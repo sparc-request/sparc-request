@@ -26,6 +26,7 @@
 //
 //= require jquery
 //= require bootstrap-sprockets
+//= require bootstrap-select
 //= require jquery-ui
 //= require jquery_ujs
 //= require jquery_nested_form
@@ -42,5 +43,3 @@
 //= require ../service_calendar
 
 window.Sparc = {}
-
-

@@ -23,8 +23,8 @@
 - billing_manager_count_var = protocol.billing_managers.size
 %input{:type => 'hidden', :value => "#{pi_count_var}", :id => "pi_count_#{protocol.id}"}
 %input{:type => 'hidden', :value => "#{billing_manager_count_var}", :id => "billing_manager_count_#{protocol.id}"}
-.row.protocol-information-title.ui-corner-top= t(:protocol_information)[:information]
-.row.protocol-information-body.ui-corner-bottom
+.row.protocol-information-body
+  .col-lg-12.h3= t(:protocol_information)[:information]
   .col-lg-4.info_left
     %ul
       %li
@@ -46,7 +46,7 @@
     = "EDIT #{protocol.type.capitalize} Information"
 
 .row
-  .col-lg-12.ui-corner-top= t(:protocol_information)[:authorized_users]
+  .col-lg-12.h3= t(:protocol_information)[:authorized_users]
   .col-lg-12.protocol-information-table
     %table.table.table-striped
       %tr
@@ -63,10 +63,11 @@
           %td= USER_ROLES.detect{|k,v| v == pr.role}.first
           %td= PROXY_RIGHTS.key(pr.project_rights)
           %td
-            %a.edit-associated-user-button{:href => "javascript:void(0)", :title => "Edit Authorized User", :'data-protocol_id' => protocol.id, :'data-user_id' => u.id, :'data-permission' => permission.to_s, :'data-pr_id' => pr.id}
+            %button.button.btn-warning.edit-associated-user-button
+              %span.glyphicon.glyphicon-pencil{ 'data-protocol_id' => protocol.id, 'data-user_id' => u.id, 'data-permission' => permission.to_s, 'data-pr_id' => pr.id }
           %td
-            %a.delete-associated-user-button{:href => "javascript:void(0)", :title => "Delete Authorized User", :style => 'font-size:10px', :'data-protocol_id' => protocol.id, :'data-current_user_role' => pr.role, :'data-pr_id' => pr.id, :'data-user_id' => u.id, :'data-user_role' => pr.role, :'data-permission' => permission.to_s}
-
+            %button.button.btn-danger.delete-associated-user-button
+              %span.glyphicon.glyphicon-remove{ 'data-protocol_id' => protocol.id, 'data-current_user_role' => pr.role, 'data-pr_id' => pr.id, 'data-user_id' => u.id, 'data-user_role' => pr.role, 'data-permission' => permission.to_s }
 
       - if protocol.project_roles.count == 0
         = t(:protocol_information)[:no_authorized_users]
@@ -74,11 +75,8 @@
 .row.associated-user-button{:'data-protocol_id' => protocol.id, :'data-permission' => permission.to_s}
   = t(:protocol_information)[:add_authorized_user]
 
-%br
-
-
-.row.service-request-title.ui-corner-top= t(:protocol_information)[:service_requests]
 .row.service_request-body
+  .col-lg-12.h3= t(:protocol_information)[:service_requests]
   .col-lg-12
     %table.table.table-striped{:style => 'font-size:12px;', :width => "845px;"}
       %tr
@@ -87,12 +85,14 @@
         %th= t(:protocol_information)[:provider]
         %th= t(:protocol_information)[:program]
         %th= t(:protocol_information)[:status]
+        %th
+          Actions:
 
       - protocol.service_requests.each do |sr|
         - first_ssr = true
         - sr.sub_service_requests.each do |ssr|
           - next if ssr.status == 'first_draft'
-          %tr.service_request
+          %tr
             %td
               = pretty_ssr_id(protocol, ssr)
             %td
@@ -104,19 +104,15 @@
             %td
               = AVAILABLE_STATUSES[ssr.status]
             %td
-              %a.new-portal-notification-button{:title => "Send Notifications", :'data-ssr_id' => ssr.ssr_id.to_s, :'data-sr_id' => sr.id}
-            %td
-              %a.view-sub-service-request-button{:title => "View Sub Service Request", :href => "javascript:void(0);", :'data-service_request_id' => ssr.service_request.id, :'data-protocol_id' => protocol.id, :'data-status' => ssr.status, :'data-ssr_id' => ssr.ssr_id.to_s}
-            %td.edit-td
-              - if @user.can_edit_sub_service_request? ssr
-                %a.edit_service_request{:href => "javascript:void(0);", :'data-permission' => permission.to_s, :'data-url' => "/service_requests/#{sr.id}/catalog?sub_service_request_id=#{ssr.id}&from_user_portal=true"}= t(:protocol_information)[:edit]
-            - if sr.sub_service_requests.size > 0 && first_ssr
-              - first_ssr = false
-              %td.edit-original-td
-                - if @user.can_edit_service_request? sr
-                  %a.edit_service_request{:href => "javascript:void(0);", :'data-permission' => permission.to_s, :'data-url' => "/service_requests/#{sr.id}/catalog?from_user_portal=true&edit_original=true"}= t(:protocol_information)[:edit_original]
+              %select.selectpicker
+                %option{ 'data-icon' => 'glyphicon-envelope' }
+                  Send Notifications
+                %option{ 'data-icon' => 'glyphicon-pencil', disabled: @user.can_edit_sub_service_request?(ssr) ? nil : 'disabled' }
+                  Edit Sub Service Request
+                %option{ 'data-icon' => 'glyphicon-pencil', disabled: (sr.sub_service_requests.size > 0 && @user.can_edit_service_request?(sr)) ? nil : 'disabled' }
+                  Edit Service Request
           %tr
-            %td.notification_td
+            %td{ colspan: 6 }
               %div{:style => "display:none;", :id => "portal_notifications_#{ssr.ssr_id.to_s}_#{sr.id}", :class => "portal_notifications"}
                 = render :partial => 'portal/sub_service_requests/notifications_area', :locals => {:service_request => sr, :protocol => protocol, :sub_service_request => ssr}
 

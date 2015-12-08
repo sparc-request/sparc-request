@@ -76,7 +76,8 @@ RSpec.describe "service calendar", js: true do
 
           accept_alert("Quantity please enter a quantity greater than or equal to") do
             fill_in "service_request_line_items_attributes_#{line_item.id}_quantity", with: 0
-            find("th.number_of_units_header").click
+            wait_for_javascript_to_finish
+            page.execute_script('$(".line_item_quantity").change()')
           end
         end
       end
@@ -121,7 +122,7 @@ RSpec.describe "service calendar", js: true do
 
         it 'should move visit 1 to the end position' do
           wait_for_javascript_to_finish
-          first(:xpath, "//a[@class='move_visits']").click
+          first('.move_visits').click
           wait_for_javascript_to_finish
           select("Visit 1", from: "visit_to_move_1")
           select("Move to last position", from: "move_to_position_1")
@@ -135,7 +136,7 @@ RSpec.describe "service calendar", js: true do
 
         it 'should move visit 2 between visits 6 and 7' do
           wait_for_javascript_to_finish
-          first(:xpath, "//a[@class='move_visits']").click
+          first('.move_visits').click
           wait_for_javascript_to_finish
           select("Visit 2", from: "visit_to_move_1")
           wait_for_javascript_to_finish
@@ -151,7 +152,7 @@ RSpec.describe "service calendar", js: true do
         it "should not mess up the visit ids" do
           arm1.visit_groups.each do |vg|
             wait_for_javascript_to_finish
-            first(:xpath, "//a[@class='move_visits']").click
+            first('.move_visits').click
             wait_for_javascript_to_finish
             select("#{vg.name}", from: "visit_to_move_1")
             select("Move to last position", from: "move_to_position_1")

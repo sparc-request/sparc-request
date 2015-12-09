@@ -640,7 +640,7 @@ class ServiceRequestsController < ApplicationController
 
         # add access
         to_add.each do |org_id|
-          sub_service_request = @service_request.sub_service_requests.find_or_create_by_organization_id :organization_id => org_id.to_i
+          sub_service_request = @service_request.sub_service_requests.find_or_create_by(:organization_id => org_id.to_i)
           sub_service_request.documents << doc_object
           sub_service_request.save
         end

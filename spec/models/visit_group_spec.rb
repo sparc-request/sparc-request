@@ -32,13 +32,13 @@ RSpec.describe "VisitGroup" do
   context "setting the default name" do
 
     it "should set a default name based on its position" do
-      expect(@visit_group.name).to eq("Visit 1")
+      expect(visit_group.name).to eq("Visit 1")
     end
 
     it "should not set the name if it already has one" do
-      @visit_group.update_attributes(name: "Foobar")
-      @visit_group.set_default_name
-      expect(@visit_group.name).to eq("Foobar")
+      visit_group.update_attributes(name: "Foobar")
+      visit_group.set_default_name
+      expect(visit_group.name).to eq("Foobar")
     end
   end
 

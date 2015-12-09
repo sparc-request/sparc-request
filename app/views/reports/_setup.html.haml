@@ -20,7 +20,7 @@
 
 = form_tag generate_reports_path, :id => "reporting_form" do
   = hidden_field_tag "report[type]", @report.class.name
-  = link_to @report.title, "javascript:void(0);", :class => 'reporting_title'
+  .reporting_title= @report.title
 
   #report_fields
 
@@ -41,7 +41,7 @@
         - check_dep_class = dependency ? 'check_dep_class' : nil
         - id = options[:for] ? options[:for] : field.delete(" ").underscore
         - name = options[:for] ? "report[" + options[:for] + "]" : "report[" + id + "]"
-        
+
         %label{:for => id}= field_label
         = text_field_tag name, nil, :id => id, :class => default_classes
       /* end text_field_tag */
@@ -56,6 +56,7 @@
           - check_dep_class = dependency ? 'check_dep_class' : nil
           - id = options[:for] || "#{field.name.underscore}_id"
           - name = options[:for] ? "report[#{options[:for]}]" : "report[#{field.name.underscore}_id]"
+          - name_method = options[:custom_name_method] || :name
 
           %label{:for => id}= field_label
           %select{:"data-dependency" => dependency, :class => [default_classes, check_dep_class].join(" "), :name => name, :id => id}
@@ -67,7 +68,7 @@
                 - dependency_id = options[:dependency_id] || dependency.sub(/^#/, "") # either an id is specified or we assume the dependency is the id
                 - if record.respond_to? dependency_id.to_s
                   - option_class = "sub-#{record.send dependency_id}"
-              %option{:value => record.id, :class => option_class}= record.name
+              %option{:value => record.id, :class => option_class}= record.send(name_method)
       /* end select_tag */
 
       /* date_field */
@@ -85,7 +86,7 @@
         %label= field_label
         %br
         %br
-        
+
         /* from information */
         - from_id = options[:for] ? options[:for] + "_from" : field.delete(" ").underscore + "_from"
         - from_name = options[:for] ? "report[" + options[:for] + "_from]" : "report[" + from_id + "]"
@@ -106,7 +107,7 @@
 
         %br
         %br
-      
+
         %label{:for => to_id, :class => 'sub_label'}= to_label
         = text_field_tag to_name, nil, :id => to_id, :"data-to" => to_date, :class => default_classes
       /* end date_range */
@@ -120,7 +121,7 @@
         - name = options[:for] ? "report[#{options[:for]}]" : "report[#{field.name.underscore}_id]"
         - name += "[]" if multiple
         %label= field_label
-        
+
         - if grouping and multiple # we have a defined grouping
           %br
           %br
@@ -149,7 +150,7 @@
           /* TODO define behavior if multiple is a method or string representation of method chain */
 
       /* end check_box_tag */
-      
+
       %br
       %br
 

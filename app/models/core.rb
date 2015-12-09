@@ -19,22 +19,22 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Core < Organization
-  belongs_to :program, :class_name => "Organization", :foreign_key => "parent_id"
-  has_many :services, :dependent => :destroy, :foreign_key => "organization_id"
+  belongs_to :program, class_name: 'Organization', foreign_key: 'parent_id'
+  has_many :services, dependent: :destroy, foreign_key: 'organization_id'
 
   # Surveys associated with this service
-  has_many :associated_surveys, :as => :surveyable
+  has_many :associated_surveys, as: :surveyable
 
   def populate_for_edit
-    self.setup_available_statuses
+    setup_available_statuses
   end
 
   def setup_available_statuses
     position = 1
-    obj_names = AvailableStatus::TYPES.map{|k,v| k}
+    obj_names = AvailableStatus::TYPES.map{ |k,v| k }
     obj_names.each do |obj_name|
-      available_status = available_statuses.detect{|obj| obj.status == obj_name}
-      available_status = available_statuses.build(:status => obj_name, :new => true) unless available_status
+      available_status = available_statuses.detect { |obj| obj.status == obj_name }
+      available_status = available_statuses.build(status: obj_name, new: true) unless available_status
       available_status.position = position
       position += 1
     end

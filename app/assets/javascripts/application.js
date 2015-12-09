@@ -34,6 +34,7 @@
 //= require jquery_ujs
 //= require jquery_nested_form
 //= require json2
+//= require infotip
 //= require shared
 //= require underscore-min
 //= require form_fx_manager

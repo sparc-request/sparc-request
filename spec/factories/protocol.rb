@@ -30,7 +30,7 @@ FactoryGirl.define do
     udak_project_number          { Random.rand(1000).to_s }
     funding_rfa                  { Faker::Lorem.word }
     potential_funding_start_date { Time.now + 1.year }
-    funding_start_date           { Time.now + 10.day }
+    funding_start_date           { '2015-10-15' }
     federal_grant_serial_number  { Random.rand(200000).to_s }
     federal_grant_title          { Faker::Lorem.sentence(2) }
     federal_grant_code_id        { Random.rand(1000).to_s }
@@ -64,12 +64,16 @@ FactoryGirl.define do
         SubServiceRequest.skip_callback(:save, :after, :update_org_tree)
         sub_service_request = build(:sub_service_request_in_cwf, service_request: service_request)
         sub_service_request.save validate: false
+        SubServiceRequest.set_callback(:save, :after, :update_org_tree)
       end
     end
 
     transient do
       project_role_count 1
       pi nil
+      identity nil
+      project_rights nil
+      role nil
     end
 
     # TODO: get this to work!
@@ -78,14 +82,18 @@ FactoryGirl.define do
     #     protocol: protocol, identity: evaluator.pi)
     # end
 
-    after(:build) do |protocol|
+    after(:build) do |protocol, evaluator|
       protocol.build_ip_patents_info(attributes_for(:ip_patents_info)) if not protocol.ip_patents_info
       protocol.build_human_subjects_info(attributes_for(:human_subjects_info)) if not protocol.human_subjects_info
       protocol.build_investigational_products_info(attributes_for(:investigational_products_info)) if not protocol.investigational_products_info
       protocol.build_research_types_info(attributes_for(:research_types_info)) if not protocol.research_types_info
       protocol.build_vertebrate_animals_info(attributes_for(:vertebrate_animals_info))  if not protocol.vertebrate_animals_info
+    end
 
-
+    after(:create) do |protocol, evaluator|
+      if evaluator.identity && evaluator.project_rights && evaluator.role
+        create(:project_role, protocol_id: protocol.id, identity_id: evaluator.identity.id, project_rights: evaluator.project_rights, role: evaluator.role)
+      end
     end
 
     factory :protocol_without_validations, traits: [:without_validations]

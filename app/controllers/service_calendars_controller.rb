@@ -29,7 +29,6 @@ class ServiceCalendarsController < ApplicationController
     @portal = params[:portal]
     @study_tracker = params[:study_tracker] == "true"
     @protocol = @service_request.protocol
-
     setup_calendar_pages
 
     # TODO: This needs to be changed for one time fees page in arms
@@ -320,7 +319,7 @@ class ServiceCalendarsController < ApplicationController
     session[:service_calendar_pages][arm_id] = page if page && arm_id
     @service_request.arms.each do |arm|
       new_page = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i
-      @pages[arm.id] = @service_request.set_visit_page new_page, arm
+      @pages[arm.id] = @service_request.set_visit_page(new_page, arm)
     end
   end
 

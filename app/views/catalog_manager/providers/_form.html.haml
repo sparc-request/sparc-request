@@ -25,6 +25,7 @@
   = hidden_field_tag 'provider[id]', @provider.id
 
   #entity_description
+    %p.org_tree= display_organization_tree(f.object)
     %fieldset.actions
       .legend= t(:organization_form)[:actions]
       = f.submit t(:organization_form)[:submit_button], :id => 'save_button', :class => 'save_button btn provider_program_core_save'

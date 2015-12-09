@@ -62,7 +62,7 @@ class ServiceRequestsReport < ReportingModule
     end
 
     attrs["SRID"] = :display_id
-    attrs["Status"] = :status
+    attrs["Status"] = :formatted_status
 
     if params[:apr_data]
       if params[:apr_data].include?("irb") || params[:apr_data].include?("iacuc")

@@ -29,4 +29,4 @@
     - if USE_LDAP
       %span.help-block 
         = t(:user_search)[:help_block]
-        %a{href: admin_identities_path(), target: "_blank" }= t(:user_search)[:help_block_link_text]
+        %a{href: admin_identities_path(), target: "_blank", title: t(:user_search)[:advanced_user_search_title]}= t(:user_search)[:help_block_link_text]

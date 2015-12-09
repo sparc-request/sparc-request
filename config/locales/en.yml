@@ -84,11 +84,13 @@ en:
     edit_user_required: "Required"
     edit_user_valid_email_required: "Valid email required"
     footer: "* Close this window or tab when you're done adding new users."
+    grid_uid: "LDAP UID"
     home: "Users"
     page_title: "Advanced User Search"
     portal: "Dashboard"
     portal_admin: "Portal Admin"
     request_services: "Request Services"
+    return_to_basic_user_search: "Please go back to the 'STEP 1: Add Users' window to add them to your study/project."
     search_help_block: "Filter the results by searching within the column headers in the grid below. Edit User buttons are displayed for people already in the system and only usable by administrators."
     search_placeholder: "Find users by first name, last name, email, or user ID"
     
@@ -1201,6 +1203,7 @@ en:
 
   # User search partial
   user_search:
+    advanced_user_search_title: "Click here to add users to SPARC and then return to this page to add them to this study/project."
     help_block: "Unable to find a user? Please try the"
     help_block_link_text: "Advanced User Search"
     message: "To begin to search and add authorized users to this study/project, type in the first or last name of the user.  Select as appropriate."

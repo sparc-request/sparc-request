@@ -78,7 +78,7 @@ class Portal::ProtocolsController < Portal::BaseController
       if USE_EPIC
         if @protocol.selected_for_epic
           @protocol.ensure_epic_user
-          Notifier.notify_for_epic_user_approval(@protocol).deliver
+          Notifier.notify_for_epic_user_approval(@protocol).deliver unless QUEUE_EPIC
         end
       end
     elsif @current_step == 'cancel_protocol'

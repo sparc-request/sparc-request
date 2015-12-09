@@ -31,7 +31,9 @@
             %td
               = "#{associated_survey.survey.title} - Version #{associated_survey.survey.survey_version}"
               %br
-              %span.associated_survey_link= direct_link_survey_url(associated_survey.survey.access_code, :survey_version => associated_survey.survey.survey_version) 
+              - survey_link = direct_link_survey_url(associated_survey.survey.access_code, :survey_version => associated_survey.survey.survey_version)
+              %a.associated_survey_link{href: survey_link, target: 'blank'}
+                = survey_link
             %td= image_tag 'cancel.png', :"data-associated_survey_id" => associated_survey.id, :class => 'associated_survey_delete'
 
   %table

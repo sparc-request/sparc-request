@@ -119,45 +119,8 @@ class Protocol < ActiveRecord::Base
     validate :primary_pi_exists
   end
 
-  def active?
-    study_type_question_group.active
-  end
-
   def is_study?
     self.type == 'Study'
-  end
-
-  def determine_study_type
-    active_answers = []
-    inactive_answers = []
-    if study_type_answers.present?
-      if active?
-        StudyTypeQuestion.active.find_each do |stq|
-          active_answers << stq.study_type_answers.find_by_protocol_id(id).answer 
-        end
-        puts active_answers.inspect
-        study_type = nil
-        STUDY_TYPE_ANSWERS_VERSION_2.each do |k, v|
-          if v == active_answers
-            study_type = k
-            break
-          end
-        end
-        study_type
-      elsif !active?
-        StudyTypeQuestion.inactive.find_each do |stq|
-          inactive_answers << stq.study_type_answers.find_by_protocol_id(id).answer 
-        end
-        study_type = nil
-        STUDY_TYPE_ANSWERS.each do |k, v|
-          if v == inactive_answers
-            study_type = k
-            break
-          end
-        end
-        study_type
-      end
-    end
   end
 
   # Determines whether a protocol contains a service_request with only a "first draft" status

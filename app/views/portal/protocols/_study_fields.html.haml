@@ -108,19 +108,11 @@
           .study_type{style: "#{f.object.selected_for_epic ? '' : 'display:none;'}"}
             = f.label :study_type_questions
             = f.fields_for :study_type_answers do |answer|
-              - puts "Answer"
-              - puts answer.inspect
-              - puts "answer.object.study_type_question.friendly_id"
-              - puts answer.object.study_type_question.friendly_id.inspect
-              - puts "answer.object.study_type_question.study_type_question_group.active"
-              - puts answer.object.study_type_question.study_type_question_group.active.inspect
-
               .field{id: "study_type_answer_#{answer.object.study_type_question.friendly_id}", style: (answer.object.study_type_question.friendly_id == 'certificate_of_conf' && answer.object.study_type_question.study_type_question_group.active ? '' : "display:none")}
                 = answer.label :answer, answer.object.study_type_question.question, class: "long"
                 = answer.select :answer, options_for_select([['Yes', true], ['No', false]], answer.object.answer), {include_blank: "Select One"}, id: "study_type_answer_#{answer.object.study_type_question.friendly_id}_answer"
                 = answer.hidden_field :study_type_question_id
-                - puts "answer.object.study_type_question.question"
-                - puts answer.object.study_type_question.question.inspect
+                
 
       %fieldset
         %legend= t(:study_form)[:optional_text]

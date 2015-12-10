@@ -43,5 +43,8 @@
       %th= t("cm_shared.labels.internal")
       %td= select_tag "pricing_setups[#{rates.try(:[], 'id') || 'blank_pricing_setup'}][internal_rate_type]", options_for_select(Service::RATE_TYPES.map{|p| [p[:display], p[:value]]}, rates.try(:[], 'internal_rate_type')), :prompt => '--- Select ---', :disabled => pricing_setup_disabled, :readonly => pricing_setup_disabled, :class => "rate"
     %tr
+      %th= t("cm_shared.labels.unfunded")
+      %td= select_tag "pricing_setups[#{rates.try(:[], 'id') || 'blank_pricing_setup'}][unfunded_rate_type]", options_for_select(Service::RATE_TYPES.map{|p| [p[:display], p[:value]]}, rates.try(:[], 'unfunded_rate_type')), :prompt => '--- Select ---', :disabled => pricing_setup_disabled, :readonly => pricing_setup_disabled, :class => "rate #{rates ? 'validate' : ''}"
+    %tr
       %th &nbsp;
       %td.footnote= t("cm_shared.labels.required_field")

@@ -122,6 +122,11 @@ RSpec.describe "editing a study", js: true do
     end
 
     describe "editing the funding start date" do
+
+      before :each do
+        page.execute_script("$('#funding_start_date').datepicker('refresh')")
+      end
+
       it "should change and save the date" do
         page.execute_script("$('#funding_start_date').focus()")
         wait_for_javascript_to_finish
@@ -244,11 +249,9 @@ RSpec.describe "editing a study", js: true do
     describe "editing the irb approval date" do
 
       it "should change and save the date" do
-        page.execute_script("$('#irb_approval_date').focus()")
-        wait_for_javascript_to_finish
-        first('a.ui-state-default.ui-state-highlight').click #click on today's date
-        wait_for_javascript_to_finish
-        expect(find("#irb_approval_date")).to have_value(Date.today.strftime('%-m/%d/%Y'))
+        page.execute_script("$('#irb_approval_date').datepicker('refresh')")
+        page.execute_script("$('#irb_approval_date').datepicker('setDate', '10/20/2015')")
+        expect(find('#irb_approval_date')).to have_value('10/20/2015')
       end
     end
 

@@ -24,10 +24,10 @@ class Visit < ActiveRecord::Base
 
   audited
 
-  belongs_to :line_items_visit
   has_many :procedures
   has_many :appointments, :through => :procedures
   belongs_to :visit_group
+  belongs_to :line_items_visit
 
   attr_accessible :line_items_visit_id
   attr_accessible :visit_group_id
@@ -68,6 +68,12 @@ class Visit < ActiveRecord::Base
     return research_billing_qty.to_i + insurance_billing_qty.to_i + effort_billing_qty.to_i
   end
 
+  # A check to see if the billing quantities have either been customized, or are set to the
+  # default of research == 1, insurance == 0, and effort == 0
+  def quantities_customized?
+    ((research_billing_qty > 1) || (insurance_billing_qty > 0) || (effort_billing_qty > 0))
+  end
+
   def position
     ##get position from visit_group
     return self.visit_group.position
@@ -86,6 +92,5 @@ class Visit < ActiveRecord::Base
   def audit_excluded_actions
     ['create']
   end
-
   ### end audit reporting methods ###
 end

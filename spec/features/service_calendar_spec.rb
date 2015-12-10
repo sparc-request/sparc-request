@@ -75,7 +75,8 @@ RSpec.describe "service calendar", js: true do
 
           accept_alert("Quantity please enter a quantity greater than or equal to") do
             fill_in "service_request_line_items_attributes_#{line_item.id}_quantity", with: 0
-            find("th.number_of_units_header").click
+            wait_for_javascript_to_finish
+            page.execute_script('$(".line_item_quantity").change()')
           end
         end
       end
@@ -120,7 +121,7 @@ RSpec.describe "service calendar", js: true do
 
         it 'should move visit 1 to the end position' do
           wait_for_javascript_to_finish
-          first(:xpath, "//a[@class='move_visits']").click
+          first('.move_visits').click
           wait_for_javascript_to_finish
           select("Visit 1", from: "visit_to_move_1")
           select("Move to last position", from: "move_to_position_1")
@@ -134,7 +135,7 @@ RSpec.describe "service calendar", js: true do
 
         it 'should move visit 2 between visits 6 and 7' do
           wait_for_javascript_to_finish
-          first(:xpath, "//a[@class='move_visits']").click
+          first('.move_visits').click
           wait_for_javascript_to_finish
           select("Visit 2", from: "visit_to_move_1")
           wait_for_javascript_to_finish
@@ -150,7 +151,7 @@ RSpec.describe "service calendar", js: true do
         it "should not mess up the visit ids" do
           arm1.visit_groups.each do |vg|
             wait_for_javascript_to_finish
-            first(:xpath, "//a[@class='move_visits']").click
+            first('.move_visits').click
             wait_for_javascript_to_finish
             select("#{vg.name}", from: "visit_to_move_1")
             select("Move to last position", from: "move_to_position_1")
@@ -160,57 +161,55 @@ RSpec.describe "service calendar", js: true do
         end
       end
 
-      describe "selecting check all row button and accepting the validation alert" do
-          
-        it "should overwrite the quantities in the row" do
-   
-          accept_confirm("This will reset custom values for this row, do you wish to continue?") do
+      context 'check all buttons' do
+
+        describe "selecting check all row button and accepting the validation alert" do
+            
+          it "should overwrite the quantities in the row if they are not customized" do
             click_link "check_row_#{arm1.line_items_visits.first.id}_template"
+            wait_for_javascript_to_finish
+            expect(first(".visits_1")).to be_checked
           end
-          wait_for_javascript_to_finish
-          expect(first(".visits_1")).to be_checked
-          expect(first(".visits_2")).to be_checked
-          expect(first(".visits_3")).to be_checked
-          expect(first(".visits_4")).to be_checked
-          expect(first(".visits_5")).to be_checked
         end
-      end
 
-      describe "selecting check all row button and canceling the validation alert" do
-          
-        it "should not overwrite the quantities in the row" do
-        
-          dismiss_confirm("This will reset custom values for this row, do you wish to continue?") do
-            click_link "check_row_#{arm1.line_items_visits.first.id}_template"
+        describe "selecting check all row button and canceling the validation alert" do
+            
+          it "should not overwrite the quantities in the row if they are customized" do
+            
+            Visit.update_all(research_billing_qty: 2)
+            visit service_calendar_service_request_path service_request.id
+            wait_for_javascript_to_finish
+
+            dismiss_confirm("This will reset custom values for this row, do you wish to continue?") do
+              click_link "check_row_#{arm1.line_items_visits.first.id}_template"
+            end
+            wait_for_javascript_to_finish
+            expect(first(".visits_1")).to be_checked
           end
-          wait_for_javascript_to_finish
-          expect(first(".visits_1")).to_not be_checked
-          expect(first(".visits_2")).to_not be_checked
-          expect(first(".visits_3")).to_not be_checked
-          expect(first(".visits_4")).to_not be_checked
-          expect(first(".visits_5")).to_not be_checked
         end
-      end
 
-      describe "selecting check all column button and accepting the validation alert" do
-          
-        it "should overwrite the quantities in the column" do
-          accept_confirm("This will reset custom values for this column, do you wish to continue?") do
+        describe "selecting check all column button and accepting the validation alert" do
+            
+          it "should overwrite the quantities in the column if they are not customized" do
             first("#check_all_column_3").click
+            wait_for_javascript_to_finish
+            expect(first(".visits_3")).to be_checked
           end
-          wait_for_javascript_to_finish
-          expect(first(".visits_3")).to be_checked
         end
-      end
 
-      describe "selecting check all column button and canceling the validation alert" do
-          
-        it "should not overwrite the quantities in the column" do
-          dismiss_confirm("This will reset custom values for this column, do you wish to continue?") do
-            first("#check_all_column_3").click
+        describe "selecting check all column button and canceling the validation alert" do
+            
+          it "should not overwrite the quantities in the column if they are customized" do
+            Visit.update_all(research_billing_qty: 2)
+            visit service_calendar_service_request_path service_request.id
+            wait_for_javascript_to_finish
+
+            dismiss_confirm("This will reset custom values for this column, do you wish to continue?") do
+              first("#check_all_column_3").click
+            end
+            wait_for_javascript_to_finish
+            expect(first(".visits_3")).to be_checked
           end
-          wait_for_javascript_to_finish
-          expect(first(".visits_3")).to_not be_checked
         end
       end
 
@@ -233,70 +232,6 @@ RSpec.describe "service calendar", js: true do
       before :each do
         click_link "billing_strategy_tab"
         @visit_id = arm1.line_items_visits.first.visits[1].id
-      end
-
-      describe "selecting check all row button and accepting the validation alert" do
-          
-        it "should overwrite the quantities in the row" do
-          fill_in "visits_#{@visit_id}_research_billing_qty", with: 10
-          wait_for_javascript_to_finish
-          accept_confirm("This will reset custom values for this row, do you wish to continue?") do
-            click_link "check_row_#{arm1.line_items_visits.first.id}_billing_strategy"
-          end
-          expect(find("#visits_#{@visit_id}_research_billing_qty")).to have_value("1")
-          expect(find("#visits_#{@visit_id}_effort_billing_qty")).to have_value("0")
-          expect(find("#visits_#{@visit_id}_insurance_billing_qty")).to have_value("0")
-        end
-      end
-
-      describe "selecting check all row button and canceling the validation alert" do
-
-        it "should not overwrite the quantities in the row" do
-          fill_in "visits_#{@visit_id}_research_billing_qty", with: 10
-          wait_for_javascript_to_finish
-          fill_in "visits_#{@visit_id}_effort_billing_qty", with: 10
-          wait_for_javascript_to_finish
-          fill_in "visits_#{@visit_id}_insurance_billing_qty", with: 10
-          wait_for_javascript_to_finish
-          dismiss_confirm("This will reset custom values for this row, do you wish to continue?") do
-            click_link "check_row_#{arm1.line_items_visits.first.id}_billing_strategy"
-          end
-          expect(find("#visits_#{@visit_id}_research_billing_qty")).to have_value("10")
-          expect(find("#visits_#{@visit_id}_effort_billing_qty")).to have_value("10")
-          expect(find("#visits_#{@visit_id}_insurance_billing_qty")).to have_value("10")
-        end
-      end
-
-      describe "selecting check all column button and accepting the validation alert" do
-          
-        it "should overwrite the quantities in the column" do
-          fill_in "visits_#{@visit_id}_research_billing_qty", with: 10
-          wait_for_javascript_to_finish
-          accept_confirm("This will reset custom values for this column, do you wish to continue?") do
-            first("#check_all_column_2").click()
-          end
-          expect(find("#visits_#{@visit_id}_research_billing_qty")).to have_value("1")
-          expect(find("#visits_#{@visit_id}_effort_billing_qty")).to have_value("0")
-          expect(find("#visits_#{@visit_id}_insurance_billing_qty")).to have_value("0")
-        end
-      end
-
-      describe "selecting check all column button and canceling the validation alert" do
-
-        it "should not overwrite the quantities in the column" do
-          fill_in "visits_#{@visit_id}_research_billing_qty", with: 10
-          wait_for_javascript_to_finish
-          fill_in "visits_#{@visit_id}_effort_billing_qty", with: 10
-          wait_for_javascript_to_finish
-          fill_in "visits_#{@visit_id}_insurance_billing_qty", with: 10
-          wait_for_javascript_to_finish
-          dismiss_confirm("This will reset custom values for this column, do you wish to continue?") do
-            first("#check_all_column_2").click 
-          end
-          expect(find("#visits_#{@visit_id}_research_billing_qty")).to have_value("10")
-          expect(find("#visits_#{@visit_id}_effort_billing_qty")).to have_value("10")
-          expect(find("#visits_#{@visit_id}_insurance_billing_qty")).to have_value("10")
-        end
       end
 
       describe "increasing the 'R' billing quantity" do
@@ -400,6 +335,11 @@ RSpec.describe "service calendar", js: true do
 
       before :each do
         @visit_id = arm1.line_items_visits.first.visits[1].id
+      end
+
+      it "should show a spinner when changed" do
+        click_link "calendar_tab"
+        expect(page).to have_css("#tab_load_spinner", visible: true)
       end
 
       it "should be blank if the visit is not checked" do

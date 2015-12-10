@@ -77,9 +77,9 @@
     - next unless @sub_service_request.nil? or @sub_service_request.organization.name == value[:process_ssr_organization_name]
     - if @tab == 'billing_strategy'
       %tr.sub_section_header
-        %th{:colspan => @portal ? 3 : 6}= value[:name]
+        %th{:colspan => @portal ? 3 : 5}= value[:name]
         - if @portal
-          %th{:colspan => 2}
+          %th{:colspan => 1}
         -5.times do
           %th.billing_type_list{:style => "text-align:center"}
             %span.billing_type R
@@ -116,7 +116,8 @@
           %td.your_cost= display_your_cost line_item
           %td.unit_type= pricing_map.unit_type
         %td.subject_count= select_tag "line_items_visit_#{line_items_visit.id}_count", options_for_select((1..arm.subject_count), line_items_visit.subject_count), :class => 'line_items_visit_subject_count', :update => "/service_requests/#{line_item.service_request_id}/service_calendars?line_items_visit=#{line_items_visit.id}&tab=template&portal=#{@portal}"
-        %td= select_row line_items_visit, @tab, @portal
+        - if @tab == 'template'
+          %td= select_row line_items_visit, @tab, @portal
         - visits = line_items_visit.visits.paginate(:page => @pages[arm.id].to_i, :per_page => 5)
         - unit_minimum = pricing_map.unit_minimum
         - totals_hash = line_items_visit.try(:per_subject_subtotals, visits)

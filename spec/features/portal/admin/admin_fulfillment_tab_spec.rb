@@ -334,7 +334,7 @@ RSpec.describe "admin fulfillment tab", js: true do
         expect(page).to have_content "Service request has been saved."
 
 
-        expect(find("#jump_to_visit_#{arm1.id} option:last-child").value).to eq("--Pandas")
+        expect(find("#jump_to_visit_#{arm1.id} option:last-child").value).to eq("--Pandas/Day 20")
       end
 
       it 'should remove visits' do

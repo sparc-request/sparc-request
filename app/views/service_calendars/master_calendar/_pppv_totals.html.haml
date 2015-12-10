@@ -22,7 +22,7 @@
   - colspan = (@merged and @portal) ? 4 : 5
   %tr.totals_section.begin_totals{:class => cycle('odd', '', :name => 'pppvs')}
     %td{:colspan => colspan}= t(:calendar_page)[:labels][:maximum_direct]
-    -unless @merged
+    -unless @merged || @tab != 'template'
       %td &nbsp;
     - 5.times do |i|
       %td{:class => "visit_column_#{i + 1} max_direct_per_patient arm_#{arm.id}"}
@@ -43,7 +43,7 @@
 
   %tr.totals_section{:class => cycle('odd', '', :name => 'pppvs')}
     %td{:colspan => colspan}= t(:calendar_page)[:labels][:maximum_per]
-    -unless @merged
+    -unless @merged || @tab != 'template'
       %td &nbsp;
     - 5.times do |i|
       %td{:class => "visit_column_#{i + 1} max_total_per_patient arm_#{arm.id}"}
@@ -53,7 +53,7 @@
 
   %tr.totals_section.grand-totals{:class => cycle('odd', '', :name => 'pppvs')}
     %td{:colspan => colspan}= t(:calendar_page)[:labels][:total_costs] + " -- " + arm.name
-    -unless @merged
+    -unless @merged || @tab != 'template'
       %td &nbsp;
     %td{:colspan => 6}
     %td{:class => "pp_total arm_#{arm.id}"}= display_total_cost_per_arm arm, line_items_visits

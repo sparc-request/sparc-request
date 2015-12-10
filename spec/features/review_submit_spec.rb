@@ -58,6 +58,34 @@ RSpec.describe "review page", js: true do
     end
   end
 
+  describe "clicking save as draft" do
+    it 'Should render a notification for the user' do
+      find("#save-as-draft").click
+      wait_for_javascript_to_finish
+      expect(page).to have_content("Notification")
+    end
+
+    describe "clicking yes in the notification" do
+      it 'Should save the service request and redirect to user portal' do
+        find("#save-as-draft").click
+        wait_for_javascript_to_finish
+        find("button.ui-button .ui-button-text", text: "Yes").click
+        wait_for_javascript_to_finish
+        expect(current_path).to eq(portal_root_path)
+      end
+    end
+
+    describe "clicking no in the notification" do
+      it 'Should close the notification box and do nothing' do
+        find("#save-as-draft").click
+        wait_for_javascript_to_finish
+        find("button.ui-button .ui-button-text", text: "No").click
+        wait_for_javascript_to_finish
+        expect(page).to_not have_content("Notification")
+      end
+    end
+  end
+
   describe "clicking get a cost estimate and declining the system satisfaction survey" do
     it 'Should submit the page', js: true do
       find("#get_a_cost_estimate").click

@@ -206,4 +206,8 @@ class LineItemsVisit < ActiveRecord::Base
   end
 
   ### end audit reporting methods ###
+
+  def any_visit_quantities_customized?
+    visits.any?(&:quantities_customized?)
+  end
 end

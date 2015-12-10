@@ -22,7 +22,7 @@ class TestReport < ReportingModule
   #$canned_reports << name unless $canned_reports.include? name # update global variable so that we can populate the list, report won't show in the list without this, unless is necessary so we don't add on refresh in dev. mode
 
   ################## BEGIN REPORT SETUP #####################
-  
+
   def self.title
     "Test Report"
   end
@@ -44,6 +44,7 @@ class TestReport < ReportingModule
   # :multiple => method, string representation of method chain, hash
   # :grouping => hash representation used to group checkboxes {"Active" => ['submitted', 'in_process'], "Other" => ['draft']}
   # :selected => array of pre-selected checkboxes ['submitted', 'in_process']
+  # :custom_name_method => method (default is :name)
   def default_options
     {
       "Date Range" => {:field_type => :date_range, :for => "service_requests_submitted_at", :from => "2012-03-01".to_date, :to => Date.today, :required => true},
@@ -66,15 +67,15 @@ class TestReport < ReportingModule
     if params[:institution_id]
       attrs[Institution] = [params[:institution_id], :abbreviation]
     end
-    
+
     if params[:provider_id]
       attrs[Provider] = [params[:provider_id], :abbreviation]
     end
-    
+
     if params[:program_id]
       attrs[Program] = [params[:program_id], :abbreviation]
     end
-    
+
     if params[:core_id]
       attrs[Core] = [params[:core_id], :abbreviation]
     end
@@ -88,7 +89,7 @@ class TestReport < ReportingModule
   end
 
   ################## END REPORT SETUP  #####################
-  
+
   ################## BEGIN QUERY SETUP #####################
   # def table => primary table to query
   # includes, where, uniq, order, and group get passed to AR methods, http://apidock.com/rails/v3.2.13/ActiveRecord/QueryMethods
@@ -131,7 +132,7 @@ class TestReport < ReportingModule
     if args[:service_requests_submitted_at_from] and args[:service_requests_submitted_at_to]
       submitted_at = args[:service_requests_submitted_at_from].to_time.strftime("%Y-%m-%d 00:00:00")..args[:service_requests_submitted_at_to].to_time.strftime("%Y-%m-%d 23:59:59")
     end
-    
+
     # default values if none are provided
     service_organization_ids = Organization.all.map(&:id) if service_organization_ids.compact.empty? # use all if none are selected
     ssr_organization_ids = Organization.all.map(&:id) if ssr_organization_ids.compact.empty? # use all if none are selected

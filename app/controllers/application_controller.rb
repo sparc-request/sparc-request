@@ -189,6 +189,10 @@ class ApplicationController < ActionController::Base
   # Validate @service_request and @sub_service_request (after having
   # been set by use_existing_service_request).  Renders an error page if
   # they were not found.
+  #
+  # NOTE: If use_existing_service_request cannot find the ServiceRequest
+  # or SubServiceRequest, it will throw an error, not render a friendly
+  # authorization_error. So how is this being used?
   def validate_existing_service_request
     if @service_request.nil?
       authorization_error "The service request you are trying to access can not be found.",

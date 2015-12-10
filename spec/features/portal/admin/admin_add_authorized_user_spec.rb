@@ -68,12 +68,8 @@ RSpec.describe 'associated users tab', js: true do
 
     describe 'searching for an user' do
       before :each do
-        fill_autocomplete('user_search', with: 'bjk7');
+        fill_in 'user_search', with: 'bjk7'
         page.find('a', text: "Brian Kelsey (kelsey@musc.edu)", visible: true).click()
-      end
-
-      it 'should remove the black shield' do
-        expect(page).not_to have_selector('#shield')
       end
 
       it 'should display the users information' do
@@ -85,9 +81,10 @@ RSpec.describe 'associated users tab', js: true do
           select "Co-Investigator", from: 'project_role_role'
           choose 'project_role_project_rights_request'
           click_button("add_authorized_user_submit_button")
+          sleep 3
 
           within('#users') do
-            expect(page).to have_text('Brian Kelsey')
+            expect(page).to have_content('Brian Kelsey')
             expect(page).to have_text('Co-Investigator')
             expect(page).to have_text('Request/Approve Services')
           end

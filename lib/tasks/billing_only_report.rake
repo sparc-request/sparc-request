@@ -6,7 +6,7 @@ namespace :reports do
     end_date = "2015-03-15".to_date # end date
 
     # protocol_ids = [5730]
-    protocol_ids = Protocol.find(:all)
+    protocol_ids = Protocol.all
 
     CSV.open("tmp/admin_billing_only_report.csv", "wb") do |csv|
       csv << ["From", start_date, "To", end_date]

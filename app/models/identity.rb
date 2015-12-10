@@ -55,8 +55,8 @@ class Identity < ActiveRecord::Base
   has_many :approvals, :dependent => :destroy
   has_many :project_roles, :dependent => :destroy
   has_many :protocols, :through => :project_roles
-  has_many :projects, :through => :project_roles, :source => :protocol, :conditions => "protocols.type = 'Project'"
-  has_many :studies, :through => :project_roles, :source => :protocol, :conditions => "protocols.type = 'Study'"
+  has_many :projects, -> { where("protocols.type = 'Project'")}, :through => :project_roles, :source => :protocol
+  has_many :studies, -> { where("protocols.type = 'Study'")}, :through => :project_roles, :source => :protocol
   has_many :super_users, :dependent => :destroy
   has_many :catalog_managers, :dependent => :destroy
   has_many :clinical_providers, :dependent => :destroy
@@ -218,7 +218,7 @@ class Identity < ActiveRecord::Base
 
   def send_admin_mail
     unless self.approved
-      Notifier.new_identity_waiting_for_approval(self).deliver
+      Notifier.new_identity_waiting_for_approval(self).deliver_now
     end
   end
 
@@ -323,7 +323,7 @@ class Identity < ActiveRecord::Base
   # any child (deep) of any of those organizations.
   # Returns an array of organizations.
   def catalog_manager_organizations
-    organizations = Organization.find(:all)
+    organizations = Organization.all
     orgs = []
 
     self.catalog_managers.map(&:organization).each do |org|
@@ -335,7 +335,7 @@ class Identity < ActiveRecord::Base
 
   # Returns an array of organizations where the user has clinical provider rights.
   def clinical_provider_organizations
-    organizations = Organization.find(:all)
+    organizations = Organization.all
     orgs = []
 
     self.clinical_providers.map(&:organization).each do |org|
@@ -354,7 +354,7 @@ class Identity < ActiveRecord::Base
   # Returns an array of organizations.
   # If you pass in "su_only" it only returns organizations for whom you are a super user.
   def admin_organizations su_only = {:su_only => false}
-    orgs = Organization.find(:all)
+    orgs = Organization.all
     organizations = []
     attached_array = []
     arr = organizations_for_users(orgs, su_only)

@@ -328,6 +328,6 @@ module ApplicationHelper
   end
 
   def first_service?(service_request)
-    service_request.line_items.count == 0 ? true : false
+    service_request.line_items.count == 0
   end
 end

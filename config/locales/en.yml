@@ -70,6 +70,30 @@ en:
       users: "Associated Users"
     title: "Dashboard <span>|</span> Welcome"
 
+  admin_identities:
+    button_cancel: "Cancel"
+    button_add_user: "Add User"
+    button_edit_user: "Edit User"
+    button_search: "Search"
+    button_update_user: "Update User"
+    catalog_manager: "Catalog Manager" 
+    edit_user_modal_title: "Update "
+    edit_user_email: "Email"
+    edit_user_first_name: "First name"
+    edit_user_last_name: "Last name" 
+    edit_user_required: "Required"
+    edit_user_valid_email_required: "Valid email required"
+    footer: "* Close this window or tab when you're done adding new users."
+    grid_uid: "LDAP UID"
+    home: "Users"
+    page_title: "Advanced User Search"
+    portal: "Dashboard"
+    portal_admin: "Portal Admin"
+    request_services: "Request Services"
+    return_to_basic_user_search: "Please go back to the 'STEP 1: Add Users' window to add them to your study/project."
+    search_help_block: "Filter the results by searching within the column headers in the grid below. Edit User buttons are displayed for people already in the system and only usable by administrators."
+    search_placeholder: "Find users by first name, last name, email, or user ID"
+    
   # Admin Root Page
   admin_root:
     assigned: "Person Assigned"
@@ -623,10 +647,24 @@ en:
     foundation_and_investigator: "25"
     federal: "49.5"
 
+  pricing_setup:
+    pricing_setup_display_date: "Pricing setup's 'display date'"
+    pricing_setup_effective_date: "Pricing setup's 'effective date'"
+    pricing_setup_corporate: "Pricing setup's 'corporate percent'"
+    pricing_setup_other: "Pricing setup's 'other percent'"
+    pricing_setup_member: "Pricing setup's 'member percent'"
+    pricing_setup_college_rate_type: "Pricing setup's 'college rate type'"
+    pricing_setup_foundation_rate_type: "Pricing setup's 'foundation rate type'"
+    pricing_setup_industry_rate_type: "Pricing setup's 'industry rate type'"
+    pricing_setup_investigator_rate_type: "Pricing setup's 'investigator rate type'"
+    pricing_setup_internal_rate_type: "Pricing setup's 'internal rate type'"
+
   # Javascript localizations
   ajax_error: "An error happened processing your request: "
   cart:
     remove_request_confirm: "This action will delete this service request and you will be redirected to your user portal. Click OK to proceed."
+    new_request_dialog1: "New Request?"
+    new_request_dialog2: "Is this a new research study or project?"
   catalog_manager_js:
     clinical_provider_remove: "Are you sure you want to remove this Fulfillment Provider?"
     cm_rights_remove: "Are you sure you want to remove rights for this user from the Catalog Manager?"
@@ -1179,6 +1217,9 @@ en:
 
   # User search partial
   user_search:
+    advanced_user_search_title: "Click here to add users to SPARC and then return to this page to add them to this study/project."
+    help_block: "Unable to find a user? Please try the"
+    help_block_link_text: "Advanced User Search"
     message: "To begin to search and add authorized users to this study/project, type in the first or last name of the user.  Select as appropriate."
     search_box_header: "User Search"
     search_placeholder: "Search for user..."

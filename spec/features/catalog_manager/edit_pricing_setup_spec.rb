@@ -71,10 +71,8 @@ RSpec.describe 'edit a pricing setup', js: true do
       page.execute_script("$('.fix_pricing_maps_button').click()")
       wait_for_javascript_to_finish
     end
-
     first(".save_button").click
     wait_for_javascript_to_finish
-
     expect(page).to have_content "Office of Biomedical Informatics saved successfully"
 
     new_date = Date.parse(PricingSetup.last.display_date.to_s)

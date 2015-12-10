@@ -18,7 +18,7 @@ RSpec.describe ProtocolArchiveController, :type => :controller do
 	  end
 		context "protocol is archived" do
 			let!(:protocol) { create(:protocol_without_validations, archived: true) }
-	  	before {get :create, {protocol_id: protocol.id}}
+	  	before {xhr :get, :create, {protocol_id: protocol.id}}
 	    it "unarchives a protocol"  do
 	    	expect(assigns(:protocol).reload.archived).to eq(false)
 	    end

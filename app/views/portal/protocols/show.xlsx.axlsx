@@ -339,7 +339,7 @@ wb.add_worksheet(name: "Consolidated Report") do |sheet|
     end
 
     alpha_array = alpha_array + additional_alpha_arrays.flatten
-  
+
     end_column = alpha_array[arm_visit_count_max * 2 + 5 + @admin_offset.to_i]
     sheet.merge_cells("A1:#{end_column}1") #info header
     sheet.merge_cells("B2:D2") #id

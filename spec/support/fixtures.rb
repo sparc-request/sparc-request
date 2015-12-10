@@ -153,7 +153,6 @@ end
 
 def create_visits
   service_request.reload
-  visit_names = ["I'm", "a", 'little', 'teapot', 'short', 'and', 'stout', 'visit', 'me', 'please']
   service_request.arms.each do |arm|
     service_request.per_patient_per_visit_line_items.each do |line_item|
       arm.create_line_items_visit(line_item)
@@ -172,11 +171,9 @@ def update_visits
 end
 
 def update_visit_groups
-  service_request.arms.each do |arm|
-    arm.populate_subjects
-    arm.visit_groups.each do |vg|
-      vg.update_attributes(day: vg.position)
-    end
+  vgs = VisitGroup.all
+  vgs.each do |vg|
+    vg.update_attributes(day: vg.position)
   end
 end
 
@@ -186,7 +183,6 @@ def build_arms
   let!(:arm2)                { create(:arm, name: "Arm2", protocol_id: protocol_for_service_request_id, visit_count: 5, subject_count: 4)}
   let!(:visit_group1)         { create(:visit_group, arm_id: arm1.id, position: 1, day: 1)}
   let!(:visit_group2)         { create(:visit_group, arm_id: arm2.id, position: 1, day: 1)}
-  # let!(:visit_group)         { create(:visit_group, arm_id: arm1.id, position: 1, day: 1)}
 end
 
 def build_project
@@ -241,14 +237,6 @@ def build_study
     protocol
   }
   build_study_type_answers()
-end
-
-def build_clinical_data all_subjects = nil
-  service_request.arms.each do |arm|
-    arm.subjects.each do |subject|
-      subject.calendar.populate(arm.visit_groups)
-    end
-  end
 end
 
 def build_fake_notification

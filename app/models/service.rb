@@ -29,7 +29,7 @@ class Service < ActiveRecord::Base
                 {:display => "Corporate Rate", :value => "corporate"}, {:display => "Other Rate", :value => "other"},
                 {:display => "Member Rate", :value => "member"}]
 
-  belongs_to :organization, :include => [:pricing_setups]
+  belongs_to :organization, -> { includes(:pricing_setups) }
   belongs_to :revenue_code_range
   # set ":inverse_of => :service" so that the first pricing map can be validated before the service has been saved
   has_many :pricing_maps, :inverse_of => :service, :dependent => :destroy 
@@ -41,8 +41,8 @@ class Service < ActiveRecord::Base
   # TODO: Andrew thinks "related services" is a bad name
   has_many :service_relations, :dependent => :destroy
   has_many :related_services, :through => :service_relations
-  has_many :required_services, :through => :service_relations, :source => :related_service, :conditions => [ "optional = ? and is_available = ?", false, true ]
-  has_many :optional_services, :through => :service_relations, :source => :related_service, :conditions => [ "optional = ? and is_available = ?", true, true ]
+  has_many :required_services, -> { where("optional = ? and is_available = ?", false, true) }, :through => :service_relations, :source => :related_service
+  has_many :optional_services, -> { where("optional = ? and is_available = ?", true, true) }, :through => :service_relations, :source => :related_service
 
   # Services that depend on this service
   has_many :depending_service_relations, :class_name => 'ServiceRelation', :foreign_key => 'related_service_id'

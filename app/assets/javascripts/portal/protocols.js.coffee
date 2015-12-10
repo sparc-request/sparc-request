@@ -38,9 +38,9 @@ $(document).ready ->
         }
       })
 
-      $('.protocol-information-button').live('click', ->
+      $('.edit-protocol-information-button').live('click', ->
         if $(this).data('permission')
-          protocol_id = $(this).data('protocol_id')
+          protocol_id = $(this).data('protocol-id')
           window.location = "/portal/protocols/#{protocol_id}/edit"
         else
           $('.permissions-dialog').dialog('open')

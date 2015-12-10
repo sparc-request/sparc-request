@@ -28,7 +28,7 @@
   .panel.panel-default
     .panel-heading
       %h4.panel-title.pull-left= t(:protocol_information)[:information]
-      %button.btn.btn-warning.btn-sm.pull-right{ type: 'button' }= "EDIT #{protocol.type.capitalize} Information"
+      %button.btn.btn-warning.btn-sm.pull-right.edit-protocol-information-button{ type: 'button', data: { permission: permission.to_s, protocol_id: protocol.id } }= "EDIT #{protocol.type.capitalize} Information"
       .clearfix
 
     .panel-body

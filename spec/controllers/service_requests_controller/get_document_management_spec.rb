@@ -23,7 +23,7 @@ RSpec.describe ServiceRequestsController do
 
     context 'ServiceRequest has no Subsidies' do
       before(:each) do
-        get :document_management, id: service_request.id        
+        xhr :get, :document_management, id: service_request.id        
       end
 
       it "should set the service list to the service request's service list" do
@@ -38,7 +38,7 @@ RSpec.describe ServiceRequestsController do
     context 'ServiceRequest has Subsidies' do
       before(:each) do
         create(:subsidy, sub_service_request: service_request.sub_service_requests.first)
-        get :document_management, id: service_request.id
+        xhr :get, :document_management, id: service_request.id
       end
 
       it "should set @service_list to the ServiceRequest's service list" do

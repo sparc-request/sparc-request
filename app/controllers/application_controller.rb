@@ -62,7 +62,7 @@ class ApplicationController < ActionController::Base
 
         Alert.where(:alert_type => ALERT_TYPES['google_calendar'], :status => ALERT_STATUSES['active']).update_all(:status => ALERT_STATUSES['clear'])
       rescue Exception => e
-        active_alert = Alert.find_or_initialize_by_alert_type_and_status(ALERT_TYPES['google_calendar'], ALERT_STATUSES['active'])
+        active_alert = Alert.where(alert_type: ALERT_TYPES['google_calendar'], status: ALERT_STATUSES['active']).first_or_initialize
         if Rails.env == 'production' && active_alert.new_record?
           active_alert.save
           ExceptionNotifier::Notifier.exception_notification(request.env, e).deliver unless request.remote_ip == '128.23.150.107' # this is an ignored IP address, MUSC security causes issues when they pressure test,  this should be extracted/configurable

@@ -22,5 +22,11 @@ FactoryGirl.define do
 
   factory :visit_group do
   	name                       { "" }
+
+    trait :without_validations do
+      to_create { |instance| instance.save(validate: false) }
+    end
+
+    factory :visit_group_without_validations, traits: [:without_validations]
   end
 end

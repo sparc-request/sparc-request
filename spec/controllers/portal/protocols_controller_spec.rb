@@ -22,7 +22,7 @@ RSpec.describe Portal::ProtocolsController do
 
   	context 'default portal view' do
 
-  	  before { get :index, format: :js }
+  	  before { xhr :get, :index, format: :js }
 
   	  it 'does not contain archived protocol' do
   	    expect(assigns(:protocols)).to eq([unarchived_protocol])
@@ -31,7 +31,7 @@ RSpec.describe Portal::ProtocolsController do
 
   	context 'filtered portal view' do
 
-  	  before { get :index, include_archived: 'true', format: :js }
+  	  before { xhr :get, :index, include_archived: 'true', format: :js }
 
   	  it 'shows archived and unarchived protocols' do
   		  expect(assigns(:protocols).sort).to eq([archived_protocol, unarchived_protocol])

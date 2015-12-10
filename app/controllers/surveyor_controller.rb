@@ -47,8 +47,30 @@ module SurveyorControllerCustomMethods
   def edit
     super
   end
+
   def update
-    super
+    question_ids_for_dependencies = (r_params || []).map{|k,v| v["question_id"] }.compact.uniq
+    saved = load_and_update_response_set_with_retries
+    return redirect_with_message(surveyor_finish, :notice, t('surveyor.completed_survey')) if saved && finish_params
+
+    respond_to do |format|
+      format.html do
+        if @response_set.nil?
+          return redirect_with_message(surveyor.available_surveys_path, :notice, t('surveyor.unable_to_find_your_responses'))
+        else
+          flash[:notice] = t('surveyor.unable_to_update_survey') unless saved
+          redirect_to surveyor.edit_my_survey_path(anchor: anchor_from(section_params), section: section_id_from(params))
+        end
+      end
+      format.js do
+        if @response_set
+          render json: @response_set.reload.all_dependencies(question_ids_for_dependencies)
+        else
+          render text: "No response set #{response_set_code_params}",
+          status: 404
+        end
+      end
+    end
   end
 
   def destroy
@@ -79,7 +101,7 @@ module SurveyorControllerCustomMethods
     File.open(full_path, 'w') do |f|
       if pretty_print
         f.write(['Identity', 'College', 'Department', survey.response_sets.first.survey.sections.map{|section| section.questions.order(:display_order).map(&:text)}].flatten.to_csv) #header
-        question_ids = survey.sections.map{|section| section.questions.order(&:display_order).map(&:id)}.flatten
+        question_ids = survey.sections.map{|section| section.questions.order(:display_order).map(&:id)}.flatten
         survey.response_sets.each do |response_set|
           next if response_set.responses.empty?
           identity = Identity.find(response_set.user_id)
@@ -107,7 +129,31 @@ module SurveyorControllerCustomMethods
       super # surveyor.available_surveys_path
     end
   end
+
+  private
+
+  def r_params
+    return unless params[:r]
+    params.require(:r).permit!
+  end
+
+  def section_params
+    return unless params[:section]
+    params.require(:section).permit!
+  end
+
+  def finish_params
+    return if !params[:finish]
+    params.require(:finish)
+  end
+
+  def response_set_code_params
+    return unless params[:response_set_code]
+    params.require(:response_set_code).permit!
+  end
 end
+
+
 class SurveyorController < ApplicationController
   include Surveyor::SurveyorControllerMethods
   include SurveyorControllerCustomMethods

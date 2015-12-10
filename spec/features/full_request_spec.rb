@@ -44,21 +44,21 @@ RSpec.describe 'Full service request' do
       click_link("South Carolina Clinical and Translational Institute (SCTR)")
       wait_for_javascript_to_finish
       expect(find(".provider-name")).to have_text("South Carolina Clinical and Translational Institute (SCTR)")
-
       click_link("Office of Biomedical Informatics")
+      wait_for_javascript_to_finish
       find("#service-1").click() # Add service 'Human Subject Review' to cart
       wait_for_javascript_to_finish
-
       # # TODO: Switch this to a search
       find("#service-2").click()
       wait_for_javascript_to_finish
-
       find(".submit-request-button").click # Submit to begin services
 
       click_link "Outside Users Click Here"
+      wait_for_javascript_to_finish
       ### LOGIN PAGE ###
       fill_in("identity_ldap_uid", with: 'jug2')
       fill_in("identity_password", with: 'p4ssword')
+      wait_for_javascript_to_finish
       find(".devise_submit_button").click
     end
   end

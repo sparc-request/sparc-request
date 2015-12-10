@@ -122,12 +122,17 @@ RSpec.describe "editing a study", js: true do
     end
 
     describe "editing the funding start date" do
+
       before :each do
         page.execute_script("$('#funding_start_date').datepicker('refresh')")
       end
+
       it "should change and save the date" do
-        page.execute_script("$('#funding_start_date').datepicker('setDate', '10/20/2015')")
-        expect(find('#funding_start_date')).to have_value('10/20/2015')
+        page.execute_script("$('#funding_start_date').focus()")
+        wait_for_javascript_to_finish
+        page.execute_script("$('#funding_start_date').val('12/20/2015')")
+        wait_for_javascript_to_finish
+        expect(find("#funding_start_date")).to have_value('12/20/2015')
       end
     end
 
@@ -164,12 +169,12 @@ RSpec.describe "editing a study", js: true do
 
     describe "editing the potential funding start date" do
 
-     it "should change and save the date" do
-       page.execute_script("$('#potential_funding_start_date').focus()")
-       page.execute_script("$('#potential_funding_start_date').val('12/20/2015')")
-       wait_for_javascript_to_finish
-       expect(find("#potential_funding_start_date")).to have_value('12/20/2015')
-     end
+      it "should change and save the date" do
+        page.execute_script("$('#potential_funding_start_date').focus()")
+        page.execute_script("$('#potential_funding_start_date').val('12/20/2015')")
+        wait_for_javascript_to_finish
+        expect(find("#potential_funding_start_date")).to have_value('12/20/2015')
+      end
     end
 
     describe "selecting a potential funding source" do
@@ -253,9 +258,11 @@ RSpec.describe "editing a study", js: true do
     describe "editing the irb expiration date" do
 
       it "should change and save the date" do
-        page.execute_script("$('#irb_expiration_date').datepicker('refresh')")
-        page.execute_script("$('#irb_expiration_date').datepicker('setDate', '10/20/2015')")
-        expect(find('#irb_expiration_date')).to have_value('10/20/2015')
+        page.execute_script("$('#irb_expiration_date').focus()")
+        wait_for_javascript_to_finish
+        page.execute_script("$('#irb_expiration_date').val('12/20/2015')")
+        wait_for_javascript_to_finish
+        expect(find("#irb_expiration_date")).to have_value('12/20/2015')
       end
     end
   end

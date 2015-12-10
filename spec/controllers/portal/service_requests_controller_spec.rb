@@ -35,7 +35,7 @@ RSpec.describe Portal::ServiceRequestsController do
   describe 'GET show' do
     it 'should set instance variables' do
       session[:service_calendar_page] = 1
-      get :show, {
+      xhr :get, :show, {
         format: :js,
         id: service_request.id,
         arm_id: arm1.id,
@@ -122,9 +122,9 @@ RSpec.describe Portal::ServiceRequestsController do
         arm_id: arm1.id,
         service_request_id: service_request.id,
         sub_service_request_id: sub_service_request.id,
-        visit_position: 2,
+        visit_position: 1,
       }.with_indifferent_access
-
+      
       expect(assigns(:sub_service_request)).to eq sub_service_request
       expect(assigns(:subsidy)).to eq subsidy
       expect(assigns(:candidate_per_patient_per_visit)).to eq [ service2 ]
@@ -144,7 +144,7 @@ RSpec.describe Portal::ServiceRequestsController do
         arm_id: arm1.id,
         service_request_id: service_request.id,
         sub_service_request_id: sub_service_request.id,
-        visit_position: 2,
+        visit_position: 1,
       }.with_indifferent_access
 
       expect(LineItemsVisit.for(arm1, line_item).visits.count).to eq(0)

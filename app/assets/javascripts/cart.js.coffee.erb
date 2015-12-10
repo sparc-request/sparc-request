@@ -33,6 +33,21 @@ removeService = (sr_id, id, move_on) ->
 
 $(document).ready ->
 
+  $("#cart-help").dialog
+    autoOpen: false
+    height: 425
+    width: 500
+    modal: true
+
+  $(document).on('click', '.faq-button', ->
+    $("#cart-help").dialog( "open" )
+  )
+
+  $('.help_answer').hide()
+
+  $('.help_question').live 'click', ->
+    $(this).siblings().toggle().css('font-style': 'italic')
+
   $('.add_service').live 'click', ->
     sr_id = $(this).attr('sr_id')
     id = $(this).attr('id')
@@ -61,4 +76,4 @@ $(document).ready ->
         $("#services").append('<span class="spinner"><img src="/assets/spinner.gif"/></span>')
         $(this).hide()
         removeService(sr_id, id, false)
-        )
+  )

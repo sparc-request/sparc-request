@@ -124,25 +124,25 @@ SparcRails::Application.routes.draw do
     end
   end
 
-  match 'service_requests/:id/add_service/:service_id' => 'service_requests#add_service'
-  match 'service_requests/:id/remove_service/:line_item_id' => 'service_requests#remove_service'
-  match 'service_requests/:id/select_calendar_row/:line_items_visit_id' => 'service_calendars#select_calendar_row'
-  match 'service_requests/:id/unselect_calendar_row/:line_items_visit_id' => 'service_calendars#unselect_calendar_row'
-  match 'service_requests/:id/select_calendar_column/:column_id/:arm_id' => 'service_calendars#select_calendar_column'
-  match 'service_requests/:id/unselect_calendar_column/:column_id/:arm_id' => 'service_calendars#unselect_calendar_column'
-  match 'service_requests/:id/delete_document/:document_id' => 'service_requests#delete_documents'
-  match 'service_requests/:id/edit_document/:document_id' => 'service_requests#edit_documents'
-  match 'service_requests/:id/new_document' => 'service_requests#new_document'
+  match 'service_requests/:id/add_service/:service_id' => 'service_requests#add_service', via: [:get, :post]
+  match 'service_requests/:id/remove_service/:line_item_id' => 'service_requests#remove_service', via: [:all]
+  match 'service_requests/:id/select_calendar_row/:line_items_visit_id' => 'service_calendars#select_calendar_row', via: [:get, :post]
+  match 'service_requests/:id/unselect_calendar_row/:line_items_visit_id' => 'service_calendars#unselect_calendar_row', via: [:get, :post]
+  match 'service_requests/:id/select_calendar_column/:column_id/:arm_id' => 'service_calendars#select_calendar_column', via: [:get, :post]
+  match 'service_requests/:id/unselect_calendar_column/:column_id/:arm_id' => 'service_calendars#unselect_calendar_column', via: [:get, :post]
+  match 'service_requests/:id/delete_document/:document_id' => 'service_requests#delete_documents', via: [:all]
+  match 'service_requests/:id/edit_document/:document_id' => 'service_requests#edit_documents', via: [:get, :post]
+  match 'service_requests/:id/new_document' => 'service_requests#new_document', via: [:get, :post]
 
   ##### sparc-services routes brought in and namespaced
   namespace :catalog_manager do
-    match 'services/search' => 'services#search'
-    match 'services/associate' => 'services#associate'
-    match 'services/disassociate' => 'services#disassociate'
-    match 'services/set_optional' => 'services#set_optional'
-    match 'services/set_linked_quantity' => 'services#set_linked_quantity'
-    match 'services/set_linked_quantity_total' => 'services#set_linked_quantity_total'
-    match 'services/get_updated_rate_maps' => 'services#get_updated_rate_maps'
+    match 'services/search' => 'services#search', via: [:get, :post]
+    match 'services/associate' => 'services#associate', via: [:get, :post]
+    match 'services/disassociate' => 'services#disassociate', via: [:get, :post]
+    match 'services/set_optional' => 'services#set_optional', via: [:get, :post]
+    match 'services/set_linked_quantity' => 'services#set_linked_quantity', via: [:get, :post]
+    match 'services/set_linked_quantity_total' => 'services#set_linked_quantity_total', via: [:get, :post]
+    match 'services/get_updated_rate_maps' => 'services#get_updated_rate_maps', via: [:get, :post]
 
     resources :catalog, only: [:index] do
       collection do
@@ -164,28 +164,28 @@ SparcRails::Application.routes.draw do
       end
     end
 
-    match 'identities/associate_with_org_unit' => 'identities#associate_with_org_unit'
-    match 'identities/disassociate_with_org_unit' => 'identities#disassociate_with_org_unit'
-    match 'identities/set_view_draft_status' => 'identities#set_view_draft_status'
-    match 'identities/set_primary_contact' => 'identities#set_primary_contact'
-    match 'identities/set_hold_emails' => 'identities#set_hold_emails'
-    match 'identities/set_edit_historic_data' => 'identities#set_edit_historic_data'
-    match 'identities/search' => 'identities#search'
-    match 'services/update_cores/:id' => 'services#update_cores'
-    match 'update_pricing_maps' => 'catalog#update_pricing_maps'
-    match 'update_dates_on_pricing_maps' => 'catalog#update_dates_on_pricing_maps'
-    match 'validate_pricing_map_dates' => 'catalog#validate_pricing_map_dates'
-    match '*verify_valid_pricing_setups' => 'catalog#verify_valid_pricing_setups'
+    match 'identities/associate_with_org_unit' => 'identities#associate_with_org_unit', via: [:get, :post]
+    match 'identities/disassociate_with_org_unit' => 'identities#disassociate_with_org_unit', via: [:get, :post]
+    match 'identities/set_view_draft_status' => 'identities#set_view_draft_status', via: [:get, :post]
+    match 'identities/set_primary_contact' => 'identities#set_primary_contact', via: [:get, :post]
+    match 'identities/set_hold_emails' => 'identities#set_hold_emails', via: [:get, :post]
+    match 'identities/set_edit_historic_data' => 'identities#set_edit_historic_data', via: [:get, :post]
+    match 'identities/search' => 'identities#search', via: [:get, :post]
+    match 'services/update_cores/:id' => 'services#update_cores', via: [:get, :post]
+    match 'update_pricing_maps' => 'catalog#update_pricing_maps', via: [:get, :post]
+    match 'update_dates_on_pricing_maps' => 'catalog#update_dates_on_pricing_maps', via: [:get, :post]
+    match 'validate_pricing_map_dates' => 'catalog#validate_pricing_map_dates', via: [:get, :post]
+    match '*verify_valid_pricing_setups' => 'catalog#verify_valid_pricing_setups', via: [:get, :post]
 
     root to: 'catalog#index'
   end
 
   ##### Study Tracker/Clinical Work Fulfillment Portal#####
-  namespace :study_tracker, path: 'clinical_work_fulfillment' do
-    match 'appointments/add_note' => 'calendars#add_note'
-    match 'calendars/delete_toast_messages' => 'calendars#delete_toast_messages'
-    match 'calendars/change_visit_group' => 'calendars#change_visit_group'
-    match 'appointments/add_service' => 'calendars#add_service'
+  namespace :study_tracker, :path => "clinical_work_fulfillment" do
+    match 'appointments/add_note' => 'calendars#add_note', via: [:get, :post]
+    match 'calendars/delete_toast_messages' => 'calendars#delete_toast_messages', via: [:all]
+    match 'calendars/change_visit_group' => 'calendars#change_visit_group', via: [:get, :post]
+    match 'appointments/add_service' => 'calendars#add_service', via: [:get, :post]
 
     root to: 'home#index'
 
@@ -258,7 +258,7 @@ SparcRails::Application.routes.draw do
       resources :sub_service_requests do
         member do
           put :update_from_fulfillment
-          put :update_from_project_study_information
+          patch :update_from_project_study_information
           put :push_to_epic
           put :add_line_item
           put :add_otf_line_item
@@ -318,8 +318,8 @@ SparcRails::Application.routes.draw do
         delete "/delete_toast_message/:id" => "admin#delete_toast_message"
       end
     end
-    match '/admin/sub_service_requests/:id/edit_document/:document_id' => 'sub_service_requests#edit_documents'
-    match "/admin/sub_service_requests/:id/delete_document/:document_id" => "sub_service_requests#delete_documents"
+    match '/admin/sub_service_requests/:id/edit_document/:document_id' => 'sub_service_requests#edit_documents', via: [:get, :post]
+    match "/admin/sub_service_requests/:id/delete_document/:document_id" => "sub_service_requests#delete_documents", via: [:get, :post]
 
     root to: 'home#index'
   end

@@ -25,7 +25,7 @@ class Portal::AssociatedUsersController < Portal::BaseController
   before_filter :find_project, :only => [:show, :edit, :new, :create, :update]
   before_filter :protocol_authorizer_view, :only => [:show]
   before_filter :protocol_authorizer_edit, :only => [:edit, :new, :create, :update]
-    
+
   def show
     # TODO: is it right to call to_i here?
     # TODO: id here should be the id of a project role, not an identity
@@ -68,7 +68,7 @@ class Portal::AssociatedUsersController < Portal::BaseController
       @identity.update_attributes params[:identity]
       if SEND_AUTHORIZED_USER_EMAILS
         @protocol.emailed_associated_users.each do |project_role|
-          UserMailer.authorized_user_changed(project_role.identity, @protocol).deliver unless project_role.identity.email.blank?
+          UserMailer.authorized_user_changed(project_role.identity, @protocol).deliver_now unless project_role.identity.email.blank?
         end
       end
 
@@ -92,7 +92,7 @@ class Portal::AssociatedUsersController < Portal::BaseController
   end
 
   def update
-    @protocol_role = ProjectRole.find params[:id]    
+    @protocol_role = ProjectRole.find params[:id]
     @identity = Identity.find @protocol_role.identity_id
     @identity.update_attributes params[:identity]
 
@@ -104,7 +104,7 @@ class Portal::AssociatedUsersController < Portal::BaseController
       @protocol_role.save
       if SEND_AUTHORIZED_USER_EMAILS
         @protocol.emailed_associated_users.each do |project_role|
-          UserMailer.authorized_user_changed(project_role.identity, @protocol).deliver unless project_role.identity.email.blank?
+          UserMailer.authorized_user_changed(project_role.identity, @protocol).deliver_now unless project_role.identity.email.blank?
         end
       end
 
@@ -169,7 +169,7 @@ class Portal::AssociatedUsersController < Portal::BaseController
 
   def search
     term = params[:term].strip
-    results = Identity.search(term).map do |i| 
+    results = Identity.search(term).map do |i|
       {
        :label => i.display_name, :value => i.id, :email => i.email, :institution => i.institution, :phone => i.phone, :era_commons_name => i.era_commons_name,
        :college => i.college, :department => i.department, :credentials => i.credentials, :credentials_other => i.credentials_other
@@ -183,7 +183,7 @@ class Portal::AssociatedUsersController < Portal::BaseController
     # automatically overwrite it.
     results = [{:label => 'No Results'}] if results.empty?
 
-    render :json => results.to_json    
+    render :json => results.to_json
   end
 
 private

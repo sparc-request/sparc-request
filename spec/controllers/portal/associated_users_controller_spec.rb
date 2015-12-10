@@ -37,7 +37,7 @@ RSpec.describe Portal::AssociatedUsersController do
   before :each do
     session[:identity_id] = identity.id
   end
-    
+
   describe 'GET show' do
     it 'should set user if user is an associated user' do
       get(:show, {
@@ -62,18 +62,18 @@ RSpec.describe Portal::AssociatedUsersController do
 
   describe 'POST edit' do
     it 'should set identity' do
-      post(:edit, {
-        format: :json,
+      post :edit, {
+        format: :js,
         id: project.project_roles[0].id,
         identity_id: identity.id,
         protocol_id: project.id,
-      }.with_indifferent_access)
+      }.with_indifferent_access
       expect(assigns(:identity)).to eq identity
     end
 
     it 'should set protocol_role' do
       post(:edit, {
-        format: :json,
+        format: :js,
         id: project.project_roles[0].id,
         identity_id: identity.id,
         protocol_id: project.id,
@@ -83,7 +83,7 @@ RSpec.describe Portal::AssociatedUsersController do
 
     it 'should set sub_service_request if sub_service_request_id is set' do
       post(:edit, {
-        format: :json,
+        format: :js,
         identity_id: identity.id,
         id: project.project_roles[0].id,
         protocol_id: project.id,
@@ -96,7 +96,7 @@ RSpec.describe Portal::AssociatedUsersController do
   describe 'POST new' do
     it 'should set identity' do
       post(:new, {
-        format: :json,
+        format: :js,
         id: project.project_roles[0].id, # not used by new, but we supply it anyway
         user_id: identity.id,
         protocol_id: project.id,
@@ -106,7 +106,7 @@ RSpec.describe Portal::AssociatedUsersController do
 
     it 'should set protocol_role' do
       post(:new, {
-        format: :json,
+        format: :js,
         id: project.project_roles[0].id, # not used by new, but we supply it anyway
         user_id: identity.id,
         protocol_id: project.id,

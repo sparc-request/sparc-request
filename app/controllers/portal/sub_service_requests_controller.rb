@@ -106,62 +106,6 @@ class Portal::SubServiceRequestsController < Portal::BaseController
     end
   end
 
-  def add_line_item
-    @sub_service_request = SubServiceRequest.find(params[:id])
-    @service_request = @sub_service_request.service_request
-    @subsidy = @sub_service_request.subsidy
-    service = Service.find(params[:new_service_id])
-    percent = @subsidy.try(:percent_subsidy).try(:*, 100)
-    @candidate_one_time_fees = @sub_service_request.candidate_services.select {|x| x.one_time_fee}
-    @candidate_per_patient_per_visit = @sub_service_request.candidate_services.reject {|x| x.one_time_fee}
-    existing_service_ids = @service_request.line_items.map(&:service_id)
-
-    # we don't have arms and we are adding a new per patient per visit service
-    if @service_request.arms.empty? and not service.one_time_fee
-      @service_request.protocol.arms.create(name: 'Screening Phase', visit_count: 1, subject_count: 1)
-    end
-
-    @arm_id = params[:arm_id].to_i if params[:arm_id]
-    @selected_arm = params[:arm_id] ? Arm.find(@arm_id) : @service_request.arms.first
-    @study_tracker = params[:study_tracker] == "true"
-    @line_items = @sub_service_request.line_items
-
-    ActiveRecord::Base.transaction do
-      if @new_line_items = @service_request.create_line_items_for_service(
-        service: Service.find(params[:new_service_id]),
-        optional: true,
-        existing_service_ids: existing_service_ids,
-        allow_duplicates: true)
-
-        @new_line_items.each do |line_item|
-          line_item.update_attribute(:sub_service_request_id, @sub_service_request.id)
-          @sub_service_request.update_cwf_data_for_new_line_item(line_item)
-        end
-
-        # Have to reload the service request to get the correct direct cost total for the subsidy
-        @subsidy.try(:sub_service_request).try(:reload)
-        @subsidy.try(:fix_pi_contribution, percent)
-      else
-        respond_to do |format|
-          format.js { render :status => 500, :json => clean_errors(@service_request.errors) }
-        end
-      end
-    end
-
-    # ##Single line item created
-    # if @sub_service_request.create_line_item(
-    #     service_id: params[:new_service_id],
-    #     sub_service_request_id: params[:sub_service_request_id])
-    #   # Have to reload the service request to get the correct direct cost total for the subsidy
-    #   @subsidy.try(:sub_service_request).try(:reload)
-    #   @subsidy.try(:fix_pi_contribution, percent)
-    # else
-    #   respond_to do |format|
-    #     format.js { render :status => 500, :json => clean_errors(@sub_service_request.errors) }
-    #   end
-    # end
-  end
-
   def add_otf_line_item
     @sub_service_request = SubServiceRequest.find(params[:id])
     @service_request = @sub_service_request.service_request

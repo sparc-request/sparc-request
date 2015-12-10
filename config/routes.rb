@@ -228,6 +228,15 @@ SparcRails::Application.routes.draw do
       end
     end
 
+    resources :multiple_line_items, only: [] do
+      collection do
+        get :new_line_items
+        put :create_line_items
+        get :edit_line_items
+        put :destroy_line_items
+      end
+    end
+
     resources :associated_users, except: [:index] do
       collection do
         get :search

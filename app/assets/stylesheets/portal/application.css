@@ -25,6 +25,7 @@
  *= require_self
  *= require_tree . 
  *= require bootstrap
+ *= require bootstrap-select
  *= require 960
  *= require jquery.toastmessage
 */

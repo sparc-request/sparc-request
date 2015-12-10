@@ -51,35 +51,10 @@
     font-size: 1.4em;
   }
 }
-// .ui-tabs.plain_class {
-//   border: 0px;
-//   background: none;
-//   padding: 0px
-// }
 
-// .ui-tabs.plain_class ul.ui-tabs-nav {
-//   background: #3883A9 !important;
-//   padding-top: 15px;
-//   border-radius: 0px;
-//   -moz-border-radius: 0px;
-//   -webkit-border-radius: 0px;
-// }
-// .ui-tabs.plain_class ul.ui-tabs-nav li {
-//   background: #3e9f5a !important;
-//   border: none;
-//   border-radius: 0px;
-//   -moz-border-radius: 0px;
-//   -webkit-border-radius: 0px;
-// }
-
-// .ui-tabs.plain_class ul.ui-tabs-nav li.ui-tabs-active {
-//   background: #f89c50 !important;
-// }
-
-// .ui-tabs.plain_class ul.ui-tabs-nav li.ui-state-hover a,
-// .ui-tabs.plain_class ul.ui-tabs-nav li.ui-state-focus a {
-//   color: white;
-// }
+#study_schedule_buttons .col-md-4 {
+  font-size: 18px;
+}
 
 #admin-tablesorter {
   table {
@@ -173,24 +148,6 @@ table.tablesorter thead tr .headerSortDown {
 table.tablesorter thead tr .headerSortDown, table.tablesorter thead tr .headerSortUp {
 background-color: #8dbdd8;
 }
-
-// .admin-right-dashboard {
-//   .user-information-title {
-//     margin-right: 0;
-//   }
-//   .user-information-body {
-//     width: auto;
-//     margin: 0;
-//     float: none;
-//   }
-//   // float: right;
-//   // display: inline;
-//   // width: 243px;
-//   // padding: 14px 0 14px 0px;
-//   p {
-//     display: inline-block;
-//   }
-// }
 
 .admin-index-ssr-list {
   display: inline-block;

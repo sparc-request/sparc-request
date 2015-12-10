@@ -5,8 +5,7 @@ $("#per_patient_services").html("<%= escape_javascript(render(:partial =>'portal
 $("#one_time_fees").html("<%= escape_javascript(render(:partial => 'portal/sub_service_requests/one_time_fees')) %>");
 $("#fulfillment_subsidy").html("<%= escape_javascript(render(:partial =>'portal/sub_service_requests/subsidy')) %>");
 $("#request_cost_total").html("<%= escape_javascript(render(:partial =>'portal/sub_service_requests/direct_cost_total')) %>");
-Sparc.datepicker.ready('.temp_datepicker:visible');
-$('.temp_datepicker:visible').removeClass('temp_datepicker');
 
 $("#modal_place").modal 'hide'
+$("#flashes_container").html("<%= escape_javascript(render('shared/flash')) %>")
 <% end %>

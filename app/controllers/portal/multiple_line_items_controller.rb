@@ -94,6 +94,6 @@ class Portal::MultipleLineItemsController < Portal::BaseController
     @line_items = @sub_service_request.line_items.select{ |li| li.service_id == @service.id }
     @line_items.each{ |li| li.destroy }
     @subsidy.try(:fix_pi_contribution, percent)
-    flash.now[:success] = "Services Deleted"
+    flash.now[:success] = "Services Destroyed!"
   end
 end

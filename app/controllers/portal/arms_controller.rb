@@ -83,7 +83,7 @@ class Portal::ArmsController < Portal::BaseController
     else
       @selected_arm = @service_request.arms.first
     end
-    # render 'portal/service_requests/add_per_patient_per_visit_visit'
+    flash[:success] = "Arm Destroyed!"
   end
 
   private

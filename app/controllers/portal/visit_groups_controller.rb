@@ -77,7 +77,7 @@ class Portal::VisitGroupsController < Portal::BaseController
     @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
     @arm = @visit_group.arm
     if @visit_group.update_attributes(params[:visit_group])
-      flash[:success] = "Visit Updated"
+      flash[:success] = "Visit Updated!"
     else
       @errors = @visit_group.errors
     end
@@ -100,7 +100,7 @@ class Portal::VisitGroupsController < Portal::BaseController
       @service_request.relevant_service_providers_and_super_users.each do |identity|
         create_visit_change_toast(identity, @sub_service_request) unless identity == @user
       end
-      flash.now[:alert] = "Visit Deleted"
+      flash.now[:alert] = "Visit Destroyed!"
     else
       @errors = @arm.errors
     end

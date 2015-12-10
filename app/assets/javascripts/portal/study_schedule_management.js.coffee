@@ -149,11 +149,10 @@
       "service_request_id"      : $('#study_schedule_buttons').data("service-request-id")
       'page'                    : page
       'schedule_tab'            : schedule_tab
-    if confirm "Are you sure you want to delete the selected visit from all particpants?"
-      $.ajax
-        type: 'DELETE'
-        url: "/portal/visit_groups/#{visit_group_id}.js"
-        data: data
+    $.ajax
+      type: 'DELETE'
+      url: "/portal/visit_groups/#{visit_group_id}.js"
+      data: data
 
 ##          **END MANAGE VISIT GROUPS**               ##
 ##          **BEGIN MANAGE LINE ITEMS**               ##

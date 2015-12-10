@@ -326,4 +326,8 @@ module ApplicationHelper
   def entity_visibility_class entity
     entity.is_available == false ? 'entity_visibility' : ''
   end
+
+  def first_service?(service_request)
+    service_request.line_items.count == 0
+  end
 end

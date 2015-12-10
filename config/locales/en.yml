@@ -663,6 +663,8 @@ en:
   ajax_error: "An error happened processing your request: "
   cart:
     remove_request_confirm: "This action will delete this service request and you will be redirected to your user portal. Click OK to proceed."
+    new_request_dialog1: "New Request?"
+    new_request_dialog2: "Is this a new research study or project?"
   catalog_manager_js:
     clinical_provider_remove: "Are you sure you want to remove this Fulfillment Provider?"
     cm_rights_remove: "Are you sure you want to remove rights for this user from the Catalog Manager?"

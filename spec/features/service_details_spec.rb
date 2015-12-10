@@ -157,7 +157,7 @@ RSpec.describe "submitting a in form", js: true do
     describe "removing an arm" do
 
       it "should delete a recently added arm" do
-        number_of_arms = Arm.find(:all).size
+        number_of_arms = Arm.all.size
         click_link("Add Arm")
         within("div.add-arm") do
           find("input[id*=name]").set("New Arm Test")
@@ -166,18 +166,18 @@ RSpec.describe "submitting a in form", js: true do
         end
         find(:xpath, "//a/img[@alt='Savecontinue']/..").click
         wait_for_javascript_to_finish
-        expect(Arm.find(:all).size).to eq(number_of_arms + 1)
+        expect(Arm.all.size).to eq(number_of_arms + 1)
 
         visit service_details_service_request_path @service_request2.id
         wait_for_javascript_to_finish
         first(".remove_arm").click
         find(:xpath, "//a/img[@alt='Savecontinue']/..").click
         wait_for_javascript_to_finish
-        expect(Arm.find(:all).size).to eq(number_of_arms)
+        expect(Arm.all.size).to eq(number_of_arms)
       end
 
       it "should not allow you to delete the last arm" do
-        number_of_arms = Arm.find(:all).size
+        number_of_arms = Arm.all.size
 
         find_by_id("1").click_link("Remove Arm")
         wait_for_javascript_to_finish
@@ -185,11 +185,11 @@ RSpec.describe "submitting a in form", js: true do
 
         find(:xpath, "//a/img[@alt='Savecontinue']/..").click
         wait_for_javascript_to_finish
-        expect(Arm.find(:all).size).to eq(number_of_arms - 1)
+        expect(Arm.all.size).to eq(number_of_arms - 1)
       end
 
       it "should not allow you to delete an arm that has patient data" do
-        number_of_arms = Arm.find(:all).size
+        number_of_arms = Arm.all.size
         subject        = create(:subject, arm_id: arm1.id)
         appointment    = create(:appointment, calendar_id: subject.calendar.id)
         visit service_details_service_request_path service_request.id
@@ -201,7 +201,7 @@ RSpec.describe "submitting a in form", js: true do
 
         find(:xpath, "//a/img[@alt='Savecontinue']/..").click
         wait_for_javascript_to_finish
-        expect(Arm.find(:all).size).to eq(number_of_arms)
+        expect(Arm.all.size).to eq(number_of_arms)
       end
     end
   end

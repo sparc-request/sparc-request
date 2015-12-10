@@ -21,21 +21,20 @@
 SparcRails::Application.configure do
   # Settings specified here will take precedence over those in config/application.rb
 
-  # Will be default in Rails 4.0
-  config.threadsafe! unless defined?($rails_rake_task) && $rails_rake_task
-
   # The test environment is used exclusively to run your application's
   # test suite. You never need to work with it otherwise. Remember that
   # your test database is "scratch space" for the test suite and is wiped
   # and recreated between test runs. Don't rely on the data there!
   config.cache_classes = true
 
-  # Configure static asset server for tests with Cache-Control for performance
-  config.serve_static_assets = true
-  config.static_cache_control = "public, max-age=3600"
+  # Do not eager load code on boot. This avoids loading your whole application
+  # just for the purpose of running a single test. If you are using a tool that
+  # preloads Rails for running tests, you may have to set it to true.
+  config.eager_load = false
 
-  # Log error messages when you accidentally call methods on nil
-  config.whiny_nils = true
+  # Configure static asset server for tests with Cache-Control for performance
+  config.serve_static_files = true
+  config.static_cache_control = "public, max-age=3600"
 
   # Show full error reports and disable caching
   config.consider_all_requests_local       = true
@@ -52,11 +51,8 @@ SparcRails::Application.configure do
   # ActionMailer::Base.deliveries array.
   config.action_mailer.delivery_method = :test
 
-  # Raise exception on mass assignment protection for Active Record models
-  config.active_record.mass_assignment_sanitizer = :strict
-
   # Print deprecation notices to the stderr
-  config.active_support.deprecation = :stderr
+  config.active_support.deprecation = :silence
 
   config.action_mailer.default_url_options = { :host => 'localhost:3000' }
 

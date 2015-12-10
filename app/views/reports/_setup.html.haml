@@ -56,6 +56,7 @@
           - check_dep_class = dependency ? 'check_dep_class' : nil
           - id = options[:for] || "#{field.name.underscore}_id"
           - name = options[:for] ? "report[#{options[:for]}]" : "report[#{field.name.underscore}_id]"
+          - name_method = options[:custom_name_method] || :name
 
           %label{:for => id}= field_label
           %select{:"data-dependency" => dependency, :class => [default_classes, check_dep_class].join(" "), :name => name, :id => id}
@@ -67,7 +68,7 @@
                 - dependency_id = options[:dependency_id] || dependency.sub(/^#/, "") # either an id is specified or we assume the dependency is the id
                 - if record.respond_to? dependency_id.to_s
                   - option_class = "sub-#{record.send dependency_id}"
-              %option{:value => record.id, :class => option_class}= record.name
+              %option{:value => record.id, :class => option_class}= record.send(name_method)
       /* end select_tag */
 
       /* date_field */

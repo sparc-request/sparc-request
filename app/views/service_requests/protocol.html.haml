@@ -91,7 +91,6 @@
     #services.ui-widget.ui-widget-content.cart-view
       %h3
         = t("study_assignment.sidebar_box.my_services")
-        %span#cart-help= t("study_assignment.sidebar_box.help")
       .line-items= render :partial => 'catalogs/cart'
     = navigation_link t(:right_navigation)[:catalog], @back, 'catalog-button btn btn-info btn-lg btn-block'
     = render :partial => 'right_navigation'

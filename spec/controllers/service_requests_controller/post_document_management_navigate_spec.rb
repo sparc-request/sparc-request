@@ -43,7 +43,7 @@ RSpec.describe ServiceRequestsController do
         before(:each) { do_post params }
 
         it 'should set @service_list of ServiceRequest' do
-          expect(assigns(:service_list)).to eq service_request.service_list.with_indifferent_access
+          expect(assigns(:service_list)).to eq service_request.service_list
         end
 
         it 'should set session[:errors]' do
@@ -67,7 +67,7 @@ RSpec.describe ServiceRequestsController do
         before(:each) { do_post params }
 
         it 'should set @service_list of ServiceRequest' do
-          expect(assigns(:service_list)).to eq service_request.service_list.with_indifferent_access
+          expect(assigns(:service_list)).to eq service_request.service_list
         end
 
         it 'should set session[:errors]' do
@@ -92,7 +92,7 @@ RSpec.describe ServiceRequestsController do
         before(:each) { do_post params }
 
         it 'should set @service_list of ServiceRequest' do
-          expect(assigns(:service_list)).to eq service_request.service_list.with_indifferent_access
+          expect(assigns(:service_list)).to eq service_request.service_list
         end
 
         it 'should set session[:errors]' do

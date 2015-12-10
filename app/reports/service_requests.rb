@@ -62,7 +62,7 @@ class ServiceRequestsReport < ReportingModule
     end
 
     attrs["SRID"] = :display_id
-    attrs["Status"] = :status
+    attrs["Status"] = :formatted_status
 
     if params[:apr_data]
       if params[:apr_data].include?("irb") || params[:apr_data].include?("iacuc")
@@ -116,7 +116,7 @@ class ServiceRequestsReport < ReportingModule
 
   # Conditions
   def where args={}
-    organizations = Organization.find(:all)
+    organizations = Organization.all
     selected_organization_id = args[:core_id] || args[:program_id] || args[:provider_id] || args[:institution_id] # we want to go up the tree, service_organization_ids plural because we might have child organizations to include
 
     if args[:tags]

@@ -109,7 +109,6 @@
     #services.ui-widget.ui-widget-content.cart-view
       %h3
         = t(:service_request_details)[:services]
-        %span#cart-help= t(:service_request_details)[:help]
       .line-items= render :partial => 'catalogs/cart', :locals => {:service_request => @service_request}
     = navigation_link t(:right_navigation)[:catalog], @catalog, 'catalog-button btn btn-info btn-lg btn-block'
     = render :partial => 'right_navigation'

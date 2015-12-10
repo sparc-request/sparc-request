@@ -133,13 +133,6 @@ RSpec.describe 'landing page', js: true do
       expect(page).not_to have_text("Editing ID: #{service_request.protocol_id}")
     end
 
-    it 'should allow user to add additional services to request' do
-      find(".add-services-button").click
-      expect(page).to have_text("Welcome to the SPARC Request Services Catalog")
-      expect(page).not_to have_text("Editing ID: #{service_request.protocol_id}")
-      expect(page).not_to have_css("div#services div.line_item")
-    end
-
     it 'should be able to search' do
       wait_for_javascript_to_finish
       find("h3#blue-provider-#{service_request.protocol_id} a").click

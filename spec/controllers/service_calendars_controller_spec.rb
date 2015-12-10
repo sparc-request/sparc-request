@@ -50,7 +50,7 @@ RSpec.describe ServiceCalendarsController do
     it 'should set tab to whatever was passed in' do
       session[:service_request_id] = service_request.id
 
-      get :table, {
+      xhr :get, :table, {
         format: :js,
         tab: 'foo',
         service_request_id: service_request.id,
@@ -71,7 +71,7 @@ RSpec.describe ServiceCalendarsController do
       session[:service_request_id] = service_request.id
       session[:service_calendar_pages] = { arm1.id.to_s => 42 }
 
-      get :table, {
+      xhr :get, :table, {
         format: :js,
         tab: 'foo',
         service_request_id: service_request.id,
@@ -87,7 +87,7 @@ RSpec.describe ServiceCalendarsController do
 
       session[:service_request_id] = service_request.id
 
-      get :update, {
+      xhr :get, :update, {
         :format              => :js,
         :tab                 => 'foo',
         :service_request_id  => service_request.id,
@@ -103,7 +103,7 @@ RSpec.describe ServiceCalendarsController do
 
       session[:service_request_id] = service_request.id
 
-      get :update, {
+      xhr :get, :update, {
         :format              => :js,
         :tab                 => 'foo',
         :service_request_id  => service_request.id,
@@ -119,7 +119,7 @@ RSpec.describe ServiceCalendarsController do
 
       session[:service_request_id] = service_request.id
 
-      get :update, {
+      xhr :get, :update, {
         :format              => :js,
         :tab                 => 'foo',
         :service_request_id  => service_request.id,
@@ -136,7 +136,7 @@ RSpec.describe ServiceCalendarsController do
 
       session[:service_request_id] = service_request.id
 
-      get :update, {
+      xhr :get, :update, {
         :format              => :js,
         :service_request_id  => service_request.id,
         :line_items_visit    => line_items_visit.id,
@@ -156,7 +156,7 @@ RSpec.describe ServiceCalendarsController do
 
       session[:service_request_id] = service_request.id
 
-      get :update, {
+      xhr :get, :update, {
         :format              => :js,
         :service_request_id  => service_request.id,
         :line_item           => nil,
@@ -179,7 +179,7 @@ RSpec.describe ServiceCalendarsController do
 
       session[:service_request_id] = service_request.id
 
-      get :update, {
+      xhr :get, :update, {
         :format              => :js,
         :service_request_id  => service_request.id,
         :line_item           => nil,
@@ -197,7 +197,7 @@ RSpec.describe ServiceCalendarsController do
 
       session[:service_request_id] = service_request.id
 
-      get :update, {
+      xhr :get, :update, {
         :format              => :js,
         :service_request_id  => service_request.id,
         :line_item           => nil,
@@ -220,7 +220,7 @@ RSpec.describe ServiceCalendarsController do
 
       session[:service_request_id] = service_request.id
 
-      get :update, {
+      xhr :get, :update, {
         :format              => :js,
         :service_request_id  => service_request.id,
         :line_item           => nil,
@@ -240,7 +240,7 @@ RSpec.describe ServiceCalendarsController do
 
       session[:service_request_id] = service_request.id
 
-      get :update, {
+      xhr :get, :update, {
         :format              => :js,
         :service_request_id  => service_request.id,
         :line_item           => nil,
@@ -259,7 +259,7 @@ RSpec.describe ServiceCalendarsController do
 
       session[:service_request_id] = service_request.id
 
-      get :update, {
+      xhr :get, :update, {
         :format              => :js,
         :service_request_id  => service_request.id,
         :line_item           => nil,
@@ -281,7 +281,7 @@ RSpec.describe ServiceCalendarsController do
 
       session[:service_request_id] = service_request.id
 
-      get :update, {
+      xhr :get, :update, {
         :format              => :js,
         :service_request_id  => service_request.id,
         :line_item           => nil,
@@ -304,7 +304,7 @@ RSpec.describe ServiceCalendarsController do
 
       session[:service_request_id] = service_request.id
 
-      get :update, {
+      xhr :get, :update, {
         :format              => :js,
         :service_request_id  => service_request.id,
         :line_item           => nil,

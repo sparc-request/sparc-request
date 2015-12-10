@@ -6,7 +6,7 @@ class AdditionalDetail::LineItemAdditionalDetailsController < ApplicationControl
   before_filter :protocol_authorizer_edit, :only => [:update]
 
   def show
-     render :json => @line_item_additional_detail.to_json(:root => false, :methods => [:additional_detail_description, :additional_detail_breadcrumb, :form_data_hash, :additional_detail_schema_hash, :additional_detail_form_array])
+     render :json => @line_item_additional_detail.to_json(:root => false, :except => [:created_at, :updated_at], :methods => [:additional_detail_description, :additional_detail_breadcrumb, :form_data_hash, :additional_detail_schema_hash, :additional_detail_form_array])
   end
 
   def update

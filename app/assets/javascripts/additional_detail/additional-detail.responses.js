@@ -111,7 +111,7 @@ angular.module('app').controller('AdditionalDetailsDisplayController', ['$scope'
 	                               {name: "Short Title", field: "protocol_short_title", cellTooltip: true, width: '20%'},
 	                               {name: 'Status', field: 'sub_service_request_status', headerTooltip: 'Service Request Status', width: '8%'}, 
 	                               {name: 'Required Questions Answered',field: 'has_answered_all_required_questions?', headerTooltip: 'Required Questions Answered'},
-	                               {field:'updated_at',name: 'Last Updated', sort: { direction: uiGridConstants.DESC, priority: 1 }, width: '12%' }
+	                               {field:'last_updated', sort: { direction: uiGridConstants.DESC, priority: 1 }, width: '12%' }
 	                               ];
 	// don't define columns for the export grid so that it will dynamically include the custom keys from additional details
 	// Angular UI Grid supports PDF export but it's turned off to keep things simple.

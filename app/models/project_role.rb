@@ -51,9 +51,14 @@ class ProjectRole < ActiveRecord::Base
   end
 
   def validate_uniqueness_within_protocol
-    duplicate_project_roles = self.protocol.project_roles.select {|x| x.identity_id == self.identity_id}
-    duplicate_project_roles << self
-    if duplicate_project_roles.count > 1
+    duplicate_project_roles = []
+    self.protocol.project_roles.each do |role|
+      if (role.identity_id == self.identity_id) && (role.id != nil)
+        duplicate_project_roles << role
+      end
+    end
+
+    if duplicate_project_roles.count > 0
       errors.add(:this, "user is already associated with this protocol.")
       return false
     end
@@ -135,7 +140,7 @@ class ProjectRole < ActiveRecord::Base
       epic_right.position = position
       position += 1
     end
-    epic_rights.sort!{|a, b| a.position <=> b.position}
+    epic_rights.sort{|a, b| a.position <=> b.position}
   end
 
   def populate_for_edit

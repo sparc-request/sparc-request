@@ -42,7 +42,7 @@ class Program < Organization
       position += 1
     end
 
-    available_statuses.sort!{|a, b| a.position <=> b.position}
+    available_statuses.sort{|a, b| a.position <=> b.position}
   end
 
   def has_active_pricing_setup

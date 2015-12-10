@@ -138,12 +138,14 @@ class CatalogManager::ServicesController < CatalogManager::AppController
       pm[1][:corporate_rate] = Service.dollars_to_cents(pm[1][:corporate_rate]) unless pm[1][:corporate_rate].blank?
       pm[1][:other_rate] = Service.dollars_to_cents(pm[1][:other_rate]) unless pm[1][:other_rate].blank?
       pm[1][:member_rate] = Service.dollars_to_cents(pm[1][:member_rate]) unless pm[1][:member_rate].blank?
-      if pm[1]['id'] == 'blank'
+
+      if pm[1]['id'].blank?
         @service.pricing_maps.build(pm[1])
       else
         # saved = @service.pricing_maps.find(pm[1]['id']).update_attributes(pm[1])
         pm_id = pm[1]['id']
         pm[1].delete(:id)
+
         saved = @service.pricing_maps.find(pm_id).update_attributes(pm[1])
       end
       if saved == true

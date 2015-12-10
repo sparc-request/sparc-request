@@ -95,9 +95,9 @@ module ApplicationHelper
 
     (beginning_visit .. ending_visit).each do |n|
       if sub_service_request
-        filtered_line_items_visits = line_items_visits.includes(:line_item).where("line_items.sub_service_request_id = ?", sub_service_request.id)
+        filtered_line_items_visits = line_items_visits.select{|x| x.line_item.sub_service_request_id == sub_service_request.id } 
       else
-        filtered_line_items_visits = line_items_visits.includes(:line_item).where("line_items.service_request_id = ?", service_request.id)
+        filtered_line_items_visits = line_items_visits.select{|x| x.line_item.service_request_id == service_request.id }
       end
 
       checked = filtered_line_items_visits.each.map{|l| l.visits[n.to_i-1].research_billing_qty >= 1 ? true : false}.all?
@@ -187,7 +187,7 @@ module ApplicationHelper
     options_for_select(arr, selected)
   end
 
-  def generate_visit_navigation arm, service_request, pages, tab, portal=nil
+  def generate_visit_navigation(arm, service_request, pages, tab, portal=nil)
     page = pages[arm.id].to_i == 0 ? 1 : pages[arm.id].to_i
 
     if @merged
@@ -325,5 +325,9 @@ module ApplicationHelper
 
   def entity_visibility_class entity
     entity.is_available == false ? 'entity_visibility' : ''
+  end
+
+  def first_service?(service_request)
+    service_request.line_items.count == 0
   end
 end

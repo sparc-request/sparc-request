@@ -112,6 +112,11 @@ class SubServiceRequest < ActiveRecord::Base
     self.update_column(:org_tree_display, my_tree)
   end
 
+  def org_tree
+    orgs = organization.parents
+    orgs << organization
+  end
+
   def set_effective_date_for_cost_calculations
     self.line_items.each{|li| li.pricing_scheme = 'effective'}
   end

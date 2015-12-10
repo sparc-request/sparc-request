@@ -384,7 +384,7 @@ class ServiceRequestsController < ApplicationController
       @service_request.reload
       @service_request.service_list.each do |org_id, values|
         line_items = values[:line_items]
-        ssr = @service_request.sub_service_requests.find_or_create_by_organization_id :organization_id => org_id.to_i
+        ssr = @service_request.sub_service_requests.where(organization_id: org_id.to_i).first_or_create
         unless @service_request.status.nil? and !ssr.status.nil?
           ssr.update_attribute(:status, @service_request.status) if ['first_draft', 'draft', nil].include?(ssr.status)
           @service_request.ensure_ssr_ids unless ['first_draft', 'draft'].include?(@service_request.status)
@@ -453,7 +453,7 @@ class ServiceRequestsController < ApplicationController
   def feedback
     feedback = Feedback.new(params[:feedback])
     if feedback.save
-      Notifier.provide_feedback(feedback).deliver
+      Notifier.provide_feedback(feedback).deliver_now
       render :nothing => true
     else
       respond_to do |format|
@@ -514,7 +514,7 @@ class ServiceRequestsController < ApplicationController
     # send e-mail to all folks with view and above
     service_request.protocol.project_roles.each do |project_role|
       next if project_role.project_rights == 'none'
-      Notifier.notify_user(project_role, service_request, xls, approval, current_user).deliver unless project_role.identity.email.blank?
+      Notifier.notify_user(project_role, service_request, xls, approval, current_user).deliver_now unless project_role.identity.email.blank?
     end
   end
 
@@ -574,7 +574,7 @@ class ServiceRequestsController < ApplicationController
       audit_report = sub_service_request.audit_report(current_user, previously_submitted_at, Time.now.utc)
     end
 
-    Notifier.notify_service_provider(service_provider, service_request, attachments, current_user, audit_report, ssr_deleted).deliver
+    Notifier.notify_service_provider(service_provider, service_request, attachments, current_user, audit_report, ssr_deleted).deliver_now
   end
 
   def send_epic_notification_for_user_approval(protocol)
@@ -640,7 +640,7 @@ class ServiceRequestsController < ApplicationController
 
         # add access
         to_add.each do |org_id|
-          sub_service_request = @service_request.sub_service_requests.find_or_create_by_organization_id :organization_id => org_id.to_i
+          sub_service_request = @service_request.sub_service_requests.find_or_create_by(:organization_id => org_id.to_i)
           sub_service_request.documents << doc_object
           sub_service_request.save
         end

@@ -77,7 +77,6 @@ class Portal::ServiceRequestsController < Portal::BaseController
     @service_request = ServiceRequest.find(params[:id])
     @selected_arm = Arm.find(params[:arm_id])
     @study_tracker = params[:study_tracker] == "true"
-
     if @selected_arm.remove_visit(params[:visit_position])
       @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
       @subsidy = @sub_service_request.subsidy

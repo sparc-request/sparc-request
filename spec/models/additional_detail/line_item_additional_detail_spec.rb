@@ -39,6 +39,21 @@ RSpec.describe LineItemAdditionalDetail do
     end
   end
 
+  describe "last_updated" do
+    before :each do
+      @line_item_additional_detail = LineItemAdditionalDetail.new
+    end
+    
+    it 'should return empty string when nil' do
+      expect(@line_item_additional_detail.last_updated).to eq("")
+    end
+    
+    it 'should return today\'s date' do
+      @line_item_additional_detail.save(:validate => false)
+      expect(@line_item_additional_detail.last_updated).to eq(Date.today.strftime("%Y-%m-%d"))
+    end
+  end
+  
   describe "additional_detail_description" do
     before :each do
       @additional_detail = AdditionalDetail.new

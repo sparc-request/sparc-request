@@ -218,7 +218,7 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
           
         get(:index, {:service_id => @core_service, :format => :json})
         expect(response.status).to eq(200)
-        expect(response.body).to eq("["+@additional_detail.to_json(:root => false, :include => :line_item_additional_details)+"]")
+        expect(response.body).to eq("["+@additional_detail.to_json(:root => false, :except => [:created_at, :updated_at], :include => :line_item_additional_details)+"]")
       end
      
       it 'should NOT be able to duplicate an additional detail' do
@@ -305,6 +305,12 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
           expect(response.status).to eq(200)
           expect(JSON.parse(response.body)["line_item_additional_details"][0]["sub_service_request_status"]).to eq(@sub_service_request.status)
         end
+        
+      it "should show additional detail with last_updated formatted date string" do
+        get(:show, {:service_id => @core_service, :id => @additional_detail, :format => :json })
+        expect(response.status).to eq(200)
+        expect(JSON.parse(response.body)["line_item_additional_details"][0]["last_updated"]).to eq(Date.today.strftime("%Y-%m-%d"))
+      end
         
         describe 'with protocol and owner name present' do
           before :each do
@@ -462,7 +468,7 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
             
           get(:index, {:service_id => @core_service, :format => :json})
           expect(response.status).to eq(200)
-          expect(response.body).to eq("["+@additional_detail.to_json(:root => false, :include => :line_item_additional_details)+"]")
+          expect(response.body).to eq("["+@additional_detail.to_json(:root => false, :except => [:created_at, :updated_at], :include => :line_item_additional_details)+"]")
         end
 
         it 'a core service new additional detail page' do
@@ -487,7 +493,7 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
         it "duplicate an additional detail" do
           get(:duplicate,{:service_id => @core_service, :id => @additional_detail, :format =>:html})
           expect(response.status).to eq(200)
-          expect(response).to render_template(:action => 'new')
+          expect(response).to render_template(:new)
           expect(assigns(:additional_detail).name).to eq(@additional_detail.name)
           expect(assigns(:additional_detail).form_definition_json).to eq(@additional_detail.form_definition_json)
           # effective date should be nil so that the admin user has decide when to make it effective
@@ -504,13 +510,13 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
         it "update_enabled should toggle enabled from true to false back to true and NOT change the name" do
           put(:update_enabled, {:service_id => @core_service, :id => @additional_detail, :additional_detail=> @additional_detail.attributes = { :enabled => "false", :name => "Test2"} })
           expect(response.status).to eq(204)
-          expect(response.body).to eq(" ")
+          expect(response.body).to eq("")
           expect(AdditionalDetail.find(@additional_detail.id).enabled).to eq(false)
           expect(AdditionalDetail.find(@additional_detail.id).name).to eq("Test")
           
           put(:update_enabled, {:service_id => @core_service, :id => @additional_detail, :additional_detail=> @additional_detail.attributes = { :enabled => "true", :name => "Test2"} })
           expect(response.status).to eq(204)
-          expect(response.body).to eq(" ")
+          expect(response.body).to eq("")
           expect(AdditionalDetail.find(@additional_detail.id).enabled).to eq(true)
           expect(AdditionalDetail.find(@additional_detail.id).name).to eq("Test")
         end
@@ -525,7 +531,7 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
         it "view an additional detail edit page" do
           get(:edit,{:service_id => @core_service, :id => @additional_detail, :format =>:html})
           expect(response.status).to eq(200)
-          expect(response).to render_template(:action => 'new')
+          expect(response).to render_template(:new)
         end
 
         describe '(with a line item additional detail present)' do
@@ -551,13 +557,13 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
           it "update_enabled should still be able to toggle enabled from true to false back to true and NOT change the name" do
             put(:update_enabled, {:service_id => @core_service, :id => @additional_detail, :additional_detail=> @additional_detail.attributes = { :enabled => "false", :name => "Test2"} })
             expect(response.status).to eq(204)
-            expect(response.body).to eq(" ")
+            expect(response.body).to eq("")
             expect(AdditionalDetail.find(@additional_detail.id).enabled).to eq(false)
             expect(AdditionalDetail.find(@additional_detail.id).name).to eq("Test")
             
             put(:update_enabled, {:service_id => @core_service, :id => @additional_detail, :additional_detail=> @additional_detail.attributes = { :enabled => "true", :name => "Test2"} })
             expect(response.status).to eq(204)
-            expect(response.body).to eq(" ")
+            expect(response.body).to eq("")
             expect(AdditionalDetail.find(@additional_detail.id).enabled).to eq(true)
             expect(AdditionalDetail.find(@additional_detail.id).name).to eq("Test")
           end
@@ -584,7 +590,7 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
             expect(assigns(:additional_detail).errors[:description].size).to eq(1)
             message = "is too long (maximum is 255 characters)"
             expect(assigns(:additional_detail).errors[:description][0]).to eq(message)
-            expect(response).to render_template("new")
+            expect(response).to render_template(:new)
             expect(response.status).to eq(200)
             expect(assigns(:service)).to_not be_blank
             expect(assigns(:additional_detail)).to_not be_blank
@@ -598,7 +604,7 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
             })
             expect(assigns(:additional_detail).errors[:name].size).to eq(1)
             expect(assigns(:additional_detail).errors[:effective_date].size).to eq(0)
-            expect(response).to render_template("new")
+            expect(response).to render_template(:new)
             expect(response.status).to eq(200)
             expect(assigns(:service)).to_not be_blank
             expect(assigns(:additional_detail)).to_not be_blank
@@ -611,7 +617,7 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
               :additional_detail => {:name => "Form # 1", :description => "10 essential questions", :form_definition_json => '{"schema": {"required": ["birthdate"] }, "form":[{"key":"birthdate"}]}', :effective_date => "", :enabled => "true"}
             })
             expect(assigns(:additional_detail).errors[:effective_date].size).to eq(1)
-            expect(response).to render_template("new")
+            expect(response).to render_template(:new)
             expect(response.status).to eq(200)
             expect(assigns(:service)).to_not be_blank
             expect(assigns(:additional_detail)).to_not be_blank
@@ -624,7 +630,7 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
               :additional_detail => {:name => "Form # 1", :description => "10 essential questions", :form_definition_json => '{"schema": {"required": ["birthdate"] }, "form":[{"key":"birthdate"}]}', :effective_date => "", :enabled => "true"}
             })
             expect(assigns(:additional_detail).errors[:effective_date].size).to eq(1)
-            expect(response).to render_template("new")
+            expect(response).to render_template(:new)
             expect(response.status).to eq(200)
             expect(assigns(:service)).to_not be_blank
             expect(assigns(:additional_detail)).to_not be_blank
@@ -642,7 +648,7 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
             expect(assigns(:additional_detail).errors[:effective_date].size).to eq(1)
             message = "is being used by another version of this form, please choose a different date."
             expect(assigns(:additional_detail).errors[:effective_date][0]).to eq(message)
-            expect(response).to render_template("new")
+            expect(response).to render_template(:new)
             expect(response.status).to eq(200)
             expect(assigns(:service)).to_not be_blank
             expect(assigns(:additional_detail)).to_not be_blank
@@ -655,7 +661,7 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
               :additional_detail => {:name => "Form # 1", :description => "10 essential questions", :form_definition_json => "", :effective_date => Date.today, :enabled => "true"}
             })
             expect(assigns(:additional_detail).errors[:form_definition_json].size).to eq(1)
-            expect(response).to render_template("new")
+            expect(response).to render_template(:new)
             expect(response.status).to eq(200)
             expect(assigns(:service)).to_not be_blank
             expect(assigns(:additional_detail)).to_not be_blank
@@ -671,7 +677,7 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
             expect(assigns(:additional_detail).errors[:form_definition_json].size).to eq(1)
             message = "must contain at least one required question."
             expect(assigns(:additional_detail).errors[:form_definition_json][0]).to eq(message)
-            expect(response).to render_template("new")
+            expect(response).to render_template(:new)
             expect(response.status).to eq(200)
             expect(assigns(:service)).to_not be_blank
             expect(assigns(:additional_detail)).to_not be_blank
@@ -693,7 +699,7 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
             
           get(:index, {:service_id => @core_service, :format => :json})
           expect(response.status).to eq(200)
-          expect(response.body).to eq("["+@additional_detail.to_json(:root => false, :include => :line_item_additional_details)+"]")
+          expect(response.body).to eq("["+@additional_detail.to_json(:root => false, :except => [:created_at, :updated_at], :include => :line_item_additional_details)+"]")
         end
 
         it 'a program service index' do
@@ -766,7 +772,7 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
           
         get(:index, {:service_id => @core_service, :format => :json})
         expect(response.status).to eq(200)
-        expect(response.body).to eq("["+@additional_detail.to_json(:root => false, :include => :line_item_additional_details)+"]")
+        expect(response.body).to eq("["+@additional_detail.to_json(:root => false, :except => [:created_at, :updated_at], :include => :line_item_additional_details)+"]")
       end
 
       it 'a core service new additional detail page' do
@@ -780,7 +786,7 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
       it "duplicate an additional detail" do
         get(:duplicate,{:service_id => @core_service, :id => @additional_detail, :format =>:html})
         expect(response.status).to eq(200)
-        expect(response).to render_template(:action => 'new')
+        expect(response).to render_template(:new)
       end  
       
       it "show an additional detail" do
@@ -851,7 +857,7 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
       it "duplicate an additional detail for a child core service" do
         get(:duplicate,{:service_id => @core_service, :id => @additional_detail, :format =>:html})
         expect(response.status).to eq(200)
-        expect(response).to render_template(:action => 'new')
+        expect(response).to render_template(:new)
       end  
       
       it "show an additional detail" do

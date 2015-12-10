@@ -10,7 +10,7 @@ class AdditionalDetail::ServiceRequestsController < ApplicationController
     respond_to do |format|
       format.html # show.html.haml, used by portal/dashboard users
       #format.json {render :json => @service_request.get_or_create_line_item_additional_details.to_json(:root=> false, :methods => [:has_answered_all_required_questions?, :additional_detail_breadcrumb])}
-      format.json {render :json => @service_request.to_json(:root=> false, :only => [], :methods => [:protocol_short_title], :include => { :get_or_create_line_item_additional_details => {:methods => [:has_answered_all_required_questions?, :additional_detail_breadcrumb] }})}   
+      format.json {render :json => @service_request.to_json(:root=> false, :only => [], :methods => [:protocol_short_title], :include => { :get_or_create_line_item_additional_details => {:except => [:created_at, :updated_at], :methods => [:has_answered_all_required_questions?, :additional_detail_breadcrumb] }})}   
     end
   end
   

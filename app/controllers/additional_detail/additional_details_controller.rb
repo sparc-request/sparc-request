@@ -11,13 +11,13 @@ class AdditionalDetail::AdditionalDetailsController < ApplicationController
   def index
     respond_to do |format|
       format.html # index.html.erb
-      format.json {render :json => @service.additional_details.to_json(:root => false, :include => :line_item_additional_details)}
+      format.json {render :json => @service.additional_details.to_json(:root => false, :except => [:created_at, :updated_at], :include => {:line_item_additional_details => {:except => [:created_at, :updated_at]}})}
     end
   end
 
   # show responses with high level detail to be used by admins to edit those responses
   def show
-    render :json => @service.additional_details.find(params[:id]).to_json(:root => false, :include => {:line_item_additional_details  => {:methods => [:sub_service_request_status, :srid, :pi_name, :protocol_short_title, :service_requester_name, :sub_service_request_id, :has_answered_all_required_questions?]}})
+    render :json => @service.additional_details.find(params[:id]).to_json(:root => false, :except => [:created_at, :updated_at], :include => {:line_item_additional_details  => {:except => [:created_at, :updated_at], :methods => [:last_updated, :sub_service_request_status, :srid, :pi_name, :protocol_short_title, :service_requester_name, :sub_service_request_id, :has_answered_all_required_questions?]}})
   end
 
   # show responses with low level details to be used for exporting

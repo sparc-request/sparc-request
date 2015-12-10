@@ -20,7 +20,7 @@ RSpec.describe ServiceRequestsController do
           expect(quick_question.body).to eq 'No question asked'
           deliverer
         end
-        get :ask_a_question, { quick_question: { email: ''}, quick_question: { body: ''}, id: service_request.id, format: :js }
+        xhr :get, :ask_a_question, { quick_question: { email: ''}, quick_question: { body: ''}, id: service_request.id, format: :js }
       end
     end
 
@@ -33,7 +33,7 @@ RSpec.describe ServiceRequestsController do
           expect(quick_question.from).to eq 'from-here@musc.edu'
           deliverer
         end
-        get :ask_a_question, { id: service_request.id, quick_question: { email: 'from-here@musc.edu' , body: '' }, format: :js }
+        xhr :get, :ask_a_question, { id: service_request.id, quick_question: { email: 'from-here@musc.edu' , body: '' }, format: :js }
       end
     end
 
@@ -46,7 +46,7 @@ RSpec.describe ServiceRequestsController do
           expect(quick_question.body).to eq 'is this thing on?'
           deliverer
         end
-        get :ask_a_question, { id: service_request.id, quick_question: { email: '' }, quick_question: { body: 'is this thing on?' }, format: :js }
+        xhr :get, :ask_a_question, { id: service_request.id, quick_question: { email: '' }, quick_question: { body: 'is this thing on?' }, format: :js }
       end
     end
   end

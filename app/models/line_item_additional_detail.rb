@@ -34,6 +34,10 @@ class LineItemAdditionalDetail < ActiveRecord::Base
     self.line_item.pi_name
   end
   
+  def last_updated
+    self.updated_at ? self.updated_at.strftime("%Y-%m-%d") : ""
+  end
+  
   def has_answered_all_required_questions?
     if self.additional_detail && self.additional_detail.has_required_questions? && self.form_data_json
       user_answers = self.form_data_hash
@@ -87,7 +91,7 @@ class LineItemAdditionalDetail < ActiveRecord::Base
     export_hash["Pi-Name"] = self.pi_name
     export_hash["Protocol-Short-Title"] = self.protocol_short_title
     export_hash["Required-Questions-Answered"] = self.has_answered_all_required_questions?
-    export_hash["Last-Updated-At"] = self.updated_at ? self.updated_at.strftime("%Y-%m-%d") : ""
+    export_hash["Last-Updated-At"] = self.last_updated
     # loop over each field in the additional detail form schema 
     #   and attempt to find its value in the line item additional detail form data
     user_answers = self.form_data_hash

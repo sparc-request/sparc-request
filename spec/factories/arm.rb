@@ -19,7 +19,32 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 FactoryGirl.define do
-
   factory :arm do
+    transient do
+      line_item_count   0
+      service_request   nil
+    end
+
+    after(:create) do |arm, evaluator|
+      if arm.visit_count.present? && arm.visit_count > 0 && evaluator.line_item_count > 0
+        sr = evaluator.service_request || create(:service_request_without_validations)
+
+        vgs = []
+        arm.visit_count.times do |n|
+          vgs << create(:visit_group_without_validations, arm: arm, day: n,
+                        window_before: nil, window_after: nil)
+        end
+
+        evaluator.line_item_count.times do |n|
+          li = create(:line_item_with_service, service_request: sr)
+          liv = create(:line_items_visit, arm: arm, line_item: li, subject_count: arm.subject_count)
+          vgs.each do |vg|
+            create(:visit, line_items_visit: liv, visit_group: vg)
+          end
+        end
+
+        arm.reload
+      end
+    end
   end
 end

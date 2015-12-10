@@ -49,20 +49,20 @@ RSpec.describe ProjectsController do
     describe 'GET create' do
       it 'should set service_request' do
         session[:service_request_id] = service_request.id
-        get :create, { id: nil, format: :js }.with_indifferent_access
+        xhr :get, :create, { id: nil, format: :js }.with_indifferent_access
         expect(assigns(:service_request)).to eq service_request
       end
 
       it 'should create a project with the given parameters' do
         session[:service_request_id] = service_request.id
-        get :create, { id: nil, format: :js, project: { title: 'this is the title', funding_status: 'not in a million years' } }.with_indifferent_access
+        xhr :get, :create, { id: nil, format: :js, project: { title: 'this is the title', funding_status: 'not in a million years' } }.with_indifferent_access
         expect(assigns(:protocol).title).to eq 'this is the title'
         expect(assigns(:protocol).funding_status).to eq 'not in a million years'
       end
 
       it 'should put the project id into the session' do
         session[:service_request_id] = service_request.id
-        get :create, { id: nil, format: :js }.with_indifferent_access
+        xhr :get, :create, { id: nil, format: :js }.with_indifferent_access
         expect(session[:saved_protocol_id]).to eq assigns(:protocol).id
       end
     end
@@ -102,14 +102,14 @@ RSpec.describe ProjectsController do
       it 'should set service_request' do
         session[:service_request_id] = service_request.id
         session[:identity_id] = identity.id
-        get :update, { id: project.id, format: :js }.with_indifferent_access
+        xhr :get, :update, { id: project.id, format: :js }.with_indifferent_access
         expect(assigns(:service_request)).to eq service_request
       end
 
       it 'should set project' do
         session[:service_request_id] = service_request.id
         session[:identity_id] = identity.id
-        get :update, { id: project.id, format: :js }.with_indifferent_access
+        xhr :get, :update, { id: project.id, format: :js }.with_indifferent_access
         expect(assigns(:protocol).class).to eq Project
       end
     end

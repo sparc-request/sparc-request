@@ -51,7 +51,6 @@ RSpec.describe "service calendar", js: true do
         wait_for_javascript_to_finish
         find(:xpath, "//a/img[@alt='Goback']/..").click
         wait_for_javascript_to_finish
-        sleep 3 # TODO: ugh: I got rid of all the sleeps, but I can't get rid of this one
         expect(LineItem.find(line_item.id).quantity).to eq(10)
       end
 
@@ -76,7 +75,8 @@ RSpec.describe "service calendar", js: true do
 
           accept_alert("Quantity please enter a quantity greater than or equal to") do
             fill_in "service_request_line_items_attributes_#{line_item.id}_quantity", with: 0
-            find("th.number_of_units_header").click
+            wait_for_javascript_to_finish
+            page.execute_script('$(".line_item_quantity").change()')
           end
         end
       end
@@ -121,7 +121,7 @@ RSpec.describe "service calendar", js: true do
 
         it 'should move visit 1 to the end position' do
           wait_for_javascript_to_finish
-          first(:xpath, "//a[@class='move_visits']").click
+          first('.move_visits').click
           wait_for_javascript_to_finish
           select("Visit 1", from: "visit_to_move_1")
           select("Move to last position", from: "move_to_position_1")
@@ -135,7 +135,7 @@ RSpec.describe "service calendar", js: true do
 
         it 'should move visit 2 between visits 6 and 7' do
           wait_for_javascript_to_finish
-          first(:xpath, "//a[@class='move_visits']").click
+          first('.move_visits').click
           wait_for_javascript_to_finish
           select("Visit 2", from: "visit_to_move_1")
           wait_for_javascript_to_finish
@@ -151,7 +151,7 @@ RSpec.describe "service calendar", js: true do
         it "should not mess up the visit ids" do
           arm1.visit_groups.each do |vg|
             wait_for_javascript_to_finish
-            first(:xpath, "//a[@class='move_visits']").click
+            first('.move_visits').click
             wait_for_javascript_to_finish
             select("#{vg.name}", from: "visit_to_move_1")
             select("Move to last position", from: "move_to_position_1")
@@ -239,8 +239,6 @@ RSpec.describe "service calendar", js: true do
           fill_in("visits_#{@visit_id}_research_billing_qty", with: 10)
           page.execute_script('$("#visits_2_research_billing_qty").change()')
           wait_for_javascript_to_finish
-          sleep 3 # TODO: ugh: I got rid of all the sleeps, but I can't get rid of this one
-
           expect(first(".pp_max_total_direct_cost.arm_#{arm1.id}", visible: true)).to have_exact_text("$300.00")
         end
 
@@ -248,8 +246,6 @@ RSpec.describe "service calendar", js: true do
           fill_in "visits_#{@visit_id}_research_billing_qty", with: 10
           page.execute_script('$("#visits_2_research_billing_qty").change()')
           wait_for_javascript_to_finish
-          sleep 3 # TODO: ugh: I got rid of all the sleeps, but I can't get rid of this one
-
           all(".visit_column_2.max_direct_per_patient.arm_#{arm1.id}").each do |x|
             if x.visible?
               expect(x).to have_exact_text("$300.00")

@@ -40,15 +40,10 @@ module Portal::ProjectsHelper
 
   def display_funding_source(project)
     if project.funding_status == 'funded'
-      _funding_sources = FUNDING_SOURCES.map {|k,v| {v => k}}
-      _funding_sources.select do |obj|
-        return "Funding Source: #{obj[project.funding_source]}" if obj.has_key?(project.funding_source)
-      end
+      puts "HELPER: #{FUNDING_SOURCES}"
+      (FUNDING_SOURCES.invert)[project.funding_source]
     elsif project.funding_status == 'pending_funding'
-      _potential_funding_sources = POTENTIAL_FUNDING_SOURCES.map {|k,v| {v => k}}
-      _potential_funding_sources.select do |obj|
-        return "Potential Funding Source: #{obj[project.potential_funding_source]}" if obj.has_key?(project.potential_funding_source)
-      end
+      (POTENTIAL_FUNDING_SOURCES.invert)[project.potential_funding_source]
     else
       ''
     end
@@ -56,7 +51,7 @@ module Portal::ProjectsHelper
 
   def display_funding_source_title(project)
     if project.funding_status == 'funded'
-      'Funding Source: '
+      'Funding Source:'
     elsif project.funding_status == 'pending_funding'
       'Potential Funding Source:'
     else

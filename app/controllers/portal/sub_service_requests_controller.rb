@@ -92,6 +92,7 @@ class Portal::SubServiceRequestsController < Portal::BaseController
       @related_service_requests = @protocol.all_child_sub_service_requests
       @approvals = [@service_request.approvals, @sub_service_request.approvals].flatten
       @selected_arm = @service_request.arms.first
+
       render :action => 'show'
     end
   end   
@@ -308,7 +309,7 @@ class Portal::SubServiceRequestsController < Portal::BaseController
     # send e-mail to all folks with view and above
     @protocol.project_roles.each do |project_role|
       next if project_role.project_rights == 'none'
-      Notifier.notify_user(project_role, @service_request, xls, false, current_user).deliver unless project_role.identity.email.blank?
+      Notifier.notify_user(project_role, @service_request, xls, false, current_user).deliver_now unless project_role.identity.email.blank?
     end
 
     # Check to see if we need to send notifications for epic.

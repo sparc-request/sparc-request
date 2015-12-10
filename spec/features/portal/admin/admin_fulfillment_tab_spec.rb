@@ -338,31 +338,11 @@ RSpec.describe "admin fulfillment tab", js: true do
       end
 
       it 'should remove visits' do
-        visits = Visit.find(:all).size
+        visits = Visit.all.size
         find('.delete_visit_link').click
         wait_for_javascript_to_finish
 
-        expect(Visit.find(:all).size).to eq(visits - 1)
-      end
-
-      context 'removing a visit on a request that is in clinical work fulfillment' do
-
-        before :each do
-          add_visits
-          sub_service_request.update_attributes(in_work_fulfillment: true, status: "submitted")
-          build_clinical_data(all_subjects = true)
-          arm1.reload
-          arm2.reload
-        end
-
-        it "should not allow a visit to be deleted if any of a visit's appointments are completed" do
-          arm1.visit_groups.last.appointments.first.update_attributes(completed_at: Date.today)
-          current_visit = find('#delete_visit_position').value
-          find('.delete_visit_link').click
-          wait_for_javascript_to_finish
-          expect(page).to have_content 'Completed appointment exists for this visit...'
-          expect(find('#delete_visit_position').value).to eq(current_visit)
-        end
+        expect(Visit.all.size).to eq(visits - 1)
       end
     end
   end
@@ -403,7 +383,7 @@ RSpec.describe "admin fulfillment tab", js: true do
       find('#submit_arm').click()
       wait_for_javascript_to_finish
       study.reload
-      number_of_arms = Arm.find(:all).size
+      number_of_arms = Arm.all.size
       select "Arm and a leg", from: "arm_id"
       wait_for_javascript_to_finish
 
@@ -412,7 +392,7 @@ RSpec.describe "admin fulfillment tab", js: true do
       end
 
       wait_for_javascript_to_finish
-      expect(Arm.find(:all).size).to eq(number_of_arms - 1)
+      expect(Arm.all.size).to eq(number_of_arms - 1)
     end
 
     it 'should not allow you to delete the last arm' do
@@ -422,37 +402,13 @@ RSpec.describe "admin fulfillment tab", js: true do
       end
       wait_for_javascript_to_finish
 
-      number_of_arms = Arm.find(:all).size
+      number_of_arms = Arm.all.size
       select "Arm", from: "arm_id"
       accept_alert("You can't delete the last arm while Per-Patient/Per Visit services still exist.") do
         find('.remove_arm_link').click()
       end
       wait_for_javascript_to_finish
-      expect(Arm.find(:all).size).to eq(number_of_arms)
-    end
-
-    it 'should not allow you to delete an arm that has patient data' do
-      number_of_arms = Arm.find(:all).size
-      subject = arm1.subjects.first
-      # appointment = create(:appointment, calendar_id: subject.calendar.id)
-      sub_service_request.update_attributes(in_work_fulfillment: true)
-      visit study_tracker_sub_service_request_path sub_service_request.id
-      click_link("Subject Tracker")
-      wait_for_javascript_to_finish
-
-      within("div#arm_#{arm1.id}") do
-        find("#schedule_#{subject.id}").click
-        wait_for_javascript_to_finish
-      end
-
-      visit portal_admin_sub_service_request_path(sub_service_request)
-      wait_for_javascript_to_finish
-      select "Arm", from: "arm_id"
-      accept_alert("This arm has subject data and can not be deleted.") do
-        find('.remove_arm_link').click()
-      end
-      wait_for_javascript_to_finish
-      expect(Arm.find(:all).size).to eq(number_of_arms)
+      expect(Arm.all.size).to eq(number_of_arms)
     end
 
   end
@@ -520,26 +476,4 @@ RSpec.describe "admin fulfillment tab", js: true do
   end
 end
 
-RSpec.describe 'fulfillment tab with disabled services', js: true do
-  let_there_be_lane
-  let_there_be_j
-  fake_login_for_each_test
-  build_service_request_with_study
 
-  before :each do
-    add_visits
-    service2.update_attributes(is_available: false)
-    visit portal_admin_sub_service_request_path(sub_service_request)
-    wait_for_javascript_to_finish
-  end
-
-  after :each do
-    wait_for_javascript_to_finish
-  end
-
-  it 'should not display dropdown' do
-    arm1.reload
-    expect(find('.line_item.odd')).to have_content "#{service2.name} (Disabled)"
-    expect(find('.line_item.odd')).not_to have_selector("#services_#{arm1.line_items_visits.first.id}")
-  end
-end

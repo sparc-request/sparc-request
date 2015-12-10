@@ -388,3 +388,177 @@ Initial Open Source Release
 * fixes otf validation bug - [view commit](https://github.com/sparc-request/sparc-request/commit/73d5226b624b86bfbb86f90b42640df95cdf966e)
 * Change in Gemfile.lock version - [view commit](https://github.com/sparc-request/sparc-request/commit/de88e0c9df366fcd2294a6e4f42b4aff27c336b4)
 
+#### v1.5.1
+
+* 60f6bde  Adding a counter to the service importer to make sure all services are imported from csv.
+* d98cae3  Typo in service calendar's controller.
+* accf685  Refactoring jump to visits and fixing javascript error.
+* 641d6dc  fixed failing spec on admin fulfillment tab
+* 21c5876  fixed failing edit pricing setup spec
+* d0e62c6  another quick survey report fix
+* f90b0eb  removed irrelevant spec for which we aren't testing anymore
+* 9ce7e83  fix to survey report
+* bda24d1  removed help_faqs_spec because it is no longer relevant. used to text for a redirect to an html page, but now the faq button links to a jquery dialog box
+* 4adee52  fixed failing specs in portal/edit_study_spec and updated gitignore for workaround with mysql 5.7
+* 34722fa  making filename explicitly a string
+* 3d069fe  fix to status for reports
+* 0ba5e2d  clean up per Andrew
+* 95e2c5d  Bug: visit_calendar partial is called from views outside its folder and therefor needs a qualified path
+* e4fa04c  Another method refactor.
+* b5f2081  more refining per greg and jason
+* 17d04c0  moved helper method to model method per Greg
+* 4ac26d4  remove unnecessary variables
+* 62b10e6  reports refactor
+* d7e1276  Changing the name of the unfunded research funding source.
+* 0f4cf02  Fixing tests affected by refactor.
+* 5410b82  Refactoring methods.
+* 91cf804  revert unrelated changes
+* 9feb239  Modifying feature specs.
+* decb30e  extract sss to separate file
+* 15e8797  Defaulting existing pricing map unfunded rate types to federal.
+* 6cac280  (origin/jl-remove_calendar_checkbox_warning) Refactoring check for custom quantities.
+* 22f5d51  (origin/jw_edit_original) removed inline style
+* b9c5692  final finalize alphebetical order of sub-sections
+* 8c731ff  finalize alphebetical order of sub-sections
+* 847d7df  added model spec
+* 5e7433b  Unit tests for new model methods.
+* d600b38  Created method for determining if a visit's quantities have been customized.
+* 227fb70  complete through identities account
+* 886ffc2  added feature specs
+* 45cf9d7  complete through admin dashboard
+* e85c2c8  moved condition into helper and started specs
+* acf5134  complete through fulfillment tab
+* a764c02  (origin/wth-alter-table-headers) fixed table according to example given
+* edae405  complete through notifications
+* 492005f  complete through catalog mgr - organization form
+* 5c7fbba  switch headers back to what they were, but with # merged within
+* d6a47bd  Making indirect cost configurable for projects in sparc proper.
+* 7b26ad7  Moving styling into css file.
+* 4c93946  Checking for visit quantities before displaying checkbox warning.
+* 8e16d69  Bug: Ensure :pages var is passed to visit_selector partial
+* 77cbc9e  conditions for showing add services button added
+* 386f586  Needed to wrap document title text.
+* 026a636  invalid reset password token - devise gem upgrade
+* a04bb9e  (origin/protal-protocol-controller-spec) Get Portal::ProtocolFinder spec passing
+* 79bb4bf  Needed to check the count for the upload buttons.
+* 16c0d33  Needed to check the count for the upload buttons.
+* a5e6da6  (origin/ml_completed_survey_request_email_fix) fix to allow email to be sent to correct user
+* 8ef3e84  (origin/jl-hide_indirect_cost_admin) Indirect cost now configurable for projects in admin portal.
+* c9cb42d  (origin/ml-remove_custom_report_button) removed custom report button
+* 49fb77e  (origin/jjh-sr-controller-specs) Out of scope.
+* aa0491b  first pass on survey report
+* 58fded0  complete through service request
+* 3715dcc  Added just under 100 more examples to ServiceRequestController specs, broke out specs for each action into separate files. Also added more examples to application_controller_spec, which only had one to start with. Some controller actions are still under tested, due to complexity, namely the navigate action.
+* 68a1657  switch headers back to what they were, but with # merged within
+* 1b543a4  Adding org tree display in catalog manager.
+* 66d36c7  changed file format of email
+* 33fa157  complete through service request
+* e2caa9f  complete through stuy/project shared
+* 5e2e56a  Refactor controller methods out to PORC
+* f3d98a5  complete through edit study form
+* 6824130  Update service_calendar.css
+* 4900b31  Change to title of documents page.
+* f443b05  Fixing document header name.
+* 0b93f7f  Had the rates and funding sources backwards.
+* d735f1c  complete through user details partial
+* 3848d01  Update README.md
+* 3f52af5  Added new version column to displayed documents table.
+* 353d5ae  (origin/sj_irb_approval_report) fixing IACUC fields
+* c57289a  (origin/jw_remove_checkboxes) added spacing to billing tab
+* c126a64  (origin/jl-notes_and_documents_reconfig) Re-arranging documents table.
+* d5372ae  (origin/go-project-information) Refactor qtip to Infotip class
+* 98cbf4c  (origin/ml_stop_sending_to_epic) added spec to cover changes
+* b711e33  removing logic for sending studies to epic queue
+* 8069638  checkboxes removed
+* 9d5f02c  further testing w duplicate survey emails
+* 2ba82d0  (origin/go-visit-calendar-jump-to) Move visit_select to partial Re-render visit_select partial on ServiceCalendar#set_day
+* ca55dda  (origin/wth-fix-failing-specs) fixed failing feature specs in admin_edit_study_spec
+* 78eb552  url to yml
+* 9800920  testing different methods to avoid duplicate emails
+* 1db4b89  Add visit_group.day to select dropdown
+* 7f6361d  (origin/kg-step_4_notification) removed extra quote
+* ad4d02f  added notification and specs
+* a29164f  help/faq button is now a link to the SPARC FAQs. There is no longer a tooltip form.
+* 0e40a2b  (origin/jl-add_unfunded_to_funding_sources) Changing College rate to Student rate.
+* 04a38f3  alphabetizing en.yml cm_shared complete
+* d594643  alphabetizing en.yml calendar page complete
+* d076ac0  alphabetizing en.yml subsidy page complete
+* 4ceff9d  (origin/jw_attachments_xlsx) changed file type from xls to xlsx.  Need ideas for testing.
+* e6e5c5b  Adding .rubocop.yml to .gitignore
+* f316f15  (origin/jw_sparc_id_in_subject_line) added protocol id to subject line of service provider emails.  Also added spec.
+* 96c941d  updating envs to match new servers and new exception notification format
+* 0bb73c1  (origin/go-visit-calendar-sort) Chore: Update haml data element names to be consistent with javascript
+* 2000613  Chore: Update javascript to use dashed data element format
+* 86a7c71  (origin/ac-fix-service-abbreviation-method, ac-fix-service-abbreviation-method) this method was causing an issue since abbreviation isn't required
+* fce18fb  #[106742712] Step 2b: Visit Calendar - A to Z sort change
+* 16f6ce2  updated styling
+* 3910e8e  (origin/sj_ssr_status_reporting) adding ssr status to report
+* 98df920  decreased width of empty html table header
+* f6489be  fixed html table issue with unevenly spread out columns
+* db72e6d  updated style of code consistent with community ruby standards. removed inline styling, replaced with css classes
+* 24b404f  (origin/jw_consolidated_request_export) protected against nil
+* 5900210  changed method name per team request
+* d99008f  added a helper method to minimize code in view per Greg and Jason
+* b2e6dfe  added specs for service calendar validation in both the template tab and quantity/billing tab.  Also fixed broken spec
+* 6195890  Bug: Add Protocol :archived attribute to API
+* 66fe91f  Added set_callback() for each skip_callback()
+* a26a3c9  Added set_callback() for each skip_callback()
+* 4b67350  Added set_callback() for each skip_callback()
+* daeec49  College Research, not Student Research
+* 3c6d5c3  Fixing formatting for rate types.
+* eb8345f  specs for check all column are not finished.
+* f607501  Adding unfunded college research as a funding source.
+* 38572e1  update jquery tabs code
+* 0f7afc3  moved traceroute gem into dev group
+* e6d7123  added rake task to populate db with proper ids
+* 9ffb019  added new SCTR CS survey
+* ebfd6c5  (origin/jw_use_dashboard_consistently) consistency is key
+* db64ee0  (origin/jw-go-service-availability) spinner acceptable
+* 7468172  spinner still slow
+* c4c410a  added spinner, but it is slow moving.  Look into this tomorrow.
+* c160b96  Visually distinguished unavailable with italics.
+* b0c28ba  adding IRB Expiration Date to existing report
+* 154a44c  (origin/jl-fix_system_satisfaction_survey) Turning back on the System Satisfaction Survey.
+* ebda317  minor epic_queues spec changes
+* 6ce559a  (origin/jw_spec_fix) fixed spec
+* 3a9c8fb  in process of visually distinguishing unavailalbe services in the show all services.  Found a bug in process.  Whenever the use sets the availability to unavailable and the  save button is hit no matter which view you are in (show available/show all), the service is hidden off that page.  this should only be the case in show available.  Also italics need to be added to the services you make unavailable in show all, but not show available.
+* 9ace9a3  switched fields in one time fees table
+* 04f3ca9  combined headers # unit type and # qty type in _otf_header
+* c47bfca  Rake task for disabling non-PB services
+* cbdff19  Refactoring import services rake task.
+* 558a120  I18n, remove unused routes
+* f2a0957  Update Gemfile.lock
+* e686896  removed unused view spec folders
+* b42375f  a few small fixes, specs almost done
+* 9e28338  added epic queues interface, no tests yet
+* 978e1ad  fixed specs. specs passing.
+* 32bf297  added traceroute gem to identify unused routes and removed unnecessary routes that we aren't using
+* d4f3c05  refactoring routes.rb file with newer ruby syntax and also modified blocks to conform to community ruby style guide...removed destroy action from protocols_controller because it is not necessary
+* 8b90e82  (origin/jw_archived_protocols) Update protocol.rb
+* 9c84d0f  added styling to unavailable_button, but I jused importants
+* ec6318d  Capable of filtering through Organizations and Services.  Specs passing.
+* 6359d03  show all/ show available services is working.  Need to style button. Specs passing.
+* b7a083c  removed unneeded method
+* 8564b12  all specs working and styling adjusted
+* 4a421c8  Fix user_unarchives_study_spec.
+* 3f124f3  remove jug2, add lmf5 to comment
+* d846d11  More work on the Show Archived Protocols button. After clicking, don't hide protocols after archiving them. Wrote specs.
+* d68f2b5  Fix user_archived_protocol_spec.
+* 95b7f38  Show Archived Protocols button working. Still need to unroll first protocol in accordion after AJAX. Spec passing.
+* e026193  moved button and added portal protocols controller spec
+* 82a2e4d  added user archives a protocol spec
+* 65e5346  added Protocol Archive Controller and testing
+* 659f1b1  added traceroute gem to identify unused routes and removed unnecessary routes that we aren't using
+* 5fbd6c5  refactoring routes.rb file with newer ruby syntax and also modified blocks to conform to community ruby style guide...removed destroy action from protocols_controller because it is not necessary
+* 325f263  Added routes to archive protocol and protocol.  Hooked js portion up to controller portion.
+* adb297a  Fix services_controller_spec to reflect new validations on PricingMaps.
+* 230d59f  data work for portal archive function
+* 9eaba00  Found all instances where user portal appears.  Need confirmation from Leila
+* 5ab1c1d  fixed digit max in admin portal
+* 5c4cb03  changed maxlength of visit_day to 4 digits
+* 0fc4cb4  refactoring routes.rb file with newer ruby syntax and also modified blocks to conform to community ruby style guide...removed destroy action from protocols_controller because it is not necessary
+* 343a5d3  removed print friendly stylesheet from portal app layout. placed stylesheet_link_tag at top of partials. It works for me locally, I don't know if there is a convention on how to add specific stylesheets to specific views
+* 6a1b701  Running tests minus /features/
+* 74d37b2  Testing the loading of spec support .rb files
+* 71588773  report tweak
+* 6cf4108  pricing maps: implemented dynamic validations

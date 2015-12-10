@@ -59,8 +59,8 @@ class Portal::NotificationsController < Portal::BaseController
     @notification = Notification.create(params[:notification])
     @message = @notification.messages.create(params[:message])
     is_service_provider = params[:is_service_provider]
-    
-    if @message.valid? 
+
+    if @message.valid?
       @message.save
 
       @sub_service_request = @notification.sub_service_request
@@ -77,7 +77,7 @@ class Portal::NotificationsController < Portal::BaseController
 
   def user_portal_update
     @notification = Notification.find(params[:id])
-    
+
     # TODO: @message is not set here; is that correct?
     @message = @notification.messages.create(params[:message])
 
@@ -91,7 +91,7 @@ class Portal::NotificationsController < Portal::BaseController
       is_service_provider = @is_service_provider.to_s
 
       UserMailer.notification_received(@message.recipient, is_service_provider, ssr_id).deliver unless @message.recipient.email.blank?
-    end    
+    end
     respond_to do |format|
       format.js { render 'portal/notifications/create' }
     end
@@ -126,7 +126,7 @@ class Portal::NotificationsController < Portal::BaseController
       notification.user_notifications_for_current_user(@user).each do |user_notification|
         user_notification.update_attributes(:read => v)
       end
-    end  
+    end
     respond_to do |format|
       format.js { render 'portal/notifications/create' }
     end

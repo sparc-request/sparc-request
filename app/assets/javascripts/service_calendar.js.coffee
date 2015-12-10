@@ -19,7 +19,6 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #= require navigation
-#= require constants
 
 $(document).ready ->
   $('.visit_number a, .service_calendar_row').live 'click', ->
@@ -219,7 +218,7 @@ $(document).ready ->
     if $(this).data('study_tracker') == true
       save_line_item_by_ajax(this)
     else
-      update_otf_line_item this
+      update_otf_line_item(this)
     recalculate_one_time_fee_totals()
     return false
   )
@@ -346,7 +345,7 @@ stack_errors_for_alert = (errors) ->
       if $(visit).is(':hidden') == false && $(visit).data('cents')
         direct_total += Math.floor($(visit).data('cents')) / 100.0
     indirect_rate = parseFloat($("#indirect_rate").val()) / 100.0
-    indirect_total = if use_indirect_cost == 'true' then direct_total * indirect_rate else 0
+    indirect_total = 0
     max_total = direct_total + indirect_total
 
     direct_total_display = '$' + (direct_total).toFixed(2)

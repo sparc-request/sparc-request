@@ -18,19 +18,20 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-- protocols.each do |protocol|
-  %h3.blue-provider{:id => "blue-provider-#{protocol.id}", :class => "blue-provider-#{protocol.id}", :'data-protocol_id' => "#{protocol.id}"}
-    %a{:href => '#'}
-      .left.protocol-accordion-title
-        = "#{protocol.type.capitalize}:"
-        = protocol.id
-        = "-"
-        = protocol.short_title
-        - if protocol.principal_investigators
-          %br
-          = "PI(s): #{protocol.principal_investigators.map(&:display_name).join(', ')}"
-      .protocol-archive-button.ui-corner-all{:'data-protocol_id' => protocol.id, :'data-archive' => protocol.archived ? 0 : 1}
-        = "#{protocol.archived ? 'UNARCHIVE' : 'ARCHIVE'} #{protocol.type.capitalize}"
-      .clear
+.container-fluid.protocol-list
+  .panel-group#protocol-accordion2
+    - protocols.each do |protocol|
+      .panel.panel-default
+        .panel-heading.container-fluid.accordion-heading{ data: { parent: '#protocol-accordion2', toggle: 'collapse', target: "#collapse-#{protocol.id}" } }
+          .row
+            .col-lg-8
+              %ul.list-unstyled
+                %li= "#{protocol.type.capitalize}: #{protocol.id} - #{protocol.short_title}"
+                - if protocol.principal_investigators
+                  %li= "PI(s): #{protocol.principal_investigators.map(&:display_name).join(', ')}"
+            .col-lg-4
+              %button.btn.btn-warning.archive_button.pull-right= "#{protocol.archived ? 'Unarchive' : 'Archive'} #{protocol.type.capitalize}"
 
-  .protocol-information.container-fluid{:class => "protocol-information-#{protocol.id}"}
+        .panel-collapse.collapse{ id: "collapse-#{protocol.id}" }
+          .panel-body
+            .container-fluid{ class: "protocol-information-#{protocol.id}"}= render(partial: 'portal/protocols/protocol_information', :locals => { protocol: protocol, user: user, protocol_role: protocol.project_roles.find_by_identity_id(user.id) })

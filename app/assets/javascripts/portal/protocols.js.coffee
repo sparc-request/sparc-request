@@ -77,14 +77,15 @@ $(document).ready ->
           data: {protocol_id: protocol_id}
       )
 
-      $(document).on('click', '.archive_button', ->
+      $(document).on('click', '.archive_button', (event) ->
+        event.stopPropagation()
         $('.search_protocols').hide()
         $('.loading_protocol').show()
         include_archived = 'true'
 
         if $('.archive_button').data('showing-archived') == 1
           include_archived = 'false'
-  
+
         $.ajax
           method: "GET"
           url: "/portal/protocols.js"

@@ -33,4 +33,4 @@
         %tr
           %td= text_area_tag "notes", "", :class => "note_box"
 
-= link_to t(:fulfillments)[:notes][:link], 'javascript:void(0);', :class => "add_note_link", :'data-sub_service_request_id' => @sub_service_request.id
+= link_to t(:fulfillments)[:notes][:link], 'javascript:void(0);', :class => "add_note_link btn btn-md btn-warning", :'data-sub_service_request_id' => @sub_service_request.id

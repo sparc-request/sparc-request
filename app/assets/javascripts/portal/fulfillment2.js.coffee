@@ -355,3 +355,27 @@ $(document).ready ->
       $(this).val(0).change()
   )
 
+  $(document).on('click', '#add_otf_service', ->
+    ssr_id = $(this).data('sub_service_request_id')
+    new_service_id = $(this).data('select_id')
+    data =
+      'sub_service_request_id': ssr_id
+      'new_service_id': $("##{new_service_id}").val()
+      'study_tracker': $('#study_tracker_hidden_field').val() || null
+    $.ajax
+      type:        'PUT'
+      url:         "/portal/admin/sub_service_requests/#{ssr_id}/add_otf_line_item"
+      data:        JSON.stringify(data)
+      dataType:    'script'
+      contentType: 'application/json; charset=utf-8'
+      success: (response_html) ->
+        $().toastmessage('showSuccessToast', I18n["service_request_success"])
+      error: (jqXHR, textStatus, errorThrown) ->
+        if jqXHR.status == 500 and jqXHR.getResponseHeader('Content-Type').split(';')[0] == 'text/javascript'
+          errors = JSON.parse(jqXHR.responseText)
+        else
+          errors = [textStatus]
+        for error in errors
+          $().toastmessage('showErrorToast', "#{error.humanize()}.");
+  )
+

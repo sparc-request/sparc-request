@@ -11,6 +11,9 @@
       url: "/portal/arms/new"
       data: data
 
+  $(document).on 'click', '#add_arm_form_button', ->
+    $(this).attr('disabled','disabled')
+
   $(document).on 'click', '#remove_arm_button', ->
     data =
       "protocol_id"             : $('#study_schedule_buttons').data('protocol-id')
@@ -23,6 +26,7 @@
       data: data
 
   $(document).on 'click', '#remove_arm_form_button', ->
+    $(this).attr('disabled','disabled')
     arm_id = $("#arm_form_select").val()
     arm_name = $("#arm_form_select option:selected").text()
     data =
@@ -45,6 +49,9 @@
       type: 'GET'
       url: "/portal/arms/navigate"
       data: data
+
+  $(document).on 'click', '#edit_arm_form_button', ->
+    $(this).attr('disabled','disabled')
 
   $(document).on 'change', "#arm_form_select", ->
     data =
@@ -74,6 +81,9 @@
       url: "/portal/visit_groups/new"
       data: data
 
+  $(document).on 'click', '#add_visit_group_form_button', ->
+    $(this).attr('disabled','disabled')
+
   $(document).on 'change', '#visit_group_arm_id', ->
     arm_id = $(this).find('option:selected').val()
     data =
@@ -99,6 +109,9 @@
       type: 'GET'
       url: "/portal/visit_groups/navigate"
       data: data
+
+  $(document).on 'click', '#edit_visit_group_form_button', ->
+    $(this).attr('disabled','disabled')
 
   $(document).on 'click', '#remove_visit_group_button', ->
     data =
@@ -139,6 +152,7 @@
         data: data
 
   $(document).on 'click', '#remove_visit_group_form_button', ->
+    $(this).attr('disabled','disabled')
     schedule_tab = $('#current_tab').attr('value')
     visit_group_id = $("#vg_form_select").val()
     arm_id = $('#vg_form_arm_select').val()
@@ -174,6 +188,9 @@
       url: "/portal/multiple_line_items/new_line_items"
       data: data
 
+  $(document).on 'click', '#add_line_items_form_button', ->
+    $(this).attr('disabled','disabled')
+
   $(document).on 'click', '#remove_service_button', ->
     data =
       'protocol_id'             : $('#study_schedule_buttons').data('protocol-id')
@@ -194,5 +211,8 @@
       type: 'GET'
       url: "/portal/multiple_line_items/edit_line_items"
       data: data
+
+  $(document).on 'click', '#remove_line_items_form_button', ->
+    $(this).attr('disabled','disabled')
 
 ##          **END MANAGE LINE ITEMS**               ##

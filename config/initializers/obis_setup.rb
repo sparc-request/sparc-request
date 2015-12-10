@@ -46,6 +46,7 @@ begin
   USE_NEWS_FEED                 = application_config['use_news_feed']
   CALENDAR_URL                  = application_config['calendar_url']
   FAQ_URL                       = application_config['faq_url']
+  USE_FAQ_LINK                  = application_config['use_faq_link'] || false
   SEND_AUTHORIZED_USER_EMAILS   = application_config['send_authorized_user_emails']
   CUSTOM_ASSET_PATH             = application_config['custom_asset_path']
   LOCALE_OVERRIDE               = application_config['locale_override']

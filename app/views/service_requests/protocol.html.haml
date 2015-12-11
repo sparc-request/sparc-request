@@ -48,9 +48,9 @@
         - if @service_request.status == 'first_draft'
           .type-select.center.form-group
             - if @sub_service_request.nil?
-              = link_to 'Research Study', new_service_request_study_path(@service_request), class: 'new-study-button', title: 'Research Study: An individual research study with defined aims and outcomes' if @sub_service_request.nil?
+              = link_to 'Research Study', new_service_request_study_path(@service_request), class: 'new-study-button btn btn-primary', title: 'Research Study: An individual research study with defined aims and outcomes'
               .divider
-              = link_to 'Project', new_service_request_project_path(@service_request), class: 'new-project-button', title: "Use 'Project' for non-study specific service requests, or anything that is not a study" if @sub_service_request.nil?
+              = link_to 'Project', new_service_request_project_path(@service_request), class: 'new-project-button btn btn-primary', title: "Use 'Project' for non-study specific service requests, or anything that is not a study"
         - else
           .previously_submitted
             .inline.form-group

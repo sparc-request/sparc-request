@@ -148,7 +148,8 @@
       .ui-corner-all.blank_field_errors= t("cm_shared.labels.required_list")
 
 .blank_pricing_setup
-  = render 'catalog_manager/shared/pricing_setup', :pricing_setup_disabled => false, :can_edit_historical_data => @user.can_edit_historical_data_for?(@program), :entity => @program
+  - pricing_setup = @program.pricing_setups.build
+  = render :partial => 'catalog_manager/shared/pricing_setup', :locals => { :pricing_setup => pricing_setup, :pricing_setup_disabled => false, :can_edit_historical_data => @user.can_edit_historical_data_for?(@program), :entity => @program }
 
 :javascript
   $(document).ready( function() {

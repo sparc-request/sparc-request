@@ -27,8 +27,8 @@ class ServiceRequest < ActiveRecord::Base
   belongs_to :service_requester, :class_name => "Identity", :foreign_key => "service_requester_id"
   belongs_to :protocol
   has_many :sub_service_requests, :dependent => :destroy
+  has_many :line_items, -> { includes(:service) }, :dependent => :destroy
   has_many :subsidies, through: :sub_service_requests
-  has_many :line_items, :include => [:service], :dependent => :destroy
   has_many :charges, :dependent => :destroy
   has_many :tokens, :dependent => :destroy
   has_many :approvals, :dependent => :destroy
@@ -106,7 +106,27 @@ class ServiceRequest < ActiveRecord::Base
   alias_attribute :service_request_id, :id
 
   #after_save :fix_missing_visits
+  
+  def service_requester_name
+    self.try(:service_requester).try(:display_name)
+  end
+  
+  def protocol_short_title
+    self.try(:protocol).try(:short_title)
+  end  
 
+  def pi_name
+    self.try(:protocol).try(:primary_principal_investigator).try(:display_name) 
+  end
+  
+  def get_or_create_line_item_additional_details
+    results =[]
+      for sub_service_request in self.sub_service_requests
+        results.concat(sub_service_request.get_or_create_line_item_additional_details)
+      end
+    results  
+  end
+   
   def protocol_page
     if self.protocol_id.blank?
       errors.add(:protocol_id, "You must identify the service request with a study/project before continuing.")
@@ -510,7 +530,7 @@ class ServiceRequest < ActiveRecord::Base
 
   def add_or_update_arms
     return if not self.has_per_patient_per_visit_services?
-
+    
     p = self.protocol
     if p.arms.empty?
       arm = p.arms.create(

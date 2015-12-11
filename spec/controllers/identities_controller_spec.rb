@@ -52,20 +52,20 @@ RSpec.describe IdentitiesController do
   describe 'GET show' do
     it 'should should set identity' do
       session[:identity_id] = identity.id
-      get :show, { id: identity.id, format: :js }.with_indifferent_access
+      xhr :get, :show, { id: identity.id, format: :js }.with_indifferent_access
       expect(assigns(:identity)).to eq identity
     end
 
     it 'should set can_edit to false if there are no project role params' do
       session[:identity_id] = identity.id
-      get :show, { id: identity.id, format: :js }.with_indifferent_access
+      xhr :get, :show, { id: identity.id, format: :js }.with_indifferent_access
       expect(assigns(:can_edit)).to eq false
     end
 
     it 'should set can_edit to true if there are project role params' do
       session[:identity_id] = identity.id
       session[:protocol_type] = 'study'
-      get :show, {
+      xhr :get, :show, {
         format: :js,
         id: identity.id,
         study: {
@@ -82,7 +82,7 @@ RSpec.describe IdentitiesController do
     it 'should create a new project role if no id is given' do
       session[:identity_id] = identity.id
       session[:protocol_type] = 'study'
-      get :show, {
+      xhr :get, :show, {
         format: :js,
         id: identity.id,
         study: {
@@ -100,7 +100,7 @@ RSpec.describe IdentitiesController do
     it 'should use the given project role if an id is given' do
       session[:identity_id] = identity.id
       session[:protocol_type] = 'study'
-      get :show, {
+      xhr :get, :show, {
         format: :js,
         id: identity.id,
         study: {
@@ -122,7 +122,7 @@ RSpec.describe IdentitiesController do
   describe 'POST add_to_protocol' do
     it 'should set can_edit to true if true was passed in' do
       session[:identity_id] = identity.id
-      get :add_to_protocol, {
+      xhr :get, :add_to_protocol, {
         format: :js,
         id: identity.id,
         can_edit: true,
@@ -139,7 +139,7 @@ RSpec.describe IdentitiesController do
 
     it 'should set error if role is blank' do
       session[:identity_id] = identity.id
-      get :add_to_protocol, {
+      xhr :get, :add_to_protocol, {
         format: :js,
         id: identity.id,
         can_edit: true,
@@ -157,7 +157,7 @@ RSpec.describe IdentitiesController do
 
     it 'should set error if role other and role_other is blank' do
       session[:identity_id] = identity.id
-      get :add_to_protocol, {
+      xhr :get, :add_to_protocol, {
         format: :js,
         id: identity.id,
         can_edit: true,
@@ -177,7 +177,7 @@ RSpec.describe IdentitiesController do
     it 'should set protocol type' do
       session[:identity_id] = identity.id
       session[:protocol_type] = 'study'
-      get :add_to_protocol, {
+      xhr :get, :add_to_protocol, {
         format: :js,
         id: identity.id,
         can_edit: true,
@@ -195,7 +195,7 @@ RSpec.describe IdentitiesController do
     it 'should create a new project role if id is blank' do
       session[:identity_id] = identity.id
       session[:protocol_type] = 'study'
-      get :add_to_protocol, {
+      xhr :get, :add_to_protocol, {
         format: :js,
         id: identity.id,
         can_edit: true,
@@ -216,7 +216,7 @@ RSpec.describe IdentitiesController do
     it 'should use the given project role if id is not blank' do
       session[:identity_id] = identity.id
       session[:protocol_type] = 'study'
-      get :add_to_protocol, {
+      xhr :get, :add_to_protocol, {
         format: :js,
         id: identity.id,
         can_edit: true,

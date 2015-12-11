@@ -84,11 +84,13 @@ class CatalogManager::CatalogController < CatalogManager::AppController
     later_dates_exist = 'false'
     services.each do |service|
       service.pricing_maps.each do |pm|
-        pricing_map_date = Date.parse(pm.send(selector).to_s)
-        if pricing_map_date == date
-          there_is_a_same_date = 'true'
-        elsif pricing_map_date > date
-          later_dates_exist = 'true'
+        if pm.send(selector)
+          pricing_map_date = Date.parse(pm.send(selector).to_s)
+          if pricing_map_date == date
+            there_is_a_same_date = 'true'
+          elsif pricing_map_date > date
+            later_dates_exist = 'true'
+          end
         end
       end
     end

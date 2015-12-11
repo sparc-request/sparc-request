@@ -73,6 +73,10 @@
                   %span{:style => "margin-right:10px;"}
                     %span= f.label (t(:tags)[tag.name.gsub(" ", "_").to_sym] ? t(:tags)[tag.name.gsub(" ", "_").to_sym] : tag.name.humanize)
                     %span= f.check_box :tag_list, { :multiple => true }, tag.name, nil
+            %tr
+              %th= t(:additional_details)[:organization_form][:label]
+              %td
+                %a{:href => additional_detail_service_additional_details_path(@service) }= @service.current_additional_detail ? @service.current_additional_detail.name + t(:additional_details)[:organization_form][:link_text_active] : t(:additional_details)[:organization_form][:link_text_inactive]
 
       %br
 
@@ -154,7 +158,8 @@
               .ui-corner-all.otf_field_errors= t(:organization_form)[:otf_field_errors]
 
 .blank_pricing_map
-  = render 'pricing_map', :pricing_map_disabled => false, :can_edit_historical_data => @user.can_edit_historical_data_for?(@service.organization), :entity => @service
+  - pricing_map = @service.pricing_maps.build
+  = render :partial => 'pricing_map', :locals => { :pricing_map => pricing_map, :pricing_map_disabled => false, :can_edit_historical_data => @user.can_edit_historical_data_for?(@service.organization), :entity => @service }
 
 :javascript
   $(document).ready( function() {

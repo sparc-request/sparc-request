@@ -47,18 +47,26 @@ class ServiceRequestsReport < ReportingModule
 
     if params[:institution_id]
       attrs[Institution] = [params[:institution_id], :abbreviation]
+    else
+      attrs["Institution"] = "org_tree.select{|org| org.type == 'Institution'}.first.try(:abbreviation)"
     end
 
     if params[:provider_id]
       attrs[Provider] = [params[:provider_id], :abbreviation]
+    else
+      attrs["Provider"] = "org_tree.select{|org| org.type == 'Provider'}.first.try(:abbreviation)"
     end
 
     if params[:program_id]
       attrs[Program] = [params[:program_id], :abbreviation]
+    else
+      attrs["Program"] = "org_tree.select{|org| org.type == 'Program'}.first.try(:abbreviation)"
     end
 
     if params[:core_id]
       attrs[Core] = [params[:core_id], :abbreviation]
+    else
+      attrs["Core"] = "org_tree.select{|org| org.type == 'Core'}.first.try(:abbreviation)"
     end
 
     attrs["SRID"] = :display_id
@@ -116,7 +124,7 @@ class ServiceRequestsReport < ReportingModule
 
   # Conditions
   def where args={}
-    organizations = Organization.find(:all)
+    organizations = Organization.all
     selected_organization_id = args[:core_id] || args[:program_id] || args[:provider_id] || args[:institution_id] # we want to go up the tree, service_organization_ids plural because we might have child organizations to include
 
     if args[:tags]

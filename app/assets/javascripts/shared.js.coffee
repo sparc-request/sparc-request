@@ -48,7 +48,7 @@ $(document).ready ->
     data += '&portal=' + $('#portal').val()
     $.ajax
       url: "/identities/#{identity_id}"
-      type: 'POST'
+      type: 'GET'
       data: data
 
   $('.add-user button').live 'click', ->

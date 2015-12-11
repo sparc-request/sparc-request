@@ -19,7 +19,7 @@ RSpec.describe ServiceRequestsController do
     context 'params[:portal] set to "true"' do
 
       it 'should set @thead_class to "ui-widget-header"' do
-        get :refresh_service_calendar, { id: service_request.id, portal: 'true', format: :js }.with_indifferent_access
+        xhr :get, :refresh_service_calendar, { id: service_request.id, portal: 'true', format: :js }.with_indifferent_access
         expect(assigns(:thead_class)).to eq 'ui-widget-header'
       end
     end
@@ -27,7 +27,7 @@ RSpec.describe ServiceRequestsController do
     context 'params[:portal] not set to "true" but present' do
 
       it 'should set @thead_class to "red-provider"' do
-        get :refresh_service_calendar, { id: service_request.id, portal: 'truthy', format: :js }.with_indifferent_access
+        xhr :get, :refresh_service_calendar, { id: service_request.id, portal: 'truthy', format: :js }.with_indifferent_access
         expect(assigns(:thead_class)).to eq 'red-provider'
       end
     end
@@ -35,7 +35,7 @@ RSpec.describe ServiceRequestsController do
     context 'params[:portal] absent' do
 
       it 'should set @thead_class to "red-provider"' do
-        get :refresh_service_calendar, { id: service_request.id, format: :js }.with_indifferent_access
+        xhr :get, :refresh_service_calendar, { id: service_request.id, format: :js }.with_indifferent_access
         expect(assigns(:thead_class)).to eq 'red-provider'
       end
     end
@@ -49,7 +49,7 @@ RSpec.describe ServiceRequestsController do
                                              arm4.id.to_s => 2 }
         @scp_keys = session[:service_calendar_pages].keys
         arm2.update_attributes(visit_count: 5)
-        get :refresh_service_calendar, { id: service_request.id, arm_id: arm1.id, page: 2, format: :js }.with_indifferent_access
+        xhr :get, :refresh_service_calendar, { id: service_request.id, arm_id: arm1.id, page: 2, format: :js }.with_indifferent_access
       end
 
       it "should update service_calendar_pages" do
@@ -91,7 +91,7 @@ RSpec.describe ServiceRequestsController do
                    arm2.id.to_s => 2,
                    arm3.id.to_s => 0,
                    arm4.id.to_s => 2 }
-        get :refresh_service_calendar, { id: service_request.id, pages: @pages, format: :js }.with_indifferent_access
+        xhr :get, :refresh_service_calendar, { id: service_request.id, pages: @pages, format: :js }.with_indifferent_access
       end
 
       it 'should set session[:service_calendar_pages] to params[:pages]' do
@@ -129,7 +129,7 @@ RSpec.describe ServiceRequestsController do
                    arm2.id.to_s => 2,
                    arm3.id.to_s => 0,
                    arm4.id.to_s => 2 }
-        get :refresh_service_calendar, { id: service_request.id, arm_id: arm1.id, page: 2, pages: @pages, format: :js }.with_indifferent_access
+        xhr :get, :refresh_service_calendar, { id: service_request.id, arm_id: arm1.id, page: 2, pages: @pages, format: :js }.with_indifferent_access
       end
 
       it "should set service_calendar_pages to params[:pages] with the update applied" do

@@ -20,7 +20,8 @@
 
 class AddEpicTag < ActiveRecord::Migration
   def up
-    Tag.create(:name => "epic")
+    tag = Tag.new(:name => "epic")
+    tag.save_without_auditing
   end
 
   def down

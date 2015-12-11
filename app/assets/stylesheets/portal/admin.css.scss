@@ -189,28 +189,10 @@ background-color: #8dbdd8;
   width: 213px;
   background: url(/assets/portal/portal_header_button_large.png) no-repeat;
 }
-.admin-buttons .return_link,
-.admin-buttons .cwf_return_link,
-#study_tracker_access div.ui-button {
-  background: url(/assets/portal/blue_button_long.png) no-repeat;
-  color: white;
-  display: block;
-  height: 24px;
-  padding: 6px 0 0 38px;
-  width: 179px;
-  margin: 0 auto;
-}
+
 .admin-buttons a.cwf_return_link {
   padding: 6px 0 0 11px;
   width: 206px;
-}
-#study_tracker_access div.ui-button {
-  border: 0 none;
-  padding: 6px 0 0;
-  width: 217px;
-}
-#study_tracker_access div.ui-button .ui-button-text {
-  padding: 0px;
 }
 
 #information a#ssr_save.ui-button,

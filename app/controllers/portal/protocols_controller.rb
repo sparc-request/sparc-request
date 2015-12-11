@@ -107,12 +107,6 @@ class Portal::ProtocolsController < Portal::BaseController
     respond_to do |format|
       format.html
     end
-    puts "^^^^^^^^^^^^^^^^^^"
-    # if !@protocol.active?
-    #   puts "Protocol is inactive!!!!!!!!!!!!!!!!!"
-    #   @protocol.update_attribute(:study_type_question_group_id, StudyTypeQuestionGroup.where(active:true).pluck(:id).first)
-    # end
-
   end
 
   def update
@@ -124,8 +118,9 @@ class Portal::ProtocolsController < Portal::BaseController
       @protocol.populate_for_edit if @protocol.type == "Study"
       render :action => 'edit'
     end
-    puts "****************************"
-    puts attrs.inspect
+    if !@protocol.active?
+      @protocol.update_attribute(:study_type_question_group_id, StudyTypeQuestionGroup.where(active:true).pluck(:id).first)
+    end
   end
 
   # @TODO: add to an authorization filter?

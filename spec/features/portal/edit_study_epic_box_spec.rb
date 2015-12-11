@@ -35,6 +35,7 @@ RSpec.describe "edit study epic box", js: true do
   	expect(page).to_not have_selector('#study_type_answer_research_active')
   	expect(page).to_not have_selector('#study_type_answer_restrict_sending')
   	click_button "Save"
+    wait_for_javascript_to_finish
   	expect(Protocol.find(study.id).determine_study_type).to eq "2"
   end
 
@@ -46,6 +47,7 @@ RSpec.describe "edit study epic box", js: true do
   	select 'Yes', from: 'study_type_answer_research_active_answer'
   	select 'No', from: 'study_type_answer_restrict_sending_answer'
   	click_button "Save"
+    wait_for_javascript_to_finish
   	expect(Protocol.find(study.id).determine_study_type).to eq "5"
   end
 
@@ -57,6 +59,7 @@ RSpec.describe "edit study epic box", js: true do
   	select 'No', from: 'study_type_answer_restrict_sending_answer'
   	expect(page).to_not have_selector('#study_type_answer_access_study_info')
   	click_button "Save"
+    wait_for_javascript_to_finish
   	expect(Protocol.find(study.id).determine_study_type).to eq "14"
   end
 end

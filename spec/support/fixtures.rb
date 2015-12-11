@@ -261,7 +261,6 @@ def build_study
   build_study_type_answers()
 end
 
-
 def build_clinical_data all_subjects = nil
   service_request.arms.each do |arm|
     arm.subjects.each do |subject|

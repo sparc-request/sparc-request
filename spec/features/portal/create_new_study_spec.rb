@@ -4,7 +4,7 @@ RSpec.describe "creating a new study from user portal", js: true do
   let_there_be_lane
   let_there_be_j
   fake_login_for_each_test
-  build_study_type_questions
+  build_service_request_with_study
 
   before :each do
     visit new_portal_protocol_path
@@ -73,11 +73,10 @@ def fill_in_study_info
   fill_in "study_short_title", with: "Bob"
   fill_in "study_title", with: "Dole"
   fill_in "study_sponsor_name", with: "Captain Kurt 'Hotdog' Zanzibar"
-  find('#study_has_cofc_true').click
   select "Funded", from: "study_funding_status"
   select "Federal", from: "study_funding_source"
   find('#study_selected_for_epic_true').click
-  select "Yes", from: "study_type_answer_higher_level_of_privacy_answer"
-  select "Yes", from: "study_type_answer_certificate_of_conf_answer"
+  select 'Yes', from: 'study_type_answer_certificate_of_conf_answer'
+  select 'Yes', from: 'study_type_answer_higher_level_of_privacy_answer'
   find('.continue_button').click
 end

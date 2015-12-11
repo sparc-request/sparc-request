@@ -95,7 +95,7 @@ module ApplicationHelper
 
     (beginning_visit .. ending_visit).each do |n|
       if sub_service_request
-        filtered_line_items_visits = line_items_visits.select{|x| x.line_item.sub_service_request_id == sub_service_request.id } 
+        filtered_line_items_visits = line_items_visits.select{|x| x.line_item.sub_service_request_id == sub_service_request.id }
       else
         filtered_line_items_visits = line_items_visits.select{|x| x.line_item.service_request_id == service_request.id }
       end

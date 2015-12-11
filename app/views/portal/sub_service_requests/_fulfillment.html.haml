@@ -53,7 +53,9 @@
   %br
 
   #add_otf_service_container
-    = render :partial => 'add_service', :locals => {:services => @candidate_one_time_fees, :select_id => 'new_otf_service_id'}
+    #add_otf_service_button.btn.btn-md.btn-warning{:'data-sub_service_request_id' => @sub_service_request.id}
+      = t(:fulfillments)[:service_button]
+    -# = render :partial => 'add_service', :locals => {:services => @candidate_one_time_fees, :select_id => 'new_otf_service_id'}
 
   %br
   

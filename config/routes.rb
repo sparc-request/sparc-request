@@ -281,8 +281,6 @@ SparcRails::Application.routes.draw do
           put :update_from_fulfillment
           patch :update_from_project_study_information
           put :push_to_epic
-          put :add_line_item
-          put :add_otf_line_item
           post :new_document
           put :add_note
         end
@@ -307,7 +305,7 @@ SparcRails::Application.routes.draw do
         end
       end
 
-      resources :line_items, only: [:destroy] do
+      resources :line_items, only: [:new, :create, :destroy] do
         member do
           put :update_from_fulfillment
           put :update_from_cwf
@@ -329,10 +327,8 @@ SparcRails::Application.routes.draw do
       collection do
         put "/visits/:id/update_from_fulfillment" => "visits#update_from_fulfillment"
         put "/service_requests/:id/update_from_fulfillment" => "service_requests#update_from_fulfillment"
-        post "/service_requests/:id/add_per_patient_per_visit_visit" => "service_requests#add_per_patient_per_visit_visit"
         put "/subsidys/:id/update_from_fulfillment" => "subsidies#update_from_fulfillment"
         delete "/subsidys/:id" => "subsidies#destroy"
-        put "/service_requests/:id/remove_per_patient_per_visit_visit" => "service_requests#remove_per_patient_per_visit_visit"
         delete "/delete_toast_message/:id" => "admin#delete_toast_message"
       end
     end

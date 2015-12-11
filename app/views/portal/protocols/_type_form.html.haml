@@ -27,5 +27,5 @@
         .info
           .field
             = label_tag 'type', t(:protocol_shared)[:change]
-            = select_tag 'protocol_type', options_for_select([['Project', 'Project'], ['Study', 'Study']], @protocol.type), :name => 'protocol[type]'
+            = select_tag 'protocol_type', options_for_select([['Project', 'Project'], ['Study', 'Study']], @protocol.type), name: 'protocol[type]'
             = submit_tag t(:protocol_shared)[:button], :confirm => t(:protocol_shared)[:confirm]

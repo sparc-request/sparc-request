@@ -18,5 +18,6 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-= select_tag select_id, options_for_select(candidate_service_options(services, true)), :'data-sub_service_request_id' => @sub_service_request.id
-%button#add_service{:'data-sub_service_request_id' => @sub_service_request.id, :'data-select_id' => select_id}= @study_tracker ? t(:fulfillments)[:cwf_service_button] : t(:fulfillments)[:service_button]
+= select_tag select_id, options_for_select(candidate_service_options(services, true)), :'data-sub_service_request_id' => @sub_service_request.id, class: "selectpicker"
+#add_service.btn.btn-md.btn-warning{:'data-sub_service_request_id' => @sub_service_request.id, :'data-select_id' => select_id}
+  = t(:fulfillments)[:service_button]

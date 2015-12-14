@@ -99,6 +99,9 @@
               = link_to "Add a Fulfillment", 'javascript:void(0);', :class => "add_fulfillment_link", :'data-line_item_id' => otf.id
         - @sub_service_request.unset_effective_date_for_cost_calculations
 
+
+  #add_otf_service_container
+    #add_otf_service_button.btn.btn-md.btn-warning{:'data-sub_service_request_id' => @sub_service_request.id}= t(:fulfillments)[:service_button]
 :javascript
   $(document).ready(function(){
     $(".li_#{@active}").show();

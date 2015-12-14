@@ -27,37 +27,38 @@
 .clear
 
 #fulfillment_info.ui-corner-all
+
+  #service_request_information
+    = render 'service_request_information'
+
   - if @sub_service_request.ctrc?
     #service_request_core_approvals
       = render 'core_approvals'
     #service_request_committee_approval
       = render 'committee_approval'
-      
-  #service_request_status_changes
-    = render 'status_changes'
-  
-  #ssr_subsidy_changes
-    = render 'subsidy_changes'
-    
-  #service_request_approval_changes
-    = render 'approval_changes'
 
-  #service_request_information
-    = render 'service_request_information'
+  %h3 History
+  .history_tabs{role: 'tabpanel'}
+    %ul.nav.nav-tabs.nav-justified{role: 'tablist'}
+      %li.custom-tab.history_tab.active{role: 'presentation'}
+        = link_to t(:fulfillments)[:status_changes][:header], "#service_request_status_changes", {class: 'status-tab', "data-toggle" => 'tab', role: 'tab', "aria-controls" => 'status-tab'}
+      %li.custom-tab.history_tab{role: 'presentation'}
+        = link_to t(:fulfillments)[:subsidy_changes][:header], "#ssr_subsidy_changes", {class: 'subsidy-tab', "data-toggle" => 'tab', role: 'tab', "aria-controls" => 'subsidy-tab'}
+      %li.custom-tab.history_tab{role: 'presentation'}
+        = link_to t(:fulfillments)[:approval_history][:header], "#service_request_approval_changes", {class: 'approval-tab', "data-toggle" => 'tab', role: 'tab', "aria-controls" => 'approval-tab'}
+
+    .tab-content
+      .tab-pane#service_request_status_changes{role: 'tabpanel', class: 'active'}
+        = render 'status_changes'
+      .tab-pane#ssr_subsidy_changes{role: 'tabpanel'}
+        = render 'subsidy_changes'
+      .tab-pane#service_request_approval_changes{role: 'tabpanel'}
+        = render 'approval_changes'
 
 #fulfillment_services.ui-corner-all
   %h3= t(:fulfillments)[:services][:header]
   #one_time_fees
     = render 'one_time_fees'
-
-  %br
-
-  #add_otf_service_container
-    #add_otf_service_button.btn.btn-md.btn-warning{:'data-sub_service_request_id' => @sub_service_request.id}
-      = t(:fulfillments)[:service_button]
-    -# = render :partial => 'add_service', :locals => {:services => @candidate_one_time_fees, :select_id => 'new_otf_service_id'}
-
-  %br
   
   = javascript_include_tag 'jquery.qtip.min'
   #per_patient_services

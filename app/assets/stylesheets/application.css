@@ -407,15 +407,14 @@ a.catalog-button,
   color: #FFF;
   height: 35px;
   font-size: 13px;
-  margin-top: 63px;
   border: none;
   width: 150px;
 }
 
 .add-user{
-  padding-left: 395px;
   padding-bottom: 55px;
-  margin-top: -157px;
+  margin-top: -60px;
+  text-align: center;
 }
 
 .blue-button a {

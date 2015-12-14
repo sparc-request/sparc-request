@@ -34,7 +34,8 @@
 
 = form_for project, :remote => true do |f|
   .grid_12
-    %h3.blue-provider.step-header.ui-corner-all= current_step == 'protocol' ? t(:protocol_shared)[:step_text] : t(:protocol_shared)[:step_text_2]
+    %h3.blue-provider.step-header.ui-corner-all
+      = current_step == 'protocol' ? t(:protocol_shared)[:step_text] : t(:protocol_shared)[:step_text_2]
   = f.hidden_field :requester_id
   = hidden_field_tag :current_step, current_step
   .clear
@@ -48,12 +49,14 @@
           .return-to-previous
             %a.cancel_link{:class => cookies['current_step'] == 'protocol' ? 'cancel' : 'go-back', :href => "javascript:void(0)"}
               = image_tag('left_arrow.png', :alt => "Cancel")
-              %span.btn.btn-success.btn-lg= t(:bottom_navigation)[:cancel]
+              %span.btn.btn-success.btn-lg
+                = current_step == 'protocol' ? t(:bottom_navigation)[:cancel] : t(:bottom_navigation)[:go_back]
           = image_tag 'spinner.gif', :class => 'return-spinner hidden'
         .exit= image_tag('Filler.png')
         .nav-forward
           = image_tag 'spinner.gif', :class => 'continue-spinner hidden'
           .save-and-continue
             %a.continue_button{:class => cookies['current_step'] == 'protocol' ? 'continue' : 'save', :href => "javascript:void(0)"}
-              %span.btn.btn-success.btn-lg= t(:bottom_navigation)[:continue]
               = image_tag('right_arrow.png', :alt => "SaveAndContinue")
+              %span.btn.btn-success.btn-lg
+                = current_step == 'protocol' ? t(:bottom_navigation)[:continue] : t(:bottom_navigation)[:save_and_continue]

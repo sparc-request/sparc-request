@@ -40,6 +40,20 @@ RSpec.describe "User wants to edit a Study", js: true do
       then_i_should_see_the_protocol_information_page
     end
 
+    scenario 'and sees the cancel button' do
+      given_i_am_viewing_the_service_request_protocol_page
+      when_i_select_a_study
+      when_i_click_the_edit_study_button
+      then_i_should_see_the_nav_button_with_text 'Cancel'
+    end
+    
+    scenario 'and sees the continue button' do
+      given_i_am_viewing_the_service_request_protocol_page
+      when_i_select_a_study
+      when_i_click_the_edit_study_button
+      then_i_should_see_the_nav_button_with_text 'Continue'
+    end
+
     context 'and clears the required fields and submits the form' do
       scenario 'and sees some errors' do
         given_i_am_viewing_the_protocol_information_page
@@ -100,6 +114,18 @@ RSpec.describe "User wants to edit a Study", js: true do
         given_i_am_viewing_the_protocol_information_page
         when_i_submit_the_form
         then_i_should_see_the_authorized_users_page
+      end
+
+      scenario 'and sees the go back button' do
+        given_i_am_viewing_the_protocol_information_page
+        when_i_submit_the_form
+        then_i_should_see_the_nav_button_with_text 'Go Back' 
+      end
+
+      scenario 'and sees the save and continue button' do
+        given_i_am_viewing_the_protocol_information_page
+        when_i_submit_the_form
+        then_i_should_see_the_nav_button_with_text 'Save & Continue' 
       end
     end
 
@@ -247,6 +273,21 @@ RSpec.describe "User wants to edit a Study", js: true do
     expect(study.funding_source).to eq("college")
     expect(study.selected_for_epic).to eq(true)
     expect(study.has_cofc).to eq(false)
+  end
+
+  def then_i_should_see_the_nav_button_with_text text
+    case text
+      when 'Cancel'
+        expect(page).to have_selector("a.cancel span", text: text)
+      when 'Go Back'
+        expect(page).to have_selector("a.go-back span", text: text)
+      when 'Continue'
+        expect(page).to have_selector("a.continue span", text: text)
+      when 'Save & Continue'
+        expect(page).to have_selector("a.save span", text: text)
+      else
+        puts "An unexpected nav button text was found in then_i_should_see_the_nav_button_with_text. Perhaps there was a typo?"
+    end
   end
 
   def then_i_should_see_errors_of_type error_type

@@ -38,6 +38,12 @@ $(document).ready ->
         }
       })
 
+      $(document).on 'click', '.accordion-heading', ->
+        protocol_id = $(this).data('protocol-id')
+        $.ajax
+          type: 'GET'
+          url: "portal/protocols/#{protocol_id}.js"
+
       $('.edit-protocol-information-button').live('click', ->
         if $(this).data('permission')
           protocol_id = $(this).data('protocol-id')

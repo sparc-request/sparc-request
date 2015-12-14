@@ -57,6 +57,10 @@ class ProtocolsController < ApplicationController
       @current_step = 'return_to_service_request'
       session[:saved_protocol_id] = @protocol.id
       flash[:notice] = "New #{@protocol.type.downcase} created"
+
+      if @service_request.status == "first_draft"
+        @service_request.update_attributes(status: "draft")
+      end
     else
       @protocol.populate_for_edit
     end
@@ -98,6 +102,11 @@ class ProtocolsController < ApplicationController
       @current_step = 'return_to_service_request'
       session[:saved_protocol_id] = @protocol.id
       flash[:notice] = "#{@protocol.type.humanize} updated"
+
+      #Added as a safety net for older SRs
+      if @service_request.status == "first_draft"
+        @service_request.update_attributes(status: "draft")
+      end
     else
       @protocol.populate_for_edit
     end

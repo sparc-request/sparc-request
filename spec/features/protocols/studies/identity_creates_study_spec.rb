@@ -261,6 +261,7 @@ RSpec.feature "User wants to create a Study", js: true do
     expect(study.funding_source).to eq("federal")
     expect(study.selected_for_epic).to eq(false)
     expect(study.has_cofc).to eq(true)
+    expect(ServiceRequest.first.status).to_not eq("first_draft")
   end
 
   def then_i_should_see_the_nav_button_with_text text

@@ -187,6 +187,7 @@ RSpec.feature 'User wants to edit a Project', js: true do
     expect(project.title).to eq("Title")
     expect(project.funding_status).to eq("funded")
     expect(project.funding_source).to eq("college")
+    expect(ServiceRequest.first.status).to_not eq("first_draft")
   end
 
   def then_i_should_see_the_nav_button_with_text text

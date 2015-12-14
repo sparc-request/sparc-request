@@ -273,6 +273,7 @@ RSpec.describe "User wants to edit a Study", js: true do
     expect(study.funding_source).to eq("college")
     expect(study.selected_for_epic).to eq(true)
     expect(study.has_cofc).to eq(false)
+    expect(ServiceRequest.first.status).to_not eq("first_draft")
   end
 
   def then_i_should_see_the_nav_button_with_text text

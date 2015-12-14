@@ -186,6 +186,7 @@ RSpec.feature 'User wants to create a Project', js: true do
     expect(project.title).to eq("Fake Title")
     expect(project.funding_status).to eq("funded")
     expect(project.funding_source).to eq("federal")
+    expect(ServiceRequest.first.status).to_not eq("first_draft")
   end
 
   def then_i_should_see_the_nav_button_with_text text

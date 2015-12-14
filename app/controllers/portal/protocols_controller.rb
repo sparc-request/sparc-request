@@ -102,6 +102,7 @@ class Portal::ProtocolsController < Portal::BaseController
 
   def edit
     @edit_protocol = true
+    @active_study_type_question_group = StudyTypeQuestionGroup.where(active:true).pluck(:id).first
     @protocol.populate_for_edit if @protocol.type == "Study"
     @protocol.valid?
     respond_to do |format|
@@ -118,9 +119,10 @@ class Portal::ProtocolsController < Portal::BaseController
       @protocol.populate_for_edit if @protocol.type == "Study"
       render :action => 'edit'
     end
-    if !@protocol.active?
-      @protocol.update_attribute(:study_type_question_group_id, StudyTypeQuestionGroup.where(active:true).pluck(:id).first)
-    end
+    # make hidden field in partial
+    # if !@protocol.active?
+    #   @protocol.update_attribute(:study_type_question_group_id, StudyTypeQuestionGroup.where(active:true).pluck(:id).first)
+    # end
   end
 
   # @TODO: add to an authorization filter?

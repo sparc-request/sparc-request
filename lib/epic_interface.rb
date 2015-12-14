@@ -287,6 +287,8 @@ class EpicInterface
   end
 
   def emit_cofc(xml, study)
+    if study.active?
+      study.study_type_questions
     cofc = study.has_cofc? ? 'YES_COFC' : 'NO_COFC'
 
     xml.subjectOf(typeCode: 'SUBJ') {

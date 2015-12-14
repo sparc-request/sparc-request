@@ -237,6 +237,8 @@ SparcRails::Application.routes.draw do
       end
     end
 
+    resources :notes, only: [:index, :new, :create]
+
     resources :associated_users, except: [:index] do
       collection do
         get :search
@@ -282,7 +284,8 @@ SparcRails::Application.routes.draw do
           patch :update_from_project_study_information
           put :push_to_epic
           post :new_document
-          put :add_note
+          get :admin_approvals_show
+          post :admin_approvals_update
         end
       end
 

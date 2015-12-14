@@ -1,0 +1,27 @@
+.modal-dialog.modal-lg
+  .modal-content
+    .modal-header
+      %button.close{type: 'button', data: {dismiss: 'modal'}}
+        %span{aria: {hidden:'true'}} &times;
+        %span.sr-only &times;
+      %h4.modal-title.text-center Notes
+    .modal-body
+      - if notes.any?
+        .details-table
+          .details-header.text-center
+            .col-xs-3 User
+            .col-xs-2 Date
+            .col-xs-7 Note
+          - notes.each do |note|
+            .detail
+              .col-xs-3.name= note.identity.full_name
+              .col-xs-2.created-at= note.created_at.try(:strftime, "%F")
+              .col-xs-7.comment= note.body
+      -else
+        .text-center There are currently no notes.
+    .modal-footer
+      .center-block
+        %button.btn.btn-default{type: 'button', data: {dismiss: 'modal'}} Close
+        %button#new_note_button.btn.btn-primary{type: "button", aria: {label: "New Note"}, data: {notable_id: notable.id, notable_type: notable_type}}
+          %span.glyphicon.glyphicon-plus{aria: {hidden: "true"}}
+          %span Add Note

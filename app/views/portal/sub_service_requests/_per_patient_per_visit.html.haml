@@ -31,7 +31,7 @@
       .schedule_tabs{role: 'tabpanel'}
         %ul.nav.nav-tabs.nav-justified{role: 'tablist'}
           %li.other_tab.custom-tab.active{role: 'presentation'}
-            = link_to t(:calendar_page)[:tabs][:template], table_service_request_service_calendars_path(service_request, tab: "template", portal: true) , {id: 'template_tab', data: {toggle: 'tab'}, role: 'tab', "aria-controls" => 'template_tab'}
+            = link_to t(:calendar_page)[:tabs][:template], table_service_request_service_calendars_path(service_request, tab: "template", portal: true), {id: 'template_tab', data: {toggle: 'tab'}, role: 'tab', "aria-controls" => 'template_tab'}
           %li.other_tab.custom-tab{role: 'presentation'}
             = link_to t(:calendar_page)[:tabs][:billing], table_service_request_service_calendars_path(service_request, tab: "billing_strategy", portal: true), {id: 'billing_strategy_tab', data: {toggle: 'tab'}, role: 'tab', "aria-controls" => 'billing_strategy_tab'}
           %li.pricing_tab.custom-tab{role: 'presentation'}

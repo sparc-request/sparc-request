@@ -18,54 +18,35 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#service_request_info
-  = render 'service_request_info'
+.panel-group#admin_accordion{ role: "tablist", aria: { multiselectable: "true" } }
 
-#notifications_area
-  = render :partial => 'notifications_area', :locals => {:service_request => service_request, :protocol => @protocol, :sub_service_request => sub_service_request}
+  .panel.panel-default
+    .panel-heading#sr_accordion_heading{ data: {toggle: "collapse", target: "#sr_accordion"}, aria: {expanded: "false", controls: "sr_accordion"} }
+      %h3.panel-title Service Request Info
+    #sr_accordion.panel-collapse.collapse.in{role: "tabpanel", aria: {labelledby: "sr_accordion_heading"}}
+      .panel-body
+        = render partial: 'portal/admin/fulfillment_accordion/service_request_info', locals: {protocol: protocol, sub_service_request: sub_service_request, service_request: service_request}
 
-.clear
+  .panel.panel-default
+    .panel-heading#users_accordion_heading.collapsed{ data: {toggle: "collapse", target: "#users_accordion"}, aria: {expanded: "false", controls: "users_accordion"} }
+      %h3.panel-title User Notifications
+    #users_accordion.panel-collapse.collapse{role: "tabpanel", aria: {labelledby: "users_accordion_heading"}}
+      .panel-body
+        = render partial: 'portal/admin/fulfillment_accordion/user_notifications', locals: {protocol: protocol, sub_service_request: sub_service_request, service_request: service_request}
 
-#fulfillment_info.ui-corner-all
+  .panel.panel-default
+    .panel-heading#history_accordion_heading.collapsed{ data: {toggle: "collapse", target: "#history_accordion"}, aria: {expanded: "false", controls: "history_accordion"} }
+      %h3.panel-title History
+    #history_accordion.panel-collapse.collapse{role: "tabpanel", aria: {labelledby: "history_accordion_heading"}}
+      .panel-body
+        = render partial: 'portal/admin/fulfillment_accordion/history', locals: {protocol: protocol, sub_service_request: sub_service_request, service_request: service_request}
 
-  #service_request_information
-    = render 'service_request_information'
-
-  - if @sub_service_request.ctrc?
-    #service_request_core_approvals
-      = render 'core_approvals'
-    #service_request_committee_approval
-      = render 'committee_approval'
-
-  %h3 History
-  .history_tabs{role: 'tabpanel'}
-    %ul.nav.nav-tabs.nav-justified{role: 'tablist'}
-      %li.custom-tab.history_tab.active{role: 'presentation'}
-        = link_to t(:fulfillments)[:status_changes][:header], "#service_request_status_changes", {class: 'status-tab', "data-toggle" => 'tab', role: 'tab', "aria-controls" => 'status-tab'}
-      %li.custom-tab.history_tab{role: 'presentation'}
-        = link_to t(:fulfillments)[:subsidy_changes][:header], "#ssr_subsidy_changes", {class: 'subsidy-tab', "data-toggle" => 'tab', role: 'tab', "aria-controls" => 'subsidy-tab'}
-      %li.custom-tab.history_tab{role: 'presentation'}
-        = link_to t(:fulfillments)[:approval_history][:header], "#service_request_approval_changes", {class: 'approval-tab', "data-toggle" => 'tab', role: 'tab', "aria-controls" => 'approval-tab'}
-
-    .tab-content
-      .tab-pane#service_request_status_changes{role: 'tabpanel', class: 'active'}
-        = render 'status_changes'
-      .tab-pane#ssr_subsidy_changes{role: 'tabpanel'}
-        = render 'subsidy_changes'
-      .tab-pane#service_request_approval_changes{role: 'tabpanel'}
-        = render 'approval_changes'
-
-#fulfillment_services.ui-corner-all
-  %h3= t(:fulfillments)[:services][:header]
-  #one_time_fees
-    = render 'one_time_fees'
-  
-  = javascript_include_tag 'jquery.qtip.min'
-  #per_patient_services
-    = render partial: 'per_patient_per_visit', locals: {sub_service_request: sub_service_request, service_request: service_request}
-
-#ssr_notes.ui-corner-all
-  = render 'notes'
+  .panel.panel-default
+    .panel-heading#services_accordion_heading.collapsed{ data: {toggle: "collapse", target: "#services_accordion"}, aria: {expanded: "false", controls: "services_accordion"} }
+      %h3.panel-title Services
+    #services_accordion.panel-collapse.collapse{role: "tabpanel", aria: {labelledby: "services_accordion_heading"}}
+      .panel-body
+        = render partial: 'portal/admin/fulfillment_accordion/services', locals: {protocol: protocol, sub_service_request: sub_service_request, service_request: service_request}
 
 #visit_toasts
   - @user_toasts.each do |user_toast|

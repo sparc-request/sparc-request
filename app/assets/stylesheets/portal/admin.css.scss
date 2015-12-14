@@ -56,6 +56,42 @@
   font-size: 18px;
 }
 
+#admin_accordion .panel-heading:hover {
+  cursor: pointer;
+}
+
+.details-table {
+  padding: 15px 0px 15px 0px;
+  height: 400px;
+  overflow: scroll;
+
+  .details-header > div {
+    background: #113967;
+    padding: 10px 10px 10px 10px;
+    color: white;
+    border-right: 1px solid white;
+    &:last-child{
+      border: 0px;
+    }
+  }
+
+  .detail {
+    padding: 1px 10px 1px 10px;
+    overflow: hidden;
+
+    .field {
+      font-weight: bold;
+    }
+  }
+
+  .detail:nth-child(2n),
+  .detail:nth-child(2n):hover {
+    background-color: #90B9CD;
+    color: white;
+  }
+}
+
+
 #admin-tablesorter {
   table {
     table-layout: fixed;

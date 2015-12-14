@@ -211,19 +211,6 @@ $(document).ready ->
     $(".li_#{li_id}").toggle()
   )
 
-  $(document).on('click', '.add_note_link', ->
-    ssr_id = $(this).data('sub_service_request_id')
-    data =
-      'sub_service_request_id': ssr_id
-      'body': $(".note_box").val()
-    $.ajax
-      type: 'PUT'
-      url:   "/portal/admin/sub_service_requests/#{ssr_id}/add_note"
-      data:  JSON.stringify(data)
-      dataType: 'script'
-      contentType: 'application/json; charset=utf-8'
-  )
-
   $(document).on 'click', '#add_otf_service_button', ->
     data =
       "sub_service_request_id"  : $(this).data("sub_service_request_id")

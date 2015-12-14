@@ -73,7 +73,7 @@
 
   .tab-content
     .tab-pane#fulfillment{role: 'tabpanel', class: 'active'}
-      = render partial: 'fulfillment', locals: {sub_service_request: @sub_service_request, service_request: @service_request}
+      = render partial: 'fulfillment', locals: {protocol: @protocol, sub_service_request: @sub_service_request, service_request: @service_request}
     .tab-pane#protocol{role: 'tabpanel', style: 'padding:15px;'}
       = render :partial => 'portal/protocols/type_form'
       = render :partial => 'portal/protocols/form', :locals => {:protocol => @protocol, :admin => true}

@@ -1,0 +1,77 @@
+-# Copyright © 2011 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+- if sub_service_request.ctrc?
+  = link_to t(:fulfillments)[:core_approvals][:header], 'javascript:void(0);', :class => "btn btn-md btn-warning", :'data-sub_service_request_id' => @sub_service_request.id, id: "admin_approvals_button"
+
+/ ********************
+
+#service_request_status
+  %h3= t(:service_requests)[:info][:text1]
+  = select_tag "sub_service_request_status", options_for_select(sub_service_request ? sub_service_request.organization.get_available_statuses.invert : [], sub_service_request.try(:status)), :'data-sub_service_request_id' => sub_service_request.id, :class => 'fulfillment_data selectpicker'
+%br
+#service_request_owner{:style => sub_service_request.status == 'draft' ? 'display:none;' : ''}
+  %h3= t(:service_requests)[:info][:text2]
+  = select_tag "sub_service_request_owner_id", owners_for_select(sub_service_request), :prompt => '---Please Select---', :'data-sub_service_request_id' => sub_service_request.id, :class => 'fulfillment_data selectpicker'
+%br
+- if sub_service_request.ready_for_fulfillment?
+  #study_tracker_access
+    .row
+      %h3= t(:service_requests)[:info][:text3]
+      = check_box_tag "in_work_fulfillment", true, sub_service_request.in_work_fulfillment, :'data-sub_service_request_id' => sub_service_request.id, :class => "cwf_data", :disabled => sub_service_request.in_work_fulfillment?
+    - if @user.clinical_provider_rights? and sub_service_request.in_work_fulfillment?
+      = link_to t(:study_tracker)[:title], CLINICAL_WORK_FULFILLMENT_URL, target: "_blank", class: "btn btn-primary btn-lg"
+
+/ ********************
+
+= link_to "Notes", 'javascript:void(0);', :class => "btn btn-md btn-warning", id: "notes_index_link", :'data-sub_service_request_id' => sub_service_request.id
+
+/ ***********
+
+#timeline
+  %h3= t(:fulfillments)[:timeline][:header]
+  #timeline_table
+    %table
+      %thead
+        %tr
+          %th= t(:fulfillments)[:timeline][:start_date]
+          %th= t(:fulfillments)[:timeline][:end_date]
+          %th= t(:fulfillments)[:timeline][:arranged_date]
+          %th= t(:fulfillments)[:timeline][:contacted_date]
+      %tbody
+        %tr
+          %td
+            = text_field_tag "protocol_start_date_picker", protocol.try(:start_date).try(:strftime, '%D'), :class => 'date datepicker', :readonly => true
+            = hidden_field_tag "protocol_start_date", protocol.try(:start_date).try(:strftime, "%F"), :'data-protocol_id' => protocol.id, :class => 'fulfillment_data'
+          %td
+            = text_field_tag "protocol_end_date_picker", protocol.try(:end_date).try(:strftime, '%D'), :class => 'date datepicker', :readonly => true
+            = hidden_field_tag "protocol_end_date", protocol.try(:end_date).try(:strftime, "%F"), :'data-protocol_id' => protocol.id, :class => 'fulfillment_data'
+          %td
+            = text_field_tag "sub_service_request_consult_arranged_date_picker", sub_service_request.try(:consult_arranged_date).try(:strftime, '%D'), :class => 'date datepicker'
+            = hidden_field_tag "sub_service_request_consult_arranged_date", sub_service_request.try(:consult_arranged_date).try(:strftime, "%F"), :'data-sub_service_request_id' => sub_service_request.id, :class => 'fulfillment_data'
+          %td
+            = text_field_tag "sub_service_request_requester_contacted_date_picker", sub_service_request.try(:requester_contacted_date).try(:strftime, '%D'), :class => 'date datepicker'
+            = hidden_field_tag "sub_service_request_requester_contacted_date", sub_service_request.try(:requester_contacted_date).try(:strftime, "%F"), :'data-sub_service_request_id' => sub_service_request.id, :class => 'fulfillment_data'
+
+#request_cost_total
+  = render 'portal/sub_service_requests/direct_cost_total'
+
+#fulfillment_subsidy
+  = render 'portal/sub_service_requests/subsidy'
+

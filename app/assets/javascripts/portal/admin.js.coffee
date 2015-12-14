@@ -97,3 +97,37 @@ $(document).ready ->
         document.location.href = url
       )
   }
+
+  $(document).on 'click', '#admin_approvals_button', ->
+    ssr_id = $(this).data("sub_service_request_id")
+    $.ajax
+      type: 'GET'
+      url: "/portal/admin/sub_service_requests/#{ssr_id}/admin_approvals_show"
+
+  $(document).on('change', '.admin_approval_checkbox', ->
+    ssr_id = $(this).data("sub_service_request_id")
+    data = "#{$(this).attr('name')}" : $(this).val()
+    $.ajax
+      type: 'POST'
+      url: "/portal/admin/sub_service_requests/#{ssr_id}/admin_approvals_update"
+      data: data
+  )
+
+  $(document).on 'click', '#notes_index_link', ->
+    data =
+      'notable_type'           : "sub_service_request"
+      'sub_service_request_id' : $(this).data("sub_service_request_id")
+    $.ajax
+      type: 'GET'
+      url: "/portal/notes"
+      data: data
+
+  $(document).on 'click', '#new_note_button', ->
+    data =
+      'notable_type'  : $(this).data("notable-type")
+      'notable_id'    : $(this).data("notable-id")
+    $.ajax
+      type: 'GET'
+      url: "/portal/notes/new"
+      data: data
+

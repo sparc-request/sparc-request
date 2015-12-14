@@ -18,6 +18,11 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-= select_tag select_id, options_for_select(candidate_service_options(services, true)), :'data-sub_service_request_id' => @sub_service_request.id, class: "selectpicker"
-#add_service.btn.btn-md.btn-warning{:'data-sub_service_request_id' => @sub_service_request.id, :'data-select_id' => select_id}
-  = t(:fulfillments)[:service_button]
+#fulfillment_services.ui-corner-all
+  %h3= t(:fulfillments)[:services][:header]
+  #one_time_fees
+    = render 'portal/sub_service_requests/one_time_fees'
+  
+  = javascript_include_tag 'jquery.qtip.min'
+  #per_patient_services
+    = render partial: 'portal/sub_service_requests/per_patient_per_visit', locals: {sub_service_request: sub_service_request, service_request: service_request}

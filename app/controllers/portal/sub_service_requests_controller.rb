@@ -94,18 +94,6 @@ class Portal::SubServiceRequestsController < Portal::BaseController
     end
   end   
 
-  def add_note
-    @sub_service_request = SubServiceRequest.find(params[:id])
-    if @sub_service_request.notes.create(:identity_id => @user.id, :body => params[:body])
-      @sub_service_request.reload
-      render 'portal/sub_service_requests/add_note'
-    else
-      respond_to do |format|
-        format.js { render :status => 500, :json => clean_errors(@sub_service_request.errors) }
-      end
-    end
-  end
-
   def new_document
     errors = []
     #### add logic to save data
@@ -220,6 +208,32 @@ class Portal::SubServiceRequestsController < Portal::BaseController
     end
   end
 
+  def admin_approvals_show
+    @sub_service_request = SubServiceRequest.find(params[:id])
+  end
+
+  def admin_approvals_update
+    @sub_service_request = SubServiceRequest.find(params[:id])
+    if @sub_service_request.update_attributes(params)
+      @sub_service_request.generate_approvals(@user, params)
+      @service_request = @sub_service_request.service_request
+      @approvals = [@service_request.approvals, @sub_service_request.approvals].flatten
+    else
+      @errors = @sub_service_request.errors
+    end
+  end
+
+private
+
+  def protocol_authorizer
+    @protocol = Protocol.find(params[:protocol_id])
+    authorized_user = ProtocolAuthorizer.new(@protocol, @user)
+    if (request.get? && !authorized_user.can_view?) || (!request.get? && !authorized_user.can_edit?)
+      @protocol = nil
+      render :partial => 'service_requests/authorization_error', :locals => {:error => "You are not allowed to access this protocol."}
+    end
+  end
+
   def email_users sub_service_request
     @service_request = sub_service_request.service_request
     @protocol = @service_request.protocol
@@ -241,16 +255,6 @@ class Portal::SubServiceRequestsController < Portal::BaseController
         @protocol.awaiting_approval_for_epic_push
         Notifier.notify_for_epic_user_approval(@protocol).deliver unless QUEUE_EPIC
       end
-    end
-  end
-
-private
-  def protocol_authorizer
-    @protocol = Protocol.find(params[:protocol_id])
-    authorized_user = ProtocolAuthorizer.new(@protocol, @user)
-    if (request.get? && !authorized_user.can_view?) || (!request.get? && !authorized_user.can_edit?)
-      @protocol = nil
-      render :partial => 'service_requests/authorization_error', :locals => {:error => "You are not allowed to access this protocol."}
     end
   end
 end

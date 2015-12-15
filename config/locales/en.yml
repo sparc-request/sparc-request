@@ -329,7 +329,8 @@ en:
       service: "Service"
       source: "Funding Source"
       source_of_price: "Source of Price / Rate"
-      survey_name: "Survey"
+      survey_name: "Name (and Version)"
+      survey_warning: "* The associated survey(s) will be sent out to the service requester(s) through email at the time of service completion."
       unfunded: "Unfunded Student Research*"
     title: "SPARC Request Services Catalog"
 

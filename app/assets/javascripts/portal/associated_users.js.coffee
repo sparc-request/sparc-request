@@ -45,7 +45,11 @@ $(document).ready ->
             url: '/portal/associated_users/new.js'
             data:
               protocol_id: $(this).data('protocol-id')
-
+            success: ->
+              $('#user_search').typeahead({
+                name: 'States',
+                local: ["Alabama","Alaska","West Virginia","Wisconsin","Wyoming"]
+              })
           # $('.add-associated-user-dialog').dialog('open')
           # $('#add-user-form #protocol_id').val($(this).data('protocol_id'))
         else

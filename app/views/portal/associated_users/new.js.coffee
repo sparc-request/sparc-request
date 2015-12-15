@@ -1,9 +1,6 @@
 $("#modal-area").html("<%= escape_javascript(render(partial: 'portal/associated_users/new', locals: { protocol: @protocol, protocol_role: @protocol_role, identity: @identity })) %>")
 $("#modal-area").modal 'show'
 
-$('input#user_search').typeahead
-  name: 'users'
-  local: ['Aaaaaa', 'Bbbbbb', 'Cccccc']
 # $('input#user_search').autocomplete
 #   source: "/portal/associated_users/search"
 #   minLength: 3

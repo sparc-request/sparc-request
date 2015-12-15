@@ -26,14 +26,15 @@
 
       .modal-header
         %button.close{ type: 'button', data: { dismiss: 'modal' } }
-          %span{ aria: { hidden:'true' } } &times;
+          %span{ aria: { hidden: 'true' } } &times;
         %h4#modal-title.text-center
           Add User
       .modal-body
         #modal_errors
-        .row.user-search-container
-          = text_field_tag 'user_search', nil, placeholder: 'Search For A User', class: 'typeahead'
-          = image_tag 'portal/spinner.gif', style: 'display: none; vertical-align: middle;', id: 'search-spinner'
+        .row
+          .col-lg-12
+            = text_field_tag 'user_search', nil, placeholder: 'Search For A User'
+            = image_tag 'portal/spinner.gif', style: 'display: none; vertical-align: middle;', id: 'search-spinner'
         .row
           .col-lg-6
             %fieldset.form-group

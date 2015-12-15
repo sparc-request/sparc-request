@@ -31,7 +31,7 @@ class ProtocolsController < ApplicationController
     @protocol.requester_id = current_user.id
     @protocol.populate_for_edit
     current_step_cookie = cookies['current_step']
-    if current_step_cookie.nil? || (current_step_cookie != "protocol" && current_step_cookie != "user_details")
+    if current_step_cookie.nil? || (current_step_cookie != "protocol")
       cookies['current_step'] = 'protocol'
     end
     @portal = false
@@ -75,7 +75,7 @@ class ProtocolsController < ApplicationController
     @protocol.populate_for_edit
     @protocol.valid?
     current_step_cookie = cookies['current_step']
-    if current_step_cookie.nil? || (current_step_cookie != "protocol" && current_step_cookie != "user_details")
+    if current_step_cookie.nil? || (current_step_cookie != "protocol")
       cookies['current_step'] = 'protocol'
     end
     @portal = false

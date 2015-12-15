@@ -17,6 +17,94 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-= form_for protocol_role, :url => portal_associated_users_path, :method => :post, :remote => true, :html => {:class => 'dialog-form associated_users_form' } do |f|
+.modal-dialog
+  .modal-content
+    = form_for protocol_role, url: portal_associated_users_path, method: :post, remote: true do |f|
+      = f.hidden_field :identity_id
+      - if @sub_service_request
+        = hidden_field_tag :sub_service_request_id, @sub_service_request.id
 
-  = render 'portal/associated_users/form', :f => f, :protocol_role => protocol_role, :identity => identity, :type => "add", :protocol => protocol
+      .modal-header
+        %button.close{ type: 'button', data: { dismiss: 'modal' } }
+          %span{ aria: { hidden:'true' } } &times;
+        %h4#modal-title.text-center
+          Add User
+      .modal-body
+        #modal_errors
+        .row.user-search-container
+          = text_field_tag 'user_search', nil, placeholder: 'Search For A User', class: 'typeahead'
+          = image_tag 'portal/spinner.gif', style: 'display: none; vertical-align: middle;', id: 'search-spinner'
+        .row
+          .col-lg-6
+            %fieldset.form-group
+              = label :identity, :full_name, t(:portal_user_form)[:name]
+              = text_field_tag 'full_name', "#{identity.first_name} #{identity.last_name}", class: 'form-control', disabled: true
+            %fieldset.form-group
+              = label :identity, :email, t(:portal_user_form)[:email]
+              = email_field_tag 'email', identity.email, class: 'form-control', disabled: true
+            %fieldset.form-group
+              = label :identity, :phone, t(:portal_user_form)[:phone]
+              = phone_field_tag 'identity[phone]', identity.phone, class: 'form-control', disabled: true
+            %fieldset.form-group
+              = f.label :role, t(:portal_user_form)[:role]
+              = select_tag 'project_role[role]', options_for_select(USER_ROLES, f.object.role), prompt: t(:portal_user_form)[:role_prompt], class: 'form-control selectpicker'
+            %fieldset.form-group
+              = f.label :role_other, t(:portal_user_form)[:role_other]
+              = f.text_field :role_other, class: 'form-control'
+
+            - if USE_EPIC && protocol != nil && protocol.selected_for_epic
+              %fieldset.form-group
+                = f.label :epic_access, t(:portal_user_form)[:epic_access]
+                %label.checkbox-inline
+                  No
+                = f.radio_button :epic_access, false, class: 'epic_access'
+                %label.checkbox-inline
+                  Yes
+                = f.radio_button :epic_access, true, class: 'epic_access'
+            %fieldset.form-group
+              = label :identity, :era_commons_name, t(:portal_user_form)[:era]
+              = text_field_tag 'identity[era_commons_name]', identity.era_commons_name, class: 'form-control'
+            %fieldset.form-group
+              = label :identity, :credentials, t(:portal_user_form)[:credentials]
+              = select_tag 'idntity[credentials]', options_for_select(USER_CREDENTIALS, identity.credentials), prompt: t(:portal_user_form)[:credential_prompt], class: 'form-control selectpicker'
+            %fieldset.form-group
+              = label :identity, :other_credentials, t(:portal_user_form)[:credentials_other]
+              = text_field_tag 'identity[other_credentials]', identity.credentials_other, class: 'form-control'
+          .col-lg-6
+            %fieldset.form-group
+              = label_tag "identity[institution]", t(:portal_user_form)[:institution]
+              = select_tag "identity[institution]", options_for_select((INSTITUTIONS.sort), identity.institution), prompt: t(:portal_user_form)[:institution_prompt], class: 'form-control selectpicker'
+            %fieldset.form-group
+              = label_tag "identity[college]", t(:portal_user_form)[:college]
+              = select_tag "identity[college]", options_for_select(COLLEGES, identity.college), prompt: t(:portal_user_form)[:college_prompt], class: 'form-control selectpicker'
+            %fieldset.form-group
+              = label_tag "identity[department]", t(:portal_user_form)[:department]
+              = select_tag "identity[department]", options_for_select(DEPARTMENTS, identity.department), prompt: t(:portal_user_form)[:department_prompt], class: 'form-control selectpicker'
+            %fieldset.form-group
+              = label_tag "identity[subspecialty]", t(:portal_user_form)[:subspecialty]
+              = select_tag "identity[subspecialty]", options_for_select((SUBSPECIALTIES.sort), identity.subspecialty), prompt: t(:portal_user_form)[:subspecialty_prompt], class: 'form-control selectpicker'
+            %fieldset.form-group
+              - disable = (f.object.role == 'pi' || f.object.role == 'primary-pi')
+              = f.label :rights, t(:portal_user_form)[:rights][:header]
+              .radio
+                %label
+                  %input{ type: 'radio', value: '', name: 'project_role[project_rights]', disabled: disable }
+                  %span= t(:portal_user_form)[:rights][:none]
+              .radio
+                %label
+                  %input{ type: 'radio', value: '', name: 'project_role[project_rights]', disabled: disable }
+                  %span= t(:portal_user_form)[:rights][:view]
+              .radio
+                %label
+                  %input{ type: 'radio', value: '', name: 'project_role[project_rights]', disabled: disable }
+                  %span= t(:portal_user_form)[:rights][:request]
+              .radio
+                %label
+                  %input{ type: 'radio', value: '', name: 'project_role[project_rights]', disabled: disable }
+                  %span= t(:portal_user_form)[:rights][:approve]
+      .modal-footer
+        .center-block
+          %button.btn.btn-default{ type: 'button', data: { dismiss: 'modal' } }
+            Close
+          %button.btn.btn-primary{ type: 'submit' }
+            Save

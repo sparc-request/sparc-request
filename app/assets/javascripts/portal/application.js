@@ -39,6 +39,7 @@
 //= require assert
 //= require form_manager
 //= require form_fx_manager
+//= require twitter/typeahead.min
 //= require_tree .
 //= require ../service_calendar
 

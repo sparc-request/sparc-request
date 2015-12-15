@@ -52,6 +52,7 @@ gem 'simplecov', require: false, group: :test
 gem 'sinatra'
 gem 'surveyor', github: 'caboteria/surveyor', branch: 'rails4'
 gem 'therubyracer', '0.10.2', :platforms => :ruby
+gem 'twitter-typeahead-rails'
 gem 'uglifier', '>= 1.0.3'
 gem 'will_paginate'
 

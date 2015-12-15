@@ -47,12 +47,14 @@ class Portal::AssociatedUsersController < Portal::BaseController
 
   # TODO: why does edit use identity_id, but new uses user_id?
   def new
-    @identity = Identity.find params[:user_id]
-    @protocol_role = @protocol.project_roles.build(:identity_id => @identity.id)
-    @protocol_role.populate_for_edit
-    if params[:sub_service_request_id]
-      @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
-    end
+    @identity = Identity.new
+    @protocol_role = @protocol.project_roles.new
+    # @protocol_role = @protocol.project_roles.build(:identity_id => @identity.id)
+    # @protocol_role.populate_for_edit
+    # if params[:sub_service_request_id]
+    #   @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
+    # end
+    @protocol_role = ProjectRole.new
     respond_to do |format|
       format.js
       format.html
@@ -68,7 +70,7 @@ class Portal::AssociatedUsersController < Portal::BaseController
       @identity.update_attributes params[:identity]
       if SEND_AUTHORIZED_USER_EMAILS
         @protocol.emailed_associated_users.each do |project_role|
-          UserMailer.authorized_user_changed(project_role.identity, @protocol).deliver_now unless project_role.identity.email.blank?
+          UserMailer.authorized_user_changed(project_role.identity, @protocol).deliver unless project_role.identity.email.blank?
         end
       end
 
@@ -104,7 +106,7 @@ class Portal::AssociatedUsersController < Portal::BaseController
       @protocol_role.save
       if SEND_AUTHORIZED_USER_EMAILS
         @protocol.emailed_associated_users.each do |project_role|
-          UserMailer.authorized_user_changed(project_role.identity, @protocol).deliver_now unless project_role.identity.email.blank?
+          UserMailer.authorized_user_changed(project_role.identity, @protocol).deliver unless project_role.identity.email.blank?
         end
       end
 
@@ -168,7 +170,7 @@ class Portal::AssociatedUsersController < Portal::BaseController
   end
 
   def search
-    term = params[:term].strip
+    term = (params[:term] || params[:q]).strip
     results = Identity.search(term).map do |i|
       {
        :label => i.display_name, :value => i.id, :email => i.email, :institution => i.institution, :phone => i.phone, :era_commons_name => i.era_commons_name,

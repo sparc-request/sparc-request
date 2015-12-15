@@ -21,19 +21,19 @@
 - permission = protocol_role.can_edit?
 - pi_count_var = protocol.principal_investigators.size
 - billing_manager_count_var = protocol.billing_managers.size
-%input{:type => 'hidden', :value => "#{pi_count_var}", :id => "pi_count_#{protocol.id}"}
-%input{:type => 'hidden', :value => "#{billing_manager_count_var}", :id => "billing_manager_count_#{protocol.id}"}
+%input{ type: 'hidden', value: "#{pi_count_var}", id: "pi_count_#{protocol.id}" }
+%input{ type: 'hidden', value: "#{billing_manager_count_var}", id: "billing_manager_count_#{protocol.id}" }
 
 .panel-group
   .panel.panel-default
     .panel-heading
       %h4.panel-title.pull-left= t(:protocol_information)[:information]
-      %button.btn.btn-warning.btn-sm.pull-right.edit-protocol-information-button{ type: 'button', data: { permission: permission.to_s, protocol_id: protocol.id } }= "EDIT #{protocol.type.capitalize} Information"
+      %button.btn.btn-warning.btn-sm.pull-right.edit-protocol-information-button{ type: 'button', data: { permission: permission.to_s, protocol_id: protocol.id } } EDIT #{protocol.type.capitalize} Information
       .clearfix
 
     .panel-body
       %dl.dl-horizontal.pull-left
-        %dt= "#{protocol.type.capitalize} ID:"
+        %dt #{protocol.type.capitalize} ID:
         %dd= protocol.try(:id)
 
         %dt= t(:protocol_information)[:title]
@@ -61,14 +61,14 @@
         %th= t(:protocol_information)[:name]
         %th= t(:protocol_information)[:role]
         %th= t(:protocol_information)[:proxy]
-        %th{:colspan => 2}= t(:protocol_information)[:actions]
+        %th{ colspan: 2 }= t(:protocol_information)[:actions]
       - protocol.project_roles.each do |pr|
         - u = pr.identity
-        %tr{data: {"user-id" => pr.identity.id}}
+        %tr{ data: { 'user-id' => pr.identity.id } }
           %td
             = u.first_name
             = u.last_name
-          %td= USER_ROLES.detect{|k,v| v == pr.role}.first
+          %td= USER_ROLES.detect { |_, v| v == pr.role }.first
           %td= PROXY_RIGHTS.key(pr.project_rights)
           %td
             %button.btn.btn-warning.edit-associated-user-button
@@ -83,9 +83,9 @@
   .panel.panel-default
     .panel-heading
       %h4.panel-title.pull-left= t(:protocol_information)[:service_requests]
-      %button.btn.btn-success.btn-sm.pull-right{ type: 'button', data: { permission: permission.to_s, } }= t(:protocol_information)[:add_services]
-      %button.btn.btn-primary.btn-sm.pull-right{ type: 'button', data: { protocol_id: protocol.id} }= t(:protocol_information)[:full_calendar]
-      %button.btn.btn-primary.btn-sm.pull-right{ type: 'button', data: { protocol_id: protocol.id} }= t(:protocol_information)[:consolidated_request]
+      %button.btn.btn-success.btn-sm.pull-right{ type: 'button', data: { permission: permission.to_s } }= t(:protocol_information)[:add_services]
+      %button.btn.btn-primary.btn-sm.pull-right{ type: 'button', data: { protocol_id: protocol.id } }= t(:protocol_information)[:full_calendar]
+      %button.btn.btn-primary.btn-sm.pull-right{ type: 'button', data: { protocol_id: protocol.id } }= t(:protocol_information)[:consolidated_request]
       .clearfix
 
     %table.table{ class: "#{cycle('striped')}" }
@@ -135,7 +135,7 @@
                     -# %span.glyphicon.glyphicon-pencil{ title: 'Edit Service Request', data: { permission: permission.to_s } }
           %tr
             %td{ colspan: 9 }
-              %div{:style => "display:none;", :id => "portal_notifications_#{ssr.ssr_id.to_s}_#{sr.id}", :class => "portal_notifications"}
-                = render :partial => 'portal/sub_service_requests/notifications_area', :locals => {:service_request => sr, :protocol => protocol, :sub_service_request => ssr}
+              .portal_notifications{ style: 'display:none', id: "portal_notifications_#{ssr.ssr_id}_#{sr.id}" }
+                = render partial: 'portal/sub_service_requests/notifications_area', locals: { service_request: sr, protocol: protocol, sub_service_request: ssr }
 
     - reset_cycle('protocol')

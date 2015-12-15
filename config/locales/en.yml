@@ -674,30 +674,32 @@ en:
   # Portal Editing user for study/project
   portal_user_form:
     add_user: "Add User"
-    edit_user: "Edit User"
-    name: "Name:"
-    email: "E-mail:"
-    phone: "Phone:"
-    role: "Role:*"
-    epic_access: "Epic EMR Access?:"
-    role_prompt: "Select a Role"
-    era: "ERA Commons Name:"
-    credentials: "Credentials:"
-    credential_prompt: "Select a Credential"
-    institution: "Institution:"
-    institution_prompt: "Select an Institution"
-    college: "College:"
     college_prompt: "Select a College"
-    department: "Department:"
+    college: "College:"
+    credential_prompt: "Select a Credential"
+    credentials: "Credentials:"
     department_prompt: "Select a Department"
-    subspecialty: "Subspecialty:"
-    subspecialty_prompt: "Select a Subspecialty"
+    department: "Department:"
+    edit_user: "Edit User"
+    email: "E-mail:"
+    epic_access: "Epic EMR Access?:"
+    era: "ERA Commons Name:"
+    institution_prompt: "Select an Institution"
+    institution: "Institution:"
+    name: "Name:"
+    credentials_other: "Other Credentials:"
+    phone: "Phone:"
     rights:
       header: "User Rights:"
       none: 'Study/Project Member Only'
       view: 'View Rights'
       request: 'Request/Approve Services'
       approve: 'Authorize/Change Study Charges'
+    role_other: "Other Role:"
+    role_prompt: "Select a Role"
+    role: "Role:*"
+    subspecialty_prompt: "Select a Subspecialty"
+    subspecialty: "Subspecialty:"
 
   # Catalog Manager - Organization Form
   organization_form:

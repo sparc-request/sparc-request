@@ -136,15 +136,6 @@ $(document).ready ->
       Sparc.associated_users.create_edit_associated_user_dialog()
       Sparc.associated_users.create_add_associated_user_dialog()
 
-    reset_fields: () ->
-      $('.errorExplanation').html('').hide()
-      $('.hidden').hide()
-      $('#epic_access').hide()
-      $('.add-associated-user-dialog input').val('')
-      $('.add-associated-user-dialog select').prop('selectedIndex', 0)
-      $('.add-associated-user-dialog #epic_access input').prop('checked', false)
-      $('.add-associated-user-dialog .rights_radios input').prop('checked', false)
-
     create_add_associated_user_dialog: () ->
       $('.add-associated-user-dialog').dialog
         autoOpen: false

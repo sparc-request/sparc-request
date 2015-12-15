@@ -19,8 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 $(document).ready ->
-
-  $('.ask-a-question-button').live 'click', ->
+  $(document).on 'click', '.ask-a-question-button', ->
     $("#ask-a-question-form").dialog( "open" )
 
   $("#ask-a-question-form").dialog

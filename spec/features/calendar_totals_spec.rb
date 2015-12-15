@@ -40,6 +40,7 @@ RSpec.describe "calender totals", js: true do
   describe "one time fees" do
 
     it "should calculate the totals", js: true do
+      find(".total_#{line_item3.id}").visible?
       expect(find(".total_#{line_item3.id}")).to have_exact_text("$50.00") # 5 quantity 1 unit per
     end
   end

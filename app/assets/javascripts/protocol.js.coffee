@@ -30,15 +30,15 @@ $(document).ready ->
       $('.existing-study').show()
       $('.edit-study').show() unless $('.edit_study_id').val() == ""
       $('.existing-project').hide()
-      $('#study-select #service_request_protocol_id').removeAttr('disabled')
-      $('#project-select #service_request_protocol_id').attr('disabled', 'disabled')
+      $('#study-select #service_request_protocol_id').prop('disabled', false)
+      $('#project-select #service_request_protocol_id').prop('disabled', true)
       infotip.setText('Research Study: An individual research study with defined aims and outcomes', '#infotip img')
     else
       $('.existing-project').show()
       $('.edit-project').show() unless $('.edit_project_id').val() == ""
       $('.existing-study').hide()
-      $('#project-select #service_request_protocol_id').removeAttr('disabled')
-      $('#study-select #service_request_protocol_id').attr('disabled', 'disabled')
+      $('#project-select #service_request_protocol_id').prop('disabled', false)
+      $('#study-select #service_request_protocol_id').prop('disabled', true)
       infotip.setText('Use "Project" for non-study specific service requests, or anything that is not a study.', '#infotip img')
 
   $("input[name=protocol]:radio:checked").change()

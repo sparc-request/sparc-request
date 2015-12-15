@@ -23,13 +23,13 @@ require 'rails_helper'
 RSpec.describe "Ask a question", js: true do
   before :each do
     visit root_path
-    find('.ask-a-question-button').click()
+    find('.ask-a-question-button').click
   end
 
   describe 'clicking the button' do
 
     it 'should display the ask a question form' do
-      expect(find_by_id('ask-a-question-form').visible?).to eq(true)
+      find('#ask-a-question-form').visible?
     end
   end
 

@@ -22,7 +22,7 @@ $(document).ready ->
 
   $('#errors').hide()
 
-  $('.feedback-button').live 'click', ->
+  $(document).on 'click', '.feedback-button', ->
     $("#feedback-form").dialog( "open" )
 
   $("#feedback-form").dialog
@@ -64,5 +64,5 @@ $(document).ready ->
         $('#errors').show()
         $('#error-text').html(I18n["feedback"]["message_error"])
 
-        
-  
+
+

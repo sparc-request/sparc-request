@@ -38,36 +38,32 @@ $(document).ready ->
         }
       })
 
-      $('.protocol-information-button').live('click', ->
+      $(document).on 'click', '.protocol-information-button', ->
         if $(this).data('permission')
           protocol_id = $(this).data('protocol_id')
           window.location = "/portal/protocols/#{protocol_id}/edit"
         else
           $('.permissions-dialog').dialog('open')
           $('.permissions-dialog .text').html('Edit.')
-      )
 
-      $('.edit_service_request').live('click', ->
+      $(document).on 'click', '.edit_service_request', ->
         if $(this).data('permission')
           window.location = $(this).data('url')
         else
           $('.permissions-dialog').dialog('open')
           $('.permissions-dialog .text').html('Edit.')
-      )
 
-      $('.service-request-button').live('click', ->
+      $(document).on 'click', '.service-request-button', ->
         if $(this).data('permission')
           window.location = $(this).data('url')
         else
           $('.permissions-dialog').dialog('open')
           $('.permissions-dialog .text').html('Edit.')
-      )
 
-      $('.add-services-button').live('click', ->
+      $(document).on 'click', '.add-services-button', ->
         if !$(this).data('permission')
           $('.permissions-dialog').dialog('open')
           $('.permissions-dialog .text').html('Edit.')
-      )
 
       $(document).on('click', '.protocol-archive-button', ->
         protocol_id = $(this).data('protocol_id')
@@ -84,7 +80,7 @@ $(document).ready ->
 
         if $('.archive_button').data('showing-archived') == 1
           include_archived = 'false'
-  
+
         $.ajax
           method: "GET"
           url: "/portal/protocols.js"
@@ -100,11 +96,11 @@ $(document).ready ->
             $('.search_protocols').show()
       )
 
-      $('.view-sub-service-request-button').live('click', ->
+      $(document).on 'click', '.view-sub-service-request-button', ->
         id = $(this).data('service_request_id')
         protocol_id = $(this).data('protocol_id')
         status = $(this).data('status')
-        ssr_id = $(this).attr('data-ssr_id')
+        ssr_id = $(this).prop('data-ssr_id')
         random_number = Math.floor(Math.random()*10101010101)
         $.ajax({
             method: 'get'
@@ -113,7 +109,6 @@ $(document).ready ->
             success: ->
               $('.view-sub-service-request-dialog').dialog('open')
           })
-      )
 
       $('.edit-protocol-information-dialog').dialog({
           autoOpen: false
@@ -153,7 +148,7 @@ $(document).ready ->
           }
       })
 
-      $('.view-full-calendar-button').live('click', ->
+      $(document).on 'click', '.view-full-calendar-button', ->
         protocol_id = $(this).data('protocol_id')
         $.ajax({
             method: 'get'
@@ -161,7 +156,6 @@ $(document).ready ->
             success: ->
               $('.view-full-calendar-dialog').dialog('open')
           })
-      )
 
       $('.view-full-calendar-dialog').dialog({
           autoOpen: false
@@ -227,31 +221,28 @@ $(document).ready ->
           ui.draggable.draggable('disable')
       })
 
-      $('#previous').live('click', ->
-        Sparc.protocol.navigateCostTable('decrease') unless $(this).attr('disabled') == 'disabled'
-      )
+      $(document).on 'click', '#previous', ->
+        Sparc.protocol.navigateCostTable('decrease') unless $(this).prop('disabled') == 'disabled'
 
-      $('#next').live('click', ->
-        Sparc.protocol.navigateCostTable('increase') unless $(this).attr('disabled') == 'disabled'
-      )
+      $(document).on 'click', '#previous', ->
+        Sparc.protocol.navigateCostTable('increase') unless $(this).prop('disabled') == 'disabled'
 
-      $('.blue-provider').live('click', ->
+      $(document).on 'click', '.blue-provider', ->
         protocol_id = $(this).data('protocol_id')
         visible = if $(this).children('.ui-icon').hasClass('ui-icon-triangle-1-s') then true else false
         if visible && $(this).siblings(".protocol-information-#{protocol_id}").children('.protocol-information-title').length == 0
           Sparc.protocol.renderProtocolAccordionTab(protocol_id)
-      )
 
     disableButton: (containing_text, change_to) ->
       button = $(".ui-dialog .ui-button:contains(#{containing_text})")
       button.html("<span class='ui-button-text'>#{change_to}</span>")
-        .attr('disabled',true)
+        .prop('disabled',true)
         .addClass('button-disabled')
 
     enableButton: (containing_text, change_to) ->
       button = $(".ui-dialog .ui-button:contains(#{containing_text})")
       button.html("<span class='ui-button-text'>#{change_to}</span>")
-        .attr('disabled',false)
+        .prop('disabled',false)
         .removeClass('button-disabled')
 
     navigateCostTable: (direction) ->

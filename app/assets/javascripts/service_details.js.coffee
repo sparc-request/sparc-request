@@ -79,8 +79,8 @@ $ ->
   setupDatePicker('#start_date', '#project_start_date, #study_start_date')
   setupDatePicker('#end_date', '#project_end_date, #study_end_date')
 
-  $('#start_date').attr("readOnly", true)
-  $('#end_date').attr("readOnly", true)
+  $('#start_date').prop("readOnly", true)
+  $('#end_date').prop("readOnly", true)
 
 
   #Recruitment Date Stuff
@@ -88,8 +88,8 @@ $ ->
   setupDatePicker('#recruitment_start_date', '#project_recruitment_start_date, #study_recruitment_start_date')
   setupDatePicker('#recruitment_end_date', '#project_recruitment_end_date, #study_recruitment_end_date')
 
-  $('#recruitment_start_date').attr("readOnly", true)
-  $('#recruitment_end_date').attr("readOnly", true)
+  $('#recruitment_start_date').prop("readOnly", true)
+  $('#recruitment_end_date').prop("readOnly", true)
 
   # If any sub service requests are in cwf, the visit and subject counts can not be decreased. Decreasing the counts in this case
   # causes patient data to be deleted
@@ -103,7 +103,7 @@ $ ->
         $(this).val(min_count)
   )
 
-  $(document).on('change', '.arm_visit_count', ->
+  $(document).on 'change', '.arm_visit_count', ->
     in_cwf = $(this).data('in_cwf')
     if in_cwf
       new_count = $(this).val()
@@ -111,7 +111,6 @@ $ ->
       if new_count < min_count
         alert(I18n["service_details_alerts"]["visit_count"])
         $(this).val(min_count)
-  )
 
   $('#navigation_form').submit ->
     go = true
@@ -120,8 +119,8 @@ $ ->
         go = false
     return go
 
-$('.units_per_quantity').live 'change', ->
-  max = parseInt($(this).attr('data-qty_max'), 10)
+$(document).on 'change', '.units_per_quantity', ->
+  max = parseInt($(this).prop('data-qty_max'), 10)
   user_input = parseInt($(this).val(), 10)
   if user_input > max
     $(this).css({'border': '2px solid red'})
@@ -155,8 +154,8 @@ $(document).ready ->
       width: 250
 
 verify_unit_minimum = (obj) ->
-  unit_min = parseInt(obj.attr('unit_minimum'), 10)
-  prev_qty = obj.attr('current_quantity')
+  unit_min = parseInt(obj.prop('unit_minimum'), 10)
+  prev_qty = obj.prop('current_quantity')
   qty = parseInt(obj.val(), 10)
   if qty < unit_min
     obj.val(prev_qty)

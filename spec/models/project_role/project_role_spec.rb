@@ -34,12 +34,12 @@ RSpec.describe 'Project Role' do
   describe "validate uniqueness within protocol" do
 
     it "should return false if the user is already associated with a given protocol" do
-      expect(@project_role.validate_uniqueness_within_protocol).to eq(false)
+      expect(@project_role.unique_to_protocol?).to eq(false)
     end
 
     it "should return true if the user is not already associated with a given protocol" do
       project_role = build(:project_role, protocol_id: @protocol.id)
-      expect(project_role.validate_uniqueness_within_protocol).to eq(true)
+      expect(project_role.unique_to_protocol?).to eq(true)
     end
   end
 

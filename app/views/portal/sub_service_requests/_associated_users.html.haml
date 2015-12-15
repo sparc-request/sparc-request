@@ -33,13 +33,12 @@
     %tbody
       = render :partial => "portal/sub_service_requests/associated_user", :locals => {:protocol => @protocol}
 %td.new-button{:colspan => 2}
-  .associated-user-button.ui-corner-all{:'data-protocol_id' => @protocol.id, :'data-permission' => "true"}= t(:associated_users)[:add]
+  .associated-user-button.ui-corner-all{:'data-protocol_id' => @protocol.id, :'data-permission' => "true"}= t(:protocol_information)[:add_authorized_user]
 
 .add-associated-user-dialog
   // TODO: this is copied directly from index.html.haml; should refactor
   .user-search-container
-    = label_tag 'user_search', 'Search for a user:'
-    = text_field_tag 'user_search'
+    = text_field_tag 'user_search', nil, placeholder: 'Search For A User'
     = image_tag('portal/spinner.gif', :style => "display:none; vertical-align:middle;", :id => 'search-spinner')
   - if @sub_service_request
     = hidden_field_tag :sub_service_request_id, @sub_service_request.id
@@ -69,9 +68,6 @@
           method: 'get',
           url: "/portal/associated_users/new",
           data: {user_id: ui.item.value, protocol_id: $('.associated-user-button').data('protocol_id'), sub_service_request_id: sub_service_request_id},
-          success: function() {
-            Sparc.associated_users.showEpicRights($('.epic_access:checked:visible').val());
-          },
         })
       },
       close: function() {

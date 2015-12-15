@@ -117,6 +117,6 @@ window.check_deps = ->
     dep = $(this).data("dependency")
     if $(dep).val() == ""
       $(this).val("")
-      $(dep).data("resolve", "#" + $(this).attr('id'))
+      $(dep).data("resolve", "#" + $(this).prop('id'))
       $(this).prop('disabled', true)
 

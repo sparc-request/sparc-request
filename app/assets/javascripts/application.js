@@ -28,6 +28,7 @@
 // the compiled file.
 //
 //= require jquery
+//= require jquery-migrate
 //= require jquery-ui
 //= require jquery.qtip.min
 //= require jquery.cookie

@@ -28,15 +28,15 @@ $(document).ready ->
       event.preventDefault()
       $(this).change()
 
-  $('.percent_of_cost').live 'change', ->
-    id = $(this).attr('data-id')
+  $(document).on 'change', '.percent_of_cost', ->
+    id = $(this).prop('data-id')
     direct_cost = $(this).data('cost')/100
     pi_contribution_field = ".ssr_#{id}"
     percent = parseFloat($(this).val())
 
     new_pi_contribution = (direct_cost * (percent/100.0)).toFixed(2)
     $(pi_contribution_field).val(new_pi_contribution)
-    
+
     percent = calculate_subsidy_percent(direct_cost, new_pi_contribution)
     if direct_cost == 0
       percent_display = '0%'
@@ -48,8 +48,8 @@ $(document).ready ->
 
   # Recalculate requested funding and subsidy percentage whenever pi
   # contribution changes
-  $('.pi-contribution').live 'change', ->
-    id = $(this).attr('data-id')
+  $(document).on 'change', '.pi-contribution', ->
+    id = $(this).prop('data-id')
     direct_cost = $('.estimated_cost_' + id).data('cost') / 100
     contribution = $(this).val()
     if contribution > direct_cost
@@ -103,15 +103,15 @@ $(document).ready ->
     pass = true
     message = ''
 
-    overridden = pi.attr('data-overridden')
+    overridden = pi.prop('data-overridden')
     # if the pi contribution field is empty, then ignore it altogether
     if pi.val() == '' or overridden == 'true'
       pass = true
     else
-      id = pi.attr('data-id')
+      id = pi.prop('data-id')
       direct_cost = $('.estimated_cost_' + id).data('cost') / 100
-      max_dollar = pi.attr('data-max_dollar')
-      max_percent = pi.attr('data-max_percent')
+      max_dollar = pi.prop('data-max_dollar')
+      max_percent = pi.prop('data-max_percent')
       core = $('.core_' + id).text()
 
       # Ensure that the requested funding is less than the maximum

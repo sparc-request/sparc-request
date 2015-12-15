@@ -30,8 +30,8 @@ $(document).ready ->
         id: 'submit_move'
         text: 'Submit'
         click: ->
-          $('#submit_move').attr('disabled', 'true')
-          $('#cancel_move').attr('disabled', 'true')
+          $('#submit_move').prop('disabled', true)
+          $('#cancel_move').prop('disabled', true)
           submit_visit_form($(this))
       },
       {

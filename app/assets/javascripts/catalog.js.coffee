@@ -38,7 +38,7 @@ $(document).ready ->
     heightStyle: 'content'
     collapsible: true
     activate: (event, ui)->
-      if url = (ui.newHeader.find('a').attr('href') or ui.oldHeader.find('a').attr('href'))
+      if url = (ui.newHeader.find('a').prop('href') or ui.oldHeader.find('a').prop('href'))
         loadDescription(url)
 
   $('.provider_accordion').accordion
@@ -46,13 +46,13 @@ $(document).ready ->
     collapsible: true
     active: false
     activate: (event, ui)->
-      if url = (ui.newHeader.find('a').attr('href') or ui.oldHeader.find('a').attr('href'))
+      if url = (ui.newHeader.find('a').prop('href') or ui.oldHeader.find('a').prop('href'))
         loadDescription(url)
 
-  $('.program-link').live 'click', ->
+  $(document).on 'click', '.program-link', ->
     $('#processing_request').show()
 
-  $('.title .name a').live 'click', ->
+  $(document).on 'click', '.title .name a', ->
     $(this).parents('.title').siblings('.service-description').toggle()
 
 
@@ -83,7 +83,7 @@ $(document).ready ->
           delay: 0
           when: "mouseout"
           solo: true
-        
+
         style:
           tip: true
           border:
@@ -108,8 +108,8 @@ $(document).ready ->
       .data("ui-autocomplete-item", item)
       .append("#{item.parents}<br><span class='service-name' title='#{item.description}'>#{item.label}</span><br><button id='service-#{item.value}' sr_id='#{item.sr_id}' style='font-size: 11px;' class='add_service'>Add to Cart</button><span class='service-description'>#{item.description}</span>")
       .appendTo(ul)
-  
-  $('.catalog-search-clear-icon').live 'click', ->
+
+  $(document).on 'click', '.catalog-search-clear-icon', ->
     $("#service_query").autocomplete("close")
     $("#service_query").clearFields()
 
@@ -128,7 +128,7 @@ $(document).ready ->
     #    $('#sign_in').dialog
     #      modal: true
     #    return false
-  
+
   $('#devise_view').dialog
     modal: true
     width: 700

@@ -18,7 +18,7 @@
 // INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 // TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-//= require surveyor/jquery-1.9.0
+//= require jquery
 //= require surveyor/jquery-ui-1.10.0.custom
 //= require surveyor/jquery-ui-timepicker-addon
 //= require surveyor/jquery.selectToUISlider

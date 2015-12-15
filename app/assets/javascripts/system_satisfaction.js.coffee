@@ -52,8 +52,8 @@ $(document).ready ->
           $('#surveyor').dialog('open')
           $('#processing_request').hide()
           $("#surveyor input[name='cancel']").click (event) ->
-            auth_token = $("form#survey_form input[name='authenticity_token']").attr('value')
-            response_set_path = $('form#survey_form').attr('action') + "?authenticity_token=#{auth_token}"
+            auth_token = $("form#survey_form input[name='authenticity_token']").prop('value')
+            response_set_path = $('form#survey_form').prop('action') + "?authenticity_token=#{auth_token}"
             $('#surveyor').dialog('close')
             $('#participate_in_survey').html('')
             $.ajax
@@ -75,7 +75,7 @@ $(document).ready ->
 
   $(document).on('click', '#submit_services1, #submit_services2, #get_a_cost_estimate', (event)->
     event.preventDefault()
-    route_to = $(this).attr('href')
+    route_to = $(this).prop('href')
 
     if survey_offered == false
       $("#participate_in_survey").dialog("open")

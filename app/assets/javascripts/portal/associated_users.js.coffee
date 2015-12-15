@@ -38,7 +38,7 @@ $(document).ready ->
         other          : ['.credentials_other']
 
     ready: ->
-      $('.associated-user-button').live 'click', ->
+      $(document).on 'click', '.associated-user-button', ->
         if $(this).data('permission')
           $('.add-associated-user-dialog').dialog('open')
           $('#add-user-form #protocol_id').val($(this).data('protocol_id'))
@@ -46,21 +46,24 @@ $(document).ready ->
           $('.permissions-dialog').dialog('open')
           $('.permissions-dialog .text').html('Edit.')
 
-      $('.user_credentials').attr('name', 'user[credentials_other]') if $('.user_credentials').val() == 'other'
-      $('.user_credentials').live 'change', ->
+      $('.user_credentials').prop('name', 'user[credentials_other]') if $('.user_credentials').val() == 'other'
+      $(document).on 'change', '.user_credentials', ->
         Sparc.associated_users.redoCredentials()
 
       # Set the rights if the role is 'pi' or 'business-grants-manager'
       # and disable all other radio buttons if 'pi'
-      $('#project_role_role').live 'change', ->
+      $(document).on 'change', '#project_role_role', ->
         role = $(this).val()
-        if role == 'pi' or role == 'primary-pi' or role == 'business-grants-manager'
-          $('#project_role_project_rights_none').attr('disabled', true)
-          $('#project_role_project_rights_view').attr('disabled', true)
-          $('#project_role_project_rights_request').attr('disabled', true)
-          $('#project_role_project_rights_approve').attr('checked', true)
+        if role == 'pi' or role == 'business-grants-manager' or role == 'primary-pi'
+          $('#project_role_project_rights_approve').prop('checked', true)
+        if role == 'pi' or role == 'primary-pi'
+          $('#project_role_project_rights_request').prop('disabled', true)
+          $('#project_role_project_rights_view').prop('disabled', true)
+          $('#project_role_project_rights_none').prop('disabled', true)
         else
-          $('.rights_radios input').attr('disabled', false)
+          $('#project_role_project_rights_request').prop('disabled', false)
+          $('#project_role_project_rights_view').prop('disabled', false)
+          $('#project_role_project_rights_none').prop('disabled', false)
 
       $(document).on 'click', '.edit-associated-user-button', ->
         if $(this).data('permission')
@@ -83,7 +86,7 @@ $(document).ready ->
           $('.permissions-dialog').dialog('open')
           $('.permissions-dialog .text').html('Edit.')
 
-      $('.delete-associated-user-button').live 'click', ->
+      $(document).on 'click', '.delete-associated-user-button', ->
         if $(this).data('permission')
           adminUsersList = $(".admin#users")
           current_user_id = $('#current_user_id').val()
@@ -121,7 +124,7 @@ $(document).ready ->
           $('.permissions-dialog').dialog('open')
           $('.permissions-dialog .text').html('Edit.')
 
-      $('#associated_user_role').live 'change', ->
+      $(document).on 'change', '#associated_user_role', ->
         roles_to_hide = ['', 'grad-research-assistant', 'undergrad-research-assistant', 'research-assistant-coordinator', 'technician', 'general-access-user', 'business-grants-manager', 'other']
         role = $(this).val()
         if role == 'other' then $('.role_other').show() else $('.role_other').hide()
@@ -158,10 +161,12 @@ $(document).ready ->
               $("#errorExplanation").remove()
         open: ->
           Sparc.associated_users.reset_fields()
-          $('.dialog-form input,.dialog-form select').attr('disabled',true)
           # $('.ui-dialog .ui-dialog-buttonpane button:contains(Submit)').filter(":visible").attr('disabled',true).addClass('button-disabled')
         close: ->
           Sparc.associated_users.reset_fields()
+          $('.dialog-form input,.dialog-form select').prop('disabled',true)
+          # $('.ui-dialog .ui-dialog-buttonpane button:contains(Submit)').filter(":visible").prop('disabled',true).addClass('button-disabled')
+      })
 
     create_edit_associated_user_dialog: () ->
       $('.edit-associated-user-dialog').dialog
@@ -177,7 +182,7 @@ $(document).ready ->
               text: 'Submit'
               click: ->
                 form = $(".edit-associated-user-dialog").children('form')
-                $('#edit_authorized_user_submit_button').attr('disabled', true)
+                $('#edit_authorized_user_submit_button').prop('disabled', true)
                 form.submit()
             'Cancel':
               id: 'edit_authorized_user_cancel_button'
@@ -186,7 +191,7 @@ $(document).ready ->
                 $(this).dialog("close")
                 $("#errorExplanation").remove()
           open: ->
-            $('#edit_authorized_user_submit_button').attr('disabled', false)
+            $('#edit_authorized_user_submit_button').prop('disabled', false)
             $('#associated_user_role').change()
           close: ->
             Sparc.associated_users.reset_fields()
@@ -212,15 +217,15 @@ $(document).ready ->
     disableSubmitButton: (containing_text, change_to) ->
       button = $(".ui-dialog .ui-dialog-buttonpane button:contains(#{containing_text})")
       button.html("<span class='ui-button-text'>#{change_to}</span>")
-        .attr('disabled',true)
+        .prop('disabled',true)
         .addClass('button-disabled')
 
     enableSubmitButton: (containing_text, change_to) ->
       button = $(".ui-dialog .ui-dialog-buttonpane button:contains(#{containing_text})")
       button.html("<span class='ui-button-text'>#{change_to}</span>")
-        .attr('disabled',false)
+        .prop('disabled',false)
         .removeClass('button-disabled')
-      button.attr('disabled',false)
+      button.prop('disabled',false)
 
     validateRolePresence: (role) ->
       role_validation = $('#user-role-validation-message')
@@ -237,11 +242,11 @@ $(document).ready ->
     redoCredentials: ->
       if $('.user_credentials').val() == 'other'
         $('#credentials_other').remove();
-        $('.user_credentials').attr('name', 'user[other_credentials]')
+        $('.user_credentials').prop('name', 'user[other_credentials]')
         $('#add-user-form .left').append('<div id="credentials_other">
           <input type="text" value="" name="user[credentials]" id="user_credentials_other">
         </div>')
       else
-        $('.user_credentials').attr('name', 'user[credentials]')
+        $('.user_credentials').prop('name', 'user[credentials]')
         $('#credentials_other').remove()
   }

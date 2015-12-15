@@ -51,7 +51,7 @@ class ProjectRole < ActiveRecord::Base
   end
 
   def unique_to_protocol?
-    duplicate_project_roles = self.protocol.project_roles.select {|x| x.identity_id == self.identity_id}
+    duplicate_project_roles = ProjectRole.where(protocol_id: self.protocol.id).select {|x| x.identity_id == self.identity_id}
     duplicate_project_roles << self
     if duplicate_project_roles.count > 1
       errors.add(:this, "user is already associated with this protocol.")
@@ -91,26 +91,25 @@ class ProjectRole < ActiveRecord::Base
   end
 
   def validate_one_primary_pi
-    if !self.has_minimum_pi?
+    if !protocol_has_primary_pi?
       errors.add(:must, "include one Primary PI.")
       return false
-    elsif self.role == 'primary-pi'
-      project_roles = self.protocol.project_roles.select {|x| x.role == 'primary-pi'}
-      unless project_roles.include?(self)
-        errors.add(:role, "- This protocol already has a Primary PI.")
-        return false
-      end
-      return true
+    elsif self.role == 'primary-pi' && protocol_has_primary_pi?
+      errors.add(:role, "- This protocol already has a Primary PI.")
+      return false
     else
       return true
     end
   end
 
-  def has_minimum_pi?
-    other_project_roles = self.protocol.project_roles.reject {|x| x == self}
-    all_project_roles = other_project_roles.map {|x| x.role}
-    all_project_roles << self.role
-    all_project_roles.include?('primary-pi') ? true : false
+  def protocol_has_primary_pi?
+    protocol = self.protocol
+    ProjectRole.where(protocol_id: protocol.id).each do |pr|
+      if pr.role == "primary-pi"
+        return true
+      end
+    return false
+    end
   end
 
   def is_only_primary_pi?

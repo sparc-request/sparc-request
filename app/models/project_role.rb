@@ -172,7 +172,7 @@ class ProjectRole < ActiveRecord::Base
       epic_right.position = position
       position += 1
     end
-    epic_rights.sort!{|a, b| a.position <=> b.position}
+    epic_rights.sort{|a, b| a.position <=> b.position}
   end
 
   def populate_for_edit

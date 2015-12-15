@@ -50,19 +50,19 @@ RSpec.describe Portal::AssociatedUsersController do
 
   describe 'identity has NO related roles and, thus, no access to' do
     it 'show' do
-      get(:show, {:format => :js, :protocol_id => @protocol.id, :id => @associated_user.id })
+      xhr :get, :show, {:format => :js, :protocol_id => @protocol.id, :id => @associated_user.id }
       expect(assigns(:protocol)).to eq nil
       expect(response).to render_template(:partial => "_authorization_error")
     end
 
     it 'edit' do
-      get(:edit, {:format => :js, :protocol_id => @protocol.id, :id => @associated_user_project_role.id, :identity_id => @associated_user.id })
+      xhr :get, :edit, {:format => :js, :protocol_id => @protocol.id, :id => @associated_user_project_role.id, :identity_id => @associated_user.id }
       expect(assigns(:protocol)).to eq nil
       expect(response).to render_template(:partial => "_authorization_error")
     end
 
     it 'new' do
-      get(:new, {:format => :js, :protocol_id => @protocol.id, :user_id => @associated_user.id })
+      xhr :get, :new, {:format => :js, :protocol_id => @protocol.id, :user_id => @associated_user.id }
       expect(assigns(:protocol)).to eq nil
       expect(response).to render_template(:partial => "_authorization_error")
     end
@@ -94,19 +94,19 @@ RSpec.describe Portal::AssociatedUsersController do
     end
 
     it 'show' do
-      get(:show, {:format => :js, :protocol_id => @protocol.id, :id => @associated_user.id })
+      xhr :get, :show, {:format => :js, :protocol_id => @protocol.id, :id => @associated_user.id }
       expect(assigns(:protocol)).to eq @protocol
       expect(response.body).to be_blank
     end
 
     it 'edit' do
-      get(:edit, {:format => :js, :protocol_id => @protocol.id, :id => @associated_user_project_role.id, :identity_id => @associated_user.id })
+      xhr :get, :edit, {:format => :js, :protocol_id => @protocol.id, :id => @associated_user_project_role.id, :identity_id => @associated_user.id }
       expect(assigns(:protocol)).to eq @protocol
       expect(response).to render_template("edit")
     end
 
     it 'new' do
-      get(:new, {:format => :js, :protocol_id => @protocol.id, :user_id => @associated_user.id })
+      xhr :get, :new, {:format => :js, :protocol_id => @protocol.id, :user_id => @associated_user.id }
       expect(assigns(:protocol)).to eq @protocol
       expect(response).to render_template("new")
     end
@@ -138,19 +138,19 @@ RSpec.describe Portal::AssociatedUsersController do
     end
 
     it 'show' do
-      get(:show, {:format => :js, :protocol_id => @protocol.id, :id => @associated_user.id })
+      xhr :get, :show, {:format => :js, :protocol_id => @protocol.id, :id => @associated_user.id }
       expect(assigns(:protocol)).to eq @protocol
       expect(response.body).to be_blank
     end
 
     it 'edit' do
-      get(:edit, {:format => :js, :protocol_id => @protocol.id, :id => @associated_user_project_role.id, :identity_id => @associated_user.id })
+      xhr :get, :edit, {:format => :js, :protocol_id => @protocol.id, :id => @associated_user_project_role.id, :identity_id => @associated_user.id }
       expect(assigns(:protocol)).to eq @protocol
       expect(response).to render_template("edit")
     end
 
     it 'new' do
-      get(:new, {:format => :js, :protocol_id => @protocol.id, :user_id => @associated_user.id })
+      xhr :get, :new, {:format => :js, :protocol_id => @protocol.id, :user_id => @associated_user.id }
       expect(assigns(:protocol)).to eq @protocol
       expect(response).to render_template("new")
     end
@@ -182,19 +182,19 @@ RSpec.describe Portal::AssociatedUsersController do
     end
 
     it 'authorize show' do
-      get(:show, {:format => :js, :protocol_id => @protocol.id, :id => @associated_user.id })
+      xhr :get, :show, {:format => :js, :protocol_id => @protocol.id, :id => @associated_user.id }
       expect(assigns(:protocol)).to eq @protocol
       expect(response.body).to be_blank
     end
 
     it 'do NOT authorize edit' do
-      get(:edit, {:format => :js, :protocol_id => @protocol.id, :id => @associated_user_project_role.id, :identity_id => @associated_user.id })
+      xhr :get, :edit, {:format => :js, :protocol_id => @protocol.id, :id => @associated_user_project_role.id, :identity_id => @associated_user.id }
       expect(assigns(:protocol)).to eq nil
       expect(response).to render_template(:partial => "_authorization_error")
     end
 
     it 'do NOT authorize new' do
-      get(:new, {:format => :js, :protocol_id => @protocol.id, :user_id => @associated_user.id })
+      xhr :get, :new, {:format => :js, :protocol_id => @protocol.id, :user_id => @associated_user.id }
       expect(assigns(:protocol)).to eq nil
       expect(response).to render_template(:partial => "_authorization_error")
     end
@@ -226,19 +226,19 @@ RSpec.describe Portal::AssociatedUsersController do
     end
 
     it 'show' do
-      get(:show, {:format => :js, :protocol_id => @protocol.id, :id => @associated_user.id })
+      xhr :get, :show, {:format => :js, :protocol_id => @protocol.id, :id => @associated_user.id }
       expect(assigns(:protocol)).to eq nil
       expect(response).to render_template(:partial => "_authorization_error")
     end
 
     it 'edit' do
-      get(:edit, {:format => :js, :protocol_id => @protocol.id, :id => @associated_user_project_role.id, :identity_id => @associated_user.id })
+      xhr :get, :edit, {:format => :js, :protocol_id => @protocol.id, :id => @associated_user_project_role.id, :identity_id => @associated_user.id }
       expect(assigns(:protocol)).to eq nil
       expect(response).to render_template(:partial => "_authorization_error")
     end
 
     it 'new' do
-      get(:new, {:format => :js, :protocol_id => @protocol.id, :user_id => @associated_user.id })
+      xhr :get, :new, {:format => :js, :protocol_id => @protocol.id, :user_id => @associated_user.id }
       expect(assigns(:protocol)).to eq nil
       expect(response).to render_template(:partial => "_authorization_error")
     end
@@ -306,15 +306,15 @@ RSpec.describe Portal::AssociatedUsersController do
           @service_provider.organization_id = @core.id
           @service_provider.save(validate: false)
 
-          get(:show, {:format => :js, :protocol_id => @protocol.id, :id => @associated_user.id })
+          xhr :get, :show, {:format => :js, :protocol_id => @protocol.id, :id => @associated_user.id }
           expect(assigns(:protocol)).to eq @protocol
           expect(response.body).to be_blank
 
-          get(:edit, {:format => :js, :protocol_id => @protocol.id, :id => @associated_user_project_role.id, :identity_id => @associated_user.id })
+          xhr :get, :edit, {:format => :js, :protocol_id => @protocol.id, :id => @associated_user_project_role.id, :identity_id => @associated_user.id }
           expect(assigns(:protocol)).to eq @protocol
           expect(response).to render_template("edit")
 
-          get(:new, {:format => :js, :protocol_id => @protocol.id, :user_id => @associated_user.id })
+          xhr :get, :new, {:format => :js, :protocol_id => @protocol.id, :user_id => @associated_user.id }
           expect(assigns(:protocol)).to eq @protocol
           expect(response).to render_template("new")
 
@@ -337,15 +337,15 @@ RSpec.describe Portal::AssociatedUsersController do
           @clinical_provider.organization_id = @core.id
           @clinical_provider.save(validate: false)
 
-          get(:show, {:format => :js, :protocol_id => @protocol.id, :id => @associated_user.id })
+          xhr :get, :show, {:format => :js, :protocol_id => @protocol.id, :id => @associated_user.id }
           expect(assigns(:protocol)).to eq nil
           expect(response).to render_template(:partial => "_authorization_error")
 
-          get(:edit, {:format => :js, :protocol_id => @protocol.id, :id => @associated_user_project_role.id, :identity_id => @associated_user.id })
+          xhr :get, :edit, {:format => :js, :protocol_id => @protocol.id, :id => @associated_user_project_role.id, :identity_id => @associated_user.id }
           expect(assigns(:protocol)).to eq nil
           expect(response).to render_template(:partial => "_authorization_error")
 
-          get(:new, {:format => :js, :protocol_id => @protocol.id, :user_id => @associated_user.id })
+          xhr :get, :new, {:format => :js, :protocol_id => @protocol.id, :user_id => @associated_user.id }
           expect(assigns(:protocol)).to eq nil
           expect(response).to render_template(:partial => "_authorization_error")
 
@@ -368,15 +368,15 @@ RSpec.describe Portal::AssociatedUsersController do
           @super_user.organization_id = @core.id
           @super_user.save(validate: false)
 
-          get(:show, {:format => :js, :protocol_id => @protocol.id, :id => @associated_user.id })
+          xhr :get, :show, {:format => :js, :protocol_id => @protocol.id, :id => @associated_user.id }
           expect(assigns(:protocol)).to eq @protocol
           expect(response.body).to be_blank
 
-          get(:edit, {:format => :js, :protocol_id => @protocol.id, :id => @associated_user_project_role.id, :identity_id => @associated_user.id })
+          xhr :get, :edit, {:format => :js, :protocol_id => @protocol.id, :id => @associated_user_project_role.id, :identity_id => @associated_user.id }
           expect(assigns(:protocol)).to eq @protocol
           expect(response).to render_template("edit")
 
-          get(:new, {:format => :js, :protocol_id => @protocol.id, :user_id => @associated_user.id })
+          xhr :get, :new, {:format => :js, :protocol_id => @protocol.id, :user_id => @associated_user.id }
           expect(assigns(:protocol)).to eq @protocol
           expect(response).to render_template("new")
 

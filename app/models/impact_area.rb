@@ -27,7 +27,6 @@ class ImpactArea < ActiveRecord::Base
   attr_accessible :name
   attr_accessible :other_text
   attr_accessible :new
-  attr_accessible :position
   attr_accessor :new
   attr_accessor :position
 

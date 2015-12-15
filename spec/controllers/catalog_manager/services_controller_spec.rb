@@ -110,6 +110,7 @@ RSpec.describe CatalogManager::ServicesController, type: :controller do
         description: "xxx",
         order: 1,
         is_available: true,
+        one_time_fee: false,
         components: "ServiceLevelComponent 1,ServiceLevelComponent 2,",
         cpt_code: "",
         charge_code: "",

@@ -29,7 +29,7 @@ class Service < ActiveRecord::Base
                 {:display => "Corporate Rate", :value => "corporate"}, {:display => "Other Rate", :value => "other"},
                 {:display => "Member Rate", :value => "member"}]
 
-  belongs_to :organization, :include => [:pricing_setups]
+  belongs_to :organization, -> { includes(:pricing_setups) }
   belongs_to :revenue_code_range
   # set ":inverse_of => :service" so that the first pricing map can be validated before the service has been saved
   has_many :pricing_maps, :inverse_of => :service, :dependent => :destroy 
@@ -41,8 +41,8 @@ class Service < ActiveRecord::Base
   # TODO: Andrew thinks "related services" is a bad name
   has_many :service_relations, :dependent => :destroy
   has_many :related_services, :through => :service_relations
-  has_many :required_services, :through => :service_relations, :source => :related_service, :conditions => [ "optional = ? and is_available = ?", false, true ]
-  has_many :optional_services, :through => :service_relations, :source => :related_service, :conditions => [ "optional = ? and is_available = ?", true, true ]
+  has_many :required_services, -> { where("optional = ? and is_available = ?", false, true) }, :through => :service_relations, :source => :related_service
+  has_many :optional_services, -> { where("optional = ? and is_available = ?", true, true) }, :through => :service_relations, :source => :related_service
 
   # Services that depend on this service
   has_many :depending_service_relations, :class_name => 'ServiceRelation', :foreign_key => 'related_service_id'
@@ -51,6 +51,9 @@ class Service < ActiveRecord::Base
   # Surveys associated with this service
   has_many :associated_surveys, :as => :surveyable
 
+  # Additional Detail forms, has many versions but only the recent by effective_date is active
+  has_many :additional_details
+  
   attr_accessible :name
   attr_accessible :abbreviation
   attr_accessible :order
@@ -228,11 +231,42 @@ class Service < ActiveRecord::Base
     return pricing_map
   end
 
+  # Find the most recent additional detail with an effective date of today or earlier,
+  #   and then confirm that it is "enabled", return nil otherwise
+  def current_additional_detail
+    current_additional_details = self.additional_details.select { |additional_detail| additional_detail.effective_date <= Date.today }
+    if(current_additional_details.count > 0)
+      current_additional_detail = current_additional_details.sort_by(&:effective_date).last
+      current_additional_detail unless current_additional_detail.enabled.blank?
+    end
+  end
+  
+  def has_required_additional_detail_questions?
+    active_additional_detail = self.current_additional_detail
+    !active_additional_detail.blank? && active_additional_detail.has_required_questions?
+  end
+  
+  # for display within additional details
+  def additional_detail_breadcrumb
+    breadcrumb = ""
+    if self.organization && self.organization.name
+      breadcrumb += self.organization.name + " / "
+    end
+    if self.name 
+      breadcrumb += self.name + " / "
+    end
+    additional_detail = self.current_additional_detail
+    if additional_detail && additional_detail.name
+      breadcrumb += additional_detail.name 
+    end
+    breadcrumb
+  end
+  
   # Find a pricing map with an effective date for today's date.
   def current_effective_pricing_map
     return effective_pricing_map_for_date(Date.today)
   end
-
+  
   # Find a pricing map with an effective date corresponding to the given
   # date.
   def effective_pricing_map_for_date(date=Date.today)

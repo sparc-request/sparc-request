@@ -51,7 +51,6 @@ RSpec.describe "service calendar", js: true do
         wait_for_javascript_to_finish
         find(:xpath, "//a/img[@alt='Goback']/..").click
         wait_for_javascript_to_finish
-        sleep 3 # TODO: ugh: I got rid of all the sleeps, but I can't get rid of this one
         expect(LineItem.find(line_item.id).quantity).to eq(10)
       end
 
@@ -240,8 +239,6 @@ RSpec.describe "service calendar", js: true do
           fill_in("visits_#{@visit_id}_research_billing_qty", with: 10)
           page.execute_script('$("#visits_2_research_billing_qty").change()')
           wait_for_javascript_to_finish
-          sleep 3 # TODO: ugh: I got rid of all the sleeps, but I can't get rid of this one
-
           expect(first(".pp_max_total_direct_cost.arm_#{arm1.id}", visible: true)).to have_exact_text("$300.00")
         end
 
@@ -249,8 +246,6 @@ RSpec.describe "service calendar", js: true do
           fill_in "visits_#{@visit_id}_research_billing_qty", with: 10
           page.execute_script('$("#visits_2_research_billing_qty").change()')
           wait_for_javascript_to_finish
-          sleep 3 # TODO: ugh: I got rid of all the sleeps, but I can't get rid of this one
-
           all(".visit_column_2.max_direct_per_patient.arm_#{arm1.id}").each do |x|
             if x.visible?
               expect(x).to have_exact_text("$300.00")

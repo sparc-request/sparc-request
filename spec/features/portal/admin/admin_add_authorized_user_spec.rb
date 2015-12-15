@@ -46,7 +46,7 @@ RSpec.feature 'User wants to add an authorized user', js: true do
         when_i_select_a_user_from_the_search
         then_i_should_see_the_users_basic_information
       end
-
+      
       context 'and sets the users rights to Primary PI, PD/PI, or Billing/Business Manager' do
         scenario 'and sees the highest user rights selected' do
           given_i_have_clicked_the_add_authorized_user_button

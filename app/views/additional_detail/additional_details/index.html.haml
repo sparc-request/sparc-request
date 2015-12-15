@@ -1,0 +1,55 @@
+:javascript
+  var service_id = '#{@service.id}';
+%div{"ng-controller" => "AdditionalDetailsDisplayController"}
+  = render :partial => 'additional_detail/shared/additional_detail_modal'
+  .modal.fade{:id=>"additionalDetailResultsModal", :role=>"dialog", :tabindex=>"-1", "aria-labelledby"=>"myModalLabel"}
+    .modal-dialog.modal-lg{:role=>"document"}
+      .modal-content{:name=>"survey"}
+        .modal-header
+          %button{"type"=>"button", "class"=>"close", "data-dismiss"=>"modal", "aria-label"=>"Close"}
+            %span{"aria-hidden"=>"true"} &times;
+          %h4.modal-title {{currentLineItemAD.additional_detail_breadcrumb}}
+        .modal-body
+          .panel.panel-default
+            .panel-heading
+              %h3.panel-title= t(:additional_details)[:admin][:show_response_header]
+            .panel-body
+              .row{"ng-repeat"=>"(key, value) in currentLineItemAD.form_data_hash"}
+                .col-md-4
+                  %label {{key}}
+                .col-md-8 {{value}}
+        .modal-footer
+          %button.btn.btn-primary{"data-dismiss"=>"modal"}= t(:additional_details)[:admin][:close_button]
+  = render :partial => 'organization_breadcrumb'
+  .alert{ "ng-show"=>"alertMessage", "ng-class"=>"{ 'alert-success' : resourceSuccessful, 'alert-danger' : !resourceSuccessful }", "role"=>"alert"}
+    = "{{alertMessage}}"
+  %div    
+    %ul.nav.nav-pills{:id=>:myTabs, :role=>:tablist}
+      %li.active{:role=>"presentation"}
+        %a{:href=>"#adGrid", "aria-controls"=>:adGrid, :role=>:tab, "data-toggle"=>:tab}
+          = t(:additional_details)[:admin][:form_tab_label]
+          %span.badge= "{{service.current_additional_detail ? 'Enabled' : 'Disabled'}}"
+      %li{:role=>"presentation"}
+        %a{:id => "resultsTab", :href=>"#liadGrid", "aria-controls"=>:liadGrid, :role=>:tab} 
+          = t(:additional_details)[:admin][:response_tab_label]
+          %span{"ng-if"=> "activeAdditionalDetail"} for {{activeAdditionalDetail.name}}
+    .tab-content
+      .tab-pane.fade.in.active{:role=>:tabpanel, :id=>:adGrid}
+        .panel.panel-default
+          .panel-heading
+            %h3.panel-title= t(:additional_details)[:admin][:form_grid_label] + "{{service.name}}"
+          .panel-body
+            = link_to t(:additional_details)[:admin][:form_grid_add_new_button], new_additional_detail_service_additional_detail_path(@service), class: "btn btn-primary"
+            %div{"ng-show"=>"gridModel.data.length > 0",:id=>"displayGrid", "ui-grid"=>"gridModel", "ui-grid-resize-columns" => "true", "ui-grid-auto-resize"=>"true", "ui-grid-selection"=>"true", "external-scopes"=>"$scope", :style=>"height: 400px;"}
+      .tab-pane.fade{:role=>:tabpanel, :id=>:liadGrid}
+        .panel.panel-default
+          .panel-heading
+            %h3.panel-title= t(:additional_details)[:admin][:response_grid_label] + "{{activeAdditionalDetail.name}}"
+          .panel-body
+            %div{:id=>"liadGrid", "ui-grid"=>"line_item_ad_gridModel", "ui-grid-resize-columns" => "true", "ui-grid-auto-resize"=>"true", "ui-grid-selection"=>"true", "external-scopes"=>"$scope", :style=>"height: 300px;"}
+        .panel.panel-default
+          .panel-heading
+            %h3.panel-title= t(:additional_details)[:admin][:response_export_grid_label] + "{{activeAdditionalDetail.name}}"
+          .panel-body
+            %button.btn.btn-primary{:type=>"button","ng-click"=>"export()"}= t(:additional_details)[:admin][:response_export_all_data_button]
+            %div{:id=>"liadExportGrid", "ui-grid"=>"line_item_export_gridModel", "ui-grid-resize-columns" => "true", "ui-grid-auto-resize"=>"true", "ui-grid-exporter"=>"true", "ui-grid-selection"=>"true", "external-scopes"=>"$scope", :style=>"height: 300px;"}

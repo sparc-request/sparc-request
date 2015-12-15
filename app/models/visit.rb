@@ -46,9 +46,7 @@ class Visit < ActiveRecord::Base
   # Find a Visit for the given "line items visit" and visit group.  This
   # creates the visit if it does not exist.
   def self.for(line_items_visit, visit_group)
-    return Visit.find_or_create_by_line_items_visit_id_and_visit_group_id(
-        line_items_visit.id,
-        visit_group.id)
+    return Visit.find_or_create_by(line_items_visit_id: line_items_visit.id, visit_group_id: visit_group.id)
   end
 
   def set_arm_edited_flag_on_subjects

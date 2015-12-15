@@ -11,7 +11,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+<<<<<<< HEAD
 ActiveRecord::Schema.define(version: 20151116155206) do
+=======
+ActiveRecord::Schema.define(:version => 20151116155206) do
+>>>>>>> master
 
   create_table "admin_rates", force: :cascade do |t|
     t.integer  "line_item_id", limit: 4
@@ -581,7 +585,11 @@ ActiveRecord::Schema.define(version: 20151116155206) do
     t.string   "internal_rate_type",     limit: 255
     t.string   "foundation_rate_type",   limit: 255
     t.datetime "deleted_at"
+<<<<<<< HEAD
     t.string   "unfunded_rate_type",     limit: 255
+=======
+    t.string   "unfunded_rate_type"
+>>>>>>> master
   end
 
   add_index "pricing_setups", ["organization_id"], name: "index_pricing_setups_on_organization_id", using: :btree

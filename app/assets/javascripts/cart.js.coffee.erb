@@ -48,10 +48,31 @@ $(document).ready ->
   $('.help_question').live 'click', ->
     $(this).siblings().toggle().css('font-style': 'italic')
 
-  $('.add_service').live 'click', ->
+  $(document).on('click', '.add_service' , ->
     sr_id = $(this).attr('sr_id')
     id = $(this).attr('id')
-    addService(sr_id, id)
+    first_service = $(this).attr('first_service')
+    li_count = $('#line_item_count').val()
+
+    if first_service == 'true' && li_count == '0'
+      options = {
+        resizable: false,
+        height: 220,
+        modal: true,
+        autoOpen: false,
+        buttons:
+          "Yes": ->
+            addService(sr_id, id)
+            $(this).dialog("close")
+          "No": ->
+            window.location.replace($("#user_portal_link").val())
+            $(this).dialog("close")
+      }
+      $('#new_request_dialog').dialog(options).dialog("open")
+      return false
+    else
+      addService(sr_id, id)
+  )
 
   $(document).on('click', '.remove-button', ->
     sr_id = $(this).attr('sr_id')

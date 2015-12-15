@@ -59,6 +59,13 @@ RSpec.describe "creating a new study from user portal", js: true do
         expect(page).to have_content "Bob"
       end
     end
+
+    describe 'selecting for epic' do
+      it 'should not add protocol to the queue' do
+        epic_size = EpicQueue.count
+        expect(epic_size).to eq(0)
+      end
+    end
   end
 end
 
@@ -69,5 +76,8 @@ def fill_in_study_info
   find('#study_has_cofc_true').click
   select "Funded", from: "study_funding_status"
   select "Federal", from: "study_funding_source"
+  find('#study_selected_for_epic_true').click
+  select "Yes", from: "study_type_answer_higher_level_of_privacy_answer"
+  select "Yes", from: "study_type_answer_certificate_of_conf_answer"
   find('.continue_button').click
 end

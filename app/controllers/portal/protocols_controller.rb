@@ -22,33 +22,15 @@ class Portal::ProtocolsController < Portal::BaseController
 
   respond_to :html, :json, :xlsx
 
-  before_filter :find_protocol, :only => [:show, :view_full_calendar, :update_from_fulfillment, :edit, :update, :update_protocol_type]
-  before_filter :protocol_authorizer_view, :only => [:show, :view_full_calendar]
-  before_filter :protocol_authorizer_edit, :only => [:update_from_fulfillment, :edit, :update, :update_protocol_type]
+  before_filter :find_protocol, only: [:show, :view_full_calendar, :update_from_fulfillment, :edit, :update, :update_protocol_type]
+  before_filter :protocol_authorizer_view, only: [:show, :view_full_calendar]
+  before_filter :protocol_authorizer_edit, only: [:update_from_fulfillment, :edit, :update, :update_protocol_type]
 
   def index
-    @protocols = []
-    include_archived = (params[:include_archived] == "true")
-
-    @user.protocols.each do |protocol|
-      if protocol.project_roles.find_by_identity_id(@user.id).project_rights != 'none'
-         @protocols << protocol if include_archived || !protocol.archived
-      end
-    end
-    @protocols = @protocols.sort_by { |pr| (pr.id || '0000') + pr.id }.reverse
-    @notifications = @user.user_notifications
-    #@projects = Project.remove_projects_due_to_permission(@projects, @user)
-
-    # params[:default_project] = '0f6a4d750fd369ff4ae409373000ba69'
-    if params[:default_protocol] && @protocols.map(&:id).include?(params[:default_protocol].to_i)
-      protocol = @protocols.select{ |p| p.id == params[:default_protocol].to_i}[0]
-      @protocols.delete(protocol)
-      @protocols.insert(0, protocol)
-    end
+    @protocols = Portal::ProtocolFinder.new(current_user, params).protocols
 
     respond_to do |format|
-      format.js
-      format.html
+      format.js { render }
     end
   end
 
@@ -96,11 +78,7 @@ class Portal::ProtocolsController < Portal::BaseController
       if USE_EPIC
         if @protocol.selected_for_epic
           @protocol.ensure_epic_user
-          if QUEUE_EPIC
-            EpicQueue.create(:protocol_id => @protocol.id) unless EpicQueue.where(:protocol_id => @protocol.id).size == 1
-          else
-            Notifier.notify_for_epic_user_approval(@protocol).deliver
-          end
+          Notifier.notify_for_epic_user_approval(@protocol).deliver unless QUEUE_EPIC
         end
       end
     elsif @current_step == 'cancel_protocol'
@@ -153,11 +131,17 @@ class Portal::ProtocolsController < Portal::BaseController
     end
   end
 
+  # This action is being used conditionally from both admin and user portal
+  # to update the protocol type
   def update_protocol_type
-    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
     # Using update_attribute here is intentional, type is a protected attribute
     if @protocol.update_attribute(:type, params[:protocol][:type])
-      redirect_to portal_admin_sub_service_request_path(@sub_service_request)
+      if params[:sub_service_request_id]
+        @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
+        redirect_to portal_admin_sub_service_request_path(@sub_service_request)
+      else
+        redirect_to edit_portal_protocol_path(@protocol)
+      end
     end
   end
 
@@ -182,6 +166,55 @@ class Portal::ProtocolsController < Portal::BaseController
       format.js
       format.html
     end
+  end
+
+  def change_arm
+    @arm_id = params[:arm_id].to_i if params[:arm_id]
+    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
+    @service_request = @sub_service_request.service_request
+    @selected_arm = params[:arm_id] ? Arm.find(@arm_id) : @service_request.arms.first
+    @study_tracker = params[:study_tracker] == "true"
+  end
+
+  def add_arm
+    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
+    @service_request = @sub_service_request.service_request
+    name = params[:arm_name] ? params[:arm_name] : "ARM #{@service_request.arms.count + 1}"
+    visit_count = params[:visit_count] ? params[:visit_count].to_i : 1
+    subject_count = params[:subject_count] ? params[:subject_count].to_i : 1
+
+    @selected_arm = @service_request.protocol.create_arm(
+        name:          name,
+        visit_count:   visit_count,
+        subject_count: subject_count)
+
+    @selected_arm.default_visit_days
+
+    @selected_arm.reload
+
+    # If any sub service requests under this arm's protocol are in CWF we need to build patient calendars
+    if @service_request.protocol.service_requests.map {|x| x.sub_service_requests.map {|y| y.in_work_fulfillment}}.flatten.include?(true)
+      @selected_arm.populate_subjects
+    end
+
+    render 'portal/protocols/change_arm'
+  end
+
+  def remove_arm
+    @arm_id = params[:arm_id].to_i if params[:arm_id]
+    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
+    @service_request = @sub_service_request.service_request
+
+    Arm.find(@arm_id).destroy
+    @service_request.reload
+
+    if @service_request.arms.empty?
+      @service_request.per_patient_per_visit_line_items.each(&:destroy)
+    else
+      @selected_arm = @service_request.arms.first
+    end
+
+    render 'portal/service_requests/add_per_patient_per_visit_visit'
   end
 
   private

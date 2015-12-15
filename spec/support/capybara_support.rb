@@ -165,7 +165,8 @@ module CapybaraSupport
       foundation_rate_type:         'full',
       industry_rate_type:           'full',
       investigator_rate_type:       'full',
-      internal_rate_type:           'full')
+      internal_rate_type:           'full',
+      unfunded_rate_type:           'full')
     pricing_setup.save!
 
     project = FactoryGirl.create(:protocol_without_validations)

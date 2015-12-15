@@ -218,7 +218,7 @@ $(document).ready ->
     if $(this).data('study_tracker') == true
       save_line_item_by_ajax(this)
     else
-      update_otf_line_item this
+      update_otf_line_item(this)
     recalculate_one_time_fee_totals()
     return false
   )

@@ -23,11 +23,11 @@ class RenameMuhaTag < ActiveRecord::Migration
     tag = Tag.find_by_name('muha')
     if tag
       tag.name = 'required forms'
-      tag.save
+      tag.save_without_auditing
     else
       tag = Tag.new
       tag.name = 'required forms'
-      tag.save
+      tag.save_without_auditing
     end
   end
 
@@ -35,7 +35,7 @@ class RenameMuhaTag < ActiveRecord::Migration
     tag = Tag.find_by_name('required forms')
     if tag
       tag.name = 'muha'
-      tag.save
+      tag.save_without_auditing
     end
   end
 end

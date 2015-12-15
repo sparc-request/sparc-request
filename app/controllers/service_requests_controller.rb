@@ -560,7 +560,7 @@ class ServiceRequestsController < ApplicationController
 
   def send_individual_service_provider_notification(service_request, sub_service_request, service_provider, xls, audit_report=nil, ssr_deleted=false)
     attachments = {}
-    attachments["service_request_#{service_request.id}.xls"] = xls
+    attachments["service_request_#{service_request.id}.xlsx"] = xls
 
     #TODO this is not very multi-institutional
     # generate the required forms pdf if it's required
@@ -640,7 +640,7 @@ class ServiceRequestsController < ApplicationController
 
         # add access
         to_add.each do |org_id|
-          sub_service_request = @service_request.sub_service_requests.find_or_create_by_organization_id :organization_id => org_id.to_i
+          sub_service_request = @service_request.sub_service_requests.find_or_create_by(:organization_id => org_id.to_i)
           sub_service_request.documents << doc_object
           sub_service_request.save
         end

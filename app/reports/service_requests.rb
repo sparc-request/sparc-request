@@ -47,22 +47,30 @@ class ServiceRequestsReport < ReportingModule
 
     if params[:institution_id]
       attrs[Institution] = [params[:institution_id], :abbreviation]
+    else
+      attrs["Institution"] = "org_tree.select{|org| org.type == 'Institution'}.first.try(:abbreviation)"
     end
 
     if params[:provider_id]
       attrs[Provider] = [params[:provider_id], :abbreviation]
+    else
+      attrs["Provider"] = "org_tree.select{|org| org.type == 'Provider'}.first.try(:abbreviation)"
     end
 
     if params[:program_id]
       attrs[Program] = [params[:program_id], :abbreviation]
+    else
+      attrs["Program"] = "org_tree.select{|org| org.type == 'Program'}.first.try(:abbreviation)"
     end
 
     if params[:core_id]
       attrs[Core] = [params[:core_id], :abbreviation]
+    else
+      attrs["Core"] = "org_tree.select{|org| org.type == 'Core'}.first.try(:abbreviation)"
     end
 
     attrs["SRID"] = :display_id
-    attrs["Status"] = :status
+    attrs["Status"] = :formatted_status
 
     if params[:apr_data]
       if params[:apr_data].include?("irb") || params[:apr_data].include?("iacuc")

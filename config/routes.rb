@@ -345,7 +345,31 @@ SparcRails::Application.routes.draw do
       get :cwf_subject
     end
   end
+  
+  ##### Additional Detail #####
+  namespace :additional_detail do
+    root :to => 'services#index'
+    resources :services, only: [:index, :show] do
+      resources :additional_details do
+        member do
+          get :duplicate
+          get :export_grid
+          put :update_enabled
+        end
+      end
+    end
+    # we may add :destroy so a service provider can allow an updated version of the form to be rendered and completed
+    resources :line_item_additional_details, only: [:show, :update], :defaults => { :format => :json } 
+    resources :service_requests, only: [:show]
+  end
 
+  ##### Admin Identities #####
+  namespace :admin do
+    root :to => 'identities#index'
+    match 'identities/search' => 'identities#search', :via => :get
+    resources :identities, only: [:index, :show, :create, :update]
+  end
+  
   mount API::Base => '/'
 
   root to: 'service_requests#catalog'

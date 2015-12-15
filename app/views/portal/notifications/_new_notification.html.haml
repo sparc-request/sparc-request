@@ -19,26 +19,24 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .notification
-  - if @recipient.id != @user.id
-    = form_tag(portal_notifications_path, :method => :post, :remote => true, :class => 'notification_notification_form') do
-      = hidden_field_tag('is_service_provider', @is_service_provider)
-      = hidden_field_tag('notification_originator_id', @user.id, :name => 'notification[originator_id]')
+  = form_tag(portal_notifications_path, :method => :post, :remote => true, :class => 'notification_notification_form') do
+    = hidden_field_tag('is_service_provider', @is_service_provider)
+    = hidden_field_tag('notification_originator_id', @user.id, :name => 'notification[originator_id]')
 
-      %p
-        = hidden_field_tag('message_to', @recipient.id, :name => 'message[to]')
-        = hidden_field_tag('message_from', @user.id, :name => 'message[from]')
-        = hidden_field_tag('message_email', @recipient.try(:email), :name => 'message[email]')
-        = hidden_field_tag('notification_sub_service_request_id', @sub_service_request.id, :name => 'notification[sub_service_request_id]')
+    %p
+      = hidden_field_tag('message_to', @recipient.id, :name => 'message[to]')
+      = hidden_field_tag('message_from', @user.id, :name => 'message[from]')
+      = hidden_field_tag('message_email', @recipient.try(:email), :name => 'message[email]')
+      = hidden_field_tag('notification_sub_service_request_id', @sub_service_request.id, :name => 'notification[sub_service_request_id]')
 
-        %strong= t(:notifications)[:recipient]
-        = @recipient.try(:full_name)
-        %br
-        %br
-      %p
-        %input#message_subject{:type => 'text', :name => "message[subject]", :placeholder => t(:notifications)[:subject], :tabindex => -1}
-        %br
-        %br
-      %p
-        %textarea#message_body{:placeholder => t(:notifications)[:message], :name => "message[body]", :cols => 75, :style => 'height:100px', :tabindex => -1}
-  - else
-    = t(:notifications)[:warning]
+      %strong= t(:notifications)[:recipient]
+      = @recipient.try(:full_name)
+      %br
+      %br
+    %p
+      %input#message_subject{:type => 'text', :name => "message[subject]", :placeholder => t(:notifications)[:subject], :tabindex => -1}
+      %br
+      %br
+    %p
+      %textarea#message_body{:placeholder => t(:notifications)[:message], :name => "message[body]", :cols => 75, :style => 'height:100px', :tabindex => -1}
+

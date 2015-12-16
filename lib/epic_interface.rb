@@ -288,8 +288,11 @@ class EpicInterface
 
   def emit_cofc(xml, study)
     if study.active?
-      study.study_type_questions
-    cofc = study.has_cofc? ? 'YES_COFC' : 'NO_COFC'
+      cofc = study.study_type_answers.where(study_type_question_id: 7).pluck(:answer) == true ? 'YES_COFC' : 'NO_COFC'
+    else
+      cofc = study.study_type_answers.where(study_type_question_id: 1).pluck(:answer) == true ? 'YES_COFC' : 'NO_COFC'
+    end
+    
 
     xml.subjectOf(typeCode: 'SUBJ') {
       xml.studyCharacteristic(classCode: 'OBS', moodCode: 'EVN') {
@@ -300,33 +303,7 @@ class EpicInterface
   end
 
   def emit_study_type(xml, study)
-    if study.active?
-      active_answers = []
-      StudyTypeQuestion.active.find_each do |stq|
-        active_answers << stq.study_type_answers.find_by_protocol_id(study.id).answer
-      end
-
-      study_type = nil
-      STUDY_TYPE_ANSWERS_VERSION_2.each do |k, v|
-        if v == active_answers
-          study_type = k
-          break
-        end
-      end
-    else 
-      answers = []
-      StudyTypeQuestion.find_each do |stq|
-        answers << stq.study_type_answers.find_by_protocol_id(study.id).answer
-      end
-
-      study_type = nil
-      STUDY_TYPE_ANSWERS.each do |k, v|
-        if v == answers
-          study_type = k
-          break
-        end
-      end
-    end
+    study_type = Portal::StudyTypeFinder.new(study).study_type
 
     if study_type then
       xml.subjectOf(typeCode: 'SUBJ') {
@@ -337,8 +314,6 @@ class EpicInterface
       }
     end
   end
-
-  # def determine_study_type()
   
   def emit_ide_number(xml, study)
     ide_number = study.investigational_products_info.try(:ide_number)

@@ -15,7 +15,6 @@ module Portal
 	  			StudyTypeQuestion.active.find_each do |stq|
 	          @active_answers << stq.study_type_answers.find_by_protocol_id(@study.id).answer 
 	        end
-	        puts @active_answers.inspect
 	        STUDY_TYPE_ANSWERS_VERSION_2.each do |k, v|
 	          if v == @active_answers
 	            @study_type = k

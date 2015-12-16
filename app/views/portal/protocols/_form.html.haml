@@ -22,7 +22,6 @@
 - url = admin ? update_from_project_study_information_portal_admin_sub_service_request_path(@sub_service_request.id) : portal_protocol_path(protocol)
 = form_for protocol, :url => url do |f|
   = f.hidden_field :requester_id
-  = f.hidden_field :study_type_question_group_id, value: @active_study_type_question_group
   - if admin
     = hidden_field_tag "admin_page", admin
     = hidden_field_tag "protocol_id", @protocol.id

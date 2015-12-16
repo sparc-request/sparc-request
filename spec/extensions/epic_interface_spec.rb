@@ -81,11 +81,14 @@ RSpec.describe EpicInterface do
         'wsdl' => "http://localhost:#{server.port}/wsdl",
         'study_root' => '1.2.3.4')
   }
+  
+  let!(:inactive_study_type_question_group)  { StudyTypeQuestionGroup.create(active: false) }
+  let!(:active_study_type_question_group)    { StudyTypeQuestionGroup.create(active: true) }
 
   let!(:study) {
     human_subjects_info = build(:human_subjects_info, pro_number: nil, hr_number: nil)
     investigational_products_info = build(:investigational_products_info, ide_number: nil)
-    study = build(:study, human_subjects_info: human_subjects_info, investigational_products_info: investigational_products_info)
+    study = build(:study, human_subjects_info: human_subjects_info, investigational_products_info: investigational_products_info, study_type_question_group_id: active_study_type_question_group.id)
     study.save(validate: false)
     study
   }
@@ -517,7 +520,7 @@ RSpec.describe EpicInterface do
 
     describe 'emitting a subjectOf for a study type' do
       it 'should handle nils for questions 2, 3, and 4' do
-        STUDY_TYPE_QUESTIONS.each_with_index do |stq, index|
+        STUDY_TYPE_QUESTIONS_VERSION_2.each_with_index do |stq, index|
           StudyTypeQuestion.create(order: index + 1, question: stq)
         end
         answers = [true, true, true, nil, nil, nil]
@@ -551,13 +554,16 @@ RSpec.describe EpicInterface do
       end
 
       it 'should handle answering all questions' do
-        STUDY_TYPE_QUESTIONS.each_with_index do |stq, index|
-          StudyTypeQuestion.create(order: index + 1, question: stq)
+        STUDY_TYPE_QUESTIONS_VERSION_2.each_with_index do |stq, index|
+          StudyTypeQuestion.active.create(order: index + 1, question: stq)
         end
-        answers = [true, false, false, true, false, true]
+        answers = [false, true, false, false, true, true]
+  
         stq_ids = StudyTypeQuestion.all.map(&:id)
         stq_ids.each_with_index do |id, index|
-          StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: id, answer: answers[index])
+          answer = StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: id, answer: answers[index])
+          answer
+          binding.pry
         end
 
         epic_interface.send_study_creation(study)
@@ -568,7 +574,7 @@ RSpec.describe EpicInterface do
                       xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
             <studyCharacteristic classCode="OBS" moodCode="EVN">
               <code code="STUDYTYPE" />
-              <value value="8" />
+              <value value="3" />
             </studyCharacteristic>
           </subjectOf>
         END

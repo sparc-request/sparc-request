@@ -117,37 +117,4 @@ module Portal::SubServiceRequestsHelper
       end
     end
   end
-
-  def service_request_owner_display sub_service_request
-    if sub_service_request.status == "draft"
-      content_tag(:span, 'Not available in draft status.')
-    else
-      select_tag "sub_service_request_owner", owners_for_select(sub_service_request), :prompt => '---Please Select---', :'data-sub_service_request_id' => sub_service_request.id, :class => 'selectpicker'
-    end
-  end
-
-  def ready_for_fulfillment_display user, sub_service_request
-    display = content_tag(:div, "", class: "row")
-    if sub_service_request.ready_for_fulfillment?
-      if sub_service_request.in_work_fulfillment?
-        display += content_tag(:h4, "In Fulfillment")
-        display += content_tag(:div, "", class: "row")
-        if user.clinical_provider_rights?
-          display += link_to "Go to Fulfillment", CLINICAL_WORK_FULFILLMENT_URL, target: "_blank", class: "btn btn-primary btn-md"
-        else
-          display += check_box_tag "in_work_fulfillment", true, true, :'data-sub_service_request_id' => sub_service_request.id, class: "cwf_data form-control", disabled: true
-        end
-      else
-        display += content_tag(:h4, "Ready for Fulfillment")
-        display += content_tag(:div, "", class: "row")
-        display += check_box_tag "in_work_fulfillment", true, false, :'data-sub_service_request_id' => sub_service_request.id, class: "cwf_data form-control"
-      end
-    else
-      display += content_tag(:h4, "Not Ready for Fulfillment")
-      display += content_tag(:div, "", class: "row")
-      display += content_tag(:span, 'This Sub Service Request is not ready for Fulfillment.')
-    end
-
-    return display
-  end
 end

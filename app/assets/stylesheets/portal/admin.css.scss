@@ -56,8 +56,12 @@
   font-size: 18px;
 }
 
-#admin_accordion .panel-heading:hover {
-  cursor: pointer;
+#admin_accordion {
+  margin-top: 10px;
+
+  .panel-heading:hover {
+    cursor: pointer;
+  }
 }
 
 .details-table {

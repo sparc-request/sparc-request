@@ -57,7 +57,7 @@
           %h1= render :partial => 'portal/home/title'
         #content
           .notification_dialog
-          .row.flash= render "shared/flash"
+          .flash= render "shared/flash"
           = yield
   %footer
     = render :partial => 'shared/piwik_tracking' if Rails.env == 'production'

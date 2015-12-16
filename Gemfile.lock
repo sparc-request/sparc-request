@@ -96,6 +96,8 @@ GEM
     bootstrap-sass (3.2.0.2)
       sass (~> 3.2)
     bootstrap-select-rails (1.6.3)
+    bootstrap3-datetimepicker-rails (4.17.37)
+      momentjs-rails (>= 2.8.1)
     builder (3.2.2)
     bullet (4.14.10)
       activesupport (>= 3.0.0)
@@ -231,6 +233,8 @@ GEM
     mime-types (2.99)
     mini_portile2 (2.0.0)
     minitest (5.8.3)
+    momentjs-rails (2.10.6)
+      railties (>= 3.1)
     multi_json (1.11.2)
     multi_xml (0.5.5)
     mustache (0.99.8)
@@ -455,6 +459,7 @@ DEPENDENCIES
   bluecloth
   bootstrap-sass (~> 3.2.0)
   bootstrap-select-rails
+  bootstrap3-datetimepicker-rails
   bullet
   capistrano
   capistrano-ext
@@ -484,6 +489,7 @@ DEPENDENCIES
   json
   launchy
   letter_opener
+  momentjs-rails (>= 2.8.1)
   mysql2 (~> 0.3.18)
   nested_form
   newrelic_rpm

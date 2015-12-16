@@ -25,28 +25,28 @@
       %h3.panel-title Service Request Info
     #sr_accordion.panel-collapse.collapse.in{role: "tabpanel", aria: {labelledby: "sr_accordion_heading"}}
       .panel-body
-        = render partial: 'portal/admin/fulfillment_accordion/service_request_info', locals: {protocol: protocol, sub_service_request: sub_service_request, service_request: service_request}
+        = render partial: 'portal/admin/fulfillment/service_request_info/service_request_info', locals: {protocol: protocol, sub_service_request: sub_service_request, service_request: service_request, subsidy: subsidy}
 
   .panel.panel-default
     .panel-heading#users_accordion_heading.collapsed{ data: {toggle: "collapse", target: "#users_accordion"}, aria: {expanded: "false", controls: "users_accordion"} }
       %h3.panel-title User Notifications
     #users_accordion.panel-collapse.collapse{role: "tabpanel", aria: {labelledby: "users_accordion_heading"}}
       .panel-body
-        = render partial: 'portal/admin/fulfillment_accordion/user_notifications', locals: {protocol: protocol, sub_service_request: sub_service_request, service_request: service_request}
+        = render partial: 'portal/admin/fulfillment/user_notifications/user_notifications', locals: {protocol: protocol, sub_service_request: sub_service_request, service_request: service_request}
 
   .panel.panel-default
     .panel-heading#history_accordion_heading.collapsed{ data: {toggle: "collapse", target: "#history_accordion"}, aria: {expanded: "false", controls: "history_accordion"} }
       %h3.panel-title History
     #history_accordion.panel-collapse.collapse{role: "tabpanel", aria: {labelledby: "history_accordion_heading"}}
       .panel-body
-        = render partial: 'portal/admin/fulfillment_accordion/history', locals: {protocol: protocol, sub_service_request: sub_service_request, service_request: service_request}
+        = render partial: 'portal/admin/fulfillment/history/history', locals: {protocol: protocol, sub_service_request: sub_service_request, service_request: service_request}
 
   .panel.panel-default
     .panel-heading#services_accordion_heading.collapsed{ data: {toggle: "collapse", target: "#services_accordion"}, aria: {expanded: "false", controls: "services_accordion"} }
       %h3.panel-title Services
     #services_accordion.panel-collapse.collapse{role: "tabpanel", aria: {labelledby: "services_accordion_heading"}}
       .panel-body
-        = render partial: 'portal/admin/fulfillment_accordion/services', locals: {protocol: protocol, sub_service_request: sub_service_request, service_request: service_request}
+        = render partial: 'portal/admin/fulfillment/services/services', locals: {protocol: protocol, sub_service_request: sub_service_request, service_request: service_request}
 
 #visit_toasts
   - @user_toasts.each do |user_toast|

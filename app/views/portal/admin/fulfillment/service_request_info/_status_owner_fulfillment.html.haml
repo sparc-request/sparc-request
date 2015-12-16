@@ -18,24 +18,20 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.history_tabs{role: 'tabpanel'}
-  %ul.nav.nav-tabs.nav-justified{role: 'tablist'}
-    %li.custom-tab.history_tab.active{role: 'presentation'}
-      = link_to t(:fulfillments)[:status_changes][:header], "#service_request_status_changes", {class: 'status-tab', "data-toggle" => 'tab', role: 'tab', "aria-controls" => 'status-tab'}
-    %li.custom-tab.history_tab{role: 'presentation'}
-      = link_to t(:fulfillments)[:subsidy_changes][:header], "#ssr_subsidy_changes", {class: 'subsidy-tab', "data-toggle" => 'tab', role: 'tab', "aria-controls" => 'subsidy-tab'}
-    %li.custom-tab.history_tab{role: 'presentation'}
-      = link_to t(:fulfillments)[:approval_history][:header], "#service_request_approval_changes", {class: 'approval-tab', "data-toggle" => 'tab', role: 'tab', "aria-controls" => 'approval-tab'}
-
-  .tab-content
-    .tab-pane#service_request_status_changes{role: 'tabpanel', class: 'active'}
-      = render 'portal/sub_service_requests/status_changes'
-
-
-    .tab-pane#ssr_subsidy_changes{role: 'tabpanel'}
-      = render 'portal/sub_service_requests/subsidy_changes'
-
-
-    .tab-pane#service_request_approval_changes{role: 'tabpanel'}
-      = render 'portal/sub_service_requests/approval_changes'
+.col-sm-12
+  .col-sm-4
+    #service_request_status
+      .row
+        %h4= t(:service_requests)[:info][:text1]
+      .row#service_request_status_dropdown
+        = select_tag "sub_service_request_status", options_for_select(sub_service_request ? sub_service_request.organization.get_available_statuses.invert : [], sub_service_request.try(:status)), :'data-sub_service_request_id' => sub_service_request.id, :class => 'selectpicker'
+  .col-sm-4
+    #service_request_owner
+      .row
+        %h4= t(:service_requests)[:info][:text2]
+      .row#service_request_owner_dropdown
+        = service_request_owner_display(sub_service_request)
+  .col-sm-4
+    #study_tracker_access
+      = ready_for_fulfillment_display(@user, sub_service_request)
 

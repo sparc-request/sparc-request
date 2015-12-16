@@ -18,11 +18,24 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#service_request_cost
-  #current_cost
-    %label= t(:fulfillments)[:totals][:effective_current_total_cost]
-    %span.effective_cost= number_to_currency(calculate_effective_current_total)
+.history_tabs{role: 'tabpanel'}
+  %ul.nav.nav-tabs.nav-justified{role: 'tablist'}
+    %li.custom-tab.history_tab.active{role: 'presentation'}
+      = link_to "Status History", "#service_request_status_changes", {class: 'status-tab', "data-toggle" => 'tab', role: 'tab', "aria-controls" => 'status-tab'}
+    %li.custom-tab.history_tab{role: 'presentation'}
+      = link_to "Subsidy History", "#ssr_subsidy_changes", {class: 'subsidy-tab', "data-toggle" => 'tab', role: 'tab', "aria-controls" => 'subsidy-tab'}
+    %li.custom-tab.history_tab{role: 'presentation'}
+      = link_to t(:fulfillments)[:approval_history][:header], "#service_request_approval_changes", {class: 'approval-tab', "data-toggle" => 'tab', role: 'tab', "aria-controls" => 'approval-tab'}
 
-  #user_display_cost
-    %label= t(:fulfillments)[:totals][:user_display_total_cost]
-    %span.display_cost= number_to_currency(calculate_user_display_total)
+  .tab-content
+    .tab-pane#service_request_status_changes{role: 'tabpanel', class: 'active'}
+      = render 'portal/sub_service_requests/status_changes'
+
+
+    .tab-pane#ssr_subsidy_changes{role: 'tabpanel'}
+      = render 'portal/sub_service_requests/subsidy_changes'
+
+
+    .tab-pane#service_request_approval_changes{role: 'tabpanel'}
+      = render 'portal/sub_service_requests/approval_changes'
+

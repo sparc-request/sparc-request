@@ -131,3 +131,34 @@ $(document).ready ->
       url: "/portal/notes/new"
       data: data
 
+  $(document).on 'click', '#add_otf_service_button', ->
+    data =
+      "sub_service_request_id"  : $(this).data("sub_service_request_id")
+      "one_time_fee"            : true
+    $.ajax
+      type: 'GET'
+      url: "/portal/admin/line_items/new"
+      data: data
+
+  $(document).on 'click', '#add_otf_line_item_form_button', ->
+    $(this).attr('disabled','disabled')
+
+  $(document).on('change', '#sub_service_request_owner', ->
+    ssr_id = $(this).data("sub_service_request_id")
+    owner_id = $(this).val()
+    data = "sub_service_request" : "owner_id" : owner_id
+    $.ajax
+      type: 'PATCH'
+      url: "/portal/admin/sub_service_requests/#{ssr_id}"
+      data: data
+  )
+
+  $(document).on('change', '#sub_service_request_status', ->
+    ssr_id = $(this).data("sub_service_request_id")
+    status = $(this).val()
+    data = "sub_service_request" : "status" : status
+    $.ajax
+      type: 'PATCH'
+      url: "/portal/admin/sub_service_requests/#{ssr_id}"
+      data: data
+  )

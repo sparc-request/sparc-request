@@ -211,18 +211,6 @@ $(document).ready ->
     $(".li_#{li_id}").toggle()
   )
 
-  $(document).on 'click', '#add_otf_service_button', ->
-    data =
-      "sub_service_request_id"  : $(this).data("sub_service_request_id")
-      "one_time_fee"            : true
-    $.ajax
-      type: 'GET'
-      url: "/portal/admin/line_items/new"
-      data: data
-
-  $(document).on 'click', '#add_otf_line_item_form_button', ->
-    $(this).attr('disabled','disabled')
-
   # SUBSIDY FUNCTIONS
 
   $(document).on('click', '.add_subsidy_link', ->

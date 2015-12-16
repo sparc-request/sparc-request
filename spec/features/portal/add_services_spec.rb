@@ -32,7 +32,7 @@ RSpec.feature 'user views Add Services link', js: true do
   scenario "user views a protocol with service request status of 'first_draft'" do
     service_request.update_attributes(status: 'first_draft')
     when_i_visit_portal_path
-    then_i_should_see_request_in_progress_text
+    then_i_should_see_a_link_to_add_services
   end
 
   scenario "user views a protocol with a service_request of status 'draft'" do

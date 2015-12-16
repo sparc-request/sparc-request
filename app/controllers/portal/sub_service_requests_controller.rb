@@ -54,8 +54,6 @@ class Portal::SubServiceRequestsController < Portal::BaseController
     @sub_service_request = SubServiceRequest.find(params[:id])
     @subsidy = @sub_service_request.subsidy
     if @sub_service_request.update_attributes(params[:sub_service_request])
-      puts "&"*1000
-      puts @sub_service_request.inspect
       flash[:success] = "Sub Service Request Updated!"
     else
       @errors = @sub_service_request.errors

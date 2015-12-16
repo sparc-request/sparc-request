@@ -32,7 +32,7 @@
         .col-xs-2
           %label= t(:fulfillments)[:subsidies][:user_display_total_cost]
         .col-xs-2
-          %label= t(:fulfillments)[:subsidies][:delete]
+          %label.pull-right= t(:fulfillments)[:subsidies][:delete]
     .row
       .col-xs-12
         - pi_contribution = calculate_admin_pi_contribution.try(:/, 100.0) || 0
@@ -48,9 +48,12 @@
           = number_to_currency(calculate_effective_current_total - pi_contribution)
         .col-xs-2.center-block.subsidy_user_display_cost#direct_cost_total{:'data-direct_cost_total' => sub_service_request.try(:direct_cost_total), :'data-max_dollar_cap' => sub_service_request.organization.try(:subsidy_map).try(:max_dollar_cap), :'data-max_percentage' => sub_service_request.organization.try(:subsidy_map).try(:max_percentage)}
           = number_to_currency(calculate_user_display_total - pi_contribution)
-        .col-xs-2.center-block
-          = link_to "", 'javascript:void(0);', :'data-subsidy_id' => subsidy.id, class: 'delete_data btn btn-xs btn-danger glyphicon glyphicon-remove'
+        .col-xs-2
+          %button.btn.btn-xs.btn-danger.center-block#delete_subsidy{:'data-subsidy_id' => subsidy.id}
+            %span.glyphicon.glyphicon-remove
 - else
-  %p.blank_requests
-    = t(:fulfillments)[:subsidies][:no_subsidy]
-    = link_to t(:fulfillments)[:subsidies][:link], 'javascript:void(0);', :class => "add_subsidy_link", :'data-sub_service_request_id' => sub_service_request.try(:id)
+  .col-xs-12
+    %p.blank_requests
+      = t(:fulfillments)[:subsidies][:no_subsidy]
+    %button.btn.btn-sm.btn-success#add_subsidy_link{:'data-sub_service_request_id' => sub_service_request.try(:id)}
+      %span= t(:fulfillments)[:subsidies][:link]

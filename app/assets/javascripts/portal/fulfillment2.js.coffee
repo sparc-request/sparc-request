@@ -213,14 +213,12 @@ $(document).ready ->
 
   # SUBSIDY FUNCTIONS
 
-  $(document).on('click', '.add_subsidy_link', ->
-    data = {'subsidy': {'sub_service_request_id': $(this).data('sub_service_request_id')}}
+  $(document).on('click', '#add_subsidy_link', ->
+    data = 'subsidy': 'sub_service_request_id': $(this).data('sub_service_request_id')
     $.ajax
       type: 'POST'
       url:  "/portal/admin/subsidies/"
-      data: JSON.stringify(data)
-      dataType: "script"
-      contentType: 'application/json; charset=utf-8'
+      data: data
       success: ->
         set_percent_subsidy()
   )

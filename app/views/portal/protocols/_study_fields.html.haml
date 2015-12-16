@@ -110,12 +110,14 @@
                   .field{id: "study_type_answer_#{answer.object.study_type_question.friendly_id}", style: ( answer.object.answer != nil ? nil : "display:none;")}
                     = answer.label :answer, answer.object.study_type_question.question, class: "long"
                     %div.display_epic_answers
-                      = answer.object.answer == "true" ? "Yes" : "No"
+                      = answer.object.answer == true ? "Yes" : "No"
                 - else
                   .field{id: "study_type_answer_#{answer.object.study_type_question.friendly_id}", style: ( answer.object.study_type_question.friendly_id == 'certificate_of_conf' || answer.object.answer != nil ? nil : "display:none;")}
-                    = answer.label :answer, answer.object.study_type_question.question, class: "long"
-                    %div.display_epic_answers
-                      = answer.object.answer == "true" ? "Yes" : "No"
+                    - if answer.object.answer != nil
+                      = answer.label :answer, answer.object.study_type_question.question, class: "long"
+                      %div.display_epic_answers
+                        = answer.object.answer == true ? "Yes" : "No"
+                      
           - else
             %span.non_standard_usage_of_radio_buttons
               = f.radio_button :selected_for_epic, true

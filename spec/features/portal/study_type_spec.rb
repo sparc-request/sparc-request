@@ -7,6 +7,7 @@ RSpec.describe "creating a new study that is selected for epic", js: true do
   build_service_request_with_study
 
   before :each do
+    study.update_attributes(study_type_question_group_id: StudyTypeQuestionGroup.where(active:true).pluck(:id).first)
     visit new_portal_protocol_path
   end
 
@@ -28,7 +29,9 @@ RSpec.describe "creating a new study that is selected for epic", js: true do
   			wait_for_javascript_to_finish
   			and_add_an_authorized_user
   			wait_for_javascript_to_finish
+        save_and_open_page
   			expect(Protocol.find(study.id).determine_study_type).to eq "0"
+        
       end
     end
   end
@@ -48,7 +51,6 @@ RSpec.describe "creating a new study that is selected for epic", js: true do
     wait_for_javascript_to_finish
     find('.continue_button').click
     wait_for_javascript_to_finish
-    save_and_open_screenshot
   end
 
 end

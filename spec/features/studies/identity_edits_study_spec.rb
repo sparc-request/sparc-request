@@ -36,6 +36,9 @@ RSpec.describe "Identity edits Study", js: true do
     find('#study_type_answer_higher_level_of_privacy_answer').set(true)
     find('#study_type_answer_higher_level_of_privacy_answer').trigger('change')
 
+    find('#study_type_answer_access_study_info_answer').set(false)
+    find('#study_type_answer_access_study_info_answer').trigger('change')
+
     find('#study_type_answer_epic_inbasket_answer').set(false)
     find('#study_type_answer_epic_inbasket_answer').trigger('change')
 
@@ -48,6 +51,8 @@ RSpec.describe "Identity edits Study", js: true do
     expect(page).to have_css('.continue_button')
     find('.continue_button').click
     wait_for_javascript_to_finish
+
+
 
     expect(find("#study_project_roles_attributes_#{jpl6.id}_epic_access_false")).to be_checked
   end

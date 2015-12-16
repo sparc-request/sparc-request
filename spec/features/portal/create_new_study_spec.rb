@@ -31,6 +31,20 @@ RSpec.describe "creating a new study from user portal", js: true do
     end
   end
 
+  describe 'submitting a partially filled out form' do
+    it 'should throw an error' do
+      fill_in "study_short_title", with: "Bob"
+      fill_in "study_title", with: "Dole"
+      fill_in "study_sponsor_name", with: "Captain Kurt 'Hotdog' Zanzibar"
+      select "Funded", from: "study_funding_status"
+      select "Federal", from: "study_funding_source"
+      find('#study_selected_for_epic_true').click
+      find('.continue_button').click
+      wait_for_javascript_to_finish
+      expect(page).to have_content("Study type questions must be selected")
+    end
+  end
+
   describe 'submitting a filled in form' do
 
     before :each do

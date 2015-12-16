@@ -11,6 +11,7 @@ RSpec.describe "edit study epic box", js: true do
   before :each do
     visit edit_portal_protocol_path service_request.protocol.id
     wait_for_javascript_to_finish
+    save_and_open_screenshot
     find('#study_selected_for_epic_true').click
   end
 

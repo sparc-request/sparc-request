@@ -188,6 +188,13 @@ RSpec.describe "editing a study", js: true do
     end
   end
 
+  context "epic box" do
+    it "should not be open because it is not selected for epic" do
+      study.update_attributes(selected_for_epic: false)
+      expect(page).to_not have_selector('#study_type_answer_certificate_of_conf')
+    end
+  end
+
   context "human subjects" do
 
     before :each do

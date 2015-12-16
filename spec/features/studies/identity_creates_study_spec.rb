@@ -40,16 +40,31 @@ RSpec.describe "Identity creates Study", js: true do
     expect(page).to have_content("Title can't be blank")
     expect(page).to have_content("Funding status can't be blank")
     expect(page).to have_content("Sponsor name can't be blank")
-    expect(page).to have_content("Does your study have a Certificate of Confidentiality must be answered")
   end
 
-  scenario "with valid form data" do
-    find('#study_has_cofc_true').click
+  scenario "selected study to be published in epic and then did not fill out study questions" do
     fill_in "study_short_title", with: "Bob"
     fill_in "study_title", with: "Dole"
     fill_in "study_sponsor_name", with: "Captain Kurt 'Hotdog' Zanzibar"
     select "Funded", from: "study_funding_status"
     select "Federal", from: "study_funding_source"
+    find('#study_selected_for_epic_true').click
+    find('.continue_button').click
+    expect(page).to have_content("Study type questions must be selected")
+  end
+
+  scenario "with valid form data" do
+    fill_in "study_short_title", with: "Bob"
+    fill_in "study_title", with: "Dole"
+    fill_in "study_sponsor_name", with: "Captain Kurt 'Hotdog' Zanzibar"
+    select "Funded", from: "study_funding_status"
+    select "Federal", from: "study_funding_source"
+    find('#study_selected_for_epic_true').click
+    select 'No', from: 'study_type_answer_certificate_of_conf_answer'
+    select 'No', from: 'study_type_answer_higher_level_of_privacy_answer'
+    select 'Yes', from: 'study_type_answer_epic_inbasket_answer'
+    select 'No', from: 'study_type_answer_research_active_answer'
+    select 'No', from: 'study_type_answer_restrict_sending_answer'
 
     find('.continue_button').click
 

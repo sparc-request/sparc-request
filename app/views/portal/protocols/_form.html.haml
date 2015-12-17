@@ -20,14 +20,14 @@
 
 - admin ||= false
 - url = admin ? update_from_project_study_information_portal_admin_sub_service_request_path(@sub_service_request.id) : portal_protocol_path(protocol)
-= form_for protocol, url: url do |f|
+= form_for protocol, :url => url do |f|
   = f.hidden_field :requester_id
   - if admin
-    = hidden_field_tag 'admin_page', admin
-    = hidden_field_tag 'protocol_id', @protocol.id
+    = hidden_field_tag "admin_page", admin
+    = hidden_field_tag "protocol_id", @protocol.id
   = f.error_messages
   - protocol_type = protocol.type
-  - if protocol_type == 'Study'
-    .edit-study-view= render partial: 'portal/protocols/study_fields', locals: { study: protocol, f: f, admin: admin }
-  - elsif protocol_type == 'Project'
-    .edit-project-view= render partial: 'portal/protocols/project_fields', locals: { project: protocol, f: f, admin: admin }
+  - if protocol_type == "Study"
+    .edit-study-view= render :partial => 'portal/protocols/study_fields', :locals => {:study => protocol, :f => f, :admin => admin}
+  - elsif protocol_type == "Project"
+    .edit-project-view= render :partial => 'portal/protocols/project_fields', :locals => {:project => protocol, :f => f, :admin => admin}

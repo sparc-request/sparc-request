@@ -24,8 +24,7 @@ RSpec.describe "Identity creates Study", js: true do
   let_there_be_lane
   let_there_be_j
   fake_login_for_each_test
-  build_service_request_with_study()
-  build_study_type_questions
+  build_service_request_with_study
 
   before :each do
     service_request.update_attribute(:status, 'first_draft')

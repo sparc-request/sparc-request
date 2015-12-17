@@ -48,7 +48,7 @@ class Portal::ArmsController < Portal::BaseController
       end
       flash[:success] = "Arm Created!"
     else
-      @errors = @arm.errors
+      @errors = @selected_arm.errors
     end
   end
 

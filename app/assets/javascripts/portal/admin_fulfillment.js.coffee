@@ -22,6 +22,21 @@ $(document).ready ->
 
   $(".datetimepicker").datetimepicker(format: 'MM-DD-YYYY', allowInputToggle: true)
 
+
+  $(document).on 'click', '#add_otf_service_button', ->
+    data =
+      "sub_service_request_id"  : $(this).data("sub_service_request_id")
+      "one_time_fee"            : true
+    $.ajax
+      type: 'GET'
+      url: "/portal/admin/line_items/new"
+      data: data
+
+  $(document).on 'click', '#add_otf_line_item_form_button', ->
+    $(this).attr('disabled','disabled')
+
+  # ADMIN APPROVALS LISTENERS BEGIN
+
   $(document).on 'click', '#admin_approvals_button', ->
     ssr_id = $(this).data("sub_service_request_id")
     $.ajax
@@ -36,6 +51,9 @@ $(document).ready ->
       url: "/portal/admin/sub_service_requests/#{ssr_id}/admin_approvals_update"
       data: data
   )
+
+  # ADMIN APPROVALS LISTENERS END
+  # NOTES LISTENERS BEGIN
 
   $(document).on 'click', '#notes_index_link', ->
     data =
@@ -55,17 +73,8 @@ $(document).ready ->
       url: "/portal/notes/new"
       data: data
 
-  $(document).on 'click', '#add_otf_service_button', ->
-    data =
-      "sub_service_request_id"  : $(this).data("sub_service_request_id")
-      "one_time_fee"            : true
-    $.ajax
-      type: 'GET'
-      url: "/portal/admin/line_items/new"
-      data: data
-
-  $(document).on 'click', '#add_otf_line_item_form_button', ->
-    $(this).attr('disabled','disabled')
+  # NOTES LISTENERS END
+  # SERVICE REQUEST INFO LISTENERS BEGIN
 
   $(document).on('change', '#sub_service_request_owner', ->
     ssr_id = $(this).data("sub_service_request_id")
@@ -87,12 +96,8 @@ $(document).ready ->
       data: data
   )
 
-  $(document).on('click', '#delete_subsidy', ->
-    subsidy_id = $(this).data("subsidy_id")
-    $.ajax
-      type: 'DELETE'
-      url: "/portal/admin/subsidys/#{subsidy_id}"
-  )
+  # SERVICE REQUEST INFO LISTENERS END
+  # TIMELINE LISTENERS BEGIN
 
   $(document).on('dp.change', '#sub_service_request_consult_arranged_date_picker', ->
     ssr_id = $(this).data("sub_service_request_id")
@@ -113,4 +118,45 @@ $(document).ready ->
       url: "/portal/admin/sub_service_requests/#{ssr_id}"
       data: data
   )
+
+  # TIMELINE LISTENERS END
+  # SUBSIDY LISTENERS BEGIN
+
+  $(document).on('click', '#add_subsidy_link', ->
+    sub_service_request_id = $(this).data('sub_service_request_id')
+    data = 'subsidy': 'sub_service_request_id': sub_service_request_id
+    $.ajax
+      type: 'POST'
+      url:  "/portal/admin/subsidies/"
+      data: data
+  )
+
+  $(document).on('change', '#subsidy_pi_contribution', ->
+    subsidy_id = $(this).data("subsidy_id")
+    pi_contribution = $(this).val()
+    data = 'subsidy': 'pi_contribution': pi_contribution
+    $.ajax
+      type: 'PATCH'
+      url:  "/portal/admin/subsidies/#{subsidy_id}"
+      data: data
+  )
+
+  $(document).on('change', '#subsidy_percent_subsidy', ->
+    subsidy_id = $(this).data("subsidy_id")
+    stored_percent_subsidy = $(this).val()
+    data = 'subsidy': 'stored_percent_subsidy': stored_percent_subsidy
+    $.ajax
+      type: 'PATCH'
+      url:  "/portal/admin/subsidies/#{subsidy_id}"
+      data: data
+  )
+
+  $(document).on('click', '#delete_subsidy', ->
+    subsidy_id = $(this).data("subsidy_id")
+    $.ajax
+      type: 'DELETE'
+      url: "/portal/admin/subsidys/#{subsidy_id}"
+  )
+
+  # SUBSIDY LISTENERS END
 

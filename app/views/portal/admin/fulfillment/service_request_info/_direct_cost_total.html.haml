@@ -21,9 +21,9 @@
 .col-sm-6
   #current_cost
     %label= t(:fulfillments)[:totals][:effective_current_total_cost]
-    %span.effective_cost= number_to_currency(calculate_effective_current_total)
+    %span.effective_cost= number_to_currency(effective_current_total(sub_service_request))
 
 .col-sm-6
   #user_display_cost
     %label= t(:fulfillments)[:totals][:user_display_total_cost]
-    %span.display_cost= number_to_currency(calculate_user_display_total)
+    %span.display_cost= number_to_currency(user_display_total(sub_service_request))

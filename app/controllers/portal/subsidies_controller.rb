@@ -20,9 +20,9 @@
 
 class Portal::SubsidiesController < Portal::BaseController
   respond_to :json, :js, :html
+  before_action :find_subsidy, only: [:update, :destroy, :update_from_fulfillment]
 
   def update_from_fulfillment
-    @subsidy = Subsidy.find(params[:id])
     total = @subsidy.sub_service_request.direct_cost_total
     percent_subsidy = 0.0
     pi_contribution = 0.0
@@ -46,7 +46,6 @@ class Portal::SubsidiesController < Portal::BaseController
     if @subsidy.update_attributes(data)
       @sub_service_request = @subsidy.sub_service_request
       @subsidy.update_attributes(:stored_percent_subsidy => percent_subsidy, :pi_contribution => pi_contribution)
-      render 'portal/sub_service_requests/add_subsidy'
     else
       respond_to do |format|
         format.json { render :status => 500, :json => clean_errors(@subsidy.errors) } 
@@ -59,22 +58,34 @@ class Portal::SubsidiesController < Portal::BaseController
       @sub_service_request = @subsidy.sub_service_request
       @subsidy.update_attribute(:pi_contribution, @sub_service_request.direct_cost_total)
       @subsidy.update_attributes(:stored_percent_subsidy => @subsidy.percent_subsidy)
-      render 'portal/sub_service_requests/add_subsidy'
+      flash[:success] = "Subsidy Created!"
     else
-      respond_to do |format|
-        format.js { render :status => 500, :json => clean_errors(@subsidy.errors) } 
-      end
+      @errors = @subsidy.errors
+    end
+  end
+
+  def update
+    @sub_service_request = @subsidy.sub_service_request
+    if @subsidy.update_attributes(params[:subsidy])
+      flash[:success] = "Subsidy Updated!"
+    else
+      @errors = @subsidy.errors
+      @subsidy.reload
     end
   end
 
   def destroy
-    @subsidy = Subsidy.find(params[:id])
     @sub_service_request = @subsidy.sub_service_request
     if @subsidy.delete
       @subsidy = nil
       @service_request = @sub_service_request.service_request
-      render 'portal/sub_service_requests/add_subsidy'
+      flash[:success] = "Subsidy Destroyed!"
     end
   end
 
+  private
+
+  def find_subsidy
+    @subsidy = Subsidy.find(params[:id])
+  end
 end

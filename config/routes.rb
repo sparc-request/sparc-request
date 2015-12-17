@@ -296,7 +296,7 @@ SparcRails::Application.routes.draw do
         end
       end
 
-      resources :subsidies, only: [:create, :destroy] do
+      resources :subsidies, only: [:create, :update, :destroy] do
         member do
           put :update_from_fulfillment
         end

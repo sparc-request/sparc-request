@@ -20,11 +20,11 @@
 
 class Portal::SubServiceRequestsController < Portal::BaseController
   respond_to :json, :js, :html
+  before_action :find_sub_service_request
 
   before_filter :protocol_authorizer, :only => [:update_from_project_study_information]
       
   def show
-    @sub_service_request = SubServiceRequest.find(params[:id])
     @admin = true
     session[:sub_service_request_id] = @sub_service_request.id
     session[:service_request_id] = @sub_service_request.service_request_id
@@ -51,7 +51,6 @@ class Portal::SubServiceRequestsController < Portal::BaseController
   end
 
   def update
-    @sub_service_request = SubServiceRequest.find(params[:id])
     @subsidy = @sub_service_request.subsidy
     if @sub_service_request.update_attributes(params[:sub_service_request])
       flash[:success] = "Sub Service Request Updated!"
@@ -61,7 +60,6 @@ class Portal::SubServiceRequestsController < Portal::BaseController
   end
 
   def destroy
-    @sub_service_request = SubServiceRequest.find(params[:id])
     if @sub_service_request.destroy
       # Delete all related toast messages
       ToastMessage.where(:sending_class_id => params[:id]).where(:sending_class => "SubServiceRequest").each do |toast|
@@ -84,7 +82,6 @@ class Portal::SubServiceRequestsController < Portal::BaseController
   end
 
   def update_from_fulfillment
-    @sub_service_request = SubServiceRequest.find(params[:id])
     @study_tracker = params[:study_tracker] == "true"
     saved_status = @sub_service_request.status
 
@@ -105,8 +102,6 @@ class Portal::SubServiceRequestsController < Portal::BaseController
   end
 
   def update_from_project_study_information
-    @sub_service_request = SubServiceRequest.find params[:id]
-
     attrs = params[@protocol.type.downcase.to_sym]
     
     if @protocol.update_attributes attrs
@@ -131,7 +126,6 @@ class Portal::SubServiceRequestsController < Portal::BaseController
     errors = []
     #### add logic to save data
     referrer = request.referrer.split('/').last
-    @sub_service_request = SubServiceRequest.find(params[:id])
     @service_request = @sub_service_request.service_request
     @service_request.update_attributes(params[:service_request])
 
@@ -178,27 +172,24 @@ class Portal::SubServiceRequestsController < Portal::BaseController
 
   def delete_documents
     # deletes a group of documents
-    sub_service_request = SubServiceRequest.find(params[:id])
-    service_request = sub_service_request.service_request
+    service_request = @sub_service_request.service_request
     document = service_request.documents.find params[:document_id]
     @tr_id = "#document_id_#{document.id}"
 
-    sub_service_request.documents.delete document
-    sub_service_request.save
+    @sub_service_request.documents.delete document
+    @sub_service_request.save
     document.destroy if document.sub_service_requests.empty?
   end
 
   def edit_documents
-    @sub_service_request = SubServiceRequest.find(params[:id])
     service_request = @sub_service_request.service_request
     @document = service_request.documents.find params[:document_id]
     @service_list = service_request.service_list
   end
 
   def push_to_epic
-    sub_service_request = SubServiceRequest.find(params[:id])
     begin
-      sub_service_request.service_request.protocol.push_to_epic(EPIC_INTERFACE)
+      @sub_service_request.service_request.protocol.push_to_epic(EPIC_INTERFACE)
 
       respond_to do |format|
         format.json {
@@ -223,7 +214,6 @@ class Portal::SubServiceRequestsController < Portal::BaseController
   end
 
   def admin_approvals_update
-    @sub_service_request = SubServiceRequest.find(params[:id])
     if @sub_service_request.update_attributes(params)
       @sub_service_request.generate_approvals(@user, params)
       @service_request = @sub_service_request.service_request
@@ -234,6 +224,10 @@ class Portal::SubServiceRequestsController < Portal::BaseController
   end
 
 private
+
+  def find_sub_service_request
+    @sub_service_request = SubServiceRequest.find(params[:id])
+  end
 
   def protocol_authorizer
     @protocol = Protocol.find(params[:protocol_id])

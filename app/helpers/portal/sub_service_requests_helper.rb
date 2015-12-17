@@ -33,36 +33,34 @@ module Portal::SubServiceRequestsHelper
 
   def calculate_total
     if @sub_service_request
-      total = @sub_service_request.direct_cost_total / 100
-    end
-
-    total
-  end
-  
-  def calculate_user_display_total
-    if @sub_service_request
-      total = @sub_service_request.direct_cost_total / 100
+      total = @sub_service_request.direct_cost_total / 100.0
     end
 
     total
   end
 
-  def calculate_admin_pi_contribution
-    if @sub_service_request && @subsidy
-      pi_contribution = @sub_service_request.subsidy.fix_pi_contribution(@subsidy.stored_percent_subsidy)
-    end
-
-    pi_contribution
+  def user_display_total sub_service_request
+    return (sub_service_request.direct_cost_total / 100.0)
   end
-  
-  def calculate_effective_current_total
-    if @sub_service_request
-      @sub_service_request.set_effective_date_for_cost_calculations
-      total = @sub_service_request.direct_cost_total / 100
-      @sub_service_request.unset_effective_date_for_cost_calculations
-    end
 
-    total
+  def effective_current_total sub_service_request
+    sub_service_request.set_effective_date_for_cost_calculations
+    total = (sub_service_request.direct_cost_total / 100.0)
+    sub_service_request.unset_effective_date_for_cost_calculations
+
+    return total
+  end
+
+  def subsidy_user_display_total sub_service_request, subsidy
+    pi_contribution = (subsidy.pi_contribution / 100.0)
+
+    return user_display_total(sub_service_request) - pi_contribution
+  end
+
+  def subsidy_effective_current_total sub_service_request, subsidy
+    pi_contribution = (subsidy.pi_contribution / 100.0)
+
+    return effective_current_total(sub_service_request) - pi_contribution
   end
 
   #This is used to filter out ssr's on the cfw home page

@@ -67,7 +67,7 @@ en:
       services: "Services"
       subject_tracker: "Subject Tracker"
       template: "Template"
-      users: "Associated Users"
+      users: "Authorized Users"
     title: "Dashboard <span>|</span> Welcome"
 
   admin_identities:
@@ -103,10 +103,6 @@ en:
     search_placeholder: "Search all service requests..."
     service: "Service"
     title: "My Profile"
-
-  # Associated Users Tab
-  associated_users:
-    add: "Add a new Associated User"
 
   # Bottom navigation
   bottom_navigation:
@@ -329,7 +325,8 @@ en:
       service: "Service"
       source: "Funding Source"
       source_of_price: "Source of Price / Rate"
-      survey_name: "Survey"
+      survey_name: "Name (and Version)"
+      survey_warning: "* The associated survey(s) will be sent out to the service requester(s) through email at the time of service completion."
       unfunded: "Unfunded Student Research*"
     title: "SPARC Request Services Catalog"
 
@@ -861,7 +858,7 @@ en:
     department: "Department:"
     edit_user: "Edit User"
     email: "E-mail:"
-    epic_access: "Epic EMR Access?:"
+    epic_access: "Epic EMR Access?:*"
     era: "ERA Commons Name:"
     institution_prompt: "Select an Institution"
     institution: "Institution:"
@@ -869,12 +866,13 @@ en:
     phone: "Phone:"
     rights:
       approve: 'Authorize/Change Study Charges'
-      header: "User Rights:"
+      header: "User Rights:*"
       none: 'Study/Project Member Only'
       request: 'Request/Approve Services'
       view: 'View Rights'
     role_prompt: "Select a Role"
     role: "Role:*"
+    specify: "Please Specify:*"
     subspecialty_prompt: "Select a Subspecialty"
     subspecialty: "Subspecialty:"
 
@@ -894,9 +892,9 @@ en:
     funding: "Funding Source:"
     greeting: "Welcome!"
     information: "Information:"
-    loading: "Loading your projects/studies"
+    loading: "Loading your Projects/Studies"
     message1: "Within your dashboard, you can view (and/or edit and submit) service requests currently in SPARC Request, as well as all of those still in 'draft' status."
-    message2: "Please note that projects/studies are listed in descending order."
+    message2: "Please note that Projects/Studies are listed in descending order."
     name: "Name:"
     no_authorized_users: "Currently no authorized users"
     note_count: "Unread Message"
@@ -904,6 +902,7 @@ en:
     program: "Program/Core:"
     provider: "Provider:"
     proxy: "Proxy Rights:"
+    require_primary_pi_message: "Projects/Studies require a Primary PI. Please add a new one before continuing."
     rights1: "You do not have appropriate rights to"
     rights2: "Should you need this right, please contact your PI or Authorized Users"
     role: "Role:"

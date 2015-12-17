@@ -1230,8 +1230,8 @@ en:
       edit_arm: "Edit Arm"
       manage_arms: "Manage Arms"
       manage_visits: "Manage Visits"
+      manage_services: "Manage Services"
       remove_arm: "Remove Arm"
-
 
   study_tracker:
     title: "Fulfillment"

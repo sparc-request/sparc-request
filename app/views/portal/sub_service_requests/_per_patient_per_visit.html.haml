@@ -26,37 +26,14 @@
     = t(:fulfillments)[:services][:visits][:no_requests]
 - else
   #per_patient_per_visit_table
-    #study_schedule_buttons{ data: { protocol_id: service_request.protocol_id, sub_service_request_id: sub_service_request.id, service_request_id: service_request.id } }
-      .row
-        .col-sm-6.col-md-6.text-center
-          =t(:protocol)[:study_schedule][:manage_arms]
-          #manage_arms
-            .btn.btn-success.btn-sm.glyphicon.glyphicon-plus#add_arm_button{title: t(:protocol)[:study_schedule][:add_arm], type: "button", aria: {label: "Add Arm"}}
-            .btn.btn-danger.btn-sm.glyphicon.glyphicon-remove#remove_arm_button{title: t(:protocol)[:study_schedule][:remove_arm], type: "button", aria: {label: "Remove Arm"}}
-            .btn.btn-warning.btn-sm.glyphicon.glyphicon-edit#edit_arm_button{title: t(:protocol)[:study_schedule][:edit_arm], type: "button", aria: {label: "Edit Arm"}}
-        .col-sm-6.col-md-6.text-center
-          =t(:protocol)[:study_schedule][:manage_visits]
-          #manage_visit_groups
-            .btn.btn-success.btn-sm.glyphicon.glyphicon-plus#add_visit_group_button{title: t(:protocol)[:study_schedule][:add_visit_group], type: "button", aria: {label: "Add Visit Group"}}
-            .btn.btn-danger.btn-sm.glyphicon.glyphicon-remove#remove_visit_group_button{title: t(:protocol)[:study_schedule][:remove_visit_group], type: "button", aria: {label: "Remove Visit Group"}}
-            .btn.btn-warning.btn-sm.glyphicon.glyphicon-edit#edit_visit_group_button{title: t(:protocol)[:study_schedule][:edit_visit_group], type: "button", aria: {label: "Edit Visit Group"}}
-
+    = render :partial => 'study_schedule/management_buttons', locals: {service_request: service_request, sub_service_request: sub_service_request}
     #service_calendar
       .schedule_tabs{role: 'tabpanel'}
         %ul.nav.nav-tabs.nav-justified{role: 'tablist'}
-          - if @study_tracker
-            = hidden_field_tag('study_tracker', true, :id => "study_tracker_hidden_field")
-            %li.other_tab.custom-tab.active{role: 'presentation'}
-              = link_to t(:calendar_page)[:tabs][:template], table_service_request_service_calendars_path(service_request, tab: "template", study_tracker: true, portal: true) , id: 'template_tab', data: {toggle: 'tab'}, role: 'tab'
-            %li.other_tab.custom-tab{role: 'presentation'}
-              = link_to t(:calendar_page)[:tabs][:billing], table_service_request_service_calendars_path(service_request, tab: "billing_strategy", study_tracker: true, portal: true), id: 'billing_strategy_tab', data: {toggle: 'tab'}, role: 'tab'
-            %li.pricing_tab.custom-tab{role: 'presentation'}
-              = link_to t(:calendar_page)[:tabs][:pricing], merged_calendar_service_request_service_calendars_path(service_request, tab: "calendar", study_tracker: true), id: 'calendar_tab', data: {toggle: 'tab'}, role: 'tab'
-          - else
-            %li.other_tab.custom-tab.active{role: 'presentation'}
-              = link_to t(:calendar_page)[:tabs][:template], table_service_request_service_calendars_path(service_request, tab: "template", portal: true) , {id: 'template_tab', data: {toggle: 'tab'}, role: 'tab', "aria-controls" => 'template_tab'}
-            %li.other_tab.custom-tab{role: 'presentation'}
-              = link_to t(:calendar_page)[:tabs][:billing], table_service_request_service_calendars_path(service_request, tab: "billing_strategy", portal: true), {id: 'billing_strategy_tab', data: {toggle: 'tab'}, role: 'tab', "aria-controls" => 'billing_strategy_tab'}
-            %li.pricing_tab.custom-tab{role: 'presentation'}
-              = link_to t(:calendar_page)[:tabs][:pricing], merged_calendar_service_request_service_calendars_path(service_request, tab: "calendar", portal: true), {id: 'calendar_tab', data: {toggle: 'tab'}, role: 'tab', "aria-controls" => 'calendar_tab'}
-            .move-visits
+          %li.other_tab.custom-tab.active{role: 'presentation'}
+            = link_to t(:calendar_page)[:tabs][:template], table_service_request_service_calendars_path(service_request, tab: "template", portal: true), {id: 'template_tab', data: {toggle: 'tab'}, role: 'tab', "aria-controls" => 'template_tab'}
+          %li.other_tab.custom-tab{role: 'presentation'}
+            = link_to t(:calendar_page)[:tabs][:billing], table_service_request_service_calendars_path(service_request, tab: "billing_strategy", portal: true), {id: 'billing_strategy_tab', data: {toggle: 'tab'}, role: 'tab', "aria-controls" => 'billing_strategy_tab'}
+          %li.pricing_tab.custom-tab{role: 'presentation'}
+            = link_to t(:calendar_page)[:tabs][:pricing], merged_calendar_service_request_service_calendars_path(service_request, tab: "calendar", portal: true), {id: 'calendar_tab', data: {toggle: 'tab'}, role: 'tab', "aria-controls" => 'calendar_tab'}
+          .move-visits

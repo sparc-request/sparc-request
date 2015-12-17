@@ -50,6 +50,39 @@ class Portal::SubServiceRequestsController < Portal::BaseController
     end
   end
 
+  def update
+    @sub_service_request = SubServiceRequest.find(params[:id])
+    @subsidy = @sub_service_request.subsidy
+    if @sub_service_request.update_attributes(params[:sub_service_request])
+      flash[:success] = "Sub Service Request Updated!"
+    else
+      @errors = @sub_service_request.errors
+    end
+  end
+
+  def destroy
+    @sub_service_request = SubServiceRequest.find(params[:id])
+    if @sub_service_request.destroy
+      # Delete all related toast messages
+      ToastMessage.where(:sending_class_id => params[:id]).where(:sending_class => "SubServiceRequest").each do |toast|
+        toast.destroy
+      end
+
+      # notify users with view rights or above of deletion
+      @sub_service_request.service_request.protocol.project_roles.each do |project_role|
+        next if project_role.project_rights == 'none'
+        Notifier.sub_service_request_deleted(project_role.identity, @sub_service_request, current_user).deliver unless project_role.identity.email.blank?
+      end
+
+      # notify service providers
+      @sub_service_request.organization.service_providers.where("(`service_providers`.`hold_emails` != 1 OR `service_providers`.`hold_emails` IS NULL)").each do |service_provider|
+        Notifier.sub_service_request_deleted(service_provider.identity, @sub_service_request, current_user).deliver
+      end
+    end
+
+    redirect_to "/portal/admin"
+  end
+
   def update_from_fulfillment
     @sub_service_request = SubServiceRequest.find(params[:id])
     @study_tracker = params[:study_tracker] == "true"
@@ -93,92 +126,6 @@ class Portal::SubServiceRequestsController < Portal::BaseController
       render :action => 'show'
     end
   end   
-
-  def add_note
-    @sub_service_request = SubServiceRequest.find(params[:id])
-    if @sub_service_request.notes.create(:identity_id => @user.id, :body => params[:body])
-      @sub_service_request.reload
-      render 'portal/sub_service_requests/add_note'
-    else
-      respond_to do |format|
-        format.js { render :status => 500, :json => clean_errors(@sub_service_request.errors) }
-      end
-    end
-  end
-
-  def add_line_item
-    @sub_service_request = SubServiceRequest.find(params[:id])
-    @service_request = @sub_service_request.service_request
-    @subsidy = @sub_service_request.subsidy
-    service = Service.find(params[:new_service_id])
-    percent = @subsidy.try(:percent_subsidy).try(:*, 100)
-    @candidate_one_time_fees = @sub_service_request.candidate_services.select {|x| x.one_time_fee}
-    @candidate_per_patient_per_visit = @sub_service_request.candidate_services.reject {|x| x.one_time_fee}
-    existing_service_ids = @service_request.line_items.map(&:service_id)
-
-    # we don't have arms and we are adding a new per patient per visit service
-    if @service_request.arms.empty? and not service.one_time_fee
-      @service_request.protocol.arms.create(name: 'Screening Phase', visit_count: 1, subject_count: 1)
-    end
-
-    @arm_id = params[:arm_id].to_i if params[:arm_id]
-    @selected_arm = params[:arm_id] ? Arm.find(@arm_id) : @service_request.arms.first
-    @study_tracker = params[:study_tracker] == "true"
-    @line_items = @sub_service_request.line_items
-
-    ActiveRecord::Base.transaction do
-      if @new_line_items = @service_request.create_line_items_for_service(
-        service: Service.find(params[:new_service_id]),
-        optional: true,
-        existing_service_ids: existing_service_ids,
-        allow_duplicates: true)
-
-        @new_line_items.each do |line_item|
-          line_item.update_attribute(:sub_service_request_id, @sub_service_request.id)
-          @sub_service_request.update_cwf_data_for_new_line_item(line_item)
-        end
-
-        # Have to reload the service request to get the correct direct cost total for the subsidy
-        @subsidy.try(:sub_service_request).try(:reload)
-        @subsidy.try(:fix_pi_contribution, percent)
-      else
-        respond_to do |format|
-          format.js { render :status => 500, :json => clean_errors(@service_request.errors) }
-        end
-      end
-    end
-
-    # ##Single line item created
-    # if @sub_service_request.create_line_item(
-    #     service_id: params[:new_service_id],
-    #     sub_service_request_id: params[:sub_service_request_id])
-    #   # Have to reload the service request to get the correct direct cost total for the subsidy
-    #   @subsidy.try(:sub_service_request).try(:reload)
-    #   @subsidy.try(:fix_pi_contribution, percent)
-    # else
-    #   respond_to do |format|
-    #     format.js { render :status => 500, :json => clean_errors(@sub_service_request.errors) }
-    #   end
-    # end
-  end
-
-  def add_otf_line_item
-    @sub_service_request = SubServiceRequest.find(params[:id])
-    @service_request = @sub_service_request.service_request
-    @candidate_one_time_fees = @sub_service_request.candidate_services.select {|x| x.one_time_fee}
-
-    @study_tracker = params[:study_tracker] == "true"
-    @line_items = @sub_service_request.line_items
-    
-    if @sub_service_request.create_line_item(
-        service_id: params[:new_service_id],
-        sub_service_request_id: params[:sub_service_request_id])
-    else
-      respond_to do |format|
-        format.js { render :status => 500, :json => clean_errors(@sub_service_request.errors) }
-      end
-    end
-  end
 
   def new_document
     errors = []
@@ -248,29 +195,6 @@ class Portal::SubServiceRequestsController < Portal::BaseController
     @service_list = service_request.service_list
   end
 
-  def destroy
-    @sub_service_request = SubServiceRequest.find(params[:id])
-    if @sub_service_request.destroy
-      # Delete all related toast messages
-      ToastMessage.where(:sending_class_id => params[:id]).where(:sending_class => "SubServiceRequest").each do |toast|
-        toast.destroy
-      end
-
-      # notify users with view rights or above of deletion
-      @sub_service_request.service_request.protocol.project_roles.each do |project_role|
-        next if project_role.project_rights == 'none'
-        Notifier.sub_service_request_deleted(project_role.identity, @sub_service_request, current_user).deliver unless project_role.identity.email.blank?
-      end
-
-      # notify service providers
-      @sub_service_request.organization.service_providers.where("(`service_providers`.`hold_emails` != 1 OR `service_providers`.`hold_emails` IS NULL)").each do |service_provider|
-        Notifier.sub_service_request_deleted(service_provider.identity, @sub_service_request, current_user).deliver
-      end
-    end
-
-    redirect_to "/portal/admin"
-  end
-
   def push_to_epic
     sub_service_request = SubServiceRequest.find(params[:id])
     begin
@@ -291,6 +215,32 @@ class Portal::SubServiceRequestsController < Portal::BaseController
               json: [$!.message])
         }
       end
+    end
+  end
+
+  def admin_approvals_show
+    @sub_service_request = SubServiceRequest.find(params[:id])
+  end
+
+  def admin_approvals_update
+    @sub_service_request = SubServiceRequest.find(params[:id])
+    if @sub_service_request.update_attributes(params)
+      @sub_service_request.generate_approvals(@user, params)
+      @service_request = @sub_service_request.service_request
+      @approvals = [@service_request.approvals, @sub_service_request.approvals].flatten
+    else
+      @errors = @sub_service_request.errors
+    end
+  end
+
+private
+
+  def protocol_authorizer
+    @protocol = Protocol.find(params[:protocol_id])
+    authorized_user = ProtocolAuthorizer.new(@protocol, @user)
+    if (request.get? && !authorized_user.can_view?) || (!request.get? && !authorized_user.can_edit?)
+      @protocol = nil
+      render :partial => 'service_requests/authorization_error', :locals => {:error => "You are not allowed to access this protocol."}
     end
   end
 
@@ -315,16 +265,6 @@ class Portal::SubServiceRequestsController < Portal::BaseController
         @protocol.awaiting_approval_for_epic_push
         Notifier.notify_for_epic_user_approval(@protocol).deliver unless QUEUE_EPIC
       end
-    end
-  end
-
-private
-  def protocol_authorizer
-    @protocol = Protocol.find(params[:protocol_id])
-    authorized_user = ProtocolAuthorizer.new(@protocol, @user)
-    if (request.get? && !authorized_user.can_view?) || (!request.get? && !authorized_user.can_edit?)
-      @protocol = nil
-      render :partial => 'service_requests/authorization_error', :locals => {:error => "You are not allowed to access this protocol."}
     end
   end
 end

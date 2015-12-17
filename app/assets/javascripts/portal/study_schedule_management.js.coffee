@@ -11,6 +11,9 @@
       url: "/portal/arms/new"
       data: data
 
+  $(document).on 'click', '#add_arm_form_button', ->
+    $(this).attr('disabled','disabled')
+
   $(document).on 'click', '#remove_arm_button', ->
     data =
       "protocol_id"             : $('#study_schedule_buttons').data('protocol-id')
@@ -23,6 +26,7 @@
       data: data
 
   $(document).on 'click', '#remove_arm_form_button', ->
+    $(this).attr('disabled','disabled')
     arm_id = $("#arm_form_select").val()
     arm_name = $("#arm_form_select option:selected").text()
     data =
@@ -45,6 +49,9 @@
       type: 'GET'
       url: "/portal/arms/navigate"
       data: data
+
+  $(document).on 'click', '#edit_arm_form_button', ->
+    $(this).attr('disabled','disabled')
 
   $(document).on 'change', "#arm_form_select", ->
     data =
@@ -74,6 +81,9 @@
       url: "/portal/visit_groups/new"
       data: data
 
+  $(document).on 'click', '#add_visit_group_form_button', ->
+    $(this).attr('disabled','disabled')
+
   $(document).on 'change', '#visit_group_arm_id', ->
     arm_id = $(this).find('option:selected').val()
     data =
@@ -99,6 +109,9 @@
       type: 'GET'
       url: "/portal/visit_groups/navigate"
       data: data
+
+  $(document).on 'click', '#edit_visit_group_form_button', ->
+    $(this).attr('disabled','disabled')
 
   $(document).on 'click', '#remove_visit_group_button', ->
     data =
@@ -139,6 +152,7 @@
         data: data
 
   $(document).on 'click', '#remove_visit_group_form_button', ->
+    $(this).attr('disabled','disabled')
     schedule_tab = $('#current_tab').attr('value')
     visit_group_id = $("#vg_form_select").val()
     arm_id = $('#vg_form_arm_select').val()
@@ -149,101 +163,56 @@
       "service_request_id"      : $('#study_schedule_buttons').data("service-request-id")
       'page'                    : page
       'schedule_tab'            : schedule_tab
-    if confirm "Are you sure you want to delete the selected visit from all particpants?"
-      $.ajax
-        type: 'DELETE'
-        url: "/portal/visit_groups/#{visit_group_id}.js"
-        data: data
+    $.ajax
+      type: 'DELETE'
+      url: "/portal/visit_groups/#{visit_group_id}.js"
+      data: data
 
 ##          **END MANAGE VISIT GROUPS**               ##
+##          **BEGIN MANAGE LINE ITEMS**               ##
 
+  $(document).on 'click', '#add_service_button', ->
+    page_hash = {}
+    $(".jump_to_visit").each (index) ->
+      key = $(this).attr('id').replace("jump_to_visit_", "")
+      value = $(this).find("option:selected").val()
+      page_hash[key] = value
+    data =
+      "sub_service_request_id"  : $('#study_schedule_buttons').data("sub-service-request-id")
+      "service_request_id"      : $('#study_schedule_buttons').data("service-request-id")
+      'page_hash'   : page_hash
+      'schedule_tab': $('#current_tab').attr('value')
+      'protocol_id' : $('#study_schedule_buttons').data('protocol-id')
+    $.ajax
+      type: 'GET'
+      url: "/portal/multiple_line_items/new_line_items"
+      data: data
 
-  # $(document).on('click', '.add_visit_link', ->
-  #   $('#visit-form').dialog('open')
-  # )
+  $(document).on 'click', '#add_line_items_form_button', ->
+    $(this).attr('disabled','disabled')
 
-  # $('#visit-form').dialog
-  #   dialogClass: "new_visit_dialog"
-  #   autoOpen: false
-  #   height: 275
-  #   width: 300
-  #   modal: true
-  #   resizable: false
-  #   buttons: [
-  #     {
-  #       id: "submit_visit"
-  #       text: "Submit"
-  #       click: ->
-  #         $("#visit-form").submit()
-  #         $("#submit_visit").attr("disabled", true).addClass("ui-state-disabled")
-  #     },
-  #     {
-  #       id: "cancel_visit"
-  #       text: "Cancel"
-  #       click: ->
-  #         $(this).dialog('close')
-  #     }]
-  #   open: ->
-  #     originalContent = $('#visit-form').html()
-  #   close: ->
-  #     $('#visit-form').html(originalContent)
+  $(document).on 'click', '#remove_service_button', ->
+    data =
+      'protocol_id'             : $('#study_schedule_buttons').data('protocol-id')
+      "sub_service_request_id"  : $('#study_schedule_buttons').data("sub-service-request-id")
+      "service_request_id"      : $('#study_schedule_buttons').data("service-request-id")
+    $.ajax
+      type: 'GET'
+      url: "/portal/multiple_line_items/edit_line_items"
+      data: data
 
-  # $('#visit-form').submit ->
-  #   sr_id = $('.add_visit_link').data('service_request_id')
-  #   data =
-  #     'sub_service_request_id': $('.add_visit_link').data('sub_service_request_id')
-  #     'service_request_id': sr_id
-  #     'visit_position': $('#visit_position').val()
-  #     'arm_id': $('#arm_id').val()
-  #     'study_tracker': $('#study_tracker_hidden_field').val() || null
-  #     'visit_name': $('#visit_name').val()
-  #     'visit_window_before': $('#visit_window_before').val()
-  #     'visit_day': $('#visit_day').val()
-  #     'visit_window_after': $('#visit_window_after').val()
-  #   $.ajax
-  #     type: 'POST'
-  #     url:   "/portal/admin/service_requests/#{sr_id}/add_per_patient_per_visit_visit"
-  #     data:  JSON.stringify(data)
-  #     dataType: 'script'
-  #     contentType: 'application/json; charset=utf-8'
-  #     success: ->
-  #       $().toastmessage('showSuccessToast', I18n["service_request_success"])
-  #       $('#visit-form').dialog('close')
-  #     error: (jqXHR, textStatus, errorThrown) ->
-  #       if jqXHR.status == 500 and jqXHR.getResponseHeader('Content-Type').split(';')[0] == 'text/javascript'
-  #         errors = JSON.parse(jqXHR.responseText)
-  #       else
-  #         errors = [textStatus]
-  #       for error in errors
-  #         $().toastmessage('showErrorToast', "#{error.humanize()}.");
-  #     complete: ->
-  #       $("#submit_visit").attr("disabled", false).removeClass("ui-state-disabled")
+  $(document).on 'change', "#remove_service_id", ->
+    data =
+      'protocol_id' : $('#study_schedule_buttons').data('protocol-id')
+      'service_id'  : $(this).find('option:selected').val()
+      "sub_service_request_id"  : $('#study_schedule_buttons').data("sub-service-request-id")
+      "service_request_id"      : $('#study_schedule_buttons').data("service-request-id")
+    $.ajax
+      type: 'GET'
+      url: "/portal/multiple_line_items/edit_line_items"
+      data: data
 
-  # $(document).on('click', '.delete_visit_link', ->
-  #   if $(this).data('visit_count') <= 1
-  #     alert(I18n["fulfillment_js"]["last_visit_delete"])
-  #   else
-  #     sr_id = $(this).data('service_request_id')
-  #     data =
-  #       'sub_service_request_id': $(this).data('sub_service_request_id')
-  #       'service_request_id': sr_id
-  #       'visit_position': $('#delete_visit_position').val()
-  #       'arm_id': $('#arm_id').val()
-  #       'study_tracker': $('#study_tracker_hidden_field').val() || null
-  #     $.ajax
-  #       type: 'PUT'
-  #       url:   "/portal/admin/service_requests/#{sr_id}/remove_per_patient_per_visit_visit"
-  #       data:  JSON.stringify(data)
-  #       dataType: 'script'
-  #       contentType: 'application/json; charset=utf-8'
-  #       success: ->
-  #         $().toastmessage('showSuccessToast', I18n["service_request_success"])
+  $(document).on 'click', '#remove_line_items_form_button', ->
+    $(this).attr('disabled','disabled')
 
-  #       error: (jqXHR, textStatus, errorThrown) ->
-  #         if jqXHR.status == 500 and jqXHR.getResponseHeader('Content-Type').split(';')[0] == 'text/javascript'
-  #           errors = JSON.parse(jqXHR.responseText)
-  #         else
-  #           errors = [textStatus]
-  #         for error in errors
-  #           $().toastmessage('showErrorToast', "#{error.humanize()}.");
-  # )
+##          **END MANAGE LINE ITEMS**               ##

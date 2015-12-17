@@ -1,0 +1,20 @@
+.modal-dialog
+  .modal-content
+    = form_for note, {remote: true, url: portal_notes_path(note), html: {class: "form-horizontal", role: "form"}} do |form|
+      = form.hidden_field :sub_service_request_id
+      = form.hidden_field :appointment_id
+      = form.hidden_field :identity_id
+      .modal-header
+        %button.close{type: 'button', data: {dismiss: 'modal'}}
+          %span{aria: {hidden:'true'}} &times;
+          %span.sr-only &times;
+        %h4.modal-title.text-center New Note
+      .modal-body
+        .form-group
+          = form.label "body", "Note", class: "col-sm-3 control-label"
+          .col-sm-8
+            = form.text_area :body, {class: 'form-control', rows: "6"}
+      .modal-footer
+        .center-block
+          %button.btn.btn-default{type: 'button', data: {dismiss: 'modal'}} Close
+          %input.btn.btn-primary{type: 'submit', value: "Add Note"}

@@ -21,6 +21,53 @@
 class Portal::LineItemsController < Portal::BaseController
   respond_to :json, :js, :html
 
+  def new
+    # called to render modal to create line items
+    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
+    @service_request = @sub_service_request.service_request
+    if params[:one_time_fee]
+      @services = @sub_service_request.candidate_services.select {|x| x.one_time_fee}
+    else
+      @services = @sub_service_request.candidate_services.select {|x| !x.one_time_fee}
+      @page_hash = params[:page_hash]
+    end
+    @schedule_tab = params[:schedule_tab]
+  end
+
+  def create
+    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
+    @service_request = @sub_service_request.service_request
+    @candidate_one_time_fees = @sub_service_request.candidate_services.select {|x| x.one_time_fee}
+
+    if @sub_service_request.create_line_item(
+        service_id: params[:add_service_id],
+        sub_service_request_id: params[:sub_service_request_id])
+    else
+      @errors = @sub_service_request.errors
+    end
+  end
+
+  def destroy
+    @line_item = LineItem.find(params[:id])
+    @sub_service_request = @line_item.sub_service_request
+    @service_request = @sub_service_request.service_request
+    @subsidy = @sub_service_request.subsidy
+    percent = @subsidy.try(:percent_subsidy).try(:*, 100)
+    @selected_arm = @service_request.arms.first
+    @study_tracker = params[:study_tracker] == "true"
+    @line_items = @sub_service_request.line_items
+
+    if @line_item.destroy
+      # Have to reload the service request to get the correct direct cost total for the subsidy
+      @subsidy.try(:fix_pi_contribution, percent)
+      @service_request = @sub_service_request.service_request
+      @candidate_one_time_fees = @sub_service_request.candidate_services.select {|x| x.one_time_fee}
+      @candidate_per_patient_per_visit = @sub_service_request.candidate_services.reject {|x| x.one_time_fee}
+
+      render 'portal/sub_service_requests/add_line_item'
+    end
+  end
+
   def update_from_fulfillment
     @line_item = LineItem.find(params[:id])
     @sub_service_request = @line_item.sub_service_request
@@ -50,15 +97,6 @@ class Portal::LineItemsController < Portal::BaseController
     end
   end
 
-  def reload_request
-     # Have to reload the service request to get the correct direct cost total for the subsidy
-    @subsidy.try(:sub_service_request).try(:reload)
-    @subsidy.try(:fix_pi_contribution, @percent)
-    @candidate_one_time_fees = @sub_service_request.candidate_services.select {|x| x.one_time_fee}
-    @candidate_per_patient_per_visit = @sub_service_request.candidate_services.reject {|x| x.one_time_fee}
-    render 'portal/sub_service_requests/add_line_item'
-  end
-
   def update_from_cwf
     @line_item = LineItem.find(params[:id])
     @sub_service_request = @line_item.sub_service_request
@@ -86,24 +124,36 @@ class Portal::LineItemsController < Portal::BaseController
     end
   end
 
-  def destroy
-    @line_item = LineItem.find(params[:id])
-    @sub_service_request = @line_item.sub_service_request
-    @service_request = @sub_service_request.service_request
-    @subsidy = @sub_service_request.subsidy
-    percent = @subsidy.try(:percent_subsidy).try(:*, 100)
-    @selected_arm = @service_request.arms.first
-    @study_tracker = params[:study_tracker] == "true"
-    @line_items = @sub_service_request.line_items
-    
-    if @line_item.destroy
+  private
+
+  def reload_request
+     # Have to reload the service request to get the correct direct cost total for the subsidy
+    @subsidy.try(:sub_service_request).try(:reload)
+    @subsidy.try(:fix_pi_contribution, @percent)
+    @candidate_one_time_fees = @sub_service_request.candidate_services.select {|x| x.one_time_fee}
+    @candidate_per_patient_per_visit = @sub_service_request.candidate_services.reject {|x| x.one_time_fee}
+    render 'portal/sub_service_requests/add_line_item'
+  end
+
+  def update_otf_line_item
+    updated_service_relations = true
+    if params[:quantity]
+      @line_item.quantity = params[:quantity]
+      updated_service_relations = @line_item.valid_otf_service_relation_quantity?
+    end
+
+    if updated_service_relations && @line_item.update_attributes(params[:line_item])
       # Have to reload the service request to get the correct direct cost total for the subsidy
-      @subsidy.try(:fix_pi_contribution, percent)
-      @service_request = @sub_service_request.service_request
+      @subsidy.try(:sub_service_request).try(:reload)
+      @subsidy.try(:fix_pi_contribution, @percent)
       @candidate_one_time_fees = @sub_service_request.candidate_services.select {|x| x.one_time_fee}
       @candidate_per_patient_per_visit = @sub_service_request.candidate_services.reject {|x| x.one_time_fee}
-
       render 'portal/sub_service_requests/add_line_item'
+    else
+      @line_item.reload
+      respond_to do |format|
+        format.js { render :status => 500, :json => clean_errors(@line_item.errors) }
+      end
     end
   end
 
@@ -142,28 +192,6 @@ class Portal::LineItemsController < Portal::BaseController
       else
         return false
       end
-    end
-  end
-end
-
-def update_otf_line_item
-  updated_service_relations = true
-  if params[:quantity]
-    @line_item.quantity = params[:quantity]
-    updated_service_relations = @line_item.valid_otf_service_relation_quantity?
-  end
-
-  if updated_service_relations && @line_item.update_attributes(params[:line_item])
-    # Have to reload the service request to get the correct direct cost total for the subsidy
-    @subsidy.try(:sub_service_request).try(:reload)
-    @subsidy.try(:fix_pi_contribution, @percent)
-    @candidate_one_time_fees = @sub_service_request.candidate_services.select {|x| x.one_time_fee}
-    @candidate_per_patient_per_visit = @sub_service_request.candidate_services.reject {|x| x.one_time_fee}
-    render 'portal/sub_service_requests/add_line_item'
-  else
-    @line_item.reload
-    respond_to do |format|
-      format.js { render :status => 500, :json => clean_errors(@line_item.errors) }
     end
   end
 end

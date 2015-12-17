@@ -65,6 +65,14 @@ class SubServiceRequest < ActiveRecord::Base
   accepts_nested_attributes_for :line_items, allow_destroy: true
   accepts_nested_attributes_for :payments, allow_destroy: true
 
+  def consult_arranged_date=(date)
+    write_attribute(:consult_arranged_date, Time.strptime(date, "%m-%d-%Y")) if date.present?
+  end
+
+  def requester_contacted_date=(date)
+    write_attribute(:requester_contacted_date, Time.strptime(date, "%m-%d-%Y")) if date.present?
+  end
+
   def formatted_status
     if AVAILABLE_STATUSES.has_key? status
       AVAILABLE_STATUSES[status]

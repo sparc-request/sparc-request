@@ -51,35 +51,50 @@
     font-size: 1.4em;
   }
 }
-// .ui-tabs.plain_class {
-//   border: 0px;
-//   background: none;
-//   padding: 0px
-// }
 
-// .ui-tabs.plain_class ul.ui-tabs-nav {
-//   background: #3883A9 !important;
-//   padding-top: 15px;
-//   border-radius: 0px;
-//   -moz-border-radius: 0px;
-//   -webkit-border-radius: 0px;
-// }
-// .ui-tabs.plain_class ul.ui-tabs-nav li {
-//   background: #3e9f5a !important;
-//   border: none;
-//   border-radius: 0px;
-//   -moz-border-radius: 0px;
-//   -webkit-border-radius: 0px;
-// }
+#study_schedule_buttons .col-md-4 {
+  font-size: 18px;
+}
 
-// .ui-tabs.plain_class ul.ui-tabs-nav li.ui-tabs-active {
-//   background: #f89c50 !important;
-// }
+#admin_accordion {
+  margin-top: 10px;
 
-// .ui-tabs.plain_class ul.ui-tabs-nav li.ui-state-hover a,
-// .ui-tabs.plain_class ul.ui-tabs-nav li.ui-state-focus a {
-//   color: white;
-// }
+  .panel-heading:hover {
+    cursor: pointer;
+  }
+}
+
+.details-table {
+  padding: 15px 0px 15px 0px;
+  height: 400px;
+  overflow: scroll;
+
+  .details-header > div {
+    background: #113967;
+    padding: 10px 10px 10px 10px;
+    color: white;
+    border-right: 1px solid white;
+    &:last-child{
+      border: 0px;
+    }
+  }
+
+  .detail {
+    padding: 1px 10px 1px 10px;
+    overflow: hidden;
+
+    .field {
+      font-weight: bold;
+    }
+  }
+
+  .detail:nth-child(2n),
+  .detail:nth-child(2n):hover {
+    background-color: #90B9CD;
+    color: white;
+  }
+}
+
 
 #admin-tablesorter {
   table {
@@ -174,24 +189,6 @@ table.tablesorter thead tr .headerSortDown, table.tablesorter thead tr .headerSo
 background-color: #8dbdd8;
 }
 
-// .admin-right-dashboard {
-//   .user-information-title {
-//     margin-right: 0;
-//   }
-//   .user-information-body {
-//     width: auto;
-//     margin: 0;
-//     float: none;
-//   }
-//   // float: right;
-//   // display: inline;
-//   // width: 243px;
-//   // padding: 14px 0 14px 0px;
-//   p {
-//     display: inline-block;
-//   }
-// }
-
 .admin-index-ssr-list {
   display: inline-block;
   width: 100%;
@@ -232,28 +229,10 @@ background-color: #8dbdd8;
   width: 213px;
   background: url(/assets/portal/portal_header_button_large.png) no-repeat;
 }
-.admin-buttons .return_link,
-.admin-buttons .cwf_return_link,
-#study_tracker_access div.ui-button {
-  background: url(/assets/portal/blue_button_long.png) no-repeat;
-  color: white;
-  display: block;
-  height: 24px;
-  padding: 6px 0 0 38px;
-  width: 179px;
-  margin: 0 auto;
-}
+
 .admin-buttons a.cwf_return_link {
   padding: 6px 0 0 11px;
   width: 206px;
-}
-#study_tracker_access div.ui-button {
-  border: 0 none;
-  padding: 6px 0 0;
-  width: 217px;
-}
-#study_tracker_access div.ui-button .ui-button-text {
-  padding: 0px;
 }
 
 #information a#ssr_save.ui-button,

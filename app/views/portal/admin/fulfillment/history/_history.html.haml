@@ -18,19 +18,24 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#notes_container
-  %h3= t(:fulfillments)[:notes][:header]
-  #notes_table
-    %table
-      %thead
-        - @sub_service_request.notes.each do |note|
-          %tr
-            %td.saved_note
-              .note_body= note.try(:body)
-              .note_date= note.try(:created_at).try(:strftime, '%D')
-              .note_name= note.try(:identity).try(:full_name)
-          %tr.space
-        %tr
-          %td= text_area_tag "notes", "", :class => "note_box"
+.history_tabs{role: 'tabpanel'}
+  %ul.nav.nav-tabs.nav-justified{role: 'tablist'}
+    %li.custom-tab.history_tab.active{role: 'presentation'}
+      = link_to "Status History", "#service_request_status_changes", {class: 'status-tab', "data-toggle" => 'tab', role: 'tab', "aria-controls" => 'status-tab'}
+    %li.custom-tab.history_tab{role: 'presentation'}
+      = link_to "Subsidy History", "#ssr_subsidy_changes", {class: 'subsidy-tab', "data-toggle" => 'tab', role: 'tab', "aria-controls" => 'subsidy-tab'}
+    %li.custom-tab.history_tab{role: 'presentation'}
+      = link_to t(:fulfillments)[:approval_history][:header], "#service_request_approval_changes", {class: 'approval-tab', "data-toggle" => 'tab', role: 'tab', "aria-controls" => 'approval-tab'}
 
-= link_to t(:fulfillments)[:notes][:link], 'javascript:void(0);', :class => "add_note_link", :'data-sub_service_request_id' => @sub_service_request.id
+  .tab-content
+    .tab-pane#service_request_status_changes{role: 'tabpanel', class: 'active'}
+      = render 'portal/sub_service_requests/status_changes'
+
+
+    .tab-pane#ssr_subsidy_changes{role: 'tabpanel'}
+      = render 'portal/sub_service_requests/subsidy_changes'
+
+
+    .tab-pane#service_request_approval_changes{role: 'tabpanel'}
+      = render 'portal/sub_service_requests/approval_changes'
+

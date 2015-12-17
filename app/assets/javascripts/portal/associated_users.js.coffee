@@ -91,13 +91,13 @@ $(document).ready ->
       $(document).on 'click', '.delete-associated-user-button', ->
         if $(this).data('permission')
           adminUsersList         = $(".admin#users")
-          current_user_id        = $('#current_user_id').val()
-          current_user_role      = $(this).data('current_user_role')
-          protocol_id            = $(this).data('protocol_id')
-          sub_service_request_id = $(this).data('sub_service_request_id')
-          pr_id                  = $(this).data('pr_id')
-          user_id                = $(this).data('user_id')
-          user_role              = $(this).data('user_role')
+          current_user_id        = parseInt($('#current_user_id').val(), 10)
+          current_user_role      = $(this).data('current-user-role')
+          protocol_id            = $(this).data('protocol-id')
+          sub_service_request_id = $(this).data('sub-service-request-id')
+          pr_id                  = $(this).data('pr-id')
+          user_id                = $(this).data('user-id')
+          user_role              = $(this).data('user-role')
           confirm_message        = if current_user_id == user_id then 'This action will remove you from the project. Are you sure?' else 'Are you sure?'
           alert_message1         = I18n["protocol_information"]["require_primary_pi_message"]
           cannot_remove_pi       = (current_user_role == 'primary-pi' or user_role == 'primary-pi')
@@ -116,9 +116,10 @@ $(document).ready ->
                   if sub_service_request_id
                     # Nothing
                   else
+                    # console.log(JSON.stringify(current_user_id))
+                    # console.log(JSON.stringify(user_id))
                     if parseInt(current_user_id, 10) == parseInt(user_id, 10)
-                      $(".blue-provider-#{protocol_id}").fadeOut(1500)
-                      $(".protocol-information-#{protocol_id}").fadeOut(1500)
+                      $(".protocol-information-panel-#{protocol_id}").fadeOut(1500)
                     else
                       Sparc.protocol.renderProtocolAccordionTab(protocol_id)
 

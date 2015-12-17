@@ -95,7 +95,7 @@ class Portal::AssociatedUsersController < Portal::BaseController
   end
 
   def update
-    @protocol_role = ProjectRole.find params[:id]    
+    @protocol_role = ProjectRole.find params[:id]
     @protocol_role.identity.assign_attributes params[:identity]
     @identity = Identity.find @protocol_role.identity_id
 
@@ -141,18 +141,14 @@ class Portal::AssociatedUsersController < Portal::BaseController
   end
 
   def destroy
-    @protocol_role = ProjectRole.find params[:id]
-    protocol = @protocol_role.protocol
-    epic_access = @protocol_role.epic_access
+    @protocol_role     = ProjectRole.find params[:id]
+    protocol           = @protocol_role.protocol
+    epic_access        = @protocol_role.epic_access
     project_role_clone = @protocol_role.clone
     @protocol_role.destroy
 
-    if USE_EPIC
-      if protocol.selected_for_epic
-        if epic_access
-          Notifier.notify_primary_pi_for_epic_user_removal(protocol, project_role_clone).deliver unless QUEUE_EPIC
-        end
-      end
+    if USE_EPIC && protocol.selected_for_epic && epic_access
+      Notifier.notify_primary_pi_for_epic_user_removal(protocol, project_role_clone).deliver unless QUEUE_EPIC
     end
 
     if params[:sub_service_request_id]

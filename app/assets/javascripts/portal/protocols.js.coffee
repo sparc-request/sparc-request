@@ -245,13 +245,6 @@ $(document).ready ->
         Sparc.protocol.navigateCostTable('increase') unless $(this).attr('disabled') == 'disabled'
       )
 
-      $('.blue-provider').live('click', ->
-        protocol_id = $(this).data('protocol_id')
-        visible = if $(this).children('.ui-icon').hasClass('ui-icon-triangle-1-s') then true else false
-        if visible && $(this).siblings(".protocol-information-#{protocol_id}").children('.protocol-information-title').length == 0
-          Sparc.protocol.renderProtocolAccordionTab(protocol_id)
-      )
-
     disableButton: (containing_text, change_to) ->
       button = $(".ui-dialog .ui-button:contains(#{containing_text})")
       button.html("<span class='ui-button-text'>#{change_to}</span>")

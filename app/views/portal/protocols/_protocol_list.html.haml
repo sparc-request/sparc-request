@@ -21,7 +21,7 @@
 .container-fluid.protocol-list
   .panel-group#protocol-accordion2
     - protocols.each do |protocol|
-      .panel.panel-default
+      .panel.panel-default{ class: "protocol-information-panel-#{protocol.id}" }
         .panel-heading.container-fluid.accordion-heading{ data: { parent: '#protocol-accordion2', toggle: 'collapse', target: "#collapse-#{protocol.id}", protocol_id: protocol.id } }
           .row
             .col-lg-8
@@ -34,5 +34,5 @@
 
         .panel-collapse.collapse{ id: "collapse-#{protocol.id}" }
           .panel-body
-            .container-fluid{ class: "protocol-information-#{protocol.id}"}
+            .container-fluid{ class: "protocol-information-container-#{protocol.id}"}
 .modal.fade#modal-area{ tabindex: -1, role: 'dialog', 'aria-hidden' => true }

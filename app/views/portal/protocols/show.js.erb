@@ -19,7 +19,7 @@
 // TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 id = "<%= @protocol.id %>"
-$(".protocol-information-" + id).html("<%= escape_javascript(render(:partial => 'portal/protocols/protocol_information', :locals => {:protocol => @protocol, :user => @user, :protocol_role => @protocol_role})) %>");
+$(".protocol-information-container-" + id).html("<%= escape_javascript(render(:partial => 'portal/protocols/protocol_information', :locals => {:protocol => @protocol, :user => @user, :protocol_role => @protocol_role})) %>");
 
 // This needs to be here so it'll be loaded in the DOM upon page load.
 // Dialog will not open otherwise.

@@ -225,7 +225,6 @@ module ServiceCalendarHelper
     else
       arr = [["No Visits", nil]]
     end
-    puts arr.inspect
 
     options_for_select(arr)
   end

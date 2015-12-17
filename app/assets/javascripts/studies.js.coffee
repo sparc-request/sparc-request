@@ -44,7 +44,7 @@ $(document).ready ->
     '#study_impact_areas_attributes_6__destroy':
       'true'             : ['.impact_other']
     '#study_selected_for_epic_true':
-      'true'             : ['#study_type_answer_certificate_of_conf', ]
+      'true'             : ['#study_type_answer_certificate_of_conf']
     '#study_type_answer_access_study_info_answer':
       'false'             : ['#study_type_answer_epic_inbasket', '#study_type_answer_research_active', '#study_type_answer_restrict_sending']
 
@@ -62,7 +62,7 @@ $(document).ready ->
   $("#study_type_answer_certificate_of_conf_answer").change ->
     
     if $(this).val() == 'true'
-      for elem in ['#study_type_answer_higher_level_of_privacy', '#study_type_answer_access_study_info', '#study_type_answer_epic_inbasket', '#study_type_answer_research_active', '#study_type_answer_restrict_sending']
+      for elem in ['#study_type_answer_access_study_info', '#study_type_answer_epic_inbasket', '#study_type_answer_research_active', '#study_type_answer_restrict_sending']
         $(elem).hide()
       for elem in ['#study_type_answer_higher_level_of_privacy_answer','#study_type_answer_access_study_info_answer','#study_type_answer_epic_inbasket_answer', '#study_type_answer_research_active_answer', '#study_type_answer_restrict_sending_answer']
         $(elem).val("").change()

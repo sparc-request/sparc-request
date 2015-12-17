@@ -5,17 +5,6 @@ RSpec.describe "Identity creates Study", js: true do
   let_there_be_j
   fake_login_for_each_test
   build_service_request_with_study
-  shared_examples_for 'display 1,2,2b,3,4,5' do
-    it 'should display 1,2,2b,3,4,5' do
-      select 'No', from: 'study_type_answer_certificate_of_conf_answer'
-      select 'Yes', from: 'study_type_answer_higher_level_of_privacy_answer'
-      select 'Yes', from: 'study_type_answer_access_study_info_answer'
-      select 'Yes', from: 'study_type_answer_epic_inbasket_answer'
-      select 'Yes', from: 'study_type_answer_research_active_answer'
-      
-      expect(page).to_not have_selector('#study_type_answer_restrict_sending')
-    end
-  end
 
   before :each do
     service_request.update_attribute(:status, 'first_draft')

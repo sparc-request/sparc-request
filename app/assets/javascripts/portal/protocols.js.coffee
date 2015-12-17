@@ -75,8 +75,9 @@ $(document).ready ->
           $('.permissions-dialog .text').html('Edit.')
       )
 
-      $(document).on('click', '.protocol-archive-button', ->
-        protocol_id = $(this).data('protocol_id')
+      $(document).on('click', '.protocol-archive-button', (event) ->
+        event.stopPropagation()
+        protocol_id = $(this).data('protocol-id')
         $.ajax
           type: "POST"
           url:  "/protocol_archive/create.js"
@@ -113,13 +114,15 @@ $(document).ready ->
         status = $(this).data('status')
         ssr_id = $(this).attr('data-ssr_id')
         random_number = Math.floor(Math.random()*10101010101)
-        $.ajax({
-            method: 'get'
-            url: "/portal/service_requests/#{id}?#{random_number}"
-            data: {protocol_id: protocol_id, status: status, ssr_id: ssr_id}
-            success: ->
-              $('.view-sub-service-request-dialog').dialog('open')
-          })
+        $.ajax
+          method: 'get'
+          url: "/portal/service_requests/#{id}?#{random_number}"
+          data:
+            protocol_id: protocol_id
+            status: status
+            ssr_id: ssr_id
+          success: ->
+            $('.view-sub-service-request-dialog').dialog('open')
       )
 
       $('.edit-protocol-information-dialog').dialog({

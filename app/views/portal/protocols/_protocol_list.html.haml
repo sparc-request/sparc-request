@@ -30,7 +30,7 @@
                 - if protocol.principal_investigators
                   %li= "PI(s): #{protocol.principal_investigators.map(&:display_name).join(', ')}"
             .col-lg-4
-              %button.btn.btn-warning.archive_button.pull-right= "#{protocol.archived ? 'Unarchive' : 'Archive'} #{protocol.type.capitalize}"
+              %button.btn.btn-warning.protocol-archive-button.pull-right{ data: { protocol_id: protocol.id } }= "#{protocol.archived ? 'Unarchive' : 'Archive'} #{protocol.type.capitalize}"
 
         .panel-collapse.collapse{ id: "collapse-#{protocol.id}" }
           .panel-body

@@ -217,15 +217,15 @@ module ServiceCalendarHelper
   def move_to_position arm
     unless arm.visit_groups.empty?
       vgs = arm.visit_groups
-      last_position = vgs.count
-      arr = [['Move to last position', last_position]]
+      arr = []
       vgs.each do |vg|
         visit_name = vg.name
-        arr << ["Insert before #{vg.position} - #{visit_name}", vg.position]
+        arr << ["Insert at #{vg.position} - #{visit_name}", vg.position]
       end
     else
       arr = [["No Visits", nil]]
     end
+    puts arr.inspect
 
     options_for_select(arr)
   end

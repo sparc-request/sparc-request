@@ -226,7 +226,12 @@ class ServiceCalendarsController < ApplicationController
     # If the visit_to_move < move_to_position we need to decrement one to move it
     # before the given position. Otherwise insert_at works as intended.
     # Special case is if we want to move to the end. We want to insert it at that position.
+    puts "X" * 20
+    puts visit_to_move.inspect
+    puts move_to_position.inspect
+    puts @arm.visit_groups.count
     if visit_to_move < move_to_position && move_to_position != @arm.visit_groups.count
+      puts "I'm in the first position"
       vg.insert_at(move_to_position - 1)
     else
       vg.insert_at(move_to_position)

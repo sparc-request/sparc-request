@@ -68,11 +68,11 @@
           %td= USER_ROLES.detect { |_, v| v == pr.role }.first
           %td= PROXY_RIGHTS.key(pr.project_rights)
           %td
-            %button.btn.btn-warning.edit-associated-user-button
-              %span.glyphicon.glyphicon-edit{ data: { protocol_id: protocol.id, user_id: u.id, permission: permission.to_s, pr_id: pr.id } }
+            %button.btn.btn-warning.edit-associated-user-button{ data: { protocol_id: protocol.id, user_id: u.id, permission: permission.to_s, pr_id: pr.id } }
+              %span.glyphicon.glyphicon-edit
           %td
-            %button.btn.btn-danger.delete-associated-user-button
-              %span.glyphicon.glyphicon-remove{ data: { protocol_id: protocol.id, current_user_role: pr.role, pr_id: pr.id, user_id: u.id, user_role: pr.role, permission: permission.to_s } }
+            %button.btn.btn-danger.delete-associated-user-button{ data: { protocol_id: protocol.id, current_user_role: pr.role, pr_id: pr.id, user_id: u.id, user_role: pr.role, permission: permission.to_s } }
+              %span.glyphicon.glyphicon-remove
 
       - if protocol.project_roles.count == 0
         = t(:protocol_information)[:no_authorized_users]

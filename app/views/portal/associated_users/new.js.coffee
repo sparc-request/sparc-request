@@ -1,4 +1,4 @@
-$("#modal-area").html("<%= escape_javascript(render(partial: 'portal/associated_users/new', locals: { protocol: @protocol, protocol_role: @protocol_role, identity: @identity })) %>")
+$("#modal-area").html("<%= escape_javascript(render(partial: 'portal/associated_users/new', locals: { protocol: @protocol, protocol_role: @protocol_role, identity: @identity, type: 'add' })) %>")
 $("#modal-area").modal 'show'
 
 # $('input#user_search').autocomplete

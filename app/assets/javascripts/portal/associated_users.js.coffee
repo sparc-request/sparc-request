@@ -45,11 +45,6 @@ $(document).ready ->
             url: '/portal/associated_users/new.js'
             data:
               protocol_id: $(this).data('protocol-id')
-            success: ->
-              $('#user_search').typeahead({
-                name: 'States',
-                local: ["Alabama","Alaska","West Virginia","Wisconsin","Wyoming"]
-              })
           # $('.add-associated-user-dialog').dialog('open')
           # $('#add-user-form #protocol_id').val($(this).data('protocol_id'))
         else
@@ -72,27 +67,23 @@ $(document).ready ->
         else
           $('.rights_radios input').attr('disabled', false)
 
-      $(document).on 'click', '.edit-associated-user-button', ->
+      $(document).on 'click', '.edit-associated-user-button', (event) ->
+        event.stopPropagation()
         if $(this).data('permission')
-          protocol_id = $(this).data('protocol_id')
-          pr_id = $(this).data('pr_id')
-          user_id = $(this).data('user_id')
-          sub_service_request_id = $(this).data('sub_service_request_id')
+          console.log('hey')
+          pr_id = $(this).data('pr-id')
+          sub_service_request_id = $(this).data('sub-service-request-id')
           $.ajax
             method: 'get'
-            url: "/portal/associated_users/#{pr_id}/edit"
+            url: "/portal/associated_users/#{pr_id}/edit.js"
             data:
-              protocol_id: protocol_id
-              identity_id: user_id
+              protocol_id: $(this).data('protocol-id')
+              identity_id: $(this).data('user-id')
               sub_service_request_id: sub_service_request_id
-            success: ->
-              $('.edit-associated-user-dialog').dialog('open')
             error: (request, status, error) ->
-              $().toastmessage("showMessage", {
-                type: "error"
-                sticky: true
-                text: error.toString()
-                })
+              console.log(request)
+              console.log(status)
+              console.log(error)
         else
           $('.permissions-dialog').dialog('open')
           $('.permissions-dialog .text').html('Edit.')

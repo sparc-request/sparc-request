@@ -26,13 +26,13 @@
           .row
             .col-lg-8
               %ul.list-unstyled
-                %li= "#{protocol.type.capitalize}: #{protocol.id} - #{protocol.short_title}"
+                %li #{protocol.type.capitalize}: #{protocol.id} - #{protocol.short_title}
                 - if protocol.principal_investigators
-                  %li= "PI(s): #{protocol.principal_investigators.map(&:display_name).join(', ')}"
+                  %li PI(s): #{protocol.principal_investigators.map(&:display_name).join(', ')}
             .col-lg-4
-              %button.btn.btn-warning.protocol-archive-button.pull-right{ data: { protocol_id: protocol.id } }= "#{protocol.archived ? 'Unarchive' : 'Archive'} #{protocol.type.capitalize}"
+              %button.btn.btn-warning.protocol-archive-button.pull-right{ data: { protocol_id: protocol.id } } #{protocol.archived ? 'Unarchive' : 'Archive'} #{protocol.type.capitalize}
 
         .panel-collapse.collapse{ id: "collapse-#{protocol.id}" }
           .panel-body
-            .container-fluid{ class: "protocol-information-container-#{protocol.id}"}
+            .container-fluid{ class: "protocol-information-container-#{protocol.id}" }
 .modal.fade#modal-area{ tabindex: -1, role: 'dialog', 'aria-hidden' => true }

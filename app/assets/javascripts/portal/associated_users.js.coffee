@@ -240,4 +240,3 @@ $(document).ready ->
       role_validation = $('#user-role-validation-message')
       role_validation.show()
       Sparc.associated_users.disableSubmitButton("Submit", "Submit")
-  }

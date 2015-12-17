@@ -53,7 +53,10 @@
         %br
         = f.select :role, options_for_select(USER_ROLES, f.object.role), :prompt => t(:portal_user_form)[:role_prompt]
         %br
-      .role_other
+      .role_other.hidden
+        %strong
+          = f.label :role_other, t(:portal_user_form)[:specify]
+        %br
         = f.text_field :role_other
         %br
 
@@ -66,7 +69,7 @@
           Yes
           = f.radio_button :epic_access, true, :class => 'epic_access'
 
-      .era_commons_name
+      .era_commons_name.hidden
         %strong
           = label_tag "identity[era_commons_name]", t(:portal_user_form)[:era]
         %br
@@ -78,7 +81,10 @@
         %br
         = select_tag "identity[credentials]", options_for_select(USER_CREDENTIALS, identity.credentials), :prompt => t(:portal_user_form)[:credential_prompt]
         %br
-      .credentials_other
+      .credentials_other.hidden
+        %strong
+          = label_tag "identity[credentials_other]", t(:portal_user_form)[:specify]
+        %br
         = text_field_tag "identity[credentials_other]", identity.credentials_other
         %br
     .right_info
@@ -100,7 +106,7 @@
         %br
         = select_tag "identity[department]", options_for_select(DEPARTMENTS, identity.department), :prompt => t(:portal_user_form)[:department_prompt]
         %br
-      .subspecialty
+      .subspecialty.hidden
         %strong
           = label_tag "identity[subspecialty]", t(:portal_user_form)[:subspecialty]
         %br

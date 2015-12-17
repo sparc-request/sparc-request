@@ -51,6 +51,10 @@ ul {
   list-style-position: inside;
 }
 
+.hidden {
+  display: none;
+}
+
 #sub_service_request_header {
   float: right;
   margin-top: 5px;
@@ -403,15 +407,14 @@ a.catalog-button,
   color: #FFF;
   height: 35px;
   font-size: 13px;
-  margin-top: 63px;
   border: none;
   width: 150px;
 }
 
 .add-user{
-  padding-left: 395px;
   padding-bottom: 55px;
-  margin-top: -157px;
+  margin-top: -60px;
+  text-align: center;
 }
 
 .blue-button a {
@@ -842,13 +845,31 @@ span#infotip img {
   text-decoration: none;
   font-size: 18px;
   color: #fff;
+  line-height: 36px;
 }
 
 .continue div{
   display: inline-block;
   zoom: 1;
   *display:inline;
+  height: 36px;
+  vertical-align: middle;
 }
+
+.continue div .continue-spinner {
+  padding-left: 0px !important;
+  padding-right: 5px !important;
+  padding-top: 2px !important;
+  padding-bottom: 2px !important;
+}
+
+.continue div .return-spinner {
+  padding-left: 5px !important;
+  padding-right: 0px !important;
+  padding-top: 2px !important;
+  padding-bottom: 2px !important;
+}
+
 
 .continue div.exit a{
   margin: 0 0 0 60px;
@@ -860,7 +881,8 @@ span#infotip img {
   vertical-align: bottom;
 }
 
-.continue div.nav-backward img {
+.continue div.nav-backward img, 
+.review-bottom-navigation div.return-to-step-3 img {
   vertical-align: middle;
   padding-right: 5px;
   padding-bottom: 2px;
@@ -884,7 +906,8 @@ span#infotip img {
 
 }
 
-.continue div.nav-forward img {
+.continue div.nav-forward img,
+.review-bottom-navigation div.submit-request img {
   vertical-align: middle;
   padding-right: 5px;
   padding-bottom: 2px;
@@ -942,9 +965,14 @@ span#infotip img {
   background-color: #ccc;
 }
 
+.review-bottom-navigation div {
+  height: 36px;
+  vertical-align: middle;
+}
 .review-bottom-navigation a {
   color: #fff;
   font-size: 18px;
+  line-height: 36px;
 }
 
 .return-to-step-3, .save-as-draft, .obtain-research-pricing, .submit-request {
@@ -959,8 +987,6 @@ span#infotip img {
 }
 
 .save-as-draft, .obtain-research-pricing {
-  padding-top: 4px;
-  height: 28px;
   width: 205px;
 }
 

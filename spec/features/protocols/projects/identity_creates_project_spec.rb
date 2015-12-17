@@ -34,21 +34,18 @@ RSpec.feature 'User wants to create a Project', js: true do
   context 'and clicks the New Project button' do
     scenario 'and sees the Protocol Information form' do
       given_i_am_viewing_the_service_request_protocol_page
-      when_i_select_the_project_radio
       when_i_click_the_new_project_button
       then_i_should_see_the_protocol_information_page
     end
 
     scenario 'and sees the cancel button' do
       given_i_am_viewing_the_service_request_protocol_page
-      when_i_select_the_project_radio
       when_i_click_the_new_project_button
       then_i_should_see_the_nav_button_with_text 'Cancel'
     end
-    
+
     scenario 'and sees the continue button' do
       given_i_am_viewing_the_service_request_protocol_page
-      when_i_select_the_project_radio
       when_i_click_the_new_project_button
       then_i_should_see_the_nav_button_with_text 'Continue'
     end
@@ -91,14 +88,14 @@ RSpec.feature 'User wants to create a Project', js: true do
         given_i_am_viewing_the_protocol_information_page
         when_i_fill_out_the_protocol_information
         when_i_submit_the_form
-        then_i_should_see_the_nav_button_with_text 'Go Back' 
+        then_i_should_see_the_nav_button_with_text 'Go Back'
       end
 
       scenario 'and sees the save and continue button' do
         given_i_am_viewing_the_protocol_information_page
         when_i_fill_out_the_protocol_information
         when_i_submit_the_form
-        then_i_should_see_the_nav_button_with_text 'Save & Continue' 
+        then_i_should_see_the_nav_button_with_text 'Save & Continue'
       end
 
       context 'TEMP: and adds themself as a Primary PI and submits the Project' do
@@ -118,7 +115,6 @@ RSpec.feature 'User wants to create a Project', js: true do
 
   def given_i_am_viewing_the_protocol_information_page
     given_i_am_viewing_the_service_request_protocol_page
-    when_i_select_the_project_radio
     when_i_click_the_new_project_button
   end
 
@@ -128,12 +124,8 @@ RSpec.feature 'User wants to create a Project', js: true do
     when_i_submit_the_form
   end
 
-  def when_i_select_the_project_radio
-    find("#protocol_Project").click
-  end
-
   def when_i_click_the_new_project_button
-    click_link "New Project"
+    click_link "Project"
   end
 
   def when_i_fill_out_the_short_title short_title="Fake Short Title"
@@ -180,7 +172,7 @@ RSpec.feature 'User wants to create a Project', js: true do
 
   def then_i_should_see_the_project_was_added_correctly
     project = Protocol.last
-    
+
     expect(project.type).to eq("Project")
     expect(project.short_title).to eq("Fake Short Title")
     expect(project.title).to eq("Fake Title")
@@ -212,7 +204,7 @@ RSpec.feature 'User wants to create a Project', js: true do
         expect(page).to have_content("Funding status can't be blank")
       when 'protocol information funding source'
         expect(page).to have_content("Funding source You must select a funding source")
-      when 'protocol information potential funding source'  
+      when 'protocol information potential funding source'
         expect(page).to have_content("Potential funding source You must select a potential funding source")
       else
         puts "An unexpected error was found in then_i_should_see_errors_of_type. Perhaps there was a typo?"

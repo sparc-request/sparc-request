@@ -179,31 +179,31 @@ $(document).ready ->
 
     create_edit_associated_user_dialog: () ->
       $('.edit-associated-user-dialog').dialog
-          autoOpen: false
-          dialogClass: "edit_user_dialog_box"
-          title: 'Edit an Authorized User'
-          width: 750
-          modal: true
-          resizable: false
-          buttons:
-            'Submit':
-              id: 'edit_authorized_user_submit_button'
-              text: 'Submit'
-              click: ->
-                form = $(".edit-associated-user-dialog").children('form')
-                $('#edit_authorized_user_submit_button').attr('disabled', true)
-                form.submit()
-            'Cancel':
-              id: 'edit_authorized_user_cancel_button'
-              text: 'Cancel'
-              click: ->
-                $(this).dialog("close")
-                $("#errorExplanation").remove()
-          open: ->
-            $('#edit_authorized_user_submit_button').attr('disabled', false)
-            $('#associated_user_role').change()
-          close: ->
-            Sparc.associated_users.reset_fields()
+        autoOpen: false
+        dialogClass: "edit_user_dialog_box"
+        title: 'Edit an Authorized User'
+        width: 750
+        modal: true
+        resizable: false
+        buttons:
+          'Submit':
+            id: 'edit_authorized_user_submit_button'
+            text: 'Submit'
+            click: ->
+              form = $(".edit-associated-user-dialog").children('form')
+              $('#edit_authorized_user_submit_button').attr('disabled', true)
+              form.submit()
+          'Cancel':
+            id: 'edit_authorized_user_cancel_button'
+            text: 'Cancel'
+            click: ->
+              $(this).dialog("close")
+              $("#errorExplanation").remove()
+        open: ->
+          $('#edit_authorized_user_submit_button').attr('disabled', false)
+          $('#associated_user_role').change()
+        close: ->
+          Sparc.associated_users.reset_fields()
 
     reset_fields: () ->
       $('.errorExplanation').html('').hide()
@@ -240,3 +240,4 @@ $(document).ready ->
       role_validation = $('#user-role-validation-message')
       role_validation.show()
       Sparc.associated_users.disableSubmitButton("Submit", "Submit")
+  }

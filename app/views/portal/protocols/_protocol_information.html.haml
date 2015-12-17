@@ -20,8 +20,6 @@
 
 - permission = protocol_role.can_edit?
 - billing_manager_count_var = protocol.billing_managers.size
-%input{ type: 'hidden', value: "#{pi_count_var}", id: "pi_count_#{protocol.id}" }
-%input{ type: 'hidden', value: "#{billing_manager_count_var}", id: "billing_manager_count_#{protocol.id}" }
 
 .panel-group
   .panel.panel-default

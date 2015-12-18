@@ -40,7 +40,6 @@ module Portal::ProjectsHelper
 
   def display_funding_source(project)
     if project.funding_status == 'funded'
-      puts "HELPER: #{FUNDING_SOURCES}"
       (FUNDING_SOURCES.invert)[project.funding_source]
     elsif project.funding_status == 'pending_funding'
       (POTENTIAL_FUNDING_SOURCES.invert)[project.potential_funding_source]

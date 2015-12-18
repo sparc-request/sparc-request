@@ -104,18 +104,29 @@ $(document).ready ->
   #   }
   # })
 
-  $(document).on 'click', '.new_notification', ->
-    sub_service_request_id = $(this).data('sub-service-request-id')
-    identity_id            = $(this).data('identity-id')
-    is_service_provider    = $(this).data('is-service-provider')
-    current_user_id        = $(this).data('current-user-id')
+  $(document).on 'change', '.new-notification', ->
+    $selected_options = $('option:selected', this)
 
-    if current_user_id == identity_id
-      alert("You can not send a message to yourself.")
-    else
-      $.ajax
-        type: 'GET'
-        url:  "/portal/notifications/new.js?sub_service_request_id=#{sub_service_request_id}&identity_id=#{identity_id}&is_service_provider=#{is_service_provider}"
+    if $selected_options.length > 0
+      $selected_option       = $selected_options.first()
+      sub_service_request_id = $selected_option.data('sub-service-request-id')
+      identity_id            = $selected_option.data('identity-id')
+      is_service_provider    = $selected_option.data('is-service-provider')
+      current_user_id        = $selected_option.data('current-user-id')
+      $this                  = $(this)
+      reset_select_picker    = ->
+        $this.selectpicker('deselectAll')
+        $this.selectpicker('render')
+
+      if current_user_id == identity_id
+        alert("You can not send a message to yourself.")
+        reset_select_picker()
+      else
+        $.ajax
+          type: 'GET'
+          url:  "/portal/notifications/new.js?sub_service_request_id=#{sub_service_request_id}&identity_id=#{identity_id}&is_service_provider=#{is_service_provider}"
+          success: ->
+            reset_select_picker()
 
   # disableSubmitButton = (containing_text, change_to) ->
   #   button = $(".ui-dialog .ui-dialog-buttonpane button:contains(#{containing_text})")

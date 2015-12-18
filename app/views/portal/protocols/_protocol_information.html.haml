@@ -91,7 +91,7 @@
       - elsif !protocol.service_requests.present?
         %button.btn.btn-success.btn-sm{ type: 'button', data: { permission: permission.to_s } }= t(:protocol_information)[:add_services]
       - else
-        %table.table{ class: "#{cycle('striped')}" }
+        %table.table.table-striped{ class: "#{cycle('striped')}" }
           %tr
             %th= t(:protocol_information)[:srid]
             %th= t(:protocol_information)[:date]
@@ -117,9 +117,17 @@
                 %td
                   = AVAILABLE_STATUSES[ssr.status]
                 %td
-                  %button.new-portal-notification-button.btn.btn-primary.btn-sm{ type: 'button', data: { ssr_id: ssr.ssr_id.to_s, sr_id: sr.id } }
-                    Send Notifications
-                    -# %span.glyphicon.glyphicon-envelope{ title: 'Send Notifications', data: { ssr_id: ssr.ssr_id.to_s, sr_id: sr.id } }
+                  %select.selectpicker.new-notification{ title: 'Send Notification To...', data: { live_search: 'true', sub_service_request_id: ssr.ssr_id,  } }
+                    %optgroup{ label: 'Requester' }
+                      %option{ data: { identity_id: sr.try(:service_requester).try(:id), sub_service_request_id: ssr.id, is_service_provider: 'false', current_user_id: current_user.id } }= t(:notifications)[:requester] + sr.try(:service_requester).try(:full_name)
+                    %optgroup{ label: 'Associated Users' }
+                      - protocol.project_roles.each do |pr|
+                        %option{ data: { identity_id: pr.identity.id, sub_service_request_id: ssr.id, is_service_provider: 'false', current_user_id: current_user.id } } #{display_user_role(pr)}: #{pr.identity.full_name}
+                    - unless @admin
+                      %optgroup{ label: 'Service Providers' }
+                        - ssr.organization.service_providers.includes(:identity).sort_by{ |sp| sp.identity.last_name }.each do |sp|
+                          %option{ data: { identity_id: sp.identity.id, sub_service_request_id: ssr.id, is_service_provider: 'true', current_user_id: current_user.id } }
+                            = sp.identity.full_name
                 %td
                   %button.btn.btn-primary.btn-sm{ type: 'button' }
                     View SSR
@@ -136,9 +144,4 @@
                       %button.btn.btn-warning.btn-sm{ type: 'button' }
                         Edit Original
                         -# %span.glyphicon.glyphicon-pencil{ title: 'Edit Service Request', data: { permission: permission.to_s } }
-              %tr
-                %td{ colspan: 9 }
-                  .portal_notifications{ style: 'display:none', id: "portal_notifications_#{ssr.ssr_id}_#{sr.id}" }
-                    = render partial: 'portal/sub_service_requests/notifications_area', locals: { service_request: sr, protocol: protocol, sub_service_request: ssr }
-
         - reset_cycle('protocol')

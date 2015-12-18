@@ -109,6 +109,7 @@ class ServiceRequestsController < ApplicationController
   end
 
   def protocol
+    cookies.delete :current_step
     @service_request.update_attribute(:service_requester_id, current_user.id) if @service_request.service_requester_id.nil?
     if @sub_service_request.nil?
       studies = current_user.project_roles.map{|pr| pr.protocol unless ['view','none'].include?(pr.project_rights) || pr.protocol.type.eql?("Project")}.compact

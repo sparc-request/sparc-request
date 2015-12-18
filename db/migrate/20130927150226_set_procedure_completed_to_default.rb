@@ -21,7 +21,7 @@
 class SetProcedureCompletedToDefault < ActiveRecord::Migration
   def up
     change_column :procedures, :completed, :boolean, :default => false
-    Procedure.update_all({:completed => false}, {:completed => nil})
+    Procedure.where(completed: nil).update_all({completed: false})
   end
 
   def down

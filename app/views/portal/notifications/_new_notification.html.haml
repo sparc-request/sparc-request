@@ -18,25 +18,33 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.notification
-  = form_tag(portal_notifications_path, :method => :post, :remote => true, :class => 'notification_notification_form') do
-    = hidden_field_tag('is_service_provider', @is_service_provider)
-    = hidden_field_tag('notification_originator_id', @user.id, :name => 'notification[originator_id]')
-
-    %p
-      = hidden_field_tag('message_to', @recipient.id, :name => 'message[to]')
-      = hidden_field_tag('message_from', @user.id, :name => 'message[from]')
-      = hidden_field_tag('message_email', @recipient.try(:email), :name => 'message[email]')
-      = hidden_field_tag('notification_sub_service_request_id', @sub_service_request.id, :name => 'notification[sub_service_request_id]')
-
-      %strong= t(:notifications)[:recipient]
-      = @recipient.try(:full_name)
-      %br
-      %br
-    %p
-      %input#message_subject{:type => 'text', :name => "message[subject]", :placeholder => t(:notifications)[:subject], :tabindex => -1}
-      %br
-      %br
-    %p
-      %textarea#message_body{:placeholder => t(:notifications)[:message], :name => "message[body]", :cols => 75, :style => 'height:100px', :tabindex => -1}
-
+.modal-dialog
+  .modal-content
+    = form_for notification, {remote: true, url: portal_notifications_path(notification), html: {class: "form-horizontal", role: "form"}} do |notification_form|
+      .modal-header
+        %button.close{type: 'button', data: {dismiss: 'modal'}}
+          %span{aria: {hidden:'true'}} &times;
+          %span.sr-only &times;
+        %h4.modal-title.text-center= "Send Notification"
+      .modal-body
+        #modal_errors
+        = notification_form.hidden_field :originator_id
+        = notification_form.hidden_field :sub_service_request_id
+        = notification_form.hidden_field :is_service_provider, value: is_service_provider
+        = notification_form.fields_for :message, message do |message_form|
+          = message_form.hidden_field :to
+          = message_form.hidden_field :from
+          = message_form.hidden_field :email
+          .form-group
+            .col-sm-12
+              = message_form.label "recipient", t(:notifications)[:recipient]+' '+recipient.try(:full_name), class: "control-label"
+          .form-group
+            .col-sm-12
+              = message_form.text_field :subject, {class: 'form-control', placeholder: t(:notifications)[:subject], rows: "6"}
+          .form-group
+            .col-sm-12
+              = message_form.text_area :body, {class: 'form-control', placeholder: t(:notifications)[:message], rows: "6"}
+      .modal-footer
+        .center-block
+          %button.btn.btn-default{type: 'button', data: {dismiss: 'modal'}} Cancel
+          %input.btn.btn-primary#send_notification_form_button{type: 'submit', value: "Send"}

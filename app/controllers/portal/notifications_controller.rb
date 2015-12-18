@@ -46,33 +46,26 @@ class Portal::NotificationsController < Portal::BaseController
 
   def new
     @recipient = Identity.find(params[:identity_id])
-    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
     @is_service_provider = params[:is_service_provider]
-
-    respond_to do |format|
-      format.js
-      format.html
-    end
+    @notification = Notification.new(originator_id: @user.id, sub_service_request_id: params[:sub_service_request_id])
+    @message = @notification.messages.new(to: @recipient.id, from: @user.id, email: @recipient.try(:email))
   end
 
   def create
-    @notification = Notification.create(params[:notification])
-    @message = @notification.messages.create(params[:message])
     is_service_provider = params[:is_service_provider]
-
+    @notification = Notification.new(originator_id: params[:notification][:originator_id], sub_service_request_id: params[:notification][:sub_service_request_id])
+    @message = @notification.messages.new(params[:notification][:message])
     if @message.valid?
+      @notification.save
       @message.save
-
-      @sub_service_request = @notification.sub_service_request
-
-      @notifications = @user.all_notifications.where(:sub_service_request_id => @sub_service_request.id)
-      ssr_id = @sub_service_request.id.to_s
+      @notifications = @user.all_notifications.where(:sub_service_request_id => @notification.sub_service_request_id)
+      ssr_id = @notification.sub_service_request_id.to_s
       UserMailer.notification_received(@message.recipient, is_service_provider, ssr_id).deliver unless @message.recipient.email.blank?
+      flash[:success] = "Notification Sent!"
+    else
+      @errors = @message.errors
     end
-    respond_to do |format|
-      format.js
-      format.html
-    end
+
   end
 
   def user_portal_update

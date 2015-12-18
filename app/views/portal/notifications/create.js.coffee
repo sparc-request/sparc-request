@@ -18,36 +18,10 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class Message < ActiveRecord::Base
-  audited
+$("#modal_errors").html("<%= escape_javascript(render(partial: 'shared/modal_errors', locals: {errors: @errors})) %>")
+<% unless @errors %>
+$("#notifications").html("<%= escape_javascript(render(:partial => 'portal/notifications/notifications')) %>");
 
-  belongs_to :notification
-  belongs_to :sender, :class_name => 'Identity', :foreign_key => 'from'
-  belongs_to :recipient, :class_name => 'Identity', :foreign_key => 'to'
-
-  after_save :create_user_notifications
-
-  attr_accessible :notification_id
-  attr_accessible :to
-  attr_accessible :from
-  attr_accessible :email
-  attr_accessible :subject
-  attr_accessible :body
-
-  validates_presence_of :to, :from, :body
-
-  # Simple way to skip the after_save callback for the import process
-  class << self
-    @import = false
-    attr_accessor :import
-  end
-
-  # TODO: do we really want to create user notifications every time we
-  # modify a Message?
-  def create_user_notifications
-    return if self.class.import
-    self.notification.user_notifications.create(:identity_id => self.to)
-    self.notification.user_notifications.create(:identity_id => self.from, :read => true)
-  end
-end
-
+$("#modal_place").modal 'hide'
+$("#flashes_container").html("<%= escape_javascript(render('shared/flash')) %>")
+<% end %>

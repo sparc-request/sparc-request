@@ -85,38 +85,23 @@ $(document).ready ->
     $(".white_arrow_up_#{message_id}").hide()
   )
 
-  $('.new_notification_dialog').dialog({
-    autoOpen: false
-    dialogClass: "send_notification_dialog_box"
-    title: 'Send Notification'
-    width: 700
-    modal: true
-    buttons: {
-      "Send": () ->
-        disableSubmitButton("Send", "Please wait...")
-        $('.notification_notification_form').bind('ajax:success', (data) ->
-          enableSubmitButton("Please wait...", "Send")
-          $('.new_notification_dialog').dialog('close')
-        ).submit()
-      "Cancel": () ->
-        enableSubmitButton("Please wait...", "Send")
-        $(this).dialog('close')
-    }
-  })
-
   $(document).on('click', '.new_notification', ->
-    sub_service_request_id = $(this).data('sub_service_request_id')
-    identity_id = $(this).data('identity_id')
-    is_service_provider = $(this).data('is_service_provider')
-    current_user_id = $(this).data('current_user_id')
+    sub_service_request_id = $(this).data('sub-service-request-id')
+    identity_id = $(this).data('identity-id')
+    is_service_provider = $(this).data('is-service-provider')
+    current_user_id = $(this).data('current-user-id')
 
     if current_user_id == identity_id
       alert("You can not send a message to yourself.")
     else
-      $('.new_notification_dialog').dialog('open')
+      data =
+        "sub_service_request_id"  : sub_service_request_id
+        "identity_id"             : identity_id
+        "is_service_provider"     : is_service_provider
       $.ajax
         type: 'GET'
-        url:  "/portal/notifications/new?sub_service_request_id=#{sub_service_request_id}&identity_id=#{identity_id}&is_service_provider=#{is_service_provider}"
+        url:  "/portal/notifications/new"
+        data: data
   )
 
   disableSubmitButton = (containing_text, change_to) ->

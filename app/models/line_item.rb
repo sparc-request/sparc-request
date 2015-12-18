@@ -33,8 +33,7 @@ class LineItem < ActiveRecord::Base
   has_many :arms, :through => :line_items_visits
   has_many :procedures
   has_many :admin_rates, :dependent => :destroy
-  has_one :line_item_additional_detail, :dependent => :destroy
-  
+
   attr_accessible :service_request_id
   attr_accessible :sub_service_request_id
   attr_accessible :service_id
@@ -74,65 +73,7 @@ class LineItem < ActiveRecord::Base
 
   # TODO: order by date/id instead of just by date?
   default_scope { order('line_items.id ASC') }
-  
-  # line_item_additional_details are created when the user first visits the Notes & Documents page
-  # if a line_item doesn't have a line_item_additional_detail (i.e., the user hasn't yet reached or skipped the Notes & Documents page), 
-  #   then we need to ask the service if its active additional_detail has required questions
-  def additional_detail_required_questions_answered?
-    if self.line_item_additional_detail
-      self.line_item_additional_detail.has_answered_all_required_questions?
-    else
-      !self.service.has_required_additional_detail_questions?
-    end
-  end
-  
-  def get_or_create_line_item_additional_detail
-    if self.line_item_additional_detail
-      self.line_item_additional_detail
-    else 
-      additional_detail = service.current_additional_detail
-      if additional_detail 
-        build_line_item_additional_detail
-        self.line_item_additional_detail.additional_detail_id = additional_detail.id
-        if self.line_item_additional_detail.save
-          self.line_item_additional_detail
-        else
-          nil
-        end
-      else
-        nil
-      end
-    end
-  end
-  
-  def service_requester_name
-    self.service_request.service_requester_name
-  end
-  
-  def protocol_short_title
-    self.service_request.protocol_short_title
-  end  
 
-  def srid
-    "#{self.service_request.try(:protocol).try(:id)}-#{self.sub_service_request.ssr_id}"
-  end
-  
-  def pi_name
-    self.service_request.pi_name
-  end
-  
-  def additional_detail_breadcrumb
-    self.service.additional_detail_breadcrumb
-  end
-  
-  def additional_details_form_data_hash
-    if self.line_item_additional_detail
-      self.line_item_additional_detail.form_data_hash
-    else
-      Hash.new
-    end   
-  end
-  
   def quantity_must_be_smaller_than_max_and_greater_than_min
     pricing = Service.find(service_id).current_effective_pricing_map
     max = pricing.units_per_qty_max

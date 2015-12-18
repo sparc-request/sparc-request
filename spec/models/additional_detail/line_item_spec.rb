@@ -20,7 +20,7 @@ RSpec.describe "Line Item" do
         before(:each) do
           @ad = AdditionalDetail.new
           @ad.enabled = true
-          @ad.effective_date = Date.today
+          @ad.effective_date = Date.current
           @ad.service_id = @service.id
           @ad.save(:validate => false)
         end
@@ -102,7 +102,7 @@ RSpec.describe "Line Item" do
       @additional_detail = AdditionalDetail.new
       @additional_detail.name = "Project Details"
       @additional_detail.enabled = true
-      @additional_detail.effective_date = Date.today
+      @additional_detail.effective_date = Date.current
       
       @line_item.service.additional_details << @additional_detail
               
@@ -131,7 +131,7 @@ RSpec.describe "Line Item" do
       @additional_detail = AdditionalDetail.new
       @additional_detail.name = "Project Team Members"
       @additional_detail.enabled = true
-      @additional_detail.effective_date = Date.today
+      @additional_detail.effective_date = Date.current
       
       @line_item.service.additional_details << @additional_detail
       
@@ -148,7 +148,7 @@ RSpec.describe "Line Item" do
       
       @additional_detail = AdditionalDetail.new
       @additional_detail.enabled = true
-      @additional_detail.effective_date = Date.yesterday
+      @additional_detail.effective_date = Date.current.yesterday
     end
     
     describe "line_item_additional_detail not yet created," do

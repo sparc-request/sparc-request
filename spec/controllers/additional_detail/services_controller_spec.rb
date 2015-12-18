@@ -22,7 +22,7 @@ RSpec.describe AdditionalDetail::ServicesController do
     @additional_detail.name = "Test"
     @additional_detail.service_id = @service.id
     @additional_detail.form_definition_json= '{"schema": {"required": ["t","date"] }}'
-    @additional_detail.effective_date = Date.today
+    @additional_detail.effective_date = Date.current
     @additional_detail.enabled = "true"
     @additional_detail.save
   end

@@ -50,7 +50,7 @@ RSpec.describe LineItemAdditionalDetail do
     
     it 'should return today\'s date' do
       @line_item_additional_detail.save(:validate => false)
-      expect(@line_item_additional_detail.last_updated).to eq(Date.today.strftime("%Y-%m-%d"))
+      expect(@line_item_additional_detail.last_updated).to eq(Date.current.strftime("%Y-%m-%d"))
     end
   end
   
@@ -311,7 +311,7 @@ RSpec.describe LineItemAdditionalDetail do
       @additional_detail = AdditionalDetail.new
       @additional_detail.name = "Project Details"
       @additional_detail.enabled = true
-      @additional_detail.effective_date = Date.today
+      @additional_detail.effective_date = Date.current
 
       @line_item.service.additional_details << @additional_detail
 
@@ -344,7 +344,7 @@ RSpec.describe LineItemAdditionalDetail do
       @additional_detail = AdditionalDetail.new
       @additional_detail.name = "Project Team Members"
       @additional_detail.enabled = true
-      @additional_detail.effective_date = Date.today
+      @additional_detail.effective_date = Date.current
 
       @line_item.service.additional_details << @additional_detail
 
@@ -445,7 +445,7 @@ RSpec.describe LineItemAdditionalDetail do
       @additional_detail = AdditionalDetail.new
       @additional_detail.name = "Project Team Members"
       @additional_detail.enabled = true
-      @additional_detail.effective_date = Date.today
+      @additional_detail.effective_date = Date.current
       @additional_detail.form_definition_json = '{"schema": {"required": ["birthdate", "email"] }, "form":[{"key":"birthdate"},{"key":"email"},{"key":"firstName"} ]}'
       @line_item.service.additional_details << @additional_detail
       
@@ -459,7 +459,7 @@ RSpec.describe LineItemAdditionalDetail do
     it "should return additional details export info with no line item additional detail info" do
       expect(@line_item_additional_detail.export_hash).to include(
         "Additional-Detail" => "BMI / Consulting / Project Team Members", 
-        "Effective-Date" => Date.today,
+        "Effective-Date" => Date.current,
         "Srid" => "10-0005",
         "Ssr-Status" => "first_draft",
         "Requester-Name" => "Requester Person (requester@test.edu)",
@@ -478,7 +478,7 @@ RSpec.describe LineItemAdditionalDetail do
       
       expect(@line_item_additional_detail.export_hash).to include(
         "Additional-Detail" => "BMI / Consulting / Project Team Members", 
-        "Effective-Date" => Date.today,
+        "Effective-Date" => Date.current,
         "Srid" => "10-0005",
         "Ssr-Status" => "first_draft",
         "Requester-Name" => "Requester Person (requester@test.edu)",
@@ -497,7 +497,7 @@ RSpec.describe LineItemAdditionalDetail do
       
       expect(@line_item_additional_detail.export_hash).to include(
         "Additional-Detail" => "BMI / Consulting / Project Team Members", 
-        "Effective-Date" => Date.today,
+        "Effective-Date" => Date.current,
         "Srid" => "10-0005",
         "Ssr-Status" => "first_draft",
         "Requester-Name" => "Requester Person (requester@test.edu)",
@@ -516,7 +516,7 @@ RSpec.describe LineItemAdditionalDetail do
       
       expect(@line_item_additional_detail.export_hash).to include(
         "Additional-Detail" => "BMI / Consulting / Project Team Members", 
-        "Effective-Date" => Date.today,
+        "Effective-Date" => Date.current,
          "Srid" => "10-0005",
         "Ssr-Status" => "first_draft",
         "Requester-Name" => "Requester Person (requester@test.edu)",
@@ -535,7 +535,7 @@ RSpec.describe LineItemAdditionalDetail do
       
       expect(@line_item_additional_detail.export_hash).to include(
         "Additional-Detail" => "BMI / Consulting / Project Team Members", 
-        "Effective-Date" => Date.today,
+        "Effective-Date" => Date.current,
         "Srid" => "10-0005",
         "Ssr-Status" => "first_draft",
         "Requester-Name" => "Requester Person (requester@test.edu)",

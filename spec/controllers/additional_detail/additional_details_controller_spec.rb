@@ -23,7 +23,7 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
     @additional_detail.name = "Test"
     @additional_detail.service_id = @core_service.id
     @additional_detail.form_definition_json = '{"schema": {"required": ["birthdate", "email"] }, "form":[{"key":"birthdate"},{"key":"email"},{"key":"firstName"} ]}'
-    @additional_detail.effective_date = Date.today
+    @additional_detail.effective_date = Date.current
     @additional_detail.enabled = "true"
     @additional_detail.save(validate: false)
     
@@ -71,7 +71,7 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
     
     it 'create an additional detail record' do
       post(:create, {:service_id => @core_service, :format => :html,
-        :additional_detail => {:name => "Form # 1", :description => "10 essential questions", :form_definition_json => "{}", :effective_date => Date.tomorrow, :enabled => "true"}
+        :additional_detail => {:name => "Form # 1", :description => "10 essential questions", :form_definition_json => "{}", :effective_date => Date.current.tomorrow, :enabled => "true"}
       })
       expect(response).to redirect_to("/identities/sign_in")
     end
@@ -166,7 +166,7 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
       
       it 'create an additional detail record' do
         post(:create, {:service_id => @core_service, :format => :html,
-          :additional_detail => {:name => "Form # 1", :description => "10 essential questions", :form_definition_json => "{}", :effective_date => Date.tomorrow, :enabled => "true"}
+          :additional_detail => {:name => "Form # 1", :description => "10 essential questions", :form_definition_json => "{}", :effective_date => Date.current.tomorrow, :enabled => "true"}
         })
         expect(response.status).to eq(401)
       end
@@ -246,7 +246,7 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
       
       it 'should NOT be able to create an additional detail record' do
         post(:create, {:service_id => @core_service, :format => :html,
-          :additional_detail => {:name => "Form # 1", :description => "10 essential questions", :form_definition_json => "{}", :effective_date => Date.tomorrow, :enabled => "true"}
+          :additional_detail => {:name => "Form # 1", :description => "10 essential questions", :form_definition_json => "{}", :effective_date => Date.current.tomorrow, :enabled => "true"}
         })
         expect(response.status).to eq(401)
       end
@@ -309,7 +309,7 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
       it "should show additional detail with last_updated formatted date string" do
         get(:show, {:service_id => @core_service, :id => @additional_detail, :format => :json })
         expect(response.status).to eq(200)
-        expect(JSON.parse(response.body)["line_item_additional_details"][0]["last_updated"]).to eq(Date.today.strftime("%Y-%m-%d"))
+        expect(JSON.parse(response.body)["line_item_additional_details"][0]["last_updated"]).to eq(Date.current.strftime("%Y-%m-%d"))
       end
         
         describe 'with protocol and owner name present' do
@@ -364,14 +364,14 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
             expect(response.status).to eq(200)
             expect(JSON.parse(response.body)[0]).to include(
                     "Additional-Detail" => "REDCap / Consulting / Test", 
-                    "Effective-Date" => Date.today.strftime("%Y-%m-%d"),
+                    "Effective-Date" => Date.current.strftime("%Y-%m-%d"),
                     "Srid" => "#{@protocol.id}-0005",
                     "Ssr-Status" => "first_draft",
                     "Requester-Name" => "Test Person (test@test.uiowa.edu)",
                     "Pi-Name" => "Primary Person (test@test.uiowa.edu)",
                     "Protocol-Short-Title" => "Short Title",
                     "Required-Questions-Answered" => false,
-                    "Last-Updated-At" => Date.today.strftime("%Y-%m-%d"),
+                    "Last-Updated-At" => Date.current.strftime("%Y-%m-%d"),
                     "birthdate" => "",
                     "email" => "",
                     "firstName" => ""
@@ -422,7 +422,7 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
 
       it 'should NOT be able to create an additional detail record' do
         post(:create, {:service_id => @core_service, :format => :html,
-          :additional_detail => {:name => "Form # 1", :description => "10 essential questions", :form_definition_json => "{}", :effective_date => Date.tomorrow, :enabled => "true"}
+          :additional_detail => {:name => "Form # 1", :description => "10 essential questions", :form_definition_json => "{}", :effective_date => Date.current.tomorrow, :enabled => "true"}
         })
         expect(response.status).to eq(401)
       end  
@@ -573,7 +573,7 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
         it 'create an additional detail record' do
           expect {
             post(:create, {:service_id => @core_service, :format => :html,
-              :additional_detail => {:name => "Form # 1", :description => "10 essential questions", :form_definition_json => '{"schema": {"required": ["birthdate"] }, "form":[{"key":"birthdate"}]}', :effective_date => Date.tomorrow, :enabled => "true"}
+              :additional_detail => {:name => "Form # 1", :description => "10 essential questions", :form_definition_json => '{"schema": {"required": ["birthdate"] }, "form":[{"key":"birthdate"}]}', :effective_date => Date.current.tomorrow, :enabled => "true"}
             })
             expect(assigns(:additional_detail).errors).to be_blank
             expect(response).to redirect_to(additional_detail_service_additional_details_path(@core_service))
@@ -585,7 +585,7 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
         it 'see failed validation for :description being too long' do
           expect {
             post(:create, {:service_id => @core_service, :format => :html,
-              :additional_detail => {:name => "Form # 1", :description => "0"*256, :form_definition_json => '{"schema": {"required": ["birthdate"] }, "form":[{"key":"birthdate"}]}', :effective_date => Date.today, :enabled => "true"}
+              :additional_detail => {:name => "Form # 1", :description => "0"*256, :form_definition_json => '{"schema": {"required": ["birthdate"] }, "form":[{"key":"birthdate"}]}', :effective_date => Date.current, :enabled => "true"}
             })
             expect(assigns(:additional_detail).errors[:description].size).to eq(1)
             message = "is too long (maximum is 255 characters)"
@@ -600,7 +600,7 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
         it 'see failed validation for blank :name when trying to create an additional detail record' do
           expect {
             post(:create, {:service_id => @core_service, :format => :html,
-              :additional_detail => {:name => "", :description => "10 essential questions", :form_definition_json => '{"schema": {"required": ["birthdate"] }, "form":[{"key":"birthdate"}]}', :effective_date => Date.tomorrow, :enabled => "true"}
+              :additional_detail => {:name => "", :description => "10 essential questions", :form_definition_json => '{"schema": {"required": ["birthdate"] }, "form":[{"key":"birthdate"}]}', :effective_date => Date.current.tomorrow, :enabled => "true"}
             })
             expect(assigns(:additional_detail).errors[:name].size).to eq(1)
             expect(assigns(:additional_detail).errors[:effective_date].size).to eq(0)
@@ -640,10 +640,10 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
         it 'see failed validation for :effective_date that is already taken when trying to create an additional detail record' do
           expect {
             post(:create, {:service_id => @core_service, :format => :html,
-              :additional_detail => {:name => "Form # 1", :description => "10 essential questions", :form_definition_json => '{"schema": {"required": ["birthdate"] }, "form":[{"key":"birthdate"}]}', :effective_date => Date.tomorrow, :enabled => "true"}
+              :additional_detail => {:name => "Form # 1", :description => "10 essential questions", :form_definition_json => '{"schema": {"required": ["birthdate"] }, "form":[{"key":"birthdate"}]}', :effective_date => Date.current.tomorrow, :enabled => "true"}
             })
             post(:create, {:service_id => @core_service, :format => :html,
-              :additional_detail => {:name => "Form # 2", :description => "10 essential questions", :form_definition_json => '{"schema": {"required": ["birthdate"] }, "form":[{"key":"birthdate"}]}', :effective_date => Date.tomorrow, :enabled => "true"}
+              :additional_detail => {:name => "Form # 2", :description => "10 essential questions", :form_definition_json => '{"schema": {"required": ["birthdate"] }, "form":[{"key":"birthdate"}]}', :effective_date => Date.current.tomorrow, :enabled => "true"}
             })
             expect(assigns(:additional_detail).errors[:effective_date].size).to eq(1)
             message = "is being used by another version of this form, please choose a different date."
@@ -658,7 +658,7 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
         it 'see failed validation for blank :form_definition_json when trying to create an additional detail record' do
           expect {
             post(:create, {:service_id => @core_service, :format => :html,
-              :additional_detail => {:name => "Form # 1", :description => "10 essential questions", :form_definition_json => "", :effective_date => Date.today, :enabled => "true"}
+              :additional_detail => {:name => "Form # 1", :description => "10 essential questions", :form_definition_json => "", :effective_date => Date.current, :enabled => "true"}
             })
             expect(assigns(:additional_detail).errors[:form_definition_json].size).to eq(1)
             expect(response).to render_template(:new)
@@ -672,7 +672,7 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
           expect {
             post(:create, {:service_id => @core_service, :format => :html,
               :additional_detail => {:name => "Form # 1", :description => "10 essential questions", :form_definition_json => '{"schema": {"type": "object","title": "Comment","properties": {},"required": []},"form": [{"key":"birthdate"},{"key":"date"}]}',
-              :effective_date => Date.today, :enabled => "true"}
+              :effective_date => Date.current, :enabled => "true"}
             })
             expect(assigns(:additional_detail).errors[:form_definition_json].size).to eq(1)
             message = "must contain at least one required question."
@@ -806,7 +806,7 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
       
       it 'create an additional detail record' do
         post(:create, {:service_id => @core_service, :format => :html,
-          :additional_detail => {:name => "Form # 1", :description => "10 essential questions", :form_definition_json => '{"schema": {"required": ["birthdate"] }, "form":[{"key":"birthdate"}]}', :effective_date => Date.tomorrow, :enabled => "true"}
+          :additional_detail => {:name => "Form # 1", :description => "10 essential questions", :form_definition_json => '{"schema": {"required": ["birthdate"] }, "form":[{"key":"birthdate"}]}', :effective_date => Date.current.tomorrow, :enabled => "true"}
         })
         expect(response).to redirect_to(additional_detail_service_additional_details_path(@core_service))
       end
@@ -877,7 +877,7 @@ RSpec.describe AdditionalDetail::AdditionalDetailsController do
       
       it 'create an additional detail record' do
         post(:create, {:service_id => @core_service, :format => :html,
-          :additional_detail => {:name => "Form # 1", :description => "10 essential questions", :form_definition_json => '{"schema": {"required": ["birthdate"] }, "form":[{"key":"birthdate"}]}', :effective_date => Date.tomorrow, :enabled => "true"}
+          :additional_detail => {:name => "Form # 1", :description => "10 essential questions", :form_definition_json => '{"schema": {"required": ["birthdate"] }, "form":[{"key":"birthdate"}]}', :effective_date => Date.current.tomorrow, :enabled => "true"}
         })
         expect(response).to redirect_to(additional_detail_service_additional_details_path(@core_service))
       end

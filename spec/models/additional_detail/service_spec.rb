@@ -16,7 +16,7 @@ RSpec.describe Service do #, type: :model
       before :each do
         @ad = AdditionalDetail.new
         @ad.enabled = true
-        @ad.effective_date = Date.today
+        @ad.effective_date = Date.current
         @service.additional_details << @ad
       end
 
@@ -27,7 +27,7 @@ RSpec.describe Service do #, type: :model
       it 'should return the most recent additional detail' do
         @ad2 = AdditionalDetail.new
         @ad2.enabled = true
-        @ad2.effective_date = Date.yesterday
+        @ad2.effective_date = Date.current.yesterday
         @service.additional_details << @ad2
         @service.current_additional_detail
         expect(@service.current_additional_detail).to eq(@ad)
@@ -36,7 +36,7 @@ RSpec.describe Service do #, type: :model
       it 'should not return additional details with effective dates in the future' do
         @ad2 = AdditionalDetail.new
         @ad2.enabled = true
-        @ad2.effective_date = Date.tomorrow
+        @ad2.effective_date = Date.current.tomorrow
         @service.additional_details << @ad2
         expect(@service.current_additional_detail).to eq(@ad)
       end
@@ -45,7 +45,7 @@ RSpec.describe Service do #, type: :model
     describe 'enabled' do
       before :each do
         @ad = AdditionalDetail.new
-        @ad.effective_date = Date.today
+        @ad.effective_date = Date.current
         @service.additional_details << @ad
       end
 
@@ -58,7 +58,7 @@ RSpec.describe Service do #, type: :model
         @ad.enabled = true
         @ad2 = AdditionalDetail.new
         @ad2.enabled = true
-        @ad2.effective_date = Date.yesterday
+        @ad2.effective_date = Date.current.yesterday
         @service.additional_details << @ad2
         expect(@service.current_additional_detail).to eq(@ad)
       end
@@ -72,7 +72,7 @@ RSpec.describe Service do #, type: :model
         @ad.enabled = false
         @ad2 = AdditionalDetail.new
         @ad2.enabled = true
-        @ad2.effective_date = Date.yesterday
+        @ad2.effective_date = Date.current.yesterday
         @service.additional_details << @ad2
         expect(@service.current_additional_detail).to eq(nil)
       end
@@ -81,7 +81,7 @@ RSpec.describe Service do #, type: :model
         @ad.enabled = false
         @ad2 = AdditionalDetail.new
         @ad2.enabled = true
-        @ad2.effective_date = Date.tomorrow
+        @ad2.effective_date = Date.current.tomorrow
         @service.additional_details << @ad2
         expect(@service.current_additional_detail).to eq(nil)
       end
@@ -127,7 +127,7 @@ RSpec.describe Service do #, type: :model
       @additional_detail = AdditionalDetail.new
       @additional_detail.name = "Project Details"
       @additional_detail.enabled = true
-      @additional_detail.effective_date = Date.today
+      @additional_detail.effective_date = Date.current
       @core_service.additional_details << @additional_detail
             
       expect(@core_service.additional_detail_breadcrumb).to eq("REDCap / New Project / Project Details")
@@ -162,7 +162,7 @@ RSpec.describe Service do #, type: :model
       @additional_detail = AdditionalDetail.new
       @additional_detail.name = "Project Team Members"
       @additional_detail.enabled = true
-      @additional_detail.effective_date = Date.today
+      @additional_detail.effective_date = Date.current
       @program_service.additional_details << @additional_detail
       
       expect(@program_service.additional_detail_breadcrumb).to eq("BMI / Consulting / Project Team Members")
@@ -175,7 +175,7 @@ RSpec.describe Service do #, type: :model
       @additional_detail = AdditionalDetail.new
       @additional_detail.name = "Email List"
       @additional_detail.enabled = true
-      @additional_detail.effective_date = Date.today
+      @additional_detail.effective_date = Date.current
       @orphaned_service.additional_details << @additional_detail
             
       expect(@orphaned_service.additional_detail_breadcrumb).to eq("Consulting Only / Email List")
@@ -187,7 +187,7 @@ RSpec.describe Service do #, type: :model
       @additional_detail = AdditionalDetail.new
       @additional_detail.name = "Email List"
       @additional_detail.enabled = true
-      @additional_detail.effective_date = Date.today
+      @additional_detail.effective_date = Date.current
       @orphaned_service.additional_details << @additional_detail
             
       expect(@orphaned_service.additional_detail_breadcrumb).to eq("Email List")
@@ -206,7 +206,7 @@ RSpec.describe Service do #, type: :model
       
       @additional_detail = AdditionalDetail.new
       @additional_detail.enabled = true
-      @additional_detail.effective_date = Date.today
+      @additional_detail.effective_date = Date.current
       @orphaned_service.additional_details << @additional_detail
 
       expect(@orphaned_service.additional_detail_breadcrumb).to eq("Consulting Only / ")
@@ -228,7 +228,7 @@ RSpec.describe Service do #, type: :model
     it 'should return false if has zero active additional_details' do
       @additional_detail = AdditionalDetail.new
       @additional_detail.enabled = true
-      @additional_detail.effective_date = Date.tomorrow # not yet effective/active
+      @additional_detail.effective_date = Date.current.tomorrow # not yet effective/active
       @additional_detail.form_definition_json= '{"schema": {"required": ["date"] }}'
       
       @service = Service.new
@@ -239,7 +239,7 @@ RSpec.describe Service do #, type: :model
     it 'should return false if has zero required questions' do
       @additional_detail = AdditionalDetail.new
       @additional_detail.enabled = true
-      @additional_detail.effective_date = Date.today
+      @additional_detail.effective_date = Date.current
       @additional_detail.form_definition_json= '{"schema": {"required": [] }}'
       
       @service = Service.new
@@ -250,7 +250,7 @@ RSpec.describe Service do #, type: :model
     it 'should return true if has one required question' do
       @additional_detail = AdditionalDetail.new
       @additional_detail.enabled = true
-      @additional_detail.effective_date = Date.today
+      @additional_detail.effective_date = Date.current
       @additional_detail.form_definition_json= '{"schema": {"required": ["date"] }}'
       
       @service = Service.new
@@ -261,7 +261,7 @@ RSpec.describe Service do #, type: :model
     it 'should return true if has two required questions' do
       @additional_detail = AdditionalDetail.new
       @additional_detail.enabled = true
-      @additional_detail.effective_date = Date.today
+      @additional_detail.effective_date = Date.current
       @additional_detail.form_definition_json= '{"schema": {"required": ["t","date"] }}'
       
       @service = Service.new

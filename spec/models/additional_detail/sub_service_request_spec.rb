@@ -33,7 +33,7 @@ RSpec.describe 'SubServiceRequest' do
       before(:each) do
         @ad = AdditionalDetail.new
         @ad.enabled = true
-        @ad.effective_date = Date.yesterday
+        @ad.effective_date = Date.current.yesterday
         @ad.service_id = @service.id
         @ad.save(:validate => false)
       end
@@ -56,7 +56,7 @@ RSpec.describe 'SubServiceRequest' do
 
           @ad2 = AdditionalDetail.new
           @ad2.enabled = true
-          @ad2.effective_date = Date.yesterday
+          @ad2.effective_date = Date.current.yesterday
           @ad2.service_id = @service2.id
           @ad2.save(:validate => false)
         end

@@ -12,7 +12,7 @@ RSpec.describe AdditionalDetail do
     end
 
     it 'should create new additional detail' do
-      @ad.effective_date= Date.today
+      @ad.effective_date= Date.current
       @ad.form_definition_json ='{"schema":{"type":"object","title":"Comment","properties":"{test}","required":["date"]},"form":[]}'
       @ad.name = "Name"
       expect(@ad.valid?)
@@ -28,7 +28,7 @@ RSpec.describe AdditionalDetail do
     end
 
     it 'should fail validation when :effective_date is in the past' do
-      @ad.effective_date= Date.yesterday
+      @ad.effective_date= Date.current.yesterday
       @ad.form_definition_json ='{"schema":{"type":"object","title":"Comment","properties":"{test}","required":["date"]},"form":[]}'
       @ad.name = "Name"
       expect(!@ad.valid?)
@@ -38,7 +38,7 @@ RSpec.describe AdditionalDetail do
 
     it 'update should fail if line item additional details present' do
       @ad.name= "Test"
-      @ad.effective_date= Date.today
+      @ad.effective_date= Date.current
       @ad.form_definition_json ='{"schema":{"type":"object","title":"Comment","properties":"{test}","required":["date"]},"form":[]}'
       expect{@ad.save}.to change(AdditionalDetail, :count).by(1)
       @line_item_additional_detail = LineItemAdditionalDetail.new
@@ -51,7 +51,7 @@ RSpec.describe AdditionalDetail do
     end
 
     it 'should fail validation when :name is null' do
-      @ad.effective_date= Date.today
+      @ad.effective_date= Date.current
       @ad.form_definition_json ='{"schema":{"type":"object","title":"Comment","properties":"{test}","required":["date"]},"form":[]}'
       expect(!@ad.valid?)
       expect(@ad.errors[:name].size).to eq(1)
@@ -59,7 +59,7 @@ RSpec.describe AdditionalDetail do
     end
 
     it 'should fail validation when :form_definition_json is null' do
-      @ad.effective_date= Date.today
+      @ad.effective_date= Date.current
       @ad.name= "Test"
       expect(!@ad.valid?)
       expect(@ad.errors[:form_definition_json].size).to eq(1)
@@ -68,7 +68,7 @@ RSpec.describe AdditionalDetail do
 
     describe "when line_item_additional_detail present" do
       before :each do
-        @ad.effective_date= Date.today
+        @ad.effective_date= Date.current
         @ad.form_definition_json ='{"schema":{"type":"object","title":"Comment","properties":"{test}","required":["date"]},"form":[]}'
         @ad.name = "Name"
         expect(@ad.valid?)
@@ -99,7 +99,7 @@ RSpec.describe AdditionalDetail do
 
     it 'should fail validation when :form_definition_json has no required questions' do
       @ad.form_definition_json = '{"schema":{"type":"object","title":"Comment","properties":{},"required": []},"form": [{"key":"birthdate"},{"key":"date"}]}'
-      @ad.effective_date= Date.today
+      @ad.effective_date= Date.current
       @ad.name= "Test"
       expect(!@ad.valid?)
       expect(@ad.errors[:form_definition_json].size).to eq(1)
@@ -108,7 +108,7 @@ RSpec.describe AdditionalDetail do
 
     it 'should fail validation when :description is too long' do
       @ad.form_definition_json ='{"schema":{"type":"object","title":"Comment","properties":"{test}","required":["date"]},"form":[]}'
-      @ad.effective_date= Date.today
+      @ad.effective_date= Date.current
       @ad.description = "0"*256
       @ad.name= "Test"
       expect(!@ad.valid?)
@@ -213,7 +213,7 @@ RSpec.describe AdditionalDetail do
       @additional_detail = AdditionalDetail.new
       @additional_detail.name = "Project Team Members"
       @additional_detail.enabled = true
-      @additional_detail.effective_date = Date.today
+      @additional_detail.effective_date = Date.current
       @additional_detail.form_definition_json = '{"schema": {"required": ["birthdate", "email"] }, "form":[{"key":"birthdate"},{"key":"email"},{"key":"firstName"} ]}'
       @line_item.service.additional_details << @additional_detail
       
@@ -228,7 +228,7 @@ RSpec.describe AdditionalDetail do
       expect(@additional_detail.export_array.length).to eq(1)
       expect(@additional_detail.export_array[0]).to include(
         "Additional-Detail" => "BMI / Consulting / Project Team Members", 
-        "Effective-Date" => Date.today,
+        "Effective-Date" => Date.current,
         "Srid" => "1001-0007",
         "Ssr-Status" => "first_draft",
         "Requester-Name" => "Requester Person (requester@test.edu)",

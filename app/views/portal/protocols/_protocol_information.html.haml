@@ -80,59 +80,65 @@
   .panel.panel-default
     .panel-heading
       %h4.panel-title.pull-left= t(:protocol_information)[:service_requests]
-      %button.btn.btn-success.btn-sm.pull-right{ type: 'button', data: { permission: permission.to_s } }= t(:protocol_information)[:add_services]
-      %a.btn.btn-primary.btn-sm.pull-right{ role: 'button', href: "#{portal_protocol_path(protocol, format: :xlsx)}", data: { protocol_id: protocol.id } }= t(:protocol_information)[:full_calendar]
-      %button.view-full-calendar-button.btn.btn-primary.btn-sm.pull-right{ type: 'button', data: { protocol_id: protocol.id } }= t(:protocol_information)[:consolidated_request]
+      - if !protocol.has_first_draft_service_request? && protocol.service_requests.present?
+        %a.btn.btn-primary.btn-sm.pull-right{ role: 'button', href: "#{portal_protocol_path(protocol, format: :xlsx)}", data: { protocol_id: protocol.id } }= t(:protocol_information)[:full_calendar]
+        %button.view-full-calendar-button.btn.btn-primary.btn-sm.pull-right{ type: 'button', data: { protocol_id: protocol.id } }= t(:protocol_information)[:consolidated_request]
       .clearfix
-
-    %table.table{ class: "#{cycle('striped')}" }
-      %tr
-        %th= t(:protocol_information)[:srid]
-        %th= t(:protocol_information)[:date]
-        %th= t(:protocol_information)[:provider]
-        %th= t(:protocol_information)[:program]
-        %th= t(:protocol_information)[:status]
-        %th{ colspan: 4 }
-          Actions:
-
-      - protocol.service_requests.each do |sr|
-        - first_ssr = true
-        - sr.sub_service_requests.each do |ssr|
-          - next if ssr.status == 'first_draft'
+    .panel-body
+      - if protocol.has_first_draft_service_request?
+        .alert.alert-danger{ role: 'alert' }
+          Request in progress.
+      - elsif !protocol.service_requests.present?
+        %button.btn.btn-success.btn-sm{ type: 'button', data: { permission: permission.to_s } }= t(:protocol_information)[:add_services]
+      - else
+        %table.table{ class: "#{cycle('striped')}" }
           %tr
-            %td
-              = pretty_ssr_id(protocol, ssr)
-            %td
-              = sr.submitted_at.to_date.strftime('%m/%d/%Y') rescue ''
-            %td
-              = ssr.organization.name
-            %td
-              = pretty_program_core(ssr)
-            %td
-              = AVAILABLE_STATUSES[ssr.status]
-            %td
-              %button.btn.btn-primary.btn-sm{ type: 'button' }
-                Send Notifications
-                -# %span.glyphicon.glyphicon-envelope{ title: 'Send Notifications', data: { ssr_id: ssr.ssr_id.to_s, sr_id: sr.id } }
-            %td
-              %button.btn.btn-primary.btn-sm{ type: 'button' }
-                View SSR
-                -# %span.glyphicon.glyphicon-eye-open{ title: 'View Sub Service Request', data: { sr_id: sr.id, protocol_id: protocol.id, status: ssr.status, ssr_id: ssr.ssr_id.to_s } }
-            %td.edit-td
-              - if @user.can_edit_sub_service_request? ssr
-                %button.btn.btn-warning.btn-sm{ type: 'button' }
-                  Edit SSR
-                  -# %span.glyphicon.glyphicon-pencil{ title: 'Edit Sub Service Request', data: { permission: permission.to_s } }
-            - if sr.sub_service_requests.size > 0 && first_ssr
-              - first_ssr = false
-              %td.edit-original-td
-                - if @user.can_edit_service_request? sr
-                  %button.btn.btn-warning.btn-sm{ type: 'button' }
-                    Edit Original
-                    -# %span.glyphicon.glyphicon-pencil{ title: 'Edit Service Request', data: { permission: permission.to_s } }
-          %tr
-            %td{ colspan: 9 }
-              .portal_notifications{ style: 'display:none', id: "portal_notifications_#{ssr.ssr_id}_#{sr.id}" }
-                = render partial: 'portal/sub_service_requests/notifications_area', locals: { service_request: sr, protocol: protocol, sub_service_request: ssr }
+            %th= t(:protocol_information)[:srid]
+            %th= t(:protocol_information)[:date]
+            %th= t(:protocol_information)[:provider]
+            %th= t(:protocol_information)[:program]
+            %th= t(:protocol_information)[:status]
+            %th{ colspan: 4 }
+              Actions:
 
-    - reset_cycle('protocol')
+          - protocol.service_requests.each do |sr|
+            - first_ssr = true
+            - sr.sub_service_requests.each do |ssr|
+              - next if ssr.status == 'first_draft'
+              %tr
+                %td
+                  = pretty_ssr_id(protocol, ssr)
+                %td
+                  = sr.submitted_at.to_date.strftime('%m/%d/%Y') rescue ''
+                %td
+                  = ssr.organization.name
+                %td
+                  = pretty_program_core(ssr)
+                %td
+                  = AVAILABLE_STATUSES[ssr.status]
+                %td
+                  %button.btn.btn-primary.btn-sm{ type: 'button' }
+                    Send Notifications
+                    -# %span.glyphicon.glyphicon-envelope{ title: 'Send Notifications', data: { ssr_id: ssr.ssr_id.to_s, sr_id: sr.id } }
+                %td
+                  %button.btn.btn-primary.btn-sm{ type: 'button' }
+                    View SSR
+                    -# %span.glyphicon.glyphicon-eye-open{ title: 'View Sub Service Request', data: { sr_id: sr.id, protocol_id: protocol.id, status: ssr.status, ssr_id: ssr.ssr_id.to_s } }
+                %td.edit-td
+                  - if @user.can_edit_sub_service_request? ssr
+                    %button.btn.btn-warning.btn-sm{ type: 'button' }
+                      Edit SSR
+                      -# %span.glyphicon.glyphicon-pencil{ title: 'Edit Sub Service Request', data: { permission: permission.to_s } }
+                - if sr.sub_service_requests.size > 0 && first_ssr
+                  - first_ssr = false
+                  %td.edit-original-td
+                    - if @user.can_edit_service_request? sr
+                      %button.btn.btn-warning.btn-sm{ type: 'button' }
+                        Edit Original
+                        -# %span.glyphicon.glyphicon-pencil{ title: 'Edit Service Request', data: { permission: permission.to_s } }
+              %tr
+                %td{ colspan: 9 }
+                  .portal_notifications{ style: 'display:none', id: "portal_notifications_#{ssr.ssr_id}_#{sr.id}" }
+                    = render partial: 'portal/sub_service_requests/notifications_area', locals: { service_request: sr, protocol: protocol, sub_service_request: ssr }
+
+        - reset_cycle('protocol')

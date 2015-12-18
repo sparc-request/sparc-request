@@ -44,7 +44,7 @@ RSpec.feature "User wants to create a Study", js: true do
       when_i_click_the_new_study_button
       then_i_should_see_the_nav_button_with_text 'Cancel'
     end
-    
+
     scenario 'and sees the continue button' do
       given_i_am_viewing_the_service_request_protocol_page
       when_i_click_the_new_study_button
@@ -116,14 +116,14 @@ RSpec.feature "User wants to create a Study", js: true do
         given_i_am_viewing_the_protocol_information_page
         when_i_fill_out_the_protocol_information
         when_i_submit_the_form
-        then_i_should_see_the_nav_button_with_text 'Go Back' 
+        then_i_should_see_the_nav_button_with_text 'Go Back'
       end
 
       scenario 'and sees the save and continue button' do
         given_i_am_viewing_the_protocol_information_page
         when_i_fill_out_the_protocol_information
         when_i_submit_the_form
-        then_i_should_see_the_nav_button_with_text 'Save & Continue' 
+        then_i_should_see_the_nav_button_with_text 'Save & Continue'
       end
 
       context 'TEMP: and adds themself as a Primary PI and submits the Study' do
@@ -153,7 +153,7 @@ RSpec.feature "User wants to create a Study", js: true do
   end
 
   def when_i_click_the_new_study_button
-    click_link "New Study"
+    click_link "Research Study"
   end
 
   def when_i_fill_out_the_short_title short_title="Fake Short Title"
@@ -174,7 +174,7 @@ RSpec.feature "User wants to create a Study", js: true do
         puts "An unexpected value was received in when_i_select_the_has_cofc. Perhaps there was a typo?"
     end
   end
-  
+
   def when_i_fill_out_the_sponsor_name sponsor_name="Fake Sponsor Name"
     fill_in "study_sponsor_name", with: sponsor_name
   end
@@ -201,7 +201,7 @@ RSpec.feature "User wants to create a Study", js: true do
   def when_i_set_question_1a_to selection
     select selection, from: "study_type_answer_higher_level_of_privacy_answer"
   end
-  
+
   def when_i_set_question_1b_to selection
     select selection, from: "study_type_answer_certificate_of_conf_answer"
   end
@@ -289,7 +289,7 @@ RSpec.feature "User wants to create a Study", js: true do
         expect(page).to have_content("Does your study have a Certificate of Confidentiality must be answered")
       when 'protocol information funding source'
         expect(page).to have_content("Funding source You must select a funding source")
-      when 'protocol information potential funding source'  
+      when 'protocol information potential funding source'
         expect(page).to have_content("Potential funding source You must select a potential funding source")
       when 'protocol information publish to epic'
         expect(page).to have_content("Study type questions must be selected")

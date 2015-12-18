@@ -30,22 +30,6 @@
   .clear
   %div
     .document-management-container
-      %table
-        %thead
-          %tr
-            %th.blue_header= t(:additional_details)[:portal_admin][:label]
-        %tbody
-          - @sub_service_request.line_items.each do |line_item|
-            %tr
-              %td
-                %a{:style => "text-decoration: underline;", :href => additional_detail_service_additional_details_path(line_item.service)}=line_item.additional_detail_breadcrumb 
-                %ul
-                  - line_item.additional_details_form_data_hash.each do |key, value|
-                    %li
-                      %strong=key + ":"
-                      %span=value
-      %br
-      %br
       = render :partial => 'portal/sub_service_requests/document_list', :locals => {:review => false}
       .clear
       %br

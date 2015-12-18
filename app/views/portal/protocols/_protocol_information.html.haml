@@ -117,7 +117,7 @@
                 %td
                   = AVAILABLE_STATUSES[ssr.status]
                 %td
-                  %button.btn.btn-primary.btn-sm{ type: 'button' }
+                  %button.new-portal-notification-button.btn.btn-primary.btn-sm{ type: 'button', data: { ssr_id: ssr.ssr_id.to_s, sr_id: sr.id } }
                     Send Notifications
                     -# %span.glyphicon.glyphicon-envelope{ title: 'Send Notifications', data: { ssr_id: ssr.ssr_id.to_s, sr_id: sr.id } }
                 %td

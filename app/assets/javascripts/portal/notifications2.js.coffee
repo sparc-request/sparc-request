@@ -24,23 +24,23 @@ $(document).ready ->
     $('.notifications-link .notifications_popup').toggle('blind')
   )
 
-  $('.notification_dialog').dialog
-    autoOpen: false
-    dialogClass: "new_message_dialog"
-    title: 'Send Notification'
-    width: 720
-    modal: true
-    buttons:
-      "Submit": () ->
-        disableSubmitButton("Submit", "Please wait...")
-        $('.notification-dialog-form').bind('ajax:success', (data) ->
-          enableSubmitButton("Please wait...", "Submit")
-          $('.notification_dialog').dialog('close')
-          $().toastmessage('showSuccessToast', I18n["notifications_js"]["send"]);
-        ).submit()
-      "Cancel": () ->
-        enableSubmitButton("Please wait...", "Submit")
-        $(this).dialog('close')
+  # $('.notification_dialog').dialog
+  #   autoOpen: false
+  #   dialogClass: "new_message_dialog"
+  #   title: 'Send Notification'
+  #   width: 720
+  #   modal: true
+  #   buttons:
+  #     "Submit": () ->
+  #       disableSubmitButton("Submit", "Please wait...")
+  #       $('.notification-dialog-form').bind('ajax:success', (data) ->
+  #         enableSubmitButton("Please wait...", "Submit")
+  #         $('.notification_dialog').dialog('close')
+  #         $().toastmessage('showSuccessToast', I18n["notifications_js"]["send"]);
+  #       ).submit()
+  #     "Cancel": () ->
+  #       enableSubmitButton("Please wait...", "Submit")
+  #       $(this).dialog('close')
 
   $(document).on('click', 'tr.notification_row td.notification_icon, td.from_column, td.srid_column, td.subject_column, td.body_column, td.received_column, .notifications_popup tr', ->
     id = $(this).data('notification_id')
@@ -85,66 +85,63 @@ $(document).ready ->
     $(".white_arrow_up_#{message_id}").hide()
   )
 
-  $('.new_notification_dialog').dialog({
-    autoOpen: false
-    dialogClass: "send_notification_dialog_box"
-    title: 'Send Notification'
-    width: 700
-    modal: true
-    buttons: {
-      "Send": () ->
-        disableSubmitButton("Send", "Please wait...")
-        $('.notification_notification_form').bind('ajax:success', (data) ->
-          enableSubmitButton("Please wait...", "Send")
-          $('.new_notification_dialog').dialog('close')
-        ).submit()
-      "Cancel": () ->
-        enableSubmitButton("Please wait...", "Send")
-        $(this).dialog('close')
-    }
-  })
+  # $('.new_notification_dialog').dialog({
+  #   autoOpen: false
+  #   dialogClass: "send_notification_dialog_box"
+  #   title: 'Send Notification'
+  #   width: 700
+  #   modal: true
+  #   buttons: {
+  #     "Send": () ->
+  #       disableSubmitButton("Send", "Please wait...")
+  #       $('.notification_notification_form').bind('ajax:success', (data) ->
+  #         enableSubmitButton("Please wait...", "Send")
+  #         $('.new_notification_dialog').dialog('close')
+  #       ).submit()
+  #     "Cancel": () ->
+  #       enableSubmitButton("Please wait...", "Send")
+  #       $(this).dialog('close')
+  #   }
+  # })
 
-  $(document).on('click', '.new_notification', ->
-    sub_service_request_id = $(this).data('sub_service_request_id')
-    identity_id = $(this).data('identity_id')
-    is_service_provider = $(this).data('is_service_provider')
-    current_user_id = $(this).data('current_user_id')
+  $(document).on 'click', '.new_notification', ->
+    sub_service_request_id = $(this).data('sub-service-request-id')
+    identity_id            = $(this).data('identity-id')
+    is_service_provider    = $(this).data('is-service-provider')
+    current_user_id        = $(this).data('current-user-id')
 
     if current_user_id == identity_id
       alert("You can not send a message to yourself.")
     else
-      $('.new_notification_dialog').dialog('open')
       $.ajax
         type: 'GET'
-        url:  "/portal/notifications/new?sub_service_request_id=#{sub_service_request_id}&identity_id=#{identity_id}&is_service_provider=#{is_service_provider}"
-  )
+        url:  "/portal/notifications/new.js?sub_service_request_id=#{sub_service_request_id}&identity_id=#{identity_id}&is_service_provider=#{is_service_provider}"
 
-  disableSubmitButton = (containing_text, change_to) ->
-    button = $(".ui-dialog .ui-dialog-buttonpane button:contains(#{containing_text})")
-    button.html("<span class='ui-button-text'>#{change_to}</span>")
-      .attr('disabled',true)
-      .addClass('button-disabled')
-
-  enableSubmitButton = (containing_text, change_to) ->
-    button = $(".ui-dialog .ui-dialog-buttonpane button:contains(#{containing_text})")
-    button.html("<span class='ui-button-text'>#{change_to}</span>")
-      .attr('disabled',false)
-      .removeClass('button-disabled')
-    button.attr('disabled',false)
+  # disableSubmitButton = (containing_text, change_to) ->
+  #   button = $(".ui-dialog .ui-dialog-buttonpane button:contains(#{containing_text})")
+  #   button.html("<span class='ui-button-text'>#{change_to}</span>")
+  #     .attr('disabled',true)
+  #     .addClass('button-disabled')
+  #
+  # enableSubmitButton = (containing_text, change_to) ->
+  #   button = $(".ui-dialog .ui-dialog-buttonpane button:contains(#{containing_text})")
+  #   button.html("<span class='ui-button-text'>#{change_to}</span>")
+  #     .attr('disabled',false)
+  #     .removeClass('button-disabled')
+  #   button.attr('disabled',false)
 
 
   # Form functions
 
-  $(document).on('click', '.new-portal-notification-button', ->
-    ssr_id = $(this).attr('data-ssr_id')
-    sr_id = $(this).attr('data-sr_id')
+  $(document).on 'click', '.new-portal-notification-button', ->
+    ssr_id = $(this).attr('data-ssr-id')
+    sr_id = $(this).attr('data-sr-id')
     if $(this).hasClass('active')
       $(this).removeClass('active')
     else
       $(this).addClass('active')
 
     $("#portal_notifications_#{ssr_id}_#{sr_id}").slideToggle()
-  )
 
   $(document).on('click', '.select_all', ->
     $('td.mark_unread input').prop('checked', true)
@@ -170,5 +167,3 @@ $(document).ready ->
       dataType: "script"
       contentType: 'application/json; charset=utf8'
   )
-
-

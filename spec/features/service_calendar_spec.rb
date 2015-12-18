@@ -125,16 +125,12 @@ RSpec.describe "service calendar", js: true do
           wait_for_javascript_to_finish
           select("Visit 1", from: "visit_to_move_1")
           wait_for_javascript_to_finish
-          within("#move_to_position_1") do
-            find("option:nth-child(10)").click
-          end
-          # select("Insert at 19 - Visit 18", from: "move_to_position_#{arm1.id}")
+          select("Insert at 19 - Visit 18", from: "move_to_position_#{arm1.id}")
           wait_for_javascript_to_finish
           find('#submit_move').click
           wait_for_javascript_to_finish
           select("Visits 6 - 10 of 10", from: "jump_to_visit_#{arm1.id}")
           wait_for_javascript_to_finish
-
           expect(page).to have_css("input.visit_name[value='Visit 1']")
         end
 
@@ -144,15 +140,11 @@ RSpec.describe "service calendar", js: true do
           wait_for_javascript_to_finish
           select("Visit 2", from: "visit_to_move_1")
           wait_for_javascript_to_finish
-          within("#move_to_position_1") do
-            find("option:nth-child(7)").click
-          end
           select("Insert at 11 - Visit 10", from: "move_to_position_1")
           find('#submit_move').click
           wait_for_javascript_to_finish
           select("Visits 6 - 10 of 10", from: "jump_to_visit_#{arm1.id}")
           wait_for_javascript_to_finish
-
           expect(page).to have_css("input.visit_name[value='Visit 2']")
         end
 
@@ -162,7 +154,7 @@ RSpec.describe "service calendar", js: true do
             first('.move_visits').click
             wait_for_javascript_to_finish
             select("#{vg.name}", from: "visit_to_move_1")
-            select("Move to last position", from: "move_to_position_1")
+            select("Insert at 19 - Visit 18", from: "move_to_position_1")
             find('#submit_move').click
             wait_for_javascript_to_finish
           end

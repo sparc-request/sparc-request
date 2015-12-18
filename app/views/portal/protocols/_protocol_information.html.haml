@@ -82,7 +82,7 @@
       %h4.panel-title.pull-left= t(:protocol_information)[:service_requests]
       %button.btn.btn-success.btn-sm.pull-right{ type: 'button', data: { permission: permission.to_s } }= t(:protocol_information)[:add_services]
       %button.btn.btn-primary.btn-sm.pull-right{ type: 'button', data: { protocol_id: protocol.id } }= t(:protocol_information)[:full_calendar]
-      %button.btn.btn-primary.btn-sm.pull-right{ type: 'button', data: { protocol_id: protocol.id } }= t(:protocol_information)[:consolidated_request]
+      %button.view-full-calendar-button.btn.btn-primary.btn-sm.pull-right{ type: 'button', data: { protocol_id: protocol.id } }= t(:protocol_information)[:consolidated_request]
       .clearfix
 
     %table.table{ class: "#{cycle('striped')}" }

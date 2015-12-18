@@ -163,15 +163,11 @@ $(document).ready ->
           }
       })
 
-      $('.view-full-calendar-button').live('click', ->
-        protocol_id = $(this).data('protocol_id')
-        $.ajax({
-            method: 'get'
-            url: "/portal/protocols/#{protocol_id}/view_full_calendar?portal=true"
-            success: ->
-              $('.view-full-calendar-dialog').dialog('open')
-          })
-      )
+      $(document).on 'click', '.view-full-calendar-button', ->
+        protocol_id = $(this).data('protocol-id')
+        $.ajax
+          method: 'get'
+          url: "/portal/protocols/#{protocol_id}/view_full_calendar.js?portal=true"
 
       $('.view-full-calendar-dialog').dialog({
           autoOpen: false

@@ -227,6 +227,17 @@ $(document).ready ->
         .removeClass('button-disabled')
       button.prop('disabled',false)
 
+    validatePiPresence: (role) ->
+      pi_count = parseInt($('.edit-user #pi_count').val(), 10)
+      pi_validation_message = $('.edit-user #pi-validation-message')
+      pi_count -= 1 if role != 'primary-pi'
+      if pi_count <= 0
+        pi_validation_message.show()
+        Sparc.associated_users.disableSubmitButton("Submit", "Submit")
+      else
+        pi_validation_message.hide()
+        Sparc.associated_users.enableSubmitButton("Submit", "Submit")
+
     validateRolePresence: (role) ->
       role_validation = $('#user-role-validation-message')
       role_validation.show()

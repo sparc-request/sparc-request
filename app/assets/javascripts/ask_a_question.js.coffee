@@ -18,9 +18,9 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$(document).ready ->
-  $(document).on 'click', '.ask-a-question-button', ->
-    $("#ask-a-question-form").dialog( "open" )
+$ ->
+  $('.ask-a-question-button').on 'click', ->
+    $("#ask-a-question-form").dialog("open")
 
   $("#ask-a-question-form").dialog
     autoOpen: false
@@ -41,7 +41,8 @@ $(document).ready ->
           $(this).dialog('close')
       }]
     close: ->
-        $(this).clearForm()
+      $('#ask-a-question-form form')[0].reset()
+
 
   $("#ask-a-question-form form").submit (event)->
     send_question()

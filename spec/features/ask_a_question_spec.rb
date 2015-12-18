@@ -36,17 +36,15 @@ RSpec.describe "Ask a question", js: true do
   describe 'form validation' do
 
     it "should not show the error message if the email is correct" do
-      find_by_id('quick_question_email').click()
+      find_by_id('quick_question_email').click
       page.find('#quick_question_email').set 'juan@gmail.com'
-      find('#submit_question').click()
-      wait_for_javascript_to_finish
+      find('#submit_question').click
       expect(find('#ask-a-question-form', visible: false).visible?).to eq(false)
     end
 
     it "should require an email" do
       find_by_id('quick_question_email').click()
       find('#submit_question').click()
-      wait_for_javascript_to_finish
       expect(find_by_id('ask-a-question-form').visible?).to eq(true)
       expect(page).to have_content("Valid email address required.")
     end
@@ -55,7 +53,6 @@ RSpec.describe "Ask a question", js: true do
       find_by_id('quick_question_email').click()
       page.find('#quick_question_email').set 'Pappy'
       find('#submit_question').click()
-      wait_for_javascript_to_finish
       expect(find_by_id('ask-a-question-form').visible?).to eq(true)
       expect(page).to have_content("Valid email address required.")
     end

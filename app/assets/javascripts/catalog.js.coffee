@@ -97,7 +97,7 @@ $(document).ready ->
       $('.catalog-search-spinner').remove()
       $('.catalog-search-clear-icon').remove()
 
-  .data("uiAutocomplete")._renderItem = (ul, item) ->
+  .data("ui-autocomplete")._renderItem = (ul, item) ->
     if item.label == 'No Results'
       $("<li class='search_result'></li>")
       .data("ui-autocomplete-item", item)

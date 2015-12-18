@@ -48,6 +48,8 @@ module SparcRails
     config.paths.add File.join('app', 'jobs'), glob: File.join('**', '*.rb')
     config.autoload_paths += Dir[Rails.root.join('app', 'jobs', '*')]
 
+    config.assets.paths << Rails.root.join('vendor', 'assets', 'components')
+
     # Only load the plugins named here, in the order given (default is alphabetical).
     # :all can be used as a placeholder for all plugins not explicitly named.
     # config.plugins = [ :exception_notification, :ssl_requirement, :all ]

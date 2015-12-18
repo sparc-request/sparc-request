@@ -20,7 +20,8 @@
 
 $("#modal_errors").html("<%= escape_javascript(render(partial: 'shared/modal_errors', locals: {errors: @errors})) %>")
 <% unless @errors %>
-$("#one_time_fees").html("<%= escape_javascript(render(:partial => 'portal/sub_service_requests/one_time_fees')) %>");
+$("#one_time_fees").html("<%= escape_javascript(render(:partial => 'portal/admin/fulfillment/services/one_time_fees')) %>");
+
 $("#fulfillment_subsidy").html("<%= escape_javascript(render(:partial =>'portal/admin/fulfillment/service_request_info/subsidy_info')) %>");
 $("#request_cost_total").html("<%= escape_javascript(render(:partial =>'portal/admin/fulfillment/service_request_info/direct_cost_total')) %>");
 

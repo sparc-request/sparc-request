@@ -18,7 +18,12 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-%h4= t(:fulfillments)[:services][:no_visits][:header]
+%h4 Study Level Activities
+
+
+= render partial: 'portal/study_level_activities/study_level_activities_table', locals: { protocol: protocol }
+
+
 - if !(@sub_service_request.one_time_fee_line_items.length >= 1)
   .blank_requests
     = t(:fulfillments)[:services][:no_visits][:no_requests]
@@ -100,10 +105,10 @@
         - @sub_service_request.unset_effective_date_for_cost_calculations
 
 
-  #add_otf_service_container
-    #add_otf_service_button.btn.btn-md.btn-warning{:'data-sub_service_request_id' => @sub_service_request.id}= t(:fulfillments)[:service_button]
-:javascript
-  $(document).ready(function(){
-    $(".li_#{@active}").show();
-  });
+  / #add_otf_service_container
+  /   #add_otf_service_button.btn.btn-md.btn-success{:'data-sub_service_request_id' => @sub_service_request.id}= t(:fulfillments)[:service_button]
+/ :javascript
+/   $(document).ready(function(){
+/     $(".li_#{@active}").show();
+/   });
 

@@ -31,15 +31,14 @@
     .panel-heading#users_accordion_heading.collapsed{ data: {toggle: "collapse", target: "#users_accordion"}, aria: {expanded: "false", controls: "users_accordion"} }
       %h3.panel-title User Notifications
     #users_accordion.panel-collapse.collapse{role: "tabpanel", aria: {labelledby: "users_accordion_heading"}}
-      .panel-body
-        = render partial: 'portal/admin/fulfillment/user_notifications/user_notifications', locals: {protocol: protocol, sub_service_request: sub_service_request, service_request: service_request}
+      = render partial: 'portal/admin/fulfillment/user_notifications/user_notifications', locals: {protocol: protocol, sub_service_request: sub_service_request, service_request: service_request}
 
   .panel.panel-primary
     .panel-heading#history_accordion_heading.collapsed{ data: {toggle: "collapse", target: "#history_accordion"}, aria: {expanded: "false", controls: "history_accordion"} }
       %h3.panel-title History
     #history_accordion.panel-collapse.collapse{role: "tabpanel", aria: {labelledby: "history_accordion_heading"}}
       .panel-body
-        = render partial: 'portal/admin/fulfillment/history/history', locals: {protocol: protocol, sub_service_request: sub_service_request, service_request: service_request}
+        = render partial: 'portal/admin/fulfillment/history/history', locals: {protocol: protocol, sub_service_request: sub_service_request, service_request: service_request, subsidy: subsidy, approvals: approvals }
 
   .panel.panel-primary
     .panel-heading#services_accordion_heading.collapsed{ data: {toggle: "collapse", target: "#services_accordion"}, aria: {expanded: "false", controls: "services_accordion"} }

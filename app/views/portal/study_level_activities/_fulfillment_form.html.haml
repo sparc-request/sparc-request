@@ -1,0 +1,34 @@
+.modal-dialog
+  .modal-content
+    = form_for fulfillment, {remote: true, html: {class: "form-horizontal", role: "form"}} do |form|
+      .modal-header
+        %button.close{type: 'button', data: {dismiss: 'modal'}}
+          %span{aria: {hidden:'true'}} &times;
+          %span.sr-only= t(:actions)[:close]
+        %h4.modal-title.text-center= header_text
+      .modal-body
+        #modal_errors
+        = render partial: 'required_fields'
+        .row
+          .col-md-12
+            = form.hidden_field :line_item_id
+            .form-group
+              = form.label "fulfilled_at", t(:fulfillment)[:fulfillment_date]+t(:actions)[:required], class: "col-sm-4 control-label"
+              .col-sm-7
+                = form.text_field "fulfilled_at", {class: 'form-control datetimepicker', id: 'date_fulfilled_field', value: format_date(fulfillment.fulfilled_at)}
+            .form-group
+              = form.label "quantity", t(:fulfillment)[:quantity]+t(:actions)[:required], class: "col-sm-4 control-label"
+              .col-sm-7
+                = form.text_field "quantity", {class: 'form-control'}
+            .form-group
+              = form.label "performer_id", t(:fulfillment)[:performed_by], class: "col-sm-4 control-label"
+              .col-sm-7
+                = form.select "performer_id", options_from_collection_for_select(clinical_providers.map(&:identity), 'id', 'full_name', fulfillment.performer_id || current_identity.id), {include_blank: false}, :class => 'form-control selectpicker'
+            .form-group
+              = form.label "components", t(:fulfillment)[:components], class: "col-sm-4 control-label"
+              .col-sm-7
+                = form.select "components", options_from_collection_for_select(fulfillment.line_item.components, 'component', 'component', fulfillment.components.map(&:component)), {include_blank: false}, {class: 'form-control selectpicker', multiple: "", title: "Please Select", 'data-width' => '150px', 'data-selected-text-format' => 'count>2'}
+      .modal-footer
+        .center-block
+          %button.btn.btn-default{type: 'button', data: {dismiss: 'modal'}}= t(:actions)[:close]
+          %input.btn.btn-primary{type: 'submit', value: t(:fulfillment)[:save_fulfillment]}

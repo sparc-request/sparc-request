@@ -18,16 +18,15 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-%table{:id => 'status_history_table', :class => 'tablesorter'}
+%table.table.table-hover.table-condensed.table-bordered.tablesorter#approval_history_table
   %thead
     %tr
-      %th= t(:fulfillments)[:status_changes][:date]
-      %th= t(:fulfillments)[:status_changes][:from]
-      %th= t(:fulfillments)[:status_changes][:to]
+      %th= t(:fulfillments)[:approval_history][:date_approved]
+      %th= t(:fulfillments)[:approval_history][:approval_type]
+      %th= t(:fulfillments)[:approval_history][:approved_by]
   %tbody
-    - if @sub_service_request
-      - @sub_service_request.past_status_lookup.each do |past_status|
-        %tr
-          %td= past_status.try(:created_at).try(:strftime, "%D %r")
-          %td= AVAILABLE_STATUSES[past_status.try(:status)]
-          %td= AVAILABLE_STATUSES[past_status.try(:changed_to)]
+    - approvals.each do |approval|
+      %tr
+        %td= approval.try(:approval_date).try(:strftime, "%D")
+        %td= approval.try(:approval_type)
+        %td= approval.try(:identity).try(:full_name)

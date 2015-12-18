@@ -20,7 +20,7 @@
 
 $("#modal_errors").html("<%= escape_javascript(render(partial: 'shared/modal_errors', locals: {errors: @errors})) %>")
 <% unless @errors %>
-$("#per_patient_services").html("<%= escape_javascript(render(:partial =>'portal/sub_service_requests/per_patient_per_visit', locals: {sub_service_request: @sub_service_request, service_request: @service_request})) %>");
+$("#per_patient_services").html("<%= escape_javascript(render(:partial =>'portal/admin/fulfillment/services/per_patient_per_visit', locals: {sub_service_request: @sub_service_request, service_request: @service_request})) %>");
 
 $("#fulfillment_subsidy").html("<%= escape_javascript(render(:partial =>'portal/admin/fulfillment/service_request_info/subsidy_info')) %>");
 $("#request_cost_total").html("<%= escape_javascript(render(:partial =>'portal/admin/fulfillment/service_request_info/direct_cost_total')) %>");

@@ -19,25 +19,26 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #notifications_area
-  %h4 Send Notifications
   %table.table.table-hover.table-condensed.table-bordered.fulfillment_notifications
-    %tr
-      %th Role
-      %th Name
-      %th
-        .center Send Notification
-    %tr
-      %td Requester
-      %td= service_request.try(:service_requester).try(:full_name)
-      %td
-        %button.center-block.btn.btn-sm.btn-success.new_notification.requester{ data: { identity_id: service_request.try(:service_requester).try(:id), sub_service_request_id: sub_service_request.id, is_service_provider: 'false', current_user_id: current_user.id }}
-          %span.glyphicon.glyphicon-envelope
-
-    - protocol.project_roles.each do |pr|
+    %thead
       %tr
-        %td= display_user_role(pr)
-        %td= pr.identity.full_name
+        %th Role
+        %th Name
+        %th
+          .center Send Notification
+    %tbody
+      %tr
+        %td Requester
+        %td= service_request.try(:service_requester).try(:full_name)
         %td
-          %button.center-block.btn.btn-sm.btn-success.new_notification.roles{ data: { identity_id: pr.identity.id, sub_service_request_id: sub_service_request.id, is_service_provider: 'false', current_user_id: current_user.id }}
+          %button.center-block.btn.btn-sm.btn-success.new_notification.requester{ data: { identity_id: service_request.try(:service_requester).try(:id), sub_service_request_id: sub_service_request.id, is_service_provider: 'false', current_user_id: current_user.id }}
             %span.glyphicon.glyphicon-envelope
+
+      - protocol.project_roles.each do |pr|
+        %tr
+          %td= display_user_role(pr)
+          %td= pr.identity.full_name
+          %td
+            %button.center-block.btn.btn-sm.btn-success.new_notification.roles{ data: { identity_id: pr.identity.id, sub_service_request_id: sub_service_request.id, is_service_provider: 'false', current_user_id: current_user.id }}
+              %span.glyphicon.glyphicon-envelope
 

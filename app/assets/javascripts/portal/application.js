@@ -27,6 +27,8 @@
 //= require jquery
 //= require bootstrap-sprockets
 //= require bootstrap-select
+//= require bootstrap-table
+//= require bootstrap-table-export
 //= require moment
 //= require bootstrap-datetimepicker
 //= require jquery-ui

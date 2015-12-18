@@ -29,13 +29,11 @@
 
   .tab-content
     .tab-pane#service_request_status_changes{role: 'tabpanel', class: 'active'}
-      = render 'portal/sub_service_requests/status_changes'
-
+      = render partial: 'portal/admin/fulfillment/history/status_changes', locals: { sub_service_request: sub_service_request }
 
     .tab-pane#ssr_subsidy_changes{role: 'tabpanel'}
-      = render 'portal/sub_service_requests/subsidy_changes'
-
+      = render partial: 'portal/admin/fulfillment/history/subsidy_changes', locals: { sub_service_request: sub_service_request, subsidy: subsidy}
 
     .tab-pane#service_request_approval_changes{role: 'tabpanel'}
-      = render 'portal/sub_service_requests/approval_changes'
+      = render partial: 'portal/admin/fulfillment/history/approval_changes', locals: { approvals: approvals }
 

@@ -1,0 +1,20 @@
+%td{colspan: 11}
+  .bootstrap-table-dropdown-overflow
+    #fulfillment-custom-toolbar
+      %button.btn.btn-success.otf_fulfillment_new{type: "button", "aria-label" => "Add Fulfillment", data: {line_item_id: line_item.id}}
+        = t(:fulfillment)[:add_fulfillment]
+    %table.fulfillments{id: "fulfillments-table", data: {toggle: 'table', search: "true", "show-columns" => "true", "show-refresh" => "true", "show-toggle" => "true", url: fulfillments_path(format: :json, line_item_id: line_item.id), "sort-name" => "fulfillment_date", "sort-order" => 'asc', sorter: "dateSorter", striped: "true", toolbar: "#fulfillment-custom-toolbar", "show-export" => "true", "export-types" => ['excel']}}
+      %thead.secondary-header
+        %tr
+          %th{data: {class: 'fulfillment_date', align: "left", field: "fulfillment_date"}}
+            = t(:fulfillment)[:fulfillment_date]
+          %th{data: {class: 'quantity', align: "left", field: "quantity"}}
+            = t(:fulfillment)[:quantity]
+          %th{data: {class: 'qty_type', align: "left", field: "quantity_type"}}
+            = t(:fulfillment)[:qty_type]
+          %th{data: {class: 'performed_by', align: "left", field: "performed_by"}}
+            = t(:fulfillment)[:performed_by]
+          %th{data: {class: 'components', align: "center", field: "components"}}
+            = t(:fulfillment)[:components]
+          %th{data: {class: 'options', align: "center", field: "options"}}
+            = t(:actions)[:actions]

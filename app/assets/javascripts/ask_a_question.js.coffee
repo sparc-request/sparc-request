@@ -44,7 +44,7 @@ $ ->
       $('#ask-a-question-form form')[0].reset()
 
 
-  $("#ask-a-question-form form").submit (event)->
+  $("#ask-a-question-form form").submit (event) ->
     send_question()
     event.preventDefault()
     return false

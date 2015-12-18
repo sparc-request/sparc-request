@@ -36,16 +36,16 @@ RSpec.describe "Ask a question", js: true do
   describe 'form validation' do
 
     it "should not show the error message if the email is correct" do
-      find_by_id('quick_question_email').click
-      page.find('#quick_question_email').set 'juan@gmail.com'
-      find('#submit_question').click
-      expect(find('#ask-a-question-form', visible: false).visible?).to eq(false)
+      fill_in 'quick_question_email', with: 'juan@gmail.com'
+      click_button 'Submit'
+      wait_for_javascript_to_finish
+      expect(page).not_to have_selector('#ask-a-question-form')
     end
 
     it "should require an email" do
       find_by_id('quick_question_email').click()
       find('#submit_question').click()
-      expect(find_by_id('ask-a-question-form').visible?).to eq(true)
+      find_by_id('ask-a-question-form').visible?
       expect(page).to have_content("Valid email address required.")
     end
 

@@ -20,6 +20,13 @@ GIT
   specs:
     grouped_validations (0.3.3)
 
+GIT
+  remote: git://github.com/swanandp/acts_as_list.git
+  revision: 0a4ad6b22bc601443f98bd7b9a9445d4fe26b749
+  specs:
+    acts_as_list (0.7.2)
+      activerecord (>= 3.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -67,8 +74,6 @@ GEM
       tzinfo (~> 1.1)
     acts-as-taggable-on (3.5.0)
       activerecord (>= 3.2, < 5)
-    acts_as_list (0.7.2)
-      activerecord (>= 3.0)
     addressable (2.3.8)
     afm (0.2.2)
     akami (1.2.2)
@@ -440,7 +445,7 @@ DEPENDENCIES
   activerecord-import
   activerecord-session_store
   acts-as-taggable-on
-  acts_as_list
+  acts_as_list!
   addressable (~> 2.3.6)
   audited-activerecord
   axlsx

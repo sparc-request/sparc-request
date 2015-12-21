@@ -134,14 +134,11 @@
                     -# %span.glyphicon.glyphicon-eye-open{ title: 'View Sub Service Request', data: { sr_id: sr.id, protocol_id: protocol.id, status: ssr.status, ssr_id: ssr.ssr_id.to_s } }
                 %td.edit-td
                   - if @user.can_edit_sub_service_request? ssr
-                    %button.btn.btn-warning.btn-sm{ type: 'button' }
+                    %button.edit_service_request.btn.btn-warning.btn-sm{ type: 'button', data: { permission: permission.to_s, url: "/service_requests/#{sr.id}/catalog?sub_service_request_id=#{ssr.id}&from_user_portal=true" } }
                       Edit SSR
-                      -# %span.glyphicon.glyphicon-pencil{ title: 'Edit Sub Service Request', data: { permission: permission.to_s } }
                 - if sr.sub_service_requests.size > 0 && first_ssr
                   - first_ssr = false
                   %td.edit-original-td
                     - if @user.can_edit_service_request? sr
-                      %button.btn.btn-warning.btn-sm{ type: 'button' }
-                        Edit Original
-                        -# %span.glyphicon.glyphicon-pencil{ title: 'Edit Service Request', data: { permission: permission.to_s } }
+                      %button.edit_service_request.btn.btn-warning.btn-sm{ type: 'button', data: { permission: permission.to_s, url: "/service_requests/#{sr.id}/catalog?from_user_portal=true&edit_original=true" } }= t(:protocol_information)[:edit_original]
         - reset_cycle('protocol')

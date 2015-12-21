@@ -53,13 +53,12 @@ $(document).ready ->
           $('.permissions-dialog .text').html('Edit.')
       )
 
-      $('.edit_service_request').live('click', ->
+      $(document).on 'click', '.edit_service_request', ->
         if $(this).data('permission')
           window.location = $(this).data('url')
         else
           $('.permissions-dialog').dialog('open')
           $('.permissions-dialog .text').html('Edit.')
-      )
 
       $('.service-request-button').live('click', ->
         if $(this).data('permission')

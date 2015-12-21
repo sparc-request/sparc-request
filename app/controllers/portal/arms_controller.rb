@@ -83,7 +83,7 @@ class Portal::ArmsController < Portal::BaseController
     else
       @selected_arm = @service_request.arms.first
     end
-    flash[:success] = "Arm Destroyed!"
+    flash[:alert] = "Arm Destroyed!"
   end
 
   private

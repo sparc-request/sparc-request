@@ -18,27 +18,5 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-module Portal::EpicQueuesHelper
-
-  def format_protocol(protocol)
-    "#{protocol.type.capitalize}: #{protocol.id} - #{protocol.short_title}"
-  end
-
-  def format_epic_queue_date(protocol)
-    date = protocol.last_epic_push_time
-    if date.present?
-      date.strftime(t(:epic_queues)[:date_formatter])
-    else
-      ''
-    end
-  end
-
-  def format_status(protocol)
-    status = protocol.last_epic_push_status
-    if status.present?
-      "#{status.capitalize}"
-    else
-      ''
-    end
-  end
-end
+$("#modal_area").html("<%= escape_javascript(render(:partial =>'portal/line_items/details_modal', locals: {line_item: @line_item})) %>");
+$("#modal_place").modal 'show'

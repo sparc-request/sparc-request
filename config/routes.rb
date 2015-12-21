@@ -302,14 +302,15 @@ SparcRails::Application.routes.draw do
         end
       end
 
-      resources :fulfillments, only: [:create, :destroy] do
+      resources :fulfillments do
         member do
           put :update_from_fulfillment
         end
       end
 
-      resources :line_items, only: [:new, :create, :destroy] do
+      resources :line_items do
         member do
+          get :details
           put :update_from_fulfillment
           put :update_from_cwf
         end

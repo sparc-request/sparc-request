@@ -19,7 +19,61 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Portal::FulfillmentsController < Portal::BaseController
-  respond_to :js, :json, :html
+
+  before_action :find_fulfillment, only: [:edit, :update]
+
+  def index
+    @line_item = LineItem.find(params[:line_item_id])
+    respond_to do |format|
+      format.js { render }
+      format.json {
+        @fulfillments = @line_item.fulfillments
+
+        render
+      }
+    end
+  end
+
+  def new
+    @line_item = LineItem.find(params[:line_item_id])
+    @clinical_providers = ClinicalProvider.where(organization_id: @line_item.sub_service_request.organization_id)
+    @fulfillment = Fulfillment.new(line_item: @line_item, performer: current_user)
+  end
+
+  def create
+    @line_item = LineItem.find(fulfillment_params[:line_item_id])
+    service = @line_item.service
+    funding_source = @line_item.protocol.funding_source
+    @fulfillment = Fulfillment.new(fulfillment_params.merge!({ creator: current_identity, service: service, service_name: service.name, service_cost: service.cost(funding_source) }))
+    if @fulfillment.valid?
+      @fulfillment.save
+      flash[:success] = "Fulfillment Created!"
+    else
+      @errors = @fulfillment.errors
+    end
+  end
+
+  def edit
+    @line_item = @fulfillment.line_item
+    @clinical_providers = ClinicalProvider.where(organization_id: @line_item.protocol.sub_service_request.organization_id)
+  end
+
+  def update
+    @line_item = @fulfillment.line_item
+    if @fulfillment.update_attributes(fulfillment_params)
+      flash[:success] = "Fulfillment Updated!"
+    else
+      @errors = @fulfillment.errors
+    end
+  end
+
+  def destroy
+    @fulfillment = Fulfillment.find(params[:id])
+    @sub_service_request = @fulfillment.line_item.sub_service_request
+    if @fulfillment.delete
+      flash[:alert] = "Fulfillment Destroyed!"
+    end
+  end
 
   def update_from_fulfillment
     @fulfillment = Fulfillment.find(params[:id])
@@ -32,25 +86,9 @@ class Portal::FulfillmentsController < Portal::BaseController
     end
   end
 
-  def create
-    if @fulfillment = Fulfillment.create(params[:fulfillment])
-      @sub_service_request = @fulfillment.line_item.sub_service_request
-      @candidate_one_time_fees = @sub_service_request.candidate_services.select {|x| x.one_time_fee}
-      @active = @fulfillment.line_item.id
-      render 'create'
-    else
-      respond_to do |format|
-        format.js { render :status => 500, :json => clean_errors(@fulfillment.errors) } 
-      end
-    end
-  end
+  private
 
-  def destroy
-    @fulfillment = Fulfillment.find(params[:id])
-    @sub_service_request = @fulfillment.line_item.sub_service_request
-    if @fulfillment.delete
-      @candidate_one_time_fees = @sub_service_request.candidate_services.select {|x| x.one_time_fee}
-      render 'create'
-    end
+  def find_fulfillment
+    @fulfillment = Fulfillment.find params[:id]
   end
 end

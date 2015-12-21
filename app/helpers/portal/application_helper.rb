@@ -19,7 +19,15 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 module Portal::ApplicationHelper
-  
+
+  def format_date date
+    if date.present?
+      date.strftime('%D')
+    else
+      ''
+    end
+  end
+
   def pretty_tag(tag)
     tag.to_s.gsub(/\s/, "_").gsub(/[^-\w]/, "").downcase
   end

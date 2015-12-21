@@ -45,7 +45,7 @@
               - protocol.principal_investigators.map(&:full_name).each do |pi|
                 %li{class: "#{protocol.id}-PI"}= pi
           %td{class: "eq-date", align: "left"}
-            = format_date(protocol)
+            = format_epic_queue_date(protocol)
           %td{class: "eq-status", align: "left"}
             = format_status(protocol)
           %td.last{class: "eq-delete", align: "center"}

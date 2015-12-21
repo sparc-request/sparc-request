@@ -67,17 +67,7 @@ class Arm < ActiveRecord::Base
   def create_line_items_visit line_item
     # if visit_count is nil then set it to 1
     self.update_attribute(:visit_count, 1) if self.visit_count.nil?
-
-    # loop until visit_groups catches up to visit_count
-    while self.visit_groups.size < self.visit_count
-      visit_group = self.visit_groups.new
-      if not visit_group.save(validate: false) then
-        raise ActiveRecord::Rollback
-      end
-    end
-
     liv = LineItemsVisit.for(self, line_item)
-
     liv.create_visits
 
     if line_items_visits.count > 1
@@ -190,34 +180,9 @@ class Arm < ActiveRecord::Base
     first = self.visit_groups.count
     last = self.visit_count
 
-    # Import the visit groups
-    vg_columns = [:name, :arm_id, :position]
-    vg_values = []
-    (last-first).times do |index|
-      position = first + index + 1
-      vg_values.push ["Visit #{position}", self.id, position]
-    end
-    VisitGroup.import vg_columns, vg_values, {:validate => true}
-
-    self.reload
-    # Grab the ids of the visit groups that were created
-    vg_ids = []
-    self.visit_groups.each do |vg|
-      if vg.visits.count == 0
-        vg_ids.push(vg.id)
-      end
-    end
-
-    # Import the visits
-    columns = [:visit_group_id, :line_items_visit_id]
-    values = []
-    self.line_items_visits.each do |liv|
-      vg_ids.each do |id|
-        values.push [id, liv.id]
-      end
-    end
-    Visit.import columns, values, {:validate => true}
-    self.reload
+    create_visit_groups(first, last)  
+    vg_ids = get_visit_group_ids
+    create_visits(vg_ids)
   end
 
   def mass_destroy_visit_group
@@ -366,4 +331,34 @@ class Arm < ActiveRecord::Base
   end
 
   ### end audit reporting methods ###
+
+  private
+
+  def create_visit_groups(first, last)
+    (last-first).times do |index|
+      position = index + 1 + first
+      VisitGroup.create(arm_id: self.id, name: "Visit #{position}", position: position)
+    end   
+    self.reload
+  end
+
+  def get_visit_group_ids
+    vg_ids = []
+    self.visit_groups.each do |vg|
+      if vg.visits.count == 0
+        vg_ids << vg.id
+      end
+    end
+
+    vg_ids
+  end
+
+  def create_visits(vg_ids)
+    self.line_items_visits.each do |liv|
+      vg_ids.each do |id|
+        Visit.create(visit_group_id: id, line_items_visit_id: liv.id)
+      end
+    end
+    self.reload
+  end
 end

@@ -1,0 +1,16 @@
+%dl.dl-horizontal.pull-left
+  %dt #{protocol.type.capitalize} ID:
+  %dd= protocol.try(:id)
+
+  %dt= t(:protocol_information)[:title]
+  %dd= protocol.try(:title)
+
+  %dt= t(:protocol_information)[:short_title]
+  %dd= protocol.try(:short_title)
+
+  - if protocol.type == 'Study'
+    %dt= t(:protocol_information)[:sponsor]
+    %dd= protocol.try(:sponsor_name)
+
+  %dt= display_funding_source_title(protocol)
+  %dd= display_funding_source(protocol)

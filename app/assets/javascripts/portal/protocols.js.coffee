@@ -107,11 +107,11 @@ $(document).ready ->
             $('.search_protocols').show()
       )
 
-      $('.view-sub-service-request-button').live('click', ->
-        id = $(this).data('service_request_id')
-        protocol_id = $(this).data('protocol_id')
-        status = $(this).data('status')
-        ssr_id = $(this).attr('data-ssr_id')
+      $(document).on 'click', '.view-sub-service-request-button', ->
+        id            = $(this).data('service-request-id')
+        protocol_id   = $(this).data('protocol-id')
+        status        = $(this).data('status')
+        ssr_id        = $(this).data('ssr-id')
         random_number = Math.floor(Math.random()*10101010101)
         $.ajax
           method: 'get'
@@ -122,7 +122,6 @@ $(document).ready ->
             ssr_id: ssr_id
           success: ->
             $('.view-sub-service-request-dialog').dialog('open')
-      )
 
       $('.edit-protocol-information-dialog').dialog({
           autoOpen: false

@@ -29,22 +29,7 @@
       .clearfix
 
     .panel-body
-      %dl.dl-horizontal.pull-left
-        %dt #{protocol.type.capitalize} ID:
-        %dd= protocol.try(:id)
-
-        %dt= t(:protocol_information)[:title]
-        %dd= protocol.try(:title)
-
-        %dt= t(:protocol_information)[:short_title]
-        %dd= protocol.try(:short_title)
-
-        - if protocol.type == 'Study'
-          %dt= t(:protocol_information)[:sponsor]
-          %dd= protocol.try(:sponsor_name)
-
-        %dt= display_funding_source_title(protocol)
-        %dd= display_funding_source(protocol)
+      = render partial: 'portal/protocols/summary', locals: { protocol: protocol }
 
   .panel.panel-default
     .panel-heading
@@ -129,9 +114,8 @@
                           %option{ data: { identity_id: sp.identity.id, sub_service_request_id: ssr.id, is_service_provider: 'true', current_user_id: current_user.id } }
                             = sp.identity.full_name
                 %td
-                  %button.btn.btn-primary.btn-sm{ type: 'button' }
+                  %button.view-sub-service-request-button.btn.btn-primary.btn-sm{ type: 'button', data: { service_request_id: sr.id, protocol_id: protocol.id, status: ssr.status, ssr_id: ssr.ssr_id.to_s } }
                     View SSR
-                    -# %span.glyphicon.glyphicon-eye-open{ title: 'View Sub Service Request', data: { sr_id: sr.id, protocol_id: protocol.id, status: ssr.status, ssr_id: ssr.ssr_id.to_s } }
                 %td.edit-td
                   - if @user.can_edit_sub_service_request? ssr
                     %button.edit_service_request.btn.btn-warning.btn-sm{ type: 'button', data: { permission: permission.to_s, url: "/service_requests/#{sr.id}/catalog?sub_service_request_id=#{ssr.id}&from_user_portal=true" } }

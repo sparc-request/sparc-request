@@ -29,7 +29,7 @@
       .row
         .col-lg-12
           .panel-group
-            .panel.panel-primary
+            .panel.panel-default
               .panel-heading= t(:ssr_dialog)[:project_study_details][:info]
               .panel-body
                 %dl.dl-horizontal.pull-left
@@ -47,7 +47,7 @@
 
                   %dt= display_funding_source_title(@protocol)
                   %dd= display_funding_source_or_potential(@protocol)
-            .panel.panel-primary
+            .panel.panel-default
               .panel-heading Users
               %table.table.table-striped
                 %tr
@@ -59,7 +59,7 @@
                     %td= pr.identity.full_name
                     %td= USER_ROLES.key(pr.role)
                     %td= PROXY_RIGHTS.key(pr.project_rights)
-            .panel.panel-primary
+            .panel.panel-default
               .panel-heading Services
               - if @protocol.has_per_patient_per_visit? @service_request, @portal
                 - @protocol.arms.each do |arm|

@@ -30,13 +30,13 @@
     .modal-body
       #modal_errors
       .panel-group
-        .panel.panel-primary
+        .panel.panel-default
           .panel-heading
             %h4.panel-title.pull-left= t(:protocol_information)[:information]
             .clearfix
           .panel-body
             = render partial: 'portal/protocols/summary', locals: { protocol: protocol }
-        .panel.panel-primary
+        .panel.panel-default
           .panel-heading
             %h4.panel-title.pull-left
               Users
@@ -51,7 +51,7 @@
                 %td= pr.identity.full_name
                 %td= USER_ROLES.key(pr.role)
                 %td= PROXY_RIGHTS.key(pr.project_rights)
-        .panel.panel-primary
+        .panel.panel-default
           .panel-heading
             %h4.panel-title.pull-left= t(:ssr_dialog)[:docs][:uploads]
             .clearfix

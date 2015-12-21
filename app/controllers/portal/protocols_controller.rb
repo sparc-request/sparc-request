@@ -120,9 +120,9 @@ class Portal::ProtocolsController < Portal::BaseController
       @protocol.populate_for_edit if @protocol.type == "Study"
       render :action => 'edit'
     end
-    # make hidden field in partial
+    
     if !@protocol.active?
-      @protocol.update_attribute(:study_type_question_group_id, StudyTypeQuestionGroup.where(active:true).pluck(:id).first)
+      @protocol.activate
     end
     
   end

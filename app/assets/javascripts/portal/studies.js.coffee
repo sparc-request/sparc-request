@@ -44,7 +44,7 @@ $(document).ready ->
       '#study_impact_areas_attributes_6__destroy':
         'true'             : ['.impact_other']
       '#study_selected_for_epic_true':
-        'true'             : ['#study_type_answer_certificate_of_conf']
+        'true'             : ['#study_type_answer_certificate_of_conf', '#study_type_answer_higher_level_of_privacy']
       '#study_type_answer_access_study_info_answer':
         'false'             : ['#study_type_answer_epic_inbasket', '#study_type_answer_research_active', '#study_type_answer_restrict_sending']
 
@@ -57,46 +57,73 @@ $(document).ready ->
         $('.study_type').show()
       $('#study_selected_for_epic_false').click ->
         $('.study_type').hide()
-        $('.study_type select').val("").change()
+        $('.study_type select').change()
       
+      $('#study_selected_for_epic_true').change ->
+        for elem in ['#study_type_answer_access_study_info', '#study_type_answer_epic_inbasket', '#study_type_answer_research_active', '#study_type_answer_restrict_sending']
+          $(elem).hide()
 
-      #Logic for Version 2 of Study Type Questions and Answers
-      $("#study_type_answer_certificate_of_conf_answer").change ->
-        
+
+
+      $("#study_type_answer_higher_level_of_privacy_answer").change ->
+        # if $(this).val() != 'true'
+        #   $('#study_type_answer_access_study_info_answer').change()
+        # if $(this).val() != 'false'
+        #   for elem in ['#study_type_answer_access_study_info', '#study_type_answer_epic_inbasket', '#study_type_answer_research_active', '#study_type_answer_restrict_sending']
+        #     $(elem).hide()
+
+        if $(this).val() == 'false'
+          for elem in ['#study_type_answer_epic_inbasket', '#study_type_answer_research_active', '#study_type_answer_restrict_sending']
+            $(elem).show()
+
+          $('#study_type_answer_access_study_info').hide()
+
+        if $(this).val() == 'true' && $(this).closest('div#study_type_answer_higher_level_of_privacy').siblings('#study_type_answer_certificate_of_conf').find('#study_type_answer_certificate_of_conf_answer').val() == 'false'
+          $('#study_type_answer_access_study_info').show()
+          $('#study_type_answer_access_study_info_answer').change()
+
+
+      $('#study_type_answer_access_study_info_answer').change ->
         if $(this).val() == 'true'
-          for elem in ['#study_type_answer_access_study_info', '#study_type_answer_epic_inbasket', '#study_type_answer_research_active', '#study_type_answer_restrict_sending']
+          for elem in ['#study_type_answer_epic_inbasket_answer', '#study_type_answer_research_active_answer', '#study_type_answer_restrict_sending_answer']
             $(elem).hide()
-          for elem in ['#study_type_answer_higher_level_of_privacy_answer','#study_type_answer_access_study_info_answer','#study_type_answer_epic_inbasket_answer', '#study_type_answer_research_active_answer', '#study_type_answer_restrict_sending_answer']
-            $(elem).val("").change()
-          $('#study_type_answer_higher_level_of_privacy').show()
+      # $("#study_type_answer_certificate_of_conf_answer").change ->
+      #   console.log 'cofc changed'
+      #   if $(this).val() == 'true'
+      #     for elem in ['#study_type_answer_access_study_info', '#study_type_answer_epic_inbasket', '#study_type_answer_research_active', '#study_type_answer_restrict_sending']
+      #       $(elem).hide()
+      #     for elem in ['#study_type_answer_higher_level_of_privacy_answer','#study_type_answer_access_study_info_answer','#study_type_answer_epic_inbasket_answer', '#study_type_answer_research_active_answer', '#study_type_answer_restrict_sending_answer']
+      #       $(elem).change()
+      #     $('#study_type_answer_higher_level_of_privacy').show()
 
-          $("#study_type_answer_higher_level_of_privacy_answer").change ->
+      #     $("#study_type_answer_higher_level_of_privacy_answer").change ->
             
-            if $(this).val() == 'true' || $(this).val() == 'false'
-              for elem in ['#study_type_answer_access_study_info', '#study_type_answer_epic_inbasket', '#study_type_answer_research_active', '#study_type_answer_restrict_sending']
-                $(elem).hide()
-              for elem in ['#study_type_answer_access_study_info_answer', '#study_type_answer_epic_inbasket_answer', '#study_type_answer_research_active_answer', '#study_type_answer_restrict_sending_answer']
-                $(elem).val("").change()
+      #       if $(this).val() == 'true' || $(this).val() == 'false'
+      #         for elem in ['#study_type_answer_access_study_info', '#study_type_answer_epic_inbasket', '#study_type_answer_research_active', '#study_type_answer_restrict_sending']
+      #           $(elem).hide()
+      #         for elem in ['#study_type_answer_access_study_info_answer', '#study_type_answer_epic_inbasket_answer', '#study_type_answer_research_active_answer', '#study_type_answer_restrict_sending_answer']
+      #           $(elem).change()
         
-        else if $(this).val() == 'false'
-          for elem in ['#study_type_answer_access_study_info', '#study_type_answer_epic_inbasket', '#study_type_answer_research_active', '#study_type_answer_restrict_sending']
-            $(elem).hide()
-          for elem in ['#study_type_answer_higher_level_of_privacy_answer','#study_type_answer_access_study_info_answer','#study_type_answer_epic_inbasket_answer', '#study_type_answer_research_active_answer', '#study_type_answer_restrict_sending_answer']
-            $(elem).val("").change()
-          $('#study_type_answer_higher_level_of_privacy').show()
+      #   else if $(this).val() == 'false'
+      #     for elem in ['#study_type_answer_access_study_info', '#study_type_answer_epic_inbasket', '#study_type_answer_research_active', '#study_type_answer_restrict_sending']
+      #       $(elem).hide()
+      #     for elem in ['#study_type_answer_higher_level_of_privacy_answer','#study_type_answer_access_study_info_answer','#study_type_answer_epic_inbasket_answer', '#study_type_answer_research_active_answer', '#study_type_answer_restrict_sending_answer']
+      #       $(elem).change()
+      #     $('#study_type_answer_higher_level_of_privacy').show()
 
-          $("#study_type_answer_higher_level_of_privacy_answer").change ->
-            for elem in ['#study_type_answer_access_study_info', '#study_type_answer_epic_inbasket', '#study_type_answer_research_active', '#study_type_answer_restrict_sending']
-              $(elem).hide()
-            for elem in ['#study_type_answer_access_study_info_answer','#study_type_answer_epic_inbasket_answer', '#study_type_answer_research_active_answer', '#study_type_answer_restrict_sending_answer']
-              $(elem).val("").change()
+      #     $("#study_type_answer_higher_level_of_privacy_answer").change ->
+      #       for elem in [ '#study_type_answer_epic_inbasket', '#study_type_answer_research_active', '#study_type_answer_restrict_sending']
+      #         $(elem).hide()
+      #       for elem in ['#study_type_answer_access_study_info_answer','#study_type_answer_epic_inbasket_answer', '#study_type_answer_research_active_answer', '#study_type_answer_restrict_sending_answer']
+      #         $(elem).change()
 
-            if $(this).val() == 'true'
-              $('#study_type_answer_access_study_info').show()
-            else if $(this).val() == 'false'
-              $('#study_type_answer_access_study_info').hide()
-              for elem in ['#study_type_answer_epic_inbasket', '#study_type_answer_research_active', '#study_type_answer_restrict_sending']
-                $(elem).show()
+      #       if $(this).val() == 'true'
+      #         $('#study_type_answer_access_study_info').show()
+      #       else if $(this).val() == 'false'
+      #         $('#study_type_answer_access_study_info').hide()
+      #         for elem in ['#study_type_answer_epic_inbasket', '#study_type_answer_research_active', '#study_type_answer_restrict_sending']
+      #           $(elem).show()
+
 
       ######## End of send to epic study question logic ##############
 
@@ -128,6 +155,8 @@ $(document).ready ->
           $('#study_investigational_products_info_attributes_ind_number').val('')
           $('#study_investigational_products_info_attributes_ind_number').change()
           $('#study_investigational_products_info_attributes_ind_on_hold').attr('checked', false)
+      $("#study_type_answer_certificate_of_conf_answer").change()
+      $("#study_type_answer_higher_level_of_privacy_answer").change() 
 
       # id       - where to stick datepicker
       # altField - input element(s) that is to be updated with

@@ -19,7 +19,7 @@ RSpec.describe "Identity edits Study", js: true do
       study.update_attributes(study_type_question_group_id: StudyTypeQuestionGroup.where(active:true).pluck(:id).first)
     end
 
-    context 'epic box answers are YES, YES, NIL, NIL, NIL, NIL' do
+    context 'epic box answers are 1: YES, YES, NIL, NIL, NIL, NIL' do
 
       before :each do
         
@@ -37,9 +37,9 @@ RSpec.describe "Identity edits Study", js: true do
       end
 
       it 'should display active questions 1,2' do
-      	save_and_open_page
+      	
 	      expect(page).to have_selector('#study_type_answer_certificate_of_conf')
-	      expect(page).to have_css('#study_type_answer_higher_level_of_privacy')
+	      expect(page).to have_selector('#study_type_answer_higher_level_of_privacy')
 	      expect(page).to_not have_selector('#study_type_answer_access_study_info')
 	      expect(page).to_not have_selector('#study_type_answer_epic_inbasket')
 	      expect(page).to_not have_selector('#study_type_answer_research_active')
@@ -58,69 +58,114 @@ RSpec.describe "Identity edits Study", js: true do
 	      it 'should have No for the active question 1 and nothing selected for active question 2' do
 	      	
 	      	expect(page).to have_select('study_type_answer_certificate_of_conf_answer', selected: 'No')
-	      	expect(page).to have_select('study_type_answer_higher_level_of_privacy_answer', selected: 'Select One')
+	      	expect(page).to have_selector('#study_type_answer_higher_level_of_privacy')
+	      	expect(page).to have_selector('#study_type_answer_access_study_info')
+		      expect(page).to_not have_selector('#study_type_answer_epic_inbasket')
+		      expect(page).to_not have_selector('#study_type_answer_research_active')
+		      expect(page).to_not have_selector('#study_type_answer_restrict_sending') 
 
 	      end
 	    end
     end
-    # context 'epic box answers are NO, YES, NO, NO, NO, NO' do
+    context 'epic box answers are 6: NO, YES, NO, NO, NO, NO' do
 
-    #   before :each do
+      before :each do
         
-    #     active_answer1.update_attributes(answer: 0)
-    #     active_answer2.update_attributes(answer: 1)
-    #     active_answer3.update_attributes(answer: 0)
-    #     active_answer4.update_attributes(answer: 0)
-    #     active_answer5.update_attributes(answer: 0)
-    #     active_answer6.update_attributes(answer: 0)
+        active_answer1.update_attributes(answer: 0)
+        active_answer2.update_attributes(answer: 1)
+        active_answer3.update_attributes(answer: 0)
+        active_answer4.update_attributes(answer: 0)
+        active_answer5.update_attributes(answer: 0)
+        active_answer6.update_attributes(answer: 0)
 
-    #     edit_project_study_info
+        edit_project_study_info
 
-    #   end
+      end
 
-    #   it 'should display all active questions ' do
+      it 'should display all active questions ' do
+      	wait_for_javascript_to_finish
+      
+	      expect(page).to have_selector('#study_type_answer_certificate_of_conf')
+	      expect(page).to have_selector('#study_type_answer_higher_level_of_privacy')
+	      expect(page).to have_selector('#study_type_answer_access_study_info')
+	      expect(page).to have_selector('#study_type_answer_epic_inbasket')
+	      expect(page).to have_selector('#study_type_answer_research_active')
+	      expect(page).to have_selector('#study_type_answer_restrict_sending') 
+      end
 
-	   #    expect(page).to have_selector('#study_type_answer_certificate_of_conf')
-	   #    expect(page).to have_selector('#study_type_answer_higher_level_of_privacy')
-	   #    expect(page).to have_selector('#study_type_answer_access_study_info')
-	   #    expect(page).to have_selector('#study_type_answer_epic_inbasket')
-	   #    expect(page).to have_selector('#study_type_answer_research_active')
-	   #    expect(page).to have_selector('#study_type_answer_restrict_sending') 
-    #   end
+      context 'first epic box answer is changed to YES' do
 
-    #   context 'first epic box answer is changed to YES' do
+      	before do
 
-    #   	before do
+      		select "Yes", from: 'study_type_answer_certificate_of_conf_answer'
+      		wait_for_javascript_to_finish
 
-    #   		select "Yes", from: 'study_type_answer_certificate_of_conf_answer'
-    #   		wait_for_javascript_to_finish
+      	end
 
-    #   	end
-
-	   #    it 'should have No for the active question 1 and nothing selected for active question 2' do
+	      it 'should have No for the active question 1 and nothing selected for active question 2' do
 	      	
-	   #    	expect(page).to have_select('study_type_answer_certificate_of_conf_answer', selected: 'Yes')
-	   #    	expect(page).to have_select('study_type_answer_higher_level_of_privacy_answer', selected: 'Select One')
+	      	expect(page).to have_select('study_type_answer_certificate_of_conf_answer', selected: 'Yes')
+	      	expect(page).to have_selector('#study_type_answer_higher_level_of_privacy')
+		      expect(page).to_not have_selector('#study_type_answer_access_study_info')
+		      expect(page).to_not have_selector('#study_type_answer_epic_inbasket')
+		      expect(page).to_not have_selector('#study_type_answer_research_active')
+		      expect(page).to_not have_selector('#study_type_answer_restrict_sending') 
 
-	   #    end
-	   #  end
-		  # context 'first epic box answer is changed to YES' do
+	      end
+	    end
+    end
+    context 'epic box answers are 2: NO, YES, YES, NIL, NIL, NIL' do
 
-    #   	before do
+      before :each do
+        
+        active_answer1.update_attributes(answer: 0)
+        active_answer2.update_attributes(answer: 1)
+        active_answer3.update_attributes(answer: 1)
+        active_answer4.update_attributes(answer: nil)
+        active_answer5.update_attributes(answer: nil)
+        active_answer6.update_attributes(answer: nil)
 
-    #   		select "Yes", from: 'study_type_answer_certificate_of_conf_answer'
-    #   		wait_for_javascript_to_finish
+        edit_project_study_info
 
-    #   	end
+      end
 
-	   #    it 'should have No for the active question 1 and nothing selected for active question 2' do
-	      	
-	   #    	expect(page).to have_select('study_type_answer_certificate_of_conf_answer', selected: 'Yes')
-	   #    	expect(page).to have_select('study_type_answer_higher_level_of_privacy_answer', selected: 'Select One')
+      it 'should display all active questions ' do
+      	wait_for_javascript_to_finish
+      
+	      expect(page).to have_selector('#study_type_answer_certificate_of_conf')
+	      expect(page).to have_selector('#study_type_answer_higher_level_of_privacy')
+	      expect(page).to have_selector('#study_type_answer_access_study_info')
+	      expect(page).to_not have_selector('#study_type_answer_epic_inbasket')
+	      expect(page).to_not have_selector('#study_type_answer_research_active')
+	      expect(page).to_not have_selector('#study_type_answer_restrict_sending') 
+      end
+    end
+    context 'epic box answers are 15: NO, NO, NIL, YES, YES, YES' do
 
-	   #    end
-	   #  end
-    # end
+      before :each do
+        
+        active_answer1.update_attributes(answer: 0)
+        active_answer2.update_attributes(answer: 0)
+        active_answer3.update_attributes(answer: nil)
+        active_answer4.update_attributes(answer: 1)
+        active_answer5.update_attributes(answer: 1)
+        active_answer6.update_attributes(answer: 1)
+
+        edit_project_study_info
+
+      end
+
+      it 'should display all active questions ' do
+      	wait_for_javascript_to_finish
+
+	      expect(page).to have_selector('#study_type_answer_certificate_of_conf')
+	      expect(page).to have_selector('#study_type_answer_higher_level_of_privacy')
+	      expect(page).to_not have_selector('#study_type_answer_access_study_info')
+	      expect(page).to have_selector('#study_type_answer_epic_inbasket')
+	      expect(page).to have_selector('#study_type_answer_research_active')
+	      expect(page).to have_selector('#study_type_answer_restrict_sending') 
+      end
+    end
   end
 
   def edit_project_study_info

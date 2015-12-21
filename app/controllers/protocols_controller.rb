@@ -94,6 +94,10 @@ class ProtocolsController < ApplicationController
     else
       @protocol.populate_for_edit
     end
+
+    if !@protocol.active?
+      @protocol.activate
+    end
   end
 
   def set_protocol_type

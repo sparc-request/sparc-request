@@ -30,8 +30,6 @@ RSpec.describe "Identity edits Study", js: true do
         active_answer5.update_attributes(answer: nil)
         active_answer6.update_attributes(answer: nil)
 
-        
-
         edit_project_study_info
 
       end
@@ -102,7 +100,7 @@ RSpec.describe "Identity edits Study", js: true do
 
       	end
 
-	      it 'should have No for the active question 1 and nothing selected for active question 2' do
+	      it 'should have No for the active question 1 and display question 2' do
 	      	
 	      	expect(page).to have_select('study_type_answer_certificate_of_conf_answer', selected: 'Yes')
 	      	expect(page).to have_selector('#study_type_answer_higher_level_of_privacy')
@@ -129,7 +127,7 @@ RSpec.describe "Identity edits Study", js: true do
 
       end
 
-      it 'should display all active questions ' do
+      it 'should display questions 1,2,2b ' do
       	wait_for_javascript_to_finish
       
 	      expect(page).to have_selector('#study_type_answer_certificate_of_conf')
@@ -155,7 +153,7 @@ RSpec.describe "Identity edits Study", js: true do
 
       end
 
-      it 'should display all active questions ' do
+      it 'should display 1,2,3,4,5 ' do
       	wait_for_javascript_to_finish
 
 	      expect(page).to have_selector('#study_type_answer_certificate_of_conf')
@@ -164,6 +162,70 @@ RSpec.describe "Identity edits Study", js: true do
 	      expect(page).to have_selector('#study_type_answer_epic_inbasket')
 	      expect(page).to have_selector('#study_type_answer_research_active')
 	      expect(page).to have_selector('#study_type_answer_restrict_sending') 
+      end
+    end
+  end
+  context 'visiting an inactive studys edit page' do
+  	before :each do 
+      study.update_attributes(selected_for_epic: true)
+      study.update_attributes(study_type_question_group_id: StudyTypeQuestionGroup.where(active:false).pluck(:id).first)
+    end
+
+    context 'epic box answers are 1: NIL, NIL, NIL, NIL, NIL, NIL' do
+
+      before :each do
+        
+        active_answer1.update_attributes(answer: nil)
+        active_answer2.update_attributes(answer: nil)
+        active_answer3.update_attributes(answer: nil)
+        active_answer4.update_attributes(answer: nil)
+        active_answer5.update_attributes(answer: nil)
+        active_answer6.update_attributes(answer: nil)   
+
+        edit_project_study_info
+
+      end
+
+      it 'should display active questions 1,2' do
+      	
+	      expect(page).to have_selector('#study_type_answer_certificate_of_conf')
+	      expect(page).to have_selector('#study_type_answer_higher_level_of_privacy')
+	      expect(page).to_not have_selector('#study_type_answer_access_study_info')
+	      expect(page).to_not have_selector('#study_type_answer_epic_inbasket')
+	      expect(page).to_not have_selector('#study_type_answer_research_active')
+	      expect(page).to_not have_selector('#study_type_answer_restrict_sending') 
+      end
+    end
+  end
+  context 'visiting an inactive studys edit page that is not selected for epic' do
+  	before :each do 
+      study.update_attributes(selected_for_epic: false)
+      study.update_attributes(study_type_question_group_id: StudyTypeQuestionGroup.where(active:false).pluck(:id).first)
+    end
+
+    context 'epic box answers are 1: NIL, NIL, NIL, NIL, NIL, NIL' do
+
+      before :each do
+        
+        active_answer1.update_attributes(answer: nil)
+        active_answer2.update_attributes(answer: nil)
+        active_answer3.update_attributes(answer: nil)
+        active_answer4.update_attributes(answer: nil)
+        active_answer5.update_attributes(answer: nil)
+        active_answer6.update_attributes(answer: nil)
+
+        edit_project_study_info
+
+      end
+
+      it 'should not display any epic box questions' do
+      	
+	      expect(page).to_not have_selector('#study_type_answer_certificate_of_conf')
+	      expect(page).to_not have_selector('#study_type_answer_higher_level_of_privacy')
+	      expect(page).to_not have_selector('#study_type_answer_access_study_info')
+	      expect(page).to_not have_selector('#study_type_answer_epic_inbasket')
+	      expect(page).to_not have_selector('#study_type_answer_research_active')
+	      expect(page).to_not have_selector('#study_type_answer_restrict_sending') 
       end
     end
   end

@@ -52,7 +52,7 @@ $(document).ready ->
 
   FormFxManager.registerListeners($('.edit-project-view'), display_dependencies)
 
-  ####### If send to epic is selected we need to do some crazy stuff,  using FormFxManager for some of it but it couldn't handle the complexity, using a combination, see below ########
+  ####### If send to epic is selected we need to do some crazy stuff,  using FormFxManager for some of it but it couldnt handle the complexity, using a combination, see below ########
 
   $('#study_selected_for_epic_true').click ->
     $('.study_type').show()
@@ -158,7 +158,7 @@ $(document).ready ->
   setupDatePicker('#iacuc_expiration_date', '#study_vertebrate_animals_info_attributes_iacuc_expiration_date')
   $('#iacuc_expiration_date').attr("readOnly", true)
 
-  #This is to disabled the submit after you click once, so you can't fire multiple posts at once.
+  #This is to disabled the submit after you click once, so you cant fire multiple posts at once.
   $("form").submit ->
     unless $('#study_research_types_info_attributes_human_subjects').is(':checked')
       $('#study_human_subjects_info_attributes_nct_number').val('')

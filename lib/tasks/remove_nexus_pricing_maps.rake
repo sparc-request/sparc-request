@@ -15,7 +15,7 @@ task remove_nexus_pricing_maps: :environment do
     maps_to_delete = []
 
     maps.each do |map|
-      if (map.created_at >= "08/01/2015") && (map.service.pricing_maps.count != 1)
+      if (map.effective_date >= "08/01/2015") && (map.service.pricing_maps.count > 1)
         maps_to_delete << map
       end
     end
@@ -34,7 +34,7 @@ task remove_nexus_pricing_maps: :environment do
       csv << ['Core', 'Service Name', 'CPT code', 'Pricing Map Effective Date']
 
       maps_to_be_deleted.each do |map|
-        csv << [map.service.organization.name, map.service.name, map.effective_date]
+        csv << [map.service.organization.name, map.service.name, map.service.cpt_code, map.effective_date]
 
         puts "Pricing map with an id of #{map.id} deleted"
         map.destroy

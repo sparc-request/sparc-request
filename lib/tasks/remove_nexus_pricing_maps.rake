@@ -15,7 +15,7 @@ task remove_nexus_pricing_maps: :environment do
     maps_to_delete = []
 
     maps.each do |map|
-      if (map.effective_date >= "08/01/2015") && (map.service.pricing_maps.count > 1)
+      if (map.effective_date >= Date.parse("2015-08-01")) && (map.service.pricing_maps.count > 1)
         maps_to_delete << map
       end
     end

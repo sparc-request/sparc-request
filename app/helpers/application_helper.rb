@@ -81,17 +81,16 @@ module ApplicationHelper
   end
 
   def generate_visit_header_row arm, service_request, page, sub_service_request, portal=nil
-    base_url = "/service_requests/#{service_request.id}/service_calendars"
-    rename_visit_url = base_url + "/rename_visit"
-    day_url = base_url + "/set_day"
+    base_url          = "/service_requests/#{service_request.id}/service_calendars"
+    day_url           = base_url + "/set_day"
     window_before_url = base_url + "/set_window_before"
-    window_after_url = base_url + "/set_window_after"
-    page = page == 0 ? 1 : page
-    beginning_visit = (page * 5) - 4
-    ending_visit = (page * 5) > arm.visit_count ? arm.visit_count : (page * 5)
-    returning_html = ""
+    window_after_url  = base_url + "/set_window_after"
+    page              = page == 0 ? 1 : page
+    beginning_visit   = (page * 5) - 4
+    ending_visit      = (page * 5) > arm.visit_count ? arm.visit_count : (page * 5)
+    returning_html    = ""
     line_items_visits = arm.line_items_visits
-    visit_groups = arm.visit_groups
+    visit_groups      = arm.visit_groups
 
     (beginning_visit .. ending_visit).each do |n|
       if sub_service_request
@@ -119,9 +118,9 @@ module ApplicationHelper
                             content_tag(:span, visit_group.window_after, :style => "display:inline-block;width:25px;") +
                             tag(:br) : label_tag("")) +
                             content_tag(:span, visit_name, :style => "display:inline-block;width:75px;") +
-                            tag(:br))
+                            tag(:br), class: 'col-lg-1')
       elsif @tab != 'template'
-        returning_html += content_tag(:th,
+        returning_html += content_tag(:span,
                                       ((USE_EPIC) ?
                                       # label_tag("Day") + "&nbsp;&nbsp;&nbsp;".html_safe + label_tag("+/-") +
                                       label_tag("-") + "&nbsp;&nbsp;".html_safe + label_tag("Day") + "&nbsp;&nbsp;".html_safe + label_tag("+") +
@@ -134,7 +133,7 @@ module ApplicationHelper
                                       text_field_tag("arm_#{arm.id}_visit_name_#{n}", visit_name, :class => "visit_name", :size => 10, :'data-arm_id' => arm.id, :'data-visit_position' => n - 1, :'data-service_request_id' => service_request.id) +
                                       tag(:br))
       else
-        returning_html += content_tag(:th,
+        returning_html += content_tag(:span,
                                       ((USE_EPIC) ?
                                       # label_tag("Day") + "&nbsp;&nbsp;&nbsp;".html_safe + label_tag("+/-") +
                                       label_tag("-") + "&nbsp;&nbsp;".html_safe + label_tag("Day") + "&nbsp;&nbsp;".html_safe + label_tag("+") +
@@ -154,7 +153,7 @@ module ApplicationHelper
     end
 
     ((page * 5) - arm.visit_count).times do
-      returning_html += content_tag(:th, "", :width => 70, :class => 'visit_number')
+      returning_html += content_tag(:th, "", :class => 'visit_number col-lg-1')
     end
 
     raw(returning_html)
@@ -209,8 +208,6 @@ module ApplicationHelper
         tag(:span, class: 'glyphicon glyphicon-chevron-left')
       end
     end
-
-    returning_html += content_tag(:span, t("calendar_page.labels.jump_to_visit"))
 
     returning_html += select_tag("jump_to_visit_#{arm.id}", visits_select_options(arm, pages), :class => 'jump_to_visit selectpicker', url: pathMethod.call(service_request, pages: pages, arm_id: arm.id, tab: tab, portal: portal))
 

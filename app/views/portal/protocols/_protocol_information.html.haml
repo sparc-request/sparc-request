@@ -66,8 +66,8 @@
     .panel-heading
       %h4.panel-title.pull-left= t(:protocol_information)[:service_requests]
       - if !protocol.has_first_draft_service_request? && protocol.service_requests.present?
-        %a.btn.btn-primary.btn-sm.pull-right{ role: 'button', href: "#{portal_protocol_path(protocol, format: :xlsx)}", data: { protocol_id: protocol.id } }= t(:protocol_information)[:full_calendar]
-        %button.view-full-calendar-button.btn.btn-primary.btn-sm.pull-right{ type: 'button', data: { protocol_id: protocol.id } }= t(:protocol_information)[:consolidated_request]
+        %a.btn.btn-primary.btn-sm.pull-right{ role: 'button', href: "#{portal_protocol_path(protocol, format: :xlsx)}", data: { protocol_id: protocol.id } }= t(:protocol_information)[:consolidated_request]
+        %button.view-full-calendar-button.btn.btn-primary.btn-sm.pull-right{ type: 'button', data: { protocol_id: protocol.id } }= t(:protocol_information)[:full_calendar]
       .clearfix
     - if protocol.has_first_draft_service_request?
       .panel-body

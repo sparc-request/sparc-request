@@ -18,8 +18,8 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 - line_items_visits = []
-%tr.section_header
-  %th{:colspan => (@portal and !@merged) ? 11 : 13}= t(:calendar_page)[:per_patient] + " -- " + arm.name
+%tr
+  %td.col-sm-12= t(:calendar_page)[:per_patient] + " -- " + arm.name
 
 
 - if @merged #display merged calendar pppv line items
@@ -31,22 +31,22 @@
         - next if @portal
         - next if service_request != line_item.service_request
       - line_items_visits << line_items_visit
-      %tr.line_item{:class => cycle('odd', '', :name => 'pppvs')}
-        %td.service_name= line_item.service.display_service_name
+      %tr
+        %td.col-sm-2= line_item.service.display_service_name
         - unless @portal
           %td.service_rate{:class => "service_rate_#{line_items_visit.id}"}= display_service_rate line_item
-        %td.your_cost= display_your_cost line_item
-        %td.unit_type= line_item.service.displayed_pricing_map.unit_type
-        %td.subject_count= line_items_visit.subject_count
+        %td.col-sm-1.your_cost= display_your_cost line_item
+        %td.col-sm-1.unit_type= line_item.service.displayed_pricing_map.unit_type
+        %td.col-sm-1.subject_count= line_items_visit.subject_count
         - visits = line_items_visit.visits.paginate(:page => @pages[arm.id].to_i, :per_page => 5)
         - unit_minimum = line_item.service.displayed_pricing_map.unit_minimum
         - totals_hash = line_items_visit.try(:per_subject_subtotals, visits)
         - visits.each_with_index do |v, index|
-          %td.visit{:visit_column => index + 1, :class => "visit_column_#{index + 1} arm_#{arm.id}", :'data-cents' => (totals_hash["#{v.id}"] || 0), :style => (@tab == 'template' ? "text-align:center" : '')}= line_item_visit_input arm, line_item, v, @tab, totals_hash, unit_minimum, @portal
+          %td.col-sm-1.visit{:visit_column => index + 1, :class => "visit_column_#{index + 1} arm_#{arm.id}", :'data-cents' => (totals_hash["#{v.id}"] || 0), :style => (@tab == 'template' ? "text-align:center" : '')}= line_item_visit_input arm, line_item, v, @tab, totals_hash, unit_minimum, @portal
         - (5 - visits.size).times do
-          %td &nbsp;
-        %td.pp_line_item_total{:class => "total_#{line_items_visit.id}"}= display_visit_based_direct_cost(line_items_visit)
-        %td.pp_line_item_study_total{:class => "total_#{line_items_visit.id}_per_study"}= display_visit_based_direct_cost_per_study(line_items_visit)
+          %td.col-sm-1 &nbsp;
+        %td.col-sm-1.pp_line_item_total{:class => "total_#{line_items_visit.id}"}= display_visit_based_direct_cost(line_items_visit)
+        %td.col-sm-1.pp_line_item_study_total{:class => "total_#{line_items_visit.id}_per_study"}= display_visit_based_direct_cost_per_study(line_items_visit)
 
 
 -elsif @review #display review calendar pppv line items

@@ -68,14 +68,15 @@
               .panel-heading
                 %h4.panel-title
                   Services
-              - if @protocol.has_per_patient_per_visit? @service_request, @portal
-                - @protocol.arms.each do |arm|
-                  .arm_calendar_container.panel-body{ data: { arm_id: arm.id } }
-                    - next if arm.visit_groups.empty?
-                    = render partial: '/service_calendars/master_calendar/pppv_calendar', locals: { service_request: @service_request, arm: arm, tab: 'pricing' }
+              .panel-body
+                - if @protocol.has_per_patient_per_visit? @service_request, @portal
+                  - @protocol.arms.each do |arm|
+                    .arm_calendar_container.container-fluid{ data: { arm_id: arm.id } }
+                      - next if arm.visit_groups.empty?
+                      = render partial: '/service_calendars/master_calendar/pppv_calendar', locals: { service_request: @service_request, arm: arm, tab: 'pricing' }
 
-              - if @protocol.has_one_time_fees? @service_request, @portal
-                = render partial: '/service_calendars/master_calendar/otf_calendar', locals: { service_request: @service_request}
+                - if @protocol.has_one_time_fees? @service_request, @portal
+                  = render partial: '/service_calendars/master_calendar/otf_calendar', locals: { service_request: @service_request}
     .modal-footer
       %button.btn.btn-default{ type: 'button', data: { dismiss: 'modal' } }
         Close

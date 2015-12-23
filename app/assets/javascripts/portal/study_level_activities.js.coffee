@@ -21,9 +21,20 @@ $ ->
   $(document).on 'click', '.otf_edit', ->
     row_index   = $(this).parents("tr").data("index")
     line_item_id = $(this).parents("table.study_level_activities").bootstrapTable("getData")[row_index].id
+    data = 'modal' : 'study_level_activity_form'
     $.ajax
       type: 'GET'
       url: "/portal/admin/line_items/#{line_item_id}/edit"
+      data: data
+
+  $(document).on 'click', '.otf_admin_rate', ->
+    row_index   = $(this).parents("tr").data("index")
+    line_item_id = $(this).parents("table.study_level_activities").bootstrapTable("getData")[row_index].id
+    data = 'modal' : 'sla_admin_rate_form'
+    $.ajax
+      type: 'GET'
+      url: "/portal/admin/line_items/#{line_item_id}/edit"
+      data: data
 
   $(document).on 'click', '.otf_delete', ->
     row_index   = $(this).parents("tr").data("index")

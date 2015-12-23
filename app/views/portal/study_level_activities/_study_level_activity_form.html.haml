@@ -20,38 +20,34 @@
 
 .modal-dialog
   .modal-content
-    = form_for line_item, {remote: true, html: {class: "form-horizontal", role: "form"}} do |form|
+    = form_for ([:portal, :admin, line_item]), {remote: true, html: {class: "form-horizontal", role: "form"}} do |form|
       .modal-header
         %button.close{type: 'button', data: {dismiss: 'modal'}}
           %span{aria: {hidden:'true'}} &times;
-          %span.sr-only= t(:actions)[:close]
+          %span.sr-only  &times;
         %h4.modal-title.text-center= header_text
       .modal-body
         #modal_errors
-        = render partial: 'required_fields'
         .row
           .col-md-12
-            = form.hidden_field :protocol_id
+            = form.hidden_field :sub_service_request_id
+            = form.hidden_field :service_request_id
             .form-group
-              = form.label "service", t(:line_item)[:service]+t(:actions)[:required], class: "col-sm-4 control-label"
+              = form.label "service", "Service", class: "col-sm-4 control-label"
               .col-sm-7
-                = form.select "service_id", options_from_collection_for_select(protocol.organization.inclusive_child_services(:one_time_fee), 'id', 'name', line_item.service_id), {include_blank: true}, :class => 'form-control selectpicker'
+                = sla_form_services_select(form, line_item)
             .form-group
-              = form.label "quantity_requested", t(:line_item)[:quantity], class: "col-sm-4 control-label"
-              .col-sm-7= form.text_field "quantity_requested", {class: 'form-control'}
+              = form.label "quantity", "Quantity Requested", class: "col-sm-4 control-label"
+              .col-sm-7= form.text_field "quantity", {class: 'form-control'}
             .form-group
-              = form.label "started_at", t(:line_item)[:started], class: "col-sm-4 control-label "
+              = form.label "in_process_date", "In Process Date", class: "col-sm-4 control-label "
               .col-sm-7
-                = form.text_field "started_at", {class: 'form-control datetimepicker', id: 'date_started_field', value: format_date(line_item.started_at)}
+                = form.text_field "in_process_date", {class: 'form-control datetimepicker', id: 'in_process_date_field', value: format_date(line_item.in_process_date)}
             .form-group
-              = form.label "account_number", t(:line_item)[:account_number], class: "col-sm-4 control-label"
+              = form.label "complete_date", "Complete Date", class: "col-sm-4 control-label "
               .col-sm-7
-                = form.text_field "account_number", {class: 'form-control', :maxlength => 30}
-            .form-group
-              = form.label "contact_name", t(:line_item)[:contact], class: "col-sm-4 control-label"
-              .col-sm-7
-                = form.text_field "contact_name", {class: 'form-control', :maxlength => 30}
+                = form.text_field "complete_date", {class: 'form-control datetimepicker', id: 'complete_date_field', value: format_date(line_item.complete_date)}
       .modal-footer
         .center-block
-          %button.btn.btn-default{type: 'button', data: {dismiss: 'modal'}}= t(:actions)[:close]
-          %input.btn.btn-primary{type: 'submit', value: t(:line_item)[:save_li]}
+          %button.btn.btn-default{type: 'button', data: {dismiss: 'modal'}} Close
+          %input.btn.btn-primary{type: 'submit', value: "Save"}

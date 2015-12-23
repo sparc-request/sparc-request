@@ -38,7 +38,8 @@ class Portal::LineItemsController < Portal::BaseController
     @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
     @service_request = @sub_service_request.service_request
     if params[:one_time_fee]
-      @services = @sub_service_request.candidate_services.select {|x| x.one_time_fee}
+      @line_item = LineItem.new(sub_service_request_id: @sub_service_request.id, service_request_id: @service_request.id)
+      @header_text = "New Study Level Activity"
     else
       @services = @sub_service_request.candidate_services.select {|x| !x.one_time_fee}
       @page_hash = params[:page_hash]
@@ -47,56 +48,58 @@ class Portal::LineItemsController < Portal::BaseController
   end
 
   def create
-    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
+    @sub_service_request = SubServiceRequest.find(params[:line_item][:sub_service_request_id])
     @service_request = @sub_service_request.service_request
-    @candidate_one_time_fees = @sub_service_request.candidate_services.select {|x| x.one_time_fee}
-
-    if @sub_service_request.create_line_item(
-        service_id: params[:add_service_id],
-        sub_service_request_id: params[:sub_service_request_id])
-    else
+    if params[:line_item][:service_id].blank?
+      @sub_service_request.errors.add(:service, "must be selected")
       @errors = @sub_service_request.errors
+    elsif not @sub_service_request.create_line_item(params[:line_item])
+      @errors = @sub_service_request.errors
+    else
+      flash[:success] = "Study Level Activity Created!"
     end
   end
 
-#   def edit
-#     @protocol = @line_item.protocol
-#     @otf = @line_item.one_time_fee
-#   end
+  def edit
+    @otf = @line_item.service.one_time_fee
+    @modal_to_render = params[:modal]
+    if @otf
+      @header_text = "Edit Study Level Activity"
+    end
+  end
 
-#   def update
-#     @otf = @line_item.one_time_fee
-#     persist_original_attributes_to_track_changes if @otf
-#     if @line_item.update_attributes(line_item_params)
-#       @line_item.update_columns(quantity_type: @line_item.service.current_effective_pricing_map.quantity_type)
-#       if @otf
-#         detect_changes_and_create_notes # study level charges needs notes for changes
-#       else
-#         update_line_item_procedures_service # study schedule line item service change
-#       end
-#       flash[:success] = t(:line_item)[:flash_messages][:updated]
-#     else
-#       @errors = @line_item.errors
-#     end
-#   end
+  def update
+    @otf = @line_item.service.one_time_fee
+    if @line_item.update_attributes(params[:line_item])
+      flash[:success] = "Study Level Activity Updated!" if @otf
+    else
+      @errors = @line_item.errors
+    end
+  end
 
   def destroy
-    @sub_service_request = @line_item.sub_service_request
-    @service_request = @sub_service_request.service_request
-    @subsidy = @sub_service_request.subsidy
-    percent = @subsidy.try(:percent_subsidy).try(:*, 100)
-    @selected_arm = @service_request.arms.first
-    @study_tracker = params[:study_tracker] == "true"
-    @line_items = @sub_service_request.line_items
-
-    if @line_item.destroy
-      # Have to reload the service request to get the correct direct cost total for the subsidy
-      @subsidy.try(:fix_pi_contribution, percent)
+    @otf = @line_item.service.one_time_fee
+    if @otf
+      @sub_service_request = @line_item.sub_service_request
+      @line_item.destroy
+      flash[:alert] = "Study Level Activity Destroyed!"
+    else
+      @sub_service_request = @line_item.sub_service_request
       @service_request = @sub_service_request.service_request
-      @candidate_one_time_fees = @sub_service_request.candidate_services.select {|x| x.one_time_fee}
-      @candidate_per_patient_per_visit = @sub_service_request.candidate_services.reject {|x| x.one_time_fee}
+      @subsidy = @sub_service_request.subsidy
+      percent = @subsidy.try(:percent_subsidy).try(:*, 100)
+      @selected_arm = @service_request.arms.first
+      @line_items = @sub_service_request.line_items
 
-      render 'portal/sub_service_requests/add_line_item'
+      if @line_item.destroy
+        # Have to reload the service request to get the correct direct cost total for the subsidy
+        @subsidy.try(:fix_pi_contribution, percent)
+        @service_request = @sub_service_request.service_request
+        @candidate_one_time_fees = @sub_service_request.candidate_services.select {|x| x.one_time_fee}
+        @candidate_per_patient_per_visit = @sub_service_request.candidate_services.reject {|x| x.one_time_fee}
+
+        render 'portal/sub_service_requests/add_line_item'
+      end
     end
   end
 

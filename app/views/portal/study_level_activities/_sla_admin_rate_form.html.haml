@@ -20,23 +20,23 @@
 
 .modal-dialog
   .modal-content
-    = form_tag(portal_admin_line_items_path, class: "form-horizontal new_visit", remote: true) do
+    = form_for ([:portal, :admin, line_item]), {remote: true, html: {class: "form-horizontal", role: "form"}} do |form|
       .modal-header
         %button.close{type: 'button', data: {dismiss: 'modal'}}
           %span{aria: {hidden:'true'}} &times;
-          %span.sr-only &times;
-        %h4#line_item.modal-title.text-center Add Service
+          %span.sr-only  &times;
+        %h4.modal-title.text-center Add Admin Rate
       .modal-body
         #modal_errors
         .row
           .col-md-12
-            = hidden_field_tag :schedule_tab, schedule_tab
-            = hidden_field_tag :service_request_id, service_request.id
-            = hidden_field_tag :sub_service_request_id, sub_service_request.id
             .form-group
-              = label_tag "add_service_id", "Service", class: "col-sm-4 control-label"
-              .col-sm-7= select_tag "add_service_id", options_from_collection_for_select(services, 'id' , 'name'), class: "form-control selectpicker"
+              = form.label "displayed_cost", "Cost", class: "col-sm-4 control-label"
+              .col-sm-7
+                .input-group
+                  .input-group-addon $
+                  = form.text_field "displayed_cost", {class: 'form-control'}
       .modal-footer
         .center-block
           %button.btn.btn-default{type: 'button', data: {dismiss: 'modal'}} Close
-          %input.btn.btn-primary#add_otf_line_item_form_button{type: 'submit', value: "Add"}
+          %input.btn.btn-primary{type: 'submit', value: "Save"}

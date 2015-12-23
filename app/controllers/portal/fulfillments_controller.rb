@@ -20,7 +20,7 @@
 
 class Portal::FulfillmentsController < Portal::BaseController
 
-  before_action :find_fulfillment, only: [:edit, :update]
+  before_action :find_fulfillment, only: [:edit, :update, :destroy]
 
   def index
     @line_item = LineItem.find(params[:line_item_id])
@@ -35,16 +35,12 @@ class Portal::FulfillmentsController < Portal::BaseController
   end
 
   def new
-    @line_item = LineItem.find(params[:line_item_id])
-    @clinical_providers = ClinicalProvider.where(organization_id: @line_item.sub_service_request.organization_id)
-    @fulfillment = Fulfillment.new(line_item: @line_item, performer: current_user)
+    @fulfillment = Fulfillment.new(line_item_id: params[:line_item_id])
+    @header_text = 'Create New Fulfillment'
   end
 
   def create
-    @line_item = LineItem.find(fulfillment_params[:line_item_id])
-    service = @line_item.service
-    funding_source = @line_item.protocol.funding_source
-    @fulfillment = Fulfillment.new(fulfillment_params.merge!({ creator: current_identity, service: service, service_name: service.name, service_cost: service.cost(funding_source) }))
+    @fulfillment = Fulfillment.new(params[:fulfillment])
     if @fulfillment.valid?
       @fulfillment.save
       flash[:success] = "Fulfillment Created!"
@@ -54,13 +50,11 @@ class Portal::FulfillmentsController < Portal::BaseController
   end
 
   def edit
-    @line_item = @fulfillment.line_item
-    @clinical_providers = ClinicalProvider.where(organization_id: @line_item.protocol.sub_service_request.organization_id)
+    @header_text = "Edit Fulfillment"
   end
 
   def update
-    @line_item = @fulfillment.line_item
-    if @fulfillment.update_attributes(fulfillment_params)
+    if @fulfillment.update_attributes(params[:fulfillment])
       flash[:success] = "Fulfillment Updated!"
     else
       @errors = @fulfillment.errors
@@ -68,7 +62,6 @@ class Portal::FulfillmentsController < Portal::BaseController
   end
 
   def destroy
-    @fulfillment = Fulfillment.find(params[:id])
     @sub_service_request = @fulfillment.line_item.sub_service_request
     if @fulfillment.delete
       flash[:alert] = "Fulfillment Destroyed!"

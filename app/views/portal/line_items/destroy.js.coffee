@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$("#modal_area").html("<%= escape_javascript(render(:partial =>'portal/study_level_activities/fulfillment_form', locals: { fulfillment: @fulfillment, header_text: @header_text })) %>");
-$("#modal_place").modal 'show'
-$("#date_fulfilled_field").datetimepicker(format: 'MM-DD-YYYY')
-$(".selectpicker").selectpicker()
+$("#flashes_container").html("<%= escape_javascript(render('shared/flash')) %>")
+$("#study-level-activities-table").bootstrapTable 'refresh', {silent: true}
+$("#fulfillment_subsidy").html("<%= escape_javascript(render(:partial =>'portal/admin/fulfillment/service_request_info/subsidy_info', locals: { sub_service_request: @sub_service_request, subsidy: @sub_service_request.subsidy })) %>");
+$("#request_cost_total").html("<%= escape_javascript(render(:partial =>'portal/admin/fulfillment/service_request_info/direct_cost_total', locals: { sub_service_request: @sub_service_request })) %>");

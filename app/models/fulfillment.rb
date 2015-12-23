@@ -40,6 +40,10 @@ class Fulfillment < ActiveRecord::Base
   CWF_QUANTITY_TYPES = ['Each', 'Sample', 'Aliquot', '3kg unit']
   UNIT_TYPES = ['N/A', 'Each', 'Sample', 'Aliquot', '3kg unit']
 
+  def date=(date_arg)
+    write_attribute(:date, Time.strptime(date_arg, "%m-%d-%Y")) if date_arg.present?
+  end
+
   def formatted_date
     format_date self.date
   end

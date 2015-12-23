@@ -20,7 +20,7 @@
 
 $("#modal_errors").html("<%= escape_javascript(render(partial: 'shared/modal_errors', locals: {errors: @errors})) %>")
 <% unless @errors %>
-$("#one_time_fees").html("<%= escape_javascript(render(:partial => 'portal/admin/fulfillment/services/one_time_fees', locals: { sub_service_request: @sub_service_request })) %>");
+$("#study-level-activities-table").bootstrapTable 'refresh', {silent: true}
 
 $("#fulfillment_subsidy").html("<%= escape_javascript(render(:partial =>'portal/admin/fulfillment/service_request_info/subsidy_info', locals: { sub_service_request: @sub_service_request, subsidy: @sub_service_request.subsidy })) %>");
 $("#request_cost_total").html("<%= escape_javascript(render(:partial =>'portal/admin/fulfillment/service_request_info/direct_cost_total', locals: { sub_service_request: @sub_service_request })) %>");

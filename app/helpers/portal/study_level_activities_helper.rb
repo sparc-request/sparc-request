@@ -23,6 +23,9 @@ module Portal::StudyLevelActivitiesHelper
         content_tag(:button, raw(content_tag(:span, '', class: "glyphicon glyphicon-list-alt", aria: {hidden: "true"}))+' Notes', type: 'button', class: 'btn btn-default form-control actions-button notes list', data: {notable_id: line_item_id, notable_type: "LineItem"}))
       )+
       content_tag(:li, raw(
+        content_tag(:button, raw(content_tag(:span, '', class: "glyphicon glyphicon-usd", aria: {hidden: "true"}))+' Add Admin Rate', type: 'button', class: 'btn btn-default form-control actions-button otf_admin_rate'))
+      )+
+      content_tag(:li, raw(
         content_tag(:button, raw(content_tag(:span, '', class: "glyphicon glyphicon-edit", aria: {hidden: "true"}))+' Edit Activity', type: 'button', class: 'btn btn-default form-control actions-button otf_edit'))
       )+
       content_tag(:li, raw(
@@ -35,6 +38,17 @@ module Portal::StudyLevelActivitiesHelper
     ul = raw content_tag(:ul, options, class: 'dropdown-menu', role: 'menu')
 
     raw content_tag(:div, button + ul, class: 'btn-group overflow_webkit_button')
+  end
+
+  def sla_form_services_select form, line_item
+    service = line_item.service
+    if service.present? and not service.is_available
+      service_name = service.name + ' (Disabled)'
+      form.select "service_id", options_for_select([service_name], service_name), {include_blank: true}, class: 'form-control selectpicker', disabled: 'disabled'
+    else
+      service_list = line_item.sub_service_request.candidate_services.select {|x| x.one_time_fee}
+      form.select "service_id", options_from_collection_for_select(service_list, 'id', 'name', line_item.service_id), {include_blank: true}, class: 'form-control selectpicker'
+    end
   end
 
   def fulfillments_drop_button line_item_id

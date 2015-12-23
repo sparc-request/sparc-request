@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151116155206) do
+ActiveRecord::Schema.define(version: 20151223152953) do
 
   create_table "admin_rates", force: :cascade do |t|
     t.integer  "line_item_id", limit: 4
@@ -462,16 +462,17 @@ ActiveRecord::Schema.define(version: 20151116155206) do
   add_index "messages", ["notification_id"], name: "index_messages_on_notification_id", using: :btree
 
   create_table "notes", force: :cascade do |t|
-    t.integer  "identity_id",            limit: 4
-    t.integer  "sub_service_request_id", limit: 4
-    t.string   "body",                   limit: 255
-    t.datetime "created_at",                         null: false
-    t.datetime "updated_at",                         null: false
-    t.integer  "appointment_id",         limit: 4
+    t.integer  "identity_id",  limit: 4
+    t.string   "body",         limit: 255
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+    t.integer  "notable_id",   limit: 4
+    t.string   "notable_type", limit: 255
   end
 
   add_index "notes", ["identity_id"], name: "index_notes_on_identity_id", using: :btree
-  add_index "notes", ["sub_service_request_id"], name: "index_notes_on_sub_service_request_id", using: :btree
+  add_index "notes", ["identity_id"], name: "index_notes_on_user_id", using: :btree
+  add_index "notes", ["notable_id", "notable_type"], name: "index_notes_on_notable_id_and_notable_type", using: :btree
 
   create_table "notifications", force: :cascade do |t|
     t.integer  "sub_service_request_id", limit: 4
@@ -558,7 +559,7 @@ ActiveRecord::Schema.define(version: 20151116155206) do
     t.date     "display_date"
     t.decimal  "other_rate",                             precision: 12, scale: 4
     t.decimal  "member_rate",                            precision: 12, scale: 4
-    t.integer  "units_per_qty_max",          limit: 4,                            default: 1
+    t.integer  "units_per_qty_max",          limit: 4,                            default: 10000
     t.string   "quantity_type",              limit: 255
     t.string   "otf_unit_type",              limit: 255,                          default: "N/A"
     t.integer  "quantity_minimum",           limit: 4,                            default: 1
@@ -582,7 +583,7 @@ ActiveRecord::Schema.define(version: 20151116155206) do
     t.string   "internal_rate_type",     limit: 255
     t.string   "foundation_rate_type",   limit: 255
     t.datetime "deleted_at"
-    t.string   "unfunded_rate_type"
+    t.string   "unfunded_rate_type",     limit: 255
   end
 
   add_index "pricing_setups", ["organization_id"], name: "index_pricing_setups_on_organization_id", using: :btree

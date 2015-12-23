@@ -22,6 +22,7 @@ class Fulfillment < ActiveRecord::Base
   audited
 
   belongs_to :line_item
+  has_many :notes, as: :notable, dependent: :destroy
 
   attr_accessible :line_item_id
   attr_accessible :timeframe

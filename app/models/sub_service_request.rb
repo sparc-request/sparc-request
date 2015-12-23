@@ -32,7 +32,7 @@ class SubServiceRequest < ActiveRecord::Base
   has_many :past_statuses, :dependent => :destroy
   has_many :line_items, :dependent => :destroy
   has_and_belongs_to_many :documents
-  has_many :notes, :dependent => :destroy
+  has_many :notes, as: :notable, dependent: :destroy
   has_many :approvals, :dependent => :destroy
   has_many :payments, :dependent => :destroy
   has_many :cover_letters, :dependent => :destroy

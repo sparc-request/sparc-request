@@ -173,8 +173,8 @@ module ApplicationHelper
       option = ["Visits #{beginning_visit} - #{ending_visit} of #{arm.visit_count}", page, :style => "font-weight:bold;"]
       arr << option
 
-      (beginning_visit..ending_visit).each do |y|
-        visit_group = arm.visit_groups[y - 1]
+      (beginning_visit..ending_visit).each do |visit_number|
+        visit_group = arm.visit_groups[visit_number - 1]
 
         if visit_group.day.present?
           arr << ["--#{visit_group.name}/Day #{visit_group.day}".html_safe, parent_page: page]

@@ -27,6 +27,7 @@ RSpec.describe "service calendar", js: true do
   build_service_request_with_project()
 
   before :each do
+    create_visits
     visit service_calendar_service_request_path service_request.id
     arm1.reload
     arm2.reload
@@ -125,7 +126,7 @@ RSpec.describe "service calendar", js: true do
           wait_for_javascript_to_finish
           select("Visit 1", from: "visit_to_move_1")
           wait_for_javascript_to_finish
-          select("Insert at 19 - Visit 18", from: "move_to_position_#{arm1.id}")
+          select("Insert at 10 - Visit 10", from: "move_to_position_#{arm1.id}")
           wait_for_javascript_to_finish
           find('#submit_move').click
           wait_for_javascript_to_finish
@@ -140,7 +141,7 @@ RSpec.describe "service calendar", js: true do
           wait_for_javascript_to_finish
           select("Visit 2", from: "visit_to_move_1")
           wait_for_javascript_to_finish
-          select("Insert at 11 - Visit 10", from: "move_to_position_1")
+          select("Insert at 7 - Visit 7", from: "move_to_position_1")
           find('#submit_move').click
           wait_for_javascript_to_finish
           select("Visits 6 - 10 of 10", from: "jump_to_visit_#{arm1.id}")
@@ -192,6 +193,7 @@ RSpec.describe "service calendar", js: true do
 
           it "should overwrite the quantities in the column if they are not customized" do
             first("#check_all_column_3").click
+            sos
             wait_for_javascript_to_finish
             expect(first(".visits_3")).to be_checked
           end

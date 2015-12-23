@@ -40,27 +40,6 @@ $(document).ready ->
   )
 
   # ADMIN APPROVALS LISTENERS END
-  # NOTES LISTENERS BEGIN
-
-  $(document).on 'click', '#notes_index_link', ->
-    data =
-      'notable_type'           : "sub_service_request"
-      'sub_service_request_id' : $(this).data("sub_service_request_id")
-    $.ajax
-      type: 'GET'
-      url: "/portal/notes"
-      data: data
-
-  $(document).on 'click', '#new_note_button', ->
-    data =
-      'notable_type'  : $(this).data("notable-type")
-      'notable_id'    : $(this).data("notable-id")
-    $.ajax
-      type: 'GET'
-      url: "/portal/notes/new"
-      data: data
-
-  # NOTES LISTENERS END
   # SERVICE REQUEST INFO LISTENERS BEGIN
 
   $(document).on('change', '#sub_service_request_owner', ->

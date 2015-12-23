@@ -19,28 +19,35 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Portal::NotesController < Portal::BaseController
+
   respond_to :json, :html
 
+  before_action :find_notable
+
   def index
-    @notable_type = params[:notable_type]
-    if @notable_type == "sub_service_request"
-      @notable = SubServiceRequest.find(params[:sub_service_request_id])
-    elsif @notable_type == "appointment"
-      @notable = Appointment.find(params[:appointment_id])
-    end
     @notes = @notable.notes
   end
 
   def new
-    @notable_type = params[:notable_type]
-    if @notable_type == "sub_service_request"
-      @note = Note.new(identity_id: @user.id, sub_service_request_id: params[:notable_id])
-    elsif @notable_type == "appointment"
-      @note = Note.new(identity_id: @user.id, appointment_id: params[:notable_id])
-    end
+    @note = Note.new(note_params.merge!({ identity_id: current_user.id }))
+    puts "$"*1000
+    puts @note.inspect
   end
 
   def create
-    @note = Note.create(params[:note]) if params[:note][:body].present? # don't create empty notes
+    @note = Note.create(note_params) if note_params[:body].present? # don't create empty notes
+    @notes = @notable.notes
+  end
+
+  private
+
+  def note_params
+    params.require(:note).permit(:identity_id, :notable_type, :notable_id, :body)
+  end
+
+  def find_notable
+    @notable_id = params[:note][:notable_id]
+    @notable_type = params[:note][:notable_type]
+    @notable = @notable_type.constantize.find @notable_id
   end
 end

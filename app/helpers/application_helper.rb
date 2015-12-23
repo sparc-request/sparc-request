@@ -95,7 +95,7 @@ module ApplicationHelper
 
     (beginning_visit .. ending_visit).each do |n|
       if sub_service_request
-        filtered_line_items_visits = line_items_visits.select{|x| x.line_item.sub_service_request_id == sub_service_request.id } 
+        filtered_line_items_visits = line_items_visits.select{|x| x.line_item.sub_service_request_id == sub_service_request.id }
       else
         filtered_line_items_visits = line_items_visits.select{|x| x.line_item.service_request_id == service_request.id }
       end
@@ -200,27 +200,33 @@ module ApplicationHelper
 
     returning_html = ""
 
-    returning_html += link_to((content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-w') + content_tag(:span, '<-', :class => 'ui-button-text')),
-                        pathMethod.call(service_request, :page => page - 1, :pages => pages, :arm_id => arm.id, :tab => tab, :portal => portal),
-                        :remote => true, :role => 'button', :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only left-arrow') unless page <= 1
-
-    returning_html += content_tag(:button, (content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-w') + content_tag(:span, '<-', :class => 'ui-button-text')),
-                                  :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only ui-button-disabled ui-state-disabled left-arrow', :disabled => true) if page <= 1
+    if page > 1
+      returning_html += button_tag(class: 'btn btn-primary left-arrow', data: { url: pathMethod.call(service_request, page: page - 1, pages: pages, arm_id: arm.id, tab: tab, portal: portal, format: :js) }) do
+        tag(:span, class: 'glyphicon glyphicon-chevron-left')
+      end
+    else
+      returning_html += button_tag(class: 'btn btn-primary left-arrow', disabled: true, data: { url: pathMethod.call(service_request, page: page - 1, pages: pages, arm_id: arm.id, tab: tab, portal: portal, format: :js) }) do
+        tag(:span, class: 'glyphicon glyphicon-chevron-left')
+      end
+    end
 
     returning_html += content_tag(:span, t("calendar_page.labels.jump_to_visit"))
 
-    returning_html += select_tag("jump_to_visit_#{arm.id}", visits_select_options(arm, pages), :class => 'jump_to_visit', :url => pathMethod.call(service_request, :pages => pages, :arm_id => arm.id, :tab => tab, :portal => portal))
+    returning_html += select_tag("jump_to_visit_#{arm.id}", visits_select_options(arm, pages), :class => 'jump_to_visit selectpicker', url: pathMethod.call(service_request, pages: pages, arm_id: arm.id, tab: tab, portal: portal))
 
     unless (portal or @merged or @review)
-      returning_html += link_to 'Move Visit', 'javascript:void(0)', class: 'ui-button ui-widget ui-state-default ui-corner-all move_visits', data: { 'arm-id' => arm.id, tab: tab, 'sr-id' => service_request.id, portal: portal }
+      returning_html += link_to 'Move Visit', 'javascript:void(0)', class: 'move_visits', data: { 'arm-id' => arm.id, tab: tab, 'sr-id' => service_request.id, portal: portal }
     end
 
-    returning_html += link_to((content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-e') + content_tag(:span, '->', :class => 'ui-button-text')),
-                              pathMethod.call(service_request, :page => page + 1, :pages => pages, :arm_id => arm.id, :tab => tab, :portal => portal),
-                              :remote => true, :role => 'button', :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only right-arrow') unless ((page + 1) * 5) - 4 > arm.visit_count
-
-    returning_html += content_tag(:button, (content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-e') + content_tag(:span, '->', :class => 'ui-button-text')),
-                                  :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only ui-button-disabled ui-state-disabled right-arrow', :disabled => true) if ((page + 1) * 5) - 4 > arm.visit_count
+    if ((page + 1) * 5) - 4 > arm.visit_count
+      returning_html += button_tag(class: 'btn btn-primary right-arrow', disabled: true, data: { url: pathMethod.call(service_request, page: page + 1, pages: pages, arm_id: arm.id, tab: tab, portal: portal, format: :js) }) do
+        tag(:span, class: 'glyphicon glyphicon-chevron-right')
+      end
+    else
+      returning_html += button_tag(class: 'btn btn-primary right-arrow', data: { url: pathMethod.call(service_request, page: page + 1, pages: pages, arm_id: arm.id, tab: tab, portal: portal, format: :js) }) do
+        tag(:span, class: 'glyphicon glyphicon-chevron-right')
+      end
+    end
 
     raw(returning_html)
   end

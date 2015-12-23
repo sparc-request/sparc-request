@@ -237,7 +237,7 @@ $(document).ready ->
       contentType: 'application/json; charset=utf-8'
   )
 
-  $(document).on('change', '.jump_to_visit', ->
+  $(document).on 'change', '.jump_to_visit', ->
     $('.service_calendar_spinner').show()
 
     page = $(this).find('option:selected').attr('parent_page')
@@ -252,7 +252,6 @@ $(document).ready ->
       dataType: 'script'
       success: ->
         $('.service_calendar_spinner').hide()
-  )
 
   update_otf_line_item = (obj) ->
     original_val = $(obj).attr('previous_quantity')

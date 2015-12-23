@@ -19,6 +19,8 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 $(document).ready ->
+  $('.selectpicker').selectpicker()
+
   # $(".visit_name").live 'mouseover', ->
   $(".visit_name").qtip
     overwrite: false
@@ -112,4 +114,3 @@ $(document).ready ->
     changing_tabs_calculating_rates()
   else if $('.line_item_visit_pricing').is(':visible')
     changing_tabs_calculating_rates()
-

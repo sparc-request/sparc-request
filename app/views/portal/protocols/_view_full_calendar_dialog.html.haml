@@ -17,7 +17,9 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.modal-dialog
+
+-# TODO place inline style in a stylesheet
+.modal-dialog.full-calendar-modal{ style: 'width: 95%;' }
   .modal-content
     = hidden_field_tag :calendar_id, @protocol.id
     .modal-header
@@ -30,7 +32,8 @@
         .col-lg-12
           .panel-group
             .panel.panel-default
-              .panel-heading= t(:ssr_dialog)[:project_study_details][:info]
+              .panel-heading
+                %h4.panel-title= t(:ssr_dialog)[:project_study_details][:info]
               .panel-body
                 %dl.dl-horizontal.pull-left
                   %dt= t(:ssr_dialog)[:project_study_details][:id]
@@ -48,7 +51,9 @@
                   %dt= display_funding_source_title(@protocol)
                   %dd= display_funding_source_or_potential(@protocol)
             .panel.panel-default
-              .panel-heading Users
+              .panel-heading
+                %h4.panel-title
+                  Users
               %table.table.table-striped
                 %tr
                   %th= t(:ssr_dialog)[:auth_users][:name]
@@ -60,10 +65,12 @@
                     %td= USER_ROLES.key(pr.role)
                     %td= PROXY_RIGHTS.key(pr.project_rights)
             .panel.panel-default
-              .panel-heading Services
+              .panel-heading
+                %h4.panel-title
+                  Services
               - if @protocol.has_per_patient_per_visit? @service_request, @portal
                 - @protocol.arms.each do |arm|
-                  .arm_calendar_container{ data: { arm_id: arm.id } }
+                  .arm_calendar_container.panel-body{ data: { arm_id: arm.id } }
                     - next if arm.visit_groups.empty?
                     = render partial: '/service_calendars/master_calendar/pppv_calendar', locals: { service_request: @service_request, arm: arm, tab: 'pricing' }
 

@@ -29,7 +29,6 @@ RSpec.describe "creating a new study that is selected for epic", js: true do
   			wait_for_javascript_to_finish
   			and_add_an_authorized_user
   			wait_for_javascript_to_finish
-        save_and_open_page
   			expect(Protocol.find(study.id).determine_study_type).to eq "0"
         
       end

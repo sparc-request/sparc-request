@@ -110,7 +110,7 @@ class Protocol < ActiveRecord::Base
     validate  :validate_funding_source
     validates :sponsor_name, :presence => true, :if => :is_study?
     validates_associated :human_subjects_info, :message => "must contain 8 numerical digits", :if => :validate_nct
-    validate  :validate_study_type_answers, :if => :selected_for_epic
+    validate  :validate_study_type_answers, :if => :selected_for_epic && !admin
   end
 
   validation_group :user_details do
@@ -149,18 +149,21 @@ class Protocol < ActiveRecord::Base
     begin
       if answers["certificate_of_conf"].answer.nil?
         has_errors = true
+        if answers["higher_level_of_privacy"].answer.nil?
+          has_errors = true
+        end
       elsif answers["certificate_of_conf"].answer == false
         if (answers["higher_level_of_privacy"].answer.nil?) 
-          has_errors = true     
+          has_errors = true    
         elsif (answers["higher_level_of_privacy"].answer == false)
-          if answers["epic_inbasket"].answer.nil? && answers["research_active"].answer.nil? && answers["restrict_sending"].answer.nil?
+          if answers["epic_inbasket"].answer.nil? || answers["research_active"].answer.nil? || answers["restrict_sending"].answer.nil?
             has_errors = true
           end
         elsif (answers["higher_level_of_privacy"].answer == true)
           if (answers["access_study_info"].answer.nil?)
             has_errors = true
           elsif (answers["access_study_info"].answer == false)
-            if answers["epic_inbasket"].answer.nil? && answers["research_active"].answer.nil? && answers["restrict_sending"].answer.nil?
+            if answers["epic_inbasket"].answer.nil? || answers["research_active"].answer.nil? || answers["restrict_sending"].answer.nil?
               has_errors = true
             end
           end

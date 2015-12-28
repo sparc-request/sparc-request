@@ -60,7 +60,6 @@ RSpec.describe EpicInterface do
           results: epic_results
         })
     thread = Thread.new { server.start }
-    timeout(10) { while server.status != :Running; end }
   end
 
   # Shut down the server when we're done.

@@ -1,18 +1,14 @@
 require 'rails_helper'
 
-RSpec.describe "Identity creates Study", js: true do
+RSpec.describe "creates Study epic box logic", js: true do
   let_there_be_lane
   let_there_be_j
   fake_login_for_each_test
   build_service_request_with_study
 
   before :each do
-    service_request.update_attribute(:status, 'first_draft')
-    visit protocol_service_request_path service_request.id
-    expect(page).to have_css('.new-study')
-    click_link "New Study"
-    find('#study_selected_for_epic_true').click()
-
+    visit new_portal_protocol_path
+    find('#study_selected_for_epic_true').click
   end
 
   context 'study type 0' do
@@ -23,6 +19,7 @@ RSpec.describe "Identity creates Study", js: true do
     end
 
     it 'should display active questions 1,2,3,4,5' do
+      
       expect(page).to have_selector('#study_type_answer_certificate_of_conf')
       expect(page).to have_selector('#study_type_answer_higher_level_of_privacy')
       expect(page).to_not have_selector('#study_type_answer_access_study_info')
@@ -210,12 +207,10 @@ RSpec.describe "Identity creates Study", js: true do
   end
   context 'study type 12' do
     before :each do
-
       answer_array= ['No','No',nil,'No','No','Yes']
       select_epic_box_answers(answer_array)
     end
     it 'should display active questions 1,2,3,4,5' do
-
       expect(page).to have_selector('#study_type_answer_certificate_of_conf')
       expect(page).to have_selector('#study_type_answer_higher_level_of_privacy')
       expect(page).to_not have_selector('#study_type_answer_access_study_info')

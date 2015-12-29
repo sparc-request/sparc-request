@@ -25,7 +25,7 @@
     = hidden_field_tag :indirect_rate, @service_request.protocol.indirect_cost_rate
   .row
     .col-sm-5.col-sm-offset-5
-      = generate_visit_navigation(arm, @service_request, @pages, tab, @portal)
+      = generate_visit_navigation(arm, @service_request, @pages, @tab, @portal)
 
   -# TODO move inline style to stylesheet
   .row.calendar-row

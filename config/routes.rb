@@ -286,6 +286,10 @@ SparcRails::Application.routes.draw do
           post :new_document
           get :admin_approvals_show
           post :admin_approvals_update
+          get :change_history_tab
+          get :status_history
+          get :subsidy_history
+          get :approval_history
         end
       end
 

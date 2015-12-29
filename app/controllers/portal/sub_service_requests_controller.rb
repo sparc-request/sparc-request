@@ -43,8 +43,6 @@ class Portal::SubServiceRequestsController < Portal::BaseController
       @notifications = @user.all_notifications.where(:sub_service_request_id => @sub_service_request.id)
       @service_list = @service_request.service_list
       @related_service_requests = @protocol.all_child_sub_service_requests
-      @approvals = [@service_request.approvals, @sub_service_request.approvals].flatten
-      @selected_arm = @service_request.arms.first
     else
       redirect_to portal_admin_index_path
     end
@@ -222,6 +220,34 @@ class Portal::SubServiceRequestsController < Portal::BaseController
       @errors = @sub_service_request.errors
     end
   end
+
+  #Admin Portal History
+  def change_history_tab
+    #Replaces currently displayed ssr history bootstrap table
+    history_path = "portal/admin/fulfillment/history/"
+    @partial_to_render = history_path + params[:partial]
+  end
+
+  def status_history
+    #For Status History Bootstrap Table
+    @past_statuses = @sub_service_request.past_status_lookup
+  end
+
+  def subsidy_history
+    #For Subsidy History Bootstrap Table
+    @subsidy_audits = []
+    subsidy = @sub_service_request.subsidy
+    if subsidy
+      @subsidy_audits = @sub_service_request.subsidy.subsidy_audits
+    end
+  end
+
+  def approval_history
+    #For Approval History Bootstrap Table
+    service_request = @sub_service_request.service_request
+    @approvals = [service_request.approvals, @sub_service_request.approvals].flatten
+  end
+  #Admin Portal History End
 
 private
 

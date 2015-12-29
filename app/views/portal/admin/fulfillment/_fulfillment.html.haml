@@ -38,7 +38,7 @@
       %h3.panel-title History
     #history_accordion.panel-collapse.collapse{role: "tabpanel", aria: {labelledby: "history_accordion_heading"}}
       .panel-body
-        = render partial: 'portal/admin/fulfillment/history/history', locals: {protocol: protocol, sub_service_request: sub_service_request, service_request: service_request, subsidy: subsidy, approvals: approvals }
+        = render partial: 'portal/admin/fulfillment/history/status_changes', locals: { sub_service_request_id: sub_service_request.id }
 
   .panel.panel-primary
     .panel-heading#study_level_activities_accordion_heading.collapsed{ data: {toggle: "collapse", target: "#study_level_activities_accordion"}, aria: {expanded: "false", controls: "study_level_activities_accordion"} }

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151223152953) do
+ActiveRecord::Schema.define(version: 20151223165833) do
 
   create_table "admin_rates", force: :cascade do |t|
     t.integer  "line_item_id", limit: 4
@@ -309,11 +309,10 @@ ActiveRecord::Schema.define(version: 20151223152953) do
   create_table "fulfillments", force: :cascade do |t|
     t.integer  "line_item_id",  limit: 4
     t.string   "timeframe",     limit: 255
-    t.text     "notes",         limit: 65535
     t.string   "time",          limit: 255
     t.datetime "date"
-    t.datetime "created_at",                  null: false
-    t.datetime "updated_at",                  null: false
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
     t.datetime "deleted_at"
     t.string   "unit_type",     limit: 255
     t.string   "quantity_type", limit: 255
@@ -463,9 +462,9 @@ ActiveRecord::Schema.define(version: 20151223152953) do
 
   create_table "notes", force: :cascade do |t|
     t.integer  "identity_id",  limit: 4
-    t.string   "body",         limit: 255
-    t.datetime "created_at",               null: false
-    t.datetime "updated_at",               null: false
+    t.text     "body",         limit: 65535
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
     t.integer  "notable_id",   limit: 4
     t.string   "notable_type", limit: 255
   end

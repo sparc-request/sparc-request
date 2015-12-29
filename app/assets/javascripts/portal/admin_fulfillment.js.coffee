@@ -125,4 +125,15 @@ $(document).ready ->
   )
 
   # SUBSIDY LISTENERS END
+  # HISTORY LISTENERS BEGIN
 
+  $(document).on('click', '.history_button', ->
+    ssr_id = $(this).data("sub-service-request-id")
+    data = 'partial': $(this).data("table")
+    $.ajax
+      type: 'GET'
+      url: "/portal/admin/sub_service_requests/#{ssr_id}/change_history_tab"
+      data: data
+  )
+
+# HISTORY LISTENERS END

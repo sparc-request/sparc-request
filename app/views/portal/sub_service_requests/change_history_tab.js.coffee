@@ -1,0 +1,2 @@
+$("#history_accordion .panel-body").html("<%= escape_javascript(render(partial: @partial_to_render, locals: { sub_service_request_id: @sub_service_request.id })) %>")
+$(".ssr_history_table").bootstrapTable()

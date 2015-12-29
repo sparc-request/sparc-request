@@ -30,8 +30,6 @@ class Portal::NotesController < Portal::BaseController
 
   def new
     @note = Note.new(note_params.merge!({ identity_id: current_user.id }))
-    puts "$"*1000
-    puts @note.inspect
   end
 
   def create

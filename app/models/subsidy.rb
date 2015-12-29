@@ -48,7 +48,7 @@ class Subsidy < ActiveRecord::Base
 
   def pi_contribution_cap
     #  (PI Contribution < max) validation
-    unless pi_contribution.blank?
+    if pi_contribution.present? and max_dollar_cap.present?
       if pi_contribution > max_dollar_cap
         errors.add(:pi_contribution, "is above the maximum contribution amount")
       end
@@ -57,7 +57,7 @@ class Subsidy < ActiveRecord::Base
 
   def stored_percent_subsidy_cap
     #  (stored percent subsidy < max) validation
-    unless stored_percent_subsidy.blank?
+    if stored_percent_subsidy.present? and max_percentage.present?
       if stored_percent_subsidy > max_percentage
         errors.add(:stored_percent_subsidy, "is above the maximum subsidy percentage")
       end

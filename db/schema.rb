@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151223165833) do
+ActiveRecord::Schema.define(version: 20151223152953) do
 
   create_table "admin_rates", force: :cascade do |t|
     t.integer  "line_item_id", limit: 4
@@ -821,7 +821,6 @@ ActiveRecord::Schema.define(version: 20151223165833) do
     t.integer  "protocol_id",              limit: 4
     t.string   "status",                   limit: 255
     t.integer  "service_requester_id",     limit: 4
-    t.text     "notes",                    limit: 65535
     t.boolean  "approved"
     t.integer  "subject_count",            limit: 4
     t.datetime "consult_arranged_date"
@@ -829,8 +828,8 @@ ActiveRecord::Schema.define(version: 20151223165833) do
     t.datetime "pppv_in_process_date"
     t.datetime "requester_contacted_date"
     t.datetime "submitted_at"
-    t.datetime "created_at",                             null: false
-    t.datetime "updated_at",                             null: false
+    t.datetime "created_at",                           null: false
+    t.datetime "updated_at",                           null: false
     t.datetime "deleted_at"
   end
 

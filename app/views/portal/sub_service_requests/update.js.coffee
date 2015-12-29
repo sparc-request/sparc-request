@@ -21,8 +21,10 @@
 <% unless @errors %>
 $("#status_owner_fulfillment").html("<%= escape_javascript(render(partial: 'portal/admin/fulfillment/service_request_info/status_owner_fulfillment', locals: { sub_service_request: @sub_service_request })) %>");
 $("#fulfillment_subsidy").html("<%= escape_javascript(render(partial: 'portal/admin/fulfillment/service_request_info/subsidy_info', locals: { sub_service_request: @sub_service_request, subsidy: @subsidy })) %>");
-$("#request_cost_total").html("<%= escape_javascript(render(partial: 'portal/admin/fulfillment/service_request_info/direct_cost_total')) %>");
+$("#request_cost_total").html("<%= escape_javascript(render(partial: 'portal/admin/fulfillment/service_request_info/direct_cost_total', locals: { sub_service_request: @sub_service_request })) %>");
 
 $(".selectpicker").selectpicker()
 $("#flashes_container").html("<%= escape_javascript(render('shared/flash')) %>")
+<% else %>
+$("#flashes_container").html("<%= escape_javascript(render(partial: 'shared/modal_errors', locals: {errors: @errors})) %>")
 <% end %>

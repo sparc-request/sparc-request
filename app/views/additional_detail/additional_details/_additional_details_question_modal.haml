@@ -1,0 +1,66 @@
+.modal.fade{:id=>"additionalDetailQuestionEditModal", :role=>"dialog", :tabindex=>"-1", "aria-labelledby"=>"myModalLabel"}
+  .modal-dialog.modal-lg{:role=>"document"}
+    .modal-content
+      .modal-header 
+        %button{"type"=>"button", "class"=>"close", "data-dismiss"=>"modal", "aria-label"=>"Close"}
+          %span{"aria-hidden"=>"true"} &times;
+        %h4.modal-title= "{{modalSaveText}}" + t(:additional_details)[:admin][:question_modal_header]
+      .modal-body
+        .alert{"ng-show"=>"alertMessage", "ng-class"=>"{ 'alert-success' : resourceSuccessful, 'alert-danger' : !resourceSuccessful }", :role=>"alert"} {{alertMessage}}
+        %form{:id=>"questions",:name=>"form", :role=>"form", "data-toggle"=>"validator"}
+          .row
+            .col-md-12
+              .form-group.has-feedback
+                %label{:for=>"name"}= t(:additional_details)[:admin][:question_modal_question_field]
+                %input.form-control{:id=>"name",:type=>"text", :placeholder=>"Question", :required=>"required", "ng-model"=>"field.name"}
+                .help-block.with-errors
+          .row
+            .col-md-6
+              .form-group.has-feedback
+                %label{:for=>"key"}= t(:additional_details)[:admin][:question_modal_key_field]
+                %input.form-control{:id=>"key", "pattern"=>"([A-Za-z0-9\_]+)", "ng-model"=>"field.key", "type"=>"text", :placeholder=>"Key", :required=>"required"}
+                .help-block Only letters, numbers, and underscores
+                .help-block.with-errors 
+            .col-md-6
+              .form-group
+                %label{:for=>"kind"}= t(:additional_details)[:admin][:question_modal_type_field]
+                %select.form-control{:id=>"kind", "ng-model"=>"field.kind", :required=>"required"}
+                  %option{:disabled=>"disabled", :value=>'', :selected=>"selected"} Select One
+                  %option{"ng-repeat"=>"(key,value) in typeHash", :value=>"{{key}}"} {{value}}
+                .help-block.with-errors
+          .row
+            .col-md-6
+              .form-group
+                %label{:for=>"description"}= t(:additional_details)[:admin][:question_modal_description_field]
+                %textarea.form-control{:id=>"description",:type=>"text", :placeholder=>"Description (Optional)", "ng-model"=>"field.description"}
+                .help-block.with-errors
+            .col-md-6
+              .form-group
+                %label{:for=>"values"}= t(:additional_details)[:admin][:question_modal_values_field]
+                %textarea.form-control{:id=>"values", "ng-disabled"=>"!csvValuesRequired", "ng-required"=>"csvValuesRequired", "ng-model"=>"field.values", :type=>"text", :placeholder=>"Values", "aria-describedby"=>"valuesHelpBlock"}
+                %span.help-block{:id=>"valuesHelpBlock"} Please add values separated by commas.
+          .row
+            .col-md-12
+              %fieldset
+                %legend Validation
+                .row
+                  .col-md-2
+                    .form-group
+                      %label{:for=>"required"}= t(:additional_details)[:admin][:question_modal_required_field]
+                      %input{"ng-disabled"=>"field.conditionId", :id=>"required", "ng-model"=>"field.required", :type=>"checkbox", :value=>""}
+                  .col-md-5
+                    .form-group
+                      %label{:for=>"min"} {{minDisplay}}
+                      %input.form-control{:id=>"min", "ng-disabled"=>"!minMaxValuesRequired", "ng-model"=>"field.min", "data-error"=>"Minimum value must be greater than maximum value", :type=>"number", :placeholder=>"Min (optional)"}
+                      .help-block.with-errors 
+                  .col-md-5
+                    .form-group
+                      %label{:for=>"max"} {{maxDisplay}}
+                      %input.form-control{:id=>"max", "ng-disabled"=>"!minMaxValuesRequired", "ng-model"=>"field.max", "data-error"=>"Maximum value must be greater than minimum value", :type=>"number", :placeholder=>"Max (optional)"}
+                      .help-block.with-errors 
+              -# logic for conditional questions is not ready to be used because it needs fine tuning and testing
+            -#= render :partial => 'form_creation_conditional_questions'
+      .modal-footer
+        %button.btn.btn-success{:type=>"submit", "ng-click"=> "addQuestion(field)", "ng-disabled"=>"!isValidQuestion()"}= "{{modalSaveText}}" + t(:additional_details)[:admin][:question_modal_add_update_question_button]
+        %button.btn.btn-warning{"ng-click"=>"resetQuestion()"}= t(:additional_details)[:admin][:question_modal_clear_question_button]
+        %button.btn.btn-default{"data-dismiss"=>"modal"}= t(:additional_details)[:admin][:cancel_button]

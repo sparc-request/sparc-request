@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151223152953) do
+ActiveRecord::Schema.define(version: 20151230174247) do
 
   create_table "admin_rates", force: :cascade do |t|
     t.integer  "line_item_id", limit: 4
@@ -456,6 +456,7 @@ ActiveRecord::Schema.define(version: 20151223152953) do
     t.text     "body",            limit: 65535
     t.datetime "created_at",                    null: false
     t.datetime "updated_at",                    null: false
+    t.boolean  "read"
   end
 
   add_index "messages", ["notification_id"], name: "index_messages_on_notification_id", using: :btree
@@ -1077,17 +1078,6 @@ ActiveRecord::Schema.define(version: 20151223152953) do
 
   add_index "tokens", ["identity_id"], name: "index_tokens_on_identity_id", using: :btree
   add_index "tokens", ["service_request_id"], name: "index_tokens_on_service_request_id", using: :btree
-
-  create_table "user_notifications", force: :cascade do |t|
-    t.integer  "identity_id",     limit: 4
-    t.integer  "notification_id", limit: 4
-    t.boolean  "read"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "user_notifications", ["identity_id"], name: "index_user_notifications_on_identity_id", using: :btree
-  add_index "user_notifications", ["notification_id"], name: "index_user_notifications_on_notification_id", using: :btree
 
   create_table "validation_conditions", force: :cascade do |t|
     t.integer  "validation_id",  limit: 4

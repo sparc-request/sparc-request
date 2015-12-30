@@ -28,6 +28,14 @@ module Portal::ApplicationHelper
     end
   end
 
+  def format_datetime date
+    if date.present?
+      date.strftime('%D %I:%M%p')
+    else
+      ''
+    end
+  end
+
   def pretty_tag(tag)
     tag.to_s.gsub(/\s/, "_").gsub(/[^-\w]/, "").downcase
   end

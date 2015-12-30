@@ -61,7 +61,7 @@
     .tab-pane#associated_users{role: 'tabpanel'}
       = render 'portal/sub_service_requests/associated_users'
     .tab-pane#notifications{role: 'tabpanel'}
-      = render 'portal/notifications/notifications'
+      = render partial: 'portal/notifications/notifications', locals: { sub_service_request: @sub_service_request }
 
 = render 'cwf_building'
   

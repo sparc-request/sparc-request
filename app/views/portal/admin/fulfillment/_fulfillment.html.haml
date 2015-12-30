@@ -31,7 +31,7 @@
     .panel-heading#users_accordion_heading.collapsed{ data: {toggle: "collapse", target: "#users_accordion"}, aria: {expanded: "false", controls: "users_accordion"} }
       %h3.panel-title User Notifications
     #users_accordion.panel-collapse.collapse{role: "tabpanel", aria: {labelledby: "users_accordion_heading"}}
-      = render partial: 'portal/admin/fulfillment/user_notifications/user_notifications', locals: {protocol: protocol, sub_service_request: sub_service_request, service_request: service_request}
+      = render partial: 'portal/admin/fulfillment/user_notifications', locals: {protocol: protocol, sub_service_request: sub_service_request, service_request: service_request}
 
   .panel.panel-primary
     .panel-heading#history_accordion_heading.collapsed{ data: {toggle: "collapse", target: "#history_accordion"}, aria: {expanded: "false", controls: "history_accordion"} }
@@ -55,7 +55,7 @@
         .col-xs-12
           = javascript_include_tag 'jquery.qtip.min'
           #per_patient_services
-            = render partial: 'portal/admin/fulfillment/services/per_patient_per_visit', locals: {sub_service_request: sub_service_request, service_request: service_request}
+            = render partial: 'portal/admin/fulfillment/per_patient_per_visit', locals: {sub_service_request: sub_service_request, service_request: service_request}
 
 #visit_toasts
   - @user_toasts.each do |user_toast|

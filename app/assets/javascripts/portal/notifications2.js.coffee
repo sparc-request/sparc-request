@@ -20,6 +20,35 @@
 
 $(document).ready ->
 
+  $(document).on('click', '.new_notification', ->
+    sub_service_request_id = $(this).data('sub-service-request-id')
+    identity_id = $(this).data('identity-id')
+    is_service_provider = $(this).data('is-service-provider')
+    current_user_id = $(this).data('current-user-id')
+
+    if current_user_id == identity_id
+      alert("You can not send a message to yourself.")
+    else
+      data =
+        "sub_service_request_id"  : sub_service_request_id
+        "identity_id"             : identity_id
+        "is_service_provider"     : is_service_provider
+      $.ajax
+        type: 'GET'
+        url:  "/portal/notifications/new"
+        data: data
+  )
+
+  $(document).on('click', '.notification-open', ->
+    row_index   = $(this).parents("tr").data("index")
+    notification_id = $(this).parents("table.notifications_table").bootstrapTable("getData")[row_index].id
+    $('.notification_dialog').dialog('open')
+    $.ajax({ type: 'GET', url: "/portal/notifications/#{notification_id}" })
+  )
+
+
+
+
   $('.notifications-link .hyperlink').live('click', ->
     $('.notifications-link .notifications_popup').toggle('blind')
   )
@@ -85,24 +114,7 @@ $(document).ready ->
     $(".white_arrow_up_#{message_id}").hide()
   )
 
-  $(document).on('click', '.new_notification', ->
-    sub_service_request_id = $(this).data('sub-service-request-id')
-    identity_id = $(this).data('identity-id')
-    is_service_provider = $(this).data('is-service-provider')
-    current_user_id = $(this).data('current-user-id')
 
-    if current_user_id == identity_id
-      alert("You can not send a message to yourself.")
-    else
-      data =
-        "sub_service_request_id"  : sub_service_request_id
-        "identity_id"             : identity_id
-        "is_service_provider"     : is_service_provider
-      $.ajax
-        type: 'GET'
-        url:  "/portal/notifications/new"
-        data: data
-  )
 
   disableSubmitButton = (containing_text, change_to) ->
     button = $(".ui-dialog .ui-dialog-buttonpane button:contains(#{containing_text})")
@@ -116,7 +128,6 @@ $(document).ready ->
       .attr('disabled',false)
       .removeClass('button-disabled')
     button.attr('disabled',false)
-
 
   # Form functions
 

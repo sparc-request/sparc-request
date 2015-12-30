@@ -23,9 +23,16 @@ class Portal::NotificationsController < Portal::BaseController
   before_filter :find_notification, :only => [:show]
 
   def index
-    @notification_index = true
-    @notifications = @user.all_notifications
-    respond_with @user, @notifications
+    respond_to do |format|
+      format.html {
+        @notification_index = true
+        @notifications = @user.all_notifications
+        respond_with @user, @notifications
+      }
+      format.json {
+        @notifications = @user.all_notifications.where(:sub_service_request_id => params[:sub_service_request_id])
+      }
+    end
   end
 
   def show

@@ -67,7 +67,6 @@ class Identity < ActiveRecord::Base
   has_many :notifications, :foreign_key => 'originator_id'
   has_many :sent_messages, :class_name => 'Message', :foreign_key => 'from'
   has_many :received_messages, :class_name => 'Message', :foreign_key => 'to'
-  has_many :user_notifications, :dependent => :destroy
   has_many :received_toast_messages, :class_name => 'ToastMessage', :foreign_key => 'to', :dependent => :destroy
   has_many :sent_toast_messages, :class_name => 'ToastMessage', :foreign_key => 'from', :dependent => :destroy
   has_many :notes, :dependent => :destroy
@@ -458,10 +457,14 @@ class Identity < ActiveRecord::Base
   # do not belong to individual identities).
   # Returns an array of Notifications.
   def all_notifications
-    ids = self.user_notifications.map {|x| x.notification_id}
-    all_notifications = Notification.where(:id => ids)
+    associated_notifications = Notification.where(0) #empty ActiveRecord::Relation
+    messages = [sent_messages, received_messages].flatten
+    unless messages.empty?
+      notification_ids = messages.map{ |m| m.notification_id }.uniq
+      associated_notifications = Notification.where(id: notification_ids)
+    end
 
-    all_notifications
+    associated_notifications
   end
 
   # Returns the count of unread notifications for this identity, based on their user_notifications
@@ -471,7 +474,7 @@ class Identity < ActiveRecord::Base
     notifications = self.all_notifications
 
     notifications.each do |notification|
-      notification_count += 1 unless notification.user_notifications_for_current_user(user).order('created_at DESC').first.read
+      notification_count += 1 unless notification.read_by_user_id(user.id)
     end
 
     notification_count

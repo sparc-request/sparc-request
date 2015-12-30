@@ -31,12 +31,15 @@ module Portal::NotificationsHelper
     end
   end
 
-  def received_at notification
-    timestamp = notification.user_notifications_for_current_user(@user).order('created_at DESC').first.created_at
-    if timestamp.strftime('%D') == Date.today.strftime('%D')
-      timestamp.strftime('%l:%M%p')
+  def read_unread_display notification, user_id
+    if notification.read_by_user_id user_id
+      raw(
+        content_tag(:button, raw(content_tag(:span, '', class: "glyphicon glyphicon-envelope", aria: {hidden: "true"}))+' Read', type: 'button', class: 'btn btn-default notification-open')
+      )
     else
-      timestamp.strftime('%D')
+      raw(
+        content_tag(:button, raw(content_tag(:span, '', class: "glyphicon glyphicon-envelope", aria: {hidden: "true"}))+' Unread', type: 'button', class: 'btn btn-success notification-open')
+      )
     end
   end
 

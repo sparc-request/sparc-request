@@ -20,6 +20,7 @@
 
 id = "<%= @protocol.id %>"
 $(".protocol-information-container-#{id}").html("<%= escape_javascript(render(:partial => 'portal/protocols/protocol_information', :locals => {:protocol => @protocol, :user => @user, :protocol_role => @protocol_role})) %>")
+$(".panel-heading[data-protocol-id='#{id}']").goTo()
 
 # This needs to be here so it'll be loaded in the DOM upon page load.
 # Dialog will not open otherwise.

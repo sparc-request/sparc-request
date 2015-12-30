@@ -23,31 +23,29 @@ require 'rails_helper'
 RSpec.describe "Ask a question", js: true do
   before :each do
     visit root_path
-    find('.ask-a-question-button').click()
+    find('.ask-a-question-button').click
   end
 
   describe 'clicking the button' do
 
     it 'should display the ask a question form' do
-      expect(find_by_id('ask-a-question-form').visible?).to eq(true)
+      find('#ask-a-question-form').visible?
     end
   end
 
   describe 'form validation' do
 
     it "should not show the error message if the email is correct" do
-      find_by_id('quick_question_email').click()
-      page.find('#quick_question_email').set 'juan@gmail.com'
-      find('#submit_question').click()
+      fill_in 'quick_question_email', with: 'juan@gmail.com'
+      click_button 'Submit'
       wait_for_javascript_to_finish
-      expect(find('#ask-a-question-form', visible: false).visible?).to eq(false)
+      expect(page).not_to have_selector('#ask-a-question-form')
     end
 
     it "should require an email" do
       find_by_id('quick_question_email').click()
       find('#submit_question').click()
-      wait_for_javascript_to_finish
-      expect(find_by_id('ask-a-question-form').visible?).to eq(true)
+      find_by_id('ask-a-question-form').visible?
       expect(page).to have_content("Valid email address required.")
     end
 
@@ -55,7 +53,6 @@ RSpec.describe "Ask a question", js: true do
       find_by_id('quick_question_email').click()
       page.find('#quick_question_email').set 'Pappy'
       find('#submit_question').click()
-      wait_for_javascript_to_finish
       expect(find_by_id('ask-a-question-form').visible?).to eq(true)
       expect(page).to have_content("Valid email address required.")
     end

@@ -40,7 +40,7 @@ $(document).ready ->
   }
 
   $(document).on('change', '.datepicker', ->
-    selector = "##{$(this).attr("id").replace('_picker', '')}"
+    selector = "##{$(this).prop("id").replace('_picker', '')}"
     $("#{selector}").change()
     )
   original = ''
@@ -49,7 +49,7 @@ $(document).ready ->
     )
 
   for datepicker in $('.datepicker')
-    do_datepicker("##{$(datepicker).attr('id')}")
+    do_datepicker("##{$(datepicker).prop('id')}")
 
   validateDate = (start,end) ->
     if start == '' or end ==''
@@ -79,20 +79,20 @@ $(document).ready ->
   $(document).on('change', '.fulfillment_data', ->
     klass = getObjKlass(this)
     object_id = $(this).data("#{klass}_id")
-    name = $(this).attr('name')
+    name = $(this).prop('name')
     key = name.replace("#{klass}_", '')
     data = {}
     data[key] = $(this).val()
     data['study_tracker'] = $('#study_tracker_hidden_field').val() || null
     data['line_items_visit_id'] = $(this).parents("tr").data("line_items_visit_id") || null
-    if $(this).attr('name') == 'protocol_start_date' or $(this).attr('name') == 'protocol_end_date'
+    if $(this).prop('name') == 'protocol_start_date' or $(this).prop('name') == 'protocol_end_date'
       start = $('#protocol_start_date_picker').datepicker("getDate")
       end = $('#protocol_end_date_picker').datepicker("getDate")
       if validateDate(start,end)
         put_attribute(object_id, klass, data)
       else
         $().toastmessage('showErrorToast', I18n["fulfillment_js"]["date_error"])
-        $("##{$(this).attr("name")}_picker").val(original)
+        $("##{$(this).prop("name")}_picker").val(original)
     else
       put_attribute(object_id, klass, data)
   )
@@ -103,7 +103,7 @@ $(document).ready ->
     data = {'in_work_fulfillment': $(this).prop('checked')}
     $('#cwf_building_dialog').dialog('open')
     put_attribute(object_id, klass, data, cwf_callback)
-    $(this).attr("disabled", "disabled")
+    $(this).prop("disabled", "disabled")
     $('#study_tracker_access div.ui-button').css("display", "inline-block")
   )
 
@@ -185,8 +185,8 @@ $(document).ready ->
   )
 
   $(document).on('change', '#arm_id', ->
-    $("#visit_position").attr('disabled', 'disabled')
-    $("#delete_visit_position").attr('disabled', 'disabled')
+    $("#visit_position").prop('disabled', 'disabled')
+    $("#delete_visit_position").prop('disabled', 'disabled')
     sr_id = $(this).data('service_request_id')
     protocol_id = $('#arm_id').data('protocol_id')
     data =
@@ -200,8 +200,8 @@ $(document).ready ->
       url:  "/portal/admin/protocols/#{protocol_id}/change_arm"
       data:  data
       success: ->
-        $("#visit_position").attr('disabled', false)
-        $("#delete_visit_position").attr('disabled', false)
+        $("#visit_position").prop('disabled', false)
+        $("#delete_visit_position").prop('disabled', false)
       error: (jqXHR, textStatus, errorThrown) ->
         if jqXHR.status == 500 and jqXHR.getResponseHeader('Content-Type').split(';')[0] == 'text/javascript'
           errors = JSON.parse(jqXHR.responseText)
@@ -313,7 +313,7 @@ $(document).ready ->
         text: "Submit"
         click: ->
           $("#visit-form").submit()
-          $("#submit_visit").attr("disabled", true).addClass("ui-state-disabled")
+          $("#submit_visit").prop("disabled", true).addClass("ui-state-disabled")
       },
       {
         id: "cancel_visit"
@@ -355,7 +355,7 @@ $(document).ready ->
         for error in errors
           $().toastmessage('showErrorToast', "#{error.humanize()}.");
       complete: ->
-        $("#submit_visit").attr("disabled", false).removeClass("ui-state-disabled")
+        $("#submit_visit").prop("disabled", false).removeClass("ui-state-disabled")
 
   $(document).on('click', '.delete_visit_link', ->
     if $(this).data('visit_count') <= 1
@@ -580,7 +580,7 @@ $(document).ready ->
       url:  "/portal/admin/delete_toast_message/#{toast_id}"
 
   send_to_epic = ->
-    ssr_id = $(this).attr('sub_service_request_id')
+    ssr_id = $(this).prop('sub_service_request_id')
     $().toastmessage('showToast', {
                      text: "Study is being sent to Epic",
                      sticky: true,

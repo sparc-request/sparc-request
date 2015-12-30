@@ -24,8 +24,8 @@ class MoveQuestionModelToQuickQuestionModel < ActiveRecord::Migration
     ActiveRecord::Base.connection.execute("insert into quick_questions select * from questions")
 
     # check that counts are the same between questions and quick_questions
-    questions_count = ActiveRecord::Base.connection.select("select count(*) as count from questions").first["count"]
-    quick_questions_count = ActiveRecord::Base.connection.select("select count(*) as count from quick_questions").first["count"]
+    questions_count = ActiveRecord::Base.connection.execute("select count(*) as count from questions").first[0]
+    quick_questions_count = ActiveRecord::Base.connection.execute("select count(*) as count from quick_questions").first[0]
 
     if questions_count == quick_questions_count
       ActiveRecord::Base.connection.execute("drop table questions")

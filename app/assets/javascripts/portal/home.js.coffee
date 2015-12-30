@@ -67,7 +67,7 @@ $(document).ready ->
                     $.datepicker._clearDate(input)
                 setTimeout( callback, 1)
 
-            $('.date').attr("readOnly", true)
+            $('.date').prop("readOnly", true)
             spinner.remove()
   }
 

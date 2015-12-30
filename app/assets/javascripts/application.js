@@ -27,16 +27,13 @@
 // It's not advisable to add code directly here, but if you do, it'll appear at the bottom of the
 // the compiled file.
 //
-//= require jquery
-//= require jquery-ui
-//= require jquery.qtip.min
-//= require jquery.form
+//= require jquery/dist/jquery.min
+//= require jquery-migrate/index
+//= require jquery-ui/jquery-ui.min
 //= require jquery_ujs
-//= require jquery_nested_form
-//= require json2
+//= require underscore/underscore
 //= require infotip
 //= require shared
-//= require underscore-min
 //= require form_fx_manager
 //= require form_manager
 //= require assert

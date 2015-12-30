@@ -19,11 +19,10 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 $(document).ready ->
-  $(".delete-eq").live("click", ->
+  $(document).on "click", ".delete-eq", ->
     if confirm(I18n["epic_queues"]["confirm"])
       eq_id = $(this).data("eq-id")
       protocol_id = $(this).data("protocol-id")
       $.ajax
         type: "DELETE"
         url: "/portal/epic_queues/#{eq_id}.js"
-  )

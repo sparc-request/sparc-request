@@ -22,8 +22,8 @@ $(document).ready ->
 
   check_core_permissions = () ->
     $('.clinical_tab_data').each ->
-      if $(this).attr('data-has_access') == "false"
-        core_name = $(this).attr('href')
+      if $(this).prop('data-has_access') == "false"
+        core_name = $(this).prop('href')
         $(core_name).find('input').prop('disabled', true)
         $(core_name).find('button').prop('disabled', true)
 
@@ -59,7 +59,7 @@ $(document).ready ->
 
   delete_toast_message = () ->
     data =
-      'id': $("#procedures_added_popup").attr('data-calendar_id')
+      'id': $("#procedures_added_popup").prop('data-calendar_id')
     $.ajax
       type: 'POST'
       url:   "/clinical_work_fulfillment/calendars/delete_toast_messages"
@@ -379,11 +379,10 @@ $(document).ready ->
   $('.search-all-subjects').focus ->
     $(this).val('')
 
-  $('.search-all-subjects').live('keyup', ->
+  $(document).on 'keyup', '.search-all-subjects', ->
     $('.subject').show() if $(this).val() is ''
-  ).live('click', ->
+  $(document).on 'click', '.search-all-subjects', ->
     $('.subject').show() if $(this).val() is ''
-  )
 
 
   #Project summary report start and end date
@@ -403,7 +402,7 @@ $(document).ready ->
     continue_with_research_project_summary_report = true
     start_date = $('#rps_start_date').val()
     end_date = $('#rps_end_date').val()
-    href = $("#research_project_summary_report_in_cwf").attr("href")
+    href = $("#research_project_summary_report_in_cwf").prop("href")
     href = href + "?start_date=#{start_date}&end_date=#{end_date}"
     $("#research_project_summary_report_date_range").dialog("close")
     $('#processing_request').dialog("open")
@@ -414,7 +413,7 @@ $(document).ready ->
   #Because of how nested forms work, the data attribute needs to be given here to get the correct id
   $(document).on 'click', 'a.add_nested_fields', ->
     otf_id = $(this).data('otf_id')
-    $("tbody#cwf_fulfillment_#{otf_id}").find('a.remove_nested_fields').attr('data-otf_id', otf_id)
+    $("tbody#cwf_fulfillment_#{otf_id}").find('a.remove_nested_fields').prop('data-otf_id', otf_id)
 
 
   $(document).on 'click', 'a.remove_nested_fields', ->

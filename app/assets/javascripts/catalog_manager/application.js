@@ -25,14 +25,15 @@
 // the compiled file.
 //
 //= require catalog_manager/sparc
-//= require jquery
+//= require jquery/dist/jquery.min
+//= require jquery-migrate/index
 //= require jquery_ujs
 //= require json2
 //= require jquery.cookie
 //= require jquery.form
 //= require jquery.toastmessage
 //= require catalog_manager/jquery.jstree
-//= require jquery-ui
+//= require jquery-ui/jquery-ui.min
 //= require jquery_nested_form
 //= require catalog_manager/jquery.formatCurrency-1.4.0.min
 //= require catalog_manager/catalog

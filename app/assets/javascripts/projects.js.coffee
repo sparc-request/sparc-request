@@ -40,6 +40,6 @@ $(document).ready ->
       when "foundation", "investigator" then $('#project_indirect_cost_rate').val(I18n["indirect_cost_rates"]["foundation_and_investigator"])
       when "federal" then $('#project_indirect_cost_rate').val(I18n["indirect_cost_rates"]["federal"])
 
-  #This is to disabled the submit after you click once, so you can't fire multiple posts at once.
+  #This is to disabled the submit after you click once, so you cant fire multiple posts at once.
   $("form").submit ->
     $('a.continue_button').unbind('click');

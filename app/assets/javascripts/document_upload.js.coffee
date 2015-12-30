@@ -22,12 +22,12 @@ $(document).ready ->
 
   $(".upload_button").click (event)->
     $("#upload_clicked").val(1)
-    $(".upload_button").attr("disabled", "disabled")
+    $(".upload_button").prop("disabled", true)
     $(".upload_button span").html('Wait...')
 
     #TODO code below is duplicated from app/assets/javascripts/navigation.js.coffee because for some reason it doesn't work otherwise
-    location = $(this).attr('location')
-    validates = $(this).attr('validates')
+    location = $(this).prop('location')
+    validates = $(this).prop('validates')
     $('#location').val(location)
     $('#validates').val(validates)
     $('#navigation_form').submit()
@@ -36,8 +36,8 @@ $(document).ready ->
     $("input#document_grouping_id").remove()
     $("table#new_document #file").replaceWith('<td id="file"><input id="document" type="file" name="document" disabled="disabled"></td>')
     $("table#new_document select#doc_type").val(0)
-    $('input#process_ssr_organization_ids_').attr('checked', false)
-    $(".upload_button").removeAttr("disabled")
+    $('input#process_ssr_organization_ids_').prop('checked', false)
+    $(".upload_button").prop("disabled", false)
     $(".upload_button span").html('Upload')
     $(".document_upload").hide()
     $(".document_upload_button").show()

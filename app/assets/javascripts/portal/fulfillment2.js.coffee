@@ -169,21 +169,6 @@ $(document).ready ->
         for error in errors
           $().toastmessage('showErrorToast', "#{error.humanize()}.");
 
-  # $(document).on('click', '.add_fulfillment_link', ->
-  #   data = {'fulfillment': {'line_item_id': $(this).data('line_item_id')}}
-  #   $.ajax
-  #     type: 'POST'
-  #     url:  "/portal/admin/fulfillments/"
-  #     data: JSON.stringify(data)
-  #     dataType: "script"
-  #     contentType: 'application/json; charset=utf-8'
-  # )
-
-  # $(document).on('change', '#line_item_quantity', ->
-  #   value = $(this).data("line_item_quantity")
-  #   $(this).val(value)
-  # )
-
   $(document).on('click', '.cwf_delete_data', ->
     klass = getObjKlass(this)
     object_id = $(this).data("#{klass}_id")

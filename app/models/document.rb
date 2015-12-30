@@ -33,6 +33,7 @@ class Document < ActiveRecord::Base
   attr_accessible :service_request_id
 
   validates :doc_type, :document, presence: true
+  validates :doc_type_other, presence: true, if: Proc.new { |doc| doc.doc_type == 'other' }
 
   def display_document_type
     self.doc_type == "other" ? self.doc_type_other.try(:humanize) : DOCUMENT_TYPES.key(self.doc_type)

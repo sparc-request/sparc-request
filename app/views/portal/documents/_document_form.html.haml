@@ -36,6 +36,10 @@
               = form.label "doc_type", "Document Type", class: "col-sm-4 control-label"
               .col-sm-7
                 = form.select "doc_type", options_for_select(DOCUMENT_TYPES, document.doc_type), {prompt: "Select Type"}, class: "form-control selectpicker"
+            .form-group#doc_type_other_field{style: document.doc_type == 'other' ? '' : 'display:none;'}
+              = form.label "doc_type_other", "Other Document Type", class: "col-sm-4 control-label"
+              .col-sm-7
+                = form.text_field "doc_type_other", {class: 'form-control'}
             .form-group
               = form.label "document", "Document", class: "col-sm-4 control-label"
               .col-sm-7

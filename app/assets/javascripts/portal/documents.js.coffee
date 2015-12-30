@@ -28,4 +28,11 @@ $ ->
         url: "/portal/documents/#{document_id}"
         data: data
 
+  $(document).on('change', '#document_doc_type', ->
+    if $(this).val() == 'other'
+      $('#doc_type_other_field').show()
+    else
+      $('#doc_type_other_field').hide()
+  )
+
   # DOCUMENTS LISTENERS END

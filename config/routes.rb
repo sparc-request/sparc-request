@@ -215,6 +215,7 @@ SparcRails::Application.routes.draw do
   namespace :portal do
     resources :services, only: [:show]
     resources :admin, only: [:index]
+    resources :documents
 
     resources :arms, only: [:new, :create, :update, :destroy] do
       collection do
@@ -267,13 +268,6 @@ SparcRails::Application.routes.draw do
       end
     end
 
-    resources :documents do
-      collection do
-        post :upload
-        post :override
-      end
-      get :download
-    end
 
     resources :epic_queues, only: ['index', 'destroy']
 
@@ -283,7 +277,6 @@ SparcRails::Application.routes.draw do
           put :update_from_fulfillment
           patch :update_from_project_study_information
           put :push_to_epic
-          post :new_document
           get :admin_approvals_show
           post :admin_approvals_update
           get :change_history_tab

@@ -46,6 +46,7 @@ gem 'prawn', '0.12.0'
 gem 'protected_attributes'
 gem 'rails', '4.2.4'
 gem 'redcarpet'
+gem 'remotipart'
 gem 'rest-client'
 gem 'rvm-capistrano', require: false
 gem 'sass'

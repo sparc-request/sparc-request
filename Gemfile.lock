@@ -332,6 +332,7 @@ GEM
       thor (>= 0.18.1, < 2.0)
     rake (10.4.2)
     redcarpet (3.3.3)
+    remotipart (1.2.1)
     responders (2.1.0)
       railties (>= 4.2.0, < 5)
     rest-client (1.8.0)
@@ -511,6 +512,7 @@ DEPENDENCIES
   rails (= 4.2.4)
   rails-erd
   redcarpet
+  remotipart
   rest-client
   rspec-activemodel-mocks
   rspec-rails (~> 3.3.3)

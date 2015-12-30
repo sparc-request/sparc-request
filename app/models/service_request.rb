@@ -34,6 +34,7 @@ class ServiceRequest < ActiveRecord::Base
   has_many :approvals, :dependent => :destroy
   has_many :documents, :dependent => :destroy
   has_many :arms, :through => :protocol
+  has_many :notes, as: :notable, dependent: :destroy
 
   validation_group :protocol do
     # validates :protocol_id, :presence => {:message => "You must identify the service request with a study/project before continuing."}

@@ -55,7 +55,7 @@
       = render :partial => 'portal/protocols/type_form'
       = render :partial => 'portal/protocols/form', :locals => {:protocol => @protocol, :admin => true}
     .tab-pane#documents{role: 'tabpanel'}
-      = render 'portal/sub_service_requests/documents'
+      = render partial: 'portal/documents/documents_table', locals: { sub_service_request: @sub_service_request, service_request: @service_request }
     .tab-pane#related_service_requests{role: 'tabpanel'}
       = render 'portal/sub_service_requests/related_service_requests'
     .tab-pane#associated_users{role: 'tabpanel'}

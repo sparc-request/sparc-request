@@ -267,7 +267,7 @@ SparcRails::Application.routes.draw do
       end
     end
 
-    resources :documents, only: [:destroy] do
+    resources :documents do
       collection do
         post :upload
         post :override

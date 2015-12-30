@@ -18,24 +18,9 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class Document < ActiveRecord::Base
-  audited
-
-  include Paperclip::Glue
-  has_and_belongs_to_many :sub_service_requests
-  belongs_to :service_request
-  has_attached_file :document #, :preserve_files => true
-
-  attr_accessible :document
-  attr_accessible :doc_type
-  attr_accessible :doc_type_other
-  attr_accessible :sub_service_requests
-  attr_accessible :service_request_id
-
-  validates :doc_type, :document, presence: true
-
-  def display_document_type
-    self.doc_type == "other" ? self.doc_type_other.try(:humanize) : DOCUMENT_TYPES.key(self.doc_type)
-  end
-
-end
+$("#modal_errors").html("<%= escape_javascript(render(partial: 'shared/modal_errors', locals: {errors: @errors})) %>")
+<% unless @errors %>
+$("#documents-table").bootstrapTable 'refresh', {silent: true}
+$("#flashes_container").html("<%= escape_javascript(render('shared/flash')) %>");
+$("#modal_place").modal 'hide'
+<% end %>

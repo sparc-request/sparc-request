@@ -1,8 +1,13 @@
-.arm_calendar_container {
-  padding-top: 10px;
-  padding-bottom: 10px;
-  
-  .calendar-row {
-    border: 1px solid #DDDDDD;
-  }
+.calendar-container .calendar-row {
+  border: 1px solid #DDDDDD;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.vertical-align-bottom {
+  vertical-align: bottom !important;
+}
+
+.top-border {
+  border-top: 1px solid black;
 }

@@ -99,9 +99,6 @@ module ApplicationHelper
         filtered_line_items_visits = line_items_visits.select{|x| x.line_item.service_request_id == service_request.id }
       end
 
-      checked = filtered_line_items_visits.each.map{|l| l.visits[n.to_i-1].research_billing_qty >= 1 ? true : false}.all?
-      action = checked == true ? 'unselect_calendar_column' : 'select_calendar_column'
-      icon = checked == true ? 'ui-icon-close' : 'ui-icon-check'
       visit_name = visit_groups[n - 1].name || "Visit #{n}"
       visit_group = visit_groups[n - 1]
 

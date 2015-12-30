@@ -19,8 +19,8 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 - line_items_visits = []
 %tr
-  %td.col-sm-12= t(:calendar_page)[:per_patient] + " -- " + arm.name
-
+  %td.col-sm-12{ colspan: @portal ? 11 : 10 }
+    %strong= t(:calendar_page)[:per_patient] + " -- " + arm.name
 
 - if @merged #display merged calendar pppv line items
   - arm.service_list.each do |key, value| # get only per patient/per visit services and group them
@@ -42,7 +42,7 @@
         - unit_minimum = line_item.service.displayed_pricing_map.unit_minimum
         - totals_hash = line_items_visit.try(:per_subject_subtotals, visits)
         - visits.each_with_index do |v, index|
-          %td.col-sm-1.visit{:visit_column => index + 1, :class => "visit_column_#{index + 1} arm_#{arm.id}", :'data-cents' => (totals_hash["#{v.id}"] || 0), :style => (@tab == 'template' ? "text-align:center" : '')}= line_item_visit_input arm, line_item, v, @tab, totals_hash, unit_minimum, @portal
+          %td.col-sm-1.text-center.visit{:visit_column => index + 1, :class => "visit_column_#{index + 1} arm_#{arm.id}", :'data-cents' => (totals_hash["#{v.id}"] || 0), :style => (@tab == 'template' ? "text-align:center" : '')}= line_item_visit_input arm, line_item, v, @tab, totals_hash, unit_minimum, @portal
         - (5 - visits.size).times do
           %td.col-sm-1 &nbsp;
         %td.col-sm-1.pp_line_item_total{:class => "total_#{line_items_visit.id}"}= display_visit_based_direct_cost(line_items_visit)
@@ -133,4 +133,4 @@
 
 
 - unless @review
-  = render :partial => "/service_calendars/master_calendar/pppv_totals", :locals => {:service_request => service_request, :arm => arm, :tab => @tab, :portal => @portal, line_items_visits: line_items_visits}
+  = render :partial => "/service_calendars/master_calendar/pppv/pppv_totals", :locals => {:service_request => service_request, :arm => arm, :tab => @tab, :portal => @portal, line_items_visits: line_items_visits}

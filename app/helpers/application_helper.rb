@@ -199,27 +199,27 @@ module ApplicationHelper
     returning_html = ""
 
     if page > 1
-      returning_html += button_tag(class: 'btn btn-primary left-arrow', data: { url: pathMethod.call(service_request, page: page - 1, pages: pages, arm_id: arm.id, tab: tab, portal: portal, format: :js) }) do
+      returning_html += button_tag(class: 'btn btn-primary left-arrow', data: { url: pathMethod.call(service_request, page: page - 1, pages: pages, arm_id: arm.id, tab: tab, portal: portal, sub_service_request_id: ssr_id, format: :js) }) do
         tag(:span, class: 'glyphicon glyphicon-chevron-left')
       end
     else
-      returning_html += button_tag(class: 'btn btn-primary left-arrow', disabled: true, data: { url: pathMethod.call(service_request, page: page - 1, pages: pages, arm_id: arm.id, tab: tab, portal: portal, format: :js) }) do
+      returning_html += button_tag(class: 'btn btn-primary left-arrow', disabled: true, data: { url: pathMethod.call(service_request, page: page - 1, pages: pages, arm_id: arm.id, tab: tab, sub_service_request_id: ssr_id, portal: portal, format: :js) }) do
         tag(:span, class: 'glyphicon glyphicon-chevron-left')
       end
     end
 
-    returning_html += select_tag("jump_to_visit_#{arm.id}", visits_select_options(arm, pages), :class => 'jump_to_visit selectpicker', url: pathMethod.call(service_request, pages: pages, arm_id: arm.id, tab: tab, portal: portal))
+    returning_html += select_tag("jump_to_visit_#{arm.id}", visits_select_options(arm, pages), :class => 'jump_to_visit selectpicker', url: pathMethod.call(service_request, pages: pages, arm_id: arm.id, tab: tab, sub_service_request_id: ssr_id, portal: portal))
 
     unless (portal or @merged or @review)
       returning_html += link_to 'Move Visit', 'javascript:void(0)', class: 'move_visits', data: { 'arm-id' => arm.id, tab: tab, 'sr-id' => service_request.id, portal: portal }
     end
 
     if ((page + 1) * 5) - 4 > arm.visit_count
-      returning_html += button_tag(class: 'btn btn-primary right-arrow', disabled: true, data: { url: pathMethod.call(service_request, page: page + 1, pages: pages, arm_id: arm.id, tab: tab, portal: portal, format: :js) }) do
+      returning_html += button_tag(class: 'btn btn-primary right-arrow', disabled: true, data: { url: pathMethod.call(service_request, page: page + 1, pages: pages, arm_id: arm.id, tab: tab, portal: portal, sub_service_request_id: ssr_id, format: :js) }) do
         tag(:span, class: 'glyphicon glyphicon-chevron-right')
       end
     else
-      returning_html += button_tag(class: 'btn btn-primary right-arrow', data: { url: pathMethod.call(service_request, page: page + 1, pages: pages, arm_id: arm.id, tab: tab, portal: portal, format: :js) }) do
+      returning_html += button_tag(class: 'btn btn-primary right-arrow', data: { url: pathMethod.call(service_request, page: page + 1, pages: pages, arm_id: arm.id, tab: tab, portal: portal, sub_service_request_id: ssr_id, format: :js) }) do
         tag(:span, class: 'glyphicon glyphicon-chevron-right')
       end
     end

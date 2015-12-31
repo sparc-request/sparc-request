@@ -23,7 +23,6 @@
     %strong= t(:calendar_page)[:per_patient] + ' -- ' + arm.name
 
 - if @merged # display merged calendar pppv line items
-  - puts 'MERGED'
   - arm.service_list.each do |_, value| # get only per patient/per visit services and group them
     - arm.line_items_visits.each do |line_items_visit|
       - line_item = line_items_visit.line_item
@@ -51,7 +50,6 @@
 
 
 - elsif @review # display review calendar pppv line items
-  - puts 'REVIEW'
   - @service_request.service_list(false).each do |_, value| # get only per patient/per visit services and group them
     - next unless @sub_service_request.nil? || @sub_service_request.organization.name == value[:process_ssr_organization_name]
     %tr.sub_section_header

@@ -62,16 +62,6 @@ $(document).ready ->
     show:
       ready: false
 
-  $('.jump_to_visit').qtip
-    overwrite: false
-    content: I18n["service_calendar_toasts"]["jump_to_visit"]
-    position:
-      corner:
-        target: 'topLeft'
-        tooltip: 'bottomLeft'
-    show:
-      ready: false
-
   $('#service_calendar').tabs
     beforeActivate: (event, ui) ->
       $("#service_calendar #tab_load_spinner").show()

@@ -20,7 +20,7 @@
 - if @portal || !@review
   - if (@sub_service_request.nil? ? @service_request.has_one_time_fee_services? : @sub_service_request.has_one_time_fee_services?) || @merged
     .row.calendar-row
-      %table.table.table-striped{ class: @review ? 'review_totals' : '' }
+      %table.table
         %thead{ class: @review ? thead_class : 'ui-widget-header' }
           = render partial: '/service_calendars/master_calendar/otf/otf_header'
         %tbody.cell-border

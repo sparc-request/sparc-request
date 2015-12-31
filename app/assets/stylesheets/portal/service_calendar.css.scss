@@ -1,13 +1,18 @@
-.calendar-container .calendar-row {
+.calendar-row {
   border: 1px solid #DDDDDD;
   margin-top: 10px;
   margin-bottom: 10px;
+
+  .visit-name {
+    border-top: 1px solid black;
+    word-wrap: break-word;
+  }
 }
 
-.vertical-align-bottom {
-  vertical-align: bottom !important;
+.section_header {
+  background-color: #adadad !important;
 }
 
-.top-border {
-  border-top: 1px solid black;
+.sub_section_header {
+  background-color: #ccc !important;
 }

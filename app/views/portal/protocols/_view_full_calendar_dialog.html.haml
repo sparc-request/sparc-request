@@ -74,7 +74,6 @@
                     .arm_calendar_container.calendar-container.container-fluid{ data: { arm_id: arm.id } }
                       - next if arm.visit_groups.empty?
                       = render partial: '/service_calendars/master_calendar/pppv/pppv_calendar', locals: { service_request: @service_request, arm: arm }
-
                 - if @protocol.has_one_time_fees? @service_request, @portal
                   .calendar-container.container-fluid
                     = render partial: '/service_calendars/master_calendar/otf/otf_calendar', locals: { service_request: @service_request }

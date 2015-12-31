@@ -185,7 +185,7 @@ module ApplicationHelper
     options_for_select(arr, selected)
   end
 
-  def generate_visit_navigation(arm, service_request, pages, tab, portal=nil)
+  def generate_visit_navigation(arm, service_request, pages, tab, portal=nil, ssr_id=nil)
     page = pages[arm.id].to_i == 0 ? 1 : pages[arm.id].to_i
 
     if @merged
@@ -199,7 +199,7 @@ module ApplicationHelper
     returning_html = ""
 
     returning_html += link_to((content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-w') + content_tag(:span, '<-', :class => 'ui-button-text')),
-                        pathMethod.call(service_request, :page => page - 1, :pages => pages, :arm_id => arm.id, :tab => tab, :portal => portal),
+                        pathMethod.call(service_request, :page => page - 1, :pages => pages, :arm_id => arm.id, :tab => tab, :portal => portal, sub_service_request_id: ssr_id),
                         :remote => true, :role => 'button', :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only left-arrow') unless page <= 1
 
     returning_html += content_tag(:button, (content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-w') + content_tag(:span, '<-', :class => 'ui-button-text')),
@@ -207,14 +207,14 @@ module ApplicationHelper
 
     returning_html += content_tag(:span, t("calendar_page.labels.jump_to_visit"))
 
-    returning_html += select_tag("jump_to_visit_#{arm.id}", visits_select_options(arm, pages), :class => 'jump_to_visit', :url => pathMethod.call(service_request, :pages => pages, :arm_id => arm.id, :tab => tab, :portal => portal))
+    returning_html += select_tag("jump_to_visit_#{arm.id}", visits_select_options(arm, pages), :class => 'jump_to_visit', :url => pathMethod.call(service_request, :pages => pages, :arm_id => arm.id, :tab => tab, :portal => portal, sub_service_request_id: ssr_id))
 
     unless (portal or @merged or @review)
       returning_html += link_to 'Move Visit', 'javascript:void(0)', class: 'ui-button ui-widget ui-state-default ui-corner-all move_visits', data: { 'arm-id' => arm.id, tab: tab, 'sr-id' => service_request.id, portal: portal }
     end
 
     returning_html += link_to((content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-e') + content_tag(:span, '->', :class => 'ui-button-text')),
-                              pathMethod.call(service_request, :page => page + 1, :pages => pages, :arm_id => arm.id, :tab => tab, :portal => portal),
+                              pathMethod.call(service_request, :page => page + 1, :pages => pages, :arm_id => arm.id, :tab => tab, :portal => portal, sub_service_request_id: ssr_id),
                               :remote => true, :role => 'button', :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only right-arrow') unless ((page + 1) * 5) - 4 > arm.visit_count
 
     returning_html += content_tag(:button, (content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-e') + content_tag(:span, '->', :class => 'ui-button-text')),

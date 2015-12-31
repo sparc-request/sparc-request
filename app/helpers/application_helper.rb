@@ -186,6 +186,7 @@ module ApplicationHelper
   end
 
   def generate_visit_navigation(arm, service_request, pages, tab, portal=nil, ssr_id=nil)
+    puts "HELPER: ssr_id: #{ssr_id}"
     page = pages[arm.id].to_i == 0 ? 1 : pages[arm.id].to_i
 
     if @merged

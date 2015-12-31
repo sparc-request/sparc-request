@@ -26,13 +26,13 @@
   .row
     - if @review
       .col-sm-5.col-sm-offset-5.text-center
-        = generate_visit_navigation(arm, @service_request, @pages, @tab, @portal)
+        = generate_visit_navigation(arm, @service_request, @pages, @tab, @portal, @sub_service_request.try(:id))
     - else
       .col-sm-5.col-sm-offset-5.text-center
-        = generate_visit_navigation(arm, @service_request, @pages, @tab, @portal)
+        = generate_visit_navigation(arm, @service_request, @pages, @tab, @portal, @sub_service_request.try(:id))
 
   -# TODO move inline style to stylesheet
   .row.calendar-row
     %table.table{ style: 'table-layout: fixed;' }
-      = render partial: '/service_calendars/master_calendar/pppv/pppv_header', :locals => {:service_request => service_request, :arm => arm, :tab => @tab, :portal => @portal}
-      = render partial: '/service_calendars/master_calendar/pppv/pppv_line_items', :locals => {:service_request => service_request, :arm => arm, :tab => @tab, :portal => @portal}
+      = render partial: '/service_calendars/master_calendar/pppv/pppv_header', :locals => {:service_request => service_request, :arm => arm, :tab => @tab, :portal => @portal, sub_service_request: @sub_service_request }
+      = render partial: '/service_calendars/master_calendar/pppv/pppv_line_items', :locals => {:service_request => service_request, :arm => arm, :tab => @tab, :portal => @portal, sub_service_request: @sub_service_request }

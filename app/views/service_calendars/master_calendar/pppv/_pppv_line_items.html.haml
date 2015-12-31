@@ -50,8 +50,10 @@
 
 
 - elsif @review # display review calendar pppv line items
+  - puts "PARTIAL: ssr: #{sub_service_request.inspect}"
+  - puts "#{sub_service_request.try(:id).inspect}"
   - @service_request.service_list(false).each do |_, value| # get only per patient/per visit services and group them
-    - next unless @sub_service_request.nil? || @sub_service_request.organization.name == value[:process_ssr_organization_name]
+    - next unless sub_service_request.nil? || sub_service_request.organization.name == value[:process_ssr_organization_name]
     %tr.sub_section_header
       %th{ colspan: 10 }= value[:name]
 
@@ -74,7 +76,7 @@
 
 - else # display default calendar pppv line items
   - service_request.service_list(false).each do |_, value| # get only per patient/per visit services and group them
-    - next unless @sub_service_request.nil? || @sub_service_request.organization.name == value[:process_ssr_organization_name]
+    - next unless sub_service_request.nil? || sub_service_request.organization.name == value[:process_ssr_organization_name]
     - if @tab == 'billing_strategy'
       %tr.sub_section_header
         %th{ colspan: @portal ? 3 : 5 }= value[:name]

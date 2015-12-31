@@ -26,6 +26,7 @@ RSpec.feature 'user views Add Services link', js: true do
   let_there_be_j
   fake_login_for_each_test
   build_study_type_questions
+  build_study_type_question_groups
   build_service_request_with_project
 
 

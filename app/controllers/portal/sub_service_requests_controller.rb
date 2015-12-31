@@ -29,7 +29,6 @@ class Portal::SubServiceRequestsController < Portal::BaseController
     session[:sub_service_request_id] = @sub_service_request.id
     session[:service_request_id] = @sub_service_request.service_request_id
     session[:service_calendar_pages] = params[:pages] if params[:pages]
-
     if @user.can_edit_fulfillment? @sub_service_request.organization
       @user_toasts = @user.received_toast_messages.select {|x| x.sending_class == 'SubServiceRequest'}.select {|y| y.sending_class_id == @sub_service_request.id}
       @service_request = @sub_service_request.service_request
@@ -48,6 +47,7 @@ class Portal::SubServiceRequestsController < Portal::BaseController
     else
       redirect_to portal_admin_index_path
     end
+
   end
 
   def update_from_fulfillment
@@ -77,6 +77,7 @@ class Portal::SubServiceRequestsController < Portal::BaseController
     attrs = params[@protocol.type.downcase.to_sym]
     
     if @protocol.update_attributes attrs
+
       redirect_to "/portal/admin/sub_service_requests/#{@sub_service_request.id}"
     else
       @user_toasts = @user.received_toast_messages.select {|x| x.sending_class == 'SubServiceRequest'}
@@ -90,6 +91,7 @@ class Portal::SubServiceRequestsController < Portal::BaseController
       @approvals = [@service_request.approvals, @sub_service_request.approvals].flatten
       @selected_arm = @service_request.arms.first
       render :action => 'show'
+
     end
   end   
 

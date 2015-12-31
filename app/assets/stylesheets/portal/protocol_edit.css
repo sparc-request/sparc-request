@@ -18,6 +18,15 @@
 /* INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR*/
 /* TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.*/
 
+.display_epic_answers{
+  font-size: 14px;
+  font-family: "Verdana", Arial, sans-serif;
+  position: absolute;
+  right: 29px;
+  margin-top: 8px;
+}
+
+
 .user-edit-protocol-view {
   font-size: 12px;
   font-family: "Verdana", Arial, sans-serif;
@@ -93,18 +102,8 @@
   width: 100% !important;
 }
 
-.user-edit-protocol-view .box .info label {
-  width: 150px !important;
-  display: block;
-  float: left;
-  margin: 4px 10px 0 0;
-  padding: 2px;
-  font-size: 1.2em;
-}
 
-.user-edit-protocol-view .box .info label.long {
-  width: 650px !important;
-}
+
 
 .user-edit-protocol-view label[for='study_funding_status'],
 .user-edit-protocol-view label[for='study_udak_project_number'],
@@ -289,6 +288,15 @@ legend {
   clear: both;
   margin-top: 4px;
   width: 100%;
+}
+
+.user-edit-protocol-view .box .info label {
+  width: 85%;
+  display: block;
+  float: left;
+  margin: 4px 10px 0 0;
+  padding: 2px;
+  font-size: 1.2em;
 }
 
 .edit-project-view .box .info label {

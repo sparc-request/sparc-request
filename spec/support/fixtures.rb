@@ -52,6 +52,11 @@ def let_there_be_j
     )}
 end
 
+def build_study_type_question_groups
+  let!(:inactive_study_type_question_group)  { StudyTypeQuestionGroup.create(active: false) }
+  let!(:active_study_type_question_group)    { StudyTypeQuestionGroup.create(active: true) }
+end
+
 def build_study_type_questions
   
   let!(:stq_higher_level_of_privacy) { StudyTypeQuestion.create("order"=>1, "question"=>"1a. Does your study require a higher level of privacy for the participants?", "friendly_id"=>"higher_level_of_privacy", "study_type_question_group_id" => inactive_study_type_question_group.id) }
@@ -68,10 +73,6 @@ def build_study_type_questions
   let!(:active_stq_restrict_sending)        { StudyTypeQuestion.create("order"=>6, "question"=>"5. Do you need to restrict the sending of study related results, such as laboratory and radiology results, to a participants MyChart?", "friendly_id"=>"restrict_sending", "study_type_question_group_id" => active_study_type_question_group.id) }
 end
 
-def build_study_type_question_groups
-  let!(:inactive_study_type_question_group)  { StudyTypeQuestionGroup.create(active: false) }
-  let!(:active_study_type_question_group)    { StudyTypeQuestionGroup.create(active: true) }
-end
 
 def build_study_type_answers
   

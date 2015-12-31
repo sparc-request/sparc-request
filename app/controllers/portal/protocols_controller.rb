@@ -59,13 +59,12 @@ class Portal::ProtocolsController < Portal::BaseController
 
   def create
     @current_step = params[:current_step]
-    @protocol = Study.new(params[:study])
+    @protocol = Study.new(params[:study].merge(study_type_question_group_id: StudyTypeQuestionGroup.active.pluck(:id).first))
     @protocol.validate_nct = true
     @portal = params[:portal]
     session[:protocol_type] = 'study'
     @portal = params[:portal]
 
-    # @protocol.assign_attributes(params[:study] || params[:project])
     if @current_step == 'go_back'
       @current_step = 'protocol'
       @protocol.populate_for_edit
@@ -121,7 +120,7 @@ class Portal::ProtocolsController < Portal::BaseController
       render :action => 'edit'
     end
     
-    if !@protocol.active?
+    if @protocol.is_study? && !@protocol.active?
       @protocol.activate
     end
     

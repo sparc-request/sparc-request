@@ -148,6 +148,7 @@ class EpicInterface
   def send_study_creation(study)
     message = study_creation_message(study)
     call('RetrieveProtocolDefResponse', message)
+    
 
     # TODO: handle response from the server
   end
@@ -210,6 +211,7 @@ class EpicInterface
         emit_study_type(xml, study)
         emit_ide_number(xml, study)
         emit_cofc(xml, study)
+   
       }
     }
 
@@ -288,11 +290,10 @@ class EpicInterface
 
   def emit_cofc(xml, study)
     if study.active?
-      cofc = study.study_type_answers.where(study_type_question_id: 7).pluck(:answer) == true ? 'YES_COFC' : 'NO_COFC'
+      cofc = study.study_type_answers.where(study_type_question_id: StudyTypeQuestion.where(study_type_question_group_id: StudyTypeQuestionGroup.where(active:true).pluck(:id)).where(order:1).first.id).first.answer == true ? 'YES_COFC' : 'NO_COFC'
     else
-      cofc = study.study_type_answers.where(study_type_question_id: 1).pluck(:answer) == true ? 'YES_COFC' : 'NO_COFC'
+      cofc = study.study_type_answers.where(study_type_question_id: StudyTypeQuestion.where(study_type_question_group_id: StudyTypeQuestionGroup.where(active:false).pluck(:id)).where(order:2).first.id).first.answer == true ? 'YES_COFC' : 'NO_COFC'
     end
-    
 
     xml.subjectOf(typeCode: 'SUBJ') {
       xml.studyCharacteristic(classCode: 'OBS', moodCode: 'EVN') {
@@ -303,9 +304,10 @@ class EpicInterface
   end
 
   def emit_study_type(xml, study)
+
     study_type = Portal::StudyTypeFinder.new(study).study_type
 
-    if study_type then
+    if study_type 
       xml.subjectOf(typeCode: 'SUBJ') {
         xml.studyCharacteristic(classCode: 'OBS', moodCode: 'EVN') {
           xml.code(code: 'STUDYTYPE')

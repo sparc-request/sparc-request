@@ -24,7 +24,7 @@ RSpec.describe 'editing a studys epic box', js: true do
     end
   end
 
-  context 'visiting a active studys edit page and the study IS selected for epic' do
+  context 'visiting a ACTIVE studys edit page and the study IS selected for epic' do
 
     before :each do 
       add_visits
@@ -142,9 +142,45 @@ RSpec.describe 'editing a studys epic box', js: true do
         
       end
     end
+    context 'epic box answers are NO, YES, NO, NO, NO, TRUE' do
+
+      before :each do
+        
+        active_answer1.update_attributes(answer: 0)
+        active_answer2.update_attributes(answer: 1)
+        active_answer3.update_attributes(answer: 0)
+        active_answer4.update_attributes(answer: 0)
+        active_answer5.update_attributes(answer: 0)
+        active_answer6.update_attributes(answer: 1)
+
+        edit_project_study_info
+
+      end
+
+      it 'should display ACTIVE questions' do
+
+        expect(page).to have_css('#study_type_answer_certificate_of_conf')
+        expect(find("#study_type_answer_certificate_of_conf")).to have_text("1. Does your study have a Certificate of Confidentiality?")
+
+        expect(page).to have_css('#study_type_answer_higher_level_of_privacy')
+        expect(find("#study_type_answer_higher_level_of_privacy")).to have_text("2. Does your study require a higher level of privacy for the participants?")
+
+        expect(page).to have_css('#study_type_answer_access_study_info')
+        expect(find('#study_type_answer_access_study_info')).to have_text("2b. Do participants enrolled in your study require a second DEIDENTIFIED Medical Record that is not connected to their primary record in Epic?")
+        
+        expect(page).to have_css('#study_type_answer_epic_inbasket')
+        expect(find("#study_type_answer_epic_inbasket")).to have_text("3. Do you wish to receive a notification via Epic InBasket when your research participants are admitted to the hospital or ED?")
+
+        expect(page).to have_css('#study_type_answer_research_active')
+        expect(find("#study_type_answer_research_active")).to have_text("4. Do you wish to remove the 'Research: Active' indicator in the Patient Header for your study participants?")
+
+        expect(page).to have_css('#study_type_answer_restrict_sending')
+        expect(find("#study_type_answer_restrict_sending")).to have_text("5. Do you need to restrict the sending of study related results, such as laboratory and radiology results, to a participants MyChart?")
+      end
+    end
   end
 
-  context 'visiting a inactive studys edit page and the study is selected for epic' do
+  context 'visiting a INACTIVE studys edit page and the study is selected for epic' do
     before :each do 
       add_visits
       study.update_attributes(selected_for_epic: true)
@@ -264,6 +300,43 @@ RSpec.describe 'editing a studys epic box', js: true do
         expect(page).to have_css('#study_type_answer_restrict_sending')
         expect(find("#study_type_answer_restrict_sending .display_epic_answers")).to have_text("Yes")
    
+      end
+    end
+    context 'epic box answers are NO, YES, NO, NO, NO, TRUE' do
+
+      before :each do
+        
+        active_answer1.update_attributes(answer: 0)
+        active_answer2.update_attributes(answer: 1)
+        active_answer3.update_attributes(answer: 0)
+        active_answer4.update_attributes(answer: 0)
+        active_answer5.update_attributes(answer: 0)
+        active_answer6.update_attributes(answer: 1)
+
+        edit_project_study_info
+
+      end
+
+      it 'should display INACTIVE questions' do
+
+        expect(page).to have_css('#study_type_answer_higher_level_of_privacy')
+        expect(find("#study_type_answer_higher_level_of_privacy")).to have_text("1a. Does your study require a higher level of privacy for the participants?")
+
+        expect(page).to have_css('#study_type_answer_certificate_of_conf')
+        expect(find("#study_type_answer_certificate_of_conf")).to have_text("1b. Does your study have a Certificate of Confidentiality?")
+        
+        expect(page).to have_css('#study_type_answer_access_study_info')
+        expect(find('#study_type_answer_access_study_info')).to have_text("1c. Do participants enrolled in your study require a second DEIDENTIFIED Medical Record that is not connected to their primary record in Epic?")
+        
+        expect(page).to have_css('#study_type_answer_epic_inbasket')
+        expect(find("#study_type_answer_epic_inbasket")).to have_text("2. Do you wish to receive a notification via Epic InBasket when your research participants are admitted to the hospital or ED?")
+
+        expect(page).to have_css('#study_type_answer_research_active')
+        expect(find("#study_type_answer_research_active")).to have_text("3. Do you wish to remove the 'Research: Active' indicator in the Patient Header for your study participants?")
+
+        expect(page).to have_css('#study_type_answer_restrict_sending')
+        expect(find("#study_type_answer_restrict_sending")).to have_text("4. Do you need to restrict the sending of study related results, such as laboratory and radiology results, to a participants MyChart?")
+        
       end
     end
   end

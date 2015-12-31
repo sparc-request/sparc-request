@@ -92,6 +92,32 @@ RSpec.describe EpicInterface do
     study
   }
 
+  let!(:answer1)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: stq_higher_level_of_privacy.id, answer: 1)}
+  let!(:answer2)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: stq_certificate_of_conf.id, answer: 0)}
+  let!(:answer3)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: stq_access_study_info.id, answer: 0)}
+  let!(:answer4)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: stq_epic_inbasket.id, answer: 0)}
+  let!(:answer5)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: stq_research_active.id, answer: 1)}
+  let!(:answer6)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: stq_restrict_sending.id, answer: 1)}
+  let!(:active_answer1)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: active_stq_certificate_of_conf.id, answer: 0)}
+  let!(:active_answer2)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: active_stq_higher_level_of_privacy.id, answer: 1)}
+  let!(:active_answer3)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: active_stq_access_study_info.id, answer: 0)}
+  let!(:active_answer4)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: active_stq_epic_inbasket.id, answer: 0)}
+  let!(:active_answer5)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: active_stq_research_active.id, answer: 1)}
+  let!(:active_answer6)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: active_stq_restrict_sending.id, answer: 1)}
+
+  let!(:stq_higher_level_of_privacy) { StudyTypeQuestion.create("order"=>1, "question"=>"1a. Does your study require a higher level of privacy for the participants?", "friendly_id"=>"higher_level_of_privacy", "study_type_question_group_id" => inactive_study_type_question_group.id) }
+  let!(:stq_certificate_of_conf)     { StudyTypeQuestion.create("order"=>2, "question"=>"1b. Does your study have a Certificate of Confidentiality?", "friendly_id"=>"certificate_of_conf", "study_type_question_group_id" => inactive_study_type_question_group.id) }
+  let!(:stq_access_study_info)       { StudyTypeQuestion.create("order"=>3, "question"=>"1c. Do participants enrolled in your study require a second DEIDENTIFIED Medical Record that is not connected to their primary record in Epic?", "friendly_id"=>"access_study_info", "study_type_question_group_id" => inactive_study_type_question_group.id) }
+  let!(:stq_epic_inbasket)           { StudyTypeQuestion.create("order"=>4, "question"=>"2. Do you wish to receive a notification via Epic InBasket when your research participants are admitted to the hospital or ED?", "friendly_id"=>"epic_inbasket", "study_type_question_group_id" => inactive_study_type_question_group.id) }
+  let!(:stq_research_active)         { StudyTypeQuestion.create("order"=>5, "question"=>"3. Do you wish to remove the 'Research: Active' indicator in the Patient Header for your study participants?", "friendly_id"=>"research_active", "study_type_question_group_id" => inactive_study_type_question_group.id) }
+  let!(:stq_restrict_sending)        { StudyTypeQuestion.create("order"=>6, "question"=>"4. Do you need to restrict the sending of study related results, such as laboratory and radiology results, to a participants MyChart?", "friendly_id"=>"restrict_sending", "study_type_question_group_id" => inactive_study_type_question_group.id) }
+  let!(:active_stq_certificate_of_conf)     { StudyTypeQuestion.create("order"=>1, "question"=>"1. Does your study have a Certificate of Confidentiality?", "friendly_id"=>"certificate_of_conf", "study_type_question_group_id" => active_study_type_question_group.id) }
+  let!(:active_stq_higher_level_of_privacy) { StudyTypeQuestion.create("order"=>2, "question"=>"2. Does your study require a higher level of privacy for the participants?", "friendly_id"=>"higher_level_of_privacy", "study_type_question_group_id" => active_study_type_question_group.id) }
+  let!(:active_stq_access_study_info)       { StudyTypeQuestion.create("order"=>3, "question"=>"2b. Do participants enrolled in your study require a second DEIDENTIFIED Medical Record that is not connected to their primary record in Epic?", "friendly_id"=>"access_study_info", "study_type_question_group_id" => active_study_type_question_group.id) }
+  let!(:active_stq_epic_inbasket)           { StudyTypeQuestion.create("order"=>4, "question"=>"3. Do you wish to receive a notification via Epic InBasket when your research participants are admitted to the hospital or ED?", "friendly_id"=>"epic_inbasket", "study_type_question_group_id" => active_study_type_question_group.id) }
+  let!(:active_stq_research_active)         { StudyTypeQuestion.create("order"=>5, "question"=>"4. Do you wish to remove the 'Research: Active' indicator in the Patient Header for your study participants?", "friendly_id"=>"research_active", "study_type_question_group_id" => active_study_type_question_group.id) }
+  let!(:active_stq_restrict_sending)        { StudyTypeQuestion.create("order"=>6, "question"=>"5. Do you need to restrict the sending of study related results, such as laboratory and radiology results, to a participants MyChart?", "friendly_id"=>"restrict_sending", "study_type_question_group_id" => active_study_type_question_group.id) }
+
   let!(:provider) {
     create(
       :provider,
@@ -116,8 +142,11 @@ RSpec.describe EpicInterface do
         is_available: 1)
   }
 
+
+
   describe 'send_study_creation' do
     it 'should work (smoke test)' do
+      study.update_attributes(study_type_question_group_id: StudyTypeQuestionGroup.where(active:true).pluck(:id).first)
       epic_interface.send_study_creation(study)
 
       xml = <<-END
@@ -131,7 +160,7 @@ RSpec.describe EpicInterface do
               <subjectOf typeCode="SUBJ">
                 <studyCharacteristic classCode="OBS" moodCode="EVN">
                   <code code="RGCL3"/>
-                  <value value="YES_COFC"/>
+                  <value value="NO_COFC"/>
                 </studyCharacteristic>
               </subjectOf>
             </plannedStudy>
@@ -157,6 +186,16 @@ RSpec.describe EpicInterface do
 
       expect(node).to be_equivalent_to(expected.root)
     end
+
+    # before :each do
+    #   study.update_attributes(study_type_question_group_id: StudyTypeQuestionGroup.where(active:true).pluck(:id).first)
+    #   answers = [true, true, nil, nil, nil, nil]
+    #   question_id = [active_stq_certificate_of_conf.id, active_stq_higher_level_of_privacy.id, active_stq_access_study_info.id, active_stq_epic_inbasket.id, active_stq_research_active.id, active_stq_restrict_sending.id]
+      
+    #   answers.each_with_index do |ans, index|
+    #     StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: question_id[index], answer: ans)
+    #   end
+    # end
 
     it 'should emit a subjectOf for a PI' do
       identity = create(
@@ -344,6 +383,7 @@ RSpec.describe EpicInterface do
     end
 
     it 'should not emit a subjectOf for a Billing Business Manager without Epic Access Rights' do
+      study.update_attributes(study_type_question_group_id: StudyTypeQuestionGroup.where(active:true).pluck(:id).first)
       identity = create(
           :identity,
           ldap_uid: 'happyhappyjoyjoy@musc.edu')
@@ -364,7 +404,7 @@ RSpec.describe EpicInterface do
                     xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
             <studyCharacteristic classCode="OBS" moodCode="EVN">
               <code code="RGCL3"/>
-              <value value="YES_COFC"/>
+              <value value="NO_COFC"/>
             </studyCharacteristic>
           </subjectOf>
         END
@@ -377,7 +417,7 @@ RSpec.describe EpicInterface do
           'rpe' => 'urn:ihe:qrph:rpe:2009',
           'hl7' => 'urn:hl7-org:v3')
 
-      expect(node[0]).to be_equivalent_to(expected.root)
+      expect(node[1]).to be_equivalent_to(expected.root)
     end
 
     it 'should emit a subjectOf for a pro number' do
@@ -516,16 +556,50 @@ RSpec.describe EpicInterface do
 
       expect(node[0]).to be_equivalent_to(expected.root)
     end
+    describe 'emitting a subjectOf for an INACTIVE study type' do
 
-    describe 'emitting a subjectOf for a study type' do
-      it 'should handle nils for questions 2, 3, and 4' do
-        STUDY_TYPE_QUESTIONS_VERSION_2.each_with_index do |stq, index|
-          StudyTypeQuestion.create(order: index + 1, question: stq)
-        end
-        answers = [true, true, true, nil, nil, nil]
-        stq_ids = StudyTypeQuestion.all.map(&:id)
-        stq_ids.each_with_index do |id, index|
-          StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: id, answer: answers[index])
+      before :each do
+        study.update_attributes(study_type_question_group_id: StudyTypeQuestionGroup.where(active:false).pluck(:id).first)
+      end
+
+      it 'should have value = NO_COFC' do
+        
+
+        answers = [true, false, false, false, true, true]
+        update_answers(false, answers)
+        
+        epic_interface.send_study_creation(study)
+
+        xml = <<-END
+          <subjectOf typeCode="SUBJ"
+                    xmlns='urn:hl7-org:v3'
+                    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
+            <studyCharacteristic classCode="OBS" moodCode="EVN">
+              <code code="RGCL3"/>
+              <value value="NO_COFC"/>
+            </studyCharacteristic>
+          </subjectOf>
+        END
+
+        expected = Nokogiri::XML(xml)
+
+        node = epic_received[0].xpath(
+        '//env:Body/rpe:RetrieveProtocolDefResponse/rpe:protocolDef/hl7:plannedStudy/hl7:subjectOf',
+        'env' => 'http://www.w3.org/2003/05/soap-envelope',
+        'rpe' => 'urn:ihe:qrph:rpe:2009',
+        'hl7' => 'urn:hl7-org:v3')
+
+        expect(node[1]).to be_equivalent_to(expected.root)
+      end
+
+      it 'should have value = YES_COFC' do
+
+        answers = [true, true, nil, nil, nil, nil]
+        update_answers(false, answers)
+        question_id = [ stq_higher_level_of_privacy.id, stq_certificate_of_conf.id, stq_access_study_info.id, stq_epic_inbasket.id, stq_research_active.id, stq_restrict_sending.id]
+        
+        answers.each_with_index do |ans, index|
+          StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: question_id[index], answer: ans)
         end
 
         epic_interface.send_study_creation(study)
@@ -549,21 +623,12 @@ RSpec.describe EpicInterface do
         'rpe' => 'urn:ihe:qrph:rpe:2009',
         'hl7' => 'urn:hl7-org:v3')
 
-        expect(node[0]).to be_equivalent_to(expected.root)
+        expect(node[1]).to be_equivalent_to(expected.root)
       end
 
-      it 'should handle answering all questions' do
-        STUDY_TYPE_QUESTIONS_VERSION_2.each_with_index do |stq, index|
-          StudyTypeQuestion.active.create(order: index + 1, question: stq)
-        end
-        answers = [false, true, false, false, true, true]
-  
-        stq_ids = StudyTypeQuestion.all.map(&:id)
-        stq_ids.each_with_index do |id, index|
-          answer = StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: id, answer: answers[index])
-          answer
-          binding.pry
-        end
+      it 'should return a study_type of 1' do
+        answers = [true, true, nil, nil, nil, nil]
+        update_answers(false, answers)
 
         epic_interface.send_study_creation(study)
 
@@ -573,7 +638,7 @@ RSpec.describe EpicInterface do
                       xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
             <studyCharacteristic classCode="OBS" moodCode="EVN">
               <code code="STUDYTYPE" />
-              <value value="3" />
+              <value value="1" />
             </studyCharacteristic>
           </subjectOf>
         END
@@ -589,15 +654,104 @@ RSpec.describe EpicInterface do
         expect(node[0]).to be_equivalent_to(expected.root)
       end
 
-      it 'should handle answering all questions' do
-        STUDY_TYPE_QUESTIONS.each_with_index do |stq, index|
-          StudyTypeQuestion.create(order: index + 1, question: stq)
-        end
-        answers = [true, true, false, true, false, true]
-        stq_ids = StudyTypeQuestion.all.map(&:id)
-        stq_ids.each_with_index do |id, index|
-          StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: id, answer: answers[index])
-        end
+      it 'should return a study_type of 2' do
+
+        answers = [true, false, true, nil, nil, nil]
+        update_answers(false, answers)
+
+        epic_interface.send_study_creation(study)
+
+        xml = <<-END
+          <subjectOf typeCode="SUBJ"
+                      xmlns='urn:hl7-org:v3'
+                      xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
+            <studyCharacteristic classCode="OBS" moodCode="EVN">
+              <code code="STUDYTYPE" />
+              <value value="2" />
+            </studyCharacteristic>
+          </subjectOf>
+        END
+
+        expected = Nokogiri::XML(xml)
+
+        node = epic_received[0].xpath(
+        '//env:Body/rpe:RetrieveProtocolDefResponse/rpe:protocolDef/hl7:plannedStudy/hl7:subjectOf',
+        'env' => 'http://www.w3.org/2003/05/soap-envelope',
+        'rpe' => 'urn:ihe:qrph:rpe:2009',
+        'hl7' => 'urn:hl7-org:v3')
+
+        expect(node[0]).to be_equivalent_to(expected.root)
+      end
+
+      it 'should return a study_type of 5' do
+
+        answers = [true, false, false, false, true, false]
+        update_answers(false, answers)
+        
+        epic_interface.send_study_creation(study)
+
+        xml = <<-END
+          <subjectOf typeCode="SUBJ"
+                      xmlns='urn:hl7-org:v3'
+                      xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
+            <studyCharacteristic classCode="OBS" moodCode="EVN">
+              <code code="STUDYTYPE" />
+              <value value="5" />
+            </studyCharacteristic>
+          </subjectOf>
+        END
+
+        expected = Nokogiri::XML(xml)
+
+        node = epic_received[0].xpath(
+        '//env:Body/rpe:RetrieveProtocolDefResponse/rpe:protocolDef/hl7:plannedStudy/hl7:subjectOf',
+        'env' => 'http://www.w3.org/2003/05/soap-envelope',
+        'rpe' => 'urn:ihe:qrph:rpe:2009',
+        'hl7' => 'urn:hl7-org:v3')
+
+        expect(node[0]).to be_equivalent_to(expected.root)
+      end
+
+      it 'should return a study_type of 15' do
+
+        answers = [false, nil, nil, true, true, true]
+        update_answers(false, answers)
+        
+        epic_interface.send_study_creation(study)
+
+        xml = <<-END
+          <subjectOf typeCode="SUBJ"
+                      xmlns='urn:hl7-org:v3'
+                      xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
+            <studyCharacteristic classCode="OBS" moodCode="EVN">
+              <code code="STUDYTYPE" />
+              <value value="15" />
+            </studyCharacteristic>
+          </subjectOf>
+        END
+
+        expected = Nokogiri::XML(xml)
+
+        node = epic_received[0].xpath(
+        '//env:Body/rpe:RetrieveProtocolDefResponse/rpe:protocolDef/hl7:plannedStudy/hl7:subjectOf',
+        'env' => 'http://www.w3.org/2003/05/soap-envelope',
+        'rpe' => 'urn:ihe:qrph:rpe:2009',
+        'hl7' => 'urn:hl7-org:v3')
+
+        expect(node[0]).to be_equivalent_to(expected.root)
+      end
+    end
+
+    describe 'emitting a subjectOf for an ACTIVE study type' do
+
+      before :each do
+        study.update_attributes(study_type_question_group_id: StudyTypeQuestionGroup.where(active:true).pluck(:id).first)
+      end
+
+      it 'should return YES_COFC' do
+
+        answers = [true, true, nil, nil, nil, nil]
+        update_answers(true, answers)
 
         epic_interface.send_study_creation(study)
 
@@ -619,20 +773,130 @@ RSpec.describe EpicInterface do
         'env' => 'http://www.w3.org/2003/05/soap-envelope',
         'rpe' => 'urn:ihe:qrph:rpe:2009',
         'hl7' => 'urn:hl7-org:v3')
+        expect(node[1]).to be_equivalent_to(expected.root)
+
+      end
+
+       it 'should return NO_COFC' do
+
+        answers = [false, true, false, false, false, false]
+        update_answers(true, answers)
+        
+        epic_interface.send_study_creation(study)
+
+        xml = <<-END
+          <subjectOf typeCode="SUBJ"
+                    xmlns='urn:hl7-org:v3'
+                    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
+            <studyCharacteristic classCode="OBS" moodCode="EVN">
+              <code code="RGCL3"/>
+              <value value="NO_COFC"/>
+            </studyCharacteristic>
+          </subjectOf>
+        END
+
+        expected = Nokogiri::XML(xml)
+
+        node = epic_received[0].xpath(
+        '//env:Body/rpe:RetrieveProtocolDefResponse/rpe:protocolDef/hl7:plannedStudy/hl7:subjectOf',
+        'env' => 'http://www.w3.org/2003/05/soap-envelope',
+        'rpe' => 'urn:ihe:qrph:rpe:2009',
+        'hl7' => 'urn:hl7-org:v3')
+
+        expect(node[1]).to be_equivalent_to(expected.root)
+      end
+      
+      it 'return a study type of 1' do
+        answers = [true, true, nil, nil, nil, nil]
+        update_answers(true, answers)
+        
+        epic_interface.send_study_creation(study)
+
+        xml = <<-END
+          <subjectOf typeCode="SUBJ"
+                      xmlns='urn:hl7-org:v3'
+                      xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
+            <studyCharacteristic classCode="OBS" moodCode="EVN">
+              <code code="STUDYTYPE" />
+              <value value="1" />
+            </studyCharacteristic>
+          </subjectOf>
+        END
+
+        expected = Nokogiri::XML(xml)
+
+        node = epic_received[0].xpath(
+        '//env:Body/rpe:RetrieveProtocolDefResponse/rpe:protocolDef/hl7:plannedStudy/hl7:subjectOf',
+        'env' => 'http://www.w3.org/2003/05/soap-envelope',
+        'rpe' => 'urn:ihe:qrph:rpe:2009',
+        'hl7' => 'urn:hl7-org:v3')
 
         expect(node[0]).to be_equivalent_to(expected.root)
       end
 
-      it 'should handle nils for questions 1b and 1c' do
-        STUDY_TYPE_QUESTIONS.each_with_index do |stq, index|
-          StudyTypeQuestion.create(order: index + 1, question: stq)
-        end
-        answers = [false, nil, nil, false, true, true]
-        stq_ids = StudyTypeQuestion.all.map(&:id)
-        stq_ids.each_with_index do |id, index|
-          StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: id, answer: answers[index])
-        end
+      it 'return a study type of 2' do
 
+        answers = [false, true, true, nil, nil, nil]
+        update_answers(true, answers)
+        
+        epic_interface.send_study_creation(study)
+
+        xml = <<-END
+          <subjectOf typeCode="SUBJ"
+                      xmlns='urn:hl7-org:v3'
+                      xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
+            <studyCharacteristic classCode="OBS" moodCode="EVN">
+              <code code="STUDYTYPE" />
+              <value value="2" />
+            </studyCharacteristic>
+          </subjectOf>
+        END
+
+        expected = Nokogiri::XML(xml)
+
+        node = epic_received[0].xpath(
+        '//env:Body/rpe:RetrieveProtocolDefResponse/rpe:protocolDef/hl7:plannedStudy/hl7:subjectOf',
+        'env' => 'http://www.w3.org/2003/05/soap-envelope',
+        'rpe' => 'urn:ihe:qrph:rpe:2009',
+        'hl7' => 'urn:hl7-org:v3')
+
+        expect(node[0]).to be_equivalent_to(expected.root)
+      end
+
+      it 'return a study type of 5' do
+
+        answers = [false, true, false, false, true, false]
+        update_answers(true, answers)
+        
+        epic_interface.send_study_creation(study)
+
+        xml = <<-END
+          <subjectOf typeCode="SUBJ"
+                      xmlns='urn:hl7-org:v3'
+                      xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
+            <studyCharacteristic classCode="OBS" moodCode="EVN">
+              <code code="STUDYTYPE" />
+              <value value="5" />
+            </studyCharacteristic>
+          </subjectOf>
+        END
+
+        expected = Nokogiri::XML(xml)
+
+        node = epic_received[0].xpath(
+        '//env:Body/rpe:RetrieveProtocolDefResponse/rpe:protocolDef/hl7:plannedStudy/hl7:subjectOf',
+        'env' => 'http://www.w3.org/2003/05/soap-envelope',
+        'rpe' => 'urn:ihe:qrph:rpe:2009',
+        'hl7' => 'urn:hl7-org:v3')
+
+        expect(node[0]).to be_equivalent_to(expected.root)
+      end
+
+      it 'return a study type of 11' do
+
+        answers = [false, false, nil, false, true, true]
+        update_answers(true, answers)
+        
         epic_interface.send_study_creation(study)
 
         xml = <<-END
@@ -1399,6 +1663,24 @@ RSpec.describe EpicInterface do
 
   describe 'send_study' do
     # TODO: add tests for the full study message
+  end
+
+  def update_answers (active, answer_array)
+    if active == true
+      active_answer1.update_attributes(answer: answer_array[0])
+      active_answer2.update_attributes(answer: answer_array[1])
+      active_answer3.update_attributes(answer: answer_array[2])
+      active_answer4.update_attributes(answer: answer_array[3])
+      active_answer5.update_attributes(answer: answer_array[4])
+      active_answer6.update_attributes(answer: answer_array[5])
+    else
+      answer1.update_attributes(answer: answer_array[0])
+      answer2.update_attributes(answer: answer_array[1])
+      answer3.update_attributes(answer: answer_array[2])
+      answer4.update_attributes(answer: answer_array[3])
+      answer5.update_attributes(answer: answer_array[4])
+      answer6.update_attributes(answer: answer_array[5])
+    end
   end
 
 end

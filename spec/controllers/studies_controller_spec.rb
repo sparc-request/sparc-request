@@ -52,6 +52,7 @@ RSpec.describe StudiesController do
         expect(assigns(:protocol).study_types).not_to eq nil
         expect(assigns(:protocol).impact_areas).not_to eq nil
         expect(assigns(:protocol).affiliations).not_to eq nil
+
       end
     end
 
@@ -85,9 +86,10 @@ RSpec.describe StudiesController do
     end
   end
 
-  context 'already have a study' do
+  context 'already have an active study' do
     let!(:study) {
       study = Study.create(attributes_for(:protocol))
+
       study.save!(validate: false)
       project_role = create(
           :project_role,
@@ -98,6 +100,10 @@ RSpec.describe StudiesController do
       study.reload
       study
     }
+
+    before :each do
+      study.update_attributes(study_type_question_group_id: StudyTypeQuestionGroup.where(active:true).pluck(:id).first)
+    end
 
     describe 'GET edit' do
       it 'should set service_request' do

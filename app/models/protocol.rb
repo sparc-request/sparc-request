@@ -110,7 +110,7 @@ class Protocol < ActiveRecord::Base
     validate  :validate_funding_source
     validates :sponsor_name, :presence => true, :if => :is_study?
     validates_associated :human_subjects_info, :message => "must contain 8 numerical digits", :if => :validate_nct
-    validate  :validate_study_type_answers, :if => :selected_for_epic && !admin
+    validate  :validate_study_type_answers, :if => :selected_for_epic
   end
 
   validation_group :user_details do
@@ -137,6 +137,11 @@ class Protocol < ActiveRecord::Base
   end
 
   def validate_study_type_answers
+
+    if id != nil
+      return if !active?
+    end
+
     friendly_ids = ["certificate_of_conf", "higher_level_of_privacy", "access_study_info", "epic_inbasket", "research_active", "restrict_sending"]
     answers = {}
     friendly_ids.each do |fid|
@@ -145,7 +150,6 @@ class Protocol < ActiveRecord::Base
     end
 
     has_errors = false
-
     begin
       if answers["certificate_of_conf"].answer.nil?
         has_errors = true
@@ -154,7 +158,7 @@ class Protocol < ActiveRecord::Base
         end
       elsif answers["certificate_of_conf"].answer == false
         if (answers["higher_level_of_privacy"].answer.nil?) 
-          has_errors = true    
+          has_errors = true
         elsif (answers["higher_level_of_privacy"].answer == false)
           if answers["epic_inbasket"].answer.nil? || answers["research_active"].answer.nil? || answers["restrict_sending"].answer.nil?
             has_errors = true
@@ -173,7 +177,7 @@ class Protocol < ActiveRecord::Base
           has_errors = true
         end
       end
-    rescue
+    rescue => e
       has_errors = true
     end
 

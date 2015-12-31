@@ -93,12 +93,6 @@ module ApplicationHelper
     visit_groups      = arm.visit_groups
 
     (beginning_visit .. ending_visit).each do |n|
-      if sub_service_request
-        filtered_line_items_visits = line_items_visits.select{|x| x.line_item.sub_service_request_id == sub_service_request.id }
-      else
-        filtered_line_items_visits = line_items_visits.select{|x| x.line_item.service_request_id == service_request.id }
-      end
-
       visit_name = visit_groups[n - 1].name || "Visit #{n}"
       visit_group = visit_groups[n - 1]
 
@@ -130,6 +124,14 @@ module ApplicationHelper
                                       text_field_tag("arm_#{arm.id}_visit_name_#{n}", visit_name, :class => "visit_name", :size => 10, :'data-arm_id' => arm.id, :'data-visit_position' => n - 1, :'data-service_request_id' => service_request.id) +
                                       tag(:br))
       else
+        if sub_service_request
+          filtered_line_items_visits = line_items_visits.select{|x| x.line_item.sub_service_request_id == sub_service_request.id }
+        else
+          filtered_line_items_visits = line_items_visits.select{|x| x.line_item.service_request_id == service_request.id }
+        end
+        checked = filtered_line_items_visits.each.map{|l| l.visits[n.to_i-1].research_billing_qty >= 1 ? true : false}.all?
+        action = checked == true ? 'unselect_calendar_column' : 'select_calendar_column'
+        icon = checked == true ? 'ui-icon-close' : 'ui-icon-check'
         returning_html += content_tag(:span,
                                       ((USE_EPIC) ?
                                       # label_tag("Day") + "&nbsp;&nbsp;&nbsp;".html_safe + label_tag("+/-") +
@@ -183,7 +185,7 @@ module ApplicationHelper
     options_for_select(arr, selected)
   end
 
-  def generate_visit_navigation(arm, service_request, pages, tab, portal=nil)
+  def generate_visit_navigation(arm, service_request, pages, tab, portal=nil, ssr_id=nil)
     page = pages[arm.id].to_i == 0 ? 1 : pages[arm.id].to_i
 
     if @merged

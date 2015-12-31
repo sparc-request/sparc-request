@@ -82,7 +82,6 @@ module ApplicationHelper
 
   def generate_visit_header_row arm, service_request, page, sub_service_request, portal=nil
     base_url = "/service_requests/#{service_request.id}/service_calendars"
-    rename_visit_url = base_url + "/rename_visit"
     day_url = base_url + "/set_day"
     window_before_url = base_url + "/set_window_before"
     window_after_url = base_url + "/set_window_after"
@@ -94,15 +93,6 @@ module ApplicationHelper
     visit_groups = arm.visit_groups
 
     (beginning_visit .. ending_visit).each do |n|
-      if sub_service_request
-        filtered_line_items_visits = line_items_visits.select{|x| x.line_item.sub_service_request_id == sub_service_request.id } 
-      else
-        filtered_line_items_visits = line_items_visits.select{|x| x.line_item.service_request_id == service_request.id }
-      end
-
-      checked = filtered_line_items_visits.each.map{|l| l.visits[n.to_i-1].research_billing_qty >= 1 ? true : false}.all?
-      action = checked == true ? 'unselect_calendar_column' : 'select_calendar_column'
-      icon = checked == true ? 'ui-icon-close' : 'ui-icon-check'
       visit_name = visit_groups[n - 1].name || "Visit #{n}"
       visit_group = visit_groups[n - 1]
 
@@ -134,6 +124,14 @@ module ApplicationHelper
                                       text_field_tag("arm_#{arm.id}_visit_name_#{n}", visit_name, :class => "visit_name", :size => 10, :'data-arm_id' => arm.id, :'data-visit_position' => n - 1, :'data-service_request_id' => service_request.id) +
                                       tag(:br))
       else
+        if sub_service_request
+          filtered_line_items_visits = line_items_visits.select{|x| x.line_item.sub_service_request_id == sub_service_request.id }
+        else
+          filtered_line_items_visits = line_items_visits.select{|x| x.line_item.service_request_id == service_request.id }
+        end
+        checked = filtered_line_items_visits.each.map{|l| l.visits[n.to_i-1].research_billing_qty >= 1 ? true : false}.all?
+        action = checked == true ? 'unselect_calendar_column' : 'select_calendar_column'
+        icon = checked == true ? 'ui-icon-close' : 'ui-icon-check'
         returning_html += content_tag(:th,
                                       ((USE_EPIC) ?
                                       # label_tag("Day") + "&nbsp;&nbsp;&nbsp;".html_safe + label_tag("+/-") +

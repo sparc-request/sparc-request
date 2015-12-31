@@ -19,37 +19,6 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 module Portal::NotificationsHelper
-  def read_unread notification, user
-    begin
-      unless notification.messages.last.from == user.id
-        notification.messages.select{ |message| message.read.blank? }.empty? ? 'read' : 'unread'
-      else
-        'read'
-      end
-    rescue
-      'read'
-    end
-  end
-
-  def read_unread_display notification, user_id
-    if notification.read_by_user_id user_id
-      raw(
-        content_tag(:button, raw(content_tag(:span, '', class: "glyphicon glyphicon-envelope", aria: {hidden: "true"}))+' Read', type: 'button', class: 'btn btn-default notification-open')
-      )
-    else
-      raw(
-        content_tag(:button, raw(content_tag(:span, '', class: "glyphicon glyphicon-envelope", aria: {hidden: "true"}))+' Unread', type: 'button', class: 'btn btn-success notification-open')
-      )
-    end
-  end
-
-  def link_to_notification notification
-    "window.location = 'portal/notifications/#{notification.id}'"
-  end
-
-  def link_to_new_notification user_id
-    new_notification_path(:user_id => user_id)
-  end
 
   def message_hide_or_show(notification, index)
     notification.messages.length - 1 == index ? 'shown' : 'hidden'

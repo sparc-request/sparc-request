@@ -24,12 +24,10 @@
       Mark as Unread
     %button.btn.btn-default#mark_as_read
       Mark as Read
-  %table.notifications_table{id: "notifications-table", data: {toggle: 'table', search: "true", "show-columns" => "true", "show-refresh" => "true", "show-toggle" => "true", url: portal_notifications_path(format: :json, sub_service_request_id: sub_service_request.id), striped: "true", toolbar: "#notifications-custom-toolbar", "show-export" => "true", "export-types" => ['excel'], "sort-name" => "open", "sort-order" => 'desc'}}
+  %table.notifications_table.table-condensed.table-no-bordered{id: "notifications-table", data: {toggle: 'table', search: "true", "show-columns" => "true", "show-refresh" => "true", "show-toggle" => "true", url: portal_notifications_path(format: :json, sub_service_request_id: sub_service_request.id), striped: "true", toolbar: "#notifications-custom-toolbar", "show-export" => "true", "export-types" => ['excel'], "sort-name" => "time", "sort-order" => 'desc', "row-style" => "notifications_row_style"}}
     %thead.primary-header
       %tr
         %th{data: {class: 'state', field: "state", checkbox: "true"}}
-        %th{data: {class: 'open', align: "center", sortable: "true", field: "open"}}
-          Open Notification
         %th{data: {class: 'from', align: "left", sortable: "true", field: "from"}}
           From
         %th{data: {class: 'subject', align: "left", sortable: "true", field: "subject"}}

@@ -39,12 +39,26 @@ $(document).ready ->
         data: data
   )
 
-  $(document).on('click', '.notification-open', ->
+  $(document).on('click', '.notifications_row > .from,.subject,.preview,.time', ->
+    #if you click on the row, it opens the notification show
     row_index   = $(this).parents("tr").data("index")
     notification_id = $(this).parents("table.notifications_table").bootstrapTable("getData")[row_index].id
     $('.notification_dialog').dialog('open')
     $.ajax({ type: 'GET', url: "/portal/notifications/#{notification_id}" })
   )
+
+  $(document).on('click', '.notifications_row > .bs-checkbox', ->
+    #clicks checkbox if you click in the same td
+    $(this).children("input[type='checkbox']").trigger('click')
+  )
+
+  window.notifications_row_style = (row, index) ->
+    #makes unread messages appear green in notifications bs table
+    class_string = 'notifications_row'
+    if not row.read
+      class_string += ' success'
+    return { classes: class_string }
+
 
 
 

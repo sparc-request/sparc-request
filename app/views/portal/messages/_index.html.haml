@@ -18,20 +18,30 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.bootstrap-table-dropdown-overflow
-  #notifications-custom-toolbar
-    %button.btn.btn-default#mark_as_unread
-      Mark as Unread
-    %button.btn.btn-default#mark_as_read
-      Mark as Read
-  %table.notifications_table.table-condensed.table-no-bordered{id: "notifications-table", data: {toggle: 'table', search: "true", "show-columns" => "true", "show-refresh" => "true", "show-toggle" => "true", url: portal_notifications_path(format: :json, sub_service_request_id: sub_service_request.id), striped: "true", toolbar: "#notifications-custom-toolbar", "show-export" => "true", "export-types" => ['excel'], "sort-name" => "time", "sort-order" => 'desc', "row-style" => "notifications_row_style"}}
-    %thead.primary-header
-      %tr
-        %th{data: {class: 'state', field: "state", checkbox: "true"}}
-        %th{data: {class: 'from', align: "left", sortable: "false", field: "from"}}
-          User
-        %th{data: {class: 'subject', align: "left", sortable: "false", field: "subject"}}
-          Subject
-        %th{data: {class: 'time', align: "right", sortable: "true", field: "time"}}
-          Time
-
+.modal-dialog.modal-lg
+  .modal-content
+    .modal-header
+      %button.close{type: 'button', data: {dismiss: 'modal'}}
+        %span{aria: {hidden:'true'}} &times;
+        %span.sr-only &times;
+      %h4.modal-title.text-center= "Messages"
+    .modal-body
+      - if messages.any?
+        .details-table
+          .details-header.text-center
+            .col-xs-3 User
+            .col-xs-2 Date
+            .col-xs-7 Message
+          - messages.each do |message|
+            .detail
+              .col-xs-3.name= message.sender.full_name
+              .col-xs-2.created-at= format_datetime(message.created_at)
+              .col-xs-7.message= message.body
+      -else
+        .text-center= "This Notification currently has no Messages."
+    .modal-footer
+      .center-block
+        %button.btn.btn-default{type: 'button', data: {dismiss: 'modal'}} Close
+        %button.btn.btn-primary.message.new{type: "button", aria: {label: "Reply"}, data: {notification_id: notification.id }}
+          %span.glyphicon.glyphicon-plus{aria: {hidden: "true"}}
+          %span Reply

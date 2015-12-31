@@ -18,30 +18,30 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-module Portal::NotificationsHelper
+class Portal::MessagesController < Portal::BaseController
+  respond_to :html, :json
 
-  def message_hide_or_show(notification, index)
-    notification.messages.length - 1 == index ? 'shown' : 'hidden'
+  def index
+    @notification = Notification.find(params[:notification_id])
+    @messages = @notification.messages
+    @messages.where("`to` = #{@user.id}").update_all(read: true)
   end
 
-  def subject_line(message)
-    def truncate(s, max=70, elided = ' ...')
-      if s.present?
-        s.match( /(.{1,#{max}})(?:\s|\z)/ )[1].tap do |res|
-          res << elided unless res.length == s.length
-        end
-      else
-        ""
-      end
-    end
+  def new
+    @notification = Notification.find(params[:notification_id])
+    recipient = @notification.get_other_user(@user.id)
+    @message = Message.new(notification_id: @notification.id, to: recipient.id, from: @user.id, email: recipient.email)
+  end
 
-    raw(
-      content_tag(:div, 
-        truncate(message.subject), class: "text-info"
-      )+
-      content_tag(:div, 
-        ' - ' + truncate(message.body), class: "text-muted"
-      )
-    )
+  def create
+    @notification = Notification.find(params[:message][:notification_id])
+    @message = Message.create(message_params) if message_params[:body].present? # don't create empty messages
+    @messages = @notification.messages
+  end
+
+private
+
+  def message_params
+    params.require(:message).permit(:notification_id, :to, :from, :email, :body)
   end
 end

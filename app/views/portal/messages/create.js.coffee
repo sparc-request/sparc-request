@@ -18,30 +18,4 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-module Portal::NotificationsHelper
-
-  def message_hide_or_show(notification, index)
-    notification.messages.length - 1 == index ? 'shown' : 'hidden'
-  end
-
-  def subject_line(message)
-    def truncate(s, max=70, elided = ' ...')
-      if s.present?
-        s.match( /(.{1,#{max}})(?:\s|\z)/ )[1].tap do |res|
-          res << elided unless res.length == s.length
-        end
-      else
-        ""
-      end
-    end
-
-    raw(
-      content_tag(:div, 
-        truncate(message.subject), class: "text-info"
-      )+
-      content_tag(:div, 
-        ' - ' + truncate(message.body), class: "text-muted"
-      )
-    )
-  end
-end
+$("#modal_area").html("<%= escape_javascript(render(partial: 'index', locals: { messages: @messages, notification: @notification })) %>")

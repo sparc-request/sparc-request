@@ -216,6 +216,8 @@ SparcRails::Application.routes.draw do
     resources :services, only: [:show]
     resources :admin, only: [:index]
     resources :documents
+    resources :messages, only: [:index, :new, :create]
+    resources :notes, only: [:index, :new, :create]
 
     resources :arms, only: [:new, :create, :update, :destroy] do
       collection do
@@ -238,8 +240,6 @@ SparcRails::Application.routes.draw do
       end
     end
 
-    resources :notes, only: [:index, :new, :create]
-
     resources :associated_users, except: [:index] do
       collection do
         get :search
@@ -258,7 +258,7 @@ SparcRails::Application.routes.draw do
     resources :studies, controller: :protocols, except: [:destroy]
     resources :projects, controller: :protocols, except: [:destroy]
 
-    resources :notifications, except: [:edit, :update, :destroy] do
+    resources :notifications, only: [:index, :new, :create] do
       member do
         put :user_portal_update
         put :admin_update

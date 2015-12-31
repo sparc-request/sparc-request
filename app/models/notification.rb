@@ -29,12 +29,36 @@ class Notification < ActiveRecord::Base
   attr_accessible :sub_service_request_id
   attr_accessible :originator_id
 
-  def read_by_user_id user_id
+  def read_by_user_id? user_id
+    # have all messages in this notification to this user been read?
     messages_to_user = messages.where("`to` = #{user_id}")
     if messages_to_user.all?{ |m| m.read }
       return true
     else
       return false
+    end
+  end
+
+  def get_users
+    # get the users associated with this notification
+    users = []
+    unless messages.empty?
+      one_message = messages.first
+      users = [one_message.sender, one_message.recipient]
+    else
+      users << originator
+    end
+
+    return users
+  end
+
+  def get_other_user current_id
+    # given one user id associated with this notification, return the other user instance
+    users = get_users
+    if users.map(&:id).include? current_id
+      return users.select{ |u| u.id != current_id }.first
+    else
+      return nil
     end
   end
 end

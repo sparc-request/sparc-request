@@ -43,8 +43,12 @@ $(document).ready ->
     #if you click on the row, it opens the notification show
     row_index   = $(this).parents("tr").data("index")
     notification_id = $(this).parents("table.notifications_table").bootstrapTable("getData")[row_index].id
-    $('.notification_dialog').dialog('open')
-    $.ajax({ type: 'GET', url: "/portal/notifications/#{notification_id}" })
+    data =
+      'notification_id': notification_id
+    $.ajax
+      type: 'GET'
+      url: "/portal/messages"
+      data: data
   )
 
   $(document).on('click', '.notifications_row > .bs-checkbox', ->
@@ -59,7 +63,12 @@ $(document).ready ->
       class_string += ' success'
     return { classes: class_string }
 
-
+  $(document).on 'click', 'button.message.new',  ->
+    data = notification_id: $(this).data('notification-id')
+    $.ajax
+      type: 'GET'
+      url: '/portal/messages/new'
+      data: data
 
 
 

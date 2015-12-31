@@ -43,8 +43,10 @@
               = message_form.text_field :subject, {class: 'form-control', placeholder: t(:notifications)[:subject], rows: "6"}
           .form-group
             .col-sm-12
-              = message_form.text_area :body, {class: 'form-control', placeholder: t(:notifications)[:message], rows: "6"}
+              = message_form.text_area :body, {class: 'form-control', placeholder: "Please enter message text here", rows: "6"}
       .modal-footer
         .center-block
           %button.btn.btn-default{type: 'button', data: {dismiss: 'modal'}} Cancel
-          %input.btn.btn-primary#send_notification_form_button{type: 'submit', value: "Send"}
+          %button.btn.btn-primary{type: "submit"}
+            %span.glyphicon.glyphicon-send{aria: {hidden: "true"}}
+            %span Send

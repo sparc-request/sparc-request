@@ -474,7 +474,7 @@ class Identity < ActiveRecord::Base
     notifications = self.all_notifications
 
     notifications.each do |notification|
-      notification_count += 1 unless notification.read_by_user_id(user.id)
+      notification_count += 1 unless notification.read_by_user_id? user.id
     end
 
     notification_count

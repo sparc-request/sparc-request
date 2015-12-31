@@ -4,10 +4,10 @@
 - page              = [1, page].max
 - beginning_visit   = (page * 5) - 4
 - ending_visit      = [arm.visit_count, 5 * page].min
-- arm.visit_groups[(beginning_visit - 1) .. (ending_visit - 1)].each_with_index do |vg, idx|
-  - if %q{review show refresh_service_calendar}.include? action
+- arm.visit_groups[(beginning_visit - 1)..(ending_visit - 1)].each_with_index do |vg, idx|
+  - if %q(review show refresh_service_calendar).include? action
     %th.col-sm-1
-      %span.visit_number= vg.name
+      %span.visit_number.visit-name= vg.name
   - elsif merged
     - if USE_EPIC
       %th.col-lg-1
@@ -26,9 +26,9 @@
           .col-sm-4.text-center
             %small= vg.window_after
         .row
-          .col-sm-10.col-sm-offset-1.text-center.visit-name= vg.name
+          .col-sm-10.col-sm-offset-1.text-center.border-top.visit-name= vg.name
     - else
-      %span= vg.name
+      %span.visit-name= vg.name
 - ((page * 5) - arm.visit_count).times do
   %th.visit_number.col-lg-1
 

@@ -4,9 +4,12 @@
   margin-bottom: 10px;
 
   .visit-name {
-    border-top: 1px solid black;
     word-wrap: break-word;
   }
+}
+
+.border-top {
+  border-top: 1px solid black;
 }
 
 .section_header {

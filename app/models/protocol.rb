@@ -138,7 +138,7 @@ class Protocol < ActiveRecord::Base
 
   def validate_study_type_answers
 
-    if id != nil
+    if id != nil && is_study?
       return if !active?
     end
 

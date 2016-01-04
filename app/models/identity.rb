@@ -64,12 +64,14 @@ class Identity < ActiveRecord::Base
   has_many :requested_service_requests, :class_name => 'ServiceRequest', :foreign_key => 'service_requester_id'
   has_many :catalog_manager_rights, :class_name => 'CatalogManager'
   has_many :service_providers, :dependent => :destroy
-  has_many :notifications, :foreign_key => 'originator_id'
-  has_many :sent_messages, :class_name => 'Message', :foreign_key => 'from'
-  has_many :received_messages, :class_name => 'Message', :foreign_key => 'to'
   has_many :received_toast_messages, :class_name => 'ToastMessage', :foreign_key => 'to', :dependent => :destroy
   has_many :sent_toast_messages, :class_name => 'ToastMessage', :foreign_key => 'from', :dependent => :destroy
   has_many :notes, :dependent => :destroy
+
+  has_many :sent_notifications, class_name: "Notification", :foreign_key => 'originator_id'
+  has_many :received_notifications, class_name: "Notification", :foreign_key => 'other_user_id'
+  has_many :sent_messages, :class_name => 'Message', :foreign_key => 'from'
+  has_many :received_messages, :class_name => 'Message', :foreign_key => 'to'
 
   # TODO: Identity doesn't really have many sub service requests; an
   # identity is the owner of many sub service requests.  We need a
@@ -453,18 +455,9 @@ class Identity < ActiveRecord::Base
   ########################## NOTIFICATION METHODS ###############################
   ###############################################################################
 
-  # Collects all notifications for this identity based on their user notifications (as notifications
-  # do not belong to individual identities).
-  # Returns an array of Notifications.
   def all_notifications
-    associated_notifications = Notification.where(0) #empty ActiveRecord::Relation
-    messages = [sent_messages, received_messages].flatten
-    unless messages.empty?
-      notification_ids = messages.map{ |m| m.notification_id }.uniq
-      associated_notifications = Notification.where(id: notification_ids)
-    end
-
-    associated_notifications
+    # Returns an array of Notifications.
+    [sent_notifications, received_notifications].flatten
   end
 
   # Returns the count of unread notifications for this identity, based on their user_notifications
@@ -474,7 +467,7 @@ class Identity < ActiveRecord::Base
     notifications = self.all_notifications
 
     notifications.each do |notification|
-      notification_count += 1 unless notification.read_by_user_id? user.id
+      notification_count += 1 unless notification.read_by? user
     end
 
     notification_count

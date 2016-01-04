@@ -23,13 +23,13 @@ class Portal::MessagesController < Portal::BaseController
 
   def index
     @notification = Notification.find(params[:notification_id])
+    @notification.set_read_by @user
     @messages = @notification.messages
-    @messages.where("`to` = #{@user.id}").update_all(read: true)
   end
 
   def new
     @notification = Notification.find(params[:notification_id])
-    recipient = @notification.get_other_user(@user.id)
+    recipient = @notification.get_user_other_than @user
     @message = Message.new(notification_id: @notification.id, to: recipient.id, from: @user.id, email: recipient.email)
   end
 

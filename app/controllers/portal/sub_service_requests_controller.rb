@@ -40,7 +40,6 @@ class Portal::SubServiceRequestsController < Portal::BaseController
       @protocol.populate_for_edit if @protocol.type == "Study"
       @candidate_one_time_fees, @candidate_per_patient_per_visit = @sub_service_request.candidate_services.partition {|x| x.one_time_fee}
       @subsidy = @sub_service_request.subsidy
-      @notifications = @user.all_notifications.where(:sub_service_request_id => @sub_service_request.id)
       @service_list = @service_request.service_list
       @related_service_requests = @protocol.all_child_sub_service_requests
     else

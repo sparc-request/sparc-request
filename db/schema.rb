@@ -452,11 +452,9 @@ ActiveRecord::Schema.define(version: 20151230174247) do
     t.integer  "to",              limit: 4
     t.integer  "from",            limit: 4
     t.string   "email",           limit: 255
-    t.string   "subject",         limit: 255
     t.text     "body",            limit: 65535
     t.datetime "created_at",                    null: false
     t.datetime "updated_at",                    null: false
-    t.boolean  "read"
   end
 
   add_index "messages", ["notification_id"], name: "index_messages_on_notification_id", using: :btree
@@ -477,8 +475,12 @@ ActiveRecord::Schema.define(version: 20151230174247) do
   create_table "notifications", force: :cascade do |t|
     t.integer  "sub_service_request_id", limit: 4
     t.integer  "originator_id",          limit: 4
-    t.datetime "created_at",                       null: false
-    t.datetime "updated_at",                       null: false
+    t.datetime "created_at",                         null: false
+    t.datetime "updated_at",                         null: false
+    t.string   "subject",                limit: 255
+    t.integer  "other_user_id",          limit: 4
+    t.boolean  "read_by_originator"
+    t.boolean  "read_by_other_user"
   end
 
   add_index "notifications", ["originator_id"], name: "index_notifications_on_originator_id", using: :btree

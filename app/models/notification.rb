@@ -22,42 +22,68 @@ class Notification < ActiveRecord::Base
   audited
 
   belongs_to :originator, :class_name => "Identity"
+  belongs_to :other_user, :class_name => "Identity"
   belongs_to :sub_service_request
 
   has_many :messages
 
   attr_accessible :sub_service_request_id
   attr_accessible :originator_id
+  attr_accessible :other_user_id
+  attr_accessible :read_by_originator
+  attr_accessible :read_by_other_user
 
-  def read_by_user_id? user_id
-    # have all messages in this notification to this user been read?
-    messages_to_user = messages.where("`to` = #{user_id}")
-    if messages_to_user.all?{ |m| m.read }
-      return true
+  def read_by? user
+    # has this notification been read by this user?
+    case user.id
+    when originator_id
+      return read_by_originator == true
+    when other_user_id
+      return read_by_other_user == true
     else
       return false
     end
   end
 
-  def get_users
-    # get the users associated with this notification
-    users = []
-    unless messages.empty?
-      one_message = messages.first
-      users = [one_message.sender, one_message.recipient]
+  def set_read_by user, read=true
+    # this notification been read by this user
+    case user.id
+    when originator_id
+      return self.update_attributes(read_by_originator: read)
+    when other_user_id
+      return self.update_attributes(read_by_other_user: read)
     else
-      users << originator
+      return false
     end
-
-    return users
   end
 
-  def get_other_user current_id
-    # given one user id associated with this notification, return the other user instance
-    users = get_users
-    if users.map(&:id).include? current_id
-      return users.select{ |u| u.id != current_id }.first
+  def from
+    unless messages.empty?
+      messages.last.sender
     else
+      originator
+    end
+  end
+
+  def to
+    unless messages.empty?
+      messages.last.recipient
+    else
+      other_user
+    end
+  end
+
+  def get_users
+    # get the users associated with this notification
+    return [originator, other_user]
+  end
+
+  def get_user_other_than current_user
+    # given one user associated with this notification, return the other user
+    users = get_users
+    if users.include? current_user #current_user is associated with this notification
+      return (users - [current_user]).first
+    else #current_user is not associated with this notification
       return nil
     end
   end

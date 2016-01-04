@@ -29,7 +29,16 @@ class Portal::NotificationsController < Portal::BaseController
         respond_with @user, @notifications
       }
       format.json {
-        @notifications = @user.all_notifications.where(:sub_service_request_id => params[:sub_service_request_id])
+        @table = params[:table]
+        ssr_id = params[:sub_service_request_id].to_i
+        @notifications = @user.all_notifications.select!{ |n| n.sub_service_request_id == ssr_id }
+        if @table == "inbox"
+          # return list of notifications with any messages to current user
+          @notifications.select!{ |n| n.messages.any? { |m| m.to == @user.id }}
+        elsif @table == "sent"
+          # return list of notifications with any messages from current user
+          @notifications.select!{ |n| n.messages.any? { |m| m.from == @user.id }}
+        end
       }
     end
   end
@@ -55,7 +64,15 @@ class Portal::NotificationsController < Portal::BaseController
     else
       @errors = @message.errors
     end
+  end
 
+  def mark_as_read
+    # handles marking notification messages as read or unread
+    as_read = (params[:read] == "true") #could be 'true'(read) or 'false'(unread)
+    params[:notification_ids].each do |notification_id|
+      notification = Notification.find(notification_id)
+      notification.set_read_by @user, as_read
+    end
   end
 
   def user_portal_update
@@ -94,24 +111,6 @@ class Portal::NotificationsController < Portal::BaseController
     respond_to do |format|
       format.js
       format.html
-    end
-  end
-
-  def mark_as_read
-    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id]) rescue nil
-    if @sub_service_request
-      @notifications = @user.all_notifications.where(:sub_service_request_id => @sub_service_request.id)
-    else
-      @notifications = @user.all_notifications
-    end
-    params[:notifications].each do |k,v|
-      notification = Notification.find(k)
-      notification.user_notifications_for_current_user(@user).each do |user_notification|
-        user_notification.update_attributes(:read => v)
-      end
-    end
-    respond_to do |format|
-      format.js { render 'portal/notifications/create' }
     end
   end
 end

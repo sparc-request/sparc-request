@@ -20,28 +20,40 @@
 
 module Portal::NotificationsHelper
 
+  def truncate_string_length(s, max=70, elided = ' ...')
+    #truncates string to max # of characters then adds elipsis
+    if s.present?
+      s.match( /(.{1,#{max}})(?:\s|\z)/ )[1].tap do |res|
+        res << elided unless res.length == s.length
+      end
+    else
+      ""
+    end
+  end
+
   def message_hide_or_show(notification, index)
     notification.messages.length - 1 == index ? 'shown' : 'hidden'
   end
 
-  def subject_line(message)
-    def truncate(s, max=70, elided = ' ...')
-      if s.present?
-        s.match( /(.{1,#{max}})(?:\s|\z)/ )[1].tap do |res|
-          res << elided unless res.length == s.length
-        end
-      else
-        ""
-      end
-    end
+  def notification_subject_line(notification)
+    subject = notification.subject.present? ? notification.subject : ""
+    body    = notification.messages.length > 0 ? notification.messages.last.body : ""
 
     raw(
       content_tag(:div, 
-        truncate(message.subject), class: "text-info"
+        truncate_string_length(subject), class: "text-info"
       )+
       content_tag(:div, 
-        ' - ' + truncate(message.body), class: "text-muted"
+        ' - ' + truncate_string_length(body), class: "text-muted"
       )
     )
+  end
+
+  def notification_time_display(notification)
+    unless notification.messages.empty?
+      format_datetime(notification.messages.last.created_at)
+    else
+      format_datetime(notification.updated_at)
+    end
   end
 end

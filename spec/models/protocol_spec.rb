@@ -24,7 +24,37 @@ require 'rails_helper'
 RSpec.describe 'Protocol' do
   let_there_be_lane
   let_there_be_j
-  build_service_request_with_study
+  build_service_request
+
+  build_study_type_question_groups()
+  build_study_type_questions()
+  
+  let!(:study) {
+    study = Study.create(attributes_for(:protocol))
+    human_subjects_info = build(:human_subjects_info, pro_number: nil, hr_number: nil)
+    study = build(:study, human_subjects_info: human_subjects_info)
+    study.update_attributes(funding_status: "funded", funding_source: "federal", indirect_cost_rate: 50.0, start_date: Time.now, end_date: Time.now + 2.month, study_type_question_group_id: StudyTypeQuestionGroup.active.pluck(:id).first)
+    study.save validate: false
+    identity = Identity.find_by_ldap_uid('jug2')
+    create(
+        :project_role,
+        protocol_id:     study.id,
+        identity_id:     identity.id,
+        project_rights:  "approve",
+        role:            "primary-pi")
+    identity2 = Identity.find_by_ldap_uid('jpl6@musc.edu')
+    create(
+        :project_role,
+        protocol_id:     study.id,
+        identity_id:     identity2.id,
+        project_rights:  "approve",
+        role:            "business-grants-manager")
+    service_request.update_attribute(:protocol_id, study.id)
+    study.reload
+    study
+  }
+ 
+  build_study_type_answers()
 
   describe ".notify_remote_around_update?", delay: true do
 
@@ -74,12 +104,13 @@ RSpec.describe 'Protocol' do
   describe 'display add services button?' do
     
     it "should return true if status is 'first_draft'" do 
-      service_request.update_attributes(status: 'first_draft')
+     
+      service_request.update_attribute(:status, 'first_draft')
       expect(study.has_first_draft_service_request?).to eq true
     end
 
     it "should return false if status is NOT 'first_draft'" do 
-      service_request.update_attributes(status: 'draft')
+      service_request.update_attribute(:status, 'draft')
       expect(study.has_first_draft_service_request?).to eq false
     end
 
@@ -109,9 +140,6 @@ RSpec.describe 'Protocol' do
 
   describe "push to epic" do
     it "should create a record of the protocols push" do
-      human_subjects_info = build(:human_subjects_info, pro_number: nil, hr_number: nil)
-      study = build(:study, human_subjects_info: human_subjects_info)
-      study.save(validate: false)
       expect{ study.push_to_epic(EPIC_INTERFACE) }.to change(EpicQueueRecord, :count).by(1)
     end
   end

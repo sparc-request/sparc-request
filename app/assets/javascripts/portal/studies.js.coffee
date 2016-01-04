@@ -59,7 +59,7 @@ $(document).ready ->
       restrict_sending_dropdown = $('#study_type_answer_restrict_sending_answer')
 
       $.prototype.hide_elt = () ->
-        this[0].selectedIndex = 0
+        # this[0].selectedIndex = 0
         this.closest('.field').hide()
         return this
 

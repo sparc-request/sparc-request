@@ -211,13 +211,14 @@ RSpec.describe "Identity edits Study epic box", js: true do
 
       it 'should display all active questions ' do
         wait_for_javascript_to_finish
-      
-        expect(page).to have_selector('#study_type_answer_certificate_of_conf')
-        expect(page).to have_selector('#study_type_answer_higher_level_of_privacy')
-        expect(page).to have_selector('#study_type_answer_access_study_info')
-        expect(page).to have_selector('#study_type_answer_epic_inbasket')
-        expect(page).to have_selector('#study_type_answer_research_active')
-        expect(page).to have_selector('#study_type_answer_restrict_sending') 
+     
+        expect(page).to have_select('study_type_answer_certificate_of_conf_answer', selected: 'No')
+        expect(page).to have_select('study_type_answer_higher_level_of_privacy_answer', selected: 'Yes')
+        expect(page).to have_select('study_type_answer_access_study_info_answer', selected: 'No')
+        expect(page).to have_select('study_type_answer_epic_inbasket_answer', selected: 'No')
+        expect(page).to have_select('study_type_answer_research_active_answer', selected: 'No')
+        expect(page).to have_select('study_type_answer_restrict_sending_answer', selected: 'No') 
+
       end
 
       context 'change 1. to YES' do

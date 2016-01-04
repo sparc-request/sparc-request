@@ -192,10 +192,9 @@ RSpec.describe "service calendar", js: true do
         describe "selecting check all column button and accepting the validation alert" do
 
           it "should overwrite the quantities in the column if they are not customized" do
-            first("#check_all_column_3").click
-            sos
+            first("#check_all_column_1").click
             wait_for_javascript_to_finish
-            expect(first(".visits_3")).to be_checked
+            expect(first(".visits_1")).to be_checked
           end
         end
 

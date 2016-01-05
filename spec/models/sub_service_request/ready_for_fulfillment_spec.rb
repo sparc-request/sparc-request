@@ -19,6 +19,49 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 require 'spec_helper'
 
+RSpec.describe 'ServiceRequest' do
+  before :each do        
+    @service_request = ServiceRequest.new
+    @service_request.save(validate: false)
+  end
+  
+  it 'is NOT funded because protocol is nil' do
+    expect(@service_request.is_funded?).to eq(false)
+  end
+  
+  it 'is NOT funded because protocol\'s funding_status is nil' do
+    @protocol = Protocol.new
+    @protocol.save(validate: false)
+    
+    @service_request.protocol_id = @protocol.id
+    @service_request.save(validate: false)
+    
+    expect(@service_request.is_funded?).to eq(false)
+  end
+  
+  it 'is NOT funded because protocol\'s funding_status is pending_funding' do
+    @protocol = Protocol.new
+    @protocol.funding_status = "pending_funding"
+    @protocol.save(validate: false)
+    
+    @service_request.protocol_id = @protocol.id
+    @service_request.save(validate: false)
+        
+    expect(@service_request.is_funded?).to eq(false)
+  end
+  
+  it 'is funded because protocol\'s funding_status is funded' do
+    @protocol = Protocol.new
+    @protocol.funding_status = "funded"
+    @protocol.save(validate: false)
+    
+    @service_request.protocol_id = @protocol.id
+    @service_request.save(validate: false)
+    
+    expect(@service_request.is_funded?).to eq(true)
+  end
+end
+
 RSpec.describe 'SubServiceRequest' do
   before :each do
     @institution = Institution.new
@@ -44,7 +87,16 @@ RSpec.describe 'SubServiceRequest' do
     @core.parent_id = @program.id
     @core.save(validate: false)
     
+    @protocol = Protocol.new
+    @protocol.funding_status = "funded"
+    @protocol.save(validate: false)
+    
+    @service_request = ServiceRequest.new
+    @service_request.protocol_id = @protocol.id
+    @service_request.save(validate: false)
+    
     @sub_service_request = SubServiceRequest.new
+    @sub_service_request.service_request_id = @service_request.id
     @sub_service_request.organization_id = @core.id
     @sub_service_request.save(validate: false)
   end
@@ -55,18 +107,52 @@ RSpec.describe 'SubServiceRequest' do
     expect(@sub_service_request.ready_for_fulfillment?).to eq(true)
   end
   
-  it 'is ready for fulfillment if already in work fulfillment and FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER is false' do
+  it 'is ready for fulfillment if already in work fulfillment and FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER is false and the protocols funding status is funded' do
     FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER = false
     @sub_service_request.in_work_fulfillment = true
     expect(@sub_service_request.ready_for_fulfillment?).to eq(true)
   end
   
-  it 'is ready for fulfillment if already in work fulfillment and FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER is nil' do
+  it 'is ready for fulfillment if already in work fulfillment and FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER is nil and the protocols funding status is funded' do
     FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER = nil
     @sub_service_request.in_work_fulfillment = true
     expect(@sub_service_request.ready_for_fulfillment?).to eq(true)
   end
  
+  it 'is ready for fulfillment if already in work fulfillment and FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER is false and the protocols funding status is pending_funding' do
+    FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER = false
+    @sub_service_request.in_work_fulfillment = true
+    @protocol.funding_status = "pending_funding"
+    @protocol.save(validate: false)
+        
+    expect(@sub_service_request.ready_for_fulfillment?).to eq(true)
+  end
+  
+  it 'is ready for fulfillment if already in work fulfillment and FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER is nil and the protocols funding status is pending_funding' do
+    FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER = nil
+    @sub_service_request.in_work_fulfillment = true
+    @protocol.funding_status = "pending_funding"
+    @protocol.save(validate: false)
+    
+    expect(@sub_service_request.ready_for_fulfillment?).to eq(true)
+  end
+  
+  it 'is NOT ready for fulfillment if FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER is false and the protocols funding status is pending_funding' do
+    FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER = false
+    @protocol.funding_status = "pending_funding"
+    @protocol.save(validate: false)
+        
+    expect(@sub_service_request.ready_for_fulfillment?).to eq(false)
+  end
+  
+  it 'is NOT ready for fulfillment if FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER is nil and the protocols funding status is pending_funding' do
+    FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER = nil
+    @protocol.funding_status = "pending_funding"
+    @protocol.save(validate: false)
+    
+    expect(@sub_service_request.ready_for_fulfillment?).to eq(false)
+  end
+  
   it 'is NOT ready for fulfillment if FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER is true' do
     FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER = true
     expect(@sub_service_request.ready_for_fulfillment?).to eq(false)
@@ -82,11 +168,22 @@ RSpec.describe 'SubServiceRequest' do
     expect(@sub_service_request.ready_for_fulfillment?).to eq(true)
   end
   
-  it 'is ready for fulfillment if the service is directly under an organization with the tag "clinical work fulfillment" and FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER is true' do
+  it 'is ready for fulfillment if the service is directly under an organization with the tag "clinical work fulfillment" and FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER is true and the protocols funding status is funded' do
     FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER = true
     @core.tag_list << "clinical work fulfillment"
     @core.save(validate: false)
     expect(@sub_service_request.ready_for_fulfillment?).to eq(true)
+  end
+  
+  it 'is NOT ready for fulfillment if the service is directly under an organization with the tag "clinical work fulfillment" and FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER is true and the protocols funding status is pending_funding' do
+    FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER = true
+    @core.tag_list << "clinical work fulfillment"
+    @core.save(validate: false)
+    
+    @protocol.funding_status = "pending_funding"
+    @protocol.save(validate: false)
+       
+    expect(@sub_service_request.ready_for_fulfillment?).to eq(false)
   end
   
   it 'is ready for fulfillment if the service is directly under an organization with the tag "clinical work fulfillment" and FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER is false' do

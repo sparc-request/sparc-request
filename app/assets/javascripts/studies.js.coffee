@@ -47,6 +47,7 @@ $(document).ready ->
 
   FormFxManager.registerListeners($('.edit-project-view'), display_dependencies)
 
+
   $(".study_type .field").hide();
 
   study_type_form = $('.study_type')
@@ -238,7 +239,7 @@ $(document).ready ->
   setupDatePicker('#iacuc_expiration_date', '#study_vertebrate_animals_info_attributes_iacuc_expiration_date')
   $('#iacuc_expiration_date').attr("readOnly", true)
 
-  #This is to disabled the submit after you click once, so you can't fire multiple posts at once.
+  #This is to disabled the submit after you click once, so you cant fire multiple posts at once.
   $("form").submit ->
     unless $('#study_research_types_info_attributes_human_subjects').is(':checked')
       $('#study_human_subjects_info_attributes_nct_number').val('')

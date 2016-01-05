@@ -31,3 +31,11 @@ def fake_login_for_each_test(uid='jug2')
     Warden.test_reset!
   end
 end
+
+def fake_login(uid='jug2')
+  Warden.test_reset!
+  Warden.test_mode!
+  identity = Identity.find_by_ldap_uid(uid)
+  login_as(identity)
+end
+

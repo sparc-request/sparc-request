@@ -126,7 +126,7 @@ class ServicePricingReport < ReportingModule
     # get child organization that have services to related to them
     service_organization_ids = [selected_organization_id]
     if selected_organization_id
-      organizations = Organization.find(:all)
+      organizations = Organization.all
       org = Organization.find(selected_organization_id)
       service_organization_ids += org.all_children(organizations).map(&:id)
       service_organization_ids.flatten!

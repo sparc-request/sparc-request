@@ -67,7 +67,7 @@ class EpicInterface
   # Create a new EpicInterface
   def initialize(config)
     logfile = File.join(Rails.root, '/log/', "epic-#{Rails.env}.log")
-    logger = ActiveSupport::BufferedLogger.new(logfile)
+    logger = ActiveSupport::Logger.new(logfile)
 
     @config = config
     @errors = {}

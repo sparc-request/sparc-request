@@ -153,13 +153,13 @@
 
           .field
             = f.label :potential_funding_start_date, t(:study_form)[:potential_funding_start_date]
-            = text_field_tag :potential_funding_start_date, (study.potential_funding_start_date.strftime('%_m/%d/%Y') rescue nil)
+            = text_field_tag :potential_funding_start_date, (study.potential_funding_start_date.strftime('%-m/%d/%Y') rescue nil)
             = f.hidden_field :potential_funding_start_date
 
         .funded
           .field
             = f.label :funding_start_date, t(:study_form)[:funding_start_date]
-            = text_field_tag :funding_start_date, (study.funding_start_date.strftime('%_m/%d/%Y') rescue nil)
+            = text_field_tag :funding_start_date, (study.funding_start_date.strftime('%-m/%d/%Y') rescue nil)
             = f.hidden_field :funding_start_date
 
 
@@ -266,7 +266,7 @@
       %fieldset
         %legend= t(:study_form)[:type] 
         %div
-          = f.fields_for :study_types do |rt|
+          = f.fields_for :study_types, f.object.study_types.sort_by(&:position) do |rt|
             .field{:class => rt.object.name}
               = rt.label :name, "#{StudyType::TYPES[rt.object.name]}:"
               = rt.check_box "_destroy", {:checked => !rt.object.new}, false, true
@@ -275,7 +275,7 @@
       %fieldset
         %legend= t(:study_form)[:impact]
         %div
-          = f.fields_for :impact_areas do |rt|
+          = f.fields_for :impact_areas, f.object.impact_areas.sort_by(&:position) do |rt|
             .field{:class => rt.object.name}
               = rt.label :name, "#{ImpactArea::TYPES[rt.object.name]}:"
               = rt.check_box "_destroy", {:checked => !rt.object.new}, false, true
@@ -288,7 +288,7 @@
       %fieldset
         %legend= t(:study_form)[:affiliations] 
         %div
-          = f.fields_for :affiliations do |rt|
+          = f.fields_for :affiliations, f.object.affiliations.sort_by(&:position) do |rt|
             .field{:class => rt.object.name}
               = rt.label :name, "#{Affiliation::TYPES[rt.object.name]}:"
               = rt.check_box "_destroy", {:checked => !rt.object.new}, false, true

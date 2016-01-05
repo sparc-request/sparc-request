@@ -33,7 +33,7 @@ RSpec.describe CatalogsController do
   describe 'POST update_description' do
     it 'should set organization and service_request' do
       session[:service_request_id] = service_request.id
-      get :update_description, {
+      xhr :get, :update_description, {
         :format              => :js,
         :id                  => core.id,
         :service_request_id  => service_request.id,

@@ -25,7 +25,7 @@ class Portal::AssociatedUsersController < Portal::BaseController
   before_filter :find_project, :only => [:show, :edit, :new, :create, :update]
   before_filter :protocol_authorizer_view, :only => [:show]
   before_filter :protocol_authorizer_edit, :only => [:edit, :new, :create, :update]
-    
+
   def show
     # TODO: is it right to call to_i here?
     # TODO: id here should be the id of a project role, not an identity
@@ -61,14 +61,15 @@ class Portal::AssociatedUsersController < Portal::BaseController
 
   def create
     @protocol_role = @protocol.project_roles.build(params[:project_role])
+    @protocol_role.identity.assign_attributes params[:identity]
     @identity = Identity.find @protocol_role.identity_id
 
-    if @protocol_role.validate_one_primary_pi && @protocol_role.validate_uniqueness_within_protocol
+    if @protocol_role.unique_to_protocol? && @protocol_role.fully_valid?
       @protocol_role.save
       @identity.update_attributes params[:identity]
       if SEND_AUTHORIZED_USER_EMAILS
         @protocol.emailed_associated_users.each do |project_role|
-          UserMailer.authorized_user_changed(project_role.identity, @protocol).deliver unless project_role.identity.email.blank?
+          UserMailer.authorized_user_changed(project_role.identity, @protocol).deliver_now unless project_role.identity.email.blank?
         end
       end
 
@@ -93,18 +94,19 @@ class Portal::AssociatedUsersController < Portal::BaseController
 
   def update
     @protocol_role = ProjectRole.find params[:id]    
+    @protocol_role.identity.assign_attributes params[:identity]
     @identity = Identity.find @protocol_role.identity_id
-    @identity.update_attributes params[:identity]
 
     epic_access = @protocol_role.epic_access
     epic_rights = @protocol_role.epic_rights.clone
     @protocol_role.assign_attributes params[:project_role]
 
-    if @protocol_role.validate_one_primary_pi
+    if @protocol_role.fully_valid?
       @protocol_role.save
+      @identity.update_attributes params[:identity]
       if SEND_AUTHORIZED_USER_EMAILS
         @protocol.emailed_associated_users.each do |project_role|
-          UserMailer.authorized_user_changed(project_role.identity, @protocol).deliver unless project_role.identity.email.blank?
+          UserMailer.authorized_user_changed(project_role.identity, @protocol).deliver_now unless project_role.identity.email.blank?
         end
       end
 
@@ -138,38 +140,34 @@ class Portal::AssociatedUsersController < Portal::BaseController
 
   def destroy
     @protocol_role = ProjectRole.find params[:id]
-    if @protocol_role.is_only_primary_pi?
-      render :js => "alert(\"Projects require a PI. Please add a new one before continuing.\")"
-    else
-      protocol = @protocol_role.protocol
-      epic_access = @protocol_role.epic_access
-      project_role_clone = @protocol_role.clone
-      @protocol_role.destroy
+    protocol = @protocol_role.protocol
+    epic_access = @protocol_role.epic_access
+    project_role_clone = @protocol_role.clone
+    @protocol_role.destroy
 
-      if USE_EPIC
-        if protocol.selected_for_epic
-          if epic_access
-            Notifier.notify_primary_pi_for_epic_user_removal(protocol, project_role_clone).deliver unless QUEUE_EPIC
-          end
+    if USE_EPIC
+      if protocol.selected_for_epic
+        if epic_access
+          Notifier.notify_primary_pi_for_epic_user_removal(protocol, project_role_clone).deliver unless QUEUE_EPIC
         end
       end
+    end
 
-      if params[:sub_service_request_id]
-        @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
-        @protocol = @sub_service_request.service_request.protocol
-        render 'portal/admin/update_associated_users'
-      else
-        respond_to do |format|
-          format.js
-          format.html
-        end
+    if params[:sub_service_request_id]
+      @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
+      @protocol = @sub_service_request.service_request.protocol
+      render 'portal/admin/update_associated_users'
+    else
+      respond_to do |format|
+        format.js
+        format.html
       end
     end
   end
 
   def search
     term = params[:term].strip
-    results = Identity.search(term).map do |i| 
+    results = Identity.search(term).map do |i|
       {
        :label => i.display_name, :value => i.id, :email => i.email, :institution => i.institution, :phone => i.phone, :era_commons_name => i.era_commons_name,
        :college => i.college, :department => i.department, :credentials => i.credentials, :credentials_other => i.credentials_other
@@ -183,7 +181,7 @@ class Portal::AssociatedUsersController < Portal::BaseController
     # automatically overwrite it.
     results = [{:label => 'No Results'}] if results.empty?
 
-    render :json => results.to_json    
+    render :json => results.to_json
   end
 
 private

@@ -26,11 +26,11 @@ RSpec.describe 'editing a study', js: true do
   fake_login_for_each_test
   build_service_request_with_study
 
-  let(:numerical_day) { Date.today.strftime('%d').gsub(/^0/, '') }
-
   before :each do
     add_visits
     study.update_attributes(potential_funding_start_date: (Time.now + 1.day))
+    study.update_attributes(funding_start_date: nil)
+    study.human_subjects_info.update_attributes(irb_expiration_date: nil)
     visit portal_admin_sub_service_request_path sub_service_request.id
     click_on('Project/Study Information')
     wait_for_javascript_to_finish
@@ -112,13 +112,14 @@ RSpec.describe 'editing a study', js: true do
       select('Funded', from: 'Proposal Funding Status')
     end
 
-    describe 'editing the funding start date' do
-      before :each do
-        page.execute_script("$('#funding_start_date').datepicker('refresh')")
-      end
-      it 'should change and save the date' do
-        page.execute_script("$('#funding_start_date').datepicker('setDate', '10/20/2015')")
-        expect(find('#funding_start_date')).to have_value('10/20/2015')
+    describe "editing the funding start date" do
+
+      it "should change and save the date" do
+        page.execute_script %Q{ $("#funding_start_date").focus()}
+        wait_for_javascript_to_finish
+        page.execute_script("$('#funding_start_date').val('12/20/15')")
+        wait_for_javascript_to_finish
+        expect(find("#funding_start_date")).to have_value('12/20/15')
       end
     end
 
@@ -151,9 +152,9 @@ RSpec.describe 'editing a study', js: true do
       it 'should change and save the date' do
         page.execute_script %{ $('#potential_funding_start_date').focus()}
         wait_for_javascript_to_finish
-        first('a.ui-state-default.ui-state-highlight').click
+        page.execute_script("$('#potential_funding_start_date').val('12/20/15')")
         wait_for_javascript_to_finish
-        expect(find('#potential_funding_start_date')).to have_value((Date.today).strftime('%-m/%d/%Y'))
+        expect(find("#potential_funding_start_date")).to have_value('12/20/15')
       end
     end
 
@@ -229,13 +230,14 @@ RSpec.describe 'editing a study', js: true do
       end
     end
 
-    describe 'editing the irb expiration date', js: true do
-      before :each do
-        page.execute_script("$( '#irb_expiration_date' ).datepicker('refresh')")
-      end
-      it 'should change and save the date' do
-        page.execute_script("$('#irb_expiration_date').datepicker('setDate', '10/30/2015')")
-        expect(find('#irb_expiration_date')).to have_value('10/30/2015')
+    describe "editing the irb expiration date" do
+
+      it "should change and save the date" do
+        page.execute_script %Q{ $("#irb_expiration_date").focus()}
+        wait_for_javascript_to_finish
+        page.execute_script("$('#irb_expiration_date').val('12/20/15')")
+        wait_for_javascript_to_finish
+        expect(find("#irb_expiration_date")).to have_value('12/20/15')
       end
     end
   end
@@ -305,9 +307,11 @@ RSpec.describe 'editing a study', js: true do
     end
   end
 
-  context 'affiliations check boxes' do
-    describe 'cancer center, lipidomics, oral health, cardiovascular, cchp, inbre, reach' do
-      it 'should change their state when clicked' do
+  context "affiliations check boxes" do
+
+    describe "cancer center, lipidomics, oral health, cardiovascular, cchp, inbre, reach" do
+
+      it "should change their state when clicked" do
         box_num = 0
         7.times do
           check("study_affiliations_attributes_#{box_num}__destroy")

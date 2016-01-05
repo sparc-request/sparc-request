@@ -35,6 +35,6 @@ class Institution < Organization
       position += 1
     end
 
-    available_statuses.sort!{|a, b| a.position <=> b.position}
+    available_statuses.sort{|a, b| a.position <=> b.position}
   end
 end

@@ -49,21 +49,19 @@ class Directory
   # Returns an array of Identities that match the query.
   def self.search(term)
     # Search ldap (if enabled) and the database
-    if USE_LDAP
+    if USE_LDAP && !SUPPRESS_LDAP_FOR_USER_SEARCH
       ldap_results = search_ldap(term)
-    else
-      ldap_results = []
+      db_results = search_database(term)
+      # If there are any entries returned from ldap that were not in the
+      # database, then create them
+      create_or_update_database_from_ldap(ldap_results, db_results)
+      # Finally, search the database a second time and return the results.
+      # If there were no new identities created, then this should return
+      # the same as the original call to search_database().
+      return search_database(term)
+    else # only search database once
+      return search_database(term)
     end
-    db_results = search_database(term)
-
-    # If there are any entries returned from ldap that were not in the
-    # database, then create them
-    create_or_update_database_from_ldap(ldap_results, db_results)
-
-    # Finally, search the database a second time and return the results.
-    # If there were no new identities created, then this should return
-    # the same as the original call to search_database().
-    return search_database(term)
   end
 
   # Searches the database only for a given search string.  Returns an
@@ -164,5 +162,30 @@ class Directory
         Rails.logger.info '#'*100
       end
     end
+  end
+  
+  # search and merge results but don't change the database
+  # this assumes USE_LDAP = true, otherwise you wouldn't use this function
+  def self.search_and_merge_ldap_and_database_results(term)
+    results = []
+    database_results = Directory.search_database(term)
+    # This is an optimization so we only have to go to the database once
+    identities = { }
+    database_results.each do |identity|
+      identities[identity.ldap_uid] = identity
+    end
+    ldap_results = Directory.search_ldap(term)
+    ldap_results.each do |ldap_result|
+      uid = "#{ldap_result[LDAP_UID].try(:first).try(:downcase)}@#{DOMAIN}"
+      if identities[uid]
+        results << identities[uid]
+      else 
+        email = ldap_result[LDAP_EMAIL].try(:first)
+        if email && email.strip.length > 0 # all SPARC users must have an email, this filters out some of the inactive LDAP users.
+          results << Identity.new(ldap_uid: uid, first_name: ldap_result[LDAP_FIRST_NAME].try(:first), last_name: ldap_result[LDAP_LAST_NAME].try(:first), email: email)
+        end  
+      end
+    end
+    results
   end
 end

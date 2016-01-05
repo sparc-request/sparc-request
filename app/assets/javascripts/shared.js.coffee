@@ -48,7 +48,7 @@ $(document).ready ->
     data += '&portal=' + $('#portal').val()
     $.ajax
       url: "/identities/#{identity_id}"
-      type: 'POST'
+      type: 'GET'
       data: data
 
   $('.add-user button').live 'click', ->
@@ -62,11 +62,15 @@ $(document).ready ->
     return false
 
   $('.cancel_link').live 'click', ->
-    cur_step = $('#current_step').val()
+    $('.return-spinner').show()
+    cur_step = $.cookie('current_step')
+    date = new Date()
+    minutes = 30
+    date.setTime(date.getTime() + (minutes * 60 * 1000))
     if cur_step == 'protocol'
-      $('#current_step').val('cancel_protocol')
+      $.cookie('current_step', 'cancel', {path: '/'})
     else if cur_step == "user_details"
-      $('#current_step').val('go_back')
+      $.cookie('current_step', 'go_back', {path: '/'})
 
     $('form').submit()
 

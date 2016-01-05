@@ -262,7 +262,7 @@
         %fieldset
           %legend= t(:study_form)[:affiliations]
           %div
-            = f.fields_for :affiliations do |rt|
+            = f.fields_for :affiliations, f.object.affiliations.sort_by(&:position) do |rt|
               .field{:class => rt.object.name}
                 = rt.label :name, "#{Affiliation::TYPES[rt.object.name]}:"
                 = rt.check_box "_destroy", {:checked => !rt.object.new}, false, true
@@ -270,7 +270,7 @@
         %fieldset
           %legend= t(:study_form)[:type]
           %div
-            = f.fields_for :study_types do |rt|
+            = f.fields_for :study_types, f.object.study_types.sort_by(&:position) do |rt|
               .field{:class => rt.object.name}
                 = rt.label :name, "#{StudyType::TYPES[rt.object.name]}:"
                 = rt.check_box "_destroy", {:checked => !rt.object.new}, false, true
@@ -284,7 +284,7 @@
         %fieldset
           %legend= t(:study_form)[:impact]
           %div
-            = f.fields_for :impact_areas do |rt|
+            = f.fields_for :impact_areas, f.object.impact_areas.sort_by(&:position) do |rt|
               .field{:class => rt.object.name}
                 = rt.label :name, "#{ImpactArea::TYPES[rt.object.name]}:"
                 = rt.check_box "_destroy", {:checked => !rt.object.new}, false, true

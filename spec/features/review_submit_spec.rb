@@ -74,6 +74,7 @@ RSpec.describe "review page", js: true do
         expect(current_path).to eq(portal_root_path)
       end
     end
+
     describe "clicking no in the notification" do
       it 'Should close the notification box and do nothing' do
         find("#save-as-draft").click

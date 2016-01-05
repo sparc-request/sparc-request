@@ -30,18 +30,25 @@ class ProtocolsController < ApplicationController
     @protocol = self.model_class.new
     @protocol.requester_id = current_user.id
     @protocol.populate_for_edit
-    @current_step = 'protocol'
+    current_step_cookie = cookies['current_step']
+    if current_step_cookie.nil? || (current_step_cookie != "protocol")
+      cookies['current_step'] = 'protocol'
+    end
     @portal = false
   end
 
   def create
     @service_request = ServiceRequest.find session[:service_request_id]
-    @current_step = params[:current_step]
+
+    @current_step = cookies['current_step']
     @protocol = self.model_class.new(params[:study] ? params[:study].merge(study_type_question_group_id: StudyTypeQuestionGroup.active.pluck(:id).first) : params[:study] || params[:project])
+
     @protocol.validate_nct = true
     @portal = params[:portal]
 
-    if @current_step == 'go_back'
+    if @current_step == 'cancel'
+      @current_step = 'return_to_service_request'
+    elsif @current_step == 'go_back'
       @current_step = 'protocol'
       @protocol.populate_for_edit
     elsif @current_step == 'protocol' and @protocol.group_valid? :protocol
@@ -52,11 +59,15 @@ class ProtocolsController < ApplicationController
       @current_step = 'return_to_service_request'
       session[:saved_protocol_id] = @protocol.id
       flash[:notice] = "New #{@protocol.type.downcase} created"
-    elsif @current_step == 'cancel_protocol'
-      @current_step = 'return_to_service_request'
+
+      if @service_request.status == "first_draft"
+        @service_request.update_attributes(status: "draft")
+      end
     else
       @protocol.populate_for_edit
     end
+
+    cookies['current_step'] = @current_step
   end
 
   def edit
@@ -65,19 +76,24 @@ class ProtocolsController < ApplicationController
     @protocol = current_user.protocols.find params[:id]
     @protocol.populate_for_edit
     @protocol.valid?
-    @current_step = 'protocol'
+    current_step_cookie = cookies['current_step']
+    if current_step_cookie.nil? || (current_step_cookie != "protocol")
+      cookies['current_step'] = 'protocol'
+    end
     @portal = false
   end
 
   def update
     @service_request = ServiceRequest.find session[:service_request_id]
-    @current_step = params[:current_step]
+    @current_step = cookies['current_step']
     @protocol = current_user.protocols.find params[:id]
     @protocol.validate_nct = true
     @portal = params[:portal]
     @protocol.assign_attributes(params[:study] || params[:project])
 
-    if @current_step == 'go_back'
+    if @current_step == 'cancel'
+      @current_step = 'return_to_service_request'
+    elsif @current_step == 'go_back'
       @current_step = 'protocol'
       @protocol.populate_for_edit
     elsif @current_step == 'protocol' and @protocol.group_valid? :protocol
@@ -88,8 +104,11 @@ class ProtocolsController < ApplicationController
       @current_step = 'return_to_service_request'
       session[:saved_protocol_id] = @protocol.id
       flash[:notice] = "#{@protocol.type.humanize} updated"
-    elsif @current_step == 'cancel_protocol'
-      @current_step = 'return_to_service_request'
+
+      #Added as a safety net for older SRs
+      if @service_request.status == "first_draft"
+        @service_request.update_attributes(status: "draft")
+      end
     else
       @protocol.populate_for_edit
     end
@@ -97,6 +116,8 @@ class ProtocolsController < ApplicationController
     if @protocol.is_study? && !@protocol.active?
       @protocol.activate
     end
+
+    cookies['current_step'] = @current_step
   end
 
   def set_protocol_type

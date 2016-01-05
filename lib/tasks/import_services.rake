@@ -116,6 +116,7 @@ namespace :data do
       puts "#"*50
       puts "Starting import"
       input_file = Rails.root.join("db", "imports", file)
+      services_imported = 0
       CSV.foreach(input_file, :headers => true) do |row|
         service = Service.new(
                             :cpt_code => row['CPT Code'],
@@ -147,7 +148,9 @@ namespace :data do
         if service.valid? and pricing_map.valid?
           service.save
           pricing_map.save
+          services_imported += 1
           puts "Saving #{service.name} with an id of #{service.id}"
+          puts "#{services_imported} services imported."
         else
           puts "#"*50
           puts "Error importing service"

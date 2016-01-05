@@ -108,11 +108,15 @@ $(document).ready ->
     sub_service_request_id = $(this).data('sub_service_request_id')
     identity_id = $(this).data('identity_id')
     is_service_provider = $(this).data('is_service_provider')
+    current_user_id = $(this).data('current_user_id')
 
-    $('.new_notification_dialog').dialog('open')
-    $.ajax
-      type: 'GET'
-      url:  "/portal/notifications/new?sub_service_request_id=#{sub_service_request_id}&identity_id=#{identity_id}&is_service_provider=#{is_service_provider}"
+    if current_user_id == identity_id
+      alert("You can not send a message to yourself.")
+    else
+      $('.new_notification_dialog').dialog('open')
+      $.ajax
+        type: 'GET'
+        url:  "/portal/notifications/new?sub_service_request_id=#{sub_service_request_id}&identity_id=#{identity_id}&is_service_provider=#{is_service_provider}"
   )
 
   disableSubmitButton = (containing_text, change_to) ->

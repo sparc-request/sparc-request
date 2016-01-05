@@ -77,7 +77,7 @@ class Portal::ProtocolsController < Portal::BaseController
       if USE_EPIC
         if @protocol.selected_for_epic
           @protocol.ensure_epic_user
-          Notifier.notify_for_epic_user_approval(@protocol).deliver
+          Notifier.notify_for_epic_user_approval(@protocol).deliver unless QUEUE_EPIC
         end
       end
     elsif @current_step == 'cancel_protocol'
@@ -135,11 +135,17 @@ class Portal::ProtocolsController < Portal::BaseController
     end
   end
 
+  # This action is being used conditionally from both admin and user portal
+  # to update the protocol type
   def update_protocol_type
-    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
     # Using update_attribute here is intentional, type is a protected attribute
     if @protocol.update_attribute(:type, params[:protocol][:type])
-      redirect_to portal_admin_sub_service_request_path(@sub_service_request)
+      if params[:sub_service_request_id]
+        @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
+        redirect_to portal_admin_sub_service_request_path(@sub_service_request)
+      else
+        redirect_to edit_portal_protocol_path(@protocol)
+      end
     end
   end
 

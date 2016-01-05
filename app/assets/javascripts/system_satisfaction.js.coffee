@@ -35,7 +35,7 @@ $(document).ready ->
         survey_offered = true
         $(this).dialog("close")
         service_request_id = $('#service_request_id').val()
-        $('#participate_in_survey').load "/surveys/system-satisfaction-survey ", {survey_version: ""}, ->
+        $('#participate_in_survey').load "/surveys/system-satisfaction-survey", {survey_version: ""}, ->
           $('#survey_form').append("<input type='hidden' id='redirect_to' name='redirect_to' value='#{route_to}'>")
           $('#survey_form div.next_section').append("<input type='button' name='cancel' value='Cancel'/>")
           $('#surveyor').dialog

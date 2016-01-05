@@ -83,13 +83,13 @@ $(document).ready ->
           data: {protocol_id: protocol_id}
       )
 
-      $(document).on('click', '.archive_button', (event) ->
+      $(document).on('click', '#show-all-protocols-btn', (event) ->
         event.stopPropagation()
         $('.search_protocols').hide()
         $('.loading_protocol').show()
         include_archived = 'true'
 
-        if $('.archive_button').data('showing-archived') == 1
+        if $('#show-all-protocols-btn').data('showing-archived') == 1
           include_archived = 'false'
 
         $.ajax
@@ -97,12 +97,12 @@ $(document).ready ->
           url: "/portal/protocols.js"
           data: { include_archived: include_archived }
           success: ->
-            if $('.archive_button').data('showing-archived') == 0
-              $('.archive_button').data('showing-archived', 1)
-              $('.archive_button').text("Show Active Projects/Studies")
+            if $('#show-all-protocols-btn').data('showing-archived') == 0
+              $('#show-all-protocols-btn').data('showing-archived', 1)
+              $('#show-all-protocols-btn').text("Show Active Projects/Studies")
             else
-              $('.archive_button').data('showing-archived', 0)
-              $('.archive_button').text("Show All Projects/Studies")
+              $('#show-all-protocols-btn').data('showing-archived', 0)
+              $('#show-all-protocols-btn').text("Show All Projects/Studies")
             $('.loading_protocol').hide()
             $('.search_protocols').show()
       )
@@ -288,7 +288,6 @@ $(document).ready ->
         success: ->
           $('.search_protocols').show()
           $('.loading_protocol').hide()
-          $('.btn').button()
           $('.blue-provider:first').trigger('click')
       })
 
@@ -298,8 +297,6 @@ $(document).ready ->
       $.ajax({
         method: 'get'
         url: "/portal/protocols/#{protocol_id}?#{random_number}"
-        success: ->
-          $('.btn').button()
         error: (xhr, j_status, error_thrown) ->
           $(".protocol-information-#{protocol_id}").html('')
       })

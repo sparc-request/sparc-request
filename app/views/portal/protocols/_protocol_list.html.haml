@@ -18,11 +18,11 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.container-fluid.protocol-list
+.protocol-list
   .panel-group#protocol-accordion2
     - protocols.each do |protocol|
       .panel.panel-default{ class: "protocol-information-panel-#{protocol.id}" }
-        .panel-heading.container-fluid.accordion-heading{ data: { parent: '#protocol-accordion2', toggle: 'collapse', target: "#collapse-#{protocol.id}", protocol_id: protocol.id } }
+        .panel-heading.accordion-heading{ data: { parent: '#protocol-accordion2', toggle: 'collapse', target: "#collapse-#{protocol.id}", protocol_id: protocol.id } }
           .row
             .col-lg-8
               %ul.list-unstyled
@@ -34,5 +34,5 @@
 
         .panel-collapse.collapse{ id: "collapse-#{protocol.id}" }
           .panel-body
-            .container-fluid{ class: "protocol-information-container-#{protocol.id}" }
+            %div{ class: "protocol-information-container-#{protocol.id}" }
   = render partial: 'shared/modal'

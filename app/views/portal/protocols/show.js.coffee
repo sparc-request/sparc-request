@@ -51,13 +51,13 @@ $(".panel-heading[data-protocol-id='#{id}']").goTo()
 #
 # disableSubmitButton = function(containing_text, change_to) {
 #   var button;
-#   button = $(".ui-dialog .ui-dialog-buttonpane button:contains(" + containing_text + ")");
+#   button = $("  button:contains(" + containing_text + ")");
 #   return button.html("<span class='ui-button-text'>" + change_to + "</span>").attr('disabled', true).addClass('button-disabled');
 # };
 #
 # enableSubmitButton = function(containing_text, change_to) {
 #   var button;
-#   button = $(".ui-dialog .ui-dialog-buttonpane button:contains(" + containing_text + ")");
+#   button = $("  button:contains(" + containing_text + ")");
 #   button.html("<span class='ui-button-text'>" + change_to + "</span>").attr('disabled', false).removeClass('button-disabled');
 #   return button.attr('disabled', false);
 # };

@@ -1,7 +1,5 @@
 archive_button_sel  = ".protocol-archive-button[data-protocol-id=#{<%= @protocol.id %>}]"
 archive_button_text = $(archive_button_sel).text()
-console.log $(archive_button_sel)
-console.log(archive_button_text)
 
 if <%= @protocol.archived %>
   if $('.archive_button').data('showing-archived') == 0

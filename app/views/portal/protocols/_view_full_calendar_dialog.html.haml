@@ -71,11 +71,11 @@
               .panel-body
                 - if @protocol.has_per_patient_per_visit? @service_request, @portal
                   - @protocol.arms.each do |arm|
-                    .arm_calendar_container.calendar-container.container-fluid{ data: { arm_id: arm.id } }
+                    .arm_calendar_container.calendar-container{ data: { arm_id: arm.id } }
                       - next if arm.visit_groups.empty?
                       = render partial: '/service_calendars/master_calendar/pppv/pppv_calendar', locals: { service_request: @service_request, arm: arm }
                 - if @protocol.has_one_time_fees? @service_request, @portal
-                  .calendar-container.container-fluid
+                  .calendar-container
                     = render partial: '/service_calendars/master_calendar/otf/otf_calendar', locals: { service_request: @service_request }
                 - unless @protocol.has_per_patient_per_visit?(@service_request, @portal) || @protocol.has_one_time_fees?(@service_request, @portal)
                   .alert.alert-danger{ role: 'alert' }

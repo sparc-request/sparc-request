@@ -23,7 +23,6 @@
 # You can use CoffeeScript in this file: http://jashkenas.github.com/coffee-script/
 
 $(document).ready ->
-  $('.btn').button()
 
   Sparc.home = {
 
@@ -102,3 +101,5 @@ $(document).ready ->
       idx = ui.newTab.parent().children().index(ui.newTab)
       $.cookie("admin_tab_name", idx, { expires: 1 })
 
+  $('#create-new-study-button').on 'click', ->
+    window.location = $(this).data('url') 

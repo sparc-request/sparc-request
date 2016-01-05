@@ -25,17 +25,15 @@
   });
 
 .new_notification_dialog
-
-.dashboard-view
-  = render 'user_information'
-  %p.dash-instructions= t(:protocol_information)[:message1]
-  %p.dash-instructions= t(:protocol_information)[:message2]
-  %br
-
-  %input.search_protocols#search_box{ placeholder: 'Search...', style: 'display:none;' }
-  = link_to new_portal_protocol_path do
-    = image_tag 'portal/create_new_study.png', class: 'portal_create_new_study'
-  .loading_protocol.ui-corner-all{ style: 'border: 1px solid black; padding: 3px; width: 200px; margin: 30px auto; text-align: center' }
+.dashboard-view.container-fluid
+  .row
+    .col-lg-12
+      %p= t(:protocol_information)[:message1]
+      %p= t(:protocol_information)[:message2]
+  .row
+    .col-lg-6
+      
+  .loading_protocol{ style: 'border: 1px solid black; padding: 3px; width: 200px; margin: 30px auto; text-align: center' }
     = t(:protocol_information)[:loading]
     %br
     = image_tag 'portal/spinner.gif'

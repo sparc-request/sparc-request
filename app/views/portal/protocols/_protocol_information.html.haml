@@ -76,7 +76,7 @@
       .panel-body
       %button.btn.btn-success.btn-sm{ type: 'button', data: { permission: permission.to_s } }= t(:protocol_information)[:add_services]
     - else
-      %table.table.table-striped{ class: "#{cycle('striped')}" }
+      %table.table.table-striped
         %tr
           %th= t(:protocol_information)[:srid]
           %th= t(:protocol_information)[:date]

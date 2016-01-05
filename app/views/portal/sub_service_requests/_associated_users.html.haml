@@ -33,7 +33,7 @@
     %tbody
       = render :partial => "portal/sub_service_requests/associated_user", :locals => {:protocol => @protocol}
 %td.new-button{:colspan => 2}
-  .associated-user-button.ui-corner-all{:'data-protocol_id' => @protocol.id, :'data-permission' => "true"}= t(:protocol_information)[:add_authorized_user]
+  .associated-user-button{:'data-protocol_id' => @protocol.id, :'data-permission' => "true"}= t(:protocol_information)[:add_authorized_user]
 
 .add-associated-user-dialog
   // TODO: this is copied directly from index.html.haml; should refactor
@@ -77,4 +77,3 @@
       }
     });
   });
-

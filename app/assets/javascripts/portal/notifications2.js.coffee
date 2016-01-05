@@ -80,6 +80,7 @@ $(document).ready ->
   )
 
   $(document).on 'change', '.new-notification', ->
+    # user portal
     $selected_options = $('option:selected', this)
 
     if $selected_options.length > 0
@@ -88,6 +89,8 @@ $(document).ready ->
       identity_id            = $selected_option.data('identity-id')
       is_service_provider    = $selected_option.data('is-service-provider')
       current_user_id        = $selected_option.data('current-user-id')
+      possible_recipients    = $.map $('option', this), (opt) ->
+        $(opt).data('identity-id')
       $this                  = $(this)
       reset_select_picker    = ->
         $this.selectpicker('deselectAll')
@@ -99,7 +102,12 @@ $(document).ready ->
       else
         $.ajax
           type: 'GET'
-          url:  "/portal/notifications/new.js?sub_service_request_id=#{sub_service_request_id}&identity_id=#{identity_id}&is_service_provider=#{is_service_provider}"
+          url:  '/portal/notifications/new.js'
+          data:
+            sub_service_request_id: sub_service_request_id
+            identity_id:            identity_id
+            is_service_provider:    is_service_provider
+            possible_recipients:    possible_recipients
           success: ->
             reset_select_picker()
 

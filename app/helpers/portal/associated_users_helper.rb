@@ -20,7 +20,6 @@
 
 module Portal::AssociatedUsersHelper
   def associated_users_edit_button(opts={})
-    puts "HELPER: #{opts.inspect}"
     content_tag(:button,
       raw(
         content_tag(:span, '', class: 'glyphicon glyphicon-edit', aria: { hidden: 'true' })
@@ -29,7 +28,6 @@ module Portal::AssociatedUsersHelper
   end
 
   def associated_users_delete_button(opts={})
-    puts "HELPER: #{opts.inspect}"
     content_tag(:button,
       raw(
         content_tag(:span, '', class: 'glyphicon glyphicon-remove', aria: { hidden: 'true' })

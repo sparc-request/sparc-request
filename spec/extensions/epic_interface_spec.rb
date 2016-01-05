@@ -81,8 +81,7 @@ RSpec.describe EpicInterface do
         'study_root' => '1.2.3.4')
   }
   
-  let!(:inactive_study_type_question_group)  { StudyTypeQuestionGroup.create(active: false) }
-  let!(:active_study_type_question_group)    { StudyTypeQuestionGroup.create(active: true) }
+  build_study_type_question_groups
 
   let!(:study) {
     human_subjects_info = build(:human_subjects_info, pro_number: nil, hr_number: nil)
@@ -92,31 +91,9 @@ RSpec.describe EpicInterface do
     study
   }
 
-  let!(:answer1)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: stq_higher_level_of_privacy.id, answer: 1)}
-  let!(:answer2)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: stq_certificate_of_conf.id, answer: 0)}
-  let!(:answer3)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: stq_access_study_info.id, answer: 0)}
-  let!(:answer4)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: stq_epic_inbasket.id, answer: 0)}
-  let!(:answer5)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: stq_research_active.id, answer: 1)}
-  let!(:answer6)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: stq_restrict_sending.id, answer: 1)}
-  let!(:active_answer1)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: active_stq_certificate_of_conf.id, answer: 0)}
-  let!(:active_answer2)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: active_stq_higher_level_of_privacy.id, answer: 1)}
-  let!(:active_answer3)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: active_stq_access_study_info.id, answer: 0)}
-  let!(:active_answer4)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: active_stq_epic_inbasket.id, answer: 0)}
-  let!(:active_answer5)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: active_stq_research_active.id, answer: 1)}
-  let!(:active_answer6)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: active_stq_restrict_sending.id, answer: 1)}
-
-  let!(:stq_higher_level_of_privacy) { StudyTypeQuestion.create("order"=>1, "question"=>"1a. Does your study require a higher level of privacy for the participants?", "friendly_id"=>"higher_level_of_privacy", "study_type_question_group_id" => inactive_study_type_question_group.id) }
-  let!(:stq_certificate_of_conf)     { StudyTypeQuestion.create("order"=>2, "question"=>"1b. Does your study have a Certificate of Confidentiality?", "friendly_id"=>"certificate_of_conf", "study_type_question_group_id" => inactive_study_type_question_group.id) }
-  let!(:stq_access_study_info)       { StudyTypeQuestion.create("order"=>3, "question"=>"1c. Do participants enrolled in your study require a second DEIDENTIFIED Medical Record that is not connected to their primary record in Epic?", "friendly_id"=>"access_study_info", "study_type_question_group_id" => inactive_study_type_question_group.id) }
-  let!(:stq_epic_inbasket)           { StudyTypeQuestion.create("order"=>4, "question"=>"2. Do you wish to receive a notification via Epic InBasket when your research participants are admitted to the hospital or ED?", "friendly_id"=>"epic_inbasket", "study_type_question_group_id" => inactive_study_type_question_group.id) }
-  let!(:stq_research_active)         { StudyTypeQuestion.create("order"=>5, "question"=>"3. Do you wish to remove the 'Research: Active' indicator in the Patient Header for your study participants?", "friendly_id"=>"research_active", "study_type_question_group_id" => inactive_study_type_question_group.id) }
-  let!(:stq_restrict_sending)        { StudyTypeQuestion.create("order"=>6, "question"=>"4. Do you need to restrict the sending of study related results, such as laboratory and radiology results, to a participants MyChart?", "friendly_id"=>"restrict_sending", "study_type_question_group_id" => inactive_study_type_question_group.id) }
-  let!(:active_stq_certificate_of_conf)     { StudyTypeQuestion.create("order"=>1, "question"=>"1. Does your study have a Certificate of Confidentiality?", "friendly_id"=>"certificate_of_conf", "study_type_question_group_id" => active_study_type_question_group.id) }
-  let!(:active_stq_higher_level_of_privacy) { StudyTypeQuestion.create("order"=>2, "question"=>"2. Does your study require a higher level of privacy for the participants?", "friendly_id"=>"higher_level_of_privacy", "study_type_question_group_id" => active_study_type_question_group.id) }
-  let!(:active_stq_access_study_info)       { StudyTypeQuestion.create("order"=>3, "question"=>"2b. Do participants enrolled in your study require a second DEIDENTIFIED Medical Record that is not connected to their primary record in Epic?", "friendly_id"=>"access_study_info", "study_type_question_group_id" => active_study_type_question_group.id) }
-  let!(:active_stq_epic_inbasket)           { StudyTypeQuestion.create("order"=>4, "question"=>"3. Do you wish to receive a notification via Epic InBasket when your research participants are admitted to the hospital or ED?", "friendly_id"=>"epic_inbasket", "study_type_question_group_id" => active_study_type_question_group.id) }
-  let!(:active_stq_research_active)         { StudyTypeQuestion.create("order"=>5, "question"=>"4. Do you wish to remove the 'Research: Active' indicator in the Patient Header for your study participants?", "friendly_id"=>"research_active", "study_type_question_group_id" => active_study_type_question_group.id) }
-  let!(:active_stq_restrict_sending)        { StudyTypeQuestion.create("order"=>6, "question"=>"5. Do you need to restrict the sending of study related results, such as laboratory and radiology results, to a participants MyChart?", "friendly_id"=>"restrict_sending", "study_type_question_group_id" => active_study_type_question_group.id) }
+  build_study_type_answers
+  build_study_type_questions
+  
 
   let!(:provider) {
     create(

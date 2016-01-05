@@ -29,7 +29,7 @@
 
   .panel.panel-primary
     .panel-heading#users_accordion_heading.collapsed{ data: {toggle: "collapse", target: "#users_accordion"}, aria: {expanded: "false", controls: "users_accordion"} }
-      %h3.panel-title User Notifications
+      %h3.panel-title User Roles
     #users_accordion.panel-collapse.collapse{role: "tabpanel", aria: {labelledby: "users_accordion_heading"}}
       = render partial: 'portal/admin/fulfillment/user_notifications', locals: {protocol: protocol, sub_service_request: sub_service_request, service_request: service_request}
 

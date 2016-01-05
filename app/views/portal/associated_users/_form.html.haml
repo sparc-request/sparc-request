@@ -21,6 +21,7 @@
   .modal-content
     = form_for protocol_role, url: portal_associated_users_path, method: :post, remote: true do |f|
       = f.hidden_field :identity_id
+      = hidden_field_tag :protocol_id, protocol.id 
       - if sub_service_request
         = hidden_field_tag :sub_service_request_id, sub_service_request.id
 

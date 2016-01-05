@@ -103,6 +103,14 @@ $(document).ready ->
     $("#notification_tabs").data("selected", "inbox")
     $("#notifications-table").bootstrapTable 'refresh', {query: {table: "inbox"}}
 
+  $(document).on 'click', 'button#compose_notification',  ->
+    data =
+      "sub_service_request_id"  : $(this).data('sub-service-request-id')
+    $.ajax
+      type: 'GET'
+      url:  "/portal/notifications/new"
+      data: data
+
   window.notifications_row_style = (row, index) ->
     class_string = 'notifications_row'
     if not row.read

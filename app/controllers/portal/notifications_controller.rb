@@ -44,25 +44,29 @@ class Portal::NotificationsController < Portal::BaseController
   end
 
   def new
-    @recipient = Identity.find(params[:identity_id])
-    @is_service_provider = params[:is_service_provider]
-    @notification = Notification.new(originator_id: @user.id, sub_service_request_id: params[:sub_service_request_id])
-    @message = @notification.messages.new(to: @recipient.id, from: @user.id, email: @recipient.try(:email))
+    @recipient = Identity.find(params[:identity_id]) if params[:identity_id].present?
+    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
+    @possible_recipients = @sub_service_request.service_request.protocol.project_roles.map(&:identity)
+    @notification = @sub_service_request.notifications.new
+    @message = @notification.messages.new
   end
 
   def create
-    is_service_provider = params[:is_service_provider]
-    @notification = Notification.new(originator_id: params[:notification][:originator_id], sub_service_request_id: params[:notification][:sub_service_request_id])
-    @message = @notification.messages.new(params[:notification][:message])
-    if @message.valid?
-      @notification.save
-      @message.save
-      @notifications = @user.all_notifications.where(:sub_service_request_id => @notification.sub_service_request_id)
-      ssr_id = @notification.sub_service_request_id.to_s
-      UserMailer.notification_received(@message.recipient, is_service_provider, ssr_id).deliver unless @message.recipient.email.blank?
-      flash[:success] = "Notification Sent!"
-    else
-      @errors = @message.errors
+    message_params = params[:notification].delete(:message)
+    if message_params[:to].present?
+      @recipient = Identity.find(message_params[:to])
+      @notification = Notification.new(params[:notification].merge!({originator_id: @user.id, read_by_originator: true, other_user_id: @recipient.id, read_by_other_user: false}))
+      @message = @notification.messages.new(message_params.merge!({from: @user.id, email: @recipient.email}))
+      if @message.valid?
+        @notification.save
+        @message.save
+        ssr = @notification.sub_service_request
+        @notifications = @user.all_notifications.select!{ |n| n.sub_service_request_id == ssr.id }
+        UserMailer.notification_received(@recipient, ssr).deliver unless @recipient.email.blank?
+        flash[:success] = "Notification Sent!"
+      else
+        @errors = @message.errors
+      end
     end
   end
 
@@ -72,45 +76,6 @@ class Portal::NotificationsController < Portal::BaseController
     params[:notification_ids].each do |notification_id|
       notification = Notification.find(notification_id)
       notification.set_read_by @user, as_read
-    end
-  end
-
-  def user_portal_update
-    @notification = Notification.find(params[:id])
-
-    # TODO: @message is not set here; is that correct?
-    @message = @notification.messages.create(params[:message])
-
-    if @message.valid?
-      @message.save
-      # TODO: this is not set if no message is created; is that correct?
-      @notifications = @user.all_notifications
-
-      ssr_id = @notification.sub_service_request.id.to_s
-      @is_service_provider =  !@notification.sub_service_request.organization.service_providers.where(:identity_id => @message.recipient.id).empty?
-      is_service_provider = @is_service_provider.to_s
-
-      UserMailer.notification_received(@message.recipient, is_service_provider, ssr_id).deliver unless @message.recipient.email.blank?
-    end
-    respond_to do |format|
-      format.js { render 'portal/notifications/create' }
-    end
-  end
-
-  def admin_update
-    @notification = Notification.find(params[:id])
-    @message = @notification.messages.create(params[:message])
-
-    if @message.valid?
-      @message.save
-      # @notification.reload
-      @sub_service_request = @notification.sub_service_request
-      @notifications = @user.all_notifications.where(:sub_service_request_id => @sub_service_request.id)
-      UserMailer.notification_received(@message.recipient).deliver unless @message.recipient.email.blank?
-    end
-    respond_to do |format|
-      format.js
-      format.html
     end
   end
 end

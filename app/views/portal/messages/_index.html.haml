@@ -24,7 +24,7 @@
       %button.close{type: 'button', data: {dismiss: 'modal'}}
         %span{aria: {hidden:'true'}} &times;
         %span.sr-only &times;
-      %h4.modal-title.text-center= notification.subject
+      %h4.modal-title.text-center= notification.subject || "No Subject"
     .modal-body
       - if messages.any?
         .details-table

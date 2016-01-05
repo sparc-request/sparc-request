@@ -19,13 +19,20 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .col-xs-12.tabs{role: 'tabpanel'}
   .col-xs-2#notification_tabs{data: {selected: "inbox"}}
-    %button.btn.btn-success.btn-block#compose_notification Compose
+    %button.btn.btn-success.btn-block#compose_notification{data: {sub_service_request_id: sub_service_request.id }}
+      %span.pull-left
+        %span.glyphicon.glyphicon-plus
+        %span Compose
     %hr
     %button.btn.btn-primary.btn-block.notification_nav#notifications_inbox
-      %span.pull-left Inbox
+      %span.pull-left
+        %span.glyphicon.glyphicon-inbox
+        %span Inbox
       %span.glyphicon.glyphicon-refresh.pull-right
     %button.btn.btn-default.btn-block.notification_nav#notifications_sent
-      %span.pull-left Sent
+      %span.pull-left
+        %span.glyphicon.glyphicon-send
+        %span Sent
       %span.glyphicon.glyphicon-refresh.pull-right{style: "display: none;"}
   .col-xs-10
     #notifications-custom-toolbar

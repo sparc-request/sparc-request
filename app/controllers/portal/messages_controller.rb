@@ -35,7 +35,10 @@ class Portal::MessagesController < Portal::BaseController
 
   def create
     @notification = Notification.find(params[:message][:notification_id])
-    @message = Message.create(message_params) if message_params[:body].present? # don't create empty messages
+    if message_params[:body].present? # don't create empty messages
+      @message = Message.create(message_params)
+      @notification.set_read_by Identity.find(@message.to), false
+    end
     @messages = @notification.messages
   end
 

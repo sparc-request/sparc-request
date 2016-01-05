@@ -28,6 +28,7 @@ class Notification < ActiveRecord::Base
   has_many :messages
 
   attr_accessible :sub_service_request_id
+  attr_accessible :subject
   attr_accessible :originator_id
   attr_accessible :other_user_id
   attr_accessible :read_by_originator

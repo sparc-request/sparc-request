@@ -28,19 +28,14 @@
         %h4.modal-title.text-center= "Send Notification"
       .modal-body
         #modal_errors
-        = notification_form.hidden_field :originator_id
         = notification_form.hidden_field :sub_service_request_id
-        = notification_form.hidden_field :is_service_provider, value: is_service_provider
         = notification_form.fields_for :message, message do |message_form|
-          = message_form.hidden_field :to
-          = message_form.hidden_field :from
-          = message_form.hidden_field :email
           .form-group
             .col-sm-12
-              = message_form.label "recipient", t(:notifications)[:recipient]+' '+recipient.try(:full_name), class: "control-label"
+              = message_form.select "to", options_from_collection_for_select(possible_recipients, 'id', 'full_name', recipient.present? ? recipient.id : nil), {prompt: "Please select a recipient"}, class: 'form-control selectpicker'
           .form-group
             .col-sm-12
-              = message_form.text_field :subject, {class: 'form-control', placeholder: t(:notifications)[:subject], rows: "6"}
+              = notification_form.text_field :subject, {class: 'form-control', placeholder: t(:notifications)[:subject], rows: "6"}
           .form-group
             .col-sm-12
               = message_form.text_area :body, {class: 'form-control', placeholder: "Please enter message text here", rows: "6"}

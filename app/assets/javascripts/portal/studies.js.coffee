@@ -59,13 +59,35 @@ $(document).ready ->
       restrict_sending_dropdown = $('#study_type_answer_restrict_sending_answer')
 
       $.prototype.hide_elt = () ->
-        # this[0].selectedIndex = 0
+        this[0].selectedIndex = 0
         this.closest('.field').hide()
         return this
 
       $.prototype.show_elt = () ->
         this.closest('.field').show()
         return this
+
+      show_if_value_selected = (dropdown) ->
+        if dropdown[0].selectedIndex > 0
+          dropdown.show_elt()
+        else
+          dropdown.hide_elt()
+
+      # Since the 'ready' function only gets fired when editing,
+      # we can assume here that there are values being loaded in
+      # each of the dropdowns. Since we can also assume that the
+      # logic governing those dropdowns was operating under the
+      # same set of rules when the study was first saved, as it
+      # is now, we can just display the fields that have a value
+      # selected and hide those that do not because the study had
+      # to be in a valid state for the initial save to succeed in
+      # the first place.
+      show_if_value_selected(certificate_of_confidence_dropdown)
+      show_if_value_selected(higher_level_of_privacy_dropdown)
+      show_if_value_selected(access_required_dropdown)
+      show_if_value_selected(epic_inbasket_dropdown)
+      show_if_value_selected(research_active_dropdown)
+      show_if_value_selected(restrict_sending_dropdown)
 
       study_selected_for_epic_radio.on 'change', (e) ->
         if $('input[name=\'study[selected_for_epic]\']:checked').val() == 'true'
@@ -144,14 +166,6 @@ $(document).ready ->
           research_active_dropdown.hide_elt()
           restrict_sending_dropdown.hide_elt()
 
-      $(study_selected_for_epic_radio.get(0)).trigger 'change'
-      higher_level_of_privacy_dropdown.trigger 'change'
-
-      if access_required_dropdown.closest('.field').css('display') != 'none'
-        access_required_dropdown.trigger 'change'
-
-         
-
       ######## End of send to epic study question logic ##############
 
       $('#study_funding_status').change ->
@@ -182,8 +196,6 @@ $(document).ready ->
           $('#study_investigational_products_info_attributes_ind_number').val('')
           $('#study_investigational_products_info_attributes_ind_number').change()
           $('#study_investigational_products_info_attributes_ind_on_hold').attr('checked', false)
-      $("#study_type_answer_certificate_of_conf_answer").change()
-      $("#study_type_answer_higher_level_of_privacy_answer").change() 
 
       # id       - where to stick datepicker
       # altField - input element(s) that is to be updated with

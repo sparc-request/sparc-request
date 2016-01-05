@@ -19,7 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 <% if @otf %> # study level activities line item edit
-$("#modal_area").html("<%= escape_javascript(render(:partial =>'portal/study_level_activities/' + @modal_to_render, locals: { line_item: @line_item, header_text: @header_text })) %>");
+$("#modal_place").html("<%= escape_javascript(render(:partial =>'portal/study_level_activities/' + @modal_to_render, locals: { line_item: @line_item, header_text: @header_text })) %>");
 <% end %>
 $("#modal_place").modal 'show'
 $(".selectpicker").selectpicker()

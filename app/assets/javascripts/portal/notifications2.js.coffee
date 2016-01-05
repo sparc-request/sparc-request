@@ -21,6 +21,7 @@
 $(document).ready ->
 
   $(document).on('click', '.new_notification', ->
+    # Admin portal user roles notification button click
     sub_service_request_id = $(this).data('sub-service-request-id')
     identity_id = $(this).data('identity-id')
     is_service_provider = $(this).data('is-service-provider')
@@ -56,27 +57,58 @@ $(document).ready ->
     $(this).children("input[type='checkbox']").trigger('click')
   )
 
+  $('.hidden-message').live('click', ->
+    message_id = $(this).data('message_id')
+    message_header = $(this).children('.message-header')
+    $(this).removeClass('hidden-message').addClass('shown-message')
+    message_header.children('.message_recipients').removeClass('hidden').addClass('shown')
+    $(this).children('.truncated-message-body').addClass('shown-message-body').removeClass('truncated-message-body')
+    $(this).children('.message-header').addClass('clickable-message-header')
+    $(".gray_arrow_down_#{message_id}").hide()
+    $(".white_arrow_up_#{message_id}").show()
+  )
+
+  $('.clickable-message-header').live('click', ->
+    message = $(this).parent('.shown-message')
+    message_id = message.data('message_id')
+    message.children('message-header').removeClass('clickable-message-header')
+    message.removeClass('shown-message').addClass('hidden-message')
+    $(this).children('.message_recipients').removeClass('shown').addClass('hidden')
+    message.children('.shown-message-body').addClass('truncated-message-body').removeClass('shown-message-body')
+    $(".gray_arrow_down_#{message_id}").show()
+    $(".white_arrow_up_#{message_id}").hide()
+  )
+
+  $(document).on 'change', '.new-notification', ->
+    $selected_options = $('option:selected', this)
+
+    if $selected_options.length > 0
+      $selected_option       = $selected_options.first()
+      sub_service_request_id = $selected_option.data('sub-service-request-id')
+      identity_id            = $selected_option.data('identity-id')
+      is_service_provider    = $selected_option.data('is-service-provider')
+      current_user_id        = $selected_option.data('current-user-id')
+      $this                  = $(this)
+      reset_select_picker    = ->
+        $this.selectpicker('deselectAll')
+        $this.selectpicker('render')
+
+      if current_user_id == identity_id
+        alert("You can not send a message to yourself.")
+        reset_select_picker()
+      else
+        $.ajax
+          type: 'GET'
+          url:  "/portal/notifications/new.js?sub_service_request_id=#{sub_service_request_id}&identity_id=#{identity_id}&is_service_provider=#{is_service_provider}"
+          success: ->
+            reset_select_picker()
+
   $(document).on 'click', 'button.message.new',  ->
     data = notification_id: $(this).data('notification-id')
     $.ajax
       type: 'GET'
       url: '/portal/messages/new'
       data: data
-
-  $('.notifications-link .hyperlink').live('click', ->
-    $('.notifications-link .notifications_popup').toggle('blind')
-  )
-
-  $(document).on('click', '.new-portal-notification-button', ->
-    ssr_id = $(this).attr('data-ssr_id')
-    sr_id = $(this).attr('data-sr_id')
-    if $(this).hasClass('active')
-      $(this).removeClass('active')
-    else
-      $(this).addClass('active')
-
-    $("#portal_notifications_#{ssr_id}_#{sr_id}").slideToggle()
-  )
 
   $(document).on 'click', 'button.mark_as_read_unread',  ->
     selections = $("#notifications-table").bootstrapTable 'getSelections'

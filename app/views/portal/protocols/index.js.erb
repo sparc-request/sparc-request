@@ -18,15 +18,7 @@
 // INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 // TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-if ($('#protocol-accordion').hasClass('ui-accordion')) {
-  $('#protocol-accordion').accordion('destroy');
-}
-$("#protocol-accordion").html("<%= escape_javascript(render(:partial => 'portal/protocols/protocol_list', :locals => {:protocols => @protocols})) %>");
-$('#protocol-accordion').accordion({
-  heightStyle: 'content',
-  collapsible: true,
-  active: false
-});
+$("#protocol-accordion").html("<%= escape_javascript(render(:partial => 'portal/protocols/protocol_list', :locals => { protocols: @protocols, user: @user })) %>");
 
 <% @source = [] %>
 <% @protocols.each do |protocol| %>
@@ -58,5 +50,3 @@ $('.search_protocols').autocomplete({
 $('.search_protocols').focus(function() {
   $(this).val('');
 });
-
-

@@ -18,37 +18,24 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.row.admin-dashboard
-  %p.col-xs-6.text-left
-    = @user.full_name
-    |
-    = @user.email
-= link_to "Show All Projects/Studies", 'javascript:void(0)', :class => "archive_button", data: { showing_archived: '0' }
-.notifications-link
-  = link_to 'javascript:void(0)', :class => "hyperlink" do
-    = image_tag @user.unread_notification_count(@user) >= 1 ? 'portal/notification_white.png' : 'portal/unreadnotification_white.png', :class => 'left'
-    .notifications-text.left
-      = pluralize(@user.unread_notification_count(@user), t(:protocol_information)[:note_count])
-  .notifications_popup
-    %table
-      %thead
-        %tr
-          %th
-          %th SRID:
-          %th From:
-          %th Subject:
-          %th Time:
-      %tbody
-        - @user.all_notifications.reverse.first(3).each do |notification|
-          %tr{:'data-notification_id' => notification.id, :'data-sub_service_request_id' => @sub_service_request.try(:id), :class => notification.read_by?(@user) ? "read_notification" : "unread_notification"}
-            %td.image_placeholder
-              %div
-            %td.srid
-              %div= 0
-            %td.sender
-              %div= notification.try(:messages).try(:last).try(:sender).try(:full_name)
-            %td.subject
-              %div= notification.try(:messages).try(:last).try(:subject)
-            %td= format_datetime(notification.messages.last.created_at)
-    = link_to "View All", portal_notifications_path, :class => "view_all_link"
-.clear
+%nav.navbar.navbar-default.portal-nav
+  .container-fluid
+    .navbar-header
+      %a.navbar-brand{ href: '#' }
+        Dashboard
+      %p.navbar-text= show_welcome_message(@user)
+    %ul.nav.navbar-nav.navbar-right
+      %li
+        %form.navbar-form.navbar-right
+          .form-group
+            %input.form-control.search_protocols#search_box{ placeholder: 'Search...', style: 'display:none;' }
+      %li
+        %button.btn.btn-success.navbar-btn#create-new-study-button{ type: 'button', data: { url: "#{new_portal_protocol_path}"} }
+          Create New Study
+      %li
+        %button.btn.btn-warning.navbar-btn#show-all-protocols-btn{ type: 'button', data: { showing_archived: '0' } }
+          Show All Projects/Studies
+      %li
+        %button.btn.btn-danger.navbar-btn#messages-btn{ type: 'button' }
+          Messages
+          %span.badge= @user.unread_notification_count(@user)

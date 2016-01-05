@@ -38,22 +38,27 @@ $(document).ready ->
         }
       })
 
-      $('.protocol-information-button').live('click', ->
+      $(document).on 'click', '.accordion-heading', ->
+        protocol_id = $(this).data('protocol-id')
+        $.ajax
+          type: 'GET'
+          url: "portal/protocols/#{protocol_id}.js"
+
+      $('.edit-protocol-information-button').live('click', ->
         if $(this).data('permission')
-          protocol_id = $(this).data('protocol_id')
+          protocol_id = $(this).data('protocol-id')
           window.location = "/portal/protocols/#{protocol_id}/edit"
         else
           $('.permissions-dialog').dialog('open')
           $('.permissions-dialog .text').html('Edit.')
       )
 
-      $('.edit_service_request').live('click', ->
+      $(document).on 'click', '.edit_service_request', ->
         if $(this).data('permission')
           window.location = $(this).data('url')
         else
           $('.permissions-dialog').dialog('open')
           $('.permissions-dialog .text').html('Edit.')
-      )
 
       $('.service-request-button').live('click', ->
         if $(this).data('permission')
@@ -69,51 +74,54 @@ $(document).ready ->
           $('.permissions-dialog .text').html('Edit.')
       )
 
-      $(document).on('click', '.protocol-archive-button', ->
-        protocol_id = $(this).data('protocol_id')
+      $(document).on('click', '.protocol-archive-button', (event) ->
+        event.stopPropagation()
+        protocol_id = $(this).data('protocol-id')
         $.ajax
           type: "POST"
           url:  "/protocol_archive/create.js"
           data: {protocol_id: protocol_id}
       )
 
-      $(document).on('click', '.archive_button', ->
+      $(document).on('click', '#show-all-protocols-btn', (event) ->
+        event.stopPropagation()
         $('.search_protocols').hide()
         $('.loading_protocol').show()
         include_archived = 'true'
 
-        if $('.archive_button').data('showing-archived') == 1
+        if $('#show-all-protocols-btn').data('showing-archived') == 1
           include_archived = 'false'
-  
+
         $.ajax
           method: "GET"
           url: "/portal/protocols.js"
           data: { include_archived: include_archived }
           success: ->
-            if $('.archive_button').data('showing-archived') == 0
-              $('.archive_button').data('showing-archived', 1)
-              $('.archive_button').text("Show Active Projects/Studies")
+            if $('#show-all-protocols-btn').data('showing-archived') == 0
+              $('#show-all-protocols-btn').data('showing-archived', 1)
+              $('#show-all-protocols-btn').text("Show Active Projects/Studies")
             else
-              $('.archive_button').data('showing-archived', 0)
-              $('.archive_button').text("Show All Projects/Studies")
+              $('#show-all-protocols-btn').data('showing-archived', 0)
+              $('#show-all-protocols-btn').text("Show All Projects/Studies")
             $('.loading_protocol').hide()
             $('.search_protocols').show()
       )
 
-      $('.view-sub-service-request-button').live('click', ->
-        id = $(this).data('service_request_id')
-        protocol_id = $(this).data('protocol_id')
-        status = $(this).data('status')
-        ssr_id = $(this).attr('data-ssr_id')
+      $(document).on 'click', '.view-sub-service-request-button', ->
+        id            = $(this).data('service-request-id')
+        protocol_id   = $(this).data('protocol-id')
+        status        = $(this).data('status')
+        ssr_id        = $(this).data('ssr-id')
         random_number = Math.floor(Math.random()*10101010101)
-        $.ajax({
-            method: 'get'
-            url: "/portal/service_requests/#{id}?#{random_number}"
-            data: {protocol_id: protocol_id, status: status, ssr_id: ssr_id}
-            success: ->
-              $('.view-sub-service-request-dialog').dialog('open')
-          })
-      )
+        $.ajax
+          method: 'get'
+          url: "/portal/service_requests/#{id}?#{random_number}"
+          data:
+            protocol_id: protocol_id
+            status: status
+            ssr_id: ssr_id
+          success: ->
+            $('.view-sub-service-request-dialog').dialog('open')
 
       $('.edit-protocol-information-dialog').dialog({
           autoOpen: false
@@ -153,15 +161,11 @@ $(document).ready ->
           }
       })
 
-      $('.view-full-calendar-button').live('click', ->
-        protocol_id = $(this).data('protocol_id')
-        $.ajax({
-            method: 'get'
-            url: "/portal/protocols/#{protocol_id}/view_full_calendar?portal=true"
-            success: ->
-              $('.view-full-calendar-dialog').dialog('open')
-          })
-      )
+      $(document).on 'click', '.view-full-calendar-button', ->
+        protocol_id = $(this).data('protocol-id')
+        $.ajax
+          method: 'get'
+          url: "/portal/protocols/#{protocol_id}/view_full_calendar.js?portal=true"
 
       $('.view-full-calendar-dialog').dialog({
           autoOpen: false
@@ -235,13 +239,6 @@ $(document).ready ->
         Sparc.protocol.navigateCostTable('increase') unless $(this).attr('disabled') == 'disabled'
       )
 
-      $('.blue-provider').live('click', ->
-        protocol_id = $(this).data('protocol_id')
-        visible = if $(this).children('.ui-icon').hasClass('ui-icon-triangle-1-s') then true else false
-        if visible && $(this).siblings(".protocol-information-#{protocol_id}").children('.protocol-information-title').length == 0
-          Sparc.protocol.renderProtocolAccordionTab(protocol_id)
-      )
-
     disableButton: (containing_text, change_to) ->
       button = $(".ui-dialog .ui-button:contains(#{containing_text})")
       button.html("<span class='ui-button-text'>#{change_to}</span>")
@@ -291,7 +288,6 @@ $(document).ready ->
         success: ->
           $('.search_protocols').show()
           $('.loading_protocol').hide()
-          $('.btn').button()
           $('.blue-provider:first').trigger('click')
       })
 
@@ -301,8 +297,6 @@ $(document).ready ->
       $.ajax({
         method: 'get'
         url: "/portal/protocols/#{protocol_id}?#{random_number}"
-        success: ->
-          $('.btn').button()
         error: (xhr, j_status, error_thrown) ->
           $(".protocol-information-#{protocol_id}").html('')
       })

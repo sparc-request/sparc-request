@@ -17,6 +17,33 @@
 // DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 // INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 // TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+.panel-heading
+  h3
+    white-space: nowrap
+    overflow: hidden
+    text-overflow: ellipsis
+    line-height: normal
+    width: 75%
+    padding-top: 8px
+
+  button, a
+    margin-left: 5px
+
+  ul
+    margin-top: 0px
+    margin-bottom: 0px
+    margin-left: 5px
+    vertical-align: middle
+
+.accordion-heading
+  cursor: pointer
+
+#create-new-study-button, #show-all-protocols-btn
+  margin-left: 10px
+
+#messages-btn
+  margin-right: 10px
+  margin-left: 10px
 
 // Mixins
 // ------------------------------------------------>
@@ -27,6 +54,13 @@ $sexy_blue: #0099FF
 $white: #FFFFFF
 $dark_gray: #CCCCCC
 $light_gray: #E8E8E8
+
+
+$brand-primary: #337ab7
+$brand-success: #5cb85c
+$brand-info:    #5bc0de
+$brand-warning: #f0ad4e
+$brand-danger:  #d9534f
 
 // The rest
 // ------------------------------------------------>
@@ -95,14 +129,10 @@ h2.title
   cursor: pointer
 
 
-#container
-  width: 945px
-  height: 100%
-  margin: 0 auto
-
-
 #container #header
   height: 102px
+  display: table
+  margin: 0 auto
 
 #container #org_logo, #container #department_title, #container #institution_logo
   float: left
@@ -175,90 +205,7 @@ h2.title
 
 .dashboard-view
   float: left
-  h3.blue-provider.ui-accordion-header
-    border: 0px !important
-.protocol-accordion-title
-  width: 630px
-.protocol-short-title
-  width: 300px
-  display: inline
-.protocol-information
-  border: none
-.protocol-information-title
-  color: $white
-  padding: 7px 7px 7px 15px
-  background: #0775B0 !important
-  border-radius: 10px !important
-  font-weight: bold
-.protocol-information-body
-  padding: 3px 0 3px 5px
-  background: #d8d8d8 !important
-  width: 840px
-  margin: 0 auto
-  border-radius: 0px !important
-  ul
-    list-style: none
-    margin: 0 5px 15px 5px
-    li
-      margin: 1px
-      font-size: 12px
-  .info_left
-    float: left
-  .info_right
-    float: right
-    margin: 35px 20px 0 0
-.protocol-information #spacer
-  height: 15px
-  background-color: #0775B0
-  margin: 0 auto 25px
-  width: 845px
-  clear: both
-.protocol-information-table
-  background: $white !important
-  width: 845px
-  margin: 0 auto
-  table
-    text-align: center
-    th
-      padding: 3px
-      font-size: 12px
-    td
-      background: #d8d8d8
-      padding: 0 10px
-      font-size: 12px
-      border: 1px solid white
-    td.no_background
-      background: none
-      padding: 0px
-      a
-        width: 34px
-        height: 34px
-        display: block
-        margin: 0 auto
-      .edit-associated-user-button
-        background: url(/assets/portal/edit_blue.png) no-repeat
-      .delete-associated-user-button
-        background: url(/assets/portal/delete_red.png) no-repeat
-.protocol-archive-button
-  float: right
-
-.protocol-archive-button,
-.protocol-information-button,
-.associated-user-button
-  width: 230px
-  height: 26px
-  padding-top: 9px
-  color: white
-  cursor: pointer
-  text-align: center
-  background: url(/assets/portal/yellowbutton_blank.png) no-repeat
-div.associated-user-button
-  margin: 10px
-  background: url(/assets/portal/yellowbutton_add.png) no-repeat
-  padding-left: 12px
-  width: 218px
-.associated-user-button:hover, .service-request-button:hover
-  cursor: pointer
+  width: 100%
 div.send_notification_dialog_box.ui-dialog
   div.ui-dialog-titlebar
     background-color: #00B741 !important
@@ -1448,4 +1395,3 @@ div.permissions_dialog
   text-align: center
   width: 200px
   z-index: 5
-

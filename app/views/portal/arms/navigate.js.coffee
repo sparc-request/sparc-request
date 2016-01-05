@@ -18,6 +18,6 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$("#modal_area").html("<%= escape_javascript(render(:partial =>'/portal/arms/navigate_arm_form', locals: {intended_action: @intended_action, arm: @arm, protocol_arms: @protocol.arms, sub_service_request: @sub_service_request, service_request: @service_request})) %>");
+$("#modal_place").html("<%= escape_javascript(render(:partial =>'/portal/arms/navigate_arm_form', locals: {intended_action: @intended_action, arm: @arm, protocol_arms: @protocol.arms, sub_service_request: @sub_service_request, service_request: @service_request})) %>");
 $("#modal_place").modal 'show'
 $(".selectpicker").selectpicker()

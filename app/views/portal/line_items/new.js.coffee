@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$("#modal_area").html("<%= escape_javascript(render(:partial =>'portal/study_level_activities/study_level_activity_form', locals: { line_item: @line_item, header_text: @header_text })) %>");
+$("#modal_place").html("<%= escape_javascript(render(:partial =>'portal/study_level_activities/study_level_activity_form', locals: { line_item: @line_item, header_text: @header_text })) %>");
 $("#modal_place").modal 'show'
 $(".selectpicker").selectpicker()
 $(".datetimepicker").datetimepicker(format: 'MM-DD-YYYY', allowInputToggle: true)

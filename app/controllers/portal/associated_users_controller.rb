@@ -47,12 +47,14 @@ class Portal::AssociatedUsersController < Portal::BaseController
 
   # TODO: why does edit use identity_id, but new uses user_id?
   def new
-    @identity = Identity.find params[:user_id]
-    @protocol_role = @protocol.project_roles.build(:identity_id => @identity.id)
-    @protocol_role.populate_for_edit
-    if params[:sub_service_request_id]
-      @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
-    end
+    @identity = Identity.new
+    @protocol_role = @protocol.project_roles.new
+    # @protocol_role = @protocol.project_roles.build(:identity_id => @identity.id)
+    # @protocol_role.populate_for_edit
+    # if params[:sub_service_request_id]
+    #   @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
+    # end
+    @protocol_role = ProjectRole.new
     respond_to do |format|
       format.js
       format.html
@@ -69,7 +71,7 @@ class Portal::AssociatedUsersController < Portal::BaseController
       @identity.update_attributes params[:identity]
       if SEND_AUTHORIZED_USER_EMAILS
         @protocol.emailed_associated_users.each do |project_role|
-          UserMailer.authorized_user_changed(project_role.identity, @protocol).deliver_now unless project_role.identity.email.blank?
+          UserMailer.authorized_user_changed(project_role.identity, @protocol).deliver unless project_role.identity.email.blank?
         end
       end
 
@@ -93,7 +95,7 @@ class Portal::AssociatedUsersController < Portal::BaseController
   end
 
   def update
-    @protocol_role = ProjectRole.find params[:id]    
+    @protocol_role = ProjectRole.find params[:id]
     @protocol_role.identity.assign_attributes params[:identity]
     @identity = Identity.find @protocol_role.identity_id
 
@@ -106,7 +108,7 @@ class Portal::AssociatedUsersController < Portal::BaseController
       @identity.update_attributes params[:identity]
       if SEND_AUTHORIZED_USER_EMAILS
         @protocol.emailed_associated_users.each do |project_role|
-          UserMailer.authorized_user_changed(project_role.identity, @protocol).deliver_now unless project_role.identity.email.blank?
+          UserMailer.authorized_user_changed(project_role.identity, @protocol).deliver unless project_role.identity.email.blank?
         end
       end
 
@@ -139,18 +141,14 @@ class Portal::AssociatedUsersController < Portal::BaseController
   end
 
   def destroy
-    @protocol_role = ProjectRole.find params[:id]
-    protocol = @protocol_role.protocol
-    epic_access = @protocol_role.epic_access
+    @protocol_role     = ProjectRole.find params[:id]
+    protocol           = @protocol_role.protocol
+    epic_access        = @protocol_role.epic_access
     project_role_clone = @protocol_role.clone
     @protocol_role.destroy
 
-    if USE_EPIC
-      if protocol.selected_for_epic
-        if epic_access
-          Notifier.notify_primary_pi_for_epic_user_removal(protocol, project_role_clone).deliver unless QUEUE_EPIC
-        end
-      end
+    if USE_EPIC && protocol.selected_for_epic && epic_access
+      Notifier.notify_primary_pi_for_epic_user_removal(protocol, project_role_clone).deliver unless QUEUE_EPIC
     end
 
     if params[:sub_service_request_id]
@@ -166,7 +164,7 @@ class Portal::AssociatedUsersController < Portal::BaseController
   end
 
   def search
-    term = params[:term].strip
+    term = (params[:term] || params[:q]).strip
     results = Identity.search(term).map do |i|
       {
        :label => i.display_name, :value => i.id, :email => i.email, :institution => i.institution, :phone => i.phone, :era_commons_name => i.era_commons_name,

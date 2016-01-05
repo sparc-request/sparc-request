@@ -81,28 +81,18 @@ module ApplicationHelper
   end
 
   def generate_visit_header_row arm, service_request, page, sub_service_request, portal=nil
-    base_url = "/service_requests/#{service_request.id}/service_calendars"
-    rename_visit_url = base_url + "/rename_visit"
-    day_url = base_url + "/set_day"
+    base_url          = "/service_requests/#{service_request.id}/service_calendars"
+    day_url           = base_url + "/set_day"
     window_before_url = base_url + "/set_window_before"
-    window_after_url = base_url + "/set_window_after"
-    page = page == 0 ? 1 : page
-    beginning_visit = (page * 5) - 4
-    ending_visit = (page * 5) > arm.visit_count ? arm.visit_count : (page * 5)
-    returning_html = ""
+    window_after_url  = base_url + "/set_window_after"
+    page              = page == 0 ? 1 : page
+    beginning_visit   = (page * 5) - 4
+    ending_visit      = (page * 5) > arm.visit_count ? arm.visit_count : (page * 5)
+    returning_html    = ""
     line_items_visits = arm.line_items_visits
-    visit_groups = arm.visit_groups
+    visit_groups      = arm.visit_groups
 
     (beginning_visit .. ending_visit).each do |n|
-      if sub_service_request
-        filtered_line_items_visits = line_items_visits.select{|x| x.line_item.sub_service_request_id == sub_service_request.id } 
-      else
-        filtered_line_items_visits = line_items_visits.select{|x| x.line_item.service_request_id == service_request.id }
-      end
-
-      checked = filtered_line_items_visits.each.map{|l| l.visits[n.to_i-1].research_billing_qty >= 1 ? true : false}.all?
-      action = checked == true ? 'unselect_calendar_column' : 'select_calendar_column'
-      icon = checked == true ? 'ui-icon-close' : 'ui-icon-check'
       visit_name = visit_groups[n - 1].name || "Visit #{n}"
       visit_group = visit_groups[n - 1]
 
@@ -119,9 +109,9 @@ module ApplicationHelper
                             content_tag(:span, visit_group.window_after, :style => "display:inline-block;width:25px;") +
                             tag(:br) : label_tag("")) +
                             content_tag(:span, visit_name, :style => "display:inline-block;width:75px;") +
-                            tag(:br))
+                            tag(:br), class: 'col-lg-1')
       elsif @tab != 'template'
-        returning_html += content_tag(:th,
+        returning_html += content_tag(:span,
                                       ((USE_EPIC) ?
                                       # label_tag("Day") + "&nbsp;&nbsp;&nbsp;".html_safe + label_tag("+/-") +
                                       label_tag("-") + "&nbsp;&nbsp;".html_safe + label_tag("Day") + "&nbsp;&nbsp;".html_safe + label_tag("+") +
@@ -134,7 +124,15 @@ module ApplicationHelper
                                       text_field_tag("arm_#{arm.id}_visit_name_#{n}", visit_name, :class => "visit_name", :size => 10, :'data-arm_id' => arm.id, :'data-visit_position' => n - 1, :'data-service_request_id' => service_request.id) +
                                       tag(:br))
       else
-        returning_html += content_tag(:th,
+        if sub_service_request
+          filtered_line_items_visits = line_items_visits.select{|x| x.line_item.sub_service_request_id == sub_service_request.id }
+        else
+          filtered_line_items_visits = line_items_visits.select{|x| x.line_item.service_request_id == service_request.id }
+        end
+        checked = filtered_line_items_visits.each.map{|l| l.visits[n.to_i-1].research_billing_qty >= 1 ? true : false}.all?
+        action = checked == true ? 'unselect_calendar_column' : 'select_calendar_column'
+        icon = checked == true ? 'ui-icon-close' : 'ui-icon-check'
+        returning_html += content_tag(:span,
                                       ((USE_EPIC) ?
                                       # label_tag("Day") + "&nbsp;&nbsp;&nbsp;".html_safe + label_tag("+/-") +
                                       label_tag("-") + "&nbsp;&nbsp;".html_safe + label_tag("Day") + "&nbsp;&nbsp;".html_safe + label_tag("+") +
@@ -154,7 +152,7 @@ module ApplicationHelper
     end
 
     ((page * 5) - arm.visit_count).times do
-      returning_html += content_tag(:th, "", :width => 70, :class => 'visit_number')
+      returning_html += content_tag(:th, "", :class => 'visit_number col-lg-1')
     end
 
     raw(returning_html)
@@ -187,7 +185,8 @@ module ApplicationHelper
     options_for_select(arr, selected)
   end
 
-  def generate_visit_navigation(arm, service_request, pages, tab, portal=nil)
+  def generate_visit_navigation(arm, service_request, pages, tab, portal=nil, ssr_id=nil)
+    puts "HELPER: ssr_id: #{ssr_id}"
     page = pages[arm.id].to_i == 0 ? 1 : pages[arm.id].to_i
 
     if @merged
@@ -200,27 +199,31 @@ module ApplicationHelper
 
     returning_html = ""
 
-    returning_html += link_to((content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-w') + content_tag(:span, '<-', :class => 'ui-button-text')),
-                        pathMethod.call(service_request, :page => page - 1, :pages => pages, :arm_id => arm.id, :tab => tab, :portal => portal),
-                        :remote => true, :role => 'button', :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only left-arrow') unless page <= 1
-
-    returning_html += content_tag(:button, (content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-w') + content_tag(:span, '<-', :class => 'ui-button-text')),
-                                  :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only ui-button-disabled ui-state-disabled left-arrow', :disabled => true) if page <= 1
-
-    returning_html += content_tag(:span, t("calendar_page.labels.jump_to_visit"))
-
-    returning_html += select_tag("jump_to_visit_#{arm.id}", visits_select_options(arm, pages), :class => 'jump_to_visit', :url => pathMethod.call(service_request, :pages => pages, :arm_id => arm.id, :tab => tab, :portal => portal))
-
-    unless (portal or @merged or @review)
-      returning_html += link_to 'Move Visit', 'javascript:void(0)', class: 'ui-button ui-widget ui-state-default ui-corner-all move_visits', data: { 'arm-id' => arm.id, tab: tab, 'sr-id' => service_request.id, portal: portal }
+    if page > 1
+      returning_html += button_tag(class: 'btn btn-primary left-arrow', data: { url: pathMethod.call(service_request, page: page - 1, pages: pages, arm_id: arm.id, tab: tab, portal: portal, sub_service_request_id: ssr_id, format: :js) }) do
+        tag(:span, class: 'glyphicon glyphicon-chevron-left')
+      end
+    else
+      returning_html += button_tag(class: 'btn btn-primary left-arrow', disabled: true, data: { url: pathMethod.call(service_request, page: page - 1, pages: pages, arm_id: arm.id, tab: tab, sub_service_request_id: ssr_id, portal: portal, format: :js) }) do
+        tag(:span, class: 'glyphicon glyphicon-chevron-left')
+      end
     end
 
-    returning_html += link_to((content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-e') + content_tag(:span, '->', :class => 'ui-button-text')),
-                              pathMethod.call(service_request, :page => page + 1, :pages => pages, :arm_id => arm.id, :tab => tab, :portal => portal),
-                              :remote => true, :role => 'button', :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only right-arrow') unless ((page + 1) * 5) - 4 > arm.visit_count
+    returning_html += select_tag("jump_to_visit_#{arm.id}", visits_select_options(arm, pages), :class => 'jump_to_visit selectpicker', url: pathMethod.call(service_request, pages: pages, arm_id: arm.id, tab: tab, sub_service_request_id: ssr_id, portal: portal))
 
-    returning_html += content_tag(:button, (content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-e') + content_tag(:span, '->', :class => 'ui-button-text')),
-                                  :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only ui-button-disabled ui-state-disabled right-arrow', :disabled => true) if ((page + 1) * 5) - 4 > arm.visit_count
+    unless (portal or @merged or @review)
+      returning_html += link_to 'Move Visit', 'javascript:void(0)', class: 'move_visits', data: { 'arm-id' => arm.id, tab: tab, 'sr-id' => service_request.id, portal: portal }
+    end
+
+    if ((page + 1) * 5) - 4 > arm.visit_count
+      returning_html += button_tag(class: 'btn btn-primary right-arrow', disabled: true, data: { url: pathMethod.call(service_request, page: page + 1, pages: pages, arm_id: arm.id, tab: tab, portal: portal, sub_service_request_id: ssr_id, format: :js) }) do
+        tag(:span, class: 'glyphicon glyphicon-chevron-right')
+      end
+    else
+      returning_html += button_tag(class: 'btn btn-primary right-arrow', data: { url: pathMethod.call(service_request, page: page + 1, pages: pages, arm_id: arm.id, tab: tab, portal: portal, sub_service_request_id: ssr_id, format: :js) }) do
+        tag(:span, class: 'glyphicon glyphicon-chevron-right')
+      end
+    end
 
     raw(returning_html)
   end

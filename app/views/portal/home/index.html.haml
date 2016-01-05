@@ -25,34 +25,21 @@
   });
 
 .new_notification_dialog
-
-.dashboard-view
-  = render 'user_information'
-  %p.dash-instructions= t(:protocol_information)[:message1]
-  %p.dash-instructions= t(:protocol_information)[:message2]
-  %br
-
-  %input#search_box.search_protocols{:placeholder => 'Search...', :style => "display:none;"}
-  = link_to new_portal_protocol_path do
-    = image_tag 'portal/create_new_study.png', :class => 'portal_create_new_study'
-  .loading_protocol.ui-corner-all{:style => "border: 1px solid black; padding: 3px; width: 200px; margin: 30px auto; text-align: center"}
+.dashboard-view.container-fluid
+  .row
+    .col-lg-12
+      %p= t(:protocol_information)[:message1]
+      %p= t(:protocol_information)[:message2]
+  .row
+    .col-lg-6
+      
+  .loading_protocol{ style: 'border: 1px solid black; padding: 3px; width: 200px; margin: 30px auto; text-align: center' }
     = t(:protocol_information)[:loading]
     %br
     = image_tag 'portal/spinner.gif'
   .search_protocols_div
-  #protocol-accordion{:style => 'margin-top:15px;'}
+  #protocol-accordion{ style: 'margin-top:15px;' }
 
-.add-associated-user-dialog
-  .user-search-container
-    = text_field_tag 'user_search', nil, placeholder: "Search For A User"
-    = image_tag('portal/spinner.gif', :style => "display:none; vertical-align:middle;", :id => 'search-spinner')
-  #add-user-form
-    =render :partial => "portal/associated_users/new", :locals => {:protocol => @protocol, :protocol_role => ProjectRole.new, :identity => Identity.new}
-  .clear
-
-.edit-associated-user-dialog
-.view-sub-service-request-dialog
-.view-full-calendar-dialog
 .permissions-dialog
   = t(:protocol_information)[:rights1]
   %b
@@ -61,29 +48,4 @@
   = t(:protocol_information)[:rights2]
 
 
-%input.default_protocol{:type => 'hidden', :value => params.try(:[], :default_protocol) || ''}
-
-:javascript
-  $(document).ready(function(){
-    var source = "/portal/associated_users/search"
-    selected_option = ''
-    $('input#user_search').autocomplete({
-      source: source,
-      minLength: 3,
-      search: function(event, ui) {$('#search-spinner').show()},
-      open: function(event, ui) {$('#search-spinner').hide()},
-      select: function(event, ui) {
-        selected_option = ui.item.label
-        $.ajax({
-          method: 'get',
-          url: "/portal/associated_users/new",
-          data: {user_id: ui.item.value, protocol_id: $('#add-user-form #protocol_id').val()},
-        })
-      },
-      close: function() {
-        $('input#user_search').autocomplete('disable')
-        $('input#user_search').val(selected_option)
-        $('input#user_search').autocomplete('enable')
-      }
-    });
-  });
+%input.default_protocol{ type: 'hidden', value: params.try(:[], :default_protocol) || '' }

@@ -25,6 +25,10 @@ FactoryGirl.define do
       service_request   nil
     end
 
+    trait :without_validations do
+      to_create { |instance| instance.save(validate: false) }
+    end
+
     after(:create) do |arm, evaluator|
       if arm.visit_count.present? && arm.visit_count > 0 && evaluator.line_item_count > 0
         sr = evaluator.service_request || create(:service_request_without_validations)
@@ -46,5 +50,7 @@ FactoryGirl.define do
         arm.reload
       end
     end
+
+    factory :arm_without_validations, traits: [:without_validations]
   end
 end

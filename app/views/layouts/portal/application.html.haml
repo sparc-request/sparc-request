@@ -42,7 +42,7 @@
       %br
       %p= t('ie_warning.text2')
 
-    #container.container
+    #container
       #processing_request.ui-corner-all{:style => 'display:none'}
         %br
         = t(:cm_index)[:processing]
@@ -51,14 +51,16 @@
       #header
         = render :partial => 'shared/header_logos'
         %input#current_user_id{:type => 'hidden', :value => @user.try(:id)}
-      #welcome_msg{:style => 'float:right;'}= show_welcome_message(@user)
-      #main
-        #title
-          %h1= render :partial => 'portal/home/title'
-        #content
-          .notification_dialog
-          .flash= render "shared/flash"
-          = yield
+      -# TODO There is a better way of doing this, but I can't remember off
+      -# the top of my head what that is exactly.
+      - if action_name == 'index' && controller_name == 'home'
+        = render partial: 'portal/home/user_information'
+      - else
+        #welcome_msg{:style => 'float:right;'}= show_welcome_message(@user)
+
+      .notification_dialog
+      .flash= render "shared/flash"
+      = yield
   %footer
     = render :partial => 'shared/piwik_tracking' if Rails.env == 'production'
     = render partial: 'shared/modal'

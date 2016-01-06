@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20151130205119) do
+ActiveRecord::Schema.define(version: 20160105150722) do
 
   create_table "admin_rates", force: :cascade do |t|
     t.integer  "line_item_id", limit: 4
@@ -558,7 +558,7 @@ ActiveRecord::Schema.define(:version => 20151130205119) do
     t.date     "display_date"
     t.decimal  "other_rate",                             precision: 12, scale: 4
     t.decimal  "member_rate",                            precision: 12, scale: 4
-    t.integer  "units_per_qty_max",          limit: 4,                            default: 1
+    t.integer  "units_per_qty_max",          limit: 4,                            default: 10000
     t.string   "quantity_type",              limit: 255
     t.string   "otf_unit_type",              limit: 255,                          default: "N/A"
     t.integer  "quantity_minimum",           limit: 4,                            default: 1
@@ -582,7 +582,7 @@ ActiveRecord::Schema.define(:version => 20151130205119) do
     t.string   "internal_rate_type",     limit: 255
     t.string   "foundation_rate_type",   limit: 255
     t.datetime "deleted_at"
-    t.string   "unfunded_rate_type"
+    t.string   "unfunded_rate_type",     limit: 255
   end
 
   add_index "pricing_setups", ["organization_id"], name: "index_pricing_setups_on_organization_id", using: :btree
@@ -653,9 +653,9 @@ ActiveRecord::Schema.define(:version => 20151130205119) do
     t.string   "billing_business_manager_static_email", limit: 255
     t.datetime "recruitment_start_date"
     t.datetime "recruitment_end_date"
-    t.boolean  "selected_for_epic",                                                   :default => false
-    t.boolean  "archived",                                                            :default => false
-    t.integer  "study_type_question_group_id"
+    t.boolean  "selected_for_epic",                                                           default: false
+    t.boolean  "archived",                                                                    default: false
+    t.integer  "study_type_question_group_id",          limit: 4
   end
 
   add_index "protocols", ["next_ssr_id"], name: "index_protocols_on_next_ssr_id", using: :btree
@@ -881,19 +881,19 @@ ActiveRecord::Schema.define(:version => 20151130205119) do
     t.datetime "updated_at",                       null: false
   end
 
-  create_table "study_type_question_groups", :force => true do |t|
-    t.boolean  "active",     :default => false
-    t.datetime "created_at",                    :null => false
-    t.datetime "updated_at",                    :null => false
+  create_table "study_type_question_groups", force: :cascade do |t|
+    t.boolean  "active",     default: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
-  create_table "study_type_questions", :force => true do |t|
-    t.integer  "order"
-    t.string   "question"
-    t.string   "friendly_id"
-    t.datetime "created_at",                   :null => false
-    t.datetime "updated_at",                   :null => false
-    t.integer  "study_type_question_group_id"
+  create_table "study_type_questions", force: :cascade do |t|
+    t.integer  "order",                        limit: 4
+    t.string   "question",                     limit: 255
+    t.string   "friendly_id",                  limit: 255
+    t.datetime "created_at",                               null: false
+    t.datetime "updated_at",                               null: false
+    t.integer  "study_type_question_group_id", limit: 4
   end
 
   create_table "study_types", force: :cascade do |t|

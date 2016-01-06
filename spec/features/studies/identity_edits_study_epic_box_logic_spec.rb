@@ -10,6 +10,7 @@ RSpec.describe "Identity edits Study epic box", js: true do
   before :each do
   	visit protocol_service_request_path service_request.id
     find('.edit-study').click
+    wait_for_javascript_to_finish
   end
 
   context 'visiting an active studys edit page' do

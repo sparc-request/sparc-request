@@ -1,4 +1,4 @@
-class DefaultUnfundedRateToFedaral < ActiveRecord::Migration
+class DefaultUnfundedRateToFederal < ActiveRecord::Migration
   def change
     pricing_setups = PricingSetup.all
 

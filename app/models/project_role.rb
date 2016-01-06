@@ -108,8 +108,9 @@ class ProjectRole < ActiveRecord::Base
       if pr.role == "primary-pi"
         return true
       end
-    return false
     end
+
+    return false
   end
 
   def is_only_primary_pi?

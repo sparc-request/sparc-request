@@ -22,7 +22,6 @@
   #documents-custom-toolbar
     %button.btn.btn-success#document_new{ data: {sub_service_request_id: sub_service_request.id }}
       = t(:documents)[:add_button]
-    %button.btn.btn-primary.notes.list{ data: {notable_id: service_request.id, notable_type: "ServiceRequest" }} Additional Notes
   %table.documents_table{id: "documents-table", data: {toggle: 'table', search: "true", "show-columns" => "true", "show-refresh" => "true", "show-toggle" => "true", url: portal_documents_path(format: :json, sub_service_request_id: sub_service_request.id), striped: "true", toolbar: "#documents-custom-toolbar", "show-export" => "true", "export-types" => ['excel']}}
     %thead.primary-header
       %tr

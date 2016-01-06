@@ -35,11 +35,7 @@ class Portal::ProtocolsController < Portal::BaseController
   end
 
   def show
-    # @project_rights = Project_Role.find_by_identity_id(@user.id);
     @protocol_role = @protocol.project_roles.find_by_identity_id(@user.id)
-
-    #@project.project_associated_users
-    #@project.project_service_requests
 
     respond_to do |format|
       format.js   { render }

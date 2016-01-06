@@ -19,24 +19,6 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 module Portal::ServiceRequestsHelper
-  # def currency_converter cents
-  # def display_one_time_fee_direct_cost line_item
-  # def display_visit_based_direct_cost(line_item)
-  # def display_your_cost line_item
-  # def generate_review_visit_navigation service_request, page, tab
-  # def generate_visit_header_row service_request, page
-  # def calculate_total(service, project)
-  #   begin
-  #     units_we_want = 0
-  #     service.visits.each {|visit| visit['quantity']}.each{ |quantity| units_we_want += quantity['quantity']}
-  #     units_per_package = service.try(:pricing_map).try(:[], 'unit_factor') || 1
-  #     packages_we_have_to_get = (units_we_want / units_per_package).ceil
-  #     total_cost = packages_we_have_to_get * service.pricing_map.send(:[], (project.project_rate + "_rate"))
-  #     "%.2f" % (total_cost / units_we_want)
-  #   rescue
-  #     "N/A"
-  #   end
-  # end
 
   def protocol_panel_header_line service_request
     "Service Request: #{service_request.id} - Submitted: #{format_date(service_request.submitted_at)}"

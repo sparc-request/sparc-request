@@ -18,45 +18,15 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.panel-group#admin_accordion{ role: "tablist", aria: { multiselectable: "true" } }
+.panel-group
+  .panel.panel-default
+    .panel-heading
+      %h4 Service Request Info
+    .panel-body
+      = render partial: 'portal/admin/fulfillment/service_request_info/service_request_info', locals: {protocol: protocol, sub_service_request: sub_service_request, service_request: service_request, subsidy: subsidy}
 
-  .panel.panel-primary
-    .panel-heading#sr_accordion_heading{ data: {toggle: "collapse", target: "#sr_accordion"}, aria: {expanded: "false", controls: "sr_accordion"} }
-      %h3.panel-title Service Request Info
-    #sr_accordion.panel-collapse.collapse.in{role: "tabpanel", aria: {labelledby: "sr_accordion_heading"}}
-      .panel-body
-        = render partial: 'portal/admin/fulfillment/service_request_info/service_request_info', locals: {protocol: protocol, sub_service_request: sub_service_request, service_request: service_request, subsidy: subsidy}
-
-  .panel.panel-primary
-    .panel-heading#users_accordion_heading.collapsed{ data: {toggle: "collapse", target: "#users_accordion"}, aria: {expanded: "false", controls: "users_accordion"} }
-      %h3.panel-title User Roles
-    #users_accordion.panel-collapse.collapse{role: "tabpanel", aria: {labelledby: "users_accordion_heading"}}
-      = render partial: 'portal/admin/fulfillment/user_notifications', locals: {protocol: protocol, sub_service_request: sub_service_request, service_request: service_request}
-
-  .panel.panel-primary
-    .panel-heading#history_accordion_heading.collapsed{ data: {toggle: "collapse", target: "#history_accordion"}, aria: {expanded: "false", controls: "history_accordion"} }
-      %h3.panel-title History
-    #history_accordion.panel-collapse.collapse{role: "tabpanel", aria: {labelledby: "history_accordion_heading"}}
-      .panel-body
-        = render partial: 'portal/admin/fulfillment/history/status_changes', locals: { sub_service_request_id: sub_service_request.id }
-
-  .panel.panel-primary
-    .panel-heading#study_level_activities_accordion_heading.collapsed{ data: {toggle: "collapse", target: "#study_level_activities_accordion"}, aria: {expanded: "false", controls: "study_level_activities_accordion"} }
-      %h3.panel-title Study Level Activities
-    #study_level_activities_accordion.panel-collapse.collapse{role: "tabpanel", aria: {labelledby: "study_level_activities_accordion_heading"}}
-      .panel-body
-        = render partial: 'portal/study_level_activities/study_level_activities_table', locals: { sub_service_request: sub_service_request }
-
-  .panel.panel-primary
-    .panel-heading#study_schedule_accordion_heading.collapsed{ data: {toggle: "collapse", target: "#study_schedule_accordion"}, aria: {expanded: "false", controls: "study_schedule_accordion"} }
-      %h3.panel-title Study Schedule
-    #study_schedule_accordion.panel-collapse.collapse{role: "tabpanel", aria: {labelledby: "study_schedule_accordion_heading"}}
-      .panel-body
-        .col-xs-12
-          = javascript_include_tag 'jquery.qtip.min'
-          #per_patient_services
-            = render partial: 'portal/admin/fulfillment/per_patient_per_visit', locals: {sub_service_request: sub_service_request, service_request: service_request}
-
-#visit_toasts
-  - @user_toasts.each do |user_toast|
-    .user_toast{:'data-toast_id' => user_toast.id, :'data-message' => user_toast.message}
+  .panel.panel-default
+    .panel-heading
+      %h4 History
+    .panel-body
+      = render partial: 'portal/admin/fulfillment/history/status_changes', locals: { sub_service_request_id: sub_service_request.id }

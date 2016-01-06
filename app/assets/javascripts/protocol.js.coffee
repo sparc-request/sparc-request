@@ -61,13 +61,13 @@ $(document).ready ->
   $('.edit-study').click ->
     study_id = $('.edit_study_id').val()
     service_request_id = $('#service_request_id').val()
-    window.location.href = "/service_requests/#{service_request_id}/studies/#{study_id}/edit"
+    window.location.href = "/service_requests/#{service_request_id}/studies/#{study_id}/edit?portal=false"
     return false
 
   $('.edit-project').click ->
     project_id = $('.edit_project_id').val()
     service_request_id = $('#service_request_id').val()
-    window.location.href = "/service_requests/#{service_request_id}/projects/#{project_id}/edit"
+    window.location.href = "/service_requests/#{service_request_id}/projects/#{project_id}/edit?portal=false"
     return false
 
   $('.edit_submitted_study').click ->

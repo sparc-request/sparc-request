@@ -31,10 +31,10 @@ class ProtocolsController < ApplicationController
     @protocol.requester_id = current_user.id
     @protocol.populate_for_edit
     current_step_cookie = cookies['current_step']
-    if current_step_cookie.nil? || (current_step_cookie != "protocol")
-      cookies['current_step'] = 'protocol'
-    end
-    @portal = false
+    cookies['current_step'] = 'protocol'
+    @portal = params[:portal]
+
+    resolve_layout
   end
 
   def create
@@ -66,6 +66,10 @@ class ProtocolsController < ApplicationController
     end
 
     cookies['current_step'] = @current_step
+
+    if @current_step != 'return_to_service_request'
+      resolve_layout
+    end
   end
 
   def edit
@@ -75,10 +79,8 @@ class ProtocolsController < ApplicationController
     @protocol.populate_for_edit
     @protocol.valid?
     current_step_cookie = cookies['current_step']
-    if current_step_cookie.nil? || (current_step_cookie != "protocol")
-      cookies['current_step'] = 'protocol'
-    end
-    @portal = false
+    cookies['current_step'] = 'protocol'
+    @portal = params[:portal]
   end
 
   def update
@@ -162,6 +164,13 @@ class ProtocolsController < ApplicationController
   end
 
   private
+
+  def resolve_layout
+    if @portal == "true"
+      @user = current_user
+      render layout: "portal/application"
+    end
+  end
 
   def send_epic_notification_for_final_review(protocol)
     Notifier.notify_primary_pi_for_epic_user_final_review(protocol).deliver unless QUEUE_EPIC

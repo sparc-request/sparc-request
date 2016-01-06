@@ -54,8 +54,8 @@ class ProtocolsController < ApplicationController
       @protocol.populate_for_edit
     elsif @current_step == 'user_details' and @protocol.valid?
       @protocol.save
+      @service_request.update_attribute(:protocol_id, @protocol.id) unless @service_request.protocol.present?
       @current_step = 'return_to_service_request'
-      session[:saved_protocol_id] = @protocol.id
       flash[:notice] = "New #{@protocol.type.downcase} created"
 
       if @service_request.status == "first_draft"

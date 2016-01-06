@@ -5,7 +5,7 @@ module Portal::DocumentsHelper
   end
 
   def document_edit_button
-    content_tag(:button, 
+    content_tag(:button,
       raw(
         content_tag(:span, '', class: "glyphicon glyphicon-edit", aria: {hidden: "true"})
       ), type: 'button', class: 'btn btn-warning actions-button document_edit'
@@ -13,7 +13,7 @@ module Portal::DocumentsHelper
   end
 
   def document_delete_button
-    content_tag(:button, 
+    content_tag(:button,
       raw(
         content_tag(:span, '', class: "glyphicon glyphicon-remove", aria: {hidden: "true"})
       ), type: 'button', class: 'btn btn-danger actions-button document_delete'

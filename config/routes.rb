@@ -240,7 +240,7 @@ SparcRails::Application.routes.draw do
       end
     end
 
-    resources :associated_users, except: [:index] do
+    resources :associated_users do
       collection do
         get :search
       end
@@ -359,7 +359,7 @@ SparcRails::Application.routes.draw do
     match 'identities/search' => 'identities#search', :via => :get
     resources :identities, only: [:index, :show, :create, :update]
   end
-  
+
   mount API::Base => '/'
 
   root to: 'service_requests#catalog'

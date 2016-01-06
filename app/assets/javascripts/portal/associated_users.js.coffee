@@ -70,7 +70,6 @@ $(document).ready ->
       $(document).on 'click', '.edit-associated-user-button', (event) ->
         event.stopPropagation()
         if $(this).data('permission')
-          console.log('hey')
           pr_id = $(this).data('pr-id')
           sub_service_request_id = $(this).data('sub-service-request-id')
           $.ajax

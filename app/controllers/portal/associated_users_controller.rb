@@ -22,9 +22,18 @@ class Portal::AssociatedUsersController < Portal::BaseController
   layout nil
 
   respond_to :html, :json, :js
-  before_filter :find_project, :only => [:show, :edit, :new, :create, :update]
-  before_filter :protocol_authorizer_view, :only => [:show]
-  before_filter :protocol_authorizer_edit, :only => [:edit, :new, :create, :update]
+  before_filter :find_project, only: [:index, :show, :edit, :new, :create, :update]
+  before_filter :protocol_authorizer_view, only: [:index, :show]
+  before_filter :protocol_authorizer_edit, only: [:edit, :new, :create, :update]
+
+  def index
+    @protocol_roles = @protocol.project_roles
+    @sub_service_request = SubServiceRequest.find params[:sub_service_request_id] if params[:sub_service_request_id]
+
+    respond_to do |format|
+      format.json
+    end
+  end
 
   def show
     # TODO: is it right to call to_i here?

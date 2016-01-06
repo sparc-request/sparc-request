@@ -19,6 +19,22 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 module Portal::AssociatedUsersHelper
+  def associated_users_edit_button(opts={})
+    content_tag(:button,
+      raw(
+        content_tag(:span, '', class: 'glyphicon glyphicon-edit', aria: { hidden: 'true' })
+      ), type: 'button', data: opts, class: 'btn btn-warning actions-button edit-associated-user-button'
+    )
+  end
+
+  def associated_users_delete_button(opts={})
+    content_tag(:button,
+      raw(
+        content_tag(:span, '', class: 'glyphicon glyphicon-remove', aria: { hidden: 'true' })
+      ), type: 'button', data: opts, class: 'btn btn-danger actions-button delete-associated-user-button'
+    )
+  end
+
   def pre_select_user_credentials(credentials)
     unless credentials.blank?
       selected =  USER_CREDENTIALS.map {|k,v| {pretty_tag(v) => k}}.select{|obj| obj unless obj[pretty_tag(credentials)].blank? }

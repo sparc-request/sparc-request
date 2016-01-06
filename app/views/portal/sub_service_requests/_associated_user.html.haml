@@ -18,17 +18,38 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-- protocol.project_roles.each do |pr|
-  - identity = pr.identity
-  %tr{:id => "user_#{identity.id}"}
-    %td= identity.try(:full_name)
-    %td= USER_ROLES.detect{|k,v| v == pr.role}.try(:first)
-    %td= identity.try(:email)
-    %td= identity.try(:phone)
-    %td= pr.try(:display_rights)
-    %td.edit
-      %a.edit-associated-user-button{:href => "javascript:void(0)", :style => 'font-size:10px', :'data-protocol_id' => pr.protocol_id, :'data-user_id' => identity.id, :'data-pr_id' => pr.id, :'data-permission' => "true", :'data-sub_service_request_id' => @sub_service_request.id}
-        = image_tag('portal/edit_blue.png')
-    %td.delete
-      %a.delete-associated-user-button{:href => "javascript:void(0)", :title => "Delete Authorized User", :'data-protocol_id' => pr.protocol_id, :'data-current_user_role' => pr.role, :'data-user_id' => identity.id, :'data-pr_id' => pr.id, :'data-user_role' => pr.role, :'data-permission' => "true", :'data-sub_service_request_id' => @sub_service_request.id}
-        = image_tag('portal/delete_red.png')
+.bootstrap-table-dropdown-overflow
+  #associated-users-custom-toolbar
+    %button.btn.btn-success.associated-user-button{ data: { protocol_id: @protocol.id, permission: 'true' } }= t(:protocol_information)[:add_authorized_user]
+  %table#associated-users-table{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', 'show-toggle' => 'true', url: portal_associated_users_path(format: :json, protocol_id: protocol.id, sub_service_request_id: @sub_service_request.id), striped: 'true', toolbar: '#associated-users-custom-toolbar', 'show-export' => 'true', 'export-types' => ['excel'] } }
+    %thead.primary-header
+      %tr
+        %th{ data: { field: 'name', align: 'left', sortable: 'true' } }
+          Full Name
+        %th{ data: { field: 'role', align: 'left', sortable: 'true' } }
+          Role
+        %th{ data: { field: 'email', align: 'left', sortable: 'false' } }
+          Email
+        %th{ data: { field: 'phone', align: 'left', sortable: 'false' } }
+          Phone
+        %th{ data: { field: 'proxy_rights', align: 'left', sortable: 'true' } }
+          Proxy Rights
+        %th{ data: { field: 'edit', align: 'center', sortable: 'false' } }
+          Edit
+        %th{ data: { field: 'delete', align: 'center', sortable: 'false' } }
+          Delete
+
+-# - protocol.project_roles.each do |pr|
+-#   - identity = pr.identity
+-#   %tr{:id => "user_#{identity.id}"}
+-#     %td= identity.try(:full_name)
+-#     %td= USER_ROLES.detect{|k,v| v == pr.role}.try(:first)
+-#     %td= identity.try(:email)
+-#     %td= identity.try(:phone)
+-#     %td= pr.try(:display_rights)
+-#     %td.edit
+-#       %a.edit-associated-user-button{:href => "javascript:void(0)", :style => 'font-size:10px', :'data-protocol_id' => pr.protocol_id, :'data-user_id' => identity.id, :'data-pr_id' => pr.id, :'data-permission' => "true", :'data-sub_service_request_id' => @sub_service_request.id}
+-#         = image_tag('portal/edit_blue.png')
+-#     %td.delete
+-#       %a.delete-associated-user-button{:href => "javascript:void(0)", :title => "Delete Authorized User", :'data-protocol_id' => pr.protocol_id, :'data-current_user_role' => pr.role, :'data-user_id' => identity.id, :'data-pr_id' => pr.id, :'data-user_role' => pr.role, :'data-permission' => "true", :'data-sub_service_request_id' => @sub_service_request.id}
+-#         = image_tag('portal/delete_red.png')

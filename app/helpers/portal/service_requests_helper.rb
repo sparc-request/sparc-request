@@ -38,6 +38,10 @@ module Portal::ServiceRequestsHelper
   #   end
   # end
 
+  def protocol_panel_header_line service_request
+    "Service Request: #{service_request.id} - Submitted: #{format_date(service_request.submitted_at)}"
+  end
+
   def service_selected(service_name, selected_service_name)
     service_name == selected_service_name
   end

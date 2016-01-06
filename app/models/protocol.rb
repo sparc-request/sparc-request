@@ -38,6 +38,7 @@ class Protocol < ActiveRecord::Base
   has_many :impact_areas, :dependent => :destroy
   has_many :arms, :dependent => :destroy
   has_many :study_type_answers, :dependent => :destroy
+  has_many :notes, as: :notable, dependent: :destroy
 
   attr_accessible :identity_id
   attr_accessible :next_ssr_id

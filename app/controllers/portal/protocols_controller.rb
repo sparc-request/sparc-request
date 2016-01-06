@@ -37,12 +37,18 @@ class Portal::ProtocolsController < Portal::BaseController
   def show
     # @project_rights = Project_Role.find_by_identity_id(@user.id);
     @protocol_role = @protocol.project_roles.find_by_identity_id(@user.id)
+
     #@project.project_associated_users
     #@project.project_service_requests
 
     respond_to do |format|
       format.js   { render }
-      format.html { render }
+      format.html {
+        @permission_to_edit = @protocol_role.can_edit?
+        @protocol_type = @protocol.type.capitalize
+        @service_requests = @protocol.service_requests
+        render 
+      }
       format.xlsx { render }
     end
   end

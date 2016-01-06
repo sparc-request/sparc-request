@@ -44,11 +44,9 @@ class Portal::NotificationsController < Portal::BaseController
   end
 
   def new
-    @recipient = Identity.find(params[:identity_id]) if params[:identity_id].present?
     @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
-    @possible_recipients = Identity.where(id: params[:possible_recipients]) || @sub_service_request.service_request.protocol.project_roles.map(&:identity)
     @notification = @sub_service_request.notifications.new
-    @message = @notification.messages.new
+    @message = @notification.messages.new(to: params[:identity_id])
   end
 
   def create

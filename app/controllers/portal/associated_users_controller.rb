@@ -28,7 +28,7 @@ class Portal::AssociatedUsersController < Portal::BaseController
 
   def index
     @protocol_roles = @protocol.project_roles
-    @sub_service_request = SubServiceRequest.find params[:sub_service_request_id] if params[:sub_service_request_id]
+    # @sub_service_request = SubServiceRequest.find params[:sub_service_request_id] if params[:sub_service_request_id]
 
     respond_to do |format|
       format.json
@@ -47,7 +47,7 @@ class Portal::AssociatedUsersController < Portal::BaseController
     @identity = Identity.find params[:identity_id]
     @protocol_role = ProjectRole.find params[:id]
     @protocol_role.populate_for_edit
-    @sub_service_request = SubServiceRequest.find params[:sub_service_request_id] if params[:sub_service_request_id]
+    # @sub_service_request = SubServiceRequest.find params[:sub_service_request_id] if params[:sub_service_request_id]
     respond_to do |format|
       format.js
       format.html
@@ -91,16 +91,16 @@ class Portal::AssociatedUsersController < Portal::BaseController
       end
     end
 
-    if params[:sub_service_request_id]
-      @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
-      @protocol = @sub_service_request.service_request.protocol
-      render 'portal/admin/update_associated_users'
-    else
-      respond_to do |format|
-        format.js
-        format.html
-      end
+    # if params[:sub_service_request_id]
+    #   @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
+    #   @protocol = @sub_service_request.service_request.protocol
+    #   render 'portal/admin/update_associated_users'
+    # else
+    respond_to do |format|
+      format.js
+      format.html
     end
+    # end
   end
 
   def update
@@ -137,16 +137,16 @@ class Portal::AssociatedUsersController < Portal::BaseController
       end
     end
 
-    if params[:sub_service_request_id]
-      @protocol = Protocol.find(params[:protocol_id])
-      @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
-      render 'portal/admin/update_associated_users'
-    else
-      respond_to do |format|
-        format.js
-        format.html
-      end
+    # if params[:sub_service_request_id]
+    #   @protocol = Protocol.find(params[:protocol_id])
+    #   @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
+    #   render 'portal/admin/update_associated_users'
+    # else
+    respond_to do |format|
+      format.js
+      format.html
     end
+    # end
   end
 
   def destroy
@@ -160,16 +160,16 @@ class Portal::AssociatedUsersController < Portal::BaseController
       Notifier.notify_primary_pi_for_epic_user_removal(protocol, project_role_clone).deliver unless QUEUE_EPIC
     end
 
-    if params[:sub_service_request_id]
-      @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
-      @protocol = @sub_service_request.service_request.protocol
-      render 'portal/admin/update_associated_users'
-    else
-      respond_to do |format|
-        format.js
-        format.html
-      end
+    # if params[:sub_service_request_id]
+    #   @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
+    #   @protocol = @sub_service_request.service_request.protocol
+    #   render 'portal/admin/update_associated_users'
+    # else
+    respond_to do |format|
+      format.js
+      format.html
     end
+    # end
   end
 
   def search

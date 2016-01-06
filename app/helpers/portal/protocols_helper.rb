@@ -18,33 +18,24 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-module Portal::AssociatedUsersHelper
-  def associated_users_edit_button(pr)
-    content_tag(:button,
-      raw(
-        content_tag(:span, '', class: 'glyphicon glyphicon-edit', aria: { hidden: 'true' })
-      ), type: 'button', data: {protocol_id: pr.protocol_id, user_id: pr.identity_id, pr_id: pr.id, permission: 'true', current_user_role: pr.role}, class: 'btn btn-warning actions-button edit-associated-user-button'
-    )
-  end
+module Portal::ProtocolsHelper
 
-  def associated_users_delete_button(pr)
-    content_tag(:button,
+  def consolidated_request_buttons_display protocol
+    if !protocol.has_first_draft_service_request? && protocol.service_requests.present?
       raw(
-        content_tag(:span, '', class: 'glyphicon glyphicon-remove', aria: { hidden: 'true' })
-      ), type: 'button', data: {protocol_id: pr.protocol_id, user_id: pr.identity_id, pr_id: pr.id, permission: 'true', current_user_role: pr.role}, class: 'btn btn-danger actions-button delete-associated-user-button'
-    )
-  end
-
-  def pre_select_user_credentials(credentials)
-    unless credentials.blank?
-      selected =  USER_CREDENTIALS.map {|k,v| {pretty_tag(v) => k}}.select{|obj| obj unless obj[pretty_tag(credentials)].blank? }
-      selected.blank? ? 'other' : selected.first.try(:keys).try(:first)
-    else
-      ''
+        content_tag( :div,
+          content_tag( :button, t(:protocol_information)[:full_calendar], type: 'button', class: 'view-full-calendar-button btn btn-primary btn-sm', data: { protocol_id: protocol.id }
+          )+
+          link_to( t(:protocol_information)[:consolidated_request], portal_protocol_path(protocol, format: :xlsx), class: "btn btn-primary btn-sm", data: { protocol_id: protocol.id }
+          ), class: "pull-right"
+        )
+      )
     end
   end
 
-  def reverse_user_credential_hash
-    USER_CREDENTIALS.each{|k, v| [v, k]}
+  def edit_protocol_button_display protocol, project_role
+    if permission = project_role.can_edit?
+      content_tag( :button, "Edit #{protocol.type.capitalize} Information", type: 'button', class: 'edit-protocol-information-button btn btn-warning btn-sm', data: { permission: permission.to_s, protocol_id: protocol.id })
+    end
   end
 end

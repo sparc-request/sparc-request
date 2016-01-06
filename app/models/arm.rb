@@ -70,6 +70,7 @@ class Arm < ActiveRecord::Base
     liv = LineItemsVisit.for(self, line_item)
     liv.create_visits
 
+
     if line_items_visits.count > 1
       liv.update_visit_names self.line_items_visits.first
     end
@@ -180,7 +181,7 @@ class Arm < ActiveRecord::Base
     first = self.visit_groups.count
     last = self.visit_count
 
-    create_visit_groups(first, last)  
+    create_visit_groups(first, last)
     vg_ids = get_visit_group_ids
     create_visits(vg_ids)
   end
@@ -338,7 +339,7 @@ class Arm < ActiveRecord::Base
     (last-first).times do |index|
       position = index + 1 + first
       VisitGroup.create(arm_id: self.id, name: "Visit #{position}", position: position)
-    end   
+    end
     self.reload
   end
 

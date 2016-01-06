@@ -180,41 +180,41 @@ SparcRails::Application.routes.draw do
     root to: 'catalog#index'
   end
 
-  ##### Study Tracker/Clinical Work Fulfillment Portal#####
-  namespace :study_tracker, :path => "clinical_work_fulfillment" do
-    match 'appointments/add_note' => 'calendars#add_note', via: [:get, :post]
-    match 'calendars/delete_toast_messages' => 'calendars#delete_toast_messages', via: [:all]
-    match 'calendars/change_visit_group' => 'calendars#change_visit_group', via: [:get, :post]
-    match 'appointments/add_service' => 'calendars#add_service', via: [:get, :post]
+  # ##### Study Tracker/Clinical Work Fulfillment Portal#####
+  # namespace :study_tracker, :path => "clinical_work_fulfillment" do
+  #   match 'appointments/add_note' => 'calendars#add_note', via: [:get, :post]
+  #   match 'calendars/delete_toast_messages' => 'calendars#delete_toast_messages', via: [:all]
+  #   match 'calendars/change_visit_group' => 'calendars#change_visit_group', via: [:get, :post]
+  #   match 'appointments/add_service' => 'calendars#add_service', via: [:get, :post]
 
-    root to: 'home#index'
+  #   root to: 'home#index'
 
-    resources :home, only: [:index] do
-      collection do
-        get :billing_report_setup
-        post :billing_report
-      end
-    end
+  #   resources :home, only: [:index] do
+  #     collection do
+  #       get :billing_report_setup
+  #       post :billing_report
+  #     end
+  #   end
 
-    resources :sub_service_requests, only: [:show, :update] do
-      resources :calendars, only: [:show]
-      resources :cover_letters, except: [:index, :destroy]
-    end
+  #   resources :sub_service_requests, only: [:show, :update] do
+  #     resources :calendars, only: [:show]
+  #     resources :cover_letters, except: [:index, :destroy]
+  #   end
 
-    resources :service_requests, only: [:update]
-    resources :subjects, only: [:update]
+  #   resources :service_requests, only: [:update]
+  #   resources :subjects, only: [:update]
 
-    resources :protocols, only: [:update] do
-      member do
-        put :update_billing_business_manager_static_email
-      end
-    end
-  end
+  #   resources :protocols, only: [:update] do
+  #     member do
+  #       put :update_billing_business_manager_static_email
+  #     end
+  #   end
+  # end
 
   ##### sparc-user routes brought in and namespaced
   namespace :portal do
     resources :services, only: [:show]
-    resources :admin, only: [:index]
+    # resources :admin, only: [:index]
     resources :documents
     resources :messages, only: [:index, :new, :create]
     resources :notes, only: [:index, :new, :create]
@@ -272,6 +272,7 @@ SparcRails::Application.routes.draw do
     resources :epic_queues, only: ['index', 'destroy']
 
     resource :admin do
+      root to: 'sub_service_requests#index'
       resources :sub_service_requests do
         member do
           put :update_from_fulfillment

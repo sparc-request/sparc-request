@@ -34,8 +34,11 @@ module Portal::AdminHelper
 
   def full_ssr_id(ssr)
     protocol = ssr.service_request.protocol
-
-    "#{protocol.id}-#{ssr.ssr_id}"
+    if protocol
+      "#{protocol.id}-#{ssr.ssr_id}"
+    else
+      "-#{ssr.ssr_id}"
+    end
   end
 
   def service_request_owner_display sub_service_request

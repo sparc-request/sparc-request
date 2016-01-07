@@ -105,4 +105,15 @@ module Portal::ApplicationHelper
   def display_user_role(user)
     user.role == 'other' ? user.role_other.humanize : user.role.humanize
   end
+
+  def truncate_string_length(s, max=70, elided = ' ...')
+    #truncates string to max # of characters then adds elipsis
+    if s.present?
+      s.match( /(.{1,#{max}})(?:\s|\z)/ )[1].tap do |res|
+        res << elided unless res.length == s.length
+      end
+    else
+      ""
+    end
+  end
 end

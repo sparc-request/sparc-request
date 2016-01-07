@@ -39,18 +39,26 @@ module Portal::ProtocolsHelper
     end
   end
 
+  def short_title_display protocol
+    truncate_string_length(protocol.short_title, 100)
+  end
+
+  def pis_display protocol
+    protocol.principal_investigators.map(&:full_name).join ", "
+  end
+
   def requests_display protocol
-    ssr_ids = protocol.sub_service_requests.select(:ssr_id).map{ |ssr| "#{protocol.id}-#{ssr.ssr_id}"}
+    ssr_ids = protocol.sub_service_requests.select(:ssr_id).map(&:ssr_id).uniq.compact
 
     html = '-'
 
-    if ssr_ids.any?
+    unless ssr_ids.empty?
       li = Array.new
 
       span = raw content_tag(:span, '', class: 'caret')
       button = raw content_tag(:button, raw('Requests  ' + span), type: 'button', class: 'btn btn-default btn-sm dropdown-toggle form-control', 'data-toggle' => 'dropdown', 'aria-expanded' => 'false')
       ssr_ids.each do |r|
-        li.push raw(content_tag(:li, raw(content_tag(:a, r, href: 'javascript:;')))) if r.length > 0
+        li.push raw(content_tag(:li, raw(content_tag(:a, "#{protocol.id}-#{r}", href: 'javascript:;'))))
       end
       ul = raw content_tag(:ul, raw(li.join), class: 'dropdown-menu', role: 'menu')
 
@@ -61,6 +69,6 @@ module Portal::ProtocolsHelper
   end
 
   def archived_button_display protocol
-
+    content_tag( :button, (protocol.archived ? 'Unarchive' : 'Archive')+" #{protocol.type.capitalize}", type: 'button', class: 'protocol-archive-button btn btn-warning btn-sm', data: { protocol_id: protocol.id })
   end
 end

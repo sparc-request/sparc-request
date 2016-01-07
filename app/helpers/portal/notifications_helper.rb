@@ -20,17 +20,6 @@
 
 module Portal::NotificationsHelper
 
-  def truncate_string_length(s, max=70, elided = ' ...')
-    #truncates string to max # of characters then adds elipsis
-    if s.present?
-      s.match( /(.{1,#{max}})(?:\s|\z)/ )[1].tap do |res|
-        res << elided unless res.length == s.length
-      end
-    else
-      ""
-    end
-  end
-
   def message_hide_or_show(notification, index)
     notification.messages.length - 1 == index ? 'shown' : 'hidden'
   end

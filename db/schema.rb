@@ -11,7 +11,8 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160105150722) do
+ActiveRecord::Schema.define(version: 20160106161249) do
+
 
   create_table "admin_rates", force: :cascade do |t|
     t.integer  "line_item_id", limit: 4
@@ -493,9 +494,9 @@ ActiveRecord::Schema.define(version: 20160105150722) do
     t.string   "abbreviation", limit: 255
     t.text     "ack_language", limit: 65535
     t.boolean  "process_ssrs"
-    t.boolean  "is_available"
-    t.datetime "created_at",                              null: false
-    t.datetime "updated_at",                              null: false
+    t.boolean  "is_available",               default: true
+    t.datetime "created_at",                                null: false
+    t.datetime "updated_at",                                null: false
     t.datetime "deleted_at"
     t.boolean  "show_in_cwf"
   end
@@ -654,8 +655,13 @@ ActiveRecord::Schema.define(version: 20160105150722) do
     t.datetime "recruitment_start_date"
     t.datetime "recruitment_end_date"
     t.boolean  "selected_for_epic",                                                           default: false
+<<<<<<< HEAD
     t.boolean  "archived",                                                                    default: false
     t.integer  "study_type_question_group_id",          limit: 4
+=======
+    t.boolean  "has_cofc"
+    t.boolean  "archived",                                                                    default: false
+>>>>>>> master
   end
 
   add_index "protocols", ["next_ssr_id"], name: "index_protocols_on_next_ssr_id", using: :btree
@@ -843,7 +849,7 @@ ActiveRecord::Schema.define(version: 20160105150722) do
     t.string   "abbreviation",          limit: 255
     t.integer  "order",                 limit: 4
     t.text     "description",           limit: 65535
-    t.boolean  "is_available"
+    t.boolean  "is_available",                                                 default: true
     t.decimal  "service_center_cost",                 precision: 12, scale: 4
     t.string   "cpt_code",              limit: 255
     t.string   "charge_code",           limit: 255

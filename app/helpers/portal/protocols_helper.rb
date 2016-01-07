@@ -38,4 +38,29 @@ module Portal::ProtocolsHelper
       content_tag( :button, "Edit #{protocol.type.capitalize} Information", type: 'button', class: 'edit-protocol-information-button btn btn-warning btn-sm', data: { permission: permission.to_s, protocol_id: protocol.id })
     end
   end
+
+  def requests_display protocol
+    ssr_ids = protocol.sub_service_requests.select(:ssr_id).map{ |ssr| "#{protocol.id}-#{ssr.ssr_id}"}
+
+    html = '-'
+
+    if ssr_ids.any?
+      li = Array.new
+
+      span = raw content_tag(:span, '', class: 'caret')
+      button = raw content_tag(:button, raw('Requests  ' + span), type: 'button', class: 'btn btn-default btn-sm dropdown-toggle form-control', 'data-toggle' => 'dropdown', 'aria-expanded' => 'false')
+      ssr_ids.each do |r|
+        li.push raw(content_tag(:li, raw(content_tag(:a, r, href: 'javascript:;')))) if r.length > 0
+      end
+      ul = raw content_tag(:ul, raw(li.join), class: 'dropdown-menu', role: 'menu')
+
+      html = raw content_tag(:div, button + ul, class: 'btn-group')
+    end
+
+    html
+  end
+
+  def archived_button_display protocol
+
+  end
 end

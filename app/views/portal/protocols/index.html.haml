@@ -18,46 +18,19 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-!!!
-%html
-  %head
-    %title= t(:portal_title)
-    = stylesheet_link_tag "#{CUSTOM_ASSET_PATH}portal/application"
-    = stylesheet_link_tag 'study_tracker'
-    = javascript_include_tag 'portal/application'
-    = javascript_include_tag 'jquery.qtip.min.js'
-    /[if IE]
-      = stylesheet_link_tag 'ie'
-    /[if gt IE 7]
-      = stylesheet_link_tag 'ie8_plus'
-    /[if lt IE 8]
-      = javascript_include_tag "ie7_warning"
-    = csrf_meta_tags
-    :javascript
-      window.I18n = #{current_translations.to_json.html_safe};
-
-  %body{:id => "body"}
-    #ie7_warning{:style => 'display: none'}
-      %p= t('ie_warning.text1')
-      %br
-      %p= t('ie_warning.text2')
-
-    #container
-      #processing_request.ui-corner-all{:style => 'display:none'}
-        %br
-        = t(:cm_index)[:processing]
-        %br
-        = image_tag 'spinner.gif'
-      #header
-        = render :partial => 'shared/header_logos'
-        %input#current_user_id{:type => 'hidden', :value => @user.try(:id)}
-      = render partial: 'layouts/portal/portal_header'
-
-
-      .notification_dialog
-      .flash= render "shared/flash"
-      #inner-content
-        = yield
-  %footer
-    = render :partial => 'shared/piwik_tracking' if Rails.env == 'production'
-    = render partial: 'shared/modal'
+.bootstrap-table-dropdown-overflow
+  #protocols-toolbar
+    %button.btn.btn-success#create-new-study-button{ type: 'button', data: { url: "#{new_portal_protocol_path}"} } Create New Study
+  %table.protocol_table{id: "protocol_table", data: {toggle: 'table', search: "true", "show-columns" => "true", "show-refresh" => "true", "show-toggle" => "true", url: portal_protocols_path(format: :json), striped: "true", toolbar: "#protocols-toolbar", "show-export" => "true", "export-types" => ['excel']}}
+    %thead.primary-header
+      %tr
+        %th{data: {class: 'id', align: "left", sortable: "true", field: "id"}}
+          ID
+        %th{data: {class: 'title', align: "left", sortable: "true", field: "title"}}
+          Short Title
+        %th{data: {class: 'pis', align: "left", sortable: "true", field: "pis"}}
+          PI(s)
+        %th{data: {class: 'requests', align: "left", sortable: "true", field: "requests"}}
+          Requests
+        %th{data: {class: 'archive_this', align: "center", sortable: "false", field: "archive"}}
+          Archive

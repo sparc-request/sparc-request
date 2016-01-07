@@ -28,10 +28,6 @@ class Portal::ProtocolsController < Portal::BaseController
 
   def index
     @protocols = Portal::ProtocolFinder.new(current_user, params).protocols
-
-    respond_to do |format|
-      format.js { render }
-    end
   end
 
   def show

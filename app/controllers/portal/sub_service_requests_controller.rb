@@ -20,21 +20,9 @@
 
 class Portal::SubServiceRequestsController < Portal::BaseController
   respond_to :json, :js, :html
-  before_action :find_sub_service_request, except: [:index]
+  before_action :find_sub_service_request
 
   before_filter :protocol_authorizer, :only => [:update_from_project_study_information]
-
-  def index
-    admin_orgs = @user.admin_organizations
-    respond_to do |format|
-      format.html {
-        redirect_to root_path if admin_orgs.empty?
-      }
-      format.json {
-        @sub_service_requests = SubServiceRequest.where("status = 'submitted' and sub_service_requests.organization_id in (#{admin_orgs.map(&:id).join(", ")})").includes(:owner, line_items: :service, service_request: [:service_requester, protocol: {project_roles: :identity}])
-      }
-    end
-  end
 
   def show
     @admin = true

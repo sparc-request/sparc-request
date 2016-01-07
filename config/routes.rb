@@ -273,7 +273,7 @@ SparcRails::Application.routes.draw do
 
     resource :admin do
       root to: 'sub_service_requests#index'
-      resources :sub_service_requests do
+      resources :sub_service_requests, except: [:index] do
         member do
           put :update_from_fulfillment
           patch :update_from_project_study_information
@@ -337,7 +337,7 @@ SparcRails::Application.routes.draw do
     match '/admin/sub_service_requests/:id/edit_document/:document_id' => 'sub_service_requests#edit_documents', via: [:get, :post]
     match "/admin/sub_service_requests/:id/delete_document/:document_id" => "sub_service_requests#delete_documents", via: [:get, :post]
 
-    root to: 'home#index'
+    root to: 'protocols#index'
   end
 
   resources :reports, only: [:index] do

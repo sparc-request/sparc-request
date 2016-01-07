@@ -1,1 +1,0 @@
-json.partial! 'sub_service_request', collection: @sub_service_requests, as: :sub_service_request

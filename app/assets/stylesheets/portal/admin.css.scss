@@ -245,34 +245,6 @@ background-color: #8dbdd8;
   color: white;
 }
 
-.portal_create_new_study,
-.portal_create_new_project {
-  margin-right: 30px;
-  margin-top: -10px;
-  color: white;
-  float: right;
-  position: relative;
-
-  .new_project_button {
-    margin-left: 17px;
-  }
-
-  .new_study_button {
-    margin-left: 16px;
-  }
-
-  .new_project_button,
-  .new_study_button {
-    height: 100%;
-    width: 100%;
-    position: absolute;
-    vertical-align: middle;
-    line-height: 32px;
-    text-align: center;
-    font-size: 1.1em;
-  }
-}
-
 .services_first { 
   list-style: none;
 }

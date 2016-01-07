@@ -20,29 +20,33 @@
 
 class ProtocolsController < ApplicationController
   respond_to :json, :js, :html
-  before_filter :initialize_service_request, :except => [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
-  before_filter :authorize_identity, :except => [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
+  before_filter :initialize_service_request, unless: :from_portal?, :except => [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
+  before_filter :authorize_identity, unless: :from_portal?, :except => [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
   before_filter :set_protocol_type, :except => [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
 
   def new
-    @service_request = ServiceRequest.find session[:service_request_id]
-    @epic_services = @service_request.should_push_to_epic? if USE_EPIC
+    @portal = params[:portal]
+    unless from_portal?
+      @service_request = ServiceRequest.find session[:service_request_id]
+      @epic_services = @service_request.should_push_to_epic? if USE_EPIC
+    end
     @protocol = self.model_class.new
     @protocol.requester_id = current_user.id
     @protocol.populate_for_edit
     current_step_cookie = cookies['current_step']
     cookies['current_step'] = 'protocol'
-    @portal = params[:portal]
 
     resolve_layout
   end
 
   def create
-    @service_request = ServiceRequest.find session[:service_request_id]
+    @portal = params[:portal]
+    unless from_portal?
+      @service_request = ServiceRequest.find session[:service_request_id]
+    end
     @current_step = cookies['current_step']
     @protocol = self.model_class.new(params[:study] || params[:project])
     @protocol.validate_nct = true
-    @portal = params[:portal]
 
     if @current_step == 'cancel'
       @current_step = 'return_to_service_request'
@@ -58,7 +62,7 @@ class ProtocolsController < ApplicationController
       session[:saved_protocol_id] = @protocol.id
       flash[:notice] = "New #{@protocol.type.downcase} created"
 
-      if @service_request.status == "first_draft"
+      if !from_portal? && @service_request.status == "first_draft"
         @service_request.update_attributes(status: "draft")
       end
     else
@@ -163,10 +167,14 @@ class ProtocolsController < ApplicationController
     render :formats => [:html]
   end
 
+  def from_portal?
+    return params[:portal] == "true"  
+  end
+
   private
 
   def resolve_layout
-    if @portal == "true"
+    if from_portal?
       @user = current_user
       render layout: "portal/application"
     end

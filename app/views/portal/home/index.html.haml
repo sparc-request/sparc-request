@@ -34,17 +34,18 @@
     = t(:protocol_information)[:message2]
   %br
 
-  %input#search_box.search_protocols.hidden{placeholder: 'Search...'}
-  = link_to new_project_path(portal: true) do
+  .row-portal-header
+    %input#search_box.search_protocols.hidden{placeholder: 'Search...'}
     .portal_create_new_project
-      .new_project_button
-        = t(:protocol_information)[:create][:project]
-      = image_tag "portal/portal_header_button.png"
-  = link_to new_study_path(portal: true) do
+      = link_to new_project_path(portal: true), class: 'new-project' do
+        .new-project-text
+          = t(:protocol_information)[:create][:project]
+        = image_tag "portal/portal_header_button.png"
     .portal_create_new_study
-      .new_study_button
-        = t(:protocol_information)[:create][:study]
-      = image_tag "portal/portal_header_button.png"
+      = link_to new_study_path(portal: true), class: 'new-study' do
+        .new-study-text
+          = t(:protocol_information)[:create][:study]
+        = image_tag "portal/portal_header_button.png"
   .loading_protocol.ui-corner-all{style: "border: 1px solid black; padding: 3px; width: 200px; margin: 30px auto; text-align: center"}
     = t(:protocol_information)[:loading]
     %br

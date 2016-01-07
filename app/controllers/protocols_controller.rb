@@ -71,11 +71,13 @@ class ProtocolsController < ApplicationController
   end
 
   def edit
+
     @service_request = ServiceRequest.find session[:service_request_id]
     @epic_services = @service_request.should_push_to_epic? if USE_EPIC
     @protocol = current_user.protocols.find params[:id]
     @protocol.populate_for_edit
     @protocol.valid?
+
     current_step_cookie = cookies['current_step']
     if current_step_cookie.nil? || (current_step_cookie != "protocol")
       cookies['current_step'] = 'protocol'
@@ -84,12 +86,17 @@ class ProtocolsController < ApplicationController
   end
 
   def update
+
     @service_request = ServiceRequest.find session[:service_request_id]
     @current_step = cookies['current_step']
     @protocol = current_user.protocols.find params[:id]
+    
     @protocol.validate_nct = true
     @portal = params[:portal]
-    @protocol.assign_attributes(params[:study] || params[:project])
+    @protocol.assign_attributes(params[:study].merge(study_type_question_group_id: StudyTypeQuestionGroup.active.pluck(:id).first) || params[:project])
+    # if @protocol.is_study? && !@protocol.active?
+    #   @protocol.activate
+    # end
 
     if @current_step == 'cancel'
       @current_step = 'return_to_service_request'
@@ -98,12 +105,14 @@ class ProtocolsController < ApplicationController
       @protocol.populate_for_edit
     elsif @current_step == 'protocol' and @protocol.group_valid? :protocol
       @current_step = 'user_details'
-      # @protocol.populate_for_edit
+      @protocol.populate_for_edit
     elsif @current_step == 'user_details' and @protocol.valid?
       @protocol.save
       @current_step = 'return_to_service_request'
       session[:saved_protocol_id] = @protocol.id
       flash[:notice] = "#{@protocol.type.humanize} updated"
+
+
 
       #Added as a safety net for older SRs
       if @service_request.status == "first_draft"
@@ -113,9 +122,7 @@ class ProtocolsController < ApplicationController
       @protocol.populate_for_edit
     end
 
-    if @protocol.is_study? && !@protocol.active?
-      @protocol.activate
-    end
+    
 
     cookies['current_step'] = @current_step
   end

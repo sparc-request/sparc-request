@@ -69,10 +69,16 @@ $(document).ready ->
     return this
 
   show_if_value_selected = (dropdown) ->
-    if dropdown[0].selectedIndex > 0
-      dropdown.show_elt()
-    else
-      dropdown.hide_elt()
+    if $('#study_study_type_question_group_id').val() == "inactive" && $('input[name=\'study[selected_for_epic]\']:checked').val() == 'true'
+      study_type_form.show()
+      certificate_of_confidence_dropdown.show_elt()
+      higher_level_of_privacy_dropdown.show_elt()
+    else if $('#study_study_type_question_group_id').val() == "active"
+      if dropdown[0].selectedIndex > 0
+        dropdown.show_elt()
+      else
+        dropdown.hide_elt()
+
 
   # Since the 'ready' function only gets fired when editing,
   # we can assume here that there are values being loaded in
@@ -166,6 +172,13 @@ $(document).ready ->
       epic_inbasket_dropdown.hide_elt()
       research_active_dropdown.hide_elt()
       restrict_sending_dropdown.hide_elt()
+
+  # if $('#study_study_type_question_group_id').val() == "inactive"
+  #   $('.study_type').find('.field:hidden select').each ->    
+  #    console.log("THIS")   
+  #    console.log($(this).attr('id'))     
+  #    hidden = '#' + $(this).attr('id')   
+  #    $(hidden).hide_elt()
 
 
   ######## End of send to epic study question logic ##############

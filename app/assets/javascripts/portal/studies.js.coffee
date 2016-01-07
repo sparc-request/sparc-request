@@ -47,124 +47,129 @@ $(document).ready ->
     ready: ->
       FormFxManager.registerListeners($('.user-edit-protocol-view'), Sparc.study.display_dependencies)
 
-      # $(".study_type .field").hide();
+      if $('#study_viewing_admin').val() == "portal"
+        $(".study_type .field").hide()
+        study_type_form = $('.study_type')
+        study_selected_for_epic_radio = $('input[name=\'study[selected_for_epic]\']')
+        certificate_of_confidence_dropdown = $('#study_type_answer_certificate_of_conf_answer')
+        higher_level_of_privacy_dropdown = $('#study_type_answer_higher_level_of_privacy_answer')
+        access_required_dropdown = $('#study_type_answer_access_study_info_answer')
+        epic_inbasket_dropdown = $('#study_type_answer_epic_inbasket_answer')
+        research_active_dropdown = $('#study_type_answer_research_active_answer')
+        restrict_sending_dropdown = $('#study_type_answer_restrict_sending_answer')
 
-      study_type_form = $('.study_type')
-      study_selected_for_epic_radio = $('input[name=\'study[selected_for_epic]\']')
-      certificate_of_confidence_dropdown = $('#study_type_answer_certificate_of_conf_answer')
-      higher_level_of_privacy_dropdown = $('#study_type_answer_higher_level_of_privacy_answer')
-      access_required_dropdown = $('#study_type_answer_access_study_info_answer')
-      epic_inbasket_dropdown = $('#study_type_answer_epic_inbasket_answer')
-      research_active_dropdown = $('#study_type_answer_research_active_answer')
-      restrict_sending_dropdown = $('#study_type_answer_restrict_sending_answer')
+        $.prototype.hide_elt = () ->
+          this[0].selectedIndex = 0
+          this.closest('.field').hide()
+          return this
 
-      $.prototype.hide_elt = () ->
-        this[0].selectedIndex = 0
-        this.closest('.field').hide()
-        return this
+        $.prototype.show_elt = () ->
+          this.closest('.field').show()
+          return this
 
-      $.prototype.show_elt = () ->
-        this.closest('.field').show()
-        return this
+        show_if_value_selected = (dropdown) ->
+          if $('#study_study_type_question_group_id').val() == "inactive" && $('input[name=\'study[selected_for_epic]\']:checked').val() == 'true'
+            study_type_form.show()
+            certificate_of_confidence_dropdown.show_elt()
+            higher_level_of_privacy_dropdown.show_elt()
+          else if $('#study_study_type_question_group_id').val() == "active"
+            if dropdown[0].selectedIndex > 0
+              dropdown.show_elt()
+            else
+              dropdown.hide_elt()
 
-      show_if_value_selected = (dropdown) ->
-        if dropdown[0].selectedIndex > 0
-          dropdown.show_elt()
-        else
-          dropdown.hide_elt()
+        # Since the 'ready' function only gets fired when editing,
+        # we can assume here that there are values being loaded in
+        # each of the dropdowns. Since we can also assume that the
+        # logic governing those dropdowns was operating under the
+        # same set of rules when the study was first saved, as it
+        # is now, we can just display the fields that have a value
+        # selected and hide those that do not because the study had
+        # to be in a valid state for the initial save to succeed in
+        # the first place.
+        show_if_value_selected(certificate_of_confidence_dropdown)
+        show_if_value_selected(higher_level_of_privacy_dropdown)
+        show_if_value_selected(access_required_dropdown)
+        show_if_value_selected(epic_inbasket_dropdown)
+        show_if_value_selected(research_active_dropdown)
+        show_if_value_selected(restrict_sending_dropdown)
 
-      # Since the 'ready' function only gets fired when editing,
-      # we can assume here that there are values being loaded in
-      # each of the dropdowns. Since we can also assume that the
-      # logic governing those dropdowns was operating under the
-      # same set of rules when the study was first saved, as it
-      # is now, we can just display the fields that have a value
-      # selected and hide those that do not because the study had
-      # to be in a valid state for the initial save to succeed in
-      # the first place.
-      show_if_value_selected(certificate_of_confidence_dropdown)
-      show_if_value_selected(higher_level_of_privacy_dropdown)
-      show_if_value_selected(access_required_dropdown)
-      show_if_value_selected(epic_inbasket_dropdown)
-      show_if_value_selected(research_active_dropdown)
-      show_if_value_selected(restrict_sending_dropdown)
-
-      study_selected_for_epic_radio.on 'change', (e) ->
-        if $('input[name=\'study[selected_for_epic]\']:checked').val() == 'true'
-          console.log('true')
-          study_type_form.show()
-          certificate_of_confidence_dropdown.show_elt()
-          higher_level_of_privacy_dropdown.show_elt()
-        else
-          console.log('false')
-          study_type_form.hide()
-          certificate_of_confidence_dropdown.hide_elt()
-          higher_level_of_privacy_dropdown.hide_elt().trigger 'change'
-        return
-
-      certificate_of_confidence_dropdown.on 'change', (e) ->
-        new_value = $(e.target).val()
-        higher_level_of_privacy_value = higher_level_of_privacy_dropdown.val()
-        if new_value == 'false'
-          if higher_level_of_privacy_value == 'false'
-            access_required_dropdown.hide_elt()
-            epic_inbasket_dropdown.show_elt()
-            research_active_dropdown.show_elt()
-            restrict_sending_dropdown.show_elt()
-          else if higher_level_of_privacy_value == 'true'
-            access_required_dropdown.show_elt()
-            epic_inbasket_dropdown.hide_elt()
-            research_active_dropdown.hide_elt()
-            restrict_sending_dropdown.hide_elt()
+        study_selected_for_epic_radio.on 'change', (e) ->
+          if $('input[name=\'study[selected_for_epic]\']:checked').val() == 'true'
+            console.log('true')
+            study_type_form.show()
+            certificate_of_confidence_dropdown.show_elt()
+            higher_level_of_privacy_dropdown.show_elt()
           else
-            access_required_dropdown.hide_elt()
-            epic_inbasket_dropdown.hide_elt()
-            research_active_dropdown.hide_elt()
-            restrict_sending_dropdown.hide_elt()
-        else
-          access_required_dropdown.hide_elt()
-          epic_inbasket_dropdown.hide_elt()
-          research_active_dropdown.hide_elt()
-          restrict_sending_dropdown.hide_elt()
-        return
+            console.log('false')
+            study_type_form.hide()
+            certificate_of_confidence_dropdown.hide_elt()
+            higher_level_of_privacy_dropdown.hide_elt().trigger 'change'
+          return
 
-      higher_level_of_privacy_dropdown.on 'change', (e) ->
-        new_value = $(e.target).val()
-        certificate_of_confidence_value = certificate_of_confidence_dropdown.val()
-        if certificate_of_confidence_value == 'false'
+        certificate_of_confidence_dropdown.on 'change', (e) ->
+          new_value = $(e.target).val()
+          higher_level_of_privacy_value = higher_level_of_privacy_dropdown.val()
           if new_value == 'false'
-            access_required_dropdown.hide_elt()
-            epic_inbasket_dropdown.show_elt()
-            research_active_dropdown.show_elt()
-            restrict_sending_dropdown.show_elt()
-          else if new_value == 'true'
-            access_required_dropdown.show_elt()
-            epic_inbasket_dropdown.hide_elt()
-            research_active_dropdown.hide_elt()
-            restrict_sending_dropdown.hide_elt()
+            if higher_level_of_privacy_value == 'false'
+              access_required_dropdown.hide_elt()
+              epic_inbasket_dropdown.show_elt()
+              research_active_dropdown.show_elt()
+              restrict_sending_dropdown.show_elt()
+            else if higher_level_of_privacy_value == 'true'
+              access_required_dropdown.show_elt()
+              epic_inbasket_dropdown.hide_elt()
+              research_active_dropdown.hide_elt()
+              restrict_sending_dropdown.hide_elt()
+            else
+              access_required_dropdown.hide_elt()
+              epic_inbasket_dropdown.hide_elt()
+              research_active_dropdown.hide_elt()
+              restrict_sending_dropdown.hide_elt()
           else
             access_required_dropdown.hide_elt()
             epic_inbasket_dropdown.hide_elt()
             research_active_dropdown.hide_elt()
             restrict_sending_dropdown.hide_elt()
-        else if new_value == ''
-          access_required_dropdown.hide_elt()
-          epic_inbasket_dropdown.hide_elt()
-          research_active_dropdown.hide_elt()
-          restrict_sending_dropdown.hide_elt()
-        return
-     
-      access_required_dropdown.on 'change', (e) ->
-        new_value = $(e.target).val()
+          return
 
-        if new_value == 'false'
-          epic_inbasket_dropdown.show_elt()
-          research_active_dropdown.show_elt()
-          restrict_sending_dropdown.show_elt()
-        else
-          epic_inbasket_dropdown.hide_elt()
-          research_active_dropdown.hide_elt()
-          restrict_sending_dropdown.hide_elt()
+        higher_level_of_privacy_dropdown.on 'change', (e) ->
+          new_value = $(e.target).val()
+          certificate_of_confidence_value = certificate_of_confidence_dropdown.val()
+          if certificate_of_confidence_value == 'false'
+            if new_value == 'false'
+              access_required_dropdown.hide_elt()
+              epic_inbasket_dropdown.show_elt()
+              research_active_dropdown.show_elt()
+              restrict_sending_dropdown.show_elt()
+            else if new_value == 'true'
+              access_required_dropdown.show_elt()
+              epic_inbasket_dropdown.hide_elt()
+              research_active_dropdown.hide_elt()
+              restrict_sending_dropdown.hide_elt()
+            else
+              access_required_dropdown.hide_elt()
+              epic_inbasket_dropdown.hide_elt()
+              research_active_dropdown.hide_elt()
+              restrict_sending_dropdown.hide_elt()
+          else if new_value == ''
+            access_required_dropdown.hide_elt()
+            epic_inbasket_dropdown.hide_elt()
+            research_active_dropdown.hide_elt()
+            restrict_sending_dropdown.hide_elt()
+          return
+       
+        access_required_dropdown.on 'change', (e) ->
+          new_value = $(e.target).val()
+
+          if new_value == 'false'
+            epic_inbasket_dropdown.show_elt()
+            research_active_dropdown.show_elt()
+            restrict_sending_dropdown.show_elt()
+          else
+            epic_inbasket_dropdown.hide_elt()
+            research_active_dropdown.hide_elt()
+            restrict_sending_dropdown.hide_elt()
 
       ######## End of send to epic study question logic ##############
 

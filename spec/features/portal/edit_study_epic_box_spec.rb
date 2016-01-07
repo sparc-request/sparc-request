@@ -470,7 +470,5 @@ RSpec.describe "edit study epic box", js: true do
     select answer_array[3], from: QUESTIONS[3] unless answer_array[3].nil?
     select answer_array[4], from: QUESTIONS[4] unless answer_array[4].nil?
     select answer_array[5], from: QUESTIONS[5] unless answer_array[5].nil?
-
-
   end
 end

@@ -123,6 +123,10 @@ class Protocol < ActiveRecord::Base
     self.type == 'Study'
   end
 
+  def active?
+    study_type_question_group.active
+  end
+
   # Determines whether a protocol contains a service_request with only a "first draft" status
   def has_first_draft_service_request?
     service_requests.any? && service_requests.map(&:status).all? { |status| status == 'first_draft'}
@@ -138,9 +142,9 @@ class Protocol < ActiveRecord::Base
 
   def validate_study_type_answers
 
-    if id != nil && is_study?
-      return if !active?
-    end
+    # if id != nil && is_study?
+    #   return if !active?
+    # end
 
     friendly_ids = ["certificate_of_conf", "higher_level_of_privacy", "access_study_info", "epic_inbasket", "research_active", "restrict_sending"]
     answers = {}

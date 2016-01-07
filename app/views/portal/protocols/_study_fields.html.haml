@@ -106,6 +106,7 @@
             .study_type{style: "#{f.object.selected_for_epic ? '' : 'display:none;'}"}
               .field.study_type_questions
                 = f.label :study_type_questions, class: 'question_text'
+                = f.hidden_field :viewing_admin, :value => "admin"
               = f.fields_for :study_type_answers, study.study_type_answers do |answer|
                 - if answer.object.study_type_question.study_type_question_group.active && study.active? && answer.object.answer != nil
                   .field{id: "study_type_answer_#{answer.object.study_type_question.friendly_id}", style: ( answer.object.study_type_question.friendly_id == 'certificate_of_conf' || answer.object.answer != nil ? nil : "display:none;")}
@@ -124,8 +125,10 @@
               = f.label :selected_for_epic, "Yes"
               = f.radio_button :selected_for_epic, false
               = f.label :selected_for_epic, "No"
+              = f.hidden_field :study_type_question_group_id, :value => study.study_type_question_group_id == 1 ? 'inactive' : 'active'
             .study_type{style: "#{f.object.selected_for_epic ? '' : 'display:none;'}"}
               = f.label :study_type_questions
+              = f.hidden_field :viewing_admin, :value => "portal"
               = f.fields_for :study_type_answers, study.study_type_answers do |answer|
                 - if answer.object.study_type_question.study_type_question_group.active 
                   .field{id: "study_type_answer_#{answer.object.study_type_question.friendly_id}"}

@@ -655,13 +655,8 @@ ActiveRecord::Schema.define(version: 20160106161249) do
     t.datetime "recruitment_start_date"
     t.datetime "recruitment_end_date"
     t.boolean  "selected_for_epic",                                                           default: false
-<<<<<<< HEAD
     t.boolean  "archived",                                                                    default: false
     t.integer  "study_type_question_group_id",          limit: 4
-=======
-    t.boolean  "has_cofc"
-    t.boolean  "archived",                                                                    default: false
->>>>>>> master
   end
 
   add_index "protocols", ["next_ssr_id"], name: "index_protocols_on_next_ssr_id", using: :btree

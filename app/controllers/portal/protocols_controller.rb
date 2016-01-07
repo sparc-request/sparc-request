@@ -109,7 +109,8 @@ class Portal::ProtocolsController < Portal::BaseController
   end
 
   def update
-    attrs = params[@protocol.type.downcase.to_sym]
+    attrs = params[:study].merge(study_type_question_group_id: StudyTypeQuestionGroup.active.pluck(:id).first) || params[:project]
+    # attrs = params[@protocol.type.downcase.to_sym].merge(study_type_question_group_id: StudyTypeQuestionGroup.active.pluck(:id).first)
     if @protocol.update_attributes attrs
       flash[:notice] = "Study updated"
       redirect_to portal_root_path(:default_protocol => @protocol)
@@ -118,9 +119,9 @@ class Portal::ProtocolsController < Portal::BaseController
       render :action => 'edit'
     end
 
-    if @protocol.is_study? && !@protocol.active?
-      @protocol.activate
-    end
+    # if @protocol.is_study? && !@protocol.active?
+    #   @protocol.activate
+    # end
     
   end
 

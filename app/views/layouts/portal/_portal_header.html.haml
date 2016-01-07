@@ -21,8 +21,8 @@
 %nav.navbar.navbar-default.portal-nav
   .container-fluid
     .navbar-header
-      %a.navbar-brand{ href: '#' }
-        Dashboard
+      %p.navbar-text
+        = breadcrumbs(@protocol, @sub_service_request)
       %p.navbar-text= show_welcome_message(@user)
     %ul.nav.navbar-nav.navbar-right
       %li

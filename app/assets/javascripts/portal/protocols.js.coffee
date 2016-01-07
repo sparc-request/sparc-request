@@ -301,3 +301,14 @@ $(document).ready ->
           $(".protocol-information-#{protocol_id}").html('')
       })
   }
+
+  $(document).on('click', '.protocols_row > .id,.title,.pis', ->
+    #if you click on the row, it opens the notification show
+    row_index   = $(this).parents("tr").data("index")
+    protocol_id = $(this).parents("#protocols_table").bootstrapTable("getData")[row_index].id
+    window.location = "/portal/protocols/#{protocol_id}"
+  )
+
+  window.protocols_row_style = (row, index) ->
+    class_string = 'protocols_row'
+    return { classes: class_string }

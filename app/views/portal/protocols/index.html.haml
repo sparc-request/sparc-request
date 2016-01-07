@@ -21,7 +21,7 @@
 .bootstrap-table-dropdown-overflow
   #protocols-toolbar
     %button.btn.btn-success#create-new-study-button{ type: 'button', data: { url: "#{new_portal_protocol_path}"} } Create New Study
-  %table.protocol_table{id: "protocol_table", data: {toggle: 'table', search: "true", "show-columns" => "true", "show-refresh" => "true", "show-toggle" => "true", url: portal_protocols_path(format: :json), striped: "true", toolbar: "#protocols-toolbar", "show-export" => "true", "export-types" => ['excel']}}
+  %table.protocols_table{id: "protocols_table", data: {toggle: 'table', search: "true", "show-columns" => "true", "show-refresh" => "true", "show-toggle" => "true", url: portal_protocols_path(format: :json), striped: "true", toolbar: "#protocols-toolbar", "show-export" => "true", "export-types" => ['excel'], "row-style" => "protocols_row_style"}}
     %thead.primary-header
       %tr
         %th{data: {class: 'id', align: "left", sortable: "true", field: "id"}}

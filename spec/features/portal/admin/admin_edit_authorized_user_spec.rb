@@ -25,10 +25,10 @@ RSpec.feature 'User wants to edit an authorized user', js: true do
   let_there_be_j
   fake_login_for_each_test
   build_service_request_with_project
-  
+
   before :each do
     add_visits
-    
+
     visit portal_admin_sub_service_request_path sub_service_request.id
     wait_for_javascript_to_finish
     page.find('a', text: "Authorized Users", visible: true).click()

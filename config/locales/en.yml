@@ -912,6 +912,7 @@ en:
     srid: "SRID:"
     status: "Status:"
     title: "Title:"
+    wait_message: Please be patient while the Project/Study loads.
 
   # Portal sub service request dialog
   ssr_dialog:

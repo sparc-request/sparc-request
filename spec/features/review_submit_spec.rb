@@ -185,6 +185,8 @@ RSpec.describe "review page", js: true do
 
       it "should not send services missing cpt code and charge code" do
         visit Capybara::Node::Simple.new(@email.body.to_s).find_link("Send to Epic")['href']
+        wait_for_javascript_to_finish
+        
         expect(page).to have_content "#{service2.name} does not have a CPT or a Charge code."
       end
     end

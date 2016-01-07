@@ -25,10 +25,10 @@ RSpec.feature "User wants to create a Study", js: true do
   let_there_be_j
   fake_login_for_each_test
   build_service_request_with_study
-  build_study_type_questions
 
   before :each do
     service_request.update_attribute(:status, 'first_draft')
+    study.update_attributes(study_type_question_group_id: StudyTypeQuestionGroup.where(active:true).pluck(:id).first)
   end
 
   #TODO: Add Authorized Users Specs
@@ -78,27 +78,35 @@ RSpec.feature "User wants to create a Study", js: true do
     end
 
     context 'and submits the form after selecting Publish to Epic and not filling out questions' do
-      scenario 'and sees some errors' do
+      
+      before :each do
         given_i_am_viewing_the_protocol_information_page
+        when_i_fill_out_the_protocol_information
+      end
+
+      scenario 'and sees some errors' do
         when_i_select_publish_study_to_epic
+        when_i_set_question_1_to "No"
         when_i_submit_the_form
         then_i_should_see_errors_of_type 'protocol information publish to epic'
-        when_i_set_question_1a_to "Yes"
+      end
+
+      scenario 'and sees some errors' do
+        when_i_select_publish_study_to_epic
+        when_i_set_question_1_to "No"
+        when_i_set_question_2_to "Yes"
         when_i_submit_the_form
         then_i_should_see_errors_of_type 'protocol information publish to epic'
-        when_i_set_question_1b_to "No"
-        when_i_submit_the_form
-        then_i_should_see_errors_of_type 'protocol information publish to epic'
-        when_i_set_question_1c_to "No"
-        when_i_submit_the_form
-        then_i_should_see_errors_of_type 'protocol information publish to epic'
-        when_i_set_question_2_to "No"
-        when_i_submit_the_form
-        then_i_should_see_errors_of_type 'protocol information publish to epic'
+      end
+
+      scenario 'and sees no errors' do
+        when_i_select_publish_study_to_epic
+        when_i_set_question_1_to "No"
+        when_i_set_question_2_to "Yes"
+        when_i_set_question_2b_to "No"
         when_i_set_question_3_to "No"
-        when_i_submit_the_form
-        then_i_should_see_errors_of_type 'protocol information publish to epic'
         when_i_set_question_4_to "No"
+        when_i_set_question_5_to "No"
         when_i_submit_the_form
         then_i_should_not_see_errors_of_type 'protocol information publish to epic'
       end
@@ -163,17 +171,6 @@ RSpec.feature "User wants to create a Study", js: true do
   def when_i_fill_out_the_title title="Fake Title"
     fill_in "study_title", with: title
   end
-
-  def when_i_select_the_has_cofc has_cofc=true
-    case has_cofc
-      when true
-        find('#study_has_cofc_true').click
-      when false
-        find('#study_has_cofc_false').click
-      else
-        puts "An unexpected value was received in when_i_select_the_has_cofc. Perhaps there was a typo?"
-    end
-  end
   
   def when_i_fill_out_the_sponsor_name sponsor_name="Fake Sponsor Name"
     fill_in "study_sponsor_name", with: sponsor_name
@@ -198,34 +195,35 @@ RSpec.feature "User wants to create a Study", js: true do
     end
   end
 
-  def when_i_set_question_1a_to selection
-    select selection, from: "study_type_answer_higher_level_of_privacy_answer"
-  end
-  
-  def when_i_set_question_1b_to selection
+  def when_i_set_question_1_to selection
     select selection, from: "study_type_answer_certificate_of_conf_answer"
   end
+  
+  def when_i_set_question_2_to selection
+    select selection, from: "study_type_answer_higher_level_of_privacy_answer"
+  end
 
-  def when_i_set_question_1c_to selection
+  def when_i_set_question_2b_to selection
     select selection, from: "study_type_answer_access_study_info_answer"
   end
 
-  def when_i_set_question_2_to selection
+  def when_i_set_question_3_to selection
     select selection, from: "study_type_answer_epic_inbasket_answer"
   end
 
-  def when_i_set_question_3_to selection
+  def when_i_set_question_4_to selection
     select selection, from: "study_type_answer_research_active_answer"
   end
 
-  def when_i_set_question_4_to selection
+  def when_i_set_question_5_to selection
     select selection, from: "study_type_answer_restrict_sending_answer"
   end
 
   def when_i_fill_out_the_protocol_information
     when_i_fill_out_the_short_title
     when_i_fill_out_the_title
-    when_i_select_the_has_cofc
+
+
     when_i_select_the_funding_status
     when_i_select_the_funding_source
     when_i_fill_out_the_sponsor_name
@@ -260,7 +258,6 @@ RSpec.feature "User wants to create a Study", js: true do
     expect(study.funding_status).to eq("funded")
     expect(study.funding_source).to eq("federal")
     expect(study.selected_for_epic).to eq(false)
-    expect(study.has_cofc).to eq(true)
     expect(ServiceRequest.first.status).to_not eq("first_draft")
   end
 
@@ -286,7 +283,6 @@ RSpec.feature "User wants to create a Study", js: true do
         expect(page).to have_content("Title can't be blank")
         expect(page).to have_content("Funding status can't be blank")
         expect(page).to have_content("Sponsor name can't be blank")
-        expect(page).to have_content("Does your study have a Certificate of Confidentiality must be answered")
       when 'protocol information funding source'
         expect(page).to have_content("Funding source You must select a funding source")
       when 'protocol information potential funding source'  

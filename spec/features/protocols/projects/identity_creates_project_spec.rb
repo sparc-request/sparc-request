@@ -24,191 +24,108 @@ RSpec.feature 'User wants to create a Project', js: true do
   let_there_be_lane
   let_there_be_j
   fake_login_for_each_test
-  build_service_request_with_project
+
+  let!(:institution)  { create(:institution, name: 'Medical University of South Carolina', order: 1, abbreviation: 'MUSC', is_available: 1) }
+  let!(:provider)     { create(:provider, name: 'South Carolina Clinical and Translational Institute (SCTR)', order: 1,
+                               css_class: 'blue-provider', parent_id: institution.id, abbreviation: 'SCTR1', process_ssrs: 0, is_available: 1) }
+  let!(:program)      { create(:program_with_pricing_setup, name: 'Office of Biomedical Informatics', order: 1, parent_id: provider.id,
+                               abbreviation:'Informatics') }
+  let!(:core)         { create(:core, type: 'Core', name: 'Clinical Data Warehouse', order: 1, parent_id: program.id,
+                               abbreviation: 'Clinical Data Warehouse') }
+  let!(:service)      { create(:service, name: 'MUSC Research Data Request (CDW)', abbreviation: 'CDW', order: 1, cpt_code: '',
+                               organization_id: core.id, one_time_fee: true) }
+  let!(:service2)     { create(:service, name: 'Breast Milk Collection', abbreviation: 'Breast Milk Collection', order: 1, cpt_code: '',
+                               organization_id: core.id) }
+  let!(:pricing_map)  { create(:pricing_map, service_id: service.id, unit_type: 'Per Query', unit_factor: 1, full_rate: 0,
+                               exclude_from_indirect_cost: 0, unit_minimum: 1) }
+  let!(:pricing_map2) { create(:pricing_map, service_id: service2.id, unit_type: 'Per patient/visit', unit_factor: 1, full_rate: 636,
+                               exclude_from_indirect_cost: 0, unit_minimum: 1) }
 
   before :each do
-    service_request.update_attribute(:status, 'first_draft')
+    visit '/'
+    click_link 'South Carolina Clinical and Translational Institute (SCTR)'
+    wait_for_javascript_to_finish
+    click_link 'Office of Biomedical Informatics'
+    wait_for_javascript_to_finish
+    click_button 'Add', match: :first
+    wait_for_javascript_to_finish
+    click_button 'Yes'
+    wait_for_javascript_to_finish
+    find('.submit-request-button').click
+    click_link 'New Project'
+    wait_for_javascript_to_finish
   end
 
   #TODO: Add Authorized Users Specs
-  context 'and clicks the New Project button' do
+  context 'clicks the New Project button' do
     scenario 'and sees the Protocol Information form' do
-      given_i_am_viewing_the_service_request_protocol_page
-      when_i_click_the_new_project_button
-      then_i_should_see_the_protocol_information_page
+      page.find '#new_project'
     end
 
     scenario 'and sees the cancel button' do
-      given_i_am_viewing_the_service_request_protocol_page
-      when_i_click_the_new_project_button
-      then_i_should_see_the_nav_button_with_text 'Cancel'
+      expect(page).to have_link 'Cancel'
     end
 
     scenario 'and sees the continue button' do
-      given_i_am_viewing_the_service_request_protocol_page
-      when_i_click_the_new_project_button
-      then_i_should_see_the_nav_button_with_text 'Continue'
+      expect(page).to have_link 'Continue'
     end
 
     context 'and submits the form without filling out required fields' do
       scenario 'and sees some errors' do
-        given_i_am_viewing_the_protocol_information_page
-        when_i_submit_the_form
-        then_i_should_see_errors_of_type 'protocol information required fields'
+        click_link 'Continue'
+        wait_for_javascript_to_finish
+        page.find '#errorExplanation'
       end
     end
 
-    context 'and submits the form without selecting a funding source' do
-      scenario 'and sees some errors' do
-        given_i_am_viewing_the_protocol_information_page
-        when_i_select_the_funding_status
-        when_i_submit_the_form
-        then_i_should_see_errors_of_type 'protocol information funding source'
+    context 'funding sources' do
+      before :each do
+        fill_in 'project_short_title', with: 'title'
+        fill_in 'project_title', with: 'title'
       end
-    end
+      scenario 'submits the form without selecting a funding source' do
+        select 'Funded', from: 'project_funding_status'
+        click_link 'Continue'
+        wait_for_javascript_to_finish
+        expect(page).to have_content "Funding source You must select a funding source"
+      end
 
-    context 'and submits the form without selecting a potential funding source' do
-      scenario 'and sees some errors' do
-        given_i_am_viewing_the_protocol_information_page
-        when_i_select_the_funding_status "Pending Funding"
-        when_i_submit_the_form
-        then_i_should_see_errors_of_type 'protocol information potential funding source'
+      scenario 'and submits the form without selecting a potential funding source' do
+        click_link 'Continue'
+        wait_for_javascript_to_finish
+        expect(page).to have_content "Funding status can't be blank"
       end
     end
 
     context 'and submits the form after filling out required fields' do
+      before :each do
+        fill_in 'project_short_title', with: 'title'
+        fill_in 'project_title', with: 'title'
+        select 'Funded', from: 'project_funding_status'
+        select 'College Department', from: 'project_funding_source'
+        click_link 'Continue'
+        wait_for_javascript_to_finish
+      end
       scenario 'and sees the Authorized Users page' do
-        given_i_am_viewing_the_protocol_information_page
-        when_i_fill_out_the_protocol_information
-        when_i_submit_the_form
-        then_i_should_see_the_authorized_users_page
+        expect(page).to have_content 'Add Users'
       end
 
       scenario 'and sees the go back button' do
-        given_i_am_viewing_the_protocol_information_page
-        when_i_fill_out_the_protocol_information
-        when_i_submit_the_form
-        then_i_should_see_the_nav_button_with_text 'Go Back'
+        expect(page).to have_link 'Go Back'
       end
 
       scenario 'and sees the save and continue button' do
-        given_i_am_viewing_the_protocol_information_page
-        when_i_fill_out_the_protocol_information
-        when_i_submit_the_form
-        then_i_should_see_the_nav_button_with_text 'Save & Continue'
+        expect(page).to have_link 'Save & Continue'
       end
 
-      context 'TEMP: and adds themself as a Primary PI and submits the Project' do
-        scenario 'and sees the Project with correct information' do
-          given_i_am_viewing_the_authorized_users_page
-          when_i_add_myself_as_a_primary_pi
-          when_i_submit_the_form
-          then_i_should_see_the_project_was_added_correctly
-        end
+      scenario 'and sees the Project with correct information' do
+        select 'Primary PI', from: 'project_role_role'
+        click_button 'Add Authorized User'
+        wait_for_javascript_to_finish
+        click_link 'Save & Continue'
+        wait_for_javascript_to_finish
+        expect(page).to have_link 'Edit Project'
       end
-    end
-  end
-
-  def given_i_am_viewing_the_service_request_protocol_page
-    visit protocol_service_request_path service_request.id
-  end
-
-  def given_i_am_viewing_the_protocol_information_page
-    given_i_am_viewing_the_service_request_protocol_page
-    when_i_click_the_new_project_button
-  end
-
-  def given_i_am_viewing_the_authorized_users_page
-    given_i_am_viewing_the_protocol_information_page
-    when_i_fill_out_the_protocol_information
-    when_i_submit_the_form
-  end
-
-  def when_i_click_the_new_project_button
-    click_link "Project"
-  end
-
-  def when_i_fill_out_the_short_title short_title="Fake Short Title"
-    fill_in "project_short_title", with: short_title
-  end
-
-  def when_i_fill_out_the_title title="Fake Title"
-    fill_in "project_title", with: title
-  end
-
-  def when_i_select_the_funding_status funding_status="Funded"
-    select funding_status, from: "project_funding_status"
-  end
-
-  def when_i_select_the_funding_source funding_source="Federal"
-    select funding_source, from: "project_funding_source"
-  end
-
-  def when_i_fill_out_the_protocol_information
-    when_i_fill_out_the_short_title
-    when_i_fill_out_the_title
-    when_i_select_the_funding_status
-    when_i_select_the_funding_source
-  end
-
-  def when_i_add_myself_as_a_primary_pi
-    select "Primary PI", from: "project_role_role"
-    find("button.add-authorized-user").click
-    wait_for_javascript_to_finish
-  end
-
-  def when_i_submit_the_form
-    find('.continue_button').click
-    wait_for_javascript_to_finish
-  end
-
-  def then_i_should_see_the_protocol_information_page
-    expect(page).to have_text("STEP 1: Protocol Information")
-  end
-
-  def then_i_should_see_the_authorized_users_page
-    expect(page).to have_text("STEP 1: Add Users")
-  end
-
-  def then_i_should_see_the_project_was_added_correctly
-    project = Protocol.last
-
-    expect(project.type).to eq("Project")
-    expect(project.short_title).to eq("Fake Short Title")
-    expect(project.title).to eq("Fake Title")
-    expect(project.funding_status).to eq("funded")
-    expect(project.funding_source).to eq("federal")
-    expect(ServiceRequest.first.status).to_not eq("first_draft")
-  end
-
-  def then_i_should_see_the_nav_button_with_text text
-    case text
-      when 'Cancel'
-        expect(page).to have_selector("a.cancel span", text: text)
-      when 'Go Back'
-        expect(page).to have_selector("a.go-back span", text: text)
-      when 'Continue'
-        expect(page).to have_selector("a.continue span", text: text)
-      when 'Save & Continue'
-        expect(page).to have_selector("a.save span", text: text)
-      else
-        puts "An unexpected nav button text was found in then_i_should_see_the_nav_button_with_text. Perhaps there was a typo?"
-    end
-  end
-
-  def then_i_should_see_errors_of_type error_type
-    case error_type
-      when 'protocol information required fields'
-        expect(page).to have_content("Short title can't be blank")
-        expect(page).to have_content("Title can't be blank")
-        expect(page).to have_content("Funding status can't be blank")
-      when 'protocol information funding source'
-        expect(page).to have_content("Funding source You must select a funding source")
-      when 'protocol information potential funding source'
-        expect(page).to have_content("Potential funding source You must select a potential funding source")
-      else
-        puts "An unexpected error was found in then_i_should_see_errors_of_type. Perhaps there was a typo?"
-        expect(0).to eq(1)
     end
   end
 end

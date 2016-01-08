@@ -20,7 +20,8 @@
 
 - admin ||= false
 - url = admin ? update_from_project_study_information_dashboard_sub_service_request_path(@sub_service_request.id) : dashboard_protocol_path(protocol)
-= form_for protocol, :url => url do |f|
+- puts 'HEY'
+= form_for protocol, :url => url, html: { class: 'form-horizontal' } do |f|
   = f.hidden_field :requester_id
   - if admin
     = hidden_field_tag "admin_page", admin
@@ -28,6 +29,6 @@
   = f.error_messages
   - protocol_type = protocol.type
   - if protocol_type == "Study"
-    .edit-study-view= render :partial => 'dashboard/protocols/study_fields', :locals => {:study => protocol, :f => f, :admin => admin}
+    .edit-study-view.container-fluid= render :partial => 'dashboard/protocols/study_fields', :locals => {:study => protocol, :f => f, :admin => admin}
   - elsif protocol_type == "Project"
-    .edit-project-view= render :partial => 'dashboard/protocols/project_fields', :locals => {:project => protocol, :f => f, :admin => admin}
+    .edit-project-view.container-fluid= render :partial => 'dashboard/protocols/project_fields', :locals => {:project => protocol, :f => f, :admin => admin}

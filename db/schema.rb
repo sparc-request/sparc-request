@@ -11,7 +11,20 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20151116155206) do
+ActiveRecord::Schema.define(:version => 20160108152313) do
+
+  create_table "additional_details", :force => true do |t|
+    t.string   "name"
+    t.string   "description"
+    t.text     "form_definition_json"
+    t.date     "effective_date"
+    t.boolean  "enabled"
+    t.integer  "service_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "additional_details", ["service_id"], :name => "index_additional_details_on_service_id"
 
   create_table "admin_rates", :force => true do |t|
     t.integer  "line_item_id"
@@ -134,11 +147,13 @@ ActiveRecord::Schema.define(:version => 20151116155206) do
     t.string   "comment"
     t.string   "remote_address"
     t.datetime "created_at"
+    t.string   "request_uuid"
   end
 
   add_index "audits", ["associated_id", "associated_type"], :name => "associated_index"
   add_index "audits", ["auditable_id", "auditable_type"], :name => "auditable_index"
   add_index "audits", ["created_at"], :name => "index_audits_on_created_at"
+  add_index "audits", ["request_uuid"], :name => "index_audits_on_request_uuid"
   add_index "audits", ["user_id", "user_type"], :name => "user_index"
 
   create_table "available_statuses", :force => true do |t|
@@ -181,6 +196,12 @@ ActiveRecord::Schema.define(:version => 20151116155206) do
 
   add_index "charges", ["service_id"], :name => "index_charges_on_service_id"
   add_index "charges", ["service_request_id"], :name => "index_charges_on_service_request_id"
+
+  create_table "click_counters", :force => true do |t|
+    t.integer  "click_count"
+    t.datetime "created_at",  :null => false
+    t.datetime "updated_at",  :null => false
+  end
 
   create_table "clinical_providers", :force => true do |t|
     t.integer  "identity_id"
@@ -410,6 +431,17 @@ ActiveRecord::Schema.define(:version => 20151116155206) do
 
   add_index "ip_patents_info", ["protocol_id"], :name => "index_ip_patents_info_on_protocol_id"
 
+  create_table "line_item_additional_details", :force => true do |t|
+    t.text     "form_data_json"
+    t.integer  "line_item_id"
+    t.integer  "additional_detail_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "line_item_additional_details", ["additional_detail_id"], :name => "index_line_item_additional_details_on_additional_detail_id"
+  add_index "line_item_additional_details", ["line_item_id"], :name => "index_line_item_additional_details_on_line_item_id"
+
   create_table "line_items", :force => true do |t|
     t.integer  "service_request_id"
     t.integer  "sub_service_request_id"
@@ -491,9 +523,9 @@ ActiveRecord::Schema.define(:version => 20151116155206) do
     t.string   "abbreviation"
     t.text     "ack_language"
     t.boolean  "process_ssrs"
-    t.boolean  "is_available"
-    t.datetime "created_at",                   :null => false
-    t.datetime "updated_at",                   :null => false
+    t.boolean  "is_available", :default => true
+    t.datetime "created_at",                     :null => false
+    t.datetime "updated_at",                     :null => false
     t.datetime "deleted_at"
     t.boolean  "show_in_cwf"
   end
@@ -556,7 +588,7 @@ ActiveRecord::Schema.define(:version => 20151116155206) do
     t.date     "display_date"
     t.decimal  "other_rate",                 :precision => 12, :scale => 4
     t.decimal  "member_rate",                :precision => 12, :scale => 4
-    t.integer  "units_per_qty_max",                                         :default => 1
+    t.integer  "units_per_qty_max",                                         :default => 10000
     t.string   "quantity_type"
     t.string   "otf_unit_type",                                             :default => "N/A"
     t.integer  "quantity_minimum",                                          :default => 1
@@ -841,7 +873,7 @@ ActiveRecord::Schema.define(:version => 20151116155206) do
     t.string   "abbreviation"
     t.integer  "order"
     t.text     "description"
-    t.boolean  "is_available"
+    t.boolean  "is_available",                                         :default => true
     t.decimal  "service_center_cost",   :precision => 12, :scale => 4
     t.string   "cpt_code"
     t.string   "charge_code"

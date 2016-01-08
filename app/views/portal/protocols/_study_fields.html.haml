@@ -125,7 +125,7 @@
               = f.label :selected_for_epic, "Yes"
               = f.radio_button :selected_for_epic, false
               = f.label :selected_for_epic, "No"
-              = f.hidden_field :study_type_question_group_id, :value => study.study_type_question_group_id == 1 ? 'inactive' : 'active'
+              = f.hidden_field :study_type_question_group_id, :value => study.study_type_question_group_id == StudyTypeQuestionGroup.where(active:false).pluck(:id).first ? 'inactive' : 'active'
             .study_type{style: "#{f.object.selected_for_epic ? '' : 'display:none;'}"}
               = f.label :study_type_questions
               = f.hidden_field :viewing_admin, :value => "portal"

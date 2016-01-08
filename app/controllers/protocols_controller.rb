@@ -93,10 +93,14 @@ class ProtocolsController < ApplicationController
     
     @protocol.validate_nct = true
     @portal = params[:portal]
-    @protocol.assign_attributes(params[:study].merge(study_type_question_group_id: StudyTypeQuestionGroup.active.pluck(:id).first) || params[:project])
-    # if @protocol.is_study? && !@protocol.active?
-    #   @protocol.activate
-    # end
+
+    if @protocol.type.downcase.to_sym == :study 
+      attrs = params[:study].merge(study_type_question_group_id: StudyTypeQuestionGroup.active.pluck(:id).first)
+    else
+      attrs = params[:project]
+    end
+
+    @protocol.assign_attributes attrs    
 
     if @current_step == 'cancel'
       @current_step = 'return_to_service_request'

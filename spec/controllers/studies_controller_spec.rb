@@ -23,22 +23,13 @@ require 'rails_helper'
 # index new create edit update delete show
 
 RSpec.describe StudiesController do
-  let!(:service_request) { FactoryGirl.create(:service_request_without_validations) }
-  let!(:identity) { create(:identity) }
-  let!(:active_study_type_question_group)    { StudyTypeQuestionGroup.create(active: true) }
-  let!(:study) {
-    study = Study.create(attributes_for(:protocol))
-    study = build(:study, study_type_question_group_id: active_study_type_question_group.id)
-    study.save!(validate: false)
-    project_role = create(
-        :project_role,
-        protocol_id: study.id,
-        identity_id: identity.id,
-        project_rights: "approve",
-        role: "pi")
-    study.reload
-    study
-  }
+  let_there_be_lane
+  fake_login_for_each_test
+  let_there_be_j
+  
+ 
+  build_service_request_with_study
+
 
   stub_controller
 
@@ -122,10 +113,10 @@ RSpec.describe StudiesController do
 
     describe 'GET update' do
       it 'should set service_request' do
-
+        # binding.pry
         session[:service_request_id] = service_request.id
-        session[:identity_id] = identity.id
-        xhr :get, :update, { id: study.id, format: :js }.with_indifferent_access
+        # session[:identity_id] = study.project_roles.first.identity_id
+        xhr :patch, :update, id: study.id, format: :js 
         expect(assigns(:service_request)).to eq service_request
       end
 

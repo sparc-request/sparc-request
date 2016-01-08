@@ -120,6 +120,16 @@ RSpec.describe "User wants to edit a Study", js: true do
         then_i_should_see_the_updated_study
       end
     end
+
+    context 'and submits the study after modifying it' do
+      scenario 'and goes back to see the appropriate fields are displayed' do
+        given_i_am_viewing_the_protocol_information_page
+        when_i_modify_the_study
+        when_i_submit_the_form
+        when_i_go_back_to_protocol_info_page
+        then_i_should_see_the_appropriate_fields_displayed
+      end
+    end
   end
 
   def given_i_am_viewing_the_service_request_protocol_page
@@ -224,6 +234,11 @@ RSpec.describe "User wants to edit a Study", js: true do
     wait_for_javascript_to_finish
   end
 
+  def when_i_go_back_to_protocol_info_page
+    find('.go-back').click
+    wait_for_javascript_to_finish
+  end
+
   def then_i_should_see_the_protocol_information_page
     expect(page).to have_text("STEP 1: Protocol Information")
   end
@@ -243,6 +258,15 @@ RSpec.describe "User wants to edit a Study", js: true do
     expect(study.funding_source).to eq("college")
     expect(study.selected_for_epic).to eq(true)
     expect(ServiceRequest.first.status).to_not eq("first_draft")
+  end
+
+  def then_i_should_see_the_appropriate_fields_displayed
+    expect(page).to have_select('study_type_answer_certificate_of_conf_answer', selected: 'Yes')
+    expect(page).to have_select('study_type_answer_higher_level_of_privacy_answer', selected: 'Yes')
+    expect(page).to_not have_selector('#study_type_answer_access_study_info')
+    expect(page).to_not have_selector('#study_type_answer_epic_inbasket')
+    expect(page).to_not have_selector('#study_type_answer_research_active')
+    expect(page).to_not have_selector('#study_type_answer_restrict_sending') 
   end
 
   def then_i_should_see_the_nav_button_with_text text

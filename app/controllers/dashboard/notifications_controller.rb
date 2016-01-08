@@ -22,24 +22,21 @@ class Dashboard::NotificationsController < Dashboard::BaseController
   respond_to :html, :json
 
   def index
-    respond_to do |format|
-      format.html {
-        @notification_index = true
-        @notifications = @user.all_notifications
-        respond_with @user, @notifications
-      }
-      format.json {
-        @table = params[:table]
-        ssr_id = params[:sub_service_request_id].to_i
-        @notifications = @user.all_notifications.select!{ |n| n.sub_service_request_id == ssr_id }
-        if @table == "inbox"
-          # return list of notifications with any messages to current user
-          @notifications.select!{ |n| n.messages.any? { |m| m.to == @user.id }}
-        elsif @table == "sent"
-          # return list of notifications with any messages from current user
-          @notifications.select!{ |n| n.messages.any? { |m| m.from == @user.id }}
-        end
-      }
+    if params[:sub_service_request_id]
+      # specific to ssr
+      @notifications = @user.all_notifications.select!{ |n| n.sub_service_request_id == params[:sub_service_request_id].to_i }
+    else
+      # all user notifications
+      @notifications = @user.all_notifications
+    end
+
+    @table = params[:table]
+    if @table == "inbox"
+      # return list of notifications with any messages to current user
+      @notifications.select!{ |n| n.messages.any? { |m| m.to == @user.id }}
+    elsif @table == "sent"
+      # return list of notifications with any messages from current user
+      @notifications.select!{ |n| n.messages.any? { |m| m.from == @user.id }}
     end
   end
 

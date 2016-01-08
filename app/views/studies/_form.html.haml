@@ -52,7 +52,7 @@
 -#
 - options = {:remote => true}
 - if portal.to_s == 'true'
-  - options[:url] = portal_studies_path (study)
+  - options[:url] = dashboard_studies_path (study)
 
 = form_for study, options do |f|
   = hidden_field_tag "portal", portal

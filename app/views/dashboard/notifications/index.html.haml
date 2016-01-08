@@ -18,7 +18,33 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.user_portal_notifications
-  = render 'dashboard/home/user_information'
-  #notifications
-    = render 'dashboard/notifications/notifications'
+.col-xs-12.tabs{role: 'tabpanel'}
+  .col-xs-2#notification_tabs{data: {selected: "inbox"}}
+    %button.btn.btn-primary.btn-block.notification_nav#notifications_inbox
+      %span.pull-left
+        %span.glyphicon.glyphicon-inbox
+        %span Inbox
+      %span.glyphicon.glyphicon-refresh.pull-right
+    %button.btn.btn-default.btn-block.notification_nav#notifications_sent
+      %span.pull-left
+        %span.glyphicon.glyphicon-send
+        %span Sent
+      %span.glyphicon.glyphicon-refresh.pull-right{style: "display: none;"}
+  .col-xs-10
+    #notifications-custom-toolbar
+      %button.btn.btn-default.mark_as_read_unread{data: {read: "false"}}
+        -# mark as unread
+        Mark as Unread
+      %button.btn.btn-default.mark_as_read_unread{data: {read: "true"}}
+        -# mark as read
+        Mark as Read
+    %table.notifications_table.table-condensed.table-no-bordered{id: "notifications-table", data: {toggle: 'table', search: "true", url: dashboard_notifications_path(format: :json, table: "inbox"), toolbar: "#notifications-custom-toolbar", "sort-name" => "time", "sort-order" => 'desc', "row-style" => "notifications_row_style"}}
+      %thead.primary-header
+        %tr
+          %th{data: {class: 'state', field: "state", checkbox: "true"}}
+          %th{data: {class: 'user', align: "left", sortable: "true", field: "user"}}
+            User
+          %th{data: {class: 'subject', align: "left", sortable: "false", field: "subject"}}
+            Subject
+          %th{data: {class: 'time', align: "right", sortable: "true", field: "time"}}
+            Time

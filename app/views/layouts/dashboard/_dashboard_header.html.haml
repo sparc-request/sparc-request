@@ -26,6 +26,6 @@
       %p.navbar-text= show_welcome_message(@user)
     %ul.nav.navbar-nav.navbar-right
       %li
-        %button.btn.btn-danger.navbar-btn#messages-btn{ type: 'button' }
+        %button.btn.btn-danger.navbar-btn#messages-btn{ type: 'button'}
           Messages
           %span.badge= @user.unread_notification_count(@user)

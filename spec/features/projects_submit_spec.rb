@@ -81,33 +81,8 @@ RSpec.describe "creating a new project ", js: true do
       find('.continue_button').click
       wait_for_javascript_to_finish
       expect(page).to have_link 'Edit Project'
+      click_link 'Edit Project'
+      expect(find("#project_short_title")).to have_value("Bob")
     end
   end
 end
-
-# RSpec.describe "editing a project" do
-#   let_there_be_lane
-#   let_there_be_j
-#   fake_login_for_each_test
-#   build_service_request()
-#   build_project()
-
-#   before :each do
-#     visit protocol_service_request_path service_request.id
-#   end
-
-#   describe "editing the short title", js: true do
-
-#     it "should save the short title" do
-#       find('.edit-project').click
-#       fill_in "project_short_title", with: "Patsy"
-#       find('.continue_button').click
-#       wait_for_javascript_to_finish
-#       find('.continue_button').click
-#       wait_for_javascript_to_finish
-#       find('.edit-project').click
-
-#       expect(find("#project_short_title")).to have_value("Patsy")
-#     end
-#   end
-# end

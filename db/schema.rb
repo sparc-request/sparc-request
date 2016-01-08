@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20151116155206) do
+ActiveRecord::Schema.define(version: 20160108152313) do
 
   create_table "admin_rates", force: :cascade do |t|
     t.integer  "line_item_id", limit: 4
@@ -183,6 +183,12 @@ ActiveRecord::Schema.define(:version => 20151116155206) do
 
   add_index "charges", ["service_id"], name: "index_charges_on_service_id", using: :btree
   add_index "charges", ["service_request_id"], name: "index_charges_on_service_request_id", using: :btree
+
+  create_table "click_counters", force: :cascade do |t|
+    t.integer  "click_count", limit: 4
+    t.datetime "created_at",            null: false
+    t.datetime "updated_at",            null: false
+  end
 
   create_table "clinical_providers", force: :cascade do |t|
     t.integer  "identity_id",     limit: 4
@@ -493,9 +499,9 @@ ActiveRecord::Schema.define(:version => 20151116155206) do
     t.string   "abbreviation", limit: 255
     t.text     "ack_language", limit: 65535
     t.boolean  "process_ssrs"
-    t.boolean  "is_available"
-    t.datetime "created_at",                              null: false
-    t.datetime "updated_at",                              null: false
+    t.boolean  "is_available",               default: true
+    t.datetime "created_at",                                null: false
+    t.datetime "updated_at",                                null: false
     t.datetime "deleted_at"
     t.boolean  "show_in_cwf"
   end
@@ -558,7 +564,7 @@ ActiveRecord::Schema.define(:version => 20151116155206) do
     t.date     "display_date"
     t.decimal  "other_rate",                             precision: 12, scale: 4
     t.decimal  "member_rate",                            precision: 12, scale: 4
-    t.integer  "units_per_qty_max",          limit: 4,                            default: 1
+    t.integer  "units_per_qty_max",          limit: 4,                            default: 10000
     t.string   "quantity_type",              limit: 255
     t.string   "otf_unit_type",              limit: 255,                          default: "N/A"
     t.integer  "quantity_minimum",           limit: 4,                            default: 1
@@ -582,7 +588,7 @@ ActiveRecord::Schema.define(:version => 20151116155206) do
     t.string   "internal_rate_type",     limit: 255
     t.string   "foundation_rate_type",   limit: 255
     t.datetime "deleted_at"
-    t.string   "unfunded_rate_type"
+    t.string   "unfunded_rate_type",     limit: 255
   end
 
   add_index "pricing_setups", ["organization_id"], name: "index_pricing_setups_on_organization_id", using: :btree
@@ -655,7 +661,7 @@ ActiveRecord::Schema.define(:version => 20151116155206) do
     t.datetime "recruitment_end_date"
     t.boolean  "selected_for_epic",                                                           default: false
     t.boolean  "has_cofc"
-    t.boolean  "archived",                                                            :default => false
+    t.boolean  "archived",                                                                    default: false
   end
 
   add_index "protocols", ["next_ssr_id"], name: "index_protocols_on_next_ssr_id", using: :btree
@@ -843,7 +849,7 @@ ActiveRecord::Schema.define(:version => 20151116155206) do
     t.string   "abbreviation",          limit: 255
     t.integer  "order",                 limit: 4
     t.text     "description",           limit: 65535
-    t.boolean  "is_available"
+    t.boolean  "is_available",                                                 default: true
     t.decimal  "service_center_cost",                 precision: 12, scale: 4
     t.string   "cpt_code",              limit: 255
     t.string   "charge_code",           limit: 255

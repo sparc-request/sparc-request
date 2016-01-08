@@ -110,7 +110,7 @@
               %span.padding-right-5.padding-left-2 /
               = text_field_tag 'quantity', line_item.quantity, :unit_minimum => line_item.service.displayed_pricing_map.unit_minimum, :class => 'line_item_quantity', :"data-line_item_id" => line_item.id, :"data-study_tracker" => true, :current_quantity => line_item.quantity
             %td= line_item.service.try(:displayed_pricing_map).try(:quantity_type).try(:humanize)
-          %td= link_to(image_tag('portal/cancel.png'), 'javascript:void(0);', :'data-line_item_id' => line_item.id, :'data-has_fulfillments' => one_time_fee_fulfillments?(line_item.id), :class => 'cwf_delete_data')
+          %td= link_to(image_tag('dashboard/cancel.png'), 'javascript:void(0);', :'data-line_item_id' => line_item.id, :'data-has_fulfillments' => one_time_fee_fulfillments?(line_item.id), :class => 'cwf_delete_data')
 
 
   - else # display default calendar otf line items

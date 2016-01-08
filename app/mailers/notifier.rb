@@ -54,7 +54,7 @@ class Notifier < ActionMailer::Base
 
     @protocol = service_request.protocol
     @service_request = service_request
-    @portal_link = USER_PORTAL_LINK + "?default_protocol=#{@protocol.id}"
+    @portal_link = DASHBOARD_LINK + "?default_protocol=#{@protocol.id}"
     @portal_text = "To VIEW and/or MAKE any changes to this request, please click here."
     @provide_arm_info = false
 
@@ -75,7 +75,7 @@ class Notifier < ActionMailer::Base
     @service_request = service_request
     @role = 'none'
     @approval_link = nil
-    @portal_link = USER_PORTAL_LINK + "admin"
+    @portal_link = DASHBOARD_LINK
     @portal_text = "Administrators/Service Providers, Click Here"
     @provide_arm_info = false
 
@@ -100,7 +100,7 @@ class Notifier < ActionMailer::Base
     @provide_arm_info = audit_report.nil? ? true : SubServiceRequest.find(@audit_report[:sub_service_request_id]).has_per_patient_per_visit_services?
     @ssr_deleted = ssr_deleted
 
-    @portal_link = USER_PORTAL_LINK + "admin"
+    @portal_link = DASHBOARD_LINK
     @portal_text = "Administrators/Service Providers, Click Here"
 
     @triggered_by = user_current.id

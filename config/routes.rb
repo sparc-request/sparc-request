@@ -180,41 +180,65 @@ SparcRails::Application.routes.draw do
     root to: 'catalog#index'
   end
 
-  # ##### Study Tracker/Clinical Work Fulfillment Portal#####
-  # namespace :study_tracker, :path => "clinical_work_fulfillment" do
-  #   match 'appointments/add_note' => 'calendars#add_note', via: [:get, :post]
-  #   match 'calendars/delete_toast_messages' => 'calendars#delete_toast_messages', via: [:all]
-  #   match 'calendars/change_visit_group' => 'calendars#change_visit_group', via: [:get, :post]
-  #   match 'appointments/add_service' => 'calendars#add_service', via: [:get, :post]
+  namespace :dashboard do
 
-  #   root to: 'home#index'
+    resources :studies, controller: :protocols, except: [:destroy]
+    resources :projects, controller: :protocols, except: [:destroy]
+    resources :protocols, except: [:destroy] do
+      member do
+        get :view_full_calendar
+        put :update_protocol_type
+        put :update_from_fulfillment
+      end
+      resources :associated_users, except: [:index]
+    end
 
-  #   resources :home, only: [:index] do
-  #     collection do
-  #       get :billing_report_setup
-  #       post :billing_report
-  #     end
-  #   end
+    resources :associated_users do
+      collection do
+        get :search
+      end
+    end
 
-  #   resources :sub_service_requests, only: [:show, :update] do
-  #     resources :calendars, only: [:show]
-  #     resources :cover_letters, except: [:index, :destroy]
-  #   end
+    resources :service_requests, only: [:show] do
+      member do
+        put :update_from_fulfillment
+      end
+    end
 
-  #   resources :service_requests, only: [:update]
-  #   resources :subjects, only: [:update]
+    resources :sub_service_requests, except: [:index] do
+      member do
+        put :update_from_fulfillment
+        patch :update_from_project_study_information
+        put :push_to_epic
+        get :admin_approvals_show
+        post :admin_approvals_update
+        get :change_history_tab
+        get :status_history
+        get :subsidy_history
+        get :approval_history
+      end
+    end
 
-  #   resources :protocols, only: [:update] do
-  #     member do
-  #       put :update_billing_business_manager_static_email
-  #     end
-  #   end
-  # end
+    resources :notifications, only: [:index, :new, :create] do
+      member do
+        put :user_portal_update
+        put :admin_update
+      end
+      collection do
+        put :mark_as_read
+      end
+    end
 
-  ##### sparc-user routes brought in and namespaced
-  namespace :portal do
+    resources :subsidies, only: [:create, :update, :destroy] do
+      member do
+        put :update_from_fulfillment
+      end
+    end
+    match "/subsidys/:id/update_from_fulfillment" => "subsidies#update_from_fulfillment", via: [:put]
+    match "/subsidys/:id" => "subsidies#destroy", via: [:delete]
+
+    resources :epic_queues, only: ['index', 'destroy']
     resources :services, only: [:show]
-    # resources :admin, only: [:index]
     resources :documents
     resources :messages, only: [:index, :new, :create]
     resources :notes, only: [:index, :new, :create]
@@ -240,102 +264,33 @@ SparcRails::Application.routes.draw do
       end
     end
 
-    resources :associated_users do
-      collection do
-        get :search
-      end
-    end
-
-    resources :service_requests, only: [:show]
-
-    resources :protocols, except: [:destroy] do
+    resources :fulfillments do
       member do
-        get :view_full_calendar
+        put :update_from_fulfillment
       end
-      resources :associated_users, except: [:index]
     end
 
-    resources :studies, controller: :protocols, except: [:destroy]
-    resources :projects, controller: :protocols, except: [:destroy]
-
-    resources :notifications, only: [:index, :new, :create] do
+    resources :line_items do
       member do
-        put :user_portal_update
-        put :admin_update
-      end
-      collection do
-        put :mark_as_read
+        get :details
+        put :update_from_fulfillment
+        put :update_from_cwf
       end
     end
 
-
-    resources :epic_queues, only: ['index', 'destroy']
-
-    resource :admin do
-      root to: 'sub_service_requests#index'
-      resources :sub_service_requests, except: [:index] do
-        member do
-          put :update_from_fulfillment
-          patch :update_from_project_study_information
-          put :push_to_epic
-          get :admin_approvals_show
-          post :admin_approvals_update
-          get :change_history_tab
-          get :status_history
-          get :subsidy_history
-          get :approval_history
-        end
-      end
-
-      resources :protocols, except: [:destroy] do
-        member do
-          put :update_protocol_type
-          put :update_from_fulfillment
-        end
-      end
-
-      resources :subsidies, only: [:create, :update, :destroy] do
-        member do
-          put :update_from_fulfillment
-        end
-      end
-
-      resources :fulfillments do
-        member do
-          put :update_from_fulfillment
-        end
-      end
-
-      resources :line_items do
-        member do
-          get :details
-          put :update_from_fulfillment
-          put :update_from_cwf
-        end
-      end
-
-      resources :line_items_visits, only: [:destroy] do
-        member do
-          put :update_from_fulfillment
-        end
-      end
-
-      resources :visits, only: [:destroy] do
-        member do
-          put :update_from_fulfillment
-        end
-      end
-
-      collection do
-        put "/visits/:id/update_from_fulfillment" => "visits#update_from_fulfillment"
-        put "/service_requests/:id/update_from_fulfillment" => "service_requests#update_from_fulfillment"
-        put "/subsidys/:id/update_from_fulfillment" => "subsidies#update_from_fulfillment"
-        delete "/subsidys/:id" => "subsidies#destroy"
-        delete "/delete_toast_message/:id" => "admin#delete_toast_message"
+    resources :line_items_visits, only: [:destroy] do
+      member do
+        put :update_from_fulfillment
       end
     end
-    match '/admin/sub_service_requests/:id/edit_document/:document_id' => 'sub_service_requests#edit_documents', via: [:get, :post]
-    match "/admin/sub_service_requests/:id/delete_document/:document_id" => "sub_service_requests#delete_documents", via: [:get, :post]
+
+    resources :visits, only: [:destroy] do
+      member do
+        put :update_from_fulfillment
+      end
+    end
+
+    match "/delete_toast_message/:id" => "admin#delete_toast_message", via: [:delete]
 
     root to: 'protocols#index'
   end

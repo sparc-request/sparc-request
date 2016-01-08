@@ -289,7 +289,7 @@ $(document).ready ->
   put_attribute = (id, data) ->
     $.ajax
       type: 'PUT'
-      url:  "/portal/admin/line_items/#{id}/update_from_cwf"
+      url:  "/dashboard/line_items/#{id}/update_from_cwf"
       data: JSON.stringify(data)
       dataType: "script"
       contentType: 'application/json; charset=utf-8'

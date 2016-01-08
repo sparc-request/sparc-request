@@ -20,6 +20,6 @@
 
 .line-items
   = hidden_field_tag :line_item_count, @line_items.size
-  = hidden_field_tag :user_portal_link, USER_PORTAL_LINK
+  = hidden_field_tag :dashboard_link, DASHBOARD_LINK
   - @line_items.each do |line_item|
     = render :partial => 'catalogs/cart_line_item', :locals => {:line_item => line_item}

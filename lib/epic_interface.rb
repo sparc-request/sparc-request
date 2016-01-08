@@ -214,7 +214,6 @@ class EpicInterface
    
       }
     }
-
     return xml.target!
   end
 

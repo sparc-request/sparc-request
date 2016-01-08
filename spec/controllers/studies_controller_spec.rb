@@ -37,18 +37,18 @@ RSpec.describe StudiesController do
     describe 'GET new' do
       it 'should set service_request' do
         session[:service_request_id] = service_request.id
-        session[:identity_id] = identity.id
+        session[:identity_id] = study.project_roles.first.identity_id
         xhr :get, :new, { id: nil, format: :js }.with_indifferent_access
         expect(assigns(:service_request)).to eq service_request
       end
 
       it 'should set study' do
         session[:service_request_id] = service_request.id
-        session[:identity_id] = identity.id
+        session[:identity_id] = study.project_roles.first.identity_id
         xhr :get, :new, { id: nil, format: :js }.with_indifferent_access
 
         expect(assigns(:protocol).class).to eq Study
-        expect(assigns(:protocol).requester_id).to eq identity.id
+        expect(assigns(:protocol).requester_id).to eq study.project_roles.first.identity_id
         expect(assigns(:protocol).research_types_info).not_to eq nil
         expect(assigns(:protocol).human_subjects_info).not_to eq nil
         expect(assigns(:protocol).vertebrate_animals_info).not_to eq nil
@@ -96,14 +96,14 @@ RSpec.describe StudiesController do
     describe 'GET edit' do
       it 'should set service_request' do
         session[:service_request_id] = service_request.id
-        session[:identity_id] = identity.id
+        session[:identity_id] = study.project_roles.first.identity_id
         xhr :get, :edit, { id: study.id, format: :js }.with_indifferent_access
         expect(assigns(:service_request)).to eq service_request
       end
 
       it 'should set study' do
         session[:service_request_id] = service_request.id
-        session[:identity_id] = identity.id
+        session[:identity_id] = study.project_roles.first.identity_id
         xhr :get, :edit, { id: study.id, format: :js }.with_indifferent_access
         expect(assigns(:protocol).class).to eq Study
       end
@@ -113,16 +113,15 @@ RSpec.describe StudiesController do
 
     describe 'GET update' do
       it 'should set service_request' do
-        # binding.pry
         session[:service_request_id] = service_request.id
-        # session[:identity_id] = study.project_roles.first.identity_id
-        xhr :patch, :update, id: study.id, format: :js 
+        session[:identity_id] = study.project_roles.first.identity_id
+        xhr :get, :update, { id: study.id, format: :js }.with_indifferent_access
         expect(assigns(:service_request)).to eq service_request
       end
 
       it 'should set study' do
         session[:service_request_id] = service_request.id
-        session[:identity_id] = identity.id
+        session[:identity_id] = study.project_roles.first.identity_id
         xhr :get, :update, { id: study.id, format: :js }.with_indifferent_access
         expect(assigns(:protocol).class).to eq Study
         expect(assigns(:protocol).study_types).not_to eq nil

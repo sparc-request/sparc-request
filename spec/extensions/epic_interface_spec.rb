@@ -128,12 +128,18 @@ RSpec.describe EpicInterface do
 
       xml = <<-END
         <RetrieveProtocolDefResponse xmlns="urn:ihe:qrph:rpe:2009">
-          <query root="1.2.3.4" extension="STUDY#{study.id}"/>
+          <query root="1.2.3.4" extension="STUDY1"/>
           <protocolDef>
             <plannedStudy xmlns="urn:hl7-org:v3" classCode="CLNTRL" moodCode="DEF">
-              <id root="1.2.3.4" extension="STUDY#{study.id}"/>
+              <id root="1.2.3.4" extension="STUDY1"/>
               <title>#{study.epic_title}</title>
               <text>#{study.brief_description}</text>
+              <subjectOf typeCode="SUBJ">
+                <studyCharacteristic classCode="OBS" moodCode="EVN">
+                  <code code="STUDYTYPE"/>
+                  <value value="3"/>
+                </studyCharacteristic>
+              </subjectOf>
               <subjectOf typeCode="SUBJ">
                 <studyCharacteristic classCode="OBS" moodCode="EVN">
                   <code code="RGCL3"/>
@@ -156,9 +162,11 @@ RSpec.describe EpicInterface do
       # Uncomment these lines for debugging (sometimes the test output
       # doesn't give you all the information you need to figure out what
       # the difference is between actual and expected).
+      # puts "EXPECTED"
       # p strip_xml_whitespace!(expected.root)
       # puts ""
       # puts ""
+      # puts "NODE"
       # p strip_xml_whitespace!(node)
 
       expect(node).to be_equivalent_to(expected.root)
@@ -502,8 +510,8 @@ RSpec.describe EpicInterface do
           'env' => 'http://www.w3.org/2003/05/soap-envelope',
           'rpe' => 'urn:ihe:qrph:rpe:2009',
           'hl7' => 'urn:hl7-org:v3')
-
-      expect(node[0]).to be_equivalent_to(expected.root)
+      
+      expect(node).to include(expected.root)
     end
 
     it 'should emit a subjectOf for a pro number if the study has both a pro number and an hr number' do

@@ -71,7 +71,7 @@ class ProtocolsController < ApplicationController
   end
 
   def edit
-
+   
     @service_request = ServiceRequest.find session[:service_request_id]
     @epic_services = @service_request.should_push_to_epic? if USE_EPIC
     @protocol = current_user.protocols.find params[:id]
@@ -86,7 +86,7 @@ class ProtocolsController < ApplicationController
   end
 
   def update
-
+    
     @service_request = ServiceRequest.find session[:service_request_id]
     @current_step = cookies['current_step']
     @protocol = current_user.protocols.find params[:id]
@@ -94,7 +94,7 @@ class ProtocolsController < ApplicationController
     @protocol.validate_nct = true
     @portal = params[:portal]
 
-    if @protocol.type.downcase.to_sym == :study 
+    if @protocol.type.downcase.to_sym == :study && params[:study]
       attrs = params[:study].merge(study_type_question_group_id: StudyTypeQuestionGroup.active.pluck(:id).first)
     else
       attrs = params[:project]

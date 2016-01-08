@@ -53,8 +53,52 @@ RSpec.describe 'Protocol' do
     study.reload
     study
   }
- 
+
   build_study_type_answers()
+
+  let!(:project) {
+    project = Project.create(attributes_for(:protocol))
+  }
+
+  describe "#active?" do
+
+    context "study is inactive" do
+      before :each do
+        study.update_attributes(study_type_question_group_id: StudyTypeQuestionGroup.where(active:false).pluck(:id).first)
+      end
+
+      it "should return false" do
+        expect(study.active?).to eq false
+      end
+    end
+    context "study is active" do
+      before :each do
+        study.update_attributes(study_type_question_group_id: StudyTypeQuestionGroup.where(active:true).pluck(:id).first)
+      end
+
+      it "should return true" do
+        expect(study.active?).to eq true
+      end
+    end
+    context "project is inactive" do
+      before :each do
+        project.update_attributes(study_type_question_group_id: StudyTypeQuestionGroup.where(active:false).pluck(:id).first)
+      end
+
+      it "should return false" do
+        expect(project.active?).to eq false
+      end
+    end
+    context "project is active" do
+      before :each do
+        project.update_attributes(study_type_question_group_id: StudyTypeQuestionGroup.where(active:true).pluck(:id).first)
+      end
+
+      it "should return true" do
+        expect(project.active?).to eq true
+      end
+    end
+  end
 
   describe ".notify_remote_around_update?", delay: true do
 

@@ -26,10 +26,6 @@ class Study < Protocol
     return [ 'project' ] # for backward-compatibility
   end
 
-  def active?
-    study_type_question_group.active
-  end
-
   def activate
     update_attribute(:study_type_question_group_id, StudyTypeQuestionGroup.where(active:true).pluck(:id).first)
   end

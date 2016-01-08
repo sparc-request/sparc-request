@@ -109,7 +109,7 @@ class Portal::ProtocolsController < Portal::BaseController
   end
 
   def update
-    if @protocol.type.downcase.to_sym == :study
+    if @protocol.type.downcase.to_sym == :study && params[:study]
       attrs = params[:study].merge(study_type_question_group_id: StudyTypeQuestionGroup.active.pluck(:id).first)
     else
       attrs = params[:project]

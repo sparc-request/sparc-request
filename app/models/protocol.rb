@@ -142,10 +142,6 @@ class Protocol < ActiveRecord::Base
 
   def validate_study_type_answers
 
-    # if id != nil && is_study?
-    #   return if !active?
-    # end
-
     friendly_ids = ["certificate_of_conf", "higher_level_of_privacy", "access_study_info", "epic_inbasket", "research_active", "restrict_sending"]
     answers = {}
     friendly_ids.each do |fid|

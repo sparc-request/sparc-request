@@ -59,7 +59,8 @@ class Portal::ProtocolsController < Portal::BaseController
 
   def create
     @current_step = params[:current_step]
-    @protocol = Study.new(params[:study].merge(study_type_question_group_id: StudyTypeQuestionGroup.active.pluck(:id).first))
+    new_study_attrs = params[:study] || Hash.new
+    @protocol = Study.new(new_study_attrs.merge(study_type_question_group_id: StudyTypeQuestionGroup.active.pluck(:id).first))
     @protocol.validate_nct = true
     @portal = params[:portal]
     session[:protocol_type] = 'study'
@@ -109,13 +110,15 @@ class Portal::ProtocolsController < Portal::BaseController
   end
 
   def update
-    if @protocol.type.downcase.to_sym == :study && params[:study]
-      attrs = params[:study].merge(study_type_question_group_id: StudyTypeQuestionGroup.active.pluck(:id).first)
+    attrs = if @protocol.type.downcase.to_sym == :study && params[:study]
+      params[:study]
+    elsif @protocol.type.downcase.to_sym == :project && params[:project]
+      params[:project]
     else
-      attrs = params[:project]
+      Hash.new
     end
     
-    if @protocol.update_attributes attrs
+    if @protocol.update_attributes(attrs.merge(study_type_question_group_id: StudyTypeQuestionGroup.active.pluck(:id).first))
       flash[:notice] = "Study updated"
       redirect_to portal_root_path(:default_protocol => @protocol)
     else

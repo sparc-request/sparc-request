@@ -41,7 +41,9 @@ class ProtocolsController < ApplicationController
     @service_request = ServiceRequest.find session[:service_request_id]
 
     @current_step = cookies['current_step']
-    @protocol = self.model_class.new(params[:study] ? params[:study].merge(study_type_question_group_id: StudyTypeQuestionGroup.active.pluck(:id).first) : params[:study] || params[:project])
+
+    new_protocol_attrs = params[:study] || params[:project] || Hash.new
+    @protocol = self.model_class.new(new_protocol_attrs.merge(study_type_question_group_id: StudyTypeQuestionGroup.active.pluck(:id).first))
 
     @protocol.validate_nct = true
     @portal = params[:portal]
@@ -94,13 +96,15 @@ class ProtocolsController < ApplicationController
     @protocol.validate_nct = true
     @portal = params[:portal]
 
-    if @protocol.type.downcase.to_sym == :study && params[:study]
-      attrs = params[:study].merge(study_type_question_group_id: StudyTypeQuestionGroup.active.pluck(:id).first)
+    attrs = if @protocol.type.downcase.to_sym == :study && params[:study]
+      params[:study]
+    elsif @protocol.type.downcase.to_sym == :project && params[:project]
+      params[:project]
     else
-      attrs = params[:project]
+      Hash.new
     end
 
-    @protocol.assign_attributes attrs    
+    @protocol.assign_attributes(attrs.merge(study_type_question_group_id: StudyTypeQuestionGroup.active.pluck(:id).first))   
 
     if @current_step == 'cancel'
       @current_step = 'return_to_service_request'
@@ -202,7 +206,6 @@ class ProtocolsController < ApplicationController
     begin
       # Do the actual push.  This might take a while...
       protocol.push_to_epic(EPIC_INTERFACE)
-
       errors = EPIC_INTERFACE.errors
       session[:errors] = errors unless errors.empty?
       @epic_errors = true unless errors.empty?

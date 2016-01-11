@@ -27,7 +27,10 @@ RSpec.describe "review page", js: true do
   let_there_be_lane
   let_there_be_j
   fake_login_for_each_test
-  build_service_request_with_project
+  build_service_request_with_study
+  build_study_type_question_groups
+  build_study_type_questions
+  build_study_type_answers
 
   before :each do
     file = File.join(Rails.root, 'surveys/system_satisfaction_survey.rb')
@@ -141,10 +144,10 @@ RSpec.describe "review page", js: true do
 
     # Table is filled correctly
     it 'should have the correct users in the table' do
-      project_role = project.project_roles.first
-      expect(@email.body).not_to have_content project.project_roles.last.identity.full_name
+      project_role = study.project_roles.first
+      expect(@email.body).not_to have_content study.project_roles.last.identity.full_name
 
-      n = Capybara::Node::Simple.new(@email.body.to_s).find("#project_role_#{project.project_roles.first.id}")
+      n = Capybara::Node::Simple.new(@email.body.to_s).find("#project_role_#{study.project_roles.first.id}")
       expect(n.find(".name")).to have_content project_role.identity.full_name
       expect(n.find(".role")).to have_content USER_ROLES.invert[project_role.role]
       expect(n.find(".epic_rights")).to have_content(EPIC_RIGHTS["view_rights"])
@@ -165,14 +168,14 @@ RSpec.describe "review page", js: true do
       end
 
       it "should send an email to the Primary PI" do
-        expect(@email.body).to have_content("The following SPARC Request users have requested access to Epic for your study ##{project.id}")
+        expect(@email.body).to have_content("The following SPARC Request users have requested access to Epic for your study ##{study.id}")
       end
 
       it "should have the correct users in the table" do
-        project_role = project.project_roles.first
-        expect(@email.body.to_s).not_to have_content project.project_roles.last.identity.full_name
+        project_role = study.project_roles.first
+        expect(@email.body.to_s).not_to have_content study.project_roles.last.identity.full_name
 
-        n = Capybara::Node::Simple.new(@email.body.to_s).find("#project_role_#{project.project_roles.first.id}")
+        n = Capybara::Node::Simple.new(@email.body.to_s).find("#project_role_#{study.project_roles.first.id}")
         expect(n.find(".name")).to have_content project_role.identity.full_name
         expect(n.find(".role")).to have_content USER_ROLES.invert[project_role.role]
         expect(n.find(".epic_rights")).to have_content(EPIC_RIGHTS["view_rights"])
@@ -184,9 +187,9 @@ RSpec.describe "review page", js: true do
       end
 
       it "should not send services missing cpt code and charge code" do
+
         visit Capybara::Node::Simple.new(@email.body.to_s).find_link("Send to Epic")['href']
         wait_for_javascript_to_finish
-        
         expect(page).to have_content "#{service2.name} does not have a CPT or a Charge code."
       end
     end

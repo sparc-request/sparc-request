@@ -47,5 +47,9 @@
           = t(:protocol_information)[:add_services]
       - else
         - @protocol.service_requests.each do |sr|
-          - next if sr.status == "first_draft"
+          - next if sr.status == 'first_draft'
           = render partial: 'dashboard/service_requests/protocol_service_request_show', locals: { service_request: sr }
+:javascript
+  $(document).ready( function() {
+    Sparc.protocol.ready();
+  })

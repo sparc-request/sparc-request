@@ -44,14 +44,13 @@ $(document).ready ->
           type: 'GET'
           url: "/dashboard/protocols/#{protocol_id}.js"
 
-      $('.edit-protocol-information-button').live('click', ->
+      $(document).on 'click', '.edit-protocol-information-button', ->
         if $(this).data('permission')
           protocol_id = $(this).data('protocol-id')
           window.location = "/dashboard/protocols/#{protocol_id}/edit"
         else
           $('.permissions-dialog').dialog('open')
           $('.permissions-dialog .text').html('Edit.')
-      )
 
       $(document).on 'click', '.edit_service_request', ->
         if $(this).data('permission')

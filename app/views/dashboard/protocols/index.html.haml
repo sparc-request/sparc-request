@@ -21,7 +21,7 @@
 .bootstrap-table-dropdown-overflow
   #protocols-toolbar
     %button.btn.btn-success#create-new-study-button{ type: 'button', data: { url: "#{new_dashboard_protocol_path}"} } Create New Study
-  %table.protocols_table{id: "protocols_table", data: {toggle: 'table', search: "true", "show-columns" => "true", "show-refresh" => "true", "show-toggle" => "true", url: dashboard_protocols_path(format: :json), striped: "true", toolbar: "#protocols-toolbar", "show-export" => "true", "export-types" => ['excel'], "row-style" => "protocols_row_style"}}
+  %table.protocols_table{ id: 'protocols_table', data: { toggle: 'table', search: 'true', show_columns: 'true', show_refresh:  'true', show_toggle: 'true', url: dashboard_protocols_path(format: :json), striped: 'true', toolbar: '#protocols-toolbar', show_export: 'true', export_types: ['excel'], row_style: 'protocols_row_style', side_pagination:  'server', pagination: 'true', page_size: '15' } }
     %thead.primary-header
       %tr
         %th{data: {class: 'id', align: "left", sortable: "true", field: "id"}}

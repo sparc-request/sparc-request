@@ -47,5 +47,5 @@
           = t(:protocol_information)[:add_services]
       - else
         - @protocol.service_requests.each do |sr|
-          - next if sr.status == "first_draft" or sr.sub_service_requests.empty?
-          = render partial: 'dashboard/service_requests/protocol_service_request_show', locals: { service_request: sr }
+          - if sr.status != "first_draft" and not sr.sub_service_requests.empty?
+            = render partial: 'dashboard/service_requests/protocol_service_request_show', locals: { service_request: sr }

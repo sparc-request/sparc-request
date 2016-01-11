@@ -16,15 +16,37 @@ module Dashboard
       protocols
     end
 
+    def total_protocols
+      @total_protocols ||= Protocol.
+                                where(archived: include_archived?).
+                                joins(:project_roles).
+                                  where(project_roles: { identity_id: @identity.id }).
+                                  where.not(project_roles: { project_rights: 'none' }).
+                                  distinct.
+                                  count
+    end
+
     private
 
     def promote_default_protocol
-      default_protocol = @identity_protocols.
-                          select { |protocol| protocol.id == @params[:default_protocol].to_i }.
-                          first
+      default_protocol = Protocol.
+        where(archived: include_archived?).
+        joins(:project_roles).
+          where(project_roles: { identity_id: @identity.id }).
+          where.not(project_roles: { project_rights: 'none' }).
+          where(id: @params[:default_protocol].to_i).
+          first if @params[:default_protocol]
 
-      if promoted_protocol = @identity_protocols.delete(default_protocol)
-        @identity_protocols.unshift promoted_protocol
+      if default_protocol
+        # if promoted protocol already on @identity_protocols, move to top
+        if promoted_protocol = @identity_protocols.delete(default_protocol)
+          @identity_protocols.unshift promoted_protocol
+        else
+          # otherwise, drop last on @identity_protocols, and add default_protocol
+          # to top
+          @identity_protocols.pop
+          @identity_protocols.unshift promoted_protocol
+        end
       end
     end
 
@@ -40,11 +62,12 @@ module Dashboard
       @identity_protocols ||= Protocol.
                                 where(archived: include_archived?).
                                 joins(:project_roles).
-                                  where('project_roles.identity_id = ?', @identity.id).
-                                  where('project_roles.project_rights != ?', 'none').
-                                uniq.
-                                sort_by { |protocol| (protocol.id || '0000') + protocol.id }.
-                                reverse
+                                  where(project_roles: { identity_id: @identity.id }).
+                                  where.not(project_roles: { project_rights: 'none' }).
+                                order(id: :desc).
+                                limit(@params[:limit]).
+                                offset(@params[:offset]).
+                                distinct
     end
 
     def include_archived?

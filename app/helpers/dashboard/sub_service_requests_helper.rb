@@ -20,37 +20,6 @@
 
 module Dashboard::SubServiceRequestsHelper
 
-#********************Admin Index Begin**********************************
-
-
-  def ssr_services_display ssr
-    # %td{:style => "max-width: 135px; word-wrap: break-word;"}
-    #   %ul.services_first
-    #     %li
-    #       - services = ssr.line_items.map(&:service).sort_by{|srv| srv.name}.map(&:name)
-
-    #     - if services.size > 1
-    #       %span.open_close_services{:style => 'display:inline-block'}
-    #       %span.open_close_services{:style => 'display:none'}
-
-    #     %span= services.shift
-    #   %ul.services_rest{:style => 'display:none'}
-    #     - services.each do |service|
-    #       %li= service
-  end
-
-  def ssr_pis_display(ssr)
-    # - pis = ssr.service_request.protocol.try(:principal_investigators).try(:map, &:full_name) || []
-    # - if pis.size > 1
-    #   - pis.each do |pi|
-    #     = pi
-    # - else
-    #   = pis[0]
-  end
-
-#********************Admin Index End**********************************
-
-
   def candidate_service_options(services, include_cpt=false)
     services.map do |service|
       n = include_cpt ? service.display_service_name : service.name

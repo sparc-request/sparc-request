@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+ # Copyright © 2011 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -58,7 +58,7 @@ module Dashboard::ProtocolsHelper
       span = raw content_tag(:span, '', class: 'caret')
       button = raw content_tag(:button, raw('Requests  ' + span), type: 'button', class: 'btn btn-default btn-sm dropdown-toggle form-control', 'data-toggle' => 'dropdown', 'aria-expanded' => 'false')
       ssr_ids.each do |r|
-        li.push raw(content_tag(:li, raw(content_tag(:a, "#{protocol.id}-#{r}", href: 'javascript:;'))))
+        li.push raw(content_tag(:li, raw(content_tag(:a, "#{protocol.id}-#{r}", href: 'javascript:;', class: "requests_display_link", data: {protocol_id: protocol.id}))))
       end
       ul = raw content_tag(:ul, raw(li.join), class: 'dropdown-menu', role: 'menu')
 

@@ -22,6 +22,79 @@
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://jashkenas.github.com/coffee-script/
 $(document).ready ->
+
+  $(document).on 'click', '#new-associated-user-button', ->
+    if $(this).data('permission')
+      $.ajax
+        method: 'get'
+        url: '/dashboard/associated_users/new.js'
+        data:
+          protocol_id: $(this).data('protocol-id')
+    else
+      $('.permissions-dialog').dialog('open')
+      $('.permissions-dialog .text').html('Edit.')
+
+
+  $(document).on 'click', '.edit-associated-user-button', (event) ->
+    event.stopPropagation()
+    if $(this).data('permission')
+      pr_id = $(this).data('pr-id')
+      sub_service_request_id = $(this).data('sub-service-request-id')
+      $.ajax
+        method: 'get'
+        url: "/dashboard/associated_users/#{pr_id}/edit.js"
+        data:
+          protocol_id: $(this).data('protocol-id')
+          identity_id: $(this).data('user-id')
+          sub_service_request_id: sub_service_request_id
+        error: (request, status, error) ->
+          console.log(request)
+          console.log(status)
+          console.log(error)
+    else
+      $('.permissions-dialog').dialog('open')
+      $('.permissions-dialog .text').html('Edit.')
+
+
+  $(document).on 'click', '.delete-associated-user-button', ->
+    if $(this).data('permission')
+      adminUsersList         = $(".admin#users")
+      current_user_id        = parseInt($('#current_user_id').val(), 10)
+      current_user_role      = $(this).data('current-user-role')
+      protocol_id            = $(this).data('protocol-id')
+      sub_service_request_id = $(this).data('sub-service-request-id')
+      pr_id                  = $(this).data('pr-id')
+      user_id                = $(this).data('user-id')
+      user_role              = $(this).data('user-role')
+      confirm_message        = if current_user_id == user_id then 'This action will remove you from the project. Are you sure?' else 'Are you sure?'
+      alert_message1         = I18n["protocol_information"]["require_primary_pi_message"]
+      cannot_remove_pi       = (current_user_role == 'primary-pi' or user_role == 'primary-pi')
+
+      if cannot_remove_pi
+        alert(alert_message1)
+      else
+        if confirm(confirm_message)
+          # Seems like the only way to pass parameters when performing a DELETE ajax
+          # request is through the URL.
+          $.ajax
+            dataType: 'script'
+            type: 'delete'
+            url: if sub_service_request_id then "/dashboard/associated_users/#{pr_id}?sub_service_request_id=#{sub_service_request_id}" else "/dashboard/associated_users/#{pr_id}"
+            success: ->
+              if sub_service_request_id
+                # Nothing
+              else
+                # console.log(JSON.stringify(current_user_id))
+                # console.log(JSON.stringify(user_id))
+                if parseInt(current_user_id, 10) == parseInt(user_id, 10)
+                  $(".protocol-information-panel-#{protocol_id}").fadeOut(1500)
+                else
+                  Sparc.protocol.renderProtocolAccordionTab(protocol_id)
+
+    else
+      $('.permissions-dialog').dialog('open')
+      $('.permissions-dialog .text').html('Edit.')
+
   Sparc.associated_users = {
     display_dependencies :
       '#project_role_role' :
@@ -38,18 +111,6 @@ $(document).ready ->
         other          : ['.credentials_other']
 
     ready: ->
-      $(document).on 'click', '.associated-user-button', ->
-        if $(this).data('permission')
-          $.ajax
-            method: 'get'
-            url: '/dashboard/associated_users/new.js'
-            data:
-              protocol_id: $(this).data('protocol-id')
-          # $('.add-associated-user-dialog').dialog('open')
-          # $('#add-user-form #protocol_id').val($(this).data('protocol_id'))
-        else
-          $('.permissions-dialog').dialog('open')
-          $('.permissions-dialog .text').html('Edit.')
 
       $('.user_credentials').attr('name', 'user[credentials_other]') if $('.user_credentials').val() == 'other'
       $('.user_credentials').live 'change', ->
@@ -66,65 +127,6 @@ $(document).ready ->
           $('#project_role_project_rights_approve').attr('checked', true)
         else
           $('.rights_radios input').attr('disabled', false)
-
-      $(document).on 'click', '.edit-associated-user-button', (event) ->
-        event.stopPropagation()
-        if $(this).data('permission')
-          pr_id = $(this).data('pr-id')
-          sub_service_request_id = $(this).data('sub-service-request-id')
-          $.ajax
-            method: 'get'
-            url: "/dashboard/associated_users/#{pr_id}/edit.js"
-            data:
-              protocol_id: $(this).data('protocol-id')
-              identity_id: $(this).data('user-id')
-              sub_service_request_id: sub_service_request_id
-            error: (request, status, error) ->
-              console.log(request)
-              console.log(status)
-              console.log(error)
-        else
-          $('.permissions-dialog').dialog('open')
-          $('.permissions-dialog .text').html('Edit.')
-
-      $(document).on 'click', '.delete-associated-user-button', ->
-        if $(this).data('permission')
-          adminUsersList         = $(".admin#users")
-          current_user_id        = parseInt($('#current_user_id').val(), 10)
-          current_user_role      = $(this).data('current-user-role')
-          protocol_id            = $(this).data('protocol-id')
-          sub_service_request_id = $(this).data('sub-service-request-id')
-          pr_id                  = $(this).data('pr-id')
-          user_id                = $(this).data('user-id')
-          user_role              = $(this).data('user-role')
-          confirm_message        = if current_user_id == user_id then 'This action will remove you from the project. Are you sure?' else 'Are you sure?'
-          alert_message1         = I18n["protocol_information"]["require_primary_pi_message"]
-          cannot_remove_pi       = (current_user_role == 'primary-pi' or user_role == 'primary-pi')
-
-          if cannot_remove_pi
-            alert(alert_message1)
-          else
-            if confirm(confirm_message)
-              # Seems like the only way to pass parameters when performing a DELETE ajax
-              # request is through the URL.
-              $.ajax
-                dataType: 'script'
-                type: 'delete'
-                url: if sub_service_request_id then "/dashboard/associated_users/#{pr_id}?sub_service_request_id=#{sub_service_request_id}" else "/dashboard/associated_users/#{pr_id}"
-                success: ->
-                  if sub_service_request_id
-                    # Nothing
-                  else
-                    # console.log(JSON.stringify(current_user_id))
-                    # console.log(JSON.stringify(user_id))
-                    if parseInt(current_user_id, 10) == parseInt(user_id, 10)
-                      $(".protocol-information-panel-#{protocol_id}").fadeOut(1500)
-                    else
-                      Sparc.protocol.renderProtocolAccordionTab(protocol_id)
-
-        else
-          $('.permissions-dialog').dialog('open')
-          $('.permissions-dialog .text').html('Edit.')
 
       $(document).on 'change', '#associated_user_role', ->
         roles_to_hide = ['', 'grad-research-assistant', 'undergrad-research-assistant', 'research-assistant-coordinator', 'technician', 'general-access-user', 'business-grants-manager', 'other']

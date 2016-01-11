@@ -189,6 +189,7 @@ SparcRails::Application.routes.draw do
         get :view_full_calendar
         put :update_protocol_type
         put :update_from_fulfillment
+        get :display_requests
       end
       resources :associated_users, except: [:index]
     end

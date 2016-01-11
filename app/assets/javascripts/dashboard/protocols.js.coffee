@@ -312,3 +312,11 @@ $(document).ready ->
   window.protocols_row_style = (row, index) ->
     class_string = 'protocols_row'
     return { classes: class_string }
+
+  $(document).on('click', '.requests_display_link', ->
+    #if you click on the row, it opens the notification show
+    protocol_id = $(this).data("protocol-id")
+    $.ajax
+      method: 'get'
+      url: "/dashboard/protocols/#{protocol_id}/display_requests"
+  )

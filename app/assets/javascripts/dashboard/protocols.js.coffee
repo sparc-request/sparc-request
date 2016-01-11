@@ -45,6 +45,7 @@ $(document).ready ->
           url: "/dashboard/protocols/#{protocol_id}.js"
 
       $(document).on 'click', '.edit-protocol-information-button', ->
+        console.log 'HEY'
         if $(this).data('permission')
           protocol_id = $(this).data('protocol-id')
           window.location = "/dashboard/protocols/#{protocol_id}/edit"

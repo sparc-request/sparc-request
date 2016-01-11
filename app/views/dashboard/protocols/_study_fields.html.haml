@@ -18,7 +18,7 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.row
+.row.user-edit-protocol-view
   .col-lg-12
     :javascript
       $(document).ready(function() {
@@ -46,13 +46,14 @@
 
         = render partial: 'form_select_field', locals: { f: f, name: :funding_status, label_text: t(:protocol_shared)[:funding_status], select_options: options_for_select(FUNDING_STATUSES, study.funding_status), include_blank: t(:study_form)[:status_blank] }
         = render partial: 'form_select_field', locals: { f: f, name: :potential_funding_source, label_text: t(:protocol_shared)[:potential_funding_source], select_options: options_for_select(FUNDING_STATUSES, study.potential_funding_source), include_blank: t(:study_form)[:potential_blank] }
-        = render partial: 'form_select_field', locals: { f: f, name: :funding_source, label_text: t(:protocol_shared)[:funding_source], select_options: options_for_select(FUNDING_STATUSES, study.funding_source), include_blank: t(:study_form)[:funding_blank] }
+        = render partial: 'form_select_field', locals: { f: f, name: :funding_source, label_text: t(:protocol_shared)[:funding_source], select_options: options_for_select(FUNDING_STATUSES, study.funding_source), include_blank: t(:study_form)[:funding_blank], row_class: 'funded internal_potential_funded_pilot_project' }
 
         / Internal Funded Pilot Project selected
-        = render partial: 'form_text_field', locals: { f: f, name: :funding_source_other, label_text: t(:study_form)[:funding_source_other] }
-        = render partial: 'form_text_field', locals: { f: f, name: :federal_grant_title, label_text: t(:study_form)[:federal_grant_title] }
-        = render partial: 'form_select_field', locals: { f: f, name: :federal_grant_code_id, label_text: t(:protocol_shared)[:federal_grant_code_id], select_options: options_for_select(FUNDING_STATUSES, study.federal_grant_code_id), include_blank: t(:study_form)[:code_blank] }
-        = render partial: 'form_select_field', locals: { f: f, name: :federal_phs_sponsor, label_text: t(:protocol_shared)[:federal_phs_sponsor], select_options: options_for_select(FUNDING_STATUSES, study.federal_phs_sponsor), include_blank: t(:study_form)[:phs_blank] }
+        = render partial: 'form_text_field', locals: { f: f, name: :funding_source_other, label_text: t(:study_form)[:funding_source_other], row_class: 'funded internal_funded_pilot_project' }
+
+        = render partial: 'form_text_field', locals: { f: f, name: :federal_grant_title, label_text: t(:study_form)[:federal_grant_title], row_class: 'federal' }
+        = render partial: 'form_select_field', locals: { f: f, name: :federal_grant_code_id, label_text: t(:protocol_shared)[:federal_grant_code_id], select_options: options_for_select(FUNDING_STATUSES, study.federal_grant_code_id), include_blank: t(:study_form)[:code_blank], row_class: 'federal' }
+        = render partial: 'form_select_field', locals: { f: f, name: :federal_phs_sponsor, label_text: t(:protocol_shared)[:federal_phs_sponsor], select_options: options_for_select(FUNDING_STATUSES, study.federal_phs_sponsor), include_blank: t(:study_form)[:phs_blank], row_class: 'federal' }
 
         %br
         %span -OR-

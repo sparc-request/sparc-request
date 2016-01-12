@@ -29,7 +29,7 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
     session[:sub_service_request_id] = @sub_service_request.id
     session[:service_request_id] = @sub_service_request.service_request_id
     session[:service_calendar_pages] = params[:pages] if params[:pages]
-
+    session[:breadcrumbs] = { protocol_id: @sub_service_request.service_request.protocol_id, sub_service_request_id: @sub_service_request.id }
     if @user.can_edit_fulfillment? @sub_service_request.organization
       @user_toasts = @user.received_toast_messages.select {|x| x.sending_class == 'SubServiceRequest'}.select {|y| y.sending_class_id == @sub_service_request.id}
       @service_request = @sub_service_request.service_request
@@ -100,7 +100,7 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
 
   def update_from_project_study_information
     attrs = params[@protocol.type.downcase.to_sym]
-    
+
     if @protocol.update_attributes attrs
       redirect_to portal_admin_sub_service_request_path(@sub_service_request)
     else
@@ -117,7 +117,7 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
 
       render :action => 'show'
     end
-  end   
+  end
 
   def push_to_epic
     begin

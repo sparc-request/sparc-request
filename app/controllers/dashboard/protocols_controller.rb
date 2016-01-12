@@ -28,7 +28,10 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
   def index
     respond_to do |format|
-      format.html { render }
+      format.html {
+        session.delete(:breadcrumbs)
+        render
+      }
       format.json {
         protocol_finder = Dashboard::ProtocolFinder.new(current_user, params)
         @protocols = protocol_finder.protocols
@@ -44,6 +47,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     respond_to do |format|
       format.js   { render }
       format.html {
+        session[:breadcrumbs] = { protocol_id: @protocol.id }
         @permission_to_edit = @protocol_role.can_edit?
         @protocol_type = @protocol.type.capitalize
         @service_requests = @protocol.service_requests

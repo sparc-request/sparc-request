@@ -1,0 +1,338 @@
+-# Copyright © 2011 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+= form_for protocol, url: dashboard_protocol_path(protocol), html: { class: 'form-horizontal' } do |form|
+  = form.hidden_field :requester_id
+  = form.error_messages
+  .edit-study-view.container-fluid
+    .row.user-edit-protocol-view
+      .col-lg-12
+        :javascript
+          $(document).ready(function() {
+          Sparc.study.ready();
+          });
+
+        .panel.panel-default
+          .panel-heading
+            %h4.panel-title= "Study Information"
+            .sub_text= "Necessary to obtain correct pricing"
+          .panel-body.container-fluid
+            .form-group.row
+              = form.label :short_title, t(:protocol_shared)[:title], class: 'col-lg-2 control-label'
+              .col-lg-10
+                = form.text_field :short_title, class: 'form-control'
+
+            .form-group.row
+              = form.label :title, t(:study_form)[:title], class: 'col-lg-2 control-label'
+              .col-lg-10
+                = form.text_field :title, class: 'form-control'
+
+            .form-group.row
+              = form.label :has_cofc, t(:study_form)[:has_cofc], class: 'col-lg-2 form-control-label'
+              .col-lg-10
+                .btn-group{data: {toggle: "buttons"}}
+                  %label.btn.btn-default
+                    = form.radio_button :has_cofc, 'true', id: "study_has_cofc_true"
+                    Yes
+                  %label.btn.btn-default
+                    = form.radio_button :has_cofc, 'false', id: "study_has_cofc_false"
+                    No
+
+            .form-group.row
+              = form.label :funding_status, t(:protocol_shared)[:funding_status], class: 'col-lg-2 control-label'
+              .col-lg-10
+                = form.select :funding_status, options_for_select(FUNDING_STATUSES, protocol.funding_status), { include_blank: t(:study_form)[:status_blank] }, class: 'selectpicker'
+
+            .form-group.row
+              = form.label :potential_funding_source, t(:protocol_shared)[:potential_funding_source], class: 'col-lg-2 control-label'
+              .col-lg-10
+                = form.select :potential_funding_source, options_for_select(POTENTIAL_FUNDING_SOURCES, protocol.potential_funding_source), { include_blank: t(:study_form)[:potential_blank] }, class: 'selectpicker'
+
+            .form-group.row.funded.internal_potential_funded_pilot_project
+              = form.label :funding_source, t(:protocol_shared)[:funding_source], class: 'col-lg-2 control-label'
+              .col-lg-10
+                = form.select :funding_source, options_for_select(FUNDING_SOURCES, protocol.funding_source), { include_blank: t(:study_form)[:funding_blank] }, class: 'selectpicker'
+
+            / Internal Funded Pilot Project selected
+            .form-group.row.funded.internal_funded_pilot_project
+              = form.label :funding_source_other, t(:study_form)[:funding_source_other], class: 'col-lg-2 control-label'
+              .col-lg-10
+                = form.text_field :funding_source_other, class: 'form-control'
+
+            .form-group.row.federal
+              = form.label :federal_grant_title, t(:study_form)[:federal_grant_title], class: 'col-lg-2 control-label'
+              .col-lg-10
+                = form.text_field :federal_grant_title, class: 'form-control'
+
+            .form-group.row.federal
+              = form.label :federal_grant_code_id, t(:protocol_shared)[:federal_grant_code_id], class: 'col-lg-2 control-label'
+              .col-lg-10
+                = form.select :federal_grant_code_id, options_for_select(FEDERAL_GRANT_CODES, protocol.federal_grant_code_id), { include_blank: t(:study_form)[:code_blank] }, class: 'selectpicker'
+
+            .form-group.row.federal
+              = form.label :federal_phs_sponsor, t(:protocol_shared)[:federal_phs_sponsor], class: 'col-lg-2 control-label'
+              .col-lg-10
+                = form.select :federal_phs_sponsor, options_for_select(FEDERAL_GRANT_PHS_SPONSORS, protocol.federal_phs_sponsor), { include_blank: t(:study_form)[:phs_blank] }, class: 'selectpicker'
+
+            %br
+            %span -OR-
+            %br
+
+            .form-group.row
+              = form.label :federal_non_phs_sponsor, t(:protocol_shared)[:federal_non_phs_sponsor], class: 'col-lg-2 control-label'
+              .col-lg-10
+                = form.select :federal_non_phs_sponsor, options_for_select(FEDERAL_GRANT_NON_PHS_SPONSORS, protocol.federal_non_phs_sponsor), { include_blank: t(:study_form)[:phs_blank] }, class: 'selectpicker'
+
+            .form-group.row
+              = form.label :federal_grant_serial_number, t(:study_form)[:federal_grant_serial_number], class: 'col-lg-2 control-label'
+              .col-lg-10
+                = form.text_field :federal_grant_serial_number, class: 'form-control'
+
+            .form-group.row
+              = form.label :study_phase, t(:protocol_shared)[:study_phase], class: 'col-lg-2 control-label'
+              .col-lg-10
+                = form.select :study_phase, options_for_select(STUDY_PHASES, protocol.study_phase), { include_blank: t(:study_form)[:phase_blank] }, class: 'selectpicker'
+
+            .form-group.row
+              = form.label :sponsor_name, t(:study_form)[:sponsor_name], class: 'col-lg-2 control-label'
+              .col-lg-10
+                = form.text_field :sponsor_name, class: 'form-control'
+
+            .form-group.row{ style: "#{USE_EPIC ? nil : 'display:none;'}" }
+              = form.label :selected_for_epic, t(:study_form)[:push_to_epic], class: 'col-lg-2 form-control-label'
+              .col-lg-10
+                .btn-group{data: {toggle: "buttons"}}
+                  %label.btn.btn-default
+                    = form.radio_button :selected_for_epic, 'true', id: "study_has_cofc_true"
+                    Yes
+                  %label.btn.btn-default
+                    = form.radio_button :selected_for_epic, 'false', id: "study_has_cofc_false"
+                    No
+
+            .form-group.row{ style: "#{protocol.selected_for_epic ? '' : 'display:none;'}" }
+              = form.label :study_type_questions, "", class: 'col-lg-2 form-control-label'
+              .col-lg-10
+                = form.fields_for :study_type_answers do |answer_form|
+                  .field{ id: "study_type_answer_#{answer_form.object.study_type_question.friendly_id}", style: (answer_form.object.study_type_question.friendly_id == 'higher_level_of_privacy' ? '' : 'display:none') }
+                    = answer_form.hidden_field :study_type_question_id
+                    = answer_form.label :answer, answer_form.object.study_type_question.question, class: "long"
+                    = answer_form.select :answer, options_for_select([['Yes', true], ['No', false]], answer_form.object.answer), { include_blank: 'Select One' }, { class: 'selectpicker', id: "study_type_answer_#{answer_form.object.study_type_question.friendly_id}_answer" }
+
+        .panel.panel-default
+          .panel-heading
+            %h4.panel-title= t(:study_form)[:optional_text]
+            .sub_text= "Used for reporting purposes and saved for your future use"
+          .panel-body
+            .form-group.row
+              = form.label :udak_project_number, t(:study_form)[:udak_project_number], class: 'col-lg-2 control-label'
+              .col-lg-10
+                = form.text_field :udak_project_number, class: 'form-control'
+
+            .form-group.row
+              = form.label :indirect_cost_rate, t(:study_form)[:rate], class: 'col-lg-2 control-label'
+              .col-lg-10
+                = form.text_field :indirect_cost_rate, class: 'form-control'
+
+            .form-group.row.pending_funding
+              = form.label :funding_rfa, t(:study_form)[:funding_rfa], class: 'col-lg-2 control-label'
+              .col-lg-10
+                = form.text_field :funding_rfa, class: 'form-control'
+
+            .form-group.row.pending_funding
+              = form.label :potential_funding_start_date, t(:study_form)[:potential_funding_start_date], class: 'col-lg-2 control-label'
+              .col-lg-10
+                = form.text_field :potential_funding_start_date, class: 'form-control', value: (protocol.potential_funding_start_date.strftime('%-m/%d/%Y') rescue nil)
+                = form.hidden_field :potential_funding_start_date
+
+            .form-group.row.funded
+              = form.label :funding_start_date, t(:study_form)[:funding_start_date], class: 'col-lg-2 control-label'
+              .col-lg-10
+                = form.text_field :funding_start_date, class: 'form-control', value: (protocol.funding_start_date.strftime('%-m/%d/%Y') rescue nil)
+                = form.hidden_field :funding_start_date
+
+        .panel.panel-default
+          .panel-heading
+            %h4.panel-title= "Research Involving"
+            .sub_text= "Check all that apply"
+          .panel-body
+            = form.fields_for :research_types_info do |rt_form|
+              .form-group.row.human_subjects
+                = rt_form.label :human_subjects, t(:study_form)[:human_subjects], class: 'col-lg-2 control-label'
+                .col-lg-10
+                  = rt_form.check_box :human_subjects, class: 'form-control'
+
+            = form.fields_for :human_subjects_info do |hs_form|
+              .form-group.row.nct_number
+                = hs_form.label :nct_number, t(:study_form)[:nct_number], class: 'col-lg-2 control-label'
+                .col-lg-10
+                  = hs_form.text_field :nct_number, class: 'form-control'
+
+              .form-group.row.hr_number
+                = hs_form.label :hr_number, t(:study_form)[:hr_number], class: 'col-lg-2 control-label'
+                .col-lg-10
+                  = hs_form.text_field :hr_number, class: 'form-control'
+
+              .form-group.row.pro_number
+                = hs_form.label :pro_number, t(:study_form)[:pro_number], class: 'col-lg-2 control-label'
+                .col-lg-10
+                  = hs_form.text_field :pro_number, class: 'form-control'
+
+              .form-group.row.irb_of_record
+                = hs_form.label :irb_of_record, t(:study_form)[:irb_of_record], class: 'col-lg-2 control-label'
+                .col-lg-10
+                  = hs_form.text_field :irb_of_record, class: 'form-control'
+
+              .form-group.row.submission_type
+                = hs_form.label :submission_type, t(:protocol_shared)[:submission_type], class: 'col-lg-2 control-label'
+                .col-lg-10
+                  = hs_form.select :submission_type, options_for_select(SUBMISSION_TYPES, protocol.human_subjects_info.submission_type), { include_blank: t(:study_form)[:submission_type] }, class: 'selectpicker'
+
+              .form-group.row.approval_pending
+                = hs_form.label :approval_pending, t(:study_form)[:approval_pending], class: 'col-lg-2 control-label'
+                .col-lg-10
+                  = hs_form.check_box :approval_pending, class: 'form-control'
+
+              .form-group.row.irb_approval_date
+                = hs_form.label :irb_approval_date, t(:study_form)[:irb_approval_date], class: 'col-lg-2 control-label'
+                .col-lg-10
+                  = hs_form.text_field :irb_approval_date, class: 'form-control', value: (protocol.human_subjects_info.irb_approval_date.strftime('%_m/%d/%Y') rescue nil)
+                  = hs_form.hidden_field :irb_approval_date
+
+              .form-group.row.irb_expiration_date
+                = hs_form.label :irb_expiration_date, t(:study_form)[:irb_expiration_date], class: 'col-lg-2 control-label'
+                .col-lg-10
+                  = hs_form.text_field :irb_expiration_date, class: 'form-control', value: (protocol.human_subjects_info.irb_expiration_date.strftime('%_m/%d/%Y') rescue nil)
+                  = hs_form.hidden_field :irb_expiration_date
+
+
+            = form.fields_for :research_types_info do |rt_form|
+              .form-group.row.vertebrate_animals
+                = rt_form.label :vertebrate_animals, t(:study_form)[:vertebrate_animals], class: 'col-lg-2 control-label'
+                .col-lg-10
+                  = rt_form.check_box :vertebrate_animals, class: 'form-control'
+
+            = form.fields_for :vertebrate_animals_info do |va_form|
+              .form-group.row.iacuc_number
+                = va_form.label :iacuc_number, t(:study_form)[:iacuc_number], class: 'col-lg-2 control-label'
+                .col-lg-10
+                  = va_form.text_field :iacuc_number, class: 'form-control'
+
+              .form-group.row.name_of_iacuc
+                = va_form.label :name_of_iacuc, t(:study_form)[:name_of_iacuc], class: 'col-lg-2 control-label'
+                .col-lg-10
+                  = va_form.text_field :name_of_iacuc, class: 'form-control'
+
+              .form-group.row.iacuc_approval_date
+                = va_form.hidden_field :iacuc_approval_date
+                = va_form.label :iacuc_approval_date, t(:study_form)[:iacuc_approval_date], class: 'col-lg-2 control-label'
+                .col-lg-10
+                  = va_form.text_field :iacuc_approval_date, class: 'form-control', value: (protocol.vertebrate_animals.iacuc_approval_date.strftime('%_m/%d/%Y') rescue nil)
+
+              .form-group.row.iacuc_expiration_date
+                = va_form.hidden_field :iacuc_expiration_date
+                = va_form.label :iacuc_expiration_date, t(:study_form)[:iacuc_expiration_date], class: 'col-lg-2 control-label'
+                .col-lg-10
+                  = va_form.text_field :iacuc_expiration_date, class: 'form-control', value: (protocol.vertebrate_animals.iacuc_expiration_date.strftime('%_m/%d/%Y') rescue nil)
+
+            = form.fields_for :research_types_info do |rt_form|
+              .form-group.row.investigational_products
+                = rt_form.label :investigational_products, t(:study_form)[:investigational_products], class: 'col-lg-2 control-label'
+                .col-lg-10
+                  = rt_form.check_box :investigational_products, class: 'form-control'
+
+            = form.fields_for :investigational_products_info do |ip_form|
+              .form-group.row.ind_number
+                = ip_form.label :ind_number, t(:study_form)[:ind_number], class: 'col-lg-2 control-label'
+                .col-lg-10
+                  = ip_form.text_field :ind_number, class: 'form-control'
+
+              .form-group.row.ind_on_hold
+                = ip_form.label :ind_on_hold, t(:study_form)[:ind_on_hold], class: 'col-lg-2 control-label'
+                .col-lg-10
+                  = ip_form.check_box :ind_on_hold, class: 'form-control'
+
+              .form-group.row.ind_number
+                = ip_form.label :ide_number, t(:study_form)[:ide_number], class: 'col-lg-2 control-label'
+                .col-lg-10
+                  = ip_form.text_field :ide_number, class: 'form-control'
+
+            = form.fields_for :research_types_info do |rt_form|
+              .form-group.row.ip_patents
+                = rt_form.label :ip_patents, t(:study_form)[:ip_patents], class: 'col-lg-2 control-label'
+                .col-lg-10
+                  = rt_form.check_box :ip_patents, class: 'form-control'
+
+            = form.fields_for :ip_patents_info do |ip_form|
+              .form-group.row.patent_number
+                = ip_form.label :patent_number, t(:study_form)[:patent_number], class: 'col-lg-2 control-label'
+                .col-lg-10
+                  = ip_form.text_field :patent_number, class: 'form-control'
+
+              .form-group.row.inventors
+                = ip_form.label :inventors, t(:study_form)[:inventors], class: 'col-lg-2 control-label'
+                .col-lg-10
+                  = ip_form.text_area :inventors, class: 'form-control'
+
+        .panel.panel-default
+          .panel-heading
+            %h4.panel-title= "Study Type"
+            .sub_text= "Check all that apply"
+          .panel-body
+            = form.fields_for :study_types, protocol.study_types.sort_by(&:position) do |st_form|
+              .form-group.row{ class: st_form.object.name }
+                = st_form.label :name, "#{StudyType::TYPES[st_form.object.name]}:", class: 'col-lg-2 control-label'
+                .col-lg-10
+                  = st_form.check_box "_destroy", { checked: !st_form.object.new, class: 'form-control' }, false, true
+                  = st_form.hidden_field :name, value: st_form.object.name
+
+        .panel.panel-default
+          .panel-heading
+            %h4.panel-title= t(:study_form)[:impact]
+            .sub_text= "Check all that apply"
+          .panel-body
+            = form.fields_for :impact_areas, protocol.impact_areas.sort_by(&:position) do |ia_form|
+              .form-group.row{ class: ia_form.object.name }
+                = ia_form.label :name, "#{ImpactArea::TYPES[ia_form.object.name]}:", class: 'col-lg-2 control-label'
+                .col-lg-10
+                  = ia_form.check_box "_destroy", { checked: !ia_form.object.new, class: 'form-control' }, false, true
+                  = ia_form.hidden_field :name, value: ia_form.object.name
+
+              - if ia_form.object.name == "other"
+                .form-group.row.impact_other
+                  = ia_form.label :other_text, "Enter area:", class: 'col-lg-2 control-label'
+                  .col-lg-10
+                    = ia_form.text_field :other_text, :id => "study_impact_areas_other", class: 'form-control'
+
+        .panel.panel-default
+          .panel-heading
+            %h4.panel-title= t(:study_form)[:affiliations]
+            .sub_text= "Check all that apply"
+          .panel-body
+            = form.fields_for :affiliations, protocol.affiliations.sort_by(&:position) do |affiliations_form|
+              .form-group.row{ class: affiliations_form.object.name }
+                = affiliations_form.label :name, "#{Affiliation::TYPES[affiliations_form.object.name]}:", class: 'col-lg-2 control-label'
+                .col-lg-10
+                  = affiliations_form.check_box "_destroy", { checked: !affiliations_form.object.new, class: 'form-control' }, false, true
+                  = affiliations_form.hidden_field :name, value: affiliations_form.object.name
+
+    .row#actions
+      .col-lg-12
+        %input.btn.btn-success{ type: "submit", value: t(:study_form)[:save]}
+        = link_to t(:protocol_shared)[:cancel], dashboard_protocol_path(protocol), class: 'btn btn-danger'

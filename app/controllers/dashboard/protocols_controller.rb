@@ -111,7 +111,6 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def edit
-    @edit_protocol = true
     @protocol.populate_for_edit if @protocol.type == "Study"
     @protocol.valid?
     respond_to do |format|
@@ -122,11 +121,11 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   def update
     attrs = params[@protocol.type.downcase.to_sym]
     if @protocol.update_attributes attrs
-      flash[:notice] = "Study updated"
-      redirect_to portal_root_path(:default_protocol => @protocol)
+      flash[:success] = "Study Updated!"
+      redirect_to dashboard_protocol_path(@protocol)
     else
       @protocol.populate_for_edit if @protocol.type == "Study"
-      render :action => 'edit'
+      redirect_to edit_dashboard_protocol_path(@protocol)
     end
   end
 
@@ -141,17 +140,13 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     end
   end
 
-  # This action is being used conditionally from both admin and user portal
-  # to update the protocol type
   def update_protocol_type
     # Using update_attribute here is intentional, type is a protected attribute
-    if @protocol.update_attribute(:type, params[:protocol][:type])
-      if params[:sub_service_request_id]
-        @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
-        redirect_to portal_admin_sub_service_request_path(@sub_service_request)
-      else
-        redirect_to edit_portal_protocol_path(@protocol)
-      end
+    if @protocol.update_attribute(:type, params[:type])
+      @form_partial = "dashboard/protocols/form/#{params[:type].downcase}_form"
+      flash[:success] = "Protocol Type Updated!"
+    else
+      @errors = @protocol.errors
     end
   end
 

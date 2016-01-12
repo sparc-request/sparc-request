@@ -317,6 +317,17 @@ $(document).ready ->
     #if you click on the row, it opens the notification show
     protocol_id = $(this).data("protocol-id")
     $.ajax
-      method: 'get'
+      type: 'get'
       url: "/dashboard/protocols/#{protocol_id}/display_requests"
+  )
+
+  $(document).on('click', '#protocol_type_button', ->
+    #if you click on the row, it opens the notification show
+    protocol_id = $(this).data("protocol-id")
+    data = type : $("#protocol_type").val()
+    if confirm "This will change the type of this Project/Study.  Are you sure?"
+      $.ajax
+        type: 'PATCH'
+        url: "/dashboard/protocols/#{protocol_id}/update_protocol_type"
+        data: data
   )

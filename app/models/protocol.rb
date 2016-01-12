@@ -128,6 +128,10 @@ class Protocol < ActiveRecord::Base
     self.type == 'Study'
   end
 
+  def is_project?
+    self.type == 'Project'
+  end
+
   # Determines whether a protocol contains a service_request with only a "first draft" status
   def has_first_draft_service_request?
     service_requests.any? && service_requests.map(&:status).all? { |status| status == 'first_draft'}

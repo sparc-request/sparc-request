@@ -133,6 +133,7 @@ SparcRails::Application.routes.draw do
   match 'service_requests/:id/delete_document/:document_id' => 'service_requests#delete_documents'
   match 'service_requests/:id/edit_document/:document_id' => 'service_requests#edit_documents'
   match 'service_requests/:id/new_document' => 'service_requests#new_document'
+  match 'service_requests/increment_click_counter' => 'service_requests#increment_click_counter'
 
   ##### sparc-services routes brought in and namespaced
   namespace :catalog_manager do

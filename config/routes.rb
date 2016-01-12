@@ -187,7 +187,7 @@ SparcRails::Application.routes.draw do
     resources :protocols, except: [:destroy] do
       member do
         get :view_full_calendar
-        put :update_protocol_type
+        patch :update_protocol_type
         put :update_from_fulfillment
         get :display_requests
       end

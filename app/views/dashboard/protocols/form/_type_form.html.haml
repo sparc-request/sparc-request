@@ -18,17 +18,17 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-- admin ||= false
-- url = admin ? update_from_project_study_information_dashboard_sub_service_request_path(@sub_service_request.id) : dashboard_protocol_path(protocol)
-- puts 'HEY'
-= form_for protocol, :url => url, html: { class: 'form-horizontal' } do |f|
-  = f.hidden_field :requester_id
-  - if admin
-    = hidden_field_tag "admin_page", admin
-    = hidden_field_tag "protocol_id", @protocol.id
-  = f.error_messages
-  - protocol_type = protocol.type
-  - if protocol_type == "Study"
-    .edit-study-view.container-fluid= render :partial => 'dashboard/protocols/study_fields', :locals => {:study => protocol, :f => f, :admin => admin}
-  - elsif protocol_type == "Project"
-    .edit-project-view.container-fluid= render :partial => 'dashboard/protocols/project_fields', :locals => {:project => protocol, :f => f, :admin => admin}
+.container-fluid
+  .row
+    .col-lg-12
+      .panel.panel-default
+        .panel-heading
+          %h4.panel-title
+            Change Project/Study Type
+        .panel-body.container-fluid
+          .form-group.row
+            = label_tag "protocol_type", t(:protocol_shared)[:change], class: 'col-lg-2 control-label'
+            .col-lg-10
+              = select_tag "protocol_type", options_for_select([['Project', 'Project'], ['Study', 'Study']], protocol.type), class: 'selectpicker'
+              %button.btn.btn-warning#protocol_type_button{ data: {protocol_id: protocol.id } }
+                = t(:protocol_shared)[:button]

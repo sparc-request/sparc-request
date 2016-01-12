@@ -179,6 +179,8 @@ GEM
       i18n (~> 0.5)
     formtastic (2.2.1)
       actionpack (>= 3.0)
+    fuzzily (0.3.3)
+      activerecord (>= 2.3.17)
     globalid (0.3.6)
       activesupport (>= 4.1.0)
     grape (0.7.0)
@@ -482,6 +484,7 @@ DEPENDENCIES
   execjs
   factory_girl_rails
   faker
+  fuzzily
   grape (= 0.7.0)
   grape-entity (~> 0.4.4)
   grouped_validations!

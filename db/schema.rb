@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151230174247) do
+ActiveRecord::Schema.define(version: 20160112130452) do
 
   create_table "admin_rates", force: :cascade do |t|
     t.integer  "line_item_id", limit: 4
@@ -496,9 +496,9 @@ ActiveRecord::Schema.define(version: 20151230174247) do
     t.string   "abbreviation", limit: 255
     t.text     "ack_language", limit: 65535
     t.boolean  "process_ssrs"
-    t.boolean  "is_available"
-    t.datetime "created_at",                              null: false
-    t.datetime "updated_at",                              null: false
+    t.boolean  "is_available",               default: true
+    t.datetime "created_at",                                null: false
+    t.datetime "updated_at",                                null: false
     t.datetime "deleted_at"
     t.boolean  "show_in_cwf"
   end
@@ -845,7 +845,7 @@ ActiveRecord::Schema.define(version: 20151230174247) do
     t.string   "abbreviation",          limit: 255
     t.integer  "order",                 limit: 4
     t.text     "description",           limit: 65535
-    t.boolean  "is_available"
+    t.boolean  "is_available",                                                 default: true
     t.decimal  "service_center_cost",                 precision: 12, scale: 4
     t.string   "cpt_code",              limit: 255
     t.string   "charge_code",           limit: 255
@@ -1080,6 +1080,17 @@ ActiveRecord::Schema.define(version: 20151230174247) do
 
   add_index "tokens", ["identity_id"], name: "index_tokens_on_identity_id", using: :btree
   add_index "tokens", ["service_request_id"], name: "index_tokens_on_service_request_id", using: :btree
+
+  create_table "trigrams", force: :cascade do |t|
+    t.string  "trigram",     limit: 3
+    t.integer "score",       limit: 2
+    t.integer "owner_id",    limit: 4
+    t.string  "owner_type",  limit: 255
+    t.string  "fuzzy_field", limit: 255
+  end
+
+  add_index "trigrams", ["owner_id", "owner_type", "fuzzy_field", "trigram", "score"], name: "index_for_match", using: :btree
+  add_index "trigrams", ["owner_id", "owner_type"], name: "index_by_owner", using: :btree
 
   create_table "validation_conditions", force: :cascade do |t|
     t.integer  "validation_id",  limit: 4

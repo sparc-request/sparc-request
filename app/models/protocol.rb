@@ -22,7 +22,13 @@ class Protocol < ActiveRecord::Base
 
   include RemotelyNotifiable
 
+  scope :for_identity, ->(identity) { joins(:project_roles).
+    where(project_roles: { identity_id: identity.id }).
+    where.not(project_roles: { project_rights: 'none' }) }
+
   audited
+
+  fuzzily_searchable :short_title
 
   has_many :study_types, :dependent => :destroy
   has_one :research_types_info, :dependent => :destroy

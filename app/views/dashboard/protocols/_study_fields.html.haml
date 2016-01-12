@@ -18,7 +18,7 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.row
+.row.user-edit-protocol-view
   .col-lg-12
     :javascript
       $(document).ready(function() {
@@ -46,13 +46,14 @@
 
         = render partial: 'form_select_field', locals: { f: f, name: :funding_status, label_text: t(:protocol_shared)[:funding_status], select_options: options_for_select(FUNDING_STATUSES, study.funding_status), include_blank: t(:study_form)[:status_blank] }
         = render partial: 'form_select_field', locals: { f: f, name: :potential_funding_source, label_text: t(:protocol_shared)[:potential_funding_source], select_options: options_for_select(FUNDING_STATUSES, study.potential_funding_source), include_blank: t(:study_form)[:potential_blank] }
-        = render partial: 'form_select_field', locals: { f: f, name: :funding_source, label_text: t(:protocol_shared)[:funding_source], select_options: options_for_select(FUNDING_STATUSES, study.funding_source), include_blank: t(:study_form)[:funding_blank] }
+        = render partial: 'form_select_field', locals: { f: f, name: :funding_source, label_text: t(:protocol_shared)[:funding_source], select_options: options_for_select(FUNDING_STATUSES, study.funding_source), include_blank: t(:study_form)[:funding_blank], row_class: 'funded internal_potential_funded_pilot_project' }
 
         / Internal Funded Pilot Project selected
-        = render partial: 'form_text_field', locals: { f: f, name: :funding_source_other, label_text: t(:study_form)[:funding_source_other] }
-        = render partial: 'form_text_field', locals: { f: f, name: :federal_grant_title, label_text: t(:study_form)[:federal_grant_title] }
-        = render partial: 'form_select_field', locals: { f: f, name: :federal_grant_code_id, label_text: t(:protocol_shared)[:federal_grant_code_id], select_options: options_for_select(FUNDING_STATUSES, study.federal_grant_code_id), include_blank: t(:study_form)[:code_blank] }
-        = render partial: 'form_select_field', locals: { f: f, name: :federal_phs_sponsor, label_text: t(:protocol_shared)[:federal_phs_sponsor], select_options: options_for_select(FUNDING_STATUSES, study.federal_phs_sponsor), include_blank: t(:study_form)[:phs_blank] }
+        = render partial: 'form_text_field', locals: { f: f, name: :funding_source_other, label_text: t(:study_form)[:funding_source_other], row_class: 'funded internal_funded_pilot_project' }
+
+        = render partial: 'form_text_field', locals: { f: f, name: :federal_grant_title, label_text: t(:study_form)[:federal_grant_title], row_class: 'federal' }
+        = render partial: 'form_select_field', locals: { f: f, name: :federal_grant_code_id, label_text: t(:protocol_shared)[:federal_grant_code_id], select_options: options_for_select(FUNDING_STATUSES, study.federal_grant_code_id), include_blank: t(:study_form)[:code_blank], row_class: 'federal' }
+        = render partial: 'form_select_field', locals: { f: f, name: :federal_phs_sponsor, label_text: t(:protocol_shared)[:federal_phs_sponsor], select_options: options_for_select(FUNDING_STATUSES, study.federal_phs_sponsor), include_blank: t(:study_form)[:phs_blank], row_class: 'federal' }
 
         %br
         %span -OR-
@@ -96,13 +97,13 @@
         = render partial: 'form_text_field', locals: { f: f, name: :funding_rfa, label_text: t(:study_form)[:funding_rfa], row_class: 'pending_funding' }
 
         .form-group.row.pending_funding
-          = f.label :potential_funding_start_date, t(:study_form)[:potential_funding_start_date], class: 'col-lg-2 form-control-label'
+          = f.label :potential_funding_start_date, t(:study_form)[:potential_funding_start_date], class: 'col-lg-2 control-label'
           .col-lg-10
             = f.text_field :potential_funding_start_date, class: 'form-control', value: (study.potential_funding_start_date.strftime('%-m/%d/%Y') rescue nil)
             = f.hidden_field :potential_funding_start_date
 
         .form-group.row.funded
-          = f.label :funding_start_date, t(:study_form)[:funding_start_date], class: 'col-lg-2 form-control-label'
+          = f.label :funding_start_date, t(:study_form)[:funding_start_date], class: 'col-lg-2 control-label'
           .col-lg-10
             = f.text_field :funding_start_date, class: 'form-control', value: (study.funding_start_date.strftime('%-m/%d/%Y') rescue nil)
             = f.hidden_field :funding_start_date
@@ -111,144 +112,104 @@
       .panel-heading
         %h4.panel-title= t(:study_form)[:research]
       .panel-body
-        %div
-          = f.fields_for :research_types_info do |rt|
-            .form-group.row.human_subjects
-              = rt.label :human_subjects, t(:study_form)[:human_subjects], class: 'col-lg-2 form-control-label'
-              = rt.check_box :human_subjects
-          = f.fields_for :human_subjects_info do |hs|
-            = render partial: 'form_text_field', locals: { f: hs, name: :nct_number, label_text: t(:study_form)[:nct_number], row_class: 'nct_number' }
+        = f.fields_for :research_types_info do |rt|
+          .form-group.row.human_subjects
+            = rt.label :human_subjects, t(:study_form)[:human_subjects], class: 'col-lg-2 control-label'
+            .col-lg-10
+              = rt.check_box :human_subjects, class: 'form-control'
+        = f.fields_for :human_subjects_info do |hs|
+          = render partial: 'form_text_field', locals: { f: hs, name: :nct_number, label_text: t(:study_form)[:nct_number], row_class: 'nct_number' }
+          = render partial: 'form_text_field', locals: { f: hs, name: :hr_number, label_text: t(:study_form)[:hr_number], row_class: 'hr_number' }
+          = render partial: 'form_text_field', locals: { f: hs, name: :pro_number, label_text: t(:study_form)[:pro_number], row_class: 'pro_number' }
+          = render partial: 'form_text_field', locals: { f: hs, name: :irb_of_record, label_text: t(:study_form)[:irb_of_record], row_class: 'irb_of_record' }
+          = render partial: 'form_select_field', locals: { f: hs, name: :submission_type, label_text: t(:protocol_shared)[:submission_type], row_class: 'submission_type', select_options: options_for_select(SUBMISSION_TYPES, study.human_subjects_info.submission_type), include_blank: t(:study_form)[:submission_type] }
+          = render partial: 'form_checkbox_field', locals: { f: hs, name: :approval_pending, label_text: t(:study_form)[:approval_pending], row_class: 'approval_pending' }
+          .form-group.row.irb_approval_date
+            = hs.label :irb_approval_date, t(:study_form)[:irb_approval_date], class: 'col-lg-2 control-label'
+            .col-lg-10
+              = hs.text_field :irb_approval_date, class: 'form-control', value: (study.human_subjects_info.irb_approval_date.strftime('%_m/%d/%Y') rescue nil)
+              = hs.hidden_field :irb_approval_date
+          .form-group.row.irb_expiration_date
+            = hs.label :irb_expiration_date, t(:study_form)[:irb_expiration_date], class: 'col-lg-2 control-label'
+            .col-lg-10
+              = hs.text_field :irb_expiration_date, class: 'form-control', value: (study.human_subjects_info.irb_expiration_date.strftime('%_m/%d/%Y') rescue nil)
+              = hs.hidden_field :irb_expiration_date
 
-    -#         .field.hr_number
-    -#           = hs.label :hr_number, t(:study_form)[:hr_number]
-    -#           = hs.text_field :hr_number
-    -#
-    -#         .field.pro_number
-    -#           = hs.label :pro_number, t(:study_form)[:pro_number]
-    -#           = hs.text_field :pro_number
-    -#
-    -#         .field.irb_of_record
-    -#           = hs.label :irb_of_record, t(:study_form)[:irb_of_record]
-    -#           = hs.text_field :irb_of_record
-    -#
-    -#         .field.submission_type
-    -#           = hs.label :submission_type, t(:study_form)[:submission_type]
-    -#           = hs.select :submission_type, options_for_select(SUBMISSION_TYPES, study.human_subjects_info.submission_type), include_blank: t(:study_form)[:submission_type]
-    -#
-    -#         .field.approval_pending
-    -#           = hs.label :approval_pending, t(:study_form)[:approval_pending]
-    -#           = hs.check_box :approval_pending
-    -#
-    -#         .field.irb_approval_date
-    -#           = hs.label :irb_approval_date, t(:study_form)[:irb_approval_date]
-    -#           = text_field_tag :irb_approval_date, (study.human_subjects_info.irb_approval_date.strftime('%_m/%d/%Y') rescue nil)
-    -#           = hs.hidden_field :irb_approval_date
-    -#
-    -#         .field.irb_expiration_date
-    -#           = hs.label :irb_expiration_date, t(:study_form)[:irb_expiration_date]
-    -#           = text_field_tag :irb_expiration_date, (study.human_subjects_info.irb_expiration_date.strftime('%_m/%d/%Y') rescue nil)
-    -#           = hs.hidden_field :irb_expiration_date
-    -#
-    -#       = f.fields_for :research_types_info do |rt|
-    -#         .field.vertebrate_animals
-    -#           = rt.label :vertebrate_animals, t(:study_form)[:vertebrate_animals]
-    -#           = rt.check_box :vertebrate_animals
-    -#
-    -#       = f.fields_for :vertebrate_animals_info do |va|
-    -#         .field.iacuc_number
-    -#           = va.label :iacuc_number, t(:study_form)[:iacuc_number]
-    -#           = va.text_field :iacuc_number
-    -#
-    -#         .field.name_of_iacuc
-    -#           = va.label :name_of_iacuc, t(:study_form)[:name_of_iacuc]
-    -#           = va.text_field :name_of_iacuc
-    -#
-    -#         .field.iacuc_approval_date
-    -#           = va.label :iacuc_approval_date, t(:study_form)[:iacuc_approval_date]
-    -#           = text_field_tag :iacuc_approval_date, (study.vertebrate_animals_info.iacuc_approval_date.strftime('%_m/%d/%Y') rescue nil)
-    -#           = va.hidden_field :iacuc_approval_date
-    -#
-    -#         .field.iacuc_expiration_date
-    -#           = va.label :iacuc_expiration_date, t(:study_form)[:iacuc_expiration_date]
-    -#           = text_field_tag :iacuc_expiration_date, (study.vertebrate_animals_info.iacuc_expiration_date.strftime('%_m/%d/%Y') rescue nil)
-    -#           = va.hidden_field :iacuc_expiration_date
-    -#
-    -#       = f.fields_for :research_types_info do |rt|
-    -#         .field.investigational_products
-    -#           = rt.label :investigational_products, t(:study_form)[:investigational_products]
-    -#           = rt.check_box :investigational_products
-    -#
-    -#       = f.fields_for :investigational_products_info do |ip|
-    -#         .field.ind_number
-    -#           = ip.label :ind_number, t(:study_form)[:ind_number]
-    -#           = ip.text_field :ind_number
-    -#
-    -#         .field.ind_on_hold
-    -#           = ip.label :ind_on_hold, t(:study_form)[:ind_on_hold]
-    -#           = ip.check_box :ind_on_hold
-    -#
-    -#         .field.ide_number
-    -#           = ip.label :ide_number, t(:study_form)[:ide_number]
-    -#           = ip.text_field :ide_number
-    -#
-    -#
-    -#       = f.fields_for :research_types_info do |rt|
-    -#         .field.ip_patents
-    -#           = rt.label :ip_patents, t(:study_form)[:ip_patents]
-    -#           = rt.check_box :ip_patents
-    -#
-    -#       = f.fields_for :ip_patents_info do |ip|
-    -#         .field.patent_number
-    -#           = ip.label :patent_number, t(:study_form)[:patent_number]
-    -#           = ip.text_field :patent_number
-    -#
-    -#         .field.inventors
-    -#           = ip.label :inventors, t(:study_form)[:inventors]
-    -#           = ip.text_area :inventors
-    -#           .clear
-    -#
-    -# .panel.panel-default
-    -#   .panel-heading
-    -#     %h4.panel-title= t(:study_form)[:type]
-    -#   .panel-body
-    -#     %div
-    -#       = f.fields_for :study_types, f.object.study_types.sort_by(&:position) do |rt|
-    -#         .field{:class => rt.object.name}
-    -#           = rt.label :name, "#{StudyType::TYPES[rt.object.name]}:"
-    -#           = rt.check_box "_destroy", {:checked => !rt.object.new}, false, true
-    -#           = rt.hidden_field :name, :value => rt.object.name
-    -#
-    -# .panel.panel-default
-    -#   .panel-heading
-    -#     %h4.panel-title= t(:study_form)[:impact]
-    -#   .panel-body
-    -#     %div
-    -#       = f.fields_for :impact_areas, f.object.impact_areas.sort_by(&:position) do |rt|
-    -#         .field{:class => rt.object.name}
-    -#           = rt.label :name, "#{ImpactArea::TYPES[rt.object.name]}:"
-    -#           = rt.check_box "_destroy", {:checked => !rt.object.new}, false, true
-    -#           = rt.hidden_field :name, :value => rt.object.name
-    -#           - if rt.object.name == "other"
-    -#             .field.impact_other
-    -#               = rt.label :other_text, "Enter area:"
-    -#               = rt.text_field :other_text, :id => "study_impact_areas_other"
-    -#
-    -# .panel.panel-default
-    -#   .panel-heading
-    -#     %h4.panel-title= t(:study_form)[:affiliations]
-    -#   .panel-body
-    -#     %div
-    -#       = f.fields_for :affiliations, f.object.affiliations.sort_by(&:position) do |rt|
-    -#         .field{:class => rt.object.name}
-    -#           = rt.label :name, "#{Affiliation::TYPES[rt.object.name]}:"
-    -#           = rt.check_box "_destroy", {:checked => !rt.object.new}, false, true
-    -#           = rt.hidden_field :name, :value => rt.object.name
 
-    -# %br.clear
-    -# #actions
-    -#   = submit_tag(t(:study_form)[:save])
-    -#   - if admin
-    -#     = link_to "Cancel", "/portal/admin/sub_service_requests/#{@sub_service_request.id}", :class => "admin_cancel_link"
-    -#   - else
-    -#     = link_to t(:protocol_shared)[:cancel], portal_root_path
-    -#   .clear
+        = f.fields_for :research_types_info do |rt|
+          = render partial: 'form_checkbox_field', locals: { f: rt, name: :vertebrate_animals, label_text: t(:study_form)[:vertebrate_animals], row_class: 'vertebrate_animals' }
+
+        = f.fields_for :vertebrate_animals_info do |va|
+          = render partial: 'form_text_field', locals: { f: va, name: :iacuc_number, label_text: t(:study_form)[:iacuc_number], row_class: 'iacuc_number' }
+          = render partial: 'form_text_field', locals: { f: va, name: :name_of_iacuc, label_text: t(:study_form)[:name_of_iacuc], row_class: 'name_of_iacuc' }
+          .form-group.row.iacuc_approval_date
+            = va.label :iacuc_approval_date, t(:study_form)[:iacuc_approval_date], class: 'col-lg-2 control-label'
+            .col-lg-10
+              = va.text_field :iacuc_approval_date, class: 'form-control', value: (study.vertebrate_animals.iacuc_approval_date.strftime('%_m/%d/%Y') rescue nil)
+              = va.hidden_field :iacuc_approval_date
+          .form-group.row.iacuc_expiration_date
+            = va.label :iacuc_expiration_date, t(:study_form)[:iacuc_expiration_date], class: 'col-lg-2 control-label'
+            .col-lg-10
+              = va.text_field :iacuc_expiration_date, class: 'form-control', value: (study.vertebrate_animals.iacuc_expiration_date.strftime('%_m/%d/%Y') rescue nil)
+              = va.hidden_field :iacuc_expiration_date
+
+        = f.fields_for :research_types_info do |rt|
+          = render partial: 'form_checkbox_field', locals: { f: rt, name: :investigational_products, label_text: t(:study_form)[:investigational_products], row_class: 'investigational_products' }
+        = f.fields_for :investigational_products_info do |ip|
+          = render partial: 'form_text_field', locals: { f: ip, name: :ind_number, label_text: t(:study_form)[:ind_number], row_class: 'ind_number' }
+          = render partial: 'form_checkbox_field', locals: { f: ip, name: :ind_on_hold, label_text: t(:study_form)[:ind_on_hold], row_class: 'ind_on_hold' }
+          = render partial: 'form_text_field', locals: { f: ip, name: :ide_number, label_text: t(:study_form)[:ide_number], row_class: 'ide_number' }
+        = f.fields_for :research_types_info do |rt|
+          = render partial: 'form_checkbox_field', locals: { f: rt, name: :ip_patents, label_text: t(:study_form)[:ip_patents], row_class: 'ip_patents' }
+        = f.fields_for :ip_patents_info do |ip|
+          = render partial: 'form_text_field', locals: { f: ip, name: :patent_number, label_text: t(:study_form)[:patent_number], row_class: 'patent_number' }
+          .form-group.row.inventors
+            = ip.label :inventors, t(:study_form)[:inventors], class: 'col-lg-2 control-label'
+            .col-lg-10
+              = ip.text_area :inventors, class: 'form-control'
+
+    .panel.panel-default
+      .panel-heading
+        %h4.panel-title= t(:study_form)[:type]
+      .panel-body
+        = f.fields_for :study_types, f.object.study_types.sort_by(&:position) do |rt|
+          .form-group.row{ class: rt.object.name }
+            = rt.label :name, "#{StudyType::TYPES[rt.object.name]}:", class: 'col-lg-2 control-label'
+            .col-lg-10
+              = rt.check_box "_destroy", { checked: !rt.object.new, class: 'form-control' }, false, true
+              = rt.hidden_field :name, value: rt.object.name
+
+    .panel.panel-default
+      .panel-heading
+        %h4.panel-title= t(:study_form)[:impact]
+      .panel-body
+        = f.fields_for :impact_areas, f.object.impact_areas.sort_by(&:position) do |rt|
+          .form-group.row{ class: rt.object.name }
+            = rt.label :name, "#{ImpactArea::TYPES[rt.object.name]}:", class: 'col-lg-2 control-label'
+            .col-lg-10
+              = rt.check_box "_destroy", { checked: !rt.object.new, class: 'form-control' }, false, true
+              = rt.hidden_field :name, value: rt.object.name
+          - if rt.object.name == "other"
+            .form-group.row.impact_other
+              = rt.label :other_text, "Enter area:", class: 'col-lg-2 control-label'
+              .col-lg-10
+                = rt.text_field :other_text, :id => "study_impact_areas_other", class: 'form-control'
+
+    .panel.panel-default
+      .panel-heading
+        %h4.panel-title= t(:study_form)[:affiliations]
+      .panel-body
+        = f.fields_for :affiliations, f.object.affiliations.sort_by(&:position) do |rt|
+          .form-group.row{ class: rt.object.name }
+            = rt.label :name, "#{Affiliation::TYPES[rt.object.name]}:", class: 'col-lg-2 control-label'
+            .col-lg-10
+              = rt.check_box "_destroy", { checked: !rt.object.new, class: 'form-control' }, false, true
+              = rt.hidden_field :name, value: rt.object.name
+
+.row#actions
+  .col-lg-12
+    = submit_tag(t(:study_form)[:save], class: 'btn btn-success')
+    - if admin
+      = link_to "Cancel", "/portal/admin/sub_service_requests/#{@sub_service_request.id}", :class => "admin_cancel_link btn btn-danger"
+    - else
+      = link_to t(:protocol_shared)[:cancel], dashboard_root_path, class: 'btn btn-danger'

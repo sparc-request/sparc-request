@@ -486,6 +486,10 @@ class ServiceRequestsController < ApplicationController
     @service_list = @service_request.service_list
   end
 
+  def increment_click_counter
+    ClickCounter.first.increment!(:click_count)
+  end
+
   private
 
   # Send notifications to all users.
@@ -685,5 +689,4 @@ class ServiceRequestsController < ApplicationController
     end
     # end document saving stuff
   end
-
 end

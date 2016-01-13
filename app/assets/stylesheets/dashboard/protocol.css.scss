@@ -24,64 +24,64 @@
     }
 }
 
-#protocol {
-    table {
-        font-size: 14px;
-        width: 100%;
+// #protocol {
+//     table {
+//         font-size: 14px;
+//         width: 100%;
 
-        th {
-            width: 25%;
-            padding: 4px;
-            text-align: left;
-        }
+//         th {
+//             width: 25%;
+//             padding: 4px;
+//             text-align: left;
+//         }
 
-        td {
-            padding: 4px;
+//         td {
+//             padding: 4px;
 
-            div {
-                min-height: 25px;
-            }
-        }
-    }
+//             div {
+//                 min-height: 25px;
+//             }
+//         }
+//     }
 
-    input {
-        width: 98%;
-    }
+//     input {
+//         width: 98%;
+//     }
 
-    input[type="checkbox"] {
-        width: auto;
-    }
+//     input[type="checkbox"] {
+//         width: auto;
+//     }
 
-    input.protocol_date, .form-date {
-        width: 15%;
-    }
+//     input.protocol_date, .form-date {
+//         width: 15%;
+//     }
 
-    input[type=submit] {
-        width: auto;
-    }
+//     input[type=submit] {
+//         width: auto;
+//     }
 
-    select {
-        width: 99%;
-    }
-}
+//     select {
+//         width: 99%;
+//     }
+// }
 
-#change_protocol_type_area {
-    .info {
-        width: 95%;
-    }
-    input, select {
-        float: left;
-    }
-    input {
-        margin: 7px 0 0 10px;
-    }
-    select {
-        width: 60% !important;
-    }
-    option {
-        max-width: 100% !important;
-    }
-}
+// #change_protocol_type_area {
+//     .info {
+//         width: 95%;
+//     }
+//     input, select {
+//         float: left;
+//     }
+//     input {
+//         margin: 7px 0 0 10px;
+//     }
+//     select {
+//         width: 60% !important;
+//     }
+//     option {
+//         max-width: 100% !important;
+//     }
+// }
 
 #protocol .user-edit-protocol-view .field.inventors {
     height: auto;

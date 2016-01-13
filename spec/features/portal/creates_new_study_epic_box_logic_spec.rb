@@ -8,7 +8,7 @@ RSpec.describe "creates new study epic box logic", js: true do
 
   before :each do
     visit new_portal_protocol_path
-    
+    find('#study_selected_for_epic_true').click
   end
 
   context 'study type 0' do
@@ -19,8 +19,6 @@ RSpec.describe "creates new study epic box logic", js: true do
     end
 
     it 'should display active questions 1,2,3,4,5' do
-      find('#study_selected_for_epic_true').click
-      save_and_open_page
       expect(page).to have_selector('#study_type_answer_certificate_of_conf')
       expect(page).to have_selector('#study_type_answer_higher_level_of_privacy')
       expect(page).to_not have_selector('#study_type_answer_access_study_info')

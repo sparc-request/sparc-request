@@ -107,7 +107,7 @@
               = f.label :study_type_questions
               = f.fields_for :study_type_answers, study.study_type_answers do |answer|
                 - if answer.object.study_type_question.study_type_question_group.active
-                  .field{id: "study_type_answer_#{answer.object.study_type_question.friendly_id}"}
+                  .field{id: "study_type_answer_#{answer.object.study_type_question.friendly_id}", style: "#{answer.object.answer != nil ? 'display:block' : 'display:none;'}"}
                     = answer.label :answer, answer.object.study_type_question.question, class: "long"
                     = answer.select :answer, options_for_select([['Yes', true], ['No', false]], answer.object.answer), {include_blank: "Select One"}, id: "study_type_answer_#{answer.object.study_type_question.friendly_id}_answer"
                     = answer.hidden_field :study_type_question_id

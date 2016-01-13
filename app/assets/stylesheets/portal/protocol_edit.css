@@ -36,6 +36,15 @@
   padding: 0 12px 12px;
 }
 
+.space_bar {
+  height: 25px;
+}
+
+.visual_error {
+  border-color: red !important;
+  border-width: 2px !important;
+}
+
 .user-edit-protocol-view .box {
   width: 100% !important;
   height: auto;

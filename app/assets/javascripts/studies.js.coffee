@@ -47,9 +47,6 @@ $(document).ready ->
 
   FormFxManager.registerListeners($('.edit-project-view'), display_dependencies)
 
-
-  $(".study_type .field").hide();
-
   study_type_form = $('.study_type')
   study_selected_for_epic_radio = $('input[name=\'study[selected_for_epic]\']')
   certificate_of_confidence_dropdown = $('#study_type_answer_certificate_of_conf_answer')
@@ -68,93 +65,23 @@ $(document).ready ->
     this.closest('.field').show()
     return this
 
-  show_if_value_selected = (dropdown) ->
-    if $('#study_study_type_question_group_id').val() == "inactive" && $('input[name=\'study[selected_for_epic]\']:checked').val() == 'true'
-      study_type_form.show()
-      certificate_of_confidence_dropdown.show_elt()
-      higher_level_of_privacy_dropdown.show_elt()
-    else if $('#study_study_type_question_group_id').val() == "active"
-      if dropdown[0].selectedIndex > 0
-        dropdown.show_elt()
-      else
-        dropdown.hide_elt()
+  visual_error = (dropdown) ->
+    if dropdown.is(':visible') && dropdown.val() == ''
+      dropdown.addClass('visual_error')
+      dropdown.on 'change', (e) ->
+        dropdown.removeClass('visual_error')
+        if $('.visual_error').length == 0
+          $('.study_type div').removeClass('field_with_errors')
+          if $('#errorExplanation ul li').size() == 1
+            $('#errorExplanation').remove()
+          else
+            $('#errorExplanation ul li:contains("Study type questions must be selected")').remove()
 
-  #FOR EDITING A STUDY - EPIC BOX
-  # Since the 'ready' function only gets fired when editing,
-  # we can assume here that there are values being loaded in
-  # each of the dropdowns. Since we can also assume that the
-  # logic governing those dropdowns was operating under the
-  # same set of rules when the study was first saved, as it
-  # is now, we can just display the fields that have a value
-  # selected and hide those that do not because the study had
-  # to be in a valid state for the initial save to succeed in
-  # the first place.
-
-  show_if_value_selected(certificate_of_confidence_dropdown)
-  show_if_value_selected(higher_level_of_privacy_dropdown)
-  show_if_value_selected(access_required_dropdown)
-  show_if_value_selected(epic_inbasket_dropdown)
-  show_if_value_selected(research_active_dropdown)
-  show_if_value_selected(restrict_sending_dropdown)
-
-  #FOR EDITING A STUDY - EPIC BOX
-  # When a user is editing the epic box information, and does not select
-  # an answer and that unselected answer hits the validations, the above 
-  # code will hide the unselected field.
-  # This code is for preventing that from happening:
-  # We are using localStorage to save the array of values we have selected
-  # before hitting validations and then comparing those to the original values
-  # if there is a discrepancy between them we show/hide 
-  # dropdowns depending on the logic associated with that particular dropdown
-
-  before_hitting_validations_array = new Array()
-  errors = new Array()
-
-  study_no_errors = localStorage.getItem("study_no_errors")  
-
-  # Saving array of study_type_answers before and after hitting validation
-  if $('.field_with_errors label').text() == "Study type questions"
-    $('.study_type .field select').each -> 
-      errors.push $(this).val()
-  else
-    $('.study_type .field select').each -> 
-      before_hitting_validations_array.push $(this).val()
-    
-    localStorage.setItem('study_no_errors', before_hitting_validations_array)
-
-  study_no_errors = JSON.stringify(study_no_errors)
-  study_no_errors = JSON.parse(study_no_errors).split(',')
-
-  not_selected = new Array()
-  show_index = new Array()
-  
-  # Comparing before/after hitting validation study type answer arrays
-  # Showing/hiding based on appropriate epic logic
-  if errors
-    for i in [0...errors.length]
-      if study_no_errors[i] != errors[i]
-        if errors[i] == ""
-          not_selected.push errors[i]
-          show_index.push i 
-    for i in show_index
-      switch i
-        when 0 then certificate_of_confidence_dropdown.show_elt() 
-        when 1 then higher_level_of_privacy_dropdown.show_elt() 
-        when 2 then access_required_dropdown.show_elt()
-        when 3 then epic_inbasket_dropdown.show_elt()
-        when 4 then research_active_dropdown.show_elt()
-        when 5 then restrict_sending_dropdown.show_elt() 
-    if errors[0] == 'false' && errors[1] == 'true'
-      access_required_dropdown.show_elt()
-    else if errors[0] == 'true' 
-      access_required_dropdown.hide_elt()
-      epic_inbasket_dropdown.hide_elt()
-      research_active_dropdown.hide_elt()
-      restrict_sending_dropdown.hide_elt() 
-    else if errors[0] == 'false' && errors[1] == 'false'
-      access_required_dropdown.hide_elt()
-  else
-    #do nothing
+  # If study is inactive, we want to force users to fill out new epic box questions
+  if $('#study_study_type_question_group_id').val() == "inactive" && $('input[name=\'study[selected_for_epic]\']:checked').val() == 'true'
+    study_type_form.show()
+    certificate_of_confidence_dropdown.show_elt()
+    higher_level_of_privacy_dropdown.show_elt()
 
   # Logic for epic info box 
   study_selected_for_epic_radio.on 'change', (e) ->
@@ -231,6 +158,26 @@ $(document).ready ->
       epic_inbasket_dropdown.hide_elt()
       research_active_dropdown.hide_elt()
       restrict_sending_dropdown.hide_elt()
+
+  # When the epic box answers hit the validations with an unselected field, 
+  # the html.haml sets display to none for unselected fields
+  # So if the user has an not filled out one of the 
+  # required fields in the epic box, it will hit this code and display 
+  # the appropriate fields that need to be filled out with a visual cue of red border
+  if $('.field_with_errors label:contains("Study type questions")').length > 0
+    study_selected_for_epic_radio.change()
+    if certificate_of_confidence_dropdown.is(':visible')
+      certificate_of_confidence_dropdown.change()
+    if access_required_dropdown.is(':visible')
+      access_required_dropdown.change()
+    if higher_level_of_privacy_dropdown.val() == 'false'
+      higher_level_of_privacy_dropdown.change()
+    visual_error(certificate_of_confidence_dropdown)
+    visual_error(higher_level_of_privacy_dropdown)
+    visual_error(access_required_dropdown)
+    visual_error(epic_inbasket_dropdown)
+    visual_error(research_active_dropdown)
+    visual_error(restrict_sending_dropdown)
 
 
   ######## End of send to epic study question logic ##############

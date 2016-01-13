@@ -84,35 +84,6 @@ RSpec.feature "User wants to create a Study", js: true do
       end
     end
 
-    context 'publish to epic' do
-      before :each do
-        fill_in 'study_short_title', with: 'title'
-        fill_in 'study_title', with: 'title'
-        choose 'study_has_cofc_false'
-        fill_in 'study_sponsor_name', with: 'test'
-        select 'Funded', from: 'study_funding_status'
-        select 'College Department', from: 'study_funding_source'
-        choose 'study_selected_for_epic_true'
-        wait_for_javascript_to_finish
-      end
-
-      scenario 'submits the form after selecting Publish to Epic and not filling out questions' do
-        click_link 'Continue'
-        expect(page).to have_content 'Study type questions must be selected'
-      end
-
-      scenario 'yes to first question' do
-        expect(page).to have_field('study_type_answer_higher_level_of_privacy_answer')
-      end
-
-      scenario 'no to first question' do
-        select 'No', from: 'study_type_answer_higher_level_of_privacy_answer'
-        find('#study_type_answer_epic_inbasket_answer').visible?
-        find('#study_type_answer_research_active_answer').visible?
-        find('#study_type_answer_restrict_sending_answer').visible?
-      end
-    end
-
     context 'and submits the form after filling out required fields' do
       before :each do
         fill_in 'study_short_title', with: 'title'
@@ -135,17 +106,6 @@ RSpec.feature "User wants to create a Study", js: true do
 
       scenario 'and sees the save and continue button' do
         expect(page).to have_link 'Save & Continue'
-      end
-
-      context 'TEMP: and adds themself as a Primary PI and submits the Study' do
-        scenario 'and sees the Study with correct information' do
-          select 'Primary PI', from: 'project_role_role'
-          click_button 'Add Authorized User'
-          wait_for_javascript_to_finish
-          click_link 'Save & Continue'
-          wait_for_javascript_to_finish
-          expect(page).to have_link 'Edit Project'
-        end
       end
     end
   end

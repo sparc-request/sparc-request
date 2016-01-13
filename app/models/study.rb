@@ -26,10 +26,6 @@ class Study < Protocol
     return [ 'project' ] # for backward-compatibility
   end
 
-  def activate
-    update_attribute(:study_type_question_group_id, StudyTypeQuestionGroup.where(active:true).pluck(:id).first)
-  end
-
   def determine_study_type
     Portal::StudyTypeFinder.new(self).study_type
   end

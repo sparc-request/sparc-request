@@ -119,8 +119,6 @@ class ProtocolsController < ApplicationController
       session[:saved_protocol_id] = @protocol.id
       flash[:notice] = "#{@protocol.type.humanize} updated"
 
-
-
       #Added as a safety net for older SRs
       if @service_request.status == "first_draft"
         @service_request.update_attributes(status: "draft")
@@ -128,9 +126,6 @@ class ProtocolsController < ApplicationController
     else
       @protocol.populate_for_edit
     end
-
-    
-
     cookies['current_step'] = @current_step
   end
 

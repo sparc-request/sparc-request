@@ -162,25 +162,15 @@ RSpec.describe EpicInterface do
       # Uncomment these lines for debugging (sometimes the test output
       # doesn't give you all the information you need to figure out what
       # the difference is between actual and expected).
-      # puts "EXPECTED"
+  
       # p strip_xml_whitespace!(expected.root)
       # puts ""
       # puts ""
-      # puts "NODE"
+
       # p strip_xml_whitespace!(node)
 
       expect(node).to be_equivalent_to(expected.root)
     end
-
-    # before :each do
-    #   study.update_attributes(study_type_question_group_id: StudyTypeQuestionGroup.where(active:true).pluck(:id).first)
-    #   answers = [true, true, nil, nil, nil, nil]
-    #   question_id = [active_stq_certificate_of_conf.id, active_stq_higher_level_of_privacy.id, active_stq_access_study_info.id, active_stq_epic_inbasket.id, active_stq_research_active.id, active_stq_restrict_sending.id]
-      
-    #   answers.each_with_index do |ans, index|
-    #     StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: question_id[index], answer: ans)
-    #   end
-    # end
 
     it 'should emit a subjectOf for a PI' do
       identity = create(

@@ -36,6 +36,7 @@ RSpec.describe "editing a study", js: true do
   context "validations" do
 
     it "should raise an error message if study's status is pending and no potential funding source is selected" do
+      sos
       select("Pending Funding", from: "Proposal Funding Status")
       click_button "Save"
       expect(page).to have_content("1 error prohibited this study from being saved")

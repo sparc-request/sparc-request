@@ -125,11 +125,6 @@ class Portal::ProtocolsController < Portal::BaseController
       @protocol.populate_for_edit if @protocol.type == "Study"
       render :action => 'edit'
     end
-
-    # if @protocol.is_study? && !@protocol.active?
-    #   @protocol.activate
-    # end
-    
   end
 
   # @TODO: add to an authorization filter?

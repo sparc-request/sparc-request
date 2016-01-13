@@ -79,7 +79,7 @@ $(document).ready ->
       else
         dropdown.hide_elt()
 
-
+  #FOR EDITING A STUDY - EPIC BOX
   # Since the 'ready' function only gets fired when editing,
   # we can assume here that there are values being loaded in
   # each of the dropdowns. Since we can also assume that the
@@ -89,6 +89,7 @@ $(document).ready ->
   # selected and hide those that do not because the study had
   # to be in a valid state for the initial save to succeed in
   # the first place.
+
   show_if_value_selected(certificate_of_confidence_dropdown)
   show_if_value_selected(higher_level_of_privacy_dropdown)
   show_if_value_selected(access_required_dropdown)
@@ -96,14 +97,72 @@ $(document).ready ->
   show_if_value_selected(research_active_dropdown)
   show_if_value_selected(restrict_sending_dropdown)
 
+  #FOR EDITING A STUDY - EPIC BOX
+  # When a user is editing the epic box information, and does not select
+  # an answer and that unselected answer hits the validations, the above 
+  # code will hide the unselected field.
+  # This code is for preventing that from happening:
+  # We are using localStorage to save the array of values we have selected
+  # before hitting validations and then comparing those to the original values
+  # if there is a discrepancy between them we show/hide 
+  # dropdowns depending on the logic associated with that particular dropdown
+
+  before_hitting_validations_array = new Array()
+  errors = new Array()
+
+  study_no_errors = localStorage.getItem("study_no_errors")  
+
+  # Saving array of study_type_answers before and after hitting validation
+  if $('.field_with_errors label').text() == "Study type questions"
+    $('.study_type .field select').each -> 
+      errors.push $(this).val()
+  else
+    $('.study_type .field select').each -> 
+      before_hitting_validations_array.push $(this).val()
+    
+    localStorage.setItem('study_no_errors', before_hitting_validations_array)
+
+  study_no_errors = JSON.stringify(study_no_errors)
+  study_no_errors = JSON.parse(study_no_errors).split(',')
+
+  not_selected = new Array()
+  show_index = new Array()
+  
+  # Comparing before/after hitting validation study type answer arrays
+  # Showing/hiding based on appropriate epic logic
+  if errors
+    for i in [0...errors.length]
+      if study_no_errors[i] != errors[i]
+        if errors[i] == ""
+          not_selected.push errors[i]
+          show_index.push i 
+    for i in show_index
+      switch i
+        when 0 then certificate_of_confidence_dropdown.show_elt() 
+        when 1 then higher_level_of_privacy_dropdown.show_elt() 
+        when 2 then access_required_dropdown.show_elt()
+        when 3 then epic_inbasket_dropdown.show_elt()
+        when 4 then research_active_dropdown.show_elt()
+        when 5 then restrict_sending_dropdown.show_elt() 
+    if errors[0] == 'false' && errors[1] == 'true'
+      access_required_dropdown.show_elt()
+    else if errors[0] == 'true' 
+      access_required_dropdown.hide_elt()
+      epic_inbasket_dropdown.hide_elt()
+      research_active_dropdown.hide_elt()
+      restrict_sending_dropdown.hide_elt() 
+    else if errors[0] == 'false' && errors[1] == 'false'
+      access_required_dropdown.hide_elt()
+  else
+    #do nothing
+
+  # Logic for epic info box 
   study_selected_for_epic_radio.on 'change', (e) ->
     if $('input[name=\'study[selected_for_epic]\']:checked').val() == 'true'
-      console.log('true')
       study_type_form.show()
       certificate_of_confidence_dropdown.show_elt()
       higher_level_of_privacy_dropdown.show_elt()
     else
-      console.log('false')
       study_type_form.hide()
       certificate_of_confidence_dropdown.hide_elt()
       higher_level_of_privacy_dropdown.hide_elt().trigger 'change'
@@ -172,13 +231,6 @@ $(document).ready ->
       epic_inbasket_dropdown.hide_elt()
       research_active_dropdown.hide_elt()
       restrict_sending_dropdown.hide_elt()
-
-  # if $('#study_study_type_question_group_id').val() == "inactive"
-  #   $('.study_type').find('.field:hidden select').each ->    
-  #    console.log("THIS")   
-  #    console.log($(this).attr('id'))     
-  #    hidden = '#' + $(this).attr('id')   
-  #    $(hidden).hide_elt()
 
 
   ######## End of send to epic study question logic ##############

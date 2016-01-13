@@ -88,7 +88,6 @@ class ProtocolsController < ApplicationController
   end
 
   def update
-    
     @service_request = ServiceRequest.find session[:service_request_id]
     @current_step = cookies['current_step']
     @protocol = current_user.protocols.find params[:id]
@@ -105,7 +104,7 @@ class ProtocolsController < ApplicationController
     end
 
     @protocol.assign_attributes(attrs.merge(study_type_question_group_id: StudyTypeQuestionGroup.active.pluck(:id).first))   
-
+    
     if @current_step == 'cancel'
       @current_step = 'return_to_service_request'
     elsif @current_step == 'go_back'

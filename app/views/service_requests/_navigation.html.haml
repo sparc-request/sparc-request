@@ -24,7 +24,10 @@
       .return-to-previous
         = navigation_link image_tag('GoBack.png'), @back
         = navigation_link t(:bottom_navigation)[:go_back], @back, "btn btn-success btn-lg "
-    .exit.btn.btn-lg= navigation_link t(:bottom_navigation)[:save_and_exit],  'save_and_exit', "btn btn-success btn-lg "
+    - if !submitted_or_previously_submitted?(@service_request)
+      .exit.btn.btn-lg= navigation_link t(:bottom_navigation)[:save_and_exit],  'save_and_exit', "btn btn-success btn-lg "
+    - else
+      .exit
     .nav-forward
       .save-and-continue
         = navigation_link t(:bottom_navigation)[:save_and_continue], @forward, "btn btn-success btn-lg "

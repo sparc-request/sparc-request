@@ -486,12 +486,14 @@ class ServiceRequest < ActiveRecord::Base
 
   # Change the status of the service request and all the sub service
   # requests to the given status.
-  def update_status(new_status)
-    self.update_attributes(status: new_status)
+  def update_status(new_status, use_validation=true)
+    self.assign_attributes(status: new_status)
 
     self.sub_service_requests.each do |ssr|
-      ssr.update_attributes(status: new_status)
+      ssr.assign_attributes(status: new_status)
     end
+
+    self.save(validate: use_validation)
   end
 
   # Make sure that all the sub service requests have an ssr id

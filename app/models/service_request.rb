@@ -183,7 +183,7 @@ class ServiceRequest < ActiveRecord::Base
   end
 
   def service_calendar_page(direction)
-    return if direction == 'back' and status == 'first_draft'
+    return if direction == 'back' && ((status == 'first_draft') || (status == 'draft' && !submitted_at.present?))
     return unless has_per_patient_per_visit_services?
 
     if USE_EPIC

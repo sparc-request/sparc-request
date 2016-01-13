@@ -17,7 +17,10 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
+:javascript
+  $(document).ready( function() {
+    Sparc.protocol.ready();
+  })
 .bootstrap-table-dropdown-overflow
   #protocols-toolbar
     %button.btn.btn-success#create-new-study-button{ type: 'button', data: { url: "#{new_dashboard_protocol_path}"} } Create New Study

@@ -397,6 +397,14 @@ class ServiceRequest < ActiveRecord::Base
     groupings
   end
 
+  def is_funded?
+    if self.protocol && self.protocol.funding_status == "funded"
+      true
+    else
+      false
+    end
+  end
+
   def has_one_time_fee_services?
     one_time_fee_line_items.count > 0
   end

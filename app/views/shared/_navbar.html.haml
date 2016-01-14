@@ -1,0 +1,20 @@
+%ul.navbar
+  %li
+    = link_to 'Dashboard', portal_root_path
+  %li
+    = link_to 'SPARC Admin', portal_admin_path
+  %li
+    = link_to 'SPARC Fulfillment', 'https://sparc-fulfillment.musc.edu', target: '_blank'
+  %li
+    = link_to 'SPARC Catalog', catalog_manager_catalog_index_path
+  %li
+    = link_to 'SPARC Reports', reports_path
+  .right-section
+    %li.align-element-nav-bar
+      - flash.each do |name, msg|
+        = content_tag :div, msg, :id => "flash_#{name}" if msg.is_a?(String)
+    - if current_user.present?
+      %li.align-element-nav-bar
+        = "Logged in as #{current_user.email}"
+      %li
+        = link_to 'Logout', destroy_identity_session_path, method: :delete

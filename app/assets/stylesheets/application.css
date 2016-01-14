@@ -2918,4 +2918,9 @@ input.devise_submit_button {
 
 .align-element-nav-bar {
   padding: 8px 15px;
+  float: right;
+}
+
+.right-section {
+  float: right;
 }

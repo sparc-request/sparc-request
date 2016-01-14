@@ -30,6 +30,7 @@
 //= require jquery
 //= require jquery-ui
 //= require jquery.qtip.min
+//= require jquery.cookie
 //= require jquery.form
 //= require jquery_ujs
 //= require jquery_nested_form

@@ -22,6 +22,7 @@
   :javascript
     $(document).ready( function(e) {
       $('a.continue_button').click(function() {
+        $('.continue-spinner').show();
         if ($('#study_selected_for_epic_true').is(':checked')) {
           $('form').submit();
         }
@@ -37,6 +38,7 @@
   :javascript
     $(document).ready( function() {
       $('a.continue_button').click(function() {
+        $('.continue-spinner').show();
         $('form').submit();
       });
     })
@@ -63,18 +65,22 @@
   .clear
   = f.error_messages
 
-  .edit-project-view.portal_container= render :partial => 'studies/fields', :locals => {:study => study, :f => f, :portal => portal, :current_step => @current_step}
+  .edit-project-view.portal_container= render :partial => 'studies/fields', :locals => {:study => study, :f => f, :portal => portal, :current_step => current_step}
   .continue.portal_container
     .grid_12
       %div{:class => 'blue-provider'}
         .nav-backward
           .return-to-previous
-            %a.cancel_link{:href => "javascript:void(0)"}
+            %a.cancel_link{:class => cookies['current_step'] == 'protocol' ? 'cancel' : 'go-back', :href => "javascript:void(0)"}
               = image_tag('left_arrow.png', :alt => "Cancel")
-              %span.btn.btn-success.btn-lg= t(:bottom_navigation)[:cancel]
+              %span.btn.btn-success.btn-lg
+                = current_step == 'protocol' ? t(:bottom_navigation)[:cancel] : t(:bottom_navigation)[:go_back]
+          = image_tag 'spinner.gif', :class => 'return-spinner hidden'
         .exit= image_tag('Filler.png')
         .nav-forward
+          = image_tag 'spinner.gif', :class => 'continue-spinner hidden'
           .save-and-continue
-            %a{:href => "javascript:void(0)", :class => 'continue_button'}
-              %span.btn.btn-success.btn-lg= t(:bottom_navigation)[:continue]
+            %a.continue_button{:class => cookies['current_step'] == 'protocol' ? 'continue' : 'save',:href => "javascript:void(0)"}
+              %span.btn.btn-success.btn-lg
+                = current_step == 'protocol' ? t(:bottom_navigation)[:continue] : t(:bottom_navigation)[:save_and_continue]
               = image_tag('right_arrow.png', :alt => "SaveAndContinue")

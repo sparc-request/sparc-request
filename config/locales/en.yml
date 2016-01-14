@@ -67,7 +67,7 @@ en:
       services: "Services"
       subject_tracker: "Subject Tracker"
       template: "Template"
-      users: "Associated Users"
+      users: "Authorized Users"
     title: "Dashboard <span>|</span> Welcome"
 
   admin_identities:
@@ -103,10 +103,6 @@ en:
     search_placeholder: "Search all service requests..."
     service: "Service"
     title: "My Profile"
-
-  # Associated Users Tab
-  associated_users:
-    add: "Add a new Associated User"
 
   # Bottom navigation
   bottom_navigation:
@@ -329,7 +325,8 @@ en:
       service: "Service"
       source: "Funding Source"
       source_of_price: "Source of Price / Rate"
-      survey_name: "Survey"
+      survey_name: "Name (and Version)"
+      survey_warning: "* The associated survey(s) will be sent out to the service requester(s) through email at the time of service completion."
       unfunded: "Unfunded Student Research*"
     title: "SPARC Request Services Catalog"
 
@@ -356,7 +353,6 @@ en:
       uploaded: "Uploaded"
       uploads: "Document Uploads"
       versions: "Version"
-    panel_title: "Documents"
     select_prompt: "Select a Type"
     update_button: "Update"
     upload_button: "Upload"
@@ -861,7 +857,7 @@ en:
     department: "Department:"
     edit_user: "Edit User"
     email: "E-mail:"
-    epic_access: "Epic EMR Access?:"
+    epic_access: "Epic EMR Access?:*"
     era: "ERA Commons Name:"
     institution_prompt: "Select an Institution"
     institution: "Institution:"
@@ -869,12 +865,13 @@ en:
     phone: "Phone:"
     rights:
       approve: 'Authorize/Change Study Charges'
-      header: "User Rights:"
+      header: "User Rights:*"
       none: 'Study/Project Member Only'
       request: 'Request/Approve Services'
       view: 'View Rights'
     role_prompt: "Select a Role"
     role: "Role:*"
+    specify: "Please Specify:*"
     subspecialty_prompt: "Select a Subspecialty"
     subspecialty: "Subspecialty:"
 
@@ -894,9 +891,9 @@ en:
     funding: "Funding Source:"
     greeting: "Welcome!"
     information: "Information:"
-    loading: "Loading your projects/studies"
+    loading: "Loading your Projects/Studies"
     message1: "Within your dashboard, you can view (and/or edit and submit) service requests currently in SPARC Request, as well as all of those still in 'draft' status."
-    message2: "Please note that projects/studies are listed in descending order."
+    message2: "Please note that Projects/Studies are listed in descending order."
     name: "Name:"
     no_authorized_users: "Currently no authorized users"
     note_count: "Unread Message"
@@ -904,6 +901,7 @@ en:
     program: "Program/Core:"
     provider: "Provider:"
     proxy: "Proxy Rights:"
+    require_primary_pi_message: "Projects/Studies require a Primary PI. Please add a new one before continuing."
     rights1: "You do not have appropriate rights to"
     rights2: "Should you need this right, please contact your PI or Authorized Users"
     role: "Role:"
@@ -1225,58 +1223,3 @@ en:
     search_box_header: "User Search"
     search_placeholder: "Search for user..."
 
-  # Additional Details
-  additional_details:
-    organization_form:
-      label: "Additional Details"
-      pre_creation: "This service must be saved before additional details can be added."
-      link_text_active: " [Enabled]"
-      link_text_inactive: "Add Additional Details"
-    portal_admin:
-      label: "Additional Details"
-    portal:
-      required_questions: "Please complete the required Additional Details for this request."
-    admin:
-      home: "Additional Details"
-      portal: "Dashboard"
-      portal_admin: "Portal Admin"
-      catalog_manager: "Catalog Manager"
-      request_services: "Request Services"
-      response_grid_label: "Additional Details for "
-      unauthorized: "You are not authorized to view this page."
-      service_request_not_found: "The Service Request ID was not found."
-      import_export_modal_header: "Import or Export an Additional Detail Form"
-      import_export_panel_header: 'Select All and then "Copy" to Export or "Paste" to Import'
-      close_button: "Close"
-      cancel_button: "Cancel"
-      form_creation_panel_header: "Additional Details Form Creator"
-      form_creation_error: "prohibited this form from being saved:"
-      form_creation_questions_header: "Questions"
-      add_question_button: "Add Question"
-      delete_question_button: "Delete Selected"
-      delete_all_questions_button: "Delete All"
-      save_form_button: "Save Form"
-      import_export_button: "Import / Export Form"
-      form_data_preview_header: "Form Data"
-      show_response_header: "Response"
-      form_tab_label: "Additional Details"
-      form_grid_label: "Additional Detail Forms for "
-      form_grid_add_new_button: "Add new Additional Details Form"
-      response_tab_label: "Responses"
-      response_grid_label: "Administer Responses for "
-      response_export_grid_label: "Export Responses for "
-      response_export_all_data_button: "Export All Data"
-      question_modal_header: " a Question"
-      question_modal_question_field: "Question"
-      question_modal_key_field: "Key"
-      question_modal_type_field: "Type"
-      question_modal_description_field: "Description"
-      question_modal_values_field: "Values"
-      question_modal_condition_field: "Show the question ONLY if..."
-      question_modal_required_field: "Required"
-      question_modal_add_update_question_button: " Question"
-      question_modal_clear_question_button: "Clear Question"
-    service_requests:
-      questionnaire_label: "Please Answer the Following Questions"
-      cancel_button: "Cancel"
-      save_button: "Save"

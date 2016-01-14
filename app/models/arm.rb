@@ -78,6 +78,7 @@ class Arm < ActiveRecord::Base
     liv = LineItemsVisit.for(self, line_item)
     liv.create_visits
 
+
     if line_items_visits.count > 1
       liv.update_visit_names self.line_items_visits.first
     end
@@ -137,7 +138,7 @@ class Arm < ActiveRecord::Base
       if not self.create_visit_group(position, name) then
         raise ActiveRecord::Rollback
       end
-      position = position.to_i - 1 unless position.blank?
+      position = position.to_i unless position.blank?
 
       if USE_EPIC
         if not self.update_visit_group_day(day, position, portal) then
@@ -169,8 +170,17 @@ class Arm < ActiveRecord::Base
   end
 
   def create_visit_group position=nil, name=''
-    if not visit_group = self.visit_groups.create(position: position, name: name) then
+    # make sure VisitGroup is valid before giving it a
+    # position in 'the list'
+    visit_group = VisitGroup.create(arm_id: id, name: name)
+    unless visit_group
       return false
+    end
+
+    if position
+      visit_group.insert_at(position)
+    else
+      visit_group.move_to_bottom
     end
 
     # Add visits to each line item under the service request
@@ -180,7 +190,7 @@ class Arm < ActiveRecord::Base
         return false
       end
     end
-
+    self.reload
     return visit_group
   end
 
@@ -188,7 +198,7 @@ class Arm < ActiveRecord::Base
     first = self.visit_groups.count
     last = self.visit_count
 
-    create_visit_groups(first, last)  
+    create_visit_groups(first, last)
     vg_ids = get_visit_group_ids
     create_visits(vg_ids)
   end
@@ -225,10 +235,10 @@ class Arm < ActiveRecord::Base
   end
 
   def update_visit_group_day day, position, portal= false
-    position = position.blank? ? self.visit_groups.count - 1 : position.to_i
-    before = self.visit_groups[position - 1] unless position == 0
-    current = self.visit_groups[position]
-    after = self.visit_groups[position + 1] unless position >= self.visit_groups.size - 1
+    position = position.blank? ? visit_groups.last.position : position.to_i
+    current  = visit_groups.at_position(position).first
+    before   = current.higher_item
+    after    = current.lower_item
 
     if portal == 'true' and USE_EPIC
       valid_day = Integer(day) rescue false
@@ -255,28 +265,26 @@ class Arm < ActiveRecord::Base
   end
 
   def update_visit_group_window_before window_before, position, portal = false
-    position = position.blank? ? self.visit_groups.count - 1 : position.to_i
-
+    position = position.blank? ? visit_groups.last.position : position.to_i
     valid = Integer(window_before) rescue false
     if !valid || valid < 0
       self.errors.add(:invalid_window_before, "You've entered an invalid number for the before window. Please enter a positive valid number")
       return false
     end
 
-    visit_group = self.visit_groups[position]
+    visit_group = visit_groups.at_position(position).first
     return visit_group.update_attributes(:window_before => window_before)
   end
 
   def update_visit_group_window_after window_after, position, portal = false
-    position = position.blank? ? self.visit_groups.count - 1 : position.to_i
-
+    position = position.blank? ? visit_groups.last.position : position.to_i
     valid = Integer(window_after) rescue false
     if !valid || valid < 0
       self.errors.add(:invalid_window_after, "You've entered an invalid number for the after window. Please enter a positive valid number")
       return false
     end
 
-    visit_group = self.visit_groups[position]
+    visit_group = visit_groups.at_position(position).first
     return visit_group.update_attributes(:window_after => window_after)
   end
 
@@ -344,9 +352,10 @@ class Arm < ActiveRecord::Base
 
   def create_visit_groups(first, last)
     (last-first).times do |index|
-      position = index + 1 + first
-      VisitGroup.create(arm_id: self.id, name: "Visit #{position}", position: position)
-    end   
+      vg = VisitGroup.create(arm_id: id)
+      vg.move_to_bottom
+      vg.update(name: "Visit #{vg.position}")
+    end
     self.reload
   end
 

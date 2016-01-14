@@ -22,13 +22,11 @@ module ApplicationHelper
   def show_welcome_message current_user
     returning_html = ""
     if current_user
-      returning_html += content_tag(:span, "Logged in as #{current_user.display_name}, ") + link_to('logout', destroy_identity_session_path, :method => :delete)
+      returning_html += content_tag(:span, "Logged in as #{current_user.email}, ") + link_to('Logout', destroy_identity_session_path, :method => :delete)
     else
       # could be used to provide a login link
       returning_html += content_tag(:span, "Not Logged In")
     end
-
-    returning_html += content_tag(:span, " | ") + link_to(t(:bug_enhancement_link), BUG_ENHANCEMENT_URL, :target => '_blank', :class => 'bug-enhancement-link') if BUG_ENHANCEMENT_URL
 
     raw(returning_html)
   end

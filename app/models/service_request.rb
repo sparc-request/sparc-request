@@ -140,7 +140,7 @@ class ServiceRequest < ActiveRecord::Base
       end
     end
 
-    unless (direction == 'back' and status == 'first_draft')
+    unless direction == 'back' && ((status == 'first_draft') || (status == 'draft' && !submitted_at.present?))
       #validate start date and end date
       if protocol
         if protocol.start_date.nil?

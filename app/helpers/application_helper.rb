@@ -328,15 +328,4 @@ module ApplicationHelper
   def first_service?(service_request)
     service_request.line_items.count == 0
   end
-
-  def submitted_or_previously_submitted?(service_request)
-    submitted = false
-    service_request.sub_service_requests.each do |sub_service_request|
-      if (sub_service_request.status == 'submitted') || sub_service_request.past_statuses.any? {|status| status.status == 'submitted'}
-        submitted = true
-      end
-    end
-
-    submitted
-  end
 end

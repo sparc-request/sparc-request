@@ -20,15 +20,7 @@ module Dashboard
     def total_protocols
       return @total_protocols if @total_protocols
 
-      protocols = Protocol.
-        where(archived: include_archived?).
-        for_identity(@identity)
-      if @params[:search]
-        protocols = protocols.
-          where('short_title LIKE ?', "%#{@params[:search]}%")
-      end
-
-      @total_protocols = protocols.count
+      @total_protocols = Protocol.find_by_sql(query).count
     end
 
     private
@@ -61,17 +53,25 @@ module Dashboard
           include?(@params[:default_protocol].to_i)
     end
 
+    # assigns @identity_protocols to a page of desired protocols
     def find_identity_protocols
       return @identity_protocols if @identity_protocols
 
+      query_pagination = (@params[:limit] ? "limit #{@params[:limit]}" : '') + (@params[:offset] ? " offset #{@params[:offset]}" : '')
+      @identity_protocols = Protocol.find_by_sql(query + ' ' + query_pagination)
+    end
+
+    # SQL query that returns all the protocols user wants
+    def query
+      return @query if @query
+
       query_select     = "select distinct protocols.* from protocols"
       query_joins      = "inner join project_roles pr1 on pr1.protocol_id = protocols.id and pr1.role != \"none\" and pr1.identity_id = #{@identity.id}"
-      query_where      = @params[:include_archived] != 'true' ? "where archived = 0" : 'where'
+      query_where      = @params[:include_archived] != 'true' ? "where archived = 0" : 'where true'
       query_order      = ""
-      query_pagination = "limit #{@params[:limit]} offset #{@params[:offset]}"
 
       if @params[:search] && @params[:search] != ''
-        query_where = query_where + " and short_title like \"%#{@params[:search]}%\""
+        query_where = query_where + " and (short_title like \"%#{@params[:search]}%\" or protocols.id = #{@params[:search]})"
       end
 
       case @sort_col
@@ -87,9 +87,8 @@ module Dashboard
         query_order = "order by protocols.id desc"
       end
 
-      @identity_protocols = Protocol.find_by_sql(query_select + ' ' + query_joins + ' ' + query_where + ' ' + query_order + ' ' + query_pagination)
+      @query = query_select + ' ' + query_joins + ' ' + query_where + ' ' + query_order
     end
-
     def include_archived?
       archived = [false]
 

@@ -22,7 +22,7 @@
   .container-fluid
     .navbar-header
       %p.navbar-text
-        = breadcrumbs
+        = session[:breadcrumbs].breadcrumbs
       %p.navbar-text= show_welcome_message(@user)
     %ul.nav.navbar-nav.navbar-right
       %li

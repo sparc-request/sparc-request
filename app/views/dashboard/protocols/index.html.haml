@@ -21,10 +21,20 @@
   $(document).ready( function() {
     Sparc.protocol.ready();
   })
+
+  protocols_table_query_params = function(p) {
+    if($('#toggle-archived').data('showing-archived') == false) {
+      p['include_archived'] = 'false'
+    } else {
+      p['include_archived'] = 'true'
+    }
+    return p;
+  }
 .bootstrap-table-dropdown-overflow
   #protocols-toolbar
-    %button.btn.btn-success#create-new-study-button{ type: 'button', data: { url: "#{new_dashboard_protocol_path}"} } Create New Study
-  %table.protocols_table{ id: 'protocols_table', data: { toggle: 'table', search: 'true', show_columns: 'true', show_refresh:  'true', show_toggle: 'true', url: dashboard_protocols_path(format: :json), striped: 'true', toolbar: '#protocols-toolbar', show_export: 'true', export_types: ['excel'], row_style: 'protocols_row_style', side_pagination:  'server', pagination: 'true', page_size: '15', sort_name: 'id', sort_order: 'desc' } }
+    %button.btn.btn-success#create-new-study-button{ type: 'button', data: { url: "#{new_dashboard_protocol_path}" } } Create New Study
+    %button.btn.btn-success#toggle-archived{ type: 'button', data: { showing_archived: 'true' } } Show Active
+  %table.protocols_table{ id: 'protocols_table', data: { toggle: 'table', search: 'true', show_columns: 'true', show_refresh:  'true', show_toggle: 'true', url: dashboard_protocols_path(format: :json), striped: 'true', toolbar: '#protocols-toolbar', show_export: 'true', export_types: ['excel'], row_style: 'protocols_row_style', side_pagination:  'server', pagination: 'true', page_size: '15', sort_name: 'id', sort_order: 'desc', query_params: 'protocols_table_query_params' } }
     %thead.primary-header
       %tr
         %th{ data: { class: 'id', align: 'left', sortable: 'true', field: 'id' } }

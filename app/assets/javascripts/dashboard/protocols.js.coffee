@@ -38,6 +38,19 @@ $(document).ready ->
         }
       })
 
+      $(document).on 'click', '#toggle-archived', ->
+        $this            = $(this)
+        $bs_table        = $('table.protocols_table')
+        console.log JSON.stringify($this.data('showing-archived'))
+        showing_archived = $this.data('showing-archived')
+        console.log showing_archived
+        # update button
+        $this.text(if showing_archived then 'Show Archived' else 'Show Active')
+        $this.data('showing-archived': (if showing_archived then false else true))
+
+        # update protocols table
+        $bs_table.bootstrapTable('refresh')
+
       $(document).on 'click', '.accordion-heading', ->
         protocol_id = $(this).data('protocol-id')
         $.ajax
@@ -45,7 +58,6 @@ $(document).ready ->
           url: "/dashboard/protocols/#{protocol_id}.js"
 
       $(document).on 'click', '.edit-protocol-information-button', ->
-        console.log 'HEY'
         if $(this).data('permission')
           protocol_id = $(this).data('protocol-id')
           window.location = "/dashboard/protocols/#{protocol_id}/edit"

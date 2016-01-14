@@ -67,6 +67,14 @@ class Arm < ActiveRecord::Base
   def create_line_items_visit line_item
     # if visit_count is nil then set it to 1
     self.update_attribute(:visit_count, 1) if self.visit_count.nil?
+
+    while self.visit_groups.size < self.visit_count
+      visit_group = self.visit_groups.new
+      if not visit_group.save(validate: false) then
+        raise ActiveRecord::Rollback
+      end
+    end
+    
     liv = LineItemsVisit.for(self, line_item)
     liv.create_visits
 

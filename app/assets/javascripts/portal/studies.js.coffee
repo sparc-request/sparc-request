@@ -67,83 +67,69 @@ $(document).ready ->
           this.closest('.field').show()
           return this
 
-        visual_error = (dropdown) ->
+        $.prototype.hide_visual_error = () ->
+          this.removeClass('visual_error')
+          if $('.visual_error').length == 0 
+            $('.study_type div').removeClass('field_with_errors')
+            if $('#errorExplanation ul li').size() == 1
+              $('#errorExplanation').remove()
+            else
+              $('#errorExplanation ul li:contains("Study type questions must be selected")').remove()
+
+        add_and_check_visual_error_on_submit = (dropdown) ->
+          console.log('submit change')
           if dropdown.is(':visible') && dropdown.val() == ''
             dropdown.addClass('visual_error')
             dropdown.on 'change', (e) ->
-              dropdown.removeClass('visual_error')
-              if $('.visual_error').length == 0
-                $('.study_type div').removeClass('field_with_errors')
-                if $('#errorExplanation ul li').size() == 1
-                  $('#errorExplanation').remove()
-                else
-                  $('#errorExplanation ul li:contains("Study type questions must be selected")').remove()
+              dropdown.hide_visual_error()
+
+        add_and_check_visual_error_on_field_change = (dropdown) ->
+          console.log('field change')
+          siblings = dropdown.parent('.field').siblings().find('.visual_error')
+          if siblings
+            for sibling in siblings
+              if !$(sibling).is(':visible')
+                $(sibling).hide_visual_error()
 
         # If study is inactive, we want to force users to fill out new epic box questions
         if $('#study_study_type_question_group_id').val() == "inactive" && $('input[name=\'study[selected_for_epic]\']:checked').val() == 'true'
           study_type_form.show()
           certificate_of_confidence_dropdown.show_elt()
-          higher_level_of_privacy_dropdown.show_elt()
 
         # Logic for epic info box 
         study_selected_for_epic_radio.on 'change', (e) ->
           if $('input[name=\'study[selected_for_epic]\']:checked').val() == 'true'
             study_type_form.show()
             certificate_of_confidence_dropdown.show_elt()
-            higher_level_of_privacy_dropdown.show_elt()
           else
             study_type_form.hide()
-            certificate_of_confidence_dropdown.hide_elt()
-            higher_level_of_privacy_dropdown.hide_elt().trigger 'change'
+            certificate_of_confidence_dropdown.hide_elt().trigger 'change'
           return
 
         certificate_of_confidence_dropdown.on 'change', (e) ->
           new_value = $(e.target).val()
-          higher_level_of_privacy_value = higher_level_of_privacy_dropdown.val()
           if new_value == 'false'
-            if higher_level_of_privacy_value == 'false'
-              access_required_dropdown.hide_elt()
-              epic_inbasket_dropdown.show_elt()
-              research_active_dropdown.show_elt()
-              restrict_sending_dropdown.show_elt()
-            else if higher_level_of_privacy_value == 'true'
-              access_required_dropdown.show_elt()
-              epic_inbasket_dropdown.hide_elt()
-              research_active_dropdown.hide_elt()
-              restrict_sending_dropdown.hide_elt()
-            else
-              access_required_dropdown.hide_elt()
-              epic_inbasket_dropdown.hide_elt()
-              research_active_dropdown.hide_elt()
-              restrict_sending_dropdown.hide_elt()
+            higher_level_of_privacy_dropdown.show_elt()
           else
+            console.log('cofc hide')
+            higher_level_of_privacy_dropdown.hide_elt()
             access_required_dropdown.hide_elt()
             epic_inbasket_dropdown.hide_elt()
             research_active_dropdown.hide_elt()
             restrict_sending_dropdown.hide_elt()
           return
 
+
         higher_level_of_privacy_dropdown.on 'change', (e) ->
           new_value = $(e.target).val()
-          certificate_of_confidence_value = certificate_of_confidence_dropdown.val()
-          if certificate_of_confidence_value == 'false'
-            if new_value == 'false'
-              access_required_dropdown.hide_elt()
-              epic_inbasket_dropdown.show_elt()
-              research_active_dropdown.show_elt()
-              restrict_sending_dropdown.show_elt()
-            else if new_value == 'true'
-              access_required_dropdown.show_elt()
-              epic_inbasket_dropdown.hide_elt()
-              research_active_dropdown.hide_elt()
-              restrict_sending_dropdown.hide_elt()
-            else
-              access_required_dropdown.hide_elt()
-              epic_inbasket_dropdown.hide_elt()
-              research_active_dropdown.hide_elt()
-              restrict_sending_dropdown.hide_elt()
-          else if new_value == ''
+          if new_value == 'false'
             access_required_dropdown.hide_elt()
+            epic_inbasket_dropdown.show_elt()
+            research_active_dropdown.show_elt()
+            restrict_sending_dropdown.show_elt()
+          else
+            console.log('higher level hide')
+            access_required_dropdown.show_elt()
             epic_inbasket_dropdown.hide_elt()
             research_active_dropdown.hide_elt()
             restrict_sending_dropdown.hide_elt()
@@ -151,15 +137,16 @@ $(document).ready ->
        
         access_required_dropdown.on 'change', (e) ->
           new_value = $(e.target).val()
-
           if new_value == 'false'
             epic_inbasket_dropdown.show_elt()
             research_active_dropdown.show_elt()
             restrict_sending_dropdown.show_elt()
           else
+            console.log('access hide')
             epic_inbasket_dropdown.hide_elt()
             research_active_dropdown.hide_elt()
             restrict_sending_dropdown.hide_elt()
+          return
 
         # When the epic box answers hit the validations with an unselected field, 
         # the html.haml sets display to none for unselected fields
@@ -169,17 +156,33 @@ $(document).ready ->
         if $('.field_with_errors label:contains("Study type questions")').length > 0
           study_selected_for_epic_radio.change()
           if certificate_of_confidence_dropdown.is(':visible')
+            console.log('error cofc')
             certificate_of_confidence_dropdown.change()
-          if access_required_dropdown.is(':visible')
+          if higher_level_of_privacy_dropdown.val() == 'true' 
+            console.log('error privacy')
+            access_required_dropdown.show_elt()
             access_required_dropdown.change()
           if higher_level_of_privacy_dropdown.val() == 'false'
             higher_level_of_privacy_dropdown.change()
-          visual_error(certificate_of_confidence_dropdown)
-          visual_error(higher_level_of_privacy_dropdown)
-          visual_error(access_required_dropdown)
-          visual_error(epic_inbasket_dropdown)
-          visual_error(research_active_dropdown)
-          visual_error(restrict_sending_dropdown)
+          if certificate_of_confidence_dropdown != "" && higher_level_of_privacy_dropdown.val() != "" && access_required_dropdown.val() == 'false'
+            console.log('error cofc')
+            access_required_dropdown.change()
+          console.log("out of if forest")
+          add_and_check_visual_error_on_submit(certificate_of_confidence_dropdown)
+          add_and_check_visual_error_on_submit(higher_level_of_privacy_dropdown)
+          add_and_check_visual_error_on_submit(access_required_dropdown)
+          add_and_check_visual_error_on_submit(epic_inbasket_dropdown)
+          add_and_check_visual_error_on_submit(research_active_dropdown)
+          add_and_check_visual_error_on_submit(restrict_sending_dropdown)
+
+          certificate_of_confidence_dropdown.on 'change', (e) ->
+            add_and_check_visual_error_on_field_change(certificate_of_confidence_dropdown)
+
+          higher_level_of_privacy_dropdown.on 'change', (e) ->
+            add_and_check_visual_error_on_field_change(higher_level_of_privacy_dropdown)
+
+          access_required_dropdown.on 'change', (e) ->
+            add_and_check_visual_error_on_field_change(access_required_dropdown)
 
       ######## End of send to epic study question logic ##############
 

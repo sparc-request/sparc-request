@@ -93,7 +93,7 @@ study_type_answers: {  '1' : [true, true,   ~,     ~,     ~,     ~],
                        '16' : [false, ~,     ~,    true, false, true],
                        '17' : [false, ~,     ~,    true, true, false],
                        '0' : [false, ~,     ~,    true, false, false] }
-study_type_answers_version_2: { '1' : [true, true,    ~,    ~,    ~,    ~],
+study_type_answers_version_2: { '1' : [true, ~,    ~,    ~,    ~,    ~],
                                 '2' : [false, true, true,   ~,    ~,    ~],
                                 '3' : [false, true, false, false, true, true],
                                 '4' : [false, true, false, false, false, true],

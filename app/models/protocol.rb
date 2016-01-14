@@ -153,9 +153,6 @@ class Protocol < ActiveRecord::Base
     begin
       if answers["certificate_of_conf"].answer.nil?
         has_errors = true
-        if answers["higher_level_of_privacy"].answer.nil?
-          has_errors = true
-        end
       elsif answers["certificate_of_conf"].answer == false
         if (answers["higher_level_of_privacy"].answer.nil?) 
           has_errors = true
@@ -171,10 +168,6 @@ class Protocol < ActiveRecord::Base
               has_errors = true
             end
           end
-        end
-      elsif answers["certificate_of_conf"].answer == true
-        if answers["higher_level_of_privacy"].answer.nil?
-          has_errors = true
         end
       end
     rescue => e

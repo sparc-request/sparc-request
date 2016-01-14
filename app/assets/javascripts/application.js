@@ -42,5 +42,4 @@
 //= require form_manager
 //= require assert
 //= require ajax_handler
-//= require ask_a_question
 //= require review

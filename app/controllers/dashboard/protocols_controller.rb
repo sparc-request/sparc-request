@@ -29,7 +29,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   def index
     respond_to do |format|
       format.html {
-        session.delete(:breadcrumbs)
+        session[:breadcrumbs].clear
         render
       }
       format.json {
@@ -47,7 +47,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     respond_to do |format|
       format.js   { render }
       format.html {
-        session[:breadcrumbs] = { protocol_id: @protocol.id }
+        session[:breadcrumbs].clear.add_crumbs(protocol_id: @protocol.id)
         @permission_to_edit = @protocol_role.can_edit?
         @protocol_type = @protocol.type.capitalize
         @service_requests = @protocol.service_requests
@@ -113,6 +113,10 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   def edit
     @protocol.populate_for_edit if @protocol.type == "Study"
     @protocol.valid?
+    session[:breadcrumbs].
+      clear.
+      add_crumbs(protocol_id: @protocol.id, edit_protocol: true)
+
     respond_to do |format|
       format.html
     end

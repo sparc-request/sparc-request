@@ -19,21 +19,5 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 module Dashboard::DashboardHelper
-  def breadcrumbs
-    puts "BREAD: #{session[:breadcrumbs].inspect}"
-    breads = [crumb(:protocol_id) && Protocol.find(crumb(:protocol_id)).try(:short_title),
-      crumb(:sub_service_request_id) && SubServiceRequest.find(crumb(:sub_service_request_id)).try(:ssr_id),
-      crumb(:notifications) && 'Notifications']
-    urls   = [crumb(:protocol_id) && dashboard_protocol_path(crumb(:protocol_id)),
-      crumb(:sub_service_request_id) && dashboard_sub_service_request_path(crumb(:sub_service_request_id)),
-      dashboard_notifications_path]
 
-    content_tag(:a, 'Dashboard', href: dashboard_protocols_path) + ((breads.zip(urls)).select { |b, _| !b.nil? }.map { |b, url| ' > '.html_safe + content_tag(:a, b, href: url) }.join.html_safe)
-  end
-
-  private
-
-  def crumb(sym)
-    session[:breadcrumbs] && session[:breadcrumbs][sym]
-  end
 end

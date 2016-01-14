@@ -25,11 +25,12 @@ class Dashboard::BaseController < ActionController::Base
 
   before_filter :authenticate_identity!
   before_filter :set_user
+  before_filter :establish_breadcrumber
 
   def current_user
     current_identity
   end
-  
+
   def set_user
     @user = current_identity
     session['uid'] = @user.nil? ? nil : @user.id
@@ -38,9 +39,9 @@ class Dashboard::BaseController < ActionController::Base
   def clean_errors errors
     errors.to_a.map {|k,v| "#{k.humanize} #{v}".rstrip + '.'}
   end
-  
+
   private
-  
+
   def protocol_authorizer_view
     authorized_user = ProtocolAuthorizer.new(@protocol, @user)
     if !authorized_user.can_view?
@@ -54,6 +55,12 @@ class Dashboard::BaseController < ActionController::Base
     if !authorized_user.can_edit?
       @protocol = nil
       render :partial => 'service_requests/authorization_error', :locals => {:error => "You are not allowed to edit this protocol."}
+    end
+  end
+
+  def establish_breadcrumber
+    if !session[:breadcrumbs] || session[:breadcrumbs].class.name != 'Dashboard::Breadcrumber'
+      session[:breadcrumbs] = Dashboard::Breadcrumber.new
     end
   end
 end

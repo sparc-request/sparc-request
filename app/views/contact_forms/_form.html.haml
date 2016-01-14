@@ -4,7 +4,10 @@
     = f.text_field :subject, class: 'contact-form-fields'
   .field
     = f.label :email, 'Email'
-    = f.email_field :email, class: 'contact-form-fields'
+    - if current_user.present?
+      = f.email_field :email, class: 'contact-form-fields', value: current_user.email
+    - else
+      = f.email_field :email, class: 'contact-form-fields'
   .field
     = f.label :message
     = f.text_area :message, class: 'contact-form-textarea'

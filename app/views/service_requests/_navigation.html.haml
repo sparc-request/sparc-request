@@ -24,7 +24,7 @@
       .return-to-previous
         = navigation_link image_tag('GoBack.png'), @back
         = navigation_link t(:bottom_navigation)[:go_back], @back, "btn btn-success btn-lg "
-    - if !submitted_or_previously_submitted?(@service_request)
+    - if @service_request.submitted_at.blank?
       .exit.btn.btn-lg= navigation_link t(:bottom_navigation)[:save_and_exit],  'save_and_exit', "btn btn-success btn-lg "
     - else
       .exit

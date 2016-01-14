@@ -20,7 +20,7 @@
 
 module Dashboard::DashboardHelper
   def breadcrumbs
-    puts "HELPER: #{session[:breadcrumbs].inspect}"
+    puts "BREAD: #{session[:breadcrumbs].inspect}"
     breads = [crumb(:protocol_id) && Protocol.find(crumb(:protocol_id)).try(:short_title),
       crumb(:sub_service_request_id) && SubServiceRequest.find(crumb(:sub_service_request_id)).try(:ssr_id),
       crumb(:notifications) && 'Notifications']

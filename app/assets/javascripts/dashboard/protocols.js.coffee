@@ -288,30 +288,6 @@ $(document).ready ->
             '$' + display_cost.toFixed(2)
           $("#quantity_#{visit.service_id}_column_#{i}").html(_display_cost)
       $('#visit_group_num').val(visit_group_num)
-
-    renderProtocolAccordionList: ->
-      $('.loading_protocol').show()
-      $('#protocol-accordion').html('')
-      default_protocol = $('.default_protocol').val()
-      url = if default_protocol == "" then "/dashboard/protocols" else "/dashboard/protocols?default_protocol=#{default_protocol}"
-      $.ajax({
-        method: 'get'
-        url: url
-        success: ->
-          $('.search_protocols').show()
-          $('.loading_protocol').hide()
-          $('.blue-provider:first').trigger('click')
-      })
-
-    renderProtocolAccordionTab: (protocol_id) ->
-      $(".protocol-information-#{protocol_id}").html("<img src='/assets/portal/spinner.gif' alt='Spinner'><br />Please be patient while the protocol/study loads.")
-      random_number = Math.floor(Math.random()*10101010101)
-      $.ajax({
-        method: 'get'
-        url: "/dashboard/protocols/#{protocol_id}?#{random_number}"
-        error: (xhr, j_status, error_thrown) ->
-          $(".protocol-information-#{protocol_id}").html('')
-      })
   }
 
   $(document).on('click', '.protocols_row > .id,.title,.pis', ->

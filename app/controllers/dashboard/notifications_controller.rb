@@ -22,6 +22,7 @@ class Dashboard::NotificationsController < Dashboard::BaseController
   respond_to :html, :json
 
   def index
+    puts "NOTES: #{session[:breadcrumbs].inspect}"
     session[:breadcrumbs] = (session[:breadcrumbs] || Hash.new).merge({ notifications: true })
     if params[:sub_service_request_id]
       # specific to ssr

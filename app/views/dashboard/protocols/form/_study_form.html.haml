@@ -32,6 +32,7 @@
         = render partial: 'dashboard/protocols/form/study_form_sections/affiliations', locals: { protocol: protocol, form: form }
 
     .row#actions
-      .col-lg-12
-        %input.btn.btn-success{ type: "submit", value: t(:study_form)[:save]}
-        = link_to t(:protocol_shared)[:cancel], dashboard_protocol_path(protocol), class: 'btn btn-danger'
+      .col-lg-4
+      .col-lg-4
+        %input.btn.btn-lg.btn-success{ type: "submit", value: t(:study_form)[:save]}
+        = link_to t(:protocol_shared)[:cancel], dashboard_protocol_path(protocol), class: 'btn btn-lg btn-danger'

@@ -149,6 +149,9 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     if @protocol.update_attribute(:type, params[:type])
       @form_partial = "dashboard/protocols/form/#{params[:type].downcase}_form"
       flash[:success] = "Protocol Type Updated!"
+      @protocol = Protocol.find @protocol.id #Protocol type has been converted, this is a reload
+      @protocol.populate_for_edit if @protocol.type == "Study"
+      @protocol.valid?
     else
       @errors = @protocol.errors
     end

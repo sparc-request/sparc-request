@@ -84,9 +84,9 @@
         .col-lg-10
           = form.select :federal_phs_sponsor, options_for_select(FEDERAL_GRANT_PHS_SPONSORS, protocol.federal_phs_sponsor), { include_blank: t(:study_form)[:phs_blank] }, class: 'selectpicker'
 
-      %br
-      %span -OR-
-      %br
+      .row
+        %label.col-lg-2
+          %span.pull-right -OR-
 
       .form-group.row
         = form.label :federal_non_phs_sponsor, t(:protocol_shared)[:federal_non_phs_sponsor], class: 'col-lg-2 control-label'

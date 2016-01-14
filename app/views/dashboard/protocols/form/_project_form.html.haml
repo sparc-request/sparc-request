@@ -63,6 +63,8 @@
             .col-lg-10
               = form.text_field :indirect_cost_rate, class: 'form-control'
       
-      #actions
-        %input.btn.btn-success{ type: "submit", value: t(:project_form)[:save]}
-        = link_to t(:protocol_shared)[:cancel], dashboard_protocol_path(protocol), class: 'btn btn-danger'        
+    .row#actions
+      .col-lg-4
+      .col-lg-4
+        %input.btn.btn-lg.btn-success{ type: "submit", value: t(:study_form)[:save]}
+        = link_to t(:protocol_shared)[:cancel], dashboard_protocol_path(protocol), class: 'btn btn-lg btn-danger'

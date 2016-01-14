@@ -41,11 +41,9 @@ $(document).ready ->
       $(document).on 'click', '#toggle-archived', ->
         $this            = $(this)
         $bs_table        = $('table.protocols_table')
-        console.log JSON.stringify($this.data('showing-archived'))
         showing_archived = $this.data('showing-archived')
-        console.log showing_archived
         # update button
-        $this.text(if showing_archived then 'Show Archived' else 'Show Active')
+        $this.text(if showing_archived then 'Show Archived' else 'Show Only Active')
         $this.data('showing-archived': (if showing_archived then false else true))
 
         # update protocols table
@@ -92,7 +90,9 @@ $(document).ready ->
         $.ajax
           type: "POST"
           url:  "/protocol_archive/create.js"
-          data: {protocol_id: protocol_id}
+          data: { protocol_id: protocol_id }
+        if !$('#toggle-archived').data('showing-archived')
+          $('#protocols_table').bootstrapTable('refresh')
       )
 
       $(document).on('click', '#show-all-protocols-btn', (event) ->

@@ -23,11 +23,6 @@
   = form.error_messages
   .edit-project-view.container-fluid
     .user-edit-protocol-view
-      :javascript
-        $(document).ready(function() {
-        Sparc.project.ready();
-        });
-
       .panel.panel-default
         .panel-heading
           %h4.panel-title Project Information
@@ -47,17 +42,15 @@
             .col-lg-10
               = form.select :funding_status, options_for_select(FUNDING_STATUSES, protocol.funding_status), { include_blank: t(:project_form)[:dropdown_default1] }, class: 'selectpicker'
         
-          #funded
-            .form-group.row
-              = form.label :funding_source, t(:protocol_shared)[:funding_source], class: 'col-lg-2 control-label'
-              .col-lg-10
-                = form.select :funding_source, options_for_select(FUNDING_SOURCES, protocol.funding_source), { include_blank: t(:project_form)[:dropdown_default2] }, class: 'selectpicker'
+          .form-group.row.funding_status_dependent.funded{ display_if(protocol.funding_status, "funded") }
+            = form.label :funding_source, t(:protocol_shared)[:funding_source], class: 'col-lg-2 control-label'
+            .col-lg-10
+              = form.select :funding_source, options_for_select(FUNDING_SOURCES, protocol.funding_source), { include_blank: t(:project_form)[:dropdown_default2] }, class: 'selectpicker'
 
-          #pending_funding
-            .form-group.row
-              = form.label :potential_funding_source, t(:protocol_shared)[:potential_funding_source], class: 'col-lg-2 control-label'
-              .col-lg-10
-                = form.select :potential_funding_source, options_for_select(POTENTIAL_FUNDING_SOURCES, protocol.potential_funding_source), { include_blank: t(:project_form)[:dropdown_default3] }, class: 'selectpicker'
+          .form-group.row.funding_status_dependent.pending_funding{ display_if(protocol.funding_status, "pending_funding") }
+            = form.label :potential_funding_source, t(:protocol_shared)[:potential_funding_source], class: 'col-lg-2 control-label'
+            .col-lg-10
+              = form.select :potential_funding_source, options_for_select(POTENTIAL_FUNDING_SOURCES, protocol.potential_funding_source), { include_blank: t(:project_form)[:dropdown_default3] }, class: 'selectpicker'
 
           .form-group.row
             = form.label :brief_description, t(:project_form)[:description], class: "col-lg-2 control-label"

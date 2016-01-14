@@ -24,7 +24,9 @@ $(document).ready ->
     # Proposal Funding Status - Dropdown
     $(".funding_status_dependent").hide()
     switch $(this).val()
-      when "funded" then $(".funded").show()
+      when "funded"
+        $(".funded").show()
+        $("#study_funding_source").trigger("change")
       when "pending_funding" then $(".pending_funding").show()
 
   $(document).on 'change', "#study_funding_source", ->
@@ -69,3 +71,10 @@ $(document).ready ->
     switch $(this).attr('checked')
       when 'checked' then $('.impact_area_dependent').show()
       else $('.impact_area_dependent').hide()
+
+  $(document).on 'change', "#project_funding_status", ->
+    # Proposal Funding Status - Dropdown
+    $(".funding_status_dependent").hide()
+    switch $(this).val()
+      when "funded" then $(".funded").show()
+      when "pending_funding" then $(".pending_funding").show()

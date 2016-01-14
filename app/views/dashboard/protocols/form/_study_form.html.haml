@@ -320,11 +320,11 @@
                 .col-lg-10
                   = ia_form.check_box "_destroy", { checked: !ia_form.object.new, class: 'form-control' }, false, true
                   = ia_form.hidden_field :name, value: ia_form.object.name
-
-              .form-group.row.impact_area_dependent.impact_other{ display_if(ia_form.object.name, "other")}
-                = ia_form.label :other_text, "Enter area:", class: 'col-lg-2 control-label'
-                .col-lg-10
-                  = ia_form.text_field :other_text, :id => "study_impact_areas_other", class: 'form-control'
+              - if ia_form.object.name == "other"
+                .form-group.row.impact_area_dependent.impact_other
+                  = ia_form.label :other_text, "Enter area:", class: 'col-lg-2 control-label'
+                  .col-lg-10
+                    = ia_form.text_field :other_text, :id => "study_impact_areas_other", class: 'form-control'
 
         .panel.panel-default
           .panel-heading

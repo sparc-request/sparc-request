@@ -18,16 +18,6 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-- if !@protocol_role.errors.messages.empty?
-  - @protocol_role.errors.messages.merge!(@identity.errors.messages)
-  - @entity_errors = @protocol_role.errors.to_json
-  :plain
-    $('#edit_authorized_user_submit_button').attr('disabled', false);
-    Sparc.home.handle_ajax_errors("#{escape_javascript(@entity_errors)}", "Authorized User");
-- else
-  :plain
-    $('.edit-associated-user-dialog').dialog('close').dialog('destroy').remove();
-    $('.add-associated-user-dialog').dialog('close').dialog('destroy').remove();
-    $("#associated_users").html("#{escape_javascript(render(:partial =>'portal/sub_service_requests/associated_users'))}");
-    Sparc.associated_users.create_edit_associated_user_dialog();
-    Sparc.associated_users.create_add_associated_user_dialog();
+:plain
+  $("#associated_users").html("#{escape_javascript(render(partial: 'portal/sub_service_requests/associated_users'))}")
+    

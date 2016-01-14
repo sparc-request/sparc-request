@@ -44,7 +44,7 @@ class Dashboard::Breadcrumber
     urls = [@crumbs[:protocol_id] && dashboard_protocol_url(@crumbs[:protocol_id], only_path: true),
       @crumbs[:sub_service_request_id] && dashboard_sub_service_request_url(@crumbs[:sub_service_request_id], only_path: true),
       dashboard_notifications_url(only_path: true),
-      edit_dashboard_protocol_url(@crumbs[:protocol_id], only_path: true)
+      @crumbs[:protocol_id] && edit_dashboard_protocol_url(@crumbs[:protocol_id], only_path: true)
       ]
 
     content_tag(:a, 'Dashboard', href: dashboard_protocols_url(only_path: true)) + ((breads.zip(urls)).select { |b, _| !b.nil? }.map { |b, url| ' > '.html_safe + content_tag(:a, b, href: url) }.join.html_safe)

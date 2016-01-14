@@ -55,14 +55,6 @@ $(document).ready ->
           type: 'GET'
           url: "/dashboard/protocols/#{protocol_id}.js"
 
-      $(document).on 'click', '.edit-protocol-information-button', ->
-        if $(this).data('permission')
-          protocol_id = $(this).data('protocol-id')
-          window.location = "/dashboard/protocols/#{protocol_id}/edit"
-        else
-          $('.permissions-dialog').dialog('open')
-          $('.permissions-dialog .text').html('Edit.')
-
       $(document).on 'click', '.edit_service_request', ->
         if $(this).data('permission')
           window.location = $(this).data('url')
@@ -82,17 +74,6 @@ $(document).ready ->
         if !$(this).data('permission')
           $('.permissions-dialog').dialog('open')
           $('.permissions-dialog .text').html('Edit.')
-      )
-
-      $(document).on('click', '.protocol-archive-button', (event) ->
-        event.stopPropagation()
-        protocol_id = $(this).data('protocol-id')
-        $.ajax
-          type: "POST"
-          url:  "/protocol_archive/create.js"
-          data: { protocol_id: protocol_id }
-        if !$('#toggle-archived').data('showing-archived')
-          $('#protocols_table').bootstrapTable('refresh')
       )
 
       $(document).on('click', '#show-all-protocols-btn', (event) ->
@@ -290,6 +271,10 @@ $(document).ready ->
       $('#visit_group_num').val(visit_group_num)
   }
 
+
+
+
+  #  Protocol Index Begin
   $(document).on('click', '.protocols_row > .id,.title,.pis', ->
     #if you click on the row, it opens the notification show
     row_index   = $(this).parents("tr").data("index")
@@ -309,6 +294,29 @@ $(document).ready ->
       url: "/dashboard/protocols/#{protocol_id}/display_requests"
   )
 
+  $(document).on('click', '.protocol-archive-button', (event) ->
+    event.stopPropagation()
+    protocol_id = $(this).data('protocol-id')
+    $.ajax
+      type: "POST"
+      url:  "/protocol_archive/create.js"
+      data: { protocol_id: protocol_id }
+    if !$('#toggle-archived').data('showing-archived')
+      $('#protocols_table').bootstrapTable('refresh')
+  )
+  #  Protocol Index End
+
+  # Protocol Show Begin
+  $(document).on 'click', '.edit-protocol-information-button', ->
+    if $(this).data('permission')
+      protocol_id = $(this).data('protocol-id')
+      window.location = "/dashboard/protocols/#{protocol_id}/edit"
+    else
+      $('.permissions-dialog').dialog('open')
+      $('.permissions-dialog .text').html('Edit.')
+  # Protocol Show End
+
+  # Protocol Edit Begin
   $(document).on('click', '#protocol_type_button', ->
     #if you click on the row, it opens the notification show
     protocol_id = $(this).data("protocol-id")
@@ -319,3 +327,4 @@ $(document).ready ->
         url: "/dashboard/protocols/#{protocol_id}/update_protocol_type"
         data: data
   )
+  # Protocol Edit End

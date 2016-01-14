@@ -167,10 +167,15 @@ $(document).ready ->
 
                   #Add the new elements
                   primary_pi_full_name = $('#primary_pi_full_name').val()
-                  message = "<strong>**WARNING**</strong>"
-                  message2 = "Changing the Primary PI will remove the current Primary PI (#{primary_pi_full_name}) from the Protocol."
-                  message3 = "Do you wish to proceed?"
-                  $('.add-associated-user-dialog').append("<h1 class='change_ppi_prompt' style='color:red;'>#{message}</h1><p class='change_ppi_prompt' style='font-size:14px;'>#{message2}</p><p class='change_ppi_prompt' style='font-size:14px;'>#{message3}</p>")
+                  pr_full_name = $('#full_name').val()
+                  warning = I18n["protocol_information"]["change_primary_pi"]["warning"]
+                  message1 = I18n["protocol_information"]["change_primary_pi"]["warning_prompt_1_1"]+
+                    "(<strong>#{pr_full_name}</strong>)"+
+                    I18n["protocol_information"]["change_primary_pi"]["warning_prompt_1_2"]+
+                    "(<strong>#{primary_pi_full_name}</strong>)"+
+                    I18n["protocol_information"]["change_primary_pi"]["warning_prompt_1_3"]
+                  message2 = I18n["protocol_information"]["change_primary_pi"]["warning_prompt_2"]
+                  $('.add-associated-user-dialog').append("<h1 class='change_ppi_prompt' style='color:red;'>#{warning}</h1><p class='change_ppi_prompt' style='font-size:14px;'>#{message1}</p><p class='change_ppi_prompt' style='font-size:14px;'>#{message2}</p>")
 
                   #Change the text
                   button_text.text('Yes')
@@ -230,6 +235,9 @@ $(document).ready ->
           $('#add_authorized_user_submit_button').children('span').text('Submit')
           $('#add_authorized_user_cancel_button').children('span').text('Cancel')
           $('.add_user_dialog_box .ui-dialog-titlebar').children('.ui-dialog-title').text('Add an Authorized User')
+          $('.change_ppi_prompt').remove()
+          $('.user-search-container').show()
+          $('#add-user-form').show()
 
     create_edit_associated_user_dialog: () ->
       $('.edit-associated-user-dialog').dialog
@@ -261,10 +269,15 @@ $(document).ready ->
 
                     #Add the new elements
                     primary_pi_full_name = $('#primary_pi_full_name').val()
-                    message = "<strong>**WARNING**</strong>"
-                    message2 = "Changing the Primary PI will remove the current Primary PI (#{primary_pi_full_name}) from the Protocol."
-                    message3 = "Do you wish to proceed?"
-                    $('.edit-associated-user-dialog').append("<h1 class='change_ppi_prompt' style='color:red;'>#{message}</h1><p class='change_ppi_prompt' style='font-size:14px;'>#{message2}</p><p class='change_ppi_prompt' style='font-size:14px;'>#{message3}</p>")
+                    pr_full_name = $('#full_name').val()
+                    warning = I18n["protocol_information"]["change_primary_pi"]["warning"]
+                    message1 = I18n["protocol_information"]["change_primary_pi"]["warning_prompt_1_1"]+
+                      "(<strong>#{pr_full_name}</strong>)"+
+                      I18n["protocol_information"]["change_primary_pi"]["warning_prompt_1_2"]+
+                      "(<strong>#{primary_pi_full_name}</strong>)"+
+                      I18n["protocol_information"]["change_primary_pi"]["warning_prompt_1_3"]
+                    message2 = I18n["protocol_information"]["change_primary_pi"]["warning_prompt_2"]
+                    $('.edit-associated-user-dialog').append("<h1 class='change_ppi_prompt' style='color:red;'>#{warning}</h1><p class='change_ppi_prompt' style='font-size:14px;'>#{message1}</p><p class='change_ppi_prompt' style='font-size:14px;'>#{message2}</p>")
 
                     #Change the text
                     button_text.text('Yes')
@@ -283,7 +296,7 @@ $(document).ready ->
                     #Change the text
                     button_text.text('Submit')
                     button.siblings('button').children('span').text('Cancel')
-                    title_text.text('Add an Authorized User')
+                    title_text.text('Edit an Authorized User')
 
                     $('.edit-associated-user-dialog').children('form').submit()
                 else
@@ -314,7 +327,7 @@ $(document).ready ->
                   #Change the text
                   button_text.text('Cancel')
                   button.siblings('button').children('span').text('Submit')
-                  title_text.text('Add an Authorized User')
+                  title_text.text('Edit an Authorized User')
           open: ->
             $('#edit_authorized_user_submit_button').attr('disabled', false)
             $('#associated_user_role').change()
@@ -322,7 +335,10 @@ $(document).ready ->
             Sparc.associated_users.reset_fields()
             $('#edit_authorized_user_submit_button').children('span').text('Submit')
             $('#edit_authorized_user_cancel_button').children('span').text('Cancel')
-            $('.edit_user_dialog_box .ui-dialog-titlebar').children('.ui-dialog-title').text('Add an Authorized User')
+            $('.edit_user_dialog_box .ui-dialog-titlebar').children('.ui-dialog-title').text('Edit an Authorized User')
+            $('.change_ppi_prompt').remove()
+            pr_id = $('#pr_id').val()
+            $("#edit_project_role_#{pr_id}").show()
 
     reset_fields: () ->
       $('.errorExplanation').html('').hide()
@@ -331,7 +347,7 @@ $(document).ready ->
       $('.add-associated-user-dialog input').val('')
       $('.add-associated-user-dialog select').prop('selectedIndex', 0)
       $('.add-associated-user-dialog #epic_access input').prop('checked', false)
-      $('.add-associated-user-dialog .rights_radios input').prop('checked', false)
+      $('.add-associated-user-dialog .rights input').prop('checked', false)
 
     createTip: (element) ->
       if $('#tip').length == 0

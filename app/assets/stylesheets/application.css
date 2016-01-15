@@ -47,6 +47,14 @@ a {
   text-decoration: none;
 }
 
+label.decrement_days {
+  padding-right: 16px;
+}
+
+label.increment_days {
+  padding-left: 18px;
+}
+
 ul {
   list-style-position: inside;
 }

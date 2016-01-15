@@ -59,18 +59,13 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
   def new
     @protocol = Study.new
+    @protocol.project_roles.new(role: "primary-pi", project_rights: "approve")
     @protocol.requester_id = current_user.id
     @protocol.populate_for_edit
     @errors = nil
     @portal = true
     @current_step = 'protocol'
     session[:protocol_type] = 'study'
-  end
-
-  def add_project_roles
-    @protocol = Study.new(params[:study])
-    if @protocol.group_valid? :protocol
-      @protocol.populate_for_edit
   end
 
   def create
@@ -100,7 +95,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     elsif @current_step == 'cancel_protocol'
       @current_step = 'return_to_portal'
     else
-      # TODO: Is this necessary?
+      # TODO: Is this neccessary?
       @errors = @current_step == 'protocol' ? @protocol.grouped_errors[:protocol].try(:messages) : @protocol.grouped_errors[:user_details].try(:messages)
       @protocol.populate_for_edit
     end

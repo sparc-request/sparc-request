@@ -18,29 +18,15 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#protocol_form_display
-  = form_for ([:dashboard, protocol]), html: { class: 'form-horizontal' } do |form|
-    = form.hidden_field :requester_id
-    = form.error_messages
-    - if protocol.is_study?
-      .edit-study-view.container-fluid
-        .row.user-edit-protocol-view
-          = render partial: 'dashboard/protocols/form/study_fields', locals: { form: form, protocol: protocol }
-          - unless protocol.id.present? # New Protocol, authorized users fields required
-            = render partial: 'dashboard/protocols/form/project_roles_fields', locals: { form: form, protocol: protocol }
-
-    - elsif protocol.is_project?
-      .edit-project-view.container-fluid
-        .row.user-edit-protocol-view
-          = render partial: 'dashboard/protocols/form/project_fields', locals: { form: form, protocol: protocol }
-          - unless protocol.id.present? # New Protocol, authorized users fields required
-            = render partial: 'dashboard/protocols/form/project_roles_fields', locals: { form: form, protocol: protocol }
-
-    .row#actions
-      .col-lg-4
-      .col-lg-4
-        %input.btn.btn-lg.btn-success{ type: "submit", value: "Save"}
-        - if protocol.id.present? # Edit Protocol
-          = link_to t(:protocol_shared)[:cancel], dashboard_protocol_path(protocol), class: 'btn btn-lg btn-danger'
-        - else # New Protocol
-          = link_to t(:protocol_shared)[:cancel], dashboard_protocols_path, class: 'btn btn-lg btn-danger'
+.panel.panel-default
+  .panel-heading
+    %h4.panel-title= "Project Roles"
+    .sub_text= "Primary PI Required"
+  .panel-body
+    = form.fields_for :project_roles do |pr_form|
+      .form-group.row
+        = pr_form.label :identity_id, "Primary PI", class: 'col-lg-2 control-label'
+        .col-lg-10
+          = pr_form.text_field :identity_id, placeholder: 'Search For A User', class: 'form-control'
+          = image_tag 'dashboard/spinner.gif', style: 'display: none; vertical-align: middle;', id: 'search-spinner'
+          = pr_form.hidden_field :identity_id

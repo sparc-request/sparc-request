@@ -30,7 +30,7 @@ RSpec.describe Portal::StudyTypeFinder do
 
       it 'should return a study_type of 1' do
         active_answer1.update_attributes(answer: 1)
-        active_answer2.update_attributes(answer: 1)
+        active_answer2.update_attributes(answer: nil)
         active_answer3.update_attributes(answer: nil)
         active_answer4.update_attributes(answer: nil)
         active_answer5.update_attributes(answer: nil)

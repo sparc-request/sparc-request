@@ -262,7 +262,6 @@ RSpec.describe "User wants to edit a Study", js: true do
 
   def then_i_should_see_the_appropriate_fields_displayed
     expect(page).to have_select('study_type_answer_certificate_of_conf_answer', selected: 'Yes')
-    expect(page).to have_select('study_type_answer_higher_level_of_privacy_answer', selected: 'Yes')
     expect(page).to_not have_selector('#study_type_answer_access_study_info')
     expect(page).to_not have_selector('#study_type_answer_epic_inbasket')
     expect(page).to_not have_selector('#study_type_answer_research_active')

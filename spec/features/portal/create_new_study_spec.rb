@@ -91,6 +91,5 @@ def fill_in_study_info
   select "Federal", from: "study_funding_source"
   find('#study_selected_for_epic_true').click
   select 'Yes', from: 'study_type_answer_certificate_of_conf_answer'
-  select 'Yes', from: 'study_type_answer_higher_level_of_privacy_answer'
   find('.continue_button').click
 end

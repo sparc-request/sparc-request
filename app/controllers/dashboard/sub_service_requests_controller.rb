@@ -29,7 +29,7 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
     session[:sub_service_request_id] = @sub_service_request.id
     session[:service_request_id] = @sub_service_request.service_request_id
     session[:service_calendar_pages] = params[:pages] if params[:pages]
-    session[:breadcrumbs].add_crumbs(protocol_id: @sub_service_request.service_request.protocol_id, sub_service_request_id: @sub_service_request.id)
+    session[:breadcrumbs].add_crumbs(protocol_id: @sub_service_request.service_request.protocol_id, sub_service_request_id: @sub_service_request.id).clear(:notifications)
     if @user.can_edit_fulfillment? @sub_service_request.organization
       @user_toasts = @user.received_toast_messages.select {|x| x.sending_class == 'SubServiceRequest'}.select {|y| y.sending_class_id == @sub_service_request.id}
       @service_request = @sub_service_request.service_request

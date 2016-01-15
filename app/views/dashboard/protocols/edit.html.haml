@@ -18,12 +18,20 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#protocol{style: 'padding:15px;'}
-  = render partial: 'dashboard/protocols/form/type_form', locals: { protocol: @protocol }
+#protocol
 
-  #protocol_form_display
-    - if @protocol.is_study?
-      = render partial: 'dashboard/protocols/form/study_form', locals: { protocol: @protocol }
+  .row.container-fluid
+    .col-lg-12
+      .panel.panel-default
+        .panel-heading
+          %h4.panel-title
+            Change Project/Study Type
+        .panel-body.container-fluid
+          .form-group.row
+            = label_tag "protocol_type", t(:protocol_shared)[:change], class: 'col-lg-2 control-label'
+            .col-lg-10
+              = select_tag "protocol_type", options_for_select([['Project', 'Project'], ['Study', 'Study']], @protocol.type), class: 'selectpicker'
+              %button.btn.btn-warning#protocol_type_button{ data: {protocol_id: @protocol.id } }
+                = t(:protocol_shared)[:button]
 
-    - elsif @protocol.is_project?
-      = render partial: 'dashboard/protocols/form/project_form', locals: { protocol: @protocol }
+  = render partial: 'dashboard/protocols/form/protocol_form', locals: { protocol: @protocol }

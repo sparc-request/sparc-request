@@ -30,7 +30,7 @@
       .col-xs-4.text-center
         %span= arm.name
       .col-xs-8.text-center
-        = render partial: 'service_calendars/visit_group_page_select', locals: { arm: arm, page: page, merged: @merged, review: @review }
+        = render partial: 'service_calendars/visit_group_page_select', locals: { arm: arm, pages: @pages, tab: tab, merged: @merged, review: @review, portal: @portal, ssr_id: @sub_service_request.try(:id), service_request: @service_request }
     .row
       .col-xs-4
       %div= render partial: 'service_calendars/visit_groups', locals: { arm: arm, visit_groups: visit_groups, tab: tab }

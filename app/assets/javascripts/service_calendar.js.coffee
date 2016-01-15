@@ -22,14 +22,9 @@
 
 $(document).ready ->
   $(document).on 'click', '.page_change_arrow', ->
-    data =
-      'arm_id': $(this).data('arm-id'),
-      'page'  : $(this).attr('page'),
-      'tab'   : $('#current_tab').val()
     $.ajax
       type: 'GET'
-      url:  '/study_schedule/change_page'
-      data: data
+      url:  $(this).data('url')
 
   $('.visit_number a, .service_calendar_row').live 'click', ->
     $('.service_calendar_spinner').show()

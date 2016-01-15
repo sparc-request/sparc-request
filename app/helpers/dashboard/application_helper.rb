@@ -36,6 +36,14 @@ module Dashboard::ApplicationHelper
     end
   end
 
+  def display_if to_compare_1, to_compare_2=true
+    if to_compare_1 == to_compare_2
+      return { style: "display: block;" }
+    else
+      return { style: "display: none;" }
+    end
+  end
+
   def pretty_tag(tag)
     tag.to_s.gsub(/\s/, "_").gsub(/[^-\w]/, "").downcase
   end

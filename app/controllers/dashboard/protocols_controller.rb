@@ -100,16 +100,6 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     end
   end
 
-  def update_from_fulfillment
-    if @protocol.update_attributes(params[:protocol])
-      render :nothing => true
-    else
-      respond_to do |format|
-        format.js { render :status => 500, :json => clean_errors(@protocol.errors) }
-      end
-    end
-  end
-
   def edit
     @protocol.populate_for_edit if @protocol.type == "Study"
     @protocol.valid?
@@ -133,6 +123,29 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     end
   end
 
+  def update_protocol_type
+    # Using update_attribute here is intentional, type is a protected attribute
+    if @protocol.update_attribute(:type, params[:type])
+      @protocol = Protocol.find @protocol.id #Protocol type has been converted, this is a reload
+      @protocol.populate_for_edit if @protocol.type == "Study"
+      @protocol.valid?
+      @form_partial = "dashboard/protocols/form/#{params[:type].downcase}_form"
+      flash[:success] = "Protocol Type Updated!"
+    else
+      @errors = @protocol.errors
+    end
+  end
+
+  def update_from_fulfillment
+    if @protocol.update_attributes(params[:protocol])
+      render :nothing => true
+    else
+      respond_to do |format|
+        format.js { render :status => 500, :json => clean_errors(@protocol.errors) }
+      end
+    end
+  end
+
   # @TODO: add to an authorization filter?
   def add_associated_user
     @protocol = Protocol.find(params[:id])
@@ -141,19 +154,6 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     respond_to do |format|
       format.js
       format.html
-    end
-  end
-
-  def update_protocol_type
-    # Using update_attribute here is intentional, type is a protected attribute
-    if @protocol.update_attribute(:type, params[:type])
-      @form_partial = "dashboard/protocols/form/#{params[:type].downcase}_form"
-      flash[:success] = "Protocol Type Updated!"
-      @protocol = Protocol.find @protocol.id #Protocol type has been converted, this is a reload
-      @protocol.populate_for_edit if @protocol.type == "Study"
-      @protocol.valid?
-    else
-      @errors = @protocol.errors
     end
   end
 

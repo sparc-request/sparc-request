@@ -178,8 +178,6 @@ class ServiceCalendarsController < ApplicationController
   def update_otf_qty_and_units_per_qty
     line_item = LineItem.find params[:line_item_id]
 
-    one_time_fees = @service_request.one_time_fee_line_items
-
     val = params[:val]
     if params[:type] == 'qty'
       line_item.quantity = val

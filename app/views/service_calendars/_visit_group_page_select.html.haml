@@ -1,0 +1,14 @@
+- if merged
+  - pathMethod = method(:merged_calendar_service_request_service_calendars_path)
+- elsif review
+  - pathMethod = method(:refresh_service_calendar_service_request_path)
+- else
+  - pathMethod = method(:table_service_request_service_calendars_path)
+.col-xs-2
+  .page_change_arrow.btn.btn-info.glyphicon.glyphicon-arrow-left{title: 'View Previous', type: "button", id: "arrow-left-#{arm.id}", :'data-arm_id' => "#{arm.id}", page: page - 1, disabled: "true", role: 'button', aria: {label: "View Previous"}, data: {toggle: "tooltip", animation: 'false'}}
+-# The visit jump to drop down
+.col-xs-8
+  = build_visits_select(arm, page)
+-# The next page arrow
+.col-xs-2
+  .page_change_arrow.btn.btn-info.btn.btn-info.glyphicon.glyphicon-arrow-right{title: 'View More', type: "button", id: "arrow-right-#{arm.id}", :'data-arm_id' => "#{arm.id}", page: page + 1, disabled: arm.visit_count <= Visit.per_page, role: 'button', aria: {label: "View Previous"}, data: {toggle: "tooltip", animation: 'false'}}

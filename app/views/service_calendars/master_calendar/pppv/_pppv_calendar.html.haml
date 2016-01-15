@@ -23,16 +23,23 @@
     = hidden_field_tag :indirect_rate, @protocol.try(:indirect_cost_rate)
   - else
     = hidden_field_tag :indirect_rate, @service_request.protocol.indirect_cost_rate
-  .row
-    - if @review
-      .col-sm-5.col-sm-offset-5.text-center
-        = generate_visit_navigation(arm, @service_request, @pages, @tab, @portal, @sub_service_request.try(:id))
-    - else
-      .col-sm-5.col-sm-offset-5.text-center
-        = generate_visit_navigation(arm, @service_request, @pages, @tab, @portal, @sub_service_request.try(:id))
 
-  -# TODO move inline style to stylesheet
-  .row.calendar-row
-    %table.table{ style: 'table-layout: fixed;' }
-      = render partial: '/service_calendars/master_calendar/pppv/pppv_header', :locals => {:service_request => service_request, :arm => arm, :tab => @tab, :portal => @portal, sub_service_request: @sub_service_request }
-      = render partial: '/service_calendars/master_calendar/pppv/pppv_line_items', :locals => {:service_request => service_request, :arm => arm, :tab => @tab, :portal => @portal, sub_service_request: @sub_service_request }
+  - visit_groups = arm.visit_groups.paginate(page: page)
+  .study_schedule{ class: "arm-#{arm.id}" }
+    .row
+      .col-xs-4.text-center
+        %span= arm.name
+      .col-xs-8.text-center
+        = render partial: 'service_calendars/visit_group_page_select', locals: { arm: arm, page: page, merged: @merged, review: @review }
+    .row
+      .col-xs-4
+      %div= render partial: 'service_calendars/visit_groups', locals: { arm: arm, visit_groups: visit_groups, tab: tab }
+  -# .row
+  -#   .col-sm-5.col-sm-offset-5.text-center
+  -#     = generate_visit_navigation(arm, @service_request, @pages, @tab, @portal, @sub_service_request.try(:id))
+  -#
+  -# -# TODO move inline style to stylesheet
+  -# .row.calendar-row
+  -#   %table.table{ style: 'table-layout: fixed;' }
+  -#     = render partial: '/service_calendars/master_calendar/pppv/pppv_header', :locals => {:service_request => service_request, :arm => arm, :tab => @tab, :portal => @portal, sub_service_request: @sub_service_request }
+  -#     = render partial: '/service_calendars/master_calendar/pppv/pppv_line_items', :locals => {:service_request => service_request, :arm => arm, :tab => @tab, :portal => @portal, sub_service_request: @sub_service_request }

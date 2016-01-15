@@ -1,0 +1,18 @@
+- visit_groups.each_with_index do |visit_group, index|
+  .col-xs-1
+    .row.text-center
+      .col-xs-4.text-center
+        %span{ id: "visit-before-display-#{visit_group.id}" }= visit_group.window_before || 0
+      .col-xs-4.text-center
+        %span{ id: "visit-day-display-#{visit_group.id}" }= visit_group.day
+      .col-xs-4.text-center
+        %span{ id: "visit-after-display-#{visit_group.id}" }= visit_group.window_after || 0
+    .row.visit_group_names.text-center
+      .visit_name_display.text-center{ data: { visit_group_id: visit_group.id } }
+        %span{ id: "visit-name-display-#{visit_group.id}" }
+          = text_field_tag "visit_group_#{visit_group.id}", visit_group.name, class: "form-control visit_group_#{index} visit_name", data: { visit_group_id: visit_group.id }, disabled: (tab == 'consolidated' ? true : false)
+- (visit_groups.size...Visit.per_page).each do |index|
+  .col-md-1.text-center{ class: "visit_group_#{index}" }
+    &nbsp
+    .row
+      .col-md-12 &nbsp

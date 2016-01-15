@@ -23,7 +23,7 @@ RSpec.describe Portal::StudyTypeFinder do
       end
 
       it 'should return a study_type of 1' do
-        answer_questions(1, 1, nil, nil, nil, nil)
+        answer_questions(1, nil, nil, nil, nil, nil)
         expect(study_type_finder.study_type).to eq("1")
       end
 

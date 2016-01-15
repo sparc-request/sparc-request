@@ -148,7 +148,7 @@ $(document).ready ->
 
   # When the epic box answers hit the validations with an unselected field, 
   # the html.haml sets display to none for unselected fields
-  # So if the user has an not filled out one of the 
+  # So if the user has not filled out one of the 
   # required fields in the epic box, it will hit this code and display 
   # the appropriate fields that need to be filled out with a visual cue of red border
   if $('.field_with_errors label:contains("Study type questions")').length > 0

@@ -13,7 +13,6 @@
 
 ActiveRecord::Schema.define(version: 20160106161249) do
 
-
   create_table "admin_rates", force: :cascade do |t|
     t.integer  "line_item_id", limit: 4
     t.integer  "admin_cost",   limit: 4

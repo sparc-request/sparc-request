@@ -101,6 +101,7 @@ class Portal::ProtocolsController < Portal::BaseController
   end
 
   def edit
+
     @edit_protocol = true
     @protocol.populate_for_edit if @protocol.type == "Study"
     @protocol.valid?
@@ -142,7 +143,9 @@ class Portal::ProtocolsController < Portal::BaseController
   # to update the protocol type
   def update_protocol_type
     # Using update_attribute here is intentional, type is a protected attribute
+
     if @protocol.update_attribute(:type, params[:protocol][:type])
+      @protocol.update_attribute(:study_type_question_group_id, StudyTypeQuestionGroup.active.pluck(:id).first)
       if params[:sub_service_request_id]
         @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
         redirect_to portal_admin_sub_service_request_path(@sub_service_request)

@@ -101,6 +101,7 @@
         %legend= t(:study_form)[:epic]
         .field{:style => "#{USE_EPIC ? nil : 'display:none;'}"}
           = f.label :selected_for_epic, t(:study_form)[:push_to_epic]
+
           - if admin
             %span.epic_selected.display_epic_answers
               = f.object.selected_for_epic ? "Yes" : "No"

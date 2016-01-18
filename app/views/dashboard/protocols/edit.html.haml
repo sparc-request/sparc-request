@@ -29,8 +29,8 @@
         .form-group.row
           = label_tag "protocol_type", t(:protocol_shared)[:change], class: 'col-lg-2 control-label'
           .col-lg-10
-            = select_tag "protocol_type", options_for_select([['Project', 'Project'], ['Study', 'Study']], @protocol.type), class: 'selectpicker'
+            = select_tag "protocol_type", options_for_select([['Project', 'Project'], ['Study', 'Study']], @protocol_type), class: 'selectpicker'
             %button.btn.btn-warning#protocol_type_button{ data: {protocol_id: @protocol.id } }
               = t(:protocol_shared)[:button]
 
-  = render partial: 'dashboard/protocols/form/protocol_form', locals: { protocol: @protocol }
+  = render partial: 'dashboard/protocols/form/protocol_form', locals: { protocol: @protocol, protocol_type: @protocol_type }

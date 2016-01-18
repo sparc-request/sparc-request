@@ -70,7 +70,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     @protocol = protocol_class.new(params[:protocol])
     unless @protocol.project_roles.map(&:identity_id).include?(current_user.id)
       # if current user is not authorized, add them as an authorized user
-      @protocol.project_roles.new(identity_id: current_user.id, role: "pi", project_rights: "approve")
+      @protocol.project_roles.new(identity_id: current_user.id, role: "general-access-user", project_rights: "approve")
     end
 
     if @protocol.valid?
@@ -90,8 +90,8 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def edit
-    @protocol.populate_for_edit if @protocol.type == "Study"
-    @protocol.valid?
+    @protocol_type = @protocol.type.downcase
+    @protocol.populate_for_edit
     session[:breadcrumbs].
       clear.
       add_crumbs(protocol_id: @protocol.id, edit_protocol: true)
@@ -112,15 +112,11 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
   def update_protocol_type
     # Using update_attribute here is intentional, type is a protected attribute
-    if @protocol.update_attribute(:type, params[:type])
-      @protocol = Protocol.find @protocol.id #Protocol type has been converted, this is a reload
-      @protocol.populate_for_edit if @protocol.type == "Study"
-      @protocol.valid?
-      @form_partial = "dashboard/protocols/form/#{params[:type].downcase}_form"
-      flash[:success] = "Protocol Type Updated!"
-    else
-      @errors = @protocol.errors
-    end
+    @protocol.update_attribute(:type, params[:type])
+    @protocol_type = params[:type].downcase
+    @protocol = Protocol.find @protocol.id #Protocol type has been converted, this is a reload
+    @protocol.populate_for_edit
+    flash[:success] = "Protocol Type Updated!"
   end
 
   def update_from_fulfillment
@@ -173,22 +169,4 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     @protocol = Protocol.find(params[:id])
   end
 
-  # TODO: Move this somewhere else. Short on time, though. - nb
-  def merge_attributes(protocol, data)
-    protocol.instance_values.each do |k, v|
-      data.merge!({k => v}) unless data.include?(k)
-    end
-  end
-
-  def fix_funding(data)
-    if data["funding_status"] == "pending_funding" && data["_type"] != "project"
-      data.delete("funding_source")
-      data.delete("funding_source_other")
-      data.delete("funding_start_date")
-    elsif data["funding_status"] == "funded"
-      data.delete("potential_funding_source")
-      data.delete("potential_funding_source_other")
-      data.delete("potential_funding_start_date")
-    end
-  end
 end

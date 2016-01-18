@@ -89,6 +89,7 @@ module Dashboard
 
       @query = query_select + ' ' + query_joins + ' ' + query_where + ' ' + query_order
     end
+
     def include_archived?
       archived = [false]
 

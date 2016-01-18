@@ -120,3 +120,4 @@ $(document).ready ->
 
   $('#study_project_roles_attributes_0_identity_id[type="text"]').keypress (event) ->
     event.preventDefault() if event.keyCode is 13
+

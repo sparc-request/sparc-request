@@ -49,12 +49,6 @@ $(document).ready ->
         # update protocols table
         $bs_table.bootstrapTable('refresh')
 
-      $(document).on 'click', '.accordion-heading', ->
-        protocol_id = $(this).data('protocol-id')
-        $.ajax
-          type: 'GET'
-          url: "/dashboard/protocols/#{protocol_id}.js"
-
       $(document).on 'click', '.edit_service_request', ->
         if $(this).data('permission')
           window.location = $(this).data('url')
@@ -74,30 +68,6 @@ $(document).ready ->
         if !$(this).data('permission')
           $('.permissions-dialog').dialog('open')
           $('.permissions-dialog .text').html('Edit.')
-      )
-
-      $(document).on('click', '#show-all-protocols-btn', (event) ->
-        event.stopPropagation()
-        $('.search_protocols').hide()
-        $('.loading_protocol').show()
-        include_archived = 'true'
-
-        if $('#show-all-protocols-btn').data('showing-archived') == 1
-          include_archived = 'false'
-
-        $.ajax
-          method: "GET"
-          url: "/dashboard/protocols.js"
-          data: { include_archived: include_archived }
-          success: ->
-            if $('#show-all-protocols-btn').data('showing-archived') == 0
-              $('#show-all-protocols-btn').data('showing-archived', 1)
-              $('#show-all-protocols-btn').text("Show Active Projects/Studies")
-            else
-              $('#show-all-protocols-btn').data('showing-archived', 0)
-              $('#show-all-protocols-btn').text("Show All Projects/Studies")
-            $('.loading_protocol').hide()
-            $('.search_protocols').show()
       )
 
       $(document).on 'click', '.view-sub-service-request-button', ->

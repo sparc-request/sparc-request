@@ -20,7 +20,7 @@
 
 $(document).ready ->
 
-  $(document).on 'change', "#study_funding_status", ->
+  $(document).on 'change', "#protocol_funding_status", ->
     # Proposal Funding Status - Dropdown
     $(".funding_status_dependent").hide()
     switch $(this).val()
@@ -29,50 +29,50 @@ $(document).ready ->
         $("#study_funding_source").trigger("change")
       when "pending_funding" then $(".pending_funding").show()
 
-  $(document).on 'change', "#study_funding_source", ->
+  $(document).on 'change', "#protocol_funding_source", ->
     # Funding Source - Dropdown
     $(".funding_source_dependent").hide()
     switch $(this).val()
       when "federal" then $(".federal").show()
       when "internal" then $(".internal").show()
 
-  $(document).on 'change', "input[name='study[selected_for_epic]']", ->
+  $(document).on 'change', "input[name='protocol[selected_for_epic]']", ->
     # Publish Study in Epic - Radio
     switch $(this).val()
       when "true" then $(".selected_for_epic_dependent").show()
       when "false" then $(".selected_for_epic_dependent").hide()
 
-  $(document).on 'change', "#study_research_types_info_attributes_human_subjects", ->
+  $(document).on 'change', "#protocol_research_types_info_attributes_human_subjects", ->
     # Human Subjects - Checkbox
     switch $(this).attr('checked')
       when 'checked' then $('.human_subjects_dependent').show()
       else $('.human_subjects_dependent').hide()
 
-  $(document).on 'change', "#study_research_types_info_attributes_vertebrate_animals", ->
+  $(document).on 'change', "#protocol_research_types_info_attributes_vertebrate_animals", ->
     # Vertebrate Animals - Checkbox
     switch $(this).attr('checked')
       when 'checked' then $('.vertebrate_animals_dependent').show()
       else $('.vertebrate_animals_dependent').hide()
 
-  $(document).on 'change', "#study_research_types_info_attributes_investigational_products", ->
+  $(document).on 'change', "#protocol_research_types_info_attributes_investigational_products", ->
     # Investigational Products - Checkbox
     switch $(this).attr('checked')
       when 'checked' then $('.investigational_products_dependent').show()
       else $('.investigational_products_dependent').hide()
 
-  $(document).on 'change', "#study_research_types_info_attributes_ip_patents", ->
+  $(document).on 'change', "#protocol_research_types_info_attributes_ip_patents", ->
     # IP/Patents - Checkbox
     switch $(this).attr('checked')
       when 'checked' then $('.ip_patents_dependent').show()
       else $('.ip_patents_dependent').hide()
 
-  $(document).on 'change', "#study_impact_areas_attributes_6__destroy", ->
+  $(document).on 'change', "#protocol_impact_areas_attributes_6__destroy", ->
     # Impact Areas Other - Checkbox
     switch $(this).attr('checked')
       when 'checked' then $('.impact_area_dependent').show()
       else $('.impact_area_dependent').hide()
 
-  $(document).on 'change', "#project_funding_status", ->
+  $(document).on 'change', "#protocol_funding_status", ->
     # Proposal Funding Status - Dropdown
     $(".funding_status_dependent").hide()
     switch $(this).val()
@@ -82,7 +82,7 @@ $(document).ready ->
 
 
   #********** Primary PI TypeAhead Input Handling Begin **********
-  if $('#study_project_roles_attributes_0_identity_id[type="text"]').length > 0
+  if $('#protocol_project_roles_attributes_0_identity_id[type="text"]').length > 0
     identities_bloodhound = new Bloodhound(
       datumTokenizer: (datum) ->
         Bloodhound.tokenizers.whitespace datum.value
@@ -92,7 +92,7 @@ $(document).ready ->
         wildcard: '%QUERY'
     )
     identities_bloodhound.initialize() # Initialize the Bloodhound suggestion engine
-    $('#study_project_roles_attributes_0_identity_id[type="text"]').typeahead(
+    $('#protocol_project_roles_attributes_0_identity_id[type="text"]').typeahead(
       # Instantiate the Typeahead UI
       {
         minLength: 3,
@@ -105,14 +105,14 @@ $(document).ready ->
       }
     )
     .on 'typeahead:select', (event, suggestion) ->
-      $("#study_project_roles_attributes_0_identity_id[type='hidden']").val(suggestion.value)
-      $("#study_project_roles_attributes_0_identity_id[type='text']").hide()
+      $("#protocol_project_roles_attributes_0_identity_id[type='hidden']").val(suggestion.value)
+      $("#protocol_project_roles_attributes_0_identity_id[type='text']").hide()
       $("#primary_pi_name").text("#{suggestion.label}").show()
       $("#user-select-clear-icon").show()
 
     $('#user-select-clear-icon').live 'click', ->
       $("#primary_pi_name").text("").hide()
       $('#user-select-clear-icon').hide()
-      $("#study_project_roles_attributes_0_identity_id[type='hidden']").val('')
-      $("#study_project_roles_attributes_0_identity_id[type='text']").val('').show()
+      $("#protocol_project_roles_attributes_0_identity_id[type='hidden']").val('')
+      $("#protocol_project_roles_attributes_0_identity_id[type='text']").val('').show()
   #********** Primary PI TypeAhead Input Handling End **********

@@ -19,7 +19,8 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Study < Protocol
-  validates :sponsor_name, :presence => true
+  validates :sponsor_name, presence: true
+  validates :has_cofc, inclusion: {in: [true, false], message: "must be answered"}
 
   def classes
     return [ 'project' ] # for backward-compatibility
@@ -36,6 +37,7 @@ class Study < Protocol
     self.setup_impact_areas
     self.setup_affiliations
     self.setup_study_type_answers
+    self.setup_project_roles
   end
 
   def setup_study_types
@@ -84,4 +86,7 @@ class Study < Protocol
     end
   end
 
+  def setup_project_roles
+    project_roles.build(role: "primary-pi", project_rights: "approve")
+  end
 end

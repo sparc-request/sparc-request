@@ -58,16 +58,16 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def new
-    @protocol = Study.new
-    @protocol.project_roles.new(role: "primary-pi", project_rights: "approve")
+    @protocol_type = params[:protocol_type]
+    @protocol = @protocol_type.capitalize.constantize.new
     @protocol.requester_id = current_user.id
     @protocol.populate_for_edit
-    @errors = nil
-    session[:protocol_type] = 'study'
+    session[:protocol_type] = params[:protocol_type]
   end
 
   def create
-    @protocol = Study.new(params[:study])
+    protocol_class = params[:protocol][:type].capitalize.constantize
+    @protocol = protocol_class.new(params[:protocol])
     unless @protocol.project_roles.map(&:identity_id).include?(current_user.id)
       # if current user is not authorized, add them as an authorized user
       @protocol.project_roles.new(identity_id: current_user.id, role: "pi", project_rights: "approve")

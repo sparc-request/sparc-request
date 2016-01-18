@@ -28,5 +28,6 @@
         = pr_form.label :identity_id, "Primary PI", class: 'col-lg-2 control-label'
         .col-lg-10
           = pr_form.text_field :identity_id, placeholder: 'Search For A User', class: 'form-control'
-          = image_tag 'dashboard/spinner.gif', style: 'display: none; vertical-align: middle;', id: 'search-spinner'
+          %label#primary_pi_name.do-not-display
+          %a.btn.btn-xs.btn-danger.glyphicon.glyphicon-remove#user-select-clear-icon{ href: "javascript:void();", style: 'display: none; vertical-align: middle;' }
           = pr_form.hidden_field :identity_id

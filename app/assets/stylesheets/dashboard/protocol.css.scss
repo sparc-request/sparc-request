@@ -24,100 +24,24 @@
     }
 }
 
-// #protocol {
-//     table {
-//         font-size: 14px;
-//         width: 100%;
-
-//         th {
-//             width: 25%;
-//             padding: 4px;
-//             text-align: left;
-//         }
-
-//         td {
-//             padding: 4px;
-
-//             div {
-//                 min-height: 25px;
-//             }
-//         }
-//     }
-
-//     input {
-//         width: 98%;
-//     }
-
-//     input[type="checkbox"] {
-//         width: auto;
-//     }
-
-//     input.protocol_date, .form-date {
-//         width: 15%;
-//     }
-
-//     input[type=submit] {
-//         width: auto;
-//     }
-
-//     select {
-//         width: 99%;
-//     }
-// }
-
-// #change_protocol_type_area {
-//     .info {
-//         width: 95%;
-//     }
-//     input, select {
-//         float: left;
-//     }
-//     input {
-//         margin: 7px 0 0 10px;
-//     }
-//     select {
-//         width: 60% !important;
-//     }
-//     option {
-//         max-width: 100% !important;
-//     }
-// }
-
-#protocol .user-edit-protocol-view .field.inventors {
-    height: auto;
-    textarea {
-        height: auto;
-    }
-}
-
-.fulfillment_notifications {
-  li:hover {
-    background-color: #ccc;
-    cursor: pointer;
-  }
-}
-
-.width-100 {
-  width: 100%;
-}
-
-.width-15 {
-  width: 15%;
-}
-
-.width-8 {
-  width: 8%;
-}
-
-.font-10px {
-  font-size: 10px;
-}
-
-.service-request-body-table-custom {
-  font-size: 12px;
-  width: 845px;
-}
-
 .do-not-display {
   display: none;
 }
+
+/* Primary PI Typeahead Begin */
+.tt-menu {
+    width: 422px;
+    margin-top: 12px;
+    padding: 8px 0;
+    background-color: #fff;
+    border: 1px solid #ccc;
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 8px;
+    box-shadow: 0 5px 10px rgba(0,0,0,.2);
+}
+
+.tt-suggestion {
+    padding: 3px 20px;
+    cursor: pointer;
+}
+/* Primary PI Typeahead End */

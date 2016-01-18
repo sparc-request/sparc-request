@@ -81,44 +81,38 @@ $(document).ready ->
 
 
 
-
-  # New Protocol Form Primary PI Search
+  #********** Primary PI TypeAhead Input Handling Begin **********
   if $('#study_project_roles_attributes_0_identity_id[type="text"]').length > 0
-    autoComplete = $('#study_project_roles_attributes_0_identity_id[type="text"]').autocomplete
-      source: '/search/identities'
-      minLength: 3
-      search: (event, ui) ->
-        $('.user-search-clear-icon').remove()
-        $("#study_project_roles_attributes_0_identity_id[type='text']").after('<img src="/assets/spinner.gif" class="user-search-spinner" />')
-      open: (event, ui) ->
-        $('.user-search-spinner').remove()
-        $("#study_project_roles_attributes_0_identity_id[type='text']").after('<img src="/assets/clear_icon.png" class="user-search-clear-icon" />')
-      close: (event, ui) ->
-        $('.user-search-spinner').remove()
-        $('.user-search-clear-icon').remove()
-      select: (event, ui) ->
-        $("#study_project_roles_attributes_0_identity_id[type='hidden']").val(ui.item.value)
-        $("#study_project_roles_attributes_0_identity_id[type='text']").hide()
-        $(".ui-helper-hidden-accessible").hide()
-        $("#study_project_roles_attributes_0_identity_id[type='text']").before("<label id='primary_pi_name'>#{ui.item.label}</label>")
-        return false
+    identities_bloodhound = new Bloodhound(
+      datumTokenizer: (datum) ->
+        Bloodhound.tokenizers.whitespace datum.value
+      queryTokenizer: Bloodhound.tokenizers.whitespace
+      remote:
+        url: '/search/identities?term=%QUERY',
+        wildcard: '%QUERY'
+    )
+    identities_bloodhound.initialize() # Initialize the Bloodhound suggestion engine
+    $('#study_project_roles_attributes_0_identity_id[type="text"]').typeahead(
+      # Instantiate the Typeahead UI
+      {
+        minLength: 3,
+        hint: false,
+        highlight: true
+      },
+      {
+        displayKey: 'label'
+        source: identities_bloodhound.ttAdapter()
+      }
+    )
+    .on 'typeahead:select', (event, suggestion) ->
+      $("#study_project_roles_attributes_0_identity_id[type='hidden']").val(suggestion.value)
+      $("#study_project_roles_attributes_0_identity_id[type='text']").hide()
+      $("#primary_pi_name").text("#{suggestion.label}").show()
+      $("#user-select-clear-icon").show()
 
-    .data("uiAutocomplete")._renderItem = (ul, item) ->
-      if item.label == 'No Results'
-        $("<li class='search_result'></li>")
-        .data("ui-autocomplete-item", item)
-        .append("#{item.label}")
-        .appendTo(ul)
-      else
-        $("<li class='search_result'></li>")
-        .data("ui-autocomplete-item", item)
-        .append("<a>" + item.label + "</a>")
-        .appendTo(ul)
-
-    $('.user-search-clear-icon').live 'click', ->
-      $("#study_project_roles_attributes_0_identity_id[type='text']").autocomplete("close")
-      $("#study_project_roles_attributes_0_identity_id[type='text']").clearFields()
-
-    $('#study_project_roles_attributes_0_identity_id[type="text"]').keypress (event) ->
-      event.preventDefault() if event.keyCode is 13
-
+    $('#user-select-clear-icon').live 'click', ->
+      $("#primary_pi_name").text("").hide()
+      $('#user-select-clear-icon').hide()
+      $("#study_project_roles_attributes_0_identity_id[type='hidden']").val('')
+      $("#study_project_roles_attributes_0_identity_id[type='text']").val('').show()
+  #********** Primary PI TypeAhead Input Handling End **********

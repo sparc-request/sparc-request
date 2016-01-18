@@ -83,41 +83,42 @@ $(document).ready ->
 
 
   # New Protocol Form Primary PI Search
-  autoComplete = $('#study_project_roles_attributes_0_identity_id[type="text"]').autocomplete
-    source: '/search/identities'
-    minLength: 3
-    search: (event, ui) ->
-      $('.user-search-clear-icon').remove()
-      $("#study_project_roles_attributes_0_identity_id[type='text']").after('<img src="/assets/spinner.gif" class="user-search-spinner" />')
-    open: (event, ui) ->
-      $('.user-search-spinner').remove()
-      $("#study_project_roles_attributes_0_identity_id[type='text']").after('<img src="/assets/clear_icon.png" class="user-search-clear-icon" />')
-    close: (event, ui) ->
-      $('.user-search-spinner').remove()
-      $('.user-search-clear-icon').remove()
-    select: (event, ui) ->
-      $("#study_project_roles_attributes_0_identity_id[type='hidden']").val(ui.item.value)
-      $("#study_project_roles_attributes_0_identity_id[type='text']").hide()
-      $(".ui-helper-hidden-accessible").hide()
-      $("#study_project_roles_attributes_0_identity_id[type='text']").before("<label id='primary_pi_name'>#{ui.item.label}</label>")
-      return false
+  if $('#study_project_roles_attributes_0_identity_id[type="text"]').length > 0
+    autoComplete = $('#study_project_roles_attributes_0_identity_id[type="text"]').autocomplete
+      source: '/search/identities'
+      minLength: 3
+      search: (event, ui) ->
+        $('.user-search-clear-icon').remove()
+        $("#study_project_roles_attributes_0_identity_id[type='text']").after('<img src="/assets/spinner.gif" class="user-search-spinner" />')
+      open: (event, ui) ->
+        $('.user-search-spinner').remove()
+        $("#study_project_roles_attributes_0_identity_id[type='text']").after('<img src="/assets/clear_icon.png" class="user-search-clear-icon" />')
+      close: (event, ui) ->
+        $('.user-search-spinner').remove()
+        $('.user-search-clear-icon').remove()
+      select: (event, ui) ->
+        $("#study_project_roles_attributes_0_identity_id[type='hidden']").val(ui.item.value)
+        $("#study_project_roles_attributes_0_identity_id[type='text']").hide()
+        $(".ui-helper-hidden-accessible").hide()
+        $("#study_project_roles_attributes_0_identity_id[type='text']").before("<label id='primary_pi_name'>#{ui.item.label}</label>")
+        return false
 
-  .data("uiAutocomplete")._renderItem = (ul, item) ->
-    if item.label == 'No Results'
-      $("<li class='search_result'></li>")
-      .data("ui-autocomplete-item", item)
-      .append("#{item.label}")
-      .appendTo(ul)
-    else
-      $("<li class='search_result'></li>")
-      .data("ui-autocomplete-item", item)
-      .append("<a>" + item.label + "</a>")
-      .appendTo(ul)
+    .data("uiAutocomplete")._renderItem = (ul, item) ->
+      if item.label == 'No Results'
+        $("<li class='search_result'></li>")
+        .data("ui-autocomplete-item", item)
+        .append("#{item.label}")
+        .appendTo(ul)
+      else
+        $("<li class='search_result'></li>")
+        .data("ui-autocomplete-item", item)
+        .append("<a>" + item.label + "</a>")
+        .appendTo(ul)
 
-  $('.user-search-clear-icon').live 'click', ->
-    $("#study_project_roles_attributes_0_identity_id[type='text']").autocomplete("close")
-    $("#study_project_roles_attributes_0_identity_id[type='text']").clearFields()
+    $('.user-search-clear-icon').live 'click', ->
+      $("#study_project_roles_attributes_0_identity_id[type='text']").autocomplete("close")
+      $("#study_project_roles_attributes_0_identity_id[type='text']").clearFields()
 
-  $('#study_project_roles_attributes_0_identity_id[type="text"]').keypress (event) ->
-    event.preventDefault() if event.keyCode is 13
+    $('#study_project_roles_attributes_0_identity_id[type="text"]').keypress (event) ->
+      event.preventDefault() if event.keyCode is 13
 

@@ -39,6 +39,7 @@ class ProjectRole < ActiveRecord::Base
 
   accepts_nested_attributes_for :epic_rights, :allow_destroy => true
 
+  validates :identity_id, :presence => true
   validates :role, :presence => true
   validates :project_rights, :presence => true
 

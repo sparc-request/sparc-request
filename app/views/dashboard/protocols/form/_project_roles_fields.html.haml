@@ -25,9 +25,11 @@
   .panel-body
     = form.fields_for :project_roles do |pr_form|
       .form-group.row
-        = pr_form.label :identity_id, "Primary PI", class: 'col-lg-2 control-label'
+        = pr_form.label :identity_id, "Primary PI*", class: 'col-lg-2 control-label'
         .col-lg-10
           = pr_form.text_field :identity_id, placeholder: 'Search For A User', class: 'form-control'
           %label#primary_pi_name.do-not-display
           %a.btn.btn-xs.btn-danger.glyphicon.glyphicon-remove#user-select-clear-icon{ href: "javascript:void();", style: 'display: none; vertical-align: middle;' }
           = pr_form.hidden_field :identity_id
+          = pr_form.hidden_field :role
+          = pr_form.hidden_field :project_rights

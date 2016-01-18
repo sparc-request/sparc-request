@@ -63,41 +63,29 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     @protocol.requester_id = current_user.id
     @protocol.populate_for_edit
     @errors = nil
-    @portal = true
-    @current_step = 'protocol'
     session[:protocol_type] = 'study'
   end
 
   def create
-    @current_step = params[:current_step]
     @protocol = Study.new(params[:study])
-    @protocol.validate_nct = true
-    @portal = params[:portal]
-    session[:protocol_type] = 'study'
-    @portal = params[:portal]
+    unless @protocol.project_roles.map(&:identity_id).include?(current_user.id)
+      # if current user is not authorized, add them as an authorized user
+      @protocol.project_roles.new(identity_id: current_user.id, role: "pi", project_rights: "approve")
+    end
 
-    # @protocol.assign_attributes(params[:study] || params[:project])
-    if @current_step == 'go_back'
-      @current_step = 'protocol'
-      @protocol.populate_for_edit
-    elsif @current_step == 'protocol' and @protocol.group_valid? :protocol
-      @current_step = 'user_details'
-      @protocol.populate_for_edit
-    elsif @current_step == 'user_details' and @protocol.valid?
+    if @protocol.valid?
       @protocol.save
-      @current_step = 'return_to_portal'
+
       if USE_EPIC
         if @protocol.selected_for_epic
           @protocol.ensure_epic_user
           Notifier.notify_for_epic_user_approval(@protocol).deliver unless QUEUE_EPIC
         end
       end
-    elsif @current_step == 'cancel_protocol'
-      @current_step = 'return_to_portal'
+
+      flash[:success] = "#{@protocol.type} Created!"
     else
-      # TODO: Is this neccessary?
-      @errors = @current_step == 'protocol' ? @protocol.grouped_errors[:protocol].try(:messages) : @protocol.grouped_errors[:user_details].try(:messages)
-      @protocol.populate_for_edit
+      @errors = @protocol.errors
     end
   end
 
@@ -116,11 +104,9 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   def update
     attrs = params[@protocol.type.downcase.to_sym]
     if @protocol.update_attributes attrs
-      flash[:success] = "Study Updated!"
-      redirect_to dashboard_protocol_path(@protocol)
+      flash[:success] = "#{@protocol.type} Updated!"
     else
-      @protocol.populate_for_edit if @protocol.type == "Study"
-      redirect_to edit_dashboard_protocol_path(@protocol)
+      @errors = @protocol.errors
     end
   end
 

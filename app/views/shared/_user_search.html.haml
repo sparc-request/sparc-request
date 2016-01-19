@@ -26,7 +26,9 @@
   %h3= t(:user_search)[:search_box_header]
   .search.form-group
     = text_field_tag 'user_search_term', nil, :placeholder => t(:user_search)[:search_placeholder], :class => "search-identities form-control",  :'data-protocol_use_epic' => protocol.selected_for_epic
-    - if USE_LDAP
+    - if USE_LDAP && SUPPRESS_LDAP_FOR_USER_SEARCH
+      %br
+      %br
       %span.help-block 
         = t(:user_search)[:help_block]
         %a{href: admin_identities_path(), target: "_blank", title: t(:user_search)[:advanced_user_search_title]}= t(:user_search)[:help_block_link_text]

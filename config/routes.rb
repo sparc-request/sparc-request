@@ -224,15 +224,15 @@ SparcRails::Application.routes.draw do
 
     resources :service_requests, only: [:show]
 
-    resources :protocols, except: [:destroy] do
+    resources :protocols, except: [:new, :destroy] do
       member do
         get :view_full_calendar
       end
       resources :associated_users, except: [:index]
     end
 
-    resources :studies, controller: :protocols, except: [:destroy]
-    resources :projects, controller: :protocols, except: [:destroy]
+    resources :studies, controller: :protocols, except: [:new, :destroy]
+    resources :projects, controller: :protocols, except: [:new, :destroy]
 
     resources :notifications, except: [:edit, :update, :destroy] do
       member do
@@ -335,23 +335,6 @@ SparcRails::Application.routes.draw do
       post :cwf_audit
       get :cwf_subject
     end
-  end
-  
-  ##### Additional Detail #####
-  namespace :additional_detail do
-    root :to => 'services#index'
-    resources :services, only: [:index, :show] do
-      resources :additional_details do
-        member do
-          get :duplicate
-          get :export_grid
-          put :update_enabled
-        end
-      end
-    end
-    # we may add :destroy so a service provider can allow an updated version of the form to be rendered and completed
-    resources :line_item_additional_details, only: [:show, :update], :defaults => { :format => :json } 
-    resources :service_requests, only: [:show]
   end
 
   ##### Admin Identities #####

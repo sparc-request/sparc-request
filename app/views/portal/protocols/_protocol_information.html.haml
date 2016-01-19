@@ -19,9 +19,7 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 - permission = protocol_role.can_edit?
-- pi_count_var = protocol.principal_investigators.size
 - billing_manager_count_var = protocol.billing_managers.size
-%input{:type => 'hidden', :value => "#{pi_count_var}", :id => "pi_count_#{protocol.id}"}
 %input{:type => 'hidden', :value => "#{billing_manager_count_var}", :id => "billing_manager_count_#{protocol.id}"}
 .protocol-information-title.ui-corner-top= t(:protocol_information)[:information]
 .protocol-information-body.ui-corner-bottom
@@ -129,12 +127,6 @@
                 %td.no_background.edit-original-td
                   - if @user.can_edit_service_request? sr
                     %a.edit_service_request{:href => "javascript:void(0);", :'data-permission' => permission.to_s, :'data-url' => "/service_requests/#{sr.id}/catalog?from_user_portal=true&edit_original=true"}= t(:protocol_information)[:edit_original]
-            - if !ssr.additional_details_required_questions_answered?
-              %tr{:class => "errorExplanation"}
-                %td.center
-                  = pretty_ssr_id(protocol, ssr)
-                %td{:colspan => "8"}
-                  %a{:style => "text-decoration: underline;", :href => additional_detail_service_request_path(:id => sr)}= t(:additional_details)[:portal][:required_questions]  
             %tr
               %td.notification_td{:colspan => "9"}
                 %div.do-not-display{:id => "portal_notifications_#{ssr.ssr_id.to_s}_#{sr.id}", :class => "portal_notifications"}

@@ -81,24 +81,6 @@ class SubServiceRequest < ActiveRecord::Base
     end
   end
 
-  def additional_details_required_questions_answered?
-    self.line_items.each do |line_item|
-      return false unless line_item.additional_detail_required_questions_answered?
-    end
-    true
-  end
-  
-  def get_or_create_line_item_additional_details
-    results = []
-    for li in self.line_items
-      liad = li.get_or_create_line_item_additional_detail
-      if liad != nil
-            results.push(liad)
-        end
-    end      
-    results
-  end
-  
   def update_org_tree
     my_tree = nil
     if organization.type == "Core"

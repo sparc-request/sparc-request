@@ -29,3 +29,4 @@ $(document).ready ->
     $(".document_upload_button").hide()
     $('#new_document').replaceWith("<div id='new_document'>Loading...</div>")
     $(".document_upload").show()
+    

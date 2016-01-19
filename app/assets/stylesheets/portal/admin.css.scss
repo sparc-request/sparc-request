@@ -221,13 +221,15 @@ background-color: #8dbdd8;
   padding: 6px 0 0 11px;
   width: 206px;
 }
+#study_tracker_access h3 {
+  float: left;
+  margin-right: 10px;
+}
 #study_tracker_access div.ui-button {
   border: 0 none;
   padding: 6px 0 0;
   width: 217px;
-}
-#study_tracker_access div.ui-button .ui-button-text {
-  padding: 0px;
+  margin-top: 5px;
 }
 
 #information a#ssr_save.ui-button,

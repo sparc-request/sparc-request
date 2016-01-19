@@ -10,7 +10,7 @@ RSpec.describe Arm, type: :model do
       end
 
       it 'should not set specfied VisitGroup\'s window_after' do
-        expect(arm.reload.visit_groups.first.window_after).to eq nil
+        expect(arm.reload.visit_groups[0].window_after).to eq nil
       end
     end
 
@@ -21,32 +21,32 @@ RSpec.describe Arm, type: :model do
     end
 
     context 'window_after not a valid integer' do
-      before(:each) { arm.update_visit_group_window_after 'sparc', 1 }
+      before(:each) { arm.update_visit_group_window_after 'sparc', 0 }
 
       it_behaves_like 'window_after invalid'
     end
 
     context 'window_after negative' do
-      before(:each) { arm.update_visit_group_window_after '-1', 1 }
+      before(:each) { arm.update_visit_group_window_after '-1', 0 }
 
       it_behaves_like 'window_after invalid'
     end
 
     context 'window_after == 0' do
-      before(:each) { arm.update_visit_group_window_after '0', 1 }
+      before(:each) { arm.update_visit_group_window_after '0', 0 }
 
       it 'should set VisitGroup\'s window_after to 0' do
-        expect(arm.reload.visit_groups.first.window_after).to eq 0
+        expect(arm.reload.visit_groups[0].window_after).to eq 0
       end
 
       it_behaves_like 'window_after valid'
     end
 
     context 'window_after > 0' do
-      before(:each) { arm.update_visit_group_window_after '1', 1 }
+      before(:each) { arm.update_visit_group_window_after '1', 0 }
 
       it 'should set VisitGroup\'s window_after' do
-        expect(arm.reload.visit_groups.first.window_after).to eq 1
+        expect(arm.reload.visit_groups[0].window_after).to eq 1
       end
 
       it_behaves_like 'window_after valid'

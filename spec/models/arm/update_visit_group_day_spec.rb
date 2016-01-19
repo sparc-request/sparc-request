@@ -3,9 +3,8 @@ require 'rails_helper'
 RSpec.describe Arm, type: :model do
   describe '#update_visit_group_day' do
     it 'should update VisitGroup\'s day' do
-      position = 2
-      arm.update_visit_group_day '4', position
-      expect(arm.reload.visit_groups.where(position: position).first.day).to eq 4
+      arm.update_visit_group_day '4', 2
+      expect(arm.reload.visit_groups[2].day).to eq 4
     end
 
     shared_examples 'should not set day' do
@@ -27,7 +26,7 @@ RSpec.describe Arm, type: :model do
       before(:each) { stub_const("USE_EPIC", true) }
 
       context 'day smaller than preceding VisitGroup' do
-        before(:each) { arm.update_visit_group_day '-1', 2, 'true' }
+        before(:each) { arm.update_visit_group_day '-1', 1, 'true' }
 
         it_behaves_like 'should not set day'
 
@@ -57,21 +56,14 @@ RSpec.describe Arm, type: :model do
       end
 
       context 'day valid' do
-        before(:each) do
-          @position = 3
-          arm.update_visit_group_day '4', @position, 'true'
-        end
+        before(:each) { arm.update_visit_group_day '4', 2, 'true' }
 
         it 'should update VisitGroup\'s day' do
-          expect(arm.reload.visit_groups.at_position(@position).first.day).to eq 4
+          expect(arm.reload.visit_groups[2].day).to eq 4
         end
 
         it 'shouldn\'t set errors[:invalid_day]' do
           expect(arm.errors[:invalid_day]).to be_empty
-        end
-
-        it 'shouldn\'t set errors[:out_of_order]' do
-          expect(arm.errors[:out_of_order]).to be_empty
         end
       end
     end
@@ -79,7 +71,7 @@ RSpec.describe Arm, type: :model do
     context 'USE_EPIC == false and portal == \'true\'' do
       before(:each) do
         stub_const("USE_EPIC", false)
-        arm.update_visit_group_day 'sparc', 1, 'true'
+        arm.update_visit_group_day 'sparc', 0, 'true'
       end
 
       it_behaves_like 'no day validations'
@@ -88,7 +80,7 @@ RSpec.describe Arm, type: :model do
     context 'USE_EPIC == true and portal == \'false\'' do
       before(:each) do
         stub_const("USE_EPIC", true)
-        arm.update_visit_group_day 'sparc', 1, 'false'
+        arm.update_visit_group_day 'sparc', 0, 'false'
       end
 
       it_behaves_like 'no day validations'
@@ -97,7 +89,7 @@ RSpec.describe Arm, type: :model do
     context 'USE_EPIC == false and portal == \'false\'' do
       before(:each) do
         stub_const("USE_EPIC", false)
-        arm.update_visit_group_day 'sparc', 1, 'false'
+        arm.update_visit_group_day 'sparc', 0, 'false'
       end
 
       it_behaves_like 'no day validations'

@@ -74,7 +74,7 @@ class Arm < ActiveRecord::Base
         raise ActiveRecord::Rollback
       end
     end
-    
+
     liv = LineItemsVisit.for(self, line_item)
     liv.create_visits
 
@@ -235,10 +235,14 @@ class Arm < ActiveRecord::Base
   end
 
   def update_visit_group_day day, position, portal= false
-    position = position.blank? ? visit_groups.last.position : position.to_i
-    current  = visit_groups.at_position(position).first
-    before   = current.higher_item
-    after    = current.lower_item
+    # position = position.blank? ? visit_groups.last.position : position.to_i
+    # current  = visit_groups.at_position(position).first
+    # before   = current.higher_item
+    # after    = current.lower_item
+    position = position.blank? ? self.visit_groups.count - 1 : position.to_i
+    before = self.visit_groups[position - 1] unless position == 0
+    current = self.visit_groups[position]
+    after = self.visit_groups[position + 1] unless position >= self.visit_groups.size - 1
 
     if portal == 'true' and USE_EPIC
       valid_day = Integer(day) rescue false
@@ -265,26 +269,26 @@ class Arm < ActiveRecord::Base
   end
 
   def update_visit_group_window_before window_before, position, portal = false
-    position = position.blank? ? visit_groups.last.position : position.to_i
+    position = position.blank? ? self.visit_groups.count - 1 : position.to_i
     valid = Integer(window_before) rescue false
     if !valid || valid < 0
       self.errors.add(:invalid_window_before, "You've entered an invalid number for the before window. Please enter a positive valid number")
       return false
     end
 
-    visit_group = visit_groups.at_position(position).first
+    visit_group = self.visit_groups[position]
     return visit_group.update_attributes(:window_before => window_before)
   end
 
   def update_visit_group_window_after window_after, position, portal = false
-    position = position.blank? ? visit_groups.last.position : position.to_i
+    position = position.blank? ? self.visit_groups.count - 1 : position.to_i
     valid = Integer(window_after) rescue false
     if !valid || valid < 0
       self.errors.add(:invalid_window_after, "You've entered an invalid number for the after window. Please enter a positive valid number")
       return false
     end
 
-    visit_group = visit_groups.at_position(position).first
+    visit_group = self.visit_groups[position]
     return visit_group.update_attributes(:window_after => window_after)
   end
 

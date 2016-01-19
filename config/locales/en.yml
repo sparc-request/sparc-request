@@ -76,11 +76,11 @@ en:
     button_edit_user: "Edit User"
     button_search: "Search"
     button_update_user: "Update User"
-    catalog_manager: "Catalog Manager" 
+    catalog_manager: "Catalog Manager"
     edit_user_modal_title: "Update "
     edit_user_email: "Email"
     edit_user_first_name: "First name"
-    edit_user_last_name: "Last name" 
+    edit_user_last_name: "Last name"
     edit_user_required: "Required"
     edit_user_valid_email_required: "Valid email required"
     footer: "* Close this window or tab when you're done adding new users."
@@ -93,7 +93,7 @@ en:
     return_to_basic_user_search: "Please go back to the 'STEP 1: Add Users' window to add them to your study/project."
     search_help_block: "Filter the results by searching within the column headers in the grid below. Edit User buttons are displayed for people already in the system and only usable by administrators."
     search_placeholder: "Find users by first name, last name, email, or user ID"
-    
+
   # Admin Root Page
   admin_root:
     assigned: "Person Assigned"
@@ -956,14 +956,17 @@ en:
     or: "If not in list above, create NEW Study/Project Below"
     previously_submitted_study: "The request that you are editing has been previously submitted and can not be moved to another study."
     previously_submitted_project: "The request that you are editing has been previously submitted and can not be moved to another project."
-    research_project: "Project"
-    research_study: "Research Study"
+    research_project: "New Project"
+    research_study: "New Research Study"
     select_project: "Select Project"
     select_protocol: "Select a Research Study/Project"
     select_study: "Select Study"
     sidebar_box:
       help: "Help"
       my_services: "My Services"
+    tooltips:
+      research_study_tooltip: 'Research Study: An individual research study with defined aims and outcomes'
+      research_project_tooltip: "Use 'Project' for non-study specific service requests, or anything that is not a study"
 
   # Rails Root Page Messages
   rails_root:

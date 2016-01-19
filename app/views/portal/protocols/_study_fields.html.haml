@@ -105,7 +105,6 @@
           - if admin && !f.object.transition_to_study
             %span.epic_selected.display_epic_answers
               = f.object.selected_for_epic ? "Yes" : "No"
-              - binding.pry
             .study_type{style: "#{f.object.selected_for_epic ? '' : 'display:none;'}"}
               .field.study_type_questions
                 = f.label :study_type_questions, class: 'question_text'

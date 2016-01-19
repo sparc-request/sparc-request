@@ -46,13 +46,60 @@ RSpec.feature 'User wants to edit an authorized user', js: true do
         then_i_should_see_the_user_information
       end
 
-      context 'and the Authorized User is the Primary PI' do
-        context 'and wants to change the Authorized Users role' do
-          scenario 'and sees that the protocol must have a Primary PI' do
-            given_i_have_clicked_the_edit_authorized_user_button
-            when_i_set_the_role_to 'PD/PI'
+      context 'and the Authorized User is the Primary PI and tries to change their role' do
+        scenario 'and sees that the protocol must have a Primary PI' do
+          given_i_have_clicked_the_edit_authorized_user_button
+          when_i_set_the_role_to 'PD/PI'
+          when_i_submit_the_form
+          then_i_should_see_an_error_of_type 'need Primary PI'
+        end
+      end
+
+      context 'and the authorized user is the primary PI and submits the form' do
+        scenario 'and does not see the warning message' do
+          given_i_have_clicked_the_edit_authorized_user_button
+          when_i_submit_the_form
+          then_i_should_not_see_the_warning_message
+        end
+      end 
+
+      context 'and the Authorized User is not the Primary PI and tries to make them the Primary PI' do
+        before :each do
+          fake_login 'jpl6@musc.edu'
+
+          visit portal_root_path
+          wait_for_javascript_to_finish
+
+          delay
+        end
+
+        context 'and submits the form' do
+          scenario 'and sees the warning message' do
+            given_i_have_clicked_the_edit_authorized_user_button 2
+            when_i_set_the_role_to 'Primary PI'
             when_i_submit_the_form
-            then_i_should_see_an_error_of_type 'need Primary PI'
+            then_i_should_see_the_warning_message
+          end
+
+          context 'and submits the form on the warning message' do
+            scenario 'and sees the Primary PI has changed' do
+              given_i_have_clicked_the_edit_authorized_user_button 2
+              when_i_set_the_role_to 'Primary PI'
+              when_i_submit_the_form
+              when_i_submit_the_form
+              then_i_should_see_the_new_primary_pi
+            end
+
+            context 'with errors in the form' do
+              scenario 'and sees errors' do
+                given_i_have_clicked_the_edit_authorized_user_button 2
+                when_i_set_the_role_to 'Primary PI'
+                when_i_have_an_error
+                when_i_submit_the_form
+                when_i_submit_the_form
+                then_i_should_see_an_error_of_type 'other credentials'
+              end
+            end
           end
         end
       end
@@ -121,8 +168,8 @@ RSpec.feature 'User wants to edit an authorized user', js: true do
     find(".ui-dialog-titlebar-close").click()
   end
 
-  def given_i_have_clicked_the_edit_authorized_user_button
-    first(".edit-associated-user-button", visible: true).click()
+  def given_i_have_clicked_the_edit_authorized_user_button button_number=1
+    all(".edit-associated-user-button", visible: true)[button_number-1].click()
   end
 
   def when_i_set_the_role_to role
@@ -142,6 +189,17 @@ RSpec.feature 'User wants to edit an authorized user', js: true do
     click_button("edit_authorized_user_submit_button")
   end
 
+  def when_i_have_an_error
+    when_i_set_the_credentials_to 'Other'
+  end
+
+  def when_i_submit_the_form_and_confirm
+    accept_confirm do
+      click_button("edit_authorized_user_submit_button")
+    end
+    wait_for_javascript_to_finish
+  end
+
   def then_i_should_see_the_edit_authorized_user_dialog
     expect(page).to have_text("Edit an Authorized User")
   end
@@ -155,16 +213,38 @@ RSpec.feature 'User wants to edit an authorized user', js: true do
     expect(find('#project_role_role', visible: true)).to have_value(lane_pr.role)
   end
 
+  def then_i_should_see_the_warning_message
+    expect(page).to have_text("**WARNING**")
+  end
+
+  def then_i_should_not_see_the_warning_message
+    expect(page).to_not have_text("**WARNING**")
+  end
+
+  def then_i_should_see_the_new_primary_pi
+    wait_for_javascript_to_finish
+    #TODO: Implement feature to reload PD/PIs on Protocol Tab when a new user / edit user is done
+    #TODO: Implement feature to reload PD/PIs on Protocol Tab when a new user / edit user is done
+    #expect(page).to_not have_selector(".protocol-accordion-title", text: "Julia Glenn")
+    #expect(page).to have_selector(".protocol-accordion-title", text: "Jason Leonard")
+    
+    expect(page).to have_selector(".protocol-information-table td", text: "Jason Leonard")
+    expect(page).to have_selector(".protocol-information-table td", text: "Primary PI")
+    expect(page).to_not have_selector(".protocol-information-table td", text: "Julia Glenn")
+  end
+
   def then_i_should_see_an_error_of_type error_type
     case error_type
       when 'need Primary PI'
-        expect(page).to have_text("Must include one Primary PI.")
+        expect(page).to have_text("Role - Protocols must have a Primary PI.")
       when 'no access'
         expect(page).to have_text("You do not have appropriate rights to")
       when 'role blank'
         expect(page).to have_text("Role can't be blank")
       when 'other fields'
         expect(page).to have_text("Must specify this User's Role.")
+        expect(page).to have_text("Must specify this User's Credentials.")
+      when 'other credentials'
         expect(page).to have_text("Must specify this User's Credentials.")
     else
       puts "An unaccounted-for error was found in then_i_should_see_an_error_of_type. Perhaps there was a typo in the test?"

@@ -18,22 +18,19 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-- protocol.project_roles.each do |pr|
-  - identity = pr.identity
-  %tr{id: "user_#{identity.id}"}
-    %td
-      = identity.try(:full_name)
-    %td
-      = USER_ROLES.detect{|k,v| v == pr.role}.try(:first)
-    %td
-      = identity.try(:email)
-    %td
-      = identity.try(:phone)
-    %td
-      = pr.try(:display_rights)
-    %td.edit
-      %a.edit-associated-user-button{href: "javascript:void(0)", style: 'font-size:10px', :'data-protocol_id' => pr.protocol_id, :'data-user_id' => identity.id, :'data-pr_id' => pr.id, :'data-permission' => "true", :'data-sub_service_request_id' => @sub_service_request.id}
-        = image_tag('portal/edit_blue.png')
-    %td.delete
-      %a.delete-associated-user-button{href: "javascript:void(0)", title: "Delete Authorized User", :'data-protocol_id' => pr.protocol_id, :'data-current_user_role' => pr.role, :'data-user_id' => identity.id, :'data-pr_id' => pr.id, :'data-user_role' => pr.role, :'data-permission' => "true", :'data-sub_service_request_id' => @sub_service_request.id}
-        = image_tag('portal/delete_red.png')
+- if !@protocol_role.errors.messages.empty?
+  - @protocol_role.errors.messages.merge!(@identity.errors.messages)
+  - @entity_errors = @protocol_role.errors.to_json
+  :plain
+    $('#add_authorized_user_submit_button').attr('disabled', false)
+    Sparc.home.handle_ajax_errors("#{escape_javascript(@entity_errors)}", "Authorized User")
+- else
+  :plain
+    $('.add-associated-user-dialog').dialog('close').dialog('destroy').remove()
+    $('.edit-associated-user-dialog').dialog('close').dialog('destroy').remove()
+    
+    $("#associated_users").html("#{escape_javascript(render(partial: 'portal/sub_service_requests/associated_users'))}")
+    $('#information').html("#{escape_javascript(render(partial: 'portal/sub_service_requests/ssr_information', locals: {protocol: @protocol, sub_service_request: @sub_service_request}))}")
+    
+    Sparc.associated_users.create_add_associated_user_dialog()
+    Sparc.associated_users.create_edit_associated_user_dialog()

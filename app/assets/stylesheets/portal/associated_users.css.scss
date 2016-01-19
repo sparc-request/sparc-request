@@ -105,20 +105,6 @@
       width: 254px;
     }
   }
-  
-  #project_rights {
-    ul.rights_labels {
-      list-style: none;
-      float: left;
-      padding-left: 15px;
-    }
-
-    ul.rights_radios {
-      list-style: none;
-      float: right;
-      padding-left: 10px;
-    }
-  }
 }
 
 #identity_details {
@@ -136,16 +122,20 @@
 }
 
 #project_rights {
-  ul.rights_labels {
+  ul.rights {
     list-style: none;
     float: left;
     padding-left: 15px;
-  }
 
-  ul.rights_radios {
-    list-style: none;
-    float: right;
-    padding-left: 10px;
+    div {
+      padding: 0px !important;
+
+      input {
+        float: right;
+        margin-top: 3px !important;
+        margin-left: 7px !important;
+      }
+    }
   }
 }
 

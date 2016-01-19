@@ -19,6 +19,58 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 module ServiceCalendarHelper
+  # this was extracted mostly verbatum from a partial
+  # TODO understand
+  def pppv_line_items_visits_to_display(arm, service_request, sub_service_request, opts={})
+    merged = opts[:merged]
+    portal = opts[:portal]
+    review = opts[:review]
+    livs   = Array.new
+
+    if merged
+      arm.service_list.each do |_, value| # get only per patient/per visit services and group them
+        arm.line_items_visits.each do |line_items_visit|
+          line_item = line_items_visit.line_item
+          next unless value[:line_items].include?(line_item)
+          if %w(first_draft draft).include?(line_item.service_request.status)
+            next if portal
+            next if service_request != line_item.service_request
+          end
+          livs << line_items_visit
+        end
+      end
+    elsif review
+      service_request.service_list(false).each do |_, value| # get only per patient/per visit services and group them
+        next unless sub_service_request.nil? || sub_service_request.organization.name == value[:process_ssr_organization_name]
+        arm.line_items_visits.each do |line_items_visit|
+          line_item = line_items_visit.line_item
+          next unless value[:line_items].include?(line_item)
+          livs << line_items_visit
+        end
+      end
+    else
+      service_request.service_list(false).each do |_, value| # get only per patient/per visit services and group them
+        next unless sub_service_request.nil? || sub_service_request.organization.name == value[:process_ssr_organization_name]
+        arm.line_items_visits.each do |line_items_visit|
+          line_item = line_items_visit.line_item
+          next unless value[:line_items].include?(line_item)
+          livs << line_items_visit
+        end
+      end
+    end
+
+    livs
+  end
+
+  def set_check obj
+    count = obj.visits.where("research_billing_qty = 0 and insurance_billing_qty = 0").count
+    count != 0
+  end
+
+  def glyph_class obj
+    count = obj.visits.where("research_billing_qty = 0 and insurance_billing_qty = 0").count
+    count == 0 ? 'glyphicon-remove' : 'glyphicon-ok'
+  end
 
   def select_row line_items_visit, tab, portal
     checked = line_items_visit.visits.map{|v| v.research_billing_qty >= 1 ? true : false}.all?

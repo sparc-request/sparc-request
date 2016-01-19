@@ -18,9 +18,9 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-- if @merged || !@portal
+- if @merged || !@portal || tab == 'consolidated'
   - colspan = (@merged && @portal) ? 4 : 5
-  %tr.totals_section.begin_totals{ class: cycle('odd', '', name: 'pppvs') }
+  %tr.totals_section.begin_totals
     %td{ colspan: colspan }
       %strong= t(:calendar_page)[:labels][:maximum_direct]
     -unless @merged || @tab != 'template'
@@ -32,7 +32,7 @@
       %td
 
   - if USE_INDIRECT_COST
-    %tr.totals_section{ class: cycle('odd', '', name: 'pppvs') }
+    %tr.totals_section
       %td{ colspan: colspan }
         %strong= t(:calendar_page)[:labels][:maximum_indirect]
       -unless @merged
@@ -43,7 +43,7 @@
       -if @merged
         %td
 
-  %tr.totals_section{ class: cycle('odd', '', name: 'pppvs')}
+  %tr.totals_section
     %td{ colspan: colspan }
       %strong= t(:calendar_page)[:labels][:maximum_per]
     -unless @merged || @tab != 'template'
@@ -54,10 +54,10 @@
     -if @merged
       %td
 
-  %tr.totals_section.grand-totals{ class: cycle('odd', '', name: 'pppvs') }
-    %td{ colspan: colspan }
+  .row.totals_section.grand-totals
+    .col-sm-5
       %strong= t(:calendar_page)[:labels][:total_costs] + " -- " + arm.name
     -unless @merged || @tab != 'template'
       %td &nbsp;
-    %td{ colspan: 6 }
-    %td{ class: "pp_total arm_#{arm.id}"}= display_total_cost_per_arm arm, line_items_visits
+    .col-sm-5
+    .col-sm-1{ class: "pp_total arm_#{arm.id}"}= display_total_cost_per_arm arm, line_items_visits

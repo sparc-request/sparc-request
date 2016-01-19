@@ -31,61 +31,57 @@
     .select-project-view
       .dotted-border.left
         %p.instructions= t("study_assignment.instructions_1")
-
         %br
-
-        .service-list= render :partial => 'service_list'
-
+        .service-list
+          = render :partial => 'service_list'
         %br
         %br
-
         %p.notice= t("study_assignment.notice")
-
         %br
         %hr
         %br
-
         - if @service_request.status == 'first_draft'
-          .type-select.center.form-group
-            - if @sub_service_request.nil?
-              = t("study_assignment.research_study")
-              = radio_button_tag :protocol, "Research Study", (@service_request.protocol.try(:type) == 'Project' ? false : true), :class => 'form-control'
-              = t("study_assignment.research_project")
-              = radio_button_tag :protocol, "Project", (@service_request.protocol.try(:type) == 'Project' ? true : false), :class => 'form-control'
-              %span#infotip= image_tag('information.png')
-              %br
-              %br
-
-          .existing-study.center
-            #study.study-select
-              #study-select= render :partial => 'study_select', :locals => {:studies => @studies} unless @studies.empty?
-              = link_to(t("study_assignment.new_study"), new_service_request_study_path(@service_request), :class => 'new-study blue-button btn btn-primary') if @sub_service_request.nil?
-              %br
-              %br
-
-          .existing-project.center
-            #project.project-select
-              #project-select= render :partial => 'project_select', :locals => {:projects => @projects} unless @projects.empty?
-              = link_to(t("study_assignment.new_project"), new_service_request_project_path(@service_request), :class => 'new-project blue-button btn btn-primary') if @sub_service_request.nil?
-              %br
-              %br
+          - if @service_request.protocol.present?
+            - if @service_request.protocol.type == 'Study'
+              .existing-study.center
+                #study.study-select
+                  #study-select
+                    .inline.form-group
+                      %strong
+                        = @service_request.protocol.display_protocol_id_and_title
+                      = link_to "Edit Study", edit_service_request_study_path(@service_request, @service_request.protocol), class: 'edit-study blue-button btn btn-primary'
+            - if @service_request.protocol.type == 'Project'
+              .existing-project.center
+                #project.project-select
+                  #project-select
+                    .inline.form-group
+                      %strong
+                        = @service_request.protocol.display_protocol_id_and_title
+                      = link_to 'Edit Project', edit_service_request_project_path(@service_request, @service_request.protocol), class: 'edit-project blue-button btn btn-primary'
+          - else
+            .type-select.center.form-group
+              - if @sub_service_request.nil?
+                = link_to t('study_assignment.research_study'), new_service_request_study_path(@service_request), class: 'new-study-button btn btn-primary', title: t('study_assignment.tooltips.research_study_tooltip')
+                .divider
+                = link_to t('study_assignment.research_project'), new_service_request_project_path(@service_request), class: 'new-project-button btn btn-primary', title: t('study_assignment.tooltips.research_project_tooltip')
         - else
           .previously_submitted
             .inline.form-group
-              - if @service_request.protocol.is_study?
+              - if @service_request.protocol.type == 'Study'
                 #study.study-select
                   = raw(t(:study_assignment)[:current_study])
-                  %span{style: 'font-weight:bold;'}= @service_request.protocol.display_protocol_id_and_title
-                  .edit-study.blue-button.btn.btn-primary.edit_submitted_study= t(:study_assignment)[:edit_study]
+                  %strong
+                    = @service_request.protocol.display_protocol_id_and_title
+                  = link_to t('study_assignment.edit_study'), edit_service_request_study_path(@service_request, @service_request.protocol), class: 'edit-study blue-button btn btn-primary'
                 %br
-                = t(:study_assignment)[:previously_submitted_study]
-              - else
+              - if @service_request.protocol.type == 'Project'
                 #project.project-select
                   = raw(t(:study_assignment)[:current_project])
-                  %span{style: 'font-weight:bold;'}= @service_request.protocol.display_protocol_id_and_title
-                  .edit-project.blue-button.btn.btn-primary.edit_submitted_project= t(:study_assignment)[:edit_project]
+                  %strong
+                    = @service_request.protocol.display_protocol_id_and_title
+                  = link_to t('study_assignment.edit_project'), edit_service_request_project_path(@service_request, @service_request.protocol), class: 'edit-project blue-button btn btn-primary'
                 %br
-                = t(:study_assignment)[:previously_submitted_project]
+              = t(:study_assignment)[:previously_submitted_project]
 
   .grid_3.protocol-view-right.right.col-md-3
     #services.ui-widget.ui-widget-content.cart-view

@@ -412,6 +412,17 @@ ActiveRecord::Schema.define(version: 20160106161249) do
 
   add_index "ip_patents_info", ["protocol_id"], name: "index_ip_patents_info_on_protocol_id", using: :btree
 
+  create_table "line_item_additional_details", force: :cascade do |t|
+    t.text     "form_data_json",       limit: 65535
+    t.integer  "line_item_id",         limit: 4
+    t.integer  "additional_detail_id", limit: 4
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "line_item_additional_details", ["additional_detail_id"], name: "index_line_item_additional_details_on_additional_detail_id", using: :btree
+  add_index "line_item_additional_details", ["line_item_id"], name: "index_line_item_additional_details_on_line_item_id", using: :btree
+
   create_table "line_items", force: :cascade do |t|
     t.integer  "service_request_id",     limit: 4
     t.integer  "sub_service_request_id", limit: 4

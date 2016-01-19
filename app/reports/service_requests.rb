@@ -156,7 +156,7 @@ class ServiceRequestsReport < ReportingModule
     # default values if none are provided
     service_organization_ids = Organization.all.map(&:id) if service_organization_ids.compact.empty? # use all if none are selected
 
-    service_organizations = Organization.find_all_by_id(service_organization_ids)
+    service_organizations = Organization.find(service_organization_ids)
 
     unless tags.empty?
       tagged_organization_ids = service_organizations.reject {|x| (x.tags.map(&:name) & tags).empty?}.map(&:id)
@@ -164,13 +164,6 @@ class ServiceRequestsReport < ReportingModule
     end
 
     ssr_organization_ids = Organization.all.map(&:id) if ssr_organization_ids.compact.empty? # use all if none are selected
-
-    # ssr_organizations = Organization.find_all_by_id(ssr_organization_ids)
-
-    # unless tags.empty?
-    #   tagged_organization_ids = ssr_organizations.reject {|x| (x.tags.map(&:name) & tags).empty?}.map(&:id)
-    #   ssr_organization_ids = ssr_organization_ids.reject {|x| !tagged_organization_ids.include?(x)}
-    # end
 
     submitted_at ||= self.default_options["Date Range"][:from]..self.default_options["Date Range"][:to]
     statuses = args[:status] || AVAILABLE_STATUSES.keys # use all if none are selected

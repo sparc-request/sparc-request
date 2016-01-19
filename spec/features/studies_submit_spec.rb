@@ -18,22 +18,25 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-# /////////////////////////////////////////////
-# //
-# // STUDY - Create.js for New Studies
-# //
-# /////////////////////////////////////////////
+require 'rails_helper'
 
-if <%= @current_step == 'return_to_portal' %>
-  window.location.href = "<%= portal_root_path %>"
-else
-  #This is to re-enable the submit, it is disabled to prevent multiple posts, if you click rapidly.
-  $('a.continue_button').click ->
-    $('form').submit()
+RSpec.describe 'create a new study', js: true do
+  let_there_be_lane
+  let_there_be_j
+  fake_login_for_each_test
+  build_service_request_with_study()
 
-  $('#current_step').val("<%= @current_step %>")
-  $('.new_study').html("<%= escape_javascript(render :partial => 'studies/form', :locals => {:study => @protocol, :portal => @portal, :current_step => @current_step}) %>")
+  before :each do
+    service_request.update_attributes(:status, 'first_draft')
+    service_request.reload
+    visit protocol_service_request_path service_request.id
+    click_link 'Research Study'
+    wait_for_javascript_to_finish
+  end
 
-  if <%= @current_step == "user_details" %>
-    $('.return-to-previous a span').text("Go Back")
-    $('.save-and-continue a span').text("Save & Close")
+  describe 'submitting a blank form' do
+    it 'should show errors when submitting a blank form' do
+      save_and_open_screenshot
+    end
+  end
+end

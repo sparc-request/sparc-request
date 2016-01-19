@@ -882,6 +882,9 @@ en:
     add_services: "Add Services"
     authorized_users: "Authorized Users:"
     consolidated_request: 'Export Consolidated Request'
+    create:
+      study: "Create New Study"
+      project: "Create New Project"
     ctrc_services_exist: "SCTR Research Nexus services have been found on another Service Request %{protocol_id}-%{ssr_id} pertaining to this Project/Study %{short_title}. To edit this request, please contact the Nexus at 792-8688."
     date: "Submitted Date:"
     delete: "Delete"

@@ -74,9 +74,15 @@ class Portal::SubServiceRequestsController < Portal::BaseController
   def update_from_project_study_information
     @sub_service_request = SubServiceRequest.find params[:id]
 
-    attrs = params[@protocol.type.downcase.to_sym]
+    attrs = if @protocol.type.downcase.to_sym == :study && params[:study]
+      params[:study]
+    elsif @protocol.type.downcase.to_sym == :project && params[:project]
+      params[:project]
+    else
+      Hash.new
+    end
     
-    if @protocol.update_attributes attrs
+    if @protocol.update_attributes(attrs.merge(study_type_question_group_id: StudyTypeQuestionGroup.active.pluck(:id).first))
       redirect_to portal_admin_sub_service_request_path(@sub_service_request)
     else
       @user_toasts = @user.received_toast_messages.select {|x| x.sending_class == 'SubServiceRequest'}

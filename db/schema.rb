@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160106161249) do
+ActiveRecord::Schema.define(version: 20160118225058) do
 
   create_table "admin_rates", force: :cascade do |t|
     t.integer  "line_item_id", limit: 4
@@ -656,6 +656,7 @@ ActiveRecord::Schema.define(version: 20160106161249) do
     t.boolean  "selected_for_epic",                                                           default: false
     t.boolean  "archived",                                                                    default: false
     t.integer  "study_type_question_group_id",          limit: 4
+    t.boolean  "transition_to_study",                                                         default: false
   end
 
   add_index "protocols", ["next_ssr_id"], name: "index_protocols_on_next_ssr_id", using: :btree

@@ -119,6 +119,8 @@ class Protocol < ActiveRecord::Base
     validate :primary_pi_exists
   end
 
+  FRIENDLY_IDS = ["certificate_of_conf", "higher_level_of_privacy", "access_study_info", "epic_inbasket", "research_active", "restrict_sending"]
+
   def is_study?
     self.type == 'Study'
   end
@@ -142,9 +144,8 @@ class Protocol < ActiveRecord::Base
 
   def validate_study_type_answers
 
-    friendly_ids = ["certificate_of_conf", "higher_level_of_privacy", "access_study_info", "epic_inbasket", "research_active", "restrict_sending"]
     answers = {}
-    friendly_ids.each do |fid|
+    FRIENDLY_IDS.each do |fid|
       q = StudyTypeQuestion.active.find_by_friendly_id(fid)
       answers[fid] = study_type_answers.find{|x| x.study_type_question_id == q.id}
     end

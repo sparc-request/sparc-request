@@ -77,14 +77,12 @@ $(document).ready ->
               $('#errorExplanation ul li:contains("Study type questions must be selected")').remove()
 
         add_and_check_visual_error_on_submit = (dropdown) ->
-          console.log('submit change')
           if dropdown.is(':visible') && dropdown.val() == ''
             dropdown.addClass('visual_error')
             dropdown.on 'change', (e) ->
               dropdown.hide_visual_error()
 
         add_and_check_visual_error_on_field_change = (dropdown) ->
-          console.log('field change')
           siblings = dropdown.parent('.field').siblings().find('.visual_error')
           if siblings
             for sibling in siblings
@@ -111,7 +109,6 @@ $(document).ready ->
           if new_value == 'false'
             higher_level_of_privacy_dropdown.show_elt()
           else
-            console.log('cofc hide')
             higher_level_of_privacy_dropdown.hide_elt()
             access_required_dropdown.hide_elt()
             epic_inbasket_dropdown.hide_elt()
@@ -128,7 +125,6 @@ $(document).ready ->
             research_active_dropdown.show_elt()
             restrict_sending_dropdown.show_elt()
           else
-            console.log('higher level hide')
             access_required_dropdown.show_elt()
             epic_inbasket_dropdown.hide_elt()
             research_active_dropdown.hide_elt()
@@ -142,7 +138,6 @@ $(document).ready ->
             research_active_dropdown.show_elt()
             restrict_sending_dropdown.show_elt()
           else
-            console.log('access hide')
             epic_inbasket_dropdown.hide_elt()
             research_active_dropdown.hide_elt()
             restrict_sending_dropdown.hide_elt()
@@ -156,18 +151,14 @@ $(document).ready ->
         if $('.field_with_errors label:contains("Study type questions")').length > 0
           study_selected_for_epic_radio.change()
           if certificate_of_confidence_dropdown.is(':visible')
-            console.log('error cofc')
             certificate_of_confidence_dropdown.change()
           if higher_level_of_privacy_dropdown.val() == 'true' 
-            console.log('error privacy')
             access_required_dropdown.show_elt()
             access_required_dropdown.change()
           if higher_level_of_privacy_dropdown.val() == 'false'
             higher_level_of_privacy_dropdown.change()
           if certificate_of_confidence_dropdown != "" && higher_level_of_privacy_dropdown.val() != "" && access_required_dropdown.val() == 'false'
-            console.log('error cofc')
             access_required_dropdown.change()
-          console.log("out of if forest")
           add_and_check_visual_error_on_submit(certificate_of_confidence_dropdown)
           add_and_check_visual_error_on_submit(higher_level_of_privacy_dropdown)
           add_and_check_visual_error_on_submit(access_required_dropdown)

@@ -225,15 +225,15 @@ SparcRails::Application.routes.draw do
 
     resources :service_requests, only: [:show]
 
-    resources :protocols, except: [:destroy] do
+    resources :protocols, except: [:new, :destroy] do
       member do
         get :view_full_calendar
       end
       resources :associated_users, except: [:index]
     end
 
-    resources :studies, controller: :protocols, except: [:destroy]
-    resources :projects, controller: :protocols, except: [:destroy]
+    resources :studies, controller: :protocols, except: [:new, :destroy]
+    resources :projects, controller: :protocols, except: [:new, :destroy]
 
     resources :notifications, except: [:edit, :update, :destroy] do
       member do

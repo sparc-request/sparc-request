@@ -31,4 +31,4 @@ else
   $('a.continue_button').click ->
     $('form').submit()
 
-  $('.edit_project').html("<%= escape_javascript(render :partial => 'projects/form', :locals => {:project => @protocol, :service_request => @service_request, :current_step => @current_step}) %>")
+  $('.edit_project').html("<%= escape_javascript(render partial: 'projects/form', locals: {project: @protocol, service_request: @service_request, portal: @portal, current_step: @current_step}) %>")

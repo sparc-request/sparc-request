@@ -21,23 +21,23 @@
 namespace :data do
   desc "Import pricing maps from CSV"
   task :import_pricing_maps => :environment do
-    def header
-      [
-       "ID",
-       "Procedure Name",
-       "Service Rate",
-       "Corporate Rate",
-       "Federal Rate",
-       "Member Rate",
-       "Other Rate",
-       "Is One Time Fee?",
-       "Clinical Qty Type",
-       "Unit Factor",
-       "Qty Min",
-       "Display Date",
-       "Effective Date"
-      ]
-    end
+
+    ### columns used
+    # service_id
+    # full_rate (most people think of this as the service rate)
+    # corporate_rate
+    # federal_rate
+    # member_rate
+    # other_rate
+    # is_one_time_fee
+    # unit_type
+    # quantity_type
+    # unit_factor
+    # unit_minimum
+    # quantity_minimum
+    # units_per_qty_max
+    # display_date
+    # effective_date
 
     def prompt(*args)
       print(*args)
@@ -55,19 +55,10 @@ namespace :data do
       file
     end
 
-    def verify_header(file)
-      input_file = Rails.root.join("db", "imports", file)
-      CSV.foreach(input_file, :headers => true) do |row|
-        return row.headers.sort == header.sort
-      end
-    end
-
     puts "Press CTRL-C to exit"
     puts ""
 
     file = get_file
-    proper_header = verify_header(file)
-
     continue = prompt("Are you sure you want to import pricing maps from #{file}? (Yes/No) ")
 
     if continue == 'Yes'
@@ -76,22 +67,23 @@ namespace :data do
       puts "Starting import"
       input_file = Rails.root.join("db", "imports", file)
       CSV.foreach(input_file, :headers => true) do |row|
-        service = Service.find(row['ID'].to_i)
+        service = Service.find(row['service_id'].to_i)
 
         pricing_map = service.pricing_maps.build(
-                                              :full_rate => Service.dollars_to_cents(row['Service Rate'].to_s.strip.gsub("$", "").gsub(",", "")),
-                                              :corporate_rate => Service.dollars_to_cents(row['Corporate Rate'].to_s.strip.gsub("$", "").gsub(",", "")),
-                                              :federal_rate => Service.dollars_to_cents(row['Federal Rate'].to_s.strip.gsub("$", "").gsub(",", "")),
-                                              :member_rate => Service.dollars_to_cents(row['Member Rate'].to_s.strip.gsub("$", "").gsub(",", "")),
-                                              :other_rate => Service.dollars_to_cents(row['Other Rate'].to_s.strip.gsub("$", "").gsub(",", "")),
-                                              :is_one_time_fee => (row['Is One Time Fee?'] == 'Y' ? true : false),
-                                              :unit_type => (row['Is One Time Fee?'] == 'Y' ? nil : row['Clinical Qty Type']),
-                                              :quantity_type => (row['Is One Time Fee?'] != 'Y' ? nil : row['Clinical Qty Type']),
-                                              :unit_factor => row['Unit Factor'],
-                                              :unit_minimum => (row['Is One Time Fee?'] == 'Y' ? nil : row['Qty Min']),
-                                              :quantity_minimum => (row['Is One Time Fee?'] != 'Y' ? nil : row['Qty Min']),
-                                              :display_date => Date.strptime(row['Display Date'], "%m/%d/%y"),
-                                              :effective_date => Date.strptime(row['Effective Date'], "%m/%d/%y")
+                                              :full_rate => Service.dollars_to_cents(row['full_rate'].to_s.strip.gsub("$", "").gsub(",", "")),
+                                              :corporate_rate => (row['corporate_rate'].blank? ? nil : Service.dollars_to_cents(row['corporate_rate'].to_s.strip.gsub("$", "").gsub(",", ""))),
+                                              :federal_rate => (row['federal_rate'].blank? ? nil : Service.dollars_to_cents(row['federal_rate'].to_s.strip.gsub("$", "").gsub(",", ""))),
+                                              :member_rate => (row['member_rate'].blank? ? nil : Service.dollars_to_cents(row['member_rate'].to_s.strip.gsub("$", "").gsub(",", ""))), 
+                                              :other_rate => (row['other_rate'].blank? ? nil : Service.dollars_to_cents(row['other_rate'].to_s.strip.gsub("$", "").gsub(",", ""))), 
+                                              :is_one_time_fee => (row['is_one_time_fee'] == 'Y' ? true : false),
+                                              :unit_type => row['unit_type'],
+                                              :quantity_type => row['quantity_type'],
+                                              :unit_factor => row['unit_factor'],
+                                              :unit_minimum => row['unit_minimum'], 
+                                              :quantity_minimum => row['quantity_minimum'], 
+                                              :units_per_qty_max => row['units_per_qty_max'],
+                                              :display_date => Date.strptime(row['display_date'], "%m/%d/%y"),
+                                              :effective_date => Date.strptime(row['effective_date'], "%m/%d/%y")
                                               )
 
         if pricing_map.valid?

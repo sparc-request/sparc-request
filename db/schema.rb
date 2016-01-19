@@ -134,13 +134,11 @@ ActiveRecord::Schema.define(version: 20160106161249) do
     t.string   "comment",         limit: 255
     t.string   "remote_address",  limit: 255
     t.datetime "created_at"
-    t.string   "request_uuid",    limit: 255
   end
 
   add_index "audits", ["associated_id", "associated_type"], name: "associated_index", using: :btree
   add_index "audits", ["auditable_id", "auditable_type"], name: "auditable_index", using: :btree
   add_index "audits", ["created_at"], name: "index_audits_on_created_at", using: :btree
-  add_index "audits", ["request_uuid"], name: "index_audits_on_request_uuid", using: :btree
   add_index "audits", ["user_id", "user_type"], name: "user_index", using: :btree
 
   create_table "available_statuses", force: :cascade do |t|

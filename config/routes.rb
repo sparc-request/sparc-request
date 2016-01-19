@@ -49,6 +49,8 @@ SparcRails::Application.routes.draw do
     end
   end
 
+  resources :contact_forms, only: [:new, :create]
+
   resources :service_requests, only: [:show] do
     resources :projects, except: [:index, :show, :destroy]
     resources :studies, except: [:index, :show, :destroy]
@@ -344,7 +346,7 @@ SparcRails::Application.routes.draw do
     match 'identities/search' => 'identities#search', :via => :get
     resources :identities, only: [:index, :show, :create, :update]
   end
-  
+
   mount API::Base => '/'
 
   root to: 'service_requests#catalog'

@@ -63,6 +63,3 @@ $(document).ready ->
       error: (event) ->
         $('#errors').show()
         $('#error-text').html(I18n["feedback"]["message_error"])
-
-        
-  

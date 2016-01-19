@@ -135,6 +135,7 @@ SparcRails::Application.routes.draw do
   match 'service_requests/:id/delete_document/:document_id' => 'service_requests#delete_documents', via: [:all]
   match 'service_requests/:id/edit_document/:document_id' => 'service_requests#edit_documents', via: [:get, :post]
   match 'service_requests/:id/new_document' => 'service_requests#new_document', via: [:get, :post]
+  match 'service_requests/increment_click_counter' => 'service_requests#increment_click_counter', via: [:post]
 
   ##### sparc-services routes brought in and namespaced
   namespace :catalog_manager do
@@ -226,15 +227,15 @@ SparcRails::Application.routes.draw do
 
     resources :service_requests, only: [:show]
 
-    resources :protocols, except: [:destroy] do
+    resources :protocols, except: [:new, :destroy] do
       member do
         get :view_full_calendar
       end
       resources :associated_users, except: [:index]
     end
 
-    resources :studies, controller: :protocols, except: [:destroy]
-    resources :projects, controller: :protocols, except: [:destroy]
+    resources :studies, controller: :protocols, except: [:new, :destroy]
+    resources :projects, controller: :protocols, except: [:new, :destroy]
 
     resources :notifications, except: [:edit, :update, :destroy] do
       member do

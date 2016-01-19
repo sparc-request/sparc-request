@@ -76,11 +76,11 @@ en:
     button_edit_user: "Edit User"
     button_search: "Search"
     button_update_user: "Update User"
-    catalog_manager: "Catalog Manager" 
+    catalog_manager: "Catalog Manager"
     edit_user_modal_title: "Update "
     edit_user_email: "Email"
     edit_user_first_name: "First name"
-    edit_user_last_name: "Last name" 
+    edit_user_last_name: "Last name"
     edit_user_required: "Required"
     edit_user_valid_email_required: "Valid email required"
     footer: "* Close this window or tab when you're done adding new users."
@@ -93,7 +93,7 @@ en:
     return_to_basic_user_search: "Please go back to the 'STEP 1: Add Users' window to add them to your study/project."
     search_help_block: "Filter the results by searching within the column headers in the grid below. Edit User buttons are displayed for people already in the system and only usable by administrators."
     search_placeholder: "Find users by first name, last name, email, or user ID"
-    
+
   # Admin Root Page
   admin_root:
     assigned: "Person Assigned"
@@ -139,6 +139,9 @@ en:
       unit_costs: "Unit Costs"
       unit_type: "Unit Type"
       your_cost: "Your Cost"
+      decrement: "-"
+      increment: "+"
+      day: "Day"
     labels:
       direct_cost: "Total Direct Cost"
       grand_total_direct: "Grand Total: Direct Costs"
@@ -881,7 +884,16 @@ en:
     add_authorized_user: "Add An Authorized User"
     add_services: "Add Services"
     authorized_users: "Authorized Users:"
+    change_primary_pi:
+      warning: "<strong>**WARNING**</strong>"
+      warning_prompt_1_1: "Adding the new Primary PI "
+      warning_prompt_1_2: " will remove the current Primary PI "
+      warning_prompt_1_3: " from the Protocol."
+      warning_prompt_2: "Do you wish to proceed?"
     consolidated_request: 'Export Consolidated Request'
+    create:
+      study: "Create New Study"
+      project: "Create New Project"
     ctrc_services_exist: "SCTR Research Nexus services have been found on another Service Request %{protocol_id}-%{ssr_id} pertaining to this Project/Study %{short_title}. To edit this request, please contact the Nexus at 792-8688."
     date: "Submitted Date:"
     delete: "Delete"
@@ -912,6 +924,7 @@ en:
     srid: "SRID:"
     status: "Status:"
     title: "Title:"
+    wait_message: Please be patient while the Project/Study loads.
 
   # Portal sub service request dialog
   ssr_dialog:
@@ -953,14 +966,17 @@ en:
     or: "If not in list above, create NEW Study/Project Below"
     previously_submitted_study: "The request that you are editing has been previously submitted and can not be moved to another study."
     previously_submitted_project: "The request that you are editing has been previously submitted and can not be moved to another project."
-    research_project: "Project"
-    research_study: "Research Study"
+    research_project: "New Project"
+    research_study: "New Research Study"
     select_project: "Select Project"
     select_protocol: "Select a Research Study/Project"
     select_study: "Select Study"
     sidebar_box:
       help: "Help"
       my_services: "My Services"
+    tooltips:
+      research_study_tooltip: 'Research Study: An individual research study with defined aims and outcomes'
+      research_project_tooltip: "Use 'Project' for non-study specific service requests, or anything that is not a study"
 
   # Rails Root Page Messages
   rails_root:

@@ -197,6 +197,12 @@ ActiveRecord::Schema.define(version: 20160114151800) do
   add_index "charges", ["service_id"], name: "index_charges_on_service_id", using: :btree
   add_index "charges", ["service_request_id"], name: "index_charges_on_service_request_id", using: :btree
 
+  create_table "click_counters", force: :cascade do |t|
+    t.integer  "click_count", limit: 4
+    t.datetime "created_at",            null: false
+    t.datetime "updated_at",            null: false
+  end
+
   create_table "clinical_providers", force: :cascade do |t|
     t.integer  "identity_id",     limit: 4
     t.integer  "organization_id", limit: 4

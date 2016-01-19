@@ -239,9 +239,46 @@ def build_study
   build_study_type_answers()
 end
 
+def build_empty_study
+  build_study_type_questions()
+  let!(:study) {
+    protocol = build(:study)
+    protocol.update_attributes(funding_status: "funded", funding_source: "college", indirect_cost_rate: 50.0, start_date: Time.now, end_date: Time.now + 2.month)
+    protocol.save validate: false
+    identity = Identity.find_by_ldap_uid('jug2')
+    create(
+        :project_role,
+        protocol_id:     protocol.id,
+        identity_id:     identity.id,
+        project_rights:  "approve",
+        role:            "primary-pi")
+    protocol.reload
+    protocol
+  }
+  build_study_type_answers()
+end
+
 def build_fake_notification
   let!(:sender) {create(:identity, last_name:'Glenn2', first_name:'Julia2', ldap_uid:'jug3', institution:'medical_university_of_south_carolina', college:'college_of_medecine', department:'other', email:'glennj2@musc.edu', credentials:'BS,    MRA', catalog_overlord: true, password:'p4ssword', password_confirmation:'p4ssword', approved: true)}
   let!(:notification) {create(:notification, sub_service_request_id: sub_service_request.id, originator_id: sender.id)}
   let!(:message) {create(:message, notification_id: notification.id, to: jug2.id, from: sender.id, email: "test@test.org", subject: "test message", body: "This is a test, and only a test")}
   let!(:user_notification) {create(:user_notification, identity_id: jug2.id, notification_id: notification.id, read: false)}
+end
+
+def build_service_request_with_services
+  let!(:institution)  { create(:institution, name: 'Medical University of South Carolina', order: 1, abbreviation: 'MUSC', is_available: 1) }
+  let!(:provider)     { create(:provider, name: 'South Carolina Clinical and Translational Institute (SCTR)', order: 1,
+                               css_class: 'blue-provider', parent_id: institution.id, abbreviation: 'SCTR1', process_ssrs: 0, is_available: 1) }
+  let!(:program)      { create(:program_with_pricing_setup, name: 'Office of Biomedical Informatics', order: 1, parent_id: provider.id,
+                               abbreviation:'Informatics') }
+  let!(:core)         { create(:core, type: 'Core', name: 'Clinical Data Warehouse', order: 1, parent_id: program.id,
+                               abbreviation: 'Clinical Data Warehouse') }
+  let!(:service)      { create(:service, name: 'MUSC Research Data Request (CDW)', abbreviation: 'CDW', order: 1, cpt_code: '',
+                               organization_id: core.id, one_time_fee: true) }
+  let!(:service2)     { create(:service, name: 'Breast Milk Collection', abbreviation: 'Breast Milk Collection', order: 1, cpt_code: '',
+                               organization_id: core.id) }
+  let!(:pricing_map)  { create(:pricing_map, service_id: service.id, unit_type: 'Per Query', unit_factor: 1, full_rate: 0,
+                               exclude_from_indirect_cost: 0, unit_minimum: 1) }
+  let!(:pricing_map2) { create(:pricing_map, service_id: service2.id, unit_type: 'Per patient/visit', unit_factor: 1, full_rate: 636,
+                               exclude_from_indirect_cost: 0, unit_minimum: 1) }
 end

@@ -139,6 +139,9 @@ en:
       unit_costs: "Unit Costs"
       unit_type: "Unit Type"
       your_cost: "Your Cost"
+      decrement: "-"
+      increment: "+"
+      day: "Day"
     labels:
       direct_cost: "Total Direct Cost"
       grand_total_direct: "Grand Total: Direct Costs"

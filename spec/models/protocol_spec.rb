@@ -71,20 +71,6 @@ RSpec.describe 'Protocol' do
     end
   end
 
-  describe 'display add services button?' do
-    
-    it "should return true if status is 'first_draft'" do 
-      service_request.update_attributes(status: 'first_draft')
-      expect(study.has_first_draft_service_request?).to eq true
-    end
-
-    it "should return false if status is NOT 'first_draft'" do 
-      service_request.update_attributes(status: 'draft')
-      expect(study.has_first_draft_service_request?).to eq false
-    end
-
-  end
-
   describe 'should validate funding status and source for studies' do
     it 'should raise an exception if funding status is nil' do
       study = Study.create(attributes_for(:protocol))

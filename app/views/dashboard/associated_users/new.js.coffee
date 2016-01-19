@@ -18,32 +18,45 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$("#modal_place").html("<%= escape_javascript(render(partial: 'dashboard/associated_users/new', locals: { protocol: @protocol, protocol_role: @protocol_role, identity: @identity, type: 'add' })) %>")
+<% if @errors.present? %> #User already associated with Protocol
+$("#modal_errors").html("<%= escape_javascript(render(partial: 'shared/modal_errors', locals: {errors: @errors})) %>")
+$('#authorized_user_search').val('')
+<% elsif @identity.present? %># User selected, go to 'User Form'
+$("#modal_place").html("<%= escape_javascript(render(partial: 'dashboard/associated_users/user_form', locals: { protocol: @protocol, project_role: @project_role, identity: @identity, header_text: @header_text })) %>")
+<% else %># User not selected, go to 'Select User Form'
+$("#modal_place").html("<%= escape_javascript(render(partial: 'dashboard/associated_users/select_user_form', locals: { protocol: @protocol, header_text: @header_text })) %>")
+
+# Initialize Authorized Users Searcher
+identities_bloodhound = new Bloodhound(
+  datumTokenizer: (datum) ->
+    Bloodhound.tokenizers.whitespace datum.value
+  queryTokenizer: Bloodhound.tokenizers.whitespace
+  remote:
+    url: '/search/identities?term=%QUERY',
+    wildcard: '%QUERY'
+)
+identities_bloodhound.initialize() # Initialize the Bloodhound suggestion engine
+$('#authorized_user_search').typeahead(
+  # Instantiate the Typeahead UI
+  {
+    minLength: 3,
+    hint: false,
+    highlight: true
+  },
+  {
+    displayKey: 'label'
+    source: identities_bloodhound.ttAdapter()
+  }
+)
+.on 'typeahead:select', (event, suggestion) ->
+  $.ajax
+    type: 'get'
+    url: '/dashboard/associated_users/new.js'
+    data:
+      protocol_id: $(this).data('protocol-id')
+      identity_id: suggestion.value
+
+<% end %>
+
 $("#modal_place").modal 'show'
-
-# $('input#user_search').autocomplete
-#   source: "/dashboard/associated_users/search"
-#   minLength: 3
-#   search: (event, ui) ->
-#     $('#search-spinner').show()
-#
-#   open: (event, ui) ->
-#     $('#search-spinner').hide()
-#
-#   select: (event, ui) ->
-#     selected_option = ui.item.label
-#     $.ajax
-#       method: 'get'
-#       url: "/dashboard/associated_users/new"
-#       data:
-#         user_id: ui.item.value
-#         protocol_id: $('#add-user-form #protocol_id').val()
-#       success: ->
-#         Sparc.associated_users.showEpicRights($('.epic_access:checked:visible').val())
-#
-# close: ->
-#   $('input#user_search').autocomplete('disable')
-#   $('input#user_search').val('')
-#   $('input#user_search').autocomplete('enable')
-
-# FormFxManager.registerListeners($('#add-user-form'), Sparc.associated_users.display_dependencies);
+$(".selectpicker").selectpicker()

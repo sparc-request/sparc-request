@@ -191,14 +191,9 @@ SparcRails::Application.routes.draw do
         put :update_from_fulfillment
         get :display_requests
       end
-      resources :associated_users, except: [:index]
     end
 
-    resources :associated_users do
-      collection do
-        get :search
-      end
-    end
+    resources :associated_users
 
     resources :service_requests, only: [:show] do
       member do

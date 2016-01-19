@@ -23,7 +23,7 @@ module Dashboard::AssociatedUsersHelper
     content_tag(:button,
       raw(
         content_tag(:span, '', class: 'glyphicon glyphicon-edit', aria: { hidden: 'true' })
-      ), type: 'button', data: {protocol_id: pr.protocol_id, user_id: pr.identity_id, pr_id: pr.id, permission: 'true', current_user_role: pr.role}, class: 'btn btn-warning actions-button edit-associated-user-button'
+      ), type: 'button', data: {project_role_id: pr.id, permission: 'true'}, class: 'btn btn-warning actions-button edit-associated-user-button'
     )
   end
 
@@ -31,7 +31,7 @@ module Dashboard::AssociatedUsersHelper
     content_tag(:button,
       raw(
         content_tag(:span, '', class: 'glyphicon glyphicon-remove', aria: { hidden: 'true' })
-      ), type: 'button', data: {protocol_id: pr.protocol_id, user_id: pr.identity_id, pr_id: pr.id, permission: 'true', current_user_role: pr.role}, class: 'btn btn-danger actions-button delete-associated-user-button'
+      ), type: 'button', data: {project_role_id: pr.id, identity_role: pr.role, identity_id: pr.identity_id, permission: 'true'}, class: 'btn btn-danger actions-button delete-associated-user-button'
     )
   end
 

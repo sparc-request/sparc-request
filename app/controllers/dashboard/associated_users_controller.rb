@@ -22,7 +22,8 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
   layout nil
 
   respond_to :html, :json, :js
-  before_filter :find_project, only: [:index, :show, :edit, :new, :create, :update]
+  before_filter :find_protocol_role, only: [:edit, :update, :destroy]
+  before_filter :find_protocol, only: [:index, :show, :edit, :new, :create, :update]
   before_filter :protocol_authorizer_view, only: [:index, :show]
   before_filter :protocol_authorizer_edit, only: [:edit, :new, :create, :update]
 
@@ -44,40 +45,36 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
   end
 
   def edit
-    @identity = Identity.find params[:identity_id]
-    @protocol_role = ProjectRole.find params[:id]
-    @protocol_role.populate_for_edit
-    # @sub_service_request = SubServiceRequest.find params[:sub_service_request_id] if params[:sub_service_request_id]
+    @identity = @protocol_role.identity
+    @header_text = "Edit Authorized User"
     respond_to do |format|
       format.js
-      format.html
     end
   end
 
-  # TODO: why does edit use identity_id, but new uses user_id?
   def new
-    @identity = Identity.new
-    @protocol_role = @protocol.project_roles.new
-    # @protocol_role = @protocol.project_roles.build(:identity_id => @identity.id)
-    # @protocol_role.populate_for_edit
-    # if params[:sub_service_request_id]
-    #   @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
-    # end
-    @protocol_role = ProjectRole.new
+    if params[:identity_id] # if user selected
+      @identity = Identity.find(params[:identity_id])
+      @project_role = @protocol.project_roles.new(identity_id: @identity.id)
+
+      unless @project_role.unique_to_protocol?
+        # Adds error if user already associated with protocol
+        @errors = @project_role.errors
+      end
+
+    end
+    @header_text = "Add Authorized User"
     respond_to do |format|
       format.js
-      format.html
     end
   end
 
   def create
-    @protocol_role = @protocol.project_roles.build(params[:project_role])
-    @protocol_role.identity.assign_attributes params[:identity]
-    @identity = Identity.find @protocol_role.identity_id
+    @protocol_role = @protocol.project_roles.new(params[:project_role])
 
-    if @protocol_role.unique_to_protocol? && @protocol_role.fully_valid?
+    if @protocol_role.fully_valid?
       @protocol_role.save
-      @identity.update_attributes params[:identity]
+      flash.now[:success] = "Authorized User Added!"
       if SEND_AUTHORIZED_USER_EMAILS
         @protocol.emailed_associated_users.each do |project_role|
           UserMailer.authorized_user_changed(project_role.identity, @protocol).deliver unless project_role.identity.email.blank?
@@ -89,19 +86,19 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
           Notifier.notify_for_epic_user_approval(@protocol).deliver unless QUEUE_EPIC
         end
       end
+    else
+      @errors = @protocol_role.errors
     end
 
     respond_to do |format|
       format.js
       format.html
     end
-    # end
   end
 
   def update
-    @protocol_role = ProjectRole.find params[:id]
-    @protocol_role.identity.assign_attributes params[:identity]
-    @identity = Identity.find @protocol_role.identity_id
+    @identity = @protocol_role.identity
+    @identity.assign_attributes params[:identity]
 
     epic_access = @protocol_role.epic_access
     epic_rights = @protocol_role.epic_rights.clone
@@ -110,6 +107,7 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
     if @protocol_role.fully_valid?
       @protocol_role.save
       @identity.update_attributes params[:identity]
+      flash.now[:success] = "Authorized User Updated!"
       if SEND_AUTHORIZED_USER_EMAILS
         @protocol.emailed_associated_users.each do |project_role|
           UserMailer.authorized_user_changed(project_role.identity, @protocol).deliver unless project_role.identity.email.blank?
@@ -130,21 +128,21 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
           end
         end
       end
+    else
+      @errors = @protocol_role.errors
     end
 
     respond_to do |format|
       format.js
-      format.html
     end
-    # end
   end
 
   def destroy
-    @protocol_role     = ProjectRole.find params[:id]
     protocol           = @protocol_role.protocol
     epic_access        = @protocol_role.epic_access
     project_role_clone = @protocol_role.clone
     @protocol_role.destroy
+    flash.now[:alert] = "Authorized User Removed!"
 
     if USE_EPIC && protocol.selected_for_epic && epic_access
       Notifier.notify_primary_pi_for_epic_user_removal(protocol, project_role_clone).deliver unless QUEUE_EPIC
@@ -157,27 +155,17 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
     # end
   end
 
-  def search
-    term = (params[:term] || params[:q]).strip
-    results = Identity.search(term).map do |i|
-      {
-       :label => i.display_name, :value => i.id, :email => i.email, :institution => i.institution, :phone => i.phone, :era_commons_name => i.era_commons_name,
-       :college => i.college, :department => i.department, :credentials => i.credentials, :credentials_other => i.credentials_other
-      }
-    end
-
-    # TODO: this behavior is particularly annoying.  If I backspace over
-    # the "No results" in the search box, then I don't type something
-    # new quickly enough, it displays "No results" again.  I suppose we
-    # should highlight "No results" so that typing something new will
-    # automatically overwrite it.
-    results = [{:label => 'No Results'}] if results.empty?
-
-    render :json => results.to_json
+private
+  def find_protocol_role
+    @protocol_role = ProjectRole.find params[:id]
   end
 
-private
-  def find_project
-    @protocol = Protocol.find(params[:protocol_id])
+  def find_protocol
+    if @protocol_role.present?
+      @protocol = @protocol_role.protocol
+    else
+      protocol_id = params[:protocol_id] || params[:project_role][:protocol_id]
+      @protocol = Protocol.find protocol_id
+    end
   end
 end

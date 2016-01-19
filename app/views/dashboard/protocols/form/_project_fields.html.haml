@@ -34,7 +34,7 @@
     .form-group.row
       = form.label :funding_status, t(:protocol_shared)[:funding_status], class: 'col-lg-2 control-label'
       .col-lg-10
-        = form.select :funding_status, options_for_select(FUNDING_STATUSES, protocol.funding_status), { include_blank: t(:project_form)[:dropdown_default1] }, class: 'selectpicker'
+        = form.select :funding_status, options_for_select(FUNDING_STATUSES, protocol.funding_status), { include_blank: t(:project_form)[:dropdown_default1] }, class: 'selectpicker project'
   
     .form-group.row.funding_status_dependent.funded{ display_if(protocol.funding_status, "funded") }
       = form.label :funding_source, t(:protocol_shared)[:funding_source], class: 'col-lg-2 control-label'

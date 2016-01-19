@@ -170,17 +170,9 @@ class Arm < ActiveRecord::Base
   end
 
   def create_visit_group position=nil, name=''
-    # make sure VisitGroup is valid before giving it a
-    # position in 'the list'
-    visit_group = VisitGroup.create(arm_id: id, name: name)
-    unless visit_group
+    if not visit_group = self.visit_groups.create(position: position, name: name)
+  then
       return false
-    end
-
-    if position
-      visit_group.insert_at(position)
-    else
-      visit_group.move_to_bottom
     end
 
     # Add visits to each line item under the service request

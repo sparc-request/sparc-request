@@ -78,7 +78,7 @@ $(document).ready ->
       )
 
       $(document).on('click', '.archive_button', ->
-        $('.search_protocols').hide()
+        $('#protocol-accordion').hide()
         $('.loading_protocol').show()
         include_archived = 'true'
 
@@ -97,7 +97,7 @@ $(document).ready ->
               $('.archive_button').data('showing-archived', 0)
               $('.archive_button').text("Show All Projects/Studies")
             $('.loading_protocol').hide()
-            $('.search_protocols').show()
+            $('#protocol-accordion').show()
       )
 
       $('.view-sub-service-request-button').live('click', ->

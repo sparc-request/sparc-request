@@ -20,59 +20,50 @@
 
 require 'rails_helper'
 
-RSpec.describe "User wants to edit a Study", js: true do
+RSpec.feature "User wants to create a Study", js: true do
   let_there_be_lane
   let_there_be_j
   fake_login_for_each_test
   build_service_request_with_study
-  build_study_type_questions
-
-  before :each do
-    service_request.update_attribute(:status, 'first_draft')
-  end
 
   #TODO: Add Authorized Users Specs
-  context 'and clicks the Edit Study button' do
+  context 'and clicks the New Study button' do
     scenario 'and sees the Protocol Information form' do
-      given_i_am_viewing_the_service_request_protocol_page
-      when_i_select_a_study
-      when_i_click_the_edit_study_button
+      given_i_am_viewing_user_portal
+      when_i_click_the_new_study_button
       then_i_should_see_the_protocol_information_page
     end
 
     scenario 'and sees the cancel button' do
-      given_i_am_viewing_the_service_request_protocol_page
-      when_i_select_a_study
-      when_i_click_the_edit_study_button
+      given_i_am_viewing_user_portal
+      when_i_click_the_new_study_button
       then_i_should_see_the_nav_button_with_text 'Cancel'
     end
     
     scenario 'and sees the continue button' do
-      given_i_am_viewing_the_service_request_protocol_page
-      when_i_select_a_study
-      when_i_click_the_edit_study_button
+      given_i_am_viewing_user_portal
+      when_i_click_the_new_study_button
       then_i_should_see_the_nav_button_with_text 'Continue'
     end
 
-    context 'and clears the required fields and submits the form' do
+    context 'and submits the form without filling out required fields' do
       scenario 'and sees some errors' do
         given_i_am_viewing_the_protocol_information_page
-        when_i_clear_the_required_fields
         when_i_submit_the_form
         then_i_should_see_errors_of_type 'protocol information required fields'
       end
     end
 
-    context 'and clears the funding source and submits the form' do
+    context 'and submits the form without selecting a funding source' do
       scenario 'and sees some errors' do
         given_i_am_viewing_the_protocol_information_page
-        when_i_select_the_funding_source "Select a Funding Source"
+        when_i_select_the_funding_status
         when_i_submit_the_form
         then_i_should_see_errors_of_type 'protocol information funding source'
       end
     end
 
-    context 'and clears the potential funding source and submits the form' do
+    context 'and submits the form without selecting a potential source' do
       scenario 'and sees some errors' do
         given_i_am_viewing_the_protocol_information_page
         when_i_select_the_funding_status "Pending Funding"
@@ -84,8 +75,7 @@ RSpec.describe "User wants to edit a Study", js: true do
     context 'and submits the form after selecting Publish to Epic and not filling out questions' do
       scenario 'and sees some errors' do
         given_i_am_viewing_the_protocol_information_page
-        when_i_select_publish_study_to_epic false
-        when_i_select_publish_study_to_epic true
+        when_i_select_publish_study_to_epic
         when_i_submit_the_form
         then_i_should_see_errors_of_type 'protocol information publish to epic'
         when_i_set_question_1a_to "Yes"
@@ -112,52 +102,61 @@ RSpec.describe "User wants to edit a Study", js: true do
     context 'and submits the form after filling out required fields' do
       scenario 'and sees the Authorized Users page' do
         given_i_am_viewing_the_protocol_information_page
+        when_i_fill_out_the_protocol_information
         when_i_submit_the_form
         then_i_should_see_the_authorized_users_page
       end
 
       scenario 'and sees the go back button' do
         given_i_am_viewing_the_protocol_information_page
+        when_i_fill_out_the_protocol_information
         when_i_submit_the_form
         then_i_should_see_the_nav_button_with_text 'Go Back' 
       end
 
       scenario 'and sees the save and continue button' do
         given_i_am_viewing_the_protocol_information_page
+        when_i_fill_out_the_protocol_information
         when_i_submit_the_form
         then_i_should_see_the_nav_button_with_text 'Save & Continue' 
       end
-    end
 
-    context 'and submits the study after modifying it' do
-      scenario 'and sees the study has been updated' do
-        given_i_am_viewing_the_protocol_information_page
-        when_i_modify_the_study
-        when_i_submit_the_form
-        when_i_submit_the_form
-        then_i_should_see_the_updated_study
+      context 'TEMP: and adds themself as a Primary PI and submits the Study' do
+        scenario 'and sees the Study with correct information' do
+          given_i_am_viewing_the_authorized_users_page
+          when_i_add_myself_as_a_primary_pi
+          when_i_submit_the_form
+          then_i_should_see_the_study_was_added_correctly
+        end
+
+        scenario 'and sees the User Portal index page' do
+          given_i_am_viewing_the_authorized_users_page
+          when_i_add_myself_as_a_primary_pi
+          when_i_submit_the_form
+          then_i_should_see_the_user_portal_page
+        end
       end
     end
   end
 
-  def given_i_am_viewing_the_service_request_protocol_page
-    visit protocol_service_request_path service_request.id
-    wait_for_javascript_to_finish
+  def given_i_am_viewing_user_portal
+    visit portal_root_path
   end
 
   def given_i_am_viewing_the_protocol_information_page
-    given_i_am_viewing_the_service_request_protocol_page
-    when_i_select_a_study
-    when_i_click_the_edit_study_button
+    given_i_am_viewing_user_portal
+    when_i_click_the_new_study_button
   end
 
-  def when_i_select_a_study
-    study = Protocol.first
-    select "#{study.id} - #{study.short_title}", from: "service_request_protocol_id"
+  def given_i_am_viewing_the_authorized_users_page
+    given_i_am_viewing_the_protocol_information_page
+    when_i_fill_out_the_protocol_information
+    when_i_submit_the_form
   end
 
-  def when_i_click_the_edit_study_button
-    find(".edit-study").click
+  def when_i_click_the_new_study_button
+    find("a.new-study").click
+    wait_for_javascript_to_finish
   end
 
   def when_i_fill_out_the_short_title short_title="Fake Short Title"
@@ -175,7 +174,7 @@ RSpec.describe "User wants to edit a Study", js: true do
       when false
         find('#study_has_cofc_false').click
       else
-        puts "An unexpected value was received in when_i_fill_out_the_has_cofc. Perhaps there was a typo?"
+        puts "An unexpected value was received in when_i_select_the_has_cofc. Perhaps there was a typo?"
     end
   end
   
@@ -226,27 +225,19 @@ RSpec.describe "User wants to edit a Study", js: true do
     select selection, from: "study_type_answer_restrict_sending_answer"
   end
 
-  def when_i_fill_out_the_publish_study_to_epic_questions
-    select "Yes", from: "study_type_answer_higher_level_of_privacy_answer"
-    select "Yes", from: "study_type_answer_certificate_of_conf_answer"
+  def when_i_fill_out_the_protocol_information
+    when_i_fill_out_the_short_title
+    when_i_fill_out_the_title
+    when_i_select_the_has_cofc
+    when_i_select_the_funding_status
+    when_i_select_the_funding_source
+    when_i_fill_out_the_sponsor_name
   end
 
-  def when_i_clear_the_required_fields
-    when_i_fill_out_the_short_title ""
-    when_i_fill_out_the_title ""
-    when_i_fill_out_the_sponsor_name ""
-    when_i_select_the_funding_status "Select a Funding Status"
-  end
-
-  def when_i_modify_the_study
-    when_i_fill_out_the_short_title "Short Title"
-    when_i_fill_out_the_title "Title"
-    when_i_select_the_has_cofc false
-    when_i_select_the_funding_status "Funded"
-    when_i_select_the_funding_source "College Department"
-    when_i_fill_out_the_sponsor_name "Sponsor Name"
-    when_i_select_publish_study_to_epic
-    when_i_fill_out_the_publish_study_to_epic_questions
+  def when_i_add_myself_as_a_primary_pi
+    select "Primary PI", from: "project_role_role"
+    find("button.add-authorized-user").click
+    wait_for_javascript_to_finish
   end
 
   def when_i_submit_the_form
@@ -255,25 +246,28 @@ RSpec.describe "User wants to edit a Study", js: true do
   end
 
   def then_i_should_see_the_protocol_information_page
-    expect(page).to have_text("STEP 1: Protocol Information")
+    expect(page).to have_text("Information needed to obtain correct pricing")
   end
 
   def then_i_should_see_the_authorized_users_page
-    expect(page).to have_text("STEP 1: Add Users")
+    expect(page).to have_text("Research Study/Project Authorized Users:")
   end
 
-  def then_i_should_see_the_updated_study
-    study = Protocol.first
+  def then_i_should_see_the_study_was_added_correctly
+    study = Protocol.last
 
     expect(study.type).to eq("Study")
-    expect(study.short_title).to eq("Short Title")
-    expect(study.title).to eq("Title")
-    expect(study.sponsor_name).to eq("Sponsor Name")
+    expect(study.short_title).to eq("Fake Short Title")
+    expect(study.title).to eq("Fake Title")
+    expect(study.sponsor_name).to eq("Fake Sponsor Name")
     expect(study.funding_status).to eq("funded")
-    expect(study.funding_source).to eq("college")
-    expect(study.selected_for_epic).to eq(true)
-    expect(study.has_cofc).to eq(false)
-    expect(ServiceRequest.first.status).to_not eq("first_draft")
+    expect(study.funding_source).to eq("federal")
+    expect(study.selected_for_epic).to eq(false)
+    expect(study.has_cofc).to eq(true)
+  end
+
+  def then_i_should_see_the_user_portal_page
+    expect(page).to have_content("Julia Glenn | glennj@musc.edu")
   end
 
   def then_i_should_see_the_nav_button_with_text text
@@ -298,6 +292,7 @@ RSpec.describe "User wants to edit a Study", js: true do
         expect(page).to have_content("Title can't be blank")
         expect(page).to have_content("Funding status can't be blank")
         expect(page).to have_content("Sponsor name can't be blank")
+        expect(page).to have_content("Does your study have a Certificate of Confidentiality must be answered")
       when 'protocol information funding source'
         expect(page).to have_content("Funding source You must select a funding source")
       when 'protocol information potential funding source'  

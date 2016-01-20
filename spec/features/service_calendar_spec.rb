@@ -141,7 +141,7 @@ RSpec.describe "service calendar", js: true do
           wait_for_javascript_to_finish
           select("Visit 2", from: "visit_to_move_1")
           wait_for_javascript_to_finish
-          select("Insert at 7 - Visit 7", from: "move_to_position_1")
+          select("Insert at 11 - Visit 10", from: "move_to_position_1")
           find('#submit_move').click
           wait_for_javascript_to_finish
           select("Visits 6 - 10 of 10", from: "jump_to_visit_#{arm1.id}")

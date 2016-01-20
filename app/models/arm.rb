@@ -138,7 +138,7 @@ class Arm < ActiveRecord::Base
       if not self.create_visit_group(position, name) then
         raise ActiveRecord::Rollback
       end
-      position = position.to_i unless position.blank?
+      position = position.to_i - 1 unless position.blank?
 
       if USE_EPIC
         if not self.update_visit_group_day(day, position, portal) then
@@ -170,8 +170,7 @@ class Arm < ActiveRecord::Base
   end
 
   def create_visit_group position=nil, name=''
-    if not visit_group = self.visit_groups.create(position: position, name: name)
-  then
+    if not visit_group = self.visit_groups.create(position: position, name: name) then
       return false
     end
 

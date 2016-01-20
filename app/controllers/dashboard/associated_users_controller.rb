@@ -70,7 +70,7 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
   end
 
   def create
-    @protocol_role = @protocol.project_roles.new(params[:project_role])
+    @protocol_role = @protocol.project_roles.build(params[:project_role])
 
     if @protocol_role.fully_valid?
       @protocol_role.save
@@ -92,21 +92,17 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
 
     respond_to do |format|
       format.js
-      format.html
     end
   end
 
   def update
     @identity = @protocol_role.identity
-    @identity.assign_attributes params[:identity]
-
     epic_access = @protocol_role.epic_access
     epic_rights = @protocol_role.epic_rights.clone
     @protocol_role.assign_attributes params[:project_role]
 
     if @protocol_role.fully_valid?
       @protocol_role.save
-      @identity.update_attributes params[:identity]
       flash.now[:success] = "Authorized User Updated!"
       if SEND_AUTHORIZED_USER_EMAILS
         @protocol.emailed_associated_users.each do |project_role|

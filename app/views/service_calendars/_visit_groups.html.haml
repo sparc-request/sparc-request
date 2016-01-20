@@ -1,5 +1,5 @@
 - visit_groups.each_with_index do |visit_group, index|
-  .col-xs-1.visit_group_box
+  %th.visit_group_box.col-sm-1
     .row.text-center
       .col-xs-4.text-center
         %span{ id: "visit-before-display-#{visit_group.id}" }= visit_group.window_before || 0
@@ -12,7 +12,7 @@
         %span{ id: "visit-name-display-#{visit_group.id}" }
           = text_field_tag "visit_group_#{visit_group.id}", visit_group.name, class: "form-control visit_group_#{index} visit_name", data: { visit_group_id: visit_group.id }, disabled: (tab == 'consolidated' ? true : false)
 - (visit_groups.size...Visit.per_page).each do |index|
-  .col-md-1.text-center{ class: "visit_group_#{index}" }
+  %th.text-center{ class: "visit_group_#{index}" }
     &nbsp
     .row
       .col-md-12 &nbsp

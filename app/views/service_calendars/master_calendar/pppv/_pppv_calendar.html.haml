@@ -18,28 +18,29 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 - visit_groups = arm.visit_groups.paginate(page: page)
-.study_schedule.service{ class: "arm_#{arm.id}" }
-  .row.header
-    .col-xs-2.text-center.study_schedule_table_name
+%thead
+  %tr.header
+    %th.text-center.study_schedule_table_name{ colspan: 2, rowspan: 2 }
       %span{ id: "arm-name-display-#{arm.id}" }= arm.name
-    .col-xs-2.text-center
+    %th.text-center{ colspan: 2 }
       Unit Costs
-    .col-xs-1
-    .col-xs-5.text-center.visit_group_select{ id: "select_for_arm_#{arm.id}" }
+    %th{ colspan: 1 }
+    %th.text-center.visit_group_select{ id: "select_for_arm_#{arm.id}", colspan: 5 }
       = render partial: '/service_calendars/visit_group_page_select', locals: { arm: arm, service_request: service_request, ssr_id: sub_service_request.try(:id), page: page, pages: pages, merged: merged, review: review, tab: tab, portal: portal }
-  .row.visit_groups
-    .col-xs-2
-    .col-xs-1.text-center.header
+    %th{ colspan: 3 }
+  %tr
+    %th.text-center.header{ colspan: 1 }
       Service Rate
-    .col-xs-1.text-center.header
+    %th.text-center.header{ colspan: 1 }
       Your Cost
-    .col-xs-1.text-center.header
+    %th.text-center.header{ colspan: 1 }
       N
-    .visit_groups{ class: "visit_groups_for_#{arm.id}" }
-      = render partial: '/service_calendars/visit_groups', locals: { arm: arm, visit_groups: visit_groups, tab: tab }
-  - if tab == 'template'
-    .row.check_visit_columns
-      .col-xs-5
-      %div{ class: "check_columns_for_arm_#{arm.id}" }
-        = render partial: '/service_calendars/check_visit_columns', locals: { visit_groups: visit_groups, tab: tab }
+    = render partial: '/service_calendars/visit_groups', locals: { arm: arm, visit_groups: visit_groups, tab: tab }
+    %th{ colspan: 2 }
+- if tab == 'template'
+  %tr
+    %td{ colspan: 5 }
+      &nbsp
+    = render partial: '/service_calendars/check_visit_columns', locals: { visit_groups: visit_groups, tab: tab }
+%tbody
   = render partial: 'service_calendars/master_calendar/pppv/pppv_line_items', locals: { service_request: service_request, arm: arm, tab: @tab, portal: @portal, sub_service_request: @sub_service_request, review: review }

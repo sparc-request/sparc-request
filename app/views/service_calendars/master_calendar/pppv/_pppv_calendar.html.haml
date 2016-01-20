@@ -20,12 +20,21 @@
 - visit_groups = arm.visit_groups.paginate(page: page)
 .study_schedule.service{ class: "arm_#{arm.id}" }
   .row.header
-    .col-xs-5.text-center.study_schedule_table_name
+    .col-xs-2.text-center.study_schedule_table_name
       %span{ id: "arm-name-display-#{arm.id}" }= arm.name
+    .col-xs-2.text-center
+      Unit Costs
+    .col-xs-1
     .col-xs-5.text-center.visit_group_select{ id: "select_for_arm_#{arm.id}" }
       = render partial: '/service_calendars/visit_group_page_select', locals: { arm: arm, service_request: service_request, ssr_id: sub_service_request.try(:id), page: page, pages: pages, merged: merged, review: review, tab: tab, portal: portal }
   .row.visit_groups
-    .col-xs-5
+    .col-xs-2
+    .col-xs-1.text-center.header
+      Service Rate
+    .col-xs-1.text-center.header
+      Your Cost
+    .col-xs-1.text-center.header
+      N
     .visit_groups{ class: "visit_groups_for_#{arm.id}" }
       = render partial: '/service_calendars/visit_groups', locals: { arm: arm, visit_groups: visit_groups, tab: tab }
   - if tab == 'template'

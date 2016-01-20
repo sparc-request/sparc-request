@@ -37,7 +37,6 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
       if not @protocol then
         raise ArgumentError, "Sub service request does not have a protocol; is it an invalid sub service request?"
       end
-      @protocol.populate_for_edit if @protocol.type == "Study"
       @candidate_one_time_fees, @candidate_per_patient_per_visit = @sub_service_request.candidate_services.partition {|x| x.one_time_fee}
       @subsidy = @sub_service_request.subsidy
       @service_list = @service_request.service_list

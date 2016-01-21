@@ -29,7 +29,6 @@ class ProjectRole < ActiveRecord::Base
 
   has_many :epic_rights, :dependent => :destroy
 
-  attr_accessible :id
   attr_accessible :protocol_id
   attr_accessible :identity_id
   attr_accessible :project_rights

@@ -47,7 +47,6 @@ class Identity < ActiveRecord::Base
   validates_confirmation_of :password, :if => :password_required?
   validates_length_of       :password, :within => password_length, :allow_blank => true
 
-  attr_accessible :id
   attr_accessible :email
   attr_accessible :password
   attr_accessible :password_confirmation

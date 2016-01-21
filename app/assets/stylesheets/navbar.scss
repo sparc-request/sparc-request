@@ -1,3 +1,9 @@
+$dashboard-tab-color: #2280A5;
+$admin-tab-color: #4E99B7;
+$fulfillment-tab-color: #7AB3C9;
+$catalog-tab-color: #A7CCD8;
+$reports-tab-color: #D3E6ED;
+
 .navbar {
   width: 100%;
   float: left;
@@ -32,23 +38,23 @@
 }
 
 .dashboard {
-  background-color: #2280A5;
+  background-color: $dashboard-tab-color;
 }
 
 .admin {
-  background-color: #4E99B7;
+  background-color: $admin-tab-color;
 }
 
 .fulfillment {
-  background-color: #7AB3C9;
+  background-color: $fulfillment-tab-color;
 }
 
 .catalog {
-  background-color: #A7CCD8;
+  background-color: $catalog-tab-color;
 }
 
 .reports {
-  background-color: #D3E6ED;
+  background-color: $reports-tab-color;
 }
 
 .logout {

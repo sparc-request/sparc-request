@@ -41,9 +41,11 @@ class ProtocolsController < ApplicationController
 
   def create
     @portal = params[:portal]
+
     unless from_portal?
       @service_request = ServiceRequest.find session[:service_request_id]
     end
+
     @current_step = cookies['current_step']
     @protocol = self.model_class.new(params[:study] || params[:project])
     @protocol.validate_nct = true
@@ -58,13 +60,14 @@ class ProtocolsController < ApplicationController
       @protocol.populate_for_edit
     elsif @current_step == 'user_details' and @protocol.valid?
       @protocol.save
-      @service_request.update_attribute(:protocol_id, @protocol.id) unless @service_request.protocol.present?
+
+      if @service_request
+        @service_request.update_attribute(:protocol_id, @protocol.id) unless @service_request.protocol.present?
+        @service_request.update_attribute(:status, "draft")
+      end
+
       @current_step = 'return_to_service_request'
       flash[:notice] = "New #{@protocol.type.downcase} created"
-
-      if !from_portal? && @service_request.status == "first_draft"
-        @service_request.update_attributes(status: "draft")
-      end
     else
       @protocol.populate_for_edit
     end
@@ -72,7 +75,7 @@ class ProtocolsController < ApplicationController
     cookies['current_step'] = @current_step
 
     if @current_step != 'return_to_service_request'
-      resolve_layout
+      resolve_layout  
     end
   end
 

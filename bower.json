@@ -18,6 +18,8 @@
     "tests"
   ],
   "dependencies": {
-    "jquery-migrate": "~1.2.1"
+    "jquery-migrate": "~1.2.1",
+    "jquery":"1.8.3",
+    "jquery-ui": "1.11.4"
   }
 }

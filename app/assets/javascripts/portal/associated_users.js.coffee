@@ -38,7 +38,7 @@ $(document).ready ->
         other          : ['.credentials_other']
 
     ready: ->
-      $('.associated-user-button').live 'click', ->
+      $(document).on 'click', '.associated-user-button', ->
         if $(this).data('permission')
           $('.add-associated-user-dialog').dialog('open')
           $('#add-user-form #protocol_id').val($(this).data('protocol_id'))
@@ -83,7 +83,7 @@ $(document).ready ->
           $('.permissions-dialog').dialog('open')
           $('.permissions-dialog .text').html('Edit.')
 
-      $('.delete-associated-user-button').live 'click', ->
+      $(document).on 'click', '.delete-associated-user-button', ->
         if $(this).data('permission')
           adminUsersList = $(".admin#users")
           current_user_id = $('#current_user_id').val()

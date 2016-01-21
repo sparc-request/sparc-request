@@ -25,7 +25,7 @@
 // the compiled file.
 //
 //= require catalog_manager/sparc
-//= require jquery
+//= require jquery-1.8.3/jquery.min
 //= require jquery_ujs
 //= require json2
 //= require jquery.cookie

@@ -24,7 +24,7 @@
 // It's not advisable to add code directly here, but if you do, it'll appear at the bottom of the
 // the compiled file.
 //
-//= require jquery
+//= require jquery-1.8.3/jquery.min
 //= require jquery-ui
 //= require jquery_ujs
 //= require jquery_nested_form

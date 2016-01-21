@@ -51,15 +51,6 @@ RSpec.describe "editing a project", js: true do
     end
   end
 
-  context "switching from project to study" do
-    it 'should update the can_edit_study column to false' do
-      select 'Study', from: 'protocol_type'
-      click_button "Change Type"
-      wait_for_javascript_to_finish
-      expect(Protocol.find(project.id).can_edit_study).to eq true
-    end
-  end
-
   context "cancel button" do
 
     it "should redirect back to the main portal page" do

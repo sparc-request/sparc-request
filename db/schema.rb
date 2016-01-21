@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160121151946) do
+ActiveRecord::Schema.define(version: 20160121173336) do
 
   create_table "admin_rates", force: :cascade do |t|
     t.integer  "line_item_id", limit: 4
@@ -667,7 +667,7 @@ ActiveRecord::Schema.define(version: 20160121151946) do
     t.string   "billing_business_manager_static_email", limit: 255
     t.datetime "recruitment_start_date"
     t.datetime "recruitment_end_date"
-    t.boolean  "selected_for_epic",                                                           default: false
+    t.boolean  "selected_for_epic"
     t.boolean  "archived",                                                                    default: false
     t.integer  "study_type_question_group_id",          limit: 4
     t.boolean  "can_edit_study",                                                              default: false

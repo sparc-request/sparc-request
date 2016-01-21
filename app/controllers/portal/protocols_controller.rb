@@ -77,6 +77,7 @@ class Portal::ProtocolsController < Portal::BaseController
     end
     
     if @protocol.update_attributes(attrs.merge(study_type_question_group_id: StudyTypeQuestionGroup.active.pluck(:id).first))
+      @protocol.update_attribute(:can_edit_study, false)
       flash[:notice] = "Study updated"
       redirect_to portal_root_path(:default_protocol => @protocol)
     else

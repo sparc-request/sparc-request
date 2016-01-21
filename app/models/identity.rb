@@ -47,9 +47,14 @@ class Identity < ActiveRecord::Base
   validates_confirmation_of :password, :if => :password_required?
   validates_length_of       :password, :within => password_length, :allow_blank => true
 
-  # Setup accessible (or protected) attributes for your model
-  attr_accessible :email, :password, :password_confirmation, :remember_me, :company, :reason, :approved
-  # attr_accessible :title, :body
+  attr_accessible :id
+  attr_accessible :email
+  attr_accessible :password
+  attr_accessible :password_confirmation
+  attr_accessible :remember_me
+  attr_accessible :company
+  attr_accessible :reason
+  attr_accessible :approved
   #### END DEVISE SETUP ####
 
   has_many :approvals, :dependent => :destroy

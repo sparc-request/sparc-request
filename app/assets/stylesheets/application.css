@@ -2907,39 +2907,6 @@ input.devise_submit_button {
   margin: 0px -50px 0px 30px !important;
 }
 
-.navbar {
-  width: 100%;
-  float: left;
-  margin: 0 0 3em 0;
-  padding: 0;
-  list-style: none;
-  background-color: #f2f2f2;
-  border-bottom: 1px solid #ccc;
-  border-top: 1px solid #ccc;
-}
-
-.navbar li {
-  float: left;
-}
-
-.navbar li a {
-  display: block;
-  padding: 8px 15px;
-  text-decoration: none;
-  font-weight: bold;
-  color: #069;
-  border-right: 1px solid #ccc;
-}
-
-.align-element-nav-bar {
-  padding: 8px 15px;
-  float: right;
-}
-
-.right-section {
-  float: right;
-}
-
 .contact-form-fields {
   height: 1.3rem;
   width: 100%;

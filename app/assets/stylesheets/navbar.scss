@@ -1,0 +1,56 @@
+.navbar {
+  width: 100%;
+  float: left;
+  margin: 0 0 3em 0;
+  padding: 0;
+  list-style: none;
+  background-color: #f2f2f2;
+  border-bottom: 1px solid #ccc;
+  border-top: 1px solid #ccc;
+}
+
+.navbar li {
+  float: left;
+}
+
+.navbar li a {
+  display: block;
+  padding: 8px 15px;
+  text-decoration: none;
+  font-weight: bold;
+  color: #000;
+  border-right: 1px solid #ccc;
+}
+
+.align-element-nav-bar {
+  padding: 8px 15px;
+  float: right;
+}
+
+.right-section {
+  float: right;
+}
+
+.dashboard {
+  background-color: #2280A5;
+}
+
+.admin {
+  background-color: #4E99B7;
+}
+
+.fulfillment {
+  background-color: #7AB3C9;
+}
+
+.catalog {
+  background-color: #A7CCD8;
+}
+
+.reports {
+  background-color: #D3E6ED;
+}
+
+.logout {
+  color: #069 !important;
+}

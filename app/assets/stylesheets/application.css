@@ -2346,6 +2346,10 @@ li:not(.ui-tabs-active) #calendar_tab:hover {
   display: inline-table;
 }
 
+div.field_with_errors {
+  display: inline;
+}
+
 .small_desc {
   font-size: 10px;
   font-weight: normal;

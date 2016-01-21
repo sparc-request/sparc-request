@@ -1,5 +1,5 @@
 - visit_groups.each_with_index do |visit_group, index|
-  %td.text-center
+  %th.col-sm-1.text-center
     - state = "#{set_check(visit_group)}"
     - if tab == 'template'
       .glyphicon.check_column.btn.btn-primary{ type: 'button', visit_group_id: visit_group.id, check: state, title: state == 'true' ? 'Check Column' : 'Uncheck Column', class: "#{glyph_class(visit_group)}", data: { toggle: 'tooltip', animation: 'false' } }
@@ -8,4 +8,4 @@
         %span.even_shorter_text.r-label=  'R'
         %span.even_shorter_text.t-label= 'T'
 - (visit_groups.size...Visit.per_page).each do |index|
-  %td{ class: "column_#{index}" } &nbsp
+  %th.col-sm-1{ class: "column_#{index}" } &nbsp

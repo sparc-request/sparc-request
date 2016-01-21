@@ -18,46 +18,39 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-- if @merged || !@portal || tab == 'consolidated'
-  - colspan = (@merged && @portal) ? 4 : 5
+- if @merged || !@portal || tab == 'calendar'
   %tr.totals_section.begin_totals
-    %td{ colspan: colspan }
+    %td.col-sm-5{ colspan: 5 }
       %strong= t(:calendar_page)[:labels][:maximum_direct]
-    -unless @merged || @tab != 'template'
-      %td &nbsp;
     - 5.times do |i|
-      %td{ class: "visit_column_#{i + 1} max_direct_per_patient arm_#{arm.id}" }
-    %td{ class: "pp_max_total_direct_cost arm_#{arm.id}"}= display_max_total_direct_cost_per_patient arm, line_items_visits
+      %td.col-sm-1.text-center{ class: "visit_column_#{i + 1} max_direct_per_patient arm_#{arm.id}" }
+    %td.col-sm-1.text-center{ class: "pp_max_total_direct_cost arm_#{arm.id}"}= display_max_total_direct_cost_per_patient arm, line_items_visits
     -if @merged
       %td
 
   - if USE_INDIRECT_COST
     %tr.totals_section
-      %td{ colspan: colspan }
+      %td.col-sm-5{ colspan: 5 }
         %strong= t(:calendar_page)[:labels][:maximum_indirect]
-      -unless @merged
-        %td &nbsp;
       - 5.times do |i|
-        %td{ class: "visit_column_#{i + 1} max_indirect_per_patient arm_#{arm.id}" }
-      %td{ class: "pp_max_total_indirect_cost arm_#{arm.id}"}= display_max_total_indirect_cost_per_patient arm, line_items_visits
+        %td.col-sm-1.text-center{ class: "visit_column_#{i + 1} max_indirect_per_patient arm_#{arm.id}" }
+      %td.col-sm-1.text-center{ class: "pp_max_total_indirect_cost arm_#{arm.id}"}= display_max_total_indirect_cost_per_patient arm, line_items_visits
       -if @merged
         %td
 
   %tr.totals_section
-    %td{ colspan: colspan }
+    %td.col-sm-5{ colspan: 5 }
       %strong= t(:calendar_page)[:labels][:maximum_per]
-    -unless @merged || @tab != 'template'
-      %td &nbsp;
     - 5.times do |i|
-      %td{ class: "visit_column_#{i + 1} max_total_per_patient arm_#{arm.id}" }
-    %td{ class: "pp_max_total arm_#{arm.id}"}= display_max_total_cost_per_patient arm, line_items_visits
+      %td.col-sm-1.text-center{ class: "visit_column_#{i + 1} max_total_per_patient arm_#{arm.id}" }
+    %td.col-sm-1.text-center{ class: "pp_max_total arm_#{arm.id}"}= display_max_total_cost_per_patient arm, line_items_visits
     -if @merged
       %td
 
-  .row.totals_section.grand-totals
-    .col-sm-5
+  %tr.totals_section.grand-totals
+    %td.col-sm-5{ colspan: 5 }
       %strong= t(:calendar_page)[:labels][:total_costs] + " -- " + arm.name
-    -unless @merged || @tab != 'template'
-      %td &nbsp;
-    .col-sm-5
-    .col-sm-1{ class: "pp_total arm_#{arm.id}"}= display_total_cost_per_arm arm, line_items_visits
+    %td.col-sm-5{ colspan: 5 }
+    %td.col-sm-1.text-center{ class: "pp_total arm_#{arm.id}" }= display_total_cost_per_arm arm, line_items_visits
+    -if @merged
+      %td

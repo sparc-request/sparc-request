@@ -20,29 +20,33 @@
 
 class ProtocolsController < ApplicationController
   respond_to :json, :js, :html
-  before_filter :initialize_service_request, :except => [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
-  before_filter :authorize_identity, :except => [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
+  before_filter :initialize_service_request, unless: :from_portal?, :except => [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
+  before_filter :authorize_identity, unless: :from_portal?, :except => [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
   before_filter :set_protocol_type, :except => [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
 
   def new
-    @service_request = ServiceRequest.find session[:service_request_id]
-    @epic_services = @service_request.should_push_to_epic? if USE_EPIC
+    @portal = params[:portal]
+    unless from_portal?
+      @service_request = ServiceRequest.find session[:service_request_id]
+      @epic_services = @service_request.should_push_to_epic? if USE_EPIC
+    end
     @protocol = self.model_class.new
     @protocol.requester_id = current_user.id
     @protocol.populate_for_edit
     current_step_cookie = cookies['current_step']
-    if current_step_cookie.nil? || (current_step_cookie != "protocol")
-      cookies['current_step'] = 'protocol'
-    end
-    @portal = false
+    cookies['current_step'] = 'protocol'
+
+    resolve_layout
   end
 
   def create
-    @service_request = ServiceRequest.find session[:service_request_id]
+    @portal = params[:portal]
+    unless from_portal?
+      @service_request = ServiceRequest.find session[:service_request_id]
+    end
     @current_step = cookies['current_step']
     @protocol = self.model_class.new(params[:study] || params[:project])
     @protocol.validate_nct = true
-    @portal = params[:portal]
 
     if @current_step == 'cancel'
       @current_step = 'return_to_service_request'
@@ -54,11 +58,11 @@ class ProtocolsController < ApplicationController
       @protocol.populate_for_edit
     elsif @current_step == 'user_details' and @protocol.valid?
       @protocol.save
+      @service_request.update_attribute(:protocol_id, @protocol.id) unless @service_request.protocol.present?
       @current_step = 'return_to_service_request'
-      session[:saved_protocol_id] = @protocol.id
       flash[:notice] = "New #{@protocol.type.downcase} created"
 
-      if @service_request.status == "first_draft"
+      if !from_portal? && @service_request.status == "first_draft"
         @service_request.update_attributes(status: "draft")
       end
     else
@@ -66,6 +70,10 @@ class ProtocolsController < ApplicationController
     end
 
     cookies['current_step'] = @current_step
+
+    if @current_step != 'return_to_service_request'
+      resolve_layout
+    end
   end
 
   def edit
@@ -75,10 +83,8 @@ class ProtocolsController < ApplicationController
     @protocol.populate_for_edit
     @protocol.valid?
     current_step_cookie = cookies['current_step']
-    if current_step_cookie.nil? || (current_step_cookie != "protocol")
-      cookies['current_step'] = 'protocol'
-    end
-    @portal = false
+    cookies['current_step'] = 'protocol'
+    @portal = params[:portal]
   end
 
   def update
@@ -161,7 +167,18 @@ class ProtocolsController < ApplicationController
     render :formats => [:html]
   end
 
+  def from_portal?
+    return params[:portal] == "true"  
+  end
+
   private
+
+  def resolve_layout
+    if from_portal?
+      @user = current_user
+      render layout: "portal/application"
+    end
+  end
 
   def send_epic_notification_for_final_review(protocol)
     Notifier.notify_primary_pi_for_epic_user_final_review(protocol).deliver unless QUEUE_EPIC

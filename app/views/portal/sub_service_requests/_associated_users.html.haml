@@ -22,28 +22,36 @@
   %table
     %thead
       %tr.true_header
-        %th{:colspan => 7}= t(:user_list)[:information]
+        %th{colspan: 7}
+          = t(:user_list)[:information]
       %tr
-        %th= t(:user_details)[:name]
-        %th= t(:user_details)[:role]
-        %th= t(:user_details)[:email]
-        %th= t(:user_details)[:phone]
-        %th= t(:user_list)[:proxy_rights]
-        %th.actions{:colspan => 2}= t(:user_list)[:actions]
+        %th
+          = t(:user_details)[:name]
+        %th
+          = t(:user_details)[:role]
+        %th
+          = t(:user_details)[:email]
+        %th
+          = t(:user_details)[:phone]
+        %th
+          = t(:user_list)[:proxy_rights]
+        %th.actions{colspan: 2}
+          = t(:user_list)[:actions]
     %tbody
-      = render :partial => "portal/sub_service_requests/associated_user", :locals => {:protocol => @protocol}
-%td.new-button{:colspan => 2}
-  .associated-user-button.ui-corner-all{:'data-protocol_id' => @protocol.id, :'data-permission' => "true"}= t(:protocol_information)[:add_authorized_user]
+      = render partial: "portal/sub_service_requests/associated_user", locals: {protocol: @protocol}
+%td.new-button{colspan: 2}
+  .associated-user-button.ui-corner-all{:'data-protocol_id' => @protocol.id, :'data-permission' => "true"}
+    = t(:protocol_information)[:add_authorized_user]
 
 .add-associated-user-dialog
   // TODO: this is copied directly from index.html.haml; should refactor
   .user-search-container
     = text_field_tag 'user_search', nil, placeholder: 'Search For A User'
-    = image_tag('portal/spinner.gif', :style => "display:none; vertical-align:middle;", :id => 'search-spinner')
+    = image_tag('portal/spinner.gif', style: "display:none; vertical-align:middle;", id: 'search-spinner')
   - if @sub_service_request
     = hidden_field_tag :sub_service_request_id, @sub_service_request.id
   #add-user-form
-    =render :partial => "portal/associated_users/new", :locals => {:protocol => @protocol, :protocol_role => ProjectRole.new, :identity => Identity.new}
+    = render partial: "portal/associated_users/new", locals: {protocol: @protocol, protocol_role: ProjectRole.new, identity: Identity.new}
 
 .edit-associated-user-dialog
 

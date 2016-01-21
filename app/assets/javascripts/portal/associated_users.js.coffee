@@ -158,9 +158,9 @@ $(document).ready ->
             click: ->
               $('#add_authorized_user_submit_button').attr('disabled', true)
 
-              role = $('#project_role_role').val()
-              primary_pi_pr_id = $('#primary_pi_pr_id').val()
-              pr_id = $('#pr_id').val()
+              role = $('.add_user_dialog_box #project_role_role').val()
+              primary_pi_pr_id = $('.add_user_dialog_box #primary_pi_pr_id').val()
+              pr_id = $('.add_user_dialog_box #pr_id').val()
 
               if role == 'primary-pi' && primary_pi_pr_id != pr_id
                 button = $('#add_authorized_user_submit_button')
@@ -173,8 +173,8 @@ $(document).ready ->
                   $('#add-user-form').hide()
 
                   #Add the new elements
-                  primary_pi_full_name = $('#primary_pi_full_name').val()
-                  pr_full_name = $('#full_name').val()
+                  primary_pi_full_name = $('.add_user_dialog_box #primary_pi_full_name').val()
+                  pr_full_name = $('.add_user_dialog_box #full_name').val()
                   warning = I18n["protocol_information"]["change_primary_pi"]["warning"]
                   message1 = I18n["protocol_information"]["change_primary_pi"]["warning_prompt_1_1"]+
                     "(<strong>#{pr_full_name}</strong>)"+
@@ -261,9 +261,9 @@ $(document).ready ->
               click: ->
                 $('#edit_authorized_user_submit_button').attr('disabled', true)
 
-                role = $('#project_role_role').val()
-                primary_pi_pr_id = $('#primary_pi_pr_id').val()
-                pr_id = $('#pr_id').val()
+                role = $('.edit_user_dialog_box #project_role_role').val()
+                primary_pi_pr_id = $('.edit_user_dialog_box #primary_pi_pr_id').val()
+                pr_id = $('.edit_user_dialog_box #pr_id').val()
 
                 if role == 'primary-pi' && primary_pi_pr_id != pr_id
                   button = $('#edit_authorized_user_submit_button')
@@ -275,8 +275,8 @@ $(document).ready ->
                     $("#edit_project_role_#{pr_id}").hide()
 
                     #Add the new elements
-                    primary_pi_full_name = $('#primary_pi_full_name').val()
-                    pr_full_name = $('#full_name').val()
+                    primary_pi_full_name = $('.edit_user_dialog_box #primary_pi_full_name').val()
+                    pr_full_name = $('.edit_user_dialog_box #full_name').val()
                     warning = I18n["protocol_information"]["change_primary_pi"]["warning"]
                     message1 = I18n["protocol_information"]["change_primary_pi"]["warning_prompt_1_1"]+
                       "(<strong>#{pr_full_name}</strong>)"+

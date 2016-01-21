@@ -27,17 +27,21 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   before_filter :protocol_authorizer_edit, only: [:update_from_fulfillment, :edit, :update, :update_protocol_type]
 
   def index
+    @filterrific =
+      initialize_filterrific(Protocol, params[:filterrific],
+        select_options: {
+          with_status: [],
+          with_core: []
+        }
+    ) or return
+
+    @protocols = @filterrific.find.page(params[:page])
+    session[:breadcrumbs].clear
+
     respond_to do |format|
-      format.html {
-        session[:breadcrumbs].clear
-        render
-      }
-      format.json {
-        protocol_finder = Dashboard::ProtocolFinder.new(current_user, params)
-        @protocols = protocol_finder.protocols
-        @total_protocols = protocol_finder.total_protocols
-        render
-      }
+      format.html
+      format.js
+      format.json
     end
   end
 

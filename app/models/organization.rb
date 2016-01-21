@@ -64,6 +64,11 @@ class Organization < ActiveRecord::Base
   accepts_nested_attributes_for :submission_emails
   accepts_nested_attributes_for :available_statuses, :allow_destroy => true
 
+  scope :authorized_for_identity, -> (identity_id) {
+    joins(:service_providers).joins(:super_users).
+    where("service_providers.identity_id = ? OR super_users.identity_id = ?", identity_id, identity_id)
+  }
+
   def label
     abbreviation || name
   end

@@ -22,13 +22,7 @@ class Protocol < ActiveRecord::Base
 
   include RemotelyNotifiable
 
-  scope :for_identity, ->(identity) { joins(:project_roles).
-    where(project_roles: { identity_id: identity.id }).
-    where.not(project_roles: { project_rights: 'none' }) }
-
   audited
-
-  fuzzily_searchable :short_title
 
   has_many :study_types, :dependent => :destroy
   has_one :research_types_info, :dependent => :destroy
@@ -40,6 +34,7 @@ class Protocol < ActiveRecord::Base
   has_many :identities, :through => :project_roles
   has_many :service_requests
   has_many :sub_service_requests, through: :service_requests
+  has_many :organizations, through: :sub_service_requests
   has_many :affiliations, :dependent => :destroy
   has_many :impact_areas, :dependent => :destroy
   has_many :arms, :dependent => :destroy
@@ -121,6 +116,57 @@ class Protocol < ActiveRecord::Base
     validate :requester_included, :on => :create
     validate :primary_pi_exists
   end
+
+  filterrific(
+    default_filter_params: { archived: false },
+    available_filters: [
+      :search_query,
+      :sorted_by,
+      :for_identity_id,
+      :for_admin,
+      :archived,
+      :with_status,
+      :with_core
+    ]
+  )
+
+  scope :search_query, -> (query) {
+
+  }
+
+  scope :sorted_by, -> (sort_key) {
+
+  }
+
+  scope :for_identity, -> (identity) { joins(:project_roles).
+    where(project_roles: { identity_id: identity.id }).
+    where.not(project_roles: { project_rights: 'none' })
+  }
+
+  scope :for_identity_id, -> (identity_id) {
+    return nil if identity_id == '0'
+    joins(:project_roles).
+    where(project_roles: { identity_id: identity_id }).
+    where.not(project_roles: { project_rights: 'none' })
+  }
+
+  scope :for_admin, -> (identity_id) {
+    return nil if identity_id == '0'
+    joins(:organizations).
+    merge( Organization.authorized_for_identity(identity_id) ).distinct
+  }
+
+  scope :archived, -> (boolean) {
+    where(archived: boolean)
+  }
+
+  scope :with_status, -> (status) {
+
+  }
+
+  scope :with_core, -> (core) {
+
+  }
 
   def is_study?
     self.type == 'Study'

@@ -17,41 +17,48 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-:javascript
-  $(document).ready( function() {
-    Sparc.protocol.ready();
-  })
 
-  protocols_table_query_params = function(p) {
-    if($('#toggle-archived').data('showing-archived') == false) {
-      p['include_archived'] = 'false'
-    } else {
-      p['include_archived'] = 'true'
-    }
-    return p;
-  }
+.col-lg-3
+  .panel.panel-default
+    .panel-heading
+      Filter Protocols
+      = render_filterrific_spinner
+    .panel-body
+      #protocol_filter_form_display
+        = form_for_filterrific @filterrific do |form|
+          .form-group.row
+            = form.label :search_query, "Search", class: 'col-lg-3 control-label'
+            .col-lg-9
+              = form.text_field :search_query, class: 'form-control filterrific-periodically-observed'
 
-.bootstrap-table-dropdown-overflow
-  #protocols-toolbar
-    .btn-group
-      %button.btn.btn-success.dropdown-toggle#create-new-study-button{ type: 'button', 'aria-expanded' => 'false', data: { toggle: 'dropdown' }}
-        %span
-          .glyphicon.glyphicon-plus
-          New Protocol
-      %ul.dropdown-menu{ role: 'menu' }
-        %li= link_to "New Study", new_dashboard_protocol_path(protocol_type: 'study')
-        %li= link_to "New Project", new_dashboard_protocol_path(protocol_type: 'project')
-    %button.btn.btn-default#toggle-archived{ type: 'button', data: { showing_archived: 'true' } } Show Only Active
-  %table.protocols_table{ id: 'protocols_table', data: { toggle: 'table', search: 'true', show_columns: 'true', show_refresh:  'true', show_toggle: 'true', url: dashboard_protocols_path(format: :json), striped: 'true', toolbar: '#protocols-toolbar', show_export: 'true', export_types: ['excel'], row_style: 'protocols_row_style', side_pagination:  'server', pagination: 'true', page_size: '15', sort_name: 'id', sort_order: 'desc', query_params: 'protocols_table_query_params' } }
-    %thead.primary-header
-      %tr
-        %th{ data: { class: 'id', align: 'left', sortable: 'true', field: 'id' } }
-          ID
-        %th{ data: { class: 'title', align: 'left', sortable: 'true', field: 'title' } }
-          Short Title
-        %th{ data: { class: 'pis', align: 'left', sortable: 'true', field: 'pis' } }
-          PI(s)
-        %th{ data: { class: 'requests', align: 'left', field: 'requests' } }
-          Requests
-        %th{ data: { class: 'archive_this', align: 'center', sortable: 'false', field: 'archive' } }
-          Archive
+          .form-group.row
+            = form.label :archived, "Include Archived", class: 'col-lg-10 control-label'
+            .col-lg-2
+              = form.check_box :archived
+
+          .form-group.row
+            = form.label :for_identity_id, "My Protocols", class: 'col-lg-10 control-label'
+            .col-lg-2
+              = form.check_box :for_identity_id, {}, @user.id, "0"
+
+          .form-group.row
+            = form.label :for_admin, "My Admin Organizations", class: 'col-lg-10 control-label'
+            .col-lg-2
+              = form.check_box :for_admin, {}, @user.id, "0"
+
+          .form-group.row
+            = form.label :with_status, "Status", class: 'col-lg-3 control-label'
+            .col-lg-9
+              = form.select :with_status, @filterrific.select_options[:with_status], { include_blank: '- Any -' }, class: "form-control selectpicker"
+
+          .form-group.row
+            = form.label :with_core, "Core", class: 'col-lg-3 control-label'
+            .col-lg-9
+              = form.select :with_core, @filterrific.select_options[:with_core], { include_blank: '- Any -' }, class: "form-control selectpicker"
+
+    .panel-footer
+      = link_to 'Reset Filters', reset_filterrific_url
+
+.col-lg-9
+  #filterrific_results
+    = render partial: 'dashboard/protocols/protocols_list', locals: { protocols: @protocols }

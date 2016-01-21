@@ -177,6 +177,8 @@ GEM
       railties (>= 3.0.0)
     faker (1.6.1)
       i18n (~> 0.5)
+    filterrific (2.0.5)
+      rails (>= 3.1.0)
     formtastic (2.2.1)
       actionpack (>= 3.0)
     fuzzily (0.3.3)
@@ -485,6 +487,7 @@ DEPENDENCIES
   execjs
   factory_girl_rails
   faker
+  filterrific
   fuzzily
   grape (= 0.7.0)
   grape-entity (~> 0.4.4)

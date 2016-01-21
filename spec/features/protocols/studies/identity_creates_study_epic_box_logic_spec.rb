@@ -9,8 +9,18 @@ RSpec.describe "Identity creates Study", js: true do
   before :each do
     service_request.update_attribute(:status, 'first_draft')
     visit protocol_service_request_path service_request.id
-    expect(page).to have_css('.new-study')
-    click_link "New Study"
+    visit '/'
+    click_link 'South Carolina Clinical and Translational Institute (SCTR)'
+    wait_for_javascript_to_finish
+    click_link 'Office of Biomedical Informatics'
+    wait_for_javascript_to_finish
+    click_button 'Add', match: :first
+    wait_for_javascript_to_finish
+    click_button 'Yes'
+    wait_for_javascript_to_finish
+    find('.submit-request-button').click
+    click_link 'New Research Study'
+    wait_for_javascript_to_finish
     find('#study_selected_for_epic_true').click()
 
   end

@@ -24,41 +24,8 @@ require 'rails_helper'
 RSpec.describe 'Protocol' do
   let_there_be_lane
   let_there_be_j
-  build_service_request
-
-  build_study_type_question_groups()
-  build_study_type_questions()
-  
-  let!(:study) {
-    study = Study.create(attributes_for(:protocol))
-    human_subjects_info = build(:human_subjects_info, pro_number: nil, hr_number: nil)
-    study = build(:study, human_subjects_info: human_subjects_info)
-    study.update_attributes(funding_status: "funded", funding_source: "federal", indirect_cost_rate: 50.0, start_date: Time.now, end_date: Time.now + 2.month, study_type_question_group_id: StudyTypeQuestionGroup.active.pluck(:id).first)
-    study.save validate: false
-    identity = Identity.find_by_ldap_uid('jug2')
-    create(
-        :project_role,
-        protocol_id:     study.id,
-        identity_id:     identity.id,
-        project_rights:  "approve",
-        role:            "primary-pi")
-    identity2 = Identity.find_by_ldap_uid('jpl6@musc.edu')
-    create(
-        :project_role,
-        protocol_id:     study.id,
-        identity_id:     identity2.id,
-        project_rights:  "approve",
-        role:            "business-grants-manager")
-    service_request.update_attribute(:protocol_id, study.id)
-    study.reload
-    study
-  }
-
-  build_study_type_answers()
-
-  let!(:project) {
-    project = Project.create(attributes_for(:protocol))
-  }
+  build_service_request_with_study()
+  build_service_request_with_project()
 
   describe "#active?" do
 

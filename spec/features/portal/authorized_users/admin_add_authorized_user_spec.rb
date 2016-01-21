@@ -105,13 +105,38 @@ RSpec.feature 'User wants to add an authorized user', js: true do
         end
       end
 
-      context 'and tries to make them a Primary PI (Assuming there is already one)' do
-        scenario 'and sees a multiple Primary PI error on the protocol' do
-          given_i_have_clicked_the_add_authorized_user_button
-          when_i_select_a_user_from_the_search
-          when_i_set_the_role_to 'Primary PI'
-          when_i_submit_the_form
-          then_i_should_see_an_error_of_type 'only 1 Primary PI'
+      context 'and sets their role to Primary PI' do
+        context 'and submits the form' do
+          scenario 'and sees the warning message' do
+            given_i_have_clicked_the_add_authorized_user_button
+            when_i_select_a_user_from_the_search
+            when_i_set_the_role_to 'Primary PI'
+            when_i_submit_the_form
+            then_i_should_see_the_warning_message
+          end
+
+          context 'and submits the form on the warning message' do
+            scenario 'and sees the Primary PI has changed' do
+              given_i_have_clicked_the_add_authorized_user_button
+              when_i_select_a_user_from_the_search
+              when_i_set_the_role_to 'Primary PI'
+              when_i_submit_the_form
+              when_i_submit_the_form
+              then_i_should_see_the_new_primary_pi
+            end
+
+            context 'with errors in the form' do
+              scenario 'and sees errors' do
+                given_i_have_clicked_the_add_authorized_user_button
+                when_i_select_a_user_from_the_search
+                when_i_set_the_role_to 'Primary PI'
+                when_i_have_an_error
+                when_i_submit_the_form
+                when_i_submit_the_form
+                then_i_should_see_an_error_of_type 'other credentials'
+              end
+            end
+          end
         end
       end
     end
@@ -169,6 +194,10 @@ RSpec.feature 'User wants to add an authorized user', js: true do
     click_button("add_authorized_user_submit_button")
   end
 
+  def when_i_have_an_error
+    when_i_set_the_credentials_to 'Other'
+  end
+
   def then_i_should_see_the_add_authorized_user_dialog
     expect(page).to have_text 'Add User'
   end
@@ -190,10 +219,27 @@ RSpec.feature 'User wants to add an authorized user', js: true do
     end
   end
 
+  def then_i_should_see_the_warning_message
+    expect(page).to have_text("**WARNING**")
+  end
+
+  def then_i_should_see_the_new_primary_pi
+    wait_for_javascript_to_finish
+    brian_id = Identity.find_by_ldap_uid("bjk7@musc.edu")
+
+    expect(page).to_not have_selector("#users td", text: "Julia Glenn")
+    expect(page).to have_selector("#users td", text: "Brian Kelsey")
+    expect(page).to have_selector('#users td', text: "Primary PI")
+    
+    expect(page).to have_selector('#information td', text: "Brian Kelsey")
+  end
+
   def then_i_should_see_an_error_of_type error_type
     case error_type
       when 'other fields'
         expect(page).to have_text("Must specify this User's Role.")
+        expect(page).to have_text("Must specify this User's Credentials.")
+      when 'other credentials'
         expect(page).to have_text("Must specify this User's Credentials.")
       when 'fields missing'
         expect(page).to have_text("Role can't be blank")

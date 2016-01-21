@@ -215,6 +215,14 @@ RSpec.describe "edit study epic box", js: true do
 
         end
       end
+
+      context 'change from a Study to a Project' do
+        it 'should update the can_edit_study column to false' do
+          select 'Project', from: 'protocol_type'
+          click_button "Change Type"
+          expect(Protocol.find(study.id).can_edit_study).to eq false
+        end
+      end
     end
     context 'epic box answers are 6: NO, YES, NO, NO, NO, NO' do
 

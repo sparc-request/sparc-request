@@ -47,49 +47,6 @@ class Portal::ProtocolsController < Portal::BaseController
     end
   end
 
-  def new
-    @protocol = Study.new
-    @protocol.requester_id = current_user.id
-    @protocol.populate_for_edit
-    @errors = nil
-    @portal = true
-    @current_step = 'protocol'
-    session[:protocol_type] = 'study'
-  end
-
-  def create
-    @current_step = params[:current_step]
-    new_study_attrs = params[:study] || Hash.new
-    @protocol = Study.new(new_study_attrs.merge(study_type_question_group_id: StudyTypeQuestionGroup.active.pluck(:id).first))
-    @protocol.validate_nct = true
-    @portal = params[:portal]
-    session[:protocol_type] = 'study'
-    @portal = params[:portal]
-
-    if @current_step == 'go_back'
-      @current_step = 'protocol'
-      @protocol.populate_for_edit
-    elsif @current_step == 'protocol' and @protocol.group_valid? :protocol
-      @current_step = 'user_details'
-      @protocol.populate_for_edit
-    elsif @current_step == 'user_details' and @protocol.valid?
-      @protocol.save
-      @current_step = 'return_to_portal'
-      if USE_EPIC
-        if @protocol.selected_for_epic
-          @protocol.ensure_epic_user
-          Notifier.notify_for_epic_user_approval(@protocol).deliver unless QUEUE_EPIC
-        end
-      end
-    elsif @current_step == 'cancel_protocol'
-      @current_step = 'return_to_portal'
-    else
-      # TODO: Is this neccessary?
-      @errors = @current_step == 'protocol' ? @protocol.grouped_errors[:protocol].try(:messages) : @protocol.grouped_errors[:user_details].try(:messages)
-      @protocol.populate_for_edit
-    end
-  end
-
   def update_from_fulfillment
     if @protocol.update_attributes(params[:protocol])
       render :nothing => true
@@ -145,10 +102,10 @@ class Portal::ProtocolsController < Portal::BaseController
     # Using update_attribute here is intentional, type is a protected attribute
     @protocol_type = params[:protocol][:type]
     if @protocol.update_attribute(:type, @protocol_type)
-      if @protocol_type == 'Study'
-        @protocol.update_attribute(:transition_to_study, true)
+      if @protocol_type == 'Study' && @protocol.selected_for_epic == nil
+        @protocol.update_attribute(:can_edit_study, true)
       elsif @protocol_type == 'Project'
-        @protocol.update_attribute(:transition_to_study, false)
+        @protocol.update_attribute(:can_edit_study, false)
       end
       @protocol.update_attribute(:study_type_question_group_id, StudyTypeQuestionGroup.active.pluck(:id).first)
       if params[:sub_service_request_id]

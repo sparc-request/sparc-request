@@ -340,7 +340,7 @@ class ServiceRequestsController < ApplicationController
     if @sub_service_request # if we are editing a sub service request we should just update it's status
       @sub_service_request.update_attribute(:status, 'draft')
     else
-      @service_request.update_status('draft')
+      @service_request.update_status('draft', @service_request.submitted_at.present?)
       @service_request.ensure_ssr_ids
     end
 
@@ -484,6 +484,10 @@ class ServiceRequestsController < ApplicationController
 
   def new_document
     @service_list = @service_request.service_list
+  end
+
+  def increment_click_counter
+    ClickCounter.first.increment!(:click_count)
   end
 
   private
@@ -685,5 +689,4 @@ class ServiceRequestsController < ApplicationController
     end
     # end document saving stuff
   end
-
 end

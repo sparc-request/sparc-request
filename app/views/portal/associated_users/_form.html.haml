@@ -18,8 +18,13 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-= hidden_field_tag "protocol_id", protocol_role.protocol_id
 = f.hidden_field :identity_id
+= hidden_field_tag :protocol_id, protocol_role.protocol_id
+- if protocol
+  = hidden_field_tag :change_primary_pi, 'false'
+  = hidden_field_tag :pr_id, protocol_role.id
+  = hidden_field_tag :primary_pi_pr_id, protocol.primary_pi_project_role.id
+  = hidden_field_tag :primary_pi_full_name, protocol.primary_principal_investigator.full_name
 - if @sub_service_request
   = hidden_field_tag :sub_service_request_id, @sub_service_request.id
 .details
@@ -113,16 +118,24 @@
         = select_tag "identity[subspecialty]", options_for_select((SUBSPECIALTIES.sort), identity.subspecialty), :prompt => t(:portal_user_form)[:subspecialty_prompt]
         %br
       #project_rights
-        %strong= t(:portal_user_form)[:rights][:header]
+        %strong
+          = t(:portal_user_form)[:rights][:header]
         %br
-          %ul.rights_labels
-            %li= f.label :project_rights_none, t(:portal_user_form)[:rights][:none]
-            %li= f.label :project_rights_view, t(:portal_user_form)[:rights][:view]
-            %li= f.label :project_rights_request, t(:portal_user_form)[:rights][:request]
-            %li= f.label :project_rights_approve, t(:portal_user_form)[:rights][:approve]
-          %ul.rights_radios
+          %ul.rights
             - disable = (f.object.role == 'pi' or f.object.role == 'primary-pi') ? true : false
-            %li= f.radio_button :project_rights, 'none', :disabled =>  disable
-            %li= f.radio_button :project_rights, 'view', :disabled => disable
-            %li= f.radio_button :project_rights, 'request', :disabled => disable
-            %li= f.radio_button :project_rights, 'approve'
+            %li
+              .rights_none
+                = f.label :project_rights_none, t(:portal_user_form)[:rights][:none]
+                = f.radio_button :project_rights, 'none', disabled:  disable
+            %li
+              .rights_view
+                = f.label :project_rights_view, t(:portal_user_form)[:rights][:view]
+                = f.radio_button :project_rights, 'view', disabled: disable
+            %li
+              .rights_request
+                = f.label :project_rights_request, t(:portal_user_form)[:rights][:request]
+                = f.radio_button :project_rights, 'request', disabled: disable
+            %li
+              .rights_approve
+                = f.label :project_rights_approve, t(:portal_user_form)[:rights][:approve]
+                = f.radio_button :project_rights, 'approve'

@@ -35,21 +35,20 @@ RSpec.describe "User wants to edit a Study", js: true do
   context 'and clicks the Edit Study button' do
     scenario 'and sees the Protocol Information form' do
       given_i_am_viewing_the_service_request_protocol_page
-      when_i_select_a_study
       when_i_click_the_edit_study_button
       then_i_should_see_the_protocol_information_page
     end
 
     scenario 'and sees the cancel button' do
       given_i_am_viewing_the_service_request_protocol_page
-      when_i_select_a_study
+      
       when_i_click_the_edit_study_button
       then_i_should_see_the_nav_button_with_text 'Cancel'
     end
     
     scenario 'and sees the continue button' do
       given_i_am_viewing_the_service_request_protocol_page
-      when_i_select_a_study
+      
       when_i_click_the_edit_study_button
       then_i_should_see_the_nav_button_with_text 'Continue'
     end
@@ -139,13 +138,8 @@ RSpec.describe "User wants to edit a Study", js: true do
 
   def given_i_am_viewing_the_protocol_information_page
     given_i_am_viewing_the_service_request_protocol_page
-    when_i_select_a_study
+    
     when_i_click_the_edit_study_button
-  end
-
-  def when_i_select_a_study
-    study = Protocol.first
-    select "#{study.id} - #{study.short_title}", from: "service_request_protocol_id"
   end
 
   def when_i_click_the_edit_study_button
@@ -245,6 +239,25 @@ RSpec.describe "User wants to edit a Study", js: true do
 
   def then_i_should_see_the_authorized_users_page
     expect(page).to have_text("STEP 1: Add Users")
+  end
+
+  def when_i_create_a_new_study
+    visit '/'
+    click_link 'South Carolina Clinical and Translational Institute (SCTR)'
+    wait_for_javascript_to_finish
+    click_link 'Office of Biomedical Informatics'
+    wait_for_javascript_to_finish
+    click_button 'Add', match: :first
+    wait_for_javascript_to_finish
+    click_button 'Yes'
+    wait_for_javascript_to_finish
+    find('.submit-request-button').click
+    click_link 'New Research Study'
+    wait_for_javascript_to_finish
+  end
+
+  def then_i_fill_out_study_info
+
   end
 
   def then_i_should_see_the_updated_study

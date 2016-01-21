@@ -200,7 +200,7 @@ $(document).ready ->
 
       $('.draggable')
         .draggable({
-          containment: 'docu  ment'
+          containment: 'document'
           appendTo: 'body'
           helper: 'clone'
           cursor: 'url(closedhand.cur),move'

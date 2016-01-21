@@ -22,12 +22,15 @@
   - @protocol_role.errors.messages.merge!(@identity.errors.messages)
   - @entity_errors = @protocol_role.errors.to_json
   :plain
-    $('#edit_authorized_user_submit_button').attr('disabled', false);
-    Sparc.home.handle_ajax_errors("#{escape_javascript(@entity_errors)}", "Authorized User");
+    $('#add_authorized_user_submit_button').attr('disabled', false)
+    Sparc.home.handle_ajax_errors("#{escape_javascript(@entity_errors)}", "Authorized User")
 - else
   :plain
-    $('.edit-associated-user-dialog').dialog('close').dialog('destroy').remove();
-    $('.add-associated-user-dialog').dialog('close').dialog('destroy').remove();
-    $("#associated_users").html("#{escape_javascript(render(:partial =>'portal/sub_service_requests/associated_users'))}");
-    Sparc.associated_users.create_edit_associated_user_dialog();
-    Sparc.associated_users.create_add_associated_user_dialog();
+    $('.add-associated-user-dialog').dialog('close').dialog('destroy').remove()
+    $('.edit-associated-user-dialog').dialog('close').dialog('destroy').remove()
+    
+    $("#associated_users").html("#{escape_javascript(render(partial: 'portal/sub_service_requests/associated_users'))}")
+    $('#information').html("#{escape_javascript(render(partial: 'portal/sub_service_requests/ssr_information', locals: {protocol: @protocol, sub_service_request: @sub_service_request}))}")
+    
+    Sparc.associated_users.create_add_associated_user_dialog()
+    Sparc.associated_users.create_edit_associated_user_dialog()

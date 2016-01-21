@@ -52,6 +52,9 @@ RSpec.describe 'as a user on catalog page' do
     click_link('Office of Biomedical Informatics')
     click_button("Add")
 
+    find("button.ui-button .ui-button-text", text: "Yes").click
+    wait_for_javascript_to_finish
+    
     click_link("Clinical and Translational Research Center (CTRC)")
     click_button("Add")
     find('.submit-request-button').click

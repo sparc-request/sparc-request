@@ -41,9 +41,11 @@ class ProtocolsController < ApplicationController
 
   def create
     @portal = params[:portal]
+
     unless from_portal?
       @service_request = ServiceRequest.find session[:service_request_id]
     end
+
     @current_step = cookies['current_step']
 
     new_protocol_attrs = params[:study] || params[:project] || Hash.new
@@ -67,9 +69,13 @@ class ProtocolsController < ApplicationController
       @current_step = 'return_to_service_request'
       flash[:notice] = "New #{@protocol.type.downcase} created"
 
-      if !from_portal? && @service_request.status == "first_draft"
-        @service_request.update_attributes(status: "draft")
+      if @service_request
+        @service_request.update_attribute(:protocol_id, @protocol.id) unless @service_request.protocol.present?
+        @service_request.update_attribute(:status, "draft")
       end
+
+      @current_step = 'return_to_service_request'
+      flash[:notice] = "New #{@protocol.type.downcase} created"
     else
       @protocol.populate_for_edit
     end
@@ -77,7 +83,7 @@ class ProtocolsController < ApplicationController
     cookies['current_step'] = @current_step
 
     if @current_step != 'return_to_service_request'
-      resolve_layout
+      resolve_layout  
     end
   end
 

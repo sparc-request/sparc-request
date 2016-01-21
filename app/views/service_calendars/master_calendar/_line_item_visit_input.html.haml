@@ -1,0 +1,21 @@
+-# locals: line_item, visit, tab, portal, arm, totals_hash (when tab == 'calendar'), unit_minimum (when tab == 'calendar')
+- base_url = "/dashboard/service_requests/#{line_item.service_request_id}/service_calendars?visit=#{visit.id}"
+- case tab
+- when 'template'
+  = check_box_tag "visits_#{visit.id}", 1, (visit.research_billing_qty.to_i > 0 || visit.insurance_billing_qty.to_i > 0 || visit.effort_billing_qty.to_i > 0), class: "line_item_visit_template visits_#{visit.id}", data: { arm_id: arm.id }, update: "#{base_url}&tab=template&portal=#{portal}"
+- when 'quantity'
+  .line_item_visit_quantity.text-center
+    = visit.research_billing_qty.to_i + visit.insurance_billing_qty.to_i + visit.effort_billing_qty.to_i
+- when 'billing_strategy'
+  .row
+    .col-sm-2.col-sm-offset-1.text-center
+      = editable visit, :research_billing_qty, url: "#{base_url}&tab=billing_strategy&column=research_billing_qty&portal=#{portal}"
+      -# = text_field_tag "visits_#{visit.id}_research_billing_qty", visit.research_billing_qty, current_quantity: visit.research_billing_qty, previous_quantity: visit.research_billing_qty, data: { unit_minimum: unit_minimum, arm_id: arm.id }, class: "form-control line_item_visit_research_billing_qty line_item_visit_billing visits_#{visit.id}", update: "#{base_url}&tab=billing_strategy&column=research_billing_qty&portal=#{portal}"
+    .col-sm-2.text-center
+      = editable visit, :insurance_billing_qty, url: "#{base_url}&tab=billing_strategy&column=insurance_billing_qty&portal=#{portal}"
+      -# = text_field_tag "visits_#{visit.id}_insurance_billing_qty", visit.insurance_billing_qty, current_quantity: visit.insurance_billing_qty, previous_quantity: visit.insurance_billing_qty, data: { unit_minimum: unit_minimum, arm_id: arm.id }, class: "form-control line_item_visit_billing visits_#{visit.id}", update: "#{base_url}&tab=billing_strategy&column=insurance_billing_qty&portal=#{portal}"
+    .col-sm-1.text-center
+      = editable visit, :effort_billing_qty, url: "#{base_url}&tab=billing_strategy&column=effort_billing_qty&portal=#{portal}"
+      -# = text_field_tag "visits_#{visit.id}_effort_billing_qty", visit.effort_billing_qty, current_quantity: visit.effort_billing_qty, previous_quantity: visit.effort_billing_qty, data: { unit_minimum: unit_minimum, arm_id: arm.id }, class: "form-control line_item_visit_billing visits_#{visit.id}", update: "#{base_url}&tab=billing_strategy&column=effort_billing_qty&portal=#{portal}"
+- when 'calendar'
+  = label_tag nil, qty_cost_label(visit.research_billing_qty + visit.insurance_billing_qty, currency_converter(totals_hash["#{visit.id}"])), class: "line_item_visit_pricing"

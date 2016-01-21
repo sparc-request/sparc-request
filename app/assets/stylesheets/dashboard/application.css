@@ -29,6 +29,7 @@
  *= require bootstrap-table
  *= require bootstrap-table-custom
  *= require bootstrap-datetimepicker
+ *= require editable/bootstrap-editable
  *= require 960
  *= require jquery.toastmessage
 */

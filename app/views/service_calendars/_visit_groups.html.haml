@@ -1,7 +1,3 @@
-- base_url          = "/service_requests/#{service_request.id}/service_calendars"
-- day_url           = base_url + "/set_day"
-- window_before_url = base_url + "/set_window_before"
-- window_after_url  = base_url + "/set_window_after"
 - visit_groups.each_with_index do |visit_group, index|
   %th.visit_group_box.col-sm-1
     .row.text-center
@@ -13,11 +9,7 @@
         %span{ id: "visit-after-display-#{visit_group.id}" }= visit_group.window_after || 0
     .row.visit_group_names.text-center
       .col-sm-12.text-center{ data: { visit_group_id: visit_group.id } }
-        - if tab == 'calendar'
-          %span= visit_group.name
-        - else
-          = text_field_tag "visit_group_#{visit_group.id}", visit_group.name, class: "form-control visit_group_#{index} visit_name", data: { visit_group_id: visit_group.id }, disabled: (tab == 'consolidated' ? true : false)
-
+        %span= visit_group.name
 - (visit_groups.size...Visit.per_page).each do |index|
   %th.col-sm-1.text-center{ class: "visit_group_#{index}" }
     &nbsp

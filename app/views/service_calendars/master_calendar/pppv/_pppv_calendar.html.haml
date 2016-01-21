@@ -22,3 +22,9 @@
   = render partial: 'service_calendars/master_calendar/pppv/pppv_header', locals: { service_request: service_request, arm: arm, tab: @tab, portal: @portal, sub_service_request: @sub_service_request, review: review, page: page, pages: pages, merged: merged, visit_groups: visit_groups }
 %tbody
   = render partial: 'service_calendars/master_calendar/pppv/pppv_line_items', locals: { service_request: service_request, arm: arm, tab: @tab, portal: @portal, sub_service_request: @sub_service_request, review: review }
+
+:javascript
+  $(document).ready( function() {
+    $('.selectpicker').selectpicker();
+    $('.editable').editable();
+  })

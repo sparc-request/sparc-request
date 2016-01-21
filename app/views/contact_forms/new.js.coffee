@@ -7,4 +7,4 @@ formDialog = $('.contact-form-dialog').html("<%= escape_javascript render 'form'
 
 $('.new_contact_form').on 'ajax:success', ->
   formDialog.dialog('close')
-  $('.flash').html('<div id="flash_notice">Message sent</div>')
+  $('.align-element-nav-bar').html('<div id="flash_notice">Message sent</div>')

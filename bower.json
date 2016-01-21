@@ -16,5 +16,8 @@
     "vendor/assets/components",
     "test",
     "tests"
-  ]
+  ],
+  "dependencies": {
+    "jquery-migrate": "~1.2.1"
+  }
 }

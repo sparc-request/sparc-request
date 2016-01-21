@@ -50,17 +50,25 @@ $(document).ready ->
       $('.user_credentials').live 'change', ->
         Sparc.associated_users.redoCredentials()
 
-      # Set the rights if the role is 'pi' or 'business-grants-manager'
-      # and disable all other radio buttons if 'pi'
-      $('#project_role_role').live 'change', ->
+      $(document).on 'change', '.add_user_dialog_box #project_role_role', ->
         role = $(this).val()
         if role == 'pi' or role == 'primary-pi' or role == 'business-grants-manager'
-          $('#project_role_project_rights_none').attr('disabled', true)
-          $('#project_role_project_rights_view').attr('disabled', true)
-          $('#project_role_project_rights_request').attr('disabled', true)
-          $('#project_role_project_rights_approve').attr('checked', true)
+          $('.add_user_dialog_box #project_role_project_rights_none').attr('disabled', true)
+          $('.add_user_dialog_box #project_role_project_rights_view').attr('disabled', true)
+          $('.add_user_dialog_box #project_role_project_rights_request').attr('disabled', true)
+          $('.add_user_dialog_box #project_role_project_rights_approve').attr('checked', true)
         else
-          $('.rights_radios input').attr('disabled', false)
+          $('.rights input').attr('disabled', false)
+
+      $(document).on 'change', '.edit_user_dialog_box #project_role_role', -> 
+        role = $(this).val()
+        if role == 'pi' or role == 'primary-pi' or role == 'business-grants-manager'
+          $('.edit_user_dialog_box #project_role_project_rights_none').attr('disabled', true)
+          $('.edit_user_dialog_box #project_role_project_rights_view').attr('disabled', true)
+          $('.edit_user_dialog_box #project_role_project_rights_request').attr('disabled', true)
+          $('.edit_user_dialog_box #project_role_project_rights_approve').attr('checked', true)
+        else
+          $('.rights input').attr('disabled', false)
 
       $(document).on 'click', '.edit-associated-user-button', ->
         if $(this).data('permission')
@@ -121,11 +129,10 @@ $(document).ready ->
           $('.permissions-dialog').dialog('open')
           $('.permissions-dialog .text').html('Edit.')
 
-      $('#associated_user_role').live 'change', ->
+      $(document).on 'change', '#associated_user_role', ->
         roles_to_hide = ['', 'grad-research-assistant', 'undergrad-research-assistant', 'research-assistant-coordinator', 'technician', 'general-access-user', 'business-grants-manager', 'other']
         role = $(this).val()
         if role == 'other' then $('.role_other').show() else $('.role_other').hide()
-        # if role == '' then Sparc.associated_users.validateRolePresence(role) else Sparc.associated_users.noProblems()
         if roles_to_hide.indexOf(role) >= 0
           $('.commons_name').hide()
           $('.subspecialty').hide()
@@ -337,8 +344,7 @@ $(document).ready ->
             $('#edit_authorized_user_cancel_button').children('span').text('Cancel')
             $('.edit_user_dialog_box .ui-dialog-titlebar').children('.ui-dialog-title').text('Edit an Authorized User')
             $('.change_ppi_prompt').remove()
-            pr_id = $('#pr_id').val()
-            $("#edit_project_role_#{pr_id}").show()
+            $('.edit-associated-user-dialog .associated_users_form').show()
 
     reset_fields: () ->
       $('.errorExplanation').html('').hide()

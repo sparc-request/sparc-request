@@ -111,11 +111,7 @@ class ServiceRequestsController < ApplicationController
   def protocol
     cookies.delete :current_step
     @service_request.update_attribute(:service_requester_id, current_user.id) if @service_request.service_requester_id.nil?
-    if @sub_service_request.nil?
-      studies = current_user.project_roles.map{|pr| pr.protocol unless ['view','none'].include?(pr.project_rights) || pr.protocol.type.eql?("Project")}.compact
-    end
-    @studies = @sub_service_request.nil? ? studies : @service_request.protocol.type.eql?("Study") ? [@service_request.protocol] : []
-    @projects = @sub_service_request.nil? ? current_user.projects(:order => 'id') : @service_request.protocol.type.eql?("Project")? [@service_request.protocol] : []
+    
     if session[:saved_protocol_id]
       @service_request.protocol = Protocol.find session[:saved_protocol_id]
       session.delete :saved_protocol_id
@@ -340,7 +336,7 @@ class ServiceRequestsController < ApplicationController
     if @sub_service_request # if we are editing a sub service request we should just update it's status
       @sub_service_request.update_attribute(:status, 'draft')
     else
-      @service_request.update_status('draft')
+      @service_request.update_status('draft', @service_request.submitted_at.present?)
       @service_request.ensure_ssr_ids
     end
 
@@ -484,6 +480,10 @@ class ServiceRequestsController < ApplicationController
 
   def new_document
     @service_list = @service_request.service_list
+  end
+
+  def increment_click_counter
+    ClickCounter.first.increment!(:click_count)
   end
 
   private
@@ -685,5 +685,4 @@ class ServiceRequestsController < ApplicationController
     end
     # end document saving stuff
   end
-
 end

@@ -287,7 +287,8 @@ $(document).ready ->
       })
 
     renderProtocolAccordionTab: (protocol_id) ->
-      $(".protocol-information-#{protocol_id}").html("<img src='/assets/portal/spinner.gif' alt='Spinner'><br />Please be patient while the protocol/study loads.")
+      message = I18n["protocol_information"]["wait_message"]
+      $(".protocol-information-#{protocol_id}").html("<img src='/assets/portal/spinner.gif' alt='Spinner'><br />#{message}")
       random_number = Math.floor(Math.random()*10101010101)
       $.ajax({
         method: 'get'

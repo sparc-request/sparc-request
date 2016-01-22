@@ -77,16 +77,10 @@
 
 %br
 
-- if protocol.has_first_draft_service_request?
+- if !protocol.service_requests.present? || only_has_first_draft_requests(protocol) || has_draft_request(protocol)
   .service-request-title.ui-corner-top= t(:protocol_information)[:service_requests]
   .service_request-body
-    %table
-      %tr.width-100
-        %th.request-in-progress.width-100= 'Request in Progress'
-- elsif !protocol.service_requests.present?
-  .service-request-title.ui-corner-top= t(:protocol_information)[:service_requests]
-  .service_request-body
-  %a.add-services-button{:href => permission ? root_path(:protocol_id => protocol.id) : "javascript:void(0);", :'data-permission' => permission.to_s}= t(:protocol_information)[:add_services]
+  %a.add-services-button{:href => permission ? root_path(protocol_id: protocol.id, from_portal: true, has_draft: has_draft_request(protocol)) : "javascript:void(0);", :'data-permission' => permission.to_s}= t(:protocol_information)[:add_services]
 - else
   .service-request-title.ui-corner-top= t(:protocol_information)[:service_requests]
   .service_request-body

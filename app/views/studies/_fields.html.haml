@@ -272,7 +272,7 @@
             = f.fields_for :affiliations, f.object.affiliations.sort_by(&:position) do |rt|
               .field{:class => rt.object.name}
                 = rt.label :name, "#{Affiliation::TYPES[rt.object.name]}:"
-                = rt.check_box "_destroy", {:checked => !rt.object.new}, false, true
+                = rt.check_box "_destroy", {:checked => (!rt.object.new && !rt.object.marked_for_destruction?)}, false, true
                 = rt.hidden_field :name, :value => rt.object.name
         %fieldset
           %legend= t(:study_form)[:type]
@@ -280,7 +280,7 @@
             = f.fields_for :study_types, f.object.study_types.sort_by(&:position) do |rt|
               .field{:class => rt.object.name}
                 = rt.label :name, "#{StudyType::TYPES[rt.object.name]}:"
-                = rt.check_box "_destroy", {:checked => !rt.object.new}, false, true
+                = rt.check_box "_destroy", {:checked => (!rt.object.new && !rt.object.marked_for_destruction?)}, false, true
                 = rt.hidden_field :name, :value => rt.object.name
 
     %td.box-padding
@@ -294,7 +294,7 @@
             = f.fields_for :impact_areas, f.object.impact_areas.sort_by(&:position) do |rt|
               .field{:class => rt.object.name}
                 = rt.label :name, "#{ImpactArea::TYPES[rt.object.name]}:"
-                = rt.check_box "_destroy", {:checked => !rt.object.new}, false, true
+                = rt.check_box "_destroy", {:checked => (!rt.object.new && !rt.object.marked_for_destruction?)}, false, true
                 = rt.hidden_field :name, :value => rt.object.name
                 - if rt.object.name == "other"
                   .field.impact_other

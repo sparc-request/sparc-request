@@ -65,6 +65,9 @@ class Portal::AssociatedUsersController < Portal::BaseController
     @identity = Identity.find @protocol_role.identity_id
 
     if @protocol_role.unique_to_protocol? && @protocol_role.fully_valid?
+      if params[:change_primary_pi] == "true"
+        ProjectRole.find(params[:primary_pi_pr_id]).destroy
+      end
       @protocol_role.save
       @identity.update_attributes params[:identity]
       if SEND_AUTHORIZED_USER_EMAILS
@@ -83,7 +86,7 @@ class Portal::AssociatedUsersController < Portal::BaseController
     if params[:sub_service_request_id]
       @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
       @protocol = @sub_service_request.service_request.protocol
-      render 'portal/admin/update_associated_users'
+      render 'portal/admin/create_authorized_users'
     else
       respond_to do |format|
         format.js
@@ -102,6 +105,9 @@ class Portal::AssociatedUsersController < Portal::BaseController
     @protocol_role.assign_attributes params[:project_role]
 
     if @protocol_role.fully_valid?
+      if params[:change_primary_pi] == "true"
+        ProjectRole.find(params[:primary_pi_pr_id]).destroy
+      end
       @protocol_role.save
       @identity.update_attributes params[:identity]
       if SEND_AUTHORIZED_USER_EMAILS
@@ -129,7 +135,7 @@ class Portal::AssociatedUsersController < Portal::BaseController
     if params[:sub_service_request_id]
       @protocol = Protocol.find(params[:protocol_id])
       @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
-      render 'portal/admin/update_associated_users'
+      render 'portal/admin/update_authorized_users'
     else
       respond_to do |format|
         format.js
@@ -156,7 +162,7 @@ class Portal::AssociatedUsersController < Portal::BaseController
     if params[:sub_service_request_id]
       @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
       @protocol = @sub_service_request.service_request.protocol
-      render 'portal/admin/update_associated_users'
+      render 'portal/admin/destroy_authorized_users'
     else
       respond_to do |format|
         format.js

@@ -320,6 +320,11 @@ class Identity < ActiveRecord::Base
   ########################### COLLECTION METHODS ################################
   ###############################################################################
 
+  def authorized_admin_organizations
+    # returns organizations for which user is service provider or super user
+    Organization.authorized_for_identity(self.id).distinct || []
+  end
+
   # Collects all organizations that this identity has catalog manager permissions on, as well as
   # any child (deep) of any of those organizations.
   # Returns an array of organizations.

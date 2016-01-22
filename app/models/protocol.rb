@@ -130,16 +130,20 @@ class Protocol < ActiveRecord::Base
   )
 
   scope :search_query, -> (search_term) {
+    # Searches protocols based on short_title, title, id, and associated_users
+    # Protects against SQL Injection with ActiveRecord::Base::sanitize
     joins(:identities).
     where(
-      "protocols.short_title like \"%#{search_term}%\" OR "\
+      "protocols.short_title like "\
+      "\"%#{search_term = ActiveRecord::Base::sanitize(search_term)}%\" OR "\
       "protocols.title like \"%#{search_term}%\" OR "\
       "protocols.id = \"#{search_term}\" OR "\
       "MATCH(identities.first_name, identities.last_name) AGAINST (\"#{search_term}\")"
     ).distinct
   }
 
-  scope :for_identity, -> (identity) { joins(:project_roles).
+  scope :for_identity, -> (identity) {
+    joins(:project_roles).
     where(project_roles: { identity_id: identity.id }).
     where.not(project_roles: { project_rights: 'none' })
   }
@@ -152,6 +156,7 @@ class Protocol < ActiveRecord::Base
   }
 
   scope :for_admin, -> (identity_id) {
+    # returns protocols with ssrs in orgs authorized for identity_id
     return nil if identity_id == '0'
     joins(:organizations).
     merge( Organization.authorized_for_identity(identity_id) ).distinct
@@ -162,12 +167,15 @@ class Protocol < ActiveRecord::Base
   }
 
   scope :with_status, -> (status) {
+    # returns protocols with ssrs in status
     joins(:sub_service_requests).
     where(sub_service_requests: { status: status }).distinct
   }
 
-  scope :with_core, -> (core) {
-
+  scope :with_core, -> (org_id) {
+    # returns protocols with ssrs in org_id
+    joins(:sub_service_requests).
+    where(sub_service_requests: { organization_id: org_id }).distinct
   }
 
   def is_study?

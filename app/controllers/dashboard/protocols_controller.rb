@@ -31,7 +31,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
       initialize_filterrific(Protocol, params[:filterrific],
         select_options: {
           with_status: AVAILABLE_STATUSES.invert,
-          with_core: []
+          with_core: @user.authorized_admin_organizations.map{ |org| [org.name, org.id] }
         }
     ) or return
 

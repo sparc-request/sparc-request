@@ -18,6 +18,43 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-# Place all the behaviors and hooks related to the matching controller here.
-# All this logic will automatically be available in application.js.
-# You can use CoffeeScript in this file: http://jashkenas.github.com/coffee-script/
+require 'rails_helper'
+
+RSpec.describe "Ask a question", js: true do
+  before :each do
+    visit root_path
+    find('.ask-a-question-button').click
+  end
+
+  describe 'clicking the button' do
+
+    it 'should display the ask a question form' do
+      find('#ask-a-question-form').visible?
+    end
+  end
+
+  describe 'form validation' do
+
+    it "should not show the error message if the email is correct" do
+      fill_in 'quick_question_email', with: 'juan@gmail.com'
+      click_button 'Submit'
+      wait_for_javascript_to_finish
+      expect(page).not_to have_selector('#ask-a-question-form')
+    end
+
+    it "should require an email" do
+      find_by_id('quick_question_email').click()
+      find('#submit_question').click()
+      find_by_id('ask-a-question-form').visible?
+      expect(page).to have_content("Valid email address required.")
+    end
+
+    it "should display the error and not allow the form to submit if the email is not valid" do
+      find_by_id('quick_question_email').click()
+      page.find('#quick_question_email').set 'Pappy'
+      find('#submit_question').click()
+      expect(find_by_id('ask-a-question-form').visible?).to eq(true)
+      expect(page).to have_content("Valid email address required.")
+    end
+  end
+end

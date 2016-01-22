@@ -21,15 +21,16 @@
 #= require navigation
 
 $(document).ready ->
-  $('.visit_number a, .service_calendar_row').live 'click', ->
+
+  $(document).on 'click', '.visit_number a, .service_calendar_row', ->
     $('.service_calendar_spinner').show()
 
-  $('.line_item_visit_template').live 'change', ->
+  $(document).on 'change', '.line_item_visit_template', ->
     $('.service_calendar_spinner').show()
     obj = $(this)
     $.ajax
       type: 'PUT'
-      url: $(this).attr('update') + "&checked=#{$(this).is(':checked')}"
+      url: $(this).prop('update') + "&checked=#{$(this).is(':checked')}"
       error: (jqXHR, textStatus, errorThrown) ->
         if jqXHR.status == 500 and jqXHR.getResponseHeader('Content-Type').split(';')[0] == 'text/javascript'
           errors = JSON.parse(jqXHR.responseText)
@@ -43,15 +44,15 @@ $(document).ready ->
       arm_id = $(this).data("arm_id")
       calculate_max_rates(arm_id)
 
-  $('.line_item_visit_quantity').live 'change', ->
+  $(document).on 'change', '.line_item_visit_quantity', ->
     $('.service_calendar_spinner').show()
     $.ajax
       type: 'PUT'
-      url: $(this).attr('update') + "&qty=#{$(this).val()}"
+      url: $(this).prop('update') + "&qty=#{$(this).val()}"
     .complete =>
       $('.service_calendar_spinner').hide()
 
-  $('.line_item_visit_billing').live 'change', ->
+  $(document).on 'change', '.line_item_visit_billing', ->
     intRegex = /^\d+$/
 
     my_qty = parseInt($(this).val(), 10)
@@ -63,7 +64,7 @@ $(document).ready ->
     qty = my_qty + sibling_qty
 
     if intRegex.test qty
-      unit_minimum = $(this).attr('data-unit-minimum')
+      unit_minimum = $(this).prop('data-unit-minimum')
 
       if qty > 0 and qty < unit_minimum
         alert "Quantity of #{qty} is less than the unit minimum of #{unit_minimum}.\nTotal quantity is being set to the unit minimum"
@@ -71,14 +72,14 @@ $(document).ready ->
         $(this).val(my_qty)
 
       obj = $(this)
-      original_val = obj.attr('previous_quantity')
+      original_val = obj.prop('previous_quantity')
 
       $('.service_calendar_spinner').show()
       $.ajax
         type: 'PUT'
-        url: $(this).attr('update') + "&qty=#{my_qty}"
+        url: $(this).prop('update') + "&qty=#{my_qty}"
         success: ->
-          $(obj).attr('previous_quantity', $(obj).val())
+          $(obj).prop('previous_quantity', $(obj).val())
         error: (jqXHR, textStatus, errorThrown) ->
           if jqXHR.status == 500 and jqXHR.getResponseHeader('Content-Type').split(';')[0] == 'text/javascript'
             errors = JSON.parse(jqXHR.responseText)
@@ -89,7 +90,7 @@ $(document).ready ->
             # if this gets weird looking.
             alert(error);
             $(obj).val(original_val)
-            $(obj).attr('current_quantity', original_val)
+            $(obj).prop('current_quantity', original_val)
       .complete =>
         $('.service_calendar_spinner').hide()
         arm_id = $(this).data("arm_id")
@@ -99,11 +100,11 @@ $(document).ready ->
       $('.service_calendar_spinner').hide()
       $(this).val(0)
 
-  $('.line_items_visit_subject_count').live 'change', ->
+  $(document).on 'change', '.line_items_visit_subject_count', ->
     $('.service_calendar_spinner').show()
     $.ajax
       type: 'PUT'
-      url: $(this).attr('update') + "&qty=#{$(this).val()}"
+      url: $(this).prop('update') + "&qty=#{$(this).val()}"
     .complete ->
       $('.service_calendar_spinner').hide()
 
@@ -115,7 +116,7 @@ $(document).ready ->
     $('.service_calendar_spinner').show()
     $.ajax
       type: 'PUT'
-      url: $(this).attr('update')
+      url: $(this).prop('update')
       data: {day: day_val, position: position}
       success: =>
         $(this).data('day', day_val)
@@ -145,7 +146,7 @@ $(document).ready ->
       $('.service_calendar_spinner').hide()
   )
 
-  $('.visit_window_before').live 'change', ->
+  $(document).on 'change', '.visit_window_before', ->
     # Grab the window_before
     position = $(this).data('position')
     window_before_val = $(this).val()
@@ -153,7 +154,7 @@ $(document).ready ->
     $('.service_calendar_spinner').show()
     $.ajax
       type: 'PUT'
-      url: $(this).attr('update')
+      url: $(this).prop('update')
       data: {window_before: window_before_val, position: position}
       success: =>
         $(this).data('window_before', window_before_val)
@@ -164,7 +165,7 @@ $(document).ready ->
     .complete ->
       $('.service_calendar_spinner').hide()
 
-  $('.visit_window_after').live 'change', ->
+  $(document).on 'change', '.visit_window_after', ->
     # Grab the window_after
     position = $(this).data('position')
     window_after_val = $(this).val()
@@ -172,7 +173,7 @@ $(document).ready ->
     $('.service_calendar_spinner').show()
     $.ajax
       type: 'PUT'
-      url: $(this).attr('update')
+      url: $(this).prop('update')
       data: {window_after: window_after_val, position: position}
       success: =>
         $(this).data('window_after', window_after_val)
@@ -184,10 +185,10 @@ $(document).ready ->
       $('.service_calendar_spinner').hide()
 
 # Triggers for changing attributes on one time fee line items
-  $('.units_per_quantity').live 'change', ->
+  $(document).on 'change', '.units_per_quantity', ->
     intRegex = /^\d+$/
-    max = parseInt($(this).attr('data-qty_max'), 10)
-    prev_qty = $(this).attr('current_units_per_quantity')
+    max = parseInt($(this).prop('data-qty_max'), 10)
+    prev_qty = $(this).prop('current_units_per_quantity')
     user_input = parseInt($(this).val(), 10)
 
     # Handle errors
@@ -203,7 +204,7 @@ $(document).ready ->
         $('#unit_max_error').fadeIn('fast').delay(5000).fadeOut(5000, => $(this).css('border', ''))
         $(this).val(max)
       else
-        $(this).attr('current_units_per_quantity', user_input)
+        $(this).prop('current_units_per_quantity', user_input)
         $('#unit_max_error').hide()
         $(this).css('border', '')
         # If it passes validation and is within study tracker, save by ajax
@@ -240,14 +241,14 @@ $(document).ready ->
   $(document).on('change', '.jump_to_visit', ->
     $('.service_calendar_spinner').show()
 
-    page = $(this).find('option:selected').attr('parent_page')
+    page = $(this).find('option:selected').prop('parent_page')
 
     if page == undefined || page == false
       page = $(this).val()
 
     $.ajax
       type: 'GET'
-      url: $(this).attr('url')
+      url: $(this).prop('url')
       data: {"page": page}
       dataType: 'script'
       success: ->
@@ -255,13 +256,13 @@ $(document).ready ->
   )
 
   update_otf_line_item = (obj) ->
-    original_val = $(obj).attr('previous_quantity')
+    original_val = $(obj).prop('previous_quantity')
     $('.service_calendar_spinner').show()
     $.ajax
       type: 'PUT'
-      url: $(obj).attr('update') + "&val=#{$(obj).val()}"
+      url: $(obj).prop('update') + "&val=#{$(obj).val()}"
       success: ->
-        $(obj).attr('previous_quantity', $(obj).val())
+        $(obj).prop('previous_quantity', $(obj).val())
       error: (jqXHR, textStatus, errorThrown) ->
         if jqXHR.status == 500 and jqXHR.getResponseHeader('Content-Type').split(';')[0] == 'text/javascript'
           errors = JSON.parse(jqXHR.responseText)
@@ -272,7 +273,7 @@ $(document).ready ->
           # if this gets weird looking.
           alert(error);
           $(obj).val(original_val)
-          $(obj).attr('current_quantity', original_val)
+          $(obj).prop('current_quantity', original_val)
     .complete =>
       $('.service_calendar_spinner').hide()
 
@@ -280,7 +281,7 @@ $(document).ready ->
 # methods for saving one time fee attributes
   save_line_item_by_ajax = (obj) ->
       object_id = $(obj).data("line_item_id")
-      name = $(obj).attr('name')
+      name = $(obj).prop('name')
       key = name.replace("line_item_", '')
       data = {}
       data[key] = $(obj).val()

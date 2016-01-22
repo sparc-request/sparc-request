@@ -23,7 +23,7 @@ $(document).ready ->
   $(".ui_close_button").button()
 
   $(".upload_button").click ->
-    $(".upload_button").attr("disabled", "disabled");
+    $(".upload_button").prop("disabled", true);
     $(".upload_button span").html('Wait...');
     $('#new_document_form').submit()
 
@@ -41,4 +41,3 @@ $(document).ready ->
     else
       $('.document_type_other').hide()
   )
-    

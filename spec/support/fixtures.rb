@@ -225,7 +225,7 @@ def build_project
   build_study_type_questions()
   let!(:project) {
     protocol = Project.create(attributes_for(:protocol))
-    protocol.update_attributes(funding_status: "funded", funding_source: "federal", indirect_cost_rate: 50.0, start_date: Time.now, end_date: Time.now + 2.month, study_type_question_group_id: active_study_type_question_group.id)
+    protocol.update_attributes(funding_status: "funded", funding_source: "federal", indirect_cost_rate: 50.0, start_date: Time.now, end_date: Time.now + 2.month, selected_for_epic: nil, study_type_question_group_id: active_study_type_question_group.id)
     protocol.save validate: false
     identity = Identity.find_by_ldap_uid('jug2')
     create(
@@ -255,7 +255,7 @@ def build_study
   let!(:study) {
 
     protocol = build(:study)
-    protocol.update_attributes(funding_status: "funded", funding_source: "federal", indirect_cost_rate: 50.0, start_date: Time.now, end_date: Time.now + 2.month, study_type_question_group_id: StudyTypeQuestionGroup.active.pluck(:id).first)
+    protocol.update_attributes(funding_status: "funded", funding_source: "federal", indirect_cost_rate: 50.0, start_date: Time.now, end_date: Time.now + 2.month, selected_for_epic: false, study_type_question_group_id: StudyTypeQuestionGroup.active.pluck(:id).first)
     protocol.save validate: false
     identity = Identity.find_by_ldap_uid('jug2')
     create(

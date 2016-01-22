@@ -62,10 +62,6 @@ RSpec.describe "editing a project", js: true do
       wait_for_javascript_to_finish
     end
 
-    it 'should update the can edit study column to true' do
-      expect(Protocol.find(project.id).can_edit_study).to eq true
-    end
-
     it 'should have epic info box editable' do
       expect(page).to have_selector('#study_selected_for_epic_true')
     end
@@ -78,18 +74,15 @@ RSpec.describe "editing a project", js: true do
       select 'Project', from: 'protocol_type'
       click_button "Change Type"
       wait_for_javascript_to_finish
-      expect(Protocol.find(project.id).can_edit_study).to eq false
       expect(page).to_not have_selector('#study_selected_for_epic_true')
       select 'Study', from: 'protocol_type'
       click_button "Change Type"
       wait_for_javascript_to_finish
-      expect(Protocol.find(project.id).can_edit_study).to eq false
       expect(page).to_not have_selector('#study_selected_for_epic_true')
     end
 
     it 'should throw an error message' do
       click_button 'Save'
-      expect(Protocol.find(project.id).can_edit_study).to eq true
       expect(page).to have_content("Selected for epic is not included in the list")
     end
   end

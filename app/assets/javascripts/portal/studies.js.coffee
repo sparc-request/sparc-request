@@ -47,6 +47,7 @@ $(document).ready ->
     ready: ->
       FormFxManager.registerListeners($('.user-edit-protocol-view'), Sparc.study.display_dependencies)
 
+
       if $('#study_viewing_admin').val() == "portal"
 
         study_type_form = $('.study_type')
@@ -57,6 +58,9 @@ $(document).ready ->
         epic_inbasket_dropdown = $('#study_type_answer_epic_inbasket_answer')
         research_active_dropdown = $('#study_type_answer_research_active_answer')
         restrict_sending_dropdown = $('#study_type_answer_restrict_sending_answer')
+
+        epic_box_alert_message = () -> 
+          alert("Please fill out the Epic Information correctly.")
 
         $.prototype.hide_elt = () ->
           this[0].selectedIndex = 0
@@ -174,6 +178,42 @@ $(document).ready ->
 
           access_required_dropdown.on 'change', (e) ->
             add_and_check_visual_error_on_field_change(access_required_dropdown)
+
+        #### This was written for an edge case in admin/portal.  
+        #### When you go from a virgin project (selected_for_epic = nil/ never been a study) 
+        #### to a study, the Epic Box should be editable instead of only displaying the epic box data.
+        
+        if $('#study_can_edit_admin_study').val() == "can_edit_study"
+          $('#actions input[type="submit"]').on 'click', (e) ->
+            if $('input[name=\'study[selected_for_epic]\']:checked').val() == 'true'
+              if certificate_of_confidence_dropdown.val() == ''
+                epic_box_alert_message()
+                add_and_check_visual_error_on_submit(certificate_of_confidence_dropdown)
+                return false
+              if certificate_of_confidence_dropdown.val() == 'false'
+                if higher_level_of_privacy_dropdown.val() == ''
+                  epic_box_alert_message()
+                  add_and_check_visual_error_on_submit(higher_level_of_privacy_dropdown)
+                  return false
+                if higher_level_of_privacy_dropdown.val() == 'true'
+                  if access_required_dropdown.val() == ''
+                    epic_box_alert_message()
+                    add_and_check_visual_error_on_submit(access_required_dropdown)
+                    return false
+                  if access_required_dropdown.val() == 'false'
+                    if epic_inbasket_dropdown.val() == '' || research_active_dropdown.val() == '' || restrict_sending_dropdown.val() == ''
+                      epic_box_alert_message()
+                      add_and_check_visual_error_on_submit(epic_inbasket_dropdown)
+                      add_and_check_visual_error_on_submit(research_active_dropdown)
+                      add_and_check_visual_error_on_submit(restrict_sending_dropdown)
+                      return false
+                else if higher_level_of_privacy_dropdown.val() == 'false'
+                  if epic_inbasket_dropdown.val() == '' || research_active_dropdown.val() == '' || restrict_sending_dropdown.val() == ''
+                    epic_box_alert_message()
+                    add_and_check_visual_error_on_submit(epic_inbasket_dropdown)
+                    add_and_check_visual_error_on_submit(research_active_dropdown)
+                    add_and_check_visual_error_on_submit(restrict_sending_dropdown)
+                    return false
 
       ######## End of send to epic study question logic ##############
 

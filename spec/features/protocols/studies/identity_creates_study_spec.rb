@@ -41,6 +41,7 @@ RSpec.feature "User wants to create a Study", js: true do
     find('.submit-request-button').click
     click_link 'New Research Study'
     wait_for_javascript_to_finish
+    find('#study_selected_for_epic_false').click()
   end
 
   #TODO: Add Authorized Users Specs

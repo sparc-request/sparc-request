@@ -77,7 +77,6 @@ class Portal::ProtocolsController < Portal::BaseController
     end
     
     if @protocol.update_attributes(attrs.merge(study_type_question_group_id: StudyTypeQuestionGroup.active.pluck(:id).first))
-      @protocol.update_attribute(:can_edit_study, false)
       flash[:notice] = "Study updated"
       redirect_to portal_root_path(:default_protocol => @protocol)
     else
@@ -103,11 +102,6 @@ class Portal::ProtocolsController < Portal::BaseController
     # Using update_attribute here is intentional, type is a protected attribute
     @protocol_type = params[:protocol][:type]
     if @protocol.update_attribute(:type, @protocol_type)
-      if @protocol_type == 'Study' && @protocol.selected_for_epic == nil
-        @protocol.update_attribute(:can_edit_study, true)
-      elsif @protocol_type == 'Project'
-        @protocol.update_attribute(:can_edit_study, false)
-      end
       @protocol.update_attribute(:study_type_question_group_id, StudyTypeQuestionGroup.active.pluck(:id).first)
       if params[:sub_service_request_id]
         @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])

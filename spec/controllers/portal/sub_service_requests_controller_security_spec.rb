@@ -32,6 +32,7 @@ RSpec.describe Portal::SubServiceRequestsController do
 
     @protocol = Study.new
     @protocol.type = 'Study'
+    @protocol.update_attribute(:selected_for_epic, false)
     @protocol.save(validate: false)
 
     # create service request and associate it to a protocol via an organization (i.e., core)

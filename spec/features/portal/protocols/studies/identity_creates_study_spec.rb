@@ -156,6 +156,7 @@ RSpec.feature "User wants to create a Study", js: true do
   def when_i_click_the_new_study_button
     find("a.new-study").click
     wait_for_javascript_to_finish
+    find('#study_selected_for_epic_false').click()
   end
 
   def when_i_fill_out_the_short_title short_title="Fake Short Title"

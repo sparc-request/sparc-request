@@ -670,7 +670,6 @@ ActiveRecord::Schema.define(version: 20160121173336) do
     t.boolean  "selected_for_epic"
     t.boolean  "archived",                                                                    default: false
     t.integer  "study_type_question_group_id",          limit: 4
-    t.boolean  "can_edit_study",                                                              default: false
   end
 
   add_index "protocols", ["next_ssr_id"], name: "index_protocols_on_next_ssr_id", using: :btree

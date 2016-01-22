@@ -105,8 +105,7 @@
           /////***** Only DISPLAY epic box in admin UNLESS changing from a virgin project 
           /////***** (a project that has never been a study- selected_for_epic = nil) to a study
           ////****** In this case, we DO want the ability to edit the Epic Box.
-
-          - if admin && !f.object.can_edit_study
+          - if admin && @protocol.selected_for_epic != nil
             %span.epic_selected.display_epic_answers
               = f.object.selected_for_epic ? "Yes" : "No"
             .study_type{style: "#{f.object.selected_for_epic ? '' : 'display:none;'}"}
@@ -135,6 +134,8 @@
             .study_type{style: "#{f.object.selected_for_epic ? '' : 'display:none;'}"}
               .space_bar
               = f.label :study_type_questions
+              - if admin
+                = f.hidden_field :can_edit_admin_study, value: "can_edit_study"
               = f.hidden_field :viewing_admin, value: "portal"
               = f.fields_for :study_type_answers, study.study_type_answers do |answer|
                 - if answer.object.study_type_question.study_type_question_group.active 

@@ -84,9 +84,6 @@ class Portal::SubServiceRequestsController < Portal::BaseController
 
     if @protocol.update_attributes(attrs.merge(study_type_question_group_id: StudyTypeQuestionGroup.active.pluck(:id).first))
       redirect_to portal_admin_sub_service_request_path(@sub_service_request)
-      if @protocol.type == "Study"
-        @protocol.update_attribute(:can_edit_study, false)
-      end
     else
       @user_toasts = @user.received_toast_messages.select {|x| x.sending_class == 'SubServiceRequest'}
       @service_request = @sub_service_request.service_request

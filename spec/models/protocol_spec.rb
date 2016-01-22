@@ -26,6 +26,9 @@ RSpec.describe 'Protocol' do
   let_there_be_j
   build_service_request_with_study()
   build_service_request_with_project()
+  build_study_type_question_groups()
+  build_study_type_questions()
+  build_study_type_answers()
 
   describe "#active?" do
 
@@ -151,6 +154,7 @@ RSpec.describe 'Protocol' do
 
   describe "push to epic" do
     it "should create a record of the protocols push" do
+      study.update_attribute(:selected_for_epic, true)
       expect{ study.push_to_epic(EPIC_INTERFACE) }.to change(EpicQueueRecord, :count).by(1)
     end
   end

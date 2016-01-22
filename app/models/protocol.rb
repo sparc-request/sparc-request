@@ -136,7 +136,7 @@ class Protocol < ActiveRecord::Base
       "protocols.title like \"%#{search_term}%\" OR "\
       "protocols.id = \"#{search_term}\" OR "\
       "MATCH(identities.first_name, identities.last_name) AGAINST (\"#{search_term}\")"
-    )
+    ).distinct
   }
 
   scope :for_identity, -> (identity) { joins(:project_roles).

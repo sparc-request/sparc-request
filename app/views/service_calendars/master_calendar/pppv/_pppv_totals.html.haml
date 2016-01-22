@@ -51,6 +51,6 @@
     %td.col-sm-5{ colspan: 5 }
       %strong= t(:calendar_page)[:labels][:total_costs] + " -- " + arm.name
     %td.col-sm-5{ colspan: 5 }
-    %td.col-sm-1.text-center{ class: "pp_total arm_#{arm.id}" }= display_total_cost_per_arm arm, line_items_visits
     -if @merged
-      %td
+      %td.col-sm-1
+    %td.col-sm-1.text-center{ class: "pp_total arm_#{arm.id}" }= display_total_cost_per_arm arm, line_items_visits

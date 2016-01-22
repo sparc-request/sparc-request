@@ -68,16 +68,17 @@ module ServiceCalendarHelper
 
   def select_row line_items_visit, tab, portal
     checked = line_items_visit.visits.map{|v| v.research_billing_qty >= 1 ? true : false}.all?
-    action = checked == true ? 'unselect_calendar_row' : 'select_calendar_row'
-    icon = checked == true ? 'ui-icon-close' : 'ui-icon-check'
+    action  = checked == true ? 'unselect_calendar_row' : 'select_calendar_row'
+    icon    = checked == true ? 'glyphicon-remove' : 'glyphicon-ok'
+
     link_to(
-        (content_tag(:span, '', :class => "ui-button-icon-primary ui-icon #{icon}") + content_tag(:span, 'Check All', :class => 'ui-button-text')),
+        (content_tag(:span, '', class: "glyphicon #{icon}")),
         "/service_requests/#{line_items_visit.line_item.service_request.id}/#{action}/#{line_items_visit.id}?portal=#{portal}",
-        :remote  => true,
-        :role    => 'button',
-        :class   => "ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only service_calendar_row",
-        :id      => "check_row_#{line_items_visit.id}_#{tab}",
-        data:    ( line_items_visit.any_visit_quantities_customized? ? { confirm: "This will reset custom values for this row, do you wish to continue?" } : nil))
+        remote: true,
+        role:   'button',
+        class:  "btn btn-primary service_calendar_row",
+        id:     "check_row_#{line_items_visit.id}_#{tab}",
+        data:   (line_items_visit.any_visit_quantities_customized? ? { confirm: "This will reset custom values for this row, do you wish to continue?" } : nil))
   end
 
   def currency_converter cents

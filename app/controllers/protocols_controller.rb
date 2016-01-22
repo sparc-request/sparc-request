@@ -63,9 +63,6 @@ class ProtocolsController < ApplicationController
       @protocol.populate_for_edit
     elsif @current_step == 'user_details' and @protocol.valid?
       @protocol.save
-      unless from_portal?
-        @service_request.update_attribute(:protocol_id, @protocol.id) unless @service_request.protocol.present?
-      end
       @current_step = 'return_to_service_request'
       flash[:notice] = "New #{@protocol.type.downcase} created"
 

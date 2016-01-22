@@ -30,7 +30,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     @filterrific =
       initialize_filterrific(Protocol, params[:filterrific],
         select_options: {
-          with_status: [],
+          with_status: AVAILABLE_STATUSES.invert,
           with_core: []
         }
     ) or return
@@ -41,7 +41,6 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     respond_to do |format|
       format.html
       format.js
-      format.json
     end
   end
 

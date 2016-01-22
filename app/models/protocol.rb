@@ -121,7 +121,6 @@ class Protocol < ActiveRecord::Base
     default_filter_params: { archived: false },
     available_filters: [
       :search_query,
-      :sorted_by,
       :for_identity_id,
       :for_admin,
       :archived,
@@ -130,12 +129,14 @@ class Protocol < ActiveRecord::Base
     ]
   )
 
-  scope :search_query, -> (query) {
-
-  }
-
-  scope :sorted_by, -> (sort_key) {
-
+  scope :search_query, -> (search_term) {
+    joins(:identities).
+    where(
+      "protocols.short_title like \"%#{search_term}%\" OR "\
+      "protocols.title like \"%#{search_term}%\" OR "\
+      "protocols.id = \"#{search_term}\" OR "\
+      "MATCH(identities.first_name, identities.last_name) AGAINST (\"#{search_term}\")"
+    )
   }
 
   scope :for_identity, -> (identity) { joins(:project_roles).
@@ -161,7 +162,8 @@ class Protocol < ActiveRecord::Base
   }
 
   scope :with_status, -> (status) {
-
+    joins(:sub_service_requests).
+    where(sub_service_requests: { status: status }).distinct
   }
 
   scope :with_core, -> (core) {

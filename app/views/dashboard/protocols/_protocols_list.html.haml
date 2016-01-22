@@ -33,20 +33,20 @@
           %li= link_to "New Study", new_dashboard_protocol_path(protocol_type: 'study')
           %li= link_to "New Project", new_dashboard_protocol_path(protocol_type: 'project')
     .clearfix
-  .panel-body
-    %table.table
-      %tr
-        %th ID
-        %th Short Title
-        %th PI(s)
-        %th Requests
-        %th Archive
-      - protocols.each do |protocol|
-        %tr
-          %td= protocol.id
-          %td= short_title_display protocol
-          %td= pis_display protocol
-          %td= requests_display protocol
-          %td= archived_button_display protocol
+  %table.table.table-hover
+    %tr
+      %th ID
+      %th Short Title
+      %th PI(s)
+      %th Requests
+      %th Archive
+    - protocols.each do |protocol|
+      %tr.protocols_index_row{ data: { protocol_id: protocol.id }}
+        %td.id= protocol.id
+        %td.title= short_title_display protocol
+        %td.pis= pis_display protocol
+        %td.requests= requests_display protocol
+        %td.archive= archived_button_display protocol
 
-    = will_paginate protocols
+  .pull-right
+    = will_paginate protocols, renderer: BootstrapPagination::Rails

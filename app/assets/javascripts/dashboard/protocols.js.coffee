@@ -38,17 +38,6 @@ $(document).ready ->
         }
       })
 
-      $(document).on 'click', '#toggle-archived', ->
-        $this            = $(this)
-        $bs_table        = $('table.protocols_table')
-        showing_archived = $this.data('showing-archived')
-        # update button
-        $this.text(if showing_archived then 'Show Archived' else 'Show Only Active')
-        $this.data('showing-archived': (if showing_archived then false else true))
-
-        # update protocols table
-        $bs_table.bootstrapTable('refresh')
-
       $(document).on 'click', '.edit_service_request', ->
         if $(this).data('permission')
           window.location = $(this).data('url')
@@ -245,19 +234,14 @@ $(document).ready ->
 
 
   #  Protocol Index Begin
-  $(document).on('click', '.protocols_row > .id,.title,.pis', ->
-    #if you click on the row, it opens the notification show
-    row_index   = $(this).parents("tr").data("index")
-    protocol_id = $(this).parents("#protocols_table").bootstrapTable("getData")[row_index].id
+  $(document).on('click', '.protocols_index_row > .id,.title,.pis', ->
+    #if you click on the row, it opens the protocol show
+    protocol_id = $(this).parent().data("protocol-id")
     window.location = "/dashboard/protocols/#{protocol_id}"
   )
 
-  window.protocols_row_style = (row, index) ->
-    class_string = 'protocols_row'
-    return { classes: class_string }
-
   $(document).on('click', '.requests_display_link', ->
-    #if you click on the row, it opens the notification show
+    # Opens the requests modal
     protocol_id = $(this).data("protocol-id")
     $.ajax
       type: 'get'
@@ -265,15 +249,18 @@ $(document).ready ->
   )
 
   $(document).on('click', '.protocol-archive-button', (event) ->
-    event.stopPropagation()
     protocol_id = $(this).data('protocol-id')
     $.ajax
       type: "POST"
       url:  "/protocol_archive/create.js"
       data: { protocol_id: protocol_id }
-    if !$('#toggle-archived').data('showing-archived')
-      $('#protocols_table').bootstrapTable('refresh')
   )
+
+  $('.pagination a').live 'click', ->
+    # This makes the pagination links go through AJAX, rather than link hrefs
+    $('.pagination').html 'Page is loading...'
+    $.getScript @href
+    return false
   #  Protocol Index End
 
   # Protocol Show Begin
@@ -288,7 +275,6 @@ $(document).ready ->
 
   # Protocol Edit Begin
   $(document).on('click', '#protocol_type_button', ->
-    #if you click on the row, it opens the notification show
     protocol_id = $(this).data("protocol-id")
     data = type : $("#protocol_type").val()
     if confirm "This will change the type of this Project/Study.  Are you sure?"

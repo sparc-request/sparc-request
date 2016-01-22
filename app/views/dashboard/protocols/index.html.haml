@@ -32,11 +32,6 @@
               = form.text_field :search_query, class: 'form-control filterrific-periodically-observed'
 
           .form-group.row
-            = form.label :archived, "Include Archived", class: 'col-lg-10 control-label'
-            .col-lg-2
-              = form.check_box :archived
-
-          .form-group.row
             = form.label :for_identity_id, "My Protocols", class: 'col-lg-10 control-label'
             .col-lg-2
               = form.check_box :for_identity_id, {}, @user.id, "0"
@@ -45,6 +40,11 @@
             = form.label :for_admin, "My Admin Organizations", class: 'col-lg-10 control-label'
             .col-lg-2
               = form.check_box :for_admin, {}, @user.id, "0"
+
+          .form-group.row
+            = form.label :archived, "Archived", class: 'col-lg-10 control-label'
+            .col-lg-2
+              = form.check_box :archived
 
           .form-group.row
             = form.label :with_status, "Status", class: 'col-lg-3 control-label'

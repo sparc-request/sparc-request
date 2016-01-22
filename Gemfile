@@ -61,6 +61,7 @@ gem 'therubyracer', '0.10.2', :platforms => :ruby
 gem 'twitter-typeahead-rails'
 gem 'uglifier', '>= 1.0.3'
 gem 'will_paginate'
+gem 'will_paginate-bootstrap'
 
 group :development, :test, :profile do
   gem 'addressable', '~> 2.3.6'

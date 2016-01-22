@@ -57,6 +57,8 @@ RSpec.describe "admin fulfillment tab", js: true do
       # More data checks here (more information probably needs to be put in the mocks)
       expect(page).not_to have_content('#service_request_owner')
       expect(page).to have_xpath("//option[@value='#{service.id}' and @selected='selected']")
+      binding.pry
+      sos
       expect(page.find("#arm_#{arm1.id}_visit_name_4")).to have_value 'Visit 4'
       expect(page).to have_xpath("//option[@value='#{service2.id}' and @selected='selected']")
     end

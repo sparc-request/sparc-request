@@ -186,10 +186,9 @@ class Arm < ActiveRecord::Base
   end
 
   def mass_create_visit_group
-    first = self.visit_groups.count
-    last = self.visit_count
+    visit_count = self.visit_count
 
-    create_visit_groups(first, last)
+    create_visit_groups(visit_count)
     vg_ids = get_visit_group_ids
     create_visits(vg_ids)
   end
@@ -345,11 +344,15 @@ class Arm < ActiveRecord::Base
 
   private
 
-  def create_visit_groups(first, last)
-    (last-first).times do |index|
-      vg = VisitGroup.create(arm_id: id)
-      vg.move_to_bottom
-      vg.update(name: "Visit #{vg.position}")
+  def create_visit_groups(visit_count)
+    last_position = visit_groups.last.position
+    count = visit_count - last_position
+    count.times do |index|
+      position = (index + 1) + 1
+      VisitGroup.create(arm_id: self.id, name: "Visit #{position}", position: position)
+      # vg = VisitGroup.create(arm_id: id)
+      # vg.move_to_bottom
+      # vg.update(name: "Visit #{vg.position}")
     end
     self.reload
   end

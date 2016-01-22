@@ -2,7 +2,7 @@
   "name": "sparc-request",
   "homepage": "https://github.com/sparc-request/sparc-request",
   "authors": [
-    "William Holt <will.t.holt@gmail.com>"
+    "William Holt <holtw@musc.edu>"
   ],
   "description": "",
   "main": "",
@@ -20,6 +20,8 @@
   "dependencies": {
     "jquery-migrate": "~1.2.1",
     "jquery":"1.8.3",
-    "jquery-ui": "1.11.4"
+    "jquery-ui": "1.11.4",
+    "jquery-ui-1.10.3": "jquery-ui#1.10.3",
+    "underscore-legacy": "underscore#1.2.1"
   }
 }

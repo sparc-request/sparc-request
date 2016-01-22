@@ -32,7 +32,7 @@
 //= require jquery.form
 //= require jquery.toastmessage
 //= require catalog_manager/jquery.jstree
-//= require jquery-ui
+//= require jquery-ui-1.10.3/ui/minified/jquery-ui.min
 //= require jquery_nested_form
 //= require catalog_manager/jquery.formatCurrency-1.4.0.min
 //= require catalog_manager/catalog

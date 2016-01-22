@@ -29,7 +29,7 @@
 //
 //= require jquery
 //= require jquery-migrate/jquery-migrate.min
-//= require jquery-ui
+//= require jquery-ui/jquery-ui.min
 //= require jquery.qtip.min
 //= require jquery.cookie
 //= require jquery.form
@@ -38,7 +38,7 @@
 //= require json2
 //= require infotip
 //= require shared
-//= require underscore-min
+//= require underscore-legacy/underscore-min
 //= require form_fx_manager
 //= require form_manager
 //= require assert

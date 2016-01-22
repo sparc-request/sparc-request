@@ -25,7 +25,7 @@
 // the compiled file.
 //
 //= require jquery-1.8.3/jquery.min
-//= require jquery-ui
+//= require jquery-ui-1.10.3/ui/minified/jquery-ui.min
 //= require jquery_ujs
 //= require jquery_nested_form
 //= require jquery.cookie
@@ -33,7 +33,7 @@
 //= require jquery.toastmessage
 //= require json2
 //= require inflection
-//= require underscore-min
+//= require underscore-legacy/underscore-min
 //= require assert
 //= require form_manager
 //= require form_fx_manager

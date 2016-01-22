@@ -18,6 +18,26 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+# Copyright © 2011 MUSC Foundation for Research Development
+# All rights reserved.
+
+# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+# disclaimer in the documentation and/or other materials provided with the distribution.
+
+# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+# derived from this software without specific prior written permission.
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 $(document).ready ->
   $(document).ajaxError (event, request, settings, error) ->
     # If you're reading this and wondering why you are getting this
@@ -41,9 +61,9 @@ $(document).ready ->
        !settings.error
       alert(I18n["ajax_error"] + settings.url)
 
-  $(document).on 'click', '.edit_project_role', ->
-    parent = $(this).prop('parent')
-    identity_id = $(this).prop('identity_id')
+  $('.edit_project_role').live 'click', ->
+    parent = $(this).attr('parent')
+    identity_id = $(this).attr('identity_id')
     data = $(".#{parent} input").serialize()
     data += '&portal=' + $('#portal').val()
     $.ajax
@@ -51,7 +71,7 @@ $(document).ready ->
       type: 'GET'
       data: data
 
-  $(document).on 'click', '.add-user button', ->
+  $('.add-user button').live 'click', ->
     data = $('#identity_details :input').serialize()
     data += '&portal=' + $("#portal").val()
     data += '&protocol_use_epic=' + $("#user_search_term").data('protocol_use_epic')
@@ -61,8 +81,12 @@ $(document).ready ->
       data: data
     return false
 
-  $(document).on 'click', '.cancel_link', ->
-    cur_step = $('#current_step').val()
+  $('.cancel_link').live 'click', ->
+    $('.return-spinner').show()
+    cur_step = $.cookie('current_step')
+    date = new Date()
+    minutes = 30
+    date.setTime(date.getTime() + (minutes * 60 * 1000))
     if cur_step == 'protocol'
       $.cookie('current_step', 'cancel', {path: '/'})
     else if cur_step == "user_details"
@@ -70,15 +94,15 @@ $(document).ready ->
 
     $('form').submit()
 
-  $(document).on 'click', '.restore_project_role', ->
-    parent = $(this).prop('parent')
+  $('.restore_project_role').live 'click', ->
+    parent = $(this).attr('parent')
     $(".#{parent}").css({opacity: 1})
     $(".#{parent} .actions").show()
     $(".#{parent} .restore").hide()
     $(".#{parent} input[name*='destroy']").val(false)
 
-  $(document).on 'click', '.remove_project_role', ->
-    parent = $(this).prop('parent')
+  $('.remove_project_role').live 'click', ->
+    parent = $(this).attr('parent')
     $(".#{parent}").css({opacity: 0.5})
     $(".#{parent} .actions").hide()
     $(".#{parent} .restore").show()
@@ -100,4 +124,3 @@ $(document).ready ->
   $('.ask-a-question-form-container').slideToggle('slow', ->
     $('.your-email > input').focus()
   )
-

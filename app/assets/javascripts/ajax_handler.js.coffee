@@ -25,7 +25,7 @@ $(document).ready ->
 
   $(document).ajaxStart ->
     ajaxDefer = $.Deferred()
-  .ajaxStop -> 
+  .ajaxStop ->
     ajaxDefer.resolve()
 
   $('.submit-request-button').on 'click', (event) ->
@@ -42,4 +42,3 @@ defer_until_complete = (event, action, selector) ->
       else
         $(selector).submit()
     event.preventDefault()
-

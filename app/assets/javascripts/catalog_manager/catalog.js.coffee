@@ -101,7 +101,7 @@ $ ->
   $('.custom_button').button()
 
   # alert until all services have a pricing setup either at the program or provider level
-  $(document).on 'click', ".provider_program_core_save", ->
+  $(".provider_program_core_save").live 'click', ->
     verify_valid_pricing_setups()
 
   verify_valid_pricing_setups = () ->
@@ -114,12 +114,12 @@ $ ->
 
   verify_valid_pricing_setups()
 
-  $(document).on 'click', '.associated_survey_delete', ->
+  $('.associated_survey_delete').live 'click', ->
     if confirm I18n["catalog_manager_js"]["survey_delete"]
       $.post '/catalog_manager/catalog/remove_associated_survey', {associated_survey_id: $(this).data('associated_survey_id')}, (data) ->
         $('#associated_survey_info').html(data)
 
-  $(document).on 'click', '.add_associated_survey', ->
+  $('.add_associated_survey').live 'click', ->
     if $('#new_associated_survey').val() == ''
       alert "No survey selected"
     else
@@ -127,7 +127,7 @@ $ ->
         $('#associated_survey_info').html(data)
     return false
 
-  $(document).on 'change', '#program', ->
+  $('#program').live 'change', ->
     new_program_id = $(this).val()
     $.post '/catalog_manager/services/update_cores/' + new_program_id, (data) ->
       $('#core_list').html(data)
@@ -166,29 +166,29 @@ $ ->
 
       # create a provider
       if /^Create New Provider$/.test click_text
-        institution_id = node_ref.rslt.obj.parents('li:eq(0)').children('a').prop('cid')
+        institution_id = node_ref.rslt.obj.parents('li:eq(0)').children('a').attr('cid')
         provider_name = prompt(I18n["catalog_manager_js"]["provider_prompt"])
         if provider_name and provider_name.length > 0
           $.post '/catalog_manager/providers', {name: provider_name, institution_id: institution_id}
 
       # create a program
       if /^Create New Program$/.test click_text
-        provider_id = node_ref.rslt.obj.parents('li:eq(0)').children('a').prop('cid')
+        provider_id = node_ref.rslt.obj.parents('li:eq(0)').children('a').attr('cid')
         program_name = prompt(I18n["catalog_manager_js"]["program_prompt"])
         if program_name and program_name.length > 0
           $.post '/catalog_manager/programs', {name: program_name, provider_id: provider_id}
 
       # create a core
       if /^Create New Core$/.test click_text
-        program_id = node_ref.rslt.obj.parents('li:eq(0)').children('a').prop('cid')
+        program_id = node_ref.rslt.obj.parents('li:eq(0)').children('a').attr('cid')
         core_name = prompt(I18n["catalog_manager_js"]["core_prompt"])
         if core_name and core_name.length > 0
           $.post '/catalog_manager/cores', {name: core_name, program_id: program_id}
 
       # create a service
       if /^Create New Service$/.test click_text
-        parent_id = node_ref.rslt.obj.parents('li:eq(0)').children('a').prop('cid')
-        parent_object_type = node_ref.rslt.obj.parents('li:eq(0)').children('a').prop('object_type')
+        parent_id = node_ref.rslt.obj.parents('li:eq(0)').children('a').attr('cid')
+        parent_object_type = node_ref.rslt.obj.parents('li:eq(0)').children('a').attr('object_type')
 
         $.get "/catalog_manager/services/verify_parent_service_provider", {parent_id: parent_id, parent_object_type: parent_object_type}, (data)->
           alert_text = data
@@ -223,8 +223,8 @@ $ ->
     $('#search_box input#search').val('')
 
   # related services
-  $(document).on 'focus', 'input#new_rs', -> $(this).val('')
-  $(document).on 'keydown.autocomplete', 'input#new_rs', ->
+  $('input#new_rs').live 'focus', -> $(this).val('')
+  $('input#new_rs').live 'keydown.autocomplete', ->
     $(this).autocomplete
       source: "/catalog_manager/services/search",
       minLength: 3,
@@ -233,25 +233,25 @@ $ ->
           $('#rs_info').html(data)
 
 
-  $(document).on 'click', '.rs_delete', ->
+  $('.rs_delete').live 'click', ->
     if confirm I18n["catalog_manager_js"]["service_remove"]
       $.post '/catalog_manager/services/disassociate', {service_relation_id: $(this).data('service_relation_id')}, (data) ->
         $('#rs_info').html(data)
 
-  $(document).on 'click', '.optional', ->
-    $.post '/catalog_manager/services/set_optional', {service_relation_id: $(this).prop('id'), optional: $(this).val()}, (data) ->
+  $('.optional').live 'click', ->
+    $.post '/catalog_manager/services/set_optional', {service_relation_id: $(this).attr('id'), optional: $(this).val()}, (data) ->
         $('#rs_info').html(data)
 
-  $(document).on 'click', '.linked_quantity', ->
+  $('.linked_quantity').live 'click', ->
     $.post '/catalog_manager/services/set_linked_quantity', {service_relation_id: $(this).data('service_relation_id'), linked_quantity: $(this).val()}, (data) ->
         $('#rs_info').html(data)
 
-  $(document).on 'change', '.linked_quantity_total', ->
+  $('.linked_quantity_total').live 'change', ->
     $.post '/catalog_manager/services/set_linked_quantity_total', {service_relation_id: $(this).data('service_relation_id'), linked_quantity_total: $(this).val()}, (data) ->
         $('#rs_info').html(data)
 
   # clinical work fulfillment
-  $(document).on 'click', '.cwf input[type=checkbox]', ->
+  $('.cwf input[type=checkbox]').live 'click', ->
     if $(this).is(":checked")
       $('.cwf.position_field').show()
     else
@@ -261,7 +261,7 @@ $ ->
   # Begin pricing map logic
   ############################q
 
-  $(document).on 'click', '.one_time_fee', ->
+  $('.one_time_fee').live 'click', ->
     pricing_map_ids = $(this).data('pricing_map_ids')
     pricing_map_ids = pricing_map_ids.split(' ')
     index = 0
@@ -279,7 +279,7 @@ $ ->
       index++
 
 
-  $(document).on 'change', '.otf_quantity_type', ->
+  $('.otf_quantity_type').live 'change', ->
     pricing_map_id = $(this).data('pricing_map_id')
     if pricing_map_id == undefined
       pricing_map_id = ""
@@ -288,7 +288,7 @@ $ ->
     else
       $("#otf_attributes_#{pricing_map_id}").html('# ' + $(this).val() + ' / ' + '# ' + $("#otf_unit_type_#{pricing_map_id}").val())
 
-  $(document).on 'change', '.otf_unit_type', ->
+  $('.otf_unit_type').live 'change', ->
     pricing_map_id = $(this).data('pricing_map_id')
     if pricing_map_id == undefined
       pricing_map_id = ""
@@ -298,7 +298,7 @@ $ ->
       $("#otf_attributes_#{pricing_map_id}").html('# ' + $("#otf_quantity_type_#{pricing_map_id}").val() + ' / ' + '# ' + $(this).val())
 
   # Pricing map one time fee validations
-  $(document).on 'change', '.otf_quantity_type, .otf_quantity_minimum, .otf_unit_type, .otf_unit_max', ->
+  $('.otf_quantity_type, .otf_quantity_minimum, .otf_unit_type, .otf_unit_max').live('change', ->
     blank_field = false
     for field in $('.otf_validate')
       blank_field = true if (($(field).val() == "") && $(field).is(":visible"))
@@ -307,11 +307,12 @@ $ ->
       enable_otf_service_save()
     else
       disable_otf_service_save()
+  )
 
   # Pricing map per patient validations
   # These need to be separate due to conditions presented by the checkbox
   # for one time fees.
-  $(document).on 'change', '.service_unit_type, .service_unit_factor, .service_unit_minimum', ->
+  $('.service_unit_type, .service_unit_factor, .service_unit_minimum').live('change', ->
     blank_field = false
     for field in $('.per_patient_validate')
       blank_field = true if (($(field).val() == "") && $(field).is(":visible"))
@@ -320,6 +321,7 @@ $ ->
       enable_per_patient_save()
     else
       disable_per_patient_save()
+  )
 
   # pricing map methods
   show_otf_attributes = (pricing_map_id) ->
@@ -331,19 +333,19 @@ $ ->
     $("#pp_fields_#{pricing_map_id}").show()
 
   disable_otf_service_save = () ->
-    $('.save_button').prop('disabled', true)
+    $('.save_button').attr('disabled', true)
     $('.otf_field_errors').css('display', 'inline-block')
 
   enable_otf_service_save = () ->
-    $('.save_button').prop('disabled', false)
+    $('.save_button').removeAttr('disabled')
     $('.otf_field_errors').hide()
 
   disable_per_patient_save = () ->
-    $('.save_button').prop('disabled', true)
+    $('.save_button').attr('disabled', true)
     $('.per_patient_errors').css('display', 'inline-block')
 
   enable_per_patient_save = () ->
-    $('.save_button').prop('disabled', false)
+    $('.save_button').removeAttr('disabled')
     $('.per_patient_errors').hide()
 
   #######################
@@ -351,13 +353,13 @@ $ ->
   #######################
 
   # submission e-mails
-  $(document).on 'focus', 'input#new_se', -> $(this).val('')
-  $(document).on 'keypress', 'input#new_se', (e) ->
+  $('input#new_se').live 'focus', -> $(this).val('')
+  $('input#new_se').live 'keypress', (e) ->
     if e.which == 13
       return false if $(this).val() == ''
       new_tr = $('.ses table.se_clone_table tbody tr:first').clone()
-      new_name = new_tr.find('.se_value').prop('name').replace('CLONE', '')
-      new_tr.find('.se_value').prop('name', new_name)
+      new_name = new_tr.find('.se_value').attr('name').replace('CLONE', '')
+      new_tr.find('.se_value').attr('name', new_name)
       new_tr.find('.se_value').val($(this).val())
       new_tr.find('.se_display').html($(this).val())
       new_tr.appendTo($('.ses table.se_table tbody'))
@@ -366,16 +368,16 @@ $ ->
       $('#entity_form').submit()
       $(this).val('')
 
-  $(document).on 'click', '.se_delete', ->
-    if $(this).prop('id')
-      $.post '/catalog_manager/catalog/remove_submission_email', {submission_email: $(this).prop('id'), org_unit: $('#org_unit_id').val()}, (data) ->
+  $('.se_delete').live 'click', ->
+    if $(this).attr('id')
+      $.post '/catalog_manager/catalog/remove_submission_email', {submission_email: $(this).attr('id'), org_unit: $('#org_unit_id').val()}, (data) ->
         $('#se_info').html(data)
     else
       $(this).parent().parent().remove()
 
   # super users
-  $(document).on 'focus', 'input#new_su', -> $(this).val('')
-  $(document).on 'keydown.autocomplete', 'input#new_su', ->
+  $('input#new_su').live 'focus', -> $(this).val('')
+  $('input#new_su').live 'keydown.autocomplete', ->
     $(this).autocomplete
       source: "/catalog_manager/identities/search",
       minLength: 3,
@@ -383,14 +385,14 @@ $ ->
         $.post '/catalog_manager/identities/associate_with_org_unit', {identity: ui.item.value, org_unit: $('#org_unit_id').val(), rel_type: "super_user_organizational_unit"}, (data) ->
           $('#su_info').html(data)
 
-  $(document).on 'click', '.su_delete', ->
+  $('.su_delete').live 'click', ->
     if confirm I18n["catalog_manager_js"]["super_user_remove"]
-      $.post '/catalog_manager/identities/disassociate_with_org_unit', {relationship: $(this).prop('id'), org_unit: $('#org_unit_id').val(), rel_type: "super_user_organizational_unit"}, (data) ->
+      $.post '/catalog_manager/identities/disassociate_with_org_unit', {relationship: $(this).attr('id'), org_unit: $('#org_unit_id').val(), rel_type: "super_user_organizational_unit"}, (data) ->
         $('#su_info').html(data)
 
   # clinical providers
-  $(document).on 'focus', 'input#new_cp', -> $(this).val('')
-  $(document).on 'keydown.autocomplete', 'input#new_cp', ->
+  $('input#new_cp').live 'focus', -> $(this).val('')
+  $('input#new_cp').live 'keydown.autocomplete', ->
     $(this).autocomplete
       source: "/catalog_manager/identities/search",
       minLength: 3,
@@ -398,14 +400,14 @@ $ ->
         $.post '/catalog_manager/identities/associate_with_org_unit', {identity: ui.item.value, org_unit: $('#org_unit_id').val(), rel_type: "clinical_provider_organizational_unit"}, (data) ->
           $('#cp_info').html(data)
 
-  $(document).on 'click', '.cp_delete', ->
+  $('.cp_delete').live 'click', ->
     if confirm I18n["catalog_manager_js"]["clinical_provider_remove"]
-      $.post '/catalog_manager/identities/disassociate_with_org_unit', {relationship: $(this).prop('id'), org_unit: $('#org_unit_id').val(), rel_type: "clinical_provider_organizational_unit"}, (data) ->
+      $.post '/catalog_manager/identities/disassociate_with_org_unit', {relationship: $(this).attr('id'), org_unit: $('#org_unit_id').val(), rel_type: "clinical_provider_organizational_unit"}, (data) ->
         $('#cp_info').html(data)
 
   # service providers
-  $(document).on 'focus', 'input#new_sp', -> $(this).val('')
-  $(document).on 'keydown.autocomplete', 'input#new_sp', ->
+  $('input#new_sp').live 'focus', -> $(this).val('')
+  $('input#new_sp').live 'keydown.autocomplete', ->
     $(this).autocomplete
       source: "/catalog_manager/identities/search",
       minLength: 3,
@@ -413,14 +415,14 @@ $ ->
         $.post '/catalog_manager/identities/associate_with_org_unit', {identity: ui.item.value, org_unit: $('#org_unit_id').val(), rel_type: "service_provider_organizational_unit"}, (data) ->
           $('#sp_info').html(data)
 
-  $(document).on 'click', '.sp_delete', ->
+  $('.sp_delete').live 'click', ->
     if confirm I18n["catalog_manager_js"]["service_provider_remove"]
-      $.post '/catalog_manager/identities/disassociate_with_org_unit', {relationship: $(this).prop('id'), org_unit: $('#org_unit_id').val(), rel_type: "service_provider_organizational_unit"}, (data) ->
+      $.post '/catalog_manager/identities/disassociate_with_org_unit', {relationship: $(this).attr('id'), org_unit: $('#org_unit_id').val(), rel_type: "service_provider_organizational_unit"}, (data) ->
         $('#sp_info').html(data)
 
   #catalog managers
-  $(document).on 'focus', 'input#new_cm', -> $(this).val('')
-  $(document).on 'keydown.autocomplete', 'input#new_cm', ->
+  $('input#new_cm').live 'focus', -> $(this).val('')
+  $('input#new_cm').live 'keydown.autocomplete', ->
     $(this).autocomplete
       source: "/catalog_manager/identities/search",
       minLength: 3,
@@ -428,45 +430,51 @@ $ ->
         $.post '/catalog_manager/identities/associate_with_org_unit', {identity: ui.item.value, org_unit: $('#org_unit_id').val(), rel_type: "catalog_manager_organizational_unit"}, (data) ->
           $('#cm_info').html(data)
 
-  $(document).on 'click', '.cm_delete', ->
+  $('.cm_delete').live 'click', ->
     if confirm I18n["catalog_manager_js"]["cm_rights_remove"]
-      $.post '/catalog_manager/identities/disassociate_with_org_unit', {relationship: $(this).prop('id'), org_unit: $('#org_unit_id').val(), rel_type: "catalog_manager_organizational_unit"}, (data) ->
+      $.post '/catalog_manager/identities/disassociate_with_org_unit', {relationship: $(this).attr('id'), org_unit: $('#org_unit_id').val(), rel_type: "catalog_manager_organizational_unit"}, (data) ->
         $('#cm_info').html(data)
 
   #primary contact toggle
-  $(document).on 'click', '.primary_contact', ->
-    $.post '/catalog_manager/identities/set_primary_contact', {service_provider: $(this).prop('identity'), org_id: $(this).prop('org_id')}, (data) ->
+  $('.primary_contact').live 'click', ->
+    $.post '/catalog_manager/identities/set_primary_contact', {service_provider: $(this).attr('identity'), org_id: $(this).attr('org_id')}, (data) ->
         $('#sp_info').html(data)
 
   #hold emails toggle
-  $(document).on 'click', '.hold_emails', ->
-    $.post '/catalog_manager/identities/set_hold_emails', {service_provider: $(this).prop('identity'), org_id: $(this).prop('org_id')}, (data) ->
+  $('.hold_emails').live 'click', ->
+    $.post '/catalog_manager/identities/set_hold_emails', {service_provider: $(this).attr('identity'), org_id: $(this).attr('org_id')}, (data) ->
         $('#sp_info').html(data)
 
   #edit history data toggle
-  $(document).on 'click', '.edit_historic_data', ->
-    current_user_id = $(this).prop('current_user_id')
-    identity = $(this).prop('identity')
-    identity_user_id = $(this).prop('identity_user_id')
-    $.post '/catalog_manager/identities/set_edit_historic_data', {manager: $(this).prop('identity'), org_id: $(this).prop('org_id')}, (data) ->
+  $('.edit_historic_data').live 'click', ->
+    current_user_id = $(this).attr('current_user_id')
+    identity = $(this).attr('identity')
+    identity_user_id = $(this).attr('identity_user_id')
+    $.post '/catalog_manager/identities/set_edit_historic_data', {manager: $(this).attr('identity'), org_id: $(this).attr('org_id')}, (data) ->
       $('#cm_info').html(data)
       if current_user_id == identity_user_id
         alert(I18n["catalog_manager_js"]["permission_change"])
         window.location = ''
 
-  $(document).on 'click', '.increase_decrease_rates', ->
+  $('.increase_decrease_rates').live('click', ->
     $('.increase_decrease_dialog').dialog('open')
-    $('.increase_or_decrease').val($(this).prop('action'))
+    $('.increase_or_decrease').val($(this).attr('action'))
+  )
 
-  $(document).on 'click', '.submit_rate_change', ->
+  $('.submit_rate_change').live('click', ->
     percent_of_change = $(this).siblings('.percent_of_change').val()
     effective_date = $(this).siblings('.effective_date').val()
     display_date = $(this).siglings('.display_date').val()
     entity_id = $(this).siblings('.entity_id').val()
     Sparc.catalog.submitRateChanges(entity_id, percent_of_change, effective_date, display_date)
+  )
 
   # Service and general (not specific to per patient or one time fees) pricing map validations
-  $(document).on 'change', '.service_name, .service_order, .service_rate, .pricing_map_display_date, .pricing_map_effective_date', ->
+  $('.service_name,
+    .service_order,
+    .service_rate,
+    .pricing_map_display_date,
+    .pricing_map_effective_date').live('change', ->
     blank_field = false
     validates = $(this).closest('.service_form').find('.validate')
 
@@ -477,25 +485,29 @@ $ ->
       $('.save_button').removeAttr('disabled')
       $('.blank_field_errors').hide()
     else
-      $('.save_button').prop('disabled', true)
+      $('.save_button').attr('disabled', true)
       $('.blank_field_errors').css('display', 'inline-block')
+  )
 
-  $(document).on 'click', '.remove_pricing_setup', ->
+  $('.remove_pricing_setup').live('click', ->
     $(this).parent().prevAll('h3:first').remove()
     $(this).parent().remove()
+  )
 
-  $(document).on 'change', '.change_rate_display_date, .change_rate_effective_date', ->
+  $('.change_rate_display_date, .change_rate_effective_date').live('change', ->
     entity_id = $(this).closest('.increase_decrease_dialog').children('.entity_id').val()
-    Sparc.catalog.validate_change_rate_date(this, entity_id, $(this).prop('display')) if $(this).val() != ""
+    Sparc.catalog.validate_change_rate_date(this, entity_id, $(this).attr('display')) if $(this).val() != ""
+  )
 
-  $(document).on 'change', '.display_date, .effective_date', ->
-    entity_id = $(this).siblings(".submitted_date").prop('entity_id')
-    Sparc.catalog.validate_change_rate_date(this, entity_id, $(this).prop('display')) if $(this).val() != ""
+  $('.display_date, .effective_date').live('change', ->
+    entity_id = $(this).siblings(".submitted_date").attr('entity_id')
+    Sparc.catalog.validate_change_rate_date(this, entity_id, $(this).attr('display')) if $(this).val() != ""
+  )
 
-  $(document).on 'click', 'a.add_new_excluded_funding_source', ->
+  $('a.add_new_excluded_funding_source').live 'click', ->
     funding_source = $('select.new_excluded_funding_source').val()
-    org_type = $(this).prop('org_type')
-    org_id = $(this).prop('org_id')
+    org_type = $(this).attr('org_type')
+    org_id = $(this).attr('org_id')
     data = {funding_source: funding_source, org_id: org_id, org_type: org_type}
     $.ajax
       url: '/catalog_manager/catalog/add_excluded_funding_source'
@@ -503,13 +515,13 @@ $ ->
       data: data
 
 
-  $(document).on 'click', 'span.remove_funding_source', ->
+  $('span.remove_funding_source').live 'click', ->
     remove_this = $(this).parent()
     if confirm(I18n["js_confirm"])
       $.ajax
         url: '/catalog_manager/catalog/remove_excluded_funding_source'
         type: 'delete'
-        data: { funding_source_id: $(this).prop('funding_source_id') }
+        data: { funding_source_id: $(this).attr('funding_source_id') }
         success: ->
           remove_this.remove()
 
@@ -520,13 +532,13 @@ $ ->
 
   $(document).on('change', 'input[id*="_tag_list_epic"]', ->
     $('#epic_wrapper').toggle()
-    $("#epic_wrapper input[type='checkbox']").prop('checked', false)
+    $("#epic_wrapper input[type='checkbox']").attr('checked', false)
   )
 
   $(document).on('change', 'input[id*="_tag_list_clinical_work_fulfillment"]', ->
     $('#cwf_wrapper').toggle()
     $('#cwf_wrapper input.cwf_clear').val('')
-    $("#cwf_wrapper input[type='checkbox']").prop('checked', false)
+    $("#cwf_wrapper input[type='checkbox']").attr('checked', false)
   )
 
   $(document).on('click','.unavailable_button', ->
@@ -534,6 +546,3 @@ $ ->
     show_unavailable = $(this).data('show-unavailable')
     window.location.assign("/catalog_manager?show_unavailable=#{show_unavailable}")
   )
-
-
-

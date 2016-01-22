@@ -102,7 +102,7 @@ $(document).ready ->
     if !$(this).is(':checked')
       $('#study_investigational_products_info_attributes_ind_number').val('')
       $('#study_investigational_products_info_attributes_ind_number').change()
-      $('#study_investigational_products_info_attributes_ind_on_hold').prop('checked', false)
+      $('#study_investigational_products_info_attributes_ind_on_hold').attr('checked', false)
 
   $('#study_federal_phs_sponsor').change ->
     $('#study_federal_non_phs_sponsor').val("")
@@ -141,26 +141,25 @@ $(document).ready ->
     ).addClass('date')
 
   setupDatePicker('#funding_start_date', '#study_funding_start_date')
-  $('#funding_start_date').prop("readOnly", true)
+  $('#funding_start_date').attr("readOnly", true)
 
   setupDatePicker('#potential_funding_start_date', '#study_potential_funding_start_date')
-  $('#potential_funding_start_date').prop("readOnly", true)
+  $('#potential_funding_start_date').attr("readOnly", true)
 
   setupDatePicker('#irb_approval_date', '#study_human_subjects_info_attributes_irb_approval_date')
-  $('#irb_approval_date').prop("readOnly", true)
+  $('#irb_approval_date').attr("readOnly", true)
 
   setupDatePicker('#irb_expiration_date', '#study_human_subjects_info_attributes_irb_expiration_date')
-  $('#irb_expiration_date').prop("readOnly", true)
+  $('#irb_expiration_date').attr("readOnly", true)
 
   setupDatePicker('#iacuc_approval_date', '#study_vertebrate_animals_info_attributes_iacuc_approval_date')
-  $('#iacuc_approval_date').prop("readOnly", true)
+  $('#iacuc_approval_date').attr("readOnly", true)
 
   setupDatePicker('#iacuc_expiration_date', '#study_vertebrate_animals_info_attributes_iacuc_expiration_date')
-  $('#iacuc_expiration_date').prop("readOnly", true)
+  $('#iacuc_expiration_date').attr("readOnly", true)
 
   #This is to disabled the submit after you click once, so you cant fire multiple posts at once.
   $("form").submit ->
     unless $('#study_research_types_info_attributes_human_subjects').is(':checked')
       $('#study_human_subjects_info_attributes_nct_number').val('')
     $('a.continue_button').unbind('click');
-

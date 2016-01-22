@@ -101,23 +101,24 @@ $(document).ready ->
     update_components_field()
 
   $(document).on 'click', 'fieldset.service_level_components button.delete', ->
-    position = $(this).prop('position')
+    position = $(this).attr('position')
     $("#service_component_position_#{position}").remove()
     update_components_field()
 
-  $(document).on 'click', '.add_pricing_map', ->
+  $('.add_pricing_map').live('click', ->
     blank_pricing_map = $('.blank_pricing_map').html()
     $('.pricing_map_accordion').append(blank_pricing_map)
     Sparc.services.create_accordion()
     Sparc.config.setDatePicker()
     $('.blank_field_errors').css('display', 'inline-block')
     $('.per_patient_errors').css('display', 'inline-block')
-    $('.save_button').prop('disabled', true)
+    $('.save_button').attr('disabled', true)
     if $('.one_time_fee').is(":checked")
       $('.otf_field_errors').show()
       $(".per_patient_errors").hide()
+  )
 
-  $(document).on 'click', '.remove_pricing_map', ->
+  $('.remove_pricing_map').live('click', ->
     div = $(this).closest('div')
     div.prevAll('h3:first').remove()
     div.remove()
@@ -125,8 +126,9 @@ $(document).ready ->
     $('.blank_field_errors').hide()
     $('.per_patient_errors').hide()
     $('.otf_field_errors').hide()
+  )
 
-  $(document).on 'click', '.add_pricing_setup', ->
+  $('.add_pricing_setup').live('click', ->
     blank_pricing_setup = $('.blank_pricing_setup').html()
     pricing_setup_form = $('.pricing_setup_accordion').append(blank_pricing_setup)
     pricing_setup_form.find('.effective_date').addClass('validate')
@@ -136,26 +138,30 @@ $(document).ready ->
     pricing_setup_form.find('.pricing_setup_form:last').append('<input name="pricing_setups[blank_pricing_setup][newly_created]" type="hidden" value="true">')
     Sparc.services.create_accordion('.pricing_setup_accordion')
     Sparc.config.setDatePicker()
+  )
 
-  $(document).on 'change', '.pricing_map_effective_date_hidden', ->
-    Sparc.services.create_date_display(this, $(this).prop('date_type'), 'effective')
+  $('.pricing_map_effective_date_hidden').live('change', ->
+    Sparc.services.create_date_display(this, $(this).attr('date_type'), 'effective')
+  )
 
-  $(document).on 'change', '.pricing_map_display_date_hidden', ->
-    Sparc.services.create_date_display(this, $(this).prop('date_type'), 'display')
+  $('.pricing_map_display_date_hidden').live('change', ->
+    Sparc.services.create_date_display(this, $(this).attr('date_type'), 'display')
+  )
 
   # $(document).on('input')
 
-  $(document).on 'change', ".rate_field", ->
+  $(".rate_field").live('change', ->
     unless $(this).hasClass('service_rate')
-      old_value = $(this).prop('old_value')
-      rate_type = $(this).prop('rate_type')
+      old_value = $(this).attr('old_value')
+      rate_type = $(this).attr('rate_type')
       unless confirm(I18n["services_js"]["rate_field_confirm"])
-        $(this).prop('old_value', old_value)
+        $(this).attr('old_value', old_value)
         $(this).val(old_value)
+  )
 
-  $(document).on 'change', '.service_rate', ->
+  $('.service_rate').live('change', ->
     rate = $(this).val()
-    organization_id = $(this).prop('organization_id')
+    organization_id = $(this).attr('organization_id')
     display_date = $(this).closest('div').find(".pricing_map_display_date_hidden").val()
     data = {full_rate: rate, organization_id: organization_id, date: display_date}
     service_rate = $(this)
@@ -168,4 +174,4 @@ $(document).ready ->
         service_rate.closest('tr').siblings('.other_rate_row').find('.set_rate').html("#{data.other_rate}")
         service_rate.closest('tr').siblings('.member_rate_row').find('.set_rate').html("#{data.member_rate}")
     })
-
+  )

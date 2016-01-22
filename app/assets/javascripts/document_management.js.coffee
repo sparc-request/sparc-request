@@ -23,21 +23,21 @@
 $(document).ready ->
 
   $(".document_upload_button").click ->
-    $("#process_ssr_organization_ids").prop('disabled', false)
-    $("#document").prop('disabled', false)
+    $("#process_ssr_organization_ids").removeAttr('disabled')
+    $("#document").removeAttr('disabled')
     $(".document_upload_button").hide()
     $('#doc_type').change()
 
   $(".document_edit").click ->
-    $("#process_ssr_organization_ids").prop('disabled', false)
-    $("#document").prop('disabled', false)
+    $("#process_ssr_organization_ids").removeAttr('disabled')
+    $("#document").removeAttr('disabled')
     $(".document_upload_button").hide()
     $('.document_edit span').html('Loading...')
     $('.document_delete').hide()
 
-  $(document).on 'click', "#cancel_upload", ->
-    $("#process_ssr_organization_ids").prop('disabled', true)
-    $("#document").prop('disabled', true)
+  $("#cancel_upload").live 'click', ->
+    $("#process_ssr_organization_ids").attr('disabled', 'disabled')
+    $("#document").attr('disabled', 'disabled')
     $('.document_delete').show()
 
   $(document).on('change', '#doc_type', ->

@@ -67,7 +67,7 @@ $(document).ready ->
                     $.datepicker._clearDate(input)
                 setTimeout( callback, 1)
 
-            $('.date').prop("readOnly", true)
+            $('.date').attr("readOnly", true)
             spinner.remove()
   }
 
@@ -101,4 +101,3 @@ $(document).ready ->
     activate: (event, ui) ->
       idx = ui.newTab.parent().children().index(ui.newTab)
       $.cookie("admin_tab_name", idx, { expires: 1 })
-

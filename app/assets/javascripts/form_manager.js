@@ -59,7 +59,7 @@ FormManager = {
         assert(inputs.length >= 1, "there were no form inputs with a name attribute supporting nesting");
         return _.each(inputs, __bind(function(i) {
           var attr, garbage, option, val, _ref;
-          key = $(i).prop('name');
+          key = $(i).attr('name');
           val = this.fromForm($(i), require_visible, data_type);
           if (formatter && _.isFunction(formatter.from_form)) {
             val = formatter.from_form(val);

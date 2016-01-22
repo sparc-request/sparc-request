@@ -21,10 +21,11 @@
 $ ->
   Sparc.config = {
     ready: ->
-      $(document).off 'change', '.datepicker'
-      $(document).on 'change', '.datepicker', ->
+      $('.datepicker').die('change')
+      $('.datepicker').live('change', ->
         submitted_field = $(this).siblings('.submitted_date')
         submitted_field.val(Sparc.config.readyMyDate($(this).val(), 'send')).change()
+      )
 
       Sparc.config.setDatePicker("with button image")
 
@@ -62,14 +63,14 @@ $ ->
         datepicker_attributes.buttonImage = "/assets/catalog_manager/calendar_edit.png"
 
       for datepicker in $('.datepicker')
-        if $(datepicker).prop('past_date') == 'true'
+        if $(datepicker).attr('past_date') == 'true'
           datepicker_attributes.minDate = null
         else
           datepicker_attributes.minDate = 0
         $(datepicker).removeClass('hasDatepicker').removeAttr('id').datepicker(datepicker_attributes)
 
 
-      $('.datepicker').prop("readOnly", true)
+      $('.datepicker').attr("readOnly", true)
 
     readyMyDate: (date_string, action) ->
       try
@@ -97,5 +98,3 @@ $ ->
         $(date).val(Sparc.config.readyMyDate($(date).val(), 'view'))
 
   }
-
-

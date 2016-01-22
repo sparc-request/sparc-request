@@ -19,6 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 $(document).ready ->
+  # $(".visit_name").live 'mouseover', ->
   $(".visit_name").qtip
     overwrite: false
     content: I18n["service_calendar_toasts"]["visit_name"]
@@ -28,6 +29,7 @@ $(document).ready ->
     show:
       ready: false
 
+  # $('.visit_day').live 'mouseover', ->
   $('.visit_day').qtip
     overwrite: false
     content: I18n["service_calendar_toasts"]["visit_day"]
@@ -74,6 +76,7 @@ $(document).ready ->
     load: (event, ui) ->
       $("#service_calendar #tab_load_spinner").hide()
 
+  # $('.billing_type_list').live 'mouseover', ->
   $('.billing_type_list').qtip
     overwrite: false
     content: 'R = Research<br />T = Third Party (Patient Insurance)<br />% = % Effort'
@@ -109,4 +112,3 @@ $(document).ready ->
     changing_tabs_calculating_rates()
   else if $('.line_item_visit_pricing').is(':visible')
     changing_tabs_calculating_rates()
-

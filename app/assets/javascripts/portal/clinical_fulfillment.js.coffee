@@ -1,29 +1,9 @@
-# Copyright © 2011 MUSC Foundation for Research Development
-# All rights reserved.
-
-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
-
-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
-
-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
-# disclaimer in the documentation and/or other materials provided with the distribution.
-
-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
-# derived from this software without specific prior written permission.
-
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 $(document).ready ->
 
   check_core_permissions = () ->
     $('.clinical_tab_data').each ->
-      if $(this).prop('data-has_access') == "false"
-        core_name = $(this).prop('href')
+      if $(this).attr('data-has_access') == "false"
+        core_name = $(this).attr('href')
         $(core_name).find('input').prop('disabled', true)
         $(core_name).find('button').prop('disabled', true)
 
@@ -59,7 +39,7 @@ $(document).ready ->
 
   delete_toast_message = () ->
     data =
-      'id': $("#procedures_added_popup").prop('data-calendar_id')
+      'id': $("#procedures_added_popup").attr('data-calendar_id')
     $.ajax
       type: 'POST'
       url:   "/clinical_work_fulfillment/calendars/delete_toast_messages"
@@ -379,10 +359,11 @@ $(document).ready ->
   $('.search-all-subjects').focus ->
     $(this).val('')
 
-  $(document).on 'keyup', '.search-all-subjects', ->
+  $('.search-all-subjects').live('keyup', ->
     $('.subject').show() if $(this).val() is ''
-  $(document).on 'click', '.search-all-subjects', ->
+  ).live('click', ->
     $('.subject').show() if $(this).val() is ''
+  )
 
 
   #Project summary report start and end date
@@ -402,7 +383,7 @@ $(document).ready ->
     continue_with_research_project_summary_report = true
     start_date = $('#rps_start_date').val()
     end_date = $('#rps_end_date').val()
-    href = $("#research_project_summary_report_in_cwf").prop("href")
+    href = $("#research_project_summary_report_in_cwf").attr("href")
     href = href + "?start_date=#{start_date}&end_date=#{end_date}"
     $("#research_project_summary_report_date_range").dialog("close")
     $('#processing_request').dialog("open")
@@ -413,7 +394,7 @@ $(document).ready ->
   #Because of how nested forms work, the data attribute needs to be given here to get the correct id
   $(document).on 'click', 'a.add_nested_fields', ->
     otf_id = $(this).data('otf_id')
-    $("tbody#cwf_fulfillment_#{otf_id}").find('a.remove_nested_fields').prop('data-otf_id', otf_id)
+    $("tbody#cwf_fulfillment_#{otf_id}").find('a.remove_nested_fields').attr('data-otf_id', otf_id)
 
 
   $(document).on 'click', 'a.remove_nested_fields', ->

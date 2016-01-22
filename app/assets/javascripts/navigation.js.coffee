@@ -19,14 +19,14 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 $(document).ready ->
-  $(document).on 'click', '.navigation_link', ->
+  $('.navigation_link').live 'click', ->
     if $(this).parent('div.exit').size() >= 1
       $('#processing_request').show()
-    location = $(this).prop('location')
-    validates = $(this).prop('validates')
+    location = $(this).attr('location')
+    validates = $(this).attr('validates')
     $('#location').val(location)
     $('#validates').val(validates)
     if location == 'service_subsidy'
       $('td.visit input').each ->
-        $(this).prop('disabled', true)
+        $(this).attr('disabled', true)
     $('#navigation_form').submit()

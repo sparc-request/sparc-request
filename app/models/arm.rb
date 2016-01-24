@@ -75,12 +75,22 @@ class Arm < ActiveRecord::Base
       end
     end
 
+    validate_visit_group_positions
+
     liv = LineItemsVisit.for(self, line_item)
     liv.create_visits
 
 
     if line_items_visits.count > 1
       liv.update_visit_names self.line_items_visits.first
+    end
+  end
+
+  def validate_visit_group_positions
+    count = 1
+    visit_groups.each do |vg|
+      vg.update_attributes(position: count)
+      count += 1
     end
   end
 

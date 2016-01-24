@@ -348,8 +348,9 @@ class Arm < ActiveRecord::Base
     last_position = visit_groups.last.position
     count = visit_count - last_position
     count.times do |index|
-      position = (index + 1) + 1
+      position = last_position + 1
       VisitGroup.create(arm_id: self.id, name: "Visit #{position}", position: position)
+      last_position += 1
       # vg = VisitGroup.create(arm_id: id)
       # vg.move_to_bottom
       # vg.update(name: "Visit #{vg.position}")

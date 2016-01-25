@@ -60,7 +60,16 @@ $(document).ready ->
         restrict_sending_dropdown = $('#study_type_answer_restrict_sending_answer')
 
         epic_box_alert_message = () -> 
-          alert("Please fill out the Epic Information correctly.")
+          options = {
+            resizable: false,
+            height: 220,
+            modal: true,
+            autoOpen: false,
+            buttons:
+              "OK": ->
+                $(this).dialog("close")
+          }
+          $('#epic_box_alert').dialog(options).dialog("open")
 
         $.prototype.hide_elt = () ->
           this[0].selectedIndex = 0

@@ -92,9 +92,9 @@
           .field
             = f.label :sponsor_name, t(:study_form)[:sponsor_name]
             = f.text_field :sponsor_name
-        %fieldset
+        %fieldset{:style => "#{USE_EPIC ? nil : 'display:none;'}"}
           %legend= t(:study_form)[:epic]
-          .epic-questions{:style => "#{USE_EPIC ? nil : 'display:none;'}"}
+          .epic-questions
             .field
               = f.label :selected_for_epic, t(:study_form)[:push_to_epic]        
               = f.hidden_field :study_type_question_group_id, :value => study.study_type_question_group_id == StudyTypeQuestionGroup.where(active:false).pluck(:id).first ? 'inactive' : 'active'

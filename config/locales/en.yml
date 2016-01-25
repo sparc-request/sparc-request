@@ -381,6 +381,7 @@ en:
     attributes: "Study Attributes"
     code_blank: "Select a Federal Grant Code"
     description: "Before you can complete a service request, please tell us more about your research study. This information will be used by our staff to decide the best way to process your request."
+    epic: "Epic Information"
     federal_grant_code_id: "Federal Grant Code:"
     federal_grant_serial_number: "Federal Grant Serial Number:"
     federal_grant_title: "Federal Grant Title:"

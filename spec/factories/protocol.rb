@@ -37,7 +37,6 @@ FactoryGirl.define do
     federal_non_phs_sponsor      { Faker::Lorem.word }
     federal_phs_sponsor          { Faker::Lorem.word }
     requester_id                 1
-    has_cofc                     true
 
     trait :without_validations do
       to_create { |instance| instance.save(validate: false) }

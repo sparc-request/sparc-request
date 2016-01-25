@@ -24,7 +24,10 @@
     $(document).ready(function() {
       Sparc.study.ready();
     });
-  
+
+  #epic_box_alert{style: 'display:none;', title: t(:epic_box)[:epic_box_error]}
+    = t(:epic_box)[:epic_box_alert]
+    
   .grid_7.box
     .info
       %fieldset
@@ -102,9 +105,8 @@
         .field{:style => "#{USE_EPIC ? nil : 'display:none;'}"}
           = f.label :selected_for_epic, t(:study_form)[:push_to_epic]
 
-          /////***** Only DISPLAY epic box in admin UNLESS changing from a virgin project 
-          /////***** (a project that has never been a study- selected_for_epic = nil) to a study
-          ////****** In this case, we DO want the ability to edit the Epic Box.
+          / Only DISPLAY epic box data in admin UNLESS changing from a virgin project 
+     
           - if admin && @protocol.selected_for_epic != nil
             %span.epic_selected.display_epic_answers
               = f.object.selected_for_epic ? "Yes" : "No"

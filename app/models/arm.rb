@@ -68,29 +68,13 @@ class Arm < ActiveRecord::Base
     # if visit_count is nil then set it to 1
     self.update_attribute(:visit_count, 1) if self.visit_count.nil?
 
-    while self.visit_groups.size < self.visit_count
-      visit_group = self.visit_groups.new
-      if not visit_group.save(validate: false) then
-        raise ActiveRecord::Rollback
-      end
-    end
-
-    validate_visit_group_positions
+    create_visit_groups(visit_count)
 
     liv = LineItemsVisit.for(self, line_item)
     liv.create_visits
 
-
     if line_items_visits.count > 1
       liv.update_visit_names self.line_items_visits.first
-    end
-  end
-
-  def validate_visit_group_positions
-    count = 1
-    visit_groups.each do |vg|
-      vg.update_attributes(position: count)
-      count += 1
     end
   end
 
@@ -355,15 +339,16 @@ class Arm < ActiveRecord::Base
   private
 
   def create_visit_groups(visit_count)
-    last_position = visit_groups.last.position
+    if visit_groups.empty?
+      last_position = 0
+    else
+      last_position = visit_groups.last.position
+    end
     count = visit_count - last_position
     count.times do |index|
       position = last_position + 1
       VisitGroup.create(arm_id: self.id, name: "Visit #{position}", position: position)
       last_position += 1
-      # vg = VisitGroup.create(arm_id: id)
-      # vg.move_to_bottom
-      # vg.update(name: "Visit #{vg.position}")
     end
     self.reload
   end

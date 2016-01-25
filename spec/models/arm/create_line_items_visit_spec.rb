@@ -49,7 +49,6 @@ RSpec.describe Arm, type: :model do
           expect(liv.line_item).to              eq line_item
           expect(liv.subject_count).to          eq arm.subject_count
           expect(liv.visits.count).to           eq arm.visit_count
-          binding.pry
           expect(liv.visits.map(&:position)).to eq (1..arm.visit_count).to_a
         end
       end

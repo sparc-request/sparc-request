@@ -87,18 +87,9 @@ module ApplicationHelper
     window_after_url = base_url + "/set_window_after"
     page = page == 0 ? 1 : page
     beginning_visit = (page * 5) - 4
-    puts "*" * 40
-    puts "beginning_visit"
-    puts beginning_visit
     ending_visit = (page * 5) > arm.visit_count ? arm.visit_count : (page * 5)
-    puts "ending_visit"
-    puts ending_visit
-    puts "arm.visit_count"
-    puts arm.visit_count
     returning_html = ""
     line_items_visits = arm.line_items_visits
-    puts "line_items_visits"
-    puts line_items_visits
     visit_groups = arm.visit_groups
 
     (beginning_visit .. ending_visit).each do |n|

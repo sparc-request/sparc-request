@@ -30,11 +30,12 @@ module Dashboard::ApplicationHelper
 
   def format_datetime date
     if date.present?
-      date.strftime('%D %I:%M%p')
+      date.strftime('%D %I:%M %p')
     else
       ''
     end
   end
+
 
   def display_if to_compare_1, to_compare_2=true
     if to_compare_1 == to_compare_2

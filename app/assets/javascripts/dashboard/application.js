@@ -29,6 +29,7 @@
 //= require bootstrap-select
 //= require bootstrap-table
 //= require bootstrap-table-export
+//= require bootstrap-table-custom
 //= require moment
 //= require bootstrap-datetimepicker
 //= require jquery-ui

@@ -1,0 +1,59 @@
+-# Copyright © 2011 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+.panel.panel-default
+  .panel-heading
+    Filter Protocols
+    = render_filterrific_spinner
+  .panel-body
+    #protocol_filter_form_display
+      = form_for_filterrific filterrific do |form|
+        .form-group.row
+          = form.label :search_query, "Search", class: 'col-lg-3 control-label'
+          .col-lg-9
+            = form.text_field :search_query, class: 'form-control filterrific-periodically-observed'
+
+        .form-group.row
+          = form.label :for_identity_id, "My Protocols", class: 'col-lg-10 control-label'
+          .col-lg-2
+            = form.check_box :for_identity_id, {}, current_user.id, "0"
+
+        .form-group.row
+          = form.label :for_admin, "My Admin Organizations", class: 'col-lg-10 control-label'
+          .col-lg-2
+            = form.check_box :for_admin, {}, current_user.id, "0"
+
+        .form-group.row
+          = form.label :archived, "Archived", class: 'col-lg-10 control-label'
+          .col-lg-2
+            = form.check_box :archived
+
+        .form-group.row
+          = form.label :with_status, "Status", class: 'col-lg-3 control-label'
+          .col-lg-9
+            = form.select :with_status, filterrific.select_options[:with_status], { include_blank: '- Any -' }, class: "form-control selectpicker"
+
+        .form-group.row
+          = form.label :with_core, "Core", class: 'col-lg-3 control-label'
+          .col-lg-9
+            = form.select :with_core, filterrific.select_options[:with_core], { include_blank: '- Any -' }, class: "form-control selectpicker"
+
+  .panel-footer
+    #reset_filters= link_to 'Reset Filters', reset_filterrific_url

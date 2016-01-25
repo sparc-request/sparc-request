@@ -256,6 +256,11 @@ $(document).ready ->
       data: { protocol_id: protocol_id }
   )
 
+  $("#reset_filters a").live 'click', ->
+    # This makes the reset filter link go through AJAX
+    $.getScript @href
+    return false
+
   $('.pagination a').live 'click', ->
     # This makes the pagination links go through AJAX, rather than link hrefs
     $('.pagination').html 'Page is loading...'

@@ -117,6 +117,12 @@ class Protocol < ActiveRecord::Base
     validate :primary_pi_exists
   end
 
+  scope :for_identity, -> (identity) {
+    joins(:project_roles).
+    where(project_roles: { identity_id: identity.id }).
+    where.not(project_roles: { project_rights: 'none' })
+  }
+
   filterrific(
     default_filter_params: { archived: false },
     available_filters: [
@@ -140,12 +146,6 @@ class Protocol < ActiveRecord::Base
       "protocols.id = \"#{search_term}\" OR "\
       "MATCH(identities.first_name, identities.last_name) AGAINST (\"#{search_term}\")"
     ).distinct
-  }
-
-  scope :for_identity, -> (identity) {
-    joins(:project_roles).
-    where(project_roles: { identity_id: identity.id }).
-    where.not(project_roles: { project_rights: 'none' })
   }
 
   scope :for_identity_id, -> (identity_id) {

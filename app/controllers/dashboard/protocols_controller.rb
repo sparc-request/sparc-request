@@ -93,7 +93,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def edit
-    @protocol_type = @protocol.type.downcase
+    @protocol_type = @protocol.type
     @protocol.populate_for_edit
     session[:breadcrumbs].
       clear.
@@ -116,7 +116,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   def update_protocol_type
     # Using update_attribute here is intentional, type is a protected attribute
     @protocol.update_attribute(:type, params[:type])
-    @protocol_type = params[:type].downcase
+    @protocol_type = params[:type]
     @protocol = Protocol.find @protocol.id #Protocol type has been converted, this is a reload
     @protocol.populate_for_edit
     flash[:success] = "Protocol Type Updated!"

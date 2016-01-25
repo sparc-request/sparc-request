@@ -19,45 +19,8 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .col-lg-3
-  .panel.panel-default
-    .panel-heading
-      Filter Protocols
-      = render_filterrific_spinner
-    .panel-body
-      #protocol_filter_form_display
-        = form_for_filterrific @filterrific do |form|
-          .form-group.row
-            = form.label :search_query, "Search", class: 'col-lg-3 control-label'
-            .col-lg-9
-              = form.text_field :search_query, class: 'form-control filterrific-periodically-observed'
-
-          .form-group.row
-            = form.label :for_identity_id, "My Protocols", class: 'col-lg-10 control-label'
-            .col-lg-2
-              = form.check_box :for_identity_id, {}, @user.id, "0"
-
-          .form-group.row
-            = form.label :for_admin, "My Admin Organizations", class: 'col-lg-10 control-label'
-            .col-lg-2
-              = form.check_box :for_admin, {}, @user.id, "0"
-
-          .form-group.row
-            = form.label :archived, "Archived", class: 'col-lg-10 control-label'
-            .col-lg-2
-              = form.check_box :archived
-
-          .form-group.row
-            = form.label :with_status, "Status", class: 'col-lg-3 control-label'
-            .col-lg-9
-              = form.select :with_status, @filterrific.select_options[:with_status], { include_blank: '- Any -' }, class: "form-control selectpicker"
-
-          .form-group.row
-            = form.label :with_core, "Core", class: 'col-lg-3 control-label'
-            .col-lg-9
-              = form.select :with_core, @filterrific.select_options[:with_core], { include_blank: '- Any -' }, class: "form-control selectpicker"
-
-    .panel-footer
-      = link_to 'Reset Filters', reset_filterrific_url
+  #filterrific_form
+    = render partial: 'dashboard/protocols/filter_protocols_form', locals: { filterrific: @filterrific, current_user: @user }
 
 .col-lg-9
   #filterrific_results

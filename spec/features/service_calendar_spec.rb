@@ -120,19 +120,17 @@ RSpec.describe "service calendar", js: true do
 
       describe 'sorting visits around' do
 
-        it 'should move visit 1 to the end position' do
+        it 'should move visit 1 to the spevified position' do
           wait_for_javascript_to_finish
           first('.move_visits').click
           wait_for_javascript_to_finish
           select("Visit 1", from: "visit_to_move_1")
           wait_for_javascript_to_finish
-          select("Insert at 19 - Visit 18", from: "move_to_position_#{arm1.id}")
+          select("Insert at 2 - Visit 2", from: "move_to_position_#{arm1.id}")
           wait_for_javascript_to_finish
           find('#submit_move').click
           wait_for_javascript_to_finish
-          select("Visits 6 - 10 of 10", from: "jump_to_visit_#{arm1.id}")
-          wait_for_javascript_to_finish
-          expect(page).to have_css("input.visit_name[value='Visit 1']")
+          expect(arm1.visit_groups.first.name).to eq('Visit 2')
         end
 
         it 'should move visit 2 between visits 6 and 7' do
@@ -141,12 +139,10 @@ RSpec.describe "service calendar", js: true do
           wait_for_javascript_to_finish
           select("Visit 2", from: "visit_to_move_1")
           wait_for_javascript_to_finish
-          select("Insert at 11 - Visit 10", from: "move_to_position_1")
+          select("Insert at 7 - Visit 7", from: "move_to_position_1")
           find('#submit_move').click
           wait_for_javascript_to_finish
-          select("Visits 6 - 10 of 10", from: "jump_to_visit_#{arm1.id}")
-          wait_for_javascript_to_finish
-          expect(page).to have_css("input.visit_name[value='Visit 2']")
+          expect(arm1.visit_groups[6].name).to eq("Visit 2")
         end
 
         it "should not mess up the visit ids" do

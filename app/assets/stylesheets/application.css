@@ -18,6 +18,7 @@
 /* INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR*/
 /* TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.*/
 
+
 html, body {
   height: 100%;
 }
@@ -45,6 +46,14 @@ img {
 
 a {
   text-decoration: none;
+}
+
+label.decrement_days {
+  padding-right: 16px;
+}
+
+label.increment_days {
+  padding-left: 18px;
 }
 
 ul {
@@ -881,7 +890,7 @@ span#infotip img {
   vertical-align: bottom;
 }
 
-.continue div.nav-backward img, 
+.continue div.nav-backward img,
 .review-bottom-navigation div.return-to-step-3 img {
   vertical-align: middle;
   padding-right: 5px;
@@ -1061,6 +1070,11 @@ span#infotip img {
 
 .confirmation-details p.instructions {
   color: #c43149;
+}
+
+.visual_error {
+  border-color: red;
+  border-width: 2px;
 }
 
 /* ServiceRequestSetupView */
@@ -2332,6 +2346,10 @@ li:not(.ui-tabs-active) #calendar_tab:hover {
   display: inline-table;
 }
 
+div.field_with_errors {
+  display: inline;
+}
+
 .small_desc {
   font-size: 10px;
   font-weight: normal;
@@ -2896,6 +2914,16 @@ input.devise_submit_button {
 
 .right-arrow {
   margin: 0px -50px 0px 30px !important;
+}
+
+.contact-form-fields {
+  height: 1.3rem;
+  width: 100%;
+}
+
+.contact-form-textarea {
+  width: 100%;
+  min-height: 75px;
 }
 
 .new-project-button {

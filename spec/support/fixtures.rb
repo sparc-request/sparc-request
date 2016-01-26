@@ -52,22 +52,57 @@ def let_there_be_j
     )}
 end
 
-def build_study_type_questions
-  let!(:stq_higher_level_of_privacy) { StudyTypeQuestion.create("order"=>1, "question"=>"1a. Does your study require a higher level of privacy for the participants?", "friendly_id"=>"higher_level_of_privacy") }
-  let!(:stq_certificate_of_conf)     { StudyTypeQuestion.create("order"=>2, "question"=>"1b. Does your study have a Certificate of Confidentiality?", "friendly_id"=>"certificate_of_conf") }
-  let!(:stq_access_study_info)       { StudyTypeQuestion.create("order"=>3, "question"=>"1c. Do participants enrolled in your study require a second DEIDENTIFIED Medical Record that is not connected to their primary record in Epic?", "friendly_id"=>"access_study_info") }
-  let!(:stq_epic_inbasket)           { StudyTypeQuestion.create("order"=>4, "question"=>"2. Do you wish to receive a notification via Epic InBasket when your research participants are admitted to the hospital or ED?", "friendly_id"=>"epic_inbasket") }
-  let!(:stq_research_active)         { StudyTypeQuestion.create("order"=>5, "question"=>"3. Do you wish to remove the 'Research: Active' indicator in the Patient Header for your study participants?", "friendly_id"=>"research_active") }
-  let!(:stq_restrict_sending)        { StudyTypeQuestion.create("order"=>6, "question"=>"4. Do you need to restrict the sending of study related results, such as laboratory and radiology results, to a participants MyChart?", "friendly_id"=>"restrict_sending") }
+def build_study_type_question_groups
+  let!(:inactive_study_type_question_group)  { StudyTypeQuestionGroup.create(active: false) }
+  let!(:active_study_type_question_group)    { StudyTypeQuestionGroup.create(active: true) }
 end
 
+def build_study_type_questions
+  
+  let!(:stq_higher_level_of_privacy) { StudyTypeQuestion.create("order"=>1, "question"=>"1a. Does your study require a higher level of privacy for the participants?", "friendly_id"=>"higher_level_of_privacy", "study_type_question_group_id" => inactive_study_type_question_group.id) }
+  let!(:stq_certificate_of_conf)     { StudyTypeQuestion.create("order"=>2, "question"=>"1b. Does your study have a Certificate of Confidentiality?", "friendly_id"=>"certificate_of_conf", "study_type_question_group_id" => inactive_study_type_question_group.id) }
+  let!(:stq_access_study_info)       { StudyTypeQuestion.create("order"=>3, "question"=>"1c. Do participants enrolled in your study require a second DEIDENTIFIED Medical Record that is not connected to their primary record in Epic?", "friendly_id"=>"access_study_info", "study_type_question_group_id" => inactive_study_type_question_group.id) }
+  let!(:stq_epic_inbasket)           { StudyTypeQuestion.create("order"=>4, "question"=>"2. Do you wish to receive a notification via Epic InBasket when your research participants are admitted to the hospital or ED?", "friendly_id"=>"epic_inbasket", "study_type_question_group_id" => inactive_study_type_question_group.id) }
+  let!(:stq_research_active)         { StudyTypeQuestion.create("order"=>5, "question"=>"3. Do you wish to remove the 'Research: Active' indicator in the Patient Header for your study participants?", "friendly_id"=>"research_active", "study_type_question_group_id" => inactive_study_type_question_group.id) }
+  let!(:stq_restrict_sending)        { StudyTypeQuestion.create("order"=>6, "question"=>"4. Do you need to restrict the sending of study related results, such as laboratory and radiology results, to a participants MyChart?", "friendly_id"=>"restrict_sending", "study_type_question_group_id" => inactive_study_type_question_group.id) }
+  let!(:active_stq_certificate_of_conf)     { StudyTypeQuestion.create("order"=>1, "question"=>"1. Does your study have a Certificate of Confidentiality?", "friendly_id"=>"certificate_of_conf", "study_type_question_group_id" => active_study_type_question_group.id) }
+  let!(:active_stq_higher_level_of_privacy) { StudyTypeQuestion.create("order"=>2, "question"=>"2. Does your study require a higher level of privacy for the participants?", "friendly_id"=>"higher_level_of_privacy", "study_type_question_group_id" => active_study_type_question_group.id) }
+  let!(:active_stq_access_study_info)       { StudyTypeQuestion.create("order"=>3, "question"=>"2b. Do participants enrolled in your study require a second DEIDENTIFIED Medical Record that is not connected to their primary record in Epic?", "friendly_id"=>"access_study_info", "study_type_question_group_id" => active_study_type_question_group.id) }
+  let!(:active_stq_epic_inbasket)           { StudyTypeQuestion.create("order"=>4, "question"=>"3. Do you wish to receive a notification via Epic InBasket when your research participants are admitted to the hospital or ED?", "friendly_id"=>"epic_inbasket", "study_type_question_group_id" => active_study_type_question_group.id) }
+  let!(:active_stq_research_active)         { StudyTypeQuestion.create("order"=>5, "question"=>"4. Do you wish to remove the 'Research: Active' indicator in the Patient Header for your study participants?", "friendly_id"=>"research_active", "study_type_question_group_id" => active_study_type_question_group.id) }
+  let!(:active_stq_restrict_sending)        { StudyTypeQuestion.create("order"=>6, "question"=>"5. Do you need to restrict the sending of study related results, such as laboratory and radiology results, to a participants MyChart?", "friendly_id"=>"restrict_sending", "study_type_question_group_id" => active_study_type_question_group.id) }
+end
+
+
 def build_study_type_answers
-  let!(:answer1)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: stq_higher_level_of_privacy.id, answer: 0)}
-  let!(:answer2)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: stq_certificate_of_conf.id, answer: 1)}
+  
+  let!(:answer1)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: stq_higher_level_of_privacy.id, answer: 1)}
+  let!(:answer2)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: stq_certificate_of_conf.id, answer: 0)}
   let!(:answer3)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: stq_access_study_info.id, answer: 0)}
   let!(:answer4)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: stq_epic_inbasket.id, answer: 0)}
-  let!(:answer5)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: stq_research_active.id, answer: 0)}
-  let!(:answer6)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: stq_restrict_sending.id, answer: 0)}
+  let!(:answer5)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: stq_research_active.id, answer: 1)}
+  let!(:answer6)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: stq_restrict_sending.id, answer: 1)}
+  let!(:active_answer1)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: active_stq_certificate_of_conf.id, answer: 0)}
+  let!(:active_answer2)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: active_stq_higher_level_of_privacy.id, answer: 1)}
+  let!(:active_answer3)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: active_stq_access_study_info.id, answer: 0)}
+  let!(:active_answer4)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: active_stq_epic_inbasket.id, answer: 0)}
+  let!(:active_answer5)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: active_stq_research_active.id, answer: 1)}
+  let!(:active_answer6)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: active_stq_restrict_sending.id, answer: 1)}
+end
+
+def build_project_type_answers
+  let!(:answer1)  { StudyTypeAnswer.create(protocol_id: project.id, study_type_question_id: stq_higher_level_of_privacy.id, answer: nil)}
+  let!(:answer2)  { StudyTypeAnswer.create(protocol_id: project.id, study_type_question_id: stq_certificate_of_conf.id, answer: nil)}
+  let!(:answer3)  { StudyTypeAnswer.create(protocol_id: project.id, study_type_question_id: stq_access_study_info.id, answer: nil)}
+  let!(:answer4)  { StudyTypeAnswer.create(protocol_id: project.id, study_type_question_id: stq_epic_inbasket.id, answer: nil)}
+  let!(:answer5)  { StudyTypeAnswer.create(protocol_id: project.id, study_type_question_id: stq_research_active.id, answer: nil)}
+  let!(:answer6)  { StudyTypeAnswer.create(protocol_id: project.id, study_type_question_id: stq_restrict_sending.id, answer: nil)}
+  let!(:active_answer1)  { StudyTypeAnswer.create(protocol_id: project.id, study_type_question_id: active_stq_certificate_of_conf.id, answer: nil)}
+  let!(:active_answer2)  { StudyTypeAnswer.create(protocol_id: project.id, study_type_question_id: active_stq_higher_level_of_privacy.id, answer: nil)}
+  let!(:active_answer3)  { StudyTypeAnswer.create(protocol_id: project.id, study_type_question_id: active_stq_access_study_info.id, answer: nil)}
+  let!(:active_answer4)  { StudyTypeAnswer.create(protocol_id: project.id, study_type_question_id: active_stq_epic_inbasket.id, answer: nil)}
+  let!(:active_answer5)  { StudyTypeAnswer.create(protocol_id: project.id, study_type_question_id: active_stq_research_active.id, answer: nil)}
+  let!(:active_answer6)  { StudyTypeAnswer.create(protocol_id: project.id, study_type_question_id: active_stq_restrict_sending.id, answer: nil)}
 end
 
 def build_service_request_with_project
@@ -186,9 +221,11 @@ def build_arms
 end
 
 def build_project
+  build_study_type_question_groups()
+  build_study_type_questions()
   let!(:project) {
     protocol = Project.create(attributes_for(:protocol))
-    protocol.update_attributes(funding_status: "funded", funding_source: "federal", indirect_cost_rate: 50.0, start_date: Time.now, end_date: Time.now + 2.month)
+    protocol.update_attributes(funding_status: "funded", funding_source: "federal", indirect_cost_rate: 50.0, start_date: Time.now, end_date: Time.now + 2.month, selected_for_epic: nil, study_type_question_group_id: active_study_type_question_group.id)
     protocol.save validate: false
     identity = Identity.find_by_ldap_uid('jug2')
     create(
@@ -209,14 +246,16 @@ def build_project
     service_request.reload
     protocol
   }
+  build_project_type_answers()
 end
 
 def build_study
+  build_study_type_question_groups()
   build_study_type_questions()
   let!(:study) {
 
     protocol = build(:study)
-    protocol.update_attributes(funding_status: "funded", funding_source: "federal", indirect_cost_rate: 50.0, start_date: Time.now, end_date: Time.now + 2.month)
+    protocol.update_attributes(funding_status: "funded", funding_source: "federal", indirect_cost_rate: 50.0, start_date: Time.now, end_date: Time.now + 2.month, selected_for_epic: false, study_type_question_group_id: StudyTypeQuestionGroup.active.pluck(:id).first)
     protocol.save validate: false
     identity = Identity.find_by_ldap_uid('jug2')
     create(
@@ -233,6 +272,26 @@ def build_study
         project_rights:  "approve",
         role:            "business-grants-manager")
     service_request.update_attribute(:protocol_id, protocol.id)
+    protocol.reload
+    protocol
+  }
+  build_study_type_answers()
+end
+
+def build_empty_study
+  build_study_type_question_groups()
+  build_study_type_questions()
+  let!(:study) {
+    protocol = build(:study)
+    protocol.update_attributes(funding_status: "funded", funding_source: "college", indirect_cost_rate: 50.0, start_date: Time.now, end_date: Time.now + 2.month)
+    protocol.save validate: false
+    identity = Identity.find_by_ldap_uid('jug2')
+    create(
+        :project_role,
+        protocol_id:     protocol.id,
+        identity_id:     identity.id,
+        project_rights:  "approve",
+        role:            "primary-pi")
     protocol.reload
     protocol
   }

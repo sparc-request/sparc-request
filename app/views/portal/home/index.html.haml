@@ -35,7 +35,7 @@
   %br
 
   .row-portal-header
-    %input#search_box.search_protocols.hidden{placeholder: 'Search...'}
+    %input#search_box.search_protocols{placeholder: 'Search...'}
     .portal_create_new_project
       = link_to new_project_path(portal: true), class: 'new-project' do
         .new-project-text
@@ -50,7 +50,6 @@
     = t(:protocol_information)[:loading]
     %br
     = image_tag 'portal/spinner.gif'
-  .search_protocols_div
   #protocol-accordion{style: 'margin-top:15px;'}
 
 .add-associated-user-dialog

@@ -175,12 +175,14 @@ $(document).ready ->
                   #Add the new elements
                   primary_pi_full_name = $('.add_user_dialog_box #primary_pi_full_name').val()
                   pr_full_name = $('.add_user_dialog_box #full_name').val()
+                  protocol_id = $('#add-user-form #protocol_id').val()
                   warning = I18n["protocol_information"]["change_primary_pi"]["warning"]
                   message1 = I18n["protocol_information"]["change_primary_pi"]["warning_prompt_1_1"]+
                     "(<strong>#{pr_full_name}</strong>)"+
                     I18n["protocol_information"]["change_primary_pi"]["warning_prompt_1_2"]+
                     "(<strong>#{primary_pi_full_name}</strong>)"+
-                    I18n["protocol_information"]["change_primary_pi"]["warning_prompt_1_3"]
+                    I18n["protocol_information"]["change_primary_pi"]["warning_prompt_1_3"]+
+                    "(<strong>#{protocol_id}</strong>)."
                   message2 = I18n["protocol_information"]["change_primary_pi"]["warning_prompt_2"]
                   $('.add-associated-user-dialog').append("<h1 class='change_ppi_prompt' style='color:red;'>#{warning}</h1><p class='change_ppi_prompt' style='font-size:14px;'>#{message1}</p><p class='change_ppi_prompt' style='font-size:14px;'>#{message2}</p>")
 

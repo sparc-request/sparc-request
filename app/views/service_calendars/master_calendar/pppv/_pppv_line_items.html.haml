@@ -37,9 +37,9 @@
         %td.service_rate{ class: "service_rate_#{liv.id}" }= display_service_rate liv.line_item
       %td.your_cost.text-center
         - if tab != 'calendar'
-          %span.edit-your-cost{ data: { type: 'text', pk: liv.line_item.id, name: 'your_cost', value: "#{(display_your_cost liv.line_item)[1..-1]}" } }
+          %span.edit-your-cost{ data: { type: 'text', pk: liv.line_item.id, name: 'your_cost', value: "#{number_with_precision(Service.cents_to_dollars(liv.line_item.applicable_rate), precision: 2)}" } }
         - else
-          %span= display_your_cost liv.line_item
+          %span= currency_converter liv.line_item.applicable_rate
       - if tab == 'calendar'
         %td.unit_type.text-center= liv.line_item.service.displayed_pricing_map.unit_type
       %td.subject_count.text-center
@@ -54,7 +54,7 @@
       - totals_hash = liv.try(:per_subject_subtotals, visits)
       - visits.each_with_index do |v, index|
         %td.text-center.visit{ visit_column: index + 1, class: "visit_column_#{index + 1} arm_#{arm.id}", data: { cents: (totals_hash["#{v.id}"] || 0) } }
-          = render partial: 'service_calendars/master_calendar/line_item_visit_input', locals: { arm: arm, line_item: liv.line_item, visit: v, tab: @tab, totals_hash: totals_hash, unit_minimum: unit_minimum, portal: @portal, service_request: service_request }
+          = render partial: 'service_calendars/master_calendar/pppv/line_item_visit_input', locals: { arm: arm, line_item: liv.line_item, visit: v, tab: @tab, totals_hash: totals_hash, unit_minimum: unit_minimum, portal: @portal, service_request: service_request }
       - (5 - visits.size).times do
         %td &nbsp;
       - if tab == 'calendar'

@@ -10,15 +10,9 @@
   .row
     .col-sm-2.col-sm-offset-1.text-center
       %span{ data: { type: 'text', pk: "#{visit.id}", name: 'qty', value: visit.research_billing_qty, url: "#{base_url}&tab=billing_strategy&column=research_billing_qty&portal=#{portal}" }, class: 'edit-research-billing-qty' }
-      -# = editable visit, :research_billing_qty,
-      -# = text_field_tag "visits_#{visit.id}_research_billing_qty", visit.research_billing_qty, current_quantity: visit.research_billing_qty, previous_quantity: visit.research_billing_qty, data: { unit_minimum: unit_minimum, arm_id: arm.id }, class: "form-control line_item_visit_research_billing_qty line_item_visit_billing visits_#{visit.id}", update: "#{base_url}&tab=billing_strategy&column=research_billing_qty&portal=#{portal}"
     .col-sm-2.text-center
       %span{ data: { type: 'text', pk: visit.id, name: 'qty', value: visit.insurance_billing_qty, url: "#{base_url}&tab=billing_strategy&column=insurance_billing_qty&portal=#{portal}" }, class: 'edit-insurance-billing-qty' }
-      -# = editable visit, :insurance_billing_qty, url: "#{base_url}&tab=billing_strategy&column=insurance_billing_qty&portal=#{portal}"
-      -# = text_field_tag "visits_#{visit.id}_insurance_billing_qty", visit.insurance_billing_qty, current_quantity: visit.insurance_billing_qty, previous_quantity: visit.insurance_billing_qty, data: { unit_minimum: unit_minimum, arm_id: arm.id }, class: "form-control line_item_visit_billing visits_#{visit.id}", update: "#{base_url}&tab=billing_strategy&column=insurance_billing_qty&portal=#{portal}"
     .col-sm-1.text-center
-      -# = editable visit, :effort_billing_qty, url: '', class: 'edit-effort-billing-qty'
       %span{ data: { type: 'text', pk: visit.id, name: 'qty', value: visit.effort_billing_qty, url: "#{base_url}&tab=billing_strategy&column=effort_billing_qty&portal=#{portal}" }, class: 'edit-effort-billing-qty' }
-      -# = text_field_tag "visits_#{visit.id}_effort_billing_qty", visit.effort_billing_qty, current_quantity: visit.effort_billing_qty, previous_quantity: visit.effort_billing_qty, data: { unit_minimum: unit_minimum, arm_id: arm.id }, class: "form-control line_item_visit_billing visits_#{visit.id}", update: "#{base_url}&tab=billing_strategy&column=effort_billing_qty&portal=#{portal}"
 - when 'calendar'
   = label_tag nil, qty_cost_label(visit.research_billing_qty + visit.insurance_billing_qty, currency_converter(totals_hash["#{visit.id}"])), class: "line_item_visit_pricing"

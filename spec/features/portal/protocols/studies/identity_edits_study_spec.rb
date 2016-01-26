@@ -30,7 +30,6 @@ RSpec.describe "editing a study", js: true do
 
   before :each do
     visit edit_portal_protocol_path service_request.protocol.id
-    find('#study_has_cofc_true').click
     wait_for_javascript_to_finish
   end
 
@@ -191,6 +190,13 @@ RSpec.describe "editing a study", js: true do
         select("IV", from: "Study Phase")
         expect(find("#study_study_phase")).to have_value("iv")
       end
+    end
+  end
+
+  context "epic box" do
+    it "should not be open because it is not selected for epic" do
+      study.update_attributes(selected_for_epic: false)
+      expect(page).to_not have_selector('#study_type_answer_certificate_of_conf')
     end
   end
 

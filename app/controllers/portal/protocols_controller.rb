@@ -58,17 +58,25 @@ class Portal::ProtocolsController < Portal::BaseController
   end
 
   def edit
+
     @edit_protocol = true
     @protocol.populate_for_edit if @protocol.type == "Study"
     @protocol.valid?
     respond_to do |format|
       format.html
-    end
+    end   
   end
 
   def update
-    attrs = params[@protocol.type.downcase.to_sym]
-    if @protocol.update_attributes attrs
+    attrs = if @protocol.type.downcase.to_sym == :study && params[:study]
+      params[:study]
+    elsif @protocol.type.downcase.to_sym == :project && params[:project]
+      params[:project]
+    else
+      Hash.new
+    end
+    
+    if @protocol.update_attributes(attrs.merge(study_type_question_group_id: StudyTypeQuestionGroup.active.pluck(:id).first))
       flash[:notice] = "Study updated"
       redirect_to portal_root_path(:default_protocol => @protocol)
     else
@@ -92,7 +100,9 @@ class Portal::ProtocolsController < Portal::BaseController
   # to update the protocol type
   def update_protocol_type
     # Using update_attribute here is intentional, type is a protected attribute
-    if @protocol.update_attribute(:type, params[:protocol][:type])
+    @protocol_type = params[:protocol][:type]
+    if @protocol.update_attribute(:type, @protocol_type)
+      @protocol.update_attribute(:study_type_question_group_id, StudyTypeQuestionGroup.active.pluck(:id).first)
       if params[:sub_service_request_id]
         @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
         redirect_to portal_admin_sub_service_request_path(@sub_service_request)

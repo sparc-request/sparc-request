@@ -29,7 +29,6 @@ class Portal::SubServiceRequestsController < Portal::BaseController
     session[:sub_service_request_id] = @sub_service_request.id
     session[:service_request_id] = @sub_service_request.service_request_id
     session[:service_calendar_pages] = params[:pages] if params[:pages]
-
     if @user.can_edit_fulfillment? @sub_service_request.organization
       @user_toasts = @user.received_toast_messages.select {|x| x.sending_class == 'SubServiceRequest'}.select {|y| y.sending_class_id == @sub_service_request.id}
       @service_request = @sub_service_request.service_request
@@ -48,6 +47,7 @@ class Portal::SubServiceRequestsController < Portal::BaseController
     else
       redirect_to portal_admin_index_path
     end
+
   end
 
   def update_from_fulfillment
@@ -74,13 +74,19 @@ class Portal::SubServiceRequestsController < Portal::BaseController
   def update_from_project_study_information
     @sub_service_request = SubServiceRequest.find params[:id]
 
-    attrs = params[@protocol.type.downcase.to_sym]
+    attrs = if @protocol.type.downcase.to_sym == :study && params[:study]
+      params[:study]
+    elsif @protocol.type.downcase.to_sym == :project && params[:project]
+      params[:project]
+    else
+      Hash.new
+    end
    
     ###TODO temporarily disabling validation in Admin Portal
-    @protocol.attributes = attrs
+    @protocol.attributes = (attrs.merge(study_type_question_group_id: StudyTypeQuestionGroup.active.pluck(:id).first))
 
     if @protocol.save(:validate => false) #update_attributes attrs
-      redirect_to "/portal/admin/sub_service_requests/#{@sub_service_request.id}"
+      redirect_to portal_admin_sub_service_request_path(@sub_service_request)
     else
       @user_toasts = @user.received_toast_messages.select {|x| x.sending_class == 'SubServiceRequest'}
       @service_request = @sub_service_request.service_request
@@ -94,6 +100,7 @@ class Portal::SubServiceRequestsController < Portal::BaseController
       @selected_arm = @service_request.arms.first
 
       render :action => 'show'
+
     end
   end   
 

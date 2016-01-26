@@ -1072,6 +1072,11 @@ span#infotip img {
   color: #c43149;
 }
 
+.visual_error {
+  border-color: red;
+  border-width: 2px;
+}
+
 /* ServiceRequestSetupView */
 .service-request-setup-view .service-details {
   background: #0775B0 !important;
@@ -2339,6 +2344,10 @@ li:not(.ui-tabs-active) #calendar_tab:hover {
 
 .inline .field_with_errors {
   display: inline-table;
+}
+
+div.field_with_errors {
+  display: inline;
 }
 
 .small_desc {

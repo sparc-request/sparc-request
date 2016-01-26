@@ -21,7 +21,11 @@
 require 'rails_helper'
 
 RSpec.describe Portal::ProtocolsController, :type => :controller do
+  let!(:identity) { create(:identity) }
+  let!(:active_study_type_question_group)    { StudyTypeQuestionGroup.create(active: true) }
+
   stub_portal_controller
+
 
   before :each do
     @identity = Identity.new
@@ -31,6 +35,7 @@ RSpec.describe Portal::ProtocolsController, :type => :controller do
     session[:identity_id] = @identity.id
 
     @protocol = Study.new
+    @protocol = build(:study, study_type_question_group_id: active_study_type_question_group.id)
     @protocol.type = 'Study'
     @protocol.save(validate: false)
   end
@@ -118,6 +123,7 @@ RSpec.describe Portal::ProtocolsController, :type => :controller do
     end
 
     it 'update protocol' do
+      
       post(:update, {:format => :html, :id => @protocol.id })
       expect(assigns(:protocol)).to eq @protocol
       expect(response).to render_template("edit")

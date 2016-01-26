@@ -30,7 +30,7 @@
   $(document).ready( function() {
     $('.selectpicker').selectpicker();
 
-    // default x-editable error function through error itself...
+    // default x-editable error function throws error itself...
     $.fn.editable.defaults.error = function(response, newValue) {
       return false;
     }

@@ -37,14 +37,14 @@
         %td.service_rate{ class: "service_rate_#{liv.id}" }= display_service_rate liv.line_item
       %td.your_cost.text-center
         - if tab != 'calendar'
-          %span.edit-your-cost{ data: { type: 'text', pk: liv.line_item.id, name: 'your_cost', value: "#{number_with_precision(Service.cents_to_dollars(liv.line_item.applicable_rate), precision: 2)}" } }
+          %a.edit-your-cost{ href: '#', data: { type: 'text', pk: liv.line_item.id, name: 'your_cost', value: "#{number_with_precision(Service.cents_to_dollars(liv.line_item.applicable_rate), precision: 2)}" } }
         - else
           %span= currency_converter liv.line_item.applicable_rate
       - if tab == 'calendar'
         %td.unit_type.text-center= liv.line_item.service.displayed_pricing_map.unit_type
       %td.subject_count.text-center
         - if tab != 'calendar'
-          %span.edit-subject-count{ data: { type: 'text', pk: liv.line_item.id, name: 'qty', title: 'Edit subject count', value: liv.subject_count, url: "/service_requests/#{liv.service_request.id}/service_calendars?line_items_visit=#{liv.id}&tab=#{tab}&portal=#{@portal}" } }
+          %a.edit-subject-count{ href: '#', data: { type: 'text', pk: liv.line_item.id, name: 'qty', title: 'Edit subject count', value: liv.subject_count, url: "/service_requests/#{liv.service_request.id}/service_calendars?line_items_visit=#{liv.id}&tab=#{tab}&portal=#{@portal}" } }
         - else
           %span= liv.subject_count
       - if @tab == 'template'

@@ -313,8 +313,11 @@ module ServiceCalendarHelper
       option = ["Visits #{beginning_visit} - #{ending_visit} of #{visit_count}", page + 1, class: "title", :page => page + 1]
       arr << option
 
-      (beginning_visit..ending_visit).each do |y|
-        arr << ["&nbsp;&nbsp; - #{arm.visit_groups[y - 1].name}".html_safe, "#{arm.visit_groups[y - 1].id}", :page => page + 1] if arm.visit_groups.present?
+      # (beginning_visit..ending_visit).each do |y|
+      if arm.visit_groups.present?
+        arm.visit_groups[(beginning_visit-1)...ending_visit].each do |vg|
+          arr << ["&nbsp;&nbsp; - #{vg.name}/Day #{vg.day}".html_safe, "#{vg.id}", page: page + 1] if arm.visit_groups.present?
+        end
       end
     end
 

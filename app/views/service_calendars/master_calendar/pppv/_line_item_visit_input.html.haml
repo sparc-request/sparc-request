@@ -9,10 +9,10 @@
 - when 'billing_strategy'
   .row
     .col-sm-2.col-sm-offset-1.text-center
-      %span{ data: { type: 'text', pk: "#{visit.id}", name: 'qty', value: visit.research_billing_qty, url: "#{base_url}&tab=billing_strategy&column=research_billing_qty&portal=#{portal}" }, class: 'edit-research-billing-qty' }
+      %a{ href: '#', data: { type: 'text', pk: "#{visit.id}", name: 'qty', value: visit.research_billing_qty, url: "#{base_url}&tab=billing_strategy&column=research_billing_qty&portal=#{portal}" }, class: 'edit-research-billing-qty' }
     .col-sm-2.text-center
-      %span{ data: { type: 'text', pk: visit.id, name: 'qty', value: visit.insurance_billing_qty, url: "#{base_url}&tab=billing_strategy&column=insurance_billing_qty&portal=#{portal}" }, class: 'edit-insurance-billing-qty' }
+      %a{ href: '#', data: { type: 'text', pk: visit.id, name: 'qty', value: visit.insurance_billing_qty, url: "#{base_url}&tab=billing_strategy&column=insurance_billing_qty&portal=#{portal}" }, class: 'edit-insurance-billing-qty' }
     .col-sm-1.text-center
-      %span{ data: { type: 'text', pk: visit.id, name: 'qty', value: visit.effort_billing_qty, url: "#{base_url}&tab=billing_strategy&column=effort_billing_qty&portal=#{portal}" }, class: 'edit-effort-billing-qty' }
+      %a{ href: '#', data: { type: 'text', pk: visit.id, name: 'qty', value: visit.effort_billing_qty, url: "#{base_url}&tab=billing_strategy&column=effort_billing_qty&portal=#{portal}" }, class: 'edit-effort-billing-qty' }
 - when 'calendar'
   = label_tag nil, qty_cost_label(visit.research_billing_qty + visit.insurance_billing_qty, currency_converter(totals_hash["#{visit.id}"])), class: "line_item_visit_pricing"

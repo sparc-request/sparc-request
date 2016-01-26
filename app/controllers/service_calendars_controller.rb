@@ -20,7 +20,9 @@
 
 class ServiceCalendarsController < ApplicationController
   before_filter :initialize_service_request
-  before_filter(:except => [:merged_calendar, :rename_visit]) {|c| params[:portal] == 'true' ? true : c.send(:authorize_identity)}
+  before_filter(except: [:merged_calendar, :rename_visit]) do |c|
+    params[:portal] == 'true' ? true : c.send(:authorize_identity)
+  end
   layout false
 
   def table
@@ -32,13 +34,15 @@ class ServiceCalendarsController < ApplicationController
     setup_calendar_pages
 
     # TODO: This needs to be changed for one time fees page in arms
-    @candidate_one_time_fees, @candidate_per_patient_per_visit = @sub_service_request.candidate_services.partition {|x| x.one_time_fee} if @sub_service_request
+    if @sub_service_request
+      @candidate_one_time_fees, @candidate_per_patient_per_visit = @sub_service_request.candidate_services.partition { |x| x.one_time_fee }
+    end
   end
 
   def update
     @portal              = params[:portal]
     @study_tracker       = params[:study_tracker] == "true"
-    @sub_service_request = SubServiceRequest.find(params[:id]) if (params[:id])
+    @sub_service_request = SubServiceRequest.find(params[:id]) if params[:id]
     @subsidy             = @sub_service_request.try(:subsidy)
     @user                = current_identity
     visit                = Visit.find params[:visit] rescue nil
@@ -46,10 +50,9 @@ class ServiceCalendarsController < ApplicationController
     @line_item           = LineItem.find params[:line_item] rescue nil
     tab                  = params[:tab]
     checked              = params[:checked]
-    qty                  = params[:undefined] && params[:undefined][:qty].to_i || params[:qty]
+    qty                  = params[:undefined].nil? ? params[:qty].to_i : params[:undefined][:qty].to_i
     column               = params[:column]
 
-    puts "CONTROLLER: #{column}: #{qty}"
     case tab
     when 'template'
       if @line_items_visit
@@ -61,11 +64,11 @@ class ServiceCalendarsController < ApplicationController
         # set quantity and research billing qty to 1
         line_item = visit.line_items_visit.line_item
         service = line_item.service
-        line_items = @service_request.per_patient_per_visit_line_items
 
         visit.attributes = {
-          :quantity => service.displayed_pricing_map.unit_minimum,
-          :research_billing_qty => service.displayed_pricing_map.unit_minimum }
+          quantity: service.displayed_pricing_map.unit_minimum,
+          research_billing_qty: service.displayed_pricing_map.unit_minimum
+        }
         visit.save
 
       elsif checked == 'false'
@@ -73,7 +76,8 @@ class ServiceCalendarsController < ApplicationController
           quantity: 0,
           research_billing_qty: 0,
           insurance_billing_qty: 0,
-          effort_billing_qty: 0)
+          effort_billing_qty: 0
+        )
       end
 
     when 'quantity'
@@ -87,13 +91,13 @@ class ServiceCalendarsController < ApplicationController
       if qty < 0
         @errors = "Quantity must be greater than zero"
       else
-        puts 'CONTROLLER: updating qty'
         #update the total quantity to reflect the 3 billing qty total
         total = visit.quantity_total
 
         visit.attributes = {
           column => qty,
-          :quantity => total }
+          quantity: total
+        }
         visit.save
       end
     end
@@ -106,20 +110,23 @@ class ServiceCalendarsController < ApplicationController
     @line_item_total_study_td = ".total_#{@line_items_visit.id}_per_study"
     @arm_id = '.arm_' + @line_items_visit.arm.id.to_s
 
-    if @sub_service_request
-      @line_items_visits = @line_items_visit.arm.line_items_visits.reject{|x| x.line_item.sub_service_request_id != @sub_service_request.id }
-    elsif @service_request
-      @line_items_visits = @line_items_visit.arm.line_items_visits.reject{|x| x.line_item.service_request_id != @service_request.id }
-    else
-      @line_items_visits = @line_items_visit.arm.line_items_visits
-    end
+    @line_items_visits =
+      if @sub_service_request
+        @line_items_visit.arm.line_items_visits.joins(:line_item)
+          .where(line_items: { sub_service_request_id: @sub_service_request.id } )
+      elsif @service_request
+        @line_items_visit.arm.line_items_visits.joins(:line_item)
+          .where(line_items: { service_request_id: @service_request.id } )
+      else
+        @line_items_visit.arm.line_items_visits
+      end
   end
 
   def rename_visit
     name = params[:name]
     position = params[:visit_position].to_i
     arm = Arm.find params[:arm_id]
-    arm.visit_groups[position].update_attributes(:name => name)
+    arm.visit_groups[position].update_attributes(name: name)
   end
 
   def set_day
@@ -130,7 +137,7 @@ class ServiceCalendarsController < ApplicationController
 
     if !arm.update_visit_group_day(day, position, portal)
       respond_to do |format|
-        format.js { render :status => 418, :json => clean_messages(arm.errors.messages) }
+        format.js { render status: 418, json: clean_messages(arm.errors.messages) }
       end
     end
   end
@@ -142,7 +149,7 @@ class ServiceCalendarsController < ApplicationController
 
     if !arm.update_visit_group_window_before(window_before, position)
       respond_to do |format|
-        format.js { render :status => 418, :json => clean_messages(arm.errors.messages) }
+        format.js { render status: 418, json: clean_messages(arm.errors.messages) }
       end
     end
   end
@@ -154,7 +161,7 @@ class ServiceCalendarsController < ApplicationController
 
     if !arm.update_visit_group_window_after(window_after, position)
       respond_to do |format|
-        format.js { render :status => 418, :json => clean_messages(arm.errors.messages) }
+        format.js { render status: 418, json: clean_messages(arm.errors.messages) }
       end
     end
   end
@@ -188,11 +195,11 @@ class ServiceCalendarsController < ApplicationController
       else
         line_item.reload
         respond_to do |format|
-          format.js { render :status => 500, :json => clean_errors(line_item.errors) }
+          format.js { render status: 500, json: clean_errors(line_item.errors) }
         end
       end
     elsif params[:type] == 'units_per_qty'
-      line_item.update_attributes(:units_per_quantity => val)
+      line_item.update_attributes(units_per_quantity: val)
     end
   end
 
@@ -213,7 +220,7 @@ class ServiceCalendarsController < ApplicationController
     move_to_position = params[:move_to_position].to_i
 
     if @portal
-      @candidate_per_patient_per_visit = @sub_service_request.candidate_services.reject {|x| x.one_time_fee}
+      @candidate_per_patient_per_visit = @sub_service_request.candidate_services.reject { |x| x.one_time_fee }
     end
     setup_calendar_pages
 
@@ -241,23 +248,21 @@ class ServiceCalendarsController < ApplicationController
     @service = @line_items_visit.line_item.service
     @sub_service_request = @line_items_visit.line_item.sub_service_request
     @subsidy = @sub_service_request.try(:subsidy)
-    line_items = @sub_service_request.per_patient_per_visit_line_items
-    line_item = @line_items_visit.line_item
-    has_service_relation = line_item.has_service_relation
     failed_visit_list = ''
     @line_items_visit.visits.each do |visit|
       visit.attributes = {
           quantity:              @service.displayed_pricing_map.unit_minimum,
           research_billing_qty:  @service.displayed_pricing_map.unit_minimum,
           insurance_billing_qty: 0,
-          effort_billing_qty:    0 }
+          effort_billing_qty:    0
+      }
 
       visit.save
     end
 
     @errors = "The follow visits for #{@service.name} were not checked because they exceeded the linked quantity limit: #{failed_visit_list}" if failed_visit_list.empty? == false
 
-    render :partial => 'update_service_calendar'
+    render partial: 'update_service_calendar'
   end
 
   def unselect_calendar_row
@@ -265,10 +270,10 @@ class ServiceCalendarsController < ApplicationController
     @sub_service_request = @line_items_visit.line_item.sub_service_request
     @subsidy = @sub_service_request.try(:subsidy)
     @line_items_visit.visits.each do |visit|
-      visit.update_attributes({:quantity => 0, :research_billing_qty => 0, :insurance_billing_qty => 0, :effort_billing_qty => 0})
+      visit.update_attributes quantity: 0, research_billing_qty: 0, insurance_billing_qty: 0, effort_billing_qty: 0
     end
 
-    render :partial => 'update_service_calendar'
+    render partial: 'update_service_calendar'
   end
 
   def select_calendar_column
@@ -282,14 +287,15 @@ class ServiceCalendarsController < ApplicationController
         next unless value[:line_items].include?(liv.line_item)
         visit = liv.visits[column_id - 1] # columns start with 1 but visits array positions start at 0
         visit.update_attributes(
-            quantity:              liv.line_item.service.displayed_pricing_map.unit_minimum,
-            research_billing_qty:  liv.line_item.service.displayed_pricing_map.unit_minimum,
-            insurance_billing_qty: 0,
-            effort_billing_qty:    0)
+          quantity:              liv.line_item.service.displayed_pricing_map.unit_minimum,
+          research_billing_qty:  liv.line_item.service.displayed_pricing_map.unit_minimum,
+          insurance_billing_qty: 0,
+          effort_billing_qty:    0
+        )
       end
     end
 
-    render :partial => 'update_service_calendar'
+    render partial: 'update_service_calendar'
   end
 
   def unselect_calendar_column
@@ -297,15 +303,15 @@ class ServiceCalendarsController < ApplicationController
     @arm = Arm.find params[:arm_id]
 
     @service_request.service_list(false).each do |key, value|
-      next unless @sub_service_request.nil? or @sub_service_request.organization.name == value[:process_ssr_organization_name]
+      next unless @sub_service_request.nil? || @sub_service_request.organization.name == value[:process_ssr_organization_name]
 
       @arm.line_items_visits.each do |liv|
         next unless value[:line_items].include?(liv.line_item)
         visit = liv.visits[column_id - 1] # columns start with 1 but visits array positions start at 0
-        visit.update_attributes({:quantity => 0, :research_billing_qty => 0, :insurance_billing_qty => 0, :effort_billing_qty => 0})
+        visit.update_attributes quantity: 0, research_billing_qty: 0, insurance_billing_qty: 0, effort_billing_qty: 0
       end
     end
-    render :partial => 'update_service_calendar'
+    render partial: 'update_service_calendar'
   end
 
   private
@@ -322,5 +328,4 @@ class ServiceCalendarsController < ApplicationController
       @pages[arm.id] = @service_request.set_visit_page(new_page, arm)
     end
   end
-
 end

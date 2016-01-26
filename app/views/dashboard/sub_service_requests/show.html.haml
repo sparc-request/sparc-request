@@ -18,7 +18,7 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-= render partial: 'dashboard/admin/header_ssr_info_table', locals: {protocol: @protocol, sub_service_request: @sub_service_request, service_request: @service_request }
+= render partial: 'dashboard/sub_service_requests/header_ssr_info_table', locals: {protocol: @protocol, sub_service_request: @sub_service_request, service_request: @service_request }
 
 .tabs{role: 'tabpanel'}
   %ul.nav.nav-tabs.nav-justified{role: 'tablist'}
@@ -37,16 +37,16 @@
 
   .tab-content
     .tab-pane#details{role: 'tabpanel', class: 'active'}
-      = render partial: 'dashboard/admin/fulfillment/service_request_info/service_request_info', locals: {protocol: @protocol, sub_service_request: @sub_service_request, service_request: @service_request, subsidy: @subsidy}
+      = render partial: 'dashboard/sub_service_requests/service_request_info/service_request_info', locals: {protocol: @protocol, sub_service_request: @sub_service_request, service_request: @service_request, subsidy: @subsidy}
     .tab-pane#study_schedule{role: 'tabpanel'}
       #per_patient_services
-        = render partial: 'dashboard/admin/fulfillment/per_patient_per_visit', locals: {sub_service_request: @sub_service_request, service_request: @service_request}
+        = render partial: 'dashboard/sub_service_requests/per_patient_per_visit', locals: {sub_service_request: @sub_service_request, service_request: @service_request}
     .tab-pane#study_level_activities{role: 'tabpanel'}
       = render partial: 'dashboard/study_level_activities/study_level_activities_table', locals: { sub_service_request: @sub_service_request }
     .tab-pane#documents{role: 'tabpanel'}
       = render partial: 'dashboard/documents/documents_table', locals: { sub_service_request: @sub_service_request, service_request: @service_request }
     .tab-pane#history{role: 'tabpanel'}
-      = render partial: 'dashboard/admin/fulfillment/history/status_changes', locals: { sub_service_request_id: @sub_service_request.id }
+      = render partial: 'dashboard/sub_service_requests/history/status_changes', locals: { sub_service_request_id: @sub_service_request.id }
     .tab-pane#notifications{role: 'tabpanel'}
       = render partial: 'dashboard/notifications/notifications', locals: { sub_service_request: @sub_service_request }
 

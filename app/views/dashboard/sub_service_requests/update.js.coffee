@@ -19,9 +19,9 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 <% unless @errors %>
-$("#status_owner_fulfillment").html("<%= escape_javascript(render(partial: 'dashboard/admin/fulfillment/service_request_info/status_owner_fulfillment', locals: { sub_service_request: @sub_service_request })) %>");
-$("#fulfillment_subsidy").html("<%= escape_javascript(render(partial: 'dashboard/admin/fulfillment/service_request_info/subsidy_info', locals: { sub_service_request: @sub_service_request, subsidy: @subsidy })) %>");
-$("#request_cost_total").html("<%= escape_javascript(render(partial: 'dashboard/admin/fulfillment/service_request_info/direct_cost_total', locals: { sub_service_request: @sub_service_request })) %>");
+$("#status_owner_fulfillment").html("<%= escape_javascript(render(partial: 'dashboard/sub_service_requests/service_request_info/status_owner_fulfillment', locals: { sub_service_request: @sub_service_request })) %>");
+$("#fulfillment_subsidy").html("<%= escape_javascript(render(partial: 'dashboard/sub_service_requests/service_request_info/subsidy_info', locals: { sub_service_request: @sub_service_request, subsidy: @subsidy })) %>");
+$("#request_cost_total").html("<%= escape_javascript(render(partial: 'dashboard/sub_service_requests/service_request_info/direct_cost_total', locals: { sub_service_request: @sub_service_request })) %>");
 
 $(".selectpicker").selectpicker()
 $("#flashes_container").html("<%= escape_javascript(render('shared/flash')) %>")

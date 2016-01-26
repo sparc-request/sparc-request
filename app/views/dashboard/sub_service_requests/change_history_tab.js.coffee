@@ -18,5 +18,5 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$("#history_accordion .panel-body").html("<%= escape_javascript(render(partial: @partial_to_render, locals: { sub_service_request_id: @sub_service_request.id })) %>")
+$(".tab-pane#history").html("<%= escape_javascript(render(partial: @partial_to_render, locals: { sub_service_request_id: @sub_service_request.id })) %>")
 $(".ssr_history_table").bootstrapTable()

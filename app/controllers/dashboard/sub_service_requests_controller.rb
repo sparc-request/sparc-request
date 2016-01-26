@@ -157,7 +157,7 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
   #Dashboard SSR History Table
   def change_history_tab
     #Replaces currently displayed ssr history bootstrap table
-    history_path = "dashboard/fulfillment/history/"
+    history_path = "dashboard/sub_service_requests/history/"
     @partial_to_render = history_path + params[:partial]
   end
 

@@ -44,7 +44,7 @@
         %td.unit_type.text-center= liv.line_item.service.displayed_pricing_map.unit_type
       %td.subject_count.text-center
         - if tab != 'calendar'
-          %span.edit-subject-count{ data: { type: 'text', pk: liv.line_item.id, name: 'subject_count', title: 'Edit subject count', value: liv.subject_count } }
+          %span.edit-subject-count{ data: { type: 'text', pk: liv.line_item.id, name: 'qty', title: 'Edit subject count', value: liv.subject_count, url: "/service_requests/#{liv.service_request.id}/service_calendars?line_items_visit=#{liv.id}&tab=#{tab}&portal=#{@portal}" } }
         - else
           %span= liv.subject_count
       - if @tab == 'template'

@@ -42,31 +42,41 @@
       dataType: "script"
     };
 
-    // display field as currency, edit as quantity
+    $('.edit-subject-count').editable({
+      title: 'Edit subject count',
+      validate: function(val) {
+        var n = ~~Number(val);
+        if(String(n) != val || n < 0) {
+          return "quantity must be a nonnegative number";
+        }
+      }
+    });
+
     $('.edit-your-cost').editable({
       title: 'Edit your cost',
       display: function(value) {
+        // display field as currency, edit as quantity
         $(this).text("$" + value);
       }
     });
 
-    validate_qty = function(val) {
+    validate_billing_qty = function(val) {
       var n = ~~Number(val);
       if(String(n) != val || n <= 0) {
         return "quantity must be a positive number";
       }
     };
 
-    $('.edit-subject-count').editable({
-      validate: validate_qty
-    });
     $('.edit-research-billing-qty').editable({
-      validate: validate_qty
+      title: 'Edit research billing quantity',
+      validate: validate_billing_qty
     });
     $('.edit-insurance-billing-qty').editable({
-      validate: validate_qty
+      title: 'Edit insurance billing quantity',
+      validate: validate_billing_qty
     });
     $('.edit-effort-billing-qty').editable({
-      validate: validate_qty
+      title: 'Edit effort billing quantity',
+      validate: validate_billing_qty
     });
   })

@@ -88,17 +88,26 @@ class ServiceCalendarsController < ApplicationController
       end
 
     when 'billing_strategy'
-      if qty < 0
-        @errors = "Quantity must be greater than zero"
-      else
-        #update the total quantity to reflect the 3 billing qty total
-        total = visit.quantity_total
+      if @line_items_visit
+        # TODO: not sure what's going on here (why is @line_items_visit
+        # set above, then set again below?  what are we doing here, and
+        # why do we not care about checked in this case?)
+        @line_items_visit.update_attribute(:subject_count, qty)
+      end
 
-        visit.attributes = {
-          column => qty,
-          quantity: total
-        }
-        visit.save
+      if visit
+        if qty < 0
+          @errors = "Quantity must be greater than zero"
+        else
+          #update the total quantity to reflect the 3 billing qty total
+          total = visit.quantity_total
+
+          visit.attributes = {
+            column => qty,
+            quantity: total
+          }
+          visit.save
+        end
       end
     end
 

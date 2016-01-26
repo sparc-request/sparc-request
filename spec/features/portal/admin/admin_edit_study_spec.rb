@@ -36,9 +36,14 @@ RSpec.describe 'editing a study', js: true do
     wait_for_javascript_to_finish
   end
 
+  context 'epic box' do
+    it 'should not be able to edit only displays epic box information' do
+      expect(page).to_not have_selector('#study_selected_for_epic_true')
+    end
+  end
+
   context 'validations' do
     it "should raise an error message if study's status is pending and no potential funding source is selected" do
-      find('#study_has_cofc_true').click
       select('Pending Funding', from: 'Proposal Funding Status')
       click_button 'Save'
       wait_for_javascript_to_finish
@@ -46,7 +51,6 @@ RSpec.describe 'editing a study', js: true do
     end
 
     it "should raise an error message if study's status is funded but no funding source is selected" do
-      find('#study_has_cofc_true').click
       select('Funded', from: 'Proposal Funding Status')
       select('Select a Funding Source', from: 'study_funding_source')
       click_button 'Save'

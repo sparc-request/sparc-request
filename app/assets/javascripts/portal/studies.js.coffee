@@ -43,52 +43,186 @@ $(document).ready ->
         'true'             : ['.ind_on_hold']
       '#study_impact_areas_attributes_6__destroy':
         'true'             : ['.impact_other']
-      '#study_type_answer_higher_level_of_privacy_answer':
-        'true'             : ['#study_type_answer_certificate_of_conf']
-      '#study_type_answer_certificate_of_conf_answer':
-        'false'            : ['#study_type_answer_access_study_info']
-      '#study_type_answer_access_study_info_answer':
-        'false'            : ['#study_type_answer_epic_inbasket', '#study_type_answer_research_active', '#study_type_answer_restrict_sending']
 
     ready: ->
       FormFxManager.registerListeners($('.user-edit-protocol-view'), Sparc.study.display_dependencies)
 
-      ####### If send to epic is selected we need to do some crazy stuff,  using FormFxManager for some of it but it couldn't handle the complexity, using a combination, see below ########
 
-      $('#study_selected_for_epic_true').click ->
-        $('.study_type').show()
-      $('#study_selected_for_epic_false').click ->
-        $('.study_type').hide()
-        $('.study_type select').val("").change()
+      if $('#study_viewing_admin').val() == "portal"
 
-      $("#study_type_answer_higher_level_of_privacy_answer").change ->
-        if $(this).val() != 'false'
-          for elem in ['#study_type_answer_epic_inbasket', '#study_type_answer_research_active', '#study_type_answer_restrict_sending']
-            $(elem).hide()
+        study_type_form = $('.study_type')
+        study_selected_for_epic_radio = $('input[name=\'study[selected_for_epic]\']')
+        certificate_of_confidence_dropdown = $('#study_type_answer_certificate_of_conf_answer')
+        higher_level_of_privacy_dropdown = $('#study_type_answer_higher_level_of_privacy_answer')
+        access_required_dropdown = $('#study_type_answer_access_study_info_answer')
+        epic_inbasket_dropdown = $('#study_type_answer_epic_inbasket_answer')
+        research_active_dropdown = $('#study_type_answer_research_active_answer')
+        restrict_sending_dropdown = $('#study_type_answer_restrict_sending_answer')
 
-          for elem in ['#study_type_answer_epic_inbasket_answer', '#study_type_answer_research_active_answer', '#study_type_answer_restrict_sending_answer']
-            $(elem).val("").change()
+        epic_box_alert_message = () -> 
+          options = {
+            resizable: false,
+            height: 220,
+            modal: true,
+            autoOpen: false,
+            buttons:
+              "OK": ->
+                $(this).dialog("close")
+          }
+          $('#epic_box_alert').dialog(options).dialog("open")
 
-        if $(this).val() != 'true'
-          $("#study_type_answer_certificate_of_conf_answer").val("").change()
-          $("#study_type_answer_access_study_info_answer").val("").change()
+        $.prototype.hide_elt = () ->
+          this[0].selectedIndex = 0
+          this.closest('.field').hide()
+          return this
 
-        if $(this).val() == 'false'
-          for elem in ['#study_type_answer_epic_inbasket', '#study_type_answer_research_active', '#study_type_answer_restrict_sending']
-            $(elem).show()
+        $.prototype.show_elt = () ->
+          this.closest('.field').show()
+          return this
 
-      $("#study_type_answer_certificate_of_conf_answer").change ->
-        if $(this).val() == 'true'
-          $("#study_type_answer_access_study_info_answer").val("").change()
-          $("#study_type_answer_epic_inbasket_answer").val("").change()
-          $("#study_type_answer_research_active_answer").val("").change()
-          $("#study_type_answer_restrict_sending_answer").val("").change()
+        $.prototype.hide_visual_error = () ->
+          this.removeClass('visual_error')
+          if $('.visual_error').length == 0 
+            $('.study_type div').removeClass('field_with_errors')
+            if $('#errorExplanation ul li').size() == 1
+              $('#errorExplanation').remove()
+            else
+              $('#errorExplanation ul li:contains("Study type questions must be selected")').remove()
 
-      $("#study_type_answer_access_study_info_answer").change ->
-        if $(this).val() == 'true'
-          $("#study_type_answer_epic_inbasket_answer").val("").change()
-          $("#study_type_answer_research_active_answer").val("").change()
-          $("#study_type_answer_restrict_sending_answer").val("").change()
+        add_and_check_visual_error_on_submit = (dropdown) ->
+          if dropdown.is(':visible') && dropdown.val() == ''
+            dropdown.addClass('visual_error')
+            dropdown.on 'change', (e) ->
+              dropdown.hide_visual_error()
+
+        add_and_check_visual_error_on_field_change = (dropdown) ->
+          siblings = dropdown.parent('.field').siblings().find('.visual_error')
+          if siblings
+            for sibling in siblings
+              if !$(sibling).is(':visible')
+                $(sibling).hide_visual_error()
+
+        # If study is inactive, we want to force users to fill out new epic box questions
+        if $('#study_study_type_question_group_id').val() == "inactive" && $('input[name=\'study[selected_for_epic]\']:checked').val() == 'true'
+          study_type_form.show()
+          certificate_of_confidence_dropdown.show_elt()
+
+        # Logic for epic info box 
+        study_selected_for_epic_radio.on 'change', (e) ->
+          if $('input[name=\'study[selected_for_epic]\']:checked').val() == 'true'
+            study_type_form.show()
+            certificate_of_confidence_dropdown.show_elt()
+          else
+            study_type_form.hide()
+            certificate_of_confidence_dropdown.hide_elt().trigger 'change'
+          return
+
+        certificate_of_confidence_dropdown.on 'change', (e) ->
+          new_value = $(e.target).val()
+          if new_value == 'false'
+            higher_level_of_privacy_dropdown.show_elt()
+          else
+            higher_level_of_privacy_dropdown.hide_elt()
+            access_required_dropdown.hide_elt()
+            epic_inbasket_dropdown.hide_elt()
+            research_active_dropdown.hide_elt()
+            restrict_sending_dropdown.hide_elt()
+          return
+
+
+        higher_level_of_privacy_dropdown.on 'change', (e) ->
+          new_value = $(e.target).val()
+          if new_value == 'false'
+            access_required_dropdown.hide_elt()
+            epic_inbasket_dropdown.show_elt()
+            research_active_dropdown.show_elt()
+            restrict_sending_dropdown.show_elt()
+          else
+            access_required_dropdown.show_elt()
+            epic_inbasket_dropdown.hide_elt()
+            research_active_dropdown.hide_elt()
+            restrict_sending_dropdown.hide_elt()
+          return
+       
+        access_required_dropdown.on 'change', (e) ->
+          new_value = $(e.target).val()
+          if new_value == 'false'
+            epic_inbasket_dropdown.show_elt()
+            research_active_dropdown.show_elt()
+            restrict_sending_dropdown.show_elt()
+          else
+            epic_inbasket_dropdown.hide_elt()
+            research_active_dropdown.hide_elt()
+            restrict_sending_dropdown.hide_elt()
+          return
+
+        # When the epic box answers hit the validations with an unselected field, 
+        # the html.haml sets display to none for unselected fields
+        # So if the user has not filled out one of the 
+        # required fields in the epic box, it will hit this code and display 
+        # the appropriate fields that need to be filled out with a visual cue of red border
+        if $('.field_with_errors label:contains("Study type questions")').length > 0
+          study_selected_for_epic_radio.change()
+          if certificate_of_confidence_dropdown.is(':visible')
+            certificate_of_confidence_dropdown.change()
+          if higher_level_of_privacy_dropdown.val() == 'true' 
+            access_required_dropdown.show_elt()
+            access_required_dropdown.change()
+          if higher_level_of_privacy_dropdown.val() == 'false'
+            higher_level_of_privacy_dropdown.change()
+          if certificate_of_confidence_dropdown != "" && higher_level_of_privacy_dropdown.val() != "" && access_required_dropdown.val() == 'false'
+            access_required_dropdown.change()
+          add_and_check_visual_error_on_submit(certificate_of_confidence_dropdown)
+          add_and_check_visual_error_on_submit(higher_level_of_privacy_dropdown)
+          add_and_check_visual_error_on_submit(access_required_dropdown)
+          add_and_check_visual_error_on_submit(epic_inbasket_dropdown)
+          add_and_check_visual_error_on_submit(research_active_dropdown)
+          add_and_check_visual_error_on_submit(restrict_sending_dropdown)
+
+          certificate_of_confidence_dropdown.on 'change', (e) ->
+            add_and_check_visual_error_on_field_change(certificate_of_confidence_dropdown)
+
+          higher_level_of_privacy_dropdown.on 'change', (e) ->
+            add_and_check_visual_error_on_field_change(higher_level_of_privacy_dropdown)
+
+          access_required_dropdown.on 'change', (e) ->
+            add_and_check_visual_error_on_field_change(access_required_dropdown)
+
+        #### This was written for an edge case in admin/portal.  
+        #### When you go from a virgin project (selected_for_epic = nil/ never been a study) 
+        #### to a study, the Epic Box should be editable instead of only displaying the epic box data.
+        
+        if $('#study_can_edit_admin_study').val() == "can_edit_study"
+          $('#actions input[type="submit"]').on 'click', (e) ->
+            if $('input[name=\'study[selected_for_epic]\']:checked').val() == 'true'
+              if certificate_of_confidence_dropdown.val() == ''
+                epic_box_alert_message()
+                add_and_check_visual_error_on_submit(certificate_of_confidence_dropdown)
+                return false
+              if certificate_of_confidence_dropdown.val() == 'false'
+                if higher_level_of_privacy_dropdown.val() == ''
+                  epic_box_alert_message()
+                  add_and_check_visual_error_on_submit(higher_level_of_privacy_dropdown)
+                  return false
+                if higher_level_of_privacy_dropdown.val() == 'true'
+                  if access_required_dropdown.val() == ''
+                    epic_box_alert_message()
+                    add_and_check_visual_error_on_submit(access_required_dropdown)
+                    return false
+                  if access_required_dropdown.val() == 'false'
+                    if epic_inbasket_dropdown.val() == '' || research_active_dropdown.val() == '' || restrict_sending_dropdown.val() == ''
+                      epic_box_alert_message()
+                      add_and_check_visual_error_on_submit(epic_inbasket_dropdown)
+                      add_and_check_visual_error_on_submit(research_active_dropdown)
+                      add_and_check_visual_error_on_submit(restrict_sending_dropdown)
+                      return false
+                else if higher_level_of_privacy_dropdown.val() == 'false'
+                  if epic_inbasket_dropdown.val() == '' || research_active_dropdown.val() == '' || restrict_sending_dropdown.val() == ''
+                    epic_box_alert_message()
+                    add_and_check_visual_error_on_submit(epic_inbasket_dropdown)
+                    add_and_check_visual_error_on_submit(research_active_dropdown)
+                    add_and_check_visual_error_on_submit(restrict_sending_dropdown)
+                    return false
 
       ######## End of send to epic study question logic ##############
 

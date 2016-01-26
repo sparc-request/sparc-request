@@ -41,13 +41,18 @@ class ProtocolsController < ApplicationController
 
   def create
     @portal = params[:portal]
+
     unless from_portal?
       @service_request = ServiceRequest.find session[:service_request_id]
     end
-    @current_step = cookies['current_step']
-    @protocol = self.model_class.new(params[:study] || params[:project])
-    @protocol.validate_nct = true
 
+    @current_step = cookies['current_step']
+
+    new_protocol_attrs = params[:study] || params[:project] || Hash.new
+    @protocol = self.model_class.new(new_protocol_attrs.merge(study_type_question_group_id: StudyTypeQuestionGroup.active.pluck(:id).first))
+
+    @protocol.validate_nct = true
+    
     if @current_step == 'cancel'
       @current_step = 'return_to_service_request'
     elsif @current_step == 'go_back'
@@ -58,13 +63,16 @@ class ProtocolsController < ApplicationController
       @protocol.populate_for_edit
     elsif @current_step == 'user_details' and @protocol.valid?
       @protocol.save
-      @service_request.update_attribute(:protocol_id, @protocol.id) unless @service_request.protocol.present?
       @current_step = 'return_to_service_request'
       flash[:notice] = "New #{@protocol.type.downcase} created"
 
-      if !from_portal? && @service_request.status == "first_draft"
-        @service_request.update_attributes(status: "draft")
+      if @service_request
+        @service_request.update_attribute(:protocol_id, @protocol.id) unless @service_request.protocol.present?
+        @service_request.update_attribute(:status, "draft")
       end
+
+      @current_step = 'return_to_service_request'
+      flash[:notice] = "New #{@protocol.type.downcase} created"
     else
       @protocol.populate_for_edit
     end
@@ -72,16 +80,18 @@ class ProtocolsController < ApplicationController
     cookies['current_step'] = @current_step
 
     if @current_step != 'return_to_service_request'
-      resolve_layout
+      resolve_layout  
     end
   end
 
   def edit
+   
     @service_request = ServiceRequest.find session[:service_request_id]
     @epic_services = @service_request.should_push_to_epic? if USE_EPIC
     @protocol = current_user.protocols.find params[:id]
     @protocol.populate_for_edit
     @protocol.valid?
+
     current_step_cookie = cookies['current_step']
     cookies['current_step'] = 'protocol'
     @portal = params[:portal]
@@ -91,10 +101,20 @@ class ProtocolsController < ApplicationController
     @service_request = ServiceRequest.find session[:service_request_id]
     @current_step = cookies['current_step']
     @protocol = current_user.protocols.find params[:id]
+    
     @protocol.validate_nct = true
     @portal = params[:portal]
-    @protocol.assign_attributes(params[:study] || params[:project])
 
+    attrs = if @protocol.type.downcase.to_sym == :study && params[:study]
+      params[:study]
+    elsif @protocol.type.downcase.to_sym == :project && params[:project]
+      params[:project]
+    else
+      Hash.new
+    end
+
+    @protocol.assign_attributes(attrs.merge(study_type_question_group_id: StudyTypeQuestionGroup.active.pluck(:id).first))   
+    
     if @current_step == 'cancel'
       @current_step = 'return_to_service_request'
     elsif @current_step == 'go_back'
@@ -116,7 +136,6 @@ class ProtocolsController < ApplicationController
     else
       @protocol.populate_for_edit
     end
-
     cookies['current_step'] = @current_step
   end
 
@@ -202,7 +221,6 @@ class ProtocolsController < ApplicationController
     begin
       # Do the actual push.  This might take a while...
       protocol.push_to_epic(EPIC_INTERFACE)
-
       errors = EPIC_INTERFACE.errors
       session[:errors] = errors unless errors.empty?
       @epic_errors = true unless errors.empty?

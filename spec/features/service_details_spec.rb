@@ -66,10 +66,12 @@ RSpec.describe "visit service details page should always show start and end date
 
     numerical_day = 10
     it "should save the start date" do
+    
       old_date = project.start_date
       enter_start_date(numerical_day)
       find(:xpath, "//a/img[@alt='Savecontinue']/..").click
       wait_for_javascript_to_finish
+
       expect(old_date).not_to eq(Protocol.find(project.id).start_date)
     end
     it "should save the end date" do

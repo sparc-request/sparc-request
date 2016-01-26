@@ -20,7 +20,7 @@
 
 require 'rails_helper'
 
-RSpec.feature "User wants to create a Study", js: true do
+RSpec.describe "User wants to edit a Study", js: true do
   let_there_be_lane
   let_there_be_j
   fake_login_for_each_test
@@ -32,43 +32,46 @@ RSpec.feature "User wants to create a Study", js: true do
   end
 
   #TODO: Add Authorized Users Specs
-  context 'and clicks the New Study button' do
+  context 'and clicks the Edit Study button' do
     scenario 'and sees the Protocol Information form' do
-      given_i_am_viewing_user_portal
-      when_i_click_the_new_study_button
+      given_i_am_viewing_the_service_request_protocol_page
+      when_i_click_the_edit_study_button
       then_i_should_see_the_protocol_information_page
     end
 
     scenario 'and sees the cancel button' do
-      given_i_am_viewing_user_portal
-      when_i_click_the_new_study_button
+      given_i_am_viewing_the_service_request_protocol_page
+      
+      when_i_click_the_edit_study_button
       then_i_should_see_the_nav_button_with_text 'Cancel'
     end
     
     scenario 'and sees the continue button' do
-      given_i_am_viewing_user_portal
-      when_i_click_the_new_study_button
+      given_i_am_viewing_the_service_request_protocol_page
+      
+      when_i_click_the_edit_study_button
       then_i_should_see_the_nav_button_with_text 'Continue'
     end
 
-    context 'and submits the form without filling out required fields' do
+    context 'and clears the required fields and submits the form' do
       scenario 'and sees some errors' do
         given_i_am_viewing_the_protocol_information_page
+        when_i_clear_the_required_fields
         when_i_submit_the_form
         then_i_should_see_errors_of_type 'protocol information required fields'
       end
     end
 
-    context 'and submits the form without selecting a funding source' do
+    context 'and clears the funding source and submits the form' do
       scenario 'and sees some errors' do
         given_i_am_viewing_the_protocol_information_page
-        when_i_select_the_funding_status
+        when_i_select_the_funding_source "Select a Funding Source"
         when_i_submit_the_form
         then_i_should_see_errors_of_type 'protocol information funding source'
       end
     end
 
-    context 'and submits the form without selecting a potential source' do
+    context 'and clears the potential funding source and submits the form' do
       scenario 'and sees some errors' do
         given_i_am_viewing_the_protocol_information_page
         when_i_select_the_funding_status "Pending Funding"
@@ -82,7 +85,6 @@ RSpec.feature "User wants to create a Study", js: true do
       scenario 'and sees no errors' do
         given_i_am_viewing_the_protocol_information_page
         when_i_select_publish_study_to_epic false
-
         when_i_submit_the_form
         then_i_should_not_see_errors_of_type 'protocol information publish to epic'
       end
@@ -91,39 +93,30 @@ RSpec.feature "User wants to create a Study", js: true do
     context 'and submits the form after filling out required fields' do
       scenario 'and sees the Authorized Users page' do
         given_i_am_viewing_the_protocol_information_page
-        when_i_fill_out_the_protocol_information
         when_i_submit_the_form
         then_i_should_see_the_authorized_users_page
       end
 
       scenario 'and sees the go back button' do
         given_i_am_viewing_the_protocol_information_page
-        when_i_fill_out_the_protocol_information
         when_i_submit_the_form
         then_i_should_see_the_nav_button_with_text 'Go Back' 
       end
 
       scenario 'and sees the save and continue button' do
         given_i_am_viewing_the_protocol_information_page
-        when_i_fill_out_the_protocol_information
         when_i_submit_the_form
         then_i_should_see_the_nav_button_with_text 'Save & Continue' 
       end
+    end
 
-      context 'TEMP: and adds themself as a Primary PI and submits the Study' do
-        scenario 'and sees the Study with correct information' do
-          given_i_am_viewing_the_authorized_users_page
-          when_i_add_myself_as_a_primary_pi
-          when_i_submit_the_form
-          then_i_should_see_the_study_was_added_correctly
-        end
-
-        scenario 'and sees the User Portal index page' do
-          given_i_am_viewing_the_authorized_users_page
-          when_i_add_myself_as_a_primary_pi
-          when_i_submit_the_form
-          then_i_should_see_the_user_portal_page
-        end
+    context 'and submits the study after modifying it' do
+      scenario 'and sees the study has been updated' do
+        given_i_am_viewing_the_protocol_information_page
+        when_i_modify_the_study
+        when_i_submit_the_form
+        when_i_submit_the_form
+        then_i_should_see_the_updated_study
       end
     end
 
@@ -138,25 +131,19 @@ RSpec.feature "User wants to create a Study", js: true do
     end
   end
 
-  def given_i_am_viewing_user_portal
-    visit portal_root_path
+  def given_i_am_viewing_the_service_request_protocol_page
+    visit protocol_service_request_path service_request.id
+    wait_for_javascript_to_finish
   end
 
   def given_i_am_viewing_the_protocol_information_page
-    given_i_am_viewing_user_portal
-    when_i_click_the_new_study_button
+    given_i_am_viewing_the_service_request_protocol_page
+    
+    when_i_click_the_edit_study_button
   end
 
-  def given_i_am_viewing_the_authorized_users_page
-    given_i_am_viewing_the_protocol_information_page
-    when_i_fill_out_the_protocol_information
-    when_i_submit_the_form
-  end
-
-  def when_i_click_the_new_study_button
-    find("a.new-study").click
-    wait_for_javascript_to_finish
-    find('#study_selected_for_epic_false').click()
+  def when_i_click_the_edit_study_button
+    find(".edit-study").click
   end
 
   def when_i_fill_out_the_short_title short_title="Fake Short Title"
@@ -175,11 +162,11 @@ RSpec.feature "User wants to create a Study", js: true do
     select funding_status, from: "study_funding_status"
   end
 
-  def when_i_select_the_funding_source funding_source="College"
+  def when_i_select_the_funding_source funding_source="Federal"
     select funding_source, from: "study_funding_source"
   end
 
-  def when_i_select_publish_study_to_epic publish_to_epic=false
+  def when_i_select_publish_study_to_epic publish_to_epic=true
     case publish_to_epic
       when true
         find('#study_selected_for_epic_true').click
@@ -214,14 +201,17 @@ RSpec.feature "User wants to create a Study", js: true do
     select selection, from: "study_type_answer_restrict_sending_answer"
   end
 
-  def when_i_fill_out_the_protocol_information
-    when_i_fill_out_the_short_title
-    when_i_fill_out_the_title
-    when_i_select_the_funding_status
-    when_i_select_the_funding_source
-    when_i_fill_out_the_sponsor_name
+  def when_i_fill_out_the_publish_study_to_epic_questions
+    select "Yes", from: "study_type_answer_higher_level_of_privacy_answer"
+    select "Yes", from: "study_type_answer_certificate_of_conf_answer"
   end
 
+  def when_i_clear_the_required_fields
+    when_i_fill_out_the_short_title ""
+    when_i_fill_out_the_title ""
+    when_i_fill_out_the_sponsor_name ""
+    when_i_select_the_funding_status "Select a Funding Status"
+  end
 
   def when_i_modify_the_study
     when_i_fill_out_the_short_title "Short Title"
@@ -230,12 +220,7 @@ RSpec.feature "User wants to create a Study", js: true do
     when_i_select_the_funding_source "College Department"
     when_i_fill_out_the_sponsor_name "Sponsor Name"
     when_i_select_publish_study_to_epic
-  end
-
-  def when_i_add_myself_as_a_primary_pi
-    select "Primary PI", from: "project_role_role"
-    find("button.add-authorized-user").click
-    wait_for_javascript_to_finish
+    when_i_fill_out_the_publish_study_to_epic_questions
   end
 
   def when_i_submit_the_form
@@ -249,30 +234,47 @@ RSpec.feature "User wants to create a Study", js: true do
   end
 
   def then_i_should_see_the_protocol_information_page
-    expect(page).to have_text("Information needed to obtain correct pricing")
+    expect(page).to have_text("STEP 1: Protocol Information")
   end
 
   def then_i_should_see_the_authorized_users_page
-    expect(page).to have_text("Research Study/Project Authorized Users:")
+    expect(page).to have_text("STEP 1: Add Users")
   end
 
-  def then_i_should_see_the_study_was_added_correctly
-    study = Protocol.last
+  def when_i_create_a_new_study
+    visit '/'
+    click_link 'South Carolina Clinical and Translational Institute (SCTR)'
+    wait_for_javascript_to_finish
+    click_link 'Office of Biomedical Informatics'
+    wait_for_javascript_to_finish
+    click_button 'Add', match: :first
+    wait_for_javascript_to_finish
+    click_button 'Yes'
+    wait_for_javascript_to_finish
+    find('.submit-request-button').click
+    click_link 'New Research Study'
+    wait_for_javascript_to_finish
+  end
+
+  def then_i_fill_out_study_info
+
+  end
+
+  def then_i_should_see_the_updated_study
+    study = Protocol.first
 
     expect(study.type).to eq("Study")
-    expect(study.short_title).to eq("Fake Short Title")
-    expect(study.title).to eq("Fake Title")
-    expect(study.sponsor_name).to eq("Fake Sponsor Name")
+    expect(study.short_title).to eq("Short Title")
+    expect(study.title).to eq("Title")
+    expect(study.sponsor_name).to eq("Sponsor Name")
     expect(study.funding_status).to eq("funded")
     expect(study.funding_source).to eq("college")
-    expect(study.selected_for_epic).to eq(false)
-  end
-
-  def then_i_should_see_the_user_portal_page
-    expect(page).to have_content("Julia Glenn | glennj@musc.edu")
+    expect(study.selected_for_epic).to eq(true)
+    expect(ServiceRequest.first.status).to_not eq("first_draft")
   end
 
   def then_i_should_see_the_appropriate_fields_displayed
+    expect(page).to have_select('study_type_answer_certificate_of_conf_answer', selected: 'Yes')
     expect(page).to_not have_selector('#study_type_answer_access_study_info')
     expect(page).to_not have_selector('#study_type_answer_epic_inbasket')
     expect(page).to_not have_selector('#study_type_answer_research_active')

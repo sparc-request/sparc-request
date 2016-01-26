@@ -36,19 +36,20 @@ class ServiceCalendarsController < ApplicationController
   end
 
   def update
-    @portal = params[:portal]
-    @study_tracker = params[:study_tracker] == "true"
+    @portal              = params[:portal]
+    @study_tracker       = params[:study_tracker] == "true"
     @sub_service_request = SubServiceRequest.find(params[:id]) if (params[:id])
-    @subsidy = @sub_service_request.try(:subsidy)
-    @user = current_identity
-    visit = Visit.find params[:visit] rescue nil
-    @line_items_visit = LineItemsVisit.find params[:line_items_visit] rescue nil
-    @line_item = LineItem.find params[:line_item] rescue nil
-    tab = params[:tab]
-    checked = params[:checked]
-    qty = params[:qty].to_i
-    column = params[:column]
+    @subsidy             = @sub_service_request.try(:subsidy)
+    @user                = current_identity
+    visit                = Visit.find params[:visit] rescue nil
+    @line_items_visit    = LineItemsVisit.find params[:line_items_visit] rescue nil
+    @line_item           = LineItem.find params[:line_item] rescue nil
+    tab                  = params[:tab]
+    checked              = params[:checked]
+    qty                  = params[:undefined] && params[:undefined][:qty].to_i || params[:qty]
+    column               = params[:column]
 
+    puts "CONTROLLER: #{column}: #{qty}"
     case tab
     when 'template'
       if @line_items_visit
@@ -86,6 +87,7 @@ class ServiceCalendarsController < ApplicationController
       if qty < 0
         @errors = "Quantity must be greater than zero"
       else
+        puts 'CONTROLLER: updating qty'
         #update the total quantity to reflect the 3 billing qty total
         total = visit.quantity_total
 

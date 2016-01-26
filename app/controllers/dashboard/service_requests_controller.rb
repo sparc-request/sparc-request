@@ -61,6 +61,8 @@ class Dashboard::ServiceRequestsController < Dashboard::BaseController
     end
   end
 
+  private
+
   ##### NOT ACTIONS #####
   def visit_count_total
     max_count = 0
@@ -74,6 +76,4 @@ class Dashboard::ServiceRequestsController < Dashboard::BaseController
     end
     max_count
   end
-
-
 end

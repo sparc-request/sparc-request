@@ -54,7 +54,7 @@
       - totals_hash = liv.try(:per_subject_subtotals, visits)
       - visits.each_with_index do |v, index|
         %td.text-center.visit{ visit_column: index + 1, class: "visit_column_#{index + 1} arm_#{arm.id}", data: { cents: (totals_hash["#{v.id}"] || 0) } }
-          = render partial: 'service_calendars/master_calendar/line_item_visit_input', locals: { arm: arm, line_item: liv.line_item, visit: v, tab: @tab, totals_hash: totals_hash, unit_minimum: unit_minimum, portal: @portal }
+          = render partial: 'service_calendars/master_calendar/line_item_visit_input', locals: { arm: arm, line_item: liv.line_item, visit: v, tab: @tab, totals_hash: totals_hash, unit_minimum: unit_minimum, portal: @portal, service_request: service_request }
       - (5 - visits.size).times do
         %td &nbsp;
       - if tab == 'calendar'
@@ -146,15 +146,3 @@
 -#
 - unless review
   = render partial: '/service_calendars/master_calendar/pppv/pppv_totals', locals: { service_request: service_request, arm: arm, tab: @tab, portal: @portal, line_items_visits: line_items_visits }
-
-:javascript
-  $(document).ready(function () {
-    $('.edit-your-cost').editable({
-      title: 'Edit your cost',
-      display: function(value) {
-        $(this).text("$" + value);
-      }
-    });
-
-    $('.edit-subject-count').editable();
-  })

@@ -29,5 +29,44 @@
 :javascript
   $(document).ready( function() {
     $('.selectpicker').selectpicker();
-    $('.editable').editable();
+
+    // default x-editable error function through error itself...
+    $.fn.editable.defaults.error = function(response, newValue) {
+      return false;
+    }
+
+    // override x-editable defaults
+    $.fn.editable.defaults.send = 'always'
+    $.fn.editable.defaults.ajaxOptions = {
+      type: "PUT",
+      dataType: "script"
+    };
+
+    // display field as currency, edit as quantity
+    $('.edit-your-cost').editable({
+      title: 'Edit your cost',
+      display: function(value) {
+        $(this).text("$" + value);
+      }
+    });
+
+    validate_qty = function(val) {
+      var n = ~~Number(val);
+      if(String(n) != val || n <= 0) {
+        return "quantity must be a positive number";
+      }
+    };
+
+    $('.edit-subject-count').editable({
+      validate: validate_qty
+    });
+    $('.edit-research-billing-qty').editable({
+      validate: validate_qty
+    });
+    $('.edit-insurance-billing-qty').editable({
+      validate: validate_qty
+    });
+    $('.edit-effort-billing-qty').editable({
+      validate: validate_qty
+    });
   })

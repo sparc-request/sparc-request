@@ -18,10 +18,10 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$("#request_cost_total").html("<%= escape_javascript(render(:partial =>'portal/sub_service_requests/direct_cost_total')) %>")
+$("#request_cost_total").html("<%= escape_javascript(render(:partial =>'dashboard/sub_service_requests/direct_cost_total', locals: { sub_service_request: @sub_service_request })) %>")
 if "<%= @subsidy %>"
-  $("#fulfillment_subsidy").html("<%= escape_javascript(render(:partial =>'portal/sub_service_requests/subsidy')) %>")
-  $("#request_cost_total").html("<%= escape_javascript(render(:partial =>'portal/sub_service_requests/direct_cost_total')) %>")
+  # TODO render _subsidy
+  $("#request_cost_total").html("<%= escape_javascript(render(:partial =>'dashboard/sub_service_requests/direct_cost_total', locals: { sub_service_request: @sub_service_request })) %>")
 unless "<%= @errors %>" == ""
   alert "<%= @errors %>"
 
@@ -46,6 +46,5 @@ if "<%= @errors %>" == ""
     $(".pp_max_total<%= @arm_id %>").html("<%= display_max_total_cost_per_patient(@line_items_visit.arm, @line_items_visits) %>")
 
     $(".pp_total<%= @arm_id %>").html("<%= display_total_cost_per_arm(@line_items_visit.arm, @line_items_visits) %>")
-    $("#fulfillment_subsidy").html("<%= escape_javascript(render(:partial =>'portal/sub_service_requests/subsidy')) %>")
-    $("#request_cost_total").html("<%= escape_javascript(render(:partial =>'portal/sub_service_requests/direct_cost_total')) %>")
-
+    # TODO render _subsidy
+    $("#request_cost_total").html("<%= escape_javascript(render(:partial =>'dashboard/sub_service_requests/direct_cost_total', locals: { sub_service_request: @sub_service_request })) %>")

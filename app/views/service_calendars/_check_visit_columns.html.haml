@@ -2,7 +2,8 @@
   %th.col-sm-1.text-center
     - state = "#{set_check(visit_group)}"
     - if tab == 'template'
-      .glyphicon.check_column.btn.btn-primary{ type: 'button', visit_group_id: visit_group.id, check: state, title: state == 'true' ? 'Check Column' : 'Uncheck Column', class: "#{glyph_class(visit_group)}", data: { toggle: 'tooltip', animation: 'false' } }
+      = select_column visit_group, index, portal, service_request
+      -# .glyphicon.check_column.btn.btn-primary{ type: 'button', visit_group_id: visit_group.id, check: state, title: state == 'true' ? 'Check Column' : 'Uncheck Column', class: "#{glyph_class(visit_group)}", data: { toggle: 'tooltip', animation: 'false' } }
     - if tab == 'quantity'
       .r-t-labels
         %span.even_shorter_text.r-label=  'R'

@@ -51,4 +51,4 @@
 - if tab == 'template'
   %tr.check_visit_column_headers
     %th.col-sm-6{ colspan: 6 }
-    = render partial: '/service_calendars/check_visit_columns', locals: { visit_groups: visit_groups, tab: tab }
+    = render partial: '/service_calendars/check_visit_columns', locals: { visit_groups: visit_groups, tab: tab, portal: portal, service_request: service_request }

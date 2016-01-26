@@ -15,9 +15,9 @@ class AdminTimeReport < ReportingModule
       Program => {:field_type => :select_tag, :dependency => '#provider_id', :dependency_id => 'parent_id'},
       Core => {:field_type => :select_tag, :dependency => '#program_id', :dependency_id => 'parent_id'},
       Service => {:field_type => :select_tag, :dependency => '#core_id', :dependency_id => 'organization_id'},
-      Status => {:field_type => :select_tag, }
-      # "Date Range" => {:field_type => :date_range, :for => "completed_at", :from => "2012-03-01".to_date, :to => Date.today},
-      # Survey => {:field_type => :select_tag, :custom_name_method => :title, :required => true}
+      "Current Status" => {:field_type => :check_box_tag, :for => 'status', :multiple => AVAILABLE_STATUSES}
+      # "Tags" => {:field_type => :text_field_tag},
+      # "Show APR Data" => {:field_type => :check_box_tag, :for => 'apr_data', :multiple => {"irb" => "IRB", "iacuc" => "IACUC"}}
     }
   end
 
@@ -27,6 +27,8 @@ class AdminTimeReport < ReportingModule
     attrs["User ID"] = :user_id
     attrs["User Name"] = "identity.try(:full_name)"
     attrs["Submitted Date"] = "completed_at.try(:strftime, \"%D\")"
+
+
 
     # if params[:survey_id]
     #   survey = Survey.find(params[:survey_id])
@@ -58,19 +60,45 @@ class AdminTimeReport < ReportingModule
   # def order => order by these attributes (include table name is always a safe bet, ex. identities.id DESC, protocols.title ASC)
   # Primary table to query
   def table
-    Fulfillment
+    SubServiceRequest
   end
 
   # Other tables to include
   def includes
-    return :survey
+    return :organization, :service_request => {:line_items => :service}
   end
 
   # Conditions
   def where args={}
-    completed_at = (args[:completed_at_from] ? args[:completed_at_from] : self.default_options["Date Range"][:from]).to_time.strftime("%Y-%m-%d 00:00:00")..(args[:completed_at_to] ? args[:completed_at_to] : self.default_options["Date Range"][:to]).to_time.strftime("%Y-%m-%d 23:59:59")
+    organizations = Organization.all
+    selected_organization_id = args[:core_id] || args[:program_id] || args[:provider_id] || args[:institution_id] # we want to go up the tree, service_organization_ids plural because we might have child organizations to include
 
-    return :response_sets => {:completed_at => completed_at, :survey_id => args[:survey_id]}
+    # get child organization that have services to related to them
+    service_organization_ids = [selected_organization_id]
+    if selected_organization_id
+      org = Organization.find(selected_organization_id)
+      service_organization_ids += org.all_children(organizations).map(&:id)
+      service_organization_ids.flatten!
+    end
+
+    ssr_organization_ids = [args[:core_id], args[:program_id], args[:provider_id], args[:institution_id]].compact
+
+    # get child organizations
+    if not ssr_organization_ids.empty?
+      org = Organization.find(selected_organization_id)
+      ssr_organization_ids = [ssr_organization_ids, org.all_children(organizations).map(&:id)].flatten
+    end
+
+    # default values if none are provided
+    service_organization_ids = Organization.all.map(&:id) if service_organization_ids.compact.empty? # use all if none are selected
+
+    service_organizations = Organization.find(service_organization_ids)
+
+    ssr_organization_ids = Organization.all.map(&:id) if ssr_organization_ids.compact.empty? # use all if none are selected
+
+    statuses = args[:status] || AVAILABLE_STATUSES.keys # use all if none are selected
+
+    return :sub_service_requests => {:organization_id => ssr_organization_ids, :status => statuses}, :services => {:organization_id => service_organization_ids}
   end
 
   # Return only uniq records for
@@ -81,7 +109,7 @@ class AdminTimeReport < ReportingModule
   end
 
   def order
-    "response_sets.completed_at ASC"
+    "service_requests.submitted_at ASC"
   end
 
   ##################  END QUERY SETUP   #####################

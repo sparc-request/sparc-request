@@ -1,8 +1,4 @@
-$dashboard-tab-color: #2280A5;
-$admin-tab-color: #4E99B7;
-$fulfillment-tab-color: #7AB3C9;
-$catalog-tab-color: #A7CCD8;
-$reports-tab-color: #D3E6ED;
+$navbar-tab-color: #113967;
 
 .navbar {
   width: 100%;
@@ -10,9 +6,9 @@ $reports-tab-color: #D3E6ED;
   margin: 0 0 3em 0;
   padding: 0;
   list-style: none;
-  background-color: #f2f2f2;
+  background-color: #fff;
   border-bottom: 1px solid #ccc;
-  border-top: 1px solid #ccc;
+  border-top: 1px solid #fff;
 }
 
 .navbar li {
@@ -24,8 +20,8 @@ $reports-tab-color: #D3E6ED;
   padding: 8px 15px;
   text-decoration: none;
   font-weight: bold;
-  color: #000;
-  border-right: 1px solid #ccc;
+  color: #fff;
+  border-right: 1px solid #fff;
 }
 
 .align-element-nav-bar {
@@ -38,23 +34,23 @@ $reports-tab-color: #D3E6ED;
 }
 
 .dashboard {
-  background-color: $dashboard-tab-color;
+  background-color: $navbar-tab-color;
 }
 
 .admin {
-  background-color: $admin-tab-color;
+  background-color: $navbar-tab-color;
 }
 
 .fulfillment {
-  background-color: $fulfillment-tab-color;
+  background-color: $navbar-tab-color;
 }
 
 .catalog {
-  background-color: $catalog-tab-color;
+  background-color: $navbar-tab-color;
 }
 
 .reports {
-  background-color: $reports-tab-color;
+  background-color: $navbar-tab-color;
 }
 
 .logout {

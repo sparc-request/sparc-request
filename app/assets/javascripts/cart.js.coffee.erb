@@ -51,10 +51,11 @@ $(document).ready ->
   $(document).on('click', '.add_service' , ->
     sr_id = $(this).attr('sr_id')
     id = $(this).attr('id')
+    from_portal = $(this).attr('from_portal')
     first_service = $(this).attr('first_service')
     li_count = $('#line_item_count').val()
 
-    if first_service == 'true' && li_count == '0'
+    if (from_portal != 'true') && (first_service == 'true') && (li_count == '0')
       options = {
         resizable: false,
         height: 220,

@@ -25,6 +25,10 @@ class Study < Protocol
     return [ 'project' ] # for backward-compatibility
   end
 
+  def determine_study_type
+    Portal::StudyTypeFinder.new(self).study_type
+  end
+
   def populate_for_edit
     super
     self.build_research_types_info           unless self.research_types_info

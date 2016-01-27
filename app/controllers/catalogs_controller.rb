@@ -25,6 +25,7 @@ class CatalogsController < ApplicationController
   def update_description
     @organization = Organization.find params[:id]
     @service_request = ServiceRequest.find session[:service_request_id]
+    @from_portal = session[:from_portal]
   end
 
 end

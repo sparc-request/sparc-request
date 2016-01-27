@@ -37,7 +37,7 @@
         %td.service_rate{ class: "service_rate_#{liv.id}" }= display_service_rate liv.line_item
       %td.your_cost.text-center
         - if tab != 'calendar'
-          %a.edit-your-cost{ href: '#', data: { type: 'text', pk: liv.line_item.id, name: 'your_cost', value: "#{number_with_precision(Service.cents_to_dollars(liv.line_item.applicable_rate), precision: 2)}" } }
+          %a.edit-your-cost{ href: '#', data: { type: 'text', pk: liv.line_item.id, name: 'displayed_cost', value: "#{number_with_precision(Service.cents_to_dollars(liv.line_item.applicable_rate), precision: 2)}", url: "/dashboard/line_items/#{liv.line_item.id}/update_from_fulfillment.js?study_tracker=#{study_tracker}&line_items_visit_id=#{liv.id}" } }
         - else
           %span= currency_converter liv.line_item.applicable_rate
       - if tab == 'calendar'

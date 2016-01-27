@@ -68,7 +68,10 @@ class ProtocolsController < ApplicationController
 
       if @service_request
         @service_request.update_attribute(:protocol_id, @protocol.id) unless @service_request.protocol.present?
-        @service_request.update_attribute(:status, "draft")
+        @service_request.update_attribute(:status, 'draft')
+        @service_request.sub_service_requests.each do |ssr|
+          ssr.update_attribute(:status, 'draft')
+        end
       end
 
       @current_step = 'return_to_service_request'

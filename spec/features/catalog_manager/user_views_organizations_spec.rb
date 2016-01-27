@@ -22,7 +22,8 @@ RSpec.feature 'User views Organizations', js: true do
 
   def given_i_am_viewing_catalog_manager
     visit catalog_manager_root_path
-    page.evaluate_script("$('#catalog').find('.jstree-closed').attr('class', 'jstree-open');")
+    wait_for_javascript_to_finish
+    page.execute_script("$('#catalog').find('.jstree-closed').attr('class', 'jstree-open');")
     wait_for_javascript_to_finish
   end
 
@@ -33,7 +34,8 @@ RSpec.feature 'User views Organizations', js: true do
   def when_i_view_all_organizations
     save_and_open_page
     find('.unavailable_button').click
-    page.evaluate_script("$('#catalog').find('.jstree-closed').attr('class', 'jstree-open');")
+    wait_for_javascript_to_finish
+    page.execute_script("$('#catalog').find('.jstree-closed').attr('class', 'jstree-open');")
     wait_for_javascript_to_finish
   end
 

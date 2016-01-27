@@ -382,6 +382,7 @@ en:
     attributes: "Study Attributes"
     code_blank: "Select a Federal Grant Code"
     description: "Before you can complete a service request, please tell us more about your research study. This information will be used by our staff to decide the best way to process your request."
+    epic: "Epic Information"
     federal_grant_code_id: "Federal Grant Code:"
     federal_grant_serial_number: "Federal Grant Serial Number:"
     federal_grant_title: "Federal Grant Title:"
@@ -687,6 +688,9 @@ en:
     calendar_changed: "Changes to patient calendars need to be saved, click 'Stay on page' and save the form to save the calendar, or click 'Leave page' to leave the page and dismiss your changes."
     subject_changed: "Changes to subjects need to be saved. Click 'Cancel' to return to the page and save the form, or 'OK' to leave the page and dismiss your changes."
     subject_delete: "This subject has one or more completed appointments and can't be deleted."
+  epic_box:
+    epic_box_error: "Epic Information Error"
+    epic_box_alert: "Please fill out the Epic Information correctly."
   feedback:
     message_error: "Message can't be blank"
   fulfillment_js:

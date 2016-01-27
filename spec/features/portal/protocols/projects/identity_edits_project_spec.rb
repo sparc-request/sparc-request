@@ -34,6 +34,7 @@ RSpec.describe "editing a project", js: true do
   context "validations" do
 
     it "should raise an error message if study's status is pending and no potential funding source is selected" do
+    
       select("Pending Funding", from: "Proposal Funding Status")
       select("Select a Potential Funding Source", from: "Potential Funding Source")
       click_button "Save"

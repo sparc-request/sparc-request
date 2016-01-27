@@ -27,7 +27,7 @@
     - unless organization.services.empty?
       .program-services
         - organization.services.order('`order`, `name`').each do |service|
-          = display_service_in_catalog service, service_request
+          = display_service_in_catalog(service, service_request, from_portal)
     %br
     - unless organization.cores.empty?
       .core-accordion
@@ -37,7 +37,7 @@
             = link_to core.name, "#"
           .core_view
             - core.services.order('`order`, `name`').each do |service|
-              = display_service_in_catalog service, service_request
+              = display_service_in_catalog(service, service_request, from_portal)
 
 - else
   .panel.panel-default

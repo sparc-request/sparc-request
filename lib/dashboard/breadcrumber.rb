@@ -37,7 +37,7 @@ class Dashboard::Breadcrumber
 
   def breadcrumbs
     breads = [@crumbs[:protocol_id] && Protocol.find(@crumbs[:protocol_id]).try(:short_title),
-      @crumbs[:sub_service_request_id] && SubServiceRequest.find(@crumbs[:sub_service_request_id]).try(:ssr_id),
+      @crumbs[:sub_service_request_id] && SubServiceRequest.find(@crumbs[:sub_service_request_id]).organization.label,
       @crumbs[:notifications] && 'Notifications',
       @crumbs[:edit_protocol] && 'Edit'
     ]

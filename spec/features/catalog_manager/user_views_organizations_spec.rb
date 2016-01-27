@@ -32,7 +32,6 @@ RSpec.feature 'User views Organizations', js: true do
   end
 
   def when_i_view_all_organizations
-    save_and_open_page
     find('.unavailable_button').click
     wait_for_javascript_to_finish
     page.execute_script("$('#catalog').find('.jstree-closed').attr('class', 'jstree-open');")

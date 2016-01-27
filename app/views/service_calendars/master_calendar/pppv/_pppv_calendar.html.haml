@@ -56,7 +56,13 @@
       title: 'Edit your cost',
       display: function(value) {
         // display field as currency, edit as quantity
-        $(this).text("$" + value);
+        $(this).text("$" + parseFloat(value).toFixed(2));
+      },
+      validate: function(value) {
+        var n = +value;
+        if(isNaN(n) || n <= 0) {
+          return "cost must be a nonnegative number";
+        }
       }
     });
 

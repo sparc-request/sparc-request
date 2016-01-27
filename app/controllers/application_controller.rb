@@ -154,11 +154,13 @@ class ApplicationController < ActionController::Base
         use_existing_service_request
         validate_existing_service_request
       elsif params[:from_portal]
+        session[:from_portal] = params[:from_portal]
         create_or_use_request_from_portal(params)
       else
         # If the cookie is nil (as with visiting the main catalog for
         # the first time), then create a new service request.
         create_new_service_request
+        session.delete(:from_portal)
       end
     elsif params[:controller] == 'devise/sessions'
       if session[:service_request_id]

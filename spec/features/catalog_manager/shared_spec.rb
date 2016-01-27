@@ -24,6 +24,7 @@ RSpec.describe 'shared views', js: true do
 
   before :each do
     default_catalog_manager_setup
+    wait_for_javascript_to_finish
     click_link('Office of Biomedical Informatics')
     wait_for_javascript_to_finish
   end

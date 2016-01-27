@@ -68,6 +68,7 @@ RSpec.feature 'User sets organization availability', js: true do
 
   def and_i_am_viewing_only_available_organizations
     find('.unavailable_button').click
+    wait_for_javascript_to_finish
     page.execute_script("$('#catalog').find('.jstree-closed').attr('class', 'jstree-open');")
     page.execute_script("$('#catalog').find('.jstree-closed').attr('class', 'jstree-open');")
     wait_for_javascript_to_finish
@@ -75,6 +76,7 @@ RSpec.feature 'User sets organization availability', js: true do
 
   def when_i_view_all_organizations
     find('.unavailable_button').click
+    wait_for_javascript_to_finish
     page.execute_script("$('#catalog').find('.jstree-closed').attr('class', 'jstree-open');")
     page.execute_script("$('#catalog').find('.jstree-closed').attr('class', 'jstree-open');")
     wait_for_javascript_to_finish

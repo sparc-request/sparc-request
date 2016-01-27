@@ -256,7 +256,22 @@ $(document).ready ->
       data: { protocol_id: protocol_id }
   )
 
-  $("#reset_filters a").live 'click', ->
+  $("#save_filters_link").live 'click', ->
+    data = {} #Grab form values
+    $.each $('form#filterrific-no-ajax-auto-submit').serializeArray(), (i, field) ->
+      data[field.name] = field.value
+    $.ajax
+      type: "GET"
+      url:  @href
+      data: data
+    return false
+
+  $(".saved_search_link").live 'click', ->
+    # This makes the saved search filter link go through AJAX
+    $.getScript @href
+    return false
+
+  $("#reset_filters_link").live 'click', ->
     # This makes the reset filter link go through AJAX
     $.getScript @href
     return false

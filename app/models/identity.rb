@@ -67,6 +67,7 @@ class Identity < ActiveRecord::Base
   has_many :received_toast_messages, :class_name => 'ToastMessage', :foreign_key => 'to', :dependent => :destroy
   has_many :sent_toast_messages, :class_name => 'ToastMessage', :foreign_key => 'from', :dependent => :destroy
   has_many :notes, :dependent => :destroy
+  has_many :protocol_filters, :dependent => :destroy
 
   has_many :sent_notifications, class_name: "Notification", :foreign_key => 'originator_id'
   has_many :received_notifications, class_name: "Notification", :foreign_key => 'other_user_id'

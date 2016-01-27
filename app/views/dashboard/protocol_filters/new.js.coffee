@@ -18,6 +18,5 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$("#filterrific_form").html("<%= escape_javascript(render(partial: '/dashboard/protocol_filters/filter_protocols_form', locals: {filterrific: @filterrific, current_user: @user})) %>")
-$("#filterrific_results").html("<%= escape_javascript(render(partial: '/dashboard/protocols/protocols_list', locals: {protocols: @protocols})) %>")
-$(".selectpicker").selectpicker()
+$("#modal_place").html("<%= escape_javascript(render(:partial =>'dashboard/protocol_filters/form', locals: { protocol_filter: @protocol_filter })) %>");
+$("#modal_place").modal 'show'

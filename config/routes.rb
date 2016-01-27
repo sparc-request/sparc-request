@@ -182,6 +182,7 @@ SparcRails::Application.routes.draw do
 
   namespace :dashboard do
 
+    resources :protocol_filters, only: [:new, :create]
     resources :studies, controller: :protocols, except: [:destroy]
     resources :projects, controller: :protocols, except: [:destroy]
     resources :protocols, except: [:destroy] do

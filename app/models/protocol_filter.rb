@@ -18,6 +18,36 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$("#filterrific_form").html("<%= escape_javascript(render(partial: '/dashboard/protocol_filters/filter_protocols_form', locals: {filterrific: @filterrific, current_user: @user})) %>")
-$("#filterrific_results").html("<%= escape_javascript(render(partial: '/dashboard/protocols/protocols_list', locals: {protocols: @protocols})) %>")
-$(".selectpicker").selectpicker()
+class ProtocolFilter < ActiveRecord::Base
+
+  belongs_to :identity
+  attr_accessible :identity_id
+
+  attr_accessible :search_name
+  attr_accessible :archived
+  attr_accessible :for_admin
+  attr_accessible :for_identity_id
+  attr_accessible :search_query
+  attr_accessible :with_core
+  attr_accessible :with_status
+
+  scope :latest_for_user, -> (identity_id, limit) {
+    where(identity_id: identity_id).
+    order(created_at: :desc).
+    limit(limit)
+  }
+
+  def href
+    Rails.application.routes.url_helpers.
+    dashboard_root_path(
+      filterrific: { 
+        archived: (self.archived ? 1 : 0), 
+        for_admin: self.for_admin, 
+        for_identity_id: self.for_identity_id, 
+        search_query: self.search_query, 
+        with_core: self.with_core, 
+        with_status: self.with_status
+      }
+    )
+  end
+end

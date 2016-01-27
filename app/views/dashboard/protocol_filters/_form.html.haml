@@ -18,10 +18,29 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.col-lg-3
-  #filterrific_form
-    = render partial: 'dashboard/protocol_filters/filter_protocols_form', locals: { filterrific: @filterrific, current_user: @user }
-
-.col-lg-9
-  #filterrific_results
-    = render partial: 'dashboard/protocols/protocols_list', locals: { protocols: @protocols }
+.modal-dialog
+  .modal-content
+    = form_for [:dashboard, protocol_filter], {remote: true, html: {role: "form"}} do |form|
+      .modal-header
+        %button.close{type: 'button', data: {dismiss: 'modal'}}
+          %span{aria: {hidden:'true'}} &times;
+          %span.sr-only &times;
+        %h4.modal-title.text-center Choose a name for your search.
+      .modal-body
+        #modal_errors
+        .row
+          .col-md-12
+            = form.hidden_field :identity_id
+            = form.hidden_field :archived
+            = form.hidden_field :for_admin
+            = form.hidden_field :for_identity_id
+            = form.hidden_field :search_query
+            = form.hidden_field :with_core
+            = form.hidden_field :with_status
+            .form-group
+              = form.label :search_name, 'Name', class: "col-sm-4 control-label"
+              .col-sm-7= form.text_field :search_name, {class: 'form-control'}
+      .modal-footer
+        .center-block
+          %button.btn.btn-default{type: 'button', data: {dismiss: 'modal'}} Close
+          %input.btn.btn-primary{type: 'submit', value: 'Save'}

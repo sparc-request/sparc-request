@@ -32,7 +32,8 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
         select_options: {
           with_status: AVAILABLE_STATUSES.invert,
           with_core: @user.authorized_admin_organizations.map{ |org| [org.name, org.id] }
-        }
+        },
+        persistence_id: false #resets filters on page reload
     ) or return
 
     @protocols = @filterrific.find.page(params[:page])

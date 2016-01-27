@@ -18,6 +18,19 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$("#filterrific_form").html("<%= escape_javascript(render(partial: '/dashboard/protocol_filters/filter_protocols_form', locals: {filterrific: @filterrific, current_user: @user})) %>")
-$("#filterrific_results").html("<%= escape_javascript(render(partial: '/dashboard/protocols/protocols_list', locals: {protocols: @protocols})) %>")
-$(".selectpicker").selectpicker()
+class Dashboard::ProtocolFiltersController < Dashboard::BaseController
+  respond_to :html, :json
+
+  def new
+    @protocol_filter = @user.protocol_filters.new(params[:filterrific])
+  end
+
+  def create
+    if ProtocolFilter.create(params[:protocol_filter])
+      flash[:success] = "Search Saved!"
+    else
+      flash[:alert] = "Search Failed to Save."
+    end
+  end
+
+end

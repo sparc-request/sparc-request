@@ -192,7 +192,7 @@ $(document).ready ->
                   title_text.text('Change Primary PI')
                 else
                   #Enable removing the old Primary PI
-                  $('#change_primary_pi').val(true)
+                  $('.add_user_dialog_box #change_primary_pi').val(true)
                   
                   #Remove the elements
                   $('.change_ppi_prompt').remove()
@@ -247,6 +247,7 @@ $(document).ready ->
           $('.change_ppi_prompt').remove()
           $('.user-search-container').show()
           $('#add-user-form').show()
+          $('.add_user_dialog_box #change_primary_pi').val(false)
 
     create_edit_associated_user_dialog: () ->
       $('.edit-associated-user-dialog').dialog
@@ -296,7 +297,7 @@ $(document).ready ->
                     title_text.text('Change Primary PI')
                   else
                     #Enable removing the old Primary PI
-                    $('#change_primary_pi').val(true)
+                    $('.edit_user_dialog_box #change_primary_pi').val(true)
                     
                     #Remove the elements
                     $('.change_ppi_prompt').remove()
@@ -349,6 +350,7 @@ $(document).ready ->
             $('.edit_user_dialog_box .ui-dialog-titlebar').children('.ui-dialog-title').text('Edit an Authorized User')
             $('.change_ppi_prompt').remove()
             $('.edit-associated-user-dialog .associated_users_form').show()
+            $('.edit_user_dialog_box #change_primary_pi').val(false)
 
     reset_fields: () ->
       $('.errorExplanation').html('').hide()

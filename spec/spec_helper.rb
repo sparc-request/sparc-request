@@ -103,3 +103,7 @@ RSpec.configure do |config|
   # as the one that triggered the failure.
   Kernel.srand config.seed
 end
+
+SitePrism.configure do |config|
+  config.use_implicit_waits = true
+end

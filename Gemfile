@@ -98,6 +98,7 @@ group :test do
   gem 'rspec-activemodel-mocks'
   gem 'shoulda-matchers', require: false
   gem 'shoulda-callback-matchers'
+  gem 'site_prism'
   gem 'webmock'
 end
 

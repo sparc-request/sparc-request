@@ -74,6 +74,7 @@ FactoryGirl.define do
       identity nil
       project_rights nil
       role nil
+      primary_pi nil
     end
 
     # TODO: get this to work!
@@ -91,8 +92,15 @@ FactoryGirl.define do
     end
 
     after(:create) do |protocol, evaluator|
+      # TODO: replace
       if evaluator.identity && evaluator.project_rights && evaluator.role
         create(:project_role, protocol_id: protocol.id, identity_id: evaluator.identity.id, project_rights: evaluator.project_rights, role: evaluator.role)
+      end
+    end
+
+    before(:create) do |protocol, evaluator|
+      if evaluator.primary_pi
+        protocol.project_roles << create(:project_role, protocol_id: protocol.id, identity_id: evaluator.primary_pi.id, project_rights: 'approve', role: 'primary-pi')
       end
     end
 

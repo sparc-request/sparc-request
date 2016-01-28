@@ -196,6 +196,7 @@ class Protocol < ActiveRecord::Base
   # Determines whether a protocol contains a service_request with only a "first draft" status
   def has_first_draft_service_request?
     service_requests.any? && service_requests.map(&:status).all? { |status| status == 'first_draft'}
+  end
 
   def active?
     study_type_question_group.active
@@ -210,7 +211,6 @@ class Protocol < ActiveRecord::Base
   end
 
   def validate_study_type_answers
-
     answers = {}
     FRIENDLY_IDS.each do |fid|
       q = StudyTypeQuestion.active.find_by_friendly_id(fid)

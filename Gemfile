@@ -62,6 +62,7 @@ gem 'twitter-typeahead-rails'
 gem 'uglifier', '>= 1.0.3'
 gem 'will_paginate'
 gem 'will_paginate-bootstrap'
+gem 'x-editable-rails'
 
 group :development, :test, :profile do
   gem 'addressable', '~> 2.3.6'

@@ -23,20 +23,18 @@
 # You can use CoffeeScript in this file: http://jashkenas.github.com/coffee-script/
 
 $(document).ready ->
-  Sparc.protocol = {
+  Sparc.protocol =
     ready: ->
-      $('.permissions-dialog').dialog({
+      $('.permissions-dialog').dialog
         autoOpen:false
-        dialogClass: "permissions_dialog"
+        dialogClass: 'permissions_dialog'
         title: "User Rights"
         width: 400
         height: 300
         model: true
-        buttons: {
-          "Ok": () ->
+        buttons:
+          'Ok': () ->
             $(this).dialog('close')
-        }
-      })
 
       $(document).on 'click', '.edit_service_request', ->
         if $(this).data('permission')
@@ -45,19 +43,17 @@ $(document).ready ->
           $('.permissions-dialog').dialog('open')
           $('.permissions-dialog .text').html('Edit.')
 
-      $('.service-request-button').live('click', ->
+      $(document).on 'click', '.service-request-button', ->
         if $(this).data('permission')
           window.location = $(this).data('url')
         else
           $('.permissions-dialog').dialog('open')
           $('.permissions-dialog .text').html('Edit.')
-      )
 
-      $('.add-services-button').live('click', ->
+      $(document).on 'click', '.add-services-button', ->
         if !$(this).data('permission')
           $('.permissions-dialog').dialog('open')
           $('.permissions-dialog .text').html('Edit.')
-      )
 
       $(document).on 'click', '.view-sub-service-request-button', ->
         id            = $(this).data('service-request-id')
@@ -75,43 +71,39 @@ $(document).ready ->
           success: ->
             $('.view-sub-service-request-dialog').dialog('open')
 
-      $('.edit-protocol-information-dialog').dialog({
-          autoOpen: false
-          title: 'Edit Study Information'
-          width: 715
-          height: 500
-          modal: true
-          buttons: {
-            "Submit": () ->
-              disableButton()
-              form = $('.edit-protocol-information-dialog').children('form')
-              form.bind('ajax:success', (data) ->
-                enableButton()
-                $('.edit-protocol-information-dialog').dialog('close')
-                Sparc.protocol.renderProtocolAccordionList()
-              ).submit()
-            "Cancel": () ->
-              $(this).dialog('close')
-          }
-      })
+      $('.edit-protocol-information-dialog').dialog
+        autoOpen: false
+        title: 'Edit Study Information'
+        width: 715
+        height: 500
+        modal: true
+        buttons:
+          'Submit': () ->
+            disableButton()
+            form = $('.edit-protocol-information-dialog').children('form')
+            form.bind('ajax:success', (data) ->
+              enableButton()
+              $('.edit-protocol-information-dialog').dialog('close')
+              Sparc.protocol.renderProtocolAccordionList()
+            ).submit()
+          'Cancel': () ->
+            $(this).dialog('close')
 
-      $('.view-sub-service-request-dialog').dialog({
-          autoOpen: false
-          dialogClass: "view_request_dialog_box"
-          title: 'Service Information'
-          width: 900
-          height: 700
-          modal: true
-          buttons: {
-            "Print": () ->
-              id = $('#id').val()
-              ssr_id = $('#ssr_id').val()
-              printerFriendly = window.open("/dashboard/service_requests/#{id}?ssr_id=#{ssr_id}")
-              printerFriendly.print()
-            "Ok": () ->
-              $(this).dialog('close')
-          }
-      })
+      $('.view-sub-service-request-dialog').dialog
+        autoOpen: false
+        dialogClass: 'view_request_dialog_box'
+        title: 'Service Information'
+        width: 900
+        height: 700
+        modal: true
+        buttons:
+          'Print': () ->
+            id = $('#id').val()
+            ssr_id = $('#ssr_id').val()
+            printerFriendly = window.open("/dashboard/service_requests/#{id}?ssr_id=#{ssr_id}")
+            printerFriendly.print()
+          'Ok': () ->
+            $(this).dialog('close')
 
       $(document).on 'click', '.view-full-calendar-button', ->
         protocol_id = $(this).data('protocol-id')
@@ -119,50 +111,47 @@ $(document).ready ->
           method: 'get'
           url: "/dashboard/protocols/#{protocol_id}/view_full_calendar.js?portal=true"
 
-      $('.view-full-calendar-dialog').dialog({
-          autoOpen: false
-          dialogClass: "full_calendar_dialog_box"
-          title: 'Study Information'
-          width: 900
-          height: 700
-          modal: true
-          buttons: [
-            {
-              text: "Print"
-              click: ->
-                calendar_id = $('#calendar_id').val()
-                printerFriendly = window.open("/dashboard/protocols/#{calendar_id}/view_full_calendar")
-                printerFriendly.print()
-            }
-            {
-            id: "ok_button"
-            text: "Ok"
+      $('.view-full-calendar-dialog').dialog
+        autoOpen: false
+        dialogClass: 'full_calendar_dialog_box'
+        title: 'Study Information'
+        width: 900
+        height: 700
+        modal: true
+        buttons: [
+          {
+            text: 'Print'
             click: ->
-              $(this).dialog('close')
-            }
-          ]
-      })
+              calendar_id = $('#calendar_id').val()
+              printerFriendly = window.open("/dashboard/protocols/#{calendar_id}/view_full_calendar")
+              printerFriendly.print()
+          }
+          {
+          id: 'ok_button'
+          text: 'Ok'
+          click: ->
+            $(this).dialog('close')
+          }
+        ]
 
 
       # Sparc.protocol.renderProjectAccordionList()
       load_Page = -> Sparc.protocol.renderProtocolAccordionList()
       setTimeout load_Page, 2000
 
-      $('#productivity-accordion').accordion({
+      $('#productivity-accordion').accordion
         heightStyle: 'content'
         event: 'mouseover'
         collapsible: true
-      })
 
       $('.draggable')
-        .draggable({
+        .draggable
           containment: 'document'
           appendTo: 'body'
           helper: 'clone'
           cursor: 'url(closedhand.cur),move'
           cursorAt: {left: 5}
           revert: 'invalid'
-        })
         .mouseenter (element) ->
           createTip(element) unless $(this).hasClass('ui-draggable-disabled')
         .mousemove (element) ->
@@ -170,7 +159,7 @@ $(document).ready ->
         .mouseleave ->
           $('#tip').remove()
 
-      $('.droppable').droppable({
+      $('.droppable').droppable
         tolerance: 'touch'
         activeClass: 'drop-active'
         hoverClass: 'drop-hover'
@@ -181,26 +170,23 @@ $(document).ready ->
             when 'publication' then $(this).children('.publications-list').append(element)
             else null
           ui.draggable.draggable('disable')
-      })
 
-      $('#previous').live('click', ->
+      $(document).on 'click', '#previous', ->
         Sparc.protocol.navigateCostTable('decrease') unless $(this).attr('disabled') == 'disabled'
-      )
 
-      $('#next').live('click', ->
+      $(document).on 'click', '#next', ->
         Sparc.protocol.navigateCostTable('increase') unless $(this).attr('disabled') == 'disabled'
-      )
 
     disableButton: (containing_text, change_to) ->
       button = $(".ui-dialog .ui-button:contains(#{containing_text})")
       button.html("<span class='ui-button-text'>#{change_to}</span>")
-        .attr('disabled',true)
+        .attr('disabled', true)
         .addClass('button-disabled')
 
     enableButton: (containing_text, change_to) ->
       button = $(".ui-dialog .ui-button:contains(#{containing_text})")
       button.html("<span class='ui-button-text'>#{change_to}</span>")
-        .attr('disabled',false)
+        .attr('disabled', false)
         .removeClass('button-disabled')
 
     navigateCostTable: (direction) ->
@@ -223,64 +209,58 @@ $(document).ready ->
         for visit in item.values
           display_cost = visit.cost / 100
           _display_cost = if isNaN(display_cost)
-            "N/A"
+            'N/A'
           else
             '$' + display_cost.toFixed(2)
           $("#quantity_#{visit.service_id}_column_#{i}").html(_display_cost)
       $('#visit_group_num').val(visit_group_num)
-  }
-
-
 
 
   #  Protocol Index Begin
-  $(document).on('click', '.protocols_index_row > .id,.title,.pis', ->
+  $(document).on 'click', '.protocols_index_row > .id,.title,.pis', ->
     #if you click on the row, it opens the protocol show
-    protocol_id = $(this).parent().data("protocol-id")
+    protocol_id = $(this).parent().data('protocol-id')
     window.location = "/dashboard/protocols/#{protocol_id}"
-  )
 
-  $(document).on('click', '.requests_display_link', ->
+  $(document).on 'click', '.requests_display_link', ->
     # Opens the requests modal
-    protocol_id = $(this).data("protocol-id")
+    protocol_id = $(this).data('protocol-id')
     $.ajax
       type: 'get'
       url: "/dashboard/protocols/#{protocol_id}/display_requests"
-  )
 
-  $(document).on('click', '.protocol-archive-button', (event) ->
+  $(document).on 'click', '.protocol-archive-button', (event) ->
     protocol_id = $(this).data('protocol-id')
     $.ajax
-      type: "POST"
-      url:  "/protocol_archive/create.js"
+      type: 'POST'
+      url:  '/protocol_archive/create.js'
       data: { protocol_id: protocol_id }
-  )
 
-  $("#save_filters_link").live 'click', ->
+  $(document).on 'click', '#save_filters_link', ->
     data = {} #Grab form values
     $.each $('form#filterrific-no-ajax-auto-submit').serializeArray(), (i, field) ->
       data[field.name] = field.value
     $.ajax
-      type: "GET"
+      type: 'GET'
       url:  @href
       data: data
     return false
 
-  $(".saved_search_link").live 'click', ->
+  $(document).on 'click', '.saved_search_link', ->
     # This makes the saved search filter link go through AJAX
     $.getScript @href
     return false
 
-  $("#reset_filters_link").live 'click', ->
+  $(document).on 'click', '#reset_filters a', ->
     # This makes the reset filter link go through AJAX
     $.getScript @href
-    return false
+    false
 
-  $('.pagination a').live 'click', ->
+  $(document).on 'click', '.pagination a', ->
     # This makes the pagination links go through AJAX, rather than link hrefs
     $('.pagination').html 'Page is loading...'
     $.getScript @href
-    return false
+    false
   #  Protocol Index End
 
   # Protocol Show Begin
@@ -294,13 +274,12 @@ $(document).ready ->
   # Protocol Show End
 
   # Protocol Edit Begin
-  $(document).on('click', '#protocol_type_button', ->
-    protocol_id = $(this).data("protocol-id")
+  $(document).on 'click', '#protocol_type_button', ->
+    protocol_id = $(this).data('protocol-id')
     data = type : $("#protocol_type").val()
     if confirm "This will change the type of this Project/Study.  Are you sure?"
       $.ajax
         type: 'PATCH'
         url: "/dashboard/protocols/#{protocol_id}/update_protocol_type"
         data: data
-  )
   # Protocol Edit End

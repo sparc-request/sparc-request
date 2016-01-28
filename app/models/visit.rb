@@ -19,6 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Visit < ActiveRecord::Base
+  self.per_page = 5
 
   include RemotelyNotifiable
 

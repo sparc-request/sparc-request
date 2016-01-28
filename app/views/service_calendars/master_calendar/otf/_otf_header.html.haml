@@ -19,7 +19,7 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 %tr.table_header
   %th= t(:calendar_page)[:headers][:services]
-  - if @study_tracker && !@merged # display study tracker otf header
+  - if study_tracker && !merged # display study tracker otf header
     %th.qty_unit_header= t(:calendar_page)[:headers][:number]
     %th.qty_unit_header= t(:calendar_page)[:headers][:unit_type]
     %th.qty_type_header= t(:calendar_page)[:headers][:number]
@@ -27,36 +27,36 @@
     %th
 
 
-  - elsif @review # display review otf header
+  - elsif review # display review otf header
     %th= t(:calendar_page)[:headers][:your_cost]
     %th{ colspan: 6 }
     %th= t(:calendar_page)[:headers][:total_per_study]
 
 
   - else # display default or merged otf header
-    - if (@portal || @study_tracker) && @merged
-      %th.your_cost_header= t(:calendar_page)[:headers][:your_cost]
-      %th{ colspan: 7 }
-      %th.total_per_study= t(:calendar_page)[:headers][:total_per_study]
+    - if (portal || study_tracker) && merged
+      %th.your_cost_header.col-sm-1= t(:calendar_page)[:headers][:your_cost]
+      %th.col-sm-7{ colspan: 7 }
+      %th.total_per_study.col-sm-1= t(:calendar_page)[:headers][:total_per_study]
     - else
-      %th.unit_costs_header{ colspan: 2 }= t(:calendar_page)[:headers][:unit_costs]
-      %th{ colspan: 2 }
+      %th.unit_costs_header.col-sm-2{ colspan: 2 }= t(:calendar_page)[:headers][:unit_costs]
+      %th.col-sm-2{ colspan: 2 }
         %span
           = t(:calendar_page)[:headers][:unit_type]
           = t(:calendar_page)[:headers][:number]
-      %th{ colspan: 2 }
+      %th.col-sm-2{ colspan: 2 }
         %span
           = t(:calendar_page)[:headers][:qty_type]
           = t(:calendar_page)[:headers][:number]
-      %th{ colspan: 5 }
-      - if @merged
+      %th.col-sm-5{ colspan: 5 }
+      - if merged
         %th.total_per_study{ rowspan: 2 }= t(:calendar_page)[:headers][:total_per_study]
 
-    - unless @merged
+    - unless merged
       %th= image_tag 'spinner.gif', class: 'service_calendar_spinner'
-    - unless @portal || @study_tracker
+    - unless portal || study_tracker
       %tr.table_header
         %th.service_rate_header= t(:calendar_page)[:headers][:service_rate]
         %th.your_cost_header= t(:calendar_page)[:headers][:your_cost]
-        - unless @merged
+        - unless merged
           %th.total_per_study= t(:calendar_page)[:headers][:total_per_study]

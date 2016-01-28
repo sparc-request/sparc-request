@@ -25,115 +25,105 @@ $(document).ready ->
   # ADMIN APPROVALS LISTENERS BEGIN
 
   $(document).on 'click', '#admin_approvals_button', ->
-    ssr_id = $(this).data("sub_service_request_id")
+    ssr_id = $(this).data('sub_service_request_id')
     $.ajax
       type: 'GET'
       url: "/dashboard/sub_service_requests/#{ssr_id}/admin_approvals_show"
 
-  $(document).on('change', '.admin_approval_checkbox', ->
-    ssr_id = $(this).data("sub_service_request_id")
+  $(document).on 'change', '.admin_approval_checkbox', ->
+    ssr_id = $(this).data('sub_service_request_id')
     data = "#{$(this).attr('name')}" : $(this).val()
     $.ajax
       type: 'POST'
       url: "/dashboard/sub_service_requests/#{ssr_id}/admin_approvals_update"
       data: data
-  )
 
   # ADMIN APPROVALS LISTENERS END
   # SERVICE REQUEST INFO LISTENERS BEGIN
 
-  $(document).on('change', '#sub_service_request_owner', ->
-    ssr_id = $(this).data("sub_service_request_id")
+  $(document).on 'change', '#sub_service_request_owner', ->
+    ssr_id = $(this).data('sub_service_request_id')
     owner_id = $(this).val()
-    data = "sub_service_request" : "owner_id" : owner_id
+    data = 'sub_service_request' : 'owner_id' : owner_id
     $.ajax
       type: 'PATCH'
       url: "/dashboard/sub_service_requests/#{ssr_id}"
       data: data
-  )
 
-  $(document).on('change', '#sub_service_request_status', ->
-    ssr_id = $(this).data("sub_service_request_id")
+  $(document).on 'change', '#sub_service_request_status', ->
+    ssr_id = $(this).data('sub_service_request_id')
     status = $(this).val()
-    data = "sub_service_request" : "status" : status
+    data = 'sub_service_request' : 'status' : status
     $.ajax
       type: 'PATCH'
       url: "/dashboard/sub_service_requests/#{ssr_id}"
       data: data
-  )
 
   # SERVICE REQUEST INFO LISTENERS END
   # TIMELINE LISTENERS BEGIN
 
-  $(document).on('dp.change', '#sub_service_request_consult_arranged_date_picker', ->
-    ssr_id = $(this).data("sub_service_request_id")
+  $(document).on 'dp.change', '#sub_service_request_consult_arranged_date_picker', ->
+    ssr_id = $(this).data('sub_service_request_id')
     consult_arranged_date = $(this).val()
-    data = "sub_service_request" : "consult_arranged_date" : consult_arranged_date
+    data = 'sub_service_request' : 'consult_arranged_date' : consult_arranged_date
     $.ajax
       type: 'PATCH'
       url: "/dashboard/sub_service_requests/#{ssr_id}"
       data: data
-  )
 
-  $(document).on('dp.change', '#sub_service_request_requester_contacted_date_picker', ->
-    ssr_id = $(this).data("sub_service_request_id")
+  $(document).on 'dp.change', '#sub_service_request_requester_contacted_date_picker', ->
+    ssr_id = $(this).data('sub_service_request_id')
     requester_contacted_date = $(this).val()
-    data = "sub_service_request" : "requester_contacted_date" : requester_contacted_date
+    data = 'sub_service_request' : 'requester_contacted_date' : requester_contacted_date
     $.ajax
       type: 'PATCH'
       url: "/dashboard/sub_service_requests/#{ssr_id}"
       data: data
-  )
 
   # TIMELINE LISTENERS END
   # SUBSIDY LISTENERS BEGIN
 
-  $(document).on('click', '#add_subsidy_link', ->
+  $(document).on 'click', '#add_subsidy_link', ->
     sub_service_request_id = $(this).data('sub_service_request_id')
     data = 'subsidy': 'sub_service_request_id': sub_service_request_id
     $.ajax
       type: 'POST'
       url:  "/dashboard/subsidies/"
       data: data
-  )
 
-  $(document).on('change', '#subsidy_pi_contribution', ->
-    subsidy_id = $(this).data("subsidy_id")
+  $(document).on 'change', '#subsidy_pi_contribution', ->
+    subsidy_id = $(this).data('subsidy_id')
     pi_contribution = $(this).val()
     data = 'subsidy': 'pi_contribution': pi_contribution
     $.ajax
       type: 'PATCH'
       url:  "/dashboard/subsidies/#{subsidy_id}"
       data: data
-  )
-
-  $(document).on('change', '#subsidy_percent_subsidy', ->
-    subsidy_id = $(this).data("subsidy_id")
+      
+  $(document).on 'change', '#subsidy_percent_subsidy', ->
+    subsidy_id = $(this).data('subsidy_id')
     stored_percent_subsidy = $(this).val()
     data = 'subsidy': 'stored_percent_subsidy': stored_percent_subsidy
     $.ajax
       type: 'PATCH'
       url:  "/dashboard/subsidies/#{subsidy_id}"
       data: data
-  )
 
-  $(document).on('click', '#delete_subsidy', ->
-    subsidy_id = $(this).data("subsidy_id")
+  $(document).on 'click', '#delete_subsidy', ->
+    subsidy_id = $(this).data('subsidy_id')
     $.ajax
       type: 'DELETE'
       url: "/dashboard/subsidys/#{subsidy_id}"
-  )
 
   # SUBSIDY LISTENERS END
   # HISTORY LISTENERS BEGIN
 
-  $(document).on('click', '.history_button', ->
+  $(document).on 'click', '.history_button', ->
     ssr_id = $(this).data("sub-service-request-id")
-    data = 'partial': $(this).data("table")
+    data = 'partial': $(this).data('table')
     $.ajax
       type: 'GET'
       url: "/dashboard/sub_service_requests/#{ssr_id}/change_history_tab"
       data: data
-  )
 
 # HISTORY LISTENERS END

@@ -21,17 +21,17 @@
 $(document).ready ->
 
   $(document).on 'click', '#messages-btn', ->
-    window.location = "/dashboard/notifications"
+    window.location = '/dashboard/notifications'
 
   $(document).on('click', '.notifications_row > td.user,td.subject,td.time', ->
     #if you click on the row, it opens the notification show
-    row_index   = $(this).parents("tr").data("index")
-    notification_id = $(this).parents("table.notifications_table").bootstrapTable("getData")[row_index].id
+    row_index   = $(this).parents('tr').data('index')
+    notification_id = $(this).parents('table.notifications_table').bootstrapTable('getData')[row_index].id
     data =
       'notification_id': notification_id
     $.ajax
       type: 'GET'
-      url: "/dashboard/messages"
+      url: '/dashboard/messages'
       data: data
   )
 
@@ -76,7 +76,7 @@ $(document).ready ->
       data: data
 
   $(document).on 'click', 'button.mark_as_read_unread',  ->
-    selections = $("#notifications-table").bootstrapTable 'getSelections'
+    selections = $('#notifications-table').bootstrapTable 'getSelections'
     notification_ids = selections.map( (hash, i) -> return hash['id'] )
     if notification_ids.length > 0
       read_or_unread = $(this).data('read')
@@ -89,23 +89,23 @@ $(document).ready ->
         data: data
 
   $(document).on 'click', 'button#notifications_sent',  ->
-    $(".notification_nav").removeClass('btn-primary').addClass('btn-default').find(".glyphicon-refresh").hide()
-    $(this).removeClass('btn-default').addClass('btn-primary').find(".glyphicon-refresh").show()
-    $("#notification_tabs").data("selected", "sent")
-    $("#notifications-table").bootstrapTable 'refresh', {query: {table: "sent"}}
+    $('.notification_nav').removeClass('btn-primary').addClass('btn-default').find('.glyphicon-refresh').hide()
+    $(this).removeClass('btn-default').addClass('btn-primary').find('.glyphicon-refresh').show()
+    $('#notification_tabs').data('selected', 'sent')
+    $('#notifications-table').bootstrapTable 'refresh', { query: { table: 'sent' } }
 
   $(document).on 'click', 'button#notifications_inbox',  ->
-    $(".notification_nav").removeClass('btn-primary').addClass('btn-default').find(".glyphicon-refresh").hide()
-    $(this).removeClass('btn-default').addClass('btn-primary').find(".glyphicon-refresh").show()
-    $("#notification_tabs").data("selected", "inbox")
-    $("#notifications-table").bootstrapTable 'refresh', {query: {table: "inbox"}}
+    $('.notification_nav').removeClass('btn-primary').addClass('btn-default').find('.glyphicon-refresh').hide()
+    $(this).removeClass('btn-default').addClass('btn-primary').find('.glyphicon-refresh').show()
+    $('#notification_tabs').data('selected', 'inbox')
+    $('#notifications-table').bootstrapTable 'refresh', { query: { table: 'inbox' } }
 
   $(document).on 'click', 'button#compose_notification',  ->
     data =
-      "sub_service_request_id"  : $(this).data('sub-service-request-id')
+      'sub_service_request_id'  : $(this).data('sub-service-request-id')
     $.ajax
       type: 'GET'
-      url:  "/dashboard/notifications/new"
+      url:  '/dashboard/notifications/new'
       data: data
 
   window.notifications_row_style = (row, index) ->
@@ -116,5 +116,5 @@ $(document).ready ->
     return { classes: class_string }
 
   window.refresh_notifications_table = ->
-    table = $("#notification_tabs").data("selected")
-    $("#notifications-table").bootstrapTable 'refresh', {query: {table: "#{table}"}}
+    table = $('#notification_tabs').data('selected')
+    $('#notifications-table').bootstrapTable 'refresh', { query: { table: "#{table}" } }

@@ -59,7 +59,7 @@ $(document).ready ->
         confirm_message = 'Are you sure you want to remove this user?'
 
       if pr_identity_role == 'primary-pi'
-        alert I18n["protocol_information"]["require_primary_pi_message"]
+        alert I18n['protocol_information']['require_primary_pi_message']
       else
         if confirm(confirm_message)
           $.ajax
@@ -72,24 +72,24 @@ $(document).ready ->
 
   #**************** Add Authorized User Form Begin ****************
 
-  $(document).on 'change', "#project_role_identity_credentials", ->
+  $(document).on 'change', '#project_role_identity_credentials', ->
     # Credentials - Dropdown
-    $(".credentials_dependent").hide()
+    $('.credentials_dependent').hide()
     switch $(this).val()
-      when "other" then $(".credentials_dependent.other").show()
+      when 'other' then $('.credentials_dependent.other').show()
 
-  $(document).on 'change', "#project_role_role", ->
+  $(document).on 'change', '#project_role_role', ->
     # Role - Dropdown
-    $(".role_dependent").hide()
+    $('.role_dependent').hide()
     switch $(this).val()
       when 'other'
-        $("#project_role_role_other").show()
-      when "business-grants-manager"
+        $('#project_role_role_other').show()
+      when 'business-grants-manager'
         $('#project_role_project_rights_none').attr('disabled', true)
         $('#project_role_project_rights_view').attr('disabled', true)
         $('#project_role_project_rights_request').attr('disabled', true)
         $('#project_role_project_rights_approve').attr('checked', true)
-      when "pi", "primary-pi"
+      when 'pi', 'primary-pi'
         $('#project_role_project_rights_none').attr('disabled', true)
         $('#project_role_project_rights_view').attr('disabled', true)
         $('#project_role_project_rights_request').attr('disabled', true)

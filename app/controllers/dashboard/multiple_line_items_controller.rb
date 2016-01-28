@@ -28,7 +28,8 @@ class Dashboard::MultipleLineItemsController < Dashboard::BaseController
     @service_request = ServiceRequest.find(params[:service_request_id])
     @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
     @protocol = Protocol.find params[:protocol_id]
-    @services = @sub_service_request.candidate_services.select {|x| !x.one_time_fee}
+    # TODO change back to not otf services
+    @services = @sub_service_request.candidate_services.select {|x| x.one_time_fee}
     # @services = @protocol.organization.inclusive_child_services(:per_participant)
     @page_hash = params[:page_hash]
     @schedule_tab = params[:schedule_tab]

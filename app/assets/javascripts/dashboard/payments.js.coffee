@@ -26,15 +26,14 @@ $ ->
     content:
       text: "Remove this payment"
     position:
-        corner:
-          target: "topMiddle"
-          tooltip: "bottomMiddle"
+      corner:
+        target: 'topMiddle'
+        tooltip: 'bottomMiddle'
 
   $('#payments_list .remove_nested_fields.uploads').qtip
     content:
       text: "Remove this document"
     position:
       corner:
-        target: "topMiddle"
-        tooltip: "bottomMiddle"
-
+        target: 'topMiddle'
+        tooltip: 'bottomMiddle'

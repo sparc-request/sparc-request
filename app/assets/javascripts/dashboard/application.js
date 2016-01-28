@@ -39,6 +39,8 @@
 //= require jquery.cookie
 //= require jquery.form
 //= require jquery.toastmessage
+//= require editable/bootstrap-editable
+//= require editable/rails
 //= require nprogress
 //= require nprogress-ajax
 //= require json2

@@ -19,19 +19,78 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 module ServiceCalendarHelper
+  # this was extracted mostly verbatum from a partial
+  # TODO understand
+  def pppv_line_items_visits_to_display(arm, service_request, sub_service_request, opts={})
+    merged = opts[:merged]
+    portal = opts[:portal]
+    grouped_livs = Hash.new
+
+    if merged
+      arm.service_list.each do |_, value| # get only per patient/per visit services and group them
+        livs = Array.new
+        arm.line_items_visits.each do |line_items_visit|
+          line_item = line_items_visit.line_item
+          next unless value[:line_items].include?(line_item)
+          if %w(first_draft draft).include?(line_item.service_request.status)
+            next if portal
+            next if service_request != line_item.service_request
+          end
+          livs << line_items_visit
+        end
+        grouped_livs[value[:name]] = livs unless livs.empty?
+      end
+    else
+      service_request.service_list(false).each do |_, value| # get only per patient/per visit services and group them
+        next unless sub_service_request.nil? || sub_service_request.organization.name == value[:process_ssr_organization_name]
+        livs = Array.new
+        arm.line_items_visits.each do |line_items_visit|
+          line_item = line_items_visit.line_item
+          next unless value[:line_items].include?(line_item)
+          livs << line_items_visit
+        end
+        grouped_livs[value[:name]] = livs unless livs.empty?
+      end
+    end
+
+    grouped_livs
+  end
+
+  def set_check obj
+    count = obj.visits.where("research_billing_qty = 0 and insurance_billing_qty = 0").count
+    count != 0
+  end
+
+  def glyph_class obj
+    count = obj.visits.where("research_billing_qty = 0 and insurance_billing_qty = 0").count
+    count == 0 ? 'glyphicon-remove' : 'glyphicon-ok'
+  end
 
   def select_row line_items_visit, tab, portal
     checked = line_items_visit.visits.map{|v| v.research_billing_qty >= 1 ? true : false}.all?
-    action = checked == true ? 'unselect_calendar_row' : 'select_calendar_row'
-    icon = checked == true ? 'ui-icon-close' : 'ui-icon-check'
+    action  = checked == true ? 'unselect_calendar_row' : 'select_calendar_row'
+    icon    = checked == true ? 'glyphicon-remove' : 'glyphicon-ok'
+
     link_to(
-        (content_tag(:span, '', :class => "ui-button-icon-primary ui-icon #{icon}") + content_tag(:span, 'Check All', :class => 'ui-button-text')),
+        (content_tag(:span, '', class: "glyphicon #{icon}")),
         "/service_requests/#{line_items_visit.line_item.service_request.id}/#{action}/#{line_items_visit.id}?portal=#{portal}",
-        :remote  => true,
-        :role    => 'button',
-        :class   => "ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only service_calendar_row",
-        :id      => "check_row_#{line_items_visit.id}_#{tab}",
-        data:    ( line_items_visit.any_visit_quantities_customized? ? { confirm: "This will reset custom values for this row, do you wish to continue?" } : nil))
+        remote: true,
+        role:   'button',
+        class:  "btn btn-primary service_calendar_row",
+        id:     "check_row_#{line_items_visit.id}_#{tab}",
+        data:   (line_items_visit.any_visit_quantities_customized? ? { confirm: "This will reset custom values for this row, do you wish to continue?" } : nil))
+  end
+
+  # couldn't we use a VisitGroup to do this?
+  def select_column visit_group, n, portal, service_request
+    arm_id             = visit_group.arm_id
+    filtered_livs      = visit_group.line_items_visits.joins(:line_item).where(line_items: { service_request_id: service_request.id })
+    checked            = filtered_livs.all? { |l| l.visits[n.to_i].research_billing_qty >= 1 }
+    action             = checked ? 'unselect_calendar_column' : 'select_calendar_column'
+    icon               = checked ? 'glyphicon-remove' : 'glyphicon-ok'
+    link_to(content_tag(:span, '', class: "glyphicon #{icon}"),
+      "/service_requests/#{service_request.id}/#{action}/#{n+1}/#{arm_id}?portal=#{portal}",
+      remote: true, role: 'button', class: 'visit_number btn btn-primary', id: "check_all_column_#{n+1}", data: ( visit_group.any_visit_quantities_customized?(service_request) ? { confirm: "This will reset custom values for this column, do you wish to continue?" } : nil))
   end
 
   def currency_converter cents
@@ -230,8 +289,6 @@ module ServiceCalendarHelper
     options_for_select(arr)
   end
 
-
-
   def create_line_items_options page_hash
     options = []
     page_hash.each do |arm_id, page|
@@ -240,5 +297,34 @@ module ServiceCalendarHelper
     end
 
     options_for_select(options)
+  end
+
+  def visits_select_options arm, cur_page=1
+    per_page = Visit.per_page
+    visit_count = arm.visit_count
+    num_pages = (visit_count / per_page.to_f).ceil
+    arr = []
+
+    num_pages.times do |page|
+      beginning_visit = (page * per_page) + 1
+      ending_visit = (page * per_page + per_page)
+      ending_visit = ending_visit > visit_count ? visit_count : ending_visit
+
+      option = ["Visits #{beginning_visit} - #{ending_visit} of #{visit_count}", page + 1, class: "title", :page => page + 1]
+      arr << option
+
+      # (beginning_visit..ending_visit).each do |y|
+      if arm.visit_groups.present?
+        arm.visit_groups[(beginning_visit-1)...ending_visit].each do |vg|
+          arr << ["&nbsp;&nbsp; - #{vg.name}/Day #{vg.day}".html_safe, "#{vg.id}", page: page + 1] if arm.visit_groups.present?
+        end
+      end
+    end
+
+    options_for_select(arr, cur_page)
+  end
+
+  def build_visits_select arm, page
+    select_tag "visits-select-for-#{arm.id}", visits_select_options(arm, page), class: 'form-control selectpicker', data: { arm_id: "#{arm.id}", page: page }
   end
 end

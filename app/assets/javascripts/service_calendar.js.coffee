@@ -21,6 +21,11 @@
 #= require navigation
 
 $(document).ready ->
+  $(document).on 'click', '.page_change_arrow', ->
+    $.ajax
+      type: 'GET'
+      url:  $(this).data('url')
+
   $('.visit_number a, .service_calendar_row').live 'click', ->
     $('.service_calendar_spinner').show()
 
@@ -36,7 +41,7 @@ $(document).ready ->
         else
           errors = [textStatus]
         for error in errors
-          alert(error);
+          alert(error)
           obj.prop('checked', false)
     .complete =>
       $('.service_calendar_spinner').hide()
@@ -87,7 +92,7 @@ $(document).ready ->
           for error in errors
             # May need to include something to allow error.humanize like we do elsewhere
             # if this gets weird looking.
-            alert(error);
+            alert(error)
             $(obj).val(original_val)
             $(obj).attr('current_quantity', original_val)
       .complete =>
@@ -269,7 +274,7 @@ $(document).ready ->
         for error in errors
           # May need to include something to allow error.humanize like we do elsewhere
           # if this gets weird looking.
-          alert(error);
+          alert(error)
           $(obj).val(original_val)
           $(obj).attr('current_quantity', original_val)
     .complete =>
@@ -278,12 +283,12 @@ $(document).ready ->
 
 # methods for saving one time fee attributes
   save_line_item_by_ajax = (obj) ->
-      object_id = $(obj).data("line_item_id")
-      name = $(obj).attr('name')
-      key = name.replace("line_item_", '')
-      data = {}
-      data[key] = $(obj).val()
-      put_attribute(object_id, data)
+    object_id = $(obj).data("line_item_id")
+    name = $(obj).attr('name')
+    key = name.replace("line_item_", '')
+    data = {}
+    data[key] = $(obj).val()
+    put_attribute(object_id, data)
 
 
   put_attribute = (id, data) ->
@@ -327,7 +332,7 @@ recalculate_one_time_fee_totals = ->
 commaSeparateNumber = (val) ->
   while (/(\d+)(\d{3})/.test(val.toString()))
     val = val.toString().replace(/(\d+)(\d{3})/, '$1'+','+'$2')
-  return val;
+  return val
 
 stack_errors_for_alert = (errors) ->
   compiled = ''

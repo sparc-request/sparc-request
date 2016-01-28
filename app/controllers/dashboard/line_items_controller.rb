@@ -117,8 +117,8 @@ class Dashboard::LineItemsController < Dashboard::BaseController
     if @line_item.service.one_time_fee
       update_otf_line_item()
     else
-      if params[:displayed_cost] # we only want to update the displayed cost
-        @line_item.displayed_cost = params[:displayed_cost] || ''
+      if params[:undefined] && params[:undefined][:displayed_cost] # we only want to update the displayed cost
+        @line_item.displayed_cost = params[:undefined][:displayed_cost] || ''
         @line_item.save
         reload_request
       elsif update_per_patient_line_item()
@@ -126,7 +126,7 @@ class Dashboard::LineItemsController < Dashboard::BaseController
       else
         @line_item.reload
         respond_to do |format|
-          format.js { render :status => 500, :json => clean_errors(@line_item.errors) } 
+          format.js { render :status => 500, :json => clean_errors(@line_item.errors) }
         end
       end
     end
@@ -147,7 +147,7 @@ class Dashboard::LineItemsController < Dashboard::BaseController
       @line_item.quantity = params[:quantity]
       updated_service_relations = @line_item.valid_otf_service_relation_quantity?
     end
-  
+
     if updated_service_relations && @line_item.update_attributes(params[:line_item])
       @candidate_one_time_fees = @sub_service_request.candidate_services.select {|x| x.one_time_fee}
       render 'dashboard/sub_service_requests/add_otf_line_item'
@@ -171,7 +171,10 @@ class Dashboard::LineItemsController < Dashboard::BaseController
     @subsidy.try(:fix_pi_contribution, @percent)
     @candidate_one_time_fees = @sub_service_request.candidate_services.select {|x| x.one_time_fee}
     @candidate_per_patient_per_visit = @sub_service_request.candidate_services.reject {|x| x.one_time_fee}
-    render 'dashboard/sub_service_requests/add_line_item'
+
+    # TODO
+    # render 'dashboard/sub_service_requests/add_line_item'
+    render nothing: :true
   end
 
   def update_otf_line_item
@@ -200,11 +203,11 @@ class Dashboard::LineItemsController < Dashboard::BaseController
     #Create new line_item, and link up line_items_visit, modify CWF data, etc...
     @old_line_item = @line_item
     visit_ids = @line_items_visit.visits.map(&:id)
-    @procedures = @old_line_item.procedures.find_all_by_visit_id(visit_ids)
+    @procedures = @old_line_item.procedures.where(visit_id: visit_ids)
 
     ActiveRecord::Base.transaction do
       if @line_item = LineItem.create(service_request_id: @service_request.id, service_id: @service_id, sub_service_request_id: @sub_service_request.id)
-
+        puts @line_item.errors.inspect
         @line_item.reload
         if @line_items_visit.update_attribute(:line_item_id, @line_item.id)
           @old_line_item.reload

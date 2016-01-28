@@ -5,15 +5,15 @@ RSpec.describe 'navigation bar', js: true do
     context 'a user is signed in' do
       before :each do
         FactoryGirl.create(
-	 :identity,
-	 first_name: 'William',
-	 last_name: 'Holt',
-	 password: 'password',
-	 password_confirmation: 'password',
-	 ldap_uid: 'holtw@musc.edu',
-	 email: 'holtw@musc.edu',
-	 catalog_overlord: true,
-	 approved: true,
+        	:identity,
+        	first_name: 'William',
+        	last_name: 'Holt',
+        	password: 'password',
+        	password_confirmation: 'password',
+        	ldap_uid: 'holtw@musc.edu',
+        	email: 'holtw@musc.edu',
+        	catalog_overlord: true,
+        	approved: true,
 	)
       end
       it 'should display the tabs' do

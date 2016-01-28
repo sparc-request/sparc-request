@@ -18,8 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-current_index = $("#service_calendar").tabs("option", "active")
-$("#service_calendar").tabs('load', current_index)
-$("#request_cost_total").html("<%= escape_javascript(render(partial: 'dashboard/sub_service_requests/direct_cost_total', locals: { sub_service_request: @sub_service_request })) %>")
+$('#service_calendar .custom-tab.active a').click()
+$('#request_cost_total').html("<%= escape_javascript(render partial: 'dashboard/sub_service_requests/service_request_info/direct_cost_total', locals: { sub_service_request: @sub_service_request }) %>")
 if "<%= @errors %>"
   alert "<%= raw(@errors) %>"

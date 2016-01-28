@@ -24,13 +24,13 @@
 
 $(document).ready ->
 
-  Sparc.home = {
+  Sparc.home =
 
     handle_ajax_errors: (errors_array, entity_type) ->
       errors_array = JSON.parse(errors_array)
-      error_string = ""
+      error_string = ''
       error_number = 0
-      for key,value of errors_array
+      for key, value of errors_array
         for error in value
           error_number += 1
           error_string += "<li>#{key[0].toUpperCase()}#{key.substr(1, key.length - 1)} #{error}</li>"
@@ -42,43 +42,42 @@ $(document).ready ->
         </ul>
       ").show()
 
-    getInfo: (info, force=null) ->
+    getInfo: (info, force = null) ->
       spinner = $(".#{info}-spinner")
-      if (spinner.length > 0) or (force is 'force')
+      if (spinner.length > 0) || (force is 'force')
         spinner.show()
         sr_id  = $('.service-request-id').val()
         ssr_id = $('.sub-service-request-id').val()
         $.ajax
           method: 'get'
-          url   : "/dashboard/service_requests/#{sr_id}/related_service_requests/#{ssr_id}/#{info}"
+          url: "/dashboard/service_requests/#{sr_id}/related_service_requests/#{ssr_id}/#{info}"
           success: ->
             $('.date').datepicker
               constrainInput: true
-              dateFormat: "m/dd/yy"
+              dateFormat: 'm/dd/yy'
               changeMonth: true
               changeYear: true
               showButtonPanel: true
-              closeText: "Clear"
+              closeText: 'Clear'
               beforeShow: (input) ->
                 callback = ->
-                  buttonPane = $(input).datepicker( "widget" ).find( ".ui-datepicker-buttonpane" )
+                  buttonPane = $(input).datepicker( 'widget' ).find('.ui-datepicker-buttonpane')
                   buttonPane.find('button.ui-datepicker-close').on 'click', ->
                     $.datepicker._clearDate(input)
-                setTimeout( callback, 1)
+                setTimeout(callback, 1)
 
-            $('.date').attr("readOnly", true)
+            $('.date').attr('readOnly', true)
             spinner.remove()
-  }
 
   $('#study_tracker_tabs').tabs
-    active: ($.cookie("study_tracker_tab_name"))
+    active: ($.cookie('study_tracker_tab_name'))
     activate: (event, ui) ->
       idx = ui.newTab.parent().children().index(ui.newTab)
-      $.cookie("study_tracker_tab_name", idx, { expires: 1 })
+      $.cookie('study_tracker_tab_name', idx, { expires: 1 })
 
 
   $('.tabs').tabs
-    active: ($.cookie("admin_tab_name"))
+    active: ($.cookie('admin_tab_name'))
     show: (event, ui) ->
       class_name = ui.tab.className
       switch class_name
@@ -99,4 +98,4 @@ $(document).ready ->
           Sparc.home.getInfo('per_patient_services')
     activate: (event, ui) ->
       idx = ui.newTab.parent().children().index(ui.newTab)
-      $.cookie("admin_tab_name", idx, { expires: 1 })
+      $.cookie('admin_tab_name', idx, { expires: 1 })

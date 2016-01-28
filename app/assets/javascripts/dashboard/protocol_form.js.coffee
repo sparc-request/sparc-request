@@ -20,64 +20,64 @@
 
 $(document).ready ->
 
-  $(document).on 'change', ".study#protocol_funding_status", ->
+  $(document).on 'change', '.study#protocol_funding_status', ->
     # Proposal Funding Status - Dropdown
-    $(".funding_status_dependent").hide()
+    $('.funding_status_dependent').hide()
     switch $(this).val()
-      when "funded"
-        $(".funded").show()
-        $("#protocol_funding_source").trigger("change")
-      when "pending_funding" then $(".pending_funding").show()
+      when 'funded'
+        $('.funded').show()
+        $('#protocol_funding_source').trigger('change')
+      when 'pending_funding' then $('.pending_funding').show()
 
   $(document).on 'change', "#protocol_funding_source", ->
     # Funding Source - Dropdown
-    $(".funding_source_dependent").hide()
+    $('.funding_source_dependent').hide()
     switch $(this).val()
-      when "federal" then $(".federal").show()
-      when "internal" then $(".internal").show()
+      when 'federal' then $('.federal').show()
+      when 'internal' then $('.internal').show()
 
   $(document).on 'change', "input[name='protocol[selected_for_epic]']", ->
     # Publish Study in Epic - Radio
     switch $(this).val()
-      when "true" then $(".selected_for_epic_dependent").show()
-      when "false" then $(".selected_for_epic_dependent").hide()
+      when 'true' then $('.selected_for_epic_dependent').show()
+      when 'false' then $('.selected_for_epic_dependent').hide()
 
-  $(document).on 'change', "#protocol_research_types_info_attributes_human_subjects", ->
+  $(document).on 'change', '#protocol_research_types_info_attributes_human_subjects', ->
     # Human Subjects - Checkbox
     switch $(this).attr('checked')
       when 'checked' then $('.human_subjects_dependent').show()
       else $('.human_subjects_dependent').hide()
 
-  $(document).on 'change', "#protocol_research_types_info_attributes_vertebrate_animals", ->
+  $(document).on 'change', '#protocol_research_types_info_attributes_vertebrate_animals', ->
     # Vertebrate Animals - Checkbox
     switch $(this).attr('checked')
       when 'checked' then $('.vertebrate_animals_dependent').show()
       else $('.vertebrate_animals_dependent').hide()
 
-  $(document).on 'change', "#protocol_research_types_info_attributes_investigational_products", ->
+  $(document).on 'change', '#protocol_research_types_info_attributes_investigational_products', ->
     # Investigational Products - Checkbox
     switch $(this).attr('checked')
       when 'checked' then $('.investigational_products_dependent').show()
       else $('.investigational_products_dependent').hide()
 
-  $(document).on 'change', "#protocol_research_types_info_attributes_ip_patents", ->
+  $(document).on 'change', '#protocol_research_types_info_attributes_ip_patents', ->
     # IP/Patents - Checkbox
     switch $(this).attr('checked')
       when 'checked' then $('.ip_patents_dependent').show()
       else $('.ip_patents_dependent').hide()
 
-  $(document).on 'change', "#protocol_impact_areas_attributes_6__destroy", ->
+  $(document).on 'change', '#protocol_impact_areas_attributes_6__destroy', ->
     # Impact Areas Other - Checkbox
     switch $(this).attr('checked')
       when 'checked' then $('.impact_area_dependent').show()
       else $('.impact_area_dependent').hide()
 
-  $(document).on 'change', ".project#protocol_funding_status", ->
+  $(document).on 'change', '.project#protocol_funding_status', ->
     # Proposal Funding Status - Dropdown
-    $(".funding_status_dependent").hide()
+    $('.funding_status_dependent').hide()
     switch $(this).val()
-      when "funded" then $(".funded").show()
-      when "pending_funding" then $(".pending_funding").show()
+      when 'funded' then $('.funded').show()
+      when 'pending_funding' then $('.pending_funding').show()
 
 
 
@@ -88,17 +88,17 @@ $(document).ready ->
         Bloodhound.tokenizers.whitespace datum.value
       queryTokenizer: Bloodhound.tokenizers.whitespace
       remote:
-        url: '/search/identities?term=%QUERY',
+        url: '/search/identities?term=%QUERY'
         wildcard: '%QUERY'
     )
     identities_bloodhound.initialize() # Initialize the Bloodhound suggestion engine
     $('#protocol_project_roles_attributes_0_identity_id[type="text"]').typeahead(
       # Instantiate the Typeahead UI
       {
-        minLength: 3,
-        hint: false,
+        minLength: 3
+        hint: false
         highlight: true
-      },
+      }
       {
         displayKey: 'label'
         source: identities_bloodhound.ttAdapter()

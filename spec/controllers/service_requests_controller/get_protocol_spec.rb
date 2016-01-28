@@ -137,14 +137,6 @@ RSpec.describe ServiceRequestsController do
         it "should set service_request" do
           expect(assigns(:service_request)).to eq service_request
         end
-
-        it "should set studies to the ServiceRequest's Protocol" do
-          expect(assigns[:studies]).to eq [service_request.protocol]
-        end
-
-        it "should set projects to empty" do
-          expect(assigns[:projects]).to eq []
-        end
       end
 
       context "without params[:sub_service_request]" do
@@ -155,14 +147,6 @@ RSpec.describe ServiceRequestsController do
 
         it "should set service_request" do
           expect(assigns(:service_request)).to eq service_request
-        end
-
-        it "should set studies to the current Identity's Studies" do
-          expect(assigns(:studies).sort).to eq [study, study2].sort
-        end
-
-        it "should set projects to the current Identity's Projects ordered by id" do
-          expect(assigns(:projects)).to eq jug2.projects(order: :id)
         end
       end
     end
@@ -180,14 +164,6 @@ RSpec.describe ServiceRequestsController do
         it "should set service_request" do
           expect(assigns(:service_request)).to eq service_request
         end
-
-        it "should set studies to empty" do
-          expect(assigns[:studies]).to eq []
-        end
-
-        it "should set projects to the ServiceRequest's Protocol" do
-          expect(assigns[:projects]).to eq [service_request.protocol]
-        end
       end
 
       context "without params[:sub_service_request]" do
@@ -198,14 +174,6 @@ RSpec.describe ServiceRequestsController do
 
         it "should set service_request" do
           expect(assigns(:service_request)).to eq service_request
-        end
-
-        it "should set studies to the current Identity's Studies" do
-          expect(assigns(:studies).sort).to eq [study2]
-        end
-
-        it "should set projects to the current Identity's Projects ordered by id" do
-          expect(assigns(:projects)).to eq jug2.projects(order: :id)
         end
       end
     end

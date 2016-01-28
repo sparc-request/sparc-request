@@ -19,20 +19,21 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .modal-dialog
   .modal-content
-    = form_for [:dashboard, project_role], url: project_role.new_record? ? dashboard_associated_users_path : dashboard_associated_user_path(project_role), remote: true do |form|
-      = form.hidden_field :identity_id
-      = form.hidden_field :protocol_id
-      .modal-header
-        %button.close{ type: 'button', data: { dismiss: 'modal' } }
-          %span{ aria: { hidden: 'true' } } &times;
-        %h4.text-center#modal-title= header_text
-      .modal-body
-        #modal_errors
-        .row
-          .col-lg-12
-            .text-center
-              %label= "#{identity.display_name} #{identity.phone || ''}"
-              %a.btn.btn-xs.btn-danger.glyphicon.glyphicon-remove#new-associated-user-button{ href: "javascript:void(0);", data: { protocol_id: protocol.id, permission: 'true' } }
+    .modal-header
+      %button.close{ type: 'button', data: { dismiss: 'modal' } }
+        %span{ aria: { hidden: 'true' } } &times;
+      %h4.text-center#modal-title= header_text
+    .modal-body
+      #modal_errors
+      .row
+        .col-lg-12
+          .text-center
+            %label= "#{identity.display_name} #{identity.phone || ''}"
+            %a.btn.btn-xs.btn-danger.glyphicon.glyphicon-remove#new-associated-user-button{ href: "javascript:void(0);", data: { protocol_id: protocol.id, permission: 'true' } }
+      %div#protocol_role_data{ data: { pr_name: project_role.identity.full_name, pi_name: project_role.protocol.primary_principal_investigator.full_name }}
+      = form_for [:dashboard, project_role], url: project_role.new_record? ? dashboard_associated_users_path : dashboard_associated_user_path(project_role), remote: true, html: { class: "protocol_role_form" } do |form|
+        = form.hidden_field :identity_id
+        = form.hidden_field :protocol_id
         .row
           .col-lg-12
             = form.fields_for :identity do |identity_form|
@@ -113,7 +114,7 @@
                     = form.radio_button :project_rights, "approve", disabled: disable
                     %span= t(:portal_user_form)[:rights][:approve]
 
-      .modal-footer
-        .center-block
-          %button.btn.btn-default{ type: 'button', data: { dismiss: 'modal' } } Cancel
-          %button.btn.btn-primary{ type: 'submit' } Save
+    .modal-footer
+      .center-block
+        %button.btn.btn-default{ type: 'button', data: { dismiss: 'modal' } } Cancel
+        %button.btn.btn-primary#save_protocol_rights_button Save

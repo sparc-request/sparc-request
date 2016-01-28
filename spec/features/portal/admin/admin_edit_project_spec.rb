@@ -54,6 +54,39 @@ RSpec.describe "editing a project", js: true do
     end
   end
 
+  context "switching from project to study" do
+    before :each do
+      project.update_attribute(:selected_for_epic, nil)
+      select 'Study', from: 'protocol_type'
+      click_button "Change Type"
+      wait_for_javascript_to_finish
+    end
+
+    it 'should have epic info box editable' do
+      expect(page).to have_selector('#study_selected_for_epic_true')
+    end
+
+    it 'should not be editable' do
+      find('#study_selected_for_epic_true').click()
+      wait_for_javascript_to_finish
+      select 'Yes', from: "study_type_answer_certificate_of_conf_answer" 
+      click_button 'Save'
+      select 'Project', from: 'protocol_type'
+      click_button "Change Type"
+      wait_for_javascript_to_finish
+      expect(page).to_not have_selector('#study_selected_for_epic_true')
+      select 'Study', from: 'protocol_type'
+      click_button "Change Type"
+      wait_for_javascript_to_finish
+      expect(page).to_not have_selector('#study_selected_for_epic_true')
+    end
+
+    it 'should throw an error message' do
+      click_button 'Save'
+      expect(page).to have_content("Selected for epic is not included in the list")
+    end
+  end
+
   context "clicking cancel button" do
 
     it "should not save changes" do

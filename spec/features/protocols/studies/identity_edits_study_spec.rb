@@ -25,31 +25,30 @@ RSpec.describe "User wants to edit a Study", js: true do
   let_there_be_j
   fake_login_for_each_test
   build_service_request_with_study
-  build_study_type_questions
 
   before :each do
     service_request.update_attribute(:status, 'first_draft')
+    study.update_attributes(study_type_question_group_id: StudyTypeQuestionGroup.where(active:true).pluck(:id).first)
   end
 
   #TODO: Add Authorized Users Specs
   context 'and clicks the Edit Study button' do
     scenario 'and sees the Protocol Information form' do
       given_i_am_viewing_the_service_request_protocol_page
-      when_i_select_a_study
       when_i_click_the_edit_study_button
       then_i_should_see_the_protocol_information_page
     end
 
     scenario 'and sees the cancel button' do
       given_i_am_viewing_the_service_request_protocol_page
-      when_i_select_a_study
+      
       when_i_click_the_edit_study_button
       then_i_should_see_the_nav_button_with_text 'Cancel'
     end
     
     scenario 'and sees the continue button' do
       given_i_am_viewing_the_service_request_protocol_page
-      when_i_select_a_study
+      
       when_i_click_the_edit_study_button
       then_i_should_see_the_nav_button_with_text 'Continue'
     end
@@ -82,28 +81,10 @@ RSpec.describe "User wants to edit a Study", js: true do
     end
 
     context 'and submits the form after selecting Publish to Epic and not filling out questions' do
-      scenario 'and sees some errors' do
+
+      scenario 'and sees no errors' do
         given_i_am_viewing_the_protocol_information_page
         when_i_select_publish_study_to_epic false
-        when_i_select_publish_study_to_epic true
-        when_i_submit_the_form
-        then_i_should_see_errors_of_type 'protocol information publish to epic'
-        when_i_set_question_1a_to "Yes"
-        when_i_submit_the_form
-        then_i_should_see_errors_of_type 'protocol information publish to epic'
-        when_i_set_question_1b_to "No"
-        when_i_submit_the_form
-        then_i_should_see_errors_of_type 'protocol information publish to epic'
-        when_i_set_question_1c_to "No"
-        when_i_submit_the_form
-        then_i_should_see_errors_of_type 'protocol information publish to epic'
-        when_i_set_question_2_to "No"
-        when_i_submit_the_form
-        then_i_should_see_errors_of_type 'protocol information publish to epic'
-        when_i_set_question_3_to "No"
-        when_i_submit_the_form
-        then_i_should_see_errors_of_type 'protocol information publish to epic'
-        when_i_set_question_4_to "No"
         when_i_submit_the_form
         then_i_should_not_see_errors_of_type 'protocol information publish to epic'
       end
@@ -138,6 +119,16 @@ RSpec.describe "User wants to edit a Study", js: true do
         then_i_should_see_the_updated_study
       end
     end
+
+    context 'and submits the study after modifying it' do
+      scenario 'and goes back to see the appropriate fields are displayed' do
+        given_i_am_viewing_the_protocol_information_page
+        when_i_modify_the_study
+        when_i_submit_the_form
+        when_i_go_back_to_protocol_info_page
+        then_i_should_see_the_appropriate_fields_displayed
+      end
+    end
   end
 
   def given_i_am_viewing_the_service_request_protocol_page
@@ -147,13 +138,8 @@ RSpec.describe "User wants to edit a Study", js: true do
 
   def given_i_am_viewing_the_protocol_information_page
     given_i_am_viewing_the_service_request_protocol_page
-    when_i_select_a_study
+    
     when_i_click_the_edit_study_button
-  end
-
-  def when_i_select_a_study
-    study = Protocol.first
-    select "#{study.id} - #{study.short_title}", from: "service_request_protocol_id"
   end
 
   def when_i_click_the_edit_study_button
@@ -166,17 +152,6 @@ RSpec.describe "User wants to edit a Study", js: true do
 
   def when_i_fill_out_the_title title="Fake Title"
     fill_in "study_title", with: title
-  end
-
-  def when_i_select_the_has_cofc has_cofc=true
-    case has_cofc
-      when true
-        find('#study_has_cofc_true').click
-      when false
-        find('#study_has_cofc_false').click
-      else
-        puts "An unexpected value was received in when_i_fill_out_the_has_cofc. Perhaps there was a typo?"
-    end
   end
   
   def when_i_fill_out_the_sponsor_name sponsor_name="Fake Sponsor Name"
@@ -202,27 +177,27 @@ RSpec.describe "User wants to edit a Study", js: true do
     end
   end
 
-  def when_i_set_question_1a_to selection
-    select selection, from: "study_type_answer_higher_level_of_privacy_answer"
-  end
-  
-  def when_i_set_question_1b_to selection
+  def when_i_set_question_1_to selection
     select selection, from: "study_type_answer_certificate_of_conf_answer"
   end
+  
+  def when_i_set_question_2_to selection
+    select selection, from: "study_type_answer_higher_level_of_privacy_answer"
+  end
 
-  def when_i_set_question_1c_to selection
+  def when_i_set_question_2b_to selection
     select selection, from: "study_type_answer_access_study_info_answer"
   end
 
-  def when_i_set_question_2_to selection
+  def when_i_set_question_3_to selection
     select selection, from: "study_type_answer_epic_inbasket_answer"
   end
 
-  def when_i_set_question_3_to selection
+  def when_i_set_question_4_to selection
     select selection, from: "study_type_answer_research_active_answer"
   end
 
-  def when_i_set_question_4_to selection
+  def when_i_set_question_5_to selection
     select selection, from: "study_type_answer_restrict_sending_answer"
   end
 
@@ -241,7 +216,6 @@ RSpec.describe "User wants to edit a Study", js: true do
   def when_i_modify_the_study
     when_i_fill_out_the_short_title "Short Title"
     when_i_fill_out_the_title "Title"
-    when_i_select_the_has_cofc false
     when_i_select_the_funding_status "Funded"
     when_i_select_the_funding_source "College Department"
     when_i_fill_out_the_sponsor_name "Sponsor Name"
@@ -254,12 +228,36 @@ RSpec.describe "User wants to edit a Study", js: true do
     wait_for_javascript_to_finish
   end
 
+  def when_i_go_back_to_protocol_info_page
+    find('.go-back').click
+    wait_for_javascript_to_finish
+  end
+
   def then_i_should_see_the_protocol_information_page
     expect(page).to have_text("STEP 1: Protocol Information")
   end
 
   def then_i_should_see_the_authorized_users_page
     expect(page).to have_text("STEP 1: Add Users")
+  end
+
+  def when_i_create_a_new_study
+    visit '/'
+    click_link 'South Carolina Clinical and Translational Institute (SCTR)'
+    wait_for_javascript_to_finish
+    click_link 'Office of Biomedical Informatics'
+    wait_for_javascript_to_finish
+    click_button 'Add', match: :first
+    wait_for_javascript_to_finish
+    click_button 'Yes'
+    wait_for_javascript_to_finish
+    find('.submit-request-button').click
+    click_link 'New Research Study'
+    wait_for_javascript_to_finish
+  end
+
+  def then_i_fill_out_study_info
+
   end
 
   def then_i_should_see_the_updated_study
@@ -272,8 +270,15 @@ RSpec.describe "User wants to edit a Study", js: true do
     expect(study.funding_status).to eq("funded")
     expect(study.funding_source).to eq("college")
     expect(study.selected_for_epic).to eq(true)
-    expect(study.has_cofc).to eq(false)
     expect(ServiceRequest.first.status).to_not eq("first_draft")
+  end
+
+  def then_i_should_see_the_appropriate_fields_displayed
+    expect(page).to have_select('study_type_answer_certificate_of_conf_answer', selected: 'Yes')
+    expect(page).to_not have_selector('#study_type_answer_access_study_info')
+    expect(page).to_not have_selector('#study_type_answer_epic_inbasket')
+    expect(page).to_not have_selector('#study_type_answer_research_active')
+    expect(page).to_not have_selector('#study_type_answer_restrict_sending') 
   end
 
   def then_i_should_see_the_nav_button_with_text text

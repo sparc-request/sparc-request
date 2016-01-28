@@ -1,0 +1,15 @@
+= form_for @contact_form, remote: true do |f|
+  .field
+    = f.label :subject, 'Subject'
+    = f.text_field :subject, class: 'contact-form-fields'
+  .field
+    = f.label :email, 'Email'
+    - if current_user.present?
+      = f.email_field :email, class: 'contact-form-fields', value: current_user.email
+    - else
+      = f.email_field :email, class: 'contact-form-fields'
+  .field
+    = f.label :message
+    = f.text_area :message, class: 'contact-form-textarea'
+  %br/
+  = f.submit 'Send Message', class: 'dark-blue-button'

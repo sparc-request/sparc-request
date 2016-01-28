@@ -102,4 +102,27 @@ $(document).ready ->
         $('.role_dependent.commons_name').show()
         $('.role_dependent.subspecialty').show()
 
+  $(document).on 'click', '#save_protocol_rights_button', ->
+    form = $("form.protocol_role_form")
+    if form.is(":hidden")
+      form.submit()
+    else if $("select[name='project_role[role]']").val() == 'primary-pi'
+      primary_pi_full_name = $('#protocol_role_data').data("pi-name")
+      pr_full_name = $('#protocol_role_data').data("pr-name")
+      protocol_id = $('#project_role_protocol_id').val()
+
+      warning = I18n["protocol_information"]["change_primary_pi"]["warning"]
+      message1 = I18n["protocol_information"]["change_primary_pi"]["warning_prompt_1_1"]+
+        "(<strong>#{pr_full_name}</strong>)"+
+        I18n["protocol_information"]["change_primary_pi"]["warning_prompt_1_2"]+
+        "(<strong>#{primary_pi_full_name}</strong>)"+
+        I18n["protocol_information"]["change_primary_pi"]["warning_prompt_1_3"]+
+        "(<strong>#{protocol_id}</strong>)."
+      message2 = I18n["protocol_information"]["change_primary_pi"]["warning_prompt_2"]
+
+      form.hide()
+      $('.modal-body').append("<h1 class='change_ppi_prompt' style='color:red;'>#{warning}</h1><p class='change_ppi_prompt' style='font-size:14px;'>#{message1}</p><p class='change_ppi_prompt' style='font-size:14px;'>#{message2}</p>")
+    else
+      form.submit()
+
   #**************** Add Authorized User Form End ****************

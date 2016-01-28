@@ -891,8 +891,8 @@ en:
     change_primary_pi:
       warning: "<strong>**WARNING**</strong>"
       warning_prompt_1_1: "Adding the new Primary PI "
-      warning_prompt_1_2: " will remove the current Primary PI "
-      warning_prompt_1_3: " from the Protocol."
+      warning_prompt_1_2: " will change the current Primary PI "
+      warning_prompt_1_3: " to a general access user on Protocol "
       warning_prompt_2: "Do you wish to proceed?"
     consolidated_request: 'Export Consolidated Request'
     create:

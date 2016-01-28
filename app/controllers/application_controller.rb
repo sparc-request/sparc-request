@@ -153,10 +153,14 @@ class ApplicationController < ActionController::Base
         # the service request is not found, display an error.
         use_existing_service_request
         validate_existing_service_request
+      elsif params[:from_portal]
+        session[:from_portal] = params[:from_portal]
+        create_or_use_request_from_portal(params)
       else
         # If the cookie is nil (as with visiting the main catalog for
         # the first time), then create a new service request.
         create_new_service_request
+        session.delete(:from_portal)
       end
     elsif params[:controller] == 'devise/sessions'
       if session[:service_request_id]
@@ -171,6 +175,24 @@ class ApplicationController < ActionController::Base
       # For controllers other than the service requests controller, we
       # look up the service request, but do not display any errors.
       use_existing_service_request
+    end
+  end
+
+  # If a request is initiated by clicking the 'Add Services' button in user
+  # portal, we need to set it to 'draft' status. If we already have a draft
+  # request created this way, use that one
+  def create_or_use_request_from_portal(params)
+    protocol = Protocol.find(params[:protocol_id].to_i)
+    if (params[:has_draft] == 'true')
+      @service_request = protocol.service_requests.last
+      @line_items = @service_request.try(:line_items)
+      @sub_service_request = @service_request.sub_service_requests.last
+      session[:service_request_id] = @service_request.id
+      if @sub_service_request
+        session[:sub_service_request_id] = @sub_service_request.id
+      end
+    else
+      create_new_service_request(true)
     end
   end
 
@@ -204,14 +226,16 @@ class ApplicationController < ActionController::Base
   end
 
   # Create a new service request and assign it to @service_request.
-  def create_new_service_request
-    @service_request = ServiceRequest.new :status => 'first_draft'
+  def create_new_service_request(from_portal=false)
+    status = from_portal ? 'draft' : 'first_draft'
+    @service_request = ServiceRequest.new :status => status
     if params[:protocol_id] # we want to create a new service request that belongs to an existing protocol
       if current_user and current_user.protocols.where(:id => params[:protocol_id]).empty? # this user doesn't have permission to create service request under this protocol
         authorization_error "You are attempting to create a service request under a study/project that you do not have permissions to access.",
                             "PROTOCOL#{params[:protocol_id]}"
       else # otherwise associate the service request with this protocol
         @service_request.protocol_id = params[:protocol_id]
+        @service_request.service_requester_id = current_user.id
       end
     end
 

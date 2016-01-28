@@ -30,7 +30,6 @@ RSpec.describe "admin fulfillment tab", js: true do
 
   before :each do
     @protocol = service_request.protocol
-    @protocol.update_attributes(has_cofc: "true")
     add_visits
     subsidy_map.destroy
     subsidy.destroy

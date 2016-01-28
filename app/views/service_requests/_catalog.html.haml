@@ -30,7 +30,7 @@
     /[if lte IE 8]
       %img(src="/assets/search_bar.png"){:class => 'test_search'}
     = render :partial => 'catalogs/service_search'
-  #welcome_message= render :partial => 'catalogs/description', :locals => {:organization => @organization, :service_request => @service_request}
+  #welcome_message= render :partial => 'catalogs/description', :locals => {:organization => @organization, :service_request => @service_request, :from_portal => @from_portal}
   #calendar-blog
     = render :partial => 'catalogs/news_and_events'
 

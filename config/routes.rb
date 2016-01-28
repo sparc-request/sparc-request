@@ -49,6 +49,8 @@ SparcRails::Application.routes.draw do
     end
   end
 
+  resources :contact_forms, only: [:new, :create]
+
   resources :service_requests, only: [:show] do
     resources :projects, except: [:index, :show, :destroy]
     resources :studies, except: [:index, :show, :destroy]
@@ -133,6 +135,7 @@ SparcRails::Application.routes.draw do
   match 'service_requests/:id/delete_document/:document_id' => 'service_requests#delete_documents', via: [:all]
   match 'service_requests/:id/edit_document/:document_id' => 'service_requests#edit_documents', via: [:get, :post]
   match 'service_requests/:id/new_document' => 'service_requests#new_document', via: [:get, :post]
+  match 'service_requests/increment_click_counter' => 'service_requests#increment_click_counter', via: [:post]
 
   ##### sparc-services routes brought in and namespaced
   namespace :catalog_manager do

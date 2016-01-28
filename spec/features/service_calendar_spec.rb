@@ -381,5 +381,31 @@ RSpec.describe "service calendar", js: true do
         expect(page).to have_content("Click to rename your visits.")
       end
     end
+
+    describe 'saving as draft' do
+
+      it 'should save the request as draft if it is in first draft' do
+        service_request.update_attributes(status: 'first_draft')
+        sub_service_request.update_attributes(status: 'first_draft')
+        click_on 'Save as Draft'
+        wait_for_javascript_to_finish
+        expect(page).to have_content('Dashboard')
+      end
+
+      it 'should save the request as draft if it is in draft and has not been previously submitted' do
+        service_request.update_attributes(status: 'draft')
+        sub_service_request.update_attributes(status: 'draft')
+        click_on 'Save as Draft'
+        wait_for_javascript_to_finish
+        expect(page).to have_content('Dashboard')
+      end
+
+      it 'should not display the Save as Draft button if the request has been previously submitted' do
+        service_request.update_attribute(:submitted_at, Date.today)
+        visit service_calendar_service_request_path service_request.id
+        wait_for_javascript_to_finish
+        expect(page).to_not have_content('Save as Draft')
+      end
+    end
   end
 end

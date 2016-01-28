@@ -25,114 +25,138 @@ RSpec.feature "User wants to create a Study", js: true do
   let_there_be_j
   fake_login_for_each_test
   build_service_request_with_study
-  build_study_type_questions
 
   before :each do
     service_request.update_attribute(:status, 'first_draft')
+    study.update_attributes(study_type_question_group_id: StudyTypeQuestionGroup.where(active:true).pluck(:id).first)
+    visit '/'
+    click_link 'South Carolina Clinical and Translational Institute (SCTR)'
+    wait_for_javascript_to_finish
+    click_link 'Office of Biomedical Informatics'
+    wait_for_javascript_to_finish
+    click_button 'Add', match: :first
+    wait_for_javascript_to_finish
+    click_button 'Yes'
+    wait_for_javascript_to_finish
+    find('.submit-request-button').click
+    click_link 'New Research Study'
+    wait_for_javascript_to_finish
+    find('#study_selected_for_epic_false').click()
   end
 
   #TODO: Add Authorized Users Specs
   context 'and clicks the New Study button' do
     scenario 'and sees the Protocol Information form' do
-      given_i_am_viewing_the_service_request_protocol_page
-      when_i_click_the_new_study_button
-      then_i_should_see_the_protocol_information_page
+      page.find '#new_study'
     end
 
     scenario 'and sees the cancel button' do
-      given_i_am_viewing_the_service_request_protocol_page
-      when_i_click_the_new_study_button
-      then_i_should_see_the_nav_button_with_text 'Cancel'
+      expect(page).to have_link 'Cancel'
     end
-    
+
     scenario 'and sees the continue button' do
-      given_i_am_viewing_the_service_request_protocol_page
-      when_i_click_the_new_study_button
-      then_i_should_see_the_nav_button_with_text 'Continue'
+      expect(page).to have_link 'Continue'
     end
 
     context 'and submits the form without filling out required fields' do
       scenario 'and sees some errors' do
-        given_i_am_viewing_the_protocol_information_page
-        when_i_submit_the_form
-        then_i_should_see_errors_of_type 'protocol information required fields'
+        click_link 'Continue'
+        page.find '#errorExplanation'
       end
     end
 
-    context 'and submits the form without selecting a funding source' do
-      scenario 'and sees some errors' do
-        given_i_am_viewing_the_protocol_information_page
-        when_i_select_the_funding_status
-        when_i_submit_the_form
-        then_i_should_see_errors_of_type 'protocol information funding source'
+    context 'funding sources' do
+      before :each do
+        fill_in 'study_short_title', with: 'title'
+        fill_in 'study_title', with: 'title'
+        fill_in 'study_sponsor_name', with: 'test'
+      end
+
+      scenario 'submits the form without selecting a funding source' do
+        click_link 'Continue'
+        wait_for_javascript_to_finish
+        expect(page).to have_content "Funding status can't be blank"
       end
     end
 
-    context 'and submits the form without selecting a potential source' do
-      scenario 'and sees some errors' do
-        given_i_am_viewing_the_protocol_information_page
-        when_i_select_the_funding_status "Pending Funding"
-        when_i_submit_the_form
-        then_i_should_see_errors_of_type 'protocol information potential funding source'
-      end
-    end
 
     context 'and submits the form after selecting Publish to Epic and not filling out questions' do
+      
+      before :each do
+        service_request.update_attribute(:status, 'first_draft')
+        study.update_attributes(study_type_question_group_id: StudyTypeQuestionGroup.where(active:true).pluck(:id).first)
+        visit '/'
+        click_link 'South Carolina Clinical and Translational Institute (SCTR)'
+        wait_for_javascript_to_finish
+        click_link 'Office of Biomedical Informatics'
+        wait_for_javascript_to_finish
+        click_button 'Add', match: :first
+        wait_for_javascript_to_finish
+        click_button 'Yes'
+        wait_for_javascript_to_finish
+        find('.submit-request-button').click
+        click_link 'New Research Study'
+        wait_for_javascript_to_finish
+        when_i_fill_out_the_protocol_information
+      end
+
       scenario 'and sees some errors' do
-        given_i_am_viewing_the_protocol_information_page
         when_i_select_publish_study_to_epic
+        when_i_set_question_1_to "No"
         when_i_submit_the_form
         then_i_should_see_errors_of_type 'protocol information publish to epic'
-        when_i_set_question_1a_to "Yes"
+      end
+
+      scenario 'and sees some errors' do
+        when_i_select_publish_study_to_epic
+        when_i_set_question_1_to "No"
+        when_i_set_question_2_to "Yes"
         when_i_submit_the_form
         then_i_should_see_errors_of_type 'protocol information publish to epic'
-        when_i_set_question_1b_to "No"
-        when_i_submit_the_form
-        then_i_should_see_errors_of_type 'protocol information publish to epic'
-        when_i_set_question_1c_to "No"
-        when_i_submit_the_form
-        then_i_should_see_errors_of_type 'protocol information publish to epic'
-        when_i_set_question_2_to "No"
-        when_i_submit_the_form
-        then_i_should_see_errors_of_type 'protocol information publish to epic'
+      end
+
+      scenario 'and sees no errors' do
+        when_i_select_publish_study_to_epic
+        when_i_set_question_1_to "No"
+        when_i_set_question_2_to "Yes"
+        when_i_set_question_2b_to "No"
         when_i_set_question_3_to "No"
-        when_i_submit_the_form
-        then_i_should_see_errors_of_type 'protocol information publish to epic'
         when_i_set_question_4_to "No"
+        when_i_set_question_5_to "No"
         when_i_submit_the_form
         then_i_should_not_see_errors_of_type 'protocol information publish to epic'
       end
+
+      scenario 'submits the form without selecting a potential source' do
+        select 'Funded', from: 'study_funding_status'
+        click_link 'Continue'
+        wait_for_javascript_to_finish
+        expect(page).to have_content 'Funding source You must select a funding source'
+      end
+
     end
 
     context 'and submits the form after filling out required fields' do
+      before :each do
+        fill_in 'study_short_title', with: 'title'
+        fill_in 'study_title', with: 'title'
+        fill_in 'study_sponsor_name', with: 'test'
+        select 'Funded', from: 'study_funding_status'
+        select 'College Department', from: 'study_funding_source'
+        click_link 'Continue'
+        wait_for_javascript_to_finish
+      end
+
       scenario 'and sees the Authorized Users page' do
-        given_i_am_viewing_the_protocol_information_page
-        when_i_fill_out_the_protocol_information
-        when_i_submit_the_form
-        then_i_should_see_the_authorized_users_page
+        expect(page).to have_content 'Add Users'
       end
 
       scenario 'and sees the go back button' do
-        given_i_am_viewing_the_protocol_information_page
-        when_i_fill_out_the_protocol_information
-        when_i_submit_the_form
-        then_i_should_see_the_nav_button_with_text 'Go Back' 
+        expect(page).to have_link 'Go Back'
       end
 
       scenario 'and sees the save and continue button' do
-        given_i_am_viewing_the_protocol_information_page
-        when_i_fill_out_the_protocol_information
-        when_i_submit_the_form
-        then_i_should_see_the_nav_button_with_text 'Save & Continue' 
-      end
-
-      context 'TEMP: and adds themself as a Primary PI and submits the Study' do
-        scenario 'and sees the Study with correct information' do
-          given_i_am_viewing_the_authorized_users_page
-          when_i_add_myself_as_a_primary_pi
-          when_i_submit_the_form
-          then_i_should_see_the_study_was_added_correctly
-        end
+        expect(page).to have_link 'Save & Continue'
       end
     end
   end
@@ -143,7 +167,9 @@ RSpec.feature "User wants to create a Study", js: true do
 
   def given_i_am_viewing_the_protocol_information_page
     given_i_am_viewing_the_service_request_protocol_page
+    wait_for_javascript_to_finish
     when_i_click_the_new_study_button
+
   end
 
   def given_i_am_viewing_the_authorized_users_page
@@ -162,17 +188,6 @@ RSpec.feature "User wants to create a Study", js: true do
 
   def when_i_fill_out_the_title title="Fake Title"
     fill_in "study_title", with: title
-  end
-
-  def when_i_select_the_has_cofc has_cofc=true
-    case has_cofc
-      when true
-        find('#study_has_cofc_true').click
-      when false
-        find('#study_has_cofc_false').click
-      else
-        puts "An unexpected value was received in when_i_select_the_has_cofc. Perhaps there was a typo?"
-    end
   end
   
   def when_i_fill_out_the_sponsor_name sponsor_name="Fake Sponsor Name"
@@ -193,39 +208,40 @@ RSpec.feature "User wants to create a Study", js: true do
         find('#study_selected_for_epic_true').click
       when false
         find('#study_selected_for_epic_false').click
-    else
-      puts "An unexpected value was received in when_i_select_publish_study_to_epic. Perhaps there was a typo?"
+      else
+        puts "An unexpected value was received in when_i_select_publish_study_to_epic. Perhaps there was a typo?"
     end
   end
 
-  def when_i_set_question_1a_to selection
-    select selection, from: "study_type_answer_higher_level_of_privacy_answer"
-  end
-  
-  def when_i_set_question_1b_to selection
+  def when_i_set_question_1_to selection
     select selection, from: "study_type_answer_certificate_of_conf_answer"
   end
+  
+  def when_i_set_question_2_to selection
+    select selection, from: "study_type_answer_higher_level_of_privacy_answer"
+  end
 
-  def when_i_set_question_1c_to selection
+  def when_i_set_question_2b_to selection
     select selection, from: "study_type_answer_access_study_info_answer"
   end
 
-  def when_i_set_question_2_to selection
+  def when_i_set_question_3_to selection
     select selection, from: "study_type_answer_epic_inbasket_answer"
   end
 
-  def when_i_set_question_3_to selection
+  def when_i_set_question_4_to selection
     select selection, from: "study_type_answer_research_active_answer"
   end
 
-  def when_i_set_question_4_to selection
+  def when_i_set_question_5_to selection
     select selection, from: "study_type_answer_restrict_sending_answer"
   end
 
   def when_i_fill_out_the_protocol_information
     when_i_fill_out_the_short_title
     when_i_fill_out_the_title
-    when_i_select_the_has_cofc
+
+
     when_i_select_the_funding_status
     when_i_select_the_funding_source
     when_i_fill_out_the_sponsor_name
@@ -260,7 +276,6 @@ RSpec.feature "User wants to create a Study", js: true do
     expect(study.funding_status).to eq("funded")
     expect(study.funding_source).to eq("federal")
     expect(study.selected_for_epic).to eq(false)
-    expect(study.has_cofc).to eq(true)
     expect(ServiceRequest.first.status).to_not eq("first_draft")
   end
 
@@ -286,7 +301,6 @@ RSpec.feature "User wants to create a Study", js: true do
         expect(page).to have_content("Title can't be blank")
         expect(page).to have_content("Funding status can't be blank")
         expect(page).to have_content("Sponsor name can't be blank")
-        expect(page).to have_content("Does your study have a Certificate of Confidentiality must be answered")
       when 'protocol information funding source'
         expect(page).to have_content("Funding source You must select a funding source")
       when 'protocol information potential funding source'  

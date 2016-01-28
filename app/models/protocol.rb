@@ -40,6 +40,9 @@ class Protocol < ActiveRecord::Base
   has_many :arms, :dependent => :destroy
   has_many :study_type_answers, :dependent => :destroy
   has_many :notes, as: :notable, dependent: :destroy
+  has_many :study_type_questions, through: :study_type_question_group
+
+  belongs_to :study_type_question_group
 
   attr_accessible :identity_id
   attr_accessible :next_ssr_id
@@ -83,8 +86,8 @@ class Protocol < ActiveRecord::Base
   attr_accessible :recruitment_end_date
   attr_accessible :selected_for_epic
   attr_accessible :study_type_answers_attributes
-  attr_accessible :has_cofc
   attr_accessible :archived
+  attr_accessible :study_type_question_group_id
 
   attr_accessor :requester_id
   attr_accessor :validate_nct
@@ -107,8 +110,10 @@ class Protocol < ActiveRecord::Base
     validates :title, :presence => true
     validates :funding_status, :presence => true
     validate  :validate_funding_source
+    validates :sponsor_name, :presence => true, :if => :is_study?
     validates_associated :human_subjects_info, :message => "must contain 8 numerical digits", :if => :validate_nct
-    validate  :validate_study_type_answers, :if => :selected_for_epic
+    validates :selected_for_epic, inclusion: [true, false], :if => :is_study?
+    validate  :validate_study_type_answers, if: [:is_study?, :selected_for_epic]
   end
 
   validation_group :user_details do
@@ -178,6 +183,8 @@ class Protocol < ActiveRecord::Base
     where(sub_service_requests: { organization_id: org_id }).distinct
   }
 
+  FRIENDLY_IDS = ["certificate_of_conf", "higher_level_of_privacy", "access_study_info", "epic_inbasket", "research_active", "restrict_sending"]
+
   def is_study?
     self.type == 'Study'
   end
@@ -189,6 +196,9 @@ class Protocol < ActiveRecord::Base
   # Determines whether a protocol contains a service_request with only a "first draft" status
   def has_first_draft_service_request?
     service_requests.any? && service_requests.map(&:status).all? { |status| status == 'first_draft'}
+
+  def active?
+    study_type_question_group.active
   end
 
   def validate_funding_source
@@ -200,32 +210,35 @@ class Protocol < ActiveRecord::Base
   end
 
   def validate_study_type_answers
-    friendly_ids = ["higher_level_of_privacy", "certificate_of_conf", "access_study_info", "epic_inbasket", "research_active", "restrict_sending"]
+
     answers = {}
-    friendly_ids.each do |fid|
-      q = StudyTypeQuestion.find_by_friendly_id(fid)
+    FRIENDLY_IDS.each do |fid|
+      q = StudyTypeQuestion.active.find_by_friendly_id(fid)
       answers[fid] = study_type_answers.find{|x| x.study_type_question_id == q.id}
     end
 
     has_errors = false
-
     begin
-      if answers["higher_level_of_privacy"].answer.nil?
+      if answers["certificate_of_conf"].answer.nil?
         has_errors = true
-      elsif answers["higher_level_of_privacy"].answer == true
-        if answers["certificate_of_conf"].answer.nil? || (answers["certificate_of_conf"].answer == false && answers["access_study_info"].answer.nil?)
+      elsif answers["certificate_of_conf"].answer == false
+        if (answers["higher_level_of_privacy"].answer.nil?) 
           has_errors = true
-        elsif answers["access_study_info"].answer == false
+        elsif (answers["higher_level_of_privacy"].answer == false)
           if answers["epic_inbasket"].answer.nil? || answers["research_active"].answer.nil? || answers["restrict_sending"].answer.nil?
             has_errors = true
           end
-        end
-      elsif answers["higher_level_of_privacy"].answer == false
-        if answers["epic_inbasket"].answer.nil? || answers["research_active"].answer.nil? || answers["restrict_sending"].answer.nil?
-          has_errors = true
+        elsif (answers["higher_level_of_privacy"].answer == true)
+          if (answers["access_study_info"].answer.nil?)
+            has_errors = true
+          elsif (answers["access_study_info"].answer == false)
+            if answers["epic_inbasket"].answer.nil? || answers["research_active"].answer.nil? || answers["restrict_sending"].answer.nil?
+              has_errors = true
+            end
+          end
         end
       end
-    rescue
+    rescue => e
       has_errors = true
     end
 

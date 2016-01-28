@@ -72,7 +72,10 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
   def create
     @protocol_role = @protocol.project_roles.build(params[:project_role])
 
-    if @protocol_role.fully_valid?
+    if @protocol_role.unique_to_protocol? && @protocol_role.fully_valid?
+      if params[:change_primary_pi] == "true"
+        ProjectRole.find(params[:primary_pi_pr_id]).update_attributes(project_rights: "request", role: "general-access-user")
+      end
       @protocol_role.save
       flash.now[:success] = "Authorized User Added!"
       if SEND_AUTHORIZED_USER_EMAILS
@@ -102,6 +105,9 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
     @protocol_role.assign_attributes params[:project_role]
 
     if @protocol_role.fully_valid?
+      if params[:change_primary_pi] == "true"
+        ProjectRole.find(params[:primary_pi_pr_id]).update_attributes(project_rights: "request", role: "general-access-user")
+      end
       @protocol_role.save
       flash.now[:success] = "Authorized User Updated!"
       if SEND_AUTHORIZED_USER_EMAILS
@@ -148,7 +154,6 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
       format.js
       format.html
     end
-    # end
   end
 
 private

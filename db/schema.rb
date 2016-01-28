@@ -134,13 +134,11 @@ ActiveRecord::Schema.define(version: 20160127133951) do
     t.string   "comment",         limit: 255
     t.string   "remote_address",  limit: 255
     t.datetime "created_at"
-    t.string   "request_uuid",    limit: 255
   end
 
   add_index "audits", ["associated_id", "associated_type"], name: "associated_index", using: :btree
   add_index "audits", ["auditable_id", "auditable_type"], name: "auditable_index", using: :btree
   add_index "audits", ["created_at"], name: "index_audits_on_created_at", using: :btree
-  add_index "audits", ["request_uuid"], name: "index_audits_on_request_uuid", using: :btree
   add_index "audits", ["user_id", "user_type"], name: "user_index", using: :btree
 
   create_table "available_statuses", force: :cascade do |t|
@@ -184,6 +182,12 @@ ActiveRecord::Schema.define(version: 20160127133951) do
   add_index "charges", ["service_id"], name: "index_charges_on_service_id", using: :btree
   add_index "charges", ["service_request_id"], name: "index_charges_on_service_request_id", using: :btree
 
+  create_table "click_counters", force: :cascade do |t|
+    t.integer  "click_count", limit: 4
+    t.datetime "created_at",            null: false
+    t.datetime "updated_at",            null: false
+  end
+
   create_table "clinical_providers", force: :cascade do |t|
     t.integer  "identity_id",     limit: 4
     t.integer  "organization_id", limit: 4
@@ -193,6 +197,14 @@ ActiveRecord::Schema.define(version: 20160127133951) do
 
   add_index "clinical_providers", ["identity_id"], name: "index_clinical_providers_on_identity_id", using: :btree
   add_index "clinical_providers", ["organization_id"], name: "index_clinical_providers_on_organization_id", using: :btree
+
+  create_table "contact_forms", force: :cascade do |t|
+    t.string   "subject",    limit: 255
+    t.string   "email",      limit: 255
+    t.text     "message",    limit: 65535
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+  end
 
   create_table "cover_letters", force: :cascade do |t|
     t.text     "content",                limit: 65535
@@ -670,9 +682,9 @@ ActiveRecord::Schema.define(version: 20160127133951) do
     t.string   "billing_business_manager_static_email", limit: 255
     t.datetime "recruitment_start_date"
     t.datetime "recruitment_end_date"
-    t.boolean  "selected_for_epic",                                                           default: false
-    t.boolean  "has_cofc"
+    t.boolean  "selected_for_epic"
     t.boolean  "archived",                                                                    default: false
+    t.integer  "study_type_question_group_id",          limit: 4
   end
 
   add_index "protocols", ["next_ssr_id"], name: "index_protocols_on_next_ssr_id", using: :btree
@@ -897,12 +909,19 @@ ActiveRecord::Schema.define(version: 20160127133951) do
     t.datetime "updated_at",                       null: false
   end
 
+  create_table "study_type_question_groups", force: :cascade do |t|
+    t.boolean  "active",     default: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "study_type_questions", force: :cascade do |t|
-    t.integer  "order",       limit: 4
-    t.string   "question",    limit: 255
-    t.string   "friendly_id", limit: 255
-    t.datetime "created_at",              null: false
-    t.datetime "updated_at",              null: false
+    t.integer  "order",                        limit: 4
+    t.string   "question",                     limit: 255
+    t.string   "friendly_id",                  limit: 255
+    t.datetime "created_at",                               null: false
+    t.datetime "updated_at",                               null: false
+    t.integer  "study_type_question_group_id", limit: 4
   end
 
   create_table "study_types", force: :cascade do |t|

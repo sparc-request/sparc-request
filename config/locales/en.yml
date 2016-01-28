@@ -139,6 +139,9 @@ en:
       unit_costs: "Unit Costs"
       unit_type: "Unit Type"
       your_cost: "Your Cost"
+      decrement: "-"
+      increment: "+"
+      day: "Day"
     labels:
       direct_cost: "Total Direct Cost"
       grand_total_direct: "Grand Total: Direct Costs"
@@ -378,6 +381,7 @@ en:
     attributes: "Study Attributes"
     code_blank: "Select a Federal Grant Code"
     description: "Before you can complete a service request, please tell us more about your research study. This information will be used by our staff to decide the best way to process your request."
+    epic: "Epic Information"
     federal_grant_code_id: "Federal Grant Code:"
     federal_grant_serial_number: "Federal Grant Serial Number:"
     federal_grant_title: "Federal Grant Title:"
@@ -779,6 +783,9 @@ en:
     calendar_changed: "Changes to patient calendars need to be saved, click 'Stay on page' and save the form to save the calendar, or click 'Leave page' to leave the page and dismiss your changes."
     subject_changed: "Changes to subjects need to be saved. Click 'Cancel' to return to the page and save the form, or 'OK' to leave the page and dismiss your changes."
     subject_delete: "This subject has one or more completed appointments and can't be deleted."
+  epic_box:
+    epic_box_error: "Epic Information Error"
+    epic_box_alert: "Please fill out the Epic Information correctly."
   feedback:
     message_error: "Message can't be blank"
   fulfillment_js:
@@ -977,7 +984,16 @@ en:
     add_authorized_user: "Add An Authorized User"
     add_services: "Add Services"
     authorized_users: "Authorized Users:"
+    change_primary_pi:
+      warning: "<strong>**WARNING**</strong>"
+      warning_prompt_1_1: "Adding the new Primary PI "
+      warning_prompt_1_2: " will change the current Primary PI "
+      warning_prompt_1_3: " to a general access user on Protocol "
+      warning_prompt_2: "Do you wish to proceed?"
     consolidated_request: 'Export Consolidated Request'
+    create:
+      study: "Create New Study"
+      project: "Create New Project"
     ctrc_services_exist: "SCTR Research Nexus services have been found on another Service Request %{protocol_id}-%{ssr_id} pertaining to this Project/Study %{short_title}. To edit this request, please contact the Nexus at 792-8688."
     date: "Submitted Date:"
     delete: "Delete"
@@ -1008,6 +1024,7 @@ en:
     srid: "SRID:"
     status: "Status:"
     title: "Title:"
+    wait_message: Please be patient while the Project/Study loads.
 
   # Portal sub service request dialog
   ssr_dialog:
@@ -1049,14 +1066,17 @@ en:
     or: "If not in list above, create NEW Study/Project Below"
     previously_submitted_study: "The request that you are editing has been previously submitted and can not be moved to another study."
     previously_submitted_project: "The request that you are editing has been previously submitted and can not be moved to another project."
-    research_project: "Project"
-    research_study: "Research Study"
+    research_project: "New Project"
+    research_study: "New Research Study"
     select_project: "Select Project"
     select_protocol: "Select a Research Study/Project"
     select_study: "Select Study"
     sidebar_box:
       help: "Help"
       my_services: "My Services"
+    tooltips:
+      research_study_tooltip: 'Research Study: An individual research study with defined aims and outcomes'
+      research_project_tooltip: "Use 'Project' for non-study specific service requests, or anything that is not a study"
 
   # Rails Root Page Messages
   rails_root:

@@ -83,8 +83,9 @@ module ApplicationHelper
       elsif @merged
         returning_html += content_tag(:th,
                             ((USE_EPIC) ?
-                            # label_tag("Day") + "&nbsp;&nbsp;&nbsp;".html_safe + label_tag("+/-") +
-                            label_tag("-") + "&nbsp;&nbsp;".html_safe + label_tag("Day") + "&nbsp;&nbsp;".html_safe + label_tag("+") +
+                            label_tag('decrement',t(:calendar_page)[:headers][:decrement], class: 'decrement_days') +
+                            label_tag('day',t(:calendar_page)[:headers][:day]) +
+                            label_tag('increment', t(:calendar_page)[:headers][:increment], class: 'increment_days') +
                             tag(:br) +
                             content_tag(:span, visit_group.window_before, :style => "display:inline-block;width:25px;") +
                             content_tag(:span, visit_group.day, :style => "display:inline-block;width:25px;") +
@@ -95,8 +96,9 @@ module ApplicationHelper
       elsif @tab != 'template'
         returning_html += content_tag(:span,
                                       ((USE_EPIC) ?
-                                      # label_tag("Day") + "&nbsp;&nbsp;&nbsp;".html_safe + label_tag("+/-") +
-                                      label_tag("-") + "&nbsp;&nbsp;".html_safe + label_tag("Day") + "&nbsp;&nbsp;".html_safe + label_tag("+") +
+                                      label_tag('decrement',t(:calendar_page)[:headers][:decrement], class: 'decrement_days') +
+                                      label_tag('day',t(:calendar_page)[:headers][:day]) +
+                                      label_tag('increment', t(:calendar_page)[:headers][:increment], class: 'increment_days') +
                                       tag(:br) +
                                       text_field_tag("window_before", visit_group.window_before, :class => "visit_window visit_window_before position_#{n} input_small", :size => 1, :'data-position' => n - 1, :'data-window-before' => visit_group.window_before, :update => "#{window_before_url}?arm_id=#{arm.id}&portal=#{portal}") +
                                       text_field_tag("day", visit_group.day, :class => "visit_day position_#{n}", :maxlength => 4, :size => 4, :'data-position' => n - 1, :'data-day' => visit_group.day, :update => "#{day_url}?arm_id=#{arm.id}&portal=#{portal}") +
@@ -116,8 +118,9 @@ module ApplicationHelper
         icon = checked == true ? 'ui-icon-close' : 'ui-icon-check'
         returning_html += content_tag(:span,
                                       ((USE_EPIC) ?
-                                      # label_tag("Day") + "&nbsp;&nbsp;&nbsp;".html_safe + label_tag("+/-") +
-                                      label_tag("-") + "&nbsp;&nbsp;".html_safe + label_tag("Day") + "&nbsp;&nbsp;".html_safe + label_tag("+") +
+                                      label_tag('decrement',t(:calendar_page)[:headers][:decrement], class: 'decrement_days') +
+                                      label_tag('day',t(:calendar_page)[:headers][:day]) +
+                                      label_tag('increment', t(:calendar_page)[:headers][:increment], class: 'increment_days') +
                                       tag(:br) +
                                       text_field_tag("window_before", visit_group.window_before, :class => "visit_window visit_window_before position_#{n} input_small", :size => 1, :'data-position' => n - 1, :'data-window-before' => visit_group.window_before, :update => "#{window_before_url}?arm_id=#{arm.id}&portal=#{portal}") +
                                       text_field_tag("day", visit_group.day, :class => "visit_day position_#{n}", :maxlength => 4, :size => 4, :'data-position' => n - 1, :'data-day' => visit_group.day, :update => "#{day_url}?arm_id=#{arm.id}&portal=#{portal}") +
@@ -257,10 +260,10 @@ module ApplicationHelper
     sps.map{|x| x.is_primary_contact? ? x.identity.display_name : nil}.compact.join("<br />")
   end
 
-  def display_service_in_catalog service, service_request
+  def display_service_in_catalog service, service_request, from_portal
     has_current_pricing_map = service.current_pricing_map rescue false # work around for current_pricing_map method raising false
     if (service.is_available? or service.is_available.nil?) and has_current_pricing_map
-      render :partial => 'service', :locals => {:service => service, :service_request => service_request}
+      render :partial => 'service', :locals => {:service => service, :service_request => service_request, :from_portal => from_portal}
     end
   end
 

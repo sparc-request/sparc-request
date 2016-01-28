@@ -1,5 +1,5 @@
 GIT
-  remote: git://github.com/caboteria/surveyor.git
+  remote: https://github.com/caboteria/surveyor.git
   revision: 5281b317a559fba43c0a3f377dbeeaf9344ad32d
   branch: rails4
   specs:
@@ -14,7 +14,7 @@ GIT
       uuidtools (~> 2.1)
 
 GIT
-  remote: git://github.com/jleonardw9/grouped_validations.git
+  remote: https://github.com/jleonardw9/grouped_validations.git
   revision: dc4207a7966fe691a240a47718b3d9689861a76f
   branch: master
   specs:
@@ -290,7 +290,7 @@ GEM
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
       slop (~> 3.4)
-    rabl (0.11.6)
+    rabl (0.11.7)
       activesupport (>= 2.3.14)
     rack (1.6.4)
     rack-accept (0.4.5)
@@ -522,6 +522,7 @@ DEPENDENCIES
   pry
   rails (= 4.2.4)
   rails-erd
+  rails-html-sanitizer
   redcarpet
   remotipart
   rest-client

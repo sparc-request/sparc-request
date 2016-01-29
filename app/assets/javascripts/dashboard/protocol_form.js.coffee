@@ -72,6 +72,18 @@ $(document).ready ->
         if !$(sibling).is(':visible')
           $(sibling).hide_visual_error()
 
+  $(document).on 'change', "input[name='protocol[selected_for_epic]']", ->
+    # Publish Study in Epic - Radio
+    switch $(this).val()
+      when 'true'
+        $('.selected_for_epic_dependent').show()
+        study_type_form.show()
+        certificate_of_confidence_dropdown.show_elt()
+      when 'false'
+        $('.selected_for_epic_dependent').hide()
+        study_type_form.hide()
+        certificate_of_confidence_dropdown.hide_elt().trigger 'change'
+
 
   $(document).on 'change', '.study#protocol_funding_status', ->
     # Proposal Funding Status - Dropdown
@@ -89,17 +101,6 @@ $(document).ready ->
       when 'federal' then $('.federal').show()
       when 'internal' then $('.internal').show()
 
-  $(document).on 'change', "input[name='protocol[selected_for_epic]']", ->
-    # Publish Study in Epic - Radio
-    switch $(this).val()
-      when 'true'
-        $('.selected_for_epic_dependent').show()
-        study_type_form.show()
-        certificate_of_confidence_dropdown.show_elt()
-      when 'false'
-        $('.selected_for_epic_dependent').hide()
-        study_type_form.hide()
-        certificate_of_confidence_dropdown.hide_elt().trigger 'change'
 
   $(document).on 'change', '#protocol_research_types_info_attributes_human_subjects', ->
     # Human Subjects - Checkbox

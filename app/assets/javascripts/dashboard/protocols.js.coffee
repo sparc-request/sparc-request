@@ -224,16 +224,16 @@ $(document).ready ->
 
   $(document).on 'click', '.requests_display_link', ->
     # Opens the requests modal
-    protocol_id = $(this).data('protocol-id')
+    protocol_id = $(this).parents("tr").data('protocol-id')
     $.ajax
       type: 'get'
       url: "/dashboard/protocols/#{protocol_id}/display_requests"
 
-  $(document).on 'click', '.protocol-archive-button', (event) ->
-    protocol_id = $(this).data('protocol-id')
+  $(document).on 'click', '.protocol-archive-button', ->
+    protocol_id = $(this).parents("tr").data('protocol-id')
     $.ajax
-      type: 'POST'
-      url:  '/protocol_archive/create.js'
+      type: 'PATCH'
+      url:  "/dashboard/protocols/#{protocol_id}/archive.js"
       data: { protocol_id: protocol_id }
 
   $(document).on 'click', '#save_filters_link', ->
@@ -246,13 +246,8 @@ $(document).ready ->
       data: data
     return false
 
-  $(document).on 'click', '.saved_search_link', ->
-    # This makes the saved search filter link go through AJAX
-    $.getScript @href
-    return false
-
-  $(document).on 'click', '#reset_filters a', ->
-    # This makes the reset filter link go through AJAX
+  $(document).on 'click', '#reset_filters_link, .saved_search_link', ->
+    # This makes the reset filter and saved search links go through AJAX
     $.getScript @href
     false
 

@@ -22,19 +22,22 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
   respond_to :html, :json, :xlsx
 
-  before_filter :find_protocol, only: [:show, :view_full_calendar, :update_from_fulfillment, :edit, :update, :update_protocol_type, :display_requests]
+  before_filter :find_protocol, only: [:show, :edit, :update, :update_protocol_type, :display_requests, :archive, :view_full_calendar, :update_from_fulfillment]
   before_filter :protocol_authorizer_view, only: [:show, :view_full_calendar]
-  before_filter :protocol_authorizer_edit, only: [:update_from_fulfillment, :edit, :update, :update_protocol_type]
+  before_filter :protocol_authorizer_edit, only: [:edit, :update, :update_protocol_type, :update_from_fulfillment]
 
   def index
+    admin_orgs = @user.authorized_admin_organizations
+    @admin =  !admin_orgs.empty?
     @filterrific =
       initialize_filterrific(Protocol, params[:filterrific],
+        default_filter_params: { show_archived: 0, for_identity_id: @user.id },
         select_options: {
           with_status: AVAILABLE_STATUSES.invert,
-          with_core: @user.authorized_admin_organizations.map{ |org| [org.name, org.id] }
+          with_core: admin_orgs.map{ |org| [org.name, org.id] }
         },
         persistence_id: false #resets filters on page reload
-    ) or return
+      ) or return
 
     @protocols = @filterrific.find.page(params[:page])
     session[:breadcrumbs].clear
@@ -124,6 +127,13 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     @protocol = Protocol.find @protocol.id #Protocol type has been converted, this is a reload
     @protocol.populate_for_edit
     flash[:success] = "Protocol Type Updated!"
+  end
+
+  def archive
+    @protocol.toggle!(:archived)
+    respond_to do |format|
+      format.js
+    end
   end
 
   def update_from_fulfillment

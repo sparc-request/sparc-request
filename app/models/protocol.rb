@@ -129,12 +129,12 @@ class Protocol < ActiveRecord::Base
   }
 
   filterrific(
-    default_filter_params: { archived: false },
+    default_filter_params: { show_archived: 0 },
     available_filters: [
       :search_query,
       :for_identity_id,
       :for_admin,
-      :archived,
+      :show_archived,
       :with_status,
       :with_core
     ]
@@ -167,7 +167,7 @@ class Protocol < ActiveRecord::Base
     merge( Organization.authorized_for_identity(identity_id) ).distinct
   }
 
-  scope :archived, -> (boolean) {
+  scope :show_archived, -> (boolean) {
     where(archived: boolean)
   }
 

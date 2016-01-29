@@ -41,7 +41,7 @@ class ProtocolFilter < ActiveRecord::Base
     Rails.application.routes.url_helpers.
     dashboard_root_path(
       filterrific: { 
-        show_archived: (self.archived ? 1 : 0),
+        show_archived: (self.show_archived ? 1 : 0),
         for_admin: self.for_admin, 
         for_identity_id: self.for_identity_id, 
         search_query: self.search_query, 

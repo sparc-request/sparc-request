@@ -107,6 +107,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
   def update
     attrs = params[@protocol.type.downcase.to_sym]
+    attrs = attrs.merge(study_type_question_group_id: StudyTypeQuestionGroup.active.pluck(:id).first)
     if @protocol.update_attributes attrs
       flash[:success] = "#{@protocol.type} Updated!"
     else

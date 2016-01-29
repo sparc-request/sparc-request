@@ -34,17 +34,6 @@
         = form.text_field :title, class: 'form-control'
 
     .form-group.row
-      = form.label :has_cofc, t(:study_form)[:has_cofc], class: 'col-lg-2 form-control-label'
-      .col-lg-10
-        .btn-group{data: {toggle: "buttons"}}
-          %label.btn.btn-default{class: "#{protocol.has_cofc == true ? 'active' : nil}"}
-            = form.radio_button :has_cofc, 'true', id: "study_has_cofc_true"
-            Yes
-          %label.btn.btn-default{class: "#{protocol.has_cofc == false ? 'active' : nil}"}
-            = form.radio_button :has_cofc, 'false', id: "study_has_cofc_false"
-            No
-
-    .form-group.row
       = form.label :funding_status, t(:protocol_shared)[:funding_status], class: 'col-lg-2 control-label'
       .col-lg-10
         = form.select :funding_status, options_for_select(FUNDING_STATUSES, protocol.funding_status), { include_blank: t(:study_form)[:status_blank] }, class: 'selectpicker study'
@@ -111,6 +100,7 @@
 
     .form-group.row{ display_if(USE_EPIC) }
       = form.label :selected_for_epic, t(:study_form)[:push_to_epic], class: 'col-lg-2 form-control-label'
+      = form.hidden_field :study_type_question_group_id, value: protocol.study_type_question_group_id == StudyTypeQuestionGroup.where(active:false).pluck(:id).first ? 'inactive' : 'active'
       .col-lg-10
         .btn-group{data: {toggle: "buttons"}}
           %label.btn.btn-default{class: "#{protocol.selected_for_epic == true ? 'active' : nil}"}
@@ -123,10 +113,15 @@
     .form-group.row.selected_for_epic_dependent{ display_if(protocol.selected_for_epic) }
       = form.label :study_type_questions, "", class: 'col-lg-2 form-control-label'
       .col-lg-10
-        = form.fields_for :study_type_answers do |answer_form|
-          .form-group.row{ id: "study_type_answer_#{answer_form.object.study_type_question.friendly_id}" }
-            .col-lg-8
-              = answer_form.hidden_field :study_type_question_id
-              = answer_form.label :answer, answer_form.object.study_type_question.question, class: "long"
-            .col-lg-4
-              = answer_form.select :answer, options_for_select([['Yes', true], ['No', false]], answer_form.object.answer), { include_blank: 'Select One' }, { class: 'selectpicker', id: "study_type_answer_#{answer_form.object.study_type_question.friendly_id}_answer" }
+        = form.fields_for :study_type_answers, protocol.study_type_answers do |answer_form|
+          - if answer_form.object.study_type_question.study_type_question_group.active
+            .form-group.row{ id: "study_type_answer_#{answer_form.object.study_type_question.friendly_id}", style: "#{answer_form.object.answer != nil ? 'display:block' : 'display:none;'}" }
+              .col-lg-8
+                = answer_form.hidden_field :study_type_question_id
+                = answer_form.label :answer, answer_form.object.study_type_question.question, class: "long"
+              .col-lg-4
+                = answer_form.select :answer, options_for_select([['Yes', true], ['No', false]], answer_form.object.answer), { include_blank: 'Select One' }, { class: 'selectpicker', id: "study_type_answer_#{answer_form.object.study_type_question.friendly_id}_answer" }
+
+
+
+

@@ -23,6 +23,7 @@
     .pull-left
       %h2.panel-title Protocols
       = page_entries_info protocols
+      = render_filterrific_spinner
     .pull-right
       .btn-group
         %button.btn.btn-success.dropdown-toggle#create-new-study-button{ type: 'button', 'aria-expanded' => 'false', data: { toggle: 'dropdown' }}

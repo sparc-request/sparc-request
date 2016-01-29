@@ -20,7 +20,8 @@
 
 class Study < Protocol
   validates :sponsor_name, presence: true
-  validates :has_cofc, inclusion: {in: [true, false], message: "must be answered"}
+  validates :selected_for_epic, inclusion: [true, false]
+  validate  :validate_study_type_answers, if: :selected_for_epic
 
   def classes
     return [ 'project' ] # for backward-compatibility

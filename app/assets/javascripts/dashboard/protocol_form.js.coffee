@@ -20,6 +20,59 @@
 
 $(document).ready ->
 
+  study_type_form = $('.study_type')
+  study_selected_for_epic_radio = $('input[name=\'study[selected_for_epic]\']')
+  certificate_of_confidence_dropdown = $('#study_type_answer_certificate_of_conf_answer')
+  higher_level_of_privacy_dropdown = $('#study_type_answer_higher_level_of_privacy_answer')
+  access_required_dropdown = $('#study_type_answer_access_study_info_answer')
+  epic_inbasket_dropdown = $('#study_type_answer_epic_inbasket_answer')
+  research_active_dropdown = $('#study_type_answer_research_active_answer')
+  restrict_sending_dropdown = $('#study_type_answer_restrict_sending_answer')
+
+  epic_box_alert_message = () -> 
+    options = {
+      resizable: false,
+      height: 220,
+      modal: true,
+      autoOpen: false,
+      buttons:
+        "OK": ->
+          $(this).dialog("close")
+    }
+    $('#epic_box_alert').dialog(options).dialog("open")
+
+  $.prototype.hide_elt = () ->
+    this[0].selectedIndex = 0
+    this.closest('.field').hide()
+    return this
+
+  $.prototype.show_elt = () ->
+    this.closest('.field').show()
+    return this
+
+  $.prototype.hide_visual_error = () ->
+    this.removeClass('visual_error')
+    if $('.visual_error').length == 0 
+      $('.study_type div').removeClass('field_with_errors')
+      if $('#errorExplanation ul li').size() == 1
+        $('#errorExplanation').remove()
+      else
+        $('#errorExplanation ul li:contains("Study type questions must be selected")').remove()
+
+  add_and_check_visual_error_on_submit = (dropdown) ->
+    if dropdown.is(':visible') && dropdown.val() == ''
+      dropdown.addClass('visual_error')
+      dropdown.on 'change', (e) ->
+        dropdown.hide_visual_error()
+
+  add_and_check_visual_error_on_field_change = (dropdown) ->
+    siblings = dropdown.parent('.field').siblings().find('.visual_error')
+    if siblings
+      for sibling in siblings
+        if !$(sibling).is(':visible')
+          $(sibling).hide_visual_error()
+
+
   $(document).on 'change', '.study#protocol_funding_status', ->
     # Proposal Funding Status - Dropdown
     $('.funding_status_dependent').hide()
@@ -39,8 +92,14 @@ $(document).ready ->
   $(document).on 'change', "input[name='protocol[selected_for_epic]']", ->
     # Publish Study in Epic - Radio
     switch $(this).val()
-      when 'true' then $('.selected_for_epic_dependent').show()
-      when 'false' then $('.selected_for_epic_dependent').hide()
+      when 'true'
+        $('.selected_for_epic_dependent').show()
+        study_type_form.show()
+        certificate_of_confidence_dropdown.show_elt()
+      when 'false'
+        $('.selected_for_epic_dependent').hide()
+        study_type_form.hide()
+        certificate_of_confidence_dropdown.hide_elt().trigger 'change'
 
   $(document).on 'change', '#protocol_research_types_info_attributes_human_subjects', ->
     # Human Subjects - Checkbox

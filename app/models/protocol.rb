@@ -110,10 +110,7 @@ class Protocol < ActiveRecord::Base
     validates :title, :presence => true
     validates :funding_status, :presence => true
     validate  :validate_funding_source
-    validates :sponsor_name, :presence => true, :if => :is_study?
     validates_associated :human_subjects_info, :message => "must contain 8 numerical digits", :if => :validate_nct
-    validates :selected_for_epic, inclusion: [true, false], :if => :is_study?
-    validate  :validate_study_type_answers, if: [:is_study?, :selected_for_epic]
   end
 
   validation_group :user_details do
@@ -183,8 +180,6 @@ class Protocol < ActiveRecord::Base
     where(sub_service_requests: { organization_id: org_id }).distinct
   }
 
-  FRIENDLY_IDS = ["certificate_of_conf", "higher_level_of_privacy", "access_study_info", "epic_inbasket", "research_active", "restrict_sending"]
-
   def is_study?
     self.type == 'Study'
   end
@@ -209,6 +204,8 @@ class Protocol < ActiveRecord::Base
       errors.add(:potential_funding_source, "You must select a potential funding source")
     end
   end
+
+  FRIENDLY_IDS = ["certificate_of_conf", "higher_level_of_privacy", "access_study_info", "epic_inbasket", "research_active", "restrict_sending"]
 
   def validate_study_type_answers
     answers = {}

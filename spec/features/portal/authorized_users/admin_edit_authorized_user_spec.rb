@@ -80,6 +80,22 @@ RSpec.feature 'User wants to edit an authorized user', js: true do
             then_i_should_see_the_new_primary_pi
           end
 
+          scenario 'and sees the old primary pi is a general access user' do
+            given_i_have_clicked_the_edit_authorized_user_button 2
+            when_i_set_the_role_to 'Primary PI'
+            when_i_submit_the_form
+            when_i_submit_the_form
+            then_i_should_see_the_old_primary_pi_is_a_general_user
+          end
+
+          scenario 'and sees the old primary pi has request rights' do
+            given_i_have_clicked_the_edit_authorized_user_button 2
+            when_i_set_the_role_to 'Primary PI'
+            when_i_submit_the_form
+            when_i_submit_the_form
+            then_i_should_see_the_old_primary_pi_has_request_rights
+          end
+
           context 'with errors in the form' do
             scenario 'and sees errors' do
               given_i_have_clicked_the_edit_authorized_user_button 2
@@ -152,13 +168,24 @@ RSpec.feature 'User wants to edit an authorized user', js: true do
 
   def then_i_should_see_the_new_primary_pi
     wait_for_javascript_to_finish
-    jason_id = Identity.find_by_ldap_uid("jpl6")
+    jason_id = Identity.find_by_ldap_uid("jpl6@musc.edu")
 
-    expect(page).to_not have_selector("#users td", text: "Julia Glenn")
     expect(page).to have_selector("#users td", text: "Jason Leonard")
     expect(page).to have_selector('#users td', text: "Primary PI")
     
     expect(page).to have_selector('#information td', text: "Jason Leonard")
+
+    expect(Protocol.first.primary_principal_investigator).to eq(jason_id)
+  end
+
+  def then_i_should_see_the_old_primary_pi_is_a_general_user
+    wait_for_javascript_to_finish
+    expect(ProjectRole.where(identity_id: Identity.find_by_ldap_uid("jug2"), protocol_id: Protocol.first.id).first.role).to eq("general-access-user")
+  end
+
+  def then_i_should_see_the_old_primary_pi_has_request_rights
+    wait_for_javascript_to_finish
+    expect(ProjectRole.find_by(identity_id: Identity.find_by_ldap_uid("jug2"), protocol_id: Protocol.first.id).project_rights).to eq("request")
   end
 
   def then_i_should_see_an_error_of_type error_type

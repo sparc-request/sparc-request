@@ -24,7 +24,51 @@ require 'rails_helper'
 RSpec.describe 'Protocol' do
   let_there_be_lane
   let_there_be_j
-  build_service_request_with_study
+  build_service_request_with_study()
+  build_service_request_with_project()
+  build_study_type_question_groups()
+  build_study_type_questions()
+  build_study_type_answers()
+
+  describe "#active?" do
+
+    context "study is inactive" do
+      before :each do
+        study.update_attributes(study_type_question_group_id: StudyTypeQuestionGroup.where(active:false).pluck(:id).first)
+      end
+
+      it "should return false" do
+        expect(study.active?).to eq false
+      end
+    end
+    context "study is active" do
+      before :each do
+        study.update_attributes(study_type_question_group_id: StudyTypeQuestionGroup.where(active:true).pluck(:id).first)
+      end
+
+      it "should return true" do
+        expect(study.active?).to eq true
+      end
+    end
+    context "project is inactive" do
+      before :each do
+        project.update_attributes(study_type_question_group_id: StudyTypeQuestionGroup.where(active:false).pluck(:id).first)
+      end
+
+      it "should return false" do
+        expect(project.active?).to eq false
+      end
+    end
+    context "project is active" do
+      before :each do
+        project.update_attributes(study_type_question_group_id: StudyTypeQuestionGroup.where(active:true).pluck(:id).first)
+      end
+
+      it "should return true" do
+        expect(project.active?).to eq true
+      end
+    end
+  end
 
   describe ".notify_remote_around_update?", delay: true do
 
@@ -95,9 +139,7 @@ RSpec.describe 'Protocol' do
 
   describe "push to epic" do
     it "should create a record of the protocols push" do
-      human_subjects_info = build(:human_subjects_info, pro_number: nil, hr_number: nil)
-      study = build(:study, human_subjects_info: human_subjects_info)
-      study.save(validate: false)
+      study.update_attribute(:selected_for_epic, true)
       expect{ study.push_to_epic(EPIC_INTERFACE) }.to change(EpicQueueRecord, :count).by(1)
     end
   end

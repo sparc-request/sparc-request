@@ -66,7 +66,7 @@ class Portal::AssociatedUsersController < Portal::BaseController
 
     if @protocol_role.unique_to_protocol? && @protocol_role.fully_valid?
       if params[:change_primary_pi] == "true"
-        ProjectRole.find(params[:primary_pi_pr_id]).destroy
+        ProjectRole.find(params[:primary_pi_pr_id]).update_attributes(project_rights: "request", role: "general-access-user")
       end
       @protocol_role.save
       @identity.update_attributes params[:identity]
@@ -106,7 +106,7 @@ class Portal::AssociatedUsersController < Portal::BaseController
 
     if @protocol_role.fully_valid?
       if params[:change_primary_pi] == "true"
-        ProjectRole.find(params[:primary_pi_pr_id]).destroy
+        ProjectRole.find(params[:primary_pi_pr_id]).update_attributes(project_rights: "request", role: "general-access-user")
       end
       @protocol_role.save
       @identity.update_attributes params[:identity]

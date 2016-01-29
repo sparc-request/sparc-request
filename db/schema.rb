@@ -11,20 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160114151800) do
-
-  create_table "additional_details", force: :cascade do |t|
-    t.string   "name",                 limit: 255
-    t.string   "description",          limit: 255
-    t.text     "form_definition_json", limit: 65535
-    t.date     "effective_date"
-    t.boolean  "enabled"
-    t.integer  "service_id",           limit: 4
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "additional_details", ["service_id"], name: "index_additional_details_on_service_id", using: :btree
+ActiveRecord::Schema.define(version: 20160121173336) do
 
   create_table "admin_rates", force: :cascade do |t|
     t.integer  "line_item_id", limit: 4
@@ -147,13 +134,11 @@ ActiveRecord::Schema.define(version: 20160114151800) do
     t.string   "comment",         limit: 255
     t.string   "remote_address",  limit: 255
     t.datetime "created_at"
-    t.string   "request_uuid",    limit: 255
   end
 
   add_index "audits", ["associated_id", "associated_type"], name: "associated_index", using: :btree
   add_index "audits", ["auditable_id", "auditable_type"], name: "auditable_index", using: :btree
   add_index "audits", ["created_at"], name: "index_audits_on_created_at", using: :btree
-  add_index "audits", ["request_uuid"], name: "index_audits_on_request_uuid", using: :btree
   add_index "audits", ["user_id", "user_type"], name: "user_index", using: :btree
 
   create_table "available_statuses", force: :cascade do |t|
@@ -439,17 +424,6 @@ ActiveRecord::Schema.define(version: 20160114151800) do
 
   add_index "ip_patents_info", ["protocol_id"], name: "index_ip_patents_info_on_protocol_id", using: :btree
 
-  create_table "line_item_additional_details", force: :cascade do |t|
-    t.text     "form_data_json",       limit: 65535
-    t.integer  "line_item_id",         limit: 4
-    t.integer  "additional_detail_id", limit: 4
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "line_item_additional_details", ["additional_detail_id"], name: "index_line_item_additional_details_on_additional_detail_id", using: :btree
-  add_index "line_item_additional_details", ["line_item_id"], name: "index_line_item_additional_details_on_line_item_id", using: :btree
-
   create_table "line_items", force: :cascade do |t|
     t.integer  "service_request_id",     limit: 4
     t.integer  "sub_service_request_id", limit: 4
@@ -691,9 +665,9 @@ ActiveRecord::Schema.define(version: 20160114151800) do
     t.string   "billing_business_manager_static_email", limit: 255
     t.datetime "recruitment_start_date"
     t.datetime "recruitment_end_date"
-    t.boolean  "selected_for_epic",                                                           default: false
-    t.boolean  "has_cofc"
+    t.boolean  "selected_for_epic"
     t.boolean  "archived",                                                                    default: false
+    t.integer  "study_type_question_group_id",          limit: 4
   end
 
   add_index "protocols", ["next_ssr_id"], name: "index_protocols_on_next_ssr_id", using: :btree
@@ -919,12 +893,19 @@ ActiveRecord::Schema.define(version: 20160114151800) do
     t.datetime "updated_at",                       null: false
   end
 
+  create_table "study_type_question_groups", force: :cascade do |t|
+    t.boolean  "active",     default: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "study_type_questions", force: :cascade do |t|
-    t.integer  "order",       limit: 4
-    t.string   "question",    limit: 255
-    t.string   "friendly_id", limit: 255
-    t.datetime "created_at",              null: false
-    t.datetime "updated_at",              null: false
+    t.integer  "order",                        limit: 4
+    t.string   "question",                     limit: 255
+    t.string   "friendly_id",                  limit: 255
+    t.datetime "created_at",                               null: false
+    t.datetime "updated_at",                               null: false
+    t.integer  "study_type_question_group_id", limit: 4
   end
 
   create_table "study_types", force: :cascade do |t|

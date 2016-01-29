@@ -82,7 +82,7 @@ RSpec.describe 'edit a provider', js: true do
         find("#provider_available_statuses_attributes_0__destroy").click
         first("#save_button").click
         wait_for_javascript_to_finish
-        expect(@provider.get_available_statuses).to eq( {"draft" => "Draft"} )
+        expect(@provider.get_available_statuses).to eq( {"ctrc_approved" => "Active"} )
       end
 
       it "should not create duplicates if saved twice" do
@@ -91,7 +91,7 @@ RSpec.describe 'edit a provider', js: true do
         wait_for_javascript_to_finish
         first("#save_button").click
         wait_for_javascript_to_finish
-        expect(@provider.get_available_statuses).to eq( {"draft" => "Draft"} )
+        expect(@provider.get_available_statuses).to eq( {"ctrc_approved" => "Active"} )
       end
     end
 

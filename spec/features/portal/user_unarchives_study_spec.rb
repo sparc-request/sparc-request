@@ -9,16 +9,15 @@ RSpec.feature 'user unarchives a study', js: true do
 
   before(:each) do
     project.update_attributes(archived: true)
+    when_i_visit_the_portal_root
   end
 
-  scenario " and sees 'Unarchive Study' button " do
-    when_i_visit_the_portal_root
+  scenario " and sees 'Unarchive Study' button " do 
     and_i_view_all_studies
     then_i_should_see_an_unarchive_study_button
   end
 
   scenario " and hides the unarchived study " do
-    when_i_visit_the_portal_root
     and_i_view_all_studies
     and_i_unarchive_the_study
     then_i_should_be_able_to_archive_the_study

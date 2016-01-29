@@ -3,7 +3,7 @@ class CreateDashboardFilters < ActiveRecord::Migration
     create_table :protocol_filters do |t|
       t.integer :identity_id
       t.string :search_name
-      t.boolean :archived
+      t.boolean :show_archived
       t.integer :for_admin
       t.integer :for_identity_id
       t.string :search_query

@@ -39,14 +39,16 @@
       %th ID
       %th Short Title
       %th PI(s)
-      %th Requests
-      %th Archive
+      %th
+      %th
     - protocols.each do |protocol|
       %tr.protocols_index_row{ data: { protocol_id: protocol.id }}
         %td.id= protocol.id
         %td.title= short_title_display protocol
         %td.pis= pis_display protocol
-        %td.requests= requests_display protocol
+        %td.requests
+          - unless protocol.sub_service_requests.empty?
+            %button.btn.btn-sm.btn-default.requests_display_link Requests
         %td.archive= archived_button_display protocol
 
   .pull-right

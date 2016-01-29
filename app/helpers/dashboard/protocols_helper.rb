@@ -47,28 +47,7 @@ module Dashboard::ProtocolsHelper
     protocol.principal_investigators.map(&:full_name).join ", "
   end
 
-  def requests_display protocol
-    ssr_ids = protocol.sub_service_requests.select(:ssr_id).map(&:ssr_id).uniq.compact
-
-    html = '-'
-
-    unless ssr_ids.empty?
-      li = Array.new
-
-      span = raw content_tag(:span, '', class: 'caret')
-      button = raw content_tag(:button, raw('Requests  ' + span), type: 'button', class: 'btn btn-default btn-sm dropdown-toggle form-control', 'data-toggle' => 'dropdown', 'aria-expanded' => 'false')
-      ssr_ids.each do |r|
-        li.push raw(content_tag(:li, raw(content_tag(:a, "#{protocol.id}-#{r}", href: 'javascript:;', class: "requests_display_link", data: {protocol_id: protocol.id}))))
-      end
-      ul = raw content_tag(:ul, raw(li.join), class: 'dropdown-menu', role: 'menu')
-
-      html = raw content_tag(:div, button + ul, class: 'btn-group')
-    end
-
-    html
-  end
-
   def archived_button_display protocol
-    content_tag( :button, (protocol.archived ? 'Unarchive' : 'Archive')+" #{protocol.type.capitalize}", type: 'button', class: 'protocol-archive-button btn btn-warning btn-sm', data: { protocol_id: protocol.id })
+    content_tag( :button, (protocol.archived ? 'Unarchive' : 'Archive')+" #{protocol.type.capitalize}", type: 'button', class: 'protocol-archive-button btn btn-warning btn-sm' )
   end
 end

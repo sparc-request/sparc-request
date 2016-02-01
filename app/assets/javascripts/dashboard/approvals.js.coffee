@@ -18,7 +18,27 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$("#modal_errors").html("<%= escape_javascript(render(partial: 'shared/modal_errors', locals: {errors: @errors})) %>")
-<% unless @errors %>
-$("#modal_place").html("<%= escape_javascript(render(:partial =>'dashboard/fulfillment/service_request_info/admin_approvals', locals: { sub_service_request: @sub_service_request })) %>");
-<% end %>
+$(document).ready ->
+
+  # ADMIN APPROVALS LISTENERS BEGIN
+
+  $(document).on 'click', '#admin_approvals_button', ->
+    ssr_id = $(this).data('sub_service_request_id')
+    data = 
+      "sub_service_request_id" : ssr_id
+    $.ajax
+      type: 'GET'
+      url: "/dashboard/approvals/new.js"
+      data: data
+
+  $(document).on 'change', '.admin_approval_checkbox', ->
+    ssr_id = $(this).data('sub_service_request_id')
+    data = 
+      "sub_service_request_id" : ssr_id
+      "#{$(this).attr('name')}" : $(this).val()
+    $.ajax
+      type: 'POST'
+      url: "/dashboard/approvals.js"
+      data: data
+
+  # ADMIN APPROVALS LISTENERS END

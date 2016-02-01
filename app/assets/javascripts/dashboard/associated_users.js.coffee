@@ -103,6 +103,7 @@ $(document).ready ->
         $('.role_dependent.subspecialty').show()
 
   $(document).on 'click', '#save_protocol_rights_button', ->
+    # Renders warning when changing Primary PI
     form = $("form.protocol_role_form")
     primary_pi_id = $('#protocol_role_data').data("pi-id")
     protocol_role_id = $('#protocol_role_data').data("pr-id")

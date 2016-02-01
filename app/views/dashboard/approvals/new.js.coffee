@@ -18,5 +18,5 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$("#modal_place").html("<%= escape_javascript(render(:partial =>'dashboard/fulfillment/service_request_info/admin_approvals', locals: { sub_service_request: @sub_service_request })) %>");
+$("#modal_place").html("<%= escape_javascript(render(:partial =>'dashboard/approvals/form', locals: { sub_service_request: @sub_service_request })) %>");
 $("#modal_place").modal 'show'

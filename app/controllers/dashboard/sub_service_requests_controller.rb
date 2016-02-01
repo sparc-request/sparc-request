@@ -21,7 +21,6 @@
 class Dashboard::SubServiceRequestsController < Dashboard::BaseController
   respond_to :json, :js, :html
   before_action :find_sub_service_request
-
   before_filter :protocol_authorizer, :only => [:update_from_project_study_information]
 
   def show
@@ -141,21 +140,7 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
     end
   end
 
-  def admin_approvals_show
-    @sub_service_request = SubServiceRequest.find(params[:id])
-  end
-
-  def admin_approvals_update
-    if @sub_service_request.update_attributes(params)
-      @sub_service_request.generate_approvals(@user, params)
-      @service_request = @sub_service_request.service_request
-      @approvals = [@service_request.approvals, @sub_service_request.approvals].flatten
-    else
-      @errors = @sub_service_request.errors
-    end
-  end
-
-  #Dashboard SSR History Table
+  #History Table Methods Begin
   def change_history_tab
     #Replaces currently displayed ssr history bootstrap table
     history_path = "dashboard/sub_service_requests/history/"
@@ -181,7 +166,7 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
     service_request = @sub_service_request.service_request
     @approvals = [service_request.approvals, @sub_service_request.approvals].flatten
   end
-  #Admin Portal History End
+  #History Table Methods End
 
 private
 

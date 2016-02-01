@@ -18,5 +18,5 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$("#fulfillment_subsidy").html("<%= escape_javascript(render(:partial =>'dashboard/admin/fulfillment/service_request_info/subsidy_info', locals: { sub_service_request: @sub_service_request, subsidy: @subsidy })) %>");
+$("#fulfillment_subsidy").html("<%= escape_javascript(render(:partial =>'dashboard/subsidies/subsidy', locals: { sub_service_request: @sub_service_request, subsidy: @subsidy })) %>");
 $("#flashes_container").html("<%= escape_javascript(render('shared/flash')) %>")

@@ -18,5 +18,23 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$("#fulfillment_subsidy").html("<%= escape_javascript(render(:partial =>'dashboard/subsidies/subsidy', locals: { sub_service_request: @sub_service_request, subsidy: @subsidy })) %>");
-$("#flashes_container").html("<%= escape_javascript(render('shared/flash')) %>")
+class Dashboard::ApprovalsController < Dashboard::BaseController
+  respond_to :js
+
+  def new
+    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
+  end
+
+  def create
+    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
+    if @sub_service_request.update_attributes(params)
+      @sub_service_request.generate_approvals(@user, params)
+      @service_request = @sub_service_request.service_request
+      @approvals = [@service_request.approvals, @sub_service_request.approvals].flatten
+      flash[:success] = "Approval Submitted!"
+    else
+      @errors = @sub_service_request.errors
+    end
+  end
+
+end

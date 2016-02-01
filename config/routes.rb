@@ -197,6 +197,7 @@ SparcRails::Application.routes.draw do
     end
 
     resources :associated_users
+    resources :approvals, only: [:new, :create]
 
     resources :service_requests, only: [:show] do
       member do
@@ -209,8 +210,6 @@ SparcRails::Application.routes.draw do
         put :update_from_fulfillment
         patch :update_from_project_study_information
         put :push_to_epic
-        get :admin_approvals_show
-        post :admin_approvals_update
         get :change_history_tab
         get :status_history
         get :subsidy_history

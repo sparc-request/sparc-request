@@ -29,20 +29,22 @@
       #modal_errors
       .row
         .col-md-12
-          #core_approvals
-            .approval
-              %label= t(:fulfillments)[:core_approvals][:nursing]
-              = check_box_tag "nursing_nutrition_approved", true, sub_service_request.nursing_nutrition_approved, :'data-sub_service_request_id' => sub_service_request.id, :class => 'admin_approval_checkbox', :disabled => sub_service_request.nursing_nutrition_approved?
-            .approval
-              %label= t(:fulfillments)[:core_approvals][:lab]
-              = check_box_tag "lab_approved", true, sub_service_request.lab_approved, :'data-sub_service_request_id' => sub_service_request.id, :class => 'admin_approval_checkbox', :disabled => sub_service_request.lab_approved?
-            .approval
-              %label= t(:fulfillments)[:core_approvals][:imaging]
-              = check_box_tag "imaging_approved", true, sub_service_request.imaging_approved, :'data-sub_service_request_id' => sub_service_request.id, :class => 'admin_approval_checkbox', :disabled => sub_service_request.imaging_approved?
-          #admin_committee_approval
-            .approval
-              = label_tag "committee_approved", t(:fulfillments)[:committee_approval][:label]
-              = check_box_tag "committee_approved", true, sub_service_request.committee_approved, :'data-sub_service_request_id' => sub_service_request.id, :class => 'admin_approval_checkbox', :disabled => sub_service_request.committee_approved?
+          .form-group.approval
+            = label_tag "nursing_nutrition_approved", t(:fulfillments)[:core_approvals][:nursing], class: "col-sm-4 control-label"
+            .col-sm-7
+              = check_box_tag "nursing_nutrition_approved", true, sub_service_request.nursing_nutrition_approved, :'data-sub_service_request_id' => sub_service_request.id, :class => 'admin_approval_checkbox form-control', :disabled => sub_service_request.nursing_nutrition_approved?
+          .form-group.approval
+            = label_tag "lab_approved", t(:fulfillments)[:core_approvals][:lab], class: "col-sm-4 control-label"
+            .col-sm-7
+              = check_box_tag "lab_approved", true, sub_service_request.lab_approved, :'data-sub_service_request_id' => sub_service_request.id, :class => 'admin_approval_checkbox form-control', :disabled => sub_service_request.lab_approved?
+          .form-group.approval
+            = label_tag "imaging_approved", t(:fulfillments)[:core_approvals][:imaging], class: "col-sm-4 control-label"
+            .col-sm-7
+              = check_box_tag "imaging_approved", true, sub_service_request.imaging_approved, :'data-sub_service_request_id' => sub_service_request.id, :class => 'admin_approval_checkbox form-control', :disabled => sub_service_request.imaging_approved?
+          .form-group.approval
+            = label_tag "committee_approved", t(:fulfillments)[:committee_approval][:label], class: "col-sm-4 control-label"
+            .col-sm-7
+              = check_box_tag "committee_approved", true, sub_service_request.committee_approved, :'data-sub_service_request_id' => sub_service_request.id, :class => 'admin_approval_checkbox form-control', :disabled => sub_service_request.committee_approved?
     .modal-footer
       .center-block
         %button.btn.btn-default{type: 'button', data: {dismiss: 'modal'}} Close

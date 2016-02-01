@@ -104,9 +104,11 @@ $(document).ready ->
 
   $(document).on 'click', '#save_protocol_rights_button', ->
     form = $("form.protocol_role_form")
+    primary_pi_id = $('#protocol_role_data').data("pi-id")
+    protocol_role_id = $('#protocol_role_data').data("pr-id")
     if form.is(":hidden")
       form.submit()
-    else if $("select[name='project_role[role]']").val() == 'primary-pi'
+    else if $("select[name='project_role[role]']").val() == 'primary-pi' and primary_pi_id != protocol_role_id
       primary_pi_full_name = $('#protocol_role_data').data("pi-name")
       pr_full_name = $('#protocol_role_data').data("pr-name")
       protocol_id = $('#project_role_protocol_id').val()

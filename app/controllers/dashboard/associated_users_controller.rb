@@ -46,6 +46,7 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
 
   def edit
     @identity = @protocol_role.identity
+    @current_pi = @protocol.primary_principal_investigator
     @header_text = "Edit Authorized User"
     respond_to do |format|
       format.js
@@ -56,6 +57,7 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
     if params[:identity_id] # if user selected
       @identity = Identity.find(params[:identity_id])
       @project_role = @protocol.project_roles.new(identity_id: @identity.id)
+      @current_pi = @protocol.primary_principal_investigator
 
       unless @project_role.unique_to_protocol?
         # Adds error if user already associated with protocol
@@ -109,7 +111,9 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
     if @protocol_role.fully_valid?
       if @protocol_role.role == "primary-pi"
         @protocol.project_roles.where(role: "primary-pi").each do |pr|
-          pr.update_attributes(project_rights: "request", role: "general-access-user")
+          unless pr.identity_id == @protocol_role.identity_id
+            pr.update_attributes(project_rights: "request", role: "general-access-user")
+          end
         end
       end
       @protocol_role.save

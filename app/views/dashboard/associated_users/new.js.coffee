@@ -22,7 +22,7 @@
 $("#modal_errors").html("<%= escape_javascript(render(partial: 'shared/modal_errors', locals: {errors: @errors})) %>")
 $('#authorized_user_search').val('')
 <% elsif @identity.present? %># User selected, go to 'User Form'
-$("#modal_place").html("<%= escape_javascript(render(partial: 'dashboard/associated_users/user_form', locals: { protocol: @protocol, project_role: @project_role, identity: @identity, header_text: @header_text })) %>")
+$("#modal_place").html("<%= escape_javascript(render(partial: 'dashboard/associated_users/user_form', locals: { protocol: @protocol, project_role: @project_role, identity: @identity, current_pi: @current_pi, header_text: @header_text })) %>")
 <% else %># User not selected, go to 'Select User Form'
 $("#modal_place").html("<%= escape_javascript(render(partial: 'dashboard/associated_users/select_user_form', locals: { protocol: @protocol, header_text: @header_text })) %>")
 

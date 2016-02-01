@@ -34,7 +34,6 @@ $(document).ready ->
         for error in value
           error_number += 1
           error_string += "<li>#{key[0].toUpperCase()}#{key.substr(1, key.length - 1)} #{error}</li>"
-
       $('.errorExplanation').html("<h2>#{error_number} error(s) prevented this #{entity_type} from being saved:</h2>
         <p>There were problems with the following fields:</p>
         <ul>

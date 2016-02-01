@@ -102,18 +102,20 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     session[:breadcrumbs].
       clear.
       add_crumbs(protocol_id: @protocol.id, edit_protocol: true)
-
+    @protocol.valid?
     respond_to do |format|
       format.html
     end
   end
 
   def update
-    attrs = params[@protocol.type.downcase.to_sym]
-    attrs = attrs.merge(study_type_question_group_id: StudyTypeQuestionGroup.active.pluck(:id).first)
-    if @protocol.update_attributes attrs
+    @protocol = current_user.protocols.find params[:id]
+    attrs = params[:protocol]
+
+    if @protocol.update_attributes(attrs.merge(study_type_question_group_id: StudyTypeQuestionGroup.active.pluck(:id).first))
       flash[:success] = "#{@protocol.type} Updated!"
     else
+      render :action => 'edit'
       @errors = @protocol.errors
     end
   end

@@ -5,6 +5,7 @@ module Dashboard
       set_url '/dashboard/protocols'
 
       section :filters, '.new_filterrific' do
+        element :search_field, '#filterrific_search_query'
         element :archived_checkbox, '#filterrific_show_archived'
         element :apply_filter_button, '#apply-filter-button'
         element :status_select, 'div.status-select button'

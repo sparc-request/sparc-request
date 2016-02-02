@@ -921,8 +921,8 @@ ActiveRecord::Schema.define(version: 20160127133951) do
     t.integer  "order",                        limit: 4
     t.string   "question",                     limit: 255
     t.string   "friendly_id",                  limit: 255
-    t.datetime "created_at",                               null: false
-    t.datetime "updated_at",                               null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.integer  "study_type_question_group_id", limit: 4
   end
 

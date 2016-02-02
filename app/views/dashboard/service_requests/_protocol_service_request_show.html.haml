@@ -18,7 +18,7 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.panel.panel-primary
+.panel.panel-primary.service-request-info
   .panel-heading
     %h4.panel-title.pull-left= protocol_panel_header_line(service_request)
     .pull-right
@@ -36,7 +36,7 @@
     - service_request.sub_service_requests.each do |ssr|
       - next if ssr.status == 'first_draft'
       %tr
-        %td
+        %td.pretty-ssr-id
           = pretty_ssr_id(service_request.protocol, ssr)
         %td
           = ssr.org_tree_display

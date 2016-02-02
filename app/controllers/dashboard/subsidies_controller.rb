@@ -79,7 +79,7 @@ class Dashboard::SubsidiesController < Dashboard::BaseController
     if @subsidy.delete
       @subsidy = nil
       @service_request = @sub_service_request.service_request
-      flash[:success] = "Subsidy Destroyed!"
+      flash[:alert] = "Subsidy Destroyed!"
     end
   end
 

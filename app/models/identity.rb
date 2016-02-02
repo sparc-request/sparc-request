@@ -427,40 +427,6 @@ class Identity < ActiveRecord::Base
     return false
   end
 
-  # # Collects all sub service requests under this identity's admin_organizations and sorts that
-  # # list by the status of the sub service requests.
-  # # Used to populate the table (as selectable by the dropdown) in the admin index.
-  # def admin_service_requests_by_status org_id=nil, admin_orgs=nil
-  #   ##Default to all ssrs, if we get an org_id, only get that organization's ssrs
-  #   ssrs = []
-  #   if org_id
-  #     ssrs = Organization.find(org_id).sub_service_requests
-  #   elsif admin_orgs && !admin_orgs.empty?
-  #     ssrs = 
-  #   else
-  #     self.admin_organizations.each do |org|
-  #       ssrs << SubServiceRequest.where(:organization_id => org.id).includes(:line_items => :service, :service_request => :protocol).to_a
-  #     end
-  #     ssrs.flatten!
-  #   end
-
-  #   hash = {}
-
-  #   ssrs.each do |ssr|
-  #     unless ssr.status.blank? or ssr.status == 'first_draft'
-  #       if ssr.service_request
-  #         if ssr.service_request.protocol
-  #           ssr_status = ssr.status.to_s.gsub(/\s/, "_").gsub(/[^-\w]/, "").downcase
-  #           hash[ssr_status] = [] unless hash[ssr_status]
-  #           hash[ssr_status] << ssr
-  #         end
-  #       end
-  #     end
-  #   end
-
-  #   hash
-  # end
-
   ###############################################################################
   ########################## NOTIFICATION METHODS ###############################
   ###############################################################################

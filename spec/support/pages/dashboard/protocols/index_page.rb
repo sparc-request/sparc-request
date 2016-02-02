@@ -10,7 +10,8 @@ module Dashboard
         element :apply_filter_button, '#apply-filter-button'
         element :status_select, 'div.status-select button'
         elements :status_options, 'div.status-select li'
-
+        element :my_protocols_checkbox, '#filterrific_for_identity_id'
+        element :my_admin_organizations_checkbox, '#filterrific_for_admin'
         def select_status(status)
           status_select.click
           status_options.select { |so| so.text == status.capitalize }.first.click

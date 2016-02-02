@@ -13,19 +13,48 @@ RSpec.describe 'dashboard index', js: :true do
   describe 'Protocols list' do
     describe 'defaults' do
       it 'should not display archived Protocols' do
+        create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: true)
+        visit_protocols_index_page
+        expect(@page).to have_no_protocols
       end
 
       it 'should not display Protocols for which user is not an associated user' do
+        create(:protocol_federally_funded, :without_validations, primary_pi: create(:identity), type: 'Project', archived: false)
+        visit_protocols_index_page
+        expect(@page).to have_no_protocols
       end
 
       it 'should not display Protocols for which user has \'none\' rights' do
-      end      
+        protocol = create(:protocol_federally_funded, :without_validations, primary_pi: create(:identity), type: 'Project', archived: false)
+        create(:project_role, identity: jug2, protocol: protocol, project_rights: 'none')
+        visit_protocols_index_page
+        expect(@page).to have_no_protocols
+      end
+
+      it 'should display unarchived Protocols for which the user has project rights other than \'none\'' do
+        create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false)
+        visit_protocols_index_page
+        expect(@page).to have_protocols
+      end
+
+      it 'should display Protocols with SubServiceRequests of any status' do
+        AVAILABLE_STATUSES.each do |status|
+          p = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false)
+          sr = create(:service_request_without_validations, protocol: p, service_requester: jug2)
+          create(:sub_service_request, ssr_id: '0001', service_request: sr, organization: create(:organization), status: status)
+        end
+
+        visit_protocols_index_page
+        expect(@page.protocols.size).to eq(AVAILABLE_STATUSES.length)
+      end
     end
+
     describe 'archive button' do
       context 'archived Project' do
         before(:each) do
           @protocol = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: true)
           visit_protocols_index_page
+
         end
 
         it "should display 'Unarchive Project'" do
@@ -175,6 +204,68 @@ RSpec.describe 'dashboard index', js: :true do
 
       context 'user cannot edit ServiceRequest' do
         it 'should not display \'Edit Original\' button' do
+        end
+      end
+    end
+  end
+
+  describe 'filters' do
+    describe 'archived checkbox' do
+      let!(:archived_protocol) { create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: true) }
+      let!(:unarchived_protocol) { create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false) }
+
+      context 'user checks archived checkbox and clicks filter button' do
+        it 'should only show archived protocols' do
+          visit_protocols_index_page
+          @page.filters.archived_checkbox.set(true)
+          @page.filters.apply_filter_button.click
+          wait_for_javascript_to_finish
+          expect(@page.displayed_protocol_ids).to eq [archived_protocol.id]
+        end
+      end
+
+      context 'user unchecks previously checked checkbox and clicks filter button' do
+        it 'should only show unarchived protocols' do
+          visit_protocols_index_page
+          @page.filters.archived_checkbox.set(true)
+          @page.filters.apply_filter_button.click
+          @page.filters.archived_checkbox.set(true)
+          @page.filters.apply_filter_button.click
+          expect(@page.displayed_protocol_ids).to eq [unarchived_protocol.id]
+        end
+      end
+    end
+
+    describe 'status dropdown' do
+      context 'user selects a status from dropdown and clicks the filter button' do
+        it 'should display only Protocols that have a SubServiceRequest of that status' do
+          # protocol with no SubServiceRequests
+          p1 = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false)
+
+          # protocol with one SSR of status approved
+          p2 = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false)
+          sr = create(:service_request_without_validations, protocol: p2, service_requester: jug2)
+          create(:sub_service_request, ssr_id: '0001', service_request: sr, organization: create(:organization), status: 'approved')
+
+          # protocol with one SSR of status approved and another
+          # SSR of another status
+          p3 = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false)
+          sr = create(:service_request_without_validations, protocol: p3, service_requester: jug2)
+          create(:sub_service_request, ssr_id: '0001', service_request: sr, organization: create(:organization), status: 'approved')
+          create(:sub_service_request, ssr_id: '0001', service_request: sr, organization: create(:organization), status: 'draft')
+
+          # protocol with a SSR not of status approved
+          p4 = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false)
+          sr = create(:service_request_without_validations, protocol: p4, service_requester: jug2)
+          create(:sub_service_request, ssr_id: '0001', service_request: sr, organization: create(:organization), status: 'draft')
+
+          visit_protocols_index_page
+          expect(@page.displayed_protocol_ids.sort).to eq [p1.id, p2.id, p3.id, p4.id]
+
+          @page.filters.select_status('approved')
+          @page.filters.apply_filter_button.click
+          wait_for_javascript_to_finish
+          expect(@page.displayed_protocol_ids.sort).to eq [p2.id, p3.id]
         end
       end
     end

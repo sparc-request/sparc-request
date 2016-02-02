@@ -143,13 +143,15 @@ class Protocol < ActiveRecord::Base
   scope :search_query, -> (search_term) {
     # Searches protocols based on short_title, title, id, and associated_users
     # Protects against SQL Injection with ActiveRecord::Base::sanitize
+    title_search_term = ActiveRecord::Base::sanitize("%#{search_term}%")
+    id_search_term = ActiveRecord::Base::sanitize(search_term)
     joins(:identities).
     where(
       "protocols.short_title like "\
-      "\"%#{search_term = ActiveRecord::Base::sanitize(search_term)}%\" OR "\
-      "protocols.title like \"%#{search_term}%\" OR "\
-      "protocols.id = \"#{search_term}\" OR "\
-      "MATCH(identities.first_name, identities.last_name) AGAINST (\"#{search_term}\")"
+      "#{title_search_term} OR "\
+      "protocols.title like #{title_search_term} OR "\
+      "protocols.id = #{id_search_term} OR "\
+      "MATCH(identities.first_name, identities.last_name) AGAINST (#{id_search_term})"
     ).distinct
   }
 
@@ -222,7 +224,7 @@ class Protocol < ActiveRecord::Base
       if answers["certificate_of_conf"].answer.nil?
         has_errors = true
       elsif answers["certificate_of_conf"].answer == false
-        if (answers["higher_level_of_privacy"].answer.nil?) 
+        if (answers["higher_level_of_privacy"].answer.nil?)
           has_errors = true
         elsif (answers["higher_level_of_privacy"].answer == false)
           if answers["epic_inbasket"].answer.nil? || answers["research_active"].answer.nil? || answers["restrict_sending"].answer.nil?

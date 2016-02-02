@@ -258,7 +258,7 @@ $(document).ready ->
         Bloodhound.tokenizers.whitespace datum.value
       queryTokenizer: Bloodhound.tokenizers.whitespace
       remote:
-        url: '/search/identities?term=%QUERY'
+        url: '/dashboard/associated_users/search_identities?term=%QUERY',
         wildcard: '%QUERY'
     )
     identities_bloodhound.initialize() # Initialize the Bloodhound suggestion engine

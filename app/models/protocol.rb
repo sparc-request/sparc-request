@@ -143,15 +143,14 @@ class Protocol < ActiveRecord::Base
   scope :search_query, -> (search_term) {
     # Searches protocols based on short_title, title, id, and associated_users
     # Protects against SQL Injection with ActiveRecord::Base::sanitize
-    title_search_term = ActiveRecord::Base::sanitize("%#{search_term}%")
-    id_search_term = ActiveRecord::Base::sanitize(search_term)
+    like_search_term = ActiveRecord::Base::sanitize("%#{search_term}%")
+    exact_search_term = ActiveRecord::Base::sanitize(search_term)
     joins(:identities).
     where(
-      "protocols.short_title like "\
-      "#{title_search_term} OR "\
-      "protocols.title like #{title_search_term} OR "\
-      "protocols.id = #{id_search_term} OR "\
-      "MATCH(identities.first_name, identities.last_name) AGAINST (#{id_search_term})"
+      "protocols.short_title like #{like_search_term} OR "\
+      "protocols.title like #{like_search_term} OR "\
+      "protocols.id = #{exact_search_term} OR "\
+      "MATCH(identities.first_name, identities.last_name) AGAINST (#{exact_search_term})"
     ).distinct
   }
 

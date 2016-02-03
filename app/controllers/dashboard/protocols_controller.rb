@@ -146,17 +146,6 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     end
   end
 
-  # @TODO: add to an authorization filter?
-  def add_associated_user
-    @protocol = Protocol.find(params[:id])
-
-    @project_role = @protocol.project_roles.build(:identity_id => @user.id)
-    respond_to do |format|
-      format.js
-      format.html
-    end
-  end
-
   def view_full_calendar
     @service_request = @protocol.any_service_requests_to_display?
 
@@ -176,7 +165,6 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     @merged = true
     respond_to do |format|
       format.js
-      format.html
     end
   end
 

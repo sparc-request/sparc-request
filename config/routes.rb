@@ -183,16 +183,11 @@ SparcRails::Application.routes.draw do
 
   namespace :dashboard do
 
-    resources :protocol_filters, only: [:new, :create]
-    resources :studies, controller: :protocols, except: [:destroy]
-    resources :projects, controller: :protocols, except: [:destroy]
-    resources :protocols, except: [:destroy] do
-      member do
-        get :view_full_calendar
-        patch :update_protocol_type
-        put :update_from_fulfillment
-        get :display_requests
-        patch :archive
+    resources :approvals, only: [:new, :create]
+
+    resources :arms, only: [:new, :create, :update, :destroy] do
+      collection do
+        get :navigate
       end
     end
 
@@ -202,70 +197,9 @@ SparcRails::Application.routes.draw do
       end
     end
 
-    resources :approvals, only: [:new, :create]
-
-    resources :service_requests, only: [:show] do
-      member do
-        put :update_from_fulfillment
-      end
-    end
-
-    resources :sub_service_requests, except: [:index] do
-      member do
-        put :update_from_fulfillment
-        patch :update_from_project_study_information
-        put :push_to_epic
-        get :change_history_tab
-        get :status_history
-        get :subsidy_history
-        get :approval_history
-      end
-    end
-
-    resources :notifications, only: [:index, :new, :create] do
-      member do
-        put :user_portal_update
-        put :admin_update
-      end
-      collection do
-        put :mark_as_read
-      end
-    end
-
-    resources :subsidies, only: [:create, :update, :destroy] do
-      member do
-        put :update_from_fulfillment
-      end
-    end
-    match "/subsidys/:id/update_from_fulfillment" => "subsidies#update_from_fulfillment", via: [:put]
-    match "/subsidys/:id" => "subsidies#destroy", via: [:delete]
+    resources :documents
 
     resources :epic_queues, only: ['index', 'destroy']
-    resources :services, only: [:show]
-    resources :documents
-    resources :messages, only: [:index, :new, :create]
-    resources :notes, only: [:index, :new, :create]
-
-    resources :arms, only: [:new, :create, :update, :destroy] do
-      collection do
-        get :navigate
-      end
-    end
-
-    resources :visit_groups, only: [:new, :create, :update, :destroy] do
-      collection do
-        get :navigate
-      end
-    end
-
-    resources :multiple_line_items, only: [] do
-      collection do
-        get :new_line_items
-        put :create_line_items
-        get :edit_line_items
-        put :destroy_line_items
-      end
-    end
 
     resources :fulfillments do
       member do
@@ -287,13 +221,84 @@ SparcRails::Application.routes.draw do
       end
     end
 
+    resources :messages, only: [:index, :new, :create]
+
+    resources :multiple_line_items, only: [] do
+      collection do
+        get :new_line_items
+        put :create_line_items
+        get :edit_line_items
+        put :destroy_line_items
+      end
+    end
+
+    resources :notes, only: [:index, :new, :create]
+
+    resources :notifications, only: [:index, :new, :create] do
+      member do
+        put :user_portal_update
+        put :admin_update
+      end
+      collection do
+        put :mark_as_read
+      end
+    end
+
+    resources :projects, controller: :protocols, except: [:destroy]
+
+    resources :protocols, except: [:destroy] do
+      member do
+        get :view_full_calendar
+        patch :update_protocol_type
+        put :update_from_fulfillment
+        get :display_requests
+        patch :archive
+      end
+    end
+
+    resources :protocol_filters, only: [:new, :create]
+
+    resources :services, only: [:show]
+
+    resources :service_requests, only: [:show] do
+      member do
+        put :update_from_fulfillment
+      end
+    end
+
+    resources :studies, controller: :protocols, except: [:destroy]
+
+    resources :subsidies, only: [:create, :update, :destroy] do
+      member do
+        put :update_from_fulfillment
+      end
+    end
+    match "/subsidys/:id/update_from_fulfillment" => "subsidies#update_from_fulfillment", via: [:put]
+    match "/subsidys/:id" => "subsidies#destroy", via: [:delete]
+
+    resources :sub_service_requests, except: [:index] do
+      member do
+        put :update_from_fulfillment
+        patch :update_from_project_study_information
+        put :push_to_epic
+        get :change_history_tab
+        get :status_history
+        get :subsidy_history
+        get :approval_history
+      end
+    end
+
     resources :visits, only: [:destroy] do
       member do
         put :update_from_fulfillment
       end
     end
 
-    match "/delete_toast_message/:id" => "admin#delete_toast_message", via: [:delete]
+    resources :visit_groups, only: [:new, :create, :update, :destroy] do
+      collection do
+        get :navigate
+      end
+    end
 
     root to: 'protocols#index'
   end

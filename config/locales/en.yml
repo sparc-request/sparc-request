@@ -26,7 +26,6 @@ en:
       human_subjects_info:
         nct_number: "The NCT #"
       protocol:
-        has_cofc: "Does your study have a Certificate of Confidentiality"
         human_subjects_info: "The NCT #"
   admin_portal_title: "SPARC Request Administration"
   application_title: "SPARC Request"
@@ -391,7 +390,6 @@ en:
     funding_rfa: "Funding Opportunity #/RFA:"
     funding_source_other: "Please Specify"
     funding_start_date: "Funding Start Date:"
-    has_cofc: "Does your study have a Certificate of Confidentiality? *"
     hr_number: "HR #:"
     human_subjects: "Human Subjects:"
     iacuc_approval_date: "IACUC Approval Date:"
@@ -891,8 +889,8 @@ en:
     change_primary_pi:
       warning: "<strong>**WARNING**</strong>"
       warning_prompt_1_1: "Adding the new Primary PI "
-      warning_prompt_1_2: " will remove the current Primary PI "
-      warning_prompt_1_3: " from the Protocol."
+      warning_prompt_1_2: " will change the current Primary PI "
+      warning_prompt_1_3: " to a general access user on Protocol "
       warning_prompt_2: "Do you wish to proceed?"
     consolidated_request: 'Export Consolidated Request'
     create:

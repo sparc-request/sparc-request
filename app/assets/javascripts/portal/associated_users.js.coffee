@@ -175,12 +175,14 @@ $(document).ready ->
                   #Add the new elements
                   primary_pi_full_name = $('.add_user_dialog_box #primary_pi_full_name').val()
                   pr_full_name = $('.add_user_dialog_box #full_name').val()
+                  protocol_id = $('#add-user-form #protocol_id').val()
                   warning = I18n["protocol_information"]["change_primary_pi"]["warning"]
                   message1 = I18n["protocol_information"]["change_primary_pi"]["warning_prompt_1_1"]+
                     "(<strong>#{pr_full_name}</strong>)"+
                     I18n["protocol_information"]["change_primary_pi"]["warning_prompt_1_2"]+
                     "(<strong>#{primary_pi_full_name}</strong>)"+
-                    I18n["protocol_information"]["change_primary_pi"]["warning_prompt_1_3"]
+                    I18n["protocol_information"]["change_primary_pi"]["warning_prompt_1_3"]+
+                    "(<strong>#{protocol_id}</strong>)."
                   message2 = I18n["protocol_information"]["change_primary_pi"]["warning_prompt_2"]
                   $('.add-associated-user-dialog').append("<h1 class='change_ppi_prompt' style='color:red;'>#{warning}</h1><p class='change_ppi_prompt' style='font-size:14px;'>#{message1}</p><p class='change_ppi_prompt' style='font-size:14px;'>#{message2}</p>")
 
@@ -190,7 +192,7 @@ $(document).ready ->
                   title_text.text('Change Primary PI')
                 else
                   #Enable removing the old Primary PI
-                  $('#change_primary_pi').val(true)
+                  $('.add_user_dialog_box #change_primary_pi').val(true)
                   
                   #Remove the elements
                   $('.change_ppi_prompt').remove()
@@ -245,6 +247,7 @@ $(document).ready ->
           $('.change_ppi_prompt').remove()
           $('.user-search-container').show()
           $('#add-user-form').show()
+          $('.add_user_dialog_box #change_primary_pi').val(false)
 
     create_edit_associated_user_dialog: () ->
       $('.edit-associated-user-dialog').dialog
@@ -277,12 +280,14 @@ $(document).ready ->
                     #Add the new elements
                     primary_pi_full_name = $('.edit_user_dialog_box #primary_pi_full_name').val()
                     pr_full_name = $('.edit_user_dialog_box #full_name').val()
+                    protocol_id = $('.edit_user_dialog_box #protocol_id').val()
                     warning = I18n["protocol_information"]["change_primary_pi"]["warning"]
                     message1 = I18n["protocol_information"]["change_primary_pi"]["warning_prompt_1_1"]+
                       "(<strong>#{pr_full_name}</strong>)"+
                       I18n["protocol_information"]["change_primary_pi"]["warning_prompt_1_2"]+
                       "(<strong>#{primary_pi_full_name}</strong>)"+
-                      I18n["protocol_information"]["change_primary_pi"]["warning_prompt_1_3"]
+                      I18n["protocol_information"]["change_primary_pi"]["warning_prompt_1_3"]+
+                      "(<strong>#{protocol_id}</strong>)."
                     message2 = I18n["protocol_information"]["change_primary_pi"]["warning_prompt_2"]
                     $('.edit-associated-user-dialog').append("<h1 class='change_ppi_prompt' style='color:red;'>#{warning}</h1><p class='change_ppi_prompt' style='font-size:14px;'>#{message1}</p><p class='change_ppi_prompt' style='font-size:14px;'>#{message2}</p>")
 
@@ -292,7 +297,7 @@ $(document).ready ->
                     title_text.text('Change Primary PI')
                   else
                     #Enable removing the old Primary PI
-                    $('#change_primary_pi').val(true)
+                    $('.edit_user_dialog_box #change_primary_pi').val(true)
                     
                     #Remove the elements
                     $('.change_ppi_prompt').remove()
@@ -345,6 +350,7 @@ $(document).ready ->
             $('.edit_user_dialog_box .ui-dialog-titlebar').children('.ui-dialog-title').text('Edit an Authorized User')
             $('.change_ppi_prompt').remove()
             $('.edit-associated-user-dialog .associated_users_form').show()
+            $('.edit_user_dialog_box #change_primary_pi').val(false)
 
     reset_fields: () ->
       $('.errorExplanation').html('').hide()

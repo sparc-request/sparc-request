@@ -115,7 +115,7 @@ module V1
             :last_epic_push_status,
             :billing_business_manager_static_email,
             :selected_for_epic,
-            :has_cofc,
+            :study_type_question_group_id,
             :archived
 
     with_options(format_with: :iso_timestamp) do

@@ -48,7 +48,7 @@ $(document).ready ->
       FormFxManager.registerListeners($('.user-edit-protocol-view'), Sparc.study.display_dependencies)
 
 
-      if $('#study_viewing_admin').val() == "portal"
+      if $('#viewing_admin').val() == "portal"
 
         study_type_form = $('.study_type')
         study_selected_for_epic_radio = $('input[name=\'study[selected_for_epic]\']')
@@ -192,7 +192,7 @@ $(document).ready ->
         #### When you go from a virgin project (selected_for_epic = nil/ never been a study) 
         #### to a study, the Epic Box should be editable instead of only displaying the epic box data.
         
-        if $('#study_can_edit_admin_study').val() == "can_edit_study"
+        if $('#can_edit_admin_study').val() == "can_edit_study"
           $('#actions input[type="submit"]').on 'click', (e) ->
             if $('input[name=\'study[selected_for_epic]\']:checked').val() == 'true'
               if certificate_of_confidence_dropdown.val() == ''

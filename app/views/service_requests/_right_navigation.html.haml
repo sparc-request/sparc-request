@@ -26,7 +26,7 @@
 - else
   .faq-button.blue-button.btn.btn-primary.btn-lg.btn-block= t(:right_navigation)[:faq]
 .feedback-button.blue-button.btn.btn-primary.btn-lg.btn-block
-  = link_to t(:right_navigation)[:feedback], 'https://redcap.musc.edu/surveys/?s=A37TNJWJPL', target: '_blank'
+  = link_to t(:right_navigation)[:feedback], t(:right_navigation)[:redcap_survey], target: '_blank'
 .feedback-button.blue-button.btn.btn-primary.btn-lg.btn-block
   = link_to 'Contact Us', new_contact_form_path, remote: true
 .contact-form-dialog

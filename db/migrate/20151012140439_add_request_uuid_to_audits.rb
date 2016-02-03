@@ -12,6 +12,8 @@ class AddRequestUuidToAudits < ActiveRecord::Migration
     if USE_SEPARATE_AUDIT_DATABASE
       ActiveRecord::Base.establish_connection("#{Rails.env}")
     end
+    
+    Audited::Adapters::ActiveRecord::Audit.reset_column_information
   end
 
   def self.down

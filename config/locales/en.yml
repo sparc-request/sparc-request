@@ -26,7 +26,6 @@ en:
       human_subjects_info:
         nct_number: "The NCT #"
       protocol:
-        has_cofc: "Does your study have a Certificate of Confidentiality"
         human_subjects_info: "The NCT #"
   admin_portal_title: "SPARC Request Administration"
   application_title: "SPARC Request"
@@ -391,7 +390,6 @@ en:
     funding_rfa: "Funding Opportunity #/RFA:"
     funding_source_other: "Please Specify"
     funding_start_date: "Funding Start Date:"
-    has_cofc: "Does your study have a Certificate of Confidentiality? *"
     hr_number: "HR #:"
     human_subjects: "Human Subjects:"
     iacuc_approval_date: "IACUC Approval Date:"
@@ -1114,6 +1112,7 @@ en:
     dashboard: "Dashboard"
     faq: "Help/FAQs"
     feedback: "Feedback"
+    redcap_survey: 'https://redcap.musc.edu/surveys/?s=A37TNJWJPL'
 
   # Service Request approve epic rights
   approve_epic_rights:

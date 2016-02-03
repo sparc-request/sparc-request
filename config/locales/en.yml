@@ -1016,6 +1016,7 @@ en:
     dashboard: "Dashboard"
     faq: "Help/FAQs"
     feedback: "Feedback"
+    redcap_survey: 'https://redcap.musc.edu/surveys/?s=A37TNJWJPL'
 
   # Service Request approve epic rights
   approve_epic_rights:

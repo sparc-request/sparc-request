@@ -45,10 +45,10 @@ FactoryGirl.define do
       charge_count 0
       token_count 0
       approval_count 0
+      organizations []
     end
 
     after(:build) do |service_request, evaluator|
-
       create_list(:sub_service_request, evaluator.sub_service_count,
         service_request: service_request)
 
@@ -66,6 +66,12 @@ FactoryGirl.define do
 
       create_list(:approval, evaluator.approval_count,
         service_request: service_request)
+    end
+
+    after(:create) do |service_request, evaluator|
+      evaluator.organizations.each do |org|
+        service_request.sub_service_requests << create(:sub_service_request, organization: org)
+      end
     end
 
     factory :service_request_without_validations, traits: [:without_validations]

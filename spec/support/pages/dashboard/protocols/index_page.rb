@@ -4,7 +4,7 @@ module Dashboard
     class IndexPage < SitePrism::Page
       set_url '/dashboard/protocols'
 
-      section :filters, '.new_filterrific' do
+      section :filters, '#filterrific_form' do
         element :search_field, '#filterrific_search_query'
         element :archived_checkbox, '#filterrific_show_archived'
         element :apply_filter_button, '#apply-filter-button'
@@ -12,9 +12,22 @@ module Dashboard
         elements :status_options, 'div.status-select li'
         element :my_protocols_checkbox, '#filterrific_for_identity_id'
         element :my_admin_organizations_checkbox, '#filterrific_for_admin'
+        element :core_select, 'div.core-select button'
+        elements :core_options, 'div.core-select li'
+        element :reset_link, '#reset_filters_link'
+
         def select_status(status)
           status_select.click
           status_options.select { |so| so.text == status.capitalize }.first.click
+        end
+
+        def select_core(core)
+          core_select.click
+          core_options.select { |so| so.text == core.capitalize }.first.click
+        end
+
+        def selected_core
+          core_select['title']
         end
       end
 

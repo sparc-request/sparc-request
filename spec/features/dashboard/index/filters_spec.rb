@@ -10,6 +10,64 @@ RSpec.describe 'filters', js: :true do
     wait_for_javascript_to_finish
   end
 
+  shared_context 'authorized Organizations' do
+    let!(:org1) { create(:organization, admin: jug2, name: 'Organization 1') }
+    let!(:org2) { create(:organization, admin: jug2, name: 'Organization 2') }
+  end
+
+  describe 'reset' do
+    context 'user is a super user and service provider for some organization' do
+      include_context 'authorized Organizations'
+
+      it 'should remove all filters' do
+        p1 = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: true, short_title: 'abc')
+        sr = create(:service_request_without_validations, protocol: p1, service_requester: jug2)
+        create(:sub_service_request, ssr_id: '0001', service_request: sr, organization: org1, status: 'draft')
+
+        p2 = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false)
+        visit_protocols_index_page
+
+        filters = @page.filters
+        filters.search_field.set('abc')
+        filters.archived_checkbox.click
+        filters.select_status('draft')
+        filters.my_protocols_checkbox.click
+        filters.my_admin_organizations_checkbox.click
+        filters.select_core(org1.name)
+        filters.apply_filter_button.click
+        wait_for_javascript_to_finish
+
+        expect(@page.displayed_protocol_ids).to eq [p1.id]
+        @page.filters.reset_link.click
+        wait_for_javascript_to_finish
+        expect(@page.displayed_protocol_ids.sort).to eq [p2.id]
+      end
+    end
+
+    context 'user is neither a super user nor service provider for any organization' do
+      it 'should remove all filters' do
+        p1 = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: true, title: 'abc')
+        sr = create(:service_request_without_validations, protocol: p1, service_requester: jug2)
+        create(:sub_service_request, ssr_id: '0001', service_request: sr, organization: create(:organization), status: 'draft')
+
+        p2 = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false)
+        visit_protocols_index_page
+
+        filters = @page.filters
+        filters.search_field.set('abc')
+        filters.archived_checkbox.click
+        filters.select_status('draft')
+        filters.apply_filter_button.click
+        wait_for_javascript_to_finish
+
+        expect(@page.displayed_protocol_ids).to eq [p1.id]
+        @page.filters.reset_link.click
+        wait_for_javascript_to_finish
+        expect(@page.displayed_protocol_ids.sort).to eq [p2.id]
+      end
+    end
+  end
+
   describe 'archived checkbox' do
     describe 'defaults' do
       it 'should not display archived Protocols' do
@@ -165,9 +223,7 @@ RSpec.describe 'filters', js: :true do
 
   describe 'my protocols' do
     context 'user is a service provider and a superuser for an Organization' do
-      let!(:organization) { create(:organization) }
-      let!(:service_provider) { create(:service_provider, identity: jug2, organization: organization) }
-      let!(:super_user) { create(:super_user, identity: jug2, organization: organization) }
+      let!(:organization) { create(:organization, admin: jug2) }
 
       it 'should show the My Protocols checkbox' do
         visit_protocols_index_page
@@ -244,18 +300,14 @@ RSpec.describe 'filters', js: :true do
 
   describe 'my admin organizations' do
     describe 'defaults' do
-      let!(:organization) { create(:organization) }
-      let!(:service_provider) { create(:service_provider, identity: jug2, organization: organization) }
-      let!(:super_user) { create(:super_user, identity: jug2, organization: organization) }
+      include_context 'authorized Organizations'
 
       it 'should not restrict listing to Protocols with SSR\'s in user\'s authorized Organizations' do
         p1 = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false)
-        sr1 = create(:service_request_without_validations, protocol: p1, service_requester: jug2)
-        create(:sub_service_request, ssr_id: '0001', service_request: sr1, organization: organization, status: 'approved')
+        create(:service_request_without_validations, protocol: p1, organizations: [org1])
 
         p2 = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false)
-        sr2 = create(:service_request_without_validations, protocol: p2, service_requester: jug2)
-        create(:sub_service_request, ssr_id: '0001', service_request: sr2, organization: create(:organization), status: 'approved')
+        create(:service_request_without_validations, protocol: p2, organizations: [create(:organization)])
 
         visit_protocols_index_page
         expect(@page.displayed_protocol_ids.sort).to eq [p1.id, p2.id]
@@ -267,21 +319,156 @@ RSpec.describe 'filters', js: :true do
       end
     end
 
-    context 'user a service provider and superuser for an Organization' do
-      let!(:organization) { create(:organization) }
-      let!(:service_provider) { create(:service_provider, identity: jug2, organization: organization) }
-      let!(:super_user) { create(:super_user, identity: jug2, organization: organization) }
+    context 'user checks My Admin Organizations and clicks the filter button' do
+      include_context 'authorized Organizations'
 
-      it 'should show the My Admin Organizations checkbox' do
+      it 'should only display Protocols contain SSR\'s belonging to user\'s authorized Organizations' do
+        p1 = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false)
+        create(:service_request_without_validations, protocol: p1, organizations: [org1])
+
+        p2 = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false)
+        create(:service_request_without_validations, protocol: p2, organizations: [create(:organization)])
+
         visit_protocols_index_page
-        expect(@page.filters).to have_my_admin_organizations_checkbox
+        @page.filters.my_admin_organizations_checkbox.click
+        @page.filters.apply_filter_button.click
+        wait_for_javascript_to_finish
+        expect(@page.displayed_protocol_ids.sort).to eq [p1.id]
       end
     end
 
-    context 'user is not both a service provider and a superuser for any Organization' do
-      it 'should not show the My Admin Organizations checkbox' do
+    context 'user unchecks previously checked My Admin Organizations and clicks the filter button' do
+      include_context 'authorized Organizations'
+
+      it 'should not restrict listing to Protocols with SSR\'s in user\'s authorized Organizations' do
+        p1 = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false)
+        create(:service_request_without_validations, protocol: p1, organizations: [org1])
+
+        p2 = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false)
+        create(:service_request_without_validations, protocol: p2, organizations: [create(:organization)])
+
         visit_protocols_index_page
-        expect(@page.filters).to have_no_my_admin_organizations_checkbox
+        @page.filters.my_admin_organizations_checkbox.click
+        @page.filters.apply_filter_button.click
+        wait_for_javascript_to_finish
+        @page.filters.my_admin_organizations_checkbox.click
+        @page.filters.apply_filter_button.click
+        wait_for_javascript_to_finish
+
+        expect(@page.displayed_protocol_ids.sort).to eq [p1.id, p2.id]
+      end
+    end
+
+    describe 'visibility' do
+      context 'user a service provider and superuser for an Organization' do
+        include_context 'authorized Organizations'
+
+        it 'should show the My Admin Organizations checkbox' do
+          visit_protocols_index_page
+          expect(@page.filters).to have_my_admin_organizations_checkbox
+        end
+      end
+
+      context 'user is not both a service provider and a superuser for any Organization' do
+        it 'should not show the My Admin Organizations checkbox' do
+          visit_protocols_index_page
+          expect(@page.filters).to have_no_my_admin_organizations_checkbox
+        end
+      end
+    end
+  end
+
+  describe 'core dropdown' do
+    describe 'defaults' do
+      include_context 'authorized Organizations'
+
+      it 'should not restrict listing to Protocols with SSR\'s in a particular user-authorized Organization' do
+        p1 = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false)
+        create(:service_request_without_validations, protocol: p1, organizations: [org1])
+
+        p2 = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false)
+        create(:service_request_without_validations, protocol: p2, organizations: [org2])
+
+        p3 = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false)
+        create(:service_request_without_validations, protocol: p3, organizations: [create(:organization)])
+
+        visit_protocols_index_page
+
+        expect(@page.displayed_protocol_ids.sort).to eq [p1.id, p2.id, p3.id]
+      end
+
+      it 'should not select anything in dropdown' do
+        p1 = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false)
+        create(:service_request_without_validations, protocol: p1, organizations: [org1])
+
+        visit_protocols_index_page
+        expect(@page.filters.selected_core).to eq '- Any -'
+      end
+    end
+
+    context 'user selects an Organization by name and clicks the Filter button' do
+      include_context 'authorized Organizations'
+
+      it 'should restrict listing to Protocols with SSR\'s belonging to that Organization' do
+        p1 = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false)
+        create(:service_request_without_validations, protocol: p1, organizations: [org1])
+
+        p2 = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false)
+        create(:service_request_without_validations, protocol: p2, organizations: [org1, org2])
+
+        p3 = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false)
+        create(:service_request_without_validations, protocol: p3, organizations: [create(:organization)])
+
+        visit_protocols_index_page
+        @page.filters.select_core(org1.name)
+        @page.filters.apply_filter_button.click
+        wait_for_javascript_to_finish
+
+        expect(@page.displayed_protocol_ids.sort).to eq [p1.id, p2.id]
+      end
+    end
+
+    context 'user deselects a previously selected Organization and clicks the Filter button' do
+      include_context 'authorized Organizations'
+
+      it 'should not restrict listing to Protocols with SSR\'s belonging to any particular Organization' do
+        p1 = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false)
+        create(:service_request_without_validations, protocol: p1, organizations: [org1])
+
+        p2 = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false)
+        create(:service_request_without_validations, protocol: p2, organizations: [org1, org2])
+
+        p3 = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false)
+        create(:service_request_without_validations, protocol: p3, organizations: [create(:organization)])
+
+        visit_protocols_index_page
+        @page.filters.select_core(org1.name)
+        @page.filters.apply_filter_button.click
+        wait_for_javascript_to_finish
+        @page.filters.core_select.click
+        @page.filters.core_options.first.click
+        @page.filters.apply_filter_button.click
+        wait_for_javascript_to_finish
+
+        expect(@page.displayed_protocol_ids.sort).to eq [p1.id, p2.id, p3.id]
+      end
+    end
+
+    describe 'visibility' do
+      context 'user a service provider and superuser for an Organization' do
+        include_context 'authorized Organizations'
+
+        it 'should show the My Admin Organizations checkbox' do
+          visit_protocols_index_page
+          expect(@page.filters).to have_core_select
+        end
+      end
+
+      context 'user is not both a service provider and a superuser for any Organization' do
+        it 'should not show the My Admin Organizations checkbox' do
+          visit_protocols_index_page
+          expect(@page.filters).to have_no_core_select
+        end
       end
     end
   end

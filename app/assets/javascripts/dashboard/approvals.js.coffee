@@ -23,7 +23,7 @@ $(document).ready ->
   # ADMIN APPROVALS LISTENERS BEGIN
 
   $(document).on 'click', '#admin_approvals_button', ->
-    ssr_id = $(this).data('sub_service_request_id')
+    ssr_id = $(this).data('sub-service-request-id')
     data = 
       "sub_service_request_id" : ssr_id
     $.ajax

@@ -18,12 +18,12 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-= render partial: 'dashboard/sub_service_requests/header_ssr_info_table', locals: {protocol: @protocol, sub_service_request: @sub_service_request, service_request: @service_request }
+= render partial: 'dashboard/sub_service_requests/header', locals: { protocol: @protocol, sub_service_request: @sub_service_request }
 
 .tabs{role: 'tabpanel'}
   %ul.nav.nav-tabs.nav-justified{role: 'tablist'}
     %li.custom-tab.ssr_tab.active{role: 'presentation'}
-      = link_to "Details", "#details", {class: 'details-tab', "data-toggle" => 'tab', role: 'tab', "aria-controls" => 'details-tab'}
+      = link_to "Request Details", "#details", {class: 'details-tab', "data-toggle" => 'tab', role: 'tab', "aria-controls" => 'details-tab'}
     %li.custom-tab.ssr_tab{role: 'presentation'}
       = link_to "Study Schedule", "#study_schedule", {class: 'study_schedule-tab', "data-toggle" => 'tab', role: 'tab', "aria-controls" => 'study_schedule-tab'}
     %li.custom-tab.ssr_tab{role: 'presentation'}
@@ -37,7 +37,7 @@
 
   .tab-content
     .tab-pane#details{role: 'tabpanel', class: 'active'}
-      = render partial: 'dashboard/sub_service_requests/service_request_info/service_request_info', locals: {protocol: @protocol, sub_service_request: @sub_service_request, service_request: @service_request, subsidy: @subsidy}
+      = render partial: 'dashboard/sub_service_requests/request_details', locals: { protocol: @protocol, service_request: @service_request, sub_service_request: @sub_service_request, subsidy: @subsidy }
     .tab-pane#study_schedule{role: 'tabpanel'}
       #per_patient_services
         = render partial: 'dashboard/sub_service_requests/per_patient_per_visit', locals: {sub_service_request: @sub_service_request, service_request: @service_request}

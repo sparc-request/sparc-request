@@ -40,6 +40,8 @@ class SubServiceRequest < ActiveRecord::Base
   has_many :reports, :dependent => :destroy
   has_many :notifications, :dependent => :destroy
 
+  delegate :protocol, to: :service_request, allow_nil: true
+
   # These two ids together form a unique id for the sub service request
   attr_accessible :service_request_id
   attr_accessible :ssr_id

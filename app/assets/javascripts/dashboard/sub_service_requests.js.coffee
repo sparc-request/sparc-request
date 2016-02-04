@@ -42,6 +42,13 @@ $(document).ready ->
       url: "/dashboard/sub_service_requests/#{ssr_id}"
       data: data
 
+  $(document).on 'click', '#delete_ssr_button', ->
+    if confirm "Are you sure you want to delete this request forever?"
+      sub_service_request_id = $(this).data('sub-service-request-id')
+      $.ajax
+        type: 'DELETE'
+        url: "/dashboard/sub_service_requests/#{sub_service_request_id}"
+
   # SERVICE REQUEST INFO LISTENERS END
   # TIMELINE LISTENERS BEGIN
 

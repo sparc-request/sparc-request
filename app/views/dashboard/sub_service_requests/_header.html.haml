@@ -18,26 +18,33 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.row.list-group#status_owner_fulfillment
-  = render partial: 'dashboard/sub_service_requests/service_request_info/status_owner_fulfillment', locals: { sub_service_request: sub_service_request }
+.panel-group#ssr_show_panel
+  .panel.panel-primary
 
-%hr
+    .panel-heading
+      %h4.panel-title.pull-left= "#{@protocol.short_title} > #{@sub_service_request.organization.name} (#{@protocol.id}-#{@sub_service_request.ssr_id})"
+      .pull-right
+        %button.btn.btn-sm.btn-default.notes.list{data: { notable_type: "SubServiceRequest", notable_id: @sub_service_request.id }}= "Notes"
+      .clearfix
 
-.row.list-group#timeline
-  = render partial: 'dashboard/sub_service_requests/service_request_info/timeline', locals: {sub_service_request: sub_service_request, protocol: protocol}
+    %table.table.table-bordered.table-condensed
+      %thead
+        %tr.default
+          %th= "Status"
+          %th= "Owner"
+          %th= "Fulfillment"
+          %th= "Current Cost"
+          %th= "User Display Cost"
 
-%hr
-
-.row.list-group#fulfillment_subsidy
-  = render partial: 'dashboard/subsidies/subsidy', locals: {sub_service_request: sub_service_request, subsidy: subsidy}
-
-%hr
-
-.row.list-group#cost_notes_approvals
-  .col-sm-12
-    .col-sm-4
-      %button.btn.btn-md.btn-warning#admin_approvals_button{ 'data-sub_service_request_id' => @sub_service_request.id, disabled: !sub_service_request.ctrc? }= t(:fulfillments)[:core_approvals][:header]
-      %button.btn.btn-md.btn-primary.notes.list{ data: {notable_id: @sub_service_request.id, notable_type: "SubServiceRequest" }} Notes
-    .col-sm-8#service_request_cost
-      = render partial: 'dashboard/sub_service_requests/service_request_info/direct_cost_total', locals: { sub_service_request: sub_service_request }
-
+      %tbody
+        %tr
+          %td.text-center#service_request_status_dropdown
+            = select_tag "sub_service_request_status", options_for_select(@sub_service_request ? @sub_service_request.organization.get_available_statuses.invert : [], @sub_service_request.try(:status)), :'data-sub_service_request_id' => @sub_service_request.id, :class => 'selectpicker'
+          %td.text-center#service_request_owner_dropdown
+            = service_request_owner_display(@sub_service_request)
+          %td.text-center#ssr_fulfillment_status
+            = ready_for_fulfillment_display(@user, sub_service_request)
+          %td.effective_cost
+            = number_to_currency(effective_current_total(@sub_service_request))
+          %td.display_cost
+            = number_to_currency(user_display_total(@sub_service_request))

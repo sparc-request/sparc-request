@@ -55,6 +55,7 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
   end
 
   def destroy
+    @protocol = @sub_service_request.protocol
     if @sub_service_request.destroy
       # Delete all related toast messages
       ToastMessage.where(:sending_class_id => params[:id]).where(:sending_class => "SubServiceRequest").each do |toast|
@@ -62,7 +63,7 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
       end
 
       # notify users with view rights or above of deletion
-      @sub_service_request.service_request.protocol.project_roles.each do |project_role|
+      @protocol.project_roles.each do |project_role|
         next if project_role.project_rights == 'none'
         Notifier.sub_service_request_deleted(project_role.identity, @sub_service_request, current_user).deliver unless project_role.identity.email.blank?
       end
@@ -71,9 +72,8 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
       @sub_service_request.organization.service_providers.where("(`service_providers`.`hold_emails` != 1 OR `service_providers`.`hold_emails` IS NULL)").each do |service_provider|
         Notifier.sub_service_request_deleted(service_provider.identity, @sub_service_request, current_user).deliver
       end
+      flash[:alert] = "Sub Service Request Destroyed!"
     end
-
-    redirect_to dashboard_root_path
   end
 
   def update_from_fulfillment

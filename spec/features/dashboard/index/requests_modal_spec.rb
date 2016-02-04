@@ -160,9 +160,9 @@ RSpec.describe 'requests modal', js: true do
           organization = create(:organization, admin: jug2, name: 'Organization 2')
           sub_service_request = create(:sub_service_request, ssr_id: '0001', service_request: service_request, organization: organization, status: EDITABLE_STATUSES.first)
           open_modal
-          binding.pry
-          @requests_modal.service_requests.first.sub_service_requests.first.admin_edit_button.click
-          expect(@page.current_url).to end_with "/dashboard/sub_service_requests/#{sub_service_request.id}"
+          expect(@requests_modal.service_requests.first.sub_service_requests.first.admin_edit_button['href']).to eq "/dashboard/sub_service_requests/#{sub_service_request.id}"
+          # @requests_modal.service_requests.first.sub_service_requests.first.admin_edit_button.click
+          # expect(@page.current_url).to end_with "/dashboard/sub_service_requests/#{sub_service_request.id}"
         end
       end
     end

@@ -297,9 +297,12 @@ class SubServiceRequest < ActiveRecord::Base
 
   # Can't edit a request if it's placed in an uneditable status
   def can_be_edited?
+    puts EDITABLE_STATUSES.inspect
     if EDITABLE_STATUSES.keys.include? self.organization.id
+      puts 'TOP'
       EDITABLE_STATUSES[self.organization.id].include?(self.status)
     else
+      puts 'BOTTOM'
       true
     end
   end

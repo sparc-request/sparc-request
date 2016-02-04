@@ -18,7 +18,7 @@ RSpec.describe 'dashboard index', js: :true do
           visit_protocols_index_page
 
           # show archived protocols
-          @page.filters.archived_checkbox.set(true)
+          @page.filters.archived_checkbox.click
           @page.filters.apply_filter_button.click
           wait_for_javascript_to_finish
         end
@@ -71,7 +71,7 @@ RSpec.describe 'dashboard index', js: :true do
           visit_protocols_index_page
 
           # show archived protocols
-          @page.filters.archived_checkbox.set(true)
+          @page.filters.archived_checkbox.click
           @page.filters.apply_filter_button.click
           wait_for_javascript_to_finish
         end
@@ -147,38 +147,5 @@ RSpec.describe 'dashboard index', js: :true do
         end
       end
     end
-
-  #   describe 'requests modal' do
-  #     let!(:protocol) { create(:protocol_federally_funded,  :without_validations, primary_pi: jug2, type: 'Study', archived: false) }
-  #     let!(:service_request_with_ssr) { create(:service_request_without_validations, protocol: protocol, service_requester: jug2) }
-  #     let!(:sub_service_request) { create(:sub_service_request, ssr_id: '0001', service_request: service_request, organization: create(:organization)) }
-  #     let!(:service_request_wo_ssr) { create(:service_request_without_validations, protocol: protocol, service_requester: jug2) }
-  #     before(:each) do
-  #       visit_protocols_index_page
-  #       @page.protocols.first.requests_button.click
-  #       @requests_modal = @page.requests_modal
-  #     end
-  #
-  #     it 'should be titled by the Protocol\'s short title' do
-  #       expect(@requests_modal.title.text).to eq protocol.short_title
-  #     end
-  #
-  #     it 'should list the associated ServiceRequests that have SubServiceRequests' do
-  #       expect(@requests_modal.service_requests.first.pretty_ssrid.text).to eq "#{protocol.id}-#{service_request_with_ssr.ssr_id}"
-  #     end
-  #
-  #     it 'should not list SubServiceRequests in first_draft' do
-  #     end
-  #
-  #     context 'user can edit ServiceRequest' do
-  #       it 'should display \'Edit Original\' button' do
-  #       end
-  #     end
-  #
-  #     context 'user cannot edit ServiceRequest' do
-  #       it 'should not display \'Edit Original\' button' do
-  #       end
-  #     end
-  #   end
   end
 end

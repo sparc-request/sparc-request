@@ -27,31 +27,33 @@
         %button.edit_service_request.btn.btn-warning.btn-sm{ type: 'button', data: { permission: @permission_to_edit.to_s, url: "/service_requests/#{service_request.id}/catalog?from_user_portal=true&edit_original=true" } }= t(:protocol_information)[:edit_original]
     .clearfix
   %table.table.table-striped
-    %tr
-      %th= t(:protocol_information)[:srid]
-      %th= "Organization"
-      %th= t(:protocol_information)[:status]
-      %th{ colspan: 4 } Actions
-
-    - service_request.sub_service_requests.each do |ssr|
-      - next if ssr.status == 'first_draft'
+    %thead
       %tr
-        %td.pretty-ssr-id
-          = pretty_ssr_id(service_request.protocol, ssr)
-        %td
-          = ssr.org_tree_display
-        %td
-          = AVAILABLE_STATUSES[ssr.status]
-        %td
-          = render partial: "dashboard/notifications/dropdown", locals: { sub_service_request: ssr }
-        %td
-          %button.view-sub-service-request-button.btn.btn-primary.btn-sm{ type: 'button', data: { service_request_id: service_request.id, protocol_id: service_request.protocol.id, status: ssr.status, ssr_id: ssr.ssr_id.to_s } }
-            View SSR
-        %td.edit-td
-          - if @user.can_edit_sub_service_request? ssr
-            %button.edit_service_request.btn.btn-warning.btn-sm{ type: 'button', data: { permission: @permission_to_edit.to_s, url: "/service_requests/#{service_request.id}/catalog?sub_service_request_id=#{ssr.id}&from_user_portal=true" } }
-              Edit SSR
-        %td.edit-td
-          - if @user.admin_organizations.include? ssr.organization
-            %a.edit_service_request.btn.btn-warning.btn-sm{ type: 'button', href: "/dashboard/sub_service_requests/#{ssr.id}" }
-              Admin Edit
+        %th= t(:protocol_information)[:srid]
+        %th= "Organization"
+        %th= t(:protocol_information)[:status]
+        %th{ colspan: 4 } Actions
+    %tbody
+      - service_request.sub_service_requests.each do |ssr|
+        - next if ssr.status == 'first_draft'
+        %tr
+          %td.pretty-ssr-id
+            = pretty_ssr_id(service_request.protocol, ssr)
+          %td.organization
+            = ssr.org_tree_display
+          %td.status
+            = AVAILABLE_STATUSES[ssr.status]
+          %td
+            = render partial: "dashboard/notifications/dropdown", locals: { sub_service_request: ssr }
+          %td
+            %button.view-sub-service-request-button.btn.btn-primary.btn-sm{ type: 'button', data: { service_request_id: service_request.id, protocol_id: service_request.protocol.id, status: ssr.status, ssr_id: ssr.ssr_id.to_s } }
+              View SSR
+          %td.edit-td
+            - if @user.can_edit_sub_service_request? ssr
+              %button.edit_service_request.btn.btn-warning.btn-sm{ type: 'button', data: { permission: @permission_to_edit.to_s, url: "/service_requests/#{service_request.id}/catalog?sub_service_request_id=#{ssr.id}&from_user_portal=true" } }
+                Edit SSR
+          %td.edit-td
+            - if @user.admin_organizations.include? ssr.organization
+              - puts 'INCLUDED'
+              %a.edit_service_request.btn.btn-warning.btn-sm{ type: 'button', href: "/dashboard/sub_service_requests/#{ssr.id}" }
+                Admin Edit

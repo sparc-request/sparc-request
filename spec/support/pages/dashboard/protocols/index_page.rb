@@ -58,7 +58,19 @@ module Dashboard
       section :requests_modal, '#requests-modal' do
         element :title, '.modal-header h4'
         sections :service_requests, '.panel.service-request-info' do
-          element :pretty_ssr_id, 'td.pretty-ssr-id'
+          element :header, '.panel-heading .panel-title'
+          sections :sub_service_requests, 'tbody tr' do
+            element :pretty_ssr_id, 'td.pretty-ssr-id'
+            element :organization, 'td.organization'
+            element :status, 'td.status'
+            element :view_ssr_button, '.view-sub-service-request-button'
+            element :edit_ssr_button, 'button.edit_service_request'
+            element :admin_edit_button, 'a.edit_service_request'
+
+            def admin_edit_button_href
+              admin_edit_button['href']
+            end
+          end
         end
       end
     end

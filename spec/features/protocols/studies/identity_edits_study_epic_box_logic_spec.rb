@@ -403,15 +403,15 @@ RSpec.describe "edit study epic box", js: true do
     wait_for_javascript_to_finish
   end
 
-  QUESTIONS = ['study_type_answer_certificate_of_conf_answer', 'study_type_answer_higher_level_of_privacy_answer', 'study_type_answer_access_study_info_answer', 'study_type_answer_epic_inbasket_answer', 'study_type_answer_research_active_answer', 'study_type_answer_restrict_sending_answer']
+  questions = ['study_type_answer_certificate_of_conf_answer', 'study_type_answer_higher_level_of_privacy_answer', 'study_type_answer_access_study_info_answer', 'study_type_answer_epic_inbasket_answer', 'study_type_answer_research_active_answer', 'study_type_answer_restrict_sending_answer']
   def select_epic_box_answers(answer_array)
 
-    select answer_array[0], from: QUESTIONS[0] unless answer_array[0].nil?
-    select answer_array[1], from: QUESTIONS[1] unless answer_array[1].nil?
-    select answer_array[2], from: QUESTIONS[2] unless answer_array[2].nil?
-    select answer_array[3], from: QUESTIONS[3] unless answer_array[3].nil?
-    select answer_array[4], from: QUESTIONS[4] unless answer_array[4].nil?
-    select answer_array[5], from: QUESTIONS[5] unless answer_array[5].nil?
+    select answer_array[0], from: questions[0] unless answer_array[0].nil?
+    select answer_array[1], from: questions[1] unless answer_array[1].nil?
+    select answer_array[2], from: questions[2] unless answer_array[2].nil?
+    select answer_array[3], from: questions[3] unless answer_array[3].nil?
+    select answer_array[4], from: questions[4] unless answer_array[4].nil?
+    select answer_array[5], from: questions[5] unless answer_array[5].nil?
   end
 
   def answer_questions(*answers)

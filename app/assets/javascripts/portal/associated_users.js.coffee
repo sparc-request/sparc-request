@@ -320,7 +320,7 @@ $(document).ready ->
               id: 'edit_authorized_user_cancel_button'
               text: 'Cancel'
               click: ->
-                pr_id = $('#pr_id').val()
+                pr_id = $('.edit_user_dialog_box #pr_id').val()
 
                 button = $('#edit_authorized_user_cancel_button')
                 button_text = button.children('span')

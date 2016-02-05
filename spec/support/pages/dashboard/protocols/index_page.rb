@@ -15,6 +15,7 @@ module Dashboard
         element :core_select, 'div.core-select button'
         elements :core_options, 'div.core-select li'
         element :reset_link, '#reset_filters_link'
+        element :save_link, '#save_filters_link'
 
         def select_status(status)
           status_select.click
@@ -28,6 +29,10 @@ module Dashboard
 
         def selected_core
           core_select['title']
+        end
+
+        section :recently_saved_filters, '#saved_searches' do
+          elements :filters, 'li a'
         end
       end
 
@@ -72,6 +77,11 @@ module Dashboard
             end
           end
         end
+      end
+
+      section :filter_form_modal, 'form.new_protocol_filter' do
+        element :name_field, '#protocol_filter_search_name'
+        element :save_button, 'input.btn[value="Save"]'
       end
     end
   end

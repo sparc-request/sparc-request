@@ -29,7 +29,7 @@ $(document).ready ->
   research_active_dropdown = $('#study_type_answer_research_active_answer')
   restrict_sending_dropdown = $('#study_type_answer_restrict_sending_answer')
 
-  epic_box_alert_message = () -> 
+  epic_box_alert_message = () ->
     options = {
       resizable: false,
       height: 220,
@@ -52,7 +52,7 @@ $(document).ready ->
 
   $.prototype.hide_visual_error = () ->
     this.removeClass('visual_error')
-    if $('.visual_error').length == 0 
+    if $('.visual_error').length == 0
       $('.study_type div').removeClass('field_with_errors')
       if $('#errorExplanation ul li').size() == 1
         $('#errorExplanation').remove()
@@ -74,7 +74,6 @@ $(document).ready ->
 
   $(document).on 'change', "input[name='protocol[selected_for_epic]']", ->
     # Publish Study in Epic - Radio
-    console.log("here")
     switch $('.selected_for_epic_button .btn input:radio:checked').val()
       when 'true'
         study_type_form.show()
@@ -124,16 +123,16 @@ $(document).ready ->
       restrict_sending_dropdown.hide_elt()
     return
 
-  # When the epic box answers hit the validations with an unselected field, 
+  # When the epic box answers hit the validations with an unselected field,
   # the html.haml sets display to none for unselected fields
-  # So if the user has not filled out one of the 
-  # required fields in the epic box, it will hit this code and display 
+  # So if the user has not filled out one of the
+  # required fields in the epic box, it will hit this code and display
   # the appropriate fields that need to be filled out with a visual cue of red border
   if $('.field_with_errors label:contains("Study type questions")').length > 0
     study_selected_for_epic_radio.change()
     if certificate_of_confidence_dropdown.is(':visible')
       certificate_of_confidence_dropdown.change()
-    if higher_level_of_privacy_dropdown.val() == 'true' 
+    if higher_level_of_privacy_dropdown.val() == 'true'
       access_required_dropdown.show_elt()
       access_required_dropdown.change()
     if higher_level_of_privacy_dropdown.val() == 'false'
@@ -156,8 +155,8 @@ $(document).ready ->
     access_required_dropdown.on 'change', (e) ->
       add_and_check_visual_error_on_field_change(access_required_dropdown)
 
-  #### This was written for an edge case in admin/portal.  
-  #### When you go from a virgin project (selected_for_epic = nil/ never been a study) 
+  #### This was written for an edge case in admin/portal.
+  #### When you go from a virgin project (selected_for_epic = nil/ never been a study)
   #### to a study, the Epic Box should be editable instead of only displaying the epic box data.
 
   if $('#study_can_edit_admin_study').val() == "can_edit_study"

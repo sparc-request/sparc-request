@@ -15,6 +15,84 @@ RSpec.describe 'filters', js: :true do
     let!(:org2) { create(:organization, admin: jug2, name: 'Organization 2') }
   end
 
+  describe 'save' do
+    let!(:protocol) { create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false) }
+    before(:each) do
+      visit_protocols_index_page
+      expect(@page).to have_protocols
+      @page.filters.archived_checkbox.click
+    end
+
+    context 'user clicks save' do
+      before(:each) do
+        @page.filters.save_link.click
+      end
+
+      it 'should present a modal asking for filter name' do
+        expect(@page).to have_content('Choose a name for your search')
+      end
+
+      context 'user enters name and clicks save' do
+        before(:each) do
+          @page.filter_form_modal.name_field.set('my filter')
+          @page.filter_form_modal.save_button.click
+          wait_for_javascript_to_finish
+        end
+
+        it 'should create a new ProtocolFilter' do
+          expect(@page.filters.recently_saved_filters).to have_filters
+        end
+
+        it 'should apply filter, if not already' do
+          expect(@page).to have_protocols
+        end
+      end
+    end
+  end
+
+  describe 'recently saved filters' do
+    let!(:protocol) { create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: true) }
+
+    context 'user has saved filters' do
+      before(:each) do
+        6.times do |n|
+          f = ProtocolFilter.create(search_name: "Filter #{n}",
+            show_archived: true,
+            for_admin: false,
+            for_identity_id: true,
+            search_query: '',
+            with_status: '')
+          f.identity = jug2
+          f.save!
+        end
+        visit_protocols_index_page
+        expect(@page).to have_no_protocols
+      end
+
+      it 'should show the five most recent saved filters' do
+        expected_filters = ProtocolFilter.where(identity_id: jug2.id).
+          order(created_at: :desc).
+          limit(5).
+          pluck(:search_name)
+
+        actual_filters = @page.
+          filters.
+          recently_saved_filters.
+          filters.
+          map(&:text)
+        expect(expected_filters).to eq actual_filters
+      end
+
+      context 'user clicks a saved filter name' do
+        it 'should apply that filter' do
+          @page.filters.recently_saved_filters.filters.first.click
+          wait_for_javascript_to_finish
+          expect(@page).to have_protocols
+        end
+      end
+    end
+  end
+
   describe 'reset' do
     context 'user is a super user and service provider for some organization' do
       include_context 'authorized Organizations'

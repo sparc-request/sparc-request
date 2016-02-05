@@ -182,8 +182,6 @@ class LineItem < ActiveRecord::Base
   def quantity_total(line_items_visit)
     # quantity_total = self.visits.map {|x| x.research_billing_qty}.inject(:+) * self.subject_count
     quantity_total = line_items_visit.visits.sum('research_billing_qty')
-    puts "MODEL: #{quantity_total}"
-    puts "MODEL: #{line_items_visit.subject_count}"
     return quantity_total * (line_items_visit.subject_count || 0)
   end
 

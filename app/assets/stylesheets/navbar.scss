@@ -1,0 +1,58 @@
+$navbar-tab-color: #113967;
+
+.navbar {
+  width: 100%;
+  float: left;
+  margin: 0 0 3em 0;
+  padding: 0;
+  list-style: none;
+  background-color: #fff;
+  border-bottom: 1px solid #ccc;
+  border-top: 1px solid #fff;
+}
+
+.navbar li {
+  float: left;
+}
+
+.navbar li a {
+  display: block;
+  padding: 8px 15px;
+  text-decoration: none;
+  font-weight: bold;
+  color: #fff;
+  border-right: 1px solid #fff;
+}
+
+.align-element-nav-bar {
+  padding: 8px 15px;
+  float: right;
+}
+
+.right-section {
+  float: right;
+}
+
+.dashboard {
+  background-color: $navbar-tab-color;
+}
+
+.admin {
+  background-color: $navbar-tab-color;
+}
+
+.fulfillment {
+  background-color: $navbar-tab-color;
+}
+
+.catalog {
+  background-color: $navbar-tab-color;
+}
+
+.reports {
+  background-color: $navbar-tab-color;
+}
+
+.logout {
+  color: #069 !important;
+}

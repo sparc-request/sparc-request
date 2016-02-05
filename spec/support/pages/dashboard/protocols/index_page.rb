@@ -4,6 +4,14 @@ module Dashboard
     class IndexPage < SitePrism::Page
       set_url '/dashboard/protocols'
 
+      element :new_protocol_button, '#create-new-study-button'
+      elements :new_protocol_options, '#create-new-protocol-select a'
+
+      def new_protocol(protocol_type)
+        new_protocol_button.click
+        new_protocol_options.select { |opt| opt.text == "New #{protocol_type}" }.first.click
+      end
+
       section :filters, '#filterrific_form' do
         element :search_field, '#filterrific_search_query'
         element :archived_checkbox, '#filterrific_show_archived'

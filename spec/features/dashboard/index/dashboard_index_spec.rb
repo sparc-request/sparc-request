@@ -10,6 +10,24 @@ RSpec.describe 'dashboard index', js: :true do
     wait_for_javascript_to_finish
   end
 
+  describe 'new protocol button' do
+    before(:each) { visit_protocols_index_page }
+
+    context 'user clicks button and selects Study from dropdown' do
+      it 'should navigate to the correct page' do
+        @page.new_protocol('Study')
+        expect(@page.current_url).to end_with "/dashboard/protocols/new?protocol_type=study"
+      end
+    end
+
+    context 'user clicks button and selects Project from dropdown' do
+      it 'should navigate to the correct page' do
+        @page.new_protocol('Project')
+        expect(@page.current_url).to end_with "/dashboard/protocols/new?protocol_type=project"
+      end
+    end
+  end
+
   describe 'Protocols list' do
     describe 'archive button' do
       context 'archived Project' do

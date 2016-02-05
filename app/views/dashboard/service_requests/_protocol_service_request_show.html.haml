@@ -54,6 +54,5 @@
                 Edit SSR
           %td.edit-td
             - if @user.admin_organizations.include? ssr.organization
-              - puts 'INCLUDED'
               %a.edit_service_request.btn.btn-warning.btn-sm{ type: 'button', href: "/dashboard/sub_service_requests/#{ssr.id}" }
                 Admin Edit

@@ -113,11 +113,8 @@ class Organization < ActiveRecord::Base
 
   # If an organization or one of it's parents is defined as lockable in the application.yml, return true 
   def has_editable_statuses?
-    parents = self.parents(true)
-    parents << id
-
     EDITABLE_STATUSES.keys.each do |org_id|
-      if parents.include?(org_id)
+      if parents(true).include?(org_id) || (org_id == id)
         return true
       end
     end

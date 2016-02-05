@@ -444,6 +444,7 @@ RSpec.describe 'organization' do
         organization2 = Organization.create(parent_id: organization1.id)
         EDITABLE_STATUSES[organization1.id] = ['draft']
         expect(organization2.has_editable_statuses?).to eq(true)
+        expect(organization1.has_editable_statuses?).to eq(true)
       end
 
       it 'should return false otherwise' do

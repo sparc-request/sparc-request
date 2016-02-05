@@ -46,9 +46,8 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
   end
 
   def update
-    @subsidy = @sub_service_request.subsidy
     if @sub_service_request.update_attributes(params[:sub_service_request])
-      flash[:success] = "Sub Service Request Updated!"
+      flash[:success] = "Request Updated!"
     else
       @errors = @sub_service_request.errors
     end
@@ -72,27 +71,7 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
       @sub_service_request.organization.service_providers.where("(`service_providers`.`hold_emails` != 1 OR `service_providers`.`hold_emails` IS NULL)").each do |service_provider|
         Notifier.sub_service_request_deleted(service_provider.identity, @sub_service_request, current_user).deliver
       end
-      flash[:alert] = "Sub Service Request Destroyed!"
-    end
-  end
-
-  def update_from_fulfillment
-    @study_tracker = params[:study_tracker] == "true"
-    saved_status = @sub_service_request.status
-
-    if @sub_service_request.update_attributes(params[:sub_service_request])
-      @sub_service_request.update_based_on_status(saved_status)
-      @sub_service_request.generate_approvals(@user, params)
-      @sub_service_request.distribute_surveys if @sub_service_request.status == 'complete' and @sub_service_request.status != saved_status #status is complete and it was something different before
-      @service_request = @sub_service_request.service_request
-      @protocol = @service_request.protocol
-      @approvals = [@service_request.approvals, @sub_service_request.approvals].flatten
-      email_users @sub_service_request if params[:status] == 'submitted'
-      render 'dashboard/sub_service_requests/update_past_status', :formats => [:js]
-    else
-      respond_to do |format|
-        format.js { render :status => 500, :json => clean_errors(@sub_service_request.errors) }
-      end
+      flash[:alert] = "Request Destroyed!"
     end
   end
 
@@ -121,22 +100,9 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
   def push_to_epic
     begin
       @sub_service_request.service_request.protocol.push_to_epic(EPIC_INTERFACE)
-
-      respond_to do |format|
-        format.json {
-          render(
-              status: 200,
-              json: {})
-        }
-      end
+      flash[:success] = "Request Pushed to Epic!"
     rescue
-      respond_to do |format|
-        format.json {
-          render(
-              status: 500,
-              json: [$!.message])
-        }
-      end
+      flash[:alert] = $!.message
     end
   end
 

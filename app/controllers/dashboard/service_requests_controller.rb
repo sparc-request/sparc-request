@@ -50,17 +50,6 @@ class Dashboard::ServiceRequestsController < Dashboard::BaseController
     end
   end
 
-  def update_from_fulfillment
-    @service_request = ServiceRequest.find(params[:id])
-    if @service_request.update_attributes(params[:service_request])
-      render :nothing => true
-    else
-      respond_to do |format|
-        format.js { render :status => 500, :json => clean_errors(@service_request.errors) }
-      end
-    end
-  end
-
   private
 
   ##### NOT ACTIONS #####

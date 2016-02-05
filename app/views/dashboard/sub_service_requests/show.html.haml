@@ -18,7 +18,8 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-= render partial: 'dashboard/sub_service_requests/header', locals: { protocol: @protocol, sub_service_request: @sub_service_request }
+#sub_service_request_header
+  = render partial: 'dashboard/sub_service_requests/header', locals: { protocol: @protocol, sub_service_request: @sub_service_request }
 
 .tabs{role: 'tabpanel'}
   %ul.nav.nav-tabs.nav-justified{role: 'tablist'}
@@ -49,8 +50,3 @@
       = render partial: 'dashboard/sub_service_requests/history/status_changes', locals: { sub_service_request_id: @sub_service_request.id }
     .tab-pane#notifications{role: 'tabpanel'}
       = render partial: 'dashboard/notifications/notifications', locals: { sub_service_request: @sub_service_request }
-
-= render 'cwf_building'
-  
-
-

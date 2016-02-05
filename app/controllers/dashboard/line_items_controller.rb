@@ -71,7 +71,7 @@ class Dashboard::LineItemsController < Dashboard::BaseController
   def update
     @otf = @line_item.service.one_time_fee
     if @line_item.update_attributes(params[:line_item])
-      flash[:success] = "Study Level Activity Updated!" if @otf
+      flash[:success] = @otf ? "Study Level Activity Updated!" : "Line Item Updated!"
     else
       @errors = @line_item.errors
     end
@@ -99,35 +99,6 @@ class Dashboard::LineItemsController < Dashboard::BaseController
         @candidate_per_patient_per_visit = @sub_service_request.candidate_services.reject {|x| x.one_time_fee}
 
         render 'dashboard/sub_service_requests/add_line_item'
-      end
-    end
-  end
-
-  def update_from_fulfillment
-    @line_item = LineItem.find(params[:id])
-    @sub_service_request = @line_item.sub_service_request
-    @service_request = @sub_service_request.service_request
-    @selected_arm = @service_request.arms.first
-    @subsidy = @sub_service_request.subsidy
-    @percent = @subsidy.try(:percent_subsidy).try(:*, 100)
-    @study_tracker = params[:study_tracker] == "true"
-    @line_items_visit = LineItemsVisit.find(params[:line_items_visit_id]) if params[:line_items_visit_id]
-    @service_id = params[:service_id]
-
-    if @line_item.service.one_time_fee
-      update_otf_line_item()
-    else
-      if params[:undefined] && params[:undefined][:displayed_cost] # we only want to update the displayed cost
-        @line_item.displayed_cost = params[:undefined][:displayed_cost] || ''
-        @line_item.save
-        reload_request
-      elsif update_per_patient_line_item()
-        reload_request
-      else
-        @line_item.reload
-        respond_to do |format|
-          format.js { render :status => 500, :json => clean_errors(@line_item.errors) }
-        end
       end
     end
   end

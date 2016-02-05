@@ -201,25 +201,16 @@ SparcRails::Application.routes.draw do
 
     resources :epic_queues, only: ['index', 'destroy']
 
-    resources :fulfillments do
-      member do
-        put :update_from_fulfillment
-      end
-    end
+    resources :fulfillments
 
     resources :line_items do
       member do
         get :details
-        put :update_from_fulfillment
         put :update_from_cwf
       end
     end
 
-    resources :line_items_visits, only: [:destroy] do
-      member do
-        put :update_from_fulfillment
-      end
-    end
+    resources :line_items_visits, only: [:destroy]
 
     resources :messages, only: [:index, :new, :create]
 
@@ -250,7 +241,6 @@ SparcRails::Application.routes.draw do
       member do
         get :view_full_calendar
         patch :update_protocol_type
-        put :update_from_fulfillment
         get :display_requests
         patch :archive
       end
@@ -260,25 +250,15 @@ SparcRails::Application.routes.draw do
 
     resources :services, only: [:show]
 
-    resources :service_requests, only: [:show] do
-      member do
-        put :update_from_fulfillment
-      end
-    end
+    resources :service_requests, only: [:show]
 
     resources :studies, controller: :protocols, except: [:destroy]
 
-    resources :subsidies, only: [:create, :update, :destroy] do
-      member do
-        put :update_from_fulfillment
-      end
-    end
-    match "/subsidys/:id/update_from_fulfillment" => "subsidies#update_from_fulfillment", via: [:put]
+    resources :subsidies, only: [:create, :update, :destroy]
     match "/subsidys/:id" => "subsidies#destroy", via: [:delete]
 
     resources :sub_service_requests, except: [:index] do
       member do
-        put :update_from_fulfillment
         patch :update_from_project_study_information
         put :push_to_epic
         get :change_history_tab
@@ -288,11 +268,7 @@ SparcRails::Application.routes.draw do
       end
     end
 
-    resources :visits, only: [:destroy] do
-      member do
-        put :update_from_fulfillment
-      end
-    end
+    resources :visits, only: [:destroy]
 
     resources :visit_groups, only: [:new, :create, :update, :destroy] do
       collection do

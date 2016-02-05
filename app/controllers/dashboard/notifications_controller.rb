@@ -27,10 +27,10 @@ class Dashboard::NotificationsController < Dashboard::BaseController
       clear(:edit_protocol)
     if params[:sub_service_request_id]
       # specific to ssr
-      @notifications = @user.all_notifications.select!{ |n| n.sub_service_request_id == params[:sub_service_request_id].to_i }
+      @notifications = @user.all_notifications.select!{ |n| n.sub_service_request_id == params[:sub_service_request_id].to_i } || []
     else
       # all user notifications
-      @notifications = @user.all_notifications
+      @notifications = @user.all_notifications || []
     end
 
     @table = params[:table]

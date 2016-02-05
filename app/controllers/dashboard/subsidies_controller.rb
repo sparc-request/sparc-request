@@ -20,38 +20,7 @@
 
 class Dashboard::SubsidiesController < Dashboard::BaseController
   respond_to :json, :js, :html
-  before_action :find_subsidy, only: [:update, :destroy, :update_from_fulfillment]
-
-  def update_from_fulfillment
-    total = @subsidy.sub_service_request.direct_cost_total
-    percent_subsidy = 0.0
-    pi_contribution = 0.0
-    # Fix pi_contribution to be in cents
-    data = params[:subsidy]
-    if params[:percent_subsidy]
-      subsidy = (params[:percent_subsidy].to_f / 100.0) * total
-      data[:pi_contribution] = (total - subsidy) / 100
-    elsif params[:pi_contribution]
-      pi_contribution =  (params[:pi_contribution].to_f * 100.0)
-      percent_subsidy = total - pi_contribution
-      percent_subsidy = ((percent_subsidy / total) * 100).round(2)
-    end
-
-    data[:pi_contribution] = data[:pi_contribution].to_f * 100.0
-    data[:overridden] = true
-
-    percent_subsidy = params[:percent_subsidy] ? params[:percent_subsidy] : percent_subsidy
-    pi_contribution = params[:percent_subsidy] ? data[:pi_contribution] : pi_contribution
-
-    if @subsidy.update_attributes(data)
-      @sub_service_request = @subsidy.sub_service_request
-      @subsidy.update_attributes(:stored_percent_subsidy => percent_subsidy, :pi_contribution => pi_contribution)
-    else
-      respond_to do |format|
-        format.json { render :status => 500, :json => clean_errors(@subsidy.errors) } 
-      end
-    end
-  end
+  before_action :find_subsidy, only: [:update, :destroy]
 
   def create
     if @subsidy = Subsidy.create(params[:subsidy])

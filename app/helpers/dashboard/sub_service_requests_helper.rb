@@ -55,14 +55,18 @@ module Dashboard::SubServiceRequestsHelper
     if sub_service_request.ready_for_fulfillment?
       if sub_service_request.in_work_fulfillment?
         if user.clinical_provider_rights?
+          # In fulfillment and user has rights
           display += link_to "Go to Fulfillment", CLINICAL_WORK_FULFILLMENT_URL, target: "_blank", class: "btn btn-primary btn-md"
         else
-          display += check_box_tag "in_work_fulfillment", true, true, :'data-sub_service_request_id' => sub_service_request.id, class: "cwf_data form-control", disabled: true
+          # In fulfillment, user does not have rights, disable button
+          display += link_to "Go to Fulfillment", CLINICAL_WORK_FULFILLMENT_URL, target: "_blank", class: "btn btn-primary btn-md", disabled: true
         end
       else
-        display += check_box_tag "in_work_fulfillment", true, false, :'data-sub_service_request_id' => sub_service_request.id, class: "cwf_data form-control"
+        # Not in Fulfillment
+        display += button_tag "Send to Fulfillment", data: { sub_service_request_id: sub_service_request.id }, id: "send_to_fulfillment_button", class: "btn btn-success btn-md form-control"
       end
     else
+      # Not ready for Fulfillment
       display += content_tag(:span, 'This Sub Service Request is not ready for Fulfillment.')
     end
 

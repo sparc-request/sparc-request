@@ -22,9 +22,9 @@
   .panel.panel-primary
 
     .panel-heading
-      %h4.panel-title.pull-left= "#{@protocol.short_title} > #{@sub_service_request.organization.name} (#{@protocol.id}-#{@sub_service_request.ssr_id})"
+      %h4.panel-title.pull-left= "#{protocol.short_title} > #{sub_service_request.organization.name} (#{protocol.id}-#{sub_service_request.ssr_id})"
       .pull-right
-        %button.btn.btn-sm.btn-default.notes.list{data: { notable_type: "SubServiceRequest", notable_id: @sub_service_request.id }}= "Notes"
+        %button.btn.btn-sm.btn-default.notes.list{data: { notable_type: "SubServiceRequest", notable_id: sub_service_request.id }}= "Notes"
       .clearfix
 
     %table.table.table-bordered.table-condensed
@@ -39,12 +39,12 @@
       %tbody
         %tr
           %td.text-center#service_request_status_dropdown
-            = select_tag "sub_service_request_status", options_for_select(@sub_service_request ? @sub_service_request.organization.get_available_statuses.invert : [], @sub_service_request.try(:status)), :'data-sub_service_request_id' => @sub_service_request.id, :class => 'selectpicker'
+            = select_tag "sub_service_request_status", options_for_select(sub_service_request ? sub_service_request.organization.get_available_statuses.invert : [], sub_service_request.try(:status)), :'data-sub_service_request_id' => sub_service_request.id, :class => 'selectpicker'
           %td.text-center#service_request_owner_dropdown
-            = service_request_owner_display(@sub_service_request)
+            = service_request_owner_display(sub_service_request)
           %td.text-center#ssr_fulfillment_status
-            = ready_for_fulfillment_display(@user, sub_service_request)
+            = ready_for_fulfillment_display(current_user, sub_service_request)
           %td.effective_cost
-            = number_to_currency(effective_current_total(@sub_service_request))
+            = number_to_currency(effective_current_total(sub_service_request))
           %td.display_cost
-            = number_to_currency(user_display_total(@sub_service_request))
+            = number_to_currency(user_display_total(sub_service_request))

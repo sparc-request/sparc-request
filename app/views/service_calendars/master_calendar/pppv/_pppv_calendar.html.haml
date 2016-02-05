@@ -38,7 +38,7 @@
     // override x-editable defaults
     $.fn.editable.defaults.send = 'always'
     $.fn.editable.defaults.ajaxOptions = {
-      type: "PUT",
+      type: "PATCH",
       dataType: "script"
     };
 
@@ -63,6 +63,10 @@
         if(isNaN(n) || n <= 0) {
           return "cost must be a nonnegative number";
         }
+      },
+      params: function(params) {
+        data = {'line_item': {'displayed_cost': params.value}};
+        return data;
       }
     });
 

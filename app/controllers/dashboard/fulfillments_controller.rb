@@ -68,17 +68,6 @@ class Dashboard::FulfillmentsController < Dashboard::BaseController
     end
   end
 
-  def update_from_fulfillment
-    @fulfillment = Fulfillment.find(params[:id])
-    if @fulfillment.update_attributes(params[:fulfillment])
-      render :nothing => true
-    else
-      respond_to do |format|
-        format.js { render :status => 500, :json => clean_errors(@fulfillment.errors) } 
-      end
-    end
-  end
-
   private
 
   def find_fulfillment

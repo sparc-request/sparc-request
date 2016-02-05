@@ -38,8 +38,8 @@ RSpec.describe "Identity creates Study", js: true do
       expect(page).to_not have_selector('#study_type_answer_access_study_info')
       expect(page).to have_selector('#study_type_answer_epic_inbasket')
       expect(page).to have_selector('#study_type_answer_research_active')
-      expect(page).to have_selector('#study_type_answer_restrict_sending')        
-    end 
+      expect(page).to have_selector('#study_type_answer_restrict_sending')
+    end
   end
 
   context 'study type 1' do
@@ -55,7 +55,7 @@ RSpec.describe "Identity creates Study", js: true do
       expect(page).to_not have_selector('#study_type_answer_access_study_info')
       expect(page).to_not have_selector('#study_type_answer_epic_inbasket')
       expect(page).to_not have_selector('#study_type_answer_research_active')
-      expect(page).to_not have_selector('#study_type_answer_restrict_sending') 
+      expect(page).to_not have_selector('#study_type_answer_restrict_sending')
     end
   end
 
@@ -74,7 +74,7 @@ RSpec.describe "Identity creates Study", js: true do
       expect(page).to_not have_selector('#study_type_answer_research_active')
       expect(page).to_not have_selector('#study_type_answer_restrict_sending')
     end
-    
+
   end
   context 'study type 3' do
 
@@ -107,7 +107,7 @@ RSpec.describe "Identity creates Study", js: true do
       expect(page).to have_selector('#study_type_answer_research_active')
       expect(page).to have_selector('#study_type_answer_restrict_sending')
     end
-    
+
   end
   context 'study type 5' do
 
@@ -124,7 +124,7 @@ RSpec.describe "Identity creates Study", js: true do
       expect(page).to have_selector('#study_type_answer_research_active')
       expect(page).to have_selector('#study_type_answer_restrict_sending')
     end
-    
+
   end
   context 'study type 6' do
 
@@ -141,7 +141,7 @@ RSpec.describe "Identity creates Study", js: true do
       expect(page).to have_selector('#study_type_answer_research_active')
       expect(page).to have_selector('#study_type_answer_restrict_sending')
     end
-    
+
   end
   context 'study type 7' do
     before :each do
@@ -156,7 +156,7 @@ RSpec.describe "Identity creates Study", js: true do
       expect(page).to have_selector('#study_type_answer_research_active')
       expect(page).to have_selector('#study_type_answer_restrict_sending')
     end
-    
+
   end
   context 'study type 8' do
     before :each do
@@ -171,7 +171,7 @@ RSpec.describe "Identity creates Study", js: true do
       expect(page).to have_selector('#study_type_answer_research_active')
       expect(page).to have_selector('#study_type_answer_restrict_sending')
     end
-    
+
   end
   context 'study type 9' do
     before :each do
@@ -186,7 +186,7 @@ RSpec.describe "Identity creates Study", js: true do
       expect(page).to have_selector('#study_type_answer_research_active')
       expect(page).to have_selector('#study_type_answer_restrict_sending')
     end
-    
+
   end
   context 'study type 10' do
     before :each do
@@ -201,7 +201,7 @@ RSpec.describe "Identity creates Study", js: true do
       expect(page).to have_selector('#study_type_answer_research_active')
       expect(page).to have_selector('#study_type_answer_restrict_sending')
     end
-    
+
   end
   context 'study type 11' do
     before :each do
@@ -216,7 +216,7 @@ RSpec.describe "Identity creates Study", js: true do
       expect(page).to have_selector('#study_type_answer_research_active')
       expect(page).to have_selector('#study_type_answer_restrict_sending')
     end
-    
+
   end
   context 'study type 12' do
     before :each do
@@ -233,7 +233,7 @@ RSpec.describe "Identity creates Study", js: true do
       expect(page).to have_selector('#study_type_answer_research_active')
       expect(page).to have_selector('#study_type_answer_restrict_sending')
     end
-    
+
   end
   context 'study type 13' do
     before :each do
@@ -248,7 +248,7 @@ RSpec.describe "Identity creates Study", js: true do
       expect(page).to have_selector('#study_type_answer_research_active')
       expect(page).to have_selector('#study_type_answer_restrict_sending')
     end
-    
+
   end
   context 'study type 14' do
     before :each do
@@ -263,7 +263,7 @@ RSpec.describe "Identity creates Study", js: true do
       expect(page).to have_selector('#study_type_answer_research_active')
       expect(page).to have_selector('#study_type_answer_restrict_sending')
     end
-    
+
   end
   context 'study type 15' do
     before :each do
@@ -278,7 +278,7 @@ RSpec.describe "Identity creates Study", js: true do
       expect(page).to have_selector('#study_type_answer_research_active')
       expect(page).to have_selector('#study_type_answer_restrict_sending')
     end
-    
+
   end
   context 'study type 16' do
     before :each do
@@ -293,7 +293,7 @@ RSpec.describe "Identity creates Study", js: true do
       expect(page).to have_selector('#study_type_answer_research_active')
       expect(page).to have_selector('#study_type_answer_restrict_sending')
     end
-    
+
   end
 
   context 'study type 17' do
@@ -326,7 +326,7 @@ RSpec.describe "Identity creates Study", js: true do
       expect(page).to_not have_selector('#study_type_answer_access_study_info')
       expect(page).to_not have_selector('#study_type_answer_epic_inbasket')
       expect(page).to_not have_selector('#study_type_answer_research_active')
-      expect(page).to_not have_selector('#study_type_answer_restrict_sending') 
+      expect(page).to_not have_selector('#study_type_answer_restrict_sending')
     end
 
     it 'should throw an error when trying to submit incomplete epic box info' do
@@ -340,7 +340,7 @@ RSpec.describe "Identity creates Study", js: true do
       expect(page).to_not have_selector('#study_type_answer_access_study_info')
       expect(page).to_not have_selector('#study_type_answer_epic_inbasket')
       expect(page).to_not have_selector('#study_type_answer_research_active')
-      expect(page).to_not have_selector('#study_type_answer_restrict_sending') 
+      expect(page).to_not have_selector('#study_type_answer_restrict_sending')
     end
 
     it 'should throw an error when trying to submit incomplete epic box info' do
@@ -354,7 +354,7 @@ RSpec.describe "Identity creates Study", js: true do
       expect(page).to have_css('#study_type_answer_access_study_info_answer.visual_error')
       expect(page).to_not have_selector('#study_type_answer_epic_inbasket')
       expect(page).to_not have_selector('#study_type_answer_research_active')
-      expect(page).to_not have_selector('#study_type_answer_restrict_sending') 
+      expect(page).to_not have_selector('#study_type_answer_restrict_sending')
     end
 
     it 'should throw an error when trying to submit incomplete epic box info' do
@@ -421,9 +421,9 @@ RSpec.describe "Identity creates Study", js: true do
     end
   end
 
-  questions = ['study_type_answer_certificate_of_conf_answer', 'study_type_answer_higher_level_of_privacy_answer', 'study_type_answer_access_study_info_answer', 'study_type_answer_epic_inbasket_answer', 'study_type_answer_research_active_answer', 'study_type_answer_restrict_sending_answer']
-  def select_epic_box_answers(answer_array)
 
+  def select_epic_box_answers(answer_array)
+    questions = ['study_type_answer_certificate_of_conf_answer', 'study_type_answer_higher_level_of_privacy_answer', 'study_type_answer_access_study_info_answer', 'study_type_answer_epic_inbasket_answer', 'study_type_answer_research_active_answer', 'study_type_answer_restrict_sending_answer']
     select answer_array[0], from: questions[0] unless answer_array[0].nil?
     select answer_array[1], from: questions[1] unless answer_array[1].nil?
     select answer_array[2], from: questions[2] unless answer_array[2].nil?

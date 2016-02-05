@@ -41,7 +41,7 @@ $(document).ready ->
       $('.add-user-details').show()
       return false
 
-  .data("uiAutocomplete")._renderItem = (ul, item) ->
+  .data("ui-autocomplete")._renderItem = (ul, item) ->
     if item.label == 'No Results'
       $("<li class='search_result'></li>")
       .data("ui-autocomplete-item", item)

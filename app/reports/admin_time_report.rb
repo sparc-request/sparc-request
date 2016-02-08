@@ -10,22 +10,14 @@ class AdminTimeReport < ReportingModule
   # see app/reports/test_report.rb for all options
   def default_options
     {
-      "Date Range" => {:field_type => :date_range, :for => "service_requests_submitted_at", :from => "2012-03-01".to_date, :to => Date.today},
-      Institution => {:field_type => :select_tag},
-      Provider => {:field_type => :select_tag, :dependency => '#institution_id', :dependency_id => 'parent_id'},
-      Program => {:field_type => :select_tag, :dependency => '#provider_id', :dependency_id => 'parent_id'},
-      Core => {:field_type => :select_tag, :dependency => '#program_id', :dependency_id => 'parent_id'},
+      # "Date Range" => {:field_type => :date_range, :for => "service_requests_submitted_at", :from => "2012-03-01".to_date, :to => Date.today},
+      Institution => {:field_type => :select_tag, :required => true},
+      Provider => {:field_type => :select_tag, :dependency => '#institution_id', :dependency_id => 'parent_id', :required => true},
+      Program => {:field_type => :select_tag, :dependency => '#provider_id', :dependency_id => 'parent_id', :required => true},
+      Core => {:field_type => :select_tag, :dependency => '#program_id', :dependency_id => 'parent_id', :required => true},
       Service => {:field_type => :select_tag, :dependency => '#core_id', :dependency_id => 'organization_id', :required => true},
       "Current Status" => {:field_type => :check_box_tag, :for => 'status', :multiple => AVAILABLE_STATUSES}
     }
-    # {
-    #   Institution => {:field_type => :select_tag},
-    #   Provider => {:field_type => :select_tag, :dependency => '#institution_id', :dependency_id => 'parent_id'},
-    #   Program => {:field_type => :select_tag, :dependency => '#provider_id', :dependency_id => 'parent_id'},
-    #   Core => {:field_type => :select_tag, :dependency => '#program_id', :dependency_id => 'parent_id'},
-    #   Service => {:field_type => :select_tag, :dependency => '#core_id', :dependency_id => 'organization_id'},
-    #   "Current Status" => {:field_type => :check_box_tag, :for => 'status', :multiple => AVAILABLE_STATUSES}
-    # }
   end
 
   # see app/reports/test_report.rb for all options
@@ -78,10 +70,6 @@ class AdminTimeReport < ReportingModule
       # attrs["Total Admin Time (blank)"] = "line_items.where(service_id: #{params[:service_id]}).map(&:fulfillments).flatten.select{|fulfillment| fulfillment.timeframe == nil}.sum(:time)"
     end
 
-    # attrs["Date Submitted"] = "service_request.submitted_at.strftime('%Y-%m-%d')"
-
-
-
     attrs
   end
 
@@ -110,14 +98,6 @@ class AdminTimeReport < ReportingModule
     organizations = Organization.all
     selected_organization_id = args[:core_id] || args[:program_id] || args[:provider_id] || args[:institution_id]
 
-    # # get child organization that have services to related to them
-    # service_organization_ids = [selected_organization_id]
-    # if selected_organization_id
-    #   org = Organization.find(selected_organization_id)
-    #   service_organization_ids = org.all_children(organizations).map(&:id)
-    #   service_organization_ids.flatten!
-    # end
-
     ssr_organization_ids = [args[:core_id], args[:program_id], args[:provider_id], args[:institution_id]].compact
 
     # get child organizations
@@ -130,13 +110,11 @@ class AdminTimeReport < ReportingModule
       submitted_at = args[:service_requests_submitted_at_from].to_time.strftime("%Y-%m-%d 00:00:00")..args[:service_requests_submitted_at_to].to_time.strftime("%Y-%m-%d 23:59:59")
     end
 
-    # default values if none are provided
-    # service_organization_ids = Organization.all.map(&:id) if service_organization_ids.compact.empty? # use all if none are selected
-    # service_organizations = Organization.find(service_organization_ids)
-
+    # default values if none are provided]
     ssr_organization_ids = Organization.all.map(&:id) if ssr_organization_ids.compact.empty? # use all if none are selected
 
-    submitted_at ||= self.default_options["Date Range"][:from]..self.default_options["Date Range"][:to]
+    # submitted_at ||= self.default_options["Date Range"][:from]..self.default_options["Date Range"][:to]
+    submitted_at = "2012-03-01".to_date..Date.today
     statuses = args[:status] || AVAILABLE_STATUSES.keys # use all if none are selected
 
     return :sub_service_requests => {:organization_id => ssr_organization_ids, :status => statuses}, :service_requests => {:submitted_at => submitted_at}, :services => {:id => args[:service_id]}

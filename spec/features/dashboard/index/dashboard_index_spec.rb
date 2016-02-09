@@ -36,8 +36,8 @@ RSpec.describe 'dashboard index', js: :true do
           visit_protocols_index_page
 
           # show archived protocols
-          @page.filters.archived_checkbox.click
-          @page.filters.apply_filter_button.click
+          @page.filter_protocols.archived_checkbox.click
+          @page.filter_protocols.apply_filter_button.click
           wait_for_javascript_to_finish
         end
 
@@ -89,8 +89,8 @@ RSpec.describe 'dashboard index', js: :true do
           visit_protocols_index_page
 
           # show archived protocols
-          @page.filters.archived_checkbox.click
-          @page.filters.apply_filter_button.click
+          @page.filter_protocols.archived_checkbox.click
+          @page.filter_protocols.apply_filter_button.click
           wait_for_javascript_to_finish
         end
 

@@ -12,7 +12,7 @@ module Dashboard
         new_protocol_options.select { |opt| opt.text == "New #{protocol_type}" }.first.click
       end
 
-      section :filter_protocol, '#filterrific_form' do
+      section :filter_protocols, '#filterrific_form' do
         element :save_link, '#save_filters_link'
         element :reset_link, '#reset_filters_link'
         element :search_field, '#filterrific_search_query'

@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'breadcrumbs', js: :true do
+RSpec.describe 'breadcrumbs', js: true do
   let_there_be_lane
   fake_login_for_each_test
   let!(:protocol) { create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false, short_title: 'abc', short_title: 'Short Title') }
@@ -8,195 +8,351 @@ RSpec.describe 'breadcrumbs', js: :true do
     sr = create(:service_request_without_validations, protocol: protocol, service_requester: jug2)
     create(:sub_service_request, ssr_id: '0001', service_request: sr, organization: create(:organization, admin: jug2, type: 'Institution', abbreviation: 'Organists'), status: 'draft')
   end
-
-  let!(:targets) { [:dashboard, :protocol, :ssr, :notifications].freeze }
-  let!(:paths) { { dashboard: '/dashboard/protocols',
-    protocol: "/dashboard/protocols/#{protocol.id}",
-    ssr: "/dashboard/sub_service_requests/#{ssr.id}",
-    notifications: '/dashboard/notifications' }.freeze }
-
-  shared_examples_for 'only dashboard' do
-    it 'should consist only of Dashboard' do
-      crumbs = find_all('#breadcrumbs a')
-      expect(crumbs.map(&:text)).to eq ['Dashboard']
-      expect(crumbs.map { |c| c['href'] }).to eq [paths[:dashboard]]
-    end
+  let!(:paths) do
+    { dashboard: '/dashboard/protocols',
+      protocol: "/dashboard/protocols/#{protocol.id}",
+      ssr: "/dashboard/sub_service_requests/#{ssr.id}",
+      notifications: '/dashboard/notifications' }.freeze
   end
 
-  shared_examples_for 'dashboard, protocol short title, and organization name' do
-    it 'should consist of dashboard, protocol short title, and organization name' do
-      crumbs = find_all('#breadcrumbs a')
-      expect(crumbs.map(&:text)).to eq ['Dashboard', 'Short Title', 'Organists']
-      expect(crumbs.map { |c| c['href'] }).to eq [paths[:dashboard], paths[:protocol], paths[:ssr]]
-    end
+  def click_dashboard_breadcrumb
+    find('#breadcrumbs a', text: 'Dashboard').click
+    wait_for_javascript_to_finish
+    expect(URI.parse(current_url).path).to eq paths[:dashboard]
   end
 
-  context 'beginning on dashboard' do
-    before(:each) { visit paths[:dashboard] }
-
-    it_behaves_like 'only dashboard'
-
-    context 'after clicking a protocol' do
-      before(:each) do
-        first('#filterrific_results tr.protocols_index_row td').click
-        wait_for_javascript_to_finish
-      end
-
-      it 'should consist of Dashboard and protocol short title' do
-        crumbs = find_all('#breadcrumbs a')
-        expect(crumbs.map(&:text)).to eq ['Dashboard', 'Short Title']
-        expect(crumbs.map { |c| c['href'] }).to eq [paths[:dashboard], paths[:protocol]]
-      end
-
-      context 'after clicking dashboard' do
-        before(:each) do
-          first('#breadcrumbs a').click
-          wait_for_javascript_to_finish
-        end
-
-        it 'should take user to dashboard' do
-          expect(URI.parse(current_url).path).to eq paths[:dashboard]
-        end
-
-        it_behaves_like 'only dashboard'
-      end
-
-      context 'navigating to SubServiceRequest' do
-        before(:each) do
-          all('.edit_service_request').last.click
-        end
-
-        it 'should take user to admin edit' do
-          expect(URI.parse(current_url).path).to eq paths[:ssr]
-        end
-
-        it_behaves_like 'dashboard, protocol short title, and organization name'
-      end
-
-      context 'navigating to notifications' do
-        before(:each) {  }
-      end
-    end
-
-    context 'navigating to SubServiceRequest' do
-      context 'navigating to dashboard' do
-      end
-
-      context 'navigating to protocol' do
-      end
-
-      context 'navigating to notifications' do
-      end
-    end
-
-    context 'navigating to notifications' do
-      context 'navigating to dashboard' do
-      end
-
-      context 'navigating to protocol' do
-      end
-
-      context 'navigating to SubServiceRequest' do
-      end
-    end
+  def click_protocol_breadcrumb
+    find('#breadcrumbs a', text: 'Short Title').click
+    wait_for_javascript_to_finish
+    expect(URI.parse(current_url).path).to eq paths[:protocol]
   end
 
-  context 'beginning on protocol' do
-    before(:each) { visit paths[:protocol] }
-
-    context 'navigating to dashboard' do
-      context 'navigating to protocol' do
-      end
-
-      context 'navigating to SubServiceRequest' do
-      end
-
-      context 'navigating to notifications' do
-      end
-    end
-
-    context 'navigating to SubServiceRequest' do
-      before(:each) do
-        all('.edit_service_request').last.click
-      end
-
-      it 'should take user to admin edit' do
-        expect(URI.parse(current_url).path).to eq paths[:ssr]
-      end
-
-      it_behaves_like 'dashboard, protocol short title, and organization name'
-
-      context 'navigating to dashboard' do
-      end
-
-      context 'navigating to protocol' do
-      end
-
-      context 'navigating to notifications' do
-      end
-    end
-
-    context 'navigating to notifications' do
-      context 'navigating to dashboard' do
-      end
-    end
+  def click_ssr_breadcrumb
+    find('#breadcrumbs a', text: 'Organists').click
+    wait_for_javascript_to_finish
+    expect(URI.parse(current_url).path).to eq paths[:ssr]
   end
 
-  context 'beginning on SubServiceRequest' do
-    context 'navigating to protocol' do
-      context 'navigating to dashboard' do
-      end
-
-      context 'navigating to SubServiceRequest' do
-      end
-    end
-
-    context 'navigating to SubServiceRequest' do
-      context 'navigating to dashboard' do
-      end
-    end
-
-    context 'navigating to notifications' do
-      context 'navigating to dashboard' do
-      end
-
-      context 'navigating to SubServiceRequest' do
-      end
-    end
+  def click_notifications_button
+    find('#messages-btn').click
+    wait_for_javascript_to_finish
   end
 
-  context 'beginning on notifications' do
-    context 'navigating to dashboard' do
-      context 'navigating to protocol' do
-      end
+  def click_protocol
+    first('#filterrific_results tr.protocols_index_row td.id').click
+    wait_for_javascript_to_finish
+  end
 
-      context 'navigating to SubServiceRequest' do
-      end
+  def click_ssr
+    find('.edit_service_request', text: 'Admin Edit').click
+    wait_for_javascript_to_finish
+  end
 
-      context 'navigating to notifications' do
-      end
-    end
+  def click_requests_button_then_ssr
+    first('#filterrific_results button.requests_display_link').click
+    wait_for_javascript_to_finish
+    find('.modal-body .edit_service_request', text: 'Admin Edit').click
+    wait_for_javascript_to_finish
+  end
 
-    context 'navigating to protocol' do
-      context 'navigating to dashboard' do
-      end
+  def check_breadcrumbs(*crumb_labels)
+    crumbs = find_all('#breadcrumbs a')
+    expect(crumbs.map(&:text)).to eq crumb_labels
+  end
 
-      context 'navigating to SubServiceRequest' do
-      end
+  it 'going from dashboard to protocol to dashboard' do
+    visit paths[:dashboard]
+    check_breadcrumbs 'Dashboard'
 
-      context 'navigating to notifications' do
-      end
-    end
+    click_protocol
+    check_breadcrumbs 'Dashboard', 'Short Title'
 
-    context 'navigating to SubServiceRequest' do
-      context 'navigating to protocol' do
-      end
+    click_dashboard_breadcrumb
+    check_breadcrumbs 'Dashboard'
+  end
 
-      context 'navigating to dashboard' do
-      end
+  it 'going from dashboard to protocol to SubServiceRequest' do
+    visit paths[:dashboard]
+    check_breadcrumbs 'Dashboard'
 
-      context 'navigating to notifications' do
-      end
-    end
+    click_protocol
+    check_breadcrumbs 'Dashboard', 'Short Title'
+
+    click_ssr
+    check_breadcrumbs 'Dashboard', 'Short Title', 'Organists'
+  end
+
+  it 'going from dashboard to protocol to notifications' do
+    visit paths[:dashboard]
+    check_breadcrumbs 'Dashboard'
+
+    click_protocol
+    check_breadcrumbs 'Dashboard', 'Short Title'
+
+    click_notifications_button
+    check_breadcrumbs 'Dashboard', 'Short Title', 'Notifications'
+  end
+
+  it 'going from dashboard to SubServiceRequest to dashboard' do
+    visit paths[:dashboard]
+    check_breadcrumbs 'Dashboard'
+
+    click_requests_button_then_ssr
+    check_breadcrumbs 'Dashboard', 'Short Title', 'Organists'
+
+    click_dashboard_breadcrumb
+    check_breadcrumbs 'Dashboard'
+  end
+
+  it 'going from dashboard to SubServiceRequest to protocol' do
+    visit paths[:dashboard]
+    check_breadcrumbs 'Dashboard'
+
+    click_requests_button_then_ssr
+    check_breadcrumbs 'Dashboard', 'Short Title', 'Organists'
+
+    click_protocol_breadcrumb
+    check_breadcrumbs 'Dashboard', 'Short Title'
+  end
+
+  it 'going from dashboard to SubServiceRequest to notifications' do
+    visit paths[:dashboard]
+    check_breadcrumbs 'Dashboard'
+
+    click_requests_button_then_ssr
+    check_breadcrumbs 'Dashboard', 'Short Title', 'Organists'
+
+    click_notifications_button
+    check_breadcrumbs 'Dashboard', 'Short Title', 'Organists', 'Notifications'
+  end
+
+  it 'going from dashboard to notifications to dashboard' do
+    visit paths[:dashboard]
+    check_breadcrumbs 'Dashboard'
+
+    click_notifications_button
+    check_breadcrumbs 'Dashboard', 'Notifications'
+
+    click_dashboard_breadcrumb
+    check_breadcrumbs 'Dashboard'
+  end
+
+  it 'going from protocol to dashboard to protocol' do
+    visit paths[:protocol]
+    check_breadcrumbs 'Dashboard', 'Short Title'
+
+    click_dashboard_breadcrumb
+    check_breadcrumbs 'Dashboard'
+
+    click_protocol
+    check_breadcrumbs 'Dashboard', 'Short Title'
+  end
+
+  it 'going from protocol to dashboard to SubServiceRequest' do
+    visit paths[:protocol]
+    check_breadcrumbs 'Dashboard', 'Short Title'
+
+    click_dashboard_breadcrumb
+    check_breadcrumbs 'Dashboard'
+
+    click_requests_button_then_ssr
+    check_breadcrumbs 'Dashboard', 'Short Title', 'Organists'
+  end
+
+  it 'going from protocol to dashboard to notifications' do
+    visit paths[:protocol]
+    check_breadcrumbs 'Dashboard', 'Short Title'
+
+    click_dashboard_breadcrumb
+    check_breadcrumbs 'Dashboard'
+
+    click_notifications_button
+    check_breadcrumbs 'Dashboard', 'Notifications'
+  end
+
+  it 'going from protocol to SubServiceRequest to dashboard' do
+    visit paths[:protocol]
+    check_breadcrumbs 'Dashboard', 'Short Title'
+
+    click_ssr
+    check_breadcrumbs 'Dashboard', 'Short Title', 'Organists'
+
+    click_dashboard_breadcrumb
+    check_breadcrumbs 'Dashboard'
+  end
+
+  it 'going from protocol to SubServiceRequest to protocol' do
+    visit paths[:protocol]
+    check_breadcrumbs 'Dashboard', 'Short Title'
+
+    click_ssr
+    check_breadcrumbs 'Dashboard', 'Short Title', 'Organists'
+
+    click_protocol_breadcrumb
+    check_breadcrumbs 'Dashboard', 'Short Title'
+  end
+
+  it 'going from protocol to SubServiceRequest to notifications' do
+    visit paths[:protocol]
+    check_breadcrumbs 'Dashboard', 'Short Title'
+
+    click_ssr
+    check_breadcrumbs 'Dashboard', 'Short Title', 'Organists'
+
+    click_notifications_button
+  end
+
+  it 'going from protocol to notifications to dashboard' do
+    visit paths[:protocol]
+    check_breadcrumbs 'Dashboard', 'Short Title'
+
+    click_notifications_button
+    check_breadcrumbs 'Dashboard', 'Short Title', 'Notifications'
+
+    click_dashboard_breadcrumb
+    check_breadcrumbs 'Dashboard'
+  end
+
+  it 'going from protocol to notifications to protocol' do
+    visit paths[:protocol]
+    check_breadcrumbs 'Dashboard', 'Short Title'
+
+    click_notifications_button
+    check_breadcrumbs 'Dashboard', 'Short Title', 'Notifications'
+
+    click_protocol_breadcrumb
+    check_breadcrumbs 'Dashboard', 'Short Title'
+  end
+
+  it 'going from SubServiceRequest to dashboard to protocol' do
+    visit paths[:ssr]
+    check_breadcrumbs 'Dashboard', 'Short Title', 'Organists'
+
+    click_dashboard_breadcrumb
+    check_breadcrumbs 'Dashboard'
+
+    click_protocol
+    check_breadcrumbs 'Dashboard', 'Short Title'
+  end
+
+  it 'going from SubServiceRequest to dashboard to SubServiceRequest' do
+    visit paths[:ssr]
+    check_breadcrumbs 'Dashboard', 'Short Title', 'Organists'
+
+    click_dashboard_breadcrumb
+    check_breadcrumbs 'Dashboard'
+
+    click_requests_button_then_ssr
+    check_breadcrumbs 'Dashboard', 'Short Title', 'Organists'
+  end
+
+  it 'going from SubServiceRequest to dashboard to notifications' do
+    visit paths[:ssr]
+    check_breadcrumbs 'Dashboard', 'Short Title', 'Organists'
+
+    click_dashboard_breadcrumb
+    check_breadcrumbs 'Dashboard'
+
+    click_notifications_button
+    check_breadcrumbs 'Dashboard', 'Notifications'
+  end
+
+  it 'going from SubServiceRequest to protocol to dashboard' do
+    visit paths[:ssr]
+    check_breadcrumbs 'Dashboard', 'Short Title', 'Organists'
+
+    click_protocol_breadcrumb
+    check_breadcrumbs 'Dashboard', 'Short Title'
+
+    click_dashboard_breadcrumb
+    check_breadcrumbs 'Dashboard'
+  end
+
+  it 'going from SubServiceRequest to protocol to SubServiceRequest' do
+    visit paths[:ssr]
+    check_breadcrumbs 'Dashboard', 'Short Title', 'Organists'
+
+    click_protocol_breadcrumb
+    check_breadcrumbs 'Dashboard', 'Short Title'
+
+    click_ssr
+    check_breadcrumbs 'Dashboard', 'Short Title', 'Organists'
+  end
+
+  it 'going from SubServiceRequest to protocol to notifications' do
+    visit paths[:ssr]
+    check_breadcrumbs 'Dashboard', 'Short Title', 'Organists'
+
+    click_protocol_breadcrumb
+    check_breadcrumbs 'Dashboard', 'Short Title'
+
+    click_notifications_button
+    check_breadcrumbs 'Dashboard', 'Short Title', 'Notifications'
+  end
+
+  it 'going from SubServiceRequest to notifications to dashboard' do
+    visit paths[:ssr]
+    check_breadcrumbs 'Dashboard', 'Short Title', 'Organists'
+
+    click_notifications_button
+    check_breadcrumbs 'Dashboard', 'Short Title', 'Organists', 'Notifications'
+
+    click_dashboard_breadcrumb
+    check_breadcrumbs 'Dashboard'
+  end
+
+  it 'going from SubServiceRequest to notifications to protocol' do
+    visit paths[:ssr]
+    check_breadcrumbs 'Dashboard', 'Short Title', 'Organists'
+
+    click_notifications_button
+    check_breadcrumbs 'Dashboard', 'Short Title', 'Organists', 'Notifications'
+
+    click_protocol_breadcrumb
+    check_breadcrumbs 'Dashboard', 'Short Title'
+  end
+
+  it 'going from SubServiceRequest to notifications to SubServiceRequest' do
+    visit paths[:ssr]
+    check_breadcrumbs 'Dashboard', 'Short Title', 'Organists'
+
+    click_notifications_button
+    check_breadcrumbs 'Dashboard', 'Short Title', 'Organists', 'Notifications'
+
+    click_ssr_breadcrumb
+    check_breadcrumbs 'Dashboard', 'Short Title', 'Organists'
+  end
+
+  it 'going from notifications to dashboard to protocol' do
+    visit paths[:notifications]
+    check_breadcrumbs 'Dashboard', 'Notifications'
+
+    click_dashboard_breadcrumb
+    check_breadcrumbs 'Dashboard'
+
+    click_protocol
+    check_breadcrumbs 'Dashboard', 'Short Title'
+  end
+
+  it 'going from notifications to dashboard to SubServiceRequest' do
+    visit paths[:notifications]
+    check_breadcrumbs 'Dashboard', 'Notifications'
+
+    click_dashboard_breadcrumb
+    check_breadcrumbs 'Dashboard'
+
+    click_requests_button_then_ssr
+    check_breadcrumbs 'Dashboard', 'Short Title', 'Organists'
+  end
+
+  it 'going from notifications to dashboard to notifications' do
+    visit paths[:notifications]
+    check_breadcrumbs 'Dashboard', 'Notifications'
+
+    click_dashboard_breadcrumb
+    check_breadcrumbs 'Dashboard'
+
+    click_notifications_button
+    check_breadcrumbs 'Dashboard', 'Notifications'
   end
 end

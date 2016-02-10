@@ -38,7 +38,7 @@
 
   .tab-content
     .tab-pane#details{role: 'tabpanel', class: 'active'}
-      = render partial: 'dashboard/sub_service_requests/request_details', locals: { protocol: @protocol, service_request: @service_request, sub_service_request: @sub_service_request, subsidy: @subsidy }
+      = render partial: 'dashboard/sub_service_requests/request_details', locals: { protocol: @protocol, service_request: @service_request, sub_service_request: @sub_service_request }
     .tab-pane#study_schedule{role: 'tabpanel'}
       #per_patient_services
         = render partial: 'dashboard/sub_service_requests/per_patient_per_visit', locals: {sub_service_request: @sub_service_request, service_request: @service_request}

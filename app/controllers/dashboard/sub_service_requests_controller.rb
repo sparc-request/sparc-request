@@ -25,21 +25,11 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
 
   def show
     @admin = true
-    session[:sub_service_request_id] = @sub_service_request.id
-    session[:service_request_id] = @sub_service_request.service_request_id
     session[:service_calendar_pages] = params[:pages] if params[:pages]
     session[:breadcrumbs].add_crumbs(protocol_id: @sub_service_request.service_request.protocol_id, sub_service_request_id: @sub_service_request.id).clear(:notifications)
     if @user.can_edit_fulfillment? @sub_service_request.organization
-      @user_toasts = @user.received_toast_messages.select {|x| x.sending_class == 'SubServiceRequest'}.select {|y| y.sending_class_id == @sub_service_request.id}
       @service_request = @sub_service_request.service_request
-      @protocol = @sub_service_request.try(:service_request).try(:protocol)
-      if not @protocol then
-        raise ArgumentError, "Sub service request does not have a protocol; is it an invalid sub service request?"
-      end
-      @candidate_one_time_fees, @candidate_per_patient_per_visit = @sub_service_request.candidate_services.partition {|x| x.one_time_fee}
-      @subsidy = @sub_service_request.subsidy
-      @service_list = @service_request.service_list
-      @related_service_requests = @protocol.all_child_sub_service_requests
+      @protocol = @sub_service_request.protocol
     else
       redirect_to dashboard_root_path
     end

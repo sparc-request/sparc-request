@@ -1,0 +1,51 @@
+-# Copyright © 2011 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+- if subsidy.present?
+  #subsidy_table
+    .row
+      .col-xs-12
+        .col-xs-3
+          %label= t(:fulfillments)[:subsidies][:pi]
+        .col-xs-3
+          %label= t(:fulfillments)[:subsidies][:percent]
+        .col-xs-2
+          %label= t(:fulfillments)[:subsidies][:effective_current_total_cost]
+        .col-xs-2
+          %label= t(:fulfillments)[:subsidies][:user_display_total_cost]
+        .col-xs-2
+          %label.pull-right= t(:fulfillments)[:subsidies][:delete]
+    .row
+      .col-xs-12
+        .col-xs-3.center-block
+          .input-group
+            .input-group-addon $
+            = text_field_tag "subsidy_pi_contribution", subsidy.try(:pi_contribution).try(:/, 100.0), :'data-subsidy_id' => subsidy.id, :class => 'form-control'
+        .col-xs-3.center-block
+          .input-group
+            = text_field_tag "subsidy_percent_subsidy", subsidy.try(:stored_percent_subsidy).try(:round, 2), :'data-subsidy_id' => subsidy.id, :class => 'form-control'
+            .input-group-addon %
+        .col-xs-2.center-block.subsidy_effective_current_cost
+          = number_to_currency(subsidy_effective_current_total(sub_service_request, subsidy))
+        .col-xs-2.center-block.subsidy_user_display_cost#direct_cost_total{data: { direct_cost_total: sub_service_request.direct_cost_total, max_dollar_cap: subsidy.max_dollar_cap, max_percentage: subsidy.max_percentage }}
+          = number_to_currency(subsidy_user_display_total(sub_service_request, subsidy))
+        .col-xs-2
+          %button.btn.btn-xs.btn-danger.center-block#delete_subsidy{:'data-subsidy_id' => subsidy.id}
+            %span.glyphicon.glyphicon-remove

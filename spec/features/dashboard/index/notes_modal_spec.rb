@@ -14,7 +14,7 @@ RSpec.describe 'requests modal', js: true do
     expect(@page).to have_protocols
     @page.protocols.first.requests_button.click
     @page.requests_modal.service_requests.first.notes_button.click
-    @notes_modal = @page.notes_modal
+    @notes_modal = @page.index_notes_modal
   end
 
   context 'ServiceRequest has notes' do
@@ -32,10 +32,8 @@ RSpec.describe 'requests modal', js: true do
     before(:each) do
       open_modal
       @notes_modal.new_note_button.click
-      expect(@page).to have_new_note_modal
-      @page.new_note_modal.input_field.set 'hey!'
-      @page.new_note_modal.add_note_button.click
-      expect(@page).to have_notes_modal
+      @page.new_notes_modal.input_field.set 'hey!'
+      @page.new_notes_modal.add_note_button.click
     end
 
     it 'should display new note in modal' do
@@ -43,6 +41,7 @@ RSpec.describe 'requests modal', js: true do
     end
 
     it 'should create a new Note' do
+      wait_for_javascript_to_finish
       expect(Note.count).to eq 1
     end
   end

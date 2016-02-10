@@ -1,4 +1,7 @@
 require 'rails_helper'
+require 'support/pages/dashboard/notes/index_modal'
+require 'support/pages/dashboard/notes/new_modal'
+
 module Dashboard
   module Protocols
     class IndexPage < SitePrism::Page
@@ -93,19 +96,9 @@ module Dashboard
         element :save_button, 'input.btn[value="Save"]'
       end
 
-      section :notes_modal, '#notes-modal' do
-        element :new_note_button, 'button.note.new'
-        sections :notes, '.detail' do
-          element :name, '.name'
-          element :created_at, '.created-at'
-          element :comment, '.comment'
-        end
-      end
+      section :index_notes_modal, Dashboard::Notes::IndexModal, '#notes-modal'
 
-      section :new_note_modal, '#new-note-modal' do
-        element :input_field, 'textarea'
-        element :add_note_button, 'input[value="Add Note"]'
-      end
+      section :new_notes_modal, Dashboard::Notes::NewModal, '#new-note-modal'
     end
   end
 end

@@ -43,7 +43,7 @@
             = ssr.org_tree_display
           %td.status
             = AVAILABLE_STATUSES[ssr.status]
-          %td
+          %td.actions
             = render partial: "dashboard/notifications/dropdown", locals: { sub_service_request: ssr }
           %td
             %button.view-sub-service-request-button.btn.btn-primary.btn-sm{ type: 'button', data: { service_request_id: service_request.id, protocol_id: service_request.protocol.id, status: ssr.status, ssr_id: ssr.ssr_id.to_s } }

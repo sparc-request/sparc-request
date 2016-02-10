@@ -27,14 +27,14 @@
           = "#{@protocol_type} Notes"
         = edit_protocol_button_display(@protocol, @protocol_role)
       .clearfix
-    .panel-body
+    .panel-body#protocol-summary
       = render partial: 'dashboard/protocols/summary', locals: { protocol: @protocol }
   .panel.panel-default
     .panel-heading
       %h4.panel-title= "Authorized Users"
     .panel-body
       = render partial: 'dashboard/associated_users/table', locals: { protocol: @protocol }
-  .panel.panel-default
+  .panel.panel-default#service-requests-panel
     .panel-heading
       %h4.panel-title.pull-left= t(:protocol_information)[:service_requests]
       = consolidated_request_buttons_display(@protocol)
@@ -43,7 +43,7 @@
       - if @protocol.has_first_draft_service_request?
         .alert.alert-danger{ role: 'alert' } Request in progress.
       - elsif !@protocol.service_requests.present?
-        %button.btn.btn-success.btn-sm{ type: 'button', data: { permission: @permission_to_edit.to_s } }
+        %button.btn.btn-success.btn-sm#add-services-button{ type: 'button', data: { permission: @permission_to_edit.to_s } }
           = t(:protocol_information)[:add_services]
       - else
         - @protocol.service_requests.each do |sr|

@@ -27,7 +27,7 @@ module Dashboard::ProtocolsHelper
           content_tag( :button, t(:protocol_information)[:full_calendar], type: 'button', class: 'view-full-calendar-button btn btn-primary btn-sm', data: { protocol_id: protocol.id }
           )+
           link_to( t(:protocol_information)[:consolidated_request], dashboard_protocol_path(protocol, format: :xlsx), class: "btn btn-primary btn-sm", data: { protocol_id: protocol.id }
-          ), class: "pull-right"
+          ), class: "pull-right export-consolidated-request"
         )
       )
     end

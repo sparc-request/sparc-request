@@ -21,30 +21,30 @@
 class Subsidy < ActiveRecord::Base
   audited
 
-  belongs_to :sub_service_request
-
   attr_accessible :sub_service_request_id
   attr_accessible :pi_contribution
   attr_accessible :stored_percent_subsidy
   attr_accessible :overridden
+  attr_accessible :status
+  attr_accessible :total_at_approval
 
-  validate :pi_contribution_cap, :stored_percent_subsidy_cap
+  # validate :pi_contribution_cap, :stored_percent_subsidy_cap
 
-  def pi_contribution=(new_contribution)
-    # recalculate subsidy percentage when changing contribution
-    if new_contribution.present?
-      write_attribute(:pi_contribution, new_contribution)
-      write_attribute(:stored_percent_subsidy, percent_subsidy)
-    end
-  end
+  # def pi_contribution=(new_contribution)
+  #   # recalculate subsidy percentage when changing contribution
+  #   if new_contribution.present?
+  #     write_attribute(:pi_contribution, new_contribution)
+  #     write_attribute(:stored_percent_subsidy, percent_subsidy)
+  #   end
+  # end
 
-  def stored_percent_subsidy=(new_percent_subsidy)
-    # recalculate contribution when changing subsidy percentage
-    if new_percent_subsidy.present?
-      write_attribute(:stored_percent_subsidy, new_percent_subsidy)
-      write_attribute(:pi_contribution, contribution_with_subsidy)
-    end
-  end
+  # def stored_percent_subsidy=(new_percent_subsidy)
+  #   # recalculate contribution when changing subsidy percentage
+  #   if new_percent_subsidy.present?
+  #     write_attribute(:stored_percent_subsidy, new_percent_subsidy)
+  #     write_attribute(:pi_contribution, contribution_with_subsidy)
+  #   end
+  # end
 
   def pi_contribution_cap
     #  (PI Contribution < max) validation

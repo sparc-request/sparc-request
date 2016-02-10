@@ -36,9 +36,11 @@ class SubServiceRequest < ActiveRecord::Base
   has_many :approvals, :dependent => :destroy
   has_many :payments, :dependent => :destroy
   has_many :cover_letters, :dependent => :destroy
-  has_one :subsidy, :dependent => :destroy
   has_many :reports, :dependent => :destroy
   has_many :notifications, :dependent => :destroy
+
+  has_one :approved_subsidy, :dependent => :destroy
+  has_one :pending_subsidy, :dependent => :destroy
 
   delegate :protocol, to: :service_request, allow_nil: true
 
@@ -63,7 +65,7 @@ class SubServiceRequest < ActiveRecord::Base
   attr_accessible :routing
   attr_accessible :documents
 
-  accepts_nested_attributes_for :subsidy
+  accepts_nested_attributes_for :pending_subsidy
   accepts_nested_attributes_for :line_items, allow_destroy: true
   accepts_nested_attributes_for :payments, allow_destroy: true
 

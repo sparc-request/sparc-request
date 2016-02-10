@@ -36,6 +36,12 @@ module Dashboard
           ssr_lists.map { |l| l.root_element['data-service-request-id'] }
         end
       end
+
+      section :new_notification_form, 'form#new_notification' do
+        element :subject_field, 'input#notification_subject'
+        element :message_field, 'textarea#notification_message_body'
+        element :submit_button, 'button[type="submit"]'
+      end
     end
   end
 end

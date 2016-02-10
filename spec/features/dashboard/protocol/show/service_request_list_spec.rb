@@ -112,10 +112,11 @@ RSpec.describe 'service request list', js: true do
         type: 'Study',
         archived: false)
     end
+    let!(:service_requester) { create(:identity, first_name: 'Some', last_name: 'Guy') }
     let!(:service_request) do
       create(:service_request_without_validations,
       protocol: protocol,
-      service_requester: create(:identity, first_name: 'Some', last_name: 'Guy'),
+      service_requester: service_requester,
       status: 'draft')
     end
     let!(:organization) do
@@ -165,6 +166,34 @@ RSpec.describe 'service request list', js: true do
                 find { |li| li.text == 'Primary-pi: Julia Glenn' }.
                 click
             end
+          end
+        end
+
+        context 'user selects someone other than themselves in dropdown and fills in modal' do
+          before(:each) do
+            @actions_td.
+              new_notification_dropdown.
+              list_items.
+              find { |li| li.text == 'Requester: Some Guy' }.
+              click
+
+            expect(@page).to have_new_notification_form
+            @page.new_notification_form.subject_field.set 'Hello'
+            @page.new_notification_form.message_field.set 'Hows it going?'
+            @page.new_notification_form.submit_button.click
+            expect(@page).to have_no_new_notification_form
+          end
+
+          it 'should send a notification to that user' do
+            note = sub_service_request.notifications.last
+            message = Message.first
+            expect(note.subject).to eq 'Hello'
+            expect(note.originator_id).to eq jug2.id
+            expect(note.other_user_id).to eq service_requester.id
+            expect(message.to).to eq service_requester.id
+            expect(message.from).to eq jug2.id
+            expect(message.body).to eq 'Hows it going?'
+            expect(message.notification_id).to eq note.id
           end
         end
       end

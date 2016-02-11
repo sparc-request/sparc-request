@@ -11,11 +11,11 @@ class AdminTimeReport < ReportingModule
   def default_options
     {
       # "Date Range" => {:field_type => :date_range, :for => "service_requests_submitted_at", :from => "2012-03-01".to_date, :to => Date.today},
-      Institution => {:field_type => :select_tag, :required => true},
+      Institution => {:field_type => :select_tag, :required => true, :has_dependencies => "true"},
       Provider => {:field_type => :select_tag, :dependency => '#institution_id', :dependency_id => 'parent_id', :required => true},
       Program => {:field_type => :select_tag, :dependency => '#provider_id', :dependency_id => 'parent_id', :required => true},
-      Core => {:field_type => :select_tag, :dependency => '#program_id', :dependency_id => 'parent_id', :required => true},
-      Service => {:field_type => :select_tag, :dependency => '#core_id', :dependency_id => 'organization_id', :required => true},
+      Core => {:field_type => :select_tag, :dependency => '#program_id', :dependency_id => 'parent_id'},
+      Service => {:field_type => :select_tag, :dependency => '#program_id, #core_id', :dependency_id => 'organization_id', :required => true},
       "Current Status" => {:field_type => :check_box_tag, :for => 'status', :multiple => AVAILABLE_STATUSES}
     }
   end

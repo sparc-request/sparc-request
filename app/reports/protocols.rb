@@ -31,7 +31,7 @@ class ProtocolsReport < ReportingModule
   def default_options
     {
       "Date Range" => {:field_type => :date_range, :for => "service_requests_submitted_at", :from => "2012-03-01".to_date, :to => Date.today},
-      Institution => {:field_type => :select_tag},
+      Institution => {:field_type => :select_tag, :has_dependencies => "true"},
       Provider => {:field_type => :select_tag, :dependency => '#institution_id', :dependency_id => 'parent_id'},
       Program => {:field_type => :select_tag, :dependency => '#provider_id', :dependency_id => 'parent_id'},
       Core => {:field_type => :select_tag, :dependency => '#program_id', :dependency_id => 'parent_id'},

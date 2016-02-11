@@ -22,8 +22,6 @@ class PendingSubsidy < Subsidy
   audited
   before_save :default_values
 
-  belongs_to :sub_service_request
-
   default_scope { where(status: "Pending") }
 
   def default_values
@@ -31,7 +29,7 @@ class PendingSubsidy < Subsidy
   end
 
   def grant_approval approver
-    # Remove current subsidy if exists, save notes
+    # Remove current approved subsidy if exists, save notes
     current_approved_subsidy = sub_service_request.approved_subsidy
     if current_approved_subsidy.present?
       notes = current_approved_subsidy.notes

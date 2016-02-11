@@ -87,41 +87,6 @@ $(document).ready ->
       data: data
 
   # TIMELINE LISTENERS END
-  # SUBSIDY LISTENERS BEGIN
-
-  $(document).on 'click', '#add_subsidy_link', ->
-    sub_service_request_id = $(this).data('sub_service_request_id')
-    data = 'subsidy': 'sub_service_request_id': sub_service_request_id
-    $.ajax
-      type: 'POST'
-      url:  "/dashboard/subsidies/"
-      data: data
-
-  $(document).on 'change', '#subsidy_pi_contribution', ->
-    subsidy_id = $(this).data('subsidy_id')
-    pi_contribution = $(this).val()
-    data = 'subsidy': 'pi_contribution': pi_contribution
-    $.ajax
-      type: 'PATCH'
-      url:  "/dashboard/subsidies/#{subsidy_id}"
-      data: data
-      
-  $(document).on 'change', '#subsidy_percent_subsidy', ->
-    subsidy_id = $(this).data('subsidy_id')
-    stored_percent_subsidy = $(this).val()
-    data = 'subsidy': 'stored_percent_subsidy': stored_percent_subsidy
-    $.ajax
-      type: 'PATCH'
-      url:  "/dashboard/subsidies/#{subsidy_id}"
-      data: data
-
-  $(document).on 'click', '#delete_subsidy', ->
-    subsidy_id = $(this).data('subsidy_id')
-    $.ajax
-      type: 'DELETE'
-      url: "/dashboard/subsidys/#{subsidy_id}"
-
-  # SUBSIDY LISTENERS END
   # HISTORY LISTENERS BEGIN
 
   $(document).on 'click', '.history_button', ->

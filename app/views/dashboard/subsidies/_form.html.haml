@@ -18,40 +18,30 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-- if subsidy.present?
-  .panel.panel-default
-    .panel-heading
-      %h4.panel-title.pull-left= "Current Effective Subsidy"
-      .pull-right
-        %button.btn.btn-sm.btn-default.notes.list{data: { notable_type: "ApprovedSubsidy", notable_id: subsidy.id }}= "Notes"
-      .clearfix
-    %table.table.table-condensed#approved_subsidy_table
-      %thead
-        %tr.default
-          %th= "Request Cost at Approval"
-          %th= t(:fulfillments)[:subsidies][:percent]
-          %th= t(:fulfillments)[:subsidies][:pi]
-          %th= "Subsidy Cost"
-          %th= "Approved By"
-          %th= "Approved At"
-          %th.text-center= "Delete"
-      %tbody
-        %tr
-          %td.request_cost
-            = number_to_currency(subsidy.total_at_approval/100.0)
-          %td.subsidy_percent
-            = subsidy.stored_percent_subsidy.round(2)
-          %td.subsidy_contribution
-            = number_to_currency(subsidy.pi_contribution/100.0)
-          %td.subsidy_effective_current_cost
-            = number_to_currency(subsidy_effective_current_total(sub_service_request, subsidy))
-          %td.approved_by
-            = subsidy.approved_by.try(:full_name)
-          %td.approved_at
-            = format_datetime(subsidy.approved_at)
-          %td.text-center.delete_subsidy
-            %button.btn.btn-sm.btn-danger.delete_subsidy{data: { subsidy_id: subsidy.id }}
-              %span.glyphicon.glyphicon-remove
-- else
-  %span= "There is no current effective subsidy."
-  %hr
+.modal-dialog
+  .modal-content
+    = form_for ([:dashboard, subsidy]), {remote: true, html: {class: "form-horizontal", role: "form"}} do |form|
+      .modal-header
+        %button.close{type: 'button', data: {dismiss: 'modal'}}
+          %span{aria: {hidden:'true'}} &times;
+          %span.sr-only &times;
+        %h4.modal-title.text-center= header_text
+      .modal-body
+        #modal_errors
+        .row
+          .col-md-12
+            = form.hidden_field :sub_service_request_id
+            .form-group
+              = form.label "pi_contribution", "PI Contribution", class: "col-sm-4 control-label"
+              .input-group.col-sm-7
+                %span.input-group-addon $
+                = form.text_field "pi_contribution", {class: 'form-control'}
+            .form-group
+              = form.label "stored_percent_subsidy", "Percent Subsidy", class: "col-sm-4 control-label"
+              .input-group.col-sm-7
+                = form.text_field "stored_percent_subsidy", {class: 'form-control'}
+                %span.input-group-addon %
+      .modal-footer
+        .center-block
+          %button.btn.btn-default{type: 'button', data: {dismiss: 'modal'}} Close
+          %input.btn.btn-primary{type: 'submit', value: "Save"}

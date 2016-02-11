@@ -18,56 +18,5 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class Dashboard::SubsidiesController < Dashboard::BaseController
-  respond_to :json, :js, :html
-  before_action :find_subsidy, only: [:edit, :update, :destroy, :approve]
-
-  def new
-    @subsidy = Subsidy.new(sub_service_request_id: params[:sub_service_request_id])
-    @header_text = "New Subsidy Pending Approval"
-  end
-
-  def create
-    if @subsidy = Subsidy.create(params[:subsidy])
-      @sub_service_request = @subsidy.sub_service_request
-      @subsidy.update_attribute(:pi_contribution, @sub_service_request.direct_cost_total)
-      @subsidy.update_attributes(:stored_percent_subsidy => @subsidy.percent_subsidy)
-      flash[:success] = "Subsidy Created!"
-    else
-      @errors = @subsidy.errors
-    end
-  end
-
-  def edit
-    @header_text = "Edit Subsidy Pending Approval"
-  end
-
-  def update
-    @sub_service_request = @subsidy.sub_service_request
-    if @subsidy.update_attributes(params[:subsidy])
-      flash[:success] = "Subsidy Updated!"
-    else
-      @errors = @subsidy.errors
-      @subsidy.reload
-    end
-  end
-
-  def destroy
-    @sub_service_request = @subsidy.sub_service_request
-    if @subsidy.delete
-      @subsidy = nil
-      @service_request = @sub_service_request.service_request
-      flash[:alert] = "Subsidy Destroyed!"
-    end
-  end
-
-  def approve
-
-  end
-
-  private
-
-  def find_subsidy
-    @subsidy = Subsidy.find(params[:id])
-  end
-end
+$("#modal_place").html("<%= escape_javascript(render(:partial =>'dashboard/subsidies/form', locals: { subsidy: @subsidy, header_text: @header_text })) %>");
+$("#modal_place").modal 'show'

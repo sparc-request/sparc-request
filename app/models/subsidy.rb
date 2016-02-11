@@ -21,6 +21,8 @@
 class Subsidy < ActiveRecord::Base
   audited
 
+  belongs_to :sub_service_request
+
   attr_accessible :sub_service_request_id
   attr_accessible :pi_contribution
   attr_accessible :stored_percent_subsidy

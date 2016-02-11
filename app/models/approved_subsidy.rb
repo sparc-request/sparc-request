@@ -22,7 +22,6 @@ class ApprovedSubsidy < Subsidy
   audited
   before_save :default_values
 
-  belongs_to :sub_service_request
   has_many :notes, as: :notable
 
   attr_accessible :approved_by, :class_name => 'Identity'

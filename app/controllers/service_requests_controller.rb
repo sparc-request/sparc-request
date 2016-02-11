@@ -329,10 +329,8 @@ class ServiceRequestsController < ApplicationController
   end
 
   def save_and_exit
-    if @sub_service_request # if we are editing a sub service request we should just update it's status
-      @sub_service_request.update_attribute(:status, 'draft')
-    else
-      @service_request.update_status('draft', @service_request.submitted_at.present?)
+    unless @sub_service_request # if we are editing a sub service request just redirect
+      @service_request.update_status('draft', false)
       @service_request.ensure_ssr_ids
     end
 
@@ -685,8 +683,10 @@ class ServiceRequestsController < ApplicationController
   def update_service_request_status(service_request, status)
     unless service_request.submitted_at?
       service_request.update_status(status)
-      service_request.previous_submitted_at = @service_request.submitted_at
-      service_request.update_attribute(:submitted_at, Time.now)
+      if (status == 'submitted') || (status == 'get_a_cost_estimate')
+        service_request.previous_submitted_at = @service_request.submitted_at
+        service_request.update_attribute(:submitted_at, Time.now)
+      end
     end
   end
 end

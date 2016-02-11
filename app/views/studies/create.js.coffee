@@ -23,7 +23,6 @@
 # // STUDY - Create.js for New Studies
 # //
 # /////////////////////////////////////////////
-
 <%- if @current_step == 'return_to_service_request' %>
 <%- if @portal == 'true' %>
   window.location.href = "<%= portal_root_path %>"
@@ -32,7 +31,7 @@
 <%- end %>
 <%- else %>
   #This is to re-enable the submit, it is disabled to prevent multiple posts, if you click rapidly.
-  $('a.continue_button').click ->
+  $(document).on 'click', 'a.continue_button', ->
     $('form').submit()
 
   $('.new_study').html("<%= escape_javascript(render partial: 'studies/form', locals: {study: @protocol, service_request: @service_request, portal: @portal, current_step: @current_step}) %>")

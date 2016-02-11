@@ -112,7 +112,7 @@
               = f.object.selected_for_epic ? "Yes" : "No"
             .study_type{style: "#{f.object.selected_for_epic ? '' : 'display:none;'}"}
               .field.study_type_questions
-                = f.label :study_type_questions, class: 'question_text'
+                = f.label :study_type_questions, t(:study_form)[:study_type_questions]
                 = hidden_field_tag :viewing_admin, "admin"
               = f.fields_for :study_type_answers, study.study_type_answers do |answer|
                 - if answer.object.study_type_question.study_type_question_group.active && study.active? && answer.object.answer != nil
@@ -135,7 +135,7 @@
               = f.hidden_field :study_type_question_group_id, :value => study.study_type_question_group_id == StudyTypeQuestionGroup.where(active:false).pluck(:id).first ? 'inactive' : 'active'
             .study_type{style: "#{f.object.selected_for_epic ? '' : 'display:none;'}"}
               .space_bar
-              = f.label :study_type_questions
+              = f.label :study_type_questions, t(:study_form)[:study_type_questions]
               - if admin
                 = hidden_field_tag :can_edit_admin_study, "can_edit_study"
               = hidden_field_tag :viewing_admin, "portal"

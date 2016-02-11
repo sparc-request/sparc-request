@@ -29,6 +29,9 @@ class SearchController < ApplicationController
     unless @sub_service_request.nil?
       results = results.reject{|s| s.parents.exclude? @sub_service_request.organization}
     end
+
+    service_request = ServiceRequest.find(session[:service_request_id])
+    first_service = service_request.line_items.count == 0
     
     results = results.map { |s|
       {
@@ -36,7 +39,9 @@ class SearchController < ApplicationController
         :label        => s.name,
         :value        => s.id,
         :description  => s.description,
-        :sr_id        => session[:service_request_id]
+        :sr_id        => session[:service_request_id],
+        :from_portal  => session[:from_portal],
+        :first_service => first_service
       }
     }
 

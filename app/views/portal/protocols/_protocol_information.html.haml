@@ -77,24 +77,39 @@
 
 %br
 
-- if !protocol.service_requests.present? || only_has_first_draft_requests(protocol) || has_draft_request(protocol)
-  .service-request-title.ui-corner-top= t(:protocol_information)[:service_requests]
-  .service_request-body
-  %a.add-services-button{:href => permission ? root_path(protocol_id: protocol.id, from_portal: true, has_draft: has_draft_request(protocol)) : "javascript:void(0);", :'data-permission' => permission.to_s}= t(:protocol_information)[:add_services]
-- else
-  .service-request-title.ui-corner-top= t(:protocol_information)[:service_requests]
-  .service_request-body
-    %table.list.service-request-body-table-custom
-      %tr.width-100
-        %th.width-15= t(:protocol_information)[:srid]
-        %th.width-15= t(:protocol_information)[:date]
-        %th.width-15= t(:protocol_information)[:provider]
-        %th.width-15= t(:protocol_information)[:program]
-        %th.width-8= t(:protocol_information)[:status]
-        %th
-        %th
-        %th
-        %th
+/ Temporarily added back Add Services button
+/ - if !protocol.service_requests.present? || only_has_first_draft_requests(protocol) || has_draft_request(protocol)
+/   .service-request-title.ui-corner-top= t(:protocol_information)[:service_requests]
+/   .service_request-body
+/   %a.add-services-button{:href => permission ? root_path(protocol_id: protocol.id, from_portal: true, has_draft: has_draft_request(protocol)) : "javascript:void(0);", :'data-permission' => permission.to_s}= t(:protocol_information)[:add_services]
+/ - else
+/   .service-request-title.ui-corner-top= t(:protocol_information)[:service_requests]
+/   .service_request-body
+/     %table.list.service-request-body-table-custom
+/       %tr.width-100
+/         %th.width-15= t(:protocol_information)[:srid]
+/         %th.width-15= t(:protocol_information)[:date]
+/         %th.width-15= t(:protocol_information)[:provider]
+/         %th.width-15= t(:protocol_information)[:program]
+/         %th.width-8= t(:protocol_information)[:status]
+/         %th
+/         %th
+/         %th
+/         %th
+
+.service-request-title.ui-corner-top= t(:protocol_information)[:service_requests]
+.service_request-body
+  %table.list.service-request-body-table-custom
+    %tr.width-100
+      %th.width-15= t(:protocol_information)[:srid]
+      %th.width-15= t(:protocol_information)[:date]
+      %th.width-15= t(:protocol_information)[:provider]
+      %th.width-15= t(:protocol_information)[:program]
+      %th.width-8= t(:protocol_information)[:status]
+      %th
+      %th
+      %th
+      %th
 
         - protocol.service_requests.each do |sr|
           - first_ssr = true
@@ -141,6 +156,8 @@
         - reset_cycle('protocol')
   %table.width-100
     %tr
+      %td
+        %a.add-services-button{:href => permission ? root_path(protocol_id: protocol.id, from_portal: true, has_draft: has_draft_request(protocol)) : "javascript:void(0);", :'data-permission' => permission.to_s}= t(:protocol_information)[:add_services]
       %td#no-add-services-button
         %a.view-full-calendar-button{:href => "javascript:void(0);", :'data-protocol_id' => protocol.id, :'data-url' => "/portal/protocols/#{protocol.id}/view_full_calendar"}= t(:protocol_information)[:full_calendar]
       %td

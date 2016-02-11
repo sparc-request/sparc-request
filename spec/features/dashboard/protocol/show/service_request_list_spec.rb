@@ -13,7 +13,6 @@ RSpec.describe 'service request list', js: true do
     context 'Protocol has at least one ServiceRequest' do
       let!(:protocol) { create(:protocol_federally_funded,  :without_validations, primary_pi: jug2, type: 'Study', archived: false) }
 
-
       context 'Protocol only has first_draft requests' do
         let!(:service_request) { create(:service_request_without_validations, protocol: protocol, service_requester: jug2, status: 'first_draft') }
         let!(:sub_service_request) { create(:sub_service_request, ssr_id: '0001', service_request: service_request, organization: create(:organization)) }
@@ -68,6 +67,52 @@ RSpec.describe 'service request list', js: true do
   describe 'displayed ServiceRequest' do
     let!(:protocol) { create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Study', archived: false) }
 
+    describe 'notes button' do
+      def open_modal
+        go_to_show_protocol protocol.id
+        @page.service_requests.ssr_lists.first.notes_button.click
+        @notes_modal = @page.index_notes_modal
+      end
+
+      let!(:sr) { create(:service_request_without_validations, protocol: protocol, service_requester: jug2, status: 'draft') }
+
+      before(:each) do
+        create(:sub_service_request, ssr_id: '0001', service_request: sr, organization: create(:organization))
+      end
+
+      context 'ServiceRequest has notes' do
+        before(:each) do
+          Note.create(identity_id: jug2.id, notable_type: 'ServiceRequest', notable_id: sr.id, body: 'hey')
+          open_modal
+        end
+
+        it 'should show previously added notes' do
+          expect(@notes_modal.notes.first.comment.text).to eq 'hey'
+        end
+      end
+
+      context 'when user presses Add Note button and saves a note' do
+        before(:each) do
+          open_modal
+          @notes_modal.new_note_button.click
+          @page.new_notes_modal.input_field.set 'hey!'
+          @page.new_notes_modal.add_note_button.click
+        end
+
+        it 'should display new note in modal' do
+          expect(@notes_modal.notes.first.comment.text).to eq 'hey!'
+        end
+
+        it 'should create a new Note' do
+          wait_for_javascript_to_finish
+          expect(Note.count).to eq 1
+        end
+      end
+    end
+
+    describe 'edit original button' do
+    end
+
     describe 'header' do
       context 'submitted ServiceRequest' do
         it 'should display id, status, and submitted date' do
@@ -121,6 +166,7 @@ RSpec.describe 'service request list', js: true do
     end
     let!(:organization) do
       create(:organization,
+        type: 'Institution',
         name: 'Megacorp',
         service_provider: create(:identity, first_name: 'Easter', last_name: 'Bunny'))
     end
@@ -128,26 +174,55 @@ RSpec.describe 'service request list', js: true do
       create(:sub_service_request,
         ssr_id: '1234',
         service_request: service_request,
-        organization: organization)
+        organization_id: organization.id)
     end
 
-    before(:each) { go_to_show_protocol protocol.id }
-
     it 'should display <protocol_id>-<ssr_id>' do
+      go_to_show_protocol protocol.id
       expect(@page.service_requests.ssr_lists.first.ssrs.first).to have_content "#{protocol.id}-1234"
     end
 
     it 'should display associated Organization' do
+      go_to_show_protocol protocol.id
       expect(@page.service_requests.ssr_lists.first.ssrs.first).to have_content "Megacorp"
     end
 
     it 'should display status' do
+      go_to_show_protocol protocol.id
       expect(@page.service_requests.ssr_lists.first.ssrs.first).to have_content "Draft"
+    end
+
+    describe 'admin edit button' do
+      context 'user is a superuser and service provider for SubServiceRequest Organization' do
+        before(:each) do
+          SuperUser.create(identity_id: jug2.id, organization_id: organization.id)
+          ServiceProvider.create(identity_id: jug2.id, organization_id: organization.id)
+        end
+
+        it 'should be visibile' do
+          go_to_show_protocol protocol.id
+          expect(@page.service_requests.ssr_lists.first.ssrs.first).to have_admin_edit_button
+        end
+
+        it 'should take user to SubServiceRequest show' do
+          go_to_show_protocol protocol.id
+          @page.service_requests.ssr_lists.first.ssrs.first.admin_edit_button.click
+          expect(URI.parse(current_url).path).to eq "/dashboard/sub_service_requests/#{sub_service_request.id}"
+        end
+      end
+
+      context 'user is not both a super user and service provider for SubServiceRequest Organization' do
+        it 'should not be visibile' do
+          go_to_show_protocol protocol.id
+          expect(@page.service_requests.ssr_lists.first.ssrs.first).to have_no_admin_edit_button
+        end
+      end
     end
 
     describe 'sending notifications' do
       context 'user clicks Send Notification' do
         before(:each) do
+          go_to_show_protocol protocol.id
           @actions_td = @page.service_requests.ssr_lists.first.ssrs.first.actions
           @actions_td.send_notification_select.click
           expect(@actions_td).to have_new_notification_dropdown

@@ -367,7 +367,6 @@ class Identity < ActiveRecord::Base
   def admin_organizations su_only = {:su_only => false}
     orgs = Organization.all
     organizations = []
-    attached_array = []
     arr = organizations_for_users(orgs, su_only)
 
     arr.each do |org|

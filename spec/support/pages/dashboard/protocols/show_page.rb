@@ -1,4 +1,7 @@
 require 'rails_helper'
+require 'support/pages/dashboard/notes/index_modal'
+require 'support/pages/dashboard/notes/new_modal'
+
 module Dashboard
   module Protocols
     class ShowPage < SitePrism::Page
@@ -14,7 +17,10 @@ module Dashboard
 
         # actual service request panels
         sections :ssr_lists, '.service-request-info' do
-          element :title, '.panel-title'
+          element :title, '.panel-heading .panel-title'
+          element :notes_button, '.panel-heading button.notes'
+          element :edit_original_button, '.panel-heading button.edit_service_request'
+
           sections :ssrs, 'tbody tr' do
             element :pretty_ssr_id, 'td.pretty-ssr-id'
             element :organization, 'td.rganization'
@@ -42,6 +48,9 @@ module Dashboard
         element :message_field, 'textarea#notification_message_body'
         element :submit_button, 'button[type="submit"]'
       end
+
+      section :index_notes_modal, Dashboard::Notes::IndexModal, '#notes-modal'
+      section :new_notes_modal, Dashboard::Notes::NewModal, '#new-note-modal'
     end
   end
 end

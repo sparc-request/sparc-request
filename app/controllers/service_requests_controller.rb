@@ -249,9 +249,7 @@ class ServiceRequestsController < ApplicationController
 
   def obtain_research_pricing
     # TODO: refactor into the ServiceRequest model
-    @service_request.update_status('get_a_cost_estimate')
-    @service_request.previous_submitted_at = @service_request.submitted_at
-    @service_request.update_attribute(:submitted_at, Time.now)
+    update_service_request_status(@service_request, 'get_a_cost_estimate')
     @service_request.ensure_ssr_ids
 
     @protocol = @service_request.protocol
@@ -267,9 +265,7 @@ class ServiceRequestsController < ApplicationController
   end
 
   def confirmation
-    @service_request.update_status('submitted')
-    @service_request.previous_submitted_at = @service_request.submitted_at
-    @service_request.update_attribute(:submitted_at, Time.now)
+    update_service_request_status(@service_request, 'submitted')
     @service_request.ensure_ssr_ids
     @service_request.update_arm_minimum_counts
 
@@ -684,5 +680,13 @@ class ServiceRequestsController < ApplicationController
       errors << doc_errors
     end
     # end document saving stuff
+  end
+
+  def update_service_request_status(service_request, status)
+    unless service_request.submitted_at?
+      service_request.update_status(status)
+      service_request.previous_submitted_at = @service_request.submitted_at
+      service_request.update_attribute(:submitted_at, Time.now)
+    end
   end
 end

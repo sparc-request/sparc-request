@@ -29,7 +29,7 @@
       .clearfix
     .panel-body#protocol-summary
       = render partial: 'dashboard/protocols/summary', locals: { protocol: @protocol }
-  .panel.panel-default
+  .panel.panel-default#authorized-users-panel
     .panel-heading
       %h4.panel-title= "Authorized Users"
     .panel-body

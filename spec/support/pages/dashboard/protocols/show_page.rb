@@ -9,6 +9,15 @@ module Dashboard
 
       element :protocol_summary, '#protocol-summary'
 
+      section :authorized_users_panel, '#authorized-users-panel' do
+        element :add_associated_user_button, 'button', text: 'Add An Authorized User'
+      end
+
+      section :add_authorized_user_modal, '#add-authorized-user-form' do
+        element :select_user_field, '#authorized_user_search'
+        elements :user_choices, 'div.tt-suggestion.tt-selectable'
+      end
+
       # big panel of service requests
       section :service_requests, '#service-requests-panel' do
         element :view_consolidated_request_button, 'button.view-full-calendar-button'

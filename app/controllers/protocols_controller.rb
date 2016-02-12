@@ -26,16 +26,10 @@ class ProtocolsController < ApplicationController
   before_filter :set_portal
 
   def new
-    unless from_portal?
-      @service_request = ServiceRequest.find session[:service_request_id]
-      @epic_services = @service_request.should_push_to_epic? if USE_EPIC
-    end
+    find_service_request
     @protocol = self.model_class.new
-    @protocol.requester_id = current_user.id
-    @protocol.populate_for_edit
-    current_step_cookie = cookies['current_step']
-    cookies['current_step'] = 'protocol'
-
+    requester_id(@protocol)
+    populate_for_edit(@protocol)
     resolve_layout
   end
 
@@ -201,6 +195,26 @@ class ProtocolsController < ApplicationController
 
   def set_portal
     @portal = params[:portal]
+  end
+
+  def find_service_request
+    unless from_portal?
+      @service_request = ServiceRequest.find session[:service_request_id]
+      @epic_services = @service_request.should_push_to_epic? if USE_EPIC
+    end
+  end
+
+  def populate_for_edit(protocol)
+    protocol.populate_for_edit
+  end
+
+  def requester_id(protocol)
+    protocol.requester_id = current_user.id
+  end
+
+  def set_cookies
+    current_step_cookie = cookies['current_step']
+    cookies['current_step'] = 'protocol'
   end
 
   def send_epic_notification_for_final_review(protocol)

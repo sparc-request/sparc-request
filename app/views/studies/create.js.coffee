@@ -35,4 +35,5 @@
     $('form').submit()
 
   $('.new_study').html("<%= escape_javascript(render partial: 'studies/form', locals: {study: @protocol, service_request: @service_request, portal: @portal, current_step: @current_step}) %>")
+  $.getScript('/assets/studies.js')
 <%- end %>

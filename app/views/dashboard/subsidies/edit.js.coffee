@@ -18,18 +18,5 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class ApprovedSubsidy < Subsidy
-  audited
-  before_save :default_values
-
-  attr_accessible :approved_by, :class_name => 'Identity'
-  attr_accessible :approved_at
-
-  default_scope { where(status: "Approved") }
-
-  def default_values
-    self.status             ||= 'Approved'
-    self.approved_at        ||= Time.now
-    self.total_at_approval  ||= sub_service_request.direct_cost_total
-  end
-end
+$("#modal_place").html("<%= escape_javascript(render(:partial =>'dashboard/subsidies/form', locals: { subsidy: @subsidy, header_text: @header_text })) %>");
+$("#modal_place").modal 'show'

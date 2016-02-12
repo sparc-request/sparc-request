@@ -21,6 +21,8 @@
 .panel.panel-default
   .panel-heading
     %h4.panel-title= "Subsidy Information"
-  .panel-body#fulfillment_subsidy
-    = render partial: 'dashboard/subsidies/approved_subsidy', locals: { sub_service_request: sub_service_request, subsidy: sub_service_request.approved_subsidy }
-    = render partial: 'dashboard/subsidies/pending_subsidy', locals: { sub_service_request: sub_service_request, subsidy: sub_service_request.pending_subsidy }
+  .panel-body
+    #approved_subsidy
+      = render partial: 'dashboard/subsidies/approved_subsidy', locals: { sub_service_request: sub_service_request, subsidy: sub_service_request.approved_subsidy }
+    #pending_subsidy
+      = render partial: 'dashboard/subsidies/pending_subsidy', locals: { sub_service_request: sub_service_request, subsidy: sub_service_request.pending_subsidy }

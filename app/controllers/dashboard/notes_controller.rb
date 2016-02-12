@@ -25,6 +25,9 @@ class Dashboard::NotesController < Dashboard::BaseController
   before_action :find_notable
 
   def index
+    puts "%"*100
+    puts @notable.inspect
+    puts @notable.notes.inspect
     @notes = @notable.notes
   end
 

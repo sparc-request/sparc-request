@@ -28,6 +28,24 @@ $(document).ready ->
       url:  "/dashboard/subsidies/new"
       data: data
 
+  $(document).on 'click', '#edit_subsidy_button', ->
+    id = $(this).data('subsidy-id')
+    $.ajax
+      type: 'GET'
+      url:  "/dashboard/subsidies/#{id}/edit"
+
+  $(document).on 'click', '.delete_subsidy_button', ->
+    subsidy_id = $(this).data('subsidy-id')
+    $.ajax
+      type: 'DELETE'
+      url: "/dashboard/subsidies/#{subsidy_id}"
+
+  $(document).on 'click', '#approve_subsidy_button', ->
+    id = $(this).data('subsidy-id')
+    $.ajax
+      type: 'PATCH'
+      url:  "/dashboard/subsidies/#{id}/approve"
+
   # $(document).on 'change', '#subsidy_pi_contribution', ->
   #   subsidy_id = $(this).data('subsidy_id')
   #   pi_contribution = $(this).val()
@@ -36,7 +54,7 @@ $(document).ready ->
   #     type: 'PATCH'
   #     url:  "/dashboard/subsidies/#{subsidy_id}"
   #     data: data
-      
+
   # $(document).on 'change', '#subsidy_percent_subsidy', ->
   #   subsidy_id = $(this).data('subsidy_id')
   #   stored_percent_subsidy = $(this).val()
@@ -45,9 +63,3 @@ $(document).ready ->
   #     type: 'PATCH'
   #     url:  "/dashboard/subsidies/#{subsidy_id}"
   #     data: data
-
-  $(document).on 'click', '#delete_subsidy', ->
-    subsidy_id = $(this).data('subsidy_id')
-    $.ajax
-      type: 'DELETE'
-      url: "/dashboard/subsidys/#{subsidy_id}"

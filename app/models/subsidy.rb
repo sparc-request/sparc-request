@@ -22,6 +22,7 @@ class Subsidy < ActiveRecord::Base
   audited
 
   belongs_to :sub_service_request
+  has_many :notes, as: :notable
 
   attr_accessible :sub_service_request_id
   attr_accessible :pi_contribution

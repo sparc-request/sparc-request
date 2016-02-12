@@ -43,13 +43,13 @@
           %td.subsidy_effective_current_cost
             = number_to_currency(subsidy_effective_current_total(sub_service_request, subsidy))
           %td.text-center.approve_subsidy
-            %button.btn.btn-sm.btn-success#approve_subsidy{data: { subsidy_id: subsidy.id }}
+            %button.btn.btn-sm.btn-success#approve_subsidy_button{data: { subsidy_id: subsidy.id }}
               %span.glyphicon.glyphicon-ok
           %td.text-center.edit_subsidy
-            .btn.btn-warning.btn-sm#edit_subsidy_button
+            .btn.btn-warning.btn-sm#edit_subsidy_button{data: { subsidy_id: subsidy.id }}
               %span.glyphicon.glyphicon-edit
           %td.text-center.delete_subsidy
-            %button.btn.btn-sm.btn-danger.delete_subsidy{data: { subsidy_id: subsidy.id }}
+            %button.btn.btn-sm.btn-danger.delete_subsidy_button{data: { subsidy_id: subsidy.id }}
               %span.glyphicon.glyphicon-remove
 - else
   .col-xs-12

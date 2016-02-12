@@ -20,7 +20,7 @@
 
 class Dashboard::SubsidiesController < Dashboard::BaseController
   respond_to :json, :js, :html
-  before_action :find_subsidy, only: [:edit, :update, :destroy, :approve]
+  before_action :find_subsidy, only: [:edit, :update, :destroy]
 
   def new
     @subsidy = Subsidy.new(sub_service_request_id: params[:sub_service_request_id])
@@ -54,15 +54,16 @@ class Dashboard::SubsidiesController < Dashboard::BaseController
 
   def destroy
     @sub_service_request = @subsidy.sub_service_request
-    if @subsidy.delete
-      @subsidy = nil
-      @service_request = @sub_service_request.service_request
+    if @subsidy.destroy
       flash[:alert] = "Subsidy Destroyed!"
     end
   end
 
   def approve
-
+    @subsidy = PendingSubsidy.find params[:id]
+    @subsidy = @subsidy.grant_approval current_user
+    @sub_service_request = @subsidy.sub_service_request
+    flash[:success] = "Subsidy Approved!"
   end
 
   private

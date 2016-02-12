@@ -35,9 +35,4 @@ class SetupProtocol
   def requester_id
     @protocol.requester_id = @user.id
   end
-
-  def set_cookies
-    current_step_cookie = @cookie
-    @cookie = 'protocol'
-  end
 end

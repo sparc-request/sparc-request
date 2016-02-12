@@ -60,9 +60,9 @@ class Dashboard::SubsidiesController < Dashboard::BaseController
   end
 
   def approve
-    @subsidy = PendingSubsidy.find params[:id]
-    @subsidy = @subsidy.grant_approval current_user
-    @sub_service_request = @subsidy.sub_service_request
+    subsidy = PendingSubsidy.find params[:id]
+    subsidy = subsidy.grant_approval current_user
+    @sub_service_request = subsidy.sub_service_request
     flash[:success] = "Subsidy Approved!"
   end
 

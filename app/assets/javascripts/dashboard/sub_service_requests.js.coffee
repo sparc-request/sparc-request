@@ -97,4 +97,4 @@ $(document).ready ->
       url: "/dashboard/sub_service_requests/#{ssr_id}/change_history_tab"
       data: data
 
-# HISTORY LISTENERS END
+  # HISTORY LISTENERS END

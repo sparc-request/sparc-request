@@ -21,8 +21,10 @@
 class ApprovedSubsidy < Subsidy
   audited
   before_save :default_values
+  belongs_to :approver, class_name: 'Identity', foreign_key: "approved_by"
 
-  attr_accessible :approved_by, :class_name => 'Identity'
+  attr_accessible :total_at_approval
+  attr_accessible :approved_by
   attr_accessible :approved_at
 
   default_scope { where(status: "Approved") }
@@ -30,6 +32,19 @@ class ApprovedSubsidy < Subsidy
   def default_values
     self.status             ||= 'Approved'
     self.approved_at        ||= Time.now
-    self.total_at_approval  ||= sub_service_request.direct_cost_total
+    self.total_at_approval  ||= total_request_cost
+  end
+
+  def approved_cost
+    # Calculates cost of subsidy (amount subsidized)
+    # stored total - pi_contribution then convert from cents to dollars
+    ( total_at_approval - pi_contribution ) / 100.0
+  end
+
+  def approved_percent_of_total
+    # Calculates the percent of total_at_approval that is subsidized
+    # (stored total - pi_contribution) / stored total then convert to percent
+    total = total_at_approval
+    ((( total - pi_contribution ) / total ) * 100.0 ).round(2)
   end
 end

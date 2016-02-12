@@ -26,10 +26,12 @@ class Subsidy < ActiveRecord::Base
 
   attr_accessible :sub_service_request_id
   attr_accessible :pi_contribution
-  attr_accessible :stored_percent_subsidy
+  # attr_accessible :stored_percent_subsidy
   attr_accessible :overridden
   attr_accessible :status
-  attr_accessible :total_at_approval
+
+  delegate :direct_cost_total, to: :sub_service_request, allow_nil: true
+  alias_attribute :total_request_cost, :direct_cost_total
 
   # validate :pi_contribution_cap, :stored_percent_subsidy_cap
 
@@ -58,38 +60,38 @@ class Subsidy < ActiveRecord::Base
     end
   end
 
-  def stored_percent_subsidy_cap
-    #  (stored percent subsidy < max) validation
-    if stored_percent_subsidy.present? and max_percentage.present?
-      if stored_percent_subsidy > max_percentage
-        errors.add(:stored_percent_subsidy, "is above the maximum subsidy percentage")
-      end
-    end
-  end
+  # def stored_percent_subsidy_cap
+  #   #  (stored percent subsidy < max) validation
+  #   if stored_percent_subsidy.present? and max_percentage.present?
+  #     if stored_percent_subsidy > max_percentage
+  #       errors.add(:stored_percent_subsidy, "is above the maximum subsidy percentage")
+  #     end
+  #   end
+  # end
 
-  def percent_subsidy
-    if self.pi_contribution.nil?
-      subsidy = 0.0
-    else
-      total = self.sub_service_request.direct_cost_total
-      remainder = (total - self.pi_contribution)
-      subsidy = (remainder / total)
-    end
+  # def percent_subsidy
+  #   if self.pi_contribution.nil?
+  #     subsidy = 0.0
+  #   else
+  #     total = self.sub_service_request.direct_cost_total
+  #     remainder = (total - self.pi_contribution)
+  #     subsidy = (remainder / total)
+  #   end
 
-    subsidy.nan? ? nil : subsidy
-  end
+  #   subsidy.nan? ? nil : subsidy
+  # end
 
-  def contribution_with_subsidy
-    if self.stored_percent_subsidy.nil?
-      contribution = 0
-    else
-      total = self.sub_service_request.direct_cost_total
-      subsidized_amount = (stored_percent_subsidy * total) / 100.0
-      contribution = (total - subsidized_amount)
-    end
+  # def contribution_with_subsidy
+  #   if self.stored_percent_subsidy.nil?
+  #     contribution = 0
+  #   else
+  #     total = self.sub_service_request.direct_cost_total
+  #     subsidized_amount = (stored_percent_subsidy * total) / 100.0
+  #     contribution = (total - subsidized_amount)
+  #   end
 
-    contribution.nan? ? nil : contribution
-  end
+  #   contribution.nan? ? nil : contribution
+  # end
 
   def max_dollar_cap
     sub_service_request.organization.subsidy_map.max_dollar_cap

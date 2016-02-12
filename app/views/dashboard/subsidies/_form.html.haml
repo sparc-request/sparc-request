@@ -35,7 +35,7 @@
               = form.label "pi_contribution", "PI Contribution", class: "col-sm-4 control-label"
               .input-group.col-sm-7
                 %span.input-group-addon $
-                = form.text_field "pi_contribution", {class: 'form-control'}
+                = form.text_field "pi_contribution", { class: 'form-control', value: cents_to_dollars_float(subsidy.pi_contribution) }
             .form-group
               = form.label "stored_percent_subsidy", "Percent Subsidy", class: "col-sm-4 control-label"
               .input-group.col-sm-7

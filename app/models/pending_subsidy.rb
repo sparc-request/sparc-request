@@ -28,6 +28,17 @@ class PendingSubsidy < Subsidy
     self.status ||= 'Pending'
   end
 
+  def current_cost
+    # SSR direct_cost_total - pi_contribution then convert from cents to dollars
+    ( total_request_cost - pi_contribution ) / 100.0
+  end
+
+  def current_percent_of_total
+    # (SSR direct_cost_total - pi_contribution) / direct_cost_total then convert to percent
+    total = total_request_cost
+    ((( total - pi_contribution ) / total ) * 100.0 ).round(2)
+  end
+
   def grant_approval approver
     # Remove current approved subsidy if exists, save notes
     current_approved_subsidy = sub_service_request.approved_subsidy
@@ -41,6 +52,7 @@ class PendingSubsidy < Subsidy
     newly_approved = ApprovedSubsidy.create(new_attributes)
 
     # Migrate notes to new approved subsidy
+    # Notes could get lost if they delete the approved subsidy instead of approving a new one.
     notes.update_all(notable_id: newly_approved.id) if current_approved_subsidy.present? && notes.present?
 
     # Delete pending subsidy

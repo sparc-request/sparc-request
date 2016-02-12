@@ -27,8 +27,10 @@ class ProtocolsController < ApplicationController
 
   def new
     @protocol = self.model_class.new
-    setup_protocol = SetupProtocol.new(params[:portal], @protocol, current_user, session[:service_request_id], cookies['current_step'])
+    setup_protocol = SetupProtocol.new(params[:portal], @protocol, current_user, session[:service_request_id])
     setup_protocol.setup
+    current_step_cookie = cookies['current_step']
+    cookies['current_step'] = 'protocol'
     resolve_layout
   end
 

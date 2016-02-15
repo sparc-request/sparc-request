@@ -41,10 +41,6 @@ RSpec.describe 'dashboard index', js: :true do
           wait_for_javascript_to_finish
         end
 
-        it "should display 'Unarchive Project'" do
-          expect(@page.protocols.first.archive_button.text).to eq 'Unarchive Project'
-        end
-
         context 'User clicks button' do
           it 'should unarchive Project' do
             @page.protocols.first.archive_button.click
@@ -63,10 +59,6 @@ RSpec.describe 'dashboard index', js: :true do
       context 'unarchived Project' do
         let!(:protocol) { create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false) }
         before(:each) { visit_protocols_index_page }
-
-        it "should display 'Archive Project'" do
-          expect(@page.protocols.first.archive_button.text).to eq 'Archive Project'
-        end
 
         context 'User clicks button' do
           it 'should archive Project' do
@@ -94,10 +86,6 @@ RSpec.describe 'dashboard index', js: :true do
           wait_for_javascript_to_finish
         end
 
-        it "should display 'Unarchive Study'" do
-          expect(@page.protocols.first.archive_button.text).to eq 'Unarchive Study'
-        end
-
         context 'User clicks button' do
           it 'should unarchive Study' do
             @page.protocols.first.archive_button.click
@@ -117,10 +105,6 @@ RSpec.describe 'dashboard index', js: :true do
         let!(:protocol) { create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Study', archived: false) }
         before(:each) { visit_protocols_index_page }
 
-        it "should display 'Archive Study'" do
-          expect(@page.protocols.first.archive_button.text).to eq 'Archive Study'
-        end
-
         context 'User clicks button' do
           it 'should archive Study' do
             @page.protocols.first.archive_button.click
@@ -139,14 +123,6 @@ RSpec.describe 'dashboard index', js: :true do
 
     describe 'requests button' do
       let!(:protocol) { create(:protocol_federally_funded,  :without_validations, primary_pi: jug2, type: 'Study', archived: false) }
-
-      context 'Protocol has no ServiceRequests' do
-        before(:each) { visit_protocols_index_page }
-
-        it 'should not display button' do
-          expect(@page.protocols.first).to have_no_requests_button
-        end
-      end
 
       context 'Protocol has a SubServiceRequest' do
         context 'user clicks the requests button' do

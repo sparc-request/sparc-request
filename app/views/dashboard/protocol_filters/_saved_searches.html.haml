@@ -22,5 +22,5 @@
   .panel-heading Recently Saved Filters
   .panel-body
     %ul
-      - ProtocolFilter.latest_for_user(current_user.id, 5).each do |pf|
+      - @protocol_filters.each do |pf|
         %li= link_to pf.search_name, pf.href, class: "saved_search_link"

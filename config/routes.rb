@@ -246,6 +246,23 @@ SparcRails::Application.routes.draw do
       end
     end
 
+    # HACK: This is needed to prevent the filterrific gem's
+    # path helpers from blowing up when running view specs
+    # This shouldn't affect dev or production environments.
+    # Alternative solutions welcome.
+    if Rails.env.test?
+      scope '/protocols', controller: :protocols, except: [:destroy] do
+        resources :test, except: [:destroy] do
+          member do
+            get :view_full_calendar
+            patch :update_protocol_type
+            get :display_requests
+            patch :archive
+          end
+        end
+      end
+    end
+
     resources :protocol_filters, only: [:new, :create]
 
     resources :services, only: [:show]

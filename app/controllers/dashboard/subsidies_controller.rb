@@ -20,18 +20,17 @@
 
 class Dashboard::SubsidiesController < Dashboard::BaseController
   respond_to :json, :js, :html
-  before_action :find_subsidy, only: [:edit, :update, :destroy]
 
   def new
-    @subsidy = Subsidy.new(sub_service_request_id: params[:sub_service_request_id])
+    @subsidy = PendingSubsidy.new(sub_service_request_id: params[:sub_service_request_id])
     @header_text = "New Subsidy Pending Approval"
   end
 
   def create
-    if @subsidy = Subsidy.create(params[:subsidy])
+    if @subsidy = PendingSubsidy.create(params[:pending_subsidy])
       @sub_service_request = @subsidy.sub_service_request
-      @subsidy.update_attribute(:pi_contribution, @sub_service_request.direct_cost_total)
-      @subsidy.update_attributes(:stored_percent_subsidy => @subsidy.percent_subsidy)
+      # @subsidy.update_attribute(:pi_contribution, @sub_service_request.direct_cost_total)
+      # @subsidy.update_attributes(:stored_percent_subsidy => @subsidy.percent_subsidy)
       flash[:success] = "Subsidy Created!"
     else
       @errors = @subsidy.errors
@@ -39,12 +38,16 @@ class Dashboard::SubsidiesController < Dashboard::BaseController
   end
 
   def edit
+    @subsidy = PendingSubsidy.find params[:id]
     @header_text = "Edit Subsidy Pending Approval"
   end
 
   def update
+    @subsidy = PendingSubsidy.find params[:id]
     @sub_service_request = @subsidy.sub_service_request
-    if @subsidy.update_attributes(params[:subsidy])
+    params[:pending_subsidy][:pi_contribution] = \
+      (params[:pending_subsidy][:pi_contribution].gsub(/[^\d^\.]/, '').to_f * 100) if params[:pending_subsidy][:pi_contribution].present?
+    if @subsidy.update_attributes(params[:pending_subsidy])
       flash[:success] = "Subsidy Updated!"
     else
       @errors = @subsidy.errors
@@ -53,6 +56,7 @@ class Dashboard::SubsidiesController < Dashboard::BaseController
   end
 
   def destroy
+    @subsidy = Subsidy.find params[:id]
     @sub_service_request = @subsidy.sub_service_request
     if @subsidy.destroy
       flash[:alert] = "Subsidy Destroyed!"
@@ -64,11 +68,5 @@ class Dashboard::SubsidiesController < Dashboard::BaseController
     subsidy = subsidy.grant_approval current_user
     @sub_service_request = subsidy.sub_service_request
     flash[:success] = "Subsidy Approved!"
-  end
-
-  private
-
-  def find_subsidy
-    @subsidy = Subsidy.find(params[:id])
   end
 end

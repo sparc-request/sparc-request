@@ -20,28 +20,43 @@
 
 .modal-dialog
   .modal-content
-    = form_for ([:dashboard, subsidy]), {remote: true, html: {class: "form-horizontal", role: "form"}} do |form|
-      .modal-header
-        %button.close{type: 'button', data: {dismiss: 'modal'}}
-          %span{aria: {hidden:'true'}} &times;
-          %span.sr-only &times;
-        %h4.modal-title.text-center= header_text
-      .modal-body
-        #modal_errors
-        .row
-          .col-md-12
+    .modal-header
+      %button.close{type: 'button', data: {dismiss: 'modal'}}
+        %span{aria: {hidden:'true'}} &times;
+        %span.sr-only &times;
+      %h4.modal-title.text-center= header_text
+
+    .modal-body
+      #modal_errors
+      .row
+        .col-md-12
+          %table.table.table-condensed.table-bordered
+            %tbody
+              %tr
+                %th.col-sm-4= "Current Request Cost"
+                %td.col-sm-7.text-right#subsidy_form_table_request_cost{data: { cost: subsidy.total_request_cost }}
+                  = number_to_currency(subsidy.total_request_cost / 100.0)
+          .form-group
+            = label_tag "current_percent_subsidy_of_total", "Percent Subsidy", class: "col-sm-4 control-label"
+            .input-group.col-sm-7
+              = text_field_tag "current_percent_subsidy_of_total", subsidy.current_percent_of_total, {class: 'form-control'}
+              %span.input-group-addon %
+          = form_for subsidy, {remote: true, url: (subsidy.new_record? ? dashboard_subsidies_path : dashboard_subsidy_path(subsidy)), html: {role: "form"}} do |form|
             = form.hidden_field :sub_service_request_id
             .form-group
               = form.label "pi_contribution", "PI Contribution", class: "col-sm-4 control-label"
               .input-group.col-sm-7
                 %span.input-group-addon $
                 = form.text_field "pi_contribution", { class: 'form-control', value: cents_to_dollars_float(subsidy.pi_contribution) }
-            .form-group
-              = form.label "stored_percent_subsidy", "Percent Subsidy", class: "col-sm-4 control-label"
-              .input-group.col-sm-7
-                = form.text_field "stored_percent_subsidy", {class: 'form-control'}
-                %span.input-group-addon %
-      .modal-footer
-        .center-block
-          %button.btn.btn-default{type: 'button', data: {dismiss: 'modal'}} Close
-          %input.btn.btn-primary{type: 'submit', value: "Save"}
+            .row
+              .col-md-12
+                %table.table.table-condensed.table-bordered
+                  %tbody
+                    %tr
+                      %th.col-sm-4= "Subsidy Cost"
+                      %td.col-sm-7.text-right#subsidy_form_table_subsidy_cost{data: { cost: subsidy.current_cost }}
+                        = number_to_currency(subsidy.current_cost)
+
+            .modal-footer
+              %button.btn.btn-default{type: 'button', data: {dismiss: 'modal'}} Close
+              %input.btn.btn-primary{type: 'submit', value: "Save"}

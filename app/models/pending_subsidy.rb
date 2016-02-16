@@ -28,6 +28,12 @@ class PendingSubsidy < Subsidy
     self.status ||= 'Pending'
   end
 
+  def pi_contribution
+    # This ensures that if pi_contribution is null (new record),
+    # then it will reflect the full cost of the request.
+    self.read_attribute(:pi_contribution) || total_request_cost
+  end
+
   def current_cost
     # Calculates cost of subsidy (amount subsidized)
     # SSR direct_cost_total - pi_contribution then convert from cents to dollars
@@ -37,8 +43,9 @@ class PendingSubsidy < Subsidy
   def current_percent_of_total
     # Calculates the percent of total request cost that is subsidized
     # (SSR direct_cost_total - pi_contribution) / direct_cost_total then convert to percent
-    total = total_request_cost
-    ((( total - pi_contribution ) / total ) * 100.0 ).round(2)
+    total = total_request_cost.to_f
+    contribution = ( pi_contribution || total ).to_f
+    ((( total - contribution ) / total ) * 100.0 ).round(2)
   end
 
   def grant_approval approver

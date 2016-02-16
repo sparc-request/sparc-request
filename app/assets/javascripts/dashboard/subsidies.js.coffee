@@ -20,6 +20,7 @@
 
 $(document).ready ->
 
+#****************** SUBSIDY INFORMATION BEGIN ***************************#
   $(document).on 'click', '#add_subsidy_button', ->
     sub_service_request_id = $(this).data('sub-service-request-id')
     data = 'sub_service_request_id': sub_service_request_id
@@ -46,20 +47,44 @@ $(document).ready ->
       type: 'PATCH'
       url:  "/dashboard/subsidies/#{id}/approve"
 
-  # $(document).on 'change', '#subsidy_pi_contribution', ->
-  #   subsidy_id = $(this).data('subsidy_id')
-  #   pi_contribution = $(this).val()
-  #   data = 'subsidy': 'pi_contribution': pi_contribution
-  #   $.ajax
-  #     type: 'PATCH'
-  #     url:  "/dashboard/subsidies/#{subsidy_id}"
-  #     data: data
+#****************** SUBSIDY INFORMATION END ***************************#
 
-  # $(document).on 'change', '#subsidy_percent_subsidy', ->
-  #   subsidy_id = $(this).data('subsidy_id')
-  #   stored_percent_subsidy = $(this).val()
-  #   data = 'subsidy': 'stored_percent_subsidy': stored_percent_subsidy
-  #   $.ajax
-  #     type: 'PATCH'
-  #     url:  "/dashboard/subsidies/#{subsidy_id}"
-  #     data: data
+#****************** SUBSIDY FORM BEGIN ***************************#
+  $(document).on 'change', '#pending_subsidy_pi_contribution', ->
+    # When user changes PI Contribution, the Percent Subsidy and Subsidy Cost fields are recalculated & displayed
+    pi_contribution = parseFloat $(this).val()
+    total_request_cost = parseFloat($("#subsidy_form_table_request_cost").data("cost")) / 100.0
+    if pi_contribution > total_request_cost
+      pi_contribution = total_request_cost
+    else if pi_contribution < 0
+      pi_contribution = 0
+    percent_subsidy = recalculate_percent_subsidy(total_request_cost, pi_contribution)
+    current_cost = recalculate_current_cost(total_request_cost, percent_subsidy)
+    redisplay_form_values(percent_subsidy, pi_contribution, current_cost)
+
+  $(document).on 'change', '#current_percent_subsidy_of_total', ->
+    # When user changes Percent Subsidy, the PI Contribution and Subsidy Cost fields are recalculated & displayed
+    percent_subsidy = parseFloat($(this).val()) / 100.0
+    total_request_cost = parseFloat($("#subsidy_form_table_request_cost").data("cost")) / 100.0
+    if percent_subsidy > 1
+      percent_subsidy = 1.0
+    else if percent_subsidy < 0
+      percent_subsidy = 0
+    pi_contribution = recalculate_pi_contribution(total_request_cost, percent_subsidy)
+    current_cost = recalculate_current_cost(total_request_cost, percent_subsidy)
+    redisplay_form_values(percent_subsidy, pi_contribution, current_cost)
+
+  recalculate_current_cost = (total_request_cost, percent_subsidy) ->
+    return total_request_cost * percent_subsidy
+  recalculate_pi_contribution = (total_request_cost, percent_subsidy) ->
+    return total_request_cost - (total_request_cost * percent_subsidy)
+  recalculate_percent_subsidy = (total_request_cost, pi_contribution) ->
+    return (total_request_cost - pi_contribution) / total_request_cost
+  redisplay_form_values = (percent_subsidy, pi_contribution, current_cost) ->
+    $("#current_percent_subsidy_of_total").val( (percent_subsidy*100.0).toFixed(2) )
+    $("#pending_subsidy_pi_contribution").val( formatMoney(pi_contribution, ',', '.', '') )
+    $("#subsidy_form_table_subsidy_cost").text( formatMoney(current_cost) )
+
+
+
+#****************** SUBSIDY FORM END ***************************#

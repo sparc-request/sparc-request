@@ -20,7 +20,6 @@
 
 $(document).ready ->
 
-  $(".datetimepicker").datetimepicker(format: 'MM-DD-YYYY', allowInputToggle: true)
 
   # SERVICE REQUEST INFO LISTENERS BEGIN
 

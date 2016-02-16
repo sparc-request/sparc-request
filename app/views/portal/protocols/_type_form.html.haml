@@ -20,7 +20,8 @@
 
 #change_protocol_type_area
   = form_tag update_protocol_type_portal_admin_protocol_path(@protocol), :method => :put, :id => "edit_protocol_#{@protocol.id}" do
-    = hidden_field_tag :sub_service_request_id, @sub_service_request.id
+    - if @sub_service_request
+      = hidden_field_tag :sub_service_request_id, @sub_service_request.id
     .user-edit-protocol-view
       .grid_7.box
         .info

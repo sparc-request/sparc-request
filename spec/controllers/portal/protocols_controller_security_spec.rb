@@ -21,7 +21,11 @@
 require 'rails_helper'
 
 RSpec.describe Portal::ProtocolsController, :type => :controller do
+  let!(:identity) { create(:identity) }
+  let!(:active_study_type_question_group)    { StudyTypeQuestionGroup.create(active: true) }
+
   stub_portal_controller
+
 
   before :each do
     @identity = Identity.new
@@ -31,6 +35,7 @@ RSpec.describe Portal::ProtocolsController, :type => :controller do
     session[:identity_id] = @identity.id
 
     @protocol = Study.new
+    @protocol = build(:study, study_type_question_group_id: active_study_type_question_group.id)
     @protocol.type = 'Study'
     @protocol.save(validate: false)
   end
@@ -99,7 +104,7 @@ RSpec.describe Portal::ProtocolsController, :type => :controller do
     end
 
     it 'show protocol' do
-      get(:show, {:format => :js, :id => @protocol.id })
+      xhr :get, :show, {:format => :js, :id => @protocol.id }
       expect(assigns(:protocol)).to eq @protocol
       expect(assigns(:protocol_role).identity).to eq @identity
     end
@@ -118,6 +123,7 @@ RSpec.describe Portal::ProtocolsController, :type => :controller do
     end
 
     it 'update protocol' do
+      
       post(:update, {:format => :html, :id => @protocol.id })
       expect(assigns(:protocol)).to eq @protocol
       expect(response).to render_template("edit")
@@ -145,7 +151,7 @@ RSpec.describe Portal::ProtocolsController, :type => :controller do
     end
 
     it 'view_full_calendar' do
-      get(:view_full_calendar, {:format => :js, :id => @protocol.id })
+      xhr :get, :view_full_calendar, {:format => :js, :id => @protocol.id }
       expect(assigns(:protocol)).to eq @protocol
       assigns(:merged)
     end
@@ -161,7 +167,7 @@ RSpec.describe Portal::ProtocolsController, :type => :controller do
     end
 
     it 'show protocol' do
-      get(:show, {:format => :js, :id => @protocol.id })
+      xhr :get, :show, {:format => :js, :id => @protocol.id }
       expect(assigns(:protocol)).to eq @protocol
       expect(assigns(:protocol_role).identity).to eq @identity
     end
@@ -207,7 +213,7 @@ RSpec.describe Portal::ProtocolsController, :type => :controller do
     end
 
     it 'view_full_calendar' do
-      get(:view_full_calendar, {:format => :js, :id => @protocol.id })
+      xhr :get, :view_full_calendar, {:format => :js, :id => @protocol.id }
       expect(assigns(:protocol)).to eq @protocol
       assigns(:merged)
     end
@@ -223,7 +229,7 @@ RSpec.describe Portal::ProtocolsController, :type => :controller do
     end
 
     it 'show protocol' do
-      get(:show, {:format => :js, :id => @protocol.id })
+      xhr :get, :show, {:format => :js, :id => @protocol.id }
       expect(assigns(:protocol)).to eq @protocol
       expect(assigns(:protocol_role).identity).to eq @identity
     end
@@ -268,7 +274,7 @@ RSpec.describe Portal::ProtocolsController, :type => :controller do
     end
 
     it 'view_full_calendar' do
-      get(:view_full_calendar, {:format => :js, :id => @protocol.id })
+      xhr :get, :view_full_calendar, {:format => :js, :id => @protocol.id }
       expect(assigns(:protocol)).to eq @protocol
       assigns(:merged)
     end
@@ -380,7 +386,7 @@ RSpec.describe Portal::ProtocolsController, :type => :controller do
           @service_provider.organization_id = @core.id
           @service_provider.save(validate: false)
 
-          get(:show, {:format => :js, :id => @protocol.id })
+          xhr :get, :show, {:format => :js, :id => @protocol.id }
           expect(assigns(:protocol)).to eq @protocol
           expect(assigns(:protocol_role)).to eq nil
 
@@ -389,7 +395,7 @@ RSpec.describe Portal::ProtocolsController, :type => :controller do
           # expect protocol to fail validation but that's fine, it means we made it through the authorization filter.
           expect(response.status).to eq(500)
 
-          get(:edit, {:format => :html, :id => @protocol.id })
+          xhr :get, :edit, {:format => :html, :id => @protocol.id }
           expect(assigns(:protocol)).to eq @protocol
           expect(assigns(:edit_protocol)).to eq true
 
@@ -397,7 +403,7 @@ RSpec.describe Portal::ProtocolsController, :type => :controller do
           expect(assigns(:protocol)).to eq @protocol
           expect(response).to render_template("edit")
 
-          get(:view_full_calendar, {:format => :js, :id => @protocol.id })
+          xhr :get, :view_full_calendar, {:format => :js, :id => @protocol.id }
           expect(assigns(:protocol)).to eq @protocol
           assigns(:merged)
 
@@ -459,7 +465,7 @@ RSpec.describe Portal::ProtocolsController, :type => :controller do
           @super_user.organization_id = @core.id
           @super_user.save(validate: false)
 
-          get(:show, {:format => :js, :id => @protocol.id })
+          xhr :get, :show, {:format => :js, :id => @protocol.id }
           expect(assigns(:protocol)).to eq @protocol
           expect(assigns(:protocol_role)).to eq nil
 
@@ -468,7 +474,7 @@ RSpec.describe Portal::ProtocolsController, :type => :controller do
           # expect protocol to fail validation but that's fine, it means we made it through the authorization filter.
           expect(response.status).to eq(500)
 
-          get(:edit, {:format => :html, :id => @protocol.id })
+          xhr :get, :edit, {:format => :html, :id => @protocol.id }
           expect(assigns(:protocol)).to eq @protocol
           expect(assigns(:edit_protocol)).to eq true
 
@@ -476,7 +482,7 @@ RSpec.describe Portal::ProtocolsController, :type => :controller do
           expect(assigns(:protocol)).to eq @protocol
           expect(response).to render_template("edit")
 
-          get(:view_full_calendar, {:format => :js, :id => @protocol.id })
+          xhr :get, :view_full_calendar, {:format => :js, :id => @protocol.id }
           expect(assigns(:protocol)).to eq @protocol
           assigns(:merged)
 

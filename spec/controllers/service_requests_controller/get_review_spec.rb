@@ -44,7 +44,7 @@ RSpec.describe ServiceRequestsController do
     context 'with params[:arm_id] and params[:page]' do
       before do
         session[:service_calendar_pages] = { arm1.id.to_s => '1' }
-        get :review, id: service_request.id, arm_id: arm1.id, page: 2
+        xhr :get, :review, id: service_request.id, arm_id: arm1.id, page: 2
       end
 
       it "should change that Arm's service calendar's page to params[:arm_id]" do
@@ -56,7 +56,7 @@ RSpec.describe ServiceRequestsController do
 
     context 'with params[:pages]' do
       before do
-        get :review, { id: service_request.id, pages: { arm1.id.to_s => 42 } }.with_indifferent_access
+        xhr :get, :review, { id: service_request.id, pages: { arm1.id.to_s => 42 } }.with_indifferent_access
       end
 
       it 'should set service_calendar_pages to params[:pages]' do
@@ -69,7 +69,7 @@ RSpec.describe ServiceRequestsController do
     context 'without params[:pages]' do
       before do
         arm1.update_attribute(:visit_count, 200)
-        get :review, { id: service_request.id }.with_indifferent_access
+        xhr :get, :review, { id: service_request.id }.with_indifferent_access
       end
 
       include_examples 'always'

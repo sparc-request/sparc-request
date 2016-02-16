@@ -20,7 +20,8 @@
 
 class AddCwfTag < ActiveRecord::Migration
   def up
-    Tag.create(:name => "clinical work fulfillment")
+    tag = Tag.new(:name => "clinical work fulfillment")
+    tag.save_without_auditing
   end
 
   def down

@@ -43,51 +43,135 @@ $(document).ready ->
       'true'             : ['.ind_on_hold']
     '#study_impact_areas_attributes_6__destroy':
       'true'             : ['.impact_other']
-    '#study_type_answer_higher_level_of_privacy_answer':
-      'true'             : ['#study_type_answer_certificate_of_conf']
-    '#study_type_answer_certificate_of_conf_answer':
-      'false'            : ['#study_type_answer_access_study_info']
-    '#study_type_answer_access_study_info_answer':
-      'false'            : ['#study_type_answer_epic_inbasket', '#study_type_answer_research_active', '#study_type_answer_restrict_sending']
+    
 
   FormFxManager.registerListeners($('.edit-project-view'), display_dependencies)
 
-  ####### If send to epic is selected we need to do some crazy stuff,  using FormFxManager for some of it but it couldn't handle the complexity, using a combination, see below ########
+  study_type_form = $('.study_type')
+  study_selected_for_epic_radio = $('input[name=\'study[selected_for_epic]\']')
+  certificate_of_confidence_dropdown = $('#study_type_answer_certificate_of_conf_answer')
+  higher_level_of_privacy_dropdown = $('#study_type_answer_higher_level_of_privacy_answer')
+  access_required_dropdown = $('#study_type_answer_access_study_info_answer')
+  epic_inbasket_dropdown = $('#study_type_answer_epic_inbasket_answer')
+  research_active_dropdown = $('#study_type_answer_research_active_answer')
+  restrict_sending_dropdown = $('#study_type_answer_restrict_sending_answer')
 
-  $('#study_selected_for_epic_true').click ->
-    $('.study_type').show()
-  $('#study_selected_for_epic_false').click ->
-    $('.study_type').hide()
-    $('.study_type select').val("").change()
+  $.prototype.hide_elt = () ->
+    this[0].selectedIndex = 0
+    this.closest('.field').hide()
+    return this
 
-  $("#study_type_answer_higher_level_of_privacy_answer").change ->
-    if $(this).val() != 'false'
-      for elem in ['#study_type_answer_epic_inbasket', '#study_type_answer_research_active', '#study_type_answer_restrict_sending']
-        $(elem).hide()
+  $.prototype.show_elt = () ->
+    this.closest('.field').show()
+    return this
 
-      for elem in ['#study_type_answer_epic_inbasket_answer', '#study_type_answer_research_active_answer', '#study_type_answer_restrict_sending_answer']
-        $(elem).val("").change()
+  $.prototype.hide_visual_error = () ->
+    this.removeClass('visual_error')
+    if $('.visual_error').length == 0 
+      $('.study_type div').removeClass('field_with_errors')
+      if $('#errorExplanation ul li').size() == 1
+        $('#errorExplanation').remove()
+      else
+        $('#errorExplanation ul li:contains("Study type questions must be selected")').remove()
 
-    if $(this).val() != 'true'
-      $("#study_type_answer_certificate_of_conf_answer").val("").change()
-      $("#study_type_answer_access_study_info_answer").val("").change()
+  add_and_check_visual_error_on_submit = (dropdown) ->
+    if dropdown.is(':visible') && dropdown.val() == ''
+      dropdown.addClass('visual_error')
+      dropdown.on 'change', (e) ->
+        dropdown.hide_visual_error()
 
-    if $(this).val() == 'false'
-      for elem in ['#study_type_answer_epic_inbasket', '#study_type_answer_research_active', '#study_type_answer_restrict_sending']
-        $(elem).show()
+  add_and_check_visual_error_on_field_change = (dropdown) ->
+    siblings = dropdown.parent('.field').siblings().find('.visual_error')
+    if siblings
+      for sibling in siblings
+        if !$(sibling).is(':visible')
+          $(sibling).hide_visual_error()
 
-  $("#study_type_answer_certificate_of_conf_answer").change ->
-    if $(this).val() == 'true'
-      $("#study_type_answer_access_study_info_answer").val("").change()
-      $("#study_type_answer_epic_inbasket_answer").val("").change()
-      $("#study_type_answer_research_active_answer").val("").change()
-      $("#study_type_answer_restrict_sending_answer").val("").change()
+  # If study is inactive, we want to force users to fill out new epic box questions
+  if $('#study_study_type_question_group_id').val() == "inactive" && $('input[name=\'study[selected_for_epic]\']:checked').val() == 'true'
+    study_type_form.show()
+    certificate_of_confidence_dropdown.show_elt()
 
-  $("#study_type_answer_access_study_info_answer").change ->
-    if $(this).val() == 'true'
-      $("#study_type_answer_epic_inbasket_answer").val("").change()
-      $("#study_type_answer_research_active_answer").val("").change()
-      $("#study_type_answer_restrict_sending_answer").val("").change()
+  # Logic for epic info box 
+  study_selected_for_epic_radio.on 'change', (e) ->
+    if $('input[name=\'study[selected_for_epic]\']:checked').val() == 'true'
+      study_type_form.show()
+      certificate_of_confidence_dropdown.show_elt()
+    else
+      study_type_form.hide()
+      certificate_of_confidence_dropdown.hide_elt().trigger 'change'
+    return
+
+  certificate_of_confidence_dropdown.on 'change', (e) ->
+    new_value = $(e.target).val()
+    if new_value == 'false'
+      higher_level_of_privacy_dropdown.show_elt()
+    else
+      higher_level_of_privacy_dropdown.hide_elt()
+      access_required_dropdown.hide_elt()
+      epic_inbasket_dropdown.hide_elt()
+      research_active_dropdown.hide_elt()
+      restrict_sending_dropdown.hide_elt()
+    return
+
+
+  higher_level_of_privacy_dropdown.on 'change', (e) ->
+    new_value = $(e.target).val()
+    if new_value == 'false'
+      access_required_dropdown.hide_elt()
+      epic_inbasket_dropdown.show_elt()
+      research_active_dropdown.show_elt()
+      restrict_sending_dropdown.show_elt()
+    else
+      access_required_dropdown.show_elt()
+      epic_inbasket_dropdown.hide_elt()
+      research_active_dropdown.hide_elt()
+      restrict_sending_dropdown.hide_elt()
+    return
+ 
+  access_required_dropdown.on 'change', (e) ->
+    new_value = $(e.target).val()
+    if new_value == 'false'
+      epic_inbasket_dropdown.show_elt()
+      research_active_dropdown.show_elt()
+      restrict_sending_dropdown.show_elt()
+    else
+      epic_inbasket_dropdown.hide_elt()
+      research_active_dropdown.hide_elt()
+      restrict_sending_dropdown.hide_elt()
+    return
+
+  # When the epic box answers hit the validations with an unselected field, 
+  # the html.haml sets display to none for unselected fields
+  # So if the user has not filled out one of the 
+  # required fields in the epic box, it will hit this code and display 
+  # the appropriate fields that need to be filled out with a visual cue of red border
+  if $('.field_with_errors label:contains("Study type questions")').length > 0
+    study_selected_for_epic_radio.change()
+    if certificate_of_confidence_dropdown.is(':visible')
+      certificate_of_confidence_dropdown.change()
+    if higher_level_of_privacy_dropdown.val() == 'true' 
+      access_required_dropdown.show_elt()
+      access_required_dropdown.change()
+    if higher_level_of_privacy_dropdown.val() == 'false'
+      higher_level_of_privacy_dropdown.change()
+    if certificate_of_confidence_dropdown != "" && higher_level_of_privacy_dropdown.val() != "" && access_required_dropdown.val() == 'false'
+      access_required_dropdown.change()
+    add_and_check_visual_error_on_submit(certificate_of_confidence_dropdown)
+    add_and_check_visual_error_on_submit(higher_level_of_privacy_dropdown)
+    add_and_check_visual_error_on_submit(access_required_dropdown)
+    add_and_check_visual_error_on_submit(epic_inbasket_dropdown)
+    add_and_check_visual_error_on_submit(research_active_dropdown)
+    add_and_check_visual_error_on_submit(restrict_sending_dropdown)
+
+    certificate_of_confidence_dropdown.on 'change', (e) ->
+      add_and_check_visual_error_on_field_change(certificate_of_confidence_dropdown)
+
+    higher_level_of_privacy_dropdown.on 'change', (e) ->
+      add_and_check_visual_error_on_field_change(higher_level_of_privacy_dropdown)
+
+    access_required_dropdown.on 'change', (e) ->
+      add_and_check_visual_error_on_field_change(access_required_dropdown)
 
   ######## End of send to epic study question logic ##############
 
@@ -116,6 +200,8 @@ $(document).ready ->
       when "industry" then $('#study_indirect_cost_rate').val(I18n["indirect_cost_rates"]["industry"])
       when "foundation", "investigator" then $('#study_indirect_cost_rate').val(I18n["indirect_cost_rates"]["foundation_and_investigator"])
       when "federal" then $('#study_indirect_cost_rate').val(I18n["indirect_cost_rates"]["federal"])
+
+
 
   # id       - where to stick datepicker
   # altField - input element(s) that is to be updated with
@@ -158,7 +244,7 @@ $(document).ready ->
   setupDatePicker('#iacuc_expiration_date', '#study_vertebrate_animals_info_attributes_iacuc_expiration_date')
   $('#iacuc_expiration_date').attr("readOnly", true)
 
-  #This is to disabled the submit after you click once, so you can't fire multiple posts at once.
+  #This is to disabled the submit after you click once, so you cant fire multiple posts at once.
   $("form").submit ->
     unless $('#study_research_types_info_attributes_human_subjects').is(':checked')
       $('#study_human_subjects_info_attributes_nct_number').val('')

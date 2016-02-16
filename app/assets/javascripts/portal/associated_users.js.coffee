@@ -38,8 +38,7 @@ $(document).ready ->
         other          : ['.credentials_other']
 
     ready: ->
-
-      $('.associated-user-button').live('click', ->
+      $(document).on 'click', '.associated-user-button', ->
         if $(this).data('permission')
           $('.add-associated-user-dialog').dialog('open')
           $('#add-user-form #protocol_id').val($(this).data('protocol_id'))
@@ -47,56 +46,52 @@ $(document).ready ->
           $('.permissions-dialog').dialog('open')
           $('.permissions-dialog .text').html('Edit.')
 
-      )
-
       $('.user_credentials').attr('name', 'user[credentials_other]') if $('.user_credentials').val() == 'other'
-      $('.user_credentials').live('change', ->
+      $('.user_credentials').live 'change', ->
         Sparc.associated_users.redoCredentials()
-      )
 
-      # Set the rights if the role is 'pi' or 'business-grants-manager'
-      # and disable all other radio buttons if 'pi'
-      $('#project_role_role').live('change', ->
+      $(document).on 'change', '.add_user_dialog_box #project_role_role', ->
         role = $(this).val()
-        if role == 'pi' or role == 'business-grants-manager' or role == 'primary-pi'
-          $('#project_role_project_rights_approve').attr('checked', true)
-        if role == 'pi' or role == 'primary-pi'
-          $('#project_role_project_rights_request').attr('disabled', true)
-          $('#project_role_project_rights_view').attr('disabled', true)
-          $('#project_role_project_rights_none').attr('disabled', true)
+        if role == 'pi' or role == 'primary-pi' or role == 'business-grants-manager'
+          $('.add_user_dialog_box #project_role_project_rights_none').attr('disabled', true)
+          $('.add_user_dialog_box #project_role_project_rights_view').attr('disabled', true)
+          $('.add_user_dialog_box #project_role_project_rights_request').attr('disabled', true)
+          $('.add_user_dialog_box #project_role_project_rights_approve').attr('checked', true)
         else
-          $('#project_role_project_rights_request').attr('disabled', false)
-          $('#project_role_project_rights_view').attr('disabled', false)
-          $('#project_role_project_rights_none').attr('disabled', false)
+          $('.rights input').attr('disabled', false)
 
-      )
+      $(document).on 'change', '.edit_user_dialog_box #project_role_role', -> 
+        role = $(this).val()
+        if role == 'pi' or role == 'primary-pi' or role == 'business-grants-manager'
+          $('.edit_user_dialog_box #project_role_project_rights_none').attr('disabled', true)
+          $('.edit_user_dialog_box #project_role_project_rights_view').attr('disabled', true)
+          $('.edit_user_dialog_box #project_role_project_rights_request').attr('disabled', true)
+          $('.edit_user_dialog_box #project_role_project_rights_approve').attr('checked', true)
+        else
+          $('.rights input').attr('disabled', false)
 
-      $(document).on('click', '.edit-associated-user-button', ->
+      $(document).on 'click', '.edit-associated-user-button', ->
         if $(this).data('permission')
           protocol_id = $(this).data('protocol_id')
           pr_id = $(this).data('pr_id')
           user_id = $(this).data('user_id')
           sub_service_request_id = $(this).data('sub_service_request_id')
-          $.ajax({
+          $.ajax
               method: 'get'
               url: "/portal/associated_users/#{pr_id}/edit"
               data: {protocol_id: protocol_id, identity_id: user_id, sub_service_request_id: sub_service_request_id}
               success: ->
                 $('.edit-associated-user-dialog').dialog('open')
-                Sparc.associated_users.showEpicRights($('.epic_access:checked').val())
               error: (request, status, error) ->
-                $().toastmessage("showMessage", {
+                $().toastmessage "showMessage",
                   type: "error"
                   sticky: true
                   text: error.toString()
-                  })
-            })
         else
           $('.permissions-dialog').dialog('open')
           $('.permissions-dialog .text').html('Edit.')
-      )
 
-      $('.delete-associated-user-button').live('click', ->
+      $(document).on 'click', '.delete-associated-user-button', ->
         if $(this).data('permission')
           adminUsersList = $(".admin#users")
           current_user_id = $('#current_user_id').val()
@@ -106,10 +101,9 @@ $(document).ready ->
           pr_id = $(this).data('pr_id')
           user_id = $(this).data('user_id')
           user_role = $(this).data('user_role')
-          pi_count = parseInt($("#pi_count_#{protocol_id}").val(), 10)
           confirm_message = if current_user_id == user_id then 'This action will remove you from the project. Are you sure?' else 'Are you sure?'
-          alert_message1 = 'Projects require a PI. Please add a new one before continuing.'
-          cannot_remove_pi = (current_user_role == 'primary-pi' or user_role == 'primary-pi') and pi_count == 1
+          alert_message1 = I18n["protocol_information"]["require_primary_pi_message"]
+          cannot_remove_pi = (current_user_role == 'primary-pi' or user_role == 'primary-pi')
 
           if cannot_remove_pi
             alert(alert_message1)
@@ -134,83 +128,238 @@ $(document).ready ->
         else
           $('.permissions-dialog').dialog('open')
           $('.permissions-dialog .text').html('Edit.')
-      )
 
-      $('#associated_user_role').live('change', ->
+      $(document).on 'change', '#associated_user_role', ->
         roles_to_hide = ['', 'grad-research-assistant', 'undergrad-research-assistant', 'research-assistant-coordinator', 'technician', 'general-access-user', 'business-grants-manager', 'other']
         role = $(this).val()
         if role == 'other' then $('.role_other').show() else $('.role_other').hide()
-        # if role == '' then Sparc.associated_users.validateRolePresence(role) else Sparc.associated_users.noProblems()
         if roles_to_hide.indexOf(role) >= 0
           $('.commons_name').hide()
           $('.subspecialty').hide()
         else
           $('.commons_name').show()
           $('.subspecialty').show()
-      )
 
       Sparc.associated_users.create_edit_associated_user_dialog()
       Sparc.associated_users.create_add_associated_user_dialog()
 
     create_add_associated_user_dialog: () ->
-      $('.add-associated-user-dialog').dialog({
+      $('.add-associated-user-dialog').dialog
         autoOpen: false
         dialogClass: "add_user_dialog_box"
         title: 'Add an Authorized User'
         width: 750
         modal: true
         resizable: false
-        buttons: [
-          {
-            id: "add_authorized_user_submit_button"
-            text: "Submit"
+        buttons:
+          'Submit':
+            id: 'add_authorized_user_submit_button'
+            text: 'Submit'
             click: ->
-              $("#new_project_role").submit()
-              $("#user_search").val('')
-          },
-          {
-            id: "add_authorized_user_cancel_button"
-            text: "Cancel"
+              $('#add_authorized_user_submit_button').attr('disabled', true)
+
+              role = $('.add_user_dialog_box #project_role_role').val()
+              primary_pi_pr_id = $('.add_user_dialog_box #primary_pi_pr_id').val()
+              pr_id = $('.add_user_dialog_box #pr_id').val()
+
+              if role == 'primary-pi' && primary_pi_pr_id != pr_id
+                button = $('#add_authorized_user_submit_button')
+                button_text = button.children('span')
+                title_text = $('.add_user_dialog_box .ui-dialog-titlebar').children('.ui-dialog-title')
+                
+                if button_text.text() == 'Submit'
+                  #Hide the form
+                  $('.user-search-container').hide()
+                  $('#add-user-form').hide()
+
+                  #Add the new elements
+                  primary_pi_full_name = $('.add_user_dialog_box #primary_pi_full_name').val()
+                  pr_full_name = $('.add_user_dialog_box #full_name').val()
+                  protocol_id = $('#add-user-form #protocol_id').val()
+                  warning = I18n["protocol_information"]["change_primary_pi"]["warning"]
+                  message1 = I18n["protocol_information"]["change_primary_pi"]["warning_prompt_1_1"]+
+                    "(<strong>#{pr_full_name}</strong>)"+
+                    I18n["protocol_information"]["change_primary_pi"]["warning_prompt_1_2"]+
+                    "(<strong>#{primary_pi_full_name}</strong>)"+
+                    I18n["protocol_information"]["change_primary_pi"]["warning_prompt_1_3"]+
+                    "(<strong>#{protocol_id}</strong>)."
+                  message2 = I18n["protocol_information"]["change_primary_pi"]["warning_prompt_2"]
+                  $('.add-associated-user-dialog').append("<h1 class='change_ppi_prompt' style='color:red;'>#{warning}</h1><p class='change_ppi_prompt' style='font-size:14px;'>#{message1}</p><p class='change_ppi_prompt' style='font-size:14px;'>#{message2}</p>")
+
+                  #Change the text
+                  button_text.text('Yes')
+                  button.siblings('button').children('span').text('No')
+                  title_text.text('Change Primary PI')
+                else
+                  #Enable removing the old Primary PI
+                  $('.add_user_dialog_box #change_primary_pi').val(true)
+                  
+                  #Remove the elements
+                  $('.change_ppi_prompt').remove()
+
+                  #Show the form
+                  $('.user-search-container').show()
+                  $('#add-user-form').show()
+
+                  #Change the text
+                  button_text.text('Submit')
+                  button.siblings('button').children('span').text('Cancel')
+                  title_text.text('Add an Authorized User')
+                  
+                  $('#new_project_role').submit()
+              else
+                $('#new_project_role').submit()
+
+              $('#add_authorized_user_submit_button').attr('disabled', false)
+
+          'Cancel':
+            id: 'add_authorized_user_cancel_button'
+            text: 'Cancel'
             click: ->
-              $(this).dialog('close')
-              $("#user_search").val('')
-              $("#errorExplanation").remove()
-          }]
+              button = $('#add_authorized_user_cancel_button')
+              button_text = button.children('span')
+              title_text = $('.add_user_dialog_box .ui-dialog-titlebar').children('.ui-dialog-title')
+              
+              if button_text.text() == 'Cancel'
+                $(this).dialog('close')
+                $('#errorExplanation').remove()
+              else
+                #Remove the elements
+                $('.change_ppi_prompt').remove()
+
+                #Show the form
+                $('.user-search-container').show()
+                $('#add-user-form').show()
+
+                #Change the text
+                button_text.text('Cancel')
+                button.siblings('button').children('span').text('Submit')
+                title_text.text('Add an Authorized User')
         open: ->
+          Sparc.associated_users.reset_fields()
           $('.dialog-form input,.dialog-form select').attr('disabled',true)
           # $('.ui-dialog .ui-dialog-buttonpane button:contains(Submit)').filter(":visible").attr('disabled',true).addClass('button-disabled')
-      })
+        close: ->
+          Sparc.associated_users.reset_fields()
+          $('#add_authorized_user_submit_button').children('span').text('Submit')
+          $('#add_authorized_user_cancel_button').children('span').text('Cancel')
+          $('.add_user_dialog_box .ui-dialog-titlebar').children('.ui-dialog-title').text('Add an Authorized User')
+          $('.change_ppi_prompt').remove()
+          $('.user-search-container').show()
+          $('#add-user-form').show()
+          $('.add_user_dialog_box #change_primary_pi').val(false)
 
     create_edit_associated_user_dialog: () ->
-      $('.edit-associated-user-dialog').dialog({
-          dialogClass: "edit_user_dialog_box"
+      $('.edit-associated-user-dialog').dialog
           autoOpen: false
           dialogClass: "edit_user_dialog_box"
           title: 'Edit an Authorized User'
           width: 750
           modal: true
           resizable: false
-          buttons: [
-            {
+          buttons:
+            'Submit':
               id: 'edit_authorized_user_submit_button'
               text: 'Submit'
               click: ->
-                form = $(".edit-associated-user-dialog").children('form')
                 $('#edit_authorized_user_submit_button').attr('disabled', true)
-                form.submit()
-            },
-            {
+
+                role = $('.edit_user_dialog_box #project_role_role').val()
+                primary_pi_pr_id = $('.edit_user_dialog_box #primary_pi_pr_id').val()
+                pr_id = $('.edit_user_dialog_box #pr_id').val()
+
+                if role == 'primary-pi' && primary_pi_pr_id != pr_id
+                  button = $('#edit_authorized_user_submit_button')
+                  button_text = button.children('span')
+                  title_text = $('.edit_user_dialog_box .ui-dialog-titlebar').children('.ui-dialog-title')
+                  
+                  if button_text.text() == 'Submit'
+                    #Hide the form
+                    $("#edit_project_role_#{pr_id}").hide()
+
+                    #Add the new elements
+                    primary_pi_full_name = $('.edit_user_dialog_box #primary_pi_full_name').val()
+                    pr_full_name = $('.edit_user_dialog_box #full_name').val()
+                    protocol_id = $('.edit_user_dialog_box #protocol_id').val()
+                    warning = I18n["protocol_information"]["change_primary_pi"]["warning"]
+                    message1 = I18n["protocol_information"]["change_primary_pi"]["warning_prompt_1_1"]+
+                      "(<strong>#{pr_full_name}</strong>)"+
+                      I18n["protocol_information"]["change_primary_pi"]["warning_prompt_1_2"]+
+                      "(<strong>#{primary_pi_full_name}</strong>)"+
+                      I18n["protocol_information"]["change_primary_pi"]["warning_prompt_1_3"]+
+                      "(<strong>#{protocol_id}</strong>)."
+                    message2 = I18n["protocol_information"]["change_primary_pi"]["warning_prompt_2"]
+                    $('.edit-associated-user-dialog').append("<h1 class='change_ppi_prompt' style='color:red;'>#{warning}</h1><p class='change_ppi_prompt' style='font-size:14px;'>#{message1}</p><p class='change_ppi_prompt' style='font-size:14px;'>#{message2}</p>")
+
+                    #Change the text
+                    button_text.text('Yes')
+                    button.siblings('button').children('span').text('No')
+                    title_text.text('Change Primary PI')
+                  else
+                    #Enable removing the old Primary PI
+                    $('.edit_user_dialog_box #change_primary_pi').val(true)
+                    
+                    #Remove the elements
+                    $('.change_ppi_prompt').remove()
+
+                    #Show the form
+                    $("#edit_project_role_#{pr_id}").show()
+
+                    #Change the text
+                    button_text.text('Submit')
+                    button.siblings('button').children('span').text('Cancel')
+                    title_text.text('Edit an Authorized User')
+
+                    $('.edit-associated-user-dialog').children('form').submit()
+                else
+                  $('.edit-associated-user-dialog').children('form').submit()
+
+                $('#edit_authorized_user_submit_button').attr('disabled', false)
+
+            'Cancel':
               id: 'edit_authorized_user_cancel_button'
               text: 'Cancel'
               click: ->
-                $(this).dialog("close")
-                $("#errorExplanation").remove()
-            }
-          ]
+                pr_id = $('.edit_user_dialog_box #pr_id').val()
+
+                button = $('#edit_authorized_user_cancel_button')
+                button_text = button.children('span')
+                title_text = $('.edit_user_dialog_box .ui-dialog-titlebar').children('.ui-dialog-title')
+                
+                if button_text.text() == 'Cancel'
+                  $(this).dialog('close')
+                  $("#errorExplanation").remove()
+                else
+                  #Remove the elements
+                  $('.change_ppi_prompt').remove()
+
+                  #Show the form
+                  $("#edit_project_role_#{pr_id}").show()
+
+                  #Change the text
+                  button_text.text('Cancel')
+                  button.siblings('button').children('span').text('Submit')
+                  title_text.text('Edit an Authorized User')
           open: ->
             $('#edit_authorized_user_submit_button').attr('disabled', false)
             $('#associated_user_role').change()
-      })
+          close: ->
+            Sparc.associated_users.reset_fields()
+            $('#edit_authorized_user_submit_button').children('span').text('Submit')
+            $('#edit_authorized_user_cancel_button').children('span').text('Cancel')
+            $('.edit_user_dialog_box .ui-dialog-titlebar').children('.ui-dialog-title').text('Edit an Authorized User')
+            $('.change_ppi_prompt').remove()
+            $('.edit-associated-user-dialog .associated_users_form').show()
+            $('.edit_user_dialog_box #change_primary_pi').val(false)
+
+    reset_fields: () ->
+      $('.errorExplanation').html('').hide()
+      $('.hidden').hide()
+      $('#epic_access').hide()
+      $('.add-associated-user-dialog input').val('')
+      $('.add-associated-user-dialog select').prop('selectedIndex', 0)
+      $('.add-associated-user-dialog #epic_access input').prop('checked', false)
+      $('.add-associated-user-dialog .rights input').prop('checked', false)
 
     createTip: (element) ->
       if $('#tip').length == 0
@@ -233,17 +382,6 @@ $(document).ready ->
         .attr('disabled',false)
         .removeClass('button-disabled')
       button.attr('disabled',false)
-
-    validatePiPresence: (role) ->
-      pi_count = parseInt($('.edit-user #pi_count').val(), 10)
-      pi_validation_message = $('.edit-user #pi-validation-message')
-      pi_count -= 1 if role != 'primary-pi'
-      if pi_count <= 0
-        pi_validation_message.show()
-        Sparc.associated_users.disableSubmitButton("Submit", "Submit")
-      else
-        pi_validation_message.hide()
-        Sparc.associated_users.enableSubmitButton("Submit", "Submit")
 
     validateRolePresence: (role) ->
       role_validation = $('#user-role-validation-message')

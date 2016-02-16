@@ -34,7 +34,7 @@ class Fulfillment < ActiveRecord::Base
   attr_accessible :unit_type
   attr_accessible :formatted_date
 
-  default_scope :order => 'fulfillments.id ASC'
+  default_scope -> { order('fulfillments.id ASC') }
 
   QUANTITY_TYPES = ['Min', 'Hours', 'Days', 'Each']
   CWF_QUANTITY_TYPES = ['Each', 'Sample', 'Aliquot', '3kg unit']

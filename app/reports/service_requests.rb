@@ -47,18 +47,26 @@ class ServiceRequestsReport < ReportingModule
 
     if params[:institution_id]
       attrs[Institution] = [params[:institution_id], :abbreviation]
+    else
+      attrs["Institution"] = "org_tree.select{|org| org.type == 'Institution'}.first.try(:abbreviation)"
     end
 
     if params[:provider_id]
       attrs[Provider] = [params[:provider_id], :abbreviation]
+    else
+      attrs["Provider"] = "org_tree.select{|org| org.type == 'Provider'}.first.try(:abbreviation)"
     end
 
     if params[:program_id]
       attrs[Program] = [params[:program_id], :abbreviation]
+    else
+      attrs["Program"] = "org_tree.select{|org| org.type == 'Program'}.first.try(:abbreviation)"
     end
 
     if params[:core_id]
       attrs[Core] = [params[:core_id], :abbreviation]
+    else
+      attrs["Core"] = "org_tree.select{|org| org.type == 'Core'}.first.try(:abbreviation)"
     end
 
     attrs["SRID"] = :display_id
@@ -116,7 +124,7 @@ class ServiceRequestsReport < ReportingModule
 
   # Conditions
   def where args={}
-    organizations = Organization.find(:all)
+    organizations = Organization.all
     selected_organization_id = args[:core_id] || args[:program_id] || args[:provider_id] || args[:institution_id] # we want to go up the tree, service_organization_ids plural because we might have child organizations to include
 
     if args[:tags]
@@ -129,7 +137,7 @@ class ServiceRequestsReport < ReportingModule
     service_organization_ids = [selected_organization_id]
     if selected_organization_id
       org = Organization.find(selected_organization_id)
-      service_organization_ids += org.all_children(organizations).map(&:id)
+      service_organization_ids = org.all_children(organizations).map(&:id)
       service_organization_ids.flatten!
     end
 
@@ -148,7 +156,7 @@ class ServiceRequestsReport < ReportingModule
     # default values if none are provided
     service_organization_ids = Organization.all.map(&:id) if service_organization_ids.compact.empty? # use all if none are selected
 
-    service_organizations = Organization.find_all_by_id(service_organization_ids)
+    service_organizations = Organization.find(service_organization_ids)
 
     unless tags.empty?
       tagged_organization_ids = service_organizations.reject {|x| (x.tags.map(&:name) & tags).empty?}.map(&:id)
@@ -156,13 +164,6 @@ class ServiceRequestsReport < ReportingModule
     end
 
     ssr_organization_ids = Organization.all.map(&:id) if ssr_organization_ids.compact.empty? # use all if none are selected
-
-    # ssr_organizations = Organization.find_all_by_id(ssr_organization_ids)
-
-    # unless tags.empty?
-    #   tagged_organization_ids = ssr_organizations.reject {|x| (x.tags.map(&:name) & tags).empty?}.map(&:id)
-    #   ssr_organization_ids = ssr_organization_ids.reject {|x| !tagged_organization_ids.include?(x)}
-    # end
 
     submitted_at ||= self.default_options["Date Range"][:from]..self.default_options["Date Range"][:to]
     statuses = args[:status] || AVAILABLE_STATUSES.keys # use all if none are selected

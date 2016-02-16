@@ -78,7 +78,7 @@ $(document).ready ->
       )
 
       $(document).on('click', '.archive_button', ->
-        $('.search_protocols').hide()
+        $('#protocol-accordion').hide()
         $('.loading_protocol').show()
         include_archived = 'true'
 
@@ -97,7 +97,7 @@ $(document).ready ->
               $('.archive_button').data('showing-archived', 0)
               $('.archive_button').text("Show All Projects/Studies")
             $('.loading_protocol').hide()
-            $('.search_protocols').show()
+            $('#protocol-accordion').show()
       )
 
       $('.view-sub-service-request-button').live('click', ->
@@ -296,7 +296,8 @@ $(document).ready ->
       })
 
     renderProtocolAccordionTab: (protocol_id) ->
-      $(".protocol-information-#{protocol_id}").html("<img src='/assets/portal/spinner.gif' alt='Spinner'><br />Please be patient while the protocol/study loads.")
+      message = I18n["protocol_information"]["wait_message"]
+      $(".protocol-information-#{protocol_id}").html("<img src='/assets/portal/spinner.gif' alt='Spinner'><br />#{message}")
       random_number = Math.floor(Math.random()*10101010101)
       $.ajax({
         method: 'get'

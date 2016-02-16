@@ -15,20 +15,20 @@ RSpec.describe ServiceRequestsController, type: :controller do
   describe 'GET catalog' do
     it 'should prepare catalog' do
       expect(controller).to receive(:prepare_catalog)
-      get :catalog, id: service_request.id
+      xhr :get, :catalog, id: service_request.id
     end
 
     context 'without params[:id]' do
       it 'should delete session[:sub_service_request_id]' do
         session[:sub_service_request_id] = sub_service_request.id
-        get :catalog
+        xhr :get, :catalog
         expect(session[:sub_service_request_id]).to_not be
       end
 
       context 'with params[:protocol_id]' do
         context 'Identity has permission to create ServiceRequest under Protocol' do
           def do_get
-            get :catalog, protocol_id: study.id
+            xhr :get, :catalog, protocol_id: study.id
           end
 
           it 'should assign a new ServiceRequest to @service_request belonging to specified Protocol' do
@@ -69,7 +69,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
       context 'without params[:protocol_id]' do
         context 'Identity has permission to create ServiceRequest under Protocol' do
           def do_get
-            get :catalog, protocol_id: study.id
+            xhr :get, :catalog, protocol_id: study.id
           end
 
           it 'should assign a new ServiceRequest to @service_request' do
@@ -88,13 +88,13 @@ RSpec.describe ServiceRequestsController, type: :controller do
     context 'with params[:id]' do
       it 'should update session[:service_request_id]' do
         session.delete(:service_request_id)
-        get :catalog, id: service_request.id
+        xhr :get, :catalog, id: service_request.id
         expect(session[:service_request_id]).to eq service_request.id.to_s
       end
 
       context 'ServiceRequest exists with id params[:id]' do
         it 'should set @service_request' do
-          get :catalog, id: service_request.id
+          xhr :get, :catalog, id: service_request.id
           expect(assigns[:service_request]).to eq service_request
         end
       end
@@ -104,20 +104,20 @@ RSpec.describe ServiceRequestsController, type: :controller do
 
       context 'without params[:sub_service_request_id]' do
         it 'should set @institutions to all Institutions' do
-          get :catalog, id: service_request.id
+          xhr :get, :catalog, id: service_request.id
           expect(assigns(:institutions)).to eq Institution.all.sort_by { |i| i.order.to_i }
         end
       end
 
       context 'with params[:sub_service_request_id]' do
         it "should set @instutitions to the SubServiceRequest's Institution" do
-          get :catalog, id: service_request.id, sub_service_request_id: sub_service_request.id
+          xhr :get, :catalog, id: service_request.id, sub_service_request_id: sub_service_request.id
           expect(assigns(:institutions)).to eq [institution]
         end
 
         it 'should update session[:sub_service_request_id]' do
           session.delete(:sub_service_request_id)
-          get :catalog, id: service_request.id, sub_service_request_id: sub_service_request.id
+          xhr :get, :catalog, id: service_request.id, sub_service_request_id: sub_service_request.id
           expect(session[:sub_service_request_id]).to eq sub_service_request.id.to_s
         end
       end

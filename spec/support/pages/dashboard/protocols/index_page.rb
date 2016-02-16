@@ -16,17 +16,17 @@ module Dashboard
       end
 
       section :filter_protocols, '#filterrific_form' do
-        element :save_link, '#save_filters_link'
-        element :reset_link, '#reset_filters_link'
-        element :search_field, '#filterrific_search_query'
-        element :archived_checkbox, '#filterrific_show_archived'
+        element :save_link, 'a', text: 'Save'
+        element :reset_link, 'a', text: 'Reset'
+        element :search_field, :field, 'Search'
+        element :archived_checkbox, :field, 'Archived'
         element :status_select, 'div.status-select button'
         elements :status_options, 'div.status-select li'
-        element :my_protocols_checkbox, '#filterrific_for_identity_id'
-        element :my_admin_organizations_checkbox, '#filterrific_for_admin'
+        element :my_protocols_checkbox, :field, 'My Protocols'
+        element :my_admin_organizations_checkbox, :field, 'My Admin Organizations'
         element :core_select, 'div.core-select button'
         elements :core_options, 'div.core-select li'
-        element :apply_filter_button, '#apply-filter-button'
+        element :apply_filter_button, :button, 'Filter'
 
         def select_status(status)
           status_select.click
@@ -42,7 +42,7 @@ module Dashboard
           core_select['title']
         end
 
-        section :recently_saved_filters, '#saved_searches' do
+        section :recently_saved_filters, '.panel', text: 'Recently Saved Filters' do
           elements :filters, 'li a'
         end
       end

@@ -16,10 +16,10 @@ RSpec.describe 'filters', js: :true do
   end
 
   describe 'save' do
-    let!(:protocol) { create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false) }
+    let!(:protocol) { create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false, title: 'My Awesome Protocol') }
     before(:each) do
       visit_protocols_index_page
-      expect(@page).to have_protocols
+      # expect(@page).to have_css('td', text: 'My Awesome Protocol')
       @page.filter_protocols.archived_checkbox.click
     end
 
@@ -34,17 +34,16 @@ RSpec.describe 'filters', js: :true do
 
       context 'user enters name and clicks save' do
         before(:each) do
+          # fill_in 'Name', with: 'my filter'
           @page.filter_form_modal.name_field.set('my filter')
           @page.filter_form_modal.save_button.click
           wait_for_javascript_to_finish
         end
 
-        it 'should create a new ProtocolFilter' do
-          expect(@page.filter_protocols.recently_saved_filters).to have_filters
-        end
-
-        it 'should apply filter, if not already' do
-          expect(@page).to have_protocols
+        it do
+          expect(@page).to have_no_filter_form_modal, 'expected save button click to close modal, got a modal'
+          expect(@page.filter_protocols.recently_saved_filters).to have_filters, 'expected page to display saved filters, got none'
+          expect(@page).to have_protocols, 'expected protocols to be on page, got none'
         end
       end
     end

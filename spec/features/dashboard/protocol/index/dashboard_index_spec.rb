@@ -42,16 +42,12 @@ RSpec.describe 'dashboard index', js: :true do
         end
 
         context 'User clicks button' do
-          it 'should unarchive Project' do
+          it do
             @page.protocols.first.archive_button.click
             wait_for_javascript_to_finish
-            expect(protocol.reload.archived).to be false
-          end
-
-          it 'should remove Project from table' do
-            @page.protocols.first.archive_button.click
-            wait_for_javascript_to_finish
-            expect(@page.protocols.size).to eq 0
+            protocol.reload
+            expect(protocol.archived).to be(false), "expected protocol.archived to be false, got #{protocol.archived}"
+            expect(@page.protocols.size).to eq(0), 'expected protocol to be removed from list, got non-empty list'
           end
         end
       end
@@ -61,16 +57,12 @@ RSpec.describe 'dashboard index', js: :true do
         before(:each) { visit_protocols_index_page }
 
         context 'User clicks button' do
-          it 'should archive Project' do
+          it do
             @page.protocols.first.archive_button.click
             wait_for_javascript_to_finish
-            expect(protocol.reload.archived).to be true
-          end
-
-          it 'should remove Project from table' do
-            @page.protocols.first.archive_button.click
-            wait_for_javascript_to_finish
-            expect(@page.protocols.size).to eq 0
+            protocol.reload
+            expect(protocol.archived).to be(true), "expected protocol.archived to be true, got #{protocol.archived}"
+            expect(@page.protocols.size).to eq(0), 'expected protocol to be removed from list, got non-empty list'
           end
         end
       end
@@ -87,16 +79,12 @@ RSpec.describe 'dashboard index', js: :true do
         end
 
         context 'User clicks button' do
-          it 'should unarchive Study' do
+          it do
             @page.protocols.first.archive_button.click
             wait_for_javascript_to_finish
-            expect(protocol.reload.archived).to be false
-          end
-
-          it 'should remove Study from table' do
-            @page.protocols.first.archive_button.click
-            wait_for_javascript_to_finish
-            expect(@page.protocols.size).to eq 0
+            protocol.reload
+            expect(protocol.archived).to be(false), "expected protocol.archived to be false, got #{protocol.archived}"
+            expect(@page.protocols.size).to eq(0), 'expected protocol to be removed from list, got non-empty list'
           end
         end
       end
@@ -106,16 +94,11 @@ RSpec.describe 'dashboard index', js: :true do
         before(:each) { visit_protocols_index_page }
 
         context 'User clicks button' do
-          it 'should archive Study' do
+          it do
             @page.protocols.first.archive_button.click
             wait_for_javascript_to_finish
-            expect(protocol.reload.archived).to be true
-          end
-
-          it 'should remove Study from table' do
-            @page.protocols.first.archive_button.click
-            wait_for_javascript_to_finish
-            expect(@page.protocols.size).to eq 0
+            expect(protocol.reload.archived).to be(true), "expected protocol.archived to be true, got #{protocol.archived}"
+            expect(@page.protocols.size).to eq(0), 'expected protocol to be removed from list, got non-empty list'
           end
         end
       end

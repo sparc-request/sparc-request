@@ -21,7 +21,7 @@
 <% if @errors.present? %>
 $("#modal_errors").html("<%= escape_javascript(render(partial: 'shared/modal_errors', locals: {errors: @errors})) %>")
 <% else %>
-$("#saved_searches").html("<%= escape_javascript(render partial: 'dashboard/protocol_filters/saved_searches', locals: { current_user: @user }) %>")
+$("#saved_searches").html("<%= escape_javascript(render partial: 'dashboard/protocol_filters/saved_searches', locals: { current_user: @user, protocol_filters: @protocol_filters }) %>")
 
 $("#modal_place").modal 'hide'
 $("#flashes_container").html("<%= escape_javascript(render('shared/flash')) %>")

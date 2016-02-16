@@ -58,27 +58,27 @@ RSpec.describe CatalogManager::CatalogHelper do
     }
 
     it 'should return a organization node for js.tree' do
-      expect(helper.node(institution)).to eq "<a href=\"#\" cid=\"#{institution.id}\" class=\"institution\" object_type=\"institution\">Medical University of South Carolina</a>"
+      expect(helper.node(institution)).to eq "<a cid=\"1\" object_type=\"institution\" class=\"institution\" href=\"#\">Medical University of South Carolina</a>"
     end
 
     it 'should return a organization node for js.tree' do
-      expect(helper.node(institution, false)).to eq "<a href=\"#\" cid=\"#{institution.id}\" class=\"institution disabled_node\" object_type=\"institution\">Medical University of South Carolina</a>"
+      expect(helper.node(institution, false)).to eq "<a cid=\"2\" object_type=\"institution\" class=\"institution disabled_node\" href=\"#\">Medical University of South Carolina</a>"
     end
 
     it 'should return a organization node for js.tree' do
-      expect(helper.node(provider)).to eq "<a href=\"#\" cid=\"#{provider.id}\" class=\"provider\" object_type=\"provider\">South Carolina Clinical and Translational Institute (SCTR)</a>"
+      expect(helper.node(provider)).to eq "<a cid=\"4\" object_type=\"provider\" class=\"provider\" href=\"#\">South Carolina Clinical and Translational Institute (SCTR)</a>"
     end
 
     it 'should return a organization node for js.tree' do
-      expect(helper.node(provider, false)).to eq "<a href=\"#\" cid=\"#{provider.id}\" class=\"provider disabled_node\" object_type=\"provider\">South Carolina Clinical and Translational Institute (SCTR)</a>"
+      expect(helper.node(provider, false)).to eq "<a cid=\"6\" object_type=\"provider\" class=\"provider disabled_node\" href=\"#\">South Carolina Clinical and Translational Institute (SCTR)</a>"
     end
 
     it 'should return a organization node for js.tree' do
-      expect(helper.node(program)).to eq "<a href=\"#\" cid=\"#{program.id}\" class=\"program\" object_type=\"program\">Office of Biomedical Informatics</a>"
+      expect(helper.node(program)).to eq "<a cid=\"9\" object_type=\"program\" class=\"program\" href=\"#\">Office of Biomedical Informatics</a>"
     end
 
     it 'should return a organization node for js.tree' do
-      expect(helper.node(program, false)).to eq "<a href=\"#\" cid=\"#{program.id}\" class=\"program disabled_node\" object_type=\"program\">Office of Biomedical Informatics</a>"
+      expect(helper.node(program, false)).to eq "<a cid=\"12\" object_type=\"program\" class=\"program disabled_node\" href=\"#\">Office of Biomedical Informatics</a>"
     end
   end
 

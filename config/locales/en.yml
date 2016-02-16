@@ -26,7 +26,6 @@ en:
       human_subjects_info:
         nct_number: "The NCT #"
       protocol:
-        has_cofc: "Does your study have a Certificate of Confidentiality"
         human_subjects_info: "The NCT #"
   admin_portal_title: "SPARC Request Administration"
   application_title: "SPARC Request"
@@ -67,8 +66,32 @@ en:
       services: "Services"
       subject_tracker: "Subject Tracker"
       template: "Template"
-      users: "Associated Users"
+      users: "Authorized Users"
     title: "Dashboard <span>|</span> Welcome"
+
+  admin_identities:
+    button_cancel: "Cancel"
+    button_add_user: "Add User"
+    button_edit_user: "Edit User"
+    button_search: "Search"
+    button_update_user: "Update User"
+    catalog_manager: "Catalog Manager"
+    edit_user_modal_title: "Update "
+    edit_user_email: "Email"
+    edit_user_first_name: "First name"
+    edit_user_last_name: "Last name"
+    edit_user_required: "Required"
+    edit_user_valid_email_required: "Valid email required"
+    footer: "* Close this window or tab when you're done adding new users."
+    grid_uid: "LDAP UID"
+    home: "Users"
+    page_title: "Advanced User Search"
+    portal: "Dashboard"
+    portal_admin: "Portal Admin"
+    request_services: "Request Services"
+    return_to_basic_user_search: "Please go back to the 'STEP 1: Add Users' window to add them to your study/project."
+    search_help_block: "Filter the results by searching within the column headers in the grid below. Edit User buttons are displayed for people already in the system and only usable by administrators."
+    search_placeholder: "Find users by first name, last name, email, or user ID"
 
   # Admin Root Page
   admin_root:
@@ -79,10 +102,6 @@ en:
     search_placeholder: "Search all service requests..."
     service: "Service"
     title: "My Profile"
-
-  # Associated Users Tab
-  associated_users:
-    add: "Add a new Associated User"
 
   # Bottom navigation
   bottom_navigation:
@@ -119,6 +138,9 @@ en:
       unit_costs: "Unit Costs"
       unit_type: "Unit Type"
       your_cost: "Your Cost"
+      decrement: "-"
+      increment: "+"
+      day: "Day"
     labels:
       direct_cost: "Total Direct Cost"
       grand_total_direct: "Grand Total: Direct Costs"
@@ -305,7 +327,8 @@ en:
       service: "Service"
       source: "Funding Source"
       source_of_price: "Source of Price / Rate"
-      survey_name: "Survey"
+      survey_name: "Name (and Version)"
+      survey_warning: "* The associated survey(s) will be sent out to the service requester(s) through email at the time of service completion."
       unfunded: "Unfunded Student Research*"
     title: "SPARC Request Services Catalog"
 
@@ -354,9 +377,11 @@ en:
   study_form:
     affiliations: "Affiliations, Collaborations, and Memberships"
     approval_pending: "Application/Approval Pending:"
+    study_type_questions: "Study type questions *"
     attributes: "Study Attributes"
     code_blank: "Select a Federal Grant Code"
     description: "Before you can complete a service request, please tell us more about your research study. This information will be used by our staff to decide the best way to process your request."
+    epic: "Epic Information"
     federal_grant_code_id: "Federal Grant Code:"
     federal_grant_serial_number: "Federal Grant Serial Number:"
     federal_grant_title: "Federal Grant Title:"
@@ -366,7 +391,6 @@ en:
     funding_rfa: "Funding Opportunity #/RFA:"
     funding_source_other: "Please Specify"
     funding_start_date: "Funding Start Date:"
-    has_cofc: "Does your study have a Certificate of Confidentiality? *"
     hr_number: "HR #:"
     human_subjects: "Human Subjects:"
     iacuc_approval_date: "IACUC Approval Date:"
@@ -398,7 +422,7 @@ en:
     potential_funding_source_other: "Please Specify"
     potential_funding_start_date: "Potential Funding Start Date:"
     pro_number: "Pro #:"
-    push_to_epic: "Publish Study in Epic:"
+    push_to_epic: "Publish Study in Epic: *"
     save: "Save"
     sponsor_name: "Sponsor Name:*"
     status_blank: "Select a Funding Status"
@@ -623,10 +647,24 @@ en:
     foundation_and_investigator: "25"
     federal: "49.5"
 
+  pricing_setup:
+    pricing_setup_display_date: "Pricing setup's 'display date'"
+    pricing_setup_effective_date: "Pricing setup's 'effective date'"
+    pricing_setup_corporate: "Pricing setup's 'corporate percent'"
+    pricing_setup_other: "Pricing setup's 'other percent'"
+    pricing_setup_member: "Pricing setup's 'member percent'"
+    pricing_setup_college_rate_type: "Pricing setup's 'college rate type'"
+    pricing_setup_foundation_rate_type: "Pricing setup's 'foundation rate type'"
+    pricing_setup_industry_rate_type: "Pricing setup's 'industry rate type'"
+    pricing_setup_investigator_rate_type: "Pricing setup's 'investigator rate type'"
+    pricing_setup_internal_rate_type: "Pricing setup's 'internal rate type'"
+
   # Javascript localizations
   ajax_error: "An error happened processing your request: "
   cart:
     remove_request_confirm: "This action will delete this service request and you will be redirected to your user portal. Click OK to proceed."
+    new_request_dialog1: "New Request?"
+    new_request_dialog2: "Is this a new research study or project?"
   catalog_manager_js:
     clinical_provider_remove: "Are you sure you want to remove this Fulfillment Provider?"
     cm_rights_remove: "Are you sure you want to remove rights for this user from the Catalog Manager?"
@@ -648,6 +686,9 @@ en:
     calendar_changed: "Changes to patient calendars need to be saved, click 'Stay on page' and save the form to save the calendar, or click 'Leave page' to leave the page and dismiss your changes."
     subject_changed: "Changes to subjects need to be saved. Click 'Cancel' to return to the page and save the form, or 'OK' to leave the page and dismiss your changes."
     subject_delete: "This subject has one or more completed appointments and can't be deleted."
+  epic_box:
+    epic_box_error: "Epic Information Error"
+    epic_box_alert: "Please fill out the Epic Information correctly."
   feedback:
     message_error: "Message can't be blank"
   fulfillment_js:
@@ -822,7 +863,7 @@ en:
     department: "Department:"
     edit_user: "Edit User"
     email: "E-mail:"
-    epic_access: "Epic EMR Access?:"
+    epic_access: "Epic EMR Access?:*"
     era: "ERA Commons Name:"
     institution_prompt: "Select an Institution"
     institution: "Institution:"
@@ -830,12 +871,13 @@ en:
     phone: "Phone:"
     rights:
       approve: 'Authorize/Change Study Charges'
-      header: "User Rights:"
+      header: "User Rights:*"
       none: 'Study/Project Member Only'
       request: 'Request/Approve Services'
       view: 'View Rights'
     role_prompt: "Select a Role"
     role: "Role:*"
+    specify: "Please Specify:*"
     subspecialty_prompt: "Select a Subspecialty"
     subspecialty: "Subspecialty:"
 
@@ -845,7 +887,16 @@ en:
     add_authorized_user: "Add An Authorized User"
     add_services: "Add Services"
     authorized_users: "Authorized Users:"
+    change_primary_pi:
+      warning: "<strong>**WARNING**</strong>"
+      warning_prompt_1_1: "Adding the new Primary PI "
+      warning_prompt_1_2: " will change the current Primary PI "
+      warning_prompt_1_3: " to a general access user on Protocol "
+      warning_prompt_2: "Do you wish to proceed?"
     consolidated_request: 'Export Consolidated Request'
+    create:
+      study: "Create New Study"
+      project: "Create New Project"
     ctrc_services_exist: "SCTR Research Nexus services have been found on another Service Request %{protocol_id}-%{ssr_id} pertaining to this Project/Study %{short_title}. To edit this request, please contact the Nexus at 792-8688."
     date: "Submitted Date:"
     delete: "Delete"
@@ -855,9 +906,9 @@ en:
     funding: "Funding Source:"
     greeting: "Welcome!"
     information: "Information:"
-    loading: "Loading your projects/studies"
+    loading: "Loading your Projects/Studies"
     message1: "Within your dashboard, you can view (and/or edit and submit) service requests currently in SPARC Request, as well as all of those still in 'draft' status."
-    message2: "Please note that projects/studies are listed in descending order."
+    message2: "Please note that Projects/Studies are listed in descending order."
     name: "Name:"
     no_authorized_users: "Currently no authorized users"
     note_count: "Unread Message"
@@ -865,6 +916,7 @@ en:
     program: "Program/Core:"
     provider: "Provider:"
     proxy: "Proxy Rights:"
+    require_primary_pi_message: "Projects/Studies require a Primary PI. Please add a new one before continuing."
     rights1: "You do not have appropriate rights to"
     rights2: "Should you need this right, please contact your PI or Authorized Users"
     role: "Role:"
@@ -875,6 +927,7 @@ en:
     srid: "SRID:"
     status: "Status:"
     title: "Title:"
+    wait_message: Please be patient while the Project/Study loads.
 
   # Portal sub service request dialog
   ssr_dialog:
@@ -916,14 +969,17 @@ en:
     or: "If not in list above, create NEW Study/Project Below"
     previously_submitted_study: "The request that you are editing has been previously submitted and can not be moved to another study."
     previously_submitted_project: "The request that you are editing has been previously submitted and can not be moved to another project."
-    research_project: "Project"
-    research_study: "Research Study"
+    research_project: "New Project"
+    research_study: "New Research Study"
     select_project: "Select Project"
     select_protocol: "Select a Research Study/Project"
     select_study: "Select Study"
     sidebar_box:
       help: "Help"
       my_services: "My Services"
+    tooltips:
+      research_study_tooltip: 'Research Study: An individual research study with defined aims and outcomes'
+      research_project_tooltip: "Use 'Project' for non-study specific service requests, or anything that is not a study"
 
   # Rails Root Page Messages
   rails_root:
@@ -961,6 +1017,7 @@ en:
     dashboard: "Dashboard"
     faq: "Help/FAQs"
     feedback: "Feedback"
+    redcap_survey: 'https://redcap.musc.edu/surveys/?s=A37TNJWJPL'
 
   # Service Request approve epic rights
   approve_epic_rights:
@@ -1129,18 +1186,18 @@ en:
   # Tooltip help dialogs
   cart_help:
     questions:
-      - question_text: "May I submit a request for services for multiple research studies/projects simultaneously?"
-        answer_text: "No. Please browse and select services for only one research study/project at a time."
-      - question_text: "May I select and add services from multiple Service Providers and Programs at one time?"
-        answer_text: "Yes. Please feel free to browse, select, and add services from any Service Provider, Program, and/or Core displayed in the system for any given research study/project."
-      - question_text: "How many Authorized Users can I add?"
-        answer_text: "Add as many Authorized Users as you feel is pertinent. There is no limit."
-      - question_text: "What is the difference  between a Research Study and a Project?"
-        answer_text: "A Research Study is an individual research protocol with defined aims and outcomes."
-      - question_text: "How is SPARC Request calculating my indirect costs?"
-        answer_text: "The original requester for your study/project defined both the funding source of the study/project and the indirect cost rate. SPARC Request uses this data to calculate your total overall indirect costs."
-      - question_text: "I\\'m stuck! Who can I contact for assistance with SPARC Request?"
-        answer_text: "The SUCCESS Center is happy to assist you! Please contact us at <a href=\"mailto:success@musc.edu\">success@musc.edu</a> or (843) 792-3357."
+      question_text1: "May I submit a request for services for multiple research studies/projects simultaneously?"
+      answer_text1: "No. Please browse and select services for only one research study/project at a time."
+      question_text2: "May I select and add services from multiple Service Providers and Programs at one time?"
+      answer_text2: "Yes. Please feel free to browse, select, and add services from any Service Provider, Program, and/or Core displayed in the system for any given research study/project."
+      question_text3: "How many Authorized Users can I add?"
+      answer_text3: "Add as many Authorized Users as you feel is pertinent. There is no limit."
+      question_text4: "What is the difference  between a Research Study and a Project?"
+      answer_text4: "A Research Study is an individual research protocol with defined aims and outcomes."
+      question_text5: "How is SPARC Request calculating my indirect costs?"
+      answer_text5: "The original requester for your study/project defined both the funding source of the study/project and the indirect cost rate. SPARC Request uses this data to calculate your total overall indirect costs."
+      question_text6: "I\'m stuck! Who can I contact for assistance with SPARC Request?"
+      answer_text6: "The SUCCESS Center is happy to assist you! Please contact us at success@musc.edu or (843) 792-3357."
 
   # User details partial
   user_details:
@@ -1179,6 +1236,9 @@ en:
 
   # User search partial
   user_search:
+    advanced_user_search_title: "Click here to add users to SPARC and then return to this page to add them to this study/project."
+    help_block: "Unable to find a user? Please try the"
+    help_block_link_text: "Advanced User Search"
     message: "To begin to search and add authorized users to this study/project, type in the first or last name of the user.  Select as appropriate."
     search_box_header: "User Search"
     search_placeholder: "Search for user..."

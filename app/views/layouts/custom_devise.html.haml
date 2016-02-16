@@ -28,6 +28,7 @@
       = stylesheet_link_tag 'ie'
     /[if lte IE 8]
       = stylesheet_link_tag 'ie8_less'
+    = stylesheet_link_tag 'navbar'
     = javascript_include_tag "application"
     = javascript_include_tag "feedback"
     /[if lt IE 8]
@@ -55,11 +56,8 @@
         = image_tag 'spinner.gif'
 
       = render :partial => 'shared/header_logos'
-      #welcome_msg
-        .flash
-          - flash.each do |name, msg|
-            = content_tag :div, msg, :id => "flash_#{name}" if msg.is_a?(String)
-        .welcome= show_welcome_message(current_user)
+      .welcome.col-md-12
+        = render partial: 'shared/navbar'
       / #title
       / %h1= t 'application_title'
       #sparc_logo_header

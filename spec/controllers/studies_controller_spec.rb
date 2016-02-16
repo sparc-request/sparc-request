@@ -23,8 +23,13 @@ require 'rails_helper'
 # index new create edit update delete show
 
 RSpec.describe StudiesController do
-  let!(:service_request) { FactoryGirl.create(:service_request_without_validations) }
-  let!(:identity) { create(:identity) }
+  let_there_be_lane
+  fake_login_for_each_test
+  let_there_be_j
+  
+ 
+  build_service_request_with_study
+
 
   stub_controller
 
@@ -32,18 +37,18 @@ RSpec.describe StudiesController do
     describe 'GET new' do
       it 'should set service_request' do
         session[:service_request_id] = service_request.id
-        session[:identity_id] = identity.id
-        get :new, { id: nil, format: :js }.with_indifferent_access
+        session[:identity_id] = study.project_roles.first.identity_id
+        xhr :get, :new, { id: nil, format: :js }.with_indifferent_access
         expect(assigns(:service_request)).to eq service_request
       end
 
       it 'should set study' do
         session[:service_request_id] = service_request.id
-        session[:identity_id] = identity.id
-        get :new, { id: nil, format: :js }.with_indifferent_access
+        session[:identity_id] = study.project_roles.first.identity_id
+        xhr :get, :new, { id: nil, format: :js }.with_indifferent_access
 
         expect(assigns(:protocol).class).to eq Study
-        expect(assigns(:protocol).requester_id).to eq identity.id
+        expect(assigns(:protocol).requester_id).to eq study.project_roles.first.identity_id
         expect(assigns(:protocol).research_types_info).not_to eq nil
         expect(assigns(:protocol).human_subjects_info).not_to eq nil
         expect(assigns(:protocol).vertebrate_animals_info).not_to eq nil
@@ -52,26 +57,27 @@ RSpec.describe StudiesController do
         expect(assigns(:protocol).study_types).not_to eq nil
         expect(assigns(:protocol).impact_areas).not_to eq nil
         expect(assigns(:protocol).affiliations).not_to eq nil
+
       end
     end
 
     describe 'GET create' do
       it 'should set service_request' do
         session[:service_request_id] = service_request.id
-        get :create, { id: nil, format: :js }.with_indifferent_access
+        xhr :get, :create, { id: nil, format: :js }.with_indifferent_access
         expect(assigns(:service_request)).to eq service_request
       end
 
       it 'should create a study with the given parameters' do
         session[:service_request_id] = service_request.id
-        get :create, { id: nil, format: :js, study: { title: 'this is the title', funding_status: 'not in a million years' } }.with_indifferent_access
+        xhr :get, :create, { id: nil, format: :js, study: { title: 'this is the title', funding_status: 'not in a million years' } }.with_indifferent_access
         expect(assigns(:protocol).title).to eq 'this is the title'
         expect(assigns(:protocol).funding_status).to eq 'not in a million years'
       end
 
       it 'should setup study types if the study is invalid' do
         session[:service_request_id] = service_request.id
-        get :create, { id: nil, format: :js, study: { title: 'this is the title', funding_status: 'not in a million years' } }.with_indifferent_access
+        xhr :get, :create, { id: nil, format: :js, study: { title: 'this is the title', funding_status: 'not in a million years' } }.with_indifferent_access
         expect(assigns(:protocol).study_types).not_to eq nil
         expect(assigns(:protocol).impact_areas).not_to eq nil
         expect(assigns(:protocol).affiliations).not_to eq nil
@@ -79,38 +85,26 @@ RSpec.describe StudiesController do
 
       it 'should put the study id into the session' do
         session[:service_request_id] = service_request.id
-        get :create, { id: nil, format: :js }.with_indifferent_access
+        xhr :get, :create, { id: nil, format: :js }.with_indifferent_access
         expect(session[:saved_study_id]).to eq assigns(:protocol).id
       end
     end
   end
 
-  context 'already have a study' do
-    let!(:study) {
-      study = Study.create(attributes_for(:protocol))
-      study.save!(validate: false)
-      project_role = create(
-          :project_role,
-          protocol_id: study.id,
-          identity_id: identity.id,
-          project_rights: "approve",
-          role: "pi")
-      study.reload
-      study
-    }
+  context 'already have an active study' do
 
     describe 'GET edit' do
       it 'should set service_request' do
         session[:service_request_id] = service_request.id
-        session[:identity_id] = identity.id
-        get :edit, { id: study.id, format: :js }.with_indifferent_access
+        session[:identity_id] = study.project_roles.first.identity_id
+        xhr :get, :edit, { id: study.id, format: :js }.with_indifferent_access
         expect(assigns(:service_request)).to eq service_request
       end
 
       it 'should set study' do
         session[:service_request_id] = service_request.id
-        session[:identity_id] = identity.id
-        get :edit, { id: study.id, format: :js }.with_indifferent_access
+        session[:identity_id] = study.project_roles.first.identity_id
+        xhr :get, :edit, { id: study.id, format: :js }.with_indifferent_access
         expect(assigns(:protocol).class).to eq Study
       end
 
@@ -120,25 +114,21 @@ RSpec.describe StudiesController do
     describe 'GET update' do
       it 'should set service_request' do
         session[:service_request_id] = service_request.id
-        session[:identity_id] = identity.id
-        get :update, { id: study.id, format: :js }.with_indifferent_access
+        session[:identity_id] = study.project_roles.first.identity_id
+        xhr :get, :update, { id: study.id, format: :js }.with_indifferent_access
         expect(assigns(:service_request)).to eq service_request
       end
 
       it 'should set study' do
         session[:service_request_id] = service_request.id
-        session[:identity_id] = identity.id
-        get :update, { id: study.id, format: :js }.with_indifferent_access
+        session[:identity_id] = study.project_roles.first.identity_id
+        xhr :get, :update, { id: study.id, format: :js }.with_indifferent_access
         expect(assigns(:protocol).class).to eq Study
         expect(assigns(:protocol).study_types).not_to eq nil
         # TODO: check that setup_study_types was called
         # TODO: check that setup_impact_affiliations was called
         # TODO: check that setup_affiliations was called
       end
-    end
-
-    describe 'GET destroy' do
-      # TODO: method is not implemented
     end
   end
 end

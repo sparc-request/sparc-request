@@ -48,7 +48,11 @@
           = f.radio_button :epic_access, true, :checked => project_role.epic_access, :identity_id => project_role.identity.id, :class => "epic_access_radio_yes", :id => "epic_access_yes_#{project_role.identity.id}"
           = f.label :epic_access, 'Yes'
 
-    %td= f.radio_button :project_rights, 'none', :disabled => !project_role.can_switch_to?()
-    %td= f.radio_button :project_rights, 'view', :disabled => !project_role.can_switch_to?()
-    %td= f.radio_button :project_rights, 'request', :disabled => !project_role.can_switch_to?()
-    %td= f.radio_button :project_rights, 'approve'
+    %td.none
+      = f.radio_button :project_rights, 'none', :disabled => !project_role.can_switch_to?()
+    %td.view
+      = f.radio_button :project_rights, 'view', :disabled => !project_role.can_switch_to?()
+    %td.request
+      = f.radio_button :project_rights, 'request', :disabled => !project_role.can_switch_to?()
+    %td.approve
+      = f.radio_button :project_rights, 'approve'

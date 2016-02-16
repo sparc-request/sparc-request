@@ -30,6 +30,7 @@
 //= require jquery
 //= require jquery-ui
 //= require jquery.qtip.min
+//= require jquery.cookie
 //= require jquery.form
 //= require jquery_ujs
 //= require jquery_nested_form
@@ -41,5 +42,5 @@
 //= require form_manager
 //= require assert
 //= require ajax_handler
-//= require ask_a_question
 //= require review
+//= require steps

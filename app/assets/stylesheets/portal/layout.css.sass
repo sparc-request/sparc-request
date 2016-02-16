@@ -63,7 +63,6 @@ h2.title
 .required
   color: red
 
-
 .error
   border: 1px solid red
 
@@ -175,8 +174,33 @@ h2.title
 
 .dashboard-view
   float: left
+  overflow: hidden
   h3.blue-provider.ui-accordion-header
     border: 0px !important
+  .row-portal-header
+    .portal_create_new_study
+      margin-right: 30px
+    .portal_create_new_study,
+    .portal_create_new_project
+      float: right
+      position: relative
+      top: -3
+      .new-study-text
+        margin-left: 17px
+      .new-project-text
+        margin-left: 16px
+      .new-project-text,
+      .new-study-text
+        color: white
+        height: 100%
+        width: 100%
+        position: absolute
+        vertical-align: middle
+        margin-top: 2px
+        line-height: 32px
+        text-align: center
+        font-size: 1.1em
+
 .protocol-accordion-title
   width: 630px
 .protocol-short-title
@@ -430,7 +454,7 @@ div.permissions_dialog
         font-weight: bold
         background: url(/assets/portal/notification_green_small.png) no-repeat
         width: 125px
-      li.new_notification.roles
+      li.new_notification.roles, li.new_notification.requester
         width: 325px
 .service-request-button
   color: $white
@@ -467,15 +491,15 @@ div.permissions_dialog
     background-color: white
     border: 3px solid #FF0000
     display: none
-    left: -221px
+    left: -287px
     padding: 10px 1px 1px
     position: absolute
     top: 57px
-    width: 443px
+    width: 510px
     z-index: 1000
     table
       border-collapse: collapse
-      width: 100%
+      width: 500px
     tr:hover
       cursor: pointer
     tr.read_notification
@@ -594,6 +618,12 @@ div.permissions_dialog
       width: 200px
     select
       width: 205px
+
+.decrement_days 
+  padding-right: 10px
+
+.increment_days 
+  padding-left: 12px
 
 .icon
   background-repeat: no-repeat
@@ -849,7 +879,7 @@ div.permissions_dialog
 .blue-provider
   background: #0775B0 !important
 
-.blue-provider.ui-state-hover 
+.blue-provider.ui-state-hover
   .protocol-accordion-title
     color: #BBBBBB !important
 
@@ -978,16 +1008,6 @@ div.permissions_dialog
 
 .return a img, .continue a img
   vertical-align: middle
-
-
-.continue
-  color: $white
-  font-size: 14px
-  font-weight: bold
-  float: left
-  width: 452px
-  padding-right: 10px
-  cursor: pointer
 
 
 // ReviewView

@@ -140,7 +140,7 @@ class Organization < ActiveRecord::Base
   # Returns an array of all services that are offered by this organization as well of all of its
   # deep children.
   def all_child_services include_self=true
-    orgs = Organization.find(:all)
+    orgs = Organization.all
     all_services = []
     children = self.all_children [], include_self, orgs
     children.each do |child|
@@ -261,7 +261,7 @@ class Organization < ActiveRecord::Base
   # service providers, as well as the service providers on all parents.  If the process_ssrs flag
   # is true at this organization, also returns the service providers of all children.
   def all_service_providers(include_children=true)
-    orgs = Organization.find(:all)
+    orgs = Organization.all
     all_service_providers = []
 
     # If process_ssrs is true, we need to also get our children's service providers
@@ -286,7 +286,7 @@ class Organization < ActiveRecord::Base
   # super users, as well as the super users on all parents.  If the process_ssrs flag
   # is true at this organization, also returns the super users of all children.
   def all_super_users
-    orgs = Organization.find(:all)
+    orgs = Organization.all
     all_super_users = []
 
     # If process_ssrs is true, we need to also get our children's super users

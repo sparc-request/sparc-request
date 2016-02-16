@@ -25,7 +25,7 @@ class LineItem < ActiveRecord::Base
   audited
 
   belongs_to :service_request
-  belongs_to :service, :include => [:pricing_maps, :organization], :counter_cache => true
+  belongs_to :service, -> { includes(:pricing_maps, :organization) }, :counter_cache => true
   belongs_to :sub_service_request
   has_many :fulfillments, :dependent => :destroy
 
@@ -72,7 +72,7 @@ class LineItem < ActiveRecord::Base
   after_destroy :remove_procedures
 
   # TODO: order by date/id instead of just by date?
-  default_scope :order => 'line_items.id ASC'
+  default_scope { order('line_items.id ASC') }
 
   def quantity_must_be_smaller_than_max_and_greater_than_min
     pricing = Service.find(service_id).current_effective_pricing_map
@@ -196,7 +196,7 @@ class LineItem < ActiveRecord::Base
     # line items visit should also check that it's for the correct protocol
     return 0.0 unless service_request.protocol_id == line_items_visit.arm.protocol_id
 
-    research_billing_qty_total = line_items_visit.visits.sum(&:research_billing_qty)
+    research_billing_qty_total = line_items_visit.visits.sum(:research_billing_qty)
 
     subject_total = research_billing_qty_total * per_unit_cost(quantity_total(line_items_visit))
     subject_total
@@ -322,8 +322,8 @@ class LineItem < ActiveRecord::Base
 
   def service_relations
     # Get the relations for this line item and others to this line item, Narrow the list to those with linked quantities
-    service_relations = ServiceRelation.find_all_by_service_id(self.service_id).reject { |sr| sr.linked_quantity == false }
-    related_service_relations = ServiceRelation.find_all_by_related_service_id(self.service_id).reject { |sr| sr.linked_quantity == false }
+    service_relations = ServiceRelation.where(service_id: self.service_id).reject { |sr| sr.linked_quantity == false }
+    related_service_relations = ServiceRelation.where(related_service_id: self.service_id).reject { |sr| sr.linked_quantity == false }
 
     (service_relations + related_service_relations)
   end

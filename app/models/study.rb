@@ -25,6 +25,10 @@ class Study < Protocol
     return [ 'project' ] # for backward-compatibility
   end
 
+  def determine_study_type
+    Portal::StudyTypeFinder.new(self).study_type
+  end
+
   def populate_for_edit
     super
     self.build_research_types_info           unless self.research_types_info
@@ -48,7 +52,7 @@ class Study < Protocol
       position += 1
     end
 
-    study_types.sort!{|a, b| a.position <=> b.position}
+    study_types.sort_by(&:position)
   end
 
   def setup_impact_areas
@@ -60,8 +64,9 @@ class Study < Protocol
       impact_area.position = position
       position += 1
     end
-    impact_areas.sort!{|a, b| a.position <=> b.position}
-  end
+
+    impact_areas.sort_by(&:position)
+   end
 
   def setup_affiliations
     position = 1
@@ -73,7 +78,7 @@ class Study < Protocol
       position += 1
     end
 
-    affiliations.sort!{|a, b| a.position <=> b.position}
+    affiliations.sort_by(&:position)
   end
 
   def setup_study_type_answers

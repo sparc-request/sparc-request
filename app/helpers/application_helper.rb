@@ -22,13 +22,11 @@ module ApplicationHelper
   def show_welcome_message current_user
     returning_html = ""
     if current_user
-      returning_html += content_tag(:span, "Logged in as #{current_user.display_name}, ") + link_to('logout', destroy_identity_session_path, :method => :delete)
+      returning_html += content_tag(:span, "Logged in as #{current_user.email}, ") + link_to('Logout', destroy_identity_session_path, :method => :delete)
     else
       # could be used to provide a login link
       returning_html += content_tag(:span, "Not Logged In")
     end
-
-    returning_html += content_tag(:span, " | ") + link_to(t(:bug_enhancement_link), BUG_ENHANCEMENT_URL, :target => '_blank', :class => 'bug-enhancement-link') if BUG_ENHANCEMENT_URL
 
     raw(returning_html)
   end
@@ -82,7 +80,6 @@ module ApplicationHelper
 
   def generate_visit_header_row arm, service_request, page, sub_service_request, portal=nil
     base_url = "/service_requests/#{service_request.id}/service_calendars"
-    rename_visit_url = base_url + "/rename_visit"
     day_url = base_url + "/set_day"
     window_before_url = base_url + "/set_window_before"
     window_after_url = base_url + "/set_window_after"
@@ -94,15 +91,6 @@ module ApplicationHelper
     visit_groups = arm.visit_groups
 
     (beginning_visit .. ending_visit).each do |n|
-      if sub_service_request
-        filtered_line_items_visits = line_items_visits.includes(:line_item).where("line_items.sub_service_request_id = ?", sub_service_request.id)
-      else
-        filtered_line_items_visits = line_items_visits.includes(:line_item).where("line_items.service_request_id = ?", service_request.id)
-      end
-
-      checked = filtered_line_items_visits.each.map{|l| l.visits[n.to_i-1].research_billing_qty >= 1 ? true : false}.all?
-      action = checked == true ? 'unselect_calendar_column' : 'select_calendar_column'
-      icon = checked == true ? 'ui-icon-close' : 'ui-icon-check'
       visit_name = visit_groups[n - 1].name || "Visit #{n}"
       visit_group = visit_groups[n - 1]
 
@@ -111,8 +99,9 @@ module ApplicationHelper
       elsif @merged
         returning_html += content_tag(:th,
                             ((USE_EPIC) ?
-                            # label_tag("Day") + "&nbsp;&nbsp;&nbsp;".html_safe + label_tag("+/-") +
-                            label_tag("-") + "&nbsp;&nbsp;".html_safe + label_tag("Day") + "&nbsp;&nbsp;".html_safe + label_tag("+") +
+                            label_tag('decrement',t(:calendar_page)[:headers][:decrement], class: 'decrement_days') +
+                            label_tag('day',t(:calendar_page)[:headers][:day]) +
+                            label_tag('increment', t(:calendar_page)[:headers][:increment], class: 'increment_days') +
                             tag(:br) +
                             content_tag(:span, visit_group.window_before, :style => "display:inline-block;width:25px;") +
                             content_tag(:span, visit_group.day, :style => "display:inline-block;width:25px;") +
@@ -123,8 +112,9 @@ module ApplicationHelper
       elsif @tab != 'template'
         returning_html += content_tag(:th,
                                       ((USE_EPIC) ?
-                                      # label_tag("Day") + "&nbsp;&nbsp;&nbsp;".html_safe + label_tag("+/-") +
-                                      label_tag("-") + "&nbsp;&nbsp;".html_safe + label_tag("Day") + "&nbsp;&nbsp;".html_safe + label_tag("+") +
+                                      label_tag('decrement',t(:calendar_page)[:headers][:decrement], class: 'decrement_days') +
+                                      label_tag('day',t(:calendar_page)[:headers][:day]) +
+                                      label_tag('increment', t(:calendar_page)[:headers][:increment], class: 'increment_days') +
                                       tag(:br) +
                                       text_field_tag("window_before", visit_group.window_before, :class => "visit_window visit_window_before position_#{n} input_small", :size => 1, :'data-position' => n - 1, :'data-window-before' => visit_group.window_before, :update => "#{window_before_url}?arm_id=#{arm.id}&portal=#{portal}") +
                                       text_field_tag("day", visit_group.day, :class => "visit_day position_#{n}", :maxlength => 4, :size => 4, :'data-position' => n - 1, :'data-day' => visit_group.day, :update => "#{day_url}?arm_id=#{arm.id}&portal=#{portal}") +
@@ -134,10 +124,19 @@ module ApplicationHelper
                                       text_field_tag("arm_#{arm.id}_visit_name_#{n}", visit_name, :class => "visit_name", :size => 10, :'data-arm_id' => arm.id, :'data-visit_position' => n - 1, :'data-service_request_id' => service_request.id) +
                                       tag(:br))
       else
+        if sub_service_request
+          filtered_line_items_visits = line_items_visits.select{|x| x.line_item.sub_service_request_id == sub_service_request.id }
+        else
+          filtered_line_items_visits = line_items_visits.select{|x| x.line_item.service_request_id == service_request.id }
+        end
+        checked = filtered_line_items_visits.each.map{|l| l.visits[n.to_i-1].research_billing_qty >= 1 ? true : false}.all?
+        action = checked == true ? 'unselect_calendar_column' : 'select_calendar_column'
+        icon = checked == true ? 'ui-icon-close' : 'ui-icon-check'
         returning_html += content_tag(:th,
                                       ((USE_EPIC) ?
-                                      # label_tag("Day") + "&nbsp;&nbsp;&nbsp;".html_safe + label_tag("+/-") +
-                                      label_tag("-") + "&nbsp;&nbsp;".html_safe + label_tag("Day") + "&nbsp;&nbsp;".html_safe + label_tag("+") +
+                                      label_tag('decrement',t(:calendar_page)[:headers][:decrement], class: 'decrement_days') +
+                                      label_tag('day',t(:calendar_page)[:headers][:day]) +
+                                      label_tag('increment', t(:calendar_page)[:headers][:increment], class: 'increment_days') +
                                       tag(:br) +
                                       text_field_tag("window_before", visit_group.window_before, :class => "visit_window visit_window_before position_#{n} input_small", :size => 1, :'data-position' => n - 1, :'data-window-before' => visit_group.window_before, :update => "#{window_before_url}?arm_id=#{arm.id}&portal=#{portal}") +
                                       text_field_tag("day", visit_group.day, :class => "visit_day position_#{n}", :maxlength => 4, :size => 4, :'data-position' => n - 1, :'data-day' => visit_group.day, :update => "#{day_url}?arm_id=#{arm.id}&portal=#{portal}") +
@@ -187,7 +186,7 @@ module ApplicationHelper
     options_for_select(arr, selected)
   end
 
-  def generate_visit_navigation(arm, service_request, pages, tab, portal=nil)
+  def generate_visit_navigation(arm, service_request, pages, tab, portal=nil, ssr_id=nil)
     page = pages[arm.id].to_i == 0 ? 1 : pages[arm.id].to_i
 
     if @merged
@@ -201,7 +200,7 @@ module ApplicationHelper
     returning_html = ""
 
     returning_html += link_to((content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-w') + content_tag(:span, '<-', :class => 'ui-button-text')),
-                        pathMethod.call(service_request, :page => page - 1, :pages => pages, :arm_id => arm.id, :tab => tab, :portal => portal),
+                        pathMethod.call(service_request, :page => page - 1, :pages => pages, :arm_id => arm.id, :tab => tab, :portal => portal, sub_service_request_id: ssr_id),
                         :remote => true, :role => 'button', :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only left-arrow') unless page <= 1
 
     returning_html += content_tag(:button, (content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-w') + content_tag(:span, '<-', :class => 'ui-button-text')),
@@ -209,14 +208,14 @@ module ApplicationHelper
 
     returning_html += content_tag(:span, t("calendar_page.labels.jump_to_visit"))
 
-    returning_html += select_tag("jump_to_visit_#{arm.id}", visits_select_options(arm, pages), :class => 'jump_to_visit', :url => pathMethod.call(service_request, :pages => pages, :arm_id => arm.id, :tab => tab, :portal => portal))
+    returning_html += select_tag("jump_to_visit_#{arm.id}", visits_select_options(arm, pages), :class => 'jump_to_visit', :url => pathMethod.call(service_request, :pages => pages, :arm_id => arm.id, :tab => tab, :portal => portal, sub_service_request_id: ssr_id))
 
     unless (portal or @merged or @review)
       returning_html += link_to 'Move Visit', 'javascript:void(0)', class: 'ui-button ui-widget ui-state-default ui-corner-all move_visits', data: { 'arm-id' => arm.id, tab: tab, 'sr-id' => service_request.id, portal: portal }
     end
 
     returning_html += link_to((content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-e') + content_tag(:span, '->', :class => 'ui-button-text')),
-                              pathMethod.call(service_request, :page => page + 1, :pages => pages, :arm_id => arm.id, :tab => tab, :portal => portal),
+                              pathMethod.call(service_request, :page => page + 1, :pages => pages, :arm_id => arm.id, :tab => tab, :portal => portal, sub_service_request_id: ssr_id),
                               :remote => true, :role => 'button', :class => 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only right-arrow') unless ((page + 1) * 5) - 4 > arm.visit_count
 
     returning_html += content_tag(:button, (content_tag(:span, '', :class => 'ui-button-icon-primary ui-icon ui-icon-circle-arrow-e') + content_tag(:span, '->', :class => 'ui-button-text')),
@@ -273,10 +272,10 @@ module ApplicationHelper
     sps.map{|x| x.is_primary_contact? ? x.identity.display_name : nil}.compact.join("<br />")
   end
 
-  def display_service_in_catalog service, service_request
+  def display_service_in_catalog service, service_request, from_portal
     has_current_pricing_map = service.current_pricing_map rescue false # work around for current_pricing_map method raising false
     if (service.is_available? or service.is_available.nil?) and has_current_pricing_map
-      render :partial => 'service', :locals => {:service => service, :service_request => service_request}
+      render :partial => 'service', :locals => {:service => service, :service_request => service_request, :from_portal => from_portal}
     end
   end
 
@@ -325,5 +324,9 @@ module ApplicationHelper
 
   def entity_visibility_class entity
     entity.is_available == false ? 'entity_visibility' : ''
+  end
+
+  def first_service?(service_request)
+    service_request.line_items.count == 0
   end
 end

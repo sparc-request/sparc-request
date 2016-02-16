@@ -20,7 +20,7 @@
 
 # /////////////////////////////////////////////
 # //
-# // Project - Edit.js for Editing Projects
+# // Project - Update.js for Editing Projects
 # //
 # /////////////////////////////////////////////
 
@@ -31,9 +31,4 @@ else
   $('a.continue_button').click ->
     $('form').submit()
 
-  $('#current_step').val("<%= @current_step %>")
-  $('.edit_project').html("<%= escape_javascript(render :partial => 'projects/form', :locals => {:project => @protocol, :service_request => @service_request, :current_step => @current_step}) %>")
-
-  if <%= @current_step == "user_details" %>
-    $('.return-to-previous a span').text("Go Back")
-  
+  $('.edit_project').html("<%= escape_javascript(render partial: 'projects/form', locals: {project: @protocol, service_request: @service_request, portal: @portal, current_step: @current_step}) %>")

@@ -18,6 +18,15 @@
 /* INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR*/
 /* TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.*/
 
+.display_epic_answers{
+  font-size: 14px;
+  font-family: "Verdana", Arial, sans-serif;
+  position: absolute;
+  right: 29px;
+  margin-top: 8px;
+}
+
+
 .user-edit-protocol-view {
   font-size: 12px;
   font-family: "Verdana", Arial, sans-serif;
@@ -25,6 +34,31 @@
 
 .user-edit-protocol-view .description {
   padding: 0 12px 12px;
+}
+
+.add-user {
+  padding-bottom: 55px;
+  margin-top: -60px;
+  text-align: center;
+}
+
+.dark-blue-button{
+  background-color: #036;
+  border-radius: 0.3em;
+  color: #FFF;
+  height: 35px;
+  font-size: 13px;
+  border: none;
+  width: 150px;
+}
+
+.space_bar {
+  height: 25px;
+}
+
+.visual_error {
+  border-color: red !important;
+  border-width: 2px !important;
 }
 
 .user-edit-protocol-view .box {
@@ -85,6 +119,20 @@
   width: 100px !important;
 }
 
+.user-edit-protocol-view .box .info label {   
+  width: 150px !important;    
+  display: block;   
+  float: left;    
+  margin: 4px 10px 0 0;   
+  padding: 2px;   
+  font-size: 1.2em;   
+}   
+        
+.user-edit-protocol-view .box .info label.long { 
+  width: 650px !important;    
+}
+
+
 .user-edit-protocol-view .box .info .field {
   display: block;
   float: left;
@@ -93,18 +141,8 @@
   width: 100% !important;
 }
 
-.user-edit-protocol-view .box .info label {
-  width: 150px !important;
-  display: block;
-  float: left;
-  margin: 4px 10px 0 0;
-  padding: 2px;
-  font-size: 1.2em;
-}
 
-.user-edit-protocol-view .box .info label.long {
-  width: 650px !important;
-}
+
 
 .user-edit-protocol-view label[for='study_funding_status'],
 .user-edit-protocol-view label[for='study_udak_project_number'],
@@ -164,6 +202,7 @@
 .edit-project-view {
   font-size: 12px;
   font-family: "Calibri", Arial, sans-serif;
+  border: 3px solid #003366;
 }
 
 .edit-project-view .description {
@@ -174,7 +213,7 @@
   vertical-align: top;
   height: auto;
   margin-left: 8px;
-  border: 3px solid #003366;
+  padding-top: 20px;
 }
 
 .edit-project-view .user-details, .edit-project-view .user_added_message {
@@ -290,6 +329,7 @@ legend {
   margin-top: 4px;
   width: 100%;
 }
+
 
 .edit-project-view .box .info label {
   width: 125px;
@@ -413,6 +453,13 @@ legend {
   border: 1px solid #fff;
   text-align: left;
   height: 35px;
+}
+
+.edit-project-view .authorized-users td.none,
+.edit-project-view .authorized-users td.view,
+.edit-project-view .authorized-users td.request,
+.edit-project-view .authorized-users td.approve {
+  text-align: center !important;
 }
 
 .edit-project-view .search-results {

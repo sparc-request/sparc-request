@@ -24,6 +24,7 @@
 //
 /////////////////////////////////////////////
 
-= render :partial => 'service_requests/steps'
+= render partial: 'service_requests/steps'
 .clear
-.edit_project= render :partial => 'projects/form', :locals => {:project => @protocol, :service_request => @service_request, :current_step => @current_step}
+.edit_project
+  = render partial: 'projects/form', locals: {project: @protocol, service_request: @service_request, portal: @portal, current_step: cookies['current_step']}

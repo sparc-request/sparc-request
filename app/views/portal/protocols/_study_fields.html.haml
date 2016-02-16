@@ -22,9 +22,12 @@
 
   :javascript
     $(document).ready(function() {
-    Sparc.study.ready();
+      Sparc.study.ready();
     });
-  
+
+  #epic_box_alert{style: 'display:none;', title: t(:epic_box)[:epic_box_error]}
+    = t(:epic_box)[:epic_box_alert]
+    
   .grid_7.box
     .info
       %fieldset
@@ -36,14 +39,6 @@
         .field
           = f.label :title, t(:study_form)[:title]
           = f.text_field :title
-        
-        .field
-          = f.label :has_cofc, t(:study_form)[:has_cofc], :style => 'width: 250px'
-          %span.non_standard_usage_of_radio_buttons
-            = f.radio_button :has_cofc, true
-            = f.label :has_cofc, 'Yes'
-            = f.radio_button :has_cofc, false
-            = f.label :has_cofc, 'No'
         
         .field
           = f.label :funding_status, t(:protocol_shared)[:funding_status]
@@ -105,21 +100,52 @@
         .field
           = f.label :sponsor_name, t(:study_form)[:sponsor_name]
           = f.text_field :sponsor_name
-
-        .field{:style => "#{USE_EPIC ? nil : 'display:none;'}"}
+      %fieldset{:style => "#{USE_EPIC ? nil : 'display:none;'}"}
+        %legend= t(:study_form)[:epic]
+        .field
           = f.label :selected_for_epic, t(:study_form)[:push_to_epic]
-          %span.non_standard_usage_of_radio_buttons
-            = f.radio_button :selected_for_epic, true
-            = f.label :selected_for_epic, "Yes"
-            = f.radio_button :selected_for_epic, false
-            = f.label :selected_for_epic, "No"
-          .study_type{style: "#{f.object.selected_for_epic ? '' : 'display:none;'}"}
-            = f.label :study_type_questions
-            = f.fields_for :study_type_answers do |answer|
-              .field{id: "study_type_answer_#{answer.object.study_type_question.friendly_id}", style: (answer.object.study_type_question.friendly_id == 'higher_level_of_privacy' ? '' : "display:none")}
-                = answer.label :answer, answer.object.study_type_question.question, class: "long"
-                = answer.select :answer, options_for_select([['Yes', true], ['No', false]], answer.object.answer), {include_blank: "Select One"}, id: "study_type_answer_#{answer.object.study_type_question.friendly_id}_answer"
-                = answer.hidden_field :study_type_question_id
+
+          / Only DISPLAY epic box data in admin UNLESS changing from a virgin project 
+     
+          - if admin && @protocol.selected_for_epic != nil
+            %span.epic_selected.display_epic_answers
+              = f.object.selected_for_epic ? "Yes" : "No"
+            .study_type{style: "#{f.object.selected_for_epic ? '' : 'display:none;'}"}
+              .field.study_type_questions
+                = f.label :study_type_questions, t(:study_form)[:study_type_questions]
+                = hidden_field_tag :viewing_admin, "admin"
+              = f.fields_for :study_type_answers, study.study_type_answers do |answer|
+                - if answer.object.study_type_question.study_type_question_group.active && study.active? && answer.object.answer != nil
+                  .field{id: "study_type_answer_#{answer.object.study_type_question.friendly_id}", style: ( answer.object.study_type_question.friendly_id == 'certificate_of_conf' || answer.object.answer != nil ? nil : "display:none;")}
+                    = answer.label :answer, answer.object.study_type_question.question, class: "long"
+                    %div.display_epic_answers
+                      = answer.object.answer == true ? "Yes" : "No"
+                - elsif !answer.object.study_type_question.study_type_question_group.active && !study.active? && answer.object.answer != nil
+                  .field{id: "study_type_answer_#{answer.object.study_type_question.friendly_id}", style: ( answer.object.study_type_question.friendly_id == 'certificate_of_conf' || answer.object.answer != nil ? nil : "display:none;")}
+                    = answer.label :answer, answer.object.study_type_question.question, class: "long"
+                    %div.display_epic_answers
+                      = answer.object.answer == true ? "Yes" : "No"
+                      
+          - else
+            %span.non_standard_usage_of_radio_buttons
+              = f.radio_button :selected_for_epic, true
+              = f.label :selected_for_epic, "Yes"
+              = f.radio_button :selected_for_epic, false
+              = f.label :selected_for_epic, "No"
+              = f.hidden_field :study_type_question_group_id, :value => study.study_type_question_group_id == StudyTypeQuestionGroup.where(active:false).pluck(:id).first ? 'inactive' : 'active'
+            .study_type{style: "#{f.object.selected_for_epic ? '' : 'display:none;'}"}
+              .space_bar
+              = f.label :study_type_questions, t(:study_form)[:study_type_questions]
+              - if admin
+                = hidden_field_tag :can_edit_admin_study, "can_edit_study"
+              = hidden_field_tag :viewing_admin, "portal"
+              = f.fields_for :study_type_answers, study.study_type_answers do |answer|
+                - if answer.object.study_type_question.study_type_question_group.active 
+                  .field{id: "study_type_answer_#{answer.object.study_type_question.friendly_id}", style: "#{answer.object.answer != nil ? 'display:block' : 'display:none;'}"}
+                    = answer.label :answer, answer.object.study_type_question.question, class: "long"
+                    = answer.select :answer, options_for_select([['Yes', true], ['No', false]], answer.object.answer), {include_blank: "Select One"}, id: "study_type_answer_#{answer.object.study_type_question.friendly_id}_answer"
+                    = answer.hidden_field :study_type_question_id
+              
 
       %fieldset
         %legend= t(:study_form)[:optional_text]
@@ -140,13 +166,13 @@
 
           .field
             = f.label :potential_funding_start_date, t(:study_form)[:potential_funding_start_date]
-            = text_field_tag :potential_funding_start_date, (study.potential_funding_start_date.strftime('%_m/%d/%Y') rescue nil)
+            = text_field_tag :potential_funding_start_date, (study.potential_funding_start_date.strftime('%-m/%d/%Y') rescue nil)
             = f.hidden_field :potential_funding_start_date
 
         .funded
           .field
             = f.label :funding_start_date, t(:study_form)[:funding_start_date]
-            = text_field_tag :funding_start_date, (study.funding_start_date.strftime('%_m/%d/%Y') rescue nil)
+            = text_field_tag :funding_start_date, (study.funding_start_date.strftime('%-m/%d/%Y') rescue nil)
             = f.hidden_field :funding_start_date
 
 
@@ -253,7 +279,7 @@
       %fieldset
         %legend= t(:study_form)[:type] 
         %div
-          = f.fields_for :study_types do |rt|
+          = f.fields_for :study_types, f.object.study_types.sort_by(&:position) do |rt|
             .field{:class => rt.object.name}
               = rt.label :name, "#{StudyType::TYPES[rt.object.name]}:"
               = rt.check_box "_destroy", {:checked => !rt.object.new}, false, true
@@ -262,7 +288,7 @@
       %fieldset
         %legend= t(:study_form)[:impact]
         %div
-          = f.fields_for :impact_areas do |rt|
+          = f.fields_for :impact_areas, f.object.impact_areas.sort_by(&:position) do |rt|
             .field{:class => rt.object.name}
               = rt.label :name, "#{ImpactArea::TYPES[rt.object.name]}:"
               = rt.check_box "_destroy", {:checked => !rt.object.new}, false, true
@@ -275,7 +301,7 @@
       %fieldset
         %legend= t(:study_form)[:affiliations] 
         %div
-          = f.fields_for :affiliations do |rt|
+          = f.fields_for :affiliations, f.object.affiliations.sort_by(&:position) do |rt|
             .field{:class => rt.object.name}
               = rt.label :name, "#{Affiliation::TYPES[rt.object.name]}:"
               = rt.check_box "_destroy", {:checked => !rt.object.new}, false, true

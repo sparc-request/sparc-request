@@ -51,15 +51,15 @@ class ServicePricingReport < ReportingModule
     if params[:institution_id]
       attrs[Institution] = [params[:institution_id], :abbreviation]
     end
-    
+
     if params[:provider_id]
       attrs[Provider] = [params[:provider_id], :abbreviation]
     end
-    
+
     if params[:program_id]
       attrs[Program] = [params[:program_id], :abbreviation]
     end
-    
+
     if params[:core_id]
       attrs[Core] = [params[:core_id], :abbreviation]
     end
@@ -93,7 +93,7 @@ class ServicePricingReport < ReportingModule
   end
 
   ################## END REPORT SETUP  #####################
-  
+
   ################## BEGIN QUERY SETUP #####################
   # def table => primary table to query
   # includes, where, uniq, order, and group get passed to AR methods, http://apidock.com/rails/v3.2.13/ActiveRecord/QueryMethods
@@ -126,16 +126,16 @@ class ServicePricingReport < ReportingModule
     # get child organization that have services to related to them
     service_organization_ids = [selected_organization_id]
     if selected_organization_id
-      organizations = Organization.find(:all)
+      organizations = Organization.all
       org = Organization.find(selected_organization_id)
-      service_organization_ids += org.all_children(organizations).map(&:id)
+      service_organization_ids = org.all_children(organizations).map(&:id)
       service_organization_ids.flatten!
       service_organization_ids.uniq!
     end
 
     service_organization_ids = Organization.all.map(&:id) if service_organization_ids.compact.empty? # use all if none are selected
 
-    service_organizations = Organization.find_all_by_id(service_organization_ids)
+    service_organizations = Organization.find(service_organization_ids)
 
     unless tags.empty?
       tagged_organization_ids = service_organizations.reject {|x| (x.tags.map(&:name) & tags).empty?}.map(&:id)

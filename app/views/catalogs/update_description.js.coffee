@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$('#welcome_message').html("<%= escape_javascript render :partial => 'catalogs/description', :locals => {:organization => @organization, :service_request => @service_request} %>")
+$('#welcome_message').html("<%= escape_javascript render :partial => 'catalogs/description', :locals => {:organization => @organization, :service_request => @service_request, :from_portal => @from_portal} %>")
 $('.core-accordion').accordion({
   heightStyle: 'content'
   collapsible: true

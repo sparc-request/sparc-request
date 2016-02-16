@@ -45,6 +45,6 @@ class ApprovedSubsidy < Subsidy
     # Calculates the percent of total_at_approval that is subsidized
     # (stored total - pi_contribution) / stored total then convert to percent
     total = total_at_approval
-    ((( total - pi_contribution ) / total ) * 100.0 ).round(2)
+    ((( total - pi_contribution ).to_f / total ) * 100.0 ).round(2)
   end
 end

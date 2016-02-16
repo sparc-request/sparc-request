@@ -29,17 +29,20 @@ class PendingSubsidy < Subsidy
   end
 
   def current_cost
+    # Calculates cost of subsidy (amount subsidized)
     # SSR direct_cost_total - pi_contribution then convert from cents to dollars
     ( total_request_cost - pi_contribution ) / 100.0
   end
 
   def current_percent_of_total
+    # Calculates the percent of total request cost that is subsidized
     # (SSR direct_cost_total - pi_contribution) / direct_cost_total then convert to percent
     total = total_request_cost
     ((( total - pi_contribution ) / total ) * 100.0 ).round(2)
   end
 
   def grant_approval approver
+    # Creates a new ApprovedSubsidy from this PendingSubsidy
     # Remove current approved subsidy if exists, save notes
     current_approved_subsidy = sub_service_request.approved_subsidy
     if current_approved_subsidy.present?

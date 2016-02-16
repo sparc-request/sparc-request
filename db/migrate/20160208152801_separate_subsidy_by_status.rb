@@ -11,9 +11,17 @@ class SeparateSubsidyByStatus < ActiveRecord::Migration
       s.update_column(:approved_at, s.attributes["updated_at"])
       s.update_column(:total_at_approval, get_total_at_approval(s))
     end
+
+    remove_column :subsidies, :stored_percent_subsidy, :float
   end
 
   def self.down
+    add_column :subsidies, :stored_percent_subsidy, :float
+
+    Subsidy.all.each do |s|
+      s.update_column(:stored_percent_subsidy, get_stored_percent(s))
+    end
+
     remove_column :subsidies, :total_at_approval, :integer
     remove_column :subsidies, :status, :string
     remove_column :subsidies, :approved_by, :integer
@@ -24,13 +32,26 @@ class SeparateSubsidyByStatus < ActiveRecord::Migration
 
   def get_total_at_approval subsidy
     begin
-      subsidy.sub_service_request.direct_cost_total
+      total = subsidy.sub_service_request.direct_cost_total
     rescue
-      percentage    = subsidy.stored_percent_subsidy / 100.00
-      contribution  = subsidy.pi_contribution / 100.00
-      total         = ( contribution / (1 - percentage) ) * 100
-      return total
+      total = calc_total_via_percent(subsidy)
     end
+    total = subsidy.pi_contribution if subsidy.pi_contribution > total
+    return total
+  end
+
+  def calc_total_via_percent subsidy
+    percentage    = subsidy.stored_percent_subsidy / 100.0
+    total         = ( subsidy.pi_contribution / (1 - percentage) )
+    return total
+  end
+
+  def get_stored_percent subsidy
+    contribution = subsidy.pi_contribution / 100.0
+    total = (subsidy.total_at_approval || subsidy.sub_service_request.direct_cost_total) / 100.0
+    percent = total > 0 ? ((total - contribution) / total) * 100.0 : 0
+
+    return percent.round(2)
   end
 
 end

@@ -54,7 +54,7 @@ class PendingSubsidy < Subsidy
     current_approved_subsidy = sub_service_request.approved_subsidy
     if current_approved_subsidy.present?
       notes = current_approved_subsidy.notes
-      current_approved_subsidy.destroy
+      ApprovedSubsidy.where(sub_service_request_id: sub_service_request_id).destroy_all
     end
 
     # Create new approved subsidy from pending attributes

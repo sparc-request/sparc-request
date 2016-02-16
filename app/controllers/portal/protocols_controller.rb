@@ -104,8 +104,8 @@ class Portal::ProtocolsController < Portal::BaseController
         @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
         redirect_to portal_admin_sub_service_request_path(@sub_service_request)
       else
-        redirect_to edit_portal_protocol_path(@protocol)
         @protocol.update_attribute(:study_type_question_group_id, StudyTypeQuestionGroup.active.pluck(:id).first)
+        redirect_to edit_portal_protocol_path(@protocol)
       end
     end
   end

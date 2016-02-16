@@ -81,11 +81,8 @@ class Portal::SubServiceRequestsController < Portal::BaseController
     else
       Hash.new
     end
-   
-    ###TODO temporarily disabling validation in Admin Portal
-    @protocol.attributes = (attrs.merge(study_type_question_group_id: StudyTypeQuestionGroup.active.pluck(:id).first))
 
-    if @protocol.save(:validate => false) #update_attributes attrs
+    if @protocol.update_attributes(attrs.merge(study_type_question_group_id: StudyTypeQuestionGroup.active.pluck(:id).first))
       redirect_to portal_admin_sub_service_request_path(@sub_service_request)
     else
       @user_toasts = @user.received_toast_messages.select {|x| x.sending_class == 'SubServiceRequest'}

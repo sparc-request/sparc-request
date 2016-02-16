@@ -12,4 +12,4 @@
     - else
       - protocol.service_requests.each do |sr|
         - if sr.status != "first_draft" and not sr.sub_service_requests.empty?
-          = render partial: 'dashboard/service_requests/protocol_service_request_show', locals: { service_request: sr }
+          = render partial: 'dashboard/service_requests/protocol_service_request_show', locals: { service_request: sr, user: user, admin: admin, permission_to_edit: permission_to_edit }

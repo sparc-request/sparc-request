@@ -20,13 +20,13 @@
 
 %select.selectpicker.new-notification{ title: 'Send Notification', data: { style: "btn-success new_notification_button", live_search: 'true', sub_service_request_id: sub_service_request.ssr_id } }
   %optgroup{ label: 'Requester' }
-    %option{ data: { identity_id: sub_service_request.service_request.service_requester_id, sub_service_request_id: sub_service_request.id, is_service_provider: 'false', current_user_id: current_user.id } }
+    %option{ data: { identity_id: sub_service_request.service_request.service_requester_id, sub_service_request_id: sub_service_request.id, is_service_provider: 'false', current_user_id: user.id } }
       = t(:notifications)[:requester] + sub_service_request.service_request.service_requester.full_name
   %optgroup{ label: 'Associated Users' }
     - sub_service_request.service_request.protocol.project_roles.each do |pr|
-      %option{ data: { identity_id: pr.identity_id, sub_service_request_id: sub_service_request.id, is_service_provider: 'false', current_user_id: current_user.id } } #{display_user_role(pr)}: #{pr.identity.full_name}
-  - unless @admin
+      %option{ data: { identity_id: pr.identity_id, sub_service_request_id: sub_service_request.id, is_service_provider: 'false', current_user_id: user.id } } #{display_user_role(pr)}: #{pr.identity.full_name}
+  - unless admin
     %optgroup{ label: 'Service Providers' }
       - sub_service_request.organization.service_providers.includes(:identity).sort_by { |sp| sp.identity.last_name }.each do |sp|
-        %option{ data: { identity_id: sp.identity.id, sub_service_request_id: sub_service_request.id, is_service_provider: 'true', current_user_id: current_user.id } }
+        %option{ data: { identity_id: sp.identity.id, sub_service_request_id: sub_service_request.id, is_service_provider: 'true', current_user_id: user.id } }
           = sp.identity.full_name

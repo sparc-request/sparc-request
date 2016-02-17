@@ -19,6 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 $ ->
   $(".datetimepicker").datetimepicker(format: 'MM-DD-YYYY', allowInputToggle: true)
+  $(".selectpicker").selectpicker()
 
 
 (exports ? this).formatMoney = (n, t=',', d='.', c='$') ->

@@ -84,11 +84,12 @@ group :development, :test do
 end
 
 group :development do
-  gem 'traceroute'
-  gem 'sqlite3'
   gem 'highline'
-  gem 'spring'
   gem 'spring-commands-rspec'
+  gem 'spring'
+  gem 'sqlite3'
+  gem 'traceroute'
+  gem 'parallel_tests', group: :development
 end
 
 group :test do

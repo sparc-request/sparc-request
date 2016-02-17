@@ -49,4 +49,4 @@
     .tab-pane#history{role: 'tabpanel'}
       = render partial: 'dashboard/sub_service_requests/history/status_changes', locals: { sub_service_request_id: @sub_service_request.id }
     .tab-pane#notifications{role: 'tabpanel'}
-      = render partial: 'dashboard/notifications/notifications', locals: { sub_service_request: @sub_service_request }
+      = render partial: 'dashboard/notifications/notifications', locals: { sub_service_request: @sub_service_request, user: @user, admin: @admin }

@@ -102,6 +102,8 @@ RSpec.configure do |config|
   # test failures related to randomization by passing the same `--seed` value
   # as the one that triggered the failure.
   Kernel.srand config.seed
+
+  config.backtrace_exclusion_patterns << /gems/
 end
 
 SitePrism.configure do |config|

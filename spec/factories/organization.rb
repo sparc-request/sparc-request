@@ -59,6 +59,7 @@ FactoryGirl.define do
       pricing_setup_count 0
       submission_email_count 0
       admin nil
+      service_provider nil
     end
 
     after(:build) do |organization, evaluator|
@@ -83,10 +84,14 @@ FactoryGirl.define do
       create_list(:submission_email, evaluator.submission_email_count,
        organization: organization)
 
-       if evaluator.admin
-         create(:super_user, organization: organization, identity: evaluator.admin)
-         create(:service_provider, organization: organization, identity: evaluator.admin)
-       end
+      if evaluator.admin
+        create(:super_user, organization: organization, identity: evaluator.admin)
+        create(:service_provider, organization: organization, identity: evaluator.admin)
+      end
+
+      if evaluator.service_provider
+        create(:service_provider, organization: organization, identity: evaluator.service_provider)
+      end
     end
 
     factory :organization_with_process_ssrs, traits: [:process_ssrs, :with_pricing_setup]

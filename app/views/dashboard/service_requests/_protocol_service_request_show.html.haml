@@ -23,8 +23,8 @@
     %h4.panel-title.pull-left= protocol_panel_header_line(service_request)
     .pull-right
       %button.btn.btn-sm.btn-default.notes.list{ data: {notable_type: "ServiceRequest", notable_id: service_request.id }} Notes
-      - if not service_request.sub_service_requests.empty? and @user.can_edit_service_request? service_request
-        %button.edit_service_request.btn.btn-warning.btn-sm{ type: 'button', data: { permission: @permission_to_edit.to_s, url: "/service_requests/#{service_request.id}/catalog?from_user_portal=true&edit_original=true" } }= t(:protocol_information)[:edit_original]
+      - if !service_request.sub_service_requests.empty? && user.can_edit_service_request?(service_request)
+        %button.edit_service_request.btn.btn-warning.btn-sm{ type: 'button', data: { permission: permission_to_edit.to_s, url: "/service_requests/#{service_request.id}/catalog?from_user_portal=true&edit_original=true" } }= t(:protocol_information)[:edit_original]
     .clearfix
   %table.table.table-striped
     %thead
@@ -43,16 +43,16 @@
             = ssr.org_tree_display
           %td.status
             = AVAILABLE_STATUSES[ssr.status]
-          %td
-            = render partial: "dashboard/notifications/dropdown", locals: { sub_service_request: ssr }
+          %td.actions
+            = render partial: 'dashboard/notifications/dropdown', locals: { sub_service_request: ssr, user: user, admin: admin }
           %td
             %button.view-sub-service-request-button.btn.btn-primary.btn-sm{ type: 'button', data: { service_request_id: service_request.id, protocol_id: service_request.protocol.id, status: ssr.status, ssr_id: ssr.ssr_id.to_s } }
               View SSR
           %td.edit-td
-            - if @user.can_edit_sub_service_request? ssr
-              %button.edit_service_request.btn.btn-warning.btn-sm{ type: 'button', data: { permission: @permission_to_edit.to_s, url: "/service_requests/#{service_request.id}/catalog?sub_service_request_id=#{ssr.id}&from_user_portal=true" } }
+            - if user.can_edit_sub_service_request? ssr
+              %button.edit_service_request.btn.btn-warning.btn-sm{ type: 'button', data: { permission: permission_to_edit.to_s, url: "/service_requests/#{service_request.id}/catalog?sub_service_request_id=#{ssr.id}&from_user_portal=true" } }
                 Edit SSR
           %td.edit-td
-            - if @user.admin_organizations.include? ssr.organization
+            - if user.admin_organizations.include? ssr.organization
               %a.edit_service_request.btn.btn-warning.btn-sm{ type: 'button', href: "/dashboard/sub_service_requests/#{ssr.id}" }
                 Admin Edit

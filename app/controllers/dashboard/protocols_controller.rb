@@ -40,6 +40,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
       ) or return
 
     @protocols = @filterrific.find.page(params[:page])
+    @protocol_filters = ProtocolFilter.latest_for_user(@user.id, 5)
     session[:breadcrumbs].clear
 
     respond_to do |format|

@@ -84,7 +84,7 @@ $(document).ready ->
 
         if $('.archive_button').data('showing-archived') == 1
           include_archived = 'false'
-  
+
         $.ajax
           method: "GET"
           url: "/portal/protocols.js"

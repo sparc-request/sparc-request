@@ -18,19 +18,12 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-:javascript
-  $(document).ready( function() {
-    $('a.continue_button').click(function() {
-      $('.continue-spinner').show();
-      $('form').submit();
-    });
-  })
-
 /////////////////////////////////////////////
 //
 // PROJECT - Form for New/Editing Projects
 //
 /////////////////////////////////////////////
+= javascript_include_tag 'user_details_navigation'
 
 = form_for project, remote: true do |f|
   = hidden_field_tag "portal", portal
@@ -43,7 +36,7 @@
   = hidden_field_tag :current_step, current_step
   .clear
   = f.error_messages
-  
+
   .edit-project-view.portal_container
     = render partial: 'projects/fields', locals: {project: project, f: f, current_step: current_step}
   .continue.portal_container

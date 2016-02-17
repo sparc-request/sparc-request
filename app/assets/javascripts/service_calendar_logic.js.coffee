@@ -112,4 +112,3 @@ $(document).ready ->
     changing_tabs_calculating_rates()
   else if $('.line_item_visit_pricing').is(':visible')
     changing_tabs_calculating_rates()
-

@@ -1,0 +1,37 @@
+{
+  "name": "schema-form-datetimepicker",
+  "main": [
+    "schema-form-datetimepicker.min.js"
+  ],
+  "version": "0.1.0",
+  "authors": [
+    "Cheng Zhu",
+    "Cheng Zhu<cheng@aqmin.com>"
+  ],
+  "moduleType": [
+    "globals"
+  ],
+  "keywords": [
+    "angular-schema-form",
+    "schema-form",
+    "form",
+    "json",
+    "json-schema",
+    "schema"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "coverage"
+  ],
+  "dependencies": {
+    "angular-strap": ">= 2.1.0"
+  },
+  "devDependencies": {
+    "angular-schema-form": ">= 0.7",
+    "angular-mocks": ">= 1.2"
+  }
+}

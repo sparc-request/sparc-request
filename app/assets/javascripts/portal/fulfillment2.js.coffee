@@ -622,4 +622,3 @@ $(document).ready ->
     if $(this).val() == ''
       $(this).val(0).change()
   )
-

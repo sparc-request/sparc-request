@@ -65,7 +65,6 @@ RSpec.describe 'edit a core', js: true do
         @core = Organization.where(abbreviation: "Clinical Data Warehouse").first
         wait_for_javascript_to_finish
         find('#available_statuses_fieldset').click
-        sleep 3
       end
 
       it "should get the default statuses" do
@@ -92,7 +91,6 @@ RSpec.describe 'edit a core', js: true do
     context "viewing user rights section" do
       it "should show user rights section" do
         find('#user_rights').click
-        sleep 3
         expect(find('#su_info')).to be_visible
       end
     end
@@ -112,7 +110,6 @@ RSpec.describe 'edit a core', js: true do
 
         expect(find('#cwf_fieldset')).to be_visible
         find('#cwf_fieldset').click
-        sleep 3
         expect(first('#cwf_fieldset fieldset')).to be_visible
       end
     end
@@ -120,7 +117,6 @@ RSpec.describe 'edit a core', js: true do
     context "pricing section" do
       before :each do
         find('#pricing').click
-        sleep 3
       end
 
       it "should show the pricing section" do

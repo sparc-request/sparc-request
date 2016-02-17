@@ -175,4 +175,3 @@ $(document).ready ->
         service_rate.closest('tr').siblings('.member_rate_row').find('.set_rate').html("#{data.member_rate}")
     })
   )
-

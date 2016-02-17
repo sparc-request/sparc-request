@@ -1,0 +1,47 @@
+{
+  "name": "angular-schema-form-dynamic-select",
+  "description": "Dynamic select add-on for angular schema form.",
+  "main": [
+    "angular-schema-form-dynamic-select.min.js"
+  ],
+  "version": "0.12.4",
+  "authors": [
+    "Cheng Zhu<cheng@aqmin.com>",
+    "Stevehu",
+    "Nicklas Börjesson<nicklas@optimalbpm.se>"
+  ],
+  "moduleType": [
+    "globals"
+  ],
+  "keywords": [
+    "angular-schema-form",
+    "angular-schema-form-add-on",
+    "schema-form",
+    "form",
+    "json",
+    "json-schema",
+    "schema"
+  ],
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "coverage"
+  ],
+  "dependencies": {
+    "angular-schema-form": ">= 0.8.0",
+    "angular-strap": ">= 2.2.2",
+    "bootstrap": "^3.2.0",
+    "angular-ui-select": "^0.12.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/OptimalBPM/angular-schema-form-dynamic-select.git"
+  },
+  "devDependencies": {
+    "angular-translate": ">= 2.4.0",
+    "angular-mocks": ">= 1.2"
+  }
+}

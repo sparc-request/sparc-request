@@ -1,0 +1,27 @@
+<div class="form-group" ng-class="{'has-error': hasError(), 'has-success': hasSuccess(), 'has-feedback': form.feedback !== false }">
+  <label class="control-label" ng-show="showTitle()">{{form.title}}</label>
+  <div class="row">
+    <div class="form-control-date">
+      <div class="input-group">
+        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+        <input type="text" class="form-control" 
+          ng-show="form.key"
+          ng-model="$$value$$"
+          schema-validate="form"
+          data-date-type="{{form.dateOptions.dateType || 'string'}}"
+          data-date-format="{{form.dateOptions.dateFormat || 'dd/MM/yyyy'}}"
+          data-autoclose="{{form.dateOptions.autoclose}}"
+          data-min-date="{{form.dateOptions.minDate}}"
+          data-max-date="{{form.dateOptions.maxDate}}"
+          data-use-navitve="{{form.dateOptions.useNative || false}}"
+          bs-datepicker />
+      </div>
+      <span ng-if="form.feedback !== false"
+        class="form-control-feedback"
+        ng-class="evalInScope(form.feedback) || {'glyphicon': true, 'glyphicon-ok': hasSuccess(), 'glyphicon-remove': hasError() }"></span>
+    </div>
+  </div>
+  <div class="help-block"
+    ng-show="(hasError() && errorMessage(schemaError())) || form.description"
+    ng-bind-html="(hasError() && errorMessage(schemaError())) || form.description"></div>
+</div>

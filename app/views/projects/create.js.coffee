@@ -32,8 +32,10 @@
 <%- end %>
 <%- else %>
   #This is to re-enable the submit, it is disabled to prevent multiple posts, if you click rapidly.
-  $('a.continue_button').click ->
+
+  $(document).on 'click', 'a.continue_button', ->
     $('form').submit()
+    console.log("hello world")
 
   $('.new_project').html("<%= escape_javascript(render partial: 'projects/form', locals: {project: @protocol, service_request: @service_request, portal: @portal, current_step: @current_step}) %>")
 <%- end %>

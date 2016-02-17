@@ -83,7 +83,7 @@ $(document).ready ->
           delay: 0
           when: "mouseout"
           solo: true
-        
+
         style:
           tip: true
           border:
@@ -97,7 +97,7 @@ $(document).ready ->
       $('.catalog-search-spinner').remove()
       $('.catalog-search-clear-icon').remove()
 
-  .data("uiAutocomplete")._renderItem = (ul, item) ->
+  .data("ui-autocomplete")._renderItem = (ul, item) ->
     if item.label == 'No Results'
       $("<li class='search_result'></li>")
       .data("ui-autocomplete-item", item)
@@ -108,7 +108,7 @@ $(document).ready ->
       .data("ui-autocomplete-item", item)
       .append("#{item.parents}<br><span class='service-name' title='#{item.description}'>#{item.label}</span><br><button id='service-#{item.value}' sr_id='#{item.sr_id}' from_portal='#{item.from_portal}' first_service='#{item.first_service}' style='font-size: 11px;' class='add_service'>Add to Cart</button><span class='service-description'>#{item.description}</span>")
       .appendTo(ul)
-  
+
   $('.catalog-search-clear-icon').live 'click', ->
     $("#service_query").autocomplete("close")
     $("#service_query").clearFields()
@@ -128,7 +128,7 @@ $(document).ready ->
     #    $('#sign_in').dialog
     #      modal: true
     #    return false
-  
+
   $('#devise_view').dialog
     modal: true
     width: 700

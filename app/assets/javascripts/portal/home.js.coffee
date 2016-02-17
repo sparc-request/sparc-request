@@ -101,4 +101,3 @@ $(document).ready ->
     activate: (event, ui) ->
       idx = ui.newTab.parent().children().index(ui.newTab)
       $.cookie("admin_tab_name", idx, { expires: 1 })
-

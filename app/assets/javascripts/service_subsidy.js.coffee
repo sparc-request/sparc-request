@@ -36,7 +36,7 @@ $(document).ready ->
 
     new_pi_contribution = (direct_cost * (percent/100.0)).toFixed(2)
     $(pi_contribution_field).val(new_pi_contribution)
-    
+
     percent = calculate_subsidy_percent(direct_cost, new_pi_contribution)
     if direct_cost == 0
       percent_display = '0%'
@@ -144,4 +144,3 @@ $(document).ready ->
       funded_amount = direct_cost - contribution
       percent = (funded_amount / direct_cost) * 100
     return percent
-

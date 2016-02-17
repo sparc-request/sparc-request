@@ -170,5 +170,3 @@ $(document).ready ->
       dataType: "script"
       contentType: 'application/json; charset=utf8'
   )
-
-

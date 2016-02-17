@@ -1,15 +1,14 @@
-//= require admin/jquery.min
-//= require admin/bootstrap.min
-// require admin/validator.min
-//= require admin/angular.min
-//= require admin/angular-resource.min
-//= require admin/angular-aria.min
-// require admin/angular-sanitize.min
-// require admin/angular-strap.min
-// renamed angular-strap.tpl to angular-strap-tpl
-// require admin/angular-strap-tpl.min
-//= require admin/ui-grid.min
-// require admin/tv4
-// require admin/ObjectPath
+//= require jquery-2.1.4/dist/jquery.min
+//= require bootstrap/dist/js/bootstrap.min
+//= require bootstrap-validator/dist/validator.min
+//= require angular/angular.min
+//= require angular-resource/angular-resource.min
+//= require angular-aria/angular-aria.min
+//= require angular-sanitize/angular-sanitize.min
+//= require angular-strap/dist/angular-strap.min
+//= require angular-strap/dist/angular-strap.tpl.min
+//= require angular-ui-grid/ui-grid.min
+//= require tv4/tv4
+//= require objectpath/lib/ObjectPath
 //= require admin/admin.module
 //= require admin/admin.identities

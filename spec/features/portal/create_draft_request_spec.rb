@@ -66,8 +66,6 @@ RSpec.describe 'creating a draft service request from user portal', js: true do
     wait_for_javascript_to_finish
     find("#service-#{service.id}").click
     wait_for_javascript_to_finish
-    find("button.ui-button .ui-button-text", text: "Yes").click
-    wait_for_javascript_to_finish
   end
 
   def a_sub_service_request_should_be_generated

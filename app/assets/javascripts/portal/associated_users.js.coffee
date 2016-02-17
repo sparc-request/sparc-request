@@ -60,7 +60,7 @@ $(document).ready ->
         else
           $('.rights input').attr('disabled', false)
 
-      $(document).on 'change', '.edit_user_dialog_box #project_role_role', -> 
+      $(document).on 'change', '.edit_user_dialog_box #project_role_role', ->
         role = $(this).val()
         if role == 'pi' or role == 'primary-pi' or role == 'business-grants-manager'
           $('.edit_user_dialog_box #project_role_project_rights_none').attr('disabled', true)
@@ -158,21 +158,22 @@ $(document).ready ->
             click: ->
               $('#add_authorized_user_submit_button').attr('disabled', true)
 
-              role = $('.add_user_dialog_box #project_role_role').val()
-              primary_pi_pr_id = $('.add_user_dialog_box #primary_pi_pr_id').val()
-              pr_id = $('.add_user_dialog_box #pr_id').val()
+              role = $('#project_role_role').val()
+              primary_pi_pr_id = $('#primary_pi_pr_id').val()
+              pr_id = $('#pr_id').val()
 
               if role == 'primary-pi' && primary_pi_pr_id != pr_id
                 button = $('#add_authorized_user_submit_button')
                 button_text = button.children('span')
                 title_text = $('.add_user_dialog_box .ui-dialog-titlebar').children('.ui-dialog-title')
-                
+
                 if button_text.text() == 'Submit'
                   #Hide the form
                   $('.user-search-container').hide()
                   $('#add-user-form').hide()
 
                   #Add the new elements
+
                   primary_pi_full_name = $('.add_user_dialog_box #primary_pi_full_name').val()
                   pr_full_name = $('.add_user_dialog_box #full_name').val()
                   protocol_id = $('#add-user-form #protocol_id').val()
@@ -193,7 +194,7 @@ $(document).ready ->
                 else
                   #Enable removing the old Primary PI
                   $('.add_user_dialog_box #change_primary_pi').val(true)
-                  
+
                   #Remove the elements
                   $('.change_ppi_prompt').remove()
 
@@ -205,7 +206,7 @@ $(document).ready ->
                   button_text.text('Submit')
                   button.siblings('button').children('span').text('Cancel')
                   title_text.text('Add an Authorized User')
-                  
+
                   $('#new_project_role').submit()
               else
                 $('#new_project_role').submit()
@@ -219,7 +220,7 @@ $(document).ready ->
               button = $('#add_authorized_user_cancel_button')
               button_text = button.children('span')
               title_text = $('.add_user_dialog_box .ui-dialog-titlebar').children('.ui-dialog-title')
-              
+
               if button_text.text() == 'Cancel'
                 $(this).dialog('close')
                 $('#errorExplanation').remove()
@@ -264,15 +265,15 @@ $(document).ready ->
               click: ->
                 $('#edit_authorized_user_submit_button').attr('disabled', true)
 
-                role = $('.edit_user_dialog_box #project_role_role').val()
-                primary_pi_pr_id = $('.edit_user_dialog_box #primary_pi_pr_id').val()
-                pr_id = $('.edit_user_dialog_box #pr_id').val()
+                role = $('#project_role_role').val()
+                primary_pi_pr_id = $('#primary_pi_pr_id').val()
+                pr_id = $('#pr_id').val()
 
                 if role == 'primary-pi' && primary_pi_pr_id != pr_id
                   button = $('#edit_authorized_user_submit_button')
                   button_text = button.children('span')
                   title_text = $('.edit_user_dialog_box .ui-dialog-titlebar').children('.ui-dialog-title')
-                  
+
                   if button_text.text() == 'Submit'
                     #Hide the form
                     $("#edit_project_role_#{pr_id}").hide()
@@ -281,6 +282,7 @@ $(document).ready ->
                     primary_pi_full_name = $('.edit_user_dialog_box #primary_pi_full_name').val()
                     pr_full_name = $('.edit_user_dialog_box #full_name').val()
                     protocol_id = $('.edit_user_dialog_box #protocol_id').val()
+
                     warning = I18n["protocol_information"]["change_primary_pi"]["warning"]
                     message1 = I18n["protocol_information"]["change_primary_pi"]["warning_prompt_1_1"]+
                       "(<strong>#{pr_full_name}</strong>)"+
@@ -298,7 +300,7 @@ $(document).ready ->
                   else
                     #Enable removing the old Primary PI
                     $('.edit_user_dialog_box #change_primary_pi').val(true)
-                    
+
                     #Remove the elements
                     $('.change_ppi_prompt').remove()
 
@@ -325,7 +327,7 @@ $(document).ready ->
                 button = $('#edit_authorized_user_cancel_button')
                 button_text = button.children('span')
                 title_text = $('.edit_user_dialog_box .ui-dialog-titlebar').children('.ui-dialog-title')
-                
+
                 if button_text.text() == 'Cancel'
                   $(this).dialog('close')
                   $("#errorExplanation").remove()

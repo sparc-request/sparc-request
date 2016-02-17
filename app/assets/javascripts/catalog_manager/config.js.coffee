@@ -98,5 +98,3 @@ $ ->
         $(date).val(Sparc.config.readyMyDate($(date).val(), 'view'))
 
   }
-
-

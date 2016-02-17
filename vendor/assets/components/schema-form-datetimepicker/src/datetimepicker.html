@@ -1,0 +1,37 @@
+<div class="form-group" ng-class="{'has-error': hasError(), 'has-success': hasSuccess(), 'has-feedback': form.feedback !== false }">
+  <label class="control-label" ng-show="showTitle()">{{form.title}}</label>
+  <div class="row">
+    <div class="form-control-date">
+      <div class="input-group">
+        <span class="input-group-addon"><i class="fa fa-calendar"></i></span>
+        <input type="text" class="form-control" 
+          ng-show="form.key"
+          ng-model="$$value$$"
+          data-date-type="object"
+          data-date-format="{{form.options.dateFormat || 'dd/MM/yyyy'}}"
+          data-autoclose="{{form.options.autoclose || '1'}}"
+          data-min-date="{{form.options.minDate}}"
+          data-max-date="{{form.options.maxDate}}"
+          data-use-navitve="{{form.options.useNative || false}}"
+          bs-datepicker />
+      </div>
+    </div>
+    <div class="form-control-time">
+      <div class="input-group">
+        <span class="input-group-addon"><i class="fa fa-clock-o"></i></span>
+        <input type="text" class="form-control" size="8"
+          ng-show="form.key"
+          ng-model="$$value$$"
+          data-time-type="object"
+          data-time-format="{{form.options.timeFormat || 'shortTime'}}"
+          data-minute-step="{{form.options.minuteStep || '15'}}"
+          data-use-native="{{form.options.useNative || false}}"
+          bs-timepicker />
+      </div>
+    </div>
+  </div>
+  <input type="hidden" sf-changed="form" ng-model="$$value$$" schema-validate="form" />
+  <div class="help-block"
+    ng-show="(hasError() && errorMessage(schemaError())) || form.description"
+    ng-bind-html="(hasError() && errorMessage(schemaError())) || form.description"></div>
+</div>

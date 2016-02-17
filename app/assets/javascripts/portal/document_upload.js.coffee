@@ -41,4 +41,3 @@ $(document).ready ->
     else
       $('.document_type_other').hide()
   )
-    

@@ -1,0 +1,28 @@
+.tilted {
+
+    /* Safari, Chrome */
+    -webkit-transform: rotate(-13deg);
+
+    /* Firefox */
+    -moz-transform: rotate(-1deg);
+
+    /* IE */
+    -ms-transform: rotate(-1deg);
+
+    /* Opera */
+    -o-transform: rotate(-1deg);
+
+    /* Older versions of IE */
+    filter: progid:DXImageTransform.Microsoft.BasicImage(rotation=0.012);
+
+    /* CSS3 standard as defined here: http://www.w3.org/TR/css3-transforms/ */
+    transform: rotate(-1.2deg);
+
+    padding-bottom: 1em;
+
+}
+
+.bigger {
+    font-size: larger;
+
+}

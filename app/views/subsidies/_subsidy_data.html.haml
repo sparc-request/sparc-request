@@ -56,7 +56,7 @@
                 %table.study-contribution
                   %tr
                     %td.percent-of-cost
-                      = text_field_tag :percent_of_cost, sub_service_request.percent_of_cost, :"data-cost" => direct_cost_total, :"data-id" => subsidy.sub_service_request_id, :class => "percent_#{sub_service_request.id} percent_of_cost", :disabled => subsidy_disabled
+                      = text_field_tag :percent_of_cost, sub_service_request.contribution_percent_of_cost, :"data-cost" => direct_cost_total, :"data-id" => subsidy.sub_service_request_id, :class => "percent_#{sub_service_request.id} percent_of_cost", :disabled => subsidy_disabled
                       \%
                       %br
                       = t("subsidy_page.table.percent_of_cost")

@@ -10,12 +10,16 @@ RSpec.describe 'dashboard/service_requests/protocol_service_request_show', type:
       type: 'Study',
       archived: false)
   end
-  let!(:service_requester) { create(:identity, first_name: 'Some', last_name: 'Guy') }
+  let!(:service_requester) do
+    create(:identity, first_name: 'Some', last_name: 'Guy')
+  end
   let!(:organization) do
     create(:organization,
       type: 'Institution',
       name: 'Megacorp',
-      service_provider: create(:identity, first_name: 'Easter', last_name: 'Bunny'))
+      service_provider: create(:identity,
+        first_name: 'Easter',
+        last_name: 'Bunny'))
   end
 
   def render_protocol_service_request_show(service_request)
@@ -66,13 +70,13 @@ RSpec.describe 'dashboard/service_requests/protocol_service_request_show', type:
   describe 'displayed SubServiceRequest' do
     let!(:service_request) do
       create(:service_request_without_validations,
-      protocol: protocol,
-      service_requester: service_requester,
-      status: 'draft')
+        protocol: protocol,
+        service_requester: service_requester,
+        status: 'draft')
     end
 
     context 'non-first_draft SubServiceRequest belongs to ServiceRequest' do
-      before(:each) do
+      it 'should display <protocol_id>-<ssr_id>, associated Organization, and status' do
         create(:sub_service_request,
           ssr_id: '1234',
           service_request: service_request,
@@ -80,17 +84,9 @@ RSpec.describe 'dashboard/service_requests/protocol_service_request_show', type:
         service_request.reload
         jug2.reload
         render_protocol_service_request_show service_request
-      end
 
-      it 'should display <protocol_id>-<ssr_id>' do
         expect(response).to have_selector('td', exact: '9999-1234')
-      end
-
-      it 'should display associated Organization' do
         expect(response).to have_selector('td', exact: 'Megacorp')
-      end
-
-      it 'should display status' do
         expect(response).to have_selector('td', exact: 'Draft')
       end
     end
@@ -107,6 +103,89 @@ RSpec.describe 'dashboard/service_requests/protocol_service_request_show', type:
         render_protocol_service_request_show service_request
 
         expect(response).not_to have_selector('td', exact: '9999-1234')
+      end
+    end
+  end
+
+  describe '"Edit Original" button' do
+    let!(:service_request) do
+      create(:service_request_without_validations,
+        protocol: protocol,
+        service_requester: service_requester,
+        status: 'draft')
+    end
+
+    context 'ServiceRequest with SubServiceRequest' do
+      let!(:ssr) do
+        create(:sub_service_request,
+          ssr_id: '1234',
+          service_request: service_request,
+          status: 'draft',
+          organization_id: organization.id)
+      end
+
+      context 'user can edit ServiceRequest' do
+        it 'should render' do
+          expect(jug2).to receive('can_edit_service_request?').
+            with(service_request).and_return(true)
+          render_protocol_service_request_show service_request
+          expect(response).to have_selector('button', exact: 'Edit Original')
+        end
+      end
+
+      context 'user cannot edit ServiceRequest' do
+        it 'should not render' do
+          expect(jug2).to receive('can_edit_service_request?').
+            with(service_request).and_return(false)
+          render_protocol_service_request_show service_request
+          expect(response).not_to have_content('Edit Original')
+        end
+      end
+    end
+
+    context 'ServiceRequest with no SubServiceRequests' do
+      it 'should not render' do
+        allow(jug2).to receive('can_edit_service_request?').
+          with(service_request).and_return(true)
+        render_protocol_service_request_show service_request
+        expect(response).to have_selector('button', exact: 'Edit Original')
+      end
+    end
+  end
+
+  describe '"Edit SSR" button' do
+    let!(:service_request) do
+      create(:service_request_without_validations,
+      protocol: protocol,
+      service_requester: service_requester,
+      status: 'draft')
+    end
+    let!(:ssr) do
+      create(:sub_service_request,
+        ssr_id: '1234',
+        service_request: service_request,
+        status: 'draft',
+        organization_id: organization.id)
+    end
+    context 'user can edit SubServiceRequest' do
+      it 'should be visible' do
+        jug2.reload
+        expect(jug2).to receive('can_edit_sub_service_request?').and_return(true)
+        service_request.reload
+        render_protocol_service_request_show service_request
+
+        expect(response).to have_selector('button', exact: 'Edit SSR')
+      end
+    end
+
+    context 'user cannot edit SubServiceRequest' do
+      it 'should not be visible' do
+        jug2.reload
+        expect(jug2).to receive('can_edit_sub_service_request?').and_return(false)
+        service_request.reload
+        render_protocol_service_request_show service_request
+
+        expect(response).not_to have_content('Edit SSR')
       end
     end
   end

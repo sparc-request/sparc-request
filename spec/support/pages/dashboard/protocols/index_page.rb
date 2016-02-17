@@ -51,8 +51,11 @@ module Dashboard
         element :id_field, 'td.id'
         element :short_title_field, 'td.title'
         element :primary_pi_field, 'td.pis'
-        element :requests_button, 'td.requests button'
-        element :archive_button, 'td.archive button'
+        element :requests_button, :button, 'Requests'
+        element :archive_project_button, :button, 'Archive Project'
+        element :unarchive_project_button, :button, 'Unarchive Project'
+        element :archive_study_button, :button, 'Archive Study'
+        element :unarchive_study_button, :button, 'Unarchive Study'
 
         def id
           id_field.text
@@ -75,18 +78,15 @@ module Dashboard
         element :title, '.modal-header h4'
         sections :service_requests, '.panel.service-request-info' do
           element :header, '.panel-heading .panel-title'
-          element :notes_button, 'button.notes.list'
+          element :notes_button, :button, 'Notes'
+          element :edit_original_button, :button, 'Edit Original'
           sections :sub_service_requests, 'tbody tr' do
             element :pretty_ssr_id, 'td.pretty-ssr-id'
             element :organization, 'td.organization'
             element :status, 'td.status'
-            element :view_ssr_button, '.view-sub-service-request-button'
-            element :edit_ssr_button, 'button.edit_service_request'
-            element :admin_edit_button, 'a.edit_service_request'
-
-            def admin_edit_button_href
-              admin_edit_button['href']
-            end
+            element :view_ssr_button, :button, 'View SSR'
+            element :edit_ssr_button, :button, 'Edit SSR'
+            element :admin_edit_button, :link, 'Admin Edit'
           end
         end
       end

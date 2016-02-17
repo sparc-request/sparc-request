@@ -421,7 +421,6 @@ RSpec.describe "Identity creates Study", js: true do
     end
   end
 
-
   def select_epic_box_answers(answer_array)
     questions = ['study_type_answer_certificate_of_conf_answer', 'study_type_answer_higher_level_of_privacy_answer', 'study_type_answer_access_study_info_answer', 'study_type_answer_epic_inbasket_answer', 'study_type_answer_research_active_answer', 'study_type_answer_restrict_sending_answer']
     select answer_array[0], from: questions[0] unless answer_array[0].nil?

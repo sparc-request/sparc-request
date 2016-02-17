@@ -54,9 +54,6 @@ RSpec.describe 'service request list', js: true do
         end
       end
     end
-
-    describe 'edit original button' do
-    end
   end
 
   describe 'displayed SubServiceRequest' do
@@ -85,21 +82,6 @@ RSpec.describe 'service request list', js: true do
         ssr_id: '1234',
         service_request: service_request,
         organization_id: organization.id)
-    end
-
-    describe 'admin edit button' do
-      context 'user is a superuser and service provider for SubServiceRequest Organization' do
-        before(:each) do
-          SuperUser.create(identity_id: jug2.id, organization_id: organization.id)
-          ServiceProvider.create(identity_id: jug2.id, organization_id: organization.id)
-        end
-
-        it 'should take user to SubServiceRequest show' do
-          go_to_show_protocol protocol.id
-          @page.service_requests.ssr_lists.first.ssrs.first.admin_edit_button.click
-          expect(URI.parse(current_url).path).to eq "/dashboard/sub_service_requests/#{sub_service_request.id}"
-        end
-      end
     end
 
     describe 'sending notifications' do
@@ -155,6 +137,56 @@ RSpec.describe 'service request list', js: true do
           end
         end
       end
+    end
+  end
+
+  describe 'buttons' do
+    let!(:protocol) do
+      create(:protocol_federally_funded,
+        :without_validations,
+        primary_pi: jug2,
+        type: 'Study',
+        archived: false)
+    end
+    let!(:service_requester) { create(:identity, first_name: 'Some', last_name: 'Guy') }
+    let!(:service_request) do
+      create(:service_request_without_validations,
+      protocol: protocol,
+      service_requester: service_requester,
+      status: 'draft')
+    end
+    let!(:organization) do
+      create(:organization,
+        type: 'Institution',
+        name: 'Megacorp',
+        admin: jug2,
+        service_provider: create(:identity, first_name: 'Easter', last_name: 'Bunny'))
+    end
+    let!(:sub_service_request) do
+      create(:sub_service_request,
+        id: 9999,
+        ssr_id: '1234',
+        service_request: service_request,
+        organization_id: organization.id)
+    end
+
+    before(:each) { go_to_show_protocol protocol.id }
+
+    scenario 'user clicks "Edit Original" button' do
+      @page.service_requests.ssr_lists.first.edit_original_button.click
+    end
+
+    scenario 'user clicks "View SSR" button' do
+      @page.service_requests.ssr_lists.first.ssrs.first.view_ssr_button.click
+    end
+
+    scenario 'user clicks "Edit SSR" button' do
+      @page.service_requests.ssr_lists.first.ssrs.first.edit_ssr_button.click
+    end
+
+    scenario 'user clicks "Admin Edit" button' do
+      @page.service_requests.ssr_lists.first.ssrs.first.admin_edit_button.click
+      expect(URI.parse(current_url).path).to eq '/dashboard/sub_service_requests/9999'
     end
   end
 end

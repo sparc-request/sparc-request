@@ -47,17 +47,17 @@ RSpec.describe 'requests modal', js: true do
       organization_id: organization.id)
   end
 
-  scenario 'user clicks "Edit Original" button' do
+  xit 'user clicks "Edit Original" button' do
     modal = open_modal
     modal.service_requests.first.edit_original_button.click
   end
 
-  scenario 'user clicks "View SSR" button' do
+  xit 'user clicks "View SSR" button' do
     modal = open_modal
     modal.service_requests.first.sub_service_requests.first.view_ssr_button.click
   end
 
-  scenario 'user clicks "Edit SSR" button' do
+  xit 'user clicks "Edit SSR" button' do
     modal = open_modal
     modal.service_requests.first.sub_service_requests.first.edit_ssr_button.click
   end

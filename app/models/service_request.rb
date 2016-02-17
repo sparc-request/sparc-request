@@ -35,6 +35,8 @@ class ServiceRequest < ActiveRecord::Base
   has_many :documents, :dependent => :destroy
   has_many :arms, :through => :protocol
 
+  after_save :set_original_submitted_date
+
   validation_group :protocol do
     # validates :protocol_id, :presence => {:message => "You must identify the service request with a study/project before continuing."}
     validate :protocol_page
@@ -512,7 +514,7 @@ class ServiceRequest < ActiveRecord::Base
 
   def add_or_update_arms
     return if not self.has_per_patient_per_visit_services?
-    
+
     p = self.protocol
     if p.arms.empty?
       arm = p.arms.create(
@@ -570,5 +572,13 @@ class ServiceRequest < ActiveRecord::Base
                                     .group_by(&:auditable_id)
 
     {:line_items => line_item_audits}
+  end
+
+  private
+
+  def set_original_submitted_date
+    if self.submitted_at && !self.original_submitted_date
+      self.update_attributes(original_submitted_date: submitted_at)
+    end
   end
 end

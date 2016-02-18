@@ -24,12 +24,12 @@
   });
 
 .admin-right-dashboard
-  - if @user.full_name.size + @user.email.size > 29 && @user.is_super_user? && QUEUE_EPIC_EDIT_LDAP_UIDS.include?(current_user.ldap_uid)
-    .user-information-body.button-information-body
-      %p
-        = @user.full_name
-        |
-        = @user.email
+  .user-information-body{class: ('button-information-body' unless !display_epic_box_dependent_on_size(current_user))}
+    %p
+      = @user.full_name
+      |
+      = @user.email
+      - if display_epic_box_dependent_on_size(current_user)
         %div.space_bar
           .admin-buttons
             = link_to "Create A Request", root_path, :class => 'create_new_request header_button'
@@ -37,17 +37,11 @@
               = link_to "Reporting", reports_path, :class => 'reporting header_button'
             - if QUEUE_EPIC_EDIT_LDAP_UIDS.include?(current_user.ldap_uid)
               = link_to "View Epic Queue", portal_epic_queues_path, :class => 'epic_queues header_button'
-  - else
-    .user-information-body
-      %p
-        = @user.full_name
-        |
-        = @user.email
+      - else
         .admin-buttons
           = link_to "Create A Request", root_path, :class => 'create_new_request header_button'
           - if @user.is_super_user?
             = link_to "Reporting", reports_path, :class => 'reporting header_button'
           - if QUEUE_EPIC_EDIT_LDAP_UIDS.include?(current_user.ldap_uid)
             = link_to "View Epic Queue", portal_epic_queues_path, :class => 'epic_queues header_button'
-
 = render :partial => 'ssr_list'

@@ -37,4 +37,9 @@ module Portal::AdminHelper
 
     "#{protocol.id}-#{ssr.ssr_id}"
   end
+
+  def display_epic_box_dependent_on_size(user)
+    user.full_name.size + user.email.size > 29 && user.is_super_user? && QUEUE_EPIC_EDIT_LDAP_UIDS.include?(user.ldap_uid) ? true : false
+  end
+
 end

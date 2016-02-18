@@ -25,6 +25,7 @@ class SetupProtocol
     unless from_portal?
       @service_request = ServiceRequest.find @service_request_id
       @epic_services = @service_request.should_push_to_epic? if USE_EPIC
+      @service_request
     end
   end
 

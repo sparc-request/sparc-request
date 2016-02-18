@@ -34,25 +34,25 @@
         %th= t(:protocol_information)[:status]
         %th{ colspan: 4 } Actions
     %tbody
-      - service_request.sub_service_requests.each do |ssr|
-        - next if ssr.status == 'first_draft'
+      - service_request.sub_service_requests.each do |sub_service_request|
+        - next if sub_service_request.status == 'first_draft'
         %tr
           %td.pretty-ssr-id
-            = pretty_ssr_id(service_request.protocol, ssr)
+            = pretty_ssr_id(service_request.protocol, sub_service_request)
           %td.organization
-            = ssr.org_tree_display
+            = sub_service_request.org_tree_display
           %td.status
-            = AVAILABLE_STATUSES[ssr.status]
+            = AVAILABLE_STATUSES[sub_service_request.status]
           %td.actions
-            = render partial: 'dashboard/notifications/dropdown', locals: { sub_service_request: ssr, user: user, admin: admin }
+            = render partial: 'dashboard/notifications/dropdown', locals: { sub_service_request: sub_service_request, user: user, admin: admin }
           %td
-            %button.view-sub-service-request-button.btn.btn-primary.btn-sm{ type: 'button', data: { service_request_id: service_request.id, protocol_id: service_request.protocol.id, status: ssr.status, ssr_id: ssr.ssr_id.to_s } }
+            %button.view-sub-service-request-button.btn.btn-primary.btn-sm{ type: 'button', data: { sub_service_request_id: sub_service_request.id } }
               View SSR
-          %td.edit-td
-            - if user.can_edit_sub_service_request? ssr
-              %button.edit_service_request.btn.btn-warning.btn-sm{ type: 'button', data: { permission: permission_to_edit.to_s, url: "/service_requests/#{service_request.id}/catalog?sub_service_request_id=#{ssr.id}&from_user_portal=true" } }
+          - if user.can_edit_sub_service_request? sub_service_request
+            %td.edit-td
+              %button.edit_service_request.btn.btn-warning.btn-sm{ type: 'button', data: { permission: permission_to_edit.to_s, url: "/service_requests/#{service_request.id}/catalog?sub_service_request_id=#{sub_service_request.id}&from_user_portal=true" } }
                 Edit SSR
-          %td.edit-td
-            - if user.admin_organizations.include? ssr.organization
-              %a.edit_service_request.btn.btn-warning.btn-sm{ type: 'button', href: "/dashboard/sub_service_requests/#{ssr.id}" }
+          - if user.admin_organizations.include? sub_service_request.organization
+            %td.admin-edit-td
+              %a.edit_service_request.btn.btn-warning.btn-sm{ type: 'button', href: "/dashboard/sub_service_requests/#{sub_service_request.id}" }
                 Admin Edit

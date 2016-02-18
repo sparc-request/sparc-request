@@ -24,14 +24,22 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
   before_filter :protocol_authorizer, :only => [:update_from_project_study_information]
 
   def show
-    @admin = true
-    session[:service_calendar_pages] = params[:pages] if params[:pages]
-    session[:breadcrumbs].add_crumbs(protocol_id: @sub_service_request.service_request.protocol_id, sub_service_request_id: @sub_service_request.id).clear(:notifications)
-    if @user.can_edit_fulfillment? @sub_service_request.organization
-      @service_request = @sub_service_request.service_request
-      @protocol = @sub_service_request.protocol
-    else
-      redirect_to dashboard_root_path
+    respond_to do |format|
+      format.js { # User Modal Show
+        render 
+      }
+      format.html { # Admin Edit
+        @admin = true
+        session[:service_calendar_pages] = params[:pages] if params[:pages]
+        session[:breadcrumbs].add_crumbs(protocol_id: @sub_service_request.protocol.id, sub_service_request_id: @sub_service_request.id).clear(:notifications)
+        if @user.can_edit_fulfillment? @sub_service_request.organization
+          @service_request = @sub_service_request.service_request
+          @protocol = @sub_service_request.protocol
+          render
+        else
+          redirect_to dashboard_root_path
+        end
+      }
     end
   end
 

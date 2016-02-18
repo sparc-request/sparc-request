@@ -151,7 +151,7 @@ class Protocol < ActiveRecord::Base
       if answers["certificate_of_conf"].answer.nil?
         has_errors = true
       elsif answers["certificate_of_conf"].answer == false
-        if (answers["higher_level_of_privacy"].answer.nil?) 
+        if (answers["higher_level_of_privacy"].answer.nil?)
           has_errors = true
         elsif (answers["higher_level_of_privacy"].answer == false)
           if answers["epic_inbasket"].answer.nil? || answers["research_active"].answer.nil? || answers["restrict_sending"].answer.nil?
@@ -198,6 +198,14 @@ class Protocol < ActiveRecord::Base
 
   def billing_business_manager_email
     billing_business_manager_static_email.blank? ?  billing_managers.map(&:email).try(:join, ', ') : billing_business_manager_static_email
+  end
+
+  def coordinators
+    project_roles.select{|pr| pr.role == 'research-assistant-coordinator'}.map(&:identity)
+  end
+
+  def coordinator_emails
+    coordinators.map(&:email).try(:join, ', ')
   end
 
   def emailed_associated_users

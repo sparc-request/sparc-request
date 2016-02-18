@@ -34,7 +34,8 @@ class VisitGroup < ActiveRecord::Base
   attr_accessible :day
   attr_accessible :window_before
   attr_accessible :window_after
-  acts_as_list :scope => :arm
+  acts_as_list scope: :arm
+  scope :at_position, ->(position) { where(position: position) }
 
   after_create :set_default_name
   after_save :set_arm_edited_flag_on_subjects

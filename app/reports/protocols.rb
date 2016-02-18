@@ -30,15 +30,11 @@ class ProtocolsReport < ReportingModule
   # see app/reports/test_report.rb for all options
   def default_options
     {
-      "Date Range" => {:field_type => :date_range, :for => "service_requests_submitted_at", :from => "2012-03-01".to_date, :to => Date.today},
-      Institution => {:field_type => :select_tag},
+      "Date Range" => {:field_type => :date_range, :for => "service_requests_original_submitted_date", :from => "2012-03-01".to_date, :to => Date.today},
+      Institution => {:field_type => :select_tag, :has_dependencies => "true"},
       Provider => {:field_type => :select_tag, :dependency => '#institution_id', :dependency_id => 'parent_id'},
       Program => {:field_type => :select_tag, :dependency => '#provider_id', :dependency_id => 'parent_id'},
-      Core => {:field_type => :select_tag, :dependency => '#program_id', :dependency_id => 'parent_id'},
-      "Current Status" => {:field_type => :check_box_tag, :for => 'status', :multiple => AVAILABLE_STATUSES,
-                           :grouping => {"Active" => ['submitted', 'in_process', 'ctrc_review', 'ctrc_approved', 'administrative_review', 'committee_review'],
-                                         "Other" => ['draft', 'get_a_cost_estimate', 'complete', 'awaiting_pi_approval', 'on_hold', 'invoiced']},
-                           :selected => ['submitted', 'in_process', 'ctrc_review', 'ctrc_approved', 'administrative_review', 'committee_review']},
+      Core => {:field_type => :select_tag, :dependency => '#program_id', :dependency_id => 'parent_id'}
     }
   end
 
@@ -46,29 +42,38 @@ class ProtocolsReport < ReportingModule
   def column_attrs
     attrs = {}
 
-    if params[:institution_id]
-      attrs[Institution] = [params[:institution_id], :abbreviation]
-    end
+    attrs["Protocol ID"] = "service_request.try(:protocol).try(:id)"
 
-    if params[:provider_id]
-      attrs[Provider] = [params[:provider_id], :abbreviation]
-    end
+    attrs["Protocol Short Title"] = "service_request.try(:protocol).try(:short_title)"
 
-    if params[:program_id]
-      attrs[Program] = [params[:program_id], :abbreviation]
-    end
+    attrs["Institution"] = "org_tree.select{|org| org.type == 'Institution'}.first.try(:name)"
+    attrs["Provider"] = "org_tree.select{|org| org.type == 'Provider'}.first.try(:name)"
+    attrs["Program"] = "org_tree.select{|org| org.type == 'Program'}.first.try(:name)"
+    attrs["Core"] = "org_tree.select{|org| org.type == 'Core'}.first.try(:name)"
 
-    if params[:core_id]
-      attrs[Core] = [params[:core_id], :abbreviation]
-    end
+    attrs["Funding Source"] = "service_request.try(:protocol).try(:funding_source)"
+    attrs["Potential Funding Source"] = "service_request.try(:protocol).try(:potential_funding_source)"
+    attrs["Financial Account"] = "service_request.try(:protocol).try(:udak_project_number)"
+    attrs["Study Phase"] = "service_request.try(:protocol).try(:study_phase)"
 
-    attrs["Protocol ID"] = :id
-    #attrs["Date Submitted"] = "service_request.submitted_at.strftime('%Y-%m-%d')"
+    attrs["NCT #"] = "service_request.try(:protocol).try(:human_subjects_info).try(:nct_number)"
+    attrs["HR #"] = "service_request.try(:protocol).try(:human_subjects_info).try(:hr_number)"
+    attrs["PRO #"] = "service_request.try(:protocol).try(:human_subjects_info).try(:pro_number)"
+    attrs["IRB of Record"] = "service_request.try(:protocol).try(:human_subjects_info).try(:irb_of_record)"
+    attrs["IRB Expiration Date"] = "service_request.try(:protocol).try(:human_subjects_info).try(:irb_expiration_date)"
 
-    attrs["Primary PI Last Name"] = "primary_principal_investigator.try(:last_name)"
-    attrs["Primary PI First Name"] = "primary_principal_investigator.try(:first_name)"
-    attrs["Primary PI College"] = ["primary_principal_investigator.try(:college)", COLLEGES.invert] # we invert since our hash is setup {"Bio Medical" => "bio_med"} for some crazy reason
-    attrs["Primary PI Department"] = ["primary_principal_investigator.try(:department)", DEPARTMENTS.invert]
+    attrs["Primary PI Last Name"] = "service_request.try(:protocol).try(:primary_principal_investigator).try(:last_name)"
+    attrs["Primary PI First Name"] = "service_request.try(:protocol).try(:primary_principal_investigator).try(:first_name)"
+    attrs["Primary PI Email"] = "service_request.try(:protocol).try(:primary_principal_investigator).try(:email)"
+    attrs["Primary PI College"] = ["service_request.try(:protocol).try(:primary_principal_investigator).try(:college)", COLLEGES.invert] # we invert since our hash is setup {"Bio Medical" => "bio_med"} for some crazy reason
+    attrs["Primary PI Department"] = ["service_request.try(:protocol).try(:primary_principal_investigator).try(:department)", DEPARTMENTS.invert]
+
+    attrs["Primary Coordinator(s)"] = "service_request.try(:protocol).try(:coordinators).try(:map){|x| x.full_name}.try(:join, ', ')"
+    attrs["Primary Coordinator Email(s)"] = "service_request.try(:protocol).try(:coordinator_emails)"
+
+    attrs["Business Manager(s)"] = "service_request.try(:protocol).try(:billing_managers).try(:map){|x| x.full_name}.try(:join, ', ')"
+    attrs["Business Manager Email(s)"] = "service_request.try(:protocol).try(:billing_business_manager_email)"
+
 
     attrs
   end
@@ -85,12 +90,12 @@ class ProtocolsReport < ReportingModule
   # def order => order by these attributes (include table name is always a safe bet, ex. identities.id DESC, protocols.title ASC)
   # Primary table to query
   def table
-    Protocol
+    SubServiceRequest
   end
 
   # Other tables to include
   def includes
-    return :service_requests => [:sub_service_requests, {:line_items => :service}]
+    return :organization, :service_request => {:line_items => :service}
   end
 
   # Conditions
@@ -104,7 +109,6 @@ class ProtocolsReport < ReportingModule
       org = Organization.find(selected_organization_id)
       service_organization_ids = org.all_children(organizations).map(&:id)
       service_organization_ids.flatten!
-      service_organization_ids.uniq!
     end
 
     ssr_organization_ids = [args[:core_id], args[:program_id], args[:provider_id], args[:institution_id]].compact
@@ -112,16 +116,20 @@ class ProtocolsReport < ReportingModule
     # get child organizations
     if not ssr_organization_ids.empty?
       org = Organization.find(selected_organization_id)
-      ssr_organization_ids = [ssr_organization_ids, org.all_children(organizations).map(&:id)].flatten.uniq
+      ssr_organization_ids = [ssr_organization_ids, org.all_children(organizations).map(&:id)].flatten
     end
 
-    if args[:service_requests_submitted_at_from] and args[:service_requests_submitted_at_to]
-      submitted_at = args[:service_requests_submitted_at_from].to_time.strftime("%Y-%m-%d 00:00:00")..args[:service_requests_submitted_at_to].to_time.strftime("%Y-%m-%d 23:59:59")
+    if args[:service_requests_original_submitted_date_from] and args[:service_requests_original_submitted_date_to]
+      submitted_at = args[:service_requests_original_submitted_date_from].to_time.strftime("%Y-%m-%d 00:00:00")..args[:service_requests_original_submitted_date_to].to_time.strftime("%Y-%m-%d 23:59:59")
     end
 
     # default values if none are provided
     service_organization_ids = Organization.all.map(&:id) if service_organization_ids.compact.empty? # use all if none are selected
+
+    service_organizations = Organization.find(service_organization_ids)
+
     ssr_organization_ids = Organization.all.map(&:id) if ssr_organization_ids.compact.empty? # use all if none are selected
+
     submitted_at ||= self.default_options["Date Range"][:from]..self.default_options["Date Range"][:to]
     statuses = args[:status] || AVAILABLE_STATUSES.keys # use all if none are selected
 
@@ -136,6 +144,7 @@ class ProtocolsReport < ReportingModule
   end
 
   def order
+    "service_requests.original_submitted_date ASC"
   end
 
   ##################  END QUERY SETUP   #####################

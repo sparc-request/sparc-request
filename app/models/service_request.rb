@@ -578,7 +578,8 @@ class ServiceRequest < ActiveRecord::Base
 
   def set_original_submitted_date
     if self.submitted_at && !self.original_submitted_date
-      self.update_attributes(original_submitted_date: submitted_at)
+      self.original_submitted_date = self.submitted_at
+      self.save(validate: false)
     end
   end
 end

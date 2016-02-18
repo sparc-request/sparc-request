@@ -19,6 +19,10 @@ module Dashboard
         element :select_all, 'input[name="btSelectAll"]'
         element :user_header, 'th', text: 'User'
         element :time_header, 'th', text: 'Time'
+        elements :notification_rows, 'tbody tr'
+        sections :notifications, 'tbody tr' do
+          element :select_checkbox, 'input[name="btSelectItem"]'
+        end
       end
     end
   end

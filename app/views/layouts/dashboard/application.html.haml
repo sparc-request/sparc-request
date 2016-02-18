@@ -50,7 +50,7 @@
       #header
         = render partial: 'shared/header_logos'
         %input#current_user_id{type: 'hidden', value: @user.try(:id)}
-      = render partial: 'layouts/dashboard/dashboard_header'
+      = render partial: 'layouts/dashboard/dashboard_header', locals: { user: @user }
 
 
       .notification_dialog

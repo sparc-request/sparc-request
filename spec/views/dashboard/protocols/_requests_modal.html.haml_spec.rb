@@ -12,14 +12,14 @@ RSpec.describe 'dashboard/protocols/requests_modal', type: :view do
   end
 
   it 'should only show ServiceRequests with SubServiceRequests' do
-    protocol = create(:protocol_federally_funded,  :without_validations, primary_pi: jug2, type: 'Study', archived: false)
+    protocol = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Study', archived: false)
     service_request_with_ssr = create(:service_request_without_validations, protocol: protocol, service_requester: jug2)
     create(:sub_service_request, ssr_id: '0001', service_request: service_request_with_ssr, organization: create(:organization))
     service_request_without_ssr = create(:service_request_without_validations, protocol: protocol, service_requester: jug2)
 
     render_requests_modal(protocol)
 
-    expect(response).to render_template(partial: '_dashboard/service_requests/protocol_service_request_show',
+    expect(response).to render_template(partial: 'dashboard/service_requests/protocol_service_request_show',
       locals: {
         service_request: service_request_with_ssr,
         user: jug2,
@@ -27,7 +27,7 @@ RSpec.describe 'dashboard/protocols/requests_modal', type: :view do
         admin: false
       })
 
-    expect(response).not_to render_template(partial: '_dashboard/service_requests/protocol_service_request_show',
+    expect(response).not_to render_template(partial: 'dashboard/service_requests/protocol_service_request_show',
       locals: {
         service_request: service_request_without_ssr,
         user: jug2,

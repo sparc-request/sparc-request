@@ -21,9 +21,12 @@
 require 'rails_helper'
 
 RSpec.feature 'User wants to add an authorized user', js: true do
-  before(:each) { stub_const('USE_LDAP', false) }
   let_there_be_lane
   let_there_be_j
+
+  before(:each) do
+    stub_const('USE_LDAP', false)
+  end
 
   let!(:protocol) do
     create(:protocol_federally_funded,
@@ -31,13 +34,6 @@ RSpec.feature 'User wants to add an authorized user', js: true do
       primary_pi: jug2,
       type: 'Project',
       archived: false)
-  end
-
-  let!(:santa_claws) do
-    create(:identity, first_name: 'Santa',
-      last_name: 'Claws',
-      approved: true,
-      ldap_uid: 'sc9@musc.edu')
   end
 
   context 'and has permission to edit the protocol' do
@@ -192,7 +188,7 @@ RSpec.feature 'User wants to add an authorized user', js: true do
     before :each do
       add_view_only_user_to_protocol
 
-      fake_login 'sc9@musc.edu'
+      fake_login 'jpl6@musc.edu'
 
       visit "/dashboard/protocols/#{protocol.id}"
       wait_for_javascript_to_finish
@@ -208,7 +204,7 @@ RSpec.feature 'User wants to add an authorized user', js: true do
 
   def add_view_only_user_to_protocol
     create(:project_role,
-      identity: santa_claws,
+      identity: jpl6,
       protocol: protocol,
       project_rights: 'view',
       role: 'mentor')
@@ -218,10 +214,10 @@ RSpec.feature 'User wants to add an authorized user', js: true do
     find_button('Add An Authorized User').click
   end
 
-  def when_i_select_a_user_from_the_search(user = 'Santa Claws')
-    find('input[placeholder="Search For A User"]').set(user)
-    expect(page).to have_css('.tt-selectable', text: user, visible: true)
-    find('.tt-selectable', text: user, visible: true).click
+  def when_i_select_a_user_from_the_search
+    find('input[placeholder="Search For A User"]').set('Jason Leonard')
+    expect(page).to have_css('.tt-selectable', text: 'Jason Leonard', visible: true)
+    find('.tt-selectable', text: 'Jason Leonard', visible: true).click
   end
 
   def when_i_set_the_role_to role
@@ -265,7 +261,7 @@ RSpec.feature 'User wants to add an authorized user', js: true do
   end
 
   def then_i_should_see_the_users_basic_information
-    expect(page).to have_css('label', exact: 'Santa Claws (sc9@musc.edu)')
+    expect(page).to have_css('label', text: 'Jason Leonard')
   end
 
   def then_i_should_see_the_highest_level_of_rights_selected
@@ -274,7 +270,7 @@ RSpec.feature 'User wants to add an authorized user', js: true do
 
   def then_i_should_see_the_user_has_been_added
     within(find('.panel', text: 'Authorized Users')) do
-      expect(page).to have_selector('td', text: 'Santa Claws')
+      expect(page).to have_selector('td', text: 'Jason Leonard')
       expect(page).to have_selector('td', text: 'Co-Investigator')
       expect(page).to have_selector('td', text: 'Request/Approve Services')
     end
@@ -290,25 +286,24 @@ RSpec.feature 'User wants to add an authorized user', js: true do
     #expect(page).to_not have_selector(".protocol-accordion-title", text: "Julia Glenn")
     #expect(page).to have_selector(".protocol-accordion-title", text: "Brian Kelsey")
     within(find('.panel', text: 'Authorized Users')) do
-      expect(page).to have_selector('td', text: 'Santa Claws')
+      expect(page).to have_selector('td', text: 'Jason Leonard')
       expect(page).to have_selector('td', text: 'Primary PI')
     end
 
-    expect(protocol.reload.primary_principal_investigator).to eq(santa_claws)
+    expect(protocol.reload.primary_principal_investigator).to eq(jpl6)
   end
 
   def then_i_should_see_the_old_primary_pi_is_a_general_user
     wait_for_javascript_to_finish
-    expect(ProjectRole.where(identity_id: Identity.find_by_ldap_uid("jug2"), protocol_id: Protocol.first.id).first.role).to eq("general-access-user")
+    expect(ProjectRole.where(identity_id: jug2.id, protocol_id: protocol.id).first.role).to eq('general-access-user')
   end
 
   def then_i_should_see_the_old_primary_pi_has_request_rights
     wait_for_javascript_to_finish
-    expect(ProjectRole.find_by(identity_id: Identity.find_by_ldap_uid("jug2"), protocol_id: Protocol.first.id).project_rights).to eq("request")
+    expect(ProjectRole.find_by(identity_id: jug2.id, protocol_id: protocol.id).project_rights).to eq('request')
   end
 
   def then_i_should_see_an_error_of_type error_type
-    save_and_open_screenshot
     case error_type
       when 'other fields'
         expect(page).to have_text("Must specify this User's Role.")

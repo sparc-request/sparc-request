@@ -29,9 +29,11 @@
           %th= t(:fulfillments)[:subsidies][:percent]
           %th= t(:fulfillments)[:subsidies][:pi]
           %th= t(:fulfillments)[:subsidies][:effective_current_total_cost]
-          %th.text-center= "Approve"
+          - if admin
+            %th.text-center= "Approve"
           %th.text-center= "Edit"
-          %th.text-center= "Delete"
+          - if admin
+            %th.text-center= "Delete"
       %tbody
         %tr
           %td.request_cost
@@ -42,15 +44,17 @@
             = number_to_currency(subsidy.pi_contribution/100.0)
           %td.subsidy_effective_current_cost
             = number_to_currency(subsidy.current_cost)
-          %td.text-center.approve_subsidy
-            %button.btn.btn-sm.btn-success#approve_subsidy_button{data: { subsidy_id: subsidy.id }}
-              %span.glyphicon.glyphicon-ok
+          - if admin
+            %td.text-center.approve_subsidy
+              %button.btn.btn-sm.btn-success#approve_subsidy_button{data: { subsidy_id: subsidy.id }}
+                %span.glyphicon.glyphicon-ok
           %td.text-center.edit_subsidy
             .btn.btn-warning.btn-sm#edit_subsidy_button{data: { subsidy_id: subsidy.id }}
               %span.glyphicon.glyphicon-edit
-          %td.text-center.delete_subsidy
-            %button.btn.btn-sm.btn-danger.delete_subsidy_button{data: { subsidy_id: subsidy.id }}
-              %span.glyphicon.glyphicon-remove
+          - if admin
+            %td.text-center.delete_subsidy
+              %button.btn.btn-sm.btn-danger.delete_subsidy_button{data: { subsidy_id: subsidy.id }}
+                %span.glyphicon.glyphicon-remove
 - else
   .col-xs-12
     %button.btn.btn-sm.btn-success#add_subsidy_button{data: { sub_service_request_id: sub_service_request.id }}

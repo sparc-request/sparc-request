@@ -26,6 +26,25 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
   def show
     respond_to do |format|
       format.js { # User Modal Show
+        arm_id = params[:arm_id] if params[:arm_id]
+        page = params[:page] if params[:page]
+        session[:service_calendar_pages] = params[:pages] if params[:pages]
+        session[:service_calendar_pages][arm_id] = page if page && arm_id
+
+        @service_request = @sub_service_request.service_request
+        @service_list = @service_request.service_list
+        @line_items = @sub_service_request.line_items
+        @protocol = @service_request.protocol
+        @tab = 'calendar'
+        @portal = true
+        @thead_class = 'ui-widget-header'
+        @review = true
+        @selected_arm = Arm.find arm_id if arm_id
+        @pages = {}
+        @service_request.arms.each do |arm|
+          new_page = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i
+          @pages[arm.id] = @service_request.set_visit_page new_page, arm
+        end
         render 
       }
       format.html { # Admin Edit

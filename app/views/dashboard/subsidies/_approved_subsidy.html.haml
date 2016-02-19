@@ -34,7 +34,8 @@
           %th= "Subsidy Cost"
           %th= "Approved By"
           %th= "Approved At"
-          %th.text-center= "Delete"
+          - if admin
+            %th.text-center= "Delete"
       %tbody
         %tr
           %td.request_cost
@@ -49,9 +50,10 @@
             = subsidy.approver.try(:full_name)
           %td.approved_at
             = format_datetime(subsidy.approved_at)
-          %td.text-center.delete_subsidy
-            %button.btn.btn-sm.btn-danger.delete_subsidy_button{data: { subsidy_id: subsidy.id }}
-              %span.glyphicon.glyphicon-remove
+          - if admin
+            %td.text-center.delete_subsidy
+              %button.btn.btn-sm.btn-danger.delete_subsidy_button{data: { subsidy_id: subsidy.id }}
+                %span.glyphicon.glyphicon-remove
 - else
   %span= "There is no current effective subsidy."
   %hr

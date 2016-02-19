@@ -25,10 +25,18 @@ RSpec.feature 'User messes with the change Primary PI Warning Dialog JS', js: tr
   let_there_be_j
   build_service_request_with_project
 
-  before :each do
-    fake_login 
+  let!(:protocol) do
+    create(:protocol_federally_funded,
+      :without_validations,
+      primary_pi: jug2,
+      type: 'Project',
+      archived: false)
+  end
 
-    visit portal_root_path
+  before :each do
+    fake_login
+
+    visit "/dashboard/protocols/#{protocol.id}"
     wait_for_javascript_to_finish
   end
 
@@ -234,8 +242,16 @@ RSpec.feature 'User messes with the change Primary PI Warning Dialog JS', js: tr
     find(".ui-dialog-titlebar-close").click()
   end
 
+  def add_view_only_user_to_protocol
+    create(:project_role,
+      identity: jpl6,
+      protocol: protocol,
+      project_rights: 'view',
+      role: 'mentor')
+  end
+
   def given_i_have_clicked_the_add_authorized_user_button
-    find(".associated-user-button", visible: true).click
+    find_button('Add An Authorized User').click
   end
 
   def given_i_have_clicked_the_edit_authorized_user_button

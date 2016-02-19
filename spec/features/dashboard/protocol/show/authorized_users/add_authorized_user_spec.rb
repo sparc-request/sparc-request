@@ -21,22 +21,31 @@
 require 'rails_helper'
 
 RSpec.feature 'User wants to add an authorized user', js: true do
+  before(:each) { stub_const('USE_LDAP', false) }
   let_there_be_lane
   let_there_be_j
-  fake_login_for_each_test
 
   let!(:protocol) do
     create(:protocol_federally_funded,
       :without_validations,
       primary_pi: jug2,
-      type: 'Study',
+      type: 'Project',
       archived: false)
+  end
+
+  let!(:santa_claws) do
+    create(:identity, first_name: 'Santa',
+      last_name: 'Claws',
+      approved: true,
+      ldap_uid: 'sc9@musc.edu')
   end
 
   context 'and has permission to edit the protocol' do
     before :each do
-      @page = Dashboard::Protocols::ShowPage.new
-      @page.load(id: protocol.id)
+      fake_login
+
+      visit "/dashboard/protocols/#{protocol.id}"
+      wait_for_javascript_to_finish
     end
 
     context 'and clicks the Add an Authorized User button' do
@@ -109,13 +118,6 @@ RSpec.feature 'User wants to add an authorized user', js: true do
         end
 
         context 'and sets their role to Primary PI' do
-          before :each do
-            fake_login 'jpl6@musc.edu'
-
-            visit portal_root_path
-            wait_for_javascript_to_finish
-          end
-
           context 'and submits the form' do
             scenario 'and sees the warning message' do
               given_i_have_clicked_the_add_authorized_user_button
@@ -171,16 +173,15 @@ RSpec.feature 'User wants to add an authorized user', js: true do
 
       context 'and searches for a user already on the protocol and tries to add the user' do
         scenario 'and sees a duplicate identity error on the protocol' do
-          #Create Brian
+          # add user
           given_i_have_clicked_the_add_authorized_user_button
           when_i_select_a_user_from_the_search
           when_i_fill_out_the_required_fields
           when_i_submit_the_form
-          #Try to create Brian again
+
+          # try to add same user again
           given_i_have_clicked_the_add_authorized_user_button
           when_i_select_a_user_from_the_search
-          when_i_fill_out_the_required_fields
-          when_i_submit_the_form
           then_i_should_see_an_error_of_type 'user already added'
         end
       end
@@ -189,11 +190,11 @@ RSpec.feature 'User wants to add an authorized user', js: true do
 
   context 'and does not have permission to edit the protocol' do
     before :each do
-      add_jason_to_protocol
+      add_view_only_user_to_protocol
 
-      fake_login 'jpl6@musc.edu'
+      fake_login 'sc9@musc.edu'
 
-      visit portal_root_path
+      visit "/dashboard/protocols/#{protocol.id}"
       wait_for_javascript_to_finish
     end
 
@@ -205,41 +206,39 @@ RSpec.feature 'User wants to add an authorized user', js: true do
     end
   end
 
-  def add_jason_to_protocol
-    #Destroy the pre-generated Jason PR for the test
-    ProjectRole.destroy(2)
-
-    #Create a new Jason PR for the test
-    project = Project.first
-    identity = Identity.find_by_ldap_uid('jpl6@musc.edu')
+  def add_view_only_user_to_protocol
     create(:project_role,
-            identity: identity,
-            protocol: project,
-            project_rights: 'view',
-            role: 'mentor'
-            )
+      identity: santa_claws,
+      protocol: protocol,
+      project_rights: 'view',
+      role: 'mentor')
   end
 
   def given_i_have_clicked_the_add_authorized_user_button
-    @page.associated_users_panel.add_associated_user_button.click
+    find_button('Add An Authorized User').click
   end
 
-  def when_i_select_a_user_from_the_search
-    @page.add_authorized_user_modal.select_user_field.set 'user_search'
-    expect(@page.add_authorized_user_modal).to have_user_choices
-    @page.add_authorized_user_modal.user_choices.find(text: 'Biran Kelsey').click
+  def when_i_select_a_user_from_the_search(user = 'Santa Claws')
+    find('input[placeholder="Search For A User"]').set(user)
+    expect(page).to have_css('.tt-selectable', text: user, visible: true)
+    find('.tt-selectable', text: user, visible: true).click
   end
 
   def when_i_set_the_role_to role
-    select role, from: 'project_role_role'
+    expect(page).to have_css('button[data-id="project_role_role"]')
+    find('button[data-id="project_role_role"]').click
+    first('li a', text: role).click
+    expect(page).to have_css("button[title='#{role}']")
   end
 
   def when_i_set_the_credentials_to credentials
-    select credentials, from: 'identity_credentials'
+    expect(page).to have_css('button[data-id="project_role_identity_attributes_credentials"]')
+    page.find('button[data-id="project_role_identity_attributes_credentials"]').click
+    first('li a', exact: credentials).click
   end
 
   def when_i_fill_out_the_required_fields
-    select "Co-Investigator", from: 'project_role_role'
+    when_i_set_the_role_to 'Co-Investigator'
     choose 'project_role_project_rights_request'
   end
 
@@ -254,7 +253,7 @@ RSpec.feature 'User wants to add an authorized user', js: true do
   end
 
   def when_i_submit_the_form
-    click_button("add_authorized_user_submit_button")
+    click_button('save_protocol_rights_button')
   end
 
   def when_i_have_an_error
@@ -262,12 +261,11 @@ RSpec.feature 'User wants to add an authorized user', js: true do
   end
 
   def then_i_should_see_the_add_authorized_user_dialog
-    expect(@page).to have_text 'Select User'
+    expect(page).to have_css('.modal', text: 'Add Authorized User')
   end
 
   def then_i_should_see_the_users_basic_information
-    expect(page).to have_css('#full_name')
-    expect(find('#full_name')).to have_value 'Brian Kelsey'
+    expect(page).to have_css('label', exact: 'Santa Claws (sc9@musc.edu)')
   end
 
   def then_i_should_see_the_highest_level_of_rights_selected
@@ -275,10 +273,10 @@ RSpec.feature 'User wants to add an authorized user', js: true do
   end
 
   def then_i_should_see_the_user_has_been_added
-    within(first('.protocol-information')) do
-      expect(page).to have_selector("td", text: "Brian Kelsey")
-      expect(page).to have_selector("td", text: "Co-Investigator")
-      expect(page).to have_selector("td", text: "Request/Approve Services")
+    within(find('.panel', text: 'Authorized Users')) do
+      expect(page).to have_selector('td', text: 'Santa Claws')
+      expect(page).to have_selector('td', text: 'Co-Investigator')
+      expect(page).to have_selector('td', text: 'Request/Approve Services')
     end
   end
 
@@ -291,12 +289,12 @@ RSpec.feature 'User wants to add an authorized user', js: true do
     #TODO: Implement feature to reload PD/PIs on Protocol Tab when a new user / edit user is done
     #expect(page).to_not have_selector(".protocol-accordion-title", text: "Julia Glenn")
     #expect(page).to have_selector(".protocol-accordion-title", text: "Brian Kelsey")
-    within(first('.protocol-information')) do
-      expect(page).to have_selector("td", text: "Brian Kelsey")
-      expect(page).to have_selector("td", text: "Primary PI")
+    within(find('.panel', text: 'Authorized Users')) do
+      expect(page).to have_selector('td', text: 'Santa Claws')
+      expect(page).to have_selector('td', text: 'Primary PI')
     end
 
-    expect(Protocol.first.primary_principal_investigator).to eq(Identity.find_by_ldap_uid("bjk7@musc.edu"))
+    expect(protocol.reload.primary_principal_investigator).to eq(santa_claws)
   end
 
   def then_i_should_see_the_old_primary_pi_is_a_general_user
@@ -310,13 +308,14 @@ RSpec.feature 'User wants to add an authorized user', js: true do
   end
 
   def then_i_should_see_an_error_of_type error_type
+    save_and_open_screenshot
     case error_type
       when 'other fields'
         expect(page).to have_text("Must specify this User's Role.")
         expect(page).to have_text("Must specify this User's Credentials.")
       when 'fields missing'
         expect(page).to have_text("Role can't be blank")
-        expect(page).to have_text("Project_rights can't be blank")
+        expect(page).to have_text("Project rights can't be blank")
       when 'user already added'
         expect(page).to have_text("This user is already associated with this protocol.")
       when 'no access'

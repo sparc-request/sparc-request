@@ -111,7 +111,7 @@ class Protocol < ActiveRecord::Base
     validates :sponsor_name, :presence => true, :if => :is_study?
     validates_associated :human_subjects_info, :message => "must contain 8 numerical digits", :if => :validate_nct
     validates :selected_for_epic, inclusion: [true, false], :if => :is_study?
-    validate  :validate_study_type_answers, if: [:is_study?, :selected_for_epic]
+    validate  :validate_study_type_answers, if: [:is_study?, :selected_for_epic, 'self.active?']
   end
 
   validation_group :user_details do

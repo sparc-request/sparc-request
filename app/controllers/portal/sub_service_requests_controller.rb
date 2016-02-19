@@ -82,7 +82,10 @@ class Portal::SubServiceRequestsController < Portal::BaseController
       Hash.new
     end
 
+    @protocol_question_group_id = @protocol.study_type_question_group_id
+    
     if @protocol.update_attributes(attrs)
+      @protocol_question_group_id == StudyTypeQuestionGroup.active.pluck(:id).first ? @protocol.update_attribute(:study_type_question_group_id, StudyTypeQuestionGroup.active.pluck(:id).first) : @protocol.update_attribute(:study_type_question_group_id, StudyTypeQuestionGroup.inactive.pluck(:id).first)
       redirect_to portal_admin_sub_service_request_path(@sub_service_request)
     else
       @user_toasts = @user.received_toast_messages.select {|x| x.sending_class == 'SubServiceRequest'}

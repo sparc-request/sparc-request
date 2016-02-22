@@ -101,6 +101,9 @@ class Portal::ProtocolsController < Portal::BaseController
     @protocol_type = params[:protocol][:type]
     if @protocol.update_attribute(:type, @protocol_type)
       if params[:sub_service_request_id]
+        if @protocol_type = "Study" && @protocol.selected_for_epic == nil
+          @protocol.update_attribute(:study_type_question_group_id, StudyTypeQuestionGroup.active.pluck(:id).first)
+        end
         @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
         redirect_to portal_admin_sub_service_request_path(@sub_service_request)
       else

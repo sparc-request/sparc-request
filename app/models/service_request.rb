@@ -492,7 +492,7 @@ class ServiceRequest < ActiveRecord::Base
     self.assign_attributes(status: new_status)
 
     self.sub_service_requests.each do |ssr|
-      ssr.assign_attributes(status: new_status)
+      ssr.update_attribute(:status, new_status)
     end
 
     self.save(validate: use_validation)

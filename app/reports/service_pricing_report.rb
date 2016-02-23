@@ -30,7 +30,7 @@ class ServicePricingReport < ReportingModule
   def default_options
     {
       "Pricing Date" => {:field_type => :date_field, :for => "services_pricing_date"},
-      Institution => {:field_type => :select_tag, :required => true},
+      Institution => {:field_type => :select_tag, :required => true, :has_dependencies => "true"},
       Provider => {:field_type => :select_tag, :dependency => '#institution_id', :dependency_id => 'parent_id'},
       Program => {:field_type => :select_tag, :dependency => '#provider_id', :dependency_id => 'parent_id'},
       Core => {:field_type => :select_tag, :dependency => '#program_id', :dependency_id => 'parent_id'},

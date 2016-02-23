@@ -27,9 +27,5 @@
   %br
   %br
 
-  / Select the position you want to move the visit to
-  / This might be slightly confusing because we're
-  / inserting before the position selected.
-  / See service_calendars_controller#move_visit_position
   .label Select where to move
   = select_tag "move_to_position_#{arm.id}", move_to_position(arm)

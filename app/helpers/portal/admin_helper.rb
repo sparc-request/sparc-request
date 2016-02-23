@@ -37,4 +37,11 @@ module Portal::AdminHelper
 
     "#{protocol.id}-#{ssr.ssr_id}"
   end
+
+  # In admin/portal, if the current user can see all three buttons and the length of the user name and email is too long,
+  # then bump the buttons down to the next line, while increasing the height of the blue user information box
+  def display_epic_box_format(user)
+    user.full_name.size + user.email.size > 29 && user.is_super_user? && QUEUE_EPIC_EDIT_LDAP_UIDS.include?(user.ldap_uid) ? true : false
+  end
+
 end

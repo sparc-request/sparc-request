@@ -35,7 +35,7 @@ FactoryGirl.define do
 
         vgs = []
         arm.visit_count.times do |n|
-          vgs << create(:visit_group_without_validations, arm: arm, day: n,
+          vgs << arm.visit_groups.create(position: n + 1, day: n,
                         window_before: nil, window_after: nil)
         end
 

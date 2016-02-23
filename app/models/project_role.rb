@@ -91,11 +91,25 @@ class ProjectRole < ActiveRecord::Base
   end
 
   def validate_one_primary_pi
-    if self.protocol.project_roles.where(role: "primary-pi").include?(self) && self.role != "primary-pi"
-      errors.add(:role, "- Protocols must have a Primary PI.")
+
+    if !protocol_has_primary_pi?
+      errors.add(:must, "include one Primary PI.")
+      return false
+    elsif self.role == 'primary-pi' && protocol_has_primary_pi?
+      errors.add(:role, "- This protocol already has a Primary PI.")
       return false
     else
       return true
+    end
+  end
+
+  def protocol_has_primary_pi?
+    protocol = self.protocol
+    ProjectRole.where(protocol_id: protocol.id).each do |pr|
+      if pr.role == "primary-pi"
+        return true
+      end
+      return false
     end
   end
 

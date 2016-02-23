@@ -59,7 +59,7 @@ module Dashboard::SubServiceRequestsHelper
           display += link_to "Go to Fulfillment", CLINICAL_WORK_FULFILLMENT_URL, target: "_blank", class: "btn btn-primary btn-md"
         else
           # In fulfillment, user does not have rights, disable button
-          display += link_to "Go to Fulfillment", CLINICAL_WORK_FULFILLMENT_URL, target: "_blank", class: "btn btn-primary btn-md", disabled: true
+          display += link_to "In Fulfillment", CLINICAL_WORK_FULFILLMENT_URL, target: "_blank", class: "btn btn-primary btn-md", disabled: true
         end
       else
         # Not in Fulfillment

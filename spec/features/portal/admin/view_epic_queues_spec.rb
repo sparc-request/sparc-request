@@ -33,6 +33,12 @@ RSpec.describe 'view epic queues', js: true do
     it "should display the 'View Epic Queue' button" do
       visit portal_admin_index_path
       wait_for_javascript_to_finish
+
+      ########
+      # Make sure that jug2 is listed
+      # in the test environment for config/application.yml
+      # queue_epic_edit_ldap_uids: ['jug2']
+      # #######
       expect(page).to have_text('View Epic Queue')
     end
 

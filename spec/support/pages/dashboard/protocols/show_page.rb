@@ -7,7 +7,14 @@ module Dashboard
     class ShowPage < SitePrism::Page
       set_url '/dashboard/protocols{/id}'
 
-      element :protocol_summary, '#protocol-summary'
+      section :protocol_summary, '#protocol_show_information_panel' do
+        element :study_notes_button, 'button', text: 'Study Notes'
+        element :edit_study_info_button, 'button', text: 'Edit Study Information'
+      end
+
+      section :index_notes_modal, Dashboard::Notes::IndexModal, '#notes-modal'
+
+      section :new_notes_modal, Dashboard::Notes::NewModal, '#new-note-modal'
 
       section :authorized_users_panel, '#authorized-users-panel' do
         element :add_associated_user_button, 'button', text: 'Add An Authorized User'
@@ -43,7 +50,7 @@ module Dashboard
             element :send_notification_select, 'button.new_notification_button'
             element :view_ssr_button, 'button.view-sub-service-request-button'
             element :edit_ssr_button, 'button.edit_service_request'
-            element :admin_edit_button, 'a.edit_service_request'
+            element :admin_edit_button, :link, 'Admin Edit'
           end
         end
 

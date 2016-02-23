@@ -1,25 +1,24 @@
 require 'rails_helper'
 
-RSpec.describe 'requests modal', js: true do
+RSpec.describe 'Show protocol Study notes spec', js: true do
   let_there_be_lane
   fake_login_for_each_test
 
   let!(:protocol) { create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Study', archived: false) }
-  let!(:sr) { create(:service_request_without_validations, protocol: protocol, service_requester: jug2) }
-  let!(:ssr) { create(:sub_service_request, ssr_id: '0001', service_request: sr, organization: create(:organization)) }
 
   def open_modal
-    @page = Dashboard::Protocols::IndexPage.new
-    @page.load
-    expect(@page).to have_protocols
-    @page.protocols.first.requests_button.click
-    @page.requests_modal.service_requests.first.notes_button.click
+    @page = Dashboard::Protocols::ShowPage.new
+    @page.load(id: protocol.id)
+    # expect(@page).to have_protocols
+    # @page.protocols.first.requests_button.click
+    # @page.requests_modal.service_requests.first.notes_button.click
+    @page.protocol_summary.study_notes_button.click
     @notes_modal = @page.index_notes_modal
   end
 
-  context 'ServiceRequest has notes' do
+  context 'Protocol has notes' do
     before(:each) do
-      Note.create(identity_id: jug2.id, notable_type: 'ServiceRequest', notable_id: sr.id, body: 'hey')
+      Note.create(identity_id: jug2.id, notable_type: 'Protocol', notable_id: protocol.id, body: 'hey')
       open_modal
     end
 
@@ -35,7 +34,7 @@ RSpec.describe 'requests modal', js: true do
       @page.new_notes_modal.input_field.set 'hey!'
       @page.new_notes_modal.add_note_button.click
     end
-    
+
     it 'should create a new Note and display it in modal' do
       expect(@notes_modal.notes.first.comment.text).to eq 'hey!'
       expect(Note.count).to eq 1

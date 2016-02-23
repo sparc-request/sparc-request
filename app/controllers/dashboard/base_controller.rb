@@ -43,16 +43,16 @@ class Dashboard::BaseController < ActionController::Base
   private
 
   def protocol_authorizer_view
-    authorized_user = ProtocolAuthorizer.new(@protocol, @user)
-    if !authorized_user.can_view?
+    @authorization = ProtocolAuthorizer.new(@protocol, @user)
+    if !@authorization.can_view?
       @protocol = nil
       render :partial => 'service_requests/authorization_error', :locals => {:error => "You are not allowed to access this protocol."}
     end
   end
 
   def protocol_authorizer_edit
-    authorized_user = ProtocolAuthorizer.new(@protocol, @user)
-    if !authorized_user.can_edit?
+    @authorization = ProtocolAuthorizer.new(@protocol, @user)
+    if !@authorization.can_edit?
       @protocol = nil
       render :partial => 'service_requests/authorization_error', :locals => {:error => "You are not allowed to edit this protocol."}
     end

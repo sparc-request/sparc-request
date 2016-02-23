@@ -23,16 +23,31 @@ require 'rails_helper'
 RSpec.feature 'User wants to delete an authorized user', js: true do
   let_there_be_lane
   let_there_be_j
-  build_service_request_with_project
+
+  before(:each) do
+    stub_const('USE_LDAP', false)
+  end
+
+  let!(:protocol) do
+    protocol = create(:protocol_federally_funded,
+      :without_validations,
+      primary_pi: jug2,
+      type: 'Project',
+      archived: false)
+    protocol
+  end
 
   context 'and has access to the protocol' do
     before :each do
+      create(:project_role,
+      protocol_id:     protocol.id,
+      identity_id:     jpl6.id,
+      project_rights:  'view',
+      role:            'mentor')
       fake_login
 
-      visit portal_root_path
+      visit "/dashboard/protocols/#{protocol.id}"
       wait_for_javascript_to_finish
-
-      delay
     end
 
     context 'and tries to delete the Primary PI' do
@@ -52,14 +67,15 @@ RSpec.feature 'User wants to delete an authorized user', js: true do
 
   context 'and does not have access to the protocol' do
     before :each do
-      add_jason_to_protocol
-
+      create(:project_role,
+      protocol_id:     protocol.id,
+      identity_id:     jpl6.id,
+      project_rights:  'view',
+      role:            'mentor')
       fake_login 'jpl6@musc.edu'
 
-      visit portal_root_path
+      visit "/dashboard/protocols/#{protocol.id}"
       wait_for_javascript_to_finish
-
-      delay
     end
 
     context 'and tries to delete the user' do
@@ -70,31 +86,8 @@ RSpec.feature 'User wants to delete an authorized user', js: true do
     end
   end
 
-  def add_jason_to_protocol
-    #Destroy the pre-generated Jason PR for the test
-    ProjectRole.destroy(2)
-
-    #Create a new Jason PR for the test
-    project = Project.first
-    identity = Identity.find_by_ldap_uid('jpl6@musc.edu')
-    create(:project_role, 
-            identity: identity,
-            protocol: project,
-            project_rights: 'view',
-            role: 'mentor'
-            )
-  end
-
-  def delay
-    #This odd delay allows the page to load enough that Capybara can
-    #find the edit buttons. For some reason without it, the page simply
-    #will not load quick enough so that the tests fail in
-    #given_i_have_clicked_the_edit_authorized_user_button.
-    find(".associated-user-button", visible: true).click()
-    find(".ui-dialog-titlebar-close").click()
-  end
-
   def given_i_have_clicked_the_delete_authorized_user_button
+    expect(page).to have_css('.delete-associated-user-button')
     page.all('.delete-associated-user-button', visible: true)[1].click()
   end
 

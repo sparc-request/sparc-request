@@ -23,16 +23,21 @@ require 'rails_helper'
 RSpec.feature 'User wants to edit an authorized user', js: true do
   let_there_be_lane
   let_there_be_j
-  build_service_request_with_project
+
+  let!(:protocol) do
+    create(:protocol_federally_funded,
+      :without_validations,
+      primary_pi: jug2,
+      type: 'Study',
+      archived: false)
+  end
 
   context 'and has permission to edit the protocol' do
+
     before :each do
       fake_login
-
-      visit portal_root_path
+      visit "/dashboard/protocols/#{protocol.id}"
       wait_for_javascript_to_finish
-
-      delay
     end
 
     context 'and clicks the Edit Authorized User button' do
@@ -61,16 +66,18 @@ RSpec.feature 'User wants to edit an authorized user', js: true do
           when_i_submit_the_form
           then_i_should_not_see_the_warning_message
         end
-      end 
+      end
 
       context 'and the Authorized User is not the Primary PI and tries to make them the Primary PI' do
         before :each do
+          create(:project_role,
+            protocol_id:     protocol.id,
+            identity_id:     jpl6.id,
+            project_rights:  'approve',
+            role:            'business-grants-manager')
           fake_login 'jpl6@musc.edu'
 
-          visit portal_root_path
-          wait_for_javascript_to_finish
-
-          delay
+          visit "/dashboard/protocols/#{protocol.id}"
         end
 
         context 'and submits the form' do
@@ -133,14 +140,21 @@ RSpec.feature 'User wants to edit an authorized user', js: true do
 
   context 'and does not have permission to edit the protocol' do
     before :each do
-      add_jason_to_protocol
+      protocol = create(:protocol_federally_funded,
+        :without_validations,
+        primary_pi: jug2,
+        type: 'Study',
+        archived: false)
 
+      create(:project_role,
+        protocol_id:     protocol.id,
+        identity_id:     jpl6.id,
+        project_rights:  'view',
+        role:            'mentor')
       fake_login 'jpl6@musc.edu'
 
-      visit portal_root_path
+      visit "/dashboard/protocols/#{protocol.id}"
       wait_for_javascript_to_finish
-
-      delay
     end
 
     context 'and clicks the Edit Authorized User button' do
@@ -151,45 +165,15 @@ RSpec.feature 'User wants to edit an authorized user', js: true do
     end
   end
 
-  def add_jason_to_protocol
-    #Destroy the pre-generated Jason PR for the test
-    ProjectRole.destroy(2)
-
-    #Create a new Jason PR for the test
-    project = Project.first
-    identity = Identity.find_by_ldap_uid('jpl6@musc.edu')
-    create(:project_role, 
-            identity: identity,
-            protocol: project,
-            project_rights: 'view',
-            role: 'mentor'
-            )
-  end
-
-  def add_an_authorized_user
-    find(".associated-user-button", visible: true).click()
-    fill_autocomplete('user_search', with: 'bjk7')
-    page.find('a', text: "Brian Kelsey", visible: true).click()
-    select "Co-Investigator", from: 'project_role_role'
-    choose 'project_role_project_rights_request'
-    click_button("add_authorized_user_submit_button")
-  end
-
-  def delay
-    #This odd delay allows the page to load enough that Capybara can
-    #find the edit buttons. For some reason without it, the page simply
-    #will not load quick enough so that the tests fail in
-    #given_i_have_clicked_the_edit_authorized_user_button.
-    find(".associated-user-button", visible: true).click()
-    find(".ui-dialog-titlebar-close").click()
-  end
-
   def given_i_have_clicked_the_edit_authorized_user_button button_number=1
     all(".edit-associated-user-button", visible: true)[button_number-1].click()
   end
 
   def when_i_set_the_role_to role
-    select role, from: 'project_role_role'
+    expect(page).to have_css('button[data-id="project_role_role"]')
+    find('button[data-id="project_role_role"]').click
+    first('li a', text: role).click
+    expect(page).to have_css("button[title='#{role}']")
   end
 
   def when_i_set_the_credentials_to credentials
@@ -202,7 +186,7 @@ RSpec.feature 'User wants to edit an authorized user', js: true do
   end
 
   def when_i_submit_the_form
-    click_button("edit_authorized_user_submit_button")
+    click_button('save_protocol_rights_button')
   end
 
   def when_i_have_an_error
@@ -217,16 +201,16 @@ RSpec.feature 'User wants to edit an authorized user', js: true do
   end
 
   def then_i_should_see_the_edit_authorized_user_dialog
-    expect(page).to have_text("Edit an Authorized User")
+    expect(page).to have_text('Edit Authorized User')
   end
 
   def then_i_should_see_the_user_information
-    lane = Identity.find_by_ldap_uid("jug2")
-    lane_pr = ProjectRole.find_by_identity_id(lane.id)
-    expect(find('#full_name', visible: true)).to have_value("#{lane.first_name} #{lane.last_name}")
-    expect(find('#email', visible: true)).to have_value(lane.email)
-    expect(find('#identity_phone', visible: true)).to have_value(lane.phone)
-    expect(find('#project_role_role', visible: true)).to have_value(lane_pr.role)
+    expect(page).to have_css('label', text: "Julia Glenn (glennj@musc.edu) #{jug2.phone}")
+    # jug2_pr = ProjectRole.find_by_identity_id(jug2.id)
+    # expect(page).to have_css('label', text: "#{jug2.first_name} #{jug2.last_name}", visible: true)
+    # expect(find('#email', visible: true)).to have_value(jug2.email)
+    # expect(find('#identity_phone', visible: true)).to have_value(jug2.phone)
+    # expect(find('#project_role_role', visible: true)).to have_value(jug2_pr.role)
   end
 
   def then_i_should_see_the_warning_message
@@ -242,22 +226,22 @@ RSpec.feature 'User wants to edit an authorized user', js: true do
     #TODO: Implement feature to reload PD/PIs on Protocol Tab when a new user / edit user is done
     #expect(page).to_not have_selector(".protocol-accordion-title", text: "Julia Glenn")
     #expect(page).to have_selector(".protocol-accordion-title", text: "Brian Kelsey")
-    within(first('.protocol-information')) do
-      expect(page).to have_selector("td", text: "Jason Leonard")
-      expect(page).to have_selector("td", text: "Primary PI")
+    within(find('.panel', text: 'Authorized Users')) do
+      expect(page).to have_selector('td', text: 'Jason Leonard')
+      expect(page).to have_selector('td', text: 'Primary PI')
     end
 
-    expect(Protocol.first.primary_principal_investigator).to eq(Identity.find_by_ldap_uid("jpl6@musc.edu"))
+    expect(protocol.reload.primary_principal_investigator).to eq(jpl6)
   end
 
   def then_i_should_see_the_old_primary_pi_is_a_general_user
     wait_for_javascript_to_finish
-    expect(ProjectRole.where(identity_id: Identity.find_by_ldap_uid("jug2"), protocol_id: Protocol.first.id).first.role).to eq("general-access-user")
+    expect(ProjectRole.where(identity_id: jug2.id, protocol_id: Protocol.first.id).first.role).to eq('general-access-user')
   end
 
   def then_i_should_see_the_old_primary_pi_has_request_rights
     wait_for_javascript_to_finish
-    expect(ProjectRole.find_by(identity_id: Identity.find_by_ldap_uid("jug2"), protocol_id: Protocol.first.id).project_rights).to eq("request")
+    expect(ProjectRole.find_by(identity_id: jug2.id, protocol_id: Protocol.first.id).project_rights).to eq('request')
   end
 
   def then_i_should_see_an_error_of_type error_type

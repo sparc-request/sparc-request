@@ -104,6 +104,13 @@ RSpec.configure do |config|
   Kernel.srand config.seed
 
   config.backtrace_exclusion_patterns << /gems/
+
+end
+
+Capybara.register_driver :webkit do |app|
+  driver = Capybara::Webkit::Driver.new(app)
+  driver.browser.set_skip_image_loading true
+  driver
 end
 
 SitePrism.configure do |config|

@@ -23,16 +23,28 @@ require 'rails_helper'
 RSpec.feature 'User messes with the change Primary PI Warning Dialog JS', js: true do
   let_there_be_lane
   let_there_be_j
-  build_service_request_with_project
 
-  before :each do
-    fake_login 
+  before(:each) do
+    stub_const('USE_LDAP', false)
+  end
 
-    visit portal_root_path
-    wait_for_javascript_to_finish
+  let!(:protocol) do
+    protocol = create(:protocol_federally_funded,
+      :without_validations,
+      primary_pi: jug2,
+      type: 'Project',
+      archived: false)
+    protocol
   end
 
   context 'under the Add Functionality' do
+    before :each do
+      fake_login
+
+      visit "/dashboard/protocols/#{protocol.id}"
+      wait_for_javascript_to_finish
+    end
+
     context 'and submits the changes' do
       scenario 'and sees the warning message' do
         given_i_have_clicked_the_add_authorized_user_button
@@ -145,11 +157,20 @@ RSpec.feature 'User messes with the change Primary PI Warning Dialog JS', js: tr
   end
 
   context 'under the Edit Functionality' do
-    context 'and submits the changes' do
-      before :each do
-        delay
-      end
+    before(:each) do
+      create(:project_role,
+        protocol_id:     protocol.id,
+        identity_id:     jpl6.id,
+        project_rights:  'approve',
+        role:            'business-grants-manager')
 
+      fake_login
+
+      visit "/dashboard/protocols/#{protocol.id}"
+      wait_for_javascript_to_finish
+    end
+
+    context 'and submits the changes' do
       scenario 'and sees the warning message' do
         given_i_have_clicked_the_edit_authorized_user_button
         when_i_set_the_user_to_primary_pi
@@ -225,17 +246,16 @@ RSpec.feature 'User messes with the change Primary PI Warning Dialog JS', js: tr
     end
   end
 
-  def delay
-    #This odd delay allows the page to load enough that Capybara can
-    #find the edit buttons. For some reason without it, the page simply
-    #will not load quick enough so that the tests fail in
-    #given_i_have_clicked_the_edit_authorized_user_button.
-    find(".associated-user-button", visible: true).click()
-    find(".ui-dialog-titlebar-close").click()
+  def add_view_only_user_to_protocol
+    create(:project_role,
+      identity: jpl6,
+      protocol: protocol,
+      project_rights: 'view',
+      role: 'mentor')
   end
 
   def given_i_have_clicked_the_add_authorized_user_button
-    find(".associated-user-button", visible: true).click
+    find_button('Add An Authorized User').click
   end
 
   def given_i_have_clicked_the_edit_authorized_user_button
@@ -243,35 +263,36 @@ RSpec.feature 'User messes with the change Primary PI Warning Dialog JS', js: tr
   end
 
   def when_i_search_and_select_the_user
-    fill_autocomplete('user_search', with: 'bjk7')
-    page.find('a', text: "Brian Kelsey", visible: true).click
+    find('input[placeholder="Search For A User"]').set('Jason Leonard')
+    expect(page).to have_css('.tt-selectable', text: 'Jason Leonard', visible: true)
+    find('.tt-selectable', text: 'Jason Leonard', visible: true).click
   end
 
   def when_i_set_the_user_to_primary_pi
-    select "Primary PI", from: 'project_role_role'
+    expect(page).to have_css('button[data-id="project_role_role"]')
+    find('button[data-id="project_role_role"]').click
+    first('li a', text: 'Primary PI').click
+    expect(page).to have_css("button[title='Primary PI']")
   end
 
   def when_i_submit_in_add
-    find("#add_authorized_user_submit_button").click
-    wait_for_javascript_to_finish
+    click_button('save_protocol_rights_button')
   end
 
   def when_i_submit_in_edit
-    find("#edit_authorized_user_submit_button").click
-    wait_for_javascript_to_finish
+    click_button('save_protocol_rights_button')
   end
 
   def when_i_cancel_in_add
-    find("#add_authorized_user_cancel_button").click
-    wait_for_javascript_to_finish
+    find('button', text: 'Cancel').click
   end
 
   def when_i_cancel_in_edit
-    find("#edit_authorized_user_cancel_button").click
+    find('button', text: 'Cancel').click
   end
 
   def when_i_exit
-    find(".ui-dialog-titlebar button").click
+    find('button.close').click
   end
 
   def when_i_reopen_the_add_dialog
@@ -287,29 +308,27 @@ RSpec.feature 'User messes with the change Primary PI Warning Dialog JS', js: tr
       when 'add form'
         expect(page).to have_selector("form#new_project_role", visible: true)
       when 'search'
-        expect(page).to have_selector("input#user_search", visible: true)
+        expect(page).to have_selector('input[placeholder="Search For A User"]', visible: true)
       when 'add text'
-        expect(page).to have_selector(".ui-dialog-title", visible: true, text: "Add an Authorized User")
-        expect(page).to have_selector("#add_authorized_user_submit_button .ui-button-text", visible: true, text: "Submit")
-        expect(page).to have_selector("#add_authorized_user_cancel_button .ui-button-text", visible: true, text: "Cancel")
+        expect(page).to have_selector('#modal-title', visible: true, text: 'Add Authorized User')
+        expect(page).to have_selector('button', visible: true, text: 'Save')
+        expect(page).to have_selector('button', visible: true, text: 'Cancel')
       when 'edit form'
-        expect(page).to have_selector("form.associated_users_form", visible: true)
+        expect(page).to have_selector('form.protocol_role_form', visible: true)
       when 'edit text'
-        expect(page).to have_selector(".ui-dialog-title", visible: true, text: "Edit an Authorized User")
-        expect(page).to have_selector("#edit_authorized_user_submit_button .ui-button-text", visible: true, text: "Submit")
-        expect(page).to have_selector("#edit_authorized_user_cancel_button .ui-button-text", visible: true, text: "Cancel")
+        expect(page).to have_selector('h4', visible: true, text: 'Edit Authorized User')
+        expect(page).to have_selector('button', visible: true, text: 'Save')
+        expect(page).to have_selector('button', visible: true, text: 'Cancel')
       when 'warning'
         expect(page).to have_text("**WARNING**")
         expect(page).to have_text("Adding the new Primary PI")
         expect(page).to have_text("Do you wish to proceed?")
       when 'warning text add'
-        expect(page).to have_selector(".ui-dialog-title", visible: true, text: "Change Primary PI")
-        expect(page).to have_selector("#add_authorized_user_submit_button .ui-button-text", visible: true, text: "Yes")
-        expect(page).to have_selector("#add_authorized_user_cancel_button .ui-button-text", visible: true, text: "No")
+        expect(page).to have_text('will change the current Primary PI')
       when 'warning text edit'
-        expect(page).to have_selector(".ui-dialog-title", visible: true, text: "Change Primary PI")
-        expect(page).to have_selector("#edit_authorized_user_submit_button .ui-button-text", visible: true, text: "Yes")
-        expect(page).to have_selector("#edit_authorized_user_cancel_button .ui-button-text", visible: true, text: "No")
+        expect(page).to have_text('will change the current Primary PI')
+        expect(page).to have_selector('button', visible: true, text: 'Save')
+        expect(page).to have_selector('button', visible: true, text: 'Cancel')
       else
         puts "An unexpected error was found in then_i_should_see_the. Perhaps there was a typo in the test?"
         expect(0).to eq(1)

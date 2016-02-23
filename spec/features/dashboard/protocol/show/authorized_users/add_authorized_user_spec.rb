@@ -186,7 +186,11 @@ RSpec.feature 'User wants to add an authorized user', js: true do
 
   context 'and does not have permission to edit the protocol' do
     before :each do
-      add_view_only_user_to_protocol
+      create(:project_role,
+        identity: jpl6,
+        protocol: protocol,
+        project_rights: 'view',
+        role: 'mentor')
 
       fake_login 'jpl6@musc.edu'
 
@@ -197,17 +201,10 @@ RSpec.feature 'User wants to add an authorized user', js: true do
     context 'and clicks the Add an Authorized User button' do
       scenario 'and sees an error' do
         given_i_have_clicked_the_add_authorized_user_button
+        binding.pry
         then_i_should_see_an_error_of_type 'no access'
       end
     end
-  end
-
-  def add_view_only_user_to_protocol
-    create(:project_role,
-      identity: jpl6,
-      protocol: protocol,
-      project_rights: 'view',
-      role: 'mentor')
   end
 
   def given_i_have_clicked_the_add_authorized_user_button
@@ -223,14 +220,15 @@ RSpec.feature 'User wants to add an authorized user', js: true do
   def when_i_set_the_role_to role
     expect(page).to have_css('button[data-id="project_role_role"]')
     find('button[data-id="project_role_role"]').click
-    first('li a', text: role).click
+    find('li a', text: /\A#{role}/).click
     expect(page).to have_css("button[title='#{role}']")
   end
 
   def when_i_set_the_credentials_to credentials
     expect(page).to have_css('button[data-id="project_role_identity_attributes_credentials"]')
     page.find('button[data-id="project_role_identity_attributes_credentials"]').click
-    first('li a', exact: credentials).click
+    find('li a', text: /\A#{credentials}/).click
+    expect(page).to have_css("button[title='#{credentials}']")
   end
 
   def when_i_fill_out_the_required_fields
@@ -240,12 +238,16 @@ RSpec.feature 'User wants to add an authorized user', js: true do
 
   def when_i_set_the_role_and_credentials_to_other
     when_i_set_the_role_to 'Other'
+    expect(page).to have_field('Role other')
+    # expect(page).to have_css('#project_role_role_other')
     when_i_set_the_credentials_to 'Other'
+    expect(page).to have_field('Credentials other')
+    # expect(page).to have_css('#identity_credentials_other')
   end
 
   def when_i_fill_out_the_other_fields
-    fill_in 'project_role_role_other', with: 'asdf'
-    fill_in 'identity_credentials_other', with: 'asdf'
+    find_field('Role other').set('asdf')
+    find_field('Credentials other').set('asdf')
   end
 
   def when_i_submit_the_form
@@ -314,6 +316,8 @@ RSpec.feature 'User wants to add an authorized user', js: true do
       when 'user already added'
         expect(page).to have_text("This user is already associated with this protocol.")
       when 'no access'
+        sleep 3
+        save_and_open_screenshot
         expect(page).to have_text("You do not have appropriate rights to")
       when 'other credentials'
         expect(page).to have_text("Must specify this User's Credentials.")

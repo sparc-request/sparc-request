@@ -72,18 +72,19 @@ $(document).ready ->
 
   #**************** Add Authorized User Form Begin ****************
 
-  $(document).on 'change', '#project_role_identity_credentials', ->
+  $(document).on 'changed.bs.select', '#project_role_identity_attributes_credentials', ->
+    console.log('hey')
     # Credentials - Dropdown
     $('.credentials_dependent').hide()
     switch $(this).val()
       when 'other' then $('.credentials_dependent.other').show()
 
-  $(document).on 'change', '#project_role_role', ->
+  $(document).on 'changed.bs.select', '#project_role_role', ->
     # Role - Dropdown
     $('.role_dependent').hide()
     switch $(this).val()
       when 'other'
-        $('#project_role_role_other').show()
+        $('.role_dependent.other').show()
       when 'business-grants-manager'
         $('#project_role_project_rights_none').attr('disabled', true)
         $('#project_role_project_rights_view').attr('disabled', true)

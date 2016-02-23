@@ -29,6 +29,7 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
 
   def index
     @protocol_roles = @protocol.project_roles
+    @permission_to_edit = @authorization.can_edit?
     # @sub_service_request = SubServiceRequest.find params[:sub_service_request_id] if params[:sub_service_request_id]
 
     respond_to do |format|

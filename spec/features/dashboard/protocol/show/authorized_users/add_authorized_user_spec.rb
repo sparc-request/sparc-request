@@ -198,12 +198,9 @@ RSpec.feature 'User wants to add an authorized user', js: true do
       wait_for_javascript_to_finish
     end
 
-    context 'and clicks the Add an Authorized User button' do
-      scenario 'and sees an error' do
-        given_i_have_clicked_the_add_authorized_user_button
-        binding.pry
-        then_i_should_see_an_error_of_type 'no access'
-      end
+    scenario 'and sees disabled Add an Authorized User button' do
+      expect(page).to have_button('Add An Authorized User', disabled: true)
+      save_and_open_screenshot
     end
   end
 

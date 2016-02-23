@@ -49,7 +49,7 @@
               %button.btn.btn-sm.btn-success#approve_subsidy_button{data: { subsidy_id: subsidy.id }}
                 %span.glyphicon.glyphicon-ok
           %td.text-center.edit_subsidy
-            .btn.btn-warning.btn-sm#edit_subsidy_button{data: { subsidy_id: subsidy.id }}
+            .btn.btn-warning.btn-sm#edit_subsidy_button{data: { subsidy_id: subsidy.id, admin: admin.to_s }}
               %span.glyphicon.glyphicon-edit
           - if admin
             %td.text-center.delete_subsidy
@@ -57,5 +57,5 @@
                 %span.glyphicon.glyphicon-remove
 - else
   .col-xs-12
-    %button.btn.btn-sm.btn-success#add_subsidy_button{data: { sub_service_request_id: sub_service_request.id }}
+    %button.btn.btn-sm.btn-success#add_subsidy_button{data: { sub_service_request_id: sub_service_request.id, admin: admin.to_s }}
       %span= t(:fulfillments)[:subsidies][:link]

@@ -43,6 +43,7 @@
               %span.input-group-addon %
           = form_for subsidy, {remote: true, url: (subsidy.new_record? ? dashboard_subsidies_path : dashboard_subsidy_path(subsidy)), html: {role: "form"}} do |form|
             = form.hidden_field :sub_service_request_id
+            = hidden_field_tag 'admin', admin
             .form-group
               = form.label "pi_contribution", "PI Contribution", class: "col-sm-4 control-label"
               .input-group.col-sm-7

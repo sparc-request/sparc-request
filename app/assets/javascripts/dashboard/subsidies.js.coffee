@@ -22,8 +22,9 @@ $(document).ready ->
 
 #****************** SUBSIDY INFORMATION BEGIN ***************************#
   $(document).on 'click', '#add_subsidy_button', ->
-    sub_service_request_id = $(this).data('sub-service-request-id')
-    data = 'sub_service_request_id': sub_service_request_id
+    data =
+      'sub_service_request_id': $(this).data('sub-service-request-id'),
+      'admin'                 : $(this).data('admin')
     $.ajax
       type: 'GET'
       url:  "/dashboard/subsidies/new"
@@ -31,9 +32,11 @@ $(document).ready ->
 
   $(document).on 'click', '#edit_subsidy_button', ->
     id = $(this).data('subsidy-id')
+    data = 'admin' : $(this).data('admin')
     $.ajax
       type: 'GET'
       url:  "/dashboard/subsidies/#{id}/edit"
+      data: data
 
   $(document).on 'click', '.delete_subsidy_button', ->
     subsidy_id = $(this).data('subsidy-id')

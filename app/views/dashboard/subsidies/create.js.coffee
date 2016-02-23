@@ -20,7 +20,7 @@
 
 $("#modal_errors").html("<%= escape_javascript(render(partial: 'shared/modal_errors', locals: {errors: @errors})) %>")
 <% unless @errors %>
-$("#pending_subsidy").html("<%= escape_javascript(render(:partial =>'dashboard/subsidies/pending_subsidy', locals: { sub_service_request: @sub_service_request, subsidy: @subsidy })) %>");
+$("#pending_subsidy").html("<%= escape_javascript(render(:partial =>'dashboard/subsidies/pending_subsidy', locals: { sub_service_request: @sub_service_request, subsidy: @subsidy, admin: @admin })) %>");
 $("#modal_place").modal 'hide'
 $("#flashes_container").html("<%= escape_javascript(render('shared/flash')) %>")
 <% end %>

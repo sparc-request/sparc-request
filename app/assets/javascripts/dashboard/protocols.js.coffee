@@ -36,13 +36,6 @@ $(document).ready ->
           'Ok': () ->
             $(this).dialog('close')
 
-      $(document).on 'click', '.edit_service_request', ->
-        if $(this).data('permission')
-          window.location = $(this).data('url')
-        else
-          $('.permissions-dialog').dialog('open')
-          $('.permissions-dialog .text').html('Edit.')
-
       $(document).on 'click', '.service-request-button', ->
         if $(this).data('permission')
           window.location = $(this).data('url')
@@ -54,22 +47,6 @@ $(document).ready ->
         if !$(this).data('permission')
           $('.permissions-dialog').dialog('open')
           $('.permissions-dialog .text').html('Edit.')
-
-      $(document).on 'click', '.view-sub-service-request-button', ->
-        id            = $(this).data('service-request-id')
-        protocol_id   = $(this).data('protocol-id')
-        status        = $(this).data('status')
-        ssr_id        = $(this).data('ssr-id')
-        random_number = Math.floor(Math.random()*10101010101)
-        $.ajax
-          method: 'get'
-          url: "/dashboard/service_requests/#{id}?#{random_number}"
-          data:
-            protocol_id: protocol_id
-            status: status
-            ssr_id: ssr_id
-          success: ->
-            $('.view-sub-service-request-dialog').dialog('open')
 
       $('.edit-protocol-information-dialog').dialog
         autoOpen: false
@@ -263,6 +240,19 @@ $(document).ready ->
     if $(this).data('permission')
       protocol_id = $(this).data('protocol-id')
       window.location = "/dashboard/protocols/#{protocol_id}/edit"
+    else
+      $('.permissions-dialog').dialog('open')
+      $('.permissions-dialog .text').html('Edit.')
+
+  $(document).on 'click', '.view-sub-service-request-button', ->
+    id = $(this).data('sub-service-request-id')
+    $.ajax
+      method: 'GET'
+      url: "/dashboard/sub_service_requests/#{id}.js"
+
+  $(document).on 'click', '.edit_service_request', ->
+    if $(this).data('permission')
+      window.location = $(this).data('url')
     else
       $('.permissions-dialog').dialog('open')
       $('.permissions-dialog .text').html('Edit.')

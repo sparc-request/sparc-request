@@ -22,8 +22,9 @@ $("#modal_errors").html("<%= escape_javascript(render(partial: 'shared/modal_err
 <% unless @errors %>
 $("#per_patient_services").html("<%= escape_javascript(render(:partial =>'dashboard/sub_service_requests/per_patient_per_visit', locals: {sub_service_request: @sub_service_request, service_request: @service_request})) %>");
 
-$("#fulfillment_subsidy").html("<%= escape_javascript(render(:partial =>'dashboard/admin/fulfillment/service_request_info/subsidy_info')) %>");
-$("#request_cost_total").html("<%= escape_javascript(render(:partial =>'dashboard/admin/fulfillment/service_request_info/direct_cost_total')) %>");
+$("#sub_service_request_header").html("<%= escape_javascript(render(partial: 'dashboard/sub_service_requests/header', locals: { sub_service_request: @sub_service_request })) %>");
+$("#subsidy_information").html("<%= escape_javascript(render(partial: 'dashboard/subsidies/subsidy', locals: { sub_service_request: @sub_service_request })) %>");
+$(".selectpicker").selectpicker()
 
 $("#modal_place").modal 'hide'
 $("#flashes_container").html("<%= escape_javascript(render('shared/flash')) %>")

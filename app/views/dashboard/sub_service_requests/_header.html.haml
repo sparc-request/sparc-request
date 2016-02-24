@@ -22,7 +22,7 @@
   .panel.panel-primary
 
     .panel-heading
-      %h4.panel-title.pull-left= "#{protocol.short_title} > #{sub_service_request.organization.name} (#{protocol.id}-#{sub_service_request.ssr_id})"
+      %h4.panel-title.pull-left= "#{sub_service_request.protocol.short_title} > #{sub_service_request.organization.name} (#{sub_service_request.protocol.id}-#{sub_service_request.ssr_id})"
       .pull-right
         %button.btn.btn-sm.btn-default.notes.list{data: { notable_type: "SubServiceRequest", notable_id: sub_service_request.id }}= "Notes"
       .clearfix
@@ -39,7 +39,7 @@
       %tbody
         %tr
           %td.text-center#service_request_status_dropdown
-            = select_tag "sub_service_request_status", options_for_select(sub_service_request ? sub_service_request.organization.get_available_statuses.invert : [], sub_service_request.try(:status)), :'data-sub_service_request_id' => sub_service_request.id, :class => 'selectpicker'
+            = select_tag "sub_service_request_status", options_for_select(sub_service_request ? sub_service_request.organization.get_available_statuses.invert : [], sub_service_request.try(:status)), :'data-sub_service_request_id' => sub_service_request.id, class: 'selectpicker'
           %td.text-center#service_request_owner_dropdown
             = service_request_owner_display(sub_service_request)
           %td.text-center#ssr_fulfillment_status

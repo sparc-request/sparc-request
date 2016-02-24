@@ -20,23 +20,43 @@
 
 class Dashboard::SubsidiesController < Dashboard::BaseController
   respond_to :json, :js, :html
-  before_action :find_subsidy, only: [:update, :destroy]
+
+  def new
+    @subsidy = PendingSubsidy.new(sub_service_request_id: params[:sub_service_request_id])
+    @header_text = "New Subsidy Pending Approval"
+    @admin = params[:admin] == 'true'
+  end
 
   def create
-    if @subsidy = Subsidy.create(params[:subsidy])
+    format_pi_contribution_param
+    if @subsidy = PendingSubsidy.create(params[:pending_subsidy])
       @sub_service_request = @subsidy.sub_service_request
-      @subsidy.update_attribute(:pi_contribution, @sub_service_request.direct_cost_total)
-      @subsidy.update_attributes(:stored_percent_subsidy => @subsidy.percent_subsidy)
+      @admin = params[:admin] == 'true'
       flash[:success] = "Subsidy Created!"
+      unless @admin
+        redirect_to dashboard_sub_service_request_path(@sub_service_request, format: :js)
+      end
     else
       @errors = @subsidy.errors
     end
   end
 
+  def edit
+    @subsidy = PendingSubsidy.find params[:id]
+    @header_text = "Edit Subsidy Pending Approval"
+    @admin = params[:admin] == 'true'
+  end
+
   def update
+    @subsidy = PendingSubsidy.find params[:id]
     @sub_service_request = @subsidy.sub_service_request
-    if @subsidy.update_attributes(params[:subsidy])
+    format_pi_contribution_param
+    if @subsidy.update_attributes(params[:pending_subsidy])
+      @admin = params[:admin] == 'true'
       flash[:success] = "Subsidy Updated!"
+      unless @admin
+        redirect_to dashboard_sub_service_request_path(@sub_service_request, format: :js)
+      end
     else
       @errors = @subsidy.errors
       @subsidy.reload
@@ -44,17 +64,29 @@ class Dashboard::SubsidiesController < Dashboard::BaseController
   end
 
   def destroy
+    @subsidy = Subsidy.find params[:id]
     @sub_service_request = @subsidy.sub_service_request
-    if @subsidy.delete
-      @subsidy = nil
-      @service_request = @sub_service_request.service_request
+    if @subsidy.destroy
+      @admin = true
       flash[:alert] = "Subsidy Destroyed!"
     end
   end
 
+  def approve
+    subsidy = PendingSubsidy.find params[:id]
+    subsidy = subsidy.grant_approval current_user
+    @sub_service_request = subsidy.sub_service_request.reload
+    @admin = true
+    flash[:success] = "Subsidy Approved!"
+  end
+
   private
 
-  def find_subsidy
-    @subsidy = Subsidy.find(params[:id])
+  def format_pi_contribution_param
+    # Refomat pi_contribution string to characters other than numbers and . delimiter,
+    # Convert to float, and multiply by 100 to get cents for db
+    if params[:pending_subsidy][:pi_contribution].present?
+      params[:pending_subsidy][:pi_contribution] = (params[:pending_subsidy][:pi_contribution].gsub(/[^\d^\.]/, '').to_f * 100)
+    end
   end
 end

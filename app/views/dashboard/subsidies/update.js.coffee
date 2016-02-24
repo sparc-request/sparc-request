@@ -18,5 +18,9 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$("#fulfillment_subsidy").html("<%= escape_javascript(render(:partial =>'dashboard/subsidies/subsidy', locals: { sub_service_request: @sub_service_request, subsidy: @subsidy })) %>");
+$("#modal_errors").html("<%= escape_javascript(render(partial: 'shared/modal_errors', locals: {errors: @errors})) %>")
+<% unless @errors %>
+$("#pending_subsidy").html("<%= escape_javascript(render(:partial =>'dashboard/subsidies/pending_subsidy', locals: { sub_service_request: @sub_service_request, subsidy: @subsidy, admin: @admin })) %>");
+$("#modal_place").modal 'hide'
 $("#flashes_container").html("<%= escape_javascript(render('shared/flash')) %>")
+<% end %>

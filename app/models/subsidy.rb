@@ -22,91 +22,39 @@ class Subsidy < ActiveRecord::Base
   audited
 
   belongs_to :sub_service_request
+  has_many :notes, as: :notable
 
   attr_accessible :sub_service_request_id
   attr_accessible :pi_contribution
-  attr_accessible :stored_percent_subsidy
   attr_accessible :overridden
+  attr_accessible :status
 
-  validate :pi_contribution_cap, :stored_percent_subsidy_cap
+  delegate :organization, to: :sub_service_request, allow_nil: true
+  delegate :subsidy_map, to: :organization, allow_nil: true
+  delegate :max_dollar_cap, to: :subsidy_map, allow_nil: true
+  delegate :max_percentage, to: :subsidy_map, allow_nil: true
 
-  def pi_contribution=(new_contribution)
-    # recalculate subsidy percentage when changing contribution
-    if new_contribution.present?
-      write_attribute(:pi_contribution, new_contribution)
-      write_attribute(:stored_percent_subsidy, percent_subsidy)
+  delegate :direct_cost_total, to: :sub_service_request, allow_nil: true
+  alias_attribute :total_request_cost, :direct_cost_total
+
+  validates_presence_of :pi_contribution
+  validate :contribution_caps
+
+  def contribution_caps
+    # Contribution can not be less than 0, greater than total, or greater than cap (if cap)
+    cap = max_dollar_cap
+    if pi_contribution < 0
+      errors.add(:pi_contribution, "can not be less than 0")
+    elsif cap.present? and cap > 0 and pi_contribution > cap
+      errors.add(:pi_contribution, "can not be greater than the cap of #{cap}")
+    elsif pi_contribution > total_request_cost
+      errors.add(:pi_contribution, "can not be greater than the total request cost")
     end
   end
 
-  def stored_percent_subsidy=(new_percent_subsidy)
-    # recalculate contribution when changing subsidy percentage
-    if new_percent_subsidy.present?
-      write_attribute(:stored_percent_subsidy, new_percent_subsidy)
-      write_attribute(:pi_contribution, contribution_with_subsidy)
-    end
-  end
-
-  def pi_contribution_cap
-    #  (PI Contribution < max) validation
-    if pi_contribution.present? and max_dollar_cap.present?
-      if pi_contribution > max_dollar_cap
-        errors.add(:pi_contribution, "is above the maximum contribution amount")
-      end
-    end
-  end
-
-  def stored_percent_subsidy_cap
-    #  (stored percent subsidy < max) validation
-    if stored_percent_subsidy.present? and max_percentage.present?
-      if stored_percent_subsidy > max_percentage
-        errors.add(:stored_percent_subsidy, "is above the maximum subsidy percentage")
-      end
-    end
-  end
-
-  def percent_subsidy
-    if self.pi_contribution.nil?
-      subsidy = 0.0
-    else
-      total = self.sub_service_request.direct_cost_total
-      remainder = (total - self.pi_contribution)
-      subsidy = (remainder / total)
-    end
-
-    subsidy.nan? ? nil : subsidy
-  end
-
-  def contribution_with_subsidy
-    if self.stored_percent_subsidy.nil?
-      contribution = 0
-    else
-      total = self.sub_service_request.direct_cost_total
-      subsidized_amount = (stored_percent_subsidy * total) / 100.0
-      contribution = (total - subsidized_amount)
-    end
-
-    contribution.nan? ? nil : contribution
-  end
-
-  def max_dollar_cap
-    sub_service_request.organization.subsidy_map.max_dollar_cap
-  end
-
-  def max_percentage
-    sub_service_request.organization.subsidy_map.max_percentage
-  end
-
-  def self.calculate_pi_contribution subsidy_percentage, total
-    contribution = (total * (subsidy_percentage.to_f / 100.00)).ceil
-    contribution = total - contribution
-    contribution.nan? ? contribution : contribution.ceil
-  end
-
-  def fix_pi_contribution subsidy_percentage
-    new_contribution = Subsidy.calculate_pi_contribution(subsidy_percentage, self.sub_service_request.direct_cost_total)
-    self.update_attributes(:pi_contribution => new_contribution)
-
-    new_contribution
+  def contribution_percent_of_cost
+    # This is basically (1 - %subsidy)
+    pi_contribution.present? ? (pi_contribution.to_f / total_request_cost * 100.0).round(2) : nil
   end
 
   def subsidy_audits

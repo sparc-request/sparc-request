@@ -271,8 +271,11 @@ SparcRails::Application.routes.draw do
 
     resources :studies, controller: :protocols, except: [:destroy]
 
-    resources :subsidies, only: [:create, :update, :destroy]
-    match "/subsidys/:id" => "subsidies#destroy", via: [:delete]
+    resources :subsidies, except: [:index] do
+      member do
+        patch :approve
+      end
+    end
 
     resources :sub_service_requests, except: [:index] do
       member do

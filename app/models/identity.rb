@@ -77,6 +77,7 @@ class Identity < ActiveRecord::Base
   has_many :received_notifications, class_name: "Notification", :foreign_key => 'other_user_id'
   has_many :sent_messages, :class_name => 'Message', :foreign_key => 'from'
   has_many :received_messages, :class_name => 'Message', :foreign_key => 'to'
+  has_many :approved_subsidies, :class_name => 'ApprovedSubsidy', :foreign_key => 'approved_by'
 
   # TODO: Identity doesn't really have many sub service requests; an
   # identity is the owner of many sub service requests.  We need a

@@ -18,14 +18,33 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$("#modal_errors").html("<%= escape_javascript(render(partial: 'shared/modal_errors', locals: {errors: @errors})) %>")
-<% unless @errors %>
-$("#per_patient_services").html("<%= escape_javascript(render(:partial =>'dashboard/sub_service_requests/per_patient_per_visit', locals: {sub_service_request: @sub_service_request, service_request: @service_request})) %>");
+class ApprovedSubsidy < Subsidy
+  audited
+  before_save :default_values
+  belongs_to :approver, class_name: 'Identity', foreign_key: "approved_by"
 
-$("#sub_service_request_header").html("<%= escape_javascript(render(partial: 'dashboard/sub_service_requests/header', locals: { sub_service_request: @sub_service_request })) %>");
-$("#subsidy_information").html("<%= escape_javascript(render(partial: 'dashboard/subsidies/subsidy', locals: { sub_service_request: @sub_service_request })) %>");
-$(".selectpicker").selectpicker()
+  attr_accessible :total_at_approval
+  attr_accessible :approved_by
+  attr_accessible :approved_at
 
-$("#modal_place").modal 'hide'
-$("#flashes_container").html("<%= escape_javascript(render('shared/flash')) %>")
-<% end %>
+  default_scope { where(status: "Approved") }
+
+  def default_values
+    self.status             ||= 'Approved'
+    self.approved_at        ||= Time.now
+    self.total_at_approval  ||= total_request_cost
+  end
+
+  def approved_cost
+    # Calculates cost of subsidy (amount subsidized)
+    # stored total - pi_contribution then convert from cents to dollars
+    ( total_at_approval - pi_contribution ) / 100.0
+  end
+
+  def approved_percent_of_total
+    # Calculates the percent of total_at_approval that is subsidized
+    # (stored total - pi_contribution) / stored total then convert to percent
+    total = total_at_approval
+    ((( total - pi_contribution ).to_f / total ) * 100.0 ).round(2)
+  end
+end

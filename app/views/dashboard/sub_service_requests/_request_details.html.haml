@@ -63,11 +63,5 @@
         .col-xs-3
           = text_field_tag "sub_service_request_requester_contacted_date_picker", sub_service_request.try(:requester_contacted_date).try(:strftime, '%D'), class: 'date datetimepicker form-control', :'data-sub_service_request_id' => sub_service_request.try(:id)
 
-
-.panel.panel-default
-  .panel-heading
-    %h4.panel-title= "Subsidy Information"
-  .panel-body#fulfillment_subsidy
-    = render partial: 'dashboard/subsidies/subsidy', locals: {sub_service_request: sub_service_request, subsidy: subsidy}
-
-
+#subsidy_information
+  = render partial: 'dashboard/subsidies/subsidy', locals: { sub_service_request: sub_service_request, admin: true }

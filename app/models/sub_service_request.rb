@@ -31,21 +31,26 @@ class SubServiceRequest < ActiveRecord::Base
   belongs_to :organization
   has_many :past_statuses, :dependent => :destroy
   has_many :line_items, :dependent => :destroy
+  has_many :line_items_visits, through: :line_items
   has_and_belongs_to_many :documents
   has_many :notes, as: :notable, dependent: :destroy
   has_many :approvals, :dependent => :destroy
   has_many :payments, :dependent => :destroy
   has_many :cover_letters, :dependent => :destroy
-  has_one :subsidy, :dependent => :destroy
   has_many :reports, :dependent => :destroy
   has_many :notifications, :dependent => :destroy
 
-  delegate :protocol, to: :service_request, allow_nil: true
+  has_one :approved_subsidy, :dependent => :destroy
+  has_one :pending_subsidy, :dependent => :destroy
 
-  # These two ids together form a unique id for the sub service request
+  delegate :protocol, to: :service_request, allow_nil: true
+  delegate :contribution_percent_of_cost, to: :approved_subsidy, allow_nil: true
+  delegate :approved_percent_of_total, to: :approved_subsidy, allow_nil: true
+  alias_attribute :approved_percent_subsidy, :approved_percent_of_total
+
+  # service_request_id & ssr_id together form a unique id for the sub service request
   attr_accessible :service_request_id
   attr_accessible :ssr_id
-
   attr_accessible :organization_id
   attr_accessible :owner_id
   attr_accessible :status_date
@@ -63,7 +68,6 @@ class SubServiceRequest < ActiveRecord::Base
   attr_accessible :routing
   attr_accessible :documents
 
-  accepts_nested_attributes_for :subsidy
   accepts_nested_attributes_for :line_items, allow_destroy: true
   accepts_nested_attributes_for :payments, allow_destroy: true
 
@@ -75,19 +79,17 @@ class SubServiceRequest < ActiveRecord::Base
     write_attribute(:requester_contacted_date, Time.strptime(date, "%m-%d-%Y")) if date.present?
   end
 
+  # Make sure that @prev_status is set whenever status is changed for update_past_status method.
+  def status= status
+    @prev_status = self.status
+    super(status)
+  end
+
   def formatted_status
     if AVAILABLE_STATUSES.has_key? status
       AVAILABLE_STATUSES[status]
     else
       "STATUS MAPPING NOT PRESENT"
-    end
-  end
-
-  def stored_percent_subsidy
-    if subsidy.present?
-      subsidy.stored_percent_subsidy
-    else
-      0
     end
   end
 
@@ -115,11 +117,6 @@ class SubServiceRequest < ActiveRecord::Base
 
   def unset_effective_date_for_cost_calculations
     self.line_items.each{|li| li.pricing_scheme = 'displayed'}
-  end
-
-  # get line_items_visits just for this sub_service_request
-  def line_items_visits
-    line_items.map(&:line_items_visits).flatten
   end
 
   def display_id
@@ -204,15 +201,6 @@ class SubServiceRequest < ActiveRecord::Base
     end
 
     return total
-  end
-
-  # percent of cost
-  def percent_of_cost
-    unless subsidy.stored_percent_subsidy.nil? || subsidy.stored_percent_subsidy == 0
-      100 - subsidy.stored_percent_subsidy
-    else
-      subsidy.pi_contribution ? (subsidy.pi_contribution/direct_cost_total * 100).round(2) : nil
-    end
   end
 
   # Returns the total indirect costs of the sub-service-request
@@ -362,19 +350,13 @@ class SubServiceRequest < ActiveRecord::Base
     candidates
   end
 
-  # Make sure that @prev_status is set whenever status is changed.
-  def status= status
-    @prev_status = self.status
-    super(status)
-  end
-
   # Callback which gets called after the ssr is saved to ensure that the
   # past status is properly updated.  It should not normally be
   # necessarily to call this method.
   def update_past_status
     old_status = self.past_statuses.last
     if @prev_status and (not old_status or old_status.status != @prev_status)
-      self.past_statuses.create(:status => @prev_status, :date => Time.now)
+      self.past_statuses.create(status: @prev_status, date: Time.now)
     end
   end
 

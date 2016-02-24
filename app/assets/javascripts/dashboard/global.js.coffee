@@ -17,15 +17,14 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+$ ->
+  $(".datetimepicker").datetimepicker(format: 'MM-DD-YYYY', allowInputToggle: true)
+  $(".selectpicker").selectpicker()
 
-$("#modal_errors").html("<%= escape_javascript(render(partial: 'shared/modal_errors', locals: {errors: @errors})) %>")
-<% unless @errors %>
-$("#per_patient_services").html("<%= escape_javascript(render(:partial =>'dashboard/sub_service_requests/per_patient_per_visit', locals: {sub_service_request: @sub_service_request, service_request: @service_request})) %>");
 
-$("#sub_service_request_header").html("<%= escape_javascript(render(partial: 'dashboard/sub_service_requests/header', locals: { sub_service_request: @sub_service_request })) %>");
-$("#subsidy_information").html("<%= escape_javascript(render(partial: 'dashboard/subsidies/subsidy', locals: { sub_service_request: @sub_service_request })) %>");
-$(".selectpicker").selectpicker()
-
-$("#modal_place").modal 'hide'
-$("#flashes_container").html("<%= escape_javascript(render('shared/flash')) %>")
-<% end %>
+(exports ? this).formatMoney = (n, t=',', d='.', c='$') ->
+  s = if n < 0 then "-#{c}" else c
+  i = Math.abs(n).toFixed(2)
+  j = (if (i.length > 3 && i > 0) then i.length % 3 else 0)
+  s += i.substr(0, j) + t if j
+  return s + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t)

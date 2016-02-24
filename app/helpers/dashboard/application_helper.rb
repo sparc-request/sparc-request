@@ -56,6 +56,10 @@ module Dashboard::ApplicationHelper
     cost / 100.00 rescue nil
   end
 
+  def cents_to_dollars_float cost
+    number_with_precision(cents_to_dollars(cost), precision: 2) || number_with_precision(0, precision: 2)
+  end
+
   def pretty_ssr_id(project, ssr)
     pre_id = project.try(:id)
     ssr_id = ssr.try(:ssr_id)

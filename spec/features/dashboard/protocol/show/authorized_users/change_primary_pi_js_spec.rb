@@ -46,110 +46,26 @@ RSpec.feature 'User messes with the change Primary PI Warning Dialog JS', js: tr
     end
 
     context 'and submits the changes' do
-      scenario 'and sees the warning message' do
+      scenario 'and sees the warning message, sees the dialog changes, doesnt see the form, and doesnt see the search box' do
         given_i_have_clicked_the_add_authorized_user_button
         when_i_search_and_select_the_user
         when_i_set_the_user_to_primary_pi
         when_i_submit_in_add
         then_i_should_see_the 'warning'
-      end
-
-      scenario 'and sees the dialog changes' do
-        given_i_have_clicked_the_add_authorized_user_button
-        when_i_search_and_select_the_user
-        when_i_set_the_user_to_primary_pi
-        when_i_submit_in_add
         then_i_should_see_the 'warning text add'
-      end
-
-      scenario 'and doesnt see the form' do
-        given_i_have_clicked_the_add_authorized_user_button
-        when_i_search_and_select_the_user
-        when_i_set_the_user_to_primary_pi
-        when_i_submit_in_add
         then_i_should_not_see_the 'add form'
-      end
-
-      scenario 'and doesnt see the search box' do
-        given_i_have_clicked_the_add_authorized_user_button
-        when_i_search_and_select_the_user
-        when_i_set_the_user_to_primary_pi
-        when_i_submit_in_add
         then_i_should_not_see_the 'search'
       end
 
       context 'and clicks No' do
-        scenario 'and sees the form' do
+        scenario 'and sees the form, sees the dialog changes, and doesnt see the warning message' do
           given_i_have_clicked_the_add_authorized_user_button
           when_i_search_and_select_the_user
           when_i_set_the_user_to_primary_pi
           when_i_submit_in_add
           when_i_cancel_in_add
           then_i_should_see_the 'add form'
-        end
-
-        scenario 'and sees the search box' do
-          given_i_have_clicked_the_add_authorized_user_button
-          when_i_search_and_select_the_user
-          when_i_set_the_user_to_primary_pi
-          when_i_submit_in_add
-          when_i_cancel_in_add
-          then_i_should_see_the 'search'
-        end
-
-        scenario 'and sees the dialog changes' do
-          given_i_have_clicked_the_add_authorized_user_button
-          when_i_search_and_select_the_user
-          when_i_set_the_user_to_primary_pi
-          when_i_submit_in_add
-          when_i_cancel_in_add
           then_i_should_see_the 'add text'
-        end
-
-        scenario 'and doesnt see the warning message' do
-          given_i_have_clicked_the_add_authorized_user_button
-          when_i_search_and_select_the_user
-          when_i_set_the_user_to_primary_pi
-          when_i_submit_in_add
-          when_i_cancel_in_add
-          then_i_should_not_see_the 'warning'
-        end
-      end
-
-      context 'and closes and reopens the dialog' do
-        scenario 'and sees the form' do
-          given_i_have_clicked_the_add_authorized_user_button
-          when_i_search_and_select_the_user
-          when_i_set_the_user_to_primary_pi
-          when_i_exit
-          when_i_reopen_the_add_dialog
-          then_i_should_see_the 'add form'
-        end
-
-        scenario 'and sees the search box' do
-          given_i_have_clicked_the_add_authorized_user_button
-          when_i_search_and_select_the_user
-          when_i_set_the_user_to_primary_pi
-          when_i_exit
-          when_i_reopen_the_add_dialog
-          then_i_should_see_the 'search'
-        end
-
-        scenario 'and sees the dialog changes' do
-          given_i_have_clicked_the_add_authorized_user_button
-          when_i_search_and_select_the_user
-          when_i_set_the_user_to_primary_pi
-          when_i_exit
-          when_i_reopen_the_add_dialog
-          then_i_should_see_the 'add text'
-        end
-
-        scenario 'and doesnt see the warning message' do
-          given_i_have_clicked_the_add_authorized_user_button
-          when_i_search_and_select_the_user
-          when_i_set_the_user_to_primary_pi
-          when_i_exit
-          when_i_reopen_the_add_dialog
           then_i_should_not_see_the 'warning'
         end
       end

@@ -36,13 +36,6 @@ $(document).ready ->
           'Ok': () ->
             $(this).dialog('close')
 
-      $(document).on 'click', '.edit_service_request', ->
-        if $(this).data('permission')
-          window.location = $(this).data('url')
-        else
-          $('.permissions-dialog').dialog('open')
-          $('.permissions-dialog .text').html('Edit.')
-
       $(document).on 'click', '.service-request-button', ->
         if $(this).data('permission')
           window.location = $(this).data('url')
@@ -54,8 +47,6 @@ $(document).ready ->
         if !$(this).data('permission')
           $('.permissions-dialog').dialog('open')
           $('.permissions-dialog .text').html('Edit.')
-
-
 
       $('.edit-protocol-information-dialog').dialog
         autoOpen: false
@@ -258,6 +249,13 @@ $(document).ready ->
     $.ajax
       method: 'GET'
       url: "/dashboard/sub_service_requests/#{id}.js"
+
+  $(document).on 'click', '.edit_service_request', ->
+    if $(this).data('permission')
+      window.location = $(this).data('url')
+    else
+      $('.permissions-dialog').dialog('open')
+      $('.permissions-dialog .text').html('Edit.')
   # Protocol Show End
 
   # Protocol Edit Begin

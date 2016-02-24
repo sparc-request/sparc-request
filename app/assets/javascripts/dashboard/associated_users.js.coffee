@@ -73,7 +73,6 @@ $(document).ready ->
   #**************** Add Authorized User Form Begin ****************
 
   $(document).on 'changed.bs.select', '#project_role_identity_attributes_credentials', ->
-    console.log('hey')
     # Credentials - Dropdown
     $('.credentials_dependent').hide()
     switch $(this).val()
@@ -129,4 +128,13 @@ $(document).ready ->
     else
       form.submit()
 
+  $(document).on 'click', '#cancel_protocol_rights_button', (event) ->
+    $form = $("form.protocol_role_form")
+    if $form.is(':hidden')
+      # on a warning modal, show form again
+      $('.change_ppi_prompt').remove()
+      $form.show()
+    else
+      # cancel
+      $(this).closest('.modal').modal('hide')
   #**************** Add Authorized User Form End ****************

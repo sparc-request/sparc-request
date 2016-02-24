@@ -36,7 +36,7 @@
           %h3{:class => "#{css_class(organization)} core-tab"}
             = link_to core.name, "#"
           .core_view
-            .provider-description.description.ui-widget.ui-widget-content.ui-corner-all= raw organization.description
+            .provider-description.description.ui-widget.ui-widget-content.ui-corner-all= raw core.description
             - core.services.order('`order`, `name`').each do |service|
               = display_service_in_catalog(service, service_request, from_portal)
 

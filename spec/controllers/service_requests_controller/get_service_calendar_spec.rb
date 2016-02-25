@@ -95,20 +95,6 @@ RSpec.describe ServiceRequestsController do
         end
       end
 
-      context 'Per patient per visit line item has extra visits' do
-        it 'should delete extra visits on per patient per visit line items' do
-          arm1.update_attribute(:visit_count, 5)
-
-          liv.visits.each(&:destroy)
-          add_visits_to_arm_line_item(arm1, line_item, 6)
-
-          get :service_calendar, { id: service_request.id, pages: { arm1.id => 42 } }.with_indifferent_access
-
-          liv.reload
-          expect(liv.visits.count).to eq 5
-        end
-      end
-
       context 'Per patient per visit line item lacking visits' do
         it 'should create visits if too few on per patient per visit line items' do
           arm1.update_attribute(:visit_count, 5)

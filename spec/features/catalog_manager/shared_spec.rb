@@ -22,33 +22,41 @@ require 'rails_helper'
 
 RSpec.describe 'shared views', js: true do
 
-  before :each do
-    default_catalog_manager_setup
-    wait_for_javascript_to_finish
-    click_link('Office of Biomedical Informatics')
-    wait_for_javascript_to_finish
-  end
-
   context "adding and deleting" do
-
-    before :each do
-      @program = Organization.where(abbreviation: "Informatics").first
-      wait_for_javascript_to_finish
-      within '#user_rights' do
-        find('.legend').click
-        wait_for_javascript_to_finish
-      end
-    end
 
     describe "catalog managers" do
 
       it "should add a new catalog manager" do
+        default_catalog_manager_setup
+        wait_for_javascript_to_finish
+        click_link('Office of Biomedical Informatics')
+        wait_for_javascript_to_finish
+        @program = Organization.where(abbreviation: "Informatics").first
+        wait_for_javascript_to_finish
+        within '#user_rights' do
+          find('.legend').click
+          wait_for_javascript_to_finish
+        end
+
         add_identity_to_organization("new_cm")
+
         expect(page).to have_content("Jason Leonard")
       end
 
       it "should delete a catalog manager" do
+        default_catalog_manager_setup
+        wait_for_javascript_to_finish
+        click_link('Office of Biomedical Informatics')
+        wait_for_javascript_to_finish
+        @program = Organization.where(abbreviation: "Informatics").first
+        wait_for_javascript_to_finish
+        within '#user_rights' do
+          find('.legend').click
+          wait_for_javascript_to_finish
+        end
+
         delete_identity_from_organization("new_cm", ".cm_delete")
+
         expect(page).not_to have_content("Jason Leonard")
       end
     end
@@ -56,12 +64,37 @@ RSpec.describe 'shared views', js: true do
     context "super users" do
 
       it "should add a new super user" do
+        default_catalog_manager_setup
+        wait_for_javascript_to_finish
+        click_link('Office of Biomedical Informatics')
+        wait_for_javascript_to_finish
+        @program = Organization.where(abbreviation: "Informatics").first
+        wait_for_javascript_to_finish
+        within '#user_rights' do
+          find('.legend').click
+          wait_for_javascript_to_finish
+        end
+
+
         add_identity_to_organization("new_su")
+
         expect(page).to have_content("Jason Leonard")
       end
 
       it "should delete a super user" do
+        default_catalog_manager_setup
+        wait_for_javascript_to_finish
+        click_link('Office of Biomedical Informatics')
+        wait_for_javascript_to_finish
+        @program = Organization.where(abbreviation: "Informatics").first
+        wait_for_javascript_to_finish
+        within '#user_rights' do
+          find('.legend').click
+          wait_for_javascript_to_finish
+        end
+
         delete_identity_from_organization("new_su", ".su_delete")
+
         expect(page).not_to have_content("Jason Leonard")
       end
     end
@@ -69,14 +102,38 @@ RSpec.describe 'shared views', js: true do
     context "service providers" do
 
       it "should add a new service provider" do
+        default_catalog_manager_setup
+        wait_for_javascript_to_finish
+        click_link('Office of Biomedical Informatics')
+        wait_for_javascript_to_finish
+        @program = Organization.where(abbreviation: "Informatics").first
+        wait_for_javascript_to_finish
+        within '#user_rights' do
+          find('.legend').click
+          wait_for_javascript_to_finish
+        end
+
         add_first_identity_to_organization("new_sp")
         add_identity_to_organization("new_sp")
+
         expect(page).to have_content("Jason Leonard")
         expect(page).to have_content("Brian Kelsey")
       end
 
       it "should delete a service provider but not all" do
+        default_catalog_manager_setup
+        wait_for_javascript_to_finish
+        click_link('Office of Biomedical Informatics')
+        wait_for_javascript_to_finish
+        @program = Organization.where(abbreviation: "Informatics").first
+        wait_for_javascript_to_finish
+        within '#user_rights' do
+          find('.legend').click
+          wait_for_javascript_to_finish
+        end
+
         delete_identity_from_organization("new_sp", ".sp_delete")
+
         expect(page).not_to have_content("Jason Leonard")
         expect(page).to have_content("Brian Kelsey")
       end
@@ -84,21 +141,46 @@ RSpec.describe 'shared views', js: true do
 
     context "submission emails" do
 
-      before :each do
+      it "should add an email to the program" do
+        default_catalog_manager_setup
+        wait_for_javascript_to_finish
+        click_link('Office of Biomedical Informatics')
+        wait_for_javascript_to_finish
+        @program = Organization.where(abbreviation: "Informatics").first
+        wait_for_javascript_to_finish
+        within '#user_rights' do
+          find('.legend').click
+          wait_for_javascript_to_finish
+        end
+
         find('#user_rights').click
         # "\r" acts as enter!!!
         fill_in "new_se", with: "franzferdinand@ww1.gov\r"
-      end
 
-      it "should add an email to the program" do
         expect(page).to have_content("franzferdinand@ww1.gov")
       end
 
       it "should delete an email from the program" do
+        default_catalog_manager_setup
+        wait_for_javascript_to_finish
+        click_link('Office of Biomedical Informatics')
+        wait_for_javascript_to_finish
+        @program = Organization.where(abbreviation: "Informatics").first
+        wait_for_javascript_to_finish
+        within '#user_rights' do
+          find('.legend').click
+          wait_for_javascript_to_finish
+        end
+
+        find('#user_rights').click
+        # "\r" acts as enter!!!
+        fill_in "new_se", with: "franzferdinand@ww1.gov\r"
+
         expect(page).to have_css(".se_table")
         within(".se_table") do
           find(".se_delete").click
         end
+
         expect(page).not_to have_content("franzferdinand@ww1.gov")
       end
     end

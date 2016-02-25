@@ -1389,7 +1389,7 @@ RSpec.describe EpicInterface do
           high = epic_interface.relative_date(visit_group.day + visit_group.window_after, study.start_date)
 
           xml = <<-END
-            <RetrieveProtocolDefResponse xmlns="urn:ihe:qrph:rpe:2009">
+            <RetrieveProtocolDefResponse>
              <query root="1.2.3.4" extension="STUDY#{study.id}"/>
              <protocolDef>
                <plannedStudy xmlns="urn:hl7-org:v3" classCode="CLNTRL" moodCode="DEF">

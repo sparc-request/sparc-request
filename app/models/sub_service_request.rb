@@ -123,6 +123,10 @@ class SubServiceRequest < ActiveRecord::Base
     return "#{service_request.try(:protocol).try(:id)}-#{ssr_id}"
   end
 
+  def has_subsidy?
+    pending_subsidy.present? or approved_subsidy.present?
+  end
+
   def create_line_item(args)
     result = self.transaction do
       new_args = {

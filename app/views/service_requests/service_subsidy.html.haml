@@ -29,7 +29,7 @@
   = render :partial => 'errors'
   .grid_9
     .select-project-view
-      = render :partial => 'subsidies/subsidy_data'
+      = render partial: 'subsidies/subsidy_data', locals: {service_request: @service_request}
 
   .grid_3.service-subsidy-view-right.right
     = navigation_link t(:right_navigation)[:catalog], @catalog, 'catalog-button'

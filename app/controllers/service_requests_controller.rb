@@ -183,44 +183,16 @@ class ServiceRequestsController < ApplicationController
     if @service_request.arms.blank?
       @back = 'service_details'
     end
-    @subsidies = []
-    @service_request.sub_service_requests.each do |ssr|
-      if ssr.subsidy
-        # we already have a subsidy; add it to the list
-        subsidy = ssr.subsidy
-        @subsidies << subsidy
-      elsif ssr.eligible_for_subsidy?
-        # we don't have a subsidy yet; add it to the list but don't save
-        # it yet
-        # TODO: is it a good idea to modify this SubServiceRequest like
-        # this without saving it to the database?
-        ssr.build_subsidy
-        @subsidies << ssr.subsidy
-      end
-    end
+    @has_subsidy = @service_request.sub_service_requests.map(&:has_subsidy?).any?
+    @eligible_for_subsidy = @service_request.sub_service_requests.map(&:eligible_for_subsidy?).any?
 
-    if @subsidies.empty? || !subsidies_for_ssr(@subsidies)
+    if not @has_subsidy and not @eligible_for_subsidy
       redirect_to "/service_requests/#{@service_request.id}/document_management"
     end
   end
 
-  def subsidies_for_ssr subsidies
-    if @sub_service_request
-      has_match = false
-      subsidies.each do |subsidy|
-        if subsidy.sub_service_request_id == @sub_service_request.id
-          has_match = true
-        end
-      end
-
-      return has_match
-    else
-      return true
-    end
-  end
-
   def document_management
-    if @service_request.sub_service_requests.map(&:subsidy).compact.empty?
+    unless @service_request.sub_service_requests.map(&:has_subsidy?).any?
       @back = 'service_calendar'
     end
     @service_list = @service_request.service_list
@@ -284,7 +256,6 @@ class ServiceRequestsController < ApplicationController
     @service_list = @service_request.service_list
 
     @service_request.sub_service_requests.each do |ssr|
-      ssr.subsidy.update_attributes(:overridden => true) if ssr.subsidy
       ssr.update_attributes(:nursing_nutrition_approved => false, :lab_approved => false, :imaging_approved => false, :committee_approved => false)
     end
 

@@ -53,8 +53,8 @@
           #service_calendar_container
             - if @service_request.has_per_patient_per_visit_services?
               - @service_request.arms.each do |arm|
-                = render :partial => '/service_calendars/master_calendar/pppv/pppv_calendar', :locals =>  {:service_request => @service_request, :tab => @tab, :arm => arm, :portal => @portal, :thead_class => @thead_class}
-            = render :partial => '/service_calendars/master_calendar/otf/otf_calendar', :locals => {:thead_class => @thead_class}
+                = render partial: '/service_calendars/master_calendar/pppv/pppv_calendar', locals: { service_request: @service_request, tab: @tab, arm: arm, portal: @portal, thead_class: @thead_class, page: @pages[arm.id], review: @review, pages: @pages, merged: @merged, study_tracker: @study_tracker }
+            = render :partial => '/service_calendars/master_calendar/otf/otf_calendar', :locals => {:thead_class => @thead_class, portal: @portal, review: @review}
             = render :partial => 'service_requests/review/review_totals', :locals => {:thead_class => @thead_class}
           %br
           %br

@@ -35,10 +35,10 @@ module Dashboard::AssociatedUsersHelper
   end
 
   def associated_users_delete_button(pr, permission_to_edit)
-    btn_classes = "#{BTN_DANGER} actions-button delete-associated-user-button"
+    btn_classes = "#{BTN_DANGER} actions-button delete-associated-user-button #{disabled_unless(permission_to_edit)}"
     btn_data = { project_role_id: pr.id, identity_role: pr.role,
       identity_id: pr.identity_id, permission: 'true' }
-      
+
     content_tag(:button,
       raw(content_tag(:span, '', class: GLYPH_REMOVE, aria: { hidden: 'true' })),
       type: 'button', data: btn_data, class: btn_classes)

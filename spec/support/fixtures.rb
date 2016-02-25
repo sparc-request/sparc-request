@@ -24,10 +24,10 @@ def let_there_be_lane
       first_name:            'Julia',
       ldap_uid:              'jug2',
       institution:           'medical_university_of_south_carolina',
-      college:               'college_of_medecine',
+      college:               'college_of_medicine',
       department:            'other',
       email:                 'glennj@musc.edu',
-      credentials:           'BS,    MRA',
+      credentials:           'ba',
       catalog_overlord:      true,
       password:              'p4ssword',
       password_confirmation: 'p4ssword',
@@ -58,7 +58,7 @@ def build_study_type_question_groups
 end
 
 def build_study_type_questions
-  
+
   let!(:stq_higher_level_of_privacy) { StudyTypeQuestion.create("order"=>1, "question"=>"1a. Does your study require a higher level of privacy for the participants?", "friendly_id"=>"higher_level_of_privacy", "study_type_question_group_id" => inactive_study_type_question_group.id) }
   let!(:stq_certificate_of_conf)     { StudyTypeQuestion.create("order"=>2, "question"=>"1b. Does your study have a Certificate of Confidentiality?", "friendly_id"=>"certificate_of_conf", "study_type_question_group_id" => inactive_study_type_question_group.id) }
   let!(:stq_access_study_info)       { StudyTypeQuestion.create("order"=>3, "question"=>"1c. Do participants enrolled in your study require a second DEIDENTIFIED Medical Record that is not connected to their primary record in Epic?", "friendly_id"=>"access_study_info", "study_type_question_group_id" => inactive_study_type_question_group.id) }
@@ -75,7 +75,7 @@ end
 
 
 def build_study_type_answers
-  
+
   let!(:answer1)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: stq_higher_level_of_privacy.id, answer: 1)}
   let!(:answer2)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: stq_certificate_of_conf.id, answer: 0)}
   let!(:answer3)  { StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: stq_access_study_info.id, answer: 0)}

@@ -82,10 +82,9 @@ class Portal::SubServiceRequestsController < Portal::BaseController
       Hash.new
     end
 
-    @protocol_question_group_id = @protocol.study_type_question_group_id
-    updated_attrs = (@protocol_question_group_id == StudyTypeQuestionGroup.active.pluck(:id).first) ? attrs.merge(study_type_question_group_id: StudyTypeQuestionGroup.active.pluck(:id).first) : attrs.merge(study_type_question_group_id: StudyTypeQuestionGroup.inactive.pluck(:id).first)
+    attrs = (@protocol.study_type_question_group_id == StudyTypeQuestionGroup.active.pluck(:id).first) ? attrs.merge(study_type_question_group_id: StudyTypeQuestionGroup.active.pluck(:id).first) : attrs.merge(study_type_question_group_id: StudyTypeQuestionGroup.inactive.pluck(:id).first)
 
-    if @protocol.update_attributes(updated_attrs)
+    if @protocol.update_attributes(attrs)
 
       redirect_to portal_admin_sub_service_request_path(@sub_service_request)
     else

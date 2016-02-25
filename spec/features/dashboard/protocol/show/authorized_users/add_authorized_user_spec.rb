@@ -200,7 +200,6 @@ RSpec.feature 'User wants to add an authorized user', js: true do
 
     scenario 'and sees disabled Add an Authorized User button' do
       expect(page).to have_button('Add An Authorized User', disabled: true)
-      save_and_open_screenshot
     end
   end
 
@@ -313,8 +312,6 @@ RSpec.feature 'User wants to add an authorized user', js: true do
       when 'user already added'
         expect(page).to have_text("This user is already associated with this protocol.")
       when 'no access'
-        sleep 3
-        save_and_open_screenshot
         expect(page).to have_text("You do not have appropriate rights to")
       when 'other credentials'
         expect(page).to have_text("Must specify this User's Credentials.")

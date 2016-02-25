@@ -25,6 +25,8 @@ $(document).ready ->
     width: 300
     modal: true
     resizable: false
+    open: (event, ui) ->
+      $('.ui-dialog-titlebar-close', ui.dialog | ui).hide()
     buttons: [
       {
         id: 'submit_move'

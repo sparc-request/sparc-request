@@ -49,6 +49,7 @@ development:
 #  constants_yml_override: -institution
   use_news_feed: true
   calendar_url: https://www.google.com/calendar/ical/sparcrequest%40gmail.com/public/basic.ics
+  use_faq_link: false
   faq_url: http://academicdepartments.musc.edu/sctr/sparc_request/faq.html
   send_authorized_user_emails: true
   no_reply_from: "no-reply@musc.edu"
@@ -69,6 +70,8 @@ development:
   clinical_work_fulfillment_url: http://fulfillment-future-url.com
   # allow catalog_manager to turn on work fulfillment one organization at a time
   fulfillment_contingent_on_catalog_manager: true
+  about_sparc_url: http://academicdepartments.musc.edu/sctr/sparc_request
+  use_about_sparc_link: true
 
 test:
   default_mail_to: nobody@nowhere.com
@@ -100,6 +103,7 @@ test:
 #  constants_yml_override: -institution
   use_news_feed: true
   calendar_url: https://www.google.com/calendar/ical/sparcrequest%40gmail.com/public/basic.ics
+  use_faq_link: false
   faq_url: http://academicdepartments.musc.edu/sctr/sparc_request/faq.html
   send_authorized_user_emails: true
   no_reply_from: "no-reply@musc.edu"
@@ -118,3 +122,5 @@ test:
   clinical_work_fulfillment_url: http://fulfillment-future-url.com
   # allow catalog_manager to turn on work fulfillment one organization at a time
 #  fulfillment_contingent_on_catalog_manager: true
+  about_sparc_url: http://academicdepartments.musc.edu/sctr/sparc_request
+  use_about_sparc_link: false

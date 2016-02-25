@@ -71,7 +71,7 @@
             = show_friendly_ssr_id(@sub_service_request) if @sub_service_request
       #content.container_12.row
         .flash= render "shared/flash"
-        = yield
+        = content_for?(:content) ? yield(:content) : yield
       .clear
       = render :partial => 'shared/footer'
       = render :partial => 'shared/piwik_tracking' if Rails.env == 'production'

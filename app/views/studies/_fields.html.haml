@@ -104,7 +104,7 @@
                 = f.radio_button :selected_for_epic, false
                 = f.label :selected_for_epic, "No"
             .study_type{style: "#{f.object.selected_for_epic ? '' : 'display:none;'}"}
-              = f.label :study_type_questions
+              = f.label :study_type_questions, t(:study_form)[:study_type_questions]
               = f.fields_for :study_type_answers, study.study_type_answers do |answer|
                 - if answer.object.study_type_question.study_type_question_group.active
                   .field{id: "study_type_answer_#{answer.object.study_type_question.friendly_id}", style: "#{answer.object.answer != nil ? 'display:block' : 'display:none;'}"}

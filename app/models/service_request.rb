@@ -36,6 +36,8 @@ class ServiceRequest < ActiveRecord::Base
   has_many :arms, :through => :protocol
   has_many :notes, as: :notable, dependent: :destroy
 
+  after_save :set_original_submitted_date
+
   validation_group :protocol do
     # validates :protocol_id, :presence => {:message => "You must identify the service request with a study/project before continuing."}
     validate :protocol_page
@@ -491,7 +493,7 @@ class ServiceRequest < ActiveRecord::Base
     self.assign_attributes(status: new_status)
 
     self.sub_service_requests.each do |ssr|
-      ssr.assign_attributes(status: new_status)
+      ssr.update_attribute(:status, new_status)
     end
 
     self.save(validate: use_validation)
@@ -513,7 +515,7 @@ class ServiceRequest < ActiveRecord::Base
 
   def add_or_update_arms
     return if not self.has_per_patient_per_visit_services?
-    
+
     p = self.protocol
     if p.arms.empty?
       arm = p.arms.create(
@@ -571,5 +573,14 @@ class ServiceRequest < ActiveRecord::Base
                                     .group_by(&:auditable_id)
 
     {:line_items => line_item_audits}
+  end
+
+  private
+
+  def set_original_submitted_date
+    if self.submitted_at && !self.original_submitted_date
+      self.original_submitted_date = self.submitted_at
+      self.save(validate: false)
+    end
   end
 end

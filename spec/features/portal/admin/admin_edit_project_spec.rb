@@ -54,7 +54,8 @@ RSpec.describe "editing a project", js: true do
     end
   end
 
-  context "switching from project to study" do
+  # virgin project:  a project that has never been a study (selected_for_epic= nil)
+  context "switching from virgin project to study" do
     before :each do
       project.update_attribute(:selected_for_epic, nil)
       select 'Study', from: 'protocol_type'

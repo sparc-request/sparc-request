@@ -115,7 +115,7 @@ module Dashboard::ServiceRequestsHelper
         visits = visits.sort_by{|index| index.try(:position)}
         last_position.times do |visit|
           visit_name = visits[visit].try(:visit_group).try(:name) || "Visit #{visit}"
-          arr << ["Insert before #{visit + 1} - #{visit_name}", visit + 1]
+          arr << ["Insert at #{visit + 1} - #{visit_name}", visit + 1]
         end
       else
         arr = [["Add Visit 1", nil]]

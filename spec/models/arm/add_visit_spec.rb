@@ -100,6 +100,8 @@ RSpec.describe Arm, type: :model do
         expect(arm).to receive(:update_visit_group_day).with(:day, 9, :portal).and_return true
         expect(arm).to receive(:update_visit_group_window_before).with(:window_before, 9, :portal).and_return true
         expect(arm).to receive(:update_visit_group_window_after).with(:window_after, 9, :portal).and_return true
+
+
         arm.add_visit 10, :day, :window_before, :window_after, "Visit Group Name", :portal
       end
     end

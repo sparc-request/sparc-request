@@ -45,7 +45,7 @@ RSpec.describe SurveyNotification do
 
     #ensure that the subject is correct
     it 'renders the subject' do
-      expect(mail).to have_subject("[Test - EMAIL TO catesa@musc.edu AND CC TO amcates@gmail.com, catesa@musc.edu] System satisfaction survey completed in SPARC Request")
+      expect(mail).to have_subject("[Test - EMAIL TO nobody@nowhere.com AND CC TO amcates@gmail.com, catesa@musc.edu] System satisfaction survey completed in SPARC Request")
     end
 
     #ensure that the receiver is correct

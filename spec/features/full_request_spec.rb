@@ -21,12 +21,6 @@
 require 'rails_helper'
 
 RSpec.describe 'Full service request' do
-
-  # before :each do
-  #   create_default_data
-  #   create_ctrc_data
-  # end
-  # let_there_be_j
   let_there_be_lane
   let_there_be_j
   build_service_request_with_project
@@ -51,7 +45,7 @@ RSpec.describe 'Full service request' do
       # # TODO: Switch this to a search
       find("button.ui-button .ui-button-text", text: "Yes").click
       wait_for_javascript_to_finish
-      
+
       find("#service-2").click()
       wait_for_javascript_to_finish
       find(".submit-request-button").click # Submit to begin services

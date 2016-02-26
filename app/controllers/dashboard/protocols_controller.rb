@@ -159,6 +159,11 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     end
   end
 
+  def display_requests
+    @protocol_role = @protocol.project_roles.find_by_identity_id(@user.id)
+    @permission_to_edit = @protocol_role.can_edit?
+  end
+
   private
 
   def find_protocol

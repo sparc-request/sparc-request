@@ -95,7 +95,8 @@ class Portal::SubServiceRequestsController < Portal::BaseController
       @related_service_requests = @protocol.all_child_sub_service_requests
       @approvals = [@service_request.approvals, @sub_service_request.approvals].flatten
       @selected_arm = @service_request.arms.first
-
+      # Sponsor name error showing up twice
+      @protocol.errors.messages[:sponsor_name].uniq!
       render :action => 'show'
 
     end

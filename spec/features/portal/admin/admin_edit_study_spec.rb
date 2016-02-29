@@ -57,6 +57,13 @@ RSpec.describe 'editing a study', js: true do
       wait_for_javascript_to_finish
       expect(page).to have_content('1 error prohibited this study from being saved')
     end
+
+    it "should raise an error message if study's sponsor name is not filled out" do
+      fill_in 'study_sponsor_name', with: ''
+      click_button 'Save'
+      wait_for_javascript_to_finish
+      expect(page).to have_content('1 error prohibited this study from being saved')
+    end
   end
 
   context 'editing the short title' do

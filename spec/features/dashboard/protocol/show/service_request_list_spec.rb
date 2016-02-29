@@ -110,21 +110,20 @@ RSpec.describe 'service request list', js: true do
         end
 
         context 'user selects someone other than themselves in dropdown and fills in modal' do
-          before(:each) do
+          it 'should send a notification to that user' do
+            # Select the service requester, say
             @actions_td.
               new_notification_dropdown.
               list_items.
               find { |li| li.text == 'Requester: Some Guy' }.
               click
-
+            # fill in and submit modal
             expect(@page).to have_new_notification_form
             @page.new_notification_form.subject_field.set 'Hello'
             @page.new_notification_form.message_field.set 'Hows it going?'
             @page.new_notification_form.submit_button.click
             expect(@page).to have_no_new_notification_form
-          end
 
-          it 'should send a notification to that user' do
             note = sub_service_request.notifications.last
             message = Message.first
             expect(note.subject).to eq 'Hello'
@@ -172,15 +171,15 @@ RSpec.describe 'service request list', js: true do
 
     before(:each) { go_to_show_protocol protocol.id }
 
-    scenario 'user clicks "Edit Original" button' do
+    xit 'user clicks "Edit Original" button' do
       @page.service_requests.ssr_lists.first.edit_original_button.click
     end
 
-    scenario 'user clicks "View SSR" button' do
+    xit 'user clicks "View SSR" button' do
       @page.service_requests.ssr_lists.first.ssrs.first.view_ssr_button.click
     end
 
-    scenario 'user clicks "Edit SSR" button' do
+    xit 'user clicks "Edit SSR" button' do
       @page.service_requests.ssr_lists.first.ssrs.first.edit_ssr_button.click
     end
 

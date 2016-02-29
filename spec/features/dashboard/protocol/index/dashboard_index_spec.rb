@@ -15,7 +15,10 @@ RSpec.describe 'dashboard index', js: :true do
     context 'user clicks button and selects Study from dropdown' do
       it 'should navigate to the correct page' do
         page = visit_protocols_index_page
-        page.new_protocol('Study')
+
+        page.new_protocol_button.click
+        page.new_study_option.click
+
         expect(page.current_url).to end_with "/dashboard/protocols/new?protocol_type=study"
       end
     end
@@ -23,7 +26,10 @@ RSpec.describe 'dashboard index', js: :true do
     context 'user clicks button and selects Project from dropdown' do
       it 'should navigate to the correct page' do
         page = visit_protocols_index_page
-        page.new_protocol('Project')
+
+        page.new_protocol_button.click
+        page.new_project_option.click
+
         expect(page.current_url).to end_with "/dashboard/protocols/new?protocol_type=project"
       end
     end
@@ -35,7 +41,6 @@ RSpec.describe 'dashboard index', js: :true do
         scenario 'User clicks button' do
           protocol = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: true)
           page = visit_protocols_index_page
-
           # show archived protocols
           page.filter_protocols.archived_checkbox.click
           page.filter_protocols.apply_filter_button.click

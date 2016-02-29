@@ -99,7 +99,7 @@ class Portal::SubServiceRequestsController < Portal::BaseController
       unless @protocol.errors.messages[:sponsor_name].nil?
         @protocol.errors.messages[:sponsor_name].uniq!
       end
-      render :action => 'show'
+      render action: 'show'
 
     end
   end   

@@ -258,6 +258,10 @@ p.notice {
   margin-top: 10px;
 }
 
+#welcome_message .section a:hover {
+  color: #0078AE;
+}
+
 #welcome_message .large_section {
   font-size: 14px;
 }

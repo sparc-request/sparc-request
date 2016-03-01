@@ -387,6 +387,14 @@ h3.needed_info {
   margin: 10px;
 }
 
+/*.faq-button a:hover {
+  color: #0078AE;
+}*/
+
+/*.faq-button .user:hover {
+  color: #0078AE;
+}*/
+
 .quick_question_email_error {
   display: none;
   color: red;
@@ -2776,6 +2784,10 @@ table.service_calendar tbody td.visit {
 #footer a {
   text-decoration: none;
   color: #FFFFFF;
+}
+
+#footer a:hover {
+  color: #0078AE;
 }
 
 .devise_view {

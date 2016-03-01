@@ -296,6 +296,10 @@ p.notice {
   width: 100%;
 }
 
+#calendar-blog .title a:hover {
+  color: #0078AE;
+}
+
 #blog, #calendar {
   height: 300px;
   overflow: scroll;

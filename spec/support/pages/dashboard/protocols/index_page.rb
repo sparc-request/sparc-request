@@ -7,19 +7,20 @@ module Dashboard
     class IndexPage < SitePrism::Page
       set_url '/dashboard/protocols'
 
-      element :new_protocol_button, '#create-new-study-button'
-      elements :new_protocol_options, '#create-new-protocol-select a'
+      element :new_protocol_button, 'button', text: 'New Protocol'
+      element :new_study_option, 'a', text: 'New Study'
+      element :new_project_option, 'a', text: 'New Project'
 
       def new_protocol(protocol_type)
         new_protocol_button.click
         new_protocol_options.select { |opt| opt.text == "New #{protocol_type}" }.first.click
       end
 
-      section :filter_protocols, '#filterrific_form' do
+      section :filter_protocols, '.panel', text: 'Filter Protocols' do
         element :save_link, 'a', text: 'Save'
         element :reset_link, 'a', text: 'Reset'
-        element :search_field, :field, 'Search'
         element :archived_checkbox, :field, 'Archived'
+        element :search_field, :field, 'Search'
         element :status_select, 'div.status-select button'
         elements :status_options, 'div.status-select li'
         element :my_protocols_checkbox, :field, 'My Protocols'
@@ -41,10 +42,10 @@ module Dashboard
         def selected_core
           core_select['title']
         end
-
-        section :recently_saved_filters, '.panel', text: 'Recently Saved Filters' do
-          elements :filters, 'li a'
-        end
+      end
+      
+      section :recently_saved_filters, '.panel', text: 'Recently Saved Filters' do
+        elements :filters, 'li a'
       end
 
       sections :protocols, '#filterrific_results tr.protocols_index_row' do

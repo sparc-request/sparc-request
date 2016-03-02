@@ -40,10 +40,10 @@ RSpec.describe 'filters', js: :true do
           wait_for_javascript_to_finish
         end
 
-        it do
-          expect(@page).to have_no_filter_form_modal, 'expected save button click to close modal, got a modal'
-          expect(@page.filter_protocols.recently_saved_filters).to have_filters, 'expected page to display saved filters, got none'
-          expect(@page).to have_protocols, 'expected protocols to be on page, got none'
+        it 'should display saved filter name under "Recently Saved Filters"' do
+          expect(@page).to have_recently_saved_filters
+          expect(@page.recently_saved_filters).to have_filters
+          expect(@page).to have_protocols
         end
       end
     end
@@ -68,23 +68,9 @@ RSpec.describe 'filters', js: :true do
         expect(@page).to have_no_protocols
       end
 
-      it 'should show the five most recent saved filters' do
-        expected_filters = ProtocolFilter.where(identity_id: jug2.id).
-          order(created_at: :desc).
-          limit(5).
-          pluck(:search_name)
-
-        actual_filters = @page.
-          filter_protocols.
-          recently_saved_filters.
-          filters.
-          map(&:text)
-        expect(expected_filters).to eq actual_filters
-      end
-
       context 'user clicks a saved filter name' do
         it 'should apply that filter' do
-          @page.filter_protocols.recently_saved_filters.filters.first.click
+          @page.recently_saved_filters.filters.first.click
           wait_for_javascript_to_finish
           expect(@page).to have_protocols
         end
@@ -93,55 +79,25 @@ RSpec.describe 'filters', js: :true do
   end
 
   describe 'reset' do
-    context 'user is a super user and service provider for some organization' do
-      include_context 'authorized Organizations'
+    it 'should remove all filters' do
+      p1 = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: true, title: 'abc')
+      sr = create(:service_request_without_validations, protocol: p1, service_requester: jug2)
+      create(:sub_service_request, ssr_id: '0001', service_request: sr, organization: create(:organization), status: 'draft')
 
-      it 'should remove all filters' do
-        p1 = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: true, short_title: 'abc')
-        sr = create(:service_request_without_validations, protocol: p1, service_requester: jug2)
-        create(:sub_service_request, ssr_id: '0001', service_request: sr, organization: org1, status: 'draft')
+      p2 = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false)
+      visit_protocols_index_page
 
-        p2 = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false)
-        visit_protocols_index_page
+      filters = @page.filter_protocols
+      filters.search_field.set('abc')
+      filters.archived_checkbox.click
+      filters.select_status('draft')
+      filters.apply_filter_button.click
+      wait_for_javascript_to_finish
 
-        filters = @page.filter_protocols
-        filters.search_field.set('abc')
-        filters.archived_checkbox.click
-        filters.select_status('draft')
-        filters.my_protocols_checkbox.click
-        filters.my_admin_organizations_checkbox.click
-        filters.select_core(org1.name)
-        filters.apply_filter_button.click
-        wait_for_javascript_to_finish
-
-        expect(@page.displayed_protocol_ids).to eq [p1.id]
-        @page.filter_protocols.reset_link.click
-        wait_for_javascript_to_finish
-        expect(@page.displayed_protocol_ids.sort).to eq [p2.id]
-      end
-    end
-
-    context 'user is neither a super user nor service provider for any organization' do
-      it 'should remove all filters' do
-        p1 = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: true, title: 'abc')
-        sr = create(:service_request_without_validations, protocol: p1, service_requester: jug2)
-        create(:sub_service_request, ssr_id: '0001', service_request: sr, organization: create(:organization), status: 'draft')
-
-        p2 = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false)
-        visit_protocols_index_page
-
-        filters = @page.filter_protocols
-        filters.search_field.set('abc')
-        filters.archived_checkbox.click
-        filters.select_status('draft')
-        filters.apply_filter_button.click
-        wait_for_javascript_to_finish
-
-        expect(@page.displayed_protocol_ids).to eq [p1.id]
-        @page.filter_protocols.reset_link.click
-        wait_for_javascript_to_finish
-        expect(@page.displayed_protocol_ids.sort).to eq [p2.id]
-      end
+      expect(@page.displayed_protocol_ids).to eq [p1.id]
+      @page.filter_protocols.reset_link.click
+      wait_for_javascript_to_finish
+      expect(@page.displayed_protocol_ids.sort).to eq [p2.id]
     end
   end
 
@@ -151,10 +107,6 @@ RSpec.describe 'filters', js: :true do
         create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: true)
         visit_protocols_index_page
         expect(@page).to have_no_protocols
-      end
-
-      it 'should not be checked' do
-        visit_protocols_index_page
         expect(@page.filter_protocols.archived_checkbox).to_not be_checked
       end
     end
@@ -305,10 +257,6 @@ RSpec.describe 'filters', js: :true do
       it 'should show the My Protocols checkbox' do
         visit_protocols_index_page
         expect(@page.filter_protocols).to have_my_protocols_checkbox
-      end
-
-      it 'should be checked' do
-        visit_protocols_index_page
         expect(@page.filter_protocols.my_protocols_checkbox).to be_checked
       end
 
@@ -352,27 +300,6 @@ RSpec.describe 'filters', js: :true do
         expect(@page.filter_protocols).to have_no_my_protocols_checkbox
       end
     end
-
-    describe 'defaults' do
-      it 'should not display Protocols for which user is not an associated user' do
-        create(:protocol_federally_funded, :without_validations, primary_pi: create(:identity), type: 'Project', archived: false)
-        visit_protocols_index_page
-        expect(@page).to have_no_protocols
-      end
-
-      it 'should not display Protocols for which user has \'none\' rights' do
-        protocol = create(:protocol_federally_funded, :without_validations, primary_pi: create(:identity), type: 'Project', archived: false)
-        create(:project_role, identity: jug2, protocol: protocol, project_rights: 'none')
-        visit_protocols_index_page
-        expect(@page).to have_no_protocols
-      end
-
-      it 'should display unarchived Protocols for which the user has project rights other than \'none\'' do
-        create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false)
-        visit_protocols_index_page
-        expect(@page).to have_protocols
-      end
-    end
   end
 
   describe 'my admin organizations' do
@@ -388,10 +315,6 @@ RSpec.describe 'filters', js: :true do
 
         visit_protocols_index_page
         expect(@page.displayed_protocol_ids.sort).to eq [p1.id, p2.id]
-      end
-
-      it 'should not be checked' do
-        visit_protocols_index_page
         expect(@page.filter_protocols.my_admin_organizations_checkbox).to_not be_checked
       end
     end
@@ -433,24 +356,6 @@ RSpec.describe 'filters', js: :true do
         wait_for_javascript_to_finish
 
         expect(@page.displayed_protocol_ids.sort).to eq [p1.id, p2.id]
-      end
-    end
-
-    describe 'visibility' do
-      context 'user a service provider and superuser for an Organization' do
-        include_context 'authorized Organizations'
-
-        it 'should show the My Admin Organizations checkbox' do
-          visit_protocols_index_page
-          expect(@page.filter_protocols).to have_my_admin_organizations_checkbox
-        end
-      end
-
-      context 'user is not both a service provider and a superuser for any Organization' do
-        it 'should not show the My Admin Organizations checkbox' do
-          visit_protocols_index_page
-          expect(@page.filter_protocols).to have_no_my_admin_organizations_checkbox
-        end
       end
     end
   end
@@ -528,24 +433,6 @@ RSpec.describe 'filters', js: :true do
         wait_for_javascript_to_finish
 
         expect(@page.displayed_protocol_ids.sort).to eq [p1.id, p2.id, p3.id]
-      end
-    end
-
-    describe 'visibility' do
-      context 'user a service provider and superuser for an Organization' do
-        include_context 'authorized Organizations'
-
-        it 'should show the My Admin Organizations checkbox' do
-          visit_protocols_index_page
-          expect(@page.filter_protocols).to have_core_select
-        end
-      end
-
-      context 'user is not both a service provider and a superuser for any Organization' do
-        it 'should not show the My Admin Organizations checkbox' do
-          visit_protocols_index_page
-          expect(@page.filter_protocols).to have_no_core_select
-        end
       end
     end
   end

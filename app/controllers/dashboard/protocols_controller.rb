@@ -56,7 +56,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
       format.js   { render }
       format.html {
         session[:breadcrumbs].clear.add_crumbs(protocol_id: @protocol.id)
-        @permission_to_edit = @protocol_role.can_edit?
+        @permission_to_edit = @authorization.can_edit?
         @protocol_type = @protocol.type.capitalize
         @service_requests = @protocol.service_requests
         render

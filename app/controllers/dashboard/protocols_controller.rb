@@ -76,7 +76,8 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   def create
     protocol_class = params[:protocol][:type].capitalize.constantize
     @protocol = protocol_class.new(params[:protocol])
-    unless @protocol.project_roles.map(&:identity_id).include?(current_user.id)
+
+    if @protocol.project_roles.where(identity_id: current_user.id).empty?
       # if current user is not authorized, add them as an authorized user
       @protocol.project_roles.new(identity_id: current_user.id, role: "general-access-user", project_rights: "approve")
     end

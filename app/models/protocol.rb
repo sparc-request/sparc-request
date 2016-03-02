@@ -44,50 +44,50 @@ class Protocol < ActiveRecord::Base
 
   belongs_to :study_type_question_group
 
-  attr_accessible :identity_id
-  attr_accessible :next_ssr_id
-  attr_accessible :short_title
-  attr_accessible :title
-  attr_accessible :sponsor_name
+  attr_accessible :affiliations_attributes
+  attr_accessible :archived
+  attr_accessible :arms_attributes
+  attr_accessible :billing_business_manager_static_email
   attr_accessible :brief_description
-  attr_accessible :indirect_cost_rate
-  attr_accessible :study_phase
-  attr_accessible :udak_project_number
-  attr_accessible :funding_rfa
-  attr_accessible :funding_status
-  attr_accessible :potential_funding_source
-  attr_accessible :potential_funding_start_date
-  attr_accessible :funding_source
-  attr_accessible :funding_start_date
+  attr_accessible :end_date
+  attr_accessible :federal_grant_code_id
   attr_accessible :federal_grant_serial_number
   attr_accessible :federal_grant_title
-  attr_accessible :federal_grant_code_id
   attr_accessible :federal_non_phs_sponsor
   attr_accessible :federal_phs_sponsor
-  attr_accessible :potential_funding_source_other
+  attr_accessible :funding_rfa
+  attr_accessible :funding_source
   attr_accessible :funding_source_other
-  attr_accessible :research_types_info_attributes
+  attr_accessible :funding_start_date
+  attr_accessible :funding_status
   attr_accessible :human_subjects_info_attributes
-  attr_accessible :vertebrate_animals_info_attributes
+  attr_accessible :identity_id
+  attr_accessible :impact_areas_attributes
+  attr_accessible :indirect_cost_rate
   attr_accessible :investigational_products_info_attributes
   attr_accessible :ip_patents_info_attributes
-  attr_accessible :study_types_attributes
-  attr_accessible :impact_areas_attributes
-  attr_accessible :affiliations_attributes
-  attr_accessible :project_roles_attributes
-  attr_accessible :arms_attributes
-  attr_accessible :requester_id
-  attr_accessible :start_date
-  attr_accessible :end_date
-  attr_accessible :last_epic_push_time
   attr_accessible :last_epic_push_status
-  attr_accessible :billing_business_manager_static_email
-  attr_accessible :recruitment_start_date
+  attr_accessible :last_epic_push_time
+  attr_accessible :next_ssr_id
+  attr_accessible :potential_funding_source
+  attr_accessible :potential_funding_source_other
+  attr_accessible :potential_funding_start_date
+  attr_accessible :project_roles_attributes
   attr_accessible :recruitment_end_date
+  attr_accessible :recruitment_start_date
+  attr_accessible :requester_id
+  attr_accessible :research_types_info_attributes
   attr_accessible :selected_for_epic
+  attr_accessible :short_title
+  attr_accessible :sponsor_name
+  attr_accessible :start_date
+  attr_accessible :study_phase
   attr_accessible :study_type_answers_attributes
-  attr_accessible :archived
   attr_accessible :study_type_question_group_id
+  attr_accessible :study_types_attributes
+  attr_accessible :title
+  attr_accessible :udak_project_number
+  attr_accessible :vertebrate_animals_info_attributes
 
   attr_accessor :requester_id
   attr_accessor :validate_nct

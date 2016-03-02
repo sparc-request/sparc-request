@@ -98,6 +98,33 @@ namespace :data do
       end
     end
 
+    def has_valid_rates?(pricing_map)
+      rate_array = [pricing_map.corporate_rate, pricing_map.federal_rate, 
+                    pricing_map.member_rate, pricing_map.other_rate]
+      rate_array.each do |rate|
+        if full_rate_lower?(rate, pricing_map)
+          return false
+        end
+      end
+
+      true
+    end
+
+    def full_rate_lower?(rate, pricing_map)
+      rate > pricing_map.full_rate
+    end
+
+    def generate_bad_rate_report(rate_array)
+      CSV.open("tmp/bad_rate_report.csv", "w+") do |csv|
+        csv << ["CPT Code", "Procedure Name", "Service Rate", "Corporate Rate", "Federal Rate", "Member Rate", "Other Rate", ]
+        rate_array.each do |rates|
+          service = rates[0]
+          pricing_map = rates[1]
+          csv << [service.cpt_code, service.name, pricing_map.full_rate, pricing_map.corporate_rate]
+        end
+      end
+    end
+
     puts "Press CTRL-C to exit"
     puts ""
 
@@ -109,6 +136,7 @@ namespace :data do
     org_labels = []
     org_labels = org.parents.map(&:label).reverse unless org.parents.empty?
     org_labels << org.label
+    pricing_maps_with_bad_rates = []
     continue = prompt("Are you sure you want to import #{file} into #{org_labels.join(" -> ")}? (Yes/No) ")
 
     if continue == 'Yes'
@@ -146,11 +174,15 @@ namespace :data do
                                               )
 
         if service.valid? and pricing_map.valid?
-          service.save
-          pricing_map.save
-          services_imported += 1
-          puts "Saving #{service.name} with an id of #{service.id}"
-          puts "#{services_imported} services imported."
+          unless has_valid_rates?(pricing_map)
+            pricing_maps_with_bad_rates << [service, pricing_map]
+          else
+            service.save
+            pricing_map.save
+            services_imported += 1
+            puts "Saving #{service.name} with an id of #{service.id}"
+            puts "#{services_imported} services imported."
+          end
         else
           puts "#"*50
           puts "Error importing service"
@@ -160,6 +192,15 @@ namespace :data do
           puts pricing_map.errors
         end
       end
+
+      puts "#"*50
+      if pricing_maps_with_bad_rates.size > 0
+        puts 'There were pricing maps with bad rates, a report has been generated in the tmp folder.'
+        generate_bad_rate_report(pricing_maps_with_bad_rates)
+      else
+        puts "All pricing maps have correct rates."
+      end
+
     else
       puts "Import aborted, please start over"
       exit

@@ -19,25 +19,27 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .panel.panel-default#authorized-users-panel
   .panel-heading
-    %h4.panel-title= "Authorized Users"
+    %h4.panel-title
+      = "Authorized Users"
   .panel-body
     .bootstrap-table-dropdown-overflow
       #associated-users-custom-toolbar
-        %button.btn.btn-success#new-associated-user-button{ disabled: permission_to_edit ? nil : true, data: { protocol_id: protocol.id, permission: 'true' } }= t(:protocol_information)[:add_authorized_user]
+        %button.btn.btn-success#new-associated-user-button{ disabled: permission_to_edit ? nil : true, data: { protocol_id: protocol.id, permission: 'true' } }
+          = t(:dashboard)[:protocols][:authorized_users][:add_user]
       %table#associated-users-table{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', 'show-toggle' => 'true', url: dashboard_associated_users_path(format: :json, protocol_id: protocol.id), striped: 'true', toolbar: '#associated-users-custom-toolbar', 'show-export' => 'true', 'export-types' => ['excel'] } }
         %thead.primary-header
           %tr
             %th{ data: { field: 'name', align: 'left', sortable: 'true' } }
-              Full Name
+              = t(:dashboard)[:protocols][:authorized_users][:name]
             %th{ data: { field: 'role', align: 'left', sortable: 'true' } }
-              Role
+              = t(:dashboard)[:protocols][:authorized_users][:role]
             %th{ data: { field: 'email', align: 'left', sortable: 'false' } }
-              Email
+              = t(:dashboard)[:protocols][:authorized_users][:email]
             %th{ data: { field: 'phone', align: 'left', sortable: 'false' } }
-              Phone
+              = t(:dashboard)[:protocols][:authorized_users][:phone]
             %th{ data: { field: 'proxy_rights', align: 'left', sortable: 'true' } }
-              Proxy Rights
+              = t(:dashboard)[:protocols][:authorized_users][:rights]
             %th{ data: { field: 'edit', align: 'center', sortable: 'false' } }
-              Edit
+              = t(:actions)[:edit]
             %th{ data: { field: 'delete', align: 'center', sortable: 'false' } }
-              Delete
+              = t(:actions)[:delete]

@@ -25,18 +25,20 @@
         %button.close{type: 'button', data: {dismiss: 'modal'}}
           %span{aria: {hidden:'true'}} &times;
           %span.sr-only  &times;
-        %h4.modal-title.text-center Add Admin Rate
+        %h4.modal-title.text-center
+          = t(:dashboard)[:study_level_activities][:admin_rate][:header]
       .modal-body
         #modal_errors
         .row
           .col-md-12
             .form-group
-              = form.label "displayed_cost", "Cost", class: "col-sm-4 control-label"
+              = form.label "displayed_cost", t(:dashboard)[:study_level_activities][:admin_rate][:cost], class: "col-sm-4 control-label"
               .col-sm-7
                 .input-group
                   .input-group-addon $
                   = form.text_field "displayed_cost", {class: 'form-control'}
       .modal-footer
         .center-block
-          %button.btn.btn-default{type: 'button', data: {dismiss: 'modal'}} Close
-          %input.btn.btn-primary{type: 'submit', value: "Save"}
+          %button.btn.btn-default{type: 'button', data: {dismiss: 'modal'}}
+            = t(:actions)[:close]
+          %input.btn.btn-primary{type: 'submit', value: t(:actions)[:save]}

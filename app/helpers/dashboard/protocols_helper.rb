@@ -24,9 +24,9 @@ module Dashboard::ProtocolsHelper
     if !protocol.has_first_draft_service_request? && protocol.service_requests.present?
       raw(
         content_tag( :div,
-          content_tag( :button, t(:protocol_information)[:full_calendar], type: 'button', class: 'view-full-calendar-button btn btn-primary btn-sm', data: { protocol_id: protocol.id }
+          content_tag( :button, t(:dashboard)[:protocols][:service_requests][:view_consolidated], type: 'button', class: 'view-full-calendar-button btn btn-primary btn-sm', data: { protocol_id: protocol.id }
           )+
-          link_to( t(:protocol_information)[:consolidated_request], dashboard_protocol_path(protocol, format: :xlsx), class: "btn btn-primary btn-sm", data: { protocol_id: protocol.id }
+          link_to( t(:dashboard)[:protocols][:service_requests][:export_consolidated], dashboard_protocol_path(protocol, format: :xlsx), class: "btn btn-primary btn-sm", data: { protocol_id: protocol.id }
           ), class: "pull-right export-consolidated-request"
         )
       )
@@ -48,6 +48,6 @@ module Dashboard::ProtocolsHelper
   end
 
   def archived_button_display protocol
-    content_tag( :button, (protocol.archived ? 'Unarchive' : 'Archive')+" #{protocol.type.capitalize}", type: 'button', class: 'protocol-archive-button btn btn-warning btn-sm' )
+    content_tag( :button, (protocol.archived ? t(:dashboard)[:protocols][:table][:unarchive] : t(:dashboard)[:protocols][:table][:archive])+" #{protocol.type.capitalize}", type: 'button', class: 'protocol-archive-button btn btn-warning btn-sm' )
   end
 end

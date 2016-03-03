@@ -18,15 +18,15 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-%select.selectpicker.new-notification{ title: 'Send Notification', data: { style: "btn-success new_notification_button", live_search: 'true', sub_service_request_id: sub_service_request.ssr_id } }
-  %optgroup{ label: 'Requester' }
+%select.selectpicker.new-notification{ title: t(:dashboard)[:notifications][:send], data: { style: "btn-success new_notification_button", live_search: 'true', sub_service_request_id: sub_service_request.ssr_id } }
+  %optgroup{ label: t(:dashboard)[:notifications][:requester] }
     %option{ data: { identity_id: sub_service_request.service_request.service_requester_id, sub_service_request_id: sub_service_request.id, is_service_provider: 'false', current_user_id: user.id } }
       = t(:notifications)[:requester] + sub_service_request.service_request.service_requester.full_name
-  %optgroup{ label: 'Associated Users' }
+  %optgroup{ label: t(:dashboard)[:notifications][:authorized_users]}
     - sub_service_request.service_request.protocol.project_roles.each do |pr|
       %option{ data: { identity_id: pr.identity_id, sub_service_request_id: sub_service_request.id, is_service_provider: 'false', current_user_id: user.id } } #{display_user_role(pr)}: #{pr.identity.full_name}
   - unless admin
-    %optgroup{ label: 'Service Providers' }
+    %optgroup{ label: t(:dashboard)[:notifications][:clinical_providers]}
       - sub_service_request.organization.service_providers.includes(:identity).sort_by { |sp| sp.identity.last_name }.each do |sp|
         %option{ data: { identity_id: sp.identity.id, sub_service_request_id: sub_service_request.id, is_service_provider: 'true', current_user_id: user.id } }
           = sp.identity.full_name

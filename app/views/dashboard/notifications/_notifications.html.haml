@@ -24,28 +24,30 @@
     %button.btn.btn-primary.btn-block.notification_nav#notifications_inbox
       %span.pull-left
         %span.glyphicon.glyphicon-inbox
-        %span Inbox
+        %span
+          = t(:dashboard)[:notifications][:inbox]
       %span.glyphicon.glyphicon-refresh.pull-right
     %button.btn.btn-default.btn-block.notification_nav#notifications_sent
       %span.pull-left
         %span.glyphicon.glyphicon-send
-        %span Sent
+        %span
+          = t(:dashboard)[:notifications][:sent]
       %span.glyphicon.glyphicon-refresh.pull-right{style: "display: none;"}
   .col-xs-10
     #notifications-custom-toolbar
       %button.btn.btn-default.mark_as_read_unread{data: {read: "false"}}
         -# mark as unread
-        Mark as Unread
+        = t(:dashboard)[:notifications][:mark_as_unread]
       %button.btn.btn-default.mark_as_read_unread{data: {read: "true"}}
         -# mark as read
-        Mark as Read
+        = t(:dashboard)[:notifications][:mark_as_read]
     %table.notifications_table.table-condensed.table-no-bordered{id: "notifications-table", data: {toggle: 'table', search: "true", url: dashboard_notifications_path(format: :json, sub_service_request_id: sub_service_request.id, table: "inbox"), toolbar: "#notifications-custom-toolbar", "sort-name" => "time", "sort-order" => 'desc', "row-style" => "notifications_row_style"}}
       %thead.primary-header
         %tr
           %th{data: {class: 'state', field: "state", checkbox: "true"}}
           %th{data: {class: 'user', align: "left", sortable: "true", field: "user"}}
-            User
+            = t(:dashboard)[:notifications][:user]
           %th{data: {class: 'subject', align: "left", sortable: "false", field: "subject"}}
-            Subject
+            = t(:dashboard)[:notifications][:subject]
           %th{data: {class: 'time', align: "right", sortable: "true", field: "time", sorter: "dateSorter"}}
-            Time
+            = t(:dashboard)[:notifications][:time]

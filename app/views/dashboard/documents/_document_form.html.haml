@@ -25,7 +25,8 @@
         %button.close{type: 'button', data: {dismiss: 'modal'}}
           %span{aria: {hidden:'true'}} &times;
           %span.sr-only &times;
-        %h4.modal-title.text-center= header_text
+        %h4.modal-title.text-center
+          = header_text
       .modal-body
         #modal_errors
         .row
@@ -33,19 +34,21 @@
             = form.hidden_field :service_request_id
             = form.hidden_field :sub_service_request_id, value: sub_service_request.id
             .form-group
-              = form.label "doc_type", "Document Type", class: "col-sm-4 control-label"
+              = form.label "doc_type", t(:dashboard)[:documents][:form][:document_type], class: "col-sm-4 control-label"
               .col-sm-7
                 = form.select "doc_type", options_for_select(DOCUMENT_TYPES, document.doc_type), {prompt: "Select Type"}, class: "form-control selectpicker"
             .form-group#doc_type_other_field{style: document.doc_type == 'other' ? '' : 'display:none;'}
-              = form.label "doc_type_other", "Other Document Type", class: "col-sm-4 control-label"
+              = form.label "doc_type_other", t(:dashboard)[:documents][:form][:document_type_other], class: "col-sm-4 control-label"
               .col-sm-7
                 = form.text_field "doc_type_other", {class: 'form-control'}
             .form-group
-              = form.label "document", "Document", class: "col-sm-4 control-label"
+              = form.label "document", t(:dashboard)[:documents][:form][:document], class: "col-sm-4 control-label"
               .col-sm-7
-                %p.help-block= document.document_file_name
+                %p.help-block
+                  = document.document_file_name
                 = form.file_field "document"
       .modal-footer
         .center-block
-          %button.btn.btn-default{type: 'button', data: {dismiss: 'modal'}} Close
-          %input.btn.btn-primary{type: 'submit', value: "Upload"}
+          %button.btn.btn-default{type: 'button', data: {dismiss: 'modal'}}
+            = t(:actions)[:close]
+          %input.btn.btn-primary{type: 'submit', value: t(:actions)[:upload]}

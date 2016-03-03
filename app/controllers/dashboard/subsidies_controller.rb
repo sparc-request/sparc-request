@@ -23,7 +23,7 @@ class Dashboard::SubsidiesController < Dashboard::BaseController
 
   def new
     @subsidy = PendingSubsidy.new(sub_service_request_id: params[:sub_service_request_id])
-    @header_text = "New Subsidy Pending Approval"
+    @header_text = t(:dashboard)[:subsidies][:new]
     @admin = params[:admin] == 'true'
   end
 
@@ -32,7 +32,7 @@ class Dashboard::SubsidiesController < Dashboard::BaseController
     if @subsidy = PendingSubsidy.create(params[:pending_subsidy])
       @sub_service_request = @subsidy.sub_service_request
       @admin = params[:admin] == 'true'
-      flash[:success] = "Subsidy Created!"
+      flash[:success] = t(:dashboard)[:subsidies][:created]
       unless @admin
         redirect_to dashboard_sub_service_request_path(@sub_service_request, format: :js)
       end
@@ -43,7 +43,7 @@ class Dashboard::SubsidiesController < Dashboard::BaseController
 
   def edit
     @subsidy = PendingSubsidy.find params[:id]
-    @header_text = "Edit Subsidy Pending Approval"
+    @header_text = t(:dashboard)[:subsidies][:edit]
     @admin = params[:admin] == 'true'
   end
 
@@ -53,7 +53,7 @@ class Dashboard::SubsidiesController < Dashboard::BaseController
     format_pi_contribution_param
     if @subsidy.update_attributes(params[:pending_subsidy])
       @admin = params[:admin] == 'true'
-      flash[:success] = "Subsidy Updated!"
+      flash[:success] = t(:dashboard)[:subsidies][:updated]
       unless @admin
         redirect_to dashboard_sub_service_request_path(@sub_service_request, format: :js)
       end
@@ -68,7 +68,7 @@ class Dashboard::SubsidiesController < Dashboard::BaseController
     @sub_service_request = @subsidy.sub_service_request
     if @subsidy.destroy
       @admin = true
-      flash[:alert] = "Subsidy Destroyed!"
+      flash[:alert] = t(:dashboard)[:subsidies][:destroyed]
     end
   end
 
@@ -77,7 +77,7 @@ class Dashboard::SubsidiesController < Dashboard::BaseController
     subsidy = subsidy.grant_approval current_user
     @sub_service_request = subsidy.sub_service_request.reload
     @admin = true
-    flash[:success] = "Subsidy Approved!"
+    flash[:success] = t(:dashboard)[:subsidies][:approved]
   end
 
   private

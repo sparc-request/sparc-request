@@ -67,7 +67,7 @@ class Dashboard::MultipleLineItemsController < Dashboard::BaseController
         # Have to reload the service request to get the correct direct cost total for the subsidy
         @subsidy.try(:sub_service_request).try(:reload)
         @subsidy.try(:fix_pi_contribution, percent)
-        flash.now[:success] = "Services Added!"
+        flash.now[:success] = t(:dashboard)[:multiple_line_items][:created]
       else
         @errors = @service_request.errors
       end
@@ -95,6 +95,6 @@ class Dashboard::MultipleLineItemsController < Dashboard::BaseController
     @line_items = @sub_service_request.line_items.select{ |li| li.service_id == @service.id }
     @line_items.each{ |li| li.destroy }
     @subsidy.try(:fix_pi_contribution, percent)
-    flash.now[:alert] = "Services Destroyed!"
+    flash.now[:alert] = t(:dashboard)[:multiple_line_items][:destroyed]
   end
 end

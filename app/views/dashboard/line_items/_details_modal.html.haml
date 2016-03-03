@@ -24,38 +24,59 @@
       %button.close{type: 'button', data: {dismiss: 'modal'}}
         %span{aria: {hidden:'true'}} &times;
         %span.sr-only &times;
-      %h4.modal-title.text-center Study Level Activity Details
+      %h4.modal-title.text-center 
+        = t(:dashboard)[:study_level_activities][:details][:header]
     .modal-body
       .details-table
         .details-header.text-center
-          .col-xs-12= sla_service_name_display(line_item)
+          .col-xs-12
+            = sla_service_name_display(line_item)
         .detail
-          .field.col-xs-4 Charge Code
-          .col-xs-8= line_item.service.charge_code
+          .field.col-xs-4
+            = t(:dashboard)[:study_level_activities][:details][:charge_code]
+          .col-xs-8
+            = line_item.service.charge_code
         .detail
-          .field.col-xs-4 Units / Quantity
-          .col-xs-8= line_item.units_per_quantity
+          .field.col-xs-4 
+            = t(:dashboard)[:study_level_activities][:details][:unit_quantity]
+          .col-xs-8
+            = line_item.units_per_quantity
         .detail
-          .field.col-xs-4 Unit Type
-          .col-xs-8= line_item.service.current_effective_pricing_map.otf_unit_type
+          .field.col-xs-4
+            = t(:dashboard)[:study_level_activities][:details][:unit_type]
+          .col-xs-8
+            = line_item.service.current_effective_pricing_map.otf_unit_type
         .detail
-          .field.col-xs-4 Quantity Requested
-          .col-xs-8= line_item.quantity
+          .field.col-xs-4
+            = t(:dashboard)[:study_level_activities][:details][:quantity_requested]
+          .col-xs-8
+            = line_item.quantity
         .detail
-          .field.col-xs-4 Quantity Type
-          .col-xs-8= line_item.service.current_effective_pricing_map.quantity_type
+          .field.col-xs-4
+            = t(:dashboard)[:study_level_activities][:details][:quantity_type]
+          .col-xs-8
+            = line_item.service.current_effective_pricing_map.quantity_type
         .detail
-          .field.col-xs-4 Cost
-          .col-xs-8= sla_cost_display(line_item)
+          .field.col-xs-4 
+            = t(:dashboard)[:study_level_activities][:details][:cost]
+          .col-xs-8
+            = sla_cost_display(line_item)
         .detail
-          .field.col-xs-4 Received
-          .col-xs-8= format_date(line_item.created_at)
+          .field.col-xs-4
+            = t(:dashboard)[:study_level_activities][:details][:received]
+          .col-xs-8
+            = format_date(line_item.created_at)
         .detail
-          .field.col-xs-4 In Process
-          .col-xs-8= format_date(line_item.in_process_date)
+          .field.col-xs-4
+            = t(:dashboard)[:study_level_activities][:details][:in_process]
+          .col-xs-8
+            = format_date(line_item.in_process_date)
         .detail
-          .field.col-xs-4 Complete
-          .col-xs-8= format_date(line_item.complete_date)
+          .field.col-xs-4
+            = t(:dashboard)[:study_level_activities][:details][:complete]
+          .col-xs-8
+            = format_date(line_item.complete_date)
     .modal-footer
       .center-block
-        %button.btn.btn-default{type: 'button', data: {dismiss: 'modal'}} Close
+        %button.btn.btn-default{type: 'button', data: {dismiss: 'modal'}}
+          = t(:actions)[:close]

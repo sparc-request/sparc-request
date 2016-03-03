@@ -106,8 +106,6 @@ namespace :data do
           return false
         end
       end
-
-      true
     end
 
     def full_rate_lower?(rate, pricing_map)
@@ -116,7 +114,7 @@ namespace :data do
 
     def generate_bad_rate_report(rate_array)
       CSV.open("tmp/bad_rate_report.csv", "w+") do |csv|
-        csv << ["CPT Code", "Procedure Name", "Service Rate", "Corporate Rate", "Federal Rate", "Member Rate", "Other Rate", ]
+        csv << ["CPT Code", "Procedure Name", "Service Rate", "Corporate Rate", "Federal Rate", "Member Rate", "Other Rate"]
         rate_array.each do |rates|
           service = rates[0]
           pricing_map = rates[1]

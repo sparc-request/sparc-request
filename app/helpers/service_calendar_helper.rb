@@ -120,7 +120,7 @@ module ServiceCalendarHelper
   end
 
   def display_visit_based_direct_cost_per_study(line_items_visit)
-    currency_converter(line_items_visit.direct_costs_for_visit_based_service_single_subject * line_items_visit.subject_count)
+    currency_converter(line_items_visit.direct_costs_for_visit_based_service_single_subject * (line_items_visit.subject_count || 0))
   end
 
   # Displays max totals per patient

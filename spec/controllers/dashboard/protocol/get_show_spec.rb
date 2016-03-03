@@ -45,6 +45,7 @@ RSpec.describe Dashboard::ProtocolsController do
       end
 
       context 'user authorized to view Protocol' do
+        render_views
         it 'should not render error message' do
           authorize(identity, protocol.becomes(Project), can_view: true)
 

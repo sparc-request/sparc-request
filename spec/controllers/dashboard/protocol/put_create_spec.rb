@@ -2,6 +2,41 @@ require 'rails_helper'
 
 RSpec.describe Dashboard::ProtocolsController do
   describe 'put create' do
+    context 'params[:protocol][:selected_for_epic] == true, USE_EPIC == true, QUEUE_EPIC == false' do
+      it 'should notify for epic user approval' do
+        identity = create(:identity)
+        log_in_dashboard_identity(obj: identity)
+
+        protocol_attributes = {
+          short_title: 'a',
+          title: 'b',
+          funding_status: 'funded',
+          funding_source: 'federal',
+          type: 'Project',
+          selected_for_epic: false,
+          requester_id: identity.id,
+          selected_for_epic: true,
+          project_roles_attributes: [
+            identity_id: identity.id,
+            role: 'primary-pi',
+            project_rights: 'approve'
+          ]
+        }
+
+        stub_const('USE_EPIC', true)
+        stub_const('QUEUE_EPIC', false)
+
+        mail = double('mail')
+        expect(mail).to receive(:deliver)
+        expect(Notifier).to receive(:notify_for_epic_user_approval) do |protocol|
+          expect(protocol.id).to eq(1) # should receive our new Protocol
+          mail
+        end
+
+        xhr :put, :create, format: :js, protocol: protocol_attributes
+      end
+    end
+
     context 'params[:protocol] does not describe a valid Protocol' do
       it 'should set @protocol to an unperisted Protocol and set @errors' do
         identity = create(:identity)
@@ -72,14 +107,30 @@ RSpec.describe Dashboard::ProtocolsController do
         expect(assigns(:protocol)).to be_persisted
         expect(assigns(:errors)).to be_nil
       end
-    end
-  end
 
-  def identity_stub(opts = {})
-    admin_orgs = opts[:admin] ? authorized_admin_organizations_stub : []
-    instance_double('Identity',
-      id: 1,
-      authorized_admin_organizations: admin_orgs
-    )
+      it 'should set flash[:success]' do
+        identity = create(:identity)
+        log_in_dashboard_identity(obj: identity)
+
+        protocol_attributes = {
+          short_title: 'a',
+          title: 'b',
+          funding_status: 'funded',
+          funding_source: 'federal',
+          type: 'Project',
+          selected_for_epic: false,
+          requester_id: identity.id,
+          project_roles_attributes: [
+            identity_id: identity.id,
+            role: 'primary-pi',
+            project_rights: 'approve'
+          ]
+        }
+
+        xhr :put, :create, format: :js, protocol: protocol_attributes
+
+        expect(flash[:success]).to eq('Project Created!')
+      end
+    end
   end
 end

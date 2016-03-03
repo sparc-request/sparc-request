@@ -80,15 +80,15 @@ RSpec.describe 'dashboard/protocols/index', type: :view do
       end
 
       it 'should show "My Protocols" checkbox' do
-        expect(response).to have_content('My Protocols')
+        expect(response).to have_field('My Protocols')
       end
 
-      it 'should show "My Admin Organizations" select' do
-        expect(response).to have_content('My Admin Organizations')
+      it 'should show "My Admin Organizations" checkbox' do
+        expect(response).to have_field('My Admin Organizations')
       end
 
       it 'should show "Core" select' do
-        expect(response).to have_content('Core')
+        expect(response).to have_field('Core')
       end
     end
   end

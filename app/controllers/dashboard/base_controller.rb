@@ -37,7 +37,7 @@ class Dashboard::BaseController < ActionController::Base
   end
 
   def clean_errors errors
-    errors.to_a.map {|k,v| "#{k.humanize} #{v}".rstrip + '.'}
+    errors.to_a.map { |k,v| "#{k.humanize} #{v}".rstrip + '.' }
   end
 
   private
@@ -46,7 +46,7 @@ class Dashboard::BaseController < ActionController::Base
     @authorization = ProtocolAuthorizer.new(@protocol, @user)
     if !@authorization.can_view?
       @protocol = nil
-      render :partial => 'service_requests/authorization_error', :locals => {:error => "You are not allowed to access this protocol."}
+      render partial: 'service_requests/authorization_error', locals: { error: 'You are not allowed to access this protocol.' }
     end
   end
 
@@ -54,7 +54,7 @@ class Dashboard::BaseController < ActionController::Base
     @authorization = ProtocolAuthorizer.new(@protocol, @user)
     if !@authorization.can_edit?
       @protocol = nil
-      render :partial => 'service_requests/authorization_error', :locals => {:error => "You are not allowed to edit this protocol."}
+      render partial: 'service_requests/authorization_error', locals: { error: 'You are not allowed to edit this protocol.' }
     end
   end
 

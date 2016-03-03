@@ -183,44 +183,16 @@ class ServiceRequestsController < ApplicationController
     if @service_request.arms.blank?
       @back = 'service_details'
     end
-    @subsidies = []
-    @service_request.sub_service_requests.each do |ssr|
-      if ssr.subsidy
-        # we already have a subsidy; add it to the list
-        subsidy = ssr.subsidy
-        @subsidies << subsidy
-      elsif ssr.eligible_for_subsidy?
-        # we don't have a subsidy yet; add it to the list but don't save
-        # it yet
-        # TODO: is it a good idea to modify this SubServiceRequest like
-        # this without saving it to the database?
-        ssr.build_subsidy
-        @subsidies << ssr.subsidy
-      end
-    end
+    @has_subsidy = @service_request.sub_service_requests.map(&:has_subsidy?).any?
+    @eligible_for_subsidy = @service_request.sub_service_requests.map(&:eligible_for_subsidy?).any?
 
-    if @subsidies.empty? || !subsidies_for_ssr(@subsidies)
+    if not @has_subsidy and not @eligible_for_subsidy
       redirect_to "/service_requests/#{@service_request.id}/document_management"
     end
   end
 
-  def subsidies_for_ssr subsidies
-    if @sub_service_request
-      has_match = false
-      subsidies.each do |subsidy|
-        if subsidy.sub_service_request_id == @sub_service_request.id
-          has_match = true
-        end
-      end
-
-      return has_match
-    else
-      return true
-    end
-  end
-
   def document_management
-    if @service_request.sub_service_requests.map(&:subsidy).compact.empty?
+    unless @service_request.sub_service_requests.map(&:has_subsidy?).any?
       @back = 'service_calendar'
     end
     @service_list = @service_request.service_list
@@ -249,9 +221,7 @@ class ServiceRequestsController < ApplicationController
 
   def obtain_research_pricing
     # TODO: refactor into the ServiceRequest model
-    @service_request.update_status('get_a_cost_estimate')
-    @service_request.previous_submitted_at = @service_request.submitted_at
-    @service_request.update_attribute(:submitted_at, Time.now)
+    update_service_request_status(@service_request, 'get_a_cost_estimate')
     @service_request.ensure_ssr_ids
 
     @protocol = @service_request.protocol
@@ -267,9 +237,7 @@ class ServiceRequestsController < ApplicationController
   end
 
   def confirmation
-    @service_request.update_status('submitted')
-    @service_request.previous_submitted_at = @service_request.submitted_at
-    @service_request.update_attribute(:submitted_at, Time.now)
+    update_service_request_status(@service_request, 'submitted')
     @service_request.ensure_ssr_ids
     @service_request.update_arm_minimum_counts
 
@@ -284,7 +252,6 @@ class ServiceRequestsController < ApplicationController
     @service_list = @service_request.service_list
 
     @service_request.sub_service_requests.each do |ssr|
-      ssr.subsidy.update_attributes(:overridden => true) if ssr.subsidy
       ssr.update_attributes(:nursing_nutrition_approved => false, :lab_approved => false, :imaging_approved => false, :committee_approved => false)
     end
 
@@ -333,10 +300,8 @@ class ServiceRequestsController < ApplicationController
   end
 
   def save_and_exit
-    if @sub_service_request # if we are editing a sub service request we should just update it's status
-      @sub_service_request.update_attribute(:status, 'draft')
-    else
-      @service_request.update_status('draft', @service_request.submitted_at.present?)
+    unless @sub_service_request # if we are editing a sub service request just redirect
+      @service_request.update_status('draft', false)
       @service_request.ensure_ssr_ids
     end
 
@@ -684,5 +649,15 @@ class ServiceRequestsController < ApplicationController
       errors << doc_errors
     end
     # end document saving stuff
+  end
+
+  def update_service_request_status(service_request, status)
+    unless service_request.submitted_at?
+      service_request.update_status(status)
+      if (status == 'submitted') || (status == 'get_a_cost_estimate')
+        service_request.previous_submitted_at = @service_request.submitted_at
+        service_request.update_attribute(:submitted_at, Time.now)
+      end
+    end
   end
 end

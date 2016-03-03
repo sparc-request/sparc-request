@@ -25,13 +25,6 @@ class Dashboard::Breadcrumber
   def add_crumb(sym, value)
     @crumbs[sym] = value
 
-    # case sym
-    # when :notifications
-    #   @crumbs.delete(:edit_protocol)
-    # when :edit_protocol
-    #   @crumbs.delete(:notifications)
-    #   @crumbs[:protocol_id] = value if value
-    # end
     self
   end
 

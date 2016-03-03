@@ -72,4 +72,4 @@
 
 #saved_searches
   - if @protocol_filters.present?
-    = render partial: 'dashboard/protocol_filters/saved_searches', locals: { current_user: current_user }
+    = render partial: 'dashboard/protocol_filters/saved_searches', locals: { current_user: current_user, protocol_filters: @protocol_filters }

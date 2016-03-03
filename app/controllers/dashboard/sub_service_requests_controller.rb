@@ -45,7 +45,7 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
           new_page = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i
           @pages[arm.id] = @service_request.set_visit_page new_page, arm
         end
-        render 
+        render
       }
       format.html { # Admin Edit
         @admin = true
@@ -60,6 +60,23 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
         end
       }
     end
+  end
+
+  def refresh_service_calendar
+    @service_request = @sub_service_request.service_request
+    arm_id = params[:arm_id].to_s if params[:arm_id]
+    @arm = Arm.find arm_id if arm_id
+    @portal = params[:portal] if params[:portal]
+    @thead_class = @portal == 'true' ? 'ui-widget-header' : 'red-provider'
+    page = params[:page] if params[:page]
+    session[:service_calendar_pages] = params[:pages] if params[:pages]
+    session[:service_calendar_pages][arm_id] = page if page && arm_id
+    @pages = {}
+    @service_request.arms.each do |arm|
+      new_page = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i
+      @pages[arm.id] = @service_request.set_visit_page new_page, arm
+    end
+    @tab = 'calendar'
   end
 
   def update

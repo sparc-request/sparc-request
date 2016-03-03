@@ -49,6 +49,8 @@ SparcRails::Application.routes.draw do
 
   resources :contact_forms, only: [:new, :create]
 
+  resources :subsidies, only: [:create, :update, :destroy]
+
   resources :service_requests, only: [:show] do
     resources :projects, except: [:index, :show, :destroy]
     resources :studies, except: [:index, :show, :destroy]
@@ -267,6 +269,22 @@ SparcRails::Application.routes.draw do
 
     resources :services, only: [:show]
 
+    resource :service_calendars, only: [:update, :index] do
+      member do
+        get 'table'
+        get 'merged_calendar'
+      end
+      collection do
+        put 'rename_visit'
+        put 'set_day'
+        put 'set_window_before'
+        put 'set_window_after'
+        put 'update_otf_qty_and_units_per_qty'
+        put 'move_visit_position'
+        put 'show_move_visits'
+      end
+    end
+
     resources :service_requests, only: [:show]
 
     resources :studies, controller: :protocols, except: [:destroy]
@@ -285,6 +303,7 @@ SparcRails::Application.routes.draw do
         get :status_history
         get :subsidy_history
         get :approval_history
+        get :refresh_service_calendar
       end
     end
 

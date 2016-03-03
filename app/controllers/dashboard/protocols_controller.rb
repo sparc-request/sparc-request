@@ -56,7 +56,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
       format.js   { render }
       format.html {
         session[:breadcrumbs].clear.add_crumbs(protocol_id: @protocol.id)
-        @permission_to_edit = @protocol_role.can_edit?
+        @permission_to_edit = @authorization.can_edit?
         @protocol_type = @protocol.type.capitalize
         @service_requests = @protocol.service_requests
         render
@@ -76,7 +76,8 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   def create
     protocol_class = params[:protocol][:type].capitalize.constantize
     @protocol = protocol_class.new(params[:protocol])
-    unless @protocol.project_roles.map(&:identity_id).include?(current_user.id)
+
+    if @protocol.project_roles.where(identity_id: current_user.id).empty?
       # if current user is not authorized, add them as an authorized user
       @protocol.project_roles.new(identity_id: current_user.id, role: "general-access-user", project_rights: "approve")
     end
@@ -110,10 +111,9 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def update
-    @protocol = current_user.protocols.find params[:id]
     attrs = params[:protocol]
 
-    if @protocol.update_attributes(attrs.merge(study_type_question_group_id: StudyTypeQuestionGroup.active.pluck(:id).first))
+    if @protocol.update_attributes(attrs.merge(study_type_question_group_id: StudyTypeQuestionGroup.active_id))
       flash[:success] = "#{@protocol.type} Updated!"
     else
       render :action => 'edit'
@@ -157,6 +157,11 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     respond_to do |format|
       format.js
     end
+  end
+
+  def display_requests
+    @protocol_role = @protocol.project_roles.find_by_identity_id(@user.id)
+    @permission_to_edit = @protocol_role.can_edit?
   end
 
   private

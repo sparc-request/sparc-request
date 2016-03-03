@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160208152801) do
+ActiveRecord::Schema.define(version: 20160217145001) do
 
   create_table "admin_rates", force: :cascade do |t|
     t.integer  "line_item_id", limit: 4
@@ -862,6 +862,7 @@ ActiveRecord::Schema.define(version: 20160208152801) do
     t.datetime "created_at",                           null: false
     t.datetime "updated_at",                           null: false
     t.datetime "deleted_at"
+    t.date     "original_submitted_date"
   end
 
   add_index "service_requests", ["protocol_id"], name: "index_service_requests_on_protocol_id", using: :btree

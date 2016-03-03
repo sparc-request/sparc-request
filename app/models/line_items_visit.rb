@@ -87,7 +87,7 @@ class LineItemsVisit < ActiveRecord::Base
   def quantity_total
     # quantity_total = self.visits.map {|x| x.research_billing_qty}.inject(:+) * self.subject_count
     quantity_total = self.visits.sum('research_billing_qty')
-    return quantity_total * self.subject_count
+    return quantity_total * (self.subject_count || 0)
   end
 
   # Returns a hash of subtotals for the visits in the line item.

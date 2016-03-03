@@ -41,7 +41,7 @@ SparcRails::Application.configure do
   config.assets.js_compressor = :uglifier
 
   # Don't fallback to assets pipeline if a precompiled asset is missed
-  config.assets.compile = false
+  config.assets.compile = true
 
   # Generate digests for assets URLs
   config.assets.digest = true
@@ -58,6 +58,7 @@ SparcRails::Application.configure do
 
   # See everything in the log (default is :info)
   # config.log_level = :debug
+  config.log_level = :info
 
   # Prepend all log lines with the following tags
   # config.log_tags = [ :subdomain, :uuid ]
@@ -92,7 +93,7 @@ SparcRails::Application.configure do
   # config.active_record.auto_explain_threshold_in_seconds = 0.5
   config.action_mailer.default_url_options = { host: 'sparc.musc.edu' }
 
-  config.middleware.use ExceptionNotifier::Rack,
+  config.middleware.use ExceptionNotification::Rack,
     email: {
       ignore_if: ->(env, exception) { ['128.23.150.107'].include?(env['REMOTE_ADDR']) },
       sender_address: 'donotreply@musc.edu',

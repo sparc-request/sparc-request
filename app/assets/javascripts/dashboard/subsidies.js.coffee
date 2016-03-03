@@ -78,11 +78,14 @@ $(document).ready ->
     redisplay_form_values(percent_subsidy, pi_contribution, current_cost)
 
   recalculate_current_cost = (total_request_cost, percent_subsidy) ->
-    return total_request_cost * percent_subsidy
+    current = total_request_cost * percent_subsidy
+    return if isNaN(current) then 0 else current
   recalculate_pi_contribution = (total_request_cost, percent_subsidy) ->
-    return total_request_cost - (total_request_cost * percent_subsidy)
+    contribution = total_request_cost - (total_request_cost * percent_subsidy)
+    return if isNaN(contribution) then 0 else contribution
   recalculate_percent_subsidy = (total_request_cost, pi_contribution) ->
-    return (total_request_cost - pi_contribution) / total_request_cost
+    percentage = (total_request_cost - pi_contribution) / total_request_cost
+    return if isNaN(percentage) then 0 else percentage
   redisplay_form_values = (percent_subsidy, pi_contribution, current_cost) ->
     $("#current_percent_subsidy_of_total").val( (percent_subsidy*100.0).toFixed(2) )
     $("#pending_subsidy_pi_contribution").val( formatMoney(pi_contribution, ',', '.', '') )

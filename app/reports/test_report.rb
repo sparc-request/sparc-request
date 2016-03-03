@@ -45,10 +45,11 @@ class TestReport < ReportingModule
   # :grouping => hash representation used to group checkboxes {"Active" => ['submitted', 'in_process'], "Other" => ['draft']}
   # :selected => array of pre-selected checkboxes ['submitted', 'in_process']
   # :custom_name_method => method (default is :name)
+  # :has_dependencies => this is used to signal the first dependencies to set up on page load. For example, institution when filter organizations.
   def default_options
     {
       "Date Range" => {:field_type => :date_range, :for => "service_requests_submitted_at", :from => "2012-03-01".to_date, :to => Date.today, :required => true},
-      Institution => {:field_type => :select_tag, :required => true},
+      Institution => {:field_type => :select_tag, :required => true, :has_dependencies => "true"},
       Provider => {:field_type => :select_tag, :dependency => '#institution_id', :dependency_id => 'parent_id'},
       Program => {:field_type => :select_tag, :dependency => '#provider_id', :dependency_id => 'parent_id'},
       Core => {:field_type => :select_tag, :dependency => '#program_id', :dependency_id => 'parent_id'},
@@ -117,7 +118,7 @@ class TestReport < ReportingModule
     service_organization_ids = [selected_organization_id]
     if selected_organization_id
       org = Organization.find(selected_organization_id)
-      service_organization_ids += org.all_children(organizations).map(&:id)
+      service_organization_ids = org.all_children(organizations).map(&:id)
       service_organization_ids.flatten!
     end
 

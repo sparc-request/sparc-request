@@ -2,22 +2,6 @@ require 'rails_helper'
 
 RSpec.describe Dashboard::ProtocolsController do
   describe 'get show' do
-    it 'should set @authorization' do
-      protocol = create(:protocol_without_validations, type: 'Project').
-        becomes(Project)
-      identity = create(:identity)
-      log_in_dashboard_identity(obj: identity.reload)
-      auth_mock1 = instance_double('ProtocolAuthorizer',
-        'can_view?' => false)
-      allow(ProtocolAuthorizer).to receive(:new).
-        with(protocol.reload, identity.reload).
-        and_return(auth_mock1)
-
-      get :show, id: protocol.id
-
-      expect(assigns(:authorization)).to eq(auth_mock1)
-    end
-
     describe 'authorization' do
       let!(:identity) { create(:identity) }
       let!(:protocol) { create(:protocol_without_validations, type: 'Project') }
@@ -41,17 +25,6 @@ RSpec.describe Dashboard::ProtocolsController do
           get :show, id: protocol.id, format: :html
 
           expect(response).to render_template('service_requests/_authorization_error')
-        end
-      end
-
-      context 'user authorized to view Protocol' do
-        render_views
-        it 'should not render error message' do
-          authorize(identity, protocol.becomes(Project), can_view: true)
-
-          get :show, id: protocol.id, format: :html
-
-          expect(response).not_to render_template('service_requests/_authorization_error')
         end
       end
     end

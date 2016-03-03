@@ -111,10 +111,9 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def update
-    @protocol = current_user.protocols.find params[:id]
     attrs = params[:protocol]
 
-    if @protocol.update_attributes(attrs.merge(study_type_question_group_id: StudyTypeQuestionGroup.active.pluck(:id).first))
+    if @protocol.update_attributes(attrs.merge(study_type_question_group_id: StudyTypeQuestionGroup.active_id))
       flash[:success] = "#{@protocol.type} Updated!"
     else
       render :action => 'edit'

@@ -29,7 +29,6 @@ RSpec.describe Dashboard::ProtocolsController do
         mail = double('mail')
         expect(mail).to receive(:deliver)
         expect(Notifier).to receive(:notify_for_epic_user_approval) do |protocol|
-          expect(protocol.id).to eq(1) # should receive our new Protocol
           mail
         end
 

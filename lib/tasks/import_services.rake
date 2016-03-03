@@ -120,7 +120,8 @@ namespace :data do
         rate_array.each do |rates|
           service = rates[0]
           pricing_map = rates[1]
-          csv << [service.cpt_code, service.name, pricing_map.full_rate, pricing_map.corporate_rate]
+          csv << [service.cpt_code, service.name, pricing_map.full_rate, pricing_map.corporate_rate, pricing_map.federal_rate,
+                  pricing_map.member_rate, pricing_map.other_rate]
         end
       end
     end
@@ -191,7 +192,7 @@ namespace :data do
           puts service.errors
           puts pricing_map.errors
         end
-      end
+      end #End of csv import
 
       puts "#"*50
       if pricing_maps_with_bad_rates.size > 0

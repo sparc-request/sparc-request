@@ -57,9 +57,19 @@ $(document).ready ->
       pi_contribution = total_request_cost
     else if pi_contribution < 0
       pi_contribution = 0
-    percent_subsidy = recalculate_percent_subsidy(total_request_cost, pi_contribution)
-    current_cost = recalculate_current_cost(total_request_cost, percent_subsidy)
-    redisplay_form_values(subsidy_id, percent_subsidy, pi_contribution, current_cost)
+
+    data = 'subsidy' :
+      'pi_contribution' : pi_contribution
+    $.ajax
+      type: 'PATCH'
+      url:  "/subsidies/#{subsidy_id}"
+      data: data
+      success: (data, textStatus, jqXHR) ->
+        percent_subsidy = recalculate_percent_subsidy(total_request_cost, pi_contribution)
+        current_cost = recalculate_current_cost(total_request_cost, percent_subsidy)
+        redisplay_form_values(subsidy_id, percent_subsidy, pi_contribution, current_cost)
+      error: (jqXHR, textStatus, errorThrown) ->
+        $(this).val($(this).defaultValue)
 
   $(document).on 'change', '#percent_subsidy', ->
     # When user changes Percent Subsidy, the PI Contribution and Subsidy Cost fields are recalculated & displayed
@@ -71,18 +81,28 @@ $(document).ready ->
     else if percent_subsidy < 0
       percent_subsidy = 0
     pi_contribution = recalculate_pi_contribution(total_request_cost, percent_subsidy)
-    current_cost = recalculate_current_cost(total_request_cost, percent_subsidy)
-    redisplay_form_values(subsidy_id, percent_subsidy, pi_contribution, current_cost)
 
-  recalculate_current_cost = (total_request_cost, percent_subsidy) ->
-    current = total_request_cost * percent_subsidy
-    return if isNaN(current) then 0 else current
+    data = 'subsidy' :
+      'pi_contribution' : pi_contribution
+    $.ajax
+      type: 'PATCH'
+      url:  "/subsidies/#{subsidy_id}"
+      data: data
+      success: (data, textStatus, jqXHR) ->
+        current_cost = recalculate_current_cost(total_request_cost, percent_subsidy)
+        redisplay_form_values(subsidy_id, percent_subsidy, pi_contribution, current_cost)
+      error: (jqXHR, textStatus, errorThrown) ->
+        $(this).val($(this).defaultValue)
+
   recalculate_pi_contribution = (total_request_cost, percent_subsidy) ->
     contribution = total_request_cost - (total_request_cost * percent_subsidy)
     return if isNaN(contribution) then 0 else contribution
   recalculate_percent_subsidy = (total_request_cost, pi_contribution) ->
     percentage = (total_request_cost - pi_contribution) / total_request_cost
     return if isNaN(percentage) then 0 else percentage
+  recalculate_current_cost = (total_request_cost, percent_subsidy) ->
+    current = total_request_cost * percent_subsidy
+    return if isNaN(current) then 0 else current
 
   redisplay_form_values = (subsidy_id, percent_subsidy, pi_contribution, current_cost) ->
     $("#percent_subsidy[data-subsidy-id='#{subsidy_id}']").val( (percent_subsidy*100.0).toFixed(2) )
@@ -90,12 +110,6 @@ $(document).ready ->
     $(".subsidy_cost[data-subsidy-id='#{subsidy_id}']").text( formatMoney(current_cost) )
 
 #****************** SUBSIDY FORM END ***************************#
-
-  # # Any time that Enter is pressed, emit a change event
-  # $('.pi-contribution, .percent_of_cost').keypress (event) ->
-  #   if event.keyCode is 13
-  #     event.preventDefault()
-  #     $(this).change()
 
   # # Validate the form before we submit it
   # $('#navigation_form').submit ->

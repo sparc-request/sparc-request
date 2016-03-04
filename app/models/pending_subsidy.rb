@@ -24,24 +24,24 @@ class PendingSubsidy < Subsidy
 
   default_scope { where(status: "Pending") }
 
-  validate :percentage_caps
+  # validate :percentage_caps
 
   def default_values
     self.status ||= 'Pending'
   end
 
-  def percentage_caps
-    # percentage can not be less than 0, greater than 100, or greater than cap (if cap)
-    cap = max_percentage
-    current_percentage = current_percent_of_total
-    if current_percentage < 0
-      errors.add(:percent_subsidy, "can not be less than 0")
-    elsif current_percentage > 100
-      errors.add(:percent_subsidy, "can not be greater than 100")
-    elsif cap.present? and cap > 0 and current_percentage > cap
-      errors.add(:percent_subsidy, "can not be greater than the cap of #{cap}")
-    end
-  end
+  # def percentage_caps
+  #   # percentage can not be less than 0, greater than 100, or greater than cap (if cap)
+  #   cap = max_percentage
+  #   current_percentage = current_percent_of_total
+  #   if current_percentage < 0
+  #     errors.add(:percent_subsidy, "can not be less than 0")
+  #   elsif current_percentage > 100
+  #     errors.add(:percent_subsidy, "can not be greater than 100")
+  #   elsif cap.present? and cap > 0 and current_percentage > cap
+  #     errors.add(:percent_subsidy, "can not be greater than the cap of #{cap}")
+  #   end
+  # end
 
   def pi_contribution
     # This ensures that if pi_contribution is null (new record),

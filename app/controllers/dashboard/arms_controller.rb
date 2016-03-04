@@ -43,7 +43,7 @@ class Dashboard::ArmsController < Dashboard::BaseController
       @selected_arm.default_visit_days
       @selected_arm.reload
       # If any sub service requests under this arm's protocol are in CWF we need to build patient calendars
-      if @protocol.service_requests.map {|x| x.sub_service_requests.map {|y| y.in_work_fulfillment}}.flatten.include?(true)
+      if @protocol.sub_service_requests.any? { |ssr| ssr.in_work_fulfillment? }
         @selected_arm.populate_subjects
       end
       flash[:success] = "Arm Created!"

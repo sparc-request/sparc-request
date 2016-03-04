@@ -683,7 +683,7 @@ class ServiceRequestsController < ApplicationController
   def update_service_request_status(service_request, status)
     unless service_request.submitted_at?
       service_request.update_status(status)
-      if (status == 'submitted') || (status == 'get_a_cost_estimate')
+      if (status == 'submitted')
         service_request.previous_submitted_at = @service_request.submitted_at
         service_request.update_attribute(:submitted_at, Time.now)
       end

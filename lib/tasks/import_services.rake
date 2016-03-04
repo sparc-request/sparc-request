@@ -102,14 +102,10 @@ namespace :data do
       rate_array = [pricing_map.corporate_rate, pricing_map.federal_rate, 
                     pricing_map.member_rate, pricing_map.other_rate]
       rate_array.each do |rate|
-        if full_rate_lower?(rate, pricing_map)
+        if (rate > pricing_map.full_rate)
           return false
         end
       end
-    end
-
-    def full_rate_lower?(rate, pricing_map)
-      rate > pricing_map.full_rate
     end
 
     def generate_bad_rate_report(rate_array)

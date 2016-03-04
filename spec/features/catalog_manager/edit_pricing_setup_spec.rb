@@ -29,31 +29,6 @@ RSpec.describe 'edit a pricing setup', js: true do
     page.execute_script("$('.ui-accordion-header').click()")
   end
 
-  it 'should successfully update a pricing_setup' do
-
-    within('.ui-accordion') do
-
-      enter_display_date
-
-      page.execute_script("$('.dont_fix_pricing_maps_button').click()")
-
-      enter_effective_date
-
-      page.execute_script("$('.dont_fix_pricing_maps_button').click()")
-
-      find('.federal_percentage_field').set('250')
-      click_link('Apply Federal % to All')
-      page.execute_script %Q{ $(".rate").val("full") }
-      page.execute_script %Q{ $(".rate").change() }
-    end
-
-    first(".save_button").click
-    wait_for_javascript_to_finish
-
-    expect(page).to have_content "Office of Biomedical Informatics saved successfully"
-
-  end
-
   ## Need to create a test that will confirm that a dialog pops when changing a date of a pricing_setup that has a related pricing_map.
   ## Need to confirm that changing the pricing_map date to match the pricing_setup works.
 

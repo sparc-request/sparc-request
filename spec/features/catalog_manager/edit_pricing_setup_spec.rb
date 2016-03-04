@@ -81,23 +81,6 @@ RSpec.describe 'edit a pricing setup', js: true do
     expect(new_date).to eq(pricing_map_date)
   end
 
-  it "should not allow letters into the percentage fields" do
-
-    within('.ui-accordion') do
-      find('.corporate_percentage_field').set("Bob")
-      page.execute_script("$('.corporate_percentage_field').trigger('change');") # shouldn't need this
-      expect(page).to have_content "Corporate can only contain numbers."
-
-      find('.other_percentage_field').set("Wilfred")
-      page.execute_script("$('.other_percentage_field').trigger('change');") # shouldn't need this
-      expect(page).to have_content "Other can only contain numbers."
-
-      find('.member_percentage_field').set("Slappy")
-      page.execute_script("$('.member_percentage_field').trigger('change');") # shouldn't need this
-      expect(page).to have_content "Member can only contain numbers."
-    end
-  end
-
   it "should allow zeros into the percentage fields" do
 
     within('.ui-accordion') do

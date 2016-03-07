@@ -665,6 +665,8 @@ en:
     remove_request_confirm: "This action will delete this service request and you will be redirected to your user portal. Click OK to proceed."
     new_request_dialog1: "New Request?"
     new_request_dialog2: "Is this a new research study or project?"
+    request_submitted1: "Delete Service Warning"
+    request_submitted2: "Deleting this service from the service cart will be irreversible and will cause it to be deleted from the associated protocol. Are you sure you want to proceed?"
   catalog_manager_js:
     clinical_provider_remove: "Are you sure you want to remove this Fulfillment Provider?"
     cm_rights_remove: "Are you sure you want to remove rights for this user from the Catalog Manager?"
@@ -1035,7 +1037,7 @@ en:
       short_title: "Short Title: "
     download_button: "Download my Service Request"
     instructions: "Thank you for submitting your service request(s) through SPARC Request. An email has been sent to each of your service providers and they should be contacting you soon. If you have any questions or concerns, please don't hesitate to contact the SUCCESS Center at 792-8300 or success@musc.edu."
-    portal_button: "Go to SPARC Request User Portal"
+    portal_button: "Go to Dashboard"
     research_pricing_instructions : "You have successfully submitted a request to get a cost estimate. An email(s) has been submitted on your behalf, and we will respond to your request for a cost estimate shortly. Should you have any questions regarding your request(s), please contact the service provider contact(s) listed below."
 
   # Service Request Details form

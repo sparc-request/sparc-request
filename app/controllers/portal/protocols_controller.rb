@@ -99,17 +99,12 @@ class Portal::ProtocolsController < Portal::BaseController
   def update_protocol_type
     # Using update_attribute here is intentional, type is a protected attribute
     @protocol_type = params[:protocol][:type]
-    if @protocol.update_attribute(:type, @protocol_type)
-      if params[:sub_service_request_id]
-        if @protocol_type = "Study" && @protocol.selected_for_epic == nil
-          @protocol.update_attribute(:study_type_question_group_id, StudyTypeQuestionGroup.active.pluck(:id).first)
-        end
-        @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
-        redirect_to portal_admin_sub_service_request_path(@sub_service_request)
-      else
-        @protocol.update_attribute(:study_type_question_group_id, StudyTypeQuestionGroup.active.pluck(:id).first)
-        redirect_to edit_portal_protocol_path(@protocol)
-      end
+    conditionally_activate_protocol
+    if admin_portal?
+      @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
+      redirect_to portal_admin_sub_service_request_path(@sub_service_request)
+    else
+      redirect_to edit_portal_protocol_path(@protocol)
     end
   end
 
@@ -186,6 +181,21 @@ class Portal::ProtocolsController < Portal::BaseController
   end
 
   private
+
+  def admin_portal?
+    params[:sub_service_request_id].present?
+  end
+
+  def conditionally_activate_protocol
+    @protocol.update_attribute(:type, @protocol_type)
+    if admin_portal?
+      if @protocol_type == "Study" && @protocol.virgin_project?
+        @protocol.activate
+      end
+    else
+      @protocol.activate
+    end
+  end
 
   def find_protocol
     @protocol = Protocol.find(params[:id])

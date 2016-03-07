@@ -66,9 +66,7 @@ RSpec.describe Portal::NotificationsController do
     it 'should return the user and all notifications' do
       session[:identity_id] = identity1.id
       get(:index, format: :json)
-      # TODO: can't just use as_json, because it formats time
-      # differently
-      expect(JSON.parse(response.body)).to eq(JSON.parse(ActiveSupport::JSON.encode([ notification1, notification2 ])))
+      expect(assigns[:notifications]).to contain_exactly(notification1, notification2)
     end
   end
 

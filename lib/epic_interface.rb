@@ -126,7 +126,8 @@ class EpicInterface
       return @client.call(
           action,
           soap_header: soap_header(action),
-          message: message)
+          message: message,
+          attributes: { 'xmlns' => @namespace })
     rescue
       h = $!.to_hash
       fault = $!.nori.find(h, 'Fault')

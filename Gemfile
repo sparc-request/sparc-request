@@ -2,7 +2,7 @@ source 'https://rubygems.org'
 
 gem 'activerecord-import'
 gem 'activerecord-session_store'
-gem 'acts_as_list', github: 'swanandp/acts_as_list'
+gem 'acts_as_list', github: 'chrisortman/acts_as_list'
 gem 'acts-as-taggable-on'
 gem 'audited-activerecord'
 gem 'axlsx'

@@ -125,7 +125,9 @@ wb.add_worksheet(name: "Consolidated Report") do |sheet|
 
       sheet.add_row(r_t_row, :style => centered)
 
-      grouped_line_items_visits = arm.line_items_visits.group_by{|liv| liv.line_item.sub_service_request.org_tree_display}
+      filtered_line_items_visits = arm.line_items_visits.reject{|liv| ['first_draft', 'draft'].include?(liv.line_item.service_request.status)}
+
+      grouped_line_items_visits = filtered_line_items_visits.group_by{|liv| liv.line_item.sub_service_request.org_tree_display}
 
 
       grouped_line_items_visits.each do |org, line_item_visits|
@@ -250,7 +252,9 @@ wb.add_worksheet(name: "Consolidated Report") do |sheet|
     total = 0
 
     @protocol.service_requests.each do |service_request|
-      total += service_request.direct_cost_total(service_request.line_items)
+      unless ['first_draft', 'draft'].include?(service_request.status)
+        total += service_request.direct_cost_total(service_request.line_items)
+      end
     end
 
     direct_cost_total_row += ["Total Direct Cost", "", "", number_to_currency(total / 100)]
@@ -258,7 +262,9 @@ wb.add_worksheet(name: "Consolidated Report") do |sheet|
     total = 0
 
     @protocol.service_requests.each do |service_request|
-      total += service_request.direct_cost_total(service_request.line_items)
+      unless ['first_draft', 'draft'].include?(service_request.status)
+        total += service_request.direct_cost_total(service_request.line_items)
+      end
     end
 
     direct_cost_total_row += ["Total Direct Cost", number_to_currency(total / 100)]
@@ -281,7 +287,9 @@ wb.add_worksheet(name: "Consolidated Report") do |sheet|
       total = 0
 
       @protocol.service_requests.each do |service_request|
-        total += service_request.indirect_cost_total(service_request.line_items)
+        unless ['first_draft', 'draft'].include?(service_request.status)
+          total += service_request.indirect_cost_total(service_request.line_items)
+        end
       end
 
       indirect_cost_total_row += ["Total Direct Cost", "", "", number_to_currency(total / 100)]
@@ -312,7 +320,9 @@ wb.add_worksheet(name: "Consolidated Report") do |sheet|
     total = 0
 
     @protocol.service_requests.each do |service_request|
-      total += service_request.grand_total(service_request.line_items)
+      unless ['first_draft', 'draft'].include?(service_request.status)
+        total += service_request.grand_total(service_request.line_items)
+      end
     end
 
     grand_total_row += ["Grand Total", "", "", number_to_currency(total / 100)]
@@ -320,7 +330,9 @@ wb.add_worksheet(name: "Consolidated Report") do |sheet|
     total = 0
 
     @protocol.service_requests.each do |service_request|
-      total += service_request.grand_total(service_request.line_items)
+      unless ['first_draft', 'draft'].include?(service_request.status)
+        total += service_request.grand_total(service_request.line_items)
+      end
     end
 
     grand_total_row += ["Grand Total", number_to_currency(total / 100)]

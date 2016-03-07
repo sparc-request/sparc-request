@@ -82,14 +82,7 @@ class Portal::SubServiceRequestsController < Portal::BaseController
       Hash.new
     end
 
-    @protocol_question_group_id = @protocol.study_type_question_group_id
-
     if @protocol.update_attributes(attrs)
-      if @protocol_question_group_id == StudyTypeQuestionGroup.active.pluck(:id).first
-        @protocol.update_attribute(:study_type_question_group_id, StudyTypeQuestionGroup.active.pluck(:id).first)
-      else
-        @protocol.update_attribute(:study_type_question_group_id, StudyTypeQuestionGroup.inactive.pluck(:id).first)
-      end
       redirect_to portal_admin_sub_service_request_path(@sub_service_request)
     else
       @user_toasts = @user.received_toast_messages.select {|x| x.sending_class == 'SubServiceRequest'}
@@ -102,8 +95,11 @@ class Portal::SubServiceRequestsController < Portal::BaseController
       @related_service_requests = @protocol.all_child_sub_service_requests
       @approvals = [@service_request.approvals, @sub_service_request.approvals].flatten
       @selected_arm = @service_request.arms.first
-
-      render :action => 'show'
+      # Sponsor name error showing up twice
+      unless @protocol.errors.messages[:sponsor_name].nil?
+        @protocol.errors.messages[:sponsor_name].uniq!
+      end
+      render action: 'show'
 
     end
   end   

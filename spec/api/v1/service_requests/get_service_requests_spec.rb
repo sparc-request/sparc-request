@@ -30,11 +30,6 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
           expect(response.body).to include('"service_requests":')
         end
 
-        it 'should respond with an array of SubServiceRequests' do
-          parsed_body = JSON.parse(response.body)
-
-          expect(parsed_body['service_requests'].length).to eq(5)
-        end
       end
     end
 

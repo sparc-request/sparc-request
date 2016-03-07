@@ -39,6 +39,10 @@ module SurveyorControllerCustomMethods
     # @title = "You can take these surveys"
   end
   def create
+    ##Save SSR Here??
+    puts '#' * 50
+    puts params.inspect
+    puts '#' * 50
     super
   end
   def show

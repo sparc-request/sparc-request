@@ -61,13 +61,6 @@ RSpec.feature 'User wants to delete an authorized user', js: true do
 
       delay
     end
-
-    context 'and tries to delete the user' do
-      scenario 'and sees an error message' do
-        given_i_have_clicked_the_delete_authorized_user_button
-        then_i_should_see_an_error_of_type 'no access'
-      end
-    end
   end
 
   def add_jason_to_protocol

@@ -22,11 +22,8 @@ require 'rails_helper'
 
 RSpec.feature 'effective and display date validations', js: true do
 
-  before :each do
-    default_catalog_manager_setup
-  end
-
   scenario 'user cannot select the same effective date as an existing pricing_map' do
+    default_catalog_manager_setup
     click_link("South Carolina Clinical and Translational Institute (SCTR)")
     wait_for_javascript_to_finish
     first('#pricing').click
@@ -46,6 +43,7 @@ RSpec.feature 'effective and display date validations', js: true do
   end
 
   scenario 'user cannot select the same display date as an existing pricing_map' do
+    default_catalog_manager_setup
     click_link("South Carolina Clinical and Translational Institute (SCTR)")
     wait_for_javascript_to_finish
     first('#pricing').click
@@ -65,6 +63,7 @@ RSpec.feature 'effective and display date validations', js: true do
   end
 
   scenario 'confirmation appears when a user selects an effective date that is before an existing effective date' do
+    default_catalog_manager_setup
     click_link("Office of Biomedical Informatics")
     wait_for_javascript_to_finish
     first('#pricing').click
@@ -85,6 +84,7 @@ RSpec.feature 'effective and display date validations', js: true do
   end
 
   scenario 'an alert will pop when a user selects an effective date in the increase/decrease rates dialog that is the same as a pricing map' do
+    default_catalog_manager_setup
     click_link('South Carolina Clinical and Translational Institute (SCTR)')
     wait_for_javascript_to_finish
     first('#pricing').click

@@ -55,36 +55,6 @@ RSpec.describe 'edit pricing map', js: true do
     wait_for_javascript_to_finish
   end
 
-  it 'should successfully update an existing pricing map', per_patient: true do
-    within('.ui-accordion > div:nth-of-type(2)') do
-      page.execute_script %Q{ $('.pricing_map_display_date:visible').focus() }
-      page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
-      page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
-      page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
-      page.execute_script %Q{ $("a.ui-state-default:contains('15')").trigger("click") } # click on day 15
-      wait_for_javascript_to_finish
-
-      page.execute_script %Q{ $('.pricing_map_effective_date:visible').focus() }
-      page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
-      page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
-      page.execute_script %Q{ $('a.ui-datepicker-next').trigger("click") } # move one month forward
-      page.execute_script %Q{ $("a.ui-state-default:contains('15')").trigger("click") } # click on day 15
-      wait_for_javascript_to_finish
-
-      ## using find('selector').set('value') was the only thing I could get to work with these fields.
-      find("input[id$='full_rate']").set(3800) ## change the service rate
-      find(".service_unit_type").set("Each") ## change the quantity type
-      find(".service_unit_minimum").set(2) ## change the unit minimum
-      find("input[id$='full_rate']").click
-      wait_for_javascript_to_finish
-    end
-
-    first(".save_button").click
-    wait_for_javascript_to_finish
-
-    expect(page).to have_content "MUSC Research Data Request (CDW) saved successfully"
-  end
-
   it 'should save the fields after the return key is hit', per_patient: true do
 
     within('.ui-accordion > div:nth-of-type(2)') do

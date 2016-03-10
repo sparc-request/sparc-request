@@ -666,7 +666,7 @@ en:
     new_request_dialog1: "New Request?"
     new_request_dialog2: "Is this a new research study or project?"
     request_submitted1: "Delete Service Warning"
-    request_submitted2: "Deleting this service from the service cart will be irreversible and will cause it to be deleted from the associated protocol. Are you sure you want to proceed?"
+    request_submitted2: "Deleting this service from the service cart will be irreversible and will cause it to be deleted from the associated protocol (%{protocol_id}). Are you sure you want to proceed?"
   catalog_manager_js:
     clinical_provider_remove: "Are you sure you want to remove this Fulfillment Provider?"
     cm_rights_remove: "Are you sure you want to remove rights for this user from the Catalog Manager?"

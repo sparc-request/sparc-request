@@ -258,6 +258,10 @@ p.notice {
   margin-top: 10px;
 }
 
+#welcome_message .section a:hover {
+  color: #0078AE;
+}
+
 #welcome_message .large_section {
   font-size: 14px;
 }
@@ -294,6 +298,10 @@ p.notice {
 
 #calendar-blog .full {
   width: 100%;
+}
+
+#calendar-blog .title a:hover {
+  color: #0078AE;
 }
 
 #blog, #calendar {
@@ -2776,6 +2784,10 @@ table.service_calendar tbody td.visit {
 #footer a {
   text-decoration: none;
   color: #FFFFFF;
+}
+
+#footer a:hover {
+  color: #0078AE;
 }
 
 .devise_view {

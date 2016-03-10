@@ -68,16 +68,9 @@ class Arm < ActiveRecord::Base
     # if visit_count is nil then set it to 1
     self.update_attribute(:visit_count, 1) if self.visit_count.nil?
 
-    # loop until visit_groups catches up to visit_count
-    while self.visit_groups.size < self.visit_count
-      visit_group = self.visit_groups.new
-      if not visit_group.save(validate: false) then
-        raise ActiveRecord::Rollback
-      end
-    end
+    create_visit_groups(visit_count)
 
     liv = LineItemsVisit.for(self, line_item)
-
     liv.create_visits
 
     if line_items_visits.count > 1
@@ -182,42 +175,16 @@ class Arm < ActiveRecord::Base
         return false
       end
     end
-
+    self.reload
     return visit_group
   end
 
   def mass_create_visit_group
-    first = self.visit_groups.count
-    last = self.visit_count
+    visit_count = self.visit_count
 
-    # Import the visit groups
-    vg_columns = [:name, :arm_id, :position]
-    vg_values = []
-    (last-first).times do |index|
-      position = first + index + 1
-      vg_values.push ["Visit #{position}", self.id, position]
-    end
-    VisitGroup.import vg_columns, vg_values, {:validate => true}
-
-    self.reload
-    # Grab the ids of the visit groups that were created
-    vg_ids = []
-    self.visit_groups.each do |vg|
-      if vg.visits.count == 0
-        vg_ids.push(vg.id)
-      end
-    end
-
-    # Import the visits
-    columns = [:visit_group_id, :line_items_visit_id]
-    values = []
-    self.line_items_visits.each do |liv|
-      vg_ids.each do |id|
-        values.push [id, liv.id]
-      end
-    end
-    Visit.import columns, values, {:validate => true}
-    self.reload
+    create_visit_groups(visit_count)
+    vg_ids = get_visit_group_ids
+    create_visits(vg_ids)
   end
 
   def mass_destroy_visit_group
@@ -283,7 +250,6 @@ class Arm < ActiveRecord::Base
 
   def update_visit_group_window_before window_before, position, portal = false
     position = position.blank? ? self.visit_groups.count - 1 : position.to_i
-
     valid = Integer(window_before) rescue false
     if !valid || valid < 0
       self.errors.add(:invalid_window_before, "You've entered an invalid number for the before window. Please enter a positive valid number")
@@ -296,7 +262,6 @@ class Arm < ActiveRecord::Base
 
   def update_visit_group_window_after window_after, position, portal = false
     position = position.blank? ? self.visit_groups.count - 1 : position.to_i
-
     valid = Integer(window_after) rescue false
     if !valid || valid < 0
       self.errors.add(:invalid_window_after, "You've entered an invalid number for the after window. Please enter a positive valid number")
@@ -366,4 +331,41 @@ class Arm < ActiveRecord::Base
   end
 
   ### end audit reporting methods ###
+
+  private
+
+  def create_visit_groups(visit_count)
+    if visit_groups.empty?
+      last_position = 0
+    else
+      last_position = visit_groups.last.position
+    end
+    count = visit_count - last_position
+    count.times do |index|
+      position = last_position + 1
+      VisitGroup.create(arm_id: self.id, name: "Visit #{position}", position: position)
+      last_position += 1
+    end
+    self.reload
+  end
+
+  def get_visit_group_ids
+    vg_ids = []
+    self.visit_groups.each do |vg|
+      if vg.visits.count == 0
+        vg_ids << vg.id
+      end
+    end
+
+    vg_ids
+  end
+
+  def create_visits(vg_ids)
+    self.line_items_visits.each do |liv|
+      vg_ids.each do |id|
+        Visit.create(visit_group_id: id, line_items_visit_id: liv.id)
+      end
+    end
+    self.reload
+  end
 end

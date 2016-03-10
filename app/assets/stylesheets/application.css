@@ -395,6 +395,14 @@ h3.needed_info {
   margin: 10px;
 }
 
+/*.faq-button a:hover {
+  color: #0078AE;
+}*/
+
+/*.faq-button .user:hover {
+  color: #0078AE;
+}*/
+
 .quick_question_email_error {
   display: none;
   color: red;
@@ -2926,6 +2934,7 @@ input.devise_submit_button {
 
 .right-arrow {
   margin: 0px -50px 0px 30px !important;
+
 }
 
 .contact-form-fields {

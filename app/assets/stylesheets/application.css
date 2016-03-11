@@ -395,13 +395,12 @@ h3.needed_info {
   margin: 10px;
 }
 
-/*.faq-button a:hover {
+.submit-request-button:hover,
+.faq-button:hover,
+.feedback-button a:hover {
   color: #0078AE;
-}*/
+}
 
-/*.faq-button .user:hover {
-  color: #0078AE;
-}*/
 
 .quick_question_email_error {
   display: none;
@@ -422,7 +421,7 @@ a.catalog-button,
   text-align: center;
   padding: 5px 0px;
   cursor: pointer;
-  color: #fff !important;
+  color: #fff;
   text-decoration: none;
 }
 
@@ -443,14 +442,14 @@ a.catalog-button,
 }
 
 .blue-button a {
-  color: #fff !important;
+  color: #fff;
 }
 
 .blue-button button, .blue-button input[type=submit] {
   background: none;
   border: none;
   padding: 0;
-  color: #fff !important;
+  color: #fff;
   cursor: pointer;
 }
 

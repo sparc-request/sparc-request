@@ -91,6 +91,37 @@ RSpec.describe 'Protocol' do
     end
   end
 
+  describe "#selected_for_epic_is_nil_in_database?" do
+    
+    context "selected_for_epic is nil" do
+      before :each do
+        study.update_attribute(:selected_for_epic, nil)
+      end
+
+      it 'should return true' do
+        expect(study.selected_for_epic_is_nil_in_database?).to eq true
+      end
+    end
+
+    context "selected_for_epic is true" do
+      before :each do
+        study.update_attribute(:selected_for_epic, true)
+      end
+      it 'should return true' do
+        expect(study.selected_for_epic_is_nil_in_database?).to eq false
+      end
+    end
+
+    context "selected_for_epic is false" do
+      before :each do
+        study.update_attribute(:selected_for_epic, false)
+      end
+      it 'should return true' do
+        expect(study.selected_for_epic_is_nil_in_database?).to eq false
+      end
+    end
+  end
+
   describe "#activate" do
     context "protocol is not active" do
       before :each do

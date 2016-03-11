@@ -329,4 +329,12 @@ module ApplicationHelper
   def first_service?(service_request)
     service_request.line_items.count == 0
   end
+
+  def display_protocol_id(service_request)
+    if service_request.protocol
+      return service_request.protocol.id
+    else
+      return ""
+    end
+  end
 end

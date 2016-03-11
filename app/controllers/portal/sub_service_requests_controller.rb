@@ -86,6 +86,8 @@ class Portal::SubServiceRequestsController < Portal::BaseController
     if @protocol.update_attributes(attrs)
       redirect_to portal_admin_sub_service_request_path(@sub_service_request)
     else
+      # @user_toasts set to an empty array for Wenjun's sanity until bootstrap is merged in
+      # @user_toasts = @user.received_toast_messages.select {|x| x.sending_class == 'SubServiceRequest'}
       @user_toasts = []
       @service_request = @sub_service_request.service_request
       @protocol.populate_for_edit if @protocol.type == "Study"

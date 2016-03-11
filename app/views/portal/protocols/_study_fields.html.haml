@@ -106,7 +106,7 @@
           = f.label :selected_for_epic, t(:study_form)[:push_to_epic]
 
           / Only DISPLAY epic box data in admin UNLESS changing from a virgin project 
-          - if (admin && !@protocol.selected_for_epic_is_nil_in_database? )
+          - if (admin && !@protocol.selected_for_epic_is_nil_in_db? )
             %span.epic_selected.display_epic_answers
               = f.object.selected_for_epic ? "Yes" : "No"
               - if f.object.selected_for_epic

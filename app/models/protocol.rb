@@ -130,7 +130,7 @@ class Protocol < ActiveRecord::Base
     selected_for_epic == nil
   end
   # returns true if selected_for_epic is nil in the database
-  def selected_for_epic_is_nil_in_database?
+  def selected_for_epic_is_nil_in_db?
     Protocol.find(id).selected_for_epic.nil?
   end
 

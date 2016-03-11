@@ -129,6 +129,10 @@ class Protocol < ActiveRecord::Base
   def virgin_project?
     selected_for_epic == nil
   end
+  # returns true if selected_for_epic is nil in the database
+  def selected_for_epic_is_nil_in_database?
+    Protocol.find(id).selected_for_epic.nil?
+  end
 
   def active?
     study_type_question_group.active

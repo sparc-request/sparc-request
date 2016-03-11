@@ -27,7 +27,7 @@
     - arm.line_items_visits.each do |line_items_visit|
       - line_item = line_items_visit.line_item
       - next unless value[:line_items].include?(line_item)
-      - if ['first_draft', 'draft'].include?(line_item.service_request.status)
+      - if ['first_draft'].include?(line_item.service_request.status)
         - next if @portal
         - next if service_request != line_item.service_request
       - line_items_visits << line_items_visit
@@ -37,6 +37,7 @@
           %td.service_rate{:class => "service_rate_#{line_items_visit.id}"}= display_service_rate line_item
         %td.your_cost= display_your_cost line_item
         %td.unit_type= line_item.service.displayed_pricing_map.unit_type
+        %td.status= line_item.service_request.status.capitalize
         %td.subject_count= line_items_visit.subject_count
         - visits = line_items_visit.visits.paginate(:page => @pages[arm.id].to_i, :per_page => 5)
         - unit_minimum = line_item.service.displayed_pricing_map.unit_minimum

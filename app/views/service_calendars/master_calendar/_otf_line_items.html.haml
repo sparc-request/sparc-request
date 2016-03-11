@@ -24,7 +24,7 @@
     %th{ colspan: 13 }= t(:calendar_page)[:headers][:other_services]
 
     - @protocol.service_requests.each do |service_request|
-      - if %w('first_draft' 'draft').include?(service_request.status)
+      - if ['first_draft'].include?(service_request.status)
         - next if @portal
         - next if service_request != current_request
       - service_request.service_list(true).each do |_, value| # get only one time fee services

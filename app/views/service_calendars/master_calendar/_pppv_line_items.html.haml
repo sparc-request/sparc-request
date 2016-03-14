@@ -20,6 +20,8 @@
 - line_items_visits = []
 %tr.section_header
   %th{:colspan => (@portal and !@merged) ? 11 : 13}= t(:calendar_page)[:per_patient] + " -- " + arm.name
+  - unless @merged || (@tab == 'billing_strategy') || (@tab == 'quantity') || (@review)
+    %th
 
 
 - if @merged #display merged calendar pppv line items
@@ -33,11 +35,11 @@
       - line_items_visits << line_items_visit
       %tr.line_item{:class => cycle('odd', '', :name => 'pppvs')}
         %td.service_name= line_item.service.display_service_name
+        %td.status= line_item.service_request.status.capitalize
         - unless @portal
           %td.service_rate{:class => "service_rate_#{line_items_visit.id}"}= display_service_rate line_item
         %td.your_cost= display_your_cost line_item
         %td.unit_type= line_item.service.displayed_pricing_map.unit_type
-        %td.status= line_item.service_request.status.capitalize
         %td.subject_count= line_items_visit.subject_count
         - visits = line_items_visit.visits.paginate(:page => @pages[arm.id].to_i, :per_page => 5)
         - unit_minimum = line_item.service.displayed_pricing_map.unit_minimum
@@ -55,12 +57,15 @@
     - next unless @sub_service_request.nil? or @sub_service_request.organization.name == value[:process_ssr_organization_name]
     %tr.sub_section_header
       %th{:colspan => 10}= value[:name]
+      %th
 
     - arm.line_items_visits.each do |line_items_visit|
       - line_item = line_items_visit.line_item
       - next unless value[:line_items].include?(line_item)
       %tr.line_item
         %td.service_name= line_item.service.display_service_name
+        %td.status= line_item.service_request.status
+
         %td.your_cost= display_your_cost line_item
         %td.subject_count= line_items_visit.subject_count
         - visits = line_items_visit.visits.paginate(:page => @pages[arm.id].to_i, :per_page => 5)
@@ -79,6 +84,7 @@
     - if @tab == 'billing_strategy'
       %tr.sub_section_header
         %th{:colspan => @portal ? 3 : 5}= value[:name]
+        %th
         - if @portal
           %th{:colspan => 1}
         -5.times do
@@ -92,6 +98,8 @@
     - else
       %tr.sub_section_header
         %th{:colspan => 13}= value[:name]
+        - unless (@tab == 'quantity')
+          %th
 
     - arm.line_items_visits.each do |line_items_visit|
       - line_item = line_items_visit.line_item
@@ -113,6 +121,7 @@
               = text_field_tag 'line_item_displayed_cost', number_with_precision(Service.cents_to_dollars(line_item.applicable_rate), :precision => 2), :'data-line_item_id' => line_item.id, :class => 'fulfillment_data fulfillment_your_cost'
         - else
           %td.service_name= line_item.service.display_service_name
+          %td.status= line_item.service_request.status.capitalize
           %td.service_rate{:class => "service_rate_#{line_items_visit.id}"}= display_service_rate line_item
           %td.your_cost= display_your_cost line_item
           %td.unit_type= pricing_map.unit_type

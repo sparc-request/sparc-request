@@ -221,7 +221,7 @@ wb.add_worksheet(name: "Consolidated Report") do |sheet|
             line_item.pricing_scheme = 'displayed'
           end
 
-          service_row += [display_your_cost(line_item), ""]
+          service_row += [display_your_cost(line_item)]
 
           if protocol_has_per_patient_per_visit
             (arm_visit_count_max*2 + 1).times do

@@ -70,6 +70,40 @@ RSpec.describe 'Protocol' do
     end
   end
 
+  describe "#virgin_project?" do
+    context "project is virgin" do
+      before :each do
+        project.update_attributes(selected_for_epic: nil)
+      end
+
+      it "should return true" do
+        expect(project.virgin_project?).to eq true
+      end
+    end
+    context "project is not a virgin" do
+      before :each do
+        project.update_attributes(selected_for_epic: false)
+      end
+
+      it "should return true" do
+        expect(project.virgin_project?).to eq false
+      end
+    end
+  end
+
+  describe "#activate" do
+    context "protocol is not active" do
+      before :each do
+        study.update_attributes(study_type_question_group_id: StudyTypeQuestionGroup.where(active:false).pluck(:id).first)
+      end
+
+      it "should activate protocol" do
+        study.activate
+        expect(study.study_type_question_group_id).to eq StudyTypeQuestionGroup.where(active:true).pluck(:id).first
+      end
+    end
+  end
+
   describe ".notify_remote_around_update?", delay: true do
 
     context ":short_title update present" do

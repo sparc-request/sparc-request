@@ -187,6 +187,10 @@ class Protocol < ActiveRecord::Base
   def is_study?
     self.type == 'Study'
   end
+  # virgin project:  a project that has never been a study
+  def virgin_project?
+    selected_for_epic == nil
+  end
 
   def is_project?
     self.type == 'Project'
@@ -199,6 +203,10 @@ class Protocol < ActiveRecord::Base
 
   def active?
     study_type_question_group.active
+  end
+
+  def activate
+    update_attribute(:study_type_question_group_id, StudyTypeQuestionGroup.active.pluck(:id).first)
   end
 
   def validate_funding_source

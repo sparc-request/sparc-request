@@ -94,7 +94,8 @@ class ProjectRole < ActiveRecord::Base
   end
 
   def validate_one_primary_pi
-    if self.protocol.project_roles.where(role: "primary-pi").include?(self) && self.role != "primary-pi"
+    pi_roles = self.protocol.project_roles.where(role: "primary-pi")
+    if pi_roles.empty? || pi_roles.include?(self) && self.role != "primary-pi"
       errors.add(:role, "- Protocols must have a Primary PI.")
       return false
     else
@@ -180,4 +181,3 @@ class ProjectRole < ActiveRecord::Base
     end
   end
 end
-

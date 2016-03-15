@@ -37,11 +37,9 @@ class Dashboard::NotificationsController < Dashboard::BaseController
     if @table == "inbox"
       # return list of notifications with any messages to current user
       @notifications.select!{ |n| n.messages.any? { |m| m.to == @user.id }}
-      puts @notifications.inspect
     elsif @table == "sent"
       # return list of notifications with any messages from current user
       @notifications.select!{ |n| n.messages.any? { |m| m.from == @user.id }}
-      puts @notifications.inspect
     end
   end
 

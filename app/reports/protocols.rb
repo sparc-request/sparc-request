@@ -43,8 +43,8 @@ class ProtocolsReport < ReportingModule
     attrs = {}
 
     attrs["Protocol ID"] = "service_request.try(:protocol).try(:id)"
-
     attrs["Protocol Short Title"] = "service_request.try(:protocol).try(:short_title)"
+    attrs["Protocol Title"] = "service_request.try(:protocol).try(:title)"
 
     if params[:institution_id]
       attrs[Institution] = [params[:institution_id], :abbreviation]
@@ -72,6 +72,7 @@ class ProtocolsReport < ReportingModule
 
     attrs["Funding Source"] = "service_request.try(:protocol).try(:funding_source)"
     attrs["Potential Funding Source"] = "service_request.try(:protocol).try(:potential_funding_source)"
+    attrs["Sponsor Name"] = "service_request.try(:protocol).try(:sponsor_name)"
     attrs["Financial Account"] = "service_request.try(:protocol).try(:udak_project_number).try{prepend(' ')}"
     attrs["Study Phase"] = "service_request.try(:protocol).try(:study_phase)"
 

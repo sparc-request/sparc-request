@@ -27,7 +27,7 @@ class Dashboard::NotificationsController < Dashboard::BaseController
       clear(:edit_protocol)
     if params[:sub_service_request_id]
       # specific to ssr
-      @notifications = @user.all_notifications.select!{ |n| n.sub_service_request_id == params[:sub_service_request_id].to_i } || []
+      @notifications = @user.all_notifications.select { |n| n.sub_service_request_id == params[:sub_service_request_id].to_i } || []
     else
       # all user notifications
       @notifications = @user.all_notifications || []
@@ -37,9 +37,11 @@ class Dashboard::NotificationsController < Dashboard::BaseController
     if @table == "inbox"
       # return list of notifications with any messages to current user
       @notifications.select!{ |n| n.messages.any? { |m| m.to == @user.id }}
+      puts @notifications.inspect
     elsif @table == "sent"
       # return list of notifications with any messages from current user
       @notifications.select!{ |n| n.messages.any? { |m| m.from == @user.id }}
+      puts @notifications.inspect
     end
   end
 
@@ -74,6 +76,10 @@ class Dashboard::NotificationsController < Dashboard::BaseController
     params[:notification_ids].each do |notification_id|
       notification = Notification.find(notification_id)
       notification.set_read_by @user, as_read
+    end
+
+    if params[:sub_service_request_id]
+      @unread_notification_count = @user.unread_notification_count_for_ssr(@user, SubServiceRequest.find(params[:sub_service_request_id]))
     end
   end
 end

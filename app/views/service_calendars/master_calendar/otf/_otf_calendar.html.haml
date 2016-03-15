@@ -27,4 +27,4 @@
         %thead
           = render partial: 'service_calendars/master_calendar/otf/otf_header', locals: { service_request: service_request,  tab: tab, portal: portal, sub_service_request: sub_service_request, review: review, merged: merged, study_tracker: study_tracker }
         %tbody
-          = render partial: 'service_calendars/master_calendar/otf/otf_line_items', locals: { service_request: service_request,  tab: tab, portal: portal, sub_service_request: sub_service_request, review: review, merged: merged, protocol: protocol }
+          = render partial: 'service_calendars/master_calendar/otf/otf_line_items', locals: { service_request: service_request,  tab: tab, portal: portal, sub_service_request: sub_service_request, review: review, merged: merged, protocol: protocol, study_tracker: study_tracker }

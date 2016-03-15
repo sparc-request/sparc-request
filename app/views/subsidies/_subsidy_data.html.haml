@@ -24,10 +24,11 @@
   %br
   %br
   - service_request.sub_service_requests.each do |ssr|
-    .ssr_subsidies{data: { sub_service_request_id: ssr.id }}
-      = render partial: "/subsidies/ssr_subsidies", locals: {sub_service_request: ssr, approved: ssr.approved_subsidy, pending: ssr.pending_subsidy}
-    %br
-    %br
+    - if ssr.eligible_for_subsidy?
+      .ssr_subsidies{data: { sub_service_request_id: ssr.id }}
+        = render partial: "/subsidies/ssr_subsidies", locals: {sub_service_request: ssr, approved: ssr.approved_subsidy, pending: ssr.pending_subsidy}
+      %br
+      %br
 -else
   = t("subsidy_page.not_eligible")
 

@@ -231,6 +231,10 @@ p.notice {
     background-color:#0078AE;
 }
 
+.right-section > li > a:hover{
+    background-color:#0078AE;
+}
+
 .service-catalog {
   background: #E8E8E8;
   margin-top: -50px;

@@ -1,0 +1,52 @@
+-# Copyright © 2011 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+#sub_service_request_header
+  = render partial: 'dashboard/sub_service_requests/header', locals: { sub_service_request: @sub_service_request }
+
+.tabs{role: 'tabpanel'}
+  %ul.nav.nav-tabs.nav-justified{role: 'tablist'}
+    %li.custom-tab.ssr_tab.active{role: 'presentation'}
+      = link_to "Request Details", "#details", {class: 'details-tab', "data-toggle" => 'tab', role: 'tab', "aria-controls" => 'details-tab'}
+    %li.custom-tab.ssr_tab{role: 'presentation'}
+      = link_to "Study Schedule", "#study_schedule", {class: 'study_schedule-tab', "data-toggle" => 'tab', role: 'tab', "aria-controls" => 'study_schedule-tab'}
+    %li.custom-tab.ssr_tab{role: 'presentation'}
+      = link_to "Study Level Activities", "#study_level_activities", {class: 'study_level_activities-tab', "data-toggle" => 'tab', role: 'tab', "aria-controls" => 'study_level_activities-tab'}
+    %li.custom-tab.ssr_tab{role: 'presentation'}
+      = link_to t(:admin_dashboard)[:tabs][:docs], "#documents", {class: 'documents-tab', "data-toggle" => 'tab', role: 'tab', "aria-controls" => 'documents-tab'}
+    %li.custom-tab.ssr_tab{role: 'presentation'}
+      = link_to "History", "#history", {class: 'history-tab', "data-toggle" => 'tab', role: 'tab', "aria-controls" => 'history-tab'}
+    %li.custom-tab.ssr_tab{role: 'presentation'}
+      = link_to t(:admin_dashboard)[:tabs][:notifications], "#notifications", {class: 'notifications-tab', "data-toggle" => 'tab', role: 'tab', "aria-controls" => 'notifications-tab'}
+
+  .tab-content
+    .tab-pane#details{role: 'tabpanel', class: 'active'}
+      = render partial: 'dashboard/sub_service_requests/request_details', locals: { protocol: @protocol, service_request: @service_request, sub_service_request: @sub_service_request }
+    .tab-pane#study_schedule{role: 'tabpanel'}
+      #per_patient_services
+        = render partial: 'dashboard/sub_service_requests/per_patient_per_visit', locals: {sub_service_request: @sub_service_request, service_request: @service_request}
+    .tab-pane#study_level_activities{role: 'tabpanel'}
+      = render partial: 'dashboard/study_level_activities/study_level_activities_table', locals: { sub_service_request: @sub_service_request }
+    .tab-pane#documents{role: 'tabpanel'}
+      = render partial: 'dashboard/documents/documents_table', locals: { sub_service_request: @sub_service_request, service_request: @service_request }
+    .tab-pane#history{role: 'tabpanel'}
+      = render partial: 'dashboard/sub_service_requests/history/status_changes', locals: { sub_service_request_id: @sub_service_request.id }
+    .tab-pane#notifications{role: 'tabpanel'}
+      = render partial: 'dashboard/notifications/notifications', locals: { sub_service_request: @sub_service_request, user: @user, admin: @admin }

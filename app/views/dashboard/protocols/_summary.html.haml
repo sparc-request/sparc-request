@@ -1,0 +1,25 @@
+.panel.panel-primary
+  .panel-heading
+    %h4.panel-title.pull-left= "#{protocol_type} Summary"
+    .pull-right
+      %button.btn.btn-sm.btn-default.notes.list{ data: { notable_type: "Protocol", notable_id: protocol.id } }
+        = "#{protocol_type} Notes"
+      = edit_protocol_button_display(protocol, protocol_role)
+    .clearfix
+  .panel-body#protocol-summary
+    %dl.dl-horizontal.pull-left
+      %dt #{protocol.type.capitalize} ID:
+      %dd= protocol.try(:id)
+
+      %dt= t(:protocol_information)[:title]
+      %dd= protocol.try(:title)
+
+      %dt= t(:protocol_information)[:short_title]
+      %dd= protocol.try(:short_title)
+
+      - if protocol.type == 'Study'
+        %dt= t(:protocol_information)[:sponsor]
+        %dd= protocol.try(:sponsor_name)
+
+      %dt= display_funding_source_title(protocol)
+      %dd= display_funding_source(protocol)

@@ -34,6 +34,7 @@ class ServiceRequest < ActiveRecord::Base
   has_many :approvals, :dependent => :destroy
   has_many :documents, :dependent => :destroy
   has_many :arms, :through => :protocol
+  has_many :notes, as: :notable, dependent: :destroy
 
   after_save :set_original_submitted_date
 

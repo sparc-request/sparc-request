@@ -19,6 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class VisitGroup < ActiveRecord::Base
+  self.per_page = Visit.per_page
 
   include RemotelyNotifiable
   include Comparable
@@ -27,6 +28,7 @@ class VisitGroup < ActiveRecord::Base
 
   belongs_to :arm
   has_many :visits, :dependent => :destroy
+  has_many :line_items_visits, through: :visits
   has_many :appointments
   attr_accessible :name
   attr_accessible :position
@@ -53,6 +55,10 @@ class VisitGroup < ActiveRecord::Base
 
   def <=> (other_vg)
     return self.day <=> other_vg.day
+  end
+
+  def insertion_name
+    "insert before " + name
   end
 
   ### audit reporting methods ###

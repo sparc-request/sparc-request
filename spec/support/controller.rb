@@ -20,11 +20,20 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 # Stub out all the methods in ApplicationController so we're not testing
-# them
-def stub_controller
+# them. opts allows you to specify the logged in user. Default behavior is
+# to query the identities table for the record with id session[:identity_id].
+# Sometimes it's desirable to use a mock Identity object; do stub_controller(obj: <mock identity>)
+# in this case. If you don't want to use the session variable, do stub_controller(id: <identity id>).
+def stub_controller(opts = {})
   before(:each) do
     allow(controller).to receive(:current_user) do
-      Identity.find_by_id(session[:identity_id])
+      if opts[:id]
+        Identity.find_by_id(opts[:id])
+      elsif opts[:obj]
+        opts[:obj]
+      else
+        Identity.find_by_id(session[:identity_id])
+      end
     end
 
     allow(controller).to receive(:authorize_identity) { }
@@ -34,16 +43,20 @@ def stub_controller
 end
 
 # Same as stub_controller, but for controllers which inherit from
-# Portal::BaseController
-def stub_portal_controller
-  before(:each) do
-    allow(controller).to receive(:authenticate_identity!) do
-    end
+# Dashboard::BaseController
+def log_in_dashboard_identity(opts = {})
+  allow(controller).to receive(:authenticate_identity!) do
+  end
 
-    allow(controller).to receive(:current_identity) do
+  allow(controller).to receive(:current_identity) do
+    if opts[:id]
+      Identity.find_by_id(opts[:id])
+    elsif opts[:obj]
+      opts[:obj]
+    else
       Identity.find_by_id(session[:identity_id])
     end
   end
 end
 
-alias :stub_catalog_manager_controller :stub_portal_controller
+alias :log_in_catalog_manager_identity :log_in_dashboard_identity

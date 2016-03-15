@@ -36,9 +36,12 @@ class ProjectRole < ActiveRecord::Base
   attr_accessible :role_other
   attr_accessible :epic_access
   attr_accessible :epic_rights_attributes
+  attr_accessible :identity_attributes
 
   accepts_nested_attributes_for :epic_rights, :allow_destroy => true
+  accepts_nested_attributes_for :identity
 
+  validates :identity_id, :presence => true
   validates :role, :presence => true
   validates :project_rights, :presence => true
 

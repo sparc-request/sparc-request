@@ -19,8 +19,6 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 SparcRails::Application.routes.draw do
-  post "protocol_archive/create"
-
   match '/direct_link_to/:survey_code', :to => 'surveyor#create', :as => 'direct_link_survey', :via => :get
   match '/surveys/:survey_code/:response_set_code', :to => 'surveyor#destroy', :via => :delete
   mount Surveyor::Engine => "/surveys", :as => "surveyor"
@@ -50,6 +48,8 @@ SparcRails::Application.routes.draw do
   end
 
   resources :contact_forms, only: [:new, :create]
+
+  resources :subsidies, only: [:create, :update, :destroy]
 
   resources :service_requests, only: [:show] do
     resources :projects, except: [:index, :show, :destroy]
@@ -182,61 +182,51 @@ SparcRails::Application.routes.draw do
     root to: 'catalog#index'
   end
 
-  ##### Study Tracker/Clinical Work Fulfillment Portal#####
-  namespace :study_tracker, :path => "clinical_work_fulfillment" do
-    match 'appointments/add_note' => 'calendars#add_note', via: [:get, :post]
-    match 'calendars/delete_toast_messages' => 'calendars#delete_toast_messages', via: [:all]
-    match 'calendars/change_visit_group' => 'calendars#change_visit_group', via: [:get, :post]
-    match 'appointments/add_service' => 'calendars#add_service', via: [:get, :post]
+  namespace :dashboard do
 
-    root to: 'home#index'
+    resources :approvals, only: [:new, :create]
 
-    resources :home, only: [:index] do
+    resources :arms, only: [:new, :create, :update, :destroy] do
       collection do
-        get :billing_report_setup
-        post :billing_report
+        get :navigate
       end
     end
 
-    resources :sub_service_requests, only: [:show, :update] do
-      resources :calendars, only: [:show]
-      resources :cover_letters, except: [:index, :destroy]
-    end
-
-    resources :service_requests, only: [:update]
-    resources :subjects, only: [:update]
-
-    resources :protocols, only: [:update] do
-      member do
-        put :update_billing_business_manager_static_email
-      end
-    end
-  end
-
-  ##### sparc-user routes brought in and namespaced
-  namespace :portal do
-    resources :services, only: [:show]
-    resources :admin, only: [:index]
-
-    resources :associated_users, except: [:index] do
+    resources :associated_users do
       collection do
-        get :search
+        get :search_identities
       end
     end
 
-    resources :service_requests, only: [:show]
+    resources :documents
 
-    resources :protocols, except: [:new, :destroy] do
+    resources :epic_queues, only: ['index', 'destroy']
+
+    resources :fulfillments
+
+    resources :line_items do
       member do
-        get :view_full_calendar
+        get :details
+        put :update_from_cwf
       end
-      resources :associated_users, except: [:index]
     end
 
-    resources :studies, controller: :protocols, except: [:new, :destroy]
-    resources :projects, controller: :protocols, except: [:new, :destroy]
+    resources :line_items_visits, only: [:destroy]
 
-    resources :notifications, except: [:edit, :update, :destroy] do
+    resources :messages, only: [:index, :new, :create]
+
+    resources :multiple_line_items, only: [] do
+      collection do
+        get :new_line_items
+        put :create_line_items
+        get :edit_line_items
+        put :destroy_line_items
+      end
+    end
+
+    resources :notes, only: [:index, :new, :create]
+
+    resources :notifications, only: [:index, :new, :create] do
       member do
         put :user_portal_update
         put :admin_update
@@ -246,84 +236,85 @@ SparcRails::Application.routes.draw do
       end
     end
 
-    resources :documents, only: [:destroy] do
-      collection do
-        post :upload
-        post :override
-      end
-      get :download
-    end
+    resources :projects, controller: :protocols, except: [:destroy]
 
-    resources :epic_queues, only: ['index', 'destroy']
-
-    resource :admin do
-      resources :sub_service_requests do
-        member do
-          put :update_from_fulfillment
-          patch :update_from_project_study_information
-          put :push_to_epic
-          put :add_line_item
-          put :add_otf_line_item
-          post :new_document
-          put :add_note
-        end
-      end
-
-      resources :protocols, except: [:destroy] do
-        member do
-          put :update_protocol_type
-          put :update_from_fulfillment
-        end
-      end
-
-      resources :subsidies, only: [:create, :destroy] do
-        member do
-          put :update_from_fulfillment
-        end
-      end
-
-      resources :fulfillments, only: [:create, :destroy] do
-        member do
-          put :update_from_fulfillment
-        end
-      end
-
-      resources :line_items, only: [:destroy] do
-        member do
-          put :update_from_fulfillment
-          put :update_from_cwf
-        end
-      end
-
-      resources :line_items_visits, only: [:destroy] do
-        member do
-          put :update_from_fulfillment
-        end
-      end
-
-      resources :visits, only: [:destroy] do
-        member do
-          put :update_from_fulfillment
-        end
-      end
-
-      collection do
-        put "/visits/:id/update_from_fulfillment" => "visits#update_from_fulfillment"
-        put "/service_requests/:id/update_from_fulfillment" => "service_requests#update_from_fulfillment"
-        get "/protocols/:id/change_arm" => "protocols#change_arm"
-        post "/protocols/:id/add_arm" => "protocols#add_arm"
-        post "/protocols/:id/remove_arm" => "protocols#remove_arm"
-        post "/service_requests/:id/add_per_patient_per_visit_visit" => "service_requests#add_per_patient_per_visit_visit"
-        put "/subsidys/:id/update_from_fulfillment" => "subsidies#update_from_fulfillment"
-        delete "/subsidys/:id" => "subsidies#destroy"
-        put "/service_requests/:id/remove_per_patient_per_visit_visit" => "service_requests#remove_per_patient_per_visit_visit"
-        delete "/delete_toast_message/:id" => "admin#delete_toast_message"
+    resources :protocols, except: [:destroy] do
+      member do
+        get :view_full_calendar
+        patch :update_protocol_type
+        get :display_requests
+        patch :archive
       end
     end
-    match '/admin/sub_service_requests/:id/edit_document/:document_id' => 'sub_service_requests#edit_documents', via: [:get, :post]
-    match "/admin/sub_service_requests/:id/delete_document/:document_id" => "sub_service_requests#delete_documents", via: [:get, :post]
 
-    root to: 'home#index'
+    # HACK: This is needed to prevent the filterrific gem's
+    # path helpers from blowing up when running view specs
+    # This shouldn't affect dev or production environments.
+    # Alternative solutions welcome.
+    if Rails.env.test?
+      scope '/protocols', controller: :protocols, except: [:destroy] do
+        resources :test, except: [:destroy] do
+          member do
+            get :view_full_calendar
+            patch :update_protocol_type
+            get :display_requests
+            patch :archive
+          end
+        end
+      end
+    end
+
+    resources :protocol_filters, only: [:new, :create]
+
+    resources :services, only: [:show]
+
+    resource :service_calendars, only: [:update, :index] do
+      member do
+        get 'table'
+        get 'merged_calendar'
+      end
+      collection do
+        put 'rename_visit'
+        put 'set_day'
+        put 'set_window_before'
+        put 'set_window_after'
+        put 'update_otf_qty_and_units_per_qty'
+        put 'move_visit_position'
+        put 'show_move_visits'
+      end
+    end
+
+    resources :service_requests, only: [:show]
+
+    resources :studies, controller: :protocols, except: [:destroy]
+
+    resources :subsidies, except: [:index] do
+      member do
+        patch :approve
+      end
+    end
+
+    resources :sub_service_requests, except: [:index] do
+      member do
+        patch :update_from_project_study_information
+        put :push_to_epic
+        get :change_history_tab
+        get :status_history
+        get :subsidy_history
+        get :approval_history
+        get :refresh_service_calendar
+      end
+    end
+
+    resources :visits, only: [:destroy]
+
+    resources :visit_groups, only: [:new, :create, :update, :destroy] do
+      collection do
+        get :navigate
+      end
+    end
+
+    root to: 'protocols#index'
   end
 
   resources :reports, only: [:index] do

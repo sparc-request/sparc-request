@@ -14,7 +14,7 @@ RSpec.describe ServiceRequestsController do
       shared_examples_for 'always' do
         it 'should redirect the user to the user portal link' do
           get :save_and_exit, id: service_request.id
-          expect(response).to redirect_to(USER_PORTAL_LINK)
+          expect(response).to redirect_to(DASHBOARD_LINK)
         end
       end
 

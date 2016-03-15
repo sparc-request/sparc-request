@@ -1,0 +1,46 @@
+.bootstrap-table
+  a.participant-calendar,
+  a.task-reschedule
+    display: block
+
+  #documents_table,
+  #reports_table
+    a.edit-document,
+    a.attached_file,
+    a.remove-document
+      display: block
+      width: 20px
+      margin: 0 auto
+
+  .participants
+    .delete,
+    .edit,
+    .details,
+    .change_arm
+      a
+        display: block
+
+  .th-inner.sortable
+    i
+      margin-left: 4px
+      font-size: 0.8em
+
+    .order
+      display: none
+
+  .fixed-table-toolbar .search .input-group
+    width: 300px
+
+  thead.primary-header
+    background-color: #337ab7
+    color: #fff
+
+  thead.secondary-header
+    background-color: #337ab7
+    color: #fff
+
+// Support Bootstrap dropdowns overflow in bootstrap-table
+.bootstrap-table-dropdown-overflow
+  .fixed-table-body
+    overflow: visible !important
+

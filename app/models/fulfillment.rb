@@ -22,6 +22,7 @@ class Fulfillment < ActiveRecord::Base
   audited
 
   belongs_to :line_item
+  has_many :notes, as: :notable, dependent: :destroy
 
   attr_accessible :line_item_id
   attr_accessible :timeframe
@@ -39,6 +40,10 @@ class Fulfillment < ActiveRecord::Base
   QUANTITY_TYPES = ['Min', 'Hours', 'Days', 'Each']
   CWF_QUANTITY_TYPES = ['Each', 'Sample', 'Aliquot', '3kg unit']
   UNIT_TYPES = ['N/A', 'Each', 'Sample', 'Aliquot', '3kg unit']
+
+  def date=(date_arg)
+    write_attribute(:date, Time.strptime(date_arg, "%m-%d-%Y")) if date_arg.present?
+  end
 
   def formatted_date
     format_date self.date

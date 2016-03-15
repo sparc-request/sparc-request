@@ -46,9 +46,7 @@
       %br
       %br
 
-      %div{:style => 'text-align: center'}
-        = t("documents.notes_instructions")
-        = text_area_tag 'service_request[notes]', @service_request.notes, :rows => 14, :cols => 75
+      %button.btn.btn-lg.btn-primary.notes.list{ type: "button", data: {notable_type: "ServiceRequest", notable_id: @service_request.id }} Service Request Notes
 
       %br
       %br

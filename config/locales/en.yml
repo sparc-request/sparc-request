@@ -45,9 +45,11 @@ en:
     delete: "Delete"
     edit: "Edit"
     remove: "Remove"
+    reply: "Reply"
     reset: "Reset"
     save: "Save"
     search: "Search"
+    send: "Send"
     upload: "Upload"
 
   constants:
@@ -227,6 +229,15 @@ en:
     #  MESSAGES  #
     ##############
     messages:
+      index:
+        no_subject: "No Subject"
+        user: "User"
+        date: "Date"
+        message: "Message"
+        no_messages: "This Notification currently has no Messages."
+      new:
+        header: "New Message to "
+        message: "Message:"
 
     #########################
     #  MULTIPLE LINE ITEMS  #

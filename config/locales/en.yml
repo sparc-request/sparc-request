@@ -288,6 +288,7 @@ en:
       status: "Status"
       my_protocols: "My Protocols"
       my_admin_orgs: "My Admin Organizations"
+      core: "Core"
       filter: "Filter"
       saved_filters:
         header: "Recently Saved Filters"

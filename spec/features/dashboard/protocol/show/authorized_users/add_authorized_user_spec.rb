@@ -204,7 +204,7 @@ RSpec.feature 'User wants to add an authorized user', js: true do
   end
 
   def given_i_have_clicked_the_add_authorized_user_button
-    find_button('Add An Authorized User').click
+    find_button('Add an Authorized User').click
   end
 
   def when_i_select_a_user_from_the_search

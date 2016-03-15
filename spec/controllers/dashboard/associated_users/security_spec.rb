@@ -55,7 +55,7 @@ RSpec.describe Dashboard::AssociatedUsersController do
     before(:each) { authorize(identity, protocol, can_edit: false) }
 
     it 'should render authorization error on GET edit and should not set @protocol' do
-      get :edit, id: project_role.id
+      get :edit, id: project_role.id, format: :js
 
       expect(assigns(:protocol)).to be_nil
       expect(response).to render_template(partial: '_authorization_error')
@@ -69,14 +69,14 @@ RSpec.describe Dashboard::AssociatedUsersController do
     end
 
     it 'should render authorization error on PUT create and should not set @protocol' do
-      put :create, project_role: { protocol_id: protocol.id }, format: :js
+      post :create, project_role: { protocol_id: protocol.id }, format: :js
 
       expect(assigns(:protocol)).to be_nil
       expect(response).to render_template(partial: '_authorization_error')
     end
 
     it 'should render authorization error on PUT update and should not set @protocol' do
-      put :update, id: project_role.id, format: :js
+      post :update, id: project_role.id, format: :js
 
       expect(assigns(:protocol)).to be_nil
       expect(response).to render_template(partial: '_authorization_error')

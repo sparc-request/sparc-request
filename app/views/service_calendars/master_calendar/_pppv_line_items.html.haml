@@ -35,7 +35,7 @@
       - line_items_visits << line_items_visit
       %tr.line_item{:class => cycle('odd', '', :name => 'pppvs')}
         %td.service_name= line_item.service.display_service_name
-        %td.status= line_item.service_request.status.capitalize
+        %td.status= display_line_items_status(line_item)
         - unless @portal
           %td.service_rate{:class => "service_rate_#{line_items_visit.id}"}= display_service_rate line_item
         %td.your_cost= display_your_cost line_item
@@ -121,7 +121,7 @@
               = text_field_tag 'line_item_displayed_cost', number_with_precision(Service.cents_to_dollars(line_item.applicable_rate), :precision => 2), :'data-line_item_id' => line_item.id, :class => 'fulfillment_data fulfillment_your_cost'
         - else
           %td.service_name= line_item.service.display_service_name
-          %td.status= line_item.service_request.status.capitalize
+          %td.status= display_line_items_status(line_item)
           %td.service_rate{:class => "service_rate_#{line_items_visit.id}"}= display_service_rate line_item
           %td.your_cost= display_your_cost line_item
           %td.unit_type= pricing_map.unit_type

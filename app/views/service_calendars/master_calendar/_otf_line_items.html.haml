@@ -32,7 +32,7 @@
         - value[:line_items].each do |line_item|
           %tr.line_item.otfs{ class: cycle('odd', '', name: 'otfs'), :"data-unit_factor" => line_item.service.displayed_pricing_map.unit_factor }
             %td.service_name= line_item.service.name
-            %td.status= line_item.service_request.status.capitalize
+            %td.status= display_line_items_status(line_item)
             - unless @portal || @study_tracker
               %td.service_rate{ class: "service_rate_#{line_item.id}" }= display_service_rate line_item
             %td.your_cost{ :"data-your_cost" => line_item.applicable_rate }= display_your_cost line_item
@@ -124,7 +124,7 @@
               = line_item.service.name
               - unless @tab == 'calendar'
                 = hidden_field_tag "service_request[line_items_attributes][#{line_item.id}][id]", line_item.id
-            %td.status= line_item.service_request.status.capitalize
+            %td.status= display_line_items_status(line_item)
             %td.service_rate{ class: "service_rate_#{line_item.id}" }= display_service_rate line_item
             %td.your_cost{ :"data-your_cost" => line_item.applicable_rate }= display_your_cost line_item
             - if @tab == 'calendar'

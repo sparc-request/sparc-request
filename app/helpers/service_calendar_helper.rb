@@ -228,4 +228,8 @@ module ServiceCalendarHelper
 
     options_for_select(arr)
   end
+
+  def display_line_items_status(line_item)
+    line_item.service_request.status.capitalize
+  end
 end

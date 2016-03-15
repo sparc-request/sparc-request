@@ -20,8 +20,9 @@
 
 - if @protocol.has_per_patient_per_visit? @service_request, @portal
   - @protocol.arms.each do |arm|
-    - next if arm.visit_groups.empty?
-    = render partial: "/service_calendars/master_calendar/pppv/pppv_calendar", locals: { tab: @tab, arm: arm, service_request: @service_request, sub_service_request: @sub_service_request, page: @pages[arm.id], pages: @pages, merged: @merged, review: @review, portal: @portal, study_tracker: @study_tracker }
+    .arm_calendar_container{:'data-arm_id' => arm.id}
+      - next if arm.visit_groups.empty?
+      = render :partial => "/service_calendars/master_calendar/pppv_calendar", :locals => {:service_request => @service_request, :arm => arm}
 - if @protocol.has_one_time_fees? @service_request, @portal
-  = render partial: "/service_calendars/master_calendar/otf/otf_calendar", locals: { tab: @tab, service_request: @service_request, sub_service_request: @sub_service_request, merged: @merged, review: @review, portal: @portal, study_tracker: @study_tracker, protocol: @protocol }
-= render partial: 'merged_grand_totals', locals: { service_request: @service_request}
+  = render :partial => "/service_calendars/master_calendar/otf_calendar", :locals =>{:current_request => @service_request}
+= render :partial => 'merged_grand_totals', :locals => {:service_request => @service_request}

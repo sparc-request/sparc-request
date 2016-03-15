@@ -23,9 +23,9 @@
 .grid_3.service-catalog.col-md-3
   #about
     - unless USE_ABOUT_SPARC_LINK
-      = link_to image_tag("#{CUSTOM_ASSET_PATH}about.png",class: 'about_sparc_img'), "javascript:void(0);", class: "about_sparc_request"
+      = link_to image_tag("#{CUSTOM_ASSET_PATH}about.png",class: 'button-hover'), "javascript:void(0);", class: "about_sparc_request"
     - else
-      = link_to image_tag("#{CUSTOM_ASSET_PATH}about.png",class: 'about_sparc_img'), ABOUT_SPARC_URL, target: "_blank"
+      = link_to image_tag("#{CUSTOM_ASSET_PATH}about.png",class: 'button-hover'), ABOUT_SPARC_URL, target: "_blank"
   %h3 Browse Services Catalog:
   = render :partial => 'catalogs/service_accordion', :locals => {:institutions => @institutions}
 .grid_6.col-md-6

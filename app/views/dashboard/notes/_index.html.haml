@@ -36,7 +36,7 @@
             .detail
               .col-xs-3.name= note.identity.full_name
               .col-xs-2.created-at= format_date(note.created_at)
-              .col-xs-7.comment= note.body
+              .col-xs-7.comment= raw note.body
       -else
         .text-center= "This #{notable_type} currently has no notes."
     .modal-footer

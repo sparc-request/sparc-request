@@ -47,4 +47,18 @@ class ApprovedSubsidy < Subsidy
     total = total_at_approval
     ((( total - pi_contribution ).to_f / total ) * 100.0 ).round(2)
   end
+
+  def log_approval_note
+    approval_string = \
+      "<table class='table table-bordered table-condensed'><thead>"\
+      "<tr><h4>Subsidy Approved</h4></tr>"\
+      "<tr><th>Request Cost</th><th>% Subsidy</th><th>PI Contribution</th><th>Subsidy Cost</th></tr>"\
+      "</thead><tbody><tr>"\
+      "<td>#{total_at_approval/100.0}</td>"\
+      "<td>#{approved_percent_of_total}</td>"\
+      "<td>#{(pi_contribution/100.0)}</td>"\
+      "<td>#{approved_cost}</td>"\
+      "</tr></tbody></table>"
+    notes.create(body: approval_string, identity_id: approver.id)
+  end
 end

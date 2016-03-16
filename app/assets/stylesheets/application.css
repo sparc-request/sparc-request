@@ -937,11 +937,8 @@ span#infotip img {
   vertical-align: bottom;
 }
 
-.continue div.nav-backward img,
-.review-bottom-navigation div.return-to-step-3 img {
-  vertical-align: middle;
-  padding-right: 5px;
-  padding-bottom: 2px;
+.continue div :hover{
+    color:#97D1EA;
 }
 
 .continue div.exit{
@@ -960,13 +957,6 @@ span#infotip img {
   vertical-align: bottom;
   text-align: right;
 
-}
-
-.continue div.nav-forward img,
-.review-bottom-navigation div.submit-request img {
-  vertical-align: middle;
-  padding-right: 5px;
-  padding-bottom: 2px;
 }
 
 /* ReviewView */
@@ -2826,7 +2816,7 @@ table.service_calendar tbody td.visit {
 }
 
 #footer a:hover {
-  color: #0078AE;
+  color: #57B5DD;
 }
 
 .devise_view {

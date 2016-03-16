@@ -61,9 +61,9 @@
           - else
             .type-select.center.form-group
               - if @sub_service_request.nil?
-                = link_to t('study_assignment.research_study'), new_service_request_study_path(@service_request, portal: false), class: 'new-study-button btn btn-primary', title: t('study_assignment.tooltips.research_study_tooltip')
+                = link_to t('study_assignment.research_study'), new_service_request_study_path(@service_request, portal: false), class: 'new-study-button btn btn-primary button-hover', title: t('study_assignment.tooltips.research_study_tooltip')
                 .divider
-                = link_to t('study_assignment.research_project'), new_service_request_project_path(@service_request, portal: false), class: 'new-project-button btn btn-primary', title: t('study_assignment.tooltips.research_project_tooltip')
+                = link_to t('study_assignment.research_project'), new_service_request_project_path(@service_request, portal: false), class: 'new-project-button btn btn-primary button-hover', title: t('study_assignment.tooltips.research_project_tooltip')
         - else
           .previously_submitted
             .inline.form-group
@@ -88,7 +88,7 @@
       %h3
         = t("study_assignment.sidebar_box.my_services")
       .line-items= render :partial => 'catalogs/cart'
-    = navigation_link t(:right_navigation)[:catalog], @back, 'catalog-button btn btn-info btn-lg btn-block'
+    = navigation_link t(:right_navigation)[:catalog], @back, 'catalog-button btn btn-info btn-lg btn-block button-hover'
     = render :partial => 'right_navigation'
 .continue.col-md-12= render :partial => 'service_requests/navigation'
 

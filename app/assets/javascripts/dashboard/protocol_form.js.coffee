@@ -71,7 +71,6 @@ $(document).ready ->
       for sibling in siblings
         if !$(sibling).is(':visible')
           $(sibling).hide_visual_error()
-  # study_selected_for_epic_radio = $('.selected_for_epic_button .btn input:radio:checked')
 
   $(document).on 'change', "input[name='protocol[selected_for_epic]']", ->
     # Publish Study in Epic - Radio

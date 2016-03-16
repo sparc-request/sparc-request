@@ -403,11 +403,11 @@ h3.needed_info {
   margin: 10px;
 }
 
-.submit-request-button:hover,
+/*.submit-request-button:hover,
 .faq-button:hover,
 .feedback-button a:hover {
   color: #0078AE;
-}
+}*/
 
 
 .quick_question_email_error {
@@ -868,8 +868,8 @@ span#infotip img {
 
 .button-hover:hover {
   opacity: 1;
-  -webkit-animation: flash 1.5s;
-  animation: flash 1.5s;
+  -webkit-animation: flash 1.0s;
+  animation: flash 1.0s;
 }
 @-webkit-keyframes flash {
   0% {

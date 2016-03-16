@@ -74,7 +74,7 @@
           %td.service_name
             = line_item.service.name
             = hidden_field_tag "service_request[line_items_attributes][#{line_item.id}][id]", line_item.id
-          %td.status= line_item.service_request.status.capitaliza
+          %td.status= display_line_items_status(line_item)
           - if line_item.service.try(:displayed_pricing_map).otf_unit_type == 'N/A'
             %td
             %td

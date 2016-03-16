@@ -40,11 +40,6 @@ class Dashboard::MultipleLineItemsController < Dashboard::BaseController
     @service_request = ServiceRequest.find(params[:service_request_id])
     @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
     @service = Service.find(params[:add_service_id])
-
-    @subsidy = @sub_service_request.subsidy
-    percent = @subsidy.try(:percent_subsidy).try(:*, 100)
-    @candidate_one_time_fees = @sub_service_request.candidate_services.select {|x| x.one_time_fee}
-    @candidate_per_patient_per_visit = @sub_service_request.candidate_services.reject {|x| x.one_time_fee}
     existing_service_ids = @service_request.line_items.map(&:service_id)
 
     # # we don't have arms and we are adding a new per patient per visit service
@@ -63,10 +58,6 @@ class Dashboard::MultipleLineItemsController < Dashboard::BaseController
           line_item.update_attribute(:sub_service_request_id, @sub_service_request.id)
           @sub_service_request.update_cwf_data_for_new_line_item(line_item)
         end
-
-        # Have to reload the service request to get the correct direct cost total for the subsidy
-        @subsidy.try(:sub_service_request).try(:reload)
-        @subsidy.try(:fix_pi_contribution, percent)
         flash.now[:success] = "Services Added!"
       else
         @errors = @service_request.errors
@@ -89,12 +80,9 @@ class Dashboard::MultipleLineItemsController < Dashboard::BaseController
     @service_request = ServiceRequest.find(params[:service_request_id])
     @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
     @service = Service.find(params[:remove_service_id])
-    @subsidy = @sub_service_request.subsidy
-    percent = @subsidy.try(:percent_subsidy).try(:*, 100)
 
     @line_items = @sub_service_request.line_items.select{ |li| li.service_id == @service.id }
     @line_items.each{ |li| li.destroy }
-    @subsidy.try(:fix_pi_contribution, percent)
     flash.now[:alert] = "Services Destroyed!"
   end
 end

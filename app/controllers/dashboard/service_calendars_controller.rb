@@ -29,7 +29,6 @@ class Dashboard::ServiceCalendarsController < ApplicationController
     #use session so we know what page to show when tabs are switched
     @tab = params[:tab]
     @portal = params[:portal]
-    @study_tracker = params[:study_tracker] == "true"
     @protocol = @service_request.protocol
     setup_calendar_pages
 
@@ -41,9 +40,7 @@ class Dashboard::ServiceCalendarsController < ApplicationController
 
   def update
     @portal              = params[:portal]
-    @study_tracker       = params[:study_tracker] == "true"
     @sub_service_request = SubServiceRequest.find(params[:id]) if params[:id]
-    @subsidy             = @sub_service_request.try(:subsidy)
     @user                = current_identity
     visit                = Visit.find params[:visit] rescue nil
     @line_items_visit    = LineItemsVisit.find params[:line_items_visit] rescue nil
@@ -183,7 +180,6 @@ class Dashboard::ServiceCalendarsController < ApplicationController
     session[:service_calendar_pages][arm_id] = page if page && arm_id
     @tab = params[:tab]
     @portal = params[:portal]
-    @study_tracker = params[:study_tracker] == "true"
     @pages = {}
     @protocol = @arm.protocol rescue @service_request.protocol
     @protocol.arms.each do |arm|
@@ -247,7 +243,6 @@ class Dashboard::ServiceCalendarsController < ApplicationController
     @line_items_visit = LineItemsVisit.find params[:line_items_visit_id]
     @service = @line_items_visit.line_item.service
     @sub_service_request = @line_items_visit.line_item.sub_service_request
-    @subsidy = @sub_service_request.try(:subsidy)
     failed_visit_list = ''
     @line_items_visit.visits.each do |visit|
       visit.attributes = {
@@ -268,7 +263,6 @@ class Dashboard::ServiceCalendarsController < ApplicationController
   def unselect_calendar_row
     @line_items_visit = LineItemsVisit.find params[:line_items_visit_id]
     @sub_service_request = @line_items_visit.line_item.sub_service_request
-    @subsidy = @sub_service_request.try(:subsidy)
     @line_items_visit.visits.each do |visit|
       visit.update_attributes quantity: 0, research_billing_qty: 0, insurance_billing_qty: 0, effort_billing_qty: 0
     end

@@ -25,11 +25,8 @@ class Dashboard::LineItemsVisitsController < Dashboard::BaseController
     @line_items_visit = LineItemsVisit.find(params[:id])
     @sub_service_request = @line_items_visit.line_item.sub_service_request
     @service_request = @sub_service_request.service_request
-    @subsidy = @sub_service_request.subsidy
-    percent = @subsidy.try(:percent_subsidy).try(:*, 100)
     @selected_arm = @service_request.arms.first
     line_item = @line_items_visit.line_item
-    @study_tracker = params[:study_tracker] == "true"
     @line_items = @sub_service_request.line_items
 
     ActiveRecord::Base.transaction do
@@ -37,8 +34,6 @@ class Dashboard::LineItemsVisitsController < Dashboard::BaseController
       if @line_items_visit.destroy
         line_item.destroy unless line_item.line_items_visits.count > 0
         # Have to reload the service request to get the correct direct cost total for the subsidy
-        @subsidy.try(:sub_service_request).try(:reload)
-        @subsidy.try(:fix_pi_contribution, percent)
         @service_request = @sub_service_request.service_request
         @candidate_one_time_fees = @sub_service_request.candidate_services.select {|x| x.one_time_fee}
         @candidate_per_patient_per_visit = @sub_service_request.candidate_services.reject {|x| x.one_time_fee}

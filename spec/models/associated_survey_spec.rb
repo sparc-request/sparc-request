@@ -21,24 +21,19 @@
 require 'rails_helper'
 
 RSpec.describe AssociatedSurvey do
-  let!(:institution)         { create(:institution, name: 'Medical University of South Carolina', order: 1, abbreviation: 'MUSC', is_available: 1)}
-  let!(:provider)            { create(:provider, parent_id:institution.id,name: 'South Carolina Clinical and Translational Institute (SCTR)',order: 1,css_class: 'blue-provider',
-                                                             abbreviation: 'SCTR1',process_ssrs: 0,is_available: 1)}
-  let!(:program)             { create(:program, type:'Program',parent_id:provider.id,name:'Office of Biomedical Informatics',order:1,
-                                                            abbreviation:'Informatics',process_ssrs:  0, is_available: 1)}
-  let!(:core)                { create(:core, parent_id: program.id)}
-  let!(:service)             { create(:service, organization_id: program.id, name: 'One Time Fee') }
-  let!(:survey)              { create(:survey, title: "System Satisfaction survey", description: nil, access_code: "system-satisfaction-survey", reference_identifier: nil,
-                                                           data_export_identifier: nil, common_namespace: nil, common_identifier: nil, active_at: nil, inactive_at: nil, css_url: nil,
-                                                           custom_class: nil, created_at: "2013-07-02 14:40:23", updated_at: "2013-07-02 14:40:23", display_order: 0, api_id: "4137bedf-40db-43e9-a411-932a5f6d77b7",
-                                                           survey_version: 0) }
-
   it "should create an associated survey" do
+    service = build_stubbed(:service)
+    survey = create(:survey)
+
     service.associated_surveys.create survey_id: survey.id
+
     expect(service.associated_surveys.size).to eq(1)
   end
 
   it "should not allow you to associate the same survey version multiple times" do
+    service = create(:service)
+    survey = create(:survey)
+
     service.associated_surveys.create survey_id: survey.id
     service.associated_surveys.create survey_id: survey.id
 
@@ -47,6 +42,8 @@ RSpec.describe AssociatedSurvey do
   end
 
   it "should not allow you to create an associated survey without valid attributes" do
+    service = create(:service)
+    survey = create(:survey)
 
     #should not
     service.associated_surveys.create survey_id: nil
@@ -64,3 +61,4 @@ RSpec.describe AssociatedSurvey do
     expect(AssociatedSurvey.count).to eq(1)
   end
 end
+

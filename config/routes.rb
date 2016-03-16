@@ -300,7 +300,6 @@ SparcRails::Application.routes.draw do
         put :push_to_epic
         get :change_history_tab
         get :status_history
-        get :subsidy_history
         get :approval_history
         get :refresh_service_calendar
       end

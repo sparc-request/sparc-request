@@ -49,6 +49,7 @@ class ApprovedSubsidy < Subsidy
   end
 
   def log_approval_note
+    # Creates a note logging the details of the subsidy's approval
     approval_string = \
       "<table class='table table-bordered table-condensed'><thead>"\
       "<tr><h4>Subsidy Approved</h4></tr>"\

@@ -21,5 +21,5 @@
 $("#flashes_container").html("<%= escape_javascript(render('shared/flash')) %>")
 $("#study-level-activities-table").bootstrapTable 'refresh', {silent: true}
 $("#sub_service_request_header").html("<%= escape_javascript(render(partial: 'dashboard/sub_service_requests/header', locals: { sub_service_request: @sub_service_request })) %>");
-$("#subsidy_information").html("<%= escape_javascript(render(partial: 'dashboard/subsidies/subsidy', locals: { sub_service_request: @sub_service_request })) %>");
+$("#subsidy_information").html("<%= escape_javascript(render(partial: 'dashboard/subsidies/subsidy', locals: { sub_service_request: @sub_service_request, admin: true })) %>");
 $(".selectpicker").selectpicker()

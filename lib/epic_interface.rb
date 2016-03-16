@@ -127,12 +127,8 @@ class EpicInterface
           action,
           soap_header: soap_header(action),
           message: message)
-    rescue
-      h = $!.to_hash
-      fault = $!.nori.find(h, 'Fault')
-      msg = $!.nori.find(fault, "Reason", 'Text')
-      msg = $!
-      raise Error.new(msg)
+    rescue Savon::Error => error
+      raise Error.new(error.to_s)
     end
   end
 

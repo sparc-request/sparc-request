@@ -125,13 +125,10 @@ class Protocol < ActiveRecord::Base
   def is_study?
     self.type == 'Study'
   end
+
   # virgin project:  a project that has never been a study
   def virgin_project?
-    selected_for_epic == nil
-  end
-  # returns true if selected_for_epic is nil in the database
-  def selected_for_epic_is_nil_in_db?
-    Protocol.find(id).selected_for_epic.nil?
+    selected_for_epic.nil?
   end
 
   def active?

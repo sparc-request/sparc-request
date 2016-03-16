@@ -27,7 +27,7 @@
     %th= t(:ssr_dialog)[:calendar][:headers][:total]
 
   %tr.table_header
-    = generate_visit_header_row arm, service_request, @pages[arm.id].to_i
+    = ServiceCalendar.generate_visit_header_row arm, service_request, @pages[arm.id].to_i
 
   %tr.section_header
     %th= t('calendar_page.per_patient') + ' -- ' + arm.name

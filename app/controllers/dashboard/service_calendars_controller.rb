@@ -19,7 +19,9 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Dashboard::ServiceCalendarsController < ApplicationController
-  before_filter :initialize_service_request
+  # before_filter :initialize_service_request
+  before_action :set_request_instance_variables
+
   before_filter(except: [:merged_calendar, :rename_visit]) do |c|
     params[:portal] == 'true' ? true : c.send(:authorize_identity)
   end
@@ -309,6 +311,17 @@ class Dashboard::ServiceCalendarsController < ApplicationController
   end
 
   private
+
+  def set_request_instance_variables
+    if params[:service_request_id]
+      @service_request = ServiceRequest.find(params[:service_request_id])
+    end
+
+    if params[:sub_service_request_id]
+      @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
+      @service_request = @sub_service_request.service_request
+    end
+  end
 
   def setup_calendar_pages
     @pages = {}

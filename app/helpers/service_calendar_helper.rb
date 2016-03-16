@@ -20,96 +20,18 @@
 
 module ServiceCalendarHelper
 
-  def line_item_visit_input arm, line_item, visit, tab, totals_hash={}, unit_minimum=0, portal=nil
-    base_url = "/service_requests/#{line_item.service_request_id}/service_calendars?visit=#{visit.id}"
-    case tab
-    when 'template'
-      check_box_tag "visits_#{visit.id}", 1, (visit.research_billing_qty.to_i > 0 or visit.insurance_billing_qty.to_i > 0 or visit.effort_billing_qty.to_i > 0), :class => "line_item_visit_template visits_#{visit.id}", :'data-arm_id' => arm.id, :update => "#{base_url}&tab=template&portal=#{portal}"
-    when 'quantity'
-      content_tag(:div, (visit.research_billing_qty.to_i + visit.insurance_billing_qty.to_i + visit.effort_billing_qty.to_i), {:style => 'text-align:center', :class => "line_item_visit_quantity"})
-    when 'billing_strategy'
-      returning_html = ""
-      returning_html += text_field_tag "visits_#{visit.id}_research_billing_qty", visit.research_billing_qty, :current_quantity => visit.research_billing_qty, :previous_quantity => visit.research_billing_qty, :"data-unit-minimum" => unit_minimum, :'data-arm_id' => arm.id, :class => "line_item_visit_research_billing_qty line_item_visit_billing visits_#{visit.id}", :update => "#{base_url}&tab=billing_strategy&column=research_billing_qty&portal=#{portal}"
-      returning_html += text_field_tag "visits_#{visit.id}_insurance_billing_qty", visit.insurance_billing_qty, :current_quantity => visit.insurance_billing_qty, :previous_quantity => visit.insurance_billing_qty, :"data-unit-minimum" => unit_minimum, :'data-arm_id' => arm.id, :class => "line_item_visit_billing visits_#{visit.id}", :update => "#{base_url}&tab=billing_strategy&column=insurance_billing_qty&portal=#{portal}"
-      returning_html += text_field_tag "visits_#{visit.id}_effort_billing_qty", visit.effort_billing_qty, :current_quantity => visit.effort_billing_qty, :previous_quantity => visit.effort_billing_qty, :"data-unit-minimum" => unit_minimum, :'data-arm_id' => arm.id, :class => "line_item_visit_billing visits_#{visit.id}", :update => "#{base_url}&tab=billing_strategy&column=effort_billing_qty&portal=#{portal}"
-      raw(returning_html)
-    when 'calendar'
-      label_tag nil, qty_cost_label(visit.research_billing_qty + visit.insurance_billing_qty, currency_converter(totals_hash["#{visit.id}"])), :class => "line_item_visit_pricing"
-    end
-  end
-
-  # this was extracted mostly verbatum from a partial
-  # TODO understand
-  def pppv_line_items_visits_to_display(arm, service_request, sub_service_request, opts={})
-    merged = opts[:merged]
-    portal = opts[:portal]
-    grouped_livs = Hash.new
-
-    if merged
-      arm.service_list.each do |_, value| # get only per patient/per visit services and group them
-        livs = Array.new
-        arm.line_items_visits.each do |line_items_visit|
-          line_item = line_items_visit.line_item
-          next unless value[:line_items].include?(line_item)
-          if %w(first_draft draft).include?(line_item.service_request.status)
-            next if portal
-            next if service_request != line_item.service_request
-          end
-          livs << line_items_visit
-        end
-        grouped_livs[value[:name]] = livs unless livs.empty?
-      end
-    else
-      service_request.service_list(false).each do |_, value| # get only per patient/per visit services and group them
-        next unless sub_service_request.nil? || sub_service_request.organization.name == value[:process_ssr_organization_name]
-        livs = Array.new
-        arm.line_items_visits.each do |line_items_visit|
-          line_item = line_items_visit.line_item
-          next unless value[:line_items].include?(line_item)
-          livs << line_items_visit
-        end
-        grouped_livs[value[:name]] = livs unless livs.empty?
-      end
-    end
-
-    grouped_livs
-  end
-
-  def set_check obj
-    count = obj.visits.where("research_billing_qty = 0 and insurance_billing_qty = 0").count
-    count != 0
-  end
-
-  def glyph_class obj
-    count = obj.visits.where("research_billing_qty = 0 and insurance_billing_qty = 0").count
-    count == 0 ? 'glyphicon-remove' : 'glyphicon-ok'
-  end
-
   def select_row line_items_visit, tab, portal
     checked = line_items_visit.visits.map{|v| v.research_billing_qty >= 1 ? true : false}.all?
-    action  = checked == true ? 'unselect_calendar_row' : 'select_calendar_row'
-    icon    = checked == true ? 'glyphicon-remove' : 'glyphicon-ok'
-
+    action = checked == true ? 'unselect_calendar_row' : 'select_calendar_row'
+    icon = checked == true ? 'ui-icon-close' : 'ui-icon-check'
     link_to(
-        (content_tag(:span, '', class: "glyphicon #{icon}")),
+        (content_tag(:span, '', :class => "ui-button-icon-primary ui-icon #{icon}") + content_tag(:span, 'Check All', :class => 'ui-button-text')),
         "/service_requests/#{line_items_visit.line_item.service_request.id}/#{action}/#{line_items_visit.id}?portal=#{portal}",
-        remote: true,
-        role:   'button',
-        class:  "btn btn-primary service_calendar_row",
-        id:     "check_row_#{line_items_visit.id}_#{tab}",
-        data:   (line_items_visit.any_visit_quantities_customized? ? { confirm: "This will reset custom values for this row, do you wish to continue?" } : nil))
-  end
-
-  # couldn't we use a VisitGroup to do this?
-  def select_column visit_group, n, portal, service_request
-    arm_id             = visit_group.arm_id
-    filtered_livs      = visit_group.line_items_visits.joins(:line_item).where(line_items: { service_request_id: service_request.id })
-    checked            = filtered_livs.all? { |l| l.visits[n.to_i].research_billing_qty >= 1 }
-    action             = checked ? 'unselect_calendar_column' : 'select_calendar_column'
-    icon               = checked ? 'glyphicon-remove' : 'glyphicon-ok'
-    link_to(content_tag(:span, '', class: "glyphicon #{icon}"),
-      "/service_requests/#{service_request.id}/#{action}/#{n+1}/#{arm_id}?portal=#{portal}",
-      remote: true, role: 'button', class: 'visit_number btn btn-primary', id: "check_all_column_#{n+1}", data: ( visit_group.any_visit_quantities_customized?(service_request) ? { confirm: "This will reset custom values for this column, do you wish to continue?" } : nil))
+        :remote  => true,
+        :role    => 'button',
+        :class   => "ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only service_calendar_row",
+        :id      => "check_row_#{line_items_visit.id}_#{tab}",
+        data:    ( line_items_visit.any_visit_quantities_customized? ? { confirm: "This will reset custom values for this row, do you wish to continue?" } : nil))
   end
 
   def currency_converter cents
@@ -139,7 +61,7 @@ module ServiceCalendarHelper
   end
 
   def display_visit_based_direct_cost_per_study(line_items_visit)
-    currency_converter(line_items_visit.direct_costs_for_visit_based_service_single_subject * (line_items_visit.subject_count || 0))
+    currency_converter(line_items_visit.direct_costs_for_visit_based_service_single_subject * line_items_visit.subject_count)
   end
 
   # Displays max totals per patient
@@ -307,11 +229,11 @@ module ServiceCalendarHelper
     options_for_select(arr)
   end
 
-  def build_visits_select arm, page
-    select_tag "visits-select-for-#{arm.id}", visits_select_options(arm, page), class: 'form-control selectpicker', data: { arm_id: "#{arm.id}", page: page }
-  end
-
-  def display_line_items_status(line_item)
-    line_item.service_request.status.capitalize
-  end
+  # def build_visits_select arm, page
+  #   select_tag "visits-select-for-#{arm.id}", visits_select_options(arm, page), class: 'form-control selectpicker', data: { arm_id: "#{arm.id}", page: page }
+  # end
+  # 
+  # def display_line_items_status(line_item)
+  #   line_item.service_request.status.capitalize
+  # end
 end

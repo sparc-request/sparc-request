@@ -9,7 +9,7 @@
   .page_change_arrow.btn.btn-info.glyphicon.glyphicon-arrow-left{ title: 'View Previous', type: "button", id: "arrow-left-#{arm.id}", disabled: page == 1 ? 'true' : nil, role: 'button', aria: { label: "View Previous" }, data: { toggle: "tooltip", animation: 'false', url: pathMethod.call(sub_service_request, page: page - 1, pages: pages, arm_id: arm.id, tab: tab, portal: portal, format: :js) } }
 -# The visit jump to drop down
 .col-xs-8
-  = build_visits_select(arm, page)
+  = Dashboard::ServiceCalendar.build_visits_select(arm, page)
 -# The next page arrow
 .col-xs-2
   .page_change_arrow.btn.btn-info.btn.btn-info.glyphicon.glyphicon-arrow-right{ title: 'View More', type: "button", id: "arrow-right-#{arm.id}", disabled: ((page + 1) * 5) - 4 > arm.visit_count ? 'true' : nil, role: 'button', aria: { label: "View More" }, data: { toggle: "tooltip", animation: 'false', url: pathMethod.call(sub_service_request, page: page + 1, pages: pages, arm_id: arm.id, tab: tab, portal: portal, format: :js) } }

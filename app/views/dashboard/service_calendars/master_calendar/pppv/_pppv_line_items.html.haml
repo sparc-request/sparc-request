@@ -18,7 +18,7 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 - line_items_visits = []
-- pppv_line_items_visits_to_display(arm, service_request, sub_service_request, merged: @merged, portal: @portal, review: @review).each do |org, livs|
+- Dashboard::ServiceCalendar.pppv_line_items_visits_to_display(arm, service_request, sub_service_request, merged: @merged, portal: @portal, review: @review).each do |org, livs|
   - if @tab == 'billing_strategy'
     %tr.sub_section_header
       %th.col-sm-5{ colspan: 5 }= org
@@ -48,7 +48,7 @@
         - else
           %span= liv.subject_count
       - if @tab == 'template'
-        %td.text-center= select_row liv, tab, portal
+        %td.text-center= Dashboard::ServiceCalendar.select_row liv, tab, portal
       - visits = liv.visits.paginate(page: @pages[arm.id].to_i, per_page: 5)
       - unit_minimum = liv.service.displayed_pricing_map.unit_minimum
       - totals_hash = liv.try(:per_subject_subtotals, visits)
@@ -59,7 +59,7 @@
         %td &nbsp;
       - if tab == 'calendar'
         %td.text-center.pp_line_item_total{ class: "total_#{liv.id}" }= display_visit_based_direct_cost(liv)
-        %td.text-center.pp_line_item_study_total{ class: "total_#{liv.id}_per_study" }= display_visit_based_direct_cost_per_study(liv)
+        %td.text-center.pp_line_item_study_total{ class: "total_#{liv.id}_per_study" }= Dashboard::ServiceCalendar.display_visit_based_direct_cost_per_study(liv)
 -#
 -# - elsif @review # display review calendar pppv line items
 -#   - @service_request.service_list(false).each do |_, value| # get only per patient/per visit services and group them

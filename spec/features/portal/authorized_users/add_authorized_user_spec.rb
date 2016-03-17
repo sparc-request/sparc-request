@@ -212,7 +212,7 @@ RSpec.feature 'User wants to add an authorized user', js: true do
   end
 
   def given_that_i_have_selected_a_protocol
-    first('.protocol-accordion-title').click
+    eventually { first('.blue-provider').click }
   end
 
   def given_i_have_clicked_the_add_authorized_user_button

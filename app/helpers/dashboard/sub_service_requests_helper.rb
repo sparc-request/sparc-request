@@ -46,7 +46,7 @@ module Dashboard::SubServiceRequestsHelper
     if sub_service_request.status == "draft"
       content_tag(:span, 'Not available in draft status.')
     else
-      select_tag "sub_service_request_owner", owners_for_select(sub_service_request), :prompt => '---Please Select---', :'data-sub_service_request_id' => sub_service_request.id, :class => 'selectpicker'
+      select_tag "sub_service_request_owner", owners_for_select(sub_service_request), :prompt => t(:constants)[:prompts][:select], :'data-sub_service_request_id' => sub_service_request.id, :class => 'selectpicker'
     end
   end
 
@@ -56,18 +56,18 @@ module Dashboard::SubServiceRequestsHelper
       if sub_service_request.in_work_fulfillment?
         if user.clinical_provider_rights?
           # In fulfillment and user has rights
-          display += link_to "Go to Fulfillment", CLINICAL_WORK_FULFILLMENT_URL, target: "_blank", class: "btn btn-primary btn-md"
+          display += link_to t(:dashboard)[:sub_service_requests][:header][:fulfillment][:go_to_fulfillment], CLINICAL_WORK_FULFILLMENT_URL, target: "_blank", class: "btn btn-primary btn-md"
         else
           # In fulfillment, user does not have rights, disable button
-          display += link_to "In Fulfillment", CLINICAL_WORK_FULFILLMENT_URL, target: "_blank", class: "btn btn-primary btn-md", disabled: true
+          display += link_to t(:dashboard)[:sub_service_requests][:header][:fulfillment][:in_fulfillment], CLINICAL_WORK_FULFILLMENT_URL, target: "_blank", class: "btn btn-primary btn-md", disabled: true
         end
       else
         # Not in Fulfillment
-        display += button_tag "Send to Fulfillment", data: { sub_service_request_id: sub_service_request.id }, id: "send_to_fulfillment_button", class: "btn btn-success btn-md form-control"
+        display += button_tag t(:dashboard)[:sub_service_requests][:header][:fulfillment][:send_to_fulfillment], data: { sub_service_request_id: sub_service_request.id }, id: "send_to_fulfillment_button", class: "btn btn-success btn-md form-control"
       end
     else
       # Not ready for Fulfillment
-      display += content_tag(:span, 'This Sub Service Request is not ready for Fulfillment.')
+      display += content_tag(:span, t(:dashboard)[:sub_service_requests][:header][:fulfillment][:not_ready])
     end
 
     return display

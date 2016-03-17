@@ -171,7 +171,7 @@ RSpec.feature 'User messes with the change Primary PI Warning Dialog JS', js: tr
   end
 
   def given_i_have_clicked_the_add_authorized_user_button
-    find_button('Add An Authorized User').click
+    find_button('Add an Authorized User').click
   end
 
   def given_i_have_clicked_the_edit_authorized_user_button
@@ -179,7 +179,7 @@ RSpec.feature 'User messes with the change Primary PI Warning Dialog JS', js: tr
   end
 
   def when_i_search_and_select_the_user
-    find('input[placeholder="Search For A User"]').set('Jason Leonard')
+    find('input[placeholder="Search for a User"]').set('Jason Leonard')
     expect(page).to have_css('.tt-selectable', text: 'Jason Leonard', visible: true)
     find('.tt-selectable', text: 'Jason Leonard', visible: true).click
   end
@@ -200,11 +200,11 @@ RSpec.feature 'User messes with the change Primary PI Warning Dialog JS', js: tr
   end
 
   def when_i_cancel_in_add
-    find('button', text: 'Cancel').click
+    find('button', text: 'Close').click
   end
 
   def when_i_cancel_in_edit
-    find('button', text: 'Cancel').click
+    find('button', text: 'Close').click
   end
 
   def when_i_exit
@@ -224,17 +224,17 @@ RSpec.feature 'User messes with the change Primary PI Warning Dialog JS', js: tr
       when 'add form'
         expect(page).to have_selector("form#new_project_role", visible: true)
       when 'search'
-        expect(page).to have_selector('input[placeholder="Search For A User"]', visible: true)
+        expect(page).to have_selector('input[placeholder="Search for a User"]', visible: true)
       when 'add text'
         expect(page).to have_selector('#modal-title', visible: true, text: 'Add Authorized User')
         expect(page).to have_selector('button', visible: true, text: 'Save')
-        expect(page).to have_selector('button', visible: true, text: 'Cancel')
+        expect(page).to have_selector('button', visible: true, text: 'Close')
       when 'edit form'
         expect(page).to have_selector('form.protocol_role_form', visible: true)
       when 'edit text'
         expect(page).to have_selector('h4', visible: true, text: 'Edit Authorized User')
         expect(page).to have_selector('button', visible: true, text: 'Save')
-        expect(page).to have_selector('button', visible: true, text: 'Cancel')
+        expect(page).to have_selector('button', visible: true, text: 'Close')
       when 'warning'
         expect(page).to have_text("**WARNING**")
         expect(page).to have_text("Adding the new Primary PI")
@@ -244,7 +244,7 @@ RSpec.feature 'User messes with the change Primary PI Warning Dialog JS', js: tr
       when 'warning text edit'
         expect(page).to have_text('will change the current Primary PI')
         expect(page).to have_selector('button', visible: true, text: 'Save')
-        expect(page).to have_selector('button', visible: true, text: 'Cancel')
+        expect(page).to have_selector('button', visible: true, text: 'Close')
       else
         puts "An unexpected error was found in then_i_should_see_the. Perhaps there was a typo in the test?"
         expect(0).to eq(1)

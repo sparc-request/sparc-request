@@ -21,36 +21,44 @@
 - if @merged || !@portal || tab == 'calendar'
   %tr.totals_section.begin_totals
     %td.col-sm-5{ colspan: 5 }
-      %strong= t(:calendar_page)[:labels][:maximum_direct]
+      %strong
+        = t(:calendars)[:pppv][:labels][:maximum_direct]
     - 5.times do |i|
       %td.col-sm-1.text-center{ class: "visit_column_#{i + 1} max_direct_per_patient arm_#{arm.id}" }
-    %td.col-sm-1.text-center{ class: "pp_max_total_direct_cost arm_#{arm.id}"}= display_max_total_direct_cost_per_patient arm, line_items_visits
+    %td.col-sm-1.text-center{ class: "pp_max_total_direct_cost arm_#{arm.id}"}
+      = display_max_total_direct_cost_per_patient arm, line_items_visits
     -if @merged
       %td
 
   - if USE_INDIRECT_COST
     %tr.totals_section
       %td.col-sm-5{ colspan: 5 }
-        %strong= t(:calendar_page)[:labels][:maximum_indirect]
+        %strong
+          = t(:calendars)[:pppv][:labels][:maximum_indirect]
       - 5.times do |i|
         %td.col-sm-1.text-center{ class: "visit_column_#{i + 1} max_indirect_per_patient arm_#{arm.id}" }
-      %td.col-sm-1.text-center{ class: "pp_max_total_indirect_cost arm_#{arm.id}"}= display_max_total_indirect_cost_per_patient arm, line_items_visits
+      %td.col-sm-1.text-center{ class: "pp_max_total_indirect_cost arm_#{arm.id}"}
+        = display_max_total_indirect_cost_per_patient arm, line_items_visits
       -if @merged
         %td
 
   %tr.totals_section
     %td.col-sm-5{ colspan: 5 }
-      %strong= t(:calendar_page)[:labels][:maximum_per]
+      %strong
+        = t(:calendars)[:pppv][:labels][:maximum_per]
     - 5.times do |i|
       %td.col-sm-1.text-center{ class: "visit_column_#{i + 1} max_total_per_patient arm_#{arm.id}" }
-    %td.col-sm-1.text-center{ class: "pp_max_total arm_#{arm.id}"}= display_max_total_cost_per_patient arm, line_items_visits
+    %td.col-sm-1.text-center{ class: "pp_max_total arm_#{arm.id}"}
+      = display_max_total_cost_per_patient arm, line_items_visits
     -if @merged
       %td
 
   %tr.totals_section.grand-totals
     %td.col-sm-5{ colspan: 5 }
-      %strong= t(:calendar_page)[:labels][:total_costs] + " -- " + arm.name
+      %strong
+        = t(:calendars)[:pppv][:labels][:total_costs] + " -- " + arm.name
     %td.col-sm-5{ colspan: 5 }
     -if @merged
       %td.col-sm-1
-    %td.col-sm-1.text-center{ class: "pp_total arm_#{arm.id}" }= display_total_cost_per_arm arm, line_items_visits
+    %td.col-sm-1.text-center{ class: "pp_total arm_#{arm.id}" }
+      = display_total_cost_per_arm arm, line_items_visits

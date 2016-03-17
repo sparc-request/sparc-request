@@ -58,7 +58,8 @@ class Dashboard::MultipleLineItemsController < Dashboard::BaseController
           line_item.update_attribute(:sub_service_request_id, @sub_service_request.id)
           @sub_service_request.update_cwf_data_for_new_line_item(line_item)
         end
-        flash.now[:success] = "Services Added!"
+
+        flash.now[:success] = t(:dashboard)[:multiple_line_items][:created]
       else
         @errors = @service_request.errors
       end
@@ -83,6 +84,6 @@ class Dashboard::MultipleLineItemsController < Dashboard::BaseController
 
     @line_items = @sub_service_request.line_items.select{ |li| li.service_id == @service.id }
     @line_items.each{ |li| li.destroy }
-    flash.now[:alert] = "Services Destroyed!"
+    flash.now[:alert] = t(:dashboard)[:multiple_line_items][:destroyed]
   end
 end

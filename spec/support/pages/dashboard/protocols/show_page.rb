@@ -17,7 +17,7 @@ module Dashboard
       section :new_notes_modal, Dashboard::Notes::NewModal, '#new-note-modal'
 
       section :authorized_users_panel, '#authorized-users-panel' do
-        element :add_associated_user_button, 'button', text: 'Add An Authorized User'
+        element :add_associated_user_button, 'button', text: 'Add an Authorized User'
       end
 
       section :add_authorized_user_modal, '#add-authorized-user-form' do

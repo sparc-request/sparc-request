@@ -25,7 +25,8 @@
         %button.close{type: 'button', data: {dismiss: 'modal'}}
           %span{aria: {hidden:'true'}} &times;
           %span.sr-only &times;
-        %h4#add_arm.modal-title.text-center Add Arm
+        %h4#add_arm.modal-title.text-center
+          = t(:dashboard)[:arms][:add]
       .modal-body
         #modal_errors
         .row
@@ -35,15 +36,16 @@
             = hidden_field_tag :service_request_id, service_request.id
             = hidden_field_tag :sub_service_request_id, sub_service_request.id
             .form-group
-              = a.label "name", 'Arm Name', class: "col-sm-4 control-label"
+              = a.label "name", t(:dashboard)[:arms][:name], class: "col-sm-4 control-label"
               .col-sm-7= a.text_field "name", {class: 'form-control'}
             .form-group
-              = a.label "subject_count", 'Subject Count', class: "col-sm-4 control-label"
+              = a.label "subject_count", t(:dashboard)[:arms][:subject_count], class: "col-sm-4 control-label"
               .col-sm-7= a.text_field "subject_count", {class: 'form-control'}
             .form-group
-              = a.label "visit_count", 'Visit Count', class: "col-sm-4 control-label"
+              = a.label "visit_count", t(:dashboard)[:arms][:visit_count], class: "col-sm-4 control-label"
               .col-sm-7= a.text_field "visit_count", {class: 'form-control'}
       .modal-footer
         .center-block
-          %button.btn.btn-default{type: 'button', data: {dismiss: 'modal'}} Close
-          %input.btn.btn-primary#add_arm_form_button{type: 'submit', value: 'Add'}
+          %button.btn.btn-default{type: 'button', data: {dismiss: 'modal'}}
+            = t(:actions)[:close]
+          %input.btn.btn-primary#add_arm_form_button{type: 'submit', value: t(:actions)[:add]}

@@ -80,7 +80,7 @@ RSpec.feature 'User wants to delete an authorized user', js: true do
 
     context 'and tries to delete the user' do
       scenario 'and sees disabled Add an Authorized User button' do
-        expect(page).to have_button('Add An Authorized User', disabled: true)
+        expect(page).to have_button('Add an Authorized User', disabled: true)
       end
     end
   end

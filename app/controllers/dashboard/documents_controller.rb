@@ -28,7 +28,7 @@ class Dashboard::DocumentsController < Dashboard::BaseController
   def new
     @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
     @document = Document.new(service_request_id: @sub_service_request.service_request_id)
-    @header_text = "New Document"
+    @header_text = t(:dashboard)[:documents][:add]
   end
 
   def create
@@ -38,7 +38,7 @@ class Dashboard::DocumentsController < Dashboard::BaseController
       @document.save
       @sub_service_request.documents << @document
       @sub_service_request.save
-      flash.now[:success] = "Document Uploaded!"
+      flash.now[:success] = t(:dashboard)[:documents][:created]
     else
       @errors = @document.errors
     end
@@ -47,13 +47,13 @@ class Dashboard::DocumentsController < Dashboard::BaseController
   def edit
     @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
     @document = Document.find(params[:id])
-    @header_text = "Edit Document"
+    @header_text = t(:dashboard)[:documents][:edit]
   end
 
   def update
     @document = Document.find(params[:id])
     if @document.update_attributes(params[:document])
-      flash.now[:success] = "Document Updated!"
+      flash.now[:success] = t(:dashboard)[:documents][:updated]
     else
       @errors = @document.errors
     end
@@ -65,6 +65,6 @@ class Dashboard::DocumentsController < Dashboard::BaseController
     @sub_service_request.documents.delete @document
     @sub_service_request.save
     @document.destroy if @document.sub_service_requests.empty?
-    flash.now[:success] = "Document Destroyed!"
+    flash.now[:success] = t(:dashboard)[:documents][:destroyed]
   end
 end

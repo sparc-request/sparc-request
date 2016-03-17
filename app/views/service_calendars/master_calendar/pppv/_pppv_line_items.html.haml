@@ -21,34 +21,45 @@
 - pppv_line_items_visits_to_display(arm, service_request, sub_service_request, merged: @merged, portal: @portal, review: @review).each do |org, livs|
   - if @tab == 'billing_strategy'
     %tr.sub_section_header
-      %th.col-sm-5{ colspan: 5 }= org
+      %th.col-sm-5{ colspan: 5 }
+        = org
       - 5.times do
         %th.col-sm-1.billing_type_list{ style: 'text-align:center' }
-          %span.billing_type R
-          %span.billing_type T
-          %span.billing_type %
+          %span.billing_type
+            = 'R'
+          %span.billing_type
+            = 'T'
+          %span.billing_type
+            = '%'
   - else
     %tr.sub_section_header
-      %th{ colspan: 12 }= org
+      %th{ colspan: 12 }
+        = org
   - livs.each do |liv|
     %tr
-      %td{ colspan: 2 }= liv.service.display_service_name
+      %td{ colspan: 2 }
+        = liv.service.display_service_name
       - unless tab == 'calendar'
-        %td.service_rate{ class: "service_rate_#{liv.id}" }= display_service_rate liv.line_item
+        %td.service_rate{ class: "service_rate_#{liv.id}" }
+          = display_service_rate liv.line_item
       %td.your_cost.text-center
         - if tab != 'calendar'
           %a.edit-your-cost{ href: '#', data: { type: 'text', pk: liv.line_item.id, name: 'displayed_cost', value: "#{number_with_precision(Service.cents_to_dollars(liv.line_item.applicable_rate), precision: 2)}", url: "/dashboard/line_items/#{liv.line_item.id}.js" } }
         - else
-          %span= number_with_precision(Service.cents_to_dollars(liv.line_item.applicable_rate), precision: 2)
+          %span
+            = number_with_precision(Service.cents_to_dollars(liv.line_item.applicable_rate), precision: 2)
       - if tab == 'calendar'
-        %td.unit_type.text-center= liv.line_item.service.displayed_pricing_map.unit_type
+        %td.unit_type.text-center
+          = liv.line_item.service.displayed_pricing_map.unit_type
       %td.subject_count.text-center
         - if tab != 'calendar'
-          %a.edit-subject-count{ href: '#', data: { type: 'text', pk: liv.line_item.id, name: 'qty', title: 'Edit subject count', value: liv.subject_count, url: "/service_requests/#{liv.service_request.id}/service_calendars?line_items_visit=#{liv.id}&tab=#{tab}&portal=#{@portal}" } }
+          %a.edit-subject-count{ href: '#', data: { type: 'text', pk: liv.line_item.id, name: 'qty', title: t(:calendars)[:pppv][:interactables][:edit_subject_count], value: liv.subject_count, url: "/service_requests/#{liv.service_request.id}/service_calendars?line_items_visit=#{liv.id}&tab=#{tab}&portal=#{@portal}" } }
         - else
-          %span= liv.subject_count
+          %span
+            = liv.subject_count
       - if @tab == 'template'
-        %td.text-center= select_row liv, tab, portal
+        %td.text-center
+          = select_row liv, tab, portal
       - visits = liv.visits.paginate(page: @pages[arm.id].to_i, per_page: 5)
       - unit_minimum = liv.service.displayed_pricing_map.unit_minimum
       - totals_hash = liv.try(:per_subject_subtotals, visits)
@@ -58,8 +69,10 @@
       - (5 - visits.size).times do
         %td &nbsp;
       - if tab == 'calendar'
-        %td.text-center.pp_line_item_total{ class: "total_#{liv.id}" }= display_visit_based_direct_cost(liv)
-        %td.text-center.pp_line_item_study_total{ class: "total_#{liv.id}_per_study" }= display_visit_based_direct_cost_per_study(liv)
+        %td.text-center.pp_line_item_total{ class: "total_#{liv.id}" }
+          = display_visit_based_direct_cost(liv)
+        %td.text-center.pp_line_item_study_total{ class: "total_#{liv.id}_per_study" }
+          = display_visit_based_direct_cost_per_study(liv)
 -#
 -# - elsif @review # display review calendar pppv line items
 -#   - @service_request.service_list(false).each do |_, value| # get only per patient/per visit services and group them

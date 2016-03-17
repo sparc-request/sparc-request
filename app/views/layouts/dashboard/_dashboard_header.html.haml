@@ -23,9 +23,11 @@
     .navbar-header
       %p.navbar-text#breadcrumbs
         = session[:breadcrumbs].breadcrumbs
-      %p.navbar-text= show_welcome_message(user)
+      %p.navbar-text
+        = show_welcome_message(user)
     %ul.nav.navbar-nav.navbar-right
       %li
         %button.btn.btn-danger.navbar-btn#messages-btn{ type: 'button'}
-          Messages
-          %span.badge= user.unread_notification_count(user)
+          = t(:dashboard)[:navbar][:messages]
+          %span.badge
+            = user.unread_notification_count(user)

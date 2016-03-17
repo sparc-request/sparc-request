@@ -331,4 +331,12 @@ module ApplicationHelper
         type.to_s
     end
   end
+
+  def display_protocol_id(service_request)
+    if service_request.protocol
+      return service_request.protocol.id
+    else
+      return ""
+    end
+  end
 end

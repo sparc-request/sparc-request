@@ -174,18 +174,24 @@ class Protocol < ActiveRecord::Base
 
   scope :with_status, -> (status) {
     # returns protocols with ssrs in status
+    return nil if status == "" or status == [""]
     joins(:sub_service_requests).
     where(sub_service_requests: { status: status }).distinct
   }
 
   scope :with_core, -> (org_id) {
     # returns protocols with ssrs in org_id
+    return nil if org_id == "" or org_id == [""]
     joins(:sub_service_requests).
     where(sub_service_requests: { organization_id: org_id }).distinct
   }
 
   def is_study?
     self.type == 'Study'
+  end
+  # virgin project:  a project that has never been a study
+  def virgin_project?
+    selected_for_epic == nil
   end
 
   def is_project?
@@ -199,6 +205,10 @@ class Protocol < ActiveRecord::Base
 
   def active?
     study_type_question_group.active
+  end
+
+  def activate
+    update_attribute(:study_type_question_group_id, StudyTypeQuestionGroup.active.pluck(:id).first)
   end
 
   def validate_funding_source

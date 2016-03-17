@@ -29,7 +29,9 @@ class Dashboard::SubsidiesController < Dashboard::BaseController
 
   def create
     format_pi_contribution_param
-    if @subsidy = PendingSubsidy.create(params[:pending_subsidy])
+    @subsidy = PendingSubsidy.new(params[:pending_subsidy])
+    if @subsidy.valid?
+      @subsidy.save
       @sub_service_request = @subsidy.sub_service_request
       @admin = params[:admin] == 'true'
       flash[:success] = t(:dashboard)[:subsidies][:created]

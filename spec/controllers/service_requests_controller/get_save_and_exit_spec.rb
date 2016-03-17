@@ -78,15 +78,6 @@ RSpec.describe ServiceRequestsController do
         end
       end
 
-      context 'with params[:sub_service_request_id]' do
-        it 'should set the status of only the SubServiceRequest to draft' do
-          service_request.update_status('not draft')
-          get :save_and_exit, id: service_request.id, sub_service_request_id: service_request.sub_service_requests.first.id
-          service_request.reload
-          expect(service_request.status).to eq 'not draft'
-          expect(service_request.sub_service_requests.first.status).to eq 'draft'
-        end
-      end
     end
   end
 end

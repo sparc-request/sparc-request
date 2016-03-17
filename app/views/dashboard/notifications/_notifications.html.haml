@@ -35,10 +35,10 @@
       %span.glyphicon.glyphicon-refresh.pull-right{style: "display: none;"}
   .col-xs-10
     #notifications-custom-toolbar
-      %button.btn.btn-default.mark_as_read_unread{data: {read: "false"}}
+      %button.btn.btn-default.mark_as_read_unread{data: {sub_service_request_id: sub_service_request.id, read: "false"}}
         -# mark as unread
         = t(:dashboard)[:notifications][:mark_as_unread]
-      %button.btn.btn-default.mark_as_read_unread{data: {read: "true"}}
+      %button.btn.btn-default.mark_as_read_unread{data: {sub_service_request_id: sub_service_request.id, read: "true"}}
         -# mark as read
         = t(:dashboard)[:notifications][:mark_as_read]
     %table.notifications_table.table-condensed.table-no-bordered{id: "notifications-table", data: {toggle: 'table', search: "true", url: dashboard_notifications_path(format: :json, sub_service_request_id: sub_service_request.id, table: "inbox"), toolbar: "#notifications-custom-toolbar", "sort-name" => "time", "sort-order" => 'desc', "row-style" => "notifications_row_style"}}

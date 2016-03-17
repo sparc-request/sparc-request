@@ -152,15 +152,6 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
     @past_statuses = @sub_service_request.past_status_lookup
   end
 
-  def subsidy_history
-    #For Subsidy History Bootstrap Table
-    @subsidy_audits = []
-    subsidy = @sub_service_request.subsidy
-    if subsidy
-      @subsidy_audits = @sub_service_request.subsidy.subsidy_audits
-    end
-  end
-
   def approval_history
     #For Approval History Bootstrap Table
     service_request = @sub_service_request.service_request

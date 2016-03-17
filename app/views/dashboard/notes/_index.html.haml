@@ -43,7 +43,7 @@
               .col-xs-2.created-at
                 = format_date(note.created_at)
               .col-xs-7.comment
-                = note.body
+                = raw note.body
       -else
         .text-center
           = t(:dashboard)[:notes][:index][:none_message1] + notable_type + t(:dashboard)[:notes][:index][:none_message2]

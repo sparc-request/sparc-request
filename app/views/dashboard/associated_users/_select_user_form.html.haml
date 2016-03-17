@@ -32,6 +32,7 @@
             = t(:dashboard)[:authorized_users][:add][:select]
           .col-lg-9
             = text_field_tag 'authorized_user_search', "", placeholder: t(:dashboard)[:authorized_users][:add][:search_prompt], class: 'form-control', data: {protocol_id: protocol.id}
+            = image_tag 'spinner.gif', id: 'loading_authorized_user_spinner', class: 'hidden'
     .modal-footer
       .center-block
         %button.btn.btn-default{ type: 'button', data: { dismiss: 'modal' } }

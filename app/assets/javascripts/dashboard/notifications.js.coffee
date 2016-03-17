@@ -28,7 +28,7 @@ $(document).ready ->
     row_index   = $(this).parents('tr').data('index')
     notification_id = $(this).parents('table.notifications_table').bootstrapTable('getData')[row_index].id
     data =
-      'notification_id': notification_id
+      'notification_id' : notification_id
     $.ajax
       type: 'GET'
       url: '/dashboard/messages'
@@ -78,11 +78,13 @@ $(document).ready ->
   $(document).on 'click', 'button.mark_as_read_unread',  ->
     selections = $('#notifications-table').bootstrapTable 'getSelections'
     notification_ids = selections.map( (hash, i) -> return hash['id'] )
+    sub_service_request_id = $(this).data('sub-service-request-id')
     if notification_ids.length > 0
       read_or_unread = $(this).data('read')
       data =
-        'notification_ids'  : notification_ids
-        'read'              : read_or_unread
+        'notification_ids'       : notification_ids
+        'read'                   : read_or_unread
+        'sub_service_request_id' : sub_service_request_id
       $.ajax
         type: 'PUT'
         url: '/dashboard/notifications/mark_as_read'

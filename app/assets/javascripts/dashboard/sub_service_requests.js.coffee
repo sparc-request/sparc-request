@@ -67,7 +67,7 @@ $(document).ready ->
   # SERVICE REQUEST INFO LISTENERS END
   # TIMELINE LISTENERS BEGIN
 
-  $(document).on 'dp.change', '#sub_service_request_consult_arranged_date_picker', ->
+  $(document).on 'dp.hide', '#sub_service_request_consult_arranged_date_picker', ->
     ssr_id = $(this).data('sub_service_request_id')
     consult_arranged_date = $(this).val()
     data = 'sub_service_request' : 'consult_arranged_date' : consult_arranged_date
@@ -76,7 +76,7 @@ $(document).ready ->
       url: "/dashboard/sub_service_requests/#{ssr_id}"
       data: data
 
-  $(document).on 'dp.change', '#sub_service_request_requester_contacted_date_picker', ->
+  $(document).on 'dp.hide', '#sub_service_request_requester_contacted_date_picker', ->
     ssr_id = $(this).data('sub_service_request_id')
     requester_contacted_date = $(this).val()
     data = 'sub_service_request' : 'requester_contacted_date' : requester_contacted_date

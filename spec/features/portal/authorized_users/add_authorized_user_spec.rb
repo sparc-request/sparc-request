@@ -93,15 +93,6 @@ RSpec.feature 'User wants to add an authorized user', js: true do
           end
         end
 
-        context 'and does not fill out the required fields and submits the form' do
-          scenario 'and sees some errors' do
-            given_i_have_clicked_the_add_authorized_user_button
-            when_i_select_a_user_from_the_search
-            when_i_submit_the_form
-            then_i_should_see_an_error_of_type 'fields missing'
-          end
-        end
-
         context 'and sets their role to Primary PI' do
           before :each do
             fake_login 'jpl6@musc.edu'
@@ -189,13 +180,6 @@ RSpec.feature 'User wants to add an authorized user', js: true do
 
       visit portal_root_path
       wait_for_javascript_to_finish
-    end
-
-    context 'and clicks the Add an Authorized User button' do
-      scenario 'and sees an error' do
-        given_i_have_clicked_the_add_authorized_user_button
-        then_i_should_see_an_error_of_type 'no access'
-      end
     end
   end
 

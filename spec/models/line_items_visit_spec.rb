@@ -27,8 +27,8 @@ RSpec.describe LineItemsVisit do
   build_service_request_with_study
 
   it 'should be possible to create a line items visit' do
-    arm = create(:arm)
-    line_items_visit = create(:line_items_visit, arm_id: arm.id)
+    arm = build(:arm)
+    line_items_visit = build(:line_items_visit, arm_id: arm.id)
     expect(line_items_visit.line_item).to eq nil
     expect(line_items_visit.visits).to eq [ ]
   end

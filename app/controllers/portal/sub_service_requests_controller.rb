@@ -82,17 +82,13 @@ class Portal::SubServiceRequestsController < Portal::BaseController
       Hash.new
     end
 
-    @protocol_question_group_id = @protocol.study_type_question_group_id
 
     if @protocol.update_attributes(attrs)
-      if @protocol_question_group_id == StudyTypeQuestionGroup.active.pluck(:id).first
-        @protocol.update_attribute(:study_type_question_group_id, StudyTypeQuestionGroup.active.pluck(:id).first)
-      else
-        @protocol.update_attribute(:study_type_question_group_id, StudyTypeQuestionGroup.inactive.pluck(:id).first)
-      end
       redirect_to portal_admin_sub_service_request_path(@sub_service_request)
     else
-      @user_toasts = @user.received_toast_messages.select {|x| x.sending_class == 'SubServiceRequest'}
+      # @user_toasts set to an empty array for Wenjun's sanity until bootstrap is merged in
+      # @user_toasts = @user.received_toast_messages.select {|x| x.sending_class == 'SubServiceRequest'}
+      @user_toasts = []
       @service_request = @sub_service_request.service_request
       @protocol.populate_for_edit if @protocol.type == "Study"
       @candidate_one_time_fees, @candidate_per_patient_per_visit = @sub_service_request.candidate_services.partition {|x| x.one_time_fee}
@@ -102,8 +98,12 @@ class Portal::SubServiceRequestsController < Portal::BaseController
       @related_service_requests = @protocol.all_child_sub_service_requests
       @approvals = [@service_request.approvals, @sub_service_request.approvals].flatten
       @selected_arm = @service_request.arms.first
-
-      render :action => 'show'
+      # Sponsor name error showing up twice
+      unless @protocol.errors.messages[:sponsor_name].nil?
+        @protocol.errors.messages[:sponsor_name].uniq!
+      end
+      
+      render action: 'show'
 
     end
   end   

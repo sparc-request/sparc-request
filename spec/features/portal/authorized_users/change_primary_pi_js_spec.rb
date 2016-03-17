@@ -58,14 +58,6 @@ RSpec.feature 'User messes with the change Primary PI Warning Dialog JS', js: tr
         then_i_should_not_see_the 'add form'
       end
 
-      scenario 'and doesnt see the search box' do
-        given_i_have_clicked_the_add_authorized_user_button
-        when_i_search_and_select_the_user
-        when_i_set_the_user_to_primary_pi
-        when_i_submit_in_add
-        then_i_should_not_see_the 'search'
-      end
-
       context 'and clicks No' do
         scenario 'and sees the form' do
           given_i_have_clicked_the_add_authorized_user_button

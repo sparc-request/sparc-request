@@ -49,6 +49,7 @@ $('#authorized_user_search').typeahead(
   }
 )
 .on 'typeahead:select', (event, suggestion) ->
+  $("#loading_authorized_user_spinner").removeClass('hidden')
   $.ajax
     type: 'get'
     url: '/dashboard/associated_users/new.js'

@@ -23,7 +23,8 @@ class Dashboard::MessagesController < Dashboard::BaseController
 
   def index
     @notification = Notification.find(params[:notification_id])
-    @notification.set_read_by @user
+    @read_by_user = @notification.read_by? @user
+    @notification.set_read_by @user unless @read_by_user
     @messages = @notification.messages
   end
 

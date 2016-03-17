@@ -189,9 +189,10 @@ class Protocol < ActiveRecord::Base
   def is_study?
     self.type == 'Study'
   end
+
   # virgin project:  a project that has never been a study
   def virgin_project?
-    selected_for_epic == nil
+    selected_for_epic.nil?
   end
 
   def is_project?

@@ -118,7 +118,7 @@ class ServiceRequest < ActiveRecord::Base
     else
       if self.has_ctrc_clinical_services?
         if self.protocol && self.protocol.has_ctrc_clinical_services?(self.id)
-          errors.add(:ctrc_services, "SCTR Research Nexus Services have been removed")
+          errors.add(:ctrc_services, "SCTR Research Nexus Services conflict with existing request. Please remove the Nexus services from your cart.")
         end
       end
     end

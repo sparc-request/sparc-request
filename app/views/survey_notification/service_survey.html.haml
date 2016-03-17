@@ -33,4 +33,4 @@ Please click on the link(s) below to complete the following survey(s) regarding 
 
 %ul
 - @surveys.each do |survey|
-  %li= link_to survey.title, direct_link_survey_url(survey.access_code, :survey_version => survey.survey_version, @ssr.id)
+  %li= link_to survey.title, direct_link_survey_url(survey.access_code, :survey_version => survey.survey_version, :ssr_id => @ssr.id)

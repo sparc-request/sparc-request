@@ -84,11 +84,6 @@ class Dashboard::MultipleLineItemsController < Dashboard::BaseController
 
     @line_items = @sub_service_request.line_items.select{ |li| li.service_id == @service.id }
     @line_items.each{ |li| li.destroy }
-<<<<<<< HEAD
-    @subsidy.try(:fix_pi_contribution, percent)
     flash.now[:alert] = t(:dashboard)[:multiple_line_items][:destroyed]
-=======
-    flash.now[:alert] = "Services Destroyed!"
->>>>>>> streamlined_bootstrap_portal
   end
 end

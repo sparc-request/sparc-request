@@ -46,7 +46,7 @@ requestSubmittedDialog = (sr_id, id)->
       "No": ->
         $(this).dialog("close")
   }
-  $('#request_submitted_dialog').dialog(options).dialog("open")
+  $('#request_submitted_dialog').dialog(options).dialog("open").prev('.ui-dialog-titlebar').css('background', 'red')
   return false
 
 

@@ -50,6 +50,7 @@ RSpec.describe Portal::NotificationsController do
   let!(:deliverer)             { double() }
 
   before(:each) do
+    session[:identity_id] = identity1.id
     allow(UserMailer).to receive(:notification_received) do
       expect(deliverer).to receive(:deliver)
       deliverer
@@ -58,23 +59,23 @@ RSpec.describe Portal::NotificationsController do
 
   describe 'GET index' do
     it 'should set notifications to all notifications for the user' do
-      session[:identity_id] = identity1.id
       get(:index, format: :json)
-      expect(assigns(:notifications)).to eq [ notification1, notification2 ]
+      expect(assigns(:notifications)).to eq [notification1.reload, notification2.reload]
     end
 
     it 'should return the user and all notifications' do
-      session[:identity_id] = identity1.id
       get(:index, format: :json)
       # TODO: can't just use as_json, because it formats time
       # differently
-      expect(JSON.parse(response.body)).to eq(JSON.parse(ActiveSupport::JSON.encode([ notification1, notification2 ])))
+      expect(JSON.parse(response.body)).to eq(
+        JSON.parse(
+          ActiveSupport::JSON.encode(
+            [notification1.reload, notification2.reload])))
     end
   end
 
   describe 'GET show' do
     it 'should set sub_service_request if sub_service_request_id was sent' do
-      session[:identity_id] = identity1.id
       post :show, {
         format: :js,
         id: notification1.id,
@@ -84,7 +85,6 @@ RSpec.describe Portal::NotificationsController do
     end
 
     it 'should not set sub_service_request if sub_service_request_id was not sent' do
-      session[:identity_id] = identity1.id
       post :show, {
         format: :js,
         id: notification1.id,
@@ -93,7 +93,6 @@ RSpec.describe Portal::NotificationsController do
     end
 
     it 'should send back the notification' do
-      session[:identity_id] = identity1.id
       post :show, {
         format: :js,
         id: notification1.id,
@@ -126,7 +125,6 @@ RSpec.describe Portal::NotificationsController do
 
   describe 'POST create' do
     it 'should create a new notification' do
-      session[:identity_id] = identity1.id
       post :create, {
         format: :js,
         notification: {
@@ -142,7 +140,6 @@ RSpec.describe Portal::NotificationsController do
     end
 
     it 'should create a new message' do
-      session[:identity_id] = identity1.id
       xhr :get, :create, {
         format: :js,
         notification: {
@@ -170,7 +167,6 @@ RSpec.describe Portal::NotificationsController do
     end
 
     it 'should set sub_service_request' do
-      session[:identity_id] = identity1.id
       post :create, {
         format: :js,
         notification: {
@@ -190,7 +186,6 @@ RSpec.describe Portal::NotificationsController do
     end
 
     it 'should set notifications' do
-      session[:identity_id] = identity1.id
       xhr :get, :create, {
         format: :js,
         notification: {
@@ -213,7 +208,6 @@ RSpec.describe Portal::NotificationsController do
     it 'should deliver the notification via email' do
       expect(UserMailer).to receive(:notification_received)
 
-      session[:identity_id] = identity1.id
       post :create, {
         format: :js,
         notification: {
@@ -233,7 +227,6 @@ RSpec.describe Portal::NotificationsController do
 
   describe 'POST user_portal_update' do
     it 'should set notification' do
-      session[:identity_id] = identity1.id
       post :user_portal_update, {
         format: :js,
         id: notification1.id,
@@ -242,7 +235,6 @@ RSpec.describe Portal::NotificationsController do
     end
 
     it 'should create a new message' do
-      session[:identity_id] = identity1.id
       post :user_portal_update, {
         format: :js,
         id: notification4.id,
@@ -268,7 +260,6 @@ RSpec.describe Portal::NotificationsController do
     end
 
     it 'should set notifications' do
-      session[:identity_id] = identity1.id
       post :user_portal_update, {
         format: :js,
         id: notification4.id,
@@ -286,7 +277,6 @@ RSpec.describe Portal::NotificationsController do
     it 'should deliver the notification via email' do
       expect(UserMailer).to receive(:notification_received)
 
-      session[:identity_id] = identity1.id
       post :user_portal_update, {
         format: :js,
         id: notification4.id,
@@ -303,7 +293,6 @@ RSpec.describe Portal::NotificationsController do
 
   describe 'POST admin_update' do
     it 'should set notification' do
-      session[:identity_id] = identity1.id
       post :admin_update, {
         format: :js,
         id: notification_with_ssr.id,
@@ -312,7 +301,6 @@ RSpec.describe Portal::NotificationsController do
     end
 
     it 'should create a new message' do
-      session[:identity_id] = identity1.id
       post :admin_update, {
         format: :js,
         id: notification_with_ssr.id,
@@ -338,7 +326,6 @@ RSpec.describe Portal::NotificationsController do
     end
 
     it 'should set sub_service_request' do
-      session[:identity_id] = identity1.id
       post :admin_update, {
         format: :js,
         id: notification_with_ssr.id,
@@ -354,7 +341,6 @@ RSpec.describe Portal::NotificationsController do
     end
 
     it 'should set notifications' do
-      session[:identity_id] = identity1.id
       post :admin_update, {
         format: :js,
         id: notification_with_ssr.id,
@@ -372,7 +358,6 @@ RSpec.describe Portal::NotificationsController do
     it 'should deliver the notification via email' do
       expect(UserMailer).to receive(:notification_received)
 
-      session[:identity_id] = identity1.id
       post :admin_update, {
         format: :js,
         id: notification_with_ssr.id,
@@ -389,7 +374,6 @@ RSpec.describe Portal::NotificationsController do
 
   describe 'POST mark_as_read' do
     it 'should set sub_service_request if sub_service_request_id is sent' do
-      session[:identity_id] = identity1.id
       post :mark_as_read, {
         format: :js,
         id: notification_with_ssr.id,
@@ -400,7 +384,6 @@ RSpec.describe Portal::NotificationsController do
     end
 
     it 'should set notifications if sub_service_request_id is sent' do
-      session[:identity_id] = identity1.id
       post :mark_as_read, {
         format: :js,
         id: notification_with_ssr.id,
@@ -411,7 +394,6 @@ RSpec.describe Portal::NotificationsController do
     end
 
     it 'should not set sub_service_request if sub_service_request_id is not sent' do
-      session[:identity_id] = identity1.id
       post :mark_as_read, {
         format: :js,
         id: notification_with_ssr.id,
@@ -421,7 +403,6 @@ RSpec.describe Portal::NotificationsController do
     end
 
     it 'should set notifications if sub_service_request_id is not sent' do
-      session[:identity_id] = identity1.id
       post :mark_as_read, {
         format: :js,
         id: notification_with_ssr.id,
@@ -431,7 +412,6 @@ RSpec.describe Portal::NotificationsController do
     end
 
     it 'should set the read attribute on all notifications that are passed in' do
-      session[:identity_id] = identity1.id
       post :mark_as_read, {
         format: :js,
         id: notification_with_ssr.id,

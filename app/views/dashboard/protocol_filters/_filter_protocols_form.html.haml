@@ -45,7 +45,7 @@
         .form-group.row
           = form.label :with_status, "Status", class: 'col-lg-3 control-label'
           .col-lg-9
-            = form.select :with_status, filterrific.select_options[:with_status], { include_blank: '- Any -' }, class: "form-control selectpicker status-select"
+            = form.select :with_status, filterrific.select_options[:with_status], {}, title: '- Any -', multiple: true, class: "form-control selectpicker status-select"
         - if admin
           %hr
           .form-group.row
@@ -61,7 +61,7 @@
           .form-group.row
             = form.label :with_core, "Core", class: 'col-lg-3 control-label'
             .col-lg-9
-              = form.select :with_core, filterrific.select_options[:with_core], { include_blank: '- Any -' }, class: "form-control selectpicker core-select"
+              = form.select :with_core, filterrific.select_options[:with_core], {}, title: '- Any -', multiple: true, class: "form-control selectpicker core-select"
 
     .panel-footer
       .pull-right

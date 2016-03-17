@@ -455,12 +455,6 @@ en:
             date: "Date Changed"
             from: "Status Changed From"
             to: "Status Changed To"
-          subsidy:
-            date: "Date Changed"
-            by: "Changed By"
-            action: "Action"
-            pi: "PI Contribution"
-            percent: "Subsidy Percent"
           approval:
             header: "Approval History"
             date: "Date Approved"

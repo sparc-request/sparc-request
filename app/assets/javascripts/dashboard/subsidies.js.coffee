@@ -41,7 +41,7 @@ $(document).ready ->
   $(document).on 'click', '.delete_subsidy_button', ->
     subsidy_id = $(this).data('subsidy-id')
 
-    if confirm("Are you sure?")
+    if confirm("Are you sure that you would like to delete this subsidy?")
       $.ajax
         type: 'DELETE'
         url: "/dashboard/subsidies/#{subsidy_id}"

@@ -77,7 +77,9 @@ class Dashboard::NotificationsController < Dashboard::BaseController
     end
 
     if params[:sub_service_request_id]
-      @unread_notification_count = @user.unread_notification_count_for_ssr(@user, SubServiceRequest.find(params[:sub_service_request_id]))
+      @unread_notification_count_for_ssr = @user.unread_notification_count_for_ssr(@user, SubServiceRequest.find(params[:sub_service_request_id]))
     end
+
+    @unread_notification_count = @user.unread_notification_count(@user)
   end
 end

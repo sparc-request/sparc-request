@@ -18,7 +18,7 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-= javascript_include_tag 'service_calendar_logic'
+= javascript_include_tag 'dashboard/service_calendar_logic'
 - if !(sub_service_request.per_patient_per_visit_line_items.length >= 1) || service_request.arms.empty?
   .blank_requests
     = t(:dashboard)[:sub_service_requests][:tabs][:study_schedule][:no_requests]

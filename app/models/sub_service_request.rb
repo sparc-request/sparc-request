@@ -261,6 +261,7 @@ class SubServiceRequest < ActiveRecord::Base
   end
 
   def eligible_for_subsidy?
+    # This defines when subsidies show up for SubServiceRequests across the app.
     if organization.eligible_for_subsidy? and not organization.funding_source_excluded_from_subsidy?(self.service_request.protocol.try(:funding_source_based_on_status))
       true
     else

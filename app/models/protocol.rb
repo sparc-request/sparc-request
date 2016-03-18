@@ -398,13 +398,13 @@ class Protocol < ActiveRecord::Base
   end
 
   def any_service_requests_to_display?
-    return self.service_requests.detect { |sr| !['first_draft', 'draft'].include?(sr.status) }
+    return self.service_requests.detect { |sr| !['first_draft'].include?(sr.status) }
   end
 
   def has_per_patient_per_visit? current_request, portal
     return self.service_requests.detect do |sr|
       if sr.has_per_patient_per_visit_services?
-        if ['first_draft', 'draft'].include?(sr.status)
+        if ['first_draft'].include?(sr.status)
           if portal
             false
           elsif current_request == sr

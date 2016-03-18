@@ -224,20 +224,15 @@ module Dashboard
     end
 
     # couldn't we use a VisitGroup to do this?
-    def self.select_column(visit_group, n, portal, sub_service_request)
+    def self.select_column(visit_group, n, portal, service_request)
       arm_id = visit_group.arm_id
-      service_request_id = sub_service_request.service_request_id
-      filtered_livs = visit_group.line_items_visits.joins(:line_item).where(line_items: { service_request_id: service_request_id })
+      filtered_livs = visit_group.line_items_visits.joins(:line_item).where(line_items: {service_request_id: service_request.id})
       checked = filtered_livs.all? { |l| l.visits[n.to_i].research_billing_qty >= 1 }
       action = checked ? 'unselect_calendar_column' : 'select_calendar_column'
       icon = checked ? 'glyphicon-remove' : 'glyphicon-ok'
       link_to(content_tag(:span, '', class: "glyphicon #{icon}"),
-              "/dashboard/service_calendars/#{sub_service_request.id}/#{action}/#{n+1}/#{arm_id}?portal=#{portal}",
-              remote: true,
-              role: 'button',
-              class: 'visit_number btn btn-primary',
-              id: "check_all_column_#{n+1}",
-              data: (visit_group.any_visit_quantities_customized?(sub_service_request.service_request) ? { confirm: 'This will reset custom values for this column, do you wish to continue?' } : nil))
+              "/dashboard/service_calendar/#{service_request.id}/#{action}/#{n+1}/#{arm_id}?portal=#{portal}",
+              remote: true, role: 'button', class: 'visit_number btn btn-primary', id: "check_all_column_#{n+1}", data: (visit_group.any_visit_quantities_customized?(service_request) ? {confirm: "This will reset custom values for this column, do you wish to continue?"} : nil))
     end
   end
 end

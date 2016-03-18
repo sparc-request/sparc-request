@@ -30,23 +30,13 @@ class Dashboard::VisitGroupsController < Dashboard::BaseController
     @visit_group = VisitGroup.new()
     @schedule_tab = params[:schedule_tab]
     @arm = params[:arm_id].present? ? Arm.find(params[:arm_id]) : @protocol.arms.first
-    @study_tracker = params[:study_tracker] == "true"
   end
 
   def create
     @service_request = ServiceRequest.find(params[:service_request_id])
     @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
-    @subsidy = @sub_service_request.subsidy
-    percent = @subsidy.try(:percent_subsidy).try(:*, 100)
     @arm =  Arm.find(params[:visit_group][:arm_id])
-    @current_page = params[:current_page]
-    @schedule_tab = params[:schedule_tab]
-    @study_tracker = params[:study_tracker] == "true"
-
     if @arm.add_visit(params[:visit_group][:position], params[:visit_group][:day], params[:visit_group][:window_before], params[:visit_group][:window_after], params[:visit_group][:name], 'true')
-      @subsidy.try(:sub_service_request).try(:reload)
-      @subsidy.try(:fix_pi_contribution, percent)
-      @candidate_per_patient_per_visit = @sub_service_request.candidate_services.reject {|x| x.one_time_fee}
       @arm.increment!(:minimum_visit_count)
       @service_request.relevant_service_providers_and_super_users.each do |identity|
         create_visit_change_toast(identity, @sub_service_request) unless identity == @user
@@ -86,16 +76,8 @@ class Dashboard::VisitGroupsController < Dashboard::BaseController
   def destroy
     @service_request = ServiceRequest.find(params[:service_request_id])
     @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
-    @current_page = params[:page].to_i == 0 ? 1 : params[:page].to_i # can't be zero
-    @schedule_tab = params[:schedule_tab]
-    @study_tracker = params[:study_tracker] == "true"
     @arm = @visit_group.arm
     if @arm.remove_visit(@visit_group.position)
-      @subsidy = @sub_service_request.subsidy
-      percent = @subsidy.try(:percent_subsidy).try(:*, 100)
-      @subsidy.try(:sub_service_request).try(:reload)
-      @subsidy.try(:fix_pi_contribution, percent)
-      @candidate_per_patient_per_visit = @sub_service_request.candidate_services.reject {|x| x.one_time_fee}
       @arm.decrement!(:minimum_visit_count)
       @service_request.relevant_service_providers_and_super_users.each do |identity|
         create_visit_change_toast(identity, @sub_service_request) unless identity == @user

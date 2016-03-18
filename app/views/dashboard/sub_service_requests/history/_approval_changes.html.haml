@@ -21,7 +21,6 @@
 .col-xs-12
   #history-custom-toolbar
     %button.btn.btn-default.history_button#status_history_button{ data: { table: "status_changes", sub_service_request_id: sub_service_request_id }} Status History
-    %button.btn.btn-default.history_button#subsidy_history_button{ data: { table: "subsidy_changes", sub_service_request_id: sub_service_request_id }} Subsidy History
     %button.btn.btn-primary.history_button#approval_history_button{ disabled: "disabled", data: { table: "approval_changes", sub_service_request_id: sub_service_request_id }} Approval History
   %table.ssr_history_table{id: "approval-history-table", data: {toggle: 'table', search: "true", "show-columns" => "true", "show-refresh" => "true", "show-toggle" => "true", url: approval_history_dashboard_sub_service_request_path(format: :json, sub_service_request_id: sub_service_request_id), striped: "true", toolbar: "#history-custom-toolbar", "show-export" => "true", "export-types" => ['excel']}}
     %thead.primary-header

@@ -190,16 +190,16 @@ RSpec.feature 'User wants to add an authorized user', js: true do
     end
 
     scenario 'and sees disabled Add an Authorized User button' do
-      expect(page).to have_button('Add An Authorized User', disabled: true)
+      expect(page).to have_button('Add an Authorized User', disabled: true)
     end
   end
 
   def given_i_have_clicked_the_add_authorized_user_button
-    find_button('Add An Authorized User').click
+    find_button('Add an Authorized User').click
   end
 
   def when_i_select_a_user_from_the_search
-    find('input[placeholder="Search For A User"]').set('Jason Leonard')
+    find('input[placeholder="Search for a User"]').set('Jason Leonard')
     expect(page).to have_css('.tt-selectable', text: 'Jason Leonard', visible: true)
     find('.tt-selectable', text: 'Jason Leonard', visible: true).click
   end
@@ -225,16 +225,16 @@ RSpec.feature 'User wants to add an authorized user', js: true do
 
   def when_i_set_the_role_and_credentials_to_other
     when_i_set_the_role_to 'Other'
-    expect(page).to have_field('Role other')
+    expect(page).to have_selector('#project_role_role_other', visible: true)
     # expect(page).to have_css('#project_role_role_other')
     when_i_set_the_credentials_to 'Other'
-    expect(page).to have_field('Credentials other')
+    expect(page).to have_selector('#project_role_identity_attributes_credentials_other', visible: true)
     # expect(page).to have_css('#identity_credentials_other')
   end
 
   def when_i_fill_out_the_other_fields
-    find_field('Role other').set('asdf')
-    find_field('Credentials other').set('asdf')
+    find('#project_role_role_other').set('asdf')
+    find('#project_role_identity_attributes_credentials_other').set('asdf')
   end
 
   def when_i_submit_the_form

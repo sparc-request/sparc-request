@@ -22,12 +22,15 @@
   = hidden_field_tag :service_request_id, service_request.id
   = hidden_field_tag :sub_service_request_id, sub_service_request.id
   .form-group
-    = a.label "name", "Arm Name", class: "col-sm-4 control-label"
-    .col-sm-7= a.text_field "name", {class: 'form-control'}
+    = a.label "name", t(:dashboard)[:arms][:name], class: "col-sm-4 control-label"
+    .col-sm-7
+      = a.text_field "name", {class: 'form-control'}
   .form-group
-    = a.label "subject_count", "Subject Count", class: "col-sm-4 control-label"
-    .col-sm-7= a.text_field "subject_count", {class: 'form-control'}
+    = a.label "subject_count", t(:dashboard)[:arms][:subject_count], class: "col-sm-4 control-label"
+    .col-sm-7
+      = a.text_field "subject_count", {class: 'form-control'}
   .modal-footer
     .center-block
-      %button.btn.btn-default{type: 'button', data: {dismiss: 'modal'}} Close
-      %input.btn.btn-primary#edit_arm_form_button{type: 'submit', value: "Save"}
+      %button.btn.btn-default{type: 'button', data: {dismiss: 'modal'}}
+        = t(:actions)[:close]
+      %input.btn.btn-primary#edit_arm_form_button{type: 'submit', value: t(:actions)[:save]}

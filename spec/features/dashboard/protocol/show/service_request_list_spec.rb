@@ -94,7 +94,7 @@ RSpec.describe 'service request list', js: true do
         end
 
         it 'should show service requester, associated users, and service providers partitioned in dropdown' do
-          expect(@actions_td.new_notification_dropdown.list_items.map(&:text).select(&:present?)).to eq ['Requester', 'Requester: Some Guy', 'Associated Users', 'Primary-pi: Julia Glenn', 'Service Providers', 'Easter Bunny']
+          expect(@actions_td.new_notification_dropdown.list_items.map(&:text).select(&:present?)).to eq ['Requester', 'Requester: Some Guy', 'Authorized Users', 'Primary-pi: Julia Glenn', 'Clinical Providers', 'Easter Bunny']
         end
 
         context 'user selects themselves in dropdown' do

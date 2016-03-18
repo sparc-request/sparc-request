@@ -39,7 +39,7 @@ class Dashboard::LineItemsController < Dashboard::BaseController
     @service_request = @sub_service_request.service_request
     if params[:one_time_fee]
       @line_item = LineItem.new(sub_service_request_id: @sub_service_request.id, service_request_id: @service_request.id)
-      @header_text = "New Study Level Activity"
+      @header_text = t(:dashboard)[:study_level_activities][:add]
     else
       @services = @sub_service_request.candidate_services.select {|x| !x.one_time_fee}
       @page_hash = params[:page_hash]
@@ -56,7 +56,7 @@ class Dashboard::LineItemsController < Dashboard::BaseController
     elsif not @sub_service_request.create_line_item(params[:line_item])
       @errors = @sub_service_request.errors
     else
-      flash[:success] = "Study Level Activity Created!"
+      flash[:success] = t(:dashboard)[:study_level_activities][:created]
     end
   end
 
@@ -64,14 +64,14 @@ class Dashboard::LineItemsController < Dashboard::BaseController
     @otf = @line_item.service.one_time_fee
     @modal_to_render = params[:modal]
     if @otf
-      @header_text = "Edit Study Level Activity"
+      @header_text = t(:dashboard)[:study_level_activities][:edit]
     end
   end
 
   def update
     @otf = @line_item.service.one_time_fee
     if @line_item.update_attributes(params[:line_item])
-      flash[:success] = @otf ? "Study Level Activity Updated!" : "Line Item Updated!"
+      flash[:success] = @otf ? t(:dashboard)[:study_level_activities][:updated] : t(:dashboard)[:line_items][:updated]
     else
       @errors = @line_item.errors
     end
@@ -82,7 +82,7 @@ class Dashboard::LineItemsController < Dashboard::BaseController
     if @otf
       @sub_service_request = @line_item.sub_service_request
       @line_item.destroy
-      flash[:alert] = "Study Level Activity Destroyed!"
+      flash[:alert] = t(:dashboard)[:study_level_activities][:destroyed]
     else
       @sub_service_request = @line_item.sub_service_request
       @service_request = @sub_service_request.service_request

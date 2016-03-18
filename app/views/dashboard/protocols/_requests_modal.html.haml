@@ -24,11 +24,13 @@
       %button.close{type: 'button', data: {dismiss: 'modal'}}
         %span{aria: {hidden:'true'}} &times;
         %span.sr-only &times;
-      %h4.modal-title.text-center= protocol.short_title
+      %h4.modal-title.text-center
+        = protocol.short_title
     .modal-body
       - protocol.service_requests.each do |sr|
         - if sr.sub_service_requests.any?
           = render partial: 'dashboard/service_requests/protocol_service_request_show', locals: { service_request: sr, user: user, permission_to_edit: permission_to_edit, admin: admin }
     .modal-footer
       .center-block
-        %button.btn.btn-default{type: 'button', data: {dismiss: 'modal'}} Close
+        %button.btn.btn-default{type: 'button', data: {dismiss: 'modal'}} 
+          = t(:actions)[:close]

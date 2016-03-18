@@ -36,26 +36,26 @@ class Dashboard::FulfillmentsController < Dashboard::BaseController
 
   def new
     @fulfillment = Fulfillment.new(line_item_id: params[:line_item_id])
-    @header_text = 'Create New Fulfillment'
+    @header_text = t(:dashboard)[:fulfillments][:add]
   end
 
   def create
     @fulfillment = Fulfillment.new(params[:fulfillment])
     if @fulfillment.valid?
       @fulfillment.save
-      flash[:success] = "Fulfillment Created!"
+      flash[:success] = t(:dashboard)[:fulfillments][:created]
     else
       @errors = @fulfillment.errors
     end
   end
 
   def edit
-    @header_text = "Edit Fulfillment"
+    @header_text = t(:dashboard)[:fulfillments][:edit]
   end
 
   def update
     if @fulfillment.update_attributes(params[:fulfillment])
-      flash[:success] = "Fulfillment Updated!"
+      flash[:success] = t(:dashboard)[:fulfillments][:updated]
     else
       @errors = @fulfillment.errors
     end
@@ -64,7 +64,7 @@ class Dashboard::FulfillmentsController < Dashboard::BaseController
   def destroy
     @sub_service_request = @fulfillment.line_item.sub_service_request
     if @fulfillment.delete
-      flash[:alert] = "Fulfillment Destroyed!"
+      flash[:alert] = t(:dashboard)[:fulfillments][:destroyed]
     end
   end
 

@@ -22,14 +22,18 @@
     .modal-header
       %button.close{ type: 'button', data: { dismiss: 'modal' } }
         %span{ aria: { hidden: 'true' } } &times;
-      %h4.text-center#modal-title= header_text
+      %h4.text-center#modal-title
+        = header_text
     .modal-body
       #modal_errors
       .row
         .col-lg-12
-          %label.col-lg-3.control-label= "Select User"
+          %label.col-lg-3.control-label
+            = t(:dashboard)[:authorized_users][:add][:select]
           .col-lg-9
-            = text_field_tag 'authorized_user_search', "", placeholder: 'Search For A User', class: 'form-control', data: {protocol_id: protocol.id}
+            = text_field_tag 'authorized_user_search', "", placeholder: t(:dashboard)[:authorized_users][:add][:search_prompt], class: 'form-control', data: {protocol_id: protocol.id}
+            = image_tag 'spinner.gif', id: 'loading_authorized_user_spinner', class: 'hidden'
     .modal-footer
       .center-block
-        %button.btn.btn-default{ type: 'button', data: { dismiss: 'modal' } } Cancel
+        %button.btn.btn-default{ type: 'button', data: { dismiss: 'modal' } }
+          = t(:actions)[:close]

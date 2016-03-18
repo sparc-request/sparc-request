@@ -20,7 +20,8 @@
 
 .panel.panel-default#service-requests-panel
   .panel-heading
-    %h4.panel-title.pull-left= t(:protocol_information)[:service_requests]
+    %h4.panel-title.pull-left
+      = t(:dashboard)[:protocols][:service_requests][:header]
     = consolidated_request_buttons_display(protocol)
     .clearfix
   .panel-body
@@ -28,7 +29,7 @@
       .alert.alert-danger{ role: 'alert' } Request in progress.
     - elsif !protocol.service_requests.present?
       %button.btn.btn-success.btn-sm#add-services-button{ type: 'button', data: { permission: permission_to_edit.to_s } }
-        = t(:protocol_information)[:add_services]
+        = t(:dashboard)[:protocols][:service_requests][:add_services]
     - else
       - protocol.service_requests.each do |sr|
         - if sr.status != "first_draft" and not sr.sub_service_requests.empty?

@@ -24,24 +24,34 @@
       %button.close{type: 'button', data: {dismiss: 'modal'}}
         %span{aria: {hidden:'true'}} &times;
         %span.sr-only &times;
-      %h4.modal-title.text-center= notification.subject || "No Subject"
+      %h4.modal-title.text-center
+        = notification.subject || t(:dashboard)[:messages][:index][:no_subject]
     .modal-body
       - if messages.any?
         .details-table
           .details-header.text-center
-            .col-xs-2 User
-            .col-xs-2 Date
-            .col-xs-8 Message
+            .col-xs-2 
+              = t(:dashboard)[:messages][:index][:user]
+            .col-xs-2
+              = t(:dashboard)[:messages][:index][:date]
+            .col-xs-8
+              = t(:dashboard)[:messages][:index][:message]
           - messages.each do |message|
             .detail
-              .col-xs-2.name= message.sender.full_name
-              .col-xs-2.created-at= format_datetime(message.created_at)
-              .col-xs-8.message= message.body
+              .col-xs-2.name
+                = message.sender.full_name
+              .col-xs-2.created-at
+                = format_datetime(message.created_at)
+              .col-xs-8.message
+                = message.body
       -else
-        .text-center= "This Notification currently has no Messages."
+        .text-center
+          = t(:dashboard)[:messages][:index][:no_messages]
     .modal-footer
       .center-block
-        %button.btn.btn-default{type: 'button', data: {dismiss: 'modal'}} Close
+        %button.btn.btn-default{type: 'button', data: {dismiss: 'modal'}}
+          = t(:actions)[:close]
         %button.btn.btn-primary.message.new{type: "button", aria: {label: "Reply"}, data: {notification_id: notification.id }}
           %span.glyphicon.glyphicon-share-alt{aria: {hidden: "true"}}
-          %span Reply
+          %span
+            = t(:actions)[:reply]

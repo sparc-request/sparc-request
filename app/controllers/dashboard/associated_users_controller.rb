@@ -48,7 +48,7 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
   def edit
     @identity = @protocol_role.identity
     @current_pi = @protocol.primary_principal_investigator
-    @header_text = "Edit Authorized User"
+    @header_text = t(:dashboard)[:authorized_users][:edit][:header]
     respond_to do |format|
       format.js
     end
@@ -66,7 +66,7 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
       end
 
     end
-    @header_text = "Add Authorized User"
+    @header_text = t(:dashboard)[:authorized_users][:add][:header]
     respond_to do |format|
       format.js
     end

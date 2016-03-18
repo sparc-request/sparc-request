@@ -22,19 +22,26 @@
   .panel.panel-primary
 
     .panel-heading
-      %h4.panel-title.pull-left= "#{sub_service_request.protocol.short_title} > #{sub_service_request.organization.name} (#{sub_service_request.protocol.id}-#{sub_service_request.ssr_id})"
+      %h4.panel-title.pull-left
+        = "#{sub_service_request.protocol.short_title} > #{sub_service_request.organization.name} (#{sub_service_request.protocol.id}-#{sub_service_request.ssr_id})"
       .pull-right
-        %button.btn.btn-sm.btn-default.notes.list{data: { notable_type: "SubServiceRequest", notable_id: sub_service_request.id }}= "Notes"
+        %button.btn.btn-sm.btn-default.notes.list{data: { notable_type: "SubServiceRequest", notable_id: sub_service_request.id }}
+          = t(:models)[:note][:plural]
       .clearfix
 
     %table.table.table-bordered.table-condensed
       %thead
         %tr.default
-          %th= "Status"
-          %th= "Owner"
-          %th= "Fulfillment"
-          %th= "Current Cost"
-          %th= "User Display Cost"
+          %th
+            = t(:dashboard)[:sub_service_requests][:header][:status]
+          %th
+            = t(:dashboard)[:sub_service_requests][:header][:owner]
+          %th
+            = t(:dashboard)[:sub_service_requests][:header][:fulfillment][:header]
+          %th
+            = t(:dashboard)[:sub_service_requests][:header][:cost]
+          %th
+            = t(:dashboard)[:sub_service_requests][:header][:user_cost]
 
       %tbody
         %tr

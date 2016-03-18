@@ -46,7 +46,7 @@ class Dashboard::ArmsController < Dashboard::BaseController
       if @protocol.sub_service_requests.any? { |ssr| ssr.in_work_fulfillment? }
         @selected_arm.populate_subjects
       end
-      flash[:success] = "Arm Created!"
+      flash[:success] = t(:dashboard)[:arms][:created]
     else
       @errors = @selected_arm.errors
     end
@@ -65,7 +65,7 @@ class Dashboard::ArmsController < Dashboard::BaseController
     @service_request = ServiceRequest.find(params[:service_request_id])
     @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
     if @arm.update_attributes(params[:arm])
-      flash[:success] = "Arm Updated!"
+      flash[:success] = t(:dashboard)[:arms][:updated]
     else
       @errors = @arm.errors
     end
@@ -83,7 +83,7 @@ class Dashboard::ArmsController < Dashboard::BaseController
     else
       @selected_arm = @service_request.arms.first
     end
-    flash[:alert] = "Arm Destroyed!"
+    flash[:alert] = t(:dashboard)[:arms][:destroyed]
   end
 
   private

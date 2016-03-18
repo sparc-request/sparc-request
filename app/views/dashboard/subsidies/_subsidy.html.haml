@@ -20,7 +20,8 @@
 
 .panel.panel-default
   .panel-heading
-    %h4.panel-title= "Subsidy Information"
+    %h4.panel-title
+      = t(:dashboard)[:subsidies][:subsidy_information][:header]
   .panel-body
     #approved_subsidy
       = render partial: 'dashboard/subsidies/approved_subsidy', locals: { sub_service_request: sub_service_request, subsidy: sub_service_request.approved_subsidy, admin: admin }

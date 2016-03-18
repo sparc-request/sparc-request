@@ -24,27 +24,29 @@
       %button.close{type: 'button', data: {dismiss: 'modal'}}
         %span{aria: {hidden:'true'}} &times;
         %span.sr-only &times;
-      %h4#line_item.modal-title.text-center= t(:fulfillments)[:core_approvals][:header]
+      %h4#line_item.modal-title.text-center
+        = t(:dashboard)[:approvals][:header]
     .modal-body
       #modal_errors
       .row
         .col-sm-12
           .form-group.approval
-            = label_tag "nursing_nutrition_approved", t(:fulfillments)[:core_approvals][:nursing], class: "col-sm-10 control-label"
+            = label_tag "nursing_nutrition_approved", t(:dashboard)[:approvals][:nursing], class: "col-sm-10 control-label"
             .col-sm-2
               = check_box_tag "nursing_nutrition_approved", true, sub_service_request.nursing_nutrition_approved, :'data-sub_service_request_id' => sub_service_request.id, :class => 'admin_approval_checkbox form-control', :disabled => sub_service_request.nursing_nutrition_approved?
           .form-group.approval
-            = label_tag "lab_approved", t(:fulfillments)[:core_approvals][:lab], class: "col-sm-10 control-label"
+            = label_tag "lab_approved", t(:dashboard)[:approvals][:lab], class: "col-sm-10 control-label"
             .col-sm-2
               = check_box_tag "lab_approved", true, sub_service_request.lab_approved, :'data-sub_service_request_id' => sub_service_request.id, :class => 'admin_approval_checkbox form-control', :disabled => sub_service_request.lab_approved?
           .form-group.approval
-            = label_tag "imaging_approved", t(:fulfillments)[:core_approvals][:imaging], class: "col-sm-10 control-label"
+            = label_tag "imaging_approved", t(:dashboard)[:approvals][:imaging], class: "col-sm-10 control-label"
             .col-sm-2
               = check_box_tag "imaging_approved", true, sub_service_request.imaging_approved, :'data-sub_service_request_id' => sub_service_request.id, :class => 'admin_approval_checkbox form-control', :disabled => sub_service_request.imaging_approved?
           .form-group.approval
-            = label_tag "committee_approved", t(:fulfillments)[:committee_approval][:label], class: "col-sm-10 control-label"
+            = label_tag "committee_approved", t(:dashboard)[:approvals][:committee], class: "col-sm-10 control-label"
             .col-sm-2
               = check_box_tag "committee_approved", true, sub_service_request.committee_approved, :'data-sub_service_request_id' => sub_service_request.id, :class => 'admin_approval_checkbox form-control', :disabled => sub_service_request.committee_approved?
     .modal-footer
       .center-block
-        %button.btn.btn-default{type: 'button', data: {dismiss: 'modal'}} Close
+        %button.btn.btn-default{type: 'button', data: {dismiss: 'modal'}}
+          = t(:actions)[:close]

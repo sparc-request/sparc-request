@@ -447,4 +447,12 @@ class Identity < ActiveRecord::Base
 
     notification_count
   end
+
+  def unread_notification_count_for_ssr user, sub_service_request
+    notification_count = 0
+
+    notification_count += (user.all_notifications.select { |n| !(n.read_by? user) && n.sub_service_request_id == sub_service_request.id }).size
+    
+    notification_count
+  end
 end

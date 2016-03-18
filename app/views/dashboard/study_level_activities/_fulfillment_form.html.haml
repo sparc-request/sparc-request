@@ -25,25 +25,27 @@
         %button.close{type: 'button', data: {dismiss: 'modal'}}
           %span{aria: {hidden:'true'}} &times;
           %span.sr-only &times;
-        %h4.modal-title.text-center= header_text
+        %h4.modal-title.text-center
+          = header_text
       .modal-body
         #modal_errors
         .row
           .col-md-12
             = form.hidden_field :line_item_id
             .form-group
-              = form.label "date", "Fulfillment Date", class: "col-sm-4 control-label"
+              = form.label "date", t(:dashboard)[:fulfillments][:form][:date], class: "col-sm-4 control-label"
               .col-sm-7
                 = form.text_field "date", {class: 'form-control datetimepicker', id: 'date_fulfilled_field', value: format_date(fulfillment.date)}
             .form-group
-              = form.label "time", "Time", class: "col-sm-4 control-label"
+              = form.label "time", t(:dashboard)[:fulfillments][:form][:time], class: "col-sm-4 control-label"
               .col-sm-7
                 = form.text_field "time", {class: 'form-control'}
             .form-group
-              = form.label "timeframe", "Time Unit", class: "col-sm-4 control-label"
+              = form.label "timeframe", t(:dashboard)[:fulfillments][:form][:time_unit], class: "col-sm-4 control-label"
               .col-sm-7
                 = form.select "timeframe", options_for_select(Fulfillment::QUANTITY_TYPES, fulfillment.timeframe), {}, class: 'form-control selectpicker'
       .modal-footer
         .center-block
-          %button.btn.btn-default{type: 'button', data: {dismiss: 'modal'}} Close
-          %input.btn.btn-primary{type: 'submit', value: "Save"}
+          %button.btn.btn-default{type: 'button', data: {dismiss: 'modal'}}
+            = t(:actions)[:close]
+          %input.btn.btn-primary{type: 'submit', value: t(:actions)[:save]}

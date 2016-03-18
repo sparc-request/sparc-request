@@ -21,19 +21,27 @@
 - if subsidy.present?
   .panel.panel-default
     .panel-heading
-      %h4.panel-title= "Subsidy Pending Approval"
+      %h4.panel-title
+        = t(:dashboard)[:subsidies][:subsidy_information][:pending][:header]
     %table.table.table-condensed#pending_subsidy_table
       %thead
         %tr.default
-          %th= "Request Current Cost"
-          %th= t(:fulfillments)[:subsidies][:percent]
-          %th= t(:fulfillments)[:subsidies][:pi]
-          %th= t(:fulfillments)[:subsidies][:effective_current_total_cost]
+          %th
+            = t(:dashboard)[:subsidies][:subsidy_information][:pending][:request_cost]
+          %th
+            = t(:dashboard)[:subsidies][:subsidy_information][:pending][:percent]
+          %th
+            = t(:dashboard)[:subsidies][:subsidy_information][:pending][:pi_contribution]
+          %th
+            = t(:dashboard)[:subsidies][:subsidy_information][:pending][:cost]
           - if admin
-            %th.text-center= "Approve"
-          %th.text-center= "Edit"
+            %th.text-center
+              = t(:dashboard)[:subsidies][:subsidy_information][:pending][:approve]
+          %th.text-center
+            = t(:actions)[:edit]
           - if admin
-            %th.text-center= "Delete"
+            %th.text-center
+              = t(:actions)[:delete]
       %tbody
         %tr
           %td.request_cost
@@ -58,4 +66,5 @@
 - else
   .col-xs-12
     %button.btn.btn-sm.btn-success#add_subsidy_button{data: { sub_service_request_id: sub_service_request.id, admin: admin.to_s }}
-      %span= t(:fulfillments)[:subsidies][:link]
+      %span
+        = t(:dashboard)[:subsidies][:subsidy_information][:add]

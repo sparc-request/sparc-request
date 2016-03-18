@@ -25,7 +25,8 @@
         %button.close{type: 'button', data: {dismiss: 'modal'}}
           %span{aria: {hidden:'true'}} &times;
           %span.sr-only  &times;
-        %h4.modal-title.text-center= header_text
+        %h4.modal-title.text-center
+          = header_text
       .modal-body
         #modal_errors
         .row
@@ -33,21 +34,23 @@
             = form.hidden_field :sub_service_request_id
             = form.hidden_field :service_request_id
             .form-group
-              = form.label "service", "Service", class: "col-sm-4 control-label"
+              = form.label "service", t(:dashboard)[:study_level_activities][:form][:service], class: "col-sm-4 control-label"
               .col-sm-7
                 = sla_form_services_select(form, line_item)
             .form-group
-              = form.label "quantity", "Quantity Requested", class: "col-sm-4 control-label"
-              .col-sm-7= form.text_field "quantity", {class: 'form-control'}
+              = form.label "quantity", t(:dashboard)[:study_level_activities][:form][:quantity_requested], class: "col-sm-4 control-label"
+              .col-sm-7
+                = form.text_field "quantity", {class: 'form-control'}
             .form-group
-              = form.label "in_process_date", "In Process Date", class: "col-sm-4 control-label "
+              = form.label "in_process_date", t(:dashboard)[:study_level_activities][:form][:in_process_date], class: "col-sm-4 control-label "
               .col-sm-7
                 = form.text_field "in_process_date", {class: 'form-control datetimepicker', id: 'in_process_date_field', value: format_date(line_item.in_process_date)}
             .form-group
-              = form.label "complete_date", "Complete Date", class: "col-sm-4 control-label "
+              = form.label "complete_date", t(:dashboard)[:study_level_activities][:form][:complete_date], class: "col-sm-4 control-label "
               .col-sm-7
                 = form.text_field "complete_date", {class: 'form-control datetimepicker', id: 'complete_date_field', value: format_date(line_item.complete_date)}
       .modal-footer
         .center-block
-          %button.btn.btn-default{type: 'button', data: {dismiss: 'modal'}} Close
-          %input.btn.btn-primary{type: 'submit', value: "Save"}
+          %button.btn.btn-default{type: 'button', data: {dismiss: 'modal'}}
+            = t(:actions)[:close]
+          %input.btn.btn-primary{type: 'submit', value: t(:actions)[:add]}

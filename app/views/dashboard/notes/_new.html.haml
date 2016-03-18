@@ -28,13 +28,15 @@
         %button.close{type: 'button', data: {dismiss: 'modal'}}
           %span{aria: {hidden:'true'}} &times;
           %span.sr-only &times;
-        %h4.modal-title.text-center= "New #{notable_type} Note"
+        %h4.modal-title.text-center
+          = t(:dashboard)[:notes][:new][:header1] + notable_type + t(:dashboard)[:notes][:new][:header2]
       .modal-body
         .form-group
-          = form.label "body", "Note", class: "col-sm-3 control-label"
+          = form.label "body", t(:dashboard)[:notes][:new][:note], class: "col-sm-3 control-label"
           .col-sm-8
             = form.text_area :body, {class: 'form-control', rows: "6"}
       .modal-footer
         .center-block
-          %button.btn.btn-default{type: 'button', data: {dismiss: 'modal'}} Close
-          %input.btn.btn-primary{type: 'submit', value: "Add Note"}
+          %button.btn.btn-default{type: 'button', data: {dismiss: 'modal'}}
+            = t(:actions)[:close]
+          %input.btn.btn-primary{type: 'submit', value: t(:actions)[:add]}

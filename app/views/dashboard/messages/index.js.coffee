@@ -18,6 +18,10 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+<% unless @read_by_user %>
+#Decrement the notification count if the notification was unread
+$('#notification_count').text(parseInt($('#notification_count').text()) - 1)
+<% end %>
 $("#modal_place").html("<%= escape_javascript(render(partial: 'index', locals: { messages: @messages, notification: @notification })) %>")
 refresh_notifications_table()
 $("#modal_place").modal 'show'

@@ -24,12 +24,12 @@
     = form.hidden_field :type
     = form.error_messages
 
-    - if protocol_type == "Study"
+    - if @protocol_type.capitalize == "Study"
       .edit-study-view.container-fluid
         .row.user-edit-protocol-view
           = render partial: 'dashboard/protocols/form/study_fields', locals: { form: form, protocol: protocol }
 
-    - elsif protocol_type == "Project"
+    - elsif @protocol_type.capitalize == "Project"
       .edit-project-view.container-fluid
         .row.user-edit-protocol-view
           = render partial: 'dashboard/protocols/form/project_fields', locals: { form: form, protocol: protocol }

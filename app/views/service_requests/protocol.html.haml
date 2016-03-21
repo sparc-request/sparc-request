@@ -49,7 +49,7 @@
                     .inline.form-group
                       %strong
                         = @service_request.protocol.display_protocol_id_and_title
-                      = link_to "Edit Study", edit_service_request_study_path(@service_request, @service_request.protocol, portal: false), class: 'edit-study blue-button btn btn-primary'
+                      = link_to "Edit Study", edit_service_request_study_path(@service_request, @service_request.protocol, portal: false), class: 'edit-study blue-button btn btn-primary button-hover'
             - if @service_request.protocol.type == 'Project'
               .existing-project.center
                 #project.project-select
@@ -57,7 +57,7 @@
                     .inline.form-group
                       %strong
                         = @service_request.protocol.display_protocol_id_and_title
-                      = link_to 'Edit Project', edit_service_request_project_path(@service_request, @service_request.protocol, portal: false), class: 'edit-project blue-button btn btn-primary'
+                      = link_to 'Edit Project', edit_service_request_project_path(@service_request, @service_request.protocol, portal: false), class: 'edit-project blue-button btn btn-primary button-hover'
           - else
             .type-select.center.form-group
               - if @sub_service_request.nil?
@@ -72,14 +72,14 @@
                   = raw(t(:study_assignment)[:current_study])
                   %strong
                     = @service_request.protocol.display_protocol_id_and_title
-                  = link_to t('study_assignment.edit_study'), edit_service_request_study_path(@service_request, @service_request.protocol, portal: false), class: 'edit-study blue-button btn btn-primary'
+                  = link_to t('study_assignment.edit_study'), edit_service_request_study_path(@service_request, @service_request.protocol, portal: false), class: 'edit-study blue-button btn btn-primary button-hover'
                 %br
               - if @service_request.protocol.type == 'Project'
                 #project.project-select
                   = raw(t(:study_assignment)[:current_project])
                   %strong
                     = @service_request.protocol.display_protocol_id_and_title
-                  = link_to t('study_assignment.edit_project'), edit_service_request_project_path(@service_request, @service_request.protocol, portal: false), class: 'edit-project blue-button btn btn-primary'
+                  = link_to t('study_assignment.edit_project'), edit_service_request_project_path(@service_request, @service_request.protocol, portal: false), class: 'edit-project blue-button btn btn-primary button-hover'
                 %br
               = t(:study_assignment)[:previously_submitted_project]
 

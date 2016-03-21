@@ -43,7 +43,7 @@
   = hidden_field_tag :current_step, current_step
   .clear
   = f.error_messages
-  
+
   .edit-project-view.portal_container
     = render partial: 'projects/fields', locals: {project: project, f: f, current_step: current_step}
   .continue.portal_container

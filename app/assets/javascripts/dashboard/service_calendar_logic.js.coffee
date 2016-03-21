@@ -118,3 +118,12 @@ $(document).ready ->
   # load first tab content
   $('#template-calendar').load $('#service_calendar .active a').attr("data-url"), (result) ->
     $('#service_calendar .active a').tab('show')
+
+  $(document).on 'change', '.visit_group_select .selectpicker', ->
+    page = $(this).find('option:selected').attr('page')
+
+    $.ajax
+      type: 'GET'
+      url: $(this).data('url')
+      data:
+        page: page

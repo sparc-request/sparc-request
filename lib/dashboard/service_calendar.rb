@@ -56,8 +56,8 @@ module Dashboard
             filtered_line_items_visits = line_items_visits.select { |x| x.line_item.service_request_id == service_request.id }
           end
           checked = filtered_line_items_visits.each.map { |l| l.visits[n.to_i-1].research_billing_qty >= 1 ? true : false }.all?
-          action = checked == true ? 'unselect_calendar_column' : 'select_calendar_column'
-          icon = checked == true ? 'ui-icon-close' : 'ui-icon-check'
+          action = checked ? 'unselect_calendar_column' : 'select_calendar_column'
+          icon = checked ? 'ui-icon-close' : 'ui-icon-check'
           returning_html += content_tag(:span,
                                         ((USE_EPIC) ?
                                             label_tag('decrement', t(:calendar_page)[:headers][:decrement], class: 'decrement_days') +
@@ -164,37 +164,37 @@ module Dashboard
       grouped_livs
     end
 
-    def self.set_check obj
-      count = obj.visits.where("research_billing_qty = 0 and insurance_billing_qty = 0").count
+    def self.set_check(obj)
+      count = obj.visits.where('research_billing_qty = 0 and insurance_billing_qty = 0').count
       count != 0
     end
 
-    def self.glyph_class obj
-      count = obj.visits.where("research_billing_qty = 0 and insurance_billing_qty = 0").count
+    def self.glyph_class(obj)
+      count = obj.visits.where('research_billing_qty = 0 and insurance_billing_qty = 0').count
       count == 0 ? 'glyphicon-remove' : 'glyphicon-ok'
     end
 
     def self.select_row(line_items_visit, tab, portal)
       checked = line_items_visit.visits.map { |v| v.research_billing_qty >= 1 ? true : false }.all?
-      action = checked == true ? 'unselect_calendar_row' : 'select_calendar_row'
-      icon = checked == true ? 'glyphicon-remove' : 'glyphicon-ok'
+      action = checked ? 'unselect_calendar_row' : 'select_calendar_row'
+      icon = checked ? 'glyphicon-remove' : 'glyphicon-ok'
 
       link_to(
           (content_tag(:span, '', class: "glyphicon #{icon}")),
           "/dashboard/service_calendars/#{line_items_visit.line_item.service_request.id}/#{action}/#{line_items_visit.id}?portal=#{portal}",
           remote: true,
           role: 'button',
-          class: "btn btn-primary service_calendar_row",
+          class: 'btn btn-primary service_calendar_row',
           id: "check_row_#{line_items_visit.id}_#{tab}",
-          data: (line_items_visit.any_visit_quantities_customized? ? {confirm: "This will reset custom values for this row, do you wish to continue?"} : nil))
+          data: (line_items_visit.any_visit_quantities_customized? ? {confirm: 'This will reset custom values for this row, do you wish to continue?'} : nil))
     end
 
     def self.display_visit_based_direct_cost_per_study(line_items_visit)
       currency_converter(line_items_visit.direct_costs_for_visit_based_service_single_subject * (line_items_visit.subject_count || 0))
     end
 
-    def self.build_visits_select(arm, page)
-      select_tag "visits-select-for-#{arm.id}", visits_select_options(arm, page), class: 'form-control selectpicker', data: {arm_id: "#{arm.id}", page: page}
+    def self.build_visits_select(arm, page, url)
+      select_tag "visits-select-for-#{arm.id}", visits_select_options(arm, page), class: 'form-control selectpicker', data: { url: url }
     end
 
     def self.visits_select_options(arm, cur_page=1)
@@ -208,7 +208,7 @@ module Dashboard
         ending_visit = (page * per_page + per_page)
         ending_visit = ending_visit > visit_count ? visit_count : ending_visit
 
-        option = ["Visits #{beginning_visit} - #{ending_visit} of #{visit_count}", page + 1, class: "title", :page => page + 1]
+        option = ["Visits #{beginning_visit} - #{ending_visit} of #{visit_count}", page + 1, class: 'title', page: page + 1]
         arr << option
 
         # (beginning_visit..ending_visit).each do |y|
@@ -231,7 +231,7 @@ module Dashboard
       icon = checked ? 'glyphicon-remove' : 'glyphicon-ok'
       link_to(content_tag(:span, '', class: "glyphicon #{icon}"),
               "/dashboard/service_calendar/#{service_request.id}/#{action}/#{n+1}/#{arm_id}?portal=#{portal}",
-              remote: true, role: 'button', class: 'visit_number btn btn-primary', id: "check_all_column_#{n+1}", data: (visit_group.any_visit_quantities_customized?(service_request) ? {confirm: "This will reset custom values for this column, do you wish to continue?"} : nil))
+              remote: true, role: 'button', class: 'visit_number btn btn-primary', id: "check_all_column_#{n+1}", data: (visit_group.any_visit_quantities_customized?(service_request) ? {confirm: 'This will reset custom values for this column, do you wish to continue?'} : nil))
     end
   end
 end

@@ -53,4 +53,4 @@
 //= require_tree .
 //= require ../service_calendar
 
-window.Sparc = {}
+window.Sparc = {};

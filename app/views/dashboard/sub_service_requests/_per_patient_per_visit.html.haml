@@ -29,11 +29,11 @@
       .schedule_tabs{ role: 'tabpanel' }
         %ul.nav.nav-tabs.nav-justified{ role: 'tablist' }
           %li.other_tab.custom-tab.active{ role: 'presentation' }
-            = link_to t(:calendar_page)[:tabs][:template], '#template-calendar', { id: 'template_tab', data: { toggle: 'tab', url: table_dashboard_service_calendars_path(service_request_id: service_request.id, tab: 'template', portal: true) }, role: 'tab', 'aria-controls' => 'template-calendar', target: '#template-calendar' }
+            = link_to t(:calendar_page)[:tabs][:template], '#template-calendar', { id: 'template_tab', data: { toggle: 'tab', url: table_dashboard_service_calendars_path(sub_service_request_id: sub_service_request.id, tab: 'template', portal: true) }, role: 'tab', 'aria-controls' => 'template-calendar', target: '#template-calendar' }
           %li.other_tab.custom-tab{ role: 'presentation' }
-            = link_to t(:calendar_page)[:tabs][:billing], '#billing-strategy-calendar', { id: 'billing_strategy_tab', data: { toggle: 'tab', url: table_dashboard_service_calendars_path(service_request_id: service_request.id, tab: 'billing_strategy', portal: true) }, role: 'tab', 'aria-controls' => 'billing-strategy-calendar', target: '#billing-strategy-calendar' }
+            = link_to t(:calendar_page)[:tabs][:billing], '#billing-strategy-calendar', { id: 'billing_strategy_tab', data: { toggle: 'tab', url: table_dashboard_service_calendars_path(sub_service_request_id: sub_service_request.id, tab: 'billing_strategy', portal: true) }, role: 'tab', 'aria-controls' => 'billing-strategy-calendar', target: '#billing-strategy-calendar' }
           %li.pricing_tab.custom-tab{ role: 'presentation' }
-            = link_to t(:calendar_page)[:tabs][:pricing], '#consolidated-request-calendar', { id: 'calendar_tab', data: { toggle: 'tab', url: merged_calendar_dashboard_service_calendars_path(service_request_id: service_request.id, tab: 'calendar', portal: true) }, role: 'tab', 'aria-controls' => 'consolidated-request-calendar', target: '#consolidated-request-calendar' }
+            = link_to t(:calendar_page)[:tabs][:pricing], '#consolidated-request-calendar', { id: 'calendar_tab', data: { toggle: 'tab', url: merged_calendar_dashboard_service_calendars_path(sub_service_request_id: sub_service_request.id, tab: 'calendar', portal: true) }, role: 'tab', 'aria-controls' => 'consolidated-request-calendar', target: '#consolidated-request-calendar' }
           .move-visits
       .tab-content
         .tab-pane.active#template-calendar{ role: 'tabpanel' }

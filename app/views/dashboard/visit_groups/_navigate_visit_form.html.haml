@@ -37,7 +37,7 @@
           .form-group
             = label_tag 'vg_form_label', t(:dashboard)[:visit_groups][:visit], class: "col-sm-4 control-label"
             .col-sm-7
-              = select_tag "vg_form_select", options_from_collection_for_select(arm.visit_groups, 'id', 'name', visit_group.id), class: "selectpicker form-control"
+              = select_tag "vg_form_select", options_for_select(arm.visit_groups.map { |vg| ["#{vg.name} - Day #{vg.day || '?'}", vg.id] }), class: "selectpicker form-control"
       - if intended_action == "edit"
         %hr
           .edit_visit_area

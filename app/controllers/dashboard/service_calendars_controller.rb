@@ -276,8 +276,8 @@ class Dashboard::ServiceCalendarsController < ApplicationController
     column_id = params[:column_id].to_i
     @arm = Arm.find params[:arm_id]
 
-    @service_request.service_list(false).each do |key, value|
-      next unless @sub_service_request.nil? or @sub_service_request.organization.name == value[:process_ssr_organization_name]
+    @service_request.service_list(false).each do |_key, value|
+      next unless @sub_service_request.nil? || @sub_service_request.organization.name == value[:process_ssr_organization_name]
 
       @arm.line_items_visits.each do |liv|
         next unless value[:line_items].include?(liv.line_item)
@@ -298,7 +298,7 @@ class Dashboard::ServiceCalendarsController < ApplicationController
     column_id = params[:column_id].to_i
     @arm = Arm.find params[:arm_id]
 
-    @service_request.service_list(false).each do |key, value|
+    @service_request.service_list(false).each do |_key, value|
       next unless @sub_service_request.nil? || @sub_service_request.organization.name == value[:process_ssr_organization_name]
 
       @arm.line_items_visits.each do |liv|
@@ -307,6 +307,7 @@ class Dashboard::ServiceCalendarsController < ApplicationController
         visit.update_attributes quantity: 0, research_billing_qty: 0, insurance_billing_qty: 0, effort_billing_qty: 0
       end
     end
+
     render partial: 'update_service_calendar'
   end
 

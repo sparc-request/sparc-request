@@ -1,4 +1,5 @@
 require 'action_view'
+
 include ActionView::Helpers::FormOptionsHelper
 include ActionView::Helpers::FormTagHelper
 
@@ -174,21 +175,6 @@ module Dashboard
       count == 0 ? 'glyphicon-remove' : 'glyphicon-ok'
     end
 
-    def self.select_row(line_items_visit, tab, portal)
-      checked = line_items_visit.visits.map { |v| v.research_billing_qty >= 1 ? true : false }.all?
-      action = checked ? 'unselect_calendar_row' : 'select_calendar_row'
-      icon = checked ? 'glyphicon-remove' : 'glyphicon-ok'
-
-      link_to(
-          (content_tag(:span, '', class: "glyphicon #{icon}")),
-          "/dashboard/service_calendars/#{line_items_visit.line_item.service_request.id}/#{action}/#{line_items_visit.id}?portal=#{portal}",
-          remote: true,
-          role: 'button',
-          class: 'btn btn-primary service_calendar_row',
-          id: "check_row_#{line_items_visit.id}_#{tab}",
-          data: (line_items_visit.any_visit_quantities_customized? ? {confirm: 'This will reset custom values for this row, do you wish to continue?'} : nil))
-    end
-
     def self.display_visit_based_direct_cost_per_study(line_items_visit)
       currency_converter(line_items_visit.direct_costs_for_visit_based_service_single_subject * (line_items_visit.subject_count || 0))
     end
@@ -222,16 +208,38 @@ module Dashboard
       options_for_select(arr, cur_page)
     end
 
-    # couldn't we use a VisitGroup to do this?
-    def self.select_column(visit_group, n, portal, service_request)
-      arm_id = visit_group.arm_id
-      filtered_livs = visit_group.line_items_visits.joins(:line_item).where(line_items: {service_request_id: service_request.id})
-      checked = filtered_livs.all? { |l| l.visits[n.to_i].research_billing_qty >= 1 }
-      action = checked ? 'unselect_calendar_column' : 'select_calendar_column'
+    def self.select_row(line_items_visit, tab, portal)
+      checked = line_items_visit.visits.all? { |v| v.research_billing_qty >= 1  }
+      action = checked ? 'unselect_calendar_row' : 'select_calendar_row'
       icon = checked ? 'glyphicon-remove' : 'glyphicon-ok'
-      link_to(content_tag(:span, '', class: "glyphicon #{icon}"),
-              "/dashboard/service_calendar/#{service_request.id}/#{action}/#{n+1}/#{arm_id}?portal=#{portal}",
-              remote: true, role: 'button', class: 'visit_number btn btn-primary', id: "check_all_column_#{n+1}", data: (visit_group.any_visit_quantities_customized?(service_request) ? {confirm: 'This will reset custom values for this column, do you wish to continue?'} : nil))
+
+      link_to(
+          (content_tag(:span, '', class: "glyphicon #{icon}")),
+          "/dashboard/service_calendars/#{action}?service_request_id=#{line_items_visit.line_item.service_request.id}&line_items_visit_id=#{line_items_visit.id}&&portal=#{portal}",
+          method: :post,
+          remote: true,
+          role: 'button',
+          class: 'btn btn-primary service_calendar_row',
+          id: "check_row_#{line_items_visit.id}_#{tab}",
+          data: (line_items_visit.any_visit_quantities_customized? ? { confirm: 'This will reset custom values for this row, do you wish to continue?' } : nil))
+    end
+
+    def self.select_column(visit_group, n, portal, sub_service_request)
+      arm_id = visit_group.arm_id
+      filtered_livs = visit_group.line_items_visits.joins(:line_item).where(line_items: { service_request_id: sub_service_request.service_request_id })
+      checked = filtered_livs.all? { |l| l.visits[n.to_i].research_billing_qty >= 1 }
+      icon = checked ? 'glyphicon-remove' : 'glyphicon-ok'
+      method = if checked
+                 'unselect_calendar_column'
+               else
+                 'select_calendar_column'
+               end
+      url = "/dashboard/service_calendars/#{method}.js?sub_service_request_id=#{sub_service_request.id}&column_id=#{n + 1}&arm_id=#{arm_id}&portal=#{portal}"
+
+      link_to(content_tag(:span, '', class: "glyphicon #{icon}"), url,
+              method: :post, remote: true, role: 'button', class: 'visit_number btn btn-primary',
+              id: "check_all_column_#{n+1}",
+              data: (visit_group.any_visit_quantities_customized?(sub_service_request.service_request) ? { confirm: 'This will reset custom values for this column, do you wish to continue?' } : nil))
     end
   end
 end

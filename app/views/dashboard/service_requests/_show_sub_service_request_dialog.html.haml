@@ -17,6 +17,7 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+= stylesheet_link_tag "dashboard/ssr_print", media: "print"
 
 .modal-dialog.modal-lg
   .modal-content
@@ -35,34 +36,39 @@
         - if sub_service_request.has_one_time_fee_services?
           = render partial: 'dashboard/service_calendars/master_calendar/otf/otf_calendar', locals: { service_request: @service_request, sub_service_request: @sub_service_request, tab: @tab, portal: @portal, thead_class: @thead_class, review: @review, pages: @pages, merged: @merged, study_tracker: @study_tracker, protocol: @protocol }
         - unless sub_service_request.has_per_patient_per_visit_services? || sub_service_request.has_one_time_fee_services?
-          = render partial: 'shared/alert', locals: { message: 'No services' }
+          = render partial: 'shared/alert', locals: { message: t(:dashboard)[:service_requests][:view_ssr][:services][:none] }
 
         .panel.panel-default
           .panel-heading
-            %h4.panel-title= "Documents"
+            %h4.panel-title
+              = t(:dashboard)[:service_requests][:view_ssr][:documents][:header]
           - if sub_service_request.documents.empty?
             .panel-body
-              = render partial: 'shared/alert', locals: { message: 'No documents' }
+              = render partial: 'shared/alert', locals: { message: t(:dashboard)[:service_requests][:view_ssr][:documents][:none] }
           - else
             %table.table.table-striped
               %thead
                 %tr
-                  %th= t(:ssr_dialog)[:docs][:file_name]
-                  %th= t(:ssr_dialog)[:docs][:program_core]
+                  %th
+                    = t(:dashboard)[:service_requests][:view_ssr][:documents][:file_name]
+                  %th
+                    = t(:dashboard)[:service_requests][:view_ssr][:documents][:program_core]
               %tbody
                 - sub_service_request.documents.each do |document|
                   %tr
-                    %td= link_to document.document_file_name, document.document.url
-                    %td= @service_list[sub_service_request.organization_id][:name]
+                    %td
+                      = link_to document.document_file_name, document.document.url
+                    %td
+                      = @service_list[sub_service_request.organization_id][:name]
 
         = render partial: 'dashboard/subsidies/subsidy', locals: { sub_service_request: sub_service_request, admin: false }
 
     .modal-footer
       .center-block
         %button.btn.btn-default{ type: 'button', data: { dismiss: 'modal' } }
-          Close
-        %button.btn.btn-primary{ type: 'button' }
-          Print
+          = t(:actions)[:close]
+        %button.btn.btn-primary#print{ type: 'button' }
+          = t(:actions)[:print]
 
 
 -#   #service_calendar_container

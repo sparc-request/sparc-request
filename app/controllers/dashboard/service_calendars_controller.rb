@@ -19,7 +19,9 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Dashboard::ServiceCalendarsController < ApplicationController
-  before_filter :initialize_service_request
+  # before_filter :initialize_service_request
+  before_action :set_request_instance_variables
+
   before_filter(except: [:merged_calendar, :rename_visit]) do |c|
     params[:portal] == 'true' ? true : c.send(:authorize_identity)
   end
@@ -39,16 +41,16 @@ class Dashboard::ServiceCalendarsController < ApplicationController
   end
 
   def update
-    @portal              = params[:portal]
+    @portal = params[:portal]
     @sub_service_request = SubServiceRequest.find(params[:id]) if params[:id]
-    @user                = current_identity
-    visit                = Visit.find params[:visit] rescue nil
-    @line_items_visit    = LineItemsVisit.find params[:line_items_visit] rescue nil
-    @line_item           = LineItem.find params[:line_item] rescue nil
-    tab                  = params[:tab]
-    checked              = params[:checked]
-    qty                  = params[:undefined].nil? ? params[:qty].to_i : params[:undefined][:qty].to_i
-    column               = params[:column]
+    @user = current_identity
+    visit = Visit.find params[:visit] rescue nil
+    @line_items_visit = LineItemsVisit.find params[:line_items_visit] rescue nil
+    @line_item = LineItem.find params[:line_item] rescue nil
+    tab = params[:tab]
+    checked = params[:checked]
+    qty = params[:undefined].nil? ? params[:qty].to_i : params[:undefined][:qty].to_i
+    column = params[:column]
 
     case tab
     when 'template'
@@ -63,17 +65,17 @@ class Dashboard::ServiceCalendarsController < ApplicationController
         service = line_item.service
 
         visit.attributes = {
-          quantity: service.displayed_pricing_map.unit_minimum,
-          research_billing_qty: service.displayed_pricing_map.unit_minimum
+            quantity: service.displayed_pricing_map.unit_minimum,
+            research_billing_qty: service.displayed_pricing_map.unit_minimum
         }
         visit.save
 
       elsif checked == 'false'
         visit.update_attributes(
-          quantity: 0,
-          research_billing_qty: 0,
-          insurance_billing_qty: 0,
-          effort_billing_qty: 0
+            quantity: 0,
+            research_billing_qty: 0,
+            insurance_billing_qty: 0,
+            effort_billing_qty: 0
         )
       end
 
@@ -100,8 +102,8 @@ class Dashboard::ServiceCalendarsController < ApplicationController
           total = visit.quantity_total
 
           visit.attributes = {
-            column => qty,
-            quantity: total
+              column => qty,
+              quantity: total
           }
           visit.save
         end
@@ -117,15 +119,15 @@ class Dashboard::ServiceCalendarsController < ApplicationController
     @arm_id = '.arm_' + @line_items_visit.arm.id.to_s
 
     @line_items_visits =
-      if @sub_service_request
-        @line_items_visit.arm.line_items_visits.joins(:line_item)
-          .where(line_items: { sub_service_request_id: @sub_service_request.id } )
-      elsif @service_request
-        @line_items_visit.arm.line_items_visits.joins(:line_item)
-          .where(line_items: { service_request_id: @service_request.id } )
-      else
-        @line_items_visit.arm.line_items_visits
-      end
+        if @sub_service_request
+          @line_items_visit.arm.line_items_visits.joins(:line_item)
+              .where(line_items: {sub_service_request_id: @sub_service_request.id})
+        elsif @service_request
+          @line_items_visit.arm.line_items_visits.joins(:line_item)
+              .where(line_items: {service_request_id: @service_request.id})
+        else
+          @line_items_visit.arm.line_items_visits
+        end
   end
 
   def rename_visit
@@ -246,10 +248,10 @@ class Dashboard::ServiceCalendarsController < ApplicationController
     failed_visit_list = ''
     @line_items_visit.visits.each do |visit|
       visit.attributes = {
-          quantity:              @service.displayed_pricing_map.unit_minimum,
-          research_billing_qty:  @service.displayed_pricing_map.unit_minimum,
+          quantity: @service.displayed_pricing_map.unit_minimum,
+          research_billing_qty: @service.displayed_pricing_map.unit_minimum,
           insurance_billing_qty: 0,
-          effort_billing_qty:    0
+          effort_billing_qty: 0
       }
 
       visit.save
@@ -274,17 +276,17 @@ class Dashboard::ServiceCalendarsController < ApplicationController
     column_id = params[:column_id].to_i
     @arm = Arm.find params[:arm_id]
 
-    @service_request.service_list(false).each do |key, value|
-      next unless @sub_service_request.nil? or @sub_service_request.organization.name == value[:process_ssr_organization_name]
+    @service_request.service_list(false).each do |_key, value|
+      next unless @sub_service_request.nil? || @sub_service_request.organization.name == value[:process_ssr_organization_name]
 
       @arm.line_items_visits.each do |liv|
         next unless value[:line_items].include?(liv.line_item)
         visit = liv.visits[column_id - 1] # columns start with 1 but visits array positions start at 0
         visit.update_attributes(
-          quantity:              liv.line_item.service.displayed_pricing_map.unit_minimum,
-          research_billing_qty:  liv.line_item.service.displayed_pricing_map.unit_minimum,
-          insurance_billing_qty: 0,
-          effort_billing_qty:    0
+            quantity: liv.line_item.service.displayed_pricing_map.unit_minimum,
+            research_billing_qty: liv.line_item.service.displayed_pricing_map.unit_minimum,
+            insurance_billing_qty: 0,
+            effort_billing_qty: 0
         )
       end
     end
@@ -296,7 +298,7 @@ class Dashboard::ServiceCalendarsController < ApplicationController
     column_id = params[:column_id].to_i
     @arm = Arm.find params[:arm_id]
 
-    @service_request.service_list(false).each do |key, value|
+    @service_request.service_list(false).each do |_key, value|
       next unless @sub_service_request.nil? || @sub_service_request.organization.name == value[:process_ssr_organization_name]
 
       @arm.line_items_visits.each do |liv|
@@ -305,10 +307,22 @@ class Dashboard::ServiceCalendarsController < ApplicationController
         visit.update_attributes quantity: 0, research_billing_qty: 0, insurance_billing_qty: 0, effort_billing_qty: 0
       end
     end
+
     render partial: 'update_service_calendar'
   end
 
   private
+
+  def set_request_instance_variables
+    if params[:service_request_id]
+      @service_request = ServiceRequest.find(params[:service_request_id])
+    end
+
+    if params[:sub_service_request_id]
+      @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
+      @service_request = @sub_service_request.service_request
+    end
+  end
 
   def setup_calendar_pages
     @pages = {}

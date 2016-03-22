@@ -34,7 +34,7 @@ module Dashboard::ProtocolsHelper
   end
 
   def edit_protocol_button_display protocol, project_role
-    if permission = project_role.can_edit?
+    if project_role.present? and permission = project_role.can_edit?
       content_tag( :button, "Edit #{protocol.type.capitalize} Information", type: 'button', class: 'edit-protocol-information-button btn btn-warning btn-sm', data: { permission: permission.to_s, protocol_id: protocol.id })
     end
   end

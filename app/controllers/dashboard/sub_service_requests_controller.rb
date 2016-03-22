@@ -49,8 +49,9 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
       }
       format.html { # Admin Edit
         @admin = true
-        session[:service_calendar_pages] = params[:pages] if params[:pages]
-        session[:breadcrumbs].add_crumbs(protocol_id: @sub_service_request.protocol.id, sub_service_request_id: @sub_service_request.id).clear(:notifications)
+        # TODO
+        # session[:service_calendar_pages] = params[:pages] if params[:pages]
+        # session[:breadcrumbs].add_crumbs(protocol_id: @sub_service_request.protocol.id, sub_service_request_id: @sub_service_request.id).clear(:notifications)
         if @user.can_edit_fulfillment? @sub_service_request.organization
           @service_request = @sub_service_request.service_request
           @protocol = @sub_service_request.protocol

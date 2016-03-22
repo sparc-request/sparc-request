@@ -18,30 +18,12 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#protocol_form_display
-  = form_for ([:dashboard, protocol]), as: :protocol, remote: true, html: { class: 'form-horizontal' } do |form|
-    = form.hidden_field :requester_id
-    = form.hidden_field :type
-    = form.error_messages
+#service_request_cost
+  #current_cost
+    %label= t(:fulfillments)[:totals][:effective_current_total_cost]
+    %span.effective_cost= number_to_currency(calculate_effective_current_total)
 
-    - if @protocol_type.capitalize == "Study"
-      .edit-study-view.container-fluid
-        .row.user-edit-protocol-view
-          = render partial: 'dashboard/protocols/form/study_fields', locals: { form: form, protocol: protocol }
-
-    - elsif @protocol_type.capitalize == "Project"
-      .edit-project-view.container-fluid
-        .row.user-edit-protocol-view
-          = render partial: 'dashboard/protocols/form/project_fields', locals: { form: form, protocol: protocol }
-
-    - unless protocol.id.present? # New Protocol, authorized users fields required
-      = render partial: 'dashboard/protocols/form/project_roles_fields', locals: { form: form, protocol: protocol }
-
-    .row#actions
-      .col-lg-4
-      .col-lg-4
-        %input.btn.btn-lg.btn-success{ type: "submit", value: "Save"}
-        - if protocol.id.present? # Edit Protocol
-          = link_to t(:protocol_shared)[:cancel], dashboard_protocol_path(protocol), class: 'btn btn-lg btn-danger'
-        - else # New Protocol
-          = link_to t(:protocol_shared)[:cancel], dashboard_protocols_path, class: 'btn btn-lg btn-danger'
+  #user_display_cost
+    %label= t(:fulfillments)[:totals][:user_display_total_cost]
+    %span.display_cost= number_to_currency(calculate_user_display_total)
+  .clear

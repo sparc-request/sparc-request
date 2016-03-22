@@ -281,6 +281,10 @@ SparcRails::Application.routes.draw do
         put 'update_otf_qty_and_units_per_qty'
         put 'move_visit_position'
         put 'show_move_visits'
+        post 'select_calendar_row'
+        post 'unselect_calendar_row'
+        post 'select_calendar_column'
+        post 'unselect_calendar_column'
       end
     end
 

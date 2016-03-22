@@ -21,7 +21,7 @@
 .panel.panel-default{ class: "arm-calendar-container-#{arm.id}" }
   .panel-heading
     %h3.panel-title= t(:calendar_page)[:per_patient] + ' -- ' + arm.name
-  %table{ class: "table table-bordered", style: 'width: 100%;' }
+  %table{ class: 'table table-bordered', style: 'width: 100%;' }
     %thead
       = render partial: '/dashboard/service_calendars/master_calendar/pppv/pppv_header', locals: { service_request: service_request, arm: arm, tab: @tab, portal: @portal, sub_service_request: @sub_service_request, review: review, page: page, pages: pages, merged: merged, visit_groups: visit_groups }
     %tbody
@@ -38,7 +38,7 @@
     // override x-editable defaults
     $.fn.editable.defaults.send = 'always'
     $.fn.editable.defaults.ajaxOptions = {
-      type: "PATCH",
+      type: "PUT",
       dataType: "script"
     };
 

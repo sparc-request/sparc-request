@@ -21,7 +21,7 @@
 $(document).ready ->
 
   study_type_form = $('.selected_for_epic_dependent')
-  study_selected_for_epic_radio = $('.selected_for_epic_button .btn input:radio:checked')
+  study_selected_for_epic_button = $('#selected_for_epic_button')
   certificate_of_confidence_dropdown = $('#study_type_answer_certificate_of_conf_answer')
   higher_level_of_privacy_dropdown = $('#study_type_answer_higher_level_of_privacy_answer')
   access_required_dropdown = $('#study_type_answer_access_study_info_answer')
@@ -74,7 +74,7 @@ $(document).ready ->
 
   $(document).on 'change', "input[name='protocol[selected_for_epic]']", ->
     # Publish Study in Epic - Radio
-    switch $('.selected_for_epic_button .btn input:radio:checked').val()
+    switch $('#selected_for_epic_button .btn input:radio:checked').val()
       when 'true'
         study_type_form.show()
         # $('.study_type .row').show()
@@ -129,7 +129,7 @@ $(document).ready ->
   # required fields in the epic box, it will hit this code and display
   # the appropriate fields that need to be filled out with a visual cue of red border
   if $('.field_with_errors label:contains("Study type questions")').length > 0
-    study_selected_for_epic_radio.change()
+    study_selected_for_epic_button.change()
     if certificate_of_confidence_dropdown.is(':visible')
       certificate_of_confidence_dropdown.change()
     if higher_level_of_privacy_dropdown.val() == 'true'

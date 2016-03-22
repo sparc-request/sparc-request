@@ -68,7 +68,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   def new
     @protocol_type = params[:protocol_type]
     @protocol = @protocol_type.capitalize.constantize.new
-    @protocol.requester_id = current_user.id
+    @protocol.requester_id = current_user.id 
     @protocol.populate_for_edit
     session[:protocol_type] = params[:protocol_type]
   end

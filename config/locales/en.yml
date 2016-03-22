@@ -340,14 +340,8 @@ en:
       service_requests:
         header: "Service Requests"
         view_consolidated: "View Consolidated Request"
-        export_consolidated: "Edit Consolidated Request"
+        export_consolidated: "Export Consolidated Request"
         add_services: "Add Services"
-
-    ############
-    # SERVICES #
-    ############
-    services:
-      
 
     ######################
     #  SERVICE REQUESTS  #

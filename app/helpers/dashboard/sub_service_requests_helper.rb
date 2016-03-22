@@ -168,4 +168,22 @@ module Dashboard::SubServiceRequestsHelper
       end
     end
   end
+
+  def calculate_effective_current_total
+    if @sub_service_request
+      @sub_service_request.set_effective_date_for_cost_calculations
+      total = @sub_service_request.direct_cost_total / 100
+      @sub_service_request.unset_effective_date_for_cost_calculations
+    end
+
+    total
+  end
+
+  def calculate_user_display_total
+    if @sub_service_request
+      total = @sub_service_request.direct_cost_total / 100
+    end
+
+    total
+  end
 end

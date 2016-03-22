@@ -18,10 +18,12 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$("#request_cost_total").html("<%= escape_javascript(render(partial: 'dashboard/sub_service_requests/service_request_info/direct_cost_total.html.haml', locals: { sub_service_request: @sub_service_request })) %>")
-if "<%= @subsidy %>"
-  $("#fulfillment_subsidy_info").html("<%= escape_javascript(render(partial: 'dashboard/sub_service_requests/service_request_info/subsidy_info', locals: { subsidy: @subsidy, sub_service_request: @sub_service_request })) %>")
-  $("#request_cost_total").html("<%= escape_javascript(render(partial: 'dashboard/sub_service_requests/service_request_info/direct_cost_total.html.haml', locals: { sub_service_request: @sub_service_request })) %>")
+# TODO need to render _direct_cost_total or equivalent
+
+#if "<%= @subsidy %>"
+  # TODO need to render _subsidy_info or equivalent
+  # TODO need to render _direct_cost_total or equivalent
+
 unless "<%= @errors %>" == ""
   alert "<%= @errors %>"
 
@@ -46,5 +48,5 @@ if "<%= @errors %>" == ""
     $(".pp_max_total<%= @arm_id %>").html("<%= display_max_total_cost_per_patient(@line_items_visit.arm, @line_items_visits) %>")
 
     $(".pp_total<%= @arm_id %>").html("<%= display_total_cost_per_arm(@line_items_visit.arm, @line_items_visits) %>")
-    $("#fulfillment_subsidy").html("<%= escape_javascript(render(partial: 'dashboard/sub_service_requests/service_request_info/subsidy_info', locals: { subsidy: @subsidy, sub_service_request: @sub_service_request })) %>")
-    $("#request_cost_total").html("<%= escape_javascript(render(partial: 'dashboard/sub_service_requests/service_request_info/direct_cost_total.html.haml', locals: { sub_service_request: @sub_service_request })) %>")
+    # TODO need to render _subsidy_info or equivalent
+    # TODO need to render _direct_cost_total or equivalent

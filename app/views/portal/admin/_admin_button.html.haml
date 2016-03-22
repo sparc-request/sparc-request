@@ -1,6 +1,0 @@
-.admin-buttons
-  = link_to "Create A Request", root_path, class: 'create_new_request header_button'
-  - if @user.is_super_user?
-    = link_to "Reporting", reports_path, class: 'reporting header_button'
-  - if QUEUE_EPIC_EDIT_LDAP_UIDS.include?(current_user.ldap_uid)
-    = link_to "View Epic Queue", portal_epic_queues_path, class: 'epic_queues header_button'

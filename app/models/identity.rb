@@ -68,13 +68,16 @@ class Identity < ActiveRecord::Base
   has_many :requested_service_requests, :class_name => 'ServiceRequest', :foreign_key => 'service_requester_id'
   has_many :catalog_manager_rights, :class_name => 'CatalogManager'
   has_many :service_providers, :dependent => :destroy
-  has_many :notifications, :foreign_key => 'originator_id'
-  has_many :sent_messages, :class_name => 'Message', :foreign_key => 'from'
-  has_many :received_messages, :class_name => 'Message', :foreign_key => 'to'
-  has_many :user_notifications, :dependent => :destroy
   has_many :received_toast_messages, :class_name => 'ToastMessage', :foreign_key => 'to', :dependent => :destroy
   has_many :sent_toast_messages, :class_name => 'ToastMessage', :foreign_key => 'from', :dependent => :destroy
   has_many :notes, :dependent => :destroy
+  has_many :protocol_filters, :dependent => :destroy
+
+  has_many :sent_notifications, class_name: "Notification", :foreign_key => 'originator_id'
+  has_many :received_notifications, class_name: "Notification", :foreign_key => 'other_user_id'
+  has_many :sent_messages, :class_name => 'Message', :foreign_key => 'from'
+  has_many :received_messages, :class_name => 'Message', :foreign_key => 'to'
+  has_many :approved_subsidies, :class_name => 'ApprovedSubsidy', :foreign_key => 'approved_by'
 
   # TODO: Identity doesn't really have many sub service requests; an
   # identity is the owner of many sub service requests.  We need a
@@ -322,6 +325,11 @@ class Identity < ActiveRecord::Base
   ########################### COLLECTION METHODS ################################
   ###############################################################################
 
+  def authorized_admin_organizations
+    # returns organizations for which user is service provider or super user
+    Organization.authorized_for_identity(self.id).distinct || []
+  end
+
   # Collects all organizations that this identity has catalog manager permissions on, as well as
   # any child (deep) of any of those organizations.
   # Returns an array of organizations.
@@ -359,7 +367,6 @@ class Identity < ActiveRecord::Base
   def admin_organizations su_only = {:su_only => false}
     orgs = Organization.all
     organizations = []
-    attached_array = []
     arr = organizations_for_users(orgs, su_only)
 
     arr.each do |org|
@@ -419,52 +426,13 @@ class Identity < ActiveRecord::Base
     return false
   end
 
-  # Collects all sub service requests under this identity's admin_organizations and sorts that
-  # list by the status of the sub service requests.
-  # Used to populate the table (as selectable by the dropdown) in the admin index.
-  def admin_service_requests_by_status org_id=nil, admin_orgs=nil
-    ##Default to all ssrs, if we get an org_id, only get that organization's ssrs
-    ssrs = []
-    if org_id
-      ssrs = Organization.find(org_id).sub_service_requests
-    elsif admin_orgs && !admin_orgs.empty?
-      ssrs = SubServiceRequest.where("sub_service_requests.organization_id in (#{admin_orgs.map(&:id).join(", ")})").includes(:owner, :line_items => :service, :service_request => [:service_requester, :protocol => {:project_roles => :identity}])
-    else
-      self.admin_organizations.each do |org|
-        ssrs << SubServiceRequest.where(:organization_id => org.id).includes(:line_items => :service, :service_request => :protocol).to_a
-      end
-      ssrs.flatten!
-    end
-
-    hash = {}
-
-    ssrs.each do |ssr|
-      unless ssr.status.blank? or ssr.status == 'first_draft'
-        if ssr.service_request
-          if ssr.service_request.protocol
-            ssr_status = ssr.status.to_s.gsub(/\s/, "_").gsub(/[^-\w]/, "").downcase
-            hash[ssr_status] = [] unless hash[ssr_status]
-            hash[ssr_status] << ssr
-          end
-        end
-      end
-    end
-
-    hash
-  end
-
   ###############################################################################
   ########################## NOTIFICATION METHODS ###############################
   ###############################################################################
 
-  # Collects all notifications for this identity based on their user notifications (as notifications
-  # do not belong to individual identities).
-  # Returns an array of Notifications.
   def all_notifications
-    ids = self.user_notifications.map {|x| x.notification_id}
-    all_notifications = Notification.where(:id => ids)
-
-    all_notifications
+    # Returns an array of Notifications.
+    [sent_notifications, received_notifications].flatten
   end
 
   # Returns the count of unread notifications for this identity, based on their user_notifications
@@ -474,9 +442,17 @@ class Identity < ActiveRecord::Base
     notifications = self.all_notifications
 
     notifications.each do |notification|
-      notification_count += 1 unless notification.user_notifications_for_current_user(user).order('created_at DESC').first.read
+      notification_count += 1 unless notification.read_by? user
     end
 
+    notification_count
+  end
+
+  def unread_notification_count_for_ssr user, sub_service_request
+    notification_count = 0
+
+    notification_count += (user.all_notifications.select { |n| !(n.read_by? user) && n.sub_service_request_id == sub_service_request.id }).size
+    
     notification_count
   end
 end

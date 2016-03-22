@@ -26,7 +26,7 @@ class Appointment < ActiveRecord::Base
   belongs_to :organization
   has_many :procedures, :dependent => :destroy
   has_many :visits, :through => :procedures
-  has_many :notes
+  has_many :notes, as: :notable
   attr_accessible :visit_group_id
   attr_accessible :organization_id
   attr_accessible :completed_at

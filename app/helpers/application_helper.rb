@@ -22,7 +22,7 @@ module ApplicationHelper
   def show_welcome_message current_user
     returning_html = ""
     if current_user
-      returning_html += content_tag(:span, "Logged in as #{current_user.email}, ") + link_to('Logout', destroy_identity_session_path, :method => :delete)
+      returning_html += content_tag(:span, t(:dashboard)[:navbar][:logged_in_as] + current_user.email + " ") + link_to('Logout', destroy_identity_session_path, :method => :delete)
     else
       # could be used to provide a login link
       returning_html += content_tag(:span, "Not Logged In")
@@ -335,6 +335,22 @@ module ApplicationHelper
       return service_request.protocol.id
     else
       return ""
+    end
+  end
+
+  ##Sets css bootstrap classes for rails flash message types##
+  def twitterized_type type
+    case type.to_sym
+      when :alert
+        "alert-danger"
+      when :error
+        "alert-danger"
+      when :notice
+        "alert-info"
+      when :success
+        "alert-success"
+      else
+        type.to_s
     end
   end
 end

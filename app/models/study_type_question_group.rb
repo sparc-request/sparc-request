@@ -4,5 +4,7 @@ class StudyTypeQuestionGroup < ActiveRecord::Base
   scope :inactive, -> {where(active:false)}
   scope :active, -> {where(active:true)}
 
-  
+  def self.active_id
+    self.active.first.id
+  end
 end

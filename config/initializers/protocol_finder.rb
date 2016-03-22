@@ -1,1 +1,1 @@
-require Rails.root.join('lib/portal/protocol_finder.rb')
+require Rails.root.join('lib/dashboard/protocol_finder.rb')

@@ -1,3 +1,4 @@
+
 /* Copyright © 2011 MUSC Foundation for Research Development*/
 /* All rights reserved.*/
 
@@ -2966,4 +2967,8 @@ input.devise_submit_button {
 
 .type-select {
   padding-top: 30px;
+}
+
+.subsidy_input {
+  width: 75% !important;
 }

@@ -19,56 +19,50 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class ProtocolAuthorizer
-  
-   def initialize(protocol,identity)
-      @protocol, @identity = protocol, identity
-   end
 
-   def can_edit?
-     return false unless @protocol && @identity
-     
-     #check to see if the user is a team member of the protocol and has approve or request rights
-     @protocol.project_roles.each do |project_role|
-       if project_role.identity_id == @identity.id && (project_role.project_rights == 'approve' || project_role.project_rights == 'request')
-         return true
-       end
-     end
-     
-     @protocol.service_requests.each do |service_request|
-       service_request.sub_service_requests.each do |sub_service_request|
-         # check to see if the user is a super user for a related Institution, Provider, Program, or Core
-         # check to see if the user is service provider for a related Provider, Program, or Core
-         # admin_organizations() checks super_users and service_providers but NOT clinical_providers
-         if @identity.admin_organizations().include?(sub_service_request.organization)
-          return true
-         end
-         # check to see if the user is a clinical provider of either a Core or a Program for one of the protocol's sub service requests
-         # Version 1.0: do not allow clinical providers to view or edit a protocol
-      #   @identity.clinical_providers.each do |clinical_provider|
-      #     if clinical_provider.organization_id == sub_service_request.organization_id || (sub_service_request.organization.type == "Core" && clinical_provider.organization_id == sub_service_request.organization.parent_id)
-      #       return true      
-      #     end
-      #   end
-       end
-     end
-     
-     return false
-   end
-   
-   def can_view?
-     return false unless @protocol && @identity
-     
-     if self.can_edit?
-       return true
-     else
-       @protocol.project_roles.each do |project_role|
-         if project_role.identity_id == @identity.id && project_role.project_rights == 'view'
-           return true
-         end
-       end
-     end
-     
-     return false
-   end
-   
+  def initialize(protocol, identity)
+    @protocol, @identity = protocol, identity
+  end
+
+  def can_edit?
+    # NOTE @can_edit memoized; use #nil? since @can_edit is a boolean.
+    # !! maps truthy and falsey values to true and false
+    if @can_edit.nil?
+      @can_edit = !!(@protocol && @identity &&
+        (roles_for_edit.any? || administrated_ssrs.any?))
+    else
+      @can_edit
+    end
+  end
+
+  def can_view?
+    # NOTE @can_view memoized; use #nil? since @can_view is a boolean.
+    # !! maps truthy and falsey values to true and false
+    if @can_view.nil?
+      @can_view = !!(@protocol && @identity &&
+        (self.can_edit? || roles_for_view.any?))
+    else
+      @can_view
+    end
+  end
+
+  private
+
+  # 'approve' or 'request' ProjectRoles associating @user and @protocol
+  def roles_for_edit
+    @protocol.project_roles.where(identity_id: @identity.id,
+      project_rights: ['approve', 'request'])
+  end
+
+  # 'view' ProjectRoles associating @user and @protocol
+  def roles_for_view
+    @protocol.project_roles.where(identity_id: @identity.id,
+      project_rights: 'view')
+  end
+
+  # SubServiceRequests belonging to @user's admin organizations
+  def administrated_ssrs
+    @protocol.sub_service_requests.where(
+      organization_id: @identity.admin_organizations.map(&:id))
+  end
 end

@@ -1,0 +1,19 @@
+#study_schedule_buttons{ data: { protocol_id: service_request.protocol_id, sub_service_request_id: sub_service_request.id, service_request_id: service_request.id } }
+  .row
+    .col-sm-4.col-md-4.text-center
+      = t(:dashboard)[:arms][:manage]
+      #manage_arms
+        .btn.btn-success.btn-sm.glyphicon.glyphicon-plus#add_arm_button{title: t(:dashboard)[:arms][:add], type: "button", aria: {label: "Add Arm"}}
+        .btn.btn-danger.btn-sm.glyphicon.glyphicon-remove#remove_arm_button{title: t(:dashboard)[:arms][:remove], type: "button", aria: {label: "Remove Arm"}}
+        .btn.btn-warning.btn-sm.glyphicon.glyphicon-edit#edit_arm_button{title: t(:dashboard)[:arms][:edit], type: "button", aria: {label: "Edit Arm"}}
+    .col-sm-4.col-md-4.text-center
+      = t(:dashboard)[:visit_groups][:manage]
+      #manage_visit_groups
+        .btn.btn-success.btn-sm.glyphicon.glyphicon-plus#add_visit_group_button{title: t(:dashboard)[:visit_groups][:add], type: "button", aria: {label: "Add Visit Group"}}
+        .btn.btn-danger.btn-sm.glyphicon.glyphicon-remove#remove_visit_group_button{title: t(:dashboard)[:visit_groups][:remove], type: "button", aria: {label: "Remove Visit Group"}}
+        .btn.btn-warning.btn-sm.glyphicon.glyphicon-edit#edit_visit_group_button{title: t(:dashboard)[:visit_groups][:edit], type: "button", aria: {label: "Edit Visit Group"}}
+    .col-sm-4.col-md-4.text-center
+      = t(:dashboard)[:multiple_line_items][:manage]
+      #manage_services
+        .btn.btn-success.btn-sm.glyphicon.glyphicon-plus#add_service_button{title: t(:dashboard)[:multiple_line_items][:add], type: "button", aria: {label: "Add Service"}}
+        .btn.btn-danger.btn-sm.glyphicon.glyphicon-remove#remove_service_button{title: t(:dashboard)[:multiple_line_items][:remove], type: "button", aria: {label: "Remove Service"}}

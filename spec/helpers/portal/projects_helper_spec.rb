@@ -64,6 +64,7 @@ RSpec.describe Portal::ProjectsHelper do
   #   end
   # end
 
+  # TODO rewrite
   context '#display_funding_source' do
     FUNDING_SOURCES ||= {}
     POTENTIAL_FUNDING_SOURCES ||= {}

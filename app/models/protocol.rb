@@ -34,58 +34,60 @@ class Protocol < ActiveRecord::Base
   has_many :identities, :through => :project_roles
   has_many :service_requests
   has_many :sub_service_requests, through: :service_requests
+  has_many :organizations, through: :sub_service_requests
   has_many :affiliations, :dependent => :destroy
   has_many :impact_areas, :dependent => :destroy
   has_many :arms, :dependent => :destroy
   has_many :study_type_answers, :dependent => :destroy
+  has_many :notes, as: :notable, dependent: :destroy
   has_many :study_type_questions, through: :study_type_question_group
 
   belongs_to :study_type_question_group
 
-  attr_accessible :identity_id
-  attr_accessible :next_ssr_id
-  attr_accessible :short_title
-  attr_accessible :title
-  attr_accessible :sponsor_name
+  attr_accessible :affiliations_attributes
+  attr_accessible :archived
+  attr_accessible :arms_attributes
+  attr_accessible :billing_business_manager_static_email
   attr_accessible :brief_description
-  attr_accessible :indirect_cost_rate
-  attr_accessible :study_phase
-  attr_accessible :udak_project_number
-  attr_accessible :funding_rfa
-  attr_accessible :funding_status
-  attr_accessible :potential_funding_source
-  attr_accessible :potential_funding_start_date
-  attr_accessible :funding_source
-  attr_accessible :funding_start_date
+  attr_accessible :end_date
+  attr_accessible :federal_grant_code_id
   attr_accessible :federal_grant_serial_number
   attr_accessible :federal_grant_title
-  attr_accessible :federal_grant_code_id
   attr_accessible :federal_non_phs_sponsor
   attr_accessible :federal_phs_sponsor
-  attr_accessible :potential_funding_source_other
+  attr_accessible :funding_rfa
+  attr_accessible :funding_source
   attr_accessible :funding_source_other
-  attr_accessible :research_types_info_attributes
+  attr_accessible :funding_start_date
+  attr_accessible :funding_status
   attr_accessible :human_subjects_info_attributes
-  attr_accessible :vertebrate_animals_info_attributes
+  attr_accessible :identity_id
+  attr_accessible :impact_areas_attributes
+  attr_accessible :indirect_cost_rate
   attr_accessible :investigational_products_info_attributes
   attr_accessible :ip_patents_info_attributes
-  attr_accessible :study_types_attributes
-  attr_accessible :impact_areas_attributes
-  attr_accessible :affiliations_attributes
-  attr_accessible :project_roles_attributes
-  attr_accessible :arms_attributes
-  attr_accessible :requester_id
-  attr_accessible :start_date
-  attr_accessible :end_date
-  attr_accessible :last_epic_push_time
   attr_accessible :last_epic_push_status
-  attr_accessible :billing_business_manager_static_email
-  attr_accessible :recruitment_start_date
+  attr_accessible :last_epic_push_time
+  attr_accessible :next_ssr_id
+  attr_accessible :potential_funding_source
+  attr_accessible :potential_funding_source_other
+  attr_accessible :potential_funding_start_date
+  attr_accessible :project_roles_attributes
   attr_accessible :recruitment_end_date
+  attr_accessible :recruitment_start_date
+  attr_accessible :requester_id
+  attr_accessible :research_types_info_attributes
   attr_accessible :selected_for_epic
+  attr_accessible :short_title
+  attr_accessible :sponsor_name
+  attr_accessible :start_date
+  attr_accessible :study_phase
   attr_accessible :study_type_answers_attributes
-  attr_accessible :archived
   attr_accessible :study_type_question_group_id
+  attr_accessible :study_types_attributes
+  attr_accessible :title
+  attr_accessible :udak_project_number
+  attr_accessible :vertebrate_animals_info_attributes
 
   attr_accessor :requester_id
   attr_accessor :validate_nct
@@ -120,7 +122,69 @@ class Protocol < ActiveRecord::Base
     validate :primary_pi_exists
   end
 
-  FRIENDLY_IDS = ["certificate_of_conf", "higher_level_of_privacy", "access_study_info", "epic_inbasket", "research_active", "restrict_sending"]
+  scope :for_identity, -> (identity) {
+    joins(:project_roles).
+    where(project_roles: { identity_id: identity.id }).
+    where.not(project_roles: { project_rights: 'none' })
+  }
+
+  filterrific(
+    default_filter_params: { show_archived: 0 },
+    available_filters: [
+      :search_query,
+      :for_identity_id,
+      :for_admin,
+      :show_archived,
+      :with_status,
+      :with_core
+    ]
+  )
+
+  scope :search_query, -> (search_term) {
+    # Searches protocols based on short_title, title, id, and associated_users
+    # Protects against SQL Injection with ActiveRecord::Base::sanitize
+    like_search_term = ActiveRecord::Base::sanitize("%#{search_term}%")
+    exact_search_term = ActiveRecord::Base::sanitize(search_term)
+    joins(:identities).
+    where(
+      "protocols.short_title like #{like_search_term} OR "\
+      "protocols.title like #{like_search_term} OR "\
+      "protocols.id = #{exact_search_term} OR "\
+      "MATCH(identities.first_name, identities.last_name) AGAINST (#{exact_search_term})"
+    ).distinct
+  }
+
+  scope :for_identity_id, -> (identity_id) {
+    return nil if identity_id == '0'
+    joins(:project_roles).
+    where(project_roles: { identity_id: identity_id }).
+    where.not(project_roles: { project_rights: 'none' })
+  }
+
+  scope :for_admin, -> (identity_id) {
+    # returns protocols with ssrs in orgs authorized for identity_id
+    return nil if identity_id == '0'
+    joins(:organizations).
+    merge( Organization.authorized_for_identity(identity_id) ).distinct
+  }
+
+  scope :show_archived, -> (boolean) {
+    where(archived: boolean)
+  }
+
+  scope :with_status, -> (status) {
+    # returns protocols with ssrs in status
+    return nil if status == "" or status == [""]
+    joins(:sub_service_requests).
+    where(sub_service_requests: { status: status }).distinct
+  }
+
+  scope :with_core, -> (org_id) {
+    # returns protocols with ssrs in org_id
+    return nil if org_id == "" or org_id == [""]
+    joins(:sub_service_requests).
+    where(sub_service_requests: { organization_id: org_id }).distinct
+  }
 
   def is_study?
     self.type == 'Study'
@@ -129,6 +193,15 @@ class Protocol < ActiveRecord::Base
   # virgin project:  a project that has never been a study
   def virgin_project?
     selected_for_epic.nil?
+  end
+
+  def is_project?
+    self.type == 'Project'
+  end
+
+  # Determines whether a protocol contains a service_request with only a "first draft" status
+  def has_first_draft_service_request?
+    service_requests.any? && service_requests.map(&:status).all? { |status| status == 'first_draft'}
   end
 
   def active?
@@ -147,8 +220,9 @@ class Protocol < ActiveRecord::Base
     end
   end
 
-  def validate_study_type_answers
+  FRIENDLY_IDS = ["certificate_of_conf", "higher_level_of_privacy", "access_study_info", "epic_inbasket", "research_active", "restrict_sending"]
 
+  def validate_study_type_answers
     answers = {}
     FRIENDLY_IDS.each do |fid|
       q = StudyTypeQuestion.active.find_by_friendly_id(fid)

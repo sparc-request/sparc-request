@@ -191,6 +191,30 @@ class Dashboard::ServiceCalendarsController < ApplicationController
     @merged = true
   end
 
+  def view_full_calendar
+    @protocol = Protocol.find(params[:protocol_id])
+    @service_request = @protocol.any_service_requests_to_display?
+
+    arm_id = params[:arm_id] if params[:arm_id]
+    page = params[:page] if params[:page]
+    session[:service_calendar_pages] = params[:pages] if params[:pages]
+    session[:service_calendar_pages][arm_id] = page if page && arm_id
+    @tab = 'calendar'
+    @portal = params[:portal]
+    if @service_request
+      @pages = {}
+      @protocol.arms.each do |arm|
+        new_page = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i
+        @pages[arm.id] = @service_request.set_visit_page new_page, arm
+      end
+    end
+    @merged = true
+    respond_to do |format|
+      format.js
+      format.html
+    end
+  end
+
   def update_otf_qty_and_units_per_qty
     line_item = LineItem.find params[:line_item_id]
 

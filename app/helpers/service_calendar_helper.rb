@@ -233,7 +233,7 @@ module ServiceCalendarHelper
   #   select_tag "visits-select-for-#{arm.id}", visits_select_options(arm, page), class: 'form-control selectpicker', data: { arm_id: "#{arm.id}", page: page }
   # end
   # 
-  # def display_line_items_status(line_item)
-  #   line_item.service_request.status.capitalize
-  # end
+  def display_line_items_status(line_item)
+    line_item.service_request.status.capitalize
+  end
 end

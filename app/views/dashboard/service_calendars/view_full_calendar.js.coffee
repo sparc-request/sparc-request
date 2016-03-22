@@ -18,5 +18,5 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$('#modal_place').html("<%= escape_javascript(render(:partial => 'dashboard/protocols/view_full_calendar', :locals => {:service_requests => @service_requests})) %>")
+$('#modal_place').html("<%= escape_javascript(render(:partial => 'dashboard/service_calendars/view_full_calendar', :locals => {:service_requests => @service_requests})) %>")
 $('#modal_place').modal 'show'

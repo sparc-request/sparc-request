@@ -272,7 +272,9 @@ SparcRails::Application.routes.draw do
       member do
         get 'table'
         get 'merged_calendar'
+        get 'view_full_calendar'
       end
+
       collection do
         put 'rename_visit'
         put 'set_day'

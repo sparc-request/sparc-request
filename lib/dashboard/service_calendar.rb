@@ -2,6 +2,7 @@ require 'action_view'
 
 include ActionView::Helpers::FormOptionsHelper
 include ActionView::Helpers::FormTagHelper
+include ActionView::Helpers::NumberHelper
 
 module Dashboard
   module ServiceCalendar
@@ -176,7 +177,7 @@ module Dashboard
     end
 
     def self.display_visit_based_direct_cost_per_study(line_items_visit)
-      currency_converter(line_items_visit.direct_costs_for_visit_based_service_single_subject * (line_items_visit.subject_count || 0))
+      number_to_currency(Service.cents_to_dollars(line_items_visit.direct_costs_for_visit_based_service_single_subject * (line_items_visit.subject_count || 0)))
     end
 
     def self.build_visits_select(arm, page, url)

@@ -112,7 +112,7 @@ en:
     save_and_continue: "Save & Continue ⟶ "
     save_and_exit: "Save as Draft"
     save_as_draft: "Save As Draft"
-    submit_to_start: "Submit to Start Services"
+    submit_to_start: "    Submit to Start Services ⟶ "
 
   message:
     red_message: "Pricing is consistent across locations unless otherwise stated."

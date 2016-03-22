@@ -252,6 +252,7 @@ class Service < ActiveRecord::Base
   def get_rate_maps(display_date, full_rate)
     hash = PricingMap.rates_from_full(display_date, self.organization_id, full_rate)
     return_map = {
+      # sprintf('%0.2f', Service.fix_service_rate(hash[:federal_rate]).to_f.round(2))
       "federal_rate" => Service.fix_service_rate(hash[:federal_rate]),
       "corporate_rate" => Service.fix_service_rate(hash[:corporate_rate]),
       "other_rate" => Service.fix_service_rate(hash[:other_rate]),

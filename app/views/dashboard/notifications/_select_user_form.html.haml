@@ -17,16 +17,23 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-%select.selectpicker.new-notification{ title: t(:dashboard)[:notifications][:table][:send], data: { style: "btn-success new_notification_button", live_search: 'true', sub_service_request_id: sub_service_request.ssr_id } }
-  %optgroup{ label: t(:dashboard)[:notifications][:table][:requester] }
-    %option{ data: { identity_id: sub_service_request.service_request.service_requester_id, sub_service_request_id: sub_service_request.id, is_service_provider: 'false', current_user_id: user.id } }
-      = t(:notifications)[:requester] + sub_service_request.service_request.service_requester.full_name
-  %optgroup{ label: t(:dashboard)[:notifications][:table][:authorized_users]}
-    - sub_service_request.service_request.protocol.project_roles.each do |pr|
-      %option{ data: { identity_id: pr.identity_id, sub_service_request_id: sub_service_request.id, is_service_provider: 'false', current_user_id: user.id } } #{display_user_role(pr)}: #{pr.identity.full_name}
-  - unless admin
-    %optgroup{ label: t(:dashboard)[:notifications][:table][:clinical_providers]}
-      - sub_service_request.organization.service_providers.includes(:identity).sort_by { |sp| sp.identity.last_name }.each do |sp|
-        %option{ data: { identity_id: sp.identity.id, sub_service_request_id: sub_service_request.id, is_service_provider: 'true', current_user_id: user.id } }
-          = sp.identity.full_name
+.modal-dialog#add-notification-recipient-form
+  .modal-content
+    .modal-header
+      %button.close{ type: 'button', data: { dismiss: 'modal' } }
+        %span{ aria: { hidden: 'true' } } &times;
+      %h4.text-center#modal-title
+        = t(:dashboard)[:notifications][:form][:select_header]
+    .modal-body
+      #modal_errors
+      .row
+        .col-lg-12
+          %label.col-lg-3.control-label
+            = t(:dashboard)[:notifications][:form][:select]
+          .col-lg-9
+            = text_field_tag 'user_search', "", placeholder: t(:constants)[:prompts][:search_for_user], class: 'form-control'
+            = image_tag 'spinner.gif', id: 'loading_recipient_spinner', class: 'hidden'
+    .modal-footer
+      .center-block
+        %button.btn.btn-default{ type: 'button', data: { dismiss: 'modal' } }
+          = t(:actions)[:close]

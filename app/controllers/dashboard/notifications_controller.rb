@@ -44,9 +44,19 @@ class Dashboard::NotificationsController < Dashboard::BaseController
   end
 
   def new
-    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
-    @notification = @sub_service_request.notifications.new
-    @message = @notification.messages.new(to: params[:identity_id])
+    @sub_service_request_id = params[:sub_service_request_id]
+
+    if params[:identity_id]
+      @notification =
+        if @sub_service_request_id.present?
+          @sub_service_request = SubServiceRequest.find(@sub_service_request_id) if params[:sub_service_request_id]
+          @sub_service_request.notifications.new
+        else
+          Notification.new
+        end
+
+        @message = @notification.messages.new(to: params[:identity_id])
+    end
   end
 
   def create
@@ -58,8 +68,11 @@ class Dashboard::NotificationsController < Dashboard::BaseController
       if @message.valid?
         @notification.save
         @message.save
+
         ssr = @notification.sub_service_request
-        @notifications = @user.all_notifications.select!{ |n| n.sub_service_request_id == ssr.id }
+        
+        @notifications =  ssr.present? ? @user.all_notifications.select!{ |n| n.sub_service_request_id == ssr.id } : @user.all_notifications
+        
         UserMailer.notification_received(@recipient, ssr).deliver unless @recipient.email.blank?
         flash[:success] = "Notification Sent!"
       else

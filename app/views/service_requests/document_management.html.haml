@@ -43,13 +43,10 @@
       .document_upload{:style=>'display:none'}
         = render :partial => 'document_form', :locals => {:provider_css => 'orange-provider'}
       .clear
-      %br
-      %br
 
-      %button.btn.btn-lg.btn-primary.notes.list{ type: "button", data: {notable_type: "ServiceRequest", notable_id: @service_request.id }} Service Request Notes
+    .service_request_notes
+      = render partial: 'notes', locals: { notes: @service_request.notes, notable_id: @service_request.id, notable_type: "ServiceRequest" }
 
-      %br
-      %br
   .grid_3.document-mgmt-view-right.right.col-md-3
     = navigation_link t(:right_navigation)[:catalog], @catalog, 'catalog-button btn btn-info btn-lg btn-block'
     = render :partial => 'right_navigation'

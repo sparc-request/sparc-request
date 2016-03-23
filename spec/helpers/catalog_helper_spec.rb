@@ -22,66 +22,6 @@ require 'rails_helper'
 
 RSpec.describe CatalogManager::CatalogHelper do
 
-  context '#node' do
-    let(:institution){
-      create(:institution,
-        name:                 'Medical University of South Carolina',
-        order:                1,
-        abbreviation:         'MUSC',
-        is_available:         1
-      )
-    }
-
-    let(:provider){
-      create(:provider,
-        name:                 'South Carolina Clinical and Translational Institute (SCTR)',
-        order:                1,
-        css_class:            'blue-provider',
-        parent_id:            institution.id,
-        abbreviation:         'SCTR1',
-        process_ssrs:         0,
-        is_available:         1
-      )
-    }
-
-    let(:program){
-      create(:program,
-        type:                 'Program',
-        name:                 'Office of Biomedical Informatics',
-        order:                1,
-        description:          'The Biomedical Informatics Programs goal is to integrate..',
-        parent_id:            provider.id,
-        abbreviation:         'Informatics',
-        process_ssrs:         0,
-        is_available:         1
-      )
-    }
-
-    it 'should return a organization node for js.tree' do
-      expect(helper.node(institution)).to eq "<a cid=\"1\" object_type=\"institution\" class=\"institution\" href=\"#\">Medical University of South Carolina</a>"
-    end
-
-    it 'should return a organization node for js.tree' do
-      expect(helper.node(institution, false)).to eq "<a cid=\"2\" object_type=\"institution\" class=\"institution disabled_node\" href=\"#\">Medical University of South Carolina</a>"
-    end
-
-    it 'should return a organization node for js.tree' do
-      expect(helper.node(provider)).to eq "<a cid=\"4\" object_type=\"provider\" class=\"provider\" href=\"#\">South Carolina Clinical and Translational Institute (SCTR)</a>"
-    end
-
-    it 'should return a organization node for js.tree' do
-      expect(helper.node(provider, false)).to eq "<a cid=\"6\" object_type=\"provider\" class=\"provider disabled_node\" href=\"#\">South Carolina Clinical and Translational Institute (SCTR)</a>"
-    end
-
-    it 'should return a organization node for js.tree' do
-      expect(helper.node(program)).to eq "<a cid=\"9\" object_type=\"program\" class=\"program\" href=\"#\">Office of Biomedical Informatics</a>"
-    end
-
-    it 'should return a organization node for js.tree' do
-      expect(helper.node(program, false)).to eq "<a cid=\"12\" object_type=\"program\" class=\"program disabled_node\" href=\"#\">Office of Biomedical Informatics</a>"
-    end
-  end
-
   context '#disable_pricing_setup' do
     it "should return whether or not it can edit a pricing setup based on date" do
       pricing_setup = create(:pricing_setup)

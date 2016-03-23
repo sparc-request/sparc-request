@@ -292,7 +292,6 @@ $(document).ready ->
           $('.search_protocols').show()
           $('.loading_protocol').hide()
           $('.btn').button()
-          $('.blue-provider:first').trigger('click')
       })
 
     renderProtocolAccordionTab: (protocol_id) ->

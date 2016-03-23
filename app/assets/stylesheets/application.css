@@ -2888,13 +2888,6 @@ table.service_calendar tbody td.visit {
   padding-top: 22px;
 }
 
-.steps_table_link {
-  width: 100%;
-  height: 100%;
-  text-decoration: none;
-  color: #fff;
-}
-
 #service_request_protocol_id {
   width: 300px;
 }

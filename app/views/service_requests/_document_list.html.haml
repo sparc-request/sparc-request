@@ -36,8 +36,8 @@
       - next unless @sub_service_request.nil? or @sub_service_request.documents.include? document
       %tr.document{:id => "document_id_#{document.id}"}
         %td{:style => "text-align:left"}
-          -document.sub_service_requests.each do |ssr|
-            = @service_list[ssr.organization_id][:name] unless @service_list[ssr.organization_id].nil?
+          - document.sub_service_requests.each do |ssr|
+            = ssr.org_tree_display
             %br
             %br
         %td= document.display_document_type

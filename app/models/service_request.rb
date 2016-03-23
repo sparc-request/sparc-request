@@ -117,7 +117,7 @@ class ServiceRequest < ActiveRecord::Base
     else
       if self.has_ctrc_clinical_services?
         if self.protocol && self.protocol.has_ctrc_clinical_services?(self.id)
-          errors.add(:ctrc_services, "SCTR Research Nexus Services have been removed")
+          errors.add(:ctrc_services, "SCTR Research Nexus Services conflict with existing request. Please remove the Nexus services from your cart.")
         end
       end
     end
@@ -492,7 +492,7 @@ class ServiceRequest < ActiveRecord::Base
     self.assign_attributes(status: new_status)
 
     self.sub_service_requests.each do |ssr|
-      ssr.assign_attributes(status: new_status)
+      ssr.update_attribute(:status, new_status)
     end
 
     self.save(validate: use_validation)
@@ -578,7 +578,8 @@ class ServiceRequest < ActiveRecord::Base
 
   def set_original_submitted_date
     if self.submitted_at && !self.original_submitted_date
-      self.update_attributes(original_submitted_date: submitted_at)
+      self.original_submitted_date = self.submitted_at
+      self.save(validate: false)
     end
   end
 end

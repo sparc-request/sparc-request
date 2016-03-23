@@ -91,9 +91,6 @@ RSpec.feature 'User wants to create a Project', js: true do
         click_link 'Continue'
         wait_for_javascript_to_finish
       end
-      scenario 'and sees the Authorized Users page' do
-        expect(page).to have_content 'Add Users'
-      end
 
       scenario 'and sees the go back button' do
         expect(page).to have_link 'Go Back'

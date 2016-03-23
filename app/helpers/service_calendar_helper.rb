@@ -146,7 +146,7 @@ module ServiceCalendarHelper
     sum = 0
     protocol.service_requests.each do |service_request|
       next unless service_request.has_one_time_fee_services?
-      if ['first_draft', 'draft'].include?(service_request.status)
+      if ['first_draft'].include?(service_request.status)
         next if portal
         next if service_request != current_request
       end
@@ -227,5 +227,13 @@ module ServiceCalendarHelper
     end
 
     options_for_select(arr)
+  end
+
+  def display_line_items_status(line_item)
+    AVAILABLE_STATUSES[line_item.sub_service_request.status]
+  end
+
+  def display_per_patient_calendar?(service_request, sub_service_request, merged)
+    (sub_service_request.nil? ? service_request.has_per_patient_per_visit_services? : sub_service_request.has_per_patient_per_visit_services?) or merged
   end
 end

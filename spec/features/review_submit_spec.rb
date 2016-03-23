@@ -99,29 +99,6 @@ RSpec.describe "review page", js: true do
     end
   end
 
-  describe "clicking get a cost estimate and accepting the system satisfaction survey" do
-    it 'Should submit the page', js: true do
-      find("#get_a_cost_estimate").click
-      find(:xpath, "//button/span[text()='Yes']/..").click
-      wait_for_javascript_to_finish
-
-      # select Yes to next question and you should see text area for Yes
-      all("#r_1_answer_id_input input").first().click
-      wait_for_javascript_to_finish
-      fill_in "r_2_text_value", with: "I love it"
-
-      # select No to next question and you should see text area for No
-      all("#r_1_answer_id_input input").last().click
-      wait_for_javascript_to_finish
-      fill_in "r_3_text_value", with: "I hate it"
-
-      within(:css, "div.next_section") do
-        click_button 'Submit'
-        wait_for_javascript_to_finish
-      end
-    end
-  end
-
   context 'epic emails' do
 
     before :each do

@@ -111,7 +111,7 @@ class Protocol < ActiveRecord::Base
     validates :sponsor_name, :presence => true, :if => :is_study?
     validates_associated :human_subjects_info, :message => "must contain 8 numerical digits", :if => :validate_nct
     validates :selected_for_epic, inclusion: [true, false], :if => :is_study?
-    validate  :validate_study_type_answers, if: [:is_study?, :selected_for_epic]
+    validate  :validate_study_type_answers, if: [:is_study?, :selected_for_epic?, "StudyTypeQuestionGroup.active.pluck(:id).first == study_type_question_group_id"]
   end
 
   validation_group :user_details do
@@ -126,8 +126,17 @@ class Protocol < ActiveRecord::Base
     self.type == 'Study'
   end
 
+  # virgin project:  a project that has never been a study
+  def virgin_project?
+    selected_for_epic.nil?
+  end
+
   def active?
     study_type_question_group.active
+  end
+
+  def activate
+    update_attribute(:study_type_question_group_id, StudyTypeQuestionGroup.active.pluck(:id).first)
   end
 
   def validate_funding_source
@@ -389,13 +398,13 @@ class Protocol < ActiveRecord::Base
   end
 
   def any_service_requests_to_display?
-    return self.service_requests.detect { |sr| !['first_draft', 'draft'].include?(sr.status) }
+    return self.service_requests.detect { |sr| !['first_draft'].include?(sr.status) }
   end
 
   def has_per_patient_per_visit? current_request, portal
     return self.service_requests.detect do |sr|
       if sr.has_per_patient_per_visit_services?
-        if ['first_draft', 'draft'].include?(sr.status)
+        if ['first_draft'].include?(sr.status)
           if portal
             false
           elsif current_request == sr
@@ -411,7 +420,7 @@ class Protocol < ActiveRecord::Base
   def has_one_time_fees? current_request, portal
     return self.service_requests.detect do |sr|
       if sr.has_one_time_fee_services?
-        if ['first_draft', 'draft'].include?(sr.status)
+        if ['first_draft'].include?(sr.status)
           if portal
             false
           elsif current_request == sr
@@ -427,7 +436,7 @@ class Protocol < ActiveRecord::Base
   def direct_cost_total service_request
     total = 0
     self.service_requests.each do |sr|
-      next if ['first_draft', 'draft'].include?(sr.status) && sr != service_request
+      next if ['first_draft'].include?(sr.status) && sr != service_request
       total += sr.direct_cost_total
     end
     return total

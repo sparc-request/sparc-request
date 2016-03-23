@@ -43,22 +43,42 @@ class ProtocolsReport < ReportingModule
     attrs = {}
 
     attrs["Protocol ID"] = "service_request.try(:protocol).try(:id)"
-
     attrs["Protocol Short Title"] = "service_request.try(:protocol).try(:short_title)"
+    attrs["Protocol Title"] = "service_request.try(:protocol).try(:title)"
 
-    attrs["Institution"] = "org_tree.select{|org| org.type == 'Institution'}.first.try(:name)"
-    attrs["Provider"] = "org_tree.select{|org| org.type == 'Provider'}.first.try(:name)"
-    attrs["Program"] = "org_tree.select{|org| org.type == 'Program'}.first.try(:name)"
-    attrs["Core"] = "org_tree.select{|org| org.type == 'Core'}.first.try(:name)"
+    if params[:institution_id]
+      attrs[Institution] = [params[:institution_id], :abbreviation]
+    else
+      attrs["Institution"] = "org_tree.select{|org| org.type == 'Institution'}.first.try(:abbreviation)"
+    end
+
+    if params[:provider_id]
+      attrs[Provider] = [params[:provider_id], :abbreviation]
+    else
+      attrs["Provider"] = "org_tree.select{|org| org.type == 'Provider'}.first.try(:abbreviation)"
+    end
+
+    if params[:program_id]
+      attrs[Program] = [params[:program_id], :abbreviation]
+    else
+      attrs["Program"] = "org_tree.select{|org| org.type == 'Program'}.first.try(:abbreviation)"
+    end
+
+    if params[:core_id]
+      attrs[Core] = [params[:core_id], :abbreviation]
+    else
+      attrs["Core"] = "org_tree.select{|org| org.type == 'Core'}.first.try(:abbreviation)"
+    end
 
     attrs["Funding Source"] = "service_request.try(:protocol).try(:funding_source)"
     attrs["Potential Funding Source"] = "service_request.try(:protocol).try(:potential_funding_source)"
-    attrs["Financial Account"] = "service_request.try(:protocol).try(:udak_project_number)"
+    attrs["Sponsor Name"] = "service_request.try(:protocol).try(:sponsor_name)"
+    attrs["Financial Account"] = "service_request.try(:protocol).try(:udak_project_number).try{prepend(' ')}"
     attrs["Study Phase"] = "service_request.try(:protocol).try(:study_phase)"
 
-    attrs["NCT #"] = "service_request.try(:protocol).try(:human_subjects_info).try(:nct_number)"
-    attrs["HR #"] = "service_request.try(:protocol).try(:human_subjects_info).try(:hr_number)"
-    attrs["PRO #"] = "service_request.try(:protocol).try(:human_subjects_info).try(:pro_number)"
+    attrs["NCT #"] = "service_request.try(:protocol).try(:human_subjects_info).try(:nct_number).try{prepend(' ')}"
+    attrs["HR #"] = "service_request.try(:protocol).try(:human_subjects_info).try(:hr_number).try{prepend(' ')}"
+    attrs["PRO #"] = "service_request.try(:protocol).try(:human_subjects_info).try(:pro_number).try{prepend(' ')}"
     attrs["IRB of Record"] = "service_request.try(:protocol).try(:human_subjects_info).try(:irb_of_record)"
     attrs["IRB Expiration Date"] = "service_request.try(:protocol).try(:human_subjects_info).try(:irb_expiration_date)"
 
@@ -125,8 +145,6 @@ class ProtocolsReport < ReportingModule
 
     # default values if none are provided
     service_organization_ids = Organization.all.map(&:id) if service_organization_ids.compact.empty? # use all if none are selected
-
-    service_organizations = Organization.find(service_organization_ids)
 
     ssr_organization_ids = Organization.all.map(&:id) if ssr_organization_ids.compact.empty? # use all if none are selected
 

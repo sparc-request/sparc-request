@@ -61,6 +61,7 @@ RSpec.describe 'landing page', js: true do
       test_user     = create(:identity, last_name:'Glenn2', first_name:'Julia2', ldap_uid:'jug3', institution:'medical_university_of_south_carolina', college:'college_of_medecine', department:'other', email:'glennj2@musc.edu', credentials:'BS,    MRA', catalog_overlord: true, password:'p4ssword', password_confirmation:'p4ssword', approved: true)
       project_role  = create(:project_role, protocol_id: service_request.protocol.id, identity_id: test_user.id, project_rights: "approve", role: "co-investigator")
 
+      eventually { first('.blue-provider').click }
       find("tr[data-user-id='#{test_user.id}'] .edit-associated-user-button").click
 
       expect(page).to have_text("Edit an Authorized User")
@@ -70,6 +71,7 @@ RSpec.describe 'landing page', js: true do
       test_user     = create(:identity, last_name:'Glenn2', first_name:'Julia2', ldap_uid:'jug3', institution:'medical_university_of_south_carolina', college:'college_of_medecine', department:'other', email:'glennj2@musc.edu', credentials:'BS,    MRA', catalog_overlord: true, password:'p4ssword', password_confirmation:'p4ssword', approved: true)
       project_role  = create(:project_role, protocol_id: service_request.protocol.id, identity_id: test_user.id, project_rights: "approve", role: "co-investigator")
 
+      eventually { first('.blue-provider').click }
       find("tr[data-user-id='#{test_user.id}'] .delete-associated-user-button").click
       wait_for_javascript_to_finish
 
@@ -77,22 +79,26 @@ RSpec.describe 'landing page', js: true do
     end
 
     it 'should not delete the user if only pi' do
+      eventually { first('.blue-provider').click }
       find("tr[data-user-id='#{identity.id}'] .delete-associated-user-button").click
 
       expect(page).to have_css("tr[data-user-id='#{identity.id}']")
     end
 
     it 'should bring up the add user box' do
+      eventually { first('.blue-provider').click }
       find("div.associated-user-button").click
       expect(find(".add-associated-user-dialog")).to be_visible
     end
 
     it 'should allow user to edit the service request' do
+      eventually { first('.blue-provider').click }
       find("td.edit-td .edit_service_request").click
       expect(page).to have_text("Editing ID: #{service_request.protocol_id}")
     end
 
     it 'should allow user to view the service request' do
+      eventually { first('.blue-provider').click }
       find(".view-sub-service-request-button").click
       within ".project_information" do
         expect(find("td.protocol-id-td")).to have_exact_text(service_request.protocol_id.to_s + '-' + sub_service_request.ssr_id)
@@ -100,6 +106,7 @@ RSpec.describe 'landing page', js: true do
     end
 
     it 'should allow user to view consolidated request' do
+      eventually { first('.blue-provider').click }
       find('.view-full-calendar-button').click
       wait_for_javascript_to_finish
       within ".project_information" do
@@ -108,6 +115,7 @@ RSpec.describe 'landing page', js: true do
     end
 
     it 'should allow user to view printer friendly consolidated request' do
+      eventually { first('.blue-provider').click }
       find('.view-full-calendar-button').click
       wait_for_javascript_to_finish
       new_window = window_opened_by { click_button 'Print' }
@@ -119,6 +127,7 @@ RSpec.describe 'landing page', js: true do
     end
 
     it 'should allow user to view printer-friendly service request' do
+      eventually { first('.blue-provider').click }
       find(".view-sub-service-request-button").click
       new_window = window_opened_by { click_button 'Print' }
       within_window new_window do
@@ -128,6 +137,7 @@ RSpec.describe 'landing page', js: true do
     end
 
     it 'should allow user to edit original service request' do
+      eventually { first('.blue-provider').click }
       find("td.edit-original-td a").click
       expect(page).to have_text("Welcome to the SPARC Request Services Catalog")
       expect(page).not_to have_text("Editing ID: #{service_request.protocol_id}")

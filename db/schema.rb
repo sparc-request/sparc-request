@@ -1114,6 +1114,17 @@ ActiveRecord::Schema.define(version: 20160315143354) do
   add_index "tokens", ["identity_id"], name: "index_tokens_on_identity_id", using: :btree
   add_index "tokens", ["service_request_id"], name: "index_tokens_on_service_request_id", using: :btree
 
+  create_table "trigrams", force: :cascade do |t|
+    t.string  "trigram",     limit: 3
+    t.integer "score",       limit: 2
+    t.integer "owner_id",    limit: 4
+    t.string  "owner_type",  limit: 255
+    t.string  "fuzzy_field", limit: 255
+  end
+
+  add_index "trigrams", ["owner_id", "owner_type", "fuzzy_field", "trigram", "score"], name: "index_for_match", using: :btree
+  add_index "trigrams", ["owner_id", "owner_type"], name: "index_by_owner", using: :btree
+
   create_table "validation_conditions", force: :cascade do |t|
     t.integer  "validation_id",  limit: 4
     t.string   "rule_key",       limit: 255

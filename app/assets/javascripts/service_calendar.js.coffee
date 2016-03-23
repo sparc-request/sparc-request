@@ -22,9 +22,10 @@
 
 $(document).ready ->
   $(document).on 'click', '.page_change_arrow', ->
-    $.ajax
-      type: 'GET'
-      url:  $(this).data('url')
+    unless $(this).attr('disabled')
+      $.ajax
+        type: 'GET'
+        url:  $(this).data('url')
 
   $('.visit_number a, .service_calendar_row').live 'click', ->
     $('.service_calendar_spinner').show()

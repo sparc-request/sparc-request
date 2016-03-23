@@ -43,6 +43,7 @@ module SparcRails
     config.autoload_paths += Dir[Rails.root.join('lib')]
     # /lib/portal path
     config.autoload_paths += Dir[Rails.root.join('lib/portal')]
+    config.autoload_paths += Dir[Rails.root.join('lib/dashboard')]
 
     # /app/jobs path
     config.paths.add File.join('app', 'jobs'), glob: File.join('**', '*.rb')

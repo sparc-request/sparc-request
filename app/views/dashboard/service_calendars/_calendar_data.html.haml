@@ -19,7 +19,7 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 - line_items_visits = []
-= javascript_include_tag 'service_calendar_logic'
+= javascript_include_tag 'dashboard/service_calendar_logic'
 = hidden_field_tag :indirect_rate, @service_request.protocol.indirect_cost_rate
 %table.service_calendar{:class => "arm_id_#{arm.id}", :style => @study_tracker ? "width:917px" : ''}
   %thead.ui-widget-header
@@ -33,14 +33,14 @@
         -#= select_tag "jump_to_visit_#{arm.id}", select_visits(arm, @pages)
         -#= text_field_tag "jump_to_visit_#{arm.id}", nil, :class => 'jump_to_visit', :url => table_service_request_service_calendars_path(@service_request, :pages => @pages, :tab => @tab, :portal => @portal, :arm_id => arm.id), :visit_count => arm.visit_count
       %th{:colspan => 5, :height => 40, :width => 375}
-        = generate_visit_navigation arm, service_request, @pages, @tab, @portal if (@sub_service_request.nil? ? service_request.has_per_patient_per_visit_services? : @sub_service_request.has_per_patient_per_visit_services?)
+        = Dashboard::ServiceCalendar.generate_visit_navigation arm, service_request, @pages, @tab, @portal if (@sub_service_request.nil? ? service_request.has_per_patient_per_visit_services? : @sub_service_request.has_per_patient_per_visit_services?)
       %th{:colspan => 2}= image_tag 'spinner.gif', :class => 'service_calendar_spinner'
     %tr.table_header
       %th.service_rate_header= t("calendar_page.headers.service_rate")
       %th.your_cost_header= t("calendar_page.headers.your_cost")
       %th &nbsp;
       - if (@sub_service_request.nil? ? service_request.has_per_patient_per_visit_services? : @sub_service_request.has_per_patient_per_visit_services?)
-        = generate_visit_header_row arm, service_request, @pages[arm.id].to_i, @portal
+        = Dashboard::ServiceCalendar.generate_visit_header_row arm, service_request, @pages[arm.id].to_i, @portal
       - else
         %th{:colspan => 5} &nbsp;
       - if @portal
@@ -96,7 +96,7 @@
               %td.your_cost= display_your_cost line_item
               %td.unit_type= pricing_map.unit_type
             %td.subject_count= select_tag "line_items_visit_#{line_items_visit.id}_count", options_for_select((1..arm.subject_count), line_items_visit.subject_count), :class => 'line_items_visit_subject_count', :update => "/service_requests/#{line_item.service_request_id}/service_calendars?line_items_visit=#{line_items_visit.id}&tab=template&portal=#{@portal}"
-            %td= select_row line_items_visit, @tab
+            %td= Dashboard::ServiceCalendar.select_row line_items_visit, @tab
             - visits = line_items_visit.visits.paginate(:page => @pages[arm.id].to_i, :per_page => 5)
             - unit_minimum = pricing_map.unit_minimum
             - totals_hash = line_items_visit.try(:per_subject_subtotals, visits)
@@ -108,7 +108,7 @@
               %td= link_to(image_tag('dashboard/cancel.png'), 'javascript:void(0);', :'data-line_items_visit_id' => line_items_visit.id, :'data-has_popup' => "true", :class => "delete_data")
             - else
               %td.pp_line_item_total{:class => "total_#{line_items_visit.id}"}= display_visit_based_direct_cost(line_items_visit)
-              %td.pp_line_item_study_total{:class => "total_#{line_items_visit.id}_per_study"}= display_visit_based_direct_cost_per_study(line_items_visit)
+              %td.pp_line_item_study_total{:class => "total_#{line_items_visit.id}_per_study"}= Dashboard::ServiceCalendar.display_visit_based_direct_cost_per_study(line_items_visit)
 
       - unless @portal
         %tr.totals_section.begin_totals{:class => cycle('odd', '', :name => 'pppvs')}

@@ -230,7 +230,7 @@ module ServiceCalendarHelper
   end
 
   def display_line_items_status(line_item)
-    line_item.service_request.status.capitalize
+    AVAILABLE_STATUSES[line_item.sub_service_request.status]
   end
 
   def display_per_patient_calendar?(service_request, sub_service_request, merged)

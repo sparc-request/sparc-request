@@ -26,22 +26,38 @@ class VisitGroup < ActiveRecord::Base
 
   audited
 
-  belongs_to :arm
-  has_many :visits, :dependent => :destroy
-  has_many :line_items_visits, through: :visits
-  has_many :appointments
   attr_accessible :name
   attr_accessible :position
   attr_accessible :arm_id
   attr_accessible :day
   attr_accessible :window_before
   attr_accessible :window_after
+
+  belongs_to :arm
+  has_many :visits, :dependent => :destroy
+  has_many :line_items_visits, through: :visits
+  has_many :appointments
+
   acts_as_list scope: :arm
   scope :at_position, ->(position) { where(position: position) }
 
   after_create :set_default_name
   after_save :set_arm_edited_flag_on_subjects
   before_destroy :remove_appointments
+
+  with_options unless: :nil? do |vg|
+    # with respect to the other VisitGroups associated with the same arm
+    vg.validate :day_must_be_in_order
+    vg.validates :day, numericality: { only_integer: true }
+  end
+
+  def self.arel_arm_id
+    arel_table[:arm_id]
+  end
+
+  def self.arel_position
+    arel_table[:position]
+  end
 
   def set_arm_edited_flag_on_subjects
     self.arm.set_arm_edited_flag_on_subjects
@@ -91,4 +107,13 @@ class VisitGroup < ActiveRecord::Base
     end
   end
 
+  def day_must_be_in_order
+    previous_days = VisitGroup.where(VisitGroup.arel_arm_id.eq(arm_id).and(
+        VisitGroup.arel_position.lt(position))).pluck(:day).compact
+    following_days = VisitGroup.where(VisitGroup.arel_arm_id.eq(arm_id).and(
+        VisitGroup.arel_position.gt(position))).pluck(:day).compact
+    unless previous_days.all? { |d| d < day } && following_days.all? { |d| d > day }
+      errors.add(:day, 'must be in order')
+    end
+  end
 end

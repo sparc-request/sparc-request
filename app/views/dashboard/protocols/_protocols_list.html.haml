@@ -23,7 +23,7 @@
     .pull-left
       %h2.panel-title
         = t(:dashboard)[:protocols][:table][:header]
-      = page_entries_info protocols
+      = page_entries_info protocols, {model: "Protocol"}
       = render_filterrific_spinner
     .pull-right
       .btn-group#create-new-protocol-select

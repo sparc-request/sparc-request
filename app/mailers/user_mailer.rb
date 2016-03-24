@@ -30,8 +30,13 @@ class UserMailer < ActionMailer::Base
 
   def notification_received(user, ssr)
     @send_to = user
-    is_service_provider = @send_to.is_service_provider? ssr
-    send_message("New #{I18n.t('application_title')} Notification", is_service_provider, ssr.id.to_s)
+
+    if ssr.present?
+      is_service_provider = @send_to.is_service_provider?(ssr)
+      send_message("New #{I18n.t('application_title')} Notification", is_service_provider, ssr.id.to_s)
+    else
+      send_message("New #{I18n.t('application_title')} Notification")
+    end
   end
 
   # Disabled (potentially only temporary) as per Lane

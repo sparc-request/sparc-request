@@ -97,3 +97,10 @@ $(document).ready ->
       data: data
 
   # HISTORY LISTENERS END
+  # PRINT LISTENER BEGIN
+
+  $(document).on 'click', '#print', ->
+    $('.modal').printElement()
+    
+  # PRINT LISTENER END
+

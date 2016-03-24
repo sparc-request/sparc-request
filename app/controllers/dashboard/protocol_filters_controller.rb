@@ -27,11 +27,10 @@ class Dashboard::ProtocolFiltersController < Dashboard::BaseController
 
   def create
     if ProtocolFilter.create(params[:protocol_filter])
-      flash[:success] = "Search Saved!"
+      flash[:success] = 'Search Saved!'
     else
-      flash[:alert] = "Search Failed to Save."
+      flash[:alert] = 'Search Failed to Save.'
     end
     @protocol_filters = ProtocolFilter.latest_for_user(@user.id, 5)
   end
-
 end

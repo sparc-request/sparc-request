@@ -23,14 +23,14 @@ class Dashboard::MessagesController < Dashboard::BaseController
 
   def index
     @notification = Notification.find(params[:notification_id])
-    @read_by_user = @notification.read_by? @user
+    @read_by_user = @notification.read_by?(@user)
     @notification.set_read_by @user unless @read_by_user
     @messages = @notification.messages
   end
 
   def new
     @notification = Notification.find(params[:notification_id])
-    recipient = @notification.get_user_other_than @user
+    recipient = @notification.get_user_other_than(@user)
     @message = Message.new(notification_id: @notification.id, to: recipient.id, from: @user.id, email: recipient.email)
   end
 
@@ -38,7 +38,7 @@ class Dashboard::MessagesController < Dashboard::BaseController
     @notification = Notification.find(params[:message][:notification_id])
     if message_params[:body].present? # don't create empty messages
       @message = Message.create(message_params)
-      @notification.set_read_by Identity.find(@message.to), false
+      @notification.set_read_by(Identity.find(@message.to), false)
     end
     @messages = @notification.messages
   end

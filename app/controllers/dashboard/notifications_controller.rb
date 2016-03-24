@@ -25,22 +25,19 @@ class Dashboard::NotificationsController < Dashboard::BaseController
     session[:breadcrumbs].
       add_crumbs(notifications: true).
       clear(:edit_protocol)
-    if params[:sub_service_request_id]
-      # specific to ssr
-      @notifications = @user.all_notifications.select { |n| n.sub_service_request_id == params[:sub_service_request_id].to_i } || []
-    else
-      # all user notifications
-      @notifications = @user.all_notifications || []
-    end
 
     @table = params[:table]
-    if @table == "inbox"
-      # return list of notifications with any messages to current user
-      @notifications.select!{ |n| n.messages.any? { |m| m.to == @user.id }}
-    elsif @table == "sent"
-      # return list of notifications with any messages from current user
-      @notifications.select!{ |n| n.messages.any? { |m| m.from == @user.id }}
+
+    @notifications = if @table == 'inbox'
+                       Notification.in_inbox_of(@user)
+                     else
+                       Notification.in_sent_of(@user)
+                     end
+    if params[:sub_service_request_id]
+      @notifications = @notifications.where(sub_service_request_id: params[:sub_service_request_id].to_i)
     end
+
+    @notifications.uniq!
   end
 
   def new
@@ -63,18 +60,20 @@ class Dashboard::NotificationsController < Dashboard::BaseController
     message_params = params[:notification].delete(:message)
     if message_params[:to].present?
       @recipient = Identity.find(message_params[:to])
-      @notification = Notification.new(params[:notification].merge!({originator_id: @user.id, read_by_originator: true, other_user_id: @recipient.id, read_by_other_user: false}))
-      @message = @notification.messages.new(message_params.merge!({from: @user.id, email: @recipient.email}))
+      @notification = Notification.new(params[:notification].merge!({ originator_id: @user.id, read_by_originator: true, other_user_id: @recipient.id, read_by_other_user: false }))
+      @message = @notification.messages.new(message_params.merge!({ from: @user.id, email: @recipient.email }))
       if @message.valid?
         @notification.save
         @message.save
 
         ssr = @notification.sub_service_request
         
+        # TODO consider
+        # @notifications = Notification.belonging_to(@user).where(sub_service_request_id: ssr.id)
         @notifications =  ssr.present? ? @user.all_notifications.select!{ |n| n.sub_service_request_id == ssr.id } : @user.all_notifications
         
         UserMailer.notification_received(@recipient, ssr).deliver unless @recipient.email.blank?
-        flash[:success] = "Notification Sent!"
+        flash[:success] = 'Notification Sent!'
       else
         @errors = @message.errors
       end
@@ -83,10 +82,10 @@ class Dashboard::NotificationsController < Dashboard::BaseController
 
   def mark_as_read
     # handles marking notification messages as read or unread
-    as_read = (params[:read] == "true") #could be 'true'(read) or 'false'(unread)
+    as_read = (params[:read] == 'true') #could be 'true'(read) or 'false'(unread)
     params[:notification_ids].each do |notification_id|
       notification = Notification.find(notification_id)
-      notification.set_read_by @user, as_read
+      notification.set_read_by(@user, as_read)
     end
 
     if params[:sub_service_request_id]

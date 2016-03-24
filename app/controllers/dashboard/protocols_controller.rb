@@ -37,7 +37,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
           with_core: admin_orgs.map{ |org| [org.name, org.id] }
         },
         persistence_id: false #resets filters on page reload
-      ) or return
+      ) || return
 
     @protocols = @filterrific.find.page(params[:page])
     @protocol_filters = ProtocolFilter.latest_for_user(@user.id, 5)
@@ -77,19 +77,17 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     protocol_class = params[:protocol][:type].capitalize.constantize
     @protocol = protocol_class.new(params[:protocol])
 
-    if @protocol.project_roles.where(identity_id: current_user.id).empty?
-      # if current user is not authorized, add them as an authorized user
-      @protocol.project_roles.new(identity_id: current_user.id, role: "general-access-user", project_rights: "approve")
-    end
-
     if @protocol.valid?
       @protocol.save
 
-      if USE_EPIC
-        if @protocol.selected_for_epic
-          @protocol.ensure_epic_user
-          Notifier.notify_for_epic_user_approval(@protocol).deliver unless QUEUE_EPIC
-        end
+      if @protocol.project_roles.where(identity_id: current_user.id).empty?
+        # if current user is not authorized, add them as an authorized user
+        @protocol.project_roles.new(identity_id: current_user.id, role: 'general-access-user', project_rights: 'approve')
+      end
+      
+      if USE_EPIC && @protocol.selected_for_epic
+        @protocol.ensure_epic_user
+        Notifier.notify_for_epic_user_approval(@protocol).deliver unless QUEUE_EPIC
       end
 
       flash[:success] = "#{@protocol.type} Created!"
@@ -116,7 +114,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     if @protocol.update_attributes(attrs.merge(study_type_question_group_id: StudyTypeQuestionGroup.active_id))
       flash[:success] = "#{@protocol.type} Updated!"
     else
-      render :action => 'edit'
+      render action: 'edit'
       @errors = @protocol.errors
     end
   end
@@ -125,9 +123,9 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     # Using update_attribute here is intentional, type is a protected attribute
     @protocol.update_attribute(:type, params[:type])
     @protocol_type = params[:type]
-    @protocol = Protocol.find @protocol.id #Protocol type has been converted, this is a reload
+    @protocol = Protocol.find(@protocol.id) #Protocol type has been converted, this is a reload
     @protocol.populate_for_edit
-    flash[:success] = "Protocol Type Updated!"
+    flash[:success] = 'Protocol Type Updated!'
   end
 
   def archive
@@ -150,7 +148,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
       @pages = {}
       @protocol.arms.each do |arm|
         new_page = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i
-        @pages[arm.id] = @service_request.set_visit_page new_page, arm
+        @pages[arm.id] = @service_request.set_visit_page(new_page, arm)
       end
     end
     @merged = true
@@ -169,5 +167,4 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   def find_protocol
     @protocol = Protocol.find(params[:id])
   end
-
 end

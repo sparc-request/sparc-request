@@ -40,9 +40,9 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
   def show
     # TODO: is it right to call to_i here?
     # TODO: id here should be the id of a project role, not an identity
-    project_role = @protocol.project_roles.find {|role| role.identity.id == params[:id].to_i}
+    project_role = @protocol.project_roles.find_by(identity_id: params[:id].to_i)
     @user = project_role.try(:identity)
-    render :nothing => true # TODO: looks like there's no view for show
+    render nothing: true # TODO: looks like there's no view for show
   end
 
   def edit
@@ -76,23 +76,21 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
     @protocol_role = @protocol.project_roles.build(params[:project_role])
 
     if @protocol_role.unique_to_protocol? && @protocol_role.fully_valid?
-      if @protocol_role.role == "primary-pi"
-        @protocol.project_roles.where(role: "primary-pi").each do |pr|
-          pr.update_attributes(project_rights: "request", role: "general-access-user")
+      if @protocol_role.role == 'primary-pi'
+        @protocol.project_roles.where(role: 'primary-pi').each do |pr|
+          pr.update_attributes(project_rights: 'request', role: 'general-access-user')
         end
       end
       @protocol_role.save
-      flash.now[:success] = "Authorized User Added!"
+      flash.now[:success] = 'Authorized User Added!'
       if SEND_AUTHORIZED_USER_EMAILS
         @protocol.emailed_associated_users.each do |project_role|
           UserMailer.authorized_user_changed(project_role.identity, @protocol).deliver unless project_role.identity.email.blank?
         end
       end
 
-      if USE_EPIC
-        if @protocol.selected_for_epic
-          Notifier.notify_for_epic_user_approval(@protocol).deliver unless QUEUE_EPIC
-        end
+      if USE_EPIC && @protocol.selected_for_epic && !QUEUE_EPIC
+        Notifier.notify_for_epic_user_approval(@protocol).deliver
       end
     else
       @errors = @protocol_role.errors
@@ -110,33 +108,31 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
     @protocol_role.assign_attributes params[:project_role]
 
     if @protocol_role.fully_valid?
-      if @protocol_role.role == "primary-pi"
-        @protocol.project_roles.where(role: "primary-pi").each do |pr|
+      if @protocol_role.role == 'primary-pi'
+        @protocol.project_roles.where(role: 'primary-pi').each do |pr|
           unless pr.identity_id == @protocol_role.identity_id
-            pr.update_attributes(project_rights: "request", role: "general-access-user")
+            pr.update_attributes(project_rights: 'request', role: 'general-access-user')
           end
         end
       end
       @protocol_role.save
-      flash.now[:success] = "Authorized User Updated!"
+      flash.now[:success] = 'Authorized User Updated!'
       if SEND_AUTHORIZED_USER_EMAILS
         @protocol.emailed_associated_users.each do |project_role|
           UserMailer.authorized_user_changed(project_role.identity, @protocol).deliver unless project_role.identity.email.blank?
         end
       end
 
-      if USE_EPIC
-        if @protocol.selected_for_epic
-          if epic_access and not @protocol_role.epic_access
-            # Access has been removed
-            Notifier.notify_for_epic_access_removal(@protocol, @protocol_role).deliver unless QUEUE_EPIC
-          elsif @protocol_role.epic_access and not epic_access
-            # Access has been granted
-            Notifier.notify_for_epic_user_approval(@protocol).deliver unless QUEUE_EPIC
-          elsif epic_rights != @protocol_role.epic_rights
-            # Rights has been changed
-            Notifier.notify_for_epic_rights_changes(@protocol, @protocol_role, epic_rights).deliver unless QUEUE_EPIC
-          end
+      if USE_EPIC && @protocol.selected_for_epic && !QUEUE_EPIC
+        if epic_access && !@protocol_role.epic_access
+          # Access has been removed
+          Notifier.notify_for_epic_access_removal(@protocol, @protocol_role).deliver
+        elsif @protocol_role.epic_access && !epic_access
+          # Access has been granted
+          Notifier.notify_for_epic_user_approval(@protocol).deliver
+        elsif epic_rights != @protocol_role.epic_rights
+          # Rights has been changed
+          Notifier.notify_for_epic_rights_changes(@protocol, @protocol_role, epic_rights).deliver
         end
       end
     else
@@ -153,10 +149,10 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
     epic_access        = @protocol_role.epic_access
     project_role_clone = @protocol_role.clone
     @protocol_role.destroy
-    flash.now[:alert] = "Authorized User Removed!"
+    flash.now[:alert] = 'Authorized User Removed!'
 
-    if USE_EPIC && protocol.selected_for_epic && epic_access
-      Notifier.notify_primary_pi_for_epic_user_removal(protocol, project_role_clone).deliver unless QUEUE_EPIC
+    if USE_EPIC && protocol.selected_for_epic && epic_access && !QUEUE_EPIC
+      Notifier.notify_primary_pi_for_epic_user_removal(protocol, project_role_clone).deliver
     end
 
     respond_to do |format|
@@ -168,14 +164,14 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
   def search_identities
     # Like SearchController#identities, but without ssr/sr authorization
     term = params[:term].strip
-    results = Identity.search(term).map{ |i| {label: i.display_name, value: i.id, email: i.email} }
+    results = Identity.search(term).map { |i| { label: i.display_name, value: i.id, email: i.email } }
     results = [{ label: 'No Results' }] if results.empty?
     render json: results.to_json
   end
 
 private
   def find_protocol_role
-    @protocol_role = ProjectRole.find params[:id]
+    @protocol_role = ProjectRole.find(params[:id])
   end
 
   def find_protocol
@@ -183,7 +179,7 @@ private
       @protocol = @protocol_role.protocol
     else
       protocol_id = params[:protocol_id] || params[:project_role][:protocol_id]
-      @protocol = Protocol.find protocol_id
+      @protocol = Protocol.find(protocol_id)
     end
   end
 end

@@ -19,7 +19,6 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Dashboard::NotesController < Dashboard::BaseController
-
   respond_to :json, :html
 
   before_action :find_notable
@@ -46,6 +45,6 @@ class Dashboard::NotesController < Dashboard::BaseController
   def find_notable
     @notable_id = params[:note][:notable_id]
     @notable_type = params[:note][:notable_type]
-    @notable = @notable_type.constantize.find @notable_id
+    @notable = @notable_type.constantize.find(@notable_id)
   end
 end

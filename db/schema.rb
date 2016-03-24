@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160315143354) do
+ActiveRecord::Schema.define(version: 20160316162141) do
 
   create_table "admin_rates", force: :cascade do |t|
     t.integer  "line_item_id", limit: 4
@@ -763,14 +763,15 @@ ActiveRecord::Schema.define(version: 20160315143354) do
   add_index "research_types_info", ["protocol_id"], name: "index_research_types_info_on_protocol_id", using: :btree
 
   create_table "response_sets", force: :cascade do |t|
-    t.integer  "user_id",      limit: 4
-    t.integer  "survey_id",    limit: 4
-    t.string   "access_code",  limit: 255
+    t.integer  "user_id",                limit: 4
+    t.integer  "survey_id",              limit: 4
+    t.string   "access_code",            limit: 255
     t.datetime "started_at"
     t.datetime "completed_at"
-    t.datetime "created_at",               null: false
-    t.datetime "updated_at",               null: false
-    t.string   "api_id",       limit: 255
+    t.datetime "created_at",                         null: false
+    t.datetime "updated_at",                         null: false
+    t.string   "api_id",                 limit: 255
+    t.integer  "sub_service_request_id", limit: 4
   end
 
   add_index "response_sets", ["access_code"], name: "response_sets_ac_idx", unique: true, using: :btree
@@ -1113,17 +1114,6 @@ ActiveRecord::Schema.define(version: 20160315143354) do
 
   add_index "tokens", ["identity_id"], name: "index_tokens_on_identity_id", using: :btree
   add_index "tokens", ["service_request_id"], name: "index_tokens_on_service_request_id", using: :btree
-
-  create_table "trigrams", force: :cascade do |t|
-    t.string  "trigram",     limit: 3
-    t.integer "score",       limit: 2
-    t.integer "owner_id",    limit: 4
-    t.string  "owner_type",  limit: 255
-    t.string  "fuzzy_field", limit: 255
-  end
-
-  add_index "trigrams", ["owner_id", "owner_type", "fuzzy_field", "trigram", "score"], name: "index_for_match", using: :btree
-  add_index "trigrams", ["owner_id", "owner_type"], name: "index_by_owner", using: :btree
 
   create_table "validation_conditions", force: :cascade do |t|
     t.integer  "validation_id",  limit: 4

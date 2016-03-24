@@ -31,7 +31,7 @@ class Dashboard::VisitsController < Dashboard::BaseController
     position = @visit.position
     arm = @visit.line_items_visit.arm
 
-    if arm.remove_visit(position) then
+    if arm.remove_visit(position)
       # Change the pi_contribution on the subsidy in accordance with the new direct cost total
       # Have to reload the service request to get the correct direct cost total for the subsidy
       @subsidy.try(:sub_service_request).try(:reload)

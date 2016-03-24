@@ -31,10 +31,9 @@ class Dashboard::ApprovalsController < Dashboard::BaseController
       @sub_service_request.generate_approvals(@user, params)
       @service_request = @sub_service_request.service_request
       @approvals = [@service_request.approvals, @sub_service_request.approvals].flatten
-      flash[:success] = "Approval Submitted!"
+      flash[:success] = 'Approval Submitted!'
     else
       @errors = @sub_service_request.errors
     end
   end
-
 end

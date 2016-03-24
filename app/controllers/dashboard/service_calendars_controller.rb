@@ -23,7 +23,7 @@ class Dashboard::ServiceCalendarsController < ApplicationController
   before_action :set_request_instance_variables
 
   before_filter(except: [:merged_calendar, :rename_visit]) do |c|
-    params[:portal] == 'true' ? true : c.send(:authorize_identity)
+    (params[:portal] == 'true') || c.send(:authorize_identity)
   end
   layout false
 
@@ -81,7 +81,7 @@ class Dashboard::ServiceCalendarsController < ApplicationController
 
     when 'quantity'
       if qty < 0
-        @errors = "Quantity must be greater than zero"
+        @errors = 'Quantity must be greater than zero'
       else
         visit.update_attribute(:quantity, qty)
       end
@@ -96,7 +96,7 @@ class Dashboard::ServiceCalendarsController < ApplicationController
 
       if visit
         if qty < 0
-          @errors = "Quantity must be greater than zero"
+          @errors = 'Quantity must be greater than zero'
         else
           #update the total quantity to reflect the 3 billing qty total
           total = visit.quantity_total
@@ -111,7 +111,7 @@ class Dashboard::ServiceCalendarsController < ApplicationController
     end
 
     @visit = visit
-    @visit_td = visit.nil? ? "" : ".visits_#{visit.id}"
+    @visit_td = visit.nil? ? '' : ".visits_#{visit.id}"
     @line_items_visit = visit.line_items_visit if @line_items_visit.nil?
     @line_item = @line_items_visit.line_item if @line_item.nil?
     @line_item_total_td = ".total_#{@line_items_visit.id}"
@@ -143,7 +143,7 @@ class Dashboard::ServiceCalendarsController < ApplicationController
     arm = Arm.find params[:arm_id]
     portal = params[:portal]
 
-    if !arm.update_visit_group_day(day, position, portal)
+    unless arm.update_visit_group_day(day, position, portal)
       respond_to do |format|
         format.js { render status: 418, json: clean_messages(arm.errors.messages) }
       end
@@ -155,7 +155,7 @@ class Dashboard::ServiceCalendarsController < ApplicationController
     position = params[:position].to_i
     arm = Arm.find params[:arm_id]
 
-    if !arm.update_visit_group_window_before(window_before, position)
+    unless arm.update_visit_group_window_before(window_before, position)
       respond_to do |format|
         format.js { render status: 418, json: clean_messages(arm.errors.messages) }
       end
@@ -167,7 +167,7 @@ class Dashboard::ServiceCalendarsController < ApplicationController
     position = params[:position].to_i
     arm = Arm.find params[:arm_id]
 
-    if !arm.update_visit_group_window_after(window_after, position)
+    unless arm.update_visit_group_window_after(window_after, position)
       respond_to do |format|
         format.js { render status: 418, json: clean_messages(arm.errors.messages) }
       end

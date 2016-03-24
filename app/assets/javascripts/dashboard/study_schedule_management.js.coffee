@@ -131,9 +131,6 @@ $ ->
       url: '/dashboard/visit_groups/navigate'
       data: data
 
-  $(document).on 'click', '#edit_visit_group_form_button', ->
-    $(this).attr('disabled','disabled')
-
   $(document).on 'click', '#remove_visit_group_button', ->
     data =
       'protocol_id'             : $('#study_schedule_buttons').data('protocol-id')

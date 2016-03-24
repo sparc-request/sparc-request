@@ -62,7 +62,7 @@ class Dashboard::DocumentsController < Dashboard::BaseController
   def destroy
     @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
     @document = Document.find(params[:id])
-    @sub_service_request.documents.delete @document
+    @sub_service_request.documents.delete(@document)
     @sub_service_request.save
     @document.destroy if @document.sub_service_requests.empty?
     flash.now[:success] = t(:dashboard)[:documents][:destroyed]

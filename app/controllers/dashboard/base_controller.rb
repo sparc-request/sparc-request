@@ -33,7 +33,7 @@ class Dashboard::BaseController < ActionController::Base
 
   def set_user
     @user = current_identity
-    session['uid'] = @user.nil? ? nil : @user.id
+    session['uid'] = @user.try(:id)
   end
 
   def clean_errors errors
@@ -44,7 +44,7 @@ class Dashboard::BaseController < ActionController::Base
 
   def protocol_authorizer_view
     @authorization = ProtocolAuthorizer.new(@protocol, @user)
-    if !@authorization.can_view?
+    unless @authorization.can_view?
       @protocol = nil
       render partial: 'service_requests/authorization_error', locals: { error: 'You are not allowed to access this protocol.' }
     end
@@ -52,7 +52,7 @@ class Dashboard::BaseController < ActionController::Base
 
   def protocol_authorizer_edit
     @authorization = ProtocolAuthorizer.new(@protocol, @user)
-    if !@authorization.can_edit?
+    unless @authorization.can_edit?
       @protocol = nil
       render partial: 'service_requests/authorization_error', locals: { error: 'You are not allowed to edit this protocol.' }
     end

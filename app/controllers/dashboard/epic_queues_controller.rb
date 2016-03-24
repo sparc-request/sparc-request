@@ -20,25 +20,25 @@
 
 class Dashboard::EpicQueuesController < Dashboard::BaseController
   
-  before_filter :get_epic_queue, :only => [:destroy]
+  before_filter :get_epic_queue, only: [:destroy]
 
   def index
     respond_to do |format|
-      format.html {
+      format.html do
         @epic_queues = EpicQueue.all
 
         render
-      }
+      end
     end
   end
 
   def destroy
     respond_to do |format|
-      format.js {
+      format.js do
         @epic_queue.destroy
 
         render
-      }
+      end
     end
   end
 

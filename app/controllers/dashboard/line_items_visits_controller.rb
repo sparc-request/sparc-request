@@ -35,8 +35,7 @@ class Dashboard::LineItemsVisitsController < Dashboard::BaseController
         line_item.destroy unless line_item.line_items_visits.count > 0
         # Have to reload the service request to get the correct direct cost total for the subsidy
         @service_request = @sub_service_request.service_request
-        @candidate_one_time_fees = @sub_service_request.candidate_services.select {|x| x.one_time_fee}
-        @candidate_per_patient_per_visit = @sub_service_request.candidate_services.reject {|x| x.one_time_fee}
+        @candidate_one_time_fees, @candidate_per_patient_per_visit = @sub_service_request.candidate_services.partition(&:one_time_fee)
         render 'dashboard/sub_service_requests/add_line_item'
       end
     end

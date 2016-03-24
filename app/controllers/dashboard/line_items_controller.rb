@@ -24,12 +24,12 @@ class Dashboard::LineItemsController < Dashboard::BaseController
 
   def index
     respond_to do |format|
-      format.json {
+      format.json do
         @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
         @line_items = @sub_service_request.one_time_fee_line_items
 
         render
-      }
+      end
     end
   end
 
@@ -41,7 +41,7 @@ class Dashboard::LineItemsController < Dashboard::BaseController
       @line_item = LineItem.new(sub_service_request_id: @sub_service_request.id, service_request_id: @service_request.id)
       @header_text = t(:dashboard)[:study_level_activities][:add]
     else
-      @services = @sub_service_request.candidate_services.select {|x| !x.one_time_fee}
+      @services = @sub_service_request.candidate_services.reject(&:one_time_fee)
       @page_hash = params[:page_hash]
     end
     @schedule_tab = params[:schedule_tab]
@@ -51,7 +51,7 @@ class Dashboard::LineItemsController < Dashboard::BaseController
     @sub_service_request = SubServiceRequest.find(params[:line_item][:sub_service_request_id])
     @service_request = @sub_service_request.service_request
     if params[:line_item][:service_id].blank?
-      @sub_service_request.errors.add(:service, "must be selected")
+      @sub_service_request.errors.add(:service, 'must be selected')
       @errors = @sub_service_request.errors
     elsif not @sub_service_request.create_line_item(params[:line_item])
       @errors = @sub_service_request.errors
@@ -107,12 +107,12 @@ class Dashboard::LineItemsController < Dashboard::BaseController
     end
 
     if updated_service_relations && @line_item.update_attributes(params[:line_item])
-      @candidate_one_time_fees = @sub_service_request.candidate_services.select {|x| x.one_time_fee}
+      @candidate_one_time_fees = @sub_service_request.candidate_services.select(&:one_time_fee)
       render 'dashboard/sub_service_requests/add_otf_line_item'
     else
       @line_item.reload
       respond_to do |format|
-        format.js { render :status => 500, :json => clean_errors(@line_item.errors) }
+        format.js { render status: 500, json: clean_errors(@line_item.errors) }
       end
     end
   end
@@ -120,7 +120,7 @@ class Dashboard::LineItemsController < Dashboard::BaseController
   private
 
   def find_line_item
-    @line_item = LineItem.find params[:id]
+    @line_item = LineItem.find(params[:id])
   end
 
   def update_otf_line_item
@@ -132,13 +132,13 @@ class Dashboard::LineItemsController < Dashboard::BaseController
 
     if updated_service_relations && @line_item.update_attributes(params[:line_item])
       # Have to reload the service request to get the correct direct cost total for the subsidy
-      @candidate_one_time_fees = @sub_service_request.candidate_services.select {|x| x.one_time_fee}
-      @candidate_per_patient_per_visit = @sub_service_request.candidate_services.reject {|x| x.one_time_fee}
+      @candidate_one_time_fees = @sub_service_request.candidate_services.select(&:one_time_fee)
+      @candidate_per_patient_per_visit = @sub_service_request.candidate_services.reject(&:one_time_fee)
       render 'dashboard/sub_service_requests/add_line_item'
     else
       @line_item.reload
       respond_to do |format|
-        format.js { render :status => 500, :json => clean_errors(@line_item.errors) }
+        format.js { render status: 500, json: clean_errors(@line_item.errors) }
       end
     end
   end
@@ -146,11 +146,11 @@ class Dashboard::LineItemsController < Dashboard::BaseController
   def update_per_patient_line_item
     #Create new line_item, and link up line_items_visit, modify CWF data, etc...
     @old_line_item = @line_item
-    visit_ids = @line_items_visit.visits.map(&:id)
+    visit_ids = @line_items_visit.visits.pluck(:id)
     @procedures = @old_line_item.procedures.where(visit_id: visit_ids)
 
     ActiveRecord::Base.transaction do
-      if @line_item = LineItem.create(service_request_id: @service_request.id, service_id: @service_id, sub_service_request_id: @sub_service_request.id)
+      if (@line_item = LineItem.create(service_request_id: @service_request.id, service_id: @service_id, sub_service_request_id: @sub_service_request.id))
         @line_item.reload
         if @line_items_visit.update_attribute(:line_item_id, @line_item.id)
           @old_line_item.reload

@@ -19,7 +19,6 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Dashboard::ArmsController < Dashboard::BaseController
-
   respond_to :json, :html
   before_action :find_arm, only: [:update, :destroy]
 
@@ -36,14 +35,14 @@ class Dashboard::ArmsController < Dashboard::BaseController
     @service_request = ServiceRequest.find(params[:service_request_id])
     @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
     name = params[:arm][:name] || "ARM #{@protocol.arms.count + 1}"
-    visit_count = params[:arm][:visit_count] ? params[:arm][:visit_count].to_i : 1
-    subject_count = params[:arm][:subject_count] ? params[:arm][:subject_count].to_i : 1
+    visit_count = params[:arm][:visit_count].try(:to_i) || 1
+    subject_count = params[:arm][:subject_count].try(:to_i) || 1
 
-    if @selected_arm = @protocol.create_arm(name: name, visit_count: visit_count, subject_count: subject_count)
+    if (@selected_arm = @protocol.create_arm(name: name, visit_count: visit_count, subject_count: subject_count))
       @selected_arm.default_visit_days
       @selected_arm.reload
       # If any sub service requests under this arm's protocol are in CWF we need to build patient calendars
-      if @protocol.sub_service_requests.any? { |ssr| ssr.in_work_fulfillment? }
+      if @protocol.sub_service_requests.any?(&:in_work_fulfillment?)
         @selected_arm.populate_subjects
       end
       flash[:success] = t(:dashboard)[:arms][:created]
@@ -91,5 +90,4 @@ class Dashboard::ArmsController < Dashboard::BaseController
   def find_arm
     @arm = Arm.find(params[:id])
   end
-
 end

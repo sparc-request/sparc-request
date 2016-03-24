@@ -27,7 +27,7 @@ class Dashboard::VisitGroupsController < Dashboard::BaseController
     @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
     @current_page = params[:current_page] # the current page of the study schedule
     @protocol = Protocol.find(params[:protocol_id])
-    @visit_group = VisitGroup.new()
+    @visit_group = VisitGroup.new
     @schedule_tab = params[:schedule_tab]
     @arm = params[:arm_id].present? ? Arm.find(params[:arm_id]) : @protocol.arms.first
   end
@@ -96,11 +96,11 @@ class Dashboard::VisitGroupsController < Dashboard::BaseController
 
   def create_visit_change_toast identity, sub_service_request
     ToastMessage.create(
-      :to => identity.id,
-      :from => current_identity.id,
-      :sending_class => 'SubServiceRequest',
-      :sending_class_id => sub_service_request.id,
-      :message => "The visit count on this service request has been changed"
+      to: identity.id,
+      from: current_identity.id,
+      sending_class: 'SubServiceRequest',
+      sending_class_id: sub_service_request.id,
+      message: 'The visit count on this service request has been changed'
     )
   end
 end

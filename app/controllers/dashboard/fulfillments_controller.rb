@@ -26,11 +26,11 @@ class Dashboard::FulfillmentsController < Dashboard::BaseController
     @line_item = LineItem.find(params[:line_item_id])
     respond_to do |format|
       format.js { render }
-      format.json {
+      format.json do
         @fulfillments = @line_item.fulfillments
 
         render
-      }
+      end
     end
   end
 
@@ -71,6 +71,6 @@ class Dashboard::FulfillmentsController < Dashboard::BaseController
   private
 
   def find_fulfillment
-    @fulfillment = Fulfillment.find params[:id]
+    @fulfillment = Fulfillment.find(params[:id])
   end
 end

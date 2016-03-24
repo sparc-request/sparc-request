@@ -28,11 +28,12 @@ class Dashboard::NotificationsController < Dashboard::BaseController
 
     @table = params[:table]
 
-    @notifications = if @table == 'inbox'
-                       Notification.in_inbox_of(@user)
-                     else
-                       Notification.in_sent_of(@user)
-                     end
+    if @table == 'inbox'
+      @notifications = Notification.in_inbox_of(@user)
+    else
+      @notifications = Notification.in_sent_of(@user)
+    end
+    
     if params[:sub_service_request_id]
       @notifications = @notifications.where(sub_service_request_id: params[:sub_service_request_id].to_i)
     end
@@ -44,13 +45,12 @@ class Dashboard::NotificationsController < Dashboard::BaseController
     @sub_service_request_id = params[:sub_service_request_id]
 
     if params[:identity_id]
-      @notification =
-        if @sub_service_request_id.present?
-          @sub_service_request = SubServiceRequest.find(@sub_service_request_id) if params[:sub_service_request_id]
-          @sub_service_request.notifications.new
-        else
-          Notification.new
-        end
+      if @sub_service_request_id.present?
+        @sub_service_request = SubServiceRequest.find(@sub_service_request_id) if params[:sub_service_request_id]
+        @notification = @sub_service_request.notifications.new
+      else
+        @notification = Notification.new
+      end
 
         @message = @notification.messages.new(to: params[:identity_id])
     end

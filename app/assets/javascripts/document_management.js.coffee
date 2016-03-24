@@ -49,6 +49,7 @@ $(document).ready ->
 
   $(".new_request_note_button").click ->
     $('#note_form').show()
+    $("#new_note_text").focus()
     $(this).hide()
 
   $("#save_request_note").click ->
@@ -56,6 +57,7 @@ $(document).ready ->
       notable_id: $(this).data('notable-id')
       notable_type: $(this).data('notable-type')
       body: $("#new_note_text").val()
+    $("#new_note_text").val("")
     $.ajax
       type: 'POST'
       url: '/dashboard/notes'

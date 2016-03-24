@@ -65,6 +65,18 @@ $(document).ready ->
 
 
   # SERVICE REQUEST INFO LISTENERS END
+  # ADMIN TAB LISTENER BEGIN
+
+  $(document).on 'click', '.ssr_tab a', ->
+    $.cookie('admin-tab', $(this).attr('id'), {path: '/'})
+
+  # ADMIN TAB LISTENER END
+  # STUDY SCHEDULE TAB BEGIN
+
+  $(document).on 'click', '.ss_tab a', ->
+    $.cookie('admin-ss-tab', $(this).attr('id'), {path: '/'})
+
+  # STUDY SCHEDULE TAB END
   # TIMELINE LISTENERS BEGIN
 
   $(document).on 'dp.hide', '#sub_service_request_consult_arranged_date_picker', ->

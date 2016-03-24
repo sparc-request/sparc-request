@@ -1,0 +1,107 @@
+/* Copyright © 2011 MUSC Foundation for Research Development*/
+/* All rights reserved.*/
+
+/* Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:*/
+
+/* 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.*/
+
+/* 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following*/
+/* disclaimer in the documentation and/or other materials provided with the distribution.*/
+
+/* 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products*/
+/* derived from this software without specific prior written permission.*/
+
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,*/
+/* BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT*/
+/* SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL*/
+/* DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS*/
+/* INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR*/
+/* TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.*/
+
+// ReviewView
+
+.notes table thead tr th
+  text-align: left
+
+.project-information
+  th, td
+    text-align: left
+    padding: 4px
+    border: 1px solid #E8E8E8
+
+.project-information, .project-roles, .service-requests
+  width: 100%
+  border: 1px solid #E8E8E8
+  border-collapse: collapse
+  margin-bottom: 20px
+
+.project-information th.light-blue-provider, .service-requests th.green-provider, .project-roles th.light-blue-provider
+  color: #fff
+
+.project-roles
+  th, td
+    text-align: left
+    padding: 4px
+    border: 1px solid #E8E8E8
+
+.review-bottom-navigation
+  div
+    height: 36px
+    vertical-align: middle
+  a
+    color: #fff
+    font-size: 18px
+    line-height: 36px
+
+.review-details
+  margin-left: 10px
+  .documents .light-blue-provider, .notes .light-blue-provider
+    color: white
+  table
+    width: 924px
+    border: 1px solid #E8E8E8
+    border-collapse: collapse
+    th
+      font-weight: bold
+      border: 1px solid #E8E8E8 !important
+      width: 298px
+      padding: 5px
+    td
+      border: 1px solid #E8E8E8 !important
+      width: 298px
+      padding: 5px
+      font-weight: normal
+    th.no-right-border
+      border-right: 1px solid #E8E8E8
+    tr
+      &.total-row td
+        font-weight: bold
+        &.total-description
+          text-align: left
+      td.grey
+        background-color: #ccc
+  .notes
+    margin-bottom: 20px
+    margin-top: 20px
+    pre
+      font-weight: bold
+
+.review-details #service_calendar_container table
+  td, th
+    width: 82px !important
+
+.review_instructions
+  border: 1px solid #000
+  list-style-type: decimal
+  margin: -10px auto 10px auto
+  font-weight: bold
+  padding: 10px
+  width: 50%
+
+.service-requests
+  th, td
+    text-align: left
+    padding: 4px
+    border: 1px solid #E8E8E8
+
+

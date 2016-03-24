@@ -45,7 +45,15 @@
       .clear
 
     .service_request_notes
-      = render partial: 'notes', locals: { notes: @service_request.notes, notable_id: @service_request.id, notable_type: "ServiceRequest" }
+      #request_notes_table
+        = render partial: '/notes/request_notes', locals: { notes: @service_request.notes, notable_id: @service_request.id, notable_type: "ServiceRequest" }
+
+      %br
+      %br
+
+      %a.new_request_note_button.blue-button= "Add Request Note"
+      #note_form{style: 'display:none'}= render partial: '/notes/note_form', locals: { service_request: @service_request }
+      .clear
 
   .grid_3.document-mgmt-view-right.right.col-md-3
     = navigation_link t(:right_navigation)[:catalog], @catalog, 'catalog-button btn btn-info btn-lg btn-block'

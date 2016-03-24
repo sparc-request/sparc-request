@@ -18,19 +18,18 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.document-management-container
-  - if notes.any?
-    %table.document-table
-      %thead
-        %tr.header.orange-provider
-          %th= t(:dashboard)[:notes][:index][:user]
-          %th= t(:dashboard)[:notes][:index][:date]
-          %th= t(:models)[:note][:singular]
-      %tbody
-        - notes.each do |note|
-          %tr
-            %td.name= note.identity.full_name
-            %td.created-at= format_date(note.created_at)
-            %td.comment= raw note.body
-  -else
-    = t(:dashboard)[:notes][:index][:none_message1] + notable_type + t(:dashboard)[:notes][:index][:none_message2]
+- if notes.any?
+  %table.notes-table
+    %thead
+      %tr.header.orange-provider
+        %th= t(:dashboard)[:notes][:index][:user]
+        %th= t(:dashboard)[:notes][:index][:date]
+        %th= t(:models)[:note][:singular]
+    %tbody
+      - notes.each do |note|
+        %tr
+          %td.name= note.identity.full_name
+          %td.created-at= format_date(note.created_at)
+          %td.comment= raw note.body
+-else
+  = t(:dashboard)[:notes][:index][:none_message1] + notable_type + t(:dashboard)[:notes][:index][:none_message2]

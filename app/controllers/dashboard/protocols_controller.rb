@@ -77,14 +77,14 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     protocol_class = params[:protocol][:type].capitalize.constantize
     @protocol = protocol_class.new(params[:protocol])
 
-    if @protocol.project_roles.where(identity_id: current_user.id).empty?
-      # if current user is not authorized, add them as an authorized user
-      @protocol.project_roles.new(identity_id: current_user.id, role: 'general-access-user', project_rights: 'approve')
-    end
-
     if @protocol.valid?
       @protocol.save
 
+      if @protocol.project_roles.where(identity_id: current_user.id).empty?
+        # if current user is not authorized, add them as an authorized user
+        @protocol.project_roles.new(identity_id: current_user.id, role: 'general-access-user', project_rights: 'approve')
+      end
+      
       if USE_EPIC && @protocol.selected_for_epic
         @protocol.ensure_epic_user
         Notifier.notify_for_epic_user_approval(@protocol).deliver unless QUEUE_EPIC

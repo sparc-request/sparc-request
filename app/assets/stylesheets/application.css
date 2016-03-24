@@ -23,3 +23,8 @@
  *= require_tree ./proper
 
 */
+
+* {
+  margin: 0px;
+  padding: 0px;
+}

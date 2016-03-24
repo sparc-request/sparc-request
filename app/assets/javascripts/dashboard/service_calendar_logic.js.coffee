@@ -127,3 +127,10 @@ $(document).ready ->
       url: $(this).data('url')
       data:
         page: page
+
+  # PRINT LISTENER BEGIN
+
+  $(document).on 'click', '#print', ->
+    $('.modal').printElement()
+    
+  # PRINT LISTENER END

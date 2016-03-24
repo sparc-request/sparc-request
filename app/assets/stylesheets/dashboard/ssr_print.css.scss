@@ -35,6 +35,36 @@
 
 
 
+  /* VIEW SSR STUFF */
+  .user-view-ssr-modal {
+    .panel:not(:last-child) {
+      th, span {
+        font-size: 9px;
+      }
+      td {
+        font-size: 8px;
+      }
+    }
+  }
+  /* END VIEW SSR STUFF */
+
+
+
+  /* CONSOLIDATED-REQUEST-SPECIFIC STUFF */
+  .full-calendar-modal {
+    .calendar-container {
+      th, span {
+        font-size: 7px;
+      }
+      td {
+        font-size: 8px;
+      }
+    }
+  }
+  /* END CONSOLIDATED-REQUEST-SPECIFIC STUFF */
+
+
+
   /* PANELS */
   .panel {
     margin-bottom: 20px;

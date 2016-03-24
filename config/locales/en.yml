@@ -343,6 +343,28 @@ en:
         export_consolidated: "Export Consolidated Request"
         add_services: "Add Services"
 
+    #####################
+    # SERVICE CALENDARS #
+    #####################
+    service_calendars:
+      consolidated_request:
+        header: "Consolidated Request Summary"
+        protocol_information:
+          header: " Information"
+          srid: "SRID:"
+          short_title: "Short Title:"
+          title: " Title:"
+          sponsor: "Sponsor Name:"
+          funding_source: "Funding Source:"
+        authorized_users:
+          header: "Authorized Users"
+          name: "Name"
+          role: "Role"
+          rights: "Proxy Rights"
+        services:
+          header: "Services"
+          none: "There are no services associated with this protocol."
+
     ######################
     #  SERVICE REQUESTS  #
     ######################

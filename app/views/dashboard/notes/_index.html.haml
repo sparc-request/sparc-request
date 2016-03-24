@@ -25,7 +25,7 @@
         %span{aria: {hidden:'true'}} &times;
         %span.sr-only &times;
       %h4.modal-title.text-center
-        = notable_type + t(:dashboard)[:notes][:index][:header]
+        = notable_type.underscore.humanize.titleize + t(:dashboard)[:notes][:index][:header]
     .modal-body
       - if notes.any?
         .details-table

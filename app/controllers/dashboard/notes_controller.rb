@@ -28,7 +28,7 @@ class Dashboard::NotesController < Dashboard::BaseController
   end
 
   def new
-    @note = Note.new(note_params.merge!({ identity_id: current_user.id }))
+    @note = Note.new(note_params.merge( identity_id: current_user.id ))
   end
 
   def create

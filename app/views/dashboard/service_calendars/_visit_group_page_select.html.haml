@@ -5,7 +5,7 @@
 - else
   - path_method = method(:table_dashboard_service_calendars_path)
 - page = pages[arm.id].to_i == 0 ? 1 : pages[arm.id].to_i
-- url_data = { sub_service_request_id: sub_service_request.id, pages: pages, arm_id: arm.id, tab: tab, portal: portal, format: :js }
+- url_data = { sub_service_request_id: sub_service_request.try(:id), service_request_id: service_request.try(:id), pages: pages, arm_id: arm.id, tab: tab, portal: portal, format: :js }
 .col-xs-2
   .page_change_arrow.btn.btn-info.glyphicon.glyphicon-arrow-left{ title: 'View Previous', type: 'button', id: "arrow-left-#{arm.id}", disabled: page == 1 ? true : nil, role: 'button', aria: { label: 'View Previous' }, data: { toggle: 'tooltip', animation: 'false', url: path_method.call(url_data.merge(page: page - 1)) } }
 -# The visit jump to drop down

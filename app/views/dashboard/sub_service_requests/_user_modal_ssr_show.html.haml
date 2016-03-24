@@ -58,7 +58,7 @@
                   %tr
                     %td
                       = link_to document.document_file_name, document.document.url
-                    %tbody
+                    %td
                       = @service_list[sub_service_request.organization_id][:name]
         - if sub_service_request.eligible_for_subsidy?
           = render partial: 'dashboard/subsidies/subsidy', locals: { sub_service_request: sub_service_request, admin: false }
@@ -67,5 +67,5 @@
       .center-block
         %button.btn.btn-default{ type: 'button', data: { dismiss: 'modal' } }
           = t(:actions)[:close]
-        %button.btn.btn-primary{ type: 'button' }
+        %button.btn.btn-primary#print{ type: 'button' }
           = t(:actions)[:print]

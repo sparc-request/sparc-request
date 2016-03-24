@@ -38,9 +38,6 @@
     = render :partial => 'catalogs/news_and_events'
 
 .grid_3.catalog-view-right.right.col-md-3
-  - if !USE_SHIBBOLETH_ONLY
-    #account.create_new_account
-      = link_to(image_tag("/assets/#{CUSTOM_ASSET_PATH}account.png", width: '196'), new_identity_registration_path)
   #services.ui-widget.ui-widget-content.cart-view
     %h3
       = t(:service_requests)[:catalog][:text1]

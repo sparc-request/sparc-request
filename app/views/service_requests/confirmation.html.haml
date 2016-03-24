@@ -33,8 +33,8 @@
           - if USE_EPIC and not QUEUE_EPIC
             = render :partial => 'protocols/push_to_epic'
           .links
-            .confirmation-button
+            .confirmation-button.button-hover
               = link_to t(:sr_confirmation)[:download_button], service_request_path(:format => :xlsx)
-            .confirmation-button
+            .confirmation-button.button-hover
               = link_to t(:sr_confirmation)[:portal_button], USER_PORTAL_LINK, :class => "user-portal"
     .footer

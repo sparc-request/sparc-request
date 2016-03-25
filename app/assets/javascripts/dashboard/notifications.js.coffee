@@ -102,13 +102,10 @@ $(document).ready ->
     $('#notification_tabs').data('selected', 'inbox')
     $('#notifications-table').bootstrapTable 'refresh', { query: { table: 'inbox' } }
 
-  $(document).on 'click', 'button#compose_notification',  ->
-    data =
-      'sub_service_request_id'  : $(this).data('sub-service-request-id')
+  $(document).on 'click', '#compose-notification',  ->
     $.ajax
       type: 'GET'
       url:  '/dashboard/notifications/new'
-      data: data
 
   window.notifications_row_style = (row, index) ->
     class_string = 'notifications_row'

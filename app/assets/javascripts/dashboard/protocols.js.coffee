@@ -53,6 +53,10 @@ $(document).ready ->
         button = $(".ui-dialog .ui-button:contains(#{containing_text})")
         button.html("<span class='ui-button-text'>#{change_to}</span>").attr('disabled', false).removeClass('button-disabled')
 
+      # Delete cookies from previously visited SSR
+      $.cookie('admin-tab', null, {path: '/'})
+      $.cookie('admin-ss-tab', null, {path: '/'})
+
       #  Protocol Index Begin
       $(document).on 'click', '.protocols_index_row > .id,.title,.pis', ->
         #if you click on the row, it opens the protocol show

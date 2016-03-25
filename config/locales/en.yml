@@ -44,6 +44,7 @@ en:
     close: "Close"
     delete: "Delete"
     edit: "Edit"
+    print: "Print"
     remove: "Remove"
     reply: "Reply"
     reset: "Reset"
@@ -56,6 +57,7 @@ en:
     prompts: 
       any: "- Any -"
       select: "---Please Select---"
+      search_for_user: "Search for a User"
 
   models:
     note:
@@ -106,8 +108,6 @@ en:
       merged:
         total_study: "Study Cost Totals"
 
-
-
   dashboard:
     ###########
     #  ADMIN  #
@@ -147,7 +147,6 @@ en:
       add:
         header: "Add Authorized User"
         select: "Select User:"
-        search_prompt: "Search for a User"
       edit:
         header: "Edit Authorized User"
       era: "ERA Commons Name:"
@@ -278,17 +277,25 @@ en:
     #  NOTIFICATIONS  #
     ###################
     notifications:
-      send: "Send Notification"
-      requester: "Requester"
-      authorized_users: "Authorized Users"
-      clinical_providers: "Clinical Providers"
-      inbox: "Inbox"
-      sent: "Sent"
-      mark_as_unread: "Mark as Unread"
-      mark_as_read: "Mark as Read"
-      user: "User"
-      subject: "Subject"
-      time: "Time"
+      table:
+        send: "Send Notification"
+        compose: "Compose Message"
+        requester: "Requester"
+        authorized_users: "Authorized Users"
+        clinical_providers: "Clinical Providers"
+        inbox: "Inbox"
+        sent: "Sent"
+        mark_as_unread: "Mark as Unread"
+        mark_as_read: "Mark as Read"
+        user: "User"
+        subject: "Subject"
+        time: "Time"
+      form:
+        select_header: "Send Notification"
+        select: "Select User:"
+        subject: "Subject"
+        message: "Please enter message text here..."
+
 
     ######################
     #  PROTOCOL FILTERS  #
@@ -342,6 +349,28 @@ en:
         export_consolidated: "Export Consolidated Request"
         add_services: "Add Services"
 
+    #####################
+    # SERVICE CALENDARS #
+    #####################
+    service_calendars:
+      consolidated_request:
+        header: "Consolidated Request Summary"
+        protocol_information:
+          header: " Information"
+          srid: "SRID:"
+          short_title: "Short Title:"
+          title: " Title:"
+          sponsor: "Sponsor Name:"
+          funding_source: "Funding Source:"
+        authorized_users:
+          header: "Authorized Users"
+          name: "Name"
+          role: "Role"
+          rights: "Proxy Rights"
+        services:
+          header: "Services"
+          none: "There are no services associated with this protocol."
+
     ######################
     #  SERVICE REQUESTS  #
     ######################
@@ -355,6 +384,14 @@ en:
         view: "View SSR"
         edit: "Edit SSR"
         admin_edit: "Admin Edit"
+      view_ssr:
+        services:
+          none: "No Services"
+        documents:
+          header: "Documents"
+          none: "No Documents"
+          file_name: "File Name"
+          program_core: "Program/Core"
 
     ############################
     #  STUDY LEVEL ACTIVITIES  #

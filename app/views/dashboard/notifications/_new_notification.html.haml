@@ -17,7 +17,6 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 .modal-dialog
   .modal-content
     = form_for notification, {remote: true, url: dashboard_notifications_path(notification), html: {class: "form-horizontal", role: "form"}} do |notification_form|
@@ -25,7 +24,10 @@
         %button.close{type: 'button', data: {dismiss: 'modal'}}
           %span{aria: {hidden:'true'}} &times;
           %span.sr-only &times;
-        %h4.modal-title.text-center= "#{message.recipient.full_name}"
+        %h4.modal-title.text-center
+          = "#{message.recipient.full_name}"
+          - unless sub_service_request_id
+            %a.btn.btn-xs.btn-danger.glyphicon.glyphicon-remove#compose-notification{ href: "javascript:void(0);" }
       .modal-body
         #modal_errors
         = notification_form.hidden_field :sub_service_request_id
@@ -33,13 +35,15 @@
           = message_form.hidden_field :to
           .form-group
             .col-sm-12
-              = notification_form.text_field :subject, {class: 'form-control', placeholder: t(:notifications)[:subject], rows: "6"}
+              = notification_form.text_field :subject, {class: 'form-control', placeholder: t(:dashboard)[:notifications][:form][:subject], rows: "6"}
           .form-group
             .col-sm-12
-              = message_form.text_area :body, {class: 'form-control', placeholder: "Please enter message text here", rows: "6"}
+              = message_form.text_area :body, {class: 'form-control', placeholder: t(:dashboard)[:notifications][:form][:message], rows: "6"}
       .modal-footer
         .center-block
-          %button.btn.btn-default{type: 'button', data: {dismiss: 'modal'}} Cancel
+          %button.btn.btn-default{type: 'button', data: {dismiss: 'modal'}}
+            = t(:actions)[:close]
           %button.btn.btn-primary{type: "submit"}
             %span.glyphicon.glyphicon-send{aria: {hidden: "true"}}
-            %span Send
+            %span
+              = t(:actions)[:send]

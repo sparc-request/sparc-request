@@ -24,6 +24,6 @@
   - else
     = hidden_field_tag :indirect_rate, @service_request.protocol.indirect_cost_rate
   %table.service_calendar{:class => @review ? arm.id : "arm_id_#{arm.id}", :style => @study_tracker ? "width:917px" : ''}
-    %thead{:class => @review ? thead_class : 'ui-widget-header'}= render :partial => "/service_calendars/master_calendar/pppv_header", :locals => {:service_request => service_request, :arm => arm, :tab => @tab, :portal => @portal}
+    %thead{:class => @review ? thead_class : 'default_calendar'}= render :partial => "/service_calendars/master_calendar/pppv_header", :locals => {:service_request => service_request, :arm => arm, :tab => @tab, :portal => @portal}
     %tbody.cell-border
       = render :partial => "/service_calendars/master_calendar/pppv_line_items", :locals => {:service_request => service_request, :arm => arm, :tab => @tab, :portal => @portal}

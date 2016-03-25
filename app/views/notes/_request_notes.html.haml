@@ -21,7 +21,7 @@
 - if notes.any?
   %table.notes-table
     %thead
-      %tr.header.orange-provider
+      %tr.header{ class: thead_class }
         %th= t(:dashboard)[:notes][:index][:user]
         %th= t(:dashboard)[:notes][:index][:date]
         %th= t(:models)[:note][:singular]

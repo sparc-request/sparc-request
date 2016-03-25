@@ -22,6 +22,6 @@ if $("#modal_area").length > 0
   $("#modal_place").html("<%= escape_javascript(render(partial: 'index', locals: { notes: @notes, notable_id: @notable_id, notable_type: @notable_type })) %>")
 else
   #sparc proper service request notes in step 3
-  $("#request_notes_table").html("<%= escape_javascript(render(partial: '/notes/request_notes', locals: { notes: @notes } )) %>")
+  $("#request_notes_table").html("<%= escape_javascript(render(partial: '/notes/request_notes', locals: { notes: @notes, thead_class: 'orange-provider'  } )) %>")
   $('.new_request_note_button').show()
   $('#note_form').hide()

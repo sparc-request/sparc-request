@@ -41,7 +41,7 @@
           .project
             = render partial: 'service_requests/review/study_project_information', locals: { protocol: @protocol, provider_css: 'red-provider' }
           .documents
-            = render partial: 'service_requests/document_list', locals: { service_list: @service_list, review: true, provider_css: 'red-provider' }
+            = render partial: 'service_requests/document_list', locals: { service_list: @service_list, review: true, thead_class: @thead_class }
           .notes
             %table
               %thead
@@ -49,7 +49,7 @@
                   %th.red-provider= t(:sr_review)[:notes_header]
               %tbody
                 %tr
-                  %td= @service_request.notes.blank? ? 'No notes found' : @service_request.notes
+                  %td= render partial: '/notes/request_notes', locals: { notes: @service_request.notes, notable_id: @service_request.id, notable_type: "ServiceRequest", thead_class: @thead_class }
           #service_calendar_container
             - if @service_request.has_per_patient_per_visit_services?
               - @service_request.arms.each do |arm|

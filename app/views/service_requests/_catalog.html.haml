@@ -38,8 +38,9 @@
     = render :partial => 'catalogs/news_and_events'
 
 .grid_3.catalog-view-right.right.col-md-3
-  #account.create_new_account
-    = link_to t(:create_an_account), new_identity_registration_path, class: 'create-an-account-button'
+  - if CREATE_AN_ACCOUNT
+    #account.create_new_account
+      = link_to t(:create_an_account), new_identity_registration_path, class: 'create-an-account-button'
   #services.ui-widget.ui-widget-content.cart-view
     %h3
       = t(:service_requests)[:catalog][:text1]

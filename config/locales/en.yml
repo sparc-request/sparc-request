@@ -41,6 +41,7 @@ en:
 
   actions:
     add: "Add"
+    cancel: "Cancel"
     close: "Close"
     delete: "Delete"
     edit: "Edit"

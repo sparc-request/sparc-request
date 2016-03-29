@@ -17,20 +17,7 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-#protocol
-
-  .row.container-fluid
-    .panel.panel-default
-      .panel-heading
-        %h4.panel-title
-          = t(:dashboard)[:protocols]
-      .panel-body.container-fluid
-        .form-group.row
-          = label_tag "protocol_type", t(:protocol_shared)[:change], class: 'col-lg-2 control-label'
-          .col-lg-10
-            = select_tag "protocol_type", options_for_select([['Project', 'Project'], ['Study', 'Study']], @protocol_type), class: 'selectpicker'
-            %button.btn.btn-warning#protocol_type_button{ data: {protocol_id: @protocol.id } }
-              = t(:protocol_shared)[:button]
-
-  = render partial: 'dashboard/protocols/form/protocol_form', locals: { protocol: @protocol, protocol_type: @protocol_type }
+.panel
+  .panel-header
+  .panel-body
+  

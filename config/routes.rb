@@ -244,6 +244,7 @@ SparcRails::Application.routes.draw do
         patch :update_protocol_type
         get :display_requests
         patch :archive
+        get :view_details
       end
     end
 

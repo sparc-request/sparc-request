@@ -22,7 +22,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
   respond_to :html, :json, :xlsx
 
-  before_filter :find_protocol, only: [:show, :edit, :update, :update_protocol_type, :display_requests, :archive, :view_full_calendar]
+  before_filter :find_protocol, only: [:show, :edit, :update, :update_protocol_type, :display_requests, :archive, :view_full_calendar, :view_details]
   before_filter :protocol_authorizer_view, only: [:show, :view_full_calendar]
   before_filter :protocol_authorizer_edit, only: [:edit, :update, :update_protocol_type]
 
@@ -160,6 +160,14 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   def display_requests
     @protocol_role = @protocol.project_roles.find_by_identity_id(@user.id)
     @permission_to_edit = @protocol_role.can_edit?
+  end
+
+  def view_details
+    @protocol_type = @protocol.type
+
+    respond_to do |format|
+      format.js
+    end
   end
 
   private

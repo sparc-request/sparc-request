@@ -106,8 +106,6 @@ en:
       merged:
         total_study: "Study Cost Totals"
 
-
-
   dashboard:
     ###########
     #  ADMIN  #
@@ -325,6 +323,10 @@ en:
       summary:
         header: " Summary"
         notes: " Notes"
+        edit1: "Edit "
+        edit2: " Information"
+        view_details1: "View "
+        view_details2: " Details"
         title: "Title:"
         short_title: "Short Title:"
         sponsor: "Sponsor Name:"
@@ -341,6 +343,8 @@ en:
         view_consolidated: "View Consolidated Request"
         export_consolidated: "Export Consolidated Request"
         add_services: "Add Services"
+      view_details:
+        header: " Details"
 
     ######################
     #  SERVICE REQUESTS  #

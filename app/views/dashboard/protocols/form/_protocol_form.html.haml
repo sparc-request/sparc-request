@@ -40,8 +40,5 @@
     .row#actions
       .col-lg-4
       .col-lg-4
-        %input.btn.btn-lg.btn-success{ type: "submit", value: "Save"}
-        - if protocol.id.present? # Edit Protocol
-          = link_to t(:protocol_shared)[:cancel], dashboard_protocol_path(protocol), class: 'btn btn-lg btn-danger'
-        - else # New Protocol
-          = link_to t(:protocol_shared)[:cancel], dashboard_protocols_path, class: 'btn btn-lg btn-danger'
+        %input.btn.btn-lg.btn-success{ type: "submit", value: t(:actions)[:save] }
+        = link_to t(:actions)[:cancel], protocol.id.present? ? dashboard_protocol_path(protocol) : dashboard_protocols_path, class: 'btn btn-lg btn-danger'

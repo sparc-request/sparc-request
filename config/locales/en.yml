@@ -55,15 +55,13 @@ en:
     upload: "Upload"
 
   constants:
+    yes_select: "Yes"
+    no_select: "No"
     prompts: 
       any: "- Any -"
       select: "---Please Select---"
       search_for_user: "Search for a User"
-
-  models:
-    note:
-      singular: "Note"
-      plural: "Notes"
+      select_one: "Select One"
 
   calendars:
     pppv:
@@ -108,6 +106,106 @@ en:
         text6: "Units Per Quantity is being set to the maximum allowed value."
       merged:
         total_study: "Study Cost Totals"
+
+  models:
+    note:
+      singular: "Note"
+      plural: "Notes"
+
+  protocols:
+    change_type:
+      header: "Change Protocol Type"
+      type: "Protocol Type:"
+      study: "Study"
+      project: "Project"
+      change_button: "Change Type"
+    studies:
+      information:
+        header: "Study Information"
+        subtext: "Necessary to obtain correct pricing"
+        short_title: "Short Title: *"
+        title: "Study Title: *"
+        funding_status: "Proposal Funding Status: *"
+        funding_source: "Funding Source: *"
+        potential_funding_source: "Potential Funding Source: *"
+        funding_source_internal: "Please Specify: *"
+        funding_source_federal:
+          title: "Federal Grant Title:"
+          code: "Federal Grant Code:"
+          phs_sponsor: "Federal PHS Sponsor:"
+          separator: "-OR-"
+          non_phs_sponsor: "Federal Non-PHS Sponsor:"
+          serial_number: "Federal Grant Serial Number:"
+        phase: "Study Phase:"
+        sponsor: "Sponsor Name: *"
+        push_to_epic: "Publish Study in Epic: *"
+      optional_information:
+        header: "Optional Information"
+        subtext: "Used for reporting purposes and saved for your future use"
+        udak_project_number: "Financial Account (UDAK #):"
+        rate: "Indirect Cost Rate:"
+        rfa: "Funding Opportunity # / RFA:"
+        potential_start_date: "Potential Funding Start Date:"
+        start_date: "Funding Start Date:"
+      research_involving:
+        header: "Research Involving"
+        subtext: "Check all that apply"
+        humans:
+          header: "Human Subjects:"
+          nct_number: "NCT #:"
+          hr_number: "HR #:"
+          pro_number: "PRO #:"
+          record_irb: "IRB of Record:"
+          submission_type: "Submission Type:"
+          pending_approval: "Application/Approval Pending:"
+          irb_approval_date: "IRB Approval Date:"
+          irb_expiration_date: "IRB Expiration Date:"
+        vertebrates:
+          header: "Vertebrate Animals:"
+          iacuc_number: "IACUC #:"
+          iacuc_name: "Name of IACUC:"
+          iacuc_approval_date: "IACUC Approval Date:"
+          iacuc_expiration_date: "IACUC Expiration Date:"
+        products:
+          header: "Investigational Products:"
+          ind_number: "IND #:"
+          ind_on_hold: "IND on Hold?:"
+          ide_number: "IDE #:"
+        ip_patents: 
+          header: "IP/Patents:"
+          number: "Patent Number:"
+          inventors: "Inventors:"
+      study_type:
+        header: "Study Type"
+        subtext: "Check all that apply"
+      impact_areas:
+        header: "Impact Areas"
+        subtext: "Check all that apply"
+        other: "Please Specify:"
+      affiliations:
+        header: "Affiliations, Collaborations, and Memberships"
+        subtext: "Check all that apply"
+    projects:
+      information:
+        header: "Project Information"
+        short_title: "Short Title: *"
+        title: "Project Title: *"
+        funding_status: "Proposal Funding Status: *"
+        funding_source: "Funding Source: *"
+        potential_funding_source: "Potential Funding Source: *"
+        description: "Brief Description:"
+        rate: "Indirect Cost Rate:"
+    prompts:
+      status: "Select a Funding Status"
+      source: "Select a Funding Source"
+      potential_source: "Select a Potential Funding Source"
+      federal_sponsor: "Select if Applicable"
+      phase: "Select a Study Phase"
+      submission_type: "Select a Submission Type"
+    authorized_users:
+      header: "Authorized Users"
+      subtext: "Primary PI Required"
+      primary_pi: "Primary PI: *"
 
   dashboard:
     ###########

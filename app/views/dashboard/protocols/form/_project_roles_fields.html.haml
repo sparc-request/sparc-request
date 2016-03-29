@@ -20,14 +20,16 @@
 
 .panel.panel-default
   .panel-heading
-    %h4.panel-title= "Project Roles"
-    .sub_text= "Primary PI Required"
+    %h4.panel-title
+      = t(:protocols)[:authorized_users][:header]
+    .sub_text
+      = t(:protocols)[:authorized_users][:subtext]
   .panel-body
     = form.fields_for :project_roles do |pr_form|
       .form-group.row
-        = pr_form.label :identity_id, "Primary PI*", class: 'col-lg-2 control-label'
+        = pr_form.label :identity_id, t(:protocols)[:authorized_users][:primary_pi], class: 'col-lg-2 control-label'
         .col-lg-10
-          = pr_form.text_field :identity_id, placeholder: 'Search For A User', class: 'form-control'
+          = pr_form.text_field :identity_id, placeholder: t(:constants)[:prompts][:search_for_user], class: 'form-control'
           %label#primary_pi_name.do-not-display
           %a.btn.btn-xs.btn-danger.glyphicon.glyphicon-remove#user-select-clear-icon{ href: "javascript:void(0);", style: 'display: none; vertical-align: middle;' }
           = pr_form.hidden_field :identity_id

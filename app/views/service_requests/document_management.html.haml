@@ -33,7 +33,7 @@
   .grid_9.col-md-9
     .document_upload_instructions= t("documents.upload_instructions_html")
     .document-management-container
-      = render :partial => 'document_list', :locals => {:review => false, :provider_css => 'orange-provider'}
+      = render :partial => 'document_list', :locals => {:review => false, :thead_class => 'orange-provider'}
       .clear
       %br
       %br
@@ -46,7 +46,7 @@
 
     .service_request_notes
       #request_notes_table
-        = render partial: '/notes/request_notes', locals: { notes: @service_request.notes, notable_id: @service_request.id, notable_type: "ServiceRequest" }
+        = render partial: '/notes/request_notes', locals: { notes: @service_request.notes, notable_id: @service_request.id, notable_type: "ServiceRequest", thead_class: "orange-provider"  }
 
       %br
       %br

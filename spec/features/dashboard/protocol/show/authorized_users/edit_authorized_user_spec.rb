@@ -54,6 +54,7 @@ RSpec.feature 'User wants to edit an authorized user', js: true do
 
       context 'and the Authorized User is the Primary PI and tries to change their role' do
         scenario 'and sees that the protocol must have a Primary PI' do
+          given_that_i_have_selected_a_protocol
           given_i_have_clicked_the_edit_authorized_user_button
           when_i_set_the_role_to 'PD/PI'
           when_i_submit_the_form
@@ -63,6 +64,7 @@ RSpec.feature 'User wants to edit an authorized user', js: true do
 
       context 'and the authorized user is the primary PI and submits the form' do
         scenario 'and does not see the warning message' do
+          given_that_i_have_selected_a_protocol
           given_i_have_clicked_the_edit_authorized_user_button
           when_i_submit_the_form
           then_i_should_not_see_the_warning_message
@@ -72,6 +74,7 @@ RSpec.feature 'User wants to edit an authorized user', js: true do
       context 'and the Authorized User is not the Primary PI and tries to make them the Primary PI' do
         context 'and submits the form' do
           scenario 'and sees the warning message' do
+            given_that_i_have_selected_a_protocol
             given_i_have_clicked_the_edit_authorized_user_button 2
             when_i_set_the_role_to 'Primary PI'
             when_i_submit_the_form
@@ -91,6 +94,7 @@ RSpec.feature 'User wants to edit an authorized user', js: true do
 
             context 'with errors in the form' do
               scenario 'and sees errors' do
+                given_that_i_have_selected_a_protocol
                 given_i_have_clicked_the_edit_authorized_user_button 2
                 when_i_set_the_role_to 'Primary PI'
                 when_i_have_an_error
@@ -105,6 +109,7 @@ RSpec.feature 'User wants to edit an authorized user', js: true do
 
       context 'and sets the role and credentials to other, makes the extra fields empty, and submits the form' do
         scenario 'and sees some errors' do
+          given_that_i_have_selected_a_protocol
           given_i_have_clicked_the_edit_authorized_user_button
           when_i_set_the_role_and_credentials_to_other
           when_i_submit_the_form
@@ -139,7 +144,7 @@ RSpec.feature 'User wants to edit an authorized user', js: true do
   end
 
   def given_i_have_clicked_the_edit_authorized_user_button button_number=1
-    all(".edit-associated-user-button", visible: true)[button_number-1].click()
+    eventually { all(".edit-associated-user-button", visible: true)[button_number-1].click() }
   end
 
   def when_i_set_the_role_to role

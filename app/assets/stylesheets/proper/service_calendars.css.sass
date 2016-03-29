@@ -110,9 +110,12 @@ li:not(.ui-tabs-active)
   width: 100%
   border-collapse: collapse
   border: 1px solid #ccc
-  thead tr th
-    border: 1px solid #ccc
-    background: #0775B0
+  thead
+    tr th
+      border: 1px solid #ccc
+    &.default_calendar
+      background: #0775B0
+      color: #fff
   tbody td.visit
     text-align: right
   .your_cost, .service_rate, .otf_total, .otf_total_direct_cost, .pp_max_total_direct_cost, .pp_max_total_indirect_cost, .pp_max_total, .pp_line_item_total, .pp_line_item_study_total, .pp_total, .max_direct_per_patient, .max_indirect_per_patient, .max_total_per_patient

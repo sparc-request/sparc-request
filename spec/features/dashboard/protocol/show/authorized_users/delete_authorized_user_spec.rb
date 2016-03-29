@@ -52,6 +52,7 @@ RSpec.feature 'User wants to delete an authorized user', js: true do
 
     context 'and tries to delete the Primary PI' do
       scenario 'and sees an error message' do
+        given_that_i_have_selected_a_protocol
         given_i_have_clicked_the_delete_authorized_user_button_for_the_primary_pi
         then_i_should_see_an_error_of_type 'need Primary PI'
       end
@@ -59,6 +60,7 @@ RSpec.feature 'User wants to delete an authorized user', js: true do
 
     context 'and tries to delete a user who is not the Primary PI' do
       scenario 'and sees the user is gone' do
+        given_that_i_have_selected_a_protocol
         given_i_have_clicked_the_delete_authorized_user_button_and_confirmed
         then_i_should_not_see_the_authorized_user
       end
@@ -92,13 +94,13 @@ RSpec.feature 'User wants to delete an authorized user', js: true do
 
   def given_i_have_clicked_the_delete_authorized_user_button_and_confirmed
     accept_confirm do
-      page.all('.delete-associated-user-button', visible: true)[1].click()
+      eventually { page.all('.delete-associated-user-button', visible: true)[1].click() }
     end
   end
 
   def given_i_have_clicked_the_delete_authorized_user_button_for_the_primary_pi
     accept_alert do
-      first('.delete-associated-user-button', visible: true).click()
+      eventually { first('.delete-associated-user-button', visible: true).click() }
     end
   end
 

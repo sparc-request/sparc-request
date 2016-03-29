@@ -88,6 +88,7 @@ RSpec.feature 'User messes with the change Primary PI Warning Dialog JS', js: tr
 
     context 'and submits the changes' do
       scenario 'and sees the warning message' do
+        given_that_i_have_selected_a_protocol
         given_i_have_clicked_the_edit_authorized_user_button
         when_i_set_the_user_to_primary_pi
         when_i_submit_in_edit
@@ -95,6 +96,7 @@ RSpec.feature 'User messes with the change Primary PI Warning Dialog JS', js: tr
       end
 
       scenario 'and sees the dialog changes' do
+        given_that_i_have_selected_a_protocol
         given_i_have_clicked_the_edit_authorized_user_button
         when_i_set_the_user_to_primary_pi
         when_i_submit_in_edit
@@ -102,6 +104,7 @@ RSpec.feature 'User messes with the change Primary PI Warning Dialog JS', js: tr
       end
 
       scenario 'and doesnt see the form' do
+        given_that_i_have_selected_a_protocol
         given_i_have_clicked_the_edit_authorized_user_button
         when_i_set_the_user_to_primary_pi
         when_i_submit_in_edit
@@ -110,6 +113,7 @@ RSpec.feature 'User messes with the change Primary PI Warning Dialog JS', js: tr
 
       context 'and clicks No' do
         scenario 'and sees the form' do
+          given_that_i_have_selected_a_protocol
           given_i_have_clicked_the_edit_authorized_user_button
           when_i_set_the_user_to_primary_pi
           when_i_submit_in_edit
@@ -118,6 +122,7 @@ RSpec.feature 'User messes with the change Primary PI Warning Dialog JS', js: tr
         end
 
         scenario 'and sees the dialog changes' do
+          given_that_i_have_selected_a_protocol
           given_i_have_clicked_the_edit_authorized_user_button
           when_i_set_the_user_to_primary_pi
           when_i_submit_in_edit
@@ -126,6 +131,7 @@ RSpec.feature 'User messes with the change Primary PI Warning Dialog JS', js: tr
         end
 
         scenario 'and doesnt see the warning message' do
+          given_that_i_have_selected_a_protocol
           given_i_have_clicked_the_edit_authorized_user_button
           when_i_set_the_user_to_primary_pi
           when_i_submit_in_edit
@@ -136,6 +142,7 @@ RSpec.feature 'User messes with the change Primary PI Warning Dialog JS', js: tr
 
       context 'and closes and reopens the dialog' do
         scenario 'and sees the form' do
+          given_that_i_have_selected_a_protocol
           given_i_have_clicked_the_edit_authorized_user_button
           when_i_set_the_user_to_primary_pi
           when_i_exit
@@ -144,6 +151,7 @@ RSpec.feature 'User messes with the change Primary PI Warning Dialog JS', js: tr
         end
 
         scenario 'and sees the dialog changes' do
+          given_that_i_have_selected_a_protocol
           given_i_have_clicked_the_edit_authorized_user_button
           when_i_set_the_user_to_primary_pi
           when_i_exit
@@ -152,6 +160,7 @@ RSpec.feature 'User messes with the change Primary PI Warning Dialog JS', js: tr
         end
 
         scenario 'and doesnt see the warning message' do
+          given_that_i_have_selected_a_protocol
           given_i_have_clicked_the_edit_authorized_user_button
           when_i_set_the_user_to_primary_pi
           when_i_exit
@@ -175,7 +184,7 @@ RSpec.feature 'User messes with the change Primary PI Warning Dialog JS', js: tr
   end
 
   def given_i_have_clicked_the_edit_authorized_user_button
-    all(".edit-associated-user-button", visible: true)[1].click()
+    eventually { all(".edit-associated-user-button", visible: true)[1].click() }
   end
 
   def when_i_search_and_select_the_user

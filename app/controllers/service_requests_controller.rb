@@ -200,6 +200,7 @@ class ServiceRequestsController < ApplicationController
     session[:service_calendar_pages] = params[:pages] if params[:pages]
     session[:service_calendar_pages][arm_id] = page if page && arm_id
     @thead_class = 'red-provider'
+    @review = true
     @portal = false
     @service_list = @service_request.service_list
     @protocol = @service_request.protocol
@@ -308,7 +309,7 @@ class ServiceRequestsController < ApplicationController
     arm_id = params[:arm_id].to_s if params[:arm_id]
     @arm = Arm.find arm_id if arm_id
     @portal = params[:portal] if params[:portal]
-    @thead_class = @portal == 'true' ? 'ui-widget-header' : 'red-provider'
+    @thead_class = @portal == 'true' ? 'default_calendar' : 'red-provider'
     page = params[:page] if params[:page]
     session[:service_calendar_pages] = params[:pages] if params[:pages]
     session[:service_calendar_pages][arm_id] = page if page && arm_id

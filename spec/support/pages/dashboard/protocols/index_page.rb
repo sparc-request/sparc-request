@@ -31,12 +31,18 @@ module Dashboard
 
         def select_status(status)
           status_select.click
+          wait_for_status_options
           status_options.select { |so| so.text == status.capitalize }.first.click
+          page.find('body').click # seems like Capybara page is available in this context
+          wait_until_status_options_invisible
         end
 
         def select_core(core)
           core_select.click
+          wait_for_core_options
           core_options.select { |so| so.text == core.capitalize }.first.click
+          page.find('body').click # seems like Capybara page is available in this context
+          wait_until_core_options_invisible
         end
 
         def selected_core

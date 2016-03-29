@@ -1,25 +1,38 @@
 require 'rails_helper'
 
 RSpec.describe 'filters', js: :true do
-  let_there_be_lane
-  fake_login_for_each_test
+  before(:each) do
+    @user = create(:identity,
+      last_name:             'Claws',
+      first_name:            'Santa',
+      ldap_uid:              'santa',
+      institution:           'medical_university_of_south_carolina',
+      college:               'college_of_medicine',
+      department:            'other',
+      email:                 'santa@musc.edu',
+      credentials:           'ba',
+      catalog_overlord:      true,
+      password:              'p4ssword',
+      password_confirmation: 'p4ssword',
+      approved:              true
+    )
+  end
+  fake_login_for_each_test('santa')
 
   def visit_protocols_index_page
     @page = Dashboard::Protocols::IndexPage.new
     @page.load
-    wait_for_javascript_to_finish
   end
 
   shared_context 'authorized Organizations' do
-    let!(:org1) { create(:organization, admin: jug2, name: 'Organization 1') }
-    let!(:org2) { create(:organization, admin: jug2, name: 'Organization 2') }
+    let!(:org1) { create(:organization, admin: @user, name: 'Organization 1') }
+    let!(:org2) { create(:organization, admin: @user, name: 'Organization 2') }
   end
 
   describe 'save' do
-    let!(:protocol) { create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false, title: 'My Awesome Protocol') }
+    let!(:protocol) { create(:protocol_federally_funded, :without_validations, primary_pi: @user, type: 'Project', archived: false, title: 'My Awesome Protocol') }
     before(:each) do
       visit_protocols_index_page
-      # expect(@page).to have_css('td', text: 'My Awesome Protocol')
       @page.filter_protocols.archived_checkbox.click
     end
 
@@ -50,7 +63,7 @@ RSpec.describe 'filters', js: :true do
   end
 
   describe 'recently saved filters' do
-    let!(:protocol) { create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: true) }
+    let!(:protocol) { create(:protocol_federally_funded, :without_validations, primary_pi: @user, type: 'Project', archived: true) }
 
     context 'user has saved filters' do
       before(:each) do
@@ -61,7 +74,7 @@ RSpec.describe 'filters', js: :true do
             for_identity_id: true,
             search_query: '',
             with_status: '')
-          f.identity = jug2
+          f.identity = @user
           f.save!
         end
         visit_protocols_index_page
@@ -80,11 +93,11 @@ RSpec.describe 'filters', js: :true do
 
   describe 'reset' do
     it 'should remove all filters' do
-      p1 = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: true, title: 'abc')
-      sr = create(:service_request_without_validations, protocol: p1, service_requester: jug2)
+      p1 = create(:protocol_federally_funded, :without_validations, primary_pi: @user, type: 'Project', archived: true, title: 'abc')
+      sr = create(:service_request_without_validations, protocol: p1, service_requester: @user)
       create(:sub_service_request, ssr_id: '0001', service_request: sr, organization: create(:organization), status: 'draft')
 
-      p2 = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false)
+      p2 = create(:protocol_federally_funded, :without_validations, primary_pi: @user, type: 'Project', archived: false)
       visit_protocols_index_page
 
       filters = @page.filter_protocols
@@ -104,7 +117,7 @@ RSpec.describe 'filters', js: :true do
   describe 'archived checkbox' do
     describe 'defaults' do
       it 'should not display archived Protocols' do
-        create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: true)
+        create(:protocol_federally_funded, :without_validations, primary_pi: @user, type: 'Project', archived: true)
         visit_protocols_index_page
         expect(@page).to have_no_protocols
         expect(@page.filter_protocols.archived_checkbox).to_not be_checked
@@ -113,8 +126,8 @@ RSpec.describe 'filters', js: :true do
 
     context 'user checks archived checkbox and clicks filter button' do
       it 'should only show archived protocols' do
-        archived_protocol = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: true)
-        create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false)
+        archived_protocol = create(:protocol_federally_funded, :without_validations, primary_pi: @user, type: 'Project', archived: true)
+        create(:protocol_federally_funded, :without_validations, primary_pi: @user, type: 'Project', archived: false)
         visit_protocols_index_page
         @page.filter_protocols.archived_checkbox.set(true)
         @page.filter_protocols.apply_filter_button.click
@@ -125,8 +138,8 @@ RSpec.describe 'filters', js: :true do
 
     context 'user unchecks previously checked checkbox and clicks filter button' do
       it 'should only show unarchived protocols' do
-        create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: true)
-        unarchived_protocol = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false)
+        create(:protocol_federally_funded, :without_validations, primary_pi: @user, type: 'Project', archived: true)
+        unarchived_protocol = create(:protocol_federally_funded, :without_validations, primary_pi: @user, type: 'Project', archived: false)
         visit_protocols_index_page
         @page.filter_protocols.archived_checkbox.set(true)
         @page.filter_protocols.apply_filter_button.click
@@ -142,8 +155,8 @@ RSpec.describe 'filters', js: :true do
     describe 'defaults' do
       it 'should display Protocols with SubServiceRequests of any status' do
         AVAILABLE_STATUSES.each do |status|
-          p = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false)
-          sr = create(:service_request_without_validations, protocol: p, service_requester: jug2)
+          p = create(:protocol_federally_funded, :without_validations, primary_pi: @user, type: 'Project', archived: false)
+          sr = create(:service_request_without_validations, protocol: p, service_requester: @user)
           create(:sub_service_request, ssr_id: '0001', service_request: sr, organization: create(:organization), status: status)
         end
 
@@ -155,23 +168,23 @@ RSpec.describe 'filters', js: :true do
     context 'user selects a status from dropdown and clicks the filter button' do
       it 'should display only Protocols that have a SubServiceRequest of that status' do
         # protocol with no SubServiceRequests
-        p1 = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false)
+        p1 = create(:protocol_federally_funded, :without_validations, primary_pi: @user, type: 'Project', archived: false)
 
         # protocol with one SSR of status approved
-        p2 = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false)
-        sr = create(:service_request_without_validations, protocol: p2, service_requester: jug2)
+        p2 = create(:protocol_federally_funded, :without_validations, primary_pi: @user, type: 'Project', archived: false)
+        sr = create(:service_request_without_validations, protocol: p2, service_requester: @user)
         create(:sub_service_request, ssr_id: '0001', service_request: sr, organization: create(:organization), status: 'approved')
 
         # protocol with one SSR of status approved and another
         # SSR of another status
-        p3 = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false)
-        sr = create(:service_request_without_validations, protocol: p3, service_requester: jug2)
+        p3 = create(:protocol_federally_funded, :without_validations, primary_pi: @user, type: 'Project', archived: false)
+        sr = create(:service_request_without_validations, protocol: p3, service_requester: @user)
         create(:sub_service_request, ssr_id: '0001', service_request: sr, organization: create(:organization), status: 'approved')
         create(:sub_service_request, ssr_id: '0001', service_request: sr, organization: create(:organization), status: 'draft')
 
         # protocol with a SSR not of status approved
-        p4 = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false)
-        sr = create(:service_request_without_validations, protocol: p4, service_requester: jug2)
+        p4 = create(:protocol_federally_funded, :without_validations, primary_pi: @user, type: 'Project', archived: false)
+        sr = create(:service_request_without_validations, protocol: p4, service_requester: @user)
         create(:sub_service_request, ssr_id: '0001', service_request: sr, organization: create(:organization), status: 'draft')
 
         visit_protocols_index_page
@@ -187,9 +200,9 @@ RSpec.describe 'filters', js: :true do
 
   describe 'search' do
     it 'should match against short title case insensitively' do
-      protocol1 = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false, short_title: 'titlex')
-      protocol2 = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false, short_title: 'xTitle')
-      create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false, short_title: 'aaa')
+      protocol1 = create(:protocol_federally_funded, :without_validations, primary_pi: @user, type: 'Project', archived: false, short_title: 'titlex')
+      protocol2 = create(:protocol_federally_funded, :without_validations, primary_pi: @user, type: 'Project', archived: false, short_title: 'xTitle')
+      create(:protocol_federally_funded, :without_validations, primary_pi: @user, type: 'Project', archived: false, short_title: 'aaa')
       visit_protocols_index_page
       @page.filter_protocols.search_field.set('title')
       @page.filter_protocols.apply_filter_button.click
@@ -198,9 +211,9 @@ RSpec.describe 'filters', js: :true do
     end
 
     it 'should match against title case insensitively' do
-      protocol1 = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false, title: 'titlex')
-      protocol2 = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false, title: 'xTitle')
-      create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false, title: 'aaa')
+      protocol1 = create(:protocol_federally_funded, :without_validations, primary_pi: @user, type: 'Project', archived: false, title: 'titlex')
+      protocol2 = create(:protocol_federally_funded, :without_validations, primary_pi: @user, type: 'Project', archived: false, title: 'xTitle')
+      create(:protocol_federally_funded, :without_validations, primary_pi: @user, type: 'Project', archived: false, title: 'aaa')
       visit_protocols_index_page
       @page.filter_protocols.search_field.set('title')
       @page.filter_protocols.apply_filter_button.click
@@ -209,9 +222,9 @@ RSpec.describe 'filters', js: :true do
     end
 
     it 'should match against id' do
-      protocol1 = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false)
-      create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false)
-      create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false)
+      protocol1 = create(:protocol_federally_funded, :without_validations, primary_pi: @user, type: 'Project', archived: false)
+      create(:protocol_federally_funded, :without_validations, primary_pi: @user, type: 'Project', archived: false)
+      create(:protocol_federally_funded, :without_validations, primary_pi: @user, type: 'Project', archived: false)
       visit_protocols_index_page
       @page.filter_protocols.search_field.set(protocol1.id.to_s)
       @page.filter_protocols.apply_filter_button.click
@@ -220,11 +233,11 @@ RSpec.describe 'filters', js: :true do
     end
 
     it 'should match against associated users\' first name case insensitively' do
-      protocol1 = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false)
+      protocol1 = create(:protocol_federally_funded, :without_validations, primary_pi: @user, type: 'Project', archived: false)
       create(:project_role, protocol: protocol1, identity: create(:identity, first_name: 'name1'))
-      protocol2 = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false)
+      protocol2 = create(:protocol_federally_funded, :without_validations, primary_pi: @user, type: 'Project', archived: false)
       create(:project_role, protocol: protocol2, identity: create(:identity, first_name: 'Name1'))
-      protocol3 = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false)
+      protocol3 = create(:protocol_federally_funded, :without_validations, primary_pi: @user, type: 'Project', archived: false)
       create(:project_role, protocol: protocol3, identity: create(:identity, first_name: 'name3'))
 
       visit_protocols_index_page
@@ -235,11 +248,11 @@ RSpec.describe 'filters', js: :true do
     end
 
     it 'should match against associated users\' last name case insensitively' do
-      protocol1 = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false)
+      protocol1 = create(:protocol_federally_funded, :without_validations, primary_pi: @user, type: 'Project', archived: false)
       create(:project_role, protocol: protocol1, identity: create(:identity, last_name: 'name1'))
-      protocol2 = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false)
+      protocol2 = create(:protocol_federally_funded, :without_validations, primary_pi: @user, type: 'Project', archived: false)
       create(:project_role, protocol: protocol2, identity: create(:identity, last_name: 'Name1'))
-      protocol3 = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false)
+      protocol3 = create(:protocol_federally_funded, :without_validations, primary_pi: @user, type: 'Project', archived: false)
       create(:project_role, protocol: protocol3, identity: create(:identity, last_name: 'name3'))
 
       visit_protocols_index_page
@@ -252,7 +265,7 @@ RSpec.describe 'filters', js: :true do
 
   describe 'my protocols' do
     context 'user is a service provider and a superuser for an Organization' do
-      let!(:organization) { create(:organization, admin: jug2) }
+      let!(:organization) { create(:organization, admin: @user) }
 
       it 'should show the My Protocols checkbox' do
         visit_protocols_index_page
@@ -263,7 +276,7 @@ RSpec.describe 'filters', js: :true do
       context 'user unchecks My Protocols and clicks the filter button' do
         it 'should display all Protocols' do
           protocol1 = create(:protocol_federally_funded, :without_validations, primary_pi: create(:identity), type: 'Project', archived: false)
-          protocol2 = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false)
+          protocol2 = create(:protocol_federally_funded, :without_validations, primary_pi: @user, type: 'Project', archived: false)
           visit_protocols_index_page
           @page.filter_protocols.my_protocols_checkbox.click
           @page.filter_protocols.apply_filter_button.click
@@ -281,13 +294,13 @@ RSpec.describe 'filters', js: :true do
 
         it 'should not display Protocols for which user has \'none\' rights' do
           protocol = create(:protocol_federally_funded, :without_validations, primary_pi: create(:identity), type: 'Project', archived: false)
-          create(:project_role, identity: jug2, protocol: protocol, project_rights: 'none')
+          create(:project_role, identity: @user, protocol: protocol, project_rights: 'none')
           visit_protocols_index_page
           expect(@page).to have_no_protocols
         end
 
         it 'should display unarchived Protocols for which the user has project rights other than \'none\'' do
-          create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false)
+          create(:protocol_federally_funded, :without_validations, primary_pi: @user, type: 'Project', archived: false)
           visit_protocols_index_page
           expect(@page).to have_protocols
         end
@@ -307,10 +320,10 @@ RSpec.describe 'filters', js: :true do
       include_context 'authorized Organizations'
 
       it 'should not restrict listing to Protocols with SSR\'s in user\'s authorized Organizations' do
-        p1 = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false)
+        p1 = create(:protocol_federally_funded, :without_validations, primary_pi: @user, type: 'Project', archived: false)
         create(:service_request_without_validations, protocol: p1, organizations: [org1])
 
-        p2 = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false)
+        p2 = create(:protocol_federally_funded, :without_validations, primary_pi: @user, type: 'Project', archived: false)
         create(:service_request_without_validations, protocol: p2, organizations: [create(:organization)])
 
         visit_protocols_index_page
@@ -323,10 +336,10 @@ RSpec.describe 'filters', js: :true do
       include_context 'authorized Organizations'
 
       it 'should only display Protocols contain SSR\'s belonging to user\'s authorized Organizations' do
-        p1 = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false)
+        p1 = create(:protocol_federally_funded, :without_validations, primary_pi: @user, type: 'Project', archived: false)
         create(:service_request_without_validations, protocol: p1, organizations: [org1])
 
-        p2 = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false)
+        p2 = create(:protocol_federally_funded, :without_validations, primary_pi: @user, type: 'Project', archived: false)
         create(:service_request_without_validations, protocol: p2, organizations: [create(:organization)])
 
         visit_protocols_index_page
@@ -341,10 +354,10 @@ RSpec.describe 'filters', js: :true do
       include_context 'authorized Organizations'
 
       it 'should not restrict listing to Protocols with SSR\'s in user\'s authorized Organizations' do
-        p1 = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false)
+        p1 = create(:protocol_federally_funded, :without_validations, primary_pi: @user, type: 'Project', archived: false)
         create(:service_request_without_validations, protocol: p1, organizations: [org1])
 
-        p2 = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false)
+        p2 = create(:protocol_federally_funded, :without_validations, primary_pi: @user, type: 'Project', archived: false)
         create(:service_request_without_validations, protocol: p2, organizations: [create(:organization)])
 
         visit_protocols_index_page
@@ -365,13 +378,13 @@ RSpec.describe 'filters', js: :true do
       include_context 'authorized Organizations'
 
       it 'should not restrict listing to Protocols with SSR\'s in a particular user-authorized Organization' do
-        p1 = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false)
+        p1 = create(:protocol_federally_funded, :without_validations, primary_pi: @user, type: 'Project', archived: false)
         create(:service_request_without_validations, protocol: p1, organizations: [org1])
 
-        p2 = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false)
+        p2 = create(:protocol_federally_funded, :without_validations, primary_pi: @user, type: 'Project', archived: false)
         create(:service_request_without_validations, protocol: p2, organizations: [org2])
 
-        p3 = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false)
+        p3 = create(:protocol_federally_funded, :without_validations, primary_pi: @user, type: 'Project', archived: false)
         create(:service_request_without_validations, protocol: p3, organizations: [create(:organization)])
 
         visit_protocols_index_page
@@ -380,7 +393,7 @@ RSpec.describe 'filters', js: :true do
       end
 
       it 'should not select anything in dropdown' do
-        p1 = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false)
+        p1 = create(:protocol_federally_funded, :without_validations, primary_pi: @user, type: 'Project', archived: false)
         create(:service_request_without_validations, protocol: p1, organizations: [org1])
 
         visit_protocols_index_page
@@ -392,13 +405,13 @@ RSpec.describe 'filters', js: :true do
       include_context 'authorized Organizations'
 
       it 'should restrict listing to Protocols with SSR\'s belonging to that Organization' do
-        p1 = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false)
+        p1 = create(:protocol_federally_funded, :without_validations, primary_pi: @user, type: 'Project', archived: false)
         create(:service_request_without_validations, protocol: p1, organizations: [org1])
 
-        p2 = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false)
+        p2 = create(:protocol_federally_funded, :without_validations, primary_pi: @user, type: 'Project', archived: false)
         create(:service_request_without_validations, protocol: p2, organizations: [org1, org2])
 
-        p3 = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false)
+        p3 = create(:protocol_federally_funded, :without_validations, primary_pi: @user, type: 'Project', archived: false)
         create(:service_request_without_validations, protocol: p3, organizations: [create(:organization)])
 
         visit_protocols_index_page
@@ -414,21 +427,20 @@ RSpec.describe 'filters', js: :true do
       include_context 'authorized Organizations'
 
       it 'should not restrict listing to Protocols with SSR\'s belonging to any particular Organization' do
-        p1 = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false)
+        p1 = create(:protocol_federally_funded, :without_validations, primary_pi: @user, type: 'Project', archived: false)
         create(:service_request_without_validations, protocol: p1, organizations: [org1])
 
-        p2 = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false)
+        p2 = create(:protocol_federally_funded, :without_validations, primary_pi: @user, type: 'Project', archived: false)
         create(:service_request_without_validations, protocol: p2, organizations: [org1, org2])
 
-        p3 = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false)
+        p3 = create(:protocol_federally_funded, :without_validations, primary_pi: @user, type: 'Project', archived: false)
         create(:service_request_without_validations, protocol: p3, organizations: [create(:organization)])
 
         visit_protocols_index_page
         @page.filter_protocols.select_core(org1.name)
         @page.filter_protocols.apply_filter_button.click
         wait_for_javascript_to_finish
-        @page.filter_protocols.core_select.click
-        @page.filter_protocols.core_options.first.click
+        @page.filter_protocols.select_core(org1.name)
         @page.filter_protocols.apply_filter_button.click
         wait_for_javascript_to_finish
 

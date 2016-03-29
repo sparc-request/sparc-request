@@ -19,18 +19,17 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #protocol
-
   .row.container-fluid
     .panel.panel-default
       .panel-heading
         %h4.panel-title
-          = t(:dashboard)[:protocols]
+          = t(:protocols)[:change_type][:header]
       .panel-body.container-fluid
         .form-group.row
-          = label_tag "protocol_type", t(:protocol_shared)[:change], class: 'col-lg-2 control-label'
+          = label_tag "protocol_type", t(:protocols)[:change_type][:type], class: 'col-lg-2 control-label'
           .col-lg-10
-            = select_tag "protocol_type", options_for_select([['Project', 'Project'], ['Study', 'Study']], @protocol_type), class: 'selectpicker'
+            = select_tag "protocol_type", options_for_select([[t(:protocols)[:change_type][:project], 'Project'], [t(:protocols)[:change_type][:study], 'Study']], @protocol_type), class: 'selectpicker'
             %button.btn.btn-warning#protocol_type_button{ data: {protocol_id: @protocol.id } }
-              = t(:protocol_shared)[:button]
+              = t(:protocols)[:change_type][:change_button]
 
   = render partial: 'dashboard/protocols/form/protocol_form', locals: { protocol: @protocol, protocol_type: @protocol_type }

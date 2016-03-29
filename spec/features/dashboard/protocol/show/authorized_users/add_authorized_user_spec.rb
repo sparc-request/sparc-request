@@ -46,12 +46,14 @@ RSpec.feature 'User wants to add an authorized user', js: true do
 
     context 'and clicks the Add an Authorized User button' do
       scenario 'and sees the Add Authorized User dialog' do
+        given_that_i_have_selected_a_protocol
         given_i_have_clicked_the_add_authorized_user_button
         then_i_should_see_the_add_authorized_user_dialog
       end
 
       context 'and searches for a user not already on the protocol' do
         scenario 'and sees the users information' do
+          given_that_i_have_selected_a_protocol
           given_i_have_clicked_the_add_authorized_user_button
           when_i_select_a_user_from_the_search
           then_i_should_see_the_users_basic_information
@@ -59,6 +61,7 @@ RSpec.feature 'User wants to add an authorized user', js: true do
 
         context 'and sets the users rights to Primary PI, PD/PI, or Billing/Business Manager' do
           scenario 'and sees the highest user rights selected' do
+            given_that_i_have_selected_a_protocol
             given_i_have_clicked_the_add_authorized_user_button
             when_i_select_a_user_from_the_search
             when_i_set_the_role_to 'Primary PI'
@@ -73,6 +76,7 @@ RSpec.feature 'User wants to add an authorized user', js: true do
         context 'and fills out the required fields' do
           context 'and submits the form' do
             scenario 'and sees the User has been added to the protocol' do
+              given_that_i_have_selected_a_protocol
               given_i_have_clicked_the_add_authorized_user_button
               when_i_select_a_user_from_the_search
               when_i_fill_out_the_required_fields
@@ -83,6 +87,7 @@ RSpec.feature 'User wants to add an authorized user', js: true do
 
           context 'but sets role and credentials to other and fills out the extra fields' do
             scenario 'and sees they can submit the form' do
+              given_that_i_have_selected_a_protocol
               given_i_have_clicked_the_add_authorized_user_button
               when_i_select_a_user_from_the_search
               when_i_set_the_role_and_credentials_to_other
@@ -93,6 +98,7 @@ RSpec.feature 'User wants to add an authorized user', js: true do
 
             context 'and leaves the extra fields blank' do
               scenario 'and sees some errors' do
+                given_that_i_have_selected_a_protocol
                 given_i_have_clicked_the_add_authorized_user_button
                 when_i_select_a_user_from_the_search
                 when_i_fill_out_the_required_fields
@@ -107,6 +113,7 @@ RSpec.feature 'User wants to add an authorized user', js: true do
         context 'and sets their role to Primary PI' do
           context 'and submits the form' do
             scenario 'and sees the warning message' do
+              given_that_i_have_selected_a_protocol
               given_i_have_clicked_the_add_authorized_user_button
               when_i_select_a_user_from_the_search
               when_i_set_the_role_to 'Primary PI'
@@ -116,6 +123,7 @@ RSpec.feature 'User wants to add an authorized user', js: true do
 
             context 'and submits the form on the warning message' do
               scenario 'and sees the Primary PI has changed' do
+                given_that_i_have_selected_a_protocol
                 given_i_have_clicked_the_add_authorized_user_button
                 when_i_select_a_user_from_the_search
                 when_i_set_the_role_to 'Primary PI'
@@ -125,6 +133,7 @@ RSpec.feature 'User wants to add an authorized user', js: true do
               end
 
               scenario 'and sees the old primary pi is a general access user' do
+                given_that_i_have_selected_a_protocol
                 given_i_have_clicked_the_add_authorized_user_button
                 when_i_select_a_user_from_the_search
                 when_i_set_the_role_to 'Primary PI'
@@ -134,6 +143,7 @@ RSpec.feature 'User wants to add an authorized user', js: true do
               end
 
               scenario 'and sees the old primary pi has request rights' do
+                given_that_i_have_selected_a_protocol
                 given_i_have_clicked_the_add_authorized_user_button
                 when_i_select_a_user_from_the_search
                 when_i_set_the_role_to 'Primary PI'
@@ -144,6 +154,7 @@ RSpec.feature 'User wants to add an authorized user', js: true do
 
               context 'with errors in the form' do
                 scenario 'and sees errors' do
+                  given_that_i_have_selected_a_protocol
                   given_i_have_clicked_the_add_authorized_user_button
                   when_i_select_a_user_from_the_search
                   when_i_set_the_role_to 'Primary PI'
@@ -192,6 +203,10 @@ RSpec.feature 'User wants to add an authorized user', js: true do
     scenario 'and sees disabled Add an Authorized User button' do
       expect(page).to have_button('Add an Authorized User', disabled: true)
     end
+  end
+
+  def given_that_i_have_selected_a_protocol
+    eventually { first('.blue-provider').click }
   end
 
   def given_i_have_clicked_the_add_authorized_user_button

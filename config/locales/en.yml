@@ -41,9 +41,11 @@ en:
 
   actions:
     add: "Add"
+    cancel: "Cancel"
     close: "Close"
     delete: "Delete"
     edit: "Edit"
+    print: "Print"
     remove: "Remove"
     reply: "Reply"
     reset: "Reset"
@@ -53,14 +55,13 @@ en:
     upload: "Upload"
 
   constants:
+    yes_select: "Yes"
+    no_select: "No"
     prompts: 
       any: "- Any -"
       select: "---Please Select---"
-
-  models:
-    note:
-      singular: "Note"
-      plural: "Notes"
+      search_for_user: "Search for a User"
+      select_one: "Select One"
 
   calendars:
     pppv:
@@ -106,6 +107,106 @@ en:
       merged:
         total_study: "Study Cost Totals"
 
+  models:
+    note:
+      singular: "Note"
+      plural: "Notes"
+
+  protocols:
+    change_type:
+      header: "Change Protocol Type"
+      type: "Protocol Type:"
+      study: "Study"
+      project: "Project"
+      change_button: "Change Type"
+    studies:
+      information:
+        header: "Study Information"
+        subtext: "Necessary to obtain correct pricing"
+        short_title: "Short Title: *"
+        title: "Study Title: *"
+        funding_status: "Proposal Funding Status: *"
+        funding_source: "Funding Source: *"
+        potential_funding_source: "Potential Funding Source: *"
+        funding_source_internal: "Please Specify: *"
+        funding_source_federal:
+          title: "Federal Grant Title:"
+          code: "Federal Grant Code:"
+          phs_sponsor: "Federal PHS Sponsor:"
+          separator: "-OR-"
+          non_phs_sponsor: "Federal Non-PHS Sponsor:"
+          serial_number: "Federal Grant Serial Number:"
+        phase: "Study Phase:"
+        sponsor: "Sponsor Name: *"
+        push_to_epic: "Publish Study in Epic: *"
+      optional_information:
+        header: "Optional Information"
+        subtext: "Used for reporting purposes and saved for your future use"
+        udak_project_number: "Financial Account (UDAK #):"
+        rate: "Indirect Cost Rate:"
+        rfa: "Funding Opportunity # / RFA:"
+        potential_start_date: "Potential Funding Start Date:"
+        start_date: "Funding Start Date:"
+      research_involving:
+        header: "Research Involving"
+        subtext: "Check all that apply"
+        humans:
+          header: "Human Subjects:"
+          nct_number: "NCT #:"
+          hr_number: "HR #:"
+          pro_number: "PRO #:"
+          record_irb: "IRB of Record:"
+          submission_type: "Submission Type:"
+          pending_approval: "Application/Approval Pending:"
+          irb_approval_date: "IRB Approval Date:"
+          irb_expiration_date: "IRB Expiration Date:"
+        vertebrates:
+          header: "Vertebrate Animals:"
+          iacuc_number: "IACUC #:"
+          iacuc_name: "Name of IACUC:"
+          iacuc_approval_date: "IACUC Approval Date:"
+          iacuc_expiration_date: "IACUC Expiration Date:"
+        products:
+          header: "Investigational Products:"
+          ind_number: "IND #:"
+          ind_on_hold: "IND on Hold?:"
+          ide_number: "IDE #:"
+        ip_patents: 
+          header: "IP/Patents:"
+          number: "Patent Number:"
+          inventors: "Inventors:"
+      study_type:
+        header: "Study Type"
+        subtext: "Check all that apply"
+      impact_areas:
+        header: "Impact Areas"
+        subtext: "Check all that apply"
+        other: "Please Specify:"
+      affiliations:
+        header: "Affiliations, Collaborations, and Memberships"
+        subtext: "Check all that apply"
+    projects:
+      information:
+        header: "Project Information"
+        short_title: "Short Title: *"
+        title: "Project Title: *"
+        funding_status: "Proposal Funding Status: *"
+        funding_source: "Funding Source: *"
+        potential_funding_source: "Potential Funding Source: *"
+        description: "Brief Description:"
+        rate: "Indirect Cost Rate:"
+    prompts:
+      status: "Select a Funding Status"
+      source: "Select a Funding Source"
+      potential_source: "Select a Potential Funding Source"
+      federal_sponsor: "Select if Applicable"
+      phase: "Select a Study Phase"
+      submission_type: "Select a Submission Type"
+    authorized_users:
+      header: "Authorized Users"
+      subtext: "Primary PI Required"
+      primary_pi: "Primary PI: *"
+
   dashboard:
     ###########
     #  ADMIN  #
@@ -145,7 +246,6 @@ en:
       add:
         header: "Add Authorized User"
         select: "Select User:"
-        search_prompt: "Search for a User"
       edit:
         header: "Edit Authorized User"
       era: "ERA Commons Name:"
@@ -276,17 +376,25 @@ en:
     #  NOTIFICATIONS  #
     ###################
     notifications:
-      send: "Send Notification"
-      requester: "Requester"
-      authorized_users: "Authorized Users"
-      clinical_providers: "Clinical Providers"
-      inbox: "Inbox"
-      sent: "Sent"
-      mark_as_unread: "Mark as Unread"
-      mark_as_read: "Mark as Read"
-      user: "User"
-      subject: "Subject"
-      time: "Time"
+      table:
+        send: "Send Notification"
+        compose: "Compose Message"
+        requester: "Requester"
+        authorized_users: "Authorized Users"
+        clinical_providers: "Clinical Providers"
+        inbox: "Inbox"
+        sent: "Sent"
+        mark_as_unread: "Mark as Unread"
+        mark_as_read: "Mark as Read"
+        user: "User"
+        subject: "Subject"
+        time: "Time"
+      form:
+        select_header: "Send Notification"
+        select: "Select User:"
+        subject: "Subject"
+        message: "Please enter message text here..."
+
 
     ######################
     #  PROTOCOL FILTERS  #
@@ -346,6 +454,28 @@ en:
       view_details:
         header: " Details"
 
+    #####################
+    # SERVICE CALENDARS #
+    #####################
+    service_calendars:
+      consolidated_request:
+        header: "Consolidated Request Summary"
+        protocol_information:
+          header: " Information"
+          srid: "SRID:"
+          short_title: "Short Title:"
+          title: " Title:"
+          sponsor: "Sponsor Name:"
+          funding_source: "Funding Source:"
+        authorized_users:
+          header: "Authorized Users"
+          name: "Name"
+          role: "Role"
+          rights: "Proxy Rights"
+        services:
+          header: "Services"
+          none: "There are no services associated with this protocol."
+
     ######################
     #  SERVICE REQUESTS  #
     ######################
@@ -359,6 +489,14 @@ en:
         view: "View SSR"
         edit: "Edit SSR"
         admin_edit: "Admin Edit"
+      view_ssr:
+        services:
+          none: "No Services"
+        documents:
+          header: "Documents"
+          none: "No Documents"
+          file_name: "File Name"
+          program_core: "Program/Core"
 
     ############################
     #  STUDY LEVEL ACTIVITIES  #

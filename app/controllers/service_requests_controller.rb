@@ -54,9 +54,6 @@ class ServiceRequestsController < ApplicationController
     #### add logic to save data
     referrer = request.referrer.split('/').last
 
-    # Save/Update any subsidy info we may have
-    subsidy_save_update(errors)
-
     @service_request.update_attributes(params[:service_request])
 
     #### if study/project attributes are available (step 2 arms nested form), update them
@@ -203,6 +200,7 @@ class ServiceRequestsController < ApplicationController
     session[:service_calendar_pages] = params[:pages] if params[:pages]
     session[:service_calendar_pages][arm_id] = page if page && arm_id
     @thead_class = 'red-provider'
+    @review = true
     @portal = false
     @service_list = @service_request.service_list
     @protocol = @service_request.protocol
@@ -311,7 +309,7 @@ class ServiceRequestsController < ApplicationController
     arm_id = params[:arm_id].to_s if params[:arm_id]
     @arm = Arm.find arm_id if arm_id
     @portal = params[:portal] if params[:portal]
-    @thead_class = @portal == 'true' ? 'ui-widget-header' : 'red-provider'
+    @thead_class = @portal == 'true' ? 'default_calendar' : 'red-provider'
     page = params[:page] if params[:page]
     session[:service_calendar_pages] = params[:pages] if params[:pages]
     session[:service_calendar_pages][arm_id] = page if page && arm_id
@@ -540,45 +538,6 @@ class ServiceRequestsController < ApplicationController
 
   def send_epic_notification_for_user_approval(protocol)
     Notifier.notify_for_epic_user_approval(protocol).deliver unless QUEUE_EPIC
-  end
-
-  # Navigate updates
-  # Subsidy saves/updates
-  def subsidy_save_update errors
-    #### convert dollars to cents for subsidy
-    if params[:service_request] && params[:service_request][:sub_service_requests_attributes]
-      params[:service_request][:sub_service_requests_attributes].each do |key, values|
-        ssr = @service_request.sub_service_requests.find values[:id]
-        if !check_for_overridden(ssr)
-          direct_cost = ssr.direct_cost_total
-          dollars = values[:subsidy_attributes][:pi_contribution]
-          funded_amount = direct_cost - Service.dollars_to_cents(dollars)
-          percent_subsidy = ((funded_amount / direct_cost) * 100).round(2)
-          if dollars.blank? # we don't want to create a subsidy if it's blank
-            values.delete(:subsidy_attributes)
-            ssr.subsidy.delete if ssr.subsidy
-          else
-            values[:subsidy_attributes][:pi_contribution] = Service.dollars_to_cents(dollars)
-            values[:subsidy_attributes][:stored_percent_subsidy] = percent_subsidy
-          end
-        else
-          direct_cost = ssr.direct_cost_total
-          percent_subsidy = ssr.subsidy.stored_percent_subsidy
-          contribution = (direct_cost * (percent_subsidy / 100.00)).ceil
-          contribution = direct_cost - contribution
-          values[:subsidy_attributes][:pi_contribution] = contribution
-        end
-      end
-    end
-  end
-
-  def check_for_overridden ssr
-    overridden = false
-    if ssr.subsidy && ssr.subsidy.overridden
-      overridden = true
-    end
-
-    overridden
   end
 
   # Document saves/updates

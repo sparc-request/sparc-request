@@ -37,7 +37,7 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
         @protocol = @service_request.protocol
         @tab = 'calendar'
         @portal = true
-        @thead_class = 'ui-widget-header'
+        @thead_class = 'default_calendar'
         @review = true
         @selected_arm = Arm.find arm_id if arm_id
         @pages = {}
@@ -49,9 +49,8 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
       }
       format.html { # Admin Edit
         @admin = true
-        # TODO
-        # session[:service_calendar_pages] = params[:pages] if params[:pages]
-        # session[:breadcrumbs].add_crumbs(protocol_id: @sub_service_request.protocol.id, sub_service_request_id: @sub_service_request.id).clear(:notifications)
+        session[:service_calendar_pages] = params[:pages] if params[:pages]
+        session[:breadcrumbs].add_crumbs(protocol_id: @sub_service_request.protocol.id, sub_service_request_id: @sub_service_request.id).clear(:notifications)
         if @user.can_edit_fulfillment? @sub_service_request.organization
           @service_request = @sub_service_request.service_request
           @protocol = @sub_service_request.protocol
@@ -68,7 +67,7 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
     arm_id = params[:arm_id].to_s if params[:arm_id]
     @arm = Arm.find arm_id if arm_id
     @portal = params[:portal] if params[:portal]
-    @thead_class = @portal == 'true' ? 'ui-widget-header' : 'red-provider'
+    @thead_class = @portal == 'true' ? 'default_calendar' : 'red-provider'
     page = params[:page] if params[:page]
     session[:service_calendar_pages] = params[:pages] if params[:pages]
     session[:service_calendar_pages][arm_id] = page if page && arm_id

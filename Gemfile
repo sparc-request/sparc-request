@@ -98,6 +98,7 @@ group :test do
   gem 'email_spec'
   gem 'factory_girl_rails'
   gem 'rspec-activemodel-mocks'
+  gem 'rspec-html-matchers'
   gem 'shoulda-matchers', require: false
   gem 'shoulda-callback-matchers'
   gem 'site_prism'

@@ -33,7 +33,7 @@
   .grid_9.col-md-9
     .document_upload_instructions= t("documents.upload_instructions_html")
     .document-management-container
-      = render :partial => 'document_list', :locals => {:review => false, :provider_css => 'orange-provider'}
+      = render :partial => 'document_list', :locals => {:review => false, :thead_class => 'orange-provider'}
       .clear
       %br
       %br
@@ -43,13 +43,18 @@
       .document_upload{:style=>'display:none'}
         = render :partial => 'document_form', :locals => {:provider_css => 'orange-provider'}
       .clear
+
+    .service_request_notes
+      #request_notes_table
+        = render partial: '/notes/request_notes', locals: { notes: @service_request.notes, notable_id: @service_request.id, notable_type: "ServiceRequest", thead_class: "orange-provider"  }
+
       %br
       %br
 
-      %button.btn.btn-lg.btn-primary.notes.list{ type: "button", data: {notable_type: "ServiceRequest", notable_id: @service_request.id }} Service Request Notes
+      %a.new_request_note_button.blue-button= "Add Request Note"
+      #note_form{style: 'display:none'}= render partial: '/notes/note_form', locals: { service_request: @service_request }
+      .clear
 
-      %br
-      %br
   .grid_3.document-mgmt-view-right.right.col-md-3
     = navigation_link t(:right_navigation)[:catalog], @catalog, 'catalog-button btn btn-info btn-lg btn-block'
     = render :partial => 'right_navigation'

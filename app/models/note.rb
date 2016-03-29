@@ -26,7 +26,7 @@ class Note < ActiveRecord::Base
 
   attr_accessible :body, :identity_id, :notable_type, :notable_id
 
-  validates_presence_of :body
+  validates_presence_of :body, :identity_id
   
   ### audit reporting methods ###
     

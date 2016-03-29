@@ -20,8 +20,10 @@
 
 .panel.panel-default
   .panel-heading
-    %h4.panel-title= t(:study_form)[:affiliations]
-    .sub_text= "Check all that apply"
+    %h4.panel-title
+      = t(:protocols)[:studies][:affiliations][:header]
+    .sub_text
+      = t(:protocols)[:studies][:affiliations][:subtext]
   .panel-body
     = form.fields_for :affiliations, protocol.affiliations.sort_by(&:position) do |affiliations_form|
       - checked = !affiliations_form.object.new && !affiliations_form.object.marked_for_destruction?

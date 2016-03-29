@@ -20,7 +20,7 @@
 - if @portal || !@review
   - if (@sub_service_request.nil? ? @service_request.has_one_time_fee_services? : @sub_service_request.has_one_time_fee_services?) or @merged
     %table.service_calendar{:class => @review ? 'review_totals' : ''}
-      %thead{:class => @review ? thead_class : 'ui-widget-header'}
+      %thead{:class => @review ? thead_class : 'default_calendar'}
         = render :partial => "/service_calendars/master_calendar/otf_header"
       %tbody.cell-border
         = render :partial => "/service_calendars/master_calendar/otf_line_items", :locals =>{:current_request => @service_request}

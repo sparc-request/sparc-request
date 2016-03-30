@@ -58,7 +58,7 @@ task :create_user => :environment do
 
   puts ""
   puts ""
-  puts "The ldap uid is defaulted to 'juan'"
+  puts "The ldap uid is defaulted to 'juan@musc.edu'"
   puts ""
 
   sparc_id = prompt "Enter the id of the above organization you want sparc rights for: "
@@ -86,7 +86,7 @@ task :create_user => :environment do
 
   if continue == "Yes"
     puts "Creating Juan..."
-    identity = Identity.create(:ldap_uid => 'juan',
+    identity = Identity.create(:ldap_uid => 'juan@musc.edu',
                              :email => 'juan@musc.edu',
                              :last_name => 'Castillo',
                              :first_name => 'Juan',

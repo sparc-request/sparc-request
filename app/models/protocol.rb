@@ -125,9 +125,10 @@ class Protocol < ActiveRecord::Base
   def is_study?
     self.type == 'Study'
   end
+
   # virgin project:  a project that has never been a study
   def virgin_project?
-    selected_for_epic == nil
+    selected_for_epic.nil?
   end
 
   def active?
@@ -397,13 +398,13 @@ class Protocol < ActiveRecord::Base
   end
 
   def any_service_requests_to_display?
-    return self.service_requests.detect { |sr| !['first_draft', 'draft'].include?(sr.status) }
+    return self.service_requests.detect { |sr| !['first_draft'].include?(sr.status) }
   end
 
   def has_per_patient_per_visit? current_request, portal
     return self.service_requests.detect do |sr|
       if sr.has_per_patient_per_visit_services?
-        if ['first_draft', 'draft'].include?(sr.status)
+        if ['first_draft'].include?(sr.status)
           if portal
             false
           elsif current_request == sr
@@ -419,7 +420,7 @@ class Protocol < ActiveRecord::Base
   def has_one_time_fees? current_request, portal
     return self.service_requests.detect do |sr|
       if sr.has_one_time_fee_services?
-        if ['first_draft', 'draft'].include?(sr.status)
+        if ['first_draft'].include?(sr.status)
           if portal
             false
           elsif current_request == sr
@@ -435,7 +436,7 @@ class Protocol < ActiveRecord::Base
   def direct_cost_total service_request
     total = 0
     self.service_requests.each do |sr|
-      next if ['first_draft', 'draft'].include?(sr.status) && sr != service_request
+      next if ['first_draft'].include?(sr.status) && sr != service_request
       total += sr.direct_cost_total
     end
     return total

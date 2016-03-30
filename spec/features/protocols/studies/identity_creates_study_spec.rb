@@ -46,10 +46,6 @@ RSpec.feature "User wants to create a Study", js: true do
 
   #TODO: Add Authorized Users Specs
   context 'and clicks the New Study button' do
-    scenario 'and sees the Protocol Information form' do
-      page.find '#new_study'
-    end
-
     scenario 'and sees the cancel button' do
       expect(page).to have_link 'Cancel'
     end
@@ -80,7 +76,7 @@ RSpec.feature "User wants to create a Study", js: true do
     end
 
 
-    context 'and submits the form after selecting Publish to Epic and not filling out questions' do
+    context 'and submits the form after selecting Publish to Epic' do
       
       before :each do
         service_request.update_attribute(:status, 'first_draft')
@@ -98,21 +94,6 @@ RSpec.feature "User wants to create a Study", js: true do
         click_link 'New Research Study'
         wait_for_javascript_to_finish
         when_i_fill_out_the_protocol_information
-      end
-
-      scenario 'and sees some errors' do
-        when_i_select_publish_study_to_epic
-        when_i_set_question_1_to "No"
-        when_i_submit_the_form
-        then_i_should_see_errors_of_type 'protocol information publish to epic'
-      end
-
-      scenario 'and sees some errors' do
-        when_i_select_publish_study_to_epic
-        when_i_set_question_1_to "No"
-        when_i_set_question_2_to "Yes"
-        when_i_submit_the_form
-        then_i_should_see_errors_of_type 'protocol information publish to epic'
       end
 
       scenario 'and sees no errors' do
@@ -145,10 +126,6 @@ RSpec.feature "User wants to create a Study", js: true do
         select 'College Department', from: 'study_funding_source'
         click_link 'Continue'
         wait_for_javascript_to_finish
-      end
-
-      scenario 'and sees the Authorized Users page' do
-        expect(page).to have_content 'Add Users'
       end
 
       scenario 'and sees the go back button' do
@@ -291,25 +268,6 @@ RSpec.feature "User wants to create a Study", js: true do
         expect(page).to have_selector("a.save span", text: text)
       else
         puts "An unexpected nav button text was found in then_i_should_see_the_nav_button_with_text. Perhaps there was a typo?"
-    end
-  end
-
-  def then_i_should_see_errors_of_type error_type
-    case error_type
-      when 'protocol information required fields'
-        expect(page).to have_content("Short title can't be blank")
-        expect(page).to have_content("Title can't be blank")
-        expect(page).to have_content("Funding status can't be blank")
-        expect(page).to have_content("Sponsor name can't be blank")
-      when 'protocol information funding source'
-        expect(page).to have_content("Funding source You must select a funding source")
-      when 'protocol information potential funding source'  
-        expect(page).to have_content("Potential funding source You must select a potential funding source")
-      when 'protocol information publish to epic'
-        expect(page).to have_content("Study type questions must be selected")
-      else
-        puts "An unexpected error was found in then_i_should_see_errors_of_type. Perhaps there was a typo?"
-        expect(0).to eq(1)
     end
   end
 

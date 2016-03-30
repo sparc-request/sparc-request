@@ -96,6 +96,34 @@ $(document).ready ->
   $('.service_rate').live('blur', ->
     $(this).formatCurrency()
   )
+
+  $('[display="Federal Rate"]').live('change', ->
+    $(this).formatCurrency()
+  )
+
+  $('[display="Corporate Rate"]').live('change', ->
+    $(this).formatCurrency()
+  )
+
+  $('[display="Other Rate"]').live('change', ->
+    $(this).formatCurrency()
+  )
+
+  $('[display="Member Rate"]').live('change', ->
+    $(this).formatCurrency()
+  )
+
+  $('#provider_subsidy_map_attributes_max_dollar_cap').live('change', ->
+    $(this).formatCurrency()
+  )
+
+  $('#program_subsidy_map_attributes_max_dollar_cap').live('change', ->
+    $(this).formatCurrency()
+  )
+
+  $('#core_subsidy_map_attributes_max_dollar_cap').live('change', ->
+    $(this).formatCurrency()
+  )
   
   $('#fix_pricing_maps_dialog').dialog({
     title: "Fix Pricing Maps"

@@ -54,31 +54,14 @@ module Dashboard
         elements :filters, 'li a'
       end
 
-      sections :protocols, '#filterrific_results tr.protocols_index_row' do
-        element :id_field, 'td.id'
-        element :short_title_field, 'td.title'
-        element :primary_pi_field, 'td.pis'
-        element :requests_button, :button, 'Requests'
-        element :archive_project_button, :button, 'Archive Project'
-        element :unarchive_project_button, :button, 'Unarchive Project'
-        element :archive_study_button, :button, 'Archive Study'
-        element :unarchive_study_button, :button, 'Unarchive Study'
-
-        def id
-          id_field.text
+      section :search_results, '.panel', text: /(Displaying all [\d]+ protocols)|(Displaying protocols)|(Displaying 1 protocol)|(No protocols found)/ do
+        sections :protocols, 'tbody tr.protocols_index_row' do
+          element :requests_button, :button, 'Requests'
+          element :archive_project_button, :button, 'Archive Project'
+          element :unarchive_project_button, :button, 'Unarchive Project'
+          element :archive_study_button, :button, 'Archive Study'
+          element :unarchive_study_button, :button, 'Unarchive Study'
         end
-
-        def short_title
-          short_title_field.text
-        end
-
-        def primary_pis
-          primary_pi_field.text
-        end
-      end
-
-      def displayed_protocol_ids
-        protocols.map { |p| p.root_element['data-protocol-id'].to_i }
       end
 
       section :requests_modal, '#requests-modal' do
@@ -98,7 +81,7 @@ module Dashboard
         end
       end
 
-      section :filter_form_modal, 'form.new_protocol_filter' do
+      section :filter_form_modal, 'form.new_protocol_filter', text: "Choose a name for your search." do
         element :name_field, '#protocol_filter_search_name'
         element :save_button, 'input.btn[value="Save"]'
       end

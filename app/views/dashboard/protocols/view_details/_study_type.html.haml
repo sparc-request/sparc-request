@@ -17,9 +17,19 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-= render partial: 'dashboard/protocols/view_details/study_information', locals: { protocol: protocol }
-= render partial: 'dashboard/protocols/view_details/optional_information', locals: { protocol: protocol }
-= render partial: 'dashboard/protocols/view_details/research_involving', locals: { protocol: protocol }
-= render partial: 'dashboard/protocols/view_details/study_type', locals: { protocol: protocol }
-= render partial: 'dashboard/protocols/view_details/impact_areas', locals: { protocol: protocol }
-= render partial: 'dashboard/protocols/view_details/affiliations', locals: { protocol: protocol }
+.panel.panel-default
+  .panel-heading
+    %h5
+      %strong
+        = t(:dashboard)[:protocols][:view_details][:studies][:study_type][:header]
+  - if protocol.study_types.any?
+    %table.table
+      %tbody
+        - protocol.study_types.each do |study_type|
+          %tr.row
+            %td
+              .col-lg-12
+                = "- " + StudyType::TYPES[study_type.name]
+  - else
+    .panel-body
+      = render partial: 'shared/alert', locals: { message: t(:dashboard)[:protocols][:view_details][:studies][:study_type][:none] }

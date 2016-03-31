@@ -72,7 +72,6 @@ module Dashboard
         end
       end
 
-
       # will appear under Filter Protocols pane, if user has any
       section :recently_saved_filters, ".panel", text: "Recently Saved Filters" do
         elements :filters, "li a"

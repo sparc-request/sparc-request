@@ -56,6 +56,18 @@ FactoryGirl.define do
       potential_funding_source "federal"
     end
 
+    trait :project do
+      type "Project"
+    end
+
+    trait :archived do
+      archived true
+    end
+
+    trait :unarchived do
+      archived false
+    end
+
     trait :with_sub_service_request_in_cwf do
       after(:create) do |protocol, evaluator|
         service_request = create(:service_request, protocol: protocol)
@@ -74,6 +86,7 @@ FactoryGirl.define do
       project_rights nil
       role nil
       primary_pi nil
+      project_role nil
     end
 
     # TODO: get this to work!
@@ -101,9 +114,16 @@ FactoryGirl.define do
       if evaluator.primary_pi
         protocol.project_roles << create(:project_role, protocol_id: protocol.id, identity_id: evaluator.primary_pi.id, project_rights: 'approve', role: 'primary-pi')
       end
+
+      if evaluator.project_role
+        protocol.project_roles << create(:project_role, evaluator.project_role)
+      end
     end
 
     factory :protocol_without_validations, traits: [:without_validations]
+    factory :project_without_validations, traits: [:without_validations, :project]
+    factory :unarchived_project_without_validations, traits: [:without_validations, :project, :unarchived]
+    factory :archived_project_without_validations, traits: [:without_validations, :project, :archived]
     factory :protocol_federally_funded, traits: [:funded, :federal]
     factory :protocol_with_sub_service_request_in_cwf, traits: [:with_sub_service_request_in_cwf, :funded, :federal]
   end

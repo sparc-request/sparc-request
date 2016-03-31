@@ -118,7 +118,6 @@ class Protocol < ActiveRecord::Base
 
   validation_group :user_details do
     validate :validate_proxy_rights
-    validate :requester_included, :on => :create
     validate :primary_pi_exists
   end
 
@@ -293,10 +292,6 @@ class Protocol < ActiveRecord::Base
 
   def emailed_associated_users
     project_roles.reject {|pr| pr.project_rights == 'none'}
-  end
-
-  def requester_included
-    errors.add(:base, "You must add yourself as an authorized user") unless project_roles.map(&:identity_id).include?(requester_id.to_i)
   end
 
   def primary_pi_exists

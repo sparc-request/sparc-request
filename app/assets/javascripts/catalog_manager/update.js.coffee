@@ -36,7 +36,7 @@ $(document).ready ->
     $('.custom_error_field').removeClass('custom_error_field')
     
   cannot_contain_letters = (selector) ->
-    $(selector).val().match(/^\d{1,3}(,\d{3})*(\.\d+)?$/) || [null]
+    $(selector).val().match(/^\d{0,3}((,)?\d{3})*(\.\d+)?$/) || [null]
   
   validate_numbers_only = (selector) ->
     unless $(selector).val() == ''
@@ -97,21 +97,10 @@ $(document).ready ->
     $(this).formatCurrency()
   )
 
-  $('[display="Federal Rate"]').live('change', ->
+  $('[display="Federal Rate"], [display="Corporate Rate"], [display="Other Rate"], [display="Member Rate"]').live('change', ->
     $(this).formatCurrency()
   )
 
-  $('[display="Corporate Rate"]').live('change', ->
-    $(this).formatCurrency()
-  )
-
-  $('[display="Other Rate"]').live('change', ->
-    $(this).formatCurrency()
-  )
-
-  $('[display="Member Rate"]').live('change', ->
-    $(this).formatCurrency()
-  )
 
   $('#provider_subsidy_map_attributes_max_dollar_cap').live('change', ->
     $(this).formatCurrency()

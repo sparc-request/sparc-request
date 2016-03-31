@@ -83,6 +83,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
       if @protocol.project_roles.where(identity_id: current_user.id).empty?
         # if current user is not authorized, add them as an authorized user
         @protocol.project_roles.new(identity_id: current_user.id, role: 'general-access-user', project_rights: 'approve')
+        @protocol.save
       end
       
       if USE_EPIC && @protocol.selected_for_epic

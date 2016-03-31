@@ -488,7 +488,7 @@ en:
             header: "Research Involving"
             none: "No Research Types selected"
             humans:
-              header: "Human Subjects:"
+              header: "Human Subjects"
               nct_number: "NCT #:"
               hr_number: "HR #:"
               pro_number: "PRO #:"
@@ -498,18 +498,18 @@ en:
               irb_approval_date: "IRB Approval Date:"
               irb_expiration_date: "IRB Expiration Date:"
             vertebrates:
-              header: "Vertebrate Animals:"
+              header: "Vertebrate Animals"
               iacuc_number: "IACUC #:"
               iacuc_name: "Name of IACUC:"
               iacuc_approval_date: "IACUC Approval Date:"
               iacuc_expiration_date: "IACUC Expiration Date:"
             products:
-              header: "Investigational Products:"
+              header: "Investigational Products"
               ind_number: "IND #:"
               ind_on_hold: "IND on Hold?:"
               ide_number: "IDE #:"
             ip_patents: 
-              header: "IP/Patents:"
+              header: "IP/Patents"
               number: "Patent Number:"
               inventors: "Inventors:"
           study_type:

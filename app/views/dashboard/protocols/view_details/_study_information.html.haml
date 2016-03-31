@@ -110,11 +110,12 @@
       - if protocol.selected_for_epic
         %tr.row
           %td.row
-            %table.table
+            %table.table.table-bordered.table-striped
               %thead
                 %th
-                  %strong.col-lg-12
-                    = t(:dashboard)[:protocols][:view_details][:studies][:information][:study_type_questions]
+                  %h5.col-lg-12
+                    %strong
+                      = t(:dashboard)[:protocols][:view_details][:studies][:information][:study_type_questions]
               - protocol.study_type_answers.each do |answer|
                 - if answer.study_type_question.study_type_question_group.active && !answer.answer.nil?
                   %tr

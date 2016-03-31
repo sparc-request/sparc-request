@@ -32,137 +32,149 @@
     / Human Subjects
     - if research_types_info.human_subjects
       .panel-body
-        %label
-          = t(:dashboard)[:protocols][:view_details][:studies][:research_involving][:humans][:header]
-      %table.table
-        %tbody
-          %tr.row
-            %td
-              %label.col-lg-3
-                = t(:dashboard)[:protocols][:view_details][:studies][:research_involving][:humans][:nct_number]
-              .col-lg-9
-                = human_info.nct_number
-          %tr.row
-            %td
-              %label.col-lg-3
-                = t(:dashboard)[:protocols][:view_details][:studies][:research_involving][:humans][:hr_number]
-              .col-lg-9
-                = human_info.hr_number
-          %tr.row
-            %td
-              %label.col-lg-3
-                = t(:dashboard)[:protocols][:view_details][:studies][:research_involving][:humans][:pro_number]
-              .col-lg-9
-                = human_info.pro_number
-          %tr.row
-            %td
-              %label.col-lg-3
-                = t(:dashboard)[:protocols][:view_details][:studies][:research_involving][:humans][:record_irb]
-              .col-lg-9
-                = human_info.irb_of_record
-          %tr.row
-            %td
-              %label.col-lg-3
-                = t(:dashboard)[:protocols][:view_details][:studies][:research_involving][:humans][:submission_type]
-              .col-lg-9
-                = SUBMISSION_TYPES[human_info.submission_type]
-          %tr.row
-            %td
-              %label.col-lg-3
-                = t(:dashboard)[:protocols][:view_details][:studies][:research_involving][:humans][:pending_approval]
-              .col-lg-9
-                = human_info.approval_pending ? t(:constants)[:yes_select] : t(:constants)[:no_select]
-          %tr.row
-            %td
-              %label.col-lg-3
-                = t(:dashboard)[:protocols][:view_details][:studies][:research_involving][:humans][:irb_approval_date]
-              .col-lg-9
-                = human_info.irb_approval_date
+        %table.table.table-striped.table-bordered
+          %thead
+            %th
+              %h5.col-lg-12
+                %strong
+                  = t(:dashboard)[:protocols][:view_details][:studies][:research_involving][:humans][:header]
+          %tbody
+            %tr
+              %td
+                %label.col-lg-3
+                  = t(:dashboard)[:protocols][:view_details][:studies][:research_involving][:humans][:nct_number]
+                .col-lg-9
+                  = human_info.nct_number
+            %tr
+              %td
+                %label.col-lg-3
+                  = t(:dashboard)[:protocols][:view_details][:studies][:research_involving][:humans][:hr_number]
+                .col-lg-9
+                  = human_info.hr_number
+            %tr
+              %td
+                %label.col-lg-3
+                  = t(:dashboard)[:protocols][:view_details][:studies][:research_involving][:humans][:pro_number]
+                .col-lg-9
+                  = human_info.pro_number
+            %tr
+              %td
+                %label.col-lg-3
+                  = t(:dashboard)[:protocols][:view_details][:studies][:research_involving][:humans][:record_irb]
+                .col-lg-9
+                  = human_info.irb_of_record
+            %tr
+              %td
+                %label.col-lg-3
+                  = t(:dashboard)[:protocols][:view_details][:studies][:research_involving][:humans][:submission_type]
+                .col-lg-9
+                  = SUBMISSION_TYPES[human_info.submission_type]
+            %tr
+              %td
+                %label.col-lg-3
+                  = t(:dashboard)[:protocols][:view_details][:studies][:research_involving][:humans][:pending_approval]
+                .col-lg-9
+                  = human_info.approval_pending ? t(:constants)[:yes_select] : t(:constants)[:no_select]
+            %tr
+              %td
+                %label.col-lg-3
+                  = t(:dashboard)[:protocols][:view_details][:studies][:research_involving][:humans][:irb_approval_date]
+                .col-lg-9
+                  = human_info.irb_approval_date
 
-          %tr.row
-            %td
-              %label.col-lg-3
-                = t(:dashboard)[:protocols][:view_details][:studies][:research_involving][:humans][:irb_expiration_date]
-              .col-lg-9
-                = human_info.irb_expiration_date
+            %tr
+              %td
+                %label.col-lg-3
+                  = t(:dashboard)[:protocols][:view_details][:studies][:research_involving][:humans][:irb_expiration_date]
+                .col-lg-9
+                  = human_info.irb_expiration_date
 
     / Vertebrate Animals
     - if research_types_info.vertebrate_animals
       .panel-body
-        %label
-          = t(:dashboard)[:protocols][:view_details][:studies][:research_involving][:vertebrates][:header]
-      %table.table
-        %tbody
-          %tr.row
-            %td
-              %label.col-lg-3
-                = t(:dashboard)[:protocols][:view_details][:studies][:research_involving][:vertebrates][:iacuc_number]
-              .col-lg-9
-                = vertebrate_info.iacuc_number
-          %tr.row
-            %td
-              %label.col-lg-3
-                = t(:dashboard)[:protocols][:view_details][:studies][:research_involving][:vertebrates][:iacuc_name]
-              .col-lg-9
-                = vertebrate_info.name_of_iacuc
-          %tr.row
-            %td
-              %label.col-lg-3
-                = t(:dashboard)[:protocols][:view_details][:studies][:research_involving][:vertebrates][:iacuc_approval_date]
-              .col-lg-9
-                = vertebrate_info.iacuc_approval_date
-          %tr.row
-            %td
-              %label.col-lg-3
-                = t(:dashboard)[:protocols][:view_details][:studies][:research_involving][:vertebrates][:iacuc_expiration_date]
-              .col-lg-9
-                = vertebrate_info.iacuc_expiration_date
+        %table.table.table-striped.table-bordered
+          %thead
+            %th
+              %h5.col-lg-12
+                %strong
+                  = t(:dashboard)[:protocols][:view_details][:studies][:research_involving][:vertebrates][:header]
+          %tbody
+            %tr
+              %td
+                %label.col-lg-3
+                  = t(:dashboard)[:protocols][:view_details][:studies][:research_involving][:vertebrates][:iacuc_number]
+                .col-lg-9
+                  = vertebrate_info.iacuc_number
+            %tr
+              %td
+                %label.col-lg-3
+                  = t(:dashboard)[:protocols][:view_details][:studies][:research_involving][:vertebrates][:iacuc_name]
+                .col-lg-9
+                  = vertebrate_info.name_of_iacuc
+            %tr
+              %td
+                %label.col-lg-3
+                  = t(:dashboard)[:protocols][:view_details][:studies][:research_involving][:vertebrates][:iacuc_approval_date]
+                .col-lg-9
+                  = vertebrate_info.iacuc_approval_date
+            %tr
+              %td
+                %label.col-lg-3
+                  = t(:dashboard)[:protocols][:view_details][:studies][:research_involving][:vertebrates][:iacuc_expiration_date]
+                .col-lg-9
+                  = vertebrate_info.iacuc_expiration_date
 
     / Investigational Products
     - if research_types_info.investigational_products
       .panel-body
-        %label
-          = t(:dashboard)[:protocols][:view_details][:studies][:research_involving][:products][:header]
-      %table.table
-        %tbody
-          %tr.row
-            %td
-              %label.col-lg-3
-                = t(:dashboard)[:protocols][:view_details][:studies][:research_involving][:products][:ind_number]
-              .col-lg-9
-                = products_info.ind_number
-          %tr.row
-            %td
-              %label.col-lg-3
-                = t(:dashboard)[:protocols][:view_details][:studies][:research_involving][:products][:ind_on_hold]
-              .col-lg-9
-                = products_info.ind_on_hold ? t(:constants)[:yes_select] : t(:constants)[:no_select]
-          %tr.row
-            %td
-              %label.col-lg-3
-                = t(:dashboard)[:protocols][:view_details][:studies][:research_involving][:products][:ide_number]
-              .col-lg-9
-                = products_info.ide_number
+        %table.table.table-striped.table-bordered
+          %thead
+            %th
+              %h5.col-lg-12
+                %strong
+                  = t(:dashboard)[:protocols][:view_details][:studies][:research_involving][:products][:header]
+          %tbody
+            %tr
+              %td
+                %label.col-lg-3
+                  = t(:dashboard)[:protocols][:view_details][:studies][:research_involving][:products][:ind_number]
+                .col-lg-9
+                  = products_info.ind_number
+            %tr
+              %td
+                %label.col-lg-3
+                  = t(:dashboard)[:protocols][:view_details][:studies][:research_involving][:products][:ind_on_hold]
+                .col-lg-9
+                  = products_info.ind_on_hold ? t(:constants)[:yes_select] : t(:constants)[:no_select]
+            %tr
+              %td
+                %label.col-lg-3
+                  = t(:dashboard)[:protocols][:view_details][:studies][:research_involving][:products][:ide_number]
+                .col-lg-9
+                  = products_info.ide_number
 
     / IP/Patents
     - if research_types_info.ip_patents
       .panel-body
-        %label
-          = t(:dashboard)[:protocols][:view_details][:studies][:research_involving][:ip_patents][:header]
-      %table.table
-        %tbody
-          %tr.row
-            %td
-              %label.col-lg-3
-                = t(:dashboard)[:protocols][:view_details][:studies][:research_involving][:ip_patents][:number]
-              .col-lg-9
-                = ip_patent_info.patent_number
-          %tr.row
-            %td
-              %label.col-lg-3
-                = t(:dashboard)[:protocols][:view_details][:studies][:research_involving][:ip_patents][:inventors]
-              .col-lg-9
-                = ip_patent_info.inventors
+        %table.table.table-striped.table-bordered
+          %thead
+            %th
+              %h5.col-lg-12
+                %strong
+                  = t(:dashboard)[:protocols][:view_details][:studies][:research_involving][:ip_patents][:header]
+          %tbody
+            %tr
+              %td
+                %label.col-lg-3
+                  = t(:dashboard)[:protocols][:view_details][:studies][:research_involving][:ip_patents][:number]
+                .col-lg-9
+                  = ip_patent_info.patent_number
+            %tr
+              %td
+                %label.col-lg-3
+                  = t(:dashboard)[:protocols][:view_details][:studies][:research_involving][:ip_patents][:inventors]
+                .col-lg-9
+                  = ip_patent_info.inventors
   - else
     .panel-body
       = render partial: 'shared/alert', locals: { message: t(:dashboard)[:protocols][:view_details][:studies][:research_involving][:none] }

@@ -6,7 +6,7 @@ task :has_duplicate_line_items_visits => :environment do
   end
 
   def display_protocol_status(has_duplicates, protocol_id)
-    if has_duplicates
+    if has_duplicates == true
       puts "Protocol #{protocol_id} needs to be repushed to Epic"
     else
       puts "No duplicates were found for #{protocol_id}"
@@ -29,7 +29,6 @@ task :has_duplicate_line_items_visits => :environment do
   puts "This task will determine if a given protocol needs to be repushed to Epic"
   puts "due to it having duplicate line items visits."
   continue = 'Yes'
-  has_duplicates = false
 
   while continue == 'Yes'
     protocol_id = (prompt "Enter a protocol id to check: ").to_i

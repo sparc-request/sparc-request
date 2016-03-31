@@ -14,16 +14,17 @@ task :has_duplicate_line_items_visits => :environment do
   end
 
   def check_arms(arms)
+    has_duplicates = false
     arms.each do |arm|
       livs = arm.line_items_visits.group_by(&:line_item_id)
       livs.values.each do |liv_array|
         if liv_array.size > 1
-          return true
+          has_duplicates = true
         end
       end
-
-      return false
     end
+
+    has_duplicates
   end
 
   puts "This task will determine if a given protocol needs to be repushed to Epic"

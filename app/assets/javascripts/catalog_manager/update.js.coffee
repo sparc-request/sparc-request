@@ -36,7 +36,7 @@ $(document).ready ->
     $('.custom_error_field').removeClass('custom_error_field')
     
   cannot_contain_letters = (selector) ->
-    $(selector).val().match(/^[0-9]\d*(\.\d+)?$/) || [null]
+    $(selector).val().match(/^\d{1,3}(,\d{3})*(\.\d+)?$/) || [null]
   
   validate_numbers_only = (selector) ->
     unless $(selector).val() == ''

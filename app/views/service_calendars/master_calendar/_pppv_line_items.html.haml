@@ -21,7 +21,7 @@
 %tr.section_header
   %th{:colspan => (@portal and !@merged) ? 11 : 13}= t(:calendar_page)[:per_patient] + " -- " + arm.name
   - unless @merged || (@tab == 'billing_strategy') || (@tab == 'quantity') || (@review)
-    %th
+    %th{:colspan => 3}
 
 
 - if @merged #display merged calendar pppv line items
@@ -97,7 +97,10 @@
         %th &nbsp;
     - else
       %tr.sub_section_header
-        %th{:colspan => 13}= value[:name]
+        - if @portal
+          %th{:colspan => 11}= value[:name]
+        - else
+          %th{:colspan => 13}= value[:name]
         - unless (@tab == 'quantity')
           %th
 

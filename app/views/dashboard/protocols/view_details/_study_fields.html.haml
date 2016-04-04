@@ -17,19 +17,9 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-#protocol
-  .row.container-fluid
-    .panel.panel-default
-      .panel-heading
-        %h4.panel-title
-          = t(:protocols)[:change_type][:header]
-      .panel-body.container-fluid
-        .form-group.row
-          = label_tag "protocol_type", t(:protocols)[:change_type][:type], class: 'col-lg-2 control-label'
-          .col-lg-10
-            = select_tag "protocol_type", options_for_select([[t(:protocols)[:change_type][:project], 'Project'], [t(:protocols)[:change_type][:study], 'Study']], @protocol_type), class: 'selectpicker'
-            %button.btn.btn-warning#protocol_type_button{ data: {protocol_id: @protocol.id } }
-              = t(:protocols)[:change_type][:change_button]
-
-  = render partial: 'dashboard/protocols/form/protocol_form', locals: { protocol: @protocol, protocol_type: @protocol_type }
+= render partial: 'dashboard/protocols/view_details/study_information', locals: { protocol: protocol }
+= render partial: 'dashboard/protocols/view_details/optional_information', locals: { protocol: protocol }
+= render partial: 'dashboard/protocols/view_details/research_involving', locals: { protocol: protocol }
+= render partial: 'dashboard/protocols/view_details/study_type', locals: { protocol: protocol }
+= render partial: 'dashboard/protocols/view_details/impact_areas', locals: { protocol: protocol }
+= render partial: 'dashboard/protocols/view_details/affiliations', locals: { protocol: protocol }

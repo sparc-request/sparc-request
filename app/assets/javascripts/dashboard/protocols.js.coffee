@@ -25,12 +25,6 @@
 $(document).ready ->
   Sparc.protocol =
     ready: ->
-      $(document).on 'click', '.view-full-calendar-button', ->
-        protocol_id = $(this).data('protocol-id')
-        $.ajax
-          method: 'get'
-          url: "/dashboard/service_calendars/view_full_calendar.js?portal=true&protocol_id=#{protocol_id}"
-
       $(document).on 'click', '.service-request-button', ->
         if $(this).data('permission')
           window.location = $(this).data('url')
@@ -97,9 +91,15 @@ $(document).ready ->
         $('.pagination').html 'Page is loading...'
         $.getScript @href
         false
-      #  Protocol Index End
+      # Protocol Index End
 
       # Protocol Show Begin
+      $(document).on 'click', '.view-protocol-details-button', ->
+        protocol_id = $(this).data('protocol-id')
+        $.ajax
+          method: 'get'
+          url: "/dashboard/protocols/#{protocol_id}/view_details"
+
       $(document).on 'click', '.edit-protocol-information-button', ->
         if $(this).data('permission')
           protocol_id = $(this).data('protocol-id')
@@ -107,6 +107,12 @@ $(document).ready ->
         else
           $('.permissions-dialog').dialog('open')
           $('.permissions-dialog .text').html('Edit.')
+
+      $(document).on 'click', '.view-full-calendar-button', ->
+        protocol_id = $(this).data('protocol-id')
+        $.ajax
+          method: 'get'
+          url: "/dashboard/service_calendars/view_full_calendar.js?portal=true&protocol_id=#{protocol_id}"
 
       $(document).on 'click', '.view-sub-service-request-button', ->
         id = $(this).data('sub-service-request-id')

@@ -17,19 +17,48 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+.panel.panel-default
+  .panel-heading
+    %h5
+      %strong
+        = t(:dashboard)[:protocols][:view_details][:projects][:information][:header]
+  .panel-body
+    .form-group.row
+      %label.col-lg-3
+        = t(:dashboard)[:protocols][:view_details][:projects][:information][:short_title]
+      .col-lg-9
+        = protocol.short_title
+    .form-group.row
+      %label.col-lg-3
+        = t(:dashboard)[:protocols][:view_details][:projects][:information][:title]
+      .col-lg-9
+        = protocol.title
+    .form-group.row
+      %label.col-lg-3
+        = t(:dashboard)[:protocols][:view_details][:projects][:information][:funding_status]
+      .col-lg-9
+        = protocol.funding_status
 
-#protocol
-  .row.container-fluid
-    .panel.panel-default
-      .panel-heading
-        %h4.panel-title
-          = t(:protocols)[:change_type][:header]
-      .panel-body.container-fluid
-        .form-group.row
-          = label_tag "protocol_type", t(:protocols)[:change_type][:type], class: 'col-lg-2 control-label'
-          .col-lg-10
-            = select_tag "protocol_type", options_for_select([[t(:protocols)[:change_type][:project], 'Project'], [t(:protocols)[:change_type][:study], 'Study']], @protocol_type), class: 'selectpicker'
-            %button.btn.btn-warning#protocol_type_button{ data: {protocol_id: @protocol.id } }
-              = t(:protocols)[:change_type][:change_button]
+    /funding source
+    .form-group.row
+      %label.col-lg-3
+        - if protocol.funding_status == "funded"
+          = t(:dashboard)[:protocols][:view_details][:projects][:information][:funding_source]
+        - else
+          = t(:dashboard)[:protocols][:view_details][:projects][:information][:potential_funding_source]
+      .col-lg-9
+        = protocol.display_funding_source_value
 
-  = render partial: 'dashboard/protocols/form/protocol_form', locals: { protocol: @protocol, protocol_type: @protocol_type }
+    .form-group.row
+      %label.col-lg-3
+        = t(:dashboard)[:protocols][:view_details][:projects][:information][:description]
+      .col-lg-9
+        = protocol.brief_description
+
+    /indirect cost
+    - if USE_INDIRECT_COST
+      .form-group.row
+        %label.col-lg-3
+          = t(:dashboard)[:protocols][:view_details][:projects][:information][:rate]
+        .col-lg-9
+          = protocol.indirect_cost_rate

@@ -42,7 +42,7 @@ class Dashboard::ArmsController < Dashboard::BaseController
       @selected_arm.default_visit_days
       @selected_arm.reload
       # If any sub service requests under this arm's protocol are in CWF we need to build patient calendars
-      if @protocol.sub_service_requests.any?(&:in_work_fulfillment?)
+      if @protocol.sub_service_requests.in_work_fulfillment.any?
         @selected_arm.populate_subjects
       end
       flash[:success] = t(:dashboard)[:arms][:created]

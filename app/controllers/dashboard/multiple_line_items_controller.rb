@@ -40,19 +40,19 @@ class Dashboard::MultipleLineItemsController < Dashboard::BaseController
     @service_request = ServiceRequest.find(params[:service_request_id])
     @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
     @service = Service.find(params[:add_service_id])
-    existing_service_ids = @service_request.line_items.map(&:service_id)
+    existing_service_ids = @service_request.line_items.pluck(:service_id)
 
     # # we don't have arms and we are adding a new per patient per visit service
-    if @service_request.arms.empty? and not @service.one_time_fee
+    if @service_request.arms.empty? && !@service.one_time_fee
       @service_request.protocol.arms.create(name: 'Screening Phase', visit_count: 1, subject_count: 1)
     end
 
     ActiveRecord::Base.transaction do
-      if @new_line_items = @service_request.create_line_items_for_service(
-        service: @service,
-        optional: true,
-        existing_service_ids: existing_service_ids,
-        allow_duplicates: true)
+      if (@new_line_items = @service_request.create_line_items_for_service(
+          service: @service,
+          optional: true,
+          existing_service_ids: existing_service_ids,
+          allow_duplicates: true))
 
         @new_line_items.each do |line_item|
           line_item.update_attribute(:sub_service_request_id, @sub_service_request.id)
@@ -70,10 +70,10 @@ class Dashboard::MultipleLineItemsController < Dashboard::BaseController
     # called to render modal to mass remove line items
     @service_request = ServiceRequest.find(params[:service_request_id])
     @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
-    @protocol = Protocol.find params[:protocol_id]
+    @protocol = Protocol.find(params[:protocol_id])
     @all_services = @sub_service_request.line_items.map(&:service).uniq
     @service = params[:service_id].present? ? Service.find(params[:service_id]) : @all_services.first
-    @arms = @protocol.arms.select{ |arm| arm.line_items.detect{|li| li.service_id == @service.id} }
+    @arms = @protocol.arms.joins(:line_items).where(line_items: { service_id: @service.id })
   end
 
   def destroy_line_items
@@ -82,8 +82,8 @@ class Dashboard::MultipleLineItemsController < Dashboard::BaseController
     @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
     @service = Service.find(params[:remove_service_id])
 
-    @line_items = @sub_service_request.line_items.select{ |li| li.service_id == @service.id }
-    @line_items.each{ |li| li.destroy }
+    @line_items = @sub_service_request.line_items.where(service_id: @service.id)
+    @line_items.each(&:destroy)
     flash.now[:alert] = t(:dashboard)[:multiple_line_items][:destroyed]
   end
 end

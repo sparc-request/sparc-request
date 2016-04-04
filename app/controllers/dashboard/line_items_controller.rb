@@ -53,7 +53,7 @@ class Dashboard::LineItemsController < Dashboard::BaseController
     if params[:line_item][:service_id].blank?
       @sub_service_request.errors.add(:service, 'must be selected')
       @errors = @sub_service_request.errors
-    elsif not @sub_service_request.create_line_item(params[:line_item])
+    elsif !@sub_service_request.create_line_item(params[:line_item])
       @errors = @sub_service_request.errors
     else
       flash[:success] = t(:dashboard)[:study_level_activities][:created]

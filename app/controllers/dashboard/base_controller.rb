@@ -37,7 +37,7 @@ class Dashboard::BaseController < ActionController::Base
   end
 
   def clean_errors errors
-    errors.to_a.map { |k,v| "#{k.humanize} #{v}".rstrip + '.' }
+    errors.to_a.map { |k, v| "#{k.humanize} #{v}".rstrip + '.' }
   end
 
   private

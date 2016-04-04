@@ -44,13 +44,13 @@ class Dashboard::SubsidiesController < Dashboard::BaseController
   end
 
   def edit
-    @subsidy = PendingSubsidy.find params[:id]
+    @subsidy = PendingSubsidy.find(params[:id])
     @header_text = t(:dashboard)[:subsidies][:edit]
     @admin = params[:admin] == 'true'
   end
 
   def update
-    @subsidy = PendingSubsidy.find params[:id]
+    @subsidy = PendingSubsidy.find(params[:id])
     @sub_service_request = @subsidy.sub_service_request
     format_pi_contribution_param
     if @subsidy.update_attributes(params[:pending_subsidy])
@@ -66,7 +66,7 @@ class Dashboard::SubsidiesController < Dashboard::BaseController
   end
 
   def destroy
-    @subsidy = Subsidy.find params[:id]
+    @subsidy = Subsidy.find(params[:id])
     @sub_service_request = @subsidy.sub_service_request
     if @subsidy.destroy
       @admin = true
@@ -75,8 +75,8 @@ class Dashboard::SubsidiesController < Dashboard::BaseController
   end
 
   def approve
-    subsidy = PendingSubsidy.find params[:id]
-    subsidy = subsidy.grant_approval current_user
+    subsidy = PendingSubsidy.find(params[:id])
+    subsidy = subsidy.grant_approval(current_user)
     @sub_service_request = subsidy.sub_service_request.reload
     @admin = true
     flash[:success] = t(:dashboard)[:subsidies][:approved]

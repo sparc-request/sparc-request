@@ -21,8 +21,8 @@
 class Dashboard::DocumentsController < Dashboard::BaseController
 
   def index
-    sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
-    @documents = sub_service_request.documents
+    @documents = Document.joins(:documents_sub_service_requests).
+        where(documents_sub_service_requests: { sub_service_request_id: params[:sub_service_request_id] })
   end
 
   def new

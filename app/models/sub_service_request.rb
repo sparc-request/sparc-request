@@ -71,6 +71,8 @@ class SubServiceRequest < ActiveRecord::Base
   accepts_nested_attributes_for :line_items, allow_destroy: true
   accepts_nested_attributes_for :payments, allow_destroy: true
 
+  scope :in_work_fulfillment, -> { where(in_work_fulfillment: true) }
+
   def consult_arranged_date=(date)
     write_attribute(:consult_arranged_date, Time.strptime(date, "%m-%d-%Y")) if date.present?
   end

@@ -84,6 +84,8 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
       @protocol_role.save
       flash.now[:success] = 'Authorized User Added!'
       if SEND_AUTHORIZED_USER_EMAILS
+        # TODO rewrite #emailed_associated_users to return ActiveRecord::Relation, then
+        # join on identities and filter out those with blank emails
         @protocol.emailed_associated_users.each do |project_role|
           UserMailer.authorized_user_changed(project_role.identity, @protocol).deliver unless project_role.identity.email.blank?
         end
@@ -109,14 +111,14 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
 
     if @protocol_role.fully_valid?
       if @protocol_role.role == 'primary-pi'
-        @protocol.project_roles.where(role: 'primary-pi').each do |pr|
-          unless pr.identity_id == @protocol_role.identity_id
-            pr.update_attributes(project_rights: 'request', role: 'general-access-user')
-          end
+        @protocol.project_roles.where(role: 'primary-pi').where.not(identity_id: @protocol_role.identity_id).each do |pr|
+          pr.update_attributes(project_rights: 'request', role: 'general-access-user')
         end
       end
       @protocol_role.save
       flash.now[:success] = 'Authorized User Updated!'
+      # TODO rewrite #emailed_associated_users to return ActiveRecord::Relation, then
+      # join on identities and filter out those with blank emails
       if SEND_AUTHORIZED_USER_EMAILS
         @protocol.emailed_associated_users.each do |project_role|
           UserMailer.authorized_user_changed(project_role.identity, @protocol).deliver unless project_role.identity.email.blank?

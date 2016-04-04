@@ -65,8 +65,8 @@ class Dashboard::NotificationsController < Dashboard::BaseController
     message_params = params[:notification].delete(:message)
     if message_params[:to].present?
       @recipient = Identity.find(message_params[:to])
-      @notification = Notification.new(params[:notification].merge!({ originator_id: @user.id, read_by_originator: true, other_user_id: @recipient.id, read_by_other_user: false }))
-      @message = @notification.messages.new(message_params.merge!({ from: @user.id, email: @recipient.email }))
+      @notification = Notification.new(params[:notification].merge(originator_id: @user.id, read_by_originator: true, other_user_id: @recipient.id, read_by_other_user: false))
+      @message = @notification.messages.new(message_params.merge(from: @user.id, email: @recipient.email))
       if @message.valid?
         @notification.save
         @message.save

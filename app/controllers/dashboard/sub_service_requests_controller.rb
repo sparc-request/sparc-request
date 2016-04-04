@@ -43,7 +43,7 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
         @pages = {}
         @service_request.arms.each do |arm|
           new_page = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i
-          @pages[arm.id] = @service_request.set_visit_page new_page, arm
+          @pages[arm.id] = @service_request.set_visit_page(new_page, arm)
         end
         render
       }
@@ -51,7 +51,7 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
         @admin = true
         session[:service_calendar_pages] = params[:pages] if params[:pages]
         session[:breadcrumbs].add_crumbs(protocol_id: @sub_service_request.protocol.id, sub_service_request_id: @sub_service_request.id).clear(:notifications)
-        if @user.can_edit_fulfillment? @sub_service_request.organization
+        if @user.can_edit_fulfillment?(@sub_service_request.organization)
           @service_request = @sub_service_request.service_request
           @protocol = @sub_service_request.protocol
           render
@@ -74,7 +74,7 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
     @pages = {}
     @service_request.arms.each do |arm|
       new_page = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i
-      @pages[arm.id] = @service_request.set_visit_page new_page, arm
+      @pages[arm.id] = @service_request.set_visit_page(new_page, arm)
     end
     @tab = 'calendar'
   end
@@ -91,18 +91,15 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
     @protocol = @sub_service_request.protocol
     if @sub_service_request.destroy
       # Delete all related toast messages
-      ToastMessage.where(sending_class_id: params[:id]).where(sending_class: 'SubServiceRequest').each do |toast|
-        toast.destroy
-      end
+      ToastMessage.where(sending_class_id: params[:id], sending_class: 'SubServiceRequest').each(&:destroy)
 
       # notify users with view rights or above of deletion
-      @protocol.project_roles.each do |project_role|
-        next if project_role.project_rights == 'none'
+      @protocol.project_roles.where.not(project_rights: "none").each do |project_role|
         Notifier.sub_service_request_deleted(project_role.identity, @sub_service_request, current_user).deliver unless project_role.identity.email.blank?
       end
 
       # notify service providers
-      @sub_service_request.organization.service_providers.where('(`service_providers`.`hold_emails` != 1 OR `service_providers`.`hold_emails` IS NULL)').each do |service_provider|
+      @sub_service_request.organization.service_providers.where.not(hold_emails: true).each do |service_provider|
         Notifier.sub_service_request_deleted(service_provider.identity, @sub_service_request, current_user).deliver
       end
       flash[:alert] = 'Request Destroyed!'
@@ -118,7 +115,7 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
       @user_toasts = @user.received_toast_messages.select { |x| x.sending_class == 'SubServiceRequest' }
       @service_request = @sub_service_request.service_request
       @protocol.populate_for_edit if @protocol.type == 'Study'
-      @candidate_one_time_fees, @candidate_per_patient_per_visit = @sub_service_request.candidate_services.partition { |x| x.one_time_fee }
+      @candidate_one_time_fees, @candidate_per_patient_per_visit = @sub_service_request.candidate_services.partition(&:one_time_fee)
       @subsidy = @sub_service_request.subsidy
       @notifications = @user.all_notifications.where(sub_service_request_id: @sub_service_request.id)
       @service_list = @service_request.service_list
@@ -127,7 +124,6 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
       @selected_arm = @service_request.arms.first
 
       render action: 'show'
-
     end
   end
 
@@ -184,8 +180,7 @@ private
     xls = render_to_string '/service_requests/show', formats: [:xlsx]
 
     # send e-mail to all folks with view and above
-    @protocol.project_roles.each do |project_role|
-      next if project_role.project_rights == 'none'
+    @protocol.project_roles.where.not(project_rights: "none").each do |project_role|
       Notifier.notify_user(project_role, @service_request, xls, false, current_user).deliver_now unless project_role.identity.email.blank?
     end
 

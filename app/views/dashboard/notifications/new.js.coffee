@@ -17,7 +17,11 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
+<% if @errors.present? %> #Sending notification to self
+$('#modal_errors').html("<%= j render 'shared/modal_errors', errors: @errors %>')
+$('#user_search').val('')
+$('#loading_recipient_spinner').hide()
+<% else %>
 <% if @message.present? %> #User has been selected
 $("#modal_place").html("<%= escape_javascript(render(partial: 'dashboard/notifications/new_notification', locals: { notification: @notification, message: @message, sub_service_request_id: @sub_service_request_id })) %>");
 <% else %> #No user selected
@@ -54,6 +58,6 @@ $('#user_search').typeahead(
       identity_id: suggestion.value
 
 <% end %>
-
+<% end %>
 $(".selectpicker").selectpicker()
 $("#modal_place").modal 'show'

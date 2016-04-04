@@ -52,7 +52,7 @@ class Dashboard::NotificationsController < Dashboard::BaseController
         @notification = Notification.new
       end
 
-      if Identity.find(params[:identity_id]) == current_user
+      if params[:identity_id] == current_user.id
         @notification.errors.add(:notifications, "can't be sent to yourself.")
         @errors = @notification.errors
       end

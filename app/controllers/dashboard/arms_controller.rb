@@ -35,8 +35,8 @@ class Dashboard::ArmsController < Dashboard::BaseController
     @service_request = ServiceRequest.find(params[:service_request_id])
     @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
     name = params[:arm][:name]
-    visit_count = params[:arm][:visit_count].try(:to_i) || 1
-    subject_count = params[:arm][:subject_count].try(:to_i) || 1
+    visit_count = params[:arm][:visit_count].try(:to_i)
+    subject_count = params[:arm][:subject_count].try(:to_i)
 
     @selected_arm = @protocol.create_arm(name: name, visit_count: visit_count, subject_count: subject_count)
     if @selected_arm.valid?

@@ -75,6 +75,7 @@ $ ->
 
   $(document).on 'click', '#edit_arm_form_button', ->
     $(this).attr('disabled','disabled')
+    $(this).closest('form').submit()
 
   $(document).on 'change', "#arm_form_select", ->
     data =

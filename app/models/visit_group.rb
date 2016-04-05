@@ -45,18 +45,10 @@ class VisitGroup < ActiveRecord::Base
   after_save :set_arm_edited_flag_on_subjects
   before_destroy :remove_appointments
 
-  with_options unless: :nil? do |vg|
+  with_options if: :day? do |vg|
     # with respect to the other VisitGroups associated with the same arm
     vg.validate :day_must_be_in_order
     vg.validates :day, numericality: { only_integer: true }
-  end
-
-  def self.arel_arm_id
-    arel_table[:arm_id]
-  end
-
-  def self.arel_position
-    arel_table[:position]
   end
 
   def set_arm_edited_flag_on_subjects
@@ -95,7 +87,6 @@ class VisitGroup < ActiveRecord::Base
 
 
   private
-
   def remove_appointments
     appointments = self.appointments
     appointments.each do |app|
@@ -108,11 +99,11 @@ class VisitGroup < ActiveRecord::Base
   end
 
   def day_must_be_in_order
-    previous_days = VisitGroup.where(VisitGroup.arel_arm_id.eq(arm_id).and(
-        VisitGroup.arel_position.lt(position))).pluck(:day).compact
-    following_days = VisitGroup.where(VisitGroup.arel_arm_id.eq(arm_id).and(
-        VisitGroup.arel_position.gt(position))).pluck(:day).compact
-    unless previous_days.all? { |d| d < day } && following_days.all? { |d| d > day }
+    position_col = VisitGroup.arel_table[:position]
+    day_col = VisitGroup.arel_table[:day]
+
+    if arm.visit_groups.where(position_col.lt(position).and(day_col.gteq(day)).or(
+                              position_col.gt(position).and(day_col.lteq(day)))).any?
       errors.add(:day, 'must be in order')
     end
   end

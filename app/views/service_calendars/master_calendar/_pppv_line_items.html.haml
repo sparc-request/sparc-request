@@ -21,7 +21,7 @@
 %tr.section_header
   %th{:colspan => (@portal and !@merged) ? 11 : 13}= t(:calendar_page)[:per_patient] + " -- " + arm.name
   - unless @merged || (@tab == 'billing_strategy') || (@tab == 'quantity') || (@review)
-    %th
+    %th{:colspan => 3}
 
 
 - if @merged #display merged calendar pppv line items
@@ -97,7 +97,10 @@
         %th &nbsp;
     - else
       %tr.sub_section_header
-        %th{:colspan => 13}= value[:name]
+        - if @portal
+          %th{:colspan => 11}= value[:name]
+        - else
+          %th{:colspan => 13}= value[:name]
         - unless (@tab == 'quantity')
           %th
 
@@ -112,6 +115,7 @@
             %td= select_tag "line_item_service_id", options_for_select(candidate_service_options(@candidate_per_patient_per_visit, true), line_item.try(:service).try(:id)), :'data-line_item_id' => line_item.id, :class => 'fulfillment_data fulfillment_selecter'
           - else
             %td= line_item.service.name + ' (Disabled)'
+          %td.status= display_line_items_status(line_item)
           %td.service_rate{:class => "service_rate_#{line_items_visit.id}"}= display_service_rate line_item
           - if @study_tracker
             %td.your_cost= currency_converter line_item.applicable_rate

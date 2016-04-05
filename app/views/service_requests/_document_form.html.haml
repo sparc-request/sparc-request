@@ -61,7 +61,7 @@
           = hidden_field_tag "process_ssr_organization_ids[]", org_id, :id => 'process_ssr_organization_ids', :disabled => (@document ? false : true)
       - if count == 1
         %td{:rowspan => document_organizations.size}
-          = navigation_link button_text, 'document_management', 'upload_button blue-button btn btn-primary'
-          = link_to t("documents.cancel_button"), "javascript:void(0)", :class => "ui_close_button blue-button btn btn-danger", :id => 'cancel_upload'
-      
+          = navigation_link button_text, 'document_management', 'upload_button blue-button btn btn-primary button-hover'
+          = link_to t("documents.cancel_button"), "javascript:void(0)", :class => "ui_close_button blue-button btn btn-danger button-hover", :id => 'cancel_upload'
+
 

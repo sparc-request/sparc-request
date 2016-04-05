@@ -227,6 +227,14 @@ p.notice {
 
 /* RootView */
 
+.navbar > li > a:hover{
+    background-color:#0078AE;
+}
+
+.right-section > li > a:hover{
+    background-color:#0078AE;
+}
+
 .service-catalog {
   background: #E8E8E8;
   margin-top: -50px;
@@ -256,6 +264,10 @@ p.notice {
 
 #welcome_message .section {
   margin-top: 10px;
+}
+
+#welcome_message .section a:hover {
+  color: #0078AE;
 }
 
 #welcome_message .large_section {
@@ -294,6 +306,10 @@ p.notice {
 
 #calendar-blog .full {
   width: 100%;
+}
+
+#calendar-blog .title a:hover {
+  color: #0078AE;
 }
 
 #blog, #calendar {
@@ -387,6 +403,13 @@ h3.needed_info {
   margin: 10px;
 }
 
+/*.submit-request-button:hover,
+.faq-button:hover,
+.feedback-button a:hover {
+  color: #0078AE;
+}*/
+
+
 .quick_question_email_error {
   display: none;
   color: red;
@@ -406,7 +429,7 @@ a.catalog-button,
   text-align: center;
   padding: 5px 0px;
   cursor: pointer;
-  color: #fff !important;
+  color: #fff;
   text-decoration: none;
 }
 
@@ -427,14 +450,14 @@ a.catalog-button,
 }
 
 .blue-button a {
-  color: #fff !important;
+  color: #fff;
 }
 
 .blue-button button, .blue-button input[type=submit] {
   background: none;
   border: none;
   padding: 0;
-  color: #fff !important;
+  color: #fff;
   cursor: pointer;
 }
 
@@ -841,6 +864,30 @@ span#infotip img {
   margin-right: 8px;
 }
 
+/* Button Hover Effects */
+
+.button-hover:hover {
+  opacity: 1;
+  -webkit-animation: flash 1.0s;
+  animation: flash 1.0s;
+}
+@-webkit-keyframes flash {
+  0% {
+    opacity: .4;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+@keyframes flash {
+  0% {
+    opacity: .4;
+  }
+  100% {
+    opacity: 1;
+  }
+}
+
 /* Navigation Bar */
 
 .continue{
@@ -870,6 +917,7 @@ span#infotip img {
   padding-right: 5px !important;
   padding-top: 2px !important;
   padding-bottom: 2px !important;
+  vertical-align: bottom;
 }
 
 .continue div .return-spinner {
@@ -877,6 +925,7 @@ span#infotip img {
   padding-right: 0px !important;
   padding-top: 2px !important;
   padding-bottom: 2px !important;
+  vertical-align: bottom;
 }
 
 
@@ -890,11 +939,8 @@ span#infotip img {
   vertical-align: bottom;
 }
 
-.continue div.nav-backward img,
-.review-bottom-navigation div.return-to-step-3 img {
-  vertical-align: middle;
-  padding-right: 5px;
-  padding-bottom: 2px;
+.continue div :hover{
+    color:#FFF;
 }
 
 .continue div.exit{
@@ -913,13 +959,6 @@ span#infotip img {
   vertical-align: bottom;
   text-align: right;
 
-}
-
-.continue div.nav-forward img,
-.review-bottom-navigation div.submit-request img {
-  vertical-align: middle;
-  padding-right: 5px;
-  padding-bottom: 2px;
 }
 
 /* ReviewView */
@@ -2776,6 +2815,10 @@ table.service_calendar tbody td.visit {
 #footer a {
   text-decoration: none;
   color: #FFFFFF;
+}
+
+#footer a:hover {
+  color: #57B5DD;
 }
 
 .devise_view {

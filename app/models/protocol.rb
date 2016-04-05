@@ -421,12 +421,16 @@ class Protocol < ActiveRecord::Base
   end
 
   def create_arm(args)
-    arm = self.arms.create(args)
-    self.service_requests.each do |service_request|
-      service_request.per_patient_per_visit_line_items.each do |li|
-        arm.create_line_items_visit(li)
+    arm = self.arms.new(args)
+    if arm.valid?
+      arm.save
+      self.service_requests.each do |service_request|
+        service_request.per_patient_per_visit_line_items.each do |li|
+          arm.create_line_items_visit(li)
+        end
       end
     end
+
     # Lets return this in case we need it for something else
     arm
   end

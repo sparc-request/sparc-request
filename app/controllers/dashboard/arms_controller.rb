@@ -34,11 +34,12 @@ class Dashboard::ArmsController < Dashboard::BaseController
     @protocol = Protocol.find(params[:arm][:protocol_id])
     @service_request = ServiceRequest.find(params[:service_request_id])
     @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
-    name = params[:arm][:name] || "ARM #{@protocol.arms.count + 1}"
+    name = params[:arm][:name]
     visit_count = params[:arm][:visit_count].try(:to_i) || 1
     subject_count = params[:arm][:subject_count].try(:to_i) || 1
 
-    if (@selected_arm = @protocol.create_arm(name: name, visit_count: visit_count, subject_count: subject_count))
+    @selected_arm = @protocol.create_arm(name: name, visit_count: visit_count, subject_count: subject_count)
+    if @selected_arm.valid?
       @selected_arm.default_visit_days
       @selected_arm.reload
       # If any sub service requests under this arm's protocol are in CWF we need to build patient calendars

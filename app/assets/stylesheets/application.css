@@ -227,14 +227,6 @@ p.notice {
 
 /* RootView */
 
-.navbar > li > a:hover{
-    background-color:#0078AE;
-}
-
-.right-section > li > a:hover{
-    background-color:#0078AE;
-}
-
 .service-catalog {
   background: #E8E8E8;
   margin-top: -50px;
@@ -264,10 +256,6 @@ p.notice {
 
 #welcome_message .section {
   margin-top: 10px;
-}
-
-#welcome_message .section a:hover {
-  color: #0078AE;
 }
 
 #welcome_message .large_section {
@@ -306,10 +294,6 @@ p.notice {
 
 #calendar-blog .full {
   width: 100%;
-}
-
-#calendar-blog .title a:hover {
-  color: #0078AE;
 }
 
 #blog, #calendar {
@@ -862,30 +846,6 @@ span#infotip img {
 .select-project-view .project-select select {
   margin-left: 8px;
   margin-right: 8px;
-}
-
-/* Button Hover Effects */
-
-.button-hover:hover {
-  opacity: 1;
-  -webkit-animation: flash 1.0s;
-  animation: flash 1.0s;
-}
-@-webkit-keyframes flash {
-  0% {
-    opacity: .4;
-  }
-  100% {
-    opacity: 1;
-  }
-}
-@keyframes flash {
-  0% {
-    opacity: .4;
-  }
-  100% {
-    opacity: 1;
-  }
 }
 
 /* Navigation Bar */

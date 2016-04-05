@@ -64,7 +64,7 @@
       - next unless value[:line_items].include?(line_item)
       %tr.line_item
         %td.service_name= line_item.service.display_service_name
-        %td.status= line_item.service_request.status
+        %td.status= display_line_items_status(line_item)
 
         %td.your_cost= display_your_cost line_item
         %td.subject_count= line_items_visit.subject_count

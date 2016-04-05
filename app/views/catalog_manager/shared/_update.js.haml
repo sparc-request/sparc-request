@@ -54,7 +54,7 @@
   $('.pricing_map_accordion').empty()
   - @entity.pricing_maps.each do |pricing_map|
     :plain
-      $('.pricing_map_accordion').append("#{escape_javascript(render :partial => 'catalog_manager/services/pricing_map', :locals => {:pricing_map => pricing_map, :pricing_map_disabled => disable_pricing_map(pricing_map, @user.can_edit_historical_data_for?(@entity.organization)), :can_edit_historical_data => @user.can_edit_historical_data_for?(@entity.organization), :entity => @entityo})}");
+      $('.pricing_map_accordion').append("#{escape_javascript(render :partial => 'catalog_manager/services/pricing_map', :locals => {:pricing_map => pricing_map, :pricing_map_disabled => disable_pricing_map(pricing_map, @user.can_edit_historical_data_for?(@entity.organization)), :can_edit_historical_data => @user.can_edit_historical_data_for?(@entity.organization), :entity => @entity})}");
   
   Sparc.config.setDatePicker("with button image")
   Sparc.config.displayDatesForUser($('.datepicker, .disabled_datepicker'))
@@ -78,11 +78,6 @@ show_unavailable = $("#show_all_services").find('.unavailable_button').data('sho
 - else
   :plain
     $("##{@entity.class.name.upcase}#{@entity.id}").removeClass("entity_visibility");
-
-      
-
-
-
 
 
 :plain

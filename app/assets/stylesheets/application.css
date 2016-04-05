@@ -387,13 +387,6 @@ h3.needed_info {
   margin: 10px;
 }
 
-/*.submit-request-button:hover,
-.faq-button:hover,
-.feedback-button a:hover {
-  color: #0078AE;
-}*/
-
-
 .quick_question_email_error {
   display: none;
   color: red;

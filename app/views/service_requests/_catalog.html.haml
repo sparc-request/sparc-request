@@ -19,7 +19,7 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 = javascript_include_tag "catalog"
-
+= stylesheet_link_tag 'home_page'
 .grid_3.service-catalog.col-md-3
   #about
     - unless USE_ABOUT_SPARC_LINK
@@ -38,9 +38,9 @@
     = render :partial => 'catalogs/news_and_events'
 
 .grid_3.catalog-view-right.right.col-md-3
-  - if !USE_SHIBBOLETH_ONLY
+  - if CREATE_AN_ACCOUNT
     #account.create_new_account
-      = link_to(image_tag("/assets/#{CUSTOM_ASSET_PATH}account.png", width: '196', :class => "button-hover"), new_identity_registration_path)
+      = link_to t(:create_an_account), new_identity_registration_path, class: 'create-an-account-button'
   #services.ui-widget.ui-widget-content.cart-view
     %h3
       = t(:service_requests)[:catalog][:text1]

@@ -31,8 +31,8 @@
           %p.instructions= t(:sr_confirmation)[:research_pricing_instructions]
           = render :partial => 'confirmation_details'
           .links
-            .confirmation-button
+            .confirmation-button.button-hover
               = link_to t(:sr_confirmation)[:download_button], service_request_path(:format => :xlsx)
-            .confirmation-button
+            .confirmation-button.button-hover
               = link_to t(:sr_confirmation)[:portal_button], USER_PORTAL_LINK, :class => "user-portal"
     .footer

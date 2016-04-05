@@ -49,7 +49,7 @@ module SurveyorControllerCustomMethods
     end
 
     if params[:ssr_id]
-      @response_set = ResponseSet.create(:survey => @survey, :user_id => (@current_user.nil? ? @current_user : @current_user.id), :ssr_id => params[:ssr_id])
+      @response_set = ResponseSet.create(:survey => @survey, :user_id => (@current_user.nil? ? @current_user : @current_user.id), :sub_service_request_id => params[:ssr_id])
     else
       @response_set = ResponseSet.create(:survey => @survey, :user_id => (@current_user.nil? ? @current_user : @current_user.id))
     end

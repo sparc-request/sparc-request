@@ -48,7 +48,7 @@ namespace :epic do
 
     manual_protocol_ids = prompt("Enter a single or comma separated list of protocol ids (leave blank to use the EPIC queue): ") unless args.automate
 
-    if EpicQueue.all.size > 0 or not manual_protocols_ids.blank?
+    if EpicQueue.all.size > 0 or not manual_protocol_ids.blank?
       confirm = "No"
       protocol_ids = []
 

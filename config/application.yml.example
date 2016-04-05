@@ -94,7 +94,7 @@ test:
   use_epic: true
   queue_epic: false
   queue_epic_load_error_to: 'glennj@musc.edu, hundc@musc.edu, forney@musc.edu, crossoml@musc.edu, success@musc.edu'
-  queue_epic_edit_ldap_uids: ['jug2@musc.edu']
+  queue_epic_edit_ldap_uids: ['jug2']
   use_google_calendar: true
   # insert sub-directory path to override the three header images + account sign-in image and override application.css
 #  custom_asset_path: image_override/

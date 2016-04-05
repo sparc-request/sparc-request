@@ -23,9 +23,9 @@
 .grid_3.service-catalog.col-md-3
   #about
     - unless USE_ABOUT_SPARC_LINK
-      = link_to image_tag("#{CUSTOM_ASSET_PATH}about.png",class: 'about_sparc_img'), "javascript:void(0);", class: "about_sparc_request"
+      = link_to image_tag("#{CUSTOM_ASSET_PATH}about.png", class: 'button-hover'), "javascript:void(0);", class: "about_sparc_request"
     - else
-      = link_to image_tag("#{CUSTOM_ASSET_PATH}about.png",class: 'about_sparc_img'), ABOUT_SPARC_URL, target: "_blank" 
+      = link_to image_tag("#{CUSTOM_ASSET_PATH}about.png", class: 'button-hover'), ABOUT_SPARC_URL, target: "_blank"
   %h3 Browse Services Catalog:
   = render :partial => 'catalogs/service_accordion', :locals => {:institutions => @institutions}
 .grid_6.col-md-6
@@ -40,18 +40,18 @@
 .grid_3.catalog-view-right.right.col-md-3
   - if !USE_SHIBBOLETH_ONLY
     #account.create_new_account
-      = link_to(image_tag("/assets/#{CUSTOM_ASSET_PATH}account.png", width: '196'), new_identity_registration_path)
+      = link_to(image_tag("/assets/#{CUSTOM_ASSET_PATH}account.png", width: '196', :class => "button-hover"), new_identity_registration_path)
   #services.ui-widget.ui-widget-content.cart-view
     %h3
       = t(:service_requests)[:catalog][:text1]
     = render :partial => 'catalogs/cart'
-  = link_to "Continue", protocol_service_request_path(@service_request), :class => 'submit-request-button btn btn-success btn-lg btn-block', :"data-signed-in" => identity_signed_in?
+  = link_to "Continue", protocol_service_request_path(@service_request), :class => 'submit-request-button btn btn-success btn-lg btn-block button-hover', :"data-signed-in" => identity_signed_in?
   = render :partial => 'service_requests/right_navigation'
 
   #submit_error{:style => "display: none"}
     = t(:service_requests)[:catalog][:text3]
     = t(:service_requests)[:catalog][:text4]
-  
+
   - if params[:signed_up_but_not_approved] == 'true'
     = javascript_include_tag "signed_up_but_not_approved"
     #signed_up_but_not_approved{:style => "display: none"}

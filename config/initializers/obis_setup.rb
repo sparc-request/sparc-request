@@ -66,7 +66,7 @@ begin
   FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER = application_config['fulfillment_contingent_on_catalog_manager'] || nil
   USE_ABOUT_SPARC_LINK                      = application_config['use_about_sparc_link'] || false
   ABOUT_SPARC_URL                           = application_config['about_sparc_url'] || nil
-    
+
   if LOCALE_OVERRIDE
     I18n.available_locales = [:en, LOCALE_OVERRIDE]
     I18n.default_locale = LOCALE_OVERRIDE

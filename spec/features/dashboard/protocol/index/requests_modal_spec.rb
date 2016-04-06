@@ -5,15 +5,9 @@ RSpec.describe 'requests modal', js: true do
   fake_login_for_each_test
 
   def visit_protocols_index_page
-    @page = Dashboard::Protocols::IndexPage.new
-    @page.load
-    wait_for_javascript_to_finish
-  end
-
-  def open_modal
-    visit_protocols_index_page
-    @page.protocols.first.requests_button.click
-    @page.requests_modal
+    page = Dashboard::Protocols::IndexPage.new
+    page.load
+    page
   end
 
   let!(:protocol) do
@@ -47,24 +41,47 @@ RSpec.describe 'requests modal', js: true do
       organization_id: organization.id)
   end
 
-  xit 'user clicks "Edit Original" button' do
-    modal = open_modal
-    modal.service_requests.first.edit_original_button.click
+  context 'user clicks "Edit Original" button' do
+    it 'should take user to SPARC homepage' do
+      page = visit_protocols_index_page
+      page.search_results.protocols.first.requests_button.click
+      expect(page).to have_requests_modal
+      page.requests_modal.service_requests.first.edit_original_button.click
+
+      expect(URI.parse(current_url).path).to eq "/service_requests/#{service_request.id}/catalog"
+    end
   end
 
-  xit 'user clicks "View SSR" button' do
-    modal = open_modal
-    modal.service_requests.first.sub_service_requests.first.view_ssr_button.click
+  context 'user clicks "View SSR" button' do
+    it 'should reveal modal containing study schedule' do
+      page = visit_protocols_index_page
+      page.search_results.protocols.first.requests_button.click
+      expect(page).to have_requests_modal
+      page.requests_modal.service_requests.first.sub_service_requests.first.view_ssr_button.click
+
+      expect(page).to have_view_ssr_modal
+    end
   end
 
-  xit 'user clicks "Edit SSR" button' do
-    modal = open_modal
-    modal.service_requests.first.sub_service_requests.first.edit_ssr_button.click
+  context 'user clicks "Edit SSR" button' do
+    it 'should take user to SPARC homepage' do
+      page = visit_protocols_index_page
+      page.search_results.protocols.first.requests_button.click
+      expect(page).to have_requests_modal
+      page.requests_modal.service_requests.first.sub_service_requests.first.edit_ssr_button.click
+
+      expect(URI.parse(current_url).path).to eq "/service_requests/#{service_request.id}/catalog"
+    end
   end
 
-  scenario 'user clicks "Admin Edit" button' do
-    modal = open_modal
-    modal.service_requests.first.sub_service_requests.first.admin_edit_button.click
-    expect(URI.parse(current_url).path).to eq '/dashboard/sub_service_requests/9999'
+  context 'user clicks "Admin Edit" button' do
+    it 'should take user to Dashboard SubServiceRequest show' do
+      page = visit_protocols_index_page
+      page.search_results.protocols.first.requests_button.click
+      expect(page).to have_requests_modal
+      page.requests_modal.service_requests.first.sub_service_requests.first.admin_edit_button.click
+
+      expect(URI.parse(current_url).path).to eq '/dashboard/sub_service_requests/9999'
+    end
   end
 end

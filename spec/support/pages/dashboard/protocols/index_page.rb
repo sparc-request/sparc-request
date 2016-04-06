@@ -56,12 +56,6 @@ module Dashboard
         element :new_study_option, "a", text: "New Study"
         element :new_project_option, "a", text: "New Project"
 
-        # select "New <protocol_type>" after clicking :new_protocol_button
-        def new_protocol(protocol_type)
-          new_protocol_button.click
-          new_protocol_options.select { |opt| opt.text == "New #{protocol_type}" }.first.click
-        end
-
         # rows of table
         sections :protocols, "tbody tr.protocols_index_row" do
           element :requests_button, :button, "Requests"
@@ -80,7 +74,7 @@ module Dashboard
       # appears after clicking Requests button in Search Results table
       section :requests_modal, "#requests-modal" do
         # the collection of all blue-header'd tables titled by 'Service Request: <digits>''
-        sections :service_requests, ".panel", text: "Service Request: [\d]+" do
+        sections :service_requests, ".panel", text: /Service Request: [\d]+/ do
           element :notes_button, :button, "Notes"
           element :edit_original_button, :button, "Edit Original"
 
@@ -92,9 +86,10 @@ module Dashboard
         end
       end
 
-      section :index_notes_modal, Dashboard::Notes::IndexModal, "#notes-modal"
+      # appears after clicking View SSR button in requests modal
+      element :view_ssr_modal, ".modal-dialog.user-view-ssr-modal"
 
-      section :new_notes_modal, Dashboard::Notes::NewModal, "#new-note-modal"
+      section :index_notes_modal, Dashboard::Notes::IndexModal, "#notes-modal"
     end
   end
 end

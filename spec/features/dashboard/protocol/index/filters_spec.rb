@@ -3,21 +3,16 @@ require "rails_helper"
 RSpec.describe "filters", js: :true do
   let!(:user) do
     create(:identity,
-           last_name: "Claws",
-           first_name: "Santa",
-           ldap_uid: "santa",
-           institution: "medical_university_of_south_carolina",
-           college: "college_of_medicine",
-           department: "other",
-           email: "santa@musc.edu",
-           credentials: "ba",
-           catalog_overlord: true,
+           last_name: "Doe",
+           first_name: "John",
+           ldap_uid: "johnd",
+           email: "johnd@musc.edu",
            password: "p4ssword",
            password_confirmation: "p4ssword",
            approved: true)
   end
 
-  fake_login_for_each_test("santa")
+  fake_login_for_each_test("johnd")
 
   def visit_protocols_index_page
     @page = Dashboard::Protocols::IndexPage.new

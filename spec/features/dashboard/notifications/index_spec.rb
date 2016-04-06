@@ -1,8 +1,18 @@
 require 'rails_helper'
 
 RSpec.describe 'Notifications index', js: true do
-  let_there_be_lane
-  fake_login_for_each_test
+  let!(:user) do
+    create(:identity,
+           last_name: "Doe",
+           first_name: "John",
+           ldap_uid: "johnd",
+           email: "johnd@musc.edu",
+           password: "p4ssword",
+           password_confirmation: "p4ssword",
+           approved: true)
+  end
+
+  fake_login_for_each_test("johnd")
 
   def visit_notifications_index_page
     page = Dashboard::Notifications::IndexPage.new
@@ -36,11 +46,12 @@ RSpec.describe 'Notifications index', js: true do
   end
 
   describe 'default' do
+    # TODO extract
     it 'should show Notifications associated with Messages to user' do
       # does not have a message to user; should not be displayed
       other_user = create(:identity, first_name: 'Santa', last_name: 'Claws')
       create(:notification,
-        originator_id: jug2.id,
+        originator_id: user.id,
         other_user_id: other_user.id,
         subject: 'notification 1',
         body: 'message 1')
@@ -48,7 +59,7 @@ RSpec.describe 'Notifications index', js: true do
       # has a message to user; should be displayed
       create(:notification,
         originator_id: other_user.id,
-        other_user_id: jug2.id,
+        other_user_id: user.id,
         subject: 'notification 2',
         body: 'message 2')
 
@@ -62,10 +73,10 @@ RSpec.describe 'Notifications index', js: true do
   describe 'select all checkbox' do
     it 'should select all Notifications' do
       other_user = create(:identity, first_name: 'Santa', last_name: 'Claws')
-      create(:notification, other_user_id: jug2.id,
+      create(:notification, other_user_id: user.id,
         originator_id: other_user.id, subject: 'notification 1',
         body: 'message 1')
-      create(:notification, other_user_id: jug2.id,
+      create(:notification, other_user_id: user.id,
         originator_id: other_user.id, subject: 'notification 2',
         body: 'message 2')
 
@@ -81,7 +92,7 @@ RSpec.describe 'Notifications index', js: true do
   describe '"Mark as Unread" button' do
     it 'should mark selected Notifications as unread' do
       other_user = create(:identity, first_name: 'Santa', last_name: 'Claws')
-      note = create(:notification, other_user_id: jug2.id,
+      note = create(:notification, other_user_id: user.id,
         originator_id: other_user.id, subject: 'notification 1',
         body: 'message 1', read_by_originator: true, read_by_other_user: true)
 
@@ -92,14 +103,14 @@ RSpec.describe 'Notifications index', js: true do
       wait_for_javascript_to_finish
 
       # should mark notification as unread
-      expect(note.reload.read_by?(jug2)).not_to be(true)
+      expect(note.reload.read_by?(user)).not_to be(true)
     end
   end
 
   describe '"Mark as Read" button' do
     it 'should mark selected Notifications as read' do
       other_user = create(:identity, first_name: 'Santa', last_name: 'Claws')
-      note = create(:notification, other_user_id: jug2.id,
+      note = create(:notification, other_user_id: user.id,
         originator_id: other_user.id, subject: 'notification 1',
         body: 'message 1', read_by_originator: false, read_by_other_user: false)
 
@@ -110,17 +121,17 @@ RSpec.describe 'Notifications index', js: true do
       wait_for_javascript_to_finish
 
       # should mark notification as read
-      expect(note.reload.read_by?(jug2)).to be(true)
+      expect(note.reload.read_by?(user)).to be(true)
     end
   end
 
   describe 'order' do
     it 'should order Notifications by :id' do
       other_user = create(:identity, first_name: 'Santa', last_name: 'Claws')
-      create(:notification, other_user_id: jug2.id,
+      create(:notification, other_user_id: user.id,
              originator_id: other_user.id, subject: 'notification 1',
              body: 'message 1')
-      create(:notification, other_user_id: jug2.id,
+      create(:notification, other_user_id: user.id,
              originator_id: other_user.id, subject: 'notification 2',
              body: 'message 2')
 
@@ -137,11 +148,11 @@ RSpec.describe 'Notifications index', js: true do
     context 'user name header clicked once' do
       it 'should sort Notifications by user first name, descending' do
         other_user1 = create(:identity, first_name: 'Santa', last_name: 'Claws')
-        create(:notification, other_user_id: jug2.id,
+        create(:notification, other_user_id: user.id,
           originator_id: other_user1.id, subject: 'notification 1',
           body: 'message 1')
         other_user2 = create(:identity, first_name: 'Tooth', last_name: 'Carie')
-        create(:notification, other_user_id: jug2.id,
+        create(:notification, other_user_id: user.id,
           originator_id: other_user2.id, subject: 'notification 2',
           body: 'message 2')
 
@@ -156,11 +167,11 @@ RSpec.describe 'Notifications index', js: true do
     context 'user name header clicked twice' do
       it 'should sort Notifications by user first name, ascending' do
         other_user1 = create(:identity, first_name: 'Santa', last_name: 'Claws')
-        create(:notification, other_user_id: jug2.id,
+        create(:notification, other_user_id: user.id,
           originator_id: other_user1.id, subject: 'notification 1',
           body: 'message 1')
         other_user2 = create(:identity, first_name: 'Tooth', last_name: 'Carie')
-        create(:notification, other_user_id: jug2.id,
+        create(:notification, other_user_id: user.id,
           originator_id: other_user2.id, subject: 'notification 2',
           body: 'message 2')
 
@@ -178,11 +189,11 @@ RSpec.describe 'Notifications index', js: true do
     context 'time header clicked once' do
       it 'should put most recent messages at the top' do
         other_user1 = create(:identity, first_name: 'Santa', last_name: 'Claws')
-        create(:notification, other_user_id: jug2.id,
+        create(:notification, other_user_id: user.id,
           originator_id: other_user1.id, subject: 'notification 1',
           body: 'message 1', message_created_at: 2.days.ago)
         other_user2 = create(:identity, first_name: 'Tooth', last_name: 'Carie')
-        create(:notification, other_user_id: jug2.id,
+        create(:notification, other_user_id: user.id,
           originator_id: other_user2.id, subject: 'notification 2',
           body: 'message 2', message_created_at: 1.days.ago)
 
@@ -199,11 +210,11 @@ RSpec.describe 'Notifications index', js: true do
     context 'time header clicked twice' do
       it 'should put oldest messages at the top' do
         other_user1 = create(:identity, first_name: 'Santa', last_name: 'Claws')
-        create(:notification, other_user_id: jug2.id,
+        create(:notification, other_user_id: user.id,
           originator_id: other_user1.id, subject: 'notification 1',
           body: 'message 1', message_created_at: 2.days.ago)
         other_user2 = create(:identity, first_name: 'Tooth', last_name: 'Carie')
-        create(:notification, other_user_id: jug2.id,
+        create(:notification, other_user_id: user.id,
           originator_id: other_user2.id, subject: 'notification 2',
           body: 'message 2', message_created_at: 1.days.ago)
 
@@ -220,13 +231,13 @@ RSpec.describe 'Notifications index', js: true do
   context 'user clicks inbox button' do
     it 'should refresh inbox' do
       other_user1 = create(:identity, first_name: 'Santa', last_name: 'Claws')
-      create(:notification, other_user_id: jug2.id,
+      create(:notification, other_user_id: user.id,
         originator_id: other_user1.id, subject: 'notification 1',
         body: 'message 1', message_created_at: 2.days.ago)
 
       index_page = visit_notifications_index_page
       other_user2 = create(:identity, first_name: 'Tooth', last_name: 'Carie')
-      create(:notification, other_user_id: jug2.id,
+      create(:notification, other_user_id: user.id,
              originator_id: other_user2.id,
              subject: 'notification 2',
              body: 'message 2',
@@ -238,14 +249,11 @@ RSpec.describe 'Notifications index', js: true do
   end
 
   context 'user clicks sent button' do
-    let!(:page) { visit_notifications_index_page }
-    before(:each) { page.view_sent_button.click }
-
     it 'should show sent messages' do
       other_user1 = create(:identity, first_name: 'Santa', last_name: 'Claws')
       create(:notification,
              other_user_id: other_user1.id,
-             originator_id: jug2.id,
+             originator_id: user.id,
              subject: 'notification 1',
              body: 'message 1',
              message_created_at: 2.days.ago)
@@ -262,14 +270,14 @@ RSpec.describe 'Notifications index', js: true do
     it 'should search by user' do
       other_user1 = create(:identity, first_name: 'Santa', last_name: 'Claws')
       create(:notification,
-             other_user_id: jug2.id,
+             other_user_id: user.id,
              originator_id: other_user1.id,
              subject: 'notification 1',
              body: 'message 1',
              message_created_at: 2.days.ago)
       other_user2 = create(:identity, first_name: 'Tooth', last_name: 'Carie')
       create(:notification,
-             other_user_id: jug2.id,
+             other_user_id: user.id,
              originator_id: other_user2.id,
              subject: 'notification 2',
              body: 'message 2',
@@ -285,14 +293,14 @@ RSpec.describe 'Notifications index', js: true do
     it 'should search by subject' do
       other_user1 = create(:identity, first_name: 'Santa', last_name: 'Claws')
       create(:notification,
-             other_user_id: jug2.id,
+             other_user_id: user.id,
              originator_id: other_user1.id,
              subject: 'MUSC Broadcast Messages for February 17th, 2016',
              body: 'message 1',
              message_created_at: 2.days.ago)
       other_user2 = create(:identity, first_name: 'Tooth', last_name: 'Carie')
       create(:notification,
-             other_user_id: jug2.id,
+             other_user_id: user.id,
              originator_id: other_user2.id,
              subject: 'notification 2',
              body: 'message 2',

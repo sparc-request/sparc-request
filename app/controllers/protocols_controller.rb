@@ -23,11 +23,11 @@ class ProtocolsController < ApplicationController
   before_filter :initialize_service_request, unless: :from_portal?, :except => [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
   before_filter :authorize_identity, unless: :from_portal?, :except => [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
   before_filter :set_protocol_type, :except => [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
-  before_filter :set_portal, except: [:new]
+  before_filter :set_portal
 
   def new
     @protocol = self.model_class.new
-    setup_protocol = SetupProtocol.new(params[:portal], @protocol, current_user, session[:service_request_id])
+    setup_protocol = SetupProtocol.new(@portal, @protocol, current_user, session[:service_request_id])
     setup_protocol.setup
     set_cookies
     resolve_layout

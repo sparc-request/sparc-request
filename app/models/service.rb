@@ -265,7 +265,8 @@ class Service < ActiveRecord::Base
     if rate.nil?
       return 'N/A'
     else
-      return "#{Service.cents_to_dollars(rate)}"
+      rate = sprintf( '%0.2f', Service.cents_to_dollars(rate).to_f.round(2) )
+      return "#{rate}"
     end
   end
 

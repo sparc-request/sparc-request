@@ -50,7 +50,7 @@ RSpec.describe "service calendar", js: true do
         fill_in "service_request_line_items_attributes_#{line_item.id}_quantity", with: 10
         page.execute_script('$(".line_item_quantity").change()')
         wait_for_javascript_to_finish
-        find(:xpath, "//a/img[@alt='Goback']/..").click
+        find('.return-to-previous').click
         wait_for_javascript_to_finish
         expect(LineItem.find(line_item.id).quantity).to eq(10)
       end
@@ -59,7 +59,7 @@ RSpec.describe "service calendar", js: true do
         fill_in "service_request_line_items_attributes_#{line_item.id}_units_per_quantity", with: 10
         page.execute_script('$(".units_per_quantity").change()')
         wait_for_javascript_to_finish
-        find(:xpath, "//a/img[@alt='Goback']/..").click
+        find('.return-to-previous').click
         wait_for_javascript_to_finish
         expect(LineItem.find(line_item.id).units_per_quantity).to eq(10)
       end

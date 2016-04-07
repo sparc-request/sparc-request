@@ -36,7 +36,7 @@ $(document).ready ->
     $('.custom_error_field').removeClass('custom_error_field')
     
   cannot_contain_letters = (selector) ->
-    $(selector).val().match(/^[0-9]\d*(\.\d+)?$/) || [null]
+    $(selector).val().match(/^\d{0,3}((,)?\d{3})*(\.\d+)?$/) || [null]
   
   validate_numbers_only = (selector) ->
     unless $(selector).val() == ''
@@ -94,6 +94,23 @@ $(document).ready ->
   )
     
   $('.service_rate').live('blur', ->
+    $(this).formatCurrency()
+  )
+
+  $('[display="Federal Rate"], [display="Corporate Rate"], [display="Other Rate"], [display="Member Rate"]').live('change', ->
+    $(this).formatCurrency()
+  )
+
+
+  $('#provider_subsidy_map_attributes_max_dollar_cap').live('change', ->
+    $(this).formatCurrency()
+  )
+
+  $('#program_subsidy_map_attributes_max_dollar_cap').live('change', ->
+    $(this).formatCurrency()
+  )
+
+  $('#core_subsidy_map_attributes_max_dollar_cap').live('change', ->
     $(this).formatCurrency()
   )
   

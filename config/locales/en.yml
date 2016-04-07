@@ -35,6 +35,7 @@ en:
   feedback: "Feedback"
   issue_contact: "Please contact the SUCCESS Center at (843) 792-8300 or success@musc.edu for assistance with this process or with any questions you may have."
   portal_title: "SPARC Request Portal"
+  create_an_account: 'Non-MUSC User? Create an Account'
 
 
 
@@ -811,14 +812,14 @@ en:
 
   # Bottom navigation
   bottom_navigation:
-    cancel: "Cancel"
-    continue: "Continue"
+    cancel: " ⟵ Cancel"
+    continue: "Continue ⟶ "
     get_cost_estimate: "Get Cost Estimate"
-    go_back: "Go Back"
-    save_and_continue: "Save & Continue"
+    go_back: " ⟵ Go Back"
+    save_and_continue: "Save & Continue ⟶ "
     save_and_exit: "Save as Draft"
     save_as_draft: "Save As Draft"
-    submit_to_start: "Submit to Start Services"
+    submit_to_start: "    Submit to Start Services ⟶ "
 
   message:
     red_message: "Pricing is consistent across locations unless otherwise stated."

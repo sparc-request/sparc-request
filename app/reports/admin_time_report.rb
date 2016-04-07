@@ -51,13 +51,16 @@ class AdminTimeReport < ReportingModule
     end
 
     if params[:service_id]
-      service = Service.find(params[:service_id])
-      attrs["Service"] = [service.name]
+      attrs[Service] = [params[:service_id], :name]
     end
 
-    attrs["Status"] = :formatted_status
+    attrs["Service Request Status"] = :formatted_status
 
-    attrs["Requester"] = "owner.try(:full_name)"
+    attrs["Service Request Owner"] = "owner.try(:full_name)"
+
+    attrs["Requester Contacted Date"] = "service_request.try(:requester_contacted_date).try(:strftime, \"%D\")"
+
+    attrs["Consult Arranged Date"] = "service_request.try(:consult_arranged_date).try(:strftime, \"%D\")"
 
     if params[:service_id]
       attrs["First Fulfillment Date"] = "line_items.where(service_id: #{params[:service_id]}).map(&:fulfillments).flatten.select(&:date?).sort_by(&:date).first.try(:date)"

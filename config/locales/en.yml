@@ -453,7 +453,6 @@ en:
         header: "Service Requests"
         view_consolidated: "View Consolidated Request"
         export_consolidated: "Export Consolidated Request"
-        in_progress: "Request in Progress..."
         add_services: "Add Services"
 
       view_details:

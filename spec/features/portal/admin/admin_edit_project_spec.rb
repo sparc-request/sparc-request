@@ -26,13 +26,6 @@ RSpec.describe "editing a project", js: true do
   fake_login_for_each_test
   build_service_request_with_project()
 
-  # before :each do
-  #   add_visits
-  #   visit portal_admin_sub_service_request_path sub_service_request.id
-  #   click_on("Project/Study Information")
-  #   wait_for_javascript_to_finish
-  # end
-
   after :each do
     wait_for_javascript_to_finish
   end

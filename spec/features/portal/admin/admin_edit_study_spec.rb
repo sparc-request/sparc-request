@@ -42,23 +42,6 @@ RSpec.describe 'editing a study', js: true do
     end
   end
 
-  context 'validations' do
-    it "should raise an error message if study's status is pending and no potential funding source is selected" do
-      select('Pending Funding', from: 'Proposal Funding Status')
-      click_button 'Save'
-      wait_for_javascript_to_finish
-      expect(page).to have_content('1 error prohibited this study from being saved')
-    end
-
-    it "should raise an error message if study's status is funded but no funding source is selected" do
-      select('Funded', from: 'Proposal Funding Status')
-      select('Select a Funding Source', from: 'study_funding_source')
-      click_button 'Save'
-      wait_for_javascript_to_finish
-      expect(page).to have_content('1 error prohibited this study from being saved')
-    end
-  end
-
   context 'editing the short title' do
     it 'should save the new short title' do
       fill_in 'study_short_title', with: 'Bob'

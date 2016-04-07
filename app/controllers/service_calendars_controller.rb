@@ -26,7 +26,7 @@ class ServiceCalendarsController < ApplicationController
   def table
     #use session so we know what page to show when tabs are switched
     @tab = params[:tab]
-    @portal = params[:portal] == 'true' ? true : false
+    @portal = params[:portal] 
     @study_tracker = params[:study_tracker] == "true"
     @protocol = @service_request.protocol
     setup_calendar_pages

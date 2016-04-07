@@ -29,13 +29,7 @@ $(document).ready ->
         if $(this).data('permission')
           window.location = $(this).data('url')
         else
-          $('.permissions-dialog').dialog('open')
-          $('.permissions-dialog .text').html('Edit.')
-
-      $(document).on 'click', '.add-services-button', ->
-        if !$(this).data('permission')
-          $('.permissions-dialog').dialog('open')
-          $('.permissions-dialog .text').html('Edit.')
+          alert(I18n["constants"]["alerts"]["not_permitted"])
 
       disableButton: (containing_text, change_to) ->
         button = $(".ui-dialog .ui-button:contains(#{containing_text})")
@@ -105,8 +99,7 @@ $(document).ready ->
           protocol_id = $(this).data('protocol-id')
           window.location = "/dashboard/protocols/#{protocol_id}/edit"
         else
-          $('.permissions-dialog').dialog('open')
-          $('.permissions-dialog .text').html('Edit.')
+          alert(I18n["constants"]["alerts"]["not_permitted"])
 
       $(document).on 'click', '.view-full-calendar-button', ->
         protocol_id = $(this).data('protocol-id')
@@ -124,13 +117,13 @@ $(document).ready ->
         if $(this).data('permission')
           window.location = $(this).data('url')
         else
-          $('.permissions-dialog').dialog('open')
-          $('.permissions-dialog .text').html('Edit.')
+          alert(I18n["constants"]["alerts"]["not_permitted"])
 
       $(document).on 'click', '#add-services-button', ->
         protocol_id = $(this).data('protocol-id')
 
         if !$(this).data('permission')
+          alert(I18n["constants"]["alerts"]["not_permitted"])
         else
           window.location = "/?protocol_id=#{protocol_id}&from_portal=true"
       # Protocol Show End

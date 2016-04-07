@@ -29,7 +29,7 @@
       .alert.alert-danger{ role: 'alert' }
         = t(:dashboard)[:protocols][:service_requests][:in_progress]
     - elsif !protocol.service_requests.present?
-      %button.btn.btn-success.btn-sm#add-services-button{ type: 'button', data: { permission: permission_to_edit.to_s } }
+      %button.btn.btn-success.btn-sm#add-services-button{ type: 'button', data: { permission: permission_to_edit.to_s, protocol_id: protocol.id } }
         = t(:dashboard)[:protocols][:service_requests][:add_services]
     - else
       - protocol.service_requests.each do |sr|

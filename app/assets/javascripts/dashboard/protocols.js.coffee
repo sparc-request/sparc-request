@@ -128,8 +128,11 @@ $(document).ready ->
           $('.permissions-dialog .text').html('Edit.')
 
       $(document).on 'click', '#add-services-button', ->
-        $.ajax
-          method: 'POST'
+        protocol_id = $(this).data('protocol-id')
+
+        if !$(this).data('permission')
+        else
+          window.location = "/?protocol_id=#{protocol_id}&from_portal=true"
       # Protocol Show End
 
       # Protocol Edit Begin

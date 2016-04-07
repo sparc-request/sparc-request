@@ -149,29 +149,52 @@ a.save-option{
 }
 
 #container #header {
-  padding-left: 10px;
+  padding-top: 10px;
   height: 102px;
-  background: white url("header_background_gradient.png") left top repeat-x;
+  background: white left top repeat-x;
+  border-left: outset 1px black;
+  border-right: outset 1px black;
 }
 
-#container #org_logo, #container #department_title, #container #institution_logo {
+#container #header #org_logo {
+  height: 100%;
+  width: 25%;
   float: left;
 }
 
-#container #org_logo {
-  width: 270px;
-  margin-top: 20px;
+#container #header #org_logo img {
+  max-height: 100%;
+  max-width: 90%;
+  margin: 5%;
+}
+
+#container #header #sparc_request_header {
+  max-height: 100%;
+  max-width: 50%;
+  float: left;
+}
+
+#container #header #sparc_request_header img {
+  max-height: 100%;
+  max-width: 100%;
+}
+
+#container #header #institution_logo {
+  max-height: 100%;
+  max-width: 25%;
+  float: left;
+}
+
+#container #header #institution_logo img {
+  max-height: 100%;
+  max-width: 68%;
+  padding-left: 16%;
+  padding-right: 16%;
 }
 
 #container #department_title {
   width: 510px; /* width: 750px; */
   margin: 22px 0 0 -4px;
-}
-
-#container #institution_logo {
-  width: 150px;
-  margin: 5px 0 0 13px;
-  text-align: right;
 }
 
 #container #content {
@@ -180,7 +203,6 @@ a.save-option{
   width: 960px; /* width: 1200; */
   border-left: outset 1px black;
   border-right: outset 1px black;
-  padding-top: 10px;
 }
 
 #container #content .pricing-message{
@@ -229,7 +251,6 @@ p.notice {
 
 .service-catalog {
   background: #E8E8E8;
-  margin-top: -50px;
 }
 
 .institution {
@@ -266,9 +287,8 @@ p.notice {
   color: #0000EE !important
 }
 
-.welcome .bug-enhancement-link {
-  color: #fff;
-  font-size: 14px;
+.welcome {
+  overflow: hidden;
 }
 
 #calendar-blog {
@@ -575,7 +595,6 @@ div#institution_accordion h3.provider_header {
 
 .catalog-view-right {
   background:  #E8E8E8;
-  margin-top: -50px !important;
   margin-right: -10px !important;
   width: 226px !important; /* width: 300px !important; */
   padding: 2px !important;
@@ -605,13 +624,19 @@ div#institution_accordion h3.provider_header {
 }
 
 #about {
-  width: 220px;
+  width: 960px;
   height: 50px;
   background: #FFF;
+  border-left: outset 1px black;
+  border-right: outset 1px black;
 }
 
 #about a {
   padding-left: 18px;
+}
+
+#about img {
+  padding-top: 10px;
 }
 
 #account {

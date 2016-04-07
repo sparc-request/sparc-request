@@ -126,6 +126,10 @@ $(document).ready ->
         else
           $('.permissions-dialog').dialog('open')
           $('.permissions-dialog .text').html('Edit.')
+
+      $(document).on 'click', '#add-services-button', ->
+        $.ajax
+          method: 'POST'
       # Protocol Show End
 
       # Protocol Edit Begin

@@ -64,13 +64,6 @@ ul {
   display: none;
 }
 
-#sub_service_request_header {
-  float: right;
-  margin-top: 5px;
-  padding-right: 15px;
-  font-size: 20px;
-}
-
 #feedback {
   float: right;
   margin-right: 10px;
@@ -289,6 +282,9 @@ p.notice {
 
 .welcome {
   overflow: hidden;
+  background-color: #fff;
+  border-left: 1px outset black;
+  border-right: 1px outset black;
 }
 
 #calendar-blog {
@@ -624,19 +620,29 @@ div#institution_accordion h3.provider_header {
 }
 
 #about {
-  width: 960px;
   height: 50px;
-  background: #FFF;
-  border-left: outset 1px black;
-  border-right: outset 1px black;
+  width: 240px;
+  float: left;
 }
 
 #about a {
-  padding-left: 18px;
+  margin-left: 33px;
+  margin-right: 32px;
 }
 
 #about img {
   padding-top: 10px;
+}
+
+#sub_service_request_header {
+  float: right;
+  padding-right: 15px;
+  font-size: 20px;
+  height: 50px;
+}
+
+#sub_service_request_header span {
+  line-height: 50px;
 }
 
 #account {

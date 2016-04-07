@@ -66,16 +66,15 @@
 
       .welcome.col-md-12
         = render 'shared/navbar'
-        #right_header{class: @sub_service_request ? "" : "hidden"}
-          %span#sub_service_request_header
+        #about
+          - unless USE_ABOUT_SPARC_LINK
+            = link_to image_tag("#{CUSTOM_ASSET_PATH}about.png", class: 'button-hover'), "javascript:void(0);", class: "about_sparc_request"
+          - else
+            = link_to image_tag("#{CUSTOM_ASSET_PATH}about.png", class: 'button-hover'), ABOUT_SPARC_URL, target: "_blank"
+        #sub_service_request_header{class: @sub_service_request ? "" : "hidden"}
+          %span
             &nbsp;
             = show_friendly_ssr_id(@sub_service_request) if @sub_service_request
-      
-      #about
-        - unless USE_ABOUT_SPARC_LINK
-          = link_to image_tag("#{CUSTOM_ASSET_PATH}about.png", class: 'button-hover'), "javascript:void(0);", class: "about_sparc_request"
-        - else
-          = link_to image_tag("#{CUSTOM_ASSET_PATH}about.png", class: 'button-hover'), ABOUT_SPARC_URL, target: "_blank"
 
       #content.container_12.row
         = content_for?(:content) ? yield(:content) : yield

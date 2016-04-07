@@ -37,25 +37,6 @@ RSpec.describe "editing a project", js: true do
     wait_for_javascript_to_finish
   end
 
-  context "validations" do
-
-    it "should raise an error message if study's status is pending and no potential funding source is selected" do
-      initial_setup
-      select("Pending Funding", from: "Proposal Funding Status")
-      select("Select a Potential Funding Source", from: "Potential Funding Source")
-      click_button "Save"
-      expect(page).to have_content("1 error prohibited this project from being saved")
-    end
-
-    it "should raise an error message if study's status is funded but no funding source is selected" do
-      initial_setup
-      select("Funded", from: "Proposal Funding Status")
-      select("Select a Funding Source", from: "project_funding_source")
-      click_button "Save"
-      expect(page).to have_content("1 error prohibited this project from being saved")
-    end
-  end
-
   context "clicking cancel button" do
 
     it "should not save changes" do

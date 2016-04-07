@@ -11,12 +11,9 @@ RSpec.describe 'requests modal', js: true do
   end
 
   let!(:protocol) do
-    create(:protocol_federally_funded,
-      :without_validations,
+    create(:unarchived_study_without_validations,
       id: 9999,
-      primary_pi: jug2,
-      type: 'Study',
-      archived: false)
+      primary_pi: jug2)
   end
 
   let!(:service_request) do

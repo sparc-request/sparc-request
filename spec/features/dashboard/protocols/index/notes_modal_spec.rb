@@ -24,22 +24,6 @@ RSpec.describe 'requests modal', js: true do
     page
   end
 
-  context 'ServiceRequest has notes' do
-    # TODO extract
-    xit 'should show previously added notes' do
-      Note.create(identity_id: user.id, notable_type: 'ServiceRequest', notable_id: sr.id, body: 'my important note')
-
-      page = index_page
-      page.instance_exec do
-        search_results.protocols.first.requests_button.click
-        wait_for_requests_modal
-        requests_modal.service_requests.first.notes_button.click
-      end
-
-      expect(page.index_notes_modal.notes.first).to have_content('my important note')
-    end
-  end
-
   context 'when user presses Add Note button and saves a note' do
     it 'should create a new Note and display it in modal' do
       page = index_page

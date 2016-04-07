@@ -1,6 +1,5 @@
 require "rails_helper"
 require "support/pages/dashboard/notes/index_modal"
-require "support/pages/dashboard/notes/new_modal"
 
 module Dashboard
   module Protocols
@@ -89,6 +88,7 @@ module Dashboard
       # appears after clicking View SSR button in requests modal
       element :view_ssr_modal, ".modal-dialog.user-view-ssr-modal"
 
+      # appears after clicking Notes button in requests modal
       section :index_notes_modal, Dashboard::Notes::IndexModal, "#notes-modal"
     end
   end

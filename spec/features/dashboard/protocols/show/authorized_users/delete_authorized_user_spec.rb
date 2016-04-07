@@ -21,38 +21,50 @@
 require 'rails_helper'
 
 RSpec.feature 'User wants to delete an authorized user', js: true do
-  let_there_be_lane
-  let_there_be_j
-
-  before(:each) do
-    stub_const('USE_LDAP', false)
+  let!(:logged_in_user) do
+    create(:identity,
+           last_name: "Doe",
+           first_name: "John",
+           ldap_uid: "johnd",
+           email: "johnd@musc.edu",
+           password: "p4ssword",
+           password_confirmation: "p4ssword",
+           approved: true)
   end
 
-  let!(:protocol) do
-    protocol = create(:protocol_federally_funded,
-      :without_validations,
-      primary_pi: jug2,
-      type: 'Project',
-      archived: false)
-    protocol
+  let!(:other_user) do
+    create(:identity,
+           last_name: "Doe",
+           first_name: "Jane",
+           ldap_uid: "janed",
+           email: "janed@musc.edu",
+           password: "p4ssword",
+           password_confirmation: "p4ssword",
+           approved: true)
   end
+
+  before(:each) { stub_const('USE_LDAP', false) }
+
+  let!(:protocol) { create(:unarchived_project_without_validations, primary_pi: logged_in_user) }
 
   context 'and has access to the protocol' do
+    fake_login_for_each_test("johnd")
+
     before :each do
       create(:project_role,
-      protocol_id:     protocol.id,
-      identity_id:     jpl6.id,
-      project_rights:  'view',
-      role:            'mentor')
-      fake_login
+        protocol_id: protocol.id,
+        identity_id: other_user.id,
+        project_rights: 'view',
+        role: 'mentor')
 
-      visit "/dashboard/protocols/#{protocol.id}"
+      # navigate to page
+      @page = Dashboard::Protocols::ShowPage.new
+      @page.load(id: protocol.id)
       wait_for_javascript_to_finish
     end
 
     context 'and tries to delete the Primary PI' do
       scenario 'and sees an error message' do
-        given_that_i_have_selected_a_protocol
         given_i_have_clicked_the_delete_authorized_user_button_for_the_primary_pi
         then_i_should_see_an_error_of_type 'need Primary PI'
       end
@@ -60,7 +72,6 @@ RSpec.feature 'User wants to delete an authorized user', js: true do
 
     context 'and tries to delete a user who is not the Primary PI' do
       scenario 'and sees the user is gone' do
-        given_that_i_have_selected_a_protocol
         given_i_have_clicked_the_delete_authorized_user_button_and_confirmed
         then_i_should_not_see_the_authorized_user
       end
@@ -68,16 +79,18 @@ RSpec.feature 'User wants to delete an authorized user', js: true do
   end
 
   context 'and does not have access to the protocol' do
+    fake_login_for_each_test("janed")
+
     before :each do
       create(:project_role,
-      protocol_id:     protocol.id,
-      identity_id:     jpl6.id,
-      project_rights:  'view',
-      role:            'mentor')
-      fake_login 'jpl6@musc.edu'
+        protocol_id: protocol.id,
+        identity_id: other_user.id,
+        project_rights: 'view',
+        role: 'mentor')
 
-      visit "/dashboard/protocols/#{protocol.id}"
-      wait_for_javascript_to_finish
+      # navigate to page
+      @page = Dashboard::Protocols::ShowPage.new
+      @page.load(id: protocol.id)
     end
 
     context 'and tries to delete the user' do
@@ -87,25 +100,18 @@ RSpec.feature 'User wants to delete an authorized user', js: true do
     end
   end
 
-  def given_i_have_clicked_the_delete_authorized_user_button
-    expect(page).to have_css('.delete-associated-user-button')
-    page.all('.delete-associated-user-button', visible: true)[1].click()
-  end
-
   def given_i_have_clicked_the_delete_authorized_user_button_and_confirmed
-    accept_confirm do
-      eventually { page.all('.delete-associated-user-button', visible: true)[1].click() }
-    end
+    @page.authorized_users(text: "Jane Doe").first.remove_button.click
   end
 
   def given_i_have_clicked_the_delete_authorized_user_button_for_the_primary_pi
     accept_alert do
-      eventually { first('.delete-associated-user-button', visible: true).click() }
+      @page.authorized_users(text: "John Doe").first.remove_button.click
     end
   end
 
   def then_i_should_not_see_the_authorized_user
-    expect(page).to_not have_text("Jason Leonard")
+    expect(@page).to_not have_text("Jane Doe")
   end
 
   def then_i_should_see_an_error_of_type error_type

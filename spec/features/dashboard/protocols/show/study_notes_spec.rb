@@ -24,17 +24,6 @@ RSpec.describe 'Show protocol Study notes spec', js: true do
     page.index_notes_modal
   end
 
-  context 'Protocol has notes' do
-    # TODO extract
-    xit 'should show previously added notes' do
-      Note.create(identity_id: user.id, notable_type: 'Protocol', notable_id: protocol.id, body: 'hey')
-
-      open_modal
-
-      expect(@notes_modal.notes.first.comment.text).to eq 'hey'
-    end
-  end
-
   context 'when user presses Add Note button and saves a note' do
     it 'should create a new Note and display it in modal' do
       modal = open_modal

@@ -21,28 +21,41 @@
 require 'rails_helper'
 
 RSpec.feature 'User messes with the change Primary PI Warning Dialog JS', js: true do
-  let_there_be_lane
-  let_there_be_j
+  let!(:logged_in_user) do
+    create(:identity,
+           last_name: "Doe",
+           first_name: "John",
+           ldap_uid: "johnd",
+           email: "johnd@musc.edu",
+           password: "p4ssword",
+           password_confirmation: "p4ssword",
+           approved: true)
+  end
+
+  let!(:other_user) do
+    create(:identity,
+           last_name: "Doe",
+           first_name: "Jane",
+           ldap_uid: "janed",
+           email: "janed@musc.edu",
+           password: "p4ssword",
+           password_confirmation: "p4ssword",
+           approved: true)
+  end
 
   before(:each) do
     stub_const('USE_LDAP', false)
   end
 
-  let!(:protocol) do
-    protocol = create(:protocol_federally_funded,
-      :without_validations,
-      primary_pi: jug2,
-      type: 'Project',
-      archived: false)
-    protocol
-  end
+  let!(:protocol) { create(:unarchived_project_without_validations, primary_pi: logged_in_user) }
 
   context 'under the Add Functionality' do
-    before :each do
-      fake_login
+    fake_login_for_each_test("johnd")
 
-      visit "/dashboard/protocols/#{protocol.id}"
-      wait_for_javascript_to_finish
+    before :each do
+      # navigate to page
+      @page = Dashboard::Protocols::ShowPage.new
+      @page.load(id: protocol.id)
     end
 
     context 'and submits the changes' do
@@ -73,22 +86,23 @@ RSpec.feature 'User messes with the change Primary PI Warning Dialog JS', js: tr
   end
 
   context 'under the Edit Functionality' do
+    fake_login_for_each_test("johnd")
+
     before(:each) do
       create(:project_role,
         protocol_id:     protocol.id,
-        identity_id:     jpl6.id,
+        identity_id:     other_user.id,
         project_rights:  'approve',
         role:            'business-grants-manager')
 
-      fake_login
-
-      visit "/dashboard/protocols/#{protocol.id}"
-      wait_for_javascript_to_finish
+      # navigate to page
+      @page = Dashboard::Protocols::ShowPage.new
+      @page.load(id: protocol.id)
     end
 
     context 'and submits the changes' do
       scenario 'and sees the warning message' do
-        given_that_i_have_selected_a_protocol
+        # binding.pry
         given_i_have_clicked_the_edit_authorized_user_button
         when_i_set_the_user_to_primary_pi
         when_i_submit_in_edit
@@ -96,7 +110,6 @@ RSpec.feature 'User messes with the change Primary PI Warning Dialog JS', js: tr
       end
 
       scenario 'and sees the dialog changes' do
-        given_that_i_have_selected_a_protocol
         given_i_have_clicked_the_edit_authorized_user_button
         when_i_set_the_user_to_primary_pi
         when_i_submit_in_edit
@@ -104,7 +117,6 @@ RSpec.feature 'User messes with the change Primary PI Warning Dialog JS', js: tr
       end
 
       scenario 'and doesnt see the form' do
-        given_that_i_have_selected_a_protocol
         given_i_have_clicked_the_edit_authorized_user_button
         when_i_set_the_user_to_primary_pi
         when_i_submit_in_edit
@@ -113,7 +125,6 @@ RSpec.feature 'User messes with the change Primary PI Warning Dialog JS', js: tr
 
       context 'and clicks No' do
         scenario 'and sees the form' do
-          given_that_i_have_selected_a_protocol
           given_i_have_clicked_the_edit_authorized_user_button
           when_i_set_the_user_to_primary_pi
           when_i_submit_in_edit
@@ -122,7 +133,6 @@ RSpec.feature 'User messes with the change Primary PI Warning Dialog JS', js: tr
         end
 
         scenario 'and sees the dialog changes' do
-          given_that_i_have_selected_a_protocol
           given_i_have_clicked_the_edit_authorized_user_button
           when_i_set_the_user_to_primary_pi
           when_i_submit_in_edit
@@ -131,7 +141,6 @@ RSpec.feature 'User messes with the change Primary PI Warning Dialog JS', js: tr
         end
 
         scenario 'and doesnt see the warning message' do
-          given_that_i_have_selected_a_protocol
           given_i_have_clicked_the_edit_authorized_user_button
           when_i_set_the_user_to_primary_pi
           when_i_submit_in_edit
@@ -142,7 +151,6 @@ RSpec.feature 'User messes with the change Primary PI Warning Dialog JS', js: tr
 
       context 'and closes and reopens the dialog' do
         scenario 'and sees the form' do
-          given_that_i_have_selected_a_protocol
           given_i_have_clicked_the_edit_authorized_user_button
           when_i_set_the_user_to_primary_pi
           when_i_exit
@@ -151,7 +159,6 @@ RSpec.feature 'User messes with the change Primary PI Warning Dialog JS', js: tr
         end
 
         scenario 'and sees the dialog changes' do
-          given_that_i_have_selected_a_protocol
           given_i_have_clicked_the_edit_authorized_user_button
           when_i_set_the_user_to_primary_pi
           when_i_exit
@@ -160,7 +167,6 @@ RSpec.feature 'User messes with the change Primary PI Warning Dialog JS', js: tr
         end
 
         scenario 'and doesnt see the warning message' do
-          given_that_i_have_selected_a_protocol
           given_i_have_clicked_the_edit_authorized_user_button
           when_i_set_the_user_to_primary_pi
           when_i_exit
@@ -180,44 +186,51 @@ RSpec.feature 'User messes with the change Primary PI Warning Dialog JS', js: tr
   end
 
   def given_i_have_clicked_the_add_authorized_user_button
-    find_button('Add an Authorized User').click
+    @page.add_authorized_user_button.click
   end
 
   def given_i_have_clicked_the_edit_authorized_user_button
-    eventually { all(".edit-associated-user-button", visible: true)[1].click() }
+    expect(@page).to have_authorized_users(text: "Jane Doe")
+    @page.authorized_users(text: "Jane Doe").first.edit_button.click
   end
 
   def when_i_search_and_select_the_user
-    find('input[placeholder="Search for a User"]').set('Jason Leonard')
-    expect(page).to have_css('.tt-selectable', text: 'Jason Leonard', visible: true)
-    find('.tt-selectable', text: 'Jason Leonard', visible: true).click
+    @page.authorized_user_modal.instance_exec do
+      select_user_field.set('Jane Doe')
+      wait_for_user_choices
+      user_choices(text: "Jane Doe").first.click
+      # wait for a field to appear to indicate that user search completed
+      wait_for_credentials_dropdown
+    end
   end
 
   def when_i_set_the_user_to_primary_pi
-    expect(page).to have_css('button[data-id="project_role_role"]')
-    find('button[data-id="project_role_role"]').click
-    first('li a', text: 'Primary PI').click
-    expect(page).to have_css("button[title='Primary PI']")
+    @page.authorized_user_modal.instance_exec do
+      role_dropdown.click
+      wait_for_dropdown_choices
+      dropdown_choices(text: /\APrimary PI\Z/).first.click
+      wait_until_dropdown_choices_invisible
+    end
   end
 
   def when_i_submit_in_add
-    click_button('save_protocol_rights_button')
+    @page.authorized_user_modal.save_button.click
   end
 
   def when_i_submit_in_edit
-    click_button('save_protocol_rights_button')
+    @page.authorized_user_modal.save_button.click
   end
 
   def when_i_cancel_in_add
-    find('button', text: 'Close').click
+    @page.authorized_user_modal.cancel_button.click
   end
 
   def when_i_cancel_in_edit
-    find('button', text: 'Close').click
+    @page.authorized_user_modal.cancel_button.click
   end
 
   def when_i_exit
-    find('button.close').click
+    @page.authorized_user_modal.x_button.click
   end
 
   def when_i_reopen_the_add_dialog

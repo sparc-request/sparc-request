@@ -18,7 +18,9 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-- if SYSTEM_SATISFACTION_SURVEY
+= stylesheet_link_tag 'hover_effect'
+
+- if SYSTEM_SATISFACTION_SURVEY != false
   = javascript_include_tag 'system_satisfaction'
 = javascript_include_tag 'service_calendar.js'
 
@@ -63,13 +65,11 @@
           %div.review-bottom-navigation
             .return-to-step-3.red-provider
               .return-to-previous
-                = navigation_link image_tag('GoBack.png'), @back
-                = navigation_link t(:bottom_navigation)[:go_back], @back, 'btn btn-success btn-lg'
+                = navigation_link t(:bottom_navigation)[:go_back], @back, "btn btn-success btn-lg button-hover"
             .save-as-draft.red-provider
-              %a.btn.btn-success.btn-lg#save-as-draft{ href: 'javascript:void(0)' }
+              %a.btn.btn-success.btn-lg.button-hover#save-as-draft{href: 'javascript:void(0)'}
                 = t(:bottom_navigation)[:save_as_draft]
             .obtain-research-pricing.red-provider
-              = link_to t(:bottom_navigation)[:get_cost_estimate], obtain_research_pricing_service_request_path, class: 'btn btn-success btn-lg', id: 'get_a_cost_estimate'
+              = link_to t(:bottom_navigation)[:get_cost_estimate], obtain_research_pricing_service_request_path, class: "btn btn-success btn-lg button-hover", id: 'get_a_cost_estimate'
             .submit-request.red-provider
-              = link_to t(:bottom_navigation)[:submit_to_start], confirmation_service_request_path, class: 'save-and-continue btn btn-success btn-lg', id: 'submit_services1'
-              = link_to image_tag('SaveContinue.png'), confirmation_service_request_path, class: 'save-and-continue', id: 'submit_services2'
+              = link_to t(:bottom_navigation)[:submit_to_start], confirmation_service_request_path, class: "save-and-continue btn btn-success btn-lg button-hover", id: 'submit_services1'

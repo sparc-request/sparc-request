@@ -52,7 +52,7 @@ RSpec.describe "review page", js: true do
 
   describe "clicking submit" do
     it 'Should submit the page', js: true do
-      find("#submit_services2").click
+      find("#submit_services1").click
       wait_for_javascript_to_finish
       click_button("No")
       wait_for_javascript_to_finish
@@ -107,7 +107,7 @@ RSpec.describe "review page", js: true do
       service2.update_attributes(send_to_epic: true, charge_code: nil, cpt_code: nil)
       service_request.protocol.update_attribute(:selected_for_epic, true)
       clear_emails
-      find("#submit_services2").click
+      find("#submit_services1").click
       wait_for_javascript_to_finish
       click_button("No")
       wait_for_javascript_to_finish

@@ -65,8 +65,9 @@ begin
   CLINICAL_WORK_FULFILLMENT_URL             = application_config['clinical_work_fulfillment_url'] || nil
   FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER = application_config['fulfillment_contingent_on_catalog_manager'] || nil
   USE_ABOUT_SPARC_LINK                      = application_config['use_about_sparc_link'] || false
+  CREATE_AN_ACCOUNT                         = application_config['create_an_account']
   ABOUT_SPARC_URL                           = application_config['about_sparc_url'] || nil
-    
+
   if LOCALE_OVERRIDE
     I18n.available_locales = [:en, LOCALE_OVERRIDE]
     I18n.default_locale = LOCALE_OVERRIDE

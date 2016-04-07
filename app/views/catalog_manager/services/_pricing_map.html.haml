@@ -58,19 +58,19 @@
         %tr.federal_rate_row
           %th= t(:pricing_map_form)[:federal_rate]
           %td.set_rate= rate_map.try(:[], 'federal_rate')
-          %td= text_field_tag "pricing_maps[#{pricing_map.try(:[], 'id') || 'blank_pricing_map'}][federal_rate]", Service.cents_to_dollars(pricing_map.try(:[], 'federal_rate')), :class => 'rate_field', :old_value => Service.cents_to_dollars(pricing_map.try(:[], 'federal_rate') ), :rate_type => "Federal", :disabled => pricing_map_disabled, :readonly => pricing_map_disabled, :display => 'Federal Rate'
+          %td= text_field_tag "pricing_maps[#{pricing_map.try(:[], 'id') || 'blank_pricing_map'}][federal_rate]", Service.cents_to_dollars(pricing_map.try(:[], 'federal_rate')), :class => 'rate_field', :old_value => Service.cents_to_dollars(pricing_map.try(:[], 'federal_rate') ), :rate_type => "Federal", :disabled => pricing_map_disabled, :readonly => pricing_map_disabled, :display => 'Federal Rate', value: number_with_precision(Service.cents_to_dollars(pricing_map.try(:[], 'federal_rate')), precision: 2)
         %tr.corporate_rate_row
           %th= t(:pricing_map_form)[:corporate_rate]
           %td.set_rate= rate_map.try(:[], 'corporate_rate')
-          %td= text_field_tag "pricing_maps[#{pricing_map.try(:[], 'id') || 'blank_pricing_map'}][corporate_rate]", Service.cents_to_dollars(pricing_map.try(:[],  'corporate_rate')), :class => 'rate_field', :old_value => Service.cents_to_dollars(pricing_map.try(:[], 'corporate_rate') ), :rate_type => "Corporate", :disabled => pricing_map_disabled, :readonly => pricing_map_disabled, :display => 'Corporate Rate'
+          %td= text_field_tag "pricing_maps[#{pricing_map.try(:[], 'id') || 'blank_pricing_map'}][corporate_rate]", Service.cents_to_dollars(pricing_map.try(:[],  'corporate_rate')), :class => 'rate_field', :old_value => Service.cents_to_dollars(pricing_map.try(:[], 'corporate_rate') ), :rate_type => "Corporate", :disabled => pricing_map_disabled, :readonly => pricing_map_disabled, :display => 'Corporate Rate', value: number_with_precision(Service.cents_to_dollars(pricing_map.try(:[],  'corporate_rate')), precision: 2)
         %tr.other_rate_row
           %th= t(:pricing_map_form)[:other_rate]
           %td.set_rate= rate_map.try(:[], 'other_rate')
-          %td= text_field_tag "pricing_maps[#{pricing_map.try(:[], 'id') || 'blank_pricing_map'}][other_rate]", Service.cents_to_dollars(pricing_map.try(:[], 'other_rate')), :class => 'rate_field', :old_value => Service.cents_to_dollars(pricing_map.try(:[], 'other_rate') ), :rate_type => "Other", :disabled => pricing_map_disabled, :readonly => pricing_map_disabled, :display => 'Other Rate'
+          %td= text_field_tag "pricing_maps[#{pricing_map.try(:[], 'id') || 'blank_pricing_map'}][other_rate]", Service.cents_to_dollars(pricing_map.try(:[], 'other_rate')), :class => 'rate_field', :old_value => Service.cents_to_dollars(pricing_map.try(:[], 'other_rate') ), :rate_type => "Other", :disabled => pricing_map_disabled, :readonly => pricing_map_disabled, :display => 'Other Rate', value: number_with_precision(Service.cents_to_dollars(pricing_map.try(:[], 'other_rate')), precision: 2)
         %tr.member_rate_row
           %th= t(:pricing_map_form)[:member_rate]
           %td.set_rate= rate_map.try(:[], 'member_rate')
-          %td= text_field_tag "pricing_maps[#{pricing_map.try(:[], 'id') || 'blank_pricing_map'}][member_rate]", Service.cents_to_dollars(pricing_map.try(:[], 'member_rate')), :class => 'rate_field', :old_value => Service.cents_to_dollars(pricing_map.try(:[], 'member_rate') ), :rate_type => "Member", :disabled => pricing_map_disabled, :readonly => pricing_map_disabled, :display => 'Member Rate'
+          %td= text_field_tag "pricing_maps[#{pricing_map.try(:[], 'id') || 'blank_pricing_map'}][member_rate]", Service.cents_to_dollars(pricing_map.try(:[], 'member_rate')), :class => 'rate_field', :old_value => Service.cents_to_dollars(pricing_map.try(:[], 'member_rate') ), :rate_type => "Member", :disabled => pricing_map_disabled, :readonly => pricing_map_disabled, :display => 'Member Rate', value: number_with_precision(Service.cents_to_dollars(pricing_map.try(:[], 'member_rate')), precision: 2)
         %tr
           %th
             %td.set_rate{:colspan => 2, :style => "font-size: 12px"}= t(:pricing_map_form)[:rate_disclaimer]

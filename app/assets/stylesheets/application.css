@@ -1157,7 +1157,7 @@ img.screening_info_img {
   position: absolute;
   top: 7px;
   left: 190px;
-  z-index: 2;
+  z-index: 1;
 }
 
 .service-request-setup-view .arm-info .add-arm .add_nested_fields {

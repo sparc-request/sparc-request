@@ -29,7 +29,10 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
         arm_id = params[:arm_id] if params[:arm_id]
         page = params[:page] if params[:page]
         session[:service_calendar_pages] = params[:pages] if params[:pages]
-        session[:service_calendar_pages][arm_id] = page if page && arm_id
+        if page && arm_id
+          session[:service_calendar_pages] = {} unless session[:service_calendar_pages].present?
+          session[:service_calendar_pages][arm_id] = page
+        end
 
         @service_request = @sub_service_request.service_request
         @service_list = @service_request.service_list

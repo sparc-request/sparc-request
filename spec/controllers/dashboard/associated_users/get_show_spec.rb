@@ -19,7 +19,17 @@ RSpec.describe Dashboard::AssociatedUsersController do
                             identity: identity,
                             protocol: protocol)
       stub_find_project_role(obj)
-      allow(protocol).to receive(:project_roles).and_return([obj])
+
+      # associate this ProjectRole with protocol
+      project_roles_collection = instance_double(ActiveRecord::Relation)
+      allow(project_roles_collection).to receive(:find_by) do |args|
+        if args[:identity_id] == identity.id
+          obj
+        else
+          nil
+        end
+      end
+      allow(protocol).to receive(:project_roles).and_return(project_roles_collection)
       obj
     end
 

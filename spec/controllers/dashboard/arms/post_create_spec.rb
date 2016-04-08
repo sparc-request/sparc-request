@@ -7,17 +7,18 @@ RSpec.describe Dashboard::ArmsController do
     def protocol_stub(opts = {})
       protocol = instance_double('Protocol',
         id: 1,
-        sub_service_requests: opts[:sub_service_requests] || [],
-        arms: opts[:arms] || [])
+        sub_service_requests: opts[:sub_service_requests] || SubServiceRequest.none,
+        arms: opts[:arms] || Arm.none)
       stub_find_protocol(protocol)
       protocol
     end
 
-    def arm_stub
+    def arm_stub(valid = true)
       instance_double('Arm',
         default_visit_days: true,
         reload: true,
-        populate_subjects: true)
+        populate_subjects: true,
+        :valid? => valid)
     end
 
     let(:sr_stub) do
@@ -38,11 +39,13 @@ RSpec.describe Dashboard::ArmsController do
 
     context 'Protocol has SubServiceRequests in CWF' do
       it 'should populate subjects for new Arm' do
-        protocol = protocol_stub(sub_service_requests: [
-          instance_double('SubServiceRequest',
-            'in_work_fulfillment?' => true)
-          ])
-
+        # stub collection of SubServiceRequests + in_work_fulfillment scope
+        sub_service_requests_collection = double(ActiveRecord::Relation)
+        expect(sub_service_requests_collection).
+            to receive_message_chain(:in_work_fulfillment, :any?).
+                and_return(true)
+        protocol = protocol_stub(sub_service_requests: sub_service_requests_collection)
+        allow(protocol).to receive_message_chain(:sub_service_requests, :in_work_fulfillment, :any?).and_return(true)
         arm = arm_stub()
         expect(arm).to receive(:populate_subjects)
         expect(protocol).to receive(:create_arm).and_return(arm)
@@ -53,11 +56,12 @@ RSpec.describe Dashboard::ArmsController do
 
     context 'Protocol has no SubServiceRequests in CWF' do
       it 'should not populate subjects for new Arm' do
-        protocol = protocol_stub(sub_service_requests: [
-          instance_double('SubServiceRequest',
-            'in_work_fulfillment?' => false)
-          ])
-
+        # stub collection of SubServiceRequests + in_work_fulfillment scope
+        sub_service_requests_collection = double(ActiveRecord::Relation)
+        expect(sub_service_requests_collection).
+            to receive_message_chain(:in_work_fulfillment, :any?).
+                and_return(false)
+        protocol = protocol_stub(sub_service_requests: sub_service_requests_collection)
         arm = arm_stub()
         expect(arm).not_to receive(:populate_subjects)
         expect(protocol).to receive(:create_arm).and_return(arm)

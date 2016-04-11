@@ -102,16 +102,8 @@ $(document).ready ->
   )
 
 
-  $('#provider_subsidy_map_attributes_max_dollar_cap').live('change', ->
-    $(this).formatCurrency()
-  )
-
-  $('#program_subsidy_map_attributes_max_dollar_cap').live('change', ->
-    $(this).formatCurrency()
-  )
-
-  $('#core_subsidy_map_attributes_max_dollar_cap').live('change', ->
-    $(this).formatCurrency()
+  $('#provider_subsidy_map_attributes_max_dollar_cap, #program_subsidy_map_attributes_max_dollar_cap, #core_subsidy_map_attributes_max_dollar_cap').live('change', ->
+    $(this).val(parseFloat($(this).val()).toFixed(2))
   )
   
   $('#fix_pricing_maps_dialog').dialog({

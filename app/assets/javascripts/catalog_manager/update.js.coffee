@@ -94,11 +94,11 @@ $(document).ready ->
   )
     
   $('.service_rate').live('blur', ->
-    $(this).formatCurrency()
+    $(this).val(parseFloat($(this).val()).toFixed(2))
   )
 
   $('[display="Federal Rate"], [display="Corporate Rate"], [display="Other Rate"], [display="Member Rate"]').live('change', ->
-    $(this).formatCurrency()
+    $(this).val(parseFloat($(this).val()).toFixed(2))
   )
 
 

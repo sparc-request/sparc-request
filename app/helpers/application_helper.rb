@@ -31,9 +31,13 @@ module ApplicationHelper
     raw(returning_html)
   end
 
-  def show_friendly_ssr_id ssr
-    unless ssr.nil?
-      "Editing ID: #{ssr.service_request.protocol.id}-#{ssr.ssr_id}"
+  def protocol_id_display protocol_id, sub_service_request, service_request
+    if protocol_id
+      "SRID: #{protocol_id}"
+    elsif sub_service_request
+      "SRID: #{sub_service_request.service_request.protocol.id}"
+    else
+      "SRID: #{service_request.protocol.id}"
     end
   end
 

@@ -30,6 +30,8 @@ class ApplicationController < ActionController::Base
   end
 
   def prepare_catalog
+    @protocol_id = params[:protocol_id]
+    
     if session['sub_service_request_id'] and @sub_service_request
       @institutions = @sub_service_request.organization.parents.select{|x| x.type == 'Institution'}
     else
@@ -71,7 +73,7 @@ class ApplicationController < ActionController::Base
     end
 
     if USE_NEWS_FEED
-      page = Nokogiri::HTML(open("http://www.sparcrequestblog.com"))
+      page = Nokogiri::HTML(open("https://www.sparcrequestblog.com"))
       headers = page.css('.entry-header').take(3)
       @news = []
       headers.each do |header|

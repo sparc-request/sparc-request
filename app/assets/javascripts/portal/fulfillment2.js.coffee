@@ -479,6 +479,14 @@ $(document).ready ->
     $(".li_#{li_id}").toggle()
   )
 
+  $(document).on('change', 'select#fulfillment_timeframe', ->  
+    if $(this).val() == ''
+      $(this).closest('tr').find('#fulfillment_time').val('').change()
+      $(this).closest('tr').find('#fulfillment_time').prop( "disabled", true ).css('background': '#CCC')
+    else
+      $(this).closest('tr').find('#fulfillment_time').prop( "disabled", false ).css('background': 'white')
+  )
+
   $(document).on('click', '.add_note_link', ->
     ssr_id = $(this).data('sub_service_request_id')
     data =

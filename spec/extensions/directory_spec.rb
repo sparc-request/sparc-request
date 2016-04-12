@@ -101,7 +101,6 @@ RSpec.describe 'Directory' do
     it 'should create identities that are not already there' do
       r = {
           "uid" =>       [ 'foo' ],
-          "cn" =>       [ 'foo' ],
           "mail" =>      [ 'foo@bar.com' ],
           "givenname" => [ 'Foo' ],
           "sn" =>        [ 'Bar' ],
@@ -123,7 +122,6 @@ RSpec.describe 'Directory' do
     it 'should update identities that need to be updated' do
       r = {
           "uid" =>       [ 'mobama' ],
-          "cn" =>       [ 'mobama' ],
           "mail" =>      [ 'bobama@whitehouse.gov' ],
           "givenname" => [ 'Bo' ],
           "sn" =>        [ 'Bama' ]}

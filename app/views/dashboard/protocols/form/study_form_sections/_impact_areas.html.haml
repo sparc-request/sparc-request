@@ -29,7 +29,7 @@
       - checked = !ia_form.object.new && !ia_form.object.marked_for_destruction?
       .form-group.row{ class: ia_form.object.name }
         = ia_form.label :name, "#{ImpactArea::TYPES[ia_form.object.name]}:", class: 'col-lg-2 control-label'
-        .col-lg-10
+        .col-lg-1
           = ia_form.check_box "_destroy", { checked: checked, class: 'form-control' }, false, true
           = ia_form.hidden_field :name, value: ia_form.object.name
       - if ia_form.object.name == "other"

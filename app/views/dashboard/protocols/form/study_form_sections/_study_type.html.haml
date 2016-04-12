@@ -29,6 +29,6 @@
       - checked = !st_form.object.new && !st_form.object.marked_for_destruction?
       .form-group.row{ class: st_form.object.name }
         = st_form.label :name, "#{StudyType::TYPES[st_form.object.name]}:", class: 'col-lg-2 control-label'
-        .col-lg-10
+        .col-lg-1
           = st_form.check_box "_destroy", { checked: checked, class: 'form-control' }, false, true
           = st_form.hidden_field :name, value: st_form.object.name

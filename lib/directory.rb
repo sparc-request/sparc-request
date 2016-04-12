@@ -56,13 +56,6 @@ class Directory
     if USE_LDAP && !SUPPRESS_LDAP_FOR_USER_SEARCH
       ldap_results = search_ldap(term)
       db_results = search_database(term)
-      ldap_results.each do |i|
-        puts "LDAP RESULT: #{i.inspect}"
-      end unless ldap_results.nil?
-      puts "----------------------------------------------"
-      db_results.each do |i|
-        puts i.inspect
-      end unless db_results.nil?
       # If there are any entries returned from ldap that were not in the
       # database, then create them
       create_or_update_database_from_ldap(ldap_results, db_results)

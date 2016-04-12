@@ -42,34 +42,6 @@ class IdentitiesController < ApplicationController
     end
   end
 
-  # search identity depending on USE_LDAP and SUPPRESS_LDAP_FOR_USER_SEARCH
-  # make sure the project_role property of the identity is not null
-  #
-  #
-  def search_or_create_identity
-    email = params[:email]
-    @identity = Directory.search(email).first
-    @can_edit = false
-    project_role_params = params[session[:protocol_type].to_sym][:project_roles_attributes][@identity.id.to_s] rescue nil
-    if project_role_params
-      project_role_params.delete '_destroy'
-      id = project_role_params.delete 'id'
-
-      if id.blank?
-        @project_role = ProjectRole.new project_role_params
-      else
-        @project_role = ProjectRole.find id
-        @project_role.project_rights = project_role_params[:project_rights]
-      end
-
-      @can_edit = true
-    else
-      @project_role = ProjectRole.new
-    end
-
-    render :show
-  end
-
   def add_to_protocol
     @can_edit = params[:can_edit]
     @error = nil

@@ -44,7 +44,7 @@
       = render partial: 'dashboard/sub_service_requests/request_details', locals: { protocol: @protocol, service_request: @service_request, sub_service_request: @sub_service_request }
     .tab-pane#study_schedule{role: 'tabpanel', class: cookies['admin-tab'] == 'study_schedule-tab' ? 'active' : ''}
       #per_patient_services
-        = render partial: 'dashboard/sub_service_requests/per_patient_per_visit', locals: {sub_service_request: @sub_service_request, service_request: @service_request}
+        = render partial: 'dashboard/sub_service_requests/per_patient_per_visit', locals: { sub_service_request: @sub_service_request, service_request: @service_request }
     .tab-pane#study_level_activities{role: 'tabpanel', class: cookies['admin-tab'] == 'study_level_activities-tab' ? 'active' : ''}
       = render partial: 'dashboard/study_level_activities/study_level_activities_table', locals: { sub_service_request: @sub_service_request }
     .tab-pane#documents{role: 'tabpanel', class: cookies['admin-tab'] == 'documents-tab' ? 'active' : ''}

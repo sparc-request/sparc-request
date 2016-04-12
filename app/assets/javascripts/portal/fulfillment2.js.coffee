@@ -481,10 +481,10 @@ $(document).ready ->
 
   $(document).on('change', 'select#fulfillment_timeframe', ->  
     if $(this).val() == ''
-      $(this).closest('tr').find('#fulfillment_time').val('').change()
-      $(this).closest('tr').find('#fulfillment_time').prop( "disabled", true ).css('background': '#CCC')
+      $(this).closest('tr').find('#fulfillment_time').attr("value", "").change()
+      $(this).closest('tr').find('#fulfillment_time').prop( "disabled", true ).addClass('disabled_text_box')
     else
-      $(this).closest('tr').find('#fulfillment_time').prop( "disabled", false ).css('background': 'white')
+      $(this).closest('tr').find('#fulfillment_time').prop( "disabled", false ).removeClass('disabled_text_box')
   )
 
   $(document).on('click', '.add_note_link', ->

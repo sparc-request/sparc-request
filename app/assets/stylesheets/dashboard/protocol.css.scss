@@ -46,6 +46,33 @@
 }
 /* Primary PI Typeahead End */
 
+/* New/Edit Protocol Form Begin */
+#funding-status   .col-lg-10,
+.pending_funding  .col-lg-10,
+#federal-non-phs  .col-lg-10,
+.approval_pending .col-lg-10 {
+  padding-top: 11px;
+}
+
+.investigational_products  .col-lg-10,
+.oral_health_cobre         .col-lg-10 {
+  padding-top: 6px;
+}
+
+#project-roles .form-group .col-lg-10 label {
+  margin-top: 8px;
+}
+
+input[type='checkbox'] {
+  width: 5%;
+}
+
+textarea {
+  resize: vertical;
+}
+
+/* New/Edit Protocol Form End */
+
 .view-protocol-details-modal {
   width: 50% !important;
 }

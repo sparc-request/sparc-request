@@ -62,7 +62,7 @@
         %br
         = image_tag 'spinner.gif'
       
-      = render partial: 'shared/header_logos'
+      = render partial: 'shared/header_logos', locals: {in_dashboard: false}
 
       .welcome.col-md-12
         = render 'shared/navbar'

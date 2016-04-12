@@ -10,15 +10,16 @@
   %li.reports
     = link_to 'SPARCReport', reports_path, target: '_blank'
   .right-section
-    %li.align-element-nav-bar
-      - flash.each do |name, msg|
-        = content_tag :div, msg, :id => "flash_#{name}" if msg.is_a?(String)
-    .user-login-section
-      - if current_user.present?
+    - if current_user.present?
+      .user-login-section
         %li.align-element-nav-bar
           = "Logged in as #{current_user.email}"
         %li
           = link_to 'Logout', destroy_identity_session_path, method: :delete, class: 'logout'
-      - else
+    - else
+      %li.align-element-nav-bar
+        - flash.each do |name, msg|
+          = content_tag :div, msg, :id => "flash_#{name}" if msg.is_a?(String)
+      .user-login-section
         %li
           = link_to 'Login', new_identity_session_path, class: 'logout'

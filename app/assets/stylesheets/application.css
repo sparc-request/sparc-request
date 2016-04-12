@@ -157,13 +157,16 @@ a.save-option{
 
 #container #header #org_logo img {
   max-height: 100%;
-  max-width: 90%;
-  margin: 5%;
+  max-width: 85%;
+  margin-top: 5%;
+  margin-bottom: 5%;
+  margin-left: 5%;
+  margin-right: 10%;
 }
 
 #container #header #sparc_request_header {
-  max-height: 100%;
-  max-width: 50%;
+  height: 100%;
+  width: 50%;
   float: left;
 }
 
@@ -173,16 +176,18 @@ a.save-option{
 }
 
 #container #header #institution_logo {
-  max-height: 100%;
-  max-width: 25%;
+  height: 100%;
+  width: 25%;
   float: left;
 }
 
 #container #header #institution_logo img {
   max-height: 100%;
-  max-width: 68%;
-  padding-left: 16%;
-  padding-right: 16%;
+  max-width: 65%;
+  margin-top: 15%;
+  margin-bottom: 15%;
+  margin-left: 30%;
+  margin-right: 5%;
 }
 
 #container #department_title {

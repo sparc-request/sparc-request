@@ -40,7 +40,7 @@ class Directory
       LDAP_FILTER      = ldap_config['ldap_filter']
       LDAP_CN         = ldap_config['ldap_cn']
       LDAP_DEPARTMENT = ldap_config['ldap_department']
-      LDAP_FIELDS = ldap_config['ldap_fields']
+      LDAP_FIELDS = ldap_config['ldap_fields'] || [LDAP_UID, LDAP_LAST_NAME, LDAP_FIRST_NAME, LDAP_EMAIL]
       LDAP_UID_FIELD = ldap_config['ldap_uid_field'] || LDAP_UID # the unique identifier from LDAP used to generate the uid column in database
     rescue
       raise "ldap.yml not found, see config/ldap.yml.example"

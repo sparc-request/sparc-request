@@ -30,5 +30,19 @@ class Identities::OmniauthCallbacksController < Devise::OmniauthCallbacksControl
       redirect_to new_identity_registration_url
     end
   end
-end
 
+  def cas
+    @identity = Identity.find_for_cas_oauth(request.env["omniauth.auth"], current_identity)
+
+    if @identity.persisted?
+      sign_in_and_redirect @identity, :event => :authentication
+      set_flash_message(:notice, :success, :kind => "CAS") if is_navigational_format?
+    else
+      @identity.save #create record in identities table
+      sign_in_and_redirect @identity, :event => :authentication
+      set_flash_message(:notice, :success, :kind => "CAS") if is_navigational_format?
+    end
+
+  end
+
+end

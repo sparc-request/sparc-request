@@ -290,9 +290,19 @@ class SubServiceRequest < ActiveRecord::Base
   # Can't edit a request if it's placed in an uneditable status
   def can_be_edited?
     if organization.has_editable_statuses?
-      EDITABLE_STATUSES[self.organization.id].include?(self.status)
+       self_or_parent_id = find_editable_id(self.organization.id)
+       EDITABLE_STATUSES[self_or_parent_id].include?(self.status)
     else
       true
+    end
+  end
+
+  def find_editable_id(id)
+    parent_ids = Organization.find(id).parents.map(&:id)
+    EDITABLE_STATUSES.keys.each do |org_id|
+      if (org_id == id) || parent_ids.include?(org_id)
+        return org_id
+      end
     end
   end
 

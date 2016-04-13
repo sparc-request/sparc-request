@@ -1124,10 +1124,10 @@ en:
   login_password: "Password:"
   remember_user: "Remember me:"
   signin:
-    button1: "MUSC Users Click Here"
+    button1: "Users Click Here"
     button2: "Outside Users Click Here"
     button3: "Sign In"
-    message1: "MUSC Users- Sign in here"
+    message1: "Users- Sign in here"
     message2: ""
     message3: "Outside Users- Sign in here with your SPARC Request account"
     message4: ""
@@ -1137,6 +1137,7 @@ en:
   initial_signin_dialog: "You are not currently logged into SPARC Request. If you are affiliated with an institution and have an institutional login OR have created a SPARC Request account and have a SPARC Request login and password, please click the top button to proceed. If you are not currently affiliated with an institution OR do not have a SPARC Request login/password, please click the button on the bottom to proceed with creating a new account."
   proceed_to_database_login: "Outside Users with existing SPARC Request Accounts"
   proceed_to_shibboleth: "MUSC Users"
+  proceed_to_cas: "University of Utah Users"
 
   # Steps navigation
   step_navigation:
@@ -1246,4 +1247,3 @@ en:
     message: "To begin to search and add authorized users to this study/project, type in the first or last name of the user.  Select as appropriate."
     search_box_header: "User Search"
     search_placeholder: "Search for user..."
-

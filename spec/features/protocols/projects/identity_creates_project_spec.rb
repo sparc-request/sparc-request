@@ -55,14 +55,6 @@ RSpec.feature 'User wants to create a Project', js: true do
       expect(page).to have_link 'Continue'
     end
 
-    context 'and submits the form without filling out required fields' do
-      scenario 'and sees some errors' do
-        click_link 'Continue'
-        wait_for_javascript_to_finish
-        page.find '#errorExplanation'
-      end
-    end
-
     context 'funding sources' do
       before :each do
         fill_in 'project_short_title', with: 'title'

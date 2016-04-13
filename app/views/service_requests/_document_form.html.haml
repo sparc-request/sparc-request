@@ -20,6 +20,7 @@
 
 - provider_css ||= 'orange-provider'
 = javascript_include_tag 'document_upload'
+= stylesheet_link_tag 'hover_effect'
 
 - orgs = []
 - orgs = @document.sub_service_requests.map{|ssr| ssr.organization} if @document

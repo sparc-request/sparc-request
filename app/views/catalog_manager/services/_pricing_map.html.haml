@@ -121,5 +121,5 @@
 :javascript
   $(document).ready( function() {
     Sparc.services.create_accordion('.pricing_map_accordion')
-    $('.service_rate').val(parseFloat($('.service_rate').val()).toFixed(2))
+    $('.service_rate').formatCurrency();
   });

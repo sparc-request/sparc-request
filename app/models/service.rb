@@ -213,8 +213,7 @@ class Service < ActiveRecord::Base
     return pricing_map_for_date(Date.today)
   end
 
-  # Find a pricing map with a display date corresponding to the given
-  # date.
+  #This method is only used for the service pricing report
   def pricing_map_for_date(date)
     unless pricing_maps.empty?
       current_maps = self.pricing_maps.select { |x| x.display_date.to_date <= date.to_date }
@@ -239,10 +238,12 @@ class Service < ActiveRecord::Base
   # Find a pricing map with an effective date corresponding to the given
   # date.
   def effective_pricing_map_for_date(date=Date.today)
+    raise ArgumentError, "Service has no pricing maps" if self.pricing_maps.empty?
+
+    # TODO: use #where? (warning: potential performance issue)
     current_maps = self.pricing_maps.select { |x| x.effective_date.to_date <= date.to_date }
-    if current_maps.empty?
-      return false
-    end
+    raise ArgumentError, "Service has no current pricing maps" if current_maps.empty?
+
     sorted_maps = current_maps.sort { |lhs, rhs| lhs.effective_date <=> rhs.effective_date }
     pricing_map = sorted_maps.last
 

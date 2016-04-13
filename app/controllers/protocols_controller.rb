@@ -27,8 +27,9 @@ class ProtocolsController < ApplicationController
 
   def new
     @protocol = self.model_class.new
-    setup_protocol = SetupProtocol.new(@portal, @protocol, current_user, session[:service_request_id])
+    setup_protocol = SetupProtocol.new(params[:portal], @protocol, current_user, session[:service_request_id])
     setup_protocol.setup
+    @epic_services = setup_protocol.set_epic_services
     set_cookies
     resolve_layout
   end

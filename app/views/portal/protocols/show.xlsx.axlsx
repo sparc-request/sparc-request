@@ -18,6 +18,11 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+def sum(columns, current_row)
+  "(#{columns.map { |c| c + current_row.to_s }.join('+')})"
+end
+
+
 wb = xlsx_package.workbook
 default = wb.styles.add_style alignment: { horizontal: :left }
 # centered = wb.styles.add_style alignment: { horizontal: :center }
@@ -105,7 +110,18 @@ end
     arm_header_row << ["Total NR Per Patient", "Total Research Cost Per Patient", "# of Subjects", "Total NR Per Study", "Total Research Cost Per Study"]
     label_row << ["NR", "R Cost", "", "NR", "R Cost"]
     sheet.add_row arm_header_row.flatten, :style => header_style
+
+    # Fetch a bunch of columns
+    total_nr_per_patient_column = sheet.rows.last.cells[-5].r[/([A-Z]+)/]
+    total_research_amount_column = sheet.rows.last.cells[-4].r[/([A-Z]+)/]
+    number_of_subjects_column = sheet.rows.last.cells[-3].r[/([A-Z]+)/]
+    total_nr_per_study_column = sheet.rows.last.cells[-2].r[/([A-Z]+)/]
+    total_r_cost_per_study_column = sheet.rows.last.cells[-1].r[/([A-Z]+)/]
     sheet.add_row arm_label_row.flatten, :style => sub_header_style
+    n_columns = sheet.rows.last.cells.drop(5).each_slice(3).map { |cs| cs[0].r[/([A-Z]+)/] }
+    r_columns = sheet.rows.last.cells.drop(5).each_slice(3).map { |cs| cs[2].r[/([A-Z]+)/] }
+    nr_columns = sheet.rows.last.cells.drop(5).each_slice(3).map { |cs| cs[1].r[/([A-Z]+)/] }
+
     sheet.add_row label_row.flatten, :style => default
 
 
@@ -116,18 +132,33 @@ end
       ((arm.visit_groups.count * 3) + 5).times {ssr_row << ""}
       sheet.add_row ssr_row, :style => org_header_style
 
+      current_row = sheet.rows.length + 1
       line_items_visits.each do |liv|
-        line_item_row = [liv.line_item.service.name, liv.line_item.service.cpt_code, "(user input here)", liv.line_item.service.current_effective_pricing_map.full_rate, liv.line_item.applicable_rate]
-        liv.visits.each do |visit|
-          line_item_row << [visit.research_billing_qty, "(Result of 'NR' input * 'N' column)", "(Result of 'Service Rate' column * 'N' column)"]
+        n_columns_sum = sum(n_columns, current_row)
+        nr_cell = "C#{current_row}"
+        your_cost_cell = "E#{current_row}"
+        total_nr_cell = total_nr_per_patient_column + current_row.to_s
+        total_research_amount_cell = total_research_amount_column + current_row.to_s
+        number_of_subjects_cell = number_of_subjects_column + current_row.to_s
+
+        line_item_row = [liv.line_item.service.name, liv.line_item.service.cpt_code, "0", liv.line_item.service.current_effective_pricing_map.full_rate, liv.line_item.applicable_rate]
+        liv.visits.each_with_index do |visit, index|
+          n_cell = n_columns[index] + current_row.to_s
+          line_item_row << [visit.research_billing_qty, "=#{nr_cell} * #{n_cell}", "=#{your_cost_cell} * #{n_cell}"]
         end
-        line_item_row << ["(Result of 'NR' cost * all 'N' columns)", "(Result of 'Research Rate' * all 'N' columns)", liv.subject_count, "(Total NR * subject count)", "Total Research amount * subject count)"]
+        line_item_row << ["=#{nr_cell} * #{n_columns_sum}",
+          "=#{your_cost_cell} * #{n_columns_sum}",
+          liv.subject_count,
+          "=#{total_nr_cell} * #{number_of_subjects_cell}",
+          "=#{total_research_amount_cell} * #{number_of_subjects_cell}"]
         sheet.add_row line_item_row.flatten, :style => default
+        current_row += 1
       end
     end
 
     sheet.add_row
     sheet.add_row
+    principle_row_no = sheet.rows.length + 2
 
     additional_row = ["Additional Services and Study Team Assessments", "", "", "", ""]
     principle_row = ["Principle Investigator", "", "(user input here)", "", "(user input here)"]
@@ -136,20 +167,42 @@ end
     financial_row = ["Financial Management", "", "(user input here)", "", "(user input here)"]
     bottom_totals = ["Total Per Visit", "", "", "", ""]
 
-    arm.visit_groups.each do |vg|
+    arm.visit_groups.each_with_index do |vg, idx|
       additional_row << ["", "", ""]
       principle_row << ["(user input here)", "(user input here)", "(user input here)"]
       coordination_row << ["(user input here)", "(user input here)", "(user input here)"]
       regulatory_row << ["(user input here)", "(user input here)", "(user input here)"]
       financial_row << ["(user input here)", "(user input here)", "(user input here)"]
-      bottom_totals << ["", "(column total here)", "(column total here)"]
+      bottom_totals << ["",
+        "=SUM(#{nr_columns[idx]}1:#{nr_columns[idx]}#{principle_row_no+3})",
+        "=SUM(#{r_columns[idx]}1:#{r_columns[idx]}#{principle_row_no+3})"]
     end
 
-    principle_row << ["(same stuff as above)", "(same stuff as above)", "", "(same stuff as above)", "(same stuff as above)"]
-    coordination_row << ["(same stuff as above)", "(same stuff as above)", "", "(same stuff as above)", "(same stuff as above)"]
-    regulatory_row << ["(same stuff as above)", "(same stuff as above)", "", "(same stuff as above)", "(same stuff as above)"]
-    financial_row << ["(same stuff as above)", "(same stuff as above)", "", "(same stuff as above)", "(same stuff as above)"]
-    bottom_totals << ["(column total here)", "(column total here)", "", "(column total here)", "(column total here)"]
+    principle_row << ["=C#{principle_row_no} * #{sum(n_columns, principle_row_no)}",
+      "=E#{principle_row_no} * #{sum(n_columns, principle_row_no)}",
+      "",
+      "=#{total_nr_per_patient_column}#{principle_row_no} * #{number_of_subjects_column}#{principle_row_no}",
+      "=#{total_research_amount_column}#{principle_row_no} * #{number_of_subjects_column}#{principle_row_no}"]
+    coordination_row << ["=C#{principle_row_no+1} * #{sum(n_columns, principle_row_no+1)}",
+      "=E#{principle_row_no+1} * #{sum(n_columns, principle_row_no+1)}",
+      "",
+      "=#{total_nr_per_patient_column}#{principle_row_no+1} * #{number_of_subjects_column}#{principle_row_no+1}",
+      "=#{total_research_amount_column}#{principle_row_no+1} * #{number_of_subjects_column}#{principle_row_no+1}"]
+    regulatory_row << ["=C#{principle_row_no+2} * #{sum(n_columns, principle_row_no+2)}",
+      "=E#{principle_row_no+2} * #{sum(n_columns, principle_row_no+2)}",
+      "",
+      "=#{total_nr_per_patient_column}#{principle_row_no+2} * #{number_of_subjects_column}#{principle_row_no+2}",
+      "=#{total_research_amount_column}#{principle_row_no+2} * #{number_of_subjects_column}#{principle_row_no+2}"]
+    financial_row << ["=C#{principle_row_no+3} * #{sum(n_columns, principle_row_no+3)}",
+      "=E#{principle_row_no+3} * #{sum(n_columns, principle_row_no+3)}",
+      "",
+      "=#{total_nr_per_patient_column}#{principle_row_no+3} * #{number_of_subjects_column}#{principle_row_no+3}",
+      "=#{total_research_amount_column}#{principle_row_no+3} * #{number_of_subjects_column}#{principle_row_no+3}"]
+    bottom_totals << ["=SUM(#{total_nr_per_patient_column}1:#{total_nr_per_patient_column}#{principle_row_no+3})",
+      "=SUM(#{total_research_amount_column}1:#{total_research_amount_column}#{principle_row_no+3})",
+      "",
+      "=SUM(#{total_nr_per_study_column}1:#{total_nr_per_study_column}#{principle_row_no+3})",
+      "=SUM(#{total_r_cost_per_study_column}1:#{total_r_cost_per_study_column}#{principle_row_no+3})"]
 
     sheet.add_row additional_row.flatten, :style => org_header_style
     sheet.add_row principle_row.flatten, :style => default
@@ -161,7 +214,11 @@ end
     arm_summary_row = ["#{arm.name}: Summary", "", "Negotiated Costs", "", "Research Cost"]
     ((arm.visit_groups.count * 3) + 5).times {arm_summary_row << ""}
     sheet.add_row arm_summary_row, :style => header_style
-    sheet.add_row ["#{arm.name}: Total Direct Costs", "", "(total of entire 'total NR per study' column)", "", "(total of entire 'total research cost per study' column)"]
+    sheet.add_row ["#{arm.name}: Total Direct Costs",
+      "",
+      "=#{total_nr_per_study_column}#{principle_row_no+4}",
+      "",
+      "=#{total_r_cost_per_study_column}#{principle_row_no+4}"]
 
   end
 end

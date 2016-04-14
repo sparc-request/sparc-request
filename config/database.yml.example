@@ -22,7 +22,7 @@ development:
   username: root
   adapter: mysql2
   encoding: utf8
-  database: sparc_rails_development
+  database: sparc-request_development
   pool: 5
   timeout: 5000
 

@@ -37,7 +37,3 @@ development:
 test:
   study_root: '1.2.3.4'
   test_mode: true
-
-
-
-

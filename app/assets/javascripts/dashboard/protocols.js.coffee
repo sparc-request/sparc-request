@@ -73,11 +73,17 @@ $(document).ready ->
 
       $(document).on 'click', '#save_filters_link', ->
         data = {} #Grab form values
+
+        # REVIEW this is not fetching values from multiselects
         $.each $('form#filterrific-no-ajax-auto-submit').serializeArray(), (i, field) ->
           data[field.name] = field.value
+
+        # manually enter those in
+        data["filterrific[with_status][]"] = $("#filterrific_with_status").val().join()
+        # data["filterrific[with_core][]"] = $("#filterrific_with_core").val().join()
         $.ajax
           type: 'GET'
-          url:  @href
+          url:  "/dashboard/protocol_filters/new"
           data: data
         return false
 

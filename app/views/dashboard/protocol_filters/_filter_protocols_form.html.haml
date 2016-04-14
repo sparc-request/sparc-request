@@ -24,7 +24,7 @@
     .pull-left
       = t(:dashboard)[:protocol_filters][:header]
     .pull-right
-      = link_to t(:actions)[:save], new_dashboard_protocol_filter_path, id: "save_filters_link"
+      %a#save_filters_link{ href: "#" }= t(:actions)[:save]
       = " | "
       = link_to t(:actions)[:reset], reset_filterrific_url, id: "reset_filters_link"
     .clearfix

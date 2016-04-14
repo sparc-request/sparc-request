@@ -3,13 +3,13 @@ require "rails_helper"
 RSpec.describe "filters", js: :true do
   let!(:user) do
     create(:identity,
-           last_name: "Doe",
-           first_name: "John",
-           ldap_uid: "johnd",
-           email: "johnd@musc.edu",
-           password: "p4ssword",
-           password_confirmation: "p4ssword",
-           approved: true)
+      last_name: "Doe",
+      first_name: "John",
+      ldap_uid: "johnd",
+      email: "johnd@musc.edu",
+      password: "p4ssword",
+      password_confirmation: "p4ssword",
+      approved: true)
   end
 
   fake_login_for_each_test("johnd")
@@ -21,13 +21,10 @@ RSpec.describe "filters", js: :true do
 
   describe "default" do
     it "should display unarchived Protocols with SubServiceRequests of any status for which the user has a ProjectRole without 'none' rights" do
-      protocol = create(:unarchived_project_without_validations,
-                 primary_pi: create(:identity),
-                 project_role: { identity_id: user.id, role: "very-important", project_rights: "not-none" })
-      service_request = create(:service_request_without_validations, protocol: protocol)
-      create(:sub_service_request_with_organization,
-             service_request: service_request,
-             status: "single-ready-to-mingle")
+      protocol = create_protocol(archived: false, status: "single-ready-to-mingle")
+      protocol.project_roles.create(identity_id: user.id,
+        role: "very-important",
+        project_rights: "not-none")
 
       visit_protocols_index_page
 
@@ -38,21 +35,22 @@ RSpec.describe "filters", js: :true do
   describe "save" do
     context "user clicks save" do
       it "should allow user to save filter" do
-        create(:unarchived_project_without_validations,
-               primary_pi: create(:identity),
-               title: "My Awesome Protocol")
-
         visit_protocols_index_page
-        @page.instance_exec do
-          filter_protocols.archived_checkbox.click
-          filter_protocols.save_link.click
-          wait_for_filter_form_modal
-          filter_form_modal.name_field.set("MyFilter")
-          filter_form_modal.save_button.click
-        end
+        expect do
+          @page.instance_exec do
+            filter_protocols.archived_checkbox.click
+            filter_protocols.select_status("Active", "Complete")
+            filter_protocols.save_link.click
+            wait_for_filter_form_modal
+            filter_form_modal.name_field.set("MyFilter")
+            filter_form_modal.save_button.click
+          end
+          expect(@page.recently_saved_filters).to have_filters(text: "MyFilter")
+        end.to change { ProtocolFilter.count }.by(1)
 
-        expect(@page.recently_saved_filters).to have_filters(text: "MyFilter")
-        expect(ProtocolFilter.count).to eq(1)
+        new_filter = ProtocolFilter.last
+        expect(new_filter.with_status).to eq("ctrc_approved,complete")
+        expect(new_filter.show_archived).to eq(true)
       end
     end
   end
@@ -60,37 +58,48 @@ RSpec.describe "filters", js: :true do
   describe "recently saved filters" do
     context "user has saved filters and clicks a saved filter name" do
       it "should apply that filter" do
-        create(:archived_project_without_validations,
-               primary_pi: create(:identity),
-               project_role: { identity_id: user.id, role: "very-important", project_rights: "to-party" })
+        # archived, has status "Complete"
+        protocol1 = create_protocol(archived: true, short_title: "ArchivedComplete", status: "complete")
+        protocol1.project_roles.create(identity_id: user.id, role: "very-important", project_rights: "to-party")
+
+        # archived, has status "Active" (ctrc_approved...)
+        protocol2 = create_protocol(archived: true, short_title: "ArchivedActive", status: "ctrc_approved")
+        protocol2.project_roles.create(identity_id: user.id, role: "very-important", project_rights: "to-party")
+
+        # unarchived, has status "Active"
+        protocol3 = create_protocol(archived: false, short_title: "UnarchivedActive", status: "ctrc_approved")
+        protocol3.project_roles.create(identity_id: user.id, role: "very-important", project_rights: "to-party")
+
+        # archived, has status "Draft"
+        protocol4 = create_protocol(archived: true, short_title: "ArchivedDraft", status: "draft")
+        protocol4.project_roles.create(identity_id: user.id, role: "very-important", project_rights: "to-party")
 
         f = ProtocolFilter.create(search_name: "MyFilter",
-                                  show_archived: true,
-                                  for_admin: false,
-                                  for_identity_id: true,
-                                  search_query: "",
-                                  with_status: "")
+          show_archived: true,
+          for_admin: false,
+          for_identity_id: true,
+          search_query: "",
+          with_status: "ctrc_approved,complete")
         f.identity = user
         f.save!
 
         visit_protocols_index_page
         @page.recently_saved_filters.filters.first.click
 
-        expect(@page.search_results).to have_protocols
+        expect(@page.search_results).to have_protocols(text: "ArchivedComplete")
+        expect(@page.search_results).to have_protocols(text: "ArchivedActive")
+        expect(@page.search_results).to have_no_protocols(text: "UnarchivedActive")
+        expect(@page.search_results).to have_no_protocols(text: "ArchivedDraft")
       end
     end
   end
 
   describe "reset" do
     it "should remove all filters" do
-      create(:archived_project_without_validations,
-               primary_pi: create(:identity),
-               short_title: "ArchivedProject",
-               project_role: { identity_id: user.id, project_rights: "to-party", role: "very-important" })
-      create(:unarchived_project_without_validations,
-             primary_pi: create(:identity),
-             short_title: "UnarchivedProject",
-             project_role: { identity_id: user.id, project_rights: "to-party", role: "very-important" })
+      archived_protocol = create_protocol(archived: true, short_title: "ArchivedProject")
+      archived_protocol.project_roles.create(identity_id: user.id, role: "very-important", project_rights: "to-party")
+      unarchived_protocol = create_protocol(archived: false, short_title: "UnarchivedProject")
+      unarchived_protocol.project_roles.create(identity_id: user.id, role: "very-important", project_rights: "to-party")
 
       visit_protocols_index_page
       @page.filter_protocols.archived_checkbox.click
@@ -105,14 +114,10 @@ RSpec.describe "filters", js: :true do
   describe "archived checkbox" do
     context "user checks archived checkbox and clicks filter button" do
       it "should only show archived protocols" do
-        create(:archived_project_without_validations,
-               primary_pi: create(:identity),
-               short_title: "ArchivedProject",
-               project_role: { identity_id: user.id, project_rights: "to-party", role: "very-important" })
-        create(:unarchived_project_without_validations,
-               primary_pi: create(:identity),
-               short_title: "UnarchivedProject",
-               project_role: { identity_id: user.id, project_rights: "to-party", role: "very-important" })
+        archived_protocol = create_protocol(archived: true, short_title: "ArchivedProject")
+        archived_protocol.project_roles.create(identity_id: user.id, role: "very-important", project_rights: "to-party")
+        unarchived_protocol = create_protocol(archived: false, short_title: "UnarchivedProject")
+        unarchived_protocol.project_roles.create(identity_id: user.id, role: "very-important", project_rights: "to-party")
 
         visit_protocols_index_page
         @page.filter_protocols.archived_checkbox.set(true)
@@ -125,122 +130,76 @@ RSpec.describe "filters", js: :true do
   end
 
   describe "status dropdown" do
-    context "user selects a status from dropdown and clicks the filter button" do
-      it "should display only Protocols that have a SubServiceRequest of that status" do
-        # protocol with no SubServiceRequests
-        create(:unarchived_project_without_validations,
-               primary_pi: create(:identity),
-               project_role: { identity_id: user.id, project_rights: "to-party", role: "very-important" })
+    context "user selects multiple statuses from dropdown and clicks the filter button" do
+      it "should display only Protocols that have a SubServiceRequest of those statuses" do
+        no_ssr_protocol = create_protocol(archived: false, short_title: "NoSubServiceRequests")
+        no_ssr_protocol.project_roles.create(identity_id: user.id, role: "very-important", project_rights: "to-party")
 
-        # protocol with one SSR of status approved
-        protocol_only_approved = create(:unarchived_project_without_validations,
-                                        primary_pi: create(:identity),
-                                        short_title: "OneApproved",
-                                        project_role: { identity_id: user.id, project_rights: "to-party", role: "very-important" })
-        service_request_only_approved = create(:service_request_without_validations,
-                                               protocol: protocol_only_approved)
-        create(:sub_service_request_with_organization,
-               service_request: service_request_only_approved,
-               status: "approved")
+        approved_protocol = create_protocol(archived: false, short_title: "ApprovedProtocol", status: "approved")
+        approved_protocol.project_roles.create(identity_id: user.id, role: "very-important", project_rights: "to-party")
 
-        # protocol with one SSR of status approved and another
-        # SSR of another status
-        protocol_one_draft_one_approved = create(:unarchived_project_without_validations,
-                                                 primary_pi: create(:identity),
-                                                 short_title: "OneDraft",
-                                                 project_role: { identity_id: user.id, project_rights: "to-party", role: "very-important" })
-        service_request_one_draft_one_approved = create(:service_request_without_validations,
-                                                        protocol: protocol_one_draft_one_approved)
-        create(:sub_service_request_with_organization,
-               service_request: service_request_one_draft_one_approved,
-               status: "approved")
-        create(:sub_service_request_with_organization,
-               service_request: service_request_one_draft_one_approved,
-               status: "draft")
+        active_protocol = create_protocol(archived: false, short_title: "ActiveProtocol", status: "ctrc_approved")
+        active_protocol.project_roles.create(identity_id: user.id, role: "very-important", project_rights: "to-party")
 
-        # protocol with a SSR not of status approved
-        protocol_only_draft = create(:unarchived_project_without_validations,
-                                     primary_pi: create(:identity),
-                                     project_role: { identity_id: user.id, project_rights: "to-party", role: "very-important" })
-        service_request_only_draft = create(:service_request_without_validations,
-                                            protocol: protocol_only_draft)
-        create(:sub_service_request_with_organization,
-               service_request: service_request_only_draft,
-               status: "draft")
+        draft_protocol = create_protocol(archived: false, short_title: "DraftProtocol", status: "draft")
+        draft_protocol.project_roles.create(identity_id: user.id, role: "very-important", project_rights: "to-party")
 
         visit_protocols_index_page
-        @page.filter_protocols.select_status("approved")
+        @page.filter_protocols.select_status("Approved", "Active")
         @page.filter_protocols.apply_filter_button.click
 
         expect(@page.search_results).to have_protocols(count: 2)
-        expect(@page.search_results).to have_protocols(text: "OneApproved")
-        expect(@page.search_results).to have_protocols(text: "OneDraft")
+        expect(@page.search_results).to have_no_protocols(text: "NoSubServiceRequests")
+        expect(@page.search_results).to have_protocols(text: "ApprovedProtocol")
+        expect(@page.search_results).to have_protocols(text: "ActiveProtocol")
+        expect(@page.search_results).to have_no_protocols(text: "DraftProtocol")
       end
     end
   end
 
   describe "search" do
     it "should match against short title case insensitively" do
-      create(:unarchived_project_without_validations,
-             primary_pi: create(:identity),
-             short_title: "titlex",
-             project_role: { identity_id: user.id, project_rights: "to-party", role: "very-important" })
-      create(:unarchived_project_without_validations,
-             primary_pi: create(:identity),
-             short_title: "xTitle",
-             project_role: { identity_id: user.id, project_rights: "to-party", role: "very-important" })
-      create(:unarchived_project_without_validations,
-             primary_pi: create(:identity),
-             short_title: "aaa",
-             project_role: { identity_id: user.id, project_rights: "to-party", role: "very-important" })
+      titlexProtocol = create_protocol(archived: false, short_title: "titlex")
+      titlexProtocol.project_roles.create(identity_id: user.id, role: "very-important", project_rights: "to-party")
+      xTitleProtocol = create_protocol(archived: false, short_title: "xTitle")
+      xTitleProtocol.project_roles.create(identity_id: user.id, role: "very-important", project_rights: "to-party")
+      aaaProtocol = create_protocol(archived: false, short_title: "aaa")
+      aaaProtocol.project_roles.create(identity_id: user.id, role: "very-important", project_rights: "to-party")
 
       visit_protocols_index_page
       expect(@page.search_results).to have_protocols(count: 3)
       @page.filter_protocols.search_field.set("title")
       @page.filter_protocols.apply_filter_button.click
 
-      expect(@page.search_results).to have_protocols(count: 2)
+      expect(@page.search_results).to have_protocols(text: "titlex")
+      expect(@page.search_results).to have_protocols(text: "xTitle")
       expect(@page.search_results).to have_no_protocols(text: "aaa")
     end
 
     it "should match against title case insensitively" do
-      create(:unarchived_project_without_validations,
-             primary_pi: create(:identity),
-             short_title: "Protocol1",
-             title: "titlex",
-             project_role: { identity_id: user.id, project_rights: "to-party", role: "very-important" })
-      create(:unarchived_project_without_validations,
-             primary_pi: create(:identity),
-             short_title: "Protocol2",
-             title: "xTitle",
-             project_role: { identity_id: user.id, project_rights: "to-party", role: "very-important" })
-      create(:unarchived_project_without_validations,
-             primary_pi: create(:identity),
-             short_title: "Protocol3",
-             title: "aaa",
-             project_role: { identity_id: user.id, project_rights: "to-party", role: "very-important" })
+      titlexProtocol = create_protocol(archived: false, title: "titlex", short_title: "Protocol1")
+      titlexProtocol.project_roles.create(identity_id: user.id, role: "very-important", project_rights: "to-party")
+      xTitleProtocol = create_protocol(archived: false, title: "xTitle", short_title: "Protocol2")
+      xTitleProtocol.project_roles.create(identity_id: user.id, role: "very-important", project_rights: "to-party")
+      aaaProtocol = create_protocol(archived: false, title: "aaa", short_title: "Protocol3")
+      aaaProtocol.project_roles.create(identity_id: user.id, role: "very-important", project_rights: "to-party")
 
       visit_protocols_index_page
       @page.filter_protocols.search_field.set("title")
       @page.filter_protocols.apply_filter_button.click
 
-      expect(@page.search_results).to have_protocols(count: 2)
+      expect(@page.search_results).to have_protocols(text: "Protocol1")
+      expect(@page.search_results).to have_protocols(text: "Protocol2")
       expect(@page.search_results).to have_no_protocols(text: "Protocol3")
     end
 
     it "should match against id" do
-      protocol1 = create(:unarchived_project_without_validations,
-                         primary_pi: create(:identity),
-                         short_title: "Protocol1",
-                         project_role: { identity_id: user.id, project_rights: "to-party", role: "very-important" })
-      create(:unarchived_project_without_validations,
-             primary_pi: create(:identity),
-             short_title: "Protocol2",
-             project_role: { identity_id: user.id, project_rights: "to-party", role: "very-important" })
-      create(:unarchived_project_without_validations,
-             primary_pi: create(:identity),
-             short_title: "Protocol3",
-             project_role: { identity_id: user.id, project_rights: "to-party", role: "very-important" })
+      protocol1 = create_protocol(archived: false, short_title: "Protocol1")
+      protocol1.project_roles.create(identity_id: user.id, role: "very-important", project_rights: "to-party")
+      protocol2 = create_protocol(archived: false, short_title: "Protocol2")
+      protocol2.project_roles.create(identity_id: user.id, role: "very-important", project_rights: "to-party")
+      protocol3 = create_protocol(archived: false, short_title: "Protocol3")
+      protocol3.project_roles.create(identity_id: user.id, role: "very-important", project_rights: "to-party")
 
       visit_protocols_index_page
       @page.filter_protocols.search_field.set(protocol1.id.to_s)
@@ -251,55 +210,47 @@ RSpec.describe "filters", js: :true do
     end
 
     it "should match against associated users first name case insensitively" do
-      protocol1 = create(:unarchived_project_without_validations,
-                         primary_pi: create(:identity),
-                         short_title: "Protocol1",
-                         project_role: { identity_id: user.id, project_rights: "to-party", role: "very-important" })
-      create(:project_role, protocol: protocol1, identity: create(:identity, first_name: "name1"))
-      protocol2 = create(:unarchived_project_without_validations,
-                         primary_pi: create(:identity),
-                         short_title: "Protocol2",
-                         project_role: { identity_id: user.id, project_rights: "to-party", role: "very-important" })
-      create(:project_role, protocol: protocol2, identity: create(:identity, first_name: "Name1"))
-      protocol3 = create(:unarchived_project_without_validations,
-                         primary_pi: create(:identity),
-                         short_title: "Protocol3",
-                         project_role: { identity_id: user.id, project_rights: "to-party", role: "very-important" })
-      create(:project_role, protocol: protocol3, identity: create(:identity, first_name: "name3"))
+      protocol1 = create_protocol(archived: false, short_title: "Protocol1")
+      create(:project_role, identity: user, role: "very-important", project_rights: "to-party", protocol: protocol1)
+      create(:project_role, identity: create(:identity, first_name: "name1"), role: "very-important", project_rights: "to-party", protocol: protocol1)
+
+      protocol2 = create_protocol(archived: false, short_title: "Protocol2")
+      create(:project_role, identity: user, role: "very-important", project_rights: "to-party", protocol: protocol2)
+      create(:project_role, identity: create(:identity, first_name: "Name1"), role: "very-important", project_rights: "to-party", protocol: protocol2)
+
+      protocol3 = create_protocol(archived: false, short_title: "Protocol3")
+      create(:project_role, identity: user, role: "very-important", project_rights: "to-party", protocol: protocol3)
+      create(:project_role, identity: create(:identity, first_name: "name3"), role: "very-important", project_rights: "to-party", protocol: protocol3)
 
       visit_protocols_index_page
       @page.filter_protocols.search_field.set("name1")
       @page.filter_protocols.apply_filter_button.click
 
-      expect(@page.search_results).to have_protocols(count: 2)
       expect(@page.search_results).to have_protocols(text: "Protocol1")
       expect(@page.search_results).to have_protocols(text: "Protocol2")
+      expect(@page.search_results).to have_no_protocols(text: "Protocol3")
     end
 
     it "should match against associated users last name case insensitively" do
-      protocol1 = create(:unarchived_project_without_validations,
-                         primary_pi: create(:identity),
-                         short_title: "Protocol1",
-                         project_role: { identity_id: user.id, project_rights: "to-party", role: "very-important" })
-      create(:project_role, protocol: protocol1, identity: create(:identity, last_name: "name1"))
-      protocol2 = create(:unarchived_project_without_validations,
-                         primary_pi: create(:identity),
-                         short_title: "Protocol2",
-                         project_role: { identity_id: user.id, project_rights: "to-party", role: "very-important" })
-      create(:project_role, protocol: protocol2, identity: create(:identity, last_name: "Name1"))
-      protocol3 = create(:unarchived_project_without_validations,
-                         primary_pi: create(:identity),
-                         short_title: "Protocol3",
-                         project_role: { identity_id: user.id, project_rights: "to-party", role: "very-important" })
-      create(:project_role, protocol: protocol3, identity: create(:identity, last_name: "name3"))
+      protocol1 = create_protocol(archived: false, short_title: "Protocol1")
+      create(:project_role, identity: user, role: "very-important", project_rights: "to-party", protocol: protocol1)
+      create(:project_role, identity: create(:identity, last_name: "name1"), role: "very-important", project_rights: "to-party", protocol: protocol1)
+
+      protocol2 = create_protocol(archived: false, short_title: "Protocol2")
+      create(:project_role, identity: user, role: "very-important", project_rights: "to-party", protocol: protocol2)
+      create(:project_role, identity: create(:identity, last_name: "Name1"), role: "very-important", project_rights: "to-party", protocol: protocol2)
+
+      protocol3 = create_protocol(archived: false, short_title: "Protocol3")
+      create(:project_role, identity: user, role: "very-important", project_rights: "to-party", protocol: protocol3)
+      create(:project_role, identity: create(:identity, last_name: "name3"), role: "very-important", project_rights: "to-party", protocol: protocol3)
 
       visit_protocols_index_page
       @page.filter_protocols.search_field.set("name1")
       @page.filter_protocols.apply_filter_button.click
 
-      expect(@page.search_results).to have_protocols(count: 2)
       expect(@page.search_results).to have_protocols(text: "Protocol1")
       expect(@page.search_results).to have_protocols(text: "Protocol2")
+      expect(@page.search_results).to have_no_protocols(text: "Protocol3")
     end
   end
 
@@ -308,11 +259,10 @@ RSpec.describe "filters", js: :true do
       let!(:organization) { create(:organization, admin: user) }
 
       context "user unchecks My Protocols and clicks the filter button" do
-        it "should display all Protocols" do
-          create(:unarchived_project_without_validations, primary_pi: create(:identity),
-                 short_title: "Protocol1",
-                 project_role: { identity_id: user.id, project_rights: "to-party", role: "very-important" })
-          create(:unarchived_project_without_validations, primary_pi: create(:identity), short_title: "Protocol2")
+        it "should display all Protocols, including those to which the user does not have a ProjectRole" do
+          protocol = create_protocol(archived: false, short_title: "Protocol1")
+          create(:project_role, identity: user, role: "very-important", project_rights: "to-party", protocol: protocol)
+          create_protocol(archived: false, short_title: "Protocol2")
 
           visit_protocols_index_page
           @page.filter_protocols.my_protocols_checkbox.click
@@ -329,17 +279,13 @@ RSpec.describe "filters", js: :true do
 
     context "user checks My Admin Organizations and clicks the filter button" do
       it "should only display Protocols contain SSRs belonging to users authorized Organizations" do
-        protocol1 = create(:unarchived_project_without_validations,
-                           primary_pi: create(:identity),
-                           short_title: "Protocol1",
-                           project_role: { identity_id: user.id, project_rights: "to-party", role: "very-important" })
-        create(:service_request_without_validations, protocol: protocol1, organizations: [organization])
+        # protocol belonging to user's admin organization
+        protocol1 = create_protocol(archived: false, short_title: "Protocol1", organization: organization)
+        create(:project_role, identity: user, role: "very-important", project_rights: "to-party", protocol: protocol1)
 
-        protocol2 = create(:unarchived_project_without_validations,
-                           primary_pi: create(:identity),
-                           short_title: "Protocol2",
-                           project_role: { identity_id: user.id, project_rights: "to-party", role: "very-important" })
-        create(:service_request_without_validations, protocol: protocol2, organizations: [create(:organization)])
+        # protocol not belonging to user's admin organization
+        protocol2 = create_protocol(archived: false, short_title: "Protocol2")
+        create(:project_role, identity: user, role: "very-important", project_rights: "to-party", protocol: protocol2)
 
         visit_protocols_index_page
         @page.filter_protocols.my_admin_organizations_checkbox.click
@@ -352,29 +298,57 @@ RSpec.describe "filters", js: :true do
   end
 
   describe "core dropdown" do
-    let(:organization) { create(:organization, admin: user, name: "MegaCorp") }
+    let(:mega_corp_organization) { create(:organization, admin: user, name: "MegaCorp") }
+    let(:trump_organization) { create(:organization, admin: user, name: "TrumpPenitentiaries") }
+    let(:some_organization) { create(:organization, admin: user, name: "SomeLLC") }
 
-    context "user selects an Organization by name and clicks the Filter button" do
-      it "should restrict listing to Protocols with SSRs belonging to that Organization" do
-        protocol1 = create(:unarchived_project_without_validations,
-                           primary_pi: create(:identity),
-                           short_title: "Protocol1",
-                           project_role: { identity_id: user.id, project_rights: "to-party"})
-        create(:service_request_without_validations, protocol: protocol1, organizations: [organization])
+    context "user selects multiple admin Organizations by name and clicks the Filter button" do
+      it "should restrict listing to Protocols with SSRs belonging to those Organizations" do
+        mega_corp_protocol = create_protocol(archived: false, short_title: "MegaCorpProtocol", organization: mega_corp_organization)
+        mega_corp_protocol.project_roles.create(identity_id: user.id, role: "very-important", project_rights: "to-party")
 
-        protocol2 = create(:unarchived_project_without_validations,
-                           primary_pi: create(:identity),
-                           short_title: "Protocol2",
-                           project_role: { identity_id: user.id, project_rights: "to-party", role: "very-important" })
-        create(:service_request_without_validations, protocol: protocol2, organizations: [create(:organization)])
+        trump_protocol = create_protocol(archived: false, short_title: "TrumpProtocol", organization: trump_organization)
+        trump_protocol.project_roles.create(identity_id: user.id, role: "very-important", project_rights: "to-party")
+
+        llc_protocol = create_protocol(archived: false, short_title: "LLCProtocol", organization: some_organization)
+        llc_protocol.project_roles.create(identity_id: user.id, role: "very-important", project_rights: "to-party")
 
         visit_protocols_index_page
-        @page.filter_protocols.select_core(organization.name)
+        @page.filter_protocols.select_core("MegaCorp", "SomeLLC")
         @page.filter_protocols.apply_filter_button.click
 
-        expect(@page.search_results).to have_protocols(text: "Protocol1")
+        expect(@page.search_results).to have_protocols(text: "MegaCorpProtocol")
+        expect(@page.search_results).to have_no_protocols(text: "TrumpProtocol")
         expect(@page.search_results).to have_no_protocols(text: "Protocol2")
       end
     end
+  end
+
+  # Creates a protocol using FactoryGirl, optionally with a SubServiceRequest
+  #
+  # @param [Hash] opts Options for creating the Protocol, all but :status and :organization
+  #   being passed directly to FactoryGirl.create. If any of those two options are present,
+  #   then a SubServiceRequest is created for the Protocol, via a ServiceRequest.
+  # @option opts [String] :status Status for SubServiceRequest
+  # @option opts [Organization] :organization Organization for SubServiceRequest.
+  # @return [Protocol]
+  def create_protocol(opts = {})
+    # parameters for SubServiceRequest
+    # if they exist, we'll create one
+    status = opts.delete(:status)
+    organization = opts.delete(:organization)
+
+    protocol = create(:project_without_validations, opts.merge(primary_pi: create(:identity)))
+
+    if status.present? || organization.present?
+      service_request = create(:service_request_without_validations,
+        protocol: protocol)
+      create(:sub_service_request,
+        status: status || "approved",
+        organization: organization || create(:organization),
+        service_request: service_request)
+    end
+
+    protocol
   end
 end

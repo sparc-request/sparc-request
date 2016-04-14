@@ -25,19 +25,24 @@ module Dashboard
         element :apply_filter_button, :button, "Filter"
 
         # select a status from :status_select by text
-        def select_status(status)
+        # @param statuses Statuses to select
+        def select_status(*statuses)
           status_select.click
           wait_for_status_options
-          status_options.select { |so| so.text == status.capitalize }.first.click
+          statuses.each do |status|
+            status_options(text: /\A#{status}\Z/).first.click
+          end
           page.find("body").click # seems like Capybara page is available in this context
           wait_until_status_options_invisible
         end
 
         # select a core for :core_select by core
-        def select_core(core)
+        def select_core(*cores)
           core_select.click
           wait_for_core_options
-          core_options.select { |so| so.text == core }.first.click
+          cores.each do |core|
+            core_options(text: /\A#{core}\Z/).first.click
+          end
           page.find("body").click # seems like Capybara page is available in this context
           wait_until_core_options_invisible
         end

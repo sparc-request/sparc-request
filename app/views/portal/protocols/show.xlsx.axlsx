@@ -28,6 +28,8 @@ default = wb.styles.add_style alignment: { horizontal: :left }
 # centered = wb.styles.add_style alignment: { horizontal: :center }
 # bordered = wb.styles.add_style :border=> {:style => :thin, :color => "00000000"}
 # centered_bordered = wb.styles.add_style :border => {:style => :thin, :color => "00000000"}, :alignment => {:horizontal => :center}
+money = wb.styles.add_style :format_code => '$#,##0.00_;[Red]-$#,##0.00'
+bold_money = wb.styles.add_style :format_code => '$#,##0.00_;[Red]-$#,##0.00', b: true
 row_header_style = wb.styles.add_style b: true
 header_style = wb.styles.add_style sz: 12, b: true, bg_color: '0099FF', fg_color: 'FFFFFF', alignment: { horizontal: :left }
 sub_header_style = wb.styles.add_style sz: 12, b: true, bg_color: 'ADADAD', alignment: { horizontal: :left }
@@ -89,6 +91,7 @@ arm_r_totals = {}
 
       current_row = sheet.rows.length + 1
       line_items_visits.each do |liv|
+        @line_item_style_array = [default, default, money, money, money]
         n_columns_sum = sum(n_columns, current_row)
         nr_cell = "C#{current_row}"
         your_cost_cell = "E#{current_row}"
@@ -96,17 +99,20 @@ arm_r_totals = {}
         total_research_amount_cell = total_research_amount_column + current_row.to_s
         number_of_subjects_cell = number_of_subjects_column + current_row.to_s
 
-        line_item_row = [liv.line_item.service.name, liv.line_item.service.cpt_code, "0", liv.line_item.service.current_effective_pricing_map.full_rate, liv.line_item.applicable_rate]
+        line_item_row = [liv.line_item.service.name, liv.line_item.service.cpt_code, "0", cents_to_dollars(liv.line_item.service.current_effective_pricing_map.full_rate), cents_to_dollars(liv.line_item.applicable_rate)]
         liv.visits.each_with_index do |visit, index|
           n_cell = n_columns[index] + current_row.to_s
           line_item_row << [visit.research_billing_qty, "=#{nr_cell} * #{n_cell}", "=#{your_cost_cell} * #{n_cell}"]
+          @line_item_style_array << [default, money, money]
         end
         line_item_row << ["=#{nr_cell} * #{n_columns_sum}",
           "=#{your_cost_cell} * #{n_columns_sum}",
           liv.subject_count,
           "=#{total_nr_cell} * #{number_of_subjects_cell}",
           "=#{total_research_amount_cell} * #{number_of_subjects_cell}"]
-        sheet.add_row line_item_row.flatten, :style => default
+        @line_item_style_array << [money, money, default, money, money]
+        @line_item_style_array.flatten!
+        sheet.add_row line_item_row.flatten, :style => @line_item_style_array
         current_row += 1
       end
     end
@@ -116,18 +122,18 @@ arm_r_totals = {}
     principle_row_no = sheet.rows.length + 2
 
     additional_row = ["Additional Services and Study Team Assessments", "", "", "", ""]
-    principle_row = ["Principle Investigator", "", "(user input here)", "", "(user input here)"]
-    coordination_row = ["Study Coordination/Data Management", "", "(user input here)", "", "(user input here)"]
-    regulatory_row = ["Regulatory Processing", "", "(user input here)", "", "(user input here)"]
-    financial_row = ["Financial Management", "", "(user input here)", "", "(user input here)"]
+    principle_row = ["Principle Investigator", "", "0", "", "0"]
+    coordination_row = ["Study Coordination/Data Management", "", "0", "", "0"]
+    regulatory_row = ["Regulatory Processing", "", "0", "", "0"]
+    financial_row = ["Financial Management", "", "0", "", "0"]
     bottom_totals = ["Total Per Visit", "", "", "", ""]
 
     arm.visit_groups.each_with_index do |vg, idx|
       additional_row << ["", "", ""]
-      principle_row << ["(user input here)", "(user input here)", "(user input here)"]
-      coordination_row << ["(user input here)", "(user input here)", "(user input here)"]
-      regulatory_row << ["(user input here)", "(user input here)", "(user input here)"]
-      financial_row << ["(user input here)", "(user input here)", "(user input here)"]
+      principle_row << ["0", "0", "0"]
+      coordination_row << ["0", "0", "0"]
+      regulatory_row << ["0", "0", "0"]
+      financial_row << ["0", "0", "0"]
       bottom_totals << ["",
         "=SUM(#{nr_columns[idx]}1:#{nr_columns[idx]}#{principle_row_no+3})",
         "=SUM(#{r_columns[idx]}1:#{r_columns[idx]}#{principle_row_no+3})"]
@@ -160,11 +166,11 @@ arm_r_totals = {}
       "=SUM(#{total_r_cost_per_study_column}1:#{total_r_cost_per_study_column}#{principle_row_no+3})"]
 
     sheet.add_row additional_row.flatten, :style => org_header_style
-    sheet.add_row principle_row.flatten, :style => default
-    sheet.add_row coordination_row.flatten, :style => default
-    sheet.add_row regulatory_row.flatten, :style => default
-    sheet.add_row financial_row.flatten, :style => default
-    sheet.add_row bottom_totals.flatten, :style => default
+    sheet.add_row principle_row.flatten, :style => @line_item_style_array
+    sheet.add_row coordination_row.flatten, :style => @line_item_style_array
+    sheet.add_row regulatory_row.flatten, :style => @line_item_style_array
+    sheet.add_row financial_row.flatten, :style => @line_item_style_array
+    sheet.add_row bottom_totals.flatten, :style => @line_item_style_array
 
     arm_summary_row = ["#{arm.name}: Summary", "", "Negotiated Costs", "", "Research Cost"]
     ((arm.visit_groups.count * 3) + 5).times {arm_summary_row << ""}
@@ -173,7 +179,7 @@ arm_r_totals = {}
       "",
       "=#{total_nr_per_study_column}#{principle_row_no+4}",
       "",
-      "=#{total_r_cost_per_study_column}#{principle_row_no+4}"]
+      "=#{total_r_cost_per_study_column}#{principle_row_no+4}"], :style => [default, default, money, default, money]
     grand_totals_row = sheet.rows.length
     arm_nr_totals[arm.name] = "C#{grand_totals_row}"
     arm_r_totals[arm.name] = "E#{grand_totals_row}"
@@ -205,29 +211,28 @@ wb.insert_worksheet(0, name: "Summary") do |sheet|
   sheet.add_row ["Study Level Services (Pass Through)"], :style => sub_header_style
 
   pi_start_up_row = sheet.rows.length + 1
-  sheet.add_row ["PI Start Up", "(User Input Here)", "(User Input Here)"], :style => default
-  sheet.add_row ["Administrative Start Up", "(User Input Here)", "(User Input Here)"], :style => default
-  sheet.add_row ["IRB Fee", "(User Input Here)", "(User Input Here)"], :style => default
-  sheet.add_row ["IDS Annual Review", "(User Input Here)", "(User Input Here)"], :style => default
+  sheet.add_row ["PI Start Up", "0", "0"], :style => [default, money, money]
+  sheet.add_row ["Administrative Start Up", "0", "0"], :style => [default, money, money]
+  sheet.add_row ["IRB Fee", "0", "0"], :style => [default, money, money]
+  sheet.add_row ["IDS Annual Review", "0", "0"], :style => [default, money, money]
 
   @protocol.service_requests.each do |sr|
     sr.line_items.where(services: {one_time_fee: true}).each do |li|
-      sheet.add_row [li.service.name, "(User Input Here)", li.applicable_rate], :style => default
+      sheet.add_row [li.service.name, "0", cents_to_dollars(li.applicable_rate)], :style => [default, money, money]
     end
   end
 
   previous_row = sheet.rows.length
-  sheet.add_row ["", "=Sum(B#{pi_start_up_row}:B#{previous_row})", "=Sum(C#{pi_start_up_row}:C#{previous_row})"], :style => row_header_style
+  sheet.add_row ["", "=Sum(B#{pi_start_up_row}:B#{previous_row})", "=Sum(C#{pi_start_up_row}:C#{previous_row})"], :style => [row_header_style, bold_money, bold_money]
   study_level_n_total_cell = "B#{previous_row+1}"
   study_level_r_total_cell = "C#{previous_row+1}"
 
   sheet.add_row ["Study Budget", "Negotiated Costs", "Research Cost"], :style => header_style
-  sheet.add_row ["Total Study Level", "=#{study_level_n_total_cell}", "=#{study_level_r_total_cell}"], :style => default
+  sheet.add_row ["Total Study Level", "=#{study_level_n_total_cell}", "=#{study_level_r_total_cell}"], :style => [default, money, money]
   study_budget_start_row = sheet.rows.length
   @protocol.arms.each do |arm|
-    sheet.add_row [arm.name, "='#{arm.name}'!#{arm_nr_totals[arm.name]}", "='#{arm.name}'!#{arm_r_totals[arm.name]}"], :style => default
+    sheet.add_row [arm.name, "='#{arm.name}'!#{arm_nr_totals[arm.name]}", "='#{arm.name}'!#{arm_r_totals[arm.name]}"], :style => [default, money, money]
   end
   study_budget_end_row = sheet.rows.length
-  sheet.add_row ["Study Budget (Total)", "=SUM(B#{study_budget_start_row}:B#{study_budget_end_row})", "=SUM(C#{study_budget_start_row}:C#{study_budget_end_row})"], :style => row_header_style
-
+  sheet.add_row ["Study Budget (Total)", "=SUM(B#{study_budget_start_row}:B#{study_budget_end_row})", "=SUM(C#{study_budget_start_row}:C#{study_budget_end_row})"], :style => [row_header_style, bold_money, bold_money]
 end

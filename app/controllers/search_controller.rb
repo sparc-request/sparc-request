@@ -59,16 +59,19 @@ class SearchController < ApplicationController
     end
     results = results.map do |i|
       {
-       :label              => i.display_name,
-       :value              => i.id,
-       :email              => i.email,
-       :institution        => i.institution,
-       :phone              => i.phone,
-       :era_commons_name   => i.era_commons_name,
-       :college            => i.college,
-       :department         => i.department,
-       :credentials        => i.credentials,
-       :credentials_other  => i.credentials_other
+        :label              => i.display_name,
+        :value              => i.id,
+        :email              => i.email,
+        :institution        => i.institution,
+        :phone              => i.phone,
+        :era_commons_name   => i.era_commons_name,
+        :college            => i.college,
+        :department         => i.department,
+        :credentials        => i.credentials,
+        :credentials_other  => i.credentials_other,
+        :first_name         => i.first_name,
+        :last_name          => i.last_name,
+        :department             => i.department,
       }
     end
     results = [{:label => 'No Results'}] if results.empty?

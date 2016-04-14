@@ -95,6 +95,7 @@ class IdentitiesController < ApplicationController
   def search_or_create_identity
     email = params[:email]
     @identity = Directory.search(email).first
+    @identity = Identity.new unless !@identity.nil?
     @can_edit = false
     project_role_params = params[session[:protocol_type].to_sym][:project_roles_attributes][@identity.id.to_s] rescue nil
     if project_role_params
@@ -115,5 +116,5 @@ class IdentitiesController < ApplicationController
 
     render :show
   end
-  
+
 end

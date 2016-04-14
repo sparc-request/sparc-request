@@ -57,7 +57,7 @@ class SearchController < ApplicationController
     else
       results = Directory.send(:search_database, term)
     end
-    results = Identity.search(term).map do |i|
+    results = results.map do |i|
       {
        :label              => i.display_name,
        :value              => i.id,

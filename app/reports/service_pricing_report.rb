@@ -45,6 +45,13 @@ class ServicePricingReport < ReportingModule
     }
   end
 
+  def records
+    records ||= self.table.includes(:pricing_maps).where(self.where(self.params)).uniq(self.uniq).group(self.group).order(self.order)
+    filtered_records = records.reject{ |service| service.pricing_map_for_date(params[:services_pricing_date]) == false }
+
+    filtered_records
+  end
+
   def column_attrs
     attrs = {}
 

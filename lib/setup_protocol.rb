@@ -6,10 +6,6 @@ class SetupProtocol
     @service_request_id = service_request_id
   end
 
-  def from_portal?
-    return @portal == "true"
-  end
-
   def set_portal
     @portal
   end
@@ -22,10 +18,18 @@ class SetupProtocol
   end
 
   def find_service_request
-    unless from_portal?
-      @service_request = ServiceRequest.find @service_request_id
-      @epic_services = @service_request.should_push_to_epic? if USE_EPIC
+    unless @portal == 'true'
+      @service_request = ServiceRequest.find(@service_request_id)
+
       @service_request
+    end
+  end
+
+  def set_epic_services
+    unless @portal == 'true'
+      @epic_services = @service_request.should_push_to_epic? if USE_EPIC
+
+      @epic_services
     end
   end
 

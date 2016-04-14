@@ -194,6 +194,7 @@ RSpec.describe "Identity creates Study", js: true do
       select_epic_box_answers(answer_array)
     end
     it 'should display active questions 1,2,2b,3,4,5' do
+      wait_for_javascript_to_finish
       expect(page).to have_selector('#study_type_answer_certificate_of_conf')
       expect(page).to have_selector('#study_type_answer_higher_level_of_privacy')
       expect(page).to have_selector('#study_type_answer_access_study_info')
@@ -256,6 +257,7 @@ RSpec.describe "Identity creates Study", js: true do
       select_epic_box_answers(answer_array)
     end
     it 'should display active questions 1,2,3,4,5' do
+      wait_for_javascript_to_finish
       expect(page).to have_selector('#study_type_answer_certificate_of_conf')
       expect(page).to have_selector('#study_type_answer_higher_level_of_privacy')
       expect(page).to_not have_selector('#study_type_answer_access_study_info')

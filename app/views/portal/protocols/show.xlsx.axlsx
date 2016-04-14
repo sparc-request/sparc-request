@@ -130,10 +130,10 @@ arm_r_totals = {}
 
     arm.visit_groups.each_with_index do |vg, idx|
       additional_row << ["", "", ""]
-      principle_row << ["0", "0", "0"]
-      coordination_row << ["0", "0", "0"]
-      regulatory_row << ["0", "0", "0"]
-      financial_row << ["0", "0", "0"]
+      principle_row << ["0", "=C#{principle_row_no} * #{n_columns[idx]}#{principle_row_no}", "=E#{principle_row_no} * #{n_columns[idx]}#{principle_row_no}"]
+      coordination_row << ["0", "=C#{principle_row_no + 1} * #{n_columns[idx]}#{principle_row_no + 1}", "=E#{principle_row_no + 1} * #{n_columns[idx]}#{principle_row_no + 1}"]
+      regulatory_row << ["0", "=C#{principle_row_no + 2} * #{n_columns[idx]}#{principle_row_no + 2}", "=E#{principle_row_no + 2} * #{n_columns[idx]}#{principle_row_no + 2}"]
+      financial_row << ["0", "=C#{principle_row_no + 3} * #{n_columns[idx]}#{principle_row_no + 3}", "=E#{principle_row_no + 3} * #{n_columns[idx]}#{principle_row_no + 3}"]
       bottom_totals << ["",
         "=SUM(#{nr_columns[idx]}1:#{nr_columns[idx]}#{principle_row_no+3})",
         "=SUM(#{r_columns[idx]}1:#{r_columns[idx]}#{principle_row_no+3})"]

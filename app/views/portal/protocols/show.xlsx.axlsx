@@ -141,27 +141,27 @@ arm_r_totals = {}
 
     principle_row << ["=C#{principle_row_no} * #{sum(n_columns, principle_row_no)}",
       "=E#{principle_row_no} * #{sum(n_columns, principle_row_no)}",
-      "",
+      arm.subject_count,
       "=#{total_nr_per_patient_column}#{principle_row_no} * #{number_of_subjects_column}#{principle_row_no}",
       "=#{total_research_amount_column}#{principle_row_no} * #{number_of_subjects_column}#{principle_row_no}"]
     coordination_row << ["=C#{principle_row_no+1} * #{sum(n_columns, principle_row_no+1)}",
       "=E#{principle_row_no+1} * #{sum(n_columns, principle_row_no+1)}",
-      "",
+      arm.subject_count,
       "=#{total_nr_per_patient_column}#{principle_row_no+1} * #{number_of_subjects_column}#{principle_row_no+1}",
       "=#{total_research_amount_column}#{principle_row_no+1} * #{number_of_subjects_column}#{principle_row_no+1}"]
     regulatory_row << ["=C#{principle_row_no+2} * #{sum(n_columns, principle_row_no+2)}",
       "=E#{principle_row_no+2} * #{sum(n_columns, principle_row_no+2)}",
-      "",
+      arm.subject_count,
       "=#{total_nr_per_patient_column}#{principle_row_no+2} * #{number_of_subjects_column}#{principle_row_no+2}",
       "=#{total_research_amount_column}#{principle_row_no+2} * #{number_of_subjects_column}#{principle_row_no+2}"]
     financial_row << ["=C#{principle_row_no+3} * #{sum(n_columns, principle_row_no+3)}",
       "=E#{principle_row_no+3} * #{sum(n_columns, principle_row_no+3)}",
-      "",
+      arm.subject_count,
       "=#{total_nr_per_patient_column}#{principle_row_no+3} * #{number_of_subjects_column}#{principle_row_no+3}",
       "=#{total_research_amount_column}#{principle_row_no+3} * #{number_of_subjects_column}#{principle_row_no+3}"]
     bottom_totals << ["=SUM(#{total_nr_per_patient_column}1:#{total_nr_per_patient_column}#{principle_row_no+3})",
       "=SUM(#{total_research_amount_column}1:#{total_research_amount_column}#{principle_row_no+3})",
-      "",
+      arm.subject_count,
       "=SUM(#{total_nr_per_study_column}1:#{total_nr_per_study_column}#{principle_row_no+3})",
       "=SUM(#{total_r_cost_per_study_column}1:#{total_r_cost_per_study_column}#{principle_row_no+3})"]
 
@@ -223,7 +223,7 @@ wb.insert_worksheet(0, name: "Summary") do |sheet|
   end
 
   previous_row = sheet.rows.length
-  sheet.add_row ["", "=Sum(B#{pi_start_up_row}:B#{previous_row})", "=Sum(C#{pi_start_up_row}:C#{previous_row})"], :style => [row_header_style, bold_money, bold_money]
+  sheet.add_row ["Study Level Services (Total)", "=Sum(B#{pi_start_up_row}:B#{previous_row})", "=Sum(C#{pi_start_up_row}:C#{previous_row})"], :style => [row_header_style, bold_money, bold_money]
   study_level_n_total_cell = "B#{previous_row+1}"
   study_level_r_total_cell = "C#{previous_row+1}"
 

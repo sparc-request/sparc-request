@@ -6,32 +6,27 @@ RSpec.describe Dashboard::ArmsController do
 
     let(:arm_stub) do
       obj = instance_double('Arm', id: 1)
+      allow(obj).to receive(:destroy)
       stub_find_arm(obj)
       obj
     end
 
     let(:sr_stub) do
-      obj = instance_double('ServiceRequest',
-        id: 2,
-        )
+      obj = instance_double('ServiceRequest', id: 2)
       stub_find_service_request(obj)
       obj
     end
 
     let(:ssr_stub) do
-      obj = instance_double('SubServiceRequest',
-        id: 3,
-        service_request: sr_stub)
+      obj = instance_double('SubServiceRequest', id: 3, service_request: sr_stub)
       stub_find_sub_service_request(obj)
       obj
     end
 
-    before(:each) do
-      log_in_dashboard_identity(obj: identity_stub)
-    end
+    before(:each) { log_in_dashboard_identity(obj: identity_stub) }
+    after(:each) { expect(arm_stub).to have_received(:destroy) }
 
     it 'should set @sub_service_request from params[:sub_service_request_id]' do
-      allow(arm_stub).to receive(:destroy)
       allow(sr_stub).to receive(:reload)
       allow(sr_stub).to receive(:arms).and_return([:last_arm])
 
@@ -41,7 +36,6 @@ RSpec.describe Dashboard::ArmsController do
     end
 
     it 'should set @service_request to the SubServiceRequest\'s ServiceRequest' do
-      allow(arm_stub).to receive(:destroy)
       allow(sr_stub).to receive(:reload)
       allow(sr_stub).to receive(:arms).and_return([:last_arm])
 
@@ -51,28 +45,13 @@ RSpec.describe Dashboard::ArmsController do
     end
 
     it 'should delete Arm' do
-      expect(arm_stub).to receive(:destroy)
       allow(sr_stub).to receive(:reload)
       allow(sr_stub).to receive(:arms).and_return([:last_arm])
 
       xhr :delete, :destroy, id: arm_stub.id, sub_service_request_id: ssr_stub.id
     end
 
-    it 'should reload @service_request after deleting Arm' do
-      expect(arm_stub).to receive(:destroy)
-      allow(sr_stub).to receive(:reload) do
-        allow(sr_stub).to receive(:arms).and_return([])
-        allow(sr_stub).to receive(:per_patient_per_visit_line_items).and_return([])
-      end
-      allow(sr_stub).to receive(:arms).and_return([:last_arm])
-
-      xhr :delete, :destroy, id: arm_stub.id, sub_service_request_id: ssr_stub.id
-
-      expect(assigns(:service_request).arms).to eq([])
-    end
-
     it 'should set flash[:alert]' do
-      allow(arm_stub).to receive(:destroy)
       allow(sr_stub).to receive(:reload)
       allow(sr_stub).to receive(:arms).and_return([:last_arm])
 
@@ -85,7 +64,6 @@ RSpec.describe Dashboard::ArmsController do
       it 'should destroy each PPPV LineItem on the ServiceRequest' do
         allow(sr_stub).to receive(:arms).and_return([arm_stub])
 
-        allow(arm_stub).to receive(:destroy)
         allow(sr_stub).to receive(:reload) do
           allow(sr_stub).to receive(:arms).and_return([])
         end
@@ -102,7 +80,6 @@ RSpec.describe Dashboard::ArmsController do
       it 'should set @selected_arm to ServiceRequest\'s first Arm (after deletion)' do
         allow(sr_stub).to receive(:arms).and_return([arm_stub])
 
-        allow(arm_stub).to receive(:destroy)
         allow(sr_stub).to receive(:reload)  # do
         #   allow(sr_stub).to receive(:arms).and_return([])       keep Arm around to match context
         # end

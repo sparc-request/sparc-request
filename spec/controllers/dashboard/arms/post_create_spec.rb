@@ -37,37 +37,18 @@ RSpec.describe Dashboard::ArmsController do
       log_in_dashboard_identity(obj: identity_stub)
     end
 
-    context 'Protocol has SubServiceRequests in CWF' do
-      it 'should populate subjects for new Arm' do
-        # stub collection of SubServiceRequests + in_work_fulfillment scope
-        sub_service_requests_collection = double(ActiveRecord::Relation)
-        expect(sub_service_requests_collection).
-            to receive_message_chain(:in_work_fulfillment, :any?).
-                and_return(true)
-        protocol = protocol_stub(sub_service_requests: sub_service_requests_collection)
-        allow(protocol).to receive_message_chain(:sub_service_requests, :in_work_fulfillment, :any?).and_return(true)
-        arm = arm_stub()
-        expect(arm).to receive(:populate_subjects)
-        expect(protocol).to receive(:create_arm).and_return(arm)
+    it "should use ArmBuilder with params[:arm] to stick new Arm in @selected_arm" do
+      protocol = protocol_stub()
+      new_arm = instance_double(Arm, valid?: true)
+      arm_builder_stub = instance_double(Dashboard::ArmBuilder, build: nil, arm: new_arm)
+      arm_attrs = { protocol_id: protocol.id, name: "MyArm", subject_count: 1, visit_count: 1 }
+      expect(Dashboard::ArmBuilder).to receive(:new).
+        with(arm_attrs).
+        and_return(arm_builder_stub)
 
-        xhr :post, :create, arm: { protocol_id: protocol.id }, service_request_id: sr_stub.id, sub_service_request_id: ssr_stub.id
-      end
-    end
+      xhr :post, :create, arm: arm_attrs, service_request_id: sr_stub.id, sub_service_request_id: ssr_stub.id
 
-    context 'Protocol has no SubServiceRequests in CWF' do
-      it 'should not populate subjects for new Arm' do
-        # stub collection of SubServiceRequests + in_work_fulfillment scope
-        sub_service_requests_collection = double(ActiveRecord::Relation)
-        expect(sub_service_requests_collection).
-            to receive_message_chain(:in_work_fulfillment, :any?).
-                and_return(false)
-        protocol = protocol_stub(sub_service_requests: sub_service_requests_collection)
-        arm = arm_stub()
-        expect(arm).not_to receive(:populate_subjects)
-        expect(protocol).to receive(:create_arm).and_return(arm)
-
-        xhr :post, :create, arm: { protocol_id: protocol.id }, service_request_id: sr_stub.id, sub_service_request_id: ssr_stub.id
-      end
+      expect(assigns(:selected_arm)).to eq(new_arm)
     end
 
     it 'should assign @protocol from params[:arm][:protocol_id]' do
@@ -106,16 +87,6 @@ RSpec.describe Dashboard::ArmsController do
       xhr :post, :create, arm: arm_params, service_request_id: sr_stub.id, sub_service_request_id: ssr_stub.id
 
       expect(assigns(:selected_arm)).to eq(arm)
-    end
-
-    it 'should set default visit days for new Arm and reload it' do
-      protocol = protocol_stub()
-      arm = arm_stub()
-      expect(arm).to receive(:default_visit_days)
-      expect(arm).to receive(:reload)
-      expect(protocol).to receive(:create_arm).and_return(arm)
-
-      xhr :post, :create, arm: { protocol_id: protocol.id }, service_request_id: sr_stub.id, sub_service_request_id: ssr_stub.id
     end
 
     it 'should set flash[:success]' do

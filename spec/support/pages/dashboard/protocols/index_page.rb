@@ -25,7 +25,6 @@ module Dashboard
         element :apply_filter_button, :button, "Filter"
 
         # select a status from :status_select by text
-        # @param statuses Statuses to select
         def select_status(*statuses)
           status_select.click
           wait_for_status_options

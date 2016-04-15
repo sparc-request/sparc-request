@@ -35,7 +35,7 @@
       .col-lg-10
         = form.text_field :title, class: 'form-control'
 
-    .form-group.row
+    .form-group.row#funding-status
       = form.label :funding_status, t(:protocols)[:studies][:information][:funding_status], class: 'col-lg-2 control-label'
       .col-lg-10
         = form.select :funding_status, options_for_select(FUNDING_STATUSES, protocol.funding_status), { include_blank: t(:protocols)[:prompts][:status] }, class: 'selectpicker study'
@@ -80,7 +80,7 @@
           %span.pull-right
             = t(:protocols)[:studies][:information][:funding_source_federal][:separator]
 
-      .form-group.row
+      .form-group.row#federal-non-phs
         = form.label :federal_non_phs_sponsor, t(:protocols)[:studies][:information][:funding_source_federal][:non_phs_sponsor], class: 'col-lg-2 control-label'
         .col-lg-10
           = form.select :federal_non_phs_sponsor, options_for_select(FEDERAL_GRANT_NON_PHS_SPONSORS, protocol.federal_non_phs_sponsor), { include_blank: t(:protocols)[:prompts][:federal_sponsor] }, class: 'selectpicker'

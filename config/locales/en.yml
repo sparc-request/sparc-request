@@ -1241,7 +1241,7 @@ en:
     mail_link: "Sign Up For the SPARC Request Listserv"
     mail_subject: "SPARC Request Listserv"
     link_one_text: "SPARC Request Blog"
-    link_one_url: "http://sparcrequestblog.com/"
+    link_one_url: "https://sparcrequestblog.com/"
     link_two_text: "SCTR"
     link_two_url: "http://sctr.musc.edu"
     link_three_text: "SPARC Request Home"

@@ -35,6 +35,11 @@ FactoryGirl.define do
     # per patient specific fields
     unit_type                  { Faker::Lorem.word }
     unit_minimum               { 1 }
-  end
-    
+
+    trait :without_validations do
+      to_create { |instance| instance.save(validate: false) }
+    end
+
+    factory :pricing_map_without_validations, traits: [:without_validations]
+  end  
 end

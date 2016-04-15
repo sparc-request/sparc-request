@@ -32,7 +32,7 @@
       .col-lg-10
         = form.text_field :title, class: 'form-control'
 
-    .form-group.row
+    .form-group.row#funding-status
       = form.label :funding_status, t(:protocols)[:projects][:information][:funding_status], class: 'col-lg-2 control-label'
       .col-lg-10
         = form.select :funding_status, options_for_select(FUNDING_STATUSES, protocol.funding_status), { include_blank: t(:protocols)[:prompts][:status] }, class: 'selectpicker project'

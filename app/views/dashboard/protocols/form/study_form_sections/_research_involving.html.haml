@@ -28,7 +28,7 @@
     = form.fields_for :research_types_info do |rt_form|
       .form-group.row.human_subjects
         = rt_form.label :human_subjects, t(:protocols)[:studies][:research_involving][:humans][:header], class: 'col-lg-2 control-label'
-        .col-lg-10
+        .col-lg-1
           = rt_form.check_box :human_subjects, class: 'form-control'
 
       / Human Subjects selected begin
@@ -61,7 +61,7 @@
 
           .form-group.row.approval_pending
             = hs_form.label :approval_pending, t(:protocols)[:studies][:research_involving][:humans][:pending_approval], class: 'col-lg-2 control-label'
-            .col-lg-10
+            .col-lg-1
               = hs_form.check_box :approval_pending, class: 'form-control'
 
           .form-group.row.irb_approval_date
@@ -79,7 +79,7 @@
 
       .form-group.row.vertebrate_animals
         = rt_form.label :vertebrate_animals, t(:protocols)[:studies][:research_involving][:vertebrates][:header], class: 'col-lg-2 control-label'
-        .col-lg-10
+        .col-lg-1
           = rt_form.check_box :vertebrate_animals, class: 'form-control'
 
       / Vertebrate Animals selected begin
@@ -110,7 +110,7 @@
 
       .form-group.row.investigational_products
         = rt_form.label :investigational_products, t(:protocols)[:studies][:research_involving][:products][:header], class: 'col-lg-2 control-label'
-        .col-lg-10
+        .col-lg-1
           = rt_form.check_box :investigational_products, class: 'form-control'
 
       / Investigational Products selected begin
@@ -123,7 +123,7 @@
 
           .form-group.row
             = ip_form.label :ind_on_hold, t(:protocols)[:studies][:research_involving][:products][:ind_on_hold], class: 'col-lg-2 control-label'
-            .col-lg-10
+            .col-lg-1
               = ip_form.check_box :ind_on_hold, class: 'form-control'
 
           .form-group.row
@@ -134,7 +134,7 @@
 
       .form-group.row.ip_patents
         = rt_form.label :ip_patents, t(:protocols)[:studies][:research_involving][:ip_patents][:header], class: 'col-lg-2 control-label'
-        .col-lg-10
+        .col-lg-1
           = rt_form.check_box :ip_patents, class: 'form-control'
 
       / IP/Patents selected begin

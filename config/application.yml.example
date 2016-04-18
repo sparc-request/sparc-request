@@ -73,6 +73,7 @@ development:
   fulfillment_contingent_on_catalog_manager: true
   about_sparc_url: http://academicdepartments.musc.edu/sctr/sparc_request
   use_about_sparc_link: true
+  use_feedback_link: true
 
 test:
   default_mail_to: nobody@nowhere.com
@@ -125,3 +126,4 @@ test:
 #  fulfillment_contingent_on_catalog_manager: true
   about_sparc_url: http://academicdepartments.musc.edu/sctr/sparc_request
   use_about_sparc_link: false
+  use_feedback_link: true

@@ -67,6 +67,7 @@ begin
   USE_ABOUT_SPARC_LINK                      = application_config['use_about_sparc_link'] || false
   CREATE_AN_ACCOUNT                         = application_config['create_an_account']
   ABOUT_SPARC_URL                           = application_config['about_sparc_url'] || nil
+  USE_FEEDBACK_LINK                         = application_config['use_feedback_link'] || false
 
   if LOCALE_OVERRIDE
     I18n.available_locales = [:en, LOCALE_OVERRIDE]

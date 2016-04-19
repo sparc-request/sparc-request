@@ -43,7 +43,7 @@
       .info
         .sign_in_options
           .center
-            = link_to signin_btn_text, identity_omniauth_authorize_path(:cas), :class => 'blue-button devise_option_button btn btn-primary'
+            = link_to t(:signin)[:button1], identity_omniauth_authorize_path(:cas), :class => 'blue-button devise_option_button btn btn-primary'
           %br
           .center
             \- OR -

@@ -31,7 +31,7 @@ module ApplicationHelper
     raw(returning_html)
   end
 
-  def protocol_id_display protocol_id, sub_service_request, service_request
+  def protocol_id_display(protocol_id, sub_service_request, service_request)
     if protocol_id
       "SRID: #{protocol_id}"
     elsif sub_service_request

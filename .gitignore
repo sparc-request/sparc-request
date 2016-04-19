@@ -83,4 +83,3 @@ spec/examples.txt
 # Ignore ctags files
 .tags
 .tags1
-/themes

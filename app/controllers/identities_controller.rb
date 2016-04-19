@@ -47,7 +47,7 @@ class IdentitiesController < ApplicationController
 
   def find_or_create
     term = params[:term]
-    @identity = Directory.search(term)
+    @identity = Directory.search(term).first
     create_project_role
     render :show
   end

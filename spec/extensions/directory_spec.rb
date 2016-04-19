@@ -21,6 +21,11 @@
 require 'rails_helper'
 
 RSpec.describe 'Directory' do
+  ldap_config   ||= YAML.load_file(Rails.root.join('config', 'ldap.yml'))[Rails.env]
+  LDAP_UID        ||= ldap_config['ldap_uid']
+  LDAP_DEPARTMENT ||= ldap_config['ldap_department']
+  LDAP_FIELDS ||= ldap_config['ldap_fields']
+  LDAP_UID_FIELD ||= ldap_config['ldap_uid_field'] || LDAP_UID # the unique identifier from LDAP used to generate the uid column in database
   describe 'search' do
     # no tests for search it's the top-level method
   end
@@ -47,7 +52,7 @@ RSpec.describe 'Directory' do
     end
 
     it 'should search case-independently' do
-      expect(Directory.search_database('WhItEhOuSe')).to eq [ id1 ]
+      expect(Directory.search_database('whitehouse')).to eq [ id1 ]
     end
 
     it "should search with single quote" do
@@ -56,8 +61,28 @@ RSpec.describe 'Directory' do
   end
 
   describe 'search_ldap' do
-    # TODO: for now, no tests for search_database; it talks to LDAP
-    # directly
+    it 'should create new identity from ldap search' do
+      identity = Directory.search('leonarjp').first
+      expect(identity).not_to eq nil
+      expect(identity.ldap_uid).to eq 'jpl6@musc.edu'
+      expect(identity.email).to eq 'leonarjp@musc.edu'
+      expect(identity.first_name).to eq 'Jason'
+      expect(identity.last_name).to eq 'Leonard'
+
+      identity = Directory.search('ash151').first
+      expect(identity).not_to eq nil
+      expect(identity.ldap_uid).to eq 'ash151@musc.edu'
+      expect(identity.email).to eq 'ash@theverybest.com'
+      expect(identity.first_name).to eq 'Ash'
+      expect(identity.last_name).to eq 'Ketchum'
+
+      identity = Directory.search('Julia').first
+      expect(identity).not_to eq nil
+      expect(identity.ldap_uid).to eq 'jug2@musc.edu'
+      expect(identity.email).to eq 'glennj@musc.edu'
+      expect(identity.first_name).to eq 'Julia'
+      expect(identity.last_name).to eq 'Glenn'
+    end
   end
 
   describe 'create_or_update_database_from_ldap' do
@@ -78,7 +103,8 @@ RSpec.describe 'Directory' do
           "uid" =>       [ 'foo' ],
           "mail" =>      [ 'foo@bar.com' ],
           "givenname" => [ 'Foo' ],
-          "sn" =>        [ 'Bar' ]}
+          "sn" =>        [ 'Bar' ],
+          "department" => ["Biomed Informatics Core CCts"]}
 
       orig_count = Identity.count
       Directory.create_or_update_database_from_ldap([r], Identity.all)
@@ -90,6 +116,7 @@ RSpec.describe 'Directory' do
       expect(id.email).to eq 'foo@bar.com'
       expect(id.first_name).to eq 'Foo'
       expect(id.last_name).to eq 'Bar'
+      expect(id.department).to eq 'Biomed Informatics Core CCts' unless LDAP_DEPARTMENT.blank?
     end
 
     it 'should update identities that need to be updated' do

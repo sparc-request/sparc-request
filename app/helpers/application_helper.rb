@@ -337,4 +337,12 @@ module ApplicationHelper
       return ""
     end
   end
+
+  def signin_btn_text
+    if defined?(INSTITUTION_NAME)
+      "#{INSTITUTION_NAME} Users Click Here"
+    else
+      t(:signin)[:button1]
+    end
+  end
 end

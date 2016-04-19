@@ -25,7 +25,10 @@
   %br
   .container_6
     #left_signin_button.proceed_with_shib.ui-button.ui-button-text.ui-widget.ui-state-default.ui-corner-all.ui-button-text-only
-      = link_to(t(:proceed_to_shibboleth), identity_omniauth_authorize_path(:shibboleth))
+      - if USE_CAS
+        = link_to(t(:proceed_to_cas), identity_omniauth_authorize_path(:cas))
+      - if USE_SHIBOLETH
+        = link_to(t(:proceed_to_shibboleth), identity_omniauth_authorize_path(:shibboleth))
     %br
     %br
     #right_signin_button.proceed_with_database.ui-button.ui-button-text.ui-widget.ui-state-default.ui-corner-all.ui-button-text-only

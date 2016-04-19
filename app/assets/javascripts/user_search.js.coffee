@@ -36,8 +36,8 @@ $(document).ready ->
         'portal' : $('#portal').val()
         'term' : "#{ui.item.email}"
       $.ajax
-        url: "#{find_or_create_identities}"
-        type: 'GET'
+        url: "/identities/find_or_create"
+        type: 'POST'
         data: data
       $('#user_search_term').clearFields()
       $('.add-user-details').show()

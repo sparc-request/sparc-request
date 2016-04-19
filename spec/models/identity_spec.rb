@@ -72,12 +72,9 @@ RSpec.describe "Identity" do
 
     it "should not create an identity for a non-existing ldap_uid" do
       expect(Identity.all.count).to eq(3)
-      # fuzzy search use mysql like against database, return record from database
-      # search ldap should return nothing
-      # the rule says if ldap search returns a record, but the record is not found in database, then create it
       Identity.search("ash")
       if USE_LDAP && !SUPPRESS_LDAP_FOR_USER_SEARCH
-        expect(Identity.all.count).to eq(3)
+        expect(Identity.all.count).to eq(4)
       else
         expect(Identity.all.count).to eq(3)
       end

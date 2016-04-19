@@ -101,4 +101,30 @@ class IdentitiesController < ApplicationController
     @identity.update_attribute(:approved, true)
     Notifier.account_status_change(@identity, false).deliver unless @identity.email.blank?
   end
+
+  def search_or_create_identity
+    email = params[:email]
+    @identity = Directory.search(email).first
+    @identity = Identity.new unless !@identity.nil?
+    @can_edit = false
+    project_role_params = params[session[:protocol_type].to_sym][:project_roles_attributes][@identity.id.to_s] rescue nil
+    if project_role_params
+      project_role_params.delete '_destroy'
+      id = project_role_params.delete 'id'
+
+      if id.blank?
+        @project_role = ProjectRole.new project_role_params
+      else
+        @project_role = ProjectRole.find id
+        @project_role.project_rights = project_role_params[:project_rights]
+      end
+
+      @can_edit = true
+    else
+      @project_role = ProjectRole.new
+    end
+
+    render :show
+  end
+
 end

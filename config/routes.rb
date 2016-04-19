@@ -25,6 +25,8 @@ SparcRails::Application.routes.draw do
   match '/surveys/:survey_code/:response_set_code', :to => 'surveyor#destroy', :via => :delete
   mount Surveyor::Engine => "/surveys", :as => "surveyor"
 
+  match '/user/search', :to => 'identities#search_or_create_identity', :as => 'search_or_create_identity', :via => :get
+
   if USE_SHIBBOLETH_ONLY
     devise_for :identities,
                controllers: {

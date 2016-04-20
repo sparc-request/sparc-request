@@ -58,11 +58,13 @@ en:
   constants:
     yes_select: "Yes"
     no_select: "No"
-    prompts: 
+    prompts:
       any: "- Any -"
       select: "---Please Select---"
       search_for_user: "Search for a User"
       select_one: "Select One"
+    alerts:
+      not_permitted: "You do not have permission to do that."
 
   calendars:
     pppv:

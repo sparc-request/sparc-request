@@ -25,12 +25,10 @@
     = consolidated_request_buttons_display(protocol)
     .clearfix
   .panel-body
-    - if protocol.has_first_draft_service_request?
-      .alert.alert-danger{ role: 'alert' } Request in progress.
-    - elsif !protocol.service_requests.present?
-      %button.btn.btn-success.btn-sm#add-services-button{ type: 'button', data: { permission: permission_to_edit.to_s } }
+    - if !protocol.sub_service_requests.present? #no SRs
+      %button.btn.btn-success.btn-sm#add-services-button{ type: 'button', data: { permission: permission_to_edit.to_s, protocol_id: protocol.id } }
         = t(:dashboard)[:protocols][:service_requests][:add_services]
     - else
       - protocol.service_requests.each do |sr|
-        - if sr.status != "first_draft" and not sr.sub_service_requests.empty?
+        - if !sr.sub_service_requests.empty?
           = render partial: 'dashboard/service_requests/protocol_service_request_show', locals: { service_request: sr, user: user, admin: admin, permission_to_edit: permission_to_edit }

@@ -4,26 +4,38 @@ RSpec.describe Dashboard::ArmsController do
   describe 'delete destroy' do
     let!(:identity_stub) { instance_double('Identity', id: 1) }
 
-    let(:arm_stub) do
-      obj = instance_double('Arm', id: 1)
-      allow(obj).to receive(:destroy)
-      stub_find_arm(obj)
-      obj
+    before(:each) do
+      log_in_dashboard_identity(obj: identity_stub)
+      arm_destroyer_stub = instance_double(Dashboard::ArmDestroyer,
+        service_request: "ServiceRequest",
+        sub_service_request: "SubServiceRequest")
+      allow(Dashboard::ArmDestroyer).to receive(:new).and_return(arm_destroyer_stub)
+      request_params = id: arm_stub.id, sub_service_request_id: ssr_stub.id
+
+      xhr :delete, :destroy, request_params
     end
 
-    let(:sr_stub) do
-      obj = instance_double('ServiceRequest', id: 2)
-      stub_find_service_request(obj)
-      obj
+    it "should use Dashboard::ArmDestroyer" do
+      expect(Dashboard::ArmDestroyer).to have_received(:new).with(request_params)
     end
 
-    let(:ssr_stub) do
-      obj = instance_double('SubServiceRequest', id: 3, service_request: sr_stub)
-      stub_find_sub_service_request(obj)
-      obj
+    it "should assign @service_request from Dashboard::ArmDestroyer instance" do
+      expect(assigns(:service_request)).to eq("ServiceRequest")
     end
 
-    before(:each) { log_in_dashboard_identity(obj: identity_stub) }
+    it "should assign @sub_service_request from Dashboard::ArmDestroyer instance" do
+      expect(assigns(:sub_service_request)).to eq("SubServiceRequest")
+    end
+
+    it "should set flash[:alert]" do
+      expect(flash[:alert]).not_to be_nil
+    end
+
+    it { is_expected.to render_template "dashboard/arms/destroy" }
+
+    it { is_expected.to respond_with :ok }
+
+
     after(:each) { expect(arm_stub).to have_received(:destroy) }
 
     it 'should set @sub_service_request from params[:sub_service_request_id]' do

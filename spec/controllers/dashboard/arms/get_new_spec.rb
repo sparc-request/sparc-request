@@ -1,8 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Dashboard::ArmsController do
-
-  describe 'get new' do
+  describe 'GET new' do
     let!(:identity_stub) { instance_double('Identity', id: 1) }
 
     let!(:protocol_stub) do
@@ -48,6 +47,9 @@ RSpec.describe Dashboard::ArmsController do
       expect(assigns(:arm).protocol_id).to eq(1)
       expect(assigns(:arm)).not_to be_persisted
     end
+
+    it { is_expected.to respond_with :ok }
+    it { is_expected.to render_template "dashboard/arms/new" }
   end
 
   def stub_find_protocol(protocol_stub)

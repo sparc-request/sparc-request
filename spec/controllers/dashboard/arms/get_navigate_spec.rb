@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Dashboard::ArmsController do
-  describe 'get navigate' do
+  describe 'GET navigate' do
     let!(:identity_stub) { instance_double('Identity', id: 1) }
 
     let(:protocol_stub) do
@@ -37,44 +37,53 @@ RSpec.describe Dashboard::ArmsController do
       log_in_dashboard_identity(obj: identity_stub)
     end
 
-    it 'should set @protocol from params[:protocol_id]' do
-      xhr :get, :navigate, protocol_id: protocol_stub.id, service_request_id: sr_stub.id, sub_service_request_id: ssr_stub.id
-      expect(assigns(:protocol)).to eq(protocol_stub)
-    end
-
-    it 'should set @service_request from params[:service_request_id]' do
-      xhr :get, :navigate, protocol_id: protocol_stub.id, service_request_id: sr_stub.id, sub_service_request_id: ssr_stub.id
-      expect(assigns(:service_request)).to eq(sr_stub)
-    end
-
-    it 'should set @sub_service_request from params[:sub_service_request_id]' do
-      xhr :get, :navigate, protocol_id: protocol_stub.id, service_request_id: sr_stub.id, sub_service_request_id: ssr_stub.id
-      expect(assigns(:sub_service_request)).to eq(ssr_stub)
-    end
-
-    it 'should set @intended_action to params[:intended_action]' do
-      xhr :get, :navigate, protocol_id: protocol_stub.id, service_request_id: sr_stub.id, sub_service_request_id: ssr_stub.id, intended_action: 'chillax'
-      expect(assigns(:intended_action)).to eq('chillax')
-    end
-
     context 'params[:arm_id] present' do
+      before(:each) do
+        xhr :get, :navigate, protocol_id: protocol_stub.id, arm_id: arm_stub.id, service_request_id: sr_stub.id, sub_service_request_id: ssr_stub.id, intended_action: 'chillax'
+      end
+
+      it 'should set @protocol from params[:protocol_id]' do
+        expect(assigns(:protocol)).to eq(protocol_stub)
+      end
+
+      it 'should set @service_request from params[:service_request_id]' do
+        expect(assigns(:service_request)).to eq(sr_stub)
+      end
+
+      it 'should set @sub_service_request from params[:sub_service_request_id]' do
+        expect(assigns(:sub_service_request)).to eq(ssr_stub)
+      end
+
+      it 'should set @intended_action to params[:intended_action]' do
+        expect(assigns(:intended_action)).to eq('chillax')
+      end
+
       it 'should set @arm from params[:arm_id]' do
-        xhr :get, :navigate, arm_id: arm_stub.id, protocol_id: protocol_stub.id, service_request_id: sr_stub.id, sub_service_request_id: ssr_stub.id, intended_action: 'chillax'
         expect(assigns(:arm)).to eq(arm_stub)
       end
+
+      it { is_expected.to render_template "dashboard/arms/navigate" }
+      it { is_expected.to respond_with :ok }
     end
 
     context 'params[:arm_id] absent' do
-      it 'should set @arm to the Protocol\'s first Arm' do
+      before(:each) do
         xhr :get, :navigate, protocol_id: protocol_stub.id, service_request_id: sr_stub.id, sub_service_request_id: ssr_stub.id, intended_action: 'chillax'
+      end
+      
+      it 'should set @arm to the Protocol\'s first Arm' do
         expect(assigns(:arm)).to eq(protocol_stub.arms.first)
       end
+
+      it { is_expected.to render_template "dashboard/arms/navigate" }
+      it { is_expected.to respond_with :ok }
     end
   end
 
   def stub_find_arm(arm)
-    allow(Arm).to receive(:find).with(arm.id).and_return(arm)
-    allow(Arm).to receive(:find).with(arm.id.to_s).and_return(arm)
+    allow(Arm).to receive(:find).
+      with(arm.id.to_s).
+      and_return(arm)
   end
 
   def stub_find_protocol(protocol)

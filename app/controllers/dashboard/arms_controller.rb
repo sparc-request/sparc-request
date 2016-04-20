@@ -49,7 +49,7 @@ class Dashboard::ArmsController < Dashboard::BaseController
     if @selected_arm.valid?
       flash[:success] = t(:dashboard)[:arms][:created]
     else
-      errors = @selected_arm.errors
+      @errors = @selected_arm.errors
     end
   end
 

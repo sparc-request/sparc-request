@@ -23,6 +23,10 @@ FactoryGirl.define do
     optional               { false }
     quantity               { 5 }
 
+    trait :without_validations do
+      to_create { |instance| instance.save(validate: false) }
+    end
+    
     trait :with_service_request do
       service_request
       # service_request factory: :service_request_with_protocol

@@ -35,7 +35,7 @@ class Calendar < ActiveRecord::Base
         line_item = visit.line_items_visit.line_item
         next unless line_item.attached_to_submitted_request
         core = line_item.service.organization
-        core_ids << core.id if core.show_in_cwf
+        core_ids << core.id if core.tag_list.include?("clinical work fulfillment")
       end
     end
     core_ids.uniq!
@@ -93,7 +93,7 @@ class Calendar < ActiveRecord::Base
       filtered_groups = groups.select{ |vg| !vg.appointments.map(&:calendar_id).include?(self.id) }
       self.populate(filtered_groups)
     end
-  end 
+  end
 
   def completed_total
     completed_procedures = self.appointments.select{|x| x.completed?}.collect{|y| y.procedures}.flatten
@@ -103,9 +103,9 @@ class Calendar < ActiveRecord::Base
   def appointments_for_core core_id
     self.appointments.where(:organization_id => core_id)
   end
-  
+
   ### audit reporting methods ###
-  
+
   def audit_excluded_fields
     {'create' => ['subject_id']}
   end

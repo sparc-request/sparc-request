@@ -44,23 +44,6 @@ module CapybaraCatalogManager
     find("div#cwf_wrapper #cwf_fieldset", visible: true).click
     wait_for_javascript_to_finish
     sleep 3
-    if org=='program' then cwfCheckBox = first("input#program_show_in_cwf")
-    else cwfCheckBox = first("input#core_show_in_cwf") end
-    if not cwfCheckBox.checked? then cwfCheckBox.click end
-    wait_for_javascript_to_finish
-
-    i = 1
-    inputID = 'program_position_in_cwf'
-    if org=='core' then inputID = 'core_position_in_cwf' end
-    first(:xpath, "//input[@id='#{inputID}']").set(i)
-    first("#save_button").click
-    wait_for_javascript_to_finish
-    while not first(:xpath, "//div[@id='errorExplanation']/ul/li[contains(text(),'Position_in_cwf')]").nil? do
-      i+=1
-      first(:xpath, "//input[@id='#{inputID}']").set(i)
-      first("#save_button").click
-      wait_for_javascript_to_finish
-    end
 
     fill_in "new_cp", with: "Julia"
     sleep 2

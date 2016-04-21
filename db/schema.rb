@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160412140449) do
+ActiveRecord::Schema.define(version: 20160421145916) do
 
   create_table "admin_rates", force: :cascade do |t|
     t.integer  "line_item_id", limit: 4
@@ -505,7 +505,6 @@ ActiveRecord::Schema.define(version: 20160412140449) do
     t.datetime "created_at",                                 null: false
     t.datetime "updated_at",                                 null: false
     t.datetime "deleted_at"
-    t.boolean  "show_in_cwf"
   end
 
   add_index "organizations", ["is_available"], name: "index_organizations_on_is_available", using: :btree

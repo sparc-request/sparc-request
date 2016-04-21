@@ -57,12 +57,13 @@ class Organization < ActiveRecord::Base
   attr_accessible :submission_emails_attributes
   attr_accessible :available_statuses_attributes
   attr_accessible :tag_list
-  attr_accessible :show_in_cwf
 
   accepts_nested_attributes_for :subsidy_map
   accepts_nested_attributes_for :pricing_setups
   accepts_nested_attributes_for :submission_emails
   accepts_nested_attributes_for :available_statuses, :allow_destroy => true
+
+  scope :in_cwf, -> {joins(:tags).where(:tags => {name: "clinical work fulfillment"})}
 
   def label
     abbreviation || name
@@ -111,7 +112,7 @@ class Organization < ActiveRecord::Base
     end
   end
 
-  # If an organization or one of it's parents is defined as lockable in the application.yml, return true 
+  # If an organization or one of it's parents is defined as lockable in the application.yml, return true
   def has_editable_statuses?
     EDITABLE_STATUSES.keys.each do |org_id|
       if parents(true).include?(org_id) || (org_id == id)
@@ -349,9 +350,5 @@ class Organization < ActiveRecord::Base
     else
       return false
     end
-  end
-
-  def self.get_cwf_organizations
-    Organization.where(show_in_cwf: true)
   end
 end

@@ -29,10 +29,14 @@ FactoryGirl.define do
     charge_code         { Faker::Lorem.words().first }
     revenue_code        { Faker::Lorem.words().first }
 
-     trait :without_callback_notify_remote_service_after_create do
-       before(:create) { |service| service.class.skip_callback(:create, :after, :notify_remote_service_after_create) }
-     #  after(:create) { Service.set_callback(:create, :after, :notify_remote_service_after_create) }
-     end
+    trait :without_validations do
+      to_create { |instance| instance.save(validate: false) }
+    end
+
+    trait :without_callback_notify_remote_service_after_create do
+      before(:create) { |service| service.class.skip_callback(:create, :after, :notify_remote_service_after_create) }
+      #  after(:create) { Service.set_callback(:create, :after, :notify_remote_service_after_create) }
+    end
 
     trait :with_ctrc_organization do
       organization factory: :organization_ctrc

@@ -2,66 +2,79 @@ require 'rails_helper'
 
 RSpec.describe Dashboard::AssociatedUsersController do
   describe 'DELETE destroy' do
-    let!(:identity_stub) { instance_double('Identity', id: 1) }
+    let!(:logged_in_user) { instance_double('Identity', id: 1) }
 
-    before(:each) do
-      log_in_dashboard_identity(obj: identity_stub)
-    end
+    # TODO what are typical contexts (concerning the conditions below)?
+    # Won't exhaustively test each possible one...
+    context "USE_EPIC == false, QUEUE_EPIC == false, Protocol associated with ProjectRole is not selected for epic, and @project_role did not have epic access" do
+      before(:each) do
+        @project_role = instance_double('ProjectRole',
+          id: 1,
+          epic_access: false,
+          clone: :clone,
+          protocol: instance_double('Protocol',
+            selected_for_epic: false))
+        allow(@project_role).to receive(:destroy)
+        stub_find_project_role(@project_role)
 
-    it 'should set @project_role from params[:id]' do
-      pr = instance_double('ProjectRole',
-        id: 1,
-        destroy: true,
-        epic_access: false,
-        clone: :clone,
-        protocol: instance_double('Protocol',
-          selected_for_epic: false))
-      stub_find_project_role(pr)
+        allow(Notifier).to receive(:notify_primary_pi_for_epic_user_removal)
 
-      xhr :delete, :destroy, id: pr.id
+        log_in_dashboard_identity(obj: logged_in_user)
 
-      expect(assigns(:protocol_role)).to eq(pr)
-    end
+        xhr :delete, :destroy, id: @project_role.id
+      end
 
-    it 'should destroy @project_role' do
-      pr = instance_double('ProjectRole',
-        id: 1,
-        epic_access: false,
-        clone: :clone,
-        protocol: instance_double('Protocol',
-          selected_for_epic: false))
-      expect(pr).to receive(:destroy)
-      stub_find_project_role(pr)
+      it 'should destroy @project_role' do
+        expect(@project_role).to have_received(:destroy)
+      end
 
-      xhr :delete, :destroy, id: pr.id
+      it "should not notify Primary PI for epic user removal" do
+        expect(Notifier).not_to have_received(:notify_primary_pi_for_epic_user_removal)
+      end
 
-      expect(assigns(:protocol_role)).to eq(pr)
+      it { is_expected.to render_template "dashboard/associated_users/destroy" }
+      it { is_expected.to respond_with :ok }
     end
 
     context 'USE_EPIC == true, QUEUE_EPIC == false, Protocol associated with @project_role is selected for epic, and @project_role had epic access' do
-      it 'should notify Primary PI for epic user removal' do
-        stub_const('USE_EPIC', true)
-        stub_const('QUEUE_EPIC', false)
-
+      before(:each) do
         protocol = instance_double('Protocol',
           selected_for_epic: true)
 
-        pr = instance_double('ProjectRole',
+        @project_role = instance_double('ProjectRole',
           id: 1,
           epic_access: true,
           destroy: true,
           protocol: protocol)
-        allow(pr).to receive(:clone).and_return(pr)
-        stub_find_project_role(pr)
+        allow(@project_role).to receive(:clone).and_return(@project_role)
+        stub_find_project_role(@project_role)
 
-        expect(Notifier).to receive(:notify_primary_pi_for_epic_user_removal).with(protocol, pr) do
-          mailer = double('mail')
-          expect(mailer).to receive(:deliver)
-          mailer
-        end
 
-        xhr :delete, :destroy, id: pr.id
+        stub_const('USE_EPIC', true)
+        stub_const('QUEUE_EPIC', false)
+
+        allow(Notifier).to receive(:notify_primary_pi_for_epic_user_removal).
+          with(protocol, @project_role) do
+            mailer = double('mail')
+            expect(mailer).to receive(:deliver)
+            mailer
+          end
+
+        log_in_dashboard_identity(obj: logged_in_user)
+
+        xhr :delete, :destroy, id: @project_role.id
       end
+
+      it 'should destroy @project_role' do
+        expect(@project_role).to have_received(:destroy)
+      end
+
+      it 'should notify Primary PI for epic user removal' do
+        expect(Notifier).to have_received(:notify_primary_pi_for_epic_user_removal)
+      end
+
+      it { is_expected.to render_template "dashboard/associated_users/destroy" }
+      it { is_expected.to respond_with :ok }
     end
 
     def stub_find_project_role(pr)

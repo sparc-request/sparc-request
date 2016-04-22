@@ -45,6 +45,8 @@ class ProjectRole < ActiveRecord::Base
   validates :role, :presence => true
   validates :project_rights, :presence => true
 
+  scope :primary_pis, -> { where(role: "primary-pi") }
+  
   def can_edit?
     if project_rights == "view" || project_rights == "none"
       return false

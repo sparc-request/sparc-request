@@ -38,10 +38,10 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
   end
 
   def show
+    # TODO: what does this even do?
     # TODO: is it right to call to_i here?
     # TODO: id here should be the id of a project role, not an identity
-    project_role = @protocol.project_roles.find_by(identity_id: params[:id].to_i)
-    @user = project_role.try(:identity)
+    @user = Identity.find(params[:id])
     render nothing: true # TODO: looks like there's no view for show
   end
 
@@ -77,15 +77,13 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
 
     if @protocol_role.unique_to_protocol? && @protocol_role.fully_valid?
       if @protocol_role.role == 'primary-pi'
-        @protocol.project_roles.where(role: 'primary-pi').each do |pr|
+        @protocol.project_roles.primary_pis.each do |pr|
           pr.update_attributes(project_rights: 'request', role: 'general-access-user')
         end
       end
       @protocol_role.save
       flash.now[:success] = 'Authorized User Added!'
       if SEND_AUTHORIZED_USER_EMAILS
-        # TODO rewrite #emailed_associated_users to return ActiveRecord::Relation, then
-        # join on identities and filter out those with blank emails
         @protocol.emailed_associated_users.each do |project_role|
           UserMailer.authorized_user_changed(project_role.identity, @protocol).deliver unless project_role.identity.email.blank?
         end

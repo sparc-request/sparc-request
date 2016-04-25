@@ -71,7 +71,7 @@ class ApplicationController < ActionController::Base
     end
 
     if USE_NEWS_FEED
-      page = Nokogiri::HTML(open("http://www.sparcrequestblog.com"))
+      page = Nokogiri::HTML(open("https://www.sparcrequestblog.com"))
       headers = page.css('.entry-header').take(3)
       @news = []
       headers.each do |header|

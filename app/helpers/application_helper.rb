@@ -172,8 +172,8 @@ module ApplicationHelper
       option = ["Visits #{beginning_visit} - #{ending_visit} of #{arm.visit_count}", page, :style => "font-weight:bold;"]
       arr << option
 
-      (beginning_visit..ending_visit).each do |y|
-        visit_group = arm.visit_groups[y - 1]
+      (beginning_visit..ending_visit).each do |visit_number|
+        visit_group = arm.visit_groups[visit_number - 1]
 
         if visit_group.day.present?
           arr << ["--#{visit_group.name}/Day #{visit_group.day}".html_safe, parent_page: page]
@@ -328,5 +328,13 @@ module ApplicationHelper
 
   def first_service?(service_request)
     service_request.line_items.count == 0
+  end
+
+  def display_protocol_id(service_request)
+    if service_request.protocol
+      return service_request.protocol.id
+    else
+      return ""
+    end
   end
 end

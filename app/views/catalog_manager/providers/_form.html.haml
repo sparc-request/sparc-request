@@ -134,7 +134,8 @@
               %td.subsidy_percentage= f_subsidy_map.text_field :max_percentage
             %tr
               %th= t(:organization_form)[:subsidy_max_dollar]
-              %td.subsidy_dollar= f_subsidy_map.text_field :max_dollar_cap
+
+              %td.subsidy_dollar= f_subsidy_map.text_field :max_dollar_cap, value: number_with_precision(f_subsidy_map.object.max_dollar_cap, precision: 2)
             = render 'catalog_manager/shared/excluded_funding_sources', :entity => @provider
     %br
 

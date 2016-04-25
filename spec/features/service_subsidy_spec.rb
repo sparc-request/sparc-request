@@ -48,7 +48,7 @@ RSpec.describe "subsidy page" do
       describe "leaving the form blank" do
 
         it 'should be fine with that', js: true do
-          find(:xpath, "//a/img[@alt='Savecontinue']/..").click
+          find('.save-and-continue').click
           wait_for_javascript_to_finish
 
           expect(sub_service_request.subsidy).to eq(nil)
@@ -60,7 +60,7 @@ RSpec.describe "subsidy page" do
           @total = (sub_service_request.direct_cost_total / 100)
           find('.pi-contribution').set((@total - program.subsidy_map.max_dollar_cap) - 5)
           find('.select-project-view').click
-          find(:xpath, "//a/img[@alt='Savecontinue']/..").click
+          find('.save-and-continue').click
           expect(page).to have_text("cannot exceed maximum dollar amount")
         end
 
@@ -72,7 +72,7 @@ RSpec.describe "subsidy page" do
           visit service_subsidy_service_request_path service_request.id
           find('.pi-contribution').set(@total - program.subsidy_map.max_dollar_cap)
           find('.select-project-view').click
-          find(:xpath, "//a/img[@alt='Savecontinue']/..").click
+          find('.save-and-continue').click
           expect(page).to have_text("cannot exceed maximum percentage of")
         end
       end
@@ -127,7 +127,7 @@ RSpec.describe "subsidy page" do
         find('.select-project-view').click
         #find(".pi-contribution.ssr_#{@ssr2.id}").set()
         wait_for_javascript_to_finish
-        find(:xpath, "//a/img[@alt='Savecontinue']/..").click
+        find('.save-and-continue').click
         expect(page).to have_text("cannot exceed maximum dollar amount")
       end
     end

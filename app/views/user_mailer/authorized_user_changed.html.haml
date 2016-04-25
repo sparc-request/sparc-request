@@ -65,7 +65,7 @@
         %strong= t(:mailer)[:role]
       %th{:style => 'border: 1px solid #000'}
         %strong= t(:mailer)[:proxy]
-    - @protocol.project_roles.each do |user|
+    - @protocol.project_roles(true).each do |user|
       %tr
         %td{:style => 'border: 1px solid #000'}= user.identity.try(:full_name)
         %td{:style => 'border: 1px solid #000; text-align: center'}= USER_ROLES.detect{|k,v| v == user.role}.try(:first)

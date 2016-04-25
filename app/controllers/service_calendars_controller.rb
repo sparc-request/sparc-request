@@ -26,11 +26,10 @@ class ServiceCalendarsController < ApplicationController
   def table
     #use session so we know what page to show when tabs are switched
     @tab = params[:tab]
-    @portal = params[:portal]
+    @portal = params[:portal] 
     @study_tracker = params[:study_tracker] == "true"
     @protocol = @service_request.protocol
     setup_calendar_pages
-
     # TODO: This needs to be changed for one time fees page in arms
     @candidate_one_time_fees, @candidate_per_patient_per_visit = @sub_service_request.candidate_services.partition {|x| x.one_time_fee} if @sub_service_request
   end
@@ -221,16 +220,7 @@ class ServiceCalendarsController < ApplicationController
     vg = @arm.visit_groups.find_by_position visit_to_move
     vg.reload
 
-    # The way insert_at works is literal. It inserts at whatever position is given
-    # We want to insert before the position given depending on the visit we're moving.
-    # If the visit_to_move < move_to_position we need to decrement one to move it
-    # before the given position. Otherwise insert_at works as intended.
-    # Special case is if we want to move to the end. We want to insert it at that position.
-    if visit_to_move < move_to_position && move_to_position != @arm.visit_groups.count
-      vg.insert_at(move_to_position - 1)
-    else
-      vg.insert_at(move_to_position)
-    end
+    vg.insert_at(move_to_position)
 
     @arm.reload
     @arm.visit_groups.reload

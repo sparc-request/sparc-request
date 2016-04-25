@@ -226,7 +226,6 @@ class Identity < ActiveRecord::Base
     end
   end
 
-  # As per Lane, a service request's status is no longer a factor for editing.
   # Only users with request or approve rights can edit.
   def can_edit_service_request? sr
     can_edit = false

@@ -18,6 +18,8 @@ class SurveyResponseReport < ReportingModule
   # see app/reports/test_report.rb for all options
   def column_attrs
     attrs = {}
+
+    attrs["SSR ID"] = "sub_service_request.try(:display_id)"
     attrs["User ID"] = :user_id
     attrs["User Name"] = "identity.try(:full_name)"
     attrs["Submitted Date"] = "completed_at.try(:strftime, \"%D\")"

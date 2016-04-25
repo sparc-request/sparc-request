@@ -18,6 +18,8 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+= stylesheet_link_tag 'hover_effect'
+
 - if USE_EPIC && @epic_services
   :javascript
     $(document).ready( function(e) {
@@ -30,6 +32,8 @@
           if (confirm("You have chosen services that are orderable in Epic. Please confirm that you do NOT want your study to be published in Epic. You will not be able to associate encounters or orders to the study without publishing.")) {
             $('form').submit();
           }
+          else
+            { $('.continue-spinner').hide(); }
         }
       });
     })
@@ -67,9 +71,8 @@
     .grid_12
       %div.blue-provider
         .nav-backward
-          .return-to-previous
+          .return-to-previous.button-hover
             %a.cancel_link{class: cookies['current_step'] == 'protocol' ? 'cancel' : 'go-back', href: "javascript:void(0)"}
-              = image_tag('left_arrow.png', alt: "Cancel")
               %span.btn.btn-success.btn-lg
                 = current_step == 'protocol' ? t(:bottom_navigation)[:cancel] : t(:bottom_navigation)[:go_back]
           = image_tag 'spinner.gif', class: 'return-spinner hidden'
@@ -77,8 +80,7 @@
           = image_tag 'Filler.png'
         .nav-forward
           = image_tag 'spinner.gif', class: 'continue-spinner hidden'
-          .save-and-continue
+          .save-and-continue.button-hover
             %a.continue_button{class: cookies['current_step'] == 'protocol' ? 'continue' : 'save', href: "javascript:void(0)"}
               %span.btn.btn-success.btn-lg
                 = current_step == 'protocol' ? t(:bottom_navigation)[:continue] : t(:bottom_navigation)[:save_and_continue]
-              = image_tag 'right_arrow.png', alt: "SaveAndContinue"

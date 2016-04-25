@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160121173336) do
+ActiveRecord::Schema.define(version: 20160412140449) do
 
   create_table "admin_rates", force: :cascade do |t|
     t.integer  "line_item_id", limit: 4
@@ -183,12 +183,6 @@ ActiveRecord::Schema.define(version: 20160121173336) do
 
   add_index "charges", ["service_id"], name: "index_charges_on_service_id", using: :btree
   add_index "charges", ["service_request_id"], name: "index_charges_on_service_request_id", using: :btree
-
-  create_table "click_counters", force: :cascade do |t|
-    t.integer  "click_count", limit: 4
-    t.datetime "created_at",            null: false
-    t.datetime "updated_at",            null: false
-  end
 
   create_table "clinical_providers", force: :cascade do |t|
     t.integer  "identity_id",     limit: 4
@@ -506,10 +500,10 @@ ActiveRecord::Schema.define(version: 20160121173336) do
     t.integer  "parent_id",    limit: 4
     t.string   "abbreviation", limit: 255
     t.text     "ack_language", limit: 65535
-    t.boolean  "process_ssrs"
+    t.boolean  "process_ssrs",               default: false
     t.boolean  "is_available",               default: true
-    t.datetime "created_at",                                null: false
-    t.datetime "updated_at",                                null: false
+    t.datetime "created_at",                                 null: false
+    t.datetime "updated_at",                                 null: false
     t.datetime "deleted_at"
     t.boolean  "show_in_cwf"
   end
@@ -752,14 +746,15 @@ ActiveRecord::Schema.define(version: 20160121173336) do
   add_index "research_types_info", ["protocol_id"], name: "index_research_types_info_on_protocol_id", using: :btree
 
   create_table "response_sets", force: :cascade do |t|
-    t.integer  "user_id",      limit: 4
-    t.integer  "survey_id",    limit: 4
-    t.string   "access_code",  limit: 255
+    t.integer  "user_id",                limit: 4
+    t.integer  "survey_id",              limit: 4
+    t.string   "access_code",            limit: 255
     t.datetime "started_at"
     t.datetime "completed_at"
-    t.datetime "created_at",               null: false
-    t.datetime "updated_at",               null: false
-    t.string   "api_id",       limit: 255
+    t.datetime "created_at",                         null: false
+    t.datetime "updated_at",                         null: false
+    t.string   "api_id",                 limit: 255
+    t.integer  "sub_service_request_id", limit: 4
   end
 
   add_index "response_sets", ["access_code"], name: "response_sets_ac_idx", unique: true, using: :btree
@@ -846,6 +841,7 @@ ActiveRecord::Schema.define(version: 20160121173336) do
     t.datetime "created_at",                             null: false
     t.datetime "updated_at",                             null: false
     t.datetime "deleted_at"
+    t.date     "original_submitted_date"
   end
 
   add_index "service_requests", ["protocol_id"], name: "index_service_requests_on_protocol_id", using: :btree
@@ -987,10 +983,10 @@ ActiveRecord::Schema.define(version: 20160121173336) do
 
   create_table "subsidy_maps", force: :cascade do |t|
     t.integer  "organization_id", limit: 4
-    t.decimal  "max_dollar_cap",            precision: 12, scale: 4
-    t.decimal  "max_percentage",            precision: 5,  scale: 2
-    t.datetime "created_at",                                         null: false
-    t.datetime "updated_at",                                         null: false
+    t.decimal  "max_dollar_cap",            precision: 12, scale: 4, default: 0.0
+    t.decimal  "max_percentage",            precision: 5,  scale: 2, default: 0.0
+    t.datetime "created_at",                                                       null: false
+    t.datetime "updated_at",                                                       null: false
     t.datetime "deleted_at"
   end
 

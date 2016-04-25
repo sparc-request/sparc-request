@@ -102,8 +102,8 @@ RSpec.describe "Identity" do
 
   describe "rights" do
 
-    let!(:user)                 {create(:identity)}
-    let!(:user2)                {create(:identity)}
+    let!(:user)                 {create(:identity, ldap_uid: 'slickwilly@musc.edu')}
+    let!(:user2)                {create(:identity, ldap_uid: 'superfly@musc.edu')}
     let!(:catalog_manager)      {create(:catalog_manager, identity_id: user.id, organization_id: institution.id)}
     let!(:super_user)           {create(:super_user, identity_id: user.id, organization_id: institution.id)}
     let!(:service_provider)     {create(:service_provider, identity_id: user.id, organization_id: institution.id, is_primary_contact: true)}

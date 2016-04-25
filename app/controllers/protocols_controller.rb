@@ -23,24 +23,18 @@ class ProtocolsController < ApplicationController
   before_filter :initialize_service_request, unless: :from_portal?, :except => [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
   before_filter :authorize_identity, unless: :from_portal?, :except => [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
   before_filter :set_protocol_type, :except => [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
+  before_filter :set_portal
 
   def new
-    @portal = params[:portal]
-    unless from_portal?
-      @service_request = ServiceRequest.find session[:service_request_id]
-      @epic_services = @service_request.should_push_to_epic? if USE_EPIC
-    end
     @protocol = self.model_class.new
-    @protocol.requester_id = current_user.id
-    @protocol.populate_for_edit
-    current_step_cookie = cookies['current_step']
-    cookies['current_step'] = 'protocol'
-
+    setup_protocol = SetupProtocol.new(params[:portal], @protocol, current_user, session[:service_request_id])
+    setup_protocol.setup
+    @epic_services = setup_protocol.set_epic_services
+    set_cookies
     resolve_layout
   end
 
   def create
-    @portal = params[:portal]
 
     unless from_portal?
       @service_request = ServiceRequest.find session[:service_request_id]
@@ -52,7 +46,7 @@ class ProtocolsController < ApplicationController
     @protocol = self.model_class.new(new_protocol_attrs.merge(study_type_question_group_id: StudyTypeQuestionGroup.active.pluck(:id).first))
 
     @protocol.validate_nct = true
-    
+
     if @current_step == 'cancel'
       @current_step = 'return_to_service_request'
     elsif @current_step == 'go_back'
@@ -83,12 +77,12 @@ class ProtocolsController < ApplicationController
     cookies['current_step'] = @current_step
 
     if @current_step != 'return_to_service_request'
-      resolve_layout  
+      resolve_layout
     end
   end
 
   def edit
-   
+
     @service_request = ServiceRequest.find session[:service_request_id]
     @epic_services = @service_request.should_push_to_epic? if USE_EPIC
     @protocol = current_user.protocols.find params[:id]
@@ -97,16 +91,14 @@ class ProtocolsController < ApplicationController
 
     current_step_cookie = cookies['current_step']
     cookies['current_step'] = 'protocol'
-    @portal = params[:portal]
   end
 
   def update
     @service_request = ServiceRequest.find session[:service_request_id]
     @current_step = cookies['current_step']
     @protocol = current_user.protocols.find params[:id]
-    
+
     @protocol.validate_nct = true
-    @portal = params[:portal]
 
     attrs = if @protocol.type.downcase.to_sym == :study && params[:study]
       params[:study]
@@ -116,8 +108,8 @@ class ProtocolsController < ApplicationController
       Hash.new
     end
 
-    @protocol.assign_attributes(attrs.merge(study_type_question_group_id: StudyTypeQuestionGroup.active.pluck(:id).first))   
-    
+    @protocol.assign_attributes(attrs.merge(study_type_question_group_id: StudyTypeQuestionGroup.active.pluck(:id).first))
+
     if @current_step == 'cancel'
       @current_step = 'return_to_service_request'
     elsif @current_step == 'go_back'
@@ -190,7 +182,7 @@ class ProtocolsController < ApplicationController
   end
 
   def from_portal?
-    return params[:portal] == "true"  
+    return params[:portal] == "true"
   end
 
   private
@@ -200,6 +192,15 @@ class ProtocolsController < ApplicationController
       @user = current_user
       render layout: "portal/application"
     end
+  end
+
+  def set_cookies
+    current_step_cookie = cookies['current_step']
+    cookies['current_step'] = 'protocol'
+  end
+
+  def set_portal
+    @portal = params[:portal]
   end
 
   def send_epic_notification_for_final_review(protocol)

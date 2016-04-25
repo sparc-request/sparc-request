@@ -22,7 +22,8 @@
   %tbody
     %tr
       %th.date_submitted{colspan: 6}
-        = t(:sr_confirmation)[:details][:date_submitted] + @service_request.submitted_at.strftime('%m/%d/%Y')
+        - if @service_request.submitted_at?
+          = t(:sr_confirmation)[:details][:date_submitted] + @service_request.submitted_at.strftime('%m/%d/%Y')
     %tr
       %th= t(:sr_confirmation)[:details][:id]
       %th= t(:sr_confirmation)[:details][:institution]

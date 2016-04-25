@@ -30,11 +30,6 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
           expect(response.body).to include('"service_requests":')
         end
 
-        it 'should respond with an array of SubServiceRequests' do
-          parsed_body = JSON.parse(response.body)
-
-          expect(parsed_body['service_requests'].length).to eq(5)
-        end
       end
     end
 
@@ -57,7 +52,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
         parsed_body         = JSON.parse(response.body)
         expected_attributes = build(:service_request).attributes.
                                 keys.
-                                reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at'].include?(key) }.
+                                reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at', 'original_submitted_date'].include?(key) }.
                                 push('callback_url', 'sparc_id').
                                 sort
 
@@ -73,7 +68,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
         parsed_body         = JSON.parse(response.body)
         expected_attributes = build(:service_request).attributes.
                                 keys.
-                                reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at'].include?(key) }.
+                                reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at', 'original_submitted_date'].include?(key) }.
                                 push('callback_url', 'sparc_id', 'sub_service_requests', 'line_items', 'protocol').
                                 sort
 

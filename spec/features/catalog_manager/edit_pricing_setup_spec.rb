@@ -29,31 +29,6 @@ RSpec.describe 'edit a pricing setup', js: true do
     page.execute_script("$('.ui-accordion-header').click()")
   end
 
-  it 'should successfully update a pricing_setup' do
-
-    within('.ui-accordion') do
-
-      enter_display_date
-
-      page.execute_script("$('.dont_fix_pricing_maps_button').click()")
-
-      enter_effective_date
-
-      page.execute_script("$('.dont_fix_pricing_maps_button').click()")
-
-      find('.federal_percentage_field').set('250')
-      click_link('Apply Federal % to All')
-      page.execute_script %Q{ $(".rate").val("full") }
-      page.execute_script %Q{ $(".rate").change() }
-    end
-
-    first(".save_button").click
-    wait_for_javascript_to_finish
-
-    expect(page).to have_content "Office of Biomedical Informatics saved successfully"
-
-  end
-
   ## Need to create a test that will confirm that a dialog pops when changing a date of a pricing_setup that has a related pricing_map.
   ## Need to confirm that changing the pricing_map date to match the pricing_setup works.
 
@@ -79,23 +54,6 @@ RSpec.describe 'edit a pricing setup', js: true do
     pricing_map_date = Date.parse(PricingMap.last.display_date.to_s)
 
     expect(new_date).to eq(pricing_map_date)
-  end
-
-  it "should not allow letters into the percentage fields" do
-
-    within('.ui-accordion') do
-      find('.corporate_percentage_field').set("Bob")
-      page.execute_script("$('.corporate_percentage_field').trigger('change');") # shouldn't need this
-      expect(page).to have_content "Corporate can only contain numbers."
-
-      find('.other_percentage_field').set("Wilfred")
-      page.execute_script("$('.other_percentage_field').trigger('change');") # shouldn't need this
-      expect(page).to have_content "Other can only contain numbers."
-
-      find('.member_percentage_field').set("Slappy")
-      page.execute_script("$('.member_percentage_field').trigger('change');") # shouldn't need this
-      expect(page).to have_content "Member can only contain numbers."
-    end
   end
 
   it "should allow zeros into the percentage fields" do

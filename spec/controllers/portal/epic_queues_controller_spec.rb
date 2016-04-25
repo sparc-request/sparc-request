@@ -42,7 +42,7 @@ RSpec.describe Portal::EpicQueuesController, :type => :controller do
   describe "GET #destroy" do
     it "should delete the epic queue" do
       session[:identity_id] = identity.id
-      get(:destroy, format: :js, id: epic_queue.id)
+      xhr :get, :destroy, format: :js, id: epic_queue.id
       expect(response).to have_http_status(:success)
       expect { epic_queue.reload }.to raise_exception(ActiveRecord::RecordNotFound)
     end

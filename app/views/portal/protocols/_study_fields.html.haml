@@ -105,11 +105,14 @@
         .field
           = f.label :selected_for_epic, t(:study_form)[:push_to_epic]
 
-          / Only DISPLAY epic box data in admin UNLESS changing from a virgin project 
-     
-          - if admin && @protocol.selected_for_epic != nil
+          / Only DISPLAY epic box data as readonly in admin UNLESS changing from a virgin project 
+          - if (admin && !@protocol.virgin_project? && (!@protocol.changed.include?('selected_for_epic') || @protocol.changed_attributes()['selected_for_epic']))
             %span.epic_selected.display_epic_answers
               = f.object.selected_for_epic ? "Yes" : "No"
+              - if f.object.selected_for_epic
+                = f.hidden_field :selected_for_epic, value: true
+              - elsif !f.object.selected_for_epic
+                = f.hidden_field :selected_for_epic, value: false
             .study_type{style: "#{f.object.selected_for_epic ? '' : 'display:none;'}"}
               .field.study_type_questions
                 = f.label :study_type_questions, t(:study_form)[:study_type_questions]
@@ -132,7 +135,6 @@
               = f.label :selected_for_epic, "Yes"
               = f.radio_button :selected_for_epic, false
               = f.label :selected_for_epic, "No"
-              = f.hidden_field :study_type_question_group_id, :value => study.study_type_question_group_id == StudyTypeQuestionGroup.where(active:false).pluck(:id).first ? 'inactive' : 'active'
             .study_type{style: "#{f.object.selected_for_epic ? '' : 'display:none;'}"}
               .space_bar
               = f.label :study_type_questions, t(:study_form)[:study_type_questions]

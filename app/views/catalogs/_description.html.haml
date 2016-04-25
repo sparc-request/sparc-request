@@ -36,6 +36,7 @@
           %h3{:class => "#{css_class(organization)} core-tab"}
             = link_to core.name, "#"
           .core_view
+            .provider-description.description.ui-widget.ui-widget-content.ui-corner-all= raw core.description
             - core.services.order('`order`, `name`').each do |service|
               = display_service_in_catalog(service, service_request, from_portal)
 
@@ -48,7 +49,7 @@
       %p.section.large_section
         %p= t(:rails_root)[:message4]
       %p.section
-        = raw(t(:rails_root)[:message9])
+        %strong= t(:rails_root)[:message9]
         = link_to(t(:rails_root)[:message9link], t(:rails_root)[:message9link])
         %br
         %strong= t(:rails_root)[:message10]

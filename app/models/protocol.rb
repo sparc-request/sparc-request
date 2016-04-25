@@ -126,8 +126,17 @@ class Protocol < ActiveRecord::Base
     self.type == 'Study'
   end
 
+  # virgin project:  a project that has never been a study
+  def virgin_project?
+    selected_for_epic.nil?
+  end
+
   def active?
     study_type_question_group.active
+  end
+
+  def activate
+    update_attribute(:study_type_question_group_id, StudyTypeQuestionGroup.active.pluck(:id).first)
   end
 
   def validate_funding_source
@@ -151,7 +160,7 @@ class Protocol < ActiveRecord::Base
       if answers["certificate_of_conf"].answer.nil?
         has_errors = true
       elsif answers["certificate_of_conf"].answer == false
-        if (answers["higher_level_of_privacy"].answer.nil?) 
+        if (answers["higher_level_of_privacy"].answer.nil?)
           has_errors = true
         elsif (answers["higher_level_of_privacy"].answer == false)
           if answers["epic_inbasket"].answer.nil? || answers["research_active"].answer.nil? || answers["restrict_sending"].answer.nil?
@@ -198,6 +207,14 @@ class Protocol < ActiveRecord::Base
 
   def billing_business_manager_email
     billing_business_manager_static_email.blank? ?  billing_managers.map(&:email).try(:join, ', ') : billing_business_manager_static_email
+  end
+
+  def coordinators
+    project_roles.select{|pr| pr.role == 'research-assistant-coordinator'}.map(&:identity)
+  end
+
+  def coordinator_emails
+    coordinators.map(&:email).try(:join, ', ')
   end
 
   def emailed_associated_users
@@ -381,13 +398,13 @@ class Protocol < ActiveRecord::Base
   end
 
   def any_service_requests_to_display?
-    return self.service_requests.detect { |sr| !['first_draft', 'draft'].include?(sr.status) }
+    return self.service_requests.detect { |sr| !['first_draft'].include?(sr.status) }
   end
 
   def has_per_patient_per_visit? current_request, portal
     return self.service_requests.detect do |sr|
       if sr.has_per_patient_per_visit_services?
-        if ['first_draft', 'draft'].include?(sr.status)
+        if ['first_draft'].include?(sr.status)
           if portal
             false
           elsif current_request == sr
@@ -403,7 +420,7 @@ class Protocol < ActiveRecord::Base
   def has_one_time_fees? current_request, portal
     return self.service_requests.detect do |sr|
       if sr.has_one_time_fee_services?
-        if ['first_draft', 'draft'].include?(sr.status)
+        if ['first_draft'].include?(sr.status)
           if portal
             false
           elsif current_request == sr
@@ -419,7 +436,7 @@ class Protocol < ActiveRecord::Base
   def direct_cost_total service_request
     total = 0
     self.service_requests.each do |sr|
-      next if ['first_draft', 'draft'].include?(sr.status) && sr != service_request
+      next if ['first_draft'].include?(sr.status) && sr != service_request
       total += sr.direct_cost_total
     end
     return total

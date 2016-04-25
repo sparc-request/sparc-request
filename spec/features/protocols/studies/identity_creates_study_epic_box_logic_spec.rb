@@ -194,6 +194,7 @@ RSpec.describe "Identity creates Study", js: true do
       select_epic_box_answers(answer_array)
     end
     it 'should display active questions 1,2,2b,3,4,5' do
+      wait_for_javascript_to_finish
       expect(page).to have_selector('#study_type_answer_certificate_of_conf')
       expect(page).to have_selector('#study_type_answer_higher_level_of_privacy')
       expect(page).to have_selector('#study_type_answer_access_study_info')
@@ -256,6 +257,7 @@ RSpec.describe "Identity creates Study", js: true do
       select_epic_box_answers(answer_array)
     end
     it 'should display active questions 1,2,3,4,5' do
+      wait_for_javascript_to_finish
       expect(page).to have_selector('#study_type_answer_certificate_of_conf')
       expect(page).to have_selector('#study_type_answer_higher_level_of_privacy')
       expect(page).to_not have_selector('#study_type_answer_access_study_info')
@@ -310,116 +312,6 @@ RSpec.describe "Identity creates Study", js: true do
       expect(page).to have_selector('#study_type_answer_restrict_sending')
     end
   end
-  context 'submitting form with incomplete fields' do
-    before :each do
-      answer_array= ['Yes',nil,nil,nil,nil,nil]
-      select_epic_box_answers(answer_array)
-    end
-
-    it 'should throw an error when trying to submit incomplete epic box info' do
-      select 'Select One', from: 'study_type_answer_certificate_of_conf_answer'
-      find('.continue_button').click
-      expect(page).to have_content("Study type questions must be selected")
-      expect(page).to have_select('study_type_answer_certificate_of_conf_answer', selected: 'Select One')
-      expect(page).to have_css('#study_type_answer_certificate_of_conf_answer.visual_error')
-      expect(page).to_not have_selector('#study_type_answer_higher_level_of_privacy')
-      expect(page).to_not have_selector('#study_type_answer_access_study_info')
-      expect(page).to_not have_selector('#study_type_answer_epic_inbasket')
-      expect(page).to_not have_selector('#study_type_answer_research_active')
-      expect(page).to_not have_selector('#study_type_answer_restrict_sending') 
-    end
-
-    it 'should throw an error when trying to submit incomplete epic box info' do
-      answer_array= ['No','Select One',nil,nil,nil,nil]
-      select_epic_box_answers(answer_array)
-      find('.continue_button').click
-      expect(page).to have_content("Study type questions must be selected")
-      expect(page).to have_select('study_type_answer_certificate_of_conf_answer', selected: 'No')
-      expect(page).to have_select('study_type_answer_higher_level_of_privacy_answer', selected: 'Select One')
-      expect(page).to have_css('#study_type_answer_higher_level_of_privacy_answer.visual_error')
-      expect(page).to_not have_selector('#study_type_answer_access_study_info')
-      expect(page).to_not have_selector('#study_type_answer_epic_inbasket')
-      expect(page).to_not have_selector('#study_type_answer_research_active')
-      expect(page).to_not have_selector('#study_type_answer_restrict_sending') 
-    end
-
-    it 'should throw an error when trying to submit incomplete epic box info' do
-      answer_array= ['No','Yes','Select One',nil,nil,nil]
-      select_epic_box_answers(answer_array)
-      find('.continue_button').click
-      expect(page).to have_content("Study type questions must be selected")
-      expect(page).to have_select('study_type_answer_certificate_of_conf_answer', selected: 'No')
-      expect(page).to have_select('study_type_answer_higher_level_of_privacy_answer', selected: 'Yes')
-      expect(page).to have_select('study_type_answer_access_study_info_answer', selected: 'Select One')
-      expect(page).to have_css('#study_type_answer_access_study_info_answer.visual_error')
-      expect(page).to_not have_selector('#study_type_answer_epic_inbasket')
-      expect(page).to_not have_selector('#study_type_answer_research_active')
-      expect(page).to_not have_selector('#study_type_answer_restrict_sending') 
-    end
-
-    it 'should throw an error when trying to submit incomplete epic box info' do
-      answer_array= ['No','Yes','No',nil,nil,nil]
-      select_epic_box_answers(answer_array)
-      find('.continue_button').click
-      expect(page).to have_content("Study type questions must be selected")
-      expect(page).to have_select('study_type_answer_certificate_of_conf_answer', selected: 'No')
-      expect(page).to have_select('study_type_answer_higher_level_of_privacy_answer', selected: 'Yes')
-      expect(page).to have_select('study_type_answer_access_study_info_answer', selected: 'No')
-      expect(page).to have_css('#study_type_answer_epic_inbasket_answer.visual_error')
-      expect(page).to have_css('#study_type_answer_research_active_answer.visual_error')
-      expect(page).to have_css('#study_type_answer_restrict_sending_answer.visual_error')
-    end
-
-    it 'should throw an error when trying to submit incomplete epic box info' do
-      answer_array= ['No','Yes','No','Yes',nil,nil]
-      select_epic_box_answers(answer_array)
-      find('.continue_button').click
-      expect(page).to have_content("Study type questions must be selected")
-      expect(page).to have_select('study_type_answer_certificate_of_conf_answer', selected: 'No')
-      expect(page).to have_select('study_type_answer_higher_level_of_privacy_answer', selected: 'Yes')
-      expect(page).to have_select('study_type_answer_access_study_info_answer', selected: 'No')
-      expect(page).to have_select('study_type_answer_epic_inbasket_answer', selected: 'Yes')
-      expect(page).to have_css('#study_type_answer_research_active_answer.visual_error')
-      expect(page).to have_css('#study_type_answer_restrict_sending_answer.visual_error')
-    end
-
-    it 'should throw an error when trying to submit incomplete epic box info' do
-      answer_array= ['No','Yes','No','Yes','Yes',nil]
-      select_epic_box_answers(answer_array)
-      find('.continue_button').click
-      expect(page).to have_content("Study type questions must be selected")
-      expect(page).to have_select('study_type_answer_certificate_of_conf_answer', selected: 'No')
-      expect(page).to have_select('study_type_answer_higher_level_of_privacy_answer', selected: 'Yes')
-      expect(page).to have_select('study_type_answer_access_study_info_answer', selected: 'No')
-      expect(page).to have_select('study_type_answer_epic_inbasket_answer', selected: 'Yes')
-      expect(page).to have_select('study_type_answer_research_active_answer', selected: 'Yes')
-      expect(page).to have_css('#study_type_answer_restrict_sending_answer.visual_error')
-    end
-    it 'should throw an error when trying to submit incomplete epic box info' do
-      answer_array= ['No','No',nil,nil,nil,nil]
-      select_epic_box_answers(answer_array)
-      find('.continue_button').click
-      expect(page).to have_content("Study type questions must be selected")
-      expect(page).to have_select('study_type_answer_certificate_of_conf_answer', selected: 'No')
-      expect(page).to have_select('study_type_answer_higher_level_of_privacy_answer', selected: 'No')
-      expect(page).to_not have_selector('#study_type_answer_access_study_info')
-      expect(page).to have_css('#study_type_answer_epic_inbasket_answer.visual_error')
-      expect(page).to have_css('#study_type_answer_research_active_answer.visual_error')
-      expect(page).to have_css('#study_type_answer_restrict_sending_answer.visual_error')
-    end
-    it 'should throw an error when trying to submit incomplete epic box info' do
-      answer_array= ['No','No',nil,'Yes',nil,nil]
-      select_epic_box_answers(answer_array)
-      find('.continue_button').click
-      expect(page).to have_content("Study type questions must be selected")
-      expect(page).to have_select('study_type_answer_certificate_of_conf_answer', selected: 'No')
-      expect(page).to have_select('study_type_answer_higher_level_of_privacy_answer', selected: 'No')
-      expect(page).to_not have_selector('#study_type_answer_access_study_info')
-      expect(page).to have_select('study_type_answer_epic_inbasket_answer', selected: 'Yes')
-      expect(page).to have_css('#study_type_answer_research_active_answer.visual_error')
-      expect(page).to have_css('#study_type_answer_restrict_sending_answer.visual_error')
-    end
-  end
 
   def select_epic_box_answers(answer_array)
     questions = ['study_type_answer_certificate_of_conf_answer', 'study_type_answer_higher_level_of_privacy_answer', 'study_type_answer_access_study_info_answer', 'study_type_answer_epic_inbasket_answer', 'study_type_answer_research_active_answer', 'study_type_answer_restrict_sending_answer']
@@ -432,5 +324,4 @@ RSpec.describe "Identity creates Study", js: true do
 
 
   end
-
 end

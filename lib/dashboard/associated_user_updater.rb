@@ -1,23 +1,13 @@
 module Dashboard
-  class ProjectRoleUpdater
+  class AssociatedUserUpdater
     attr_reader :protocol_role
 
     def initialize(params)
-      @project_role_id = params[:id]
-      @project_role_attrs = params[:project_role]
-    end
-
-    def successful?
-      @success
-    end
-
-    def update
-      @protocol_role = ProjectRole.find(@project_role_id)
+      @protocol_role = ProjectRole.find(params[:id])
       protocol = @protocol_role.protocol
-      @identity = @protocol_role.identity
 
       epic_rights = @protocol_role.epic_rights.to_a # use to_a to eval ActiveRecord::Relation
-      @protocol_role.assign_attributes(@project_role_attrs)
+      @protocol_role.assign_attributes(params[:project_role])
 
       if @protocol_role.fully_valid?
         @success = true
@@ -53,6 +43,10 @@ module Dashboard
       else
         @success = false
       end
+    end
+
+    def successful?
+      @success
     end
   end
 end

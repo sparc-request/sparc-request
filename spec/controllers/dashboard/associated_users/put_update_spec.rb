@@ -18,12 +18,12 @@ RSpec.describe Dashboard::AssociatedUsersController do
         stub_find_protocol(protocol)
         authorize(identity_stub, protocol, can_edit: false)
 
-        pr = instance_double('ProjectRole',
+        project_role = instance_double('ProjectRole',
           id: 1,
           protocol: protocol)
-        stub_find_project_role(pr)
+        stub_find_project_role(project_role)
 
-        xhr :put, :update, id: pr.id
+        xhr :put, :update, id: project_role.id
       end
 
       it { is_expected.to render_template "service_requests/_authorization_error" }
@@ -43,21 +43,19 @@ RSpec.describe Dashboard::AssociatedUsersController do
           protocol: protocol)
         stub_find_project_role(@project_role)
 
-        @project_role_updater = instance_double(Dashboard::ProjectRoleUpdater,
+        project_role_updater = instance_double(Dashboard::AssociatedUserUpdater,
           successful?: true, # valid in this context
           protocol_role: @project_role)
 
-        allow(@project_role_updater).to receive(:update)
-        allow(Dashboard::ProjectRoleUpdater).to receive(:new).
-          and_return(@project_role_updater)
+        allow(Dashboard::AssociatedUserUpdater).to receive(:new).
+          and_return(project_role_updater)
 
         xhr :put, :update, id: @project_role.id, project_role: "project role attrs"
       end
 
       it 'should update @protocol_role using params[:project_role] using ProtocolUpdater' do
-        expect(Dashboard::ProjectRoleUpdater).to have_received(:new).
+        expect(Dashboard::AssociatedUserUpdater).to have_received(:new).
           with(id: @project_role.id.to_s, project_role: "project role attrs")
-        expect(@project_role_updater).to have_received(:update)
       end
 
       it 'should not set @errors' do
@@ -86,12 +84,11 @@ RSpec.describe Dashboard::AssociatedUsersController do
           protocol: protocol)
         stub_find_project_role(@project_role)
 
-        @project_role_updater = instance_double(Dashboard::ProjectRoleUpdater,
+        @project_role_updater = instance_double(Dashboard::AssociatedUserUpdater,
           successful?: false, # valid in this context
-          update: nil,
           protocol_role: @project_role)
 
-        allow(Dashboard::ProjectRoleUpdater).to receive(:new).and_return(@project_role_updater)
+        allow(Dashboard::AssociatedUserUpdater).to receive(:new).and_return(@project_role_updater)
 
         xhr :put, :update, id: @project_role.id, project_role: "project role attrs"
       end

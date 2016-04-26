@@ -1,22 +1,12 @@
 require "rails_helper"
 
 RSpec.describe Dashboard::ProjectRoleUpdater do
-  let!(:primary_pi) do
-    create(:identity)
-  end
-
-  # Protocol and Identity the updated ProjectRole are associated with
-  let!(:protocol) do
-
-  end
-
-  let!(:identity) do
-    create(:identity)
-  end
+  let!(:primary_pi) { create(:identity) }
+  let!(:identity) { create(:identity) }
 
   describe "#update" do
     context "params[:project_role] describes a valid ProjectRole" do
-      it "should update ProjectRole from params[:id]" do
+      it "should update ProjectRole from params[:id] with params[:project_role]" do
         protocol = create(:protocol_without_validations, primary_pi: primary_pi)
         project_role = ProjectRole.create(identity_id: identity.id,
           protocol_id: protocol.id,
@@ -110,6 +100,7 @@ RSpec.describe Dashboard::ProjectRoleUpdater do
           builder = Dashboard::ProjectRoleUpdater.new(id: project_role.id,
             project_role: { epic_access: false })
           expect(Notifier).to receive(:notify_for_epic_access_removal) do |p, pr|
+            # make sure the correct objects are being passed
             expect(p.id).to eq(protocol.id)
             expect(pr.id).to eq(project_role.id)
             expect(pr.epic_access).to eq(false)
@@ -133,6 +124,7 @@ RSpec.describe Dashboard::ProjectRoleUpdater do
           builder = Dashboard::ProjectRoleUpdater.new(id: project_role.id,
             project_role: { epic_access: true })
           expect(Notifier).to receive(:notify_for_epic_user_approval) do |p|
+            # make sure the correct objects are being passed
             expect(p.id).to eq(protocol.id)
             mailer_stub = double('mailer')
             expect(mailer_stub).to receive(:deliver)
@@ -155,6 +147,7 @@ RSpec.describe Dashboard::ProjectRoleUpdater do
           builder = Dashboard::ProjectRoleUpdater.new(id: project_role.id,
             project_role: { epic_rights_attributes: [{ right: "correct", position: 2 }] })
           expect(Notifier).to receive(:notify_for_epic_rights_changes) do |p, pr, epic_rights|
+            # make sure the correct objects are being passed
             expect(p.id).to eq(protocol.id)
             expect(pr.epic_rights.count).to eq(2)
             mailer_stub = double('mailer')

@@ -21,8 +21,8 @@
 class Dashboard::DocumentsController < Dashboard::BaseController
 
   def index
-    @documents = Document.joins(:documents_sub_service_requests).
-        where(documents_sub_service_requests: { sub_service_request_id: params[:sub_service_request_id] })
+    sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
+    @documents = sub_service_request.documents
   end
 
   def new
@@ -33,9 +33,8 @@ class Dashboard::DocumentsController < Dashboard::BaseController
 
   def create
     @sub_service_request = SubServiceRequest.find(params[:document][:sub_service_request_id])
-    @document = Document.new(params[:document])
+    @document = Document.create(params[:document])
     if @document.valid?
-      @document.save
       @sub_service_request.documents << @document
       @sub_service_request.save
       flash.now[:success] = t(:dashboard)[:documents][:created]
@@ -60,11 +59,8 @@ class Dashboard::DocumentsController < Dashboard::BaseController
   end
 
   def destroy
-    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
-    @document = Document.find(params[:id])
-    @sub_service_request.documents.delete(@document)
-    @sub_service_request.save
-    @document.destroy if @document.sub_service_requests.empty?
+    Dashboard::DocumentRemover.new(id: params[:id],
+      sub_service_request_id: params[:sub_service_request_id])
     flash.now[:success] = t(:dashboard)[:documents][:destroyed]
   end
 end

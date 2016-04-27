@@ -231,7 +231,6 @@ en:
     service_level_components: "Service Level Components"
     service_provider_required_message: "You must have at least one service provider either at the provider, program, or core level"
     service_providers: "Service Providers"
-    show_in_cwf: "Show in Fulfillment"
     split_notify: "Split/Notify Here"
     status_legend: "Status Options (Use default statuses below or click to create custom service request statuses)"
     submission_emails: "Submission E-mails"

@@ -107,7 +107,7 @@ module ApplicationHelper
                             content_tag(:span, visit_group.day, :style => "display:inline-block;width:25px;") +
                             content_tag(:span, visit_group.window_after, :style => "display:inline-block;width:25px;") +
                             tag(:br) : label_tag("")) +
-                            content_tag(:span, visit_name, :style => "display:inline-block;width:75px;") +
+                            content_tag(:span, visit_name, :style => "display:inline-block;width:75px;word-wrap:break-word;") +
                             tag(:br))
       elsif @tab != 'template'
         returning_html += content_tag(:th,

@@ -110,7 +110,7 @@ $(document).ready ->
     else
       id = pi.attr('data-id')
       direct_cost = $('.estimated_cost_' + id).data('cost') / 100
-      max_dollar = pi.attr('data-max_dollar')
+      max_dollar = parseFloat(pi.attr('data-max_dollar')).toFixed(2)
       max_percent = pi.attr('data-max_percent')
       core = $('.core_' + id).text()
 

@@ -8,8 +8,6 @@ namespace :data do
     end
 
     file = "db/imports/user_change_password_test.csv"
-    identity_ids_to_find = []
-
     def prompt(*args)
       print(*args)
       STDIN.gets.strip

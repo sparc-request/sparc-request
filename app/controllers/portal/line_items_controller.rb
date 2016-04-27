@@ -111,7 +111,6 @@ class Portal::LineItemsController < Portal::BaseController
     #Create new line_item, and link up line_items_visit, modify CWF data, etc...
     @old_line_item = @line_item
     visit_ids = @line_items_visit.visits.map(&:id)
-    @procedures = @old_line_item.procedures.find_all_by_visit_id(visit_ids)
 
     ActiveRecord::Base.transaction do
       if @line_item = LineItem.create(service_request_id: @service_request.id, service_id: @service_id, sub_service_request_id: @sub_service_request.id)
@@ -119,17 +118,6 @@ class Portal::LineItemsController < Portal::BaseController
         @line_item.reload
         if @line_items_visit.update_attribute(:line_item_id, @line_item.id)
           @old_line_item.reload
-
-          if @sub_service_request.in_work_fulfillment
-            #Modify Procedures in CWF
-            @procedures.each do |procedure|
-              if procedure.completed?
-                procedure.update_attributes(service_id: @old_line_item.service.id, line_item_id: nil)
-              else
-                procedure.update_attribute(:line_item_id, @line_item.id)
-              end
-            end
-          end
 
           if @old_line_item.line_items_visits.empty?
             @old_line_item.destroy

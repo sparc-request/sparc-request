@@ -32,11 +32,11 @@
     = link_to t(:right_navigation)[:feedback], "javascript:void();"
     = form_tag feedback_service_requests_path, :method => :post, :remote => true do
       %p
-        = text_field_tag "feedback[email]", nil, {:placeholder => t(:notifications)[:email], :size => 35, :tabindex => 1}
+        = text_field_tag "feedback[email]", nil, {placeholder: t(:notifications)[:email], :size => 35, :tabindex => 1}
         %br
         %br
       %p
-        = text_area_tag "feedback[message]", nil, {:placeholder => t(:notifications)[:feedback], :cols => 65, :rows => 15, :tabindex => 2}
+        = text_area_tag "feedback[message]", nil, {placeholder: t(:notifications)[:feedback], :cols => 65, :rows => 15, :tabindex => 2}
 
 .ask-a-question-button.blue-button.btn.btn-primary.btn-lg.btn-block.button-hover
   = link_to 'Contact Us', new_contact_form_path, remote: true

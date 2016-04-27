@@ -70,10 +70,14 @@ RSpec.describe "Identity" do
       expect(Identity.search("ash151")).to eq([identity])
     end
 
-    it "should create an identity for a non-existing ldap_uid" do
+    it "should not create an identity for a non-existing ldap_uid" do
       expect(Identity.all.count).to eq(3)
       Identity.search("ash")
-      expect(Identity.all.count).to eq(4)
+      if USE_LDAP && !SUPPRESS_LDAP_FOR_USER_SEARCH
+        expect(Identity.all.count).to eq(4)
+      else
+        expect(Identity.all.count).to eq(3)
+      end
     end
 
     it "should return an empty array if it cannot find anything" do

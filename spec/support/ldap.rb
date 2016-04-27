@@ -44,8 +44,9 @@ RSpec.configure do |config|
       { "givenname" => ["Ash"], "sn" => ["Williams"], "mail" => ["ash@s-mart.com"], "uid" => ["ashley"] },
       { "givenname" => ["No"], "sn" => ["Email"], "uid" => ["iamabadldaprecord"] },
       { "givenname" => ['Brian'], "sn" => ['Kelsey'], "uid" => ['bjk7'], "mail" => ['kelsey@musc.edu'] },
-      { "givenname" => ['Jason'], "sn" => ['Leonard'], "uid" => ['jpl6@musc.edu'], "mail" => ['leonarjp@musc.edu'] },
+      { "givenname" => ['Jason'], "sn" => ['Leonard'], "uid" => ['jpl6'], "mail" => ['leonarjp@musc.edu'] },
       { "givenname" => ['Julia'], "sn" => ['Glenn'], "uid" => ['jug2'], "mail" => ['glennj@musc.edu'] },
+      { "givenname" => ['Justin'], "sn" => ['Frankel'], "uid" => ['burn@utah.edu'], "mail" => ['burn@nullsoft.com'] },
     ]
 
     attributes = ["uid", "sn", "givenname", "mail"]
@@ -58,7 +59,10 @@ RSpec.configure do |config|
     allow(ldap).to receive(:search).with(filter: create_ldap_filter('iamabadldaprecord'), attributes: attributes).and_return([results[2]])
     allow(ldap).to receive(:search).with(filter: create_ldap_filter('gary'), attributes: attributes).and_return([])
     allow(ldap).to receive(:search).with(filter: create_ldap_filter('error'), attributes: attributes).and_raise('error')
-    allow(ldap).to receive(:search).with(filter: create_ldap_filter('duplicate'), attributes: attributes)
+    allow(ldap).to receive(:search).with(filter: create_ldap_filter('ash@theverybest.com'), attributes: attributes).and_return([results[0]])
+    allow(ldap).to receive(:search).with(filter: create_ldap_filter('kelsey@musc.edu'), attributes: attributes).and_return([results[3]])
+    allow(ldap).to receive(:search).with(filter: create_ldap_filter('burn@nullsoft.com'), attributes: attributes).and_return([results[6]])
+    #allow(ldap).to receive(:search).with(filter: create_ldap_filter('duplicate'), attributes: attributes)
 
     allow(Net::LDAP).to receive(:new).and_return(ldap)
   end

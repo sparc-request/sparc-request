@@ -19,21 +19,28 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 SparcRails::Application.routes.draw do
-  post "protocol_archive/create"
+  post 'protocol_archive/create'
 
-  match '/direct_link_to/:survey_code', :to => 'surveyor#create', :as => 'direct_link_survey', :via => :get
-  match '/surveys/:survey_code/:response_set_code', :to => 'surveyor#destroy', :via => :delete
-  mount Surveyor::Engine => "/surveys", :as => "surveyor"
+  match '/direct_link_to/:survey_code', to: 'surveyor#create', as: 'direct_link_survey', via: :get
+  match '/surveys/:survey_code/:response_set_code', to: 'surveyor#destroy', via: :delete
+  mount Surveyor::Engine => '/surveys', :as => 'surveyor'
 
   if USE_SHIBBOLETH_ONLY
     devise_for :identities,
                controllers: {
                  omniauth_callbacks: 'identities/omniauth_callbacks'
                }, path_names: { sign_in: 'auth/shibboleth' }
-  else
+
+  elsif USE_CAS_ONLY
     devise_for :identities,
                controllers: {
                  omniauth_callbacks: 'identities/omniauth_callbacks'
+               }, path_names: { sign_in: 'auth/cas' }
+  else
+    devise_for :identities,
+               controllers: {
+                 omniauth_callbacks: 'identities/omniauth_callbacks',
+                 registrations:      'identities/registrations'
                }
   end
 
@@ -183,7 +190,7 @@ SparcRails::Application.routes.draw do
   end
 
   ##### Study Tracker/Clinical Work Fulfillment Portal#####
-  namespace :study_tracker, :path => "clinical_work_fulfillment" do
+  namespace :study_tracker, path: 'clinical_work_fulfillment' do
     match 'appointments/add_note' => 'calendars#add_note', via: [:get, :post]
     match 'calendars/delete_toast_messages' => 'calendars#delete_toast_messages', via: [:all]
     match 'calendars/change_visit_group' => 'calendars#change_visit_group', via: [:get, :post]
@@ -254,7 +261,7 @@ SparcRails::Application.routes.draw do
       get :download
     end
 
-    resources :epic_queues, only: ['index', 'destroy']
+    resources :epic_queues, only: %w(index destroy)
 
     resource :admin do
       resources :sub_service_requests do
@@ -308,20 +315,20 @@ SparcRails::Application.routes.draw do
       end
 
       collection do
-        put "/visits/:id/update_from_fulfillment" => "visits#update_from_fulfillment"
-        put "/service_requests/:id/update_from_fulfillment" => "service_requests#update_from_fulfillment"
-        get "/protocols/:id/change_arm" => "protocols#change_arm"
-        post "/protocols/:id/add_arm" => "protocols#add_arm"
-        post "/protocols/:id/remove_arm" => "protocols#remove_arm"
-        post "/service_requests/:id/add_per_patient_per_visit_visit" => "service_requests#add_per_patient_per_visit_visit"
-        put "/subsidys/:id/update_from_fulfillment" => "subsidies#update_from_fulfillment"
-        delete "/subsidys/:id" => "subsidies#destroy"
-        put "/service_requests/:id/remove_per_patient_per_visit_visit" => "service_requests#remove_per_patient_per_visit_visit"
-        delete "/delete_toast_message/:id" => "admin#delete_toast_message"
+        put '/visits/:id/update_from_fulfillment' => 'visits#update_from_fulfillment'
+        put '/service_requests/:id/update_from_fulfillment' => 'service_requests#update_from_fulfillment'
+        get '/protocols/:id/change_arm' => 'protocols#change_arm'
+        post '/protocols/:id/add_arm' => 'protocols#add_arm'
+        post '/protocols/:id/remove_arm' => 'protocols#remove_arm'
+        post '/service_requests/:id/add_per_patient_per_visit_visit' => 'service_requests#add_per_patient_per_visit_visit'
+        put '/subsidys/:id/update_from_fulfillment' => 'subsidies#update_from_fulfillment'
+        delete '/subsidys/:id' => 'subsidies#destroy'
+        put '/service_requests/:id/remove_per_patient_per_visit_visit' => 'service_requests#remove_per_patient_per_visit_visit'
+        delete '/delete_toast_message/:id' => 'admin#delete_toast_message'
       end
     end
     match '/admin/sub_service_requests/:id/edit_document/:document_id' => 'sub_service_requests#edit_documents', via: [:get, :post]
-    match "/admin/sub_service_requests/:id/delete_document/:document_id" => "sub_service_requests#delete_documents", via: [:get, :post]
+    match '/admin/sub_service_requests/:id/delete_document/:document_id' => 'sub_service_requests#delete_documents', via: [:get, :post]
 
     root to: 'home#index'
   end
@@ -341,7 +348,7 @@ SparcRails::Application.routes.draw do
 
   ##### Admin Identities #####
   namespace :admin do
-    root :to => 'identities#index'
+    root to: 'identities#index'
     match 'identities/search' => 'identities#search', :via => :get
     resources :identities, only: [:index, :show, :create, :update]
   end

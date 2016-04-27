@@ -54,6 +54,8 @@ gem 'surveyor', :git => 'https://github.com/sparc-request/surveyor.git', branch:
 gem 'therubyracer', '0.10.2', :platforms => :ruby
 gem 'uglifier', '>= 1.0.3'
 gem 'will_paginate'
+gem 'omniauth-cas'
+
 
 group :development, :test, :profile do
   gem 'addressable', '~> 2.3.6'

@@ -252,6 +252,10 @@ GEM
     omniauth (1.2.2)
       hashie (>= 1.2, < 4)
       rack (~> 1.0)
+    omniauth-cas (1.1.0)
+      addressable (~> 2.3)
+      nokogiri (~> 1.5)
+      omniauth (~> 1.2.0)
     omniauth-shibboleth (1.2.1)
       omniauth (>= 1.0.0)
     options (2.3.2)
@@ -488,6 +492,7 @@ DEPENDENCIES
   nori
   obis-net-ldap
   omniauth
+  omniauth-cas
   omniauth-shibboleth
   paperclip (~> 3.4.1)
   pdfkit
@@ -522,3 +527,6 @@ DEPENDENCIES
   uglifier (>= 1.0.3)
   webmock
   will_paginate
+
+BUNDLED WITH
+   1.11.2

@@ -42,7 +42,7 @@ class StudyTracker::HomeController < StudyTracker::BaseController
     @render_billing_report = true
     @study_tracker = true
     # get cwf organizations
-    @cwf_organizations = Organization.get_cwf_organizations
+    @cwf_organizations = Organization.in_cwf
     @protocols = SubServiceRequest.where(:in_work_fulfillment => true).map{|x| x.service_request.protocol}.uniq
   end
 

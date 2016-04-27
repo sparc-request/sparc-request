@@ -21,7 +21,7 @@
 .service-view
   %span.title
     %span.name= link_to service.display_service_name, 'javascript:void(0);'
-    %button.add_service.btn.btn-success{id: "service-#{service.id}", sr_id: "#{service_request.id}", first_service: "#{first_service?(service_request)}", from_portal: "#{from_portal}"} Add
+    %button.add_service.pull-right.btn.btn-success{id: "service-#{service.id}", sr_id: "#{service_request.id}", first_service: "#{first_service?(service_request)}", from_portal: "#{from_portal}"} Add
     .clear
   %span.service-description.description{style: 'display:none'}= raw service.description
 

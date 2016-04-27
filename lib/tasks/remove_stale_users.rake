@@ -28,8 +28,6 @@ namespace :data do
     end
 
     file = "db/imports/user_delete.csv"
-    identity_ids_to_delete = []
-
     def prompt(*args)
       print(*args)
       STDIN.gets.strip

@@ -326,6 +326,7 @@ class Arm < ActiveRecord::Base
     self.visit_groups.each do |vg|
       vg.update_attribute(:day, vg.position)
     end
+    reload
   end
 
   ### audit reporting methods ###

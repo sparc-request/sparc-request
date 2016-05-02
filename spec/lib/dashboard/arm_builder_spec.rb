@@ -1,110 +1,94 @@
 require "rails_helper"
 
 RSpec.describe Dashboard::ArmBuilder do
-  describe "#initialize" do
-    it "should create a new Arm" do
-      allow(Arm).to receive(:create)
-      attrs = { some_attr: :some_value }
+  context "with attributes describing valid Arm, Protocol has SubServiceRequests in fulfillment" do
+    before(:each) do
+      # stub a Protocol with fulfillments and a per patient, per visit LineItem
+      protocol = findable_stub(Protocol) do
+        instance_double(Protocol,
+          id: 1,
+          sub_service_requests: [instance_double(SubServiceRequest, in_work_fulfillment: true)])
+      end
+      service_request = build_stubbed(:service_request)
+      allow(protocol).to receive(:service_requests).and_return([service_request])
+      allow(service_request).to receive(:per_patient_per_visit_line_items).and_return(["PPPVLineItem"])
 
-      Dashboard::ArmBuilder.new(attrs)
+      # stub a valid Arm for Arm.create
+      @new_arm = instance_double(Arm, valid?: true)
+      arm_attributes_for_creation = { protocol_id: 1, other_attributes: "here" }
+      allow(Arm).to receive(:create).with(arm_attributes_for_creation).and_return(@new_arm)
 
-      expect(Arm).to have_received(:create).with(attrs)
+      # test for proper Arm setup, in this order
+      # TODO find a way to move these expectations into individual examples
+      expect(@new_arm).to receive(:create_line_items_visit).with("PPPVLineItem").ordered
+      expect(@new_arm).to receive(:default_visit_days).ordered
+      expect(@new_arm).to receive(:populate_subjects).ordered
+
+      @builder = Dashboard::ArmBuilder.new(arm_attributes_for_creation)
+    end
+
+    it "should set :arm to created Arm, with a LineItemsVisit for each PPV LineItem under Protocol, default visit days, and populated subjects" do
+      expect(@builder.arm).to eq(@new_arm)
     end
   end
 
-  describe "#build" do
-    context "with attributes describing valid Arm" do
-      it "should create LineItemsVisits for each PPPV LineItem associated with the Protocol" do
-        protocol = build_stubbed(:protocol)
-        stub_find_protocol(protocol)
-        service_request = build_stubbed(:service_request, protocol_id: protocol.id)
-        allow(protocol).to receive(:service_requests).and_return([service_request])
-        pppv_line_item = instance_double(LineItem)
-        allow(service_request).to receive(:per_patient_per_visit_line_items).and_return([pppv_line_item])
-
-        # spy on new Arm's #create_line_items_visit
-        attrs = { protocol_id: protocol.id, name: "MyArm", subject_count: 1, visit_count: 1 }
-        new_arm = Arm.create(attrs)
-        allow(new_arm).to receive(:create_line_items_visit)
-        allow(Arm).to receive(:create).with(attrs).and_return(new_arm)
-
-        builder = Dashboard::ArmBuilder.new(attrs)
-        builder.build
-
-        expect(new_arm).to have_received(:create_line_items_visit).with(pppv_line_item)
+  context "with attributes describing valid Arm, Protocol has no SubServiceRequests in fulfillment" do
+    before(:each) do
+      # stub a Protocol with no fulfillments and a per patient, per visit LineItem
+      protocol = findable_stub(Protocol) do
+        instance_double(Protocol,
+          id: 1,
+          sub_service_requests: [instance_double(SubServiceRequest, in_work_fulfillment: false)])
       end
+      service_request = build_stubbed(:service_request)
+      allow(protocol).to receive(:service_requests).and_return([service_request])
+      allow(service_request).to receive(:per_patient_per_visit_line_items).and_return(["PPPVLineItem"])
 
-      it "should set default visit days on associated VisitGroups" do
-        protocol = build_stubbed(:protocol)
-        stub_find_protocol(protocol)
+      # stub a valid Arm for Arm.create
+      @new_arm = instance_double(Arm, valid?: true)
+      arm_attributes_for_creation = { protocol_id: 1, other_attributes: "here" }
+      allow(Arm).to receive(:create).with(arm_attributes_for_creation).and_return(@new_arm)
 
-        # spy on new Arm's #default_visit_days
-        attrs = { protocol_id: protocol.id, name: "MyArm", subject_count: 1, visit_count: 1 }
-        new_arm = Arm.create(attrs)
-        allow(new_arm).to receive(:default_visit_days)
-        allow(Arm).to receive(:create).with(attrs).and_return(new_arm)
+      # test for proper Arm setup, in this order
+      # TODO find a way to move these expectations into individual examples
+      allow(@new_arm).to receive(:create_line_items_visit).with("PPPVLineItem").ordered
+      expect(@new_arm).to receive(:default_visit_days).ordered
+      allow(@new_arm).to receive(:populate_subjects)
 
-        builder = Dashboard::ArmBuilder.new(attrs)
-        builder.build
+      @builder = Dashboard::ArmBuilder.new(arm_attributes_for_creation)
+    end
 
-        expect(new_arm).to have_received(:default_visit_days)
-      end
+    it "should set :arm to created Arm, with a LineItemsVisit for each PPV LineItem under Protocol, and default visit days" do
+      expect(@builder.arm).to eq(@new_arm)
+    end
 
-      it "#arm should return a valid Arm after #build" do
-        protocol = build_stubbed(:protocol)
-        stub_find_protocol(protocol)
-
-        attrs = { protocol_id: protocol.id, name: "MyArm", subject_count: 1, visit_count: 1 }
-        builder = Dashboard::ArmBuilder.new(attrs)
-        builder.build
-
-        expect(builder.arm.class.name).to eq("Arm")
-        expect(builder.arm).to be_valid
-      end
-
-      context 'Protocol has SubServiceRequests in CWF' do
-        it 'should populate subjects for new Arm' do
-          # stub Protocol with SubServiceRequests in CWF
-          protocol = build_stubbed(:protocol)
-          ssr_in_cwf = instance_double(SubServiceRequest, in_work_fulfillment: true)
-          allow(protocol).to receive(:sub_service_requests).and_return([ssr_in_cwf])
-          stub_find_protocol(protocol)
-
-          # spy on new Arm's #populate_subjects
-          attrs = { protocol_id: protocol.id, name: "MyArm", subject_count: 1, visit_count: 1 }
-          new_arm = Arm.create(attrs)
-          allow(new_arm).to receive(:populate_subjects)
-          allow(Arm).to receive(:create).with(attrs).and_return(new_arm)
-
-          Dashboard::ArmBuilder.new(attrs).build
-
-          expect(new_arm).to have_received(:populate_subjects)
-        end
-      end
-
-      context 'Protocol has no SubServiceRequests in CWF' do
-        it 'should not populate subjects for new Arm' do
-          # stub Protocol with SubServiceRequests in CWF
-          protocol = build_stubbed(:protocol)
-          ssr_in_cwf = instance_double(SubServiceRequest, in_work_fulfillment: false)
-          allow(protocol).to receive(:sub_service_requests).and_return([ssr_in_cwf])
-          stub_find_protocol(protocol)
-
-          # spy on new Arm's #populate_subjects
-          attrs = { protocol_id: protocol.id, name: "MyArm", subject_count: 1, visit_count: 1 }
-          new_arm = Arm.create(attrs)
-          allow(new_arm).to receive(:populate_subjects)
-          allow(Arm).to receive(:create).with(attrs).and_return(new_arm)
-
-          Dashboard::ArmBuilder.new(attrs).build
-
-          expect(new_arm).not_to have_received(:populate_subjects)
-        end
-      end
+    it "should not populate subjects for new Arm" do
+      expect(@new_arm).not_to have_received(:populate_subjects)
     end
   end
 
-  def stub_find_protocol(stub)
-    allow(Protocol).to receive(:find).with(stub.id).and_return(stub)
+  context "with attributes describing invalid Arm" do
+    before(:each) do
+      # stub an invalid Arm for Arm.create
+      @new_arm = instance_double(Arm, valid?: false)
+      arm_attributes_for_creation = { protocol_id: 1, other_attributes: "here" }
+      allow(Arm).to receive(:create).with(arm_attributes_for_creation).and_return(@new_arm)
+
+      allow(@new_arm).to receive(:create_line_items_visit)
+      allow(@new_arm).to receive(:default_visit_days)
+      allow(@new_arm).to receive(:populate_subjects)
+
+      @builder = Dashboard::ArmBuilder.new(arm_attributes_for_creation)
+    end
+
+    it "should set :arm to created Arm" do
+      expect(@builder.arm).to eq(@new_arm)
+    end
+
+    it "should not perform any setup on new Arm" do
+      expect(@new_arm).not_to have_received(:create_line_items_visit)
+      expect(@new_arm).not_to have_received(:default_visit_days)
+      expect(@new_arm).not_to have_received(:populate_subjects)
+    end
   end
 end

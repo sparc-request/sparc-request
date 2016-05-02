@@ -13,10 +13,9 @@ RSpec.describe Dashboard::ProtocolsController do
 
       context 'user not authorized to edit Protocol' do
         it 'should render error message' do
-          protocol = instance_double('Protocol',
-            id: 1,
-            type: :protocol_type)
-          stub_find_protocol(protocol)
+          protocol = findable_stub(Protocol) do
+            instance_double(Protocol, id: 1, type: :protocol_type)
+          end
           authorize(identity_stub, protocol, can_edit: false)
 
           get :edit, id: 1
@@ -31,20 +30,19 @@ RSpec.describe Dashboard::ProtocolsController do
         id: 1)
       log_in_dashboard_identity(obj: identity_stub)
 
-      protocol_stub = instance_double('Protocol',
-        id: 1,
-        type: :protocol_type,
-        'valid?' => true)
-      expect(protocol_stub).to receive(:populate_for_edit)
-      # let controller find this "Protocol"
-      stub_find_protocol(protocol_stub)
-
-      # allow current_user to edit Protocol
+      protocol_stub = findable_stub(Protocol) do
+        instance_double(Protocol,
+          id: 1,
+          type: :protocol_type,
+          valid?: true)
+      end
+      allow(protocol_stub).to receive(:populate_for_edit)
       authorize(identity_stub, protocol_stub, can_edit: true)
 
       get :edit, id: 1
 
       expect(assigns(:protocol_type)).to eq(:protocol_type)
+      expect(protocol_stub).to have_received(:populate_for_edit)
     end
   end
 
@@ -55,9 +53,5 @@ RSpec.describe Dashboard::ProtocolsController do
     expect(ProtocolAuthorizer).to receive(:new).
       with(protocol, identity).
       and_return(auth_mock)
-  end
-
-  def stub_find_protocol(protocol_stub)
-    allow(Protocol).to receive(:find).with(protocol_stub.id.to_s).and_return(protocol_stub)
   end
 end

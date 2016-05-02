@@ -40,9 +40,8 @@ class Dashboard::FulfillmentsController < Dashboard::BaseController
   end
 
   def create
-    @fulfillment = Fulfillment.new(params[:fulfillment])
+    @fulfillment = Fulfillment.create(params[:fulfillment])
     if @fulfillment.valid?
-      @fulfillment.save
       flash[:success] = t(:dashboard)[:fulfillments][:created]
     else
       @errors = @fulfillment.errors
@@ -62,7 +61,6 @@ class Dashboard::FulfillmentsController < Dashboard::BaseController
   end
 
   def destroy
-    @sub_service_request = @fulfillment.line_item.sub_service_request
     if @fulfillment.delete
       flash[:alert] = t(:dashboard)[:fulfillments][:destroyed]
     end

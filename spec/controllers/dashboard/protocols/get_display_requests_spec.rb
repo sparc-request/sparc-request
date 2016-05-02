@@ -10,12 +10,11 @@ RSpec.describe Dashboard::ProtocolsController do
       project_role_stub = instance_double('ProjectRole',
       'can_edit?' => :permission_to_edit)
 
-      protocol_stub = instance_double('Protocol',
-        id: 1)
-      allow(protocol_stub).to receive_message_chain(
-        :project_roles, :find_by_identity_id).
+      protocol_stub = findable_stub(Protocol) do
+        instance_double('Protocol', id: 1)
+      end
+      allow(protocol_stub).to receive_message_chain(:project_roles, :find_by_identity_id).
         with(1).and_return(project_role_stub)
-      stub_find_protocol(protocol_stub)
 
       xhr :get, :display_requests, id: 1, format: :js
 
@@ -31,9 +30,5 @@ RSpec.describe Dashboard::ProtocolsController do
     expect(ProtocolAuthorizer).to receive(:new).
       with(protocol, identity).
       and_return(auth_mock)
-  end
-
-  def stub_find_protocol(protocol_stub)
-    allow(Protocol).to receive(:find).with(protocol_stub.id.to_s).and_return(protocol_stub)
   end
 end

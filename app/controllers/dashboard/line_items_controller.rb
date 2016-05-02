@@ -41,7 +41,7 @@ class Dashboard::LineItemsController < Dashboard::BaseController
       @line_item = LineItem.new(sub_service_request_id: @sub_service_request.id, service_request_id: @service_request.id)
       @header_text = t(:dashboard)[:study_level_activities][:add]
     else
-      @services = @sub_service_request.candidate_services.reject(&:one_time_fee)
+      @services = @sub_service_request.candidate_pppv_services
       @page_hash = params[:page_hash]
     end
     @schedule_tab = params[:schedule_tab]
@@ -154,17 +154,6 @@ class Dashboard::LineItemsController < Dashboard::BaseController
         @line_item.reload
         if @line_items_visit.update_attribute(:line_item_id, @line_item.id)
           @old_line_item.reload
-
-          if @sub_service_request.in_work_fulfillment
-            #Modify Procedures in CWF
-            @procedures.each do |procedure|
-              if procedure.completed?
-                procedure.update_attributes(service_id: @old_line_item.service.id, line_item_id: nil)
-              else
-                procedure.update_attribute(:line_item_id, @line_item.id)
-              end
-            end
-          end
 
           if @old_line_item.line_items_visits.empty?
             @old_line_item.destroy

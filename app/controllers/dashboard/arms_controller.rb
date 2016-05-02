@@ -20,7 +20,7 @@
 
 class Dashboard::ArmsController < Dashboard::BaseController
   respond_to :json, :html
-  before_action :find_arm, only: [:update, :destroy]
+  before_action :find_arm, only: [:update]
 
   def new
     @protocol = Protocol.find(params[:protocol_id])
@@ -43,13 +43,12 @@ class Dashboard::ArmsController < Dashboard::BaseController
       visit_count: visit_count,
       subject_count: subject_count,
       protocol_id: protocol_id)
-    arm_builder.build
     @selected_arm = arm_builder.arm
 
     if @selected_arm.valid?
       flash[:success] = t(:dashboard)[:arms][:created]
     else
-      errors = @selected_arm.errors
+      @errors = @selected_arm.errors
     end
   end
 
@@ -73,17 +72,14 @@ class Dashboard::ArmsController < Dashboard::BaseController
   end
 
   def destroy
-    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
-    @service_request = @sub_service_request.service_request
+    destroyer = Dashboard::ArmDestroyer.new(id: params[:id],
+      sub_service_request_id: params[:sub_service_request_id])
+    destroyer.destroy
 
-    @arm.destroy
-    @service_request.reload
+    @sub_service_request = destroyer.sub_service_request
+    @service_request = destroyer.service_request
+    @selected_arm = destroyer.selected_arm
 
-    if @service_request.arms.empty?
-      @service_request.per_patient_per_visit_line_items.each(&:destroy)
-    else
-      @selected_arm = @service_request.arms.first
-    end
     flash[:alert] = t(:dashboard)[:arms][:destroyed]
   end
 

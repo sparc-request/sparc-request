@@ -116,3 +116,11 @@ end
 SitePrism.configure do |config|
   config.use_implicit_waits = true
 end
+
+Shoulda::Matchers.configure do |config|
+  config.integrate do |with|
+    # Choose a test framework:
+    with.test_framework :rspec
+    with.library :rails
+  end
+end

@@ -10,19 +10,19 @@ RSpec.describe Dashboard::AssociatedUsersController do
   end
 
   let!(:protocol) do
-    obj = instance_double(Protocol,
-      id: 2)
-    stub_find_protocol(obj)
-    obj
+    findable_stub(Protocol) do
+      instance_double(Protocol,
+        id: 2)
+    end
   end
 
   let!(:project_role) do
-    obj = instance_double(ProjectRole,
-      id: 3,
-      identity: identity,
-      protocol: protocol)
-    stub_find_project_role(obj)
-    obj
+    findable_stub(ProjectRole) do
+      instance_double(ProjectRole,
+        id: 3,
+        identity: identity,
+        protocol: protocol)
+    end
   end
 
   before(:each) do
@@ -90,20 +90,5 @@ RSpec.describe Dashboard::AssociatedUsersController do
     expect(ProtocolAuthorizer).to receive(:new).
         with(protocol, identity).
         and_return(auth_mock)
-  end
-
-  def stub_find_protocol(obj)
-    allow(Protocol).to receive(:find).
-        with(obj.id).
-        and_return(obj)
-    allow(Protocol).to receive(:find).
-        with(obj.id.to_s).
-        and_return(obj)
-  end
-
-  def stub_find_project_role(obj)
-    allow(ProjectRole).to receive(:find).
-        with(obj.id.to_s).
-        and_return(obj)
   end
 end

@@ -25,11 +25,22 @@
 - if USE_FAQ_LINK
   = link_to t(:right_navigation)[:faq], FAQ_URL, class: "faq-button blue-button btn btn-primary btn-lg btn-block button-hover", target: "blank"
 - else
-  .faq-button.blue-button.btn.btn-primary.btn-lg.btn-block.button-hover
-    = t(:right_navigation)[:faq]
-.feedback-button.blue-button.btn.btn-primary.btn-lg.btn-block.button-hover
-  = link_to t(:right_navigation)[:feedback], t(:right_navigation)[:redcap_survey], target: '_blank'
-.feedback-button.blue-button.btn.btn-primary.btn-lg.btn-block.button-hover
+  .faq-button.blue-button.btn.btn-primary.btn-lg.btn-block.button-hover= t(:right_navigation)[:faq]
+- if USE_FEEDBACK_LINK
+  = link_to t(:right_navigation)[:feedback], t(:right_navigation)[:redcap_survey], :class => "faq-button blue-button btn btn-primary btn-lg btn-block button-hover", target: '_blank'
+- else
+  .feedback-button.blue-button.btn.btn-primary.btn-lg.btn-block.button-hover= t(:right_navigation)[:feedback]
+  #feedback-form{:style => 'display: none', :title => 'Give Us Your Feedback!'}
+    = link_to t(:right_navigation)[:feedback], "javascript:void();"
+    = form_tag feedback_service_requests_path, :method => :post, :remote => true do
+      %p
+        = text_field_tag "feedback[email]", nil, {placeholder: t(:notifications)[:email], :size => 35, :tabindex => 1}
+        %br
+        %br
+      %p
+        = text_area_tag "feedback[message]", nil, {placeholder: t(:notifications)[:feedback], :cols => 65, :rows => 15, :tabindex => 2}
+
+.ask-a-question-button.blue-button.btn.btn-primary.btn-lg.btn-block.button-hover
   = link_to 'Contact Us', new_contact_form_path, remote: true
 .contact-form-dialog
 

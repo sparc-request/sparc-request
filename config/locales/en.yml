@@ -58,11 +58,13 @@ en:
   constants:
     yes_select: "Yes"
     no_select: "No"
-    prompts: 
+    prompts:
       any: "- Any -"
       select: "---Please Select---"
       search_for_user: "Search for a User"
       select_one: "Select One"
+    alerts:
+      not_permitted: "You do not have permission to do that."
 
   calendars:
     pppv:
@@ -937,7 +939,6 @@ en:
     service_level_components: "Service Level Components"
     service_provider_required_message: "You must have at least one service provider either at the provider, program, or core level"
     service_providers: "Service Providers"
-    show_in_cwf: "Show in Fulfillment"
     split_notify: "Split/Notify Here"
     status_legend: "Status Options (Use default statuses below or click to create custom service request statuses)"
     submission_emails: "Submission E-mails"

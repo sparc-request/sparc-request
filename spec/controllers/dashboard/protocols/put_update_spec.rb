@@ -13,10 +13,11 @@ RSpec.describe Dashboard::ProtocolsController do
 
       context 'user not authorized to edit Protocol' do
         it 'should render error message' do
-          protocol = instance_double('Protocol',
-            id: 1,
-            type: :protocol_type)
-          stub_find_protocol(protocol)
+          protocol = findable_stub(Protocol) do
+            instance_double(Protocol,
+              id: 1,
+              type: :protocol_type)
+          end
           authorize(identity_stub, protocol, can_edit: false)
 
           xhr :get, :update, id: 1
@@ -31,17 +32,15 @@ RSpec.describe Dashboard::ProtocolsController do
         # stub an active StudyTypeQuestionGroup
         allow(StudyTypeQuestionGroup).to receive(:active_id).and_return(2)
 
-        protocol_stub = instance_double('Protocol',
-          id: 1,
-          type: 'Project',
-          errors: 'none') # set errors to ensure @errors isn't being set
+        protocol_stub = findable_stub(Protocol) do
+          instance_double(Protocol, id: 1, type: 'Project')
+        end
         protocol_attributes = { some_attribute: 'some value' }
         expect(protocol_stub).to receive(:update_attributes).
           with(protocol_attributes.
             merge(study_type_question_group_id: 2).
             stringify_keys).
           and_return(true)
-        stub_find_protocol(protocol_stub)
 
         authorize(identity_stub, protocol_stub, can_edit: true)
 
@@ -57,14 +56,15 @@ RSpec.describe Dashboard::ProtocolsController do
         # stub an active StudyTypeQuestionGroup
         allow(StudyTypeQuestionGroup).to receive(:active_id).and_return(2)
 
-        protocol_stub = instance_double('Protocol',
-          id: 1,
-          type: 'Project',
-          errors: 'oh god')
+        protocol_stub = findable_stub(Protocol) do
+          instance_double(Protocol,
+            id: 1,
+            type: 'Project',
+            errors: 'oh god')
+        end
         protocol_attributes = { some_attribute: 'some value' }
         expect(protocol_stub).to receive(:update_attributes).
           and_return(false)
-        stub_find_protocol(protocol_stub)
 
         authorize(identity_stub, protocol_stub, can_edit: true)
 
@@ -82,9 +82,5 @@ RSpec.describe Dashboard::ProtocolsController do
     expect(ProtocolAuthorizer).to receive(:new).
       with(protocol, identity).
       and_return(auth_mock)
-  end
-
-  def stub_find_protocol(protocol_stub)
-    allow(Protocol).to receive(:find).with(protocol_stub.id.to_s).and_return(protocol_stub)
   end
 end

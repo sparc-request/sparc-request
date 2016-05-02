@@ -18,56 +18,46 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class CatalogManager::ProgramsController < CatalogManager::AppController
-  respond_to :js, :html, :json
-  layout false
-
-  def create
-    @provider = Provider.find(params[:provider_id])
-    @program = Program.new({:name => params[:name], :abbreviation => params[:name], :parent_id => @provider.id})
-    @program.build_subsidy_map()
-    @program.save
-    
-    respond_with [:catalog_manager, @program]
-  end
-
-  def show
-    @organization = Organization.find params[:id]
-    @program = Program.find params[:id]
-    @program.setup_available_statuses
-  end
-  
-  def update
-    @program = Program.find(params[:id])
-
-    unless params[:program][:tag_list]
-      params[:program][:tag_list] = ""
+namespace :data do
+  desc "Delete identities from CSV"
+  task :remove_stale_users => :environment do
+    def header
+      [
+        "identity_id"
+      ]
     end
 
-    params[:program].delete(:id)
-
-    if @program.update_attributes(params[:program])
-      flash[:notice] = "#{@program.name} saved correctly."
-    else
-      flash[:alert] = "Failed to update #{@program.name}."
+    file = "db/imports/user_delete.csv"
+    def prompt(*args)
+      print(*args)
+      STDIN.gets.strip
     end
-    
-    params[:pricing_setups].each do |ps|
-      if ps[1]['id'].blank?
-        ps[1].delete(:id)
-        ps[1].delete(:newly_created)
-        @program.pricing_setups.build(ps[1])
-      else
-        ps_id = ps[1]['id']
-        ps[1].delete(:id)
-        @program.pricing_setups.find(ps_id).update_attributes(ps[1])        
+
+    def get_file(error=false)
+      puts "No import file specified or the file specified does not exist in db/imports" if error
+      file = prompt "Please specify the file name to import from db/imports (must be a CSV, see db/imports/example.csv for formatting): "
+
+      while file.blank? or not File.exists?(Rails.root.join("db", "imports", file))
+        file = get_file(true)
       end
-      @program.save
-    end if params[:pricing_setups]
-  
-    @program.setup_available_statuses      
-    @entity = @program
-    respond_with @program, :location => catalog_manager_program_path(@program)
-  end
 
+      file
+    end
+
+    begin
+      file = get_file
+      input_file = Rails.root.join('db', 'imports', file)
+      CSV.foreach(input_file, :headers => true, :encoding => 'windows-1251:utf-8') do |row|
+        id = row["identity_id"]
+        puts ""
+        puts ""
+        continue = prompt "All records will be deleted!!  Press any key to continue or CTRL-C to exit"
+        puts ""
+        puts ""
+        Identity.find(id.to_i).destroy
+      end
+    end
+  end
 end
+
+

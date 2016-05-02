@@ -79,7 +79,7 @@ class StudyTracker::CalendarsController < StudyTracker::BaseController
       # @default_appointment = @calendar.appointments_for_core(@default_core.id).reject{|x| x.completed_for_core?(@default_core.id) }.first || visit_group.appointments.first
       generate_toasts_for_new_procedures
 
-      
+
     else # no visit group because appointment was completed before vg was deleted
       @default_visit_group_id = nil
       @selected_key = params[:appointment_tag]
@@ -120,7 +120,7 @@ class StudyTracker::CalendarsController < StudyTracker::BaseController
 
   def get_calendar_data(calendar)
     # Get the cores
-    @cwf_cores = Organization.get_cwf_organizations
+    @cwf_cores = Organization.in_cwf
     @subject = calendar.subject
     @appointments = calendar.appointments.sort{|x,y| x.position_switch <=> y.position_switch }
     @default_core = (cookies['current_core'] ? Organization.find(cookies['current_core']) : @cwf_cores.first)

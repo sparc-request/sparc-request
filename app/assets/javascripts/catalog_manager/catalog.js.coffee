@@ -249,12 +249,6 @@ $ ->
     $.post '/catalog_manager/services/set_linked_quantity_total', {service_relation_id: $(this).data('service_relation_id'), linked_quantity_total: $(this).val()}, (data) ->
         $('#rs_info').html(data)
 
-  # clinical work fulfillment
-  $('.cwf input[type=checkbox]').live 'click', ->
-    if $(this).is(":checked")
-      $('.cwf.position_field').show()
-    else
-      $('.cwf.position_field').hide()
 
   ############################
   # Begin pricing map logic
@@ -544,7 +538,7 @@ $ ->
     $('#processing_request').dialog('open')
     show_unavailable = $(this).data('show-unavailable')
     window.location.assign("/catalog_manager?show_unavailable=#{show_unavailable}")
-  ) 
+  )
 
-  
+
 

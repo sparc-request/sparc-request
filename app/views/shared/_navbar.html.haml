@@ -1,4 +1,5 @@
 %ul.navbar
+<<<<<<< HEAD
   %li.dashboard
     = link_to 'Dashboard', dashboard_root_path, target: '_blank'
   %li.fulfillment
@@ -7,6 +8,11 @@
     = link_to 'SPARCCatalog', catalog_manager_catalog_index_path, target: '_blank'
   %li.reports
     = link_to 'SPARCReport', reports_path, target: '_blank'
+=======
+  - NAVBAR_LINKS.each do |name, path|
+    %li.dashboard
+      = link_to name.to_s, path, target: '_blank'
+>>>>>>> master
   .right-section
     %li.align-element-nav-bar
       - flash.each do |name, msg|

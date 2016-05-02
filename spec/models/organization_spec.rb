@@ -425,18 +425,6 @@ RSpec.describe 'organization' do
       end
     end
 
-    context "patient visit calendar" do
-
-      let!(:core1)    { create(:core, show_in_cwf: true) }
-      let!(:core2)    { create(:core, show_in_cwf: true) }
-      describe "get cwf organizations" do
-
-        it "should return an array of all organizations flagged to show in clinical work fulfillment" do
-          expect(Organization.get_cwf_organizations).to include(core1, core2)
-        end
-      end
-    end
-
     describe 'has editable statuses?' do
 
       it 'should return true if the current organization or its parent have editable statuses' do

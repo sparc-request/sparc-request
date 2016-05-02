@@ -156,4 +156,3 @@ $(document).ready ->
   #     max_dollar = pi.attr('data-max_dollar')
   #     max_percent = pi.attr('data-max_percent')
   #     core = $('.core_' + id).text()
-

@@ -64,6 +64,10 @@ ul {
   display: none;
 }
 
+#ie7_warning {
+  display: none;
+}
+
 #feedback {
   float: right;
   margin-right: 10px;
@@ -253,8 +257,8 @@ p.notice {
 }
 
 .catalog-middle {
-  margin-left: 5px !important;
-  margin-right: 5px !important;
+  margin-left: 5px;
+  margin-right: 5px;
 }
 
 #welcome_message {
@@ -2607,6 +2611,7 @@ div.field_with_errors {
 }
 
 #processing_request {
+  display: none;
   background: #fff;
   border: 1px solid #000;
   left: 45%;

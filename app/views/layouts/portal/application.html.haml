@@ -55,16 +55,16 @@
         %br
         = image_tag 'spinner.gif'
       #header
-        = render partial: 'shared/header_logos', locals: {in_dashboard: true}
+        = render 'shared/header_logos', in_dashboard: true
         %input#current_user_id{type: 'hidden', value: @user.try(:id)}
       #welcome_msg{style: 'float:right;'}
         = show_welcome_message(@user)
       #main
         #title
           %h1
-            = render partial: 'portal/home/title'
+            = render 'portal/home/title'
         #content
           .notification_dialog
           = yield
   %footer
-    = render partial: 'shared/piwik_tracking' if Rails.env == 'production'
+    = render 'shared/piwik_tracking' if Rails.env == 'production'

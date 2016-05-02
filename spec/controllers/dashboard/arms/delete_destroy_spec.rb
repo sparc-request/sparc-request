@@ -2,9 +2,10 @@ require 'rails_helper'
 
 RSpec.describe Dashboard::ArmsController do
   describe 'delete destroy' do
-    let!(:identity_stub) { instance_double('Identity', id: 1) }
+    let!(:identity_stub) {}
 
     before(:each) do
+      identity_stub = instance_double('Identity', id: 1)
       log_in_dashboard_identity(obj: identity_stub)
 
       @request_params = { id: "arm id", sub_service_request_id: "sub service request id" }
@@ -33,6 +34,10 @@ RSpec.describe Dashboard::ArmsController do
 
     it "should assign @sub_service_request from Dashboard::ArmDestroyer instance" do
       expect(assigns(:sub_service_request)).to eq("sub service request")
+    end
+
+    it "should assign @selected_arm from Dashboard::ArmDestroyer instance" do
+      expect(assigns(:selected_arm)).to eq("selected arm")
     end
 
     it "should set flash[:alert]" do

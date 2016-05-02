@@ -12,15 +12,17 @@ RSpec.describe Dashboard::AssociatedUsersController do
 
     let!(:protocol) do
       obj = build_stubbed(:protocol)
-      allow(obj).to receive(:primary_principal_investigator).and_return(primary_pi)
+      allow(obj).to receive(:primary_principal_investigator)
+        .and_return(primary_pi)
       obj
     end
 
     let!(:project_role) do
-      obj = build_stubbed(:project_role,
-        identity: identity,
-        protocol: protocol)
-      stub_find_project_role(obj)
+      obj = findable_stub(ProjectRole) do
+        build_stubbed(:project_role,
+          identity: identity,
+          protocol: protocol)
+      end
       allow(protocol).to receive(:project_roles).and_return([obj])
       obj
     end
@@ -73,12 +75,6 @@ RSpec.describe Dashboard::AssociatedUsersController do
       it { is_expected.to respond_with :ok }
     end
 
-    def stub_find_protocol(protocol_stub)
-      allow(Protocol).to receive(:find).
-        with(protocol_stub.id).
-        and_return(protocol_stub)
-    end
-
     def authorize(identity, protocol, opts = {})
       auth_mock = instance_double('ProtocolAuthorizer',
         'can_view?' => opts[:can_view].nil? ? false : opts[:can_view],
@@ -86,12 +82,6 @@ RSpec.describe Dashboard::AssociatedUsersController do
       expect(ProtocolAuthorizer).to receive(:new).
         with(protocol, identity).
         and_return(auth_mock)
-    end
-
-    def stub_find_project_role(obj)
-      allow(ProjectRole).to receive(:find).
-        with(obj.id.to_s).
-        and_return(obj)
     end
   end
 end

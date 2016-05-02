@@ -12,16 +12,18 @@ RSpec.describe Dashboard::AssociatedUsersController do
       render_views
 
       before(:each) do
-        protocol = instance_double('Protocol',
+        protocol = findable_stub(Protocol) do
+          instance_double(Protocol,
           id: 1,
           type: "protocol type")
-        stub_find_protocol(protocol)
+        end
         authorize(identity_stub, protocol, can_edit: false)
 
-        project_role = instance_double('ProjectRole',
-          id: 1,
-          protocol: protocol)
-        stub_find_project_role(project_role)
+        project_role = findable_stub(ProjectRole) do
+          instance_double(ProjectRole,
+            id: 1,
+            protocol: protocol)
+        end
 
         xhr :put, :update, id: project_role.id
       end
@@ -32,16 +34,18 @@ RSpec.describe Dashboard::AssociatedUsersController do
 
     context "params[:project_role] describes a valid update to ProtjectRole with id params[:id]" do
       before(:each) do
-        protocol = instance_double('Protocol',
-          id: 1,
-          type: "protocol type")
-        stub_find_protocol(protocol)
+        protocol = findable_stub(Protocol) do
+          instance_double(Protocol,
+            id: 1,
+            type: "protocol type")
+        end
         authorize(identity_stub, protocol, can_edit: true)
 
-        @project_role = instance_double('ProjectRole',
-          id: 1,
-          protocol: protocol)
-        stub_find_project_role(@project_role)
+        @project_role = findable_stub(ProjectRole) do
+          instance_double(ProjectRole,
+            id: 1,
+            protocol: protocol)
+        end
 
         project_role_updater = instance_double(Dashboard::AssociatedUserUpdater,
           successful?: true, # valid in this context
@@ -72,17 +76,19 @@ RSpec.describe Dashboard::AssociatedUsersController do
 
     context "params[:project_role] describes an invalid update to ProtjectRole with id params[:id]" do
       before(:each) do
-        protocol = instance_double('Protocol',
-          id: 1,
-          type: "protocol type")
-        stub_find_protocol(protocol)
+        protocol = findable_stub(Protocol) do
+          instance_double(Protocol,
+            id: 1,
+            type: "protocol type")
+        end
         authorize(identity_stub, protocol, can_edit: true)
 
-        @project_role = instance_double('ProjectRole',
-          id: 1,
-          errors: "my errors",
-          protocol: protocol)
-        stub_find_project_role(@project_role)
+        @project_role = findable_stub(ProjectRole) do
+          instance_double(ProjectRole,
+            id: 1,
+            errors: "my errors",
+            protocol: protocol)
+        end
 
         @project_role_updater = instance_double(Dashboard::AssociatedUserUpdater,
           successful?: false, # valid in this context
@@ -112,14 +118,6 @@ RSpec.describe Dashboard::AssociatedUsersController do
       expect(ProtocolAuthorizer).to receive(:new).
         with(protocol, identity).
         and_return(auth_mock)
-    end
-
-    def stub_find_project_role(pr)
-      allow(ProjectRole).to receive(:find).with(pr.id.to_s).and_return(pr)
-    end
-
-    def stub_find_protocol(protocol_stub)
-      allow(Protocol).to receive(:find).with(protocol_stub.id.to_s).and_return(protocol_stub)
     end
   end
 end

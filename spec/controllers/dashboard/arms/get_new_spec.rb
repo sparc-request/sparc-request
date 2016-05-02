@@ -2,24 +2,18 @@ require 'rails_helper'
 
 RSpec.describe Dashboard::ArmsController do
   describe 'GET new' do
-    let!(:identity_stub) { instance_double('Identity', id: 1) }
+    let!(:identity_stub) { instance_double(Identity, id: 1) }
 
     let!(:protocol_stub) do
-      protocol_stub = instance_double('Protocol', id: 1)
-      stub_find_protocol(protocol_stub)
-      protocol_stub
+      findable_stub(Protocol) { instance_double(Protocol, id: 1) }
     end
 
     let!(:sr_stub) do
-      sr_stub = instance_double('ServiceRequest', id: 2)
-      stub_find_service_request(sr_stub)
-      sr_stub
+      findable_stub(ServiceRequest) { instance_double(ServiceRequest, id: 2) }
     end
 
     let!(:ssr_stub) do
-      ssr_stub = instance_double('SubServiceRequest', id: 3)
-      stub_find_sub_service_request(ssr_stub)
-      ssr_stub
+      findable_stub(SubServiceRequest) { instance_double(SubServiceRequest, id: 3) }
     end
 
     before(:each) do
@@ -50,23 +44,5 @@ RSpec.describe Dashboard::ArmsController do
 
     it { is_expected.to respond_with :ok }
     it { is_expected.to render_template "dashboard/arms/new" }
-  end
-
-  def stub_find_protocol(protocol_stub)
-    allow(Protocol).to receive(:find).
-      with(protocol_stub.id.to_s).
-      and_return(protocol_stub)
-  end
-
-  def stub_find_service_request(sr_stub)
-    allow(ServiceRequest).to receive(:find).
-      with(sr_stub.id.to_s).
-      and_return(sr_stub)
-  end
-
-  def stub_find_sub_service_request(ssr_stub)
-    allow(SubServiceRequest).to receive(:find).
-      with(ssr_stub.id.to_s).
-      and_return(ssr_stub)
   end
 end

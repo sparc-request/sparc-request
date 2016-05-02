@@ -43,7 +43,6 @@ class Dashboard::ArmsController < Dashboard::BaseController
       visit_count: visit_count,
       subject_count: subject_count,
       protocol_id: protocol_id)
-    arm_builder.build
     @selected_arm = arm_builder.arm
 
     if @selected_arm.valid?

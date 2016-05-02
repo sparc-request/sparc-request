@@ -4,9 +4,10 @@ RSpec.describe Dashboard::FulfillmentsController do
   describe "PUT #update" do
     context "params[:fulfillment] describes a valid update" do
       before(:each) do
-        @fulfillment = instance_double(Fulfillment, id: 1)
+        @fulfillment = findable_stub(Fulfillment) do
+          instance_double(Fulfillment, id: 1)
+        end
         allow(@fulfillment).to receive(:update_attributes).and_return(true)
-        stub_find_document(@fulfillment)
 
         logged_in_user = create(:identity)
         log_in_dashboard_identity(obj: logged_in_user)
@@ -30,10 +31,11 @@ RSpec.describe Dashboard::FulfillmentsController do
 
     context "params[:fulfillment] describes an invalid update" do
       before(:each) do
-        @fulfillment = instance_double(Fulfillment, id: 1)
+        @fulfillment = findable_stub(Fulfillment) do
+          instance_double(Fulfillment, id: 1)
+        end
         allow(@fulfillment).to receive(:update_attributes).and_return(false)
         allow(@fulfillment).to receive(:errors).and_return("my errors")
-        stub_find_document(@fulfillment)
 
         logged_in_user = create(:identity)
         log_in_dashboard_identity(obj: logged_in_user)
@@ -53,12 +55,6 @@ RSpec.describe Dashboard::FulfillmentsController do
 
       it { is_expected.to render_template "dashboard/fulfillments/update" }
       it { is_expected.to respond_with :ok }
-    end
-
-    def stub_find_document(obj)
-      allow(Fulfillment).to receive(:find).
-        with(obj.id.to_s).
-        and_return(obj)
     end
   end
 end

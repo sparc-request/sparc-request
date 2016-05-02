@@ -2,18 +2,16 @@ require 'rails_helper'
 
 RSpec.describe Dashboard::ArmsController do
   describe 'PUT update' do
-    let!(:identity_stub) { instance_double('Identity', id: 1) }
+    let!(:identity_stub) { instance_double(Identity, id: 1) }
 
     let(:sr_stub) do
-      obj = instance_double('ServiceRequest', id: 2)
-      stub_find_service_request(obj)
-      obj
+      findable_stub(ServiceRequest) { instance_double(ServiceRequest, id: 2) }
     end
 
     let(:ssr_stub) do
-      obj = instance_double('SubServiceRequest', id: 3)
-      stub_find_sub_service_request(obj)
-      obj
+      findable_stub(SubServiceRequest) do
+        instance_double('SubServiceRequest', id: 3)
+      end
     end
 
     before(:each) do
@@ -22,8 +20,7 @@ RSpec.describe Dashboard::ArmsController do
 
     context 'params[:arm] describes a valid update' do
       before(:each) do
-        @arm_stub = instance_double('Arm', id: 1)
-        stub_find_arm(@arm_stub)
+        @arm_stub = findable_stub(Arm) { instance_double(Arm, id: 1) }
         allow(@arm_stub).to receive(:update_attributes).and_return(true)
 
         xhr :put, :update, id: @arm_stub.id, arm: 'arm_attributes', service_request_id: sr_stub.id, sub_service_request_id: ssr_stub.id
@@ -56,10 +53,9 @@ RSpec.describe Dashboard::ArmsController do
 
     context 'params[:arm] does not describe a valid update' do
       before(:each) do
-        @arm_stub = instance_double('Arm',
-          id: 1,
-          errors: "uh oh")
-        stub_find_arm(@arm_stub)
+        @arm_stub = findable_stub(Arm) do
+          instance_double(Arm, id: 1, errors: "uh oh")
+        end
         allow(@arm_stub).to receive(:update_attributes).and_return(false)
 
         xhr :put, :update, id: @arm_stub.id, arm: 'arm_attributes', service_request_id: sr_stub.id, sub_service_request_id: ssr_stub.id
@@ -81,23 +77,5 @@ RSpec.describe Dashboard::ArmsController do
         expect(flash[:success]).to be_nil
       end
     end
-  end
-
-  def stub_find_arm(arm)
-    allow(Arm).to receive(:find).
-      with(arm.id.to_s).
-      and_return(arm)
-  end
-
-  def stub_find_service_request(sr_stub)
-    allow(ServiceRequest).to receive(:find).
-      with(sr_stub.id.to_s).
-      and_return(sr_stub)
-  end
-
-  def stub_find_sub_service_request(ssr_stub)
-    allow(SubServiceRequest).to receive(:find).
-      with(ssr_stub.id.to_s).
-      and_return(ssr_stub)
   end
 end

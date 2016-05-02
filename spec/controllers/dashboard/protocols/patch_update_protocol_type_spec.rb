@@ -9,14 +9,13 @@ RSpec.describe Dashboard::ProtocolsController do
     end
 
     describe 'authorization' do
-      render_views
-
       context 'user not authorized to edit Protocol' do
         it 'should render error message' do
-          protocol_stub = instance_double('Protocol',
-            id: 1,
-            type: :protocol_type)
-          stub_find_protocol(protocol_stub)
+          protocol_stub = findable_stub(Protocol) do
+            instance_double(Protocol,
+              id: 1,
+              type: :protocol_type)
+          end
           authorize(identity_stub, protocol_stub, can_edit: false)
 
           xhr :patch, :update_protocol_type, id: 1, format: :js
@@ -38,12 +37,13 @@ RSpec.describe Dashboard::ProtocolsController do
     end
 
     it 'should populate Protocol for edit' do
-      protocol_stub = instance_double('Protocol',
-        id: 1,
-        type: :protocol_type)
+      protocol_stub = findable_stub(Protocol) do
+        instance_double(Protocol,
+          id: 1,
+          type: :protocol_type)
+      end
       allow(protocol_stub).to receive(:update_attribute)
       expect(protocol_stub).to receive(:populate_for_edit)
-      stub_find_protocol(protocol_stub)
       authorize(identity_stub, protocol_stub, can_edit: true)
 
       xhr :patch, :update_protocol_type, id: 1, type: 'Project', format: :js
@@ -57,10 +57,5 @@ RSpec.describe Dashboard::ProtocolsController do
     expect(ProtocolAuthorizer).to receive(:new).
       with(protocol, identity).
       and_return(auth_mock)
-  end
-
-  def stub_find_protocol(protocol)
-    allow(Protocol).to receive(:find).with(protocol.id).and_return(protocol)
-    allow(Protocol).to receive(:find).with(protocol.id.to_s).and_return(protocol)
   end
 end

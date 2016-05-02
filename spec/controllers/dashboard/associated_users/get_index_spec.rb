@@ -7,9 +7,7 @@ RSpec.describe Dashboard::AssociatedUsersController do
     end
 
     let!(:protocol) do
-      obj = build_stubbed(:protocol)
-      stub_find_protocol(obj)
-      obj
+      findable_stub(Protocol) { build_stubbed(:protocol) }
     end
 
     context "User does not have view rights to Protocol" do
@@ -70,12 +68,6 @@ RSpec.describe Dashboard::AssociatedUsersController do
         'can_edit?' => opts[:can_edit].nil? ? false : opts[:can_edit])
       allow(ProtocolAuthorizer).to receive(:new).
         and_return(auth_mock)
-    end
-
-    def stub_find_protocol(protocol_stub)
-      allow(Protocol).to receive(:find).
-          with(protocol_stub.id).
-          and_return(protocol_stub)
     end
   end
 end

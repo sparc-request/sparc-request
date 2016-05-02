@@ -4,9 +4,8 @@ RSpec.describe Dashboard::DocumentsController do
   describe "PUT #update" do
     context "params[:document] describes a valid update" do
       before(:each) do
-        @document = build_stubbed(:document)
+        @document = findable_stub(Document) { build_stubbed(:document) }
         allow(@document).to receive(:update_attributes).and_return(true)
-        stub_find_document(@document)
 
         logged_in_user = create(:identity)
         log_in_dashboard_identity(obj: logged_in_user)
@@ -30,10 +29,9 @@ RSpec.describe Dashboard::DocumentsController do
 
     context "params[:document] describes an invalid update" do
       before(:each) do
-        @document = build_stubbed(:document)
+        @document = findable_stub(Document) { build_stubbed(:document) }
         allow(@document).to receive(:update_attributes).and_return(false)
         allow(@document).to receive(:errors).and_return("my errors")
-        stub_find_document(@document)
 
         logged_in_user = create(:identity)
         log_in_dashboard_identity(obj: logged_in_user)
@@ -53,12 +51,6 @@ RSpec.describe Dashboard::DocumentsController do
 
       it { is_expected.to render_template "dashboard/documents/update" }
       it { is_expected.to respond_with :ok }
-    end
-
-    def stub_find_document(obj)
-      allow(Document).to receive(:find).
-        with(obj.id.to_s).
-        and_return(obj)
     end
   end
 end

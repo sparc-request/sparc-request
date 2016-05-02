@@ -64,6 +64,10 @@ FactoryGirl.define do
       one_time_fee true
     end
 
+    trait :per_patient_per_visit do
+      one_time_fee false
+    end
+
     transient do
       line_item_count 0
       pricing_map_count 1
@@ -116,5 +120,7 @@ FactoryGirl.define do
     factory :service_with_process_ssrs_organization, traits: [:with_process_ssrs_organization]
     factory :service_with_pricing_map, traits: [:with_pricing_map, :with_process_ssrs_organization]
     factory :service_without_callback_notify_remote_service_after_create, traits: [:without_callback_notify_remote_service_after_create]
+    factory :one_time_fee_service, traits: [:one_time_fee]
+    factory :per_patient_per_visit_service, traits: [:per_patient_per_visit]
   end
 end

@@ -3,9 +3,7 @@ require 'rails_helper'
 RSpec.describe Dashboard::AssociatedUsersController do
   describe 'GET new' do
     let!(:identity) do
-      obj = build_stubbed(:identity)
-      stub_find_identity(obj)
-      obj
+      findable_stub(Identity) { build_stubbed(:identity) }
     end
 
     let(:primary_pi) do
@@ -13,10 +11,9 @@ RSpec.describe Dashboard::AssociatedUsersController do
     end
 
     let!(:protocol) do
-      obj = build_stubbed(:protocol)
+      obj = findable_stub(Protocol) { build_stubbed(:protocol) }
       allow(obj).to receive(:primary_principal_investigator).
         and_return(primary_pi)
-      stub_find_protocol(obj)
       obj
     end
 
@@ -123,18 +120,6 @@ RSpec.describe Dashboard::AssociatedUsersController do
       expect(ProtocolAuthorizer).to receive(:new).
         with(protocol, identity).
         and_return(auth_mock)
-    end
-
-    def stub_find_protocol(obj)
-      allow(Protocol).to receive(:find).
-          with(obj.id).
-          and_return(obj)
-    end
-
-    def stub_find_identity(obj)
-      allow(Identity).to receive(:find).
-        with(obj.id).
-        and_return(obj)
     end
   end
 end

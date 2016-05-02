@@ -4,8 +4,7 @@ RSpec.describe Dashboard::FulfillmentsController do
   describe "GET #index" do
     context "format js" do
       before(:each) do
-        @line_item = build_stubbed(:line_item)
-        stub_find_line_item(@line_item)
+        @line_item = findable_stub(LineItem) { build_stubbed(:line_item) }
 
         logged_in_user = create(:identity)
         log_in_dashboard_identity(obj: logged_in_user)
@@ -22,10 +21,9 @@ RSpec.describe Dashboard::FulfillmentsController do
 
     context "format json" do
       before(:each) do
-        @line_item = build_stubbed(:line_item)
+        @line_item = findable_stub(LineItem) { build_stubbed(:line_item) }
         @fulfillments = instance_double(ActiveRecord::Relation)
         allow(@line_item).to receive(:fulfillments).and_return(@fulfillments)
-        stub_find_line_item(@line_item)
 
         logged_in_user = create(:identity)
         log_in_dashboard_identity(obj: logged_in_user)
@@ -42,15 +40,6 @@ RSpec.describe Dashboard::FulfillmentsController do
 
       it { is_expected.to render_template "dashboard/fulfillments/index" }
       it { is_expected.to respond_with :ok }
-    end
-
-    def stub_find_line_item(obj)
-      allow(LineItem).to receive(:find).
-        with(obj.id.to_s).
-        and_return(obj)
-      allow(LineItem).to receive(:find).
-        with(obj.id).
-        and_return(obj)
     end
   end
 end

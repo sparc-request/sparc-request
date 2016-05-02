@@ -8,14 +8,15 @@ RSpec.describe Dashboard::AssociatedUsersController do
     # Won't exhaustively test each possible one...
     context "USE_EPIC == false, QUEUE_EPIC == false, Protocol associated with ProjectRole is not selected for epic, and @project_role did not have epic access" do
       before(:each) do
-        @project_role = instance_double('ProjectRole',
-          id: 1,
-          epic_access: false,
-          clone: :clone,
-          protocol: instance_double('Protocol',
-            selected_for_epic: false))
+        @project_role = findable_stub(ProjectRole) do
+          instance_double(ProjectRole,
+            id: 1,
+            epic_access: false,
+            clone: :clone,
+            protocol: instance_double(Protocol,
+              selected_for_epic: false))
+        end
         allow(@project_role).to receive(:destroy)
-        stub_find_project_role(@project_role)
 
         allow(Notifier).to receive(:notify_primary_pi_for_epic_user_removal)
 
@@ -38,17 +39,17 @@ RSpec.describe Dashboard::AssociatedUsersController do
 
     context 'USE_EPIC == true, QUEUE_EPIC == false, Protocol associated with @project_role is selected for epic, and @project_role had epic access' do
       before(:each) do
-        protocol = instance_double('Protocol',
+        protocol = instance_double(Protocol,
           selected_for_epic: true)
 
-        @project_role = instance_double('ProjectRole',
-          id: 1,
-          epic_access: true,
-          destroy: true,
-          protocol: protocol)
+        @project_role = findable_stub(ProjectRole) do
+          instance_double(ProjectRole,
+            id: 1,
+            epic_access: true,
+            destroy: true,
+            protocol: protocol)
+        end
         allow(@project_role).to receive(:clone).and_return(@project_role)
-        stub_find_project_role(@project_role)
-
 
         stub_const('USE_EPIC', true)
         stub_const('QUEUE_EPIC', false)
@@ -75,10 +76,6 @@ RSpec.describe Dashboard::AssociatedUsersController do
 
       it { is_expected.to render_template "dashboard/associated_users/destroy" }
       it { is_expected.to respond_with :ok }
-    end
-
-    def stub_find_project_role(pr)
-      allow(ProjectRole).to receive(:find).with(pr.id.to_s).and_return(pr)
     end
   end
 end

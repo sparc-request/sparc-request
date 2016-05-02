@@ -252,6 +252,10 @@ class SubServiceRequest < ActiveRecord::Base
     services
   end
 
+  def candidate_pppv_services
+    candidate_services.reject(&:one_time_fee)
+  end
+
   def update_line_item line_item, args
     if self.line_items.map {|li| li.id}.include? line_item.id
       line_item.update_attributes!(args)

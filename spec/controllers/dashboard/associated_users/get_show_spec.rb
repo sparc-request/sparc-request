@@ -3,23 +3,22 @@ require 'rails_helper'
 RSpec.describe Dashboard::AssociatedUsersController do
   describe 'GET show' do
     let!(:identity) do
-      obj = instance_double(Identity, id: 1)
-      stub_find_identity(obj)
-      obj
+      findable_stub(Identity) { instance_double(Identity, id: 1) }
     end
 
     let!(:protocol) do
-      obj = instance_double(Protocol, id: 2)
-      stub_find_protocol(obj)
-      obj
+      findable_stub(Protocol) do
+        instance_double(Protocol, id: 2)
+      end
     end
 
     let!(:project_role) do
-      obj = instance_double(ProjectRole,
-        id: 3,
-        identity: identity,
-        protocol: protocol)
-      stub_find_project_role(obj)
+      obj = findable_stub(ProjectRole) do
+        instance_double(ProjectRole,
+          id: 3,
+          identity: identity,
+          protocol: protocol)
+      end
 
       # associate this ProjectRole with protocol via #find_by
       project_roles_collection = instance_double(ActiveRecord::Relation)
@@ -73,24 +72,6 @@ RSpec.describe Dashboard::AssociatedUsersController do
       expect(ProtocolAuthorizer).to receive(:new).
         with(protocol, identity).
         and_return(auth_mock)
-    end
-
-    def stub_find_protocol(protocol_stub)
-      allow(Protocol).to receive(:find).
-        with(protocol_stub.id).
-        and_return(protocol_stub)
-    end
-
-    def stub_find_project_role(obj)
-      allow(ProjectRole).to receive(:find).
-        with(obj.id.to_s).
-        and_return(obj)
-    end
-
-    def stub_find_identity(obj)
-      allow(Identity).to receive(:find).
-        with(obj.id.to_s).
-        and_return(obj)
     end
   end
 end

@@ -20,13 +20,6 @@
 $ ->
   $(".datetimepicker").datetimepicker(format: 'MM-DD-YYYY', allowInputToggle: true)
   $(".selectpicker").selectpicker()
-
-  # PRINT LISTENER BEGIN
-
-  $(document).on 'click', '#print', ->
-    $('.modal').printElement()
-    
-  # PRINT LISTENER END
   
 (exports ? this).formatMoney = (n, t=',', d='.', c='$') ->
   s = if n < 0 then "-#{c}" else c

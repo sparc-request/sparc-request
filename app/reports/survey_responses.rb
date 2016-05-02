@@ -81,4 +81,16 @@ class SurveyResponseReport < ReportingModule
   end
 
   ##################  END QUERY SETUP   #####################
+
+  private
+
+  def create_report(worksheet)
+    super
+    record_answers = records.map { |record| record.responses.where(question_id: 1).first.try(:answer).try(:text) }.compact
+    yes_answers = record_answers.select { |answer| answer == "Yes" }
+    percent_satisifed = yes_answers.length.to_f / record_answers.length * 100
+
+    worksheet.add_row([])
+    worksheet.add_row(["Overall Satisfaction Rate", "", sprintf("%.2f%%", percent_satisifed)])
+  end
 end

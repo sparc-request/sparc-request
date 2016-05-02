@@ -5,7 +5,7 @@ include ActionView::Helpers::FormTagHelper
 include ActionView::Helpers::NumberHelper
 
 module Dashboard
-  module ServiceCalendar
+  module ServiceCalendars
     def self.generate_visit_header_row(arm, service_request, page, sub_service_request, portal = nil)
       base_url = "/dashboard/service_requests/#{service_request.id}/service_calendars"
       day_url = base_url + '/set_day'

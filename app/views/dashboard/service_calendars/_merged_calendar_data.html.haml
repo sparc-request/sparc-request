@@ -74,7 +74,7 @@
           - (5 - visits.size).times do
             %td &nbsp;
           %td.pp_line_item_total{:class => "total_#{line_items_visit.id}"}= display_visit_based_direct_cost(line_items_visit)
-          %td.pp_line_item_study_total{:class => "total_#{line_items_visit.id}_per_study"}= Dashboard::ServiceCalendar.display_visit_based_direct_cost_per_study(line_items_visit)
+          %td.pp_line_item_study_total{:class => "total_#{line_items_visit.id}_per_study"}= Dashboard::ServiceCalendars.display_visit_based_direct_cost_per_study(line_items_visit)
 
     - colspan = @portal ? 4 : 5
     %tr.totals_section.begin_totals{:class => cycle('odd', '', :name => 'pppvs')}

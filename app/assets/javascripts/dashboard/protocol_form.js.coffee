@@ -22,12 +22,12 @@ $(document).ready ->
 
   study_type_form = $('.selected_for_epic_dependent')
   study_selected_for_epic_button = $('#selected_for_epic_button')
-  certificate_of_confidence_dropdown = $('#study_type_answer_certificate_of_conf_answer')
-  higher_level_of_privacy_dropdown = $('#study_type_answer_higher_level_of_privacy_answer')
-  access_required_dropdown = $('#study_type_answer_access_study_info_answer')
-  epic_inbasket_dropdown = $('#study_type_answer_epic_inbasket_answer')
-  research_active_dropdown = $('#study_type_answer_research_active_answer')
-  restrict_sending_dropdown = $('#study_type_answer_restrict_sending_answer')
+  certificate_of_confidence_dropdown = $('#study_type_answer_certificate_of_conf')
+  higher_level_of_privacy_dropdown = $('#study_type_answer_higher_level_of_privacy')
+  access_required_dropdown = $('#study_type_answer_access_study_info')
+  epic_inbasket_dropdown = $('#study_type_answer_epic_inbasket')
+  research_active_dropdown = $('#study_type_answer_research_active')
+  restrict_sending_dropdown = $('#study_type_answer_restrict_sending')
 
   epic_box_alert_message = () ->
     options = {

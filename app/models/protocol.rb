@@ -220,45 +220,6 @@ class Protocol < ActiveRecord::Base
     end
   end
 
-  FRIENDLY_IDS = ["certificate_of_conf", "higher_level_of_privacy", "access_study_info", "epic_inbasket", "research_active", "restrict_sending"]
-
-  def validate_study_type_answers
-    answers = {}
-    FRIENDLY_IDS.each do |fid|
-      q = StudyTypeQuestion.active.find_by_friendly_id(fid)
-      answers[fid] = study_type_answers.find{|x| x.study_type_question_id == q.id}
-    end
-
-    has_errors = false
-    begin
-      if answers["certificate_of_conf"].answer.nil?
-        has_errors = true
-      elsif answers["certificate_of_conf"].answer == false
-        if (answers["higher_level_of_privacy"].answer.nil?)
-          has_errors = true
-        elsif (answers["higher_level_of_privacy"].answer == false)
-          if answers["epic_inbasket"].answer.nil? || answers["research_active"].answer.nil? || answers["restrict_sending"].answer.nil?
-            has_errors = true
-          end
-        elsif (answers["higher_level_of_privacy"].answer == true)
-          if (answers["access_study_info"].answer.nil?)
-            has_errors = true
-          elsif (answers["access_study_info"].answer == false)
-            if answers["epic_inbasket"].answer.nil? || answers["research_active"].answer.nil? || answers["restrict_sending"].answer.nil?
-              has_errors = true
-            end
-          end
-        end
-      end
-    rescue => e
-      has_errors = true
-    end
-
-    if has_errors
-      errors.add(:study_type_questions, "must be selected")
-    end
-  end
-
   def validate_proxy_rights
     errors.add(:base, "All users must be assigned a proxy right") unless self.project_roles.map(&:project_rights).find_all(&:nil?).empty?
   end

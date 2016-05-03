@@ -107,7 +107,6 @@
     - if admin && !protocol.virgin_project? && (!protocol.changed.include?('selected_for_epic') || protocol.changed_attributes()['selected_for_epic'])
       .form-group.row{ display_if(USE_EPIC) }
         = form.label :selected_for_epic, t(:protocols)[:studies][:information][:push_to_epic], class: 'col-lg-2 form-control-label'
-        = form.hidden_field :study_type_question_group_id, value: protocol.study_type_question_group_id == StudyTypeQuestionGroup.where(active:false).pluck(:id).first ? 'inactive' : 'active'
         .col-lg-10
           %span.epic_selected.display_epic_answers
             = form.object.selected_for_epic ? "Yes" : "No"
@@ -115,7 +114,7 @@
               = form.hidden_field :selected_for_epic, value: true
             - elsif !form.object.selected_for_epic
               = form.hidden_field :selected_for_epic, value: false
-      .form-group.row.selected_for_epic_dependent#readonly{ display_if(protocol.selected_for_epic) }
+      .form-group.row.selected_for_epic_dependent#readonly
         = form.label :study_type_questions, "", class: 'col-lg-2 form-control-label'
         .col-lg-10
           = form.fields_for :study_type_answers, protocol.study_type_answers do |answer|
@@ -123,10 +122,10 @@
               = render partial: 'dashboard/protocols/form/study_form_sections/readonly_answer_field', locals: { answer: answer }
             - elsif !answer.object.study_type_question.study_type_question_group.active && !protocol.active? && answer.object.answer != nil
               = render partial: 'dashboard/protocols/form/study_form_sections/readonly_answer_field', locals: { answer: answer }
+
     - else
       .form-group.row{ display_if(USE_EPIC) }
         = form.label :selected_for_epic, t(:protocols)[:studies][:information][:push_to_epic], class: 'col-lg-2 form-control-label'
-        = form.hidden_field :study_type_question_group_id, value: protocol.study_type_question_group_id == StudyTypeQuestionGroup.where(active:false).pluck(:id).first ? 'inactive' : 'active'
         .col-lg-10
           .btn-group#selected_for_epic_button{data: {toggle: "buttons"}}
             %label.btn.btn-default{class: "#{protocol.selected_for_epic == true ? 'active' : nil}"}
@@ -135,7 +134,7 @@
             %label.btn.btn-default{class: "#{protocol.selected_for_epic == false ? 'active' : nil}"}
               = form.radio_button :selected_for_epic, 'false', id: "study_selected_for_epic_false"
               No
-      .form-group.row.selected_for_epic_dependent{ display_if(protocol.selected_for_epic) }
+      .form-group.row.selected_for_epic_dependent{ style: "display: none;" }
         = form.label :study_type_questions, "", class: 'col-lg-2 form-control-label'
         .col-lg-10
           = form.fields_for :study_type_answers, protocol.study_type_answers do |answer_form|
@@ -147,7 +146,3 @@
                 .col-lg-4
                   = answer_form.select :answer, options_for_select([['Yes', true], ['No', false]], answer_form.object.answer), { include_blank: 'Select One' }, { class: 'selectpicker', id: "study_type_answer_#{answer_form.object.study_type_question.friendly_id}_answer" }
 
-:javascript
-  $(document).ready( function() {
-    Sparc.protocol.ready();
-  })

@@ -100,6 +100,8 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def edit
+    admin_orgs = @user.authorized_admin_organizations
+    @admin =  !admin_orgs.empty?
     @protocol_type = @protocol.type
     @protocol.populate_for_edit
     session[:breadcrumbs].

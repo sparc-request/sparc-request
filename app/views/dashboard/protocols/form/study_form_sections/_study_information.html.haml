@@ -133,7 +133,7 @@
             - elsif !answer.object.study_type_question.study_type_question_group.active && !protocol.active? && answer.object.answer != nil
               = render partial: 'dashboard/protocols/form/study_form_sections/readonly_answer_field', locals: { answer: answer }
     - else
-      .form-group.row.selected_for_epic_dependent{ display_if(protocol.selected_for_epic) }
+      .form-group.row.selected_for_epic_dependent{ display_if(@protocol.selected_for_epic) }
         = form.label :study_type_questions, "", class: 'col-lg-2 form-control-label'
         .col-lg-10
           = form.fields_for :study_type_answers, protocol.study_type_answers do |answer_form|

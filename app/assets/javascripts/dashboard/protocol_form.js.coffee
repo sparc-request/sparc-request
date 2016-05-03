@@ -71,6 +71,11 @@ $(document).ready ->
       for sibling in siblings
         if !$(sibling).is(':visible')
           $(sibling).hide_visual_error()
+          
+  # If study is inactive, we want to force users to fill out new epic box questions
+  if $('input[name=\'protocol[selected_for_epic]\']:checked').val() == 'true'
+    study_type_form.show()
+    certificate_of_confidence_dropdown.show_elt()
 
   $(document).on 'change', "input[name='protocol[selected_for_epic]']", ->
     # Publish Study in Epic - Radio

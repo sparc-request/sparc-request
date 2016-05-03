@@ -25,7 +25,7 @@
     .pull-right
       %button.btn.btn-sm.btn-default.notes.list{ data: {notable_type: "ServiceRequest", notable_id: service_request.id }} 
         = t(:models)[:note][:plural]
-      - if !service_request.sub_service_requests.empty? && user.can_edit_service_request?(service_request)
+      - if permission_to_edit && !service_request.sub_service_requests.empty? && user.can_edit_service_request?(service_request)
         %button.edit_service_request.btn.btn-warning.btn-sm{ type: 'button', data: { permission: permission_to_edit.to_s, url: "/service_requests/#{service_request.id}/catalog?from_user_portal=true&edit_original=true" } }
           = t(:dashboard)[:service_requests][:edit_original]
     .clearfix
@@ -55,11 +55,11 @@
           %td
             %button.view-sub-service-request-button.btn.btn-primary.btn-sm{ type: 'button', data: { sub_service_request_id: sub_service_request.id } }
               = t(:dashboard)[:service_requests][:actions][:view]
-          - if user.can_edit_sub_service_request? sub_service_request
+          - if permission_to_edit && user.can_edit_sub_service_request?(sub_service_request)
             %td.edit-td
               %button.edit_service_request.btn.btn-warning.btn-sm{ type: 'button', data: { permission: permission_to_edit.to_s, url: "/service_requests/#{service_request.id}/catalog?sub_service_request_id=#{sub_service_request.id}&from_user_portal=true" } }
                 = t(:dashboard)[:service_requests][:actions][:edit]
-          - if user.admin_organizations.include? sub_service_request.organization
+          - if permission_to_edit && user.admin_organizations.include?(sub_service_request.organization)
             %td.admin-edit-td
-              %a.edit_service_request.btn.btn-warning.btn-sm{ type: 'button', href: "/dashboard/sub_service_requests/#{sub_service_request.id}" }
+              %a.edit_service_request.btn.btn-warning.btn-sm{ type: 'button', href: "/dashboard/sub_service_requests/#{sub_service_request.id}", data: { permission: permission_to_edit.to_s } }
                 = t(:dashboard)[:service_requests][:actions][:admin_edit]

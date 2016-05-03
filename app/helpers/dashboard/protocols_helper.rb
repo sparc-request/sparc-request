@@ -20,7 +20,7 @@
 
 module Dashboard::ProtocolsHelper
 
-  def consolidated_request_buttons_display protocol
+  def consolidated_request_buttons_display(protocol)
     if !protocol.has_first_draft_service_request? && protocol.service_requests.present?
       raw(
         content_tag( :div,
@@ -33,21 +33,21 @@ module Dashboard::ProtocolsHelper
     end
   end
 
-  def edit_protocol_button_display protocol, project_role
-    if project_role.present? and permission = project_role.can_edit?
+  def edit_protocol_button_display(protocol, project_role)
+    if project_role.present? && permission = project_role.can_edit?
       content_tag( :button, t(:dashboard)[:protocols][:summary][:edit1] + protocol.type.capitalize + t(:dashboard)[:protocols][:summary][:edit2], type: 'button', class: 'edit-protocol-information-button btn btn-warning btn-sm', data: { permission: permission.to_s, protocol_id: protocol.id })
     end
   end
 
-  def short_title_display protocol
+  def short_title_display(protocol)
     truncate_string_length(protocol.short_title, 100)
   end
 
-  def pis_display protocol
+  def pis_display(protocol)
     protocol.principal_investigators.map(&:full_name).join ", "
   end
 
-  def archived_button_display protocol
+  def archived_button_display(protocol)
     content_tag( :button, (protocol.archived ? t(:dashboard)[:protocols][:table][:unarchive] : t(:dashboard)[:protocols][:table][:archive])+" #{protocol.type.capitalize}", type: 'button', class: 'protocol-archive-button btn btn-warning btn-sm' )
   end
 end

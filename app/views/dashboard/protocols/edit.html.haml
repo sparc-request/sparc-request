@@ -32,7 +32,7 @@
             %button.btn.btn-warning#protocol_type_button{ data: {protocol_id: @protocol.id } }
               = t(:protocols)[:change_type][:change_button]
 
-  = render partial: 'dashboard/protocols/form/protocol_form', locals: { protocol: @protocol, protocol_type: @protocol_type }
+  = render partial: 'dashboard/protocols/form/protocol_form', locals: { protocol: @protocol, protocol_type: @protocol_type, admin: @admin }
 
 :javascript
   $(document).ready( function() {

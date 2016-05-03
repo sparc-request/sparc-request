@@ -66,6 +66,8 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def new
+    admin_orgs = @user.authorized_admin_organizations
+    @admin =  !admin_orgs.empty?
     @protocol_type = params[:protocol_type]
     @protocol = @protocol_type.capitalize.constantize.new
     @protocol.requester_id = current_user.id 
@@ -111,8 +113,12 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
   def update
     attrs = params[:protocol]
+    admin_orgs = @user.authorized_admin_organizations
+    @admin =  !admin_orgs.empty?
 
-    if @protocol.update_attributes(attrs.merge(study_type_question_group_id: StudyTypeQuestionGroup.active_id))
+    if @admin && @protocol.update_attributes(attrs.merge(study_type_question_group_id: StudyTypeQuestionGroup.inactive_id))
+      flash[:success] = "#{@protocol.type} Updated!"
+    elsif !@admin && @protocol.update_attributes(attrs.merge(study_type_question_group_id: StudyTypeQuestionGroup.active_id))
       flash[:success] = "#{@protocol.type} Updated!"
     else
       render action: 'edit'

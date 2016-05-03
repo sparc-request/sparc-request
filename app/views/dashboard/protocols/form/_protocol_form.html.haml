@@ -22,7 +22,6 @@
   = form_for ([:dashboard, protocol]), as: :protocol, remote: true, html: { class: 'form-horizontal' } do |form|
     = form.hidden_field :requester_id
     = form.hidden_field :type
-    = form.error_messages
 
     - if @protocol.type.capitalize == "Study"
       .edit-study-view.container-fluid

@@ -4,16 +4,32 @@ RSpec.describe 'dashboard/service_requests/service_requests', type: :view do
   let!(:logged_in_identity) { build_stubbed(:identity) }
 
   context 'Protocol has no SubServiceRequests' do
-    it 'should display "Add Services" button' do
-      protocol = instance_double('Protocol',
-        id: 1,
-        service_requests: [],
-        sub_service_requests: [],
-        :has_first_draft_service_request? => false)
-      render 'dashboard/service_requests/service_requests',
-        protocol: protocol,
-        permission_to_edit: false
-      expect(response).to have_selector('button', exact: 'Add Services')
+    context 'and user has appropriate rights' do
+      it 'should display "Add Services" button' do
+        protocol = instance_double('Protocol',
+          id: 1,
+          service_requests: [],
+          sub_service_requests: [],
+          has_first_draft_service_request?: false)
+        render 'dashboard/service_requests/service_requests',
+          protocol: protocol,
+          permission_to_edit: true
+        expect(response).to have_selector('button', exact: 'Add Services')
+      end
+    end
+
+    context 'and user does not have appropriate rights' do
+      it 'should not display "Add Services" button' do
+        protocol = instance_double('Protocol',
+          id: 1,
+          service_requests: [],
+          sub_service_requests: [],
+          has_first_draft_service_request?: false)
+        render 'dashboard/service_requests/service_requests',
+          protocol: protocol,
+          permission_to_edit: false
+        expect(response).to_not have_selector('button', exact: 'Add Services')
+      end
     end
   end
 

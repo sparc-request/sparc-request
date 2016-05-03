@@ -92,12 +92,13 @@ RSpec.describe 'service request list', js: true do
           it 'should send a notification to that user' do
             page = go_to_show_protocol(protocol.id)
             first_ssr = page.service_requests.first.ssrs.first
+            easter_bunny = Identity.where(first_name: "Easter", last_name: "Bunny").first
 
             # open potential recipients for a notification
             first_ssr.send_notification_select.click
             first_ssr.wait_until_recipients_visible
             # Select the service requester, say
-            first_ssr.recipients.find { |li| li.text == 'Requester: Some Guy' }.click
+            first_ssr.recipients.find { |li| li.text == 'Easter Bunny' }.click
             # fill in and submit notification
             page.wait_for_new_notification_form
             page.new_notification_form.instance_exec do
@@ -111,8 +112,8 @@ RSpec.describe 'service request list', js: true do
             message = Message.first
             expect(note.subject).to eq 'Hello'
             expect(note.originator_id).to eq user.id
-            expect(note.other_user_id).to eq service_requester.id
-            expect(message.to).to eq service_requester.id
+            expect(note.other_user_id).to eq easter_bunny.id
+            expect(message.to).to eq easter_bunny.id
             expect(message.from).to eq user.id
             expect(message.body).to eq 'Hows it going?'
             expect(message.notification_id).to eq note.id

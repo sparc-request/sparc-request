@@ -14,7 +14,9 @@ RSpec.describe 'dashboard/notifications/_notifications', type: :view do
 
       clinical_provider = build_stubbed(:identity, first_name: "Dr.", last_name: "Feelgood")
       organization = build_stubbed(:organization)
-      allow(organization).to receive_message_chain(:service_providers, :includes).with(:identity).and_return([build_stubbed(:clinical_provider, identity: clinical_provider, organization: organization)])
+      allow(organization).to receive_message_chain(:service_providers, :includes).
+        with(:identity).
+        and_return([build_stubbed(:clinical_provider, identity: clinical_provider, organization: organization)])
 
       @sub_service_request = build_stubbed(:sub_service_request, service_request: service_request)
       allow(@sub_service_request).to receive(:organization).and_return(organization)
@@ -23,24 +25,25 @@ RSpec.describe 'dashboard/notifications/_notifications', type: :view do
     end
 
     context "user an admin" do
-      it "should show requester, authorized users, but not clinical providers" do
+      it "should show authorized users, but not clinical providers or the service requester" do
         render "dashboard/notifications/notifications", sub_service_request: @sub_service_request, user: @logged_in_user, admin: true
 
         expect(response).to have_tag("select") do
-          with_option(/Requester: John Doe/)
           with_option(/Primary-pi: Jane Doe/)
+          without_option(/John Doe/)
+          without_option(/Dr\. Feelgood/)
         end
       end
     end
 
     context "user not an admin" do
-      it "should show clinical providers, requester and authorized users" do
+      it "should show clinical providers and authorized users, but not the service requester" do
         render "dashboard/notifications/notifications", sub_service_request: @sub_service_request, user: @logged_in_user, admin: false
 
         expect(response).to have_tag("select") do
-          with_option(/Requester: John Doe/)
           with_option(/Primary-pi: Jane Doe/)
           with_option(/Dr\. Feelgood/)
+          without_option(/John Doe/)
         end
       end
     end

@@ -33,3 +33,8 @@
               = t(:protocols)[:change_type][:change_button]
 
   = render partial: 'dashboard/protocols/form/protocol_form', locals: { protocol: @protocol, protocol_type: @protocol_type }
+
+:javascript
+  $(document).ready( function() {
+    Sparc.protocol.ready();
+  })

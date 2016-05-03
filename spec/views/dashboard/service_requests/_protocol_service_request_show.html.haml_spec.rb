@@ -126,7 +126,7 @@ RSpec.describe 'dashboard/service_requests/protocol_service_request_show', type:
 
       context 'user can edit ServiceRequest' do
         it 'should render' do
-          expect(jug2).to receive('can_edit_service_request?').
+          allow(jug2).to receive('can_edit_service_request?').
             with(service_request).and_return(true)
           render_protocol_service_request_show service_request
           expect(response).to have_selector('button', exact: 'Edit Original')
@@ -135,7 +135,7 @@ RSpec.describe 'dashboard/service_requests/protocol_service_request_show', type:
 
       context 'user cannot edit ServiceRequest' do
         it 'should not render' do
-          expect(jug2).to receive('can_edit_service_request?').
+          allow(jug2).to receive('can_edit_service_request?').
             with(service_request).and_return(false)
           render_protocol_service_request_show service_request
           expect(response).not_to have_content('Edit Original')
@@ -170,7 +170,7 @@ RSpec.describe 'dashboard/service_requests/protocol_service_request_show', type:
     context 'user can edit SubServiceRequest' do
       it 'should be visible' do
         jug2.reload
-        expect(jug2).to receive('can_edit_sub_service_request?').and_return(true)
+        allow(jug2).to receive('can_edit_sub_service_request?').and_return(true)
         service_request.reload
         render_protocol_service_request_show service_request
 
@@ -181,7 +181,7 @@ RSpec.describe 'dashboard/service_requests/protocol_service_request_show', type:
     context 'user cannot edit SubServiceRequest' do
       it 'should not be visible' do
         jug2.reload
-        expect(jug2).to receive('can_edit_sub_service_request?').and_return(false)
+        allow(jug2).to receive('can_edit_sub_service_request?').and_return(false)
         service_request.reload
         render_protocol_service_request_show service_request
 

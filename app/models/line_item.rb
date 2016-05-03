@@ -27,7 +27,6 @@ class LineItem < ActiveRecord::Base
   belongs_to :service_request
   belongs_to :service, -> { includes(:pricing_maps, :organization) }, :counter_cache => true
   belongs_to :sub_service_request
-  has_one :service_request, through: :sub_service_request
   has_many :fulfillments, :dependent => :destroy
 
   has_many :line_items_visits, :dependent => :destroy

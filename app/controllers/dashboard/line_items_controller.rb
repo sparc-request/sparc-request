@@ -85,7 +85,7 @@ class Dashboard::LineItemsController < Dashboard::BaseController
       flash[:alert] = t(:dashboard)[:study_level_activities][:destroyed]
     else
       @sub_service_request = @line_item.sub_service_request
-      @service_request = @line_item.service_request
+      @service_request = @sub_service_request.service_request
       @selected_arm = @service_request.arms.first
       @line_items = @sub_service_request.line_items
 
@@ -98,7 +98,7 @@ class Dashboard::LineItemsController < Dashboard::BaseController
   def update_from_cwf
     @line_item = LineItem.find(params[:id])
     @sub_service_request = @line_item.sub_service_request
-    @service_request = @line_item.service_request
+    @service_request = @sub_service_request.service_request
 
     updated_service_relations = true
     if params[:quantity]

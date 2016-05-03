@@ -127,7 +127,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def update_protocol_type
-     # Using update_attribute here is intentional, type is a protected attribute
+    # Using update_attribute here is intentional, type is a protected attribute
     admin_orgs = @user.authorized_admin_organizations
     @admin =  !admin_orgs.empty?
     @protocol_type = params[:type]

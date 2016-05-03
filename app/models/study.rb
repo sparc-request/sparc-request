@@ -130,7 +130,7 @@ class Study < Protocol
     end
 
     if has_errors
-      errors.add(:study_type_questions, "must be selected")
+      errors.add(:study_type_answers, "must be selected")
     end
   end
 end

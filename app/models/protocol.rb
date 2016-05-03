@@ -86,6 +86,7 @@ class Protocol < ActiveRecord::Base
   attr_accessible :study_type_question_group_id
   attr_accessible :study_types_attributes
   attr_accessible :title
+  attr_accessible :type
   attr_accessible :udak_project_number
   attr_accessible :vertebrate_animals_info_attributes
 

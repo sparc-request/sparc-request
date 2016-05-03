@@ -41,27 +41,27 @@ $(document).ready ->
     this.closest('.row').show()
     return this
 
-  $.prototype.hide_visual_error = () ->
-    this.removeClass('visual_error')
-    if $('.visual_error').length == 0
-      $('.study_type div').removeClass('field_with_errors')
-      if $('#errorExplanation ul li').size() == 1
-        $('#errorExplanation').remove()
-      else
-        $('#errorExplanation ul li:contains("Study type questions must be selected")').remove()
+  # $.prototype.hide_visual_error = () ->
+  #   this.removeClass('visual_error')
+  #   if $('.visual_error').length == 0
+  #     $('.study_type div').removeClass('field_with_errors')
+  #     if $('#errorExplanation ul li').size() == 1
+  #       $('#errorExplanation').remove()
+  #     else
+  #       $('#errorExplanation ul li:contains("Study type questions must be selected")').remove()
 
-  add_and_check_visual_error_on_submit = (dropdown) ->
-    if dropdown.is(':visible') && dropdown.val() == ''
-      dropdown.addClass('visual_error')
-      dropdown.on 'change', (e) ->
-        dropdown.hide_visual_error()
+  # add_and_check_visual_error_on_submit = (dropdown) ->
+  #   if dropdown.is(':visible') && dropdown.val() == ''
+  #     dropdown.addClass('visual_error')
+  #     dropdown.on 'change', (e) ->
+  #       dropdown.hide_visual_error()
 
-  add_and_check_visual_error_on_field_change = (dropdown) ->
-    siblings = dropdown.parent('.row').siblings().find('.visual_error')
-    if siblings
-      for sibling in siblings
-        if !$(sibling).is(':visible')
-          $(sibling).hide_visual_error()
+  # add_and_check_visual_error_on_field_change = (dropdown) ->
+  #   siblings = dropdown.parent('.row').siblings().find('.visual_error')
+  #   if siblings
+  #     for sibling in siblings
+  #       if !$(sibling).is(':visible')
+  #         $(sibling).hide_visual_error()
 
   $(document).on 'change', "input[name='protocol[selected_for_epic]']", ->
     # Publish Study in Epic - Radio
@@ -116,32 +116,32 @@ $(document).ready ->
   # So if the user has not filled out one of the
   # required fields in the epic box, it will hit this code and display
   # the appropriate fields that need to be filled out with a visual cue of red border
-  if $('.field_with_errors label:contains("Study type questions")').length > 0
-    $('#selected_for_epic_button').change()
-    if $('#study_type_answer_certificate_of_conf_answer').is(':visible')
-      $('#study_type_answer_certificate_of_conf_answer').change()
-    if $('#study_type_answer_higher_level_of_privacy_answer').val() == 'true'
-      $('#study_type_answer_access_study_info_answer').show_elt()
-      $('#study_type_answer_access_study_info_answer').change()
-    if $('#study_type_answer_higher_level_of_privacy_answer').val() == 'false'
-      $('#study_type_answer_higher_level_of_privacy_answer').change()
-    if $('#study_type_answer_certificate_of_conf_answer') != "" && $('#study_type_answer_higher_level_of_privacy_answer').val() != "" && $('#study_type_answer_access_study_info_answer').val() == 'false'
-      $('#study_type_answer_access_study_info_answer').change()
-    add_and_check_visual_error_on_submit($('#study_type_answer_certificate_of_conf_answer'))
-    add_and_check_visual_error_on_submit($('#study_type_answer_higher_level_of_privacy_answer'))
-    add_and_check_visual_error_on_submit($('#study_type_answer_access_study_info_answer'))
-    add_and_check_visual_error_on_submit($('#study_type_answer_epic_inbasket_answer'))
-    add_and_check_visual_error_on_submit(research_active_dropdown)
-    add_and_check_visual_error_on_submit($('#study_type_answer_restrict_sending_answer'))
+  # if $('.field_with_errors label:contains("Study type questions")').length > 0
+  #   $('#selected_for_epic_button').change()
+  #   if $('#study_type_answer_certificate_of_conf_answer').is(':visible')
+  #     $('#study_type_answer_certificate_of_conf_answer').change()
+  #   if $('#study_type_answer_higher_level_of_privacy_answer').val() == 'true'
+  #     $('#study_type_answer_access_study_info_answer').show_elt()
+  #     $('#study_type_answer_access_study_info_answer').change()
+  #   if $('#study_type_answer_higher_level_of_privacy_answer').val() == 'false'
+  #     $('#study_type_answer_higher_level_of_privacy_answer').change()
+  #   if $('#study_type_answer_certificate_of_conf_answer') != "" && $('#study_type_answer_higher_level_of_privacy_answer').val() != "" && $('#study_type_answer_access_study_info_answer').val() == 'false'
+  #     $('#study_type_answer_access_study_info_answer').change()
+  #   add_and_check_visual_error_on_submit($('#study_type_answer_certificate_of_conf_answer'))
+  #   add_and_check_visual_error_on_submit($('#study_type_answer_higher_level_of_privacy_answer'))
+  #   add_and_check_visual_error_on_submit($('#study_type_answer_access_study_info_answer'))
+  #   add_and_check_visual_error_on_submit($('#study_type_answer_epic_inbasket_answer'))
+  #   add_and_check_visual_error_on_submit(research_active_dropdown)
+  #   add_and_check_visual_error_on_submit($('#study_type_answer_restrict_sending_answer'))
 
-    $('#study_type_answer_certificate_of_conf_answer').on 'change', (e) ->
-      add_and_check_visual_error_on_field_change($('#study_type_answer_certificate_of_conf_answer'))
+  #   $('#study_type_answer_certificate_of_conf_answer').on 'change', (e) ->
+  #     add_and_check_visual_error_on_field_change($('#study_type_answer_certificate_of_conf_answer'))
 
-    $('#study_type_answer_higher_level_of_privacy_answer').on 'change', (e) ->
-      add_and_check_visual_error_on_field_change($('#study_type_answer_higher_level_of_privacy_answer'))
+  #   $('#study_type_answer_higher_level_of_privacy_answer').on 'change', (e) ->
+  #     add_and_check_visual_error_on_field_change($('#study_type_answer_higher_level_of_privacy_answer'))
 
-    $('#study_type_answer_access_study_info_answer').on 'change', (e) ->
-      add_and_check_visual_error_on_field_change($('#study_type_answer_access_study_info_answer'))
+  #   $('#study_type_answer_access_study_info_answer').on 'change', (e) ->
+  #     add_and_check_visual_error_on_field_change($('#study_type_answer_access_study_info_answer'))
 
   #### This was written for an edge case in admin/portal.
   #### When you go from a virgin project (selected_for_epic = nil/ never been a study)

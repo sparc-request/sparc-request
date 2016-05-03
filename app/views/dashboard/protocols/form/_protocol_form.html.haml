@@ -31,10 +31,10 @@
     - elsif @protocol.type.capitalize == "Project"
       .edit-project-view.container-fluid
         .row.user-edit-protocol-view
-          = render partial: 'dashboard/protocols/form/project_fields', locals: { form: form, protocol: protocol, admin: admin }
+          = render partial: 'dashboard/protocols/form/project_fields', locals: { form: form, protocol: protocol }
 
     - unless protocol.id.present? # New Protocol, authorized users fields required
-      = render partial: 'dashboard/protocols/form/project_roles_fields', locals: { form: form, protocol: protocol, admin: admin }
+      = render partial: 'dashboard/protocols/form/project_roles_fields', locals: { form: form, protocol: protocol }
 
     .row#actions
       .col-lg-4

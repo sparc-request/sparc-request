@@ -102,7 +102,7 @@
         = form.text_field :sponsor_name, class: 'form-control'
 
     .form-group.row{ display_if(USE_EPIC) }
-      = form.label :selected_for_epic, t(:study_form)[:push_to_epic], class: 'col-lg-2 form-control-label'
+      = form.label :selected_for_epic, t(:protocols)[:studies][:information][:push_to_epic], class: 'col-lg-2 form-control-label'
       = form.hidden_field :study_type_question_group_id, value: protocol.study_type_question_group_id == StudyTypeQuestionGroup.where(active:false).pluck(:id).first ? 'inactive' : 'active'
       .col-lg-10
         / Display epic questions as readonly for administrators 

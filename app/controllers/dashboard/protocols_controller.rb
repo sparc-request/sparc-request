@@ -127,12 +127,15 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def update_protocol_type
-    # Using update_attribute here is intentional, type is a protected attribute
-    @protocol.update_attribute(:type, params[:type])
+     # Using update_attribute here is intentional, type is a protected attribute
+    admin_orgs = @user.authorized_admin_organizations
+    @admin =  !admin_orgs.empty?
     @protocol_type = params[:type]
-    @protocol = Protocol.find(@protocol.id) #Protocol type has been converted, this is a reload
+    @protocol.update_attribute(:type, @protocol_type)
+    conditionally_activate_protocol
+    @protocol = Protocol.find @protocol.id #Protocol type has been converted, this is a reload
     @protocol.populate_for_edit
-    flash[:success] = 'Protocol Type Updated!'
+    flash[:success] = "Protocol Type Updated!"
   end
 
   def archive
@@ -181,5 +184,19 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
   def find_protocol
     @protocol = Protocol.find(params[:id])
+  end
+
+  def admin?
+    !@user.authorized_admin_organizations.empty?
+  end
+
+  def conditionally_activate_protocol
+    if admin?
+      if @protocol_type == "Study" && @protocol.virgin_project?
+        @protocol.activate
+      end
+    else
+      @protocol.activate
+    end
   end
 end

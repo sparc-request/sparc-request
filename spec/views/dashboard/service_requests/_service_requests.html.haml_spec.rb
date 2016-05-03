@@ -1,12 +1,14 @@
 require 'rails_helper'
 
 RSpec.describe 'dashboard/service_requests/service_requests', type: :view do
-  let_there_be_lane
+  let!(:logged_in_identity) { build_stubbed(:identity) }
 
-  context 'Protocol has no ServiceRequests' do
+  context 'Protocol has no SubServiceRequests' do
     it 'should display "Add Services" button' do
       protocol = instance_double('Protocol',
+        id: 1,
         service_requests: [],
+        sub_service_requests: [],
         :has_first_draft_service_request? => false)
       render 'dashboard/service_requests/service_requests',
         protocol: protocol,
@@ -15,50 +17,37 @@ RSpec.describe 'dashboard/service_requests/service_requests', type: :view do
     end
   end
 
-  context 'Protocol has all ServiceRequests in first_draft' do
-    it 'should indicate that the requests are in progress' do
-      protocol = instance_double('Protocol',
-        service_requests: [:at_least_one_service_request],
-        :has_first_draft_service_request? => true)
-      render 'dashboard/service_requests/service_requests',
-        protocol: protocol,
-        permission_to_edit: false
-      expect(response).to have_content('Request in progress.')
-    end
-  end
-
-  context 'Protocol has some ServiceRequest not in first_draft' do
-    let!(:protocol) do
-      create(:protocol_federally_funded,
-        :without_validations,
-        id: 9999,
-        primary_pi: jug2,
-        type: 'Study',
-        archived: false,
-        short_title: 'My Awesome Short Title')
-    end
-    let!(:service_request_d) do
-      sr = create(:service_request_without_validations, id: 1234, protocol: protocol, service_requester: jug2, status: 'draft')
-      create(:sub_service_request, ssr_id: '0001', service_request: sr, organization: create(:organization))
-      sr
-    end
-
+  context 'Protocol has some SubServiceRequest' do
     before(:each) do
+      protocol = build_stubbed(:protocol)
+      @service_request = build_stubbed(:service_request, protocol: protocol)
+      allow(protocol).to receive(:service_requests).
+        and_return([@service_request])
+
+      organization = build_stubbed(:organization)
+      sub_service_request = build_stubbed(:sub_service_request,
+        service_request: @service_request,
+        organization: organization)
+      allow(protocol).to receive(:sub_service_requests).
+        and_return([sub_service_request])
+      allow(@service_request).to receive(:sub_service_requests).
+        and_return([sub_service_request])
+
       render 'dashboard/service_requests/service_requests',
         protocol: protocol,
         permission_to_edit: false,
-        user: jug2,
+        user: logged_in_identity,
         admin: false
     end
 
     it 'should show that SubServiceRequest' do
       expect(response).to render_template('dashboard/service_requests/_protocol_service_request_show',
         locals: {
-          service_request: service_request_d,
-          user: jug2,
+          service_request: @service_request,
+          user: logged_in_identity,
           admin: false,
           permission_to_edit: false
-          })
+        })
     end
   end
 end

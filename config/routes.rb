@@ -204,9 +204,8 @@ SparcRails::Application.routes.draw do
 
     resources :fulfillments
 
-    resources :line_items do
+    resources :line_items, except: ['show'] do
       member do
-        get :details
         put :update_from_cwf
       end
     end

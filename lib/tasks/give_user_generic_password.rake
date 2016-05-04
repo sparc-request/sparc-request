@@ -7,7 +7,6 @@ namespace :data do
       ]
     end
 
-    file = "db/imports/user_change_password_test.csv"
     def prompt(*args)
       print(*args)
       STDIN.gets.strip

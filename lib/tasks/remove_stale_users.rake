@@ -27,7 +27,6 @@ namespace :data do
       ]
     end
 
-    file = "db/imports/user_delete.csv"
     def prompt(*args)
       print(*args)
       STDIN.gets.strip

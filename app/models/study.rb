@@ -69,7 +69,7 @@ class Study < Protocol
     end
 
     impact_areas.sort_by(&:position)
-   end
+  end
 
   def setup_affiliations
     position = 1
@@ -92,7 +92,7 @@ class Study < Protocol
   end
 
   def setup_project_roles
-    project_roles.build(role: "primary-pi", project_rights: "approve")
+    project_roles.build(role: "primary-pi", project_rights: "approve") unless project_roles.primary_pis.any?
   end
 
   FRIENDLY_IDS = ["certificate_of_conf", "higher_level_of_privacy", "access_study_info", "epic_inbasket", "research_active", "restrict_sending"]

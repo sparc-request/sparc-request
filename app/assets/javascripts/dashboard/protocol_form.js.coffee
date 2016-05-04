@@ -125,32 +125,32 @@ $(document).ready ->
   # So if the user has not filled out one of the
   # required fields in the epic box, it will hit this code and display
   # the appropriate fields that need to be filled out with a visual cue of red border
-  # if $('.field_with_errors label:contains("Study type questions")').length > 0
-  #   $(study_selected_for_epic_button).change()
-  #   if $(certificate_of_confidence_dropdown).is(':visible')
-  #     $(certificate_of_confidence_dropdown).change()
-  #   if $(higher_level_of_privacy_dropdown).val() == 'true'
-  #     $(access_required_dropdown).show_elt()
-  #     $(access_required_dropdown).change()
-  #   if $(higher_level_of_privacy_dropdown).val() == 'false'
-  #     $(higher_level_of_privacy_dropdown).change()
-  #   if $(certificate_of_confidence_dropdown) != "" && $(higher_level_of_privacy_dropdown).val() != "" && $(access_required_dropdown).val() == 'false'
-  #     $(access_required_dropdown).change()
-  #   add_and_check_visual_error_on_submit($(certificate_of_confidence_dropdown))
-  #   add_and_check_visual_error_on_submit($(higher_level_of_privacy_dropdown))
-  #   add_and_check_visual_error_on_submit($(access_required_dropdown))
-  #   add_and_check_visual_error_on_submit($(epic_inbasket_dropdown))
-  #   add_and_check_visual_error_on_submit(research_active_dropdown)
-  #   add_and_check_visual_error_on_submit($(restrict_sending_dropdown))
+  if $('.field_with_errors label:contains("Study type questions")').length > 0
+    $(study_selected_for_epic_button).change()
+    if $(certificate_of_confidence_dropdown).is(':visible')
+      $(certificate_of_confidence_dropdown).change()
+    if $(higher_level_of_privacy_dropdown).val() == 'true'
+      $(access_required_dropdown).show_elt()
+      $(access_required_dropdown).change()
+    if $(higher_level_of_privacy_dropdown).val() == 'false'
+      $(higher_level_of_privacy_dropdown).change()
+    if $(certificate_of_confidence_dropdown) != "" && $(higher_level_of_privacy_dropdown).val() != "" && $(access_required_dropdown).val() == 'false'
+      $(access_required_dropdown).change()
+    add_and_check_visual_error_on_submit($(certificate_of_confidence_dropdown))
+    add_and_check_visual_error_on_submit($(higher_level_of_privacy_dropdown))
+    add_and_check_visual_error_on_submit($(access_required_dropdown))
+    add_and_check_visual_error_on_submit($(epic_inbasket_dropdown))
+    add_and_check_visual_error_on_submit(research_active_dropdown)
+    add_and_check_visual_error_on_submit($(restrict_sending_dropdown))
 
-  #   $(certificate_of_confidence_dropdown).on 'change', (e) ->
-  #     add_and_check_visual_error_on_field_change($(certificate_of_confidence_dropdown))
+    $(certificate_of_confidence_dropdown).on 'change', (e) ->
+      add_and_check_visual_error_on_field_change($(certificate_of_confidence_dropdown))
 
-  #   $(higher_level_of_privacy_dropdown).on 'change', (e) ->
-  #     add_and_check_visual_error_on_field_change($(higher_level_of_privacy_dropdown))
+    $(higher_level_of_privacy_dropdown).on 'change', (e) ->
+      add_and_check_visual_error_on_field_change($(higher_level_of_privacy_dropdown))
 
-  #   $(access_required_dropdown).on 'change', (e) ->
-  #     add_and_check_visual_error_on_field_change($(access_required_dropdown))
+    $(access_required_dropdown).on 'change', (e) ->
+      add_and_check_visual_error_on_field_change($(access_required_dropdown))
 
   #### This was written for an edge case in admin/portal.
   #### When you go from a virgin project (selected_for_epic = nil/ never been a study)

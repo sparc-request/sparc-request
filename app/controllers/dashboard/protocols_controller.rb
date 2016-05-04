@@ -108,6 +108,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
       clear.
       add_crumbs(protocol_id: @protocol.id, edit_protocol: true)
     @protocol.valid?
+    @errors = @protocol.errors
     respond_to do |format|
       format.html
     end

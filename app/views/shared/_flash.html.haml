@@ -1,11 +1,14 @@
 #flashes_container
-  - flash.each do |type, message|
-    .alert.alert-dismissable{ :class => twitterized_type(type) }
-      %button.close{:'data-dismiss' => "alert", :type => "button"}
-        %span{:'aria-hidden' => "true"} &times;
-        %span.sr-only Close
-      %p= message
-  - flash.clear
+  - if !content_for?(:error_messages)
+    - flash.each do |type, message|
+      .alert.alert-dismissable{ :class => twitterized_type(type) }
+        %button.close{:'data-dismiss' => "alert", :type => "button"}
+          %span{:'aria-hidden' => "true"} &times;
+          %span.sr-only Close
+        %p= message
+    - flash.clear
+  - else
+    = content_for(:error_messages)
 
 :coffeescript
   window.setTimeout (->

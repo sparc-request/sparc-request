@@ -20,6 +20,15 @@
 
 $(document).ready ->
 
+  study_type_form = '.selected_for_epic_dependent'
+  study_selected_for_epic_button = '#selected_for_epic_button'
+  certificate_of_confidence_dropdown = '#study_type_answer_certificate_of_conf_answer'
+  higher_level_of_privacy_dropdown = '#study_type_answer_higher_level_of_privacy_answer'
+  access_required_dropdown = '#study_type_answer_access_study_info_answer'
+  epic_inbasket_dropdown = '#study_type_answer_epic_inbasket_answer'
+  research_active_dropdown = '#study_type_answer_research_active_answer'
+  restrict_sending_dropdown = '#study_type_answer_restrict_sending_answer'
+
   epic_box_alert_message = () ->
     options = {
       resizable: false,
@@ -67,48 +76,48 @@ $(document).ready ->
     # Publish Study in Epic - Radio
     switch $('#selected_for_epic_button .btn input:radio:checked').val()
       when 'true'
-        $('.selected_for_epic_dependent').show()
-        $('#study_type_answer_certificate_of_conf_answer').show_elt()
+        $(study_type_form).show()
+        $(certificate_of_confidence_dropdown).show_elt()
       when 'false'
-        $('.selected_for_epic_dependent').hide()
-        $('#study_type_answer_certificate_of_conf_answer').hide_elt().trigger 'change'
+        $(study_type_form).hide()
+        $(certificate_of_confidence_dropdown).hide_elt().trigger 'change'
 
-  $(document).on 'change', '#study_type_answer_certificate_of_conf_answer', (e) ->
+  $(document).on 'change', certificate_of_confidence_dropdown, (e) ->
     new_value = $(e.target).val()
     if new_value == 'false'
-      $('#study_type_answer_higher_level_of_privacy_answer').show_elt()
+      $(higher_level_of_privacy_dropdown).show_elt()
     else
-      $('#study_type_answer_higher_level_of_privacy_answer').hide_elt()
-      $('#study_type_answer_access_study_info_answer').hide_elt()
-      $('#study_type_answer_epic_inbasket_answer').hide_elt()
-      $('#study_type_answer_research_active_answer').hide_elt()
-      $('#study_type_answer_restrict_sending_answer').hide_elt()
+      $(higher_level_of_privacy_dropdown).hide_elt()
+      $(access_required_dropdown).hide_elt()
+      $(epic_inbasket_dropdown).hide_elt()
+      $(research_active_dropdown).hide_elt()
+      $(restrict_sending_dropdown).hide_elt()
     return
 
-  $(document).on 'change', '#study_type_answer_higher_level_of_privacy_answer', (e) ->
+  $(document).on 'change', higher_level_of_privacy_dropdown, (e) ->
     new_value = $(e.target).val()
     if new_value == 'false'
-      $('#study_type_answer_access_study_info_answer').hide_elt()
-      $('#study_type_answer_epic_inbasket_answer').show_elt()
-      $('#study_type_answer_research_active_answer').show_elt()
-      $('#study_type_answer_restrict_sending_answer').show_elt()
+      $(access_required_dropdown).hide_elt()
+      $(epic_inbasket_dropdown).show_elt()
+      $(research_active_dropdown).show_elt()
+      $(restrict_sending_dropdown).show_elt()
     else
-      $('#study_type_answer_access_study_info_answer').show_elt()
-      $('#study_type_answer_epic_inbasket_answer').hide_elt()
-      $('#study_type_answer_research_active_answer').hide_elt()
-      $('#study_type_answer_restrict_sending_answer').hide_elt()
+      $(access_required_dropdown).show_elt()
+      $(epic_inbasket_dropdown).hide_elt()
+      $(research_active_dropdown).hide_elt()
+      $(restrict_sending_dropdown).hide_elt()
     return
 
-  $(document).on 'change', '#study_type_answer_access_study_info_answer', (e) ->
+  $(document).on 'change', access_required_dropdown, (e) ->
     new_value = $(e.target).val()
     if new_value == 'false'
-      $('#study_type_answer_epic_inbasket_answer').show_elt()
-      $('#study_type_answer_research_active_answer').show_elt()
-      $('#study_type_answer_restrict_sending_answer').show_elt()
+      $(epic_inbasket_dropdown).show_elt()
+      $(research_active_dropdown).show_elt()
+      $(restrict_sending_dropdown).show_elt()
     else
-      $('#study_type_answer_epic_inbasket_answer').hide_elt()
-      $('#study_type_answer_research_active_answer').hide_elt()
-      $('#study_type_answer_restrict_sending_answer').hide_elt()
+      $(epic_inbasket_dropdown).hide_elt()
+      $(research_active_dropdown).hide_elt()
+      $(restrict_sending_dropdown).hide_elt()
     return
 
   # When the epic box answers hit the validations with an unselected field,
@@ -117,31 +126,31 @@ $(document).ready ->
   # required fields in the epic box, it will hit this code and display
   # the appropriate fields that need to be filled out with a visual cue of red border
   # if $('.field_with_errors label:contains("Study type questions")').length > 0
-  #   $('#selected_for_epic_button').change()
-  #   if $('#study_type_answer_certificate_of_conf_answer').is(':visible')
-  #     $('#study_type_answer_certificate_of_conf_answer').change()
-  #   if $('#study_type_answer_higher_level_of_privacy_answer').val() == 'true'
-  #     $('#study_type_answer_access_study_info_answer').show_elt()
-  #     $('#study_type_answer_access_study_info_answer').change()
-  #   if $('#study_type_answer_higher_level_of_privacy_answer').val() == 'false'
-  #     $('#study_type_answer_higher_level_of_privacy_answer').change()
-  #   if $('#study_type_answer_certificate_of_conf_answer') != "" && $('#study_type_answer_higher_level_of_privacy_answer').val() != "" && $('#study_type_answer_access_study_info_answer').val() == 'false'
-  #     $('#study_type_answer_access_study_info_answer').change()
-  #   add_and_check_visual_error_on_submit($('#study_type_answer_certificate_of_conf_answer'))
-  #   add_and_check_visual_error_on_submit($('#study_type_answer_higher_level_of_privacy_answer'))
-  #   add_and_check_visual_error_on_submit($('#study_type_answer_access_study_info_answer'))
-  #   add_and_check_visual_error_on_submit($('#study_type_answer_epic_inbasket_answer'))
+  #   $(study_selected_for_epic_button).change()
+  #   if $(certificate_of_confidence_dropdown).is(':visible')
+  #     $(certificate_of_confidence_dropdown).change()
+  #   if $(higher_level_of_privacy_dropdown).val() == 'true'
+  #     $(access_required_dropdown).show_elt()
+  #     $(access_required_dropdown).change()
+  #   if $(higher_level_of_privacy_dropdown).val() == 'false'
+  #     $(higher_level_of_privacy_dropdown).change()
+  #   if $(certificate_of_confidence_dropdown) != "" && $(higher_level_of_privacy_dropdown).val() != "" && $(access_required_dropdown).val() == 'false'
+  #     $(access_required_dropdown).change()
+  #   add_and_check_visual_error_on_submit($(certificate_of_confidence_dropdown))
+  #   add_and_check_visual_error_on_submit($(higher_level_of_privacy_dropdown))
+  #   add_and_check_visual_error_on_submit($(access_required_dropdown))
+  #   add_and_check_visual_error_on_submit($(epic_inbasket_dropdown))
   #   add_and_check_visual_error_on_submit(research_active_dropdown)
-  #   add_and_check_visual_error_on_submit($('#study_type_answer_restrict_sending_answer'))
+  #   add_and_check_visual_error_on_submit($(restrict_sending_dropdown))
 
-  #   $('#study_type_answer_certificate_of_conf_answer').on 'change', (e) ->
-  #     add_and_check_visual_error_on_field_change($('#study_type_answer_certificate_of_conf_answer'))
+  #   $(certificate_of_confidence_dropdown).on 'change', (e) ->
+  #     add_and_check_visual_error_on_field_change($(certificate_of_confidence_dropdown))
 
-  #   $('#study_type_answer_higher_level_of_privacy_answer').on 'change', (e) ->
-  #     add_and_check_visual_error_on_field_change($('#study_type_answer_higher_level_of_privacy_answer'))
+  #   $(higher_level_of_privacy_dropdown).on 'change', (e) ->
+  #     add_and_check_visual_error_on_field_change($(higher_level_of_privacy_dropdown))
 
-  #   $('#study_type_answer_access_study_info_answer').on 'change', (e) ->
-  #     add_and_check_visual_error_on_field_change($('#study_type_answer_access_study_info_answer'))
+  #   $(access_required_dropdown).on 'change', (e) ->
+  #     add_and_check_visual_error_on_field_change($(access_required_dropdown))
 
   #### This was written for an edge case in admin/portal.
   #### When you go from a virgin project (selected_for_epic = nil/ never been a study)
@@ -150,33 +159,33 @@ $(document).ready ->
   if $('#study_can_edit_admin_study').val() == "can_edit_study"
     $('#actions input[type="submit"]').on 'click', (e) ->
       if $('input[name=\'study[selected_for_epic]\']:checked').val() == 'true'
-        if $('#study_type_answer_certificate_of_conf_answer').val() == ''
+        if $(certificate_of_confidence_dropdown).val() == ''
           epic_box_alert_message()
-          add_and_check_visual_error_on_submit($('#study_type_answer_certificate_of_conf_answer'))
+          add_and_check_visual_error_on_submit($(certificate_of_confidence_dropdown))
           return false
-        if $('#study_type_answer_certificate_of_conf_answer').val() == 'false'
-          if $('#study_type_answer_higher_level_of_privacy_answer').val() == ''
+        if $(certificate_of_confidence_dropdown).val() == 'false'
+          if $(higher_level_of_privacy_dropdown).val() == ''
             epic_box_alert_message()
-            add_and_check_visual_error_on_submit($('#study_type_answer_higher_level_of_privacy_answer'))
+            add_and_check_visual_error_on_submit($(higher_level_of_privacy_dropdown))
             return false
-          if $('#study_type_answer_higher_level_of_privacy_answer').val() == 'true'
-            if $('#study_type_answer_access_study_info_answer').val() == ''
+          if $(higher_level_of_privacy_dropdown).val() == 'true'
+            if $(access_required_dropdown).val() == ''
               epic_box_alert_message()
-              add_and_check_visual_error_on_submit($('#study_type_answer_access_study_info_answer'))
+              add_and_check_visual_error_on_submit($(access_required_dropdown))
               return false
-            if $('#study_type_answer_access_study_info_answer').val() == 'false'
-              if $('#study_type_answer_epic_inbasket_answer').val() == '' ||$('#study_type_answer_research_active_answer').val() == '' || $('#study_type_answer_restrict_sending_answer').val() == ''
+            if $(access_required_dropdown).val() == 'false'
+              if $(epic_inbasket_dropdown).val() == '' ||$(research_active_dropdown).val() == '' || $(restrict_sending_dropdown).val() == ''
                 epic_box_alert_message()
-                add_and_check_visual_error_on_submit($('#study_type_answer_epic_inbasket_answer'))
+                add_and_check_visual_error_on_submit($(epic_inbasket_dropdown))
                 add_and_check_visual_error_on_submit(research_active_dropdown)
-                add_and_check_visual_error_on_submit($('#study_type_answer_restrict_sending_answer'))
+                add_and_check_visual_error_on_submit($(restrict_sending_dropdown))
                 return false
-          else if $('#study_type_answer_higher_level_of_privacy_answer').val() == 'false'
-            if $('#study_type_answer_epic_inbasket_answer').val() == '' ||$('#study_type_answer_research_active_answer').val() == '' || $('#study_type_answer_restrict_sending_answer').val() == ''
+          else if $(higher_level_of_privacy_dropdown).val() == 'false'
+            if $(epic_inbasket_dropdown).val() == '' ||$(research_active_dropdown).val() == '' || $(restrict_sending_dropdown).val() == ''
               epic_box_alert_message()
-              add_and_check_visual_error_on_submit($('#study_type_answer_epic_inbasket_answer'))
+              add_and_check_visual_error_on_submit($(epic_inbasket_dropdown))
               add_and_check_visual_error_on_submit(research_active_dropdown)
-              add_and_check_visual_error_on_submit($('#study_type_answer_restrict_sending_answer'))
+              add_and_check_visual_error_on_submit($(restrict_sending_dropdown))
               return false
 
   ######## End of send to epic study question logic ##############

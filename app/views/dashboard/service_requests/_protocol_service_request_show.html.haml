@@ -59,7 +59,7 @@
             %td.edit-td
               %button.edit_service_request.btn.btn-warning.btn-sm{ type: 'button', data: { permission: permission_to_edit.to_s, url: "/service_requests/#{service_request.id}/catalog?sub_service_request_id=#{sub_service_request.id}&from_user_portal=true" } }
                 = t(:dashboard)[:service_requests][:actions][:edit]
-          - if permission_to_edit && user.admin_organizations.include?(sub_service_request.organization)
+          - if user.admin_organizations.include?(sub_service_request.organization)
             %td.admin-edit-td
               %a.edit_service_request.btn.btn-warning.btn-sm{ type: 'button', href: "/dashboard/sub_service_requests/#{sub_service_request.id}", data: { permission: permission_to_edit.to_s } }
                 = t(:dashboard)[:service_requests][:actions][:admin_edit]

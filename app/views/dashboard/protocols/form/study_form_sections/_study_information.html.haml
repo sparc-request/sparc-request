@@ -114,8 +114,8 @@
               = form.hidden_field :selected_for_epic, value: true
             - elsif !form.object.selected_for_epic
               = form.hidden_field :selected_for_epic, value: false
-      .form-group.row.selected_for_epic_dependent#readonly
-        = form.label :study_type_questions, "", class: 'col-lg-2 form-control-label'
+      .form-group.row.selected_for_epic_dependent#readonly{ display_if(protocol.selected_for_epic) }
+        = form.label :study_type_questions, t(:study_form)[:study_type_questions], class: 'col-lg-2 form-control-label'
         .col-lg-10
           = form.fields_for :study_type_answers, protocol.study_type_answers do |answer|
             - if answer.object.study_type_question.study_type_question_group.active && protocol.active? && answer.object.answer != nil

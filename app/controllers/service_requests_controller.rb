@@ -21,11 +21,13 @@
 require 'generate_request_grant_billing_pdf'
 
 class ServiceRequestsController < ApplicationController
-  before_filter :initialize_service_request, :except => [:approve_changes]
-  before_filter :authorize_identity, :except => [:approve_changes, :show]
-  before_filter :authenticate_identity!, :except => [:catalog, :add_service, :remove_service, :ask_a_question, :feedback]
-  before_filter :prepare_catalog, :only => :catalog
-  layout false, :only => [:ask_a_question, :feedback]
+  before_filter :initialize_service_request,      except: [:approve_changes]
+  before_filter :authorize_identity,              except: [:approve_changes, :show]
+  before_filter :authenticate_identity!,          except: [:catalog, :add_service, :remove_service, :ask_a_question, :feedback]
+  before_filter :authorize_protocol_edit_request, only: :catalog
+  before_filter :prepare_catalog,                 only: :catalog
+
+  layout false,                                   only: [:ask_a_question, :feedback]
   respond_to :js, :json, :html
 
   def show
@@ -612,6 +614,20 @@ class ServiceRequestsController < ApplicationController
         service_request.previous_submitted_at = @service_request.submitted_at
         service_request.update_attribute(:submitted_at, Time.now)
       end
+    end
+  end
+
+  def authorize_protocol_edit_request
+    authorized =  if @sub_service_request
+                    current_user.can_edit_sub_service_request?(@sub_service_request)
+                  else
+                    current_user.can_edit_service_request?(@service_request)
+                  end
+
+    unless authorized
+      @service_request     = nil
+      @sub_service_request = nil
+      render partial: 'service_requests/authorization_error', locals: { error: 'You are not allowed to edit this Request.' }
     end
   end
 end

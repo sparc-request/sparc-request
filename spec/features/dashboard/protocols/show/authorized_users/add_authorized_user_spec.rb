@@ -190,7 +190,7 @@ RSpec.feature 'User wants to add an authorized user', js: true do
   context 'and does not have permission to edit the protocol' do
     fake_login_for_each_test("janed")
 
-    scenario 'and sees disabled Add an Authorized User button' do
+    scenario 'and sees the disabled Add an Authorized User button' do
       create(:project_role,
              identity: other_user,
              protocol: protocol,

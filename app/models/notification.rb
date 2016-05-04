@@ -34,8 +34,21 @@ class Notification < ActiveRecord::Base
   attr_accessible :read_by_originator
   attr_accessible :read_by_other_user
 
-  scope :in_inbox_of, lambda { |user| joins(:messages).where(messages: { to: user.id }) }
-  scope :in_sent_of, lambda { |user| joins(:messages).where(messages: { from: user.id }) }
+  def self.in_inbox_of(identity_id, sub_service_request_id=nil)
+    if !sub_service_request_id.present?
+      joins(:messages).where(messages: { to: identity_id })
+    else
+      joins(:messages).where(messages: { to: identity_id }, sub_service_request_id: sub_service_request_id)
+    end
+  end
+
+  def self.in_sent_of(identity_id, sub_service_request_id=nil)
+    if !sub_service_request_id.present?
+      joins(:messages).where(messages: { from: identity_id })
+    else
+      joins(:messages).where(messages: { from: identity_id }, sub_service_request_id: sub_service_request_id)
+    end
+  end
 
   def self.belonging_to(user)
     messages = Message.arel_table

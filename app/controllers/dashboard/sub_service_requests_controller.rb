@@ -19,9 +19,11 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Dashboard::SubServiceRequestsController < Dashboard::BaseController
-  respond_to :json, :js, :html
   before_action :find_sub_service_request
-  before_filter :protocol_authorizer, only: [:update_from_project_study_information]
+  before_filter :protocol_authorizer,     only: [:update_from_project_study_information]
+  before_filter :authorize_admin,         only: :show
+
+  respond_to :json, :js, :html
 
   def show
     respond_to do |format|
@@ -170,6 +172,13 @@ private
     if (request.get? && !authorized_user.can_view?) || (!request.get? && !authorized_user.can_edit?)
       @protocol = nil
       render partial: 'service_requests/authorization_error', locals: { error: 'You are not allowed to access this protocol.' }
+    end
+  end
+
+  def authorize_admin
+    unless @user.admin_organizations.include?(@sub_service_request.organization)
+      @protocol = nil
+      render partial: 'service_requests/authorization_error', locals: { error: 'You are not allowed to access this Sub Service Request.' }
     end
   end
 

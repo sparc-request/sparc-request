@@ -30,9 +30,6 @@ $(document).ready ->
         url: '/dashboard/associated_users/new.js'
         data:
           protocol_id: $(this).data('protocol-id')
-    else
-      $('.permissions-dialog').dialog('open')
-      $('.permissions-dialog .text').html('Edit.')
 
 
   $(document).on 'click', '.edit-associated-user-button', (event) ->
@@ -41,9 +38,6 @@ $(document).ready ->
       $.ajax
         type: 'get'
         url: "/dashboard/associated_users/#{project_role_id}/edit.js"
-    else
-      $('.permissions-dialog').dialog('open')
-      $('.permissions-dialog .text').html('Edit.')
 
 
   $(document).on 'click', '.delete-associated-user-button', ->
@@ -65,10 +59,7 @@ $(document).ready ->
           $.ajax
             type: 'delete'
             url: "/dashboard/associated_users/#{project_role_id}"
-
-    else
-      $('.permissions-dialog').dialog('open')
-      $('.permissions-dialog .text').html('Edit.')
+            
 
   #**************** Add Authorized User Form Begin ****************
 

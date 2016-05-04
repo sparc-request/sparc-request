@@ -6,10 +6,9 @@ RSpec.describe Dashboard::LineItemsController do
       before(:each) do
         @service_request = build_stubbed(:service_request)
 
-        @sub_service_request = build_stubbed(:sub_service_request)
+        @sub_service_request = findable_stub(SubServiceRequest) { build_stubbed(:sub_service_request) }
         allow(@sub_service_request).to receive(:service_request).and_return(@service_request)
         allow(@sub_service_request).to receive(:candidate_pppv_services).and_return("candidate pppv services")
-        stub_find_sub_service_request(@sub_service_request)
 
         logged_in_user = create(:identity)
         log_in_dashboard_identity(obj: logged_in_user)
@@ -36,11 +35,12 @@ RSpec.describe Dashboard::LineItemsController do
       before(:each) do
         @service_request = build_stubbed(:service_request)
 
-        @sub_service_request = instance_double(SubServiceRequest,
-          id: 1,
-          service_request: @service_request,
-          errors: "my errors")
-        stub_find_sub_service_request(@sub_service_request)
+        @sub_service_request = findable_stub(SubServiceRequest) do
+          instance_double(SubServiceRequest,
+            id: 1,
+            service_request: @service_request,
+            errors: "my errors")
+        end
 
         # params[:line_item] does not describe valid LineItem
         allow(@sub_service_request).to receive(:create_line_item).and_return(false)
@@ -70,11 +70,12 @@ RSpec.describe Dashboard::LineItemsController do
       before(:each) do
         @service_request = build_stubbed(:service_request)
 
-        @sub_service_request = instance_double(SubServiceRequest,
-          id: 1,
-          service_request: @service_request,
-          errors: "my errors")
-        stub_find_sub_service_request(@sub_service_request)
+        @sub_service_request = findable_stub(SubServiceRequest) do
+          instance_double(SubServiceRequest,
+            id: 1,
+            service_request: @service_request,
+            errors: "my errors")
+        end
 
         # params[:line_item] does not describe valid LineItem
         allow(@sub_service_request).to receive(:create_line_item).and_return(true)
@@ -98,12 +99,6 @@ RSpec.describe Dashboard::LineItemsController do
 
       it { is_expected.to render_template "dashboard/line_items/create" }
       it { is_expected.to respond_with :ok }
-    end
-
-    def stub_find_sub_service_request(ssr_stub)
-      allow(SubServiceRequest).to receive(:find).
-        with(ssr_stub.id.to_s).
-        and_return(ssr_stub)
     end
   end
 end

@@ -92,20 +92,20 @@ RSpec.feature 'User wants to delete an authorized user', js: true do
         # navigate to page
         page = Dashboard::Protocols::ShowPage.new
         page.load(id: protocol.id)
-      
-        save_and_open_screenshot
-        expect(page.authorized_users.remove_button).to be_disabled
+
+        expect(page.authorized_users.first).to have_no_enabled_remove_button
+        expect(page.authorized_users.first).to have_disabled_remove_button
       end
     end
   end
 
   def given_i_have_clicked_the_delete_authorized_user_button_and_confirmed
-    @page.authorized_users(text: "Jane Doe").first.remove_button.click
+    @page.authorized_users(text: "Jane Doe").first.enabled_remove_button.click
   end
 
   def given_i_have_clicked_the_delete_authorized_user_button_for_the_primary_pi
     accept_alert do
-      @page.authorized_users(text: "John Doe").first.remove_button.click
+      @page.authorized_users(text: "John Doe").first.enabled_remove_button.click
     end
   end
 

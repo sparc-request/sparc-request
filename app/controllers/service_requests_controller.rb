@@ -618,7 +618,13 @@ class ServiceRequestsController < ApplicationController
   end
 
   def authorize_protocol_edit_request
-    unless current_user.can_edit_sub_service_request?(@sub_service_request)
+    authorized =  if @sub_service_request
+                    current_user.can_edit_sub_service_request?(@sub_service_request)
+                  else
+                    current_user.can_edit_service_request?(@service_request)
+                  end
+
+    unless authorized
       @service_request     = nil
       @sub_service_request = nil
       render partial: 'service_requests/authorization_error', locals: { error: 'You are not allowed to edit this Request.' }

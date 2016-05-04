@@ -82,7 +82,7 @@ RSpec.feature 'User wants to delete an authorized user', js: true do
     fake_login_for_each_test("janed")
 
     context 'and tries to delete the user' do
-      scenario 'and sees disabled Add an Authorized User button' do
+      scenario 'and sees disabled Delete an Authorized User button' do
         create(:project_role,
         protocol_id: protocol.id,
         identity_id: other_user.id,
@@ -93,7 +93,8 @@ RSpec.feature 'User wants to delete an authorized user', js: true do
         page = Dashboard::Protocols::ShowPage.new
         page.load(id: protocol.id)
       
-        expect(page).to have_no_add_authorized_user_button
+        save_and_open_screenshot
+        expect(page.authorized_users.remove_button).to be_disabled
       end
     end
   end

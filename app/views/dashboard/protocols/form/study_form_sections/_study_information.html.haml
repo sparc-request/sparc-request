@@ -109,7 +109,7 @@
         = form.label :selected_for_epic, t(:protocols)[:studies][:information][:push_to_epic], class: 'col-lg-2 form-control-label'
         .col-lg-10
           %span.epic_selected.display_epic_answers
-            = form.object.selected_for_epic ? "Yes" : "No"
+            = form.object.selected_for_epic ? t(:constants)[:yes_select] : t(:constants)[:no_select]
             - if form.object.selected_for_epic
               = form.hidden_field :selected_for_epic, value: true
             - elsif !form.object.selected_for_epic
@@ -128,12 +128,12 @@
         = form.label :selected_for_epic, t(:protocols)[:studies][:information][:push_to_epic], class: 'col-lg-2 form-control-label'
         .col-lg-10
           .btn-group#selected_for_epic_button{data: {toggle: "buttons"}}
-            %label.btn.btn-default{class: "#{protocol.selected_for_epic == true ? 'active' : nil}"}
-              = form.radio_button :selected_for_epic, 'true', id: "study_selected_for_epic_true"
-              Yes
-            %label.btn.btn-default{class: "#{protocol.selected_for_epic == false ? 'active' : nil}"}
-              = form.radio_button :selected_for_epic, 'false', id: "study_selected_for_epic_false"
-              No
+            %label.btn.btn-default
+              = form.radio_button :selected_for_epic, 'true', id: "study_selected_for_epic_true", class: 'form-control'
+              = t(:constants)[:yes_select]
+            %label.btn.btn-default
+              = form.radio_button :selected_for_epic, 'false', id: "study_selected_for_epic_false", class: 'form-control'
+              = t(:constants)[:no_select]
       .form-group.row.selected_for_epic_dependent{ style: "display: none;" }
         = form.label :study_type_questions, "", class: 'col-lg-2 form-control-label'
         .col-lg-10

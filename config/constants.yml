@@ -754,3 +754,8 @@ user_credentials: { "MD": 'md',
                     "Other": 'other' }
 audit_actions: { 'create': 'Added',
                  'destroy': 'Removed'}
+navbar_buttons: { 'dashboard':    "Dashboard",
+                  'admin':        "SPARCAdmin",
+                  'fulfillment':  "SPARCFulfillment",
+                  'catalog':      "SPARCCatalog",
+                  'report':       "SPARCReport" }

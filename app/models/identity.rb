@@ -151,22 +151,37 @@ class Identity < ActiveRecord::Base
     @is_super_user ||= self.super_users.count > 0
   end
 
-  def is_service_provider? ssr
-   is_provider = false
-   orgs =[]
-   orgs << ssr.organization << ssr.organization.parents
-   orgs.flatten!
-   orgs.each do |org|
-     provider_ids = org.service_providers_lookup.map{|x| x.identity_id}
-     if provider_ids.include?(self.id)
-     is_provider = true
-     end
-   end
+  def is_service_provider? ssr=nil
+    is_provider = false
+    if ssr
+      orgs =[]
+      orgs << ssr.organization << ssr.organization.parents
+      orgs.flatten!
+      orgs.each do |org|
+        provider_ids = org.service_providers_lookup.map{|x| x.identity_id}
+        if provider_ids.include?(self.id)
+        is_provider = true
+        end
+      end
+    else
+      is_provider = self.service_providers.count > 0 ? true : false
+    end
 
-  is_provider
+    is_provider
 
   end
 
+  def is_catalog_manager?
+    @is_catalog_manager ||= self.catalog_managers.count > 0
+  end
+
+  def is_fulfillment_provider?
+    is_provider = false
+    if !self.clinical_providers.empty?
+      is_provider = true
+    end
+    is_provider
+  end
   ###############################################################################
   ############################# SEARCH METHODS ##################################
   ###############################################################################

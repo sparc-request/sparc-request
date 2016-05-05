@@ -124,7 +124,7 @@ begin
   AUDIT_ACTIONS                  = config['audit_actions']
   ALERT_TYPES                    = config['alert_types']
   ALERT_STATUSES                 = config['alert_statuses']
-  NAVBAR_BUTTONS                 = config['navbar_buttons']
+  NAV_LINKS                      = config['nav_links']
 rescue
   raise "constants.yml not found"
 end

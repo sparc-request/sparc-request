@@ -94,7 +94,20 @@ a.add_new_excluded_funding_source {
     margin-right: 10px;
     display: none;
   }
+
+  #nav_link {
+   float:right !important;
+   padding: 20px;
+   color: white;
+  }
+
+  #nav_link a{
+   font-size: 14px;
+   background: $background;
+   color: white !important;
+  }
 }
+
 
 #show_all_services a.btn.unavailable_button {
   margin-left: 45px;

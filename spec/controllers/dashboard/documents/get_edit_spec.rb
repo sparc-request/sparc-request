@@ -3,13 +3,13 @@ require "rails_helper"
 RSpec.describe Dashboard::DocumentsController do
   describe "GET #edit" do
     before(:each) do
-      @sub_service_request = build_stubbed(:sub_service_request)
-      stub_find_sub_service_request(@sub_service_request)
+      @sub_service_request = findable_stub(SubServiceRequest) do
+        build_stubbed(:sub_service_request)
+      end
 
-      @document = build_stubbed(:document)
-      stub_find_document(@document)
+      @document = findable_stub(Document) { build_stubbed(:document) }
 
-      logged_in_user = create(:identity)
+      logged_in_user = build_stubbed(:identity)
       log_in_dashboard_identity(obj: logged_in_user)
       xhr :get, :edit, id: @document.id, sub_service_request_id: @sub_service_request.id
     end
@@ -28,17 +28,5 @@ RSpec.describe Dashboard::DocumentsController do
 
     it { is_expected.to respond_with :ok }
     it { is_expected.to render_template "dashboard/documents/edit" }
-  end
-
-  def stub_find_sub_service_request(obj)
-    allow(SubServiceRequest).to receive(:find).
-      with(obj.id.to_s).
-      and_return(obj)
-  end
-
-  def stub_find_document(obj)
-    allow(Document).to receive(:find).
-      with(obj.id.to_s).
-      and_return(obj)
   end
 end

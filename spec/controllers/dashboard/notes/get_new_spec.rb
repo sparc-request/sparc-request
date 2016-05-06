@@ -18,7 +18,8 @@ RSpec.describe Dashboard::NotesController do
       allow(Note).to receive(:new).and_return("my new note")
 
       log_in_dashboard_identity(obj: @logged_in_user)
-      xhr :get, :new, note: { identity_id: "-1", notable_type: "MyNotableType", notable_id: "2", body: "very important note" }
+      xhr :get, :new, note: { identity_id: "-1", notable_type: "MyNotableType",
+        notable_id: "2", body: "very important note" }
     end
 
     it "should assign @note to newly created Note" do

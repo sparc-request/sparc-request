@@ -12,19 +12,18 @@ RSpec.describe Dashboard::MessagesController do
 
         @to_identity = findable_stub(Identity) { build_stubbed(:identity) }
         @from_identity = build_stubbed(:identity)
-        email = "jay@email.com"
         @new_message_attr = {
           notification_id: @notification.id.to_s,
           to: @to_identity.id.to_s,
           from: @from_identity.id.to_s,
-          email: email,
+          email: "jay@email.com",
           body: "hey"
         }.stringify_keys
 
         @new_message = Message.new(@new_message_attr)
         allow(Message).to receive(:create).and_return(@new_message)
 
-        log_in_dashboard_identity(obj: create(:identity))
+        log_in_dashboard_identity(obj: build_stubbed(:identity))
         xhr :post, :create, message: @new_message_attr
       end
 
@@ -55,12 +54,13 @@ RSpec.describe Dashboard::MessagesController do
 
         @to_identity = build_stubbed(:identity)
         @from_identity = build_stubbed(:identity)
-        email = "jay@email.com"
 
         allow(Message).to receive(:create)
 
-        log_in_dashboard_identity(obj: create(:identity))
-        xhr :post, :create, message: { notification_id: @notification.id, to: @to_identity.id.to_s, from: @from_identity.id.to_s, email: email, body: "" }
+        log_in_dashboard_identity(obj: build_stubbed(:identity))
+        xhr :post, :create, message: { notification_id: @notification.id,
+          to: @to_identity.id.to_s, from: @from_identity.id.to_s, email: "jay@email.com",
+          body: "" }
       end
 
       it "should not create a Message" do

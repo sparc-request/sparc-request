@@ -5,12 +5,13 @@ RSpec.describe Dashboard::DocumentsController do
     before(:each) do
       allow(Dashboard::DocumentRemover).to receive(:new)
 
-      logged_in_user = create(:identity)
+      logged_in_user = build_stubbed(:identity)
       log_in_dashboard_identity(obj: logged_in_user)
-      xhr :delete, :destroy, id: "document_id", sub_service_request_id: "sub_service_request_id"
+      xhr :delete, :destroy, id: "document_id",
+        sub_service_request_id: "sub_service_request_id"
     end
 
-    it "should destroy the Document from params[:id] from the SubServiceRequest from params[:sub_service_request_id] using Dashboard::DocumentRemover" do
+    it "should destroy the Document <- params[:id] from the SubServiceRequest <- params[:sub_service_request_id] using Dashboard::DocumentRemover" do
       expect(Dashboard::DocumentRemover).to have_received(:new).
         with(id: "document_id", sub_service_request_id: "sub_service_request_id")
     end

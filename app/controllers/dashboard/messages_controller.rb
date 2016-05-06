@@ -31,7 +31,8 @@ class Dashboard::MessagesController < Dashboard::BaseController
   def new
     @notification = Notification.find(params[:notification_id])
     recipient = @notification.get_user_other_than(@user)
-    @message = Message.new(notification_id: @notification.id, to: recipient.id, from: @user.id, email: recipient.email)
+    @message = Message.new(notification_id: @notification.id, to: recipient.id,
+      from: @user.id, email: recipient.email)
   end
 
   def create

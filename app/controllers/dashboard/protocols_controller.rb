@@ -50,7 +50,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def show
-    @protocol_role = @protocol.project_roles.find_by_identity_id(@user.id)
+    @protocol_role = @protocol.project_roles.find_by(identity_id: @user.id)
 
     respond_to do |format|
       format.js   { render }
@@ -70,24 +70,22 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     @admin =  !admin_orgs.empty?
     @protocol_type = params[:protocol_type]
     @protocol = @protocol_type.capitalize.constantize.new
-    @protocol.requester_id = current_user.id 
+    @protocol.requester_id = current_user.id
     @protocol.populate_for_edit
     session[:protocol_type] = params[:protocol_type]
   end
 
   def create
     protocol_class = params[:protocol][:type].capitalize.constantize
-    @protocol = protocol_class.new(params[:protocol])
+    @protocol = protocol_class.create(params[:protocol])
 
     if @protocol.valid?
-      @protocol.save
-
       if @protocol.project_roles.where(identity_id: current_user.id).empty?
         # if current user is not authorized, add them as an authorized user
         @protocol.project_roles.new(identity_id: current_user.id, role: 'general-access-user', project_rights: 'approve')
         @protocol.save
       end
-      
+
       if USE_EPIC && @protocol.selected_for_epic
         @protocol.ensure_epic_user
         Notifier.notify_for_epic_user_approval(@protocol).deliver unless QUEUE_EPIC
@@ -171,7 +169,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def display_requests
-    @protocol_role = @protocol.project_roles.find_by_identity_id(@user.id)
+    @protocol_role = @protocol.project_roles.find_by(identity_id: @user.id)
     @permission_to_edit = @protocol_role.can_edit?
   end
 

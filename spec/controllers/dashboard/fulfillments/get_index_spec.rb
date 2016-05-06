@@ -6,8 +6,7 @@ RSpec.describe Dashboard::FulfillmentsController do
       before(:each) do
         @line_item = findable_stub(LineItem) { build_stubbed(:line_item) }
 
-        logged_in_user = create(:identity)
-        log_in_dashboard_identity(obj: logged_in_user)
+        log_in_dashboard_identity(obj: build_stubbed(:identity))
         xhr :get, :index, line_item_id: @line_item.id
       end
 
@@ -25,8 +24,7 @@ RSpec.describe Dashboard::FulfillmentsController do
         @fulfillments = instance_double(ActiveRecord::Relation)
         allow(@line_item).to receive(:fulfillments).and_return(@fulfillments)
 
-        logged_in_user = create(:identity)
-        log_in_dashboard_identity(obj: logged_in_user)
+        log_in_dashboard_identity(obj: build_stubbed(:identity))
         get :index, line_item_id: @line_item.id, format: :json
       end
 

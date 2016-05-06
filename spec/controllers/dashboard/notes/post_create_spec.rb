@@ -21,7 +21,8 @@ RSpec.describe Dashboard::NotesController do
         allow(Note).to receive(:create)
 
         log_in_dashboard_identity(obj: @logged_in_user)
-        xhr :get, :create, note: { identity_id: "-1", notable_type: "MyNotableType", notable_id: "2", body: "" }
+        xhr :get, :create, note: { identity_id: "-1", notable_type: "MyNotableType",
+          notable_id: "2", body: "" }
       end
 
       it "should not create a new Note" do
@@ -49,7 +50,8 @@ RSpec.describe Dashboard::NotesController do
           and_return("my new note")
 
         log_in_dashboard_identity(obj: @logged_in_user)
-        xhr :get, :create, note: { identity_id: "-1", notable_type: "MyNotableType", notable_id: "2", body: "this was notable" }
+        xhr :get, :create, note: { identity_id: "-1", notable_type: "MyNotableType",
+          notable_id: "2", body: "this was notable" }
       end
 
       it "should create a new Note for current user with params[:note]" do

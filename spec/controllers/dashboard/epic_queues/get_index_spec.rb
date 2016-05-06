@@ -6,8 +6,7 @@ RSpec.describe Dashboard::EpicQueuesController do
       @all_epic_queues = instance_double(ActiveRecord::Relation)
       allow(EpicQueue).to receive(:all).and_return(@all_epic_queues)
 
-      logged_in_user = create(:identity)
-      log_in_dashboard_identity(obj: logged_in_user)
+      log_in_dashboard_identity(obj: build_stubbed(:identity))
       get :index
     end
 

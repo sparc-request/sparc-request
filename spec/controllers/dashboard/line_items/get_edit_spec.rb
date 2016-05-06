@@ -8,8 +8,7 @@ RSpec.describe Dashboard::LineItemsController do
         allow(@line_item).to receive_message_chain(:service, :one_time_fee).
           and_return(true)
 
-        logged_in_user = create(:identity)
-        log_in_dashboard_identity(obj: logged_in_user)
+        log_in_dashboard_identity(obj: build_stubbed(:identity))
         xhr :get, :edit, id: @line_item.id, modal: "my modal"
       end
 
@@ -39,8 +38,7 @@ RSpec.describe Dashboard::LineItemsController do
         allow(@line_item).to receive_message_chain(:service, :one_time_fee).
           and_return(false)
 
-        logged_in_user = create(:identity)
-        log_in_dashboard_identity(obj: logged_in_user)
+        log_in_dashboard_identity(obj: build_stubbed(:identity))
         xhr :get, :edit, id: @line_item.id, modal: "my modal"
       end
 

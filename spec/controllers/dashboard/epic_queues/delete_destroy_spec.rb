@@ -3,13 +3,14 @@ require "rails_helper"
 RSpec.describe Dashboard::EpicQueuesController do
   describe "DELETE #destroy" do
     before(:each) do
-      @epic_queue = instance_double(EpicQueue, id: 1)
+      @epic_queue = build_stubbed(:epic_queue)
       allow(@epic_queue).to receive(:destroy)
-      allow(EpicQueue).to receive(:find).with("1").and_return(@epic_queue)
+      allow(EpicQueue).to receive(:find).
+        with(@epic_queue.id.to_s).
+        and_return(@epic_queue)
 
-      logged_in_user = create(:identity)
-      log_in_dashboard_identity(obj: logged_in_user)
-      xhr :delete, :destroy, id: 1
+      log_in_dashboard_identity(obj: build_stubbed(:identity))
+      xhr :delete, :destroy, id: @epic_queue.id
     end
 
     it "should delete EpicQueue from params[:id]" do

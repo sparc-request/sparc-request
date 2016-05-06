@@ -2,60 +2,51 @@ require 'rails_helper'
 
 RSpec.describe Dashboard::ProtocolsController do
   describe 'patch update_protocol_type' do
-    let!(:identity_stub) { instance_double('Identity', id: 1) }
-
-    before(:each) do
-      log_in_dashboard_identity(obj: identity_stub)
-    end
-
-    describe 'authorization' do
-      context 'user not authorized to edit Protocol' do
-        it 'should render error message' do
-          protocol_stub = findable_stub(Protocol) do
-            instance_double(Protocol,
-              id: 1,
-              type: :protocol_type)
-          end
-          authorize(identity_stub, protocol_stub, can_edit: false)
-
-          xhr :patch, :update_protocol_type, id: 1, format: :js
-
-          expect(response).to render_template('service_requests/_authorization_error')
+    context 'user not authorized to edit Protocol' do
+      before(:each) do
+        @logged_in_user = build_stubbed(:identity)
+        @protocol = findable_stub(Protocol) do
+          build_stubbed(:protocol)
         end
+        authorize(@logged_in_user, @protocol, can_edit: false)
+        log_in_dashboard_identity(obj: @logged_in_user)
+        xhr :patch, :update_protocol_type, id: @protocol.id
       end
-    end
 
-    it 'should update Protocol type to params[:type]' do
-      protocol = create(:protocol_without_validations, type: 'Study')
-      authorize(identity_stub, protocol.becomes(Study), can_edit: true)
-
-      xhr :patch, :update_protocol_type, id: protocol.id, type: 'Project', format: :js
-
-      expect(assigns(:protocol).class.name).to eq('Project')
-      expect(assigns(:protocol).type).to eq('Project')
-      expect(assigns(:protocol)).to be_persisted
-    end
-
-    it 'should populate Protocol for edit' do
-      protocol_stub = findable_stub(Protocol) do
-        instance_double(Protocol,
-          id: 1,
-          type: :protocol_type)
+      it "should use ProtocolAuthorizer to authorize user" do
+        expect(ProtocolAuthorizer).to have_received(:new).
+          with(@protocol, @logged_in_user)
       end
-      allow(protocol_stub).to receive(:update_attribute)
-      expect(protocol_stub).to receive(:populate_for_edit)
-      authorize(identity_stub, protocol_stub, can_edit: true)
 
-      xhr :patch, :update_protocol_type, id: 1, type: 'Project', format: :js
+      it { is_expected.to render_template "service_requests/_authorization_error" }
+      it { is_expected.to respond_with :ok }
     end
-  end
 
-  def authorize(identity, protocol, opts = {})
-    auth_mock = instance_double('ProtocolAuthorizer',
-      'can_view?' => opts[:can_view].nil? ? false : opts[:can_view],
-      'can_edit?' => opts[:can_edit].nil? ? false : opts[:can_edit])
-    expect(ProtocolAuthorizer).to receive(:new).
-      with(protocol, identity).
-      and_return(auth_mock)
+    context "user authorized to edit Protocol" do
+      before(:each) do
+        @logged_in_user = build_stubbed(:identity)
+        log_in_dashboard_identity(obj: @logged_in_user)
+
+        @protocol = findable_stub(Protocol) do
+          build_stubbed(:protocol, type: "Study")
+        end
+        allow(@protocol).to receive(:update_attribute)
+        allow(@protocol).to receive(:populate_for_edit)
+        authorize(@logged_in_user, @protocol, can_edit: true)
+
+        xhr :patch, :update_protocol_type, id: @protocol.id, type: "Project"
+      end
+
+      it 'should update Protocol type to params[:type]' do
+        expect(@protocol).to have_received(:update_attribute).with(:type, "Project")
+      end
+
+      it 'should populate Protocol for edit' do
+        expect(@protocol).to have_received(:populate_for_edit)
+      end
+
+      it { is_expected.to render_template "dashboard/protocols/update_protocol_type" }
+      it { is_expected.to respond_with :ok }
+    end
   end
 end

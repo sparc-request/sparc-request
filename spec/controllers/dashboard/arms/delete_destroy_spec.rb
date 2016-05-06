@@ -2,11 +2,8 @@ require 'rails_helper'
 
 RSpec.describe Dashboard::ArmsController do
   describe 'delete destroy' do
-    let!(:identity_stub) {}
-
     before(:each) do
-      identity_stub = instance_double('Identity', id: 1)
-      log_in_dashboard_identity(obj: identity_stub)
+      log_in_dashboard_identity(obj: build_stubbed(:identity))
 
       @request_params = { id: "arm id", sub_service_request_id: "sub service request id" }
       @destroyer = instance_double(Dashboard::ArmDestroyer,
@@ -21,7 +18,8 @@ RSpec.describe Dashboard::ArmsController do
     end
 
     it "should use Dashboard::ArmDestroyer" do
-      expect(Dashboard::ArmDestroyer).to have_received(:new).with(@request_params)
+      expect(Dashboard::ArmDestroyer).to have_received(:new).
+        with(id: "arm id", sub_service_request_id: "sub service request id")
     end
 
     it "should invoke #destroy on Dashboard::ArmDestroyer" do

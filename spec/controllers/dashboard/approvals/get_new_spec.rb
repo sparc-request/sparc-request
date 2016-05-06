@@ -4,12 +4,11 @@ RSpec.describe Dashboard::ApprovalsController, type: :controller do
   describe 'GET new' do
     before(:each) do
       @ssr_stub = findable_stub(SubServiceRequest) do
-        instance_double(SubServiceRequest, id: 1)
+        build_stubbed(SubServiceRequest)
       end
 
-      identity_stub = instance_double('Identity', id: 1)
-      log_in_dashboard_identity(obj: identity_stub)
-      xhr :get, :new, sub_service_request_id: 1
+      log_in_dashboard_identity(obj: build_stubbed(:identity))
+      xhr :get, :new, sub_service_request_id: @ssr_stub.id
     end
 
     it 'should set @sub_service_request to the SubServiceRequest with id params[:sub_service_request_id]' do

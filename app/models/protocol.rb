@@ -24,23 +24,23 @@ class Protocol < ActiveRecord::Base
 
   audited
 
-  has_many :study_types, :dependent => :destroy
-  has_one :research_types_info, :dependent => :destroy
-  has_one :human_subjects_info, :dependent => :destroy
-  has_one :vertebrate_animals_info, :dependent => :destroy
-  has_one :investigational_products_info, :dependent => :destroy
-  has_one :ip_patents_info, :dependent => :destroy
-  has_many :project_roles, :dependent => :destroy
-  has_many :identities, :through => :project_roles
+  has_many :study_types,                  dependent: :destroy
+  has_one :research_types_info,           dependent: :destroy
+  has_one :human_subjects_info,           dependent: :destroy
+  has_one :vertebrate_animals_info,       dependent: :destroy
+  has_one :investigational_products_info, dependent: :destroy
+  has_one :ip_patents_info,               dependent: :destroy
+  has_many :project_roles,                dependent: :destroy
+  has_many :identities,                   through: :project_roles
   has_many :service_requests
-  has_many :sub_service_requests, through: :service_requests
-  has_many :organizations, through: :sub_service_requests
-  has_many :affiliations, :dependent => :destroy
-  has_many :impact_areas, :dependent => :destroy
-  has_many :arms, :dependent => :destroy
-  has_many :study_type_answers, :dependent => :destroy
-  has_many :notes, as: :notable, dependent: :destroy
-  has_many :study_type_questions, through: :study_type_question_group
+  has_many :sub_service_requests,         through: :service_requests
+  has_many :organizations,                through: :sub_service_requests
+  has_many :affiliations,                 dependent: :destroy
+  has_many :impact_areas,                 dependent: :destroy
+  has_many :arms,                         dependent: :destroy
+  has_many :study_type_answers,           dependent: :destroy
+  has_many :notes, as: :notable,          dependent: :destroy
+  has_many :study_type_questions,         through: :study_type_question_group
 
   belongs_to :study_type_question_group
 
@@ -99,19 +99,19 @@ class Protocol < ActiveRecord::Base
   accepts_nested_attributes_for :vertebrate_animals_info
   accepts_nested_attributes_for :investigational_products_info
   accepts_nested_attributes_for :ip_patents_info
-  accepts_nested_attributes_for :study_types, :allow_destroy => true
-  accepts_nested_attributes_for :impact_areas, :allow_destroy => true
-  accepts_nested_attributes_for :affiliations, :allow_destroy => true
-  accepts_nested_attributes_for :project_roles, :allow_destroy => true
-  accepts_nested_attributes_for :arms, :allow_destroy => true
-  accepts_nested_attributes_for :study_type_answers, :allow_destroy => true
+  accepts_nested_attributes_for :study_types,                   allow_destroy: true
+  accepts_nested_attributes_for :impact_areas,                  allow_destroy: true
+  accepts_nested_attributes_for :affiliations,                  allow_destroy: true
+  accepts_nested_attributes_for :project_roles,                 allow_destroy: true
+  accepts_nested_attributes_for :arms,                          allow_destroy: true
+  accepts_nested_attributes_for :study_type_answers,            allow_destroy: true
 
   validation_group :protocol do
-    validates :short_title, :presence => true
-    validates :title, :presence => true
-    validates :funding_status, :presence => true
+    validates :short_title,                    presence: true
+    validates :title,                          presence: true
+    validates :funding_status,                 presence: true
     validate  :validate_funding_source
-    validates_associated :human_subjects_info, :message => "must contain 8 numerical digits", :if => :validate_nct
+    validates_associated :human_subjects_info, message: "must contain 8 numerical digits", if: :validate_nct
   end
 
   validation_group :user_details do

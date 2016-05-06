@@ -19,8 +19,8 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Study < Protocol
-  validates :sponsor_name, presence: true
-  validates :selected_for_epic, inclusion: [true, false]
+  validates :sponsor_name,                presence: true
+  validates :selected_for_epic,           inclusion: [true, false]
   validate  :validate_study_type_answers, if: [:selected_for_epic?, "StudyTypeQuestionGroup.active.pluck(:id).first == changed_attributes()['study_type_question_group_id']"]
 
   def classes

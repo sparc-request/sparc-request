@@ -115,9 +115,9 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def update
-    attrs = params[:protocol]
+    attrs      = params[:protocol]
     admin_orgs = @user.authorized_admin_organizations
-    @admin =  !admin_orgs.empty?
+    @admin     = !admin_orgs.empty?
     
     # admin is not able to activate study_type_question_group
     if @admin && @protocol.update_attributes(attrs)
@@ -176,8 +176,6 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def view_details
-    @protocol_type = @protocol.type
-
     respond_to do |format|
       format.js
     end

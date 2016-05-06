@@ -23,15 +23,15 @@
       %button.close{ type: 'button', data: { dismiss: 'modal' } }
         %span{ aria: { hidden: 'true' } } &times;
       %h4.text-center 
-        = protocol_type + t(:dashboard)[:protocols][:view_details][:header] + protocol.id.to_s
+        = protocol.type + t(:dashboard)[:protocols][:view_details][:header] + protocol.id.to_s
     .modal-body
       #modal_errors
       .row
         .col-lg-12
           .panel-group
-            - if protocol_type == "Study"
+            - if protocol.type == "Study"
               = render partial: 'dashboard/protocols/view_details/study_fields', locals: {protocol: protocol}
-            - elsif protocol_type == "Project"
+            - elsif protocol.type == "Project"
               = render partial: 'dashboard/protocols/view_details/project_fields', locals: {protocol: protocol}
     .modal-footer
       %button.btn.btn-default{ type: 'button', data: { dismiss: 'modal' } }

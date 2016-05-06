@@ -1,7 +1,20 @@
 %ul.navbar
-  - NAVBAR_LINKS.each do |name, path|
-    %li.dashboard
-      = link_to name.to_s, path, target: '_blank'
+  %li.dashboard
+    = link_to NAV_LINKS['dashboard'], portal_root_path
+  - if  current_user
+    - if (current_user.is_super_user? || current_user.is_service_provider?)
+      %li.admin
+        = link_to NAV_LINKS['admin'], portal_admin_path
+      - if current_user.is_super_user?
+        %li.reports
+          = link_to NAV_LINKS['report'], reports_path
+    - if current_user.is_fulfillment_provider?
+      %li.fulfillment
+        = link_to NAV_LINKS['fulfillment'], CLINICAL_WORK_FULFILLMENT_URL, target: '_blank'
+    - if (current_user.is_overlord? || current_user.is_catalog_manager?)
+      %li.catalog
+        = link_to NAV_LINKS['catalog'], catalog_manager_catalog_index_path,  target: '_blank'
+
   .right-section
     %li.align-element-nav-bar
       - flash.each do |name, msg|

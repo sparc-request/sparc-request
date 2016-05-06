@@ -19,6 +19,12 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #search_box
+  #nav_link
+    = link_to NAV_LINKS['admin'], portal_admin_path, :class => 'button-hover'
+    |
+    = link_to NAV_LINKS['report'], reports_path, :class => 'button-hover'
+    |
+    = link_to NAV_LINKS['root'], ROOT_URL, :class => 'button-hover'
   %span.search= t(:cm_index)[:search]
   = text_field_tag 'search'
   = submit_tag t(:cm_index)[:submit], :class => 'custom_button', :id => 'search_button'

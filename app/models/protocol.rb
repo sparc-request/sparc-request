@@ -41,6 +41,7 @@ class Protocol < ActiveRecord::Base
   has_many :study_type_answers,           dependent: :destroy
   has_many :notes, as: :notable,          dependent: :destroy
   has_many :study_type_questions,         through: :study_type_question_group
+  has_many :documents,                    through: :service_requests
 
   belongs_to :study_type_question_group
 

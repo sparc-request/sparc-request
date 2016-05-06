@@ -19,19 +19,21 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .bootstrap-table-dropdown-overflow
-  #documents-custom-toolbar
-    %button.btn.btn-success#document_new{ data: {sub_service_request_id: sub_service_request.id }}
-      = t(:dashboard)[:documents][:add]
-  %table.documents_table{id: "documents-table", data: {toggle: 'table', search: "true", "show-columns" => "true", "show-refresh" => "true", "show-toggle" => "true", url: dashboard_documents_path(format: :json, sub_service_request_id: sub_service_request.id), striped: "true", toolbar: "#documents-custom-toolbar", "show-export" => "true", "export-types" => ['excel']}}
-    %thead.primary-header
-      %tr
-        %th{data: {class: 'type', align: "left", sortable: "true", field: "type"}}
-          = t(:dashboard)[:documents][:table][:type]
-        %th{data: {class: 'title', align: "left", sortable: "true", field: "title"}}
-          = t(:dashboard)[:documents][:table][:title]
-        %th{data: {class: 'uploaded', align: "left", sortable: "true", field: "uploaded"}}
-          = t(:dashboard)[:documents][:table][:uploaded]
-        %th{data: {class: 'edit', align: "center", sortable: "false", field: "edit"}}
-          = t(:actions)[:edit]
-        %th{data: {class: 'delete', align: "center", sortable: "false", field: "delete"}}
-          = t(:actions)[:delete]
+	#documents-custom-toolbar
+		%button.btn.btn-success#document_new{ class: permission_to_edit ? "" : "disabled", data: {protocol_id: protocol.id } }
+			= t(:dashboard)[:documents][:add]
+	%table.documents_table{ id: "documents-table", data: {toggle: 'table', search: "true", "show-columns" => "true", "show-refresh" => "true", "show-toggle" => "true", url: dashboard_documents_path(format: :json, protocol_id: protocol.id, permission_to_edit: permission_to_edit), striped: "true", toolbar: "#documents-custom-toolbar", "show-export" => "true", "export-types" => ['excel']} }
+		%thead.primary-header
+			%tr
+				%th{data: {class: 'type', align: "left", sortable: "true", field: "organization"}}
+					= t(:dashboard)[:protocols][:documents][:organization]
+				%th{data: {class: 'type', align: "left", sortable: "true", field: "type"}}
+					= t(:dashboard)[:protocols][:documents][:type]
+				%th{data: {class: 'title', align: "left", sortable: "true", field: "title"}}
+					= t(:dashboard)[:protocols][:documents][:title]
+				%th{data: {class: 'uploaded', align: "left", sortable: "true", field: "uploaded"}}
+					= t(:dashboard)[:protocols][:documents][:uploaded]
+				%th{data: {class: 'edit', align: "center", sortable: "false", field: "edit"}}
+					= t(:actions)[:edit]
+				%th{data: {class: 'delete', align: "center", sortable: "false", field: "delete"}}
+					= t(:actions)[:delete]

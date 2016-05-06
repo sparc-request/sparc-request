@@ -441,6 +441,14 @@ en:
         short_title: "Short Title:"
         sponsor: "Sponsor Name:"
 
+      documents:
+        header: "Documents"
+        add_document: "Add Document"
+        organization: "Organization"
+        type: "Type"
+        title: "Title"
+        uploaded: "Date Uploaded"
+
       authorized_users:
         header: "Authorized Users"
         add_user: "Add an Authorized User"
@@ -1059,7 +1067,7 @@ en:
       recipients: "Service Providers"
       title: "Title"
       type: "Type"
-      uploaded: "Uploaded"
+      uploaded: "Date Uploaded"
       uploads: "Document Uploads"
       versions: "Version"
     select_prompt: "Select a Type"

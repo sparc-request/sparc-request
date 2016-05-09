@@ -1,100 +1,73 @@
 require 'rails_helper'
 
 RSpec.describe Dashboard::ProtocolsController do
-  describe 'get show' do
-    describe 'authorization' do
-      let!(:identity) { create(:identity) }
-      let!(:protocol) { create(:protocol_without_validations, type: 'Project') }
+  describe 'GET #show' do
+    context 'user not authorized to view Protocol' do
       before(:each) do
-        log_in_dashboard_identity(obj: identity.reload)
+        @logged_in_user = build_stubbed(:identity)
+        log_in_dashboard_identity(obj: @logged_in_user)
 
-        # controller action needs this; not related to auth
-        ProjectRole.create(
-          protocol_id: protocol.id,
-          identity_id: identity.id,
-          role: 'mentor',
-          project_rights: 'primary-pi')
-        protocol.reload
-      end
-
-      context 'user not authorized to view Protocol' do
-        render_views
-        it 'should render error message' do
-          authorize(identity, protocol.becomes(Project), can_view: false)
-
-          get :show, id: protocol.id, format: :html
-
-          expect(response).to render_template('service_requests/_authorization_error')
+        @protocol = findable_stub(Protocol) do
+          build_stubbed(:protocol, type: "Project")
         end
+        authorize(@logged_in_user, @protocol, can_view: false)
+
+        get :show, id: @protocol.id
       end
+
+      it "should use ProtocolAuthorizer to authorize user" do
+        expect(ProtocolAuthorizer).to have_received(:new).
+          with(@protocol, @logged_in_user)
+      end
+
+      it { is_expected.to render_template "service_requests/_authorization_error" }
+      it { is_expected.to respond_with :ok }
     end
 
-    context 'user authorized to view protocol' do
-      let!(:identity) { create(:identity) }
-      let!(:protocol) { create(:protocol_without_validations, type: 'Project') }
-      let!(:pr) do
-        ProjectRole.create(
-          protocol_id: protocol.id,
-          identity_id: identity.id,
-          role: 'mentor',
-          project_rights: 'primary-pi')
-      end
-
+    context 'user authorized to view Protocol, format: html' do
       before(:each) do
-        log_in_dashboard_identity(obj: identity.reload)
+        @logged_in_user = build_stubbed(:identity)
+        log_in_dashboard_identity(obj: @logged_in_user)
 
-        protocol.reload
-
-        authorize(identity, protocol.becomes(Project),
+        @protocol = findable_stub(Protocol) do
+          build_stubbed(:protocol, type: "Project")
+        end
+        allow(@protocol).to receive(:service_requests).
+          and_return("ServiceRequests")
+        authorize(@logged_in_user, @protocol,
           can_view: true,
           can_edit: :permission_to_edit)
+
+        @project_role = build_stubbed(:project_role)
+        allow(@protocol.project_roles).to receive(:find_by).
+          with(identity_id: @logged_in_user.id).
+          and_return(@project_role)
+
+        get :show, id: @protocol.id
       end
 
       it 'should set @protocol' do
-        get :show, id: protocol.id
-
-        expect(assigns(:protocol)).to eq(protocol.becomes(Project))
+        expect(assigns(:protocol)).to eq(@protocol)
       end
 
       it 'should set @protocol_role to the ProjectRole of the logged in user pertinent to the Protocol' do
-        get :show, id: protocol.id
-
-        expect(assigns(:protocol_role)).to eq(pr)
+        expect(assigns(:protocol_role)).to eq(@project_role)
       end
 
-      context 'format html' do
-        it 'should set @permission_to_edit, @protocol_type, and @service_requests' do
-          sr = create(:service_request_without_validations, protocol_id: protocol.id)
-          get :show, id: protocol.id, format: :html
-
-          expect(assigns(:permission_to_edit)).to eq(:permission_to_edit)
-          expect(assigns(:protocol_type)).to eq 'Project'
-          expect(assigns(:service_requests).to_a).to eq [sr]
-        end
+      it "should set @permission_to_edit from ProtocolAuthorizer" do
+        expect(assigns(:permission_to_edit)).to eq(:permission_to_edit)
       end
+
+      it "should set @protocol_type to the type of Protocol" do
+        expect(assigns(:protocol_type)).to eq("Project")
+      end
+
+      it "should set @service_requests to ServiceRequests of Protocol" do
+        expect(assigns(:service_requests)).to eq("ServiceRequests")
+      end
+
+      it { is_expected.to respond_with :ok }
+      it { is_expected.to render_template "dashboard/protocols/show" }
     end
-  end
-
-  def identity_stub(opts = {})
-    admin_orgs = opts[:admin] ? authorized_admin_organizations_stub : []
-    instance_double('Identity',
-      id: 1,
-      authorized_admin_organizations: admin_orgs
-    )
-  end
-
-  def authorized_admin_organizations_stub
-    [instance_double('Organization',
-      id: 1,
-      name: 'MegaCorp')]
-  end
-
-  def authorize(identity, protocol, opts = {})
-    auth_mock = instance_double('ProtocolAuthorizer',
-      'can_view?' => opts[:can_view].nil? ? false : opts[:can_view],
-      'can_edit?' => opts[:can_edit].nil? ? false : opts[:can_edit])
-    expect(ProtocolAuthorizer).to receive(:new).
-      with(protocol, identity).
-      and_return(auth_mock)
   end
 end

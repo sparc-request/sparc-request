@@ -6,9 +6,7 @@ RSpec.describe Dashboard::MessagesController do
       before(:each) do
         @logged_in_user = build_stubbed(:identity)
 
-        @notification = findable_stub(Notification) do
-          build_stubbed(:notification)
-        end
+        @notification = findable_stub(Notification) { build_stubbed(:notification) }
         allow(@notification).to receive(:read_by?).
           with(@logged_in_user).
           and_return(false)
@@ -45,9 +43,8 @@ RSpec.describe Dashboard::MessagesController do
       before(:each) do
         @logged_in_user = build_stubbed(:identity)
 
-        @notification = findable_stub(Notification) do
-          build_stubbed(:notification)
-        end
+        @notification = findable_stub(Notification) { build_stubbed(:notification) }
+
         allow(@notification).to receive(:read_by?).
           with(@logged_in_user).
           and_return(true)

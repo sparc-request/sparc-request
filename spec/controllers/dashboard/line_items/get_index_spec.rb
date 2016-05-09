@@ -9,8 +9,7 @@ RSpec.describe Dashboard::LineItemsController do
       allow(@sub_service_request).to receive(:one_time_fee_line_items).
         and_return("my otf line items")
 
-      logged_in_user = create(:identity)
-      log_in_dashboard_identity(obj: logged_in_user)
+      log_in_dashboard_identity(obj: build_stubbed(:identity))
       get :index, sub_service_request_id: @sub_service_request.id, format: :json
     end
 

@@ -6,9 +6,7 @@ RSpec.describe Dashboard::AssociatedUsersController do
       findable_stub(Identity) { build_stubbed(:identity) }
     end
 
-    let(:primary_pi) do
-      build_stubbed(:identity)
-    end
+    let(:primary_pi) { build_stubbed(:identity) }
 
     let!(:protocol) do
       obj = findable_stub(Protocol) { build_stubbed(:protocol) }
@@ -18,8 +16,6 @@ RSpec.describe Dashboard::AssociatedUsersController do
     end
 
     context "User not authorized to edit Protocol" do
-      render_views
-
       before(:each) do
         authorize(identity, protocol, can_edit: false)
         log_in_dashboard_identity(obj: identity)
@@ -27,13 +23,16 @@ RSpec.describe Dashboard::AssociatedUsersController do
         xhr :get, :new, protocol_id: protocol.id, identity_id: identity.id, format: :js
       end
 
+      it "should use ProtocolAuthorizer to authorize user" do
+        expect(ProtocolAuthorizer).to have_received(:new).
+          with(protocol, identity)
+      end
+
       it { is_expected.to render_template "service_requests/_authorization_error" }
       it { is_expected.to respond_with :ok }
     end
 
     context "User authorized to edit Protocol" do
-      render_views
-
       before(:each) do
         authorize(identity, protocol, can_edit: true)
         log_in_dashboard_identity(obj: identity)
@@ -50,22 +49,26 @@ RSpec.describe Dashboard::AssociatedUsersController do
     end
 
     context 'params[:identity_id] present and unique to Protocol' do
-      let!(:new_project_role) do
-        # stub ProjectRole creation
-        project_roles_association = double('project_roles_association')
-        project_role = instance_double(ProjectRole, unique_to_protocol?: true)
-        allow(protocol).to receive(:project_roles).and_return(project_roles_association)
-        allow(project_roles_association).to receive(:new).
-          with(identity_id: identity.id).
-          and_return(project_role)
-        project_role
-      end
-
       before(:each) do
         authorize(identity, protocol, can_edit: true)
         log_in_dashboard_identity(obj: identity)
 
+        # stub ProjectRole creation, a little complicated
+        @project_roles_association = instance_double(ActiveRecord::Relation)
+        @new_project_role = build_stubbed(:project_role)
+        allow(@new_project_role).to receive(:unique_to_protocol?).
+          and_return(true)
+        allow(protocol).to receive(:project_roles).
+          and_return(@project_roles_association)
+        allow(@project_roles_association).to receive(:new).
+          and_return(@new_project_role)
+
         xhr :get, :new, protocol_id: protocol.id, identity_id: identity.id, format: :js
+      end
+
+      it "should build a ProjectRole for Protocol using params[:identity_id]" do
+        expect(@project_roles_association).to have_received(:new).
+          with(identity_id: identity.id)
       end
 
       it 'should set @identity to the Identity from params[:identity_id]' do
@@ -77,7 +80,7 @@ RSpec.describe Dashboard::AssociatedUsersController do
       end
 
       it 'should set @project_role to a new ProjectRole associated with @protocol' do
-        expect(assigns(:project_role)).to eq(new_project_role)
+        expect(assigns(:project_role)).to eq(@new_project_role)
       end
 
       it { is_expected.to render_template "dashboard/associated_users/new" }
@@ -85,22 +88,19 @@ RSpec.describe Dashboard::AssociatedUsersController do
     end
 
     context "params[:identity_id] present and not unique to Protocol" do
-      let!(:new_project_role) do
-        # stub ProjectRole creation
-        project_roles_association = double('project_roles_association')
-        project_role = instance_double(ProjectRole,
-          unique_to_protocol?: false,
-          errors: "errors")
-        allow(protocol).to receive(:project_roles).and_return(project_roles_association)
-        allow(project_roles_association).to receive(:new).
-          with(identity_id: identity.id).
-          and_return(project_role)
-        project_role
-      end
-
       before(:each) do
         authorize(identity, protocol, can_edit: true)
         log_in_dashboard_identity(obj: identity)
+
+        # stub ProjectRole creation, a little complicated
+        @project_roles_association = instance_double(ActiveRecord::Relation)
+        @new_project_role = build_stubbed(:project_role)
+        allow(@new_project_role).to receive(:unique_to_protocol?).and_return(false)
+        allow(@new_project_role).to receive(:errors).and_return("errors")
+        allow(protocol).to receive(:project_roles).
+          and_return(@project_roles_association)
+        allow(@project_roles_association).to receive(:new).
+          and_return(@new_project_role)
 
         xhr :get, :new, protocol_id: protocol.id, identity_id: identity.id, format: :js
       end
@@ -111,15 +111,6 @@ RSpec.describe Dashboard::AssociatedUsersController do
 
       it { is_expected.to render_template "dashboard/associated_users/new" }
       it { is_expected.to respond_with :ok }
-    end
-
-    def authorize(identity, protocol, opts = {})
-      auth_mock = instance_double('ProtocolAuthorizer',
-                                  'can_view?' => opts[:can_view].nil? ? false : opts[:can_view],
-                                  'can_edit?' => opts[:can_edit].nil? ? false : opts[:can_edit])
-      expect(ProtocolAuthorizer).to receive(:new).
-        with(protocol, identity).
-        and_return(auth_mock)
     end
   end
 end

@@ -7,9 +7,8 @@ RSpec.describe Dashboard::FulfillmentsController do
         instance_double(Fulfillment, id: 1)
       end
 
-      logged_in_user = create(:identity)
-      log_in_dashboard_identity(obj: logged_in_user)
-      xhr :get, :edit, id: 1
+      log_in_dashboard_identity(obj: build_stubbed(:identity))
+      xhr :get, :edit, id: @fulfillment.id
     end
 
     it "should assign @fulfillment from params[:id]" do

@@ -7,8 +7,7 @@ RSpec.describe Dashboard::DocumentsController do
         @document = findable_stub(Document) { build_stubbed(:document) }
         allow(@document).to receive(:update_attributes).and_return(true)
 
-        logged_in_user = create(:identity)
-        log_in_dashboard_identity(obj: logged_in_user)
+        log_in_dashboard_identity(obj: build_stubbed(:identity))
 
         @document_attrs = "document attributes"
         xhr :put, :update, id: @document.id, document: @document_attrs
@@ -33,8 +32,7 @@ RSpec.describe Dashboard::DocumentsController do
         allow(@document).to receive(:update_attributes).and_return(false)
         allow(@document).to receive(:errors).and_return("my errors")
 
-        logged_in_user = create(:identity)
-        log_in_dashboard_identity(obj: logged_in_user)
+        log_in_dashboard_identity(obj: build_stubbed(:identity))
 
         @document_attrs = "document attributes"
         xhr :put, :update, id: @document.id, document: @document_attrs

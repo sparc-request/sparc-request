@@ -9,16 +9,14 @@ RSpec.describe Dashboard::FulfillmentsController do
         end
         allow(@fulfillment).to receive(:update_attributes).and_return(true)
 
-        logged_in_user = create(:identity)
-        log_in_dashboard_identity(obj: logged_in_user)
+        log_in_dashboard_identity(obj: build_stubbed(:identity))
 
-        @fulfillment_attrs = "fulfillment attributes"
-        xhr :put, :update, id: 1, fulfillment: @fulfillment_attrs
+        xhr :put, :update, id: @fulfillment.id, fulfillment: "fulfillment attributes"
       end
 
-      it "should update document" do
+      it "should update Fulfillment" do
         expect(@fulfillment).to have_received(:update_attributes).
-          with(@fulfillment_attrs)
+          with("fulfillment attributes")
       end
 
       it "should not set @errors" do
@@ -37,16 +35,15 @@ RSpec.describe Dashboard::FulfillmentsController do
         allow(@fulfillment).to receive(:update_attributes).and_return(false)
         allow(@fulfillment).to receive(:errors).and_return("my errors")
 
-        logged_in_user = create(:identity)
+        logged_in_user = build_stubbed(:identity)
         log_in_dashboard_identity(obj: logged_in_user)
 
-        @fulfillment_attrs = "fulfillment attributes"
-        xhr :put, :update, id: 1, fulfillment: @fulfillment_attrs
+        xhr :put, :update, id: @fulfillment.id, fulfillment: "fulfillment attributes"
       end
 
-      it "should attempt to update document" do
+      it "should attempt to update Fulfillment" do
         expect(@fulfillment).to have_received(:update_attributes).
-          with(@fulfillment_attrs)
+          with("fulfillment attributes")
       end
 
       it "should set @errors" do

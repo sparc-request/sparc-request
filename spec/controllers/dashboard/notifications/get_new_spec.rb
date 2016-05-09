@@ -15,7 +15,6 @@ RSpec.describe Dashboard::NotificationsController do
         @recipient = build_stubbed(:identity)
         @new_message = build_stubbed(:message)
         allow(@new_notification.messages).to receive(:new).
-          with(to: @recipient.id.to_s).
           and_return(@new_message)
 
         @logged_in_user = build_stubbed(:identity)
@@ -36,6 +35,11 @@ RSpec.describe Dashboard::NotificationsController do
       end
 
       it "should build a new Message to Identity from params[:identity_id]" do
+        expect(@new_notification.messages).to have_received(:new).
+          with(to: @recipient.id.to_s)
+      end
+
+      it "should assign new Message to @message" do
         expect(assigns(:message)).to eq(@new_message)
       end
 
@@ -52,7 +56,6 @@ RSpec.describe Dashboard::NotificationsController do
         @recipient = build_stubbed(:identity)
         @new_message = build_stubbed(:message)
         allow(@new_notification.messages).to receive(:new).
-          with(to: @recipient.id.to_s).
           and_return(@new_message)
 
         @logged_in_user = build_stubbed(:identity)
@@ -65,6 +68,11 @@ RSpec.describe Dashboard::NotificationsController do
       end
 
       it "should build a new Message to Identity from params[:identity_id]" do
+        expect(@new_notification.messages).to have_received(:new).
+          with(to: @recipient.id.to_s)
+      end
+
+      it "should assign new Message to @message" do
         expect(assigns(:message)).to eq(@new_message)
       end
 
@@ -75,7 +83,7 @@ RSpec.describe Dashboard::NotificationsController do
     context "params[:identity_id] == current_user.id" do
       before(:each) do
         @logged_in_user = build_stubbed(:identity)
-        
+
         @new_notification = build_stubbed(:notification)
         allow(Notification).to receive(:new).
           and_return(@new_notification)
@@ -84,7 +92,6 @@ RSpec.describe Dashboard::NotificationsController do
         @recipient = build_stubbed(:identity)
         @new_message = build_stubbed(:message)
         allow(@new_notification.messages).to receive(:new).
-          with(to: @logged_in_user.id.to_s).
           and_return(@new_message)
 
         log_in_dashboard_identity(obj: @logged_in_user)

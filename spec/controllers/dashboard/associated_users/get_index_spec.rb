@@ -11,7 +11,6 @@ RSpec.describe Dashboard::AssociatedUsersController do
     end
 
     context "User does not have view rights to Protocol" do
-      render_views
       before(:each) do
         authorize(identity, protocol, can_view: false)
         log_in_dashboard_identity(obj: identity)
@@ -19,13 +18,16 @@ RSpec.describe Dashboard::AssociatedUsersController do
         get :index, protocol_id: protocol.id, format: :json
       end
 
+      it "should use ProtocolAuthorizer to authorize user" do
+        expect(ProtocolAuthorizer).to have_received(:new).
+          with(protocol, identity)
+      end
+
       it { is_expected.to render_template "service_requests/_authorization_error" }
       it { is_expected.to respond_with :ok }
     end
 
     context "User has view rights to Protocol" do
-      render_views
-
       let!(:project_role) do
         obj = build_stubbed(:project_role,
           identity: identity,
@@ -60,14 +62,6 @@ RSpec.describe Dashboard::AssociatedUsersController do
 
       it { is_expected.to render_template "dashboard/associated_users/index" }
       it { is_expected.to respond_with :ok }
-    end
-
-    def authorize(identity, protocol, opts = {})
-      auth_mock = instance_double('ProtocolAuthorizer',
-        'can_view?' => opts[:can_view].nil? ? false : opts[:can_view],
-        'can_edit?' => opts[:can_edit].nil? ? false : opts[:can_edit])
-      allow(ProtocolAuthorizer).to receive(:new).
-        and_return(auth_mock)
     end
   end
 end

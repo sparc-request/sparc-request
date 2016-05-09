@@ -1,34 +1,57 @@
 require 'rails_helper'
 
 RSpec.describe Dashboard::ProtocolsController do
-  describe 'get display_requests' do
-    it 'should set @protocol_role and @permission_to_edit' do
-      identity = instance_double('Identity',
-        id: 1)
-      log_in_dashboard_identity(obj: identity)
+  describe 'GET #display_requests' do
+    context 'user not authorized to view Protocol' do
+      before(:each) do
+        @logged_in_user = build_stubbed(:identity)
 
-      project_role_stub = instance_double('ProjectRole',
-      'can_edit?' => :permission_to_edit)
+        @protocol = findable_stub(Protocol) do
+          build_stubbed(:protocol, type: "Project")
+        end
+        authorize(@logged_in_user, @protocol, can_view: false)
 
-      protocol_stub = findable_stub(Protocol) do
-        instance_double('Protocol', id: 1)
+        log_in_dashboard_identity(obj: @logged_in_user)
+        get :edit, id: @protocol.id
       end
-      allow(protocol_stub).to receive_message_chain(:project_roles, :find_by_identity_id).
-        with(1).and_return(project_role_stub)
 
-      xhr :get, :display_requests, id: 1, format: :js
+      it "should use ProtocolAuthorizer to authorize user" do
+        expect(ProtocolAuthorizer).to have_received(:new).
+          with(@protocol, @logged_in_user)
+      end
 
-      expect(assigns(:protocol_role)).to eq(project_role_stub)
-      expect(assigns(:protocol)).to eq(protocol_stub)
+      it { is_expected.to respond_with :ok }
+      it { is_expected.to render_template "service_requests/_authorization_error" }
     end
-  end
 
-  def authorize(identity, protocol, opts = {})
-    auth_mock = instance_double('ProtocolAuthorizer',
-      'can_view?' => opts[:can_view].nil? ? false : opts[:can_view],
-      'can_edit?' => opts[:can_edit].nil? ? false : opts[:can_edit])
-    expect(ProtocolAuthorizer).to receive(:new).
-      with(protocol, identity).
-      and_return(auth_mock)
+    context "user authorized to view Protocol" do
+      before(:each) do
+        @current_user = build_stubbed(:identity)
+        log_in_dashboard_identity(obj: @current_user)
+
+        @protocol = findable_stub(Protocol) { build_stubbed(:protocol) }
+        authorize(@current_user, @protocol, can_view: true)
+
+        @project_role = build_stubbed(:project_role,
+          identity_id: @current_user.id,
+          protocol_id: @protocol.id)
+        allow(@protocol.project_roles).to receive(:find_by).
+          with(identity_id: @current_user.id).
+          and_return(@project_role)
+
+        xhr :get, :display_requests, id: @protocol.id, format: :js
+      end
+
+      it "should set @protocol to Protocol <- params[:id]" do
+        expect(assigns(:protocol)).to eq(@protocol)
+      end
+
+      it "should set @protocol_role to user's ProjectRole under @protocol" do
+        expect(assigns(:protocol_role)).to eq(@project_role)
+      end
+
+      it { is_expected.to respond_with :ok }
+      it { is_expected.to render_template "dashboard/protocols/display_requests" }
+    end
   end
 end

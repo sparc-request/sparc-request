@@ -41,13 +41,17 @@ RSpec.describe Dashboard::ArmBuilder do
           sub_service_requests: [instance_double(SubServiceRequest, in_work_fulfillment: false)])
       end
       service_request = build_stubbed(:service_request)
-      allow(protocol).to receive(:service_requests).and_return([service_request])
-      allow(service_request).to receive(:per_patient_per_visit_line_items).and_return(["PPPVLineItem"])
+      allow(protocol).to receive(:service_requests).
+        and_return([service_request])
+      allow(service_request).to receive(:per_patient_per_visit_line_items).
+        and_return(["PPPVLineItem"])
 
       # stub a valid Arm for Arm.create
       @new_arm = instance_double(Arm, valid?: true)
       arm_attributes_for_creation = { protocol_id: 1, other_attributes: "here" }
-      allow(Arm).to receive(:create).with(arm_attributes_for_creation).and_return(@new_arm)
+      allow(Arm).to receive(:create).
+        with(arm_attributes_for_creation).
+        and_return(@new_arm)
 
       # test for proper Arm setup, in this order
       # TODO find a way to move these expectations into individual examples
@@ -72,7 +76,9 @@ RSpec.describe Dashboard::ArmBuilder do
       # stub an invalid Arm for Arm.create
       @new_arm = instance_double(Arm, valid?: false)
       arm_attributes_for_creation = { protocol_id: 1, other_attributes: "here" }
-      allow(Arm).to receive(:create).with(arm_attributes_for_creation).and_return(@new_arm)
+      allow(Arm).to receive(:create).
+        with(arm_attributes_for_creation).
+        and_return(@new_arm)
 
       allow(@new_arm).to receive(:create_line_items_visit)
       allow(@new_arm).to receive(:default_visit_days)

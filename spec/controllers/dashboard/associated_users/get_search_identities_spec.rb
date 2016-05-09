@@ -3,13 +3,10 @@ require 'rails_helper'
 RSpec.describe Dashboard::AssociatedUsersController do
   describe 'GET search_identities' do
     before(:each) do
-      logged_in_user = build_stubbed(:identity)
-      log_in_dashboard_identity(obj: logged_in_user)
+      log_in_dashboard_identity(obj: build_stubbed(:identity))
     end
 
     context "search term yields at least one matching record" do
-      render_views
-
       before(:each) do
         matching_record1 = instance_double(Identity,
           display_name: "My Good Name",

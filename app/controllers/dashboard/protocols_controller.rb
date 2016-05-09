@@ -27,8 +27,8 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   before_filter :protocol_authorizer_edit, only: [:edit, :update, :update_protocol_type]
 
   def index
-    admin_orgs = @user.authorized_admin_organizations
-    @admin =  !admin_orgs.empty?
+    admin_orgs   = @user.authorized_admin_organizations
+    @admin       = !admin_orgs.empty?
     @filterrific =
       initialize_filterrific(Protocol, params[:filterrific],
         default_filter_params: { show_archived: 0, for_identity_id: @user.id },
@@ -39,7 +39,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
         persistence_id: false #resets filters on page reload
       ) || return
 
-    @protocols = @filterrific.find.page(params[:page])
+    @protocols        = @filterrific.find.page(params[:page])
     @protocol_filters = ProtocolFilter.latest_for_user(@user.id, 5)
     session[:breadcrumbs].clear
 
@@ -170,7 +170,8 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
   def display_requests
     @protocol_role = @protocol.project_roles.find_by(identity_id: @user.id)
-    @permission_to_edit = @protocol_role.can_edit?
+
+    @permission_to_edit = @protocol_role.present? ? @protocol_role.can_edit? : Protocol.for_admin(@user.id).include?(@protocol)
   end
 
   def view_details

@@ -22,7 +22,7 @@
 
 - if !(sub_service_request.per_patient_per_visit_line_items.length >= 1) || service_request.arms.empty?
   .blank_requests
-    = t(:dashboard)[:sub_service_requests][:tabs][:study_schedule][:no_requests]
+    = render partial: 'shared/alert', locals: { message: t(:dashboard)[:sub_service_requests][:tabs][:study_schedule][:no_requests] }
 - else
   #per_patient_per_visit_table
     = render partial: 'study_schedule/management_buttons', locals: { service_request: service_request, sub_service_request: sub_service_request }

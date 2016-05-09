@@ -101,10 +101,9 @@
       .col-lg-10
         = form.text_field :sponsor_name, class: 'form-control'
 
-    
-        / Display epic questions as readonly for administrators 
-
-    - if admin && !protocol.virgin_project? && (!protocol.changed.include?('selected_for_epic') || protocol.changed_attributes()['selected_for_epic'])
+    / Display epic questions as readonly for administrators who aren't an authorized user
+    / with edit abilities
+    - if !permission_to_edit && admin && !protocol.virgin_project? && (!protocol.changed.include?('selected_for_epic') || protocol.changed_attributes()['selected_for_epic'])
       .form-group.row{ display_if(USE_EPIC) }
         = form.label :selected_for_epic, t(:protocols)[:studies][:information][:push_to_epic], class: 'col-lg-2 form-control-label'
         .col-lg-10

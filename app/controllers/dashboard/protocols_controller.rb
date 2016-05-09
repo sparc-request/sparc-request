@@ -98,15 +98,20 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def edit
-    admin_orgs = @user.authorized_admin_organizations
-    @admin =  !admin_orgs.empty?
-    @protocol_type = @protocol.type
+    admin_orgs          = @user.authorized_admin_organizations
+    @admin              = !admin_orgs.empty?
+    @protocol_type      = @protocol.type
+    protocol_role       = @protocol.project_roles.find_by(identity_id: @user.id)
+    @permission_to_edit = protocol_role.nil? ? false : protocol_role.can_edit?
+
     @protocol.populate_for_edit
     session[:breadcrumbs].
       clear.
       add_crumbs(protocol_id: @protocol.id, edit_protocol: true)
+    
     @protocol.valid?
     @errors = @protocol.errors
+    
     respond_to do |format|
       format.html
     end

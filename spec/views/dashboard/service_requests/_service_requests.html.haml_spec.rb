@@ -11,9 +11,11 @@ RSpec.describe 'dashboard/service_requests/service_requests', type: :view do
           service_requests: [],
           sub_service_requests: [],
           has_first_draft_service_request?: false)
+
         render 'dashboard/service_requests/service_requests',
           protocol: protocol,
           permission_to_edit: true
+
         expect(response).to have_selector('button', exact: 'Add Services')
       end
     end
@@ -25,9 +27,11 @@ RSpec.describe 'dashboard/service_requests/service_requests', type: :view do
           service_requests: [],
           sub_service_requests: [],
           has_first_draft_service_request?: false)
+
         render 'dashboard/service_requests/service_requests',
           protocol: protocol,
           permission_to_edit: false
+
         expect(response).to_not have_selector('button', exact: 'Add Services')
       end
     end

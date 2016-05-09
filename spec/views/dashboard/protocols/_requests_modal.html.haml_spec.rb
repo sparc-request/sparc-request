@@ -1,3 +1,4 @@
+# TODO rewrite with stubs
 require 'rails_helper'
 
 RSpec.describe 'dashboard/protocols/requests_modal', type: :view do

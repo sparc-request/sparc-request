@@ -20,15 +20,6 @@
 
 module Dashboard::DocumentsHelper
 
-  def display_organizations_for(document)
-    org_tree = ""
-    document.sub_service_requests.each do |ssr|
-      org_tree += ssr.org_tree_display
-    end
-
-    org_tree.html_safe
-  end
-
   def display_document_title(document)
     link_to document.document_file_name, document.document.url
   end
@@ -37,7 +28,7 @@ module Dashboard::DocumentsHelper
     content_tag(:button,
       raw(
         content_tag(:span, '', class: "glyphicon glyphicon-edit", aria: {hidden: "true"})
-      ), type: 'button', class: "btn btn-warning actions-button document_edit #{permission_to_edit.present? && !permission_to_edit ? 'disabled' : ''}"
+      ), type: 'button', class: "btn btn-warning actions-button document_edit"
     )
   end
 
@@ -45,7 +36,7 @@ module Dashboard::DocumentsHelper
     content_tag(:button,
       raw(
         content_tag(:span, '', class: "glyphicon glyphicon-remove", aria: {hidden: "true"})
-      ), type: 'button', class: "btn btn-danger actions-button document_delete #{permission_to_edit.present? && !permission_to_edit ? 'disabled' : ''}"
+      ), type: 'button', class: "btn btn-danger actions-button document_delete"
     )
   end
 end

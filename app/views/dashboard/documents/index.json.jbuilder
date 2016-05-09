@@ -1,6 +1,5 @@
 json.(@documents) do |doc|
 	json.id doc.id
-	json.organization display_organizations_for(doc)
 	json.type doc.display_document_type
 	json.title display_document_title(doc)
 	json.uploaded format_date(doc.created_at)

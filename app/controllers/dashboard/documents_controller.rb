@@ -19,28 +19,15 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Dashboard::DocumentsController < Dashboard::BaseController
-  before_filter :find_protocol,            only: [:index, :new, :edit]
   before_filter :find_sub_service_request, only: [:index, :new, :edit]
-  before_filter :protocol_authorizer_view, only: [:index], if: "@protocol.present?"
-  before_filter :protocol_authorizer_edit, only: [:new, :edit, :destroy], if: "@protocol.present?"
 
   def index
-    @documents =  if params[:sub_service_request_id].present?
-                    @sub_service_request.documents
-                  else
-                    @permission_to_edit = params[:permission_to_edit]
-                    @protocol.documents
-                  end
+    @documents = @sub_service_request.documents
   end
 
   def new
-    @document = if params[:sub_service_request_id].present?
-                  @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
-                  Document.new(service_request_id: @sub_service_request.service_request_id)
-                else
-                  Document.new(: @protocol.id)
-
-    @header_text = t(:dashboard)[:documents][:add]
+    @document     = Document.new(service_request_id: @sub_service_request.service_request_id)
+    @header_text  = t(:dashboard)[:documents][:add]
   end
 
   def create
@@ -80,9 +67,5 @@ class Dashboard::DocumentsController < Dashboard::BaseController
 
   def find_sub_service_request
     @sub_service_request = params[:sub_service_request_id].present? ? SubServiceRequest.find(params[:sub_service_request_id]) : nil
-  end
-
-  def find_protocol
-    @protocol = params[:protocol_id].present? ? Protocol.find(params[:protocol_id]) : nil
   end
 end

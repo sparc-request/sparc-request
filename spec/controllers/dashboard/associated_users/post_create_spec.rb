@@ -2,10 +2,6 @@ require 'rails_helper'
 
 RSpec.describe Dashboard::AssociatedUsersController do
   describe 'POST create' do
-    def errors_stub(message)
-      double(ActiveModel::Errors, full_messages: [message])
-    end
-
     let!(:identity) { build_stubbed(:identity) }
 
     let!(:protocol) { findable_stub(Protocol) { build_stubbed(:protocol) } }

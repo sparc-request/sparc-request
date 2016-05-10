@@ -172,6 +172,8 @@ en:
 
   # Catalog Manager Index Page
   cm_index:
+    additional_details: "Additional Details"
+    add_additional_details: "Add Additional Details"
     core: "Create New Core"
     institution: "Create New Institution"
     pricing_map1: "No Pricing Map Changes"

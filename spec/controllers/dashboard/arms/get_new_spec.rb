@@ -2,23 +2,24 @@ require 'rails_helper'
 
 RSpec.describe Dashboard::ArmsController do
   describe 'GET new' do
-    let!(:identity_stub) { instance_double(Identity, id: 1) }
+    let!(:identity_stub) { build_stubbed(:identity) }
 
     let!(:protocol_stub) do
-      findable_stub(Protocol) { instance_double(Protocol, id: 1) }
+      findable_stub(Protocol) { build_stubbed(:protocol) }
     end
 
     let!(:sr_stub) do
-      findable_stub(ServiceRequest) { instance_double(ServiceRequest, id: 2) }
+      findable_stub(ServiceRequest) { build_stubbed(:service_request) }
     end
 
     let!(:ssr_stub) do
-      findable_stub(SubServiceRequest) { instance_double(SubServiceRequest, id: 3) }
+      findable_stub(SubServiceRequest) { build_stubbed(:sub_service_request) }
     end
 
     before(:each) do
       log_in_dashboard_identity(obj: identity_stub)
-      xhr :get, :new, protocol_id: 1, service_request_id: 2, sub_service_request_id: 3, schedule_tab: 'schedule_tab'
+      xhr :get, :new, protocol_id: protocol_stub.id, service_request_id: sr_stub.id,
+        sub_service_request_id: ssr_stub.id, schedule_tab: 'schedule_tab'
     end
 
     it 'should set @protocol from params[:protocol_id]' do
@@ -38,7 +39,7 @@ RSpec.describe Dashboard::ArmsController do
     end
 
     it 'should assign @arm to a new, unpersisted Arm associated with Protocol' do
-      expect(assigns(:arm).protocol_id).to eq(1)
+      expect(assigns(:arm).protocol_id).to eq(protocol_stub.id)
       expect(assigns(:arm)).not_to be_persisted
     end
 

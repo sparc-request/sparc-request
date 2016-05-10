@@ -46,7 +46,7 @@ RSpec.describe 'Notifications index', js: true do
   end
 
   describe 'default' do
-    # TODO extract
+    # TODO extract to view specs
     it 'should show Notifications associated with Messages to user' do
       # does not have a message to user; should not be displayed
       other_user = create(:identity, first_name: 'Santa', last_name: 'Claws')
@@ -97,6 +97,7 @@ RSpec.describe 'Notifications index', js: true do
         body: 'message 1', read_by_originator: true, read_by_other_user: true)
 
       index_page = visit_notifications_index_page
+      # having issues with async. javascript & bootstrap table
       wait_for_javascript_to_finish
       index_page.notifications.first.select_checkbox.click
       index_page.mark_as_unread_button.click
@@ -115,6 +116,7 @@ RSpec.describe 'Notifications index', js: true do
         body: 'message 1', read_by_originator: false, read_by_other_user: false)
 
       index_page = visit_notifications_index_page
+      # having issues with async. javascript & bootstrap table
       wait_for_javascript_to_finish
       index_page.notifications.first.select_checkbox.click
       index_page.mark_as_read_button.click

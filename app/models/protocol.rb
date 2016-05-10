@@ -24,23 +24,23 @@ class Protocol < ActiveRecord::Base
 
   audited
 
-  has_many :study_types, :dependent => :destroy
-  has_one :research_types_info, :dependent => :destroy
-  has_one :human_subjects_info, :dependent => :destroy
-  has_one :vertebrate_animals_info, :dependent => :destroy
-  has_one :investigational_products_info, :dependent => :destroy
-  has_one :ip_patents_info, :dependent => :destroy
-  has_many :project_roles, :dependent => :destroy
-  has_many :identities, :through => :project_roles
+  has_many :study_types,                  dependent: :destroy
+  has_one :research_types_info,           dependent: :destroy
+  has_one :human_subjects_info,           dependent: :destroy
+  has_one :vertebrate_animals_info,       dependent: :destroy
+  has_one :investigational_products_info, dependent: :destroy
+  has_one :ip_patents_info,               dependent: :destroy
+  has_many :project_roles,                dependent: :destroy
+  has_many :identities,                   through: :project_roles
   has_many :service_requests
-  has_many :sub_service_requests, through: :service_requests
-  has_many :organizations, through: :sub_service_requests
-  has_many :affiliations, :dependent => :destroy
-  has_many :impact_areas, :dependent => :destroy
-  has_many :arms, :dependent => :destroy
-  has_many :study_type_answers, :dependent => :destroy
-  has_many :notes, as: :notable, dependent: :destroy
-  has_many :study_type_questions, through: :study_type_question_group
+  has_many :sub_service_requests,         through: :service_requests
+  has_many :organizations,                through: :sub_service_requests
+  has_many :affiliations,                 dependent: :destroy
+  has_many :impact_areas,                 dependent: :destroy
+  has_many :arms,                         dependent: :destroy
+  has_many :study_type_answers,           dependent: :destroy
+  has_many :notes, as: :notable,          dependent: :destroy
+  has_many :study_type_questions,         through: :study_type_question_group
 
   belongs_to :study_type_question_group
 
@@ -86,6 +86,7 @@ class Protocol < ActiveRecord::Base
   attr_accessible :study_type_question_group_id
   attr_accessible :study_types_attributes
   attr_accessible :title
+  attr_accessible :type
   attr_accessible :udak_project_number
   attr_accessible :vertebrate_animals_info_attributes
 
@@ -98,22 +99,19 @@ class Protocol < ActiveRecord::Base
   accepts_nested_attributes_for :vertebrate_animals_info
   accepts_nested_attributes_for :investigational_products_info
   accepts_nested_attributes_for :ip_patents_info
-  accepts_nested_attributes_for :study_types, :allow_destroy => true
-  accepts_nested_attributes_for :impact_areas, :allow_destroy => true
-  accepts_nested_attributes_for :affiliations, :allow_destroy => true
-  accepts_nested_attributes_for :project_roles, :allow_destroy => true
-  accepts_nested_attributes_for :arms, :allow_destroy => true
-  accepts_nested_attributes_for :study_type_answers, :allow_destroy => true
+  accepts_nested_attributes_for :study_types,                   allow_destroy: true
+  accepts_nested_attributes_for :impact_areas,                  allow_destroy: true
+  accepts_nested_attributes_for :affiliations,                  allow_destroy: true
+  accepts_nested_attributes_for :project_roles,                 allow_destroy: true
+  accepts_nested_attributes_for :arms,                          allow_destroy: true
+  accepts_nested_attributes_for :study_type_answers,            allow_destroy: true
 
   validation_group :protocol do
-    validates :short_title, :presence => true
-    validates :title, :presence => true
-    validates :funding_status, :presence => true
+    validates :short_title,                    presence: true
+    validates :title,                          presence: true
+    validates :funding_status,                 presence: true
     validate  :validate_funding_source
-    validates :sponsor_name, :presence => true, :if => :is_study?
-    validates_associated :human_subjects_info, :message => "must contain 8 numerical digits", :if => :validate_nct
-    validates :selected_for_epic, inclusion: [true, false], :if => [:is_study?, :is_epic?]
-    validate  :validate_study_type_answers, if: [:is_study?, :selected_for_epic?, "StudyTypeQuestionGroup.active.pluck(:id).first == study_type_question_group_id"]
+    validates_associated :human_subjects_info, message: "must contain 8 numerical digits", if: :validate_nct
   end
 
   validation_group :user_details do
@@ -220,45 +218,6 @@ class Protocol < ActiveRecord::Base
       errors.add(:funding_source, "You must select a funding source")
     elsif self.funding_status == "pending_funding" && self.potential_funding_source.blank?
       errors.add(:potential_funding_source, "You must select a potential funding source")
-    end
-  end
-
-  FRIENDLY_IDS = ["certificate_of_conf", "higher_level_of_privacy", "access_study_info", "epic_inbasket", "research_active", "restrict_sending"]
-
-  def validate_study_type_answers
-    answers = {}
-    FRIENDLY_IDS.each do |fid|
-      q = StudyTypeQuestion.active.find_by_friendly_id(fid)
-      answers[fid] = study_type_answers.find{|x| x.study_type_question_id == q.id}
-    end
-
-    has_errors = false
-    begin
-      if answers["certificate_of_conf"].answer.nil?
-        has_errors = true
-      elsif answers["certificate_of_conf"].answer == false
-        if (answers["higher_level_of_privacy"].answer.nil?)
-          has_errors = true
-        elsif (answers["higher_level_of_privacy"].answer == false)
-          if answers["epic_inbasket"].answer.nil? || answers["research_active"].answer.nil? || answers["restrict_sending"].answer.nil?
-            has_errors = true
-          end
-        elsif (answers["higher_level_of_privacy"].answer == true)
-          if (answers["access_study_info"].answer.nil?)
-            has_errors = true
-          elsif (answers["access_study_info"].answer == false)
-            if answers["epic_inbasket"].answer.nil? || answers["research_active"].answer.nil? || answers["restrict_sending"].answer.nil?
-              has_errors = true
-            end
-          end
-        end
-      end
-    rescue => e
-      has_errors = true
-    end
-
-    if has_errors
-      errors.add(:study_type_questions, "must be selected")
     end
   end
 

@@ -7,17 +7,16 @@ RSpec.describe Dashboard::LineItemsController do
         @service_request = build_stubbed(:service_request)
 
         @sub_service_request = findable_stub(SubServiceRequest) do
-          instance_double(SubServiceRequest,
-            id: 1,
-            service_request: @service_request,
-            candidate_pppv_services: "candidate pppv services")
+          build_stubbed(:sub_service_request, service_request: @service_request)
         end
+        allow(@sub_service_request).to receive(:candidate_pppv_services).
+          and_return("candidate pppv services")
 
         allow(LineItem).to receive(:new).and_return("my new LineItem")
 
-        logged_in_user = create(:identity)
-        log_in_dashboard_identity(obj: logged_in_user)
-        xhr :get, :new, sub_service_request_id: @sub_service_request.id, schedule_tab: "my schedule tab", one_time_fee: "yep"
+        log_in_dashboard_identity(obj: build_stubbed(:identity))
+        xhr :get, :new, sub_service_request_id: @sub_service_request.id,
+          schedule_tab: "my schedule tab", one_time_fee: "yep"
       end
 
       it "should set @sub_service_request from params[:sub_service_request_id]" do
@@ -48,16 +47,14 @@ RSpec.describe Dashboard::LineItemsController do
       before(:each) do
         @service_request = build_stubbed(:service_request)
         @sub_service_request = findable_stub(SubServiceRequest) do
-          build_stubbed(:sub_service_request)
+          build_stubbed(:sub_service_request, service_request: @service_request)
         end
-        allow(@sub_service_request).to receive(:service_request).
-          and_return(@service_request)
         allow(@sub_service_request).to receive(:candidate_pppv_services).
           and_return("candidate pppv services")
 
-        logged_in_user = create(:identity)
-        log_in_dashboard_identity(obj: logged_in_user)
-        xhr :get, :new, sub_service_request_id: @sub_service_request.id, schedule_tab: "my schedule tab", page_hash: "my page hash"
+        log_in_dashboard_identity(obj: build_stubbed(:identity))
+        xhr :get, :new, sub_service_request_id: @sub_service_request.id,
+          schedule_tab: "my schedule tab", page_hash: "my page hash"
       end
 
       it "should set @sub_service_request from params[:sub_service_request_id]" do

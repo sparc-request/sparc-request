@@ -7,4 +7,8 @@ class StudyTypeQuestionGroup < ActiveRecord::Base
   def self.active_id
     self.active.first.id
   end
+
+  def self.inactive_id
+    inactive.first.id
+  end
 end

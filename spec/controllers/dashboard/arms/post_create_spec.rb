@@ -3,24 +3,19 @@ require 'rails_helper'
 RSpec.describe Dashboard::ArmsController do
   describe 'post create' do
     let(:protocol) do
-      findable_stub(Protocol) do
-        instance_double(Protocol,
-          id: 1,
-          sub_service_requests: SubServiceRequest.none,
-          arms: Arm.none)
-      end
+      findable_stub(Protocol) { build_stubbed(:protocol) }
     end
 
     let(:sr_stub) do
-      findable_stub(ServiceRequest) { instance_double(ServiceRequest, id: 2) }
+      findable_stub(ServiceRequest) { build_stubbed(:service_request) }
     end
 
     let(:ssr_stub) do
-      findable_stub(SubServiceRequest) { instance_double(SubServiceRequest, id: 3) }
+      findable_stub(SubServiceRequest) { build_stubbed(:sub_service_request) }
     end
 
     before(:each) do
-      log_in_dashboard_identity(obj: instance_double(Identity, id: 1))
+      log_in_dashboard_identity(obj: build_stubbed(:identity))
     end
 
     context "params[:arm] does not describe a valid Arm" do
@@ -50,7 +45,8 @@ RSpec.describe Dashboard::ArmsController do
         allow(Dashboard::ArmBuilder).to receive(:new).
           and_return(@arm_builder_stub)
 
-        xhr :post, :create, arm: @arm_attrs, service_request_id: sr_stub.id, sub_service_request_id: ssr_stub.id
+        xhr :post, :create, arm: @arm_attrs, service_request_id: sr_stub.id,
+          sub_service_request_id: ssr_stub.id
       end
 
       it "should use ArmBuilder with params[:arm] to stick new Arm in @selected_arm" do

@@ -28,8 +28,6 @@ RSpec.describe Dashboard::AssociatedUsersController do
     end
 
     context "User not authorized to edit Protocol" do
-      render_views
-
       before(:each) do
         authorize(identity, protocol, can_edit: false)
         log_in_dashboard_identity(obj: identity)
@@ -37,13 +35,16 @@ RSpec.describe Dashboard::AssociatedUsersController do
         xhr :get, :edit, id: project_role.id, format: :js
       end
 
+      it "should use ProtocolAuthorizer to authorize user" do
+        expect(ProtocolAuthorizer).to have_received(:new).
+          with(protocol, identity)
+      end
+
       it { is_expected.to render_template "service_requests/_authorization_error" }
       it { is_expected.to respond_with :ok }
     end
 
     context "User authorized to edit Protocol" do
-      render_views
-
       before(:each) do
         authorize(identity, protocol, can_edit: true)
         log_in_dashboard_identity(obj: identity)
@@ -55,7 +56,7 @@ RSpec.describe Dashboard::AssociatedUsersController do
         expect(assigns(:protocol_role)).to eq(project_role)
       end
 
-      it 'should set @protocol from @project_role.protocol' do
+      it 'should set @protocol to Protocol of @project_role' do
         expect(assigns(:protocol)).to eq(protocol)
       end
 
@@ -73,15 +74,6 @@ RSpec.describe Dashboard::AssociatedUsersController do
 
       it { is_expected.to render_template "dashboard/associated_users/edit" }
       it { is_expected.to respond_with :ok }
-    end
-
-    def authorize(identity, protocol, opts = {})
-      auth_mock = instance_double('ProtocolAuthorizer',
-        'can_view?' => opts[:can_view].nil? ? false : opts[:can_view],
-        'can_edit?' => opts[:can_edit].nil? ? false : opts[:can_edit])
-      expect(ProtocolAuthorizer).to receive(:new).
-        with(protocol, identity).
-        and_return(auth_mock)
     end
   end
 end

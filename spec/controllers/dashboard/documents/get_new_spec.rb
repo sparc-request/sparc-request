@@ -9,7 +9,7 @@ RSpec.describe Dashboard::DocumentsController do
       end
       allow(@sub_service_request).to receive(:documents).and_return(@documents)
 
-      logged_in_user = create(:identity)
+      logged_in_user = build_stubbed(:identity)
       log_in_dashboard_identity(obj: logged_in_user)
 
       xhr :get, :edit, id: @document.id, sub_service_request_id: @sub_service_request.id

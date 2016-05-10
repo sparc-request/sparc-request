@@ -190,7 +190,7 @@ RSpec.feature 'User wants to add an authorized user', js: true do
   context 'and does not have permission to edit the protocol' do
     fake_login_for_each_test("janed")
 
-    scenario 'and sees disabled Add an Authorized User button' do
+    scenario 'and sees the disabled Add an Authorized User button' do
       create(:project_role,
              identity: other_user,
              protocol: protocol,
@@ -199,13 +199,13 @@ RSpec.feature 'User wants to add an authorized user', js: true do
 
       page = Dashboard::Protocols::ShowPage.new
       page.load(id: protocol.id)
-
-      expect(page.add_authorized_user_button).to be_disabled
+      expect(page).to have_disabled_add_authorized_user_button
+      expect(page).to have_no_enabled_add_authorized_user_button
     end
   end
 
   def given_i_have_clicked_the_add_authorized_user_button
-    @page.add_authorized_user_button.click
+    @page.enabled_add_authorized_user_button.click
   end
 
   def when_i_select_a_user_from_the_search

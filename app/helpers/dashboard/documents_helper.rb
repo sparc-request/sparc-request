@@ -20,23 +20,23 @@
 
 module Dashboard::DocumentsHelper
 
-  def display_document_title document
+  def display_document_title(document)
     link_to document.document_file_name, document.document.url
   end
 
-  def document_edit_button
+  def document_edit_button(permission_to_edit)
     content_tag(:button,
       raw(
         content_tag(:span, '', class: "glyphicon glyphicon-edit", aria: {hidden: "true"})
-      ), type: 'button', class: 'btn btn-warning actions-button document_edit'
+      ), type: 'button', class: "btn btn-warning actions-button document_edit"
     )
   end
 
-  def document_delete_button
+  def document_delete_button(permission_to_edit)
     content_tag(:button,
       raw(
         content_tag(:span, '', class: "glyphicon glyphicon-remove", aria: {hidden: "true"})
-      ), type: 'button', class: 'btn btn-danger actions-button document_delete'
+      ), type: 'button', class: "btn btn-danger actions-button document_delete"
     )
   end
 end

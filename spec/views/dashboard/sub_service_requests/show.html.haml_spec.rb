@@ -19,53 +19,39 @@ RSpec.describe 'dashboard/sub_service_requests/show', type: :view do
 
     assign(:user, @logged_in_user)
     assign(:admin, "ADMIN")
+
+    render
   end
 
   it "should display user's unread notifications count" do
-    render
-
     expect(response).to have_css("#notification_count", text: "12345")
   end
 
   it "should render header" do
-    render
-
     expect(response).to render_template(partial: "dashboard/sub_service_requests/_header", locals: { sub_service_request: @sub_service_request })
   end
 
   it "should render request details" do
-    render
-
     expect(response).to render_template(partial: "dashboard/sub_service_requests/_request_details", locals: { sub_service_request: @sub_service_request, service_request: @service_request, protocol: @protocol })
   end
 
   it "should render per patient per visit calendars" do
-    render
-
     expect(response).to render_template(partial: "dashboard/sub_service_requests/_per_patient_per_visit", locals: { sub_service_request: @sub_service_request, service_request: @service_request })
   end
 
   it "should render study level activities table" do
-    render
-
     expect(response).to render_template(partial: "dashboard/study_level_activities/study_level_activities_table", locals: { sub_service_request: @sub_service_request })
   end
 
   it "should render documents table" do
-    render
-
     expect(response).to render_template(partial: "dashboard/documents/documents_table", locals: { sub_service_request: @sub_service_request, service_request: @service_request })
   end
 
   it "should render status changes table" do
-    render
-
     expect(response).to render_template(partial: "dashboard/sub_service_requests/history/status_changes", locals: { sub_service_request_id: @sub_service_request.id })
   end
 
   it "should render notifications table" do
-    render
-
     expect(response).to render_template(partial: "dashboard/notifications/notifications", locals: { sub_service_request: @sub_service_request, admin: "ADMIN", user: @logged_in_user })
   end
 end

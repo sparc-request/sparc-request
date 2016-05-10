@@ -17,7 +17,9 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
+- if @errors.present?
+  - content_for(:error_messages) do
+    = render(partial: 'shared/modal_errors', locals: { errors: @errors })
 #protocol
   .row.container-fluid
     .panel.panel-default
@@ -32,4 +34,9 @@
             %button.btn.btn-warning#protocol_type_button{ data: {protocol_id: @protocol.id } }
               = t(:protocols)[:change_type][:change_button]
 
-  = render partial: 'dashboard/protocols/form/protocol_form', locals: { protocol: @protocol, protocol_type: @protocol_type }
+  = render partial: 'dashboard/protocols/form/protocol_form', locals: { protocol: @protocol, protocol_type: @protocol_type, admin: @admin, permission_to_edit: @permission_to_edit }
+
+:javascript
+  $(document).ready( function() {
+    Sparc.protocol.ready();
+  })

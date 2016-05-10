@@ -186,7 +186,7 @@ RSpec.feature 'User messes with the change Primary PI Warning Dialog JS', js: tr
   end
 
   def given_i_have_clicked_the_add_authorized_user_button
-    @page.add_authorized_user_button.click
+    @page.enabled_add_authorized_user_button.click
   end
 
   def given_i_have_clicked_the_edit_authorized_user_button

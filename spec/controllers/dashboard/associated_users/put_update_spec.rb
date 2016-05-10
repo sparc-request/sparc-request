@@ -2,30 +2,27 @@ require 'rails_helper'
 
 RSpec.describe Dashboard::AssociatedUsersController do
   describe 'PUT update' do
-    let!(:identity_stub) { instance_double('Identity', id: 1) }
+    let!(:identity) { build_stubbed(:identity) }
 
-    before(:each) do
-      log_in_dashboard_identity(obj: identity_stub)
-    end
+    before(:each) { log_in_dashboard_identity(obj: identity) }
 
     context 'user not authorized to edit Protocol associated with ProjectRole' do
-      render_views
-
       before(:each) do
-        protocol = findable_stub(Protocol) do
-          instance_double(Protocol,
-          id: 1,
-          type: "protocol type")
+        @protocol = findable_stub(Protocol) do
+          build_stubbed(:protocol, type: "Project")
         end
-        authorize(identity_stub, protocol, can_edit: false)
+        authorize(identity, @protocol, can_edit: false)
 
         project_role = findable_stub(ProjectRole) do
-          instance_double(ProjectRole,
-            id: 1,
-            protocol: protocol)
+          build_stubbed(:project_role, protocol: @protocol)
         end
 
         xhr :put, :update, id: project_role.id
+      end
+
+      it "should use ProtocolAuthorizer to authorize user" do
+        expect(ProtocolAuthorizer).to have_received(:new).
+          with(@protocol, identity)
       end
 
       it { is_expected.to render_template "service_requests/_authorization_error" }
@@ -35,16 +32,12 @@ RSpec.describe Dashboard::AssociatedUsersController do
     context "params[:project_role] describes a valid update to ProtjectRole with id params[:id]" do
       before(:each) do
         protocol = findable_stub(Protocol) do
-          instance_double(Protocol,
-            id: 1,
-            type: "protocol type")
+          build_stubbed(:protocol, type: "Project")
         end
-        authorize(identity_stub, protocol, can_edit: true)
+        authorize(identity, protocol, can_edit: true)
 
         @project_role = findable_stub(ProjectRole) do
-          instance_double(ProjectRole,
-            id: 1,
-            protocol: protocol)
+          build_stubbed(:project_role, protocol: protocol)
         end
 
         project_role_updater = instance_double(Dashboard::AssociatedUserUpdater,
@@ -77,18 +70,14 @@ RSpec.describe Dashboard::AssociatedUsersController do
     context "params[:project_role] describes an invalid update to ProtjectRole with id params[:id]" do
       before(:each) do
         protocol = findable_stub(Protocol) do
-          instance_double(Protocol,
-            id: 1,
-            type: "protocol type")
+          build_stubbed(:protocol, type: "Project")
         end
-        authorize(identity_stub, protocol, can_edit: true)
+        authorize(identity, protocol, can_edit: true)
 
         @project_role = findable_stub(ProjectRole) do
-          instance_double(ProjectRole,
-            id: 1,
-            errors: "my errors",
-            protocol: protocol)
+          build_stubbed(:project_role, protocol: protocol)
         end
+        allow(@project_role).to receive(:errors).and_return("my errors")
 
         @project_role_updater = instance_double(Dashboard::AssociatedUserUpdater,
           successful?: false, # valid in this context
@@ -109,15 +98,6 @@ RSpec.describe Dashboard::AssociatedUsersController do
 
       it { is_expected.to render_template "dashboard/associated_users/update" }
       it { is_expected.to respond_with :ok }
-    end
-
-    def authorize(identity, protocol, opts = {})
-      auth_mock = instance_double('ProtocolAuthorizer',
-        'can_view?' => opts[:can_view].nil? ? false : opts[:can_view],
-        'can_edit?' => opts[:can_edit].nil? ? false : opts[:can_edit])
-      expect(ProtocolAuthorizer).to receive(:new).
-        with(protocol, identity).
-        and_return(auth_mock)
     end
   end
 end

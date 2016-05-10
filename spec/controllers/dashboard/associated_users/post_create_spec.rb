@@ -6,19 +6,11 @@ RSpec.describe Dashboard::AssociatedUsersController do
       double(ActiveModel::Errors, full_messages: [message])
     end
 
-    let!(:identity) do
-      build_stubbed(:identity)
-    end
+    let!(:identity) { build_stubbed(:identity) }
 
-    let!(:protocol) do
-      obj = build_stubbed(:protocol)
-      stub_find_protocol(obj)
-      obj
-    end
+    let!(:protocol) { findable_stub(Protocol) { build_stubbed(:protocol) } }
 
     context "User not authorized to edit Protocol" do
-      render_views
-
       before(:each) do
         authorize(identity, protocol, can_edit: false)
         log_in_dashboard_identity(obj: identity)
@@ -26,19 +18,21 @@ RSpec.describe Dashboard::AssociatedUsersController do
         xhr :post, :create, protocol_id: protocol.id, format: :js
       end
 
+      it "should use ProtocolAuthorizer to authorize user" do
+        expect(ProtocolAuthorizer).to have_received(:new).
+          with(protocol, identity)
+      end
+
       it { is_expected.to render_template "service_requests/_authorization_error" }
       it { is_expected.to respond_with :ok }
     end
 
     context "User authorized to edit Protocol and params[:project_role] describes valid ProjectRole" do
-      render_views
-
       before(:each) do
         authorize(identity, protocol, can_edit: true)
         log_in_dashboard_identity(obj: identity)
 
         @new_project_roles_attrs = "@new_project_roles_attrs"
-        new_project_role = instance_double(ProjectRole)
         associated_user_creator = instance_double(Dashboard::AssociatedUserCreator,
           successful?: true)
         allow(Dashboard::AssociatedUserCreator).to receive(:new).
@@ -61,14 +55,13 @@ RSpec.describe Dashboard::AssociatedUsersController do
     end
 
     context "User authorized to edit Protocol and params[:project_role] describes an invalid ProjectRole" do
-      render_views
-
       before(:each) do
         authorize(identity, protocol, can_edit: true)
         log_in_dashboard_identity(obj: identity)
 
         @new_project_roles_attrs = "@new_project_roles_attrs"
-        new_project_role = instance_double(ProjectRole, errors: errors_stub("my messages"))
+        new_project_role = build_stubbed(:project_role)
+        allow(new_project_role).to receive(:errors).and_return("my errors")
         associated_user_creator = instance_double(Dashboard::AssociatedUserCreator,
           successful?: false,
           protocol_role: new_project_role)
@@ -84,27 +77,12 @@ RSpec.describe Dashboard::AssociatedUsersController do
           with(@new_project_roles_attrs)
       end
 
-      it "should set @errors" do
-        expect(assigns(:errors).full_messages).to eq(["my messages"])
+      it "should set @errors from built ProjectRole's errors" do
+        expect(assigns(:errors)).to eq("my errors")
       end
 
       it { is_expected.to render_template "dashboard/associated_users/create" }
       it { is_expected.to respond_with :ok }
-    end
-
-    def authorize(identity, protocol, opts = {})
-      auth_mock = instance_double('ProtocolAuthorizer',
-        'can_view?' => opts[:can_view].nil? ? false : opts[:can_view],
-        'can_edit?' => opts[:can_edit].nil? ? false : opts[:can_edit])
-      expect(ProtocolAuthorizer).to receive(:new).
-        with(protocol, identity).
-        and_return(auth_mock)
-    end
-
-    def stub_find_protocol(protocol_stub)
-      allow(Protocol).to receive(:find).
-        with(protocol_stub.id).
-        and_return(protocol_stub)
     end
   end
 end

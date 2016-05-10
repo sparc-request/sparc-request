@@ -19,16 +19,15 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Dashboard::DocumentsController < Dashboard::BaseController
+  before_filter :find_sub_service_request, only: [:index, :new, :edit]
 
   def index
-    sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
-    @documents = sub_service_request.documents
+    @documents = @sub_service_request.documents
   end
 
   def new
-    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
-    @document = Document.new(service_request_id: @sub_service_request.service_request_id)
-    @header_text = t(:dashboard)[:documents][:add]
+    @document     = Document.new(service_request_id: @sub_service_request.service_request_id)
+    @header_text  = t(:dashboard)[:documents][:add]
   end
 
   def create
@@ -62,5 +61,11 @@ class Dashboard::DocumentsController < Dashboard::BaseController
     Dashboard::DocumentRemover.new(id: params[:id],
       sub_service_request_id: params[:sub_service_request_id])
     flash.now[:success] = t(:dashboard)[:documents][:destroyed]
+  end
+
+  private
+
+  def find_sub_service_request
+    @sub_service_request = params[:sub_service_request_id].present? ? SubServiceRequest.find(params[:sub_service_request_id]) : nil
   end
 end

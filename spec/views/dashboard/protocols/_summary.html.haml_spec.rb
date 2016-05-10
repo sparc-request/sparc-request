@@ -19,7 +19,9 @@ RSpec.describe 'dashboard/protocols/summary', type: :view do
         type: 'Study',
         archived: false,
         short_title: 'My Awesome Short Title')
+
       render_summary_for protocol
+
       expect(response).to have_content('Study Summary')
     end
 
@@ -31,6 +33,7 @@ RSpec.describe 'dashboard/protocols/summary', type: :view do
         archived: false,
         title: 'Study_Title',
         short_title: 'Study_Short_Title')
+
       render_summary_for protocol
 
       expect(response).to have_selector('button', exact: 'Study Notes')
@@ -49,6 +52,7 @@ RSpec.describe 'dashboard/protocols/summary', type: :view do
           potential_funding_source: 'federal',
           funding_source: 'college',
           funding_status: 'pending_funding')
+
         render_summary_for protocol
 
         expect(response).to have_content('9999')
@@ -73,6 +77,7 @@ RSpec.describe 'dashboard/protocols/summary', type: :view do
           potential_funding_source: 'federal',
           funding_source: 'college',
           funding_status: 'funded')
+
         render_summary_for protocol
 
         expect(response).to have_content('9999')
@@ -95,6 +100,7 @@ RSpec.describe 'dashboard/protocols/summary', type: :view do
         archived: false,
         title: 'Project_Title',
         short_title: 'Project_Short_Title')
+
       render_summary_for protocol
 
       expect(response).to have_selector('button', exact: 'Project Notes')
@@ -107,6 +113,7 @@ RSpec.describe 'dashboard/protocols/summary', type: :view do
         type: 'Project',
         archived: false,
         short_title: 'My Awesome Short Title')
+
       render_summary_for protocol
 
       expect(response).to have_content('Project Summary')
@@ -125,6 +132,7 @@ RSpec.describe 'dashboard/protocols/summary', type: :view do
           potential_funding_source: 'federal',
           funding_source: 'college',
           funding_status: 'pending_funding')
+
         render_summary_for protocol
 
         expect(response).to have_content('9999')
@@ -149,6 +157,7 @@ RSpec.describe 'dashboard/protocols/summary', type: :view do
           potential_funding_source: 'federal',
           funding_source: 'college',
           funding_status: 'funded')
+
         render_summary_for protocol
 
         expect(response).to have_content('9999')

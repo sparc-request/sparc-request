@@ -34,15 +34,40 @@ class Notification < ActiveRecord::Base
   attr_accessible :read_by_originator
   attr_accessible :read_by_other_user
 
-  scope :in_inbox_of, lambda { |user| joins(:messages).where(messages: { to: user.id }) }
-  scope :in_sent_of, lambda { |user| joins(:messages).where(messages: { from: user.id }) }
+  def self.in_inbox_of(identity_id, sub_service_request_id=nil)
+    notifications = belonging_to(identity_id).
+      joins(:messages).
+      where(messages: { to: identity_id })
+    if sub_service_request_id.present?
+      notifications.where(sub_service_request_id: sub_service_request_id)
+    else
+      notifications
+    end
+  end
 
-  def self.belonging_to(user)
-    messages = Message.arel_table
+  def self.in_sent_of(identity_id, sub_service_request_id=nil)
+    notifications = belonging_to(identity_id).
+      joins(:messages).
+      where(messages: { from: identity_id })
 
-    Notification.joins(:messages).where(messages[:to].eq(user.id).
-        or(messages[:from].eq(user.id))
-    )
+    if sub_service_request_id.present?
+      notifications.where(sub_service_request_id: sub_service_request_id)
+    else
+      notifications
+    end
+  end
+
+  def self.belonging_to(identity_id, sub_service_request_id=nil)
+    notifications = Notification.arel_table
+
+    notifications = Notification.
+      where(notifications[:other_user_id].eq(identity_id).
+            or(notifications[:originator_id].eq(identity_id)))
+    if sub_service_request_id.present?
+      notifications.where(sub_service_request_id: sub_service_request_id)
+    else
+      notifications
+    end
   end
 
   def read_by?(user)

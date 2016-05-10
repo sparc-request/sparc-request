@@ -13,12 +13,14 @@ module Dashboard
 
       section :index_notes_modal, Dashboard::Notes::IndexModal, '#notes-modal'
 
-      element :add_authorized_user_button, 'button', text: 'Add an Authorized User'
+      element :enabled_add_authorized_user_button, 'button:not(.disabled)', text: 'Add an Authorized User'
+      element :disabled_add_authorized_user_button, 'button.disabled', text: 'Add an Authorized User'
 
       # list of authorized users
       sections :authorized_users, '#associated-users-table tbody tr' do
         element :edit_button, ".edit-associated-user-button"
-        element :remove_button, ".delete-associated-user-button"
+        element :enabled_remove_button, ".delete-associated-user-button:not(.disabled)"
+        element :disabled_remove_button, ".delete-associated-user-button.disabled"
       end
 
       # modal appears after clicking Add Authorized User button

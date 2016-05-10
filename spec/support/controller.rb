@@ -41,22 +41,3 @@ def stub_controller(opts = {})
     allow(controller).to receive(:authenticate_identity!) { }
   end
 end
-
-# Same as stub_controller, but for controllers which inherit from
-# Dashboard::BaseController
-def log_in_dashboard_identity(opts = {})
-  allow(controller).to receive(:authenticate_identity!) do
-  end
-
-  allow(controller).to receive(:current_identity) do
-    if opts[:id]
-      Identity.find_by_id(opts[:id])
-    elsif opts[:obj]
-      opts[:obj]
-    else
-      Identity.find_by_id(session[:identity_id])
-    end
-  end
-end
-
-alias :log_in_catalog_manager_identity :log_in_dashboard_identity

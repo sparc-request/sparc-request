@@ -81,32 +81,31 @@ RSpec.feature 'User wants to delete an authorized user', js: true do
   context 'and does not have access to the protocol' do
     fake_login_for_each_test("janed")
 
-    before :each do
-      create(:project_role,
+    context 'and tries to delete the user' do
+      scenario 'and sees disabled Delete an Authorized User button' do
+        create(:project_role,
         protocol_id: protocol.id,
         identity_id: other_user.id,
         project_rights: 'view',
         role: 'mentor')
 
-      # navigate to page
-      @page = Dashboard::Protocols::ShowPage.new
-      @page.load(id: protocol.id)
-    end
+        # navigate to page
+        page = Dashboard::Protocols::ShowPage.new
+        page.load(id: protocol.id)
 
-    context 'and tries to delete the user' do
-      scenario 'and sees disabled Add an Authorized User button' do
-        expect(page).to have_button('Add an Authorized User', disabled: true)
+        expect(page.authorized_users.first).to have_no_enabled_remove_button
+        expect(page.authorized_users.first).to have_disabled_remove_button
       end
     end
   end
 
   def given_i_have_clicked_the_delete_authorized_user_button_and_confirmed
-    @page.authorized_users(text: "Jane Doe").first.remove_button.click
+    @page.authorized_users(text: "Jane Doe").first.enabled_remove_button.click
   end
 
   def given_i_have_clicked_the_delete_authorized_user_button_for_the_primary_pi
     accept_alert do
-      @page.authorized_users(text: "John Doe").first.remove_button.click
+      @page.authorized_users(text: "John Doe").first.enabled_remove_button.click
     end
   end
 

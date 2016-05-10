@@ -76,6 +76,7 @@ RSpec.describe 'dashboard/protocols/index', type: :view do
       before(:each) do
         assign(:admin, true)
         assign(:protocols, [].paginate(page: 1))
+
         render
       end
 
@@ -110,6 +111,7 @@ RSpec.describe 'dashboard/protocols/index', type: :view do
               full_name: 'Toof Fairy')
           ]
         assign(:protocols, [protocol].paginate(page: 1))
+
         render
       end
 
@@ -130,7 +132,9 @@ RSpec.describe 'dashboard/protocols/index', type: :view do
       context 'unarchived Project on page' do
         it "should display 'Archive Project'" do
           assign(:protocols, [build(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false)].paginate(page: 1))
+
           render template: 'dashboard/protocols/index.html.haml'
+
           expect(response).to have_selector('button', exact: 'Archive Project')
         end
       end
@@ -138,7 +142,9 @@ RSpec.describe 'dashboard/protocols/index', type: :view do
       context 'unarchived Study on page' do
         it "should display 'Archive Study'" do
           assign(:protocols, [build(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Study', archived: false)].paginate(page: 1))
+
           render template: 'dashboard/protocols/index.html.haml'
+
           expect(response).to have_selector('button', exact: 'Archive Study')
         end
       end
@@ -146,7 +152,9 @@ RSpec.describe 'dashboard/protocols/index', type: :view do
       context 'archived Project on page' do
         it "should display 'Unarchive Project'" do
           assign(:protocols, [build(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: true)].paginate(page: 1))
+
           render template: 'dashboard/protocols/index.html.haml'
+
           expect(response).to have_selector('button', exact: 'Unarchive Project')
         end
       end
@@ -154,7 +162,9 @@ RSpec.describe 'dashboard/protocols/index', type: :view do
       context 'archived Study on page' do
         it "should display 'Unarchive Study'" do
           assign(:protocols, [build(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Study', archived: true)].paginate(page: 1))
+
           render template: 'dashboard/protocols/index.html.haml'
+
           expect(response).to have_selector('button', exact: 'Unarchive Study')
         end
       end
@@ -166,7 +176,9 @@ RSpec.describe 'dashboard/protocols/index', type: :view do
           protocol = build(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false)
           allow(protocol).to receive(:service_requests).and_return []
           assign(:protocols, [protocol].paginate(page: 1))
+
           render
+
           expect(response).not_to have_content('Requests')
         end
       end
@@ -176,7 +188,9 @@ RSpec.describe 'dashboard/protocols/index', type: :view do
           protocol = build(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Project', archived: false)
           allow(protocol).to receive(:service_requests).and_return []
           assign(:protocols, [protocol].paginate(page: 1))
+
           render
+          
           expect(response).to have_selector('button', exact: 'Requests')
         end
       end

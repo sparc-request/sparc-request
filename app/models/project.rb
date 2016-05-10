@@ -26,7 +26,7 @@ class Project < Protocol
   end
 
   def setup_project_roles
-    project_roles.build(role: "primary-pi", project_rights: "approve")
+    project_roles.build(role: "primary-pi", project_rights: "approve") unless project_roles.primary_pis.any?
   end
 
 end

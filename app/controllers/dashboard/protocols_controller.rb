@@ -23,12 +23,12 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   respond_to :html, :json, :xlsx
 
   before_filter :find_protocol, only: [:show, :edit, :update, :update_protocol_type, :display_requests, :archive, :view_full_calendar, :view_details]
-  before_filter :protocol_authorizer_view, only: [:show, :view_full_calendar]
+  before_filter :protocol_authorizer_view, only: [:show, :view_full_calendar, :display_requests]
   before_filter :protocol_authorizer_edit, only: [:edit, :update, :update_protocol_type]
 
   def index
-    admin_orgs = @user.authorized_admin_organizations
-    @admin =  !admin_orgs.empty?
+    admin_orgs   = @user.authorized_admin_organizations
+    @admin       = !admin_orgs.empty?
     @filterrific =
       initialize_filterrific(Protocol, params[:filterrific],
         default_filter_params: { show_archived: 0, for_identity_id: @user.id },
@@ -39,7 +39,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
         persistence_id: false #resets filters on page reload
       ) || return
 
-    @protocols = @filterrific.find.page(params[:page])
+    @protocols        = @filterrific.find.page(params[:page])
     @protocol_filters = ProtocolFilter.latest_for_user(@user.id, 5)
     session[:breadcrumbs].clear
 
@@ -50,7 +50,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def show
-    @protocol_role = @protocol.project_roles.find_by_identity_id(@user.id)
+    @protocol_role = @protocol.project_roles.find_by(identity_id: @user.id)
 
     respond_to do |format|
       format.js   { render }
@@ -66,26 +66,26 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def new
+    admin_orgs = @user.authorized_admin_organizations
+    @admin =  !admin_orgs.empty?
     @protocol_type = params[:protocol_type]
     @protocol = @protocol_type.capitalize.constantize.new
-    @protocol.requester_id = current_user.id 
+    @protocol.requester_id = current_user.id
     @protocol.populate_for_edit
     session[:protocol_type] = params[:protocol_type]
   end
 
   def create
     protocol_class = params[:protocol][:type].capitalize.constantize
-    @protocol = protocol_class.new(params[:protocol])
+    @protocol = protocol_class.create(params[:protocol])
 
     if @protocol.valid?
-      @protocol.save
-
       if @protocol.project_roles.where(identity_id: current_user.id).empty?
         # if current user is not authorized, add them as an authorized user
         @protocol.project_roles.new(identity_id: current_user.id, role: 'general-access-user', project_rights: 'approve')
         @protocol.save
       end
-      
+
       if USE_EPIC && @protocol.selected_for_epic
         @protocol.ensure_epic_user
         Notifier.notify_for_epic_user_approval(@protocol).deliver unless QUEUE_EPIC
@@ -98,35 +98,50 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def edit
-    @protocol_type = @protocol.type
+    admin_orgs          = @user.authorized_admin_organizations
+    @admin              = !admin_orgs.empty?
+    @protocol_type      = @protocol.type
+    protocol_role       = @protocol.project_roles.find_by(identity_id: @user.id)
+    @permission_to_edit = protocol_role.nil? ? false : protocol_role.can_edit?
+
     @protocol.populate_for_edit
     session[:breadcrumbs].
       clear.
       add_crumbs(protocol_id: @protocol.id, edit_protocol: true)
+    
     @protocol.valid?
+    @errors = @protocol.errors
+    
     respond_to do |format|
       format.html
     end
   end
 
   def update
-    attrs = params[:protocol]
-
-    if @protocol.update_attributes(attrs.merge(study_type_question_group_id: StudyTypeQuestionGroup.active_id))
+    attrs      = params[:protocol]
+    admin_orgs = @user.authorized_admin_organizations
+    @admin     = !admin_orgs.empty?
+    
+    # admin is not able to activate study_type_question_group
+    if @admin && @protocol.update_attributes(attrs)
+      flash[:success] = "#{@protocol.type} Updated!"
+    elsif !@admin && @protocol.update_attributes(attrs.merge(study_type_question_group_id: StudyTypeQuestionGroup.active_id))
       flash[:success] = "#{@protocol.type} Updated!"
     else
-      render action: 'edit'
       @errors = @protocol.errors
     end
   end
 
   def update_protocol_type
     # Using update_attribute here is intentional, type is a protected attribute
-    @protocol.update_attribute(:type, params[:type])
+    admin_orgs = @user.authorized_admin_organizations
+    @admin =  !admin_orgs.empty?
     @protocol_type = params[:type]
-    @protocol = Protocol.find(@protocol.id) #Protocol type has been converted, this is a reload
+    @protocol.update_attribute(:type, @protocol_type)
+    conditionally_activate_protocol
+    @protocol = Protocol.find @protocol.id #Protocol type has been converted, this is a reload
     @protocol.populate_for_edit
-    flash[:success] = 'Protocol Type Updated!'
+    flash[:success] = "Protocol Type Updated!"
   end
 
   def archive
@@ -159,13 +174,12 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def display_requests
-    @protocol_role = @protocol.project_roles.find_by_identity_id(@user.id)
-    @permission_to_edit = @protocol_role.can_edit?
+    @protocol_role = @protocol.project_roles.find_by(identity_id: @user.id)
+
+    @permission_to_edit = @protocol_role.present? ? @protocol_role.can_edit? : Protocol.for_admin(@user.id).include?(@protocol)
   end
 
   def view_details
-    @protocol_type = @protocol.type
-
     respond_to do |format|
       format.js
     end
@@ -175,5 +189,19 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
   def find_protocol
     @protocol = Protocol.find(params[:id])
+  end
+
+  def admin?
+    !@user.authorized_admin_organizations.empty?
+  end
+
+  def conditionally_activate_protocol
+    if admin?
+      if @protocol_type == "Study" && @protocol.virgin_project?
+        @protocol.activate
+      end
+    else
+      @protocol.activate
+    end
   end
 end

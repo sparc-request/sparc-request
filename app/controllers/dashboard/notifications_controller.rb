@@ -28,17 +28,12 @@ class Dashboard::NotificationsController < Dashboard::BaseController
 
     @table = params[:table]
 
-    if @table == 'inbox'
-      @notifications = Notification.in_inbox_of(@user)
-    else
-      @notifications = Notification.in_sent_of(@user)
-    end
-    
-    if params[:sub_service_request_id]
-      @notifications = @notifications.where(sub_service_request_id: params[:sub_service_request_id].to_i)
-    end
-
-    @notifications.uniq!
+    @notifications =
+      if @table == 'inbox'
+        Notification.in_inbox_of(@user.id, params[:sub_service_request_id])
+      else
+        Notification.in_sent_of(@user.id, params[:sub_service_request_id])
+      end.uniq
   end
 
   def new
@@ -52,7 +47,7 @@ class Dashboard::NotificationsController < Dashboard::BaseController
         @notification = Notification.new
       end
 
-      if params[:identity_id] == current_user.id
+      if params[:identity_id].try(:to_i) == current_user.id
         @notification.errors.add(:notifications, "can't be sent to yourself.")
         @errors = @notification.errors
       end
@@ -72,11 +67,11 @@ class Dashboard::NotificationsController < Dashboard::BaseController
         @message.save
 
         ssr = @notification.sub_service_request
-        
+
         # TODO consider
         # @notifications = Notification.belonging_to(@user).where(sub_service_request_id: ssr.id)
         @notifications =  ssr.present? ? @user.all_notifications.select!{ |n| n.sub_service_request_id == ssr.id } : @user.all_notifications
-        
+
         UserMailer.notification_received(@recipient, ssr).deliver unless @recipient.email.blank?
         flash[:success] = 'Notification Sent!'
       else

@@ -156,7 +156,7 @@ class ProjectRole < ActiveRecord::Base
     end
   end
 
-  def setup_epic_rights is_new=true
+  def setup_epic_rights(is_new=true)
     position = 1
     EPIC_RIGHTS.each do |right, description|
       epic_right = epic_rights.detect{|obj| obj.right == right}

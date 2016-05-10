@@ -63,8 +63,6 @@ en:
       select: "---Please Select---"
       search_for_user: "Search for a User"
       select_one: "Select One"
-    alerts:
-      not_permitted: "You do not have permission to do that."
 
   calendars:
     pppv:
@@ -1061,7 +1059,7 @@ en:
       recipients: "Service Providers"
       title: "Title"
       type: "Type"
-      uploaded: "Uploaded"
+      uploaded: "Date Uploaded"
       uploads: "Document Uploads"
       versions: "Version"
     select_prompt: "Select a Type"

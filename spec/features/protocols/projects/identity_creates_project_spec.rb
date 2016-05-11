@@ -55,14 +55,6 @@ RSpec.feature 'User wants to create a Project', js: true do
       expect(page).to have_link 'Continue'
     end
 
-    context 'and submits the form without filling out required fields' do
-      scenario 'and sees some errors' do
-        click_link 'Continue'
-        wait_for_javascript_to_finish
-        page.find '#errorExplanation'
-      end
-    end
-
     context 'funding sources' do
       before :each do
         fill_in 'project_short_title', with: 'title'
@@ -90,9 +82,6 @@ RSpec.feature 'User wants to create a Project', js: true do
         select 'College Department', from: 'project_funding_source'
         click_link 'Continue'
         wait_for_javascript_to_finish
-      end
-      scenario 'and sees the Authorized Users page' do
-        expect(page).to have_content 'Add Users'
       end
 
       scenario 'and sees the go back button' do

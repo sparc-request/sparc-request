@@ -35,6 +35,7 @@ en:
   feedback: "Feedback"
   issue_contact: "Please contact the SUCCESS Center at (843) 792-8300 or success@musc.edu for assistance with this process or with any questions you may have."
   portal_title: "SPARC Request Portal"
+  create_an_account: 'Non-MUSC User? Create an Account'
 
   # Admin Dashboard
   admin_dashboard:
@@ -105,14 +106,14 @@ en:
 
   # Bottom navigation
   bottom_navigation:
-    cancel: "Cancel"
-    continue: "Continue"
+    cancel: " ⟵ Cancel"
+    continue: "Continue ⟶ "
     get_cost_estimate: "Get Cost Estimate"
-    go_back: "Go Back"
-    save_and_continue: "Save & Continue"
+    go_back: " ⟵ Go Back"
+    save_and_continue: "Save & Continue ⟶ "
     save_and_exit: "Save as Draft"
     save_as_draft: "Save As Draft"
-    submit_to_start: "Submit to Start Services"
+    submit_to_start: "    Submit to Start Services ⟶ "
 
   message:
     red_message: "Pricing is consistent across locations unless otherwise stated."
@@ -130,6 +131,7 @@ en:
       qty_type: "Qty Type"
       service_rate: "Service Rate"
       services: "Services"
+      status: 'Status'
       subjects: "N"
       total_per_patient: "Total Per Patient"
       total_per_study: "Total Per Study"
@@ -533,7 +535,7 @@ en:
     mail_link: "Sign Up For the SPARC Request Listserv"
     mail_subject: "SPARC Request Listserv"
     link_one_text: "SPARC Request Blog"
-    link_one_url: "http://sparcrequestblog.com/"
+    link_one_url: "https://sparcrequestblog.com/"
     link_two_text: "SCTR"
     link_two_url: "http://sctr.musc.edu"
     link_three_text: "SPARC Request Home"
@@ -665,6 +667,8 @@ en:
     remove_request_confirm: "This action will delete this service request and you will be redirected to your user portal. Click OK to proceed."
     new_request_dialog1: "New Request?"
     new_request_dialog2: "Is this a new research study or project?"
+    request_submitted1: "Delete Service Warning"
+    request_submitted2: "Deleting this service from the service cart will be irreversible and will cause it to be deleted from the associated protocol (%{protocol_id}). Are you sure you want to proceed?"
   catalog_manager_js:
     clinical_provider_remove: "Are you sure you want to remove this Fulfillment Provider?"
     cm_rights_remove: "Are you sure you want to remove rights for this user from the Catalog Manager?"
@@ -897,7 +901,7 @@ en:
     create:
       study: "Create New Study"
       project: "Create New Project"
-    ctrc_services_exist: "SCTR Research Nexus services have been found on another Service Request %{protocol_id}-%{ssr_id} pertaining to this Project/Study %{short_title}. To edit this request, please contact the Nexus at 792-8688."
+    ctrc_services_exist: "SCTR Research Nexus services have been found on another Service Request %{protocol_id}-%{ssr_id} pertaining to this Project/Study %{short_title}. Please remove the Nexus services from your cart, and call 792-8688 to edit the existing request."
     date: "Submitted Date:"
     delete: "Delete"
     edit_original: "Edit Original"
@@ -1035,7 +1039,7 @@ en:
       short_title: "Short Title: "
     download_button: "Download my Service Request"
     instructions: "Thank you for submitting your service request(s) through SPARC Request. An email has been sent to each of your service providers and they should be contacting you soon. If you have any questions or concerns, please don't hesitate to contact the SUCCESS Center at 792-8300 or success@musc.edu."
-    portal_button: "Go to SPARC Request User Portal"
+    portal_button: "Go to Dashboard"
     research_pricing_instructions : "You have successfully submitted a request to get a cost estimate. An email(s) has been submitted on your behalf, and we will respond to your request for a cost estimate shortly. Should you have any questions regarding your request(s), please contact the service provider contact(s) listed below."
 
   # Service Request Details form

@@ -31,7 +31,7 @@ class ServiceRequestsReport < ReportingModule
   def default_options
     {
       "Date Range" => {:field_type => :date_range, :for => "service_requests_submitted_at", :from => "2012-03-01".to_date, :to => Date.today},
-      Institution => {:field_type => :select_tag},
+      Institution => {:field_type => :select_tag, :has_dependencies => "true"},
       Provider => {:field_type => :select_tag, :dependency => '#institution_id', :dependency_id => 'parent_id'},
       Program => {:field_type => :select_tag, :dependency => '#provider_id', :dependency_id => 'parent_id'},
       Core => {:field_type => :select_tag, :dependency => '#program_id', :dependency_id => 'parent_id'},
@@ -44,6 +44,14 @@ class ServiceRequestsReport < ReportingModule
   # see app/reports/test_report.rb for all options
   def column_attrs
     attrs = {}
+
+    attrs["SRID"] = :display_id
+    attrs["Status"] = :formatted_status
+
+    attrs["Protocol Short Title"] = "service_request.try(:protocol).try(:short_title)"
+    attrs["Full Protocol Title"] = "service_request.try(:protocol).try(:title)"
+
+    attrs["Date Submitted"] = "service_request.submitted_at.strftime('%Y-%m-%d')"
 
     if params[:institution_id]
       attrs[Institution] = [params[:institution_id], :abbreviation]
@@ -69,16 +77,6 @@ class ServiceRequestsReport < ReportingModule
       attrs["Core"] = "org_tree.select{|org| org.type == 'Core'}.first.try(:abbreviation)"
     end
 
-    attrs["SRID"] = :display_id
-    attrs["Status"] = :formatted_status
-
-    if params[:apr_data]
-      if params[:apr_data].include?("irb") || params[:apr_data].include?("iacuc")
-        attrs["Full Protocol Title"] = "service_request.try(:protocol).try(:title)"
-      end
-    end
-
-    attrs["Date Submitted"] = "service_request.submitted_at.strftime('%Y-%m-%d')"
     attrs["Primary PI Last Name"] = "service_request.try(:protocol).try(:primary_principal_investigator).try(:last_name)"
     attrs["Primary PI First Name"] = "service_request.try(:protocol).try(:primary_principal_investigator).try(:first_name)"
     attrs["Primary PI College"] = ["service_request.try(:protocol).try(:primary_principal_investigator).try(:college)", COLLEGES.invert] # we invert since our hash is setup {"Bio Medical" => "bio_med"} for some crazy reason

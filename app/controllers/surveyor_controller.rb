@@ -38,9 +38,32 @@ module SurveyorControllerCustomMethods
     super
     # @title = "You can take these surveys"
   end
+
   def create
-    super
+    surveys = Survey.where(:access_code => params[:survey_code]).order("survey_version DESC")
+
+    if params[:survey_version].blank?
+      @survey = surveys.first
+    else
+      @survey = surveys.where(:survey_version => params[:survey_version]).first
+    end
+
+    if params[:ssr_id]
+      @response_set = ResponseSet.create(:survey => @survey, :user_id => (@current_user.nil? ? @current_user : @current_user.id), :sub_service_request_id => params[:ssr_id])
+    else
+      @response_set = ResponseSet.create(:survey => @survey, :user_id => (@current_user.nil? ? @current_user : @current_user.id))
+    end
+
+    if (@survey && @response_set)
+      flash[:notice] = t('surveyor.survey_started_success')
+      redirect_to(surveyor.edit_my_survey_path(
+        :survey_code => @survey.access_code, :response_set_code  => @response_set.access_code))
+    else
+      flash[:notice] = t('surveyor.Unable_to_find_that_survey')
+      redirect_to surveyor_index
+    end
   end
+
   def show
     super
   end

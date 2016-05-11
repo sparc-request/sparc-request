@@ -31,6 +31,25 @@ removeService = (sr_id, id, move_on) ->
       if move_on
         window.location.replace($("#user_portal_link").val())
 
+requestSubmittedDialog = (sr_id, id)->
+  options = {
+    resizable: false,
+    height: 220,
+    modal: true,
+    autoOpen: false,
+    buttons:
+      "Yes": ->
+        $("#services .line-items").remove()
+        $("#services").append('<span class="spinner"><img src="/assets/spinner.gif"/></span>')
+        removeService(sr_id, id, false)
+        $(this).dialog("close")
+      "No": ->
+        $(this).dialog("close")
+  }
+  $('#request_submitted_dialog').dialog(options).dialog("open").prev('.ui-dialog-titlebar').css('background', 'red')
+  return false
+
+
 $(document).ready ->
 
   $("#cart-help").dialog
@@ -81,11 +100,11 @@ $(document).ready ->
     id = $(this).attr('id')
     li_count = $('#line_item_count').val()
     has_fulfillments = Boolean($(this).data("has_fulfillments"))
-    in_fulfillment = Boolean($(this).data("in_fulfillment"))
+    request_submitted = Boolean($(this).data("request_submitted"))
     if has_fulfillments
       alert(I18n["has_fulfillments"])
-    else if in_fulfillment
-      alert(I18n["in_fulfillment"])
+    else if request_submitted
+      requestSubmittedDialog(sr_id, id)
     else
       if li_count == "1" and ssr_id != ''
         if confirm(I18n["cart"]["remove_request_confirm"])

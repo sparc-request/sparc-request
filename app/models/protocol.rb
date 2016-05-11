@@ -144,17 +144,17 @@ class Protocol < ActiveRecord::Base
     exact_search_term = ActiveRecord::Base::sanitize(search_term)
 
     #TODO temporary replacement for "MATCH(identities.first_name, identities.last_name) AGAINST (#{exact_search_term})"
-    fullname_search_sql = []
-    search_term.split.each do |term|
-      fullname_search_sql << "CONCAT(identities.first_name, identities.last_name) LIKE #{ActiveRecord::Base::sanitize("%#{term}%")}"
+    where_clause = []
+    search_term.to_s.split.each do |term|
+      where_clause << "CONCAT(identities.first_name, identities.last_name) LIKE #{ActiveRecord::Base::sanitize("%#{term}%")}"
     end
 
+    where_clause << "protocols.short_title like #{like_search_term}"
+    where_clause << "protocols.title like #{like_search_term}"
+    where_clause << "protocols.id = #{exact_search_term}"
+
     joins(:identities).
-    where(
-      "protocols.short_title like #{like_search_term} OR "\
-      "protocols.title like #{like_search_term} OR "\
-      "protocols.id = #{exact_search_term} OR "\
-      "#{fullname_search_sql.join(' OR ')}"
+    where(where_clause.compact.join(' OR ')
     ).distinct
   }
 

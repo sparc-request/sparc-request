@@ -136,7 +136,6 @@ class Portal::ProtocolsController < Portal::BaseController
     @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
     @service_request = @sub_service_request.service_request
     @selected_arm = params[:arm_id] ? Arm.find(@arm_id) : @service_request.arms.first
-    @study_tracker = params[:study_tracker] == "true"
   end
 
   def add_arm

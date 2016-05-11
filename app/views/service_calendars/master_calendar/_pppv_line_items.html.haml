@@ -23,19 +23,17 @@
   - unless @merged || (@tab == 'billing_strategy') || (@tab == 'quantity') || (@review)
     %th{:colspan => 3}
 
-
 - if @merged #display merged calendar pppv line items
   - arm.service_list.each do |key, value| # get only per patient/per visit services and group them
     - arm.line_items_visits.each do |line_items_visit|
       - line_item = line_items_visit.line_item
       - next unless value[:line_items].include?(line_item)
-      - if ['first_draft'].include?(line_item.service_request.status)
+      - if ['first_draft', 'draft'].include?(line_item.service_request.status)
         - next if @portal
         - next if service_request != line_item.service_request
       - line_items_visits << line_items_visit
       %tr.line_item{:class => cycle('odd', '', :name => 'pppvs')}
         %td.service_name= line_item.service.display_service_name
-        %td.status= display_line_items_status(line_item)
         - unless @portal
           %td.service_rate{:class => "service_rate_#{line_items_visit.id}"}= display_service_rate line_item
         %td.your_cost= display_your_cost line_item
@@ -57,7 +55,6 @@
     - next unless @sub_service_request.nil? or @sub_service_request.organization.name == value[:process_ssr_organization_name]
     %tr.sub_section_header
       %th{:colspan => 10}= value[:name]
-      %th
 
     - arm.line_items_visits.each do |line_items_visit|
       - line_item = line_items_visit.line_item
@@ -65,7 +62,6 @@
       %tr.line_item
         %td.service_name= line_item.service.display_service_name
         %td.status= display_line_items_status(line_item)
-
         %td.your_cost= display_your_cost line_item
         %td.subject_count= line_items_visit.subject_count
         - visits = line_items_visit.visits.paginate(:page => @pages[arm.id].to_i, :per_page => 5)
@@ -84,7 +80,6 @@
     - if @tab == 'billing_strategy'
       %tr.sub_section_header
         %th{:colspan => @portal ? 3 : 5}= value[:name]
-        %th
         - if @portal
           %th{:colspan => 1}
         -5.times do
@@ -125,7 +120,6 @@
               = text_field_tag 'line_item_displayed_cost', number_with_precision(Service.cents_to_dollars(line_item.applicable_rate), :precision => 2), :'data-line_item_id' => line_item.id, :class => 'fulfillment_data fulfillment_your_cost'
         - else
           %td.service_name= line_item.service.display_service_name
-          %td.status= display_line_items_status(line_item)
           %td.service_rate{:class => "service_rate_#{line_items_visit.id}"}= display_service_rate line_item
           %td.your_cost= display_your_cost line_item
           %td.unit_type= pricing_map.unit_type
@@ -144,7 +138,6 @@
         - else
           %td.pp_line_item_total{:class => "total_#{line_items_visit.id}"}= display_visit_based_direct_cost(line_items_visit)
           %td.pp_line_item_study_total{:class => "total_#{line_items_visit.id}_per_study"}= display_visit_based_direct_cost_per_study(line_items_visit)
-
 
 - unless @review
   = render :partial => "/service_calendars/master_calendar/pppv_totals", :locals => {:service_request => service_request, :arm => arm, :tab => @tab, :portal => @portal, line_items_visits: line_items_visits}

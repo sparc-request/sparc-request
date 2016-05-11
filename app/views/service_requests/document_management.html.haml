@@ -34,7 +34,7 @@
   .grid_9.col-md-9
     .document_upload_instructions= t("documents.upload_instructions_html")
     .document-management-container
-      = render :partial => 'document_list', :locals => {:review => false, :provider_css => 'orange-provider'}
+      = render :partial => 'document_list', :locals => {:review => false, :thead_class => 'orange-provider'}
       .clear
       %br
       %br
@@ -44,15 +44,18 @@
       .document_upload{:style=>'display:none'}
         = render :partial => 'document_form', :locals => {:provider_css => 'orange-provider'}
       .clear
-      %br
-      %br
 
-      %div{:style => 'text-align: center'}
-        = t("documents.notes_instructions")
-        = text_area_tag 'service_request[notes]', @service_request.notes, :rows => 14, :cols => 75
+    .service_request_notes
+      #request_notes_table
+        = render partial: '/notes/request_notes', locals: { notes: @service_request.notes, notable_id: @service_request.id, notable_type: "ServiceRequest", thead_class: "orange-provider"  }
 
       %br
       %br
+
+      %a.new_request_note_button.button-hover.blue-button= "Add Request Note"
+      #note_form{style: 'display:none'}= render partial: '/notes/note_form', locals: { service_request: @service_request }
+      .clear
+
   .grid_3.document-mgmt-view-right.right.col-md-3
     = navigation_link t(:right_navigation)[:catalog], @catalog, 'catalog-button btn btn-info btn-lg btn-block button-hover'
     = render :partial => 'right_navigation'

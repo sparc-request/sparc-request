@@ -22,7 +22,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery
   helper :all
   helper_method :current_user
-
+  helper_method :xeditable?
   before_filter :setup_navigation
 
   def current_user
@@ -297,5 +297,9 @@ class ApplicationController < ActionController::Base
       @forward = c['forward']
       @validation_groups = c['validation_groups']
     end
+  end
+
+  def xeditable? object=nil
+    true
   end
 end

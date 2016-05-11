@@ -18,60 +18,24 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-/ If it has a subsidy display it
-/ If it has overridden flag disable the inputs
-/ If it has overridden flag pass validation
-
-- if @subsidies.count == 0
-  = t("subsidy_page.not_eligible")
--else
+- if @has_subsidy or @eligible_for_subsidy
   = t("subsidy_page.eligible_html")
   %br
   %br
-  %table.subsidies
-    %thead
-      %tr.table_header
-        %th= t("subsidy_page.table.institution")
-        %th= t("subsidy_page.table.total_estimated")
-        %th= t("subsidy_page.table.pi_contribution")
-        %th= t("subsidy_page.table.subsidy")
-
-    %tbody.subsidies-list
-      = fields_for @service_request do |sr_fields|
-        = sr_fields.fields_for :sub_service_requests, :include_id => false do |ssr_fields|
-          - sub_service_request = ssr_fields.object
-          - subsidy = sub_service_request.subsidy
-          - next unless @subsidies.include?(subsidy) and (@sub_service_request.nil? or sub_service_request == @sub_service_request)
-          = ssr_fields.fields_for :subsidy do |subsidy_fields|
-            %tr.subsidy-item
-              - direct_cost_total = sub_service_request.direct_cost_total
-              - pi_contribution = calculate_pi_contribution(subsidy, direct_cost_total)
-              - organization = sub_service_request.organization
-              %td{:class => "core_#{sub_service_request.id}"}= "#{ssr_institution(organization)} -- #{ssr_provider(organization)} -- #{ssr_program_core(organization)}"
-              %td{:class => "estimated_cost_#{sub_service_request.id}", :'data-cost' => direct_cost_total}= currency_converter(direct_cost_total)
-              %td
-                = ssr_fields.hidden_field :id
-                = subsidy_fields.hidden_field :id
-                - subsidy_disabled = (subsidy.overridden || (direct_cost_total == 0.0)) ? true : false
-                %table.study-contribution
-                  %tr
-                    %td.percent-of-cost
-                      = text_field_tag :percent_of_cost, sub_service_request.percent_of_cost, :"data-cost" => direct_cost_total, :"data-id" => subsidy.sub_service_request_id, :class => "percent_#{sub_service_request.id} percent_of_cost", :disabled => subsidy_disabled
-                      \%
-                      %br
-                      = t("subsidy_page.table.percent_of_cost")
-                    %td.text OR
-                    %td.amount-of-funding
-                      $
-                      = subsidy_fields.text_field :pi_contribution, :value => (Service.cents_to_dollars(pi_contribution.to_s) if not subsidy.pi_contribution.blank?), :"data-id" => subsidy.sub_service_request_id, :"data-max_dollar" => organization.subsidy_map.max_dollar_cap, :"data-max_percent" => organization.subsidy_map.max_percentage, :class => "pi-contribution ssr_#{sub_service_request.id}", "data-overridden" => subsidy_disabled, disabled: subsidy_disabled
-                      - if subsidy_disabled
-                        = subsidy_fields.hidden_field :pi_contribution, :value => (Service.cents_to_dollars(subsidy.pi_contribution.to_s) if not subsidy.pi_contribution.blank?)
-                      = t("subsidy_page.table.amount_of_funding")
-                      = subsidy_fields.hidden_field :stored_percent_subsidy, :class => "stored_percent_subsidy_#{subsidy.sub_service_request_id}"
-              %td{:class => "subsidy_percent_#{sub_service_request.id}"}= "#{calculate_subsidy_percentage(direct_cost_total, pi_contribution, subsidy)}%"
-            - if subsidy.overridden
-              %tr.overridden
-                %td{:colspan => 4}= t("subsidy_page.overridden")
+  %br
+  - service_request.sub_service_requests.each do |ssr|
+    %br
+    %h4= ssr.organization.name
+    %hr
+    %br
+    - if ssr.eligible_for_subsidy?
+      .ssr_subsidies{data: { sub_service_request_id: ssr.id }}
+        = render partial: "/subsidies/ssr_subsidies", locals: {sub_service_request: ssr, approved: ssr.approved_subsidy, pending: ssr.pending_subsidy}
+      %br
+    - else
+      = "#{ssr.organization.name} is not eligible for subsidy."
+-else
+  = t("subsidy_page.not_eligible")
 
   %br
   .additional-funding

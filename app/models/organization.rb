@@ -63,8 +63,14 @@ class Organization < ActiveRecord::Base
   accepts_nested_attributes_for :submission_emails
   accepts_nested_attributes_for :available_statuses, :allow_destroy => true
 
-  scope :in_cwf, -> {joins(:tags).where(tags: {name: 'clinical work fulfillment'})}
+  scope :authorized_for_identity, -> (identity_id) {
+    # returns organizations for which
+    # identity_id is service provider or super user.
+    joins(:service_providers).joins(:super_users).
+    where("service_providers.identity_id = ? OR super_users.identity_id = ?", identity_id, identity_id)
+  }
 
+  scope :in_cwf, -> { joins(:tags).where(tags: { name: 'clinical work fulfillment' }) }
 
   def label
     abbreviation || name

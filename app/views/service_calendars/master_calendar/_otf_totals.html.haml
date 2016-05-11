@@ -21,9 +21,7 @@
   - if @merged #display merged calendar otf totals
     %tr.totals_section.grand-totals{:class => cycle('odd', '', :name => 'otfs')}
       %td{:colspan => 3}= t(:calendar_page)[:labels][:total_costs_other]
-      %td{:colspan => (@portal or @study_tracker) ? 7 : 9}
-      - unless @portal
-        %td
+      %td{:colspan => (@portal or @study_tracker) ? 6 : 9}
       %td.otf_total_direct_cost= display_protocol_total_otfs @protocol, current_request, @portal
 
 
@@ -48,7 +46,7 @@
 
   - else #display default calendar otf totals
     %tr.totals_section.begin_totals{:class => cycle('odd', '', :name => 'otfs')}
-      %td{:colspan => 6}= t(:calendar_page)[:labels][:total_direct_other]
+      %td{:colspan => 5}= t(:calendar_page)[:labels][:total_direct_other]
       %td{:colspan => 7}
       %td.otf_total_direct_cost= display_total_direct_cost_per_study_otfs @service_request, (@line_items.nil? ? @service_request.line_items : @line_items)
       - if @study_tracker

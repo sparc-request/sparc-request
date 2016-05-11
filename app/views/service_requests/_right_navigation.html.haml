@@ -17,11 +17,13 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 = stylesheet_link_tag 'hover_effect'
 
+.ask-a-question-button.blue-button.btn.btn-primary.btn-lg.btn-block
+  = t(:right_navigation)[:ask_a_question]
+
 - if USE_FAQ_LINK
-  = link_to t(:right_navigation)[:faq], FAQ_URL, :class => "faq-button blue-button btn btn-primary btn-lg btn-block button-hover", :target => "blank"
+  = link_to t(:right_navigation)[:faq], FAQ_URL, class: "faq-button blue-button btn btn-primary btn-lg btn-block button-hover", target: "blank"
 - else
   .faq-button.blue-button.btn.btn-primary.btn-lg.btn-block.button-hover= t(:right_navigation)[:faq]
 - if USE_FEEDBACK_LINK
@@ -43,35 +45,47 @@
 .contact-form-dialog
 
 - unless USE_FAQ_LINK
-  #cart-help{:style => 'display: none', :title => 'Help/FAQs'}
+  #cart-help{style: 'display: none', title: 'Help/FAQs'}
     %ul
       %li
-        %span.help_question{style:  "text-decoration: underline;"}= t(:cart_help)[:questions][:question_text1]
+        %span.help_question{style:  "text-decoration: underline;"}
+          = t(:cart_help)[:questions][:question_text1]
         %br
         %br
-        %span.help_answer{style: "display: inline-block;", id: "help_answer_#{1}"}= t(:cart_help)[:questions][:answer_text1]
+        %span.help_answer{style: "display: inline-block;", id: "help_answer_#{1}"}
+          = t(:cart_help)[:questions][:answer_text1]
       %li
-        %span.help_question{style:  "text-decoration: underline;"}= t(:cart_help)[:questions][:question_text2]
+        %span.help_question{style:  "text-decoration: underline;"}
+          = t(:cart_help)[:questions][:question_text2]
         %br
         %br
-        %span.help_answer{style: "display: inline-block;", id: "help_answer_#{2}"}= t(:cart_help)[:questions][:answer_text2]
+        %span.help_answer{style: "display: inline-block;", id: "help_answer_#{2}"}
+          = t(:cart_help)[:questions][:answer_text2]
       %li
-        %span.help_question{style:  "text-decoration: underline;"}= t(:cart_help)[:questions][:question_text3]
+        %span.help_question{style:  "text-decoration: underline;"}
+          = t(:cart_help)[:questions][:question_text3]
         %br
         %br
-        %span.help_answer{style: "display: inline-block;", id: "help_answer_#{3}"}= t(:cart_help)[:questions][:answer_text3]
+        %span.help_answer{style: "display: inline-block;", id: "help_answer_#{3}"}
+          = t(:cart_help)[:questions][:answer_text3]
       %li
-        %span.help_question{style:  "text-decoration: underline;"}= t(:cart_help)[:questions][:question_text4]
+        %span.help_question{style:  "text-decoration: underline;"}
+          = t(:cart_help)[:questions][:question_text4]
         %br
         %br
-        %span.help_answer{style: "display: inline-block;", id: "help_answer_#{4}"}= t(:cart_help)[:questions][:answer_text4]
+        %span.help_answer{style: "display: inline-block;", id: "help_answer_#{4}"}
+          = t(:cart_help)[:questions][:answer_text4]
       %li
-        %span.help_question{style:  "text-decoration: underline;"}= t(:cart_help)[:questions][:question_text5]
+        %span.help_question{style:  "text-decoration: underline;"}
+          = t(:cart_help)[:questions][:question_text5]
         %br
         %br
-        %span.help_answer{style: "display: inline-block;", id: "help_answer_#{5}"}= t(:cart_help)[:questions][:answer_text5]
+        %span.help_answer{style: "display: inline-block;", id: "help_answer_#{5}"}
+          = t(:cart_help)[:questions][:answer_text5]
       %li
-        %span.help_question{style:  "text-decoration: underline;"}= t(:cart_help)[:questions][:question_text6]
+        %span.help_question{style:  "text-decoration: underline;"}
+          = t(:cart_help)[:questions][:question_text6]
         %br
         %br
-        %span.help_answer{style: "display: inline-block;", id: "help_answer_#{6}"}= t(:cart_help)[:questions][:answer_text6]
+        %span.help_answer{style: "display: inline-block;", id: "help_answer_#{6}"}
+          = t(:cart_help)[:questions][:answer_text6]

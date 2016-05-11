@@ -21,11 +21,13 @@
 require 'generate_request_grant_billing_pdf'
 
 class ServiceRequestsController < ApplicationController
-  before_filter :initialize_service_request, :except => [:approve_changes]
-  before_filter :authorize_identity, :except => [:approve_changes, :show]
-  before_filter :authenticate_identity!, :except => [:catalog, :add_service, :remove_service, :ask_a_question, :feedback]
-  before_filter :prepare_catalog, :only => :catalog
-  layout false, :only => [:ask_a_question, :feedback]
+  before_filter :initialize_service_request,      except: [:approve_changes]
+  before_filter :authorize_identity,              except: [:approve_changes, :show]
+  before_filter :authenticate_identity!,          except: [:catalog, :add_service, :remove_service, :ask_a_question, :feedback]
+  before_filter :authorize_protocol_edit_request, only: :catalog
+  before_filter :prepare_catalog,                 only: :catalog
+
+  layout false,                                   only: [:ask_a_question, :feedback]
   respond_to :js, :json, :html
 
   def show
@@ -53,9 +55,6 @@ class ServiceRequestsController < ApplicationController
 
     #### add logic to save data
     referrer = request.referrer.split('/').last
-
-    # Save/Update any subsidy info we may have
-    subsidy_save_update(errors)
 
     @service_request.update_attributes(params[:service_request])
 
@@ -183,44 +182,16 @@ class ServiceRequestsController < ApplicationController
     if @service_request.arms.blank?
       @back = 'service_details'
     end
-    @subsidies = []
-    @service_request.sub_service_requests.each do |ssr|
-      if ssr.subsidy
-        # we already have a subsidy; add it to the list
-        subsidy = ssr.subsidy
-        @subsidies << subsidy
-      elsif ssr.eligible_for_subsidy?
-        # we don't have a subsidy yet; add it to the list but don't save
-        # it yet
-        # TODO: is it a good idea to modify this SubServiceRequest like
-        # this without saving it to the database?
-        ssr.build_subsidy
-        @subsidies << ssr.subsidy
-      end
-    end
+    @has_subsidy = @service_request.sub_service_requests.map(&:has_subsidy?).any?
+    @eligible_for_subsidy = @service_request.sub_service_requests.map(&:eligible_for_subsidy?).any?
 
-    if @subsidies.empty? || !subsidies_for_ssr(@subsidies)
+    if not @has_subsidy and not @eligible_for_subsidy
       redirect_to "/service_requests/#{@service_request.id}/document_management"
     end
   end
 
-  def subsidies_for_ssr subsidies
-    if @sub_service_request
-      has_match = false
-      subsidies.each do |subsidy|
-        if subsidy.sub_service_request_id == @sub_service_request.id
-          has_match = true
-        end
-      end
-
-      return has_match
-    else
-      return true
-    end
-  end
-
   def document_management
-    if @service_request.sub_service_requests.map(&:subsidy).compact.empty?
+    unless @service_request.sub_service_requests.map(&:has_subsidy?).any?
       @back = 'service_calendar'
     end
   end
@@ -231,6 +202,7 @@ class ServiceRequestsController < ApplicationController
     session[:service_calendar_pages] = params[:pages] if params[:pages]
     session[:service_calendar_pages][arm_id] = page if page && arm_id
     @thead_class = 'red-provider'
+    @review = true
     @portal = false
     @service_list = @service_request.service_list
     @protocol = @service_request.protocol
@@ -279,7 +251,6 @@ class ServiceRequestsController < ApplicationController
     @service_list = @service_request.service_list
 
     @service_request.sub_service_requests.each do |ssr|
-      ssr.subsidy.update_attributes(:overridden => true) if ssr.subsidy
       ssr.update_attributes(:nursing_nutrition_approved => false, :lab_approved => false, :imaging_approved => false, :committee_approved => false)
     end
 
@@ -333,14 +304,14 @@ class ServiceRequestsController < ApplicationController
       @service_request.ensure_ssr_ids
     end
 
-    redirect_to USER_PORTAL_LINK
+    redirect_to DASHBOARD_LINK
   end
 
   def refresh_service_calendar
     arm_id = params[:arm_id].to_s if params[:arm_id]
     @arm = Arm.find arm_id if arm_id
     @portal = params[:portal] if params[:portal]
-    @thead_class = @portal == 'true' ? 'ui-widget-header' : 'red-provider'
+    @thead_class = @portal == 'true' ? 'default_calendar' : 'red-provider'
     page = params[:page] if params[:page]
     session[:service_calendar_pages] = params[:pages] if params[:pages]
     session[:service_calendar_pages][arm_id] = page if page && arm_id
@@ -571,45 +542,6 @@ class ServiceRequestsController < ApplicationController
     Notifier.notify_for_epic_user_approval(protocol).deliver unless QUEUE_EPIC
   end
 
-  # Navigate updates
-  # Subsidy saves/updates
-  def subsidy_save_update errors
-    #### convert dollars to cents for subsidy
-    if params[:service_request] && params[:service_request][:sub_service_requests_attributes]
-      params[:service_request][:sub_service_requests_attributes].each do |key, values|
-        ssr = @service_request.sub_service_requests.find values[:id]
-        if !check_for_overridden(ssr)
-          direct_cost = ssr.direct_cost_total
-          dollars = values[:subsidy_attributes][:pi_contribution]
-          funded_amount = direct_cost - Service.dollars_to_cents(dollars)
-          percent_subsidy = ((funded_amount / direct_cost) * 100).round(2)
-          if dollars.blank? # we don't want to create a subsidy if it's blank
-            values.delete(:subsidy_attributes)
-            ssr.subsidy.delete if ssr.subsidy
-          else
-            values[:subsidy_attributes][:pi_contribution] = Service.dollars_to_cents(dollars)
-            values[:subsidy_attributes][:stored_percent_subsidy] = percent_subsidy
-          end
-        else
-          direct_cost = ssr.direct_cost_total
-          percent_subsidy = ssr.subsidy.stored_percent_subsidy
-          contribution = (direct_cost * (percent_subsidy / 100.00)).ceil
-          contribution = direct_cost - contribution
-          values[:subsidy_attributes][:pi_contribution] = contribution
-        end
-      end
-    end
-  end
-
-  def check_for_overridden ssr
-    overridden = false
-    if ssr.subsidy && ssr.subsidy.overridden
-      overridden = true
-    end
-
-    overridden
-  end
-
   # Document saves/updates
   def document_save_update errors
      #### save/update documents if we have them
@@ -681,6 +613,22 @@ class ServiceRequestsController < ApplicationController
       if (status == 'submitted')
         service_request.previous_submitted_at = @service_request.submitted_at
         service_request.update_attribute(:submitted_at, Time.now)
+      end
+    end
+  end
+
+  def authorize_protocol_edit_request
+    if current_user
+      authorized =  if @sub_service_request
+                      current_user.can_edit_sub_service_request?(@sub_service_request)
+                    else
+                      current_user.can_edit_service_request?(@service_request)
+                    end
+
+      unless authorized
+        @service_request     = nil
+        @sub_service_request = nil
+        render partial: 'service_requests/authorization_error', locals: { error: 'You are not allowed to edit this Request.' }
       end
     end
   end

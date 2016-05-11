@@ -1,0 +1,65 @@
+-# Copyright © 2011 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+.panel.panel-primary.service-request-info
+  .panel-heading
+    %h4.panel-title.pull-left
+      = protocol_panel_header_line(service_request)
+    .pull-right
+      %button.btn.btn-sm.btn-default.notes.list{ data: {notable_type: "ServiceRequest", notable_id: service_request.id }} 
+        = t(:models)[:note][:plural]
+      - if !service_request.sub_service_requests.empty? && user.can_edit_service_request?(service_request)
+        %button.edit_service_request.btn.btn-warning.btn-sm{ type: 'button', data: { permission: permission_to_edit.to_s, url: "/service_requests/#{service_request.id}/catalog?from_user_portal=true&edit_original=true" } }
+          = t(:dashboard)[:service_requests][:edit_original]
+    .clearfix
+  %table.table.table-striped
+    %thead
+      %tr
+        %th
+          = t(:dashboard)[:service_requests][:srid]
+        %th
+          = t(:dashboard)[:service_requests][:organization]
+        %th
+          = t(:dashboard)[:service_requests][:status]
+        %th{ colspan: 4 }
+          = t(:dashboard)[:service_requests][:actions][:header]
+    %tbody
+      - service_request.sub_service_requests.each do |sub_service_request|
+        - next if sub_service_request.status == 'first_draft'
+        %tr
+          %td.pretty-ssr-id
+            = pretty_ssr_id(service_request.protocol, sub_service_request)
+          %td.organization
+            = sub_service_request.org_tree_display
+          %td.status
+            = AVAILABLE_STATUSES[sub_service_request.status]
+          %td.actions
+            = render partial: 'dashboard/notifications/dropdown', locals: { sub_service_request: sub_service_request, user: user, admin: admin }
+          %td
+            %button.view-sub-service-request-button.btn.btn-primary.btn-sm{ type: 'button', data: { sub_service_request_id: sub_service_request.id } }
+              = t(:dashboard)[:service_requests][:actions][:view]
+          - if user.can_edit_sub_service_request?(sub_service_request)
+            %td.edit-td
+              %button.edit_service_request.btn.btn-warning.btn-sm{ type: 'button', data: { permission: permission_to_edit.to_s, url: "/service_requests/#{service_request.id}/catalog?sub_service_request_id=#{sub_service_request.id}&from_user_portal=true" } }
+                = t(:dashboard)[:service_requests][:actions][:edit]
+          - if user.admin_organizations.include?(sub_service_request.organization)
+            %td.admin-edit-td
+              %a.edit_service_request.btn.btn-warning.btn-sm{ type: 'button', href: "/dashboard/sub_service_requests/#{sub_service_request.id}", data: { permission: permission_to_edit.to_s } }
+                = t(:dashboard)[:service_requests][:actions][:admin_edit]

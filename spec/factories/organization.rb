@@ -50,6 +50,10 @@ FactoryGirl.define do
       is_available false
     end
 
+    trait :without_validations do
+      to_create { |instance| instance.save(validate: false) }
+    end
+
     transient do
       sub_service_request_count 0
       service_count 0
@@ -58,6 +62,8 @@ FactoryGirl.define do
       service_provider_count 0
       pricing_setup_count 0
       submission_email_count 0
+      admin nil
+      service_provider nil
     end
 
     after(:build) do |organization, evaluator|
@@ -81,10 +87,20 @@ FactoryGirl.define do
 
       create_list(:submission_email, evaluator.submission_email_count,
        organization: organization)
+
+      if evaluator.admin
+        create(:super_user, organization: organization, identity: evaluator.admin)
+        create(:service_provider, organization: organization, identity: evaluator.admin)
+      end
+
+      if evaluator.service_provider
+        create(:service_provider, organization: organization, identity: evaluator.service_provider)
+      end
     end
 
     factory :organization_with_process_ssrs, traits: [:process_ssrs, :with_pricing_setup]
     factory :organization_ctrc, traits: [:ctrc]
+    factory :organization_without_validations, traits: [:without_validations]
   end
 
   factory :institution do
@@ -97,6 +113,10 @@ FactoryGirl.define do
 
     trait :disabled do
       is_available false
+    end
+
+    trait :without_validations do
+      to_create { |instance| instance.save(validate: false) }
     end
 
     transient do
@@ -112,6 +132,7 @@ FactoryGirl.define do
        evaluator.super_user_count, organization: organization)
 
     end
+    factory :institution_without_validations, traits: [:without_validations]
   end
 
   factory :provider do
@@ -124,6 +145,10 @@ FactoryGirl.define do
 
     trait :process_ssrs do
       process_ssrs true
+    end
+
+    trait :without_validations do
+      to_create { |instance| instance.save(validate: false) }
     end
 
     trait :disabled do
@@ -158,7 +183,7 @@ FactoryGirl.define do
       create_list(:submission_email, evaluator.submission_email_count,
        organization: organization)
     end
-
+    factory :provider_without_validations, traits: [:without_validations]
   end
 
   factory :program do
@@ -175,6 +200,10 @@ FactoryGirl.define do
 
     trait :disabled do
       is_available false
+    end
+
+    trait :without_validations do
+      to_create { |instance| instance.save(validate: false) }
     end
 
     trait :with_provider do
@@ -222,6 +251,7 @@ FactoryGirl.define do
 
     factory :program_with_provider, traits: [:with_provider]
     factory :program_with_pricing_setup, traits: [:with_pricing_setup]
+    factory :program_without_validations, traits: [:without_validations]
   end
 
   factory :core do
@@ -238,6 +268,10 @@ FactoryGirl.define do
 
     trait :disabled do
       is_available false
+    end
+
+    trait :without_validations do
+      to_create { |instance| instance.save(validate: false) }
     end
 
     transient do
@@ -268,5 +302,7 @@ FactoryGirl.define do
       create_list(:submission_email, evaluator.submission_email_count,
        organization: organization)
     end
+
+    factory :core_without_validations, traits: [:without_validations]
   end
 end

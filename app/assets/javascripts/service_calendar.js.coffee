@@ -21,6 +21,12 @@
 #= require navigation
 
 $(document).ready ->
+  $(document).on 'click', '.page_change_arrow', ->
+    unless $(this).attr('disabled')
+      $.ajax
+        type: 'GET'
+        url:  $(this).data('url')
+
   $('.visit_number a, .service_calendar_row').live 'click', ->
     $('.service_calendar_spinner').show()
 
@@ -36,7 +42,7 @@ $(document).ready ->
         else
           errors = [textStatus]
         for error in errors
-          alert(error);
+          alert(error)
           obj.prop('checked', false)
     .complete =>
       $('.service_calendar_spinner').hide()
@@ -87,7 +93,7 @@ $(document).ready ->
           for error in errors
             # May need to include something to allow error.humanize like we do elsewhere
             # if this gets weird looking.
-            alert(error);
+            alert(error)
             $(obj).val(original_val)
             $(obj).attr('current_quantity', original_val)
       .complete =>
@@ -237,7 +243,7 @@ $(document).ready ->
       contentType: 'application/json; charset=utf-8'
   )
 
-  $(document).on('change', '.jump_to_visit', ->
+  $(document).on 'change', '.jump_to_visit', ->
     $('.service_calendar_spinner').show()
 
     page = $(this).find('option:selected').attr('parent_page')
@@ -252,7 +258,6 @@ $(document).ready ->
       dataType: 'script'
       success: ->
         $('.service_calendar_spinner').hide()
-  )
 
   update_otf_line_item = (obj) ->
     original_val = $(obj).attr('previous_quantity')
@@ -270,7 +275,7 @@ $(document).ready ->
         for error in errors
           # May need to include something to allow error.humanize like we do elsewhere
           # if this gets weird looking.
-          alert(error);
+          alert(error)
           $(obj).val(original_val)
           $(obj).attr('current_quantity', original_val)
     .complete =>
@@ -279,18 +284,18 @@ $(document).ready ->
 
 # methods for saving one time fee attributes
   save_line_item_by_ajax = (obj) ->
-      object_id = $(obj).data("line_item_id")
-      name = $(obj).attr('name')
-      key = name.replace("line_item_", '')
-      data = {}
-      data[key] = $(obj).val()
-      put_attribute(object_id, data)
+    object_id = $(obj).data("line_item_id")
+    name = $(obj).attr('name')
+    key = name.replace("line_item_", '')
+    data = {}
+    data[key] = $(obj).val()
+    put_attribute(object_id, data)
 
 
   put_attribute = (id, data) ->
     $.ajax
       type: 'PUT'
-      url:  "/portal/admin/line_items/#{id}/update_from_cwf"
+      url:  "/dashboard/line_items/#{id}/update_from_cwf"
       data: JSON.stringify(data)
       dataType: "script"
       contentType: 'application/json; charset=utf-8'
@@ -328,7 +333,7 @@ recalculate_one_time_fee_totals = ->
 commaSeparateNumber = (val) ->
   while (/(\d+)(\d{3})/.test(val.toString()))
     val = val.toString().replace(/(\d+)(\d{3})/, '$1'+','+'$2')
-  return val;
+  return val
 
 stack_errors_for_alert = (errors) ->
   compiled = ''

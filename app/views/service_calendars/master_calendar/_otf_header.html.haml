@@ -19,9 +19,17 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 %tr.table_header
   %th{ rowspan: 2, style: @review ? '' : 'height: 88px', class: @review ? '' : 'services_header' }= t(:calendar_page)[:headers][:services]
-  %th{ rowspan: 2 }= t(:calendar_page)[:headers][:status]
 
-  - if @review # display review otf header
+
+  - if @study_tracker && !@merged # display study tracker otf header
+    %th.qty_unit_header.width-130= t(:calendar_page)[:headers][:number]
+    %th.qty_unit_header.width-130= t(:calendar_page)[:headers][:unit_type]
+    %th.qty_type_header= t(:calendar_page)[:headers][:number]
+    %th.number_of_units_header.width-130= t(:calendar_page)[:headers][:qty_type]
+    %th
+
+
+  - elsif @review # display review otf header
     %th{ rowspan: 2 }= t(:calendar_page)[:headers][:your_cost]
     %th{ colspan: 6 }
     %th{ rowspan: 2 }= t(:calendar_page)[:headers][:total_per_study]

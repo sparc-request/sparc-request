@@ -72,7 +72,7 @@ redh
 staging:
   default_mail_to: 'glennj@musc.edu'
   admin_mail_to: 'success@musc.edu'
-  user_portal_link: 'https://sparc-stg.mdc.musc.edu/portal/'
+  dashboard_link: 'https://sparc-stg.mdc.musc.edu/dashboard/'
 
 27. vi config/setup_load_paths.rb and add something like this
 

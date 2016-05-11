@@ -43,6 +43,10 @@ class Arm < ActiveRecord::Base
 
   after_save :update_liv_subject_counts
 
+  validates :name, presence: true
+  validates :visit_count, numericality: { greater_than: 0 }
+  validates :subject_count, numericality: { greater_than: 0 }
+
   def update_liv_subject_counts
 
     self.line_items_visits.each do |liv|
@@ -322,6 +326,7 @@ class Arm < ActiveRecord::Base
     self.visit_groups.each do |vg|
       vg.update_attribute(:day, vg.position)
     end
+    reload
   end
 
   ### audit reporting methods ###

@@ -23,6 +23,7 @@ ENV["RAILS_ENV"] ||= 'test'
 require File.expand_path("../../config/environment", __FILE__)
 
 require 'spec_helper'
+require 'site_prism'
 
 RSpec.configure do |config|
   # TODO mark spec types explicitly

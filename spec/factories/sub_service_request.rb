@@ -22,6 +22,10 @@ FactoryGirl.define do
   factory :sub_service_request do
     owner_id           { Random.rand(1000) }
 
+    trait :without_validations do
+      to_create { |instance| instance.save(validate: false) }
+    end
+    
     trait :with_payment do
       after(:create) do |sub_service_request, evaluator|
         FactoryGirl.create(:payment, sub_service_request: sub_service_request)
@@ -51,6 +55,11 @@ FactoryGirl.define do
       end
     end
 
+    trait :with_organization do
+      organization
+    end
+
+    factory :sub_service_request_with_organization, traits: [:with_organization]
     factory :sub_service_request_with_payment, traits: [:with_payment]
     factory :sub_service_request_in_cwf, traits: [:in_cwf]
     factory :sub_service_request_with_subsidy, traits: [:with_subsidy]

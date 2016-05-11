@@ -176,9 +176,16 @@ $(document).ready ->
 
 
   ###PUBLISH IN EPIC BUTTON STATES###
-  $('#selected_for_epic_button label').each ->
-    if $(this).children('input').attr('checked')
-      $(this).addClass('active')
+  if $('#study_selected_for_epic_true').is(':checked')
+    $('#study_selected_for_epic_true_button').addClass('active')
+  else
+    $('#study_selected_for_epic_false_button').addClass('active')
+
+  $(document).on 'click', '#selected_for_epic_button label', ->
+    $(this).addClass('active')
+    $(this).children('input').prop('checked')
+    $(this).siblings('.active').removeClass('active')
+
   ###END PUBLISH IN EPIC BUTTON STATES###
 
 

@@ -37,7 +37,7 @@
       %a#notifications-tab{href: "#notifications", role: 'tab', 'aria-controls' => 'notifications-tab', data: {toggle: 'tab'}}
         = t(:dashboard)[:sub_service_requests][:tabs][:notifications][:header]
         %span#notification_count.badge
-          = @user.unread_notification_count_for_ssr(@user, @sub_service_request)
+          = @user.unread_notification_count(@sub_service_request.id)
 
   .tab-content
     .tab-pane#details{role: 'tabpanel', class: cookies['admin-tab'] ? (cookies['admin-tab'] == 'details-tab' ? 'active' : '') : 'active'}

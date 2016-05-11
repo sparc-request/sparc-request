@@ -70,25 +70,27 @@ RSpec.describe 'dashboard/sub_service_requests/_request_details', type: :view do
   end
 
   def stub_protocol
-    instance_double(Protocol)
+    build_stubbed(:protocol)
   end
 
   def stub_service_request(opts = {})
-    instance_double(ServiceRequest, id: 1,
-                    protocol: opts[:protocol])
+    build_stubbed(:service_request,
+      protocol: opts[:protocol])
   end
 
   # specify protocol and organization
   def stub_sub_service_request(opts = {})
-    instance_double(SubServiceRequest,
-                    id: 1,
-                    service_request: opts[:service_request],
-                    ctrc?: !!opts[:ctrc?],
-                    eligible_for_subsidy?: !!opts[:eligible_for_subsidy?])
+    obj = build_stubbed(:sub_service_request,
+      service_request: opts[:service_request])
+    allow(obj).to receive(:ctrc?).
+      and_return(!!opts[:ctrc?])
+    allow(obj).to receive(:eligible_for_subsidy?).
+      and_return(!!opts[:eligible_for_subsidy?])
+    obj
   end
 
   def stub_organization(opts = {})
-    instance_double(Organization)
+    build_stubbed(:organization)
   end
 
   def stub_current_user(user)

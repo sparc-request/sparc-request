@@ -41,7 +41,7 @@ class Dashboard::NotificationsController < Dashboard::BaseController
 
     if params[:identity_id]
       if @sub_service_request_id.present?
-        @sub_service_request = SubServiceRequest.find(@sub_service_request_id) if params[:sub_service_request_id]
+        @sub_service_request = SubServiceRequest.find(@sub_service_request_id)
         @notification = @sub_service_request.notifications.new
       else
         @notification = Notification.new
@@ -67,10 +67,7 @@ class Dashboard::NotificationsController < Dashboard::BaseController
         @message.save
 
         ssr = @notification.sub_service_request
-
-        # TODO consider
-        # @notifications = Notification.belonging_to(@user).where(sub_service_request_id: ssr.id)
-        @notifications =  ssr.present? ? @user.all_notifications.select!{ |n| n.sub_service_request_id == ssr.id } : @user.all_notifications
+        @notifications = Notification.belonging_to(@user.id, params[:sub_service_request_id])
 
         UserMailer.notification_received(@recipient, ssr).deliver unless @recipient.email.blank?
         flash[:success] = 'Notification Sent!'
@@ -83,15 +80,12 @@ class Dashboard::NotificationsController < Dashboard::BaseController
   def mark_as_read
     # handles marking notification messages as read or unread
     as_read = (params[:read] == 'true') #could be 'true'(read) or 'false'(unread)
-    params[:notification_ids].each do |notification_id|
-      notification = Notification.find(notification_id)
-      notification.set_read_by(@user, as_read)
-    end
+    Notification.where(id: params[:notification_ids]).each { |n| n.set_read_by(@user, as_read)}
 
     if params[:sub_service_request_id]
-      @unread_notification_count_for_ssr = @user.unread_notification_count_for_ssr(@user, SubServiceRequest.find(params[:sub_service_request_id]))
+      @unread_notification_count_for_ssr = @user.unread_notification_count(params[:sub_service_request_id])
     end
 
-    @unread_notification_count = @user.unread_notification_count(@user)
+    @unread_notification_count = @user.unread_notification_count
   end
 end

@@ -435,24 +435,7 @@ class Identity < ActiveRecord::Base
     [sent_notifications, received_notifications].flatten
   end
 
-  # Returns the count of unread notifications for this identity, based on their user_notifications
-  # (where the :read flag is set).
-  def unread_notification_count user
-    notification_count = 0
-    notifications = self.all_notifications
-
-    notifications.each do |notification|
-      notification_count += 1 unless notification.read_by? user
-    end
-
-    notification_count
-  end
-
-  def unread_notification_count_for_ssr user, sub_service_request
-    notification_count = 0
-
-    notification_count += (user.all_notifications.select { |n| !(n.read_by? user) && n.sub_service_request_id == sub_service_request.id }).size
-
-    notification_count
+  def unread_notification_count(sub_service_request_id=nil)
+    Notification.of_ssr(sub_service_request_id).unread_by(id).count
   end
 end

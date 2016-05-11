@@ -21,6 +21,10 @@
 FactoryGirl.define do
 
   factory :notification do
+    trait :without_validations do
+      to_create { |instance| instance.save(validate: false) }
+    end
+
     transient do
       body nil
       message_created_at nil
@@ -41,5 +45,7 @@ FactoryGirl.define do
         notification.messages << message
       end
     end
+
+    factory :notification_without_validations, traits: [:without_validations]
   end
 end

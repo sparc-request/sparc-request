@@ -14,7 +14,9 @@ RSpec.describe 'dashboard/sub_service_requests/show', type: :view do
     assign(:sub_service_request, @sub_service_request)
 
     @logged_in_user = build_stubbed(:identity)
-    allow(@logged_in_user).to receive(:unread_notification_count_for_ssr).with(@logged_in_user, @sub_service_request).and_return("12345")
+    allow(@logged_in_user).to receive(:unread_notification_count).
+      with(@sub_service_request.id).
+      and_return("12345")
     ActionView::Base.send(:define_method, :current_user) { @logged_in_user }
 
     assign(:user, @logged_in_user)

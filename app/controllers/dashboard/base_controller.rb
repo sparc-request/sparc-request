@@ -36,7 +36,7 @@ class Dashboard::BaseController < ActionController::Base
     session['uid'] = @user.try(:id)
   end
 
-  def clean_errors errors
+  def clean_errors(errors)
     errors.to_a.map { |k, v| "#{k.humanize} #{v}".rstrip + '.' }
   end
 

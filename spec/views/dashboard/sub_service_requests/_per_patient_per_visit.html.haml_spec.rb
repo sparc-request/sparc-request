@@ -5,8 +5,9 @@ RSpec.describe 'dashboard/sub_service_requests/_per_patient_per_visit', type: :v
 
   context "SubServiceRequest has no pppv LineItems" do
     it "should indicate that there are no requests" do
-      service_request = instance_double(ServiceRequest, arms: [:arm])
-      sub_service_request = instance_double(SubServiceRequest, per_patient_per_visit_line_items: [])
+      service_request = build_stubbed(:service_request)
+      allow(service_request).to receive(:arms).and_return(["some arm"])
+      sub_service_request = build_stubbed("sub_service_request")
 
       render "dashboard/sub_service_requests/per_patient_per_visit", sub_service_request: sub_service_request, service_request: service_request
 
@@ -16,8 +17,10 @@ RSpec.describe 'dashboard/sub_service_requests/_per_patient_per_visit', type: :v
 
   context "ServiceRequest has no Arms" do
     it "should indicate that there are no requests" do
-      service_request = instance_double(ServiceRequest, arms: [])
-      sub_service_request = instance_double(SubServiceRequest, per_patient_per_visit_line_items: [:line_item])
+      service_request = build_stubbed(:service_request)
+      sub_service_request = build_stubbed(:sub_service_request)
+      allow(sub_service_request).to receive(:per_patient_per_visit_line_items).
+        and_return(["some line item"])
 
       render "dashboard/sub_service_requests/per_patient_per_visit", sub_service_request: sub_service_request, service_request: service_request
 

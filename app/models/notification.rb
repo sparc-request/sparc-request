@@ -34,40 +34,41 @@ class Notification < ActiveRecord::Base
   attr_accessible :read_by_originator
   attr_accessible :read_by_other_user
 
-  def self.in_inbox_of(identity_id, sub_service_request_id=nil)
-    notifications = belonging_to(identity_id).
-      joins(:messages).
-      where(messages: { to: identity_id })
-    if sub_service_request_id.present?
-      notifications.where(sub_service_request_id: sub_service_request_id)
-    else
-      notifications
-    end
-  end
-
-  def self.in_sent_of(identity_id, sub_service_request_id=nil)
-    notifications = belonging_to(identity_id).
-      joins(:messages).
-      where(messages: { from: identity_id })
-
-    if sub_service_request_id.present?
-      notifications.where(sub_service_request_id: sub_service_request_id)
-    else
-      notifications
-    end
-  end
-
   def self.belonging_to(identity_id, sub_service_request_id=nil)
     notifications = Notification.arel_table
 
-    notifications = Notification.
+    of_ssr(sub_service_request_id).
       where(notifications[:other_user_id].eq(identity_id).
-            or(notifications[:originator_id].eq(identity_id)))
-    if sub_service_request_id.present?
-      notifications.where(sub_service_request_id: sub_service_request_id)
+        or(notifications[:originator_id].eq(identity_id)))
+  end
+
+  def self.of_ssr(ssr_id=nil)
+    if ssr_id.nil?
+      all
     else
-      notifications
+      where(sub_service_request_id: ssr_id)
     end
+  end
+
+  def self.in_inbox_of(identity_id, sub_service_request_id=nil)
+    of_ssr(sub_service_request_id).
+    belonging_to(identity_id).
+      joins(:messages).
+      where(messages: { to: identity_id })
+  end
+
+  def self.in_sent_of(identity_id, sub_service_request_id=nil)
+    of_ssr(sub_service_request_id).
+    belonging_to(identity_id).
+      joins(:messages).
+      where(messages: { from: identity_id })
+  end
+
+  def self.unread_by(identity_id)
+    notifications = Notification.arel_table
+
+    where(notifications[:originator_id].eq(identity_id).and(notifications[:read_by_originator].eq(false)).
+      or(notifications[:other_user_id].eq(identity_id).and(notifications[:read_by_other_user].eq(false))))
   end
 
   def read_by?(user)

@@ -11,8 +11,8 @@ RSpec.describe 'dashboard/sub_service_requests/_header', type: :view do
       organization = stub_organization
       sub_service_request = stub_sub_service_request(protocol: protocol, organization: organization)
       logged_in_user = build_stubbed(:identity)
-      allow(logged_in_user).to receive(:unread_notification_count_for_ssr).with(
-          logged_in_user, sub_service_request).and_return("12345")
+      allow(logged_in_user).to receive(:unread_notification_count).
+        with(sub_service_request.id).and_return("12345")
       stub_current_user(logged_in_user)
 
       render "dashboard/sub_service_requests/header", sub_service_request: sub_service_request
@@ -30,11 +30,11 @@ RSpec.describe 'dashboard/sub_service_requests/_header', type: :view do
         protocol = stub_protocol
         organization = stub_organization
         sub_service_request = stub_sub_service_request(protocol: protocol,
-                                                       organization: organization,
-                                                       status: "draft")
+          organization: organization,
+          status: "draft")
         logged_in_user = build_stubbed(:identity)
-        allow(logged_in_user).to receive(:unread_notification_count_for_ssr).with(
-            logged_in_user, sub_service_request).and_return("12345")
+        allow(logged_in_user).to receive(:unread_notification_count).
+          with(sub_service_request.id).and_return("12345")
         stub_current_user(logged_in_user)
 
         render "dashboard/sub_service_requests/header", sub_service_request: sub_service_request
@@ -50,13 +50,14 @@ RSpec.describe 'dashboard/sub_service_requests/_header', type: :view do
         sub_service_request_owner = build_stubbed(:identity, first_name: "Thing", last_name: "1")
         potential_owner = build_stubbed(:identity, first_name: "Thing", last_name: "2")
         sub_service_request = stub_sub_service_request(protocol: protocol,
-                                                       organization: organization,
-                                                       status: "not_draft",
-                                                       candidate_owners: [sub_service_request_owner, potential_owner],)
-        allow(sub_service_request).to receive(:owner_id).and_return(sub_service_request_owner.id)
+          organization: organization,
+          status: "not_draft",
+          candidate_owners: [sub_service_request_owner, potential_owner])
+        allow(sub_service_request).to receive(:owner_id).
+          and_return(sub_service_request_owner.id)
         logged_in_user = build_stubbed(:identity)
-        allow(logged_in_user).to receive(:unread_notification_count_for_ssr).with(
-            logged_in_user, sub_service_request).and_return("12345")
+        allow(logged_in_user).to receive(:unread_notification_count).
+          with(sub_service_request).and_return("12345")
         stub_current_user(logged_in_user)
 
         render "dashboard/sub_service_requests/header", sub_service_request: sub_service_request
@@ -77,18 +78,19 @@ RSpec.describe 'dashboard/sub_service_requests/_header', type: :view do
             protocol = stub_protocol
             organization = stub_organization
             sub_service_request = stub_sub_service_request(protocol: protocol,
-                                                           organization: organization,
-                                                           status: "draft")
+              organization: organization,
+              status: "draft")
             allow(sub_service_request).to receive_messages(ready_for_fulfillment?: true,
-                                                           in_work_fulfillment?: true)
+              in_work_fulfillment?: true)
             logged_in_user = build_stubbed(:identity)
-            allow(logged_in_user).to receive_messages(unread_notification_count_for_ssr: 12345,
-                                                      clinical_provider_rights?: true)
+            allow(logged_in_user).to receive_messages(unread_notification_count: 12345,
+              clinical_provider_rights?: true)
             stub_current_user(logged_in_user)
 
             render "dashboard/sub_service_requests/header", sub_service_request: sub_service_request
 
-            expect(response).to have_tag("a", text: "Go to Fulfillment", with: { href: CLINICAL_WORK_FULFILLMENT_URL })
+            expect(response).to have_tag("a", text: "Go to Fulfillment",
+              with: { href: CLINICAL_WORK_FULFILLMENT_URL })
           end
         end
 
@@ -97,13 +99,13 @@ RSpec.describe 'dashboard/sub_service_requests/_header', type: :view do
             protocol = stub_protocol
             organization = stub_organization
             sub_service_request = stub_sub_service_request(protocol: protocol,
-                                                           organization: organization,
-                                                           status: "draft")
+              organization: organization,
+              status: "draft")
             allow(sub_service_request).to receive_messages(ready_for_fulfillment?: true,
-                                                           in_work_fulfillment?: true)
+              in_work_fulfillment?: true)
             logged_in_user = build_stubbed(:identity)
-            allow(logged_in_user).to receive_messages(unread_notification_count_for_ssr: 12345,
-                                                      clinical_provider_rights?: false)
+            allow(logged_in_user).to receive_messages(unread_notification_count: 12345,
+              clinical_provider_rights?: false)
             stub_current_user(logged_in_user)
 
             render "dashboard/sub_service_requests/header", sub_service_request: sub_service_request
@@ -118,12 +120,12 @@ RSpec.describe 'dashboard/sub_service_requests/_header', type: :view do
           protocol = stub_protocol
           organization = stub_organization
           sub_service_request = stub_sub_service_request(protocol: protocol,
-                                                         organization: organization,
-                                                         status: "draft")
+            organization: organization,
+            status: "draft")
           allow(sub_service_request).to receive_messages(ready_for_fulfillment?: true,
-                                                         in_work_fulfillment?: false)
+            in_work_fulfillment?: false)
           logged_in_user = build_stubbed(:identity)
-          allow(logged_in_user).to receive_messages(unread_notification_count_for_ssr: 12345)
+          allow(logged_in_user).to receive_messages(unread_notification_count: 12345)
           stub_current_user(logged_in_user)
 
           render "dashboard/sub_service_requests/header", sub_service_request: sub_service_request
@@ -138,11 +140,11 @@ RSpec.describe 'dashboard/sub_service_requests/_header', type: :view do
         protocol = stub_protocol
         organization = stub_organization
         sub_service_request = stub_sub_service_request(protocol: protocol,
-                                                       organization: organization,
-                                                       status: "draft")
+          organization: organization,
+          status: "draft")
         allow(sub_service_request).to receive_messages(ready_for_fulfillment?: false)
         logged_in_user = build_stubbed(:identity)
-        allow(logged_in_user).to receive_messages(unread_notification_count_for_ssr: 12345)
+        allow(logged_in_user).to receive_messages(unread_notification_count: 12345)
         stub_current_user(logged_in_user)
 
         render "dashboard/sub_service_requests/header", sub_service_request: sub_service_request
@@ -157,8 +159,8 @@ RSpec.describe 'dashboard/sub_service_requests/_header', type: :view do
     organization = stub_organization
     sub_service_request = stub_sub_service_request(protocol: protocol, organization: organization)
     logged_in_user = build_stubbed(:identity)
-    allow(logged_in_user).to receive(:unread_notification_count_for_ssr).with(
-        logged_in_user, sub_service_request).and_return("12345")
+    allow(logged_in_user).to receive(:unread_notification_count).
+      with(sub_service_request).and_return("12345")
     stub_current_user(logged_in_user)
 
     render "dashboard/sub_service_requests/header", sub_service_request: sub_service_request
@@ -171,8 +173,8 @@ RSpec.describe 'dashboard/sub_service_requests/_header', type: :view do
     organization = stub_organization
     sub_service_request = stub_sub_service_request(protocol: protocol, organization: organization)
     logged_in_user = build_stubbed(:identity)
-    allow(logged_in_user).to receive(:unread_notification_count_for_ssr).with(
-        logged_in_user, sub_service_request).and_return("12345")
+    allow(logged_in_user).to receive(:unread_notification_count).
+      with(sub_service_request).and_return("12345")
     stub_current_user(logged_in_user)
 
     render "dashboard/sub_service_requests/header", sub_service_request: sub_service_request
@@ -181,20 +183,22 @@ RSpec.describe 'dashboard/sub_service_requests/_header', type: :view do
   end
 
   def stub_protocol
-    instance_double(Protocol, id: 1, short_title: "MyAwesomeProtocol")
+    build_stubbed(:protocol, short_title: "MyAwesomeProtocol")
   end
 
   # specify protocol and organization
   def stub_sub_service_request(opts = {})
     d = instance_double(SubServiceRequest,
-                        id: 1,
-                        protocol: opts[:protocol],
-                        organization: opts[:organization],
-                        ssr_id: "0001",
-                        status: opts[:status] || "NotDraft",
-                        candidate_owners: opts[:candidate_owners] || [],
-                        ready_for_fulfillment?: opts[:ready_for_fulfillment?].nil? || opts[:ready_for_fulfillment?],
-                        in_work_fulfillment?: opts[:in_work_fulfillment?].nil? || opts[:in_work_fulfillment?])
+      id: 1,
+      protocol: opts[:protocol],
+      organization: opts[:organization],
+      ssr_id: "0001",
+      status: opts[:status] || "NotDraft",             # default "NotDraft"
+      candidate_owners: opts[:candidate_owners] || [], # default []
+      ready_for_fulfillment?: opts[:ready_for_fulfillment?].nil? || opts[:ready_for_fulfillment?], # default true
+      in_work_fulfillment?: opts[:in_work_fulfillment?].nil? || opts[:in_work_fulfillment?])       # default true
+
+    # TODO refactor pricing, cost calculations
     effective_cost = 54321
     displayed_cost = 54320
     expect(d).to receive(:set_effective_date_for_cost_calculations) do
@@ -211,8 +215,8 @@ RSpec.describe 'dashboard/sub_service_requests/_header', type: :view do
   def stub_organization(opts = {})
     default_statuses = { "draft" => "Draft", "not_draft" => "NotDraft" }
     instance_double(Organization,
-                    name: "MegaCorp",
-                    get_available_statuses: opts[:get_available_statuses].nil? ? default_statuses : opts[:get_available_statuses])
+      name: "MegaCorp",
+      get_available_statuses: opts[:get_available_statuses].nil? ? default_statuses : opts[:get_available_statuses])
   end
 
   def stub_current_user(user)

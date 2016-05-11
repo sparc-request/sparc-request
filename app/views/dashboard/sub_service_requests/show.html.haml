@@ -1,0 +1,55 @@
+-# Copyright © 2011 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+#sub_service_request_header
+  = render 'dashboard/sub_service_requests/header', sub_service_request: @sub_service_request
+
+.tabs{role: 'tabpanel'}
+  %ul.nav.nav-tabs.nav-justified{role: 'tablist'}
+    %li.custom-tab.ssr_tab{role: 'presentation', class: cookies['admin-tab'] ? (cookies['admin-tab'] == 'details-tab' ? 'active' : '') : 'active'}
+      = link_to t(:dashboard)[:sub_service_requests][:tabs][:request_details][:header], "#details", {id: 'details-tab', "data-toggle" => 'tab', role: 'tab', "aria-controls" => 'details-tab'}
+    %li.custom-tab.ssr_tab{role: 'presentation', class: cookies['admin-tab'] == 'study_schedule-tab' ? 'active' : ''}
+      = link_to t(:dashboard)[:sub_service_requests][:tabs][:study_schedule][:header], "#study_schedule", {id: 'study_schedule-tab', "data-toggle" => 'tab', role: 'tab', "aria-controls" => 'study_schedule-tab'}
+    %li.custom-tab.ssr_tab{role: 'presentation', class: cookies['admin-tab'] == 'study_level_activities-tab' ? 'active' : ''}
+      = link_to t(:dashboard)[:sub_service_requests][:tabs][:study_level_activities][:header], "#study_level_activities", {id: 'study_level_activities-tab', "data-toggle" => 'tab', role: 'tab', "aria-controls" => 'study_level_activities-tab'}
+    %li.custom-tab.ssr_tab{role: 'presentation', class: cookies['admin-tab'] == 'documents-tab' ? 'active' : ''}
+      = link_to t(:dashboard)[:sub_service_requests][:tabs][:documents][:header], "#documents", {id: 'documents-tab', "data-toggle" => 'tab', role: 'tab', "aria-controls" => 'documents-tab'}
+    %li.custom-tab.ssr_tab{role: 'presentation', class: cookies['admin-tab'] == 'history-tab' ? 'active' : ''}
+      = link_to t(:dashboard)[:sub_service_requests][:tabs][:history][:header], "#history", {id: 'history-tab', "data-toggle" => 'tab', role: 'tab', "aria-controls" => 'history-tab'}
+    %li.custom-tab.ssr_tab{role: 'presentation', class: cookies['admin-tab'] == 'notifications-tab' ? 'active' : ''}
+      %a#notifications-tab{href: "#notifications", role: 'tab', 'aria-controls' => 'notifications-tab', data: {toggle: 'tab'}}
+        = t(:dashboard)[:sub_service_requests][:tabs][:notifications][:header]
+        %span#notification_count.badge
+          = @user.unread_notification_count(@sub_service_request.id)
+
+  .tab-content
+    .tab-pane#details{role: 'tabpanel', class: cookies['admin-tab'] ? (cookies['admin-tab'] == 'details-tab' ? 'active' : '') : 'active'}
+      = render 'dashboard/sub_service_requests/request_details', protocol: @protocol, service_request: @service_request, sub_service_request: @sub_service_request
+    .tab-pane#study_schedule{role: 'tabpanel', class: cookies['admin-tab'] == 'study_schedule-tab' ? 'active' : ''}
+      #per_patient_services
+        = render 'dashboard/sub_service_requests/per_patient_per_visit', sub_service_request: @sub_service_request, service_request: @service_request
+    .tab-pane#study_level_activities{role: 'tabpanel', class: cookies['admin-tab'] == 'study_level_activities-tab' ? 'active' : ''}
+      = render 'dashboard/study_level_activities/study_level_activities_table', sub_service_request: @sub_service_request
+    .tab-pane#documents{role: 'tabpanel', class: cookies['admin-tab'] == 'documents-tab' ? 'active' : ''}
+      = render 'dashboard/documents/documents_table', sub_service_request: @sub_service_request, service_request: @service_request
+    .tab-pane#history{role: 'tabpanel', class: cookies['admin-tab'] == 'history-tab' ? 'active' : ''}
+      = render 'dashboard/sub_service_requests/history/status_changes', sub_service_request_id: @sub_service_request.id
+    .tab-pane#notifications{role: 'tabpanel', class: cookies['admin-tab'] == 'notifications-tab' ? 'active' : ''}
+      = render 'dashboard/notifications/notifications', sub_service_request: @sub_service_request, user: @user, admin: @admin

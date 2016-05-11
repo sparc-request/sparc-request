@@ -5,6 +5,7 @@
  *= require admin/bootstrap.min
  *= require admin/bootstrap-theme.min
  *= require admin/bootstrap-accessibility
+ *= require admin/bootstrap-datetimepicker
  *= require admin/ui-grid.min
  *= require_self
 */

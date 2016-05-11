@@ -37,7 +37,6 @@ $ ->
           humanized_error_message = Sparc.catalog.humanize_error_message(key, error)
           error_number += 1
           error_string += humanized_error_message
-
       $('.errorExplanation').html("<h2>#{error_number} error(s) prevented this #{entity_type} from being saved:</h2>
         <p>There were problems with the following fields:</p>
         <ul>

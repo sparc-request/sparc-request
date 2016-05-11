@@ -36,12 +36,17 @@ class ProjectRole < ActiveRecord::Base
   attr_accessible :role_other
   attr_accessible :epic_access
   attr_accessible :epic_rights_attributes
+  attr_accessible :identity_attributes
 
   accepts_nested_attributes_for :epic_rights, :allow_destroy => true
+  accepts_nested_attributes_for :identity
 
+  validates :identity_id, :presence => true
   validates :role, :presence => true
   validates :project_rights, :presence => true
 
+  scope :primary_pis, -> { where(role: "primary-pi") }
+  
   def can_edit?
     if project_rights == "view" || project_rights == "none"
       return false
@@ -151,7 +156,7 @@ class ProjectRole < ActiveRecord::Base
     end
   end
 
-  def setup_epic_rights is_new=true
+  def setup_epic_rights(is_new=true)
     position = 1
     EPIC_RIGHTS.each do |right, description|
       epic_right = epic_rights.detect{|obj| obj.right == right}

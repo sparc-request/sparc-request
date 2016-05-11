@@ -28,7 +28,7 @@ begin
   NEW_USER_CC                               = application_config['new_user_cc']
   SYSTEM_SATISFACTION_SURVEY_CC             = application_config['system_satisfaction_survey_cc']
   ROOT_URL                                  = application_config['root_url']
-  USER_PORTAL_LINK                          = application_config['user_portal_link']
+  DASHBOARD_LINK                            = application_config['dashboard_link']
   HEADER_LINK_1                             = application_config['header_link_1']
   HEADER_LINK_2                             = application_config['header_link_2']
   HEADER_LINK_3                             = application_config['header_link_3']

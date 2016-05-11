@@ -67,7 +67,8 @@ class Directory
   # Searches the database only for a given search string.  Returns an
   # array of Identities.
   def self.search_database(term)
-    identities = Identity.where("ldap_uid like ? OR email like ? OR last_name like ? OR first_name like ?", "%#{term}%", "%#{term}%", "%#{term}%", "%#{term}%")
+    search_query = query(term)
+    identities = Identity.find_by_sql(search_query)
     return identities
   end
 
@@ -97,6 +98,27 @@ class Directory
     end
 
     return res
+  end
+
+  # SQL query that returns identities
+  def self.query(term)
+    query_select     = "select distinct identities.* from identities"
+
+    where_term = lambda do |search_term|
+      return  "(identities.ldap_uid like \"%#{search_term}%\" or "\
+              "identities.email like \"%#{search_term}%\" or "\
+              "identities.first_name like \"%#{search_term}%\" or "\
+              "identities.last_name like \"%#{search_term}%\")"
+    end
+
+    query_where = "where "
+    search_terms = term.strip.split
+    search_terms.each do |search_term|
+      query_where += " and " unless search_term == search_terms.first
+      query_where += where_term.call(search_term)
+    end
+
+    return query_select + ' ' + query_where + ' limit 15'
   end
 
   # Create or update the database based on what was returned from ldap.

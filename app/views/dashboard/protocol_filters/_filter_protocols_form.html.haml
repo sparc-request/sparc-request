@@ -1,0 +1,75 @@
+-# Copyright © 2011 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+.panel.panel-default
+
+  .panel-heading
+    .pull-left
+      = t(:dashboard)[:protocol_filters][:header]
+    .pull-right
+      %a#save_filters_link{ href: "#" }= t(:actions)[:save]
+      = " | "
+      = link_to t(:actions)[:reset], reset_filterrific_url, id: "reset_filters_link"
+    .clearfix
+
+  = form_for_filterrific filterrific, remote: true, html: { id: 'filterrific-no-ajax-auto-submit' } do |form|
+    .panel-body
+      #protocol_filter_form_display
+        .form-group.row
+          = form.label :search_query, t(:actions)[:search], class: 'col-lg-3 control-label'
+          .col-lg-9
+            = form.text_field :search_query, class: 'form-control'
+
+        .form-group.row
+          = form.label :show_archived, t(:dashboard)[:protocol_filters][:archived], class: 'col-lg-10 control-label'
+          .col-lg-2
+            = form.check_box :show_archived
+
+        .form-group.row
+          = form.label :with_status, t(:dashboard)[:protocol_filters][:status], class: 'col-lg-3 control-label'
+          .col-lg-9
+            = form.select :with_status, filterrific.select_options[:with_status], {}, class: "form-control selectpicker status-select", multiple: true, data: { none_selected_text: t(:constants)[:prompts][:any] }
+        - if admin
+          %hr
+          .form-group.row
+            = form.label :for_identity_id, t(:dashboard)[:protocol_filters][:my_protocols], class: 'col-lg-10 control-label'
+            .col-lg-2
+              = form.check_box :for_identity_id, {}, current_user.id, "0"
+
+          .form-group.row
+            = form.label :for_admin, t(:dashboard)[:protocol_filters][:my_admin_orgs], class: 'col-lg-10 control-label'
+            .col-lg-2
+              = form.check_box :for_admin, {}, current_user.id, "0"
+
+          .form-group.row
+            = form.label :with_core, t(:dashboard)[:protocol_filters][:core], class: 'col-lg-3 control-label'
+            .col-lg-9
+              = form.select :with_core, filterrific.select_options[:with_core], {}, class: "form-control selectpicker core-select", multiple: true, data: { none_selected_text: t(:constants)[:prompts][:any] }
+
+    .panel-footer
+      .pull-right
+        %button.btn.btn-default#apply-filter-button{type: "submit"}
+          = t(:dashboard)[:protocol_filters][:filter]
+      .clearfix
+
+
+#saved_searches
+  - if @protocol_filters.present?
+    = render partial: 'dashboard/protocol_filters/saved_searches', locals: { current_user: current_user, protocol_filters: @protocol_filters }

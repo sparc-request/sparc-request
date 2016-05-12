@@ -3,12 +3,11 @@ $navbar-tab-color: #113967;
 .navbar {
   width: 100%;
   float: left;
-  margin: 0 0 3em 0;
   padding: 0;
   list-style: none;
-  background-color: #fff;
   border-bottom: 1px solid #ccc;
-  border-top: 1px solid #fff;
+  border-top: 1px solid #ccc;
+  overflow: hidden;
 }
 
 .navbar li {
@@ -21,7 +20,6 @@ $navbar-tab-color: #113967;
   text-decoration: none;
   font-weight: bold;
   color: #fff;
-  border-right: 1px solid #fff;
 }
 
 .align-element-nav-bar {
@@ -29,24 +27,28 @@ $navbar-tab-color: #113967;
   float: right;
 }
 
-.right-section {
+.user-login-section {
   float: right;
 }
 
 .dashboard {
   background-color: $navbar-tab-color;
+  border-right: 1px solid #fff;
 }
 
 .admin {
   background-color: $navbar-tab-color;
+  border-right: 1px solid #fff;
 }
 
 .fulfillment {
   background-color: $navbar-tab-color;
+  border-right: 1px solid #fff;
 }
 
 .catalog {
   background-color: $navbar-tab-color;
+  border-right: 1px solid #fff;
 }
 
 .reports {
@@ -55,4 +57,5 @@ $navbar-tab-color: #113967;
 
 .logout {
   background-color: $navbar-tab-color;
+  border-right: none;
 }

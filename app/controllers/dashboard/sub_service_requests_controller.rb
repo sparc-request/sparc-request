@@ -19,11 +19,18 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Dashboard::SubServiceRequestsController < Dashboard::BaseController
-  before_action :find_sub_service_request
-  before_filter :protocol_authorizer,     only: [:update_from_project_study_information]
-  before_filter :authorize_admin,         only: :show
+  before_action :find_sub_service_request,  except: :index
+  before_action :find_protocol,             only: :index
+  before_filter :protocol_authorizer,       only: :update_from_project_study_information
+  before_filter :authorize_admin,           only: :show
 
   respond_to :json, :js, :html
+
+  def index
+    @sub_service_requests = @protocol.sub_service_requests
+    @permission_to_edit   = params[:permission_to_edit]
+    @admin                = params[:admin]
+  end
 
   def show
     respond_to do |format|
@@ -67,23 +74,6 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
     end
   end
 
-  def refresh_service_calendar
-    @service_request = @sub_service_request.service_request
-    arm_id = params[:arm_id].to_s if params[:arm_id]
-    @arm = Arm.find arm_id if arm_id
-    @portal = params[:portal] if params[:portal]
-    @thead_class = @portal == 'true' ? 'default_calendar' : 'red-provider'
-    page = params[:page] if params[:page]
-    session[:service_calendar_pages] = params[:pages] if params[:pages]
-    session[:service_calendar_pages][arm_id] = page if page && arm_id
-    @pages = {}
-    @service_request.arms.each do |arm|
-      new_page = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i
-      @pages[arm.id] = @service_request.set_visit_page(new_page, arm)
-    end
-    @tab = 'calendar'
-  end
-
   def update
     if @sub_service_request.update_attributes(params[:sub_service_request])
       flash[:success] = 'Request Updated!'
@@ -109,6 +99,23 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
       end
       flash[:alert] = 'Request Destroyed!'
     end
+  end
+
+  def refresh_service_calendar
+    @service_request = @sub_service_request.service_request
+    arm_id = params[:arm_id].to_s if params[:arm_id]
+    @arm = Arm.find arm_id if arm_id
+    @portal = params[:portal] if params[:portal]
+    @thead_class = @portal == 'true' ? 'default_calendar' : 'red-provider'
+    page = params[:page] if params[:page]
+    session[:service_calendar_pages] = params[:pages] if params[:pages]
+    session[:service_calendar_pages][arm_id] = page if page && arm_id
+    @pages = {}
+    @service_request.arms.each do |arm|
+      new_page = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i
+      @pages[arm.id] = @service_request.set_visit_page(new_page, arm)
+    end
+    @tab = 'calendar'
   end
 
   def update_from_project_study_information
@@ -164,6 +171,10 @@ private
 
   def find_sub_service_request
     @sub_service_request = SubServiceRequest.find(params[:id])
+  end
+
+  def find_protocol
+    @protocol = Protocol.find(params[:protocol_id])
   end
 
   def protocol_authorizer

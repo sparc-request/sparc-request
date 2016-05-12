@@ -23,18 +23,17 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   respond_to :html, :json, :xlsx
 
   before_filter :find_protocol, only: [:show, :edit, :update, :update_protocol_type, :display_requests, :archive, :view_full_calendar, :view_details]
+  before_filter :find_is_admin, only: [:index, :new, :edit, :update, :update_protocol_type, :display_requests]
   before_filter :protocol_authorizer_view, only: [:show, :view_full_calendar, :display_requests]
   before_filter :protocol_authorizer_edit, only: [:edit, :update, :update_protocol_type]
 
   def index
-    admin_orgs   = @user.authorized_admin_organizations
-    @admin       = !admin_orgs.empty?
     @filterrific =
       initialize_filterrific(Protocol, params[:filterrific],
         default_filter_params: { show_archived: 0, for_identity_id: @user.id },
         select_options: {
           with_status: AVAILABLE_STATUSES.invert,
-          with_core: admin_orgs.map { |org| [org.name, org.id] }
+          with_core: @admin_orgs.map { |org| [org.name, org.id] }
         },
         persistence_id: false #resets filters on page reload
       ) || return
@@ -66,8 +65,6 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def new
-    admin_orgs = @user.authorized_admin_organizations
-    @admin =  !admin_orgs.empty?
     @protocol_type = params[:protocol_type]
     @protocol = @protocol_type.capitalize.constantize.new
     @protocol.requester_id = current_user.id
@@ -98,8 +95,6 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def edit
-    admin_orgs          = @user.authorized_admin_organizations
-    @admin              = !admin_orgs.empty?
     @protocol_type      = @protocol.type
     protocol_role       = @protocol.project_roles.find_by(identity_id: @user.id)
     @permission_to_edit = protocol_role.nil? ? false : protocol_role.can_edit?
@@ -118,9 +113,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def update
-    attrs      = params[:protocol]
-    admin_orgs = @user.authorized_admin_organizations
-    @admin     = !admin_orgs.empty?
+    attrs = params[:protocol]
     
     # admin is not able to activate study_type_question_group
     if @admin && @protocol.update_attributes(attrs)
@@ -134,8 +127,6 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
   def update_protocol_type
     # Using update_attribute here is intentional, type is a protected attribute
-    admin_orgs = @user.authorized_admin_organizations
-    @admin =  !admin_orgs.empty?
     @protocol_type = params[:type]
     @protocol.update_attribute(:type, @protocol_type)
     conditionally_activate_protocol
@@ -174,9 +165,14 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def display_requests
-    @protocol_role = @protocol.project_roles.find_by(identity_id: @user.id)
+    protocol_role       = @protocol.project_roles.find_by(identity_id: @user.id)
+    permission_to_edit  = protocol_role.present? ? protocol_role.can_edit? : Protocol.for_admin(@user.id).include?(@protocol)
+    puts "#"*50
+    puts @protocol
+    modal               = render_to_string(partial: 'dashboard/protocols/requests_modal', locals: { protocol: @protocol, user: @user, permission_to_edit: permission_to_edit, admin: @admin })
 
-    @permission_to_edit = @protocol_role.present? ? @protocol_role.can_edit? : Protocol.for_admin(@user.id).include?(@protocol)
+    data = { protocol_id: @protocol.id, permission_to_edit: permission_to_edit, admin: @admin, modal: modal }
+    render json: data
   end
 
   def view_details
@@ -189,6 +185,11 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
   def find_protocol
     @protocol = Protocol.find(params[:id])
+  end
+
+  def find_is_admin
+    @admin_orgs = @user.authorized_admin_organizations
+    @admin      = !@admin_orgs.empty?
   end
 
   def admin?

@@ -69,6 +69,20 @@ textarea {
 
 /* New/Edit Protocol Form End */
 
+/* Show Protocol Begin */
 .view-protocol-details-modal {
   width: 50% !important;
 }
+
+.export-consolidated-request {
+  display: inline-block;
+}
+
+.new-notification {
+  width: 100% !important;
+}
+
+.view-service-request, .edit-service-request {
+  margin: 5px;
+}
+/* Show Protocol End*/

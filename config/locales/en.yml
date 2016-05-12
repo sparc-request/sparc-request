@@ -559,14 +559,15 @@ en:
     #  SERVICE REQUESTS  #
     ######################
     service_requests:
-      edit_original: "Edit Original"
+      none: "There are no requests to display"
       srid: "SRID"
       organization: "Organization"
       status: "Status"
+      notifications: "Notifications"
       actions: 
         header: "Actions"
-        view: "View SSR"
-        edit: "Edit SSR"
+        view: "View Request"
+        edit: "Edit Request"
         admin_edit: "Admin Edit"
       view_ssr:
         services:

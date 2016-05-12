@@ -68,7 +68,8 @@
         #right_header
           %span#sub_service_request_header
             &nbsp;
-            = show_friendly_ssr_id(@sub_service_request) if @sub_service_request
+            = protocol_id_display(@protocol_id, @sub_service_request, @service_request)
+
       #content.container_12.row
         .flash= render "shared/flash"
         = content_for?(:content) ? yield(:content) : yield

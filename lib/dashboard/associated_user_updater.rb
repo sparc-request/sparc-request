@@ -48,5 +48,9 @@ module Dashboard
     def successful?
       @success
     end
+
+    def protocol_role
+      @protocol_role
+    end
   end
 end

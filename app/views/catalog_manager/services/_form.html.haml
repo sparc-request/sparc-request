@@ -75,7 +75,8 @@
                     %span= f.check_box :tag_list, { :multiple => true }, tag.name, nil
             %tr
               %th= t(:cm_index)[:additional_details]
-              %td=  link_to t(:cm_index)[:add_additional_details], '#'
+              %td=  link_to t(:cm_index)[:add_additional_details], '#',
+                target: '_blank'
 
       %br
 

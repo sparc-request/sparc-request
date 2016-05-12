@@ -192,7 +192,7 @@ SparcRails::Application.routes.draw do
       end
     end
 
-    resources :associated_users do
+    resources :associated_users, only: [:index, :new, :create, :edit, :update] do
       collection do
         get :search_identities
       end

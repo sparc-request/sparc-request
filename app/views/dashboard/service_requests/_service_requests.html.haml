@@ -31,4 +31,4 @@
     - else
       - protocol.service_requests.each do |sr|
         - if !sr.sub_service_requests.empty?
-          = render partial: 'dashboard/service_requests/protocol_service_request_show', locals: { service_request: sr, user: user, admin: admin, permission_to_edit: permission_to_edit }
+          = render 'dashboard/service_requests/protocol_service_request_show', service_request: sr, user: user, admin: admin, permission_to_edit: permission_to_edit

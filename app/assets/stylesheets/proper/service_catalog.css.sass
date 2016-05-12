@@ -21,11 +21,16 @@
 // RootView
 
 #about
-  width: 220px
   height: 50px
-  background: #FFF
+  width: 240px
+  float: left
+
   a
-    padding-left: 18px
+    margin-left: 33px
+    margin-right: 32px
+
+  img
+    padding-top: 10px
 
 #account
   width: 230px
@@ -97,6 +102,10 @@
   float: right
   cursor: pointer
 
+.catalog-middle
+  margin-left: 5px
+  margin-right: 5px
+
 .catalog-search-spinner, .catalog-search-clear-icon
   float: right
   margin-right: 5px
@@ -127,8 +136,6 @@
 
 .catalog-view-right
   background: #E8E8E8
-  margin-top: -50px !important
-  margin-right: -10px !important
   width: 226px !important
   padding: 2px !important
 
@@ -206,13 +213,24 @@ div#institution_accordion h3.provider_header
 
 .service-catalog
   background: #E8E8E8
-  margin-top: -50px
+
   .ui-accordion-content h4
     padding: 4px 6px
 
 .service-description
   font-size: 12px !important
   font-family: "Calibri", "Helvetica Neue", Helvetica,sans-serif !important
+
+#service_request_protocol_id
+  height: 50px
+  width: 250px
+
+  float: right
+  text-align: center
+  font-size: 20px
+
+  span
+    line-height: 50px
 
 .service-view
   margin: 4px 0
@@ -244,9 +262,11 @@ div#institution_accordion h3.provider_header
   &.green-provider-odd a, &.orange-provider-odd a, &.light-blue-provider-odd a
     color: #FFF !important
 
-.welcome .bug-enhancement-link
-  color: #fff
-  font-size: 14px
+.welcome
+  overflow: hidden
+  background-color: #fff
+  border-left: 1px outset black
+  border-right: 1px outset black
 
 #welcome_msg
   text-align: right

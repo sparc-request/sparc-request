@@ -17,7 +17,8 @@ RSpec.describe Dashboard::AssociatedUsersController do
           build_stubbed(:project_role, protocol: @protocol)
         end
 
-        xhr :put, :update, id: project_role.id
+        xhr :put, :update,  id: project_role.id, 
+                            protocol_id: @protocol.id
       end
 
       it "should use ProtocolAuthorizer to authorize user" do
@@ -29,15 +30,15 @@ RSpec.describe Dashboard::AssociatedUsersController do
       it { is_expected.to respond_with :ok }
     end
 
-    context "params[:project_role] describes a valid update to ProtjectRole with id params[:id]" do
+    context "params[:project_role] describes a valid update to ProjectRole with id params[:id]" do
       before(:each) do
-        protocol = findable_stub(Protocol) do
+        @protocol = findable_stub(Protocol) do
           build_stubbed(:protocol, type: "Project")
         end
-        authorize(identity, protocol, can_edit: true)
+        authorize(identity, @protocol, can_edit: true)
 
         @project_role = findable_stub(ProjectRole) do
-          build_stubbed(:project_role, protocol: protocol)
+          build_stubbed(:project_role, protocol: @protocol)
         end
 
         project_role_updater = instance_double(Dashboard::AssociatedUserUpdater,
@@ -47,12 +48,12 @@ RSpec.describe Dashboard::AssociatedUsersController do
         allow(Dashboard::AssociatedUserUpdater).to receive(:new).
           and_return(project_role_updater)
 
-        xhr :put, :update, id: @project_role.id, project_role: "project role attrs"
+        xhr :put, :update, id: @project_role.id, protocol_id: @protocol.id, project_role: {identity_id: '1'}
       end
 
       it 'should update @protocol_role using params[:project_role] using ProtocolUpdater' do
         expect(Dashboard::AssociatedUserUpdater).to have_received(:new).
-          with(id: @project_role.id.to_s, project_role: "project role attrs")
+          with(id: @project_role.id.to_s, project_role: {identity_id: '1'})
       end
 
       it 'should not set @errors' do
@@ -67,15 +68,15 @@ RSpec.describe Dashboard::AssociatedUsersController do
       it { is_expected.to respond_with :ok }
     end
 
-    context "params[:project_role] describes an invalid update to ProtjectRole with id params[:id]" do
+    context "params[:project_role] describes an invalid update to ProjectRole with id params[:id]" do
       before(:each) do
-        protocol = findable_stub(Protocol) do
+        @protocol = findable_stub(Protocol) do
           build_stubbed(:protocol, type: "Project")
         end
-        authorize(identity, protocol, can_edit: true)
+        authorize(identity, @protocol, can_edit: true)
 
         @project_role = findable_stub(ProjectRole) do
-          build_stubbed(:project_role, protocol: protocol)
+          build_stubbed(:project_role, protocol: @protocol)
         end
         allow(@project_role).to receive(:errors).and_return("my errors")
 
@@ -85,7 +86,7 @@ RSpec.describe Dashboard::AssociatedUsersController do
 
         allow(Dashboard::AssociatedUserUpdater).to receive(:new).and_return(@project_role_updater)
 
-        xhr :put, :update, id: @project_role.id, project_role: "project role attrs"
+        xhr :put, :update, id: @project_role.id, protocol_id: @protocol.id, project_role: {identity_id: '1'}
       end
 
       it 'should set @errors' do

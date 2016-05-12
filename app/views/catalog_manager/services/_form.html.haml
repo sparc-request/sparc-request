@@ -73,6 +73,10 @@
                   %span{:style => "margin-right:10px;"}
                     %span= f.label (t(:tags)[tag.name.gsub(" ", "_").to_sym] ? t(:tags)[tag.name.gsub(" ", "_").to_sym] : tag.name.humanize)
                     %span= f.check_box :tag_list, { :multiple => true }, tag.name, nil
+            %tr
+              %th= t(:cm_index)[:additional_details]
+              %td=  link_to t(:cm_index)[:add_additional_details],
+                additional_details_path, target: '_blank'
 
       %br
 

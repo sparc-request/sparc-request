@@ -30,6 +30,8 @@ class ApplicationController < ActionController::Base
   end
 
   def prepare_catalog
+    @protocol_id = params[:protocol_id]
+    
     if session['sub_service_request_id'] and @sub_service_request
       @institutions = @sub_service_request.organization.parents.select{|x| x.type == 'Institution'}
     else

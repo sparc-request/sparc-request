@@ -50,15 +50,14 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def show
-    @protocol_role = @protocol.project_roles.find_by(identity_id: @user.id)
-
     respond_to do |format|
       format.js   { render }
       format.html {
         session[:breadcrumbs].clear.add_crumbs(protocol_id: @protocol.id)
-        @permission_to_edit = @authorization.can_edit?
-        @protocol_type = @protocol.type.capitalize
-        @service_requests = @protocol.service_requests
+        admin               = !@user.authorized_admin_organizations.empty?
+        @permission_to_edit = @authorization.can_edit? || admin
+        @protocol_type      = @protocol.type.capitalize
+        @service_requests   = @protocol.service_requests
         render
       }
       format.xlsx { render }

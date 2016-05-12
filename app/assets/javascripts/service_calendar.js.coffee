@@ -225,7 +225,12 @@ $(document).ready ->
       save_line_item_by_ajax(this)
     else
       update_otf_line_item(this)
-    recalculate_one_time_fee_totals()
+
+    # If new val is greater than units_per_qty_max, do no recalculate totals 
+    new_val = $(this).val()
+    max_val = $(this).attr('units_per_qty_max')
+    if parseInt(new_val) <= parseInt(max_val)
+      recalculate_one_time_fee_totals()
     return false
   )
 

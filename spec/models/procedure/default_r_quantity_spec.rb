@@ -41,8 +41,8 @@ RSpec.describe Procedure, type: :model do
     end
 
     context 'Appointment has a VisitGroup' do
-      let!(:arm)    { Arm.create }
-      let!(:vg)     { VisitGroup.create(arm_id: arm.id) }
+      let!(:arm)    { create(:arm) }
+      let!(:vg)     { create(:visit_group, arm: arm) }
 
       before(:each) do
         appointment.update_attributes(visit_group_id: vg.id)

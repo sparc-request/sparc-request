@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe Arm, type: :model do
   describe '#populate_subjects' do
     context 'number of associated Subjects exceeds subject_count' do
-      let!(:arm) { Arm.create(subject_count: 1) }
+      let!(:arm) { create(:arm, subject_count: 1) }
       before(:each) do
         2.times { arm.subjects.create }
       end
@@ -14,7 +14,7 @@ RSpec.describe Arm, type: :model do
     end
 
     context 'number of associated Subjects equals subject_count' do
-      let!(:arm) { Arm.create(subject_count: 1) }
+      let!(:arm) { create(:arm, subject_count: 1) }
       before(:each) do
         arm.subjects.create
       end
@@ -25,7 +25,7 @@ RSpec.describe Arm, type: :model do
     end
 
     context 'subject_count exceeds number of associated Subjects' do
-      let!(:arm) { Arm.create(subject_count: 3) }
+      let!(:arm) { create(:arm, subject_count: 3) }
       before(:each) do
         arm.subjects.create
       end

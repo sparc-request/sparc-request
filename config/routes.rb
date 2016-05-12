@@ -37,6 +37,8 @@ SparcRails::Application.routes.draw do
                }
   end
 
+  resources :additional_details, only: [:index]
+
   resources :identities, only: [:show] do
     collection do
       post 'add_to_protocol'

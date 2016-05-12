@@ -142,13 +142,19 @@ class Protocol < ActiveRecord::Base
     # Protects against SQL Injection with ActiveRecord::Base::sanitize
     like_search_term = ActiveRecord::Base::sanitize("%#{search_term}%")
     exact_search_term = ActiveRecord::Base::sanitize(search_term)
+
+    #TODO temporary replacement for "MATCH(identities.first_name, identities.last_name) AGAINST (#{exact_search_term})"
+    where_clause = search_term.to_s.split.map do |term|
+      "CONCAT(identities.first_name, identities.last_name) LIKE #{ActiveRecord::Base::sanitize("%#{term}%")}"
+    end
+
+    where_clause += ["protocols.short_title like #{like_search_term}",
+      "protocols.title like #{like_search_term}",
+      "protocols.id = #{exact_search_term}"]
+
     joins(:identities).
-    where(
-      "protocols.short_title like #{like_search_term} OR "\
-      "protocols.title like #{like_search_term} OR "\
-      "protocols.id = #{exact_search_term} OR "\
-      "MATCH(identities.first_name, identities.last_name) AGAINST (#{exact_search_term})"
-    ).distinct
+      where(where_clause.compact.join(' OR ')).
+      distinct
   }
 
   scope :for_identity_id, -> (identity_id) {

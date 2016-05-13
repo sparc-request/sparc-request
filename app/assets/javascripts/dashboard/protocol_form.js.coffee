@@ -146,16 +146,16 @@ $(document).ready ->
   #######################################################################################
   
   ###FUNDING STATUS FIELDS DISPLAY###
-  display_study_funding_status_fields = (selector) ->
+  display_funding_status_fields = (selector) ->
     $('.funding_status_dependent').hide()
     switch selector.val()
       when 'funded' then $('.funded').show()
       when 'pending_funding' then $('.pending_funding').show()
 
-  display_study_funding_status_fields($('.study#protocol_funding_status'))
+  display_funding_status_fields($('#protocol_funding_status'))
 
-  $(document).on 'change', '.study#protocol_funding_status', ->
-    display_study_funding_status_fields($(this))
+  $(document).on 'change', '#protocol_funding_status', ->
+    display_funding_status_fields($(this))
   ###END FUNDING STATUS FIELDS DISPLAY###
 
 
@@ -304,22 +304,6 @@ $(document).ready ->
       when 'checked' then $('.impact_area_dependent').show()
       else $('.impact_area_dependent').hide()
   ###END IMPACT AREAS OTHER FIELD DISPLAY###
-
-
-  
-  ###PROJECT FUNDING STATUS FIELDS DISPLAY###
-  display_project_funding_status_fields = () ->
-    switch $(this).val()
-      when 'funded' then $('.funded').show()
-      when 'pending_funding' then $('.pending_funding').show()
-
-  display_project_funding_status_fields
-
-  $(document).on 'change', '.project#protocol_funding_status', ->
-    # Proposal Funding Status - Dropdown
-    $('.funding_status_dependent').hide()
-    display_project_funding_status_fields
-  ###END PROJECT FUNDING STATUS FIELDS DISPLAY###
 
 
 

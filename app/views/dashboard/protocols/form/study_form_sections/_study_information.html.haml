@@ -40,13 +40,11 @@
       .col-lg-10
         = form.select :funding_status, options_for_select(FUNDING_STATUSES, protocol.funding_status), { include_blank: t(:protocols)[:prompts][:status] }, class: 'selectpicker study'
 
-    / Funded selected
     .form-group.row.funding_status_dependent.funded{ display_if(protocol.funding_status, "funded") }
       = form.label :funding_source, t(:protocols)[:studies][:information][:funding_source], class: 'col-lg-2 control-label'
       .col-lg-10
         = form.select :funding_source, options_for_select(FUNDING_SOURCES, protocol.funding_source), { include_blank: t(:protocols)[:prompts][:source] }, class: 'selectpicker'
 
-    / Pending Funding selected
     .form-group.row.funding_status_dependent.pending_funding{ display_if(protocol.funding_status, "pending_funding") }
       = form.label :potential_funding_source, t(:protocols)[:studies][:information][:potential_funding_source], class: 'col-lg-2 control-label'
       .col-lg-10

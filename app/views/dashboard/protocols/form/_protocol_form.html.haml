@@ -19,7 +19,7 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #protocol_form_display
-  = form_for ([:dashboard, protocol]), as: :protocol, remote: true, html: { class: 'form-horizontal' } do |form|
+  = form_for ([:dashboard, protocol]), as: :protocol, remote: true, html: { class: 'form-horizontal', autocomplete: 'off' } do |form|
     = form.hidden_field :requester_id
     = form.hidden_field :type
 

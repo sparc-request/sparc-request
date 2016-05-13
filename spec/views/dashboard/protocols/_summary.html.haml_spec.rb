@@ -5,8 +5,7 @@ RSpec.describe 'dashboard/protocols/summary', type: :view do
     render 'dashboard/protocols/summary',
       protocol: protocol,
       protocol_type: protocol.type,
-      protocol_role: instance_double('ProjectRole',
-        'can_edit?' => false)
+      permission_to_edit: true
   end
 
   let_there_be_lane

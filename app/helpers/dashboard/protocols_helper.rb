@@ -1,4 +1,4 @@
- # Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -33,9 +33,9 @@ module Dashboard::ProtocolsHelper
     end
   end
 
-  def edit_protocol_button_display(protocol, project_role)
-    if project_role.present? && permission = project_role.can_edit?
-      content_tag( :button, t(:dashboard)[:protocols][:summary][:edit1] + protocol.type.capitalize + t(:dashboard)[:protocols][:summary][:edit2], type: 'button', class: 'edit-protocol-information-button btn btn-warning btn-sm', data: { permission: permission.to_s, protocol_id: protocol.id })
+  def edit_protocol_button_display(protocol, permission_to_edit)
+    if permission_to_edit
+      content_tag( :button, t(:dashboard)[:protocols][:summary][:edit1] + protocol.type.capitalize + t(:dashboard)[:protocols][:summary][:edit2], type: 'button', class: 'edit-protocol-information-button btn btn-warning btn-sm', data: { permission: permission_to_edit.to_s, protocol_id: protocol.id })
     end
   end
 

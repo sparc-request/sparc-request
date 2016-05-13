@@ -25,7 +25,7 @@
     = consolidated_request_buttons_display(protocol)
     .clearfix
   .panel-body
-    - if permission_to_edit && !protocol.service_requests.present? #no SRs
+    - if permission_to_edit && !protocol.sub_service_requests.present? #no SSRs
       %button.btn.btn-success.btn-sm#add-services-button{ type: 'button', data: { permission: permission_to_edit.to_s, protocol_id: protocol.id } }
         = t(:dashboard)[:protocols][:service_requests][:add_services]
     - else

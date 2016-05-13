@@ -11,8 +11,6 @@
           = link_to 'Logout', destroy_identity_session_path, method: :delete, class: 'logout'
     - else
       %li.align-element-nav-bar
-        - flash.each do |name, msg|
-          = content_tag :div, msg, :id => "flash_#{name}" if msg.is_a?(String)
       .user-login-section
         %li
           = link_to 'Login', new_identity_session_path, class: 'logout'

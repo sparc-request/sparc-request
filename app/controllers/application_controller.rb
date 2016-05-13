@@ -30,8 +30,6 @@ class ApplicationController < ActionController::Base
   end
 
   def prepare_catalog
-    @protocol_id = params[:protocol_id]
-    
     if session['sub_service_request_id'] and @sub_service_request
       @institutions = @sub_service_request.organization.parents.select{|x| x.type == 'Institution'}
     else
@@ -62,7 +60,7 @@ class ApplicationController < ActionController::Base
 
         @events.reverse!
 
-        Alert.where(:alert_type => ALERT_TYPES['google_calendar'], :status => ALERT_STATUSES['active']).update_all(:status => ALERT_STATUSES['clear'])
+        Alert.where(alert_type: ALERT_TYPES['google_calendar'], status: ALERT_STATUSES['active']).update_all(status: ALERT_STATUSES['clear'])
       rescue Exception => e
         active_alert = Alert.where(alert_type: ALERT_TYPES['google_calendar'], status: ALERT_STATUSES['active']).first_or_initialize
         if Rails.env == 'production' && active_alert.new_record?
@@ -77,9 +75,9 @@ class ApplicationController < ActionController::Base
       headers = page.css('.entry-header').take(3)
       @news = []
       headers.each do |header|
-        @news << {:title => header.at_css('.entry-title').text,
-                  :link => header.at_css('.entry-title a')[:href],
-                  :date => header.at_css('.date').text }
+        @news << {title: header.at_css('.entry-title').text,
+                  link: header.at_css('.entry-title a')[:href],
+                  date: header.at_css('.date').text }
       end
     end
   end
@@ -88,13 +86,13 @@ class ApplicationController < ActionController::Base
     all_day = !event.dtstart.to_s.include?("UTC")
     start_time = Time.parse(event.dtstart.to_s).in_time_zone("Eastern Time (US & Canada)")
     end_time = Time.parse(event.dtend.to_s).in_time_zone("Eastern Time (US & Canada)")
-    { :month => start_time.strftime("%b"),
-      :day => start_time.day,
-      :title => event.summary,
-      :all_day => all_day,
-      :start_time => start_time.strftime("%l:%M %p"),
-      :end_time => end_time.strftime("%l:%M %p"),
-      :where => event.location
+    { month: start_time.strftime("%b"),
+      day: start_time.day,
+      title: event.summary,
+      all_day: all_day,
+      start_time: start_time.strftime("%l:%M %p"),
+      end_time: end_time.strftime("%l:%M %p"),
+      where: event.location
     }
   end
 
@@ -104,7 +102,7 @@ class ApplicationController < ActionController::Base
     error += "<br />If you believe this is in error please contact, #{I18n.t 'error_contact'}, and provide the following information:"
     error += "<br /> Reference #: "
     error += ref
-    render :partial => 'service_requests/authorization_error', :locals => {:error => error}
+    render 'service_requests/authorization_error', error: error
   end
 
   def clean_errors errors
@@ -168,8 +166,8 @@ class ApplicationController < ActionController::Base
       if session[:service_request_id]
         use_existing_service_request
       else
-        @service_request = ServiceRequest.new :status => 'first_draft'
-        @service_request.save :validate => false
+        @service_request = ServiceRequest.new(status: 'first_draft')
+        @service_request.save(validate: false)
         @line_items = []
         session[:service_request_id] = @service_request.id
       end
@@ -230,9 +228,10 @@ class ApplicationController < ActionController::Base
   # Create a new service request and assign it to @service_request.
   def create_new_service_request(from_portal=false)
     status = from_portal ? 'draft' : 'first_draft'
-    @service_request = ServiceRequest.new :status => status
+    @service_request = ServiceRequest.new(status: status)
+
     if params[:protocol_id] # we want to create a new service request that belongs to an existing protocol
-      if current_user and current_user.protocols.where(:id => params[:protocol_id]).empty? # this user doesn't have permission to create service request under this protocol
+      if current_user and current_user.protocols.where(id: params[:protocol_id]).empty? # this user doesn't have permission to create service request under this protocol
         authorization_error "You are attempting to create a service request under a study/project that you do not have permissions to access.",
                             "PROTOCOL#{params[:protocol_id]}"
       else # otherwise associate the service request with this protocol
@@ -247,9 +246,9 @@ class ApplicationController < ActionController::Base
       signed_up_but_not_approved = true
     end
 
-    @service_request.save :validate => false
+    @service_request.save(validate: false)
     session[:service_request_id] = @service_request.id
-    redirect_to catalog_service_request_path(@service_request, :signed_up_but_not_approved => signed_up_but_not_approved)
+    redirect_to catalog_service_request_path(@service_request, signed_up_but_not_approved: signed_up_but_not_approved)
   end
 
   def authorize_identity

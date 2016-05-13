@@ -146,41 +146,26 @@ $(document).ready ->
   #######################################################################################
   
   ###FUNDING STATUS FIELDS DISPLAY###
-  display_funding_status_fields = (selector) ->
+  $(document).on 'change', '#protocol_funding_status', ->
     $('.funding_status_dependent').hide()
-    switch selector.val()
+    switch $(this).val()
       when 'funded' then $('.funded').show()
       when 'pending_funding' then $('.pending_funding').show()
-
-  display_funding_status_fields($('#protocol_funding_status'))
-
-  $(document).on 'change', '#protocol_funding_status', ->
-    display_funding_status_fields($(this))
   ###END FUNDING STATUS FIELDS DISPLAY###
 
 
 
   ###FUNDING SOURCE FIELDS DISPLAY###
-  display_funding_source_fields = (selector) ->
+  $(document).on 'change', '#protocol_funding_source', ->
     $('.funding_source_dependent').hide()
-    switch selector.val()
+    switch $(this).val()
       when 'federal' then $('.federal').show()
       when 'internal' then $('.internal').show()
-
-  display_funding_source_fields($('#protocol_funding_source'))
-
-  $(document).on 'change', '#protocol_funding_source', ->
-    display_funding_source_fields($(this))
   ###END FUNDING SOURCE FIELDS DISPLAY###
 
 
 
   ###PUBLISH IN EPIC BUTTON STATES###
-  if $('#study_selected_for_epic_true').is(':checked')
-    $('#study_selected_for_epic_true_button').addClass('active')
-  else
-    $('#study_selected_for_epic_false_button').addClass('active')
-
   $(document).on 'click', '#selected_for_epic_button label', ->
     $(this).addClass('active')
     $(this).children('input').prop('checked')
@@ -191,10 +176,6 @@ $(document).ready ->
 
 
   ###EPIC BUTTON FIELDS DISPLAY###
-  if $('#selected_for_epic_button .btn input:radio:checked').val() == "true"
-    $(study_type_form).show()
-    $(certificate_of_confidence_dropdown).show_elt()
-
   $(document).on 'change', "input[name='protocol[selected_for_epic]']", ->
     # Publish Study in Epic - Radio
     switch $('#selected_for_epic_button .btn input:radio:checked').val()
@@ -247,9 +228,6 @@ $(document).ready ->
 
 
   ###HUMAN SUBJECTS FIELDS DISPLAY###
-  if $('#protocol_research_types_info_attributes_human_subjects').prop('checked')
-    $('.human_subjects_dependent').show()
-
   $(document).on 'change', '#protocol_research_types_info_attributes_human_subjects', ->
     switch $(this).attr('checked')
       when 'checked' then $('.human_subjects_dependent').show()
@@ -259,9 +237,6 @@ $(document).ready ->
 
 
   ###VERTEBRATE ANIMALS FIELDS DISPLAY###
-  if $('#protocol_research_types_info_attributes_vertebrate_animals').prop('checked')
-    $('.vertebrate_animals_dependent').show()
-
   $(document).on 'change', '#protocol_research_types_info_attributes_vertebrate_animals', ->
     switch $(this).attr('checked')
       when 'checked' then $('.vertebrate_animals_dependent').show()
@@ -271,9 +246,6 @@ $(document).ready ->
 
 
   ###INVESTIGATIONAL PRODUCTS FIELDS DISPLAY###
-  if $('#protocol_research_types_info_attributes_investigational_products').prop('checked')
-    $('.investigational_products_dependent').show()
-
   $(document).on 'change', '#protocol_research_types_info_attributes_investigational_products', ->
     switch $(this).attr('checked')
       when 'checked' then $('.investigational_products_dependent').show()
@@ -283,9 +255,6 @@ $(document).ready ->
 
 
   ###IP/PATENTS FIELDS DISPLAY###
-  if $('#protocol_research_types_info_attributes_ip_patents').prop('checked')
-    $('.ip_patents_dependent').show()
-
   $(document).on 'change', '#protocol_research_types_info_attributes_ip_patents', ->
     switch $(this).attr('checked')
       when 'checked' then $('.ip_patents_dependent').show()
@@ -295,9 +264,6 @@ $(document).ready ->
 
 
   ###IMPACT AREAS OTHER FIELD DISPLAY###
-  if $('#protocol_impact_areas_attributes_6__destroy').prop('checked')
-    $('.impact_area_dependent').show()
-
   $(document).on 'change', '#protocol_impact_areas_attributes_6__destroy', ->
     # Impact Areas Other - Checkbox
     switch $(this).attr('checked')

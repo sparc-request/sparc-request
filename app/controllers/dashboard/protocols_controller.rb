@@ -98,8 +98,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def edit
-    admin_orgs          = @user.authorized_admin_organizations
-    @admin              = !admin_orgs.empty?
+    @admin               = !@user.authorized_admin_organizations.empty?
     @protocol_type      = @protocol.type
     protocol_role       = @protocol.project_roles.find_by(identity_id: @user.id)
     @permission_to_edit = protocol_role.nil? ? false : protocol_role.can_edit?
@@ -118,14 +117,14 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def update
-    attrs      = params[:protocol]
-    admin_orgs = @user.authorized_admin_organizations
-    @admin     = !admin_orgs.empty?
+    attrs         = params[:protocol]
+    @admin        = !@user.authorized_admin_organizations.empty?
+    protocol_role = @protocol.project_roles.find_by(identity_id: @user.id)
     
     # admin is not able to activate study_type_question_group
-    if @admin && @protocol.update_attributes(attrs)
+    if @admin && protocol_role.nil? && @protocol.update_attributes(attrs)
       flash[:success] = "#{@protocol.type} Updated!"
-    elsif !@admin && @protocol.update_attributes(attrs.merge(study_type_question_group_id: StudyTypeQuestionGroup.active_id))
+    elsif (!@admin || @admin && protocol_role.can_edit?) && @protocol.update_attributes(attrs.merge(study_type_question_group_id: StudyTypeQuestionGroup.active_id))
       flash[:success] = "#{@protocol.type} Updated!"
     else
       @errors = @protocol.errors
@@ -134,13 +133,17 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
   def update_protocol_type
     # Using update_attribute here is intentional, type is a protected attribute
-    admin_orgs = @user.authorized_admin_organizations
-    @admin =  !admin_orgs.empty?
-    @protocol_type = params[:type]
+    @admin              = !@user.authorized_admin_organizations.empty?
+    protocol_role       = @protocol.project_roles.find_by(identity_id: @user.id)
+    @permission_to_edit = protocol_role.nil? ? false : protocol_role.can_edit?
+    @protocol_type      = params[:type]
+
     @protocol.update_attribute(:type, @protocol_type)
     conditionally_activate_protocol
-    @protocol = Protocol.find @protocol.id #Protocol type has been converted, this is a reload
+
+    @protocol = Protocol.find(@protocol.id)#Protocol type has been converted, this is a reload
     @protocol.populate_for_edit
+    
     flash[:success] = "Protocol Type Updated!"
   end
 

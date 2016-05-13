@@ -77,6 +77,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   def create
     protocol_class = params[:protocol][:type].capitalize.constantize
     @protocol = protocol_class.create(params[:protocol])
+    @protocol.update_attributes(study_type_question_group_id: StudyTypeQuestionGroup.active_id)
 
     if @protocol.valid?
       if @protocol.project_roles.where(identity_id: current_user.id).empty?

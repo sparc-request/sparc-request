@@ -11,6 +11,7 @@ RSpec.describe 'dashboard/protocols/show', type: :view do
       archived: false,
       short_title: 'My Awesome Short Title')
     assign(:protocol, protocol)
+    
     protocol
   end
 
@@ -18,6 +19,7 @@ RSpec.describe 'dashboard/protocols/show', type: :view do
     protocol_role = instance_double('ProjectRole',
       'can_edit?' => true)
     assign(:protocol_role, protocol_role)
+
     protocol_role
   end
 
@@ -34,7 +36,9 @@ RSpec.describe 'dashboard/protocols/show', type: :view do
       locals: {
         protocol: protocol,
         protocol_role: protocol_role,
-        protocol_type: 'Study'
+        protocol_type: 'Study',
+        permission_to_edit: false,
+        summary: nil
       })
   end
 

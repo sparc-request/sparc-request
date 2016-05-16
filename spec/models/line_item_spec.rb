@@ -241,9 +241,9 @@ RSpec.describe "Line Item" do
       context "direct costs for one time fees with fulfillments" do
 
         let!(:otf_line_item) { create(:line_item, service_request_id: service_request.id, service_id: service.id, sub_service_request_id: sub_service_request.id, quantity: 5, units_per_quantity: 1) }
-        let!(:fulfillment1)  { create(:fulfillment, quantity: 5, line_item_id: otf_line_item.id, date: Date.yesterday) }
-        let!(:fulfillment2)  { create(:fulfillment, quantity: 5, line_item_id: otf_line_item.id, date: Date.today) }
-        let!(:fulfillment3)  { create(:fulfillment, quantity: 5, line_item_id: otf_line_item.id, date: Date.today) }
+        let!(:fulfillment1)  { create(:fulfillment, quantity: 5, line_item_id: otf_line_item.id, date: Date.yesterday.strftime("%m-%d-%Y")) }
+        let!(:fulfillment2)  { create(:fulfillment, quantity: 5, line_item_id: otf_line_item.id, date: Date.today.strftime("%m-%d-%Y")) }
+        let!(:fulfillment3)  { create(:fulfillment, quantity: 5, line_item_id: otf_line_item.id, date: Date.today.strftime("%m-%d-%Y")) }
         let!(:pricing_map2)  { create(:pricing_map, service_id: service.id, unit_type: 'ea', effective_date: Date.today, display_date: Date.today, full_rate: 600, exclude_from_indirect_cost: 0, unit_minimum: 1)}
 
         it "should correctly calculate a line item's cost that has multiple fulfillments" do

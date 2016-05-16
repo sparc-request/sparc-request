@@ -167,7 +167,6 @@ module V1
     expose  :protocol_id,
             :status,
             :service_requester_id,
-            :notes,
             :approved,
             :subject_count
 

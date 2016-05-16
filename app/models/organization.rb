@@ -63,14 +63,18 @@ class Organization < ActiveRecord::Base
   accepts_nested_attributes_for :submission_emails
   accepts_nested_attributes_for :available_statuses, :allow_destroy => true
 
-  scope :authorized_for_identity, -> (identity_id) {
-    # returns organizations for which
-    # identity_id is service provider or super user.
-    joins(:service_providers).joins(:super_users).
-    where("service_providers.identity_id = ? OR super_users.identity_id = ?", identity_id, identity_id)
-  }
-
   scope :in_cwf, -> { joins(:tags).where(tags: { name: 'clinical work fulfillment' }) }
+
+  def self.authorized_for_identity(identity_id)
+    super_user_orgs                 = Organization.joins(:super_users).where("super_users.identity_id = ?", identity_id).distinct
+    service_provider_orgs           = Organization.joins(:service_providers).where("service_providers.identity_id = ?", identity_id).distinct
+
+    super_user_orgs_children        = authorized_child_organizations(super_user_orgs.pluck(:id))
+    service_provider_orgs_children  = authorized_child_organizations(service_provider_orgs.pluck(:id))
+
+    #Convert the activerecord relations into arrays
+    super_user_orgs | service_provider_orgs | super_user_orgs_children | service_provider_orgs_children
+  end
 
   def label
     abbreviation || name
@@ -356,6 +360,17 @@ class Organization < ActiveRecord::Base
       self.parent.has_tag? tag
     else
       return false
+    end
+  end
+
+  private
+
+  def self.authorized_child_organizations(org_ids)
+    if org_ids.empty?
+      []
+    else
+      orgs = Organization.where(parent_id: org_ids)
+      orgs | authorized_child_organizations(orgs.pluck(:id))
     end
   end
 end

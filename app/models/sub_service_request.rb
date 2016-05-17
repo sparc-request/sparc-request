@@ -230,7 +230,7 @@ class SubServiceRequest < ActiveRecord::Base
   end
 
   def subsidy_percentage
-    funded_amount = direct_cost_total - subsidies.last.pi_contribution.to_f
+    funded_amount = direct_cost_total - subsidies.first.pi_contribution.to_f
 
     ((funded_amount.to_f / direct_cost_total.to_f).round(2) * 100).to_i
   end

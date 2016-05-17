@@ -44,7 +44,7 @@ class SubServiceRequest < ActiveRecord::Base
   has_one :pending_subsidy, :dependent => :destroy
 
   delegate :protocol, to: :service_request, allow_nil: true
-  delegate :contribution_percent_of_cost, to: :approved_subsidy, allow_nil: true
+  delegate :percent_subsidy, to: :approved_subsidy, allow_nil: true
   delegate :approved_percent_of_total, to: :approved_subsidy, allow_nil: true
   alias_attribute :approved_percent_subsidy, :approved_percent_of_total
 

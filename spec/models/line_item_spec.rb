@@ -253,7 +253,7 @@ RSpec.describe "Line Item" do
 
         it "should correctly calculate a line item's cost that has a unit factor greater than one" do
           pricing_map2.update_attributes(unit_factor: 5)
-          fulfillment3 = create(:fulfillment, quantity: 6, line_item_id: otf_line_item.id, date: Date.today)
+          fulfillment3 = create(:fulfillment, quantity: 6, line_item_id: otf_line_item.id, date: Date.today.strftime("%m-%d-%Y"))
           # ceiling(quantity:16/unit_factor:5) * rate:(percentage:0.5 * cost:600)
           expect(otf_line_item.reload.direct_cost_for_one_time_fee_with_fulfillments(Date.today, Date.today)).to eq(1200.0)
         end

@@ -14,13 +14,6 @@ RSpec.describe 'dashboard/protocols/show', type: :view do
     protocol
   end
 
-  let!(:protocol_role) do
-    protocol_role = instance_double('ProjectRole',
-      'can_edit?' => true)
-    assign(:protocol_role, protocol_role)
-    protocol_role
-  end
-
   before(:each) do
     assign(:user, jug2)
     assign(:protocol_type, 'Study')
@@ -33,8 +26,9 @@ RSpec.describe 'dashboard/protocols/show', type: :view do
     expect(response).to render_template(partial: 'dashboard/protocols/_summary',
       locals: {
         protocol: protocol,
-        protocol_role: protocol_role,
-        protocol_type: 'Study'
+        protocol_type: 'Study',
+        permission_to_edit: false,
+        summary: nil
       })
   end
 

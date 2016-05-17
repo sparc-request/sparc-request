@@ -52,6 +52,8 @@ $(document).ready ->
     # When user changes PI Contribution, the Percent Subsidy and Subsidy Cost fields are recalculated & displayed
     subsidy_id = $(this).data('subsidy-id')
     pi_contribution = parseFloat $(this).val()
+    if isNaN(pi_contribution)
+      pi_contribution = 0
     total_request_cost = parseFloat($(".request_cost[data-subsidy-id='#{subsidy_id}']").data("cost")) / 100.0
     if pi_contribution > total_request_cost
       pi_contribution = total_request_cost
@@ -75,6 +77,8 @@ $(document).ready ->
     # When user changes Percent Subsidy, the PI Contribution and Subsidy Cost fields are recalculated & displayed
     subsidy_id = $(this).data('subsidy-id')
     percent_subsidy = parseFloat($(this).val()) / 100.0
+    if isNaN(percent_subsidy)
+      percent_subsidy = 0
     total_request_cost = parseFloat($(".request_cost[data-subsidy-id='#{subsidy_id}']").data("cost")) / 100.0
     if percent_subsidy > 1
       percent_subsidy = 1.0

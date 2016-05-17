@@ -167,7 +167,6 @@ module V1
     expose  :protocol_id,
             :status,
             :service_requester_id,
-            :notes,
             :approved,
             :subject_count
 
@@ -195,8 +194,7 @@ module V1
             :in_work_fulfillment,
             :routing,
             :org_tree_display,
-            :grand_total,
-            :stored_percent_subsidy
+            :grand_total
 
     expose  :formatted_status, as: :status
 

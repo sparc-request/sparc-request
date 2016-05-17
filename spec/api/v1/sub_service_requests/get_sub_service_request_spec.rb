@@ -47,7 +47,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
         expected_attributes = @sub_service_request.attributes.
                                 keys.
                                 reject! { |key| ['id', 'created_at', 'updated_at', 'deleted_at'].include?(key) }.
-                                push('callback_url', 'sparc_id', 'grand_total', 'stored_percent_subsidy').
+                                push('callback_url', 'sparc_id', 'grand_total').
                                 sort
 
         expect(parsed_body['sub_service_request'].keys.sort).to eq(expected_attributes)
@@ -63,7 +63,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
         expected_attributes = @sub_service_request.attributes.
                                 keys.
                                 reject! { |key| ['id', 'created_at', 'updated_at', 'deleted_at'].include?(key) }.
-                                push('callback_url', 'sparc_id', 'line_items', 'service_request', 'grand_total', 'stored_percent_subsidy').
+                                push('callback_url', 'sparc_id', 'line_items', 'service_request', 'grand_total').
                                 sort
 
         expect(parsed_body['sub_service_request'].keys.sort).to eq(expected_attributes)

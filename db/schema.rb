@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160421145916) do
+ActiveRecord::Schema.define(version: 20160509140555) do
 
   create_table "admin_rates", force: :cascade do |t|
     t.integer  "line_item_id", limit: 4
@@ -381,7 +381,6 @@ ActiveRecord::Schema.define(version: 20160421145916) do
 
   add_index "identities", ["approved"], name: "index_identities_on_approved", using: :btree
   add_index "identities", ["email"], name: "index_identities_on_email", using: :btree
-  add_index "identities", ["first_name", "last_name"], name: "full_name", type: :fulltext
   add_index "identities", ["last_name"], name: "index_identities_on_last_name", using: :btree
   add_index "identities", ["ldap_uid"], name: "index_identities_on_ldap_uid", unique: true, using: :btree
   add_index "identities", ["reset_password_token"], name: "index_identities_on_reset_password_token", unique: true, using: :btree
@@ -882,6 +881,7 @@ ActiveRecord::Schema.define(version: 20160421145916) do
     t.boolean  "one_time_fee",                                                 default: false
     t.integer  "line_items_count",      limit: 4,                              default: 0
     t.text     "components",            limit: 65535
+    t.integer  "eap_id",                limit: 4
   end
 
   add_index "services", ["is_available"], name: "index_services_on_is_available", using: :btree

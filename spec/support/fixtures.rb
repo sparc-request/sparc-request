@@ -171,7 +171,7 @@ def build_service_request
   let!(:core_62)             { create(:core, parent_id: program.id, abbreviation: "PWF Services") }
   let!(:sub_service_request) { create(:sub_service_request, ssr_id: "0001", service_request_id: service_request.id, organization_id: program.id,status: "draft")}
 
-
+  
   before :each do
     program.tag_list.add("ctrc")
 

@@ -194,8 +194,7 @@ module V1
             :in_work_fulfillment,
             :routing,
             :org_tree_display,
-            :grand_total,
-            :stored_percent_subsidy
+            :grand_total
 
     expose  :formatted_status, as: :status
 

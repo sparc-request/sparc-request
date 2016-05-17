@@ -22,5 +22,6 @@ FactoryGirl.define do
 
   factory :subsidy do
     sub_service_request nil
+    pi_contribution 0
   end
 end

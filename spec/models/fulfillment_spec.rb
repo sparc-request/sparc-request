@@ -3,7 +3,7 @@ require 'rails_helper'
 RSpec.describe Fulfillment, type: :model do
   describe '#formatted_date' do
     context 'date present' do
-      let!(:fulfillment) { Fulfillment.create(date: Date.new(2001, 1, 2)) }
+      let!(:fulfillment) { Fulfillment.create(date: Date.new(2001, 1, 2).strftime("%m-%d-%Y")) }
       it 'should return date in format: -m/%d/%Y' do
         expect(fulfillment.formatted_date).to eq '1/02/2001'
       end
@@ -38,14 +38,14 @@ RSpec.describe Fulfillment, type: :model do
 
   describe '#within_date_range?' do
     context 'start_date nil' do
-      let!(:fulfillment) { Fulfillment.create(date: Date.new(2001, 1, 2)) }
+      let!(:fulfillment) { Fulfillment.create(date: Date.new(2001, 1, 2).strftime("%m-%d-%Y")) }
       it 'should return false' do
         expect(fulfillment.within_date_range?(nil, Date.new(2002, 1, 2))).to eq false
       end
     end
 
     context 'end_date nil' do
-      let!(:fulfillment) { Fulfillment.create(date: Date.new(2001, 1, 2)) }
+      let!(:fulfillment) { Fulfillment.create(date: Date.new(2001, 1, 2).strftime("%m-%d-%Y")) }
       it 'should return false' do
         expect(fulfillment.within_date_range?(Date.new(2000, 1, 2), nil)).to eq false
       end
@@ -64,7 +64,7 @@ RSpec.describe Fulfillment, type: :model do
 
       it 'should return true if Fulfillment date occurs on or after start date and occurs on or before end_date' do
         @dates.combination(3) do |start_date, date, end_date|
-          fulfillment.update_attributes(date: date)
+          fulfillment.update_attributes(date: date.strftime("%m-%d-%Y"))
           expect(fulfillment.within_date_range?(start_date, end_date)).to eq(
             (date >= start_date) && (date <= end_date))
         end

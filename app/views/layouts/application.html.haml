@@ -76,8 +76,6 @@
             = show_friendly_ssr_id(@sub_service_request) if @sub_service_request
 
       #content.container_12.row
-        .flash
-          = render "shared/flash"
         = content_for?(:content) ? yield(:content) : yield
       .clear
       = render 'shared/footer'

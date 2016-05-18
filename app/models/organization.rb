@@ -63,6 +63,8 @@ class Organization < ActiveRecord::Base
   accepts_nested_attributes_for :submission_emails
   accepts_nested_attributes_for :available_statuses, :allow_destroy => true
 
+  #TODO:  In rails 5, the .or operator will be added for ActiveRecord queries. We should try to 
+  #       condense this to a single query at that point
   scope :authorized_for_identity, -> (identity_id) {
     super_user_orgs                 = joins(:super_users).where(super_users: {identity_id: identity_id} ).distinct
     service_provider_orgs           = joins(:service_providers).where(service_providers: {identity_id: identity_id} ).distinct

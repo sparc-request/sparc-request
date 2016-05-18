@@ -304,7 +304,7 @@ class ServiceRequestsController < ApplicationController
       @service_request.ensure_ssr_ids
     end
 
-    redirect_to DASHBOARD_LINK
+    redirect_to dashboard_root_path
   end
 
   def refresh_service_calendar

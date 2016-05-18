@@ -74,11 +74,9 @@ RSpec.describe "service calendar", js: true do
           page.execute_script('$(".units_per_quantity").change()')
           wait_for_javascript_to_finish
 
-          accept_alert("Quantity please enter a quantity greater than or equal to") do
-            fill_in "service_request_line_items_attributes_#{line_item.id}_quantity", with: 0
-            wait_for_javascript_to_finish
-            page.execute_script('$(".line_item_quantity").change()')
-          end
+          fill_in "service_request_line_items_attributes_#{line_item.id}_quantity", with: 0
+          wait_for_javascript_to_finish
+          page.execute_script('$(".line_item_quantity").change()')
         end
       end
 
@@ -236,14 +234,14 @@ RSpec.describe "service calendar", js: true do
       describe "increasing the 'R' billing quantity" do
         it "should increase the total cost" do
           fill_in("visits_#{@visit_id}_research_billing_qty", with: 10)
-          find('#sparc_logo_header').click
+          find('body').click
           wait_for_javascript_to_finish
           expect(first(".pp_max_total_direct_cost.arm_#{arm1.id}", visible: true)).to have_exact_text("$300.00")
         end
 
         it "should update each visits maximum costs" do
           fill_in "visits_#{@visit_id}_research_billing_qty", with: 10
-          find('#sparc_logo_header').click
+          find('body').click
           wait_for_javascript_to_finish
           all(".visit_column_2.max_direct_per_patient.arm_#{arm1.id}").each do |x|
             if x.visible?
@@ -274,15 +272,15 @@ RSpec.describe "service calendar", js: true do
           # Putting values in these fields should not increase the total
           # cost
           fill_in "visits_#{@visit_id}_insurance_billing_qty", with: 10
-          find('#sparc_logo_header').click
+          find('body').click
           wait_for_javascript_to_finish
 
           fill_in "visits_#{@visit_id}_effort_billing_qty", with: 10
-          find('#sparc_logo_header').click
+          find('body').click
           wait_for_javascript_to_finish
 
           fill_in "visits_#{@visit_id}_research_billing_qty", with: 1
-          find('#sparc_logo_header').click
+          find('body').click
           wait_for_javascript_to_finish
 
           all(".pp_max_total_direct_cost.arm_#{arm1.id}").each do |x|
@@ -307,15 +305,15 @@ RSpec.describe "service calendar", js: true do
         visit_id = @visit_id
 
         fill_in "visits_#{visit_id}_research_billing_qty", with: 10
-        find('#sparc_logo_header').click
+        find('body').click
         wait_for_javascript_to_finish
 
         fill_in "visits_#{visit_id}_insurance_billing_qty", with: 10
-        find('#sparc_logo_header').click
+        find('body').click
         wait_for_javascript_to_finish
 
         fill_in "visits_#{visit_id}_effort_billing_qty", with: 10
-        find('#sparc_logo_header').click
+        find('body').click
         wait_for_javascript_to_finish
 
         click_link "quantity_tab"

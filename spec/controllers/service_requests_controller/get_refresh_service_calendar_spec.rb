@@ -20,7 +20,7 @@ RSpec.describe ServiceRequestsController do
 
       it 'should set @thead_class to "ui-widget-header"' do
         xhr :get, :refresh_service_calendar, { id: service_request.id, portal: 'true', format: :js }.with_indifferent_access
-        expect(assigns(:thead_class)).to eq 'ui-widget-header'
+        expect(assigns(:thead_class)).to eq 'default_calendar'
       end
     end
 

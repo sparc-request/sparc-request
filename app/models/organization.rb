@@ -69,12 +69,12 @@ class Organization < ActiveRecord::Base
     super_user_orgs                 = joins(:super_users).where(super_users: {identity_id: identity_id} ).distinct
     service_provider_orgs           = joins(:service_providers).where(service_providers: {identity_id: identity_id} ).distinct
 
-    super_user_orgs_children        = authorized_child_organizations(super_user_orgs.pluck(:id))
-    service_provider_orgs_children  = authorized_child_organizations(service_provider_orgs.pluck(:id))
+    super_user_orgs_children        = authorized_child_organizations(super_user_orgs)
+    service_provider_orgs_children  = authorized_child_organizations(service_provider_orgs)
     
     #To get around merge-and in activerecord, we get all the organizations as an array, then convert it back
     #to an ActiveRecord Relation through another query on the IDs
-    Organization.where(id: (super_user_orgs | super_user_orgs_children | service_provider_orgs | service_provider_orgs_children) )
+    Organization.where(id: (super_user_orgs | super_user_orgs_children | service_provider_orgs | service_provider_orgs_children) ).distinct
   }
 
   scope :in_cwf, -> { joins(:tags).where(tags: { name: 'clinical work fulfillment' }) }

@@ -311,7 +311,7 @@ $(document).ready ->
 
 recalculate_one_time_fee_totals = ->
   grand_total = 0
-  otfs = $('.otfs')
+  otfs = $('.otfs:visible')
 
   otfs.each (index, otf) =>
     your_cost = $(otf).children('.your_cost').data('your_cost')

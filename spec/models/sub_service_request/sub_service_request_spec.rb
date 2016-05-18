@@ -191,7 +191,7 @@ RSpec.describe 'SubServiceRequest' do
       context "subsidy percentage" do
 
         it "should return the correct subsidy percentage" do
-          expect(sub_service_request.subsidy_percentage).to eq(50)
+          expect(sub_service_request.subsidy_percentage).to eq(80)
         end
       end
 

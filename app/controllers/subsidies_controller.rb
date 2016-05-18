@@ -44,10 +44,10 @@ class SubsidiesController < ApplicationController
     @sub_service_request = @subsidy.sub_service_request
   end
 
+  # Refomat pi_contribution string to characters other than numbers and . delimiter,
+  # Convert to float, and multiply by 100 to get cents for db
   def format_pi_contribution_param
-    # Refomat pi_contribution string to characters other than numbers and . delimiter,
-    # Convert to float, and multiply by 100 to get cents for db
-    if params[:subsidy][:pi_contribution].present?
+    if !params[:subsidy].nil? && params[:subsidy][:pi_contribution].present?
       params[:subsidy][:pi_contribution] = (params[:subsidy][:pi_contribution].gsub(/[^\d^\.]/, '').to_f * 100)
     end
   end

@@ -21,132 +21,51 @@
 require 'rails_helper'
 #include 'ServiceCalendarHelper'
 
-RSpec.describe "subsidy page" do
+RSpec.describe "subsidy page", js: true do
   let_there_be_lane
   let_there_be_j
   fake_login_for_each_test
   build_service_request_with_project
 
-  describe "has subsidy" do
+  describe "Adding a subsidy" do
     before :each do
       add_visits
-
-      #destroy subsidies created in fixtures again...
       subsidy_map.destroy
       subsidy.destroy
-
-      subsidy_map = create(:subsidy_map, organization_id: program.id, max_dollar_cap: (sub_service_request.direct_cost_total / 200), max_percentage: 50.00)
+      subsidy_map = create(:subsidy_map, organization_id: program.id, max_dollar_cap: (sub_service_request.direct_cost_total / 100), max_percentage: 50.00)
       program.update_attribute(:subsidy_map, subsidy_map)
+      @direct_cost = (sub_service_request.direct_cost_total / 100.00)
       visit service_subsidy_service_request_path service_request.id
     end
 
-    describe "is not overridden" do
-      it 'should allow PI Contribution to be set', js: true do
-        expect(page).not_to have_css("input.pi-contribution[disabled=disabled]")
-      end
-
-      describe "leaving the form blank" do
-
-        it 'should be fine with that', js: true do
-          find('.save-and-continue').click
-          wait_for_javascript_to_finish
-
-          expect(sub_service_request.subsidy).to eq(nil)
-        end
-      end
-
-      describe "filling in with wrong values" do
-        it 'should reject to high an amount', js: true do
-          @total = (sub_service_request.direct_cost_total / 100)
-          find('.pi-contribution').set((@total - program.subsidy_map.max_dollar_cap) - 5)
-          find('.select-project-view').click
-          find('.save-and-continue').click
-          expect(page).to have_text("cannot exceed maximum dollar amount")
-        end
-
-        it 'should reject too high a percentage', js: true do
-          @total = (sub_service_request.direct_cost_total / 100)
-          #Change values, and re-visit page, to independantly test the percentage, instead of max_dollar_cap
-          subsidy_map = create(:subsidy_map, organization_id: program.id, max_dollar_cap: @total, max_percentage: 50.00)
-          program.update_attribute(:subsidy_map, subsidy_map)
-          visit service_subsidy_service_request_path service_request.id
-          find('.pi-contribution').set(@total - program.subsidy_map.max_dollar_cap)
-          find('.select-project-view').click
-          find('.save-and-continue').click
-          expect(page).to have_text("cannot exceed maximum percentage of")
-        end
-      end
-
-      describe "filling in with correct values" do
-        before :each do
-          @total = (sub_service_request.direct_cost_total / 100)
-          @contribution = @total - program.subsidy_map.max_dollar_cap
-          find('.pi-contribution').set(@contribution)
-          find('.select-project-view').click
-          wait_for_javascript_to_finish
-        end
-
-        it 'should save PI Contribution', js: true do
-          click_link 'Save & Continue'
-          wait_for_javascript_to_finish
-
-          expect(sub_service_request.subsidy.pi_contribution).to eq((@contribution * 100).to_i)
-        end
-
-        it 'should adjust requested funding correctly', js: true do
-          expect(find(".pi-contribution").value).to eq((@total - @contribution).to_s)
-        end
-
-        it 'should adjust subsidy percent correctly', js: true do
-          expect(find(".subsidy_percent_#{sub_service_request.id}").text.gsub!('%', '').to_f).to eq(((@total - @contribution) / @total) * 100)
-        end
-      end
+    it 'should display request cost in the pi contribution field' do
+      click_button 'Add a Subsidy'
+      
+      wait_for_javascript_to_finish
+      pi_field_value = find('#pi_contribution').value
+      expect(@direct_cost.to_s + '0').to eq(pi_field_value)
     end
 
-    describe "Multiple subsidies" do
-      before :each do
-        subsidy_map = create(:subsidy_map, organization_id: program.id, max_dollar_cap: (sub_service_request.direct_cost_total / 200), max_percentage: 50.00)
-        program.update_attribute(:subsidy_map, subsidy_map)
-
-        program2 = create(:program,type:'Program',parent_id:provider.id,name:'Test',order:1,abbreviation:'Informatics',process_ssrs:  0, is_available: 1)
-        pricing_setup2 = create(:pricing_setup, organization_id: program2.id, display_date: Time.now - 1.day, federal: 50, corporate: 50, other: 50, member: 50, college_rate_type: 'federal', federal_rate_type: 'federal', industry_rate_type: 'federal', investigator_rate_type: 'federal', internal_rate_type: 'federal', foundation_rate_type: 'federal')
-        service3 = create(:service, organization_id:program2.id, name: 'Per Patient')
-        subsidy_map2 = create(:subsidy_map, organization_id: program2.id, max_dollar_cap: (sub_service_request.direct_cost_total / 200), max_percentage: 50.00)
-        program2.update_attribute(:subsidy_map, subsidy_map2)
-        pricing_map3 = create(:pricing_map, unit_minimum: 1, unit_factor: 1, service_id: service3.id, display_date: Time.now - 1.day, full_rate: 2000, federal_rate: 3000, units_per_qty_max: 20)
-        @ssr2 = create(:sub_service_request, ssr_id: "0001", service_request_id: service_request.id, organization_id: program2.id,status: "draft")
-        line_item3 = create(:line_item, service_request_id: service_request.id, service_id: service3.id, sub_service_request_id: @ssr2.id, quantity: 0)
-
-        service_request.reload
-        add_visits
-        visit service_subsidy_service_request_path service_request.id
-      end
-      it "should have 2 subsidies", js: true do
-        @total = (sub_service_request.direct_cost_total / 100)
-        find(".pi-contribution.ssr_#{sub_service_request.id}").set((@total - program.subsidy_map.max_dollar_cap) - 100)
-        find('.select-project-view').click
-        #find(".pi-contribution.ssr_#{@ssr2.id}").set()
-        wait_for_javascript_to_finish
-        find('.save-and-continue').click
-        expect(page).to have_text("cannot exceed maximum dollar amount")
-      end
+    it 'should adjust the pi contribution if a subsidy percentage is added' do
+      click_button 'Add a Subsidy'
+      wait_for_javascript_to_finish
+      find('#percent_subsidy').set("30\n")
+      wait_for_javascript_to_finish
+      new_contribution = @direct_cost - (@direct_cost * 0.3)
+      pi_field_value = find('#pi_contribution').value.gsub(/,/, '')
+      expect(pi_field_value).to eq(new_contribution.to_s + '0')
     end
 
-    describe 'Subsidy is overridden' do
-
-      before { Subsidy.destroy_all }
-
-      it 'should NOT allow PI Contribution to be set', js: true do
-        create(:subsidy,
-                sub_service_request_id: sub_service_request.id,
-                pi_contribution: sub_service_request.direct_cost_total,
-                overridden: true)
-
-        visit service_subsidy_service_request_path service_request.id
-        wait_for_javascript_to_finish
-
-        expect(page).to have_css('input.pi-contribution[disabled=disabled]')
-      end
+    it 'should adjust the subsidy percent if the pi contribution is changed' do
+      click_button 'Add a Subsidy'
+      wait_for_javascript_to_finish
+      new_pi_contribution = (@direct_cost - 1000)
+      find('#pi_contribution').set("#{new_pi_contribution.to_s}\n")
+      wait_for_javascript_to_finish
+      subsidy_cost = @direct_cost - new_pi_contribution
+      percent_subsidy = ((subsidy_cost / @direct_cost) * 100).round(2)
+      percent_field_value = find('#percent_subsidy').value
+      expect(percent_field_value).to eq(percent_subsidy.to_s)
     end
   end
 end

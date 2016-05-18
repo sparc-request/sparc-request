@@ -42,7 +42,7 @@ RSpec.describe ServiceRequestsController do
 
       it "should set overridden to true for all associated Subsidies" do
         service_request.subsidies.each do |s|
-          s.update_attributes(overridden: false)
+          s.update_attributes(overridden: true)
         end
 
         xhr :get, :confirmation, id: service_request.id

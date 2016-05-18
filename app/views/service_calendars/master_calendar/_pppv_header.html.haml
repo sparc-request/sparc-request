@@ -71,4 +71,4 @@
         %th{:colspan => 4} &nbsp;
       - else
         %th= t(:calendar_page)[:headers][:total_per_patient]
-        %th.total_per_study= t(:calendar_page)[:headers][:total_per_study]
+        %th.total_per_study{:colspan => 2}= t(:calendar_page)[:headers][:total_per_study]

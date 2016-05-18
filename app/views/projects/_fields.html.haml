@@ -71,7 +71,7 @@
         #user_detail_errors.errorExplanation{:style => 'display:none'}
         .info
           = render :partial => 'shared/user_search', :locals => {:protocol => project}
-          - hide_user_details = (project.new_record? and project.project_roles.empty?) ? '' : 'display:none;'
+          - hide_user_details = project.project_roles.any? && project.project_roles.first.identity_id.blank? ? '' : 'display:none;'
           .user_added_message{:style => 'display:none;'}
           %p
             - t(:protocol_shared)[:add_user]

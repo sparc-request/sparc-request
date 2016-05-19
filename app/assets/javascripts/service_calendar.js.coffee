@@ -229,7 +229,7 @@ $(document).ready ->
       # If new val is greater than units_per_qty_max, do no recalculate totals 
       new_val = $(this).val()
       max_val = $(this).attr('units_per_qty_max')
-      if parseInt(new_val) <= parseInt(max_val)
+      if (parseInt(new_val) <= parseInt(max_val)) && (parseInt(new_val) >= parseInt(min_val))
         recalculate_one_time_fee_totals()
         
     return false

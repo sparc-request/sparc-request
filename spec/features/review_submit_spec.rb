@@ -76,7 +76,7 @@ RSpec.describe "review page", js: true do
         wait_for_javascript_to_finish
         find("button.ui-button .ui-button-text", text: "Yes").click
         wait_for_javascript_to_finish
-        expect(current_path).to eq(portal_root_path)
+        expect(current_path).to eq(dashboard_root_path)
       end
     end
 

@@ -38,6 +38,11 @@ $(document).ready ->
       $.ajax
         type: 'get'
         url: "/dashboard/associated_users/#{project_role_id}/edit.js"
+        success: ->
+          if $('#project_role_role').val() == 'other'
+            $('.role_dependent.other').show()
+          if $('#project_role_identity_attributes_credentials').val() == 'other'
+            $('.credentials_dependent.other').show()
 
 
   $(document).on 'click', '.delete-associated-user-button', ->
@@ -62,12 +67,11 @@ $(document).ready ->
             
 
   #**************** Add Authorized User Form Begin ****************
-
   $(document).on 'changed.bs.select', '#project_role_identity_attributes_credentials', ->
     # Credentials - Dropdown
     $('.credentials_dependent').hide()
-    switch $(this).val()
-      when 'other' then $('.credentials_dependent.other').show()
+    if $(this).val() == 'other'
+      $('.credentials_dependent.other').show()
 
   $(document).on 'changed.bs.select', '#project_role_role', ->
     # Role - Dropdown

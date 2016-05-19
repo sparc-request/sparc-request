@@ -79,7 +79,7 @@ RSpec.describe "Request redirect", js: true do
       find("button.ui-button .ui-button-text", text: "No").click
       wait_for_javascript_to_finish
 
-      expect(current_path).to eq(portal_root_path)
+      expect(current_path).to eq(dashboard_root_path)
     end
   end
 end

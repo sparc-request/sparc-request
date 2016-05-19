@@ -39,12 +39,12 @@ class SubServiceRequest < ActiveRecord::Base
   has_many :cover_letters, :dependent => :destroy
   has_many :reports, :dependent => :destroy
   has_many :notifications, :dependent => :destroy
-
+  has_many :subsidies
   has_one :approved_subsidy, :dependent => :destroy
   has_one :pending_subsidy, :dependent => :destroy
 
   delegate :protocol, to: :service_request, allow_nil: true
-  delegate :contribution_percent_of_cost, to: :approved_subsidy, allow_nil: true
+  delegate :percent_subsidy, to: :approved_subsidy, allow_nil: true
   delegate :approved_percent_of_total, to: :approved_subsidy, allow_nil: true
   alias_attribute :approved_percent_subsidy, :approved_percent_of_total
 
@@ -230,9 +230,9 @@ class SubServiceRequest < ActiveRecord::Base
   end
 
   def subsidy_percentage
-    funded_amount = self.direct_cost_total - self.subsidy.pi_contribution.to_f
+    funded_amount = direct_cost_total - subsidies.first.pi_contribution.to_f
 
-    ((funded_amount.to_f / self.direct_cost_total.to_f).round(2) * 100).to_i
+    ((funded_amount.to_f / direct_cost_total.to_f).round(2) * 100).to_i
   end
 
   # Returns a list of candidate services for a given ssr (used in fulfillment)

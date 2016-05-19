@@ -29,25 +29,12 @@ RSpec.describe "Subsidy" do
   describe "percent subsidy" do
 
     it "should return the correct subsidy" do
-      expect(subsidy.percent_subsidy).to eq(0.5)
+      expect(subsidy.percent_subsidy).to eq(20.0)
     end
 
     it "should return 100% subsidy if there is no pi contribution" do
-      subsidy.update_attributes(pi_contribution: 0)
-      expect(subsidy.percent_subsidy).to eq(1.0)
-    end
-
-    it "should return zero if pi contribution is nil" do
-      subsidy.update_attributes(pi_contribution: nil)
+      subsidy.update_attribute(:pi_contribution, 0)
       expect(subsidy.percent_subsidy).to eq(0.0)
-    end
-  end
-
-  describe "fix pi contribution" do
-
-    it "should set the pi contribution from a given subsidy percentage" do
-      subsidy.fix_pi_contribution(50)
-      expect(subsidy.pi_contribution).to eq(2500)
     end
   end
 end

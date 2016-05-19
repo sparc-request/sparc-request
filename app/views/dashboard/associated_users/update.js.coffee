@@ -19,9 +19,20 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 <% if @errors.present? %>
-$("#modal_errors").html("<%= escape_javascript(render(partial: 'shared/modal_errors', locals: {errors: @errors})) %>")
+$("#modal_errors").html("<%= escape_javascript(render('shared/modal_errors', errors: @errors)) %>")
 <% else %>
-$("#modal_place").modal 'hide'
+$("#modal_place").modal('hide')
+# Send the user back to dashboard if theyre a member and not an admin
+<% if @return_to_dashboard %>
+window.location = "/dashboard"
+# Update the entire view to account for the current users rights change
+<% elsif @current_user_updated %>
+$("#summary-panel").html("<%= escape_javascript(render('dashboard/protocols/summary', protocol: @protocol, protocol_type: @protocol_type, permission_to_edit: @permission_to_edit)) %>")
+$("#authorized-users-panel").html("<%= escape_javascript(render('dashboard/associated_users/table', protocol: @protocol, permission_to_edit: @permission_to_edit)) %>")
+$("#service-requests-panel").html("<%= escape_javascript(render('dashboard/service_requests/service_requests', protocol: @protocol, permission_to_edit: @permission_to_edit, user: @user, admin: @admin)) %>")
+$("#associated-users-table").bootstrapTable()
+<% else %>
 $("#associated-users-table").bootstrapTable 'refresh', {silent: true}
+<% end %>
 $("#flashes_container").html("<%= escape_javascript(render('shared/flash')) %>")
 <% end %>

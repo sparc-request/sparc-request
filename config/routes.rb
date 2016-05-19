@@ -192,7 +192,7 @@ SparcRails::Application.routes.draw do
       end
     end
 
-    resources :associated_users do
+    resources :associated_users, only: [:index, :new, :create, :edit, :update, :destroy] do
       collection do
         get :search_identities
       end
@@ -200,7 +200,7 @@ SparcRails::Application.routes.draw do
 
     resources :documents
 
-    resources :epic_queues, only: ['index', 'destroy']
+    resources :epic_queues, only: [:index, :destroy]
 
     resources :fulfillments
 

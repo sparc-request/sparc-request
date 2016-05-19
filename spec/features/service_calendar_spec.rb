@@ -249,14 +249,14 @@ RSpec.describe "service calendar", js: true do
       describe "increasing the 'R' billing quantity" do
         it "should increase the total cost" do
           fill_in("visits_#{@visit_id}_research_billing_qty", with: 10)
-          find('#sparc_logo_header').click
+          find('body').click
           wait_for_javascript_to_finish
           expect(first(".pp_max_total_direct_cost.arm_#{arm1.id}", visible: true)).to have_exact_text("$300.00")
         end
 
         it "should update each visits maximum costs" do
           fill_in "visits_#{@visit_id}_research_billing_qty", with: 10
-          find('#sparc_logo_header').click
+          find('body').click
           wait_for_javascript_to_finish
           all(".visit_column_2.max_direct_per_patient.arm_#{arm1.id}").each do |x|
             if x.visible?
@@ -287,15 +287,15 @@ RSpec.describe "service calendar", js: true do
           # Putting values in these fields should not increase the total
           # cost
           fill_in "visits_#{@visit_id}_insurance_billing_qty", with: 10
-          find('#sparc_logo_header').click
+          find('body').click
           wait_for_javascript_to_finish
 
           fill_in "visits_#{@visit_id}_effort_billing_qty", with: 10
-          find('#sparc_logo_header').click
+          find('body').click
           wait_for_javascript_to_finish
 
           fill_in "visits_#{@visit_id}_research_billing_qty", with: 1
-          find('#sparc_logo_header').click
+          find('body').click
           wait_for_javascript_to_finish
 
           all(".pp_max_total_direct_cost.arm_#{arm1.id}").each do |x|
@@ -320,15 +320,15 @@ RSpec.describe "service calendar", js: true do
         visit_id = @visit_id
 
         fill_in "visits_#{visit_id}_research_billing_qty", with: 10
-        find('#sparc_logo_header').click
+        find('body').click
         wait_for_javascript_to_finish
 
         fill_in "visits_#{visit_id}_insurance_billing_qty", with: 10
-        find('#sparc_logo_header').click
+        find('body').click
         wait_for_javascript_to_finish
 
         fill_in "visits_#{visit_id}_effort_billing_qty", with: 10
-        find('#sparc_logo_header').click
+        find('body').click
         wait_for_javascript_to_finish
 
         click_link "quantity_tab"

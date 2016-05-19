@@ -49,8 +49,8 @@ class Fulfillment < ActiveRecord::Base
     format_date self.date
   end
 
-  def formatted_date=(d)
-    self.date = parse_date(d)
+  def formatted_date=(date)
+    self.date = parse_date(date)
   end
 
   def within_date_range? start_date, end_date
@@ -67,13 +67,13 @@ class Fulfillment < ActiveRecord::Base
 
   private
 
-  def format_date(d)
-    d.try(:strftime, '%-m/%d/%Y')
+  def format_date(date)
+    date.try(:strftime, '%-m/%d/%Y')
   end
 
   def parse_date(str)
     begin
-      Date.strptime(str.to_s.strip, '%m/%d/%Y')
+      Date.strptime(str.to_s.strip, '%m/%d/%Y').strftime("%m-%d-%Y")
     rescue ArgumentError => e
       nil
     end

@@ -150,13 +150,13 @@ $(document).ready ->
   # So if the user has not filled out one of the 
   # required fields in the epic box, it will hit this code and display 
   # the appropriate fields that need to be filled out with a visual cue of red border
-  if $('.field_with_errors label:contains("Study type answers")').length > 0
+  if $('#errorExplanation ul li:contains("Study type answers")').length > 0
     $(study_selected_for_epic_button).change()
     if $(certificate_of_confidence_dropdown).is(':visible')
       $(certificate_of_confidence_dropdown).change()
     if $(higher_level_of_privacy_dropdown).val() == 'true' 
       $(access_required_dropdown).show_elt()
-      $(access_required_dropdown).change()
+      $(higher_level_of_privacy_dropdown).change()
     if $(higher_level_of_privacy_dropdown).val() == 'false'
       $(higher_level_of_privacy_dropdown).change()
     if $(certificate_of_confidence_dropdown) != "" && $(higher_level_of_privacy_dropdown).val() != "" && $(access_required_dropdown).val() == 'false'
@@ -168,13 +168,13 @@ $(document).ready ->
     add_and_check_visual_error_on_submit($(research_active_dropdown))
     add_and_check_visual_error_on_submit($(restrict_sending_dropdown))
 
-    $(certificate_of_confidence_dropdown).on 'change', (e) ->
+    $(document).on 'change', $(certificate_of_confidence_dropdown), (e) ->
       add_and_check_visual_error_on_field_change($(certificate_of_confidence_dropdown))
 
-    $(higher_level_of_privacy_dropdown).on 'change', (e) ->
+    $(document).on 'change', $(higher_level_of_privacy_dropdown), (e) ->
       add_and_check_visual_error_on_field_change($(higher_level_of_privacy_dropdown))
 
-    $(access_required_dropdown).on 'change', (e) ->
+    $(document).on 'change', $(access_required_dropdown), (e) ->
       add_and_check_visual_error_on_field_change($(access_required_dropdown))
 
   ######## End of send to epic study question logic ##############

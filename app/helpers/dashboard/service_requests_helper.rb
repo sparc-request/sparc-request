@@ -20,6 +20,14 @@
 
 module Dashboard::ServiceRequestsHelper
 
+  def modify_request_button_url(service_request)
+    if service_request.is_editable? # Request not locked
+      "/service_requests/#{service_request.id}/catalog?from_user_portal=true&edit_original=true"
+    else # Request locked
+      "/service_requests/#{service_request.id}/catalog?from_user_portal=true&edit_original=true&locked=true"
+    end
+  end
+
   def protocol_panel_header_line service_request
     if service_request.status == "submitted"
       "Service Request: #{service_request.id} - Submitted - #{format_date(service_request.submitted_at)}"

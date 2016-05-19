@@ -20,52 +20,67 @@
 
 class Dashboard::SubServiceRequestsController < Dashboard::BaseController
   before_action :find_sub_service_request,  except: :index
-  before_action :find_protocol,             only: :index
   before_filter :protocol_authorizer,       only: :update_from_project_study_information
-  before_filter :authorize_admin,           only: :show
+  before_filter :authorize_admin,           only: :show, unless: :format_js?
 
   respond_to :json, :js, :html
 
   def index
-    @sub_service_requests = @protocol.sub_service_requests
-    @permission_to_edit   = params[:permission_to_edit]
-    @admin                = params[:admin]
+    service_request       = ServiceRequest.find(params[:srid])
+    @protocol             = service_request.protocol
+    @admin_orgs           = @user.authorized_admin_organizations
+    @permission_to_edit   = params[:permission_to_edit] 
+    pre_filtered_ssrs     = service_request.sub_service_requests
+    @sub_service_requests = []
+
+    pre_filtered_ssrs.each do |ssr|
+      if ssr.should_be_displayed_for_user?(@user, @permission_to_edit)
+        @sub_service_requests << ssr
+      end
+    end
   end
 
   def show
     respond_to do |format|
       format.js { # User Modal Show
-        arm_id = params[:arm_id] if params[:arm_id]
-        page = params[:page] if params[:page]
-        session[:service_calendar_pages] = params[:pages] if params[:pages]
+        arm_id                            = params[:arm_id] if params[:arm_id]
+        page                              = params[:page]   if params[:page]
+        session[:service_calendar_pages]  = params[:pages]  if params[:pages]
+        
         if page && arm_id
-          session[:service_calendar_pages] = {} unless session[:service_calendar_pages].present?
-          session[:service_calendar_pages][arm_id] = page
+          session[:service_calendar_pages]          = {} unless session[:service_calendar_pages].present?
+          session[:service_calendar_pages][arm_id]  = page
         end
 
-        @service_request = @sub_service_request.service_request
-        @service_list = @service_request.service_list
-        @line_items = @sub_service_request.line_items
-        @protocol = @service_request.protocol
-        @tab = 'calendar'
-        @portal = true
-        @thead_class = 'default_calendar'
-        @review = true
-        @selected_arm = Arm.find arm_id if arm_id
-        @pages = {}
+        @service_request  = @sub_service_request.service_request
+        @service_list     = @service_request.service_list
+        @line_items       = @sub_service_request.line_items
+        @protocol         = @service_request.protocol
+        @tab              = 'calendar'
+        @portal           = true
+        @thead_class      = 'default_calendar'
+        @review           = true
+        @selected_arm     = Arm.find arm_id if arm_id
+        @pages            = {}
+
         @service_request.arms.each do |arm|
           new_page = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i
           @pages[arm.id] = @service_request.set_visit_page(new_page, arm)
         end
+
         render
       }
+
       format.html { # Admin Edit
-        @admin = true
+        authorize_admin
+        
         session[:service_calendar_pages] = params[:pages] if params[:pages]
         session[:breadcrumbs].add_crumbs(protocol_id: @sub_service_request.protocol.id, sub_service_request_id: @sub_service_request.id).clear(:notifications)
+        
         if @user.can_edit_fulfillment?(@sub_service_request.organization)
-          @service_request = @sub_service_request.service_request
-          @protocol = @sub_service_request.protocol
+          @service_request  = @sub_service_request.service_request
+          @protocol         = @sub_service_request.protocol
+
           render
         else
           redirect_to dashboard_root_path
@@ -102,19 +117,22 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
   end
 
   def refresh_service_calendar
-    @service_request = @sub_service_request.service_request
-    arm_id = params[:arm_id].to_s if params[:arm_id]
-    @arm = Arm.find arm_id if arm_id
-    @portal = params[:portal] if params[:portal]
-    @thead_class = @portal == 'true' ? 'default_calendar' : 'red-provider'
-    page = params[:page] if params[:page]
+    @service_request  = @sub_service_request.service_request
+    arm_id            = params[:arm_id].to_s if params[:arm_id]
+    @arm              = Arm.find arm_id if arm_id
+    @portal           = params[:portal] if params[:portal]
+    @thead_class      = @portal == 'true' ? 'default_calendar' : 'red-provider'
+    page              = params[:page] if params[:page]
+
     session[:service_calendar_pages] = params[:pages] if params[:pages]
     session[:service_calendar_pages][arm_id] = page if page && arm_id
+    
     @pages = {}
     @service_request.arms.each do |arm|
       new_page = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i
       @pages[arm.id] = @service_request.set_visit_page(new_page, arm)
     end
+    
     @tab = 'calendar'
   end
 
@@ -173,46 +191,24 @@ private
     @sub_service_request = SubServiceRequest.find(params[:id])
   end
 
-  def find_protocol
-    @protocol = Protocol.find(params[:protocol_id])
-  end
-
   def protocol_authorizer
     @protocol = Protocol.find(params[:protocol_id])
     authorized_user = ProtocolAuthorizer.new(@protocol, @user)
+
     if (request.get? && !authorized_user.can_view?) || (!request.get? && !authorized_user.can_edit?)
       @protocol = nil
-      render partial: 'service_requests/authorization_error', locals: { error: 'You are not allowed to access this protocol.' }
+      render partial: 'service_requests/authorization_error', locals: { error: 'You are not allowed to access this protocol.', in_dashboard: false }
     end
   end
 
   def authorize_admin
-    unless @user.admin_organizations.include?(@sub_service_request.organization)
+    unless @user.authorized_admin_organizations.include?(@sub_service_request.organization)
       @protocol = nil
-      render partial: 'service_requests/authorization_error', locals: { error: 'You are not allowed to access this Sub Service Request.' }
+      render partial: 'service_requests/authorization_error', locals: { error: 'You are not allowed to access this Sub Service Request.', in_dashboard: false }
     end
   end
 
-  def email_users sub_service_request
-    @service_request = sub_service_request.service_request
-    @protocol = @service_request.protocol
-    @line_items = sub_service_request.line_items
-    @service_list = @service_request.service_list
-
-    # generate the excel for this service request
-    xls = render_to_string '/service_requests/show', formats: [:xlsx]
-
-    # send e-mail to all folks with view and above
-    @protocol.project_roles.where.not(project_rights: "none").each do |project_role|
-      Notifier.notify_user(project_role, @service_request, xls, false, current_user).deliver_now unless project_role.identity.email.blank?
-    end
-
-    # Check to see if we need to send notifications for epic.
-    if USE_EPIC
-      if @protocol.selected_for_epic
-        @protocol.awaiting_approval_for_epic_push
-        Notifier.notify_for_epic_user_approval(@protocol).deliver unless QUEUE_EPIC
-      end
-    end
+  def format_js?
+    request.format.js?
   end
 end

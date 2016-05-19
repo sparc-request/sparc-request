@@ -24,8 +24,8 @@
 $(document).ready ->
   Sparc.protocol =
     ready: ->
-      $('#service-requests-table').on 'all.bs.table', ->
-        $('.selectpicker').selectpicker()
+      $('.service-requests-table').on 'all.bs.table', ->
+        $(this).find('.selectpicker').selectpicker() #Find descendant selectpickers
 
       $(document).on 'click', '.service-request-button', ->
         if $(this).data('permission')
@@ -60,9 +60,9 @@ $(document).ready ->
           success: (data) ->
             $('#modal_place').html(data.modal)
             $('#modal_place').modal 'show'
-            $('#service-requests-table').bootstrapTable()
-            $('#service-requests-table').on 'all.bs.table', ->
-              $('.selectpicker').selectpicker()
+            $('.service-requests-table').bootstrapTable()
+            $('.service-requests-table').on 'all.bs.table', ->
+              $(this).find('.selectpicker').selectpicker()
 
 
       $(document).on 'click', '.protocol-archive-button', ->
@@ -130,12 +130,8 @@ $(document).ready ->
 
       $(document).on 'click', '#add-services-button', ->
         if $(this).data('permission')
-          if $(this).data('has-request') && $(this).data('user-can-edit-request')
-            service_request_id = $(this).data('service-request-id')
-            window.location = "/service_requests/#{service_request_id}/catalog?from_user_portal=true&edit_original=true"
-          else
-            protocol_id = $(this).data('protocol-id')
-            window.location = "/?protocol_id=#{protocol_id}&from_portal=true"
+          protocol_id         = $(this).data('protocol-id')
+          window.location     = "/?protocol_id=#{protocol_id}&from_portal=true"
       # Protocol Show End
 
       # Protocol Edit Begin

@@ -52,4 +52,4 @@
     .tab-pane#history{role: 'tabpanel', class: cookies['admin-tab'] == 'history-tab' ? 'active' : ''}
       = render 'dashboard/sub_service_requests/history/status_changes', sub_service_request_id: @sub_service_request.id
     .tab-pane#notifications{role: 'tabpanel', class: cookies['admin-tab'] == 'notifications-tab' ? 'active' : ''}
-      = render 'dashboard/notifications/notifications', sub_service_request: @sub_service_request, user: @user, admin: @admin
+      = render 'dashboard/notifications/notifications', sub_service_request: @sub_service_request, user: @user

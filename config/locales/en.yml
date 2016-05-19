@@ -382,7 +382,7 @@ en:
         compose: "Compose Message"
         requester: "Requester"
         authorized_users: "Authorized Users"
-        clinical_providers: "Clinical Providers"
+        service_providers: "Service Providers"
         inbox: "Inbox"
         sent: "Sent"
         mark_as_unread: "Mark as Unread"
@@ -559,15 +559,15 @@ en:
     #  SERVICE REQUESTS  #
     ######################
     service_requests:
-      none: "There are no requests to display"
+      modify_request: "Modify Request"
       srid: "SRID"
       organization: "Organization"
       status: "Status"
       notifications: "Notifications"
       actions: 
         header: "Actions"
-        view: "View Request"
-        edit: "Edit Request"
+        view: "View"
+        edit: "Edit"
         admin_edit: "Admin Edit"
       view_ssr:
         services:

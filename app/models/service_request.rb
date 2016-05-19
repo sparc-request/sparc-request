@@ -575,6 +575,19 @@ class ServiceRequest < ActiveRecord::Base
     {:line_items => line_item_audits}
   end
 
+  def should_be_displayed_for_user(user, permission_to_edit)
+    if !permission_to_edit && user.authorized_admin_organizations.any?
+      sub_service_requests.each do |ssr|
+        if ssr.should_be_displayed_for_user?(user) # If any should be displayed, display SR
+          return true
+        end
+      end
+      return false # If no SSRs should be displayed, hide the SR
+    else
+      return true # If there user is not an admin, we should not bog down their load time checking the SSRs
+    end
+  end
+
   private
 
   def set_original_submitted_date

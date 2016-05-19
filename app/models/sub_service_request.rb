@@ -493,6 +493,12 @@ class SubServiceRequest < ActiveRecord::Base
   end
   ### end audit reporting methods ###
 
+  # If the SSR is draft and the user is not an authorized user but is a Service Provider for
+  # an Organization of the SSR, do not display it
+  def should_be_displayed_for_user?(user, permission_to_edit=false)
+    !(status == 'draft' && !permission_to_edit && Organization.joins(:service_providers).where(id: org_tree, service_providers: { identity: user, organization_id: org_tree}).any?)
+  end
+
   private
 
   def notify_remote_around_update?

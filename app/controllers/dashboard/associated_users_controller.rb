@@ -20,8 +20,8 @@
 
 class Dashboard::AssociatedUsersController < Dashboard::BaseController
   layout nil
-
   respond_to :html, :json, :js
+  
   before_filter :find_protocol_role,        only: [:edit, :destroy]
   before_filter :find_protocol,             only: [:index, :new, :create, :edit, :update]
   before_filter :protocol_authorizer_view,  only: [:index]
@@ -29,7 +29,7 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
 
   def index
     @protocol_roles     = @protocol.project_roles
-    @permission_to_edit = @authorization.can_edit? || @admin
+    @permission_to_edit = @authorization.can_edit?
 
     respond_to do |format|
       format.json

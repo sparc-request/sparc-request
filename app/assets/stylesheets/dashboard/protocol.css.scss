@@ -82,7 +82,10 @@ textarea {
   width: 100% !important;
 }
 
-.view-service-request, .edit-service-request {
-  margin: 5px;
+table {
+  .view-service-request, .edit-service-request {
+    margin: 5px;
+  }
 }
+
 /* Show Protocol End*/

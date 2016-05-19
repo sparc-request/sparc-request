@@ -60,8 +60,8 @@ module Dashboard::ApplicationHelper
     number_with_precision(cents_to_dollars(cost), precision: 2) || number_with_precision(0, precision: 2)
   end
 
-  def pretty_ssr_id(project, ssr)
-    pre_id = project.try(:id)
+  def pretty_ssr_id(protocol, ssr)
+    pre_id = protocol.try(:id)
     ssr_id = ssr.try(:ssr_id)
 
     "#{pre_id}-#{ssr_id}"

@@ -19,29 +19,25 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 module Dashboard::AssociatedUsersHelper
-  GLYPH_EDIT = 'glyphicon glyphicon-edit'.freeze()
-  GLYPH_REMOVE = 'glyphicon glyphicon-remove'.freeze()
-  BTN_WARNING = 'btn btn-warning'.freeze()
-  BTN_DANGER = 'btn btn-danger'.freeze()
-
+  
   def associated_users_edit_button(pr, permission_to_edit)
-    btn_classes = [BTN_WARNING, disabled_unless(permission_to_edit),
-      'actions-button', 'edit-associated-user-button'].join(' ')
-
     content_tag(:button,
-      raw(content_tag(:span, '', class: GLYPH_EDIT, aria: { hidden: 'true' })),
-      type: 'button', data: { project_role_id: pr.id, permission: 'true' },
-      class: btn_classes)
+      raw(
+        content_tag(:span, '', class: 'glyphicon glyphicon-edit', aria: { hidden: 'true' })
+      ),
+      type: 'button', data: { project_role_id: pr.id, permission: permission_to_edit.to_s },
+      class: "btn btn-warning actions-button edit-associated-user-button #{permission_to_edit ? '' : 'disabled'}"
+    )
   end
 
   def associated_users_delete_button(pr, permission_to_edit)
-    btn_classes = "#{BTN_DANGER} actions-button delete-associated-user-button #{disabled_unless(permission_to_edit)}"
-    btn_data = { project_role_id: pr.id, identity_role: pr.role,
-      identity_id: pr.identity_id, permission: 'true' }
-
     content_tag(:button,
-      raw(content_tag(:span, '', class: GLYPH_REMOVE, aria: { hidden: 'true' })),
-      type: 'button', data: btn_data, class: btn_classes)
+      raw(
+        content_tag(:span, '', class: 'glyphicon glyphicon-remove', aria: { hidden: 'true' })
+      ),
+      type: 'button', data: { project_role_id: pr.id, identity_role: pr.role, identity_id: pr.identity_id, permission: permission_to_edit.to_s }, 
+      class: "btn btn-danger actions-button delete-associated-user-button #{permission_to_edit ? '' : 'disabled'}"
+    )
   end
 
   def pre_select_user_credentials(credentials)
@@ -55,10 +51,5 @@ module Dashboard::AssociatedUsersHelper
 
   def reverse_user_credential_hash
     USER_CREDENTIALS.each{|k, v| [v, k]}
-  end
-
-  private
-  def disabled_unless(permission_to_edit)
-    permission_to_edit ? '' : 'disabled'
   end
 end

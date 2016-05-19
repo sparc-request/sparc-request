@@ -28,9 +28,21 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   before_filter :protocol_authorizer_edit, only: [:edit, :update, :update_protocol_type]
 
   def index
+    admin_orgs   = @user.authorized_admin_organizations
+    @admin       = !admin_orgs.empty?
+
+    default_filter_params = { show_archived: 0 }
+
+    # if we are an admin we want to default to admin organizations
+    if @admin
+      default_filter_params[:for_admin] = @user.id
+    else
+      default_filter_params[:for_identity_id] = @user.id
+    end
+
     @filterrific =
       initialize_filterrific(Protocol, params[:filterrific],
-        default_filter_params: { show_archived: 0, for_identity_id: @user.id },
+        default_filter_params: default_filter_params,
         select_options: {
           with_status: AVAILABLE_STATUSES.invert,
           with_core: @admin_orgs.map { |org| [org.name, org.id] }

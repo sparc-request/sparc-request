@@ -76,8 +76,6 @@
             = protocol_id_display(@sub_service_request, @service_request)
 
       #content.container_12.row
-        .flash
-          = render "shared/flash"
         = content_for?(:content) ? yield(:content) : yield
       .clear
       = render 'shared/footer'

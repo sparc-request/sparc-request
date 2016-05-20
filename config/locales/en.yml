@@ -382,7 +382,7 @@ en:
         compose: "Compose Message"
         requester: "Requester"
         authorized_users: "Authorized Users"
-        clinical_providers: "Clinical Providers"
+        service_providers: "Service Providers"
         inbox: "Inbox"
         sent: "Sent"
         mark_as_unread: "Mark as Unread"

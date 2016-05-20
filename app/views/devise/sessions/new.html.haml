@@ -19,12 +19,12 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 .devise_form#login{:style => "padding-left:0"}
-  - if USE_SHIBOLETH
+  - if USE_SHIBBOLETH
     .grid_6.prefix_3.suffix_3.box.sign_in_selection#shibboleth_sign_in_button
       .info
         .center
           = link_to t(:signin)[:button1], identity_omniauth_authorize_path(:shibboleth), :class => 'blue-button devise_option_button btn btn-primary'
-  - if USE_SHIBOLETH && !USE_SHIBBOLETH_ONLY
+  - if USE_SHIBBOLETH && !USE_SHIBBOLETH_ONLY
     .clear
     .sign_in_options
       %br

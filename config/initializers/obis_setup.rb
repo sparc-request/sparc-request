@@ -33,7 +33,7 @@ begin
   HEADER_LINK_2                             = application_config['header_link_2']
   HEADER_LINK_3                             = application_config['header_link_3']
   USE_INDIRECT_COST                         = application_config['use_indirect_cost']
-  USE_SHIBOLETH                             = application_config['use_shiboleth']
+  USE_SHIBBOLETH                             = application_config['use_shiboleth']
   USE_SHIBBOLETH_ONLY                       = application_config['use_shibboleth_only']
   USE_LDAP                                  = application_config['use_ldap']
   SUPPRESS_LDAP_FOR_USER_SEARCH             = application_config['suppress_ldap_for_user_search'] || nil

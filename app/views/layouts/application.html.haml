@@ -70,7 +70,7 @@
             = link_to image_tag("#{CUSTOM_ASSET_PATH}about.png", class: 'button-hover'), "javascript:void(0);", class: "about_sparc_request"
           - else
             = link_to image_tag("#{CUSTOM_ASSET_PATH}about.png", class: 'button-hover'), ABOUT_SPARC_URL, target: "_blank"
-        #service_request_protocol_id{class: !(@sub_service_request.nil? && @service_request.nil?) ? "" : "hidden"}
+        #service_request_protocol_id{class: @sub_service_request.present? || @service_request.present? ? "" : "hidden"}
           %span
             &nbsp;
             = protocol_id_display(@sub_service_request, @service_request)

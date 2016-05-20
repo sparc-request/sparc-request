@@ -20,7 +20,14 @@
 
 <% unless @read_by_user %>
 #Decrement the notification count if the notification was unread
-$('#notification_count').text(parseInt($('#notification_count').text()) - 1)
+
+badge_count = parseInt($('#messages-btn .badge').text())
+$('#messages-btn .badge').text(badge_count - 1)
+
+if $('#notification_count').length
+  notification_count = parseInt($('#notification_count').text())
+  $('#notification_count').text(notification_count - 1)
+
 <% end %>
 $("#modal_place").html("<%= escape_javascript(render(partial: 'index', locals: { messages: @messages, notification: @notification })) %>")
 refresh_notifications_table()

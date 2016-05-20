@@ -22,21 +22,18 @@
 = stylesheet_link_tag 'home_page'
 = stylesheet_link_tag 'hover_effect'
 .grid_3.service-catalog.col-md-3
-  #about
-    - unless USE_ABOUT_SPARC_LINK
-      = link_to image_tag("#{CUSTOM_ASSET_PATH}about.png", class: 'button-hover'), "javascript:void(0);", class: "about_sparc_request"
-    - else
-      = link_to image_tag("#{CUSTOM_ASSET_PATH}about.png", class: 'button-hover'), ABOUT_SPARC_URL, target: "_blank"
-  %h3 Browse Services Catalog:
-  = render :partial => 'catalogs/service_accordion', :locals => {:institutions => @institutions}
-.grid_6.col-md-6
+  %h3 
+    = "Browse Services Catalog:"
+  = render 'catalogs/service_accordion', institutions: @institutions
+.grid_6.col-md-6.catalog-middle
   #search.form-group
     /[if lte IE 8]
-      %img(src="/assets/search_bar.png"){:class => 'test_search'}
-    = render :partial => 'catalogs/service_search'
-  #welcome_message= render :partial => 'catalogs/description', :locals => {:organization => @organization, :service_request => @service_request, :from_portal => @from_portal}
+      %img(src="/assets/search_bar.png"){class: 'test_search'}
+    = render 'catalogs/service_search'
+  #welcome_message
+    = render 'catalogs/description', organization: @organization, service_request: @service_request, from_portal: @from_portal
   #calendar-blog
-    = render :partial => 'catalogs/news_and_events'
+    = render 'catalogs/news_and_events'
 
 .grid_3.catalog-view-right.right.col-md-3
   - if CREATE_AN_ACCOUNT
@@ -45,19 +42,20 @@
   #services.ui-widget.ui-widget-content.cart-view
     %h3
       = t(:service_requests)[:catalog][:text1]
-    = render :partial => 'catalogs/cart'
-  = link_to "Continue", protocol_service_request_path(@service_request), :class => 'submit-request-button btn btn-success btn-lg btn-block button-hover', :"data-signed-in" => identity_signed_in?
-  = render :partial => 'service_requests/right_navigation'
+    = render 'catalogs/cart'
+  = link_to "Continue", protocol_service_request_path(@service_request), class: 'submit-request-button btn btn-success btn-lg btn-block button-hover', :"data-signed-in" => identity_signed_in?
+  = render 'service_requests/right_navigation'
 
-  #submit_error{:style => "display: none"}
+  #submit_error.hidden
     = t(:service_requests)[:catalog][:text3]
     = t(:service_requests)[:catalog][:text4]
 
   - if params[:signed_up_but_not_approved] == 'true'
     = javascript_include_tag "signed_up_but_not_approved"
-    #signed_up_but_not_approved{:style => "display: none"}
-      = render :partial => 'catalogs/signed_up_but_not_approved_dialog_box'
-  #sign_in{:style => "display: none"}
-    = render :partial => 'catalogs/signin_dialog_box'
+    #signed_up_but_not_approved.hidden
+      = render 'catalogs/signed_up_but_not_approved_dialog_box'
+  #sign_in.hidden
+    = render 'catalogs/signin_dialog_box'
 
-  #about_sparc{:title => t(:about_title)}= t(:about_text)
+  #about_sparc{title: t(:about_title)}
+    = t(:about_text)

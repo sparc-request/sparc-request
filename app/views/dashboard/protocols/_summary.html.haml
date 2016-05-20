@@ -1,4 +1,4 @@
-.panel.panel-primary
+.panel.panel-primary#summary-panel
   .panel-heading
     %h4.panel-title.pull-left
       = protocol_type + t(:dashboard)[:protocols][:summary][:header]
@@ -7,11 +7,11 @@
         = protocol_type + t(:dashboard)[:protocols][:summary][:notes]
       %button.btn.btn-sm.btn-info.view-protocol-details-button{ data: { protocol_id: protocol.id } }
         = t(:dashboard)[:protocols][:summary][:view_details1] + protocol_type + t(:dashboard)[:protocols][:summary][:view_details2]
-      = edit_protocol_button_display(protocol, protocol_role)
+      = edit_protocol_button_display(protocol, permission_to_edit)
     .clearfix
   .panel-body#protocol-summary
     %dl.dl-horizontal.pull-left
-      %dt #{protocol.type.capitalize} ID:
+      %dt #{protocol_type.capitalize} ID:
       %dd
         = protocol.try(:id)
 
@@ -25,7 +25,7 @@
       %dd
         = protocol.try(:short_title)
 
-      - if protocol.type == 'Study'
+      - if protocol_type == 'Study'
         %dt
           = t(:dashboard)[:protocols][:summary][:sponsor]
         %dd

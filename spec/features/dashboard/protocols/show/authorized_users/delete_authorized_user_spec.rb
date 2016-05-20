@@ -93,8 +93,8 @@ RSpec.feature 'User wants to delete an authorized user', js: true do
         page = Dashboard::Protocols::ShowPage.new
         page.load(id: protocol.id)
 
-        expect(page.authorized_users.first).to have_no_enabled_remove_button
-        expect(page.authorized_users.first).to have_disabled_remove_button
+        expect(page).not_to have_css '.delete-associated-user-button:not(.disabled)'
+        expect(page).to have_css '.delete-associated-user-button.disabled'
       end
     end
   end

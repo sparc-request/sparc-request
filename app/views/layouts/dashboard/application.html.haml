@@ -37,9 +37,11 @@
 
   %body#body
     #ie7_warning{style: 'display: none'}
-      %p= t('ie_warning.text1')
+      %p
+        = t('ie_warning.text1')
       %br
-      %p= t('ie_warning.text2')
+      %p
+        = t('ie_warning.text2')
 
     #container
       #processing_request.ui-corner-all{style: 'display:none'}
@@ -48,15 +50,15 @@
         %br
         = image_tag 'spinner.gif'
       #header
-        = render partial: 'shared/header_logos'
+        = render 'shared/header_logos', in_dashboard: true
         %input#current_user_id{type: 'hidden', value: @user.try(:id)}
-      = render partial: 'layouts/dashboard/dashboard_header', locals: { user: @user }
-
+      = render 'layouts/dashboard/dashboard_header', user: @user
 
       .notification_dialog
-      .flash= render "shared/flash"
+      .flash
+        = render "shared/flash"
       #inner-content
         = yield
   %footer
-    = render :partial => 'shared/piwik_tracking' if Rails.env == 'production'
-    = render partial: 'shared/modal'
+    = render 'shared/piwik_tracking' if Rails.env == 'production'
+    = render 'shared/modal'

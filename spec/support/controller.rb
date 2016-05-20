@@ -41,3 +41,18 @@ def stub_controller(opts = {})
     allow(controller).to receive(:authenticate_identity!) { }
   end
 end
+
+# Same as stub_controller, but for controllers which inherit from
+# Portal::BaseController
+def stub_portal_controller
+  before(:each) do
+    allow(controller).to receive(:authenticate_identity!) do
+    end
+
+    allow(controller).to receive(:current_identity) do
+      Identity.find_by_id(session[:identity_id])
+    end
+  end
+end
+
+alias :stub_catalog_manager_controller :stub_portal_controller

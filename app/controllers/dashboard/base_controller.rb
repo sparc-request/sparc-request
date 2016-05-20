@@ -43,16 +43,20 @@ class Dashboard::BaseController < ActionController::Base
   private
 
   def protocol_authorizer_view
-    @authorization = ProtocolAuthorizer.new(@protocol, @user)
-    unless @authorization.can_view?
+    @authorization  = ProtocolAuthorizer.new(@protocol, @user)
+    @admin          = !@user.authorized_admin_organizations.empty?
+
+    unless @authorization.can_view? || @admin
       @protocol = nil
       render partial: 'service_requests/authorization_error', locals: { error: 'You are not allowed to access this protocol.' }
     end
   end
 
   def protocol_authorizer_edit
-    @authorization = ProtocolAuthorizer.new(@protocol, @user)
-    unless @authorization.can_edit?
+    @authorization  = ProtocolAuthorizer.new(@protocol, @user)
+    @admin          = !@user.authorized_admin_organizations.empty?
+    
+    unless @authorization.can_edit? || @admin
       @protocol = nil
       render partial: 'service_requests/authorization_error', locals: { error: 'You are not allowed to edit this protocol.' }
     end

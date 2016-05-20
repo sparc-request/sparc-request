@@ -57,7 +57,7 @@ RSpec.describe 'Project Role' do
 
   describe "is only primary pi" do
 
-    let!(:project_role) {create(:project_role, protocol_id: @protocol.id, role: 'mentor')}
+    let!(:project_role) {create(:project_role, protocol_id: @protocol.id, role: 'mentor', identity_id: user2.id) }
 
     it "should return true if only one project role has a pi on the protocol" do
       expect(@project_role.is_only_primary_pi?).to eq(true)

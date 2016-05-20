@@ -154,7 +154,7 @@ def build_per_patient_per_visit_services
   let!(:clinical_provider)   { create(:clinical_provider, organization_id: program.id, identity_id: jug2.id) }
   let!(:available_status)    { create(:available_status, organization_id: program.id, status: 'submitted')}
   let!(:available_status2)   { create(:available_status, organization_id: program.id, status: 'draft')}
-  let!(:subsidy)             { Subsidy.auditing_enabled = false; create(:subsidy, pi_contribution: 2500, sub_service_request_id: sub_service_request.id)}
+  let!(:subsidy)             { Subsidy.auditing_enabled = false; create(:subsidy_without_validations, pi_contribution: 1000, sub_service_request_id: sub_service_request.id)}
   let!(:subsidy_map)         { create(:subsidy_map, organization_id: program.id) }
 end
 
@@ -171,7 +171,7 @@ def build_service_request
   let!(:core_62)             { create(:core, parent_id: program.id, abbreviation: "PWF Services") }
   let!(:sub_service_request) { create(:sub_service_request, ssr_id: "0001", service_request_id: service_request.id, organization_id: program.id,status: "draft")}
 
-
+  
   before :each do
     program.tag_list.add("ctrc")
 

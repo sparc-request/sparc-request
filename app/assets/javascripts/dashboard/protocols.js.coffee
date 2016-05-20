@@ -44,7 +44,7 @@ $(document).ready ->
       $.cookie('admin-ss-tab', null, {path: '/'})
 
       #  Protocol Index Begin
-      $(document).on 'click', '.protocols_index_row > .id,.title,.pis', ->
+      $(document).on 'click', '.protocols_index_row > .id, .protocols_index_row > .title, .protocols_index_row > .pis', ->
         #if you click on the row, it opens the protocol show
         protocol_id = $(this).parent().data('protocol-id')
         window.location = "/dashboard/protocols/#{protocol_id}"

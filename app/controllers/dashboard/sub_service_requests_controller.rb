@@ -26,18 +26,12 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
   respond_to :json, :js, :html
 
   def index
-    service_request       = ServiceRequest.find(params[:srid])
-    @protocol             = service_request.protocol
-    @admin_orgs           = @user.authorized_admin_organizations
-    @permission_to_edit   = params[:permission_to_edit] 
-    pre_filtered_ssrs     = service_request.sub_service_requests
-    @sub_service_requests = []
-
-    pre_filtered_ssrs.each do |ssr|
-      if ssr.should_be_displayed_for_user?(@user, @permission_to_edit)
-        @sub_service_requests << ssr
-      end
-    end
+    service_request         = ServiceRequest.find(params[:srid])
+    @protocol               = service_request.protocol
+    @admin_orgs             = @user.authorized_admin_organizations
+    @permission_to_edit     = params[:permission_to_edit] 
+    has_valid_protocol_role = @protocol.project_roles.where(identity_id: @user.id).where.not(project_rights: 'none').any?
+    @sub_service_requests   = service_request.sub_service_requests.reject { |ssr| !ssr.should_be_displayed_for_user?(@user, has_valid_protocol_role) }
   end
 
   def show

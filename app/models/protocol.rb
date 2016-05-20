@@ -130,7 +130,7 @@ class Protocol < ActiveRecord::Base
     available_filters: [
       :search_query,
       :for_identity_id,
-      :for_admin,
+      :for_admin_with_filter,
       :show_archived,
       :with_status,
       :with_core
@@ -160,15 +160,42 @@ class Protocol < ActiveRecord::Base
   scope :for_identity_id, -> (identity_id) {
     return nil if identity_id == '0'
     joins(:project_roles).
-    where(project_roles: { identity_id: identity_id }).
-    where.not(project_roles: { project_rights: 'none' })
+      where(project_roles: { identity_id: identity_id }).
+      where.not(project_roles: { project_rights: 'none' })
   }
 
   scope :for_admin, -> (identity_id) {
     # returns protocols with ssrs in orgs authorized for identity_id
     return nil if identity_id == '0'
     joins(:organizations).
-    merge( Organization.authorized_for_identity(identity_id) ).distinct
+      merge( Organization.authorized_for_identity(identity_id) ).distinct
+  }
+
+  # TODO: This is really, really slow. If you can think of a way to speed it up, please help
+  # To be used with the Protocol Filter
+  scope :for_admin_with_filter, -> (identity_id) {
+    return nil if identity_id == '0'
+    user      = Identity.find(identity_id)
+    protocols = joins(:organizations).
+                  merge( Organization.authorized_for_identity(identity_id) ).distinct.includes(:sub_service_requests)
+
+
+    # Display If:
+    # => User has valid Protocol Role
+    # => User has super user on Protocol's SSR's Organizations
+    # => User has no Service Providers on Protocol's SSR's Organizations
+    # => Any SRs should be displayed
+    protocols.reject do |protocol|
+      unless has_pr = protocol.has_valid_protocol_role?(identity_id) || !protocol.has_service_provider?(identity_id) # Because we got protocols for admin before, if they aren't a SP then they must be a super user
+        protocol.sub_service_requests.each do |ssr|
+          return true if ssr.should_be_displayed_for_user?(user, has_pr)
+        end
+      end
+
+      return false
+    end
+
+    Protocol.where(id: protocols)
   }
 
   scope :show_archived, -> (boolean) {
@@ -514,6 +541,14 @@ class Protocol < ActiveRecord::Base
     if remove_arms
       self.arms.destroy_all
     end
+  end
+
+  def has_valid_protocol_role?(identity_id)
+    project_roles.where(identity_id: identity_id).where.not(project_rights: 'none').any?
+  end
+
+  def has_service_provider?(identity_id)
+    Organization.for_protocol(self).joins(:service_providers).where(service_providers: { identity_id: identity_id }).any?
   end
 
   private

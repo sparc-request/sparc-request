@@ -575,20 +575,31 @@ class ServiceRequest < ActiveRecord::Base
     {:line_items => line_item_audits}
   end
 
-  def should_be_displayed_for_user(user, permission_to_edit)
-    if !permission_to_edit && user.authorized_admin_organizations.any?
-      sub_service_requests.each do |ssr|
-        if ssr.should_be_displayed_for_user?(user) # If any should be displayed, display SR
-          return true
-        end
-      end
-      return false # If no SSRs should be displayed, hide the SR
+  # Display if:
+  # => User has valid Protocol Role
+  # => User has super user on SR's SSR's organizations
+  # => User has no Service Providers on SR's SSR's organizations
+  # => Any SSRs should be displayed
+  def should_be_displayed_for_user?(user, has_valid_protocol_role)
+    if has_valid_protocol_role || has_super_user?(user.id) || !has_service_provider?(user.id)
+      return true
     else
-      return true # If there user is not an admin, we should not bog down their load time checking the SSRs
+      sub_service_requests.each do |sr|
+        return true if sr.should_be_displayed_for_user?(user, has_valid_protocol_role)
+      end
+      return false
     end
   end
 
   private
+
+  def has_super_user?(identity_id)
+    Organization.for_service_request(self).joins(:super_users).where(super_users: { identity_id: identity_id }).any?
+  end
+
+  def has_service_provider?(identity_id)
+    Organization.for_service_request(self).joins(:service_providers).where(service_providers: { identity_id: identity_id }).any?
+  end
 
   def set_original_submitted_date
     if self.submitted_at && !self.original_submitted_date

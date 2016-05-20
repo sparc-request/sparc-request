@@ -33,15 +33,17 @@
           .col-md-12
             = form.hidden_field :identity_id
             = form.hidden_field :show_archived
-            = form.hidden_field :for_admin
+            = form.hidden_field :for_admin_with_filter
             = form.hidden_field :for_identity_id
             = form.hidden_field :search_query
             = form.hidden_field :with_core
             = form.hidden_field :with_status
             .form-group
               = form.label :search_name, t(:dashboard)[:protocol_filters][:saved_filters][:modal][:name], class: "col-sm-4 control-label"
-              .col-sm-7= form.text_field :search_name, {class: 'form-control'}
+              .col-sm-7
+                = form.text_field :search_name, {class: 'form-control'}
       .modal-footer
         .center-block
-          %button.btn.btn-default{type: 'button', data: {dismiss: 'modal'}} Close
+          %button.btn.btn-default{type: 'button', data: {dismiss: 'modal'}}
+            = t(:actions)[:close]
           %input.btn.btn-primary{type: 'submit', value: 'Save'}

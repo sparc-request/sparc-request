@@ -57,6 +57,7 @@ class IdentitiesController < ApplicationController
     @protocol_type = session[:protocol_type]
 
     identity = Identity.find params[:identity][:id]
+    params[:identity].delete(:id) # we can't mass assign ID
     identity.update_attributes params[:identity]
 
     # {"identity_id"=>"11968", "first_name"=>"Colin", "last_name"=>"Alstad", "email"=>"alstad@musc.edu", "phone"=>"843-792-5378", "role"=>"pi", "role_other"=>"",
@@ -66,11 +67,13 @@ class IdentitiesController < ApplicationController
 
     # should check if this is an existing project role
     if params[:project_role][:id].blank?
+      params[:project_role].delete(:id) # we can't mass assign ID
       @project_role = ProjectRole.new params[:project_role]
       @project_role.set_default_rights
       @project_role.identity = identity
     else
       @project_role = ProjectRole.find params[:project_role][:id]
+      params[:project_role].delete(:id) # we can't mass assign ID
       @project_role.update_attributes params[:project_role]
       @project_role.set_default_rights
     end

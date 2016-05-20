@@ -128,6 +128,10 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
   def update
     attrs         = params[:protocol]
+
+    attrs[:start_date] = Time.strptime(attrs[:start_date], "%m-%d-%Y") if attrs[:start_date]
+    attrs[:end_date] =   Time.strptime(attrs[:end_date],   "%m-%d-%Y") if attrs[:end_date]
+
     @admin        = !@user.authorized_admin_organizations.empty?
     protocol_role = @protocol.project_roles.find_by(identity_id: @user.id)
     
@@ -138,6 +142,11 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
       flash[:success] = "#{@protocol.type} Updated!"
     else
       @errors = @protocol.errors
+    end
+
+    if params[:sub_service_request]
+      @sub_service_request = SubServiceRequest.find params[:sub_service_request][:id]
+      render "/dashboard/sub_service_requests/update"
     end
   end
 

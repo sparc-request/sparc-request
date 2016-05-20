@@ -628,7 +628,8 @@ class ServiceRequestsController < ApplicationController
       unless authorized
         @service_request     = nil
         @sub_service_request = nil
-        render 'service_requests/authorization_error', error: 'You are not allowed to edit this Request.'
+        render partial: 'service_requests/authorization_error',
+          locals: { error: 'You are not allowed to edit this Request.' }
       end
     end
   end

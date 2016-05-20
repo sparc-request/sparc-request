@@ -296,6 +296,7 @@ $(document).ready ->
       {
         displayKey: 'label'
         source: identities_bloodhound.ttAdapter()
+        limit: 100
       }
     )
     .on 'typeahead:select', (event, suggestion) ->

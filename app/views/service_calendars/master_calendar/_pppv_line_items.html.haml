@@ -137,7 +137,7 @@
           %td= link_to(image_tag('portal/cancel.png'), 'javascript:void(0);', :'data-line_items_visit_id' => line_items_visit.id, :'data-has_popup' => "true", :class => "delete_data")
         - else
           %td.pp_line_item_total{:class => "total_#{line_items_visit.id}"}= display_visit_based_direct_cost(line_items_visit)
-          %td.pp_line_item_study_total{:class => "total_#{line_items_visit.id}_per_study"}= display_visit_based_direct_cost_per_study(line_items_visit)
+          %td.pp_line_item_study_total{:colspan => 2, :class => "total_#{line_items_visit.id}_per_study"}= display_visit_based_direct_cost_per_study(line_items_visit)
 
 - unless @review
   = render :partial => "/service_calendars/master_calendar/pppv_totals", :locals => {:service_request => service_request, :arm => arm, :tab => @tab, :portal => @portal, line_items_visits: line_items_visits}

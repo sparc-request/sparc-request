@@ -69,7 +69,7 @@ RSpec.describe "service calendar", js: true do
 
       describe 'unit minimum too low' do
 
-        it 'should throw js error' do
+        it 'should retain original total direct cost' do
           fill_in "service_request_line_items_attributes_#{line_item.id}_units_per_quantity", with: 1
           page.execute_script('$(".units_per_quantity").change()')
           wait_for_javascript_to_finish
@@ -77,6 +77,9 @@ RSpec.describe "service calendar", js: true do
           fill_in "service_request_line_items_attributes_#{line_item.id}_quantity", with: 0
           wait_for_javascript_to_finish
           page.execute_script('$(".line_item_quantity").change()')
+          wait_for_javascript_to_finish
+          
+          expect(page).to have_css('.otf_total_direct_cost', text: '$50.00')
         end
       end
 
@@ -91,6 +94,18 @@ RSpec.describe "service calendar", js: true do
           wait_for_javascript_to_finish
 
           expect(page).to have_css('#unit_max_error', text: 'more than the maximum allowed')
+        end
+
+        it 'should retain original total direct cost' do
+          fill_in "service_request_line_items_attributes_#{line_item.id}_units_per_quantity", with: 1
+          page.execute_script('$(".units_per_quantity").change()')
+          wait_for_javascript_to_finish
+
+          fill_in "service_request_line_items_attributes_#{line_item.id}_quantity", with: 55
+          page.execute_script('$(".line_item_quantity").change()')
+          wait_for_javascript_to_finish
+
+          expect(page).to have_css('.otf_total_direct_cost', text: '$50.00')
         end
       end
     end

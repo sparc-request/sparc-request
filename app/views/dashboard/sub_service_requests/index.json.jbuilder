@@ -1,5 +1,5 @@
 json.(@sub_service_requests) do |ssr|
-	json.srid			pretty_ssr_id(@protocol, ssr)
+	json.srid			ssr.display_id
 	json.organization	ssr.org_tree_display
 	json.status			AVAILABLE_STATUSES[ssr.status]
 	json.notifications	ssr_notifications_display(ssr, @user)

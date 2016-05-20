@@ -122,7 +122,7 @@ class SubServiceRequest < ActiveRecord::Base
   end
 
   def display_id
-    return "#{service_request.try(:protocol).try(:id)}-#{ssr_id}"
+    return "#{service_request.try(:protocol).try(:id)}-#{ssr_id || 'DRAFT'}"
   end
 
   def has_subsidy?

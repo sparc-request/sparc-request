@@ -124,8 +124,10 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def update
-    attrs         = params[:protocol]
-    protocol_role = @protocol.project_roles.find_by(identity_id: @user.id)
+    attrs               = params[:protocol]
+    attrs[:start_date]  = Time.strptime(attrs[:start_date], "%m-%d-%Y") if attrs[:start_date]
+    attrs[:end_date]    =   Time.strptime(attrs[:end_date],   "%m-%d-%Y") if attrs[:end_date]
+    protocol_role       = @protocol.project_roles.find_by(identity_id: @user.id)
     
     # admin is not able to activate study_type_question_group
     if @admin && protocol_role.nil? && @protocol.update_attributes(attrs)
@@ -134,6 +136,11 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
       flash[:success] = "#{@protocol.type} Updated!"
     else
       @errors = @protocol.errors
+    end
+
+    if params[:sub_service_request]
+      @sub_service_request = SubServiceRequest.find params[:sub_service_request][:id]
+      render "/dashboard/sub_service_requests/update"
     end
   end
 

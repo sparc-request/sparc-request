@@ -229,10 +229,6 @@ module ServiceCalendarHelper
     options_for_select(arr)
   end
 
-  # def build_visits_select arm, page
-  #   select_tag "visits-select-for-#{arm.id}", visits_select_options(arm, page), class: 'form-control selectpicker', data: { arm_id: "#{arm.id}", page: page }
-  # end
-  # 
   def display_line_items_status(line_item)
     AVAILABLE_STATUSES[line_item.sub_service_request.status]
   end

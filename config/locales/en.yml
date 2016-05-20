@@ -908,6 +908,7 @@ en:
     color_blank: "Select a Color"
     core_facility: "Core/Facility Based Services"
     core: "Core"
+    eap_id: 'EAP ID'
     cpt_code: "CPT Code"
     css_class: "Color"
     ctrc_label: "Nexus"

@@ -24,18 +24,18 @@ module Dashboard::NotificationsHelper
     notification.messages.length - 1 == index ? 'shown' : 'hidden'
   end
 
-  def notification_subject_line(notification)
-    subject = notification.subject.present? ? notification.subject : ""
+  def notification_subject_line(notification, with_body=true)
+    protocol = notification.sub_service_request_id.blank? ? '' : "[#{notification.sub_service_request.display_id}] - "
+    subject = notification.subject.present? ? notification.subject : t(:dashboard)[:messages][:index][:no_subject]
     body    = notification.messages.length > 0 ? notification.messages.last.body : ""
 
-    raw(
-      content_tag(:div, 
-        truncate_string_length(subject), class: "text-info"
-      )+
-      content_tag(:div, 
-        ' - ' + truncate_string_length(body), class: "text-muted"
-      )
-    )
+    returning_html = content_tag(:div, 
+                       content_tag(:span, protocol) +
+                       content_tag(:span, truncate_string_length(subject)), class: "text-info"
+                     )
+
+    returning_html += content_tag(:div, ' - ' + truncate_string_length(body), class: "text-muted") if with_body
+    raw returning_html
   end
 
   def notification_time_display(notification)

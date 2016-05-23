@@ -81,4 +81,20 @@ class SurveyResponseReport < ReportingModule
   end
 
   ##################  END QUERY SETUP   #####################
+
+  private
+
+  def create_report(worksheet)
+    super
+
+    # only add satisfaction rate to the bottom of reports for the system satisfaction survey
+    if params["survey_id"] == Survey.find_by(access_code: "system-satisfaction-survey").id.to_s
+      record_answers = records.map { |record| record.responses.where(question_id: 1).first.try(:answer).try(:text) }.compact
+      yes_answers = record_answers.select { |answer| answer == "Yes" }
+      percent_satisifed = yes_answers.length.to_f / record_answers.length * 100
+
+      worksheet.add_row([])
+      worksheet.add_row(["Overall Satisfaction Rate", "", sprintf("%.2f%%", percent_satisifed)])
+    end
+  end
 end

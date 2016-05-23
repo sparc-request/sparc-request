@@ -25,7 +25,7 @@
         %span{aria: {hidden:'true'}} &times;
         %span.sr-only &times;
       %h4.modal-title.text-center
-        = notification.subject || t(:dashboard)[:messages][:index][:no_subject]
+        = notification_subject_line(notification, false)
     .modal-body
       - if messages.any?
         .details-table

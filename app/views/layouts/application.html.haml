@@ -70,14 +70,12 @@
             = link_to image_tag("#{CUSTOM_ASSET_PATH}about.png", class: 'button-hover'), "javascript:void(0);", class: "about_sparc_request"
           - else
             = link_to image_tag("#{CUSTOM_ASSET_PATH}about.png", class: 'button-hover'), ABOUT_SPARC_URL, target: "_blank"
-        #service_request_protocol_id{class: @sub_service_request ? "" : "hidden"}
+        #service_request_protocol_id{class: @sub_service_request.present? || @service_request.present? ? "" : "hidden"}
           %span
             &nbsp;
-            = show_friendly_ssr_id(@sub_service_request) if @sub_service_request
+            = protocol_id_display(@sub_service_request, @service_request)
 
       #content.container_12.row
-        .flash
-          = render "shared/flash"
         = content_for?(:content) ? yield(:content) : yield
       .clear
       = render 'shared/footer'

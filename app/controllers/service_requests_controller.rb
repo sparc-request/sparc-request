@@ -77,7 +77,7 @@ class ServiceRequestsController < ApplicationController
     validates = params["validates"]
 
     if (@validation_groups[location].nil? or @validation_groups[location].map{|vg| @service_request.group_valid? vg.to_sym}.all?) and (validates.blank? or @service_request.group_valid? validates.to_sym) and errors.empty?
-      @service_request.save(:validate => false)
+      @service_request.save(validate: false)
       redirect_to "/service_requests/#{@service_request.id}/#{location}#{additional_params}"
     else
       if @validation_groups[location]
@@ -226,13 +226,13 @@ class ServiceRequestsController < ApplicationController
     @protocol = @service_request.protocol
     # As the service request leaves draft, so too do the arms
     @protocol.arms.each do |arm|
-      arm.update_attributes({:new_with_draft => false})
+      arm.update_attributes({new_with_draft: false})
     end
     @service_list = @service_request.service_list
 
     send_confirmation_notifications
 
-    render :formats => [:html]
+    render formats: [:html]
   end
 
   def confirmation
@@ -243,7 +243,7 @@ class ServiceRequestsController < ApplicationController
     @protocol = @service_request.protocol
     # As the service request leaves draft, so too do the arms
     @protocol.arms.each do |arm|
-      arm.update_attributes({:new_with_draft => false})
+      arm.update_attributes({new_with_draft: false})
       if @protocol.service_requests.map {|x| x.sub_service_requests.map {|y| y.in_work_fulfillment}}.flatten.include?(true)
         arm.populate_subjects
       end
@@ -251,7 +251,7 @@ class ServiceRequestsController < ApplicationController
     @service_list = @service_request.service_list
 
     @service_request.sub_service_requests.each do |ssr|
-      ssr.update_attributes(:nursing_nutrition_approved => false, :lab_approved => false, :imaging_approved => false, :committee_approved => false)
+      ssr.update_attributes(nursing_nutrition_approved: false, lab_approved: false, imaging_approved: false, committee_approved: false)
     end
 
     send_confirmation_notifications
@@ -263,7 +263,7 @@ class ServiceRequestsController < ApplicationController
       if @protocol.selected_for_epic
         @protocol.ensure_epic_user
         if QUEUE_EPIC
-          EpicQueue.create(:protocol_id => @protocol.id) unless EpicQueue.where(:protocol_id => @protocol.id).size == 1
+          EpicQueue.create(protocol_id: @protocol.id) unless EpicQueue.where(protocol_id: @protocol.id).size == 1
         else
           @protocol.awaiting_approval_for_epic_push
           send_epic_notification_for_user_approval(@protocol)
@@ -271,14 +271,14 @@ class ServiceRequestsController < ApplicationController
       end
     end
 
-    render :formats => [:html]
+    render formats: [:html]
   end
 
   def send_confirmation_notifications
     if @service_request.previous_submitted_at.nil?
       send_notifications(@service_request, @sub_service_request)
     elsif service_request_has_changed_ssr?(@service_request)
-      xls = render_to_string :action => 'show', :formats => [:xlsx]
+      xls = render_to_string action: 'show', formats: [:xlsx]
       @service_request.sub_service_requests.each do |ssr|
         if ssr_has_changed?(@service_request, ssr)
           send_ssr_service_provider_notifications(@service_request, ssr, xls)
@@ -289,11 +289,11 @@ class ServiceRequestsController < ApplicationController
 
   def approve_changes
     @service_request = ServiceRequest.find params[:id]
-    @approval = @service_request.approvals.where(:id => params[:approval_id]).first
+    @approval = @service_request.approvals.where(id: params[:approval_id]).first
     @previously_approved = true
 
     if @approval and @approval.identity.nil?
-      @approval.update_attributes(:identity_id => current_user.id, :approval_date => Time.now)
+      @approval.update_attributes(identity_id: current_user.id, approval_date: Time.now)
       @previously_approved = false
     end
   end
@@ -331,7 +331,7 @@ class ServiceRequestsController < ApplicationController
     existing_service_ids = @service_request.line_items.map(&:service_id)
 
     if existing_service_ids.include? id
-      render :text => 'Service exists in line items'
+      render text: 'Service exists in line items'
     else
       service = Service.find id
 
@@ -391,7 +391,7 @@ class ServiceRequestsController < ApplicationController
       ssr = @service_request.sub_service_requests.find_by_organization_id(org_id)
       if !['first_draft', 'draft'].include?(@service_request.status) and !@service_request.submitted_at.nil? and @service_request.submitted_at > ssr.created_at
         @protocol = @service_request.protocol
-        xls = @protocol.nil? ? nil : render_to_string(:action => 'show', :formats => [:xlsx])
+        xls = @protocol.nil? ? nil : render_to_string(action: 'show', formats: [:xlsx])
         send_ssr_service_provider_notifications(@service_request, ssr, xls, ssr_deleted=true)
       end
       ssr.destroy
@@ -400,14 +400,14 @@ class ServiceRequestsController < ApplicationController
     @service_request.reload
 
     @line_items = (@sub_service_request.nil? ? @service_request.line_items : @sub_service_request.line_items)
-    render :formats => [:js]
+    render formats: [:js]
   end
 
   def ask_a_question
     from = params['quick_question']['email'].blank? ? NO_REPLY_FROM : params['quick_question']['email']
     body = params['quick_question']['body'].blank? ? 'No question asked' : params['quick_question']['body']
 
-    quick_question = QuickQuestion.create :to => DEFAULT_MAIL_TO, :from => from, :body => body
+    quick_question = QuickQuestion.create to: DEFAULT_MAIL_TO, from: from, body: body
     Notifier.ask_a_question(quick_question).deliver
   end
 
@@ -415,10 +415,10 @@ class ServiceRequestsController < ApplicationController
     feedback = Feedback.new(params[:feedback])
     if feedback.save
       Notifier.provide_feedback(feedback).deliver_now
-      render :nothing => true
+      render nothing: true
     else
       respond_to do |format|
-        format.js { render :status => 403, :json => feedback.errors.to_a.map {|k,v| "#{k.humanize} #{v}".rstrip + '.'} }
+        format.js { render status: 403, json: feedback.errors.to_a.map {|k,v| "#{k.humanize} #{v}".rstrip + '.'} }
       end
     end
   end
@@ -450,7 +450,7 @@ class ServiceRequestsController < ApplicationController
 
   # Send notifications to all users.
   def send_notifications(service_request, sub_service_request)
-    xls = render_to_string :action => 'show', :formats => [:xlsx]
+    xls = render_to_string action: 'show', formats: [:xlsx]
     send_user_notifications(service_request, xls)
 
     if sub_service_request then
@@ -562,7 +562,7 @@ class ServiceRequestsController < ApplicationController
 
         # add access
         to_add.each do |org_id|
-          sub_service_request = @service_request.sub_service_requests.find_or_create_by(:organization_id => org_id.to_i)
+          sub_service_request = @service_request.sub_service_requests.find_or_create_by(organization_id: org_id.to_i)
           sub_service_request.documents << doc_object
           sub_service_request.save
         end
@@ -579,17 +579,17 @@ class ServiceRequestsController < ApplicationController
         if doc_object
           if @sub_service_request and doc_object.sub_service_requests.size > 1
             new_doc = document ? document : doc_object.document # if no new document provided use the old document
-            newDocument = Document.create :document => new_doc, :doc_type => params[:doc_type], :doc_type_other => params[:doc_type_other], :service_request_id => @service_request.id
+            newDocument = Document.create(document: new_doc, doc_type: params[:doc_type], doc_type_other: params[:doc_type_other], service_request_id: @service_request.id)
             @sub_service_request.documents << newDocument
             @sub_service_request.documents.delete doc_object
             @sub_service_request.save
           else
             new_doc = document || doc_object.document
-            doc_object.update_attributes(:document => new_doc, :doc_type => doc_type, :doc_type_other => doc_type_other)
+            doc_object.update_attributes(document: new_doc, doc_type: doc_type, doc_type_other: doc_type_other)
           end
         end
       else # new document
-        newDocument = Document.create :document => document, :doc_type => doc_type, :doc_type_other => doc_type_other, :service_request_id => @service_request.id
+        newDocument = Document.create(document: document, doc_type: doc_type, doc_type_other: doc_type_other, service_request_id: @service_request.id)
         process_ssr_organization_ids.each do |org_id|
           sub_service_request = @service_request.sub_service_requests.find_by_organization_id org_id.to_i
           sub_service_request.documents << newDocument
@@ -628,7 +628,7 @@ class ServiceRequestsController < ApplicationController
       unless authorized
         @service_request     = nil
         @sub_service_request = nil
-        render partial: 'service_requests/authorization_error', locals: { error: 'You are not allowed to edit this Request.' }
+        render 'service_requests/authorization_error', error: 'You are not allowed to edit this Request.'
       end
     end
   end

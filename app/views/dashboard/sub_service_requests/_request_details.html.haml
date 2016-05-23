@@ -63,9 +63,9 @@
     .row
       .col-xs-12
         .col-xs-3
-          = text_field_tag "protocol_start_date_picker", protocol.try(:start_date).try(:strftime, '%D'), class: 'date datetimepicker form-control', readonly: true
+          = text_field_tag "protocol_start_date_picker", protocol.try(:start_date).try(:strftime, '%D'), class: 'date datetimepicker form-control', :'data-protocol_id' => sub_service_request.try(:protocol).try(:id), :'data-sub_service_request_id' => sub_service_request.try(:id)
         .col-xs-3
-          = text_field_tag "protocol_end_date_picker", protocol.try(:end_date).try(:strftime, '%D'), class: 'date datetimepicker form-control', readonly: true
+          = text_field_tag "protocol_end_date_picker", protocol.try(:end_date).try(:strftime, '%D'), class: 'date datetimepicker form-control', :'data-protocol_id' => sub_service_request.try(:protocol).try(:id), :'data-sub_service_request_id' => sub_service_request.try(:id)
         .col-xs-3
           = text_field_tag "sub_service_request_consult_arranged_date_picker", sub_service_request.try(:consult_arranged_date).try(:strftime, '%D'), class: 'date datetimepicker form-control', :'data-sub_service_request_id' => sub_service_request.try(:id)
         .col-xs-3

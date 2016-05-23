@@ -164,7 +164,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     @protocol.populate_for_edit
   
     flash[:success] = "Protocol Type Updated!"
-    if @protocol_type == "Study" && @protocol.sponsor_name.empty? && @protocol.selected_for_epic.nil?
+    if @protocol_type == "Study" && @protocol.sponsor_name.nil? && @protocol.selected_for_epic.nil?
       flash[:alert] = "Please complete Sponsor Name and Publish Study in Epic"
     end
   end

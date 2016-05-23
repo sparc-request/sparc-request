@@ -134,11 +134,11 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
     @admin        = !@user.authorized_admin_organizations.empty?
     protocol_role = @protocol.project_roles.find_by(identity_id: @user.id)
-    
+
     # admin is not able to activate study_type_question_group
     if @admin && protocol_role.nil? && @protocol.update_attributes(attrs)
       flash[:success] = "#{@protocol.type} Updated!"
-    elsif (!@admin || @admin && protocol_role.can_edit?) && @protocol.update_attributes(attrs.merge(study_type_question_group_id: StudyTypeQuestionGroup.active_id))
+    elsif (!@admin || @admin && !protocol_role.nil? && protocol_role.can_edit?) && @protocol.update_attributes(attrs.merge(study_type_question_group_id: StudyTypeQuestionGroup.active_id))
       flash[:success] = "#{@protocol.type} Updated!"
     else
       @errors = @protocol.errors
@@ -159,11 +159,14 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
     @protocol.update_attribute(:type, @protocol_type)
     conditionally_activate_protocol
-
+    
     @protocol = Protocol.find(@protocol.id)#Protocol type has been converted, this is a reload
     @protocol.populate_for_edit
-    
+  
     flash[:success] = "Protocol Type Updated!"
+    if @protocol_type == "Study" && @protocol.sponsor_name.empty? && @protocol.selected_for_epic.nil?
+      flash[:alert] = "Please complete Sponsor Name and Publish Study in Epic"
+    end
   end
 
   def archive

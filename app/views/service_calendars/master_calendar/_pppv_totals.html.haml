@@ -27,8 +27,7 @@
     - 5.times do |i|
       %td{:class => "visit_column_#{i + 1} max_direct_per_patient arm_#{arm.id}"}
     %td{:class => "pp_max_total_direct_cost arm_#{arm.id}"}= display_max_total_direct_cost_per_patient arm, line_items_visits
-    - if @merged
-      %td &nbsp;
+    %td{:colspan => 2} &nbsp;
 
   - if USE_INDIRECT_COST
     %tr.totals_section{:class => cycle('odd', '', :name => 'pppvs')}
@@ -38,8 +37,7 @@
       - 5.times do |i|
         %td{:class => "visit_column_#{i + 1} max_indirect_per_patient arm_#{arm.id}"}
       %td{:class => "pp_max_total_indirect_cost arm_#{arm.id}"}= display_max_total_indirect_cost_per_patient arm, line_items_visits
-      - if @merged
-        %td &nbsp;
+      %td &nbsp;
 
   %tr.totals_section{:class => cycle('odd', '', :name => 'pppvs')}
     %td{:colspan => colspan}= t(:calendar_page)[:labels][:maximum_per]
@@ -48,12 +46,11 @@
     - 5.times do |i|
       %td{:class => "visit_column_#{i + 1} max_total_per_patient arm_#{arm.id}"}
     %td{:class => "pp_max_total arm_#{arm.id}"}= display_max_total_cost_per_patient arm, line_items_visits
-    -if @merged
-      %td &nbsp;
+    %td{:colspan => 2} &nbsp;
 
   %tr.totals_section.grand-totals{:class => cycle('odd', '', :name => 'pppvs')}
     %td{:colspan => colspan}= t(:calendar_page)[:labels][:total_costs] + " -- " + arm.name
     -unless @merged || @tab != 'template'
-      %td &nbsp;
+      %td{:colspan => 2} &nbsp;
     %td{:colspan => 6}
-    %td{:colspan => 2, :class => "pp_total arm_#{arm.id}"}= display_total_cost_per_arm arm, line_items_visits
+    %td{:class => "pp_total arm_#{arm.id}"}= display_total_cost_per_arm arm, line_items_visits

@@ -22,12 +22,13 @@
 
 
   - if @review #display review calendar pppv header
+    %th{:rowspan => 2}= t(:calendar_page)[:headers][:status]
     %th.your_cost_header{:rowspan => 2}= t(:calendar_page)[:headers][:your_cost]
     %th.number_of_subjects_header{:rowspan => 2}= t(:calendar_page)[:headers][:subjects]
     %th{:colspan => 5, :height => 40, :width => 375}
       = generate_visit_navigation(arm, @service_request, @pages, tab, portal, portal ? @sub_service_request.try(:id) : nil)
     %th{:rowspan => 2}= t(:calendar_page)[:headers][:total_per_patient]
-    %th.total_per_study{:rowspan => 2, :colspan => 2}= t(:calendar_page)[:headers][:total_per_study]
+    %th.total_per_study{:rowspan => 2}= t(:calendar_page)[:headers][:total_per_study]
 
     %tr.table_header
       = generate_visit_header_row arm, @service_request, @pages[arm.id].to_i, @sub_service_request

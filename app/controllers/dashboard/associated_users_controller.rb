@@ -92,10 +92,9 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
         @protocol_type            = @protocol.type
         protocol_role             = updater.protocol_role
         @permission_to_edit       = protocol_role.can_edit?
-        @has_valid_protocol_role  = protocol_role.can_view?
 
         #If the user sets themselves to member and they're not an admin, go to dashboard
-        @return_to_dashboard = !(@has_valid_protocol_role || @admin)
+        @return_to_dashboard = !protocol_role.can_view? && !@admin
       end
 
       flash.now[:success] = 'Authorized User Updated!'
@@ -118,11 +117,10 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
     if @current_user_destroyed  = protocol_role_clone.identity_id == @user.id
       @protocol_type            = @protocol.type
       @permission_to_edit       = false
-      @has_valid_protocol_role  = false
       @admin                    = Protocol.for_admin(@user.id).include?(@protocol)
 
       #If the user sets themselves to member and they're not an admin, go to dashboard
-      @return_to_dashboard = !(@has_valid_protocol_role || @admin)
+      @return_to_dashboard = !@admin
     end
 
     flash.now[:alert] = 'Authorized User Removed!'

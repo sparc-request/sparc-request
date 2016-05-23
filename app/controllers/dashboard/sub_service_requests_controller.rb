@@ -195,7 +195,7 @@ private
   end
 
   def authorize_admin
-    unless @user.authorized_admin_organizations.include?(@sub_service_request.organization)
+    unless (@user.authorized_admin_organizations & @sub_service_request.org_tree).any?
       @protocol = nil
       render partial: 'service_requests/authorization_error', locals: { error: 'You are not allowed to access this Sub Service Request.', in_dashboard: false }
     end

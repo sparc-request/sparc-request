@@ -17,23 +17,22 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 .clear
 #institution_accordion
   - institutions.each do |institution|
     - next unless institution.is_available? or institution.is_available.nil?
-    %h3{:class => institution.css_class}
+    %h3{class: institution.css_class}
       = link_to institution.name, update_description_catalog_path(institution)
     %div.institution
       .provider_accordion
         - institution.providers.order('`order`').each do |provider|
           - next unless provider.is_available? or provider.is_available.nil?
           - next if @sub_service_request and (@sub_service_request.organization != provider and @sub_service_request.organization.parents.exclude?(provider))
-          %h3{:class => "#{provider.css_class} provider_header"}
+          %h3{class: "#{provider.css_class} provider_header"}
             = link_to provider.name, update_description_catalog_path(provider)
           %div.provider
             - provider.programs.order('`order`').each do |program|
               - next unless (program.is_available? || program.is_available.nil?) && program.has_active_pricing_setup
               - next if @sub_service_request and (@sub_service_request.organization != program and @sub_service_request.organization.parents.exclude?(program))
-              %h4{ :class => "#{cycle('even', provider.css_class + '-odd')}"  }
-                = link_to program.name, update_description_catalog_path(program, :sub_service_request_id => (@sub_service_request ? @sub_service_request.id : nil)), :class => 'program-link', :remote => true, :method => :post
+              %h4{ class: "#{cycle('even', provider.css_class + '-odd')}"  }
+                = link_to program.name, update_description_catalog_path(program, sub_service_request_id: (@sub_service_request ? @sub_service_request.id : nil)), class: 'program-link', remote: true, method: :post

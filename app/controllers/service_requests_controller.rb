@@ -105,6 +105,7 @@ class ServiceRequestsController < ApplicationController
 
   def catalog
     # uses a before filter defined in application controller named 'prepare_catalog', extracted so that devise controllers could use as well
+    @locked = params[:locked]
   end
 
   def protocol
@@ -619,16 +620,19 @@ class ServiceRequestsController < ApplicationController
 
   def authorize_protocol_edit_request
     if current_user
-      authorized =  if @sub_service_request
+      authorized  = if @sub_service_request
                       current_user.can_edit_sub_service_request?(@sub_service_request)
                     else
                       current_user.can_edit_service_request?(@service_request)
                     end
 
-      unless authorized
+      protocol = @sub_service_request ? @sub_service_request.service_request.protocol : @service_request.protocol
+
+      unless authorized || protocol.project_roles.find_by(identity: current_user).present?
         @service_request     = nil
         @sub_service_request = nil
-        render 'service_requests/authorization_error', error: 'You are not allowed to edit this Request.'
+        
+        render partial: 'service_requests/authorization_error', locals: { error: 'You are not allowed to edit this Request.', in_dashboard: false }
       end
     end
   end

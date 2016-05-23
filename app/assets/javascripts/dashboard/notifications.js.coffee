@@ -23,9 +23,6 @@ $(document).ready ->
   $(document).on 'click', '#messages-btn', ->
     window.location = '/dashboard/notifications'
 
-  $(document).on 'click', '#epic-queue-btn', ->
-    window.location = '/dashboard/epic_queues'
-
   $(document).on('click', '.notifications_row > td.user,td.subject,td.time', ->
     #if you click on the row, it opens the notification show
     row_index   = $(this).parents('tr').data('index')

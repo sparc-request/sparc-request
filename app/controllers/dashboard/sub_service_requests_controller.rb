@@ -190,14 +190,14 @@ private
 
     if (request.get? && !authorized_user.can_view?) || (!request.get? && !authorized_user.can_edit?)
       @protocol = nil
-      render partial: 'service_requests/authorization_error', locals: { error: 'You are not allowed to access this protocol.', in_dashboard: false }
+      render partial: 'service_requests/authorization_error', locals: { error: 'You are not allowed to access this protocol.' }
     end
   end
 
   def authorize_admin
     unless (@user.authorized_admin_organizations & @sub_service_request.org_tree).any?
       @protocol = nil
-      render partial: 'service_requests/authorization_error', locals: { error: 'You are not allowed to access this Sub Service Request.', in_dashboard: false }
+      render partial: 'service_requests/authorization_error', locals: { error: 'You are not allowed to access this Sub Service Request.' }
     end
   end
 

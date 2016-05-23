@@ -147,27 +147,27 @@ RSpec.describe 'service request list', js: true do
         organization_id: organization.id)
     end
 
-    scenario 'user clicks "Edit Original" button' do
+    scenario 'user clicks "Modify Request" button' do
       page = go_to_show_protocol(protocol.id)
 
-      page.service_requests.first.edit_original_button.click
+      page.service_requests.first.modify_request_button.click
 
       expect(URI.parse(current_url).path).to eq "/service_requests/#{service_request.id}/catalog"
     end
 
-    scenario 'user clicks "View SSR" button' do
+    scenario 'user clicks "View" button' do
       page = go_to_show_protocol(protocol.id)
 
-      page.service_requests.first.ssrs.first.view_ssr_button.click
+      page.service_requests.first.ssrs.first.view_button.click
 
       page.wait_for_view_ssr_modal
       expect(page).to have_view_ssr_modal
     end
 
-    scenario 'user clicks "Edit SSR" button' do
+    scenario 'user clicks "Edit" button' do
       page = go_to_show_protocol(protocol.id)
 
-      page.service_requests.first.ssrs.first.edit_ssr_button.click
+      page.service_requests.first.ssrs.first.edit_button.click
 
       expect(URI.parse(current_url).path).to eq "/service_requests/#{service_request.id}/catalog"
     end
@@ -175,6 +175,7 @@ RSpec.describe 'service request list', js: true do
     scenario 'user clicks "Admin Edit" button' do
       page = go_to_show_protocol(protocol.id)
 
+      save_and_open_screenshot
       page.service_requests.first.ssrs.first.admin_edit_button.click
 
       expect(URI.parse(current_url).path).to eq '/dashboard/sub_service_requests/9999'

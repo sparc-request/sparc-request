@@ -265,7 +265,8 @@ RSpec.describe "filters", js: :true do
           create_protocol(archived: false, short_title: "Protocol2")
 
           visit_protocols_index_page
-          @page.filter_protocols.my_protocols_checkbox.click
+
+          @page.filter_protocols.my_admin_organizations_checkbox.click
           @page.filter_protocols.apply_filter_button.click
 
           expect(@page.search_results).to have_protocols(count: 2)

@@ -38,34 +38,43 @@ RSpec.describe 'requests modal', js: true do
       organization_id: organization.id)
   end
 
-  context 'user clicks "Edit Original" button' do
+  context 'user clicks "Modify Request" button' do
     it 'should take user to SPARC homepage' do
       page = visit_protocols_index_page
       page.search_results.protocols.first.requests_button.click
       expect(page).to have_requests_modal
-      page.requests_modal.service_requests.first.edit_original_button.click
+      page.requests_modal.service_requests.first.modify_request_button.click
+      wait_for_javascript_to_finish
 
       expect(URI.parse(current_url).path).to eq "/service_requests/#{service_request.id}/catalog"
     end
   end
 
-  context 'user clicks "View SSR" button' do
+  context 'user clicks "View" button' do
     it 'should reveal modal containing study schedule' do
       page = visit_protocols_index_page
       page.search_results.protocols.first.requests_button.click
-      expect(page).to have_requests_modal
-      page.requests_modal.service_requests.first.sub_service_requests.first.view_ssr_button.click
+      wait_for_javascript_to_finish
 
-      expect(page).to have_view_ssr_modal
+      expect(page).to have_requests_modal
+
+      page.requests_modal.service_requests.first.sub_service_requests.first.view_button.click
+      wait_for_javascript_to_finish
+
+      expect(page).to have_selector ".modal-dialog.user-view-ssr-modal"
     end
   end
 
-  context 'user clicks "Edit SSR" button' do
+  context 'user clicks "Edit" button' do
     it 'should take user to SPARC homepage' do
       page = visit_protocols_index_page
       page.search_results.protocols.first.requests_button.click
+      wait_for_javascript_to_finish
+      
       expect(page).to have_requests_modal
-      page.requests_modal.service_requests.first.sub_service_requests.first.edit_ssr_button.click
+
+      page.requests_modal.service_requests.first.sub_service_requests.first.edit_button.click
+      wait_for_javascript_to_finish
 
       expect(URI.parse(current_url).path).to eq "/service_requests/#{service_request.id}/catalog"
     end
@@ -75,8 +84,11 @@ RSpec.describe 'requests modal', js: true do
     it 'should take user to Dashboard SubServiceRequest show' do
       page = visit_protocols_index_page
       page.search_results.protocols.first.requests_button.click
+      wait_for_javascript_to_finish
       expect(page).to have_requests_modal
+
       page.requests_modal.service_requests.first.sub_service_requests.first.admin_edit_button.click
+      wait_for_javascript_to_finish
 
       expect(URI.parse(current_url).path).to eq '/dashboard/sub_service_requests/9999'
     end

@@ -27,6 +27,9 @@
         = show_welcome_message(user)
     %ul.nav.navbar-nav.navbar-right
       %li
+        - if QUEUE_EPIC_EDIT_LDAP_UIDS.include?(current_user.ldap_uid)
+          %button.btn.btn-info.navbar-btn#epic-queue-btn{ type: 'button'}
+            = t(:dashboard)[:navbar][:epic_queue]
         %button.btn.btn-danger.navbar-btn#messages-btn{ type: 'button'}
           = t(:dashboard)[:navbar][:messages]
           %span.badge

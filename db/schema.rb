@@ -10,6 +10,7 @@
 # you'll amass, the slower it'll run and the greater likelihood for issues).
 #
 # It's strongly recommended that you check this file into your version control system.
+
 ActiveRecord::Schema.define(version: 20160523164445) do
 
   create_table "admin_rates", force: :cascade do |t|
@@ -881,6 +882,7 @@ ActiveRecord::Schema.define(version: 20160523164445) do
     t.boolean  "one_time_fee",                                                 default: false
     t.integer  "line_items_count",      limit: 4,                              default: 0
     t.text     "components",            limit: 65535
+    t.integer  "eap_id",                limit: 4
   end
 
   add_index "services", ["is_available"], name: "index_services_on_is_available", using: :btree

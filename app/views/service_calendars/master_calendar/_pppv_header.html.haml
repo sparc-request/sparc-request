@@ -22,6 +22,7 @@
 
 
   - if @review #display review calendar pppv header
+    %th{:rowspan => 2}= t(:calendar_page)[:headers][:status]
     %th.your_cost_header{:rowspan => 2}= t(:calendar_page)[:headers][:your_cost]
     %th.number_of_subjects_header{:rowspan => 2}= t(:calendar_page)[:headers][:subjects]
     %th{:colspan => 5, :height => 40, :width => 375}

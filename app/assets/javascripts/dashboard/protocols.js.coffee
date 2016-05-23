@@ -80,8 +80,12 @@ $(document).ready ->
           data[field.name] = field.value
 
         # manually enter those in
-        data["filterrific[with_status][]"] = $("#filterrific_with_status").val().join()
-        # data["filterrific[with_core][]"] = $("#filterrific_with_core").val().join()
+        if data["filterrific[with_status][]"].length
+          data["filterrific[with_status][]"] = $("#filterrific_with_status").val()
+
+        if data["filterrific[with_core][]"].length
+          data["filterrific[with_core][]"] = $("#filterrific_with_core").val()
+
         $.ajax
           type: 'GET'
           url:  "/dashboard/protocol_filters/new"

@@ -58,8 +58,7 @@ development:
   system_satisfaction_survey: false
   editable_statuses: { 14: ['first_draft', 'draft', 'submitted', nil, 'get_a_cost_estimate', 'awaiting_pi_approval'],
                      48: ['draft', 'submitted'] }
-  navbar_links: { Dashboard:        'http://localhost:3000/portal',
-                  SPARCAdmin:       'http://localhost:3000/portal/admin',
+  navbar_links: { Dashboard:        'http://localhost:3000/dashboard',
                   SPARCFulfillment: 'https://cwf-d.obis.musc.edu',
                   SPARCCatalog:     'http://localhost:3000/catalog_manager',
                   SPARCReport:      'http://localhost:3000/reports' }

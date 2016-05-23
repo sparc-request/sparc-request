@@ -10,8 +10,7 @@
 # you'll amass, the slower it'll run and the greater likelihood for issues).
 #
 # It's strongly recommended that you check this file into your version control system.
-
-ActiveRecord::Schema.define(version: 20160421145916) do
+ActiveRecord::Schema.define(version: 20160523164445) do
 
   create_table "admin_rates", force: :cascade do |t|
     t.integer  "line_item_id", limit: 4
@@ -637,7 +636,7 @@ ActiveRecord::Schema.define(version: 20160421145916) do
     t.boolean  "show_archived"
     t.integer  "for_identity_id", limit: 4
     t.string   "search_query",    limit: 255
-    t.integer  "with_core",       limit: 4
+    t.string   "with_core",       limit: 255
     t.string   "with_status",     limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"

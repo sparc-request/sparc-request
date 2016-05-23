@@ -812,16 +812,6 @@ ActiveRecord::Schema.define(version: 20160509140555) do
     t.datetime "updated_at",                 null: false
   end
 
-  create_table "service_level_components", force: :cascade do |t|
-    t.integer  "service_id", limit: 4
-    t.string   "component",  limit: 255
-    t.integer  "position",   limit: 4,   default: 0
-    t.datetime "created_at",                         null: false
-    t.datetime "updated_at",                         null: false
-  end
-
-  add_index "service_level_components", ["service_id"], name: "index_service_level_components_on_service_id", using: :btree
-
   create_table "service_providers", force: :cascade do |t|
     t.integer  "identity_id",        limit: 4
     t.integer  "organization_id",    limit: 4

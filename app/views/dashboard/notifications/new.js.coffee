@@ -47,7 +47,7 @@ $('#user_search').typeahead(
   {
     displayKey: 'label'
     source: identities_bloodhound.ttAdapter()
-    limit: 100
+    limit: 100000
   }
 )
 .on 'typeahead:select', (event, suggestion) ->

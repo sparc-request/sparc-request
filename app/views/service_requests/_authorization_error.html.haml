@@ -25,7 +25,7 @@
     = stylesheet_link_tag '960', "#{CUSTOM_ASSET_PATH}application", 'jquery-ui', :media => 'all'
   %body
     #container.container
-      = render :partial => 'shared/header_logos'
+      = render :partial => 'shared/header_logos', locals: { in_dashboard: in_dashboard }
       #title
         %h1= t 'application_title'
       #content.container_12

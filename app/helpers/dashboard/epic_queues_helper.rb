@@ -26,17 +26,14 @@ module Dashboard::EpicQueuesHelper
 
   def format_pis(protocol)
     protocol.principal_investigators.map(&:full_name).each do |pi|
-      "#{protocol.id}-PI"
+      "#{pi}"
     end
   end
 
   def epic_queue_delete_button(epic_queue)
-    btn_classes = "#{BTN_DANGER} actions-button delete-epic-queue-button #{disabled_unless(permission_to_edit)}"
-    btn_data = { epic_queue_id: epic_queue.id, permission: 'true' }
-
     content_tag(:button,
-      raw(content_tag(:span, '', class: GLYPH_REMOVE, aria: { hidden: 'true' })),
-      type: 'button', data: btn_data, class: btn_classes)
+      raw(content_tag(:span, '', class: 'glyphicon glyphicon-remove', aria: { hidden: 'true' })),
+      type: 'button', data: { epic_queue_id: epic_queue.id, permission: 'true' }, class: "btn btn-danger actions-button delete-epic-queue-button")
   end
 
   def format_epic_queue_date(protocol)

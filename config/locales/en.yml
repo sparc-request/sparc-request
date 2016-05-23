@@ -294,7 +294,7 @@ en:
     #  EPIC QUEUES  #
     #################
     epic_queues:
-
+      header: "Epic Queues"
     ##################
     #  FULFILLMENTS  #
     ##################

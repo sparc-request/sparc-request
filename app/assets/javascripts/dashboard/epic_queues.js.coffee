@@ -25,10 +25,9 @@ $(document).ready ->
   $(document).on 'click', '#epic-queue-btn', ->
     window.location = '/dashboard/epic_queues'
 
-  $(document).on 'click', '.delete-eq', ->
+  $(document).on 'click', '.delete-epic-queue-button', ->
     if confirm(I18n['epic_queues']['confirm'])
-      eq_id = $(this).data('eq-id')
-      protocol_id = $(this).data('protocol-id')
+      eq_id = $(this).data('epic-queue-id')
       $.ajax
         type: 'DELETE'
         url: "/dashboard/epic_queues/#{eq_id}.js"

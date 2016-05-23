@@ -35,7 +35,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
     # if we are an admin we want to default to admin organizations
     if @admin
-      default_filter_params[:for_admin_with_filter] = @user.id.to_s
+      default_filter_params[:for_admin] = @user.id.to_s
     else
       default_filter_params[:for_identity_id]       = @user.id.to_s
     end
@@ -66,7 +66,6 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
       format.html {
         session[:breadcrumbs].clear.add_crumbs(protocol_id: @protocol.id)
         @permission_to_edit       = @authorization.present? ? @authorization.can_edit? : false
-        @has_valid_protocol_role  = @authorization.present? ? @authorization.can_view? : false
         @protocol_type            = @protocol.type.capitalize
         render
       }
@@ -194,8 +193,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   def display_requests
     protocol_role           = @protocol.project_roles.find_by(identity_id: @user.id)
     permission_to_edit      = protocol_role.present? ? protocol_role.can_edit? : false
-    has_valid_protocol_role = protocol_role.present? ? protocol_role.can_view? : false
-    modal                   = render_to_string(partial: 'dashboard/protocols/requests_modal', locals: { protocol: @protocol, user: @user, permission_to_edit: permission_to_edit, has_valid_protocol_role: has_valid_protocol_role, admin: @admin })
+    modal                   = render_to_string(partial: 'dashboard/protocols/requests_modal', locals: { protocol: @protocol, user: @user, permission_to_edit: permission_to_edit, admin: @admin })
 
     data = { modal: modal }
     render json: data

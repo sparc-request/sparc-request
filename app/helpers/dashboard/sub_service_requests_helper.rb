@@ -192,13 +192,11 @@ module Dashboard::SubServiceRequestsHelper
   end
 
   def ssr_actions_display(ssr, user, permission_to_edit, admin_orgs)
-    admin_access = admin_orgs.include?(ssr.organization)
+    admin_access = (admin_orgs & ssr.org_tree).any?
 
-    content_tag(:div, '', class: 'center') do
-      ssr_view_button(ssr)+
-      ssr_edit_button(ssr, user, permission_to_edit, admin_access)+
-      ssr_admin_button(ssr, user, permission_to_edit, admin_access)
-    end
+    ssr_view_button(ssr)+
+    ssr_edit_button(ssr, user, permission_to_edit, admin_access)+
+    ssr_admin_button(ssr, user, permission_to_edit, admin_access)
   end
 
   private

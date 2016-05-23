@@ -28,7 +28,7 @@
 	.panel-body
 		- if protocol.sub_service_requests.any?
 			- protocol.service_requests.each do |sr|
-				- if sr.sub_service_requests.any? && sr.should_be_displayed_for_user?(user, has_valid_protocol_role)
+				- if sr.sub_service_requests.any?
 					= render 'dashboard/service_requests/protocol_service_request_show', service_request: sr, protocol: protocol, user: user, admin: admin, permission_to_edit: permission_to_edit, view_only: view_only
 		- else
 			%button.btn.btn-success.btn-sm#add-services-button{ class: permission_to_edit ? '' : 'disabled', type: 'button', data: { permission: permission_to_edit.to_s, protocol_id: protocol.id, action: 'new request' } }

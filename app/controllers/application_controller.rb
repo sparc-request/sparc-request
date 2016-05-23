@@ -102,7 +102,7 @@ class ApplicationController < ActionController::Base
     error += "<br />If you believe this is in error please contact, #{I18n.t 'error_contact'}, and provide the following information:"
     error += "<br /> Reference #: "
     error += ref
-    render 'service_requests/authorization_error', error: error
+    render partial: 'service_requests/authorization_error', locals: { error: error, in_dashboard: false }
   end
 
   def clean_errors errors

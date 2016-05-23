@@ -114,10 +114,8 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
     protocol_role_clone = @protocol_role.clone
     
     @protocol_role.destroy
-
-    @current_user_destroyed = protocol_role_clone.identity_id == @user.id
     
-    if @current_user_destroyed
+    if @current_user_destroyed  = protocol_role_clone.identity_id == @user.id
       @protocol_type            = @protocol.type
       @permission_to_edit       = false
       @has_valid_protocol_role  = false

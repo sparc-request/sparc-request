@@ -20,8 +20,11 @@
 
 #search_box
   #nav_link
-    = link_to NAV_LINKS['admin'], portal_admin_path, :class => 'button-hover'
+    = link_to NAV_LINKS['dashboard'], portal_root_path, :class => 'button-hover'
     |
+    - if !NAV_LINKS['admin'].blank?
+      = link_to NAV_LINKS['admin'], portal_admin_path, :class => 'button-hover'
+      |
     = link_to NAV_LINKS['report'], reports_path, :class => 'button-hover'
     |
     = link_to NAV_LINKS['root'], ROOT_URL, :class => 'button-hover'

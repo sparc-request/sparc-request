@@ -1,4 +1,4 @@
-nrequire "rails_helper"
+require "rails_helper"
 
 RSpec.describe Dashboard::EpicQueuesController do
   describe "GET #index" do

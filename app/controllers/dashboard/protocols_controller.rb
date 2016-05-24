@@ -35,9 +35,9 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
     # if we are an admin we want to default to admin organizations
     if @admin
-      default_filter_params[:for_admin_with_filter] = @user.id.to_s
+      default_filter_params[:for_admin]       = @user.id.to_s
     else
-      default_filter_params[:for_identity_id]       = @user.id.to_s
+      default_filter_params[:for_identity_id] = @user.id.to_s
     end
 
     @filterrific =
@@ -65,9 +65,8 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
       format.js   { render }
       format.html {
         session[:breadcrumbs].clear.add_crumbs(protocol_id: @protocol.id)
-        @permission_to_edit       = @authorization.present? ? @authorization.can_edit? : false
-        @has_valid_protocol_role  = @authorization.present? ? @authorization.can_view? : false
-        @protocol_type            = @protocol.type.capitalize
+        @permission_to_edit = @authorization.present? ? @authorization.can_edit? : false
+        @protocol_type      = @protocol.type.capitalize
         render
       }
       format.xlsx { render }
@@ -126,13 +125,14 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   def update
     attrs               = params[:protocol]
     attrs[:start_date]  = Time.strptime(attrs[:start_date], "%m-%d-%Y") if attrs[:start_date]
-    attrs[:end_date]    =   Time.strptime(attrs[:end_date],   "%m-%d-%Y") if attrs[:end_date]
+    attrs[:end_date]    = Time.strptime(attrs[:end_date],   "%m-%d-%Y") if attrs[:end_date]
+
     protocol_role       = @protocol.project_roles.find_by(identity_id: @user.id)
     
     # admin is not able to activate study_type_question_group
     if @admin && protocol_role.nil? && @protocol.update_attributes(attrs)
       flash[:success] = "#{@protocol.type} Updated!"
-    elsif (!@admin || @admin && protocol_role.can_edit?) && @protocol.update_attributes(attrs.merge(study_type_question_group_id: StudyTypeQuestionGroup.active_id))
+    elsif (!@admin || @admin && !protocol_role.nil? && protocol_role.can_edit?) && @protocol.update_attributes(attrs.merge(study_type_question_group_id: StudyTypeQuestionGroup.active_id))
       flash[:success] = "#{@protocol.type} Updated!"
     else
       @errors = @protocol.errors
@@ -152,11 +152,14 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
     @protocol.update_attribute(:type, @protocol_type)
     conditionally_activate_protocol
-
+    
     @protocol = Protocol.find(@protocol.id)#Protocol type has been converted, this is a reload
     @protocol.populate_for_edit
-    
+  
     flash[:success] = "Protocol Type Updated!"
+    if @protocol_type == "Study" && @protocol.sponsor_name.nil? && @protocol.selected_for_epic.nil?
+      flash[:alert] = "Please complete Sponsor Name and Publish Study in Epic"
+    end
   end
 
   def archive
@@ -192,10 +195,9 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def display_requests
-    protocol_role           = @protocol.project_roles.find_by(identity_id: @user.id)
-    permission_to_edit      = protocol_role.present? ? protocol_role.can_edit? : false
-    has_valid_protocol_role = protocol_role.present? ? protocol_role.can_view? : false
-    modal                   = render_to_string(partial: 'dashboard/protocols/requests_modal', locals: { protocol: @protocol, user: @user, permission_to_edit: permission_to_edit, has_valid_protocol_role: has_valid_protocol_role, admin: @admin })
+    @protocol_role      = @protocol.project_roles.find_by(identity_id: @user.id)
+    @permission_to_edit = @protocol_role.present? ? @protocol_role.can_edit? : false
+    modal               = render_to_string(partial: 'dashboard/protocols/requests_modal', locals: { protocol: @protocol, user: @user, permission_to_edit: @permission_to_edit })
 
     data = { modal: modal }
     render json: data

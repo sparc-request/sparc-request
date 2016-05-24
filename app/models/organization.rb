@@ -77,24 +77,6 @@ class Organization < ActiveRecord::Base
     Organization.where(id: (super_user_orgs | super_user_orgs_children | service_provider_orgs | service_provider_orgs_children) ).distinct
   }
 
-  scope :for_protocol, -> (protocol) {
-    orgs    = protocol.organizations
-    parents = authorized_parent_organizations(orgs.pluck(:parent_id))
-
-    Organization.where(id: (orgs | parents)).distinct
-  }
-
-  scope :for_service_request, -> (sr) {
-    orgs    = joins(:sub_service_requests).where(sub_service_requests: { service_request_id: sr.id })
-    parents = authorized_parent_organizations(orgs.pluck(:parent_id))
-
-    Organization.where(id: (orgs | parents)).distinct
-  }
-
-  scope :for_sub_service_request, -> (ssr) {
-    where(id: ssr.org_tree)
-  }
-
   scope :in_cwf, -> { joins(:tags).where(tags: { name: 'clinical work fulfillment' }) }
 
   def label
@@ -392,15 +374,6 @@ class Organization < ActiveRecord::Base
     else
       orgs = Organization.where(parent_id: org_ids)
       orgs | authorized_child_organizations(orgs.pluck(:id))
-    end
-  end
-
-  def self.authorized_parent_organizations(org_ids)
-    if org_ids.empty?
-      []
-    else
-      orgs = Organization.where(id: org_ids)
-      orgs | authorized_parent_organizations(orgs.pluck(:parent_id))
     end
   end
 end

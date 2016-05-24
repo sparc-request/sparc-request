@@ -49,7 +49,7 @@ RSpec.describe "filters", js: :true do
         end.to change { ProtocolFilter.count }.by(1)
 
         new_filter = ProtocolFilter.last
-        expect(new_filter.with_status).to eq("ctrc_approved,complete")
+        expect(new_filter.with_status).to eq(['ctrc_approved', 'complete'])
         expect(new_filter.show_archived).to eq(true)
       end
     end
@@ -79,7 +79,7 @@ RSpec.describe "filters", js: :true do
           for_admin: false,
           for_identity_id: true,
           search_query: "",
-          with_status: "ctrc_approved,complete")
+          with_status: ['ctrc_approved', 'complete'])
         f.identity = user
         f.save!
 
@@ -265,7 +265,8 @@ RSpec.describe "filters", js: :true do
           create_protocol(archived: false, short_title: "Protocol2")
 
           visit_protocols_index_page
-          @page.filter_protocols.my_protocols_checkbox.click
+
+          @page.filter_protocols.my_admin_organizations_checkbox.click
           @page.filter_protocols.apply_filter_button.click
 
           expect(@page.search_results).to have_protocols(count: 2)

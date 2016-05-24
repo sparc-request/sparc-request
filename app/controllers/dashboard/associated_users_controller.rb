@@ -23,10 +23,10 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
   respond_to :html, :json, :js
   
   before_filter :find_protocol_role,        only: [:edit, :destroy]
-  before_filter :find_protocol,             only: [:index, :new, :create, :edit, :update]
+  before_filter :find_protocol,             only: [:index, :new, :create, :edit, :update, :destroy]
   before_filter :find_admin_for_protocol,   only: [:index, :update]
   before_filter :protocol_authorizer_view,  only: [:index]
-  before_filter :protocol_authorizer_edit,  only: [:new, :create, :edit, :update]
+  before_filter :protocol_authorizer_edit,  only: [:new, :create, :edit, :update, :destroy]
 
   def index
     @protocol_roles     = @protocol.project_roles
@@ -92,10 +92,9 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
         @protocol_type            = @protocol.type
         protocol_role             = updater.protocol_role
         @permission_to_edit       = protocol_role.can_edit?
-        @has_valid_protocol_role  = protocol_role.can_view?
 
         #If the user sets themselves to member and they're not an admin, go to dashboard
-        @return_to_dashboard = !(@has_valid_protocol_role || @admin)
+        @return_to_dashboard = !protocol_role.can_view? && !@admin
       end
 
       flash.now[:success] = 'Authorized User Updated!'
@@ -114,17 +113,14 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
     protocol_role_clone = @protocol_role.clone
     
     @protocol_role.destroy
-
-    @current_user_destroyed = protocol_role_clone.identity_id == @user.id
     
-    if @current_user_destroyed
+    if @current_user_destroyed  = protocol_role_clone.identity_id == @user.id
       @protocol_type            = @protocol.type
       @permission_to_edit       = false
-      @has_valid_protocol_role  = false
       @admin                    = Protocol.for_admin(@user.id).include?(@protocol)
 
       #If the user sets themselves to member and they're not an admin, go to dashboard
-      @return_to_dashboard = !(@has_valid_protocol_role || @admin)
+      @return_to_dashboard = !@admin
     end
 
     flash.now[:alert] = 'Authorized User Removed!'

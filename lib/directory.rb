@@ -118,7 +118,7 @@ class Directory
       query_where += where_term.call(search_term)
     end
 
-    return query_select + ' ' + query_where + ' limit 15'
+    return query_select + ' ' + query_where
   end
 
   # Create or update the database based on what was returned from ldap.

@@ -21,11 +21,15 @@
 class ProtocolFilter < ActiveRecord::Base
 
   belongs_to :identity
+
+  serialize :with_core, Array
+  serialize :with_status, Array
+
   attr_accessible :identity_id
 
   attr_accessible :search_name
   attr_accessible :show_archived
-  attr_accessible :for_admin_with_filter
+  attr_accessible :for_admin
   attr_accessible :for_identity_id
   attr_accessible :search_query
   attr_accessible :with_core
@@ -42,11 +46,11 @@ class ProtocolFilter < ActiveRecord::Base
     dashboard_root_path(
       filterrific: {
         show_archived: (self.show_archived ? 1 : 0),
-        for_admin_with_filter: self.for_admin_with_filter,
+        for_admin: self.for_admin,
         for_identity_id: self.for_identity_id,
         search_query: self.search_query,
-        with_core: self.with_core.try(:split, ","),
-        with_status: self.with_status.try(:split, ","),
+        with_core: self.with_core,
+        with_status: self.with_status
       }
     )
   end

@@ -50,20 +50,12 @@ RSpec.describe Dashboard::ProtocolsController do
         expect(assigns(:protocol)).to eq(@protocol)
       end
 
-      it 'should set @protocol_role to the ProjectRole of the logged in user pertinent to the Protocol' do
-        expect(assigns(:protocol_role)).to eq(@project_role)
-      end
-
       it "should set @permission_to_edit from ProtocolAuthorizer" do
         expect(assigns(:permission_to_edit)).to eq(:permission_to_edit)
       end
 
       it "should set @protocol_type to the type of Protocol" do
         expect(assigns(:protocol_type)).to eq("Project")
-      end
-
-      it "should set @service_requests to ServiceRequests of Protocol" do
-        expect(assigns(:service_requests)).to eq("ServiceRequests")
       end
 
       it { is_expected.to respond_with :ok }

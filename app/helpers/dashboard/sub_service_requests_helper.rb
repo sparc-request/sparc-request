@@ -192,13 +192,11 @@ module Dashboard::SubServiceRequestsHelper
   end
 
   def ssr_actions_display(ssr, user, permission_to_edit, admin_orgs)
-    admin_access = admin_orgs.include?(ssr.organization)
+    admin_access = (admin_orgs & ssr.org_tree).any?
 
-    content_tag(:div, '', class: 'center') do
-      ssr_view_button(ssr)+
-      ssr_edit_button(ssr, user, permission_to_edit, admin_access)+
-      ssr_admin_button(ssr, user, permission_to_edit, admin_access)
-    end
+    ssr_view_button(ssr)+
+    ssr_edit_button(ssr, user, permission_to_edit, admin_access)+
+    ssr_admin_button(ssr, user, permission_to_edit, admin_access)
   end
 
   private
@@ -209,8 +207,8 @@ module Dashboard::SubServiceRequestsHelper
 
   def ssr_edit_button(ssr, user, permission_to_edit, admin_access)
     # The SSR must not be locked, and the user must either be an authorized user or an authorized admin
-    if ssr.can_be_edited? && (user.has_correct_project_role?(ssr) || admin_access)
-      content_tag(:button, t(:dashboard)[:service_requests][:actions][:edit], class: 'edit-service-request btn btn-warning btn-sm', type: 'button', data: { permission: permission_to_edit.to_s, url: "/service_requests/#{ssr.service_request.id}/catalog?sub_service_request_id=#{ssr.id}&from_user_portal=true"})
+    if ssr.can_be_edited? && permission = (permission_to_edit == 'true' || admin_access)
+      content_tag(:button, t(:dashboard)[:service_requests][:actions][:edit], class: 'edit-service-request btn btn-warning btn-sm', type: 'button', data: { permission: permission.to_s, url: "/service_requests/#{ssr.service_request.id}/catalog?sub_service_request_id=#{ssr.id}&from_user_portal=true"})
     else
       ''
     end
@@ -218,7 +216,7 @@ module Dashboard::SubServiceRequestsHelper
 
   def ssr_admin_button(ssr, user, permission_to_edit, admin_access)
     if admin_access
-      content_tag(:button, t(:dashboard)[:service_requests][:actions][:admin_edit], class: "edit-service-request btn btn-warning btn-sm", type: 'button', data: { permission: permission_to_edit, url: "/dashboard/sub_service_requests/#{ssr.id}" })
+      content_tag(:button, t(:dashboard)[:service_requests][:actions][:admin_edit], class: "edit-service-request btn btn-warning btn-sm", type: 'button', data: { permission: admin_access.to_s, url: "/dashboard/sub_service_requests/#{ssr.id}" })
     else
       ''
     end

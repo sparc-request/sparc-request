@@ -493,24 +493,7 @@ class SubServiceRequest < ActiveRecord::Base
   end
   ### end audit reporting methods ###
 
-  # Display if:
-  # => Status isn't draft
-  # => User has valid Protocol Role
-  # => User has super user on SSR's organizations
-  # => User has no Service Providers on SSR's organizations
-  def should_be_displayed_for_user?(user, has_valid_protocol_role)
-    status != 'draft' || has_valid_protocol_role || has_super_user?(user.id) || !has_service_provider?(user.id)
-  end
-
   private
-
-  def has_super_user?(identity_id)
-    Organization.for_sub_service_request(self).joins(:super_users).where(super_users: { identity_id: identity_id }).any?
-  end
-
-  def has_service_provider?(identity_id)
-    Organization.for_sub_service_request(self).joins(:service_providers).where(service_providers: { identity_id: identity_id }).any?
-  end
 
   def notify_remote_around_update?
     true

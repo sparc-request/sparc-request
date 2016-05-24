@@ -14,9 +14,11 @@ RSpec.describe 'dashboard/service_requests/service_requests', type: :view do
 
         render 'dashboard/service_requests/service_requests',
           protocol: protocol,
-          permission_to_edit: true
+          permission_to_edit: true,
+          user: logged_in_identity,
+          view_only: false
 
-        expect(response).to have_selector('button', exact: 'Add Services')
+        expect(response).to have_selector('button', text: 'Add Services')
       end
     end
 
@@ -30,9 +32,11 @@ RSpec.describe 'dashboard/service_requests/service_requests', type: :view do
 
         render 'dashboard/service_requests/service_requests',
           protocol: protocol,
-          permission_to_edit: false
+          permission_to_edit: false,
+          user: logged_in_identity,
+          view_only: false
 
-        expect(response).to_not have_selector('button', exact: 'Add Services')
+        expect(response).to have_selector('button.disabled', text: 'Add Services')
       end
     end
   end
@@ -57,16 +61,16 @@ RSpec.describe 'dashboard/service_requests/service_requests', type: :view do
         protocol: protocol,
         permission_to_edit: false,
         user: logged_in_identity,
-        admin: false
+        view_only: false
     end
 
     it 'should show that SubServiceRequest' do
       expect(response).to render_template('dashboard/service_requests/_protocol_service_request_show',
         locals: {
           service_request: @service_request,
+          permission_to_edit: false,
           user: logged_in_identity,
-          admin: false,
-          permission_to_edit: false
+          view_only: false
         })
     end
   end

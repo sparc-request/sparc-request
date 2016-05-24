@@ -29,8 +29,7 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
     service_request         = ServiceRequest.find(params[:srid])
     @admin_orgs             = @user.authorized_admin_organizations
     @permission_to_edit     = params[:permission_to_edit] 
-    has_valid_protocol_role = service_request.protocol.project_roles.where(identity_id: @user.id).where.not(project_rights: 'none').any?
-    @sub_service_requests   = service_request.sub_service_requests.reject { |ssr| !ssr.should_be_displayed_for_user?(@user, has_valid_protocol_role) }
+    @sub_service_requests   = service_request.sub_service_requests
   end
 
   def show
@@ -190,14 +189,14 @@ private
 
     if (request.get? && !authorized_user.can_view?) || (!request.get? && !authorized_user.can_edit?)
       @protocol = nil
-      render partial: 'service_requests/authorization_error', locals: { error: 'You are not allowed to access this protocol.', in_dashboard: false }
+      render partial: 'service_requests/authorization_error', locals: { error: 'You are not allowed to access this protocol.' }
     end
   end
 
   def authorize_admin
-    unless @user.authorized_admin_organizations.include?(@sub_service_request.organization)
+    unless (@user.authorized_admin_organizations & @sub_service_request.org_tree).any?
       @protocol = nil
-      render partial: 'service_requests/authorization_error', locals: { error: 'You are not allowed to access this Sub Service Request.', in_dashboard: false }
+      render partial: 'service_requests/authorization_error', locals: { error: 'You are not allowed to access this Sub Service Request.' }
     end
   end
 

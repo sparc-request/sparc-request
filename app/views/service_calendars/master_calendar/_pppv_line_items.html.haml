@@ -19,8 +19,8 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 - line_items_visits = []
 %tr.section_header
-  %th{:colspan => (@portal and !@merged) ? 11 : 13}= t(:calendar_page)[:per_patient] + " -- " + arm.name
-  - unless @merged || (@tab == 'billing_strategy') || (@tab == 'quantity') || (@review)
+  %th{:colspan => @merged ? 15 : 13}= t(:calendar_page)[:per_patient] + " -- " + arm.name
+  - unless @merged || (@review)
     %th{:colspan => 3}
 
 - if @merged #display merged calendar pppv line items
@@ -82,23 +82,22 @@
       %tr.sub_section_header
         %th{:colspan => @portal ? 3 : 6}= value[:name]
         - if @portal
-          %th{:colspan => 1}
+          %th
         -5.times do
           %th.billing_type_list{:style => "text-align:center"}
             %span.billing_type R
             %span.billing_type T
             %span.billing_type %
-        - unless @portal
-          %th &nbsp;
-        %th &nbsp;
+        %th{ colspan: 5 } &nbsp;
     - else
       %tr.sub_section_header
         - if @portal
           %th{:colspan => 11}= value[:name]
+        - elsif @tab == 'quantity'
+          %th{:colspan => 16}= value[:name]
         - else
           %th{:colspan => 14}= value[:name]
-        - unless (@tab == 'quantity')
-          %th
+          %th{ colspan: 2 }
 
     - arm.line_items_visits.each do |line_items_visit|
       - line_item = line_items_visit.line_item

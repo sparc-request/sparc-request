@@ -53,4 +53,7 @@
     -unless @merged || @tab != 'template'
       %td{:colspan => 2} &nbsp;
     %td{:colspan => 6}
-    %td{:class => "pp_total arm_#{arm.id}"}= display_total_cost_per_arm arm, line_items_visits
+    - if @tab == 'billing_strategy' || @tab == 'quantity'
+      %td{:colspan => 2, :class => "pp_total arm_#{arm.id}"}= display_total_cost_per_arm arm, line_items_visits
+    - else 
+      %td{:class => "pp_total arm_#{arm.id}"}= display_total_cost_per_arm arm, line_items_visits

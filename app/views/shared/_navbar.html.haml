@@ -8,7 +8,7 @@
     - if current_user.is_super_user?
       %li.reports
         = link_to NAV_LINKS['report'], reports_path
-    - if !NAV_LINKS['fulfillment'].empty? && current_user.is_fulfillment_provider?
+    - if !NAV_LINKS['fulfillment'].blank? && current_user.is_fulfillment_provider?
       %li.fulfillment
         = link_to NAV_LINKS['fulfillment'], CLINICAL_WORK_FULFILLMENT_URL, target: '_blank'
     - if (current_user.is_overlord? || current_user.is_catalog_manager?)

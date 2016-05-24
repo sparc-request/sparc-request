@@ -29,7 +29,6 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
     service_request         = ServiceRequest.find(params[:srid])
     @admin_orgs             = @user.authorized_admin_organizations
     @permission_to_edit     = params[:permission_to_edit] 
-    puts @permission_to_edit
     @sub_service_requests   = service_request.sub_service_requests
   end
 

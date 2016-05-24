@@ -26,17 +26,17 @@ RSpec.describe Dashboard::ProtocolsController do
 
     context "user authorized to view Protocol" do
       before(:each) do
-        @current_user = build_stubbed(:identity)
-        log_in_dashboard_identity(obj: @current_user)
+        @user = build_stubbed(:identity)
+        log_in_dashboard_identity(obj: @user)
 
         @protocol = findable_stub(Protocol) { build_stubbed(:protocol) }
-        authorize(@current_user, @protocol, can_view: true)
+        authorize(@user, @protocol, can_view: true)
 
-        @project_role = build_stubbed(:project_role,
-          identity_id: @current_user.id,
+        @project_role = create(:project_role,
+          identity_id: @user.id,
           protocol_id: @protocol.id)
         allow(@protocol.project_roles).to receive(:find_by).
-          with(identity_id: @current_user.id).
+          with(identity_id: @user.id).
           and_return(@project_role)
 
         xhr :get, :display_requests, id: @protocol.id, format: :js
@@ -50,8 +50,11 @@ RSpec.describe Dashboard::ProtocolsController do
         expect(assigns(:protocol_role)).to eq(@project_role)
       end
 
+      it "should set @permission_to_edit based on ProjectRole's permissions" do
+        expect(assigns(:permission_to_edit)).to eq(@project_role.can_edit?)
+      end
+
       it { is_expected.to respond_with :ok }
-      it { is_expected.to render_template "dashboard/protocols/display_requests" }
     end
   end
 end

@@ -106,7 +106,6 @@ RSpec.describe Dashboard::AssociatedUsersController do
       end
 
       it 'should set @errors' do
-        binding.pry
         expect(assigns(:errors)).to eq("errors")
       end
 

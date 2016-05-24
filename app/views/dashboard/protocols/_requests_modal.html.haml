@@ -28,7 +28,7 @@
     .modal-body
       - protocol.service_requests.each do |sr|
         - if sr.sub_service_requests.any?
-          = render 'dashboard/service_requests/protocol_service_request_show', service_request: sr, user: user, admin: admin, permission_to_edit: permission_to_edit, view_only: true
+          = render 'dashboard/service_requests/protocol_service_request_show', service_request: sr, user: user, permission_to_edit: permission_to_edit, view_only: true
     .modal-footer
       .center-block
         %button.btn.btn-default{type: 'button', data: {dismiss: 'modal'}} 

@@ -196,7 +196,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   def display_requests
     protocol_role           = @protocol.project_roles.find_by(identity_id: @user.id)
     permission_to_edit      = protocol_role.present? ? protocol_role.can_edit? : false
-    modal                   = render_to_string(partial: 'dashboard/protocols/requests_modal', locals: { protocol: @protocol, user: @user, permission_to_edit: permission_to_edit, admin: @admin })
+    modal                   = render_to_string(partial: 'dashboard/protocols/requests_modal', locals: { protocol: @protocol, user: @user, permission_to_edit: permission_to_edit })
 
     data = { modal: modal }
     render json: data

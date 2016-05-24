@@ -21,7 +21,7 @@
 .panel-group#protocol_show_information_panel
   = render 'dashboard/protocols/summary', protocol: @protocol, protocol_type: @protocol_type, permission_to_edit: @permission_to_edit
   = render 'dashboard/associated_users/table', protocol: @protocol, permission_to_edit: @permission_to_edit
-  = render 'dashboard/service_requests/service_requests', protocol: @protocol, permission_to_edit: @permission_to_edit, user: @user, admin: @admin, view_only: false
+  = render 'dashboard/service_requests/service_requests', protocol: @protocol, permission_to_edit: @permission_to_edit, user: @user, view_only: false
 
 :javascript
   $(document).ready( function() {

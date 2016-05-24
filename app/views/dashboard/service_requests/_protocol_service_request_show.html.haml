@@ -24,7 +24,7 @@
     .pull-right
       %button.btn.btn-sm.btn-default.notes.list{ data: {notable_type: "ServiceRequest", notable_id: service_request.id } } 
         = t(:models)[:note][:plural]
-      - unless admin && !permission_to_edit # Admin + not authorized user
+      - unless !permission_to_edit
         %button.btn.btn-warning.btn-sm.edit-service-request{ class: permission_to_edit ? '' : 'disabled', type: 'button', data: { permission: permission_to_edit.to_s, url: "/service_requests/#{service_request.id}/catalog?from_user_portal=true&edit_original=true" } }
           = t(:dashboard)[:service_requests][:modify_request]
     .clearfix

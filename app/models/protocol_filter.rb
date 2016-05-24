@@ -21,6 +21,10 @@
 class ProtocolFilter < ActiveRecord::Base
 
   belongs_to :identity
+
+  serialize :with_core, Array
+  serialize :with_status, Array
+
   attr_accessible :identity_id
 
   attr_accessible :search_name
@@ -45,8 +49,8 @@ class ProtocolFilter < ActiveRecord::Base
         for_admin: self.for_admin,
         for_identity_id: self.for_identity_id,
         search_query: self.search_query,
-        with_core: self.with_core.try(:split, ","),
-        with_status: self.with_status.try(:split, ","),
+        with_core: self.with_core,
+        with_status: self.with_status
       }
     )
   end

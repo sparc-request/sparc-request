@@ -34,7 +34,7 @@
     = image_tag 'cancel.png', :style => 'display:none'
 
     #container.container
-      = render :partial => 'shared/header_logos'
+      = render 'shared/header_logos', in_dashboard: false
       #welcome_msg= show_welcome_message(current_user)
       #sparc_logo_header
         = image_tag('sparc_request_header.jpg')

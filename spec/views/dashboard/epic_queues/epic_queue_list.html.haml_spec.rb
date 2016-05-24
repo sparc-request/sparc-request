@@ -1,6 +1,4 @@
-require 'rails_helper'
-
-RSpec.describe 'dashboard/notifications/_notifications', type: :view do
+RSpec.describe 'dashboard/epic_queues/_epic_queue_list', type: :view do
   include RSpecHtmlMatchers
 
   describe "recipient dropdown" do
@@ -27,13 +25,26 @@ RSpec.describe 'dashboard/notifications/_notifications', type: :view do
       @logged_in_user = build_stubbed(:identity)
     end
 
-    it "should show clinical providers and authorized users, but not the service requester" do
-      render "dashboard/notifications/notifications", sub_service_request: @sub_service_request, user: @logged_in_user
+    context "user an admin" do
+      it "should show authorized users, but not clinical providers or the service requester" do
+        render "dashboard/notifications/notifications", sub_service_request: @sub_service_request, user: @logged_in_user, admin: true
+        expect(response).to have_tag("select") do
+          with_option(/Primary-pi: Jane Doe/)
+          without_option(/John Doe/)
+          without_option(/Dr\. Feelgood/)
+        end
+      end
+    end
 
-      expect(response).to have_tag("select") do
-        with_option(/Primary-pi: Jane Doe/)
-        with_option(/Dr\. Feelgood/)
-        without_option(/John Doe/)
+    context "user not an admin" do
+      it "should show clinical providers and authorized users, but not the service requester" do
+        render "dashboard/notifications/notifications", sub_service_request: @sub_service_request, user: @logged_in_user, admin: false
+
+        expect(response).to have_tag("select") do
+          with_option(/Primary-pi: Jane Doe/)
+          with_option(/Dr\. Feelgood/)
+          without_option(/John Doe/)
+        end
       end
     end
   end

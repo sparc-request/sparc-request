@@ -221,16 +221,13 @@ $(document).ready ->
     return false
 
   $(document).on('change', '.line_item_quantity', ->
-    if $(this).data('study_tracker') == true
-      save_line_item_by_ajax(this)
+    update_otf_line_item(this)
+    # If new val is greater than units_per_qty_max, do not recalculate totals 
+    new_val = $(this).val()
+    max_val = $(this).attr('units_per_qty_max')
+    min_val = $(this).attr('unit_minimum')
+    if (parseInt(new_val) <= parseInt(max_val)) && (parseInt(new_val) >= parseInt(min_val))
       recalculate_one_time_fee_totals()
-    else
-      update_otf_line_item(this)
-      # If new val is greater than units_per_qty_max, do no recalculate totals 
-      new_val = $(this).val()
-      max_val = $(this).attr('units_per_qty_max')
-      if (parseInt(new_val) <= parseInt(max_val)) && (parseInt(new_val) >= parseInt(min_val))
-        recalculate_one_time_fee_totals()
         
     return false
   )

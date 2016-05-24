@@ -175,7 +175,6 @@ RSpec.describe 'service request list', js: true do
     scenario 'user clicks "Admin Edit" button' do
       page = go_to_show_protocol(protocol.id)
 
-      save_and_open_screenshot
       page.service_requests.first.ssrs.first.admin_edit_button.click
 
       expect(URI.parse(current_url).path).to eq '/dashboard/sub_service_requests/9999'

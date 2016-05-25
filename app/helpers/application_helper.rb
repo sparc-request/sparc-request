@@ -276,10 +276,10 @@ module ApplicationHelper
     sps.map{|x| x.is_primary_contact? ? x.identity.display_name : nil}.compact.join("<br />")
   end
 
-  def display_service_in_catalog service, service_request
+  def display_service_in_catalog service, service_request, from_portal
     has_current_pricing_map = service.current_pricing_map rescue false # work around for current_pricing_map method raising false
     if (service.is_available? or service.is_available.nil?) and has_current_pricing_map
-      render 'service', service: service, service_request: service_request
+      render 'service', service: service, service_request: service_request, from_portal: from_portal
     end
   end
 
@@ -340,6 +340,10 @@ module ApplicationHelper
     else
       return ""
     end
+  end
+
+  def display_locked_organization(organization_name)
+    content_tag(:a, organization_name+" **LOCKED**", href: 'javascript:void(0)')
   end
 
   ##Sets css bootstrap classes for rails flash message types##

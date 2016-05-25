@@ -106,6 +106,21 @@ class ServiceRequestsController < ApplicationController
   def catalog
     # uses a before filter defined in application controller named 'prepare_catalog', extracted so that devise controllers could use as well
     @locked = params[:locked]
+
+    if @locked
+      @locked_org_ids = []
+
+      @service_request.sub_service_requests.each do |ssr|
+        organization = ssr.organization
+        if organization.has_editable_statuses?
+          self_or_parent_id = ssr.find_editable_id(organization.id)
+          @locked_org_ids << self_or_parent_id if !EDITABLE_STATUSES[self_or_parent_id].include?(ssr.status)
+        end
+
+        @locked_org_ids << organization.all_children(Organization.all).map(&:id)
+      end
+    end
+    @locked_org_ids = @locked_org_ids.flatten.uniq
   end
 
   def protocol

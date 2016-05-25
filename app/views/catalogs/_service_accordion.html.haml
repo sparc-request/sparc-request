@@ -21,18 +21,30 @@
 #institution_accordion
   - institutions.each do |institution|
     - next unless institution.is_available? or institution.is_available.nil?
-    %h3{class: institution.css_class}
-      = link_to institution.name, update_description_catalog_path(institution)
+    - institution_locked = locked_org_ids.present? ? locked_org_ids.include?(institution.id) : false
+    %h3{ class: institution.css_class+(institution_locked ? 'locked' : '') }
+      - if institution_locked
+        = display_locked_organization(institution.name)
+      - else
+        = link_to institution.name, update_description_catalog_path(institution)
     %div.institution
       .provider_accordion
         - institution.providers.order('`order`').each do |provider|
           - next unless provider.is_available? or provider.is_available.nil?
           - next if @sub_service_request and (@sub_service_request.organization != provider and @sub_service_request.organization.parents.exclude?(provider))
-          %h3{class: "#{provider.css_class} provider_header"}
-            = link_to provider.name, update_description_catalog_path(provider)
+          - provider_locked = locked_org_ids.present? ? locked_org_ids.include?(provider.id) : false
+          %h3{ class: "#{provider.css_class} provider_header #{provider_locked ? 'locked' : ''}" }
+            - if provider_locked
+              = display_locked_organization(provider.name)
+            - else
+              = link_to provider.name, update_description_catalog_path(provider)
           %div.provider
             - provider.programs.order('`order`').each do |program|
               - next unless (program.is_available? || program.is_available.nil?) && program.has_active_pricing_setup
               - next if @sub_service_request and (@sub_service_request.organization != program and @sub_service_request.organization.parents.exclude?(program))
-              %h4{ class: "#{cycle('even', provider.css_class + '-odd')}"  }
-                = link_to program.name, update_description_catalog_path(program, sub_service_request_id: (@sub_service_request ? @sub_service_request.id : nil)), class: 'program-link', remote: true, method: :post
+              - program_locked = locked_org_ids.present? ? locked_org_ids.include?(program.id) : false
+              %h4{ class: "#{cycle('even', provider.css_class + '-odd')} #{program_locked ? 'locked' : ''}" }
+                - if program_locked
+                  = display_locked_organization(program.name)
+                - else
+                  = link_to program.name, update_description_catalog_path(program, sub_service_request_id: (@sub_service_request ? @sub_service_request.id : nil)), class: 'program-link', remote: true, method: :post

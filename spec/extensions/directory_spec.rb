@@ -83,6 +83,15 @@ RSpec.describe 'Directory' do
       expect(identity.first_name).to eq 'Julia'
       expect(identity.last_name).to eq 'Glenn'
     end
+
+    it 'should search_and_merge_ldap_and_database_results' do
+      identity = Directory.search_and_merge_ldap_and_database_results('leonarjp').first
+      expect(identity).not_to eq nil
+      expect(identity.ldap_uid).to eq 'jpl6@musc.edu'
+      expect(identity.email).to eq 'leonarjp@musc.edu'
+      expect(identity.first_name).to eq 'Jason'
+      expect(identity.last_name).to eq 'Leonard'
+    end
   end
 
   describe 'create_or_update_database_from_ldap' do

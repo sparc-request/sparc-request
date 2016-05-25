@@ -1115,10 +1115,6 @@ ActiveRecord::Schema.define(version: 20160523164445) do
   add_index "tokens", ["identity_id"], name: "index_tokens_on_identity_id", using: :btree
   add_index "tokens", ["service_request_id"], name: "index_tokens_on_service_request_id", using: :btree
 
-  create_table "user_notifications", force: :cascade do |t|
-    t.integer "identity_id", limit: 4
-  end
-
   create_table "validation_conditions", force: :cascade do |t|
     t.integer  "validation_id",  limit: 4
     t.string   "rule_key",       limit: 255

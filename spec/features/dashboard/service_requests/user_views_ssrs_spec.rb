@@ -30,7 +30,7 @@ RSpec.describe "User views SSR table", js: true do
     page
   end
 
-  let!(:bob)                  { create(:identity) }
+  let!(:bob)                  		{ create(:identity) }
 
   context 'for an editable SSR' do
 	  context 'As an Authorized User with Edit Privileges' do

@@ -17,7 +17,6 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 <% if @errors.present? %>
 $("#modal_errors").html("<%= escape_javascript(render('shared/modal_errors', errors: @errors)) %>")
 <% else %>
@@ -32,7 +31,7 @@ $("#authorized-users-panel").html("<%= escape_javascript(render('dashboard/assoc
 $("#service-requests-panel").html("<%= escape_javascript(render('dashboard/service_requests/service_requests', protocol: @protocol, permission_to_edit: @permission_to_edit, user: @user, admin: @admin, view_only: false)) %>")
 $("#associated-users-table").bootstrapTable()
 $('.service-requests-table').on 'all.bs.table', ->
-	$(this).find('.selectpicker').selectpicker() #Find descendant selectpickers
+  $(this).find('.selectpicker').selectpicker() #Find descendant selectpickers
 $(".service-requests-table").bootstrapTable()
 <% else %>
 $("#associated-users-table").bootstrapTable 'refresh', {silent: true}

@@ -45,6 +45,56 @@ RSpec.describe 'dashboard index', js: :true do
   end
 
   describe 'Protocols list' do
+    describe 'requests button' do
+      describe 'user is a Super User' do
+        before(:each) do
+          create(:super_user, identity_id: user.id)
+        end
+        describe 'protocol has ssr' do
+          scenario 'user should see requests button' do
+            protocol = create(:study_without_validations, primary_pi: user)
+            sr = create(:service_request_without_validations, protocol: protocol, service_requester: user) 
+            ssr = create(:sub_service_request, service_request: sr, organization: create(:organization)) 
+            page = visit_protocols_index_page
+
+            expect(page.search_results.protocols.first).to have_requests_button
+          end
+        end
+        describe 'protocol does not have ssr' do
+          scenario 'user should NOT see requests button' do
+            protocol = create(:study_without_validations, primary_pi: user)
+            page = visit_protocols_index_page
+            
+            expect(page.search_results.protocols.first).to have_no_requests_button
+          end
+        end
+      end
+      describe 'user has a project role' do
+        before(:each) do
+          @protocol = create(:study_without_validations, primary_pi: user)
+          create(:project_role, identity: user, role: "very-important", project_rights: "to-party", protocol: protocol)
+        end
+        describe 'protocol has ssr' do
+          scenario 'user should see requests button' do
+            sr = create(:service_request_without_validations, protocol: @protocol, service_requester: user) 
+            ssr = create(:sub_service_request, service_request: sr, organization: create(:organization)) 
+            page = visit_protocols_index_page
+
+            expect(page.search_results.protocols.first).to have_requests_button
+          end
+        end
+      end
+      describe 'user does not have a project role and is not a Super User' do
+        describe 'protocol has ssr' do
+          scenario 'user should not see requests button' do
+          end
+        end
+        describe 'protocol does not have ssr' do
+          scenario 'user should not see requests button' do
+          end
+        end
+      end
+    end
     describe 'archive button' do
       context 'archived Project' do
         scenario 'User clicks button' do

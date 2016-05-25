@@ -32,7 +32,7 @@ class Dashboard::DocumentsController < Dashboard::BaseController
 
   def create
     @sub_service_request = SubServiceRequest.find(params[:document][:sub_service_request_id])
-    @document = Document.create(params[:document])
+    @document = Document.create(params[:document].except!(:sub_service_request_id))
     if @document.valid?
       @sub_service_request.documents << @document
       @sub_service_request.save
@@ -50,7 +50,7 @@ class Dashboard::DocumentsController < Dashboard::BaseController
 
   def update
     @document = Document.find(params[:id])
-    if @document.update_attributes(params[:document])
+    if @document.update_attributes(params[:document].except!(:sub_service_request_id))
       flash.now[:success] = t(:dashboard)[:documents][:updated]
     else
       @errors = @document.errors

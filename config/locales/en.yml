@@ -1408,6 +1408,7 @@ en:
     core_facility: "Core/Facility Based Services"
     service_center_cost: "Service Center Cost"
     hospital_based_services: "Hospital Based Services"
+    eap_id: 'EAP ID'
     cpt_code: "CPT Code"
     send_to_epic: "Send To Epic"
     charge_code: "Charge Code"

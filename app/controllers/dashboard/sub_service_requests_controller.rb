@@ -27,8 +27,9 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
 
   def index
     service_request         = ServiceRequest.find(params[:srid])
+    protocol                = service_request.protocol
     @admin_orgs             = @user.authorized_admin_organizations
-    @permission_to_edit     = params[:permission_to_edit] 
+    @permission_to_edit     = protocol.project_roles.find_by(identity_id: @user.id)
     @sub_service_requests   = service_request.sub_service_requests
   end
 

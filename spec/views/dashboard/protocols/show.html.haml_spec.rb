@@ -24,12 +24,7 @@ RSpec.describe 'dashboard/protocols/show', type: :view do
 
   it 'should render dashboard/protocols/summary' do
     expect(response).to render_template(partial: 'dashboard/protocols/_summary',
-      locals: {
-        protocol: protocol,
-        protocol_type: 'Study',
-        permission_to_edit: false,
-        summary: nil
-      })
+      locals: { protocol: protocol })
   end
 
   it 'should render dashboard/associated_users/table' do

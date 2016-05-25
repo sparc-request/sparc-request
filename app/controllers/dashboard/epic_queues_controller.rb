@@ -48,6 +48,7 @@ class Dashboard::EpicQueuesController < Dashboard::BaseController
 
   private
 
+  # Check to see if user has rights to view epic queues
   def authorize_overlord
     unless QUEUE_EPIC_EDIT_LDAP_UIDS.include?(@user.ldap_uid)
       @epic_queues = nil

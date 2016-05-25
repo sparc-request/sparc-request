@@ -22,9 +22,6 @@ $(document).ready ->
 
   $('.epic-queue-table').bootstrapTable()
 
-  $(document).on 'click', '#epic-queue-btn', ->
-    window.location = '/dashboard/epic_queues'
-
   $(document).on 'click', '.delete-epic-queue-button', ->
     if confirm(I18n['epic_queues']['confirm'])
       eq_id = $(this).data('epic-queue-id')

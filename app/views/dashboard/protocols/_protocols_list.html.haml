@@ -56,7 +56,7 @@
         %td.pis
           = pis_display protocol
         %td.requests
-          - unless protocol.sub_service_requests.empty?
+          - if !protocol.sub_service_requests.empty? && (!protocol.project_roles.find_by(identity: current_user).nil? || admin_protocols.include?(protocol.id))
             %button.btn.btn-sm.btn-default.requests_display_link
               = t(:dashboard)[:protocols][:table][:requests]
         %td.archive

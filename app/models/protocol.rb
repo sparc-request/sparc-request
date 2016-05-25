@@ -133,7 +133,7 @@ class Protocol < ActiveRecord::Base
       :for_admin,
       :show_archived,
       :with_status,
-      :with_core
+      :with_organization
     ]
   )
 
@@ -182,7 +182,7 @@ class Protocol < ActiveRecord::Base
     where(sub_service_requests: { status: status }).distinct
   }
 
-  scope :with_core, -> (org_id) {
+  scope :with_organization, -> (org_id) {
     # returns protocols with ssrs in org_id
     return nil if org_id == "" or org_id == [""]
     joins(:sub_service_requests).

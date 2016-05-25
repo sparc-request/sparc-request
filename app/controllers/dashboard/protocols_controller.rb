@@ -44,7 +44,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
         default_filter_params: default_filter_params,
         select_options: {
           with_status: AVAILABLE_STATUSES.invert,
-          with_core: admin_orgs.map { |org| [org.name, org.id] }
+          with_organization: admin_orgs.map { |org| [org.name, org.id] }
         },
         persistence_id: false #resets filters on page reload
       ) || return

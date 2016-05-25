@@ -48,9 +48,9 @@
             = form.select :with_status, filterrific.select_options[:with_status], {}, class: "form-control selectpicker status-select", multiple: true, data: { none_selected_text: t(:constants)[:prompts][:any] }
 
         .form-group.row
-          = form.label :with_core, t(:dashboard)[:protocol_filters][:organization], class: 'col-lg-3 control-label'
+          = form.label :with_organization, t(:dashboard)[:protocol_filters][:organization], class: 'col-lg-3 control-label'
           .col-lg-9.drop-underneath
-            = form.select :with_core, filterrific.select_options[:with_core], {}, class: "form-control selectpicker core-select", multiple: true, data: { none_selected_text: t(:constants)[:prompts][:any] }
+            = form.select :with_organization, filterrific.select_options[:with_organization], {}, class: "form-control selectpicker core-select", multiple: true, data: { none_selected_text: t(:constants)[:prompts][:any] }
         - if admin
           %hr
           .form-group.row

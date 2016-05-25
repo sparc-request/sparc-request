@@ -74,8 +74,8 @@ $(document).ready ->
         if data["filterrific[with_status][]"].length
           data["filterrific[with_status][]"] = $("#filterrific_with_status").val()
 
-        if data["filterrific[with_core][]"].length
-          data["filterrific[with_core][]"] = $("#filterrific_with_core").val()
+        if data["filterrific[with_organization][]"].length
+          data["filterrific[with_organization][]"] = $("#filterrific_with_organization").val()
 
         $.ajax
           type: 'GET'

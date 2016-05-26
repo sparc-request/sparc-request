@@ -65,8 +65,6 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
       }
 
       format.html { # Admin Edit
-        authorize_admin
-        
         session[:service_calendar_pages] = params[:pages] if params[:pages]
         session[:breadcrumbs].add_crumbs(protocol_id: @sub_service_request.protocol.id, sub_service_request_id: @sub_service_request.id).clear(:notifications)
         

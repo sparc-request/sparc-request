@@ -122,7 +122,7 @@ class ServiceRequestsController < ApplicationController
     end
 
     unless @locked_org_ids.nil?
-      @locked_org_ids = @locked_org_ids.flatten.uniq
+      @locked_org_ids = @locked_org_ids.flatten!.uniq!
     end
 
     @locked_org_ids

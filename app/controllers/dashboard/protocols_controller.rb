@@ -126,6 +126,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     attrs               = params[:protocol]
     attrs[:start_date]  = Time.strptime(attrs[:start_date], "%m-%d-%Y") if attrs[:start_date]
     attrs[:end_date]    = Time.strptime(attrs[:end_date],   "%m-%d-%Y") if attrs[:end_date]
+
     protocol_role       = @protocol.project_roles.find_by(identity_id: @user.id)
     
     # admin is not able to activate study_type_question_group

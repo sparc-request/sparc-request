@@ -258,9 +258,9 @@ class ApplicationController < ActionController::Base
 
     # we have a current user
     if current_user
-      if @sub_service_request.nil? and current_user.can_edit_service_request? @service_request
+      if @sub_service_request.nil? and (current_user.can_edit_service_request?(@service_request) || @service_request.protocol.project_roles.find_by(identity: current_user).present?)
         return true
-      elsif @sub_service_request and current_user.can_edit_sub_service_request? @sub_service_request
+      elsif @sub_service_request and (current_user.can_edit_sub_service_request?(@sub_service_request) || @sub_service_request.protocol.project_roles.find_by(identity: current_user).present?)
         return true
       end
 

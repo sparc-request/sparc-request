@@ -55,7 +55,7 @@ class Dashboard::BaseController < ActionController::Base
   def protocol_authorizer_edit
     @authorization  = ProtocolAuthorizer.new(@protocol, @user)
     
-    unless @authorization.can_edit?
+    unless @authorization.can_edit? || @admin
       @protocol = nil
       render partial: 'service_requests/authorization_error', locals: { error: 'You are not allowed to edit this protocol.' }
     end

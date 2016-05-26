@@ -1,40 +1,17 @@
-- if @review
-  %table.service_calendar.review_totals
-    - if (@sub_service_request.nil? ? @service_request.has_one_time_fee_services? : @sub_service_request.has_one_time_fee_services?)
-      %thead{:class => thead_class}
-        %tr.table_header
-          %th{:rowspan => 2}= t(:sr_review)[:calendar][:headers][:services]
-          %th{:rowspan => 2}= t(:sr_review)[:calendar][:headers][:cost]
-          %th{:colspan => 6}
-          %th{:rowspan => 2}= t(:sr_review)[:calendar][:headers][:total_per_study]
-    %tbody.cell-border
-      - if (@sub_service_request.nil? ? @service_request.has_one_time_fee_services? : @sub_service_request.has_one_time_fee_services?)
-        %tr.section_header
-          %th{:colspan => @portal ? 11 : 12}= t("calendar_page.headers.other_services")
-        - @service_request.service_list(true).each do |key, value| # get only one time fee services and group them
-          - next unless @sub_service_request.nil? or @sub_service_request.organization.name == value[:process_ssr_organization_name]
-          %tr.sub_section_header
-            %th{:colspan => 9}= value[:name]
-            - value[:line_items].each do |line_item|
-              %tr.line_item
-                %td.service_name= line_item.service.name
-                %td.your_cost= display_your_cost line_item
-                %td{:colspan => 6}
-                %td= display_one_time_fee_direct_cost line_item
+%table.service_calendar.review_totals
+  %tr.section_header
+    %tr.totals_section
+      %td{:colspan => 7}
+      %td.total_cell= t(:sr_review)[:calendar][:totals][:direct_cost]
+      %td.total_cell{:id => 'grand_total_direct'}= display_grand_total_direct_costs @service_request, @line_items
 
-      %tr.section_header
-        %tr.totals_section
-          %td{:colspan => 7}
-          %td.total_cell= t(:sr_review)[:calendar][:totals][:direct_cost]
-          %td.total_cell{:id => 'grand_total_direct'}= display_grand_total_direct_costs @service_request, @line_items
+    - if USE_INDIRECT_COST
+      %tr.totals_section
+        %td{:colspan => 7}
+        %td.total_cell= t(:sr_review)[:calendar][:totals][:indirect_cost]
+        %td.total_cell{:id => 'grand_total_indirect'}= display_grand_total_indirect_costs @service_request, @line_items
 
-        - if USE_INDIRECT_COST
-          %tr.totals_section
-            %td{:colspan => 7}
-            %td.total_cell= t(:sr_review)[:calendar][:totals][:indirect_cost]
-            %td.total_cell{:id => 'grand_total_indirect'}= display_grand_total_indirect_costs @service_request, @line_items
-
-        %tr.totals_section
-          %td{:colspan => 7}
-          %td.total_cell= t(:sr_review)[:calendar][:totals][:grand]
-          %td.total_cell{:id => 'grand_total'}= display_grand_total @service_request, @line_items
+    %tr.totals_section
+      %td{:colspan => 7}
+      %td.total_cell= t(:sr_review)[:calendar][:totals][:grand]
+      %td.total_cell{:id => 'grand_total'}= display_grand_total @service_request, @line_items

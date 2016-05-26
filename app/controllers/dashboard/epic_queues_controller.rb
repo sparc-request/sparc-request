@@ -21,12 +21,16 @@
 class Dashboard::EpicQueuesController < Dashboard::BaseController
   
   before_filter :get_epic_queue, only: [:destroy]
+  before_filter :authorize_overlord
 
   def index
     respond_to do |format|
-      format.html do
+      format.json do
         @epic_queues = EpicQueue.all
 
+        render
+      end
+      format.html do
         render
       end
     end
@@ -43,6 +47,15 @@ class Dashboard::EpicQueuesController < Dashboard::BaseController
   end
 
   private
+
+  # Check to see if user has rights to view epic queues
+  def authorize_overlord
+    unless QUEUE_EPIC_EDIT_LDAP_UIDS.include?(@user.ldap_uid)
+      @epic_queues = nil
+      @epic_queue = nil
+      render partial: 'service_requests/authorization_error', locals: { error: 'You do not have access to view the Epic Queues', in_dashboard: false }
+    end
+  end
 
   def get_epic_queue
     @epic_queue = EpicQueue.find(params[:id])

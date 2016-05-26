@@ -120,7 +120,12 @@ class ServiceRequestsController < ApplicationController
         @locked_org_ids << organization.all_children(Organization.all).map(&:id)
       end
     end
-    @locked_org_ids = @locked_org_ids.flatten.uniq
+
+    unless @locked_org_ids.nil?
+      @locked_org_ids = @locked_org_ids.flatten.uniq
+    end
+
+    @locked_org_ids
   end
 
   def protocol

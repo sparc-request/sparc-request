@@ -18,14 +18,5 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.admin-right-dashboard
-  .user-information-body
-    %p
-      = @user.full_name
-      |
-      = @user.email
-    .admin-buttons
-      =link_to "Return to Dashboard", dashboard_root_path, :class => 'return_link'
-%br
 #epic-queue-container
   = render :partial => 'epic_queue_list'

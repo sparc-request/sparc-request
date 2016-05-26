@@ -24,8 +24,8 @@ $(document).ready ->
 
   $(document).on 'click', '#admin_approvals_button', ->
     ssr_id = $(this).data('sub-service-request-id')
-    data = 
-      "sub_service_request_id" : ssr_id
+    data =
+      "ssr_id" : ssr_id
     $.ajax
       type: 'GET'
       url: "/dashboard/approvals/new.js"
@@ -33,9 +33,10 @@ $(document).ready ->
 
   $(document).on 'change', '.admin_approval_checkbox', ->
     ssr_id = $(this).data('sub_service_request_id')
-    data = 
-      "sub_service_request_id" : ssr_id
-      "#{$(this).attr('name')}" : $(this).val()
+    data =
+      "ssr_id" : ssr_id
+      sub_service_request:
+        "#{$(this).attr('name')}" : $(this).val()
     $.ajax
       type: 'POST'
       url: "/dashboard/approvals.js"

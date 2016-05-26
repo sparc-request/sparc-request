@@ -41,7 +41,7 @@
           %label.col-lg-3
             = t(:dashboard)[:protocols][:view_details][:studies][:information][:funding_status]
           .col-lg-9
-            = protocol.funding_status.capitalize
+            = protocol.funding_status.nil? ? '' : protocol.funding_status.capitalize
 
       / Funding Source
       %tr.row
@@ -92,7 +92,7 @@
           %label.col-lg-3
             = t(:dashboard)[:protocols][:view_details][:studies][:information][:phase]
           .col-lg-9
-            = protocol.study_phase.capitalize
+            = protocol.study_phase.nil? ? '' : protocol.study_phase.capitalize
       %tr.row
         %td
           %label.col-lg-3

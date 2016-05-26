@@ -46,6 +46,11 @@
           = form.label :with_status, t(:dashboard)[:protocol_filters][:status], class: 'col-lg-3 control-label'
           .col-lg-9
             = form.select :with_status, filterrific.select_options[:with_status], {}, class: "form-control selectpicker status-select", multiple: true, data: { none_selected_text: t(:constants)[:prompts][:any] }
+
+        .form-group.row
+          = form.label :with_organization, t(:dashboard)[:protocol_filters][:organization], class: 'col-lg-3 control-label'
+          .col-lg-9.drop-underneath
+            = form.select :with_organization, filterrific.select_options[:with_organization], {}, class: "form-control selectpicker core-select", multiple: true, data: { none_selected_text: t(:constants)[:prompts][:any] }
         - if admin
           %hr
           .form-group.row
@@ -57,11 +62,6 @@
             = form.label :for_admin, t(:dashboard)[:protocol_filters][:my_admin_orgs], class: 'col-lg-10 control-label'
             .col-lg-2
               = form.check_box :for_admin, {}, current_user.id, "0"
-
-          .form-group.row
-            = form.label :with_core, t(:dashboard)[:protocol_filters][:core], class: 'col-lg-3 control-label'
-            .col-lg-9
-              = form.select :with_core, filterrific.select_options[:with_core], {}, class: "form-control selectpicker core-select", multiple: true, data: { none_selected_text: t(:constants)[:prompts][:any] }
 
     .panel-footer
       .pull-right

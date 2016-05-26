@@ -19,7 +19,7 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 - if @merged || !@portal
-  - colspan = (@merged and @portal) ? 4 : 5
+  - colspan = (@merged and @portal) ? 4 : 6 
   %tr.totals_section.begin_totals{:class => cycle('odd', '', :name => 'pppvs')}
     %td{:colspan => colspan}= t(:calendar_page)[:labels][:maximum_direct]
     - unless @merged || @tab != 'template'
@@ -53,4 +53,7 @@
     -unless @merged || @tab != 'template'
       %td{:colspan => 2} &nbsp;
     %td{:colspan => 6}
-    %td{:class => "pp_total arm_#{arm.id}"}= display_total_cost_per_arm arm, line_items_visits
+    - if @tab == 'billing_strategy' || @tab == 'quantity'
+      %td{:colspan => 2, :class => "pp_total arm_#{arm.id}"}= display_total_cost_per_arm arm, line_items_visits
+    - else 
+      %td{:class => "pp_total arm_#{arm.id}"}= display_total_cost_per_arm arm, line_items_visits

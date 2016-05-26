@@ -5,10 +5,18 @@ RSpec.describe 'layouts/dashboard/_dashboard_header.html.haml', view: true do
 
   before(:each) do
     @user = instance_double(Identity,
+      ldap_uid: 'jug2',
       email: 'user@email.com',
-      unread_notification_count: 2)
+      unread_notification_count: 2,
+      )
 
     expect(session[:breadcrumbs]).to receive(:breadcrumbs).and_return('All those other pages.')
+  end
+
+  it 'should display view epic queue button' do
+    render 'layouts/dashboard/dashboard_header', user: @user
+
+    expect(response).to have_selector('button#epic-queue-btn', text: 'View Epic Queue')
   end
 
   it 'should display number of unread notifications (for user)' do

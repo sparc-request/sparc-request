@@ -207,7 +207,7 @@ module Dashboard::SubServiceRequestsHelper
 
   def ssr_edit_button(ssr, user, permission_to_edit, admin_access)
     # The SSR must not be locked, and the user must either be an authorized user or an authorized admin
-    if ssr.can_be_edited? && permission = (permission_to_edit == 'true' || admin_access)
+    if ssr.can_be_edited? && permission = (permission_to_edit || admin_access)
       content_tag(:button, t(:dashboard)[:service_requests][:actions][:edit], class: 'edit-service-request btn btn-warning btn-sm', type: 'button', data: { permission: permission.to_s, url: "/service_requests/#{ssr.service_request.id}/catalog?sub_service_request_id=#{ssr.id}&from_user_portal=true"})
     else
       ''

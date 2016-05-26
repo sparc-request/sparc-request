@@ -31,6 +31,7 @@ class Dashboard::ProtocolFiltersController < Dashboard::BaseController
     else
       flash[:alert] = 'Search Failed to Save.'
     end
+    
     @protocol_filters = ProtocolFilter.latest_for_user(@user.id, 5)
   end
 end

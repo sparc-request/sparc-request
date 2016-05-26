@@ -27,27 +27,13 @@ RSpec.describe 'dashboard/notifications/_notifications', type: :view do
       @logged_in_user = build_stubbed(:identity)
     end
 
-    context "user an admin" do
-      it "should show authorized users, but not clinical providers or the service requester" do
-        render "dashboard/notifications/notifications", sub_service_request: @sub_service_request, user: @logged_in_user, admin: true
+    it "should show clinical providers and authorized users, but not the service requester" do
+      render "dashboard/notifications/notifications", sub_service_request: @sub_service_request, user: @logged_in_user
 
-        expect(response).to have_tag("select") do
-          with_option(/Primary-pi: Jane Doe/)
-          without_option(/John Doe/)
-          without_option(/Dr\. Feelgood/)
-        end
-      end
-    end
-
-    context "user not an admin" do
-      it "should show clinical providers and authorized users, but not the service requester" do
-        render "dashboard/notifications/notifications", sub_service_request: @sub_service_request, user: @logged_in_user, admin: false
-
-        expect(response).to have_tag("select") do
-          with_option(/Primary-pi: Jane Doe/)
-          with_option(/Dr\. Feelgood/)
-          without_option(/John Doe/)
-        end
+      expect(response).to have_tag("select") do
+        with_option(/Primary-pi: Jane Doe/)
+        with_option(/Dr\. Feelgood/)
+        without_option(/John Doe/)
       end
     end
   end

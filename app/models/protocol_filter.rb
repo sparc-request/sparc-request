@@ -22,7 +22,7 @@ class ProtocolFilter < ActiveRecord::Base
 
   belongs_to :identity
 
-  serialize :with_core, Array
+  serialize :with_organization, Array
   serialize :with_status, Array
 
   attr_accessible :identity_id
@@ -32,7 +32,7 @@ class ProtocolFilter < ActiveRecord::Base
   attr_accessible :for_admin
   attr_accessible :for_identity_id
   attr_accessible :search_query
-  attr_accessible :with_core
+  attr_accessible :with_organization
   attr_accessible :with_status
 
   scope :latest_for_user, -> (identity_id, limit) {
@@ -49,7 +49,7 @@ class ProtocolFilter < ActiveRecord::Base
         for_admin: self.for_admin,
         for_identity_id: self.for_identity_id,
         search_query: self.search_query,
-        with_core: self.with_core,
+        with_organization: self.with_organization,
         with_status: self.with_status
       }
     )

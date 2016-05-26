@@ -301,7 +301,7 @@ SparcRails::Application.routes.draw do
       end
     end
 
-    resources :sub_service_requests, except: [:index] do
+    resources :sub_service_requests, except: [:new, :create, :edit]do
       member do
         patch :update_from_project_study_information
         put :push_to_epic

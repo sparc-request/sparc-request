@@ -37,16 +37,16 @@ $(document).ready ->
   $('#institution_accordion').accordion
     heightStyle: 'content'
     collapsible: true
-    activate: (event, ui)->
-      if url = (ui.newHeader.find('a').attr('href') or ui.oldHeader.find('a').attr('href'))
+    activate: (event, ui) ->
+      if (url = (ui.newHeader.find('a').attr('href') or ui.oldHeader.find('a').attr('href'))) && url != 'javascript:void(0)'
         loadDescription(url)
 
   $('.provider_accordion').accordion
     heightStyle: 'content'
     collapsible: true
     active: false
-    activate: (event, ui)->
-      if url = (ui.newHeader.find('a').attr('href') or ui.oldHeader.find('a').attr('href'))
+    activate: (event, ui) ->
+      if (url = (ui.newHeader.find('a').attr('href') or ui.oldHeader.find('a').attr('href'))) && url != 'javascript:void(0)'
         loadDescription(url)
 
   $('.program-link').live 'click', ->

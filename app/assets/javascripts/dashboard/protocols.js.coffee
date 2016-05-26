@@ -21,10 +21,12 @@
 # Place all the behaviors and hooks related to the matching controller here.
 # All this logic will automatically be available in application.js.
 # You can use CoffeeScript in this file: http://jashkenas.github.com/coffee-script/
-
 $(document).ready ->
   Sparc.protocol =
     ready: ->
+      $('.service-requests-table').on 'all.bs.table', ->
+        $(this).find('.selectpicker').selectpicker() #Find descendant selectpickers
+
       $(document).on 'click', '.service-request-button', ->
         if $(this).data('permission')
           window.location = $(this).data('url')
@@ -55,6 +57,13 @@ $(document).ready ->
         $.ajax
           type: 'get'
           url: "/dashboard/protocols/#{protocol_id}/display_requests"
+          success: (data) ->
+            $('#modal_place').html(data.modal)
+            $('#modal_place').modal 'show'
+            $('.service-requests-table').bootstrapTable()
+            $('.service-requests-table').on 'all.bs.table', ->
+              $(this).find('.selectpicker').selectpicker()
+
 
       $(document).on 'click', '.protocol-archive-button', ->
         protocol_id = $(this).parents("tr").data('protocol-id')
@@ -74,8 +83,8 @@ $(document).ready ->
         if data["filterrific[with_status][]"].length
           data["filterrific[with_status][]"] = $("#filterrific_with_status").val()
 
-        if data["filterrific[with_core][]"].length
-          data["filterrific[with_core][]"] = $("#filterrific_with_core").val()
+        if data["filterrific[with_organization][]"].length
+          data["filterrific[with_organization][]"] = $("#filterrific_with_organization").val()
 
         $.ajax
           type: 'GET'
@@ -113,21 +122,20 @@ $(document).ready ->
           method: 'get'
           url: "/dashboard/service_calendars/view_full_calendar.js?portal=true&protocol_id=#{protocol_id}"
 
-      $(document).on 'click', '.view-sub-service-request-button', ->
+      $(document).on 'click', '.view-service-request', ->
         id = $(this).data('sub-service-request-id')
         $.ajax
           method: 'GET'
           url: "/dashboard/sub_service_requests/#{id}.js"
 
-      $(document).on 'click', '.edit_service_request', ->
+      $(document).on 'click', '.edit-service-request', ->
         if $(this).data('permission')
           window.location = $(this).data('url')
 
       $(document).on 'click', '#add-services-button', ->
-        protocol_id = $(this).data('protocol-id')
-
         if $(this).data('permission')
-          window.location = "/?protocol_id=#{protocol_id}&from_portal=true"
+          protocol_id         = $(this).data('protocol-id')
+          window.location     = "/?protocol_id=#{protocol_id}&from_portal=true"
       # Protocol Show End
 
       # Protocol Edit Begin

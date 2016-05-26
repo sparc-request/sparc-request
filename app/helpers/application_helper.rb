@@ -342,6 +342,10 @@ module ApplicationHelper
     end
   end
 
+  def display_locked_organization(organization_name)
+    content_tag(:a, organization_name+" **LOCKED**", href: 'javascript:void(0)')
+  end
+
   ##Sets css bootstrap classes for rails flash message types##
   def twitterized_type type
     case type.to_sym

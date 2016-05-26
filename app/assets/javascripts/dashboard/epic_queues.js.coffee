@@ -19,10 +19,12 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 $(document).ready ->
-  $(document).on 'click', '.delete-eq', ->
+
+  $('.epic-queue-table').bootstrapTable()
+
+  $(document).on 'click', '.delete-epic-queue-button', ->
     if confirm(I18n['epic_queues']['confirm'])
-      eq_id = $(this).data('eq-id')
-      protocol_id = $(this).data('protocol-id')
+      eq_id = $(this).data('epic-queue-id')
       $.ajax
         type: 'DELETE'
         url: "/dashboard/epic_queues/#{eq_id}.js"

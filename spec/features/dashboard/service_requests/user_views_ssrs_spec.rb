@@ -41,10 +41,9 @@ RSpec.describe "User views SSR table", js: true do
 
 	    scenario 'and sees View and Edit' do
 				page = go_to_show_protocol(protocol.id)
-				wait_for_javascript_to_finish
 
-				expect(page).to have_selector('button', text: 'View')
-				expect(page).to have_selector('button', text: 'Edit')
+				expect(page).to have_selector('button', text: /\AView\z/)
+				expect(page).to have_selector('button', text: /\AEdit\z/)
 				expect(page).not_to have_selector('button', text: 'Admin Edit')
 			end
 	  end
@@ -59,26 +58,24 @@ RSpec.describe "User views SSR table", js: true do
 	    	create(:project_role, identity: jug2, protocol: protocol, project_rights: 'view', role: 'consultant')
 
 	    	page = go_to_show_protocol(protocol.id)
-				wait_for_javascript_to_finish
 
-				expect(page).to have_selector('button', text: 'View')
-				expect(page).not_to have_selector('button', text: 'Edit')
+				expect(page).to have_selector('button', text: /\AView\z/)
+				expect(page).not_to have_selector('button', text: /\AEdit\z/)
 				expect(page).not_to have_selector('button', text: 'Admin Edit')
 	    end
 	  end
 
 		context 'As an admin' do
-			let!(:protocol)					 		{ create(:unarchived_study_without_validations, primary_pi: jug2) }
+			let!(:protocol)					 		{ create(:unarchived_study_without_validations, primary_pi: bob) }
 	    let!(:service_request) 			{ create(:service_request_without_validations, protocol: protocol, service_requester: jug2, status: 'draft') }
 	    let!(:organization)					{ create(:organization,type: 'Institution', name: 'Megacorp', admin: jug2, service_provider: jug2) }
 	    let!(:sub_service_request) 	{ create(:sub_service_request, id: 9999, ssr_id: '1234', service_request: service_request, organization_id: organization.id) }
 
-			scenario 'and sees View, Edit, and Admin Edit' do
+			scenario 'and sees View, and Admin Edit, but not Edit' do
 				page = go_to_show_protocol(protocol.id)
-				wait_for_javascript_to_finish
 
-				expect(page).to have_selector('button', text: 'View')
-				expect(page).to have_selector('button', text: 'Edit')
+				expect(page).to have_selector('button', text: /\AView\z/)
+				expect(page).not_to have_selector('button', text: /\AEdit\z/)
 				expect(page).to have_selector('button', text: 'Admin Edit')
 			end
 		end

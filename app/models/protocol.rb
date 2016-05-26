@@ -133,7 +133,7 @@ class Protocol < ActiveRecord::Base
       :for_admin,
       :show_archived,
       :with_status,
-      :with_core
+      :with_organization
     ]
   )
 
@@ -160,15 +160,15 @@ class Protocol < ActiveRecord::Base
   scope :for_identity_id, -> (identity_id) {
     return nil if identity_id == '0'
     joins(:project_roles).
-    where(project_roles: { identity_id: identity_id }).
-    where.not(project_roles: { project_rights: 'none' })
+      where(project_roles: { identity_id: identity_id }).
+      where.not(project_roles: { project_rights: 'none' })
   }
 
   scope :for_admin, -> (identity_id) {
     # returns protocols with ssrs in orgs authorized for identity_id
     return nil if identity_id == '0'
     joins(:organizations).
-    merge( Organization.authorized_for_identity(identity_id) ).distinct
+      merge( Organization.authorized_for_identity(identity_id) ).distinct
   }
 
   scope :show_archived, -> (boolean) {
@@ -182,7 +182,7 @@ class Protocol < ActiveRecord::Base
     where(sub_service_requests: { status: status }).distinct
   }
 
-  scope :with_core, -> (org_id) {
+  scope :with_organization, -> (org_id) {
     # returns protocols with ssrs in org_id
     return nil if org_id == "" or org_id == [""]
     joins(:sub_service_requests).

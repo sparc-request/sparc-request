@@ -18,4 +18,4 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$("#epic-queue-container").replace_html('<%= escape_javascript(render(:partial => "epic_queue_list")).html_safe %>'
+$('.epic-queue-table').bootstrapTable('refresh', silent: 'true')

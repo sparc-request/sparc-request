@@ -28,8 +28,7 @@ class ProtocolAuthorizer
     # NOTE @can_edit memoized; use #nil? since @can_edit is a boolean.
     # !! maps truthy and falsey values to true and false
     if @can_edit.nil?
-      @can_edit = !!(@protocol && @identity &&
-        (roles_for_edit.any? || administrated_ssrs.any?))
+      @can_edit = !!(@protocol && @identity && roles_for_edit.any?)
     else
       @can_edit
     end
@@ -58,11 +57,5 @@ class ProtocolAuthorizer
   def roles_for_view
     @protocol.project_roles.where(identity_id: @identity.id,
       project_rights: 'view')
-  end
-
-  # SubServiceRequests belonging to @user's admin organizations
-  def administrated_ssrs
-    @protocol.sub_service_requests.where(
-      organization_id: @identity.admin_organizations.map(&:id))
   end
 end

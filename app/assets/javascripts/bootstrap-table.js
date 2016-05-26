@@ -457,7 +457,7 @@
                     this.options.paginationVAlign === 'top' || this.options.paginationVAlign === 'both' ?
                     '<div class="fixed-table-pagination" style="clear: both;"></div>' :
                     '',
-                '<div class="fixed-table-container protocol-management-and-financial-view">',
+                '<div class="fixed-table-container">',
                 '<div class="fixed-table-header"><table></table></div>',
                 '<div class="fixed-table-body">',
                     '<div class="fixed-table-loading">',

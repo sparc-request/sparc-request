@@ -8,10 +8,10 @@ RSpec.describe Dashboard::ApprovalsController, type: :controller do
       end
 
       log_in_dashboard_identity(obj: build_stubbed(:identity))
-      xhr :get, :new, sub_service_request_id: @ssr_stub.id
+      xhr :get, :new, ssr_id: @ssr_stub.id
     end
 
-    it 'should set @sub_service_request to the SubServiceRequest with id params[:sub_service_request_id]' do
+    it 'should set @sub_service_request to the SubServiceRequest with id params[:ssr_id]' do
       expect(assigns(:sub_service_request)).to eq(@ssr_stub)
     end
 

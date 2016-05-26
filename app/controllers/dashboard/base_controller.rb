@@ -44,8 +44,8 @@ class Dashboard::BaseController < ActionController::Base
 
   def protocol_authorizer_view
     @authorization  = ProtocolAuthorizer.new(@protocol, @user)
-    @admin          = !@user.authorized_admin_organizations.empty?
 
+    # Admins should be able to view too
     unless @authorization.can_view? || @admin
       @protocol = nil
       render partial: 'service_requests/authorization_error', locals: { error: 'You are not allowed to access this protocol.' }
@@ -54,7 +54,6 @@ class Dashboard::BaseController < ActionController::Base
 
   def protocol_authorizer_edit
     @authorization  = ProtocolAuthorizer.new(@protocol, @user)
-    @admin          = !@user.authorized_admin_organizations.empty?
     
     unless @authorization.can_edit? || @admin
       @protocol = nil
@@ -66,5 +65,9 @@ class Dashboard::BaseController < ActionController::Base
     if !session[:breadcrumbs] || session[:breadcrumbs].class.name != 'Dashboard::Breadcrumber'
       session[:breadcrumbs] = Dashboard::Breadcrumber.new
     end
+  end
+
+  def find_admin_for_protocol
+    @admin = Protocol.for_admin(@user).include?(@protocol)
   end
 end

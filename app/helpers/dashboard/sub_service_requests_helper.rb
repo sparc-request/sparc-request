@@ -186,4 +186,39 @@ module Dashboard::SubServiceRequestsHelper
 
     total
   end
+
+  def ssr_notifications_display(ssr, user)
+    render 'dashboard/notifications/dropdown.html', sub_service_request: ssr, user: user
+  end
+
+  def ssr_actions_display(ssr, user, permission_to_edit, admin_orgs)
+    admin_access = (admin_orgs & ssr.org_tree).any?
+
+    ssr_view_button(ssr)+
+    ssr_edit_button(ssr, user, permission_to_edit, admin_access)+
+    ssr_admin_button(ssr, user, permission_to_edit, admin_access)
+  end
+
+  private
+
+  def ssr_view_button(ssr)
+    content_tag(:button, t(:dashboard)[:service_requests][:actions][:view], class: 'view-service-request btn btn-primary btn-sm', type: 'button', data: { sub_service_request_id: ssr.id })
+  end
+
+  def ssr_edit_button(ssr, user, permission_to_edit, admin_access)
+    # The SSR must not be locked, and the user must either be an authorized user or an authorized admin
+    if ssr.can_be_edited? && permission = (permission_to_edit == 'true' || admin_access)
+      content_tag(:button, t(:dashboard)[:service_requests][:actions][:edit], class: 'edit-service-request btn btn-warning btn-sm', type: 'button', data: { permission: permission.to_s, url: "/service_requests/#{ssr.service_request.id}/catalog?sub_service_request_id=#{ssr.id}&from_user_portal=true"})
+    else
+      ''
+    end
+  end
+
+  def ssr_admin_button(ssr, user, permission_to_edit, admin_access)
+    if admin_access
+      content_tag(:button, t(:dashboard)[:service_requests][:actions][:admin_edit], class: "edit-service-request btn btn-warning btn-sm", type: 'button', data: { permission: admin_access.to_s, url: "/dashboard/sub_service_requests/#{ssr.id}" })
+    else
+      ''
+    end
+  end
 end

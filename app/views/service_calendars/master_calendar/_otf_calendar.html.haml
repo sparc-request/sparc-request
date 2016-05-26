@@ -17,12 +17,12 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-- if @portal || !@review
-  - if (@sub_service_request.nil? ? @service_request.has_one_time_fee_services? : @sub_service_request.has_one_time_fee_services?) or @merged
-    %table.service_calendar{:class => @review ? 'review_totals' : ''}
-      %thead{:class => @review ? thead_class : 'default_calendar'}
-        = render :partial => "/service_calendars/master_calendar/otf_header"
-      %tbody.cell-border
-        = render :partial => "/service_calendars/master_calendar/otf_line_items", :locals =>{:current_request => @service_request}
-        - unless @study_tracker and !@merged
-          = render :partial => "/service_calendars/master_calendar/otf_totals", :locals =>{:current_request => @service_request}
+
+- if (@sub_service_request.nil? ? @service_request.has_one_time_fee_services? : @sub_service_request.has_one_time_fee_services?) or @merged
+  %table.service_calendar{:class => @review ? 'review_totals' : ''}
+    %thead{:class => @review ? thead_class : 'default_calendar'}
+      = render :partial => "/service_calendars/master_calendar/otf_header"
+    %tbody.cell-border
+      = render :partial => "/service_calendars/master_calendar/otf_line_items", :locals =>{:current_request => @service_request}
+      - unless @study_tracker and !@merged
+        = render :partial => "/service_calendars/master_calendar/otf_totals", :locals =>{:current_request => @service_request}

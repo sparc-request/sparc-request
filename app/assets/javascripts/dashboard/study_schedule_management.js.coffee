@@ -105,9 +105,6 @@ $ ->
       url: '/dashboard/visit_groups/new'
       data: data
 
-  $(document).on 'click', '#add_visit_group_form_button', ->
-    $(this).attr('disabled','disabled')
-
   $(document).on 'change', '#visit_group_arm_id', ->
     arm_id = $(this).find('option:selected').val()
     data =

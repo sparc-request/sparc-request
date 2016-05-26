@@ -17,13 +17,15 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 .service-view
   %span.title
-    %span.name= link_to service.display_service_name, 'javascript:void(0);'
-    %button.add_service.pull-right.btn.btn-success{id: "service-#{service.id}", sr_id: "#{service_request.id}", first_service: "#{first_service?(service_request)}", from_portal: "#{from_portal}"} Add
+    %span.name
+      = link_to service.display_service_name, 'javascript:void(0);'
+    %button.add_service.pull-right.btn.btn-success{id: "service-#{service.id}", sr_id: "#{service_request.id}", first_service: "#{first_service?(service_request)}", from_portal: from_portal.to_s}
+      = t(:actions)[:add]
     .clear
-  %span.service-description.description{style: 'display:none'}= raw service.description
+  %span.service-description.description{style: 'display:none'}
+    = raw service.description
 
 #new_request_dialog{style: 'display:none;', title: t(:cart)[:new_request_dialog1]}
   = t(:cart)[:new_request_dialog2]

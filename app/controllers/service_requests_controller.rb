@@ -105,6 +105,27 @@ class ServiceRequestsController < ApplicationController
 
   def catalog
     # uses a before filter defined in application controller named 'prepare_catalog', extracted so that devise controllers could use as well
+    @locked = params[:locked]
+
+    if @locked
+      @locked_org_ids = []
+
+      @service_request.sub_service_requests.each do |ssr|
+        organization = ssr.organization
+        if organization.has_editable_statuses?
+          self_or_parent_id = ssr.find_editable_id(organization.id)
+          @locked_org_ids << self_or_parent_id if !EDITABLE_STATUSES[self_or_parent_id].include?(ssr.status)
+        end
+
+        @locked_org_ids << organization.all_children(Organization.all).map(&:id)
+      end
+    end
+
+    unless @locked_org_ids.nil?
+      @locked_org_ids = @locked_org_ids.flatten!.uniq!
+    end
+
+    @locked_org_ids
   end
 
   def protocol
@@ -619,17 +640,19 @@ class ServiceRequestsController < ApplicationController
 
   def authorize_protocol_edit_request
     if current_user
-      authorized =  if @sub_service_request
+      authorized  = if @sub_service_request
                       current_user.can_edit_sub_service_request?(@sub_service_request)
                     else
                       current_user.can_edit_service_request?(@service_request)
                     end
 
-      unless authorized
+      protocol = @sub_service_request ? @sub_service_request.service_request.protocol : @service_request.protocol
+
+      unless authorized || protocol.project_roles.find_by(identity: current_user).present?
         @service_request     = nil
         @sub_service_request = nil
-        render partial: 'service_requests/authorization_error',
-          locals: { error: 'You are not allowed to edit this Request.' }
+
+        render partial: 'service_requests/authorization_error', locals: { error: 'You are not allowed to edit this Request.' }
       end
     end
   end

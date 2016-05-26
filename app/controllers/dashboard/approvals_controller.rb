@@ -22,13 +22,13 @@ class Dashboard::ApprovalsController < Dashboard::BaseController
   respond_to :js
 
   def new
-    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
+    @sub_service_request = SubServiceRequest.find(params[:ssr_id])
   end
 
   def create
-    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
-    if @sub_service_request.update_attributes(params)
-      @sub_service_request.generate_approvals(@user, params)
+    @sub_service_request = SubServiceRequest.find(params[:ssr_id])
+    if @sub_service_request.update_attributes(params[:sub_service_request])
+      @sub_service_request.generate_approvals(@user, params[:sub_service_request])
       @service_request = @sub_service_request.service_request
       @approvals = [@service_request.approvals, @sub_service_request.approvals].flatten
       flash[:success] = 'Approval Submitted!'

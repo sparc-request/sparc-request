@@ -54,6 +54,6 @@ RSpec.describe 'dashboard/sub_service_requests/show', type: :view do
   end
 
   it "should render notifications table" do
-    expect(response).to render_template(partial: "dashboard/notifications/notifications", locals: { sub_service_request: @sub_service_request, admin: "ADMIN", user: @logged_in_user })
+    expect(response).to render_template(partial: "dashboard/notifications/notifications", locals: { sub_service_request: @sub_service_request, user: @logged_in_user })
   end
 end

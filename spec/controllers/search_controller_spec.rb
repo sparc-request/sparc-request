@@ -274,66 +274,34 @@ RSpec.describe SearchController do
     end
 
     it 'should return one instance if search returns one instance' do
-      allow(Identity).to receive(:search) { [ identity ] }
-      expect(Identity).to receive(:search).with('search term')
 
       get :identities, {
         format: :json,
         id: nil,
-        term: 'search term',
+        term: 'leonarjp',
       }.with_indifferent_access
 
       results = JSON.parse(response.body)
 
       expect(results.length).to eq 1
 
-      expect(results[0]['label']).to              eq 'Justin Frankel (burn@nullsoft.com)'
-      expect(results[0]['value']).to              eq identity.id
-      expect(results[0]['email']).to              eq 'burn@nullsoft.com'
-      expect(results[0]['institution']).to        eq 'Nullsoft'
-      expect(results[0]['phone']).to              eq '555-1212'
-      expect(results[0]['era_commons_name']).to   eq 'huh?'
-      expect(results[0]['college']).to            eq 'Winamp'
-      expect(results[0]['department']).to         eq 'Awesomeness'
-      expect(results[0]['credentials']).to        eq 'Master Hacker'
-      expect(results[0]['credentials_other']).to  eq 'Irc Junkie'
+      expect(results[0]['label']).to              eq 'Jason Leonard (leonarjp@musc.edu)'
+      expect(results[0]['email']).to              eq 'leonarjp@musc.edu'
     end
 
     it 'should return two instances if search returns two instances' do
-      allow(Identity).to receive(:search) { [ identity, identity2 ] }
-      expect(Identity).to receive(:search).with('search term')
 
       get :identities, {
         format: :json,
         id: nil,
-        term: 'search term',
+        term: 'leonarjp',
       }.with_indifferent_access
 
       results = JSON.parse(response.body)
 
-      expect(results.length).to eq 2
+      expect(results.length).to eq 1
 
-      expect(results[0]['label']).to              eq 'Justin Frankel (burn@nullsoft.com)'
-      expect(results[0]['value']).to              eq identity.id
-      expect(results[0]['email']).to              eq 'burn@nullsoft.com'
-      expect(results[0]['institution']).to        eq 'Nullsoft'
-      expect(results[0]['phone']).to              eq '555-1212'
-      expect(results[0]['era_commons_name']).to   eq 'huh?'
-      expect(results[0]['college']).to            eq 'Winamp'
-      expect(results[0]['department']).to         eq 'Awesomeness'
-      expect(results[0]['credentials']).to        eq 'Master Hacker'
-      expect(results[0]['credentials_other']).to  eq 'Irc Junkie'
-
-      # TODO: should this be "Mcafee" or "McAfee"?
-      expect(results[1]['label']).to              eq 'John Mcafee (john@mcafee.com)'
-      expect(results[1]['value']).to              eq identity2.id
-      expect(results[1]['email']).to              eq 'john@mcafee.com'
-      expect(results[1]['institution']).to        eq 'McAfee'
-      expect(results[1]['phone']).to              eq '867-5309'
-      expect(results[1]['era_commons_name']).to   eq 'wtf?'
-      expect(results[1]['college']).to            eq 'Roanoke College'
-      expect(results[1]['credentials']).to        eq 'Running from the authorities'
-      expect(results[1]['credentials_other']).to  eq 'Dangerous hobbies'
+      expect(results[0]['label']).to              eq 'Jason Leonard (leonarjp@musc.edu)'
     end
   end
 end

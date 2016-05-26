@@ -21,8 +21,7 @@
 class IdentitiesController < ApplicationController
   before_filter(:except => [:approve_account, :disapprove_account]) {|c| params[:portal] == 'true' ? true : c.send(:initialize_service_request)}
   before_filter(:except => [:approve_account, :disapprove_account]) {|c| params[:portal] == 'true' ? true : c.send(:authorize_identity)}
-  def show
-    @identity = Identity.find params[:id]
+  def create_project_role
     @can_edit = false
     project_role_params = params[session[:protocol_type].to_sym][:project_roles_attributes][@identity.id.to_s] rescue nil
     if project_role_params
@@ -40,6 +39,17 @@ class IdentitiesController < ApplicationController
     else
       @project_role = ProjectRole.new
     end
+  end
+  def show
+    @identity = Identity.find params[:id]
+    create_project_role
+  end
+
+  def find_or_create
+    term = params[:term]
+    @identity = Directory.search(term).first
+    create_project_role
+    render :show
   end
 
   def add_to_protocol
@@ -94,4 +104,5 @@ class IdentitiesController < ApplicationController
     @identity.update_attribute(:approved, true)
     Notifier.account_status_change(@identity, false).deliver unless @identity.email.blank?
   end
+
 end

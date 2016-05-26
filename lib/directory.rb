@@ -89,7 +89,6 @@ class Directory
       # use LDAP_FILTER to override default filter with custom string
       filter = (LDAP_FILTER && LDAP_FILTER.gsub('#{term}', term)) || fields.map { |f| Net::LDAP::Filter.contains(f, term) }.inject(:|)
       res = ldap.search(:attributes => fields, :filter => filter)
-      Rails.logger.info ldap.get_operation_result unless res
     rescue => e
       Rails.logger.info '#'*100
       Rails.logger.info "#{e.message} (#{e.class})"
@@ -185,7 +184,7 @@ class Directory
       end
     end
   end
-  
+
   # search and merge results but don't change the database
   # this assumes USE_LDAP = true, otherwise you wouldn't use this function
   def self.search_and_merge_ldap_and_database_results(term)
@@ -197,15 +196,17 @@ class Directory
       identities[identity.ldap_uid] = identity
     end
     ldap_results = Directory.search_ldap(term)
-    ldap_results.each do |ldap_result|
-      uid = "#{ldap_result[LDAP_UID].try(:first).try(:downcase)}@#{DOMAIN}"
-      if identities[uid]
-        results << identities[uid]
-      else 
-        email = ldap_result[LDAP_EMAIL].try(:first)
-        if email && email.strip.length > 0 # all SPARC users must have an email, this filters out some of the inactive LDAP users.
-          results << Identity.new(ldap_uid: uid, first_name: ldap_result[LDAP_FIRST_NAME].try(:first), last_name: ldap_result[LDAP_LAST_NAME].try(:first), email: email)
-        end  
+    if !ldap_results.nil?
+      ldap_results.each do |ldap_result|
+        uid = "#{ldap_result[LDAP_UID].try(:first).try(:downcase)}@#{DOMAIN}"
+        if identities[uid]
+          results << identities[uid]
+        else
+          email = ldap_result[LDAP_EMAIL].try(:first)
+          if email && email.strip.length > 0 # all SPARC users must have an email, this filters out some of the inactive LDAP users.
+            results << Identity.new(ldap_uid: uid, first_name: ldap_result[LDAP_FIRST_NAME].try(:first), last_name: ldap_result[LDAP_LAST_NAME].try(:first), email: email)
+          end
+        end
       end
     end
     results

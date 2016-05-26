@@ -38,6 +38,7 @@ SparcRails::Application.routes.draw do
   resources :identities, only: [:show] do
     collection do
       post 'add_to_protocol'
+      post 'find_or_create'
     end
 
     member do

@@ -32,10 +32,12 @@ $(document).ready ->
       $('.user-search-spinner').remove()
       $('.user-search-clear-icon').remove()
     select: (event, ui) ->
-      data = 'portal' : $('#portal').val()
+      data =
+        'portal' : $('#portal').val()
+        'term' : "#{ui.item.email}"
       $.ajax
-        url: "/identities/#{ui.item.value}"
-        type: 'GET'
+        url: "/identities/find_or_create"
+        type: 'POST'
         data: data
       $('#user_search_term').clearFields()
       $('.add-user-details').show()

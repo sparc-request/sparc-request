@@ -154,19 +154,20 @@ class Identity < ActiveRecord::Base
     @is_super_user ||= self.super_users.count > 0
   end
 
-  def is_service_provider? ssr
-   is_provider = false
-   orgs =[]
-   orgs << ssr.organization << ssr.organization.parents
-   orgs.flatten!
-   orgs.each do |org|
-     provider_ids = org.service_providers_lookup.map{|x| x.identity_id}
-     if provider_ids.include?(self.id)
-     is_provider = true
-     end
-   end
+  def is_service_provider?(ssr)
+    is_provider = false
+    orgs =[]
+    orgs << ssr.organization << ssr.organization.parents
+    orgs.flatten!
+    
+    orgs.each do |org|
+      provider_ids = org.service_providers_lookup.map{|x| x.identity_id}
+      if provider_ids.include?(self.id)
+        is_provider = true
+      end
+    end
 
-  is_provider
+    is_provider
 
   end
 
@@ -231,44 +232,24 @@ class Identity < ActiveRecord::Base
 
   # Only users with request or approve rights can edit.
   def can_edit_service_request? sr
-    can_edit = false
-
     if (sr.service_requester_id == self.id or sr.service_requester_id.nil?) && sr.is_editable?
-      can_edit = true
+      true
     elsif sr.is_editable? && has_correct_project_role?(sr)
-      can_edit = true
+      true
+    else
+      false
     end
-
-    can_edit
   end
 
   # If a user has request or approve rights AND the request is editable, then the user can edit.
   def can_edit_sub_service_request? ssr
-    if ssr.can_be_edited? && has_correct_project_role?(ssr)
-      return true
-    end
-
-    return false
+    ssr.can_be_edited? && has_correct_project_role?(ssr)
   end
 
   def has_correct_project_role? request
-    self.project_roles.each do |pr|
-      if (pr.protocol_id == requests_protocol_id(request)) && ['approve', 'request'].include?(pr.project_rights)
-        return true
-      end
-    end
+    protocol = request.class == ServiceRequest ? request.protocol : request.service_request.protocol
 
-    return false
-  end
-
-  def requests_protocol_id request
-    if request.class == ServiceRequest
-      id = request.try(:protocol).try(:id)
-    else
-      id = request.service_request.try(:protocol).try(:id)
-    end
-
-    id
+    protocol.project_roles.where(identity_id: self.id).any?
   end
 
   # Determines whether this identity can edit a given organization's information in CatalogManager.

@@ -294,7 +294,7 @@ en:
     #  EPIC QUEUES  #
     #################
     epic_queues:
-
+      header: "Epic Queues"
     ##################
     #  FULFILLMENTS  #
     ##################
@@ -354,6 +354,7 @@ en:
     ##########
     navbar:
       logged_in_as: "Logged in as "
+      epic_queue: "View Epic Queue"
       messages: "Messages"
 
     ###########
@@ -406,7 +407,7 @@ en:
       status: "Status"
       my_protocols: "My Protocols"
       my_admin_orgs: "My Admin Organizations"
-      core: "Core"
+      organization: "Organization"
       filter: "Filter"
       saved_filters:
         header: "Recently Saved Filters"
@@ -559,14 +560,15 @@ en:
     #  SERVICE REQUESTS  #
     ######################
     service_requests:
-      edit_original: "Edit Original"
+      modify_request: "Modify Request"
       srid: "SRID"
       organization: "Organization"
       status: "Status"
+      notifications: "Notifications"
       actions:
         header: "Actions"
-        view: "View SSR"
-        edit: "Edit SSR"
+        view: "View"
+        edit: "Edit"
         admin_edit: "Admin Edit"
       view_ssr:
         services:
@@ -907,7 +909,6 @@ en:
     color_blank: "Select a Color"
     core_facility: "Core/Facility Based Services"
     core: "Core"
-    eap_id: 'EAP ID'
     cpt_code: "CPT Code"
     css_class: "Color"
     ctrc_label: "Nexus"

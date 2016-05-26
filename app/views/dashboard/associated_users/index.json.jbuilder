@@ -6,6 +6,6 @@ json.(@protocol_roles) do |pr|
   json.email             pr.identity.email
   json.phone             pr.identity.phone
   json.protocol_id       pr.protocol_id
-  json.edit              associated_users_edit_button(pr, @permission_to_edit)
-  json.delete            associated_users_delete_button(pr, @permission_to_edit)
+  json.edit              associated_users_edit_button(pr, @permission_to_edit || @admin)
+  json.delete            associated_users_delete_button(pr, @permission_to_edit || @admin)
 end

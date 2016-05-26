@@ -29,7 +29,7 @@
       = link_to t(:actions)[:reset], reset_filterrific_url, id: "reset_filters_link"
     .clearfix
 
-  = form_for_filterrific filterrific, remote: true, html: { id: 'filterrific-no-ajax-auto-submit' } do |form|
+  = form_for_filterrific filterrific, remote: true, html: { id: 'filterrific-no-ajax-auto-submit', autocomplete: 'off' } do |form|
     .panel-body
       #protocol_filter_form_display
         .form-group.row

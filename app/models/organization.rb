@@ -372,7 +372,7 @@ class Organization < ActiveRecord::Base
     if org_ids.empty?
       []
     else
-      orgs = Organization.where(parent_id:  org_ids)
+      orgs = Organization.where(parent_id: org_ids)
       orgs | authorized_child_organizations(orgs.pluck(:id))
     end
   end

@@ -42,8 +42,10 @@
               = form.hidden_field :with_status, multiple: true, value: status
             .form-group
               = form.label :search_name, t(:dashboard)[:protocol_filters][:saved_filters][:modal][:name], class: "col-sm-4 control-label"
-              .col-sm-7= form.text_field :search_name, {class: 'form-control'}
+              .col-sm-7
+                = form.text_field :search_name, {class: 'form-control'}
       .modal-footer
         .center-block
-          %button.btn.btn-default{type: 'button', data: {dismiss: 'modal'}} Close
+          %button.btn.btn-default{type: 'button', data: {dismiss: 'modal'}}
+            = t(:actions)[:close]
           %input.btn.btn-primary{type: 'submit', value: 'Save'}

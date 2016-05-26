@@ -28,10 +28,17 @@ SparcRails::Application.routes.draw do
                controllers: {
                  omniauth_callbacks: 'identities/omniauth_callbacks'
                }, path_names: { sign_in: 'auth/shibboleth' }
-  else
+
+  elsif USE_CAS_ONLY
     devise_for :identities,
                controllers: {
                  omniauth_callbacks: 'identities/omniauth_callbacks'
+               }, path_names: { sign_in: 'auth/cas' }
+  else
+    devise_for :identities,
+               controllers: {
+                 omniauth_callbacks: 'identities/omniauth_callbacks',
+                 registrations:      'identities/registrations'
                }
   end
 

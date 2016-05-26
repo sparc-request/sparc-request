@@ -172,7 +172,7 @@ en:
           ind_number: "IND #:"
           ind_on_hold: "IND on Hold?:"
           ide_number: "IDE #:"
-        ip_patents: 
+        ip_patents:
           header: "IP/Patents:"
           number: "Patent Number:"
           inventors: "Inventors:"
@@ -265,7 +265,7 @@ en:
       role_prompt: "Select a Role"
       role_specify: "Please Specify:*"
       epic_access: "Epic EMR Access?:*"
-      rights: 
+      rights:
         header: "User Rights:*"
         none: Study/Project Member Only
         view: "View Rights"
@@ -509,7 +509,7 @@ en:
               ind_number: "IND #:"
               ind_on_hold: "IND on Hold?:"
               ide_number: "IDE #:"
-            ip_patents: 
+            ip_patents:
               header: "IP/Patents"
               number: "Patent Number:"
               inventors: "Inventors:"
@@ -563,7 +563,7 @@ en:
       srid: "SRID"
       organization: "Organization"
       status: "Status"
-      actions: 
+      actions:
         header: "Actions"
         view: "View SSR"
         edit: "Edit SSR"
@@ -638,7 +638,7 @@ en:
         user_cost: "User Display Cost"
 
       tabs:
-        request_details: 
+        request_details:
           header: "Request Details"
           options:
             header: "Options"
@@ -1253,7 +1253,8 @@ en:
     create_report: "Create Report"
     defined_reports_desc: "Please select a defined report below and click to proceed with report customizations."
     defined_reports: "Defined Reports"
-    intro: "Welcome to the SPARC Request Reporting Module. Please select a report type to proceed."
+    intro: "Welcome to the SPARC Request Reporting Module"
+    sub_intro: "Please select a report type to proceed"
     proceed: "Proceed"
     return_to_admin_portal: "Return to Admin Portal"
   study_tracker:

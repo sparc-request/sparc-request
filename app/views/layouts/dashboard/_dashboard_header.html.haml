@@ -21,13 +21,21 @@
 %nav.navbar.navbar-default.portal-nav
   .container-fluid
     .navbar-header
-      %p.navbar-text#breadcrumbs
-        = session[:breadcrumbs].breadcrumbs
-      %p.navbar-text
-        = show_welcome_message(user)
+      - if @dashboard_landing or @in_reporting_module
+        %ul.nav.navbar-nav
+          - NAVBAR_LINKS.each do |name, path|
+            %li.dashboard
+              = link_to name.to_s, path, target: '_blank'
+      - else
+        %ol.breadcrumb
+          = session[:breadcrumbs].breadcrumbs
+
     %ul.nav.navbar-nav.navbar-right
       %li
         %button.btn.btn-danger.navbar-btn#messages-btn{ type: 'button'}
           = t(:dashboard)[:navbar][:messages]
           %span.badge
             = user.unread_notification_count
+
+    %p.navbar-text.navbar-right
+      = show_welcome_message(user)

@@ -69,7 +69,9 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
         @protocol_type      = @protocol.type.capitalize
         render
       }
-      format.xlsx { render }
+      format.xlsx {
+        response.headers['Content-Disposition'] = "attachment; filename='(#{@protocol.id}) Consolidated Corporate Study Budget.xlsx'"
+      }
     end
   end
 

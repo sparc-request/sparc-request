@@ -29,10 +29,7 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
     service_request         = ServiceRequest.find(params[:srid])
     protocol                = service_request.protocol
     @admin_orgs             = @user.authorized_admin_organizations
-    @permission_to_edit     = !protocol.project_roles.find_by(identity_id: @user.id).nil?
-    puts "~"*50
-    puts @permission_to_edit
-
+    @permission_to_edit     = !protocol.project_roles.find_by(identity_id: @user.id, project_rights: ['approve', 'request']).nil?
     @sub_service_requests   = service_request.sub_service_requests
   end
 

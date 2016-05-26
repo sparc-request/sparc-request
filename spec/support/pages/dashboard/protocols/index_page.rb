@@ -79,12 +79,12 @@ module Dashboard
         # the collection of all blue-header'd tables titled by 'Service Request: <digits>''
         sections :service_requests, ".panel", text: /Service Request: [\d]+/ do
           element :notes_button, :button, "Notes"
-          element :edit_original_button, :button, "Edit Original"
+          element :modify_request_button, :button, "Modify Request"
 
           sections :sub_service_requests, "tbody tr" do
-            element :view_ssr_button, :button, "View SSR"
-            element :edit_ssr_button, :button, "Edit SSR"
-            element :admin_edit_button, :link, "Admin Edit"
+            element :view_button, :button, "View"
+            element :edit_button, :button, "Edit"
+            element :admin_edit_button, :button, "Admin Edit"
           end
         end
       end

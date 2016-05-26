@@ -48,11 +48,11 @@ class ProjectRole < ActiveRecord::Base
   scope :primary_pis, -> { where(role: "primary-pi") }
   
   def can_edit?
-    if project_rights == "view" || project_rights == "none"
-      return false
-    else
-      return true
-    end
+    !(project_rights == "view" || project_rights == "none")
+  end
+
+  def can_view?
+    project_rights != 'none'
   end
 
   def unique_to_protocol?

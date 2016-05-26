@@ -17,18 +17,19 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 .panel.panel-default#service-requests-panel
-  .panel-heading
-    %h4.panel-title.pull-left
-      = t(:dashboard)[:protocols][:service_requests][:header]
-    = consolidated_request_buttons_display(protocol)
-    .clearfix
-  .panel-body
-    - if permission_to_edit && !protocol.sub_service_requests.present? #no SSRs
-      %button.btn.btn-success.btn-sm#add-services-button{ type: 'button', data: { permission: permission_to_edit.to_s, protocol_id: protocol.id } }
-        = t(:dashboard)[:protocols][:service_requests][:add_services]
-    - else
-      - protocol.service_requests.each do |sr|
-        - if !sr.sub_service_requests.empty?
-          = render 'dashboard/service_requests/protocol_service_request_show', service_request: sr, user: user, admin: admin, permission_to_edit: permission_to_edit
+	.panel-heading
+		%h4.panel-title.pull-left
+			= t(:dashboard)[:protocols][:service_requests][:header]
+		- if !view_only
+			.pull-right
+				= consolidated_request_buttons_display(protocol)
+		.clearfix
+	.panel-body
+		- if protocol.sub_service_requests.any?
+			- protocol.service_requests.each do |sr|
+				- if sr.sub_service_requests.any?
+					= render 'dashboard/service_requests/protocol_service_request_show', service_request: sr, protocol: protocol, user: user, permission_to_edit: permission_to_edit, view_only: view_only
+		- else
+			%button.btn.btn-success.btn-sm#add-services-button{ class: permission_to_edit ? '' : 'disabled', type: 'button', data: { permission: permission_to_edit.to_s, protocol_id: protocol.id, action: 'new request' } }
+				= t(:dashboard)[:protocols][:service_requests][:add_services]

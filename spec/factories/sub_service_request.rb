@@ -63,5 +63,6 @@ FactoryGirl.define do
     factory :sub_service_request_with_payment, traits: [:with_payment]
     factory :sub_service_request_in_cwf, traits: [:in_cwf]
     factory :sub_service_request_with_subsidy, traits: [:with_subsidy]
+    factory :sub_service_request_without_validations, traits: [:without_validations]
   end
 end

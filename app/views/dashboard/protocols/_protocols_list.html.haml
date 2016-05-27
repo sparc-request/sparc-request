@@ -56,9 +56,8 @@
         %td.pis
           = pis_display protocol
         %td.requests
-          = display_requests_and_archive_button('request', protocol, admin_protocols)
+          = display_requests_button(protocol, admin_protocols)
         %td.archive
-          = display_requests_and_archive_button('archive', protocol, admin_protocols)
-
+          = display_archive_button(protocol, admin_protocols)
   .pull-right
     = will_paginate protocols, renderer: BootstrapPagination::Rails

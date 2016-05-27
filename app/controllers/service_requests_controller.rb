@@ -257,6 +257,9 @@ class ServiceRequestsController < ApplicationController
   end
 
   def confirmation
+    if @sub_service_request
+      @sub_service_request.update_attribute(:status, 'submitted')
+    end
     update_service_request_status(@service_request, 'submitted')
     @service_request.ensure_ssr_ids
     @service_request.update_arm_minimum_counts
@@ -320,7 +323,9 @@ class ServiceRequestsController < ApplicationController
   end
 
   def save_and_exit
-    unless @sub_service_request # if we are editing a sub service request just redirect
+    if @sub_service_request # if we are editing a sub service request just redirect
+      @sub_service_request.update_attribute(:status, 'draft')
+    else
       @service_request.update_status('draft', false)
       @service_request.ensure_ssr_ids
     end

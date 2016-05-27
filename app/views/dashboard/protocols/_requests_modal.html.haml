@@ -27,7 +27,7 @@
         = protocol.short_title
     .modal-body
       - protocol.service_requests.each do |sr|
-        - if sr.sub_service_requests.any? && !sr.should_be_hidden_for_sp?(sp_only_admin_orgs)
+        - if sr.sub_service_requests.any? && (permission_to_view || !sr.should_be_hidden_for_sp?(sp_only_admin_orgs))
           = render 'dashboard/service_requests/protocol_service_request_show', service_request: sr, user: user, permission_to_edit: permission_to_edit, view_only: true
     .modal-footer
       .center-block

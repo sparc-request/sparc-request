@@ -175,9 +175,15 @@ class Protocol < ActiveRecord::Base
     # returns protocols with ssrs in orgs authorized for identity_id
     return nil if identity_id == '0'
 
-    sp_only_admin_orgs = Organization.authorized_for_identity(identity_id, true)
+    # We want to find all protocols where the user is an Admin AND Authorized User
+    # as they will be filtered out by the SP Only Organizations queries
+    admin_protocols           = for_admin(identity_id)
+    authorized_user_protocols = joins(:project_roles).where(project_roles: { identity_id: identity_id }) & admin_protocols
 
-    where(id: Protocol.for_admin(identity_id).to_a.reject { |p| p.should_be_hidden_for_sp?(sp_only_admin_orgs) }).distinct
+    sp_only_admin_orgs        = Organization.authorized_for_identity(identity_id, true)
+    visible_admin_protocols   = for_admin(identity_id).to_a.reject { |p| p.should_be_hidden_for_sp?(sp_only_admin_orgs) }
+    
+    where(id: (authorized_user_protocols | visible_admin_protocols)).distinct
   }
 
   scope :show_archived, -> (boolean) {

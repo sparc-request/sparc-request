@@ -26,7 +26,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   before_filter :find_admin_for_protocol,                         only: [:show, :edit, :update, :update_protocol_type, :display_requests]
   before_filter :protocol_authorizer_view,                        only: [:show, :view_full_calendar, :display_requests]
   before_filter :protocol_authorizer_edit,                        only: [:edit, :update, :update_protocol_type]
-  before_filter :find_service_provider_only_admin_organizations,  only: [:index, :show, :display_requests]
+  before_filter :find_service_provider_only_admin_organizations,  only: [:show, :display_requests]
 
   def index
     admin_orgs   = @user.authorized_admin_organizations
@@ -69,6 +69,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
       format.html {
         session[:breadcrumbs].clear.add_crumbs(protocol_id: @protocol.id)
         @permission_to_edit = @authorization.present? ? @authorization.can_edit? : false
+        @permission_to_view = @authorization.present? ? @authorization.can_view? : false
         @protocol_type      = @protocol.type.capitalize
 
         render
@@ -201,9 +202,9 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def display_requests
-    @protocol_role      = @protocol.project_roles.find_by(identity_id: @user.id)
-    @permission_to_edit = @protocol_role.present? ? @protocol_role.can_edit? : false
-    modal               = render_to_string(partial: 'dashboard/protocols/requests_modal', locals: { protocol: @protocol, user: @user, sp_only_admin_orgs: @sp_only_admin_orgs, permission_to_edit: @permission_to_edit })
+    permission_to_edit  = @authorization.present? ? @authorization.can_edit? : false
+    permission_to_view  = @authorization.present? ? @authorization.can_view? : false
+    modal               = render_to_string(partial: 'dashboard/protocols/requests_modal', locals: { protocol: @protocol, user: @user, sp_only_admin_orgs: @sp_only_admin_orgs, permission_to_edit: permission_to_edit, permission_to_view: permission_to_view })
 
     data = { modal: modal }
     render json: data

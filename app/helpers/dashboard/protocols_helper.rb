@@ -50,4 +50,15 @@ module Dashboard::ProtocolsHelper
   def archived_button_display(protocol)
     content_tag( :button, (protocol.archived ? t(:dashboard)[:protocols][:table][:unarchive] : t(:dashboard)[:protocols][:table][:archive])+" #{protocol.type.capitalize}", type: 'button', class: 'protocol-archive-button btn btn-warning btn-sm' )
   end
+
+  def display_requests_and_archive_button(button, protocol, admin_protocols)
+    if !protocol.sub_service_requests.empty? && (!protocol.project_roles.find_by(identity: current_user).nil? || admin_protocols.include?(protocol.id))
+      case button 
+      when 'archive'
+        content_tag( :button, (protocol.archived ? t(:dashboard)[:protocols][:table][:unarchive] : t(:dashboard)[:protocols][:table][:archive])+" #{protocol.type.capitalize}", type: 'button', class: 'protocol-archive-button btn btn-warning btn-sm' )
+      when 'request'
+        content_tag( :button, t(:dashboard)[:protocols][:table][:requests], type: 'button', class: 'requests_display_link btn btn-default btn-sm' )
+      end
+    end
+  end
 end

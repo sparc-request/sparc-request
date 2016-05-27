@@ -52,6 +52,8 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
     @protocols        = @filterrific.find.page(params[:page])
     @protocol_filters = ProtocolFilter.latest_for_user(@user.id, 5)
+    #toggles the display of the navigation bar, instead of breadcrumbs
+    @show_navbar = true
     session[:breadcrumbs].clear
 
     respond_to do |format|
@@ -115,10 +117,10 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     session[:breadcrumbs].
       clear.
       add_crumbs(protocol_id: @protocol.id, edit_protocol: true)
-    
+
     @protocol.valid?
     @errors = @protocol.errors
-    
+
     respond_to do |format|
       format.html
     end
@@ -130,7 +132,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     attrs[:end_date]    = Time.strptime(attrs[:end_date],   "%m-%d-%Y") if attrs[:end_date]
 
     protocol_role       = @protocol.project_roles.find_by(identity_id: @user.id)
-    
+
     # admin is not able to activate study_type_question_group
     if @admin && protocol_role.nil? && @protocol.update_attributes(attrs)
       flash[:success] = "#{@protocol.type} Updated!"
@@ -154,10 +156,10 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
     @protocol.update_attribute(:type, @protocol_type)
     conditionally_activate_protocol
-    
+
     @protocol = Protocol.find(@protocol.id)#Protocol type has been converted, this is a reload
     @protocol.populate_for_edit
-  
+
     flash[:success] = "Protocol Type Updated!"
     if @protocol_type == "Study" && @protocol.sponsor_name.nil? && @protocol.selected_for_epic.nil?
       flash[:alert] = "Please complete Sponsor Name and Publish Study in Epic"

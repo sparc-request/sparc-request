@@ -71,4 +71,30 @@ RSpec.describe Fulfillment, type: :model do
       end
     end
   end
+
+  describe 'time validation' do
+    it 'should validate the format of time' do
+      fulfillment = build(:fulfillment, date: Date.new(2001, 1, 2).strftime("%m-%d-%Y"), time: 1.23)
+
+      expect(fulfillment).to be_valid
+    end
+
+    it 'should not validate the format of time up to two numbers after decimal point' do
+      fulfillment = build(:fulfillment, date: Date.new(2001, 1, 2).strftime("%m-%d-%Y"), time: 1.23434)
+
+      expect(fulfillment).not_to be_valid
+    end
+
+    it 'should not validate the format of time - should be greater than zero' do
+      fulfillment = build(:fulfillment, date: Date.new(2001, 1, 2).strftime("%m-%d-%Y"), time: 0)
+
+      expect(fulfillment).not_to be_valid
+    end
+
+    it 'should not validate the format of time - no strings allowed' do
+      fulfillment = build(:fulfillment, date: Date.new(2001, 1, 2).strftime("%m-%d-%Y"), time: 'ooga booga')
+
+      expect(fulfillment).not_to be_valid
+    end
+  end
 end

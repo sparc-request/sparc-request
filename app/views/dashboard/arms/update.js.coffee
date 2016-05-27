@@ -29,7 +29,7 @@ $("#subsidy_information").html("<%= escape_javascript(render(partial: 'dashboard
 $(".selectpicker").selectpicker()
 
 # refreshes calendar
-$('#template-calendar').load $('#service_calendar .active a').attr("data-url"), (result) ->
+$('#service_calendar .tab-content .tab-pane.active').load $('#service_calendar .active a').attr("data-url"), (result) ->
   $('#service_calendar .active a').tab('show')
 
 $("#modal_place").modal 'hide'

@@ -26,7 +26,7 @@ class ReportsController < ApplicationController
   before_filter :authenticate_identity!
   before_filter :require_super_user, :only => [:index, :setup, :generate]
   before_filter :set_user
-  before_filter :set_in_reporting
+  before_filter :set_show_navbar
 
   def current_user
     current_identity
@@ -37,8 +37,8 @@ class ReportsController < ApplicationController
     session['uid'] = @user.nil? ? nil : @user.id
   end
 
-  def set_in_reporting
-    @in_reporting_module = true
+  def set_show_navbar
+    @show_navbar = true
   end
 
   def require_super_user

@@ -53,7 +53,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     @protocols        = @filterrific.find.page(params[:page])
     @protocol_filters = ProtocolFilter.latest_for_user(@user.id, 5)
     #toggles the display of the navigation bar, instead of breadcrumbs
-    @dashboard_landing = true
+    @show_navbar = true
     session[:breadcrumbs].clear
 
     respond_to do |format|
@@ -132,7 +132,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     attrs[:end_date]    = Time.strptime(attrs[:end_date],   "%m-%d-%Y") if attrs[:end_date]
 
     protocol_role       = @protocol.project_roles.find_by(identity_id: @user.id)
-    
+
     # admin is not able to activate study_type_question_group
     if @admin && protocol_role.nil? && @protocol.update_attributes(attrs)
       flash[:success] = "#{@protocol.type} Updated!"

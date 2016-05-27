@@ -241,6 +241,9 @@ class ServiceRequestsController < ApplicationController
 
   def obtain_research_pricing
     # TODO: refactor into the ServiceRequest model
+    if @sub_service_request
+      @sub_service_request.update_attribute(:status, 'get_a_cost_estimate')
+    end
     update_service_request_status(@service_request, 'get_a_cost_estimate')
     @service_request.ensure_ssr_ids
 

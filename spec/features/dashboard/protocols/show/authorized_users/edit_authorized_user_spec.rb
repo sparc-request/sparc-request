@@ -21,143 +21,200 @@
 require 'rails_helper'
 
 RSpec.feature 'User wants to edit an authorized user', js: true do
-  let!(:logged_in_user) do
-    create(:identity,
-           last_name: "Doe",
-           first_name: "John",
-           ldap_uid: "johnd",
-           email: "johnd@musc.edu",
-           password: "p4ssword",
-           password_confirmation: "p4ssword",
-           college: "college_of_medicine",
-           department: "other",
-           credentials: "ba",
-           institution: "medical_university_of_south_carolina",
-           approved: true)
-  end
+  let!(:logged_in_user) { create(:identity, last_name: "Doe", first_name: "John", ldap_uid: "johnd", email: "johnd@musc.edu", password: "p4ssword", password_confirmation: "p4ssword", college: "college_of_medicine", department: "other", credentials: "ba", institution: "medical_university_of_south_carolina", approved: true) }
 
-  let!(:other_user) do
-    create(:identity,
-           last_name: "Doe",
-           first_name: "Jane",
-           ldap_uid: "janed",
-           email: "janed@musc.edu",
-           password: "p4ssword",
-           password_confirmation: "p4ssword",
-           approved: true)
-  end
+  let!(:other_user) { create(:identity, last_name: "Doe", first_name: "Jane", ldap_uid: "janed", email: "janed@musc.edu", password: "p4ssword", password_confirmation: "p4ssword", approved: true) }
 
   before(:each) { stub_const('USE_LDAP', false) }
 
-  let!(:protocol) do
-    protocol = create(:unarchived_project_without_validations, primary_pi: logged_in_user)
-    ProjectRole.create(
-      protocol_id:     protocol.id,
-      identity_id:     other_user.id,
-      project_rights:  'approve',
-      role:            'business-grants-manager')
-    protocol
-  end
-
-  context 'and has permission to edit the protocol' do
-    fake_login_for_each_test("johnd")
-
-    before :each do
-      # navigate to page
-      @page = Dashboard::Protocols::ShowPage.new
-      @page.load(id: protocol.id)
-      wait_for_javascript_to_finish
+  context 'which is not assigned to themself' do
+    let!(:protocol) do
+      protocol  = create(:unarchived_project_without_validations, primary_pi: logged_in_user)
+                  create(:project_role, protocol: protocol, identity: other_user, project_rights: 'approve', role: 'business-grants-manager')
+      protocol
     end
 
-    context 'and clicks the Edit Authorized User button' do
-      scenario 'and sees the Edit Authorized User dialog and the users information' do
-        given_i_have_clicked_the_edit_authorized_user_button("John Doe")
-        then_i_should_see_the_edit_authorized_user_dialog
-        then_i_should_see_the_user_information
+    context 'and has permission to edit the protocol' do
+      fake_login_for_each_test("johnd")
+
+      before :each do
+        # navigate to page
+        @page = Dashboard::Protocols::ShowPage.new
+        @page.load(id: protocol.id)
+        wait_for_javascript_to_finish
       end
 
-      context 'and the Authorized User is the Primary PI and tries to change their role' do
-        scenario 'and sees that the protocol must have a Primary PI' do
+      context 'and clicks the Edit Authorized User button' do
+        scenario 'and sees the Edit Authorized User dialog and the users information' do
           given_i_have_clicked_the_edit_authorized_user_button("John Doe")
-          when_i_set_the_role_to 'PD/PI'
-          when_i_submit_the_form
-          then_i_should_see_an_error_of_type 'need Primary PI'
+          then_i_should_see_the_edit_authorized_user_dialog
+          then_i_should_see_the_user_information
         end
-      end
 
-      context 'and the authorized user is the primary PI and submits the form' do
-        scenario 'and does not see the warning message' do
-          given_i_have_clicked_the_edit_authorized_user_button("John Doe")
-          when_i_submit_the_form
-          then_i_should_not_see_the_warning_message
-        end
-      end
-
-      context 'and the Authorized User is not the Primary PI and tries to make them the Primary PI' do
-        context 'and submits the form' do
-          scenario 'and sees the warning message' do
-            given_i_have_clicked_the_edit_authorized_user_button("Jane Doe")
-            when_i_set_the_role_to 'Primary PI'
+        context 'and the Authorized User is the Primary PI and tries to change their role' do
+          scenario 'and sees that the protocol must have a Primary PI' do
+            given_i_have_clicked_the_edit_authorized_user_button("John Doe")
+            when_i_set_the_role_to 'PD/PI'
             when_i_submit_the_form
-            then_i_should_see_the_warning_message
+            then_i_should_see_an_error_of_type 'need Primary PI'
           end
+        end
 
-          context 'and submits the form on the warning message' do
-            scenario 'and sees the Primary PI has changed, old primary pi is a general access user with request rights' do
+        context 'and the authorized user is the primary PI and submits the form' do
+          scenario 'and does not see the warning message' do
+            given_i_have_clicked_the_edit_authorized_user_button("John Doe")
+            when_i_submit_the_form
+            then_i_should_not_see_the_warning_message
+          end
+        end
+
+        context 'and the Authorized User is not the Primary PI and tries to make them the Primary PI' do
+          context 'and submits the form' do
+            scenario 'and sees the warning message' do
               given_i_have_clicked_the_edit_authorized_user_button("Jane Doe")
               when_i_set_the_role_to 'Primary PI'
               when_i_submit_the_form
-              when_i_submit_the_form
-              then_i_should_see_the_new_primary_pi
-              then_i_should_see_the_old_primary_pi_is_a_general_user
-              then_i_should_see_the_old_primary_pi_has_request_rights
+              then_i_should_see_the_warning_message
             end
 
-            context 'with errors in the form' do
-              scenario 'and sees errors' do
+            context 'and submits the form on the warning message' do
+              scenario 'and sees the Primary PI has changed, old primary pi is a general access user with request rights' do
                 given_i_have_clicked_the_edit_authorized_user_button("Jane Doe")
                 when_i_set_the_role_to 'Primary PI'
-                when_i_have_an_error
                 when_i_submit_the_form
                 when_i_submit_the_form
-                then_i_should_see_an_error_of_type 'other credentials'
+                then_i_should_see_the_new_primary_pi
+                then_i_should_see_the_old_primary_pi_is_a_general_user
+                then_i_should_see_the_old_primary_pi_has_request_rights
+              end
+
+              context 'with errors in the form' do
+                scenario 'and sees errors' do
+                  given_i_have_clicked_the_edit_authorized_user_button("Jane Doe")
+                  when_i_set_the_role_to 'Primary PI'
+                  when_i_have_an_error
+                  when_i_submit_the_form
+                  when_i_submit_the_form
+                  then_i_should_see_an_error_of_type 'other credentials'
+                end
               end
             end
           end
         end
+
+        context 'and sets the role and credentials to other, makes the extra fields empty, and submits the form' do
+          scenario 'and sees some errors' do
+            given_i_have_clicked_the_edit_authorized_user_button("John Doe")
+            when_i_set_the_role_and_credentials_to_other
+            when_i_submit_the_form
+            then_i_should_see_an_error_of_type 'other fields'
+          end
+        end
+      end
+    end
+
+    context 'and does not have permission to edit the protocol' do
+      fake_login_for_each_test("janed")
+
+      before :each do
+        protocol = create(:unarchived_study_without_validations, primary_pi: logged_in_user)
+
+        ProjectRole.create(protocol: protocol, identity: other_user, project_rights: 'view', role: 'mentor')
+
+        # navigate to page
+        @page = Dashboard::Protocols::ShowPage.new
+        @page.load(id: protocol.id)
       end
 
-      context 'and sets the role and credentials to other, makes the extra fields empty, and submits the form' do
-        scenario 'and sees some errors' do
-          given_i_have_clicked_the_edit_authorized_user_button("John Doe")
-          when_i_set_the_role_and_credentials_to_other
-          when_i_submit_the_form
-          then_i_should_see_an_error_of_type 'other fields'
-        end
+      scenario 'and sees disabled Add an Authorized User button' do
+        expect(page).to have_css('.edit-associated-user-button.disabled')
       end
     end
   end
 
-  context 'and does not have permission to edit the protocol' do
-    fake_login_for_each_test("janed")
-
-    before :each do
-      protocol = create(:unarchived_study_without_validations, primary_pi: logged_in_user)
-
-      ProjectRole.create(
-        protocol_id:     protocol.id,
-        identity_id:     other_user.id,
-        project_rights:  'view',
-        role:            'mentor')
-
-      # navigate to page
-      @page = Dashboard::Protocols::ShowPage.new
-      @page.load(id: protocol.id)
-      wait_for_javascript_to_finish
+  context 'which is assigned to themself' do
+    let!(:protocol) do
+      protocol  = create(:unarchived_project_without_validations, primary_pi: other_user)
+                  create(:project_role, protocol: protocol, identity: logged_in_user, project_rights: 'approve', role: 'mentor')
+      protocol
     end
 
-    scenario 'and sees disabled Add an Authorized User button' do
-      expect(page).to have_css('.edit-associated-user-button.disabled')
+    fake_login_for_each_test("johnd")
+
+    context 'and set the rights to view' do
+      context 'and they are an Admin' do
+        before :each do
+          organization    = create(:organization)
+          service_request = create(:service_request_without_validations, protocol: protocol)
+                            create(:sub_service_request_without_validations, service_request: service_request, organization: organization)
+                            create(:super_user, organization: organization, identity: logged_in_user)
+
+          # navigate to page
+          page = Dashboard::Protocols::ShowPage.new
+          page.load(id: protocol.id)
+
+          page.authorized_users(text: "John Doe").first.edit_button.click
+          page.authorized_user_modal.view_rights.click
+          page.authorized_user_modal.save_button.click
+          wait_for_javascript_to_finish
+        end
+
+        scenario 'and should see the Edit Study Information button' do
+          expect(page).to have_selector('.edit-protocol-information-button')
+        end
+
+        scenario 'and should see the Add/Edit/Delete Authorized User buttons ENABLED' do
+          expect(page).to have_css '#new-associated-user-button:not(.disabled)'
+
+          expect(page).not_to have_css '.edit-associated-user-button.disabled'
+          expect(page).to have_css '.edit-associated-user-button:not(.disabled)'
+          
+          expect(page).not_to have_css '.delete-associated-user-button.disabled'
+          expect(page).to have_css '.delete-associated-user-button:not(.disabled)'
+        end
+      end
+
+      context 'and they are not an Admin' do
+        before :each do
+          # navigate to page
+          page = Dashboard::Protocols::ShowPage.new
+          page.load(id: protocol.id)
+
+          page.authorized_users(text: "John Doe").first.edit_button.click
+          page.authorized_user_modal.view_rights.click
+          page.authorized_user_modal.save_button.click
+          wait_for_javascript_to_finish
+        end
+
+        scenario 'and should NOT see the Edit Study Information button' do
+          expect(page).not_to have_selector('.edit-protocol-information-button')
+        end
+
+        scenario 'and should see the Add/Edit/Delete Authorized User buttons DISABLED' do
+          expect(page).to have_css '#new-associated-user-button.disabled'
+
+          expect(page).not_to have_css '.edit-associated-user-button:not(.disabled)'
+          expect(page).to have_css '.edit-associated-user-button.disabled'
+          
+          expect(page).not_to have_css '.delete-associated-user-button:not(.disabled)'
+          expect(page).to have_css '.delete-associated-user-button.disabled'
+        end
+      end
+
+      context 'and sets the rights to none' do
+        scenario 'and is redirected to dashboard' do
+          # navigate to page
+          page = Dashboard::Protocols::ShowPage.new
+          page.load(id: protocol.id)
+
+          page.authorized_users(text: "John Doe").first.edit_button.click
+          page.authorized_user_modal.none_rights.click
+          page.authorized_user_modal.save_button.click
+          wait_for_javascript_to_finish
+
+          expect(URI.parse(current_url).path).to eq("/dashboard")
+        end
+      end
     end
   end
 

@@ -16,5 +16,5 @@ $(document).ready ->
         pane.tab('show')
 
   # load first tab content
-  $('#template-calendar').load $('#service_calendar .active a').attr("data-url"), (result) ->
+  $('#service_calendar .tab-content .tab-pane.active').load $('#service_calendar .active a').attr("data-url"), (result) ->
     $('#service_calendar .active a').tab('show')

@@ -326,7 +326,7 @@ class ServiceRequestsController < ApplicationController
   end
 
   def save_and_exit
-    if @sub_service_request # if we are editing a sub service request just redirect
+    if @sub_service_request #if editing a sub service request, update status
       @sub_service_request.update_attribute(:status, 'draft')
     else
       @service_request.update_status('draft', false)

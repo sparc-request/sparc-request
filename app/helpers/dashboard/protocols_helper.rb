@@ -47,14 +47,14 @@ module Dashboard::ProtocolsHelper
     protocol.principal_investigators.map(&:full_name).join ", "
   end
 
-  def display_requests_button(protocol, admin_protocols)
-    if !protocol.sub_service_requests.empty? && (!protocol.project_roles.find_by(identity: current_user).nil? || admin_protocols.include?(protocol.id))
+  def display_requests_button(protocol, admin_protocols, current_user)
+    if !protocol.sub_service_requests.empty? && (!protocol.project_roles.find_by(identity: current_user).nil? || admin_protocols.try(:include?, protocol.id))
       content_tag( :button, t(:dashboard)[:protocols][:table][:requests], type: 'button', class: 'requests_display_link btn btn-default btn-sm' )
     end
   end
 
-  def display_archive_button(protocol, admin_protocols)
-    if !protocol.project_roles.find_by(identity: current_user).nil? || admin_protocols.include?(protocol.id)
+  def display_archive_button(protocol, admin_protocols, current_user)
+    if !protocol.project_roles.find_by(identity: current_user).nil? || admin_protocols.try(:include?, protocol.id)
       content_tag( :button, (protocol.archived ? t(:dashboard)[:protocols][:table][:unarchive] : t(:dashboard)[:protocols][:table][:archive])+" #{protocol.type.capitalize}", type: 'button', class: 'protocol-archive-button btn btn-warning btn-sm' )
     end
   end

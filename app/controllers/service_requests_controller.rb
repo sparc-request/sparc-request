@@ -243,62 +243,64 @@ class ServiceRequestsController < ApplicationController
     # TODO: refactor into the ServiceRequest model
     if @sub_service_request
       @sub_service_request.update_attribute(:status, 'get_a_cost_estimate')
+    else
+      update_service_request_status(@service_request, 'get_a_cost_estimate')
+      @service_request.ensure_ssr_ids
+
+      @protocol = @service_request.protocol
+      # As the service request leaves draft, so too do the arms
+      @protocol.arms.each do |arm|
+        arm.update_attributes({new_with_draft: false})
+      end
+      @service_list = @service_request.service_list
+
+      send_confirmation_notifications
+
+      render formats: [:html]
     end
-    update_service_request_status(@service_request, 'get_a_cost_estimate')
-    @service_request.ensure_ssr_ids
-
-    @protocol = @service_request.protocol
-    # As the service request leaves draft, so too do the arms
-    @protocol.arms.each do |arm|
-      arm.update_attributes({new_with_draft: false})
-    end
-    @service_list = @service_request.service_list
-
-    send_confirmation_notifications
-
-    render formats: [:html]
   end
 
   def confirmation
     if @sub_service_request
       @sub_service_request.update_attribute(:status, 'submitted')
-    end
-    update_service_request_status(@service_request, 'submitted')
-    @service_request.ensure_ssr_ids
-    @service_request.update_arm_minimum_counts
+    else
+      update_service_request_status(@service_request, 'submitted')
+      @service_request.ensure_ssr_ids
+      @service_request.update_arm_minimum_counts
 
-    @protocol = @service_request.protocol
-    # As the service request leaves draft, so too do the arms
-    @protocol.arms.each do |arm|
-      arm.update_attributes({new_with_draft: false})
-      if @protocol.service_requests.map {|x| x.sub_service_requests.map {|y| y.in_work_fulfillment}}.flatten.include?(true)
-        arm.populate_subjects
+      @protocol = @service_request.protocol
+      # As the service request leaves draft, so too do the arms
+      @protocol.arms.each do |arm|
+        arm.update_attributes({new_with_draft: false})
+        if @protocol.service_requests.map {|x| x.sub_service_requests.map {|y| y.in_work_fulfillment}}.flatten.include?(true)
+          arm.populate_subjects
+        end
       end
-    end
-    @service_list = @service_request.service_list
+      @service_list = @service_request.service_list
 
-    @service_request.sub_service_requests.each do |ssr|
-      ssr.update_attributes(nursing_nutrition_approved: false, lab_approved: false, imaging_approved: false, committee_approved: false)
-    end
+      @service_request.sub_service_requests.each do |ssr|
+        ssr.update_attributes(nursing_nutrition_approved: false, lab_approved: false, imaging_approved: false, committee_approved: false)
+      end
 
-    send_confirmation_notifications
+      send_confirmation_notifications
 
     # Send a notification to Lane et al to create users in Epic.  Once
     # that has been done, one of them will click a link which calls
     # approve_epic_rights.
-    if USE_EPIC
-      if @protocol.selected_for_epic
-        @protocol.ensure_epic_user
-        if QUEUE_EPIC
-          EpicQueue.create(protocol_id: @protocol.id) unless EpicQueue.where(protocol_id: @protocol.id).size == 1
-        else
-          @protocol.awaiting_approval_for_epic_push
-          send_epic_notification_for_user_approval(@protocol)
+      if USE_EPIC
+        if @protocol.selected_for_epic
+          @protocol.ensure_epic_user
+          if QUEUE_EPIC
+            EpicQueue.create(protocol_id: @protocol.id) unless EpicQueue.where(protocol_id: @protocol.id).size == 1
+          else
+            @protocol.awaiting_approval_for_epic_push
+            send_epic_notification_for_user_approval(@protocol)
+          end
         end
       end
-    end
 
-    render formats: [:html]
+      render formats: [:html]
+    end
   end
 
   def send_confirmation_notifications
@@ -329,7 +331,7 @@ class ServiceRequestsController < ApplicationController
     if @sub_service_request #if editing a sub service request, update status
       @sub_service_request.update_attribute(:status, 'draft')
     else
-      @service_request.update_status('draft', false)
+      update_service_request_status(@service_request, 'draft')
       @service_request.ensure_ssr_ids
     end
 

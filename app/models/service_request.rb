@@ -493,6 +493,7 @@ class ServiceRequest < ActiveRecord::Base
     self.assign_attributes(status: new_status)
 
     self.sub_service_requests.each do |ssr|
+      next if ssr.can_be_edited?
       ssr.update_attribute(:status, new_status)
     end
 

@@ -37,10 +37,11 @@ class Dashboard::Breadcrumber
 
     r = content_tag(:li, content_tag(:a, 'Dashboard', href: dashboard_protocols_url))
     labels_and_urls.each_with_index do |breadcrumb_array, index|
+      label, url = breadcrumb_array
       if index == labels_and_urls.size - 1
-        r += content_tag(:li, breadcrumb_array.first, class: "active")
+        r += content_tag(:li, label, class: "active")
       else
-        r += content_tag(:li, content_tag(:a, breadcrumb_array.first, href: breadcrumb_array.last))
+        r += content_tag(:li, content_tag(:a, label, href: url))
       end
     end
 

@@ -75,6 +75,11 @@
             .col-lg-10
               = hs_form.text_field :irb_expiration_date, class: 'form-control', value: (protocol.human_subjects_info.irb_expiration_date.strftime('%_m/%d/%Y') rescue nil)
               = hs_form.hidden_field :irb_expiration_date
+
+          .form-group.row
+            = form.label :study_phase, t(:protocols)[:studies][:information][:phase], class: 'col-lg-2 control-label'
+            .col-lg-10
+              = form.select :study_phase, options_for_select(STUDY_PHASES, protocol.study_phase), { include_blank: t(:protocols)[:prompts][:phase] }, class: 'selectpicker'
       / Human Subjects selected end
 
       .form-group.row.vertebrate_animals

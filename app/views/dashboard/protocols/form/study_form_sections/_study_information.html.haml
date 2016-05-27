@@ -90,11 +90,6 @@
     / Federal selected end
 
     .form-group.row
-      = form.label :study_phase, t(:protocols)[:studies][:information][:phase], class: 'col-lg-2 control-label'
-      .col-lg-10
-        = form.select :study_phase, options_for_select(STUDY_PHASES, protocol.study_phase), { include_blank: t(:protocols)[:prompts][:phase] }, class: 'selectpicker'
-
-    .form-group.row
       = form.label :sponsor_name, t(:protocols)[:studies][:information][:sponsor], class: 'col-lg-2 control-label'
       .col-lg-10
         = form.text_field :sponsor_name, class: 'form-control'

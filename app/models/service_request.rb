@@ -115,12 +115,6 @@ class ServiceRequest < ActiveRecord::Base
       errors.add(:protocol_id, "You must identify the service request with a study/project before continuing.")
     elsif not self.protocol.valid?
       errors.add(:protocol, "Errors in the selected study/project have been detected.  Please click Edit Study/Project to correct")
-    else
-      if self.has_ctrc_clinical_services?
-        if self.protocol && self.protocol.has_ctrc_clinical_services?(self.id)
-          errors.add(:ctrc_services, "SCTR Research Nexus Services conflict with existing request. Please remove the Nexus services from your cart.")
-        end
-      end
     end
 
     if self.line_items.empty?
@@ -564,6 +558,16 @@ class ServiceRequest < ActiveRecord::Base
     end
 
     return true
+  end
+
+  def has_locked_ssr?
+    sub_service_requests.each do |ssr|
+      if !ssr.can_be_edited?
+        return true
+      end
+    end
+
+    return false
   end
 
   def audit_report identity, start_date=self.previous_submitted_at.utc, end_date=Time.now.utc

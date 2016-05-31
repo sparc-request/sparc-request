@@ -249,7 +249,7 @@ class Identity < ActiveRecord::Base
   def has_correct_project_role? request
     protocol = request.class == ServiceRequest ? request.protocol : request.service_request.protocol
 
-    protocol.project_roles.where(identity_id: self.id).any?
+    protocol.project_roles.where(identity_id: self.id, project_rights: ['approve', 'request']).any?
   end
 
   # Determines whether this identity can edit a given organization's information in CatalogManager.

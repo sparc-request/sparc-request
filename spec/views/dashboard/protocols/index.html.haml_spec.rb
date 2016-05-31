@@ -67,8 +67,8 @@ RSpec.describe 'dashboard/protocols/index', type: :view do
         expect(response).not_to have_content('My Admin Organizations')
       end
 
-      it 'should not show "Core" select' do
-        expect(response).not_to have_content('Core')
+      it 'should show "Organization" select' do
+        expect(response).to have_content('Organization')
       end
     end
 
@@ -86,10 +86,6 @@ RSpec.describe 'dashboard/protocols/index', type: :view do
 
       it 'should show "My Admin Organizations" checkbox' do
         expect(response).to have_field('My Admin Organizations')
-      end
-
-      it 'should show "Core" select' do
-        expect(response).to have_field('Core')
       end
     end
   end

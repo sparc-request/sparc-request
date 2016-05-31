@@ -21,10 +21,14 @@
 %nav.navbar.navbar-default.portal-nav
   .container-fluid
     .navbar-header
-      %p.navbar-text#breadcrumbs
-        = session[:breadcrumbs].breadcrumbs
-      %p.navbar-text
-        = show_welcome_message(user)
+      - if @show_navbar
+        %ul.nav.navbar-nav
+          - NAVBAR_LINKS.each do |name, path|
+            %li= link_to name.to_s, path, target: '_blank'
+      - else
+        %ol.breadcrumb
+          = session[:breadcrumbs].breadcrumbs
+
     %ul.nav.navbar-nav.navbar-right
       %li
         - if QUEUE_EPIC_EDIT_LDAP_UIDS.include?(user.ldap_uid)
@@ -34,3 +38,6 @@
           = t(:dashboard)[:navbar][:messages]
           %span.badge
             = user.unread_notification_count
+
+    %p.navbar-text.navbar-right
+      = show_welcome_message(user)

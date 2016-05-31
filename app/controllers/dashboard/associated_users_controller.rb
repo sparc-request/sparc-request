@@ -24,7 +24,7 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
   
   before_filter :find_protocol_role,        only: [:edit, :destroy]
   before_filter :find_protocol,             only: [:index, :new, :create, :edit, :update, :destroy]
-  before_filter :find_admin_for_protocol,   only: [:index, :update]
+  before_filter :find_admin_for_protocol,   only: [:index, :new, :create, :edit, :update, :destroy]
   before_filter :protocol_authorizer_view,  only: [:index]
   before_filter :protocol_authorizer_edit,  only: [:new, :create, :edit, :update, :destroy]
 
@@ -71,6 +71,10 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
     creator = Dashboard::AssociatedUserCreator.new(params[:project_role])
 
     if creator.successful?
+      if @current_user_created = params[:project_role][:identity_id].to_i == @user.id
+        @permission_to_edit = creator.protocol_role.can_edit?
+      end
+
       flash.now[:success] = 'Authorized User Added!'
     else
       @errors = creator.protocol_role.errors
@@ -86,9 +90,7 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
     
     if updater.successful?
       #We care about this because the new rights will determine what is rendered
-      @current_user_updated = params[:project_role][:identity_id].to_i == @user.id
-      
-      if @current_user_updated
+      if @current_user_updated = params[:project_role][:identity_id].to_i == @user.id
         @protocol_type            = @protocol.type
         protocol_role             = updater.protocol_role
         @permission_to_edit       = protocol_role.can_edit?

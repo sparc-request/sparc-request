@@ -28,6 +28,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   before_filter :protocol_authorizer_edit,  only: [:edit, :update, :update_protocol_type]
 
   def index
+
     admin_orgs   = @user.authorized_admin_organizations
     @admin       = !admin_orgs.empty?
 
@@ -35,8 +36,10 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
     # if we are an admin we want to default to admin organizations
     if @admin
+      @organizations = IdentityOrganizations.new(@user.id).admin_organizations_with_protocols
       default_filter_params[:for_admin]       = @user.id.to_s
     else
+      @organizations = IdentityOrganizations.new(@user.id).general_user_organizations_with_protocols
       default_filter_params[:for_identity_id] = @user.id.to_s
     end
 
@@ -45,7 +48,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
         default_filter_params: default_filter_params,
         select_options: {
           with_status: AVAILABLE_STATUSES.invert,
-          with_organization: admin_orgs.map { |org| [org.name, org.id] }
+          with_organization: GroupedOrganizations.new(@organizations).collect_grouped_options
         },
         persistence_id: false #resets filters on page reload
       ) || return

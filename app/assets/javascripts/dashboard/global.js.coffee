@@ -27,4 +27,9 @@ $ ->
   j = (if (i.length > 3 && i > 0) then i.length % 3 else 0)
   s += i.substr(0, j) + t if j
   return s + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t)
+
+(exports ? this).refresh_study_schedule = () ->
+  $('#service_calendar .tab-content .tab-pane.active').load $('#service_calendar .active a').attr("data-url"), (result) ->
+    $('#service_calendar .active a').tab('show')
+
   

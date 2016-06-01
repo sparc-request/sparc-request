@@ -44,7 +44,7 @@
         %td.unit_type.text-center= liv.line_item.service.displayed_pricing_map.unit_type
       %td.subject_count.text-center
         - if tab != 'calendar'
-          %a.edit-subject-count{ href: '#', data: { type: 'text', pk: liv.line_item.id, name: 'qty', title: 'Edit subject count', value: liv.subject_count, url: "/dashboard/service_calendars.js?service_request_id=#{liv.service_request.id}&line_items_visit=#{liv.id}&tab=#{tab}&portal=#{@portal}" } }
+          %a.edit-subject-count{ href: '#', data: { type: 'text', pk: liv.line_item.id, name: 'qty', title: 'Edit subject count', value: liv.subject_count, url: "/dashboard/service_calendars.js?service_request_id=#{liv.service_request.id}&line_items_visit=#{liv.id}&tab=#{tab}&portal=#{@portal}", max_subject_count: arm.subject_count } }
         - else
           %span= liv.subject_count
       - if @tab == 'template'

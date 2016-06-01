@@ -359,7 +359,7 @@ en:
     navbar:
       logged_in_as: "Logged in as "
       epic_queue: "View Epic Queue"
-      messages: "Messages"
+      messages: "All Notifications"
 
     ###########
     #  NOTES  #

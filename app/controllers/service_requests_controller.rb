@@ -566,7 +566,7 @@ class ServiceRequestsController < ApplicationController
     doc_type_other = params[:doc_type_other]
     upload_clicked = params[:upload_clicked]
 
-    if doc_type and process_ssr_organization_ids and (document or document_id)
+    if !doc_type.empty? && process_ssr_organization_ids && document
       # have all required ingredients for successful document
       if document_id # update existing document
         org_ids = doc_object.sub_service_requests.map{|ssr| ssr.organization_id.to_s}
@@ -609,15 +609,15 @@ class ServiceRequestsController < ApplicationController
           sub_service_request.save
         end
       end
-    elsif upload_clicked == "1" and ((doc_type == "" or !process_ssr_organization_ids) or ( !document and !document_id ))
+
+    elsif upload_clicked == "1" && ((doc_type == "" || !process_ssr_organization_ids) || !document)
       # collect errors
       doc_errors = {}
       doc_errors[:recipients] = ["You must select at least one recipient"] if !process_ssr_organization_ids
-      doc_errors[:document] = ["You must select a document to upload"] if !document and !document_id
+      doc_errors[:document] = ["You must select a document to upload"] if !document
       doc_errors[:doc_type] = ["You must provide a document type"] if doc_type == ""
       errors << doc_errors
     end
-    # end document saving stuff
   end
 
   def update_service_request_status(service_request, status)

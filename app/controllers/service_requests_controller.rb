@@ -108,6 +108,7 @@ class ServiceRequestsController < ApplicationController
     @locked = params[:locked]
 
     if @locked
+      @ctrc_ssr_id    = @service_request.protocol.find_sub_service_request_with_ctrc(@service_request)
       @locked_org_ids = []
 
       @service_request.sub_service_requests.each do |ssr|
@@ -115,9 +116,8 @@ class ServiceRequestsController < ApplicationController
         if organization.has_editable_statuses?
           self_or_parent_id = ssr.find_editable_id(organization.id)
           @locked_org_ids << self_or_parent_id if !EDITABLE_STATUSES[self_or_parent_id].include?(ssr.status)
+          @locked_org_ids << organization.all_children(Organization.all).map(&:id)
         end
-
-        @locked_org_ids << organization.all_children(Organization.all).map(&:id)
       end
     end
 
@@ -135,14 +135,6 @@ class ServiceRequestsController < ApplicationController
     if session[:saved_protocol_id]
       @service_request.protocol = Protocol.find session[:saved_protocol_id]
       session.delete :saved_protocol_id
-    end
-
-    @ctrc_services = false
-    if session[:errors] and session[:errors] != []
-      if session[:errors][:ctrc_services]
-        @ctrc_services = true
-        @ssr_id = @service_request.protocol.find_sub_service_request_with_ctrc(@service_request.id)
-      end
     end
   end
 

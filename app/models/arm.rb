@@ -324,7 +324,7 @@ class Arm < ActiveRecord::Base
 
   def default_visit_days
     self.visit_groups.each do |vg|
-      vg.update_attribute(:day, vg.position)
+      vg.update_attribute(:day, vg.position*5)
     end
     reload
   end

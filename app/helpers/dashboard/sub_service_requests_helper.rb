@@ -67,7 +67,7 @@ module Dashboard::SubServiceRequestsHelper
       end
     else
       # Not ready for Fulfillment
-      display += content_tag(:span, t(:dashboard)[:sub_service_requests][:header][:fulfillment][:not_ready])
+      display += content_tag(:span, t(:dashboard)[:sub_service_requests][:header][:fulfillment][:not_enabled])
     end
 
     return display

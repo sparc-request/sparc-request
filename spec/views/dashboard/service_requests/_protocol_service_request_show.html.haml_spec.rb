@@ -107,13 +107,5 @@ RSpec.describe 'dashboard/service_requests/protocol_service_request_show', type:
         end
       end
     end
-
-    context 'ServiceRequest with no SubServiceRequests' do
-      it 'should not render' do
-        render_protocol_service_request_show service_request
-
-        expect(response).not_to have_content("Service Request: #{service_request.id} - Draft #{service_request.updated_at.strftime('%D')}")
-      end
-    end
   end
 end

@@ -34,6 +34,21 @@ $(document).ready ->
   $(document).on 'click', '.about_sparc_request', ->
     $('#about_sparc').dialog('open')
 
+  $('#ctrc-dialog').dialog
+    autoOpen: false
+    modal: true
+    width: 375
+    height: 200
+    buttons: [{
+      text: 'Ok'
+      click: ->
+        $(this).dialog('close')
+    }]
+
+  $(document).on 'click', '.locked a', ->
+    if $(this).text() == 'Research Nexus **LOCKED**'
+      $('#ctrc-dialog').dialog('open')
+
   $('#institution_accordion').accordion
     heightStyle: 'content'
     collapsible: true

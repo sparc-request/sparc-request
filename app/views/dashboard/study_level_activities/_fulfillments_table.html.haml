@@ -23,7 +23,7 @@
     #fulfillment-custom-toolbar
       %button.btn.btn-success.otf_fulfillment_new{type: "button", "aria-label" => "Add Fulfillment", data: {line_item_id: line_item.id}}
         = t(:dashboard)[:fulfillments][:add]
-    %table.fulfillments{id: "fulfillments-table", data: {toggle: 'table', search: "true", "show-columns" => "true", "show-refresh" => "true", "show-toggle" => "true", url: dashboard_fulfillments_path(format: :json, line_item_id: line_item.id), "sort-name" => "fulfillment_date", "sort-order" => 'asc', sorter: "dateSorter", striped: "true", toolbar: "#fulfillment-custom-toolbar", "show-export" => "true", "export-types" => ['excel']}}
+    %table.fulfillments{id: "fulfillments-table", data: {toggle: 'table', search: "true", "show-columns" => "true", "show-refresh" => "true", "show-toggle" => "true", url: dashboard_fulfillments_path(format: :json, line_item_id: line_item.id), "sort-name" => "fulfillment_date", "sort-order" => 'asc', sorter: "dateSorter", striped: "true", toolbar: "#fulfillment-custom-toolbar", "show-export" => "false", "export-types" => ['excel']}}
       %thead.secondary-header
         %tr
           %th{data: {class: 'fulfillment_date', align: "left", field: "fulfillment_date"}}

@@ -112,23 +112,23 @@ RSpec.feature 'User wants to edit an authorized user', js: true do
         end
       end
     end
+  end
 
-    context 'and does not have permission to edit the protocol' do
-      fake_login_for_each_test("janed")
+  context 'and does not have permission to edit the protocol' do
+    fake_login_for_each_test("johnd")
 
-      before :each do
-        protocol = create(:unarchived_study_without_validations, primary_pi: logged_in_user)
+    let!(:protocol) do
+      protocol  = create(:unarchived_project_without_validations, primary_pi: other_user)
+                  create(:project_role, protocol: protocol, identity: logged_in_user, project_rights: 'view', role: 'business-grants-manager')
+      protocol
+    end
 
-        ProjectRole.create(protocol: protocol, identity: other_user, project_rights: 'view', role: 'mentor')
-
-        # navigate to page
-        @page = Dashboard::Protocols::ShowPage.new
-        @page.load(id: protocol.id)
-      end
-
-      scenario 'and sees disabled Add an Authorized User button' do
-        expect(page).to have_css('.edit-associated-user-button.disabled')
-      end
+    scenario 'and sees disabled Add an Authorized User button' do
+      # navigate to page
+      @page = Dashboard::Protocols::ShowPage.new
+      @page.load(id: protocol.id)
+      
+      expect(page).to have_css('#new-associated-user-button.disabled')
     end
   end
 

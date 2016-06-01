@@ -635,7 +635,7 @@ en:
           go_to_fulfillment: "Go to Fulfillment"
           in_fulfillment: "In Fulfillment"
           send_to_fulfillment: "Send to Fulfillment"
-          not_ready: "This Sub Service Request is not ready for Fulfillment."
+          not_enabled: "Not enabled in SPARCCatalog."
         cost: "Current Cost"
         user_cost: "User Display Cost"
 

@@ -29,12 +29,12 @@
         %ol.breadcrumb
           = session[:breadcrumbs].breadcrumbs
 
-    - if @show_nav_buttons
-      %ul.nav.navbar-nav.navbar-right
-        %li
-          - if QUEUE_EPIC_EDIT_LDAP_UIDS.include?(user.ldap_uid)
-            %button.btn.btn-info.navbar-btn#epic-queue-btn{ type: 'button'}
-              = link_to t(:dashboard)[:navbar][:epic_queue], dashboard_epic_queues_path
+    %ul.nav.navbar-nav.navbar-right
+      %li
+        - if QUEUE_EPIC_EDIT_LDAP_UIDS.include?(user.ldap_uid)
+          %button.btn.btn-info.navbar-btn#epic-queue-btn{ type: 'button'}
+            = link_to t(:dashboard)[:navbar][:epic_queue], dashboard_epic_queues_path
+      - if @show_nav_buttons
         %li
           %button.btn.btn-danger.navbar-btn#messages-btn{ type: 'button'}
             = t(:dashboard)[:navbar][:messages]

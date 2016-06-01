@@ -48,7 +48,7 @@ module Dashboard::ProtocolsHelper
   end
 
   def display_requests_button(protocol, admin_protocols, current_user)
-    if !protocol.sub_service_requests.empty? && (!protocol.project_roles.find_by(identity: current_user).nil? || admin_protocols.try(:include?, protocol.id))
+    if protocol.sub_service_requests.any? && (protocol.project_roles.where(identity: current_user).any? || admin_protocols.try(:include?, protocol.id))
       content_tag( :button, t(:dashboard)[:protocols][:table][:requests], type: 'button', class: 'requests_display_link btn btn-default btn-sm' )
     end
   end

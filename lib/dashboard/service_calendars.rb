@@ -152,7 +152,7 @@ module Dashboard
         end
       else
         service_request.service_list(false).each do |_, value| # get only per patient/per visit services and group them
-          next unless sub_service_request.nil? || sub_service_request.organization.name == value[:process_ssr_organization_name]
+          next if sub_service_request.nil? || sub_service_request.organization.name == value[:process_ssr_organization_name]
           livs = Array.new
           arm.line_items_visits.each do |line_items_visit|
             line_item = line_items_visit.line_item

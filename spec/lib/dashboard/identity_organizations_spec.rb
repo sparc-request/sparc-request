@@ -10,17 +10,17 @@ RSpec.describe IdentityOrganizations do
           provider_organization    = create(:provider_without_validations, parent_id:  institution_organization.id)
           program_organization     = create(:program_without_validations, parent_id: provider_organization.id)
 
+          provider_protocol        = create(:protocol_without_validations)
+          provider_sr              = create(:service_request_without_validations, protocol_id:  provider_protocol.id)
+          provider_ssr             = create(:sub_service_request_without_validations, service_request_id:  provider_sr.id, organization_id: provider_organization.id)
+
+          program_protocol         = create(:protocol_without_validations)
+          program_sr               = create(:service_request_without_validations, protocol_id:  program_protocol.id)
+          program_ssr              = create(:sub_service_request_without_validations, service_request_id:  program_sr.id, organization_id: program_organization.id)
+
           identity                 = create(:identity)
           create(:service_provider, identity: identity, organization: institution_organization)
           create(:super_user, identity: identity, organization: provider_organization)
-
-          provider_protocol                 = create(:protocol_without_validations)
-          provider_sr                       = create(:service_request_without_validations, protocol_id:  provider_protocol.id)
-          provider_ssr                      = create(:sub_service_request_without_validations, service_request_id:  provider_sr.id, organization_id: provider_organization.id)
-
-          program_protocol                 = create(:protocol_without_validations)
-          program_sr                       = create(:service_request_without_validations, protocol_id:  program_protocol.id)
-          program_ssr                      = create(:sub_service_request_without_validations, service_request_id:  program_sr.id, organization_id: program_organization.id)
 
           orgs_with_protocols = []
           orgs_with_protocols << provider_organization.id # There is a protocol attached at the provider level
@@ -34,21 +34,19 @@ RSpec.describe IdentityOrganizations do
     context "Identity is not a super user or service provider" do
 
       it "should not return any organizations" do
+        identity                 = create(:identity)
         institution_organization = create(:institution_without_validations)
         provider_organization    = create(:provider_without_validations, parent_id:  institution_organization.id)
         program_organization     = create(:program_without_validations, parent_id: provider_organization.id)
 
-        provider_protocol                 = create(:protocol_without_validations)
-        provider_sr                       = create(:service_request_without_validations, protocol_id:  provider_protocol.id)
-        provider_ssr                      = create(:sub_service_request_without_validations, service_request_id:  provider_sr.id, organization_id: provider_organization.id)
+        provider_protocol        = create(:protocol_without_validations, primary_pi: identity)
+        provider_sr              = create(:service_request_without_validations, protocol_id:  provider_protocol.id)
+        provider_ssr             = create(:sub_service_request_without_validations, service_request_id:  provider_sr.id, organization_id: provider_organization.id)
 
-        program_protocol                 = create(:protocol_without_validations)
-        program_sr                       = create(:service_request_without_validations, protocol_id:  program_protocol.id)
-        program_ssr                      = create(:sub_service_request_without_validations, service_request_id:  program_sr.id, organization_id: program_organization.id)
+        program_protocol         = create(:protocol_without_validations, primary_pi: identity)
+        program_sr               = create(:service_request_without_validations, protocol_id:  program_protocol.id)
+        program_ssr              = create(:sub_service_request_without_validations, service_request_id:  program_sr.id, organization_id: program_organization.id)
 
-        identity                 = create(:identity)
-        create(:project_role, identity_id: identity.id, protocol_id: provider_protocol.id)
-        create(:project_role, identity_id: identity.id, protocol_id: program_protocol.id)
 
         # This Identity does not have super user or service provider status so we should expect an empty array
         expect(IdentityOrganizations.new(identity.id).admin_organizations_with_protocols.map(&:id)).to eq([])
@@ -64,17 +62,17 @@ RSpec.describe IdentityOrganizations do
           provider_organization    = create(:provider_without_validations, parent_id:  institution_organization.id)
           program_organization     = create(:program_without_validations, parent_id: provider_organization.id)
 
+          provider_protocol        = create(:protocol_without_validations)
+          provider_sr              = create(:service_request_without_validations, protocol_id:  provider_protocol.id)
+          provider_ssr             = create(:sub_service_request_without_validations, service_request_id:  provider_sr.id, organization_id: provider_organization.id)
+
+          program_protocol         = create(:protocol_without_validations)
+          program_sr               = create(:service_request_without_validations, protocol_id:  program_protocol.id)
+          program_ssr              = create(:sub_service_request_without_validations, service_request_id:  program_sr.id, organization_id: program_organization.id)
+
           identity                 = create(:identity)
           create(:service_provider, identity: identity, organization: institution_organization)
           create(:super_user, identity: identity, organization: provider_organization)
-
-          provider_protocol                 = create(:protocol_without_validations)
-          provider_sr                       = create(:service_request_without_validations, protocol_id:  provider_protocol.id)
-          provider_ssr                      = create(:sub_service_request_without_validations, service_request_id:  provider_sr.id, organization_id: provider_organization.id)
-
-          program_protocol                 = create(:protocol_without_validations)
-          program_sr                       = create(:service_request_without_validations, protocol_id:  program_protocol.id)
-          program_ssr                      = create(:sub_service_request_without_validations, service_request_id:  program_sr.id, organization_id: program_organization.id)
 
           orgs_with_protocols = []
           orgs_with_protocols << provider_organization.id # There is a protocol attached at the provider level
@@ -86,30 +84,26 @@ RSpec.describe IdentityOrganizations do
       end
     end
     context "Identity is a general user" do
-
       it "should not return any organizations" do
+        identity                 = create(:identity)
+
         institution_organization = create(:institution_without_validations)
         provider_organization    = create(:provider_without_validations, parent_id:  institution_organization.id)
         program_organization     = create(:program_without_validations, parent_id: provider_organization.id)
 
-        provider_protocol        = create(:protocol_without_validations)
+        provider_protocol        = create(:protocol_without_validations, primary_pi: identity)
         provider_sr              = create(:service_request_without_validations, protocol_id:  provider_protocol.id)
         provider_ssr             = create(:sub_service_request_without_validations, service_request_id:  provider_sr.id, organization_id: provider_organization.id)
 
-        program_protocol         = create(:protocol_without_validations)
+        program_protocol         = create(:protocol_without_validations, primary_pi: identity)
         program_sr               = create(:service_request_without_validations, protocol_id:  program_protocol.id)
         program_ssr              = create(:sub_service_request_without_validations, service_request_id:  program_sr.id, organization_id: program_organization.id)
-
-        identity                 = create(:identity)
-        create(:project_role, identity_id: identity.id, protocol_id: provider_protocol.id)
-        create(:project_role, identity_id: identity.id, protocol_id: program_protocol.id)
 
         orgs_with_protocols = []
         orgs_with_protocols << provider_organization.id
         orgs_with_protocols << program_organization.id
 
-        # This Identity does not have super user or service provider status so we should expect an empty array
-        expect(IdentityOrganizations.new(identity.id).admin_organizations_with_protocols.map(&:id)).to eq([])
+        expect(IdentityOrganizations.new(identity.id).general_user_organizations_with_protocols.map(&:id)).to eq(orgs_with_protocols.flatten.sort)
       end
     end
   end

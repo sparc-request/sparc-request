@@ -208,6 +208,10 @@ en:
       subtext: "Primary PI Required"
       primary_pi: "Primary PI: *"
 
+  proper:
+    catalog:
+      ctrc_lock: "SCTR Research Nexus services are already present on this request (%{protocol_id}-%{ssr_id}) pertaining to this %{protocol_type}, '%{short_title}'. Please call (843) 792-8688 to edit the existing request."
+
   dashboard:
     ###########
     #  ADMIN  #
@@ -635,7 +639,7 @@ en:
           go_to_fulfillment: "Go to Fulfillment"
           in_fulfillment: "In Fulfillment"
           send_to_fulfillment: "Send to Fulfillment"
-          not_ready: "This Sub Service Request is not ready for Fulfillment."
+          not_enabled: "Not enabled in SPARCCatalog."
         cost: "Current Cost"
         user_cost: "User Display Cost"
 
@@ -1706,7 +1710,6 @@ en:
     create:
       study: "Create New Study"
       project: "Create New Project"
-    ctrc_services_exist: "SCTR Research Nexus services have been found on another Service Request %{protocol_id}-%{ssr_id} pertaining to this Project/Study %{short_title}. Please remove the Nexus services from your cart, and call 792-8688 to edit the existing request."
     date: "Submitted Date:"
     delete: "Delete"
     edit_original: "Edit Original"

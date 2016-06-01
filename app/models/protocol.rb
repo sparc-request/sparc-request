@@ -423,17 +423,6 @@ class Protocol < ActiveRecord::Base
     return self.service_requests.any? { |sr| sr.should_push_to_epic? }
   end
 
-  def has_ctrc_clinical_services? current_service_request_id
-    self.service_requests.each do |sr|
-      next if sr.id == current_service_request_id
-      if sr.has_ctrc_clinical_services? and sr.status != 'first_draft'
-        return sr.id
-      end
-    end
-
-    return nil
-  end
-
   def has_nexus_services?
     self.service_requests.each do |sr|
       if sr.has_ctrc_clinical_services? and sr.status != 'first_draft'
@@ -444,14 +433,14 @@ class Protocol < ActiveRecord::Base
     return false
   end
 
-  def find_sub_service_request_with_ctrc current_service_request_id
-    id = has_ctrc_clinical_services? current_service_request_id
-    service_request = self.service_requests.find id
+  def find_sub_service_request_with_ctrc(service_request)
     service_request.sub_service_requests.each do |ssr|
       if ssr.ctrc?
         return ssr.ssr_id
       end
     end
+
+    return nil
   end
 
   def any_service_requests_to_display?

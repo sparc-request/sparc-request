@@ -635,13 +635,13 @@ ActiveRecord::Schema.define(version: 20160527143837) do
     t.integer  "identity_id",        limit: 4
     t.string   "search_name",        limit: 255
     t.boolean  "show_archived"
-    t.integer  "for_identity_id",    limit: 4
-    t.string   "search_query",       limit: 255
-    t.string   "with_organization",  limit: 255
-    t.string   "with_status",        limit: 255
+    t.integer  "for_admin",         limit: 4
+    t.integer  "for_identity_id",   limit: 4
+    t.string   "search_query",      limit: 255
+    t.string   "with_organization", limit: 255
+    t.string   "with_status",       limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "filtered_for_admin", limit: 4
   end
 
   create_table "protocols", force: :cascade do |t|

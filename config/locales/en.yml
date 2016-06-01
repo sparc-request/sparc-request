@@ -171,7 +171,7 @@ en:
           header: "Investigational Products:"
           ind_number: "IND #:"
           ind_on_hold: "IND on Hold?:"
-          ide_number: "IDE #:"
+          ide_number: "IDE# / HDE# / HUD#:"
         ip_patents:
           header: "IP/Patents:"
           number: "Patent Number:"

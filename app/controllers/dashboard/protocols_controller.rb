@@ -22,10 +22,11 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
   respond_to :html, :json, :xlsx
 
-  before_filter :find_protocol,             only: [:show, :edit, :update, :update_protocol_type, :display_requests, :archive, :view_full_calendar, :view_details]
-  before_filter :find_admin_for_protocol,   only: [:show, :edit, :update, :update_protocol_type, :display_requests]
-  before_filter :protocol_authorizer_view,  only: [:show, :view_full_calendar, :display_requests]
-  before_filter :protocol_authorizer_edit,  only: [:edit, :update, :update_protocol_type]
+  before_filter :find_protocol,                                   only: [:show, :edit, :update, :update_protocol_type, :display_requests, :archive, :view_full_calendar, :view_details]
+  before_filter :find_admin_for_protocol,                         only: [:show, :edit, :update, :update_protocol_type, :display_requests]
+  before_filter :protocol_authorizer_view,                        only: [:show, :view_full_calendar, :display_requests]
+  before_filter :protocol_authorizer_edit,                        only: [:edit, :update, :update_protocol_type]
+  before_filter :find_service_provider_only_admin_organizations,  only: [:show, :display_requests]
 
   def index
     admin_orgs   = @user.authorized_admin_organizations
@@ -35,9 +36,9 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
     # if we are an admin we want to default to admin organizations
     if @admin
-      default_filter_params[:for_admin]       = @user.id.to_s
+      default_filter_params[:filtered_for_admin]  = @user.id.to_s
     else
-      default_filter_params[:for_identity_id] = @user.id.to_s
+      default_filter_params[:for_identity_id]     = @user.id.to_s
     end
 
     @filterrific =
@@ -70,7 +71,9 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
       format.html {
         session[:breadcrumbs].clear.add_crumbs(protocol_id: @protocol.id)
         @permission_to_edit = @authorization.present? ? @authorization.can_edit? : false
+        @permission_to_view = @authorization.present? ? @authorization.can_view? : false
         @protocol_type      = @protocol.type.capitalize
+
         render
       }
       format.xlsx {
@@ -200,9 +203,9 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def display_requests
-    @protocol_role      = @protocol.project_roles.find_by(identity_id: @user.id)
-    @permission_to_edit = @protocol_role.present? ? @protocol_role.can_edit? : false
-    modal               = render_to_string(partial: 'dashboard/protocols/requests_modal', locals: { protocol: @protocol, user: @user, permission_to_edit: @permission_to_edit })
+    permission_to_edit  = @authorization.present? ? @authorization.can_edit? : false
+    permission_to_view  = @authorization.present? ? @authorization.can_view? : false
+    modal               = render_to_string(partial: 'dashboard/protocols/requests_modal', locals: { protocol: @protocol, user: @user, sp_only_admin_orgs: @sp_only_admin_orgs, permission_to_edit: permission_to_edit, permission_to_view: permission_to_view })
 
     data = { modal: modal }
     render json: data
@@ -218,6 +221,10 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
   def find_protocol
     @protocol = Protocol.find(params[:id])
+  end
+
+  def find_service_provider_only_admin_organizations
+    @sp_only_admin_orgs = @admin ? @user.authorized_admin_organizations({ sp_only: true }) : nil
   end
 
   def conditionally_activate_protocol

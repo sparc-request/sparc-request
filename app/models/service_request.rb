@@ -579,6 +579,10 @@ class ServiceRequest < ActiveRecord::Base
     {:line_items => line_item_audits}
   end
 
+  def should_be_hidden_for_sp?(sp_only_admin_orgs)
+    (sub_service_requests.reject { |ssr| ssr.should_be_hidden_for_sp?(sp_only_admin_orgs) }).empty?
+  end
+
   private
 
   def set_original_submitted_date

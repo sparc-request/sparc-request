@@ -130,7 +130,7 @@ class Protocol < ActiveRecord::Base
     available_filters: [
       :search_query,
       :for_identity_id,
-      :for_admin,
+      :filtered_for_admin,
       :show_archived,
       :with_status,
       :with_organization
@@ -169,6 +169,21 @@ class Protocol < ActiveRecord::Base
     return nil if identity_id == '0'
     joins(:organizations).
       merge( Organization.authorized_for_identity(identity_id) ).distinct
+  }
+
+  scope :filtered_for_admin, -> (identity_id) {
+    # returns protocols with ssrs in orgs authorized for identity_id
+    return nil if identity_id == '0'
+
+    # We want to find all protocols where the user is an Admin AND Authorized User
+    # as they will be filtered out by the SP Only Organizations queries
+    admin_protocols           = for_admin(identity_id)
+    authorized_user_protocols = joins(:project_roles).where(project_roles: { identity_id: identity_id }) & admin_protocols
+
+    sp_only_admin_orgs        = Organization.authorized_for_identity(identity_id, true)
+    visible_admin_protocols   = for_admin(identity_id).to_a.reject { |p| p.should_be_hidden_for_sp?(sp_only_admin_orgs) }
+    
+    where(id: (authorized_user_protocols | visible_admin_protocols)).distinct
   }
 
   scope :show_archived, -> (boolean) {
@@ -503,6 +518,10 @@ class Protocol < ActiveRecord::Base
     if remove_arms
       self.arms.destroy_all
     end
+  end
+
+  def should_be_hidden_for_sp?(sp_only_admin_orgs)
+    (service_requests.reject { |sr| sr.should_be_hidden_for_sp?(sp_only_admin_orgs) }).empty?
   end
 
   private

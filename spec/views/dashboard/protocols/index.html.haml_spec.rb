@@ -93,6 +93,7 @@ RSpec.describe 'dashboard/protocols/index', type: :view do
   describe 'Protocols list' do
     describe 'Protocol info' do
       before(:each) do
+        create(:super_user, identity_id: jug2.id)
         protocol = build(:protocol_federally_funded,
           :without_validations,
           primary_pi: jug2,
@@ -107,7 +108,6 @@ RSpec.describe 'dashboard/protocols/index', type: :view do
               full_name: 'Toof Fairy')
           ]
         assign(:protocols, [protocol].paginate(page: 1))
-
         render
       end
 

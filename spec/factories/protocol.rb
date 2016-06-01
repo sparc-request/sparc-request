@@ -125,6 +125,7 @@ FactoryGirl.define do
     end
 
     factory :protocol_without_validations, traits: [:without_validations]
+    factory :study_without_validations, traits: [:without_validations, :study]
     factory :project_without_validations, traits: [:without_validations, :project]
     factory :unarchived_project_without_validations, traits: [:without_validations, :project, :unarchived]
     factory :archived_project_without_validations, traits: [:without_validations, :project, :archived]

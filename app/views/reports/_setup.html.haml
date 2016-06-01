@@ -73,13 +73,13 @@
 
         /* date_field */
         - if field_type == :date_field
-          - default_classes = "form-control date_field"
+          - default_classes = "form-control date datetimepicker"
           - default_classes += " required_field" if options[:required]
           - id = options[:for] ? options[:for] : field.delete(" ").underscore
           - name = options[:for] ? "report[" + options[:for] + "]" : "report[" + id + "]"
           %label{:for => id, :class => "col-sm-3 control-label"}= field_label
           .col-sm-9
-            = text_field_tag name, nil, :id => id, :class => default_classes, :type => "date"
+            = text_field_tag name, nil, :id => id, :class => default_classes, :type => "text"
 
         /* date_range */
         - if field_type == :date_range

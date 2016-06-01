@@ -590,7 +590,6 @@ en:
       destroyed: "Study Level Activity Destroyed!"
       table:
         service: "Service"
-        code: "Code"
         quantity_requested: "Qty Requested"
         quantity_type: "Qty Type"
         cost: "Cost"

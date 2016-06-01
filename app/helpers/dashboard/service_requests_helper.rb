@@ -21,11 +21,7 @@
 module Dashboard::ServiceRequestsHelper
 
   def modify_request_button_url(service_request)
-    if service_request.is_editable? # Request not locked
-      "/service_requests/#{service_request.id}/catalog?from_user_portal=true&edit_original=true&locked=false"
-    else # Request locked
-      "/service_requests/#{service_request.id}/catalog?from_user_portal=true&edit_original=true&locked=true"
-    end
+    catalog_service_request_path(service_request, { from_user_portal: true, edit_original: true, locked: service_request.has_locked_ssr? })
   end
 
   def protocol_panel_header_line service_request

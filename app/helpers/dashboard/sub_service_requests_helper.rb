@@ -67,7 +67,7 @@ module Dashboard::SubServiceRequestsHelper
       end
     else
       # Not ready for Fulfillment
-      display += content_tag(:span, t(:dashboard)[:sub_service_requests][:header][:fulfillment][:not_ready])
+      display += content_tag(:span, t(:dashboard)[:sub_service_requests][:header][:fulfillment][:not_enabled])
     end
 
     return display
@@ -195,7 +195,7 @@ module Dashboard::SubServiceRequestsHelper
     admin_access = (admin_orgs & ssr.org_tree).any?
 
     ssr_view_button(ssr)+
-    ssr_edit_button(ssr, user, permission_to_edit, admin_access)+
+    ssr_edit_button(ssr, user, permission_to_edit)+
     ssr_admin_button(ssr, user, permission_to_edit, admin_access)
   end
 
@@ -205,10 +205,10 @@ module Dashboard::SubServiceRequestsHelper
     content_tag(:button, t(:dashboard)[:service_requests][:actions][:view], class: 'view-service-request btn btn-primary btn-sm', type: 'button', data: { sub_service_request_id: ssr.id })
   end
 
-  def ssr_edit_button(ssr, user, permission_to_edit, admin_access)
+  def ssr_edit_button(ssr, user, permission_to_edit)
     # The SSR must not be locked, and the user must either be an authorized user or an authorized admin
-    if ssr.can_be_edited? && permission = (permission_to_edit == 'true' || admin_access)
-      content_tag(:button, t(:dashboard)[:service_requests][:actions][:edit], class: 'edit-service-request btn btn-warning btn-sm', type: 'button', data: { permission: permission.to_s, url: "/service_requests/#{ssr.service_request.id}/catalog?sub_service_request_id=#{ssr.id}&from_user_portal=true"})
+    if ssr.can_be_edited? && permission_to_edit
+      content_tag(:button, t(:dashboard)[:service_requests][:actions][:edit], class: 'edit-service-request btn btn-warning btn-sm', type: 'button', data: { permission: permission_to_edit.to_s, url: "/service_requests/#{ssr.service_request.id}/catalog?sub_service_request_id=#{ssr.id}&from_user_portal=true"})
     else
       ''
     end

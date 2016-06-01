@@ -108,6 +108,7 @@ class ServiceRequestsController < ApplicationController
     @locked = params[:locked]
 
     if @locked
+      @ctrc_ssr_id    = @service_request.protocol.find_sub_service_request_with_ctrc(@service_request)
       @locked_org_ids = []
 
       @service_request.sub_service_requests.each do |ssr|
@@ -115,9 +116,8 @@ class ServiceRequestsController < ApplicationController
         if organization.has_editable_statuses?
           self_or_parent_id = ssr.find_editable_id(organization.id)
           @locked_org_ids << self_or_parent_id if !EDITABLE_STATUSES[self_or_parent_id].include?(ssr.status)
+          @locked_org_ids << organization.all_children(Organization.all).map(&:id)
         end
-
-        @locked_org_ids << organization.all_children(Organization.all).map(&:id)
       end
     end
 
@@ -135,14 +135,6 @@ class ServiceRequestsController < ApplicationController
     if session[:saved_protocol_id]
       @service_request.protocol = Protocol.find session[:saved_protocol_id]
       session.delete :saved_protocol_id
-    end
-
-    @ctrc_services = false
-    if session[:errors] and session[:errors] != []
-      if session[:errors][:ctrc_services]
-        @ctrc_services = true
-        @ssr_id = @service_request.protocol.find_sub_service_request_with_ctrc(@service_request.id)
-      end
     end
   end
 
@@ -574,7 +566,7 @@ class ServiceRequestsController < ApplicationController
     doc_type_other = params[:doc_type_other]
     upload_clicked = params[:upload_clicked]
 
-    if doc_type and process_ssr_organization_ids and (document or document_id)
+    if !doc_type.empty? && process_ssr_organization_ids && document
       # have all required ingredients for successful document
       if document_id # update existing document
         org_ids = doc_object.sub_service_requests.map{|ssr| ssr.organization_id.to_s}
@@ -617,15 +609,15 @@ class ServiceRequestsController < ApplicationController
           sub_service_request.save
         end
       end
-    elsif upload_clicked == "1" and ((doc_type == "" or !process_ssr_organization_ids) or ( !document and !document_id ))
+
+    elsif upload_clicked == "1" && ((doc_type == "" || !process_ssr_organization_ids) || !document)
       # collect errors
       doc_errors = {}
       doc_errors[:recipients] = ["You must select at least one recipient"] if !process_ssr_organization_ids
-      doc_errors[:document] = ["You must select a document to upload"] if !document and !document_id
+      doc_errors[:document] = ["You must select a document to upload"] if !document
       doc_errors[:doc_type] = ["You must provide a document type"] if doc_type == ""
       errors << doc_errors
     end
-    # end document saving stuff
   end
 
   def update_service_request_status(service_request, status)

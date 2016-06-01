@@ -19,19 +19,16 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 = javascript_include_tag 'reporting'
-%br
-#reporting_container
 
-  = link_to "Return to Dashboard", dashboard_root_path, :id => 'return_to_dashboard'
-
+#reporting_container.col-lg-10.col-lg-offset-1
   #report_selection
-    %h2= t(:reports)[:intro]
+    %h3= t(:reports)[:intro]
+    %h4.text-muted= t(:reports)[:sub_intro]
 
-    %br
     %br
 
     - $canned_reports.each do |report|
-      = link_to report.constantize.title, setup_reports_path(report: report), method: :get, remote: true, :class => "reporting_button", :id => "defined_report_link"
+      = link_to report.constantize.title, setup_reports_path(report: report), method: :get, remote: true, :class => "btn btn-primary btn-lg"
 
   #defined_reports
     #defined_reports_step_2

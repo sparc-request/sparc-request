@@ -249,7 +249,7 @@ class Identity < ActiveRecord::Base
   def has_correct_project_role? request
     protocol = request.class == ServiceRequest ? request.protocol : request.service_request.protocol
 
-    protocol.project_roles.where(identity_id: self.id).any?
+    protocol.project_roles.where(identity_id: self.id, project_rights: ['approve', 'request']).any?
   end
 
   # Determines whether this identity can edit a given organization's information in CatalogManager.
@@ -306,9 +306,9 @@ class Identity < ActiveRecord::Base
   ########################### COLLECTION METHODS ################################
   ###############################################################################
 
-  def authorized_admin_organizations
+  def authorized_admin_organizations(sp_only={sp_only: false})
     # returns organizations for which user is service provider or super user
-    Organization.authorized_for_identity(self.id).distinct
+    Organization.authorized_for_identity(self.id, sp_only[:sp_only]).distinct
   end
 
   # Collects all organizations that this identity has catalog manager permissions on, as well as

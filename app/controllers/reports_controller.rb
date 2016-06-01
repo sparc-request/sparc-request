@@ -26,14 +26,19 @@ class ReportsController < ApplicationController
   before_filter :authenticate_identity!
   before_filter :require_super_user, :only => [:index, :setup, :generate]
   before_filter :set_user
+  before_filter :set_show_navbar
 
   def current_user
     current_identity
   end
-  
+
   def set_user
     @user = current_identity
     session['uid'] = @user.nil? ? nil : @user.id
+  end
+
+  def set_show_navbar
+    @show_navbar = true
   end
 
   def require_super_user
@@ -56,7 +61,7 @@ class ReportsController < ApplicationController
     @report = report.constantize.new report_params
 
     # generate excel
-    tempfile = @report.to_excel 
+    tempfile = @report.to_excel
     send_file tempfile.path, :filename => 'report.xlsx', :disposition => 'inline', :type =>  "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
 
     # generate csv
@@ -66,7 +71,7 @@ class ReportsController < ApplicationController
 
   def research_project_summary
     @sub_service_request = SubServiceRequest.find params[:id]
-    @service_request = @sub_service_request.service_request 
+    @service_request = @sub_service_request.service_request
     @protocol = @service_request.protocol
     @start_date = params[:start_date].blank? ? nil : Date.parse(params[:start_date])
     @end_date = params[:end_date].blank? ? nil : Date.parse(params[:end_date])
@@ -77,7 +82,7 @@ class ReportsController < ApplicationController
     xlsx.class.class_eval { attr_accessor :original_filename, :content_type }
     xlsx.original_filename = "research_project_summary.xlsx"
     xlsx.content_type = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    
+
     report = @sub_service_request.reports.new
     report.xlsx = xlsx
     report.report_type = "research_project_summary"
@@ -89,7 +94,7 @@ class ReportsController < ApplicationController
 
   def cwf_audit
     included_cores = params[:organizations] || []
-    
+
     @ssr = SubServiceRequest.find params[:id]
 
     if params[:min_start_date].to_time.strftime('%Y-%m-%d') == params[:cwf_audit_start_date]
@@ -110,7 +115,7 @@ class ReportsController < ApplicationController
       @audit_trail += @ssr.subsidy.audit_trail start_date, end_date
     end
     @audit_trail += @ssr.reports.map{|x| x.audit_trail start_date, end_date}
-  
+
     @ssr.service_request.protocol.arms.each do |arm|
       @audit_trail += arm.audit_trail start_date, end_date
       @audit_trail += arm.line_items_visits.includes(:line_item => :service).where("services.organization_id IN (?)", included_cores).map{|x| x.audit_trail start_date, end_date}
@@ -121,7 +126,7 @@ class ReportsController < ApplicationController
           @audit_trail += subject.calendar.audit_trail start_date, end_date
           @audit_trail += subject.calendar.appointments.map{|x| x.audit_trail start_date, end_date}
         end
-        
+
         subject.calendar.appointments.where("organization_id IN (?)", included_cores).each do |appointment|
           @audit_trail += appointment.procedures.includes(:service).where("services.organization_id IN (?)", included_cores).map{|x| x.audit_trail start_date, end_date}
           @audit_trail += appointment.procedures.includes(:line_item => :service).where("services.organization_id IN (?)", included_cores).map{|x| x.audit_trail start_date, end_date}
@@ -143,7 +148,7 @@ class ReportsController < ApplicationController
     @subject.calendar.build_subject_data
     @arm = Arm.find params[:arm]
     @sub_service_request = SubServiceRequest.find params[:id]
-    @service_request = @sub_service_request.service_request 
+    @service_request = @sub_service_request.service_request
     @protocol = @service_request.protocol
   end
 end

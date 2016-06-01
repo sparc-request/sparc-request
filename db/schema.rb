@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160525190420) do
+ActiveRecord::Schema.define(version: 20160527143837) do
 
   create_table "admin_rates", force: :cascade do |t|
     t.integer  "line_item_id", limit: 4
@@ -632,8 +632,8 @@ ActiveRecord::Schema.define(version: 20160525190420) do
   add_index "project_roles", ["protocol_id"], name: "index_project_roles_on_protocol_id", using: :btree
 
   create_table "protocol_filters", force: :cascade do |t|
-    t.integer  "identity_id",       limit: 4
-    t.string   "search_name",       limit: 255
+    t.integer  "identity_id",        limit: 4
+    t.string   "search_name",        limit: 255
     t.boolean  "show_archived"
     t.integer  "for_admin",         limit: 4
     t.integer  "for_identity_id",   limit: 4
@@ -1114,6 +1114,10 @@ ActiveRecord::Schema.define(version: 20160525190420) do
 
   add_index "tokens", ["identity_id"], name: "index_tokens_on_identity_id", using: :btree
   add_index "tokens", ["service_request_id"], name: "index_tokens_on_service_request_id", using: :btree
+
+  create_table "user_notifications", force: :cascade do |t|
+    t.integer "identity_id", limit: 4
+  end
 
   create_table "validation_conditions", force: :cascade do |t|
     t.integer  "validation_id",  limit: 4

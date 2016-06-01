@@ -56,11 +56,8 @@
         %td.pis
           = pis_display protocol
         %td.requests
-          - unless protocol.sub_service_requests.empty?
-            %button.btn.btn-sm.btn-default.requests_display_link
-              = t(:dashboard)[:protocols][:table][:requests]
+          = display_requests_button(protocol, admin_protocols, current_user)
         %td.archive
-          = archived_button_display protocol
-
+          = display_archive_button(protocol, admin_protocols, current_user)
   .pull-right
     = will_paginate protocols, renderer: BootstrapPagination::Rails

@@ -24,6 +24,13 @@ class ApplicationController < ActionController::Base
   helper_method :current_user
   helper_method :xeditable?
   before_filter :setup_navigation
+  before_action :configure_permitted_parameters, if: :devise_controller?
+
+  protected
+
+  def configure_permitted_parameters
+    devise_parameter_sanitizer.for(:sign_up) { |u|  u.permit!}
+  end
 
   def current_user
     current_identity

@@ -21,9 +21,8 @@
   .panel-heading
     %h4.panel-title.pull-left
       = t(:dashboard)[:protocols][:service_requests][:header]
-    - if !view_only
-      .pull-right
-        = consolidated_request_buttons_display(protocol)
+    .pull-right
+      = consolidated_request_buttons_display(protocol)
     .clearfix
   .panel-body
     - if protocol.sub_service_requests.any?

@@ -99,7 +99,7 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
         @permission_to_view = protocol_role.can_view?
 
         #If the user sets themselves to member and they're not an admin, go to dashboard
-        @return_to_dashboard = !(permission_to_view || @admin)
+        @return_to_dashboard = !(@permission_to_view || @admin)
       end
 
       flash.now[:success] = 'Authorized User Updated!'

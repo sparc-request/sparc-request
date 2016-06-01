@@ -111,8 +111,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
   def edit
     @protocol_type      = @protocol.type
-    protocol_role       = @protocol.project_roles.find_by(identity_id: @user.id)
-    @permission_to_edit = protocol_role.nil? ? false : protocol_role.can_edit?
+    @permission_to_edit = @authorization.nil? ? false : @authorization.can_edit?
 
     @protocol.populate_for_edit
     session[:breadcrumbs].
@@ -132,12 +131,12 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     attrs[:start_date]  = Time.strptime(attrs[:start_date], "%m-%d-%Y") if attrs[:start_date]
     attrs[:end_date]    = Time.strptime(attrs[:end_date],   "%m-%d-%Y") if attrs[:end_date]
 
-    protocol_role       = @protocol.project_roles.find_by(identity_id: @user.id)
+    permission_to_edit  = @authorization.present? ? @authorization.can_edit? : false
 
     # admin is not able to activate study_type_question_group
-    if @admin && protocol_role.nil? && @protocol.update_attributes(attrs)
+    if !permission_to_edit && @protocol.update_attributes(attrs)
       flash[:success] = "#{@protocol.type} Updated!"
-    elsif (!@admin || @admin && !protocol_role.nil? && protocol_role.can_edit?) && @protocol.update_attributes(attrs.merge(study_type_question_group_id: StudyTypeQuestionGroup.active_id))
+    elsif permission_to_edit && @protocol.update_attributes(attrs.merge(study_type_question_group_id: StudyTypeQuestionGroup.active_id))
       flash[:success] = "#{@protocol.type} Updated!"
     else
       @errors = @protocol.errors

@@ -20,7 +20,6 @@
 
 class Dashboard::SubServiceRequestsController < Dashboard::BaseController
   before_action :find_sub_service_request,  except: :index
-  before_filter :protocol_authorizer,       only: :update_from_project_study_information
   before_filter :authorize_admin,           only: :show, unless: :format_js?
 
   respond_to :json, :js, :html
@@ -127,27 +126,6 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
     @tab = 'calendar'
   end
 
-  def update_from_project_study_information
-    attrs = params[@protocol.type.downcase.to_sym]
-
-    if @protocol.update_attributes(attrs.merge(study_type_question_group_id: StudyTypeQuestionGroup.active.pluck(:id).first))
-      redirect_to portal_admin_sub_service_request_path(@sub_service_request)
-    else
-      @user_toasts = @user.received_toast_messages.select { |x| x.sending_class == 'SubServiceRequest' }
-      @service_request = @sub_service_request.service_request
-      @protocol.populate_for_edit if @protocol.type == 'Study'
-      @candidate_one_time_fees, @candidate_per_patient_per_visit = @sub_service_request.candidate_services.partition(&:one_time_fee)
-      @subsidy = @sub_service_request.subsidy
-      @notifications = @user.all_notifications.where(sub_service_request_id: @sub_service_request.id)
-      @service_list = @service_request.service_list
-      @related_service_requests = @protocol.all_child_sub_service_requests
-      @approvals = [@service_request.approvals, @sub_service_request.approvals].flatten
-      @selected_arm = @service_request.arms.first
-
-      render action: 'show'
-    end
-  end
-
   def push_to_epic
     begin
       @sub_service_request.service_request.protocol.push_to_epic(EPIC_INTERFACE)
@@ -180,16 +158,6 @@ private
 
   def find_sub_service_request
     @sub_service_request = SubServiceRequest.find(params[:id])
-  end
-
-  def protocol_authorizer
-    @protocol = Protocol.find(params[:protocol_id])
-    authorized_user = ProtocolAuthorizer.new(@protocol, @user)
-
-    if (request.get? && !authorized_user.can_view?) || (!request.get? && !authorized_user.can_edit?)
-      @protocol = nil
-      render partial: 'service_requests/authorization_error', locals: { error: 'You are not allowed to access this protocol.' }
-    end
   end
 
   def authorize_admin

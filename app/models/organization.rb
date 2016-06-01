@@ -149,7 +149,7 @@ class Organization < ActiveRecord::Base
     false
   end
 
-  Returns the immediate children of this organization (shallow search)
+  # Returns the immediate children of this organization (shallow search)
   def children orgs
     children = []
 

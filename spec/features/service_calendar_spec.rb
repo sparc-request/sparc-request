@@ -400,7 +400,7 @@ RSpec.describe "service calendar", js: true do
         sub_service_request.update_attributes(status: 'first_draft')
         click_on 'Save as Draft'
         wait_for_javascript_to_finish
-        expect(page).to have_content('Dashboard')
+        expect(page).to have_content('Filter Protocols')
       end
 
       it 'should save the request as draft if it is in draft and has not been previously submitted' do
@@ -408,7 +408,7 @@ RSpec.describe "service calendar", js: true do
         sub_service_request.update_attributes(status: 'draft')
         click_on 'Save as Draft'
         wait_for_javascript_to_finish
-        expect(page).to have_content('Dashboard')
+        expect(page).to have_content('Filter Protocols')
       end
 
       it 'should not display the Save as Draft button if the request has been previously submitted' do

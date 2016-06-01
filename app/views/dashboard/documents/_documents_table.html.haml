@@ -29,7 +29,7 @@
           = t(:dashboard)[:documents][:table][:type]
         %th{data: {class: 'title', align: "left", sortable: "true", field: "title"}}
           = t(:dashboard)[:documents][:table][:title]
-        %th{data: {class: 'uploaded', align: "left", sortable: "true", field: "uploaded"}}
+        %th{data: {class: 'uploaded', align: "left", sortable: "true", field: "uploaded", sorter: "dateSorter"}}
           = t(:dashboard)[:documents][:table][:uploaded]
         %th{data: {class: 'edit', align: "center", sortable: "false", field: "edit"}}
           = t(:actions)[:edit]

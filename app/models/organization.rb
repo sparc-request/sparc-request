@@ -41,7 +41,9 @@ class Organization < ActiveRecord::Base
   has_many :identities, :through => :catalog_managers
   has_many :services, :dependent => :destroy
   has_many :sub_service_requests, :dependent => :destroy
+  has_many :protocols, through: :sub_service_requests 
   has_many :available_statuses, :dependent => :destroy
+  has_many :org_children, class_name: "Organization", foreign_key: :parent_id
 
   attr_accessible :name
   attr_accessible :order
@@ -152,6 +154,24 @@ class Organization < ActiveRecord::Base
     end
 
     children
+  end
+
+  def all_child_organizations
+    [
+      org_children,
+      org_children.map(&:all_child_organizations)
+    ].flatten
+  end
+
+  def child_orgs_with_protocols
+    organizations = all_child_organizations
+    organizations_with_protocols = []
+    organizations.flatten.uniq.each do |organization|
+      if organization.protocols.any?
+        organizations_with_protocols << organization
+      end
+    end
+    organizations_with_protocols.flatten.uniq
   end
 
   # Returns an array of all children (and children of children) of this organization (deep search).

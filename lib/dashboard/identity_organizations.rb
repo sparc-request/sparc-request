@@ -1,4 +1,4 @@
-class IdentityOrganizations
+class Dashboard::IdentityOrganizations
   def initialize(id) 
     @id = id
   end

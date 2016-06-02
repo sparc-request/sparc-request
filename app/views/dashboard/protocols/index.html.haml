@@ -20,11 +20,11 @@
 
 .col-lg-3
   #filterrific_form
-    = render partial: 'dashboard/protocol_filters/filter_protocols_form', locals: { filterrific: @filterrific, current_user: @user, admin: @admin }
+    = render 'dashboard/protocol_filters/filter_protocols_form', filterrific: @filterrific, current_user: @user, admin: @admin
 
 .col-lg-9
   #filterrific_results
-    = render partial: 'dashboard/protocols/protocols_list', locals: { protocols: @protocols }
+    = render 'dashboard/protocols/protocols_list', protocols: @protocols, current_user: @user, admin_protocols: @admin_protocols
 
 :javascript
   $(document).ready( function() {

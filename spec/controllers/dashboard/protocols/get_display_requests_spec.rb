@@ -48,14 +48,6 @@ RSpec.describe Dashboard::ProtocolsController do
           expect(assigns(:protocol)).to eq(@protocol)
         end
 
-        it "should set @protocol_role to user's ProjectRole under @protocol" do
-          expect(assigns(:protocol_role)).to eq(@project_role)
-        end
-
-        it "should set @permission_to_edit based on ProjectRole's permissions" do
-          expect(assigns(:permission_to_edit)).to eq(@project_role.can_edit?)
-        end
-
         it { is_expected.to respond_with :ok }
       end
     end

@@ -65,18 +65,22 @@ class Organization < ActiveRecord::Base
   accepts_nested_attributes_for :submission_emails
   accepts_nested_attributes_for :available_statuses, :allow_destroy => true
 
-  #TODO:  In rails 5, the .or operator will be added for ActiveRecord queries. We should try to 
+  # TODO: In rails 5, the .or operator will be added for ActiveRecord queries. We should try to 
   #       condense this to a single query at that point
-  scope :authorized_for_identity, -> (identity_id) {
+  scope :authorized_for_identity, -> (identity_id, sp_only=false) {
     super_user_orgs                 = joins(:super_users).where(super_users: {identity_id: identity_id} ).distinct
     service_provider_orgs           = joins(:service_providers).where(service_providers: {identity_id: identity_id} ).distinct
 
     super_user_orgs_children        = authorized_child_organizations(super_user_orgs.pluck(:id))
     service_provider_orgs_children  = authorized_child_organizations(service_provider_orgs.pluck(:id))
     
-    #To get around merge-and in activerecord, we get all the organizations as an array, then convert it back
-    #to an ActiveRecord Relation through another query on the IDs
-    Organization.where(id: (super_user_orgs | super_user_orgs_children | service_provider_orgs | service_provider_orgs_children) ).distinct
+    # To get around merge-and in activerecord, we get all the organizations as an array, then convert it back
+    # to an ActiveRecord Relation through another query on the IDs
+    if sp_only
+      Organization.where(id: (service_provider_orgs | service_provider_orgs_children)).where.not(id: (super_user_orgs | super_user_orgs_children)).distinct
+    else
+      Organization.where(id: (super_user_orgs | super_user_orgs_children | service_provider_orgs | service_provider_orgs_children) ).distinct
+    end
   }
 
   scope :for_protocol, -> (protocol) {

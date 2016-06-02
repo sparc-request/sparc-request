@@ -149,7 +149,7 @@ RSpec.describe 'dashboard/sub_service_requests/_header', type: :view do
 
         render "dashboard/sub_service_requests/header", sub_service_request: sub_service_request
 
-        expect(response).to have_tag("span", text: "This Sub Service Request is not ready for Fulfillment.")
+        expect(response).to have_tag("span", text: "Not enabled in SPARCCatalog.")
       end
     end
   end

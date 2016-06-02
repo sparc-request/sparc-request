@@ -1,4 +1,4 @@
-class GroupedOrganizations
+class Dashboard::GroupedOrganizations
   def initialize(organizations)
     @organizations = organizations
   end

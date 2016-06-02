@@ -19,10 +19,10 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 module ApplicationHelper
-  def show_welcome_message current_user
+  def show_welcome_message current_user, bootstrap = false
     returning_html = ""
     if current_user
-      returning_html += content_tag(:span, t(:dashboard)[:navbar][:logged_in_as] + current_user.email + " ") + link_to('Logout', destroy_identity_session_path, method: :delete)
+      returning_html += content_tag(:span, t(:dashboard)[:navbar][:logged_in_as] + current_user.email + " ") + link_to('Logout', destroy_identity_session_path, method: :delete, class: bootstrap ? "btn btn-warning" : "")
     else
       # could be used to provide a login link
       returning_html += content_tag(:span, "Not Logged In")

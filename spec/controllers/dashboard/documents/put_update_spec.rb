@@ -9,7 +9,7 @@ RSpec.describe Dashboard::DocumentsController do
 
         log_in_dashboard_identity(obj: build_stubbed(:identity))
 
-        @document_attrs = "document attributes"
+        @document_attrs = {}
         xhr :put, :update, id: @document.id, document: @document_attrs
       end
 
@@ -34,7 +34,7 @@ RSpec.describe Dashboard::DocumentsController do
 
         log_in_dashboard_identity(obj: build_stubbed(:identity))
 
-        @document_attrs = "document attributes"
+        @document_attrs = {}
         xhr :put, :update, id: @document.id, document: @document_attrs
       end
 

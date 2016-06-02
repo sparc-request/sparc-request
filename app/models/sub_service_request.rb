@@ -42,8 +42,8 @@ class SubServiceRequest < ActiveRecord::Base
   has_many :subsidies
   has_one :approved_subsidy, :dependent => :destroy
   has_one :pending_subsidy, :dependent => :destroy
+  has_one :protocol, through: :service_request
 
-  delegate :protocol, to: :service_request, allow_nil: true
   delegate :percent_subsidy, to: :approved_subsidy, allow_nil: true
   delegate :approved_percent_of_total, to: :approved_subsidy, allow_nil: true
   alias_attribute :approved_percent_subsidy, :approved_percent_of_total
@@ -492,6 +492,10 @@ class SubServiceRequest < ActiveRecord::Base
     filtered_audit_trail
   end
   ### end audit reporting methods ###
+
+  def should_be_hidden_for_sp?(sp_only_admin_orgs)
+    status == 'draft' && (org_tree & sp_only_admin_orgs).any?
+  end
 
   private
 

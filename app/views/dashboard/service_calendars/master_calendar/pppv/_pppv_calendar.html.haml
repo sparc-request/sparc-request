@@ -46,8 +46,12 @@
       title: 'Edit subject count',
       validate: function(val) {
         var n = ~~Number(val);
+        var max_subject_count = $(this).data('max-subject-count');
         if(String(n) != val || n < 0) {
           return "quantity must be a nonnegative number";
+        }
+        else if(n > max_subject_count) {
+          return "The N cannot exceed the maximum subject count of the arm (" + max_subject_count + ")";
         }
       }
     });

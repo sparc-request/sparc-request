@@ -15,12 +15,12 @@ module Dashboard
         element :archived_checkbox, :field, "Archived"
         element :status_select, "div.status-select button"
         elements :status_options, "div.status-select li"
-
+        element :core_select, "div.core-select button"
+        elements :core_options, "div.core-select li"
+        
         # these appear if user is an admin
         element :my_protocols_checkbox, :field, "My Protocols"
         element :my_admin_organizations_checkbox, :field, "My Admin Organizations"
-        element :core_select, "div.core-select button"
-        elements :core_options, "div.core-select li"
 
         element :apply_filter_button, :button, "Filter"
 

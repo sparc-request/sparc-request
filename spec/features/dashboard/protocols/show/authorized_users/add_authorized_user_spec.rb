@@ -209,10 +209,12 @@ RSpec.feature 'User wants to add an authorized user', js: true do
         when_i_set_the_role_to('Consultant')
         @page.authorized_user_modal.approve_rights.click
         when_i_submit_the_form
+        wait_for_javascript_to_finish
       end
 
       scenario 'and sees the edit button for all non-locked SSRs' do
-        expect(@page).to have_selector('.service-requests-table .edit-service-request', count: 2)
+        expect(@page.service_requests.first.ssrs.first).to have_edit_button
+        expect(@page.service_requests.first.ssrs.second).to have_edit_button
       end
 
       scenario 'and sees the Modify Request button for all SRs' do

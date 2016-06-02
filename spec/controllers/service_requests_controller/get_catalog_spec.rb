@@ -123,11 +123,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
       end
     end
 
-    it 'should set @locked' do
-      xhr :get, :catalog, id: service_request.id, sub_service_request_id: sub_service_request.id, locked: false
-      expect(assigns(:locked)).to eq(false)
-    end
-
     # TODO: Try and figure out a clean way of setting up the test config to be able to
     #       test locked organization checks and finding the ctrc ssr id
   end

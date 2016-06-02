@@ -83,16 +83,6 @@ class Organization < ActiveRecord::Base
     end
   }
 
-  scope :for_protocol, -> (protocol) {
-    orgs = []
-
-    protocol.sub_service_requests.each do |ssr|
-      orgs << ssr.org_tree
-    end
-
-    where(id: orgs.flatten.uniq)
-  }
-
   scope :in_cwf, -> { joins(:tags).where(tags: { name: 'clinical work fulfillment' }) }
 
   def label

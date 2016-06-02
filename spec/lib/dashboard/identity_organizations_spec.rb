@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe IdentityOrganizations do
+RSpec.describe Dashboard::IdentityOrganizations do
 
   describe '#admin_organizations_with_protocols' do
     context "Identity is super user at provider level" do
@@ -27,7 +27,7 @@ RSpec.describe IdentityOrganizations do
           orgs_with_protocols << program_organization.id # There is a protocol attached at the program level
 
           # Should return an array with the provider and program org, not the institution org since it does not have a protocol attached
-          expect(IdentityOrganizations.new(identity.id).admin_organizations_with_protocols.map(&:id)).to eq(orgs_with_protocols.flatten.sort)
+          expect(Dashboard::IdentityOrganizations.new(identity.id).admin_organizations_with_protocols.map(&:id)).to eq(orgs_with_protocols.flatten.sort)
         end
       end
     end
@@ -49,7 +49,7 @@ RSpec.describe IdentityOrganizations do
 
 
         # This Identity does not have super user or service provider status so we should expect an empty array
-        expect(IdentityOrganizations.new(identity.id).admin_organizations_with_protocols.map(&:id)).to eq([])
+        expect(Dashboard::IdentityOrganizations.new(identity.id).admin_organizations_with_protocols.map(&:id)).to eq([])
       end
     end
   end
@@ -79,7 +79,7 @@ RSpec.describe IdentityOrganizations do
           orgs_with_protocols << program_organization.id # There is a protocol attached at the program level
 
           # Identity is not a general user, expect an empty array
-          expect(IdentityOrganizations.new(identity.id).general_user_organizations_with_protocols.map(&:id)).to eq([])
+          expect(Dashboard::IdentityOrganizations.new(identity.id).general_user_organizations_with_protocols.map(&:id)).to eq([])
         end
       end
     end
@@ -104,7 +104,7 @@ RSpec.describe IdentityOrganizations do
         orgs_with_protocols << program_organization.id
 
         # Identity is a general user and has access to both protocols
-        expect(IdentityOrganizations.new(identity.id).general_user_organizations_with_protocols.map(&:id)).to eq(orgs_with_protocols.flatten.sort)
+        expect(Dashboard::IdentityOrganizations.new(identity.id).general_user_organizations_with_protocols.map(&:id)).to eq(orgs_with_protocols.flatten.sort)
       end
     end
     context "Identity is a general user" do
@@ -133,7 +133,7 @@ RSpec.describe IdentityOrganizations do
         orgs_with_protocols << program_organization.id
 
         # Identity is a general user and has access to both protocols
-        expect(IdentityOrganizations.new(identity.id).general_user_organizations_with_protocols.map(&:id)).to eq(orgs_with_protocols.flatten.sort)
+        expect(Dashboard::IdentityOrganizations.new(identity.id).general_user_organizations_with_protocols.map(&:id)).to eq(orgs_with_protocols.flatten.sort)
       end
     end
   end

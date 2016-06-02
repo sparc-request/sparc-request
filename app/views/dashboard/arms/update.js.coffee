@@ -28,9 +28,7 @@ $("#sub_service_request_header").html("<%= escape_javascript(render(partial: 'da
 $("#subsidy_information").html("<%= escape_javascript(render(partial: 'dashboard/subsidies/subsidy', locals: { sub_service_request: @sub_service_request, admin: true })) %>");
 $(".selectpicker").selectpicker()
 
-# refreshes calendar
-$('#service_calendar .tab-content .tab-pane.active').load $('#service_calendar .active a').attr("data-url"), (result) ->
-  $('#service_calendar .active a').tab('show')
+refresh_study_schedule()
 
 $("#modal_place").modal 'hide'
 <% end %>

@@ -29,6 +29,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   before_filter :find_service_provider_only_admin_organizations,  only: [:show, :display_requests]
 
   def index
+
     admin_orgs   = @user.authorized_admin_organizations
     @admin       = !admin_orgs.empty?
 
@@ -36,9 +37,11 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
     # if we are an admin we want to default to admin organizations
     if @admin
-      default_filter_params[:filtered_for_admin]  = @user.id.to_s
+      @organizations = Dashboard::IdentityOrganizations.new(@user.id).admin_organizations_with_protocols
+      default_filter_params[:for_admin]       = @user.id.to_s
     else
-      default_filter_params[:for_identity_id]     = @user.id.to_s
+      @organizations = Dashboard::IdentityOrganizations.new(@user.id).general_user_organizations_with_protocols
+      default_filter_params[:for_identity_id] = @user.id.to_s
     end
 
     @filterrific =
@@ -46,7 +49,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
         default_filter_params: default_filter_params,
         select_options: {
           with_status: AVAILABLE_STATUSES.invert,
-          with_organization: admin_orgs.map { |org| [org.name, org.id] }
+          with_organization: Dashboard::GroupedOrganizations.new(@organizations).collect_grouped_options
         },
         persistence_id: false #resets filters on page reload
       ) || return
@@ -55,8 +58,8 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     @admin_protocols  = Protocol.for_admin(@user.id).pluck(:id)
     @protocol_filters = ProtocolFilter.latest_for_user(@user.id, 5)
     #toggles the display of the navigation bar, instead of breadcrumbs
-    @show_navbar = true
-    @show_messages = true
+    @show_navbar      = true
+    @show_nav_buttons = true
     session[:breadcrumbs].clear
 
     respond_to do |format|

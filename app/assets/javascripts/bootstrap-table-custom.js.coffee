@@ -18,7 +18,13 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+getOrder = ->
+  if $table.bootstrapTable('getOptions').sortOrder == 'asc' then -1 else 1
+
 (exports ? this).dateSorter = (a, b) ->
+  return -1 * getOrder() if !a
+  return 1 * getOrder() if !b
+
   sort_a = new Date(a)
   sort_b = new Date(b)
 

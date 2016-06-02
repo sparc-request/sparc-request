@@ -256,6 +256,7 @@ $(document).ready ->
       $('#ind-on-hold-group').show()
     else
       $('#ind-on-hold-group').hide()
+      $('#protocol_investigational_products_info_attributes_ind_on_hold').attr('checked', false)
   ###END INVESTIGATIONAL PRODUCTS FIELDS DISPLAY###
 
 

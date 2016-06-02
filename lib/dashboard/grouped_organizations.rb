@@ -1,5 +1,5 @@
 module Dashboard
-  class Dashboard::GroupedOrganizations
+  class GroupedOrganizations
     def initialize(organizations)
       @organizations = organizations
     end

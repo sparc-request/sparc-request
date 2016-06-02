@@ -38,7 +38,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     # if we are an admin we want to default to admin organizations
     if @admin
       @organizations = Dashboard::IdentityOrganizations.new(@user.id).admin_organizations_with_protocols
-      default_filter_params[:for_admin]       = @user.id.to_s
+      default_filter_params[:filtered_for_admin]       = @user.id.to_s
     else
       @organizations = Dashboard::IdentityOrganizations.new(@user.id).general_user_organizations_with_protocols
       default_filter_params[:for_identity_id] = @user.id.to_s

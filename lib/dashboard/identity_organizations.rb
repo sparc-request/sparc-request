@@ -3,7 +3,7 @@ class IdentityOrganizations
     @id = id
   end
 
-  # returns organizations that 
+  # returns organizations that have protocols and general user has access to
   def general_user_organizations_with_protocols
     Protocol.joins(:project_roles).where(project_roles: { identity_id: @id } ).where.not(project_roles: { project_rights: 'none' }).map(&:organizations).flatten.uniq
   end

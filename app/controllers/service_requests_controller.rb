@@ -70,7 +70,9 @@ class ServiceRequestsController < ApplicationController
     end
 
     # Save/Update any document info we may have
-    document_save_update(errors)
+    if params[:current_location] == 'document_management'
+      document_save_update(errors)
+    end
 
     location = params["location"]
     additional_params = request.referrer.split('/').last.split('?').size == 2 ? "?" + request.referrer.split('/').last.split('?').last : nil

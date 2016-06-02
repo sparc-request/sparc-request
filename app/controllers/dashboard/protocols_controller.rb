@@ -59,7 +59,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     @protocol_filters = ProtocolFilter.latest_for_user(@user.id, 5)
     #toggles the display of the navigation bar, instead of breadcrumbs
     @show_navbar      = true
-    @show_nav_buttons = true
+    @show_messages    = true
     session[:breadcrumbs].clear
 
     respond_to do |format|

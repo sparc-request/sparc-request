@@ -22,11 +22,14 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
   respond_to :html, :json, :xlsx
 
-  before_filter :find_protocol, only: [:show, :edit, :update, :update_protocol_type, :display_requests, :archive, :view_full_calendar, :view_details]
-  before_filter :protocol_authorizer_view, only: [:show, :view_full_calendar, :display_requests]
-  before_filter :protocol_authorizer_edit, only: [:edit, :update, :update_protocol_type]
+  before_filter :find_protocol,                                   only: [:show, :edit, :update, :update_protocol_type, :display_requests, :archive, :view_full_calendar, :view_details]
+  before_filter :find_admin_for_protocol,                         only: [:show, :edit, :update, :update_protocol_type, :display_requests]
+  before_filter :protocol_authorizer_view,                        only: [:show, :view_full_calendar, :display_requests]
+  before_filter :protocol_authorizer_edit,                        only: [:edit, :update, :update_protocol_type]
+  before_filter :find_service_provider_only_admin_organizations,  only: [:show, :display_requests]
 
   def index
+
     admin_orgs   = @user.authorized_admin_organizations
     @admin       = !admin_orgs.empty?
 
@@ -34,9 +37,11 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
     # if we are an admin we want to default to admin organizations
     if @admin
-      default_filter_params[:for_admin] = @user.id
+      @organizations = Dashboard::IdentityOrganizations.new(@user.id).admin_organizations_with_protocols
+      default_filter_params[:filtered_for_admin]       = @user.id.to_s
     else
-      default_filter_params[:for_identity_id] = @user.id
+      @organizations = Dashboard::IdentityOrganizations.new(@user.id).general_user_organizations_with_protocols
+      default_filter_params[:for_identity_id] = @user.id.to_s
     end
 
     @filterrific =
@@ -44,13 +49,17 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
         default_filter_params: default_filter_params,
         select_options: {
           with_status: AVAILABLE_STATUSES.invert,
-          with_organization: admin_orgs.map { |org| [org.name, org.id] }
+          with_organization: Dashboard::GroupedOrganizations.new(@organizations).collect_grouped_options
         },
         persistence_id: false #resets filters on page reload
       ) || return
 
     @protocols        = @filterrific.find.page(params[:page])
+    @admin_protocols  = Protocol.for_admin(@user.id).pluck(:id)
     @protocol_filters = ProtocolFilter.latest_for_user(@user.id, 5)
+    #toggles the display of the navigation bar, instead of breadcrumbs
+    @show_navbar      = true
+    @show_nav_buttons = true
     session[:breadcrumbs].clear
 
     respond_to do |format|
@@ -64,22 +73,22 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
       format.js   { render }
       format.html {
         session[:breadcrumbs].clear.add_crumbs(protocol_id: @protocol.id)
-        admin               = !@user.authorized_admin_organizations.empty?
-        @permission_to_edit = @authorization.can_edit? || admin
+        @permission_to_edit = @authorization.present? ? @authorization.can_edit? : false
+        @permission_to_view = @authorization.present? ? @authorization.can_view? : false
         @protocol_type      = @protocol.type.capitalize
-        @service_requests   = @protocol.service_requests
+
         render
       }
-      format.xlsx { render }
+      format.xlsx {
+        response.headers['Content-Disposition'] = "attachment; filename='(#{@protocol.id}) Consolidated Corporate Study Budget.xlsx'"
+      }
     end
   end
 
   def new
-    admin_orgs = @user.authorized_admin_organizations
-    @admin =  !admin_orgs.empty?
-    @protocol_type = params[:protocol_type]
-    @protocol = @protocol_type.capitalize.constantize.new
-    @protocol.requester_id = current_user.id
+    @protocol_type          = params[:protocol_type]
+    @protocol               = @protocol_type.capitalize.constantize.new
+    @protocol.requester_id  = current_user.id
     @protocol.populate_for_edit
     session[:protocol_type] = params[:protocol_type]
   end
@@ -108,37 +117,33 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def edit
-    @admin               = !@user.authorized_admin_organizations.empty?
     @protocol_type      = @protocol.type
-    protocol_role       = @protocol.project_roles.find_by(identity_id: @user.id)
-    @permission_to_edit = protocol_role.nil? ? false : protocol_role.can_edit?
+    @permission_to_edit = @authorization.nil? ? false : @authorization.can_edit?
 
     @protocol.populate_for_edit
     session[:breadcrumbs].
       clear.
       add_crumbs(protocol_id: @protocol.id, edit_protocol: true)
-    
+
     @protocol.valid?
     @errors = @protocol.errors
-    
+
     respond_to do |format|
       format.html
     end
   end
 
   def update
-    attrs         = params[:protocol]
+    attrs               = params[:protocol]
+    attrs[:start_date]  = Time.strptime(attrs[:start_date], "%m-%d-%Y") if attrs[:start_date]
+    attrs[:end_date]    = Time.strptime(attrs[:end_date],   "%m-%d-%Y") if attrs[:end_date]
 
-    attrs[:start_date] = Time.strptime(attrs[:start_date], "%m-%d-%Y") if attrs[:start_date]
-    attrs[:end_date] =   Time.strptime(attrs[:end_date],   "%m-%d-%Y") if attrs[:end_date]
-
-    @admin        = !@user.authorized_admin_organizations.empty?
-    protocol_role = @protocol.project_roles.find_by(identity_id: @user.id)
+    permission_to_edit  = @authorization.present? ? @authorization.can_edit? : false
 
     # admin is not able to activate study_type_question_group
-    if @admin && protocol_role.nil? && @protocol.update_attributes(attrs)
+    if !permission_to_edit && @protocol.update_attributes(attrs)
       flash[:success] = "#{@protocol.type} Updated!"
-    elsif (!@admin || @admin && !protocol_role.nil? && protocol_role.can_edit?) && @protocol.update_attributes(attrs.merge(study_type_question_group_id: StudyTypeQuestionGroup.active_id))
+    elsif permission_to_edit && @protocol.update_attributes(attrs.merge(study_type_question_group_id: StudyTypeQuestionGroup.active_id))
       flash[:success] = "#{@protocol.type} Updated!"
     else
       @errors = @protocol.errors
@@ -152,17 +157,16 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
   def update_protocol_type
     # Using update_attribute here is intentional, type is a protected attribute
-    @admin              = !@user.authorized_admin_organizations.empty?
     protocol_role       = @protocol.project_roles.find_by(identity_id: @user.id)
     @permission_to_edit = protocol_role.nil? ? false : protocol_role.can_edit?
     @protocol_type      = params[:type]
 
     @protocol.update_attribute(:type, @protocol_type)
     conditionally_activate_protocol
-    
+
     @protocol = Protocol.find(@protocol.id)#Protocol type has been converted, this is a reload
     @protocol.populate_for_edit
-  
+
     flash[:success] = "Protocol Type Updated!"
     if @protocol_type == "Study" && @protocol.sponsor_name.nil? && @protocol.selected_for_epic.nil?
       flash[:alert] = "Please complete Sponsor Name and Publish Study in Epic"
@@ -177,21 +181,24 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def view_full_calendar
-    @service_request = @protocol.any_service_requests_to_display?
+    @service_request  = @protocol.any_service_requests_to_display?
+    arm_id            = params[:arm_id] if params[:arm_id]
+    page              = params[:page] if params[:page]
 
-    arm_id = params[:arm_id] if params[:arm_id]
-    page = params[:page] if params[:page]
-    session[:service_calendar_pages] = params[:pages] if params[:pages]
-    session[:service_calendar_pages][arm_id] = page if page && arm_id
-    @tab = 'calendar'
+    session[:service_calendar_pages]          = params[:pages] if params[:pages]
+    session[:service_calendar_pages][arm_id]  = page if page && arm_id
+
+    @tab    = 'calendar'
     @portal = params[:portal]
+
     if @service_request
       @pages = {}
       @protocol.arms.each do |arm|
-        new_page = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i
-        @pages[arm.id] = @service_request.set_visit_page(new_page, arm)
+        new_page        = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i
+        @pages[arm.id]  = @service_request.set_visit_page(new_page, arm)
       end
     end
+
     @merged = true
     respond_to do |format|
       format.js
@@ -199,9 +206,12 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def display_requests
-    @protocol_role = @protocol.project_roles.find_by(identity_id: @user.id)
+    permission_to_edit  = @authorization.present? ? @authorization.can_edit? : false
+    permission_to_view  = @authorization.present? ? @authorization.can_view? : false
+    modal               = render_to_string(partial: 'dashboard/protocols/requests_modal', locals: { protocol: @protocol, user: @user, sp_only_admin_orgs: @sp_only_admin_orgs, permission_to_edit: permission_to_edit, permission_to_view: permission_to_view })
 
-    @permission_to_edit = @protocol_role.present? ? @protocol_role.can_edit? : Protocol.for_admin(@user.id).include?(@protocol)
+    data = { modal: modal }
+    render json: data
   end
 
   def view_details
@@ -216,12 +226,12 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     @protocol = Protocol.find(params[:id])
   end
 
-  def admin?
-    !@user.authorized_admin_organizations.empty?
+  def find_service_provider_only_admin_organizations
+    @sp_only_admin_orgs = @admin ? @user.authorized_admin_organizations({ sp_only: true }) : nil
   end
 
   def conditionally_activate_protocol
-    if admin?
+    if @admin
       if @protocol_type == "Study" && @protocol.virgin_project?
         @protocol.activate
       end

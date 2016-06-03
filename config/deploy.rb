@@ -132,17 +132,17 @@ end
 namespace :delayed_job do
   desc "Start delayed_job process" 
   task :start, :roles => :app do
-    run "cd #{current_path} && RAILS_ENV=#{rails_env} bundle exec script/delayed_job start"
+    run "cd #{current_path} && RAILS_ENV=#{rails_env} bundle exec script/delayed_job -n 2 start"
   end
 
   desc "Stop delayed_job process" 
   task :stop, :roles => :app do
-    run "cd #{current_path} && RAILS_ENV=#{rails_env} bundle exec script/delayed_job stop"
+    run "cd #{current_path} && RAILS_ENV=#{rails_env} bundle exec script/delayed_job -n 2 stop"
   end
 
   desc "Restart delayed_job process" 
   task :restart, :roles => :app do
-    run "cd #{current_path} && RAILS_ENV=#{rails_env} bundle exec script/delayed_job restart" 
+    run "cd #{current_path} && RAILS_ENV=#{rails_env} bundle exec script/delayed_job -n 2 restart" 
   end
 end
 

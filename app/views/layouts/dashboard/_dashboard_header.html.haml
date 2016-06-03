@@ -21,16 +21,25 @@
 %nav.navbar.navbar-default.portal-nav
   .container-fluid
     .navbar-header
-      %p.navbar-text#breadcrumbs
-        = session[:breadcrumbs].breadcrumbs
-      %p.navbar-text
-        = show_welcome_message(user)
+      - if @show_navbar
+        %ul.nav.navbar-nav
+          - NAVBAR_LINKS.each do |name, path|
+            %li= link_to name.to_s, path, target: '_blank'
+      - else
+        %ol.breadcrumb
+          = session[:breadcrumbs].breadcrumbs
+
     %ul.nav.navbar-nav.navbar-right
       %li
         - if QUEUE_EPIC_EDIT_LDAP_UIDS.include?(user.ldap_uid)
           %button.btn.btn-info.navbar-btn#epic-queue-btn{ type: 'button'}
             = link_to t(:dashboard)[:navbar][:epic_queue], dashboard_epic_queues_path
-        %button.btn.btn-danger.navbar-btn#messages-btn{ type: 'button'}
-          = t(:dashboard)[:navbar][:messages]
-          %span.badge
-            = user.unread_notification_count
+      - if @show_nav_buttons
+        %li
+          %button.btn.btn-danger.navbar-btn#messages-btn{ type: 'button'}
+            = t(:dashboard)[:navbar][:messages]
+            %span.badge
+              = user.unread_notification_count
+
+    %p#welcome-nav.navbar-text.navbar-right
+      = show_welcome_message(user, bootstrap = true)

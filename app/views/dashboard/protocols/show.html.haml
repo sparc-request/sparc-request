@@ -17,11 +17,10 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 .panel-group#protocol_show_information_panel
-  = render 'dashboard/protocols/summary', protocol: @protocol, protocol_type: @protocol_type, permission_to_edit: @permission_to_edit
-  = render 'dashboard/associated_users/table', protocol: @protocol, permission_to_edit: @permission_to_edit
-  = render 'dashboard/service_requests/service_requests', protocol: @protocol, permission_to_edit: @permission_to_edit, user: @user, admin: @admin
+  = render 'dashboard/protocols/summary', protocol: @protocol, protocol_type: @protocol_type, permission_to_edit: @permission_to_edit || @admin
+  = render 'dashboard/associated_users/table', protocol: @protocol, permission_to_edit: @permission_to_edit || @admin
+  = render 'dashboard/service_requests/service_requests', protocol: @protocol, sp_only_admin_orgs: @sp_only_admin_orgs, permission_to_edit: @permission_to_edit, permission_to_view: @permission_to_view, user: @user, view_only: false
 
 :javascript
   $(document).ready( function() {

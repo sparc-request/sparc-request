@@ -20,16 +20,18 @@
 
 class Dashboard::AssociatedUsersController < Dashboard::BaseController
   layout nil
-
   respond_to :html, :json, :js
-  before_filter :find_protocol_role,        only: [:edit, :destroy]
-  before_filter :find_protocol,             only: [:index, :new, :create, :edit, :update]
-  before_filter :protocol_authorizer_view,  only: [:index]
-  before_filter :protocol_authorizer_edit,  only: [:new, :create, :edit, :update]
+  
+  before_filter :find_protocol_role,                              only: [:edit, :destroy]
+  before_filter :find_protocol,                                   only: [:index, :new, :create, :edit, :update, :destroy]
+  before_filter :find_admin_for_protocol,                         only: [:index, :new, :create, :edit, :update, :destroy]
+  before_filter :protocol_authorizer_view,                        only: [:index]
+  before_filter :protocol_authorizer_edit,                        only: [:new, :create, :edit, :update, :destroy]
+  before_filter :find_service_provider_only_admin_organizations,  only: [:create, :update, :destroy]
 
   def index
     @protocol_roles     = @protocol.project_roles
-    @permission_to_edit = @authorization.can_edit? || @admin
+    @permission_to_edit = @authorization.can_edit?
 
     respond_to do |format|
       format.json
@@ -70,6 +72,11 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
     creator = Dashboard::AssociatedUserCreator.new(params[:project_role])
 
     if creator.successful?
+      if @current_user_created = params[:project_role][:identity_id].to_i == @user.id
+        @permission_to_edit = creator.protocol_role.can_edit?
+        @permission_to_view = creator.protocol_role.can_view?
+      end
+
       flash.now[:success] = 'Authorized User Added!'
     else
       @errors = creator.protocol_role.errors
@@ -85,15 +92,14 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
     
     if updater.successful?
       #We care about this because the new rights will determine what is rendered
-      @current_user_updated = params[:project_role][:identity_id].to_i == @user.id
-      
-      if @current_user_updated
-        @protocol_type        = @protocol.type
-        protocol_role         = updater.protocol_role
-        @permission_to_edit   = protocol_role.can_edit? || @admin
+      if @current_user_updated = params[:project_role][:identity_id].to_i == @user.id
+        @protocol_type      = @protocol.type
+        protocol_role       = updater.protocol_role
+        @permission_to_edit = protocol_role.can_edit?
+        @permission_to_view = protocol_role.can_view?
 
         #If the user sets themselves to member and they're not an admin, go to dashboard
-        @return_to_dashboard  = protocol_role.project_rights == 'none' && !@permission_to_edit
+        @return_to_dashboard = !(@permission_to_view || @admin)
       end
 
       flash.now[:success] = 'Authorized User Updated!'
@@ -107,16 +113,25 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
   end
 
   def destroy
-    protocol           = @protocol_role.protocol
-    epic_access        = @protocol_role.epic_access
-    project_role_clone = @protocol_role.clone
+    @protocol           = @protocol_role.protocol
+    epic_access         = @protocol_role.epic_access
+    protocol_role_clone = @protocol_role.clone
     
     @protocol_role.destroy
+    
+    if @current_user_destroyed  = protocol_role_clone.identity_id == @user.id
+      @protocol_type            = @protocol.type
+      @permission_to_edit       = false
+      @permission_to_view       = false
+
+      #If the user sets themselves to member and they're not an admin, go to dashboard
+      @return_to_dashboard = !@admin
+    end
 
     flash.now[:alert] = 'Authorized User Removed!'
 
-    if USE_EPIC && protocol.selected_for_epic && epic_access && !QUEUE_EPIC
-      Notifier.notify_primary_pi_for_epic_user_removal(protocol, project_role_clone).deliver
+    if USE_EPIC && @protocol.selected_for_epic && epic_access && !QUEUE_EPIC
+      Notifier.notify_primary_pi_for_epic_user_removal(@protocol, protocol_role_clone).deliver
     end
 
     respond_to do |format|
@@ -135,6 +150,11 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
   end
 
 private
+  
+  def find_service_provider_only_admin_organizations
+    @sp_only_admin_orgs = @admin ? @user.authorized_admin_organizations({ sp_only: true }) : nil
+  end
+
   def find_protocol_role
     @protocol_role = ProjectRole.find(params[:id])
   end

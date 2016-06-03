@@ -76,32 +76,6 @@ RSpec.describe ServiceRequestsController do
              end_date: Time.now + 2.month)
     end
 
-    context 'with session[:errors][:ctrc_services]' do
-      build_service_request_with_study
-
-      before(:each) do
-        session[:errors]             = { ctrc_services: "an error"}
-        session[:service_request_id] = service_request.id
-        allow(controller).to receive(:initialize_service_request) do
-          controller.instance_eval do
-            @service_request = ServiceRequest.find_by_id(session[:service_request_id])
-          end
-          allow(controller.instance_variable_get(:@service_request)).
-            to receive_message_chain("protocol.find_sub_service_request_with_ctrc").
-            with(service_request.id) { :ssr_id }
-        end
-        get :protocol, id: service_request.id
-      end
-
-      it 'should set @ctrc_services to true' do
-        expect(assigns(:ctrc_services)).to be true
-      end
-
-      it 'should set @ssr_id to ctrc SubServiceRequest' do
-        expect(assigns(:ssr_id)).to eq :ssr_id
-      end
-    end
-
     context 'with session[:saved_protocol_id]' do
 
       build_service_request_with_study

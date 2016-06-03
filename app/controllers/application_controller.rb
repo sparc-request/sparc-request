@@ -24,6 +24,13 @@ class ApplicationController < ActionController::Base
   helper_method :current_user
   helper_method :xeditable?
   before_filter :setup_navigation
+  before_action :configure_permitted_parameters, if: :devise_controller?
+
+  protected
+
+  def configure_permitted_parameters
+    devise_parameter_sanitizer.for(:sign_up) { |u|  u.permit!}
+  end
 
   def current_user
     current_identity
@@ -102,6 +109,7 @@ class ApplicationController < ActionController::Base
     error += "<br />If you believe this is in error please contact, #{I18n.t 'error_contact'}, and provide the following information:"
     error += "<br /> Reference #: "
     error += ref
+
     render partial: 'service_requests/authorization_error', locals: { error: error }
   end
 
@@ -257,9 +265,9 @@ class ApplicationController < ActionController::Base
 
     # we have a current user
     if current_user
-      if @sub_service_request.nil? and current_user.can_edit_service_request? @service_request
+      if @sub_service_request.nil? and (current_user.can_edit_service_request?(@service_request) || @service_request.protocol.project_roles.find_by(identity: current_user).present?)
         return true
-      elsif @sub_service_request and current_user.can_edit_sub_service_request? @sub_service_request
+      elsif @sub_service_request and (current_user.can_edit_sub_service_request?(@sub_service_request) || @sub_service_request.protocol.project_roles.find_by(identity: current_user).present?)
         return true
       end
 

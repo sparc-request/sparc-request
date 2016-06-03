@@ -98,10 +98,9 @@
                   .calendar-container
                     = render partial: '/dashboard/service_calendars/master_calendar/otf/otf_calendar', locals: { service_request: @service_request, sub_service_request: nil, portal: true, merged: true, tab: @tab, review: false, study_tracker: false, protocol: @protocol }
                 - unless @protocol.has_per_patient_per_visit?(@service_request, true) || @protocol.has_one_time_fees?(@service_request, true)
-                  .alert.alert-danger{ role: 'alert' }
-                    = t(:dashbaord)[:service_calendars][:consolidated_request][:services][:none]
+                  = render 'shared/alert', message: t(:dashboard)[:service_calendars][:consolidated_request][:services][:none]
     .modal-footer
       %button.btn.btn-default{ type: 'button', data: { dismiss: 'modal' } }
         = t(:actions)[:close]
-      %button.btn.btn-primary#print{ type: 'button' }
-        = t(:actions)[:print]
+      -# %button.btn.btn-primary#print{ type: 'button' }
+      -#  = t(:actions)[:print]

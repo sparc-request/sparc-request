@@ -19,10 +19,10 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 module ApplicationHelper
-  def show_welcome_message current_user
+  def show_welcome_message current_user, bootstrap = false
     returning_html = ""
     if current_user
-      returning_html += content_tag(:span, t(:dashboard)[:navbar][:logged_in_as] + current_user.email + " ") + link_to('Logout', destroy_identity_session_path, method: :delete)
+      returning_html += content_tag(:span, t(:dashboard)[:navbar][:logged_in_as] + current_user.email + " ") + link_to('Logout', destroy_identity_session_path, method: :delete, class: bootstrap ? "btn btn-primary" : "")
     else
       # could be used to provide a login link
       returning_html += content_tag(:span, "Not Logged In")
@@ -32,10 +32,10 @@ module ApplicationHelper
   end
 
   def protocol_id_display(sub_service_request, service_request)
-    if sub_service_request
+    if sub_service_request && sub_service_request.service_request.protocol.present?
       "SRID: #{sub_service_request.service_request.protocol.id}"
-    elsif protocol = service_request.protocol
-      "SRID: #{protocol.id}"
+    elsif service_request && service_request.protocol.present?
+      "SRID: #{service_request.protocol.id}"
     else
       ""
     end
@@ -340,6 +340,10 @@ module ApplicationHelper
     else
       return ""
     end
+  end
+
+  def display_locked_organization(organization_name)
+    content_tag(:a, organization_name+" **LOCKED**", href: 'javascript:void(0)')
   end
 
   ##Sets css bootstrap classes for rails flash message types##

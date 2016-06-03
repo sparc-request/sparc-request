@@ -171,8 +171,8 @@ en:
           header: "Investigational Products:"
           ind_number: "IND #:"
           ind_on_hold: "IND on Hold?:"
-          ide_number: "IDE #:"
-        ip_patents: 
+          ide_number: "IDE# / HDE# / HUD#:"
+        ip_patents:
           header: "IP/Patents:"
           number: "Patent Number:"
           inventors: "Inventors:"
@@ -207,6 +207,10 @@ en:
       header: "Authorized Users"
       subtext: "Primary PI Required"
       primary_pi: "Primary PI: *"
+
+  proper:
+    catalog:
+      ctrc_lock: "SCTR Research Nexus services are already present on this request (%{protocol_id}-%{ssr_id}) pertaining to this %{protocol_type}, '%{short_title}'. Please call (843) 792-8688 to edit the existing request."
 
   dashboard:
     ###########
@@ -265,7 +269,7 @@ en:
       role_prompt: "Select a Role"
       role_specify: "Please Specify:*"
       epic_access: "Epic EMR Access?:*"
-      rights: 
+      rights:
         header: "User Rights:*"
         none: Study/Project Member Only
         view: "View Rights"
@@ -355,7 +359,7 @@ en:
     navbar:
       logged_in_as: "Logged in as "
       epic_queue: "View Epic Queue"
-      messages: "Messages"
+      messages: "All Notifications"
 
     ###########
     #  NOTES  #
@@ -510,7 +514,7 @@ en:
               ind_number: "IND #:"
               ind_on_hold: "IND on Hold?:"
               ide_number: "IDE #:"
-            ip_patents: 
+            ip_patents:
               header: "IP/Patents"
               number: "Patent Number:"
               inventors: "Inventors:"
@@ -560,14 +564,15 @@ en:
     #  SERVICE REQUESTS  #
     ######################
     service_requests:
-      edit_original: "Edit Original"
+      modify_request: "Modify Request"
       srid: "SRID"
       organization: "Organization"
       status: "Status"
-      actions: 
+      notifications: "Notifications"
+      actions:
         header: "Actions"
-        view: "View SSR"
-        edit: "Edit SSR"
+        view: "View"
+        edit: "Edit"
         admin_edit: "Admin Edit"
       view_ssr:
         services:
@@ -589,7 +594,6 @@ en:
       destroyed: "Study Level Activity Destroyed!"
       table:
         service: "Service"
-        code: "Code"
         quantity_requested: "Qty Requested"
         quantity_type: "Qty Type"
         cost: "Cost"
@@ -634,12 +638,12 @@ en:
           go_to_fulfillment: "Go to Fulfillment"
           in_fulfillment: "In Fulfillment"
           send_to_fulfillment: "Send to Fulfillment"
-          not_ready: "This Sub Service Request is not ready for Fulfillment."
+          not_enabled: "Not enabled in SPARCCatalog."
         cost: "Current Cost"
         user_cost: "User Display Cost"
 
       tabs:
-        request_details: 
+        request_details:
           header: "Request Details"
           options:
             header: "Options"
@@ -908,7 +912,6 @@ en:
     color_blank: "Select a Color"
     core_facility: "Core/Facility Based Services"
     core: "Core"
-    eap_id: 'EAP ID'
     cpt_code: "CPT Code"
     css_class: "Color"
     ctrc_label: "Nexus"
@@ -1254,7 +1257,8 @@ en:
     create_report: "Create Report"
     defined_reports_desc: "Please select a defined report below and click to proceed with report customizations."
     defined_reports: "Defined Reports"
-    intro: "Welcome to the SPARC Request Reporting Module. Please select a report type to proceed."
+    intro: "Welcome to the SPARC Request Reporting Module"
+    sub_intro: "Please select a report type to proceed"
     proceed: "Proceed"
     return_to_admin_portal: "Return to Admin Portal"
   study_tracker:
@@ -1705,7 +1709,6 @@ en:
     create:
       study: "Create New Study"
       project: "Create New Project"
-    ctrc_services_exist: "SCTR Research Nexus services have been found on another Service Request %{protocol_id}-%{ssr_id} pertaining to this Project/Study %{short_title}. Please remove the Nexus services from your cart, and call 792-8688 to edit the existing request."
     date: "Submitted Date:"
     delete: "Delete"
     edit_original: "Edit Original"

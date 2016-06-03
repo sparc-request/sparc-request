@@ -105,9 +105,21 @@ span#infotip img
     a
       font-size: 12px !important
       font-weight: normal !important
-      color: #003366 !important
+  .ui-accordion-content h4:not(.locked) a
+    color: #003366 !important
+    &:hover
+      color: red !important
+  .ui-accordion-content
+    h4.locked
+      background: red !important
+      a
+        color: white !important
+        &:hover
+          color: #003366 !important
+    h3.locked
+      background: red !important
       &:hover
-        color: red !important
+        color: #003366 !important
 
 .ui-autocomplete
   list-style: none

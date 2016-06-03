@@ -17,7 +17,6 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 <% if @errors.present? %>
 $("#modal_errors").html("<%= escape_javascript(render('shared/modal_errors', errors: @errors)) %>")
 <% else %>
@@ -27,10 +26,13 @@ $("#modal_place").modal('hide')
 window.location = "/dashboard"
 # Update the entire view to account for the current users rights change
 <% elsif @current_user_updated %>
-$("#summary-panel").html("<%= escape_javascript(render('dashboard/protocols/summary', protocol: @protocol, protocol_type: @protocol_type, permission_to_edit: @permission_to_edit)) %>")
-$("#authorized-users-panel").html("<%= escape_javascript(render('dashboard/associated_users/table', protocol: @protocol, permission_to_edit: @permission_to_edit)) %>")
-$("#service-requests-panel").html("<%= escape_javascript(render('dashboard/service_requests/service_requests', protocol: @protocol, permission_to_edit: @permission_to_edit, user: @user, admin: @admin)) %>")
+$("#summary-panel").html("<%= escape_javascript(render('dashboard/protocols/summary', protocol: @protocol, protocol_type: @protocol_type, permission_to_edit: @permission_to_edit || @admin)) %>")
+$("#authorized-users-panel").html("<%= escape_javascript(render('dashboard/associated_users/table', protocol: @protocol, permission_to_edit: @permission_to_edit || @admin)) %>")
+$("#service-requests-panel").html("<%= escape_javascript(render('dashboard/service_requests/service_requests', protocol: @protocol, sp_only_admin_orgs: @sp_only_admin_orgs, permission_to_edit: @permission_to_edit, permission_to_view: @permission_to_view, user: @user, view_only: false)) %>")
 $("#associated-users-table").bootstrapTable()
+$('.service-requests-table').on 'all.bs.table', ->
+  $(this).find('.selectpicker').selectpicker() #Find descendant selectpickers
+$(".service-requests-table").bootstrapTable()
 <% else %>
 $("#associated-users-table").bootstrapTable 'refresh', {silent: true}
 <% end %>

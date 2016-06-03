@@ -27,7 +27,7 @@ module Dashboard::ProtocolsHelper
           content_tag( :button, t(:dashboard)[:protocols][:service_requests][:view_consolidated], type: 'button', class: 'view-full-calendar-button btn btn-primary btn-sm', data: { protocol_id: protocol.id }
           )+
           link_to( t(:dashboard)[:protocols][:service_requests][:export_consolidated], dashboard_protocol_path(protocol, format: :xlsx), class: "btn btn-primary btn-sm", data: { protocol_id: protocol.id }
-          ), class: "pull-right export-consolidated-request"
+          ), class: "export-consolidated-request"
         )
       )
     end
@@ -47,7 +47,15 @@ module Dashboard::ProtocolsHelper
     protocol.principal_investigators.map(&:full_name).join ", "
   end
 
-  def archived_button_display(protocol)
-    content_tag( :button, (protocol.archived ? t(:dashboard)[:protocols][:table][:unarchive] : t(:dashboard)[:protocols][:table][:archive])+" #{protocol.type.capitalize}", type: 'button', class: 'protocol-archive-button btn btn-warning btn-sm' )
+  def display_requests_button(protocol, admin_protocols, current_user)
+    if protocol.sub_service_requests.any? && (protocol.project_roles.where(identity: current_user).any? || admin_protocols.try(:include?, protocol.id))
+      content_tag( :button, t(:dashboard)[:protocols][:table][:requests], type: 'button', class: 'requests_display_link btn btn-default btn-sm' )
+    end
+  end
+
+  def display_archive_button(protocol, admin_protocols, current_user)
+    if !protocol.project_roles.find_by(identity: current_user).nil? || admin_protocols.try(:include?, protocol.id)
+      content_tag( :button, (protocol.archived ? t(:dashboard)[:protocols][:table][:unarchive] : t(:dashboard)[:protocols][:table][:archive])+" #{protocol.type.capitalize}", type: 'button', class: 'protocol-archive-button btn btn-warning btn-sm' )
+    end
   end
 end

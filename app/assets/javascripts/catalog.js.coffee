@@ -34,19 +34,34 @@ $(document).ready ->
   $(document).on 'click', '.about_sparc_request', ->
     $('#about_sparc').dialog('open')
 
+  $('#ctrc-dialog').dialog
+    autoOpen: false
+    modal: true
+    width: 375
+    height: 200
+    buttons: [{
+      text: 'Ok'
+      click: ->
+        $(this).dialog('close')
+    }]
+
+  $(document).on 'click', '.locked a', ->
+    if $(this).text() == 'Research Nexus **LOCKED**'
+      $('#ctrc-dialog').dialog('open')
+
   $('#institution_accordion').accordion
     heightStyle: 'content'
     collapsible: true
-    activate: (event, ui)->
-      if url = (ui.newHeader.find('a').attr('href') or ui.oldHeader.find('a').attr('href'))
+    activate: (event, ui) ->
+      if (url = (ui.newHeader.find('a').attr('href') or ui.oldHeader.find('a').attr('href'))) && url != 'javascript:void(0)'
         loadDescription(url)
 
   $('.provider_accordion').accordion
     heightStyle: 'content'
     collapsible: true
     active: false
-    activate: (event, ui)->
-      if url = (ui.newHeader.find('a').attr('href') or ui.oldHeader.find('a').attr('href'))
+    activate: (event, ui) ->
+      if (url = (ui.newHeader.find('a').attr('href') or ui.oldHeader.find('a').attr('href'))) && url != 'javascript:void(0)'
         loadDescription(url)
 
   $('.program-link').live 'click', ->

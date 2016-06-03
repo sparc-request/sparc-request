@@ -22,14 +22,14 @@
   #documents-custom-toolbar
     %button.btn.btn-success#document_new{ data: {sub_service_request_id: sub_service_request.id }}
       = t(:dashboard)[:documents][:add]
-  %table.documents_table{id: "documents-table", data: {toggle: 'table', search: "true", "show-columns" => "true", "show-refresh" => "true", "show-toggle" => "true", url: dashboard_documents_path(format: :json, sub_service_request_id: sub_service_request.id), striped: "true", toolbar: "#documents-custom-toolbar", "show-export" => "true", "export-types" => ['excel']}}
+  %table.documents_table{id: "documents-table", data: {toggle: 'table', search: "true", "show-columns" => "true", "show-refresh" => "true", "show-toggle" => "true", url: dashboard_documents_path(format: :json, sub_service_request_id: sub_service_request.id), striped: "true", toolbar: "#documents-custom-toolbar", "show-export" => "false", "export-types" => ['excel']}}
     %thead.primary-header
       %tr
         %th{data: {class: 'type', align: "left", sortable: "true", field: "type"}}
           = t(:dashboard)[:documents][:table][:type]
         %th{data: {class: 'title', align: "left", sortable: "true", field: "title"}}
           = t(:dashboard)[:documents][:table][:title]
-        %th{data: {class: 'uploaded', align: "left", sortable: "true", field: "uploaded"}}
+        %th{data: {class: 'uploaded', align: "left", sortable: "true", field: "uploaded", sorter: "dateSorter"}}
           = t(:dashboard)[:documents][:table][:uploaded]
         %th{data: {class: 'edit', align: "center", sortable: "false", field: "edit"}}
           = t(:actions)[:edit]

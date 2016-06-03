@@ -20,30 +20,30 @@ RSpec.describe 'Notifications index', js: true do
     page
   end
 
-  describe "Compose Message button" do
-    context "user clicks button" do
-      it "should allow user to search for a recipient and compose a new message to them" do
-        stub_const('USE_LDAP', false) # forces search to use db
-        create(:identity, first_name: 'Santa', last_name: 'Claws')
-        page = visit_notifications_index_page
+  # describe "Compose Message button" do
+  #   context "user clicks button" do
+  #     it "should allow user to search for a recipient and compose a new message to them" do
+  #       stub_const('USE_LDAP', false) # forces search to use db
+  #       create(:identity, first_name: 'Santa', last_name: 'Claws')
+  #       page = visit_notifications_index_page
 
-        expect do
-          page.compose_button.click
-          page.wait_for_send_notification_modal
-          page.send_notification_modal.instance_exec do
-            select_user.set("Claws")
-            wait_until_search_results_visible(10)
-            search_results.select { |sr| sr.text =~ /Claws/ }.first.click
-            wait_for_subject_line
-            subject_line.set("subject")
-            message_box.set("important message")
-            send_button.click
-          end
-          page.wait_until_send_notification_modal_invisible
-        end.to change { Notification.count }.by(1)
-      end
-    end
-  end
+  #       expect do
+  #         page.compose_button.click
+  #         page.wait_for_send_notification_modal
+  #         page.send_notification_modal.instance_exec do
+  #           select_user.set("Claws")
+  #           wait_until_search_results_visible(10)
+  #           search_results.select { |sr| sr.text =~ /Claws/ }.first.click
+  #           wait_for_subject_line
+  #           subject_line.set("subject")
+  #           message_box.set("important message")
+  #           send_button.click
+  #         end
+  #         page.wait_until_send_notification_modal_invisible
+  #       end.to change { Notification.count }.by(1)
+  #     end
+  #   end
+  # end
 
   describe 'default' do
     # TODO extract to view specs

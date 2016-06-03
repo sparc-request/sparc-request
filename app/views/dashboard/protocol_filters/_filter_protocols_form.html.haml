@@ -29,7 +29,7 @@
       = link_to t(:actions)[:reset], reset_filterrific_url, id: "reset_filters_link"
     .clearfix
 
-  = form_for_filterrific filterrific, remote: true, html: { id: 'filterrific-no-ajax-auto-submit' } do |form|
+  = form_for_filterrific filterrific, remote: true, html: { id: 'filterrific-no-ajax-auto-submit', autocomplete: 'off' } do |form|
     .panel-body
       #protocol_filter_form_display
         .form-group.row
@@ -59,9 +59,9 @@
               = form.check_box :for_identity_id, {}, current_user.id, "0"
 
           .form-group.row
-            = form.label :for_admin, t(:dashboard)[:protocol_filters][:my_admin_orgs], class: 'col-lg-10 control-label'
+            = form.label :filtered_for_admin, t(:dashboard)[:protocol_filters][:my_admin_orgs], class: 'col-lg-10 control-label'
             .col-lg-2
-              = form.check_box :for_admin, {}, current_user.id, "0"
+              = form.check_box :filtered_for_admin, {}, current_user.id, "0"
 
     .panel-footer
       .pull-right

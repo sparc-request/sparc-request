@@ -289,8 +289,12 @@ RSpec.describe "filters", js: :true do
         create(:project_role, identity: user, role: "very-important", project_rights: "to-party", protocol: protocol2)
 
         visit_protocols_index_page
+        wait_for_javascript_to_finish
+
         @page.filter_protocols.my_admin_organizations_checkbox.click
         @page.filter_protocols.apply_filter_button.click
+        
+        wait_for_javascript_to_finish
 
         expect(@page.search_results).to have_protocols(text: "Protocol1")
         expect(@page.search_results).to have_no_protocols(text: "Protocol2")

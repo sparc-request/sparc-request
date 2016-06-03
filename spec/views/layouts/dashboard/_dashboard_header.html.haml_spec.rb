@@ -20,9 +20,10 @@ RSpec.describe 'layouts/dashboard/_dashboard_header.html.haml', view: true do
   end
 
   it 'should display number of unread notifications (for user)' do
+    @show_messages = true
     render 'layouts/dashboard/dashboard_header', user: @user
 
-    expect(response).to have_selector('button#messages-btn', text: '2')
+    expect(response).to have_selector('button#messages-btn span.badge', text: '2')
   end
 
   it 'should display breadcrumbs by sending :breadcrumbs to session[:breadcrumbs]' do

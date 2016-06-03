@@ -1,11 +1,6 @@
 sudo: false
 language: ruby
 cache: bundler
-addons:
-  apt:
-    packages:
-      - qt5-default
-      - qt5-qmake
 before_install:
   - export TZ=America/New_York
 before_script:

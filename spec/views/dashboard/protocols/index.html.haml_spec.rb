@@ -14,7 +14,7 @@ RSpec.describe 'dashboard/protocols/index', type: :view do
       search_query: '',
       show_archived: 0,
       for_identity_id: jug2.id,
-      for_admin: false,
+      filtered_for_admin: false,
       with_organization: false
     ))
   end

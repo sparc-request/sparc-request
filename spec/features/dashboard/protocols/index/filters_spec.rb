@@ -299,9 +299,9 @@ RSpec.describe "filters", js: :true do
   end
 
   describe "core dropdown" do
-    let(:mega_corp_organization) { create(:organization, admin: user, name: "MegaCorp") }
-    let(:trump_organization) { create(:organization, admin: user, name: "TrumpPenitentiaries") }
-    let(:some_organization) { create(:organization, admin: user, name: "SomeLLC") }
+    let(:mega_corp_organization) { create(:organization, admin: user, name: "MegaCorp", type: 'Institution') }
+    let(:trump_organization) { create(:organization, admin: user, name: "TrumpPenitentiaries", type: 'Institution') }
+    let(:some_organization) { create(:organization, admin: user, name: "SomeLLC", type: 'Institution') }
 
     context "user selects multiple admin Organizations by name and clicks the Filter button" do
       it "should restrict listing to Protocols with SSRs belonging to those Organizations" do

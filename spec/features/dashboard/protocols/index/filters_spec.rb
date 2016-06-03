@@ -289,8 +289,12 @@ RSpec.describe "filters", js: :true do
         create(:project_role, identity: user, role: "very-important", project_rights: "to-party", protocol: protocol2)
 
         visit_protocols_index_page
+        wait_for_javascript_to_finish
+
         @page.filter_protocols.my_admin_organizations_checkbox.click
         @page.filter_protocols.apply_filter_button.click
+        
+        wait_for_javascript_to_finish
 
         expect(@page.search_results).to have_protocols(text: "Protocol1")
         expect(@page.search_results).to have_no_protocols(text: "Protocol2")
@@ -299,9 +303,9 @@ RSpec.describe "filters", js: :true do
   end
 
   describe "core dropdown" do
-    let(:mega_corp_organization) { create(:organization, admin: user, name: "MegaCorp") }
-    let(:trump_organization) { create(:organization, admin: user, name: "TrumpPenitentiaries") }
-    let(:some_organization) { create(:organization, admin: user, name: "SomeLLC") }
+    let(:mega_corp_organization) { create(:organization, admin: user, name: "MegaCorp", type: 'Institution') }
+    let(:trump_organization) { create(:organization, admin: user, name: "TrumpPenitentiaries", type: 'Institution') }
+    let(:some_organization) { create(:organization, admin: user, name: "SomeLLC", type: 'Institution') }
 
     context "user selects multiple admin Organizations by name and clicks the Filter button" do
       it "should restrict listing to Protocols with SSRs belonging to those Organizations" do

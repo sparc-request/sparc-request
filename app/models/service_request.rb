@@ -560,16 +560,6 @@ class ServiceRequest < ActiveRecord::Base
     return true
   end
 
-  def has_locked_ssr?
-    sub_service_requests.each do |ssr|
-      if !ssr.can_be_edited?
-        return true
-      end
-    end
-
-    return false
-  end
-
   def audit_report identity, start_date=self.previous_submitted_at.utc, end_date=Time.now.utc
     line_item_audits = AuditRecovery.where("audited_changes LIKE '%service_request_id: #{self.id}%' AND
                                       auditable_type = 'LineItem' AND user_id = #{identity.id} AND action IN ('create', 'destroy') AND

@@ -33,8 +33,15 @@
     %br
     - unless organization.cores.empty?
       .core-accordion
+        - if @sub_service_request
+          - ssr_org = @sub_service_request.organization
+
         - organization.cores.order('`order`').each do |core|
           - next unless core.is_available? or core.is_available.nil?
+
+          - if @sub_service_request && !@program_is_process_ssr
+            - next unless ssr_org == core
+
           %h3{class: "#{css_class(organization)} core-tab"}
             = link_to core.name, "#"
           .core_view

@@ -108,8 +108,7 @@ RSpec.configure do |config|
 end
 
 Capybara.register_driver :webkit do |app|
-  driver = Capybara::Webkit::Driver.new(app)
-  driver.browser.set_skip_image_loading true
+  driver = Capybara::Webkit::Driver.new(app, { set_skip_image_loading: true })
   driver
 end
 

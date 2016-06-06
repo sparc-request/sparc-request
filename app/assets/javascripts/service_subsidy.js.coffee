@@ -75,6 +75,7 @@ $(document).ready ->
 
   $(document).on 'change', '#percent_subsidy', ->
     # When user changes Percent Subsidy, the PI Contribution and Subsidy Cost fields are recalculated & displayed
+    max_percent = $(this).data('max-percentage')
     subsidy_id = $(this).data('subsidy-id')
     percent_subsidy = parseFloat($(this).val()) / 100.0
     if isNaN(percent_subsidy)
@@ -94,7 +95,15 @@ $(document).ready ->
       data: data
       success: (data, textStatus, jqXHR) ->
         current_cost = recalculate_current_cost(total_request_cost, percent_subsidy)
-        redisplay_form_values(subsidy_id, percent_subsidy, pi_contribution, current_cost)
+        if (percent_subsidy * 100) > max_percent
+          $("#submit_error .message").html("The Percent Subsidy cannot be greater than the max percent of #{max_percent}.")
+          $("#submit_error").dialog
+            modal: true
+            buttons:
+              Ok: ->
+                $(this).dialog('close')
+        else
+          redisplay_form_values(subsidy_id, percent_subsidy, pi_contribution, current_cost)
       error: (jqXHR, textStatus, errorThrown) ->
         $(this).val($(this).defaultValue)
 

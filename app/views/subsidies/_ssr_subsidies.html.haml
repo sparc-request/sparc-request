@@ -70,7 +70,7 @@
           %td.pi_contribution
             = text_field_tag "pi_contribution", cents_to_dollars_float(pending.pi_contribution), { class: "subsidy_input", data: { subsidy_id: pending.id } }
           %td.subsidy_cost{data: { subsidy_id: pending.id, cost: pending.current_cost }}
-            = number_to_currency(pending.current_cost).gsub(/,/, '')
+            = number_to_currency(pending.current_cost)
           %td.delete_subsidy
             %button.delete_subsidy_button{ type: "button", data: { subsidy_id: pending.id }}
               %span= "Delete"

@@ -94,6 +94,7 @@ RSpec.feature 'User wants to delete an authorized user', js: true do
         # navigate to page
         page = Dashboard::Protocols::ShowPage.new
         page.load(id: protocol.id)
+        wait_for_javascript_to_finish
 
         page.authorized_users(text: "John Doe").first.enabled_remove_button.click
         wait_for_javascript_to_finish
@@ -119,6 +120,7 @@ RSpec.feature 'User wants to delete an authorized user', js: true do
         # navigate to page
         page = Dashboard::Protocols::ShowPage.new
         page.load(id: protocol.id)      
+        wait_for_javascript_to_finish
         
         page.authorized_users(text: "John Doe").first.enabled_remove_button.click
         wait_for_javascript_to_finish

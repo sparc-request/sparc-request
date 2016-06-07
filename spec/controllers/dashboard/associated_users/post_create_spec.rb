@@ -87,7 +87,7 @@ RSpec.describe Dashboard::AssociatedUsersController do
         log_in_dashboard_identity(obj: identity)
 
         @new_project_roles_attrs  = {identity_id: identity.id}
-        project_role              = instance_double(ProjectRole, can_edit?: true)
+        project_role              = instance_double(ProjectRole, can_edit?: true, can_view?: true)
         associated_user_creator   = instance_double(Dashboard::AssociatedUserCreator,
           successful?: true)
 

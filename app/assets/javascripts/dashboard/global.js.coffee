@@ -20,7 +20,7 @@
 $ ->
   $(".datetimepicker").datetimepicker(format: 'MM-DD-YYYY', allowInputToggle: true)
   $(".selectpicker").selectpicker()
-  
+
 (exports ? this).formatMoney = (n, t=',', d='.', c='$') ->
   s = if n < 0 then "-#{c}" else c
   i = Math.abs(n).toFixed(2)
@@ -32,4 +32,4 @@ $ ->
   $('#service_calendar .tab-content .tab-pane.active').load $('#service_calendar .active a').attr("data-url"), (result) ->
     $('#service_calendar .active a').tab('show')
 
-  
+

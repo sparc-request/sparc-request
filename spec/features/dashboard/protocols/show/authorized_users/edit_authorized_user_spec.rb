@@ -152,6 +152,7 @@ RSpec.feature 'User wants to edit an authorized user', js: true do
           # navigate to page
           page = Dashboard::Protocols::ShowPage.new
           page.load(id: protocol.id)
+          wait_for_javascript_to_finish
 
           page.authorized_users(text: "John Doe").first.edit_button.click
           page.authorized_user_modal.view_rights.click
@@ -179,6 +180,7 @@ RSpec.feature 'User wants to edit an authorized user', js: true do
           # navigate to page
           page = Dashboard::Protocols::ShowPage.new
           page.load(id: protocol.id)
+          wait_for_javascript_to_finish
 
           page.authorized_users(text: "John Doe").first.edit_button.click
           page.authorized_user_modal.view_rights.click
@@ -206,6 +208,7 @@ RSpec.feature 'User wants to edit an authorized user', js: true do
           # navigate to page
           page = Dashboard::Protocols::ShowPage.new
           page.load(id: protocol.id)
+          wait_for_javascript_to_finish
 
           page.authorized_users(text: "John Doe").first.edit_button.click
           page.authorized_user_modal.none_rights.click

@@ -54,7 +54,16 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
         persistence_id: false #resets filters on page reload
       ) || return
 
-    @protocols        = @filterrific.find.page(params[:page])
+    if @admin
+      @protocols = @filterrific.find.page(params[:page])
+    else
+      @protocols = @filterrific.find.
+                    page(params[:page]).
+                    joins(:project_roles).
+                    where(project_roles: { identity_id: 10333 }).
+                    where.not(project_roles: { project_rights: 'none' })
+    end  
+
     @admin_protocols  = Protocol.for_admin(@user.id).pluck(:id)
     @protocol_filters = ProtocolFilter.latest_for_user(@user.id, 5)
     #toggles the display of the navigation bar, instead of breadcrumbs

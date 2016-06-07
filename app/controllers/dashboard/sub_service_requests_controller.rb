@@ -20,23 +20,21 @@
 
 class Dashboard::SubServiceRequestsController < Dashboard::BaseController
   before_action :find_sub_service_request,  except: :index
-  before_filter :authorize_admin,           only: :show, unless: :format_js?
+  before_filter :find_service_request,      only: :index
+  before_filter :find_permissions,          only: :index
+  before_filter :find_admin_orgs,           unless: :show_js?
+  before_filter :authorize_protocol,        only: :index
+  before_filter :authorize_admin,           except: :index, unless: :show_js?
 
   respond_to :json, :js, :html
 
   def index
-    service_request       = ServiceRequest.find(params[:srid])
-    protocol              = service_request.protocol
-    @admin_orgs           = @user.authorized_admin_organizations
-    @permission_to_edit   = protocol.project_roles.where(identity_id: @user.id, project_rights: ['approve', 'request']).any?
-    permission_to_view    = protocol.project_roles.where(identity_id: @user.id, project_rights: ['view', 'approve', 'request']).any?
-    
-    @sub_service_requests = if permission_to_view
-                              service_request.sub_service_requests
-                            else
-                              sp_only_admin_orgs = @user.authorized_admin_organizations({ sp_only: true })
-
-                              service_request.sub_service_requests.reject { |ssr| ssr.should_be_hidden_for_sp?(sp_only_admin_orgs) }
+    protocol              = @service_request.protocol
+    sp_only_admin_orgs    = @user.authorized_admin_organizations({ sp_only: true })
+    @sub_service_requests = if @permission_to_view || sp_only_admin_orgs.empty?
+                              @service_request.sub_service_requests
+                            else # Only reject SSRs if the user is ONLY a service provider for the request
+                              @service_request.sub_service_requests.reject { |ssr| ssr.should_be_hidden_for_sp?(sp_only_admin_orgs) }
                             end
   end
 
@@ -75,14 +73,10 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
         session[:service_calendar_pages] = params[:pages] if params[:pages]
         session[:breadcrumbs].add_crumbs(protocol_id: @sub_service_request.protocol.id, sub_service_request_id: @sub_service_request.id).clear(:notifications)
         
-        if @user.can_edit_fulfillment?(@sub_service_request.organization)
-          @service_request  = @sub_service_request.service_request
-          @protocol         = @sub_service_request.protocol
+        @service_request  = @sub_service_request.service_request
+        @protocol         = @sub_service_request.protocol
 
-          render
-        else
-          redirect_to dashboard_root_path
-        end
+        render
       }
     end
   end
@@ -168,14 +162,40 @@ private
     @sub_service_request = SubServiceRequest.find(params[:id])
   end
 
-  def authorize_admin
-    unless (@user.authorized_admin_organizations & @sub_service_request.org_tree).any?
-      @protocol = nil
+  def find_service_request
+    @service_request = ServiceRequest.find(params[:srid])
+  end
+
+  def find_permissions
+    project_roles = @service_request.protocol.project_roles
+
+    @permission_to_edit = project_roles.where(identity_id: @user.id, project_rights: ['approve', 'request']).any?
+    @permission_to_view = project_roles.where(identity_id: @user.id, project_rights: ['view', 'approve', 'request']).any?
+  end
+
+  def find_admin_orgs
+    @admin_orgs = @user.authorized_admin_organizations
+  end
+
+  def authorize_protocol
+    unless @permission_to_view || Protocol.for_admin(@user.id).include?(@service_request.protocol)
+      @sub_service_request  = nil
+      @service_request      = nil
+      @permission_to_edit   = nil
+      @permission_to_view   = nil
+
       render partial: 'service_requests/authorization_error', locals: { error: 'You are not allowed to access this Sub Service Request.' }
     end
   end
 
-  def format_js?
-    request.format.js?
+  def authorize_admin
+    unless (@admin_orgs & @sub_service_request.org_tree).any?
+      @sub_service_request = nil
+      render partial: 'service_requests/authorization_error', locals: { error: 'You are not allowed to access this Sub Service Request.' }
+    end
+  end
+
+  def show_js?
+    action_name == 'show' && request.format.js?
   end
 end

@@ -22,5 +22,117 @@ require 'rails_helper'
 
 RSpec.describe Dashboard::SubServiceRequestsController do
   describe 'DELETE #destroy' do
+    before :each do
+      @logged_in_user = create(:identity)
+      log_in_dashboard_identity(obj: @logged_in_user)
+
+      @protocol             = create(:protocol_federally_funded, primary_pi: @logged_in_user)
+      @service_request      = create(:service_request_without_validations, protocol: @protocol)
+      @organization         = create(:organization)
+      @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, organization: @organization)
+    end
+
+    #####AUTHORIZATION#####
+    context 'authorize admin' do
+      context 'user is authorized admin' do
+        before :each do
+          create(:super_user, identity: @logged_in_user, organization: @organization)
+
+          delete :destroy, id: @sub_service_request.id, format: :js
+        end
+
+        it { is_expected.to render_template "dashboard/sub_service_requests/destroy" }
+        it { is_expected.to respond_with :ok }
+      end
+
+      context 'user is not authorized admin on SSR' do
+        before :each do
+          delete :destroy, id: @sub_service_request.id, format: :js
+        end
+
+        it { is_expected.to render_template "service_requests/_authorization_error" }
+        it { is_expected.to respond_with :ok }
+      end
+    end
+
+    #####INSTANCE VARIABLES#####
+    context 'instance variables' do
+      before :each do
+        create(:super_user, identity: @logged_in_user, organization: @organization)
+
+        delete :destroy, id: @sub_service_request.id, format: :js
+      end
+
+      it 'should assign instance variables' do
+        expect(assigns(:sub_service_request)).to eq(@sub_service_request)
+        expect(assigns(:admin_orgs)).to eq([@organization])
+        expect(assigns(:protocol)).to eq(@protocol)
+      end
+
+      it { is_expected.to render_template "dashboard/sub_service_requests/destroy" }
+      it { is_expected.to respond_with :ok }
+    end
+
+    #####TOAST MESSAGES####
+    context 'toast messages' do
+      before :each do
+        @toast_message = create(:toast_message, :for_ssr, sending_class_id: @sub_service_request.id)
+
+        create(:super_user, identity: @logged_in_user, organization: @organization)
+
+        allow(@toast_message).to receive(:destroy)
+
+        delete :destroy, id: @sub_service_request.id, format: :js
+      end
+
+      it 'should destroy toast messages for the SSR' do
+        expect(@toast_message).to have_received(:destroy)
+      end
+
+      it { is_expected.to render_template "dashboard/sub_service_requests/destroy" }
+      it { is_expected.to respond_with :ok }
+    end
+
+    #####NOTIFIER#####
+    context 'notifier' do
+      before :each do
+        allow(Notifier).to receive(:sub_service_request_deleted).
+          with(@logged_in_user, @sub_service_request, @logged_in_user) do
+            mailer = double('mail')
+            expect(mailer).to receive(:deliver)
+            mailer
+          end
+      end
+
+      context 'user is authorized user' do
+        before :each do
+          create(:super_user, identity: @logged_in_user, organization: @organization)
+
+          delete :destroy, id: @sub_service_request.id, format: :js
+        end
+
+        it 'should notify them' do
+          expect(Notifier).to have_received(:sub_service_request_deleted)
+        end
+
+        it { is_expected.to render_template "dashboard/sub_service_requests/destroy" }
+        it { is_expected.to respond_with :ok }
+      end
+
+      context 'user is service provider' do
+        before :each do
+          create(:service_provider, organization: @organization, identity: @logged_in_user, hold_emails: false)
+
+          delete :destroy, id: @sub_service_request.id, format: :js
+        end
+
+        it 'should notify them' do
+          expect(Notifier).to have_received(:sub_service_request_deleted).twice
+        end
+
+        it { is_expected.to render_template "dashboard/sub_service_requests/destroy" }
+        it { is_expected.to respond_with :ok }
+      end
+    end
   end
 end

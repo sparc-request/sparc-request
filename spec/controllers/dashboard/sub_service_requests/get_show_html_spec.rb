@@ -21,17 +21,17 @@
 require 'rails_helper'
 
 RSpec.describe Dashboard::SubServiceRequestsController do
-  describe 'PUT #update' do
+  describe 'GET #show.html' do
     before :each do
       @logged_in_user = create(:identity)
-      @other_user     = create(:identity)
-
       log_in_dashboard_identity(obj: @logged_in_user)
 
-      @protocol             = create(:protocol_without_validations, primary_pi: @other_user)
+      @protocol             = create(:protocol_without_validations, primary_pi: @logged_in_user)
       @service_request      = create(:service_request_without_validations, protocol: @protocol)
+      service               = create(:service, organization: create(:organization))
+      line_item             = create(:line_item_without_validations, service_request: @service_request, service: service)
       @organization         = create(:organization)
-      @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, organization: @organization)
+      @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, organization: @organization)   
     end
 
     #####AUTHORIZATION#####
@@ -40,10 +40,10 @@ RSpec.describe Dashboard::SubServiceRequestsController do
         before :each do
           create(:super_user, identity: @logged_in_user, organization: @organization)
 
-          put :update, id: @sub_service_request.id, format: :js
+          get :show, id: @sub_service_request.id
         end
 
-        it { is_expected.to render_template "dashboard/sub_service_requests/update" }
+        it { is_expected.to render_template "dashboard/sub_service_requests/show" }
         it { is_expected.to respond_with :ok }
       end
 
@@ -62,17 +62,69 @@ RSpec.describe Dashboard::SubServiceRequestsController do
       before :each do
         create(:super_user, identity: @logged_in_user, organization: @organization)
 
-        put :update, id: @sub_service_request.id, format: :js
+        get :show, id: @sub_service_request.id # Defaults to HTML
       end
 
       it 'should assign instance variables' do
         expect(assigns(:sub_service_request)).to eq(@sub_service_request)
         expect(assigns(:admin_orgs)).to eq([@organization])
-        expect(assigns(:errors)).to be_nil
+        expect(assigns(:service_request)).to eq(@service_request)
+        expect(assigns(:protocol)).to eq(@protocol)
       end
 
-      it { is_expected.to render_template "dashboard/sub_service_requests/update" }
+      it { is_expected.to render_template "dashboard/sub_service_requests/show" }
       it { is_expected.to respond_with :ok }
+    end
+
+    #####SESSION VARIABLES#####
+    context 'session variables' do
+      before :each do
+        create(:super_user, identity: @logged_in_user, organization: @organization)
+      end
+
+      context 'session[:service_calendar_pages]' do
+        context 'params[:pages] is assigned' do
+          before :each do
+            get :show, id: @sub_service_request.id, pages: 'pages'
+          end
+
+          it 'should be assigned' do
+            expect(session[:service_calendar_pages]).to eq('pages')
+          end
+
+          it { is_expected.to render_template "dashboard/sub_service_requests/show" }
+          it { is_expected.to respond_with :ok }
+        end
+
+        context 'params[:pages] is not assigned' do
+          before :each do
+            get :show, id: @sub_service_request.id
+          end
+
+          it 'should not be assigned' do
+            expect(session[:service_calendar_pages]).to eq(nil)
+          end
+
+          it { is_expected.to render_template "dashboard/sub_service_requests/show" }
+          it { is_expected.to respond_with :ok }
+        end
+      end
+
+      context 'session[:breadcrumbs]' do
+        before :each do
+          @breadcrumber = Dashboard::Breadcrumber.new
+          @breadcrumber.add_crumbs(protocol_id: @protocol.id, sub_service_request_id: @sub_service_request.id)
+          
+          get :show, id: @sub_service_request.id
+        end
+
+        it 'should add the protocol and sub service request' do
+          expect(session[:breadcrumbs].breadcrumbs).to eq(@breadcrumber.breadcrumbs)
+        end
+
+        it { is_expected.to render_template "dashboard/sub_service_requests/show" }
+        it { is_expected.to respond_with :ok }
+      end
     end
   end
 end

@@ -22,5 +22,72 @@ require 'rails_helper'
 
 RSpec.describe Dashboard::SubServiceRequestsController do
   describe 'PUT #push_to_epic' do
+    before :each do
+      @logged_in_user = create(:identity)
+      log_in_dashboard_identity(obj: @logged_in_user)
+
+      @protocol             = create(:protocol_federally_funded, primary_pi: @logged_in_user)
+      @service_request      = create(:service_request_without_validations, protocol: @protocol)
+      @organization         = create(:organization)
+      @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, organization: @organization)
+    end
+
+    #####AUTHORIZATION#####
+    context 'authorize admin' do
+      context 'user is authorized admin' do
+        before :each do
+          create(:super_user, identity: @logged_in_user, organization: @organization)
+
+          put :push_to_epic, id: @sub_service_request.id, format: :js
+        end
+
+        it { is_expected.to render_template "dashboard/sub_service_requests/push_to_epic" }
+        it { is_expected.to respond_with :ok }
+      end
+
+      context 'user is not authorized admin on SSR' do
+        before :each do
+          put :push_to_epic, id: @sub_service_request.id, format: :js
+        end
+
+        it { is_expected.to render_template "service_requests/_authorization_error" }
+        it { is_expected.to respond_with :ok }
+      end
+    end
+
+    #####INSTANCE VARIABLES#####
+    context 'instance variables' do
+      before :each do
+        create(:super_user, identity: @logged_in_user, organization: @organization)
+
+        put :push_to_epic, id: @sub_service_request.id, format: :js
+      end
+
+      it 'should assign instance variables' do
+        expect(assigns(:sub_service_request)).to eq(@sub_service_request)
+        expect(assigns(:admin_orgs)).to eq([@organization])
+      end
+
+      it { is_expected.to render_template "dashboard/sub_service_requests/push_to_epic" }
+      it { is_expected.to respond_with :ok }
+    end
+
+    #####PUSH TO EPIC#####
+    context 'push protocol to epic' do
+      before :each do
+        create(:super_user, identity: @logged_in_user, organization: @organization)
+
+        allow(@protocol).to receive(:push_to_epic)
+
+        put :push_to_epic, id: @sub_service_request.id, format: :js
+      end
+
+      it 'should push the protocol' do
+        expect(@protocol).to have_received(:push_to_epic)
+      end
+
+      it { is_expected.to render_template "dashboard/sub_service_requests/push_to_epic" }
+      it { is_expected.to respond_with :ok }
+    end
   end
 end

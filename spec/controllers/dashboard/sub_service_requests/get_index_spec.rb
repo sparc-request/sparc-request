@@ -22,5 +22,117 @@ require 'rails_helper'
 
 RSpec.describe Dashboard::SubServiceRequestsController do
   describe 'GET #index' do
+    before :each do
+      @logged_in_user = create(:identity)
+      @other_user     = create(:identity)
+
+      log_in_dashboard_identity(obj: @logged_in_user)
+
+      @protocol             = create(:protocol_without_validations, primary_pi: @other_user)
+      @service_request      = create(:service_request_without_validations, protocol: @protocol)
+      @organization         = create(:organization)
+      @non_draft_ssr        = create(:sub_service_request, service_request: @service_request, organization: @organization)
+      @draft_ssr            = create(:sub_service_request, service_request: @service_request, organization: @organization, status: 'draft')                              
+    end
+
+    #####AUTHORIZATION#####
+    context 'authorize protocol' do
+      context 'user has authorized protocol role' do
+        before :each do
+          create(:project_role, identity: @logged_in_user, protocol: @protocol, project_rights: 'view')
+
+          get :index, srid: @service_request.id, format: :json
+        end
+
+        it { is_expected.to render_template "dashboard/sub_service_requests/index" }
+        it { is_expected.to respond_with :ok }
+      end
+
+      context 'user is authorized admin' do
+        before :each do
+          create(:super_user, identity: @logged_in_user, organization: @organization)
+
+          get :index, srid: @service_request.id, format: :json
+        end
+
+        it { is_expected.to render_template "dashboard/sub_service_requests/index" }
+        it { is_expected.to respond_with :ok }
+      end
+
+      context 'user is not authorized' do
+        before :each do
+          get :index, srid: @service_request.id, format: :json
+        end
+
+        it { is_expected.to render_template "service_requests/_authorization_error" }
+        it { is_expected.to respond_with :ok }
+      end
+    end
+
+    #####INSTANCE VARIABLES#####
+    context 'instance variables' do
+      before :each do
+        create(:super_user, identity: @logged_in_user, organization: @organization)
+
+        get :index, srid: @service_request.id, format: :json
+      end
+      
+      it 'should assign instance variables' do
+        expect(assigns(:service_request)).to eq(@service_request)
+        expect(assigns(:permission_to_edit)).to eq(false)
+        expect(assigns(:permission_to_view)).to eq(false)
+        expect(assigns(:admin_orgs)).to eq([@organization])
+      end
+      
+      it { is_expected.to render_template "dashboard/sub_service_requests/index" }
+      it { is_expected.to respond_with :ok }
+    end
+
+    context 'assigns @sub_service_requests' do
+      context 'user has permission to view' do
+        before :each do
+          create(:project_role, identity: @logged_in_user, protocol: @protocol, project_rights: 'view')
+          
+          get :index, srid: @service_request.id, format: :json
+        end
+        
+        it 'should get all sub service requests for service request' do
+          expect(assigns(:sub_service_requests)).to eq(@service_request.sub_service_requests)
+        end
+
+        it { is_expected.to render_template "dashboard/sub_service_requests/index" }
+        it { is_expected.to respond_with :ok }
+      end
+
+      context 'user has service-provider-only admin organizations' do
+        before :each do
+          create(:service_provider, identity: @logged_in_user, organization: @organization)
+
+          get :index, srid: @service_request.id, format: :json
+        end
+
+        it 'should get viewable SSRs' do
+          expect(assigns(:sub_service_requests)).to eq([@non_draft_ssr])
+        end
+
+        it { is_expected.to render_template "dashboard/sub_service_requests/index" }
+        it { is_expected.to respond_with :ok }
+      end
+
+      context 'user has no service-provider-only admin organizations' do
+        before :each do
+          create(:super_user, identity: @logged_in_user, organization: @organization)
+
+          get :index, srid: @service_request.id, format: :json
+        end
+
+        it 'should get all sub service requests for service request' do
+          expect(assigns(:sub_service_requests)).to eq([@non_draft_ssr, @draft_ssr])
+        end
+
+        it { is_expected.to render_template "dashboard/sub_service_requests/index" }
+        it { is_expected.to respond_with :ok }
+      end
+    end
   end
 end

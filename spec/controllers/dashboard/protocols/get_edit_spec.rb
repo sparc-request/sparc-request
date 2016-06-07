@@ -54,26 +54,26 @@ RSpec.describe Dashboard::ProtocolsController do
       end
     end
 
-    context 'user has Admin access' do
-      context 'user not authorized to view Protocol' do
-        before :each do
-          @logged_in_user = create(:identity)
-          @protocol       = create(:protocol_without_validations, type: 'Project')
+    context 'user does not have Admin access nor a valid project role' do
+      before :each do
+        @logged_in_user = create(:identity)
+        @protocol       = create(:protocol_without_validations, type: 'Project')
 
-          log_in_dashboard_identity(obj: @logged_in_user)
+        log_in_dashboard_identity(obj: @logged_in_user)
 
-          get :edit, id: @protocol.id
-        end
-
-        it 'should set @admin to false' do
-          expect(assigns(:admin)).to eq(false)
-        end
-
-        it { is_expected.to respond_with :ok }
-        it { is_expected.to render_template "service_requests/_authorization_error" }
+        get :edit, id: @protocol.id
       end
 
-      context 'user authorized to view Protocol as Super User' do
+      it 'should set @admin to false' do
+        expect(assigns(:admin)).to eq(false)
+      end
+
+      it { is_expected.to respond_with :ok }
+      it { is_expected.to render_template "service_requests/_authorization_error" }
+    end
+
+    context 'user has Admin access but not a valid project role' do
+      context 'user authorized to edit Protocol as Super User' do
         before :each do
           @logged_in_user = create(:identity)
           @protocol       = create(:protocol_without_validations, type: 'Project')
@@ -94,7 +94,7 @@ RSpec.describe Dashboard::ProtocolsController do
         it { is_expected.to respond_with :ok }
       end
 
-      context 'user authorized to view Protocol as Service Provider' do
+      context 'user authorized to edit Protocol as Service Provider' do
         before :each do
           @logged_in_user = create(:identity)
           @protocol       = create(:protocol_without_validations, type: 'Project')

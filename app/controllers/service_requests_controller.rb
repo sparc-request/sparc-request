@@ -70,7 +70,9 @@ class ServiceRequestsController < ApplicationController
     end
 
     # Save/Update any document info we may have
-    document_save_update(errors)
+    if params[:current_location] == 'document_management'
+      document_save_update(errors)
+    end
 
     location = params["location"]
     additional_params = request.referrer.split('/').last.split('?').size == 2 ? "?" + request.referrer.split('/').last.split('?').last : nil
@@ -105,24 +107,23 @@ class ServiceRequestsController < ApplicationController
 
   def catalog
     # uses a before filter defined in application controller named 'prepare_catalog', extracted so that devise controllers could use as well
-    @locked = params[:locked]
+    @locked_org_ids = []
 
-    if @locked
-      @locked_org_ids = []
+    if @service_request.protocol.present?
+      @ctrc_ssr_id    = @service_request.protocol.find_sub_service_request_with_ctrc(@service_request)
 
       @service_request.sub_service_requests.each do |ssr|
         organization = ssr.organization
         if organization.has_editable_statuses?
           self_or_parent_id = ssr.find_editable_id(organization.id)
           @locked_org_ids << self_or_parent_id if !EDITABLE_STATUSES[self_or_parent_id].include?(ssr.status)
+          @locked_org_ids << organization.all_children(Organization.all).map(&:id)
         end
-
-        @locked_org_ids << organization.all_children(Organization.all).map(&:id)
       end
-    end
 
-    unless @locked_org_ids.nil?
-      @locked_org_ids = @locked_org_ids.flatten!.uniq!
+      unless @locked_org_ids.empty?
+        @locked_org_ids = @locked_org_ids.flatten!.uniq!
+      end
     end
 
     @locked_org_ids
@@ -135,14 +136,6 @@ class ServiceRequestsController < ApplicationController
     if session[:saved_protocol_id]
       @service_request.protocol = Protocol.find session[:saved_protocol_id]
       session.delete :saved_protocol_id
-    end
-
-    @ctrc_services = false
-    if session[:errors] and session[:errors] != []
-      if session[:errors][:ctrc_services]
-        @ctrc_services = true
-        @ssr_id = @service_request.protocol.find_sub_service_request_with_ctrc(@service_request.id)
-      end
     end
   end
 
@@ -378,7 +371,8 @@ class ServiceRequestsController < ApplicationController
         line_items = values[:line_items]
         ssr = @service_request.sub_service_requests.where(organization_id: org_id.to_i).first_or_create
         unless @service_request.status.nil? and !ssr.status.nil?
-          ssr.update_attribute(:status, @service_request.status) if ['first_draft', 'draft', nil].include?(ssr.status)
+          status_to_change_to = ['first_draft', 'draft', nil].include?(@service_request.status) ? @service_request.status : 'draft'
+          ssr.update_attribute(:status, status_to_change_to)
           @service_request.ensure_ssr_ids unless ['first_draft', 'draft'].include?(@service_request.status)
         end
 
@@ -584,7 +578,7 @@ class ServiceRequestsController < ApplicationController
     doc_type_other = params[:doc_type_other]
     upload_clicked = params[:upload_clicked]
 
-    if doc_type and process_ssr_organization_ids and (document or document_id)
+    if !doc_type.empty? && process_ssr_organization_ids && document
       # have all required ingredients for successful document
       if document_id # update existing document
         org_ids = doc_object.sub_service_requests.map{|ssr| ssr.organization_id.to_s}
@@ -627,15 +621,15 @@ class ServiceRequestsController < ApplicationController
           sub_service_request.save
         end
       end
-    elsif upload_clicked == "1" and ((doc_type == "" or !process_ssr_organization_ids) or ( !document and !document_id ))
+
+    elsif upload_clicked == "1" && ((doc_type == "" || !process_ssr_organization_ids) || !document)
       # collect errors
       doc_errors = {}
       doc_errors[:recipients] = ["You must select at least one recipient"] if !process_ssr_organization_ids
-      doc_errors[:document] = ["You must select a document to upload"] if !document and !document_id
+      doc_errors[:document] = ["You must select a document to upload"] if !document
       doc_errors[:doc_type] = ["You must provide a document type"] if doc_type == ""
       errors << doc_errors
     end
-    # end document saving stuff
   end
 
   def update_service_request_status(service_request, status)

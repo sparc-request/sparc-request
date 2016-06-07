@@ -75,7 +75,7 @@ RSpec.describe Dashboard::AssociatedUsersController do
           expect(assigns(:current_user_destroyed)).to eq(false)
           expect(assigns(:protocol_type)).to eq(nil)
           expect(assigns(:permission_to_edit)).to eq(nil)
-          expect(assigns(:admin)).to eq(nil)
+          expect(assigns(:admin)).to eq(false)
           expect(assigns(:return_to_dashboard)).to eq(nil)
         end
 

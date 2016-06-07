@@ -14,7 +14,7 @@ RSpec.describe 'dashboard/protocols/index', type: :view do
       search_query: '',
       show_archived: 0,
       for_identity_id: jug2.id,
-      for_admin: false,
+      filtered_for_admin: false,
       with_organization: false
     ))
   end
@@ -67,8 +67,8 @@ RSpec.describe 'dashboard/protocols/index', type: :view do
         expect(response).not_to have_content('My Admin Organizations')
       end
 
-      it 'should not show "Core" select' do
-        expect(response).not_to have_content('Core')
+      it 'should show "Organization" select' do
+        expect(response).to have_content('Organization')
       end
     end
 
@@ -87,16 +87,13 @@ RSpec.describe 'dashboard/protocols/index', type: :view do
       it 'should show "My Admin Organizations" checkbox' do
         expect(response).to have_field('My Admin Organizations')
       end
-
-      it 'should show "Core" select' do
-        expect(response).to have_field('Core')
-      end
     end
   end
 
   describe 'Protocols list' do
     describe 'Protocol info' do
       before(:each) do
+        create(:super_user, identity_id: jug2.id)
         protocol = build(:protocol_federally_funded,
           :without_validations,
           primary_pi: jug2,
@@ -111,7 +108,6 @@ RSpec.describe 'dashboard/protocols/index', type: :view do
               full_name: 'Toof Fairy')
           ]
         assign(:protocols, [protocol].paginate(page: 1))
-
         render
       end
 

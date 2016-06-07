@@ -88,6 +88,12 @@
                   = t(:dashboard)[:protocols][:view_details][:studies][:research_involving][:humans][:irb_expiration_date]
                 .col-lg-9
                   = human_info.irb_expiration_date
+            %tr
+              %td
+                %label.col-lg-3
+                  = t(:dashboard)[:protocols][:view_details][:studies][:information][:phase]
+                .col-lg-9
+                  = protocol.study_phase.nil? ? '' : protocol.study_phase.capitalize
 
     / Vertebrate Animals
     - if research_types_info.vertebrate_animals
@@ -140,12 +146,6 @@
                   = t(:dashboard)[:protocols][:view_details][:studies][:research_involving][:products][:ind_number]
                 .col-lg-9
                   = products_info.ind_number
-            %tr
-              %td
-                %label.col-lg-3
-                  = t(:dashboard)[:protocols][:view_details][:studies][:research_involving][:products][:ind_on_hold]
-                .col-lg-9
-                  = products_info.ind_on_hold ? t(:constants)[:yes_select] : t(:constants)[:no_select]
             %tr
               %td
                 %label.col-lg-3

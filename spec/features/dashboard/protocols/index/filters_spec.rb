@@ -258,7 +258,7 @@ RSpec.describe "filters", js: :true do
     context "user is a service provider and a superuser for an Organization" do
       let!(:organization) { create(:organization, admin: user) }
 
-      context "user unchecks My Protocols and clicks the filter button" do
+      context "user unchecks My Admin Orgs and clicks the filter button" do
         it "should display all Protocols, including those to which the user does not have a ProjectRole" do
           protocol = create_protocol(archived: false, short_title: "Protocol1")
           create(:project_role, identity: user, role: "very-important", project_rights: "to-party", protocol: protocol)
@@ -266,7 +266,7 @@ RSpec.describe "filters", js: :true do
 
           visit_protocols_index_page
 
-          @page.filter_protocols.my_admin_organizations_checkbox.click
+          @page.filter_protocols.my_admin_organizations_checkbox.click # unchecking My Admin Orgs
           @page.filter_protocols.apply_filter_button.click
 
           expect(@page.search_results).to have_protocols(count: 2)
@@ -289,10 +289,6 @@ RSpec.describe "filters", js: :true do
         create(:project_role, identity: user, role: "very-important", project_rights: "to-party", protocol: protocol2)
 
         visit_protocols_index_page
-        wait_for_javascript_to_finish
-
-        @page.filter_protocols.my_admin_organizations_checkbox.click
-        @page.filter_protocols.apply_filter_button.click
         
         wait_for_javascript_to_finish
 

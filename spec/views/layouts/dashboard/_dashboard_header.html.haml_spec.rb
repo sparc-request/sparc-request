@@ -10,6 +10,7 @@ RSpec.describe 'layouts/dashboard/_dashboard_header.html.haml', view: true do
       unread_notification_count: 2,
       )
 
+    session[:breadcrumbs] = Dashboard::Breadcrumber.new
     expect(session[:breadcrumbs]).to receive(:breadcrumbs).and_return('All those other pages.')
   end
 

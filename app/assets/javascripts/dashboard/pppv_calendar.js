@@ -47,7 +47,7 @@ $('.edit-your-cost').editable({
 
 validate_billing_qty = function(val) {
   var n = ~~Number(val);
-  if(String(n) != val || n <= 0) {
+  if(String(n) != val || n < 0) {
     return "quantity must be a positive number";
   }
 };

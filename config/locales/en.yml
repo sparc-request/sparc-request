@@ -513,7 +513,7 @@ en:
               header: "Investigational Products"
               ind_number: "IND #:"
               ind_on_hold: "IND on Hold?:"
-              ide_number: "IDE #:"
+              ide_number: "IDE# / HDE# / HUD#:"
             ip_patents:
               header: "IP/Patents"
               number: "Patent Number:"
@@ -1108,7 +1108,7 @@ en:
     iacuc_approval_date: "IACUC Approval Date:"
     iacuc_expiration_date: "IACUC Expiration Date:"
     iacuc_number: "IACUC #:"
-    ide_number: "IDE#:"
+    ide_number: "IDE# / HDE# / HUD#:"
     impact: "Impact Areas"
     ind_number: "IND#:"
     ind_on_hold: "IND on Hold?"

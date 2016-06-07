@@ -21,8 +21,4 @@
 FactoryGirl.define do
   factory :toast_message do
   end
-
-  trait :for_ssr do
-    sending_class 'SubServiceRequest'
-  end
 end

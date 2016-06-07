@@ -250,6 +250,13 @@ $(document).ready ->
     switch $(this).attr('checked')
       when 'checked' then $('.investigational_products_dependent').show()
       else $('.investigational_products_dependent').hide()
+
+  $(document).on 'change', '#protocol_investigational_products_info_attributes_ind_number', ->
+    if !!$(this).val().replace(/^\s+/g, "")
+      $('#ind-on-hold-group').show()
+    else
+      $('#ind-on-hold-group').hide()
+      $('#protocol_investigational_products_info_attributes_ind_on_hold').attr('checked', false)
   ###END INVESTIGATIONAL PRODUCTS FIELDS DISPLAY###
 
 

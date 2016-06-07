@@ -20,8 +20,7 @@
 
 class Dashboard::SubServiceRequestsController < Dashboard::BaseController
   before_action :find_sub_service_request,  except: :index
-  before_filter :protocol_authorizer,       only: :update_from_project_study_information
-  before_filter :authorize_admin,           only: :show, unless: :format_js?
+  before_filter :authorize_admin,           unless: :show_js?
 
   respond_to :json, :js, :html
 
@@ -37,7 +36,11 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
                             else
                               sp_only_admin_orgs = @user.authorized_admin_organizations({ sp_only: true })
 
-                              service_request.sub_service_requests.reject { |ssr| ssr.should_be_hidden_for_sp?(sp_only_admin_orgs) }
+                              if sp_only_admin_orgs.any?
+                                service_request.sub_service_requests.reject { |ssr| ssr.should_be_hidden_for_sp?(sp_only_admin_orgs) }
+                              else
+                                service_request.sub_service_requests
+                              end
                             end
   end
 
@@ -76,14 +79,10 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
         session[:service_calendar_pages] = params[:pages] if params[:pages]
         session[:breadcrumbs].add_crumbs(protocol_id: @sub_service_request.protocol.id, sub_service_request_id: @sub_service_request.id).clear(:notifications)
         
-        if @user.can_edit_fulfillment?(@sub_service_request.organization)
-          @service_request  = @sub_service_request.service_request
-          @protocol         = @sub_service_request.protocol
+        @service_request  = @sub_service_request.service_request
+        @protocol         = @sub_service_request.protocol
 
-          render
-        else
-          redirect_to dashboard_root_path
-        end
+        render
       }
     end
   end
@@ -207,7 +206,7 @@ private
     end
   end
 
-  def format_js?
-    request.format.js?
+  def show_js?
+    action_name == 'show' && request.format.js?
   end
 end

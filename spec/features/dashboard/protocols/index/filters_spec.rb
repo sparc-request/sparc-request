@@ -258,7 +258,7 @@ RSpec.describe "filters", js: :true do
     context "user is a service provider and a superuser for an Organization" do
       let!(:organization) { create(:organization, admin: user) }
 
-      context "user unchecks My Protocols and clicks the filter button" do
+      context "user unchecks My Admin Orgs and clicks the filter button" do
         it "should display all Protocols, including those to which the user does not have a ProjectRole" do
           protocol = create_protocol(archived: false, short_title: "Protocol1")
           create(:project_role, identity: user, role: "very-important", project_rights: "to-party", protocol: protocol)
@@ -266,7 +266,7 @@ RSpec.describe "filters", js: :true do
 
           visit_protocols_index_page
 
-          @page.filter_protocols.my_admin_organizations_checkbox.click
+          @page.filter_protocols.my_admin_organizations_checkbox.click # unchecking My Admin Orgs
           @page.filter_protocols.apply_filter_button.click
 
           expect(@page.search_results).to have_protocols(count: 2)
@@ -289,8 +289,8 @@ RSpec.describe "filters", js: :true do
         create(:project_role, identity: user, role: "very-important", project_rights: "to-party", protocol: protocol2)
 
         visit_protocols_index_page
-        @page.filter_protocols.my_admin_organizations_checkbox.click
-        @page.filter_protocols.apply_filter_button.click
+        
+        wait_for_javascript_to_finish
 
         expect(@page.search_results).to have_protocols(text: "Protocol1")
         expect(@page.search_results).to have_no_protocols(text: "Protocol2")
@@ -299,9 +299,9 @@ RSpec.describe "filters", js: :true do
   end
 
   describe "core dropdown" do
-    let(:mega_corp_organization) { create(:organization, admin: user, name: "MegaCorp") }
-    let(:trump_organization) { create(:organization, admin: user, name: "TrumpPenitentiaries") }
-    let(:some_organization) { create(:organization, admin: user, name: "SomeLLC") }
+    let(:mega_corp_organization) { create(:organization, admin: user, name: "MegaCorp", type: 'Institution') }
+    let(:trump_organization) { create(:organization, admin: user, name: "TrumpPenitentiaries", type: 'Institution') }
+    let(:some_organization) { create(:organization, admin: user, name: "SomeLLC", type: 'Institution') }
 
     context "user selects multiple admin Organizations by name and clicks the Filter button" do
       it "should restrict listing to Protocols with SSRs belonging to those Organizations" do

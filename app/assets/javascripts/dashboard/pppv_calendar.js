@@ -35,7 +35,7 @@ $('.edit-your-cost').editable({
   },
   validate: function(value) {
               var n = +value;
-              if(isNaN(n) || n <= 0) {
+              if(isNaN(n) || n < 0) {
                 return "cost must be a nonnegative number";
               }
             },

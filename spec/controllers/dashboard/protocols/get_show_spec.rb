@@ -21,7 +21,7 @@ RSpec.describe Dashboard::ProtocolsController do
             with(@protocol, @logged_in_user)
         end
 
-        it { is_expected.to render_template "service_requests/_authorization_error" }
+        it { is_expected.to render_template "dashboard/shared/_authorization_error" }
         it { is_expected.to respond_with :ok }
       end
 
@@ -80,7 +80,7 @@ RSpec.describe Dashboard::ProtocolsController do
         end
 
         it { is_expected.to respond_with :ok }
-        it { is_expected.to render_template "service_requests/_authorization_error" }
+        it { is_expected.to render_template "dashboard/shared/_authorization_error" }
       end
 
       context 'user authorized to view Protocol as Super User' do

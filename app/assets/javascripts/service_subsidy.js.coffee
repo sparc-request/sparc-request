@@ -92,7 +92,7 @@ $(document).ready ->
     total_request_cost = parseFloat($(".request_cost[data-subsidy-id='#{subsidy_id}']").data("cost")) / 100.0
     pi_contribution = recalculate_pi_contribution(total_request_cost, percent_subsidy)
 
-    if (percent_subsidy * 100) > max_percent
+    if (percent_subsidy * 100) > parseFloat(max_percent)
       original_subsidy = recalculate_percent_subsidy(total_request_cost, original_pi_contribution)
       current_cost = recalculate_current_cost(total_request_cost, original_subsidy)
       display_error_and_reset(subsidy_id, original_subsidy, original_pi_contribution, current_cost, max_percent)

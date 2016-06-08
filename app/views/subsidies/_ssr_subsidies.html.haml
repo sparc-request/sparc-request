@@ -68,7 +68,7 @@
           %td.percent_subsidy
             = text_field_tag "percent_subsidy", pending.current_percent_of_total, { class: "subsidy_input", data: { subsidy_id: pending.id, max_percentage: sub_service_request.organization.subsidy_map.max_percentage } }
           %td.pi_contribution
-            = text_field_tag "pi_contribution", cents_to_dollars_float(pending.pi_contribution), { class: "subsidy_input", data: { subsidy_id: pending.id } }
+            = text_field_tag "pi_contribution", cents_to_dollars_float(pending.pi_contribution), { class: "subsidy_input", data: { subsidy_id: pending.id, max_percentage: sub_service_request.organization.subsidy_map.max_percentage, pi_contribution: pending.pi_contribution } }
           %td.subsidy_cost{data: { subsidy_id: pending.id, cost: pending.current_cost }}
             = number_to_currency(pending.current_cost)
           %td.delete_subsidy

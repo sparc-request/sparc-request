@@ -455,6 +455,10 @@ en:
         phone: "Phone"
         rights: "Proxy Rights"
 
+      documents:
+        header: "Documents"
+        add_document: "Add Document"
+
       service_requests:
         header: "Service Requests"
         view_consolidated: "View Consolidated Request"

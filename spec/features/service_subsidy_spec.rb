@@ -53,7 +53,7 @@ RSpec.describe "subsidy page", js: true do
       wait_for_javascript_to_finish
       new_contribution = @direct_cost - (@direct_cost * 0.3)
       pi_field_value = find('#pi_contribution').value.gsub(/,/, '')
-      expect(pi_field_value).to eq(new_contribution.to_s + '0')
+      expect(pi_field_value).to eq('$' + new_contribution.to_s + '0')
     end
 
     it 'should adjust the subsidy percent if the pi contribution is changed' do

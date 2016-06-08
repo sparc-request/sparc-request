@@ -52,15 +52,15 @@ $(document).ready ->
     # When user changes PI Contribution, the Percent Subsidy and Subsidy Cost fields are recalculated & displayed
     max_percent = $(this).data('max-percentage')
     subsidy_id = $(this).data('subsidy-id')
-    current_percent_subsidy = parseFloat($('#percent_subsidy').val())
+    current_percent_subsidy = (parseFloat($('#percent_subsidy').val()) / 100.0)
     pi_contribution = parseFloat $(this).val()
     total_request_cost = parseFloat($(".request_cost[data-subsidy-id='#{subsidy_id}']").data("cost")) / 100.0
     percent_subsidy = (recalculate_percent_subsidy(total_request_cost, pi_contribution) * 100).toFixed(2)
 
     if parseFloat(percent_subsidy) > parseFloat(max_percent)
-      original_pi_contribution = recalculate_pi_contribution(total_request_cost, (current_percent_subsidy / 100))
-      current_cost = recalculate_current_cost(total_request_cost, (current_percent_subsidy / 100))
-      display_error_and_reset(subsidy_id, (current_percent_subsidy / 100), original_pi_contribution, current_cost, max_percent)
+      original_pi_contribution = recalculate_pi_contribution(total_request_cost, current_percent_subsidy)
+      current_cost = recalculate_current_cost(total_request_cost, current_percent_subsidy)
+      display_error_and_reset(subsidy_id, current_percent_subsidy, original_pi_contribution, current_cost, max_percent)
     else
 
       if isNaN(pi_contribution)
@@ -97,6 +97,7 @@ $(document).ready ->
       current_cost = recalculate_current_cost(total_request_cost, original_subsidy)
       display_error_and_reset(subsidy_id, original_subsidy, original_pi_contribution, current_cost, max_percent)
     else
+
       if isNaN(percent_subsidy)
         percent_subsidy = 0
       if percent_subsidy > 1

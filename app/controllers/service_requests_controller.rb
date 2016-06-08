@@ -107,11 +107,10 @@ class ServiceRequestsController < ApplicationController
 
   def catalog
     # uses a before filter defined in application controller named 'prepare_catalog', extracted so that devise controllers could use as well
-    @locked = params[:locked]
+    @locked_org_ids = []
 
-    if @locked
+    if @service_request.protocol.present?
       @ctrc_ssr_id    = @service_request.protocol.find_sub_service_request_with_ctrc(@service_request)
-      @locked_org_ids = []
 
       @service_request.sub_service_requests.each do |ssr|
         organization = ssr.organization
@@ -121,10 +120,10 @@ class ServiceRequestsController < ApplicationController
           @locked_org_ids << organization.all_children(Organization.all).map(&:id)
         end
       end
-    end
 
-    unless @locked_org_ids.nil?
-      @locked_org_ids = @locked_org_ids.flatten!.uniq!
+      unless @locked_org_ids.empty?
+        @locked_org_ids = @locked_org_ids.flatten!.uniq!
+      end
     end
 
     @locked_org_ids
@@ -362,7 +361,8 @@ class ServiceRequestsController < ApplicationController
         line_items = values[:line_items]
         ssr = @service_request.sub_service_requests.where(organization_id: org_id.to_i).first_or_create
         unless @service_request.status.nil? and !ssr.status.nil?
-          ssr.update_attribute(:status, @service_request.status) if ['first_draft', 'draft', nil].include?(ssr.status)
+          status_to_change_to = ['first_draft', 'draft', nil].include?(@service_request.status) ? @service_request.status : 'draft'
+          ssr.update_attribute(:status, status_to_change_to)
           @service_request.ensure_ssr_ids unless ['first_draft', 'draft'].include?(@service_request.status)
         end
 

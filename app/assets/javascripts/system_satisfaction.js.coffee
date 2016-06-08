@@ -51,6 +51,7 @@ $(document).ready ->
 
           $('#surveyor').dialog('open')
           $('#processing_request').hide()
+          $('.submit-request').css({"font": "normal norgitmal normal normal 18px / 36px Calibri, Helvetica Neue, Helvetica, sans-serif"}) 
           $("#surveyor input[name='cancel']").click (event) ->
             auth_token = $("form#survey_form input[name='authenticity_token']").attr('value')
             response_set_path = $('form#survey_form').attr('action') + "?authenticity_token=#{auth_token}"
@@ -62,6 +63,7 @@ $(document).ready ->
               success: ->
                 window.location.href = route_to
 
+        
         $('#welcome_msg').hide()
         $('#feedback').hide()
         $('.ask-a-question').hide()

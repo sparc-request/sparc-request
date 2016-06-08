@@ -410,7 +410,7 @@ en:
       archived: "Archived"
       status: "Status"
       my_protocols: "My Protocols"
-      my_admin_orgs: "My Admin Organizations"
+      my_admin_protocols: "My Admin Protocols"
       organization: "Organization"
       filter: "Filter"
       saved_filters:

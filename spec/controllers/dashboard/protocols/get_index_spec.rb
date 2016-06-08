@@ -44,11 +44,24 @@ RSpec.describe Dashboard::ProtocolsController do
 
     context 'user has no admin organizations' do
       before(:each) do
-        @logged_in_user = build_stubbed(:identity)
+        @logged_in_user = create(:identity,
+                           last_name: "Doe",
+                           first_name: "John",
+                           ldap_uid: "jug2",
+                           email: "johnd@musc.edu",
+                           password: "p4ssword",
+                           password_confirmation: "p4ssword",
+                           approved: true)
+
         allow(@logged_in_user).to receive(:authorized_admin_organizations).
           and_return([])
 
-        paginated_protocols = double('protocols', page: [:protocols])
+    
+        protocol = FactoryGirl.build(:protocol)
+        protocol.save validate: false
+        FactoryGirl.create(:project_role_with_identity_and_protocol, identity: @logged_in_user, protocol: protocol)
+
+        paginated_protocols = double('protocols', page: @logged_in_user.protocols)
         filterrific = double('filterrific', find: paginated_protocols)
         allow(controller).to receive(:initialize_filterrific).
           and_return(filterrific)
@@ -65,7 +78,7 @@ RSpec.describe Dashboard::ProtocolsController do
       end
 
       it "should assign @protocols to those returned by filterrific" do
-        expect(assigns(:protocols)).to eq [:protocols]
+        expect(assigns(:protocols)).to eq @logged_in_user.protocols
       end
 
       it 'should assign @protocol_filters to the five most recent filters' do

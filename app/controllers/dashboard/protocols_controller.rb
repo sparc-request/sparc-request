@@ -60,7 +60,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
       @protocols = @filterrific.find.
                     page(params[:page]).
                     joins(:project_roles).
-                    where(project_roles: { identity_id: 10333 }).
+                    where(project_roles: { identity_id: @user.id }).
                     where.not(project_roles: { project_rights: 'none' })
     end  
 

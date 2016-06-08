@@ -80,7 +80,7 @@
           %label{:for => id, :class => "col-sm-3 control-label"}= field_label
           .col-sm-9
             .input-group.date
-              = text_field_tag name, nil, :id => id, :class => default_classes, :type => "date"
+              = text_field_tag name, nil, :id => id, :class => default_classes
               %span.input-group-addon
                 %span.glyphicon.glyphicon-calendar
 
@@ -107,14 +107,14 @@
           %label{:for => from_id, :class => 'col-sm-1 col-sm-offset-1 control-label'}= from_label
           .col-sm-3
             .input-group.date
-              = text_field_tag from_name, nil, :id => from_id, :"data-from" => from_date, :class => default_classes, :type => "date"
+              = text_field_tag from_name, nil, :id => from_id, :"data-from" => from_date, :class => default_classes
               %span.input-group-addon
                 %span.glyphicon.glyphicon-calendar
 
           %label{:for => to_id, :class => 'col-sm-1 control-label'}= to_label
           .col-sm-3
             .input-group.date
-              = text_field_tag to_name, nil, :id => to_id, :"data-to" => to_date, :class => default_classes, :type => "date"
+              = text_field_tag to_name, nil, :id => to_id, :"data-to" => to_date, :class => default_classes
               %span.input-group-addon
                 %span.glyphicon.glyphicon-calendar
         /* end date_range */

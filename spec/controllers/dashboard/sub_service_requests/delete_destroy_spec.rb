@@ -75,22 +75,21 @@ RSpec.describe Dashboard::SubServiceRequestsController do
 
     #####TOAST MESSAGES####
     context 'toast messages' do
-      it 'should destroy toast messages for the SSR' do
+      before :each do
         @toast_message = create(:toast_message, sending_class: 'SubServiceRequest', sending_class_id: @sub_service_request.id)
         create(:super_user, identity: @logged_in_user, organization: @organization)
+      end
+      
+      it 'should destroy toast messages for the SSR' do
         expect{ delete :destroy, id: @sub_service_request.id, format: :js }.to change(ToastMessage, :count).by(-1)
       end
 
       it 'should render_template' do
-        @toast_message = create(:toast_message, sending_class: 'SubServiceRequest', sending_class_id: @sub_service_request.id)
-        create(:super_user, identity: @logged_in_user, organization: @organization)
         delete(:destroy, id: @sub_service_request.id, format: :js)
         is_expected.to render_template "dashboard/sub_service_requests/destroy"
       end
 
       it 'should respond with ok' do
-        @toast_message = create(:toast_message, sending_class: 'SubServiceRequest', sending_class_id: @sub_service_request.id)
-        create(:super_user, identity: @logged_in_user, organization: @organization)
         delete(:destroy, id: @sub_service_request.id, format: :js)
         is_expected.to respond_with :ok
       end

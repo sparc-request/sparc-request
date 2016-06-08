@@ -226,7 +226,10 @@ RSpec.describe "filters", js: :true do
       @page.filter_protocols.search_field.set("name1")
       @page.filter_protocols.apply_filter_button.click()
 
-
+      @page.instance_exec do
+        search_results.wait_for_protocols
+      end
+      
       expect(@page.search_results).to have_protocols(text: "Protocol1")
       expect(@page.search_results).to have_protocols(text: "Protocol2")
       expect(@page.search_results).to have_no_protocols(text: "Protocol3")
@@ -248,6 +251,10 @@ RSpec.describe "filters", js: :true do
       visit_protocols_index_page
       @page.filter_protocols.search_field.set("name1")
       @page.filter_protocols.apply_filter_button.click()
+
+      @page.instance_exec do
+        search_results.wait_for_protocols
+      end
 
       expect(@page.search_results).to have_protocols(text: "Protocol1")
       expect(@page.search_results).to have_protocols(text: "Protocol2")

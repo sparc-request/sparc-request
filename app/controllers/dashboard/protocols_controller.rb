@@ -121,6 +121,9 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     @permission_to_edit = @authorization.nil? ? false : @authorization.can_edit?
 
     @protocol.populate_for_edit
+    if @permission_to_edit 
+      @protocol.update_attribute(:study_type_question_group_id, StudyTypeQuestionGroup.active_id)
+    end
     session[:breadcrumbs].
       clear.
       add_crumbs(protocol_id: @protocol.id, edit_protocol: true)

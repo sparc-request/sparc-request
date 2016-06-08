@@ -153,7 +153,7 @@ en:
         subtext: "Check all that apply"
         humans:
           header: "Human Subjects:"
-          nct_number: "NCT #:"
+          nct_number: "NCT# (National Clinical Trials Number):"
           hr_number: "HR #:"
           pro_number: "PRO #:"
           record_irb: "IRB of Record:"
@@ -495,7 +495,7 @@ en:
             none: "No Research Types selected"
             humans:
               header: "Human Subjects"
-              nct_number: "NCT #:"
+              nct_number: "NCT# (National Clinical Trials Number):"
               hr_number: "HR #:"
               pro_number: "PRO #:"
               record_irb: "IRB of Record:"
@@ -1120,7 +1120,7 @@ en:
     irb_expiration_date: "IRB Expiration Date:"
     irb_of_record: "IRB of Record:"
     name_of_iacuc: "Name of IACUC:"
-    nct_number: "NCT #:"
+    nct_number: "NCT# (National Clinical Trials Number):"
     needed_info: "Information needed to obtain correct pricing"
     optional_text: "Optional Information"
     optional_text2: "(used for reporting purposes and saved for your future use)"

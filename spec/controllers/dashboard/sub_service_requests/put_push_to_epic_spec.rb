@@ -74,19 +74,20 @@ RSpec.describe Dashboard::SubServiceRequestsController do
 
     #####PUSH TO EPIC#####
     context 'push protocol to epic' do
-      it 'should push the protocol' do
+      before :each do
         create(:super_user, identity: @logged_in_user, organization: @organization)
+      end
+      
+      it 'should push the protocol' do
         expect{ put :push_to_epic, id: @sub_service_request.id, format: :js }.to change(EpicQueueRecord, :count).by(1)
       end
 
       it 'render template' do
-        create(:super_user, identity: @logged_in_user, organization: @organization)
         put :push_to_epic, id: @sub_service_request.id, format: :js
         is_expected.to render_template "dashboard/sub_service_requests/push_to_epic"
       end
 
       it 'respond ok' do
-        create(:super_user, identity: @logged_in_user, organization: @organization)
         put :push_to_epic, id: @sub_service_request.id, format: :js
         is_expected.to respond_with :ok
       end

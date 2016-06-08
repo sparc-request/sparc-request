@@ -22,12 +22,14 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
   respond_to :html, :json, :xlsx
 
-  before_filter :find_protocol,             only: [:show, :edit, :update, :update_protocol_type, :display_requests, :archive, :view_full_calendar, :view_details]
-  before_filter :find_admin_for_protocol,   only: [:show, :edit, :update, :update_protocol_type, :display_requests]
-  before_filter :protocol_authorizer_view,  only: [:show, :view_full_calendar, :display_requests]
-  before_filter :protocol_authorizer_edit,  only: [:edit, :update, :update_protocol_type]
+  before_filter :find_protocol,                                   only: [:show, :edit, :update, :update_protocol_type, :display_requests, :archive, :view_full_calendar, :view_details]
+  before_filter :find_admin_for_protocol,                         only: [:show, :edit, :update, :update_protocol_type, :display_requests]
+  before_filter :protocol_authorizer_view,                        only: [:show, :view_full_calendar, :display_requests]
+  before_filter :protocol_authorizer_edit,                        only: [:edit, :update, :update_protocol_type]
+  before_filter :find_service_provider_only_admin_organizations,  only: [:show, :display_requests]
 
   def index
+
     admin_orgs   = @user.authorized_admin_organizations
     @admin       = !admin_orgs.empty?
 
@@ -35,8 +37,10 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
     # if we are an admin we want to default to admin organizations
     if @admin
-      default_filter_params[:for_admin]       = @user.id.to_s
+      @organizations = Dashboard::IdentityOrganizations.new(@user.id).admin_organizations_with_protocols
+      default_filter_params[:filtered_for_admin]       = @user.id.to_s
     else
+      @organizations = Dashboard::IdentityOrganizations.new(@user.id).general_user_organizations_with_protocols
       default_filter_params[:for_identity_id] = @user.id.to_s
     end
 
@@ -45,15 +49,17 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
         default_filter_params: default_filter_params,
         select_options: {
           with_status: AVAILABLE_STATUSES.invert,
-          with_organization: admin_orgs.map { |org| [org.name, org.id] }
+          with_organization: Dashboard::GroupedOrganizations.new(@organizations).collect_grouped_options
         },
         persistence_id: false #resets filters on page reload
       ) || return
 
     @protocols        = @filterrific.find.page(params[:page])
+    @admin_protocols  = Protocol.for_admin(@user.id).pluck(:id)
     @protocol_filters = ProtocolFilter.latest_for_user(@user.id, 5)
     #toggles the display of the navigation bar, instead of breadcrumbs
-    @show_navbar = true
+    @show_navbar      = true
+    @show_messages    = true
     session[:breadcrumbs].clear
 
     respond_to do |format|
@@ -68,7 +74,9 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
       format.html {
         session[:breadcrumbs].clear.add_crumbs(protocol_id: @protocol.id)
         @permission_to_edit = @authorization.present? ? @authorization.can_edit? : false
+        @permission_to_view = @authorization.present? ? @authorization.can_view? : false
         @protocol_type      = @protocol.type.capitalize
+
         render
       }
       format.xlsx {
@@ -110,8 +118,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
   def edit
     @protocol_type      = @protocol.type
-    protocol_role       = @protocol.project_roles.find_by(identity_id: @user.id)
-    @permission_to_edit = protocol_role.nil? ? false : protocol_role.can_edit?
+    @permission_to_edit = @authorization.nil? ? false : @authorization.can_edit?
 
     @protocol.populate_for_edit
     session[:breadcrumbs].
@@ -131,12 +138,12 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     attrs[:start_date]  = Time.strptime(attrs[:start_date], "%m-%d-%Y") if attrs[:start_date]
     attrs[:end_date]    = Time.strptime(attrs[:end_date],   "%m-%d-%Y") if attrs[:end_date]
 
-    protocol_role       = @protocol.project_roles.find_by(identity_id: @user.id)
+    permission_to_edit  = @authorization.present? ? @authorization.can_edit? : false
 
     # admin is not able to activate study_type_question_group
-    if @admin && protocol_role.nil? && @protocol.update_attributes(attrs)
+    if !permission_to_edit && @protocol.update_attributes(attrs)
       flash[:success] = "#{@protocol.type} Updated!"
-    elsif (!@admin || @admin && !protocol_role.nil? && protocol_role.can_edit?) && @protocol.update_attributes(attrs.merge(study_type_question_group_id: StudyTypeQuestionGroup.active_id))
+    elsif permission_to_edit && @protocol.update_attributes(attrs.merge(study_type_question_group_id: StudyTypeQuestionGroup.active_id))
       flash[:success] = "#{@protocol.type} Updated!"
     else
       @errors = @protocol.errors
@@ -199,9 +206,9 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def display_requests
-    @protocol_role      = @protocol.project_roles.find_by(identity_id: @user.id)
-    @permission_to_edit = @protocol_role.present? ? @protocol_role.can_edit? : false
-    modal               = render_to_string(partial: 'dashboard/protocols/requests_modal', locals: { protocol: @protocol, user: @user, permission_to_edit: @permission_to_edit })
+    permission_to_edit  = @authorization.present? ? @authorization.can_edit? : false
+    permission_to_view  = @authorization.present? ? @authorization.can_view? : false
+    modal               = render_to_string(partial: 'dashboard/protocols/requests_modal', locals: { protocol: @protocol, user: @user, sp_only_admin_orgs: @sp_only_admin_orgs, permission_to_edit: permission_to_edit, permission_to_view: permission_to_view })
 
     data = { modal: modal }
     render json: data
@@ -217,6 +224,10 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
   def find_protocol
     @protocol = Protocol.find(params[:id])
+  end
+
+  def find_service_provider_only_admin_organizations
+    @sp_only_admin_orgs = @admin ? @user.authorized_admin_organizations({ sp_only: true }) : nil
   end
 
   def conditionally_activate_protocol

@@ -24,10 +24,10 @@
       = t(:dashboard)[:sub_service_requests][:tabs][:history][:status][:header]
     %button.btn.btn-primary.history_button#approval_history_button{ disabled: "disabled", data: { table: "approval_changes", sub_service_request_id: sub_service_request_id }} 
       = t(:dashboard)[:sub_service_requests][:tabs][:history][:approval][:header]
-  %table.ssr_history_table{id: "approval-history-table", data: {toggle: 'table', search: "true", "show-columns" => "true", "show-refresh" => "true", "show-toggle" => "true", url: approval_history_dashboard_sub_service_request_path(format: :json, sub_service_request_id: sub_service_request_id), striped: "true", toolbar: "#history-custom-toolbar", "show-export" => "true", "export-types" => ['excel']}}
+  %table.ssr_history_table{id: "approval-history-table", data: {toggle: 'table', search: "true", "show-columns" => "true", "show-refresh" => "true", "show-toggle" => "true", url: approval_history_dashboard_sub_service_request_path(format: :json, sub_service_request_id: sub_service_request_id), striped: "true", toolbar: "#history-custom-toolbar", "show-export" => "false", "export-types" => ['excel']}}
     %thead.primary-header
       %tr
-        %th{data: {class: 'date', align: "left", sortable: "true", field: "date"}}
+        %th{data: {class: 'date', align: "left", sortable: "true", field: "date", sorter: "dateSorter"}}
           = t(:dashboard)[:sub_service_requests][:tabs][:history][:approval][:date]
         %th{data: {class: 'type', align: "left", sortable: "true", field: "type"}}
           = t(:dashboard)[:sub_service_requests][:tabs][:history][:approval][:type]

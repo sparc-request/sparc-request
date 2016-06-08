@@ -122,5 +122,8 @@ RSpec.describe ServiceRequestsController, type: :controller do
         end
       end
     end
+
+    # TODO: Try and figure out a clean way of setting up the test config to be able to
+    #       test locked organization checks and finding the ctrc ssr id
   end
 end

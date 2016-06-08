@@ -115,12 +115,6 @@ class ServiceRequest < ActiveRecord::Base
       errors.add(:protocol_id, "You must identify the service request with a study/project before continuing.")
     elsif not self.protocol.valid?
       errors.add(:protocol, "Errors in the selected study/project have been detected.  Please click Edit Study/Project to correct")
-    else
-      if self.has_ctrc_clinical_services?
-        if self.protocol && self.protocol.has_ctrc_clinical_services?(self.id)
-          errors.add(:ctrc_services, "SCTR Research Nexus Services conflict with existing request. Please remove the Nexus services from your cart.")
-        end
-      end
     end
 
     if self.line_items.empty?
@@ -555,17 +549,6 @@ class ServiceRequest < ActiveRecord::Base
     true #self.sub_service_requests.all?{|ssr| ssr.arms_editable?}
   end
 
-  # If the last sub service request on the service request is not editable,
-  # then a user should not be able to access the request though the 'Edit
-  # Original' button.
-  def is_editable?
-    if (self.sub_service_requests.count == 1) && !self.sub_service_requests.first.can_be_edited?
-      return false
-    end
-
-    return true
-  end
-
   def audit_report identity, start_date=self.previous_submitted_at.utc, end_date=Time.now.utc
     line_item_audits = AuditRecovery.where("audited_changes LIKE '%service_request_id: #{self.id}%' AND
                                       auditable_type = 'LineItem' AND user_id = #{identity.id} AND action IN ('create', 'destroy') AND
@@ -573,6 +556,10 @@ class ServiceRequest < ActiveRecord::Base
                                     .group_by(&:auditable_id)
 
     {:line_items => line_item_audits}
+  end
+
+  def should_be_hidden_for_sp?(sp_only_admin_orgs)
+    (sub_service_requests.reject { |ssr| ssr.should_be_hidden_for_sp?(sp_only_admin_orgs) }).empty?
   end
 
   private

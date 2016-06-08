@@ -8,7 +8,7 @@ RSpec.describe Arm, type: :model do
     end
 
     it 'should set the day for each VisitGroup to its position' do
-      expect { arm.default_visit_days }.to change { arm.visit_groups.pluck :day }.from([nil, nil]).to([1, 2])
+      expect { arm.default_visit_days }.to change { arm.visit_groups.pluck :day }.from([nil, nil]).to([5, 10])
     end
   end
 end

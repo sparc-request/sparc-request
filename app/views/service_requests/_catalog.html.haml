@@ -60,3 +60,7 @@
 
   #about_sparc{ title: t(:about_title) }
     = t(:about_text)
+
+- if @ctrc_ssr_id
+  #ctrc-dialog
+    = I18n.t('proper.catalog.ctrc_lock', protocol_id: @service_request.protocol.id, ssr_id: @ctrc_ssr_id, protocol_type: @service_request.protocol.type, short_title: @service_request.protocol.short_title)

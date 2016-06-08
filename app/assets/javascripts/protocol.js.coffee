@@ -61,10 +61,5 @@ $(document).ready ->
     else
       $('.edit-project').show()
 
-  $('#ctrc_dialog').dialog
-    modal: true
-    width: 375
-    height: 200
-
-
   $('#redirect').button()
+  

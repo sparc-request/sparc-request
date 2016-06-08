@@ -146,6 +146,7 @@ module V1
             :abbreviation,
             :order,
             :description,
+            :eap_id,
             :is_available,
             :service_center_cost,
             :cpt_code,

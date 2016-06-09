@@ -62,7 +62,6 @@ $(document).ready ->
               success: ->
                 window.location.href = route_to
 
-        $('.submit-request').css({"font": "normal normal normal normal 18px / 36px Calibri, Helvetica Neue, Helvetica, sans-serif"}) 
         $('#welcome_msg').hide()
         $('#feedback').hide()
         $('.ask-a-question').hide()

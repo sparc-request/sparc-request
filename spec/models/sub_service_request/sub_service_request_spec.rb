@@ -112,12 +112,6 @@ RSpec.describe 'SubServiceRequest' do
             sub_service_request.update_attribute(:in_work_fulfillment, true)
           end
 
-          it 'should create procedures for the line item' do
-            count = Procedure.count
-            li = sub_service_request.create_line_item(service_id: @fulfillment_service.id, sub_service_request_id: sub_service_request.id)
-            expect(Procedure.count).to eq(count * 2)
-          end
-
           it 'should roll back if it fails' do
             expect {
               allow(sub_service_request).to receive(:in_work_fulfillment).and_raise('error')

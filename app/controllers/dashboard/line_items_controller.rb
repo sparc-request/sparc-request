@@ -142,30 +142,4 @@ class Dashboard::LineItemsController < Dashboard::BaseController
       end
     end
   end
-
-  def update_per_patient_line_item
-    #Create new line_item, and link up line_items_visit, modify CWF data, etc...
-    @old_line_item = @line_item
-    visit_ids = @line_items_visit.visits.pluck(:id)
-    @procedures = @old_line_item.procedures.where(visit_id: visit_ids)
-
-    ActiveRecord::Base.transaction do
-      if (@line_item = LineItem.create(service_request_id: @service_request.id, service_id: @service_id, sub_service_request_id: @sub_service_request.id))
-        @line_item.reload
-        if @line_items_visit.update_attribute(:line_item_id, @line_item.id)
-          @old_line_item.reload
-
-          if @old_line_item.line_items_visits.empty?
-            @old_line_item.destroy
-          end
-          return @line_item
-        else
-          return false
-        end
-
-      else
-        return false
-      end
-    end
-  end
 end

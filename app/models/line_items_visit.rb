@@ -36,12 +36,6 @@ class LineItemsVisit < ActiveRecord::Base
   attr_accessible :subject_count  # number of subjects for this visit grouping
   attr_accessible :hidden
 
-  after_save :set_arm_edited_flag_on_subjects
-
-  def set_arm_edited_flag_on_subjects
-    self.arm.set_arm_edited_flag_on_subjects
-  end
-
   # Find a LineItemsVisit for the given arm and line item.  If it does
   # not exist, create it first, then return it.
   def self.for(arm, line_item)
@@ -183,23 +177,6 @@ class LineItemsVisit < ActiveRecord::Base
   def remove_visit visit_group
     visit = self.visits.find_by_visit_group_id(visit_group.id)
     visit.delete
-  end
-
-  def procedures
-    self.visits.map {|x| x.appointments.map {|y| y.procedures.select {|z| z.line_item_id == self.line_item_id}}}.flatten
-  end
-
-  def remove_procedures
-    self.procedures.each do |pro|
-      if pro.completed?
-        if pro.line_item.service.displayed_pricing_map.unit_factor > 1
-          pro.update_attributes(:unit_factor_cost => pro.cost * 100)
-        end
-        pro.update_attributes(service_id: self.line_item.service_id, line_item_id: nil, visit_id: nil)
-      else
-        pro.destroy
-      end
-    end
   end
 
   ### audit reporting methods ###

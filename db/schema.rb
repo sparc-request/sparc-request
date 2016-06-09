@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160527143837) do
+ActiveRecord::Schema.define(version: 20160609133351) do
 
   create_table "admin_rates", force: :cascade do |t|
     t.integer  "line_item_id", limit: 4
@@ -96,15 +96,13 @@ ActiveRecord::Schema.define(version: 20160527143837) do
   add_index "approvals", ["sub_service_request_id"], name: "index_approvals_on_sub_service_request_id", using: :btree
 
   create_table "arms", force: :cascade do |t|
-    t.string   "name",                  limit: 255
-    t.integer  "visit_count",           limit: 4,   default: 1
-    t.datetime "created_at",                                        null: false
-    t.datetime "updated_at",                                        null: false
-    t.integer  "subject_count",         limit: 4,   default: 1
-    t.integer  "protocol_id",           limit: 4
-    t.boolean  "new_with_draft",                    default: false
-    t.integer  "minimum_visit_count",   limit: 4,   default: 0
-    t.integer  "minimum_subject_count", limit: 4,   default: 0
+    t.string   "name",           limit: 255
+    t.integer  "visit_count",    limit: 4,   default: 1
+    t.datetime "created_at",                                 null: false
+    t.datetime "updated_at",                                 null: false
+    t.integer  "subject_count",  limit: 4,   default: 1
+    t.integer  "protocol_id",    limit: 4
+    t.boolean  "new_with_draft",             default: false
   end
 
   add_index "arms", ["protocol_id"], name: "index_arms_on_protocol_id", using: :btree

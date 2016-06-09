@@ -31,7 +31,6 @@ class LineItem < ActiveRecord::Base
 
   has_many :line_items_visits, :dependent => :destroy
   has_many :arms, :through => :line_items_visits
-  has_many :procedures
   has_many :admin_rates, :dependent => :destroy
   has_many :notes, as: :notable, dependent: :destroy
 
@@ -57,8 +56,6 @@ class LineItem < ActiveRecord::Base
 
   validates :quantity, :numericality => true, :on => :update, :if => Proc.new { |li| li.service.one_time_fee }
   validate :quantity_must_be_smaller_than_max_and_greater_than_min, :on => :update, :if => Proc.new { |li| li.service.one_time_fee }
-
-  after_destroy :remove_procedures
 
   # TODO: order by date/id instead of just by date?
   default_scope { order('line_items.id ASC') }
@@ -382,18 +379,5 @@ class LineItem < ActiveRecord::Base
     end
 
     return true
-  end
-
-  private
-
-  def remove_procedures
-    procedures = self.procedures
-    procedures.each do |pro|
-      if pro.completed?
-        pro.update_attributes(service_id: self.service_id, line_item_id: nil, visit_id: nil)
-      else
-        pro.destroy
-      end
-    end
   end
 end

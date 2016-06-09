@@ -103,24 +103,6 @@ RSpec.describe 'SubServiceRequest' do
           expect(li.service_id).to eq(@fulfillment_service.id)
           expect(li).not_to be_new_record
         end
-
-        context 'subject calendars exist' do
-
-          before :each do
-            add_visits
-            service_request.arms.each(&:populate_subjects)
-            sub_service_request.update_attribute(:in_work_fulfillment, true)
-          end
-
-          it 'should roll back if it fails' do
-            expect {
-              allow(sub_service_request).to receive(:in_work_fulfillment).and_raise('error')
-              sub_service_request.create_line_item(service_id: @fulfillment_service.id, sub_service_request_id: sub_service_request.id) rescue nil
-            }.not_to change(LineItem, :count)
-          end
-
-        end
-
       end
     end
 

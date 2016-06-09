@@ -137,9 +137,6 @@ class SubServiceRequest < ActiveRecord::Base
       new_args.update(args)
       li = service_request.create_line_item(new_args)
 
-      # Update subject visit calendars if present
-      update_cwf_data_for_new_line_item(li)
-
       li
     end
 

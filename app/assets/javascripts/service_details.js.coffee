@@ -33,17 +33,9 @@ $ ->
   $(document).on 'nested:fieldRemoved:arms', (event) ->
     field = event.field
     button = field.find('.remove_arm')
-
-    if button.hasClass('cannot_remove')
-      button.show()
-      field.show()
-      hiddenField = button.prev('input[type=hidden]')
-      hiddenField.val('0')
-      alert("This arm has subject data and cannot be removed")
-    else
-      field.find('.skinny_fields input').val('1')
-      nested_field_count -= 1
-      toggleRemoveLink()
+    field.find('.skinny_fields input').val('1')
+    nested_field_count -= 1
+    toggleRemoveLink()
 
   $(document).on 'nested:fieldAdded:arms', ->
     nested_field_count += 1

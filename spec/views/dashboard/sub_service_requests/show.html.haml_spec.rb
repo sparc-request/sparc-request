@@ -11,6 +11,7 @@ RSpec.describe 'dashboard/sub_service_requests/show', type: :view do
 
     organization = Organization.new(name: "MegaCorp")
     allow(@sub_service_request).to receive(:organization).and_return(organization)
+    allow(@sub_service_request).to receive(:protocol).and_return(@protocol)
     assign(:sub_service_request, @sub_service_request)
 
     @logged_in_user = build_stubbed(:identity)

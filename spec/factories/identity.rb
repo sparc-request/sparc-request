@@ -19,12 +19,19 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 FactoryGirl.define do
+  sequence :ldap_uid do |n|
+    "ldap_uid#{n}@email.com"
+  end
+  
+  sequence :email do |n|
+    "email#{n}@email.com"
+  end
 
   factory :identity do
-    ldap_uid              { Faker::Internet.user_name }
+    ldap_uid
     last_name             { Faker::Name.last_name }
     first_name            { Faker::Name.first_name }
-    email                 { Faker::Internet.email }
+    email
     institution           { Faker::Company.name }
     college               { Faker::Company.name }
     department            { Faker::Company.name }

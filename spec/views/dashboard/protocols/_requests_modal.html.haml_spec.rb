@@ -108,7 +108,7 @@ RSpec.describe 'dashboard/protocols/requests_modal', type: :view do
     it 'should render if the user is an Authorized User' do
       organization    = create(:organization)
                         create(:service_provider, organization: organization, identity: jug2)
-      protocol        = create(:unarchived_protocol_without_validations, primary_pi: create(:identity))
+      protocol        = create(:unarchived_study_without_validations, primary_pi: create(:identity))
       service_request = create(:service_request_without_validations, protocol: protocol)
 
     end

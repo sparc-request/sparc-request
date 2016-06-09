@@ -37,8 +37,13 @@ class PricingSetup < ActiveRecord::Base
   attr_accessible :industry_rate_type
   attr_accessible :investigator_rate_type
   attr_accessible :internal_rate_type
+  attr_accessible :unfunded_rate_type
   
   after_create :create_pricing_maps
+
+  validates :display_date, :effective_date, :corporate, :other, :member, :college_rate_type,
+            :foundation_rate_type, :industry_rate_type, :investigator_rate_type,
+            :internal_rate_type, presence: true
 
   def rate_type(funding_source)
     case funding_source
@@ -48,6 +53,7 @@ class PricingSetup < ActiveRecord::Base
     when 'industry'      then self.industry_rate_type
     when 'investigator'  then self.investigator_rate_type
     when 'internal'      then self.internal_rate_type
+    when 'unfunded'      then self.unfunded_rate_type
     else raise ArgumentError, "Could not find rate type for funding source #{funding_source}"
     end
   end
@@ -66,7 +72,7 @@ class PricingSetup < ActiveRecord::Base
 
     return applied_percentage || 1.0
   end
-  
+
   def create_pricing_maps
     # If there is no organization, then there are no pricing maps
     return if self.organization.nil?
@@ -75,13 +81,13 @@ class PricingSetup < ActiveRecord::Base
       current_map = nil
       begin
         effective_pricing_map = service.effective_pricing_map_for_date(self.effective_date).attributes
-        
+
         ## Deleting the attributes to prevent mass-assignment errors.
         effective_pricing_map.delete('id')
         effective_pricing_map.delete('created_at')
         effective_pricing_map.delete('updated_at')
         effective_pricing_map.delete('deleted_at')
-                
+
         current_map = PricingMap.new(effective_pricing_map)
       rescue
         current_map = service.pricing_maps.build
@@ -90,10 +96,10 @@ class PricingSetup < ActiveRecord::Base
         current_map.unit_minimum = 1
         current_map.unit_type = "Each"
       end
-      
+
       current_map.effective_date = self.effective_date.to_date
       current_map.display_date = self.display_date.to_date
-      current_map.save      
+      current_map.save
     end
   end
 end

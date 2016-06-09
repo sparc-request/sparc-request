@@ -28,7 +28,7 @@
 
 %p
   The following users are still present on the study. Each individual is listed below with the Epic responsibilities requested. Please review carefully. When ready, please click the Approve link. This will send your study information to Epic automatically. If you
-  need to make any changes to the personnel/responsibilities below, please click the “Edit” link which will redirect you to your SPARC Request user portal. Here, under your study’s “User” section, you can add/delete/edit any listed personnel as needed."
+  need to make any changes to the personnel/responsibilities below, please click the “Edit” link which will redirect you to your SPARC Request Dashboard. Here, under your study’s “User” section, you can add/delete/edit any listed personnel as needed."
 
 =render :partial => 'epic_access_rights'
 
@@ -36,7 +36,7 @@
 
 .accept_button= link_to "Send to Epic", push_to_epic_protocol_url(@protocol)
 %br
-.edit_button=  link_to "Edit", portal_root_url(:default_protocol => @protocol.id)
+.edit_button=  link_to "Edit", dashboard_root_url(:default_protocol => @protocol.id)
 
 %br
 

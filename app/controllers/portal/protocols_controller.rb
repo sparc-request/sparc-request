@@ -19,32 +19,18 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Portal::ProtocolsController < Portal::BaseController
-  respond_to :html, :json
-  before_filter :find_protocol, :only => [:show, :view_full_calendar, :update_from_fulfillment, :edit, :update, :update_protocol_type]
-  before_filter :protocol_authorizer_view, :only => [:show, :view_full_calendar]
-  before_filter :protocol_authorizer_edit, :only => [:update_from_fulfillment, :edit, :update, :update_protocol_type]
-    
-  def index
-    @protocols = []
-    @user.protocols.each do |protocol|
-      if protocol.project_roles.find_by_identity_id(@user.id).project_rights != 'none'
-         @protocols << protocol
-      end
-    end
-    @protocols = @protocols.sort_by { |pr| (pr.id || '0000') + pr.id }.reverse
-    @notifications = @user.user_notifications
-    #@projects = Project.remove_projects_due_to_permission(@projects, @user)
 
-    # params[:default_project] = '0f6a4d750fd369ff4ae409373000ba69'
-    if params[:default_protocol] && @protocols.map(&:id).include?(params[:default_protocol].to_i)
-      protocol = @protocols.select{ |p| p.id == params[:default_protocol].to_i}[0]
-      @protocols.delete(protocol)
-      @protocols.insert(0, protocol)
-    end
+  respond_to :html, :json, :xlsx
+
+  before_filter :find_protocol, only: [:show, :view_full_calendar, :update_from_fulfillment, :edit, :update, :update_protocol_type]
+  before_filter :protocol_authorizer_view, only: [:show, :view_full_calendar]
+  before_filter :protocol_authorizer_edit, only: [:update_from_fulfillment, :edit, :update, :update_protocol_type]
+
+  def index
+    @protocols = Portal::ProtocolFinder.new(current_user, params).protocols
 
     respond_to do |format|
-      format.js
-      format.html
+      format.js { render }
     end
   end
 
@@ -55,55 +41,9 @@ class Portal::ProtocolsController < Portal::BaseController
     #@project.project_service_requests
 
     respond_to do |format|
-      format.js
-      format.html
-    end
-  end
-
-  def new
-    @protocol = Study.new
-    @protocol.requester_id = current_user.id
-    @protocol.populate_for_edit
-    @errors = nil
-    @portal = true
-    @current_step = 'protocol'
-    session[:protocol_type] = 'study'
-  end
-
-  def create
-    @current_step = params[:current_step]
-    @protocol = Study.new(params[:study])
-    @protocol.validate_nct = true
-    @portal = params[:portal]
-    session[:protocol_type] = 'study'
-    @portal = params[:portal]
-
-    # @protocol.assign_attributes(params[:study] || params[:project])
-    if @current_step == 'go_back'
-      @current_step = 'protocol'
-      @protocol.populate_for_edit
-    elsif @current_step == 'protocol' and @protocol.group_valid? :protocol
-      @current_step = 'user_details'
-      @protocol.populate_for_edit
-    elsif @current_step == 'user_details' and @protocol.valid?
-      @protocol.save
-      @current_step = 'return_to_portal'
-      if USE_EPIC
-        if @protocol.selected_for_epic
-          @protocol.ensure_epic_user
-          if QUEUE_EPIC
-            EpicQueue.create(:protocol_id => @protocol.id) unless EpicQueue.where(:protocol_id => @protocol.id).size == 1
-          else
-            Notifier.notify_for_epic_user_approval(@protocol).deliver
-          end
-        end
-      end
-    elsif @current_step == 'cancel_protocol'
-      @current_step = 'return_to_portal'
-    else
-      # TODO: Is this neccessary?
-      @errors = @current_step == 'protocol' ? @protocol.grouped_errors[:protocol].try(:messages) : @protocol.grouped_errors[:user_details].try(:messages)
-      @protocol.populate_for_edit
+      format.js   { render }
+      format.html { render }
+      format.xlsx { render }
     end
   end
 
@@ -112,7 +52,7 @@ class Portal::ProtocolsController < Portal::BaseController
       render :nothing => true
     else
       respond_to do |format|
-        format.js { render :status => 500, :json => clean_errors(@protocol.errors) } 
+        format.js { render :status => 500, :json => clean_errors(@protocol.errors) }
       end
     end
   end
@@ -123,12 +63,18 @@ class Portal::ProtocolsController < Portal::BaseController
     @protocol.valid?
     respond_to do |format|
       format.html
-    end
+    end   
   end
 
   def update
-    attrs = params[@protocol.type.downcase.to_sym]
-    if @protocol.update_attributes attrs
+    attrs = if @protocol.type.downcase.to_sym == :study && params[:study]
+      params[:study]
+    elsif @protocol.type.downcase.to_sym == :project && params[:project]
+      params[:project]
+    else
+      Hash.new
+    end
+    if @protocol.update_attributes(attrs.merge(study_type_question_group_id: StudyTypeQuestionGroup.active.pluck(:id).first))
       flash[:notice] = "Study updated"
       redirect_to portal_root_path(:default_protocol => @protocol)
     else
@@ -148,11 +94,17 @@ class Portal::ProtocolsController < Portal::BaseController
     end
   end
 
+  # This action is being used conditionally from both admin and user portal
+  # to update the protocol type
   def update_protocol_type
-    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
     # Using update_attribute here is intentional, type is a protected attribute
-    if @protocol.update_attribute(:type, params[:protocol][:type])
+    @protocol_type = params[:protocol][:type]
+    conditionally_activate_protocol
+    if admin_portal?
+      @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
       redirect_to portal_admin_sub_service_request_path(@sub_service_request)
+    else
+      redirect_to edit_portal_protocol_path(@protocol)
     end
   end
 
@@ -173,6 +125,10 @@ class Portal::ProtocolsController < Portal::BaseController
       end
     end
     @merged = true
+    respond_to do |format|
+      format.js
+      format.html
+    end
   end
 
   def change_arm
@@ -180,7 +136,6 @@ class Portal::ProtocolsController < Portal::BaseController
     @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
     @service_request = @sub_service_request.service_request
     @selected_arm = params[:arm_id] ? Arm.find(@arm_id) : @service_request.arms.first
-    @study_tracker = params[:study_tracker] == "true"
   end
 
   def add_arm
@@ -224,8 +179,22 @@ class Portal::ProtocolsController < Portal::BaseController
     render 'portal/service_requests/add_per_patient_per_visit_visit'
   end
 
-
   private
+
+  def admin_portal?
+    params[:sub_service_request_id].present?
+  end
+
+  def conditionally_activate_protocol
+    @protocol.update_attribute(:type, @protocol_type)
+    if admin_portal?
+      if @protocol_type == "Study" && @protocol.virgin_project?
+        @protocol.activate
+      end
+    else
+      @protocol.activate
+    end
+  end
 
   def find_protocol
     @protocol = Protocol.find(params[:id])

@@ -32,7 +32,7 @@ set :user, "capistrano"
 set :use_sudo, false
 ssh_options[:forward_agent] = true
 
-set :stages, %w(testing demo demo2 staging production)
+set :stages, %w(testing demo demo2 staging production testing_rails_4)
 set :default_stage, "testing"
 
 after "deploy:update_code", "db:symlink"
@@ -132,17 +132,17 @@ end
 namespace :delayed_job do
   desc "Start delayed_job process" 
   task :start, :roles => :app do
-    run "cd #{current_path} && RAILS_ENV=#{rails_env} bundle exec script/delayed_job start"
+    run "cd #{current_path} && RAILS_ENV=#{rails_env} bundle exec script/delayed_job -n 2 start"
   end
 
   desc "Stop delayed_job process" 
   task :stop, :roles => :app do
-    run "cd #{current_path} && RAILS_ENV=#{rails_env} bundle exec script/delayed_job stop"
+    run "cd #{current_path} && RAILS_ENV=#{rails_env} bundle exec script/delayed_job -n 2 stop"
   end
 
   desc "Restart delayed_job process" 
   task :restart, :roles => :app do
-    run "cd #{current_path} && RAILS_ENV=#{rails_env} bundle exec script/delayed_job restart" 
+    run "cd #{current_path} && RAILS_ENV=#{rails_env} bundle exec script/delayed_job -n 2 restart" 
   end
 end
 

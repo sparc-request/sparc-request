@@ -28,7 +28,7 @@ survey "System Satisfaction survey", :default_mandatory => false do
     answer :text
     dependency :rule => "Y"
     condition_Y :question_1, "==", :answer_yes
-    
+
     question "If no, please tell us why. (Have suggestions for us to make it better?)"
     answer :text
     dependency :rule => "N"

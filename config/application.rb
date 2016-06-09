@@ -41,10 +41,15 @@ module SparcRails
 
     # /lib path
     config.autoload_paths += Dir[Rails.root.join('lib')]
+    # /lib/portal path
+    config.autoload_paths += Dir[Rails.root.join('lib/portal')]
+    config.autoload_paths += Dir[Rails.root.join('lib/dashboard')]
 
     # /app/jobs path
     config.paths.add File.join('app', 'jobs'), glob: File.join('**', '*.rb')
     config.autoload_paths += Dir[Rails.root.join('app', 'jobs', '*')]
+
+    config.action_dispatch.default_headers.merge!({'X-Frame-Options' => 'ALLOWALL', 'X-UA-Compatible' => 'IE=edge,chrome=1'})
 
     # Only load the plugins named here, in the order given (default is alphabetical).
     # :all can be used as a placeholder for all plugins not explicitly named.
@@ -82,10 +87,10 @@ module SparcRails
     # This will create an empty whitelist of attributes available for mass-assignment for all models
     # in your app. As such, your models will need to explicitly whitelist or blacklist accessible
     # parameters by using an attr_accessible or attr_protected declaration.
-    config.active_record.whitelist_attributes = true
+    config.active_record.whitelist_attributes = false
 
     # Enable the asset pipeline
-    config.assets.enabled = true
+    config.assets.enabled = false
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'

@@ -22,6 +22,12 @@
 #= require navigation
 
 $(document).ready ->
+
+  $('.new-study-button').tooltip()
+  $('.new-project-button').tooltip()
+
+  infotip.setText('Research Study: An individual research study with defined aims and outcomes', '#infotip img')
+
   $("input[name=protocol]:radio").change ->
     if $(this).val() == 'Research Study'
       $('.existing-study').show()
@@ -29,12 +35,14 @@ $(document).ready ->
       $('.existing-project').hide()
       $('#study-select #service_request_protocol_id').removeAttr('disabled')
       $('#project-select #service_request_protocol_id').attr('disabled', 'disabled')
+      infotip.setText('Research Study: An individual research study with defined aims and outcomes', '#infotip img')
     else
       $('.existing-project').show()
       $('.edit-project').show() unless $('.edit_project_id').val() == ""
       $('.existing-study').hide()
       $('#project-select #service_request_protocol_id').removeAttr('disabled')
       $('#study-select #service_request_protocol_id').attr('disabled', 'disabled')
+      infotip.setText('Use "Project" for non-study specific service requests, or anything that is not a study.', '#infotip img')
 
   $("input[name=protocol]:radio:checked").change()
 
@@ -53,49 +61,5 @@ $(document).ready ->
     else
       $('.edit-project').show()
 
-  $('.edit-study').click ->
-    study_id = $('.edit_study_id').val()
-    service_request_id = $('#service_request_id').val()
-    window.location.href = "/service_requests/#{service_request_id}/studies/#{study_id}/edit"
-    return false
-
-  $('.edit-project').click ->
-    project_id = $('.edit_project_id').val()
-    service_request_id = $('#service_request_id').val()
-    window.location.href = "/service_requests/#{service_request_id}/projects/#{project_id}/edit"
-    return false
-
-  $('.edit_submitted_study').click ->
-    study_id = $('#protocol_id').val()
-    service_request_id = $('#service_request_id').val()
-    window.location.href = "/service_requests/#{service_request_id}/studies/#{study_id}/edit"
-    return false
-
-  $('.edit_submitted_project').click ->
-    project_id = $('#protocol_id').val()
-    service_request_id = $('#service_request_id').val()
-    window.location.href = "/service_requests/#{service_request_id}/projects/#{project_id}/edit"
-    return false
-
-  $('#ctrc_dialog').dialog
-    modal: true
-    width: 375
-    height: 200
-
   $('#redirect').button()
-
-  $('#infotip img').qtip
-    content: 'Research Study: An individual research study with defined aims and outcomes'
-    position:
-      corner:
-        target: "topRight"
-        tooltip: "bottomLeft"
-
-    style:
-      tip: true
-      border:
-        width: 0
-        radius: 4
-
-      name: "light"
-      width: 250
+  

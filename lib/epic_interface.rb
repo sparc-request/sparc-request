@@ -67,7 +67,7 @@ class EpicInterface
   # Create a new EpicInterface
   def initialize(config)
     logfile = File.join(Rails.root, '/log/', "epic-#{Rails.env}.log")
-    logger = ActiveSupport::BufferedLogger.new(logfile)
+    logger = ActiveSupport::Logger.new(logfile)
 
     @config = config
     @errors = {}
@@ -127,12 +127,8 @@ class EpicInterface
           action,
           soap_header: soap_header(action),
           message: message)
-    rescue
-      h = $!.to_hash
-      fault = $!.nori.find(h, 'Fault')
-      msg = $!.nori.find(fault, "Reason", 'Text')
-      msg = $!
-      raise Error.new(msg)
+    rescue Savon::Error => error
+      raise Error.new(error.to_s)
     end
   end
 
@@ -148,6 +144,7 @@ class EpicInterface
   def send_study_creation(study)
     message = study_creation_message(study)
     call('RetrieveProtocolDefResponse', message)
+    
 
     # TODO: handle response from the server
   end
@@ -180,6 +177,7 @@ class EpicInterface
         emit_irb_number(xml, study)
         emit_category_grouper(xml, study)
         emit_study_type(xml, study)
+        emit_ide_number(xml, study)
         emit_cofc(xml, study)
         emit_visits(xml, study)
         emit_procedures_and_encounters(xml, study)
@@ -207,10 +205,11 @@ class EpicInterface
         emit_irb_number(xml, study)
         emit_category_grouper(xml, study)
         emit_study_type(xml, study)
+        emit_ide_number(xml, study)
         emit_cofc(xml, study)
+   
       }
     }
-
     return xml.target!
   end
 
@@ -232,7 +231,7 @@ class EpicInterface
   def emit_nct_number(xml, study)
     nct_number = study.human_subjects_info.try(:nct_number)
 
-    if study.research_types_info.human_subjects && !nct_number.blank? then
+    if study.research_types_info.try(:human_subjects) && !nct_number.blank? then
       xml.subjectOf(typeCode: 'SUBJ') {
         xml.studyCharacteristic(classCode: 'OBS', moodCode: 'EVN') {
           xml.code(code: 'NCT')
@@ -285,7 +284,11 @@ class EpicInterface
   end
 
   def emit_cofc(xml, study)
-    cofc = study.has_cofc? ? 'YES_COFC' : 'NO_COFC'
+    if study.active?
+      cofc = study.study_type_answers.where(study_type_question_id: StudyTypeQuestion.where(study_type_question_group_id: StudyTypeQuestionGroup.where(active:true).pluck(:id)).where(order:1).first.id).first.answer == true ? 'YES_COFC' : 'NO_COFC'
+    else
+      cofc = study.study_type_answers.where(study_type_question_id: StudyTypeQuestion.where(study_type_question_group_id: StudyTypeQuestionGroup.where(active:false).pluck(:id)).where(order:2).first.id).first.answer == true ? 'YES_COFC' : 'NO_COFC'
+    end
 
     xml.subjectOf(typeCode: 'SUBJ') {
       xml.studyCharacteristic(classCode: 'OBS', moodCode: 'EVN') {
@@ -296,24 +299,27 @@ class EpicInterface
   end
 
   def emit_study_type(xml, study)
-    answers = []
-    StudyTypeQuestion.find_each do |stq|
-      answers << stq.study_type_answers.find_by_protocol_id(study.id).answer
-    end
 
-    study_type = nil
-    STUDY_TYPE_ANSWERS.each do |k, v|
-      if v == answers
-        study_type = k
-        break
-      end
-    end
+    study_type = Portal::StudyTypeFinder.new(study).study_type
 
-    if study_type then
+    if study_type 
       xml.subjectOf(typeCode: 'SUBJ') {
         xml.studyCharacteristic(classCode: 'OBS', moodCode: 'EVN') {
           xml.code(code: 'STUDYTYPE')
           xml.value(value: study_type)
+        }
+      }
+    end
+  end
+  
+  def emit_ide_number(xml, study)
+    ide_number = study.investigational_products_info.try(:ide_number)
+
+    if study.investigational_products_info && !ide_number.blank? then
+      xml.subjectOf(typeCode: 'SUBJ') {
+        xml.studyCharacteristic(classCode: 'OBS', moodCode: 'EVN') {
+          xml.code(code: 'RGFT2')
+          xml.value(value: ide_number)
         }
       }
     end
@@ -539,4 +545,3 @@ class EpicInterface
     end
   end
 end
-

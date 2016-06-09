@@ -27,12 +27,16 @@ class ServiceRequest < ActiveRecord::Base
   belongs_to :service_requester, :class_name => "Identity", :foreign_key => "service_requester_id"
   belongs_to :protocol
   has_many :sub_service_requests, :dependent => :destroy
-  has_many :line_items, :include => [:service], :dependent => :destroy
+  has_many :line_items, -> { includes(:service) }, :dependent => :destroy
+  has_many :subsidies, through: :sub_service_requests
   has_many :charges, :dependent => :destroy
   has_many :tokens, :dependent => :destroy
   has_many :approvals, :dependent => :destroy
   has_many :documents, :dependent => :destroy
   has_many :arms, :through => :protocol
+  has_many :notes, as: :notable, dependent: :destroy
+
+  after_save :set_original_submitted_date
 
   validation_group :protocol do
     # validates :protocol_id, :presence => {:message => "You must identify the service request with a study/project before continuing."}
@@ -111,12 +115,6 @@ class ServiceRequest < ActiveRecord::Base
       errors.add(:protocol_id, "You must identify the service request with a study/project before continuing.")
     elsif not self.protocol.valid?
       errors.add(:protocol, "Errors in the selected study/project have been detected.  Please click Edit Study/Project to correct")
-    else
-      if self.has_ctrc_clinical_services?
-        if self.protocol && self.protocol.has_ctrc_clinical_services?(self.id)
-          errors.add(:ctrc_services, "SCTR Research Nexus Services have been removed")
-        end
-      end
     end
 
     if self.line_items.empty?
@@ -139,7 +137,7 @@ class ServiceRequest < ActiveRecord::Base
       end
     end
 
-    unless (direction == 'back' and status == 'first_draft')
+    unless direction == 'back' && ((status == 'first_draft') || (status == 'draft' && !submitted_at.present?))
       #validate start date and end date
       if protocol
         if protocol.start_date.nil?
@@ -182,7 +180,7 @@ class ServiceRequest < ActiveRecord::Base
   end
 
   def service_calendar_page(direction)
-    return if direction == 'back' and status == 'first_draft'
+    return if direction == 'back' && ((status == 'first_draft') || (status == 'draft' && !submitted_at.present?))
     return unless has_per_patient_per_visit_services?
 
     if USE_EPIC
@@ -485,12 +483,14 @@ class ServiceRequest < ActiveRecord::Base
 
   # Change the status of the service request and all the sub service
   # requests to the given status.
-  def update_status(new_status)
-    self.update_attributes(status: new_status)
+  def update_status(new_status, use_validation=true)
+    self.assign_attributes(status: new_status)
 
     self.sub_service_requests.each do |ssr|
-      ssr.update_attributes(status: new_status)
+      ssr.update_attribute(:status, new_status)
     end
+
+    self.save(validate: use_validation)
   end
 
   # Make sure that all the sub service requests have an ssr id
@@ -549,17 +549,6 @@ class ServiceRequest < ActiveRecord::Base
     true #self.sub_service_requests.all?{|ssr| ssr.arms_editable?}
   end
 
-  # If the last sub service request on the service request is not editable,
-  # then a user should not be able to access the request though the 'Edit
-  # Original' button.
-  def is_editable?
-    if (self.sub_service_requests.count == 1) && !self.sub_service_requests.first.can_be_edited?
-      return false
-    end
-
-    return true
-  end
-
   def audit_report identity, start_date=self.previous_submitted_at.utc, end_date=Time.now.utc
     line_item_audits = AuditRecovery.where("audited_changes LIKE '%service_request_id: #{self.id}%' AND
                                       auditable_type = 'LineItem' AND user_id = #{identity.id} AND action IN ('create', 'destroy') AND
@@ -567,5 +556,18 @@ class ServiceRequest < ActiveRecord::Base
                                     .group_by(&:auditable_id)
 
     {:line_items => line_item_audits}
+  end
+
+  def should_be_hidden_for_sp?(sp_only_admin_orgs)
+    (sub_service_requests.reject { |ssr| ssr.should_be_hidden_for_sp?(sp_only_admin_orgs) }).empty?
+  end
+
+  private
+
+  def set_original_submitted_date
+    if self.submitted_at && !self.original_submitted_date
+      self.original_submitted_date = self.submitted_at
+      self.save(validate: false)
+    end
   end
 end

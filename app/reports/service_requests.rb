@@ -22,7 +22,7 @@ class ServiceRequestsReport < ReportingModule
   $canned_reports << name unless $canned_reports.include? name # update global variable so that we can populate the list, report won't show in the list without this, unless is necessary so we don't add on refresh in dev. mode
 
   ################## BEGIN REPORT SETUP #####################
-  
+
   def self.title
     "Service Requests"
   end
@@ -31,7 +31,7 @@ class ServiceRequestsReport < ReportingModule
   def default_options
     {
       "Date Range" => {:field_type => :date_range, :for => "service_requests_submitted_at", :from => "2012-03-01".to_date, :to => Date.today},
-      Institution => {:field_type => :select_tag},
+      Institution => {:field_type => :select_tag, :has_dependencies => "true"},
       Provider => {:field_type => :select_tag, :dependency => '#institution_id', :dependency_id => 'parent_id'},
       Program => {:field_type => :select_tag, :dependency => '#provider_id', :dependency_id => 'parent_id'},
       Core => {:field_type => :select_tag, :dependency => '#program_id', :dependency_id => 'parent_id'},
@@ -45,34 +45,40 @@ class ServiceRequestsReport < ReportingModule
   def column_attrs
     attrs = {}
 
-    if params[:institution_id]
-      attrs[Institution] = [params[:institution_id], :abbreviation]
-    end
-    
-    if params[:provider_id]
-      attrs[Provider] = [params[:provider_id], :abbreviation]
-    end
-    
-    if params[:program_id]
-      attrs[Program] = [params[:program_id], :abbreviation]
-    end
-    
-    if params[:core_id]
-      attrs[Core] = [params[:core_id], :abbreviation]
-    end
-
     attrs["SRID"] = :display_id
+    attrs["Status"] = :formatted_status
 
-    if params[:apr_data]
-      if params[:apr_data].include?("irb") || params[:apr_data].include?("iacuc")
-        attrs["Full Protocol Title"] = "service_request.try(:protocol).try(:title)"
-      end
-    end
+    attrs["Protocol Short Title"] = "service_request.try(:protocol).try(:short_title)"
+    attrs["Full Protocol Title"] = "service_request.try(:protocol).try(:title)"
 
     attrs["Date Submitted"] = "service_request.submitted_at.strftime('%Y-%m-%d')"
 
+    if params[:institution_id]
+      attrs[Institution] = [params[:institution_id], :abbreviation]
+    else
+      attrs["Institution"] = "org_tree.select{|org| org.type == 'Institution'}.first.try(:abbreviation)"
+    end
+
+    if params[:provider_id]
+      attrs[Provider] = [params[:provider_id], :abbreviation]
+    else
+      attrs["Provider"] = "org_tree.select{|org| org.type == 'Provider'}.first.try(:abbreviation)"
+    end
+
+    if params[:program_id]
+      attrs[Program] = [params[:program_id], :abbreviation]
+    else
+      attrs["Program"] = "org_tree.select{|org| org.type == 'Program'}.first.try(:abbreviation)"
+    end
+
+    if params[:core_id]
+      attrs[Core] = [params[:core_id], :abbreviation]
+    else
+      attrs["Core"] = "org_tree.select{|org| org.type == 'Core'}.first.try(:abbreviation)"
+    end
+
     attrs["Primary PI Last Name"] = "service_request.try(:protocol).try(:primary_principal_investigator).try(:last_name)"
-    attrs["Primary PI First Name"] = "service_request.try(:protocol).try(:primary_principal_investigator).try(:first_name)" 
+    attrs["Primary PI First Name"] = "service_request.try(:protocol).try(:primary_principal_investigator).try(:first_name)"
     attrs["Primary PI College"] = ["service_request.try(:protocol).try(:primary_principal_investigator).try(:college)", COLLEGES.invert] # we invert since our hash is setup {"Bio Medical" => "bio_med"} for some crazy reason
     attrs["Primary PI Department"] = ["service_request.try(:protocol).try(:primary_principal_investigator).try(:department)", DEPARTMENTS.invert]
 
@@ -81,11 +87,13 @@ class ServiceRequestsReport < ReportingModule
         attrs["IRB Checked Y/N"] = "service_request.try(:protocol).try(:research_types_info).try(:human_subjects) ? \"Y\" : \"N\""
         attrs["If true, IRB # (HR or PRO)"] = "service_request.try(:protocol).try(:human_subjects_info).try(:irb_and_pro_numbers)"
         attrs["IRB Approval Date"] = "service_request.try(:protocol).try(:human_subjects_info).try(:irb_approval_date).try(:strftime, \"%D\")"
+        attrs["IRB Expiration Date"] = "service_request.try(:protocol).try(:human_subjects_info).try(:irb_expiration_date).try(:strftime, \"%D\")"
       end
       if params[:apr_data].include?("iacuc")
         attrs["IACUC Checked Y/N"] = "service_request.try(:protocol).try(:research_types_info).try(:vertebrate_animals) ? \"Y\" : \"N\""
         attrs["If true, IACUC #"] = "service_request.try(:protocol).try(:vertebrate_animals_info).try(:iacuc_number)"
-        attrs["IRB Approval Date"] = "service_request.try(:protocol).try(:vertebrate_animals_info).try(:iacuc_approval_date).try(:strftime, \"%D\")"
+        attrs["IACUC Approval Date"] = "service_request.try(:protocol).try(:vertebrate_animals_info).try(:iacuc_approval_date).try(:strftime, \"%D\")"
+        attrs["IACUC Expiration Date"] = "service_request.try(:protocol).try(:vertebrate_animals_info).try(:iacuc_expiration_date).try(:strftime, \"%D\")"
       end
     end
 
@@ -93,7 +101,7 @@ class ServiceRequestsReport < ReportingModule
   end
 
   ################## END REPORT SETUP  #####################
-  
+
   ################## BEGIN QUERY SETUP #####################
   # def table => primary table to query
   # includes, where, uniq, order, and group get passed to AR methods, http://apidock.com/rails/v3.2.13/ActiveRecord/QueryMethods
@@ -104,7 +112,7 @@ class ServiceRequestsReport < ReportingModule
   # def order => order by these attributes (include table name is always a safe bet, ex. identities.id DESC, protocols.title ASC)
   # Primary table to query
   def table
-    SubServiceRequest 
+    SubServiceRequest
   end
 
   # Other tables to include
@@ -114,7 +122,7 @@ class ServiceRequestsReport < ReportingModule
 
   # Conditions
   def where args={}
-    organizations = Organization.find(:all)
+    organizations = Organization.all
     selected_organization_id = args[:core_id] || args[:program_id] || args[:provider_id] || args[:institution_id] # we want to go up the tree, service_organization_ids plural because we might have child organizations to include
 
     if args[:tags]
@@ -127,7 +135,7 @@ class ServiceRequestsReport < ReportingModule
     service_organization_ids = [selected_organization_id]
     if selected_organization_id
       org = Organization.find(selected_organization_id)
-      service_organization_ids += org.all_children(organizations).map(&:id)
+      service_organization_ids = org.all_children(organizations).map(&:id)
       service_organization_ids.flatten!
     end
 
@@ -146,7 +154,7 @@ class ServiceRequestsReport < ReportingModule
     # default values if none are provided
     service_organization_ids = Organization.all.map(&:id) if service_organization_ids.compact.empty? # use all if none are selected
 
-    service_organizations = Organization.find_all_by_id(service_organization_ids)
+    service_organizations = Organization.find(service_organization_ids)
 
     unless tags.empty?
       tagged_organization_ids = service_organizations.reject {|x| (x.tags.map(&:name) & tags).empty?}.map(&:id)
@@ -154,13 +162,6 @@ class ServiceRequestsReport < ReportingModule
     end
 
     ssr_organization_ids = Organization.all.map(&:id) if ssr_organization_ids.compact.empty? # use all if none are selected
-
-    # ssr_organizations = Organization.find_all_by_id(ssr_organization_ids)
-
-    # unless tags.empty?
-    #   tagged_organization_ids = ssr_organizations.reject {|x| (x.tags.map(&:name) & tags).empty?}.map(&:id)
-    #   ssr_organization_ids = ssr_organization_ids.reject {|x| !tagged_organization_ids.include?(x)}
-    # end
 
     submitted_at ||= self.default_options["Date Range"][:from]..self.default_options["Date Range"][:to]
     statuses = args[:status] || AVAILABLE_STATUSES.keys # use all if none are selected

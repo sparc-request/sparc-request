@@ -1,14 +1,14 @@
-require 'spec_helper'
+require 'rails_helper'
 
 RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
   describe 'GET /v1/project_role/:id.json' do
 
     before do
-      protocol = FactoryGirl.build(:protocol)
+      protocol = build(:protocol)
       protocol.save validate: false
 
-      @project_role = FactoryGirl.create(:project_role_with_identity, protocol: protocol)
+      @project_role = create(:project_role_with_identity, protocol: protocol)
     end
 
     context 'response params' do
@@ -36,7 +36,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
       before { cwf_sends_api_get_request_for_resource('project_roles', @project_role.id, 'shallow') }
 
       it 'should respond with a single shallow project_role' do
-        expect(response.body).to eq("{\"project_role\":{\"sparc_id\":1,\"callback_url\":\"https://127.0.0.1:5000/v1/project_roles/1.json\"}}")
+        expect(response.body).to eq("{\"project_role\":{\"sparc_id\":#{@project_role.id},\"callback_url\":\"https://127.0.0.1:5000/v1/project_roles/#{@project_role.id}.json\"}}")
       end
     end
 

@@ -22,7 +22,7 @@ class UniquePiReport < ReportingModule
   $canned_reports << name unless $canned_reports.include? name # update global variable so that we can populate the list, report won't show in the list without this, unless is necessary so we don't add on refresh in dev. mode
 
   ################## BEGIN REPORT SETUP #####################
-  
+
   def self.title
     "Unique PI"
   end
@@ -31,7 +31,7 @@ class UniquePiReport < ReportingModule
   def default_options
     {
       "Date Range" => {:field_type => :date_range, :for => "service_requests_submitted_at", :from => "2012-03-01".to_date, :to => Date.today},
-      Institution => {:field_type => :select_tag},
+      Institution => {:field_type => :select_tag, :has_dependencies => "true"},
       Provider => {:field_type => :select_tag, :dependency => '#institution_id', :dependency_id => 'parent_id'},
       Program => {:field_type => :select_tag, :dependency => '#provider_id', :dependency_id => 'parent_id'},
       Core => {:field_type => :select_tag, :dependency => '#program_id', :dependency_id => 'parent_id'},
@@ -45,15 +45,15 @@ class UniquePiReport < ReportingModule
     if params[:institution_id]
       attrs[Institution] = [params[:institution_id], :abbreviation]
     end
-    
+
     if params[:provider_id]
       attrs[Provider] = [params[:provider_id], :abbreviation]
     end
-    
+
     if params[:program_id]
       attrs[Program] = [params[:program_id], :abbreviation]
     end
-    
+
     if params[:core_id]
       attrs[Core] = [params[:core_id], :abbreviation]
     end
@@ -67,7 +67,7 @@ class UniquePiReport < ReportingModule
   end
 
   ################## END REPORT SETUP  #####################
-  
+
   ################## BEGIN QUERY SETUP #####################
   # def table => primary table to query
   # includes, where, uniq, order, and group get passed to AR methods, http://apidock.com/rails/v3.2.13/ActiveRecord/QueryMethods
@@ -88,14 +88,14 @@ class UniquePiReport < ReportingModule
 
   # Conditions
   def where args={}
-    organizations = Organization.find(:all)
+    organizations = Organization.all
     selected_organization_id = args[:core_id] || args[:program_id] || args[:provider_id] || args[:institution_id] # we want to go up the tree, service_organization_ids plural because we might have child organizations to include
 
     # get child organization that have services to related to them
     service_organization_ids = [selected_organization_id]
     if selected_organization_id
       org = Organization.find(selected_organization_id)
-      service_organization_ids += org.all_children(organizations).map(&:id)
+      service_organization_ids = org.all_children(organizations).map(&:id)
       service_organization_ids.flatten!
     end
 

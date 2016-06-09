@@ -18,15 +18,15 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-- line_items_visits = [] 
+- line_items_visits = []
 = javascript_include_tag 'service_calendar_logic'
 = hidden_field_tag :indirect_rate, @service_request.protocol.indirect_cost_rate
 %table.service_calendar{:class => "arm_id_#{arm.id}", :style => @study_tracker ? "width:917px" : ''}
-  %thead.ui-widget-header
+  %thead.default_calendar
     %tr.table_header
       %th.services_header{:rowspan => 2}= t("calendar_page.headers.services")
       %th.unit_costs_header{:colspan => 2}= t("calendar_page.headers.unit_costs")
-      - unless @portal 
+      - unless @portal
         %th.qty_type_header{:rowspan => 2}= t("calendar_page.headers.clinical_qty")
       %th.number_of_subjects_header{:rowspan => 2}= t("calendar_page.headers.subjects")
       %th
@@ -39,7 +39,7 @@
       %th.service_rate_header= t("calendar_page.headers.service_rate")
       %th.your_cost_header= t("calendar_page.headers.your_cost")
       %th &nbsp;
-      - if (@sub_service_request.nil? ? service_request.has_per_patient_per_visit_services? : @sub_service_request.has_per_patient_per_visit_services?) 
+      - if (@sub_service_request.nil? ? service_request.has_per_patient_per_visit_services? : @sub_service_request.has_per_patient_per_visit_services?)
         = generate_visit_header_row arm, service_request, @pages[arm.id].to_i, @portal
       - else
         %th{:colspan => 5} &nbsp;
@@ -50,7 +50,7 @@
         %th.total_per_study= t("calendar_page.headers.total_per_study")
 
   %tbody.cell-border
-    - if (@sub_service_request.nil? ? service_request.has_per_patient_per_visit_services? : @sub_service_request.has_per_patient_per_visit_services?) 
+    - if (@sub_service_request.nil? ? service_request.has_per_patient_per_visit_services? : @sub_service_request.has_per_patient_per_visit_services?)
       %tr.section_header
         %th{:colspan => @portal ? 11 : 13}= t("calendar_page.per_patient") + " -- " + arm.name
       - service_request.service_list(false).each do |key, value| # get only per patient/per visit services and group them
@@ -59,7 +59,7 @@
           %tr.sub_section_header
             %th{:colspan => @portal ? 3 : 6}= value[:name]
             -if @portal
-              %th{:colspan => 2}
+              %th{:colspan => 1}
             -5.times do
               %th.billing_type_list{:style => "text-align:center"}
                 %span.billing_type R
@@ -86,7 +86,7 @@
               %td.service_rate{:class => "service_rate_#{line_items_visit.id}"}= display_service_rate line_item
               - if @study_tracker
                 %td.your_cost= currency_converter line_item.applicable_rate
-              -else 
+              -else
                 %td.your_cost{:style => "white-space:nowrap;overflow:hidden;"}
                   %span= "$"
                   = text_field_tag 'line_item_displayed_cost', number_with_precision(Service.cents_to_dollars(line_item.applicable_rate), :precision => 2), :'data-line_item_id' => line_item.id, :class => 'fulfillment_data fulfillment_your_cost'
@@ -117,7 +117,7 @@
           - 5.times do |i|
             %td{:class => "visit_column_#{i + 1} max_direct_per_patient arm_#{arm.id}"}
           %td{:class => "pp_max_total_direct_cost arm_#{arm.id}"}= display_max_total_direct_cost_per_patient arm, line_items_visits
-        
+
         - if USE_INDIRECT_COST
           %tr.totals_section{:class => cycle('odd', '', :name => 'pppvs')}
             %td{:colspan => 5}= t("calendar_page.labels.maximum_indirect")

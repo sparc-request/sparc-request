@@ -18,10 +18,13 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+= stylesheet_link_tag 'hover_effect'
+
 - if USE_EPIC && @epic_services
   :javascript
     $(document).ready( function(e) {
       $('a.continue_button').click(function() {
+        $('.continue-spinner').show();
         if ($('#study_selected_for_epic_true').is(':checked')) {
           $('form').submit();
         }
@@ -29,6 +32,8 @@
           if (confirm("You have chosen services that are orderable in Epic. Please confirm that you do NOT want your study to be published in Epic. You will not be able to associate encounters or orders to the study without publishing.")) {
             $('form').submit();
           }
+          else
+            { $('.continue-spinner').hide(); }
         }
       });
     })
@@ -37,6 +42,7 @@
   :javascript
     $(document).ready( function() {
       $('a.continue_button').click(function() {
+        $('.continue-spinner').show();
         $('form').submit();
       });
     })
@@ -47,34 +53,34 @@
 //
 /////////////////////////////////////////////
 
--#
-- options = {:remote => true}
-- if portal.to_s == 'true'
-  - options[:url] = portal_studies_path (study)
-
-= form_for study, options do |f|
+= form_for study, remote: true do |f|
   = hidden_field_tag "portal", portal
 
-  - if portal.to_s == 'false'
+  - if portal == 'false'
     .grid_12
-      %h3.blue-provider.step-header.ui-corner-all= current_step == 'protocol' ? t(:protocol_shared)[:step_text] : t(:protocol_shared)[:step_text_2]
+      %h3.blue-provider.step-header.ui-corner-all
+        = current_step == 'protocol' ? t(:protocol_shared)[:step_text] : t(:protocol_shared)[:step_text_2]
   = f.hidden_field :requester_id
   = hidden_field_tag :current_step, current_step
   .clear
   = f.error_messages
 
-  .edit-project-view.portal_container= render :partial => 'studies/fields', :locals => {:study => study, :f => f, :portal => portal, :current_step => @current_step}
+  .edit-project-view.portal_container
+    = render partial: 'studies/fields', locals: {study: study, f: f, portal: portal, current_step: current_step}
   .continue.portal_container
     .grid_12
-      %div{:class => 'blue-provider'}
+      %div.blue-provider
         .nav-backward
-          .return-to-previous
-            %a.cancel_link{:href => "javascript:void(0)"}
-              = image_tag('left_arrow.png', :alt => "Cancel")
-              %span.btn.btn-success.btn-lg= t(:bottom_navigation)[:cancel]
-        .exit= image_tag('Filler.png')
+          .return-to-previous.button-hover
+            %a.cancel_link{class: cookies['current_step'] == 'protocol' ? 'cancel' : 'go-back', href: "javascript:void(0)"}
+              %span.btn.btn-success.btn-lg
+                = current_step == 'protocol' ? t(:bottom_navigation)[:cancel] : t(:bottom_navigation)[:go_back]
+          = image_tag 'spinner.gif', class: 'return-spinner hidden'
+        .exit
+          = image_tag 'Filler.png'
         .nav-forward
-          .save-and-continue
-            %a{:href => "javascript:void(0)", :class => 'continue_button'}
-              %span.btn.btn-success.btn-lg= t(:bottom_navigation)[:continue]
-              = image_tag('right_arrow.png', :alt => "SaveAndContinue")
+          = image_tag 'spinner.gif', class: 'continue-spinner hidden'
+          .save-and-continue.button-hover
+            %a.continue_button{class: cookies['current_step'] == 'protocol' ? 'continue' : 'save', href: "javascript:void(0)"}
+              %span.btn.btn-success.btn-lg
+                = current_step == 'protocol' ? t(:bottom_navigation)[:continue] : t(:bottom_navigation)[:save_and_continue]

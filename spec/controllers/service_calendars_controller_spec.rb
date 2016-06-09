@@ -18,29 +18,29 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-require 'spec_helper'
+require 'rails_helper'
 
 def add_visits_to_arm_line_item(arm, line_item, n=arm.visit_count)
   line_items_visit = LineItemsVisit.for(arm, line_item)
 
   n.times do |index|
-    FactoryGirl.create(:visit_group, arm_id: arm.id, day: index )
+    create(:visit_group, arm_id: arm.id, day: index )
   end
 
   n.times do |index|
-     FactoryGirl.create(:visit, quantity: 0, line_items_visit_id: line_items_visit.id, visit_group_id: arm.visit_groups[index].id)
+     create(:visit, quantity: 0, line_items_visit_id: line_items_visit.id, visit_group_id: arm.visit_groups[index].id)
   end
 end
 
-describe ServiceCalendarsController do
-  
+RSpec.describe ServiceCalendarsController do
+
   let_there_be_lane
   fake_login_for_each_test
   let_there_be_j
   build_service_request_with_project
   stub_controller
   stub_portal_controller
-  
+
   before(:each) do
     session[:identity_id] = jug2
     add_visits
@@ -50,36 +50,34 @@ describe ServiceCalendarsController do
     it 'should set tab to whatever was passed in' do
       session[:service_request_id] = service_request.id
 
-      get :table, {
-        :format => :js,
-        :tab => 'foo',
-        :service_request_id => service_request.id,
+      xhr :get, :table, {
+        format: :js,
+        tab: 'foo',
+        service_request_id: service_request.id,
       }.with_indifferent_access
 
-      assigns(:tab).should eq 'foo'
+      expect(assigns(:tab)).to eq 'foo'
     end
 
     it 'should set the visit page for the service request' do
-      ServiceRequest.any_instance.
-        should_receive(:set_visit_page).
+      expect_any_instance_of(ServiceRequest).to receive(:set_visit_page).
         with(42, arm1).
         and_return(12)
 
-      ServiceRequest.any_instance.
-        should_receive(:set_visit_page).
+      expect_any_instance_of(ServiceRequest).to receive(:set_visit_page).
         with(0, arm2).
         and_return(13)
 
       session[:service_request_id] = service_request.id
       session[:service_calendar_pages] = { arm1.id.to_s => 42 }
-        
-      get :table, {
-        :format => :js,
-        :tab => 'foo',
-        :service_request_id => service_request.id,
+
+      xhr :get, :table, {
+        format: :js,
+        tab: 'foo',
+        service_request_id: service_request.id,
       }.with_indifferent_access
 
-      assigns(:pages).should eq({ arm1.id => 12, arm2.id => 13 })
+      expect(assigns(:pages)).to eq({ arm1.id => 12, arm2.id => 13 })
     end
   end
 
@@ -89,7 +87,7 @@ describe ServiceCalendarsController do
 
       session[:service_request_id] = service_request.id
 
-      get :update, {
+      xhr :get, :update, {
         :format              => :js,
         :tab                 => 'foo',
         :service_request_id  => service_request.id,
@@ -97,7 +95,7 @@ describe ServiceCalendarsController do
         :visit               => visit.id,
       }.with_indifferent_access
 
-      assigns(:visit).should eq visit
+      expect(assigns(:visit)).to eq visit
     end
 
     it 'should set line_item to the given line item if it exists' do
@@ -105,7 +103,7 @@ describe ServiceCalendarsController do
 
       session[:service_request_id] = service_request.id
 
-      get :update, {
+      xhr :get, :update, {
         :format              => :js,
         :tab                 => 'foo',
         :service_request_id  => service_request.id,
@@ -113,7 +111,7 @@ describe ServiceCalendarsController do
         :visit               => visit.id,
       }.with_indifferent_access
 
-      assigns(:line_item).should eq line_item
+      expect(assigns(:line_item)).to eq line_item
     end
 
     it "should set line_item to the visit's line item if there is no line item given" do
@@ -121,7 +119,7 @@ describe ServiceCalendarsController do
 
       session[:service_request_id] = service_request.id
 
-      get :update, {
+      xhr :get, :update, {
         :format              => :js,
         :tab                 => 'foo',
         :service_request_id  => service_request.id,
@@ -129,7 +127,7 @@ describe ServiceCalendarsController do
         :visit               => visit.id,
       }.with_indifferent_access
 
-      assigns(:line_item).should eq visit.line_items_visit.line_item
+      expect(assigns(:line_item)).to eq visit.line_items_visit.line_item
     end
 
     it 'should set subject count on the visit grouping if on the template tab' do
@@ -138,7 +136,7 @@ describe ServiceCalendarsController do
 
       session[:service_request_id] = service_request.id
 
-      get :update, {
+      xhr :get, :update, {
         :format              => :js,
         :service_request_id  => service_request.id,
         :line_items_visit    => line_items_visit.id,
@@ -149,16 +147,16 @@ describe ServiceCalendarsController do
       }.with_indifferent_access
 
       line_items_visit.reload
-      line_items_visit.subject_count.should eq 240
+      expect(line_items_visit.subject_count).to eq 240
     end
 
     it 'should set all the quantities to 0 if on the template tab and there is no line item and checked is false' do
       visit = arm1.visits[0]
-      visit.update_attributes(:research_billing_qty => 0)
+      visit.update_attributes(research_billing_qty: 0)
 
       session[:service_request_id] = service_request.id
 
-      get :update, {
+      xhr :get, :update, {
         :format              => :js,
         :service_request_id  => service_request.id,
         :line_item           => nil,
@@ -169,19 +167,19 @@ describe ServiceCalendarsController do
 
       visit.reload
 
-      visit.quantity.should eq 0
-      visit.research_billing_qty.should eq 0
-      visit.insurance_billing_qty.should eq 0
-      visit.effort_billing_qty.should eq 0
+      expect(visit.quantity).to eq 0
+      expect(visit.research_billing_qty).to eq 0
+      expect(visit.insurance_billing_qty).to eq 0
+      expect(visit.effort_billing_qty).to eq 0
     end
 
     it 'should give an error if on the quantity tab and quantity is less than 0' do
       visit = arm1.visits[0]
-      visit.update_attributes(:research_billing_qty => 0)
+      visit.update_attributes(research_billing_qty: 0)
 
       session[:service_request_id] = service_request.id
 
-      get :update, {
+      xhr :get, :update, {
         :format              => :js,
         :service_request_id  => service_request.id,
         :line_item           => nil,
@@ -190,16 +188,16 @@ describe ServiceCalendarsController do
         :qty                 => -1,
       }.with_indifferent_access
 
-      assigns(:errors).should eq "Quantity must be greater than zero"
+      expect(assigns(:errors)).to eq "Quantity must be greater than zero"
     end
 
     it 'should update quantity on the visit if on the quantity tab and quantity is 0' do
       visit = arm1.visits[0]
-      visit.update_attributes(:research_billing_qty => 0)
+      visit.update_attributes(research_billing_qty: 0)
 
       session[:service_request_id] = service_request.id
 
-      get :update, {
+      xhr :get, :update, {
         :format              => :js,
         :service_request_id  => service_request.id,
         :line_item           => nil,
@@ -210,18 +208,19 @@ describe ServiceCalendarsController do
 
       visit.reload
 
-      visit.quantity.should eq 0
+      expect(visit.quantity).to eq 0
     end
 
     it 'should update quantity on the visit if on the quantity tab and quantity is greater than 0' do
-      LineItem.any_instance.stub_chain(:service, :displayed_pricing_map, :unit_minimum) { 120 }
+      displayed_pricing_map = double(unit_minimum: 120)
+      allow_any_instance_of(LineItem).to receive(:service).and_return(displayed_pricing_map)
 
       visit = arm1.visits[0]
-      visit.update_attributes(:research_billing_qty => 0)
+      visit.update_attributes(research_billing_qty: 0)
 
       session[:service_request_id] = service_request.id
 
-      get :update, {
+      xhr :get, :update, {
         :format              => :js,
         :service_request_id  => service_request.id,
         :line_item           => nil,
@@ -232,16 +231,16 @@ describe ServiceCalendarsController do
 
       visit.reload
 
-      visit.quantity.should eq 18
+      expect(visit.quantity).to eq 18
     end
 
     it 'should give an error if on the billing strategy tab and quantity is less than 0' do
       visit = arm1.visits[0]
-      visit.update_attributes(:research_billing_qty => 0)
+      visit.update_attributes(research_billing_qty: 0)
 
       session[:service_request_id] = service_request.id
 
-      get :update, {
+      xhr :get, :update, {
         :format              => :js,
         :service_request_id  => service_request.id,
         :line_item           => nil,
@@ -250,17 +249,17 @@ describe ServiceCalendarsController do
         :qty                 => -1,
       }.with_indifferent_access
 
-      assigns(:errors).should eq "Quantity must be greater than zero"
+      expect(assigns(:errors)).to eq "Quantity must be greater than zero"
     end
 
     it 'should update the given column on the visit if on the billing strategy tab and quantity is 0' do
       visit = arm1.visits[0]
-      visit.update_attributes(:research_billing_qty => 0)
-      visit.update_attributes(:effort_billing_qty => 42)
+      visit.update_attributes(research_billing_qty: 0)
+      visit.update_attributes(effort_billing_qty: 42)
 
       session[:service_request_id] = service_request.id
 
-      get :update, {
+      xhr :get, :update, {
         :format              => :js,
         :service_request_id  => service_request.id,
         :line_item           => nil,
@@ -272,17 +271,17 @@ describe ServiceCalendarsController do
 
       visit.reload
 
-      visit.effort_billing_qty.should eq 0
+      expect(visit.effort_billing_qty).to eq 0
     end
 
     it 'should update the given column on the visit if on the billing strategy tab and quantity is greater than 0' do
       visit = arm1.visits[0]
-      visit.update_attributes(:research_billing_qty => 0)
-      visit.update_attributes(:effort_billing_qty => 42)
+      visit.update_attributes(research_billing_qty: 0)
+      visit.update_attributes(effort_billing_qty: 42)
 
       session[:service_request_id] = service_request.id
 
-      get :update, {
+      xhr :get, :update, {
         :format              => :js,
         :service_request_id  => service_request.id,
         :line_item           => nil,
@@ -294,18 +293,18 @@ describe ServiceCalendarsController do
 
       visit.reload
 
-      visit.effort_billing_qty.should eq 100
+      expect(visit.effort_billing_qty).to eq 100
     end
 
     it 'should update quantity on the visit to the total if on the billing strategy tab' do
       visit = arm1.visits[0]
-      visit.update_attributes(:research_billing_qty => 8)
-      visit.update_attributes(:insurance_billing_qty => 17)
-      visit.update_attributes(:effort_billing_qty => 42)
+      visit.update_attributes(research_billing_qty: 8)
+      visit.update_attributes(insurance_billing_qty: 17)
+      visit.update_attributes(effort_billing_qty: 42)
 
       session[:service_request_id] = service_request.id
 
-      get :update, {
+      xhr :get, :update, {
         :format              => :js,
         :service_request_id  => service_request.id,
         :line_item           => nil,
@@ -317,25 +316,25 @@ describe ServiceCalendarsController do
 
       visit.reload
 
-      visit.quantity.should eq(8 + 17 + 42)
+      expect(visit.quantity).to eq(8 + 17 + 42)
     end
   end
 
   context('calendar methods') do
     let!(:service1) {
-      service = FactoryGirl.create(:service, pricing_map_count: 1, organization_id: program.id)
+      service = create(:service, pricing_map_count: 1, organization_id: program.id)
       service.pricing_maps[0].update_attributes(display_date: Date.today)
       service
     }
 
     let!(:service2) {
-      service = FactoryGirl.create(:service, pricing_map_count: 1, organization_id: program.id)
+      service = create(:service, pricing_map_count: 1, organization_id: program.id)
       service.pricing_maps[0].update_attributes(display_date: Date.today)
       service
     }
 
     let!(:service3) {
-      service = FactoryGirl.create(:service, pricing_map_count: 1, organization_id: program.id)
+      service = create(:service, pricing_map_count: 1, organization_id: program.id)
       service.pricing_maps[0].update_attributes(display_date: Date.today)
       service
     }
@@ -344,9 +343,9 @@ describe ServiceCalendarsController do
     let!(:pricing_map2) { service2.pricing_maps[0] }
     let!(:pricing_map3) { service3.pricing_maps[0] }
 
-    let!(:line_item1) { FactoryGirl.create(:line_item, service_id: service1.id, service_request_id: service_request.id, sub_service_request_id: sub_service_request.id) }
-    let!(:line_item2) { FactoryGirl.create(:line_item, service_id: service2.id, service_request_id: service_request.id, sub_service_request_id: sub_service_request.id) }
-    let!(:line_item3) { FactoryGirl.create(:line_item, service_id: service3.id, service_request_id: service_request.id, sub_service_request_id: sub_service_request.id) }
+    let!(:line_item1) { create(:line_item, service_id: service1.id, service_request_id: service_request.id, sub_service_request_id: sub_service_request.id) }
+    let!(:line_item2) { create(:line_item, service_id: service2.id, service_request_id: service_request.id, sub_service_request_id: sub_service_request.id) }
+    let!(:line_item3) { create(:line_item, service_id: service3.id, service_request_id: service_request.id, sub_service_request_id: sub_service_request.id) }
 
     build_project
     build_arms
@@ -366,7 +365,7 @@ describe ServiceCalendarsController do
           :format               => :js
         }.with_indifferent_access
 
-        assigns(:line_items_visit).should eq liv
+        expect(assigns(:line_items_visit)).to eq liv
       end
 
       it "should update each of the line item's visits" do
@@ -382,19 +381,19 @@ describe ServiceCalendarsController do
           :format               => :js
         }.with_indifferent_access
 
-        liv.visits.count.should eq 3
-        liv.visits[0].quantity.should               eq 100
-        liv.visits[0].research_billing_qty.should   eq 100
-        liv.visits[0].insurance_billing_qty.should  eq 0
-        liv.visits[0].effort_billing_qty.should     eq 0
-        liv.visits[1].quantity.should               eq 100
-        liv.visits[1].research_billing_qty.should   eq 100
-        liv.visits[1].insurance_billing_qty.should  eq 0
-        liv.visits[1].effort_billing_qty.should     eq 0
-        liv.visits[2].quantity.should               eq 100
-        liv.visits[2].research_billing_qty.should   eq 100
-        liv.visits[2].insurance_billing_qty.should  eq 0
-        liv.visits[2].effort_billing_qty.should     eq 0
+        expect(liv.visits.count).to eq 3
+        expect(liv.visits[0].quantity).to               eq 100
+        expect(liv.visits[0].research_billing_qty).to   eq 100
+        expect(liv.visits[0].insurance_billing_qty).to  eq 0
+        expect(liv.visits[0].effort_billing_qty).to     eq 0
+        expect(liv.visits[1].quantity).to               eq 100
+        expect(liv.visits[1].research_billing_qty).to   eq 100
+        expect(liv.visits[1].insurance_billing_qty).to  eq 0
+        expect(liv.visits[1].effort_billing_qty).to     eq 0
+        expect(liv.visits[2].quantity).to               eq 100
+        expect(liv.visits[2].research_billing_qty).to   eq 100
+        expect(liv.visits[2].insurance_billing_qty).to  eq 0
+        expect(liv.visits[2].effort_billing_qty).to     eq 0
       end
     end
 
@@ -412,7 +411,7 @@ describe ServiceCalendarsController do
           :format               => :js
         }.with_indifferent_access
 
-        assigns(:line_items_visit).should eq liv
+        expect(assigns(:line_items_visit)).to eq liv
       end
 
       it "should update each of the line item's visits" do
@@ -428,19 +427,19 @@ describe ServiceCalendarsController do
           :format               => :js
         }.with_indifferent_access
 
-        liv.visits.count.should eq 3
-        liv.visits[0].quantity.should               eq 0
-        liv.visits[0].research_billing_qty.should   eq 0
-        liv.visits[0].insurance_billing_qty.should  eq 0
-        liv.visits[0].effort_billing_qty.should     eq 0
-        liv.visits[1].quantity.should               eq 0
-        liv.visits[1].research_billing_qty.should   eq 0
-        liv.visits[1].insurance_billing_qty.should  eq 0
-        liv.visits[1].effort_billing_qty.should     eq 0
-        liv.visits[2].quantity.should               eq 0
-        liv.visits[2].research_billing_qty.should   eq 0
-        liv.visits[2].insurance_billing_qty.should  eq 0
-        liv.visits[2].effort_billing_qty.should     eq 0
+        expect(liv.visits.count).to eq 3
+        expect(liv.visits[0].quantity).to               eq 0
+        expect(liv.visits[0].research_billing_qty).to   eq 0
+        expect(liv.visits[0].insurance_billing_qty).to  eq 0
+        expect(liv.visits[0].effort_billing_qty).to     eq 0
+        expect(liv.visits[1].quantity).to               eq 0
+        expect(liv.visits[1].research_billing_qty).to   eq 0
+        expect(liv.visits[1].insurance_billing_qty).to  eq 0
+        expect(liv.visits[1].effort_billing_qty).to     eq 0
+        expect(liv.visits[2].quantity).to               eq 0
+        expect(liv.visits[2].research_billing_qty).to   eq 0
+        expect(liv.visits[2].insurance_billing_qty).to  eq 0
+        expect(liv.visits[2].effort_billing_qty).to     eq 0
       end
     end
 
@@ -463,18 +462,18 @@ describe ServiceCalendarsController do
         }.with_indifferent_access
 
         liv = LineItemsVisit.for(arm1, line_item1)
-        liv.visits[1].quantity.should               eq 100
-        liv.visits[1].research_billing_qty.should   eq 100
-        liv.visits[1].insurance_billing_qty.should  eq 0
-        liv.visits[1].effort_billing_qty.should     eq 0
-        liv.visits[1].quantity.should               eq 100
-        liv.visits[1].research_billing_qty.should   eq 100
-        liv.visits[1].insurance_billing_qty.should  eq 0
-        liv.visits[1].effort_billing_qty.should     eq 0
-        liv.visits[1].quantity.should               eq 100
-        liv.visits[1].research_billing_qty.should   eq 100
-        liv.visits[1].insurance_billing_qty.should  eq 0
-        liv.visits[1].effort_billing_qty.should     eq 0
+        expect(liv.visits[1].quantity).to               eq 100
+        expect(liv.visits[1].research_billing_qty).to   eq 100
+        expect(liv.visits[1].insurance_billing_qty).to  eq 0
+        expect(liv.visits[1].effort_billing_qty).to     eq 0
+        expect(liv.visits[1].quantity).to               eq 100
+        expect(liv.visits[1].research_billing_qty).to   eq 100
+        expect(liv.visits[1].insurance_billing_qty).to  eq 0
+        expect(liv.visits[1].effort_billing_qty).to     eq 0
+        expect(liv.visits[1].quantity).to               eq 100
+        expect(liv.visits[1].research_billing_qty).to   eq 100
+        expect(liv.visits[1].insurance_billing_qty).to  eq 0
+        expect(liv.visits[1].effort_billing_qty).to     eq 0
       end
     end
 
@@ -497,20 +496,19 @@ describe ServiceCalendarsController do
         }.with_indifferent_access
 
         liv = LineItemsVisit.for(arm1, line_item1)
-        liv.visits[1].quantity.should               eq 0
-        liv.visits[1].research_billing_qty.should   eq 0
-        liv.visits[1].insurance_billing_qty.should  eq 0
-        liv.visits[1].effort_billing_qty.should     eq 0
-        liv.visits[1].quantity.should               eq 0
-        liv.visits[1].research_billing_qty.should   eq 0
-        liv.visits[1].insurance_billing_qty.should  eq 0
-        liv.visits[1].effort_billing_qty.should     eq 0
-        liv.visits[1].quantity.should               eq 0
-        liv.visits[1].research_billing_qty.should   eq 0
-        liv.visits[1].insurance_billing_qty.should  eq 0
-        liv.visits[1].effort_billing_qty.should     eq 0
+        expect(liv.visits[1].quantity).to               eq 0
+        expect(liv.visits[1].research_billing_qty).to   eq 0
+        expect(liv.visits[1].insurance_billing_qty).to  eq 0
+        expect(liv.visits[1].effort_billing_qty).to     eq 0
+        expect(liv.visits[1].quantity).to               eq 0
+        expect(liv.visits[1].research_billing_qty).to   eq 0
+        expect(liv.visits[1].insurance_billing_qty).to  eq 0
+        expect(liv.visits[1].effort_billing_qty).to     eq 0
+        expect(liv.visits[1].quantity).to               eq 0
+        expect(liv.visits[1].research_billing_qty).to   eq 0
+        expect(liv.visits[1].insurance_billing_qty).to  eq 0
+        expect(liv.visits[1].effort_billing_qty).to     eq 0
       end
     end
   end
 end
-

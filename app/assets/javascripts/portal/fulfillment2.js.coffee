@@ -369,7 +369,7 @@ $(document).ready ->
         'arm_id': $('#arm_id').val()
         'study_tracker': $('#study_tracker_hidden_field').val() || null
       $.ajax
-        type: 'DELETE'
+        type: 'PUT'
         url:   "/portal/admin/service_requests/#{sr_id}/remove_per_patient_per_visit_visit"
         data:  JSON.stringify(data)
         dataType: 'script'
@@ -477,6 +477,14 @@ $(document).ready ->
     $(this).children().first().toggleClass('ui-icon-triangle-1-s')
     li_id = $(this).data('line_item_id')
     $(".li_#{li_id}").toggle()
+  )
+
+  $(document).on('change', 'select#fulfillment_timeframe', ->  
+    if $(this).val() == ''
+      $(this).closest('tr').find('#fulfillment_time').attr("value", "").change()
+      $(this).closest('tr').find('#fulfillment_time').prop( "disabled", true ).addClass('disabled_text_box')
+    else
+      $(this).closest('tr').find('#fulfillment_time').prop( "disabled", false ).removeClass('disabled_text_box')
   )
 
   $(document).on('click', '.add_note_link', ->

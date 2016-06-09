@@ -18,118 +18,85 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-require 'spec_helper'
+require 'rails_helper'
 
-feature 'effective and display date validations' do
-  before :each do
+RSpec.feature 'effective and display date validations', js: true do
+
+  scenario 'user cannot select the same effective date as an existing pricing_map' do
     default_catalog_manager_setup
-  end    
-  
-  scenario 'user cannot select the same effective date as an existing pricing_map', :js => true do
     click_link("South Carolina Clinical and Translational Institute (SCTR)")
-    sleep 1
-
+    wait_for_javascript_to_finish
     first('#pricing').click
-    sleep 1
-
+    wait_for_javascript_to_finish
     first('.add_pricing_setup').click
+    wait_for_javascript_to_finish
     first('.pricing_setup_accordion h3').click
-    sleep 1
- 
+    wait_for_javascript_to_finish
     page.execute_script("$('.effective_date:visible').focus()")
-    sleep 1
-    first('.ui-datepicker-today').click #click on today's date
-    sleep 1
- 
-    # This is the only way I could figure out how to test the text of the confirmation dialog
-    get_alert_window do |prompt|
-      # The test will pass if the confirmation dialog is closed, so if text matches the test will pass, otherwise it will fail
-      if prompt.text == ('A pricing map already exists with that effective date.  Please choose another date.')
-        prompt.accept
-      end
+    wait_for_javascript_to_finish
+    message = accept_alert do
+      first('.ui-datepicker-today').click
     end
+    wait_for_javascript_to_finish
+
+    expect(message).to eq('A pricing map already exists with that effective date.  Please choose another date.')
   end
-  
-  scenario 'user cannot select the same display date as an existing pricing_map', :js => true do
+
+  scenario 'user cannot select the same display date as an existing pricing_map' do
+    default_catalog_manager_setup
     click_link("South Carolina Clinical and Translational Institute (SCTR)")
-    sleep 1
+    wait_for_javascript_to_finish
     first('#pricing').click
-    sleep 1
-
+    wait_for_javascript_to_finish
     first('.add_pricing_setup').click
+    wait_for_javascript_to_finish
     first('.pricing_setup_accordion h3').click
-    sleep 1
-
+    wait_for_javascript_to_finish
     page.execute_script("$('.display_date:visible').focus()")
-    sleep 1
-    first('.ui-datepicker-today').click #click on today's date
-    sleep 1
-
-    # This is the only way I could figure out how to test the text of
-    # the confirmation dialog
-    get_alert_window do |prompt|
-      # The test will pass if the confirmation dialog is closed, so if
-      # text matches the test will pass, otherwise it will fail    
-      if prompt.text == ('A pricing map already exists with that display date.  Please choose another date.')
-        prompt.accept
-      end
+    wait_for_javascript_to_finish
+    message = accept_alert do
+      find('.ui-datepicker-today').click
     end
+    wait_for_javascript_to_finish
+
+    expect(message).to eq('A pricing map already exists with that display date.  Please choose another date.')
   end
-  
 
-  scenario 'confirmation appears when a user selects an effective date that is before an existing effective date', :js => true do
+  scenario 'confirmation appears when a user selects an effective date that is before an existing effective date' do
+    default_catalog_manager_setup
     click_link("Office of Biomedical Informatics")
-    sleep 1
-
+    wait_for_javascript_to_finish
     first('#pricing').click
-    sleep 1
-
+    wait_for_javascript_to_finish
     first('.add_pricing_setup').click
     all('.pricing_setup_accordion h3').last.click
-    sleep 1
-
+    wait_for_javascript_to_finish
     page.execute_script("$('.effective_date:visible').focus()")
-    sleep 1
-    page.execute_script %Q{ $('a.ui-datepicker-prev').trigger("click") } # go back one month
-    page.execute_script %Q{ $("a.ui-state-default:contains('15')").trigger("click") } # click on day 15
-    sleep 1
-
-    # This is the only way I could figure out how to test the text of
-    # the confirmation dialog
-    prompt = retry_until {
-      get_alert_window do |prompt|
-        # The test will pass if the confirmation dialog is closed, so if
-        # text matches the test will pass, otherwise it will fail    
-        if prompt.text == ('This effective date is before the effective date of existing pricing maps, are you sure you want to do this?')
-          prompt.dismiss # dismissed confirmation to avoid a second confirmation dialog, which capybara does not appear to handle
-      end
+    wait_for_javascript_to_finish
+    page.execute_script %Q{ $('a.ui-datepicker-prev').trigger("click") }
+    wait_for_javascript_to_finish
+    message = dismiss_confirm do
+      page.execute_script %Q{ $("a.ui-state-default:contains('15')").trigger("click") } # click on day 15
     end
-    }
-    
+    wait_for_javascript_to_finish
+
+    expect(message).to eq('This effective date is before the effective date of existing pricing maps, are you sure you want to do this?')
   end
-  
-  scenario 'an alert will pop when a user selects an effective date in the increase/decrease rates dialog that is 
-            the same as a pricing map', :js => true do
 
+  scenario 'an alert will pop when a user selects an effective date in the increase/decrease rates dialog that is the same as a pricing map' do
+    default_catalog_manager_setup
     click_link('South Carolina Clinical and Translational Institute (SCTR)')
-    sleep 1
-
+    wait_for_javascript_to_finish
     first('#pricing').click
-    sleep 1
-
+    wait_for_javascript_to_finish
     first('.increase_decrease_rates').click
-    
     page.execute_script("$('.change_rate_display_date:visible').focus()")
-    sleep 1
-    first('a.ui-state-default.ui-state-highlight').click #click on today's date
-    sleep 1
-
-    # This is the only way I could figure out how to test the text of the confirmation dialog
-    get_alert_window do |prompt|
-      # The test will pass if the confirmation dialog is closed, so if text matches the test will pass, otherwise it will fail
-      if prompt.text == ('A pricing map already exists with that display date.  Please choose another date.')
-        prompt.accept
-      end
+    wait_for_javascript_to_finish
+    message = accept_alert do
+      first('a.ui-state-default.ui-state-highlight').click #click on today's date
     end
+    wait_for_javascript_to_finish
+
+    expect(message).to eq('A pricing map already exists with that display date.  Please choose another date.')
   end
 end

@@ -19,16 +19,97 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 require 'date'
-require 'spec_helper'
+require 'rails_helper'
 
-describe 'Protocol' do
+RSpec.describe 'Protocol' do
+  let_there_be_lane
+  let_there_be_j
+  build_service_request_with_study()
+  build_service_request_with_project()
+  build_study_type_question_groups()
+  build_study_type_questions()
+  build_study_type_answers()
 
-  describe ".notify_remote_around_update?" do
+  describe "#active?" do
+
+    context "study is inactive" do
+      before :each do
+        study.update_attributes(study_type_question_group_id: StudyTypeQuestionGroup.where(active:false).pluck(:id).first)
+      end
+
+      it "should return false" do
+        expect(study.active?).to eq false
+      end
+    end
+    context "study is active" do
+      before :each do
+        study.update_attributes(study_type_question_group_id: StudyTypeQuestionGroup.where(active:true).pluck(:id).first)
+      end
+
+      it "should return true" do
+        expect(study.active?).to eq true
+      end
+    end
+    context "project is inactive" do
+      before :each do
+        project.update_attributes(study_type_question_group_id: StudyTypeQuestionGroup.where(active:false).pluck(:id).first)
+      end
+
+      it "should return false" do
+        expect(project.active?).to eq false
+      end
+    end
+    context "project is active" do
+      before :each do
+        project.update_attributes(study_type_question_group_id: StudyTypeQuestionGroup.where(active:true).pluck(:id).first)
+      end
+
+      it "should return true" do
+        expect(project.active?).to eq true
+      end
+    end
+  end
+
+  describe "#virgin_project?" do
+    context "project is virgin" do
+      before :each do
+        project.update_attributes(selected_for_epic: nil)
+      end
+
+      it "should return true" do
+        expect(project.virgin_project?).to eq true
+      end
+    end
+    context "project is not a virgin" do
+      before :each do
+        project.update_attributes(selected_for_epic: false)
+      end
+
+      it "should return true" do
+        expect(project.virgin_project?).to eq false
+      end
+    end
+  end
+
+  describe "#activate" do
+    context "protocol is not active" do
+      before :each do
+        study.update_attributes(study_type_question_group_id: StudyTypeQuestionGroup.where(active:false).pluck(:id).first)
+      end
+
+      it "should activate protocol" do
+        study.activate
+        expect(study.study_type_question_group_id).to eq StudyTypeQuestionGroup.where(active:true).pluck(:id).first
+      end
+    end
+  end
+
+  describe ".notify_remote_around_update?", delay: true do
 
     context ":short_title update present" do
 
       it "should create a RemoteServiceNotifierJob" do
-        protocol = FactoryGirl.build(:protocol)
+        protocol = build(:protocol)
 
         protocol.save validate: false
         protocol.update_attribute :short_title, "New short title"
@@ -40,63 +121,60 @@ describe 'Protocol' do
     context ":short_title update not present" do
 
       it "should not create a RemoteServiceNotifierJob" do
-        protocol = FactoryGirl.build(:protocol)
+        protocol = build(:protocol)
 
         protocol.save validate: false
         protocol.update_attribute :title, "New title"
 
-        expect(Delayed::Job.where(queue: "remote_service_notifier").one?).to_not be
+        expect(Delayed::Job.where(queue: "remote_service_notifier").one?).not_to be
       end
     end
   end
 
   describe 'funding_source_based_on_status' do
     it 'should return the potential funding source if funding status is pending_funding' do
-      study = Study.create(FactoryGirl.attributes_for(:protocol))
+      study = Study.create(attributes_for(:protocol))
       study.funding_status = 'pending_funding'
       study.funding_source = 'college'
       study.potential_funding_source = 'foundation'
-      study.funding_source_based_on_status.should eq 'foundation'
+      expect(study.funding_source_based_on_status).to eq 'foundation'
     end
 
     it 'should return the funding source if funding status is funded' do
-      study = Study.create(FactoryGirl.attributes_for(:protocol))
+      study = Study.create(attributes_for(:protocol))
       study.funding_status = 'funded'
       study.funding_source = 'college'
       study.potential_funding_source = 'foundation'
-      study.funding_source_based_on_status.should eq 'college'
+      expect(study.funding_source_based_on_status).to eq 'college'
     end
   end
 
   describe 'should validate funding status and source for studies' do
     it 'should raise an exception if funding status is nil' do
-      study = Study.create(FactoryGirl.attributes_for(:protocol))
+      study = Study.create(attributes_for(:protocol))
       study.funding_status = nil
-      lambda { study.funding_source_based_on_status }.should raise_exception ArgumentError
+      expect(lambda { study.funding_source_based_on_status }).to raise_exception ArgumentError
     end
 
     it 'should raise an exception if funding status is neither funded nor pending_funding' do
-      study = Study.create(FactoryGirl.attributes_for(:protocol))
+      study = Study.create(attributes_for(:protocol))
       study.funding_status = 'foobarbaz'
-      lambda { study.funding_source_based_on_status }.should raise_exception ArgumentError
+      expect(lambda { study.funding_source_based_on_status }).to raise_exception ArgumentError
     end
   end
 
   describe 'should validate funding source for projects' do
     it 'should raise an exception if funding source is nil' do
-      project = Project.create(FactoryGirl.attributes_for(:protocol))
+      project = Project.create(attributes_for(:protocol))
       project.funding_source = nil
-      project.valid?.should eq false
+      expect(project.valid?).to eq false
     end
   end
 
   describe "push to epic" do
     it "should create a record of the protocols push" do
-      human_subjects_info = FactoryGirl.build(:human_subjects_info, pro_number: nil, hr_number: nil)
-      study = FactoryGirl.build(:study, human_subjects_info: human_subjects_info)
-      study.save(validate: false)
+      study.update_attribute(:selected_for_epic, true)
       expect{ study.push_to_epic(EPIC_INTERFACE) }.to change(EpicQueueRecord, :count).by(1)
     end
   end
 end
-

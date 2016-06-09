@@ -1,4 +1,4 @@
-require 'spec_helper'
+require 'rails_helper'
 
 RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
@@ -6,8 +6,8 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
     before do
       5.times do
-        organization        = FactoryGirl.create(:organization)
-        sub_service_request = FactoryGirl.create(:sub_service_request, organization: organization)
+        organization        = create(:organization)
+        sub_service_request = create(:sub_service_request, organization: organization)
       end
 
       @sub_service_request_ids = SubServiceRequest.pluck(:id)
@@ -56,10 +56,10 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
       it 'should respond with an array of sub_service_requests and their attributes' do
         parsed_body         = JSON.parse(response.body)
-        expected_attributes = FactoryGirl.build(:sub_service_request).attributes.
+        expected_attributes = build(:sub_service_request).attributes.
                                 keys.
                                 reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at'].include?(key) }.
-                                push('callback_url', 'sparc_id', 'grand_total', 'stored_percent_subsidy').
+                                push('callback_url', 'sparc_id', 'grand_total').
                                 sort
 
         expect(parsed_body['sub_service_requests'].map(&:keys).flatten.uniq.sort).to eq(expected_attributes)
@@ -72,10 +72,10 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
       it 'should respond with an array of sub_service_requests and their attributes and their shallow reflections' do
         parsed_body         = JSON.parse(response.body)
-        expected_attributes = FactoryGirl.build(:sub_service_request).attributes.
+        expected_attributes = build(:sub_service_request).attributes.
                                 keys.
                                 reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at'].include?(key) }.
-                                push('callback_url', 'sparc_id', 'line_items', 'service_request', 'grand_total', 'stored_percent_subsidy').
+                                push('callback_url', 'sparc_id', 'line_items', 'service_request', 'grand_total').
                                 sort
 
         expect(parsed_body['sub_service_requests'].map(&:keys).flatten.uniq.sort).to eq(expected_attributes)

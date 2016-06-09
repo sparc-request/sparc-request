@@ -23,12 +23,12 @@ module Capybara::Node::Matchers
     synchronize do
       unless text == content
         raise Capybara::ExpectationNotMet
-      end                                                                                   
+      end
     end
     return true
-  rescue Capybara::ExpectationNotMet                                                        
-    return false                                                                            
-  end 
+  rescue Capybara::ExpectationNotMet
+    return false
+  end
 
   alias_method :has_exact_content?, :has_exact_text?
 
@@ -36,12 +36,12 @@ module Capybara::Node::Matchers
     synchronize do
       if text == content
         raise Capybara::ExpectationNotMet
-      end                                                                                   
+      end
     end
     return true
-  rescue Capybara::ExpectationNotMet                                                        
-    return false                                                                            
-  end 
+  rescue Capybara::ExpectationNotMet
+    return false
+  end
 
   alias_method :does_not_have_exact_content?, :does_not_have_exact_text?
 
@@ -49,23 +49,23 @@ module Capybara::Node::Matchers
     synchronize do
       unless value == expected
         raise Capybara::ExpectationNotMet
-      end                                                                                   
+      end
     end
     return true
-  rescue Capybara::ExpectationNotMet                                                        
-    return false                                                                            
-  end 
+  rescue Capybara::ExpectationNotMet
+    return false
+  end
 
   def does_not_have_value?(expected)
     synchronize do
       if value == expected
         raise Capybara::ExpectationNotMet
-      end                                                                                   
+      end
     end
     return true
-  rescue Capybara::ExpectationNotMet                                                        
-    return false                                                                            
-  end 
+  rescue Capybara::ExpectationNotMet
+    return false
+  end
 end
 
 module Capybara::RSpecMatchers
@@ -86,11 +86,11 @@ module Capybara::RSpecMatchers
       @actual.does_not_have_exact_text?(text)
     end
 
-    def failure_message_for_should
+    def failure_message
       "expected #{format(text)} to equal #{format(@actual.text)}"
     end
 
-    def failure_message_for_should_not
+    def failure_message__when_negated
       "expected #{format(text)} to not equal #{format(@actual.text)}"
     end
 
@@ -145,11 +145,11 @@ module Capybara::RSpecMatchers
       @actual.does_not_have_exact_value?(value)
     end
 
-    def failure_message_for_should
+    def failure_message
       "expected #{format(value)} to equal #{format(@actual.value)}"
     end
 
-    def failure_message_for_should_not
+    def failure_message_when_negated
       "expected #{format(value)} to not equal #{format(@actual.value)}"
     end
 
@@ -179,4 +179,3 @@ module Capybara::RSpecMatchers
     HaveValue.new(value)
   end
 end
-

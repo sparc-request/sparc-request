@@ -18,25 +18,45 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-require 'spec_helper'
+require 'rails_helper'
 
-describe "VisitGroup" do
+RSpec.describe "VisitGroup" do
 
   let_there_be_lane
   let_there_be_j
   build_service_request_with_study
-  let!(:visit_group)         { FactoryGirl.create(:visit_group, arm_id: arm1.id, position: 1, day: 1)}
+  let!(:visit_group) { create(:visit_group, arm_id: arm1.id, position: 1, day: 1)}
+  let!(:visit1)      { create(:visit, visit_group_id: visit_group.id)}         
+  let!(:visit2)      { create(:visit, visit_group_id: visit_group.id)}         
 
   context "setting the default name" do
 
     it "should set a default name based on its position" do
-      visit_group.name.should eq("Visit 1")
+      expect(visit_group.name).to eq("Visit 1")
     end
 
     it "should not set the name if it already has one" do
       visit_group.update_attributes(name: "Foobar")
       visit_group.set_default_name
-      visit_group.name.should eq("Foobar")
+      expect(visit_group.name).to eq("Foobar")
+    end
+  end
+
+  describe 'any visit quantities customized' do
+
+    let!(:arm)               { create(:arm) }
+    let!(:line_items_visit1) { create(:line_items_visit, arm_id: arm.id, line_item_id: line_item.id) }
+    let!(:visit_group)       { create(:visit_group, arm_id: arm.id)}
+    let!(:visit1)            { create(:visit, line_items_visit_id: line_items_visit1.id, visit_group_id: visit_group.id) }
+    let!(:visit2)            { create(:visit, line_items_visit_id: line_items_visit1.id, visit_group_id: visit_group.id) }
+
+    it 'should return true if any of the visits have quantities' do
+      visit2.update_attributes(research_billing_qty: 2)
+      expect(visit_group.any_visit_quantities_customized?(service_request)).to eq(true)
+    end
+
+    it 'should return false if the quantity is zero' do
+      expect(visit_group.any_visit_quantities_customized?(service_request)).to eq(false)
     end
   end
 end

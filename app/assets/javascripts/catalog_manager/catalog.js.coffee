@@ -34,15 +34,28 @@ $ ->
       error_number = 0
       for key,value of errors_array
         for error in value
+          humanized_error_message = Sparc.catalog.humanize_error_message(key, error)
           error_number += 1
-          error_string += "<li>#{key[0].toUpperCase()}#{key.substr(1, key.length - 1)} #{error}</li>"
-
+          error_string += humanized_error_message
       $('.errorExplanation').html("<h2>#{error_number} error(s) prevented this #{entity_type} from being saved:</h2>
         <p>There were problems with the following fields:</p>
         <ul>
           #{error_string}
         </ul>
       ").show()
+      $("html, body").animate({ scrollTop: 0 }, "slow")
+
+    humanize_error_message: (key, error) ->
+      new_key = key.replace(/.\./g, '_')
+      humanized_message = I18n["pricing_setup"]["#{new_key}"]
+      returned_message = ""
+
+      if humanized_message != undefined
+        returned_message = "<li>#{humanized_message} #{error}</li>"
+      else
+        returned_message = "<li>#{key[0].toUpperCase()}#{key.substr(1, key.length - 1)} #{error}</li>"
+
+      return returned_message
 
     submitRateChanges: (entity_id, percentage, effective_date, display_date) ->
       data = { entity_id: entity_id, percentage: percentage, effective_date: Sparc.config.readyMyDate(effective_date, 'send'), display_date: Sparc.config.readyMyDate(display_date, 'send')}
@@ -236,12 +249,6 @@ $ ->
     $.post '/catalog_manager/services/set_linked_quantity_total', {service_relation_id: $(this).data('service_relation_id'), linked_quantity_total: $(this).val()}, (data) ->
         $('#rs_info').html(data)
 
-  # clinical work fulfillment
-  $('.cwf input[type=checkbox]').live 'click', ->
-    if $(this).is(":checked")
-      $('.cwf.position_field').show()
-    else
-      $('.cwf.position_field').hide()
 
   ############################
   # Begin pricing map logic
@@ -455,10 +462,6 @@ $ ->
     Sparc.catalog.submitRateChanges(entity_id, percent_of_change, effective_date, display_date)
   )
 
-  $('.display_date, .effective_date, .rate, .percentage_field').live('change', ->
-    validate_dates_and_rates()
-  )
-
   # Service and general (not specific to per patient or one time fees) pricing map validations
   $('.service_name,
     .service_order,
@@ -482,23 +485,7 @@ $ ->
   $('.remove_pricing_setup').live('click', ->
     $(this).parent().prevAll('h3:first').remove()
     $(this).parent().remove()
-    validate_dates_and_rates()
   )
-
-  validate_dates_and_rates = () ->
-    blank_field = false
-
-    for field in $('.validate')
-      blank_field = true if $(field).val() == ""
-
-    if blank_field == false
-      $('.save_button').removeAttr('disabled')
-      $('.blank_field_errors').hide()
-    else
-      $('.save_button').attr('disabled', true)
-      $('.blank_field_errors').css('display', 'inline-block')
-
-
 
   $('.change_rate_display_date, .change_rate_effective_date').live('change', ->
     entity_id = $(this).closest('.increase_decrease_dialog').children('.entity_id').val()
@@ -546,4 +533,12 @@ $ ->
     $('#cwf_wrapper input.cwf_clear').val('')
     $("#cwf_wrapper input[type='checkbox']").attr('checked', false)
   )
+
+  $(document).on('click','.unavailable_button', ->
+    $('#processing_request').dialog('open')
+    show_unavailable = $(this).data('show-unavailable')
+    window.location.assign("/catalog_manager?show_unavailable=#{show_unavailable}")
+  )
+
+
 

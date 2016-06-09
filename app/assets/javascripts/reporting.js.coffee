@@ -19,33 +19,21 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 $(document).ready ->
-  $('#defined_reports_step_1').dialog
-    autoOpen: false
-    modal: true
-    width: 'auto'
-    height: 'auto'
-
-  $('#defined_report_link').click ->
-    #$('#defined_reports_step_1').show()
-    $('#defined_reports_step_2').hide()
-    $('#defined_reports_step_1').dialog("open")
-
-  $('#custom_report_link').click ->
-    alert "Coming soon!"
 
   $(document).on "click", "#reporting_return_to_list", (event) ->
     event.preventDefault()
     $('#defined_reports_step_2').hide()
     $("#report_selection").show()
-    $('#defined_reports_step_1').dialog("open")
 
   $(document).on "change", ".reporting_field", ->
-    window.check_deps()
-    if $(this).data("resolve") and $(this).val() != ""
-      res = $(this).data("resolve")
-      $(res).prop('disabled', false)
-      cattype = $(this).val()
-      optionswitch(cattype, res)
+    parent_id = "#" + $(this).attr('id')
+    window.check_deps(parent_id)
+    if $(this).val() != ""
+      $(".check_dep_class.needs_update").each ->
+        $(this).removeClass('needs_update')
+        $(this).prop('disabled', false)
+        cattype = $(parent_id).val()
+        optionswitch(cattype, "#" + $(this).attr('id'))
 
   $(document).on "submit", "#reporting_form", (event) ->
     empty = $('.required_field').filter ->
@@ -79,7 +67,7 @@ rewriteoption = (myfilter, res) ->
   resultgood = false
   myfilterclass = "sub-" + myfilter
   optionlisting = "<option value=''>Select One</option>"
-  
+
   #first variable is always the value, second is always the class, third is always the text
   for i in [3..options.length] by 3
     regex = new RegExp(myfilterclass + '$')
@@ -90,47 +78,25 @@ rewriteoption = (myfilter, res) ->
     return optionlisting
 
 window.create_date_pickers = (from, to) ->
-  $("#{from}").datepicker
-    changeMonth: true,
-    changeYear: true,
-    dateFormat: "yy-mm-dd",
-    numberOfMonths: 3,
-    onClose: (selectedDate) ->
-      unless selectedDate == ""
-        $("#{to}").datepicker( "option", "minDate", selectedDate )
+  $("#{from}").datetimepicker(format: 'YYYY-MM-DD', allowInputToggle: true)
+  $("#{to}").datetimepicker(format: 'YYYY-MM-DD', allowInputToggle: true, useCurrent: false)
 
-  $("#{to}").datepicker
-    changeMonth: true,
-    changeYear: true,
-    dateFormat: "yy-mm-dd",
-    numberOfMonths: 3,
-    onClose: (selectedDate) ->
-      unless selectedDate == ""
-        $("#{from}").datepicker( "option", "maxDate", selectedDate )
-  
-  minDate = $("#{from}").data("from")
-  maxDate = $("#{to}").data("to")
+  $("#{from}").on "dp.change", (e) ->
+    $("#{to}").data('DateTimePicker').minDate(e.date)
 
-  if minDate
-    $("#{from}").datepicker("option", "minDate", new Date(minDate))
-    $("#{to}").datepicker("option", "minDate", new Date(minDate))
-  
-  if maxDate
-    $("#{from}").datepicker("option", "maxDate", new Date(maxDate))
-    $("#{to}").datepicker("option", "maxDate", new Date(maxDate))
+  $("#{to}").on "dp.change", (e) ->
+    $("#{from}").data('DateTimePicker').maxDate(e.date)
 
 window.create_single_date_pickers = ->
-  $('.date_field').datepicker
-    changeMonth: true,
-    changeYear: true,
-    dateFormat: "yy-mm-dd",
-    numberOfMonths: 3,
+  $(".datetimepicker").datetimepicker(format: 'YYYY-MM-DD', allowInputToggle: true)
 
-window.check_deps = ->
+window.check_deps = (parent_id) ->
   $(".check_dep_class").each ->
     dep = $(this).data("dependency")
-    if $(dep).val() == ""
+    if dep.match(parent_id)
+      $(this).addClass("needs_update")
       $(this).val("")
-      $(dep).data("resolve", "#" + $(this).attr('id'))
+
+    if $(dep).val() == ""
       $(this).prop('disabled', true)
 

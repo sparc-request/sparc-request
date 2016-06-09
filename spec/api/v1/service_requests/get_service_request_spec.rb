@@ -1,11 +1,11 @@
-require 'spec_helper'
+require 'rails_helper'
 
 RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
   describe 'GET /v1/service_request/:id.json' do
 
     before do
-      @service_request = FactoryGirl.build(:service_request)
+      @service_request = build(:service_request)
       @service_request.save validate: false
     end
 
@@ -34,7 +34,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
       before { cwf_sends_api_get_request_for_resource('service_requests', @service_request.id, 'shallow') }
 
       it 'should respond with a single shallow service_request' do
-        expect(response.body).to eq("{\"service_request\":{\"sparc_id\":1,\"callback_url\":\"https://127.0.0.1:5000/v1/service_requests/1.json\"}}")
+        expect(response.body).to eq("{\"service_request\":{\"sparc_id\":#{@service_request.id},\"callback_url\":\"https://127.0.0.1:5000/v1/service_requests/#{@service_request.id}.json\"}}")
       end
     end
 
@@ -44,9 +44,9 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
       it 'should respond with a Service' do
         parsed_body         = JSON.parse(response.body)
-        expected_attributes = FactoryGirl.build(:service_request).attributes.
+        expected_attributes = build(:service_request).attributes.
                                 keys.
-                                reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at'].include?(key) }.
+                                reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at', 'original_submitted_date'].include?(key) }.
                                 push('callback_url', 'sparc_id').
                                 sort
 
@@ -60,9 +60,9 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
       it 'should respond with an array of service_requests and their attributes and their shallow reflections' do
         parsed_body         = JSON.parse(response.body)
-        expected_attributes = FactoryGirl.build(:service_request).attributes.
+        expected_attributes = build(:service_request).attributes.
                                 keys.
-                                reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at'].include?(key) }.
+                                reject { |key| ['id', 'created_at', 'updated_at', 'deleted_at', 'original_submitted_date'].include?(key) }.
                                 push('callback_url', 'sparc_id', 'sub_service_requests', 'line_items', 'protocol').
                                 sort
 

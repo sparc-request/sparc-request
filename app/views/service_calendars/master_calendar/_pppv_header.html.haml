@@ -19,13 +19,14 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 %tr.table_header
   %th.services_header{:rowspan => 2}= t(:calendar_page)[:headers][:services]
+  %th.status_header{ rowspan: 2 }= t(:calendar_page)[:headers][:status]
 
 
   - if @review #display review calendar pppv header
     %th.your_cost_header{:rowspan => 2}= t(:calendar_page)[:headers][:your_cost]
     %th.number_of_subjects_header{:rowspan => 2}= t(:calendar_page)[:headers][:subjects]
     %th{:colspan => 5, :height => 40, :width => 375}
-      = generate_visit_navigation arm, @service_request, @pages, tab, portal
+      = generate_visit_navigation(arm, @service_request, @pages, tab, portal, portal ? @sub_service_request.try(:id) : nil)
     %th{:rowspan => 2}= t(:calendar_page)[:headers][:total_per_patient]
     %th.total_per_study{:rowspan => 2}= t(:calendar_page)[:headers][:total_per_study]
 
@@ -39,13 +40,13 @@
     - else
       %th.unit_costs_header{:colspan => 2}= t(:calendar_page)[:headers][:unit_costs]
     %th.qty_type_header{:rowspan => 2}= t(:calendar_page)[:headers][:clinical_qty]
-    %th.number_of_subjects_header{:rowspan => 2}= t(:calendar_page)[:headers][:subjects]
-    %th{:colspan => 5, :height => 40, :width => 375}
-      = generate_visit_navigation arm, @service_request, @pages, @tab, @portal
+    %th{:colspan => 6, :height => 40, :width => 375}
+      = generate_visit_navigation(arm, @service_request, @pages, tab, portal, portal ? @sub_service_request.try(:id) : nil)
     %th{:rowspan => 2}= t(:calendar_page)[:headers][:total_per_patient]
     %th.total_per_study{:rowspan => 2}= t(:calendar_page)[:headers][:total_per_study]
 
     %tr.table_header
+      %th.number_of_subjects_header{:rowspan => 1}= t(:calendar_page)[:headers][:subjects]
       - unless @portal
         %th.service_rate_header= t(:calendar_page)[:headers][:service_rate]
         %th.your_cost_header= t(:calendar_page)[:headers][:your_cost]
@@ -57,18 +58,18 @@
     - unless @portal
       %th.qty_type_header{:rowspan => 2}= t(:calendar_page)[:headers][:clinical_qty]
     %th.number_of_subjects_header{:rowspan => 2}= t(:calendar_page)[:headers][:subjects]
-    %th
-    %th{:colspan => 5, :height => 40, :width => 375}
-      = generate_visit_navigation arm, service_request, @pages, @tab, @portal
-    %th{:colspan => 2}= image_tag 'spinner.gif', :class => 'service_calendar_spinner'
+    %th{:colspan => 6, :height => 40, :width => 375}
+      = generate_visit_navigation(arm, @service_request, @pages, tab, portal, portal ? @sub_service_request.try(:id) : nil)
+    %th{:colspan => 3}= image_tag 'spinner.gif', :class => 'service_calendar_spinner'
 
     %tr.table_header
       %th.service_rate_header= t(:calendar_page)[:headers][:service_rate]
       %th.your_cost_header= t(:calendar_page)[:headers][:your_cost]
-      %th &nbsp;
+      -if @tab == 'template'
+        %th &nbsp;
       = generate_visit_header_row arm, service_request, @pages[arm.id].to_i, @sub_service_request, @portal
       - if @portal
-        %th &nbsp;
+        %th{:colspan => 4} &nbsp;
       - else
         %th= t(:calendar_page)[:headers][:total_per_patient]
-        %th.total_per_study= t(:calendar_page)[:headers][:total_per_study]
+        %th.total_per_study{:colspan => 2}= t(:calendar_page)[:headers][:total_per_study]

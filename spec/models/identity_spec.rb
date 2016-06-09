@@ -18,28 +18,28 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-require 'spec_helper'
+require 'rails_helper'
 require 'net/ldap' # TODO: not sure why this is necessary
 
-describe "Identity" do
+RSpec.describe "Identity" do
   let_there_be_lane
   let_there_be_j
   build_service_request_with_project
-  
+
 
   describe "helper methods" do
 
-    let!(:identity) { FactoryGirl.create(:identity, first_name: "ash", last_name: "ketchum", email: "ash@theverybest.com") }
+    let!(:identity) { create(:identity, first_name: "ash", last_name: "ketchum", email: "ash@theverybest.com") }
 
     describe "full_name" do
 
       it "should return the full name if both first and last name are present" do
-        identity.full_name.should eq("Ash Ketchum")
+        expect(identity.full_name).to eq("Ash Ketchum")
       end
 
       it "should return what it can (without extra whitespace) if a piece is missing" do
         identity.update_attribute(:last_name, nil)
-        identity.full_name.should eq("Ash")
+        expect(identity.full_name).to eq("Ash")
       end
 
     end
@@ -47,12 +47,12 @@ describe "Identity" do
     describe "display name" do
 
       it "should return the display name if all elements are present" do
-        identity.display_name.should eq("Ash Ketchum (ash@theverybest.com)")
+        expect(identity.display_name).to eq("Ash Ketchum (ash@theverybest.com)")
       end
 
       it "should return what it can (without extra whitespace) if a piece is missing" do
         identity.update_attribute(:email, nil)
-        identity.display_name.should eq("Ash Ketchum ()")
+        expect(identity.display_name).to eq("Ash Ketchum ()")
       end
 
     end
@@ -64,37 +64,37 @@ describe "Identity" do
     # Several of these tests will put a bunch of stuff into the logs,
     # So while the tests are passing you will see a bunch of text in the spec logs.
 
-    let!(:identity) { FactoryGirl.create(:identity, first_name: "ash", last_name: "ketchum", email: "ash@theverybest.com", ldap_uid: 'ash151@musc.edu') }
+    let!(:identity) { create(:identity, first_name: "ash", last_name: "ketchum", email: "ash@theverybest.com", ldap_uid: 'ash151@musc.edu') }
 
     it "should find an existing identity" do
-      Identity.search("ash151").should eq([identity])
+      expect(Identity.search("ash151")).to eq([identity])
     end
 
     it "should create an identity for a non-existing ldap_uid" do
-      Identity.all.count.should eq(3)
+      expect(Identity.all.count).to eq(3)
       Identity.search("ash")
-      Identity.all.count.should eq(4)
+      expect(Identity.all.count).to eq(4)
     end
 
     it "should return an empty array if it cannot find anything" do
-      Identity.search("gary").should eq([])
+      expect(Identity.search("gary")).to eq([])
     end
 
     it "should still search the database if ldap fails for some reason" do
-      FactoryGirl.create(:identity, :ldap_uid => 'error')
+      create(:identity, ldap_uid: 'error')
       # These search terms will cause ldap to raise an exception, however,
       # the search results will still return the 'error' identity.
-      Identity.search('error').should_not be_empty()
+      expect(Identity.search('error')).not_to be_empty()
     end
 
     it "should return identities without an e-mail address" do
-      Identity.all.count.should eq(3)
-      Identity.search('iamabadldaprecord').should_not be_empty()
-      Identity.all.count.should eq(4)
+      expect(Identity.all.count).to eq(3)
+      expect(Identity.search('iamabadldaprecord')).not_to be_empty()
+      expect(Identity.all.count).to eq(4)
     end
 
     it "should still search the database if the identity creation fails for some reason" do
-      FactoryGirl.create(:identity, first_name: "ash", last_name: "evil", email: "another_ash@s-mart.com", ldap_uid: 'ashley@musc.edu')
+      create(:identity, first_name: "ash", last_name: "evil", email: "another_ash@s-mart.com", ldap_uid: 'ashley@musc.edu')
       Identity.search('ash')
     end
 
@@ -102,18 +102,18 @@ describe "Identity" do
 
   describe "rights" do
 
-    let!(:user)                 {FactoryGirl.create(:identity)}
-    let!(:user2)                {FactoryGirl.create(:identity)}           
-    let!(:catalog_manager)      {FactoryGirl.create(:catalog_manager, identity_id: user.id, organization_id: institution.id)}
-    let!(:super_user)           {FactoryGirl.create(:super_user, identity_id: user.id, organization_id: institution.id)}
-    let!(:service_provider)     {FactoryGirl.create(:service_provider, identity_id: user.id, organization_id: institution.id, is_primary_contact: true)}
-    let!(:clinical_provider)    {FactoryGirl.create(:clinical_provider, identity_id: user2.id, organization_id: core.id)}
-    let!(:ctrc_provider)        {FactoryGirl.create(:clinical_provider, identity_id: user2.id, organization_id: program.id)}
-    let!(:project_role)         {FactoryGirl.create(:project_role, identity_id: user.id, protocol_id: project.id, project_rights: 'approve')}
-    let!(:request)              {FactoryGirl.create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id)}
+    let!(:user)                 {create(:identity, ldap_uid: 'slickwilly@musc.edu')}
+    let!(:user2)                {create(:identity, ldap_uid: 'superfly@musc.edu')}
+    let!(:catalog_manager)      {create(:catalog_manager, identity_id: user.id, organization_id: institution.id)}
+    let!(:super_user)           {create(:super_user, identity_id: user.id, organization_id: institution.id)}
+    let!(:service_provider)     {create(:service_provider, identity_id: user.id, organization_id: institution.id, is_primary_contact: true)}
+    let!(:clinical_provider)    {create(:clinical_provider, identity_id: user2.id, organization_id: core.id)}
+    let!(:ctrc_provider)        {create(:clinical_provider, identity_id: user2.id, organization_id: program.id)}
+    let!(:project_role)         {create(:project_role, identity_id: user.id, protocol_id: project.id, project_rights: 'approve')}
+    let!(:request)              {create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id)}
 
     describe "permission methods" do
-    
+
 
       describe "can edit service request " do
 
@@ -121,12 +121,12 @@ describe "Identity" do
         it "should return false if the users rights are not 'approve' or request" do
           project_role.update_attributes(project_rights: 'none')
           service_request.update_attributes(service_requester_id: user2.id)
-          user.can_edit_service_request?(service_request).should eq(false)
+          expect(user.can_edit_service_request?(service_request)).to eq(false)
         end
 
         it "should return true no matter what the service request's status is" do
           service_request.update_attributes(status: 'approved')
-          user.can_edit_service_request?(service_request).should eq(true)
+          expect(user.can_edit_service_request?(service_request)).to eq(true)
         end
       end
 
@@ -135,30 +135,30 @@ describe "Identity" do
         it "should return true if the user has the correct rights, and if nexus ssr has the correct status" do
           program.tag_list = 'ctrc'
           program.save
-          user.can_edit_sub_service_request?(sub_service_request).should eq(true)
+          expect(user.can_edit_sub_service_request?(sub_service_request)).to eq(true)
         end
 
         it "should return true if not a nexus request, regardless of status" do
           request.update_attributes(status: "complete")
-          user.can_edit_sub_service_request?(request).should eq(true)
+          expect(user.can_edit_sub_service_request?(request)).to eq(true)
         end
 
         it "should return false if the user does not have correct rights" do
           project_role.update_attributes(project_rights: 'none')
           service_request.update_attributes(service_requester_id: user2.id)
-          user.can_edit_sub_service_request?(sub_service_request).should eq(false)
-        end 
+          expect(user.can_edit_sub_service_request?(sub_service_request)).to eq(false)
+        end
       end
 
       describe "can edit entity" do
 
         it "should return true if the user is a catalog manager for a given organization" do
-          user.can_edit_entity?(institution).should eq(true)
+          expect(user.can_edit_entity?(institution)).to eq(true)
         end
 
         it "should return false if the user is not a catalog manager for a given organization" do
-          random_user = FactoryGirl.create(:identity)
-          random_user.can_edit_entity?(institution).should eq(false)
+          random_user = create(:identity)
+          expect(random_user.can_edit_entity?(institution)).to eq(false)
         end
       end
 
@@ -166,43 +166,43 @@ describe "Identity" do
 
         it "should return true if 'edit historic data' flag is set for the user's catalog manager relationship" do
           catalog_manager.update_attributes(edit_historic_data: true)
-          user.can_edit_historical_data_for?(institution).should eq(true)
+          expect(user.can_edit_historical_data_for?(institution)).to eq(true)
         end
 
         it "should return false if the flag is not set" do
-          user.can_edit_historical_data_for?(institution).should eq(false)
+          expect(user.can_edit_historical_data_for?(institution)).to eq(false)
         end
       end
 
       describe "can edit fulfillment" do
 
         it "should return true if the user is a super user for an organization's parent" do
-          user.can_edit_fulfillment?(provider).should eq(true)
+          expect(user.can_edit_fulfillment?(provider)).to eq(true)
         end
 
         it "should return true if the user is a service provider for a given organization" do
-          user.can_edit_fulfillment?(institution).should eq(true)
+          expect(user.can_edit_fulfillment?(institution)).to eq(true)
         end
 
         it "should return false if these conditions are not met" do
-          random_user = FactoryGirl.create(:identity)
-          random_user.can_edit_fulfillment?(institution).should eq(false)
-        end 
+          random_user = create(:identity)
+          expect(random_user.can_edit_fulfillment?(institution)).to eq(false)
+        end
       end
 
       describe "can edit core" do
 
         it "should return true if the user is a clinical provider on the given core" do
-          user2.can_edit_core?(core.id).should eq(true)
+          expect(user2.can_edit_core?(core.id)).to eq(true)
         end
 
         it "should return true if the user is a super user on the given core" do
-          user.can_edit_core?(core.id).should eq(true)
+          expect(user.can_edit_core?(core.id)).to eq(true)
         end
 
         it "should return false if the user is not a clinical provider on a given core" do
-          random_user = FactoryGirl.create(:identity)
-          random_user.can_edit_core?(core.id).should eq(false)
+          random_user = create(:identity)
+          expect(random_user.can_edit_core?(core.id)).to eq(false)
         end
       end
 
@@ -211,95 +211,89 @@ describe "Identity" do
         it "should return true if the user is a clinical provider on the ctrc" do
           program.tag_list.add("ctrc")
           program.save
-          user2.clinical_provider_for_ctrc?.should eq(true)
+          expect(user2.clinical_provider_for_ctrc?).to eq(true)
         end
 
         it "should return false if the user is not a clinical provider on the ctrc" do
-          user.clinical_provider_for_ctrc?.should eq(false)
+          expect(user.clinical_provider_for_ctrc?).to eq(false)
         end
       end
 
       describe "is service provider" do
 
         it "should return true if the user is a service provider for a given ssr's organization or any of it's parents" do
-          user.is_service_provider?(request).should eq(true)
+          expect(user.is_service_provider?(request)).to eq(true)
         end
 
         it "should return false if the user is not a service provider in the org tree" do
-          user2.is_service_provider?(request).should eq(false)
+          expect(user2.is_service_provider?(request)).to eq(false)
         end
       end
     end
 
     describe "collection methods" do
-      
+
       describe "catalog manager organizations" do
 
         it "should collect all organizations that the user has catalog manager permissions on" do
-          user.catalog_manager_organizations.should include(institution)
+          expect(user.catalog_manager_organizations).to include(institution)
         end
 
         it "should also collect all child organizations" do
-          user.catalog_manager_organizations.should include(provider, program)
+          expect(user.catalog_manager_organizations).to include(provider, program)
         end
       end
 
       describe "admin organizations" do
 
         it "should collect all organizations that the user has super user permissions on" do
-          user.admin_organizations.should include(institution)
+          expect(user.admin_organizations).to include(institution)
         end
 
         it "should also collect all child organizations" do
-          user.admin_organizations.should include(provider, program)
+          expect(user.admin_organizations).to include(provider, program)
         end
 
         it "should not ignore nil organizations" do
-          sp = FactoryGirl.create(:service_provider, identity_id: user.id, organization_id: 9999)
-          lambda {user.admin_organizations}.should_not raise_exception
-        end
-      end
-
-      describe "admin service requests by status" do
-
-        it "should return all of a user's sub service requests under admin organizations sorted by status" do
-          hash = user.admin_service_requests_by_status
-          hash.should include('draft')
-        end
-        it "should return a specific organization's sub service requests if givin an org id" do
-          sub_service_request.update_attributes(status: "submitted", organization_id: institution.id)
-          hash = user.admin_service_requests_by_status(institution.id)
-          hash.should include('submitted')
+          create(:service_provider, identity_id: user.id, organization_id: 9999)
+          expect(lambda {user.admin_organizations}).not_to raise_exception
         end
       end
     end
   end
 
   describe "notification methods" do
+    describe "#unread_notification_count" do
+      context "with :sub_service_request_id" do
+        it "should return number of unread notifications only associated with specified SubServiceRequest" do
+          user1 = create(:identity)
+          user2 = create(:identity)
 
-    let!(:user)               {FactoryGirl.create(:identity)}
-    let!(:notification)       {FactoryGirl.create(:notification)}
-    let!(:notification2)      {FactoryGirl.create(:notification)}
-    let!(:user_notification)  {FactoryGirl.create(:user_notification, identity_id: user.id, notification_id: notification.id)}
-    let!(:user_notification2) {FactoryGirl.create(:user_notification, identity_id: user.id, notification_id: notification2.id)}
+          # expect
+          create(:notification_without_validations, originator_id: user1.id, read_by_originator: false, sub_service_request_id: 1)
 
+          # don't expect
+          create(:notification_without_validations, originator_id: user1.id, read_by_originator: false, sub_service_request_id: 2)
+          create(:notification_without_validations, originator_id: user2.id, read_by_originator: false)
 
-    describe "all notifications" do
-
-      it "should return all of a user's notifications based on their user notifications" do
-        user.all_notifications.should include(notification, notification2)
-      end
-    end
-
-    describe "unread notification count" do
-
-      it "should return the correct number of unread notifications" do
-        user.unread_notification_count(user).should eq(2)
+          expect(user1.unread_notification_count(1)).to eq(1)
+        end
       end
 
-      it "should reduce the count by one if a message is read" do
-        user_notification.update_attributes(read: true)
-        user.unread_notification_count(user).should eq(1)
+      context "without :sub_service_request_id" do
+        it "should return number of unread notifications" do
+          user1 = create(:identity)
+          user2 = create(:identity)
+
+          # expect
+          create(:notification_without_validations, originator_id: user1.id, read_by_originator: false, sub_service_request_id: 1)
+          create(:notification_without_validations, originator_id: user1.id, read_by_originator: false, sub_service_request_id: 2)
+
+          # don't expect
+          create(:notification_without_validations, originator_id: user2.id, read_by_originator: false)
+
+          expect(user1.unread_notification_count).to eq(2)
+        end
       end
     end
   end
@@ -307,10 +301,10 @@ describe "Identity" do
   describe "validations" do
 
     it "should validate the presence of neccessary attributes" do
-      lambda { FactoryGirl.build(:identity).save! }.should_not raise_exception
-      lambda { FactoryGirl.build(:identity, :ldap_uid => nil).save! }.should raise_exception(ActiveRecord::RecordInvalid)
-      lambda { FactoryGirl.build(:identity, :first_name => nil).save! }.should raise_exception(ActiveRecord::RecordInvalid)
-      lambda { FactoryGirl.build(:identity, :last_name => nil).save! }.should raise_exception(ActiveRecord::RecordInvalid)
+      expect(lambda { build(:identity).save! }).not_to raise_exception
+      expect(lambda { build(:identity, ldap_uid: nil).save! }).to raise_exception(ActiveRecord::RecordInvalid)
+      expect(lambda { build(:identity, first_name: nil).save! }).to raise_exception(ActiveRecord::RecordInvalid)
+      expect(lambda { build(:identity, last_name: nil).save! }).to raise_exception(ActiveRecord::RecordInvalid)
     end
   end
 end

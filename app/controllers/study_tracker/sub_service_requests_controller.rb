@@ -48,10 +48,10 @@ class StudyTracker::SubServiceRequestsController < StudyTracker::BaseController
     build_fulfillments
 
     # get cwf organizations
-    @cwf_organizations = Organization.get_cwf_organizations
+    @cwf_organizations = Organization.in_cwf
 
     # min start date and max end date
-    cwf_audit = @sub_service_request.audits.where(:audited_changes => YAML.dump({"in_work_fulfillment" => [nil, true]})).first
+    cwf_audit = @sub_service_request.audits.where(:audited_changes => YAML.dump({'in_work_fulfillment' => [false, true]})).first
     @min_start_date = cwf_audit.nil? ? "N/A" : cwf_audit.created_at.utc
     @max_end_date = Time.now.utc
   end

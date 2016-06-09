@@ -26,8 +26,10 @@ class LineItemsVisit < ActiveRecord::Base
 
   belongs_to :arm
   belongs_to :line_item
-
-  has_many :visits, :dependent => :destroy, :include => :visit_group, :order => 'visit_groups.position'
+  has_one :service_request, through: :line_item
+  has_one :sub_service_request, through: :line_item
+  has_one :service, through: :line_item
+  has_many :visits, -> { includes(:visit_group).order("visit_groups.position") }, :dependent => :destroy
 
   attr_accessible :arm_id
   attr_accessible :line_item_id
@@ -43,10 +45,8 @@ class LineItemsVisit < ActiveRecord::Base
   # Find a LineItemsVisit for the given arm and line item.  If it does
   # not exist, create it first, then return it.
   def self.for(arm, line_item)
-    return LineItemsVisit.find_or_create_by_arm_id_and_line_item_id(
-        arm.id,
-        line_item.id,
-        subject_count: arm.subject_count)
+    liv = LineItemsVisit.where(arm_id: arm.id, line_item_id: line_item.id).first_or_create(subject_count: arm.subject_count)
+    return liv
   end
 
   def create_visits
@@ -88,7 +88,7 @@ class LineItemsVisit < ActiveRecord::Base
   def quantity_total
     # quantity_total = self.visits.map {|x| x.research_billing_qty}.inject(:+) * self.subject_count
     quantity_total = self.visits.sum('research_billing_qty')
-    return quantity_total * self.subject_count
+    return quantity_total * (self.subject_count || 0)
   end
 
   # Returns a hash of subtotals for the visits in the line item.
@@ -119,11 +119,8 @@ class LineItemsVisit < ActiveRecord::Base
 
   # Determine the direct costs for a visit-based service for one subject
   def direct_costs_for_visit_based_service_single_subject
-    # TODO: use sum() here
-    # totals_array = self.per_subject_subtotals(visits).values.select {|x| x.class == Float}
-    # subject_total = totals_array.empty? ? 0 : totals_array.inject(:+)
-    result = self.connection.execute("SELECT SUM(research_billing_qty) FROM visits WHERE line_items_visit_id=#{self.id} AND research_billing_qty >= 1")
-    research_billing_qty_total = result.to_a[0][0] || 0
+    result = Visit.where("line_items_visit_id = ? AND research_billing_qty >= ?", self.id, 1).sum(:research_billing_qty)
+    research_billing_qty_total = result || 0
     subject_total = research_billing_qty_total * per_unit_cost(quantity_total())
 
     subject_total
@@ -212,4 +209,8 @@ class LineItemsVisit < ActiveRecord::Base
   end
 
   ### end audit reporting methods ###
+
+  def any_visit_quantities_customized?
+    visits.any?(&:quantities_customized?)
+  end
 end

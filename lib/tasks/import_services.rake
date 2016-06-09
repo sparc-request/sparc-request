@@ -24,11 +24,8 @@ namespace :data do
     def header
       [
        "CPT Code",
-       "CDM Code",
        "Send to Epic",
        "Procedure Name",
-       "Abbreviation",
-       "Order",
        "Service Rate",
        "Corporate Rate",
        "Federal Rate",
@@ -101,6 +98,28 @@ namespace :data do
       end
     end
 
+    def has_valid_rates?(pricing_map)
+      rate_array = [pricing_map.corporate_rate, pricing_map.federal_rate, 
+                    pricing_map.member_rate, pricing_map.other_rate]
+      rate_array.each do |rate|
+        if (rate > pricing_map.full_rate)
+          return false
+        end
+      end
+    end
+
+    def generate_bad_rate_report(rate_array)
+      CSV.open("tmp/bad_rate_report.csv", "w+") do |csv|
+        csv << ["CPT Code", "Procedure Name", "Service Rate", "Corporate Rate", "Federal Rate", "Member Rate", "Other Rate"]
+        rate_array.each do |rates|
+          service = rates[0]
+          pricing_map = rates[1]
+          csv << [service.cpt_code, service.name, pricing_map.full_rate, pricing_map.corporate_rate, pricing_map.federal_rate,
+                  pricing_map.member_rate, pricing_map.other_rate]
+        end
+      end
+    end
+
     puts "Press CTRL-C to exit"
     puts ""
 
@@ -112,6 +131,7 @@ namespace :data do
     org_labels = []
     org_labels = org.parents.map(&:label).reverse unless org.parents.empty?
     org_labels << org.label
+    pricing_maps_with_bad_rates = []
     continue = prompt("Are you sure you want to import #{file} into #{org_labels.join(" -> ")}? (Yes/No) ")
 
     if continue == 'Yes'
@@ -119,15 +139,16 @@ namespace :data do
       puts "#"*50
       puts "Starting import"
       input_file = Rails.root.join("db", "imports", file)
+      services_imported = 0
       CSV.foreach(input_file, :headers => true) do |row|
         service = Service.new(
                             :cpt_code => row['CPT Code'],
-                            :cdm_code => row['CDM Code'],
                             :send_to_epic => (row['Send to Epic'] == 'Y' ? true : false),
-                            :name => row['Procedure Name'],
+                            :name => ('PB ' + row['Procedure Name']),
                             :abbreviation => row['Abbreviation'],
-                            :order => row['Order'],
+                            :order => 1,
                             :organization_id => org.id,
+                            :one_time_fee => (row['Is One Time Fee?'] == 'Y' ? true : false),
                             :is_available => true)
 
         service.tag_list = "epic" if row['Send to Epic'] == 'Y'
@@ -138,7 +159,6 @@ namespace :data do
                                               :federal_rate => Service.dollars_to_cents(row['Federal Rate'].to_s.strip.gsub("$", "").gsub(",", "")),
                                               :member_rate => Service.dollars_to_cents(row['Member Rate'].to_s.strip.gsub("$", "").gsub(",", "")),
                                               :other_rate => Service.dollars_to_cents(row['Other Rate'].to_s.strip.gsub("$", "").gsub(",", "")),
-                                              :is_one_time_fee => (row['Is One Time Fee?'] == 'Y' ? true : false),
                                               :unit_type => (row['Is One Time Fee?'] == 'Y' ? nil : row['Clinical Qty Type']),
                                               :quantity_type => (row['Is One Time Fee?'] != 'Y' ? nil : row['Clinical Qty Type']),
                                               :unit_factor => row['Unit Factor'],
@@ -149,8 +169,15 @@ namespace :data do
                                               )
 
         if service.valid? and pricing_map.valid?
-          service.save
-          pricing_map.save
+          unless has_valid_rates?(pricing_map)
+            pricing_maps_with_bad_rates << [service, pricing_map]
+          else
+            service.save
+            pricing_map.save
+            services_imported += 1
+            puts "Saving #{service.name} with an id of #{service.id}"
+            puts "#{services_imported} services imported."
+          end
         else
           puts "#"*50
           puts "Error importing service"
@@ -159,7 +186,16 @@ namespace :data do
           puts service.errors
           puts pricing_map.errors
         end
+      end #End of csv import
+
+      puts "#"*50
+      if pricing_maps_with_bad_rates.size > 0
+        puts 'There were pricing maps with bad rates, a report has been generated in the tmp folder.'
+        generate_bad_rate_report(pricing_maps_with_bad_rates)
+      else
+        puts "All pricing maps have correct rates."
       end
+
     else
       puts "Import aborted, please start over"
       exit

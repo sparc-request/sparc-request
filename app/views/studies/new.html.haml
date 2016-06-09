@@ -24,6 +24,8 @@
 //
 /////////////////////////////////////////////
 
-= render :partial => 'service_requests/steps'
+- if @portal == "false"
+  = render partial: 'service_requests/steps'
 .clear
-.new_study= render :partial => 'studies/form', :locals => {:study => @protocol, :service_request => @service_request, :portal => @portal, :current_step => @current_step}
+.new_study
+  = render partial: 'studies/form', locals: {study: @protocol, service_request: @service_request, portal: @portal, current_step: cookies['current_step']}

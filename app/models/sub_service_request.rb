@@ -31,19 +31,26 @@ class SubServiceRequest < ActiveRecord::Base
   belongs_to :organization
   has_many :past_statuses, :dependent => :destroy
   has_many :line_items, :dependent => :destroy
+  has_many :line_items_visits, through: :line_items
   has_and_belongs_to_many :documents
-  has_many :notes, :dependent => :destroy
+  has_many :notes, as: :notable, dependent: :destroy
   has_many :approvals, :dependent => :destroy
   has_many :payments, :dependent => :destroy
   has_many :cover_letters, :dependent => :destroy
-  has_one :subsidy, :dependent => :destroy
   has_many :reports, :dependent => :destroy
   has_many :notifications, :dependent => :destroy
+  has_many :subsidies
+  has_one :approved_subsidy, :dependent => :destroy
+  has_one :pending_subsidy, :dependent => :destroy
+  has_one :protocol, through: :service_request
 
-  # These two ids together form a unique id for the sub service request
+  delegate :percent_subsidy, to: :approved_subsidy, allow_nil: true
+  delegate :approved_percent_of_total, to: :approved_subsidy, allow_nil: true
+  alias_attribute :approved_percent_subsidy, :approved_percent_of_total
+
+  # service_request_id & ssr_id together form a unique id for the sub service request
   attr_accessible :service_request_id
   attr_accessible :ssr_id
-
   attr_accessible :organization_id
   attr_accessible :owner_id
   attr_accessible :status_date
@@ -52,7 +59,7 @@ class SubServiceRequest < ActiveRecord::Base
   attr_accessible :nursing_nutrition_approved
   attr_accessible :lab_approved
   attr_accessible :imaging_approved
-  attr_accessible :src_approved
+  attr_accessible :committee_approved
   attr_accessible :requester_contacted_date
   attr_accessible :line_items_attributes
   attr_accessible :subsidy_attributes
@@ -61,23 +68,30 @@ class SubServiceRequest < ActiveRecord::Base
   attr_accessible :routing
   attr_accessible :documents
 
-  accepts_nested_attributes_for :subsidy
   accepts_nested_attributes_for :line_items, allow_destroy: true
   accepts_nested_attributes_for :payments, allow_destroy: true
+
+  scope :in_work_fulfillment, -> { where(in_work_fulfillment: true) }
+
+  def consult_arranged_date=(date)
+    write_attribute(:consult_arranged_date, Time.strptime(date, "%m-%d-%Y")) if date.present?
+  end
+
+  def requester_contacted_date=(date)
+    write_attribute(:requester_contacted_date, Time.strptime(date, "%m-%d-%Y")) if date.present?
+  end
+
+  # Make sure that @prev_status is set whenever status is changed for update_past_status method.
+  def status= status
+    @prev_status = self.status
+    super(status)
+  end
 
   def formatted_status
     if AVAILABLE_STATUSES.has_key? status
       AVAILABLE_STATUSES[status]
     else
       "STATUS MAPPING NOT PRESENT"
-    end
-  end
-
-  def stored_percent_subsidy
-    if subsidy.present?
-      subsidy.stored_percent_subsidy
-    else
-      0
     end
   end
 
@@ -94,6 +108,11 @@ class SubServiceRequest < ActiveRecord::Base
     self.update_column(:org_tree_display, my_tree)
   end
 
+  def org_tree
+    orgs = organization.parents
+    orgs << organization
+  end
+
   def set_effective_date_for_cost_calculations
     self.line_items.each{|li| li.pricing_scheme = 'effective'}
   end
@@ -102,13 +121,12 @@ class SubServiceRequest < ActiveRecord::Base
     self.line_items.each{|li| li.pricing_scheme = 'displayed'}
   end
 
-  # get line_items_visits just for this sub_service_request
-  def line_items_visits
-    line_items.map(&:line_items_visits).flatten
+  def display_id
+    return "#{service_request.try(:protocol).try(:id)}-#{ssr_id || 'DRAFT'}"
   end
 
-  def display_id
-    return "#{service_request.try(:protocol).try(:id)}-#{ssr_id}"
+  def has_subsidy?
+    pending_subsidy.present? or approved_subsidy.present?
   end
 
   def create_line_item(args)
@@ -191,15 +209,6 @@ class SubServiceRequest < ActiveRecord::Base
     return total
   end
 
-  # percent of cost
-  def percent_of_cost
-    unless subsidy.stored_percent_subsidy.nil? || subsidy.stored_percent_subsidy == 0
-      100 - subsidy.stored_percent_subsidy
-    else
-      subsidy.pi_contribution ? (subsidy.pi_contribution/direct_cost_total * 100).round(2) : nil
-    end
-  end
-
   # Returns the total indirect costs of the sub-service-request
   def indirect_cost_total
     total = 0.0
@@ -221,9 +230,9 @@ class SubServiceRequest < ActiveRecord::Base
   end
 
   def subsidy_percentage
-    funded_amount = self.direct_cost_total - self.subsidy.pi_contribution.to_f
+    funded_amount = direct_cost_total - subsidies.first.pi_contribution.to_f
 
-    ((funded_amount.to_f / self.direct_cost_total.to_f).round(2) * 100).to_i
+    ((funded_amount.to_f / direct_cost_total.to_f).round(2) * 100).to_i
   end
 
   # Returns a list of candidate services for a given ssr (used in fulfillment)
@@ -243,6 +252,10 @@ class SubServiceRequest < ActiveRecord::Base
     services
   end
 
+  def candidate_pppv_services
+    candidate_services.reject(&:one_time_fee)
+  end
+
   def update_line_item line_item, args
     if self.line_items.map {|li| li.id}.include? line_item.id
       line_item.update_attributes!(args)
@@ -254,6 +267,7 @@ class SubServiceRequest < ActiveRecord::Base
   end
 
   def eligible_for_subsidy?
+    # This defines when subsidies show up for SubServiceRequests across the app.
     if organization.eligible_for_subsidy? and not organization.funding_source_excluded_from_subsidy?(self.service_request.protocol.try(:funding_source_based_on_status))
       true
     else
@@ -264,6 +278,16 @@ class SubServiceRequest < ActiveRecord::Base
   ###############################################################################
   ######################## FULFILLMENT RELATED METHODS ##########################
   ###############################################################################
+  def ready_for_fulfillment?
+    # return true if work fulfillment has already been turned "on" or global variable FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER is set to false or nil
+    # otherwise, return true only if FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER is true and the parent organization has tag 'clinical work fulfillment'
+    if self.in_work_fulfillment || !FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER ||
+        (FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER && self.organization.tag_list.include?('clinical work fulfillment'))
+      return true
+    else
+      return false
+    end
+  end
 
   ########################
   ## SSR STATUS METHODS ##
@@ -274,10 +298,20 @@ class SubServiceRequest < ActiveRecord::Base
 
   # Can't edit a request if it's placed in an uneditable status
   def can_be_edited?
-    if EDITABLE_STATUSES.keys.include? self.organization.id
-      EDITABLE_STATUSES[self.organization.id].include?(self.status)
+    if organization.has_editable_statuses?
+       self_or_parent_id = find_editable_id(self.organization.id)
+       EDITABLE_STATUSES[self_or_parent_id].include?(self.status)
     else
       true
+    end
+  end
+
+  def find_editable_id(id)
+    parent_ids = Organization.find(id).parents.map(&:id)
+    EDITABLE_STATUSES.keys.each do |org_id|
+      if (org_id == id) || parent_ids.include?(org_id)
+        return org_id
+      end
     end
   end
 
@@ -285,7 +319,7 @@ class SubServiceRequest < ActiveRecord::Base
   # (no need to create a new sr if there's only one ssr) AND it's previous status was an editable one
   # AND it's new status is an uneditable one, then create a new sr and place the ssr under it. Probably don't need the last condition.
   def update_based_on_status previous_status
-    if !self.can_be_edited? && EDITABLE_STATUSES.keys.include?(self.organization.id) && (self.service_request.sub_service_requests.count > 1) &&
+    if !self.can_be_edited? && organization.has_editable_statuses? && (self.service_request.sub_service_requests.count > 1) &&
                             EDITABLE_STATUSES[self.organization.id].include?(previous_status) &&
                             !EDITABLE_STATUSES[self.organization.id].include?(self.status)
       self.switch_to_new_service_request
@@ -337,19 +371,13 @@ class SubServiceRequest < ActiveRecord::Base
     candidates
   end
 
-  # Make sure that @prev_status is set whenever status is changed.
-  def status= status
-    @prev_status = self.status
-    super(status)
-  end
-
   # Callback which gets called after the ssr is saved to ensure that the
   # past status is properly updated.  It should not normally be
   # necessarily to call this method.
   def update_past_status
     old_status = self.past_statuses.last
     if @prev_status and (not old_status or old_status.status != @prev_status)
-      self.past_statuses.create(:status => @prev_status, :date => Time.now)
+      self.past_statuses.create(status: @prev_status, date: Time.now)
     end
   end
 
@@ -402,8 +430,8 @@ class SubServiceRequest < ActiveRecord::Base
       self.approvals.create({:identity_id => current_user.id, :sub_service_request_id => self.id, :approval_date => Date.today, :approval_type => "Imaging Approved"})
     end
 
-    if params[:src_approved]
-      self.approvals.create({:identity_id => current_user.id, :sub_service_request_id => self.id, :approval_date => Date.today, :approval_type => "SRC Approved"})
+    if params[:committee_approved]
+      self.approvals.create({:identity_id => current_user.id, :sub_service_request_id => self.id, :approval_date => Date.today, :approval_type => "Committee Approved"})
     end
   end
 
@@ -412,6 +440,7 @@ class SubServiceRequest < ActiveRecord::Base
   ##########################
 
   def distribute_surveys
+
     # e-mail primary PI and requester
     primary_pi = service_request.protocol.primary_principal_investigator
     requester = service_request.service_requester
@@ -423,7 +452,10 @@ class SubServiceRequest < ActiveRecord::Base
 
     unless available_surveys.blank?
       SurveyNotification.service_survey(available_surveys, primary_pi, self).deliver
-      SurveyNotification.service_survey(available_surveys, requester, self).deliver
+    # only send survey email to both users if they are unique
+      if primary_pi != requester
+        SurveyNotification.service_survey(available_surveys, requester, self).deliver
+      end
     end
   end
 
@@ -460,6 +492,10 @@ class SubServiceRequest < ActiveRecord::Base
     filtered_audit_trail
   end
   ### end audit reporting methods ###
+
+  def should_be_hidden_for_sp?(sp_only_admin_orgs)
+    status == 'draft' && (org_tree & sp_only_admin_orgs).any?
+  end
 
   private
 

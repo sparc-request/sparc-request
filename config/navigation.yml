@@ -24,7 +24,7 @@ protocol:
   back: catalog
   catalog: catalog
   forward: service_details
-  validation_groups: 
+  validation_groups:
     catalog:
     save_and_exit:
       - protocol
@@ -51,7 +51,7 @@ service_details:
 service_calendar:
   step_text: 'STEP 2B: Visit Calendar'
   css_class: light-blue-provider
-  back: service_details 
+  back: service_details
   catalog: catalog
   forward: service_subsidy
   validation_groups:
@@ -82,13 +82,13 @@ service_subsidy:
   css_class: light-blue-provider
   back: service_calendar
   catalog: catalog
-  forward: document_management 
+  forward: document_management
   validation_groups:
     document_management:
       - service_subsidy
 
 document_management:
-  step_text: 'STEP 3: Notes & Documents'
+  step_text: 'STEP 3: Shared Documents & Notes'
   css_class: orange-provider
   back: service_subsidy
   catalog: catalog
@@ -100,7 +100,7 @@ document_management:
 review:
   step_text: 'STEP 4: Review Your Request'
   css_class: red-provider
-  back: document_management 
+  back: document_management
   catalog: catalog
   obtain_research_pricing: obtain_research_pricing
   forward: confirmation
@@ -108,9 +108,9 @@ review:
     document_management:
 
 obtain_research_pricing:
-  step_text: 'STEP 5a: Get a Quote'
+  step_text: 'STEP 5a: Get a Cost Estimate'
   css_class: green-provider
-  back: review 
+  back: review
   catalog: catalog
   validation_groups:
     document_management:
@@ -118,7 +118,7 @@ obtain_research_pricing:
 confirmation:
   step_text: 'STEP 5: Submission Confirmation'
   css_class: green-provider
-  back: review 
+  back: review
   catalog: catalog
   forward: confirmation
   validation_groups:

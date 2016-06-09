@@ -102,6 +102,9 @@
           %fieldset.single_fieldset
             %table
               %tr
+                %th= f.label :eap_id, t(:organization_form)[:eap_id]
+                %td= f.text_field :eap_id
+              %tr
                 %th= f.label :cpt_code, t(:organization_form)[:cpt_code]
                 %td= f.text_field :cpt_code
               %tr
@@ -145,7 +148,8 @@
               .ui-corner-all.otf_field_errors= t(:organization_form)[:otf_field_errors]
 
 .blank_pricing_map
-  = render 'pricing_map', :pricing_map_disabled => false, :can_edit_historical_data => @user.can_edit_historical_data_for?(@service.organization), :entity => @service
+  - pricing_map = @service.pricing_maps.build
+  = render :partial => 'pricing_map', :locals => { :pricing_map => pricing_map, :pricing_map_disabled => false, :can_edit_historical_data => @user.can_edit_historical_data_for?(@service.organization), :entity => @service }
 
 :javascript
   $(document).ready( function() {

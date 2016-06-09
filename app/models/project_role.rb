@@ -36,22 +36,27 @@ class ProjectRole < ActiveRecord::Base
   attr_accessible :role_other
   attr_accessible :epic_access
   attr_accessible :epic_rights_attributes
+  attr_accessible :identity_attributes
 
   accepts_nested_attributes_for :epic_rights, :allow_destroy => true
+  accepts_nested_attributes_for :identity
 
+  validates :identity_id, :presence => true
   validates :role, :presence => true
   validates :project_rights, :presence => true
 
+  scope :primary_pis, -> { where(role: "primary-pi") }
+  
   def can_edit?
-    if project_rights == "view" || project_rights == "none"
-      return false
-    else
-      return true
-    end
+    !(project_rights == "view" || project_rights == "none")
   end
 
-  def validate_uniqueness_within_protocol
-    duplicate_project_roles = self.protocol.project_roles.select {|x| x.identity_id == self.identity_id}
+  def can_view?
+    project_rights != 'none'
+  end
+
+  def unique_to_protocol?
+    duplicate_project_roles = ProjectRole.where(protocol_id: self.protocol.id).select {|x| x.identity_id == self.identity_id}
     duplicate_project_roles << self
     if duplicate_project_roles.count > 1
       errors.add(:this, "user is already associated with this protocol.")
@@ -61,19 +66,43 @@ class ProjectRole < ActiveRecord::Base
     return true
   end
 
-  def validate_one_primary_pi
-    unless self.has_minimum_pi?
-      errors.add(:must, "include one Primary PI.")
-      return false
-    end
-    return true
+  def fully_valid?
+    valid = self.valid?
+    other_selections_valid = self.validate_other_selections
+    one_primary_pi = self.validate_one_primary_pi
+
+    return (valid && other_selections_valid && one_primary_pi)
   end
 
-  def has_minimum_pi?
-    other_project_roles = self.protocol.project_roles.reject {|x| x == self}
-    all_project_roles = other_project_roles.map {|x| x.role}
-    all_project_roles << self.role
-    all_project_roles.include?('primary-pi') ? true : false
+  def validate_other_selections
+    role_other_filled = true
+    credentials_other_filled = true
+
+    if self.role == 'other'
+      if self.role_other.nil? || (!self.role_other.nil? && self.role_other.blank?)
+        role_other_filled = false
+        errors.add(:must, "specify this User's Role.")
+      end
+    end
+
+    if self.identity.credentials == 'other'
+      if self.identity.credentials_other.nil? || (!self.identity.credentials_other.nil? && self.identity.credentials_other.blank?)
+        credentials_other_filled = false
+        errors.add(:must, "specify this User's Credentials.")
+      end
+    end
+
+    return role_other_filled && credentials_other_filled
+  end
+
+  def validate_one_primary_pi
+    pi_roles = self.protocol.project_roles.where(role: "primary-pi")
+    if pi_roles.empty? || pi_roles.include?(self) && self.role != "primary-pi"
+      errors.add(:role, "- Protocols must have a Primary PI.")
+      return false
+    else
+      return true
+    end
   end
 
   def is_only_primary_pi?
@@ -127,7 +156,7 @@ class ProjectRole < ActiveRecord::Base
     end
   end
 
-  def setup_epic_rights is_new=true
+  def setup_epic_rights(is_new=true)
     position = 1
     EPIC_RIGHTS.each do |right, description|
       epic_right = epic_rights.detect{|obj| obj.right == right}
@@ -135,7 +164,7 @@ class ProjectRole < ActiveRecord::Base
       epic_right.position = position
       position += 1
     end
-    epic_rights.sort!{|a, b| a.position <=> b.position}
+    epic_rights.sort{|a, b| a.position <=> b.position}
   end
 
   def populate_for_edit
@@ -154,4 +183,3 @@ class ProjectRole < ActiveRecord::Base
     end
   end
 end
-

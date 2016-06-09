@@ -24,7 +24,7 @@ task :create_user => :environment do
       print(*args)
       STDIN.gets.strip
   end
-    
+
   def list_orgs
     puts "#"*50
     institutions = Institution.order(:name)
@@ -48,41 +48,60 @@ task :create_user => :environment do
     puts "#"*50
   end
 
-  users = Identity.all
   puts "This task will create a user with all rights for a given organization, for testing and development purposes."
-  login_id = prompt "Enter musc email: "
-
-  users.each do |user|
-    while user.ldap_uid == login_id
-      login_id = prompt "That user already exists, please enter another: "
-    end
+  password = prompt "Enter a password for your new user that is 6 charaters or longer: "
+  while password.size < 6
+    password = prompt "Enter a password for your new user that is 6 charaters or longer: "
   end
-
+  
   list_orgs
 
   puts ""
   puts ""
-  puts "The password is defaulted to 'password'"
+  puts "The ldap uid is defaulted to 'juan@musc.edu'"
   puts ""
-  id = prompt "Enter the id of the above organization you want rights for: "
-  desired_organization = Organization.find(id.to_i)
-  continue = prompt "You have indicated that you wish to have rights for #{desired_organization.name}, do you want to proceed? (Yes/No) "
+
+  sparc_id = prompt "Enter the id of the above organization you want sparc rights for: "
+
+  fulfillment = prompt "Do you need rights in sparc fulfillment? (Yes/No): "
+  puts ""
+  puts ""
+
+  if fulfillment == 'Yes'
+    cwf_id = prompt "Enter the id of the above organization you want sparc fulfillment rights for: "
+    puts ""
+    puts ""
+    desired_fulfillment_organization = Organization.find(cwf_id.to_i)
+  end
+
+  desired_sparc_organization = Organization.find(sparc_id.to_i)
+
+  puts "You have indicated that you wish to have sparc rights for #{desired_sparc_organization.name}"
+  if fulfillment == 'Yes'
+    puts "and fulfillment rights for #{desired_fulfillment_organization.name}."
+  end
+  puts ""
+  puts ""
+  continue = prompt "Is this correct? (Yes/No): "
+
   if continue == "Yes"
-    puts "Creating #{login_id}..."
-    identity = Identity.create(:ldap_uid => "#{login_id}", 
-                             :email => "#{login_id}", 
-                             :last_name => 'Castillo', 
-                             :first_name => "Juan", 
-                             :phone => '555-555-5555', 
+    puts "Creating Juan..."
+    identity = Identity.create(:ldap_uid => 'juan@musc.edu',
+                             :email => 'juan@musc.edu',
+                             :last_name => 'Castillo',
+                             :first_name => 'Juan',
+                             :phone => '555-555-5555',
                              :catalog_overlord => 1,
-                             :password => 'password',
-                             :password_confirmation => 'password',
+                             :password => "#{password}",
+                             :password_confirmation => "#{password}",
                              :approved => 1 )
     identity.save
-    CatalogManager.create(:identity_id => identity.id, :organization_id => id.to_i, :edit_historic_data => 1)
-    SuperUser.create(:identity_id => identity.id, :organization_id => id.to_i)
-    ClinicalProvider.create(:identity_id => identity.id, :organization_id => id.to_i)
+    CatalogManager.create(:identity_id => identity.id, :organization_id => sparc_id.to_i, :edit_historic_data => 1)
+    SuperUser.create(:identity_id => identity.id, :organization_id => sparc_id.to_i)
 
+    if fulfillment == 'Yes'
+      ClinicalProvider.create(identity_id: identity.id, organization_id: cwf_id.to_i)
+    end
   else
     puts "Task aborted"
   end

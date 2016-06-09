@@ -5,11 +5,12 @@
 #   git config --global core.excludesfile ~/.gitignore_global
 
 sr.sql
-sr_production.sql
+fulfillment_production.sql
 
 .rvmrc
 .ruby-gemset
 .ruby-version
+.rubocop.yml
 
 # Ignore bundler config
 /.bundle
@@ -46,6 +47,7 @@ config/ldap.yml
 config/application.yml
 config/ldap.yml
 config/epic.yml
+config/initializers/abstract_mysql_adapter.rb
 public/portal
 public/catalog_manager
 
@@ -71,6 +73,13 @@ Procfile
 
 config/setup_load_paths.rb
 
+# Ignore Bundler binstubs
 bin/*
 
+# Ignore spec examples
 spec/examples.txt
+
+# Ignore ctags files
+.tags
+.tags1
+/themes

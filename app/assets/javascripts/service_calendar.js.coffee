@@ -19,9 +19,14 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #= require navigation
-#= require constants
 
 $(document).ready ->
+  $(document).on 'click', '.page_change_arrow', ->
+    unless $(this).attr('disabled')
+      $.ajax
+        type: 'GET'
+        url:  $(this).data('url')
+
   $('.visit_number a, .service_calendar_row').live 'click', ->
     $('.service_calendar_spinner').show()
 
@@ -37,7 +42,7 @@ $(document).ready ->
         else
           errors = [textStatus]
         for error in errors
-          alert(error);
+          alert(error)
           obj.prop('checked', false)
     .complete =>
       $('.service_calendar_spinner').hide()
@@ -88,7 +93,7 @@ $(document).ready ->
           for error in errors
             # May need to include something to allow error.humanize like we do elsewhere
             # if this gets weird looking.
-            alert(error);
+            alert(error)
             $(obj).val(original_val)
             $(obj).attr('current_quantity', original_val)
       .complete =>
@@ -215,18 +220,22 @@ $(document).ready ->
     recalculate_one_time_fee_totals()
     return false
 
-  $('.line_item_quantity').live 'change', ->
-    if $(this).data('study_tracker') == true
-      save_line_item_by_ajax(this)
-    else
-      update_otf_line_item this
-    recalculate_one_time_fee_totals()
+  $(document).on('change', '.line_item_quantity', ->
+    update_otf_line_item(this)
+    # If new val is greater than units_per_qty_max, do not recalculate totals 
+    new_val = $(this).val()
+    max_val = $(this).attr('units_per_qty_max')
+    min_val = $(this).attr('unit_minimum')
+    if (parseInt(new_val) <= parseInt(max_val)) && (parseInt(new_val) >= parseInt(min_val))
+      recalculate_one_time_fee_totals()
+        
     return false
+  )
 
   $(document).on('click', '.move_visits', ->
-    sr_id = $(this).data('sr_id')
+    sr_id = $(this).data('sr-id')
     data =
-      'arm_id': $(this).data('arm_id')
+      'arm_id': $(this).data('arm-id')
       'tab': $(this).data('tab')
       'portal': $(this).data('portal')
     $.ajax
@@ -237,7 +246,7 @@ $(document).ready ->
       contentType: 'application/json; charset=utf-8'
   )
 
-  $(document).on('change', '.jump_to_visit', ->
+  $(document).on 'change', '.jump_to_visit', ->
     $('.service_calendar_spinner').show()
 
     page = $(this).find('option:selected').attr('parent_page')
@@ -252,7 +261,6 @@ $(document).ready ->
       dataType: 'script'
       success: ->
         $('.service_calendar_spinner').hide()
-  )
 
   update_otf_line_item = (obj) ->
     original_val = $(obj).attr('previous_quantity')
@@ -270,7 +278,7 @@ $(document).ready ->
         for error in errors
           # May need to include something to allow error.humanize like we do elsewhere
           # if this gets weird looking.
-          alert(error);
+          alert(error)
           $(obj).val(original_val)
           $(obj).attr('current_quantity', original_val)
     .complete =>
@@ -279,18 +287,18 @@ $(document).ready ->
 
 # methods for saving one time fee attributes
   save_line_item_by_ajax = (obj) ->
-      object_id = $(obj).data("line_item_id")
-      name = $(obj).attr('name')
-      key = name.replace("line_item_", '')
-      data = {}
-      data[key] = $(obj).val()
-      put_attribute(object_id, data)
+    object_id = $(obj).data("line_item_id")
+    name = $(obj).attr('name')
+    key = name.replace("line_item_", '')
+    data = {}
+    data[key] = $(obj).val()
+    put_attribute(object_id, data)
 
 
   put_attribute = (id, data) ->
     $.ajax
       type: 'PUT'
-      url:  "/portal/admin/line_items/#{id}/update_from_cwf"
+      url:  "/dashboard/line_items/#{id}/update_from_cwf"
       data: JSON.stringify(data)
       dataType: "script"
       contentType: 'application/json; charset=utf-8'
@@ -306,7 +314,7 @@ $(document).ready ->
 
 recalculate_one_time_fee_totals = ->
   grand_total = 0
-  otfs = $('.otfs')
+  otfs = $('.otfs:visible')
 
   otfs.each (index, otf) =>
     your_cost = $(otf).children('.your_cost').data('your_cost')
@@ -328,7 +336,7 @@ recalculate_one_time_fee_totals = ->
 commaSeparateNumber = (val) ->
   while (/(\d+)(\d{3})/.test(val.toString()))
     val = val.toString().replace(/(\d+)(\d{3})/, '$1'+','+'$2')
-  return val;
+  return val
 
 stack_errors_for_alert = (errors) ->
   compiled = ''
@@ -345,7 +353,7 @@ stack_errors_for_alert = (errors) ->
       if $(visit).is(':hidden') == false && $(visit).data('cents')
         direct_total += Math.floor($(visit).data('cents')) / 100.0
     indirect_rate = parseFloat($("#indirect_rate").val()) / 100.0
-    indirect_total = if use_indirect_cost == 'true' then direct_total * indirect_rate else 0
+    indirect_total = 0
     max_total = direct_total + indirect_total
 
     direct_total_display = '$' + (direct_total).toFixed(2)

@@ -30,7 +30,7 @@ class ServicePricingReport < ReportingModule
   def default_options
     {
       "Pricing Date" => {:field_type => :date_field, :for => "services_pricing_date"},
-      Institution => {:field_type => :select_tag, :required => true},
+      Institution => {:field_type => :select_tag, :required => true, :has_dependencies => "true"},
       Provider => {:field_type => :select_tag, :dependency => '#institution_id', :dependency_id => 'parent_id'},
       Program => {:field_type => :select_tag, :dependency => '#provider_id', :dependency_id => 'parent_id'},
       Core => {:field_type => :select_tag, :dependency => '#program_id', :dependency_id => 'parent_id'},
@@ -45,21 +45,25 @@ class ServicePricingReport < ReportingModule
     }
   end
 
+  def records
+    records ||= self.table.joins(:pricing_maps).where(self.where(self.params)).uniq(self.uniq).group(self.group).order(self.order)
+  end
+
   def column_attrs
     attrs = {}
 
     if params[:institution_id]
       attrs[Institution] = [params[:institution_id], :abbreviation]
     end
-    
+
     if params[:provider_id]
       attrs[Provider] = [params[:provider_id], :abbreviation]
     end
-    
+
     if params[:program_id]
       attrs[Program] = [params[:program_id], :abbreviation]
     end
-    
+
     if params[:core_id]
       attrs[Core] = [params[:core_id], :abbreviation]
     end
@@ -68,23 +72,23 @@ class ServicePricingReport < ReportingModule
 
     if params[:rate_types]
       if params[:rate_types].include?("full_rate")
-        attrs["Full Rate"] = "report_pricing(pricing_map_for_date(\"#{params[:services_pricing_date]}\").full_rate.to_f)"
+        attrs["Full Rate"] = "report_pricing(pricing_map_for_date(\"#{params[:services_pricing_date]}\").full_rate.to_f) rescue 'N/A'"
       end
 
       if params[:rate_types].include?("federal_rate")
-        attrs["Federal Rate"] = "report_pricing(pricing_map_for_date(\"#{params[:services_pricing_date]}\").true_rate_hash(\"#{params[:services_pricing_date]}\", organization_id)[:federal_rate])"
+        attrs["Federal Rate"] = "report_pricing(pricing_map_for_date(\"#{params[:services_pricing_date]}\").true_rate_hash(\"#{params[:services_pricing_date]}\", organization_id)[:federal_rate]) rescue 'N/A'"
       end
 
       if params[:rate_types].include?("corporate_rate")
-        attrs["Corporate Rate"] = "report_pricing(pricing_map_for_date(\"#{params[:services_pricing_date]}\").true_rate_hash(\"#{params[:services_pricing_date]}\", organization_id)[:corporate_rate])"
+        attrs["Corporate Rate"] = "report_pricing(pricing_map_for_date(\"#{params[:services_pricing_date]}\").true_rate_hash(\"#{params[:services_pricing_date]}\", organization_id)[:corporate_rate]) rescue 'N/A'"
       end
 
       if params[:rate_types].include?("other_rate")
-        attrs["Other Rate"] = "report_pricing(pricing_map_for_date(\"#{params[:services_pricing_date]}\").true_rate_hash(\"#{params[:services_pricing_date]}\", organization_id)[:other_rate])"
+        attrs["Other Rate"] = "report_pricing(pricing_map_for_date(\"#{params[:services_pricing_date]}\").true_rate_hash(\"#{params[:services_pricing_date]}\", organization_id)[:other_rate]) rescue 'N/A'"
       end
 
       if params[:rate_types].include?("member_rate")
-        attrs["Member Rate"] = "report_pricing(pricing_map_for_date(\"#{params[:services_pricing_date]}\").true_rate_hash(\"#{params[:services_pricing_date]}\", organization_id)[:member_rate])"
+        attrs["Member Rate"] = "report_pricing(pricing_map_for_date(\"#{params[:services_pricing_date]}\").true_rate_hash(\"#{params[:services_pricing_date]}\", organization_id)[:member_rate]) rescue 'N/A'"
       end
 
     end
@@ -93,7 +97,7 @@ class ServicePricingReport < ReportingModule
   end
 
   ################## END REPORT SETUP  #####################
-  
+
   ################## BEGIN QUERY SETUP #####################
   # def table => primary table to query
   # includes, where, uniq, order, and group get passed to AR methods, http://apidock.com/rails/v3.2.13/ActiveRecord/QueryMethods
@@ -126,24 +130,22 @@ class ServicePricingReport < ReportingModule
     # get child organization that have services to related to them
     service_organization_ids = [selected_organization_id]
     if selected_organization_id
-      organizations = Organization.find(:all)
+      organizations = Organization.all
       org = Organization.find(selected_organization_id)
-      service_organization_ids += org.all_children(organizations).map(&:id)
+      service_organization_ids = org.all_children(organizations).map(&:id)
       service_organization_ids.flatten!
       service_organization_ids.uniq!
     end
 
     service_organization_ids = Organization.all.map(&:id) if service_organization_ids.compact.empty? # use all if none are selected
 
-    service_organizations = Organization.find_all_by_id(service_organization_ids)
+    service_organizations = Organization.find(service_organization_ids)
 
     unless tags.empty?
       tagged_organization_ids = service_organizations.reject {|x| (x.tags.map(&:name) & tags).empty?}.map(&:id)
       service_organization_ids = service_organization_ids.reject {|x| !tagged_organization_ids.include?(x)}
     end
-
-    return :services => {:organization_id => service_organization_ids}
-
+    return "services.organization_id IN (#{service_organization_ids.join(',')}) and pricing_maps.display_date >= #{args[:services_pricing_date]}"
   end
 
   def uniq

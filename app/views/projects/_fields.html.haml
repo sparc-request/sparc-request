@@ -55,9 +55,10 @@
         = f.label :brief_description, t(:project_form)[:description]
         = f.text_area :brief_description
 
-      .indirect_cost_rate
-        = f.label :indirect_cost_rate, t(:project_form)[:rate]
-        = f.text_field :indirect_cost_rate
+      - if USE_INDIRECT_COST
+        .indirect_cost_rate
+          = f.label :indirect_cost_rate, t(:project_form)[:rate]
+          = f.text_field :indirect_cost_rate
   .clear
   %br
 
@@ -70,7 +71,7 @@
         #user_detail_errors.errorExplanation{:style => 'display:none'}
         .info
           = render :partial => 'shared/user_search', :locals => {:protocol => project}
-          - hide_user_details = (project.new_record? and project.project_roles.empty?) ? '' : 'display:none;'
+          - hide_user_details = project.project_roles.any? && project.project_roles.first.identity_id.blank? ? '' : 'display:none;'
           .user_added_message{:style => 'display:none;'}
           %p
             - t(:protocol_shared)[:add_user]

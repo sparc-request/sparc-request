@@ -138,8 +138,6 @@ $(document).ready ->
     pricing_setup_form.find('.pricing_setup_form:last').append('<input name="pricing_setups[blank_pricing_setup][newly_created]" type="hidden" value="true">')
     Sparc.services.create_accordion('.pricing_setup_accordion')
     Sparc.config.setDatePicker()
-    $('.blank_field_errors').css('display', 'inline-block')
-    $('.save_button').attr('disabled', true)
   )
 
   $('.pricing_map_effective_date_hidden').live('change', ->
@@ -162,7 +160,7 @@ $(document).ready ->
   )
 
   $('.service_rate').live('change', ->
-    rate = $(this).val()
+    rate = $(this).val(parseFloat($(this).val()).toFixed(2)).val()
     organization_id = $(this).attr('organization_id')
     display_date = $(this).closest('div').find(".pricing_map_display_date_hidden").val()
     data = {full_rate: rate, organization_id: organization_id, date: display_date}

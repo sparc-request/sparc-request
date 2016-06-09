@@ -25,7 +25,7 @@ class LineItem < ActiveRecord::Base
   audited
 
   belongs_to :service_request
-  belongs_to :service, :include => [:pricing_maps, :organization], :counter_cache => true
+  belongs_to :service, -> { includes(:pricing_maps, :organization) }, :counter_cache => true
   belongs_to :sub_service_request
   has_many :fulfillments, :dependent => :destroy
 
@@ -33,6 +33,7 @@ class LineItem < ActiveRecord::Base
   has_many :arms, :through => :line_items_visits
   has_many :procedures
   has_many :admin_rates, :dependent => :destroy
+  has_many :notes, as: :notable, dependent: :destroy
 
   attr_accessible :service_request_id
   attr_accessible :sub_service_request_id
@@ -51,20 +52,8 @@ class LineItem < ActiveRecord::Base
 
   delegate :one_time_fee, to: :service
 
-  def displayed_cost
-    applicable_rate
-  end
-
-  def displayed_cost=(dollars)
-    admin_rates.new :admin_cost => dollars.blank? ? nil : Service.dollars_to_cents(dollars)
-  end
-
-  def pricing_scheme
-    @pricing_scheme || 'displayed'
-  end
-
-  validates :service_id, :numericality => true
-  validates :service_request_id, :numericality => true
+  validates :service_id, numericality: true, presence: true
+  validates :service_request_id, numericality:  true
 
   validates :quantity, :numericality => true, :on => :update, :if => Proc.new { |li| li.service.one_time_fee }
   validate :quantity_must_be_smaller_than_max_and_greater_than_min, :on => :update, :if => Proc.new { |li| li.service.one_time_fee }
@@ -72,19 +61,39 @@ class LineItem < ActiveRecord::Base
   after_destroy :remove_procedures
 
   # TODO: order by date/id instead of just by date?
-  default_scope :order => 'line_items.id ASC'
+  default_scope { order('line_items.id ASC') }
+
+  def displayed_cost
+    '%.2f' % (applicable_rate / 100.0)
+  end
+
+  def displayed_cost=(dollars)
+    admin_rates.new( admin_cost: dollars.blank? ? nil : Service.dollars_to_cents(dollars) )
+  end
+
+  def pricing_scheme
+    @pricing_scheme || 'displayed'
+  end
+
+  def in_process_date=(date)
+    write_attribute(:in_process_date, Time.strptime(date, "%m-%d-%Y")) if date.present?
+  end
+
+  def complete_date=(date)
+    write_attribute(:complete_date, Time.strptime(date, "%m-%d-%Y")) if date.present?
+  end
 
   def quantity_must_be_smaller_than_max_and_greater_than_min
     pricing = Service.find(service_id).current_effective_pricing_map
     max = pricing.units_per_qty_max
     min = pricing.quantity_minimum
     if quantity.nil?
-      errors.add(:quantity, "Please enter a quantity")
+      errors.add(:quantity, "must not be blank")
     else
       if quantity < min
-        errors.add(:quantity, "Please enter a quantity greater than or equal to #{min}")
+        errors.add(:quantity, "must be greater than or equal to the minimum quantity of #{min}")
       elsif quantity > max
-        errors.add(:quantity, "The maximum quantity allowed is #{max}")
+        errors.add(:quantity, "must be less than or equal to the maximum quantity of #{max}")
       end
     end
   end
@@ -173,7 +182,7 @@ class LineItem < ActiveRecord::Base
   def quantity_total(line_items_visit)
     # quantity_total = self.visits.map {|x| x.research_billing_qty}.inject(:+) * self.subject_count
     quantity_total = line_items_visit.visits.sum('research_billing_qty')
-    return quantity_total * line_items_visit.subject_count
+    return quantity_total * (line_items_visit.subject_count || 0)
   end
 
   # Returns a hash of subtotals for the visits in the line item.
@@ -196,7 +205,7 @@ class LineItem < ActiveRecord::Base
     # line items visit should also check that it's for the correct protocol
     return 0.0 unless service_request.protocol_id == line_items_visit.arm.protocol_id
 
-    research_billing_qty_total = line_items_visit.visits.sum(&:research_billing_qty)
+    research_billing_qty_total = line_items_visit.visits.sum(:research_billing_qty)
 
     subject_total = research_billing_qty_total * per_unit_cost(quantity_total(line_items_visit))
     subject_total
@@ -206,7 +215,7 @@ class LineItem < ActiveRecord::Base
   def direct_costs_for_visit_based_service
     total = 0
     self.line_items_visits.each do |line_items_visit|
-      total += line_items_visit.subject_count * self.direct_costs_for_visit_based_service_single_subject(line_items_visit)
+      total += (line_items_visit.subject_count || 0) * self.direct_costs_for_visit_based_service_single_subject(line_items_visit)
     end
     total
   end
@@ -322,8 +331,8 @@ class LineItem < ActiveRecord::Base
 
   def service_relations
     # Get the relations for this line item and others to this line item, Narrow the list to those with linked quantities
-    service_relations = ServiceRelation.find_all_by_service_id(self.service_id).reject { |sr| sr.linked_quantity == false }
-    related_service_relations = ServiceRelation.find_all_by_related_service_id(self.service_id).reject { |sr| sr.linked_quantity == false }
+    service_relations = ServiceRelation.where(service_id: self.service_id).reject { |sr| sr.linked_quantity == false }
+    related_service_relations = ServiceRelation.where(related_service_id: self.service_id).reject { |sr| sr.linked_quantity == false }
 
     (service_relations + related_service_relations)
   end

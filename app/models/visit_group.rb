@@ -19,26 +19,36 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class VisitGroup < ActiveRecord::Base
+  self.per_page = Visit.per_page
 
   include RemotelyNotifiable
   include Comparable
 
   audited
 
-  belongs_to :arm
-  has_many :visits, :dependent => :destroy
-  has_many :appointments
   attr_accessible :name
   attr_accessible :position
   attr_accessible :arm_id
   attr_accessible :day
   attr_accessible :window_before
   attr_accessible :window_after
-  acts_as_list :scope => :arm
+
+  belongs_to :arm
+  has_many :visits, :dependent => :destroy
+  has_many :line_items_visits, through: :visits
+  has_many :appointments
+
+  acts_as_list scope: :arm
 
   after_create :set_default_name
   after_save :set_arm_edited_flag_on_subjects
   before_destroy :remove_appointments
+
+  with_options if: :day? do |vg|
+    # with respect to the other VisitGroups associated with the same arm
+    vg.validate :day_must_be_in_order
+    vg.validates :day, numericality: { only_integer: true }
+  end
 
   def set_arm_edited_flag_on_subjects
     self.arm.set_arm_edited_flag_on_subjects
@@ -54,6 +64,10 @@ class VisitGroup < ActiveRecord::Base
     return self.day <=> other_vg.day
   end
 
+  def insertion_name
+    "insert before " + name
+  end
+
   ### audit reporting methods ###
 
   def audit_label audit
@@ -66,9 +80,12 @@ class VisitGroup < ActiveRecord::Base
 
   ### end audit reporting methods ###
 
+  def any_visit_quantities_customized?(service_request)
+    visits.any? { |visit| ((visit.quantities_customized?) && (visit.line_items_visit.line_item.service_request_id == service_request.id)) }
+  end
+
 
   private
-
   def remove_appointments
     appointments = self.appointments
     appointments.each do |app|
@@ -80,4 +97,13 @@ class VisitGroup < ActiveRecord::Base
     end
   end
 
+  def day_must_be_in_order
+    position_col = VisitGroup.arel_table[:position]
+    day_col = VisitGroup.arel_table[:day]
+
+    if arm.visit_groups.where(position_col.lt(position).and(day_col.gteq(day)).or(
+                              position_col.gt(position).and(day_col.lteq(day)))).any?
+      errors.add(:day, 'must be in order')
+    end
+  end
 end

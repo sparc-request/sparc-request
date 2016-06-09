@@ -25,6 +25,7 @@
   = hidden_field_tag 'program[id]', @program.id
 
   #entity_description
+    %p.org_tree= display_organization_tree(f.object)
     %fieldset.actions
       .legend= t(:organization_form)[:actions]
       = f.submit t(:organization_form)[:submit_button], :id => 'save_button', :class => 'btn save_button provider_program_core_save'
@@ -94,9 +95,6 @@
         .legend= t(:organization_form)[:clinical_work_fulfillment]
         %fieldset.single_fieldset
           %table
-            %tr.cwf
-              %th= t(:organization_form)[:show_in_cwf]
-              %td= f.check_box :show_in_cwf
             %tr
               %th= t(:organization_form)[:clinical_providers]
           #cp_info= render :partial => 'catalog_manager/shared/clinical_providers', :locals => {:entity => @program}
@@ -127,7 +125,7 @@
               %td.subsidy_percentage= f_subsidy_map.text_field :max_percentage
             %tr
               %th= t(:organization_form)[:subsidy_max_dollar]
-              %td.subsidy_dollar= f_subsidy_map.text_field :max_dollar_cap
+              %td.subsidy_dollar= f_subsidy_map.text_field :max_dollar_cap, value: number_with_precision(f_subsidy_map.object.max_dollar_cap, precision: 2)
             = render 'catalog_manager/shared/excluded_funding_sources', :entity => @program
 
     %br
@@ -147,7 +145,8 @@
       .ui-corner-all.blank_field_errors= t("cm_shared.labels.required_list")
 
 .blank_pricing_setup
-  = render 'catalog_manager/shared/pricing_setup', :pricing_setup_disabled => false, :can_edit_historical_data => @user.can_edit_historical_data_for?(@program), :entity => @program
+  - pricing_setup = @program.pricing_setups.build
+  = render :partial => 'catalog_manager/shared/pricing_setup', :locals => { :pricing_setup => pricing_setup, :pricing_setup_disabled => false, :can_edit_historical_data => @user.can_edit_historical_data_for?(@program), :entity => @program }
 
 :javascript
   $(document).ready( function() {

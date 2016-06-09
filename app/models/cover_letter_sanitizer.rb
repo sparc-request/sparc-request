@@ -18,6 +18,6 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class CoverLetterSanitizer < HTML::WhiteListSanitizer
-  self.allowed_tags = HTML::WhiteListSanitizer.allowed_tags - %w(em)
+class CoverLetterSanitizer < Rails::Html::WhiteListSanitizer
+  self.allowed_tags = %w(p)
 end

@@ -18,9 +18,11 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+= stylesheet_link_tag 'hover_effect'
 :javascript
   $(document).ready( function() {
     $('a.continue_button').click(function() {
+      $('.continue-spinner').show();
       $('form').submit();
     });
   })
@@ -31,26 +33,34 @@
 //
 /////////////////////////////////////////////
 
-= form_for project, :remote => true do |f|
-  .grid_12
-    %h3.blue-provider.step-header.ui-corner-all= current_step == 'protocol' ? t(:protocol_shared)[:step_text] : t(:protocol_shared)[:step_text_2]
+= form_for project, remote: true do |f|
+  = hidden_field_tag "portal", portal
+
+  - if portal == 'false'
+    .grid_12
+      %h3.blue-provider.step-header.ui-corner-all
+        = current_step == 'protocol' ? t(:protocol_shared)[:step_text] : t(:protocol_shared)[:step_text_2]
   = f.hidden_field :requester_id
   = hidden_field_tag :current_step, current_step
   .clear
   = f.error_messages
-  
-  .edit-project-view= render :partial => 'projects/fields', :locals => {:project => project, :f => f, :current_step => current_step}
-  .continue
+
+  .edit-project-view.portal_container
+    = render partial: 'projects/fields', locals: {project: project, f: f, current_step: current_step}
+  .continue.portal_container
     .grid_12
-      %div{:class => 'blue-provider'}
+      %div.blue-provider
         .nav-backward
           .return-to-previous
-            %a.cancel_link{:href => "javascript:void(0)"}
-              = image_tag('left_arrow.png', :alt => "Cancel")
-              %span.btn.btn-success.btn-lg= t(:bottom_navigation)[:cancel]
-        .exit= image_tag('Filler.png')
+            %a.cancel_link{class: cookies['current_step'] == 'protocol' ? 'cancel' : 'go-back', href: "javascript:void(0)"}
+              %span.btn.btn-success.btn-lg.button-hover
+                = current_step == 'protocol' ? t(:bottom_navigation)[:cancel] : t(:bottom_navigation)[:go_back]
+          = image_tag 'spinner.gif', class: 'return-spinner hidden'
+        .exit
+          = image_tag 'Filler.png'
         .nav-forward
+          = image_tag 'spinner.gif', class: 'continue-spinner hidden'
           .save-and-continue
-            %a{:href => "javascript:void(0)", :class => 'continue_button'}
-              %span.btn.btn-success.btn-lg= t(:bottom_navigation)[:continue]
-              = image_tag('right_arrow.png', :alt => "SaveAndContinue")
+            %a.continue_button{class: cookies['current_step'] == 'protocol' ? 'continue' : 'save', href: "javascript:void(0)"}
+              %span.btn.btn-success.btn-lg.button-hover
+                = current_step == 'protocol' ? t(:bottom_navigation)[:continue] : t(:bottom_navigation)[:save_and_continue]

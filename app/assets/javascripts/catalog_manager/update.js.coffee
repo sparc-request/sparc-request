@@ -36,7 +36,7 @@ $(document).ready ->
     $('.custom_error_field').removeClass('custom_error_field')
     
   cannot_contain_letters = (selector) ->
-    $(selector).val().match(/^[0-9]\d*(\.\d+)?$/) || [null]
+    $(selector).val().match(/^\d{0,3}((,)?\d{3})*(\.\d+)?$/) || [null]
   
   validate_numbers_only = (selector) ->
     unless $(selector).val() == ''
@@ -94,7 +94,16 @@ $(document).ready ->
   )
     
   $('.service_rate').live('blur', ->
-    $(this).formatCurrency()
+    $(this).val(parseFloat($(this).val()).toFixed(2))
+  )
+
+  $('[display="Federal Rate"], [display="Corporate Rate"], [display="Other Rate"], [display="Member Rate"]').live('change', ->
+    $(this).val(parseFloat($(this).val()).toFixed(2))
+  )
+
+
+  $('#provider_subsidy_map_attributes_max_dollar_cap, #program_subsidy_map_attributes_max_dollar_cap, #core_subsidy_map_attributes_max_dollar_cap').live('change', ->
+    $(this).val(parseFloat($(this).val()).toFixed(2))
   )
   
   $('#fix_pricing_maps_dialog').dialog({

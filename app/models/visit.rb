@@ -19,15 +19,16 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Visit < ActiveRecord::Base
+  self.per_page = 5
 
   include RemotelyNotifiable
 
   audited
 
-  belongs_to :line_items_visit
   has_many :procedures
   has_many :appointments, :through => :procedures
   belongs_to :visit_group
+  belongs_to :line_items_visit
 
   attr_accessible :line_items_visit_id
   attr_accessible :visit_group_id
@@ -46,9 +47,7 @@ class Visit < ActiveRecord::Base
   # Find a Visit for the given "line items visit" and visit group.  This
   # creates the visit if it does not exist.
   def self.for(line_items_visit, visit_group)
-    return Visit.find_or_create_by_line_items_visit_id_and_visit_group_id(
-        line_items_visit.id,
-        visit_group.id)
+    return Visit.find_or_create_by(line_items_visit_id: line_items_visit.id, visit_group_id: visit_group.id)
   end
 
   def set_arm_edited_flag_on_subjects
@@ -56,6 +55,7 @@ class Visit < ActiveRecord::Base
   end
 
   def cost(per_unit_cost = self.line_items_visit.per_unit_cost(self.line_items_visit.quantity_total))
+    
     li = self.line_items_visit.line_item
     if li.applicable_rate == "N/A"
       return "N/A"
@@ -68,6 +68,12 @@ class Visit < ActiveRecord::Base
 
   def quantity_total
     return research_billing_qty.to_i + insurance_billing_qty.to_i + effort_billing_qty.to_i
+  end
+
+  # A check to see if the billing quantities have either been customized, or are set to the
+  # default of research == 1, insurance == 0, and effort == 0
+  def quantities_customized?
+    ((research_billing_qty > 1) || (insurance_billing_qty > 0) || (effort_billing_qty > 0))
   end
 
   def position
@@ -88,6 +94,5 @@ class Visit < ActiveRecord::Base
   def audit_excluded_actions
     ['create']
   end
-
   ### end audit reporting methods ###
 end

@@ -18,12 +18,6 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-def sign_in uid="jug2", password="p4ssword"
-  fill_in "identity_ldap_uid", :with => uid
-  fill_in "identity_password", :with => password
-  click_button "Sign in"
-end
-
 include Warden::Test::Helpers
 
 def fake_login_for_each_test(uid='jug2')
@@ -36,5 +30,12 @@ def fake_login_for_each_test(uid='jug2')
   after :each do
     Warden.test_reset!
   end
+end
+
+def fake_login(uid='jug2')
+  Warden.test_reset!
+  Warden.test_mode!
+  identity = Identity.find_by_ldap_uid(uid)
+  login_as(identity)
 end
 

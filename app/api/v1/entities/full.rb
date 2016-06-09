@@ -1,3 +1,6 @@
+#Copyright © 2011-2016 MUSC Foundation for Research Development.
+#All rights reserved.
+
 module V1
 
   class ArmFull < ArmShallow
@@ -114,7 +117,9 @@ module V1
             :last_epic_push_time,
             :last_epic_push_status,
             :billing_business_manager_static_email,
-            :selected_for_epic
+            :selected_for_epic,
+            :study_type_question_group_id,
+            :archived
 
     with_options(format_with: :iso_timestamp) do
       expose :start_date
@@ -141,6 +146,7 @@ module V1
             :abbreviation,
             :order,
             :description,
+            :eap_id,
             :is_available,
             :service_center_cost,
             :cpt_code,
@@ -162,7 +168,6 @@ module V1
     expose  :protocol_id,
             :status,
             :service_requester_id,
-            :notes,
             :approved,
             :subject_count
 
@@ -186,12 +191,11 @@ module V1
             :nursing_nutrition_approved,
             :lab_approved,
             :imaging_approved,
-            :src_approved,
+            :committee_approved,
             :in_work_fulfillment,
             :routing,
             :org_tree_display,
-            :grand_total,
-            :stored_percent_subsidy
+            :grand_total
 
     expose  :formatted_status, as: :status
 

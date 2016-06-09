@@ -25,9 +25,9 @@ SparcRails::Application.configure do
   # every request. This slows down response time but is perfect for development
   # since you don't have to restart the web server when you make code changes.
   config.cache_classes = false
-
-  # Log error messages when you accidentally call methods on nil.
-  config.whiny_nils = true
+  
+  # Do not eager load code on boot.
+  config.eager_load = false
 
   # Show full error reports and disable caching
   config.consider_all_requests_local       = true
@@ -47,7 +47,7 @@ SparcRails::Application.configure do
 
   # Log the query plan for queries taking more than this (works
   # with SQLite, MySQL, and PostgreSQL)
-  config.active_record.auto_explain_threshold_in_seconds = 0.5
+  # config.active_record.auto_explain_threshold_in_seconds = 0.5
 
   # Do not compress assets
   config.assets.compress = false
@@ -55,5 +55,5 @@ SparcRails::Application.configure do
   # Expands the lines which load the assets
   config.assets.debug = true
 
-  config.action_mailer.default_url_options = { :host => 'obis-sparc-dev.mdc.musc.edu' }
+  config.action_mailer.default_url_options = { :host => 'sparc-d.obis.musc.edu' }
 end

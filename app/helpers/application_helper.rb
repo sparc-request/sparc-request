@@ -300,11 +300,6 @@ module ApplicationHelper
     devise_mapping.to
   end
 
-  #Determines if an arm can be deleted in sparc proper, based on whether the request is in CWF and has patient data
-  def can_be_deleted? arm
-    arm.subjects.empty? ? true : arm.subjects.none?{|x| x.has_appointments?}
-  end
-
   def current_translations
     @translations ||= I18n.backend.send(:translations)
     @translations[I18n.locale].with_indifferent_access
@@ -319,11 +314,6 @@ module ApplicationHelper
     end
 
     has_fulfillments
-  end
-
-  # If any of the subjects under the given arm have completed appointments, returns true
-  def arm_has_subject_data? arm
-    arm.subjects ? arm.subjects.any?{|subject| subject.calendar.appointments.any?{|appt| !appt.completed_at.nil?}} : false
   end
 
   def entity_visibility_class entity

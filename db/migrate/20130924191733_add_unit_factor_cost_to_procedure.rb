@@ -19,6 +19,8 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class AddUnitFactorCostToProcedure < ActiveRecord::Migration
+  class Procedure < ActiveRecord::Base; end
+  
   def change
     add_column :procedures, :unit_factor_cost, :decimal, :precision => 12, :scale => 4
   end

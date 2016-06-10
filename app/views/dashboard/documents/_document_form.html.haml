@@ -30,7 +30,7 @@
         #modal_errors
         .row
           .col-md-12
-            = form.hidden_field :protocol_id, value: form.object.protocol.id
+            = hidden_field_tag :protocol_id, value: form.object.protocol.id
             .form-group
               = form.label "doc_type", t(:dashboard)[:documents][:form][:document_type], class: "col-sm-4 control-label"
               .col-sm-7

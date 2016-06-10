@@ -19,7 +19,9 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Dashboard::DocumentsController < Dashboard::BaseController
-  before_filter :find_protocol, only: [:index, :new, :edit]
+  before_filter :find_protocol,             only: [:index, :new, :create, :edit, :update, :destroy]
+  before_filter :find_admin_for_protocol,   only: [:index, :new, :create, :edit, :update, :destroy]
+  before_filter :protocol_authorizer_edit,  only: [:new, :create, :edit, :update, :destroy]
 
   def index
     @permission_to_edit = @protocol.project_roles.where(identity: @user, project_rights: ['approve', 'request']).any?
@@ -38,7 +40,6 @@ class Dashboard::DocumentsController < Dashboard::BaseController
 
   def create
     @document = Document.create(params[:document])
-    @protocol = @document.protocol
 
     if @document.valid?
       assign_organization_access
@@ -56,7 +57,6 @@ class Dashboard::DocumentsController < Dashboard::BaseController
 
   def update
     @document = Document.find(params[:id])
-    @protocol = @document.protocol
 
     if @document.update_attributes(params[:document])
       assign_organization_access

@@ -44,23 +44,14 @@ RSpec.describe Dashboard::ProtocolsController do
 
     context 'user has no admin organizations' do
       before(:each) do
-        @logged_in_user = create(:identity,
-                           last_name: "Doe",
-                           first_name: "John",
-                           ldap_uid: "jug2",
-                           email: "johnd@musc.edu",
-                           password: "p4ssword",
-                           password_confirmation: "p4ssword",
-                           approved: true)
+        @logged_in_user = build_stubbed(:identity)
 
         allow(@logged_in_user).to receive(:authorized_admin_organizations).
           and_return([])
 
-    
-        protocol = FactoryGirl.build(:protocol)
-        protocol.save validate: false
-        FactoryGirl.create(:project_role_with_identity_and_protocol, identity: @logged_in_user, protocol: protocol)
-
+        protocol = build_stubbed(:protocol)
+        build_stubbed(:project_role, identity: @logged_in_user, protocol: protocol)
+        
         paginated_protocols = double('protocols', page: @logged_in_user.protocols)
         filterrific = double('filterrific', find: paginated_protocols)
         allow(controller).to receive(:initialize_filterrific).

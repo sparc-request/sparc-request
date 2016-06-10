@@ -89,6 +89,7 @@ class Directory
       # use LDAP_FILTER to override default filter with custom string
       filter = (LDAP_FILTER && LDAP_FILTER.gsub('#{term}', term)) || fields.map { |f| Net::LDAP::Filter.contains(f, term) }.inject(:|)
       res = ldap.search(:attributes => fields, :filter => filter)
+      puts '#' * 100
       Rails.logger.info ldap.get_operation_result unless res
     rescue => e
       Rails.logger.info '#'*100

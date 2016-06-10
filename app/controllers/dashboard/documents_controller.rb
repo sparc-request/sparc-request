@@ -20,6 +20,7 @@
 
 class Dashboard::DocumentsController < Dashboard::BaseController
   before_filter :find_sub_service_request, only: [:index, :new, :edit]
+  before_filter :find_protocol,            only: [:protocol_index]
 
   def index
     @documents = @sub_service_request.documents
@@ -63,9 +64,23 @@ class Dashboard::DocumentsController < Dashboard::BaseController
     flash.now[:success] = t(:dashboard)[:documents][:destroyed]
   end
 
+  def protocol_index
+    @documents          = Document.where(service_request: @protocol.service_requests)
+    @permission_to_edit = @protocol.project_roles.where(identity: @user, project_rights: ['approve', 'request']).any?
+
+    if !@permission_to_edit
+      admin_orgs = @user.authorized_admin_organizations
+      @documents = @documents.reject { |document| (admin_orgs & document.sub_service_requests.map(&:org_tree).flatten.uniq).empty? }
+    end
+  end
+
   private
 
   def find_sub_service_request
     @sub_service_request = params[:sub_service_request_id].present? ? SubServiceRequest.find(params[:sub_service_request_id]) : nil
+  end
+
+  def find_protocol
+    @protocol = Protocol.find(params[:protocol_id])
   end
 end

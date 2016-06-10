@@ -198,7 +198,11 @@ SparcRails::Application.routes.draw do
       end
     end
 
-    resources :documents
+    resources :documents, except: [:show] do
+      collection do
+        get :protocol_index
+      end
+    end
 
     resources :epic_queues, only: [:index, :destroy]
 

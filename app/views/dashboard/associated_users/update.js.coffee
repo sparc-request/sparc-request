@@ -28,6 +28,7 @@ window.location = "/dashboard"
 <% elsif @current_user_updated %>
 $("#summary-panel").html("<%= escape_javascript(render('dashboard/protocols/summary', protocol: @protocol, protocol_type: @protocol_type, permission_to_edit: @permission_to_edit || @admin)) %>")
 $("#authorized-users-panel").html("<%= escape_javascript(render('dashboard/associated_users/table', protocol: @protocol, permission_to_edit: @permission_to_edit || @admin)) %>")
+$("#documents-panel").html("<%= escape_javascript(render( 'dashboard/documents/documents_table', protocol: @protocol, permission_to_edit: @permission_to_edit || @admin )) %>")
 $("#service-requests-panel").html("<%= escape_javascript(render('dashboard/service_requests/service_requests', protocol: @protocol, sp_only_admin_orgs: @sp_only_admin_orgs, permission_to_edit: @permission_to_edit, permission_to_view: @permission_to_view, user: @user, view_only: false)) %>")
 $("#associated-users-table").bootstrapTable()
 $('.service-requests-table').on 'all.bs.table', ->

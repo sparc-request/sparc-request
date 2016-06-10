@@ -252,7 +252,6 @@ class ServiceRequestsController < ApplicationController
   def confirmation
     update_service_request_status(@service_request, 'submitted')
     @service_request.ensure_ssr_ids
-    @service_request.update_arm_minimum_counts
 
     @protocol = @service_request.protocol
     # As the service request leaves draft, so too do the arms

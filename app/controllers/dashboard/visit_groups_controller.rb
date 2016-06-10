@@ -37,7 +37,6 @@ class Dashboard::VisitGroupsController < Dashboard::BaseController
     @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
     @arm =  Arm.find(params[:visit_group][:arm_id])
     if @arm.add_visit(params[:visit_group][:position], params[:visit_group][:day], params[:visit_group][:window_before], params[:visit_group][:window_after], params[:visit_group][:name], 'true')
-      @arm.increment!(:minimum_visit_count)
       @service_request.relevant_service_providers_and_super_users.each do |identity|
         create_visit_change_toast(identity, @sub_service_request) unless identity == @user
       end
@@ -78,7 +77,6 @@ class Dashboard::VisitGroupsController < Dashboard::BaseController
     @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
     @arm = @visit_group.arm
     if @arm.remove_visit(@visit_group.position)
-      @arm.decrement!(:minimum_visit_count)
       @service_request.relevant_service_providers_and_super_users.each do |identity|
         create_visit_change_toast(identity, @sub_service_request) unless identity == @user
       end

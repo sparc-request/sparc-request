@@ -539,12 +539,6 @@ class ServiceRequest < ActiveRecord::Base
     return self.line_items.any? { |li| li.service.is_ctrc_clinical_service? }
   end
 
-  def update_arm_minimum_counts
-    self.arms.each do |arm|
-      arm.update_minimum_counts
-    end
-  end
-
   def arms_editable?
     true #self.sub_service_requests.all?{|ssr| ssr.arms_editable?}
   end

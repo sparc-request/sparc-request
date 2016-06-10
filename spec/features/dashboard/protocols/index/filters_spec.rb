@@ -209,56 +209,38 @@ RSpec.describe "filters", js: :true do
       expect(@page.search_results).to have_protocols(text: "Protocol1")
     end
 
-    it "should match against associated users first name case insensitively" do
+    it "should match against associated users first name case insensitively (lowercase)" do
       protocol1 = create_protocol(archived: false, short_title: "Protocol1")
       create(:project_role, identity: user, role: "very-important", project_rights: "to-party", protocol: protocol1)
-      create(:project_role, identity: create(:identity, first_name: "name1"), role: "very-important", project_rights: "to-party", protocol: protocol1)
-
       protocol2 = create_protocol(archived: false, short_title: "Protocol2")
       create(:project_role, identity: user, role: "very-important", project_rights: "to-party", protocol: protocol2)
-      create(:project_role, identity: create(:identity, first_name: "Name1"), role: "very-important", project_rights: "to-party", protocol: protocol2)
-
       protocol3 = create_protocol(archived: false, short_title: "Protocol3")
       create(:project_role, identity: user, role: "very-important", project_rights: "to-party", protocol: protocol3)
-      create(:project_role, identity: create(:identity, first_name: "name3"), role: "very-important", project_rights: "to-party", protocol: protocol3)
 
       visit_protocols_index_page
-      @page.filter_protocols.search_field.set("name1")
+      @page.filter_protocols.search_field.set("john")
       @page.filter_protocols.apply_filter_button.click()
-
-      @page.instance_exec do
-        search_results.wait_for_protocols
-      end
       
       expect(@page.search_results).to have_protocols(text: "Protocol1")
       expect(@page.search_results).to have_protocols(text: "Protocol2")
-      expect(@page.search_results).to have_no_protocols(text: "Protocol3")
+      expect(@page.search_results).to have_protocols(text: "Protocol3")
     end
 
-    it "should match against associated users last name case insensitively" do
+    it "should match against associated users last name case insensitively (uppercase)" do
       protocol1 = create_protocol(archived: false, short_title: "Protocol1")
       create(:project_role, identity: user, role: "very-important", project_rights: "to-party", protocol: protocol1)
-      create(:project_role, identity: create(:identity, last_name: "name1"), role: "very-important", project_rights: "to-party", protocol: protocol1)
-
       protocol2 = create_protocol(archived: false, short_title: "Protocol2")
       create(:project_role, identity: user, role: "very-important", project_rights: "to-party", protocol: protocol2)
-      create(:project_role, identity: create(:identity, last_name: "Name1"), role: "very-important", project_rights: "to-party", protocol: protocol2)
-
       protocol3 = create_protocol(archived: false, short_title: "Protocol3")
       create(:project_role, identity: user, role: "very-important", project_rights: "to-party", protocol: protocol3)
-      create(:project_role, identity: create(:identity, last_name: "name3"), role: "very-important", project_rights: "to-party", protocol: protocol3)
 
       visit_protocols_index_page
-      @page.filter_protocols.search_field.set("name1")
+      @page.filter_protocols.search_field.set("John")
       @page.filter_protocols.apply_filter_button.click()
-
-      @page.instance_exec do
-        search_results.wait_for_protocols
-      end
 
       expect(@page.search_results).to have_protocols(text: "Protocol1")
       expect(@page.search_results).to have_protocols(text: "Protocol2")
-      expect(@page.search_results).to have_no_protocols(text: "Protocol3")
+      expect(@page.search_results).to have_protocols(text: "Protocol3")
     end
   end
 

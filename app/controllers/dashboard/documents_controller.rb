@@ -19,23 +19,30 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Dashboard::DocumentsController < Dashboard::BaseController
-  before_filter :find_sub_service_request, only: [:index, :new, :edit]
+  before_filter :find_protocol, only: [:index, :new, :edit]
 
   def index
-    @documents = @sub_service_request.documents
+    @permission_to_edit = @protocol.project_roles.where(identity: @user, project_rights: ['approve', 'request']).any?
+    @documents          = @protocol.documents
+    
+    if !@permission_to_edit
+      admin_orgs = @user.authorized_admin_organizations
+      @documents = @documents.reject { |document| (admin_orgs & document.sub_service_requests.map(&:org_tree).flatten.uniq).empty? }
+    end
   end
 
   def new
-    @document     = Document.new(service_request_id: @sub_service_request.service_request_id)
+    @document     = @protocol.documents.new
     @header_text  = t(:dashboard)[:documents][:add]
   end
 
   def create
-    @sub_service_request = SubServiceRequest.find(params[:document][:sub_service_request_id])
-    @document = Document.create(params[:document].except!(:sub_service_request_id))
+    @document = Document.create(params[:document])
+    @protocol = @document.protocol
+
     if @document.valid?
-      @sub_service_request.documents << @document
-      @sub_service_request.save
+      assign_organization_access
+
       flash.now[:success] = t(:dashboard)[:documents][:created]
     else
       @errors = @document.errors
@@ -43,14 +50,17 @@ class Dashboard::DocumentsController < Dashboard::BaseController
   end
 
   def edit
-    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
-    @document = Document.find(params[:id])
-    @header_text = t(:dashboard)[:documents][:edit]
+    @document     = Document.find(params[:id])
+    @header_text  = t(:dashboard)[:documents][:edit]
   end
 
   def update
     @document = Document.find(params[:id])
-    if @document.update_attributes(params[:document].except!(:sub_service_request_id))
+    @protocol = @document.protocol
+
+    if @document.update_attributes(params[:document])
+      assign_organization_access
+
       flash.now[:success] = t(:dashboard)[:documents][:updated]
     else
       @errors = @document.errors
@@ -58,14 +68,18 @@ class Dashboard::DocumentsController < Dashboard::BaseController
   end
 
   def destroy
-    Dashboard::DocumentRemover.new(id: params[:id],
-      sub_service_request_id: params[:sub_service_request_id])
+    Dashboard::DocumentRemover.new(params[:id])
+    
     flash.now[:success] = t(:dashboard)[:documents][:destroyed]
   end
 
   private
 
-  def find_sub_service_request
-    @sub_service_request = params[:sub_service_request_id].present? ? SubServiceRequest.find(params[:sub_service_request_id]) : nil
+  def find_protocol
+    @protocol = Protocol.find(params[:protocol_id])
+  end
+
+  def assign_organization_access
+    @document.sub_service_requests = @protocol.sub_service_requests.where(organization_id: params[:org_ids])
   end
 end

@@ -28,7 +28,7 @@ module Dashboard::DocumentsHelper
     content_tag(:button,
       raw(
         content_tag(:span, '', class: "glyphicon glyphicon-edit", aria: {hidden: "true"})
-      ), type: 'button', class: "btn btn-warning actions-button document_edit"
+      ), type: 'button', class: "btn btn-warning actions-button document-edit"
     )
   end
 
@@ -36,7 +36,21 @@ module Dashboard::DocumentsHelper
     content_tag(:button,
       raw(
         content_tag(:span, '', class: "glyphicon glyphicon-remove", aria: {hidden: "true"})
-      ), type: 'button', class: "btn btn-danger actions-button document_delete"
+      ), type: 'button', class: "btn btn-danger actions-button document-delete"
     )
+  end
+
+  def service_provider_access_display(document)
+    returning_html = ""
+
+    document.protocol.sub_service_requests.each do |ssr|
+      returning_html << content_tag(:div,
+                          content_tag(:span, ssr.organization.name)+
+                          content_tag(:input, '', type: 'checkbox'),
+                          class: 'row'
+                        )
+    end
+
+    returning_html.html_safe
   end
 end

@@ -22,33 +22,33 @@ $ ->
 
   # DOCUMENTS LISTENERS BEGIN
 
-  $(document).on 'click', '#document_new', ->
-    data = 'sub_service_request_id': $(this).data('sub-service-request-id')
+  $(document).on 'click', '#document-new', ->
+    data = 'protocol_id': $(this).data('protocol-id')
     $.ajax
       type: 'GET'
       url: '/dashboard/documents/new'
       data: data
 
-  $(document).on 'click', '.document_edit', ->
+  $(document).on 'click', '.document-edit', ->
     row_index   = $(this).parents('tr').data('index')
-    document_id = $(this).parents('table.documents_table').bootstrapTable('getData')[row_index].id
-    data = 'sub_service_request_id': $('#document_new').data('sub-service-request-id')
+    document_id = $(this).parents('table#documents-table').bootstrapTable('getData')[row_index].id
+    data = 'protocol_id': $('#document-new').data('protocol-id')
     $.ajax
       type: 'GET'
       url: "/dashboard/documents/#{document_id}/edit"
       data: data
 
-  $(document).on 'click', '.document_delete', ->
+  $(document).on 'click', '.document-delete', ->
     row_index   = $(this).parents('tr').data('index')
-    document_id = $(this).parents('table.documents_table').bootstrapTable('getData')[row_index].id
-    data = 'sub_service_request_id': $('#document_new').data('sub-service-request-id')
-    if confirm "Are you sure you want to delete the selected Document from this SubServiceRequest?"
+    document_id = $(this).parents('table#documents-table').bootstrapTable('getData')[row_index].id
+    data = 'protocol_id': $('#document-new').data('protocol-id')
+    if confirm "Are you sure you want to delete the selected Document from this Protocol?"
       $.ajax
         type: 'DELETE'
         url: "/dashboard/documents/#{document_id}"
         data: data
 
-  $(document).on 'change', '#document_doc_type', ->
+  $(document).on 'change', '#document-doc-type', ->
     if $(this).val() == 'other'
       $('#doc_type_other_field').show()
     else

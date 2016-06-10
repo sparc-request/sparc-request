@@ -280,6 +280,7 @@ en:
     #  DOCUMENTS  #
     ###############
     documents:
+      header: "Documents"
       add: "Add a New Document"
       edit: "Edit Document"
       created: "Document Uploaded!"
@@ -293,6 +294,7 @@ en:
         document_type: "Document Type:"
         document_type_other: "Other Document Type:"
         document: "Document:"
+        access: "Allow Access:"
 
     #################
     #  EPIC QUEUES  #

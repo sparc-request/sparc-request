@@ -23,14 +23,14 @@ class Document < ActiveRecord::Base
 
   include Paperclip::Glue
   has_and_belongs_to_many :sub_service_requests
-  belongs_to :service_request
+  belongs_to :protocol
   has_attached_file :document #, :preserve_files => true
 
   attr_accessible :document
   attr_accessible :doc_type
   attr_accessible :doc_type_other
   attr_accessible :sub_service_requests
-  attr_accessible :service_request_id
+  attr_accessible :protocol_id
 
   validates :doc_type, :document, presence: true
   validates :doc_type_other, presence: true, if: Proc.new { |doc| doc.doc_type == 'other' }

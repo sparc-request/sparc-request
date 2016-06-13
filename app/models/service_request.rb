@@ -301,7 +301,7 @@ class ServiceRequest < ActiveRecord::Base
   end
 
   def create_line_item(args)
-    quantity = args.delete(:quantity) || 1
+    quantity = args.delete('quantity') || args.delete(:quantity) || 1
     if line_item = self.line_items.create(args)
 
       if line_item.service.one_time_fee

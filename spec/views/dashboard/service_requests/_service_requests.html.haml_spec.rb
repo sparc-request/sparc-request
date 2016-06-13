@@ -72,11 +72,12 @@ RSpec.describe 'dashboard/service_requests/service_requests', type: :view do
     end
   end
 
-  context 'Service Request with all \'draft\' SSRs for Service Provider' do
+  context 'Service Request with all \'draft\' or \'first_draft\'' do
     it 'should render if the user is an Authorized User' do
       protocol        = create(:unarchived_study_without_validations, primary_pi: jug2)
       service_request = create(:service_request_without_validations, protocol: protocol)
                         create(:sub_service_request_without_validations, service_request: service_request, organization: create(:organization), status: 'draft')
+                        create(:sub_service_request_without_validations, service_request: service_request, organization: create(:organization), status: 'first_draft')
 
       render_service_requests(protocol)
 
@@ -96,6 +97,7 @@ RSpec.describe 'dashboard/service_requests/service_requests', type: :view do
       organization    = create(:organization)
                         create(:super_user, identity: jug2, organization: organization)
                         create(:sub_service_request_without_validations, service_request: service_request, organization: organization, status: 'draft')
+                        create(:sub_service_request_without_validations, service_request: service_request, organization: organization, status: 'first_draft')
 
       render_service_requests(protocol)
 
@@ -109,18 +111,42 @@ RSpec.describe 'dashboard/service_requests/service_requests', type: :view do
       )
     end
 
-    it 'should not render for Service Providers' do
+    it 'should render for Service Providers' do
       protocol        = create(:unarchived_study_without_validations, primary_pi: create(:identity))
       service_request = create(:service_request_without_validations, protocol: protocol)
       organization    = create(:organization)
                         create(:service_provider, identity: jug2, organization: organization)
                         create(:sub_service_request_without_validations, service_request: service_request, organization: organization, status: 'draft')
+                        create(:sub_service_request_without_validations, service_request: service_request, organization: organization, status: 'first_draft')
 
-      render_service_requests(protocol, [organization])
+      render_service_requests(protocol, false, [organization])
+
+      expect(response).to render_template(partial: 'dashboard/service_requests/protocol_service_request_show',
+        locals: {
+          service_request: service_request,
+          user: jug2,
+          permission_to_edit: false,
+          view_only: false
+        }
+      )
+    end
+
+    it 'should not render for Service Providers not in that Service Request' do
+      protocol        = create(:unarchived_study_without_validations, primary_pi: create(:identity))
+      service_request = create(:service_request_without_validations, protocol: protocol)
+      organization    = create(:organization)
+                        create(:service_provider, identity: jug2, organization: organization)
+                        create(:sub_service_request_without_validations, service_request: service_request, organization: organization, status: 'draft')
+      hidden_request  = create(:service_request_without_validations, protocol: protocol)
+      hidden_org      = create(:organization)
+                        create(:sub_service_request_without_validations, service_request: hidden_request, organization: hidden_org, status: 'draft')
+                        create(:sub_service_request_without_validations, service_request: hidden_request, organization: hidden_org, status: 'first_draft')
+
+      render_service_requests(protocol, false, [organization])
 
       expect(response).not_to render_template(partial: 'dashboard/service_requests/protocol_service_request_show',
         locals: {
-          service_request: service_request,
+          service_request: hidden_request,
           user: jug2,
           permission_to_edit: false,
           view_only: false

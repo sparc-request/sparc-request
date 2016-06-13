@@ -190,9 +190,10 @@ class Protocol < ActiveRecord::Base
 
     if sp_only_admin_orgs.any?
       admin_protocols           = for_admin(identity_id)
-      authorized_user_protocols = joins(:project_roles).where(project_roles: { identity_id: identity_id }) & admin_protocols
+      authorized_user_protocols = joins(:project_roles).where(project_roles: { identity_id: identity_id })
       visible_admin_protocols   = admin_protocols.to_a.reject { |p| p.should_be_hidden_for_sp?(sp_only_admin_orgs) }
       
+      # TODO: In rails 5, we can do an or-merge to create a single query for this entire process
       where(id: (authorized_user_protocols | visible_admin_protocols)).distinct
     else
       for_admin(identity_id)

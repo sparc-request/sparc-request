@@ -138,7 +138,7 @@ RSpec.feature "User wants to create a Study", js: true do
 
       scenario 'and fills in a user name' do
         when_i_search_for_the_user_name
-        # save_and_open_screenshot
+        save_and_open_screenshot
       end
     end
   end
@@ -160,7 +160,7 @@ RSpec.feature "User wants to create a Study", js: true do
     when_i_submit_the_form
   end
 
-  def when_i_search_for_the_user_name username = Identity.last.first_name + " " + Identity.last.last_name
+  def when_i_search_for_the_user_name username = Identity.last.email
     page.execute_script "$('#user_search_term').autocomplete('search', '#{username}')"
     page.execute_script "$('#user_search_term').val('#{username}')"
   end

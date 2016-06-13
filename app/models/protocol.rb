@@ -461,22 +461,6 @@ class Protocol < ActiveRecord::Base
     return self.service_requests.detect { |sr| !['first_draft'].include?(sr.status) }
   end
 
-  def has_per_patient_per_visit? current_request, portal
-    return self.service_requests.detect do |sr|
-      if sr.has_per_patient_per_visit_services?
-        if ['first_draft'].include?(sr.status)
-          if portal
-            false
-          elsif current_request == sr
-            true
-          end
-        else
-          true
-        end
-      end
-    end
-  end
-  
   def direct_cost_total service_request
     total = 0
     self.service_requests.each do |sr|

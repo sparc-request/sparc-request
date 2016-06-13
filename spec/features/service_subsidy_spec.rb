@@ -53,7 +53,7 @@ RSpec.describe "subsidy page", js: true do
       wait_for_javascript_to_finish
       new_contribution = @direct_cost - (@direct_cost * 0.3)
       pi_field_value = find('#pi_contribution').value.gsub(/,/, '')
-      expect(pi_field_value).to eq(new_contribution.to_s + '0')
+      expect(pi_field_value).to eq('$' + new_contribution.to_s + '0')
     end
 
     it 'should adjust the subsidy percent if the pi contribution is changed' do
@@ -66,6 +66,23 @@ RSpec.describe "subsidy page", js: true do
       percent_subsidy = ((subsidy_cost / @direct_cost) * 100).round(2)
       percent_field_value = find('#percent_subsidy').value
       expect(percent_field_value).to eq(percent_subsidy.to_s)
+    end
+
+    context 'triggering validations modal' do
+      
+      it 'should hit the validations if the entered percent is higher than the max percent' do
+        click_button 'Add a Subsidy'
+        wait_for_javascript_to_finish
+        find('#percent_subsidy').set("60\n")
+        expect(page).to have_content("The Percent Subsidy cannot be greater than the max percent of 50.0")
+      end
+
+      it 'should hit the validations if the entered pi contribution results in a percent subsidy greater than the max' do
+        click_button 'Add a Subsidy'
+        wait_for_javascript_to_finish
+        find('#pi_contribution').set("3000\n")
+        expect(page).to have_content("The Percent Subsidy cannot be greater than the max percent of 50.0")
+      end
     end
   end
 end

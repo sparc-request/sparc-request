@@ -53,15 +53,15 @@
             = form.select :with_organization, filterrific.select_options[:with_organization], {}, class: "form-control selectpicker core-select", multiple: true, data: { none_selected_text: t(:constants)[:prompts][:any] }
         - if admin
           %hr
-          .form-group.row
-            = form.label :for_identity_id, t(:dashboard)[:protocol_filters][:my_protocols], class: 'col-lg-10 control-label'
+          .form-group.row.identity-protocols
+            = form.label :admin_filter, t(:dashboard)[:protocol_filters][:my_protocols], class: 'col-lg-10 control-label'
             .col-lg-2
-              = form.check_box :for_identity_id, {}, current_user.id, "0"
+              = form.radio_button :admin_filter, "for_identity #{current_user.id}"
 
-          .form-group.row
-            = form.label :filtered_for_admin, t(:dashboard)[:protocol_filters][:my_admin_orgs], class: 'col-lg-10 control-label'
+          .form-group.row.admin-protocols
+            = form.label :admin_filter, t(:dashboard)[:protocol_filters][:my_admin_protocols], class: 'col-lg-10 control-label'
             .col-lg-2
-              = form.check_box :filtered_for_admin, {}, current_user.id, "0"
+              = form.radio_button :admin_filter, "for_admin #{current_user.id}"
 
     .panel-footer
       .pull-right

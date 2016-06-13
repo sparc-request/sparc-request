@@ -129,8 +129,7 @@ class Protocol < ActiveRecord::Base
     default_filter_params: { show_archived: 0 },
     available_filters: [
       :search_query,
-      :for_identity_id,
-      :filtered_for_admin,
+      :admin_filter,
       :show_archived,
       :with_status,
       :with_organization
@@ -162,6 +161,16 @@ class Protocol < ActiveRecord::Base
     joins(:project_roles).
       where(project_roles: { identity_id: identity_id }).
       where.not(project_roles: { project_rights: 'none' })
+  }
+
+  scope :admin_filter, -> (params) {
+    filter, id  = params.split(" ")
+
+    if filter == 'for_admin'
+      return filtered_for_admin(id)
+    elsif filter == 'for_identity'
+      return for_identity_id(id)
+    end
   }
 
   scope :for_admin, -> (identity_id) {

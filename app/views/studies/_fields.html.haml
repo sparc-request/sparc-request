@@ -156,7 +156,7 @@
 
             = f.fields_for :human_subjects_info do |hs|
               .field.nct_number
-                = hs.label :nct_number, t(:study_form)[:nct_number]
+                = hs.label :nct_number, t(:study_form)[:nct_number], class: "long"
                 = hs.text_field :nct_number
 
               .field.hr_number

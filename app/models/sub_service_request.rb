@@ -494,7 +494,7 @@ class SubServiceRequest < ActiveRecord::Base
   ### end audit reporting methods ###
 
   def should_be_hidden_for_sp?(sp_only_admin_orgs)
-    status == 'draft' && (org_tree & sp_only_admin_orgs).any?
+    ['first_draft', 'draft'].include?(status) && sp_only_admin_orgs.count != 0 && (org_tree & sp_only_admin_orgs).empty?
   end
 
   private

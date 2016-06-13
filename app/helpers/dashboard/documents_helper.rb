@@ -20,13 +20,15 @@
 
 module Dashboard::DocumentsHelper
 
-  def display_document_title(document)
-    link_to document.document_file_name, document.document.url
+  def display_document_title(document, permission)
+    if permission
+      link_to document.document_file_name, document.document.url
+    else
+      document.document_file_name
+    end
   end
 
-  def document_edit_button(document, permission_to_edit, admin_orgs)
-    permission = permission_to_edit || (admin_orgs & document.all_organizations).any?
-
+  def document_edit_button(document, permission)
     content_tag(:button,
       raw(
         content_tag(:span, '', class: "glyphicon glyphicon-edit", aria: {hidden: "true"})
@@ -34,9 +36,7 @@ module Dashboard::DocumentsHelper
     )
   end
 
-  def document_delete_button(document, permission_to_edit, admin_orgs)
-    permission = permission_to_edit || (admin_orgs & document.all_organizations).any?
-
+  def document_delete_button(document, permission)
     content_tag(:button,
       raw(
         content_tag(:span, '', class: "glyphicon glyphicon-remove", aria: {hidden: "true"})

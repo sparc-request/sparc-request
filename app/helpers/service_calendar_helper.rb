@@ -214,6 +214,14 @@ module ServiceCalendarHelper
     options_for_select(arr)
   end
 
+  def has_one_time_fees? current_request, portal
+    return self.service_request.detect do |sr|
+      next unless sr.has_one_time_fee_services?
+      true unless ['first_draft'].include?(sr.status)
+      !portal ? current_request == sr : false
+    end
+  end
+  
   def move_to_position arm
     unless arm.visit_groups.empty?
       vgs = arm.visit_groups

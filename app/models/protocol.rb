@@ -476,23 +476,7 @@ class Protocol < ActiveRecord::Base
       end
     end
   end
-
-  def has_one_time_fees? current_request, portal
-    return self.service_requests.detect do |sr|
-      if sr.has_one_time_fee_services?
-        if ['first_draft'].include?(sr.status)
-          if portal
-            false
-          elsif current_request == sr
-            true
-          end
-        else
-          true
-        end
-      end
-    end
-  end
-
+  
   def direct_cost_total service_request
     total = 0
     self.service_requests.each do |sr|

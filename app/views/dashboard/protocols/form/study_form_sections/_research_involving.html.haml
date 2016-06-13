@@ -34,7 +34,7 @@
       / Human Subjects selected begin
       .human_subjects_dependent{ display_if(rt_form.object.human_subjects) }
         = form.fields_for :human_subjects_info do |hs_form|
-          .form-group.row
+          .form-group.row.nct-number
             = hs_form.label :nct_number, t(:protocols)[:studies][:research_involving][:humans][:nct_number], class: 'col-lg-2 control-label'
             .col-lg-10
               = hs_form.text_field :nct_number, class: 'form-control'
@@ -125,6 +125,11 @@
             = ip_form.label :ind_number, t(:protocols)[:studies][:research_involving][:products][:ind_number], class: 'col-lg-2 control-label'
             .col-lg-10
               = ip_form.text_field :ind_number, class: 'form-control'
+
+          .form-group.row#ind-on-hold-group{ display_if(!ip_form.object.ind_number.blank?) }
+            = ip_form.label :ind_on_hold, t(:protocols)[:studies][:research_involving][:products][:ind_on_hold], class: 'col-lg-2 control-label'
+            .col-lg-1
+              = ip_form.check_box :ind_on_hold, class: 'form-control'
 
           .form-group.row
             = ip_form.label :ide_number, t(:protocols)[:studies][:research_involving][:products][:ide_number], class: 'col-lg-2 control-label'

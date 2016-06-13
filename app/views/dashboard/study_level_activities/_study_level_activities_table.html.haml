@@ -26,7 +26,7 @@
       %table.study_level_activities{id: "study-level-activities-table", data: {toggle: 'table', search: "true", "show-columns" => "true", "show-refresh" => "true", "show-toggle" => "true", url: dashboard_line_items_path(format: :json, sub_service_request_id: sub_service_request.id), striped: "true", toolbar: "#sla-custom-toolbar", "show-export" => "false", "export-types" => ['excel']}}
         %thead.primary-header
           %tr
-            %th{data: {class: 'fulfillments_button', align: "left", field: "fulfillments_button"}}
+            %th{data: {class: 'fulfillments_button', align: "left", field: "fulfillments_button", switchable: 'false'}}
             %th{data: {class: 'service', align: "left", field: "service"}}
               = t(:dashboard)[:study_level_activities][:table][:service]
             %th{data: {class: 'qty_req', align: "left", sortable: "true", field: "quantity_requested"}}

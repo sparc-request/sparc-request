@@ -62,6 +62,11 @@ class SurveyResponseReport < ReportingModule
     return :survey
   end
 
+  # Other tables to join
+  def joins
+    return :responses
+  end
+
   # Conditions
   def where args={}
     completed_at = (args[:completed_at_from] ? args[:completed_at_from] : self.default_options["Date Range"][:from]).to_time.strftime("%Y-%m-%d 00:00:00")..(args[:completed_at_to] ? args[:completed_at_to] : self.default_options["Date Range"][:to]).to_time.strftime("%Y-%m-%d 23:59:59")
@@ -71,6 +76,7 @@ class SurveyResponseReport < ReportingModule
 
   # Return only uniq records for
   def uniq
+    return :response_sets
   end
 
   def group

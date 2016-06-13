@@ -51,6 +51,30 @@ module Dashboard
         element :cancel_button, :button, text: "Close"
       end
 
+      element :enabled_add_document_button, '#document-new:not(.disabled)', text: 'Add a New Document'
+      element :disabled_add_document_button, '#document-new.disabled', text: 'Add a New Document'
+      sections :documents, '#documents-table tbody tr' do
+        element :enabled_edit_button, ".document-edit:not(.disabled)"
+        element :disabled_edit_button, ".document-edit.disabled"
+        element :enabled_remove_button, ".document-delete:not(.disabled)"
+        element :disabled_remove_button, ".document-delete.disabled"
+      end
+
+      # modal appears after clicking Add Document Button
+      section :document_modal, '.modal-dialog', text: /(Add|Edit) Document/ do
+        element :x_button, "button.close"
+
+        element :doc_type_dropdown, "button[data-id='document_doc_type']"
+        element :document_upload, "input#document_document"
+        element :access_dropdown, "button[data-id='org_ids']"
+
+        # generic matcher for any dropdown choices
+        elements :dropdown_choices, "li a"
+
+        element :upload_button, :button, text: "Upload"
+        element :cancel_button, :button, text: "Close"
+      end
+
       # big panel of service requests: the consolidated buttongs and the
       # following :service_requests sections
       element :view_consolidated_request_button, :button, text: "View Consolidated Request"

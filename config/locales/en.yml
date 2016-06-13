@@ -23,6 +23,8 @@ en:
   about_title: "About SPARC Request"
   activerecord:
     attributes:
+      fulfillment:
+        time: "Quantity"
       human_subjects_info:
         nct_number: "The NCT #"
       protocol:
@@ -310,8 +312,8 @@ en:
       destroyed: "Fulfillment Destroyed!"
       table:
         date: "Fulfillment Date"
-        time_unit: "Time Unit"
-        time: "Time"
+        time_unit: "Qty Unit"
+        time: "Quantity"
         actions: "Actions"
       actions:
         notes: " Notes"
@@ -319,8 +321,8 @@ en:
         delete: " Delete Fulfillment"
       form:
         date: "Fulfillment Date:"
-        time: "Time:"
-        time_unit: "Time Unit:"
+        time: "Quantity:"
+        time_unit: "Qty Unit:"
 
     ################
     #  LINE ITEMS  #

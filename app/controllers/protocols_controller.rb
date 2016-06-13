@@ -56,11 +56,13 @@ class ProtocolsController < ApplicationController
       @current_step = 'user_details'
       @protocol.populate_for_edit
     elsif @current_step == 'user_details' and @protocol.valid?
-      if @protocol.project_roles.where(identity_id: current_user.id).empty?
+      unless @protocol.project_roles.map(&:identity_id).include? current_user.id
         # if current user is not authorized, add them as an authorized user
         @protocol.project_roles.new(identity_id: current_user.id, role: 'general-access-user', project_rights: 'approve')
-        @protocol.save
       end
+
+      @protocol.save
+
       @current_step = 'return_to_service_request'
 
       if @service_request

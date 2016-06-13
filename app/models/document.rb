@@ -39,4 +39,7 @@ class Document < ActiveRecord::Base
     self.doc_type == "other" ? self.doc_type_other.try(:humanize) : DOCUMENT_TYPES.key(self.doc_type)
   end
 
+  def all_organizations
+    sub_service_requests.map(&:org_tree).flatten.uniq
+  end
 end

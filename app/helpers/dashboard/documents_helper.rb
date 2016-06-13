@@ -24,33 +24,33 @@ module Dashboard::DocumentsHelper
     link_to document.document_file_name, document.document.url
   end
 
-  def document_edit_button(permission_to_edit)
+  def document_edit_button(document, permission_to_edit, admin_orgs)
+    permission = permission_to_edit || (admin_orgs & document.all_organizations).any?
+
     content_tag(:button,
       raw(
         content_tag(:span, '', class: "glyphicon glyphicon-edit", aria: {hidden: "true"})
-      ), type: 'button', class: "btn btn-warning actions-button document-edit"
+      ), type: 'button', class: "btn btn-warning actions-button document-edit #{permission ? '' : 'disabled'}", data: { permission: permission.to_s }
     )
   end
 
-  def document_delete_button(permission_to_edit)
+  def document_delete_button(document, permission_to_edit, admin_orgs)
+    permission = permission_to_edit || (admin_orgs & document.all_organizations).any?
+
     content_tag(:button,
       raw(
         content_tag(:span, '', class: "glyphicon glyphicon-remove", aria: {hidden: "true"})
-      ), type: 'button', class: "btn btn-danger actions-button document-delete"
+      ), type: 'button', class: "btn btn-danger actions-button document-delete #{permission ? '' : 'disabled'}", data: { permission: permission.to_s }
     )
   end
 
-  def service_provider_access_display(document)
-    returning_html = ""
+  def document_org_access_collection(document, action)
+    default_select  = if action == 'new'
+                        current_user.authorized_admin_organizations.ids
+                      else
+                        document.sub_service_requests.map(&:organization_id)
+                      end
 
-    document.protocol.sub_service_requests.each do |ssr|
-      returning_html << content_tag(:div,
-                          content_tag(:span, ssr.organization.name)+
-                          content_tag(:input, '', type: 'checkbox'),
-                          class: 'row'
-                        )
-    end
-
-    returning_html.html_safe
+    options_from_collection_for_select(document.protocol.organizations, :id, :name, default_select)
   end
 end

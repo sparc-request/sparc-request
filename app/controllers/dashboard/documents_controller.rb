@@ -24,22 +24,25 @@ class Dashboard::DocumentsController < Dashboard::BaseController
   before_filter :protocol_authorizer_edit,  only: [:new, :create, :edit, :update, :destroy]
 
   def index
-    @permission_to_edit = @protocol.project_roles.where(identity: @user, project_rights: ['approve', 'request']).any?
     @documents          = @protocol.documents
-    
-    if !@permission_to_edit
-      admin_orgs = @user.authorized_admin_organizations
-      @documents = @documents.reject { |document| (admin_orgs & document.sub_service_requests.map(&:org_tree).flatten.uniq).empty? }
+    @permission_to_edit = @protocol.project_roles.where(identity: @user, project_rights: ['approve', 'request']).any?
+    permission_to_view  = @protocol.project_roles.where(identity: @user, project_rights: ['approve', 'request', 'view']).any?
+    @admin_orgs         = @user.authorized_admin_organizations
+
+    unless permission_to_view
+      @documents  = @documents.reject { |document| (@admin_orgs & document.all_organizations).empty? }
     end
   end
 
   def new
     @document     = @protocol.documents.new
+    @action       = 'new'
     @header_text  = t(:dashboard)[:documents][:add]
   end
 
   def create
     @document = Document.create(params[:document])
+    @document.update_attributes(protocol_id: @protocol.id)
 
     if @document.valid?
       assign_organization_access
@@ -52,6 +55,7 @@ class Dashboard::DocumentsController < Dashboard::BaseController
 
   def edit
     @document     = Document.find(params[:id])
+    @action       = 'edit'
     @header_text  = t(:dashboard)[:documents][:edit]
   end
 

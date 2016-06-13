@@ -28,11 +28,22 @@ RSpec.describe Dashboard::ProtocolsController do
       context "user authorized to edit Protocol" do
         build_study_type_question_groups
         before(:each) do
-          @logged_in_user = create(:identity)
-          @protocol       = create(:unarchived_study_without_validations, study_type_question_group_id: active_study_type_question_group.id)
-          create(:project_role, identity_id: @logged_in_user.id, protocol_id: @protocol.id, project_rights: 'approve')
+          @logged_in_user = build_stubbed(:identity)
+          @protocol       = findable_stub(Protocol) do
+            build_stubbed(:protocol,
+              type: "Study",
+              study_type_question_group_id: inactive_study_type_question_group.id
+            )
+          end
+
+          allow(@protocol).to receive(:valid?).and_return(true)
+          allow(@protocol).to receive(:populate_for_edit)
+          allow(@protocol).to receive(:update_attribute).and_return(true)
+
+          authorize(@logged_in_user, @protocol, can_edit: true)
 
           log_in_dashboard_identity(obj: @logged_in_user)
+
           get :edit, id: @protocol.id
         end
 
@@ -44,6 +55,10 @@ RSpec.describe Dashboard::ProtocolsController do
           expect(@protocol).to have_received(:populate_for_edit)
         end
 
+        it "should update StudyTypeQuestionGroup id" do
+          expect(@protocol).to have_received(:update_attribute).
+            with(:study_type_question_group_id, active_study_type_question_group.id)
+        end
         it { is_expected.to respond_with :ok }
         it { is_expected.to render_template "dashboard/protocols/edit" }
       end

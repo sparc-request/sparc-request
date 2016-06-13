@@ -26,6 +26,8 @@ class Directory
     # Load the YAML file for ldap configuration and set constants
     begin
       ldap_config   ||= YAML.load_file(Rails.root.join('config', 'ldap.yml'))[Rails.env]
+      puts "#"*50
+      puts ldap_config.inspect
       LDAP_HOST       = ldap_config['ldap_host']
       LDAP_PORT       = ldap_config['ldap_port']
       LDAP_BASE       = ldap_config['ldap_base']
@@ -88,6 +90,9 @@ class Directory
       ldap.auth LDAP_AUTH_USERNAME, LDAP_AUTH_PASSWORD unless !LDAP_AUTH_USERNAME || !LDAP_AUTH_PASSWORD
       # use LDAP_FILTER to override default filter with custom string
       filter = (LDAP_FILTER && LDAP_FILTER.gsub('#{term}', term)) || fields.map { |f| Net::LDAP::Filter.contains(f, term) }.inject(:|)
+      puts '#' * 100
+      puts fields.inspect
+      puts filter.inspect
       res = ldap.search(:attributes => fields, :filter => filter)
       puts '#' * 100
       Rails.logger.info ldap.get_operation_result unless res

@@ -26,23 +26,18 @@ RSpec.describe Dashboard::ProtocolsController do
       end
 
       context "user authorized to edit Protocol" do
+        build_study_type_question_groups
         before(:each) do
-          @logged_in_user = build_stubbed(:identity)
-
-          @protocol = findable_stub(Protocol) do
-            build_stubbed(:protocol, type: "Project")
-          end
-          allow(@protocol).to receive(:valid?).and_return(true)
-          allow(@protocol).to receive(:populate_for_edit)
-
-          authorize(@logged_in_user, @protocol, can_edit: true)
+          @logged_in_user = create(:identity)
+          @protocol       = create(:unarchived_study_without_validations, study_type_question_group_id: active_study_type_question_group.id)
+          create(:project_role, identity_id: @logged_in_user.id, protocol_id: @protocol.id, project_rights: 'approve')
 
           log_in_dashboard_identity(obj: @logged_in_user)
           get :edit, id: @protocol.id
         end
 
         it "should assign @protocol_type to type of Protocol" do
-          expect(assigns(:protocol_type)).to eq("Project")
+          expect(assigns(:protocol_type)).to eq("Study")
         end
 
         it "should populate Protocol for edit" do

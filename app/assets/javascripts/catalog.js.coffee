@@ -75,11 +75,9 @@ $(document).ready ->
     source: '/search/services'
     minLength: 2
     search: (event, ui) ->
-      $('.catalog-search-clear-icon').remove()
       $("#service_query").after('<img src="/assets/spinner.gif" class="catalog-search-spinner" />')
     open: (event, ui) ->
       $('.catalog-search-spinner').remove()
-      $("#service_query").after('<img src="/assets/clear_icon.png" class="catalog-search-clear-icon" />')
       $('.service-name').qtip
         content: { text: false}
         position:

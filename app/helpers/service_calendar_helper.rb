@@ -214,6 +214,24 @@ module ServiceCalendarHelper
     options_for_select(arr)
   end
 
+  def has_per_patient_per_visit? current_request, portal
+    return self.service_request.detect do |sr|
+      next unless sr.has_per_patient_per_visit_services?
+      has_conditional_helper
+    end
+  end
+
+  def has_one_time_fees? current_request, portal
+    return self.service_requests.detect do |sr|
+      next unless sr.has_one_time_fee_services?
+      has_conditional_helper
+    end
+  end
+
+  def has_conditional_helper
+    true unless ['first_draft'].include?(sr.status)
+    !portal ? current_request == sr : false
+  
   def move_to_position arm
     unless arm.visit_groups.empty?
       vgs = arm.visit_groups

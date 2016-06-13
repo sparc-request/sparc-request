@@ -33,8 +33,7 @@
           .col-md-12
             = form.hidden_field :identity_id
             = form.hidden_field :show_archived
-            = form.hidden_field :filtered_for_admin
-            = form.hidden_field :for_identity_id
+            = form.hidden_field :admin_filter
             = form.hidden_field :search_query
             - protocol_filter.with_organization.each do |core_id|
               = form.hidden_field :with_organization, multiple: true, value: core_id

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160527143837) do
+ActiveRecord::Schema.define(version: 20160608151717) do
 
   create_table "admin_rates", force: :cascade do |t|
     t.integer  "line_item_id", limit: 4
@@ -381,6 +381,7 @@ ActiveRecord::Schema.define(version: 20160527143837) do
 
   add_index "identities", ["approved"], name: "index_identities_on_approved", using: :btree
   add_index "identities", ["email"], name: "index_identities_on_email", using: :btree
+  add_index "identities", ["first_name", "last_name"], name: "full_name", type: :fulltext
   add_index "identities", ["last_name"], name: "index_identities_on_last_name", using: :btree
   add_index "identities", ["ldap_uid"], name: "index_identities_on_ldap_uid", unique: true, using: :btree
   add_index "identities", ["reset_password_token"], name: "index_identities_on_reset_password_token", unique: true, using: :btree
@@ -631,16 +632,15 @@ ActiveRecord::Schema.define(version: 20160527143837) do
   add_index "project_roles", ["protocol_id"], name: "index_project_roles_on_protocol_id", using: :btree
 
   create_table "protocol_filters", force: :cascade do |t|
-    t.integer  "identity_id",        limit: 4
-    t.string   "search_name",        limit: 255
+    t.integer  "identity_id",       limit: 4
+    t.string   "search_name",       limit: 255
     t.boolean  "show_archived"
-    t.integer  "for_identity_id",    limit: 4
-    t.string   "search_query",       limit: 255
-    t.string   "with_organization",  limit: 255
-    t.string   "with_status",        limit: 255
+    t.string   "search_query",      limit: 255
+    t.string   "with_organization", limit: 255
+    t.string   "with_status",       limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "filtered_for_admin", limit: 4
+    t.string   "admin_filter",      limit: 255
   end
 
   create_table "protocols", force: :cascade do |t|
@@ -1113,6 +1113,10 @@ ActiveRecord::Schema.define(version: 20160527143837) do
 
   add_index "tokens", ["identity_id"], name: "index_tokens_on_identity_id", using: :btree
   add_index "tokens", ["service_request_id"], name: "index_tokens_on_service_request_id", using: :btree
+
+  create_table "user_notifications", force: :cascade do |t|
+    t.integer "identity_id", limit: 4
+  end
 
   create_table "validation_conditions", force: :cascade do |t|
     t.integer  "validation_id",  limit: 4

@@ -36,7 +36,7 @@ class Fulfillment < ActiveRecord::Base
   attr_accessible :formatted_date
 
   validates :time, format: { with: /\A\d+(?:\.\d{0,2})?\z/,
-                             message: 'must be numerical' },
+                             message: 'cannot be a decimal with more than two places after the decimal point. Correct format: "1.23"' },
                              numericality: { greater_than: 0,
                                              message: 'must be numerical'}
 

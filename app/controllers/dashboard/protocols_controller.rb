@@ -38,12 +38,12 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     # if we are an admin we want to default to admin organizations
     if @admin
       @organizations = Dashboard::IdentityOrganizations.new(@user.id).admin_organizations_with_protocols
-      default_filter_params[:admin_filter] = "for_admin #{current_user.id}"
+      default_filter_params[:admin_filter] = "for_admin #{@user.id}"
     else
       @organizations = Dashboard::IdentityOrganizations.new(@user.id).general_user_organizations_with_protocols
-      default_filter_params[:admin_filter] = "for_identity #{current_user.id}"
+      default_filter_params[:admin_filter] = "for_identity #{@user.id}"
+      params[:filterrific][:admin_filter] = "for_identity #{@user.id}" if params[:filterrific]
     end
-
     @filterrific =
       initialize_filterrific(Protocol, params[:filterrific],
         default_filter_params: default_filter_params,
@@ -54,15 +54,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
         persistence_id: false #resets filters on page reload
       ) || return
 
-    if @admin
-      @protocols = @filterrific.find.page(params[:page])
-    else
-      @protocols = @filterrific.find.
-                    page(params[:page]).
-                    joins(:project_roles).
-                    where(project_roles: { identity_id: @user.id }).
-                    where.not(project_roles: { project_rights: 'none' })
-    end  
+    @protocols = @filterrific.find.page(params[:page])
 
     @admin_protocols  = Protocol.for_admin(@user.id).pluck(:id)
     @protocol_filters = ProtocolFilter.latest_for_user(@user.id, 5)

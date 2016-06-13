@@ -62,6 +62,7 @@
             = form.label :admin_filter, t(:dashboard)[:protocol_filters][:my_admin_protocols], class: 'col-lg-10 control-label'
             .col-lg-2
               = form.radio_button :admin_filter, "for_admin #{current_user.id}"
+
     .panel-footer
       .pull-right
         %button.btn.btn-default#apply-filter-button{type: "submit"}

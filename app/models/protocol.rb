@@ -165,7 +165,6 @@ class Protocol < ActiveRecord::Base
 
   scope :admin_filter, -> (params) {
     filter, id  = params.split(" ")
-
     if filter == 'for_admin'
       return filtered_for_admin(id)
     elsif filter == 'for_identity'

@@ -372,19 +372,22 @@ class ServiceRequestsController < ApplicationController
 
       # create sub_service_requests
       @service_request.reload
+      @service_request.previous_submitted_at = @service_request.submitted_at
+
       @service_request.service_list.each do |org_id, values|
         line_items = values[:line_items]
         ssr = @service_request.sub_service_requests.where(organization_id: org_id.to_i).first_or_create
-        unless @service_request.status.nil? and !ssr.status.nil?
-          status_to_change_to = ['first_draft', 'draft', nil].include?(@service_request.status) ? @service_request.status : 'draft'
-          ssr.update_attribute(:status, status_to_change_to)
-          @service_request.ensure_ssr_ids unless ['first_draft', 'draft'].include?(@service_request.status)
-        end
 
         line_items.each do |li|
           li.update_attribute(:sub_service_request_id, ssr.id)
         end
+
+        if ssr.can_be_edited? && ssr_has_changed?(@service_request, ssr)
+          ssr.update_attribute :status, 'draft'
+        end
       end
+
+      @service_request.ensure_ssr_ids unless ['first_draft', 'draft'].include?(@service_request.status)
     end
   end
 

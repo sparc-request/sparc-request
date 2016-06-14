@@ -191,7 +191,7 @@ class Protocol < ActiveRecord::Base
       admin_protocols           = for_admin(identity_id)
       authorized_user_protocols = joins(:project_roles).where(project_roles: { identity_id: identity_id })
       visible_admin_protocols   = admin_protocols.to_a.reject { |p| p.should_be_hidden_for_sp?(sp_only_admin_orgs) }
-      
+
       # TODO: In rails 5, we can do an or-merge to create a single query for this entire process
       where(id: (authorized_user_protocols | visible_admin_protocols)).distinct
     else
@@ -460,7 +460,7 @@ class Protocol < ActiveRecord::Base
     return self.service_requests.detect { |sr| !['first_draft'].include?(sr.status) }
   end
 
-  def has_line_items_of_type? current_request, portal, one_time_fee = false
+  def has_line_items_of_type?(current_request, portal, one_time_fee=false)
     return self.service_requests.detect do |sr|
       next unless (one_time_fee ? sr.has_one_time_fee_services? : sr.has_per_patient_per_visit_services?)
       true unless ['first_draft'].include?(sr.status)

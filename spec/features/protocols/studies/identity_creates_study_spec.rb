@@ -135,6 +135,11 @@ RSpec.feature "User wants to create a Study", js: true do
       scenario 'and sees the save and continue button' do
         expect(page).to have_link 'Save & Continue'
       end
+
+      scenario 'and fills in a user name' do
+        when_i_search_for_the_user_name
+        save_and_open_screenshot
+      end
     end
   end
 
@@ -153,6 +158,11 @@ RSpec.feature "User wants to create a Study", js: true do
     given_i_am_viewing_the_protocol_information_page
     when_i_fill_out_the_protocol_information
     when_i_submit_the_form
+  end
+
+  def when_i_search_for_the_user_name username = Identity.last.email
+    page.execute_script "$('#user_search_term').autocomplete('search', '#{username}')"
+    page.execute_script "$('#user_search_term').val('#{username}')"
   end
 
   def when_i_click_the_new_study_button

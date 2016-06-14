@@ -237,15 +237,6 @@ class ServiceRequestsController < ApplicationController
 
     if @sub_service_request
       @sub_service_request.update_attribute(:status, 'get_a_cost_estimate')
-
-      next_ssr_id = self.protocol.next_ssr_id || 1
-      if not @sub_service_request.ssr_id then
-        @sub_service_request.update_attributes(ssr_id: "%04d" % next_ssr_id)
-        next_ssr_id += 1
-
-        @protocol.update_attributes(next_ssr_id: next_ssr_id)
-      end
-
     else
       update_service_request_status(@service_request, 'get_a_cost_estimate')
       @service_request.ensure_ssr_ids
@@ -261,6 +252,14 @@ class ServiceRequestsController < ApplicationController
     if @sub_service_request
       @service_request.previous_submitted_at = @service_request.submitted_at
       @sub_service_request.update_attributes(status: 'submitted', nursing_nutrition_approved: false, lab_approved: false, imaging_approved: false, committee_approved: false)
+      
+      next_ssr_id = self.protocol.next_ssr_id || 1
+      if not @sub_service_request.ssr_id then
+        @sub_service_request.update_attributes(ssr_id: "%04d" % next_ssr_id)
+        next_ssr_id += 1
+
+        @protocol.update_attributes(next_ssr_id: next_ssr_id)
+      end
     else
       update_service_request_status(@service_request, 'submitted')
       @service_request.ensure_ssr_ids

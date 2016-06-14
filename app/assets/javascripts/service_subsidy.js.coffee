@@ -50,53 +50,72 @@ $(document).ready ->
 #****************** SUBSIDY FORM BEGIN ***************************#
   $(document).on 'change', '#pi_contribution', ->
     # When user changes PI Contribution, the Percent Subsidy and Subsidy Cost fields are recalculated & displayed
+    max_percent = $(this).data('max-percentage')
     subsidy_id = $(this).data('subsidy-id')
+    current_percent_subsidy = (parseFloat($('#percent_subsidy').val()) / 100.0)
     pi_contribution = parseFloat $(this).val()
-    if isNaN(pi_contribution)
-      pi_contribution = 0
     total_request_cost = parseFloat($(".request_cost[data-subsidy-id='#{subsidy_id}']").data("cost")) / 100.0
-    if pi_contribution > total_request_cost
-      pi_contribution = total_request_cost
-    else if pi_contribution < 0
-      pi_contribution = 0
+    percent_subsidy = (recalculate_percent_subsidy(total_request_cost, pi_contribution) * 100).toFixed(2)
 
-    data = 'subsidy' :
-      'pi_contribution' : pi_contribution
-    $.ajax
-      type: 'PATCH'
-      url:  "/subsidies/#{subsidy_id}"
-      data: data
-      success: (data, textStatus, jqXHR) ->
-        percent_subsidy = recalculate_percent_subsidy(total_request_cost, pi_contribution)
-        current_cost = recalculate_current_cost(total_request_cost, percent_subsidy)
-        redisplay_form_values(subsidy_id, percent_subsidy, pi_contribution, current_cost)
-      error: (jqXHR, textStatus, errorThrown) ->
-        $(this).val($(this).defaultValue)
+    if parseFloat(percent_subsidy) > parseFloat(max_percent)
+      original_pi_contribution = recalculate_pi_contribution(total_request_cost, current_percent_subsidy)
+      current_cost = recalculate_current_cost(total_request_cost, current_percent_subsidy)
+      display_error_and_reset(subsidy_id, current_percent_subsidy, original_pi_contribution, current_cost, max_percent)
+    else
+
+      if isNaN(pi_contribution)
+        pi_contribution = 0
+      if pi_contribution > total_request_cost
+        pi_contribution = total_request_cost
+      else if pi_contribution < 0
+        pi_contribution = 0
+
+      data = 'subsidy' :
+        'pi_contribution' : pi_contribution
+      $.ajax
+        type: 'PATCH'
+        url:  "/subsidies/#{subsidy_id}"
+        data: data
+        success: (data, textStatus, jqXHR) ->
+          percent_subsidy = recalculate_percent_subsidy(total_request_cost, pi_contribution)
+          current_cost = recalculate_current_cost(total_request_cost, percent_subsidy)
+          redisplay_form_values(subsidy_id, percent_subsidy, pi_contribution, current_cost)
+        error: (jqXHR, textStatus, errorThrown) ->
+          $(this).val($(this).defaultValue)
 
   $(document).on 'change', '#percent_subsidy', ->
     # When user changes Percent Subsidy, the PI Contribution and Subsidy Cost fields are recalculated & displayed
+    max_percent = $(this).data('max-percentage')
     subsidy_id = $(this).data('subsidy-id')
     percent_subsidy = parseFloat($(this).val()) / 100.0
-    if isNaN(percent_subsidy)
-      percent_subsidy = 0
+    original_pi_contribution = parseFloat($("#pi_contribution").data("pi-contribution")) / 100 
     total_request_cost = parseFloat($(".request_cost[data-subsidy-id='#{subsidy_id}']").data("cost")) / 100.0
-    if percent_subsidy > 1
-      percent_subsidy = 1.0
-    else if percent_subsidy < 0
-      percent_subsidy = 0
     pi_contribution = recalculate_pi_contribution(total_request_cost, percent_subsidy)
 
-    data = 'subsidy' :
-      'pi_contribution' : pi_contribution
-    $.ajax
-      type: 'PATCH'
-      url:  "/subsidies/#{subsidy_id}"
-      data: data
-      success: (data, textStatus, jqXHR) ->
-        current_cost = recalculate_current_cost(total_request_cost, percent_subsidy)
-        redisplay_form_values(subsidy_id, percent_subsidy, pi_contribution, current_cost)
-      error: (jqXHR, textStatus, errorThrown) ->
-        $(this).val($(this).defaultValue)
+    if (percent_subsidy * 100) > parseFloat(max_percent)
+      original_subsidy = recalculate_percent_subsidy(total_request_cost, original_pi_contribution)
+      current_cost = recalculate_current_cost(total_request_cost, original_subsidy)
+      display_error_and_reset(subsidy_id, original_subsidy, original_pi_contribution, current_cost, max_percent)
+    else
+
+      if isNaN(percent_subsidy)
+        percent_subsidy = 0
+      if percent_subsidy > 1
+        percent_subsidy = 1.0
+      else if percent_subsidy < 0
+        percent_subsidy = 0
+      
+      data = 'subsidy' :
+        'pi_contribution' : pi_contribution
+      $.ajax
+        type: 'PATCH'
+        url:  "/subsidies/#{subsidy_id}"
+        data: data
+        success: (data, textStatus, jqXHR) ->
+          current_cost = recalculate_current_cost(total_request_cost, percent_subsidy)
+          redisplay_form_values(subsidy_id, percent_subsidy, pi_contribution, current_cost)
+        error: (jqXHR, textStatus, errorThrown) ->
+          $(this).val($(this).defaultValue)
 
   recalculate_pi_contribution = (total_request_cost, percent_subsidy) ->
     contribution = total_request_cost - (total_request_cost * percent_subsidy)
@@ -110,53 +129,17 @@ $(document).ready ->
 
   redisplay_form_values = (subsidy_id, percent_subsidy, pi_contribution, current_cost) ->
     $("#percent_subsidy[data-subsidy-id='#{subsidy_id}']").val( (percent_subsidy*100.0).toFixed(2) )
-    $("#pi_contribution[data-subsidy-id='#{subsidy_id}']").val( formatMoney(pi_contribution, ',', '.', '') )
-    $(".subsidy_cost[data-subsidy-id='#{subsidy_id}']").text( formatMoney(current_cost) )
+    $("#pi_contribution[data-subsidy-id='#{subsidy_id}']").val( format_currency(pi_contribution) )
+    $(".subsidy_cost[data-subsidy-id='#{subsidy_id}']").text( format_currency(current_cost) )
 
-#****************** SUBSIDY FORM END ***************************#
+  format_currency = (total) ->
+    ('$' + parseFloat(total, 10).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,").toString())
 
-  # # Validate the form before we submit it
-  # $('#navigation_form').submit ->
-  #   message = ""
-  #   pass = true
-
-  #   # Validate each subsidy.  If one of them fails, break out of the
-  #   # loop early.
-  #   $('.pi-contribution').each (index, elem) ->
-  #     try
-  #       [ pass, message ] = validate_pi_contribution($(this))
-  #       if (!pass)
-  #         return false
-  #     catch error
-
-  #   # If any subsidy failed to pass, emit an error message
-  #   if pass == false
-  #     $("#submit_error .message").html(message)
-  #     $("#submit_error").dialog
-  #       modal: true
-  #       buttons:
-  #         Ok: ->
-  #           $(this).dialog('close')
-  #   return pass
-
-  # # Validate the PI contribution for a subsidy.  Returns a 2-tuple
-  # # containing:
-  # #
-  # #    pass - true if validation passes, false otherwise
-  # #    message - a string containing the error message if validation
-  # #    fails
-  # #
-  # validate_pi_contribution = (pi) ->
-  #   pass = true
-  #   message = ''
-
-  #   overridden = pi.attr('data-overridden')
-  #   # if the pi contribution field is empty, then ignore it altogether
-  #   if pi.val() == '' or overridden == 'true'
-  #     pass = true
-  #   else
-  #     id = pi.attr('data-id')
-  #     direct_cost = $('.estimated_cost_' + id).data('cost') / 100
-  #     max_dollar = pi.attr('data-max_dollar')
-  #     max_percent = pi.attr('data-max_percent')
-  #     core = $('.core_' + id).text()
+  display_error_and_reset = (subsidy_id, percent, pi_contribution, current_cost, max_percent) ->
+    $("#submit_error .message").html("The Percent Subsidy cannot be greater than the max percent of #{max_percent}.")
+    $("#submit_error").dialog
+      modal: true
+      buttons:
+        Ok: ->
+          $(this).dialog('close')
+    redisplay_form_values(subsidy_id, percent, pi_contribution, current_cost)

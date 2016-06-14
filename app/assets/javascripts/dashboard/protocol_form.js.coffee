@@ -173,7 +173,9 @@ $(document).ready ->
 
   ###END PUBLISH IN EPIC BUTTON STATES###
 
-
+  if $("input[name='protocol[selected_for_epic]']").val() == 'true'
+    $(study_type_form).show()
+    $(certificate_of_confidence_dropdown).show_elt()
 
   ###EPIC BUTTON FIELDS DISPLAY###
   $(document).on 'change', "input[name='protocol[selected_for_epic]']", ->
@@ -250,6 +252,13 @@ $(document).ready ->
     switch $(this).attr('checked')
       when 'checked' then $('.investigational_products_dependent').show()
       else $('.investigational_products_dependent').hide()
+
+  $(document).on 'change', '#protocol_investigational_products_info_attributes_ind_number', ->
+    if !!$(this).val().replace(/^\s+/g, "")
+      $('#ind-on-hold-group').show()
+    else
+      $('#ind-on-hold-group').hide()
+      $('#protocol_investigational_products_info_attributes_ind_on_hold').attr('checked', false)
   ###END INVESTIGATIONAL PRODUCTS FIELDS DISPLAY###
 
 

@@ -38,12 +38,12 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     # if we are an admin we want to default to admin organizations
     if @admin
       @organizations = Dashboard::IdentityOrganizations.new(@user.id).admin_organizations_with_protocols
-      default_filter_params[:filtered_for_admin]       = @user.id.to_s
+      default_filter_params[:admin_filter] = "for_admin #{@user.id}"
     else
       @organizations = Dashboard::IdentityOrganizations.new(@user.id).general_user_organizations_with_protocols
-      default_filter_params[:for_identity_id] = @user.id.to_s
+      default_filter_params[:admin_filter] = "for_identity #{@user.id}"
+      params[:filterrific][:admin_filter] = "for_identity #{@user.id}" if params[:filterrific]
     end
-
     @filterrific =
       initialize_filterrific(Protocol, params[:filterrific],
         default_filter_params: default_filter_params,
@@ -54,7 +54,8 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
         persistence_id: false #resets filters on page reload
       ) || return
 
-    @protocols        = @filterrific.find.page(params[:page])
+    @protocols = @filterrific.find.page(params[:page])
+
     @admin_protocols  = Protocol.for_admin(@user.id).pluck(:id)
     @protocol_filters = ProtocolFilter.latest_for_user(@user.id, 5)
     #toggles the display of the navigation bar, instead of breadcrumbs
@@ -95,15 +96,16 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
   def create
     protocol_class = params[:protocol][:type].capitalize.constantize
-    @protocol = protocol_class.create(params[:protocol])
-    @protocol.update_attributes(study_type_question_group_id: StudyTypeQuestionGroup.active_id)
+    @protocol = protocol_class.new(params[:protocol])
+    @protocol.study_type_question_group_id = StudyTypeQuestionGroup.active_id
 
     if @protocol.valid?
-      if @protocol.project_roles.where(identity_id: current_user.id).empty?
+      unless @protocol.project_roles.map(&:identity_id).include? current_user.id
         # if current user is not authorized, add them as an authorized user
         @protocol.project_roles.new(identity_id: current_user.id, role: 'general-access-user', project_rights: 'approve')
-        @protocol.save
       end
+
+      @protocol.save
 
       if USE_EPIC && @protocol.selected_for_epic
         @protocol.ensure_epic_user
@@ -119,8 +121,10 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   def edit
     @protocol_type      = @protocol.type
     @permission_to_edit = @authorization.nil? ? false : @authorization.can_edit?
-
     @protocol.populate_for_edit
+    if @permission_to_edit
+      @protocol.update_attribute(:study_type_question_group_id, StudyTypeQuestionGroup.active_id)
+    end
     session[:breadcrumbs].
       clear.
       add_crumbs(protocol_id: @protocol.id, edit_protocol: true)

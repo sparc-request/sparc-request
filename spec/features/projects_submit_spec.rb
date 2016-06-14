@@ -74,7 +74,7 @@ RSpec.describe "creating a new project ", js: true do
       expect(page).to have_css('#project_role_role')
       select "Primary PI", from: "project_role_role"
       click_button "Add Authorized User"
-      fill_autocomplete('user_search_term', with: 'bjk7');
+      fill_autocomplete('user_search_term', with: 'bjk7')
       page.find('a', text: "Brian Kelsey (kelsey@musc.edu)", visible: true).click()
       select "Billing/Business Manager", from: "project_role_role"
       click_button "Add Authorized User"

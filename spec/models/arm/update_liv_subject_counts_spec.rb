@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe Arm, type: :model do
-  let!(:arm) { Arm.create(subject_count: 3) }
+  let!(:arm) { create(:arm, subject_count: 3) }
   let!(:liv) { create(:line_items_visit, line_item: li, arm: arm, subject_count: nil) }
 
   shared_examples_for 'change LineItemsVisit\'s subject_count' do

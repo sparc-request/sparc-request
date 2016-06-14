@@ -41,11 +41,11 @@ class Identity < ActiveRecord::Base
   email_regexp = /\A[^@\s]+@([^@\s]+\.)+[^@\s]+\z/
   password_length = 6..128
 
-  validates_format_of     :email, :with  => email_regexp, :allow_blank => true, :if => :email_changed?
+  validates_format_of     :email, with: email_regexp, allow_blank: true, if: :email_changed?
 
-  validates_presence_of     :password, :if => :password_required?
-  validates_confirmation_of :password, :if => :password_required?
-  validates_length_of       :password, :within => password_length, :allow_blank => true
+  validates_presence_of     :password, if: :password_required?
+  validates_confirmation_of :password, if: :password_required?
+  validates_length_of       :password, within: password_length, allow_blank: true
 
   attr_accessible :email
   attr_accessible :password
@@ -56,30 +56,33 @@ class Identity < ActiveRecord::Base
   attr_accessible :approved
   #### END DEVISE SETUP ####
 
-  has_many :approvals, :dependent => :destroy
-  has_many :project_roles, :dependent => :destroy
-  has_many :protocols, :through => :project_roles
-  has_many :projects, -> { where("protocols.type = 'Project'")}, :through => :project_roles, :source => :protocol
-  has_many :studies, -> { where("protocols.type = 'Study'")}, :through => :project_roles, :source => :protocol
-  has_many :super_users, :dependent => :destroy
-  has_many :catalog_managers, :dependent => :destroy
-  has_many :clinical_providers, :dependent => :destroy
-  has_many :protocol_service_requests, :through => :protocols, :source => :service_requests
-  has_many :requested_service_requests, :class_name => 'ServiceRequest', :foreign_key => 'service_requester_id'
-  has_many :catalog_manager_rights, :class_name => 'CatalogManager'
-  has_many :service_providers, :dependent => :destroy
-  has_many :notifications, :foreign_key => 'originator_id'
-  has_many :sent_messages, :class_name => 'Message', :foreign_key => 'from'
-  has_many :received_messages, :class_name => 'Message', :foreign_key => 'to'
-  has_many :user_notifications, :dependent => :destroy
-  has_many :received_toast_messages, :class_name => 'ToastMessage', :foreign_key => 'to', :dependent => :destroy
-  has_many :sent_toast_messages, :class_name => 'ToastMessage', :foreign_key => 'from', :dependent => :destroy
-  has_many :notes, :dependent => :destroy
+  has_many :approvals, dependent: :destroy
+  has_many :project_roles, dependent: :destroy
+  has_many :protocols, through: :project_roles
+  has_many :projects, -> { where("protocols.type = 'Project'")}, through: :project_roles, source: :protocol
+  has_many :studies, -> { where("protocols.type = 'Study'")}, through: :project_roles, source: :protocol
+  has_many :super_users, dependent: :destroy
+  has_many :catalog_managers, dependent: :destroy
+  has_many :clinical_providers, dependent: :destroy
+  has_many :protocol_service_requests, through: :protocols, source: :service_requests
+  has_many :requested_service_requests, class_name: 'ServiceRequest', foreign_key: 'service_requester_id'
+  has_many :catalog_manager_rights, class_name: 'CatalogManager'
+  has_many :service_providers, dependent: :destroy
+  has_many :received_toast_messages, class_name: 'ToastMessage', foreign_key: 'to', dependent: :destroy
+  has_many :sent_toast_messages, class_name: 'ToastMessage', foreign_key: 'from', dependent: :destroy
+  has_many :notes, dependent: :destroy
+  has_many :protocol_filters, dependent: :destroy
+
+  has_many :sent_notifications, class_name: "Notification", foreign_key: 'originator_id'
+  has_many :received_notifications, class_name: "Notification", foreign_key: 'other_user_id'
+  has_many :sent_messages, class_name: 'Message', foreign_key: 'from'
+  has_many :received_messages, class_name: 'Message', foreign_key: 'to'
+  has_many :approved_subsidies, class_name: 'ApprovedSubsidy', foreign_key: 'approved_by'
 
   # TODO: Identity doesn't really have many sub service requests; an
   # identity is the owner of many sub service requests.  We need a
   # better name here.
-  # has_many :sub_service_requests, :foreign_key => 'owner_id'
+  # has_many :sub_service_requests, foreign_key: 'owner_id'
 
   attr_accessible :ldap_uid
   attr_accessible :email
@@ -151,19 +154,20 @@ class Identity < ActiveRecord::Base
     @is_super_user ||= self.super_users.count > 0
   end
 
-  def is_service_provider? ssr
-   is_provider = false
-   orgs =[]
-   orgs << ssr.organization << ssr.organization.parents
-   orgs.flatten!
-   orgs.each do |org|
-     provider_ids = org.service_providers_lookup.map{|x| x.identity_id}
-     if provider_ids.include?(self.id)
-     is_provider = true
-     end
-   end
+  def is_service_provider?(ssr)
+    is_provider = false
+    orgs =[]
+    orgs << ssr.organization << ssr.organization.parents
+    orgs.flatten!
+    
+    orgs.each do |org|
+      provider_ids = org.service_providers_lookup.map{|x| x.identity_id}
+      if provider_ids.include?(self.id)
+        is_provider = true
+      end
+    end
 
-  is_provider
+    is_provider
 
   end
 
@@ -181,10 +185,10 @@ class Identity < ActiveRecord::Base
 
   # DEVISE specific methods
   def self.find_for_shibboleth_oauth(auth, signed_in_resource=nil)
-    identity = Identity.where(:ldap_uid => auth.uid).first
+    identity = Identity.where(ldap_uid: auth.uid).first
 
     unless identity
-      identity = Identity.create :ldap_uid => auth.uid, :first_name => auth.info.first_name, :last_name => auth.info.last_name, :email => auth.info.email, :password => Devise.friendly_token[0,20], :approved => true
+      identity = Identity.create ldap_uid: auth.uid, first_name: auth.info.first_name, last_name: auth.info.last_name, email: auth.info.email, password: Devise.friendly_token[0,20], approved: true
     end
     identity
   end
@@ -204,7 +208,7 @@ class Identity < ActiveRecord::Base
   def self.find_first_by_auth_conditions(warden_conditions)
     conditions = warden_conditions.dup
     if login = conditions.delete(:login)
-      where(conditions).where(["lower(ldap_uid) = :value", { :value => login.downcase }]).first
+      where(conditions).where(["lower(ldap_uid) = :value", { value: login.downcase }]).first
     else
       where(conditions).first
     end
@@ -228,44 +232,18 @@ class Identity < ActiveRecord::Base
 
   # Only users with request or approve rights can edit.
   def can_edit_service_request? sr
-    can_edit = false
-
-    if (sr.service_requester_id == self.id or sr.service_requester_id.nil?) && sr.is_editable?
-      can_edit = true
-    elsif sr.is_editable? && has_correct_project_role?(sr)
-      can_edit = true
-    end
-
-    can_edit
+    (sr.service_requester_id == self.id or sr.service_requester_id.nil?) || has_correct_project_role?(sr)
   end
 
   # If a user has request or approve rights AND the request is editable, then the user can edit.
   def can_edit_sub_service_request? ssr
-    if ssr.can_be_edited? && has_correct_project_role?(ssr)
-      return true
-    end
-
-    return false
+    ssr.can_be_edited? && has_correct_project_role?(ssr)
   end
 
   def has_correct_project_role? request
-    self.project_roles.each do |pr|
-      if (pr.protocol_id == requests_protocol_id(request)) && ['approve', 'request'].include?(pr.project_rights)
-        return true
-      end
-    end
+    protocol = request.class == ServiceRequest ? request.protocol : request.service_request.protocol
 
-    return false
-  end
-
-  def requests_protocol_id request
-    if request.class == ServiceRequest
-      id = request.try(:protocol).try(:id)
-    else
-      id = request.service_request.try(:protocol).try(:id)
-    end
-
-    id
+    protocol.project_roles.where(identity_id: self.id, project_rights: ['approve', 'request']).any?
   end
 
   # Determines whether this identity can edit a given organization's information in CatalogManager.
@@ -322,6 +300,11 @@ class Identity < ActiveRecord::Base
   ########################### COLLECTION METHODS ################################
   ###############################################################################
 
+  def authorized_admin_organizations(sp_only={sp_only: false})
+    # returns organizations for which user is service provider or super user
+    Organization.authorized_for_identity(self.id, sp_only[:sp_only]).distinct
+  end
+
   # Collects all organizations that this identity has catalog manager permissions on, as well as
   # any child (deep) of any of those organizations.
   # Returns an array of organizations.
@@ -345,7 +328,7 @@ class Identity < ActiveRecord::Base
       orgs << org.all_children(organizations)
     end
 
-    self.admin_organizations({:su_only => true}).each do |org|
+    self.admin_organizations({su_only: true}).each do |org|
       orgs << org
     end
 
@@ -356,12 +339,11 @@ class Identity < ActiveRecord::Base
   # on, as well as any child (deep) of any of those organizations.
   # Returns an array of organizations.
   # If you pass in "su_only" it only returns organizations for whom you are a super user.
-  def admin_organizations su_only = {:su_only => false}
+  def admin_organizations su_only = {su_only: false}
     orgs = Organization.all
     organizations = []
-    attached_array = []
     arr = organizations_for_users(orgs, su_only)
-
+    
     arr.each do |org|
       organizations << org.all_children(orgs)
     end
@@ -399,7 +381,7 @@ class Identity < ActiveRecord::Base
   def clinical_provider_rights?
     #TODO should look at all tagged with CTRC
     org = Organization.tagged_with("ctrc").first
-    if !self.clinical_providers.empty? or self.admin_organizations({:su_only => true}).include?(org)
+    if !self.clinical_providers.empty? or self.admin_organizations({su_only: true}).include?(org)
       return true
     else
       return false
@@ -419,64 +401,16 @@ class Identity < ActiveRecord::Base
     return false
   end
 
-  # Collects all sub service requests under this identity's admin_organizations and sorts that
-  # list by the status of the sub service requests.
-  # Used to populate the table (as selectable by the dropdown) in the admin index.
-  def admin_service_requests_by_status org_id=nil, admin_orgs=nil
-    ##Default to all ssrs, if we get an org_id, only get that organization's ssrs
-    ssrs = []
-    if org_id
-      ssrs = Organization.find(org_id).sub_service_requests
-    elsif admin_orgs && !admin_orgs.empty?
-      ssrs = SubServiceRequest.where("sub_service_requests.organization_id in (#{admin_orgs.map(&:id).join(", ")})").includes(:owner, :line_items => :service, :service_request => [:service_requester, :protocol => {:project_roles => :identity}])
-    else
-      self.admin_organizations.each do |org|
-        ssrs << SubServiceRequest.where(:organization_id => org.id).includes(:line_items => :service, :service_request => :protocol).to_a
-      end
-      ssrs.flatten!
-    end
-
-    hash = {}
-
-    ssrs.each do |ssr|
-      unless ssr.status.blank? or ssr.status == 'first_draft'
-        if ssr.service_request
-          if ssr.service_request.protocol
-            ssr_status = ssr.status.to_s.gsub(/\s/, "_").gsub(/[^-\w]/, "").downcase
-            hash[ssr_status] = [] unless hash[ssr_status]
-            hash[ssr_status] << ssr
-          end
-        end
-      end
-    end
-
-    hash
-  end
-
   ###############################################################################
   ########################## NOTIFICATION METHODS ###############################
   ###############################################################################
 
-  # Collects all notifications for this identity based on their user notifications (as notifications
-  # do not belong to individual identities).
-  # Returns an array of Notifications.
   def all_notifications
-    ids = self.user_notifications.map {|x| x.notification_id}
-    all_notifications = Notification.where(:id => ids)
-
-    all_notifications
+    # Returns an array of Notifications.
+    [sent_notifications, received_notifications].flatten
   end
 
-  # Returns the count of unread notifications for this identity, based on their user_notifications
-  # (where the :read flag is set).
-  def unread_notification_count user
-    notification_count = 0
-    notifications = self.all_notifications
-
-    notifications.each do |notification|
-      notification_count += 1 unless notification.user_notifications_for_current_user(user).order('created_at DESC').first.read
-    end
-
-    notification_count
+  def unread_notification_count(sub_service_request_id=nil)
+    Notification.of_ssr(sub_service_request_id).unread_by(id).count
   end
 end

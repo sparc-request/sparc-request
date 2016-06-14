@@ -26,7 +26,9 @@ class LineItemsVisit < ActiveRecord::Base
 
   belongs_to :arm
   belongs_to :line_item
-
+  has_one :service_request, through: :line_item
+  has_one :sub_service_request, through: :line_item
+  has_one :service, through: :line_item
   has_many :visits, -> { includes(:visit_group).order("visit_groups.position") }, :dependent => :destroy
 
   attr_accessible :arm_id
@@ -43,7 +45,8 @@ class LineItemsVisit < ActiveRecord::Base
   # Find a LineItemsVisit for the given arm and line item.  If it does
   # not exist, create it first, then return it.
   def self.for(arm, line_item)
-    return LineItemsVisit.where(arm_id: arm.id, line_item_id: line_item.id, subject_count: arm.subject_count).first_or_create
+    liv = LineItemsVisit.where(arm_id: arm.id, line_item_id: line_item.id).first_or_create(subject_count: arm.subject_count)
+    return liv
   end
 
   def create_visits
@@ -85,7 +88,7 @@ class LineItemsVisit < ActiveRecord::Base
   def quantity_total
     # quantity_total = self.visits.map {|x| x.research_billing_qty}.inject(:+) * self.subject_count
     quantity_total = self.visits.sum('research_billing_qty')
-    return quantity_total * self.subject_count
+    return quantity_total * (self.subject_count || 0)
   end
 
   # Returns a hash of subtotals for the visits in the line item.

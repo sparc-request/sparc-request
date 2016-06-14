@@ -103,9 +103,6 @@
         .legend= t(:organization_form)[:clinical_work_fulfillment]
         %fieldset.single_fieldset
           %table
-            %tr.cwf
-              %th= t(:organization_form)[:show_in_cwf]
-              %td= f.check_box :show_in_cwf
             %tr
               %th= t(:organization_form)[:clinical_providers]
           #cp_info= render :partial => 'catalog_manager/shared/clinical_providers', :locals => {:entity => @provider}
@@ -134,7 +131,8 @@
               %td.subsidy_percentage= f_subsidy_map.text_field :max_percentage
             %tr
               %th= t(:organization_form)[:subsidy_max_dollar]
-              %td.subsidy_dollar= f_subsidy_map.text_field :max_dollar_cap
+
+              %td.subsidy_dollar= f_subsidy_map.text_field :max_dollar_cap, value: number_with_precision(f_subsidy_map.object.max_dollar_cap, precision: 2)
             = render 'catalog_manager/shared/excluded_funding_sources', :entity => @provider
     %br
 

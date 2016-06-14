@@ -20,8 +20,10 @@
 
 - if organization
   .provider-details-view
-    .provider-name{:class => css_class(organization)}= organization.name
-    .provider-description.description.ui-widget.ui-widget-content.ui-corner-all= raw organization.description
+    .provider-name{class: css_class(organization)}
+      = organization.name
+    .provider-description.description.ui-widget.ui-widget-content.ui-corner-all
+      = raw organization.description
 
   - if organization.type == "Program"
     - unless organization.services.empty?
@@ -31,32 +33,46 @@
     %br
     - unless organization.cores.empty?
       .core-accordion
+        - if @sub_service_request
+          - ssr_org = @sub_service_request.organization
+
         - organization.cores.order('`order`').each do |core|
           - next unless core.is_available? or core.is_available.nil?
-          %h3{:class => "#{css_class(organization)} core-tab"}
+
+          - if @sub_service_request && !@program_is_process_ssr
+            - next unless ssr_org == core
+
+          %h3{class: "#{css_class(organization)} core-tab"}
             = link_to core.name, "#"
           .core_view
-            .provider-description.description.ui-widget.ui-widget-content.ui-corner-all= raw core.description
+            .provider-description.description.ui-widget.ui-widget-content.ui-corner-all
+              = raw core.description
             - core.services.order('`order`, `name`').each do |service|
               = display_service_in_catalog(service, service_request, from_portal)
 
 - else
   .panel.panel-default
     .panel-heading
-      %h1.panel-title= t(:rails_root)[:welcome]
+      %h1.panel-title
+        = t(:rails_root)[:welcome]
     .section.large_section.panel-body
-      %p= t(:rails_root)[:message1]
+      %p
+        = t(:rails_root)[:message1]
       %p.section.large_section
-        %p= t(:rails_root)[:message4]
+        %p
+          = t(:rails_root)[:message4]
       %p.section
-        = raw(t(:rails_root)[:message9])
+        %strong
+          = t(:rails_root)[:message9]
         = link_to(t(:rails_root)[:message9link], t(:rails_root)[:message9link])
         %br
-        %strong= t(:rails_root)[:message10]
+        %strong
+          = t(:rails_root)[:message10]
         = link_to(t(:rails_root)[:message10link], t(:rails_root)[:message10link])
         %br
         %br
-        .pricing-message= t(:rails_root)[:message11]
+        .pricing-message
+          = t(:rails_root)[:message11]
 
         #red_description.section
         #blue_description.section

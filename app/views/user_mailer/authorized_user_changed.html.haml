@@ -27,7 +27,7 @@
   = t(:mailer)[:header3]
 %p
   = t(:mailer)[:body1]
-  %strong= link_to t(:mailer)[:link2], portal_root_url(:protocol => 'https', :default_protocol => @protocol.id)
+  %strong= link_to t(:mailer)[:link2], dashboard_root_url(:protocol => 'https', :default_protocol => @protocol.id)
 %p
   %table{:style => 'border: 1px solid #000; width: 100%; border-collapse: collapse;'}
     %tr
@@ -65,7 +65,7 @@
         %strong= t(:mailer)[:role]
       %th{:style => 'border: 1px solid #000'}
         %strong= t(:mailer)[:proxy]
-    - @protocol.project_roles.each do |user|
+    - @protocol.project_roles(true).each do |user|
       %tr
         %td{:style => 'border: 1px solid #000'}= user.identity.try(:full_name)
         %td{:style => 'border: 1px solid #000; text-align: center'}= USER_ROLES.detect{|k,v| v == user.role}.try(:first)

@@ -58,6 +58,7 @@ class Service < ActiveRecord::Base
   attr_accessible :is_available
   attr_accessible :service_center_cost
   attr_accessible :cpt_code
+  attr_accessible :eap_id
   attr_accessible :charge_code
   attr_accessible :revenue_code
   attr_accessible :organization_id
@@ -213,19 +214,21 @@ class Service < ActiveRecord::Base
     return pricing_map_for_date(Date.today)
   end
 
-  # Find a pricing map with a display date corresponding to the given
-  # date.
+  #This method is only used for the service pricing report
   def pricing_map_for_date(date)
-    raise ArgumentError, "Service has no pricing maps" if self.pricing_maps.empty?
+    unless pricing_maps.empty?
+      current_maps = self.pricing_maps.select { |x| x.display_date.to_date <= date.to_date }
+      if current_maps.empty?
+        return false
+      end
 
-    # TODO: use #where? (warning: potential performance issue)
-    current_maps = self.pricing_maps.select { |x| x.display_date.to_date <= date.to_date }
-    raise ArgumentError, "Service has no current pricing maps" if current_maps.empty?
+      sorted_maps = current_maps.sort { |lhs, rhs| lhs.display_date <=> rhs.display_date }
+      pricing_map = sorted_maps.last
 
-    sorted_maps = current_maps.sort { |lhs, rhs| lhs.display_date <=> rhs.display_date }
-    pricing_map = sorted_maps.last
-
-    return pricing_map
+      return pricing_map
+    else
+      return false
+    end
   end
 
   # Find a pricing map with an effective date for today's date.
@@ -265,7 +268,8 @@ class Service < ActiveRecord::Base
     if rate.nil?
       return 'N/A'
     else
-      return "#{Service.cents_to_dollars(rate)}"
+      rate = sprintf( '%0.2f', Service.cents_to_dollars(rate).to_f.round(2) )
+      return "#{rate}"
     end
   end
 

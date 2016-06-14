@@ -102,8 +102,8 @@ RSpec.describe "Identity" do
 
   describe "rights" do
 
-    let!(:user)                 {create(:identity)}
-    let!(:user2)                {create(:identity)}
+    let!(:user)                 {create(:identity, ldap_uid: 'slickwilly@musc.edu')}
+    let!(:user2)                {create(:identity, ldap_uid: 'superfly@musc.edu')}
     let!(:catalog_manager)      {create(:catalog_manager, identity_id: user.id, organization_id: institution.id)}
     let!(:super_user)           {create(:super_user, identity_id: user.id, organization_id: institution.id)}
     let!(:service_provider)     {create(:service_provider, identity_id: user.id, organization_id: institution.id, is_primary_contact: true)}
@@ -255,51 +255,45 @@ RSpec.describe "Identity" do
         end
 
         it "should not ignore nil organizations" do
-          sp = create(:service_provider, identity_id: user.id, organization_id: 9999)
+          create(:service_provider, identity_id: user.id, organization_id: 9999)
           expect(lambda {user.admin_organizations}).not_to raise_exception
-        end
-      end
-
-      describe "admin service requests by status" do
-
-        it "should return all of a user's sub service requests under admin organizations sorted by status" do
-          hash = user.admin_service_requests_by_status
-          expect(hash).to include('draft')
-        end
-        it "should return a specific organization's sub service requests if givin an org id" do
-          sub_service_request.update_attributes(status: "submitted", organization_id: institution.id)
-          hash = user.admin_service_requests_by_status(institution.id)
-          expect(hash).to include('submitted')
         end
       end
     end
   end
 
   describe "notification methods" do
+    describe "#unread_notification_count" do
+      context "with :sub_service_request_id" do
+        it "should return number of unread notifications only associated with specified SubServiceRequest" do
+          user1 = create(:identity)
+          user2 = create(:identity)
 
-    let!(:user)               {create(:identity)}
-    let!(:notification)       {create(:notification)}
-    let!(:notification2)      {create(:notification)}
-    let!(:user_notification)  {create(:user_notification, identity_id: user.id, notification_id: notification.id)}
-    let!(:user_notification2) {create(:user_notification, identity_id: user.id, notification_id: notification2.id)}
+          # expect
+          create(:notification_without_validations, originator_id: user1.id, read_by_originator: false, sub_service_request_id: 1)
 
+          # don't expect
+          create(:notification_without_validations, originator_id: user1.id, read_by_originator: false, sub_service_request_id: 2)
+          create(:notification_without_validations, originator_id: user2.id, read_by_originator: false)
 
-    describe "all notifications" do
-
-      it "should return all of a user's notifications based on their user notifications" do
-        expect(user.all_notifications).to include(notification, notification2)
-      end
-    end
-
-    describe "unread notification count" do
-
-      it "should return the correct number of unread notifications" do
-        expect(user.unread_notification_count(user)).to eq(2)
+          expect(user1.unread_notification_count(1)).to eq(1)
+        end
       end
 
-      it "should reduce the count by one if a message is read" do
-        user_notification.update_attributes(read: true)
-        expect(user.unread_notification_count(user)).to eq(1)
+      context "without :sub_service_request_id" do
+        it "should return number of unread notifications" do
+          user1 = create(:identity)
+          user2 = create(:identity)
+
+          # expect
+          create(:notification_without_validations, originator_id: user1.id, read_by_originator: false, sub_service_request_id: 1)
+          create(:notification_without_validations, originator_id: user1.id, read_by_originator: false, sub_service_request_id: 2)
+
+          # don't expect
+          create(:notification_without_validations, originator_id: user2.id, read_by_originator: false)
+
+          expect(user1.unread_notification_count).to eq(2)
+        end
       end
     end
   end

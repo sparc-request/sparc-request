@@ -34,19 +34,34 @@ $(document).ready ->
   $(document).on 'click', '.about_sparc_request', ->
     $('#about_sparc').dialog('open')
 
+  $('#ctrc-dialog').dialog
+    autoOpen: false
+    modal: true
+    width: 375
+    height: 200
+    buttons: [{
+      text: 'Ok'
+      click: ->
+        $(this).dialog('close')
+    }]
+
+  $(document).on 'click', '.locked a', ->
+    if $(this).text() == 'Research Nexus **LOCKED**'
+      $('#ctrc-dialog').dialog('open')
+
   $('#institution_accordion').accordion
     heightStyle: 'content'
     collapsible: true
-    activate: (event, ui)->
-      if url = (ui.newHeader.find('a').attr('href') or ui.oldHeader.find('a').attr('href'))
+    activate: (event, ui) ->
+      if (url = (ui.newHeader.find('a').attr('href') or ui.oldHeader.find('a').attr('href'))) && url != 'javascript:void(0)'
         loadDescription(url)
 
   $('.provider_accordion').accordion
     heightStyle: 'content'
     collapsible: true
     active: false
-    activate: (event, ui)->
-      if url = (ui.newHeader.find('a').attr('href') or ui.oldHeader.find('a').attr('href'))
+    activate: (event, ui) ->
+      if (url = (ui.newHeader.find('a').attr('href') or ui.oldHeader.find('a').attr('href'))) && url != 'javascript:void(0)'
         loadDescription(url)
 
   $('.program-link').live 'click', ->
@@ -106,7 +121,7 @@ $(document).ready ->
     else
       $("<li class='search_result'></li>")
       .data("ui-autocomplete-item", item)
-      .append("#{item.parents}<br><span class='service-name' title='#{item.description}'>#{item.label}</span><br><button id='service-#{item.value}' sr_id='#{item.sr_id}' from_portal='#{item.from_portal}' first_service='#{item.first_service}' style='font-size: 11px;' class='add_service'>Add to Cart</button><span class='service-description'>#{item.description}</span>")
+      .append("#{item.parents}<br><span class='service-name' title='#{item.description}'>#{item.label}<br> #{item.abbreviation} <br> #{item.cpt_code}</span><br><button id='service-#{item.value}' sr_id='#{item.sr_id}' from_portal='#{item.from_portal}' first_service='#{item.first_service}' style='font-size: 11px;' class='add_service'>Add to Cart</button><span class='service-description'>#{item.description}</span>")
       .appendTo(ul)
   
   $('.catalog-search-clear-icon').live 'click', ->

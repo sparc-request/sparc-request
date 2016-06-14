@@ -45,6 +45,10 @@ class ServicePricingReport < ReportingModule
     }
   end
 
+  def records
+    records ||= self.table.joins(:pricing_maps).where(self.where(self.params)).uniq(self.uniq).group(self.group).order(self.order)
+  end
+
   def column_attrs
     attrs = {}
 
@@ -68,23 +72,23 @@ class ServicePricingReport < ReportingModule
 
     if params[:rate_types]
       if params[:rate_types].include?("full_rate")
-        attrs["Full Rate"] = "report_pricing(pricing_map_for_date(\"#{params[:services_pricing_date]}\").full_rate.to_f)"
+        attrs["Full Rate"] = "report_pricing(pricing_map_for_date(\"#{params[:services_pricing_date]}\").full_rate.to_f) rescue 'N/A'"
       end
 
       if params[:rate_types].include?("federal_rate")
-        attrs["Federal Rate"] = "report_pricing(pricing_map_for_date(\"#{params[:services_pricing_date]}\").true_rate_hash(\"#{params[:services_pricing_date]}\", organization_id)[:federal_rate])"
+        attrs["Federal Rate"] = "report_pricing(pricing_map_for_date(\"#{params[:services_pricing_date]}\").true_rate_hash(\"#{params[:services_pricing_date]}\", organization_id)[:federal_rate]) rescue 'N/A'"
       end
 
       if params[:rate_types].include?("corporate_rate")
-        attrs["Corporate Rate"] = "report_pricing(pricing_map_for_date(\"#{params[:services_pricing_date]}\").true_rate_hash(\"#{params[:services_pricing_date]}\", organization_id)[:corporate_rate])"
+        attrs["Corporate Rate"] = "report_pricing(pricing_map_for_date(\"#{params[:services_pricing_date]}\").true_rate_hash(\"#{params[:services_pricing_date]}\", organization_id)[:corporate_rate]) rescue 'N/A'"
       end
 
       if params[:rate_types].include?("other_rate")
-        attrs["Other Rate"] = "report_pricing(pricing_map_for_date(\"#{params[:services_pricing_date]}\").true_rate_hash(\"#{params[:services_pricing_date]}\", organization_id)[:other_rate])"
+        attrs["Other Rate"] = "report_pricing(pricing_map_for_date(\"#{params[:services_pricing_date]}\").true_rate_hash(\"#{params[:services_pricing_date]}\", organization_id)[:other_rate]) rescue 'N/A'"
       end
 
       if params[:rate_types].include?("member_rate")
-        attrs["Member Rate"] = "report_pricing(pricing_map_for_date(\"#{params[:services_pricing_date]}\").true_rate_hash(\"#{params[:services_pricing_date]}\", organization_id)[:member_rate])"
+        attrs["Member Rate"] = "report_pricing(pricing_map_for_date(\"#{params[:services_pricing_date]}\").true_rate_hash(\"#{params[:services_pricing_date]}\", organization_id)[:member_rate]) rescue 'N/A'"
       end
 
     end
@@ -141,9 +145,7 @@ class ServicePricingReport < ReportingModule
       tagged_organization_ids = service_organizations.reject {|x| (x.tags.map(&:name) & tags).empty?}.map(&:id)
       service_organization_ids = service_organization_ids.reject {|x| !tagged_organization_ids.include?(x)}
     end
-
-    return :services => {:organization_id => service_organization_ids}
-
+    return "services.organization_id IN (#{service_organization_ids.join(',')}) and pricing_maps.display_date >= #{args[:services_pricing_date]}"
   end
 
   def uniq

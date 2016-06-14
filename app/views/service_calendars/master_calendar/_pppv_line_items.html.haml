@@ -19,17 +19,16 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 - line_items_visits = []
 %tr.section_header
-  %th{:colspan => (@portal and !@merged) ? 11 : 13}= t(:calendar_page)[:per_patient] + " -- " + arm.name
-  - unless @merged || (@tab == 'billing_strategy') || (@tab == 'quantity') || (@review)
-    %th
-
+  %th{:colspan => @merged ? 15 : 13}= t(:calendar_page)[:per_patient] + " -- " + arm.name
+  - unless @merged || (@review)
+    %th{:colspan => 3}
 
 - if @merged #display merged calendar pppv line items
   - arm.service_list.each do |key, value| # get only per patient/per visit services and group them
     - arm.line_items_visits.each do |line_items_visit|
       - line_item = line_items_visit.line_item
       - next unless value[:line_items].include?(line_item)
-      - if ['first_draft'].include?(line_item.service_request.status)
+      - if ['first_draft', 'draft'].include?(line_item.service_request.status)
         - next if @portal
         - next if service_request != line_item.service_request
       - line_items_visits << line_items_visit
@@ -56,16 +55,14 @@
   - @service_request.service_list(false).each do |key, value| # get only per patient/per visit services and group them
     - next unless @sub_service_request.nil? or @sub_service_request.organization.name == value[:process_ssr_organization_name]
     %tr.sub_section_header
-      %th{:colspan => 10}= value[:name]
-      %th
+      %th{:colspan => 11}= value[:name]
 
     - arm.line_items_visits.each do |line_items_visit|
       - line_item = line_items_visit.line_item
       - next unless value[:line_items].include?(line_item)
       %tr.line_item
         %td.service_name= line_item.service.display_service_name
-        %td.status= line_item.service_request.status
-
+        %td.status= display_line_items_status(line_item)
         %td.your_cost= display_your_cost line_item
         %td.subject_count= line_items_visit.subject_count
         - visits = line_items_visit.visits.paginate(:page => @pages[arm.id].to_i, :per_page => 5)
@@ -83,23 +80,24 @@
     - next unless @sub_service_request.nil? or @sub_service_request.organization.name == value[:process_ssr_organization_name]
     - if @tab == 'billing_strategy'
       %tr.sub_section_header
-        %th{:colspan => @portal ? 3 : 5}= value[:name]
-        %th
+        %th{:colspan => @portal ? 3 : 6}= value[:name]
         - if @portal
-          %th{:colspan => 1}
+          %th
         -5.times do
           %th.billing_type_list{:style => "text-align:center"}
             %span.billing_type R
             %span.billing_type T
             %span.billing_type %
-        - unless @portal
-          %th &nbsp;
-        %th &nbsp;
+        %th{ colspan: 5 } &nbsp;
     - else
       %tr.sub_section_header
-        %th{:colspan => 13}= value[:name]
-        - unless (@tab == 'quantity')
-          %th
+        - if @portal
+          %th{:colspan => 11}= value[:name]
+        - elsif @tab == 'quantity'
+          %th{:colspan => 16}= value[:name]
+        - else
+          %th{:colspan => 14}= value[:name]
+          %th{ colspan: 2 }
 
     - arm.line_items_visits.each do |line_items_visit|
       - line_item = line_items_visit.line_item
@@ -112,6 +110,7 @@
             %td= select_tag "line_item_service_id", options_for_select(candidate_service_options(@candidate_per_patient_per_visit, true), line_item.try(:service).try(:id)), :'data-line_item_id' => line_item.id, :class => 'fulfillment_data fulfillment_selecter'
           - else
             %td= line_item.service.name + ' (Disabled)'
+          %td.status= display_line_items_status(line_item)
           %td.service_rate{:class => "service_rate_#{line_items_visit.id}"}= display_service_rate line_item
           - if @study_tracker
             %td.your_cost= currency_converter line_item.applicable_rate
@@ -139,8 +138,7 @@
           %td= link_to(image_tag('portal/cancel.png'), 'javascript:void(0);', :'data-line_items_visit_id' => line_items_visit.id, :'data-has_popup' => "true", :class => "delete_data")
         - else
           %td.pp_line_item_total{:class => "total_#{line_items_visit.id}"}= display_visit_based_direct_cost(line_items_visit)
-          %td.pp_line_item_study_total{:class => "total_#{line_items_visit.id}_per_study"}= display_visit_based_direct_cost_per_study(line_items_visit)
-
+          %td.pp_line_item_study_total{:colspan => 2, :class => "total_#{line_items_visit.id}_per_study"}= display_visit_based_direct_cost_per_study(line_items_visit)
 
 - unless @review
   = render :partial => "/service_calendars/master_calendar/pppv_totals", :locals => {:service_request => service_request, :arm => arm, :tab => @tab, :portal => @portal, line_items_visits: line_items_visits}

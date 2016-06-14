@@ -8,14 +8,15 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
       protocol = build(:protocol)
       protocol.save validate: false
 
-      create_list(:project_role_with_identity, 5, protocol: protocol)
+      user = create(:identity, ldap_uid: 'smarmy@musc.edu')
+      create(:project_role, identity_id: user.id, protocol_id: protocol.id, project_rights: 'approve')
 
       @project_role_ids = ProjectRole.pluck(:id)
     end
 
     context 'with ids' do
 
-      before { cwf_sends_api_get_request_for_resources('project_roles', 'shallow', @project_role_ids.pop(4)) }
+      before { cwf_sends_api_get_request_for_resources('project_roles', 'shallow', @project_role_ids.pop(1)) }
 
       context 'success' do
 
@@ -34,7 +35,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
         it 'should respond with an array of Identities' do
           parsed_body = JSON.parse(response.body)
 
-          expect(parsed_body['project_roles'].length).to eq(4)
+          expect(parsed_body['project_roles'].length).to eq(1)
         end
       end
     end

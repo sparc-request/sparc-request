@@ -21,8 +21,12 @@
 class Project < Protocol
 
   def populate_for_edit
-    # I be empty...
     super
+    self.setup_project_roles
+  end
+
+  def setup_project_roles
+    project_roles.build(role: "primary-pi", project_rights: "approve") unless project_roles.primary_pis.any?
   end
 
 end

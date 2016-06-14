@@ -29,7 +29,7 @@ RSpec.describe 'RemoteServiceNotifierJob', type: :model do
     context 'remote service unavailable', remote_service: :unavailable do
 
       it 'should raise an exception' do
-        expect{ @job.perform }.to raise_exception
+        expect{ @job.perform }.to raise_error RemoteServiceNotifierJob::RemoteServiceNotifierError
       end
     end
   end

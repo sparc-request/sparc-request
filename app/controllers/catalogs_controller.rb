@@ -23,9 +23,9 @@ class CatalogsController < ApplicationController
   before_filter :authorize_identity
 
   def update_description
-    @organization = Organization.find params[:id]
-    @service_request = ServiceRequest.find session[:service_request_id]
-    @from_portal = session[:from_portal]
+    @organization 		= Organization.find params[:id]
+    @service_request 	= ServiceRequest.find session[:service_request_id]
+    @from_portal      = session[:from_portal]
+    @program_is_process_ssr = params[:program_is_process_ssr] == 'true'
   end
-
 end

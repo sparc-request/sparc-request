@@ -160,7 +160,7 @@ $(document).ready ->
   )
 
   $('.service_rate').live('change', ->
-    rate = $(this).val()
+    rate = $(this).val(parseFloat($(this).val()).toFixed(2)).val()
     organization_id = $(this).attr('organization_id')
     display_date = $(this).closest('div').find(".pricing_map_display_date_hidden").val()
     data = {full_rate: rate, organization_id: organization_id, date: display_date}

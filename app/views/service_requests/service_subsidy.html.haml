@@ -26,10 +26,10 @@
   = hidden_field_tag :validates, ''
   = hidden_field_tag :current_location, @page
   = render :partial => 'steps'
-  = render :partial => 'errors'
+  #errors= render :partial => 'errors'
   .grid_9
-    .select-project-view
-      = render :partial => 'subsidies/subsidy_data'
+    .select-project-view#service_subsidies
+      = render partial: 'subsidies/subsidy_data', locals: {service_request: @service_request}
 
   .grid_3.service-subsidy-view-right.right
     = navigation_link t(:right_navigation)[:catalog], @catalog, 'catalog-button'

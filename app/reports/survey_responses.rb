@@ -62,6 +62,11 @@ class SurveyResponseReport < ReportingModule
     return :survey
   end
 
+  # Other tables to join
+  def joins
+    return :responses
+  end
+
   # Conditions
   def where args={}
     completed_at = (args[:completed_at_from] ? args[:completed_at_from] : self.default_options["Date Range"][:from]).to_time.strftime("%Y-%m-%d 00:00:00")..(args[:completed_at_to] ? args[:completed_at_to] : self.default_options["Date Range"][:to]).to_time.strftime("%Y-%m-%d 23:59:59")
@@ -71,6 +76,7 @@ class SurveyResponseReport < ReportingModule
 
   # Return only uniq records for
   def uniq
+    return :response_sets
   end
 
   def group
@@ -81,4 +87,20 @@ class SurveyResponseReport < ReportingModule
   end
 
   ##################  END QUERY SETUP   #####################
+
+  private
+
+  def create_report(worksheet)
+    super
+
+    # only add satisfaction rate to the bottom of reports for the system satisfaction survey
+    if params["survey_id"] == Survey.find_by(access_code: "system-satisfaction-survey").id.to_s
+      record_answers = records.map { |record| record.responses.where(question_id: 1).first.try(:answer).try(:text) }.compact
+      yes_answers = record_answers.select { |answer| answer == "Yes" }
+      percent_satisifed = yes_answers.length.to_f / record_answers.length * 100
+
+      worksheet.add_row([])
+      worksheet.add_row(["Overall Satisfaction Rate", "", sprintf("%.2f%%", percent_satisifed)])
+    end
+  end
 end

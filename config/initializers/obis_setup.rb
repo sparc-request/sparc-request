@@ -28,12 +28,12 @@ begin
   NEW_USER_CC                               = application_config['new_user_cc']
   SYSTEM_SATISFACTION_SURVEY_CC             = application_config['system_satisfaction_survey_cc']
   ROOT_URL                                  = application_config['root_url']
-  USER_PORTAL_LINK                          = application_config['user_portal_link']
+  DASHBOARD_LINK                            = application_config['dashboard_link']
   HEADER_LINK_1                             = application_config['header_link_1']
   HEADER_LINK_2                             = application_config['header_link_2']
   HEADER_LINK_3                             = application_config['header_link_3']
   USE_INDIRECT_COST                         = application_config['use_indirect_cost']
-  USE_SHIBOLETH                             = application_config['use_shiboleth']
+  USE_SHIBBOLETH                             = application_config['use_shiboleth']
   USE_SHIBBOLETH_ONLY                       = application_config['use_shibboleth_only']
   USE_LDAP                                  = application_config['use_ldap']
   SUPPRESS_LDAP_FOR_USER_SEARCH             = application_config['suppress_ldap_for_user_search'] || nil
@@ -65,8 +65,11 @@ begin
   CLINICAL_WORK_FULFILLMENT_URL             = application_config['clinical_work_fulfillment_url'] || nil
   FULFILLMENT_CONTINGENT_ON_CATALOG_MANAGER = application_config['fulfillment_contingent_on_catalog_manager'] || nil
   USE_ABOUT_SPARC_LINK                      = application_config['use_about_sparc_link'] || false
+  CREATE_AN_ACCOUNT                         = application_config['create_an_account']
   ABOUT_SPARC_URL                           = application_config['about_sparc_url'] || nil
-    
+  USE_FEEDBACK_LINK                         = application_config['use_feedback_link'] || false
+  NAVBAR_LINKS                              = application_config['navbar_links'] || {}
+
   if LOCALE_OVERRIDE
     I18n.available_locales = [:en, LOCALE_OVERRIDE]
     I18n.default_locale = LOCALE_OVERRIDE

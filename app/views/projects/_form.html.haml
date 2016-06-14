@@ -18,6 +18,7 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+= stylesheet_link_tag 'hover_effect'
 :javascript
   $(document).ready( function() {
     $('a.continue_button').click(function() {
@@ -43,7 +44,7 @@
   = hidden_field_tag :current_step, current_step
   .clear
   = f.error_messages
-  
+
   .edit-project-view.portal_container
     = render partial: 'projects/fields', locals: {project: project, f: f, current_step: current_step}
   .continue.portal_container
@@ -52,8 +53,7 @@
         .nav-backward
           .return-to-previous
             %a.cancel_link{class: cookies['current_step'] == 'protocol' ? 'cancel' : 'go-back', href: "javascript:void(0)"}
-              = image_tag 'left_arrow.png', alt: "Cancel"
-              %span.btn.btn-success.btn-lg
+              %span.btn.btn-success.btn-lg.button-hover
                 = current_step == 'protocol' ? t(:bottom_navigation)[:cancel] : t(:bottom_navigation)[:go_back]
           = image_tag 'spinner.gif', class: 'return-spinner hidden'
         .exit
@@ -62,6 +62,5 @@
           = image_tag 'spinner.gif', class: 'continue-spinner hidden'
           .save-and-continue
             %a.continue_button{class: cookies['current_step'] == 'protocol' ? 'continue' : 'save', href: "javascript:void(0)"}
-              %span.btn.btn-success.btn-lg
+              %span.btn.btn-success.btn-lg.button-hover
                 = current_step == 'protocol' ? t(:bottom_navigation)[:continue] : t(:bottom_navigation)[:save_and_continue]
-              = image_tag 'right_arrow.png', alt: "SaveAndContinue"

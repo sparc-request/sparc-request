@@ -1,23 +1,16 @@
 %ul.navbar
-  %li.dashboard
-    = link_to 'Dashboard', portal_root_path, target: '_blank'
-  %li.admin
-    = link_to 'SPARCAdmin', portal_admin_path, target: '_blank'
-  %li.fulfillment
-    = link_to 'SPARCFulfillment', 'https://sparc-fulfillment.musc.edu', target: '_blank'
-  %li.catalog
-    = link_to 'SPARCCatalog', catalog_manager_catalog_index_path, target: '_blank'
-  %li.reports
-    = link_to 'SPARCReport', reports_path, target: '_blank'
+  - NAVBAR_LINKS.each do |name, path|
+    %li.dashboard
+      = link_to name.to_s, path, target: '_blank'
   .right-section
-    %li.align-element-nav-bar
-      - flash.each do |name, msg|
-        = content_tag :div, msg, :id => "flash_#{name}" if msg.is_a?(String)
     - if current_user.present?
-      %li.align-element-nav-bar
-        = "Logged in as #{current_user.email}"
-      %li
-        = link_to 'Logout', destroy_identity_session_path, method: :delete, class: 'logout'
+      .user-login-section
+        %li.align-element-nav-bar
+          = "Logged in as #{current_user.email}"
+        %li
+          = link_to 'Logout', destroy_identity_session_path, method: :delete, class: 'logout'
     - else
-      %li
-        = link_to 'Login', new_identity_session_path, class: 'logout'
+      %li.align-element-nav-bar
+      .user-login-section
+        %li
+          = link_to 'Login', new_identity_session_path, class: 'logout'

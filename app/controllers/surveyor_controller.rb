@@ -49,7 +49,7 @@ module SurveyorControllerCustomMethods
     end
 
     if params[:ssr_id]
-      @response_set = ResponseSet.create(:survey => @survey, :user_id => (@current_user.nil? ? @current_user : @current_user.id), :ssr_id => params[:ssr_id])
+      @response_set = ResponseSet.create(:survey => @survey, :user_id => (@current_user.nil? ? @current_user : @current_user.id), :sub_service_request_id => params[:ssr_id])
     else
       @response_set = ResponseSet.create(:survey => @survey, :user_id => (@current_user.nil? ? @current_user : @current_user.id))
     end
@@ -146,7 +146,7 @@ module SurveyorControllerCustomMethods
   def surveyor_finish
     # the update action redirects to this method if given params[:finish]
     if not params['redirect_to'].blank?
-      SurveyNotification.system_satisfaction_survey(@response_set).deliver
+      SurveyNotification.system_satisfaction_survey(@response_set).deliver_now
       params['redirect_to']
     else
       super # surveyor.available_surveys_path

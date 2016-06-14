@@ -2,26 +2,10 @@ require 'rails_helper'
 
 RSpec.describe Arm, type: :model do
   describe '#add_visit' do
-    context 'visit_count nil' do
-      let(:arm) { Arm.create(visit_count: nil) }
-
-      it 'should set visit_count to 1' do
-        arm.add_visit
-        expect(arm.visit_count).to eq 1
-      end
-    end
-
-    context 'visit_count non-nil' do
-      let(:arm) { Arm.create(visit_count: 1) }
-
-      it 'should increment visit_count' do
-        arm.add_visit
-        expect(arm.visit_count).to eq 2
-      end
-    end
+    let(:arm) { Arm.create(visit_count: 1, subject_count: 1, name: "My Good Arm") }
 
     context 'position not specified' do
-      let!(:arm) { create(:arm, visit_count: 2, line_item_count: 2) }
+      let!(:arm) { create(:arm, visit_count: 2, line_item_count: 2, name: "My Good Arm") }
 
       it 'should add a new VisitGroup to the end' do
         orig_vg_ids = arm.visit_groups.map &:id
@@ -32,6 +16,10 @@ RSpec.describe Arm, type: :model do
         expect(arm.visit_groups.map &:id).to start_with orig_vg_ids
         # expect last VisitGroup to be new
         expect(orig_vg_ids).not_to include(arm.visit_groups[2].id)
+      end
+
+      it 'should increment visit_count' do
+        expect { arm.add_visit }.to change { arm.visit_count }.by(1)
       end
 
       it 'should add a new Visit to each LineItemsVisit to the end' do
@@ -52,7 +40,7 @@ RSpec.describe Arm, type: :model do
     end
 
     context 'position specified' do
-      let!(:arm) { create(:arm, visit_count: 2, line_item_count: 2) }
+      let!(:arm) { create(:arm, visit_count: 2, line_item_count: 2, name: "My Good Arm") }
 
       it 'should add a new VisitGroup to that position' do
         expect { arm.add_visit 2 }.to change { arm.visit_groups.count }.by(1)
@@ -83,14 +71,16 @@ RSpec.describe Arm, type: :model do
 
     context 'name specified' do
       it 'should set VisitGroup name' do
-        arm = Arm.create
+        arm = create(:arm)
+
         arm.add_visit(nil, nil, 0, 0, 'Visit Group Name')
+        
         expect(arm.visit_groups.first.name).to eq 'Visit Group Name'
       end
     end
 
     context 'USE_EPIC == true' do
-      let(:arm) { Arm.create }
+      let(:arm) { create(:arm) }
 
       before(:each) do
         stub_const("USE_EPIC", true)
@@ -107,7 +97,7 @@ RSpec.describe Arm, type: :model do
     end
 
     context 'USE_EPIC == false' do
-      let(:arm) { Arm.create }
+      let(:arm) { create(:arm) }
 
       before(:each) do
         stub_const("USE_EPIC", false)

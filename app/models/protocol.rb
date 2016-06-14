@@ -24,68 +24,71 @@ class Protocol < ActiveRecord::Base
 
   audited
 
-  has_many :study_types, :dependent => :destroy
-  has_one :research_types_info, :dependent => :destroy
-  has_one :human_subjects_info, :dependent => :destroy
-  has_one :vertebrate_animals_info, :dependent => :destroy
-  has_one :investigational_products_info, :dependent => :destroy
-  has_one :ip_patents_info, :dependent => :destroy
-  has_many :project_roles, :dependent => :destroy
-  has_many :identities, :through => :project_roles
+  has_many :study_types,                  dependent: :destroy
+  has_one :research_types_info,           dependent: :destroy
+  has_one :human_subjects_info,           dependent: :destroy
+  has_one :vertebrate_animals_info,       dependent: :destroy
+  has_one :investigational_products_info, dependent: :destroy
+  has_one :ip_patents_info,               dependent: :destroy
+  has_many :project_roles,                dependent: :destroy
+  has_many :identities,                   through: :project_roles
   has_many :service_requests
-  has_many :sub_service_requests, through: :service_requests
-  has_many :affiliations, :dependent => :destroy
-  has_many :impact_areas, :dependent => :destroy
-  has_many :arms, :dependent => :destroy
-  has_many :study_type_answers, :dependent => :destroy
-  has_many :study_type_questions, through: :study_type_question_group
+  has_many :sub_service_requests,         through: :service_requests
+  has_many :organizations,                through: :sub_service_requests
+  has_many :affiliations,                 dependent: :destroy
+  has_many :impact_areas,                 dependent: :destroy
+  has_many :arms,                         dependent: :destroy
+  has_many :study_type_answers,           dependent: :destroy
+  has_many :notes, as: :notable,          dependent: :destroy
+  has_many :study_type_questions,         through: :study_type_question_group
 
   belongs_to :study_type_question_group
 
-  attr_accessible :identity_id
-  attr_accessible :next_ssr_id
-  attr_accessible :short_title
-  attr_accessible :title
-  attr_accessible :sponsor_name
+  attr_accessible :affiliations_attributes
+  attr_accessible :archived
+  attr_accessible :arms_attributes
+  attr_accessible :billing_business_manager_static_email
   attr_accessible :brief_description
-  attr_accessible :indirect_cost_rate
-  attr_accessible :study_phase
-  attr_accessible :udak_project_number
-  attr_accessible :funding_rfa
-  attr_accessible :funding_status
-  attr_accessible :potential_funding_source
-  attr_accessible :potential_funding_start_date
-  attr_accessible :funding_source
-  attr_accessible :funding_start_date
+  attr_accessible :end_date
+  attr_accessible :federal_grant_code_id
   attr_accessible :federal_grant_serial_number
   attr_accessible :federal_grant_title
-  attr_accessible :federal_grant_code_id
   attr_accessible :federal_non_phs_sponsor
   attr_accessible :federal_phs_sponsor
-  attr_accessible :potential_funding_source_other
+  attr_accessible :funding_rfa
+  attr_accessible :funding_source
   attr_accessible :funding_source_other
-  attr_accessible :research_types_info_attributes
+  attr_accessible :funding_start_date
+  attr_accessible :funding_status
   attr_accessible :human_subjects_info_attributes
-  attr_accessible :vertebrate_animals_info_attributes
+  attr_accessible :identity_id
+  attr_accessible :impact_areas_attributes
+  attr_accessible :indirect_cost_rate
   attr_accessible :investigational_products_info_attributes
   attr_accessible :ip_patents_info_attributes
-  attr_accessible :study_types_attributes
-  attr_accessible :impact_areas_attributes
-  attr_accessible :affiliations_attributes
-  attr_accessible :project_roles_attributes
-  attr_accessible :arms_attributes
-  attr_accessible :requester_id
-  attr_accessible :start_date
-  attr_accessible :end_date
-  attr_accessible :last_epic_push_time
   attr_accessible :last_epic_push_status
-  attr_accessible :billing_business_manager_static_email
-  attr_accessible :recruitment_start_date
+  attr_accessible :last_epic_push_time
+  attr_accessible :next_ssr_id
+  attr_accessible :potential_funding_source
+  attr_accessible :potential_funding_source_other
+  attr_accessible :potential_funding_start_date
+  attr_accessible :project_roles_attributes
   attr_accessible :recruitment_end_date
+  attr_accessible :recruitment_start_date
+  attr_accessible :requester_id
+  attr_accessible :research_types_info_attributes
   attr_accessible :selected_for_epic
+  attr_accessible :short_title
+  attr_accessible :sponsor_name
+  attr_accessible :start_date
+  attr_accessible :study_phase
   attr_accessible :study_type_answers_attributes
-  attr_accessible :archived
   attr_accessible :study_type_question_group_id
+  attr_accessible :study_types_attributes
+  attr_accessible :title
+  attr_accessible :type
+  attr_accessible :udak_project_number
+  attr_accessible :vertebrate_animals_info_attributes
 
   attr_accessor :requester_id
   attr_accessor :validate_nct
@@ -96,39 +99,144 @@ class Protocol < ActiveRecord::Base
   accepts_nested_attributes_for :vertebrate_animals_info
   accepts_nested_attributes_for :investigational_products_info
   accepts_nested_attributes_for :ip_patents_info
-  accepts_nested_attributes_for :study_types, :allow_destroy => true
-  accepts_nested_attributes_for :impact_areas, :allow_destroy => true
-  accepts_nested_attributes_for :affiliations, :allow_destroy => true
-  accepts_nested_attributes_for :project_roles, :allow_destroy => true
-  accepts_nested_attributes_for :arms, :allow_destroy => true
-  accepts_nested_attributes_for :study_type_answers, :allow_destroy => true
+  accepts_nested_attributes_for :study_types,                   allow_destroy: true
+  accepts_nested_attributes_for :impact_areas,                  allow_destroy: true
+  accepts_nested_attributes_for :affiliations,                  allow_destroy: true
+  accepts_nested_attributes_for :project_roles,                 allow_destroy: true
+  accepts_nested_attributes_for :arms,                          allow_destroy: true
+  accepts_nested_attributes_for :study_type_answers,            allow_destroy: true
 
   validation_group :protocol do
-    validates :short_title, :presence => true
-    validates :title, :presence => true
-    validates :funding_status, :presence => true
+    validates :short_title,                    presence: true
+    validates :title,                          presence: true
+    validates :funding_status,                 presence: true
     validate  :validate_funding_source
-    validates :sponsor_name, :presence => true, :if => :is_study?
-    validates_associated :human_subjects_info, :message => "must contain 8 numerical digits", :if => :validate_nct
-    validates :selected_for_epic, inclusion: [true, false], :if => :is_study?
-    validate  :validate_study_type_answers, if: [:is_study?, :selected_for_epic?, "StudyTypeQuestionGroup.active.pluck(:id).first == study_type_question_group_id"]
+    validates_associated :human_subjects_info, message: "must contain 8 numerical digits", if: :validate_nct
   end
 
   validation_group :user_details do
     validate :validate_proxy_rights
-    validate :requester_included, :on => :create
     validate :primary_pi_exists
   end
 
-  FRIENDLY_IDS = ["certificate_of_conf", "higher_level_of_privacy", "access_study_info", "epic_inbasket", "research_active", "restrict_sending"]
+  scope :for_identity, -> (identity) {
+    joins(:project_roles).
+    where(project_roles: { identity_id: identity.id }).
+    where.not(project_roles: { project_rights: 'none' })
+  }
+
+  filterrific(
+    default_filter_params: { show_archived: 0 },
+    available_filters: [
+      :search_query,
+      :admin_filter,
+      :show_archived,
+      :with_status,
+      :with_organization
+    ]
+  )
+
+  scope :search_query, -> (search_term) {
+    # Searches protocols based on short_title, title, id, and associated_users
+    # Protects against SQL Injection with ActiveRecord::Base::sanitize
+    like_search_term = ActiveRecord::Base::sanitize("%#{search_term}%")
+    exact_search_term = ActiveRecord::Base::sanitize(search_term)
+
+    #TODO temporary replacement for "MATCH(identities.first_name, identities.last_name) AGAINST (#{exact_search_term})"
+    where_clause = search_term.to_s.split.map do |term|
+      "CONCAT(identities.first_name, identities.last_name) LIKE #{ActiveRecord::Base::sanitize("%#{term}%")}"
+    end
+
+    where_clause += ["protocols.short_title like #{like_search_term}",
+      "protocols.title like #{like_search_term}",
+      "protocols.id = #{exact_search_term}"]
+
+    joins(:identities).
+      where(where_clause.compact.join(' OR ')).
+      distinct
+  }
+
+  scope :for_identity_id, -> (identity_id) {
+    return nil if identity_id == '0'
+    joins(:project_roles).
+      where(project_roles: { identity_id: identity_id }).
+      where.not(project_roles: { project_rights: 'none' })
+  }
+
+  scope :admin_filter, -> (params) {
+    filter, id  = params.split(" ")
+    if filter == 'for_admin'
+      return filtered_for_admin(id)
+    elsif filter == 'for_identity'
+      return for_identity_id(id)
+    end
+  }
+
+  scope :for_admin, -> (identity_id) {
+    # returns protocols with ssrs in orgs authorized for identity_id
+    return nil if identity_id == '0'
+    joins(:organizations).
+      merge( Organization.authorized_for_identity(identity_id) ).distinct
+  }
+
+  scope :filtered_for_admin, -> (identity_id) {
+    # returns protocols with ssrs in orgs authorized for identity_id
+    return nil if identity_id == '0'
+
+    # We want to find all protocols where the user is an Admin AND Authorized User
+    # as they will be filtered out by the SP Only Organizations queries
+    sp_only_admin_orgs        = Organization.authorized_for_identity(identity_id, true)
+
+    if sp_only_admin_orgs.any?
+      admin_protocols           = for_admin(identity_id)
+      authorized_user_protocols = joins(:project_roles).where(project_roles: { identity_id: identity_id })
+      visible_admin_protocols   = admin_protocols.to_a.reject { |p| p.should_be_hidden_for_sp?(sp_only_admin_orgs) }
+      
+      # TODO: In rails 5, we can do an or-merge to create a single query for this entire process
+      where(id: (authorized_user_protocols | visible_admin_protocols)).distinct
+    else
+      for_admin(identity_id)
+    end
+  }
+
+  scope :show_archived, -> (boolean) {
+    where(archived: boolean)
+  }
+
+  scope :with_status, -> (status) {
+    # returns protocols with ssrs in status
+    return nil if status == "" or status == [""]
+    joins(:sub_service_requests).
+    where(sub_service_requests: { status: status }).distinct
+  }
+
+  scope :with_organization, -> (org_id) {
+    # returns protocols with ssrs in org_id
+    return nil if org_id == "" or org_id == [""]
+    joins(:sub_service_requests).
+    where(sub_service_requests: { organization_id: org_id }).distinct
+  }
 
   def is_study?
     self.type == 'Study'
   end
 
+  def is_epic?
+    USE_EPIC
+  end
+
   # virgin project:  a project that has never been a study
   def virgin_project?
     selected_for_epic.nil?
+  end
+
+  def is_project?
+    self.type == 'Project'
+  end
+
+  # Determines whether a protocol contains a service_request with only a "first draft" status
+  def has_first_draft_service_request?
+    service_requests.any? && service_requests.map(&:status).all? { |status| status == 'first_draft'}
   end
 
   def active?
@@ -144,44 +252,6 @@ class Protocol < ActiveRecord::Base
       errors.add(:funding_source, "You must select a funding source")
     elsif self.funding_status == "pending_funding" && self.potential_funding_source.blank?
       errors.add(:potential_funding_source, "You must select a potential funding source")
-    end
-  end
-
-  def validate_study_type_answers
-
-    answers = {}
-    FRIENDLY_IDS.each do |fid|
-      q = StudyTypeQuestion.active.find_by_friendly_id(fid)
-      answers[fid] = study_type_answers.find{|x| x.study_type_question_id == q.id}
-    end
-
-    has_errors = false
-    begin
-      if answers["certificate_of_conf"].answer.nil?
-        has_errors = true
-      elsif answers["certificate_of_conf"].answer == false
-        if (answers["higher_level_of_privacy"].answer.nil?)
-          has_errors = true
-        elsif (answers["higher_level_of_privacy"].answer == false)
-          if answers["epic_inbasket"].answer.nil? || answers["research_active"].answer.nil? || answers["restrict_sending"].answer.nil?
-            has_errors = true
-          end
-        elsif (answers["higher_level_of_privacy"].answer == true)
-          if (answers["access_study_info"].answer.nil?)
-            has_errors = true
-          elsif (answers["access_study_info"].answer == false)
-            if answers["epic_inbasket"].answer.nil? || answers["research_active"].answer.nil? || answers["restrict_sending"].answer.nil?
-              has_errors = true
-            end
-          end
-        end
-      end
-    rescue => e
-      has_errors = true
-    end
-
-    if has_errors
-      errors.add(:study_type_questions, "must be selected")
     end
   end
 
@@ -219,10 +289,6 @@ class Protocol < ActiveRecord::Base
 
   def emailed_associated_users
     project_roles.reject {|pr| pr.project_rights == 'none'}
-  end
-
-  def requester_included
-    errors.add(:base, "You must add yourself as an authorized user") unless project_roles.map(&:identity_id).include?(requester_id.to_i)
   end
 
   def primary_pi_exists
@@ -352,29 +418,22 @@ class Protocol < ActiveRecord::Base
   end
 
   def create_arm(args)
-    arm = self.arms.create(args)
-    self.service_requests.each do |service_request|
-      service_request.per_patient_per_visit_line_items.each do |li|
-        arm.create_line_items_visit(li)
+    arm = self.arms.new(args)
+    if arm.valid?
+      arm.save
+      self.service_requests.each do |service_request|
+        service_request.per_patient_per_visit_line_items.each do |li|
+          arm.create_line_items_visit(li)
+        end
       end
     end
+
     # Lets return this in case we need it for something else
     arm
   end
 
   def should_push_to_epic?
     return self.service_requests.any? { |sr| sr.should_push_to_epic? }
-  end
-
-  def has_ctrc_clinical_services? current_service_request_id
-    self.service_requests.each do |sr|
-      next if sr.id == current_service_request_id
-      if sr.has_ctrc_clinical_services? and sr.status != 'first_draft'
-        return sr.id
-      end
-    end
-
-    return nil
   end
 
   def has_nexus_services?
@@ -387,14 +446,14 @@ class Protocol < ActiveRecord::Base
     return false
   end
 
-  def find_sub_service_request_with_ctrc current_service_request_id
-    id = has_ctrc_clinical_services? current_service_request_id
-    service_request = self.service_requests.find id
+  def find_sub_service_request_with_ctrc(service_request)
     service_request.sub_service_requests.each do |ssr|
       if ssr.ctrc?
         return ssr.ssr_id
       end
     end
+
+    return nil
   end
 
   def any_service_requests_to_display?
@@ -472,6 +531,10 @@ class Protocol < ActiveRecord::Base
     if remove_arms
       self.arms.destroy_all
     end
+  end
+
+  def should_be_hidden_for_sp?(sp_only_admin_orgs)
+    (service_requests.reject { |sr| sr.should_be_hidden_for_sp?(sp_only_admin_orgs) }).empty?
   end
 
   private

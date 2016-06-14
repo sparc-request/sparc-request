@@ -19,6 +19,7 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 = javascript_include_tag 'protocol'
+= stylesheet_link_tag 'hover_effect'
 
 = form_tag navigate_service_request_path(@service_request), :id => 'navigation_form', :class =>'form-inline' do
   = hidden_field_tag :location, ''
@@ -49,7 +50,7 @@
                     .inline.form-group
                       %strong
                         = @service_request.protocol.display_protocol_id_and_title
-                      = link_to "Edit Study", edit_service_request_study_path(@service_request, @service_request.protocol, portal: false), class: 'edit-study blue-button btn btn-primary'
+                      = link_to "Edit Study", edit_service_request_study_path(@service_request, @service_request.protocol, portal: false), class: 'edit-study blue-button btn btn-primary button-hover'
             - if @service_request.protocol.type == 'Project'
               .existing-project.center
                 #project.project-select
@@ -57,13 +58,13 @@
                     .inline.form-group
                       %strong
                         = @service_request.protocol.display_protocol_id_and_title
-                      = link_to 'Edit Project', edit_service_request_project_path(@service_request, @service_request.protocol, portal: false), class: 'edit-project blue-button btn btn-primary'
+                      = link_to 'Edit Project', edit_service_request_project_path(@service_request, @service_request.protocol, portal: false), class: 'edit-project blue-button btn btn-primary button-hover'
           - else
             .type-select.center.form-group
               - if @sub_service_request.nil?
-                = link_to t('study_assignment.research_study'), new_service_request_study_path(@service_request, portal: false), class: 'new-study-button btn btn-primary', title: t('study_assignment.tooltips.research_study_tooltip')
+                = link_to t('study_assignment.research_study'), new_service_request_study_path(@service_request, portal: false), class: 'new-study-button btn btn-primary button-hover', title: t('study_assignment.tooltips.research_study_tooltip')
                 .divider
-                = link_to t('study_assignment.research_project'), new_service_request_project_path(@service_request, portal: false), class: 'new-project-button btn btn-primary', title: t('study_assignment.tooltips.research_project_tooltip')
+                = link_to t('study_assignment.research_project'), new_service_request_project_path(@service_request, portal: false), class: 'new-project-button btn btn-primary button-hover', title: t('study_assignment.tooltips.research_project_tooltip')
         - else
           .previously_submitted
             .inline.form-group
@@ -72,14 +73,14 @@
                   = raw(t(:study_assignment)[:current_study])
                   %strong
                     = @service_request.protocol.display_protocol_id_and_title
-                  = link_to t('study_assignment.edit_study'), edit_service_request_study_path(@service_request, @service_request.protocol, portal: false), class: 'edit-study blue-button btn btn-primary'
+                  = link_to t('study_assignment.edit_study'), edit_service_request_study_path(@service_request, @service_request.protocol, portal: false), class: 'edit-study blue-button btn btn-primary button-hover'
                 %br
               - if @service_request.protocol.type == 'Project'
                 #project.project-select
                   = raw(t(:study_assignment)[:current_project])
                   %strong
                     = @service_request.protocol.display_protocol_id_and_title
-                  = link_to t('study_assignment.edit_project'), edit_service_request_project_path(@service_request, @service_request.protocol, portal: false), class: 'edit-project blue-button btn btn-primary'
+                  = link_to t('study_assignment.edit_project'), edit_service_request_project_path(@service_request, @service_request.protocol, portal: false), class: 'edit-project blue-button btn btn-primary button-hover'
                 %br
               = t(:study_assignment)[:previously_submitted_project]
 
@@ -88,13 +89,6 @@
       %h3
         = t("study_assignment.sidebar_box.my_services")
       .line-items= render :partial => 'catalogs/cart'
-    = navigation_link t(:right_navigation)[:catalog], @back, 'catalog-button btn btn-info btn-lg btn-block'
+    = navigation_link t(:right_navigation)[:catalog], @back, 'catalog-button btn btn-info btn-lg btn-block button-hover'
     = render :partial => 'right_navigation'
 .continue.col-md-12= render :partial => 'service_requests/navigation'
-
-- if @ctrc_services
-  #ctrc_dialog
-    = I18n.t('protocol_information.ctrc_services_exist', :protocol_id => @service_request.protocol.id, :ssr_id => @ssr_id, :short_title => @service_request.protocol.short_title)
-    %br
-    %br
-    #redirect{:style => "float:right"}= link_to "Ok", protocol_service_request_path(@service_request)

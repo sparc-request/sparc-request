@@ -18,8 +18,10 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+= stylesheet_link_tag 'hover_effect'
+
 .add-user
-  = button_tag @can_edit ? t(:user_details)[:update_button] : t(:user_details)[:add_button], class: 'dark-blue-button add-authorized-user btn btn-primary'
+  = button_tag @can_edit ? t(:user_details)[:update_button] : t(:user_details)[:add_button], class: 'dark-blue-button add-authorized-user btn btn-primary button-hover'
 %table.authorized-users
   %thead
     %tr
@@ -53,6 +55,7 @@
         = t(:user_list)[:rights5]
   %tbody
     - protocol.project_roles.each do |pr|
-      = render partial: 'shared/user_proxy_right', locals: {project_role: pr, protocol_use_epic: protocol.selected_for_epic ? 'true' : 'false' }
+      - if pr.identity.present?
+        = render partial: 'shared/user_proxy_right', locals: {project_role: pr, protocol_use_epic: protocol.selected_for_epic ? 'true' : 'false' }
 
 %br

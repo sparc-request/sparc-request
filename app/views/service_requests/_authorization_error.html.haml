@@ -19,23 +19,25 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 !!! 1.1
-%html{"xml:lang" => "en", :xmlns => "http://www.w3.org/1999/xhtml"}
+%html{"xml:lang" => "en", xmlns: "http://www.w3.org/1999/xhtml"}
   %head
     %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
-    = stylesheet_link_tag '960', "#{CUSTOM_ASSET_PATH}application", 'jquery-ui', :media => 'all'
+    = stylesheet_link_tag '960', "#{CUSTOM_ASSET_PATH}application", 'jquery-ui', media: 'all'
   %body
     #container.container
-      = render :partial => 'shared/header_logos'
+      = render 'shared/header_logos', in_dashboard: false
       #title
-        %h1= t 'application_title'
+        %h1
+          = t 'application_title'
       #content.container_12
         %br
         %br
         .grid_3 &nbsp;
         .grid_6.authorization_error.ui-corner-all
-          #auth_error= raw(error)
+          #auth_error
+            = raw(error)
           %br
           Click
-          = link_to 'here', USER_PORTAL_LINK
-          to return to your user portal
+          = link_to 'here', DASHBOARD_LINK
+          to return to your dashboard
         .grid_3 &nbsp;

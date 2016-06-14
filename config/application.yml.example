@@ -25,7 +25,8 @@ development:
   new_user_cc: "amcates@gmail.com, no-reply@musc.edu"
   system_satisfaction_survey_cc: 'amcates@gmail.com, catesa@musc.edu'
   root_url: "https://andrews-mac-pro.thurmond-gazes.musc.edu"
-  user_portal_link: 'http://musc-pro.homelinux.net:3001/'
+  dashboard_link: 'http://musc-pro.homelinux.net:3001/dashboard'
+  create_an_account: false
   header_link_1: http://sctr.musc.edu
   header_link_2: http://sctr.musc.edu
   header_link_3: http://www.musc.edu
@@ -57,6 +58,10 @@ development:
   system_satisfaction_survey: false
   editable_statuses: { 14: ['first_draft', 'draft', 'submitted', nil, 'get_a_cost_estimate', 'awaiting_pi_approval'],
                      48: ['draft', 'submitted'] }
+  navbar_links: { Dashboard:        'http://localhost:3000/dashboard',
+                  SPARCFulfillment: 'https://cwf-d.obis.musc.edu',
+                  SPARCCatalog:     'http://localhost:3000/catalog_manager',
+                  SPARCReport:      'http://localhost:3000/reports' }
   # API
   remote_service_notifier_protocol: "http"
   remote_service_notifier_host: "127.0.0.1:5001"
@@ -72,6 +77,7 @@ development:
   fulfillment_contingent_on_catalog_manager: true
   about_sparc_url: http://academicdepartments.musc.edu/sctr/sparc_request
   use_about_sparc_link: true
+  use_feedback_link: true
 
 test:
   default_mail_to: nobody@nowhere.com
@@ -80,10 +86,16 @@ test:
   new_user_cc: "amcates@gmail.com, no-reply@musc.edu"
   system_satisfaction_survey_cc: 'amcates@gmail.com, catesa@musc.edu'
   root_url: /
-  user_portal_link: /portal
+  dashboard_link: /dashboard
   header_link_1: http://sctr.musc.edu
   header_link_2: http://sctr.musc.edu
   header_link_3: http://www.musc.edu
+  editable_statuses: { 14: ['first_draft', 'draft', 'submitted', nil, 'get_a_cost_estimate', 'awaiting_pi_approval'],
+                     48: ['draft', 'submitted'] }
+  navbar_links: { Dashboard:        'http://localhost:3000/dashboard',
+                  SPARCFulfillment: 'https://cwf-d.obis.musc.edu',
+                  SPARCCatalog:     'http://localhost:3000/catalog_manager',
+                  SPARCReport:      'http://localhost:3000/reports' }
   use_indirect_cost: false
   use_shiboleth: true
   use_shibboleth_only: false # set to true to turn off database authentication sign in options
@@ -93,7 +105,7 @@ test:
   use_epic: true
   queue_epic: false
   queue_epic_load_error_to: 'glennj@musc.edu, hundc@musc.edu, forney@musc.edu, crossoml@musc.edu, success@musc.edu'
-  queue_epic_edit_ldap_uids: ['jug2@musc.edu']
+  queue_epic_edit_ldap_uids: ['jug2']
   use_google_calendar: true
   # insert sub-directory path to override the three header images + account sign-in image and override application.css
 #  custom_asset_path: image_override/
@@ -124,3 +136,4 @@ test:
 #  fulfillment_contingent_on_catalog_manager: true
   about_sparc_url: http://academicdepartments.musc.edu/sctr/sparc_request
   use_about_sparc_link: false
+  use_feedback_link: true

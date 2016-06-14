@@ -105,18 +105,21 @@
           .legend= t(:organization_form)[:epic_info]
           %fieldset.single_fieldset
             %table
-              %tr
-                %th= f.label :cpt_code, t(:organization_form)[:cpt_code]
-                %td= f.text_field :cpt_code
-              %tr
-                %th= f.label :charge_code, t(:organization_form)[:charge_code]
-                %td= f.text_field :charge_code
-              %tr
-                %th= f.label :revenue_code, t(:organization_form)[:revenue_code]
-                %td= f.text_field :revenue_code
-              %tr
-                %th= f.label :send_to_epic, t(:organization_form)[:send_to_epic]
-                %td= f.check_box :send_to_epic
+            %tr
+              %th= f.label :eap_id, t(:organization_form)[:eap_id]
+              %td= f.text_field :eap_id
+            %tr
+              %th= f.label :cpt_code, t(:organization_form)[:cpt_code]
+              %td= f.text_field :cpt_code
+            %tr
+              %th= f.label :charge_code, t(:organization_form)[:charge_code]
+              %td= f.text_field :charge_code
+            %tr
+              %th= f.label :revenue_code, t(:organization_form)[:revenue_code]
+              %td= f.text_field :revenue_code
+            %tr
+              %th= f.label :send_to_epic, t(:organization_form)[:send_to_epic]
+              %td= f.check_box :send_to_epic
         %br
 
       %fieldset#pricing.parent

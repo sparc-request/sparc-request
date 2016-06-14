@@ -2,8 +2,8 @@ namespace :reports do
   desc "Create billing only report for CWF"
   task :billing_only_report => :environment do
 
-    start_date = "2015-03-01".to_date # start date
-    end_date = "2015-03-15".to_date # end date
+    start_date = "2015-07-01".to_date # start date
+    end_date = "2015-07-31".to_date # end date
 
     # protocol_ids = [5730]
     protocol_ids = Protocol.all
@@ -30,8 +30,7 @@ namespace :reports do
                 next unless (procedure.should_be_displayed && procedure.completed?)
                 r_qty = procedure.r_quantity
 
-                pricing_map = procedure.direct_service.effective_pricing_map_for_date(appt.completed_at)
-                research_rate = (pricing_map.federal_rate ? pricing_map.federal_rate : pricing_map.full_rate) / 100
+                research_rate = procedure.cost
                 cost = research_rate * r_qty
 
                 csv << [protocol.id, protocol.try(:primary_principal_investigator).try(:full_name), subject.name, subject.label, visit_name, visit_date, procedure.display_service_name, r_qty, research_rate, cost]

@@ -113,19 +113,19 @@ class ServiceRequestsController < ApplicationController
 
       @service_request.sub_service_requests.each do |ssr|
         organization = ssr.organization
+
         if organization.has_editable_statuses?
           self_or_parent_id = ssr.find_editable_id(organization.id)
+
           @locked_org_ids << self_or_parent_id if !EDITABLE_STATUSES[self_or_parent_id].include?(ssr.status)
           @locked_org_ids << organization.all_children(Organization.all).map(&:id)
         end
       end
 
       unless @locked_org_ids.empty?
-        @locked_org_ids = @locked_org_ids.flatten!.uniq!
+        @locked_org_ids = @locked_org_ids.flatten.uniq
       end
     end
-
-    @locked_org_ids
   end
 
   def protocol
@@ -240,11 +240,6 @@ class ServiceRequestsController < ApplicationController
     else
       update_service_request_status(@service_request, 'get_a_cost_estimate')
       @service_request.ensure_ssr_ids
-
-      # As the service request leaves draft, so too do the arms
-      @protocol.arms.each do |arm|
-        arm.update_attributes({new_with_draft: false})
-      end
     end
 
     send_confirmation_notifications
@@ -256,25 +251,28 @@ class ServiceRequestsController < ApplicationController
 
     if @sub_service_request
       @service_request.previous_submitted_at = @service_request.submitted_at
-      @sub_service_request.update_attribute(:status, 'submitted')
-      @sub_service_request.update_attributes(nursing_nutrition_approved: false, lab_approved: false, imaging_approved: false, committee_approved: false)
+      @sub_service_request.update_attributes(status: 'submitted', nursing_nutrition_approved: false, lab_approved: false, imaging_approved: false, committee_approved: false)
+      
+      next_ssr_id = self.protocol.next_ssr_id || 1
+      if not @sub_service_request.ssr_id then
+        @sub_service_request.update_attributes(ssr_id: "%04d" % next_ssr_id)
+        next_ssr_id += 1
+
+        @protocol.update_attributes(next_ssr_id: next_ssr_id)
+      end
     else
       update_service_request_status(@service_request, 'submitted')
       @service_request.ensure_ssr_ids
       @service_request.update_arm_minimum_counts
 
-      # As the service request leaves draft, so too do the arms
-      @protocol.arms.each do |arm|
-        arm.update_attributes({new_with_draft: false})
-        if @protocol.service_requests.map {|x| x.sub_service_requests.map {|y| y.in_work_fulfillment}}.flatten.include?(true)
-          arm.populate_subjects
-        end
-      end
-
       @service_request.sub_service_requests.each do |ssr|
         ssr.update_attributes(nursing_nutrition_approved: false, lab_approved: false, imaging_approved: false, committee_approved: false)
       end
+    end
 
+    should_push_to_epic = @sub_service_request ? @sub_service_request.should_push_to_epic? : @service_request.should_push_to_epic?
+
+    if should_push_to_epic
       # Send a notification to Lane et al to create users in Epic.  Once
       # that has been done, one of them will click a link which calls
       # approve_epic_rights.
@@ -289,7 +287,6 @@ class ServiceRequestsController < ApplicationController
           end
         end
       end
-
     end
 
     send_confirmation_notifications
@@ -300,8 +297,8 @@ class ServiceRequestsController < ApplicationController
     if @service_request.previous_submitted_at.nil?
       send_notifications(@service_request, @sub_service_request)
     elsif @sub_service_request
-      xls = render_to_string action: 'show', formats: [:xlsx]
       if ssr_has_changed?(@service_request, @sub_service_request)
+        xls = render_to_string action: 'show', formats: [:xlsx]
         send_ssr_service_provider_notifications(@service_request, @sub_service_request, xls)
       end
     elsif service_request_has_changed_ssr?(@service_request)
@@ -372,19 +369,22 @@ class ServiceRequestsController < ApplicationController
 
       # create sub_service_requests
       @service_request.reload
+      @service_request.previous_submitted_at = @service_request.submitted_at
+
       @service_request.service_list.each do |org_id, values|
         line_items = values[:line_items]
         ssr = @service_request.sub_service_requests.where(organization_id: org_id.to_i).first_or_create
-        unless @service_request.status.nil? and !ssr.status.nil?
-          status_to_change_to = ['first_draft', 'draft', nil].include?(@service_request.status) ? @service_request.status : 'draft'
-          ssr.update_attribute(:status, status_to_change_to)
-          @service_request.ensure_ssr_ids unless ['first_draft', 'draft'].include?(@service_request.status)
-        end
 
         line_items.each do |li|
           li.update_attribute(:sub_service_request_id, ssr.id)
         end
+
+        if ssr.can_be_edited? && ssr_has_changed?(@service_request, ssr)
+          ssr.update_attribute :status, 'draft'
+        end
       end
+
+      @service_request.ensure_ssr_ids unless ['first_draft', 'draft'].include?(@service_request.status)
     end
   end
 

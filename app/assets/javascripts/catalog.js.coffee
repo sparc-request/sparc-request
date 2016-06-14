@@ -75,11 +75,9 @@ $(document).ready ->
     source: '/search/services'
     minLength: 2
     search: (event, ui) ->
-      $('.catalog-search-clear-icon').remove()
       $("#service_query").after('<img src="/assets/spinner.gif" class="catalog-search-spinner" />')
     open: (event, ui) ->
       $('.catalog-search-spinner').remove()
-      $("#service_query").after('<img src="/assets/clear_icon.png" class="catalog-search-clear-icon" />')
       $('.service-name').qtip
         content: { text: false}
         position:
@@ -121,12 +119,8 @@ $(document).ready ->
     else
       $("<li class='search_result'></li>")
       .data("ui-autocomplete-item", item)
-      .append("#{item.parents}<br><span class='service-name' title='#{item.description}'>#{item.label}<br> #{item.abbreviation} <br> #{item.cpt_code}</span><br><button id='service-#{item.value}' sr_id='#{item.sr_id}' from_portal='#{item.from_portal}' first_service='#{item.first_service}' style='font-size: 11px;' class='add_service'>Add to Cart</button><span class='service-description'>#{item.description}</span>")
+      .append("#{item.parents}<br><span class='service-name' title='#{item.description}'>#{item.label}<br> CPT Code: #{item.cpt_code}<br> Abbreviation: #{item.abbreviation}</span><br><button id='service-#{item.value}' sr_id='#{item.sr_id}' from_portal='#{item.from_portal}' first_service='#{item.first_service}' style='font-size: 11px;' class='add_service'>Add to Cart</button><span class='service-description'>#{item.description}</span>")
       .appendTo(ul)
-  
-  $('.catalog-search-clear-icon').live 'click', ->
-    $("#service_query").autocomplete("close")
-    $("#service_query").clearFields()
 
   $('.submit-request-button').click ->
     signed_in = $(this).data('signed-in')

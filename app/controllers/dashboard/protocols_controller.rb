@@ -96,15 +96,16 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
   def create
     protocol_class = params[:protocol][:type].capitalize.constantize
-    @protocol = protocol_class.create(params[:protocol])
-    @protocol.update_attributes(study_type_question_group_id: StudyTypeQuestionGroup.active_id)
+    @protocol = protocol_class.new(params[:protocol])
+    @protocol.study_type_question_group_id = StudyTypeQuestionGroup.active_id
 
     if @protocol.valid?
-      if @protocol.project_roles.where(identity_id: current_user.id).empty?
+      unless @protocol.project_roles.map(&:identity_id).include? current_user.id
         # if current user is not authorized, add them as an authorized user
         @protocol.project_roles.new(identity_id: current_user.id, role: 'general-access-user', project_rights: 'approve')
-        @protocol.save
       end
+
+      @protocol.save
 
       if USE_EPIC && @protocol.selected_for_epic
         @protocol.ensure_epic_user

@@ -30,8 +30,8 @@
 
   - if organization.type == "Program"
     - unless organization.services.empty?
-      - if @sub_service_request && @program_is_process_ssr
-        - show_program_services = ssr_org == organization
+      - if @sub_service_request && (!@program_is_process_ssr && !organization.parents.include?(ssr_org))
+        - show_program_services = false
 
       - if show_program_services
         .program-services

@@ -22,5 +22,8 @@ $('#welcome_message').html("<%= escape_javascript render 'catalogs/description',
 $('.core-accordion').accordion
   heightStyle: 'content'
   collapsible: true
+  beforeActivate: (event, ui) ->
+    if (url = (ui.newHeader.find('a').attr('href') or ui.oldHeader.find('a').attr('href'))) && url == 'javascript:void(0)'
+      event.peventDefault()
 
 $('#processing_request').hide()

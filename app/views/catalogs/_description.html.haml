@@ -46,8 +46,13 @@
           - if @sub_service_request && !@program_is_process_ssr
             - next unless ssr_org == core
 
-          %h3{class: "#{css_class(organization)} core-tab"}
-            = link_to core.name, "#"
+          - core_locked = @locked_org_ids.present? ? @locked_org_ids.include?(core.id) : false
+
+          %h3{class: "#{css_class(organization)} core-tab #{core_locked ? 'locked' : ''}"}
+            - if core_locked
+              = display_locked_organization(core.name)
+            - else
+              = link_to core.name, "#"
           .core_view
             .provider-description.description.ui-widget.ui-widget-content.ui-corner-all
               = raw core.description

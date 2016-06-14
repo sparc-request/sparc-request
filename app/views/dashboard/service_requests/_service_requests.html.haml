@@ -25,10 +25,16 @@
       = consolidated_request_buttons_display(protocol)
     .clearfix
   .panel-body
-    - if protocol.sub_service_requests.any?
+    -# TODO: Switch historical first_draft SSRs to draft and refactor this.
+    - if protocol.has_non_first_draft_ssrs? && protocol.show_for_admin?(super_user_orgs)
+      -# Only display requests if there are not first draft SSRs
       - protocol.service_requests.each do |sr|
-        - if sr.sub_service_requests.any? && (permission_to_view || !sr.should_be_hidden_for_sp?(sp_only_admin_orgs))
+        - if sr.has_non_first_draft_ssrs? && (permission_to_view || sr.show_for_admin?(super_user_orgs))
           = render 'dashboard/service_requests/protocol_service_request_show', service_request: sr, protocol: protocol, user: user, permission_to_edit: permission_to_edit, view_only: view_only
+    - elsif !permission_to_view
+      -# Non-authorized users should only see the alert message
+      = render 'shared/alert', message: t(:dashboard)[:protocols][:service_requests][:none]
     - else
+      -# Authorized users should see 'Add Services' button
       %button.btn.btn-success.btn-sm#add-services-button{ class: permission_to_edit ? '' : 'disabled', type: 'button', data: { permission: permission_to_edit.to_s, protocol_id: protocol.id, action: 'new request' } }
         = t(:dashboard)[:protocols][:service_requests][:add_services]

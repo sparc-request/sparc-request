@@ -558,8 +558,16 @@ class ServiceRequest < ActiveRecord::Base
     {:line_items => line_item_audits}
   end
 
-  def should_be_hidden_for_sp?(sp_only_admin_orgs)
-    (sub_service_requests.reject { |ssr| ssr.should_be_hidden_for_sp?(sp_only_admin_orgs) }).empty?
+  def show_for_admin?(super_user_orgs)
+    sub_service_requests.each do |ssr|
+      return true if ssr.show_for_admin?(super_user_orgs) # Early return is preferable for performance
+    end
+
+    return false
+  end
+
+  def has_non_first_draft_ssrs?
+    sub_service_requests.where.not(status: 'first_draft').any?
   end
 
   private

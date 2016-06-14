@@ -166,7 +166,7 @@ class Protocol < ActiveRecord::Base
   scope :admin_filter, -> (params) {
     filter, id  = params.split(" ")
     if filter == 'for_admin'
-      return filtered_for_admin(id)
+      return for_admin(id)
     elsif filter == 'for_identity'
       return for_identity_id(id)
     end
@@ -183,20 +183,17 @@ class Protocol < ActiveRecord::Base
     # returns protocols with ssrs in orgs authorized for identity_id
     return nil if identity_id == '0'
 
-    # We want to find all protocols where the user is an Admin AND Authorized User
-    # as they will be filtered out by the SP Only Organizations queries
-    sp_only_admin_orgs        = Organization.authorized_for_identity(identity_id, true)
+    user = Identity.find(identity_id)
 
-    if sp_only_admin_orgs.any?
-      admin_protocols           = for_admin(identity_id)
-      authorized_user_protocols = joins(:project_roles).where(project_roles: { identity_id: identity_id })
-      visible_admin_protocols   = admin_protocols.to_a.reject { |p| p.should_be_hidden_for_sp?(sp_only_admin_orgs) }
-      
-      # TODO: In rails 5, we can do an or-merge to create a single query for this entire process
-      where(id: (authorized_user_protocols | visible_admin_protocols)).distinct
-    else
-      for_admin(identity_id)
+    protocols = for_admin(identity_id).joins(:sub_service_requests).where.not(sub_service_requests: { status: 'first_draft' }).to_a.reject do |protocol|
+      puts "!"*100
+      super_user_orgs = protocol.super_user_orgs_for(user)
+
+      puts "@"*100
+      !protocol.show_for_admin?(super_user_orgs)
     end
+
+    where(id: protocols)
   }
 
   scope :show_archived, -> (boolean) {
@@ -533,11 +530,35 @@ class Protocol < ActiveRecord::Base
     end
   end
 
-  def should_be_hidden_for_sp?(sp_only_admin_orgs)
-    (service_requests.reject { |sr| sr.should_be_hidden_for_sp?(sp_only_admin_orgs) }).empty?
+  def show_for_admin?(super_user_orgs)
+    service_requests.each do |sr|
+      return true if sr.show_for_admin?(super_user_orgs)
+    end
+
+    return false
+  end
+
+  def all_organizations
+    Organization.where(id: orgs_lookup(self.organizations))
+  end
+
+  def super_user_orgs_for(identity)
+    all_organizations.joins(:super_users).where(super_users: { identity: identity })
+  end
+
+  def has_non_first_draft_ssrs?
+    sub_service_requests.where.not(status: 'first_draft').any?
   end
 
   private
+
+  def orgs_lookup(orgs)
+    if orgs.empty?
+      orgs
+    else
+      orgs.merge(orgs_lookup(Organization.where(id: orgs.map(&:parent))))
+    end
+  end
 
   def notify_remote_around_update?
     true

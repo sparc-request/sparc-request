@@ -26,7 +26,6 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   before_filter :find_admin_for_protocol,                         only: [:show, :edit, :update, :update_protocol_type, :display_requests]
   before_filter :protocol_authorizer_view,                        only: [:show, :view_full_calendar, :display_requests]
   before_filter :protocol_authorizer_edit,                        only: [:edit, :update, :update_protocol_type]
-  before_filter :find_service_provider_only_admin_organizations,  only: [:show, :display_requests]
 
   def index
 
@@ -77,6 +76,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
         @permission_to_edit = @authorization.present? ? @authorization.can_edit? : false
         @permission_to_view = @authorization.present? ? @authorization.can_view? : false
         @protocol_type      = @protocol.type.capitalize
+        @super_user_orgs    = @protocol.super_user_orgs_for(@user)
 
         render
       }
@@ -207,9 +207,10 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def display_requests
-    permission_to_edit  = @authorization.present? ? @authorization.can_edit? : false
-    permission_to_view  = @authorization.present? ? @authorization.can_view? : false
-    modal               = render_to_string(partial: 'dashboard/protocols/requests_modal', locals: { protocol: @protocol, user: @user, sp_only_admin_orgs: @sp_only_admin_orgs, permission_to_edit: permission_to_edit, permission_to_view: permission_to_view })
+    permission_to_edit = @authorization.present? ? @authorization.can_edit? : false
+    permission_to_view = @authorization.present? ? @authorization.can_view? : false
+    super_user_orgs    = @protocol.super_user_orgs_for(@user)
+    modal              = render_to_string(partial: 'dashboard/protocols/requests_modal', locals: { protocol: @protocol, user: @user, permission_to_edit: permission_to_edit, permission_to_view: permission_to_view, super_user_orgs: super_user_orgs })
 
     data = { modal: modal }
     render json: data
@@ -225,10 +226,6 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
   def find_protocol
     @protocol = Protocol.find(params[:id])
-  end
-
-  def find_service_provider_only_admin_organizations
-    @sp_only_admin_orgs = @admin ? @user.authorized_admin_organizations({ sp_only: true }) : nil
   end
 
   def conditionally_activate_protocol

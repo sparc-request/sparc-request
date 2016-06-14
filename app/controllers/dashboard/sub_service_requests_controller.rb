@@ -29,16 +29,14 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
     service_request       = ServiceRequest.find(params[:srid])
     protocol              = service_request.protocol
     @admin_orgs           = @user.authorized_admin_organizations
-    @permission_to_edit   = protocol.project_roles.where(identity_id: @user.id, project_rights: ['approve', 'request']).any?
-    permission_to_view    = protocol.project_roles.where(identity_id: @user.id, project_rights: ['view', 'approve', 'request']).any?
-    
-    @sub_service_requests = if permission_to_view
-                              service_request.sub_service_requests
-                            else
-                              sp_only_admin_orgs = @user.authorized_admin_organizations({ sp_only: true })
+    @sub_service_requests = service_request.sub_service_requests.where.not(status: 'first_draft') # TODO: Switch historical first_draft SSRs to draft and refactor this.
+    @permission_to_edit   = protocol.project_roles.where(identity: @user, project_rights: ['approve', 'request']).any?
+    permission_to_view    = protocol.project_roles.where(identity: @user, project_rights: ['view', 'approve', 'request']).any?
 
-                              service_request.sub_service_requests.reject { |ssr| ssr.should_be_hidden_for_sp?(sp_only_admin_orgs) }
-                            end
+    unless permission_to_view
+      super_user_orgs       = protocol.super_user_orgs_for(@user)
+      @sub_service_requests = @sub_service_requests.reject { |ssr| !ssr.show_for_admin?(super_user_orgs) }
+    end
   end
 
   def show

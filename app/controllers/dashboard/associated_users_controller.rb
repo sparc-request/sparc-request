@@ -27,7 +27,6 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
   before_filter :find_admin_for_protocol,                         only: [:index, :new, :create, :edit, :update, :destroy]
   before_filter :protocol_authorizer_view,                        only: [:index]
   before_filter :protocol_authorizer_edit,                        only: [:new, :create, :edit, :update, :destroy]
-  before_filter :find_service_provider_only_admin_organizations,  only: [:create, :update, :destroy]
 
   def index
     @protocol_roles     = @protocol.project_roles
@@ -75,6 +74,7 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
       if @current_user_created = params[:project_role][:identity_id].to_i == @user.id
         @permission_to_edit = creator.protocol_role.can_edit?
         @permission_to_view = creator.protocol_role.can_view?
+        @super_user_orgs    = @protocol.super_user_orgs_for(@user)
       end
 
       flash.now[:success] = 'Authorized User Added!'
@@ -97,6 +97,7 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
         protocol_role       = updater.protocol_role
         @permission_to_edit = protocol_role.can_edit?
         @permission_to_view = protocol_role.can_view?
+        @super_user_orgs    = @protocol.super_user_orgs_for(@user)
 
         #If the user sets themselves to member and they're not an admin, go to dashboard
         @return_to_dashboard = !(@permission_to_view || @admin)
@@ -119,10 +120,11 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
     
     @protocol_role.destroy
     
-    if @current_user_destroyed  = protocol_role_clone.identity_id == @user.id
-      @protocol_type            = @protocol.type
-      @permission_to_edit       = false
-      @permission_to_view       = false
+    if @current_user_destroyed = protocol_role_clone.identity_id == @user.id
+      @protocol_type      = @protocol.type
+      @permission_to_edit = false
+      @permission_to_view = false
+      @super_user_orgs    = @protocol.super_user_orgs_for(@user)
 
       #If the user sets themselves to member and they're not an admin, go to dashboard
       @return_to_dashboard = !@admin
@@ -150,10 +152,6 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
   end
 
 private
-  
-  def find_service_provider_only_admin_organizations
-    @sp_only_admin_orgs = @admin ? @user.authorized_admin_organizations({ sp_only: true }) : nil
-  end
 
   def find_protocol_role
     @protocol_role = ProjectRole.find(params[:id])

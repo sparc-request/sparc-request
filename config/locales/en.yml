@@ -462,6 +462,7 @@ en:
         view_consolidated: "View Consolidated Request"
         export_consolidated: "Export Consolidated Request"
         add_services: "Add Services"
+        none: "No available Service Requests"
 
       view_details:
         header: " Details: #"

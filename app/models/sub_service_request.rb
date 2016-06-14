@@ -493,8 +493,12 @@ class SubServiceRequest < ActiveRecord::Base
   end
   ### end audit reporting methods ###
 
-  def should_be_hidden_for_sp?(sp_only_admin_orgs)
-    ['first_draft', 'draft'].include?(status) && sp_only_admin_orgs.count != 0 && (org_tree & sp_only_admin_orgs).empty?
+  def show_for_admin?(super_user_orgs)
+    if super_user_orgs.any? # Super Users see draft SSRs for their organization(s)
+      status != 'draft' || (org_tree & super_user_orgs).any?
+    else # Service Providers do not see draft SSRs
+      status != 'draft'
+    end
   end
 
   private

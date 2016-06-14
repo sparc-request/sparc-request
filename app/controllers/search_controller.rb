@@ -41,7 +41,9 @@ class SearchController < ApplicationController
         :description  => s.description,
         :sr_id        => session[:service_request_id],
         :from_portal  => session[:from_portal],
-        :first_service => first_service
+        :first_service => first_service,
+        :abbreviation => s.abbreviation,
+        :cpt_code     => s.cpt_code
       }
     }
 

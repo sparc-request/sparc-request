@@ -26,31 +26,82 @@ RSpec.describe Dashboard::ProtocolsController do
       end
 
       context "user authorized to edit Protocol" do
-        before(:each) do
-          @logged_in_user = build_stubbed(:identity)
+        context "protocol has inactive study_type_question_group_id" do
 
-          @protocol = findable_stub(Protocol) do
-            build_stubbed(:protocol, type: "Project")
+          build_study_type_question_groups
+          before(:each) do
+            @logged_in_user = build_stubbed(:identity)
+            @protocol       = findable_stub(Protocol) do
+              build_stubbed(:protocol,
+                type: "Study",
+                study_type_question_group_id: inactive_study_type_question_group.id
+              )
+            end
+
+            allow(@protocol).to receive(:valid?).and_return(true)
+            allow(@protocol).to receive(:populate_for_edit)
+            allow(@protocol).to receive(:update_attribute).and_return(true)
+
+            authorize(@logged_in_user, @protocol, can_edit: true)
+
+            log_in_dashboard_identity(obj: @logged_in_user)
+
+            get :edit, id: @protocol.id
           end
-          allow(@protocol).to receive(:valid?).and_return(true)
-          allow(@protocol).to receive(:populate_for_edit)
 
-          authorize(@logged_in_user, @protocol, can_edit: true)
+          it "should assign @protocol_type to type of Protocol" do
+            expect(assigns(:protocol_type)).to eq("Study")
+          end
 
-          log_in_dashboard_identity(obj: @logged_in_user)
-          get :edit, id: @protocol.id
+          it "should populate Protocol for edit" do
+            expect(@protocol).to have_received(:populate_for_edit)
+          end
+
+          it "should update StudyTypeQuestionGroup id" do
+            expect(@protocol).to have_received(:update_attribute).
+              with(:study_type_question_group_id, active_study_type_question_group.id)
+          end
+          it { is_expected.to respond_with :ok }
+          it { is_expected.to render_template "dashboard/protocols/edit" }
         end
+        context "protocol has active study_type_question_group_id" do
 
-        it "should assign @protocol_type to type of Protocol" do
-          expect(assigns(:protocol_type)).to eq("Project")
+          build_study_type_question_groups
+          before(:each) do
+            @logged_in_user = build_stubbed(:identity)
+            @protocol       = findable_stub(Protocol) do
+              build_stubbed(:protocol,
+                type: "Study",
+                study_type_question_group_id: active_study_type_question_group.id
+              )
+            end
+
+            allow(@protocol).to receive(:valid?).and_return(true)
+            allow(@protocol).to receive(:populate_for_edit)
+            allow(@protocol).to receive(:update_attribute).and_return(true)
+
+            authorize(@logged_in_user, @protocol, can_edit: true)
+
+            log_in_dashboard_identity(obj: @logged_in_user)
+
+            get :edit, id: @protocol.id
+          end
+
+          it "should assign @protocol_type to type of Protocol" do
+            expect(assigns(:protocol_type)).to eq("Study")
+          end
+
+          it "should populate Protocol for edit" do
+            expect(@protocol).to have_received(:populate_for_edit)
+          end
+
+          it "should update StudyTypeQuestionGroup id" do
+            expect(@protocol).to have_received(:update_attribute).
+              with(:study_type_question_group_id, active_study_type_question_group.id)
+          end
+          it { is_expected.to respond_with :ok }
+          it { is_expected.to render_template "dashboard/protocols/edit" }
         end
-
-        it "should populate Protocol for edit" do
-          expect(@protocol).to have_received(:populate_for_edit)
-        end
-
-        it { is_expected.to respond_with :ok }
-        it { is_expected.to render_template "dashboard/protocols/edit" }
       end
     end
 
@@ -74,9 +125,10 @@ RSpec.describe Dashboard::ProtocolsController do
 
     context 'user has Admin access but not a valid project role' do
       context 'user authorized to edit Protocol as Super User' do
+        build_study_type_question_groups
         before :each do
           @logged_in_user = create(:identity)
-          @protocol       = create(:protocol_without_validations, type: 'Project')
+          @protocol       = create(:protocol_without_validations, type: 'Study', study_type_question_group_id: inactive_study_type_question_group.id)
           organization    = create(:organization)
           service_request = create(:service_request_without_validations, protocol: @protocol)
                             create(:sub_service_request_without_validations, organization: organization, service_request: service_request)

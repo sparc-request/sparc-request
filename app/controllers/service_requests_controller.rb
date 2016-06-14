@@ -32,7 +32,6 @@ class ServiceRequestsController < ApplicationController
 
   def show
     @protocol = @service_request.protocol
-    @service_list = @service_request.service_list
     @admin_offset = params[:admin_offset]
 
     # TODO: this gives an error in the spec tests, because they think
@@ -234,63 +233,77 @@ class ServiceRequestsController < ApplicationController
 
   def obtain_research_pricing
     # TODO: refactor into the ServiceRequest model
-    update_service_request_status(@service_request, 'get_a_cost_estimate')
-    @service_request.ensure_ssr_ids
-
     @protocol = @service_request.protocol
-    # As the service request leaves draft, so too do the arms
-    @protocol.arms.each do |arm|
-      arm.update_attributes({new_with_draft: false})
+
+    if @sub_service_request
+      @sub_service_request.update_attribute(:status, 'get_a_cost_estimate')
+    else
+      update_service_request_status(@service_request, 'get_a_cost_estimate')
+      @service_request.ensure_ssr_ids
+
+      # As the service request leaves draft, so too do the arms
+      @protocol.arms.each do |arm|
+        arm.update_attributes({new_with_draft: false})
+      end
     end
-    @service_list = @service_request.service_list
 
     send_confirmation_notifications
-
     render formats: [:html]
   end
 
   def confirmation
-    update_service_request_status(@service_request, 'submitted')
-    @service_request.ensure_ssr_ids
-    @service_request.update_arm_minimum_counts
-
     @protocol = @service_request.protocol
-    # As the service request leaves draft, so too do the arms
-    @protocol.arms.each do |arm|
-      arm.update_attributes({new_with_draft: false})
-      if @protocol.service_requests.map {|x| x.sub_service_requests.map {|y| y.in_work_fulfillment}}.flatten.include?(true)
-        arm.populate_subjects
-      end
-    end
-    @service_list = @service_request.service_list
 
-    @service_request.sub_service_requests.each do |ssr|
-      ssr.update_attributes(nursing_nutrition_approved: false, lab_approved: false, imaging_approved: false, committee_approved: false)
+    if @sub_service_request
+      @service_request.previous_submitted_at = @service_request.submitted_at
+      @sub_service_request.update_attribute(:status, 'submitted')
+      @sub_service_request.update_attributes(nursing_nutrition_approved: false, lab_approved: false, imaging_approved: false, committee_approved: false)
+    else
+      update_service_request_status(@service_request, 'submitted')
+      @service_request.ensure_ssr_ids
+      @service_request.update_arm_minimum_counts
+
+      # As the service request leaves draft, so too do the arms
+      @protocol.arms.each do |arm|
+        arm.update_attributes({new_with_draft: false})
+        if @protocol.service_requests.map {|x| x.sub_service_requests.map {|y| y.in_work_fulfillment}}.flatten.include?(true)
+          arm.populate_subjects
+        end
+      end
+
+      @service_request.sub_service_requests.each do |ssr|
+        ssr.update_attributes(nursing_nutrition_approved: false, lab_approved: false, imaging_approved: false, committee_approved: false)
+      end
+
+      # Send a notification to Lane et al to create users in Epic.  Once
+      # that has been done, one of them will click a link which calls
+      # approve_epic_rights.
+      if USE_EPIC
+        if @protocol.selected_for_epic
+          @protocol.ensure_epic_user
+          if QUEUE_EPIC
+            EpicQueue.create(protocol_id: @protocol.id) unless EpicQueue.where(protocol_id: @protocol.id).size == 1
+          else
+            @protocol.awaiting_approval_for_epic_push
+            send_epic_notification_for_user_approval(@protocol)
+          end
+        end
+      end
+
     end
 
     send_confirmation_notifications
-
-    # Send a notification to Lane et al to create users in Epic.  Once
-    # that has been done, one of them will click a link which calls
-    # approve_epic_rights.
-    if USE_EPIC
-      if @protocol.selected_for_epic
-        @protocol.ensure_epic_user
-        if QUEUE_EPIC
-          EpicQueue.create(protocol_id: @protocol.id) unless EpicQueue.where(protocol_id: @protocol.id).size == 1
-        else
-          @protocol.awaiting_approval_for_epic_push
-          send_epic_notification_for_user_approval(@protocol)
-        end
-      end
-    end
-
     render formats: [:html]
   end
 
   def send_confirmation_notifications
     if @service_request.previous_submitted_at.nil?
       send_notifications(@service_request, @sub_service_request)
+    elsif @sub_service_request
+      xls = render_to_string action: 'show', formats: [:xlsx]
+      if ssr_has_changed?(@service_request, @sub_service_request)
+        send_ssr_service_provider_notifications(@service_request, @sub_service_request, xls)
+      end
     elsif service_request_has_changed_ssr?(@service_request)
       xls = render_to_string action: 'show', formats: [:xlsx]
       @service_request.sub_service_requests.each do |ssr|
@@ -313,8 +326,10 @@ class ServiceRequestsController < ApplicationController
   end
 
   def save_and_exit
-    unless @sub_service_request # if we are editing a sub service request just redirect
-      @service_request.update_status('draft', false)
+    if @sub_service_request #if editing a sub service request, update status
+      @sub_service_request.update_attribute(:status, 'draft')
+    else
+      update_service_request_status(@service_request, 'draft')
       @service_request.ensure_ssr_ids
     end
 

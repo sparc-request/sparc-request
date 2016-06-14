@@ -13,8 +13,7 @@ RSpec.describe 'dashboard/protocols/index', type: :view do
       with_status: [],
       search_query: '',
       show_archived: 0,
-      for_identity_id: jug2.id,
-      filtered_for_admin: false,
+      admin_filter: "for_identity #{jug2.id}",
       with_organization: false
     ))
   end
@@ -59,12 +58,12 @@ RSpec.describe 'dashboard/protocols/index', type: :view do
         render
       end
 
-      it 'should not show "My Protocols" checkbox' do
+      it 'should not show "My Protocols" radio' do
         expect(response).not_to have_content('My Protocols')
       end
 
-      it 'should not show "My Admin Organizations" select' do
-        expect(response).not_to have_content('My Admin Organizations')
+      it 'should not show "My Admin Protocols" radio' do
+        expect(response).not_to have_content('My Admin Protocols')
       end
 
       it 'should show "Organization" select' do
@@ -80,12 +79,12 @@ RSpec.describe 'dashboard/protocols/index', type: :view do
         render
       end
 
-      it 'should show "My Protocols" checkbox' do
-        expect(response).to have_field('My Protocols')
+      it 'should show "My Protocols" radio' do
+        expect(response).to have_selector('label', text: 'My Protocols')
       end
 
-      it 'should show "My Admin Organizations" checkbox' do
-        expect(response).to have_field('My Admin Organizations')
+      it 'should show "My Admin Protocols" radio' do
+        expect(response).to have_selector('label', text: 'My Admin Protocols')
       end
     end
   end

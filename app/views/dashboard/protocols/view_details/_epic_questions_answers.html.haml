@@ -1,0 +1,6 @@
+%tr
+  %td
+    %label.col-lg-10
+      = answer.study_type_question.question
+    .col-lg-2
+      = answer.answer ? t(:constants)[:yes_select] : t(:constants)[:no_select]

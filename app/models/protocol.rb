@@ -129,8 +129,7 @@ class Protocol < ActiveRecord::Base
     default_filter_params: { show_archived: 0 },
     available_filters: [
       :search_query,
-      :for_identity_id,
-      :filtered_for_admin,
+      :admin_filter,
       :show_archived,
       :with_status,
       :with_organization
@@ -164,6 +163,15 @@ class Protocol < ActiveRecord::Base
       where.not(project_roles: { project_rights: 'none' })
   }
 
+  scope :admin_filter, -> (params) {
+    filter, id  = params.split(" ")
+    if filter == 'for_admin'
+      return filtered_for_admin(id)
+    elsif filter == 'for_identity'
+      return for_identity_id(id)
+    end
+  }
+
   scope :for_admin, -> (identity_id) {
     # returns protocols with ssrs in orgs authorized for identity_id
     return nil if identity_id == '0'
@@ -181,9 +189,10 @@ class Protocol < ActiveRecord::Base
 
     if sp_only_admin_orgs.any?
       admin_protocols           = for_admin(identity_id)
-      authorized_user_protocols = joins(:project_roles).where(project_roles: { identity_id: identity_id }) & admin_protocols
+      authorized_user_protocols = joins(:project_roles).where(project_roles: { identity_id: identity_id })
       visible_admin_protocols   = admin_protocols.to_a.reject { |p| p.should_be_hidden_for_sp?(sp_only_admin_orgs) }
       
+      # TODO: In rails 5, we can do an or-merge to create a single query for this entire process
       where(id: (authorized_user_protocols | visible_admin_protocols)).distinct
     else
       for_admin(identity_id)

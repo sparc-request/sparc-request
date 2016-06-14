@@ -47,11 +47,12 @@ RSpec.describe 'dashboard/protocols/requests_modal', type: :view do
     )
   end
 
-  context 'Service Request with all \'draft\' SSRs for Service Provider' do
+  context 'Service Request with all \'draft\' or \'first_draft\'' do
     it 'should render if the user is an Authorized User' do
       protocol        = create(:unarchived_study_without_validations, primary_pi: jug2)
       service_request = create(:service_request_without_validations, protocol: protocol)
                         create(:sub_service_request_without_validations, service_request: service_request, organization: create(:organization), status: 'draft')
+                        create(:sub_service_request_without_validations, service_request: service_request, organization: create(:organization), status: 'first_draft')
 
       render_requests_modal(protocol)
 
@@ -71,6 +72,7 @@ RSpec.describe 'dashboard/protocols/requests_modal', type: :view do
       organization    = create(:organization)
                         create(:super_user, identity: jug2, organization: organization)
                         create(:sub_service_request_without_validations, service_request: service_request, organization: organization, status: 'draft')
+                        create(:sub_service_request_without_validations, service_request: service_request, organization: organization, status: 'first_draft')
 
       render_requests_modal(protocol)
 
@@ -84,16 +86,17 @@ RSpec.describe 'dashboard/protocols/requests_modal', type: :view do
       )
     end
 
-    it 'should not render for Service Providers' do
+    it 'should render for Service Providers' do
       protocol        = create(:unarchived_study_without_validations, primary_pi: create(:identity))
       service_request = create(:service_request_without_validations, protocol: protocol)
       organization    = create(:organization)
                         create(:service_provider, identity: jug2, organization: organization)
                         create(:sub_service_request_without_validations, service_request: service_request, organization: organization, status: 'draft')
+                        create(:sub_service_request_without_validations, service_request: service_request, organization: organization, status: 'first_draft')
 
       render_requests_modal(protocol, [organization])
 
-      expect(response).not_to render_template(partial: 'dashboard/service_requests/protocol_service_request_show',
+      expect(response).to render_template(partial: 'dashboard/service_requests/protocol_service_request_show',
         locals: {
           service_request: service_request,
           user: jug2,
@@ -102,22 +105,28 @@ RSpec.describe 'dashboard/protocols/requests_modal', type: :view do
         }
       )
     end
-  end
 
-  context 'Service Request with all \'draft\' SSRs for Service Provider' do
-    it 'should render if the user is an Authorized User' do
-      organization    = create(:organization)
-                        create(:service_provider, organization: organization, identity: jug2)
+    it 'should not render for Service Providers not in that Service Request' do
       protocol        = create(:unarchived_study_without_validations, primary_pi: create(:identity))
       service_request = create(:service_request_without_validations, protocol: protocol)
+      organization    = create(:organization)
+                        create(:service_provider, identity: jug2, organization: organization)
+                        create(:sub_service_request_without_validations, service_request: service_request, organization: organization, status: 'draft')
+      hidden_request  = create(:service_request_without_validations, protocol: protocol)
+      hidden_org      = create(:organization)
+                        create(:sub_service_request_without_validations, service_request: hidden_request, organization: hidden_org, status: 'draft')
+                        create(:sub_service_request_without_validations, service_request: hidden_request, organization: hidden_org, status: 'first_draft')
 
+      render_requests_modal(protocol, [organization])
+
+      expect(response).not_to render_template(partial: 'dashboard/service_requests/protocol_service_request_show',
+        locals: {
+          service_request: hidden_request,
+          user: jug2,
+          permission_to_edit: false,
+          view_only: true
+        }
+      )
     end
-
-    it 'should not render if the user is not an Authorized User' do
-    end
-  end
-
-  it 'should render Service Request with all \'draft\' SSRs for Super Users' do
-
   end
 end

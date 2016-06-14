@@ -301,7 +301,7 @@ class ServiceRequest < ActiveRecord::Base
   end
 
   def create_line_item(args)
-    quantity = args.delete(:quantity) || 1
+    quantity = args.delete('quantity') || args.delete(:quantity) || 1
     if line_item = self.line_items.create(args)
 
       if line_item.service.one_time_fee
@@ -487,6 +487,7 @@ class ServiceRequest < ActiveRecord::Base
     self.assign_attributes(status: new_status)
 
     self.sub_service_requests.each do |ssr|
+      next unless ssr.can_be_edited?
       ssr.update_attribute(:status, new_status)
     end
 

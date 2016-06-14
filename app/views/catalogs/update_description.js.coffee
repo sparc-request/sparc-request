@@ -24,6 +24,6 @@ $('.core-accordion').accordion
   collapsible: true
   beforeActivate: (event, ui) ->
     if (url = (ui.newHeader.find('a').attr('href') or ui.oldHeader.find('a').attr('href'))) && url == 'javascript:void(0)'
-      event.peventDefault()
+      event.preventDefault()
 
 $('#processing_request').hide()

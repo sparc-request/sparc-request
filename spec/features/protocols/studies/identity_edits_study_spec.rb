@@ -97,6 +97,15 @@ RSpec.describe "User wants to edit a Study", js: true do
         then_i_should_see_the_authorized_users_page
       end
 
+      scenario 'and fills in a user name' do
+        given_i_am_viewing_the_authorized_users_page
+        fill_autocomplete('user_search_term', with: 'bjk7')
+        page.find('a', text: "Brian Kelsey (kelsey@musc.edu)", visible: true).click()
+        wait_for_javascript_to_finish
+        expect(page).to have_content("Brian Kelsey")
+        expect(page).to have_content("kelsey@musc.edu")
+      end
+
       scenario 'and sees the go back button' do
         given_i_am_viewing_the_protocol_information_page
         when_i_submit_the_form
@@ -129,6 +138,11 @@ RSpec.describe "User wants to edit a Study", js: true do
         then_i_should_see_the_appropriate_fields_displayed
       end
     end
+  end
+
+  def given_i_am_viewing_the_authorized_users_page
+    given_i_am_viewing_the_protocol_information_page
+    when_i_submit_the_form
   end
 
   def given_i_am_viewing_the_service_request_protocol_page

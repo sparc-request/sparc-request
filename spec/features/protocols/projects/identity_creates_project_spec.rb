@@ -100,6 +100,14 @@ RSpec.feature 'User wants to create a Project', js: true do
         wait_for_javascript_to_finish
         expect(page).to have_link 'Edit Project'
       end
+
+      scenario 'and fills in a user name' do
+        fill_autocomplete('user_search_term', with: 'bjk7')
+        page.find('a', text: "Brian Kelsey (kelsey@musc.edu)", visible: true).click()
+        wait_for_javascript_to_finish
+        expect(page).to have_content("Brian Kelsey")
+        expect(page).to have_content("kelsey@musc.edu")
+      end
     end
   end
 end

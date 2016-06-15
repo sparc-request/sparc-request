@@ -166,7 +166,7 @@ class Protocol < ActiveRecord::Base
   scope :admin_filter, -> (params) {
     filter, id  = params.split(" ")
     if filter == 'for_admin'
-      return for_admin(id)
+      return filtered_for_admin(id)
     elsif filter == 'for_identity'
       return for_identity_id(id)
     end
@@ -183,16 +183,24 @@ class Protocol < ActiveRecord::Base
     # returns protocols with ssrs in orgs authorized for identity_id
     return nil if identity_id == '0'
 
+    start = Time.now
+
     user = Identity.find(identity_id)
 
     protocols = for_admin(identity_id).joins(:sub_service_requests).where.not(sub_service_requests: { status: 'first_draft' }).to_a.reject do |protocol|
-      puts "!"*100
-      super_user_orgs = protocol.super_user_orgs_for(user)
+      if protocol.project_roles.where(identity_id: 23135).where.not(project_rights: 'none').any?
+        false
+      else
+        super_user_orgs = protocol.super_user_orgs_for(user)
 
-      puts "@"*100
-      !protocol.show_for_admin?(super_user_orgs)
+        !protocol.show_for_admin?(super_user_orgs)
+      end
     end
 
+    stop = Time.now
+    puts "!"*50
+    puts stop - start
+    puts "!"*50
     where(id: protocols)
   }
 
@@ -539,7 +547,7 @@ class Protocol < ActiveRecord::Base
   end
 
   def all_organizations
-    Organization.where(id: orgs_lookup(self.organizations))
+    Organization.where(id: (organizations | orgs_lookup(organizations.map(&:parent_id).uniq.compact)))
   end
 
   def super_user_orgs_for(identity)
@@ -552,11 +560,13 @@ class Protocol < ActiveRecord::Base
 
   private
 
-  def orgs_lookup(orgs)
-    if orgs.empty?
-      orgs
+  def orgs_lookup(org_ids)
+    if org_ids.empty?
+      Organization.none
     else
-      orgs.merge(orgs_lookup(Organization.where(id: orgs.map(&:parent))))
+      orgs       = Organization.where(id: org_ids)
+      parent_ids = orgs.map(&:parent_id).uniq.compact
+      orgs | ((parent_ids - orgs.map(&:id)).empty? ? [] : orgs_lookup(orgs.map(&:parent_id).uniq.compact))
     end
   end
 

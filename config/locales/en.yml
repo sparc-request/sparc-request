@@ -312,7 +312,7 @@ en:
       destroyed: "Fulfillment Destroyed!"
       table:
         date: "Fulfillment Date"
-        time_unit: "Qty Unit"
+        time_unit: "Qty Type"
         time: "Quantity"
         actions: "Actions"
       actions:
@@ -322,7 +322,7 @@ en:
       form:
         date: "Fulfillment Date:"
         time: "Quantity:"
-        time_unit: "Qty Unit:"
+        time_unit: "Qty Type:"
 
     ################
     #  LINE ITEMS  #

@@ -166,42 +166,21 @@ class Protocol < ActiveRecord::Base
   scope :admin_filter, -> (params) {
     filter, id  = params.split(" ")
     if filter == 'for_admin'
-      return filtered_for_admin(id)
+      for_admin(id)
     elsif filter == 'for_identity'
-      return for_identity_id(id)
+      for_identity_id(id)
     end
   }
 
   scope :for_admin, -> (identity_id) {
     # returns protocols with ssrs in orgs authorized for identity_id
     return nil if identity_id == '0'
+
     joins(:organizations).
-      merge( Organization.authorized_for_identity(identity_id) ).distinct
-  }
-
-  scope :filtered_for_admin, -> (identity_id) {
-    # returns protocols with ssrs in orgs authorized for identity_id
-    return nil if identity_id == '0'
-
-    start = Time.now
-
-    user = Identity.find(identity_id)
-
-    protocols = for_admin(identity_id).joins(:sub_service_requests).where.not(sub_service_requests: { status: 'first_draft' }).to_a.reject do |protocol|
-      if protocol.project_roles.where(identity_id: 23135).where.not(project_rights: 'none').any?
-        false
-      else
-        super_user_orgs = protocol.super_user_orgs_for(user)
-
-        !protocol.show_for_admin?(super_user_orgs)
-      end
-    end
-
-    stop = Time.now
-    puts "!"*50
-    puts stop - start
-    puts "!"*50
-    where(id: protocols)
+      merge(Organization.authorized_for_identity(identity_id)).
+    joins(:sub_service_requests).
+      merge(SubServiceRequest.where.not(status: 'first_draft')).
+    distinct
   }
 
   scope :show_archived, -> (boolean) {

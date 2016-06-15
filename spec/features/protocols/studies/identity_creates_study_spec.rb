@@ -44,7 +44,6 @@ RSpec.feature "User wants to create a Study", js: true do
     find('#study_selected_for_epic_false').click()
   end
 
-  #TODO: Add Authorized Users Specs
   context 'and clicks the New Study button' do
     scenario 'and sees the cancel button' do
       expect(page).to have_link 'Cancel'
@@ -136,12 +135,29 @@ RSpec.feature "User wants to create a Study", js: true do
         expect(page).to have_link 'Save & Continue'
       end
 
-      scenario 'and fills in a user name' do
-        when_i_search_for_the_user_name
-        page.find('a', text: "Brian Kelsey (kelsey@musc.edu)", visible: true).click()
-        wait_for_javascript_to_finish
-        expect(page).to have_content("Brian Kelsey")
-        expect(page).to have_content("kelsey@musc.edu")
+      context 'and looks for an additional user' do
+        before :each do
+          select 'Primary PI', from: 'project_role_role'
+          click_button 'Add Authorized User'
+          wait_for_javascript_to_finish
+          fill_autocomplete('user_search_term', with: 'bjk7')
+          wait_for_javascript_to_finish
+          page.find('a', text: "Brian Kelsey (kelsey@musc.edu)", visible: true).click()
+          select 'PD/PI', from: 'project_role_role'
+        end
+
+        scenario 'and sees the user information' do
+          expect(page).to have_content "Brian Kelsey"
+          expect(page).to have_content "kelsey@musc.edu"
+        end
+
+        scenario 'and adds the authorized user' do
+          click_button 'Add Authorized User'
+          wait_for_javascript_to_finish
+          expect(page).not_to have_content('kelsey@musc.edu')
+          click_link 'Save & Continue'
+          expect(page).to have_link 'Edit Study'
+        end
       end
     end
   end

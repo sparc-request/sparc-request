@@ -40,8 +40,6 @@ RSpec.feature 'User wants to create a Project', js: true do
     click_link 'New Project'
     wait_for_javascript_to_finish
   end
-
-  #TODO: Add Authorized Users Specs
   context 'clicks the New Project button' do
     scenario 'and sees the Protocol Information form' do
       page.find '#new_project'
@@ -101,13 +99,31 @@ RSpec.feature 'User wants to create a Project', js: true do
         expect(page).to have_link 'Edit Project'
       end
 
-      scenario 'and fills in a user name' do
-        fill_autocomplete('user_search_term', with: 'bjk7')
-        page.find('a', text: "Brian Kelsey (kelsey@musc.edu)", visible: true).click()
-        wait_for_javascript_to_finish
-        expect(page).to have_content("Brian Kelsey")
-        expect(page).to have_content("kelsey@musc.edu")
+      context 'and looks for an additional user' do
+        before :each do
+          select 'Primary PI', from: 'project_role_role'
+          click_button 'Add Authorized User'
+          wait_for_javascript_to_finish
+          fill_autocomplete('user_search_term', with: 'bjk7')
+          wait_for_javascript_to_finish
+          page.find('a', text: "Brian Kelsey (kelsey@musc.edu)", visible: true).click()
+          select 'PD/PI', from: 'project_role_role'
+        end
+
+        scenario 'and sees the user information' do
+          expect(page).to have_content "Brian Kelsey"
+          expect(page).to have_content "kelsey@musc.edu"
+        end
+
+        scenario 'and adds the authorized user' do
+          click_button 'Add Authorized User'
+          wait_for_javascript_to_finish
+          expect(page).not_to have_content('kelsey@musc.edu')
+          click_link 'Save & Continue'
+          expect(page).to have_link 'Edit Project'
+        end
       end
     end
   end
+
 end

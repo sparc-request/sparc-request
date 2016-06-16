@@ -98,11 +98,16 @@ $(document).ready ->
     original_pi_contribution = parseFloat($("#pi_contribution").data("pi-contribution")) / 100 
     total_request_cost = parseFloat($(".request_cost[data-subsidy-id='#{subsidy_id}']").data("cost")) / 100.0
     pi_contribution = recalculate_pi_contribution(total_request_cost, percent_subsidy)
+    original_subsidy = recalculate_percent_subsidy(total_request_cost, original_pi_contribution)
 
     if (percent_subsidy * 100) > parseFloat(max_percent)
-      original_subsidy = recalculate_percent_subsidy(total_request_cost, original_pi_contribution)
+      message = "The Percent Subsidy cannot be greater than the max percent of #{max_percent}."
       current_cost = recalculate_current_cost(total_request_cost, original_subsidy)
-      display_error_and_reset(subsidy_id, original_subsidy, original_pi_contribution, current_cost, max_percent)
+      display_error_and_reset(subsidy_id, original_subsidy, original_pi_contribution, current_cost, max_percent, message)
+    else if recalculate_current_cost(total_request_cost, percent_subsidy) > max_dollar_cap
+      message = "The Subsidy Cost cannot be greater than the max dollar cap of #{max_dollar_cap}."
+      current_cost = recalculate_current_cost(total_request_cost, original_subsidy)
+      display_error_and_reset(subsidy_id, original_subsidy, original_pi_contribution, current_cost, max_percent, message)
     else
 
       if isNaN(percent_subsidy)
@@ -150,3 +155,5 @@ $(document).ready ->
         Ok: ->
           $(this).dialog('close')
     redisplay_form_values(subsidy_id, percent, pi_contribution, current_cost)
+
+  validate_subsidy = () ->

@@ -35,7 +35,6 @@ RSpec.describe "subsidy page", js: true do
       subsidy_map = create(:subsidy_map, organization_id: program.id, max_dollar_cap: (sub_service_request.direct_cost_total / 100), max_percentage: 50.00)
       program.update_attribute(:subsidy_map, subsidy_map)
       @direct_cost = (sub_service_request.direct_cost_total / 100.00)
-      @dollar_cap = subsidy_map.max_dollar_cap
       visit service_subsidy_service_request_path service_request.id
     end
 

@@ -409,7 +409,11 @@ class ServiceRequestsController < ApplicationController
       end
     end
 
-    @line_items.find_by_service_id(service.id).destroy
+    @line_items.where(service_id: service.id).each do |li|
+      li.sub_service_request.update_attribute :status, 'draft' if li.sub_service_request.can_be_edited?
+      li.destroy
+    end
+
     @line_items.reload
 
     #@service_request = current_user.service_requests.find session[:service_request_id]
@@ -421,12 +425,6 @@ class ServiceRequestsController < ApplicationController
 
     # clean up sub_service_requests
     @service_request.reload
-
-    @service_request.sub_service_requests.each do |ssr|
-      if ssr.can_be_edited? && ssr_has_changed?(@service_request, ssr)
-        ssr.update_attribute :status, 'draft'
-      end
-    end
 
     to_delete = @service_request.sub_service_requests.map(&:organization_id) - @service_request.service_list.keys
     to_delete.each do |org_id|

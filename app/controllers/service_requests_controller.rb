@@ -376,7 +376,6 @@ class ServiceRequestsController < ApplicationController
       @service_request.previous_submitted_at = @service_request.submitted_at
 
       @new_line_items.each do |li|
-        li.reload
         ssr = @service_request.sub_service_requests.where(organization_id: li.service.process_ssrs_organization.id).first_or_create
         li.update_attribute(:sub_service_request_id, ssr.id)
 

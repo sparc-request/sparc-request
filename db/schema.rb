@@ -381,7 +381,6 @@ ActiveRecord::Schema.define(version: 20160608151717) do
 
   add_index "identities", ["approved"], name: "index_identities_on_approved", using: :btree
   add_index "identities", ["email"], name: "index_identities_on_email", using: :btree
-  add_index "identities", ["first_name", "last_name"], name: "full_name", type: :fulltext
   add_index "identities", ["last_name"], name: "index_identities_on_last_name", using: :btree
   add_index "identities", ["ldap_uid"], name: "index_identities_on_ldap_uid", unique: true, using: :btree
   add_index "identities", ["reset_password_token"], name: "index_identities_on_reset_password_token", unique: true, using: :btree
@@ -1113,10 +1112,6 @@ ActiveRecord::Schema.define(version: 20160608151717) do
 
   add_index "tokens", ["identity_id"], name: "index_tokens_on_identity_id", using: :btree
   add_index "tokens", ["service_request_id"], name: "index_tokens_on_service_request_id", using: :btree
-
-  create_table "user_notifications", force: :cascade do |t|
-    t.integer "identity_id", limit: 4
-  end
 
   create_table "validation_conditions", force: :cascade do |t|
     t.integer  "validation_id",  limit: 4

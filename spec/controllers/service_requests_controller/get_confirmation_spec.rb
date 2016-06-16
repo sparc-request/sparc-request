@@ -20,26 +20,6 @@ RSpec.describe ServiceRequestsController do
         expect(assigns(:service_request).status).to eq 'submitted'
       end
 
-      it "should set service_list to the ServiceRequest's service_list" do
-        xhr :get, :confirmation, id: service_request.id
-        expect(assigns(:service_list)).to eq(service_request.service_list)
-      end
-
-      it "should move all associated Arms out of draft status" do
-        service_request.arms.each { |arm| arm.update_attributes(new_with_draft: true) }
-        xhr :get, :confirmation, id: service_request.id
-        expect(service_request.reload.arms).to all(satisfy { |a| !a.new_with_draft })
-      end
-
-      context "with SubServiceRequest marked in_work_fulfillment" do
-
-        it "should populate all the associated Arms with participants" do
-          service_request.sub_service_requests.first.update_attributes(in_work_fulfillment: true)
-          xhr :get, :confirmation, id: service_request.id
-          expect(service_request.reload.arms).to all(satisfy { |a| a.subject_count == a.subjects.count })
-        end
-      end
-
       it "should set overridden to true for all associated Subsidies" do
         service_request.subsidies.each do |s|
           s.update_attributes(overridden: true)

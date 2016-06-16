@@ -235,35 +235,38 @@ class ServiceRequestsController < ApplicationController
   def obtain_research_pricing
     # TODO: refactor into the ServiceRequest model
     @protocol = @service_request.protocol
+    @service_request.previous_submitted_at = @service_request.submitted_at
+
+    to_notify = []
 
     if @sub_service_request
+      if @sub_service_request.status != 'get_a_cost_estimate'
+        to_notify << @sub_service_request.id
+      end
+
       @sub_service_request.update_attribute(:status, 'get_a_cost_estimate')
     else
-      update_service_request_status(@service_request, 'get_a_cost_estimate')
-      @service_request.ensure_ssr_ids
+      to_notify = update_service_request_status(@service_request, 'get_a_cost_estimate')
     end
 
-    send_confirmation_notifications
+    send_confirmation_notifications to_notify
     render formats: [:html]
   end
 
   def confirmation
     @protocol = @service_request.protocol
+    @service_request.previous_submitted_at = @service_request.submitted_at
+
+    to_notify = []
 
     if @sub_service_request
-      @service_request.previous_submitted_at = @service_request.submitted_at
-      @sub_service_request.update_attributes(status: 'submitted', nursing_nutrition_approved: false, lab_approved: false, imaging_approved: false, committee_approved: false)
-      
-      next_ssr_id = self.protocol.next_ssr_id || 1
-      if not @sub_service_request.ssr_id then
-        @sub_service_request.update_attributes(ssr_id: "%04d" % next_ssr_id)
-        next_ssr_id += 1
-
-        @protocol.update_attributes(next_ssr_id: next_ssr_id)
+      if @sub_service_request.status != 'submitted'
+        to_notify << @sub_service_request.id
       end
+
+      @sub_service_request.update_attributes(status: 'submitted', nursing_nutrition_approved: false, lab_approved: false, imaging_approved: false, committee_approved: false)
     else
-      update_service_request_status(@service_request, 'submitted')
-      @service_request.ensure_ssr_ids
+      to_notify = update_service_request_status(@service_request, 'submitted')
       @service_request.update_arm_minimum_counts
 
       @service_request.sub_service_requests.each do |ssr|
@@ -290,22 +293,22 @@ class ServiceRequestsController < ApplicationController
       end
     end
 
-    send_confirmation_notifications
+    send_confirmation_notifications to_notify
     render formats: [:html]
   end
 
-  def send_confirmation_notifications
+  def send_confirmation_notifications to_notify
     if @service_request.previous_submitted_at.nil?
       send_notifications(@service_request, @sub_service_request)
     elsif @sub_service_request
-      if ssr_has_changed?(@service_request, @sub_service_request)
+      if to_notify.include? @sub_service_request.id
         xls = render_to_string action: 'show', formats: [:xlsx]
         send_ssr_service_provider_notifications(@service_request, @sub_service_request, xls)
       end
-    elsif service_request_has_changed_ssr?(@service_request)
+    else
       xls = render_to_string action: 'show', formats: [:xlsx]
       @service_request.sub_service_requests.each do |ssr|
-        if ssr_has_changed?(@service_request, ssr)
+        if to_notify.include? ssr.id
           send_ssr_service_provider_notifications(@service_request, ssr, xls)
         end
       end
@@ -387,7 +390,7 @@ class ServiceRequestsController < ApplicationController
         end
       end
 
-      @service_request.ensure_ssr_ids unless ['first_draft', 'draft'].include?(@service_request.status)
+      @service_request.ensure_ssr_ids if @service_request.status != 'first_draft'
     end
   end
 
@@ -418,6 +421,12 @@ class ServiceRequestsController < ApplicationController
 
     # clean up sub_service_requests
     @service_request.reload
+
+    @service_request.sub_service_requests.each do |ssr|
+      if ssr.can_be_edited? && ssr_has_changed?(@service_request, ssr)
+        ssr.update_attribute :status, 'draft'
+      end
+    end
 
     to_delete = @service_request.sub_service_requests.map(&:organization_id) - @service_request.service_list.keys
     to_delete.each do |org_id|
@@ -641,13 +650,11 @@ class ServiceRequestsController < ApplicationController
   end
 
   def update_service_request_status(service_request, status)
-    unless service_request.submitted_at?
-      service_request.update_status(status)
-      if (status == 'submitted')
-        service_request.previous_submitted_at = @service_request.submitted_at
-        service_request.update_attribute(:submitted_at, Time.now)
-      end
+    if (status == 'submitted')
+      service_request.previous_submitted_at = @service_request.submitted_at
+      service_request.update_attribute(:submitted_at, Time.now)
     end
+    service_request.update_status(status)
   end
 
   def authorize_protocol_edit_request

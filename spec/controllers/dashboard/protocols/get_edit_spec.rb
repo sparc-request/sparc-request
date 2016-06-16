@@ -57,9 +57,8 @@ RSpec.describe Dashboard::ProtocolsController do
             expect(@protocol).to have_received(:populate_for_edit)
           end
 
-          it "should update StudyTypeQuestionGroup id" do
-            expect(@protocol).to have_received(:update_attribute).
-              with(:study_type_question_group_id, active_study_type_question_group.id)
+          it "should set StudyTypeQuestionGroup id to activate" do
+            expect(@protocol.study_type_question_group_id).to eq(active_study_type_question_group.id)
           end
           it { is_expected.to respond_with :ok }
           it { is_expected.to render_template "dashboard/protocols/edit" }
@@ -95,9 +94,8 @@ RSpec.describe Dashboard::ProtocolsController do
             expect(@protocol).to have_received(:populate_for_edit)
           end
 
-          it "should update StudyTypeQuestionGroup id" do
-            expect(@protocol).to have_received(:update_attribute).
-              with(:study_type_question_group_id, active_study_type_question_group.id)
+          it "should set StudyTypeQuestionGroup id to active" do
+            expect(@protocol.study_type_question_group_id).to eq(active_study_type_question_group.id)
           end
           it { is_expected.to respond_with :ok }
           it { is_expected.to render_template "dashboard/protocols/edit" }

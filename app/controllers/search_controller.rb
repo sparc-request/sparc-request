@@ -32,6 +32,10 @@ class SearchController < ApplicationController
 
     service_request = ServiceRequest.find(session[:service_request_id])
     first_service = service_request.line_items.count == 0
+
+    #exclude services from "locked organizations"
+    locked_orgs = service_request.sub_service_requests.reject{ |ssr| ssr.can_be_edited? }.map(&:organization)
+    results = results.reject{ |s| (s.parents & locked_orgs).any? }
     
     results = results.map { |s|
       {

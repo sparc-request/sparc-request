@@ -116,9 +116,10 @@ class ServiceRequestsController < ApplicationController
 
         if organization.has_editable_statuses?
           self_or_parent_id = ssr.find_editable_id(organization.id)
-
-          @locked_org_ids << self_or_parent_id if !EDITABLE_STATUSES[self_or_parent_id].include?(ssr.status)
-          @locked_org_ids << organization.all_children(Organization.all).map(&:id)
+          if !EDITABLE_STATUSES[self_or_parent_id].include?(ssr.status)
+            @locked_org_ids << self_or_parent_id
+            @locked_org_ids << organization.all_children(Organization.all).map(&:id)
+          end
         end
       end
 
@@ -379,7 +380,9 @@ class ServiceRequestsController < ApplicationController
           li.update_attribute(:sub_service_request_id, ssr.id)
         end
 
-        if ssr.can_be_edited? && ssr_has_changed?(@service_request, ssr)
+        if @service_request.status == 'first_draft'
+          ssr.update_attribute :status, 'first_draft'
+        elsif ssr.status.nil? || (ssr.can_be_edited? && ssr_has_changed?(@service_request, ssr))
           ssr.update_attribute :status, 'draft'
         end
       end

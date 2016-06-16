@@ -41,6 +41,10 @@ RSpec.describe ServiceRequestsController do
       service
     end
 
+    before do
+      session[:identity_id] = jug2.id
+    end
+
     it 'should accept params[:service_id] prefixed with "service-"' do
       post :add_service, { id: service_request.id, service_id: "service-#{new_service.id}", format: :js }
       expect(response.status).to eq 200

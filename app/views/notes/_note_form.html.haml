@@ -28,7 +28,5 @@
       %td
         =text_area_tag("new_note_text", nil, rows: 10, cols: 50)
       %td
-        %a.blue-button#save_request_note{data: {notable_id: service_request.id, notable_type: "ServiceRequest"}}
+        %a.blue-button.button-hover#save_request_note{data: {notable_id: service_request.id, notable_type: "ServiceRequest"}}
           = "Save Note"
-      
-

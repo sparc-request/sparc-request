@@ -37,7 +37,7 @@ module ServiceCalendarHelper
     else
       content_tag(:a,
         (content_tag(:span, '', class: 'ui-button-icon-primary ui-icon ui-icon-locked') + content_tag(:span, 'Check All', :class => 'ui-button-text')),
-        class: 'ui-button ui-widget ui-state-error ui-corner-all ui-button-icon-only',
+        class: 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only',
         role: 'button'
       )
     end

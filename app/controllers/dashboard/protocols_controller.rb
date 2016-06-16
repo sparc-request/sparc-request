@@ -70,10 +70,6 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def show
-    if @protocol.selected_for_epic && @protocol.active? && @protocol.nil_active_study_type_answers?
-      @protocol.update_attribute(:study_type_question_group_id, StudyTypeQuestionGroup.inactive_id)
-    end
-
     respond_to do |format|
       format.js   { render }
       format.html {
@@ -127,7 +123,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     @permission_to_edit = @authorization.nil? ? false : @authorization.can_edit?
 
     if @permission_to_edit
-      @protocol.activate
+      @protocol.study_type_question_group_id = StudyTypeQuestionGroup.active_id
     end
 
     @protocol.populate_for_edit

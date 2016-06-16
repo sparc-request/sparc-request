@@ -492,16 +492,6 @@ class Protocol < ActiveRecord::Base
     end
   end
 
-  def nil_active_study_type_answers?
-    active_study_type_answers = []
-    study_type_answers.each do |study_type_answer|
-      if study_type_answer.study_type_question.study_type_question_group_id == StudyTypeQuestionGroup.active_id
-        active_study_type_answers << study_type_answer.answer
-      end
-    end
-    active_study_type_answers.compact.empty?
-  end
-
   def direct_cost_total service_request
     total = 0
     self.service_requests.each do |sr|

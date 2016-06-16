@@ -58,19 +58,59 @@ module ApplicationHelper
     params[:controller] + '/' + params[:action]
   end
 
-  def line_item_visit_input arm, line_item, visit, tab, totals_hash={}, unit_minimum=0, portal=nil
+  def line_item_visit_input(arm, line_item, visit, tab, totals_hash={}, unit_minimum=0, portal=nil, locked=false)
     base_url = "/service_requests/#{line_item.service_request_id}/service_calendars?visit=#{visit.id}"
     case tab
     when 'template'
-      check_box_tag "visits_#{visit.id}", 1, (visit.research_billing_qty.to_i > 0 or visit.insurance_billing_qty.to_i > 0 or visit.effort_billing_qty.to_i > 0), class: "line_item_visit_template visits_#{visit.id}", :'data-arm_id' => arm.id, update: "#{base_url}&tab=template&portal=#{portal}"
+      if locked
+        ""
+      else
+        content_tag(:div,
+          check_box_tag("visits_#{visit.id}", 1, (visit.research_billing_qty.to_i > 0 or visit.insurance_billing_qty.to_i > 0 or visit.effort_billing_qty.to_i > 0), class: "line_item_visit_template visits_#{visit.id}", :'data-arm_id' => arm.id, update: "#{base_url}&tab=template&portal=#{portal}", disabled: locked),
+          class: 'full-centered'
+        )
+      end
     when 'quantity'
-      content_tag(:div, (visit.research_billing_qty.to_i + visit.insurance_billing_qty.to_i + visit.effort_billing_qty.to_i), {style: 'text-align:center', class: "line_item_visit_quantity"})
+      content_tag(:div, (visit.research_billing_qty.to_i + visit.insurance_billing_qty.to_i + visit.effort_billing_qty.to_i), {class: "line_item_visit_quantity full-centered"})
     when 'billing_strategy'
       returning_html = ""
-      returning_html += text_field_tag "visits_#{visit.id}_research_billing_qty", visit.research_billing_qty, current_quantity: visit.research_billing_qty, previous_quantity: visit.research_billing_qty, :"data-unit-minimum" => unit_minimum, :'data-arm_id' => arm.id, class: "line_item_visit_research_billing_qty line_item_visit_billing visits_#{visit.id}", update: "#{base_url}&tab=billing_strategy&column=research_billing_qty&portal=#{portal}"
-      returning_html += text_field_tag "visits_#{visit.id}_insurance_billing_qty", visit.insurance_billing_qty, current_quantity: visit.insurance_billing_qty, previous_quantity: visit.insurance_billing_qty, :"data-unit-minimum" => unit_minimum, :'data-arm_id' => arm.id, class: "line_item_visit_billing visits_#{visit.id}", update: "#{base_url}&tab=billing_strategy&column=insurance_billing_qty&portal=#{portal}"
-      returning_html += text_field_tag "visits_#{visit.id}_effort_billing_qty", visit.effort_billing_qty, current_quantity: visit.effort_billing_qty, previous_quantity: visit.effort_billing_qty, :"data-unit-minimum" => unit_minimum, :'data-arm_id' => arm.id, class: "line_item_visit_billing visits_#{visit.id}", update: "#{base_url}&tab=billing_strategy&column=effort_billing_qty&portal=#{portal}"
-      raw(returning_html)
+      if locked
+        raw(
+          content_tag(:span, visit.research_billing_qty, class: 'locked-billing-type')+
+          content_tag(:span, visit.insurance_billing_qty, class: 'locked-billing-type')+
+          content_tag(:span, visit.effort_billing_qty, class: 'locked-billing-type')
+        )
+      else
+        raw(
+          text_field_tag("visits_#{visit.id}_research_billing_qty",
+            visit.research_billing_qty,
+            current_quantity: visit.research_billing_qty,
+            previous_quantity: visit.research_billing_qty,
+            data: { unit_minimum: unit_minimum, arm_id: arm.id },
+            class: "line_item_visit_research_billing_qty line_item_visit_billing visits_#{visit.id}",
+            update: "#{base_url}&tab=billing_strategy&column=research_billing_qty&portal=#{portal}",
+            disabled: locked
+          )+
+          text_field_tag("visits_#{visit.id}_insurance_billing_qty",
+            visit.insurance_billing_qty,
+            current_quantity: visit.insurance_billing_qty,
+            previous_quantity: visit.insurance_billing_qty,
+            data: { unit_minimum: unit_minimum, arm_id: arm.id },
+            class: "line_item_visit_billing visits_#{visit.id}",
+            update: "#{base_url}&tab=billing_strategy&column=insurance_billing_qty&portal=#{portal}",
+            disabled: locked
+          )+
+          text_field_tag("visits_#{visit.id}_effort_billing_qty",
+            visit.effort_billing_qty,
+            current_quantity: visit.effort_billing_qty,
+            previous_quantity: visit.effort_billing_qty,
+            data: { unit_minimum: unit_minimum, arm_id: arm.id },
+            class: "line_item_visit_billing visits_#{visit.id}",
+            update: "#{base_url}&tab=billing_strategy&column=effort_billing_qty&portal=#{portal}",
+            disabled: locked
+          )
+        )
+      end
     when 'calendar'
       label_tag nil, qty_cost_label(visit.research_billing_qty + visit.insurance_billing_qty, currency_converter(totals_hash["#{visit.id}"])), class: "line_item_visit_pricing"
     end
@@ -131,9 +171,10 @@ module ApplicationHelper
         if sub_service_request
           filtered_line_items_visits = line_items_visits.select{|x| x.line_item.sub_service_request_id == sub_service_request.id }
         else
-          filtered_line_items_visits = line_items_visits.select{|x| x.line_item.service_request_id == service_request.id }
+          filtered_line_items_visits = line_items_visits.select{|x| x.line_item.service_request_id == service_request.id }.reject { |liv| !liv.line_item.sub_service_request.can_be_edited? }
         end
-        checked = filtered_line_items_visits.each.map{|l| l.visits[n.to_i-1].research_billing_qty >= 1 ? true : false}.all?
+
+        checked = filtered_line_items_visits.each.map{|liv| liv.visits[n.to_i-1].research_billing_qty >= 1}.all?
         action = checked == true ? 'unselect_calendar_column' : 'select_calendar_column'
         icon = checked == true ? 'ui-icon-close' : 'ui-icon-check'
         returning_html += content_tag(:th,

@@ -280,7 +280,7 @@ class ServiceCalendarsController < ApplicationController
       next unless @sub_service_request.nil? or @sub_service_request.organization.name == value[:process_ssr_organization_name]
 
       @arm.line_items_visits.each do |liv|
-        next unless value[:line_items].include?(liv.line_item)
+        next if !value[:line_items].include?(liv.line_item) || !liv.line_item.sub_service_request.can_be_edited?
         visit = liv.visits[column_id - 1] # columns start with 1 but visits array positions start at 0
         visit.update_attributes(
           quantity:              liv.line_item.service.displayed_pricing_map.unit_minimum,
@@ -302,7 +302,7 @@ class ServiceCalendarsController < ApplicationController
       next unless @sub_service_request.nil? || @sub_service_request.organization.name == value[:process_ssr_organization_name]
 
       @arm.line_items_visits.each do |liv|
-        next unless value[:line_items].include?(liv.line_item)
+        next if !value[:line_items].include?(liv.line_item) || !liv.line_item.sub_service_request.can_be_edited?
         visit = liv.visits[column_id - 1] # columns start with 1 but visits array positions start at 0
         visit.update_attributes quantity: 0, research_billing_qty: 0, insurance_billing_qty: 0, effort_billing_qty: 0
       end

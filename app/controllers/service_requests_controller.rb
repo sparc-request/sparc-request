@@ -375,13 +375,9 @@ class ServiceRequestsController < ApplicationController
       @service_request.reload
       @service_request.previous_submitted_at = @service_request.submitted_at
 
-      @service_request.service_list.each do |org_id, values|
-        line_items = values[:line_items]
-        ssr = @service_request.sub_service_requests.where(organization_id: org_id.to_i).first_or_create
-
-        line_items.each do |li|
-          li.update_attribute(:sub_service_request_id, ssr.id)
-        end
+      @new_line_items.each do |li|
+        ssr = @service_request.sub_service_requests.where(organization_id: li.service.process_ssrs_organization.id).first_or_create
+        li.update_attribute(:sub_service_request_id, ssr.id)
 
         if @service_request.status == 'first_draft'
           ssr.update_attribute :status, 'first_draft'
@@ -410,7 +406,8 @@ class ServiceRequestsController < ApplicationController
     end
 
     @line_items.where(service_id: service.id).each do |li|
-      li.sub_service_request.update_attribute :status, 'draft' if li.sub_service_request.can_be_edited?
+      ssr = li.sub_service_request
+      ssr.update_attribute :status, 'draft' if ssr.can_be_edited? && ssr.status != 'first_draft'
       li.destroy
     end
 

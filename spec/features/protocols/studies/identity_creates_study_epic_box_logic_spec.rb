@@ -7,6 +7,7 @@ RSpec.describe "Identity creates Study", js: true do
   build_service_request_with_study
 
   before :each do
+    program.update_attribute(:process_ssrs, true)
     service_request.update_attribute(:status, 'first_draft')
     visit protocol_service_request_path service_request.id
     visit '/'

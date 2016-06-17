@@ -71,14 +71,16 @@ class Service < ActiveRecord::Base
 
   validate :validate_pricing_maps_present
 
-  alias :process_ssrs_organization :organization
-
   ###############################################
   # Validations
   def validate_pricing_maps_present
     errors.add(:service, "must contain at least 1 pricing map.") if pricing_maps.length < 1
   end
   ###############################################
+
+  def process_ssrs_organization
+    organization.process_ssrs_parent
+  end
 
   # Return the parent organizations of the service.  Note that this
   # returns the organizations in the reverse order of

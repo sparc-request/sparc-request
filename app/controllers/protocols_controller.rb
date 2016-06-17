@@ -71,6 +71,7 @@ class ProtocolsController < ApplicationController
         @service_request.sub_service_requests.each do |ssr|
           ssr.update_attribute(:status, 'draft')
         end
+        @service_request.ensure_ssr_ids
       end
 
       @current_step = 'return_to_service_request'

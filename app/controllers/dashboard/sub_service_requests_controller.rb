@@ -29,14 +29,9 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
     service_request       = ServiceRequest.find(params[:srid])
     protocol              = service_request.protocol
     @admin_orgs           = @user.authorized_admin_organizations
-    @sub_service_requests = service_request.sub_service_requests.where.not(status: 'first_draft') # TODO: Switch historical first_draft SSRs to draft and refactor this.
+    @sub_service_requests = service_request.sub_service_requests.where.not(status: 'first_draft') # TODO: Remove Historical first_draft SSRs and remove this
     @permission_to_edit   = protocol.project_roles.where(identity: @user, project_rights: ['approve', 'request']).any?
     permission_to_view    = protocol.project_roles.where(identity: @user, project_rights: ['view', 'approve', 'request']).any?
-
-    unless permission_to_view
-      super_user_orgs       = protocol.super_user_orgs_for(@user)
-      @sub_service_requests = @sub_service_requests.reject { |ssr| !ssr.show_for_admin?(super_user_orgs) }
-    end
   end
 
   def show

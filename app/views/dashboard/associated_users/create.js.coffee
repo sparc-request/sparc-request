@@ -22,7 +22,7 @@
 $("#modal_errors").html("<%= escape_javascript(render(partial: 'shared/modal_errors', locals: {errors: @errors})) %>")
 <% else %>
 <% if @current_user_created && @permission_to_edit %>
-$("#service-requests-panel").html("<%= escape_javascript(render('dashboard/service_requests/service_requests', protocol: @protocol, super_user_orgs: @super_user_orgs, permission_to_edit: @permission_to_edit, permission_to_view: @permission_to_view, user: @user, view_only: false)) %>")
+$("#service-requests-panel").html("<%= escape_javascript(render('dashboard/service_requests/service_requests', protocol: @protocol, super_user_orgs: @super_user_orgs, permission_to_edit: @permission_to_edit, user: @user, view_only: false)) %>")
 $('.service-requests-table').on 'all.bs.table', ->
   $(this).find('.selectpicker').selectpicker() #Find descendant selectpickers
 $(".service-requests-table").bootstrapTable()

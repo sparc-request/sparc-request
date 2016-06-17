@@ -497,14 +497,6 @@ class SubServiceRequest < ActiveRecord::Base
   end
   ### end audit reporting methods ###
 
-  def show_for_admin?(super_user_orgs)
-    if super_user_orgs.any? # Super Users see draft SSRs for their organization(s)
-      status != 'draft' || (org_tree & super_user_orgs).any?
-    else # Service Providers do not see draft SSRs
-      status != 'draft'
-    end
-  end
-
   private
 
   def notify_remote_around_update?

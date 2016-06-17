@@ -74,9 +74,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
       format.html {
         session[:breadcrumbs].clear.add_crumbs(protocol_id: @protocol.id)
         @permission_to_edit = @authorization.present? ? @authorization.can_edit? : false
-        @permission_to_view = @authorization.present? ? @authorization.can_view? : false
         @protocol_type      = @protocol.type.capitalize
-        @super_user_orgs    = @protocol.super_user_orgs_for(@user)
 
         render
       }
@@ -214,9 +212,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
   def display_requests
     permission_to_edit = @authorization.present? ? @authorization.can_edit? : false
-    permission_to_view = @authorization.present? ? @authorization.can_view? : false
-    super_user_orgs    = @protocol.super_user_orgs_for(@user)
-    modal              = render_to_string(partial: 'dashboard/protocols/requests_modal', locals: { protocol: @protocol, user: @user, permission_to_edit: permission_to_edit, permission_to_view: permission_to_view, super_user_orgs: super_user_orgs })
+    modal              = render_to_string(partial: 'dashboard/protocols/requests_modal', locals: { protocol: @protocol, user: @user, permission_to_edit: permission_to_edit })
 
     data = { modal: modal }
     render json: data

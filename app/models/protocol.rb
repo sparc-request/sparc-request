@@ -525,29 +525,11 @@ class Protocol < ActiveRecord::Base
     return false
   end
 
-  def all_organizations
-    Organization.where(id: (organizations | orgs_lookup(organizations.map(&:parent_id).uniq.compact)))
-  end
-
-  def super_user_orgs_for(identity)
-    all_organizations.joins(:super_users).where(super_users: { identity: identity })
-  end
-
   def has_non_first_draft_ssrs?
     sub_service_requests.where.not(status: 'first_draft').any?
   end
 
   private
-
-  def orgs_lookup(org_ids)
-    if org_ids.empty?
-      Organization.none
-    else
-      orgs       = Organization.where(id: org_ids)
-      parent_ids = orgs.map(&:parent_id).uniq.compact
-      orgs | ((parent_ids - orgs.map(&:id)).empty? ? [] : orgs_lookup(orgs.map(&:parent_id).uniq.compact))
-    end
-  end
 
   def notify_remote_around_update?
     true

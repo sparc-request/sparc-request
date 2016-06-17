@@ -26,15 +26,11 @@
       %h4.modal-title.text-center
         = protocol.short_title
     .modal-body
-      -# TODO: Switch historical first_draft SSRs to draft and refactor this.
-      - if protocol.has_non_first_draft_ssrs? && protocol.show_for_admin?(super_user_orgs)
-        -# Only display requests if there are not first draft SSRs
+      - # TODO: Remove Historical first_draft SSRs and remove this
+      - if protocol.has_non_first_draft_ssrs?
         - protocol.service_requests.each do |sr|
-          - if sr.has_non_first_draft_ssrs? && (permission_to_view || sr.show_for_admin?(super_user_orgs))
+          - if sr.has_non_first_draft_ssrs?
             = render 'dashboard/service_requests/protocol_service_request_show', service_request: sr, user: user, permission_to_edit: permission_to_edit, view_only: true
-      - else
-        -# Non-authorized users should only see the alert message
-        = render 'shared/alert', message: t(:dashboard)[:protocols][:service_requests][:none]
     .modal-footer
       .center-block
         %button.btn.btn-default{type: 'button', data: {dismiss: 'modal'}} 

@@ -81,7 +81,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
         render
       }
       format.xlsx {
-        response.headers['Content-Disposition'] = "attachment; filename='(#{@protocol.id}) Consolidated Corporate Study Budget.xlsx'"
+        response.headers['Content-Disposition'] = "attachment; filename=\"(#{@protocol.id}) Consolidated Corporate Study Budget.xlsx\""
       }
     end
   end

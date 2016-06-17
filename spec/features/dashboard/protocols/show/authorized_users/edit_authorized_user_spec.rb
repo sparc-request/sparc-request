@@ -146,7 +146,7 @@ RSpec.feature 'User wants to edit an authorized user', js: true do
         before :each do
           organization    = create(:organization)
           service_request = create(:service_request_without_validations, protocol: protocol)
-                            create(:sub_service_request_without_validations, service_request: service_request, organization: organization)
+                            create(:sub_service_request_without_validations, service_request: service_request, organization: organization, status: 'draft')
                             create(:super_user, organization: organization, identity: logged_in_user)
 
           # navigate to page

@@ -110,7 +110,8 @@ $(document).ready ->
       $('.catalog-search-spinner').remove()
       $('.catalog-search-clear-icon').remove()
 
-  .data("uiAutocomplete")._renderItem = (ul, item) ->    label = item.label
+  .data("uiAutocomplete")._renderItem = (ul, item) ->    
+    label = item.label
     unless item.label is 'No Results'
       label = "#{item.parents}<br>
               <span class='service-name' title='#{item.description}'>

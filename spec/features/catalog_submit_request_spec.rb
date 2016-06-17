@@ -29,7 +29,7 @@ RSpec.describe 'as a user on catalog page' do
   end
 
   let!(:institution)  {create(:institution, id: 53, name: 'Medical University of South Carolina', order: 1,abbreviation: 'MUSC', is_available: 1)}
-  let!(:provider) {create(:provider, id: 10, name: 'South Carolina Clinical and Translational Institute (SCTR)', order: 1, css_class: 'blue-provider', parent_id: institution.id, abbreviation: 'SCTR1', process_ssrs: 0, is_available: 1)}
+  let!(:provider) {create(:provider, id: 10, name: 'South Carolina Clinical and Translational Institute (SCTR)', order: 1, css_class: 'blue-provider', parent_id: institution.id, abbreviation: 'SCTR1', process_ssrs: 1, is_available: 1)}
 
   let!(:program) {create(:program_with_pricing_setup, name: 'Office of Biomedical Informatics', order: 1, parent_id: provider.id, abbreviation:'Informatics')}
   let!(:program2) {create(:program_with_pricing_setup, name:'Clinical and Translational Research Center (CTRC)', order: 2, parent_id: provider.id, abbreviation:'Informatics')}

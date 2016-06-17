@@ -31,7 +31,6 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
     @admin_orgs           = @user.authorized_admin_organizations
     @sub_service_requests = service_request.sub_service_requests.where.not(status: 'first_draft') # TODO: Remove Historical first_draft SSRs and remove this
     @permission_to_edit   = protocol.project_roles.where(identity: @user, project_rights: ['approve', 'request']).any?
-    permission_to_view    = protocol.project_roles.where(identity: @user, project_rights: ['view', 'approve', 'request']).any?
   end
 
   def show

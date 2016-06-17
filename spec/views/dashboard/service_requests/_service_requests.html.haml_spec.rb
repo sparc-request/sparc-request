@@ -3,13 +3,11 @@ require 'rails_helper'
 RSpec.describe 'dashboard/service_requests/service_requests', type: :view do
   let_there_be_lane
 
-  def render_service_requests(protocol, permission_to_edit=false, sp_only_admin_orgs=[])
+  def render_service_requests(protocol, permission_to_edit=false)
     render 'dashboard/service_requests/service_requests',
       protocol: protocol,
       user: jug2,
       permission_to_edit: permission_to_edit,
-      permission_to_view: false,
-      sp_only_admin_orgs: sp_only_admin_orgs,
       view_only: false
   end
 

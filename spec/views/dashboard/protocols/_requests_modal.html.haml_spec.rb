@@ -4,13 +4,11 @@ require 'rails_helper'
 RSpec.describe 'dashboard/protocols/requests_modal', type: :view do
   let_there_be_lane
 
-  def render_requests_modal(protocol, sp_only_admin_orgs=[])
+  def render_requests_modal(protocol)
     render 'dashboard/protocols/requests_modal',
       protocol: protocol,
       user: jug2,
       permission_to_edit: false,
-      permission_to_view: false,
-      sp_only_admin_orgs: sp_only_admin_orgs,
       view_only: true
   end
 

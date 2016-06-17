@@ -517,14 +517,6 @@ class Protocol < ActiveRecord::Base
     end
   end
 
-  def show_for_admin?(super_user_orgs)
-    service_requests.each do |sr|
-      return true if sr.show_for_admin?(super_user_orgs)
-    end
-
-    return false
-  end
-
   def has_non_first_draft_ssrs?
     sub_service_requests.where.not(status: 'first_draft').any?
   end

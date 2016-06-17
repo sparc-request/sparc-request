@@ -484,14 +484,28 @@ class ServiceRequest < ActiveRecord::Base
   # Change the status of the service request and all the sub service
   # requests to the given status.
   def update_status(new_status, use_validation=true)
+    to_notify = []
+
     self.assign_attributes(status: new_status)
 
     self.sub_service_requests.each do |ssr|
       next unless ssr.can_be_edited?
-      ssr.update_attribute(:status, new_status)
+
+      available = AVAILABLE_STATUSES.keys
+      editable = EDITABLE_STATUSES[ssr.organization_id] || available
+
+      changeable = available & editable
+
+      if changeable.include? new_status
+        if ssr.status != new_status
+          ssr.update_attribute(:status, new_status)
+          to_notify << ssr.id
+        end
+      end
     end
 
     self.save(validate: use_validation)
+    to_notify
   end
 
   # Make sure that all the sub service requests have an ssr id

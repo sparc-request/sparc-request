@@ -59,20 +59,7 @@ RSpec.describe ServiceRequestsController do
         expect(service_request.reload.previous_submitted_at).to eq previous_submitted_at
       end
 
-      it 'should increment next_ssr_id' do
-        service_request.protocol.update_attribute(:next_ssr_id, 42)
-        service_request.sub_service_requests.each { |ssr| ssr.destroy }
-        ssr = create(:sub_service_request,
-                     service_request_id: service_request.id,
-                     organization_id: core.id)
-
-        xhr :get, :confirmation, id: service_request.id
-        service_request.protocol.reload
-        expect(service_request.protocol.next_ssr_id).to eq 43
-      end
-
-      it 'should should set status and ssr_id on all the sub service request' do
-        service_request.protocol.update_attribute(:next_ssr_id, 42)
+      it 'should should set status on all the sub service request' do
         service_request.sub_service_requests.each { |ssr| ssr.destroy }
 
         ssr1 = create(:sub_service_request,
@@ -91,23 +78,6 @@ RSpec.describe ServiceRequestsController do
 
         expect(ssr1.status).to eq 'submitted'
         expect(ssr2.status).to eq 'submitted'
-
-        expect(ssr1.ssr_id).to eq '0042'
-        expect(ssr2.ssr_id).to eq '0043'
-      end
-
-      it 'should set ssr_id correctly when next_ssr_id > 9999' do
-        service_request.protocol.update_attribute(:next_ssr_id, 10042)
-        service_request.sub_service_requests.each { |ssr| ssr.destroy }
-        ssr1 = create(:sub_service_request,
-                      service_request_id: service_request.id,
-                      ssr_id: nil,
-                      organization_id: core.id)
-
-        xhr :get, :confirmation, id: service_request.id
-
-        ssr1.reload
-        expect(ssr1.ssr_id).to eq '10042'
       end
 
       it 'should send an email if services are set to send to epic' do

@@ -27,6 +27,7 @@ RSpec.feature "User wants to create a Study", js: true do
   build_service_request_with_study
 
   before :each do
+    program.update_attribute(:process_ssrs, true)
     service_request.update_attribute(:status, 'first_draft')
     study.update_attributes(study_type_question_group_id: StudyTypeQuestionGroup.where(active:true).pluck(:id).first)
     visit '/'

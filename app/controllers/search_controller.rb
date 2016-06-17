@@ -43,7 +43,8 @@ class SearchController < ApplicationController
         :from_portal  => session[:from_portal],
         :first_service => first_service,
         :abbreviation => s.abbreviation,
-        :cpt_code     => s.cpt_code
+        :cpt_code     => s.cpt_code,
+        :is_available => s.is_available
       }
     }
 

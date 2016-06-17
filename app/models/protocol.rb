@@ -176,11 +176,10 @@ class Protocol < ActiveRecord::Base
     # returns protocols with ssrs in orgs authorized for identity_id
     return nil if identity_id == '0'
 
-    joins(:organizations).
-      merge(Organization.authorized_for_identity(identity_id)).
+    ssrs = SubServiceRequest.where.not(status: 'first_draft').where(organization_id: Organization.authorized_for_identity(identity_id))
+
     joins(:sub_service_requests).
-      merge(SubServiceRequest.where.not(status: 'first_draft')).
-    distinct
+      merge(ssrs).distinct
   }
 
   scope :show_archived, -> (boolean) {

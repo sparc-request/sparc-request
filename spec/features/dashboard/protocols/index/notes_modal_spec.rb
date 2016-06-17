@@ -16,7 +16,7 @@ RSpec.describe 'requests modal', js: true do
 
   let!(:protocol) { create(:unarchived_study_without_validations, primary_pi: user) }
   let!(:sr) { create(:service_request_without_validations, protocol: protocol, service_requester: user) }
-  let!(:ssr) { create(:sub_service_request, service_request: sr, organization: create(:organization)) }
+  let!(:ssr) { create(:sub_service_request, service_request: sr, organization: create(:organization), status: 'draft') }
 
   def index_page
     page = Dashboard::Protocols::IndexPage.new

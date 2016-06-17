@@ -497,10 +497,6 @@ class SubServiceRequest < ActiveRecord::Base
   end
   ### end audit reporting methods ###
 
-  def should_be_hidden_for_sp?(sp_only_admin_orgs)
-    ['first_draft', 'draft'].include?(status) && sp_only_admin_orgs.count != 0 && (org_tree & sp_only_admin_orgs).empty?
-  end
-
   private
 
   def notify_remote_around_update?

@@ -73,7 +73,6 @@ module ApplicationHelper
     when 'quantity'
       content_tag(:div, (visit.research_billing_qty.to_i + visit.insurance_billing_qty.to_i + visit.effort_billing_qty.to_i), {class: "line_item_visit_quantity full-centered"})
     when 'billing_strategy'
-      returning_html = ""
       if locked
         raw(
           content_tag(:span, visit.research_billing_qty, class: 'locked-billing-type')+

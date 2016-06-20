@@ -33,13 +33,12 @@ task :add_eap_id => :environment do
 
   def format_revenue_code(code)
     if code.size < 4
-      return "0" * (4 - code.size) + code
+      code = ("0" * (4 - code.size) + code)
     end
 
     code
   end
 
-  
   revenue_codes = []
   cpt_codes = []
   service_names = []
@@ -61,12 +60,12 @@ task :add_eap_id => :environment do
         service.eap_id = row['eap_id'].to_i
         unless service.revenue_code == formatted_revenue_code
           revenue_codes << [service.id, service.revenue_code]
-          service.revenue_code = row['revenue_code']    
+          service.revenue_code = formatted_revenue_code    
         end
 
         unless service.cpt_code == row['cpt_code']
           cpt_codes << [service.id, service.cpt_code]
-          service.cpt_code = row['cpt_code']   
+          service.cpt_code = row['cpt_code'] == 'NULL' ? nil : row['cpt_code']     
         end
 
         unless service.name == row['name']

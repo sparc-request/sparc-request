@@ -41,7 +41,9 @@ class Organization < ActiveRecord::Base
   has_many :identities, :through => :catalog_managers
   has_many :services, :dependent => :destroy
   has_many :sub_service_requests, :dependent => :destroy
+  has_many :protocols, through: :sub_service_requests 
   has_many :available_statuses, :dependent => :destroy
+  has_many :org_children, class_name: "Organization", foreign_key: :parent_id
 
   attr_accessible :name
   attr_accessible :order
@@ -57,12 +59,20 @@ class Organization < ActiveRecord::Base
   attr_accessible :submission_emails_attributes
   attr_accessible :available_statuses_attributes
   attr_accessible :tag_list
-  attr_accessible :show_in_cwf
 
   accepts_nested_attributes_for :subsidy_map
   accepts_nested_attributes_for :pricing_setups
   accepts_nested_attributes_for :submission_emails
   accepts_nested_attributes_for :available_statuses, :allow_destroy => true
+
+  # TODO: In rails 5, the .or operator will be added for ActiveRecord queries. We should try to 
+  #       condense this to a single query at that point
+  scope :authorized_for_identity, -> (identity_id) {
+    orgs = includes(:super_users, :service_providers).where("super_users.identity_id = ? or service_providers.identity_id = ?", identity_id, identity_id).references(:super_users, :service_providers).uniq(:organizations)
+    where(id: orgs + Organization.authorized_child_organizations(orgs.map(&:id))).distinct
+  }
+
+  scope :in_cwf, -> { joins(:tags).where(tags: { name: 'clinical work fulfillment' }) }
 
   def label
     abbreviation || name
@@ -111,7 +121,7 @@ class Organization < ActiveRecord::Base
     end
   end
 
-  # If an organization or one of it's parents is defined as lockable in the application.yml, return true 
+  # If an organization or one of it's parents is defined as lockable in the application.yml, return true
   def has_editable_statuses?
     EDITABLE_STATUSES.keys.each do |org_id|
       if parents(true).include?(org_id) || (org_id == id)
@@ -133,6 +143,24 @@ class Organization < ActiveRecord::Base
     end
 
     children
+  end
+
+  def all_child_organizations
+    [
+      org_children,
+      org_children.map(&:all_child_organizations)
+    ].flatten
+  end
+
+  def child_orgs_with_protocols
+    organizations = all_child_organizations
+    organizations_with_protocols = []
+    organizations.flatten.uniq.each do |organization|
+      if organization.protocols.any?
+        organizations_with_protocols << organization
+      end
+    end
+    organizations_with_protocols.flatten.uniq
   end
 
   # Returns an array of all children (and children of children) of this organization (deep search).
@@ -351,7 +379,15 @@ class Organization < ActiveRecord::Base
     end
   end
 
-  def self.get_cwf_organizations
-    Organization.where(show_in_cwf: true)
+  private
+
+  def self.authorized_child_organizations(org_ids)
+    org_ids = org_ids.flatten.compact
+    if org_ids.empty?
+      []
+    else
+      orgs = Organization.where(parent_id: org_ids)
+      orgs | authorized_child_organizations(orgs.pluck(:id))
+    end
   end
 end

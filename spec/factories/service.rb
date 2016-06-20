@@ -29,10 +29,14 @@ FactoryGirl.define do
     charge_code         { Faker::Lorem.words().first }
     revenue_code        { Faker::Lorem.words().first }
 
-     trait :without_callback_notify_remote_service_after_create do
-       before(:create) { |service| service.class.skip_callback(:create, :after, :notify_remote_service_after_create) }
-     #  after(:create) { Service.set_callback(:create, :after, :notify_remote_service_after_create) }
-     end
+    trait :without_validations do
+      to_create { |instance| instance.save(validate: false) }
+    end
+
+    trait :without_callback_notify_remote_service_after_create do
+      before(:create) { |service| service.class.skip_callback(:create, :after, :notify_remote_service_after_create) }
+      #  after(:create) { Service.set_callback(:create, :after, :notify_remote_service_after_create) }
+    end
 
     trait :with_ctrc_organization do
       organization factory: :organization_ctrc
@@ -58,6 +62,10 @@ FactoryGirl.define do
 
     trait :one_time_fee do
       one_time_fee true
+    end
+
+    trait :per_patient_per_visit do
+      one_time_fee false
     end
 
     transient do
@@ -112,5 +120,7 @@ FactoryGirl.define do
     factory :service_with_process_ssrs_organization, traits: [:with_process_ssrs_organization]
     factory :service_with_pricing_map, traits: [:with_pricing_map, :with_process_ssrs_organization]
     factory :service_without_callback_notify_remote_service_after_create, traits: [:without_callback_notify_remote_service_after_create]
+    factory :one_time_fee_service, traits: [:one_time_fee]
+    factory :per_patient_per_visit_service, traits: [:per_patient_per_visit]
   end
 end

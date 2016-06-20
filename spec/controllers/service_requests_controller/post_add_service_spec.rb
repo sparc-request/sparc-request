@@ -9,9 +9,12 @@ RSpec.describe ServiceRequestsController do
     let_there_be_lane
     let_there_be_j
     build_service_request_with_study
-    build_one_time_fee_services
-    build_per_patient_per_visit_services
-    let!(:core2) { create(:core, parent_id: program.id) }
+
+    before(:each) do
+      core.update_attribute(:process_ssrs, true)
+    end
+
+    let!(:core2) { create(:core, parent_id: program.id, process_ssrs: 1) }
 
     let!(:new_service) do
       service = create(:service,
@@ -39,6 +42,10 @@ RSpec.describe ServiceRequestsController do
                        organization_id: core2.id)
       service.pricing_maps[0].update_attributes(display_date: Date.today)
       service
+    end
+
+    before do
+      session[:identity_id] = jug2.id
     end
 
     it 'should accept params[:service_id] prefixed with "service-"' do

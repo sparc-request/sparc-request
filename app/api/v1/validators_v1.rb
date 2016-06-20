@@ -1,3 +1,6 @@
+#Copyright © 2011-2016 MUSC Foundation for Research Development.
+#All rights reserved.
+
 module ValidatorsV1
 
   class RecordPresence < Grape::Validations::SingleOptionValidator

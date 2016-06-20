@@ -1,0 +1,12 @@
+- visit_groups.each_with_index do |visit_group, index|
+  %th.col-sm-1.text-center
+    - state = "#{Dashboard::ServiceCalendars.set_check(visit_group)}"
+    - if tab == 'template'
+      = Dashboard::ServiceCalendars.select_column visit_group, index, portal, sub_service_request
+      -# .glyphicon.check_column.btn.btn-primary{ type: 'button', visit_group_id: visit_group.id, check: state, title: state == 'true' ? 'Check Column' : 'Uncheck Column', class: "#{glyph_class(visit_group)}", data: { toggle: 'tooltip', animation: 'false' } }
+    - if tab == 'quantity'
+      .r-t-labels
+        %span.even_shorter_text.r-label= 'R'
+        %span.even_shorter_text.t-label= 'T'
+- (visit_groups.size...Visit.per_page).each do |index|
+  %th.col-sm-1{ class: "column_#{index}" } &nbsp

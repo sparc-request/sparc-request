@@ -1,0 +1,5 @@
+.form-group.row{id: "study_type_answer_#{answer.object.study_type_question.friendly_id}", style: ( answer.object.study_type_question.friendly_id == 'certificate_of_conf' || answer.object.answer != nil ? nil : "display:none;")}
+  .col-lg-8
+    = answer.label :answer, answer.object.study_type_question.question, class: "long"
+  .col-lg-4
+    = answer.object.answer == true ? "Yes" : "No"

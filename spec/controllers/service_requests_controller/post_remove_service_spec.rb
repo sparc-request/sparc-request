@@ -6,10 +6,12 @@ RSpec.describe ServiceRequestsController do
   let_there_be_lane
   let_there_be_j
   build_service_request_with_study
-  build_one_time_fee_services
-  build_per_patient_per_visit_services
 
   describe 'POST remove_service' do
+
+    before do
+      session[:identity_id] = jug2.id
+    end
 
     before(:each) do
       allow(controller.request).to receive(:referrer).and_return('http://example.com')
@@ -20,13 +22,14 @@ RSpec.describe ServiceRequestsController do
     let!(:service1) { service = create( :service, organization_id: core.id) }
     let!(:service2) { service = create( :service, organization_id: core.id) }
     let!(:service3) { service = create( :service, organization_id: core2.id) }
-
-    let!(:line_item1) { create(:line_item, service_id: service1.id, service_request_id: service_request.id) }
-    let!(:line_item2) { create(:line_item, service_id: service2.id, service_request_id: service_request.id) }
-    let!(:line_item3) { create(:line_item, service_id: service3.id, service_request_id: service_request.id) }
-
+    
     let!(:ssr1) { create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id) }
     let!(:ssr2) { create(:sub_service_request, service_request_id: service_request.id, organization_id: core2.id) }
+
+    let!(:line_item1) { create(:line_item, service_id: service1.id, service_request_id: service_request.id, sub_service_request_id: ssr1.id) }
+    let!(:line_item2) { create(:line_item, service_id: service2.id, service_request_id: service_request.id, sub_service_request_id: ssr1.id) }
+    let!(:line_item3) { create(:line_item, service_id: service3.id, service_request_id: service_request.id, sub_service_request_id: ssr2.id) }
+
 
     it 'should mark LineItems of related Services of Service as optional' do
       # make service2 a related Service of service1,

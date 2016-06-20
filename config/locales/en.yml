@@ -23,6 +23,8 @@ en:
   about_title: "About SPARC Request"
   activerecord:
     attributes:
+      fulfillment:
+        time: "Quantity"
       human_subjects_info:
         nct_number: "The NCT #"
       protocol:
@@ -36,6 +38,717 @@ en:
   issue_contact: "Please contact the SUCCESS Center at (843) 792-8300 or success@musc.edu for assistance with this process or with any questions you may have."
   portal_title: "SPARC Request Portal"
   create_an_account: 'Non-MUSC User? Create an Account'
+
+
+
+
+  actions:
+    add: "Add"
+    cancel: "Cancel"
+    close: "Close"
+    delete: "Delete"
+    edit: "Edit"
+    print: "Print"
+    remove: "Remove"
+    reply: "Reply"
+    reset: "Reset"
+    save: "Save"
+    search: "Search"
+    send: "Send"
+    upload: "Upload"
+
+  constants:
+    yes_select: "Yes"
+    no_select: "No"
+    prompts:
+      any: "- Any -"
+      select: "---Please Select---"
+      search_for_user: "Search for a User"
+      select_one: "Select One"
+
+  calendars:
+    pppv:
+      header: "Per Patient/Visit Services"
+      header_fields:
+        service: "Service Name"
+        unit_cost: "Unit Costs"
+        your_cost: "Your Cost"
+        quantity_type: "Clinical Qty Type"
+        subject_count: "Subject Count"
+        page_select:
+          previous: "View Previous"
+          next: "View Next"
+        total_per_patient: "Total Per Patient"
+        total_per_study: "Total Per Study"
+        service_rate: "Service Rate"
+      interactables:
+        edit_subject_count: "Edit Subject Count"
+      labels:
+        maximum_direct: "Maximum Total Direct Costs Per Patient"
+        maximum_indirect: "Maximum Total Indirect Costs Per Patient"
+        maximum_per: "Maximum Total Per Patient"
+        total_costs: "Total Costs (Per Patient/Visit Services) Per Study"
+    otf:
+      header: "Services"
+      header_fields:
+        number: "#"
+        unit_type: "Unit Type"
+        quantity_type: "Qty Type"
+        your_cost: "Your Cost"
+        total_per_study: "Total Per Study"
+        unit_costs: "Unit Costs"
+        service_rate: "Service Rate"
+        other_services: "Other Services"
+      details:
+        nan: "Please enter a valid number."
+        text1: "Quantity of"
+        text2: "is less than the unit minimum of"
+        text3: "Quantity is being reset to the previous value."
+        text4: "Units Per Quantity of"
+        text5: "is more than the maximum allowed of"
+        text6: "Units Per Quantity is being set to the maximum allowed value."
+      merged:
+        total_study: "Study Cost Totals"
+
+  models:
+    note:
+      singular: "Note"
+      plural: "Notes"
+
+  protocols:
+    change_type:
+      header: "Change Protocol Type"
+      type: "Protocol Type:"
+      study: "Study"
+      project: "Project"
+      change_button: "Change Type"
+    studies:
+      information:
+        header: "Study Information"
+        subtext: "Necessary to obtain correct pricing"
+        short_title: "Short Title: *"
+        title: "Study Title: *"
+        funding_status: "Proposal Funding Status: *"
+        funding_source: "Funding Source: *"
+        potential_funding_source: "Potential Funding Source: *"
+        funding_source_internal: "Please Specify: *"
+        funding_source_federal:
+          title: "Federal Grant Title:"
+          code: "Federal Grant Code:"
+          phs_sponsor: "Federal PHS Sponsor:"
+          separator: "-OR-"
+          non_phs_sponsor: "Federal Non-PHS Sponsor:"
+          serial_number: "Federal Grant Serial Number:"
+        phase: "Study Phase:"
+        sponsor: "Sponsor Name: *"
+        push_to_epic: "Publish Study in Epic: *"
+      optional_information:
+        header: "Optional Information"
+        subtext: "Used for reporting purposes and saved for your future use"
+        udak_project_number: "Financial Account (UDAK #):"
+        rate: "Indirect Cost Rate:"
+        rfa: "Funding Opportunity # / RFA:"
+        potential_start_date: "Potential Funding Start Date:"
+        start_date: "Funding Start Date:"
+      research_involving:
+        header: "Research Involving"
+        subtext: "Check all that apply"
+        humans:
+          header: "Human Subjects:"
+          nct_number: "NCT# (National Clinical Trials Number):"
+          hr_number: "HR #:"
+          pro_number: "PRO #:"
+          record_irb: "IRB of Record:"
+          submission_type: "Submission Type:"
+          pending_approval: "Application/Approval Pending?:"
+          irb_approval_date: "IRB Approval Date:"
+          irb_expiration_date: "IRB Expiration Date:"
+        vertebrates:
+          header: "Vertebrate Animals:"
+          iacuc_number: "IACUC #:"
+          iacuc_name: "Name of IACUC:"
+          iacuc_approval_date: "IACUC Approval Date:"
+          iacuc_expiration_date: "IACUC Expiration Date:"
+        products:
+          header: "Investigational Products:"
+          ind_number: "IND #:"
+          ind_on_hold: "IND on Hold?:"
+          ide_number: "IDE# / HDE# / HUD#:"
+        ip_patents:
+          header: "IP/Patents:"
+          number: "Patent Number:"
+          inventors: "Inventors:"
+      study_type:
+        header: "Study Type"
+        subtext: "Check all that apply"
+      impact_areas:
+        header: "Impact Areas"
+        subtext: "Check all that apply"
+        other: "Please Specify:"
+      affiliations:
+        header: "Affiliations, Collaborations, and Memberships"
+        subtext: "Check all that apply"
+    projects:
+      information:
+        header: "Project Information"
+        short_title: "Short Title: *"
+        title: "Project Title: *"
+        funding_status: "Proposal Funding Status: *"
+        funding_source: "Funding Source: *"
+        potential_funding_source: "Potential Funding Source: *"
+        description: "Brief Description:"
+        rate: "Indirect Cost Rate:"
+    prompts:
+      status: "Select a Funding Status"
+      source: "Select a Funding Source"
+      potential_source: "Select a Potential Funding Source"
+      federal_sponsor: "Select if Applicable"
+      phase: "Select a Study Phase"
+      submission_type: "Select a Submission Type"
+    authorized_users:
+      header: "Authorized Users"
+      subtext: "Primary PI Required"
+      primary_pi: "Primary PI: *"
+
+  proper:
+    catalog:
+      ctrc_lock: "SCTR Research Nexus services are already present on this request (%{protocol_id}-%{ssr_id}) pertaining to this %{protocol_type}, '%{short_title}'. Please call (843) 792-8688 to edit the existing request."
+
+  dashboard:
+    ###########
+    #  ADMIN  #
+    ###########
+    admin:
+
+    ###############
+    #  APPROVALS  #
+    ###############
+    approvals:
+      header: "Administrative Approvals"
+      nursing: "Nursing/Nutrition Approved:"
+      lab: "Lab Approved:"
+      imaging: "Imaging Approved:"
+      committee: "Committee Approved:"
+
+    ##########
+    #  ARMS  #
+    ##########
+    arms:
+      manage: "Manage Arms"
+      add: "Add Arm"
+      remove: "Remove Arm"
+      edit: "Edit Arm"
+      created: "Arm Created!"
+      updated: "Arm Updated!"
+      destroyed: "Arm Destroyed!"
+      arm: "Arm:"
+      name: "Arm Name:"
+      subject_count: "Subject Count:"
+      visit_count: "Visit Count:"
+
+    ######################
+    #  AUTHORIZED USERS  #
+    ######################
+    authorized_users:
+      add:
+        header: "Add Authorized User"
+        select: "Select User:"
+      edit:
+        header: "Edit Authorized User"
+      era: "ERA Commons Name:"
+      credentials: "Credentials:"
+      credentials_prompt: "Select a Credential"
+      credentials_specify: "Please Specify:*"
+      institution: "Institution:"
+      institution_prompt: "Select an Institution"
+      college: "College:"
+      college_prompt: "Select a College"
+      department: "Department:"
+      department_prompt: "Select a Department"
+      subspecialty: "Subspecialty:"
+      subspecialty_prompt: "Select a Subspecialty"
+      role: "Role:*"
+      role_prompt: "Select a Role"
+      role_specify: "Please Specify:*"
+      epic_access: "Epic EMR Access?:*"
+      rights:
+        header: "User Rights:*"
+        none: Study/Project Member Only
+        view: "View Rights"
+        request: "Request/Approve Services"
+        approve: "Authorized/Change Study Charges"
+
+    ###############
+    #  DOCUMENTS  #
+    ###############
+    documents:
+      add: "Add a New Document"
+      edit: "Edit Document"
+      created: "Document Uploaded!"
+      updated: "Document Updated!"
+      destroyed: "Document Destroyed!"
+      table:
+        type: "Type"
+        title: "Title"
+        uploaded: "Uploaded"
+      form:
+        document_type: "Document Type:"
+        document_type_other: "Other Document Type:"
+        document: "Document:"
+
+    #################
+    #  EPIC QUEUES  #
+    #################
+    epic_queues:
+      header: "Epic Queues"
+    ##################
+    #  FULFILLMENTS  #
+    ##################
+    fulfillments:
+      add: "Add Fulfillment"
+      edit: "Edit Fulfillment"
+      created: "Fulfillment Created!"
+      updated: "Fulfillment Updated!"
+      destroyed: "Fulfillment Destroyed!"
+      table:
+        date: "Fulfillment Date"
+        time_unit: "Qty Type"
+        time: "Quantity"
+        actions: "Actions"
+      actions:
+        notes: " Notes"
+        edit: " Edit Fulfillment"
+        delete: " Delete Fulfillment"
+      form:
+        date: "Fulfillment Date:"
+        time: "Quantity:"
+        time_unit: "Qty Type:"
+
+    ################
+    #  LINE ITEMS  #
+    ################
+    line_items:
+      updated: "Line Item Updated!"
+
+    ##############
+    #  MESSAGES  #
+    ##############
+    messages:
+      index:
+        no_subject: "No Subject"
+        user: "User"
+        date: "Date"
+        message: "Message"
+        no_messages: "This Notification currently has no Messages."
+      new:
+        header: "New Message to "
+        message: "Message:"
+
+    #########################
+    #  MULTIPLE LINE ITEMS  #
+    #########################
+    multiple_line_items:
+      manage: "Manage Services"
+      add: "Add Service"
+      remove: "Remove Service"
+      created: "Services Added!"
+      destroyed: "Services Removed!"
+      service: "Service:"
+
+    ##########
+    # NAVBAR #
+    ##########
+    navbar:
+      logged_in_as: "Logged in as "
+      epic_queue: "View Epic Queue"
+      messages: "All Notifications"
+
+    ###########
+    #  NOTES  #
+    ###########
+    notes:
+      index:
+        header: " Notes"
+        none_message1: "This "
+        none_message2: " currently has no notes."
+        user: "User"
+        date: "Date"
+        add: "Add Note"
+
+      new:
+        header1: "New "
+        header2: " Note"
+        note: "Note:"
+
+    ###################
+    #  NOTIFICATIONS  #
+    ###################
+    notifications:
+      table:
+        send: "Send Notification"
+        compose: "Compose Message"
+        requester: "Requester"
+        authorized_users: "Authorized Users"
+        service_providers: "Service Providers"
+        inbox: "Inbox"
+        sent: "Sent"
+        mark_as_unread: "Mark as Unread"
+        mark_as_read: "Mark as Read"
+        user: "User"
+        subject: "Subject"
+        time: "Time"
+      form:
+        select_header: "Send Notification"
+        select: "Select User:"
+        subject: "Subject"
+        message: "Please enter message text here..."
+
+
+    ######################
+    #  PROTOCOL FILTERS  #
+    ######################
+    protocol_filters:
+      header: "Filter Protocols"
+      archived: "Archived"
+      status: "Status"
+      my_protocols: "My Protocols"
+      my_admin_protocols: "My Admin Protocols"
+      organization: "Organization"
+      filter: "Filter"
+      saved_filters:
+        header: "Recently Saved Filters"
+        modal:
+          header: "Choose a name for your search."
+          name: "Name"
+
+    ###############
+    #  PROTOCOLS  #
+    ###############
+    protocols:
+      table:
+        header: "Protocols"
+        new_protocol: "New Protocol"
+        new_study: "New Study"
+        new_project: "New Project"
+        short_title: "Short Title"
+        id: "ID"
+        pis: "PI(s)"
+        requests: Requests
+        archive: "Archive"
+        unarchive: "Unarchive"
+
+      summary:
+        header: " Summary"
+        notes: " Notes"
+        edit1: "Edit "
+        edit2: " Information"
+        view_details1: "View "
+        view_details2: " Details"
+        title: "Title:"
+        short_title: "Short Title:"
+        sponsor: "Sponsor Name:"
+
+      authorized_users:
+        header: "Authorized Users"
+        add_user: "Add an Authorized User"
+        name: "Full Name"
+        role: "Role"
+        email: "Email"
+        phone: "Phone"
+        rights: "Proxy Rights"
+
+      service_requests:
+        header: "Service Requests"
+        view_consolidated: "View Consolidated Request"
+        export_consolidated: "Export Consolidated Request"
+        add_services: "Add Services"
+
+      view_details:
+        header: " Details: #"
+        studies:
+          information:
+            header: "Study Information"
+            short_title: "Short Title:"
+            title: "Study Title:"
+            funding_status: "Proposal Funding Status:"
+            funding_source: "Funding Source:"
+            potential_funding_source: "Potential Funding Source:"
+            funding_source_internal: "Internal Funding Source:"
+            funding_source_federal:
+              title: "Federal Grant Title:"
+              code: "Federal Grant Code:"
+              phs_sponsor: "Federal PHS Sponsor:"
+              separator: "-OR-"
+              non_phs_sponsor: "Federal Non-PHS Sponsor:"
+              serial_number: "Federal Grant Serial Number:"
+            phase: "Study Phase:"
+            sponsor: "Sponsor Name:"
+            push_to_epic: "Publish Study in Epic:"
+            study_type_questions: "Study-Type Questions"
+          optional_information:
+            header: "Optional Information"
+            udak_project_number: "Financial Account (UDAK #):"
+            rate: "Indirect Cost Rate:"
+            rfa: "Funding Opportunity # / RFA:"
+            potential_start_date: "Potential Funding Start Date:"
+            start_date: "Funding Start Date:"
+          research_involving:
+            header: "Research Involving"
+            none: "No Research Types selected"
+            humans:
+              header: "Human Subjects"
+              nct_number: "NCT# (National Clinical Trials Number):"
+              hr_number: "HR #:"
+              pro_number: "PRO #:"
+              record_irb: "IRB of Record:"
+              submission_type: "Submission Type:"
+              pending_approval: "Application/Approval Pending?:"
+              irb_approval_date: "IRB Approval Date:"
+              irb_expiration_date: "IRB Expiration Date:"
+            vertebrates:
+              header: "Vertebrate Animals"
+              iacuc_number: "IACUC #:"
+              iacuc_name: "Name of IACUC:"
+              iacuc_approval_date: "IACUC Approval Date:"
+              iacuc_expiration_date: "IACUC Expiration Date:"
+            products:
+              header: "Investigational Products"
+              ind_number: "IND #:"
+              ind_on_hold: "IND on Hold?:"
+              ide_number: "IDE# / HDE# / HUD#:"
+            ip_patents:
+              header: "IP/Patents"
+              number: "Patent Number:"
+              inventors: "Inventors:"
+          study_type:
+            header: "Study Type"
+            none: "No Study Types selected"
+          impact_areas:
+            header: "Impact Areas"
+            none: "No Impact Areas selected"
+          affiliations:
+            header: "Affiliations, Collaborations, and Memberships"
+            none: "No Affiliations selected"
+        projects:
+          information:
+            header: "Project Information"
+            short_title: "Short Title:"
+            title: "Project Title:"
+            funding_status: "Proposal Funding Status:"
+            funding_source: "Funding Source:"
+            potential_funding_source: "Potential Funding Source:"
+            description: "Brief Description:"
+            rate: "Indirect Cost Rate:"
+
+    #####################
+    # SERVICE CALENDARS #
+    #####################
+    service_calendars:
+      consolidated_request:
+        header: "Consolidated Request Summary"
+        protocol_information:
+          header: " Information"
+          srid: "SRID:"
+          short_title: "Short Title:"
+          title: " Title:"
+          sponsor: "Sponsor Name:"
+          funding_source: "Funding Source:"
+        authorized_users:
+          header: "Authorized Users"
+          name: "Name"
+          role: "Role"
+          rights: "Proxy Rights"
+        services:
+          header: "Services"
+          none: "There are no services associated with this protocol."
+
+    ######################
+    #  SERVICE REQUESTS  #
+    ######################
+    service_requests:
+      modify_request: "Modify Request"
+      srid: "SRID"
+      organization: "Organization"
+      status: "Status"
+      notifications: "Notifications"
+      actions:
+        header: "Actions"
+        view: "View"
+        edit: "Edit"
+        admin_edit: "Admin Edit"
+      view_ssr:
+        services:
+          none: "No Services"
+        documents:
+          header: "Documents"
+          none: "No Documents"
+          file_name: "File Name"
+          program_core: "Program/Core"
+
+    ############################
+    #  STUDY LEVEL ACTIVITIES  #
+    ############################
+    study_level_activities:
+      add: "Add Study Level Activity"
+      edit: "Edit Study Level Activity"
+      created: "Study Level Activity Created!"
+      updated: "Study Level Activity Updated!"
+      destroyed: "Study Level Activity Destroyed!"
+      table:
+        service: "Service"
+        quantity_requested: "Qty Requested"
+        quantity_type: "Qty Type"
+        cost: "Cost"
+        in_process: "In Process"
+        complete: "Complete"
+        actions: "Actions"
+      form:
+        service: "Service:"
+        quantity_requested: "Quantity Requested:"
+        in_process_date: "In Process Date:"
+        complete_date: "Complete Date:"
+      actions:
+        details: " Details"
+        notes: " Notes"
+        admin_rate: " Add Admin Rate"
+        edit: " Edit Activity"
+        delete: " Delete Activity"
+      details:
+        header: "Study Level Activity Details"
+        charge_code: "Charge Code"
+        unit_quantity: "Units / Quantity"
+        unit_type: "Unit Type"
+        quantity_requested: "Quantity Requested"
+        quantity_type: "Quantity Type"
+        cost: "Cost"
+        received: "Received"
+        in_process: "In Process"
+        complete: "Complete"
+      admin_rate:
+        header: "Add Admin Rate"
+        cost: "Cost:"
+
+    ##########################
+    #  SUB SERVICE REQUESTS  #
+    ##########################
+    sub_service_requests:
+      header:
+        status: "Status"
+        owner: "Owner"
+        fulfillment:
+          header: "Fulfillment"
+          go_to_fulfillment: "Go to Fulfillment"
+          in_fulfillment: "In Fulfillment"
+          send_to_fulfillment: "Send to Fulfillment"
+          not_enabled: "Not enabled in SPARCCatalog."
+        cost: "Current Cost"
+        user_cost: "User Display Cost"
+
+      tabs:
+        request_details:
+          header: "Request Details"
+          options:
+            header: "Options"
+            send_to_epic: "Send to Epic"
+            core_approvals: "Administrative Approvals"
+            export_to_excel: "Export to Excel"
+            delete_request: "Delete Request"
+          timeline:
+            header: "Timeline"
+            start_date: "Proposed Start Date"
+            end_date: "Proposed End Date"
+            arranged_date: "Consult Arranged Date"
+            contacted_date: "Requester Contacted Date"
+
+        study_schedule:
+          header: "Study Schedule"
+          no_requests: "There are no per-patient/per-visit requests."
+
+        study_level_activities:
+          header: "Study Level Activities"
+
+        documents:
+          header: "Documents"
+
+        history:
+          header: "History"
+          status:
+            header: "Status History"
+            date: "Date Changed"
+            from: "Status Changed From"
+            to: "Status Changed To"
+          approval:
+            header: "Approval History"
+            date: "Date Approved"
+            type: "Type"
+            by: "Approved By"
+
+        notifications:
+          header: "Notifications"
+
+    ###############
+    #  SUBSIDIES  #
+    ###############
+    subsidies:
+      new: "New Subsidy Pending Approval"
+      edit: "Edit Subsidy Pending Approval"
+      created: "Subsidy Created!"
+      updated: "Subsidy Updated!"
+      destroyed: "Subsidy Destroyed!"
+      subsidy_information:
+        header: "Subsidy Information"
+        approved:
+          header: "Current Effective Subsidy"
+          request_cost: "Request Cost at Approval"
+          percent: "% Subsidy"
+          pi_contribution: "PI Contribution"
+          cost: "Subsidy Cost"
+          approved_by: "Approved By"
+          approved_at: "Approved At"
+          none: "There is no current effective subsidy."
+        pending:
+          header: "Subsidy Pending Approval"
+          request_cost: "Request Current Cost"
+          percent: "% Subsidy"
+          pi_contribution: "PI Contribution"
+          cost: "Subsidy Current Cost"
+          approve: "Approve"
+        add: "Add a Subsidy"
+      form:
+        request_cost: "Current Request Cost:"
+        percent: "Percent Subsidy:"
+        pi: "PI Contribution:"
+        cost: "Subsidy Cost:"
+
+
+    ##################
+    #  VISIT GROUPS  #
+    ##################
+    visit_groups:
+      manage: "Manage Visits"
+      add: "Add Visit Group"
+      remove: "Remove Visit Group"
+      edit: "Edit Visit Group"
+      add_visit: "Add Visit"
+      edit_visit: "Edit Visit"
+      remove_visit: "Remove Visit"
+      created: "Visit Created!"
+      updated: "Visit Updated!"
+      destroyed: "Visit Destroyed!"
+      arm: "Arm:"
+      visit: "Visit:"
+      name: "Name:"
+      day: "Day:"
+      position: "Position:"
+      window_before: "Window Before:"
+      window_after: "Window After:"
+
+
+
+
+
+
+
 
   # Admin Dashboard
   admin_dashboard:
@@ -231,7 +944,6 @@ en:
     service_level_components: "Service Level Components"
     service_provider_required_message: "You must have at least one service provider either at the provider, program, or core level"
     service_providers: "Service Providers"
-    show_in_cwf: "Show in Fulfillment"
     split_notify: "Split/Notify Here"
     status_legend: "Status Options (Use default statuses below or click to create custom service request statuses)"
     submission_emails: "Submission E-mails"
@@ -354,7 +1066,7 @@ en:
       recipients: "Service Providers"
       title: "Title"
       type: "Type"
-      uploaded: "Uploaded"
+      uploaded: "Date Uploaded"
       uploads: "Document Uploads"
       versions: "Version"
     select_prompt: "Select a Type"
@@ -398,7 +1110,7 @@ en:
     iacuc_approval_date: "IACUC Approval Date:"
     iacuc_expiration_date: "IACUC Expiration Date:"
     iacuc_number: "IACUC #:"
-    ide_number: "IDE#:"
+    ide_number: "IDE# / HDE# / HUD#:"
     impact: "Impact Areas"
     ind_number: "IND#:"
     ind_on_hold: "IND on Hold?"
@@ -410,7 +1122,7 @@ en:
     irb_expiration_date: "IRB Expiration Date:"
     irb_of_record: "IRB of Record:"
     name_of_iacuc: "Name of IACUC:"
-    nct_number: "NCT #:"
+    nct_number: "NCT# (National Clinical Trials Number):"
     needed_info: "Information needed to obtain correct pricing"
     optional_text: "Optional Information"
     optional_text2: "(used for reporting purposes and saved for your future use)"
@@ -547,7 +1259,8 @@ en:
     create_report: "Create Report"
     defined_reports_desc: "Please select a defined report below and click to proceed with report customizations."
     defined_reports: "Defined Reports"
-    intro: "Welcome to the SPARC Request Reporting Module. Please select a report type to proceed."
+    intro: "Welcome to the SPARC Request Reporting Module"
+    sub_intro: "Please select a report type to proceed"
     proceed: "Proceed"
     return_to_admin_portal: "Return to Admin Portal"
   study_tracker:
@@ -576,71 +1289,168 @@ en:
         billing: "Billing"
         payments: "Payments"
         services: "Services"
+        cost: "Your Cost"
+        subjects: "# Subjects"
+        total: "Service Total"
         study_level_charges: "Study Level Charges"
         study_schedule: "Study Schedule"
         subject_tracker: "Subject Tracker"
-    notes:
-      header: "Comments:"
-      save: "Save Comment"
-    otf_charges:
-      add: "Add a Fulfillment"
-      date: "Date"
-      remove: "Remove"
-    payment_uploads:
-      add: "Add document"
-      remove: "Remove"
-      remove_confirm: "Are you sure you want to delete this document?"
-    payments:
-      add: "Add a payment"
-      amt_invoiced: "Amount Invoiced"
-      amt_received: "Amount Received"
-      date_received: "Date Received"
-      details: "Details"
-      documents: "Documents"
-      pay_method: "Payment Method"
-      percent_subsidy: "Percent Subsidy"
-      prompt: ""
-      remove_confirm: "Are you sure you want to delete this payment?"
-      remove: "Remove"
-      submitted: "Date Submitted"
-    save: "Save"
-    subject_tracker:
-      add: "Add a subject"
-      confirm: "Are you sure you want to delete this subject?"
-      delete: "Delete"
-      dob: "Date of Birth"
-      ethnicity: "Race" #this was change to race but the database still has it labeled as ethnicity
-      gender: "Gender"
-      id: "ID"
-      mrn: "MRN"
-      name: "Subject Name"
-      report: "Report"
-      schedule: "Schedule"
-    title: "Fulfillment"
-    visit_calendar:
-      add_service: "Add Service"
-      cwf_link: "Back to Fulfillment"
-      grand_total: "Grand Total"
-      header1: "Study/Project ID:"
-      header10: "Total"
-      header2: "Subject ID:"
-      header3: "Billing/Business Manager:"
-      header4: "Subject Study Status:"
-      header5: "Procedure"
-      header6: "Completed"
-      header7: "R Quantity"
-      header8: "T Quantity"
-      header9: "Unit Cost"
-      popup_header1: "Visit Name:"
-      popup_header2: "Service/Assessment Name:"
-      popup_message1: "Attention - An assessment"
-      popup_message2: "has been added at"
-      popup_message3: "If subject is past visit, please refer to your IRB-approved protocol."
-      popup_message4: "Attention - Assessments have been added to the following visits. If subject is past visit, please refer to your IRB-approved protocol."
-      save_alert: "You must save your changes for the dashboard to be updated."
-      submit: "Save Appointments"
-      visit_complete: "Date of Visit (entering date signifies a completed visit)"
-      visit_selector: "Please select a visit:"
+      totals:
+        direct_cost: "Total Direct Cost"
+        indirect_cost: "Total Indirect Costs"
+        grand: "Grand Total:"
+      notes:
+        header: "Comments:"
+        save: "Save Comment"
+      otf_charges:
+        add: "Add a Fulfillment"
+        date: "Date"
+        remove: "Remove"
+      payment_uploads:
+        add: "Add document"
+        remove: "Remove"
+        remove_confirm: "Are you sure you want to delete this document?"
+      payments:
+        add: "Add a payment"
+        amt_invoiced: "Amount Invoiced"
+        amt_received: "Amount Received"
+        date_received: "Date Received"
+        details: "Details"
+        documents: "Documents"
+        pay_method: "Payment Method"
+        percent_subsidy: "Percent Subsidy"
+        prompt: ""
+        remove_confirm: "Are you sure you want to delete this payment?"
+        remove: "Remove"
+        submitted: "Date Submitted"
+      save: "Save"
+      subject_tracker:
+        add: "Add a subject"
+        confirm: "Are you sure you want to delete this subject?"
+        delete: "Delete"
+        dob: "Date of Birth"
+        ethnicity: "Race" #this was change to race but the database still has it labeled as ethnicity
+        gender: "Gender"
+        id: "ID"
+        mrn: "MRN"
+        name: "Subject Name"
+        report: "Report"
+        schedule: "Schedule"
+      title: "Fulfillment"
+      visit_calendar:
+        add_service: "Add Service"
+        cwf_link: "Back to Fulfillment"
+        grand_total: "Grand Total"
+        header1: "Study/Project ID:"
+        header10: "Total"
+        header2: "Subject ID:"
+        header3: "Billing/Business Manager:"
+        header4: "Subject Study Status:"
+        header5: "Procedure"
+        header6: "Completed"
+        header7: "R Quantity"
+        header8: "T Quantity"
+        header9: "Unit Cost"
+        popup_header1: "Visit Name:"
+        popup_header2: "Service/Assessment Name:"
+        popup_message1: "Attention - An assessment"
+        popup_message2: "has been added at"
+        popup_message3: "If subject is past visit, please refer to your IRB-approved protocol."
+        popup_message4: "Attention - Assessments have been added to the following visits. If subject is past visit, please refer to your IRB-approved protocol."
+        save_alert: "You must save your changes for the dashboard to be updated."
+        submit: "Save Appointments"
+        visit_complete: "Date of Visit (entering date signifies a completed visit)"
+        visit_selector: "Please select a visit:"
+  # Portal Editing user for study/project
+  portal_user_form:
+    add_user: "Add User"
+    college_prompt: "Select a College"
+    college: "College:"
+    credential_prompt: "Select a Credential"
+    credentials: "Credentials:"
+    department_prompt: "Select a Department"
+    department: "Department:"
+    edit_user: "Edit User"
+    email: "E-mail:"
+    epic_access: "Epic EMR Access?:"
+    era: "ERA Commons Name:"
+    institution_prompt: "Select an Institution"
+    institution: "Institution:"
+    name: "Name:"
+    credentials_other: "Other Credentials:"
+    phone: "Phone:"
+    rights:
+      header: "User Rights:"
+      none: 'Study/Project Member Only'
+      view: 'View Rights'
+      request: 'Request/Approve Services'
+      approve: 'Authorize/Change Study Charges'
+    role_other: "Other Role:"
+    role_prompt: "Select a Role"
+    role: "Role:*"
+    subspecialty_prompt: "Select a Subspecialty"
+    subspecialty: "Subspecialty:"
+
+  # Catalog Manager - Organization Form
+  organization_form:
+    service_level_components: "Service Level Components"
+    gen_info: "General Information"
+    user_rights: "User Rights"
+    pricing: "Pricing"
+    epic_info: "Epic Interface"
+    program: "Program"
+    core: "Core"
+    name: "Name"
+    abbreviation: "Abbreviation"
+    description: "Description"
+    ack_language: "Acknowledgement Language"
+    order: "Order"
+    tag_list: "Tags"
+    is_ctrc: "Is CTRC?"
+    split_notify: "Split/Notify Here"
+    css_class: "Color"
+    disabled: "Do not display in SPARC"
+    one_time_fee: "One Time Fee"
+    core_facility: "Core/Facility Based Services"
+    service_center_cost: "Service Center Cost"
+    hospital_based_services: "Hospital Based Services"
+    eap_id: 'EAP ID'
+    cpt_code: "CPT Code"
+    send_to_epic: "Send To Epic"
+    charge_code: "Charge Code"
+    revenue_code: "Revenue Code"
+    pricing_maps: "Pricing Maps"
+    add_map: "Add Pricing Map"
+    related_services: "Related Services"
+    associated_surveys: "Surveys"
+    submission_emails: "Submission E-mails"
+    super_users: "Super Users"
+    service_providers: "Service Providers"
+    service_provider_required_message: "You must have at least one service provider either at the provider, program, or core level"
+    new_sp: "New Service Provider"
+    service_error: "There are no service providers anywhere on this tree."
+    cm_rights: "Catalog Manager Rights"
+    clinical_work_fulfillment: "Fulfillment"
+    clinical_providers: "Fulfillment Provider Rights:"
+    new_cm: "New Catalog Manager"
+    auto_price_adj: "Automatic Pricing Adjustment"
+    change_rates: "Increase or Decrease Rates"
+    pricing_setup: "Pricing Setup"
+    subsidy_info: "Subsidy Information"
+    subsidy_max_percent: "Max Percentage"
+    subsidy_max_dollar: "Max Dollar Cap"
+    actions: "Actions:"
+    submit_button: "Save"
+    cancel_button: "Cancel"
+    blank_field_errors: "Name and Order are required on the Service.  Effective Date, Display Date, and Service Rate are required on all Pricing Maps."
+    per_patient_errors: "Clinical Quantity Type, Unit Factor, and Units Per Qty Maximum are required on all Per Patient Pricing Maps."
+    otf_field_errors: "If the Pricing Map is a one time fee (the box is checked), Quantity Type, Quantity Minimum, Unit Type, and Unit Maximum are required."
+    status_legend: "Status Options (Use default statuses below or click to create custom service request statuses)"
+    default_statuses: "Default Statuses:"
+    color_blank: "Select a Color"
+    errors: "Effective Date, Display Dates, Percent of Fee, and Rates are required on all pricing setups."
+    show_in_cwf: "Show in Fulfillment"
+    ctrc_label: "Nexus"
 
   # Indirect cost rates, default values used to prepopulate forms
   indirect_cost_rates:
@@ -901,7 +1711,6 @@ en:
     create:
       study: "Create New Study"
       project: "Create New Project"
-    ctrc_services_exist: "SCTR Research Nexus services have been found on another Service Request %{protocol_id}-%{ssr_id} pertaining to this Project/Study %{short_title}. Please remove the Nexus services from your cart, and call 792-8688 to edit the existing request."
     date: "Submitted Date:"
     delete: "Delete"
     edit_original: "Edit Original"
@@ -1150,6 +1959,19 @@ en:
     text1: "Your browser version is out of date. SPARC Request does not support Internet Explorer versions older than version 8."
     text2: "Using versions lower than 8 can cause data curruption, and other serious problems using this tool."
 
+  protocol:
+    study_schedule:
+      add_arm: "Add Arm"
+      add_visit_group: "Add Visit Group"
+      edit_arm: "Edit Arm"
+      manage_arms: "Manage Arms"
+      manage_visits: "Manage Visits"
+      manage_services: "Manage Services"
+      remove_arm: "Remove Arm"
+
+  study_tracker:
+    title: "Fulfillment"
+    save: "Save"
   # Study/Project Shared
   protocol_shared:
     add_user: "User added!  See table below to set proxy rights."

@@ -23,6 +23,10 @@ FactoryGirl.define do
     optional               { false }
     quantity               { 5 }
 
+    trait :without_validations do
+      to_create { |instance| instance.save(validate: false) }
+    end
+
     trait :with_service_request do
       service_request
       # service_request factory: :service_request_with_protocol
@@ -34,6 +38,14 @@ FactoryGirl.define do
 
     trait :is_optional do
       optional true
+    end
+
+    trait :per_patient_per_visit do
+      service factory: :per_patient_per_visit_service
+    end
+
+    trait :one_time_fee do
+      service factory: :one_time_fee_service
     end
 
     transient do
@@ -50,5 +62,7 @@ FactoryGirl.define do
     end
 
     factory :line_item_with_service, traits: [:with_service, :with_service_request]
+    factory :one_time_fee_line_item, traits: [:one_time_fee]
+    factory :per_patient_per_visit_line_item, traits: [:per_patient_per_visit]
   end
 end

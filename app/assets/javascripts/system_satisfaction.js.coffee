@@ -40,9 +40,9 @@ $(document).ready ->
           $('#survey_form div.next_section').append("<input type='button' name='cancel' value='Cancel'/>")
           $('#surveyor').dialog
             position:
-              my: "left top"
-              at: "left bottom"
-              of: $('#sparc_logo_header')
+              my: "center bottom"
+              at: "center"
+              of: $('body')
             autoOpen: false
             modal: true
             width: 980

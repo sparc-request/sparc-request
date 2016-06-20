@@ -53,7 +53,7 @@ class CatalogManager::ProgramsController < CatalogManager::AppController
     end
     
     params[:pricing_setups].each do |ps|
-      if ps[1]['id'] == 'blank'
+      if ps[1]['id'].blank?
         ps[1].delete(:id)
         ps[1].delete(:newly_created)
         @program.pricing_setups.build(ps[1])

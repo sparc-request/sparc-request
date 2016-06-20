@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160412140449) do
+ActiveRecord::Schema.define(version: 20160608151717) do
 
   create_table "admin_rates", force: :cascade do |t|
     t.integer  "line_item_id", limit: 4
@@ -317,11 +317,10 @@ ActiveRecord::Schema.define(version: 20160412140449) do
   create_table "fulfillments", force: :cascade do |t|
     t.integer  "line_item_id",  limit: 4
     t.string   "timeframe",     limit: 255
-    t.text     "notes",         limit: 65535
     t.string   "time",          limit: 255
     t.datetime "date"
-    t.datetime "created_at",                  null: false
-    t.datetime "updated_at",                  null: false
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
     t.datetime "deleted_at"
     t.string   "unit_type",     limit: 255
     t.string   "quantity_type", limit: 255
@@ -461,7 +460,6 @@ ActiveRecord::Schema.define(version: 20160412140449) do
     t.integer  "to",              limit: 4
     t.integer  "from",            limit: 4
     t.string   "email",           limit: 255
-    t.string   "subject",         limit: 255
     t.text     "body",            limit: 65535
     t.datetime "created_at",                    null: false
     t.datetime "updated_at",                    null: false
@@ -470,22 +468,27 @@ ActiveRecord::Schema.define(version: 20160412140449) do
   add_index "messages", ["notification_id"], name: "index_messages_on_notification_id", using: :btree
 
   create_table "notes", force: :cascade do |t|
-    t.integer  "identity_id",            limit: 4
-    t.integer  "sub_service_request_id", limit: 4
-    t.string   "body",                   limit: 255
-    t.datetime "created_at",                         null: false
-    t.datetime "updated_at",                         null: false
-    t.integer  "appointment_id",         limit: 4
+    t.integer  "identity_id",  limit: 4
+    t.text     "body",         limit: 65535
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+    t.integer  "notable_id",   limit: 4
+    t.string   "notable_type", limit: 255
   end
 
   add_index "notes", ["identity_id"], name: "index_notes_on_identity_id", using: :btree
-  add_index "notes", ["sub_service_request_id"], name: "index_notes_on_sub_service_request_id", using: :btree
+  add_index "notes", ["identity_id"], name: "index_notes_on_user_id", using: :btree
+  add_index "notes", ["notable_id", "notable_type"], name: "index_notes_on_notable_id_and_notable_type", using: :btree
 
   create_table "notifications", force: :cascade do |t|
     t.integer  "sub_service_request_id", limit: 4
     t.integer  "originator_id",          limit: 4
-    t.datetime "created_at",                       null: false
-    t.datetime "updated_at",                       null: false
+    t.datetime "created_at",                         null: false
+    t.datetime "updated_at",                         null: false
+    t.string   "subject",                limit: 255
+    t.integer  "other_user_id",          limit: 4
+    t.boolean  "read_by_originator"
+    t.boolean  "read_by_other_user"
   end
 
   add_index "notifications", ["originator_id"], name: "index_notifications_on_originator_id", using: :btree
@@ -505,7 +508,6 @@ ActiveRecord::Schema.define(version: 20160412140449) do
     t.datetime "created_at",                                 null: false
     t.datetime "updated_at",                                 null: false
     t.datetime "deleted_at"
-    t.boolean  "show_in_cwf"
   end
 
   add_index "organizations", ["is_available"], name: "index_organizations_on_is_available", using: :btree
@@ -627,6 +629,18 @@ ActiveRecord::Schema.define(version: 20160412140449) do
 
   add_index "project_roles", ["identity_id"], name: "index_project_roles_on_identity_id", using: :btree
   add_index "project_roles", ["protocol_id"], name: "index_project_roles_on_protocol_id", using: :btree
+
+  create_table "protocol_filters", force: :cascade do |t|
+    t.integer  "identity_id",       limit: 4
+    t.string   "search_name",       limit: 255
+    t.boolean  "show_archived"
+    t.string   "search_query",      limit: 255
+    t.string   "with_organization", limit: 255
+    t.string   "with_status",       limit: 255
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.string   "admin_filter",      limit: 255
+  end
 
   create_table "protocols", force: :cascade do |t|
     t.string   "type",                                  limit: 255
@@ -830,7 +844,6 @@ ActiveRecord::Schema.define(version: 20160412140449) do
     t.integer  "protocol_id",              limit: 4
     t.string   "status",                   limit: 255
     t.integer  "service_requester_id",     limit: 4
-    t.text     "notes",                    limit: 65535
     t.boolean  "approved"
     t.integer  "subject_count",            limit: 4
     t.datetime "consult_arranged_date"
@@ -838,8 +851,8 @@ ActiveRecord::Schema.define(version: 20160412140449) do
     t.datetime "pppv_in_process_date"
     t.datetime "requester_contacted_date"
     t.datetime "submitted_at"
-    t.datetime "created_at",                             null: false
-    t.datetime "updated_at",                             null: false
+    t.datetime "created_at",                           null: false
+    t.datetime "updated_at",                           null: false
     t.datetime "deleted_at"
     t.date     "original_submitted_date"
   end
@@ -867,6 +880,7 @@ ActiveRecord::Schema.define(version: 20160412140449) do
     t.boolean  "one_time_fee",                                                 default: false
     t.integer  "line_items_count",      limit: 4,                              default: 0
     t.text     "components",            limit: 65535
+    t.integer  "eap_id",                limit: 4
   end
 
   add_index "services", ["is_available"], name: "index_services_on_is_available", using: :btree
@@ -971,12 +985,15 @@ ActiveRecord::Schema.define(version: 20160412140449) do
 
   create_table "subsidies", force: :cascade do |t|
     t.integer  "pi_contribution",        limit: 4
-    t.datetime "created_at",                                      null: false
-    t.datetime "updated_at",                                      null: false
+    t.datetime "created_at",                                             null: false
+    t.datetime "updated_at",                                             null: false
     t.datetime "deleted_at"
     t.boolean  "overridden"
     t.integer  "sub_service_request_id", limit: 4
-    t.float    "stored_percent_subsidy", limit: 24, default: 0.0
+    t.integer  "total_at_approval",      limit: 4
+    t.string   "status",                 limit: 255, default: "Pending"
+    t.integer  "approved_by",            limit: 4
+    t.datetime "approved_at"
   end
 
   add_index "subsidies", ["sub_service_request_id"], name: "index_subsidies_on_sub_service_request_id", using: :btree
@@ -1095,17 +1112,6 @@ ActiveRecord::Schema.define(version: 20160412140449) do
 
   add_index "tokens", ["identity_id"], name: "index_tokens_on_identity_id", using: :btree
   add_index "tokens", ["service_request_id"], name: "index_tokens_on_service_request_id", using: :btree
-
-  create_table "user_notifications", force: :cascade do |t|
-    t.integer  "identity_id",     limit: 4
-    t.integer  "notification_id", limit: 4
-    t.boolean  "read"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-  end
-
-  add_index "user_notifications", ["identity_id"], name: "index_user_notifications_on_identity_id", using: :btree
-  add_index "user_notifications", ["notification_id"], name: "index_user_notifications_on_notification_id", using: :btree
 
   create_table "validation_conditions", force: :cascade do |t|
     t.integer  "validation_id",  limit: 4

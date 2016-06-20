@@ -78,41 +78,17 @@ rewriteoption = (myfilter, res) ->
     return optionlisting
 
 window.create_date_pickers = (from, to) ->
-  $("#{from}").datepicker
-    changeMonth: true,
-    changeYear: true,
-    dateFormat: "yy-mm-dd",
-    numberOfMonths: 3,
-    onClose: (selectedDate) ->
-      unless selectedDate == ""
-        $("#{to}").datepicker( "option", "minDate", selectedDate )
+  $("#{from}").datetimepicker(format: 'YYYY-MM-DD', allowInputToggle: true)
+  $("#{to}").datetimepicker(format: 'YYYY-MM-DD', allowInputToggle: true, useCurrent: false)
 
-  $("#{to}").datepicker
-    changeMonth: true,
-    changeYear: true,
-    dateFormat: "yy-mm-dd",
-    numberOfMonths: 3,
-    onClose: (selectedDate) ->
-      unless selectedDate == ""
-        $("#{from}").datepicker( "option", "maxDate", selectedDate )
+  $("#{from}").on "dp.change", (e) ->
+    $("#{to}").data('DateTimePicker').minDate(e.date)
 
-  minDate = $("#{from}").data("from")
-  maxDate = $("#{to}").data("to")
-
-  if minDate
-    $("#{from}").datepicker("option", "minDate", new Date(minDate))
-    $("#{to}").datepicker("option", "minDate", new Date(minDate))
-
-  if maxDate
-    $("#{from}").datepicker("option", "maxDate", new Date(maxDate))
-    $("#{to}").datepicker("option", "maxDate", new Date(maxDate))
+  $("#{to}").on "dp.change", (e) ->
+    $("#{from}").data('DateTimePicker').maxDate(e.date)
 
 window.create_single_date_pickers = ->
-  $('.date_field').datepicker
-    changeMonth: true,
-    changeYear: true,
-    dateFormat: "yy-mm-dd",
-    numberOfMonths: 3,
+  $(".datetimepicker").datetimepicker(format: 'YYYY-MM-DD', allowInputToggle: true)
 
 window.check_deps = (parent_id) ->
   $(".check_dep_class").each ->

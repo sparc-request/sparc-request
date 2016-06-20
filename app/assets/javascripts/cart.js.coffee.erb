@@ -29,7 +29,7 @@ removeService = (sr_id, id, move_on) ->
     url: "/service_requests/#{sr_id}/remove_service/#{id}"
     success: (data, textStatus, jqXHR) ->
       if move_on
-        window.location.replace($("#user_portal_link").val())
+        window.location.replace($("#dashboard_link").val())
 
 requestSubmittedDialog = (sr_id, id)->
   options = {
@@ -85,7 +85,7 @@ $(document).ready ->
             addService(sr_id, id)
             $(this).dialog("close")
           "No": ->
-            window.location.replace($("#user_portal_link").val())
+            window.location = "/dashboard"
             $(this).dialog("close")
       }
       $('#new_request_dialog').dialog(options).dialog("open")

@@ -54,8 +54,10 @@ RSpec.describe "review page", js: true do
     it 'Should submit the page', js: true do
       find("#submit_services1").click
       wait_for_javascript_to_finish
-      click_button("No")
-      wait_for_javascript_to_finish
+      if SYSTEM_SATISFACTION_SURVEY
+        click_button("No")
+        wait_for_javascript_to_finish
+      end
       service_request_test = ServiceRequest.find(service_request.id)
       expect(service_request_test.status).to eq("submitted")
     end
@@ -74,7 +76,7 @@ RSpec.describe "review page", js: true do
         wait_for_javascript_to_finish
         find("button.ui-button .ui-button-text", text: "Yes").click
         wait_for_javascript_to_finish
-        expect(current_path).to eq(portal_root_path)
+        expect(current_path).to eq(dashboard_root_path)
       end
     end
 
@@ -89,11 +91,13 @@ RSpec.describe "review page", js: true do
     end
   end
 
-  describe "clicking get a cost estimate and declining the system satisfaction survey" do
+  describe "clicking get a cost estimate and declining the system satisfaction survey (if turned on)" do
     it 'Should submit the page', js: true do
       find("#get_a_cost_estimate").click
-      find(:xpath, "//button/span[text()='No']/..").click
-      wait_for_javascript_to_finish
+      if SYSTEM_SATISFACTION_SURVEY
+        find(:xpath, "//button/span[text()='No']/..").click
+        wait_for_javascript_to_finish
+      end
       service_request_test = ServiceRequest.find(service_request.id)
       expect(service_request_test.status).to eq("get_a_cost_estimate")
     end
@@ -109,8 +113,10 @@ RSpec.describe "review page", js: true do
       clear_emails
       find("#submit_services1").click
       wait_for_javascript_to_finish
-      click_button("No")
-      wait_for_javascript_to_finish
+      if SYSTEM_SATISFACTION_SURVEY
+        click_button("No")
+        wait_for_javascript_to_finish
+      end
       @email = all_emails.find { |email| email.subject == "Epic Rights Approval"}
       service_request.update_attributes(status: 'submitted')
     end

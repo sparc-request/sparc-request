@@ -1,9 +1,10 @@
 #footer.row
   .container_12.col-md-12
-    = mail_to t('footer.mail_to'), t('footer.mail_link'), :subject => t('footer.mail_subject')
+    = mail_to t('footer.mail_to'), t('footer.mail_link'), subject: t('footer.mail_subject')
     |
-    = link_to t('footer.link_one_text'), t('footer.link_one_url'), :target => "_blank"
+    = link_to t('footer.link_one_text'), t('footer.link_one_url'), target: "_blank"
     |
-    = link_to t('footer.link_two_text'), t('footer.link_two_url'), :target => "_blank"
+    = link_to t('footer.link_two_text'), t('footer.link_two_url'), target: "_blank"
     |
-    = link_to t('footer.link_three_text'), t('footer.link_three_url'), :target => "_blank"
+    = link_to t('footer.link_three_text'), t('footer.link_three_url'), target: "_blank"
+    

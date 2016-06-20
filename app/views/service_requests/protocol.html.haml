@@ -92,10 +92,3 @@
     = navigation_link t(:right_navigation)[:catalog], @back, 'catalog-button btn btn-info btn-lg btn-block button-hover'
     = render :partial => 'right_navigation'
 .continue.col-md-12= render :partial => 'service_requests/navigation'
-
-- if @ctrc_services
-  #ctrc_dialog
-    = I18n.t('protocol_information.ctrc_services_exist', :protocol_id => @service_request.protocol.id, :ssr_id => @ssr_id, :short_title => @service_request.protocol.short_title)
-    %br
-    %br
-    #redirect{:style => "float:right"}= link_to "Ok", protocol_service_request_path(@service_request)

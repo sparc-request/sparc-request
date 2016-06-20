@@ -102,4 +102,24 @@ RSpec.configure do |config|
   # test failures related to randomization by passing the same `--seed` value
   # as the one that triggered the failure.
   Kernel.srand config.seed
+
+  config.backtrace_exclusion_patterns << /gems/
+
+end
+
+Capybara.register_driver :webkit do |app|
+  driver = Capybara::Webkit::Driver.new(app, { set_skip_image_loading: true })
+  driver
+end
+
+SitePrism.configure do |config|
+  config.use_implicit_waits = true
+end
+
+Shoulda::Matchers.configure do |config|
+  config.integrate do |with|
+    # Choose a test framework:
+    with.test_framework :rspec
+    with.library :rails
+  end
 end

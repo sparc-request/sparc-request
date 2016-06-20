@@ -1,0 +1,22 @@
+#flashes_container
+  - if !content_for?(:error_messages)
+    - flash.each do |type, message|
+      .alert.alert-dismissable{ class: twitterized_type(type) }
+        %button.close{:'data-dismiss' => "alert", type: "button"}
+          %span{:'aria-hidden' => "true"} &times;
+          %span.sr-only
+            = t(:actions)[:close]
+        %p
+          = message
+    - flash.clear
+  - else
+    = content_for(:error_messages)
+
+:coffeescript
+  window.setTimeout (->
+    $(".alert-dismissable").fadeTo(500, 0).slideUp 500, ->
+      $(this).remove()
+      return
+
+    return
+  ), 4000

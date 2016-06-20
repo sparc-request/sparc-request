@@ -30,8 +30,6 @@
       window.I18n = #{current_translations.to_json.html_safe};
   %body
     #container.container
-      = render :partial => 'shared/header_logos'
-      #sparc_logo_header
-        = image_tag('sparc_request_header.jpg')
+      = render 'shared/header_logos', in_dashboard: false
       #content.container_12
         = yield

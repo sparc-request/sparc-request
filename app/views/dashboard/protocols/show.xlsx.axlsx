@@ -1,0 +1,248 @@
+# Copyright © 2011 MUSC Foundation for Research Development
+# All rights reserved.
+
+# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+# disclaimer in the documentation and/or other materials provided with the distribution.
+
+# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+# derived from this software without specific prior written permission.
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+def sum(columns, current_row)
+  "(#{columns.map { |c| c + current_row.to_s }.join('+')})"
+end
+
+
+wb = xlsx_package.workbook
+default = wb.styles.add_style alignment: { horizontal: :left }
+# centered = wb.styles.add_style alignment: { horizontal: :center }
+# bordered = wb.styles.add_style :border=> {:style => :thin, :color => "00000000"}
+# centered_bordered = wb.styles.add_style :border => {:style => :thin, :color => "00000000"}, :alignment => {:horizontal => :center}
+money = wb.styles.add_style :format_code => '$#,##0.00_;[Red]-$#,##0.00'
+bold_money = wb.styles.add_style :format_code => '$#,##0.00_;[Red]-$#,##0.00', b: true
+percent = wb.styles.add_style :format_code => '0.00\%', b: true
+row_header_style = wb.styles.add_style b: true
+header_style = wb.styles.add_style sz: 12, b: true, bg_color: '0099FF', fg_color: 'FFFFFF', alignment: { horizontal: :left }
+sub_header_style = wb.styles.add_style sz: 12, b: true, bg_color: 'ADADAD', alignment: { horizontal: :left }
+org_header_style = wb.styles.add_style sz: 12, b: true, bg_color: 'CCCCCC', alignment: { horizontal: :left }
+
+arm_nr_totals = {}
+arm_r_totals = {}
+
+# Page for each arm
+@protocol.arms.each do |arm|
+  wb.add_worksheet(name: "#{arm.name}") do |sheet|
+
+    #Repeating protocol information on the top of each page
+    protocol_header_row = ["#{@protocol.class.to_s} Information", "", "", "", ""]
+    ((arm.visit_groups.count * 3) + 5).times {protocol_header_row << ""}
+    sheet.add_row protocol_header_row, :style => header_style
+    sheet.add_row ["SPARC #{@protocol.class.to_s} ID:",@protocol.id], :style => default
+    sheet.add_row ["Short Title:",@protocol.short_title], :style => default
+    sheet.add_row ["Protocol Title:", @protocol.short_title], :style => default
+    sheet.add_row ["Sponsor:", @protocol.sponsor_name], :style => default
+    sheet.add_row ["Primary PI Name:", @protocol.primary_principal_investigator.full_name], :style => default
+
+    #Header Section
+    arm_header_row = ["Selected Services", "CPT Code", "Negotiated Reimbursement (NR)", "Hospital Cost (Service Rate)", "Research Cost (Your Cost)"]
+    arm_label_row = [arm.name, "", "", "", ""]
+    label_row = ["", "", "", "", ""]
+
+    #Column headers and labels for each visit_group, meaning each visit / appointment
+    arm.visit_groups.each do |vg|
+      arm_header_row << ["Procedure Occurence (N)", vg.name, ""]
+      label_row << ["N", "NR", "R Cost"]
+      arm_label_row << ["", "", ""]
+    end
+
+    arm_header_row << ["Total NR Per Patient", "Total Research Cost Per Patient", "# of Subjects", "Total NR Per Study", "Total Research Cost Per Study"]
+    label_row << ["NR", "R Cost", "", "NR", "R Cost"]
+    sheet.add_row arm_header_row.flatten, :style => header_style
+
+    # Fetch a bunch of columns
+    total_nr_per_patient_column = sheet.rows.last.cells[-5].r[/([A-Z]+)/]
+    total_research_amount_column = sheet.rows.last.cells[-4].r[/([A-Z]+)/]
+    number_of_subjects_column = sheet.rows.last.cells[-3].r[/([A-Z]+)/]
+    total_nr_per_study_column = sheet.rows.last.cells[-2].r[/([A-Z]+)/]
+    total_r_cost_per_study_column = sheet.rows.last.cells[-1].r[/([A-Z]+)/]
+    sheet.add_row arm_label_row.flatten, :style => sub_header_style
+    n_columns = sheet.rows.last.cells.drop(5).each_slice(3).map { |cs| cs[0].r[/([A-Z]+)/] }
+    r_columns = sheet.rows.last.cells.drop(5).each_slice(3).map { |cs| cs[2].r[/([A-Z]+)/] }
+    nr_columns = sheet.rows.last.cells.drop(5).each_slice(3).map { |cs| cs[1].r[/([A-Z]+)/] }
+
+    sheet.add_row label_row.flatten, :style => default
+
+
+
+    #Displays line_items_visits, grouped by organization from the sub service request
+    arm.line_items_visits.includes(:line_item).group_by{|liv| liv.line_item.sub_service_request}.each do |service_request, line_items_visits|
+      ssr_row = [service_request.organization.name, "", "", "", ""]
+      ((arm.visit_groups.count * 3) + 5).times {ssr_row << ""}
+      sheet.add_row ssr_row, :style => org_header_style
+
+      current_row = sheet.rows.length + 1
+      line_items_visits.each do |liv|
+        @line_item_style_array = [default, default, money, money, money]
+        n_columns_sum = sum(n_columns, current_row)
+        nr_cell = "C#{current_row}"
+        your_cost_cell = "E#{current_row}"
+        total_nr_cell = total_nr_per_patient_column + current_row.to_s
+        total_research_amount_cell = total_research_amount_column + current_row.to_s
+        number_of_subjects_cell = number_of_subjects_column + current_row.to_s
+
+        line_item_row = [liv.line_item.service.name, liv.line_item.service.cpt_code, "0", cents_to_dollars(liv.line_item.service.current_effective_pricing_map.full_rate), cents_to_dollars(liv.line_item.applicable_rate)]
+        liv.visits.each_with_index do |visit, index|
+          n_cell = n_columns[index] + current_row.to_s
+          line_item_row << [liv.subject_count, "=#{nr_cell} * #{n_cell}", "=#{your_cost_cell} * #{n_cell}"]
+          @line_item_style_array << [default, money, money]
+        end
+        line_item_row << ["=#{nr_cell} * #{n_columns_sum}",
+          "=#{your_cost_cell} * #{n_columns_sum}",
+          liv.subject_count,
+          "=#{total_nr_cell} * #{number_of_subjects_cell}",
+          "=#{total_research_amount_cell} * #{number_of_subjects_cell}"]
+        @line_item_style_array << [money, money, default, money, money]
+        @line_item_style_array.flatten!
+        sheet.add_row line_item_row.flatten, :style => @line_item_style_array
+        current_row += 1
+      end
+    end
+
+    sheet.add_row
+    sheet.add_row
+    principle_row_no = sheet.rows.length + 2
+
+    additional_row = ["Additional Services and Study Team Assessments", "", "", "", ""]
+    principle_row = ["Principle Investigator", "", "0", "", "0"]
+    coordination_row = ["Study Coordination/Data Management", "", "0", "", "0"]
+    regulatory_row = ["Regulatory Processing", "", "0", "", "0"]
+    financial_row = ["Financial Management", "", "0", "", "0"]
+    bottom_totals = ["Total Per Visit", "", "", "", ""]
+
+    arm.visit_groups.each_with_index do |vg, idx|
+      additional_row << ["", "", ""]
+      principle_row << ["0", "=C#{principle_row_no} * #{n_columns[idx]}#{principle_row_no}", "=E#{principle_row_no} * #{n_columns[idx]}#{principle_row_no}"]
+      coordination_row << ["0", "=C#{principle_row_no + 1} * #{n_columns[idx]}#{principle_row_no + 1}", "=E#{principle_row_no + 1} * #{n_columns[idx]}#{principle_row_no + 1}"]
+      regulatory_row << ["0", "=C#{principle_row_no + 2} * #{n_columns[idx]}#{principle_row_no + 2}", "=E#{principle_row_no + 2} * #{n_columns[idx]}#{principle_row_no + 2}"]
+      financial_row << ["0", "=C#{principle_row_no + 3} * #{n_columns[idx]}#{principle_row_no + 3}", "=E#{principle_row_no + 3} * #{n_columns[idx]}#{principle_row_no + 3}"]
+      bottom_totals << ["",
+        "=SUM(#{nr_columns[idx]}1:#{nr_columns[idx]}#{principle_row_no+3})",
+        "=SUM(#{r_columns[idx]}1:#{r_columns[idx]}#{principle_row_no+3})"]
+    end
+
+    principle_row << ["=C#{principle_row_no} * #{sum(n_columns, principle_row_no)}",
+      "=E#{principle_row_no} * #{sum(n_columns, principle_row_no)}",
+      arm.subject_count,
+      "=#{total_nr_per_patient_column}#{principle_row_no} * #{number_of_subjects_column}#{principle_row_no}",
+      "=#{total_research_amount_column}#{principle_row_no} * #{number_of_subjects_column}#{principle_row_no}"]
+    coordination_row << ["=C#{principle_row_no+1} * #{sum(n_columns, principle_row_no+1)}",
+      "=E#{principle_row_no+1} * #{sum(n_columns, principle_row_no+1)}",
+      arm.subject_count,
+      "=#{total_nr_per_patient_column}#{principle_row_no+1} * #{number_of_subjects_column}#{principle_row_no+1}",
+      "=#{total_research_amount_column}#{principle_row_no+1} * #{number_of_subjects_column}#{principle_row_no+1}"]
+    regulatory_row << ["=C#{principle_row_no+2} * #{sum(n_columns, principle_row_no+2)}",
+      "=E#{principle_row_no+2} * #{sum(n_columns, principle_row_no+2)}",
+      arm.subject_count,
+      "=#{total_nr_per_patient_column}#{principle_row_no+2} * #{number_of_subjects_column}#{principle_row_no+2}",
+      "=#{total_research_amount_column}#{principle_row_no+2} * #{number_of_subjects_column}#{principle_row_no+2}"]
+    financial_row << ["=C#{principle_row_no+3} * #{sum(n_columns, principle_row_no+3)}",
+      "=E#{principle_row_no+3} * #{sum(n_columns, principle_row_no+3)}",
+      arm.subject_count,
+      "=#{total_nr_per_patient_column}#{principle_row_no+3} * #{number_of_subjects_column}#{principle_row_no+3}",
+      "=#{total_research_amount_column}#{principle_row_no+3} * #{number_of_subjects_column}#{principle_row_no+3}"]
+    bottom_totals << ["=SUM(#{total_nr_per_patient_column}1:#{total_nr_per_patient_column}#{principle_row_no+3})",
+      "=SUM(#{total_research_amount_column}1:#{total_research_amount_column}#{principle_row_no+3})",
+      arm.subject_count,
+      "=SUM(#{total_nr_per_study_column}1:#{total_nr_per_study_column}#{principle_row_no+3})",
+      "=SUM(#{total_r_cost_per_study_column}1:#{total_r_cost_per_study_column}#{principle_row_no+3})"]
+
+    sheet.add_row additional_row.flatten, :style => org_header_style
+    sheet.add_row principle_row.flatten, :style => @line_item_style_array
+    sheet.add_row coordination_row.flatten, :style => @line_item_style_array
+    sheet.add_row regulatory_row.flatten, :style => @line_item_style_array
+    sheet.add_row financial_row.flatten, :style => @line_item_style_array
+    sheet.add_row bottom_totals.flatten, :style => @line_item_style_array
+
+    arm_summary_row = ["#{arm.name}: Summary", "", "Negotiated Costs", "", "Research Cost"]
+    ((arm.visit_groups.count * 3) + 5).times {arm_summary_row << ""}
+    sheet.add_row arm_summary_row, :style => header_style
+    sheet.add_row ["#{arm.name}: Total Direct Costs",
+      "",
+      "=#{total_nr_per_study_column}#{principle_row_no+4}",
+      "",
+      "=#{total_r_cost_per_study_column}#{principle_row_no+4}"], :style => [default, default, money, default, money]
+    grand_totals_row = sheet.rows.length
+    arm_nr_totals[arm.name] = "C#{grand_totals_row}"
+    arm_r_totals[arm.name] = "E#{grand_totals_row}"
+  end
+end
+
+wb.insert_worksheet(0, name: "Summary") do |sheet|
+
+  @total_otf_direct_cost = @protocol.service_requests.map{|sr| sr.total_direct_costs_one_time}.sum
+
+  sheet.add_row ["#{@protocol.class.to_s} Information", "", "", "", "", "", ""], :style => header_style
+
+  sheet.add_row ["SPARC #{@protocol.class.to_s} ID:", "", @protocol.id], :style => default
+  sheet.add_row ["Short Title:", "", @protocol.short_title], :style => default
+  sheet.add_row ["Protocol Title:", "", @protocol.short_title], :style => default
+  sheet.add_row ["Sponsor:", "", @protocol.sponsor_name], :style => default
+  sheet.add_row ["Primary PI Name:", "", @protocol.primary_principal_investigator.full_name], :style => default
+  sheet.add_row ["Business Manager:", "", @protocol.billing_managers.map(&:full_name).try(:join, ', ')], :style => default
+  sheet.add_row ["Funding Source:", "", @protocol.display_funding_source_value], :style => default
+
+  sheet.add_row ["Protocol Arms", "", "", "", "", "", ""], :style => header_style
+  sheet.add_row ["Arm", "", "# of Subjects", "# of Visits", "", "", ""], :style => sub_header_style
+
+  @protocol.arms.each do |arm|
+    sheet.add_row [arm.name, "", arm.subject_count, arm.visit_count, "", "", ""], :style => default
+  end
+
+  sheet.add_row ["Other Services", "", "Negotiated Reimbursement (NR)", "Research Cost (Your Cost)", "Procedure Occurrence (N)", "NR", "R Cost"], :style => header_style
+  sheet.add_row ["Study Level Services (Pass Through)", "", "", "", "", "", ""], :style => sub_header_style
+
+  pi_start_up_row = sheet.rows.length + 1
+  sheet.add_row ["PI Start Up", "", "0", "0", "1", "=C#{pi_start_up_row}*E#{pi_start_up_row}", "=D#{pi_start_up_row}*E#{pi_start_up_row}"], :style => [default, default, money, money, default, money, money]
+  sheet.add_row ["Administrative Start Up", "", "0", "0","1", "=C#{pi_start_up_row+1}*E#{pi_start_up_row+1}", "=D#{pi_start_up_row+1}*E#{pi_start_up_row+1}"], :style => [default, default, money, money, default, money, money]
+  sheet.add_row ["IRB Fee", "", "0", "0", "1", "=C#{pi_start_up_row+2}*E#{pi_start_up_row+2}", "=D#{pi_start_up_row+2}*E#{pi_start_up_row+2}"], :style => [default, default, money, money, default, money, money]
+  sheet.add_row ["IDS Annual Review", "", "0", "0", "1", "=C#{pi_start_up_row+3}*E#{pi_start_up_row+3}", "=D#{pi_start_up_row+3}*E#{pi_start_up_row+3}"], :style => [default, default, money, money, default, money, money]
+
+  @protocol.service_requests.each do |sr|
+    sr.line_items.where(services: {one_time_fee: true}).each do |li|
+      li_row = sheet.rows.length + 1
+      sheet.add_row [li.service.name, "", "0", cents_to_dollars(li.applicable_rate), li.quantity, "=C#{li_row}*E#{li_row}", "=D#{li_row}*E#{li_row}"], :style => [default, default, money, money, default, money, money]
+    end
+  end
+
+  previous_row = sheet.rows.length
+  sheet.add_row ["Study Level Services (Total)", "", "=Sum(C#{pi_start_up_row}:C#{previous_row})", "=Sum(D#{pi_start_up_row}:D#{previous_row})", "", "=Sum(F#{pi_start_up_row}:F#{previous_row})", "=Sum(G#{pi_start_up_row}:G#{previous_row})"], :style => [row_header_style, row_header_style, bold_money, bold_money, row_header_style, bold_money, bold_money]
+  study_level_n_total_cell = "F#{previous_row+1}"
+  study_level_r_total_cell = "G#{previous_row+1}"
+
+  sheet.add_row ["Study Budget", "", "", "", "", "Total Negotiated Cost", "Total Research Cost"], :style => header_style
+  sheet.add_row ["Total Study Level", "", "", "", "", "=#{study_level_n_total_cell}", "=#{study_level_r_total_cell}"], :style => [default, default, default, default, default, money, money]
+  study_budget_start_row = sheet.rows.length
+  @protocol.arms.each do |arm|
+    sheet.add_row [arm.name, "", "", "", "", "='#{arm.name}'!#{arm_nr_totals[arm.name]}", "='#{arm.name}'!#{arm_r_totals[arm.name]}"], :style => [default, default, default, default, default, money, money]
+  end
+  study_budget_end_row = sheet.rows.length
+  sheet.add_row ["Total Direct Cost", "", "", "", "", "=SUM(F#{study_budget_start_row}:F#{study_budget_end_row})", "=SUM(G#{study_budget_start_row}:G#{study_budget_end_row})"], :style => [row_header_style, row_header_style, row_header_style, row_header_style, row_header_style, bold_money, bold_money]
+  
+  indirect_cost_percentage_row = sheet.rows.length + 1
+  sheet.add_row ["Indirect Cost Percentage", "30"], :style => [row_header_style, percent]
+
+  total_nr_budget = "F#{study_budget_end_row+1}+((B#{indirect_cost_percentage_row}/100.0)*F#{study_budget_end_row+1})"
+  total_r_budget  = "G#{study_budget_end_row+1}+((B#{indirect_cost_percentage_row}/100.0)*G#{study_budget_end_row+1})"
+
+  sheet.add_row ["Total Budget", "", "", "", "", "=#{total_nr_budget}", "=#{total_r_budget}"], :style => [row_header_style, row_header_style, row_header_style, row_header_style, row_header_style, bold_money, bold_money]
+end

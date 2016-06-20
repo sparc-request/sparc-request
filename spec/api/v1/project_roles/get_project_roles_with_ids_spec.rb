@@ -8,7 +8,6 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
       protocol = build(:protocol)
       protocol.save validate: false
 
-      # create_list(:project_role_with_identity, 5, protocol: protocol)
       user = create(:identity, ldap_uid: 'smarmy@musc.edu')
       create(:project_role, identity_id: user.id, protocol_id: protocol.id, project_rights: 'approve')
 

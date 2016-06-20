@@ -21,5 +21,31 @@
 FactoryGirl.define do
 
   factory :notification do
+    trait :without_validations do
+      to_create { |instance| instance.save(validate: false) }
+    end
+
+    transient do
+      body nil
+      message_created_at nil
+    end
+
+    after(:build) do |notification, evaluator|
+      if evaluator.body
+        message = create(:message,
+          notification_id: notification.id,
+          from: notification.originator_id,
+          to: notification.other_user_id,
+          body: evaluator.body)
+
+        if evaluator.message_created_at
+          message.update_attribute(:updated_at, evaluator.message_created_at)
+        end
+
+        notification.messages << message
+      end
+    end
+
+    factory :notification_without_validations, traits: [:without_validations]
   end
 end

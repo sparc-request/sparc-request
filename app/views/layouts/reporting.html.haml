@@ -18,29 +18,50 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-!!! 1.1
-%html{"xml:lang" => "en", :xmlns => "http://www.w3.org/1999/xhtml"}
+!!!
+%html
   %head
-    %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
-    %title= t 'application_title'
-    = stylesheet_link_tag "#{CUSTOM_ASSET_PATH}application", '960', 'jquery-ui', :media => 'all'
-    = javascript_include_tag "application"
+    %title SPARC Request Reporting
+    = stylesheet_link_tag "#{CUSTOM_ASSET_PATH}dashboard/application"
+    = javascript_include_tag 'dashboard/application'
+    = javascript_include_tag 'jquery.qtip.min.js'
+    /[if IE]
+      = stylesheet_link_tag 'ie'
+    /[if gt IE 7]
+      = stylesheet_link_tag 'ie8_plus'
+    /[if lt IE 8]
+      = javascript_include_tag "ie7_warning"
     = csrf_meta_tags
     :javascript
       window.I18n = #{current_translations.to_json.html_safe};
-  %body
-    // load spinner and cancel images so they are cached
-    = image_tag 'spinner.gif', :style => 'display:none'
+
+  %body#body
+    #ie7_warning{style: 'display: none'}
+      %p
+        = t('ie_warning.text1')
+      %br
+      %p
+        = t('ie_warning.text2')
+
     = image_tag 'cancel.png', :style => 'display:none'
 
-    #container.container
-      = render :partial => 'shared/header_logos'
-      #welcome_msg= show_welcome_message(current_user)
-      #sparc_logo_header
-        = image_tag('sparc_request_header.jpg')
-        #right_header
-      #content.container_12
-        - flash.each do |name, msg|
-          = content_tag :div, msg, :id => "flash_#{name}" if msg.is_a?(String)
+    #container
+      #processing_request.ui-corner-all{style: 'display:none'}
+        %br
+        = t(:cm_index)[:processing]
+        %br
+        = image_tag 'spinner.gif'
+      #header
+        = render 'shared/header_logos', in_dashboard: true
+        %input#current_user_id{type: 'hidden', value: @user.try(:id)}
+      = render 'layouts/dashboard/dashboard_header', user: @user
+
+      .notification_dialog
+      .flash
+        = render "shared/flash"
+      #inner-content
         = yield
-      = render :partial => 'shared/piwik_tracking' if Rails.env == 'production'
+
+  %footer
+    = render 'shared/piwik_tracking' if Rails.env == 'production'
+    = render 'shared/modal'

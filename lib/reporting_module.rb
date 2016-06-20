@@ -37,11 +37,30 @@ class ReportingModule
 
   def records
     records ||= self.table.includes(self.includes)
+                    .joins(self.joins)
                     .where(self.where(self.params))
                     .uniq(self.uniq)
                     .group(self.group)
                     .order(self.order)
     records
+  end
+
+  def includes
+  end
+
+  def joins
+  end
+
+  def where
+  end
+
+  def uniq
+  end
+
+  def group
+  end
+
+  def order
   end
 
   def to_excel

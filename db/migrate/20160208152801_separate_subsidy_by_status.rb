@@ -48,7 +48,7 @@ class SeparateSubsidyByStatus < ActiveRecord::Migration
 
   def get_stored_percent subsidy
     contribution = subsidy.pi_contribution / 100.0
-    total = (subsidy.total_at_approval || subsidy.sub_service_request.direct_cost_total) / 100.0
+    total = ((subsidy.total_at_approval || subsidy.sub_service_request.direct_cost_total) / 100.0) || 0
     percent = total > 0 ? ((total - contribution) / total) * 100.0 : 0
 
     return percent.round(2)

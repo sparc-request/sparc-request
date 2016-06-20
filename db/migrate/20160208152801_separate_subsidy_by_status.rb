@@ -36,8 +36,12 @@ class SeparateSubsidyByStatus < ActiveRecord::Migration
     rescue
       total = calc_total_via_percent(subsidy)
     end
-    total = subsidy.pi_contribution if subsidy.pi_contribution > total
-    return total
+
+    if subsidy.pi_contribution
+      total = subsidy.pi_contribution if subsidy.pi_contribution > total
+    end
+
+    return total || 0
   end
 
   def calc_total_via_percent subsidy
@@ -48,7 +52,7 @@ class SeparateSubsidyByStatus < ActiveRecord::Migration
 
   def get_stored_percent subsidy
     contribution = subsidy.pi_contribution / 100.0
-    total = ((subsidy.total_at_approval || subsidy.sub_service_request.direct_cost_total) / 100.0) || 0
+    total = (subsidy.total_at_approval || subsidy.sub_service_request.direct_cost_total) / 100.0
     percent = total > 0 ? ((total - contribution) / total) * 100.0 : 0
 
     return percent.round(2)

@@ -36,7 +36,7 @@ class Identity < ActiveRecord::Base
   # :token_authenticatable, :confirmable,
   # :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :trackable, :omniauthable
+         :recoverable, :rememberable, :trackable, :omniauthable, omniauth_providers: [:cas]
 
   email_regexp = /\A[^@\s]+@([^@\s]+\.)+[^@\s]+\z/
   password_length = 6..128
@@ -189,6 +189,16 @@ class Identity < ActiveRecord::Base
 
     unless identity
       identity = Identity.create ldap_uid: auth.uid, first_name: auth.info.first_name, last_name: auth.info.last_name, email: auth.info.email, password: Devise.friendly_token[0,20], approved: true
+    end
+    identity
+  end
+
+  # search the database for the identity with the given ldap_uid, if not found, create a new one
+  def self.find_for_cas_oauth(auth, _signed_in_resource = nil)
+    identity = Identity.where(:ldap_uid => auth.uid).first
+
+    unless identity
+      identity = Identity.create :ldap_uid => auth.uid, :first_name => auth.info.first_name, :last_name => auth.info.last_name, :email => auth.info.email, :password => Devise.friendly_token[0,20], :approved => true
     end
     identity
   end

@@ -21,6 +21,7 @@
 # Use this hook to configure devise mailer, warden hooks and so forth.
 # Many of these configuration options can be set straight in your model.
 Devise.setup do |config|
+
   # Secret key
   config.secret_key = '7f528de4b8c0f8d08e6f2928c4284943a072b280cf29b845f3a978b032d2853c6a659f5d628c59aa34fea8a106395021803daff07f5a7c064d24ebcb79a8d0bd'
 
@@ -238,6 +239,19 @@ Devise.setup do |config|
                   :info_fields => {:email => 'mail', :name => 'cn', :last_name => 'sn', :first_name => 'givenName'},
                   :extra_fields => [:schacHomeOrganization]
   }
+
+  cas_config_file_path = Rails.root.join('config', 'cas.yml')
+  if File.exist?(cas_config_file_path)
+    cas_config = YAML.load_file(cas_config_file_path)[Rails.env]
+    if cas_config
+      config.omniauth :cas,
+                      url: cas_config['url'],
+                      login_url: cas_config['login_url'],
+                      service_validate_url: cas_config['service_validate_url'],
+                      callback_url: cas_config['callback_url'],
+                      debug: cas_config['debug']
+    end
+  end
 
   # ==> Warden configuration
   # If you want to use other strategies, that are not supported by Devise, or

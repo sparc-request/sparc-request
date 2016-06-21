@@ -54,7 +54,7 @@
             = number_to_currency(subsidy.current_cost)
           - if admin
             %td.text-center.approve_subsidy
-              %button.btn.btn-sm.btn-success#approve_subsidy_button{data: { subsidy_id: subsidy.id}}
+              %button.btn.btn-sm.btn-success#approve_subsidy_button{data: { subsidy_id: subsidy.id }}
                 %span.glyphicon.glyphicon-ok
           %td.text-center.edit_subsidy
             .btn.btn-warning.btn-sm#edit_subsidy_button{data: { subsidy_id: subsidy.id, admin: admin.to_s }}

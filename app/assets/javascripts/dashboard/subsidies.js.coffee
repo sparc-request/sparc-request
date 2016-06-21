@@ -48,9 +48,18 @@ $(document).ready ->
 
   $(document).on 'click', '#approve_subsidy_button', ->
     id = $(this).data('subsidy-id')
-    $.ajax
-      type: 'PATCH'
-      url:  "/dashboard/subsidies/#{id}/approve"
+    max_percent = parseFloat($(".subsidy_percent").data("max-percent"))
+    max_contribution = parseFloat($(".subsidy_contribution").data("max-contribution"))
+    current_percent = parseFloat($(".subsidy_percent").data("current-percent"))
+    current_contribution = parseFloat($(".subsidy_contribution").data("current-contribution"))
+    if current_percent > max_percent
+      alert("Error: Subsidy percentage cannot exceed #{max_percent}%")
+    else if current_contribution > max_contribution
+      alert("Error: Subsidy contribution cannot exceed $#{max_contribution}")
+    else
+      $.ajax
+        type: 'PATCH'
+        url:  "/dashboard/subsidies/#{id}/approve"
 
 #****************** SUBSIDY INFORMATION END ***************************#
 

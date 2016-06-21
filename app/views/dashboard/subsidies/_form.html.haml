@@ -36,7 +36,7 @@
               %tr
                 %th.col-sm-4
                   = t(:dashboard)[:subsidies][:form][:request_cost]
-                %td.col-sm-7.text-right#subsidy_form_table_request_cost{data: { cost: subsidy.total_request_cost }}
+                %td.col-sm-7.text-right#subsidy_form_table_request_cost{data: { cost: subsidy.total_request_cost}}
                   = number_to_currency(subsidy.total_request_cost / 100.0)
           .form-group
             = label_tag "current_percent_subsidy_of_total", t(:dashboard)[:subsidies][:form][:percent], class: "col-sm-4 control-label"

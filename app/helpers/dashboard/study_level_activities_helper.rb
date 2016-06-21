@@ -72,9 +72,7 @@ module Dashboard::StudyLevelActivitiesHelper
   end
 
   def fulfillments_drop_button line_item_id
-    content_tag(:button, class: 'btn btn-primary btn-sm otf_fulfillments list', title: "View Fulfillments", type: "button", aria: {label: "Fulfillments List"}, data: {toggle: "tooltip", animation: 'false'}) do
-      content_tag(:span, '', class: "glyphicon glyphicon-chevron-right", aria: {hidden: "true"})
-    end
+    raw content_tag(:button, 'List', id: "list-#{line_item_id}", type: 'button', class: 'btn btn-success otf_fulfillment_list', title: 'List', type: "button", aria: {label: "List Fulfillments"}, data: {line_item_id: line_item_id})
   end
 
   def fulfillment_options_buttons fulfillment_id

@@ -22,21 +22,22 @@
 
 - if SYSTEM_SATISFACTION_SURVEY != false
   = javascript_include_tag 'system_satisfaction'
-= form_tag navigate_service_request_path(@service_request), {:id => 'navigation_form', :class => 'root-view', :multipart => true} do
+= form_tag navigate_service_request_path(@service_request), {id: 'navigation_form', class: 'root-view', multipart: true} do
   = hidden_field_tag :location, ''
   = hidden_field_tag :validates, ''
-  = render :partial => 'steps'
+  = render partial: 'steps'
   .grid_12
     .view-anchor
       .confirmation-view
         .confirmation-details
-          %p.instructions= t(:sr_confirmation)[:instructions]
-          = render :partial => 'confirmation_details'
+          %p.instructions
+            = t(:sr_confirmation)[:instructions]
+          = render partial: 'confirmation_details'
           - if USE_EPIC and not QUEUE_EPIC
-            = render :partial => 'protocols/push_to_epic'
+            = render partial: 'protocols/push_to_epic'
           .links
             .confirmation-button.button-hover
-              = link_to t(:sr_confirmation)[:download_button], service_request_path(:format => :xlsx)
+              = link_to t(:sr_confirmation)[:download_button], service_request_path(format: :xlsx)
             .confirmation-button.button-hover
-              = link_to t(:sr_confirmation)[:portal_button], USER_PORTAL_LINK, :class => "user-portal"
+              = link_to t(:sr_confirmation)[:portal_button], DASHBOARD_LINK, class: "user-portal"
     .footer

@@ -21,7 +21,7 @@
 $('#defined_reports_step_2').html("<%= raw escape_javascript(render(:partial => 'setup')) %>");
 $('#report_selection').hide();
 $('#defined_reports, #defined_reports_step_2').show();
-$('#defined_reports_step_1').dialog('close');
+// $('#defined_reports_step_1').dialog('close');
 first_dependency = "#" + $('.reporting_field[has_dependencies]').attr('id')
 window.check_deps(first_dependency);
 

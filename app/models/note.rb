@@ -22,12 +22,11 @@ class Note < ActiveRecord::Base
   audited
 
   belongs_to :identity
-  belongs_to :sub_service_request
-  belongs_to :appointment
+  belongs_to :notable, polymorphic: true
 
-  attr_accessible :body, :identity_id, :sub_service_request_id
+  attr_accessible :body, :identity_id, :notable_type, :notable_id
 
-  validates_presence_of :body
+  validates_presence_of :body, :identity_id
   
   ### audit reporting methods ###
     

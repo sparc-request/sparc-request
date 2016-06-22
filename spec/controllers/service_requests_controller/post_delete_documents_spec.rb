@@ -24,6 +24,7 @@ RSpec.describe ServiceRequestsController do
     let!(:core2) { create(:core, parent_id: program.id) }
 
     before(:each) do
+      doc.update_attribute(:id, 1)
       doc.sub_service_requests << ssr1
       doc.sub_service_requests << ssr2
     end

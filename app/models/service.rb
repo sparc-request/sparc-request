@@ -58,6 +58,7 @@ class Service < ActiveRecord::Base
   attr_accessible :is_available
   attr_accessible :service_center_cost
   attr_accessible :cpt_code
+  attr_accessible :eap_id
   attr_accessible :charge_code
   attr_accessible :revenue_code
   attr_accessible :organization_id
@@ -70,14 +71,16 @@ class Service < ActiveRecord::Base
 
   validate :validate_pricing_maps_present
 
-  alias :process_ssrs_organization :organization
-
   ###############################################
   # Validations
   def validate_pricing_maps_present
     errors.add(:service, "must contain at least 1 pricing map.") if pricing_maps.length < 1
   end
   ###############################################
+
+  def process_ssrs_organization
+    organization.process_ssrs_parent
+  end
 
   # Return the parent organizations of the service.  Note that this
   # returns the organizations in the reverse order of

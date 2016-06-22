@@ -27,7 +27,7 @@
   = t(:mailer)[:header3]
 %p
   = t(:mailer)[:body1]
-  %strong= link_to t(:mailer)[:link2], portal_root_url(:protocol => 'https', :default_protocol => @protocol.id)
+  %strong= link_to t(:mailer)[:link2], dashboard_root_url(:protocol => 'https', :default_protocol => @protocol.id)
 %p
   %table{:style => 'border: 1px solid #000; width: 100%; border-collapse: collapse;'}
     %tr

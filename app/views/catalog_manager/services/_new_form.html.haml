@@ -102,6 +102,9 @@
           %fieldset.single_fieldset
             %table
               %tr
+                %th= f.label :eap_id, t(:organization_form)[:eap_id]
+                %td= f.text_field :eap_id
+              %tr
                 %th= f.label :cpt_code, t(:organization_form)[:cpt_code]
                 %td= f.text_field :cpt_code
               %tr

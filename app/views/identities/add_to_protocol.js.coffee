@@ -43,6 +43,8 @@ else if $(".project_role_<%= @project_role.identity.id %>").length > 0 and "<%= 
   $('.add-user-details').hide()
 else
   $('#user_detail_errors').hide()
+  $('.user-details-left').hide()
+  $('.user-details-right').hide()
   $('.authorized-users tbody').append("<%= escape_javascript(render :partial => 'shared/user_proxy_right', :locals => {:project_role => @project_role, :protocol_use_epic => @protocol_use_epic}) %>")
   $('.user_added_message p').html("<%= escape_javascript(t("protocol_shared.add_user")) %>")
   $('.user_added_message').show().fadeOut(2500, 'linear')

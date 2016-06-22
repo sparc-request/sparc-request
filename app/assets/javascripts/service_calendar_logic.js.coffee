@@ -19,6 +19,8 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 $(document).ready ->
+  # $('.selectpicker').selectpicker()
+
   # $(".visit_name").live 'mouseover', ->
   $(".visit_name").qtip
     overwrite: false
@@ -53,16 +55,6 @@ $(document).ready ->
   $('.visit_window_after').qtip
     overwrite: false
     content: I18n["service_calendar_toasts"]["visit_window_after"]
-    position:
-      corner:
-        target: 'topLeft'
-        tooltip: 'bottomLeft'
-    show:
-      ready: false
-
-  $('.jump_to_visit').qtip
-    overwrite: false
-    content: I18n["service_calendar_toasts"]["jump_to_visit"]
     position:
       corner:
         target: 'topLeft'
@@ -113,3 +105,22 @@ $(document).ready ->
   else if $('.line_item_visit_pricing').is(':visible')
     changing_tabs_calculating_rates()
 
+  $(document).on 'click', '.schedule_tabs a', (e) ->
+    e.preventDefault()
+
+    url = $(this).attr("data-url")
+    href = this.hash
+    pane = $(this)
+
+    # ajax load from data-url
+    $.ajax
+      type: 'GET'
+      url: url
+      dataType: 'html'
+      success: (data) ->
+        $(href).html data
+        pane.tab('show')
+
+  # load first tab content
+  $('#template-calendar').load $('#service_calendar .active a').attr("data-url"), (result) ->
+    $('#service_calendar .active a').tab('show')

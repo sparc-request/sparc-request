@@ -1,3 +1,6 @@
+#Copyright © 2011-2016 MUSC Foundation for Research Development.
+#All rights reserved.
+
 module HelpersV1
 
   def update_service_line_items_count_attribute(params)

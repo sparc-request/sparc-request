@@ -1,0 +1,57 @@
+-# Copyright © 2011 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+.panel-group#ssr_show_panel
+  .panel.panel-primary
+
+    .panel-heading
+      %h4.panel-title.pull-left
+        = "#{sub_service_request.protocol.short_title} > #{sub_service_request.organization.name} (#{sub_service_request.protocol.id}-#{sub_service_request.ssr_id})"
+      .pull-right
+        %button.btn.btn-sm.btn-default.notes.list{data: { notable_type: "SubServiceRequest", notable_id: sub_service_request.id }}
+          = t(:models)[:note][:plural]
+      .clearfix
+
+    %table.table.table-bordered.table-condensed
+      %thead
+        %tr.default
+          %th
+            = t(:dashboard)[:sub_service_requests][:header][:status]
+          %th
+            = t(:dashboard)[:sub_service_requests][:header][:owner]
+          %th
+            = t(:dashboard)[:sub_service_requests][:header][:fulfillment][:header]
+          %th
+            = t(:dashboard)[:sub_service_requests][:header][:cost]
+          %th
+            = t(:dashboard)[:sub_service_requests][:header][:user_cost]
+
+      %tbody
+        %tr
+          %td.text-center#service_request_status_dropdown
+            = select_tag "sub_service_request_status", options_for_select(sub_service_request ? sub_service_request.organization.get_available_statuses.invert : [], sub_service_request.try(:status)), :'data-sub_service_request_id' => sub_service_request.id, class: 'selectpicker'
+          %td.text-center#service_request_owner_dropdown
+            = service_request_owner_display(sub_service_request)
+          %td.text-center#ssr_fulfillment_status
+            = ready_for_fulfillment_display(current_user, sub_service_request)
+          %td.effective_cost
+            = number_to_currency(effective_current_total(sub_service_request))
+          %td.display_cost
+            = number_to_currency(user_display_total(sub_service_request))

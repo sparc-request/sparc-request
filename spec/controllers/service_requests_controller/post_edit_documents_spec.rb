@@ -11,6 +11,7 @@ RSpec.describe ServiceRequestsController do
     let!(:doc) { Document.create(service_request_id: service_request.id) }
 
     before(:each) do
+      doc.update_attribute(:id, 1)
       doc.sub_service_requests << sub_service_request
       session[:service_request_id] = service_request.id
       allow(controller).to receive(:initialize_service_request) do

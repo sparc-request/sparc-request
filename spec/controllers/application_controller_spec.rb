@@ -49,7 +49,7 @@ RSpec.describe ApplicationController, type: :controller do
   describe '#current_user' do
     it 'should call current_identity' do
       expect(controller).to receive(:current_identity)
-      controller.current_user
+      controller.send(:current_user)
     end
   end
 
@@ -66,7 +66,7 @@ RSpec.describe ApplicationController, type: :controller do
             .with(:service_request)
             .and_return(true)
           expect(controller).to_not receive(:authorization_error)
-          controller.authorize_identity
+          controller.send(:authorize_identity)
         end
       end
 
@@ -77,7 +77,7 @@ RSpec.describe ApplicationController, type: :controller do
             .with(:sub_service_request)
             .and_return(true)
           expect(controller).to_not receive(:authorization_error)
-          controller.authorize_identity
+          controller.send(:authorize_identity)
         end
       end
 
@@ -88,7 +88,7 @@ RSpec.describe ApplicationController, type: :controller do
             .with(:service_request)
             .and_return(false)
           expect(controller).to receive(:authorization_error)
-          controller.authorize_identity
+          controller.send(:authorize_identity)
         end
       end
 
@@ -99,7 +99,7 @@ RSpec.describe ApplicationController, type: :controller do
             .with(:sub_service_request)
             .and_return(false)
           expect(controller).to receive(:authorization_error)
-          controller.authorize_identity
+          controller.send(:authorize_identity)
         end
       end
     end
@@ -114,7 +114,7 @@ RSpec.describe ApplicationController, type: :controller do
           service_request = instance_double('ServiceRequest', status: 'first_draft', service_requester_id: nil)
           controller.instance_variable_set(:@service_request, service_request)
           expect(controller).to_not receive(:authorization_error)
-          controller.authorize_identity
+          controller.send(:authorize_identity)
         end
       end
 
@@ -124,7 +124,7 @@ RSpec.describe ApplicationController, type: :controller do
           controller.instance_variable_set(:@service_request, service_request)
           expect(controller).to_not receive(:authorization_error)
           expect(controller).to receive(:authenticate_identity!)
-          controller.authorize_identity
+          controller.send(:authorize_identity)
         end
       end
 
@@ -134,7 +134,7 @@ RSpec.describe ApplicationController, type: :controller do
           controller.instance_variable_set(:@service_request, service_request)
           expect(controller).to_not receive(:authorization_error)
           expect(controller).to receive(:authenticate_identity!)
-          controller.authorize_identity
+          controller.send(:authorize_identity)
         end
       end
 
@@ -143,7 +143,7 @@ RSpec.describe ApplicationController, type: :controller do
           service_request = instance_double('ServiceRequest', status: nil)
           controller.instance_variable_set(:@service_request, service_request)
           expect(controller).to receive(:authorization_error)
-          controller.authorize_identity
+          controller.send(:authorize_identity)
         end
       end
     end

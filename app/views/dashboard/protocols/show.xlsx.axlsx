@@ -60,7 +60,7 @@ arm_r_totals = {}
 
     #Column headers and labels for each visit_group, meaning each visit / appointment
     arm.visit_groups.each do |vg|
-      arm_header_row << ["Procedure Occurence (N)", vg.name, ""]
+      arm_header_row << ["", vg.name, ""]
       label_row << ["N", "NR", "R Cost"]
       arm_label_row << ["", "", ""]
     end
@@ -103,12 +103,12 @@ arm_r_totals = {}
         line_item_row = [liv.line_item.service.name, liv.line_item.service.cpt_code, "0", cents_to_dollars(liv.line_item.service.current_effective_pricing_map.full_rate), cents_to_dollars(liv.line_item.applicable_rate)]
         liv.visits.each_with_index do |visit, index|
           n_cell = n_columns[index] + current_row.to_s
-          line_item_row << [liv.subject_count, "=#{nr_cell} * #{n_cell}", "=#{your_cost_cell} * #{n_cell}"]
+          line_item_row << [visit.research_billing_qty, "=#{nr_cell} * #{n_cell}", "=#{your_cost_cell} * #{n_cell}"]
           @line_item_style_array << [default, money, money]
         end
         line_item_row << ["=#{nr_cell} * #{n_columns_sum}",
           "=#{your_cost_cell} * #{n_columns_sum}",
-          liv.subject_count,
+          arm.subject_count,
           "=#{total_nr_cell} * #{number_of_subjects_cell}",
           "=#{total_research_amount_cell} * #{number_of_subjects_cell}"]
         @line_item_style_array << [money, money, default, money, money]
@@ -237,7 +237,7 @@ wb.insert_worksheet(0, name: "Summary") do |sheet|
   end
   study_budget_end_row = sheet.rows.length
   sheet.add_row ["Total Direct Cost", "", "", "", "", "=SUM(F#{study_budget_start_row}:F#{study_budget_end_row})", "=SUM(G#{study_budget_start_row}:G#{study_budget_end_row})"], :style => [row_header_style, row_header_style, row_header_style, row_header_style, row_header_style, bold_money, bold_money]
-  
+
   indirect_cost_percentage_row = sheet.rows.length + 1
   sheet.add_row ["Indirect Cost Percentage", "30"], :style => [row_header_style, percent]
 

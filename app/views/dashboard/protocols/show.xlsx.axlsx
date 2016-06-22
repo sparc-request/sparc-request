@@ -109,7 +109,7 @@ arm_r_totals = {}
         end
         line_item_row << ["=#{nr_cell} * #{n_columns_sum}",
           "=#{your_cost_cell} * #{n_columns_sum}",
-          arm.subject_count,
+          liv.subject_count,
           "=#{total_nr_cell} * #{number_of_subjects_cell}",
           "=#{total_research_amount_cell} * #{number_of_subjects_cell}"]
         @line_item_style_array << [money, money, default, money, money]

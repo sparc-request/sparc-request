@@ -19,19 +19,19 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Dashboard::DocumentsController < Dashboard::BaseController
-  before_filter :find_protocol,             only: [:index, :new, :create, :edit, :update, :destroy]
-  before_filter :find_admin_for_protocol,   only: [:index, :new, :create, :edit, :update, :destroy]
-  before_filter :protocol_authorizer_edit,  only: [:new, :create, :edit, :update, :destroy]
+  before_filter :find_protocol,                   only: [:index, :new, :create, :edit, :update, :destroy]
+  before_filter :find_admin_for_protocol,         only: [:index, :new, :create, :edit, :update, :destroy]
+  before_filter :protocol_authorizer_view,        only: [:index]
+  before_filter :protocol_authorizer_edit,        only: [:new, :create, :edit, :update, :destroy]
+  
+  before_filter :find_document,                   only: [:edit, :update, :destroy]
+  before_filter :authorize_admin_access_document, only: [:edit, :update, :destroy]
 
   def index
     @documents          = @protocol.documents
     @permission_to_edit = @protocol.project_roles.where(identity: @user, project_rights: ['approve', 'request']).any?
     permission_to_view  = @protocol.project_roles.where(identity: @user, project_rights: ['approve', 'request', 'view']).any?
     @admin_orgs         = @user.authorized_admin_organizations
-
-    unless permission_to_view
-      @documents  = @documents.reject { |document| (@admin_orgs & document.all_organizations).empty? }
-    end
   end
 
   def new
@@ -54,14 +54,11 @@ class Dashboard::DocumentsController < Dashboard::BaseController
   end
 
   def edit
-    @document     = Document.find(params[:id])
     @action       = 'edit'
     @header_text  = t(:dashboard)[:documents][:edit]
   end
 
   def update
-    @document = Document.find(params[:id])
-
     if @document.update_attributes(params[:document])
       assign_organization_access
 
@@ -85,5 +82,17 @@ class Dashboard::DocumentsController < Dashboard::BaseController
 
   def assign_organization_access
     @document.sub_service_requests = @protocol.sub_service_requests.where(organization_id: params[:org_ids])
+  end
+
+  def find_document
+    @document = Document.find(params[:id])
+  end
+
+  def authorize_admin_access_document
+    @admin_orgs = @user.authorized_admin_organizations
+
+    unless @authorization.can_edit? || (@admin_orgs & @document.all_organizations).any?
+      render partial: 'service_requests/authorization_error', locals: { error: 'You are not allowed to edit this document.' }
+    end
   end
 end

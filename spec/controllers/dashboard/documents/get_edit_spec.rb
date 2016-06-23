@@ -2,31 +2,98 @@ require "rails_helper"
 
 RSpec.describe Dashboard::DocumentsController do
   describe "GET #edit" do
-    before(:each) do
-      @sub_service_request = findable_stub(SubServiceRequest) do
-        build_stubbed(:sub_service_request)
+
+    let(:logged_in_user) { create(:identity) }
+    let(:other_user) { create(:identity) }
+
+    before :each do
+      log_in_dashboard_identity(obj: logged_in_user)
+    end
+
+    context 'user is authorized to edit protocol' do
+      before :each do
+        @protocol       = create(:protocol_without_validations, primary_pi: logged_in_user)
+        organization    = create(:organization)
+        service_request = create(:service_request_without_validations, protocol: @protocol)
+        @ssr            = create(:sub_service_request_without_validations, service_request: service_request, organization: organization)
+                          create(:super_user, identity: logged_in_user, organization: organization)
+        @document       = create(:document)
+        params          = { protocol_id: @protocol.id, id: @document.id }
+        
+        xhr :get, :edit, params, format: :js
       end
 
-      @document = findable_stub(Document) { build_stubbed(:document) }
+      it 'should assign @protocol' do
+        expect(assigns(:protocol)).to eq(@protocol)
+      end
 
-      logged_in_user = build_stubbed(:identity)
-      log_in_dashboard_identity(obj: logged_in_user)
-      xhr :get, :edit, id: @document.id, sub_service_request_id: @sub_service_request.id
+      it 'should assign @admin' do
+        expect(assigns(:admin)).to eq(true)
+      end
+
+      it 'should assign @authorization' do
+        expect(assigns(:authorization)).to be
+      end
+
+      it 'should assign @document' do
+        expect(assigns(:document)).to eq(@document)
+      end
+
+      it 'should assign @action' do
+        expect(assigns(:action)).to eq('edit')
+      end
+
+      it 'should assign @header_text' do
+        expect(assigns(:header_text)).to eq('Edit Document')
+      end
+
+      it { is_expected.to respond_with :ok }
+      it { is_expected.to render_template "dashboard/documents/edit" }
     end
 
-    it "should set @document from params[:id]" do
-      expect(assigns(:document)).to eq(@document)
+    context 'user is not authorized to edit protocol' do
+      before :each do
+        protocol  = create(:protocol_without_validations, primary_pi: other_user)
+        document  = create(:document)
+        params    = { protocol_id: protocol.id, id: document.id }
+        
+        xhr :get, :edit, params, format: :js
+      end
+
+      it { is_expected.to respond_with :ok }
+      it { is_expected.to render_template "service_requests/_authorization_error" }
     end
 
-    it "should set @sub_service_request from params[:sub_service_request_id]" do
-      expect(assigns(:sub_service_request)).to eq(@sub_service_request)
+    context 'user has admin access to document' do
+      before :each do
+        protocol        = create(:protocol_without_validations, primary_pi: other_user)
+        organization    = create(:organization)
+        service_request = create(:service_request_without_validations, protocol: protocol)
+        ssr             = create(:sub_service_request_without_validations, service_request: service_request, organization: organization)
+                          create(:super_user, identity: logged_in_user, organization: organization)
+        document        = create(:document)
+        params          = { protocol_id: protocol.id, id: document.id }
+
+        document.sub_service_requests = [ssr]
+
+        xhr :get, :edit, params, format: :js
+      end
+
+      it { is_expected.to respond_with :ok }
+      it { is_expected.to render_template "dashboard/documents/edit" }
     end
 
-    it "should set @header_text" do
-      expect(assigns(:header_text)).not_to be_nil
-    end
+    context 'user does not have admin access to document' do
+      before :each do
+        protocol  = create(:protocol_without_validations, primary_pi: other_user)
+        document  = create(:document)
+        params    = { protocol_id: protocol.id, id: document.id }
 
-    it { is_expected.to respond_with :ok }
-    it { is_expected.to render_template "dashboard/documents/edit" }
+        xhr :get, :edit, params, format: :js
+      end
+
+      it { is_expected.to respond_with :ok }
+      it { is_expected.to render_template "service_requests/_authorization_error" }
+    end
   end
 end

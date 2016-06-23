@@ -239,6 +239,19 @@ Devise.setup do |config|
                   :extra_fields => [:schacHomeOrganization]
   }
 
+  cas_config_file_path = Rails.root.join('config', 'cas.yml')
+  if File.exist?(cas_config_file_path)
+    cas_config = YAML.load_file(cas_config_file_path)[Rails.env]
+    if cas_config
+      config.omniauth :cas,
+                      url: cas_config['url'],
+                      login_url: cas_config['login_url'],
+                      service_validate_url: cas_config['service_validate_url'],
+                      callback_url: cas_config['callback_url'],
+                      debug: cas_config['debug']
+    end
+  end
+
   # ==> Warden configuration
   # If you want to use other strategies, that are not supported by Devise, or
   # change the failure app, you can configure them inside the config.warden block.

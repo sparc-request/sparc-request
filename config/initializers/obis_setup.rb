@@ -69,7 +69,9 @@ begin
   ABOUT_SPARC_URL                           = application_config['about_sparc_url'] || nil
   USE_FEEDBACK_LINK                         = application_config['use_feedback_link'] || false
   NAVBAR_LINKS                              = application_config['navbar_links'] || {}
-
+  USE_CAS                                   = application_config['use_cas'] || false
+  USE_CAS_ONLY                              = application_config['use_cas_only'] || false
+  
   if LOCALE_OVERRIDE
     I18n.available_locales = [:en, LOCALE_OVERRIDE]
     I18n.default_locale = LOCALE_OVERRIDE

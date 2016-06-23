@@ -24,7 +24,7 @@ class CatalogManager::CoresController < CatalogManager::OrganizationsController
   
   def create
     @program = Program.find(params[:program_id])
-    @core = Core.new({:name => params[:name], :abbreviation => params[:name], :parent_id => @program.id})
+    @core = Core.new({name: params[:name], abbreviation: params[:name], parent_id: @program.id})
     @core.build_subsidy_map()
     @core.save
     
@@ -43,15 +43,11 @@ class CatalogManager::CoresController < CatalogManager::OrganizationsController
     end
 
     params[:core].delete(:id)
-    if @core.update_attributes(params[:core])
-      flash[:notice] = "#{@core.name} saved correctly."
-    else
-      flash[:alert] = "Failed to update #{@core.name}."
-    end
+    update_organization(@core, params[:core])
     
     @core.setup_available_statuses
     @entity = @core
-    respond_with @core, :location => catalog_manager_core_path(@core)          
+    respond_with @core, location: catalog_manager_core_path(@core)
   end
   
 end

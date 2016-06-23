@@ -33,4 +33,30 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
   def update
   end
 
+  protected
+
+  def update_organization(organization, params)
+    if organization.update_attributes(params)
+      flash[:notice] = "#{organization.name} saved correctly."
+    else
+      flash[:alert] = "Failed to update #{organization.name}."
+    end
+  end
+
+  def build_pricing_setups(organization)
+    if params[:pricing_setups]
+      params[:pricing_setups].each do |ps|
+        if ps[1]['id'].blank?
+          ps[1].delete(:id)
+          ps[1].delete(:newly_created)
+          organization.pricing_setups.build(ps[1])
+        else
+          # @provider.pricing_setups.find(ps[1]['id']).update_attributes(ps[1])
+          ps[1].delete(:id)
+          organization.pricing_setups.find(ps[1]['id']).update_attributes(ps[1])
+        end
+        organization.save
+      end
+    end
+  end
 end

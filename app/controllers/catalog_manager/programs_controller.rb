@@ -43,25 +43,9 @@ class CatalogManager::ProgramsController < CatalogManager::OrganizationsControll
     end
 
     params[:program].delete(:id)
+    update_organization(@program, params[:program])
 
-    if @program.update_attributes(params[:program])
-      flash[:notice] = "#{@program.name} saved correctly."
-    else
-      flash[:alert] = "Failed to update #{@program.name}."
-    end
-    
-    params[:pricing_setups].each do |ps|
-      if ps[1]['id'].blank?
-        ps[1].delete(:id)
-        ps[1].delete(:newly_created)
-        @program.pricing_setups.build(ps[1])
-      else
-        ps_id = ps[1]['id']
-        ps[1].delete(:id)
-        @program.pricing_setups.find(ps_id).update_attributes(ps[1])        
-      end
-      @program.save
-    end if params[:pricing_setups]
+    build_pricing_setups(@program)
   
     @program.setup_available_statuses      
     @entity = @program

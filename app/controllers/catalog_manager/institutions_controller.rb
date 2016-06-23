@@ -41,11 +41,7 @@ class CatalogManager::InstitutionsController < CatalogManager::OrganizationsCont
     end
     
     params[:institution].delete(:id)
-    if @institution.update_attributes(params[:institution])
-      flash[:notice] = "#{@institution.name} saved correctly."
-    else
-      flash[:alert] = "Failed to update #{@institution.name}."
-    end
+    update_organization(@institution, params[:institution])
     
     @institution.setup_available_statuses
     @entity = @institution

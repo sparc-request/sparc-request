@@ -26,15 +26,5 @@ RSpec.describe "Subsidy" do
   let_there_be_j
   build_service_request_with_study
 
-  describe "percent subsidy" do
-
-    it "should return the correct subsidy" do
-      expect(subsidy.percent_subsidy).to eq(20.0)
-    end
-
-    it "should return 100% subsidy if there is no pi contribution" do
-      subsidy.update_attribute(:pi_contribution, 0)
-      expect(subsidy.percent_subsidy).to eq(0.0)
-    end
-  end
+ # TO DO:  write specs for #contribution_caps and #subsidy_audits
 end

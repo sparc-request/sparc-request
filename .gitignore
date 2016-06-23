@@ -83,3 +83,6 @@ spec/examples.txt
 .tags
 .tags1
 /themes
+
+# Ignore vendor/bundle
+/vendor/bundle

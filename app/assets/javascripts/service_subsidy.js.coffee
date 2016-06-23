@@ -118,7 +118,8 @@ $(document).ready ->
         percent_subsidy = 0
       
       data = 'subsidy' :
-        'pi_contribution' : pi_contribution
+        'pi_contribution' : pi_contribution,
+        'percent_subsidy' : percent_subsidy
       $.ajax
         type: 'PATCH'
         url:  "/subsidies/#{subsidy_id}"

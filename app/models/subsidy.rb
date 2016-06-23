@@ -28,6 +28,7 @@ class Subsidy < ActiveRecord::Base
   attr_accessible :pi_contribution
   attr_accessible :overridden
   attr_accessible :status
+  attr_accessible :percent_subsidy
 
   delegate :organization, to: :sub_service_request, allow_nil: true
   delegate :subsidy_map, to: :organization, allow_nil: true
@@ -59,9 +60,9 @@ class Subsidy < ActiveRecord::Base
     end
   end
 
-  def percent_subsidy
-    pi_contribution.present? ? (pi_contribution.to_f / total_request_cost * 100.0).round(2) : nil
-  end
+  # def percent_subsidy
+  #   pi_contribution.present? ? (pi_contribution.to_f / total_request_cost * 100.0).round(2) : nil
+  # end
 
   def subsidy_audits
     subsidy_audits = AuditRecovery.where("auditable_id = ? AND auditable_type = ?", self.id, "Subsidy").order(:created_at)

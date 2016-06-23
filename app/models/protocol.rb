@@ -130,8 +130,7 @@ class Protocol < ActiveRecord::Base
     default_filter_params: { show_archived: 0 },
     available_filters: [
       :search_query,
-      :for_identity_id,
-      :filtered_for_admin,
+      :admin_filter,
       :show_archived,
       :with_status,
       :with_organization
@@ -165,30 +164,23 @@ class Protocol < ActiveRecord::Base
       where.not(project_roles: { project_rights: 'none' })
   }
 
+  scope :admin_filter, -> (params) {
+    filter, id  = params.split(" ")
+    if filter == 'for_admin'
+      for_admin(id)
+    elsif filter == 'for_identity'
+      for_identity_id(id)
+    end
+  }
+
   scope :for_admin, -> (identity_id) {
     # returns protocols with ssrs in orgs authorized for identity_id
     return nil if identity_id == '0'
-    joins(:organizations).
-      merge( Organization.authorized_for_identity(identity_id) ).distinct
-  }
 
-  scope :filtered_for_admin, -> (identity_id) {
-    # returns protocols with ssrs in orgs authorized for identity_id
-    return nil if identity_id == '0'
+    ssrs = SubServiceRequest.where.not(status: 'first_draft').where(organization_id: Organization.authorized_for_identity(identity_id))
 
-    # We want to find all protocols where the user is an Admin AND Authorized User
-    # as they will be filtered out by the SP Only Organizations queries
-    sp_only_admin_orgs        = Organization.authorized_for_identity(identity_id, true)
-
-    if sp_only_admin_orgs.any?
-      admin_protocols           = for_admin(identity_id)
-      authorized_user_protocols = joins(:project_roles).where(project_roles: { identity_id: identity_id }) & admin_protocols
-      visible_admin_protocols   = admin_protocols.to_a.reject { |p| p.should_be_hidden_for_sp?(sp_only_admin_orgs) }
-      
-      where(id: (authorized_user_protocols | visible_admin_protocols)).distinct
-    else
-      for_admin(identity_id)
-    end
+    joins(:sub_service_requests).
+      merge(ssrs).distinct
   }
 
   scope :show_archived, -> (boolean) {
@@ -197,14 +189,14 @@ class Protocol < ActiveRecord::Base
 
   scope :with_status, -> (status) {
     # returns protocols with ssrs in status
-    return nil if status == "" or status == [""]
+    return nil if status.reject!(&:blank?) == []
     joins(:sub_service_requests).
     where(sub_service_requests: { status: status }).distinct
   }
 
   scope :with_organization, -> (org_id) {
     # returns protocols with ssrs in org_id
-    return nil if org_id == "" or org_id == [""]
+    return nil if org_id.reject!(&:blank?) == []
     joins(:sub_service_requests).
     where(sub_service_requests: { organization_id: org_id }).distinct
   }
@@ -525,8 +517,8 @@ class Protocol < ActiveRecord::Base
     end
   end
 
-  def should_be_hidden_for_sp?(sp_only_admin_orgs)
-    (service_requests.reject { |sr| sr.should_be_hidden_for_sp?(sp_only_admin_orgs) }).empty?
+  def has_non_first_draft_ssrs?
+    sub_service_requests.where.not(status: 'first_draft').any?
   end
 
   private

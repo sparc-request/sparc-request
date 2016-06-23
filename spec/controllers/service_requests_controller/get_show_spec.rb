@@ -21,10 +21,6 @@ RSpec.describe ServiceRequestsController do
         expect(assigns(:protocol)).to eq service_request.protocol
       end
 
-      it 'should set service_list' do
-        expect(assigns(:service_list)).to eq service_request.service_list
-      end
-
       it 'should not set admin_offset' do
         expect(assigns(:admin_offset)).to_not be
       end
@@ -38,10 +34,6 @@ RSpec.describe ServiceRequestsController do
 
       it 'should set protocol' do
         expect(assigns(:protocol)).to eq service_request.protocol
-      end
-
-      it 'should set service_list' do
-        expect(assigns(:service_list)).to eq service_request.service_list
       end
 
       it 'should set admin_offset' do

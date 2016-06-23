@@ -29,8 +29,7 @@ class ProtocolFilter < ActiveRecord::Base
 
   attr_accessible :search_name
   attr_accessible :show_archived
-  attr_accessible :filtered_for_admin
-  attr_accessible :for_identity_id
+  attr_accessible :admin_filter
   attr_accessible :search_query
   attr_accessible :with_organization
   attr_accessible :with_status
@@ -46,8 +45,7 @@ class ProtocolFilter < ActiveRecord::Base
     dashboard_root_path(
       filterrific: {
         show_archived: (self.show_archived ? 1 : 0),
-        filtered_for_admin: self.filtered_for_admin,
-        for_identity_id: self.for_identity_id,
+        admin_filter: self.admin_filter,
         search_query: self.search_query,
         with_organization: self.with_organization,
         with_status: self.with_status

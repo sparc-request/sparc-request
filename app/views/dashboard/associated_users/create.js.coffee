@@ -23,7 +23,7 @@ $("#modal_errors").html("<%= escape_javascript(render(partial: 'shared/modal_err
 <% else %>
 <% if @current_user_created %>
 $("#documents-panel").html("<%= escape_javascript(render( 'dashboard/documents/documents_table', protocol: @protocol, permission_to_edit: @permission_to_edit || @admin )) %>")
-$("#service-requests-panel").html("<%= escape_javascript(render('dashboard/service_requests/service_requests', protocol: @protocol, sp_only_admin_orgs: @sp_only_admin_orgs, permission_to_edit: @permission_to_edit, permission_to_view: @permission_to_view, user: @user, view_only: false)) %>")
+$("#service-requests-panel").html("<%= escape_javascript(render('dashboard/service_requests/service_requests', protocol: @protocol, permission_to_edit: @permission_to_edit, user: @user, view_only: false)) %>")
 
 $("#documents-table").bootstrapTable()
 $(".service-requests-table").bootstrapTable()

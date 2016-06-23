@@ -18,92 +18,35 @@
 // INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 // TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-.protocols_index_row{
-    .id,.title,.pis{
-        cursor: pointer;
-    }
-}
+// replaced require_tree .
+@import 'associated_users';
+@import 'cover_letters';
+@import 'documents';
+@import 'epic_queues';
+@import 'layout';
+@import 'notifications';
+@import 'nprogress_config';
+@import 'payments';
+@import 'printer_friendly_requests';
+@import 'project';
+@import 'protocol';
+@import 'related_service_requests';
+@import 'service_calendar';
+@import 'service_requests';
+@import 'services';
+@import 'study_level_charges';
+@import 'sub_service_requests';
+@import 'twitter_typeahead';
+@import 'users';
 
-.do-not-display {
-  display: none;
-}
-
-/* Primary PI Typeahead Begin */
-.tt-menu {
-  width: 422px;
-  margin-top: 12px;
-  padding: 8px 0;
-  background-color: #fff;
-  border: 1px solid #ccc;
-  border: 1px solid rgba(0, 0, 0, 0.2);
-  border-radius: 8px;
-  box-shadow: 0 5px 10px rgba(0,0,0,.2);
-}
-
-.tt-suggestion {
-  padding: 3px 20px;
-  cursor: pointer;
-}
-/* Primary PI Typeahead End */
-
-/* New/Edit Protocol Form Begin */
-#funding-status   .col-lg-10,
-.pending_funding  .col-lg-10,
-#federal-non-phs  .col-lg-10,
-.approval_pending .col-lg-10 {
-  padding-top: 11px;
-}
-
-.investigational_products  .col-lg-10,
-.oral_health_cobre         .col-lg-10 {
-  padding-top: 6px;
-}
-
-#project-roles .form-group .col-lg-10 label {
-  margin-top: 8px;
-}
-
-.nct-number {
-  .col-lg-10 {
-    padding-top: 10px;
-  }
-}
-
-textarea {
-  resize: vertical;
-}
-
-/* New/Edit Protocol Form End */
-
-/* Show Protocol Begin */
-.view-protocol-details-modal {
-  width: 50% !important;
-}
-
-.export-consolidated-request {
-  display: inline-block;
-}
-
-.service-requests-table {
-  tr {
-    td:nth-child(4) {
-      .new-notification {
-        width: 100% !important;
-      }
-    }
-
-    td:nth-child(5) {
-      text-align: center !important;
-    }
-
-    .view-service-request, .edit-service-request {
-        margin: 5px 5px 5px 0px;
-    }
-  }
-}
-
-/* Show Protocol End*/
-
-.drop-underneath {
-  margin-top: 20px;
-}
+// original require files
+@import 'bootstrap-sprockets';
+@import 'bootstrap';
+@import 'bootstrap-select';
+@import 'bootstrap-table';
+@import 'bootstrap-table-custom';
+@import 'bootstrap-datetimepicker';
+@import 'editable/bootstrap-editable';
+@import 'jquery-ui';
+@import '960';
+@import 'jquery.toastmessage';

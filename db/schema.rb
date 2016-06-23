@@ -639,16 +639,15 @@ ActiveRecord::Schema.define(version: 20160609132758) do
   add_index "project_roles", ["protocol_id"], name: "index_project_roles_on_protocol_id", using: :btree
 
   create_table "protocol_filters", force: :cascade do |t|
-    t.integer  "identity_id",        limit: 4
-    t.string   "search_name",        limit: 255
+    t.integer  "identity_id",       limit: 4
+    t.string   "search_name",       limit: 255
     t.boolean  "show_archived"
-    t.integer  "for_identity_id",    limit: 4
-    t.string   "search_query",       limit: 255
-    t.string   "with_organization",  limit: 255
-    t.string   "with_status",        limit: 255
+    t.string   "search_query",      limit: 255
+    t.string   "with_organization", limit: 255
+    t.string   "with_status",       limit: 255
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.integer  "filtered_for_admin", limit: 4
+    t.string   "admin_filter",      limit: 255
   end
 
   create_table "protocols", force: :cascade do |t|

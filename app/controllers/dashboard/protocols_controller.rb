@@ -26,7 +26,6 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   before_filter :find_admin_for_protocol,                         only: [:show, :edit, :update, :update_protocol_type, :display_requests]
   before_filter :protocol_authorizer_view,                        only: [:show, :view_full_calendar, :display_requests]
   before_filter :protocol_authorizer_edit,                        only: [:edit, :update, :update_protocol_type]
-  before_filter :find_service_provider_only_admin_organizations,  only: [:show, :display_requests]
 
   def index
 
@@ -38,12 +37,12 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     # if we are an admin we want to default to admin organizations
     if @admin
       @organizations = Dashboard::IdentityOrganizations.new(@user.id).admin_organizations_with_protocols
-      default_filter_params[:filtered_for_admin]       = @user.id.to_s
+      default_filter_params[:admin_filter] = "for_admin #{@user.id}"
     else
       @organizations = Dashboard::IdentityOrganizations.new(@user.id).general_user_organizations_with_protocols
-      default_filter_params[:for_identity_id] = @user.id.to_s
+      default_filter_params[:admin_filter] = "for_identity #{@user.id}"
+      params[:filterrific][:admin_filter] = "for_identity #{@user.id}" if params[:filterrific]
     end
-
     @filterrific =
       initialize_filterrific(Protocol, params[:filterrific],
         default_filter_params: default_filter_params,
@@ -54,7 +53,8 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
         persistence_id: false #resets filters on page reload
       ) || return
 
-    @protocols        = @filterrific.find.page(params[:page])
+    @protocols = @filterrific.find.page(params[:page])
+
     @admin_protocols  = Protocol.for_admin(@user.id).pluck(:id)
     @protocol_filters = ProtocolFilter.latest_for_user(@user.id, 5)
     #toggles the display of the navigation bar, instead of breadcrumbs
@@ -74,13 +74,12 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
       format.html {
         session[:breadcrumbs].clear.add_crumbs(protocol_id: @protocol.id)
         @permission_to_edit = @authorization.present? ? @authorization.can_edit? : false
-        @permission_to_view = @authorization.present? ? @authorization.can_view? : false
         @protocol_type      = @protocol.type.capitalize
 
         render
       }
       format.xlsx {
-        response.headers['Content-Disposition'] = "attachment; filename='(#{@protocol.id}) Consolidated Corporate Study Budget.xlsx'"
+        response.headers['Content-Disposition'] = "attachment; filename=\"(#{@protocol.id}) Consolidated Corporate Study Budget.xlsx\""
       }
     end
   end
@@ -95,15 +94,16 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
   def create
     protocol_class = params[:protocol][:type].capitalize.constantize
-    @protocol = protocol_class.create(params[:protocol])
-    @protocol.update_attributes(study_type_question_group_id: StudyTypeQuestionGroup.active_id)
+    @protocol = protocol_class.new(params[:protocol])
+    @protocol.study_type_question_group_id = StudyTypeQuestionGroup.active_id
 
     if @protocol.valid?
-      if @protocol.project_roles.where(identity_id: current_user.id).empty?
+      unless @protocol.project_roles.map(&:identity_id).include? current_user.id
         # if current user is not authorized, add them as an authorized user
         @protocol.project_roles.new(identity_id: current_user.id, role: 'general-access-user', project_rights: 'approve')
-        @protocol.save
       end
+
+      @protocol.save
 
       if USE_EPIC && @protocol.selected_for_epic
         @protocol.ensure_epic_user
@@ -120,7 +120,12 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     @protocol_type      = @protocol.type
     @permission_to_edit = @authorization.nil? ? false : @authorization.can_edit?
 
+    if @permission_to_edit
+      @protocol.study_type_question_group_id = StudyTypeQuestionGroup.active_id
+    end
+
     @protocol.populate_for_edit
+ 
     session[:breadcrumbs].
       clear.
       add_crumbs(protocol_id: @protocol.id, edit_protocol: true)
@@ -206,9 +211,8 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def display_requests
-    permission_to_edit  = @authorization.present? ? @authorization.can_edit? : false
-    permission_to_view  = @authorization.present? ? @authorization.can_view? : false
-    modal               = render_to_string(partial: 'dashboard/protocols/requests_modal', locals: { protocol: @protocol, user: @user, sp_only_admin_orgs: @sp_only_admin_orgs, permission_to_edit: permission_to_edit, permission_to_view: permission_to_view })
+    permission_to_edit = @authorization.present? ? @authorization.can_edit? : false
+    modal              = render_to_string(partial: 'dashboard/protocols/requests_modal', locals: { protocol: @protocol, user: @user, permission_to_edit: permission_to_edit })
 
     data = { modal: modal }
     render json: data
@@ -224,10 +228,6 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
   def find_protocol
     @protocol = Protocol.find(params[:id])
-  end
-
-  def find_service_provider_only_admin_organizations
-    @sp_only_admin_orgs = @admin ? @user.authorized_admin_organizations({ sp_only: true }) : nil
   end
 
   def conditionally_activate_protocol

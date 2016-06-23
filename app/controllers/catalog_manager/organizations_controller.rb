@@ -17,41 +17,20 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-class CatalogManager::CoresController < CatalogManager::OrganizationsController
+class CatalogManager::OrganizationsController < CatalogManager::AppController
   layout false
   respond_to :js, :html
-  
+
   def create
-    @program = Program.find(params[:program_id])
-    @core = Core.new({:name => params[:name], :abbreviation => params[:name], :parent_id => @program.id})
-    @core.build_subsidy_map()
-    @core.save
-    
-    respond_with [:catalog_manager, @core]
   end
-  
+
   def show
-    redirect_to catalog_manager_organization_path( params[:id], path: catalog_manager_core_path )
+    @path = params[:path]
+    @organization = Organization.find(params[:id])
+    @organization.setup_available_statuses
   end
-  
+
   def update
-    @core = Core.find(params[:id])
-
-    unless params[:core][:tag_list]
-      params[:core][:tag_list] = ""
-    end
-
-    params[:core].delete(:id)
-    if @core.update_attributes(params[:core])
-      flash[:notice] = "#{@core.name} saved correctly."
-    else
-      flash[:alert] = "Failed to update #{@core.name}."
-    end
-    
-    @core.setup_available_statuses
-    @entity = @core
-    respond_with @core, :location => catalog_manager_core_path(@core)          
   end
-  
+
 end

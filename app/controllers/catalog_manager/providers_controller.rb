@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class CatalogManager::ProvidersController < CatalogManager::AppController
+class CatalogManager::ProvidersController < CatalogManager::OrganizationsController
   respond_to :js, :html, :json
   layout false
 
@@ -32,8 +32,7 @@ class CatalogManager::ProvidersController < CatalogManager::AppController
   end
 
   def show
-    @provider = Provider.find(params[:id])
-    @provider.setup_available_statuses
+    redirect_to catalog_manager_organization_path( params[:id], path: catalog_manager_provider_path )
   end
 
   def update

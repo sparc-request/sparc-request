@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class CatalogManager::ProgramsController < CatalogManager::AppController
+class CatalogManager::ProgramsController < CatalogManager::OrganizationsController
   respond_to :js, :html, :json
   layout false
 
@@ -32,9 +32,7 @@ class CatalogManager::ProgramsController < CatalogManager::AppController
   end
 
   def show
-    @organization = Organization.find params[:id]
-    @program = Program.find params[:id]
-    @program.setup_available_statuses
+    redirect_to catalog_manager_organization_path( params[:id], path: catalog_manager_program_path )
   end
   
   def update

@@ -462,7 +462,7 @@ class ServiceRequestsController < ApplicationController
 
   def delete_documents
     # deletes a document unless we are working with a sub_service_request
-    @document = @service_request.documents.find params[:document_id]
+    @document = @service_request.protocol.documents.find params[:document_id]
     @tr_id = "#document_id_#{@document.id}"
 
     if @sub_service_request.nil?
@@ -475,7 +475,7 @@ class ServiceRequestsController < ApplicationController
   end
 
   def edit_documents
-    @document = @service_request.documents.find params[:document_id]
+    @document = @service_request.protocol.documents.find params[:document_id]
     @service_list = @service_request.service_list
   end
 

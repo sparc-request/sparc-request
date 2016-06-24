@@ -15,7 +15,7 @@ RSpec.describe Dashboard::DocumentsController do
         @protocol       = create(:protocol_without_validations, primary_pi: logged_in_user)
         @organization   = create(:organization)
         service_request = create(:service_request_without_validations, protocol: @protocol)
-        @ssr            = create(:sub_service_request_without_validations, service_request: service_request, organization: @organization)
+        @ssr            = create(:sub_service_request_without_validations, service_request: service_request, organization: @organization, status: 'draft')
                           create(:super_user, identity: logged_in_user, organization: @organization)
 
         get :index, protocol_id: @protocol.id, format: :json

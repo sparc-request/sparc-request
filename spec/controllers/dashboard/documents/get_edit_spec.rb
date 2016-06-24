@@ -15,12 +15,15 @@ RSpec.describe Dashboard::DocumentsController do
         @protocol       = create(:protocol_without_validations, primary_pi: logged_in_user)
         organization    = create(:organization)
         service_request = create(:service_request_without_validations, protocol: @protocol)
-        @ssr            = create(:sub_service_request_without_validations, service_request: service_request, organization: organization)
+        @ssr            = create(:sub_service_request_without_validations, service_request: service_request, organization: organization, status: 'draft')
                           create(:super_user, identity: logged_in_user, organization: organization)
-        @document       = create(:document)
-        params          = { protocol_id: @protocol.id, id: @document.id }
+        @document       = create(:document, protocol: @protocol)
         
-        xhr :get, :edit, params, format: :js
+        xhr :get, :edit, id: @document.id, format: :js
+      end
+
+      it 'should assign @document' do
+        expect(assigns(:document)).to eq(@document)
       end
 
       it 'should assign @protocol' do
@@ -33,10 +36,6 @@ RSpec.describe Dashboard::DocumentsController do
 
       it 'should assign @authorization' do
         expect(assigns(:authorization)).to be
-      end
-
-      it 'should assign @document' do
-        expect(assigns(:document)).to eq(@document)
       end
 
       it 'should assign @action' do
@@ -54,10 +53,9 @@ RSpec.describe Dashboard::DocumentsController do
     context 'user is not authorized to edit protocol' do
       before :each do
         protocol  = create(:protocol_without_validations, primary_pi: other_user)
-        document  = create(:document)
-        params    = { protocol_id: protocol.id, id: document.id }
+        document  = create(:document, protocol: protocol)
         
-        xhr :get, :edit, params, format: :js
+        xhr :get, :edit, id: document.id, format: :js
       end
 
       it { is_expected.to respond_with :ok }
@@ -69,14 +67,13 @@ RSpec.describe Dashboard::DocumentsController do
         protocol        = create(:protocol_without_validations, primary_pi: other_user)
         organization    = create(:organization)
         service_request = create(:service_request_without_validations, protocol: protocol)
-        ssr             = create(:sub_service_request_without_validations, service_request: service_request, organization: organization)
+        ssr             = create(:sub_service_request_without_validations, service_request: service_request, organization: organization, status: 'draft')
                           create(:super_user, identity: logged_in_user, organization: organization)
-        document        = create(:document)
-        params          = { protocol_id: protocol.id, id: document.id }
+        document        = create(:document, protocol: protocol)
 
         document.sub_service_requests = [ssr]
 
-        xhr :get, :edit, params, format: :js
+        xhr :get, :edit, id: document.id, format: :js
       end
 
       it { is_expected.to respond_with :ok }
@@ -86,10 +83,9 @@ RSpec.describe Dashboard::DocumentsController do
     context 'user does not have admin access to document' do
       before :each do
         protocol  = create(:protocol_without_validations, primary_pi: other_user)
-        document  = create(:document)
-        params    = { protocol_id: protocol.id, id: document.id }
+        document  = create(:document, protocol: protocol)
 
-        xhr :get, :edit, params, format: :js
+        xhr :get, :edit, id: document.id, format: :js
       end
 
       it { is_expected.to respond_with :ok }

@@ -51,6 +51,6 @@ module Dashboard::DocumentsHelper
                         document.sub_service_requests.map(&:organization_id)
                       end
 
-    options_from_collection_for_select(document.protocol.organizations, :id, :name, default_select)
+    options_from_collection_for_select(document.protocol.organizations.distinct.sort_by(&:name), :id, :name, default_select)
   end
 end

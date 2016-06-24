@@ -22,21 +22,91 @@ require 'rails_helper'
 
 RSpec.feature 'User wants to add a document', js: true do
   let!(:logged_in_user) { create(:identity, last_name: "Doe", first_name: "John", ldap_uid: "johnd", email: "johnd@musc.edu", password: "p4ssword", password_confirmation: "p4ssword", approved: true) }
-  let!(:protocol) { create(:unarchived_project_without_validations, primary_pi: logged_in_user) }
+  let!(:other_user) { create(:identity, last_name: "Doe", first_name: "Jane", ldap_uid: "janed", email: "janed@musc.edu", password: "p4ssword", password_confirmation: "p4ssword", approved: true) }
 
-  before :each do
-    @page = Dashboard::Protocols::ShowPage.new
-    @page.load(id: protocol.id)
-  end
+  fake_login_for_each_test("johnd")
 
-  context 'and has permission to do so and clicks \'Add a New Document\'' do
-    scenario 'and sees the document modal' do
-      @page.enabled_add_document_button.click
+  context 'and has permission to do so' do
+    before :each do
+      @protocol = create(:unarchived_study_without_validations, primary_pi: logged_in_user)
 
-      expect(@page).to have_document_modal
+      @page = Dashboard::Protocols::ShowPage.new
+      @page.load(id: @protocol.id)
+      wait_for_javascript_to_finish
+    end
+
+    scenario 'and sees the enabled \'Add a New Document\' button' do
+      expect(@page).to have_enabled_add_document_button
+    end
+
+    context 'and clicks \'Add a New Document\'' do
+      before :each do
+        give_user_admin_access_to_protocol
+
+        @page.enabled_add_document_button.click
+        wait_for_javascript_to_finish
+      end
+
+      scenario 'and sees the document modal' do
+        expect(@page).to have_document_modal
+      end
+
+      scenario 'and sees their admin orgs selected' do
+        open_access_dropdown
+        expect(@page.document_modal).to have_selector('li.selected', text: @organization.name)
+      end
+
+      context 'and fills in the form and submits' do
+        before :each do
+          fill_out_document_fields
+          wait_for_javascript_to_finish
+        end
+
+        scenario 'and sees the new document' do
+          @page.wait_for_documents(text: 'Protocol')
+          expect(@page).to have_documents(text: 'Protocol')
+        end
+      end
     end
   end
 
   context 'and does not have permission to do so' do
+    before :each do
+      protocol = create(:unarchived_study_without_validations, primary_pi: other_user)
+      create(:project_role, identity: logged_in_user, protocol: protocol, project_rights: 'view')
+
+      @page = Dashboard::Protocols::ShowPage.new
+      @page.load(id: protocol.id)
+    end
+
+    scenario 'and sees the disabled \'Add a New Document\' button' do
+      expect(@page).to have_disabled_add_document_button
+    end
+  end
+
+  def give_user_admin_access_to_protocol
+    @organization   = create(:organization)
+    service_request = create(:service_request_without_validations, protocol: @protocol)
+                      create(:sub_service_request_without_validations, organization: @organization, service_request: service_request)
+                      create(:super_user, identity: logged_in_user, organization: @organization)
+  end
+
+  def fill_out_document_fields
+    @page.document_modal.instance_exec do
+      doc_type_dropdown.click
+      wait_for_dropdown_choices
+      dropdown_choices(text: 'Protocol').first.click
+    end
+
+    attach_file 'document_document', './spec/fixtures/files/text_document.txt'
+
+    @page.document_modal.upload_button.click
+  end
+
+  def open_access_dropdown
+    @page.document_modal.instance_exec do
+      access_dropdown.click
+      wait_for_dropdown_choices
+    end
   end
 end

@@ -19,12 +19,12 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Dashboard::DocumentsController < Dashboard::BaseController
+  before_filter :find_document,                   only: [:edit, :update, :destroy]
   before_filter :find_protocol,                   only: [:index, :new, :create, :edit, :update, :destroy]
   before_filter :find_admin_for_protocol,         only: [:index, :new, :create, :edit, :update, :destroy]
   before_filter :protocol_authorizer_view,        only: [:index]
   before_filter :protocol_authorizer_edit,        only: [:new, :create, :edit, :update, :destroy]
-  
-  before_filter :find_document,                   only: [:edit, :update, :destroy]
+
   before_filter :authorize_admin_access_document, only: [:edit, :update, :destroy]
 
   def index
@@ -86,16 +86,20 @@ class Dashboard::DocumentsController < Dashboard::BaseController
 
   private
 
+  def find_document
+    @document = Document.find(params[:id])
+  end
+
   def find_protocol
-    @protocol = Protocol.find(params[:protocol_id])
+    if @document
+      @protocol = @document.protocol
+    else
+      @protocol = Protocol.find(params[:protocol_id])
+    end
   end
 
   def assign_organization_access
     @document.sub_service_requests = @protocol.sub_service_requests.where(organization_id: params[:org_ids])
-  end
-
-  def find_document
-    @document = Document.find(params[:id])
   end
 
   def authorize_admin_access_document
@@ -104,9 +108,5 @@ class Dashboard::DocumentsController < Dashboard::BaseController
     unless @authorization.can_edit? || (@admin_orgs & @document.all_organizations).any?
       render partial: 'service_requests/authorization_error', locals: { error: 'You are not allowed to edit this document.' }
     end
-  end
-
-  def find_protocol
-    @protocol = Protocol.find(params[:protocol_id])
   end
 end

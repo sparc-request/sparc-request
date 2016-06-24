@@ -20,39 +20,24 @@
 
 require 'rails_helper'
 
-RSpec.describe Document do
-  it { should belong_to(:protocol) }
-  it { should have_and_belong_to_many(:sub_service_requests) }
+RSpec.feature 'User wants to edit a document', js: true do
+  let!(:logged_in_user) { create(:identity, last_name: "Doe", first_name: "John", ldap_uid: "johnd", email: "johnd@musc.edu", password: "p4ssword", password_confirmation: "p4ssword", approved: true) }
 
-  it 'should create a document' do
-    doc = Document.create()
-    expect(doc).to be_an_instance_of Document
-  end
+  fake_login_for_each_test("johnd")
 
-  describe 'display_document_type' do
-    let!(:document1) { create(:document, doc_type: 'other', doc_type_other: 'support') }
-    let!(:document2) { create(:document, doc_type: 'hipaa') }
+  context 'and clicks the Delete button' do
+    scenario 'and sees the document removed' do
+      @protocol = create(:unarchived_study_without_validations, primary_pi: logged_in_user)
+                  create(:document, protocol: @protocol, doc_type: 'Protocol')
 
-    it 'should display correctly for doc type other' do
-      expect(document1.display_document_type).to eq('Support')
-    end
+      @page = Dashboard::Protocols::ShowPage.new
+      @page.load(id: @protocol.id)
+      wait_for_javascript_to_finish
 
-    it 'should display correctly for typical doc type' do
-      expect(document2.display_document_type).to eq('HIPAA')
-    end
-  end
+      @page.documents.first.enabled_remove_button.click
+      wait_for_javascript_to_finish
 
-  describe '#all_organizations' do
-    it 'should return SSR organizations and their trees' do
-      document = create(:document)
-      org1     = create(:organization)
-      org2     = create(:organization, parent: org1)
-      ssr1     = create(:sub_service_request_without_validations, organization: org1)
-      ssr2     = create(:sub_service_request_without_validations, organization: org2)
-      
-      document.sub_service_requests = [ssr1, ssr2]
-
-      expect(document.reload.all_organizations).to eq([org1, org2])
+      expect(@page.documents(text: 'Protocol').count).to eq(0)
     end
   end
 end

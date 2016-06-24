@@ -34,22 +34,18 @@ $ ->
     if $(this).data('permission')
       row_index   = $(this).parents('tr').data('index')
       document_id = $(this).parents('table#documents-table').bootstrapTable('getData')[row_index].id
-      data = 'protocol_id': $('#document-new').data('protocol-id')
       $.ajax
         type: 'GET'
         url: "/dashboard/documents/#{document_id}/edit"
-        data: data
 
   $(document).on 'click', '.document-delete', ->
     if $(this).data('permission')
       row_index   = $(this).parents('tr').data('index')
       document_id = $(this).parents('table#documents-table').bootstrapTable('getData')[row_index].id
-      data = 'protocol_id': $('#document-new').data('protocol-id')
       if confirm "Are you sure you want to delete the selected Document from this Protocol?"
         $.ajax
           type: 'DELETE'
           url: "/dashboard/documents/#{document_id}"
-          data: data
 
   $(document).on 'change', '#document-doc-type', ->
     if $(this).val() == 'other'

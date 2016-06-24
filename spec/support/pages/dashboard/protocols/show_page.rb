@@ -61,7 +61,7 @@ module Dashboard
       end
 
       # modal appears after clicking Add Document Button
-      section :document_modal, '.modal-dialog', text: /(Add|Edit) Document/ do
+      section :document_modal, '.modal-dialog', text: /(Add a New|Edit) Document/ do
         element :x_button, "button.close"
 
         element :doc_type_dropdown, "button[data-id='document_doc_type']"
@@ -71,7 +71,7 @@ module Dashboard
         # generic matcher for any dropdown choices
         elements :dropdown_choices, "li a"
 
-        element :upload_button, :button, text: "Upload"
+        element :upload_button, 'input.btn.btn-primary'
         element :cancel_button, :button, text: "Close"
       end
 

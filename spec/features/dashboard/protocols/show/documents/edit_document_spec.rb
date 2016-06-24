@@ -20,42 +20,52 @@
 
 require 'rails_helper'
 
-RSpec.feature 'User views the documents list', js: true do
+RSpec.feature 'User wants to edit a document', js: true do
   let!(:logged_in_user) { create(:identity, last_name: "Doe", first_name: "John", ldap_uid: "johnd", email: "johnd@musc.edu", password: "p4ssword", password_confirmation: "p4ssword", approved: true) }
-  let!(:protocol) { create(:unarchived_project_without_validations, primary_pi: logged_in_user) }
 
-  context 'and has permission to edit' do
+  fake_login_for_each_test("johnd")
+
+  before :each do
+    @protocol = create(:unarchived_study_without_validations, primary_pi: logged_in_user)
+                create(:document, protocol: @protocol, doc_type: 'Protocol')
+
+    @page = Dashboard::Protocols::ShowPage.new
+    @page.load(id: @protocol.id)
+    wait_for_javascript_to_finish
+  end
+
+  context 'and clicks the Edit button' do
     before :each do
-      @page = Dashboard::Protocols::ShowPage.new
-      @page.load(id: protocol.id)
+      @page.documents.first.enabled_edit_button.click
+      wait_for_javascript_to_finish
+    end
+
+    scenario 'and sees the document modal' do
+      expect(@page).to have_document_modal
+    end
+
+    context 'and edits a field and submits' do
+      before :each do
+        edit_document_fields
+        wait_for_javascript_to_finish
+      end
+
+      scenario 'and sees the updated document' do
+        @page.wait_for_documents(text: 'Protocol')
+        expect(@page).to have_documents(text: 'Consent')
+      end
     end
   end
 
-  context 'and has permission to view' do
-    context 'and does not have organization access to a document' do
-      before :each do
-        @page = Dashboard::Protocols::ShowPage.new
-        @page.load(id: protocol.id)
-      end
+  def edit_document_fields
+    @page.document_modal.instance_exec do
+      doc_type_dropdown.click
+      wait_for_dropdown_choices
+      dropdown_choices(text: 'Consent').first.click
     end
 
-    context 'and has organization access to a document' do
-      before :each do
-        @page = Dashboard::Protocols::ShowPage.new
-        @page.load(id: protocol.id)
-      end
-    end
-  end
+    attach_file 'document_document', './spec/fixtures/files/text_document.txt'
 
-  context 'and does not have permission but has admin access' do
-    before :each do
-      @page = Dashboard::Protocols::ShowPage.new
-      @page.load(id: protocol.id)
-    end
-    
-    scenario 'and sees only documents they have access to' do
-      organization = create(:organization)
-      expect(@page).to have_documents(count: 1)
-    end
+    @page.document_modal.upload_button.click
   end
 end

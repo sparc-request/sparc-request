@@ -46,7 +46,7 @@
         %td{:rowspan => document_organizations.size}
           = select_tag :doc_type, options_for_select(DOCUMENT_TYPES, doc_type), :prompt => t("documents.select_prompt")
           .document_type_other{:style => doc_type == 'other' ? '' : 'display:none;'}
-            = text_field_tag :doc_type_other, doc_type_other, placeholder: 'Please specify: *'
+            = text_field_tag :doc_type_other, doc_type_other, placeholder: t(:constants)[:prompts][:please_specify]
         %td#file{:rowspan => document_organizations.size}
           = hidden_field_tag "upload_clicked", 0
           - if @document

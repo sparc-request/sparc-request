@@ -36,18 +36,11 @@ class CatalogManager::CoresController < CatalogManager::OrganizationsController
   end
   
   def update
-    @core = Core.find(params[:id])
-
-    unless params[:core][:tag_list]
-      params[:core][:tag_list] = ""
-    end
-
-    params[:core].delete(:id)
-    update_organization(@core, params[:core])
-    
-    @core.setup_available_statuses
-    @entity = @core
-    respond_with @core, location: catalog_manager_core_path(@core)
+    super
+    @org_params = params[:core]
+    set_org_tags
+    update_organization
+    respond_with @organization, location: catalog_manager_core_path(@organization)
   end
   
 end

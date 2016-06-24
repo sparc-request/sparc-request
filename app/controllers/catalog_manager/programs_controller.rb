@@ -36,20 +36,12 @@ class CatalogManager::ProgramsController < CatalogManager::OrganizationsControll
   end
   
   def update
-    @program = Program.find(params[:id])
-
-    unless params[:program][:tag_list]
-      params[:program][:tag_list] = ""
-    end
-
-    params[:program].delete(:id)
-    update_organization(@program, params[:program])
-
-    build_pricing_setups(@program)
-  
-    @program.setup_available_statuses      
-    @entity = @program
-    respond_with @program, :location => catalog_manager_program_path(@program)
+    super
+    @org_params = params[:program]
+    set_org_tags
+    update_organization
+    save_pricing_setups
+    respond_with @organization, location: catalog_manager_program_path(@organization)
   end
 
 end

@@ -36,20 +36,12 @@ class CatalogManager::ProvidersController < CatalogManager::OrganizationsControl
   end
 
   def update
-    @provider = Provider.find(params[:id])
-
-    unless params[:provider][:tag_list]
-      params[:provider][:tag_list] = ""
-    end
-
-    params[:provider].delete(:id)
-    update_organization(@provider, params[:provider])
-
-    build_pricing_setups(@provider)
-
-    @provider.setup_available_statuses
-    @entity = @provider
-    respond_with @provider, :location => catalog_manager_provider_path(@provider)
+    super
+    @org_params = params[:provider]
+    set_org_tags
+    update_organization
+    save_pricing_setups
+    respond_with @organization, location: catalog_manager_provider_path(@organization)
   end
 
 end

@@ -34,17 +34,9 @@ class CatalogManager::InstitutionsController < CatalogManager::OrganizationsCont
   end
 
   def update
-    @institution = Institution.find(params[:id])
-
-    unless params[:institution][:tag_list]
-      params[:institution][:tag_list] = ""
-    end
-    
-    params[:institution].delete(:id)
-    update_organization(@institution, params[:institution])
-    
-    @institution.setup_available_statuses
-    @entity = @institution
-    respond_with @institution, :location => catalog_manager_institution_path(@institution)
+    super
+    @org_params = params[:institution]
+    update_organization
+    respond_with @organization, location: catalog_manager_institution_path(@organization)
   end
 end

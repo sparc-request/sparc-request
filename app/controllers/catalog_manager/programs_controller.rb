@@ -19,12 +19,9 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class CatalogManager::ProgramsController < CatalogManager::OrganizationsController
-  respond_to :js, :html, :json
-  layout false
-
   def create
     @provider = Provider.find(params[:provider_id])
-    @program = Program.new({:name => params[:name], :abbreviation => params[:name], :parent_id => @provider.id})
+    @program = Program.new({name: params[:name], abbreviation: params[:name], parent_id: @provider.id})
     @program.build_subsidy_map()
     @program.save
     

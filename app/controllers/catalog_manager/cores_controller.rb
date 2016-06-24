@@ -19,9 +19,6 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class CatalogManager::CoresController < CatalogManager::OrganizationsController
-  layout false
-  respond_to :js, :html
-  
   def create
     @program = Program.find(params[:program_id])
     @core = Core.new({name: params[:name], abbreviation: params[:name], parent_id: @program.id})

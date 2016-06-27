@@ -22,5 +22,7 @@ class Tag < ActiveRecord::Base
   audited
 
   attr_accessible :name
+
+  has_many :taggings, dependent: :destroy, class_name: '::ActsAsTaggableOn::Tagging'
 end
 

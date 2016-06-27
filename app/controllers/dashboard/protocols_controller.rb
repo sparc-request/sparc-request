@@ -43,6 +43,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
       default_filter_params[:admin_filter] = "for_identity #{@user.id}"
       params[:filterrific][:admin_filter] = "for_identity #{@user.id}" if params[:filterrific]
     end
+
     @filterrific =
       initialize_filterrific(Protocol, params[:filterrific],
         default_filter_params: default_filter_params,

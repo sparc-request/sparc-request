@@ -139,16 +139,18 @@ class Protocol < ActiveRecord::Base
   scope :search_query, -> (search_term) {
     # Searches protocols based on short_title, title, id, and associated_users
     # Protects against SQL Injection with ActiveRecord::Base::sanitize
-    like_search_term = ActiveRecord::Base::sanitize("%#{search_term}%")
+
+    # inserts ! so that we can escape special characters
+    escaped_search_term = search_term.gsub(/[!%_]/) { |x| '!' + x }
+
+    like_search_term = ActiveRecord::Base::sanitize("%#{escaped_search_term}%")
     exact_search_term = ActiveRecord::Base::sanitize(search_term)
 
     #TODO temporary replacement for "MATCH(identities.first_name, identities.last_name) AGAINST (#{exact_search_term})"
-    where_clause = search_term.to_s.split.map do |term|
-      "CONCAT(identities.first_name, identities.last_name) LIKE #{ActiveRecord::Base::sanitize("%#{term}%")}"
-    end
+    where_clause = ["CONCAT(identities.first_name, ' ', identities.last_name) LIKE #{like_search_term} escape '!'"]
 
-    where_clause += ["protocols.short_title like #{like_search_term}",
-      "protocols.title like #{like_search_term}",
+    where_clause += ["protocols.short_title like #{like_search_term} escape '!'",
+      "protocols.title like #{like_search_term} escape '!'",
       "protocols.id = #{exact_search_term}"]
 
     joins(:identities).

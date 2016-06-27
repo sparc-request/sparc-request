@@ -22,6 +22,10 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
   respond_to :js, :html, :json
 
   def create
+    @organization.build_subsidy_map()
+    @organization.save
+
+    respond_with [:catalog_manger, @organization]
   end
 
   def show
@@ -59,7 +63,7 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
           ps[1].delete(:newly_created)
           @organization.pricing_setups.build(ps[1])
         else
-          # @provider.pricing_setups.find(ps[1]['id']).update_attributes(ps[1])
+          # @organization.pricing_setups.find(ps[1]['id']).update_attributes(ps[1])
           ps_id = ps[1]['id']
           ps[1].delete(:id)
           @organization.pricing_setups.find(ps_id).update_attributes(ps[1])

@@ -20,12 +20,9 @@
 
 class CatalogManager::ProvidersController < CatalogManager::OrganizationsController
   def create
-    @institution = Institution.find(params[:institution_id])
-    @provider = Provider.new({name: params[:name], abbreviation: params[:name], parent_id: @institution.id})
-    @provider.build_subsidy_map()
-    @provider.save
-
-    respond_with [:catalog_manger, @provider]
+    @parent_org = Institution.find(params[:institution_id])
+    @organization = Provider.new({name: params[:name], abbreviation: params[:name], parent_id: @parent_org.id})
+    super
   end
 
   def show

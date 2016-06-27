@@ -20,12 +20,9 @@
 
 class CatalogManager::CoresController < CatalogManager::OrganizationsController
   def create
-    @program = Program.find(params[:program_id])
-    @core = Core.new({name: params[:name], abbreviation: params[:name], parent_id: @program.id})
-    @core.build_subsidy_map()
-    @core.save
-    
-    respond_with [:catalog_manager, @core]
+    @parent_org = Program.find(params[:program_id])
+    @organization = Core.new({name: params[:name], abbreviation: params[:name], parent_id: @parent_org.id})
+    super
   end
   
   def show

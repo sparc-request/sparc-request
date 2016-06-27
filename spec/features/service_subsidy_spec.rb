@@ -39,7 +39,7 @@ RSpec.describe "subsidy page", js: true do
     end
 
     it 'should display request cost in the pi contribution field' do
-      click_button 'Add a Subsidy'
+      click_button 'Request a Subsidy'
       
       wait_for_javascript_to_finish
       pi_field_value = find('#pi_contribution').value
@@ -47,7 +47,7 @@ RSpec.describe "subsidy page", js: true do
     end
 
     it 'should adjust the pi contribution if a subsidy percentage is added' do
-      click_button 'Add a Subsidy'
+      click_button 'Request a Subsidy'
       wait_for_javascript_to_finish
       find('#percent_subsidy').set("30\n")
       wait_for_javascript_to_finish
@@ -57,7 +57,7 @@ RSpec.describe "subsidy page", js: true do
     end
 
     it 'should adjust the subsidy percent if the pi contribution is changed' do
-      click_button 'Add a Subsidy'
+      click_button 'Request a Subsidy'
       wait_for_javascript_to_finish
       new_pi_contribution = (@direct_cost - 1000)
       find('#pi_contribution').set("#{new_pi_contribution.to_s}\n")
@@ -71,14 +71,14 @@ RSpec.describe "subsidy page", js: true do
     context 'validating max percent' do
 
       it 'should hit the validations if the entered percent is higher than the max percent' do
-        click_button 'Add a Subsidy'
+        click_button 'Request a Subsidy'
         wait_for_javascript_to_finish
         find('#percent_subsidy').set("60\n")
         expect(page).to have_content("The Percent Subsidy cannot be greater than the max percent of 50.0")
       end
 
       it 'should hit the validations if the entered pi contribution results in a percent subsidy greater than the max' do
-        click_button 'Add a Subsidy'
+        click_button 'Request a Subsidy'
         wait_for_javascript_to_finish
         find('#pi_contribution').set("3000\n")
         expect(page).to have_content("The Percent Subsidy cannot be greater than the max percent of 50.0")
@@ -89,7 +89,7 @@ RSpec.describe "subsidy page", js: true do
 
       it 'should hit the validations if the entered percent causes subsidy cost to be higher than max dollar cap' do
         program.subsidy_map.update_attribute(:max_dollar_cap, 1000)
-        click_button 'Add a Subsidy'
+        click_button 'Request a Subsidy'
         wait_for_javascript_to_finish
         find('#percent_subsidy').set("45\n")
         expect(page).to have_content("The Subsidy Cost cannot be greater than the max dollar cap of 1000.0")
@@ -97,7 +97,7 @@ RSpec.describe "subsidy page", js: true do
 
       it 'should hit the validations if the entered pi contribution causes subsidy cost to be higher than max dollar cap' do
         program.subsidy_map.update_attribute(:max_dollar_cap, 1000)
-        click_button 'Add a Subsidy'
+        click_button 'Request a Subsidy'
         wait_for_javascript_to_finish
         find('#pi_contribution').set("5000\n")
         expect(page).to have_content("The Subsidy Cost cannot be greater than the max dollar cap of 1000.0")

@@ -33,11 +33,8 @@ class CatalogManager::CoresController < CatalogManager::OrganizationsController
   end
   
   def update
+    @attributes = params[:core]
     super
-    @org_params = params[:core]
-    set_org_tags
-    update_organization
-    respond_with @organization, location: catalog_manager_core_path(@organization)
   end
   
 end

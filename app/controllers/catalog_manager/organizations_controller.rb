@@ -32,15 +32,19 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
 
   def update
     @organization = Organization.find(params[:id])
+    update_organization
+    save_pricing_setups
+    set_org_tags
     @organization.setup_available_statuses
     @entity = @organization
+    render 'catalog_manager/organizations/update'
   end
 
-  protected
+  private
 
   def update_organization
-    @org_params.delete(:id)
-    if @organization.update_attributes(@org_params)
+    @attributes.delete(:id)
+    if @organization.update_attributes(@attributes)
       flash[:notice] = "#{@organization.name} saved correctly."
     else
       flash[:alert] = "Failed to update #{@organization.name}."
@@ -48,7 +52,7 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
   end
 
   def save_pricing_setups
-    if params[:pricing_setups]
+    if params[:pricing_setups] && ['Program', 'Provider'].include?(@organization.type)
       params[:pricing_setups].each do |ps|
         if ps[1]['id'].blank?
           ps[1].delete(:id)
@@ -66,8 +70,8 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
   end
 
   def set_org_tags
-    unless @org_params[:tag_list]
-      @org_params[:tag_list] = ""
+    unless @attributes[:tag_list] || @organization.type == 'Institution'
+      @attributes[:tag_list] = ""
     end
   end
 end

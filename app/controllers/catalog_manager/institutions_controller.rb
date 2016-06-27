@@ -31,9 +31,7 @@ class CatalogManager::InstitutionsController < CatalogManager::OrganizationsCont
   end
 
   def update
+    @attributes = params[:institution]
     super
-    @org_params = params[:institution]
-    update_organization
-    respond_with @organization, location: catalog_manager_institution_path(@organization)
   end
 end

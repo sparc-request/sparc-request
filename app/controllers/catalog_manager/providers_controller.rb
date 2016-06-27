@@ -33,12 +33,8 @@ class CatalogManager::ProvidersController < CatalogManager::OrganizationsControl
   end
 
   def update
+    @attributes = params[:provider]
     super
-    @org_params = params[:provider]
-    set_org_tags
-    update_organization
-    save_pricing_setups
-    respond_with @organization, location: catalog_manager_provider_path(@organization)
   end
 
 end

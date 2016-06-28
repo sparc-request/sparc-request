@@ -78,6 +78,7 @@ $(document).ready ->
 
       data = 'subsidy' :
         'pi_contribution' : pi_contribution
+        'percent_subsidy' : percent_subsidy
       $.ajax
         type: 'PATCH'
         url:  "/subsidies/#{subsidy_id}"
@@ -90,12 +91,13 @@ $(document).ready ->
           $(this).val($(this).defaultValue)
 
   $(document).on 'change', '#percent_subsidy', ->
+    console.log("HERE")
     # When user changes Percent Subsidy, the PI Contribution and Subsidy Cost fields are recalculated & displayed
     max_percent = $(this).data('max-percentage')
     max_dollar_cap = $(this).data('max-dollar-cap')
     subsidy_id = $(this).data('subsidy-id')
     percent_subsidy = parseFloat($(this).val()) / 100.0
-    original_pi_contribution = parseFloat($("#pi_contribution").data("pi-contribution")) / 100 
+    original_pi_contribution = parseFloat($('#pi_contribution').val().replace('$', ''))
     total_request_cost = parseFloat($(".request_cost[data-subsidy-id='#{subsidy_id}']").data("cost")) / 100.0
     pi_contribution = recalculate_pi_contribution(total_request_cost, percent_subsidy)
     original_subsidy = recalculate_percent_subsidy(total_request_cost, original_pi_contribution)

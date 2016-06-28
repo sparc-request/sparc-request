@@ -5,7 +5,12 @@
       -next if name == "SPARCCatalog" && current_user.catalog_managers.empty?
       -next if name == "SPARCReport" && !current_user.is_super_user?
     %li.dashboard
-      = link_to name.to_s, path, target: '_blank'
+      - x = ""
+      - if request.url == path
+        - x = "highlighted"
+      - elsif name == "SPARCRequest" && ( request.url.include? 'service_requests')
+        - x = "highlighted"
+      = link_to name.to_s, path, target: '_blank', id: x
 
   .right-section
     - if current_user.present?

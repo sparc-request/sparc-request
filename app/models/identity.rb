@@ -198,10 +198,8 @@ class Identity < ActiveRecord::Base
     identity = Identity.where(:ldap_uid => auth.uid).first
 
     unless identity
-      identity = Identity.create :ldap_uid => auth.uid, :first_name => auth.extra.firstName, :last_name => auth.extra.lastName, :email => auth.info.email, :password => Devise.friendly_token[0,20], :approved => true
-    end
-    if !identity.persisted?
-      identity.save
+      uid = "#{auth.uid}@#{DOMAIN}"
+      identity = Directory.search_and_merge_ldap_and_database_results(uid).first
     end
     identity
   end

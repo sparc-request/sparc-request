@@ -71,7 +71,30 @@ begin
   NAVBAR_LINKS                              = application_config['navbar_links'] || {}
   USE_CAS                                   = application_config['use_cas'] || false
   USE_CAS_ONLY                              = application_config['use_cas_only'] || false
-  
+
+
+  # Only initialize LDAP if it is enabled
+  if USE_LDAP
+    # Load the YAML file for ldap configuration and set constants
+    begin
+      ldap_config   ||= YAML.load_file(Rails.root.join('config', 'ldap.yml'))[Rails.env]
+      LDAP_HOST       = ldap_config['ldap_host']
+      LDAP_PORT       = ldap_config['ldap_port']
+      LDAP_BASE       = ldap_config['ldap_base']
+      LDAP_ENCRYPTION = ldap_config['ldap_encryption'].to_sym
+      DOMAIN          = ldap_config['ldap_domain']
+      LDAP_UID        = ldap_config['ldap_uid']
+      LDAP_LAST_NAME  = ldap_config['ldap_last_name']
+      LDAP_FIRST_NAME = ldap_config['ldap_first_name']
+      LDAP_EMAIL      = ldap_config['ldap_email']
+      LDAP_AUTH_USERNAME      = ldap_config['ldap_auth_username']
+      LDAP_AUTH_PASSWORD      = ldap_config['ldap_auth_password']
+      LDAP_FILTER      = ldap_config['ldap_filter']
+    rescue
+      raise "ldap.yml not found, see config/ldap.yml.example"
+    end
+  end
+
   if LOCALE_OVERRIDE
     I18n.available_locales = [:en, LOCALE_OVERRIDE]
     I18n.default_locale = LOCALE_OVERRIDE

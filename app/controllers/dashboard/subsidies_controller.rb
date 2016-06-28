@@ -53,6 +53,7 @@ class Dashboard::SubsidiesController < Dashboard::BaseController
     @subsidy = PendingSubsidy.find(params[:id])
     @sub_service_request = @subsidy.sub_service_request
     format_pi_contribution_param
+    format_percent_subsidy_param
     if @subsidy.update_attributes(params[:pending_subsidy])
       @admin = params[:admin] == 'true'
       flash[:success] = t(:dashboard)[:subsidies][:updated]
@@ -89,6 +90,12 @@ class Dashboard::SubsidiesController < Dashboard::BaseController
     # Convert to float, and multiply by 100 to get cents for db
     if params[:pending_subsidy][:pi_contribution].present?
       params[:pending_subsidy][:pi_contribution] = (params[:pending_subsidy][:pi_contribution].gsub(/[^\d^\.]/, '').to_f * 100)
+    end
+  end
+
+  def format_percent_subsidy_param
+    if !params[:pending_subsidy].nil? && params[:pending_subsidy][:percent_subsidy].present?
+      params[:pending_subsidy][:percent_subsidy] = ((params[:pending_subsidy][:percent_subsidy].gsub(/[^\d^\.]/, '').to_f) / 100)
     end
   end
 end

@@ -56,6 +56,7 @@ $(document).ready ->
 
 #****************** SUBSIDY FORM BEGIN ***************************#
   $(document).on 'change', '#pending_subsidy_pi_contribution', ->
+    console.log("here")
     # When user changes PI Contribution, the Percent Subsidy and Subsidy Cost fields are recalculated & displayed
     pi_contribution = parseFloat $(this).val()
     total_request_cost = parseFloat($("#subsidy_form_table_request_cost").data("cost")) / 100.0
@@ -67,7 +68,8 @@ $(document).ready ->
     current_cost = recalculate_current_cost(total_request_cost, percent_subsidy)
     redisplay_form_values(percent_subsidy, pi_contribution, current_cost)
 
-  $(document).on 'change', '#current_percent_subsidy_of_total', ->
+  $(document).on 'change', '#pending_subsidy_percent_subsidy', ->
+    console.log("percent subsidy")
     # When user changes Percent Subsidy, the PI Contribution and Subsidy Cost fields are recalculated & displayed
     percent_subsidy = parseFloat($(this).val()) / 100.0
     total_request_cost = parseFloat($("#subsidy_form_table_request_cost").data("cost")) / 100.0
@@ -81,14 +83,22 @@ $(document).ready ->
 
   recalculate_current_cost = (total_request_cost, percent_subsidy) ->
     current = total_request_cost * percent_subsidy
+    console.log("cc")
+    console.log(current)
     return if isNaN(current) then 0 else current
   recalculate_pi_contribution = (total_request_cost, percent_subsidy) ->
     contribution = total_request_cost - (total_request_cost * percent_subsidy)
+    console.log("pi")
+    console.log(contribution)
     return if isNaN(contribution) then 0 else contribution
   recalculate_percent_subsidy = (total_request_cost, pi_contribution) ->
     percentage = (total_request_cost - pi_contribution) / total_request_cost
+    console.log("percentage")
+    console.log(percentage)
     return if isNaN(percentage) then 0 else percentage
+
   redisplay_form_values = (percent_subsidy, pi_contribution, current_cost) ->
+    console.log("mmmhmmm")
     $("#current_percent_subsidy_of_total").val( (percent_subsidy*100.0).toFixed(2) )
     $("#pending_subsidy_pi_contribution").val( formatMoney(pi_contribution, ',', '.', '') )
     $("#subsidy_form_table_subsidy_cost").text( formatMoney(current_cost) )

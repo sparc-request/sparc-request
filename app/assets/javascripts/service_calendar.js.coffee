@@ -98,7 +98,7 @@ $(document).ready ->
             $(obj).attr('current_quantity', original_val)
       .complete =>
         $('.service_calendar_spinner').hide()
-        arm_id = $(this).data("arm_id")
+        arm_id = $(this).data("arm-id")
         calculate_max_rates(arm_id)
     else
       alert "Quantity must be a whole number"

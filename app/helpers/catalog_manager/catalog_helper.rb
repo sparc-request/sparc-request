@@ -61,6 +61,10 @@ module CatalogManager::CatalogHelper
 
     tree.join(' / ')
   end
+
+  def is_parent_available? organization_id
+    Organization.find(organization_id).parent.is_available
+  end
 end
 
 def display_name object

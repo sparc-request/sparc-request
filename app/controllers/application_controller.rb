@@ -79,12 +79,12 @@ class ApplicationController < ActionController::Base
 
     if USE_NEWS_FEED
       page = Nokogiri::HTML(open("https://www.sparcrequestblog.com"))
-      headers = page.css('.entry-header').take(3)
+      articles = page.css('article.post').take(3)
       @news = []
-      headers.each do |header|
-        @news << {title: header.at_css('.entry-title').text,
-                  link: header.at_css('.entry-title a')[:href],
-                  date: header.at_css('.date').text }
+      articles.each do |article|
+        @news << {title: (article.at_css('.entry-title') ? article.at_css('.entry-title').text : ""),
+                  link: (article.at_css('.entry-title a') ? article.at_css('.entry-title a')[:href] : ""),
+                  date: (article.at_css('.date') ? article.at_css('.date').text : "") }
       end
     end
   end

@@ -635,7 +635,7 @@ class ServiceRequestsController < ApplicationController
         end
       end
 
-    elsif upload_clicked == "1" && ((doc_type == "" || !process_ssr_organization_ids) || !document)
+    elsif upload_clicked == "1" && ((doc_type == "" || !process_ssr_organization_ids) || !document|| doc_type == 'other' && doc_type_other.empty?)
       # collect errors
       doc_errors = {}
       doc_errors[:recipients] = ["You must select at least one recipient"] if !process_ssr_organization_ids

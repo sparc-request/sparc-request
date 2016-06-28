@@ -31,7 +31,6 @@ RSpec.describe "User wants to edit a Study", js: true do
     study.update_attributes(study_type_question_group_id: StudyTypeQuestionGroup.where(active:true).pluck(:id).first)
   end
 
-  #TODO: Add Authorized Users Specs
   context 'and clicks the Edit Study button' do
     scenario 'and sees the Protocol Information form' do
       given_i_am_viewing_the_service_request_protocol_page
@@ -108,6 +107,30 @@ RSpec.describe "User wants to edit a Study", js: true do
         when_i_submit_the_form
         then_i_should_see_the_nav_button_with_text 'Save & Continue' 
       end
+
+      context 'and looks for an additional user' do
+        before :each do
+          given_i_am_viewing_the_protocol_information_page
+          when_i_submit_the_form
+          fill_autocomplete('user_search_term', with: 'bjk7')
+          wait_for_javascript_to_finish
+          page.find('a', text: "Brian Kelsey (kelsey@musc.edu)", visible: true).click()
+          select 'PD/PI', from: 'project_role_role'
+        end
+
+        scenario 'and sees the user information' do
+          expect(page).to have_content "Brian Kelsey"
+          expect(page).to have_content "kelsey@musc.edu"
+        end
+
+        scenario 'and adds the authorized user' do
+          click_button 'Add Authorized User'
+          wait_for_javascript_to_finish
+          expect(page).not_to have_content('kelsey@musc.edu')
+          click_link 'Save & Continue'
+          expect(page).to have_link 'Edit Study'
+        end
+      end
     end
 
     context 'and submits the study after modifying it' do
@@ -129,6 +152,11 @@ RSpec.describe "User wants to edit a Study", js: true do
         then_i_should_see_the_appropriate_fields_displayed
       end
     end
+  end
+
+  def given_i_am_viewing_the_authorized_users_page
+    given_i_am_viewing_the_protocol_information_page
+    when_i_submit_the_form
   end
 
   def given_i_am_viewing_the_service_request_protocol_page

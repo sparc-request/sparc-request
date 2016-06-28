@@ -300,9 +300,9 @@ class Identity < ActiveRecord::Base
   ########################### COLLECTION METHODS ################################
   ###############################################################################
 
-  def authorized_admin_organizations(sp_only={sp_only: false})
+  def authorized_admin_organizations
     # returns organizations for which user is service provider or super user
-    Organization.authorized_for_identity(self.id, sp_only[:sp_only]).distinct
+    Organization.authorized_for_identity(self.id)
   end
 
   # Collects all organizations that this identity has catalog manager permissions on, as well as

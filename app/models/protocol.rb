@@ -166,37 +166,20 @@ class Protocol < ActiveRecord::Base
   scope :admin_filter, -> (params) {
     filter, id  = params.split(" ")
     if filter == 'for_admin'
-      return filtered_for_admin(id)
+      for_admin(id)
     elsif filter == 'for_identity'
-      return for_identity_id(id)
+      for_identity_id(id)
     end
   }
 
   scope :for_admin, -> (identity_id) {
     # returns protocols with ssrs in orgs authorized for identity_id
     return nil if identity_id == '0'
-    joins(:organizations).
-      merge( Organization.authorized_for_identity(identity_id) ).distinct
-  }
 
-  scope :filtered_for_admin, -> (identity_id) {
-    # returns protocols with ssrs in orgs authorized for identity_id
-    return nil if identity_id == '0'
+    ssrs = SubServiceRequest.where.not(status: 'first_draft').where(organization_id: Organization.authorized_for_identity(identity_id))
 
-    # We want to find all protocols where the user is an Admin AND Authorized User
-    # as they will be filtered out by the SP Only Organizations queries
-    sp_only_admin_orgs        = Organization.authorized_for_identity(identity_id, true)
-
-    if sp_only_admin_orgs.any?
-      admin_protocols           = for_admin(identity_id)
-      authorized_user_protocols = joins(:project_roles).where(project_roles: { identity_id: identity_id })
-      visible_admin_protocols   = admin_protocols.to_a.reject { |p| p.should_be_hidden_for_sp?(sp_only_admin_orgs) }
-      
-      # TODO: In rails 5, we can do an or-merge to create a single query for this entire process
-      where(id: (authorized_user_protocols | visible_admin_protocols)).distinct
-    else
-      for_admin(identity_id)
-    end
+    joins(:sub_service_requests).
+      merge(ssrs).distinct
   }
 
   scope :show_archived, -> (boolean) {
@@ -533,8 +516,8 @@ class Protocol < ActiveRecord::Base
     end
   end
 
-  def should_be_hidden_for_sp?(sp_only_admin_orgs)
-    (service_requests.reject { |sr| sr.should_be_hidden_for_sp?(sp_only_admin_orgs) }).empty?
+  def has_non_first_draft_ssrs?
+    sub_service_requests.where.not(status: 'first_draft').any?
   end
 
   private

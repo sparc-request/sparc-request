@@ -82,7 +82,6 @@ class Portal::SubServiceRequestsController < Portal::BaseController
       Hash.new
     end
 
-
     if @protocol.update_attributes(attrs)
       redirect_to portal_admin_sub_service_request_path(@sub_service_request)
     else

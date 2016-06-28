@@ -21,7 +21,7 @@
 module ServiceCalendarHelper
 
   def select_row(line_items_visit, tab, portal, locked)
-    checked = line_items_visit.visits.map{|v| v.research_billing_qty >= 1 ? true : false}.all?
+    checked = line_items_visit.visits.map{|v| v.research_billing_qty >= 1}.all?
     action = checked == true ? 'unselect_calendar_row' : 'select_calendar_row'
     icon = checked == true ? 'ui-icon-close' : 'ui-icon-check'
 

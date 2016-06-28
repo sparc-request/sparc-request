@@ -66,7 +66,7 @@ module ApplicationHelper
         ""
       else
         content_tag(:div,
-          check_box_tag("visits_#{visit.id}", 1, (visit.research_billing_qty.to_i > 0 or visit.insurance_billing_qty.to_i > 0 or visit.effort_billing_qty.to_i > 0), class: "line_item_visit_template visits_#{visit.id}", :'data-arm_id' => arm.id, update: "#{base_url}&tab=template&portal=#{portal}", disabled: locked),
+          check_box_tag("visits_#{visit.id}", 1, (visit.research_billing_qty.to_i > 0 or visit.insurance_billing_qty.to_i > 0 or visit.effort_billing_qty.to_i > 0), class: "line_item_visit_template visits_#{visit.id}", :'data-arm_id' => arm.id, update: "#{base_url}&tab=template&portal=#{portal}"),
           class: 'full-centered'
         )
       end
@@ -88,7 +88,6 @@ module ApplicationHelper
             data: { unit_minimum: unit_minimum, arm_id: arm.id },
             class: "line_item_visit_research_billing_qty line_item_visit_billing visits_#{visit.id}",
             update: "#{base_url}&tab=billing_strategy&column=research_billing_qty&portal=#{portal}",
-            disabled: locked
           )+
           text_field_tag("visits_#{visit.id}_insurance_billing_qty",
             visit.insurance_billing_qty,
@@ -97,7 +96,6 @@ module ApplicationHelper
             data: { unit_minimum: unit_minimum, arm_id: arm.id },
             class: "line_item_visit_billing visits_#{visit.id}",
             update: "#{base_url}&tab=billing_strategy&column=insurance_billing_qty&portal=#{portal}",
-            disabled: locked
           )+
           text_field_tag("visits_#{visit.id}_effort_billing_qty",
             visit.effort_billing_qty,
@@ -106,7 +104,6 @@ module ApplicationHelper
             data: { unit_minimum: unit_minimum, arm_id: arm.id },
             class: "line_item_visit_billing visits_#{visit.id}",
             update: "#{base_url}&tab=billing_strategy&column=effort_billing_qty&portal=#{portal}",
-            disabled: locked
           )
         )
       end

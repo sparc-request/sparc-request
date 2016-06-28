@@ -27,7 +27,7 @@ RSpec.describe "creating a new project ", js: true do
 
   let!(:institution)  { create(:institution, name: 'Medical University of South Carolina', order: 1, abbreviation: 'MUSC', is_available: 1) }
   let!(:provider)     { create(:provider, name: 'South Carolina Clinical and Translational Institute (SCTR)', order: 1,
-                               css_class: 'blue-provider', parent_id: institution.id, abbreviation: 'SCTR1', process_ssrs: 0, is_available: 1) }
+                               css_class: 'blue-provider', parent_id: institution.id, abbreviation: 'SCTR1', process_ssrs: 1, is_available: 1) }
   let!(:program)      { create(:program_with_pricing_setup, name: 'Office of Biomedical Informatics', order: 1, parent_id: provider.id,
                                abbreviation:'Informatics') }
   let!(:core)         { create(:core, type: 'Core', name: 'Clinical Data Warehouse', order: 1, parent_id: program.id,
@@ -74,7 +74,7 @@ RSpec.describe "creating a new project ", js: true do
       expect(page).to have_css('#project_role_role')
       select "Primary PI", from: "project_role_role"
       click_button "Add Authorized User"
-      fill_autocomplete('user_search_term', with: 'bjk7');
+      fill_autocomplete('user_search_term', with: 'bjk7')
       page.find('a', text: "Brian Kelsey (kelsey@musc.edu)", visible: true).click()
       select "Billing/Business Manager", from: "project_role_role"
       click_button "Add Authorized User"

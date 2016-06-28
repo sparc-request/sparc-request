@@ -36,8 +36,12 @@ class SeparateSubsidyByStatus < ActiveRecord::Migration
     rescue
       total = calc_total_via_percent(subsidy)
     end
-    total = subsidy.pi_contribution if subsidy.pi_contribution > total
-    return total
+
+    if subsidy.pi_contribution
+      total = subsidy.pi_contribution if subsidy.pi_contribution > total
+    end
+
+    return total || 0
   end
 
   def calc_total_via_percent subsidy

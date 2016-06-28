@@ -264,6 +264,7 @@ en:
       college: "College:"
       college_prompt: "Select a College"
       department: "Department:"
+      phone: "Phone:"
       department_prompt: "Select a Department"
       subspecialty: "Subspecialty:"
       subspecialty_prompt: "Select a Subspecialty"
@@ -312,7 +313,7 @@ en:
       destroyed: "Fulfillment Destroyed!"
       table:
         date: "Fulfillment Date"
-        time_unit: "Qty Unit"
+        time_unit: "Qty Type"
         time: "Quantity"
         actions: "Actions"
       actions:
@@ -322,7 +323,7 @@ en:
       form:
         date: "Fulfillment Date:"
         time: "Quantity:"
-        time_unit: "Qty Unit:"
+        time_unit: "Qty Type:"
 
     ################
     #  LINE ITEMS  #

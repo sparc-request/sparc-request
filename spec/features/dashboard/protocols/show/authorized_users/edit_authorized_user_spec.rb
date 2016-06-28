@@ -146,7 +146,7 @@ RSpec.feature 'User wants to edit an authorized user', js: true do
         before :each do
           organization    = create(:organization)
           service_request = create(:service_request_without_validations, protocol: protocol)
-                            create(:sub_service_request_without_validations, service_request: service_request, organization: organization)
+                            create(:sub_service_request_without_validations, service_request: service_request, organization: organization, status: 'draft')
                             create(:super_user, organization: organization, identity: logged_in_user)
 
           # navigate to page
@@ -270,11 +270,12 @@ RSpec.feature 'User wants to edit an authorized user', js: true do
   end
 
   def then_i_should_see_the_user_information
-    expect(@page.authorized_user_modal).to have_content("John Doe (johnd@musc.edu) #{logged_in_user.phone}")
+    expect(@page.authorized_user_modal).to have_content("John Doe (johnd@musc.edu)")
     expect(@page.authorized_user_modal).to have_credentials_dropdown(text: "BA")
     expect(@page.authorized_user_modal).to have_institution_dropdown(text: "Medical University of South Carolina")
     expect(@page.authorized_user_modal).to have_college_dropdown(text: "College of Medicine")
     expect(@page.authorized_user_modal).to have_department_dropdown(text: "Other")
+    expect(page).to have_content(logged_in_user.phone)
     expect(@page.authorized_user_modal).to have_role_dropdown(text: "Primary PI")
   end
 

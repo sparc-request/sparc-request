@@ -95,6 +95,10 @@ class SubServiceRequest < ActiveRecord::Base
     end
   end
 
+  def should_push_to_epic?
+    return self.line_items.any? { |li| li.should_push_to_epic? }
+  end
+
   def update_org_tree
     my_tree = nil
     if organization.type == "Core"
@@ -492,10 +496,6 @@ class SubServiceRequest < ActiveRecord::Base
     filtered_audit_trail
   end
   ### end audit reporting methods ###
-
-  def should_be_hidden_for_sp?(sp_only_admin_orgs)
-    ['first_draft', 'draft'].include?(status) && sp_only_admin_orgs.count != 0 && (org_tree & sp_only_admin_orgs).empty?
-  end
 
   private
 

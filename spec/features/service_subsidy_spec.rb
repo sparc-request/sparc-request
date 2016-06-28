@@ -68,8 +68,8 @@ RSpec.describe "subsidy page", js: true do
       expect(percent_field_value).to eq(percent_subsidy.to_s)
     end
 
-    context 'triggering validations modal' do
-      
+    context 'validating max percent' do
+
       it 'should hit the validations if the entered percent is higher than the max percent' do
         click_button 'Add a Subsidy'
         wait_for_javascript_to_finish
@@ -82,6 +82,25 @@ RSpec.describe "subsidy page", js: true do
         wait_for_javascript_to_finish
         find('#pi_contribution').set("3000\n")
         expect(page).to have_content("The Percent Subsidy cannot be greater than the max percent of 50.0")
+      end
+    end
+
+    context 'validating max dollar cap' do
+
+      it 'should hit the validations if the entered percent causes subsidy cost to be higher than max dollar cap' do
+        program.subsidy_map.update_attribute(:max_dollar_cap, 1000)
+        click_button 'Add a Subsidy'
+        wait_for_javascript_to_finish
+        find('#percent_subsidy').set("45\n")
+        expect(page).to have_content("The Subsidy Cost cannot be greater than the max dollar cap of 1000.0")
+      end
+
+      it 'should hit the validations if the entered pi contribution causes subsidy cost to be higher than max dollar cap' do
+        program.subsidy_map.update_attribute(:max_dollar_cap, 1000)
+        click_button 'Add a Subsidy'
+        wait_for_javascript_to_finish
+        find('#pi_contribution').set("5000\n")
+        expect(page).to have_content("The Subsidy Cost cannot be greater than the max dollar cap of 1000.0")
       end
     end
   end

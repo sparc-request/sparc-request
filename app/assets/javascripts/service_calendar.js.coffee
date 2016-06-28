@@ -98,7 +98,7 @@ $(document).ready ->
             $(obj).attr('current_quantity', original_val)
       .complete =>
         $('.service_calendar_spinner').hide()
-        arm_id = $(this).data("arm_id")
+        arm_id = $(this).data("arm-id")
         calculate_max_rates(arm_id)
     else
       alert "Quantity must be a whole number"
@@ -228,7 +228,6 @@ $(document).ready ->
     min_val = $(this).attr('unit_minimum')
     if (parseInt(new_val) <= parseInt(max_val)) && (parseInt(new_val) >= parseInt(min_val))
       recalculate_one_time_fee_totals()
-        
     return false
   )
 

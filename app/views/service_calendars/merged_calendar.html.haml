@@ -18,11 +18,11 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-- if @protocol.has_per_patient_per_visit? @service_request, @portal
+- if @protocol.has_line_items_of_type?(@service_request, @portal, "pppv")
   - @protocol.arms.each do |arm|
     .arm_calendar_container{:'data-arm_id' => arm.id}
       - next if arm.visit_groups.empty?
       = render :partial => "/service_calendars/master_calendar/pppv_calendar", :locals => {:service_request => @service_request, :arm => arm}
-- if @protocol.has_one_time_fees? @service_request, @portal
+- if @protocol.has_line_items_of_type?(@service_request, @portal, "otf")
   = render :partial => "/service_calendars/master_calendar/otf_calendar", :locals =>{:current_request => @service_request}
 = render :partial => 'merged_grand_totals', :locals => {:service_request => @service_request}

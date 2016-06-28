@@ -264,6 +264,7 @@ en:
       college: "College:"
       college_prompt: "Select a College"
       department: "Department:"
+      phone: "Phone:"
       department_prompt: "Select a Department"
       subspecialty: "Subspecialty:"
       subspecialty_prompt: "Select a Subspecialty"

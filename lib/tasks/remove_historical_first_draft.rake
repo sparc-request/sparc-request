@@ -25,7 +25,7 @@ task :remove_historical_first_draft => :environment do
   
   ActiveRecord::Base.descendants.each do |model|
     if model.respond_to? 'auditing_enabled'
-      model.auditing_enabled = false
+      model.auditing_enabled = true
     end
   end
 

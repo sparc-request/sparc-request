@@ -5,7 +5,6 @@ RSpec.describe ServiceRequestsController do
 
   let_there_be_lane
   let_there_be_j
-  build_service_request
 
   def do_post
     post :delete_documents, {
@@ -17,14 +16,17 @@ RSpec.describe ServiceRequestsController do
 
   describe 'POST delete_documents' do
 
-    let!(:doc)   { Document.create(service_request_id: service_request.id) }
-    let!(:ssr1)  { create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id)  }
-    let!(:ssr2)  { create(:sub_service_request, service_request_id: service_request.id, organization_id: core2.id) }
-
-    let!(:core2) { create(:core, parent_id: program.id) }
+    let!(:protocol)         { create(:protocol_without_validations, primary_pi: jug2) }
+    let!(:service_request)  { create(:service_request_without_validations, protocol: protocol) }
+    let!(:provider)         { create(:provider, parent: create(:institution)) }
+    let!(:program)          { create(:program, parent: provider) }
+    let!(:core1)            { create(:core, parent: program) }
+    let!(:core2)            { create(:core, parent: program) }
+    let!(:ssr1)             { create(:sub_service_request, service_request: service_request, organization: core1)  }
+    let!(:ssr2)             { create(:sub_service_request, service_request: service_request, organization: core2) }
+    let!(:doc)              { create(:document, protocol: protocol) }
 
     before(:each) do
-      doc.update_attribute(:id, 1)
       doc.sub_service_requests << ssr1
       doc.sub_service_requests << ssr2
     end

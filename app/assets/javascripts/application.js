@@ -28,6 +28,13 @@
 // the compiled file.
 //
 //= require jquery
+//= require bootstrap-sprockets
+//= require bootstrap-select
+//= require bootstrap-table
+//= require bootstrap-table-export
+//= require bootstrap-table-custom
+//= require moment
+//= require bootstrap-datetimepicker
 //= require jquery-ui
 //= require jquery.qtip.min
 //= require jquery.cookie

@@ -444,35 +444,11 @@ class Protocol < ActiveRecord::Base
     return self.service_requests.detect { |sr| !['first_draft'].include?(sr.status) }
   end
 
-  def has_per_patient_per_visit? current_request, portal
+  def has_line_items_of_type?(current_request, portal, type)
     return self.service_requests.detect do |sr|
-      if sr.has_per_patient_per_visit_services?
-        if ['first_draft'].include?(sr.status)
-          if portal
-            false
-          elsif current_request == sr
-            true
-          end
-        else
-          true
-        end
-      end
-    end
-  end
-
-  def has_one_time_fees? current_request, portal
-    return self.service_requests.detect do |sr|
-      if sr.has_one_time_fee_services?
-        if ['first_draft'].include?(sr.status)
-          if portal
-            false
-          elsif current_request == sr
-            true
-          end
-        else
-          true
-        end
-      end
+      next unless ((type == "otf") ? sr.has_one_time_fee_services? : sr.has_per_patient_per_visit_services?)
+      true unless ['first_draft'].include?(sr.status)
+      !portal && current_request == sr
     end
   end
 

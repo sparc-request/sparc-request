@@ -365,7 +365,6 @@ RSpec.describe "service calendar", js: true do
       it "should show total price for that visit" do
         find("#billing_strategy_tab").click
         wait_for_javascript_to_finish
-
         within(".arm_#{arm1.id}.visit.visit_column_2") do
           wait_for_javascript_to_finish
           fill_in "visits_#{@visit_id}_research_billing_qty", with: "5\r"

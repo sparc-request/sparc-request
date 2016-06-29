@@ -43,13 +43,5 @@ RSpec.describe 'edit an institution', js: true do
       first("#save_button").click
       expect(page).to have_content( 'Medical University of South Carolina saved successfully' )
     end
-
-    context "viewing user rights section" do
-      it "should show user rights section" do
-        find('#user_rights').click
-        sleep 3
-        expect(find('#su_info')).to be_visible
-      end
-    end
   end
 end

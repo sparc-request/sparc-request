@@ -20,14 +20,13 @@
 
 class CatalogManager::InstitutionsController < CatalogManager::OrganizationsController
   def create
-    @institution = Institution.create({name: params[:name], abbreviation: params[:name], is_available: false})
-    @user.catalog_manager_rights.create organization_id: @institution.id
- 
-    respond_with [:catalog_manger, @institution]
+    @organization = Institution.create({name: params[:name], abbreviation: params[:name], is_available: false})
+    @user.catalog_manager_rights.create( organization_id: @organization.id )
   end
 
   def show
-    redirect_to catalog_manager_organization_path( params[:id], path: catalog_manager_institution_path )
+    @path = catalog_manager_institution_path
+    super
   end
 
   def update

@@ -24,14 +24,12 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
   def create
     @organization.build_subsidy_map()
     @organization.save
-
-    respond_with [:catalog_manger, @organization]
   end
 
   def show
-    @path = params[:path]
     @organization = Organization.find(params[:id])
     @organization.setup_available_statuses
+    render 'catalog_manager/organizations/show'
   end
 
   def update

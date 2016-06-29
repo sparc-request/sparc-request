@@ -26,7 +26,8 @@ class CatalogManager::ProgramsController < CatalogManager::OrganizationsControll
   end
 
   def show
-    redirect_to catalog_manager_organization_path( params[:id], path: catalog_manager_program_path )
+    @path = catalog_manager_program_path
+    super
   end
   
   def update

@@ -59,7 +59,7 @@ RSpec.describe Dashboard::DocumentsController do
       end
 
       it { is_expected.to respond_with :ok }
-      it { is_expected.to render_template "service_requests/_authorization_error" }
+      it { is_expected.to render_template "dashboard/shared/_authorization_error" }
     end
 
     context 'user has admin access to document' do
@@ -97,7 +97,7 @@ RSpec.describe Dashboard::DocumentsController do
       end
 
       it { is_expected.to respond_with :ok }
-      it { is_expected.to render_template "service_requests/_authorization_error" }
+      it { is_expected.to render_template "dashboard/shared/_authorization_error" }
     end
   end
 end

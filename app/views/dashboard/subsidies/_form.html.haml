@@ -49,7 +49,8 @@
             .form-group
               = form.label "pi_contribution", t(:dashboard)[:subsidies][:form][:pi], class: "col-sm-4 control-label"
               .input-group.col-sm-7
-                = form.text_field "pi_contribution", { class: 'form-control', value: ('$' + cents_to_dollars_float(subsidy.pi_contribution)).to_s }
+                %span.input-group-addon $
+                = form.text_field "pi_contribution", { class: 'form-control', value: (cents_to_dollars_float(subsidy.pi_contribution)).to_s }
             .row
               .col-md-12
                 %table.table.table-condensed.table-bordered

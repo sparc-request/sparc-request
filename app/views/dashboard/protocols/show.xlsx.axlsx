@@ -60,7 +60,7 @@ arm_r_totals = {}
 
     #Column headers and labels for each visit_group, meaning each visit / appointment
     arm.visit_groups.each do |vg|
-      arm_header_row << ["Procedure Occurence (N)", vg.name, ""]
+      arm_header_row << ["", vg.name, ""]
       label_row << ["N", "NR", "R Cost"]
       arm_label_row << ["", "", ""]
     end
@@ -104,7 +104,7 @@ arm_r_totals = {}
         line_item_row = [liv.line_item.service.name, liv.line_item.service.cpt_code, "0", cents_to_dollars(liv.line_item.service.current_effective_pricing_map.full_rate), cents_to_dollars(liv.line_item.applicable_rate)]
         liv.visits.each_with_index do |visit, index|
           n_cell = n_columns[index] + current_row.to_s
-          line_item_row << [liv.subject_count, "=#{nr_cell} * #{n_cell}", "=#{your_cost_cell} * #{n_cell}"]
+          line_item_row << [visit.research_billing_qty, "=#{nr_cell} * #{n_cell}", "=#{your_cost_cell} * #{n_cell}"]
           @line_item_style_array << [default, money, money]
         end
         line_item_row << ["=#{nr_cell} * #{n_columns_sum}",

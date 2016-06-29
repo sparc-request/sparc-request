@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160627160134) do
+ActiveRecord::Schema.define(version: 20160609132758) do
 
   create_table "admin_rates", force: :cascade do |t|
     t.integer  "line_item_id", limit: 4
@@ -184,6 +184,12 @@ ActiveRecord::Schema.define(version: 20160627160134) do
   add_index "charges", ["service_id"], name: "index_charges_on_service_id", using: :btree
   add_index "charges", ["service_request_id"], name: "index_charges_on_service_request_id", using: :btree
 
+  create_table "click_counters", force: :cascade do |t|
+    t.integer  "click_count", limit: 4
+    t.datetime "created_at",            null: false
+    t.datetime "updated_at",            null: false
+  end
+
   create_table "clinical_providers", force: :cascade do |t|
     t.integer  "identity_id",     limit: 4
     t.integer  "organization_id", limit: 4
@@ -269,8 +275,10 @@ ActiveRecord::Schema.define(version: 20160627160134) do
     t.integer  "document_file_size",    limit: 4
     t.datetime "document_updated_at"
     t.string   "doc_type_other",        limit: 255
-    t.integer  "service_request_id",    limit: 4
+    t.integer  "protocol_id",           limit: 4
   end
+
+  add_index "documents", ["protocol_id"], name: "index_documents_on_protocol_id", using: :btree
 
   create_table "documents_sub_service_requests", id: false, force: :cascade do |t|
     t.integer "document_id",            limit: 4

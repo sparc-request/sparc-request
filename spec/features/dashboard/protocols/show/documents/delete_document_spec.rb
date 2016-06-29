@@ -18,20 +18,26 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-<% if @errors.present? %>
-$("#modal_errors").html("<%= escape_javascript(render(partial: 'shared/modal_errors', locals: {errors: @errors})) %>")
-<% else %>
-<% if @current_user_created %>
-$("#documents-panel").html("<%= escape_javascript(render( 'dashboard/documents/documents_table', protocol: @protocol, permission_to_edit: @permission_to_edit || @admin )) %>")
-$("#service-requests-panel").html("<%= escape_javascript(render('dashboard/service_requests/service_requests', protocol: @protocol, permission_to_edit: @permission_to_edit, user: @user, view_only: false)) %>")
+require 'rails_helper'
 
-$("#documents-table").bootstrapTable()
-$(".service-requests-table").bootstrapTable()
+RSpec.feature 'User wants to edit a document', js: true do
+  let!(:logged_in_user) { create(:identity, last_name: "Doe", first_name: "John", ldap_uid: "johnd", email: "johnd@musc.edu", password: "p4ssword", password_confirmation: "p4ssword", approved: true) }
 
-$('.service-requests-table').on 'all.bs.table', ->
-  $(this).find('.selectpicker').selectpicker() #Find descendant selectpickers
-<% end %>
-$("#modal_place").modal 'hide'
-$("#associated-users-table").bootstrapTable 'refresh', {silent: true}
-$("#flashes_container").html("<%= escape_javascript(render('shared/flash')) %>")
-<% end %>
+  fake_login_for_each_test("johnd")
+
+  context 'and clicks the Delete button' do
+    scenario 'and sees the document removed' do
+      @protocol = create(:unarchived_study_without_validations, primary_pi: logged_in_user)
+                  create(:document, protocol: @protocol, doc_type: 'Protocol')
+
+      @page = Dashboard::Protocols::ShowPage.new
+      @page.load(id: @protocol.id)
+      wait_for_javascript_to_finish
+
+      @page.documents.first.enabled_remove_button.click
+      wait_for_javascript_to_finish
+
+      expect(@page.documents(text: 'Protocol').count).to eq(0)
+    end
+  end
+end

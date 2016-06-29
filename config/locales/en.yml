@@ -283,6 +283,7 @@ en:
     #  DOCUMENTS  #
     ###############
     documents:
+      header: "Documents"
       add: "Add a New Document"
       edit: "Edit Document"
       created: "Document Uploaded!"
@@ -296,6 +297,7 @@ en:
         document_type: "Document Type:"
         document_type_other: "Other Document Type:"
         document: "Document:"
+        access: "Allow Access:"
 
     #################
     #  EPIC QUEUES  #
@@ -457,6 +459,10 @@ en:
         email: "Email"
         phone: "Phone"
         rights: "Proxy Rights"
+
+      documents:
+        header: "Documents"
+        add_document: "Add Document"
 
       service_requests:
         header: "Service Requests"
@@ -1212,7 +1218,7 @@ en:
       delete: "Delete Subsidy"
       effective_current_total_cost: "Subsidy Current Cost"
       header: "Subsidy Information"
-      link: "Add a Subsidy"
+      link: "Request a Subsidy"
       no_subsidy: "No subsidy has been requested for this service request."
       percent: "% Subsidy"
       pi: "PI Contribution"

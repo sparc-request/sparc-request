@@ -18,61 +18,54 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class Dashboard::FulfillmentsController < Dashboard::BaseController
+require 'rails_helper'
 
-  before_action :find_fulfillment, only: [:edit, :update, :destroy]
+RSpec.feature 'User wants to edit a document', js: true do
+  let!(:logged_in_user) { create(:identity, last_name: "Doe", first_name: "John", ldap_uid: "johnd", email: "johnd@musc.edu", password: "p4ssword", password_confirmation: "p4ssword", approved: true) }
 
-  def index
-    @line_item = LineItem.find(params[:line_item_id])
-    respond_to do |format|
-      format.js { render }
-      format.json do
-        @fulfillments = @line_item.fulfillments
+  fake_login_for_each_test("johnd")
 
-        render
+  before :each do
+    @protocol = create(:unarchived_study_without_validations, primary_pi: logged_in_user)
+                create(:document, protocol: @protocol, doc_type: 'Protocol')
+
+    @page = Dashboard::Protocols::ShowPage.new
+    @page.load(id: @protocol.id)
+    wait_for_javascript_to_finish
+  end
+
+  context 'and clicks the Edit button' do
+    before :each do
+      @page.documents.first.enabled_edit_button.click
+      wait_for_javascript_to_finish
+    end
+
+    scenario 'and sees the document modal' do
+      expect(@page).to have_document_modal
+    end
+
+    context 'and edits a field and submits' do
+      before :each do
+        edit_document_fields
+        wait_for_javascript_to_finish
+      end
+
+      scenario 'and sees the updated document' do
+        @page.wait_for_documents(text: 'Protocol')
+        expect(@page).to have_documents(text: 'Consent')
       end
     end
   end
 
-  def new
-    @fulfillment = Fulfillment.new(line_item_id: params[:line_item_id])
-    @header_text = t(:dashboard)[:fulfillments][:add]
-  end
-
-  def create
-    @fulfillment = Fulfillment.new(params[:fulfillment])
-    if @fulfillment.valid?
-      @fulfillment.save
-      @line_item = @fulfillment.line_item
-      flash[:success] = t(:dashboard)[:fulfillments][:created]
-    else
-      @errors = @fulfillment.errors
+  def edit_document_fields
+    @page.document_modal.instance_exec do
+      doc_type_dropdown.click
+      wait_for_dropdown_choices
+      dropdown_choices(text: 'Consent').first.click
     end
-  end
 
-  def edit
-    @header_text = t(:dashboard)[:fulfillments][:edit]
-  end
+    attach_file 'document_document', './spec/fixtures/files/text_document.txt'
 
-  def update
-    if @fulfillment.update_attributes(params[:fulfillment])
-      @line_item = @fulfillment.line_item
-      flash[:success] = t(:dashboard)[:fulfillments][:updated]
-    else
-      @errors = @fulfillment.errors
-    end
-  end
-
-  def destroy
-    if @fulfillment.delete
-      @line_item = @fulfillment.line_item
-      flash[:alert] = t(:dashboard)[:fulfillments][:destroyed]
-    end
-  end
-
-  private
-
-  def find_fulfillment
-    @fulfillment = Fulfillment.find(params[:id])
+    @page.document_modal.upload_button.click
   end
 end

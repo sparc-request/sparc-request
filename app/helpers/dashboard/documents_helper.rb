@@ -20,23 +20,37 @@
 
 module Dashboard::DocumentsHelper
 
-  def display_document_title(document)
-    link_to document.document_file_name, document.document.url
+  def display_document_title(document, permission)
+    if permission
+      link_to document.document_file_name, document.document.url
+    else
+      document.document_file_name
+    end
   end
 
-  def document_edit_button(permission_to_edit)
+  def document_edit_button(document, permission)
     content_tag(:button,
       raw(
         content_tag(:span, '', class: "glyphicon glyphicon-edit", aria: {hidden: "true"})
-      ), type: 'button', class: "btn btn-warning actions-button document_edit"
+      ), type: 'button', class: "btn btn-warning actions-button document-edit #{permission ? '' : 'disabled'}", data: { permission: permission.to_s }
     )
   end
 
-  def document_delete_button(permission_to_edit)
+  def document_delete_button(document, permission)
     content_tag(:button,
       raw(
         content_tag(:span, '', class: "glyphicon glyphicon-remove", aria: {hidden: "true"})
-      ), type: 'button', class: "btn btn-danger actions-button document_delete"
+      ), type: 'button', class: "btn btn-danger actions-button document-delete #{permission ? '' : 'disabled'}", data: { permission: permission.to_s }
     )
+  end
+
+  def document_org_access_collection(document, action)
+    default_select  = if action == 'new'
+                        current_user.authorized_admin_organizations.ids
+                      else
+                        document.sub_service_requests.map(&:organization_id)
+                      end
+
+    options_from_collection_for_select(document.protocol.organizations.distinct.sort_by(&:name), :id, :name, default_select)
   end
 end

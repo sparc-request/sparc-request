@@ -91,7 +91,6 @@ $(document).ready ->
           $(this).val($(this).defaultValue)
 
   $(document).on 'change', '#percent_subsidy', ->
-    console.log("HERE")
     # When user changes Percent Subsidy, the PI Contribution and Subsidy Cost fields are recalculated & displayed
     max_percent = $(this).data('max-percentage')
     max_dollar_cap = $(this).data('max-dollar-cap')

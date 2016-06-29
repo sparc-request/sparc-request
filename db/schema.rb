@@ -276,7 +276,6 @@ ActiveRecord::Schema.define(version: 20160629155935) do
     t.datetime "document_updated_at"
     t.string   "doc_type_other",        limit: 255
     t.integer  "protocol_id",           limit: 4
-    t.integer  "service_request_id",    limit: 4
   end
 
   add_index "documents", ["protocol_id"], name: "index_documents_on_protocol_id", using: :btree

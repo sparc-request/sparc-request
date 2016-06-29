@@ -76,7 +76,7 @@ wb.add_worksheet(name: "Review") do |sheet|
 
   sheet.add_row doc_row, :style => sub_header_style
 
-  @service_request.documents.each do |doc|
+  @service_request.protocol.documents.each do |doc|
     next unless @sub_service_request.nil? or doc.sub_service_requests.map{|ssr| ssr.id}.include?(@sub_service_request.id)
     parents = []
     doc.sub_service_requests.each do |ssr|

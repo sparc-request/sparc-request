@@ -462,7 +462,7 @@ class ServiceRequestsController < ApplicationController
 
   def delete_documents
     # deletes a document unless we are working with a sub_service_request
-    @document = @service_request.documents.find params[:document_id]
+    @document = @service_request.protocol.documents.find params[:document_id]
     @tr_id = "#document_id_#{@document.id}"
 
     if @sub_service_request.nil?
@@ -475,7 +475,7 @@ class ServiceRequestsController < ApplicationController
   end
 
   def edit_documents
-    @document = @service_request.documents.find params[:document_id]
+    @document = @service_request.protocol.documents.find params[:document_id]
     @service_list = @service_request.service_list
   end
 
@@ -616,7 +616,7 @@ class ServiceRequestsController < ApplicationController
         if doc_object
           if @sub_service_request and doc_object.sub_service_requests.size > 1
             new_doc = document ? document : doc_object.document # if no new document provided use the old document
-            newDocument = Document.create(document: new_doc, doc_type: params[:doc_type], doc_type_other: params[:doc_type_other], service_request_id: @service_request.id)
+            newDocument = Document.create(document: new_doc, doc_type: params[:doc_type], doc_type_other: params[:doc_type_other], protocol_id: @service_request.protocol_id)
             @sub_service_request.documents << newDocument
             @sub_service_request.documents.delete doc_object
             @sub_service_request.save
@@ -626,7 +626,7 @@ class ServiceRequestsController < ApplicationController
           end
         end
       else # new document
-        newDocument = Document.create(document: document, doc_type: doc_type, doc_type_other: doc_type_other, service_request_id: @service_request.id)
+        newDocument = Document.create(document: document, doc_type: doc_type, doc_type_other: doc_type_other, protocol_id: @service_request.protocol_id)
         process_ssr_organization_ids.each do |org_id|
           sub_service_request = @service_request.sub_service_requests.find_by_organization_id org_id.to_i
           sub_service_request.documents << newDocument

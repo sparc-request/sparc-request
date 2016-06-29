@@ -220,7 +220,7 @@ RSpec.describe "filters", js: :true do
       visit_protocols_index_page
       @page.filter_protocols.search_field.set("john")
       @page.filter_protocols.apply_filter_button.click()
-      
+
       expect(@page.search_results).to have_protocols(text: "Protocol1")
       expect(@page.search_results).to have_protocols(text: "Protocol2")
       expect(@page.search_results).to have_protocols(text: "Protocol3")
@@ -242,6 +242,25 @@ RSpec.describe "filters", js: :true do
       expect(@page.search_results).to have_protocols(text: "Protocol2")
       expect(@page.search_results).to have_protocols(text: "Protocol3")
     end
+
+    it "should match against displaying special characters" do
+      titlexProtocol = create_protocol(archived: false, short_title: "title %")
+      titlexProtocol.project_roles.create(identity_id: user.id, role: "very-important", project_rights: "to-party")
+      _TitleProtocol = create_protocol(archived: false, short_title: "_Title")
+      _TitleProtocol.project_roles.create(identity_id: user.id, role: "very-important", project_rights: "to-party")
+      axaProtocol = create_protocol(archived: false, short_title: "a%a")
+      axaProtocol.project_roles.create(identity_id: user.id, role: "very-important", project_rights: "to-party")
+
+      visit_protocols_index_page
+      expect(@page.search_results).to have_protocols(count: 3)
+      @page.filter_protocols.search_field.set("%")
+      @page.filter_protocols.apply_filter_button.click()
+      wait_for_javascript_to_finish
+
+      expect(@page.search_results).to have_protocols(text: "title %")
+      expect(@page.search_results).to have_no_protocols(text: "_Title")
+      expect(@page.search_results).to have_protocols(text: "a%a")
+    end
   end
 
   describe "My Admin Protocols" do
@@ -258,7 +277,7 @@ RSpec.describe "filters", js: :true do
         create(:project_role, identity: user, role: "very-important", project_rights: "to-party", protocol: protocol2)
 
         visit_protocols_index_page
-        
+
         wait_for_javascript_to_finish
 
         expect(@page.search_results).to have_protocols(text: "Protocol1")

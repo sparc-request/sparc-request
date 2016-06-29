@@ -462,18 +462,49 @@ RSpec.describe ServiceCalendarsController do
         }.with_indifferent_access
 
         liv = LineItemsVisit.for(arm1, line_item1)
+
         expect(liv.visits[1].quantity).to               eq 100
         expect(liv.visits[1].research_billing_qty).to   eq 100
         expect(liv.visits[1].insurance_billing_qty).to  eq 0
         expect(liv.visits[1].effort_billing_qty).to     eq 0
-        expect(liv.visits[1].quantity).to               eq 100
-        expect(liv.visits[1].research_billing_qty).to   eq 100
-        expect(liv.visits[1].insurance_billing_qty).to  eq 0
-        expect(liv.visits[1].effort_billing_qty).to     eq 0
-        expect(liv.visits[1].quantity).to               eq 100
-        expect(liv.visits[1].research_billing_qty).to   eq 100
-        expect(liv.visits[1].insurance_billing_qty).to  eq 0
-        expect(liv.visits[1].effort_billing_qty).to     eq 0
+      end
+
+      it 'should not update locked visits' do
+        locked_org = create(:organization)
+        
+        EDITABLE_STATUSES[locked_org.id] = ['draft']
+
+                              create( :sub_service_request_without_validations,
+                                      service_request: service_request,
+                                      organization: locked_org,
+                                      status: 'on_hold' )
+        locked_service      = create( :service,
+                                      pricing_map_count: 1,
+                                      organization: locked_org )
+        locked_line_item    = create( :line_item,
+                                      service_id: service1.id,
+                                      service_request_id: service_request.id,
+                                      sub_service_request_id: sub_service_request.id )
+
+        locked_pricing_map  = locked_service.pricing_maps[0]
+        locked_pricing_map.update_attributes(display_date: Date.today, unit_minimum: 100)
+        
+        add_visits_to_arm_line_item(arm1, locked_line_item, 3)
+
+        session[:service_request_id] = service_request.id
+        post :select_calendar_column, {
+          :id            => service_request.id,
+          :column_id     => 2, # 1-based
+          :arm_id        => arm1.id,
+          :format        => :js,
+        }.with_indifferent_access
+
+        liv = LineItemsVisit.for(arm1, locked_line_item)
+
+        expect(liv.visits[0].quantity).to               eq 0
+        expect(liv.visits[0].research_billing_qty).to   eq 0
+        expect(liv.visits[0].insurance_billing_qty).to  eq 0
+        expect(liv.visits[0].effort_billing_qty).to     eq 0
       end
     end
 
@@ -496,18 +527,54 @@ RSpec.describe ServiceCalendarsController do
         }.with_indifferent_access
 
         liv = LineItemsVisit.for(arm1, line_item1)
+
         expect(liv.visits[1].quantity).to               eq 0
         expect(liv.visits[1].research_billing_qty).to   eq 0
         expect(liv.visits[1].insurance_billing_qty).to  eq 0
         expect(liv.visits[1].effort_billing_qty).to     eq 0
-        expect(liv.visits[1].quantity).to               eq 0
-        expect(liv.visits[1].research_billing_qty).to   eq 0
-        expect(liv.visits[1].insurance_billing_qty).to  eq 0
-        expect(liv.visits[1].effort_billing_qty).to     eq 0
-        expect(liv.visits[1].quantity).to               eq 0
-        expect(liv.visits[1].research_billing_qty).to   eq 0
-        expect(liv.visits[1].insurance_billing_qty).to  eq 0
-        expect(liv.visits[1].effort_billing_qty).to     eq 0
+      end
+
+      it 'should not update locked visits' do
+        locked_org = create(:organization)
+        
+        EDITABLE_STATUSES[locked_org.id] = ['draft']
+
+                              create( :sub_service_request_without_validations,
+                                      service_request: service_request,
+                                      organization: locked_org,
+                                      status: 'on_hold' )
+        locked_service      = create( :service,
+                                      pricing_map_count: 1,
+                                      organization: locked_org )
+        locked_line_item    = create( :line_item,
+                                      service_id: service1.id,
+                                      service_request_id: service_request.id,
+                                      sub_service_request_id: sub_service_request.id)
+
+        locked_pricing_map  = locked_service.pricing_maps[0]
+        locked_pricing_map.update_attributes(display_date: Date.today, unit_minimum: 100)
+
+        add_visits_to_arm_line_item(arm1, locked_line_item, 3)
+
+        # Set all of the quantities to 100 before-hand
+        liv = LineItemsVisit.for(arm1, locked_line_item)
+        liv.visits[0].update_attributes(  quantity: 100,
+                                          research_billing_qty: 100,
+                                          insurance_billing_qty: 100,
+                                          effort_billing_qty: 100  )
+        
+        session[:service_request_id] = service_request.id
+        post :unselect_calendar_column, {
+          :id            => service_request.id,
+          :column_id     => 2, # 1-based
+          :arm_id        => arm1.id,
+          :format        => :js,
+        }.with_indifferent_access
+
+        expect(liv.visits[0].quantity).to               eq 100
+        expect(liv.visits[0].research_billing_qty).to   eq 100
+        expect(liv.visits[0].insurance_billing_qty).to  eq 100
+        expect(liv.visits[0].effort_billing_qty).to     eq 100
       end
     end
   end

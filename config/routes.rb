@@ -198,7 +198,7 @@ SparcRails::Application.routes.draw do
       end
     end
 
-    resources :documents
+    resources :documents, except: [:show]
 
     resources :epic_queues, only: [:index, :destroy]
 

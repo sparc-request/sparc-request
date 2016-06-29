@@ -24,6 +24,7 @@ $(document).ready ->
     minLength: 3
     search: (event, ui) ->
       $('.user-search-clear-icon').remove()
+      $('.user-search-spinner').remove()
       $("#user_search_term").after('<img src="/assets/spinner.gif" class="user-search-spinner" />')
     open: (event, ui) ->
       $('.user-search-spinner').remove()

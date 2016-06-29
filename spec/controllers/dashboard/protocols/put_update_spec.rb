@@ -16,7 +16,7 @@ RSpec.describe Dashboard::ProtocolsController do
         end
 
         it { is_expected.to respond_with :ok }
-        it { is_expected.to render_template "service_requests/_authorization_error" }
+        it { is_expected.to render_template "dashboard/shared/_authorization_error" }
       end
 
       context "user authorized to edit Protocol" do
@@ -96,7 +96,7 @@ RSpec.describe Dashboard::ProtocolsController do
       end
 
       it { is_expected.to respond_with :ok }
-      it { is_expected.to render_template "service_requests/_authorization_error" }
+      it { is_expected.to render_template "dashboard/shared/_authorization_error" }
     end
 
     context 'user has Admin access but not a valid project role' do
@@ -106,7 +106,7 @@ RSpec.describe Dashboard::ProtocolsController do
           @protocol       = create(:protocol_without_validations, type: 'Project')
           organization    = create(:organization)
           service_request = create(:service_request_without_validations, protocol: @protocol)
-                            create(:sub_service_request_without_validations, organization: organization, service_request: service_request)
+                            create(:sub_service_request_without_validations, organization: organization, service_request: service_request, status: 'draft')
                             create(:super_user, identity: @logged_in_user, organization: organization)
 
           log_in_dashboard_identity(obj: @logged_in_user)
@@ -127,7 +127,7 @@ RSpec.describe Dashboard::ProtocolsController do
           @protocol       = create(:protocol_without_validations, type: 'Project')
           organization    = create(:organization)
           service_request = create(:service_request_without_validations, protocol: @protocol)
-                            create(:sub_service_request_without_validations, organization: organization, service_request: service_request)
+                            create(:sub_service_request_without_validations, organization: organization, service_request: service_request, status: 'draft')
                             create(:service_provider, identity: @logged_in_user, organization: organization)
 
           log_in_dashboard_identity(obj: @logged_in_user)

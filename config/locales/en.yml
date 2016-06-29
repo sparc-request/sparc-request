@@ -23,6 +23,8 @@ en:
   about_title: "About SPARC Request"
   activerecord:
     attributes:
+      fulfillment:
+        time: "Quantity"
       human_subjects_info:
         nct_number: "The NCT #"
       protocol:
@@ -153,7 +155,7 @@ en:
         subtext: "Check all that apply"
         humans:
           header: "Human Subjects:"
-          nct_number: "NCT #:"
+          nct_number: "NCT# (National Clinical Trials Number):"
           hr_number: "HR #:"
           pro_number: "PRO #:"
           record_irb: "IRB of Record:"
@@ -262,6 +264,7 @@ en:
       college: "College:"
       college_prompt: "Select a College"
       department: "Department:"
+      phone: "Phone:"
       department_prompt: "Select a Department"
       subspecialty: "Subspecialty:"
       subspecialty_prompt: "Select a Subspecialty"
@@ -280,6 +283,7 @@ en:
     #  DOCUMENTS  #
     ###############
     documents:
+      header: "Documents"
       add: "Add a New Document"
       edit: "Edit Document"
       created: "Document Uploaded!"
@@ -293,6 +297,7 @@ en:
         document_type: "Document Type:"
         document_type_other: "Other Document Type:"
         document: "Document:"
+        access: "Allow Access:"
 
     #################
     #  EPIC QUEUES  #
@@ -310,8 +315,8 @@ en:
       destroyed: "Fulfillment Destroyed!"
       table:
         date: "Fulfillment Date"
-        time_unit: "Time Unit"
-        time: "Time"
+        time_unit: "Qty Type"
+        time: "Quantity"
         actions: "Actions"
       actions:
         notes: " Notes"
@@ -319,8 +324,8 @@ en:
         delete: " Delete Fulfillment"
       form:
         date: "Fulfillment Date:"
-        time: "Time:"
-        time_unit: "Time Unit:"
+        time: "Quantity:"
+        time_unit: "Qty Type:"
 
     ################
     #  LINE ITEMS  #
@@ -410,7 +415,7 @@ en:
       archived: "Archived"
       status: "Status"
       my_protocols: "My Protocols"
-      my_admin_orgs: "My Admin Organizations"
+      my_admin_protocols: "My Admin Protocols"
       organization: "Organization"
       filter: "Filter"
       saved_filters:
@@ -455,6 +460,10 @@ en:
         phone: "Phone"
         rights: "Proxy Rights"
 
+      documents:
+        header: "Documents"
+        add_document: "Add Document"
+
       service_requests:
         header: "Service Requests"
         view_consolidated: "View Consolidated Request"
@@ -495,7 +504,7 @@ en:
             none: "No Research Types selected"
             humans:
               header: "Human Subjects"
-              nct_number: "NCT #:"
+              nct_number: "NCT# (National Clinical Trials Number):"
               hr_number: "HR #:"
               pro_number: "PRO #:"
               record_irb: "IRB of Record:"
@@ -513,7 +522,7 @@ en:
               header: "Investigational Products"
               ind_number: "IND #:"
               ind_on_hold: "IND on Hold?:"
-              ide_number: "IDE #:"
+              ide_number: "IDE# / HDE# / HUD#:"
             ip_patents:
               header: "IP/Patents"
               number: "Patent Number:"
@@ -1108,7 +1117,7 @@ en:
     iacuc_approval_date: "IACUC Approval Date:"
     iacuc_expiration_date: "IACUC Expiration Date:"
     iacuc_number: "IACUC #:"
-    ide_number: "IDE#:"
+    ide_number: "IDE# / HDE# / HUD#:"
     impact: "Impact Areas"
     ind_number: "IND#:"
     ind_on_hold: "IND on Hold?"
@@ -1120,7 +1129,7 @@ en:
     irb_expiration_date: "IRB Expiration Date:"
     irb_of_record: "IRB of Record:"
     name_of_iacuc: "Name of IACUC:"
-    nct_number: "NCT #:"
+    nct_number: "NCT# (National Clinical Trials Number):"
     needed_info: "Information needed to obtain correct pricing"
     optional_text: "Optional Information"
     optional_text2: "(used for reporting purposes and saved for your future use)"
@@ -1209,7 +1218,7 @@ en:
       delete: "Delete Subsidy"
       effective_current_total_cost: "Subsidy Current Cost"
       header: "Subsidy Information"
-      link: "Add a Subsidy"
+      link: "Request a Subsidy"
       no_subsidy: "No subsidy has been requested for this service request."
       percent: "% Subsidy"
       pi: "PI Contribution"

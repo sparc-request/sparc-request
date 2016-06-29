@@ -45,6 +45,7 @@ class CatalogManager::ProvidersController < CatalogManager::AppController
 
     params[:provider].delete(:id)
     if @provider.update_attributes(params[:provider])
+      @provider.update_descendants_availability(params[:provider][:is_available])
       flash[:notice] = "#{@provider.name} saved correctly."
     else
       flash[:alert] = "Failed to update #{@provider.name}."

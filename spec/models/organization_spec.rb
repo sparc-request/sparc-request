@@ -219,6 +219,24 @@ RSpec.describe 'organization' do
     end
   end
 
+  describe 'update descendants availability' do
+
+    it 'should update all descendants availability to false' do 
+      provider = create(:provider, is_available: true)
+      program = create(:program, parent: provider, is_available: true)
+      core = create(:core, parent: program, is_available: true)
+
+      provider.update_descendants_availability("false")
+
+      program.reload
+      core.reload
+
+      expect(program.is_available).to eq(false)
+      expect(core.is_available).to eq(false)
+
+    end
+
+  end
 
   describe 'current_pricing_setup' do
 

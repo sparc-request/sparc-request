@@ -29,13 +29,11 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
   respond_to :json, :js, :html
 
   def index
-    protocol              = @service_request.protocol
-    sp_only_admin_orgs    = @user.authorized_admin_organizations({ sp_only: true })
-    @sub_service_requests = if @permission_to_view || sp_only_admin_orgs.empty?
-                              @service_request.sub_service_requests
-                            else # Only reject SSRs if the user is ONLY a service provider for the request
-                              @service_request.sub_service_requests.reject { |ssr| ssr.should_be_hidden_for_sp?(sp_only_admin_orgs) }
-                            end
+    service_request       = ServiceRequest.find(params[:srid])
+    protocol              = service_request.protocol
+    @admin_orgs           = @user.authorized_admin_organizations
+    @sub_service_requests = service_request.sub_service_requests.where.not(status: 'first_draft') # TODO: Remove Historical first_draft SSRs and remove this
+    @permission_to_edit   = protocol.project_roles.where(identity: @user, project_rights: ['approve', 'request']).any?
   end
 
   def show

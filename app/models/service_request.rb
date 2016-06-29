@@ -32,10 +32,9 @@ class ServiceRequest < ActiveRecord::Base
   has_many :charges, :dependent => :destroy
   has_many :tokens, :dependent => :destroy
   has_many :approvals, :dependent => :destroy
-  has_many :documents, :dependent => :destroy
   has_many :arms, :through => :protocol
   has_many :notes, as: :notable, dependent: :destroy
-
+  
   after_save :set_original_submitted_date
 
   validation_group :protocol do
@@ -301,7 +300,7 @@ class ServiceRequest < ActiveRecord::Base
   end
 
   def create_line_item(args)
-    quantity = args.delete(:quantity) || 1
+    quantity = args.delete('quantity') || args.delete(:quantity) || 1
     if line_item = self.line_items.create(args)
 
       if line_item.service.one_time_fee
@@ -484,13 +483,28 @@ class ServiceRequest < ActiveRecord::Base
   # Change the status of the service request and all the sub service
   # requests to the given status.
   def update_status(new_status, use_validation=true)
+    to_notify = []
+
     self.assign_attributes(status: new_status)
 
     self.sub_service_requests.each do |ssr|
-      ssr.update_attribute(:status, new_status)
+      next unless ssr.can_be_edited?
+
+      available = AVAILABLE_STATUSES.keys
+      editable = EDITABLE_STATUSES[ssr.organization_id] || available
+
+      changeable = available & editable
+
+      if changeable.include? new_status
+        if ssr.status != new_status
+          ssr.update_attribute(:status, new_status)
+          to_notify << ssr.id
+        end
+      end
     end
 
     self.save(validate: use_validation)
+    to_notify
   end
 
   # Make sure that all the sub service requests have an ssr id
@@ -557,9 +571,9 @@ class ServiceRequest < ActiveRecord::Base
 
     {:line_items => line_item_audits}
   end
-
-  def should_be_hidden_for_sp?(sp_only_admin_orgs)
-    (sub_service_requests.reject { |ssr| ssr.should_be_hidden_for_sp?(sp_only_admin_orgs) }).empty?
+  
+  def has_non_first_draft_ssrs?
+    sub_service_requests.where.not(status: 'first_draft').any?
   end
 
   private

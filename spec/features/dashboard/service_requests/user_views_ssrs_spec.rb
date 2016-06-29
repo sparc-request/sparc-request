@@ -37,7 +37,7 @@ RSpec.describe "User views SSR table", js: true do
       let!(:protocol)             { create(:unarchived_study_without_validations, primary_pi: jug2) }
       let!(:service_request)      { create(:service_request_without_validations, protocol: protocol, service_requester: jug2, status: 'draft') }
       let!(:organization)         { create(:organization,type: 'Institution', name: 'Megacorp', admin: bob, service_provider: bob) }
-      let!(:sub_service_request)  { create(:sub_service_request, id: 9999, ssr_id: '1234', service_request: service_request, organization_id: organization.id) }
+      let!(:sub_service_request)  { create(:sub_service_request, id: 9999, ssr_id: '1234', service_request: service_request, organization_id: organization.id, status: 'draft') }
 
       scenario 'and sees View and Edit' do
         page = go_to_show_protocol(protocol.id)
@@ -46,13 +46,31 @@ RSpec.describe "User views SSR table", js: true do
         expect(page).to have_selector('button', text: /\AEdit\z/)
         expect(page).not_to have_selector('button', text: 'Admin Edit')
       end
+
+      context 'for a locked SSR' do
+        let!(:protocol)             { create(:unarchived_study_without_validations, primary_pi: jug2) }
+        let!(:service_request)      { create(:service_request_without_validations, protocol: protocol, service_requester: jug2, status: 'draft') }
+        let!(:organization)         { create(:organization,type: 'Institution', name: 'Megacorp', admin: bob, service_provider: bob) }
+        
+        scenario 'and sees View but not Edit' do
+          EDITABLE_STATUSES[organization.id] = ['draft']
+
+          sub_service_request.update_attribute(:status, 'on_hold')
+
+          page = go_to_show_protocol(protocol.id)
+
+          expect(page).to have_selector('button', text: /\AView\z/)
+          expect(page).not_to have_selector('button', text: /\AEdit\z/)
+          expect(page).not_to have_selector('button', text: 'Admin Edit')
+        end
+      end
     end
 
     context 'As an Authorized User with View Privileges' do
       let!(:protocol)             { create(:unarchived_study_without_validations, primary_pi: bob) }
       let!(:service_request)      { create(:service_request_without_validations, protocol: protocol, service_requester: bob, status: 'draft') }
       let!(:organization)         { create(:organization,type: 'Institution', name: 'Megacorp', admin: bob, service_provider: bob) }
-      let!(:sub_service_request)  { create(:sub_service_request, id: 9999, ssr_id: '1234', service_request: service_request, organization_id: organization.id) }
+      let!(:sub_service_request)  { create(:sub_service_request, id: 9999, ssr_id: '1234', service_request: service_request, organization_id: organization.id, status: 'draft') }
 
       scenario 'and sees View' do
         create(:project_role, identity: jug2, protocol: protocol, project_rights: 'view', role: 'consultant')
@@ -69,7 +87,7 @@ RSpec.describe "User views SSR table", js: true do
       let!(:protocol)             { create(:unarchived_study_without_validations, primary_pi: bob) }
       let!(:service_request)      { create(:service_request_without_validations, protocol: protocol, service_requester: jug2, status: 'draft') }
       let!(:organization)         { create(:organization,type: 'Institution', name: 'Megacorp', admin: jug2, service_provider: jug2) }
-      let!(:sub_service_request)  { create(:sub_service_request, id: 9999, ssr_id: '1234', service_request: service_request, organization_id: organization.id) }
+      let!(:sub_service_request)  { create(:sub_service_request, id: 9999, ssr_id: '1234', service_request: service_request, organization_id: organization.id, status: 'draft') }
 
       scenario 'and sees View, and Admin Edit, but not Edit' do
         page = go_to_show_protocol(protocol.id)

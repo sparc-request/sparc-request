@@ -60,7 +60,7 @@ arm_r_totals = {}
 
     #Column headers and labels for each visit_group, meaning each visit / appointment
     arm.visit_groups.each do |vg|
-      arm_header_row << ["Procedure Occurence (N)", vg.name, ""]
+      arm_header_row << ["", vg.name, ""]
       label_row << ["N", "NR", "R Cost"]
       arm_label_row << ["", "", ""]
     end
@@ -85,8 +85,9 @@ arm_r_totals = {}
 
 
     #Displays line_items_visits, grouped by organization from the sub service request
-    arm.line_items_visits.includes(:line_item).group_by{|liv| liv.line_item.sub_service_request}.each do |service_request, line_items_visits|
-      ssr_row = [service_request.organization.name, "", "", "", ""]
+    arm.line_items_visits.includes(:line_item).group_by{|liv| liv.line_item.sub_service_request}.each do |sub_service_request, line_items_visits|
+      next if ["draft", "first_draft"].include?(sub_service_request.status)
+      ssr_row = [sub_service_request.organization.name, "", "", "", ""]
       ((arm.visit_groups.count * 3) + 5).times {ssr_row << ""}
       sheet.add_row ssr_row, :style => org_header_style
 
@@ -103,7 +104,7 @@ arm_r_totals = {}
         line_item_row = [liv.line_item.service.name, liv.line_item.service.cpt_code, "0", cents_to_dollars(liv.line_item.service.current_effective_pricing_map.full_rate), cents_to_dollars(liv.line_item.applicable_rate)]
         liv.visits.each_with_index do |visit, index|
           n_cell = n_columns[index] + current_row.to_s
-          line_item_row << [liv.subject_count, "=#{nr_cell} * #{n_cell}", "=#{your_cost_cell} * #{n_cell}"]
+          line_item_row << [visit.research_billing_qty, "=#{nr_cell} * #{n_cell}", "=#{your_cost_cell} * #{n_cell}"]
           @line_item_style_array << [default, money, money]
         end
         line_item_row << ["=#{nr_cell} * #{n_columns_sum}",
@@ -188,9 +189,6 @@ arm_r_totals = {}
 end
 
 wb.insert_worksheet(0, name: "Summary") do |sheet|
-
-  @total_otf_direct_cost = @protocol.service_requests.map{|sr| sr.total_direct_costs_one_time}.sum
-
   sheet.add_row ["#{@protocol.class.to_s} Information", "", "", "", "", "", ""], :style => header_style
 
   sheet.add_row ["SPARC #{@protocol.class.to_s} ID:", "", @protocol.id], :style => default
@@ -219,6 +217,7 @@ wb.insert_worksheet(0, name: "Summary") do |sheet|
 
   @protocol.service_requests.each do |sr|
     sr.line_items.where(services: {one_time_fee: true}).each do |li|
+      next if ["draft", "first_draft"].include?(li.sub_service_request.status)
       li_row = sheet.rows.length + 1
       sheet.add_row [li.service.name, "", "0", cents_to_dollars(li.applicable_rate), li.quantity, "=C#{li_row}*E#{li_row}", "=D#{li_row}*E#{li_row}"], :style => [default, default, money, money, default, money, money]
     end
@@ -237,7 +236,7 @@ wb.insert_worksheet(0, name: "Summary") do |sheet|
   end
   study_budget_end_row = sheet.rows.length
   sheet.add_row ["Total Direct Cost", "", "", "", "", "=SUM(F#{study_budget_start_row}:F#{study_budget_end_row})", "=SUM(G#{study_budget_start_row}:G#{study_budget_end_row})"], :style => [row_header_style, row_header_style, row_header_style, row_header_style, row_header_style, bold_money, bold_money]
-  
+
   indirect_cost_percentage_row = sheet.rows.length + 1
   sheet.add_row ["Indirect Cost Percentage", "30"], :style => [row_header_style, percent]
 

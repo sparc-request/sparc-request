@@ -283,6 +283,7 @@ en:
     #  DOCUMENTS  #
     ###############
     documents:
+      header: "Documents"
       add: "Add a New Document"
       edit: "Edit Document"
       created: "Document Uploaded!"
@@ -296,6 +297,7 @@ en:
         document_type: "Document Type:"
         document_type_other: "Other Document Type:"
         document: "Document:"
+        access: "Allow Access:"
 
     #################
     #  EPIC QUEUES  #
@@ -457,6 +459,10 @@ en:
         email: "Email"
         phone: "Phone"
         rights: "Proxy Rights"
+
+      documents:
+        header: "Documents"
+        add_document: "Add Document"
 
       service_requests:
         header: "Service Requests"

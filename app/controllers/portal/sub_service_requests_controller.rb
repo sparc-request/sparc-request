@@ -246,7 +246,7 @@ class Portal::SubServiceRequestsController < Portal::BaseController
     # deletes a group of documents
     sub_service_request = SubServiceRequest.find(params[:id])
     service_request = sub_service_request.service_request
-    document = service_request.documents.find params[:document_id]
+    document = service_request.protocol.documents.find params[:document_id]
     @tr_id = "#document_id_#{document.id}"
 
     sub_service_request.documents.delete document
@@ -257,7 +257,7 @@ class Portal::SubServiceRequestsController < Portal::BaseController
   def edit_documents
     @sub_service_request = SubServiceRequest.find(params[:id])
     service_request = @sub_service_request.service_request
-    @document = service_request.documents.find params[:document_id]
+    @document = service_request.protocol.documents.find params[:document_id]
     @service_list = service_request.service_list
   end
 

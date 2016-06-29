@@ -5,13 +5,15 @@ RSpec.describe ServiceRequestsController do
 
   let_there_be_lane
   let_there_be_j
-  build_service_request
 
   describe 'POST edit_documents' do
-    let!(:doc) { Document.create(service_request_id: service_request.id) }
+    let!(:protocol)             { create(:protocol_without_validations, primary_pi: jug2) }
+    let!(:service_request)      { create(:service_request_without_validations, protocol: protocol) }
+    let!(:organization)         { create(:organization) }
+    let!(:sub_service_request)  { create(:sub_service_request_without_validations, service_request: service_request, organization: organization) }
+    let!(:doc)                  { create(:document, protocol: protocol) }
 
     before(:each) do
-      doc.update_attribute(:id, 1)
       doc.sub_service_requests << sub_service_request
       session[:service_request_id] = service_request.id
       allow(controller).to receive(:initialize_service_request) do

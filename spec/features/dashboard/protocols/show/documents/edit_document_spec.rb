@@ -20,39 +20,52 @@
 
 require 'rails_helper'
 
-RSpec.describe Document do
-  it { should belong_to(:protocol) }
-  it { should have_and_belong_to_many(:sub_service_requests) }
+RSpec.feature 'User wants to edit a document', js: true do
+  let!(:logged_in_user) { create(:identity, last_name: "Doe", first_name: "John", ldap_uid: "johnd", email: "johnd@musc.edu", password: "p4ssword", password_confirmation: "p4ssword", approved: true) }
 
-  it 'should create a document' do
-    doc = Document.create()
-    expect(doc).to be_an_instance_of Document
+  fake_login_for_each_test("johnd")
+
+  before :each do
+    @protocol = create(:unarchived_study_without_validations, primary_pi: logged_in_user)
+                create(:document, protocol: @protocol, doc_type: 'Protocol')
+
+    @page = Dashboard::Protocols::ShowPage.new
+    @page.load(id: @protocol.id)
+    wait_for_javascript_to_finish
   end
 
-  describe 'display_document_type' do
-    let!(:document1) { create(:document, doc_type: 'other', doc_type_other: 'support') }
-    let!(:document2) { create(:document, doc_type: 'hipaa') }
-
-    it 'should display correctly for doc type other' do
-      expect(document1.display_document_type).to eq('Support')
+  context 'and clicks the Edit button' do
+    before :each do
+      @page.documents.first.enabled_edit_button.click
+      wait_for_javascript_to_finish
     end
 
-    it 'should display correctly for typical doc type' do
-      expect(document2.display_document_type).to eq('HIPAA')
+    scenario 'and sees the document modal' do
+      expect(@page).to have_document_modal
+    end
+
+    context 'and edits a field and submits' do
+      before :each do
+        edit_document_fields
+        wait_for_javascript_to_finish
+      end
+
+      scenario 'and sees the updated document' do
+        @page.wait_for_documents(text: 'Protocol')
+        expect(@page).to have_documents(text: 'Consent')
+      end
     end
   end
 
-  describe '#all_organizations' do
-    it 'should return SSR organizations and their trees' do
-      document = create(:document)
-      org1     = create(:organization)
-      org2     = create(:organization, parent: org1)
-      ssr1     = create(:sub_service_request_without_validations, organization: org1)
-      ssr2     = create(:sub_service_request_without_validations, organization: org2)
-      
-      document.sub_service_requests = [ssr1, ssr2]
-
-      expect(document.reload.all_organizations).to eq([org1, org2])
+  def edit_document_fields
+    @page.document_modal.instance_exec do
+      doc_type_dropdown.click
+      wait_for_dropdown_choices
+      dropdown_choices(text: 'Consent').first.click
     end
+
+    attach_file 'document_document', './spec/fixtures/files/text_document.txt'
+
+    @page.document_modal.upload_button.click
   end
 end

@@ -617,7 +617,6 @@ class ServiceRequestsController < ApplicationController
         if doc_object
           if @sub_service_request and doc_object.sub_service_requests.size > 1
             new_doc = document ? document : doc_object.document # if no new document provided use the old document
-            puts "*" * 50
             newDocument = Document.create(document: new_doc, doc_type: params[:doc_type], doc_type_other: params[:doc_type_other], service_request_id: @service_request.id)
             @sub_service_request.documents << newDocument
             @sub_service_request.documents.delete doc_object
@@ -625,7 +624,6 @@ class ServiceRequestsController < ApplicationController
           else
             new_doc = document || doc_object.document
             doc_object.update_attributes(document: new_doc, doc_type: doc_type, doc_type_other: doc_type_other)
-            puts "#" * 50
           end
         end
       else # new document

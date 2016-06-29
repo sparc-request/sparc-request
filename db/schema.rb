@@ -269,8 +269,10 @@ ActiveRecord::Schema.define(version: 20160622150859) do
     t.integer  "document_file_size",    limit: 4
     t.datetime "document_updated_at"
     t.string   "doc_type_other",        limit: 255
-    t.integer  "service_request_id",    limit: 4
+    t.integer  "protocol_id",           limit: 4
   end
+
+  add_index "documents", ["protocol_id"], name: "index_documents_on_protocol_id", using: :btree
 
   create_table "documents_sub_service_requests", id: false, force: :cascade do |t|
     t.integer "document_id",            limit: 4

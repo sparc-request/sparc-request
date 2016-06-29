@@ -79,5 +79,5 @@
     #submit_error{:style => "display: none"}
       .message
   - else
-    %button.add_subsidy_button{ type: "button", data: { sub_service_request_id: sub_service_request.id }}
+    %button{ type: "button", class: 'light-blue-button add_subsidy_button btn btn-primary', data: { sub_service_request_id: sub_service_request.id }}
       %span= t(:fulfillments)[:subsidies][:link]

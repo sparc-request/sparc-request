@@ -43,6 +43,7 @@ class CatalogManager::InstitutionsController < CatalogManager::AppController
     
     params[:institution].delete(:id)
     if @institution.update_attributes(params[:institution])
+      @institution.update_descendants_availability(params[:institution][:is_available])
       flash[:notice] = "#{@institution.name} saved correctly."
     else
       flash[:alert] = "Failed to update #{@institution.name}."

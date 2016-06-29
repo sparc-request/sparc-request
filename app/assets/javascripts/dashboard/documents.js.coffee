@@ -22,33 +22,32 @@ $ ->
 
   # DOCUMENTS LISTENERS BEGIN
 
-  $(document).on 'click', '#document_new', ->
-    data = 'sub_service_request_id': $(this).data('sub-service-request-id')
-    $.ajax
-      type: 'GET'
-      url: '/dashboard/documents/new'
-      data: data
-
-  $(document).on 'click', '.document_edit', ->
-    row_index   = $(this).parents('tr').data('index')
-    document_id = $(this).parents('table.documents_table').bootstrapTable('getData')[row_index].id
-    data = 'sub_service_request_id': $('#document_new').data('sub-service-request-id')
-    $.ajax
-      type: 'GET'
-      url: "/dashboard/documents/#{document_id}/edit"
-      data: data
-
-  $(document).on 'click', '.document_delete', ->
-    row_index   = $(this).parents('tr').data('index')
-    document_id = $(this).parents('table.documents_table').bootstrapTable('getData')[row_index].id
-    data = 'sub_service_request_id': $('#document_new').data('sub-service-request-id')
-    if confirm "Are you sure you want to delete the selected Document from this SubServiceRequest?"
+  $(document).on 'click', '#document-new', ->
+    if $(this).data('permission')
+      data = 'protocol_id': $(this).data('protocol-id')
       $.ajax
-        type: 'DELETE'
-        url: "/dashboard/documents/#{document_id}"
+        type: 'GET'
+        url: '/dashboard/documents/new'
         data: data
 
-  $(document).on 'change', '#document_doc_type', ->
+  $(document).on 'click', '.document-edit', ->
+    if $(this).data('permission')
+      row_index   = $(this).parents('tr').data('index')
+      document_id = $(this).parents('table#documents-table').bootstrapTable('getData')[row_index].id
+      $.ajax
+        type: 'GET'
+        url: "/dashboard/documents/#{document_id}/edit"
+
+  $(document).on 'click', '.document-delete', ->
+    if $(this).data('permission')
+      row_index   = $(this).parents('tr').data('index')
+      document_id = $(this).parents('table#documents-table').bootstrapTable('getData')[row_index].id
+      if confirm "Are you sure you want to delete the selected Document from this Protocol?"
+        $.ajax
+          type: 'DELETE'
+          url: "/dashboard/documents/#{document_id}"
+
+  $(document).on 'change', '#document-doc-type', ->
     if $(this).val() == 'other'
       $('#doc_type_other_field').show()
     else

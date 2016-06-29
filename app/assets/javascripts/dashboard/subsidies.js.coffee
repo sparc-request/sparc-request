@@ -91,8 +91,11 @@ $(document).ready ->
 
   redisplay_form_values = (percent_subsidy, pi_contribution, current_cost) ->
     $('#pending_subsidy_percent_subsidy').val( (percent_subsidy*100.0).toFixed(2) )
-    $("#pending_subsidy_pi_contribution").val( formatMoney(pi_contribution, ',', '.', '') )
-    $("#subsidy_form_table_subsidy_cost").text( formatMoney(current_cost) )
+    $("#pending_subsidy_pi_contribution").val( format_currency(pi_contribution) )
+    $("#subsidy_form_table_subsidy_cost").text( format_currency(current_cost) )
+
+  format_currency = (total) ->
+    (parseFloat(total, 10).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,").toString())
 
 
 

@@ -46,10 +46,6 @@ RSpec.describe 'dashboard/sub_service_requests/show', type: :view do
     expect(response).to render_template(partial: "dashboard/study_level_activities/study_level_activities_table", locals: { sub_service_request: @sub_service_request })
   end
 
-  it "should render documents table" do
-    expect(response).to render_template(partial: "dashboard/documents/documents_table", locals: { sub_service_request: @sub_service_request, service_request: @service_request })
-  end
-
   it "should render status changes table" do
     expect(response).to render_template(partial: "dashboard/sub_service_requests/history/status_changes", locals: { sub_service_request_id: @sub_service_request.id })
   end

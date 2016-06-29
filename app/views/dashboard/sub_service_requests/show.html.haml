@@ -50,6 +50,6 @@
     .tab-pane#documents{role: 'tabpanel', class: cookies['admin-tab'] == 'documents-tab' ? 'active' : ''}
       = render 'dashboard/documents/documents_table', sub_service_request: @sub_service_request, service_request: @service_request
     .tab-pane#history{role: 'tabpanel', class: cookies['admin-tab'] == 'history-tab' ? 'active' : ''}
-      = render 'dashboard/sub_service_requests/history/status_changes', sub_service_request_id: @sub_service_request.id
+      = render 'dashboard/sub_service_requests/history/status_changes', sub_service_request_id: @sub_service_request.id, tab: 'status_changes'
     .tab-pane#notifications{role: 'tabpanel', class: cookies['admin-tab'] == 'notifications-tab' ? 'active' : ''}
       = render 'dashboard/notifications/notifications', sub_service_request: @sub_service_request, user: @user

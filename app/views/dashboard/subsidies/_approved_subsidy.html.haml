@@ -23,9 +23,6 @@
     .panel-heading
       %h4.panel-title.pull-left
         = t(:dashboard)[:subsidies][:subsidy_information][:approved][:header]
-      .pull-right
-        %button.btn.btn-sm.btn-default.notes.list{data: { notable_type: "Subsidy", notable_id: subsidy.id }}
-          = t(:models)[:note][:plural]
       .clearfix
     %table.table.table-condensed#approved_subsidy_table
       %thead

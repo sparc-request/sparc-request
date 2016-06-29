@@ -18,5 +18,35 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$(".tab-pane#history").html("<%= escape_javascript(render(partial: @partial_to_render, locals: { sub_service_request_id: @sub_service_request.id, tab: @tab })) %>")
-$(".ssr_history_table").bootstrapTable()
+class PastSubsidy < ActiveRecord::Base
+  audited
+
+  belongs_to :sub_service_request
+  belongs_to :approver, class_name: 'Identity', foreign_key: "approved_by"
+
+  attr_accessible :sub_service_request_id
+  attr_accessible :total_at_approval
+  attr_accessible :pi_contribution
+  attr_accessible :approved_by
+  attr_accessible :approved_at
+
+  default_scope { order('approved_at ASC') }
+
+  def approved_cost
+    # Calculates cost of subsidy (amount subsidized)
+    # stored total - pi_contribution then convert from cents to dollars
+    ( total_at_approval - pi_contribution ) / 100.0
+  end
+
+  def approved_percent_of_total
+    # Calculates the percent of total_at_approval that is subsidized
+    # (stored total - pi_contribution) / stored total then convert to percent
+    total = total_at_approval
+
+    if total.nil? || total == 0
+      0.00
+    else
+      ((( total - pi_contribution ).to_f / total ) * 100.0 ).round(2)
+    end
+  end
+end

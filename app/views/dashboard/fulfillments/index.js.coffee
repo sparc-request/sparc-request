@@ -18,7 +18,6 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$("#fulfillments_row").attr('data-line_item_id', "<%= @line_item.id %>")
-$("#fulfillments_row").html("<%= escape_javascript(render(:partial =>'dashboard/study_level_activities/fulfillments_table', locals: {line_item: @line_item})) %>");
-$("#fulfillments_row").prev("tr").first().find(".otf_fulfillments > .glyphicon").removeClass("glyphicon-refresh").addClass("glyphicon-chevron-down").parents("button").attr('data-original-title', 'Hide Fulfillments')
+$("#modal_place").html("<%= escape_javascript(render(partial: 'dashboard/study_level_activities/fulfillments_table', locals: {line_item: @line_item, header_text: 'Fulfillments List'})) %>");
 $("#fulfillments-table").bootstrapTable()
+$("#modal_place").modal('show')

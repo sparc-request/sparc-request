@@ -398,4 +398,33 @@ module ApplicationHelper
         type.to_s
     end
   end
+
+  def navbar_link identifier, details
+            #if current_user
+            #  next if name == "SPARCFulfillment" && ( current_user.clinical_providers.empty? || !current_user.is_super_user? )
+            #  next if name == "SPARCCatalog" && current_user.catalog_managers.empty?
+            #  next if name == "SPARCReport" && !current_user.is_super_user?
+           # %li.dashboard
+           # end
+    name, path = details
+
+    case name
+    when 'fulfillment'
+      render_navbar_link(identifier, name, path) if current_user.clinical_providers.empty? || !current_user.is_super_user?
+    when 'catalog'
+    when 'report'
+    when 'request'
+    end
+  end
+
+  def render_navbar_link identifier, name, path
+    x = ""
+    if request.url == path
+     x = "highlighted"
+    elsif name == "SPARCRequest" && ( request.url.include? 'service_requests')
+     x = "highlighted"
+    end
+    content_tag :li, link_to(name.to_s, path, target: '_blank', class: x), class: 'dashboard'
+
+  end
 end

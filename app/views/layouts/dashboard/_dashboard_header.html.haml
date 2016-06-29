@@ -23,18 +23,8 @@
     .navbar-header
       - if @show_navbar
         %ul.nav.navbar-nav
-          - NAVBAR_LINKS.each do |name, path|
-            -if current_user
-              -next if name == "SPARCFulfillment" && ( current_user.clinical_providers.empty? || !current_user.is_super_user? )
-              -next if name == "SPARCCatalog" && current_user.catalog_managers.empty?
-              -next if name == "SPARCReport" && !current_user.is_super_user?
-            %li.dashboard
-              - x = ""
-              - if request.url == path
-                - x = "highlighted"
-              - elsif name == "SPARCRequest" && ( request.url.include? 'service_requests')
-                - x = "highlighted"
-              = link_to name.to_s, path, target: '_blank', id: x
+          - NAVBAR_LINKS.each do |identifier, details|
+            = navbar_link(identifier, details)
       - else
         %ol.breadcrumb
           = session[:breadcrumbs].breadcrumbs

@@ -19,8 +19,8 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .col-xs-12
   #history-custom-toolbar
-    = render 'dashboard/sub_service_requests/history/history_buttons', sub_service_request_id: sub_service_request_id, tab: tab
-  %table.ssr_history_table{ id: "subsidy-history-table", data: { toggle: 'table', search: "true", "show-columns" => "true", "show-refresh" => "true", "show-toggle" => "true", url: subsidy_history_dashboard_sub_service_request_path(format: :json, sub_service_request_id: sub_service_request_id), striped: "true", toolbar: "#history-custom-toolbar", "show-export" => "false", "export-types" => ['excel'] } }
+    = render 'dashboard/sub_service_requests/history/history_buttons', sub_service_request: sub_service_request, tab: tab
+  %table.ssr_history_table{ id: "subsidy-history-table", data: { toggle: 'table', search: "true", "show-columns" => "true", "show-refresh" => "true", "show-toggle" => "true", url: subsidy_history_dashboard_sub_service_request_path(id: sub_service_request.id, format: :json), striped: "true", toolbar: "#history-custom-toolbar", "show-export" => "false", "export-types" => ['excel'] } }
     %thead.primary-header
       %tr
         %th{ data: { class: 'request-cost', align: "left", sortable: "true", field: "request_cost", sorter: "dateSorter" } }

@@ -110,17 +110,26 @@ $(document).ready ->
       $('.catalog-search-spinner').remove()
       $('.catalog-search-clear-icon').remove()
 
-  .data("uiAutocomplete")._renderItem = (ul, item) ->
-    if item.label == 'No Results'
-      $("<li class='search_result'></li>")
-      .data("ui-autocomplete-item", item)
-      .append("#{item.label}")
-      .appendTo(ul)
-    else
-      $("<li class='search_result'></li>")
-      .data("ui-autocomplete-item", item)
-      .append("#{item.parents}<br><span class='service-name' title='#{item.description}'>#{item.label}<br> CPT Code: #{item.cpt_code}<br> Abbreviation: #{item.abbreviation}</span><br><button id='service-#{item.value}' sr_id='#{item.sr_id}' from_portal='#{item.from_portal}' first_service='#{item.first_service}' style='font-size: 11px;' class='add_service'>Add to Cart</button><span class='service-description'>#{item.description}</span>")
-      .appendTo(ul)
+  .data("uiAutocomplete")._renderItem = (ul, item) ->    
+    label = item.label
+    unless item.label is 'No Results'
+      label = "#{item.parents}<br>
+              <span class='service-name' title='#{item.description}'>
+              #{item.label}<br> 
+              CPT Code: #{item.cpt_code}<br> 
+              Abbreviation: #{item.abbreviation}</span><br>
+              <button id='service-#{item.value}' 
+              sr_id='#{item.sr_id}' 
+              from_portal='#{item.from_portal}' 
+              first_service='#{item.first_service}' 
+              style='font-size: 11px;' 
+              class='add_service'>Add to Cart</button>
+              <span class='service-description'>#{item.description}</span>"
+
+    $("<li class='search_result'></li>")
+    .data("ui-autocomplete-item", item)
+    .append(label)
+    .appendTo(ul)
 
   $('.submit-request-button').click ->
     signed_in = $(this).data('signed-in')

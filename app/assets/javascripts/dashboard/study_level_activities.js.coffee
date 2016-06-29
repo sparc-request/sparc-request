@@ -64,25 +64,13 @@ $ ->
         type: 'DELETE'
         url: "/dashboard/line_items/#{line_item_id}"
 
-  $(document).on 'click', '.otf_fulfillments', ->
-    selected_row = $(this).parents('tr')
-    fulfillments_row = $("#fulfillments_row") #already displayed
-    span = $(this).children('.glyphicon')
-    line_item_id = $(this).parents('table.study_level_activities').bootstrapTable('getData')[selected_row.data('index')].id
-    fulfillments_already_displayed = fulfillments_row.attr('data-line_item_id') == "#{line_item_id}"
-
-    fulfillments_row.prev('tr').first().find('.glyphicon-chevron-down').removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-right').parents('.otf_fulfillments').attr('data-original-title', 'View Fulfillments')
-    fulfillments_row.remove()
-    unless fulfillments_already_displayed
-      span.removeClass('glyphicon-chevron-right').addClass('glyphicon-refresh')
-      $(this).parents('tr').after("<tr id='fulfillments_row'></tr>")
-      $.ajax
-        type: 'GET'
-        url: '/dashboard/fulfillments'
-        data: 'line_item_id' : line_item_id
-    else
-      $(this).attr('data-original-title', 'View Fulfillments')
-      span.removeClass('glyphicon-chevron-down').addClass('glyphicon-chevron-right')
+  $(document).on 'click', '.otf_fulfillment_list', ->
+    line_item_id = $(this).data('line-item-id')
+    data = line_item_id: line_item_id
+    $.ajax
+      type: 'GET'
+      url: "/dashboard/fulfillments"
+      data: "line_item_id" : line_item_id
 
   # Fulfillment Bindings
 

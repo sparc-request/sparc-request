@@ -47,6 +47,7 @@ class CatalogManager::ProgramsController < CatalogManager::AppController
     params[:program].delete(:id)
 
     if @program.update_attributes(params[:program])
+      @program.update_descendants_availability(params[:program][:is_available])
       flash[:notice] = "#{@program.name} saved correctly."
     else
       flash[:alert] = "Failed to update #{@program.name}."

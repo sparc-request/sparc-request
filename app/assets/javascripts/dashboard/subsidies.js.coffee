@@ -94,7 +94,7 @@ $(document).ready ->
     $("#subsidy_form_table_subsidy_cost").text( format_currency(current_cost) )
 
   format_currency = (total) ->
-    ('$' + parseFloat(total, 10).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,").toString())
+    (parseFloat(total, 10).toFixed(2).replace(/(\d)(?=(\d{3})+\.)/g, "$1,").toString())
 
 
 

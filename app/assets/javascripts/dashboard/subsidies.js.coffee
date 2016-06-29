@@ -99,10 +99,14 @@ $(document).ready ->
 
   redisplay_form_values = (percent_subsidy, pi_contribution, current_cost) ->
     console.log("mmmhmmm")
-    $("#current_percent_subsidy_of_total").val( (percent_subsidy*100.0).toFixed(2) )
+    $('#pending_subsidy_percent_subsidy').val( (percent_subsidy*100.0).toFixed(2) )
     $("#pending_subsidy_pi_contribution").val( formatMoney(pi_contribution, ',', '.', '') )
     $("#subsidy_form_table_subsidy_cost").text( formatMoney(current_cost) )
 
 
 
 #****************** SUBSIDY FORM END ***************************#
+
+  $(document).on 'click', '#details-tab', ->
+    $("#pending_subsidy").load(location.href + " #pending_subsidy")
+

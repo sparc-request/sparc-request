@@ -657,7 +657,7 @@ class ServiceRequestsController < ApplicationController
       authorized  = if @sub_service_request
                       current_user.can_edit_sub_service_request?(@sub_service_request)
                     else
-                      current_user.can_edit_service_request?(@service_request)
+                      @service_request.status == 'first_draft' || current_user.can_edit_service_request?(@service_request)
                     end
 
       protocol = @sub_service_request ? @sub_service_request.service_request.protocol : @service_request.protocol

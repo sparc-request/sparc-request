@@ -111,7 +111,7 @@ RSpec.describe ApplicationController, type: :controller do
 
       context 'ServiceRequest in first_draft and not submitted yet' do
         it 'should authorize Identity' do
-          service_request = instance_double('ServiceRequest', status: 'first_draft', service_requester_id: nil)
+          service_request = instance_double('ServiceRequest', status: 'first_draft')
           controller.instance_variable_set(:@service_request, service_request)
           expect(controller).to_not receive(:authorization_error)
           controller.send(:authorize_identity)
@@ -121,16 +121,6 @@ RSpec.describe ApplicationController, type: :controller do
       context 'ServiceRequest status not first_draft' do
         it 'should authenticate and authorize Identity' do
           service_request = instance_double('ServiceRequest', status: 'draft')
-          controller.instance_variable_set(:@service_request, service_request)
-          expect(controller).to_not receive(:authorization_error)
-          expect(controller).to receive(:authenticate_identity!)
-          controller.send(:authorize_identity)
-        end
-      end
-
-      context 'ServiceRequest has non-nil service_requester_id and status' do
-        it 'should authorize Identity' do
-          service_request = instance_double('ServiceRequest', status: 'draft', service_requester_id: 1)
           controller.instance_variable_set(:@service_request, service_request)
           expect(controller).to_not receive(:authorization_error)
           expect(controller).to receive(:authenticate_identity!)

@@ -400,31 +400,24 @@ module ApplicationHelper
   end
 
   def navbar_link identifier, details
-            #if current_user
-            #  next if name == "SPARCFulfillment" && ( current_user.clinical_providers.empty? || !current_user.is_super_user? )
-            #  next if name == "SPARCCatalog" && current_user.catalog_managers.empty?
-            #  next if name == "SPARCReport" && !current_user.is_super_user?
-           # %li.dashboard
-           # end
     name, path = details
-
-    case name
+    
+    case identifier
     when 'fulfillment'
-      render_navbar_link(identifier, name, path) if current_user.clinical_providers.empty? || !current_user.is_super_user?
+      render_navbar_link(identifier, name, path) unless current_user.clinical_providers.empty? && !current_user.is_super_user?
     when 'catalog'
+      render_navbar_link(identifier, name, path) unless current_user.catalog_managers.empty?
     when 'report'
-    when 'request'
+      render_navbar_link(identifier, name, path) unless !current_user.is_super_user?
+    else
+      render_navbar_link(identifier, name, path)
     end
   end
 
   def render_navbar_link identifier, name, path
-    x = ""
-    if request.url == path
-     x = "highlighted"
-    elsif name == "SPARCRequest" && ( request.url.include? 'service_requests')
-     x = "highlighted"
-    end
-    content_tag :li, link_to(name.to_s, path, target: '_blank', class: x), class: 'dashboard'
+
+    highlighted = request.url == path || ( identifier == 'request' && request.url.include?('service_requests') )
+    content_tag :li, link_to(name.to_s, path, target: '_blank', class: highlighted ? 'highlighted' : ''), class: 'dashboard'
 
   end
 end

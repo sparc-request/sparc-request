@@ -32,7 +32,7 @@
       = render partial: 'subsidies/subsidy_data', locals: {service_request: @service_request}
 
   .grid_3.service-subsidy-view-right.right
-    = navigation_link t(:right_navigation)[:catalog], @catalog, 'catalog-button'
+    = navigation_link t(:right_navigation)[:catalog], @catalog, 'catalog-button button-hover'
     = render :partial => 'right_navigation'
 
   .clear

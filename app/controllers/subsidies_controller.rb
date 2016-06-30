@@ -54,7 +54,7 @@ class SubsidiesController < ApplicationController
   end
 
   def format_percent_subsidy_param
-    if params[:subsidy][:percent_subsidy].present?
+    if !params[:subsidy].nil? && params[:subsidy][:percent_subsidy].present?
       params[:subsidy][:percent_subsidy] = (params[:subsidy][:percent_subsidy].gsub(/[^\d^\.]/, '').to_f)
     end
   end

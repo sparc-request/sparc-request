@@ -131,7 +131,7 @@ class ServiceRequestsController < ApplicationController
 
   def protocol
     cookies.delete :current_step
-    @service_request.update_attribute(:service_requester_id, current_user.id) if @service_request.service_requester_id.nil?
+    @service_request.sub_service_requests.where(service_requester_id: nil).update_all(service_requester_id: current_user.id)
     
     if session[:saved_protocol_id]
       @service_request.protocol = Protocol.find session[:saved_protocol_id]

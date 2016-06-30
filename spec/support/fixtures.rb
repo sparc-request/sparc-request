@@ -180,7 +180,7 @@ def build_service_request
       organization.save
     end
 
-    service_request.update_attribute(:service_requester_id, Identity.find_by_ldap_uid("jug2").id)
+    service_request.sub_service_requests.update_all(service_requester_id:key => "value",  Identity.find_by_ldap_uid("jug2").id)
     service_request.update_attribute(:status, 'draft')
   end
 end

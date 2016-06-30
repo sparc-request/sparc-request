@@ -21,11 +21,12 @@
 <% if @otf %>
 $("#modal_errors").html("<%= escape_javascript(render(partial: 'shared/modal_errors', locals: {errors: @errors})) %>");
 <% unless @errors %>
-$("#study-level-activities-table").bootstrapTable 'refresh', {silent: true}
-$("#modal_place").modal 'hide'
+$("#study-level-activities-table").bootstrapTable 'refresh', {silent: true};
+$(".table").html("<%= escape_javascript(render(sub_service_requests/header')) %>");
+$("#modal_place").modal 'hide';
 <% end %>
 
 <% else %>
 
 <% end %>
-$("#flashes_container").html("<%= escape_javascript(render('shared/flash')) %>");
+$("#flashes_container").html("<%= escape_javascript(render(shared/flash')) %>");

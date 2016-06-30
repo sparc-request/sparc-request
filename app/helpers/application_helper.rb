@@ -403,9 +403,9 @@ module ApplicationHelper
     name, path = details
     
     case identifier
-    when 'fulfillment'
+    when 'protocols'
       render_navbar_link(identifier, name, path) unless current_user.clinical_providers.empty? && !current_user.is_super_user?
-    when 'catalog'
+    when 'catalog_manager/catalog'
       render_navbar_link(identifier, name, path) unless current_user.catalog_managers.empty?
     when 'report'
       render_navbar_link(identifier, name, path) unless !current_user.is_super_user?
@@ -415,9 +415,27 @@ module ApplicationHelper
   end
 
   def render_navbar_link identifier, name, path
-
-    highlighted = request.url == path || ( identifier == 'request' && request.url.include?('service_requests') )
-    content_tag :li, link_to(name.to_s, path, target: '_blank', class: highlighted ? 'highlighted' : ''), class: 'dashboard'
+    path_controller = Rails.application.routes.recognize_path(path)[:controller]
+    request_controller = Rails.application.routes.recognize_path(request.url)[:controller]
+    content_tag :li, link_to(name.to_s, path, target: '_blank', class: path_controller == request_controller ? 'highlighted' : ''), class: 'dashboard'
 
   end
 end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -19,6 +19,16 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 module ApplicationHelper
+
+  def navbar_links
+    list = ""
+    NAVBAR_LINKS.each do |name, path|
+      list += content_tag(:li, link_to(name.to_s, path, target: :blank))
+    end
+
+    content_tag(:ul, list.html_safe, class: 'nav navbar-nav')
+  end
+  
   def show_welcome_message current_user, bootstrap = false
     returning_html = ""
     if current_user

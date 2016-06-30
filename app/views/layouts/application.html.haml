@@ -39,12 +39,12 @@
   %body#body
     #ie7_warning.hidden
       %p
-        = t('ie_warning.text1')
+        = t(:ie_warning)[:text1]
       %br
       %p
-        = t('ie_warning.text2')
+        = t(:ie_warning)[:text2]
 
-    #container.container
+    #container
       #processing_request.ui-corner-all.hidden
         %br
           = t(:cm_index)[:processing]
@@ -54,12 +54,10 @@
         = render 'layouts/header_logos', in_dashboard: false
         %input#current_user_id{ type: 'hidden', value: @user.try(:id) }
       = render 'layouts/header', user: @user
-
-      .flash
+      .row.flash
         = render 'shared/flash'
-      #inner-content
+      #inner-content.row
         = yield
-  %footer
-    = render 'shared/footer'
-    = render 'shared/piwik_tracking' if Rails.env == 'production'
-    = render 'shared/modal'
+      = render 'shared/footer'
+      = render 'shared/piwik_tracking' if Rails.env == 'production'
+      = render 'shared/modal'

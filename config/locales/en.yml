@@ -212,6 +212,20 @@ en:
 
   proper:
     header: "SPARC Request"
+    navbar:
+      logged_in: "Logged in as %{email}"
+      login: "Login"
+      logout: "Logout"
+    footer:
+      mail_to: "hundc@musc.edu"
+      mail_link: "Sign Up For the SPARC Request Listserv"
+      mail_subject: "SPARC Request Listserv"
+      sparc_blog: "SPARC Request Blog"
+      sparc_blog_url: "https://sparcrequestblog.com/"
+      sctr: "SCTR"
+      sctr_url: "http://sctr.musc.edu"
+      home: "SPARC Request Home"
+      home_url: "http://academicdepartments.musc.edu/sctr/sparc_request"
     catalog:
       ctrc_lock: "SCTR Research Nexus services are already present on this request (%{protocol_id}-%{ssr_id}) pertaining to this %{protocol_type}, '%{short_title}'. Please call (843) 792-8688 to edit the existing request."
 

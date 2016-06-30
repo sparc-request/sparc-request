@@ -1,10 +1,9 @@
 #footer.row
-  .container_12.col-md-12
-    = mail_to t('footer.mail_to'), t('footer.mail_link'), subject: t('footer.mail_subject')
-    |
-    = link_to t('footer.link_one_text'), t('footer.link_one_url'), target: "_blank"
-    |
-    = link_to t('footer.link_two_text'), t('footer.link_two_url'), target: "_blank"
-    |
-    = link_to t('footer.link_three_text'), t('footer.link_three_url'), target: "_blank"
-    
+  .col-md-4
+    = mail_to t(:proper)[:footer][:mail_to], t(:proper)[:footer][:mail_link], subject: t(:proper)[:footer][:mail_subject], class: 'btn btn-primary'
+  .col-md-3
+    = link_to t(:proper)[:footer][:sparc_blog], t(:proper)[:footer][:sparc_blog_url], target: :blank, class: 'btn btn-primary'
+  .col-md-2
+    = link_to t(:proper)[:footer][:sctr], t(:proper)[:footer][:sctr_url], target: :blank, class: 'btn btn-primary'
+  .col-md-3
+    = link_to t(:proper)[:footer][:home], t(:proper)[:footer][:home_url], target: :blank, class: 'btn btn-primary'  

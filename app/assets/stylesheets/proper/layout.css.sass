@@ -18,51 +18,64 @@
 /* INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR*/
 /* TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.*/
 
- // * These are the catalog selector colors
- // * Light Blue: #8AB6CB
- // * Light Green: #7EAE8D
- // * Light Orange: #CAA27B
-
- // * Navy: #003366
- // * Light Blue: #227BA5
- // * Orange: #E09462
- // * Red: #ff3333
- // * Green: #2C9B4D
-
-*
-  margin: 0
-  padding: 0
-
 #container 
   #header
     height: 102px
+    width: 100%
     display: table
-    margin: 0 auto
 
-    #org-logo, #sparc-request-header, #institution-logo
-      float: left
-
-      img
-        width: 100%
-
-    #org-logo
-      width: 293px
-      margin-top: 20px
-
-    #sparc-request-header
-      width: 585px
+    div
       text-align: center
-      margin-top: 27x
+
+    .org-logo
+      margin-left: 50px
+
+    .sparc-request-header
+      margin-top: 15px
+
+    .institution-logo
+      margin-top: 15px
+      margin-left: 25px
+
+  .navbar
+    .navbar-right
+      margin-right: 0px
+
+    .welcome-nav
+      margin: 9px 0
+
       a
-        font-weight: bold
-        font-size: 22px
-        font-family: "Times New Roman"
-        text-decoration: none
+        margin: 0 10px
+
+    .navbar-nav li
+      a:hover,
+      a:focus
+        background-color: #e7e7e7
+        color: #555
+
+  #inner-content
+    margin-bottom: 20px
+    margin-left: auto
+    margin-right: auto
+    padding-left: 15px
+    padding-right: 15px
+    width: 1170px
+
+  #footer
+    margin-left: auto
+    margin-right: auto
+    padding-left: 15px
+    padding-right: 15px
+    height: 100px
+    width: 1170px
+    margin-top: 15px
+    border-top: 1px solid #eee
+
+    div
+      height: 100%
+      line-height: 100px
+      text-align: center
+
+      a
         color: white
-
-    #institution-logo
-      width: 291px
-      margin-top: 10px
-      text-align: right
-
 

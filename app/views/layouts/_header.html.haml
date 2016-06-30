@@ -17,12 +17,15 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-%nav.navbar.navbar-default.proper-nav
+%nav.navbar.navbar-default
   .container-fluid
     .navbar-header
-      %ul.nav.navbar-nav
-        - NAVBAR_LINKS.each do |name, path|
-          %li
-            = link_to name.to_s, path, target: '_blank'
+      = navbar_links
+    - if current_user.present?
+      %p.navbar-text.navbar-right.welcome-nav
+        %span
+          = I18n.t('proper.navbar.logged_in', email: current_user.email)
+        = link_to t(:proper)[:navbar][:logout], destroy_identity_session_path, method: :delete, class: 'btn btn-warning'
+    - else
+      = link_to t(:proper)[:navbar][:login], new_identity_session_path, class: 'btn btn-primary'
     %p#welcome_nav.navbar-text.navbar-right
-      = show_welcome_message(user, bootstrap = true)

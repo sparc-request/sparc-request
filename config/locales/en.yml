@@ -211,6 +211,7 @@ en:
       primary_pi: "Primary PI: *"
 
   proper:
+    header: "SPARC Request"
     catalog:
       ctrc_lock: "SCTR Research Nexus services are already present on this request (%{protocol_id}-%{ssr_id}) pertaining to this %{protocol_type}, '%{short_title}'. Please call (843) 792-8688 to edit the existing request."
 

@@ -27,4 +27,6 @@ class SubsidyMap < ActiveRecord::Base
   attr_accessible :organization_id
   attr_accessible :max_dollar_cap
   attr_accessible :max_percentage
+  attr_accessible :default_percentage
+  attr_accessible :instructions
 end

@@ -23,6 +23,7 @@ class Dashboard::SubsidiesController < Dashboard::BaseController
 
   def new
     @subsidy = PendingSubsidy.new(sub_service_request_id: params[:sub_service_request_id])
+    binding.pry
     @header_text = t(:dashboard)[:subsidies][:new]
     @admin = params[:admin] == 'true'
   end

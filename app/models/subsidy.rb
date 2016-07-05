@@ -33,6 +33,7 @@ class Subsidy < ActiveRecord::Base
   delegate :subsidy_map, to: :organization, allow_nil: true
   delegate :max_dollar_cap, to: :subsidy_map, allow_nil: true
   delegate :max_percentage, to: :subsidy_map, allow_nil: true
+  delegate :default_percentage, to: :subsidy_map, allow_nil: true
 
   delegate :direct_cost_total, to: :sub_service_request, allow_nil: true
   alias_attribute :total_request_cost, :direct_cost_total

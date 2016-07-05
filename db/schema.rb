@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160609132758) do
+ActiveRecord::Schema.define(version: 20160701125130) do
 
   create_table "admin_rates", force: :cascade do |t|
     t.integer  "line_item_id", limit: 4
@@ -183,12 +183,6 @@ ActiveRecord::Schema.define(version: 20160609132758) do
 
   add_index "charges", ["service_id"], name: "index_charges_on_service_id", using: :btree
   add_index "charges", ["service_request_id"], name: "index_charges_on_service_request_id", using: :btree
-
-  create_table "click_counters", force: :cascade do |t|
-    t.integer  "click_count", limit: 4
-    t.datetime "created_at",            null: false
-    t.datetime "updated_at",            null: false
-  end
 
   create_table "clinical_providers", force: :cascade do |t|
     t.integer  "identity_id",     limit: 4
@@ -1007,12 +1001,14 @@ ActiveRecord::Schema.define(version: 20160609132758) do
   add_index "subsidies", ["sub_service_request_id"], name: "index_subsidies_on_sub_service_request_id", using: :btree
 
   create_table "subsidy_maps", force: :cascade do |t|
-    t.integer  "organization_id", limit: 4
-    t.decimal  "max_dollar_cap",            precision: 12, scale: 4, default: 0.0
-    t.decimal  "max_percentage",            precision: 5,  scale: 2, default: 0.0
-    t.datetime "created_at",                                                       null: false
-    t.datetime "updated_at",                                                       null: false
+    t.integer  "organization_id",    limit: 4
+    t.decimal  "max_dollar_cap",                 precision: 12, scale: 4, default: 0.0
+    t.decimal  "max_percentage",                 precision: 5,  scale: 2, default: 0.0
+    t.datetime "created_at",                                                            null: false
+    t.datetime "updated_at",                                                            null: false
     t.datetime "deleted_at"
+    t.float    "default_percentage", limit: 24,                           default: 0.0
+    t.string   "instructions",       limit: 255
   end
 
   add_index "subsidy_maps", ["organization_id"], name: "index_subsidy_maps_on_organization_id", using: :btree

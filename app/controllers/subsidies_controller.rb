@@ -23,6 +23,7 @@ class SubsidiesController < ApplicationController
 
   def create
     @sub_service_request = SubServiceRequest.find params[:subsidy][:sub_service_request_id]
+    binding.pry
     @subsidy = PendingSubsidy.create(sub_service_request_id: @sub_service_request.id, pi_contribution: @sub_service_request.direct_cost_total)
   end
 

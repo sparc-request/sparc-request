@@ -28,6 +28,7 @@ class Subsidy < ActiveRecord::Base
   attr_accessible :pi_contribution
   attr_accessible :overridden
   attr_accessible :status
+  attr_accessible :percent_subsidy
 
   delegate :organization, to: :sub_service_request, allow_nil: true
   delegate :subsidy_map, to: :organization, allow_nil: true
@@ -46,22 +47,16 @@ class Subsidy < ActiveRecord::Base
     dollar_cap, percent_cap = max_dollar_cap, max_percentage
     request_cost = total_request_cost()
     subsidy_cost = (request_cost - pi_contribution)
-    potential_subsidy = ((subsidy_cost / request_cost) * 100.0).round(2)
-    percent_subsidy = potential_subsidy.nan? ?  0.0 : potential_subsidy
 
     if pi_contribution < 0
       errors.add(:pi_contribution, "can not be less than 0")
     elsif dollar_cap.present? and dollar_cap > 0 and (subsidy_cost / 100.0) > dollar_cap
       errors.add(:requested_funding, "can not be greater than the cap of #{dollar_cap}")
-    elsif percent_cap.present? and percent_cap > 0 and percent_subsidy > percent_cap
+    elsif percent_cap.present? and percent_cap > 0 and percent_subsidy * 100 > percent_cap
       errors.add(:percent_subsidy, "can not be greater than the cap of #{percent_cap}")
     elsif pi_contribution > total_request_cost
       errors.add(:pi_contribution, "can not be greater than the total request cost")
     end
-  end
-
-  def percent_subsidy
-    pi_contribution.present? ? (pi_contribution.to_f / total_request_cost * 100.0).round(2) : nil
   end
 
   def subsidy_audits

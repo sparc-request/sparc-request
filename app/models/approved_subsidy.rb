@@ -41,18 +41,6 @@ class ApprovedSubsidy < Subsidy
     ( total_at_approval - pi_contribution ) / 100.0
   end
 
-  def approved_percent_of_total
-    # Calculates the percent of total_at_approval that is subsidized
-    # (stored total - pi_contribution) / stored total then convert to percent
-    total = total_at_approval
-
-    if total.nil? || total == 0
-      0.00
-    else
-      ((( total - pi_contribution ).to_f / total ) * 100.0 ).round(2)
-    end
-  end
-
   def log_approval_note
     # Creates a note logging the details of the subsidy's approval
     approval_string = \
@@ -61,7 +49,7 @@ class ApprovedSubsidy < Subsidy
       "<tr><th>Request Cost</th><th>% Subsidy</th><th>PI Contribution</th><th>Subsidy Cost</th></tr>"\
       "</thead><tbody><tr>"\
       "<td>#{total_at_approval/100.0}</td>"\
-      "<td>#{approved_percent_of_total}</td>"\
+      "<td>#{percent_subsidy}</td>"\
       "<td>#{(pi_contribution/100.0)}</td>"\
       "<td>#{approved_cost}</td>"\
       "</tr></tbody></table>"

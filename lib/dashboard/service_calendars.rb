@@ -211,12 +211,12 @@ module Dashboard
 
     def self.select_row(line_items_visit, tab, portal)
       checked = line_items_visit.visits.all? { |v| v.research_billing_qty >= 1  }
-      action = checked ? 'unselect_calendar_row' : 'select_calendar_row'
+      check_param = checked ? 'uncheck' : 'check'
       icon = checked ? 'glyphicon-remove' : 'glyphicon-ok'
 
       link_to(
           (content_tag(:span, '', class: "glyphicon #{icon}")),
-          "/dashboard/service_calendars/#{action}?service_request_id=#{line_items_visit.line_item.service_request.id}&line_items_visit_id=#{line_items_visit.id}&&portal=#{portal}",
+          "/dashboard/service_calendars/toggle_calendar_row?#{check_param}=true&service_request_id=#{line_items_visit.line_item.service_request.id}&line_items_visit_id=#{line_items_visit.id}&&portal=#{portal}",
           method: :post,
           remote: true,
           role: 'button',

@@ -350,7 +350,7 @@ RSpec.describe ServiceCalendarsController do
     build_project
     build_arms
 
-    describe 'POST select_calendar_row' do
+    describe 'POST toggle_calendar_row checked' do
 
       it 'should set line item' do
         liv = LineItemsVisit.for(arm1, line_item1)
@@ -359,10 +359,11 @@ RSpec.describe ServiceCalendarsController do
         add_visits_to_arm_line_item(arm1, line_item1, 3)
 
         session[:service_request_id] = service_request.id
-        post :select_calendar_row, {
+        post :toggle_calendar_row, {
           :id                   => service_request.id,
           :line_items_visit_id  => liv.id,
-          :format               => :js
+          :format               => :js,
+          :check                => true
         }.with_indifferent_access
 
         expect(assigns(:line_items_visit)).to eq liv
@@ -375,12 +376,12 @@ RSpec.describe ServiceCalendarsController do
         add_visits_to_arm_line_item(arm1, line_item1, 3)
 
         session[:service_request_id] = service_request.id
-        post :select_calendar_row, {
+        post :toggle_calendar_row, {
           :id                   => service_request.id,
           :line_items_visit_id  => liv.id,
-          :format               => :js
+          :format               => :js,
+          :check                => true
         }.with_indifferent_access
-
         expect(liv.visits.count).to eq 3
         expect(liv.visits[0].quantity).to               eq 100
         expect(liv.visits[0].research_billing_qty).to   eq 100
@@ -397,7 +398,7 @@ RSpec.describe ServiceCalendarsController do
       end
     end
 
-    describe 'GET unselect_calendar_row' do
+    describe 'GET toggle_calendar_row, uncheck' do
       it 'should set line item' do
         liv = LineItemsVisit.for(arm1, line_item1)
 
@@ -405,10 +406,11 @@ RSpec.describe ServiceCalendarsController do
         add_visits_to_arm_line_item(arm1, line_item1, 3)
 
         session[:service_request_id] = service_request.id
-        post :unselect_calendar_row, {
+        post :toggle_calendar_row, {
           :id                   => service_request.id,
           :line_items_visit_id  => liv.id,
-          :format               => :js
+          :format               => :js,
+          :uncheck              => true
         }.with_indifferent_access
 
         expect(assigns(:line_items_visit)).to eq liv
@@ -421,10 +423,11 @@ RSpec.describe ServiceCalendarsController do
         add_visits_to_arm_line_item(arm1, line_item1, 3)
 
         session[:service_request_id] = service_request.id
-        post :unselect_calendar_row, {
+        post :toggle_calendar_row, {
           :id                   => service_request.id,
           :line_items_visit_id  => liv.id,
-          :format               => :js
+          :format               => :js,
+          :uncheck                => true
         }.with_indifferent_access
 
         expect(liv.visits.count).to eq 3

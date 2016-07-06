@@ -1825,7 +1825,6 @@ en:
 
   # Right navigation
   right_navigation:
-    ask_a_question: "Ask A Question"
     catalog: "Back to Catalog"
     dashboard: "Dashboard"
     faq: "Help/FAQs"

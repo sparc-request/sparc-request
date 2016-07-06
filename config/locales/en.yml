@@ -294,9 +294,9 @@ en:
         title: "Title"
         uploaded: "Uploaded"
       form:
-        document_type: "Document Type:"
-        document_type_other: "Other Document Type:"
-        document: "Document:"
+        document_type: "Document Type:*"
+        specify_doc_type: "Please Specify:*"
+        document: "Document:*"
         access: "Allow Access:"
 
     #################

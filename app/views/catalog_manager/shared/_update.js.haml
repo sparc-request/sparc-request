@@ -18,7 +18,13 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+- console.log('#' * 50)
+- console.log('Test9')
+- console.log('#' * 50)
 - unless @entity.errors.messages.empty?
+  - console.log('#' * 50)
+  - console.log('Test0')
+  - console.log('#' * 50)
   - @entity_errors = @entity.errors.to_json
   :plain
     $('#flash').hide();
@@ -26,6 +32,9 @@
     Sparc.catalog.handle_ajax_errors("#{escape_javascript(@entity_errors)}", "#{@entity.type}")
 
 - else
+  - console.log('#' * 50)
+  - console.log('Test1')
+  - console.log('#' * 50)
   :plain
     Sparc.catalog.clear_error_fields()
     $('#flash').hide();
@@ -34,6 +43,9 @@
 -# re-render available_statuses
 -#TODO this is ugly and wrong, refactor
 - if not @entity.instance_of? Service and @entity
+  - console.log('#' * 50)
+  - console.log('Test2')
+  - console.log('#' * 50)
   - my_class = @entity.class.to_s.downcase
   - url = eval("catalog_manager_#{my_class}_path")
   - @f = nil; form_for(@entity, :url => url) {|f| @f = f}
@@ -41,6 +53,9 @@
 
 -# re-render pricing_setups if the entity is a Provider or Program
 - if @entity.instance_of? Provider or @entity.instance_of? Program
+  - console.log('#' * 50)
+  - console.log('Test3')
+  - console.log('#' * 50)
   $('.pricing_setup_accordion').empty()
   - @entity.pricing_setups.each do |pricing_setup|
     :plain
@@ -51,6 +66,9 @@
 
 -# re-render pricing_maps if the entity is a Service
 - if @entity.instance_of? Service
+  - console.log('#' * 50)
+  - console.log('Test4')
+  - console.log('#' * 50)
   $('.pricing_map_accordion').empty()
   - @entity.pricing_maps.each do |pricing_map|
     :plain
@@ -61,12 +79,18 @@
 
 - # re-render submission emails if entity is a core, program, or provider
 - if @entity.instance_of? Core or @entity.instance_of? Program or @entity.instance_of? Provider
+  - console.log('#' * 50)
+  - console.log('Test5')
+  - console.log('#' * 50)
   :plain
     $('#se_info').html("#{escape_javascript(render :partial => 'catalog_manager/shared/submission_emails', :locals => {:entity => @entity})}")
 
 show_unavailable = $("#show_all_services").find('.unavailable_button').data('show-unavailable')
 
 - if @entity.is_available == false
+  - console.log('#' * 50)
+  - console.log('Test6')
+  - console.log('#' * 50)
   :plain
     if (show_unavailable  == false) {
       $("##{@entity.class.name.upcase}#{@entity.id}").remove();
@@ -76,6 +100,9 @@ show_unavailable = $("#show_all_services").find('.unavailable_button').data('sho
       $("##{@entity.class.name.upcase}#{@entity.id}").addClass("entity_visibility");
     }
 - else
+  - console.log('#' * 50)
+  - console.log('Test7')
+  - console.log('#' * 50)
   :plain
     $("##{@entity.class.name.upcase}#{@entity.id}").removeClass("entity_visibility");
 d

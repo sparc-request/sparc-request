@@ -25,7 +25,6 @@ class CatalogManager::InstitutionsController < CatalogManager::AppController
   def create
     @institution = Institution.create({:name => params[:name], :abbreviation => params[:name], :is_available => false})
     @user.catalog_manager_rights.create :organization_id => @institution.id
- 
     respond_with [:catalog_manger, @institution]
   end
 

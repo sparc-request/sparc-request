@@ -37,6 +37,8 @@ RSpec.feature 'create new institution', js: true do
     fill_in 'institution_description', with: ''
 
     first("#save_button").click
+    wait_for_javascript_to_finish
+    save_and_open_screenshot
     expect(page).to have_content( 'Greatest Institution saved successfully' )
   end
 end

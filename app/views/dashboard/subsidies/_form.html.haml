@@ -44,7 +44,7 @@
             .form-group
               = form.label "percent_subsidy", t(:dashboard)[:subsidies][:form][:percent], class: "col-sm-4 control-label"
               .input-group.col-sm-7
-                = form.text_field "percent_subsidy", { class: 'form-control', value: display_as_percent(subsidy.percent_subsidy) }
+                = form.text_field "percent_subsidy", { class: 'form-control', value: display_as_percent(subsidy.percent_subsidy || subsidy.default_percentage) }
                 %span.input-group-addon %
             .form-group
               = form.label "pi_contribution", t(:dashboard)[:subsidies][:form][:pi], class: "col-sm-4 control-label"

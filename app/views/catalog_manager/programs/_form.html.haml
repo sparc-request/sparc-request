@@ -56,7 +56,11 @@
             %td= f.check_box :process_ssrs
           %tr
             %th= t(:organization_form)[:disabled]
-            %td= f.check_box :is_available, {:checked => (@program.is_available.nil? ? false : !@program.is_available), disabled: !is_parent_available?(params[:id]) }, false, true
+            %td
+              = f.check_box :is_available, {:checked => (@program.is_available.nil? ? false : !@program.is_available), disabled: !is_parent_available?(params[:id]) }, false, true
+              %span
+                - unless is_parent_available?(params[:id])
+                  = I18n.t('organization_form.disabled_at', disabled_parent: disabled_parent(params[:id]))
           %tr
             %th= t(:organization_form)[:tag_list]
             %td

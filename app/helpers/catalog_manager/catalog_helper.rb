@@ -65,6 +65,26 @@ module CatalogManager::CatalogHelper
   def is_parent_available? organization_id
     Organization.find(organization_id).parent.is_available
   end
+
+  def is_service_parent_available? service_id
+    Organization.find(Service.find(service_id).organization_id).is_available
+  end
+
+  def disabled_parent organization_id
+    if is_parent_available?(organization_id)
+      Organization.find(organization_id).name
+    else
+      disabled_parent(Organization.find(organization_id).parent_id)
+    end
+  end
+
+  def disabled_service_parent service_id
+    if is_service_parent_available?(service_id)
+      Service.find(service_id).name
+    else
+      disabled_parent(Service.find(service_id).organization_id)
+    end
+  end
 end
 
 def display_name object

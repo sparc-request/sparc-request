@@ -75,4 +75,59 @@ RSpec.describe CatalogManager::CatalogHelper do
       expect(helper.disable_pricing_map(pricing_map, false)).to eq(true)
     end
   end
+
+  context '#is_parent_available?' do
+    it 'should return true if parent organization is available' do
+      parent_org = create(:institution, is_available: true)
+      child_org  = create(:provider, parent_id: parent_org.id)
+
+      expect(helper.is_parent_available?(child_org.id)).to eq(true)
+    end
+
+    it 'should return false if parent organization is available' do
+      parent_org = create(:institution, is_available: false)
+      child_org  = create(:provider, parent_id: parent_org.id)
+
+      expect(helper.is_parent_available?(child_org.id)).to eq(false)
+    end
+  end
+
+  context '#is_service_parent_available?' do
+    it 'should return true if parent organization is available' do
+      parent_org = create(:program, is_available: true)
+      child_org  = create(:service, organization_id: parent_org.id)
+
+      expect(helper.is_service_parent_available?(child_org.id)).to eq(true)
+    end
+
+    it 'should return false if parent organization is available' do
+      parent_org = create(:program, is_available: false)
+      child_org  = create(:service, organization_id: parent_org.id)
+
+      expect(helper.is_service_parent_available?(child_org.id)).to eq(false)
+    end
+  end
+
+  context '#disabled_parent' do
+    it 'should return the name of the highest disabled organization in the tree' do
+      institution = create(:institution, name: 'Institution', is_available: true)
+      provider    = create(:provider, name: 'Provider', parent_id: institution.id, is_available: false)
+      program     = create(:program, name: 'Program', parent_id: provider.id, is_available: false)
+      core        = create(:core, name: 'Core', parent_id: program.id, is_available: false)
+
+      expect(helper.disabled_parent(core.id)).to eq(provider.name)
+    end
+  end
+
+  context '#disabled_service_parent' do
+    it 'should return the name of the highest disabled organization in the tree' do
+      institution = create(:institution, name: 'Institution', is_available: true)
+      provider    = create(:provider, name: 'Provider', parent_id: institution.id, is_available: false)
+      program     = create(:program, name: 'Program', parent_id: provider.id, is_available: false)
+      core        = create(:core, name: 'Core', parent_id: program.id, is_available: false)
+      service     = create(:service, name: 'Service', organization_id: core.id, is_available: false)
+
+      expect(helper.disabled_service_parent(service.id)).to eq(provider.name)
+    end
+  end
 end

@@ -26,15 +26,41 @@ RSpec.describe "Subsidy" do
   let_there_be_j
   build_service_request_with_study
 
-  describe "percent subsidy" do
-
-    it "should return the correct subsidy" do
-      expect(subsidy.percent_subsidy).to eq(20.0)
+  describe "#contribution_caps" do
+    context "pi contribution is less than 0" do
+      it "should return an error message" do
+        subsidy.update_attribute(:pi_contribution, -1)
+        expect(subsidy.contribution_caps).to eq(["can not be less than 0"])
+      end
     end
-
-    it "should return 100% subsidy if there is no pi contribution" do
-      subsidy.update_attribute(:pi_contribution, 0)
-      expect(subsidy.percent_subsidy).to eq(0.0)
+    context "subsidy cost is greater than max_dollar_cap" do
+      # subsidy_cost = (request_cost - pi_contribution)
+      # subsidy_cost = (5000 - 1000)
+      # (subsidy_cost / 100.0) > dollar_cap
+      # (4000 / 100) > 30
+      it "should return an error message" do
+        subsidy_map.update_attribute(:max_dollar_cap, 30)
+        expect(subsidy.contribution_caps).to eq(["can not be greater than the cap of 30.0"])
+      end
+    end
+    context "percent_subsidy is greater than max_percentage" do
+      # percent_subsidy * 100 > percent_cap
+      # 0.4 * 100 > 30
+      it "should return an error message" do
+        subsidy.update_attribute(:percent_subsidy, 0.4)
+        subsidy_map.update_attribute(:max_percentage, 30)
+        expect(subsidy.contribution_caps).to eq(["can not be greater than the cap of 30.0"])
+      end
+    end
+    context "pi_contribution is greater than total_request_cost" do
+      # pi_contribution > total_request_cost
+      # 1000 > 5000
+      it "should return an error message" do
+        subsidy.update_attribute(:pi_contribution, 6000)
+        expect(subsidy.contribution_caps).to eq(["can not be greater than the total request cost"])
+      end
     end
   end
+
+ # TO DO:  write specs for #subsidy_audits
 end

@@ -49,14 +49,14 @@ $(document).ready ->
     if $(this).text() == 'Research Nexus **LOCKED**'
       $('#ctrc-dialog').dialog('open')
 
-  $('#institution_accordion').accordion
+  $('#institution-accordion').accordion
     heightStyle: 'content'
     collapsible: true
     activate: (event, ui) ->
       if (url = (ui.newHeader.find('a').attr('href') or ui.oldHeader.find('a').attr('href'))) && url != 'javascript:void(0)'
         loadDescription(url)
 
-  $('.provider_accordion').accordion
+  $('.provider-accordion').accordion
     heightStyle: 'content'
     collapsible: true
     active: false

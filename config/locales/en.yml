@@ -46,6 +46,7 @@ en:
     add: "Add"
     cancel: "Cancel"
     close: "Close"
+    continue: "Continue"
     delete: "Delete"
     edit: "Edit"
     print: "Print"
@@ -212,21 +213,59 @@ en:
 
   proper:
     header: "SPARC Request"
+
+    login:
+      header: "Log in"
+      login_name: "Login"
+      password: "Password"
+      submit: 'Login'
+
     navbar:
       logged_in: "Logged in as %{email}"
       login: "Login"
       logout: "Logout"
+
     footer:
+      faqs: "Help/FAQs"
+      feedback: "Feedback"
+      redcap_survey: 'https://redcap.musc.edu/surveys/?s=A37TNJWJPL'
+      contact: "Contact"
       mail_to: "hundc@musc.edu"
-      mail_link: "Sign Up For the SPARC Request Listserv"
+      mail_link: "Listserv"
       mail_subject: "SPARC Request Listserv"
-      sparc_blog: "SPARC Request Blog"
+      sparc_blog: "Blog"
       sparc_blog_url: "https://sparcrequestblog.com/"
       sctr: "SCTR"
       sctr_url: "http://sctr.musc.edu"
-      home: "SPARC Request Home"
+      about: "About"
+      home: "Home"
       home_url: "http://academicdepartments.musc.edu/sctr/sparc_request"
+
     catalog:
+      accordion:
+        header: "Browse Service Catalog"
+
+      center:
+        search_placeholder: "Search by Service Name or CPT Code..."
+        welcome: "Welcome to the SPARC Request Services Catalog"
+        description: "Search for services above or browse the catalog to your left"
+        notice: "** You may only select services applicable to ONE Protocol at a time **"
+        website: "Website/Training:"
+        website_link: "http://academicdepartments.musc.edu/sctr/sparc_request"
+        blog: "Blog:"
+        blog_link: "http://www.sparcrequestblog.com"
+        pricing_warning: "Pricing is consistent across locations unless otherwise stated"
+        news:
+          header: "News"
+          none: "There is no recent news. Please check back later."
+        calendar:
+          header: "Calendar"
+          all_day: "All Day"
+          none: "No events scheduled within a month from today."
+
+      cart:
+        header: "My Services"
+
       ctrc_lock: "SCTR Research Nexus services are already present on this request (%{protocol_id}-%{ssr_id}) pertaining to this %{protocol_type}, '%{short_title}'. Please call (843) 792-8688 to edit the existing request."
 
   dashboard:
@@ -1847,7 +1886,6 @@ en:
 
   # Right navigation
   right_navigation:
-    ask_a_question: "Ask A Question"
     catalog: "Back to Catalog"
     dashboard: "Dashboard"
     faq: "Help/FAQs"

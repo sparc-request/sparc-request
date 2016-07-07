@@ -17,8 +17,16 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-= text_field_tag 'service_query', nil, :placeholder => t(:service_requests)[:catalog][:search_placeholder], :class => "search-services form-control input-lg"
-
-#new_request_dialog{style: 'display:none;', title: t(:cart)[:new_request_dialog1]}
-  = t(:cart)[:new_request_dialog2]
+.panel.panel-default{ class: USE_GOOGLE_CALENDAR ? 'col-sm-6' : 'col-sm-12' }
+  .panel-heading
+    %h1.panel-title
+      = t(:proper)[:catalog][:center][:news][:header]
+  .panel-body
+    - if @news.empty?
+      = t(:proper)[:catalog][:center][:news][:header]
+    - @news.each do |article|
+      .blog-link
+        .title
+          = link_to article[:title], article[:link]
+        .date
+          = article[:date]

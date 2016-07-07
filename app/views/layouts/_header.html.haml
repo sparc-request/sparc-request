@@ -21,11 +21,11 @@
   .container-fluid
     .navbar-header
       = navbar_links
-    - if current_user.present?
-      %p.navbar-text.navbar-right.welcome-nav
+    %p.navbar-text.navbar-right.welcome-nav
+      - if current_user.present?
         %span
           = I18n.t('proper.navbar.logged_in', email: current_user.email)
         = link_to t(:proper)[:navbar][:logout], destroy_identity_session_path, method: :delete, class: 'btn btn-warning'
-    - else
-      = link_to t(:proper)[:navbar][:login], new_identity_session_path, class: 'btn btn-primary'
+      - else
+        = link_to t(:proper)[:navbar][:login], new_identity_session_path, class: 'btn btn-primary'
     %p#welcome_nav.navbar-text.navbar-right

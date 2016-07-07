@@ -17,45 +17,25 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-%hr
-  %table
-    %thead
-      - if USE_NEWS_FEED
-        %th{:class => (USE_GOOGLE_CALENDAR) ? 'half' : 'full'}
-          %h1 News
-      - if USE_GOOGLE_CALENDAR
-        %th{:class => (USE_NEWS_FEED) ? 'half' : 'full'}
-          %h1 Calendar
-    %body
-      - if USE_NEWS_FEED
-        %td{:class => (USE_GOOGLE_CALENDAR) ? 'half' : 'full'}
-          #blog
-            / TODO: Put loop here for blog links
-            - @news.each do |article|
-              .blog-link
-                .title= link_to article[:title], article[:link]
-                .date= article[:date]
-                %br
-      - if USE_GOOGLE_CALENDAR
-        %td{:class => (USE_NEWS_FEED) ? 'half' : 'full'}
-          #calendar
-            / TODO: Put loop here for calendar events
-            - if @events.empty?
-              = t(:service_requests)[:catalog][:event]
-            - @events.each do |event|
-              .calendar-event
-                .date{ :class => cycle('light-blue-provider', 'green-provider', 'orange-provider')  }
-                  = event[:month]
-                  %br
-                  .day= event[:day]
-                .location
-                  .title= event[:title]
-                  .time
-                    - if event[:all_day]
-                      All Day
-                    - else
-                      = [event[:start_time], event[:end_time]].join(' - ')
-                    = " - #{event[:where]}" unless event[:where].blank?
-              .clear
-              %br
+.panel.panel-default{ class: USE_NEWS_FEED ? 'col-sm-6' : 'col-sm-12' }
+  .panel-heading
+    %h1.panel-title
+      = t(:proper)[:catalog][:center][:calendar][:header]
+  .panel-body
+    - if @events.empty?
+      = t(:proper)[:catalog][:center][:calendar][:none]
+    - @events.each do |event|
+      .calendar-event
+        .date
+          = event[:month]
+          .day
+            = event[:day]
+        .location
+          .title
+            = event[:title]
+          .time
+            - if event[:all_day]
+              = t(:proper)[:catalog][:center][:calendar][:all_day]
+            - else
+              = [event[:start_time], event[:end_time]].join(' - ')
+            = " - #{event[:where]}" unless event[:where].blank?

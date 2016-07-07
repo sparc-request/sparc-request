@@ -28,7 +28,7 @@ module ApplicationHelper
 
     content_tag(:ul, list.html_safe, class: 'nav navbar-nav')
   end
-  
+
   def show_welcome_message current_user, bootstrap = false
     returning_html = ""
     if current_user
@@ -48,6 +48,22 @@ module ApplicationHelper
       "SRID: #{service_request.protocol.id}"
     else
       ""
+    end
+  end
+
+  def faq_helper
+    if USE_FAQ_LINK
+      link_to t(:proper)[:footer][:faqs], FAQ_URL, target: :blank, class: 'btn btn-primary btn-lg btn-block'
+    else
+      content_tag(:button, t(:proper)[:footer][:faqs], class: 'faq-button btn btn-primary btn-lg btn-block', href: 'javascript:void(0)')
+    end
+  end
+
+  def feedback_helper
+    if USE_FEEDBACK_LINK
+      link_to t(:proper)[:footer][:feedback], t(:proper)[:footer][:redcap_survey], target: :blank, class: 'btn btn-primary btn-lg btn-block'
+    else
+      content_tag(:button, t(:proper)[:footer][:feedback], class: 'feedback-button btn btn-primary btn-lg btn-block', href: 'javascript:void(0)')
     end
   end
 
@@ -387,10 +403,6 @@ module ApplicationHelper
     else
       return ""
     end
-  end
-
-  def display_locked_organization(organization_name)
-    content_tag(:a, organization_name+" **LOCKED**", href: 'javascript:void(0)')
   end
 
   ##Sets css bootstrap classes for rails flash message types##

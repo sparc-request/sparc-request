@@ -58,7 +58,7 @@ module Dashboard
             filtered_line_items_visits = line_items_visits.select { |x| x.line_item.service_request_id == service_request.id }
           end
           checked = filtered_line_items_visits.each.map { |l| l.visits[n.to_i-1].research_billing_qty >= 1 ? true : false }.all?
-          action = checked ? 'unselect_calendar_column' : 'select_calendar_column'
+          action = checked ? 'uncheck' : 'check'
           icon = checked ? 'ui-icon-close' : 'ui-icon-check'
           returning_html += content_tag(:span,
                                         ((USE_EPIC) ?
@@ -74,7 +74,7 @@ module Dashboard
                                             text_field_tag("arm_#{arm.id}_visit_name_#{n}", visit_name, class: 'visit_name', size: 10, :'data-arm_id' => arm.id, :'data-visit_position' => n - 1, :'data-service_request_id' => service_request.id) +
                                             tag(:br) +
                                             link_to((content_tag(:span, '', class: "ui-button-icon-primary ui-icon #{icon}") + content_tag(:span, 'Check All', class: 'ui-button-text')),
-                                                    "/dashboard/service_requests/#{service_request.id}/#{action}/#{n}/#{arm.id}?portal=#{portal}",
+                                                    "/dashboard/service_requests/#{service_request.id}/toggle_calendar_row?#{action}=true /#{n}/#{arm.id}?portal=#{portal}",
                                                     remote: true, role: 'button', class: 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only', id: "check_all_column_#{n}", data: (visit_group.any_visit_quantities_customized?(service_request) ? {confirm: 'This will reset custom values for this column, do you wish to continue?'} : nil)),
                                         width: 60, class: 'visit_number')
         end
@@ -235,7 +235,7 @@ module Dashboard
                else
                  'select_calendar_column'
                end
-      url = "/dashboard/service_calendars/#{method}.js?sub_service_request_id=#{sub_service_request.id}&column_id=#{n + 1}&arm_id=#{arm_id}&portal=#{portal}"
+      url = "/dashboard/service_calendars/toggle_calendar_row?#{check_param}=true&sub_service_request_id=#{sub_service_request.id}&column_id=#{n + 1}&arm_id=#{arm_id}&portal=#{portal}"
 
       link_to(content_tag(:span, '', class: "glyphicon #{icon}"), url,
               method: :post, remote: true, role: 'button', class: 'visit_number btn btn-primary',

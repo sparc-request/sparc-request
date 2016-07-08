@@ -19,9 +19,12 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .col-md-6.catalog-center
   #search.form-group
-    = text_field_tag 'service_query', nil, placeholder: t(:proper)[:catalog][:center][:search_placeholder], class: "search-services form-control input-lg"
+    = text_field_tag 'service-query', nil, placeholder: t(:proper)[:catalog][:center][:search_placeholder], class: "search-services form-control input-lg"
   #welcome-message
-    = render 'catalogs/description', organization: organization, service_request: service_request, from_portal: from_portal
+    - if organization
+      = render 'catalogs/description', organization: organization, service_request: service_request, from_portal: from_portal
+    - else
+      = render 'catalogs/welcome'
   #calendar-blog
     - if USE_NEWS_FEED
       = render 'catalogs/news'

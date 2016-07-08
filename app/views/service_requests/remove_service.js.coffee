@@ -18,6 +18,10 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+line_item_count = parseInt($('#line_item_count').val())
+line_item_count -= 1
+$('#line_item_count').val(line_item_count)
+
 $("#services").append("<%= escape_javascript render :partial => 'catalogs/cart' %>")
 $("#services .spinner").remove()
 

@@ -102,15 +102,22 @@ span#infotip img
       color: #003366 !important
 
 .ui-accordion
-  .ui-accordion-content
-    padding: 2px 4px !important
   .ui-accordion-header
     margin-top: 5px !important
-  .ui-accordion-content h4
-    margin: 2px 0 !important
-    a
-      font-size: 12px !important
-      font-weight: normal !important
+  .ui-accordion-header.ui-state-active
+    border-bottom-left-radius: 0 !important
+    border-bottom-right-radius: 0 !important
+  .ui-accordion-content
+    padding: 2px 4px !important
+    border-left: 1px solid black
+    border-right: 1px solid black
+    border-bottom: 1px solid black
+    
+    h4
+      margin: 2px 0 !important
+      a
+        font-size: 12px !important
+        font-weight: normal !important
 
 .ui-autocomplete
   list-style: none

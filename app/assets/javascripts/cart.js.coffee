@@ -18,20 +18,20 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-addService = (sr_id, id) ->
+addService = (srid, id) ->
   $.ajax
     type: 'POST'
-    url: "/service_requests/#{sr_id}/add_service/#{id}"
+    url: "/service_requests/#{srid}/add_service/#{id}"
 
-removeService = (sr_id, id, move_on) ->
+removeService = (srid, id, move_on) ->
   $.ajax
     type: 'POST'
-    url: "/service_requests/#{sr_id}/remove_service/#{id}"
+    url: "/service_requests/#{srid}/remove_service/#{id}"
     success: (data, textStatus, jqXHR) ->
       if move_on
-        window.location.replace($("#dashboard_link").val())
+        window.location = '/dashboard'
 
-requestSubmittedDialog = (sr_id, id)->
+requestSubmittedDialog = (srid, id) ->
   options = {
     resizable: false,
     height: 220,
@@ -41,14 +41,12 @@ requestSubmittedDialog = (sr_id, id)->
       "Yes": ->
         $("#services .line-items").remove()
         $("#services").append('<span class="spinner"><img src="/assets/spinner.gif"/></span>')
-        removeService(sr_id, id, false)
+        removeService(srid, id, false)
         $(this).dialog("close")
       "No": ->
         $(this).dialog("close")
   }
   $('#request_submitted_dialog').dialog(options).dialog("open").prev('.ui-dialog-titlebar').css('background', 'red')
-  return false
-
 
 $(document).ready ->
 
@@ -58,23 +56,21 @@ $(document).ready ->
     width: 500
     modal: true
 
-  $(document).on('click', '.faq-button', ->
-    $("#cart-help").dialog( "open" )
-  )
+  $(document).on 'click', '.faq-button', ->
+    $("#cart-help").dialog('open')
 
   $('.help_answer').hide()
 
-  $('.help_question').live 'click', ->
+  $(document).on 'click', '.help_question', ->
     $(this).siblings().toggle().css('font-style': 'italic')
 
-  $(document).on('click', '.add_service' , ->
-    sr_id = $(this).attr('sr_id')
-    id = $(this).attr('id')
-    from_portal = $(this).attr('from_portal')
-    first_service = $(this).attr('first_service')
-    li_count = $('#line_item_count').val()
+  $(document).on 'click', '.add-service' , ->
+    id = $(this).data('id')
+    srid = $(this).data('srid')
+    from_portal = $(this).data('from-portal')
+    li_count = parseInt($('#line_item_count').val())
 
-    if (from_portal != 'true') && (first_service == 'true') && (li_count == '0')
+    if from_portal == 0 && li_count == 0
       options = {
         resizable: false,
         height: 220,
@@ -82,39 +78,37 @@ $(document).ready ->
         autoOpen: false,
         buttons:
           "Yes": ->
-            addService(sr_id, id)
+            addService(srid, id)
             $(this).dialog("close")
           "No": ->
             window.location = "/dashboard"
             $(this).dialog("close")
       }
-      $('#new_request_dialog').dialog(options).dialog("open")
-      return false
+      $('#new-request-dialog').dialog(options).dialog("open")
     else
-      addService(sr_id, id)
-  )
+      addService(srid, id)
 
-  $(document).on('click', '.remove-button', ->
-    sr_id = $(this).attr('sr_id')
-    ssr_id = $(this).attr('ssr_id')
-    id = $(this).attr('id')
-    li_count = $('#line_item_count').val()
-    has_fulfillments = Boolean($(this).data("has_fulfillments"))
-    request_submitted = Boolean($(this).data("request_submitted"))
-    if has_fulfillments
-      alert(I18n["has_fulfillments"])
-    else if request_submitted
-      requestSubmittedDialog(sr_id, id)
+  $(document).on 'click', '.remove-button', ->
+    id = $(this).data('id')
+    srid = $(this).data('srid')
+    ssrid = $(this).data('ssrid')
+    li_count = parseInt($('#line_item_count').val())
+    has_fulfillments = $(this).data('has-fulfillments')
+    request_submitted = $(this).data('request-submitted')
+
+    if has_fulfillments == 1
+      alert(I18n['proper']['catalog']['cart']['has_fulfillments'])
+    else if request_submitted == 1
+      requestSubmittedDialog(srid, id)
     else
-      if li_count == "1" and ssr_id != ''
-        if confirm(I18n["cart"]["remove_request_confirm"])
+      if li_count == 1 and ssrid != ''
+        if confirm(I18n['proper']['catalog']['cart']['remove_request_confirm'])
           $("#services .line-items").remove()
           $("#services").append('<span class="spinner"><img src="/assets/spinner.gif"/></span>')
           $(this).hide()
-          removeService(sr_id, id, true)
+          removeService(srid, id, true)
       else
         $("#services .line-items").remove()
         $("#services").append('<span class="spinner"><img src="/assets/spinner.gif"/></span>')
         $(this).hide()
-        removeService(sr_id, id, false)
-  )
+        removeService(srid, id, false)

@@ -53,17 +53,17 @@ module ApplicationHelper
 
   def faq_helper
     if USE_FAQ_LINK
-      link_to t(:proper)[:footer][:faqs], FAQ_URL, target: :blank, class: 'btn btn-primary btn-lg btn-block'
+      link_to t(:proper)[:catalog][:cart][:faqs], FAQ_URL, target: :blank, class: 'btn btn-primary btn-lg btn-block'
     else
-      content_tag(:button, t(:proper)[:footer][:faqs], class: 'faq-button btn btn-primary btn-lg btn-block', href: 'javascript:void(0)')
+      content_tag(:button, t(:proper)[:catalog][:cart][:faqs], class: 'faq-button btn btn-primary btn-lg btn-block', href: 'javascript:void(0)')
     end
   end
 
   def feedback_helper
     if USE_FEEDBACK_LINK
-      link_to t(:proper)[:footer][:feedback], t(:proper)[:footer][:redcap_survey], target: :blank, class: 'btn btn-primary btn-lg btn-block'
+      link_to t(:proper)[:catalog][:cart][:feedback], t(:proper)[:catalog][:cart][:redcap_survey], target: :blank, class: 'btn btn-primary btn-lg btn-block'
     else
-      content_tag(:button, t(:proper)[:footer][:feedback], class: 'feedback-button btn btn-primary btn-lg btn-block', href: 'javascript:void(0)')
+      content_tag(:button, t(:proper)[:catalog][:cart][:feedback], class: 'feedback-button btn btn-primary btn-lg btn-block', href: 'javascript:void(0)')
     end
   end
 
@@ -339,13 +339,6 @@ module ApplicationHelper
     sps.map{|x| x.is_primary_contact? ? x.identity.display_name : nil}.compact.join("<br />")
   end
 
-  def display_service_in_catalog service, service_request, from_portal
-    has_current_pricing_map = service.current_pricing_map rescue false # work around for current_pricing_map method raising false
-    if (service.is_available? or service.is_available.nil?) and has_current_pricing_map
-      render 'service', service: service, service_request: service_request, from_portal: from_portal
-    end
-  end
-
   # devise helpers
   def resource_name
     :identity
@@ -391,10 +384,6 @@ module ApplicationHelper
 
   def entity_visibility_class entity
     entity.is_available == false ? 'entity_visibility' : ''
-  end
-
-  def first_service?(service_request)
-    service_request.line_items.count == 0
   end
 
   def display_protocol_id(service_request)

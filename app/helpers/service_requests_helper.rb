@@ -22,7 +22,7 @@ module ServiceRequestsHelper
       next unless (organization.nil? || (process_ssr_found = ssr_org == institution) || organization.parents.include?(institution))
       locked = locked_ids.include?(institution.id)
 
-      returning_html += content_tag(:h3, organization_display(institution, locked), class: [institution.css_class, locked ? 'locked' : ''])
+      returning_html += content_tag(:h3, organization_name_display(institution, locked), class: ['btn institution-header', institution.css_class, locked ? 'locked' : ''], data: { id: institution.id })
       returning_html += content_tag(:div,
                           content_tag(:div, provider_accordion(institution.providers, locked_ids, organization, process_ssr_found), class: 'provider-accordion'),
                           class: 'institution'
@@ -33,6 +33,38 @@ module ServiceRequestsHelper
     returning_html.html_safe
   end
 
+  def core_accordion(organization, ssr_org, service_request, locked_ids, process_ssr_found, from_portal)
+    returning_html = ""
+
+    if ssr_org.present? && !process_ssr_found
+      returning_html += core_html(ssr_org, organization, service_request, false, from_portal)
+    else
+      organization.cores.where(is_available: [true, nil]).order('`order`').each do |core|
+        returning_html += core_html(core, organization, service_request, locked_ids.include?(core.id), from_portal)
+      end
+    end
+
+    returning_html.html_safe
+  end
+
+  def organization_name_display(organization, locked)
+    locked ? organization.name+" **LOCKED**" : organization.name
+  end
+
+  def organization_description_display(organization)
+    organization.description.present? ? organization.description : t(:proper)[:catalog][:accordion][:no_description]
+  end
+
+  def display_service_in_catalog(service, service_request, from_portal)
+    if [true, nil].include?(service.is_available) && service.current_pricing_map
+      render 'service', service: service, service_request: service_request, from_portal: from_portal
+    else
+      ""
+    end
+  end
+
+  private
+
   def provider_accordion(providers, locked_ids, organization, process_ssr_found)
     returning_html = ""
 
@@ -40,7 +72,7 @@ module ServiceRequestsHelper
       next unless (organization.nil? || process_ssr_found || (process_ssr_found = ssr_org == provider) || organization.parents.include?(provider))
       locked = locked_ids.include?(provider.id)
 
-      returning_html += content_tag(:h3, organization_display(provider, locked), class: [provider.css_class, 'provider-header', locked ? 'locked' : ''])
+      returning_html += content_tag(:h3, organization_name_display(provider, locked), class: ['btn', provider.css_class, 'provider-header', locked ? 'locked' : ''], data: { id: provider.id })
       returning_html += content_tag(:div, program_accordion(provider.programs, locked_ids, organization, process_ssr_found), class: 'provider')
     end
 
@@ -54,17 +86,23 @@ module ServiceRequestsHelper
       next unless (organization.nil? || process_ssr_found || (process_ssr_found = ssr_org == program) || organization.parents.include?(program))
       locked = locked_ids.include?(program.id)
 
-      returning_html += content_tag(:h4, organization_display(program, locked), class: [program.css_class, locked ? 'locked' : ''])
+      returning_html += content_tag(:h4, organization_name_display(program, locked), class: ['btn btn-default btn-sm program-link', locked ? 'locked' : ''], data: { id: program.id, process_ssr_found: process_ssr_found })
     end
 
     returning_html.html_safe
   end
 
-  def organization_display(organization, locked)
-    if locked
-      content_tag(:a, organization_name+" **LOCKED**", href: 'javascript:void(0)')
-    else
-      link_to organization.name, update_description_catalog_path(organization)
+  def core_html(core, parent, service_request, locked, from_portal)
+    services = ""
+    
+    core.services.order('`order`, `name`').each do |service|
+      services += display_service_in_catalog(service, service_request, from_portal)
     end
+
+    [ content_tag(:h3, organization_name_display(core, locked), class: ['btn core-header', css_class(parent), locked ? 'locked' : '']),
+      content_tag(:div,
+        content_tag(:div, organization_description_display(core), class: 'description core-description col-sm-12')+services.html_safe,
+        class: 'core-view'
+      )].join('').html_safe
   end
 end

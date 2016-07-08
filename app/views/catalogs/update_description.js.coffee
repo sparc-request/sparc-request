@@ -18,12 +18,9 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$('#welcome_message').html("<%= escape_javascript render 'catalogs/description', organization: @organization, service_request: @service_request, from_portal: @from_portal %>")
+$('#welcome-message').html("<%= escape_javascript render 'catalogs/description', organization: @organization, service_request: @service_request, sub_service_request: @sub_service_request, ssr_org: @ssr_org, from_portal: @from_portal, process_ssr_found: @process_ssr_found, locked_org_ids: @locked_org_ids %>")
 $('.core-accordion').accordion
   heightStyle: 'content'
   collapsible: true
-  beforeActivate: (event, ui) ->
-    if (url = (ui.newHeader.find('a').attr('href') or ui.oldHeader.find('a').attr('href'))) && url == 'javascript:void(0)'
-      event.preventDefault()
 
 $('#processing_request').hide()

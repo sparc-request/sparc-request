@@ -18,64 +18,19 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .panel.panel-default
-  - if organization
-    - show_program_services = true
-    - if @sub_service_request
-      - ssr_org = @sub_service_request.organization
-    .provider-details-view
-      .provider-name{class: css_class(organization)}
-        = organization.name
-      .provider-description.description.ui-widget.ui-widget-content.ui-corner-all
-        = raw organization.description
+  .panel-heading{ class: css_class(organization) }
+    %h1.panel-title
+      = organization.name
+  .panel-body
+    .description
+      = organization_description_display(organization)
 
     - if organization.type == "Program"
-      - unless organization.services.empty?
-        - if @sub_service_request && (!@program_is_process_ssr && !organization.parents.include?(ssr_org))
-          - show_program_services = false
+      - if organization.services.any? && (sub_service_request.nil? || process_ssr_found || organization.parents.include?(ssr_org))
+        .program-services
+          - organization.services.order('`order`, `name`').each do |service|
+            = display_service_in_catalog(service, service_request, from_portal)
 
-        - if show_program_services
-          .program-services
-            - organization.services.order('`order`, `name`').each do |service|
-              = display_service_in_catalog(service, service_request, from_portal)
-      %br
-      - unless organization.cores.empty?
+      - if organization.cores.any?
         .core-accordion
-          - organization.cores.order('`order`').each do |core|
-            - next unless core.is_available? or core.is_available.nil?
-
-            - if @sub_service_request && !@program_is_process_ssr
-              - next unless ssr_org == core
-
-            - core_locked = @locked_org_ids.present? ? @locked_org_ids.include?(core.id) : false
-
-            %h3{class: "#{css_class(organization)} core-tab #{core_locked ? 'locked' : ''}"}
-              - if core_locked
-                = display_locked_organization(core.name)
-              - else
-                = link_to core.name, "#"
-            .core_view
-              .provider-description.description.ui-widget.ui-widget-content.ui-corner-all
-                = raw core.description
-              - core.services.order('`order`, `name`').each do |service|
-                = display_service_in_catalog(service, service_request, from_portal)
-
-  - else
-    .panel-heading
-      %h1.panel-title
-        = t(:proper)[:catalog][:center][:welcome]
-    .panel-body
-      %p
-        = t(:proper)[:catalog][:center][:description]
-      %p
-        %strong
-          = t(:proper)[:catalog][:center][:notice]
-      %p.website
-        %strong
-          = t(:proper)[:catalog][:center][:website]
-        = link_to t(:proper)[:catalog][:center][:website_link], t(:proper)[:catalog][:center][:website_link]
-      %p.blog
-        %strong
-          = t(:proper)[:catalog][:center][:blog]
-        = link_to t(:proper)[:catalog][:center][:blog_link], t(:proper)[:catalog][:center][:blog_link]
-        .pricing-message
-          = t(:proper)[:catalog][:center][:pricing_warning]
+          = core_accordion(organization, ssr_org, service_request, locked_org_ids, process_ssr_found, from_portal)

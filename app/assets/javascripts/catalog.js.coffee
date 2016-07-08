@@ -20,20 +20,9 @@
 
 #= require cart
 
-loadDescription = (url) ->
-  $.ajax
-    type: 'POST'
-    url: url
-
 $(document).ready ->
 
-  $('#about_sparc').dialog
-    autoOpen: false
-    modal: true
-
-  $(document).on 'click', '.about_sparc_request', ->
-    $('#about_sparc').dialog('open')
-
+  # Related to locked service requests
   $('#ctrc-dialog').dialog
     autoOpen: false
     modal: true
@@ -49,33 +38,55 @@ $(document).ready ->
     if $(this).text() == 'Research Nexus **LOCKED**'
       $('#ctrc-dialog').dialog('open')
 
+  # Organization Accordion Logic
   $('#institution-accordion').accordion
     heightStyle: 'content'
     collapsible: true
-    activate: (event, ui) ->
-      if (url = (ui.newHeader.find('a').attr('href') or ui.oldHeader.find('a').attr('href'))) && url != 'javascript:void(0)'
-        loadDescription(url)
 
   $('.provider-accordion').accordion
     heightStyle: 'content'
     collapsible: true
     active: false
-    activate: (event, ui) ->
-      if (url = (ui.newHeader.find('a').attr('href') or ui.oldHeader.find('a').attr('href'))) && url != 'javascript:void(0)'
-        loadDescription(url)
 
-  $('.program-link').live 'click', ->
-    $('#processing_request').show()
+  $(document).on 'click', '.institution-header, .provider-header', ->
+    $('#processing-request').removeClass('hidden')
+    id    = $(this).data('id')
+    $.ajax
+      type: 'POST'
+      url: "/catalogs/#{id}/update_description"
+      success: ->
+        $('#processing-request').addClass('hidden')
 
-  $('.title .name a').live 'click', ->
-    $(this).parents('.title').siblings('.service-description').toggle()
+  $(document).on 'click', '.program-link', ->
+    $('#processing-request').removeClass('hidden')
+    id    = $(this).data('id')
+    data  = process_ssr_found : $(this).data('process-ssr-found') 
+    $.ajax
+      type: 'POST'
+      data: data
+      url: "/catalogs/#{id}/update_description"
+      success: ->
+        $('#processing-request').addClass('hidden')
+
+  $(document).on 'click', '.core-header', ->
+    $('.service-description').addClass('hidden')
+
+  $(document).on 'click', '.service-view .title .name a', ->
+    id = $(this).data('id')
+    description = $(".service-description-#{id}")
+
+    if description.hasClass('hidden')
+      $('.service-description').addClass('hidden')
+      description.removeClass('hidden')
+    else
+      description.addClass('hidden')
 
 
-  autoComplete = $('#service_query').autocomplete
+  autoComplete = $('#service-query').autocomplete
     source: '/search/services'
     minLength: 2
     search: (event, ui) ->
-      $("#service_query").after('<img src="/assets/spinner.gif" class="catalog-search-spinner" />')
+      $("#service-query").after('<img src="/assets/spinner.gif" class="catalog-search-spinner" />')
     open: (event, ui) ->
       $('.catalog-search-spinner').remove()
       $('.service-name').qtip

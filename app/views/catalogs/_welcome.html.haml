@@ -17,19 +17,22 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-= javascript_include_tag "catalog"
-
-= render 'catalogs/service_accordion', institutions: @institutions, organization: @organization, locked_org_ids: @locked_org_ids
-= render 'catalogs/catalog_center', organization: @organization, service_request: @service_request, from_portal: @from_portal
-= render 'catalogs/catalog_right', service_request: @service_request, sub_service_request: @sub_service_request, line_items: @line_items
-
-#new-request-dialog.hidden{ title: t(:cart)[:new_request_dialog1] }
-  = t(:cart)[:new_request_dialog2]
-
-- if CREATE_AN_ACCOUNT
-  #account.create_new_account
-    = link_to t(:create_an_account), new_identity_registration_path, class: 'create-an-account-button'
-
-- if @ctrc_ssr_id
-  #ctrc-dialog
-    = I18n.t('proper.catalog.ctrc_lock', protocol_id: @service_request.protocol.id, ssr_id: @ctrc_ssr_id, protocol_type: @service_request.protocol.type, short_title: @service_request.protocol.short_title)
+.page-header.text-center
+  %h3
+    = t(:proper)[:catalog][:center][:welcome]
+.text-center
+  %p
+    = t(:proper)[:catalog][:center][:description]
+  %p
+    %strong
+      = t(:proper)[:catalog][:center][:notice]
+  %p.website
+    %strong
+      = t(:proper)[:catalog][:center][:website]
+    = link_to t(:proper)[:catalog][:center][:website_link], t(:proper)[:catalog][:center][:website_link]
+  %p.blog
+    %strong
+      = t(:proper)[:catalog][:center][:blog]
+    = link_to t(:proper)[:catalog][:center][:blog_link], t(:proper)[:catalog][:center][:blog_link]
+    .pricing-message
+      = t(:proper)[:catalog][:center][:pricing_warning]

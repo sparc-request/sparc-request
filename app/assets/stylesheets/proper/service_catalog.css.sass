@@ -18,98 +18,156 @@
 /* INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR*/
 /* TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.*/
 
-.service-catalog
-  .provider-header
-    background: #0078ae url("/assets/jquery-ui/ui-bg_glass_45_0078ae_1x400.png") repeat-x scroll 50% 50% !important
-    border: 1px solid #77d5f7 !important
-    + .provider 
-      h4
-        padding-left: 5%
-        padding-right: 5%
-        width: 100%
-        line-height: 100%
+/* RELATED TO THE INSTITUTION ACCORDION */
+#institution-accordion
+  .btn
+    white-space: normal
 
-      h4:nth-child(odd)
-        a
-          color: #003366
+.ui-accordion-header
+  background: #0078ae url("/assets/jquery-ui/ui-bg_glass_45_0078ae_1x400.png") repeat-x scroll 50% 50% !important
+  border: 0px !important
 
-      h4:nth-child(even)
-        background: #6495ED
-        a
-          color: white
+.ui-accordion-header.ui-state-hover,
+.ui-accordion-header.ui-state-focus
+  color: white !important
 
-  .blue-provider
-    background: #003366 !important
-    + .provider
-      h4:nth-child(even)
-        background: #6BB1FF
-        a
-          color: white
+.provider-header
+  + .provider 
+    h4
+      padding-left: 5%
+      padding-right: 5%
+      width: 100%
+      line-height: 100%
 
-  .green-provider
-    background: #2C9A4D !important
-    + .provider
-      h4:nth-child(even)
-        background: #7EAE8D
-        a
-          color: white
+.blue-provider
+  background: #003366 !important
+.blue-provider.btn:hover
+  background: #002255 !important
 
-  .light-blue-provider
-    background: #0775B0 !important
-    + .provider
-      h4:nth-child(even)
-        background: #6495ED
-        a
-          color: white
+.green-provider
+  background: #2C9A4D !important
+.green-provider.btn:hover
+  background : #1C8A3D !important
 
-  .red-provider
-    background: #C43149 !important
-    + .provider
-      h4:nth-child(even)
-        background: #EC828F
-        a
-          color: white
+.light-blue-provider
+  background: #0775B0 !important
+.light-blue-provider.btn:hover
+  background: #0065A0 !important
 
-  .orange-provider
-    background: #F79739 !important
-    + .provider
-      h4:nth-child(even)
-        background: #FFC125
-        a
-          color: white
+.red-provider
+  background: #C43149 !important
+.red-provider.btn:hover
+  background: #B42139 !important
 
+.orange-provider
+  background: #F79739 !important
+.orange-provider.btn:hover
+  background: #E78729 !important
+
+.blue-provider,
+.green-provider,
+.light-blue-provider,
+.red-provider,
+.orange-provider
+  h1
+    color: white
+
+.service-view
+  .title
+    display: inline-flex
+    width: 100%
+    div
+      margin: auto
+    .name
+      text-align: left
+      a
+        color: #337AB7 !important
+
+.service-view:not(:last-child)
+  padding-bottom: 5px
+  border-bottom: 1px solid #EEE
+  margin-bottom: 5px
+
+.program-services,
+.core-accordion
+  padding-top: 15px !important
+
+.description
+  font-size: 14px
+
+.core-description
+  padding-top: 15px
+  padding-bottom: 10px
+
+.service-description
+  padding-top: 5px
+
+/* RELATED TO THE CENTER CATALOG ELEMENTS */
 .catalog-center
-  #search,
-  #welcome_message,
-  #calendar-blog
+  padding-left: 0 !important
+  padding-right: 0 !important
+
+  #search
     margin-bottom: 20px
 
   #welcome-message
-    .panel
-      text-align: center
+    border-bottom: 1px solid black
+    margin-bottom: 10px
+    .page-header
+      margin-top: 0
+    h3
+      margin-top: 0
 
   #calendar-blog
-    border-top: 1px solid #eee
+    display: inline-block
+    .news-container
+      padding-left: 0
+      padding-right: 8px
 
-    .panel
+    .calendar-container
+      padding-left: 8px
+      padding-right: 0
+
+    .col-sm-12
       padding-left: 0
       padding-right: 0
 
+    .panel
       .blog-link:not(:last-child),
       .calendar-event:not(:last-child)
         padding-bottom: 5px
         margin-bottom: 5px
         border-bottom: 1px solid #eee
 
+/* RELATED TO THE RIGHT CATALOG ELEMENTS (CART) */
 .catalog-right
   .panel
     margin-bottom: 0px
 
     .cart
       min-height: 200px
+
+      .line-item
+        display: inline-flex
+        width: 100%
+        div
+          padding: 0px
+          margin: auto
+
+      .line-item:not(:last-child)
+        padding-bottom: 5px
+        border-bottom: 1px solid #EEE
+        margin-bottom: 5px
+
   .nav-buttons
     a,
     div
       margin-top: 5px
       margin-bottom: 5px
+
+  #cart-help
+    .help-question
+      text-decoration: undeline
+    .help-answer
+      display: inline-block
 

@@ -23,10 +23,10 @@ class CatalogsController < ApplicationController
   before_filter :authorize_identity
 
   def update_description
-    @organization 		= Organization.find params[:id]
-    @service_request 	= ServiceRequest.find session[:service_request_id]
-    @from_portal      = session[:from_portal]
-    @program_is_process_ssr = params[:program_is_process_ssr] == 'true'
+    @organization 		  = Organization.find params[:id]
+    @from_portal        = session[:from_portal]
+    @process_ssr_found  = params[:process_ssr_found] == 'true'
+    @ssr_org            = @sub_service_request.organization if @sub_service_request
 
     @locked_org_ids = []
     if @service_request.protocol.present?

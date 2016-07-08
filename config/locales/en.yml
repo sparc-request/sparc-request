@@ -19,8 +19,6 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 en:
-  about_text: "SPARC Request (Services, Pricing, & Application for Research Centers) is a web-based research management system that provides a central portal (one-stop shop) to researchers and their study teams to browse for research services and resources, as well as submit service and pricing requests with a focus on billing compliance and proposal/budget development. The free software is open to MUSC affiliates and CTSA institutions to adopt and capitalize on efficiencies."
-  about_title: "About SPARC Request"
   activerecord:
     attributes:
       fulfillment:
@@ -226,10 +224,6 @@ en:
       logout: "Logout"
 
     footer:
-      faqs: "Help/FAQs"
-      feedback: "Feedback"
-      redcap_survey: 'https://redcap.musc.edu/surveys/?s=A37TNJWJPL'
-      contact: "Contact"
       mail_to: "hundc@musc.edu"
       mail_link: "Listserv"
       mail_subject: "SPARC Request Listserv"
@@ -238,12 +232,12 @@ en:
       sctr: "SCTR"
       sctr_url: "http://sctr.musc.edu"
       about: "About"
-      home: "Home"
-      home_url: "http://academicdepartments.musc.edu/sctr/sparc_request"
+      about_url: "http://academicdepartments.musc.edu/sctr/sparc_request"
 
     catalog:
       accordion:
         header: "Browse Service Catalog"
+        no_description: "No description available."
 
       center:
         search_placeholder: "Search by Service Name or CPT Code..."
@@ -265,6 +259,12 @@ en:
 
       cart:
         header: "My Services"
+        has_fulfillments: "This line item has one or more fulfillments associated with it and can not be deleted."
+        remove_request_confirm: "This action will delete this service request and you will be redirected to your user portal. Click OK to proceed."
+        faqs: "Help/FAQs"
+        feedback: "Feedback"
+        redcap_survey: 'https://redcap.musc.edu/surveys/?s=A37TNJWJPL'
+        contact: "Contact"
 
       ctrc_lock: "SCTR Research Nexus services are already present on this request (%{protocol_id}-%{ssr_id}) pertaining to this %{protocol_type}, '%{short_title}'. Please call (843) 792-8688 to edit the existing request."
 

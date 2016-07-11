@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160622150859) do
+ActiveRecord::Schema.define(version: 20160629155935) do
 
   create_table "admin_rates", force: :cascade do |t|
     t.integer  "line_item_id", limit: 4
@@ -525,6 +525,19 @@ ActiveRecord::Schema.define(version: 20160622150859) do
   end
 
   add_index "past_statuses", ["sub_service_request_id"], name: "index_past_statuses_on_sub_service_request_id", using: :btree
+
+  create_table "past_subsidies", force: :cascade do |t|
+    t.integer  "sub_service_request_id", limit: 4
+    t.integer  "total_at_approval",      limit: 4
+    t.integer  "pi_contribution",        limit: 4
+    t.integer  "approved_by",            limit: 4
+    t.datetime "approved_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "past_subsidies", ["approved_by"], name: "index_past_subsidies_on_approved_by", using: :btree
+  add_index "past_subsidies", ["sub_service_request_id"], name: "index_past_subsidies_on_sub_service_request_id", using: :btree
 
   create_table "payment_uploads", force: :cascade do |t|
     t.integer  "payment_id",        limit: 4

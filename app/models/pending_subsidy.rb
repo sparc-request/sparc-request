@@ -31,7 +31,7 @@ class PendingSubsidy < Subsidy
   def pi_contribution
     # This ensures that if pi_contribution is null (new record),
     # then it will reflect the full cost of the request.
-    self.read_attribute(:pi_contribution) || total_request_cost
+    total_request_cost - (total_request_cost * percent_subsidy) || total_request_cost
   end
 
   def current_cost

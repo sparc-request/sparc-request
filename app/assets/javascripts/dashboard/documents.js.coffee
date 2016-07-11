@@ -47,7 +47,7 @@ $ ->
           type: 'DELETE'
           url: "/dashboard/documents/#{document_id}"
 
-  $(document).on 'change', '#document-doc-type', ->
+  $(document).on 'change', '#document_doc_type', ->
     if $(this).val() == 'other'
       $('#doc_type_other_field').show()
     else

@@ -585,7 +585,7 @@ class ServiceRequestsController < ApplicationController
     process_ssr_organization_ids = params[:process_ssr_organization_ids]
     document_id = params[:document_id]
     doc_object = Document.find(document_id) if document_id
-    document = params[:document]
+    document = params[:document].present? || !params[:document_id].present? ? params[:document] : doc_object.document
     doc_type = params[:doc_type]
     doc_type_other = params[:doc_type_other]
     upload_clicked = params[:upload_clicked]

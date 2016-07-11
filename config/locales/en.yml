@@ -706,7 +706,7 @@ en:
         header: "Subsidy Information"
         approved:
           header: "Current Effective Subsidy"
-          request_cost: "Request Cost at Approval"
+          request_cost: "Cost at Approval"
           percent: "% Subsidy"
           pi_contribution: "PI Contribution"
           cost: "Subsidy Cost"
@@ -715,7 +715,7 @@ en:
           none: "There is no current effective subsidy."
         pending:
           header: "Subsidy Pending Approval"
-          request_cost: "Request Current Cost"
+          request_cost: "Current Cost"
           percent: "% Subsidy"
           pi_contribution: "PI Contribution"
           cost: "Subsidy Current Cost"

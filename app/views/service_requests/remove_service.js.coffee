@@ -17,13 +17,9 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+$('#line_item_count').val(<%= @line_items.count %>)
 
-line_item_count = parseInt($('#line_item_count').val())
-line_item_count -= 1
-$('#line_item_count').val(line_item_count)
-
-$("#services").append("<%= escape_javascript render :partial => 'catalogs/cart' %>")
-$("#services .spinner").remove()
+$('.cart').html("<%= escape_javascript(render( 'catalogs/cart', line_items: @line_items, service_request: @service_request, sub_service_request: @sub_service_request ))%>")
 
 if "<%= @page %>" == 'protocol'
   $('.service-list').html("<%= escape_javascript render :partial => 'service_list' %>")

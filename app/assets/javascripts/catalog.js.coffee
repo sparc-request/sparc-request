@@ -34,10 +34,6 @@ $(document).ready ->
         $(this).dialog('close')
     }]
 
-  $(document).on 'click', '.locked a', ->
-    if $(this).text() == 'Research Nexus **LOCKED**'
-      $('#ctrc-dialog').dialog('open')
-
   # Organization Accordion Logic
   $('#institution-accordion').accordion
     heightStyle: 'content'
@@ -47,6 +43,10 @@ $(document).ready ->
     heightStyle: 'content'
     collapsible: true
     active: false
+
+  $(document).on 'click', '.locked a', ->
+    if $(this).text() == 'Research Nexus **LOCKED**'
+      $('#ctrc-dialog').dialog('open')
 
   $(document).on 'click', '.institution-header, .provider-header', ->
     $('#processing-request').removeClass('hidden')
@@ -151,6 +151,7 @@ $(document).ready ->
         buttons:
             Ok: ->
               $(this).dialog('close')
+      $('#submit_error').removeClass('hidden')
       return false
     #else
     #  if signed_in == false

@@ -23,13 +23,16 @@ addService = (srid, id) ->
     type: 'POST'
     url: "/service_requests/#{srid}/add_service/#{id}"
 
-removeService = (srid, id, move_on) ->
+removeService = (srid, id, move_on, spinner) ->
   $.ajax
     type: 'POST'
     url: "/service_requests/#{srid}/remove_service/#{id}"
     success: (data, textStatus, jqXHR) ->
       if move_on
         window.location = '/dashboard'
+      else
+        spinner.hide()
+
 
 requestSubmittedDialog = (srid, id) ->
   options = {
@@ -74,7 +77,7 @@ $(document).ready ->
     else
       addService(srid, id)
 
-  $(document).on 'click', '.remove-button', ->
+  $(document).on 'click', '.remove-service', ->
     id = $(this).data('id')
     srid = $(this).data('srid')
     ssrid = $(this).data('ssrid')
@@ -87,14 +90,11 @@ $(document).ready ->
     else if request_submitted == 1
       requestSubmittedDialog(srid, id)
     else
+      spinner = $('<span class="spinner"><img src="/assets/catalog_manager/spinner_small.gif"/></span>')
       if li_count == 1 and ssrid != ''
         if confirm(I18n['proper']['catalog']['cart']['remove_request_confirm'])
-          $("#services .line-items").remove()
-          $("#services").append('<span class="spinner"><img src="/assets/spinner.gif"/></span>')
-          $(this).hide()
-          removeService(srid, id, true)
+          $(this).replaceWith(spinner)
+          removeService(srid, id, true, spinner)
       else
-        $("#services .line-items").remove()
-        $("#services").append('<span class="spinner"><img src="/assets/spinner.gif"/></span>')
-        $(this).hide()
-        removeService(srid, id, false)
+        $(this).replaceWith(spinner)
+        removeService(srid, id, false, spinner)

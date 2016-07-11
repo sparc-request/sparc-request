@@ -50,21 +50,7 @@ requestSubmittedDialog = (srid, id) ->
 
 $(document).ready ->
 
-  $("#cart-help").dialog
-    autoOpen: false
-    height: 425
-    width: 500
-    modal: true
-
-  $(document).on 'click', '.faq-button', ->
-    $("#cart-help").dialog('open')
-
-  $('.help_answer').hide()
-
-  $(document).on 'click', '.help_question', ->
-    $(this).siblings().toggle().css('font-style': 'italic')
-
-  $(document).on 'click', '.add-service' , ->
+  $(document).on 'click', '.add-service', ->
     id = $(this).data('id')
     srid = $(this).data('srid')
     from_portal = $(this).data('from-portal')

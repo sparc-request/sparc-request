@@ -452,11 +452,9 @@ class ServiceRequestsController < ApplicationController
     feedback = Feedback.new(params[:feedback])
     if feedback.save
       Notifier.provide_feedback(feedback).deliver_now
-      render nothing: true
+      flash.now[:success] = t(:proper)[:right_navigation][:feedback][:submitted]
     else
-      respond_to do |format|
-        format.js { render status: 403, json: feedback.errors.to_a.map {|k,v| "#{k.humanize} #{v}".rstrip + '.'} }
-      end
+      @errors = feedback.errors
     end
   end
 

@@ -63,6 +63,23 @@ module ServiceRequestsHelper
     end
   end
 
+  # RIGHT NAVIGATION BUTTONS
+  def faq_helper
+    if USE_FAQ_LINK
+      link_to t(:proper)[:right_navigation][:faqs][:header], FAQ_URL, target: :blank, class: 'btn btn-primary btn-lg btn-block'
+    else
+      content_tag(:button, t(:proper)[:right_navigation][:faqs][:header], class: 'faq-button btn btn-primary btn-lg btn-block', href: 'javascript:void(0)')
+    end
+  end
+
+  def feedback_helper
+    if USE_FEEDBACK_LINK
+      link_to t(:proper)[:right_navigation][:feedback][:header], t(:proper)[:right_navigation][:redcap_survey], target: :blank, class: 'btn btn-primary btn-lg btn-block'
+    else
+      content_tag(:button, t(:proper)[:right_navigation][:feedback][:header], class: 'feedback-button btn btn-primary btn-lg btn-block', href: 'javascript:void(0)')
+    end
+  end
+
   private
 
   def provider_accordion(providers, locked_ids, organization, process_ssr_found)

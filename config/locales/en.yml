@@ -54,6 +54,7 @@ en:
     save: "Save"
     search: "Search"
     send: "Send"
+    submit: "Submit"
     upload: "Upload"
 
   constants:
@@ -261,10 +262,34 @@ en:
         header: "My Services"
         has_fulfillments: "This line item has one or more fulfillments associated with it and can not be deleted."
         remove_request_confirm: "This action will delete this service request and you will be redirected to your user portal. Click OK to proceed."
-        faqs: "Help/FAQs"
-        feedback: "Feedback"
-        redcap_survey: 'https://redcap.musc.edu/surveys/?s=A37TNJWJPL'
-        contact: "Contact"
+
+    right_navigation:
+      faqs:
+        header: "Help/FAQs"
+        question_1: "May I submit a request for services for multiple research studies/projects simultaneously?"
+        answer_1: "No. Please browse and select services for only one research study/project at a time."
+        question_2: "May I select and add services from multiple Service Providers and Programs at one time?"
+        answer_2: "Yes. Please feel free to browse, select, and add services from any Service Provider, Program, and/or Core displayed in the system for any given research study/project."
+        question_3: "How many Authorized Users can I add?"
+        answer_3: "Add as many Authorized Users as you feel is pertinent. There is no limit."
+        question_4: "What is the difference  between a Research Study and a Project?"
+        answer_4: "A Research Study is an individual research protocol with defined aims and outcomes."
+        question_5: "How is SPARC Request calculating my indirect costs?"
+        answer_5: "The original requester for your study/project defined both the funding source of the study/project and the indirect cost rate. SPARC Request uses this data to calculate your total overall indirect costs."
+        question_6: "I\'m stuck! Who can I contact for assistance with SPARC Request?"
+        answer_6: "The SUCCESS Center is happy to assist you! Please contact us at success@musc.edu or (843) 792-3357."
+      feedback:
+        header: "Feedback"
+        email: "Email:"
+        feedback: "Feedback:*"
+        submitted: "Thank you for providing your feedback!"
+      redcap_survey: 'https://redcap.musc.edu/surveys/?s=A37TNJWJPL'
+      contact:
+        header: "Contact Us"
+        subject: "Subject:"
+        email: "Email:"
+        message: "Message:*"
+        submitted: "Message sent successfully!"
 
       ctrc_lock: "SCTR Research Nexus services are already present on this request (%{protocol_id}-%{ssr_id}) pertaining to this %{protocol_type}, '%{short_title}'. Please call (843) 792-8688 to edit the existing request."
 

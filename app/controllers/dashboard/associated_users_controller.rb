@@ -19,7 +19,6 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Dashboard::AssociatedUsersController < Dashboard::BaseController
-  layout nil
   respond_to :html, :json, :js
   
   before_filter :find_protocol_role,                              only: [:edit, :destroy]

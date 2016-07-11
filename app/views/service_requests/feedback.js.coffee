@@ -17,26 +17,9 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-class ContactFormsController < ApplicationController
-
-  def new
-    @contact_form = ContactForm.new
-  end
-
-  def create
-    @contact_form = ContactForm.new(contact_form_params)
-
-    if @contact_form.valid?
-      ContactMailer.contact_us_email(@contact_form).deliver_now
-      flash.now[:success] = t(:proper)[:right_navigation][:contact][:submitted]
-    else
-      @errors = @contact_form.errors
-    end
-  end
-
-  private
-
-  def contact_form_params
-    params.require(:contact_form).permit!
-  end
-end
+<% if @errors.present? %>
+$(".modal #modal_errors").html("<%= escape_javascript(render(partial: 'shared/modal_errors', locals: {errors: @errors})) %>")
+<% else %>
+$("#modal_place").modal 'hide'
+$('.flash').html("<%= escape_javascript(render('shared/flash')) %>")
+<% end %>

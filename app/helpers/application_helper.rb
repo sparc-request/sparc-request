@@ -51,22 +51,6 @@ module ApplicationHelper
     end
   end
 
-  def faq_helper
-    if USE_FAQ_LINK
-      link_to t(:proper)[:catalog][:cart][:faqs], FAQ_URL, target: :blank, class: 'btn btn-primary btn-lg btn-block'
-    else
-      content_tag(:button, t(:proper)[:catalog][:cart][:faqs], class: 'faq-button btn btn-primary btn-lg btn-block', href: 'javascript:void(0)')
-    end
-  end
-
-  def feedback_helper
-    if USE_FEEDBACK_LINK
-      link_to t(:proper)[:catalog][:cart][:feedback], t(:proper)[:catalog][:cart][:redcap_survey], target: :blank, class: 'btn btn-primary btn-lg btn-block'
-    else
-      content_tag(:button, t(:proper)[:catalog][:cart][:feedback], class: 'feedback-button btn btn-primary btn-lg btn-block', href: 'javascript:void(0)')
-    end
-  end
-
   def css_class(organization)
     case organization.type
     when 'Institution'

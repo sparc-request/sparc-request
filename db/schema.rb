@@ -184,12 +184,6 @@ ActiveRecord::Schema.define(version: 20160630134824) do
   add_index "charges", ["service_id"], name: "index_charges_on_service_id", using: :btree
   add_index "charges", ["service_request_id"], name: "index_charges_on_service_request_id", using: :btree
 
-  create_table "click_counters", force: :cascade do |t|
-    t.integer  "click_count", limit: 4
-    t.datetime "created_at",            null: false
-    t.datetime "updated_at",            null: false
-  end
-
   create_table "clinical_providers", force: :cascade do |t|
     t.integer  "identity_id",     limit: 4
     t.integer  "organization_id", limit: 4
@@ -1016,6 +1010,7 @@ ActiveRecord::Schema.define(version: 20160630134824) do
     t.string   "status",                 limit: 255, default: "Pending"
     t.integer  "approved_by",            limit: 4
     t.datetime "approved_at"
+    t.float    "percent_subsidy",        limit: 24,  default: 0.0
   end
 
   add_index "subsidies", ["sub_service_request_id"], name: "index_subsidies_on_sub_service_request_id", using: :btree

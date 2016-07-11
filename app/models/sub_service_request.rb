@@ -46,8 +46,6 @@ class SubServiceRequest < ActiveRecord::Base
   has_one :protocol, through: :service_request
 
   delegate :percent_subsidy, to: :approved_subsidy, allow_nil: true
-  delegate :approved_percent_of_total, to: :approved_subsidy, allow_nil: true
-  alias_attribute :approved_percent_subsidy, :approved_percent_of_total
 
   # service_request_id & ssr_id together form a unique id for the sub service request
   attr_accessible :service_request_id

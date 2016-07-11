@@ -56,21 +56,17 @@ class PendingSubsidy < Subsidy
     # Creates a new ApprovedSubsidy from this PendingSubsidy
     # Remove current approved subsidy if exists, save notes
     current_approved_subsidy = sub_service_request.approved_subsidy
+    
+    # log the past subsidy
+    PastSubsidy.create(current_approved_subsidy.attributes.except("id", "status", "created_at", "updated_at", "deleted_at", "overridden"))
+
     if current_approved_subsidy.present?
-      notes = current_approved_subsidy.notes
       ApprovedSubsidy.where(sub_service_request_id: sub_service_request_id).destroy_all
     end
 
     # Create new approved subsidy from pending attributes
     new_attributes = self.attributes.except("id", "status", "created_at", "updated_at", "deleted_at").merge!({approved_by: approver.id})
     newly_approved = ApprovedSubsidy.create(new_attributes)
-
-    # Migrate notes to new approved subsidy
-    # Notes could get lost if they delete the approved subsidy instead of approving a new one.
-    notes.update_all(notable_id: newly_approved.id) if current_approved_subsidy.present? && notes.present?
-
-    # log note of approval of subsidy
-    newly_approved.log_approval_note
 
     # Delete pending subsidy
     self.destroy

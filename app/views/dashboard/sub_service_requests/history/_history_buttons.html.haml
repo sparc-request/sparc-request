@@ -17,5 +17,15 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-= render :partial => 'catalog_manager/shared/update'
+- status_tab = tab == 'status_changes'
+- approval_tab = tab == 'approval_changes'
+- subsidy_tab = tab == 'subsidy_changes'
+%button.btn.history_button#status_history_button{ class: status_tab ? 'btn-primary' : 'btn-default', disabled: status_tab, data: { table: "status_changes", sub_service_request_id: sub_service_request.id } } 
+  = t(:dashboard)[:sub_service_requests][:tabs][:history][:status][:header]
+%button.btn.history_button#approval_history_button{ class: approval_tab ? 'btn-primary' : 'btn-default', disabled: approval_tab, data: { table: "approval_changes", sub_service_request_id: sub_service_request.id } } 
+  = t(:dashboard)[:sub_service_requests][:tabs][:history][:approval][:header]
+- if sub_service_request.eligible_for_subsidy?
+  %button.btn.history_button#subsidy-history-button{ class: subsidy_tab ? 'btn-primary' : 'btn-default', disabled: subsidy_tab, data: { table: "subsidy_changes", sub_service_request_id: sub_service_request.id } }
+    = t(:dashboard)[:sub_service_requests][:tabs][:history][:subsidy][:header]
+%span
+  = image_tag 'spinner.gif', class: 'hidden', id: 'history-spinner'

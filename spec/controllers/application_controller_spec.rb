@@ -128,6 +128,16 @@ RSpec.describe ApplicationController, type: :controller do
         end
       end
 
+      context 'ServiceRequest and status' do
+        it 'should authorize Identity' do
+          service_request = instance_double('ServiceRequest', status: 'draft')
+          controller.instance_variable_set(:@service_request, service_request)
+          expect(controller).to_not receive(:authorization_error)
+          expect(controller).to receive(:authenticate_identity!)
+          controller.send(:authorize_identity)
+        end
+      end
+
       context 'ServiceRequest has nil status' do
         it 'should not authorize Identity' do
           service_request = instance_double('ServiceRequest', status: nil)

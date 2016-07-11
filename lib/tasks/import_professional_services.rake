@@ -16,6 +16,13 @@ namespace :data do
       ### POS used so that we can have same org with different ranges
       org_plus_pos = row['ORG ID'] + "-" + row['POS']
       ranges[org_plus_pos] = Range.new(row['From'].to_i, row['To'].to_i)
+      ranges[org_plus_pos] = []
+
+      justification = row['From'].size
+
+      Range.new(row['From'].to_i, row['To'].to_i).each do |r|
+        ranges[org_plus_pos] << r.to_s.rjust(justification, '0')
+      end
     end
 
     Service.transaction do
@@ -23,7 +30,7 @@ namespace :data do
         begin
           eap_id = row['EAP ID']
 
-          range = ranges.select{|k,v| v.member? eap_id.to_i}
+          range = ranges.select{|k,v| v.include? eap_id}
 
           if range.empty?
             puts "No EAP ID range exists, skipping #{eap_id} - #{row['Procedure Name']}"

@@ -51,7 +51,6 @@ class Dashboard::ServiceCalendarsController < ApplicationController
     checked = params[:checked]
     qty = params[:undefined].nil? ? params[:qty].to_i : params[:undefined][:qty].to_i
     column = params[:column]
-
     case tab
     when 'template'
       if @line_items_visit
@@ -114,10 +113,10 @@ class Dashboard::ServiceCalendarsController < ApplicationController
     @visit_td = visit.nil? ? '' : ".visits_#{visit.id}"
     @line_items_visit = visit.line_items_visit if @line_items_visit.nil?
     @line_item = @line_items_visit.line_item if @line_item.nil?
+    @sub_service_request = @line_item.sub_service_request
     @line_item_total_td = ".total_#{@line_items_visit.id}"
     @line_item_total_study_td = ".total_#{@line_items_visit.id}_per_study"
     @arm_id = '.arm_' + @line_items_visit.arm.id.to_s
-
     @line_items_visits =
         if @sub_service_request
           @line_items_visit.arm.line_items_visits.joins(:line_item)

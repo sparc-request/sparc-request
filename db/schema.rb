@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160701125130) do
+ActiveRecord::Schema.define(version: 20160711161202) do
 
   create_table "admin_rates", force: :cascade do |t|
     t.integer  "line_item_id", limit: 4
@@ -526,6 +526,19 @@ ActiveRecord::Schema.define(version: 20160701125130) do
 
   add_index "past_statuses", ["sub_service_request_id"], name: "index_past_statuses_on_sub_service_request_id", using: :btree
 
+  create_table "past_subsidies", force: :cascade do |t|
+    t.integer  "sub_service_request_id", limit: 4
+    t.integer  "total_at_approval",      limit: 4
+    t.integer  "pi_contribution",        limit: 4
+    t.integer  "approved_by",            limit: 4
+    t.datetime "approved_at"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "past_subsidies", ["approved_by"], name: "index_past_subsidies_on_approved_by", using: :btree
+  add_index "past_subsidies", ["sub_service_request_id"], name: "index_past_subsidies_on_sub_service_request_id", using: :btree
+
   create_table "payment_uploads", force: :cascade do |t|
     t.integer  "payment_id",        limit: 4
     t.datetime "created_at",                    null: false
@@ -882,7 +895,7 @@ ActiveRecord::Schema.define(version: 20160701125130) do
     t.boolean  "one_time_fee",                                                 default: false
     t.integer  "line_items_count",      limit: 4,                              default: 0
     t.text     "components",            limit: 65535
-    t.integer  "eap_id",                limit: 4
+    t.string   "eap_id",                limit: 255
   end
 
   add_index "services", ["is_available"], name: "index_services_on_is_available", using: :btree
@@ -996,7 +1009,7 @@ ActiveRecord::Schema.define(version: 20160701125130) do
     t.string   "status",                 limit: 255, default: "Pending"
     t.integer  "approved_by",            limit: 4
     t.datetime "approved_at"
-    t.float    "percent_subsidy",        limit: 24,  default: 0.0
+    t.float    "percent_subsidy",        limit: 24
   end
 
   add_index "subsidies", ["sub_service_request_id"], name: "index_subsidies_on_sub_service_request_id", using: :btree

@@ -154,6 +154,7 @@ SparcRails::Application.routes.draw do
       end
     end
 
+    resources :organizations, only: [:show, :update, :create]
     resources :institutions, only: [:show, :update, :create]
     resources :providers, only: [:show, :update, :create]
     resources :programs, only: [:show, :update, :create]
@@ -304,6 +305,7 @@ SparcRails::Application.routes.draw do
         get :change_history_tab
         get :status_history
         get :approval_history
+        get :subsidy_history
         get :refresh_service_calendar
       end
     end

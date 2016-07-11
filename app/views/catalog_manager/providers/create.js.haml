@@ -20,22 +20,22 @@
 
 :plain
   $('#catalog').jstree(
-    'create_node', 
-    $("#INSTITUTION#{@institution.id}"), 
-    1, 
-    { attr: 
-      {id: "PROVIDER#{@provider.id}"}, 
-      data: 
-      { attr: 
-        { cid: "#{@provider.id}", 
+    'create_node',
+    $("#INSTITUTION#{@parent_org.id}"),
+    1,
+    { attr:
+      {id: "PROVIDER#{@organization.id}"},
+      data:
+      { attr:
+        { cid: "#{@organization.id}",
         class: "provider",
-        object_type: "provider"}, 
-        title: "#{@provider.name}"}
-        }, 
+        object_type: "provider"},
+        title: "#{@organization.name}"}
+        },
 
         function(){
           $('#catalog').jstree('create_node',
-            $("#PROVIDER#{@provider.id}"),
+            $("#PROVIDER#{@organization.id}"),
             'inside',
             {data: 'Create New Program'},
             true)});

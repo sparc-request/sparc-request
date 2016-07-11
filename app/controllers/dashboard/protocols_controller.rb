@@ -141,8 +141,16 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
   def update
     attrs               = params[:protocol]
-    attrs[:start_date]  = Time.strptime(attrs[:start_date], "%m-%d-%Y") if attrs[:start_date]
-    attrs[:end_date]    = Time.strptime(attrs[:end_date],   "%m-%d-%Y") if attrs[:end_date]
+
+    #### fix dates so they are saved correctly ####
+    attrs                                      = convert_date_for_save attrs, :start_date
+    attrs                                      = convert_date_for_save attrs, :end_date
+    attrs                                      = convert_date_for_save attrs, :funding_start_date
+    attrs                                      = convert_date_for_save attrs, :potential_funding_start_date
+    attrs[:human_subjects_info_attributes]     = convert_date_for_save attrs[:human_subjects_info_attributes], :irb_approval_date
+    attrs[:human_subjects_info_attributes]     = convert_date_for_save attrs[:human_subjects_info_attributes], :irb_expiration_date
+    attrs[:vertebrate_animals_info_attributes] = convert_date_for_save attrs[:vertebrate_animals_info_attributes], :iacuc_approval_date
+    attrs[:vertebrate_animals_info_attributes] = convert_date_for_save attrs[:vertebrate_animals_info_attributes], :iacuc_expiration_date
 
     permission_to_edit  = @authorization.present? ? @authorization.can_edit? : false
 
@@ -239,5 +247,13 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     else
       @protocol.activate
     end
+  end
+
+  def convert_date_for_save attrs, date_field
+    if attrs[date_field]
+      attrs[date_field] = Time.strptime(attrs[date_field], "%m/%d/%Y") rescue nil # if it's not set or the user blanks it out
+    end
+
+    attrs
   end
 end

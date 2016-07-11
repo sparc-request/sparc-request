@@ -54,7 +54,7 @@ RSpec.describe 'service request list', js: true do
     let!(:protocol) { create(:unarchived_study_without_validations, primary_pi: user) }
     let!(:service_request) do
       create(:service_request_without_validations,
-      protocol: protocol
+      protocol: protocol,
       status: 'draft')
     end
     let!(:organization) do

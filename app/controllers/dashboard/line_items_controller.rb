@@ -69,6 +69,7 @@ class Dashboard::LineItemsController < Dashboard::BaseController
   end
 
   def update
+    @sub_service_request = @line_item.sub_service_request
     @otf = @line_item.service.one_time_fee
     if @line_item.update_attributes(params[:line_item])
       flash[:success] = @otf ? t(:dashboard)[:study_level_activities][:updated] : t(:dashboard)[:line_items][:updated]

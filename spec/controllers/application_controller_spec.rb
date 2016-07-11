@@ -61,9 +61,10 @@ RSpec.describe ApplicationController, type: :controller do
 
       context '@sub_service_request nil and Identity can edit @service_request' do
         it 'should authorize Identity' do
-          controller.instance_variable_set(:@service_request, :service_request)
+          sr = build(:service_request)
+          controller.instance_variable_set(:@service_request, sr)
           allow(jug2).to receive(:can_edit_service_request?)
-            .with(:service_request)
+            .with(sr)
             .and_return(true)
           expect(controller).to_not receive(:authorization_error)
           controller.send(:authorize_identity)
@@ -83,9 +84,10 @@ RSpec.describe ApplicationController, type: :controller do
 
       context '@sub_service_request nil and Identity cannot edit @service_request' do
         it 'should not authorize Identity' do
-          controller.instance_variable_set(:@service_request, :service_request)
+          sr = build(:service_request)
+          controller.instance_variable_set(:@service_request, sr)
           allow(jug2).to receive(:can_edit_service_request?)
-            .with(:service_request)
+            .with(sr)
             .and_return(false)
           expect(controller).to receive(:authorization_error)
           controller.send(:authorize_identity)

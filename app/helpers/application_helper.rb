@@ -187,10 +187,10 @@ module ApplicationHelper
                                       text_field_tag("arm_#{arm.id}_visit_name_#{n}", visit_name, class: "visit_name", size: 10, :'data-arm_id' => arm.id, :'data-visit_position' => n - 1, :'data-service_request_id' => service_request.id) +
                                       tag(:br) +
                                       link_to((content_tag(:span, '', class: "ui-button-icon-primary ui-icon #{icon}") + content_tag(:span, 'Check All', class: 'ui-button-text')),
-                                              "/service_requests/#{service_request.id}/toggle_calendar_column?#{action}=true/#{n}/#{arm.id}?portal=#{portal}",
+                                              "/service_requests/#{service_request.id}/toggle_calendar_column/#{n}/#{arm.id}?#{action}=true&portal=#{portal}",
                                               remote: true, role: 'button', class: 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only', id: "check_all_column_#{n}", data: ( visit_group.any_visit_quantities_customized?(service_request) ? { confirm: "This will reset custom values for this column, do you wish to continue?"} : nil)),
                                       width: 60, class: 'visit_number')
-
+      #binding.pry
       end
     end
 

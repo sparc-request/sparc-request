@@ -445,7 +445,7 @@ RSpec.describe ServiceCalendarsController do
         expect(liv.visits[2].effort_billing_qty).to     eq 0
       end
     end
-
+    
     describe 'GET toggle_calendar_column, checked' do
       it 'should update each of the visits' do
         pricing_map1.update_attribute(:unit_minimum, 100)
@@ -513,7 +513,7 @@ RSpec.describe ServiceCalendarsController do
       end
     end
 
-    describe 'GET toggle_calendar_column, uncheck' do
+    describe 'POST toggle_calendar_column, uncheck' do
       it 'should update each of the visits' do
         pricing_map1.update_attribute(:unit_minimum, 100)
         pricing_map2.update_attribute(:unit_minimum, 100)

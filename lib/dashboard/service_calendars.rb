@@ -230,12 +230,9 @@ module Dashboard
       filtered_livs = visit_group.line_items_visits.joins(:line_item).where(line_items: { service_request_id: sub_service_request.service_request_id })
       checked = filtered_livs.all? { |l| l.visits[n.to_i].research_billing_qty >= 1 }
       icon = checked ? 'glyphicon-remove' : 'glyphicon-ok'
-      method = if checked
-                 'unselect_calendar_column'
-               else
-                 'select_calendar_column'
-               end
-      url = "/dashboard/service_calendars/toggle_calendar_row?#{check_param}=true&sub_service_request_id=#{sub_service_request.id}&column_id=#{n + 1}&arm_id=#{arm_id}&portal=#{portal}"
+      check_param = checked ? 'uncheck' : 'check'
+      
+      url = "/dashboard/service_calendars/toggle_calendar_column?#{check_param}=true&sub_service_request_id=#{sub_service_request.id}&column_id=#{n + 1}&arm_id=#{arm_id}&portal=#{portal}"
 
       link_to(content_tag(:span, '', class: "glyphicon #{icon}"), url,
               method: :post, remote: true, role: 'button', class: 'visit_number btn btn-primary',

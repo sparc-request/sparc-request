@@ -80,8 +80,6 @@ RSpec.describe "User views documents table", js: true do
 
     scenario 'and sees the document link and enabled edit/delete buttons for access documents' do
       doc = @page.documents(text: document_with_access.document_file_name).first
-
-      
       
       expect(doc).to have_selector('td.title a', text: document_with_access.document_file_name)
       expect(doc).to have_enabled_edit_button

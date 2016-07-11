@@ -128,6 +128,8 @@ class Dashboard::ServiceCalendarsController < ApplicationController
         else
           @line_items_visit.arm.line_items_visits
         end
+    @service_request.update_attribute(:status, "draft") if @sub_service_request
+    @service_request.update_attribute(:status, "draft")
   end
 
   def rename_visit
@@ -277,8 +279,8 @@ class Dashboard::ServiceCalendarsController < ApplicationController
         visit.update_attributes(quantity: @service.displayed_pricing_map.unit_minimum, research_billing_qty: @service.displayed_pricing_map.unit_minimum, insurance_billing_qty: 0, effort_billing_qty: 0)
       end
     end
-
-    render partial: 'update_service_calendar'
+    @sub_service_request.update_attribute(:status, "draft") if @sub_service_request
+    @service_request.update_attribute(:status, "draft")
   end
 
   def toggle_calendar_column
@@ -295,50 +297,12 @@ class Dashboard::ServiceCalendarsController < ApplicationController
           visit.update_attributes quantity: liv.line_item.service.displayed_pricing_map.unit_minimum, research_billing_qty: liv.line_item.service.displayed_pricing_map.unit_minimum, insurance_billing_qty: 0, effort_billing_qty: 0
         elsif params[:uncheck]
           visit.update_attributes quantity: 0, research_billing_qty: 0, insurance_billing_qty: 0, effort_billing_qty: 0
-          
+        end
       end
     end
-    render partial: 'update_service_calendar'
+    @sub_service_request.update_attribute(:status, "draft") if @sub_service_request
+    @service_request.update_attribute(:status, "draft")
   end
-
-  # def select_calendar_column
-  #   column_id = params[:column_id].to_i
-  #   @arm = Arm.find params[:arm_id]
-
-  #   @service_request.service_list(false).each do |_key, value|
-  #     next unless @sub_service_request.nil? || @sub_service_request.organization.name == value[:process_ssr_organization_name]
-
-  #     @arm.line_items_visits.each do |liv|
-  #       next unless value[:line_items].include?(liv.line_item)
-  #       visit = liv.visits[column_id - 1] # columns start with 1 but visits array positions start at 0
-  #       visit.update_attributes(
-  #           quantity: liv.line_item.service.displayed_pricing_map.unit_minimum,
-  #           research_billing_qty: liv.line_item.service.displayed_pricing_map.unit_minimum,
-  #           insurance_billing_qty: 0,
-  #           effort_billing_qty: 0
-  #       )
-  #     end
-  #   end
-
-  #   render partial: 'update_service_calendar'
-  # end
-
-  # def unselect_calendar_column
-  #   column_id = params[:column_id].to_i
-  #   @arm = Arm.find(params[:arm_id])
-
-  #   @service_request.service_list(false).each do |_key, value|
-  #     next unless @sub_service_request.nil? || @sub_service_request.organization.name == value[:process_ssr_organization_name]
-
-  #     @arm.line_items_visits.each do |liv|
-  #       next unless value[:line_items].include?(liv.line_item)
-  #       visit = liv.visits[column_id - 1] # columns start with 1 but visits array positions start at 0
-  #       visit.update_attributes quantity: 0, research_billing_qty: 0, insurance_billing_qty: 0, effort_billing_qty: 0
-  #     end
-  #   end
-
-  #   render partial: 'update_service_calendar'
-  # end
 
   private
 

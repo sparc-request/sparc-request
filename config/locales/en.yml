@@ -62,9 +62,11 @@ en:
     no_select: "No"
     prompts:
       any: "- Any -"
+      please_specify: "Please specify: *"
       select: "---Please Select---"
       search_for_user: "Search for a User"
       select_one: "Select One"
+
 
   calendars:
     pppv:

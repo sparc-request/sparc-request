@@ -147,10 +147,16 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     attrs                                      = convert_date_for_save attrs, :end_date
     attrs                                      = convert_date_for_save attrs, :funding_start_date
     attrs                                      = convert_date_for_save attrs, :potential_funding_start_date
-    attrs[:human_subjects_info_attributes]     = convert_date_for_save attrs[:human_subjects_info_attributes], :irb_approval_date
-    attrs[:human_subjects_info_attributes]     = convert_date_for_save attrs[:human_subjects_info_attributes], :irb_expiration_date
-    attrs[:vertebrate_animals_info_attributes] = convert_date_for_save attrs[:vertebrate_animals_info_attributes], :iacuc_approval_date
-    attrs[:vertebrate_animals_info_attributes] = convert_date_for_save attrs[:vertebrate_animals_info_attributes], :iacuc_expiration_date
+
+    if attrs[:human_subjects_info_attributes]
+      attrs[:human_subjects_info_attributes]     = convert_date_for_save attrs[:human_subjects_info_attributes], :irb_approval_date
+      attrs[:human_subjects_info_attributes]     = convert_date_for_save attrs[:human_subjects_info_attributes], :irb_expiration_date
+    end
+
+    if attrs[:vertebrate_animals_info_attributes]
+      attrs[:vertebrate_animals_info_attributes] = convert_date_for_save attrs[:vertebrate_animals_info_attributes], :iacuc_approval_date
+      attrs[:vertebrate_animals_info_attributes] = convert_date_for_save attrs[:vertebrate_animals_info_attributes], :iacuc_expiration_date
+    end
 
     permission_to_edit  = @authorization.present? ? @authorization.can_edit? : false
 

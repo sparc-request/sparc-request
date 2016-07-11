@@ -156,6 +156,7 @@ SparcRails::Application.routes.draw do
       end
     end
 
+    resources :organizations, only: [:show, :update, :create]
     resources :institutions, only: [:show, :update, :create]
     resources :providers, only: [:show, :update, :create]
     resources :programs, only: [:show, :update, :create]

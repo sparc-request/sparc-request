@@ -144,7 +144,7 @@ $(document).ready ->
   #########################
   ### FORM FIELDS LOGIC ###
   #######################################################################################
-  
+
   ###FUNDING STATUS FIELDS DISPLAY###
   $(document).on 'change', '#protocol_funding_status', ->
     $('.funding_status_dependent').hide()

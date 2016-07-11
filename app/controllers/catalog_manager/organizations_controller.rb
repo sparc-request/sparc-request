@@ -22,7 +22,7 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
   respond_to :js, :html, :json
 
   def create
-    @organization.build_subsidy_map()
+    @organization.build_subsidy_map() unless @organization.type == 'Institution'
     @organization.save
   end
 

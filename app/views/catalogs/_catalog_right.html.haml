@@ -21,7 +21,7 @@
   .panel.panel-default
     .panel-heading.text-center
       %h4.panel-title
-        = t(:proper)[:catalog][:cart][:header]
+        = t(:proper)[:catalog][:cart][:header] + protocol_id_display(sub_service_request, service_request)
     .panel-body.cart
       = render 'catalogs/cart', line_items: line_items, service_request: service_request, sub_service_request: sub_service_request
   .nav-buttons

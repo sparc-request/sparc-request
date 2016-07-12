@@ -41,16 +41,6 @@ module ApplicationHelper
     raw(returning_html)
   end
 
-  def protocol_id_display(sub_service_request, service_request)
-    if sub_service_request && sub_service_request.service_request.protocol.present?
-      "SRID: #{sub_service_request.service_request.protocol.id}"
-    elsif service_request && service_request.protocol.present?
-      "SRID: #{service_request.protocol.id}"
-    else
-      ""
-    end
-  end
-
   def css_class(organization)
     case organization.type
     when 'Institution'

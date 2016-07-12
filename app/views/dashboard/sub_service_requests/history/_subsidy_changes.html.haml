@@ -20,12 +20,18 @@
 .col-xs-12
   #history-custom-toolbar
     = render 'dashboard/sub_service_requests/history/history_buttons', sub_service_request: sub_service_request, tab: tab
-  %table.ssr_history_table{ id: "status-history-table", data: { toggle: 'table', search: "true", "show-columns" => "true", "show-refresh" => "true", "show-toggle" => "true", url: status_history_dashboard_sub_service_request_path(id: sub_service_request.id, format: :json), striped: "true", "show-export" => "false", toolbar: "#history-custom-toolbar", "export-types" => ['excel'] } }
+  %table.ssr_history_table{ id: "subsidy-history-table", data: { toggle: 'table', search: "true", "show-columns" => "true", "show-refresh" => "true", "show-toggle" => "true", url: subsidy_history_dashboard_sub_service_request_path(id: sub_service_request.id, format: :json), striped: "true", toolbar: "#history-custom-toolbar", "show-export" => "false", "export-types" => ['excel'] } }
     %thead.primary-header
       %tr
-        %th{ data: { class: 'created_at', align: "left", sortable: "true", field: "created_at", sorter: "dateSorter" } }
-          = t(:dashboard)[:sub_service_requests][:tabs][:history][:status][:date]
-        %th{ data: { class: 'changed_from', align: "left", sortable: "true", field: "changed_from" } }
-          = t(:dashboard)[:sub_service_requests][:tabs][:history][:status][:from]
-        %th{ data: { class: 'changed_to', align: "left", sortable: "true", field: "changed_to" } }
-          = t(:dashboard)[:sub_service_requests][:tabs][:history][:status][:to]
+        %th{ data: { class: 'request-cost', align: "left", sortable: "true", field: "request_cost", sorter: "dateSorter" } }
+          = t(:dashboard)[:sub_service_requests][:tabs][:history][:subsidy][:request_cost]
+        %th{ data: { class: 'percent', align: "left", sortable: "true", field: "percent" } }
+          = t(:dashboard)[:sub_service_requests][:tabs][:history][:subsidy][:percent]
+        %th{ data: { class: 'pi-contribution', align: "left", sortable: "true", field: "pi_contribution" } }
+          = t(:dashboard)[:sub_service_requests][:tabs][:history][:subsidy][:contribution]
+        %th{ data: { class: 'subsidy-cost', align: "left", sortable: "true", field: "subsidy_cost" } }
+          = t(:dashboard)[:sub_service_requests][:tabs][:history][:subsidy][:subsidy_cost]
+        %th{ data: { class: 'approved-by', align: "left", sortable: "true", field: "approved_by" } }
+          = t(:dashboard)[:sub_service_requests][:tabs][:history][:subsidy][:approved_by]
+        %th{ data: { class: 'date', align: "left", sortable: "true", field: "date" } }
+          = t(:dashboard)[:sub_service_requests][:tabs][:history][:subsidy][:date]

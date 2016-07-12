@@ -36,7 +36,7 @@
               .col-sm-7
                 = form.select "doc_type", options_for_select(DOCUMENT_TYPES, document.doc_type), {prompt: "Select Type"}, class: "form-control selectpicker"
             .form-group#doc_type_other_field{ display_if(document.doc_type == 'other') }
-              = form.label "doc_type_other", t(:dashboard)[:documents][:form][:document_type_other], class: "col-sm-4 control-label"
+              = form.label "doc_type_other", t(:dashboard)[:documents][:form][:specify_doc_type], class: "col-sm-4 control-label"
               .col-sm-7
                 = form.text_field "doc_type_other", {class: 'form-control'}
             .form-group

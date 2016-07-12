@@ -163,6 +163,7 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
     #Replaces currently displayed ssr history bootstrap table
     history_path = 'dashboard/sub_service_requests/history/'
     @partial_to_render = history_path + params[:partial]
+    @tab = params[:partial]
   end
 
   def status_history
@@ -174,6 +175,11 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
     #For Approval History Bootstrap Table
     service_request = @sub_service_request.service_request
     @approvals = [service_request.approvals, @sub_service_request.approvals].flatten
+  end
+
+  def subsidy_history
+    #For Subsidy History Bootstrap Table
+    @subsidies = PastSubsidy.where(sub_service_request_id: @sub_service_request.id)
   end
   #History Table Methods End
 

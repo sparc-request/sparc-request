@@ -47,7 +47,7 @@ task :add_eap_id => :environment do
         puts ""
         puts "Adding eap id to service #{service.name}"
 
-        service.eap_id = row['eap_id'].to_i
+        service.eap_id = row['eap_id']
         
         unless service.revenue_code == row['revenue_code'].rjust(4, '0')
           revenue_codes << [service.id, service.revenue_code]

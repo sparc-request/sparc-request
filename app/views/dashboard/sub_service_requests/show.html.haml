@@ -46,6 +46,6 @@
     .tab-pane#study_level_activities{role: 'tabpanel', class: cookies['admin-tab'] == 'study_level_activities-tab' ? 'active' : '', data: {partial_name: 'study_level_activities/study_level_activities_table'}}
       = render 'dashboard/study_level_activities/study_level_activities_table', sub_service_request: @sub_service_request if cookies['admin-tab'] == 'study_level_activities-tab'
     .tab-pane#history{role: 'tabpanel', class: cookies['admin-tab'] == 'history-tab' ? 'active' : '', data: {partial_name: 'sub_service_requests/history/status_changes'}}
-      = render 'dashboard/sub_service_requests/history/status_changes', sub_service_request: @sub_service_request if cookies['admin-tab'] == 'history-tab'
+      = render 'dashboard/sub_service_requests/history/status_changes', sub_service_request: @sub_service_request, tab: 'status_changes' if cookies['admin-tab'] == 'history-tab'
     .tab-pane#notifications{role: 'tabpanel', class: cookies['admin-tab'] == 'notifications-tab' ? 'active' : '', data: {partial_name: 'notifications/notifications'}}
       = render 'dashboard/notifications/notifications', sub_service_request: @sub_service_request, user: @user if cookies['admin-tab'] == 'notifications-tab'

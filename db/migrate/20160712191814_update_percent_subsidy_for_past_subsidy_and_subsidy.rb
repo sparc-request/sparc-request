@@ -19,8 +19,12 @@ class UpdatePercentSubsidyForPastSubsidyAndSubsidy < ActiveRecord::Migration
     PastSubsidy.all.each do |subsidy|
       pi_contribution = subsidy.pi_contribution
       request_cost = subsidy.total_at_approval
-      percent_subsidy = (request_cost - pi_contribution).to_f / request_cost.to_f
-      subsidy.update_attribute(:percent_subsidy, percent_subsidy)
+      if request_cost && pi_contribution && !request_cost.zero?
+        percent_subsidy = (request_cost - pi_contribution).to_f / request_cost.to_f
+        subsidy.update_attribute(:percent_subsidy, percent_subsidy)
+      else
+        puts "Percent Subsidy for #{subsidy.id} wasn't updated in PastSubsidy table"
+      end
     end
 
     Subsidy.all.each do |subsidy|
@@ -29,6 +33,8 @@ class UpdatePercentSubsidyForPastSubsidyAndSubsidy < ActiveRecord::Migration
       if request_cost && pi_contribution && !request_cost.zero?
         percent_subsidy = (request_cost - pi_contribution).to_f / request_cost.to_f
         subsidy.update_attribute(:percent_subsidy, percent_subsidy)
+      else
+        puts "Percent Subsidy for #{subsidy.id} wasn't updated in Subsidy table"
       end
     end
     remove_column :past_subsidies, :pi_contribution

@@ -17,7 +17,8 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-$(document).on 'click', '.faq-button', ->
+$(document).ready ->
+  $(document).on 'click', '.faq-button', ->
     $('#modal_place').html($('#cart-help-modal').html())
     $("#modal_place").modal 'show'
 
@@ -33,7 +34,6 @@ $(document).on 'click', '.faq-button', ->
     else
       answer.addClass('hidden')
 
-$(document).ready ->
   $(document).on 'click', '.feedback-button', ->
     $('#modal_place').html($('#feedback-modal').html())
     $("#modal_place").modal 'show'

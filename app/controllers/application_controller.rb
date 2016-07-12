@@ -248,15 +248,9 @@ class ApplicationController < ActionController::Base
       end
     end
 
-    # if the user has requested an account and it is pending approval we need to change the login message
-    signed_up_but_not_approved = false
-    if flash[:notice] == I18n.t("devise.registrations.identity.signed_up_but_not_approved") # use the local version of the text
-      signed_up_but_not_approved = true
-    end
-
     @service_request.save(validate: false)
     session[:service_request_id] = @service_request.id
-    redirect_to catalog_service_request_path(@service_request, signed_up_but_not_approved: signed_up_but_not_approved)
+    redirect_to catalog_service_request_path(@service_request)
   end
 
   def authorize_identity

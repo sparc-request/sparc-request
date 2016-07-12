@@ -27,17 +27,3 @@
   .nav-buttons
     = link_to t(:actions)[:continue], protocol_service_request_path(service_request), class: 'submit-request-button btn btn-success btn-lg btn-block', data: { signed_in: identity_signed_in? }
     = render 'service_requests/right_navigation/right_navigation'
-
-  #request_submitted_dialog{style: 'display:none;', title: t(:cart)[:request_submitted1]}
-    = I18n.t('cart.request_submitted2', :protocol_id => display_protocol_id(@service_request))
-
-  #submit_error.hidden
-    = t(:service_requests)[:catalog][:text3]
-    = t(:service_requests)[:catalog][:text4]
-
-  - if params[:signed_up_but_not_approved] == 'true'
-    = javascript_include_tag "signed_up_but_not_approved"
-    #signed_up_but_not_approved.hidden
-      = render 'catalogs/signed_up_but_not_approved_dialog_box'
-  #sign_in.hidden
-    = render 'catalogs/signin_dialog_box'

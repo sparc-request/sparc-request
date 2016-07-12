@@ -17,6 +17,49 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+$(document).ready ->
+  $(document).on 'click', '.add-service', ->
+    id = $(this).data('id')
+    srid = $(this).data('srid')
+    from_portal = $(this).data('from-portal')
+    li_count = parseInt($('#line_item_count').val())
+
+    if from_portal == 0 && li_count == 0
+      $('#modal_place').html($('#new-request-modal').html())
+      $('#modal_place').modal('show')
+
+      $(document).on 'click', '#modal_place .yes-button', ->
+        addService(srid, id)
+    else
+      addService(srid, id)
+
+  $(document).on 'click', '.remove-service', ->
+    id = $(this).data('id')
+    srid = $(this).data('srid')
+    ssrid = $(this).data('ssrid')
+    li_count = parseInt($('#line_item_count').val())
+    has_fulfillments = $(this).data('has-fulfillments')
+    request_submitted = $(this).data('request-submitted')
+    spinner = $('<span class="spinner"><img src="/assets/catalog_manager/spinner_small.gif"/></span>')
+
+    if has_fulfillments == 1
+      alert(I18n['proper']['catalog']['cart']['has_fulfillments'])
+    else if request_submitted == 1
+      button = $(this)
+      $('#modal_place').html($('#request-submitted-modal').html())
+      $('#modal_place').modal('show')
+
+      $(document).on 'click', '#modal_place .yes-button', ->
+        button.replaceWith(spinner)
+        removeService(srid, id, false, spinner)
+    else
+      if li_count == 1 and ssrid != ''
+        if confirm(I18n['proper']['catalog']['cart']['remove_request_confirm'])
+          $(this).replaceWith(spinner)
+          removeService(srid, id, true, spinner)
+      else
+        $(this).replaceWith(spinner)
+        removeService(srid, id, false, spinner)
 
 addService = (srid, id) ->
   $.ajax
@@ -32,69 +75,3 @@ removeService = (srid, id, move_on, spinner) ->
         window.location = '/dashboard'
       else
         spinner.hide()
-
-
-requestSubmittedDialog = (srid, id) ->
-  options = {
-    resizable: false,
-    height: 220,
-    modal: true,
-    autoOpen: false,
-    buttons:
-      "Yes": ->
-        $("#services .line-items").remove()
-        $("#services").append('<span class="spinner"><img src="/assets/spinner.gif"/></span>')
-        removeService(srid, id, false)
-        $(this).dialog("close")
-      "No": ->
-        $(this).dialog("close")
-  }
-  $('#request_submitted_dialog').dialog(options).dialog("open").prev('.ui-dialog-titlebar').css('background', 'red')
-
-$(document).ready ->
-
-  $(document).on 'click', '.add-service', ->
-    id = $(this).data('id')
-    srid = $(this).data('srid')
-    from_portal = $(this).data('from-portal')
-    li_count = parseInt($('#line_item_count').val())
-
-    if from_portal == 0 && li_count == 0
-      options = {
-        resizable: false,
-        height: 220,
-        modal: true,
-        autoOpen: false,
-        buttons:
-          "Yes": ->
-            addService(srid, id)
-            $(this).dialog("close")
-          "No": ->
-            window.location = "/dashboard"
-            $(this).dialog("close")
-      }
-      $('#new-request-dialog').dialog(options).dialog("open")
-    else
-      addService(srid, id)
-
-  $(document).on 'click', '.remove-service', ->
-    id = $(this).data('id')
-    srid = $(this).data('srid')
-    ssrid = $(this).data('ssrid')
-    li_count = parseInt($('#line_item_count').val())
-    has_fulfillments = $(this).data('has-fulfillments')
-    request_submitted = $(this).data('request-submitted')
-
-    if has_fulfillments == 1
-      alert(I18n['proper']['catalog']['cart']['has_fulfillments'])
-    else if request_submitted == 1
-      requestSubmittedDialog(srid, id)
-    else
-      spinner = $('<span class="spinner"><img src="/assets/catalog_manager/spinner_small.gif"/></span>')
-      if li_count == 1 and ssrid != ''
-        if confirm(I18n['proper']['catalog']['cart']['remove_request_confirm'])
-          $(this).replaceWith(spinner)
-          removeService(srid, id, true, spinner)
-      else
-        $(this).replaceWith(spinner)
-        removeService(srid, id, false, spinner)

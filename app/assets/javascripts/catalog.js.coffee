@@ -21,8 +21,7 @@
 #= require cart
 
 $(document).ready ->
-
-  # Related to locked service requests
+  ### Related to locked service requests ###
   $('#ctrc-dialog').dialog
     autoOpen: false
     modal: true
@@ -34,7 +33,11 @@ $(document).ready ->
         $(this).dialog('close')
     }]
 
-  # Organization Accordion Logic
+  $(document).on 'click', '.locked a', ->
+    if $(this).text() == 'Research Nexus **LOCKED**'
+      $('#ctrc-dialog').dialog('open')
+
+  ### Organization Accordion Logic ###
   $('#institution-accordion').accordion
     heightStyle: 'content'
     collapsible: true
@@ -43,10 +46,6 @@ $(document).ready ->
     heightStyle: 'content'
     collapsible: true
     active: false
-
-  $(document).on 'click', '.locked a', ->
-    if $(this).text() == 'Research Nexus **LOCKED**'
-      $('#ctrc-dialog').dialog('open')
 
   $(document).on 'click', '.institution-header, .provider-header', ->
     $('#processing-request').removeClass('hidden')
@@ -81,7 +80,7 @@ $(document).ready ->
     else
       description.addClass('hidden')
 
-
+  ### Search Logic ###
   autoComplete = $('#service-query').autocomplete
     source: '/search/services'
     minLength: 2
@@ -146,19 +145,22 @@ $(document).ready ->
     signed_in = $(this).data('signed-in')
 
     if $('#line_item_count').val() <= 0
-      $('#submit_error').dialog
-        modal: true
-        buttons:
-            Ok: ->
-              $(this).dialog('close')
-      $('#submit_error').removeClass('hidden')
+      $('#modal_place').html($('#submit-error-modal').html())
+      $('#modal_place').modal('show')
+      $('.modal #submit-error-modal').removeClass('hidden')
       return false
-    #else
-    #  if signed_in == false
-    #    $('#sign_in').dialog
-    #      modal: true
-    #    return false
+    else if !signed_in
+      $('#sign_in').dialog
+        modal: true
+      return false
   
+  if parseInt($('#signed_up_not_approved').val()) == 1
+    $('#modal_place').html($('#signed-up-not-approved-modal').html())
+    $('#modal_place').modal
+      backdrop: 'static',
+      keyboard: false
+      show: true
+
   $('#devise_view').dialog
     modal: true
     width: 700

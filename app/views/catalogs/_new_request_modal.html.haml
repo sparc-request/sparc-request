@@ -17,11 +17,21 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-%div.acknowledge_approval_status_dialog
-  = raw t("devise.registrations.identity.signed_up_but_not_approved") 
-  %br
-  %br
-  %div.acknowledge_approval_status.ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-text-only
-    %span.ui-button-text
-      = link_to(t(:signup)[:not_approved], "javascript:void(0);")
+#new-request-modal.hidden
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %button.close{ type: 'button', data: { dismiss: 'modal' } }
+          %span{ aria: { hidden: 'true' } } &times;
+        %h4.text-center#modal-title
+          = t(:proper)[:catalog][:new_request][:header]
+      .modal-body
+        #modal_errors
+        .form-group.text-center
+          = t(:proper)[:catalog][:new_request][:warning]
+      .modal-footer
+        .center-block
+          %a.btn.btn-default.yes-button{ data: { dismiss: 'modal' } }
+            = t(:constants)[:yes_select]
+          %a.btn.btn-default{ href: dashboard_protocols_path }
+            = t(:constants)[:no_select]

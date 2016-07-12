@@ -17,17 +17,21 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-%nav.navbar.navbar-default
-  .container-fluid
-    .navbar-header
-      = navbar_links
-    %p.navbar-text.navbar-right.welcome-nav
-      - if current_user.present?
-        %span
-          = I18n.t('proper.navbar.logged_in', email: current_user.email)
-        = link_to t(:proper)[:navbar][:logout], destroy_identity_session_path, method: :delete, class: 'btn btn-warning'
-      - else
-        - if !CREATE_AN_ACCOUNT
-          = link_to t(:create_an_account), new_identity_registration_path, class: 'btn btn-primary'
-        = link_to t(:proper)[:navbar][:login], new_identity_session_path, class: 'btn btn-primary'
-    %p#welcome_nav.navbar-text.navbar-right
+#submit-error-modal.hidden
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %button.close{ type: 'button', data: { dismiss: 'modal' } }
+          %span{ aria: { hidden: 'true' } } &times;
+        %h4.text-center#modal-title
+          = t(:proper)[:catalog][:cart][:submit_error][:header]
+      .modal-body
+        #modal_errors
+        .form-group
+          = t(:proper)[:catalog][:cart][:submit_error][:warning_text]
+        .form-group
+          = t(:proper)[:catalog][:cart][:submit_error][:service_required]
+      .modal-footer
+        .center-block
+          %button.btn.btn-default{ type: 'button', data: { dismiss: 'modal' } }
+            = t(:actions)[:close]

@@ -17,19 +17,35 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-$ ->
-  $(".datetimepicker").datetimepicker(format: 'MM/DD/YYYY', allowInputToggle: true)
-  $(".selectpicker").selectpicker()
 
-(exports ? this).formatMoney = (n, t=',', d='.', c='$') ->
-  s = if n < 0 then "-#{c}" else c
-  i = Math.abs(n).toFixed(2)
-  j = (if (i.length > 3 && i > 0) then i.length % 3 else 0)
-  s += i.substr(0, j) + t if j
-  return s + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t)
+class CreatePastSubsidies < ActiveRecord::Migration
+  def change
+    create_table :past_subsidies do |t|
+      t.integer :sub_service_request_id
+      t.integer :total_at_approval
+      t.integer :pi_contribution
+      t.integer :approved_by
+      t.datetime :approved_at
 
-(exports ? this).refresh_study_schedule = () ->
-  $('#service_calendar .tab-content .tab-pane.active').load $('#service_calendar .active a').attr("data-url"), (result) ->
-    $('#service_calendar .active a').tab('show')
+      t.timestamps
+    end
 
+    add_index :past_subsidies, :sub_service_request_id
+    add_index :past_subsidies, :approved_by
 
+    Note.where(notable_type: 'Subsidy').each do |note|
+      p = PastSubsidy.new
+      p.sub_service_request_id = Subsidy.find(note.notable_id).sub_service_request_id
+
+      data = note.body.split('<td>')
+      p.total_at_approval = (data[1].sub('</td>', '').to_f * 100).to_i
+      p.pi_contribution   = (data[3].sub('</td>', '').to_f * 100).to_i
+      p.approved_by       = note.identity_id
+      p.approved_at       = note.created_at
+
+      note.destroy
+
+      p.save
+    end
+  end
+end

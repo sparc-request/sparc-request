@@ -4,8 +4,8 @@ class AddProtocolToDocuments < ActiveRecord::Migration
     add_index :documents, :protocol_id
 
     Document.all.each do |doc|
-      service_request = doc.service_request
-      protocol = service_request.protocol
+      service_request = ServiceRequest.find(doc.service_request_id)
+      protocol = Protocol.find(service_request.protocol_id) if service_request.protocol_id.present?
 
       puts "Document id   #{doc.id}"
       puts "Removing from Service Request id   #{service_request.id}"

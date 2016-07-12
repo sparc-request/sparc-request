@@ -67,9 +67,11 @@ en:
     no_select: "No"
     prompts:
       any: "- Any -"
+      please_specify: "Please specify: *"
       select: "---Please Select---"
       search_for_user: "Search for a User"
       select_one: "Select One"
+
 
   calendars:
     pppv:
@@ -403,9 +405,9 @@ en:
         title: "Title"
         uploaded: "Uploaded"
       form:
-        document_type: "Document Type:"
-        document_type_other: "Other Document Type:"
-        document: "Document:"
+        document_type: "Document Type:*"
+        specify_doc_type: "Please Specify:*"
+        document: "Document:*"
         access: "Allow Access:"
 
     #################
@@ -798,6 +800,14 @@ en:
             date: "Date Approved"
             type: "Type"
             by: "Approved By"
+          subsidy:
+            header: "Subsidy History"
+            request_cost: "Request Cost at Approval"
+            percent: "% Subsidy"
+            contribution: "PI Contribution"
+            subsidy_cost: "Subsidy Cost"
+            approved_by: "Approved By"
+            date: "Date Approved"
 
         notifications:
           header: "Notifications"
@@ -815,7 +825,7 @@ en:
         header: "Subsidy Information"
         approved:
           header: "Current Effective Subsidy"
-          request_cost: "Request Cost at Approval"
+          request_cost: "Cost at Approval"
           percent: "% Subsidy"
           pi_contribution: "PI Contribution"
           cost: "Subsidy Cost"
@@ -824,7 +834,7 @@ en:
           none: "There is no current effective subsidy."
         pending:
           header: "Subsidy Pending Approval"
-          request_cost: "Request Current Cost"
+          request_cost: "Current Cost"
           percent: "% Subsidy"
           pi_contribution: "PI Contribution"
           cost: "Subsidy Current Cost"

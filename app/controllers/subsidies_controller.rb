@@ -28,6 +28,7 @@ class SubsidiesController < ApplicationController
 
   def update
     format_pi_contribution_param
+    format_percent_subsidy_param
     unless @subsidy.update_attributes(params[:subsidy])
       @errors = @subsidy.errors.full_messages
     end
@@ -49,6 +50,12 @@ class SubsidiesController < ApplicationController
   def format_pi_contribution_param
     if !params[:subsidy].nil? && params[:subsidy][:pi_contribution].present?
       params[:subsidy][:pi_contribution] = (params[:subsidy][:pi_contribution].gsub(/[^\d^\.]/, '').to_f * 100)
+    end
+  end
+
+  def format_percent_subsidy_param
+    if !params[:subsidy].nil? && params[:subsidy][:percent_subsidy].present?
+      params[:subsidy][:percent_subsidy] = (params[:subsidy][:percent_subsidy].gsub(/[^\d^\.]/, '').to_f)
     end
   end
 end

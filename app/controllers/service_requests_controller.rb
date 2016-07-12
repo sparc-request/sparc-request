@@ -132,7 +132,7 @@ class ServiceRequestsController < ApplicationController
   def protocol
     cookies.delete :current_step
     @service_request.update_attribute(:service_requester_id, current_user.id) if @service_request.service_requester_id.nil?
-    
+
     if session[:saved_protocol_id]
       @service_request.protocol = Protocol.find session[:saved_protocol_id]
       session.delete :saved_protocol_id
@@ -585,12 +585,13 @@ class ServiceRequestsController < ApplicationController
     process_ssr_organization_ids = params[:process_ssr_organization_ids]
     document_id = params[:document_id]
     doc_object = Document.find(document_id) if document_id
-    document = params[:document]
+    document = params[:document].present? || !params[:document_id].present? ? params[:document] : doc_object.document
     doc_type = params[:doc_type]
     doc_type_other = params[:doc_type_other]
     upload_clicked = params[:upload_clicked]
+    doc_type_valid = !doc_type.empty? && (doc_type != 'other' || (doc_type == 'other' && !doc_type_other.empty?))
 
-    if !doc_type.empty? && process_ssr_organization_ids && document
+    if doc_type_valid && process_ssr_organization_ids && document
       # have all required ingredients for successful document
       if document_id # update existing document
         org_ids = doc_object.sub_service_requests.map{|ssr| ssr.organization_id.to_s}
@@ -634,12 +635,13 @@ class ServiceRequestsController < ApplicationController
         end
       end
 
-    elsif upload_clicked == "1" && ((doc_type == "" || !process_ssr_organization_ids) || !document)
+    elsif upload_clicked == "1" && ((doc_type == "" || !process_ssr_organization_ids) || !document || doc_type == 'other' && doc_type_other.empty?)
       # collect errors
       doc_errors = {}
       doc_errors[:recipients] = ["You must select at least one recipient"] if !process_ssr_organization_ids
       doc_errors[:document] = ["You must select a document to upload"] if !document
       doc_errors[:doc_type] = ["You must provide a document type"] if doc_type == ""
+      doc_errors[:doc_type_other] = ["You must specify the document type"] if doc_type == 'other' && doc_type_other.empty?
       errors << doc_errors
     end
   end

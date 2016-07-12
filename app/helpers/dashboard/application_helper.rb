@@ -60,6 +60,10 @@ module Dashboard::ApplicationHelper
     number_with_precision(cents_to_dollars(cost), precision: 2) || number_with_precision(0, precision: 2)
   end
 
+  def display_as_percent(percent_subsidy)
+    (percent_subsidy * 100.0).round(2) rescue nil
+  end
+
   def display_user_role(user)
     user.role == 'other' ? user.role_other.humanize : user.role.humanize
   end

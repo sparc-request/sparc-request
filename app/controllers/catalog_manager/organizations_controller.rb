@@ -17,45 +17,63 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-class SubsidiesController < ApplicationController
-  before_filter :find_subsidy, only: [:update, :destroy]
+class CatalogManager::OrganizationsController < CatalogManager::AppController
+  layout false
+  respond_to :js, :html, :json
 
   def create
-    @sub_service_request = SubServiceRequest.find params[:subsidy][:sub_service_request_id]
-    @subsidy = PendingSubsidy.create(sub_service_request_id: @sub_service_request.id, pi_contribution: @sub_service_request.direct_cost_total)
+    @organization.build_subsidy_map() unless @organization.type == 'Institution'
+    @organization.save
+  end
+
+  def show
+    @organization = Organization.find(params[:id])
+    @organization.setup_available_statuses
+    render 'catalog_manager/organizations/show'
   end
 
   def update
-    format_pi_contribution_param
-    format_percent_subsidy_param
-    unless @subsidy.update_attributes(params[:subsidy])
-      @errors = @subsidy.errors.full_messages
-    end
-  end
-
-  def destroy
-    @subsidy.destroy
+    @organization = Organization.find(params[:id])
+    update_organization
+    save_pricing_setups
+    set_org_tags
+    @organization.setup_available_statuses
+    @entity = @organization
+    render 'catalog_manager/organizations/update'
   end
 
   private
 
-  def find_subsidy
-    @subsidy = PendingSubsidy.find(params[:id])
-    @sub_service_request = @subsidy.sub_service_request
-  end
-
-  # Refomat pi_contribution string to characters other than numbers and . delimiter,
-  # Convert to float, and multiply by 100 to get cents for db
-  def format_pi_contribution_param
-    if !params[:subsidy].nil? && params[:subsidy][:pi_contribution].present?
-      params[:subsidy][:pi_contribution] = (params[:subsidy][:pi_contribution].gsub(/[^\d^\.]/, '').to_f * 100)
+  def update_organization
+    @attributes.delete(:id)
+    if @organization.update_attributes(@attributes)
+      flash[:notice] = "#{@organization.name} saved correctly."
+    else
+      flash[:alert] = "Failed to update #{@organization.name}."
     end
   end
 
-  def format_percent_subsidy_param
-    if !params[:subsidy].nil? && params[:subsidy][:percent_subsidy].present?
-      params[:subsidy][:percent_subsidy] = (params[:subsidy][:percent_subsidy].gsub(/[^\d^\.]/, '').to_f)
+  def save_pricing_setups
+    if params[:pricing_setups] && ['Program', 'Provider'].include?(@organization.type)
+      params[:pricing_setups].each do |ps|
+        if ps[1]['id'].blank?
+          ps[1].delete(:id)
+          ps[1].delete(:newly_created)
+          @organization.pricing_setups.build(ps[1])
+        else
+          # @organization.pricing_setups.find(ps[1]['id']).update_attributes(ps[1])
+          ps_id = ps[1]['id']
+          ps[1].delete(:id)
+          @organization.pricing_setups.find(ps_id).update_attributes(ps[1])
+        end
+        @organization.save
+      end
+    end
+  end
+
+  def set_org_tags
+    unless @attributes[:tag_list] || @organization.type == 'Institution'
+      @attributes[:tag_list] = ""
     end
   end
 end

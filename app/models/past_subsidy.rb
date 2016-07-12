@@ -18,48 +18,35 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class Subsidy < ActiveRecord::Base
+class PastSubsidy < ActiveRecord::Base
   audited
 
   belongs_to :sub_service_request
-  has_many :notes, as: :notable
+  belongs_to :approver, class_name: 'Identity', foreign_key: "approved_by"
 
   attr_accessible :sub_service_request_id
+  attr_accessible :total_at_approval
   attr_accessible :pi_contribution
-  attr_accessible :overridden
-  attr_accessible :status
-  attr_accessible :percent_subsidy
+  attr_accessible :approved_by
+  attr_accessible :approved_at
 
-  delegate :organization, to: :sub_service_request, allow_nil: true
-  delegate :subsidy_map, to: :organization, allow_nil: true
-  delegate :max_dollar_cap, to: :subsidy_map, allow_nil: true
-  delegate :max_percentage, to: :subsidy_map, allow_nil: true
+  default_scope { order('approved_at ASC') }
 
-  delegate :direct_cost_total, to: :sub_service_request, allow_nil: true
-  alias_attribute :total_request_cost, :direct_cost_total
-
-  validates_presence_of :pi_contribution
-  validate :contribution_caps
-
-  # Generates error messages if user input is out of parameters
-  def contribution_caps
-    dollar_cap, percent_cap = max_dollar_cap, max_percentage
-    request_cost = total_request_cost()
-    subsidy_cost = (request_cost - pi_contribution)
-
-    if pi_contribution < 0
-      errors.add(:pi_contribution, "can not be less than 0")
-    elsif dollar_cap.present? and dollar_cap > 0 and (subsidy_cost / 100.0) > dollar_cap
-      errors.add(:requested_funding, "can not be greater than the cap of #{dollar_cap}")
-    elsif percent_cap.present? and percent_cap > 0 and percent_subsidy * 100 > percent_cap
-      errors.add(:percent_subsidy, "can not be greater than the cap of #{percent_cap}")
-    elsif pi_contribution > total_request_cost
-      errors.add(:pi_contribution, "can not be greater than the total request cost")
-    end
+  def approved_cost
+    # Calculates cost of subsidy (amount subsidized)
+    # stored total - pi_contribution then convert from cents to dollars
+    ( total_at_approval - pi_contribution ) / 100.0
   end
 
-  def subsidy_audits
-    subsidy_audits = AuditRecovery.where("auditable_id = ? AND auditable_type = ?", self.id, "Subsidy").order(:created_at)
-    subsidy_audits
+  def approved_percent_of_total
+    # Calculates the percent of total_at_approval that is subsidized
+    # (stored total - pi_contribution) / stored total then convert to percent
+    total = total_at_approval
+
+    if total.nil? || total == 0
+      0.00
+    else
+      ((( total - pi_contribution ).to_f / total ) * 100.0 ).round(2)
+    end
   end
 end

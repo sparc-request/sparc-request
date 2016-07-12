@@ -24,4 +24,4 @@
         = t(:proper)[:catalog][:accordion][:header]
     .panel-body
       #institution-accordion
-        = institution_accordion(institutions, locked_org_ids, organization)
+        = institution_accordion(institutions, locked_org_ids.nil? ? [] : locked_org_ids, organization)

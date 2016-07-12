@@ -141,7 +141,7 @@ $(document).ready ->
     .append(label)
     .appendTo(ul)
 
-  $('.submit-request-button').click ->
+  $(document).on 'click', '.submit-request-button', ->
     signed_in = $(this).data('signed-in')
 
     if $('#line_item_count').val() <= 0
@@ -153,24 +153,3 @@ $(document).ready ->
       $('#sign_in').dialog
         modal: true
       return false
-  
-  if parseInt($('#signed_up_not_approved').val()) == 1
-    $('#modal_place').html($('#signed-up-not-approved-modal').html())
-    $('#modal_place').modal
-      backdrop: 'static',
-      keyboard: false
-      show: true
-
-  $('#devise_view').dialog
-    modal: true
-    width: 700
-    dialogClass: 'devise_view'
-
-  $('.toggle_outside_user_sign_in').click ->
-    $('#outside_sign_in_form').show()
-    $('#shibboleth_sign_in_button').hide()
-    $(this).hide()
-    $('.sign_in_options').hide()
-
-  $('#cancel_registration').click ->
-    $('#signup_form').dialog('close')

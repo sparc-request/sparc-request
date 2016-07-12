@@ -17,21 +17,19 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-.devise_form#reset.password_reset
-  .grid_5.box
-    .info
-      %h2= t :password_reset_message
-      = form_for(resource, :as => resource_name, :url => password_path(resource_name), :html => { :method => :post }) do |f|
-        = devise_error_messages!
-        .field
-          = f.label(:ldap_uid, t(:login_name), :style => 'width:auto')
-          = f.text_field :ldap_uid, :style => 'width:auto'
-
-        #button
-          = f.submit t(:password_reset_submit), :class => 'blue-button devise_submit_button'
-          = link_to t(:devise)[:cancel], catalog_service_request_path(@service_request), :class => 'blue-button devise_cancel_button'
-    .links
-      = render "devise/shared/links"
-    .clear
-    %br
+.devise-form
+  .col-md-3
+  .col-md-6.text-center
+    %h1.page-header
+      = t(:devise)[:passwords][:header]
+    #forgot-password-form
+      = form_for resource, as: resource_name, url: password_path(resource_name), method: :post do |f|
+        - if resource.errors.any?
+          = render 'shared/modal_errors', errors: resource.errors
+        .form-group.field
+          = f.label :ldap_uid, t(:devise)[:passwords][:username]
+          = f.text_field :ldap_uid, class: 'form-control'
+        .form-group
+          = f.submit t(:devise)[:passwords][:send_reset], class: 'btn btn-primary'
+          = link_to t(:actions)[:cancel], new_identity_session_path, class: 'btn btn-primary'
+  .col-md-3

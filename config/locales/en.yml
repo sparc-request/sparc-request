@@ -25,6 +25,11 @@ en:
         time: "Quantity"
       human_subjects_info:
         nct_number: "The NCT #"
+      identity:
+        ldap_uid: "Username"
+        first_name: "First Name"
+        last_name: "Last Name"
+        password_confirmation: "Password Confirmation"
       protocol:
         human_subjects_info: "The NCT #"
   admin_portal_title: "SPARC Request Administration"
@@ -210,23 +215,27 @@ en:
       subtext: "Primary PI Required"
       primary_pi: "Primary PI: *"
 
+
+
+
+
   proper:
+    ##########
+    # HEADER #
+    ##########
     header: "SPARC Request"
 
-    login:
-      header: "Log in"
-      login_name: "Login"
-      password: "Password"
-      submit: "Login"
-      signed_up_not_approved:
-        header: "Signed Up But Not Approved"
-        warning: "You have successfully applied for a new SPARC account. You will hear from an account administrator within one business day regarding your account status. Please note that you will be unable to proceed submitting your Service Request until your account has been approved."
-
+    ##########
+    # NAVBAR #
+    ##########
     navbar:
       logged_in: "Logged in as %{email}"
-      login: "Login"
+      login: "Login / Sign Up"
       logout: "Logout"
 
+    ##########
+    # FOOTER #
+    ##########
     footer:
       mail_to: "hundc@musc.edu"
       mail_link: "Listserv"
@@ -238,6 +247,9 @@ en:
       about: "About"
       about_url: "http://academicdepartments.musc.edu/sctr/sparc_request"
 
+    ###########
+    # CATALOG #
+    ###########
     catalog:
       accordion:
         header: "Browse Service Catalog"
@@ -274,6 +286,9 @@ en:
         header: "Remove Service Warning"
         warning: "Deleting this service from the service cart will be irreversible and will cause it to be deleted from the associated protocol (%{protocol_id}). Are you sure you want to proceed?"
 
+    ####################
+    # RIGHT NAVIGATION #
+    ####################
     right_navigation:
       faqs:
         header: "Help/FAQs"
@@ -291,18 +306,22 @@ en:
         answer_6: "The SUCCESS Center is happy to assist you! Please contact us at success@musc.edu or (843) 792-3357."
       feedback:
         header: "Feedback"
-        email: "Email:"
+        email: "Email:*"
         feedback: "Feedback:*"
         submitted: "Thank you for providing your feedback!"
       redcap_survey: 'https://redcap.musc.edu/surveys/?s=A37TNJWJPL'
       contact:
         header: "Contact Us"
         subject: "Subject:"
-        email: "Email:"
+        email: "Email:*"
         message: "Message:*"
         submitted: "Message sent successfully!"
 
       ctrc_lock: "SCTR Research Nexus services are already present on this request (%{protocol_id}-%{ssr_id}) pertaining to this %{protocol_type}, '%{short_title}'. Please call (843) 792-8688 to edit the existing request."
+
+
+
+
 
   dashboard:
     ###########

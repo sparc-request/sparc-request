@@ -26,10 +26,7 @@
 = render 'catalogs/submit_error_modal'
 = render 'catalogs/new_request_modal'
 = render 'catalogs/request_submitted_modal', service_request: @service_request
-- if current_identity && !current_identity.approved
-  = render 'catalogs/signed_up_but_not_approved_modal', val: current_identity.approved
-#sign_in.hidden
-  = render 'catalogs/signin_dialog_box'
+
 - if @ctrc_ssr_id
   #ctrc-dialog
     = I18n.t('proper.catalog.ctrc_lock', protocol_id: @service_request.protocol.id, ssr_id: @ctrc_ssr_id, protocol_type: @service_request.protocol.type, short_title: @service_request.protocol.short_title)

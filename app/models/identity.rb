@@ -41,12 +41,6 @@ class Identity < ActiveRecord::Base
   email_regexp = /\A[^@\s]+@([^@\s]+\.)+[^@\s]+\z/
   password_length = 6..128
 
-  validates_format_of     :email, with: email_regexp, allow_blank: true, if: :email_changed?
-
-  validates_presence_of     :password, if: :password_required?
-  validates_confirmation_of :password, if: :password_required?
-  validates_length_of       :password, within: password_length, allow_blank: true
-
   attr_accessible :email
   attr_accessible :password
   attr_accessible :password_confirmation
@@ -102,8 +96,12 @@ class Identity < ActiveRecord::Base
 
   validates_presence_of :last_name
   validates_presence_of :first_name
-  validates :ldap_uid, uniqueness: {case_sensitive: false}, presence: true
+  validates_format_of   :email, with: email_regexp, allow_blank: true, if: :email_changed?
+  validates             :ldap_uid, uniqueness: {case_sensitive: false}, presence: true
 
+  validates_presence_of     :password, if: :password_required?
+  validates_length_of       :password, within: password_length, allow_blank: true
+  validates_confirmation_of :password, if: :password_required?
 
   ###############################################################################
   ############################## DEVISE OVERRIDES ###############################

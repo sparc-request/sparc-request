@@ -17,16 +17,21 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-%div.signin_dialog.center
-  = t :initial_signin_dialog
-  %clear
-  %br
-  %br
-  .container_6
-    #left_signin_button.proceed_with_shib.ui-button.ui-button-text.ui-widget.ui-state-default.ui-corner-all.ui-button-text-only
-      = link_to(t(:proceed_to_shibboleth), identity_omniauth_authorize_path(:shibboleth))
-    %br
-    %br
-    #right_signin_button.proceed_with_database.ui-button.ui-button-text.ui-widget.ui-state-default.ui-corner-all.ui-button-text-only
-      = link_to(t(:proceed_to_database), "javascript:void(0);")
+.hidden#login-form
+  = form_for resource, as: resource_name, url: session_path(resource_name), role: 'form' do |f|
+    .form-group
+      = f.label :ldap_uid, t(:devise)[:sessions][:login]
+      = f.text_field :ldap_uid, autofocus: true, class: 'form-control'
+    .form-group
+      = f.label :password, t(:devise)[:sessions][:password]
+      = f.password_field :password, autocomplete: 'off', class: 'form-control'
+    - if devise_mapping.rememberable?
+      .form-group
+        = f.check_box :remember_me
+        = f.label :remember_me
+    .form-group
+      = f.submit t(:devise)[:sessions][:submit], class: 'btn btn-primary sign-in'
+      %a.btn.btn-primary.go-back-button
+        = t(:actions)[:cancel]
+  .links
+    = render 'devise/shared/links'

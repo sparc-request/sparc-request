@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011 MUSC Foundat#ion for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -19,12 +19,10 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 $(document).ready ->
-  $('#sign_in').dialog
-    modal: true
-    title: I18n["sign_in_dialog"]
-    width: 800
-    height: 400
-    dialogClass: 'no-close'
+  $(document).on 'click', '.standard-login-button', ->
+    $('.login-buttons, .return-button, .sign-up-button').addClass('hidden')
+    $('#login-form').removeClass('hidden')
 
-  $('.proceed_with_shib').click ->
-    $('#sign_in').dialog('close')
+  $(document).on 'click', '.go-back-button', ->
+    $('.login-buttons, .return-button, .sign-up-button').removeClass('hidden')
+    $('#login-form').addClass('hidden')

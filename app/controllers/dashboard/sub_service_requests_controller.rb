@@ -82,6 +82,7 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
 
   def update
     if @sub_service_request.update_attributes(params[:sub_service_request])
+      @sub_service_request.update_past_status(current_user)
       flash[:success] = 'Request Updated!'
     else
       @errors = @sub_service_request.errors

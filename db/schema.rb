@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160629155935) do
+ActiveRecord::Schema.define(version: 20160712155630) do
 
   create_table "admin_rates", force: :cascade do |t|
     t.integer  "line_item_id", limit: 4
@@ -522,8 +522,10 @@ ActiveRecord::Schema.define(version: 20160629155935) do
     t.datetime "created_at",                         null: false
     t.datetime "updated_at",                         null: false
     t.datetime "deleted_at"
+    t.integer  "changed_by",             limit: 4
   end
 
+  add_index "past_statuses", ["changed_by"], name: "index_past_statuses_on_changed_by", using: :btree
   add_index "past_statuses", ["sub_service_request_id"], name: "index_past_statuses_on_sub_service_request_id", using: :btree
 
   create_table "past_subsidies", force: :cascade do |t|
@@ -895,7 +897,7 @@ ActiveRecord::Schema.define(version: 20160629155935) do
     t.boolean  "one_time_fee",                                                 default: false
     t.integer  "line_items_count",      limit: 4,                              default: 0
     t.text     "components",            limit: 65535
-    t.integer  "eap_id",                limit: 4
+    t.string   "eap_id",                limit: 255
   end
 
   add_index "services", ["is_available"], name: "index_services_on_is_available", using: :btree

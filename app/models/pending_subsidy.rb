@@ -28,12 +28,6 @@ class PendingSubsidy < Subsidy
     self.status ||= 'Pending'
   end
 
-  def pi_contribution
-    # This ensures that if pi_contribution is null (new record),
-    # then it will reflect the full cost of the request.
-    total_request_cost - (total_request_cost * percent_subsidy) || total_request_cost
-  end
-
   def current_cost
     # Calculates cost of subsidy (amount subsidized)
     # SSR direct_cost_total - pi_contribution then convert from cents to dollars

@@ -40,6 +40,12 @@ class Subsidy < ActiveRecord::Base
   validates_presence_of :pi_contribution
   validate :contribution_caps
 
+  def pi_contribution
+    # This ensures that if pi_contribution is null (new record),
+    # then it will reflect the full cost of the request.
+    total_request_cost - (total_request_cost * percent_subsidy) || total_request_cost
+  end
+
   # Generates error messages if user input is out of parameters
   def contribution_caps
     request_cost = total_request_cost

@@ -48,14 +48,16 @@ class Subsidy < ActiveRecord::Base
     potential_subsidy = ((subsidy_cost / request_cost) * 100.0).round(2)
     percent_subsidy = potential_subsidy.nan? ?  0.0 : potential_subsidy
 
-    if pi_contribution < 0
-      errors.add(:pi_contribution, "can not be less than 0")
-    elsif dollar_cap.present? and dollar_cap > 0 and (subsidy_cost / 100.0) > dollar_cap
-      errors.add(:requested_funding, "can not be greater than the cap of #{dollar_cap}")
-    elsif percent_cap.present? and percent_cap > 0 and percent_subsidy > percent_cap
-      errors.add(:percent_subsidy, "can not be greater than the cap of #{percent_cap}")
-    elsif pi_contribution > total_request_cost
-      errors.add(:pi_contribution, "can not be greater than the total request cost")
+    if self.status == "Pending"
+      if pi_contribution < 0
+        errors.add(:pi_contribution, "can not be less than 0")
+      elsif dollar_cap.present? and dollar_cap > 0 and (subsidy_cost / 100.0) > dollar_cap
+        errors.add(:requested_funding, "can not be greater than the cap of #{dollar_cap}")
+      elsif percent_cap.present? and percent_cap > 0 and percent_subsidy > percent_cap
+        errors.add(:percent_subsidy, "can not be greater than the cap of #{percent_cap}")
+      elsif pi_contribution > total_request_cost
+        errors.add(:pi_contribution, "can not be greater than the total request cost")
+      end
     end
   end
 

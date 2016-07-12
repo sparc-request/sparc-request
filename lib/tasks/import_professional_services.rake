@@ -7,38 +7,51 @@ namespace :data do
       STDIN.gets.strip
     end
 
+    skipped_services = CSV.open("tmp/skipped_pb_services_#{Time.now.strftime('%m%d%Y%T')}.csv", "wb")
+
+    skipped_services << ['REASON','EAP ID','CPT Code','Charge Code','Revenue Code','Send to Epic','Procedure Name','Service Rate','Corporate Rate ','Federal Rate','Member Rate','Other Rate','Is One Time Fee?','Clinical Qty Type','Unit Factor','Qty Min','Display Date','Effective Date']
+
     ranges = {}
-    CSV.foreach(ENV['range'], :headers => true, :encoding => 'windows-1251:utf-8') do |row|
+    CSV.foreach(ENV['range_file'], :headers => true, :encoding => 'windows-1251:utf-8') do |row|
       ### POS used so that we can have same org with different ranges
       org_plus_pos = row['ORG ID'] + "-" + row['POS']
-      ranges[org_plus_pos] = Range.new(*row['CPT Code Grouping'].split('-').map(&:to_i))
+      ranges[org_plus_pos] = Range.new(row['From'].to_i, row['To'].to_i)
+      ranges[org_plus_pos] = []
+
+      justification = row['From'].size
+
+      Range.new(row['From'].to_i, row['To'].to_i).each do |r|
+        ranges[org_plus_pos] << r.to_s.rjust(justification, '0')
+      end
     end
 
-    continue = prompt("Are you sure you want to import services for CPT code ranges #{ranges.inspect} (yes/no)? ")
-
-    raise "Aborted!" unless continue == 'yes'
-
     Service.transaction do
-      begin
-        CSV.foreach(ENV['file'], :headers => true, :encoding => 'windows-1251:utf-8') do |row|
-          cpt_code = row['CPT Code'].chomp("26")
+      CSV.foreach(ENV['pb_file'], :headers => true, :encoding => 'windows-1251:utf-8') do |row|
+        begin
+          eap_id = row['EAP ID']
 
-          range = ranges.select{|k,v| v.member? cpt_code.to_i}
+          range = ranges.select{|k,v| v.include? eap_id}
 
           if range.empty?
-            puts "No CPT code range exists, skipping #{cpt_code} - #{row['Procedure Name']}"
+            puts "No EAP ID range exists, skipping #{eap_id} - #{row['Procedure Name']}"
+            skipped_services << ['No EAP ID range found'] + row.fields
           elsif range.size > 1
             raise "Overlapping ranges: :\n\n#{row.inspect}\n\n#{ranges.inspect}"
+            skipped_services << ['Multiple EAP ID ranges found'] + row.fields
           else
             organization_id = range.keys.first.split('-').first # looks like 123-1
 
-            service = Service.new(
+            attrs = {:eap_id => row['EAP ID'], :organization_id => organization_id}
+
+            service = Service.where(attrs).first || Service.new(attrs)
+
+            service.assign_attributes(
                                 :organization_id => organization_id,
-                                :cpt_code => cpt_code,
+                                :cpt_code => row['CPT Code'],
                                 :send_to_epic => (row['Send to Epic'] == 'Y' ? true : false),
-                                :name => 'PB ' + row['Procedure Name'],
-                                :abbreviation => 'PB ' + row['Procedure Name'],
-                                :order => nil,
+                                :name => row['Procedure Name'],
+                                :abbreviation => row['Procedure Name'],
+                                :order => 1,
                                 :one_time_fee => (row['Is One Time Fee?'] == 'Y' ? true : false),
                                 :is_available => true)
 
@@ -57,8 +70,8 @@ namespace :data do
                                                   :full_rate => full_rate,
                                                   :corporate_rate => corporate_rate,
                                                   :federal_rate => federal_rate,
-                                                  :member_rate => member_rate, 
-                                                  :other_rate => other_rate, 
+                                                  :member_rate => member_rate,
+                                                  :other_rate => other_rate,
                                                   :unit_type => (row['Is One Time Fee?'] == 'Y' ? nil : row['Clinical Qty Type']),
                                                   :quantity_type => (row['Is One Time Fee?'] != 'Y' ? nil : row['Clinical Qty Type']),
                                                   :unit_factor => row['Unit Factor'],
@@ -80,13 +93,23 @@ namespace :data do
               puts pricing_map.inspect
               puts service.errors
               puts pricing_map.errors
+
+              all_errors = service.errors.messages.merge(pricing_map.errors.messages)
+
+              skipped_services << [all_errors.to_s] + row.fields
             end
           end
+        rescue Exception => e
+          puts "Usage: rake data:import_professional_services pb_file=tmp/file.csv range_file=tmp/file.csv"
+          puts e.message
+          puts e.backtrace.inspect
+          puts row.inspect
+          skipped_services << [e.message] + row.fields
+          next
         end
-      rescue Exception => e
-        puts "Usage: rake data:import_professional_services file=tmp/file.csv range=tmp/file.csv"
-        puts e.message
       end
+
+      skipped_services.close # close out the csv file
     end
   end
 end

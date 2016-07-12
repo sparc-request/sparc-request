@@ -26,7 +26,6 @@
 
 unless "<%= @errors %>" == ""
   alert "<%= @errors %>"
-
 if "<%= @errors %>" == ""
   unless "<%= @portal %>"
     if <%= @line_item.service.displayed_pricing_map.unit_factor %> > 1
@@ -48,5 +47,8 @@ if "<%= @errors %>" == ""
     $(".pp_max_total<%= @arm_id %>").html("<%= display_max_total_cost_per_patient(@line_items_visit.arm, @line_items_visits) %>")
 
     $(".pp_total<%= @arm_id %>").html("<%= display_total_cost_per_arm(@line_items_visit.arm, @line_items_visits) %>")
+$("#sub_service_request_header").html("<%= escape_javascript(render(partial: 'dashboard/sub_service_requests/header', locals: {sub_service_request: @sub_service_request})) %>")
+$(".selectpicker").selectpicker()
+
     # TODO need to render _subsidy_info or equivalent
     # TODO need to render _direct_cost_total or equivalent

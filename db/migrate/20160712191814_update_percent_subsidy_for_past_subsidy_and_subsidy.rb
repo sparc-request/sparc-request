@@ -33,6 +33,8 @@ class UpdatePercentSubsidyForPastSubsidyAndSubsidy < ActiveRecord::Migration
       if request_cost && pi_contribution && !request_cost.zero?
         percent_subsidy = (request_cost - pi_contribution).to_f / request_cost.to_f
         subsidy.update_attribute(:percent_subsidy, percent_subsidy)
+      elsif request_cost.zero? && pi_contribution.zero?
+        puts "Request cost and pi contribution are both 0 for Subsidy #{subsidy.id}"
       else
         puts "Percent Subsidy for #{subsidy.id} wasn't updated in Subsidy table"
       end

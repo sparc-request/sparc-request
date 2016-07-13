@@ -36,14 +36,14 @@ $(document).ready ->
         'sub_service_request_id': $(this).data('sub-service-request-id'),
     $.ajax
       type: 'POST'
-      url:  "/subsidies"
+      url:  "/subsidies/create"
       data: data
 
   $(document).on 'click', '.delete_subsidy_button', ->
     subsidy_id = $(this).data('subsidy-id')
     $.ajax
       type: 'DELETE'
-      url: "/subsidies/#{subsidy_id}"
+      url: "/subsidies/#{subsidy_id}/destroy"
 
 #****************** SERVICE SUBSIDY END ***************************#
 
@@ -80,8 +80,8 @@ $(document).ready ->
         'pi_contribution' : pi_contribution
         'percent_subsidy' : percent_subsidy
       $.ajax
-        type: 'PATCH'
-        url:  "/subsidies/#{subsidy_id}"
+        type: 'POST'
+        url:  "/subsidies/#{subsidy_id}/update"
         data: data
         success: (data, textStatus, jqXHR) ->
           percent_subsidy = recalculate_percent_subsidy(total_request_cost, pi_contribution)
@@ -122,8 +122,8 @@ $(document).ready ->
         'pi_contribution' : pi_contribution,
         'percent_subsidy' : percent_subsidy
       $.ajax
-        type: 'PATCH'
-        url:  "/subsidies/#{subsidy_id}"
+        type: 'POST'
+        url:  "/subsidies/#{subsidy_id}/update"
         data: data
         success: (data, textStatus, jqXHR) ->
           current_cost = recalculate_current_cost(total_request_cost, percent_subsidy)

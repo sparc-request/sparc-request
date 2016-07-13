@@ -270,6 +270,7 @@ ActiveRecord::Schema.define(version: 20160711161202) do
     t.datetime "document_updated_at"
     t.string   "doc_type_other",        limit: 255
     t.integer  "protocol_id",           limit: 4
+    t.integer  "service_request_id",    limit: 4
   end
 
   add_index "documents", ["protocol_id"], name: "index_documents_on_protocol_id", using: :btree
@@ -693,6 +694,7 @@ ActiveRecord::Schema.define(version: 20160711161202) do
     t.boolean  "selected_for_epic"
     t.boolean  "archived",                                                                    default: false
     t.integer  "study_type_question_group_id",          limit: 4
+    t.integer  "requester_id",                          limit: 4
   end
 
   add_index "protocols", ["next_ssr_id"], name: "index_protocols_on_next_ssr_id", using: :btree
@@ -856,24 +858,21 @@ ActiveRecord::Schema.define(version: 20160711161202) do
   add_index "service_relations", ["service_id"], name: "index_service_relations_on_service_id", using: :btree
 
   create_table "service_requests", force: :cascade do |t|
-    t.integer  "protocol_id",              limit: 4
-    t.string   "status",                   limit: 255
-    t.integer  "service_requester_id",     limit: 4
+    t.integer  "protocol_id",             limit: 4
+    t.string   "status",                  limit: 255
     t.boolean  "approved"
-    t.integer  "subject_count",            limit: 4
+    t.integer  "subject_count",           limit: 4
     t.datetime "consult_arranged_date"
     t.datetime "pppv_complete_date"
     t.datetime "pppv_in_process_date"
-    t.datetime "requester_contacted_date"
     t.datetime "submitted_at"
-    t.datetime "created_at",                           null: false
-    t.datetime "updated_at",                           null: false
+    t.datetime "created_at",                          null: false
+    t.datetime "updated_at",                          null: false
     t.datetime "deleted_at"
     t.date     "original_submitted_date"
   end
 
   add_index "service_requests", ["protocol_id"], name: "index_service_requests_on_protocol_id", using: :btree
-  add_index "service_requests", ["service_requester_id"], name: "index_service_requests_on_service_requester_id", using: :btree
   add_index "service_requests", ["status"], name: "index_service_requests_on_status", using: :btree
 
   create_table "services", force: :cascade do |t|
@@ -964,11 +963,13 @@ ActiveRecord::Schema.define(version: 20160711161202) do
     t.boolean  "in_work_fulfillment",                      default: false
     t.string   "routing",                    limit: 255
     t.text     "org_tree_display",           limit: 65535
+    t.integer  "service_requester_id",       limit: 4
   end
 
   add_index "sub_service_requests", ["organization_id"], name: "index_sub_service_requests_on_organization_id", using: :btree
   add_index "sub_service_requests", ["owner_id"], name: "index_sub_service_requests_on_owner_id", using: :btree
   add_index "sub_service_requests", ["service_request_id"], name: "index_sub_service_requests_on_service_request_id", using: :btree
+  add_index "sub_service_requests", ["service_requester_id"], name: "index_sub_service_requests_on_service_requester_id", using: :btree
   add_index "sub_service_requests", ["ssr_id"], name: "index_sub_service_requests_on_ssr_id", using: :btree
   add_index "sub_service_requests", ["status"], name: "index_sub_service_requests_on_status", using: :btree
 

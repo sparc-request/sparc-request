@@ -54,7 +54,7 @@ class PendingSubsidy < Subsidy
     end
 
     # Create new approved subsidy from pending attributes
-    new_attributes = self.attributes.except("id", "pi_contribution", "status", "created_at", "updated_at", "deleted_at").merge!({approved_by: approver.id})
+    new_attributes = self.attributes.except("id", "status", "created_at", "updated_at", "deleted_at").merge!({approved_by: approver.id})
     newly_approved = ApprovedSubsidy.create(new_attributes)
 
     # Delete pending subsidy

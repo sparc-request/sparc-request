@@ -53,7 +53,6 @@
   - if pending.present?
     - max_percentage = sub_service_request.organization.subsidy_map.max_percentage
     - max_dollar_cap = sub_service_request.organization.subsidy_map.max_dollar_cap
-    - default_percentage = sub_service_request.organization.subsidy_map.default_percentage
     - instructions = sub_service_request.organization.subsidy_map.instructions
     %table
       %thead
@@ -69,7 +68,7 @@
           %td.request_cost{ data: { subsidy_id: pending.id, cost: pending.total_request_cost }}
             = number_to_currency(pending.total_request_cost / 100.0)
           %td.percent_subsidy
-            = text_field_tag "percent_subsidy", display_as_percent(pending.percent_subsidy || default_percentage), { class: "subsidy_input", data: { subsidy_id: pending.id, max_percentage: max_percentage, max_dollar_cap: max_dollar_cap, percent_subsidy: pending.percent_subsidy } }
+            = text_field_tag "percent_subsidy", display_as_percent(pending.current_percent), { class: "subsidy_input", data: { subsidy_id: pending.id, max_percentage: max_percentage, max_dollar_cap: max_dollar_cap, percent_subsidy: pending.percent_subsidy } }
           %td.pi_contribution
             = text_field_tag "pi_contribution", cents_to_dollars_float(pending.pi_contribution), { class: "subsidy_input", data: { subsidy_id: pending.id, max_percentage: max_percentage, max_dollar_cap: max_dollar_cap, pi_contribution: pending.pi_contribution } }
           %td.subsidy_cost{ data: { subsidy_id: pending.id, cost: pending.current_cost }}

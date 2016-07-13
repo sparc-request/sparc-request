@@ -22,7 +22,6 @@ FactoryGirl.define do
   factory :service_request do
     protocol_id          { Random.rand(10000) }
     status               { Faker::Lorem.sentence(3) }
-    service_requester_id { Random.rand(1000) }
     approved             { false }
 
     trait :without_validations do

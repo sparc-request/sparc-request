@@ -167,7 +167,6 @@ module V1
 
     expose  :protocol_id,
             :status,
-            :service_requester_id,
             :approved,
             :subject_count
 
@@ -175,7 +174,6 @@ module V1
       expose :consult_arranged_date
       expose :pppv_complete_date
       expose :pppv_in_process_date
-      expose :requester_contacted_date
       expose :submitted_at
     end
   end
@@ -195,7 +193,8 @@ module V1
             :in_work_fulfillment,
             :routing,
             :org_tree_display,
-            :grand_total
+            :grand_total,
+            :service_requester_id
 
     expose  :formatted_status, as: :status
 

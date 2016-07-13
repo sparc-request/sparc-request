@@ -31,11 +31,7 @@ class PendingSubsidy < Subsidy
   def pi_contribution
     # This ensures that if pi_contribution is null (new record),
     # then it will reflect the full cost of the request.
-    if percent_subsidy
-      total_request_cost - (total_request_cost * percent_subsidy) || total_request_cost
-    else
-      total_request_cost - (total_request_cost * default_percentage) || total_request_cost
-    end
+    total_request_cost - (total_request_cost * current_percent) || total_request_cost
   end
 
   def current_cost
@@ -56,11 +52,10 @@ class PendingSubsidy < Subsidy
     # Creates a new ApprovedSubsidy from this PendingSubsidy
     # Remove current approved subsidy if exists, save notes
     current_approved_subsidy = sub_service_request.approved_subsidy
-    
-    # log the past subsidy
-    PastSubsidy.create(current_approved_subsidy.attributes.except("id", "status", "created_at", "updated_at", "deleted_at", "overridden"))
 
     if current_approved_subsidy.present?
+      # log the past subsidy
+      PastSubsidy.create(current_approved_subsidy.attributes.except("id", "status", "created_at", "updated_at", "deleted_at", "overridden"))
       ApprovedSubsidy.where(sub_service_request_id: sub_service_request_id).destroy_all
     end
 

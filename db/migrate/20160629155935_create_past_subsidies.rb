@@ -19,6 +19,15 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class CreatePastSubsidies < ActiveRecord::Migration
+
+  class PastSubsidy < ActiveRecord::Base
+    attr_accessible :pi_contribution
+    attr_accessible :sub_service_request_id
+    attr_accessible :total_at_approval
+    attr_accessible :approved_by
+    attr_accessible :approved_at
+  end
+
   def change
     create_table :past_subsidies do |t|
       t.integer :sub_service_request_id

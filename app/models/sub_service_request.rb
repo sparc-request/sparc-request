@@ -75,11 +75,11 @@ class SubServiceRequest < ActiveRecord::Base
   scope :in_work_fulfillment, -> { where(in_work_fulfillment: true) }
 
   def consult_arranged_date=(date)
-    write_attribute(:consult_arranged_date, Time.strptime(date, "%m-%d-%Y")) if date.present?
+    write_attribute(:consult_arranged_date, Time.strptime(date, "%m/%d/%Y")) if date.present?
   end
 
   def requester_contacted_date=(date)
-    write_attribute(:requester_contacted_date, Time.strptime(date, "%m-%d-%Y")) if date.present?
+    write_attribute(:requester_contacted_date, Time.strptime(date, "%m/%d/%Y")) if date.present?
   end
 
   # Make sure that @prev_status is set whenever status is changed for update_past_status method.

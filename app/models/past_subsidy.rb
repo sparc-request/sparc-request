@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class PastSubsidy < Subsidy
+class PastSubsidy < ActiveRecord::Base
   audited
 
   belongs_to :sub_service_request
@@ -31,6 +31,12 @@ class PastSubsidy < Subsidy
   attr_accessible :approved_at
 
   default_scope { order('approved_at ASC') }
+
+  def pi_contribution
+    # This ensures that if pi_contribution is null (new record),
+    # then it will reflect the full cost of the request.
+    total_at_approval - (total_at_approval * percent_subsidy) || total_at_approval
+  end
 
   def approved_cost
     # Calculates cost of subsidy (amount subsidized)

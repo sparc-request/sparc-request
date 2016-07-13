@@ -14,7 +14,7 @@ RSpec.describe 'dashboard/protocols/requests_modal', type: :view do
 
   it 'should render Service Requests with Sub Service Requests' do
     protocol                  = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Study', archived: false)
-    service_request_with_ssr  = create(:service_request_without_validations, protocol: protocol, service_requester: jug2)
+    service_request_with_ssr  = create(:service_request_without_validations, protocol: protocol)
                                 create(:sub_service_request, service_request: service_request_with_ssr, organization: create(:organization), status: 'draft')
 
     render_requests_modal(protocol)
@@ -31,7 +31,7 @@ RSpec.describe 'dashboard/protocols/requests_modal', type: :view do
 
   it 'should not render Service Request without Sub Service Requests' do
     protocol                    = create(:protocol_federally_funded, :without_validations, primary_pi: jug2, type: 'Study', archived: false)
-    service_request_without_ssr = create(:service_request_without_validations, protocol: protocol, service_requester: jug2)
+    service_request_without_ssr = create(:service_request_without_validations, protocol: protocol)
     
     render_requests_modal(protocol)
 

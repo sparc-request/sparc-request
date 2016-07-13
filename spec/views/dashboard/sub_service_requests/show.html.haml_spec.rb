@@ -4,7 +4,7 @@ RSpec.describe 'dashboard/sub_service_requests/show', type: :view do
   before(:each) do
     @protocol = build_stubbed(:protocol_without_validations)
 
-    @service_request = build_stubbed(:service_request_without_validations, protocol: @protocol, service_requester: build_stubbed(:identity))
+    @service_request = build_stubbed(:service_request_without_validations, protocol: @protocol)
     assign(:service_request, @service_request)
 
     @sub_service_request = build_stubbed(:sub_service_request, service_request: @service_request)
@@ -47,7 +47,7 @@ RSpec.describe 'dashboard/sub_service_requests/show', type: :view do
   end
 
   it "should render status changes table" do
-    expect(response).to render_template(partial: "dashboard/sub_service_requests/history/status_changes", locals: { sub_service_request_id: @sub_service_request.id })
+    expect(response).to render_template(partial: "dashboard/sub_service_requests/history/status_changes", locals: { sub_service_request: @sub_service_request })
   end
 
   it "should render notifications table" do

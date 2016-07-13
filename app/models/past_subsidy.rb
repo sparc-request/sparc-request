@@ -18,52 +18,35 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-FactoryGirl.define do
-  factory :sub_service_request do
-    owner_id           { Random.rand(1000) }
-    service_requester_id { Random.rand(1000) }
+class PastSubsidy < ActiveRecord::Base
+  audited
 
-    trait :without_validations do
-      to_create { |instance| instance.save(validate: false) }
+  belongs_to :sub_service_request
+  belongs_to :approver, class_name: 'Identity', foreign_key: "approved_by"
+
+  attr_accessible :sub_service_request_id
+  attr_accessible :total_at_approval
+  attr_accessible :pi_contribution
+  attr_accessible :approved_by
+  attr_accessible :approved_at
+
+  default_scope { order('approved_at ASC') }
+
+  def approved_cost
+    # Calculates cost of subsidy (amount subsidized)
+    # stored total - pi_contribution then convert from cents to dollars
+    ( total_at_approval - pi_contribution ) / 100.0
+  end
+
+  def approved_percent_of_total
+    # Calculates the percent of total_at_approval that is subsidized
+    # (stored total - pi_contribution) / stored total then convert to percent
+    total = total_at_approval
+
+    if total.nil? || total == 0
+      0.00
+    else
+      ((( total - pi_contribution ).to_f / total ) * 100.0 ).round(2)
     end
-    
-    trait :with_payment do
-      after(:create) do |sub_service_request, evaluator|
-        FactoryGirl.create(:payment, sub_service_request: sub_service_request)
-      end
-    end
-
-    transient do
-      line_item_count 0
-      past_status_count 0
-    end
-
-    after(:build) do |sub_service_request, evaluator|
-      create_list(:line_item, evaluator.line_item_count,
-        sub_service_request: sub_service_request)
-
-      create_list(:past_status, evaluator.past_status_count,
-        sub_service_request: sub_service_request)
-    end
-
-    trait :in_cwf do
-      in_work_fulfillment true
-    end
-
-    trait :with_subsidy do
-      after(:create) do |sub_service_request, evaluator|
-        create(:subsidy, sub_service_request: sub_service_request)
-      end
-    end
-
-    trait :with_organization do
-      organization
-    end
-
-    factory :sub_service_request_with_organization, traits: [:with_organization]
-    factory :sub_service_request_with_payment, traits: [:with_payment]
-    factory :sub_service_request_in_cwf, traits: [:in_cwf]
-    factory :sub_service_request_with_subsidy, traits: [:with_subsidy]
-    factory :sub_service_request_without_validations, traits: [:without_validations]
   end
 end

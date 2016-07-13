@@ -18,52 +18,34 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-FactoryGirl.define do
-  factory :sub_service_request do
-    owner_id           { Random.rand(1000) }
-    service_requester_id { Random.rand(1000) }
+class CreatePastSubsidies < ActiveRecord::Migration
+  def change
+    create_table :past_subsidies do |t|
+      t.integer :sub_service_request_id
+      t.integer :total_at_approval
+      t.integer :pi_contribution
+      t.integer :approved_by
+      t.datetime :approved_at
 
-    trait :without_validations do
-      to_create { |instance| instance.save(validate: false) }
-    end
-    
-    trait :with_payment do
-      after(:create) do |sub_service_request, evaluator|
-        FactoryGirl.create(:payment, sub_service_request: sub_service_request)
-      end
+      t.timestamps
     end
 
-    transient do
-      line_item_count 0
-      past_status_count 0
+    add_index :past_subsidies, :sub_service_request_id
+    add_index :past_subsidies, :approved_by
+
+    Note.where(notable_type: 'Subsidy').each do |note|
+      p = PastSubsidy.new
+      p.sub_service_request_id = Subsidy.find(note.notable_id).sub_service_request_id
+
+      data = note.body.split('<td>')
+      p.total_at_approval = (data[1].sub('</td>', '').to_f * 100).to_i
+      p.pi_contribution   = (data[3].sub('</td>', '').to_f * 100).to_i
+      p.approved_by       = note.identity_id
+      p.approved_at       = note.created_at
+
+      note.destroy
+
+      p.save
     end
-
-    after(:build) do |sub_service_request, evaluator|
-      create_list(:line_item, evaluator.line_item_count,
-        sub_service_request: sub_service_request)
-
-      create_list(:past_status, evaluator.past_status_count,
-        sub_service_request: sub_service_request)
-    end
-
-    trait :in_cwf do
-      in_work_fulfillment true
-    end
-
-    trait :with_subsidy do
-      after(:create) do |sub_service_request, evaluator|
-        create(:subsidy, sub_service_request: sub_service_request)
-      end
-    end
-
-    trait :with_organization do
-      organization
-    end
-
-    factory :sub_service_request_with_organization, traits: [:with_organization]
-    factory :sub_service_request_with_payment, traits: [:with_payment]
-    factory :sub_service_request_in_cwf, traits: [:in_cwf]
-    factory :sub_service_request_with_subsidy, traits: [:with_subsidy]
-    factory :sub_service_request_without_validations, traits: [:without_validations]
   end
 end

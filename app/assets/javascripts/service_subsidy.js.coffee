@@ -36,14 +36,14 @@ $(document).ready ->
         'sub_service_request_id': $(this).data('sub-service-request-id'),
     $.ajax
       type: 'POST'
-      url:  "/subsidies/create"
+      url:  "/subsidies"
       data: data
 
   $(document).on 'click', '.delete_subsidy_button', ->
     subsidy_id = $(this).data('subsidy-id')
     $.ajax
       type: 'DELETE'
-      url: "/subsidies/#{subsidy_id}/destroy"
+      url: "/subsidies/#{subsidy_id}"
 
 #****************** SERVICE SUBSIDY END ***************************#
 
@@ -59,8 +59,8 @@ $(document).ready ->
     percent_subsidy = (recalculate_percent_subsidy(total_request_cost, pi_contribution) * 100).toFixed(2)
     original_pi_contribution = recalculate_pi_contribution(total_request_cost, current_percent_subsidy)
 
-    if parseFloat(percent_subsidy) > parseFloat(max_percent) 
-      message = "The Percent Subsidy cannot be greater than the max percent of #{max_percent}." 
+    if parseFloat(percent_subsidy) > parseFloat(max_percent)
+      message = "The Percent Subsidy cannot be greater than the max percent of #{max_percent}."
       current_cost = recalculate_current_cost(total_request_cost, current_percent_subsidy)
       display_error_and_reset(subsidy_id, current_percent_subsidy, original_pi_contribution, current_cost, max_percent, message)
     else if recalculate_current_cost(total_request_cost, (percent_subsidy / 100)) > max_dollar_cap
@@ -80,8 +80,8 @@ $(document).ready ->
         'pi_contribution' : pi_contribution
         'percent_subsidy' : percent_subsidy
       $.ajax
-        type: 'POST'
-        url:  "/subsidies/#{subsidy_id}/update"
+        type: 'PUT'
+        url:  "/subsidies/#{subsidy_id}"
         data: data
         success: (data, textStatus, jqXHR) ->
           percent_subsidy = recalculate_percent_subsidy(total_request_cost, pi_contribution)
@@ -100,7 +100,7 @@ $(document).ready ->
     total_request_cost = parseFloat($(".request_cost[data-subsidy-id='#{subsidy_id}']").data("cost")) / 100.0
     pi_contribution = recalculate_pi_contribution(total_request_cost, percent_subsidy)
     original_subsidy = recalculate_percent_subsidy(total_request_cost, original_pi_contribution)
-    
+
     if (parseFloat(percent_subsidy * 100)) > parseFloat(max_percent)
       message = "The Percent Subsidy cannot be greater than the max percent of #{max_percent}."
       current_cost = recalculate_current_cost(total_request_cost, original_subsidy)
@@ -117,13 +117,13 @@ $(document).ready ->
         percent_subsidy = 1.0
       else if percent_subsidy < 0
         percent_subsidy = 0
-      
+
       data = 'subsidy' :
         'pi_contribution' : pi_contribution,
         'percent_subsidy' : percent_subsidy
       $.ajax
-        type: 'POST'
-        url:  "/subsidies/#{subsidy_id}/update"
+        type: 'PUT'
+        url:  "/subsidies/#{subsidy_id}"
         data: data
         success: (data, textStatus, jqXHR) ->
           current_cost = recalculate_current_cost(total_request_cost, percent_subsidy)

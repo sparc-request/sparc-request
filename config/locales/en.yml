@@ -325,9 +325,9 @@ en:
         edit: " Edit Fulfillment"
         delete: " Delete Fulfillment"
       form:
-        date: "Fulfillment Date:"
-        time: "Quantity:"
-        time_unit: "Qty Type:"
+        date: "Fulfillment Date: *"
+        time: "Quantity: *"
+        time_unit: "Qty Type: *"
 
     ################
     #  LINE ITEMS  #

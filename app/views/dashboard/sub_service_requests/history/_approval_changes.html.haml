@@ -20,7 +20,7 @@
 .col-xs-12
   #history-custom-toolbar
     = render 'dashboard/sub_service_requests/history/history_buttons', sub_service_request: sub_service_request, tab: tab
-  %table.ssr_history_table{ id: "approval-history-table", data: { toggle: 'table', search: "true", "show-columns" => "true", "show-refresh" => "true", "show-toggle" => "true", url: approval_history_dashboard_sub_service_request_path(id: sub_service_request.id, format: :json), striped: "true", toolbar: "#history-custom-toolbar", "show-export" => "false", "export-types" => ['excel'] } }
+  %table.ssr_history_table{ id: "approval-history-table", data: { toggle: 'table', search: "true", "show-columns" => "true", "show-refresh" => "true", "show-toggle" => "true", url: approval_history_dashboard_sub_service_request_path(id: sub_service_request.id, format: :json), striped: "true", toolbar: "#history-custom-toolbar", sort_name: 'date', sort_order: 'desc', "show-export" => "false", "export-types" => ['excel'] } }
     %thead.primary-header
       %tr
         %th{ data: { class: 'date', align: "left", sortable: "true", field: "date", sorter: "dateSorter" } }

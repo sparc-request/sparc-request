@@ -52,7 +52,6 @@ $(document).ready ->
     # When user changes PI Contribution, the Percent Subsidy and Subsidy Cost fields are recalculated & displayed
     max_percent = $(this).data('max-percentage')
     max_dollar_cap = $(this).data('max-dollar-cap')
-    is_admin = $(this).data('is-admin')
     subsidy_id = $(this).data('subsidy-id')
     current_percent_subsidy = (parseFloat($('#percent_subsidy').val()) / 100.0)
     pi_contribution = parseFloat $(this).val()
@@ -60,11 +59,11 @@ $(document).ready ->
     percent_subsidy = (recalculate_percent_subsidy(total_request_cost, pi_contribution) * 100).toFixed(2)
     original_pi_contribution = recalculate_pi_contribution(total_request_cost, current_percent_subsidy)
 
-    if parseFloat(percent_subsidy) > parseFloat(max_percent) && !is_admin
+    if parseFloat(percent_subsidy) > parseFloat(max_percent)
       message = "The Percent Subsidy cannot be greater than the max percent of #{max_percent}."
       current_cost = recalculate_current_cost(total_request_cost, current_percent_subsidy)
       display_error_and_reset(subsidy_id, current_percent_subsidy, original_pi_contribution, current_cost, max_percent, message)
-    else if recalculate_current_cost(total_request_cost, (percent_subsidy / 100)) > max_dollar_cap && !is_admin
+    else if recalculate_current_cost(total_request_cost, (percent_subsidy / 100)) > max_dollar_cap
       message = "The Subsidy Cost cannot be greater than the max dollar cap of #{max_dollar_cap}."
       current_cost = recalculate_current_cost(total_request_cost, current_percent_subsidy)
       display_error_and_reset(subsidy_id, current_percent_subsidy, original_pi_contribution, current_cost, max_percent, message)
@@ -95,7 +94,6 @@ $(document).ready ->
     # When user changes Percent Subsidy, the PI Contribution and Subsidy Cost fields are recalculated & displayed
     max_percent = $(this).data('max-percentage')
     max_dollar_cap = $(this).data('max-dollar-cap')
-    is_admin = $(this).data('is-admin')
     subsidy_id = $(this).data('subsidy-id')
     percent_subsidy = parseFloat($(this).val()) / 100.0
     original_pi_contribution = parseFloat($('#pi_contribution').val().replace('$', ''))
@@ -103,11 +101,11 @@ $(document).ready ->
     pi_contribution = recalculate_pi_contribution(total_request_cost, percent_subsidy)
     original_subsidy = recalculate_percent_subsidy(total_request_cost, original_pi_contribution)
 
-    if (parseFloat(percent_subsidy * 100)) > parseFloat(max_percent) && !is_admin
+    if (parseFloat(percent_subsidy * 100)) > parseFloat(max_percent)
       message = "The Percent Subsidy cannot be greater than the max percent of #{max_percent}."
       current_cost = recalculate_current_cost(total_request_cost, original_subsidy)
       display_error_and_reset(subsidy_id, original_subsidy, original_pi_contribution, current_cost, max_percent, message)
-    else if recalculate_current_cost(total_request_cost, percent_subsidy) > max_dollar_cap && !is_admin
+    else if recalculate_current_cost(total_request_cost, percent_subsidy) > max_dollar_cap
       message = "The Subsidy Cost cannot be greater than the max dollar cap of #{max_dollar_cap}."
       current_cost = recalculate_current_cost(total_request_cost, original_subsidy)
       display_error_and_reset(subsidy_id, original_subsidy, original_pi_contribution, current_cost, max_percent, message)

@@ -52,14 +52,6 @@ class Fulfillment < ActiveRecord::Base
     write_attribute(:date, Time.strptime(date_arg, "%m/%d/%Y")) if date_arg.present?
   end
 
-  # def formatted_date
-  #   format_date self.date
-  # end
-
-  # def formatted_date=(date)
-  #   self.date = parse_date(date)
-  # end
-
   def within_date_range? start_date, end_date
     date = self.date.try(:to_date)
 
@@ -73,16 +65,4 @@ class Fulfillment < ActiveRecord::Base
   end
 
   private
-
-  # def format_date(date)
-  #   date.try(:strftime, '%-m/%d/%Y')
-  # end
-
-  # def parse_date(str)
-  #   begin
-  #     Date.strptime(str.to_s.strip, '%m/%d/%Y').strftime("%m-%d-%Y")
-  #   rescue ArgumentError => e
-  #     nil
-  #   end
-  # end
 end

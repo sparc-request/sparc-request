@@ -154,12 +154,12 @@ def build_per_patient_per_visit_services
   let!(:clinical_provider)   { create(:clinical_provider, organization_id: program.id, identity_id: jug2.id) }
   let!(:available_status)    { create(:available_status, organization_id: program.id, status: 'submitted')}
   let!(:available_status2)   { create(:available_status, organization_id: program.id, status: 'draft')}
-  let!(:subsidy)             { Subsidy.auditing_enabled = false; create(:subsidy_without_validations, pi_contribution: 1000, sub_service_request_id: sub_service_request.id)}
+  let!(:subsidy)             { Subsidy.auditing_enabled = false; create(:subsidy_without_validations, percent_subsidy: 0.45, sub_service_request_id: sub_service_request.id)}
   let!(:subsidy_map)         { create(:subsidy_map, organization_id: program.id) }
 end
 
 def build_service_request
-  let!(:service_request)     { FactoryGirl.create(:service_request_without_validations, status: "draft") }
+  let!(:service_request)     { create(:service_request_without_validations, status: "draft") }
   let!(:institution)         { create(:institution,name: 'Medical University of South Carolina', order: 1, abbreviation: 'MUSC', is_available: 1)}
   let!(:provider)            { create(:provider,parent_id:institution.id,name: 'South Carolina Clinical and Translational Institute (SCTR)',order: 1,css_class: 'blue-provider', abbreviation: 'SCTR1',process_ssrs: 0,is_available: 1)}
   let!(:program)             { create(:program,type:'Program',parent_id:provider.id,name:'Office of Biomedical Informatics',order:1, abbreviation:'Informatics', process_ssrs:  0, is_available: 1)}
@@ -171,7 +171,7 @@ def build_service_request
   let!(:core_62)             { create(:core, parent_id: program.id, abbreviation: "PWF Services") }
   let!(:sub_service_request) { create(:sub_service_request, ssr_id: "0001", service_request_id: service_request.id, organization_id: program.id,status: "draft")}
 
-  
+
   before :each do
     program.tag_list.add("ctrc")
 
@@ -180,7 +180,6 @@ def build_service_request
       organization.save
     end
 
-    service_request.update_attribute(:service_requester_id, Identity.find_by_ldap_uid("jug2").id)
     service_request.update_attribute(:status, 'draft')
   end
 end

@@ -21,6 +21,7 @@
 FactoryGirl.define do
   factory :sub_service_request do
     owner_id           { Random.rand(1000) }
+    service_requester_id { Random.rand(1000) }
 
     trait :without_validations do
       to_create { |instance| instance.save(validate: false) }

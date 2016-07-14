@@ -2021,7 +2021,7 @@ en:
 
   # Tag label overrides
   tags:
-    ctrc: "Nexus"
+    ctrc: "Administrative Approvals"
     clinical_work_fulfillment: "Fulfillment"
     ctrc_clinical_services: "Nexus clinical services"
 

@@ -58,8 +58,6 @@ class AdminTimeReport < ReportingModule
 
     attrs["Service Request Owner"] = "owner.try(:full_name)"
 
-    attrs["Requester Contacted Date"] = "service_request.try(:requester_contacted_date).try(:strftime, \"%D\")"
-
     attrs["Consult Arranged Date"] = "service_request.try(:consult_arranged_date).try(:strftime, \"%D\")"
 
     if params[:service_id]

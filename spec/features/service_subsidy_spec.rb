@@ -36,8 +36,10 @@ RSpec.describe "subsidy page", js: true do
       program.update_attribute(:subsidy_map, subsidy_map)
       @max_dollar_cap = subsidy_map.max_dollar_cap.to_f
       @max_percentage = subsidy_map.max_percentage.to_f
+      binding.pry
       @direct_cost = (sub_service_request.direct_cost_total / 100.00)
       visit service_subsidy_service_request_path service_request.id
+      save_and_open_screenshot
     end
 
     it 'should display request cost in the pi contribution field' do
@@ -64,7 +66,7 @@ RSpec.describe "subsidy page", js: true do
       wait_for_javascript_to_finish
       find('#pi_contribution').set("6000\n")
       wait_for_javascript_to_finish
-      
+
       subsidy_cost = @direct_cost - 6000
       percent_subsidy = ((subsidy_cost / @direct_cost) * 100).round(2)
       percent_field_value = find('#percent_subsidy').value

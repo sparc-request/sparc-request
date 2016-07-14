@@ -22,15 +22,16 @@ class SearchController < ApplicationController
   before_filter :initialize_service_request
   before_filter :authorize_identity
   def services
-    term            = params[:term].strip
-    service_request = ServiceRequest.find(session[:service_request_id])
-    locked_ssrs     = service_request.sub_service_requests.reject{ |ssr| ssr.can_be_edited? }
-    locked_orgs     = Organization.authorized_child_organizations(locked_ssrs.map(&:organization_id))
+    term              = params[:term].strip
+    service_request   = ServiceRequest.find(session[:service_request_id])
+    locked_ssrs       = service_request.sub_service_requests.reject{ |ssr| ssr.can_be_edited? }
+    locked_org_ids    = locked_ssrs.map(&:organization_id)
+    locked_child_ids  = Organization.authorized_child_organizations(locked_org_ids).map(&:id)
 
     results = Service.
                 where("(name LIKE ? OR abbreviation LIKE ? OR cpt_code LIKE ?) AND is_available = ?", "%#{term}%", "%#{term}%", "%#{term}%", "1").
                 where(organization: (Organization.available_cores | Organization.available_programs)).
-                where.not(organization: locked_orgs).
+                where.not(organization_id: locked_org_ids + locked_child_ids).
                 reject { |s| (s.current_pricing_map rescue false) == false } # Why is this here?
     
     unless @sub_service_request.nil?

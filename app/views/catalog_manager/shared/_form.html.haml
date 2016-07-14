@@ -76,7 +76,7 @@
                     %span= f.label (t(:tags)[tag.name.gsub(" ", "_").to_sym] ? t(:tags)[tag.name.gsub(" ", "_").to_sym] : tag.name.humanize)
                     %span= f.check_box :tag_list, { multiple: true }, tag.name, nil
 
-    - if ['Institution','Provider'].include?(@organization.type)
+    - if @organization.type != 'Institution'
       = render partial: 'catalog_manager/shared/available_statuses', locals: {f: f}
 
     %fieldset#user_rights.parent

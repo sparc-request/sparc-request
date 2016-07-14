@@ -28,10 +28,9 @@ class Dashboard::SubsidiesController < Dashboard::BaseController
   end
 
   def create
-    format_pi_contribution_param
-    @subsidy = PendingSubsidy.new(params[:pending_subsidy])
-    if @subsidy.valid?
-      @subsidy.save
+    format_percent_subsidy_param
+    @subsidy = PendingSubsidy.new(params[:pending_subsidy].except(:pi_contribution))
+    if @subsidy.save(validate: false)
       @sub_service_request = @subsidy.sub_service_request
       @admin = params[:admin] == 'true'
       flash[:success] = t(:dashboard)[:subsidies][:created]
@@ -52,9 +51,9 @@ class Dashboard::SubsidiesController < Dashboard::BaseController
   def update
     @subsidy = PendingSubsidy.find(params[:id])
     @sub_service_request = @subsidy.sub_service_request
-    format_pi_contribution_param
     format_percent_subsidy_param
-    if @subsidy.update_attributes(params[:pending_subsidy])
+    @subsidy.assign_attributes(params[:pending_subsidy].except(:pi_contribution))
+    if @subsidy.save(validate: false)
       @admin = params[:admin] == 'true'
       flash[:success] = t(:dashboard)[:subsidies][:updated]
       unless @admin
@@ -84,14 +83,6 @@ class Dashboard::SubsidiesController < Dashboard::BaseController
   end
 
   private
-
-  def format_pi_contribution_param
-    # Refomat pi_contribution string to characters other than numbers and . delimiter,
-    # Convert to float, and multiply by 100 to get cents for db
-    if !params[:pending_subsidy].nil? && params[:pending_subsidy][:pi_contribution].present?
-      params[:pending_subsidy][:pi_contribution] = (params[:pending_subsidy][:pi_contribution].gsub(/[^\d^\.]/, '').to_f * 100)
-    end
-  end
 
   def format_percent_subsidy_param
     if !params[:pending_subsidy].nil? && params[:pending_subsidy][:percent_subsidy].present?

@@ -288,6 +288,22 @@ en:
         header: "Remove Service Warning"
         warning: "Deleting this service from the service cart will be irreversible and will cause it to be deleted from the associated protocol (%{protocol_id}). Are you sure you want to proceed?"
 
+    ############
+    # PROTOCOL #
+    ############
+    protocol:
+
+    ##############
+    # NAVIGATION #
+    ##############
+    navigation:
+      steps:
+        step1: "STEP 1:<br />Review Services &<br />Assign Study or Project"
+        step2: "STEP 2:<br />Enter Service<br />Details"
+        step3: "STEP 3:<br />Notes &<br />Documents"
+        step4: "STEP 4:<br />Review Your<br />Request"
+        step5: "STEP 5:<br />Submission<br />Confirmation"
+
     ####################
     # RIGHT NAVIGATION #
     ####################

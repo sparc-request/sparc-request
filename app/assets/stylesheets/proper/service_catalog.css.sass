@@ -17,6 +17,7 @@
 /* DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS*/
 /* INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR*/
 /* TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.*/
+@import 'proper/colors'
 
 /* RELATED TO THE INSTITUTION ACCORDION */
 #institution-accordion
@@ -43,29 +44,37 @@
   background: #0065A0 !important
 
 .blue-provider
-  background: #003366 !important
+  background: $sparc-blue !important
 .blue-provider.btn:hover
-  background: #002255 !important
+  background: $sparc-blue-hover !important
 
 .green-provider
-  background: #2C9A4D !important
+  background: $sparc-green !important
 .green-provider.btn:hover
-  background : #1C8A3D !important
+  background : $sparc-green-hover !important
 
 .light-blue-provider
-  background: #0775B0 !important
+  background: $sparc-light-blue !important
 .light-blue-provider.btn:hover
-  background: #0065A0 !important
+  background: $sparc-light-blue-hover !important
 
 .red-provider
-  background: #C43149 !important
+  background: $sparc-red !important
 .red-provider.btn:hover
-  background: #B42139 !important
+  background: $sparc-red-hover !important
 
 .orange-provider
-  background: #F79739 !important
+  background: $sparc-orange !important
 .orange-provider.btn:hover
-  background: #E78729 !important
+  background: $sparc-orange-hover !important
+
+.blue-provider,
+.green-provider,
+.light-blue-provider,
+.red-provider,
+.orange-provider
+  h1
+    color: white
 
 .service-view
   .title
@@ -115,6 +124,7 @@
 
   #calendar-blog
     display: inline-block
+    width: 100%
     .news-container
       padding-left: 0
       padding-right: 8px
@@ -134,32 +144,8 @@
         margin-bottom: 5px
         border-bottom: 1px solid #eee
 
-/* RELATED TO THE RIGHT CATALOG ELEMENTS (CART) */
-.catalog-right
-  .panel
-    margin-bottom: 0px
 
-    .cart
-      min-height: 200px
-
-      .line-item
-        display: inline-flex
-        width: 100%
-        div
-          padding: 0px
-          margin: auto
-
-      .line-item:not(:last-child)
-        padding-bottom: 5px
-        border-bottom: 1px solid #EEE
-        margin-bottom: 5px
-
-  .nav-buttons
-    a,
-    div
-      margin-top: 5px
-      margin-bottom: 5px
-
+/* RELATED TO MODAL POPUPS */
 .help-question
   text-decoration: underline
 .help-answer

@@ -54,6 +54,9 @@ en:
       return: "Return to Catalog"
       signed_in: 'Signed in successfully.'
       signed_out: 'Signed out successfully.'
+      validate_login:
+        header: "Login Required"
+        warning: "You must log in before starting a new Service Request."
     passwords:
       header: "Forgot Your Password?"
       username: "Username:"

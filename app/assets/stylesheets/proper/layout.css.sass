@@ -50,14 +50,22 @@
       margin-left: 25px
 
   .navbar
-    .navbar-right
-      margin-right: 0px
+    @media(max-width: 768px)
+      .navbar-nav
+        width: 100%
+        margin-left: 0px
+        margin-right: 0px
 
-    .welcome-nav
-      margin: 9px 0
+      .navbar-right
+        padding: 10px 15px
+        margin: 0
 
-      a
-        margin: 0 10px
+    @media(min-width: 768px)
+      .welcome-nav
+        margin: 9px 0
+
+        a
+          margin: 0 10px
 
     .navbar-nav li
       a:hover,
@@ -70,7 +78,9 @@
     margin-right: auto
     padding-left: 15px
     padding-right: 15px
-    width: 1170px
+    width: 100%
+    @media (min-width: 1170px)
+      width: 1170px
 
   .footer
     margin-left: auto

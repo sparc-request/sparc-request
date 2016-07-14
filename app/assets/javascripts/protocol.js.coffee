@@ -22,6 +22,22 @@
 #= require navigation
 
 $(document).ready ->
+  
+  $(document).on('mouseenter', '.step-btn', ->
+    $(this).addClass('hover')
+    $(this).siblings('.right-arrow').addClass('hover')
+  ).on('mouseleave', '.btn', ->
+    $(this).removeClass('hover')
+    $(this).siblings('.right-arrow').removeClass('hover')
+  )
+
+  $(document).on('mouseenter', '.right-arrow', ->
+    $(this).addClass('hover')
+    $(this).siblings('.step-btn').addClass('hover')
+  ).on('mouseleave', '.right-arrow', ->
+    $(this).removeClass('hover')
+    $(this).siblings('.step-btn').removeClass('hover')
+  )
 
   $('.new-study-button').tooltip()
   $('.new-project-button').tooltip()

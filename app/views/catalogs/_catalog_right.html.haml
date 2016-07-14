@@ -25,5 +25,5 @@
     .panel-body.cart
       = render 'catalogs/cart', line_items: line_items, service_request: service_request, sub_service_request: sub_service_request
   .nav-buttons
-    = link_to t(:actions)[:continue], protocol_service_request_path(service_request), class: 'submit-request-button btn btn-success btn-lg btn-block', data: { signed_in: identity_signed_in? }
+    = link_to t(:actions)[:continue], protocol_service_request_path(service_request), class: 'submit-request-button btn btn-success btn-lg btn-block'
     = render 'service_requests/right_navigation/right_navigation'

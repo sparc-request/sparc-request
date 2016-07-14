@@ -17,17 +17,18 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 = javascript_include_tag 'protocol'
-= stylesheet_link_tag 'hover_effect'
+= javascript_include_tag 'right_navigation'
+= stylesheet_link_tag 'proper/steps'
+= stylesheet_link_tag 'proper/right_navigation'
 
-= form_tag navigate_service_request_path(@service_request), :id => 'navigation_form', :class =>'form-inline' do
+= render '/service_requests/navigation/steps'
+= form_tag navigate_service_request_path(@service_request), id: 'navigation_form' do
   = hidden_field_tag :location, ''
   = hidden_field_tag :validates, ''
   = hidden_field_tag :current_location, @page
   = hidden_field_tag :protocol_id, @service_request.protocol_id
-  = render :partial => 'steps'
-  = render :partial => 'errors'
+  = render 'errors'
   .grid_9.col-md-9
     .select-project-view
       .dotted-border.left
@@ -88,7 +89,7 @@
     #services.ui-widget.ui-widget-content.cart-view
       %h3
         = t("study_assignment.sidebar_box.my_services")
-      .line-items= render :partial => 'catalogs/cart'
+      .line-items= render :partial => 'catalogs/cart', locals: { line_items: @line_items, service_request: @service_request, sub_service_request: @sub_service_request }
     = navigation_link t(:right_navigation)[:catalog], @back, 'catalog-button btn btn-info btn-lg btn-block button-hover'
     = render :partial => 'right_navigation'
 .continue.col-md-12= render :partial => 'service_requests/navigation'

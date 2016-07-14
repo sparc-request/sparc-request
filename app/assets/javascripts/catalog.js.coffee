@@ -142,14 +142,8 @@ $(document).ready ->
     .appendTo(ul)
 
   $(document).on 'click', '.submit-request-button', ->
-    signed_in = $(this).data('signed-in')
-
     if $('#line_item_count').val() <= 0
       $('#modal_place').html($('#submit-error-modal').html())
       $('#modal_place').modal('show')
       $('.modal #submit-error-modal').removeClass('hidden')
-      return false
-    else if !signed_in
-      $('#sign_in').dialog
-        modal: true
       return false

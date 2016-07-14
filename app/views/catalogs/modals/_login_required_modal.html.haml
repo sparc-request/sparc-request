@@ -17,28 +17,19 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-/[if IE 8]
-  %img(src="/assets/steps_no_text.png"){:class => 'steps_banner_ie'}
-  .test_table
-    %table.steps_table{:id => 'steps_banner', :usemap => '#steps_banner'}
-      %tr
-        %td= raw(t(:step_navigation)[:step_1])
-        %td= raw(t(:step_navigation)[:step_2])
-        %td= raw(t(:step_navigation)[:step_3])
-        %td= raw(t(:step_navigation)[:step_4])
-        %td= raw(t(:step_navigation)[:step_5])
-.grid_12.col-md-12
-  <!--[if !IE 8]> -->
-  .test_table
-    %table.steps_table{:id => 'steps_banner', :usemap => '#steps_banner'}
-      %tr
-        %td= raw(t(:step_navigation)[:step_1])
-        %td= raw(t(:step_navigation)[:step_2])
-        %td= raw(t(:step_navigation)[:step_3])
-        %td= raw(t(:step_navigation)[:step_4])
-        %td= raw(t(:step_navigation)[:step_5])
-  <!-- <![endif]-->
-
-  %h3.step-header.ui-corner-all{:class => @css_class}= @step_text
-  %br
+#login-required-modal.hidden
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %button.close{ type: 'button', data: { dismiss: 'modal' } }
+          %span{ aria: { hidden: 'true' } } &times;
+        %h4.text-center#modal-title
+          = t(:devise)[:sessions][:validate_login][:header]
+      .modal-body
+        #modal_errors
+        .form-group.text-center
+          = t(:devise)[:sessions][:validate_login][:warning]
+      .modal-footer
+        .center-block
+          %button.btn.btn-default{ type: 'button', data: { dismiss: 'modal' } }
+            = t(:actions)[:close]

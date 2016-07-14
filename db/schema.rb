@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160711161202) do
+ActiveRecord::Schema.define(version: 20160712191814) do
 
   create_table "admin_rates", force: :cascade do |t|
     t.integer  "line_item_id", limit: 4
@@ -530,11 +530,11 @@ ActiveRecord::Schema.define(version: 20160711161202) do
   create_table "past_subsidies", force: :cascade do |t|
     t.integer  "sub_service_request_id", limit: 4
     t.integer  "total_at_approval",      limit: 4
-    t.integer  "pi_contribution",        limit: 4
     t.integer  "approved_by",            limit: 4
     t.datetime "approved_at"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.float    "percent_subsidy",        limit: 24, default: 0.0
   end
 
   add_index "past_subsidies", ["approved_by"], name: "index_past_subsidies_on_approved_by", using: :btree
@@ -1000,7 +1000,6 @@ ActiveRecord::Schema.define(version: 20160711161202) do
   add_index "submission_emails", ["organization_id"], name: "index_submission_emails_on_organization_id", using: :btree
 
   create_table "subsidies", force: :cascade do |t|
-    t.integer  "pi_contribution",        limit: 4
     t.datetime "created_at",                                             null: false
     t.datetime "updated_at",                                             null: false
     t.datetime "deleted_at"

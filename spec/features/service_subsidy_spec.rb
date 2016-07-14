@@ -64,7 +64,7 @@ RSpec.describe "subsidy page", js: true do
       wait_for_javascript_to_finish
       find('#pi_contribution').set("6000\n")
       wait_for_javascript_to_finish
-      
+
       subsidy_cost = @direct_cost - 6000
       percent_subsidy = ((subsidy_cost / @direct_cost) * 100).round(2)
       percent_field_value = find('#percent_subsidy').value

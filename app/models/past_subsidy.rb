@@ -26,11 +26,17 @@ class PastSubsidy < ActiveRecord::Base
 
   attr_accessible :sub_service_request_id
   attr_accessible :total_at_approval
-  attr_accessible :pi_contribution
+  attr_accessible :percent_subsidy
   attr_accessible :approved_by
   attr_accessible :approved_at
 
   default_scope { order('approved_at ASC') }
+
+  def pi_contribution
+    # This ensures that if pi_contribution is null (new record),
+    # then it will reflect the full cost of the request.
+    total_at_approval - (total_at_approval * percent_subsidy) || total_at_approval
+  end
 
   def approved_cost
     # Calculates cost of subsidy (amount subsidized)

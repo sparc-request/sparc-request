@@ -22,7 +22,7 @@ FactoryGirl.define do
 
   factory :subsidy do
     sub_service_request nil
-    pi_contribution 0
+    percent_subsidy 0
 
     trait :without_validations do
       to_create { |instance| instance.save(validate: false) }

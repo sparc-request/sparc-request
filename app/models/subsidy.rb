@@ -43,12 +43,12 @@ class Subsidy < ActiveRecord::Base
   def pi_contribution
     # This ensures that if pi_contribution is null (new record),
     # then it will reflect the full cost of the request.
-    total_request_cost - (total_request_cost * percent_subsidy) || total_request_cost
+    total_request_cost.to_f - (total_request_cost.to_f * percent_subsidy) || total_request_cost.to_f
   end
 
   # Generates error messages if user input is out of parameters
   def contribution_caps
-    subsidy_cost = (total_request_cost - pi_contribution)
+    subsidy_cost = (total_request_cost.to_f - pi_contribution)
     if pi_contribution < 0
       errors.add(:pi_contribution, "can not be less than 0")
     elsif max_dollar_cap.present? and max_dollar_cap > 0 and (subsidy_cost / 100.0) > max_dollar_cap

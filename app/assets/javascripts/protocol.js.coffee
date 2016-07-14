@@ -22,7 +22,6 @@
 #= require navigation
 
 $(document).ready ->
-  
   $(document).on('mouseenter', '.step-btn', ->
     $(this).addClass('hover')
     $(this).siblings('.right-arrow').addClass('hover')
@@ -39,28 +38,16 @@ $(document).ready ->
     $(this).siblings('.step-btn').removeClass('hover')
   )
 
-  $('.new-study-button').tooltip()
-  $('.new-project-button').tooltip()
-
-  infotip.setText('Research Study: An individual research study with defined aims and outcomes', '#infotip img')
-
-  $("input[name=protocol]:radio").change ->
-    if $(this).val() == 'Research Study'
-      $('.existing-study').show()
-      $('.edit-study').show() unless $('.edit_study_id').val() == ""
-      $('.existing-project').hide()
-      $('#study-select #service_request_protocol_id').removeAttr('disabled')
-      $('#project-select #service_request_protocol_id').attr('disabled', 'disabled')
-      infotip.setText('Research Study: An individual research study with defined aims and outcomes', '#infotip img')
+  $(document).on 'click', '.service-view a', ->
+    id = $(this).data('id')
+    description = $(".service-description-#{id}")
+    if description.hasClass('hidden')
+      $('.service-description').addClass('hidden')
+      description.removeClass('hidden')
     else
-      $('.existing-project').show()
-      $('.edit-project').show() unless $('.edit_project_id').val() == ""
-      $('.existing-study').hide()
-      $('#project-select #service_request_protocol_id').removeAttr('disabled')
-      $('#study-select #service_request_protocol_id').attr('disabled', 'disabled')
-      infotip.setText('Use "Project" for non-study specific service requests, or anything that is not a study.', '#infotip img')
+      description.addClass('hidden')
 
-  $("input[name=protocol]:radio:checked").change()
+  $('.protocol-select-help a').tooltip()
 
   $('.edit-study').hide() unless $('.edit_study_id').val() != ""
   $('.edit-project').hide() unless $('.edit_project_id').val() != ""

@@ -19,7 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 $('#line_item_count').val(<%= @line_items.count %>)
 
-$('.cart').html("<%= escape_javascript(render( 'catalogs/cart', line_items: @line_items, service_request: @service_request, sub_service_request: @sub_service_request ))%>")
+$('.cart').html("<%= escape_javascript(render( 'service_requests/right_navigation/cart', line_items: @line_items, service_request: @service_request, sub_service_request: @sub_service_request )) %>")
 
 if "<%= @page %>" == 'protocol'
-  $('.service-list').html("<%= escape_javascript render :partial => 'service_list' %>")
+  $('.service-list').html("<%= escape_javascript(render( 'service_requests/protocol/service_list', service_request: @service_request, sub_service_request: @sub_service_request )) %>")

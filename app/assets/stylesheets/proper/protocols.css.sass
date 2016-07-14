@@ -17,3 +17,44 @@
 /* DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS*/
 /* INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR*/
 /* TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.*/
+@import 'proper/colors'
+
+.body-container
+  margin-bottom: 20px
+
+.protocol-left
+  border-right-style: dotted
+  border-right-color: #ccc
+
+  .review-service-warning
+    font-weight: bold
+
+  .panel
+    .panel-heading
+      background: $sparc-blue !important
+      border: 0
+
+    .panel-body
+      border: 1px solid $sparc-blue
+
+    .service-view
+      display: inline-block
+      width: 100%
+      .service
+        width: 100%
+        border: 0px
+        text-align: left
+        color: $link
+
+
+    .service-view:not(:last-child)
+      padding-bottom: 5px
+      border-bottom: 1px solid #eee
+      margin-bottom: 5px
+
+  .percent-effort-warning
+    font-style: italic
+    color: red
+    padding-bottom: 20px
+    border-bottom: 1px solid black
+    margin-bottom: 20px

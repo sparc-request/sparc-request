@@ -25,7 +25,7 @@
       = render 'catalogs/description', organization: organization, service_request: service_request, from_portal: from_portal
     - else
       = render 'catalogs/welcome'
-  #calendar-blog
+  #calendar-blog.full
     - if USE_NEWS_FEED
       = render 'catalogs/news'
     - if USE_GOOGLE_CALENDAR

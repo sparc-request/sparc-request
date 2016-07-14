@@ -17,18 +17,7 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-= stylesheet_link_tag 'hover_effect'
-
-.grid_12
-  %div{:class => @css_class}
-    .nav-backward
-      .return-to-previous
-        = navigation_link t(:bottom_navigation)[:go_back], @back, "btn btn-success btn-lg button-hover"
-    - if @service_request.submitted_at.blank?
-      .exit.btn.btn-lg= navigation_link t(:bottom_navigation)[:save_and_exit],  'save_and_exit', "btn btn-success btn-lg button-hover"
-    - else
-      .exit
-    .nav-forward
-      .save-and-continue
-        = navigation_link t(:bottom_navigation)[:save_and_continue], @forward, "btn btn-success btn-lg button-hover"
+.line-items
+  = hidden_field_tag :line_item_count, line_items.size
+  - line_items.each do |line_item|
+    = render 'service_requests/right_navigation/cart_line_item', line_item: line_item, service_request: service_request, sub_service_request: sub_service_request

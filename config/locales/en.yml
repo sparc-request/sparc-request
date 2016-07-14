@@ -123,6 +123,7 @@ en:
       plural: "Notes"
 
   protocols:
+    new: "New Protocol"
     change_type:
       header: "Change Protocol Type"
       type: "Protocol Type:"
@@ -130,6 +131,7 @@ en:
       project: "Project"
       change_button: "Change Type"
     studies:
+      new: "New Study"
       information:
         header: "Study Information"
         subtext: "Necessary to obtain correct pricing"
@@ -196,6 +198,7 @@ en:
         header: "Affiliations, Collaborations, and Memberships"
         subtext: "Check all that apply"
     projects:
+      new: "New Project"
       information:
         header: "Project Information"
         short_title: "Short Title: *"
@@ -273,14 +276,6 @@ en:
           header: "Calendar"
           all_day: "All Day"
           none: "No events scheduled within a month from today."
-      cart:
-        header: "My Services"
-        has_fulfillments: "This line item has one or more fulfillments associated with it and can not be deleted."
-        remove_request_confirm: "This action will delete this service request and you will be redirected to your Dashboard. Click OK to proceed."
-        submit_error:
-          header: "Submission Error"
-          warning_text: "Please ensure that you have added all necessary research services to your \"My Services\" cart before proceeding. For a listing of available services to add, click on any of the Programs listed on the left-hand side of the page. Services will appear in the middle of the screen. Add services by clicking \"Add\"."
-          service_required: "You must add at least 1 service to your cart before clicking \"Continue\"."
       new_request:
         header: "New Request?"
         warning: "Is this a new research study or project?"
@@ -292,6 +287,26 @@ en:
     # PROTOCOL #
     ############
     protocol:
+      review_services_notice: "Please review Services below."
+      percent_effort_notice: "If Professional Services are covered by % effort, please indicate in Step 2."
+      selection_help:
+        question: "Which type of Protocol should I choose?"
+        study_response: "Choose 'New Study' for a research study with defined aims and outcomes."
+        project_response: "Choose 'New Project' for non-study-specific Service Requests or anything that is not a research study."
+      previously_submitted_warning: "The request that you are editing has been previously submitted and can not be moved to another %{study_type}."
+
+    ########
+    # CART #
+    ########
+    cart:
+      header: "My Services"
+      to_catalog: "Return to Catalog"
+      has_fulfillments: "This line item has one or more fulfillments associated with it and can not be deleted."
+      remove_request_confirm: "This action will delete this service request and you will be redirected to your Dashboard. Click OK to proceed."
+      submit_error:
+        header: "Submission Error"
+        warning_text: "Please ensure that you have added all necessary research services to your \"My Services\" cart before proceeding. For a listing of available services to add, click on any of the Programs listed on the left-hand side of the page. Services will appear in the middle of the screen. Add services by clicking \"Add\"."
+        service_required: "You must add at least 1 service to your cart before clicking \"Continue\"."
 
     ##############
     # NAVIGATION #
@@ -303,6 +318,10 @@ en:
         step3: "STEP 3:<br />Notes &<br />Documents"
         step4: "STEP 4:<br />Review Your<br />Request"
         step5: "STEP 5:<br />Submission<br />Confirmation"
+      bottom:
+        back: "← Go Back"
+        save_and_exit: "Save as Draft"
+        save_and_continue: "Save and Continue →"
 
     ####################
     # RIGHT NAVIGATION #

@@ -52,7 +52,7 @@ module ServiceRequestsHelper
   end
 
   def organization_description_display(organization)
-    organization.description.present? ? organization.description : t(:proper)[:catalog][:accordion][:no_description]
+    organization.description.present? ? raw(organization.description) : t(:proper)[:catalog][:accordion][:no_description]
   end
 
   def display_service_in_catalog(service, service_request, from_portal)
@@ -90,6 +90,14 @@ module ServiceRequestsHelper
     end
   end
 
+  def request_submitted_warning_display(service_request)
+    if service_request.status == 'first_draft'
+      ''
+    else
+      content_tag(:p, I18n.t('proper.protocol.previously_submitted_warning', service_request.protocol.type), class: 'text-center')
+    end
+  end
+
   private
 
   def provider_accordion(providers, locked_ids, organization, process_ssr_found)
@@ -113,7 +121,7 @@ module ServiceRequestsHelper
       next unless (organization.nil? || process_ssr_found || (process_ssr_found = ssr_org == program) || organization.parents.include?(program))
       locked = locked_ids.include?(program.id)
 
-      returning_html += content_tag(:h4, organization_name_display(program, locked), class: ['btn btn-default btn-sm program-link', locked ? 'locked' : ''], data: { id: program.id, process_ssr_found: process_ssr_found })
+      returning_html += content_tag(:h4, organization_name_display(program, locked), class: ['btn btn-default btn-sm full program-link', locked ? 'locked' : ''], data: { id: program.id, process_ssr_found: process_ssr_found })
     end
 
     returning_html.html_safe

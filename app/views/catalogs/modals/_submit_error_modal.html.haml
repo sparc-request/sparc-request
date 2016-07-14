@@ -24,13 +24,13 @@
         %button.close{ type: 'button', data: { dismiss: 'modal' } }
           %span{ aria: { hidden: 'true' } } &times;
         %h4.text-center#modal-title
-          = t(:proper)[:catalog][:cart][:submit_error][:header]
+          = t(:proper)[:cart][:submit_error][:header]
       .modal-body
         #modal_errors
         .form-group
-          = t(:proper)[:catalog][:cart][:submit_error][:warning_text]
+          = t(:proper)[:cart][:submit_error][:warning_text]
         .form-group
-          = t(:proper)[:catalog][:cart][:submit_error][:service_required]
+          = t(:proper)[:cart][:submit_error][:service_required]
       .modal-footer
         .center-block
           %button.btn.btn-default{ type: 'button', data: { dismiss: 'modal' } }

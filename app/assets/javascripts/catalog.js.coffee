@@ -70,7 +70,7 @@ $(document).ready ->
   $(document).on 'click', '.core-header', ->
     $('.service-description').addClass('hidden')
 
-  $(document).on 'click', '.service-view .title .name a', ->
+  $(document).on 'click', '.service-view a', ->
     id = $(this).data('id')
     description = $(".service-description-#{id}")
 

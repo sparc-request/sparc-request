@@ -21,9 +21,9 @@
   .panel.panel-default
     .panel-heading.text-center
       %h4.panel-title
-        = t(:proper)[:catalog][:cart][:header] + protocol_id_display(sub_service_request, service_request)
+        = t(:proper)[:cart][:header] + protocol_id_display(sub_service_request, service_request)
     .panel-body.cart
-      = render 'catalogs/cart', line_items: line_items, service_request: service_request, sub_service_request: sub_service_request
+      = render 'service_requests/right_navigation/cart', line_items: line_items, service_request: service_request, sub_service_request: sub_service_request
   .nav-buttons
     = link_to t(:actions)[:continue], protocol_service_request_path(service_request), class: 'submit-request-button btn btn-success btn-lg btn-block'
     = render 'service_requests/right_navigation/right_navigation'

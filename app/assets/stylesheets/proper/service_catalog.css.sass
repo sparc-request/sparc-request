@@ -38,7 +38,6 @@
     h4
       padding-left: 5%
       padding-right: 5%
-      width: 100%
       line-height: 100%
 .provider-header:hover
   background: #0065A0 !important
@@ -77,15 +76,14 @@
     color: white
 
 .service-view
+  display: inline-block
   .title
-    display: inline-flex
-    width: 100%
     div
       margin: auto
-    .name
-      text-align: left
-      a
-        color: #337AB7 !important
+      .service
+        text-align: left
+        border: 0
+        color: $link
 
 .service-view:not(:last-child)
   padding-bottom: 5px
@@ -124,7 +122,6 @@
 
   #calendar-blog
     display: inline-block
-    width: 100%
     @media( min-width: 768px )
       .news-container
         padding-left: 0

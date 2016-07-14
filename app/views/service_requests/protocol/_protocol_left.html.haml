@@ -1,0 +1,73 @@
+-# Copyright © 2011 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+.col-md-9.protocol-left
+  %p.review-service-warning
+    = t(:proper)[:protocol][:review_services_notice]
+  .service-list
+    = render 'service_requests/protocol/service_list', service_request: @service_request, sub_service_request: @sub_service_request
+  %p.text-center.percent-effort-warning
+    = t(:proper)[:protocol][:percent_effort_notice]
+  = render 'service_requests/protocol/protocol_display', service_request: @service_request
+
+
+
+
+  / - if @service_request.status == 'first_draft'
+  /   - if @service_request.protocol.present?
+  /     - if @service_request.protocol.type == 'Study'
+  /       .existing-study.center
+  /         #study.study-select
+  /           #study-select
+  /             .inline.form-group
+  /               %strong
+  /                 = @service_request.protocol.display_protocol_id_and_title
+  /               = link_to "Edit Study", edit_service_request_study_path(@service_request, @service_request.protocol, portal: false), class: 'edit-study blue-button btn btn-primary button-hover'
+  /     - if @service_request.protocol.type == 'Project'
+  /       .existing-project.center
+  /         #project.project-select
+  /           #project-select
+  /             .inline.form-group
+  /               %strong
+  /                 = @service_request.protocol.display_protocol_id_and_title
+  /               = link_to 'Edit Project', edit_service_request_project_path(@service_request, @service_request.protocol, portal: false), class: 'edit-project blue-button btn btn-primary button-hover'
+  /   - else
+  /     .type-select.center.form-group
+  /       - if @sub_service_request.nil?
+  /         = link_to t('study_assignment.research_study'), new_service_request_study_path(@service_request, portal: false), class: 'new-study-button btn btn-primary button-hover', title: t('study_assignment.tooltips.research_study_tooltip')
+  /         .divider
+  /         = link_to t('study_assignment.research_project'), new_service_request_project_path(@service_request, portal: false), class: 'new-project-button btn btn-primary button-hover', title: t('study_assignment.tooltips.research_project_tooltip')
+  / - else
+  /   .previously_submitted
+  /     .inline.form-group
+  /       - if @service_request.protocol.type == 'Study'
+  /         #study.study-select
+  /           = raw(t(:study_assignment)[:current_study])
+  /           %strong
+  /             = @service_request.protocol.display_protocol_id_and_title
+  /           = link_to t('study_assignment.edit_study'), edit_service_request_study_path(@service_request, @service_request.protocol, portal: false), class: 'edit-study blue-button btn btn-primary button-hover'
+  /         %br
+  /       - if @service_request.protocol.type == 'Project'
+  /         #project.project-select
+  /           = raw(t(:study_assignment)[:current_project])
+  /           %strong
+  /             = @service_request.protocol.display_protocol_id_and_title
+  /           = link_to t('study_assignment.edit_project'), edit_service_request_project_path(@service_request, @service_request.protocol, portal: false), class: 'edit-project blue-button btn btn-primary button-hover'
+  /         %br
+  /       = t(:study_assignment)[:previously_submitted_project]

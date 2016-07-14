@@ -62,27 +62,19 @@ module CatalogManager::CatalogHelper
     tree.join(' / ')
   end
 
-  def is_parent_available? organization_id
-    Organization.find(organization_id).parent.is_available
-  end
-
-  def is_service_parent_available? service_id
-    Organization.find(Service.find(service_id).organization_id).is_available
-  end
-
-  def disabled_parent organization_id
-    if is_parent_available?(organization_id)
-      Organization.find(organization_id).name
+  def disabled_parent organization
+    if organization.parent.is_available
+      organization.name
     else
-      disabled_parent(Organization.find(organization_id).parent_id)
+      disabled_parent(organization.parent)
     end
   end
 
-  def disabled_service_parent service_id
-    if is_service_parent_available?(service_id)
-      Service.find(service_id).name
+  def disabled_service_parent service
+    if service.organization.is_available
+      service.name
     else
-      disabled_parent(Service.find(service_id).organization_id)
+      disabled_parent(service.organization)
     end
   end
 end

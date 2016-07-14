@@ -22,7 +22,7 @@
 = stylesheet_link_tag 'proper/steps'
 = stylesheet_link_tag 'proper/right_navigation'
 
-= render '/service_requests/navigation/steps'
+= render '/service_requests/navigation/steps', step: @step_text, css_class: @css_class
 = form_tag navigate_service_request_path(@service_request), id: 'navigation_form' do
   = hidden_field_tag :location, ''
   = hidden_field_tag :validates, ''

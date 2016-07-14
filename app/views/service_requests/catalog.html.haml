@@ -30,6 +30,7 @@
 = render 'catalogs/modals/new_request_modal'
 = render 'catalogs/modals/request_submitted_modal', service_request: @service_request
 = render 'catalogs/modals/login_required_modal'
+
 - if @ctrc_ssr_id
   #ctrc-dialog
     = I18n.t('proper.catalog.ctrc_lock', protocol_id: @service_request.protocol.id, ssr_id: @ctrc_ssr_id, protocol_type: @service_request.protocol.type, short_title: @service_request.protocol.short_title)

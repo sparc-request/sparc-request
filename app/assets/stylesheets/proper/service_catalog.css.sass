@@ -125,13 +125,14 @@
   #calendar-blog
     display: inline-block
     width: 100%
-    .news-container
-      padding-left: 0
-      padding-right: 8px
+    @media( min-width: 768px )
+      .news-container
+        padding-left: 0
+        padding-right: 8px
 
-    .calendar-container
-      padding-left: 8px
-      padding-right: 0
+      .calendar-container
+        padding-left: 8px
+        padding-right: 0
 
     .col-sm-12
       padding-left: 0

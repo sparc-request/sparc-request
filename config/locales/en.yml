@@ -687,7 +687,7 @@ en:
             from: "Status Changed From"
             to: "Status Changed To"
           approval:
-            header: "Approval History"
+            header: "Administrative Approvals History"
             date: "Date Approved"
             type: "Type"
             by: "Approved By"

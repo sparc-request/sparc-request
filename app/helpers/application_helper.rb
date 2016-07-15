@@ -20,6 +20,21 @@
 
 module ApplicationHelper
 
+  def glyphicon(type)
+    icon_class  = case type
+                  when :new
+                    'glyphicon-plus'
+                  when :edit
+                    'glyphicon-edit'
+                  when :destroy
+                    'glyphicon-remove'
+                  else 
+                    ''
+                  end
+
+    content_tag(:div, '', class: "glyphicon #{icon_class}")
+  end
+
   def navbar_links
     list = ""
     NAVBAR_LINKS.each do |name, path|

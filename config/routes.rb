@@ -96,19 +96,6 @@ SparcRails::Application.routes.draw do
     member do
       get :approve_epic_rights
       get :push_to_epic
-    end
-  end
-
-  resources :projects, except: [:index, :show, :destroy] do
-    member do
-      get :push_to_epic_status
-    end
-  end
-
-  resources :studies, except: [:index, :show, :destroy] do
-    resources :identities, only: [:show]
-
-    member do
       get :push_to_epic_status
     end
   end

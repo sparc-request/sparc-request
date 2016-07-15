@@ -25,7 +25,7 @@ $(document).ready ->
   $(document).on('mouseenter', '.step-btn', ->
     $(this).addClass('hover')
     $(this).siblings('.right-arrow').addClass('hover')
-  ).on('mouseleave', '.btn', ->
+  ).on('mouseleave', '.step-btn', ->
     $(this).removeClass('hover')
     $(this).siblings('.right-arrow').removeClass('hover')
   )
@@ -38,16 +38,19 @@ $(document).ready ->
     $(this).siblings('.step-btn').removeClass('hover')
   )
 
-  $(document).on 'click', '.service-view a', ->
-    id = $(this).data('id')
-    description = $(".service-description-#{id}")
-    if description.hasClass('hidden')
-      $('.service-description').addClass('hidden')
-      description.removeClass('hidden')
-    else
-      description.addClass('hidden')
+  $(document).on('mouseenter', '.service-view a', ->
+    $(".service-description-#{$(this).data('id')}").removeClass('hidden')
+  ).on('mouseleave', '.service-view a', ->
+    $(".service-description-#{$(this).data('id')}").addClass('hidden')
+  )
 
   $('.protocol-select-help a').tooltip()
+
+
+
+
+
+
 
   $('.edit-study').hide() unless $('.edit_study_id').val() != ""
   $('.edit-project').hide() unless $('.edit_project_id').val() != ""

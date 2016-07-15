@@ -124,6 +124,7 @@ en:
 
   protocols:
     new: "New Protocol"
+    edit: "Edit %{protocol_type}"
     change_type:
       header: "Change Protocol Type"
       type: "Protocol Type:"

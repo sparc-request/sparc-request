@@ -21,6 +21,7 @@ $(document).ready ->
   $(document).on 'click', '.faq-button', ->
     $('#modal_place').html($('#cart-help-modal').html())
     $("#modal_place").modal 'show'
+    return false
 
   $(document).on 'click', '.help-question', ->
     id = $(this).data('id')
@@ -37,3 +38,4 @@ $(document).ready ->
   $(document).on 'click', '.feedback-button', ->
     $('#modal_place').html($('#feedback-modal').html())
     $("#modal_place").modal 'show'
+    return false

@@ -18,13 +18,17 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class StudiesController < ProtocolsController
+module ProtocolsHelper
 
-  def model_class
-    return Study
+  def new_study
+    glyphicon(:new) + ' ' + t(:protocols)[:studies][:new]
   end
 
-  def set_protocol_type
-    session[:protocol_type] = 'study'
+  def new_project
+    glyphicon(:new) + ' ' + t(:protocols)[:projects][:new]
+  end
+
+  def edit_protocol(protocol)
+    glyphicon(:edit) + ' ' + I18n.t('protocols.edit', protocol_type: protocol.type) + ' #' + protocol.id
   end
 end

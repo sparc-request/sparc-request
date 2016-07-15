@@ -70,15 +70,11 @@ $(document).ready ->
   $(document).on 'click', '.core-header', ->
     $('.service-description').addClass('hidden')
 
-  $(document).on 'click', '.service-view a', ->
-    id = $(this).data('id')
-    description = $(".service-description-#{id}")
-
-    if description.hasClass('hidden')
-      $('.service-description').addClass('hidden')
-      description.removeClass('hidden')
-    else
-      description.addClass('hidden')
+  $(document).on('mouseenter', '.service-view a', ->
+    $(".service-description-#{$(this).data('id')}").removeClass('hidden')
+  ).on('mouseleave', '.service-view a', ->
+    $(".service-description-#{$(this).data('id')}").addClass('hidden')
+  )
 
   ### Search Logic ###
   autoComplete = $('#service-query').autocomplete

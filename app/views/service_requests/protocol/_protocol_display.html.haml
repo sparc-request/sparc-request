@@ -19,10 +19,10 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .col-sm-12.protocol-container.text-center
   - if service_request.protocol
-
+    = link_to edit_protocol(service_request.protocol), class: 'btn btn-warning'
     = request_submitted_warning_display(service_request)
   - else
-    = link_to t(:protocols)[:studies][:new], new_protocol_path(service_request_id: service_request.id, type: 'Study'), class: 'btn btn-primary'
-    = link_to t(:protocols)[:projects][:new], new_protocol_path(service_request_id: service_request.id, type: 'Project'), class: 'btn btn-primary'
+    = link_to new_study, new_protocol_path(srid: service_request.id, protocol_type: 'Study'), class: 'btn btn-success'
+    = link_to new_project, new_protocol_path(srid: service_request.id, protocol_type: 'Project'), class: 'btn btn-success'
     .protocol-select-help
       = link_to t(:proper)[:protocol][:selection_help][:question], 'javascript:void(0)', title: [t(:proper)[:protocol][:selection_help][:study_response], t(:proper)[:protocol][:selection_help][:project_response]], data: { toggle: 'tooltip' }

@@ -19,19 +19,24 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class ProtocolsController < ApplicationController
-  respond_to :json, :js, :html
-  before_filter :initialize_service_request, unless: :from_portal?, :except => [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
-  before_filter :authorize_identity, unless: :from_portal?, :except => [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
-  before_filter :set_protocol_type, :except => [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
+  
+  respond_to :html, :js, :json
+
+  before_filter :initialize_service_request,  unless: :from_portal?,  except: [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
+  before_filter :authorize_identity,          unless: :from_portal?,  except: [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
   before_filter :set_portal
 
   def new
-    @protocol = self.model_class.new
-    setup_protocol = SetupProtocol.new(params[:portal], @protocol, current_user, session[:service_request_id])
-    setup_protocol.setup
-    @epic_services = setup_protocol.set_epic_services
-    set_cookies
-    resolve_layout
+    @protocol_type          = params[:protocol_type]
+    @protocol               = @protocol_type.capitalize.constantize.new
+    @protocol.requester_id  = current_user.id
+    @protocol.populate_for_edit
+    # @protocol = self.model_class.new
+    # setup_protocol = SetupProtocol.new(params[:portal], @protocol, current_user, session[:service_request_id])
+    # setup_protocol.setup
+    # @epic_services = setup_protocol.set_epic_services
+    # set_cookies
+    # resolve_layout
   end
 
   def create
@@ -139,10 +144,6 @@ class ProtocolsController < ApplicationController
       @protocol.populate_for_edit
     end
     cookies['current_step'] = @current_step
-  end
-
-  def set_protocol_type
-    raise NotImplementedError
   end
 
   def push_to_epic_status

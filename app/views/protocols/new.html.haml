@@ -17,11 +17,5 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.col-md-9.protocol-left
-  %p.review-service-warning
-    = t(:proper)[:protocol][:review_services_notice]
-  .service-list
-    = render 'service_requests/protocol/service_list', service_request: @service_request, sub_service_request: @sub_service_request
-  %p.text-center.percent-effort-warning
-    = t(:proper)[:protocol][:percent_effort_notice]
-  = render 'service_requests/protocol/protocol_display', service_request: @service_request
+#protocol
+  = render partial: 'dashboard/protocols/form/protocol_form', locals: { protocol: @protocol, protocol_type: @protocol_type, admin: false, permission_to_edit: true }

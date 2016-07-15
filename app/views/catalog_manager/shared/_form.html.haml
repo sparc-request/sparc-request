@@ -72,7 +72,7 @@
               %th= t(:organization_form)[:tag_list] #not present in institutions
               %td
                 - Tag.all.each do |tag|
-                  %span{style: "margin-right:10px;"}
+                  %span{style: "margin-right:30px;"}
                     %span= f.label (t(:tags)[tag.name.gsub(" ", "_").to_sym] ? t(:tags)[tag.name.gsub(" ", "_").to_sym] : tag.name.humanize)
                     %span= f.check_box :tag_list, { multiple: true }, tag.name, nil
 

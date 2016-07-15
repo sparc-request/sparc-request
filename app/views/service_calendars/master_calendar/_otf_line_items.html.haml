@@ -206,15 +206,21 @@
                 %td{ colspan: 2 }
                   %span
                     = line_item.service.try(:displayed_pricing_map).try(:otf_unit_type).try(:humanize)
-                    = text_field_tag "service_request[line_items_attributes][#{line_item.id}][units_per_quantity]", line_item.units_per_quantity, |
-                     'data-qty_max' => line_item.service.displayed_pricing_map.units_per_qty_max, class: 'units_per_quantity', current_units_per_quantity: line_item.units_per_quantity, |
-                     update: update_otf_qty_and_units_per_qty_service_request_service_calendars_path(@service_request, line_item_id: line_item.id, type: 'units_per_qty') |
+                    - if locked
+                      = line_item.units_per_quantity
+                    - else
+                      = text_field_tag "service_request[line_items_attributes][#{line_item.id}][units_per_quantity]", line_item.units_per_quantity, |
+                       'data-qty_max' => line_item.service.displayed_pricing_map.units_per_qty_max, class: 'units_per_quantity', current_units_per_quantity: line_item.units_per_quantity, |
+                       update: update_otf_qty_and_units_per_qty_service_request_service_calendars_path(@service_request, line_item_id: line_item.id, type: 'units_per_qty') |
                 %td{ colspan: 2 }
                   %span
                     = line_item.service.try(:displayed_pricing_map).try(:quantity_type).try(:humanize)
-                    = text_field_tag "service_request[line_items_attributes][#{line_item.id}][quantity]", line_item.quantity, |
-                     unit_minimum:  line_item.service.displayed_pricing_map.quantity_minimum, class: 'line_item_quantity', current_quantity: line_item.quantity, previous_quantity: line_item.quantity, units_per_qty_max: line_item.service.displayed_pricing_map.units_per_qty_max, |
-                     update: update_otf_qty_and_units_per_qty_service_request_service_calendars_path(@service_request, line_item_id: line_item.id, type: 'qty') |
+                    - if locked
+                      = line_item.quantity
+                    - else
+                      = text_field_tag "service_request[line_items_attributes][#{line_item.id}][quantity]", line_item.quantity, |
+                       unit_minimum:  line_item.service.displayed_pricing_map.quantity_minimum, class: 'line_item_quantity', current_quantity: line_item.quantity, previous_quantity: line_item.quantity, units_per_qty_max: line_item.service.displayed_pricing_map.units_per_qty_max, |
+                       update: update_otf_qty_and_units_per_qty_service_request_service_calendars_path(@service_request, line_item_id: line_item.id, type: 'qty') |
             %td{ colspan: 7 }
             %td{ class: "otf_total total_#{line_item.id}" }
               = display_one_time_fee_direct_cost line_item

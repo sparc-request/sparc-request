@@ -17,52 +17,40 @@
 /* DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS*/
 /* INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR*/
 /* TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.*/
-@import 'proper/colors'
+/* Primary PI Typeahead */
+.tt-menu
+  width: 422px
+  margin-top: 12px
+  padding: 8px 0
+  background-color: #fff
+  border: 1px solid #ccc
+  border: 1px solid rgba(0, 0, 0, 0.2)
+  border-radius: 8px
+  box-shadow: 0 5px 10px rgba(0,0,0,.2)
 
-.body-container
-  margin-bottom: 20px
+.tt-suggestion
+  padding: 3px 20px
+  margin: 3px 0
+  cursor: pointer
 
-.protocol-left
-  border-right-style: dotted
-  border-right-color: #ccc
+.tt-suggestion:not(:last-child)
+  border-bottom: 1px solid #EEE
 
-  .review-service-warning
-    font-weight: bold
+/* New/Edit Protocol */
+#funding-status, .pending_funding, #federal-non-phs, .approval_pending
+  .col-lg-10
+    padding-top: 11px
 
-  .service-list
-    display: inline-block
-    border-bottom: 1px solid black
-    margin-bottom: 20px
-    .service-view
-      display: inline-block
-      width: 100%
-      .service
-        width: 100%
-        border: 0px
-        text-align: left
-        color: $link
+.investigational_products, .oral_health_cobre
+  .col-lg-10
+    padding-top: 6px
 
-    .service-view:not(:last-child)
-      padding-bottom: 5px
-      border-bottom: 1px solid #eee
-      margin-bottom: 5px
+#project-roles .form-group .col-lg-10 label
+  margin-top: 8px
 
-  .panel
-    .panel-heading
-      background: $sparc-blue !important
-      border: 0
+.nct-number
+  .col-lg-10
+    padding-top: 10px
 
-    .panel-body
-      border: 1px solid $sparc-blue
-
-  .percent-effort-warning, .previously-submitted-warning
-    font-style: italic
-    color: red
-
-#protocol-summary
-  .row
-    margin: 0
-  .row:not(:last-child)
-    padding-bottom: 3px
-    border-bottom: 1px solid #EEE
-    margin-bottom: 3px
+textarea
+  resize: vertical

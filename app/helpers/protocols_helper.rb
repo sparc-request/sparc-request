@@ -19,16 +19,11 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 module ProtocolsHelper
-
-  def new_study
-    glyphicon(:new) + ' ' + t(:protocols)[:studies][:new]
-  end
-
-  def new_project
-    glyphicon(:new) + ' ' + t(:protocols)[:projects][:new]
-  end
-
-  def edit_protocol(protocol)
-    glyphicon(:edit) + ' ' + I18n.t('protocols.edit', protocol_type: protocol.type) + ' #' + protocol.id
+  def request_submitted_warning_display(service_request)
+    if service_request.status == 'submitted'
+      content_tag(:p, I18n.t('proper.protocol.previously_submitted_warning', protocol_type: service_request.protocol.type), class: 'previously-submitted-warning')
+    else
+      ''
+    end
   end
 end

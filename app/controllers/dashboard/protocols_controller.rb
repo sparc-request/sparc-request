@@ -96,7 +96,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   def create
     protocol_class = params[:protocol][:type].capitalize.constantize
 
-    attrs = fix_date_params
+    attrs = params[:protocol]
 
     @protocol = protocol_class.new(attrs)
     @protocol.study_type_question_group_id = StudyTypeQuestionGroup.active_id
@@ -143,7 +143,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def update
-    attrs = fix_date_params
+    attrs = params[:protocol]
 
     permission_to_edit  = @authorization.present? ? @authorization.can_edit? : false
 
@@ -241,35 +241,4 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
       @protocol.activate
     end
   end
-
-  def convert_date_for_save attrs, date_field
-    if attrs[date_field] && attrs[date_field].present?
-      attrs[date_field] = Time.strptime(attrs[date_field], "%m/%d/%Y")
-    end
-
-    attrs
-  end
-
-  def fix_date_params
-    attrs               = params[:protocol]
-
-    #### fix dates so they are saved correctly ####
-    attrs                                        = convert_date_for_save attrs, :start_date
-    attrs                                        = convert_date_for_save attrs, :end_date
-    attrs                                        = convert_date_for_save attrs, :funding_start_date
-    attrs                                        = convert_date_for_save attrs, :potential_funding_start_date
-
-    if attrs[:human_subjects_info_attributes]
-      attrs[:human_subjects_info_attributes]     = convert_date_for_save attrs[:human_subjects_info_attributes], :irb_approval_date
-      attrs[:human_subjects_info_attributes]     = convert_date_for_save attrs[:human_subjects_info_attributes], :irb_expiration_date
-    end
-
-    if attrs[:vertebrate_animals_info_attributes]
-      attrs[:vertebrate_animals_info_attributes] = convert_date_for_save attrs[:vertebrate_animals_info_attributes], :iacuc_approval_date
-      attrs[:vertebrate_animals_info_attributes] = convert_date_for_save attrs[:vertebrate_animals_info_attributes], :iacuc_expiration_date
-    end
-
-    attrs
-  end
-
 end

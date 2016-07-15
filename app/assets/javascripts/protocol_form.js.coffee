@@ -19,6 +19,22 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 $(document).ready ->
+  $('.datetimepicker').datetimepicker
+    format: 'MM/DD/YYYY'
+  
+  # Protocol Edit Begin
+  $(document).on 'click', '#protocol-type-button', ->
+    protocol_id = $(this).data('protocol-id')
+    srid        = $(this).data('srid')
+    data = 
+      type : $("#protocol_type").val()
+      srid : srid
+    if confirm(I18n['protocols']['change_type']['warning'])
+      $.ajax
+        type: 'PATCH'
+        url: "/protocols/#{protocol_id}/update_protocol_type"
+        data: data
+  # Protocol Edit End
 
   study_type_form = '.selected_for_epic_dependent'
   study_selected_for_epic_button = '#selected_for_epic_button'

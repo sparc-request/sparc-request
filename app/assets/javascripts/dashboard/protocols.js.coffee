@@ -137,14 +137,3 @@ $(document).ready ->
           protocol_id         = $(this).data('protocol-id')
           window.location     = "/?protocol_id=#{protocol_id}&from_portal=true"
       # Protocol Show End
-
-      # Protocol Edit Begin
-      $(document).on 'click', '#protocol_type_button', ->
-        protocol_id = $(this).data('protocol-id')
-        data = type : $("#protocol_type").val()
-        if confirm "This will change the type of this Project/Study.  Are you sure?"
-          $.ajax
-            type: 'PATCH'
-            url: "/dashboard/protocols/#{protocol_id}/update_protocol_type"
-            data: data
-      # Protocol Edit End

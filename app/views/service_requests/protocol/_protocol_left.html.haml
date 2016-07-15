@@ -20,8 +20,8 @@
 .col-md-9.protocol-left
   %p.review-service-warning
     = t(:proper)[:protocol][:review_services_notice]
+  %p.percent-effort-warning
+    = t(:proper)[:protocol][:percent_effort_notice]
   .service-list
     = render 'service_requests/protocol/service_list', service_request: @service_request, sub_service_request: @sub_service_request
-  %p.text-center.percent-effort-warning
-    = t(:proper)[:protocol][:percent_effort_notice]
   = render 'service_requests/protocol/protocol_display', service_request: @service_request

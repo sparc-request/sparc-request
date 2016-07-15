@@ -90,14 +90,6 @@ module ServiceRequestsHelper
     end
   end
 
-  def request_submitted_warning_display(service_request)
-    if service_request.status == 'first_draft'
-      ''
-    else
-      content_tag(:p, I18n.t('proper.protocol.previously_submitted_warning', service_request.protocol.type), class: 'text-center')
-    end
-  end
-
   private
 
   def provider_accordion(providers, locked_ids, organization, process_ssr_found)

@@ -37,7 +37,7 @@ class ProtocolsController < ApplicationController
   def create
     protocol_class                          = params[:protocol][:type].capitalize.constantize
     @protocol                               = protocol_class.new(params[:protocol])
-    @protocol.service_request_id            = params[:service_request_id]
+    @service_request                        = ServiceRequest.find(params[:srid])
     @protocol.study_type_question_group_id  = StudyTypeQuestionGroup.active_id
 
     if @protocol.valid?
@@ -45,8 +45,9 @@ class ProtocolsController < ApplicationController
         # if current user is not authorized, add them as an authorized user
         @protocol.project_roles.new(identity_id: current_user.id, role: 'general-access-user', project_rights: 'approve')
       end
-      
+
       @protocol.save
+      @service_request.update_attributes(protocol: @protocol, status: 'draft')
 
       if USE_EPIC && @protocol.selected_for_epic
         @protocol.ensure_epic_user
@@ -60,58 +61,49 @@ class ProtocolsController < ApplicationController
   end
 
   def edit
+    @service_request                        = ServiceRequest.find(params[:srid])
+    @protocol                               = Protocol.find(params[:id])
+    @protocol.study_type_question_group_id  = StudyTypeQuestionGroup.active_id
 
-    @service_request = ServiceRequest.find session[:service_request_id]
-    @epic_services = @service_request.should_push_to_epic? if USE_EPIC
-    @protocol = current_user.protocols.find params[:id]
     @protocol.populate_for_edit
     @protocol.valid?
+    @errors = @protocol.errors
 
-    current_step_cookie = cookies['current_step']
-    cookies['current_step'] = 'protocol'
+    respond_to do |format|
+      format.html
+    end
   end
 
   def update
-    @service_request = ServiceRequest.find session[:service_request_id]
-    @current_step = cookies['current_step']
-    @protocol = current_user.protocols.find params[:id]
+    @service_request = ServiceRequest.find(params[:srid])
+    @protocol        = Protocol.find(params[:id])
 
+    if @protocol.update_attributes(params[:protocol].merge(study_type_question_group_id: StudyTypeQuestionGroup.active_id))
+      flash[:success] = "#{@protocol.type} Updated!"
+    else
+      @errors = @protocol.errors
+    end
     @protocol.validate_nct = true
 
-    attrs = if @protocol.type.downcase.to_sym == :study && params[:study]
-      params[:study]
-    elsif @protocol.type.downcase.to_sym == :project && params[:project]
-      params[:project]
-    else
-      Hash.new
+    if @service_request.status == "first_draft"
+      @service_request.update_attributes(status: "draft")
     end
+  end
 
-    @protocol.assign_attributes(attrs.merge(study_type_question_group_id: StudyTypeQuestionGroup.active.pluck(:id).first))
+  def update_protocol_type
+    @protocol       = Protocol.find(params[:id])
+    @protocol_type  = params[:type]
 
-    if @current_step == 'cancel'
-      @current_step = 'return_to_service_request'
-    elsif @current_step == 'go_back' and @protocol.valid?
-      @current_step = 'protocol'
-      @protocol.populate_for_edit
-    elsif @current_step == 'protocol' and @protocol.group_valid? :protocol
-      @current_step = 'user_details'
-      @protocol.populate_for_edit
-    elsif @current_step == 'user_details' and @protocol.valid?
-      @protocol.save
-      @current_step = 'return_to_service_request'
-      session[:saved_protocol_id] = @protocol.id
+    @protocol.update_attribute(:type, @protocol_type)
+    @protocol.activate
 
-      #Added as a safety net for older SRs
-      if @service_request.status == "first_draft"
-        @service_request.update_attributes(status: "draft")
-      end
-    elsif @current_step == 'go_back' and !@protocol.valid?
-      @current_step = 'user_details'
-      @protocol.populate_for_edit
-    else
-      @protocol.populate_for_edit
+    @protocol = Protocol.find(@protocol.id)#Protocol type has been converted, this is a reload
+    @protocol.populate_for_edit
+
+    flash[:success] = "Protocol Type Updated!"
+    if @protocol_type == "Study" && @protocol.sponsor_name.nil? && @protocol.selected_for_epic.nil?
+      flash[:alert] = "Please complete Sponsor Name and Publish Study in Epic"
     end
-    cookies['current_step'] = @current_step
   end
 
   def push_to_epic_status

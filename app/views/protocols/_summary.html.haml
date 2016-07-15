@@ -17,15 +17,44 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.row.container-fluid
-  .panel.panel-default
-    .panel-heading
-      %h4.panel-title
-        = t(:protocols)[:change_type][:header]
-    .panel-body.container-fluid
-      .form-group.row
-        = label_tag "protocol_type", t(:protocols)[:change_type][:type], class: 'col-lg-2 control-label'
-        .col-lg-10
-          = select_tag "protocol_type", options_for_select([[t(:protocols)[:change_type][:project], 'Project'], [t(:protocols)[:change_type][:study], 'Study']], protocol_type), class: 'selectpicker'
-          %button.btn.btn-warning#protocol-type-button{ data: {protocol_id: protocol.id } }
-            = t(:protocols)[:change_type][:change_button]
+.panel.panel-primary#summary-panel
+  .panel-heading
+    %h1.panel-title.pull-left
+      = I18n.t('protocols.summary.header', protocol_type: protocol_type)
+    .pull-right
+      %button.btn.btn-info.view-protocol-details-button{ data: { protocol_id: protocol.id } }
+        = I18n.t('dashboard.protocols.summary.view_details', protocol_type: protocol_type)
+      = link_to I18n.t('protocols.edit', protocol_type: protocol_type), edit_protocol_path(protocol, srid: service_request.id), class: 'btn btn-warning'
+    .clearfix
+  .panel-body#protocol-summary.text-left
+    .row
+      .col-sm-3
+        %label
+          = I18n.t('protocols.summary.id', protocol_type: protocol_type)
+      .col-sm-9
+        = protocol.try(:id)
+    .row
+      .col-sm-3
+        %label
+          = t(:protocols)[:summary][:title]
+      .col-sm-9
+        = protocol.try(:title)
+    .row
+      .col-sm-3
+        %label
+          = t(:protocols)[:summary][:short_title]
+      .col-sm-9
+        = protocol.try(:short_title)
+    - if protocol_type == 'Study'
+      .row
+        .col-sm-3
+          %label
+            = t(:protocols)[:summary][:sponsor]
+        .col-sm-9
+          = protocol.try(:sponsor_name)
+    .row
+      .col-sm-3
+        %label
+          = display_funding_source_title(protocol)
+      .col-sm-9
+        = display_funding_source(protocol)

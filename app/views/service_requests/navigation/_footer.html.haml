@@ -19,9 +19,9 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .bottom-nav.col-sm-12.ui-corner-all{ class: css_class }
   .col-sm-3.text-left
-    = link_to t(:proper)[:navigation][:bottom][:back], back, class: 'btn btn-success'
+    = link_to t(:proper)[:navigation][:bottom][:back], back, class: 'btn btn-danger'
   .col-sm-6.text-center
     - if service_request.submitted_at.blank? && service_request.protocol.present?
-      = link_to t(:proper)[:navigation][:bottom][:save_and_exit], 'save_and_exit', class: 'btn btn-success'
+      = link_to t(:proper)[:navigation][:bottom][:save_and_exit], 'save_and_exit', class: 'btn btn-warning'
   .col-sm-3.text-right
     = link_to t(:proper)[:navigation][:bottom][:save_and_continue], forward, class: 'btn btn-success'

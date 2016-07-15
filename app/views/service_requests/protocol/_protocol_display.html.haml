@@ -17,12 +17,12 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.col-sm-12.protocol-container.text-center
-  - if service_request.protocol
-    = link_to edit_protocol(service_request.protocol), class: 'btn btn-warning'
-    = request_submitted_warning_display(service_request)
-  - else
-    = link_to new_study, new_protocol_path(srid: service_request.id, protocol_type: 'Study'), class: 'btn btn-success'
-    = link_to new_project, new_protocol_path(srid: service_request.id, protocol_type: 'Project'), class: 'btn btn-success'
+- if service_request.protocol
+  = request_submitted_warning_display(service_request)
+  = render 'protocols/summary', protocol: service_request.protocol, protocol_type: service_request.protocol.type, service_request: service_request
+- else
+  .col-sm-12.protocol-container.text-center
+    = link_to t(:protocols)[:studies][:new], new_protocol_path(srid: service_request.id, protocol_type: 'Study'), class: 'btn btn-success'
+    = link_to t(:protocols)[:projects][:new], new_protocol_path(srid: service_request.id, protocol_type: 'Project'), class: 'btn btn-success'
     .protocol-select-help
       = link_to t(:proper)[:protocol][:selection_help][:question], 'javascript:void(0)', title: [t(:proper)[:protocol][:selection_help][:study_response], t(:proper)[:protocol][:selection_help][:project_response]], data: { toggle: 'tooltip' }

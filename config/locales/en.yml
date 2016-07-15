@@ -124,13 +124,22 @@ en:
 
   protocols:
     new: "New Protocol"
-    edit: "Edit %{protocol_type}"
+    edit: "Edit %{protocol_type} Information"
+    summary:
+      header: "%{protocol_type} Summary"
+      id: "%{protocol_type} ID:"
+      title: "Title:"
+      short_title: "Short Title:"
+      sponsor: "Sponsor Name:"
+      funding_source: "Funding Source:"
+      potential_source: "Potential Funding Source:"
     change_type:
       header: "Change Protocol Type"
       type: "Protocol Type:"
       study: "Study"
       project: "Project"
       change_button: "Change Type"
+      warning: "This will change the type of this Protocol. Are you sure?"
     studies:
       new: "New Study"
       information:
@@ -294,7 +303,7 @@ en:
         question: "Which type of Protocol should I choose?"
         study_response: "Choose 'New Study' for a research study with defined aims and outcomes."
         project_response: "Choose 'New Project' for non-study-specific Service Requests or anything that is not a research study."
-      previously_submitted_warning: "The request that you are editing has been previously submitted and can not be moved to another %{study_type}."
+      previously_submitted_warning: "The request that you are editing has been previously submitted and can not be moved to another %{protocol_type}."
 
     ########
     # CART #
@@ -588,15 +597,7 @@ en:
         unarchive: "Unarchive"
 
       summary:
-        header: " Summary"
-        notes: " Notes"
-        edit1: "Edit "
-        edit2: " Information"
-        view_details1: "View "
-        view_details2: " Details"
-        title: "Title:"
-        short_title: "Short Title:"
-        sponsor: "Sponsor Name:"
+        view_details: "View %{protocol_type} Details"
 
       authorized_users:
         header: "Authorized Users"

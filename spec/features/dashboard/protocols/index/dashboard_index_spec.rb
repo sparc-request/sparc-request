@@ -53,7 +53,7 @@ RSpec.describe 'dashboard index', js: :true do
         describe 'protocol has ssr' do
           scenario 'user should see requests button and archive button' do
             protocol = create(:study_without_validations, primary_pi: user)
-            sr = create(:service_request_without_validations, protocol: protocol, service_requester: user) 
+            sr = create(:service_request_without_validations, protocol: protocol) 
             ssr = create(:sub_service_request, service_request: sr, organization: create(:organization)) 
             page = visit_protocols_index_page
 
@@ -79,7 +79,7 @@ RSpec.describe 'dashboard index', js: :true do
         end
         describe 'protocol has ssr' do
           scenario 'user should see requests button and archive button' do
-            sr = create(:service_request_without_validations, protocol: @protocol, service_requester: user) 
+            sr = create(:service_request_without_validations, protocol: @protocol) 
             ssr = create(:sub_service_request, service_request: sr, organization: create(:organization)) 
             page = visit_protocols_index_page
 
@@ -105,7 +105,7 @@ RSpec.describe 'dashboard index', js: :true do
           create(:super_user, identity_id: user.id)
           protocol = create(:archived_project_without_validations, primary_pi: user)
           create(:project_role, identity: user, role: "very-important", project_rights: "to-party", protocol: protocol)
-          sr = create(:service_request_without_validations, protocol: protocol, service_requester: user) 
+          sr = create(:service_request_without_validations, protocol: protocol) 
           ssr = create(:sub_service_request, service_request: sr, organization: create(:organization)) 
 
           page = visit_protocols_index_page
@@ -126,7 +126,7 @@ RSpec.describe 'dashboard index', js: :true do
           create(:super_user, identity_id: user.id)
           protocol = create(:unarchived_project_without_validations, primary_pi: user)
           create(:project_role, identity: user, role: "very-important", project_rights: "to-party", protocol: protocol)
-          sr = create(:service_request_without_validations, protocol: protocol, service_requester: user) 
+          sr = create(:service_request_without_validations, protocol: protocol) 
           ssr = create(:sub_service_request, service_request: sr, organization: create(:organization)) 
 
           page = visit_protocols_index_page
@@ -142,7 +142,7 @@ RSpec.describe 'dashboard index', js: :true do
           create(:super_user, identity_id: user.id)
           protocol = create(:archived_study_without_validations, primary_pi: user)
           create(:project_role, identity: user, role: "very-important", project_rights: "to-party", protocol: protocol)
-          sr = create(:service_request_without_validations, protocol: protocol, service_requester: user) 
+          sr = create(:service_request_without_validations, protocol: protocol) 
           ssr = create(:sub_service_request, service_request: sr, organization: create(:organization)) 
 
           page = visit_protocols_index_page
@@ -162,7 +162,7 @@ RSpec.describe 'dashboard index', js: :true do
           create(:super_user, identity_id: user.id)
           protocol = create(:unarchived_study_without_validations, primary_pi: user)
           create(:project_role, identity: user, role: "very-important", project_rights: "to-party", protocol: protocol)
-          sr = create(:service_request_without_validations, protocol: protocol, service_requester: user) 
+          sr = create(:service_request_without_validations, protocol: protocol) 
           ssr = create(:sub_service_request, service_request: sr, organization: create(:organization)) 
 
           page = visit_protocols_index_page

@@ -35,7 +35,7 @@ RSpec.describe "User views SSR table", js: true do
   context 'for an editable SSR' do
     context 'As an Authorized User with Edit Privileges' do
       let!(:protocol)             { create(:unarchived_study_without_validations, primary_pi: jug2) }
-      let!(:service_request)      { create(:service_request_without_validations, protocol: protocol, service_requester: jug2, status: 'draft') }
+      let!(:service_request)      { create(:service_request_without_validations, protocol: protocol, status: 'draft') }
       let!(:organization)         { create(:organization,type: 'Institution', name: 'Megacorp', admin: bob, service_provider: bob) }
       let!(:sub_service_request)  { create(:sub_service_request, id: 9999, ssr_id: '1234', service_request: service_request, organization_id: organization.id, status: 'draft') }
 
@@ -49,7 +49,7 @@ RSpec.describe "User views SSR table", js: true do
 
       context 'for a locked SSR' do
         let!(:protocol)             { create(:unarchived_study_without_validations, primary_pi: jug2) }
-        let!(:service_request)      { create(:service_request_without_validations, protocol: protocol, service_requester: jug2, status: 'draft') }
+        let!(:service_request)      { create(:service_request_without_validations, protocol: protocol, status: 'draft') }
         let!(:organization)         { create(:organization,type: 'Institution', name: 'Megacorp', admin: bob, service_provider: bob) }
         
         scenario 'and sees View but not Edit' do
@@ -68,7 +68,7 @@ RSpec.describe "User views SSR table", js: true do
 
     context 'As an Authorized User with View Privileges' do
       let!(:protocol)             { create(:unarchived_study_without_validations, primary_pi: bob) }
-      let!(:service_request)      { create(:service_request_without_validations, protocol: protocol, service_requester: bob, status: 'draft') }
+      let!(:service_request)      { create(:service_request_without_validations, protocol: protocol, status: 'draft') }
       let!(:organization)         { create(:organization,type: 'Institution', name: 'Megacorp', admin: bob, service_provider: bob) }
       let!(:sub_service_request)  { create(:sub_service_request, id: 9999, ssr_id: '1234', service_request: service_request, organization_id: organization.id, status: 'draft') }
 
@@ -85,7 +85,7 @@ RSpec.describe "User views SSR table", js: true do
 
     context 'As an admin' do
       let!(:protocol)             { create(:unarchived_study_without_validations, primary_pi: bob) }
-      let!(:service_request)      { create(:service_request_without_validations, protocol: protocol, service_requester: jug2, status: 'draft') }
+      let!(:service_request)      { create(:service_request_without_validations, protocol: protocol, status: 'draft') }
       let!(:organization)         { create(:organization,type: 'Institution', name: 'Megacorp', admin: jug2, service_provider: jug2) }
       let!(:sub_service_request)  { create(:sub_service_request, id: 9999, ssr_id: '1234', service_request: service_request, organization_id: organization.id, status: 'draft') }
 

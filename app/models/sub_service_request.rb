@@ -26,6 +26,7 @@ class SubServiceRequest < ActiveRecord::Base
 
   after_save :update_past_status, :update_org_tree
 
+  belongs_to :service_requester, class_name: "Identity", foreign_key: "service_requester_id"
   belongs_to :owner, :class_name => 'Identity', :foreign_key => "owner_id"
   belongs_to :service_request
   belongs_to :organization
@@ -65,6 +66,8 @@ class SubServiceRequest < ActiveRecord::Base
   attr_accessible :in_work_fulfillment
   attr_accessible :routing
   attr_accessible :documents
+  attr_accessible :service_requester_id
+  attr_accessible :requester_contacted_date
 
   accepts_nested_attributes_for :line_items, allow_destroy: true
   accepts_nested_attributes_for :payments, allow_destroy: true

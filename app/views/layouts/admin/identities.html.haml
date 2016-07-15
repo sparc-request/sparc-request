@@ -27,9 +27,7 @@
               %li
                 %a{:href=> catalog_manager_root_path() }= t(:admin_identities)[:catalog_manager]
               %li
-                %a{:href=> portal_admin_path() }= t(:admin_identities)[:portal_admin]
-              %li
-                %a{:href=> portal_root_path() }= t(:admin_identities)[:portal]
+                %a{:href=> DASHBOARD_LINK }= t(:admin_identities)[:portal]
               %li
                 %a{:href=> root_path() }= t(:admin_identities)[:request_services]
     .container-fluid

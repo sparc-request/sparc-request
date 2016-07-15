@@ -131,7 +131,8 @@ class ServiceRequestsController < ApplicationController
 
   def protocol
     cookies.delete :current_step
-    @service_request.update_attribute(:service_requester_id, current_user.id) if @service_request.service_requester_id.nil?
+
+    @service_request.sub_service_requests.where(service_requester_id: nil).update_all(service_requester_id: current_user.id)
 
     if session[:saved_protocol_id]
       @service_request.protocol = Protocol.find session[:saved_protocol_id]
@@ -657,7 +658,7 @@ class ServiceRequestsController < ApplicationController
       authorized  = if @sub_service_request
                       current_user.can_edit_sub_service_request?(@sub_service_request)
                     else
-                      current_user.can_edit_service_request?(@service_request)
+                      @service_request.status == 'first_draft' || current_user.can_edit_service_request?(@service_request)
                     end
 
       protocol = @sub_service_request ? @sub_service_request.service_request.protocol : @service_request.protocol

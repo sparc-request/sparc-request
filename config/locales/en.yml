@@ -469,9 +469,9 @@ en:
         edit: " Edit Fulfillment"
         delete: " Delete Fulfillment"
       form:
-        date: "Fulfillment Date:"
-        time: "Quantity:"
-        time_unit: "Qty Type:"
+        date: "Fulfillment Date:*"
+        time: "Quantity:*"
+        time_unit: "Qty Type:*"
 
     ################
     #  LINE ITEMS  #
@@ -874,7 +874,7 @@ en:
           pi_contribution: "PI Contribution"
           cost: "Subsidy Current Cost"
           approve: "Approve"
-        add: "Add a Subsidy"
+        add: "Request a Subsidy"
       form:
         request_cost: "Current Request Cost:"
         percent: "Percent Subsidy:"

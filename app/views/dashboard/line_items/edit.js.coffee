@@ -23,4 +23,4 @@ $("#modal_place").html("<%= escape_javascript(render(:partial =>'dashboard/study
 <% end %>
 $("#modal_place").modal 'show'
 $(".selectpicker").selectpicker()
-$(".datetimepicker").datetimepicker(format: 'MM-DD-YYYY', allowInputToggle: true)
+$(".datetimepicker").datetimepicker(format: 'MM/DD/YYYY', allowInputToggle: true)

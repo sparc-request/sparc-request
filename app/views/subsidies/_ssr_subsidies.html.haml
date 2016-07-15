@@ -59,10 +59,10 @@
         %tr
           %th= "Subsidy Pending Approval"
         %tr
-          %th{align: "left"}= "Current Request Cost"
-          %th{align: "left"}= "Percent Subsidy"
-          %th{align: "left"}= "PI Contribution"
-          %th{align: "left"}= "Subsidy Cost"
+          %th.text-left= "Current Request Cost"
+          %th.text-left= "Percent Subsidy"
+          %th.text-left= "PI Contribution"
+          %th.text-left= "Subsidy Cost"
       %tbody
         %tr
           %td.request_cost{ data: { subsidy_id: pending.id, cost: pending.total_request_cost }}
@@ -79,7 +79,7 @@
     -if instructions
       %table
         %tr
-          %th{align: "left"}= "Instructions"
+          %th.text-left= t(:organization_form)[:subsidy_instructions]
         %tr
           %td.instructions{data: {subsidy_id: pending.id, instructions: instructions }}
             = instructions

@@ -30,10 +30,21 @@
     - welcome_text = @service_request.status == "get_a_cost_estimate" ? I18n.t('notifier.welcome_obtain_research_pricing') : I18n.t('notifier.welcome_submit')
     - if @role == 'pi' || @role == 'primary-pi'
       %p= I18n.t('notifier.body1', :full_name => @identity.full_name)
-      %p= I18n.t('notifier.body2_pi', :welcome => welcome_text, :application_title => I18n.t('application_title'), :root_url => ROOT_URL, :protocol_type => @protocol.type.downcase)
+      %p{:style => 'display: inline;'}
+        = I18n.t('notifier.body2_pi', :welcome => welcome_text, :application_title => I18n.t('application_title'), :root_url => ROOT_URL, :protocol_type => @protocol.type.downcase)
+      %strong= t(:notifier)[:body3_pi]
     - else
       %p= I18n.t('notifier.body2_non_pi', :welcome => welcome_text, :application_title => I18n.t('application_title'), :root_url => ROOT_URL, :protocol_type => @protocol.type.downcase)
-
+    %br
+    - if @approval_link
+      %p
+        = t(:notifier)[:body7]
+        %a{:style => "color: red; font-weight: bold;", :href => @approval_link}= t(:notifier)[:link]
+        ="."
+    %p
+      %a{:style => "color: blue; font-weight: bold;", :href => @portal_link}=@portal_text
+    %br
+    %br
     %table{:style => 'border: 1px solid black; border-collapse: collapse; width: 100%;', :cellpadding => 3}
       %thead
         %tr{:style => 'border: 1px solid black;'}
@@ -62,15 +73,23 @@
     %table{:style => 'border: 1px solid black; border-collapse: collapse; width: 100%;', :cellpadding => 3}
       %thead
         %tr{:style => 'border: 1px solid black;'}
+          %td{:colspan => 4}
+            %strong= t(:notifier)[:u_info]
+        %tr
           %th{:style => 'border: 1px solid black; text-align: left;'}= t(:notifier)[:name]
+          %th{:style => 'border: 1px solid black;'}= t(:notifier)[:contact_info]
           %th{:style => 'border: 1px solid black;'}= t(:notifier)[:role]
-          %th{:style => 'border: 1px solid black;'}= t(:notifier)[:proxy]
+          - if !@protocol.selected_for_epic.nil?
+            %th{:style => 'border: 1px solid black;'}= t(:notifier)[:epic_access]
       %tbody
         - @protocol.project_roles.each do |pr|
           %tr{:style => 'border: 1px solid black;'}
             %td{:style => 'border: 1px solid black;'}= pr.identity.full_name
-            %td{:style => 'border: 1px solid black; text-align: center;'}= pr.role.upcase
-            %td{:style => 'border: 1px solid black; text-align: center;'}= {"approve"=>"Authorize/Change Study Charges", "request"=>"Request/Approve Services", "view"=>"View Rights", "none"=>"Member Only"}[pr.project_rights]
+            %td{:style => 'border: 1px solid black;'}= pr.identity.email
+            - if pr.identity.id == @triggered_by
+              %td{:style => 'border: 1px solid black; text-align: center;'}= pr.role.upcase + " " + t(:notifier)[:requester]
+            - if !@protocol.selected_for_epic.nil?
+              %td{:style => 'border: 1px solid black; text-align: center;'}= pr.epic_access == 1 ? "Yes" : "No"
 
     - if @ssr_deleted
       %br
@@ -97,35 +116,17 @@
             %tr{:style => 'border: 1px solid black;'}
               %td{:style => 'border: 1px solid black;'}= service.name
               %td{:style => 'border: 1px solid black; text-align: center;'}= AUDIT_ACTIONS[last_change.action]
-
-    %p= t(:issue_contact)
-
-    %p= t(:notifier)[:body6]
-    - if @approval_link
-      %p
-        = t(:notifier)[:body7]
-        %a{:style => "color: red; font-weight: bold;", :href => @approval_link}= t(:notifier)[:link]
-        ="."
-    %p
-      %a{:style => "color: blue; font-weight: bold;", :href => @portal_link}=@portal_text
-    - @service_request.service_list.map{|k, v| v[:acks]}.flatten.uniq.each do |ack|
-      %p{:style => 'font-size: small;'}=ack
-
     %hr
     %table{:style => 'border: 1px solid black; border-collapse: collapse; width: 100%;', :cellpadding => 3}
-      %thead
-        %tr{:style => 'border: 1px solid black;'}
-          %td{:colspan => 2}
-            %strong= t(:notifier)[:admin_data]
       %tbody
         %tr{:style => 'border: 1px solid black;'}
-          %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:notifier)[:triggered_by]
+          %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:notifier)[:sr_id_acronym]
           %td{:style => 'border: 1px solid black;'}= @triggered_by
         %tr{:style => 'border: 1px solid black;'}
-          %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:notifier)[:sr_id]
+          %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:notifier)[:organization]
           %td{:style => 'border: 1px solid black;'}= @service_request.id
         %tr{:style => 'border: 1px solid black;'}
-          %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:notifier)[:ssr_ids]
+          %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:notifier)[:status]
           %td{:style => 'border: 1px solid black;'}= @ssr_ids
     %br
     - if @service_request.has_per_patient_per_visit_services? and @service_request.arms.count >0 and @provide_arm_info
@@ -144,3 +145,12 @@
               %td{:style => 'border: 1px solid black;'}= arm.name
               %td{:style => 'border: 1px solid black;'}= arm.subject_count
               %td{:style => 'border: 1px solid black;'}= arm.visit_count
+    %p= t(:notifier)[:body6]
+    
+    %p= t(:issue_contact)
+
+    - if @role == 'pi' || @role == 'primary-pi'
+      - @service_request.service_list.map{|k, v| v[:acks]}.flatten.uniq.each do |ack|
+        %p{:style => 'font-size: small;'}=ack
+
+

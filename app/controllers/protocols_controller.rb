@@ -30,64 +30,32 @@ class ProtocolsController < ApplicationController
     @protocol_type          = params[:protocol_type]
     @protocol               = @protocol_type.capitalize.constantize.new
     @protocol.requester_id  = current_user.id
+    @service_request        = ServiceRequest.find(params[:srid])
     @protocol.populate_for_edit
-    # @protocol = self.model_class.new
-    # setup_protocol = SetupProtocol.new(params[:portal], @protocol, current_user, session[:service_request_id])
-    # setup_protocol.setup
-    # @epic_services = setup_protocol.set_epic_services
-    # set_cookies
-    # resolve_layout
   end
 
   def create
+    protocol_class                          = params[:protocol][:type].capitalize.constantize
+    @protocol                               = protocol_class.new(params[:protocol])
+    @protocol.service_request_id            = params[:service_request_id]
+    @protocol.study_type_question_group_id  = StudyTypeQuestionGroup.active_id
 
-    unless from_portal?
-      @service_request = ServiceRequest.find session[:service_request_id]
-    end
-
-    @current_step = cookies['current_step']
-
-    new_protocol_attrs = params[:study] || params[:project] || Hash.new
-    @protocol = self.model_class.new(new_protocol_attrs.merge(study_type_question_group_id: StudyTypeQuestionGroup.active.pluck(:id).first))
-
-    @protocol.validate_nct = true
-
-    if @current_step == 'cancel'
-      @current_step = 'return_to_service_request'
-    elsif @current_step == 'go_back'
-      @current_step = 'protocol'
-      @protocol.populate_for_edit
-    elsif @current_step == 'protocol' and @protocol.group_valid? :protocol
-      @current_step = 'user_details'
-      @protocol.populate_for_edit
-    elsif @current_step == 'user_details' and @protocol.valid?
+    if @protocol.valid?
       unless @protocol.project_roles.map(&:identity_id).include? current_user.id
         # if current user is not authorized, add them as an authorized user
         @protocol.project_roles.new(identity_id: current_user.id, role: 'general-access-user', project_rights: 'approve')
       end
-
+      
       @protocol.save
 
-      @current_step = 'return_to_service_request'
-
-      if @service_request
-        @service_request.update_attribute(:protocol_id, @protocol.id) unless @service_request.protocol.present?
-        @service_request.update_attribute(:status, 'draft')
-        @service_request.sub_service_requests.each do |ssr|
-          ssr.update_attribute(:status, 'draft')
-        end
-        @service_request.ensure_ssr_ids
+      if USE_EPIC && @protocol.selected_for_epic
+        @protocol.ensure_epic_user
+        Notifier.notify_for_epic_user_approval(@protocol).deliver unless QUEUE_EPIC
       end
 
-      @current_step = 'return_to_service_request'
+      flash[:success] = "#{@protocol.type} Created!"
     else
-      @protocol.populate_for_edit
-    end
-
-    cookies['current_step'] = @current_step
-
-    if @current_step != 'return_to_service_request'
-      resolve_layout
+      @errors = @protocol.errors
     end
   end
 

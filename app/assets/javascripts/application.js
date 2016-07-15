@@ -46,6 +46,7 @@
 //= require underscore-min
 //= require form_fx_manager
 //= require form_manager
+//= require twitter/typeahead.min
 //= require assert
 //= require ajax_handler
 //= require review

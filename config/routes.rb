@@ -100,6 +100,12 @@ SparcRails::Application.routes.draw do
     end
   end
 
+   resources :projects, controller: :protocols, except: [:index, :show, :destroy] do
+  end
+
+  resources :studies, controller: :protocols, except: [:index, :show, :destroy] do
+  end
+
   resources :catalogs, only: [] do
     member do
       post 'update_description'

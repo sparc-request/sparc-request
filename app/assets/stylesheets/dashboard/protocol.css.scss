@@ -44,6 +44,10 @@
   padding: 3px 20px;
   cursor: pointer;
 }
+
+.tt-suggestion:not(:last-child) {
+  border-bottom: 1px solid #EEE;
+}
 /* Primary PI Typeahead End */
 
 /* New/Edit Protocol Form Begin */

@@ -17,5 +17,18 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-#protocol
-  = render 'dashboard/protocols/form/protocol_form', protocol: @protocol, protocol_type: @protocol_type, admin: @admin, permission_to_edit: @permission_to_edit
+
+.panel.panel-default
+  .panel-heading
+    %h4.panel-title
+      = t(:protocols)[:studies][:study_type][:header]
+    .sub_text
+      = t(:protocols)[:studies][:study_type][:subtext]
+  .panel-body
+    = form.fields_for :study_types, protocol.study_types.sort_by(&:position) do |st_form|
+      - checked = !st_form.object.new && !st_form.object.marked_for_destruction?
+      .form-group.row{ class: st_form.object.name }
+        = st_form.label :name, "#{StudyType::TYPES[st_form.object.name]}:", class: 'col-lg-2 control-label'
+        .col-lg-1
+          = st_form.check_box "_destroy", { checked: checked, class: 'form-control' }, false, true
+          = st_form.hidden_field :name, value: st_form.object.name

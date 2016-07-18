@@ -32,12 +32,8 @@
     = render "user_information"
     - if @ssr_deleted
       = render "deleted_services"
-
     - elsif @audit_report.present? && @audit_report[:line_items].present?
       = render "audit_action"
-
-    %br
-    %br
 
     - if @service_request.has_per_patient_per_visit_services? and @service_request.arms.count >0 and @provide_arm_info
       = render "arm_information"

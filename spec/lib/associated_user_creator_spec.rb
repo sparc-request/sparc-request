@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Dashboard::AssociatedUserCreator do
+RSpec.describe AssociatedUserCreator do
   context "params[:project_role] describes a valid ProjectRole" do
     before(:each) do
       protocol = create(:protocol_without_validations,
@@ -14,16 +14,16 @@ RSpec.describe Dashboard::AssociatedUserCreator do
     end
 
     it "#successful? should return true" do
-      creator = Dashboard::AssociatedUserCreator.new(@project_role_attrs)
+      creator = AssociatedUserCreator.new(@project_role_attrs)
       expect(creator.successful?).to eq(true)
     end
 
     it "should create a new ProjectRole for Protocol from params[:project_role][:protocol_id]" do
-      expect { Dashboard::AssociatedUserCreator.new(@project_role_attrs) }.to change { ProjectRole.count }.by(1)
+      expect { AssociatedUserCreator.new(@project_role_attrs) }.to change { ProjectRole.count }.by(1)
     end
 
     it "should return new ProjectRole with #protocol_role" do
-      creator = Dashboard::AssociatedUserCreator.new(@project_role_attrs)
+      creator = AssociatedUserCreator.new(@project_role_attrs)
       expect(creator.protocol_role).to eq(ProjectRole.last)
     end
 
@@ -36,7 +36,7 @@ RSpec.describe Dashboard::AssociatedUserCreator do
           mailer
         end
 
-        Dashboard::AssociatedUserCreator.new(@project_role_attrs)
+        AssociatedUserCreator.new(@project_role_attrs)
       end
     end
 
@@ -45,7 +45,7 @@ RSpec.describe Dashboard::AssociatedUserCreator do
         stub_const("SEND_AUTHORIZED_USER_EMAILS", false)
         allow(UserMailer).to receive(:authorized_user_changed)
 
-        Dashboard::AssociatedUserCreator.new(@project_role_attrs)
+        AssociatedUserCreator.new(@project_role_attrs)
 
         expect(UserMailer).not_to have_received(:authorized_user_changed)
       end
@@ -61,7 +61,7 @@ RSpec.describe Dashboard::AssociatedUserCreator do
           mailer
         end
 
-        Dashboard::AssociatedUserCreator.new(@project_role_attrs)
+        AssociatedUserCreator.new(@project_role_attrs)
 
         expect(Notifier).to have_received(:notify_for_epic_user_approval)
       end
@@ -81,12 +81,12 @@ RSpec.describe Dashboard::AssociatedUserCreator do
     end
 
     it "#successful? should return false" do
-      creator = Dashboard::AssociatedUserCreator.new(@project_role_attrs)
+      creator = AssociatedUserCreator.new(@project_role_attrs)
       expect(creator.successful?).to eq(false)
     end
 
     it "should not create a new ProjectRole" do
-      expect { Dashboard::AssociatedUserCreator.new(@project_role_attrs) }.not_to change { ProjectRole.count }
+      expect { AssociatedUserCreator.new(@project_role_attrs) }.not_to change { ProjectRole.count }
     end
 
     context "SEND_AUTHORIZED_USER_EMAILS true" do
@@ -94,7 +94,7 @@ RSpec.describe Dashboard::AssociatedUserCreator do
         stub_const("SEND_AUTHORIZED_USER_EMAILS", true)
         allow(UserMailer).to receive(:authorized_user_changed)
 
-        Dashboard::AssociatedUserCreator.new(@project_role_attrs)
+        AssociatedUserCreator.new(@project_role_attrs)
 
         expect(UserMailer).not_to have_received(:authorized_user_changed)
       end
@@ -106,7 +106,7 @@ RSpec.describe Dashboard::AssociatedUserCreator do
         stub_const("QUEUE_EPIC", false)
         allow(Notifier).to receive(:notify_for_epic_user_approval)
 
-        Dashboard::AssociatedUserCreator.new(@project_role_attrs)
+        AssociatedUserCreator.new(@project_role_attrs)
 
         expect(Notifier).not_to have_received(:notify_for_epic_user_approval)
       end

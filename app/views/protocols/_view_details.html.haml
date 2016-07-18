@@ -17,23 +17,22 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.modal-dialog#add-authorized-user-form
+.modal-dialog.view-protocol-details-modal
   .modal-content
     .modal-header
       %button.close{ type: 'button', data: { dismiss: 'modal' } }
         %span{ aria: { hidden: 'true' } } &times;
-      %h4.text-center#modal-title
-        = header_text
+      %h4.text-center 
+        = protocol.type + t(:dashboard)[:protocols][:view_details][:header] + protocol.id.to_s
     .modal-body
       #modal_errors
       .row
         .col-lg-12
-          %label.col-lg-3.control-label
-            = t(:dashboard)[:authorized_users][:add][:select]
-          .col-lg-9
-            = text_field_tag 'authorized_user_search', "", placeholder: t(:constants)[:prompts][:search_for_user], class: 'form-control', data: {protocol_id: protocol.id}
-            = image_tag 'spinner.gif', id: 'loading_authorized_user_spinner', class: 'hidden'
+          .panel-group
+            - if protocol.type == "Study"
+              = render partial: 'protocols/view_details/study_fields', locals: {protocol: protocol}
+            - elsif protocol.type == "Project"
+              = render partial: 'protocols/view_details/project_fields', locals: {protocol: protocol}
     .modal-footer
-      .center-block
-        %button.btn.btn-default{ type: 'button', data: { dismiss: 'modal' } }
-          = t(:actions)[:close]
+      %button.btn.btn-default{ type: 'button', data: { dismiss: 'modal' } }
+        = t(:actions)[:close]

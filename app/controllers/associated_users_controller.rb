@@ -18,31 +18,20 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class Dashboard::AssociatedUsersController < Dashboard::BaseController
+class AssociatedUsersController < ApplicationController
   respond_to :html, :json, :js
-  
-  before_filter :find_protocol_role,                              only: [:edit, :destroy]
-  before_filter :find_protocol,                                   only: [:index, :new, :create, :edit, :update, :destroy]
-  before_filter :find_admin_for_protocol,                         only: [:index, :new, :create, :edit, :update, :destroy]
-  before_filter :protocol_authorizer_view,                        only: [:index]
-  before_filter :protocol_authorizer_edit,                        only: [:new, :create, :edit, :update, :destroy]
+
+  before_filter :initialize_service_request
+  before_filter :authorize_identity
+  before_filter :find_protocol_role,          only: [:edit, :destroy]
+  before_filter :find_protocol,               only: [:index, :new, :create, :edit, :update, :destroy]
 
   def index
-    @protocol_roles     = @protocol.project_roles
-    @permission_to_edit = @authorization.can_edit?
+    @protocol_roles = @protocol.project_roles
+    @current_user = current_user
 
     respond_to do |format|
       format.json
-    end
-  end
-  
-  def edit
-    @identity     = @protocol_role.identity
-    @current_pi   = @protocol.primary_principal_investigator
-    @header_text  = t(:authorized_users)[:edit][:header]
-
-    respond_to do |format|
-      format.js
     end
   end
 
@@ -66,14 +55,20 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
     end
   end
 
+  def edit
+    @identity     = @protocol_role.identity
+    @current_pi   = @protocol.primary_principal_investigator
+    @header_text  = t(:authorized_users)[:edit][:header]
+
+    respond_to do |format|
+      format.js
+    end
+  end
+
   def create
     creator = AssociatedUserCreator.new(params[:project_role])
 
     if creator.successful?
-      if @current_user_created = params[:project_role][:identity_id].to_i == @user.id
-        @permission_to_edit = creator.protocol_role.can_edit?
-      end
-
       flash.now[:success] = t(:authorized_users)[:created]
     else
       @errors = creator.protocol_role.errors
@@ -88,16 +83,6 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
     updater = AssociatedUserUpdater.new(id: params[:id], project_role: params[:project_role])
     
     if updater.successful?
-      #We care about this because the new rights will determine what is rendered
-      if @current_user_updated = params[:project_role][:identity_id].to_i == @user.id
-        @protocol_type      = @protocol.type
-        protocol_role       = updater.protocol_role
-        @permission_to_edit = protocol_role.can_edit?
-
-        #If the user sets themselves to member and they're not an admin, go to dashboard
-        @return_to_dashboard = !(protocol_role.can_view? || @admin)
-      end
-
       flash.now[:success] = t(:authorized_users)[:updated]
     else
       @errors = updater.protocol_role.errors

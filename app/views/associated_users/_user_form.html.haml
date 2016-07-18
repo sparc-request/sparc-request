@@ -30,7 +30,7 @@
         .col-lg-12
           .text-center
             %label
-              = "#{identity.display_name}"
+              = identity.display_name
             %a.btn.btn-xs.btn-danger.glyphicon.glyphicon-remove#new-associated-user-button{ href: "javascript:void(0);", data: { protocol_id: protocol.id, permission: 'true' } }
       %div#protocol_role_data{ data: { pr_id: identity.id, pr_name: identity.full_name, pi_id: current_pi.id, pi_name: current_pi.full_name }}
       = form_for [:dashboard, project_role], url: project_role.new_record? ? dashboard_associated_users_path : dashboard_associated_user_path(project_role), remote: true, html: { class: "protocol_role_form" } do |form|
@@ -39,59 +39,59 @@
         .row
           .col-lg-12
             = form.fields_for :identity do |identity_form|
-              .form-group.row.role_dependent.commons_name.do-not-display
-                = identity_form.label :era_commons_name, t(:dashboard)[:authorized_users][:era], class: 'col-lg-3 control-label'
+              .form-group.row.role_dependent.commons_name.hidden
+                = identity_form.label :era_commons_name, t(:authorized_users)[:form_fields][:era], class: 'col-lg-3 control-label'
                 .col-lg-9
                   = identity_form.text_field :era_commons_name, class: 'form-control'
 
               .form-group.row
-                = identity_form.label :credentials, t(:dashboard)[:authorized_users][:credentials], class: 'col-lg-3 control-label'
+                = identity_form.label :credentials, t(:authorized_users)[:form_fields][:credentials], class: 'col-lg-3 control-label'
                 .col-lg-9
-                  = identity_form.select :credentials, options_for_select(USER_CREDENTIALS, identity.credentials), { include_blank: t(:dashboard)[:authorized_users][:credentials_prompt] }, class: 'form-control selectpicker'
+                  = identity_form.select :credentials, options_for_select(USER_CREDENTIALS, identity.credentials), { include_blank: t(:authorized_users)[:form_fields][:credentials_prompt] }, class: 'form-control selectpicker'
 
-              .form-group.row.credentials_dependent.other.do-not-display
-                = identity_form.label :credentials_other, t(:dashboard)[:authorized_users][:credentials_specify], class: 'col-lg-3 control-label'
+              .form-group.row.credentials_dependent.other.hidden
+                = identity_form.label :credentials_other, t(:authorized_users)[:form_fields][:credentials_specify], class: 'col-lg-3 control-label'
                 .col-lg-9
                   = identity_form.text_field :credentials_other, class: 'form-control'
 
               .form-group.row
-                = identity_form.label :institution, t(:dashboard)[:authorized_users][:institution], class: 'col-lg-3 control-label'
+                = identity_form.label :institution, t(:authorized_users)[:form_fields][:institution], class: 'col-lg-3 control-label'
                 .col-lg-9
-                  = identity_form.select :institution, options_for_select((INSTITUTIONS.sort), identity.institution), { include_blank: t(:dashboard)[:authorized_users][:institution_prompt] }, class: 'form-control selectpicker'
+                  = identity_form.select :institution, options_for_select((INSTITUTIONS.sort), identity.institution), { include_blank: t(:authorized_users)[:form_fields][:institution_prompt] }, class: 'form-control selectpicker'
 
               .form-group.row
-                = identity_form.label :college, t(:dashboard)[:authorized_users][:college], class: 'col-lg-3 control-label'
+                = identity_form.label :college, t(:authorized_users)[:form_fields][:college], class: 'col-lg-3 control-label'
                 .col-lg-9
-                  = identity_form.select :college, options_for_select(COLLEGES, identity.college), { include_blank: t(:dashboard)[:authorized_users][:college_prompt] }, class: 'form-control selectpicker'
+                  = identity_form.select :college, options_for_select(COLLEGES, identity.college), { include_blank: t(:authorized_users)[:form_fields][:college_prompt] }, class: 'form-control selectpicker'
 
               .form-group.row
-                = identity_form.label :department, t(:dashboard)[:authorized_users][:department], class: 'col-lg-3 control-label'
+                = identity_form.label :department, t(:authorized_users)[:form_fields][:department], class: 'col-lg-3 control-label'
                 .col-lg-9
-                  = identity_form.select :department, options_for_select(DEPARTMENTS, identity.department), { include_blank: t(:dashboard)[:authorized_users][:department_prompt] }, class: 'form-control selectpicker'
+                  = identity_form.select :department, options_for_select(DEPARTMENTS, identity.department), { include_blank: t(:authorized_users)[:form_fields][:department_prompt] }, class: 'form-control selectpicker'
 
               .form-group.row
-                =identity_form.label :phone, t(:dashboard)[:authorized_users][:phone], class: 'col-lg-3 control-label'
+                =identity_form.label :phone, t(:authorized_users)[:form_fields][:phone], class: 'col-lg-3 control-label'
                 .col-lg-9
                   =identity_form.text_field :phone, class: 'form-control'
 
-              .form-group.row.role_dependent.subspecialty.do-not-display
-                = identity_form.label :subspecialty, t(:dashboard)[:authorized_users][:subspecialty], class: 'col-lg-3 control-label'
+              .form-group.row.role_dependent.subspecialty.hidden
+                = identity_form.label :subspecialty, t(:authorized_users)[:form_fields][:subspecialty], class: 'col-lg-3 control-label'
                 .col-lg-9
-                  = identity_form.select :subspecialty, options_for_select((SUBSPECIALTIES.sort), identity.subspecialty), { include_blank: t(:dashboard)[:authorized_users][:subspecialty_prompt] }, class: 'form-control selectpicker'
+                  = identity_form.select :subspecialty, options_for_select((SUBSPECIALTIES.sort), identity.subspecialty), { include_blank: t(:authorized_users)[:form_fields][:subspecialty_prompt] }, class: 'form-control selectpicker'
 
             .form-group.row
-              = form.label :role, t(:dashboard)[:authorized_users][:role], class: 'col-lg-3 control-label'
+              = form.label :role, t(:authorized_users)[:form_fields][:role], class: 'col-lg-3 control-label'
               .col-lg-9
-                = form.select :role, options_for_select(USER_ROLES, form.object.role), { include_blank: t(:dashboard)[:authorized_users][:role_prompt] }, class: 'form-control selectpicker'
+                = form.select :role, options_for_select(USER_ROLES, form.object.role), { include_blank: t(:authorized_users)[:form_fields][:role_prompt] }, class: 'form-control selectpicker'
 
-            .form-group.row.role_dependent.other.do-not-display
-              = form.label :role_other, t(:dashboard)[:authorized_users][:role_specify], class: 'col-lg-3 control-label'
+            .form-group.row.role_dependent.other.hidden
+              = form.label :role_other, t(:authorized_users)[:form_fields][:role_specify], class: 'col-lg-3 control-label'
               .col-lg-9
                 = form.text_field :role_other, class: 'form-control'
 
             - if USE_EPIC && protocol != nil && protocol.selected_for_epic
               .form-group.row
-                = form.label :epic_access, t(:dashboard)[:authorized_users][:epic_access], class: 'col-lg-3 control-label'
+                = form.label :epic_access, t(:authorized_users)[:form_fields][:epic_access], class: 'col-lg-3 control-label'
                 .col-lg-9
                   %label.checkbox-inline
                     No
@@ -102,28 +102,28 @@
 
             .form-group.row
               - disable = (form.object.role == 'pi' || form.object.role == 'primary-pi')
-              = form.label :rights, t(:dashboard)[:authorized_users][:rights][:header], class: 'col-lg-3 control-label'
+              = form.label :rights, t(:authorized_users)[:rights][:header], class: 'col-lg-3 control-label'
               .col-lg-9
                 .radio
                   %label
                     = form.radio_button :project_rights, "none", disabled: disable
                     %span
-                      = t(:dashboard)[:authorized_users][:rights][:none]
+                      = t(:authorized_users)[:rights][:none]
                 .radio
                   %label
                     = form.radio_button :project_rights, "view", disabled: disable
                     %span
-                      = t(:dashboard)[:authorized_users][:rights][:view]
+                      = t(:authorized_users)[:rights][:view]
                 .radio
                   %label
                     = form.radio_button :project_rights, "request", disabled: disable
                     %span
-                      = t(:dashboard)[:authorized_users][:rights][:request]
+                      = t(:authorized_users)[:rights][:request]
                 .radio
                   %label
                     = form.radio_button :project_rights, "approve", disabled: disable
                     %span
-                      = t(:dashboard)[:authorized_users][:rights][:approve]
+                      = t(:authorized_users)[:rights][:approve]
 
     .modal-footer
       .center-block

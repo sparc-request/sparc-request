@@ -122,9 +122,65 @@ en:
       singular: "Note"
       plural: "Notes"
 
+
+
+
+
+  authorized_users:
+    header: "Authorized Users"
+    add_user: "Add an Authorized User"
+    add:
+      header: "Add Authorized User"
+      select: "Select User:"
+    edit:
+      header: "Edit Authorized User"
+    delete:
+      self_remove_warning: "This action will remove you from the Protocol. Are you sure?"
+      remove_warning: "Are you sure you want to remove this user?"
+      pi_warning: "Projects/Studies require a Primary PI. Please add a new one before continuing."
+    created: "Authorized User Added!"
+    updated: "Authorized User Updated!"
+    destroyed: "Authorized User Removed!"
+    form_fields:
+      era: "ERA Commons Name:"
+      credentials: "Credentials:"
+      credentials_prompt: "Select a Credential"
+      credentials_specify: "Please Specify:*"
+      institution: "Institution:"
+      institution_prompt: "Select an Institution"
+      college: "College:"
+      college_prompt: "Select a College"
+      department: "Department:"
+      phone: "Phone:"
+      department_prompt: "Select a Department"
+      subspecialty: "Subspecialty:"
+      subspecialty_prompt: "Select a Subspecialty"
+      role: "Role:*"
+      role_prompt: "Select a Role"
+      role_specify: "Please Specify:*"
+      epic_access: "Epic EMR Access?:*"
+    rights:
+      header: "User Rights:*"
+      none: Study/Project Member Only
+      view: "View Rights"
+      request: "Request/Approve Services"
+      approve: "Authorized/Change Study Charges"
+    table_fields:
+      name: "Full Name"
+      role: "Role"
+      email: "Email"
+      phone: "Phone"
+      rights: "Proxy Rights"
+
+
+
+
+
   protocols:
     new: "New Protocol"
     edit: "Edit %{protocol_type} Information"
+    created: "%{protocol_type} Created!"
+    updated: "%{protocol_type} Updated!"
     summary:
       header: "%{protocol_type} Summary"
       id: "%{protocol_type} ID:"
@@ -140,6 +196,8 @@ en:
       project: "Project"
       change_button: "Change Type"
       warning: "This will change the type of this Protocol. Are you sure?"
+      updated: "Protocol Type Updated!"
+      new_study_warning: "Please complete Sponsor Name and Publish Study in Epic"
     studies:
       new: "New Study"
       information:
@@ -304,7 +362,8 @@ en:
         study_response: "Choose 'New Study' for a research study with defined aims and outcomes."
         project_response: "Choose 'New Project' for non-study-specific Service Requests or anything that is not a research study."
       previously_submitted_warning: "The request that you are editing has been previously submitted and can not be moved to another %{protocol_type}."
-
+      authorized_users:
+        self_remove_warning: "You can't remove yourself as an Authorized User of this Protocol. Please complete this request first or create a new request."
     ########
     # CART #
     ########
@@ -402,39 +461,6 @@ en:
       subject_count: "Subject Count:"
       visit_count: "Visit Count:"
 
-    ######################
-    #  AUTHORIZED USERS  #
-    ######################
-    authorized_users:
-      add:
-        header: "Add Authorized User"
-        select: "Select User:"
-      edit:
-        header: "Edit Authorized User"
-      era: "ERA Commons Name:"
-      credentials: "Credentials:"
-      credentials_prompt: "Select a Credential"
-      credentials_specify: "Please Specify:*"
-      institution: "Institution:"
-      institution_prompt: "Select an Institution"
-      college: "College:"
-      college_prompt: "Select a College"
-      department: "Department:"
-      phone: "Phone:"
-      department_prompt: "Select a Department"
-      subspecialty: "Subspecialty:"
-      subspecialty_prompt: "Select a Subspecialty"
-      role: "Role:*"
-      role_prompt: "Select a Role"
-      role_specify: "Please Specify:*"
-      epic_access: "Epic EMR Access?:*"
-      rights:
-        header: "User Rights:*"
-        none: Study/Project Member Only
-        view: "View Rights"
-        request: "Request/Approve Services"
-        approve: "Authorized/Change Study Charges"
-
     ###############
     #  DOCUMENTS  #
     ###############
@@ -460,6 +486,7 @@ en:
     #################
     epic_queues:
       header: "Epic Queues"
+
     ##################
     #  FULFILLMENTS  #
     ##################
@@ -598,15 +625,6 @@ en:
 
       summary:
         view_details: "View %{protocol_type} Details"
-
-      authorized_users:
-        header: "Authorized Users"
-        add_user: "Add an Authorized User"
-        name: "Full Name"
-        role: "Role"
-        email: "Email"
-        phone: "Phone"
-        rights: "Proxy Rights"
 
       documents:
         header: "Documents"

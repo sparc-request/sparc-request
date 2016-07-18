@@ -19,9 +19,6 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 $(document).ready ->
-  $('.datetimepicker').datetimepicker
-    format: 'MM/DD/YYYY'
-  
   # Protocol Edit Begin
   $(document).on 'click', '#protocol-type-button', ->
     protocol_id = $(this).data('protocol-id')

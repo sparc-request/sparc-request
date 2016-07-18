@@ -31,7 +31,6 @@ $(document).ready ->
         data:
           protocol_id: $(this).data('protocol-id')
 
-
   $(document).on 'click', '.edit-associated-user-button', (event) ->
     if $(this).data('permission')
       project_role_id = $(this).data('project-role-id')
@@ -44,7 +43,6 @@ $(document).ready ->
           if $('#project_role_identity_attributes_credentials').val() == 'other'
             $('.credentials_dependent.other').show()
 
-
   $(document).on 'click', '.delete-associated-user-button', ->
     if $(this).data('permission')
       project_role_id        = $(this).data('project-role-id')
@@ -53,83 +51,14 @@ $(document).ready ->
       pr_identity_id         = $(this).data('identity-id')
 
       if current_user_id == pr_identity_id
-        confirm_message = 'This action will remove you from the project. Are you sure?'
+        confirm_message = I18n['authorized_users']['delete']['self_remove_warning']
       else
-        confirm_message = 'Are you sure you want to remove this user?'
+        confirm_message = I18n['authorized_users']['delete']['remove_warning']
 
       if pr_identity_role == 'primary-pi'
-        alert I18n['protocol_information']['require_primary_pi_message']
+        alert I18n['authorized_users']['delete']['pi_warning']
       else
         if confirm(confirm_message)
           $.ajax
             type: 'delete'
             url: "/dashboard/associated_users/#{project_role_id}"
-            
-
-  #**************** Add Authorized User Form Begin ****************
-  $(document).on 'changed.bs.select', '#project_role_identity_attributes_credentials', ->
-    # Credentials - Dropdown
-    $('.credentials_dependent').hide()
-    if $(this).val() == 'other'
-      $('.credentials_dependent.other').show()
-
-  $(document).on 'changed.bs.select', '#project_role_role', ->
-    # Role - Dropdown
-    $('.role_dependent').hide()
-    switch $(this).val()
-      when 'other'
-        $('.role_dependent.other').show()
-      when 'business-grants-manager'
-        $('#project_role_project_rights_none').attr('disabled', true)
-        $('#project_role_project_rights_view').attr('disabled', true)
-        $('#project_role_project_rights_request').attr('disabled', true)
-        $('#project_role_project_rights_approve').attr('checked', true)
-      when 'pi', 'primary-pi'
-        $('#project_role_project_rights_none').attr('disabled', true)
-        $('#project_role_project_rights_view').attr('disabled', true)
-        $('#project_role_project_rights_request').attr('disabled', true)
-        $('#project_role_project_rights_approve').attr('checked', true)
-        $('.role_dependent.commons_name').show()
-        $('.role_dependent.subspecialty').show()
-      when '', 'grad-research-assistant', 'undergrad-research-assistant', 'research-assistant-coordinator', 'technician', 'general-access-user'
-      else
-        $('input[name="project_role[project_rights]"]').attr('disabled', false).attr('checked', false)
-        $('.role_dependent.commons_name').show()
-        $('.role_dependent.subspecialty').show()
-
-  $(document).on 'click', '#save_protocol_rights_button', ->
-    # Renders warning when changing Primary PI
-    form = $("form.protocol_role_form")
-    primary_pi_id = $('#protocol_role_data').data("pi-id")
-    protocol_role_id = $('#protocol_role_data').data("pr-id")
-    if form.is(":hidden")
-      form.submit()
-    else if $("select[name='project_role[role]']").val() == 'primary-pi' and primary_pi_id != protocol_role_id
-      primary_pi_full_name = $('#protocol_role_data').data("pi-name")
-      pr_full_name = $('#protocol_role_data').data("pr-name")
-      protocol_id = $('#project_role_protocol_id').val()
-
-      warning = I18n["protocol_information"]["change_primary_pi"]["warning"]
-      message1 = I18n["protocol_information"]["change_primary_pi"]["warning_prompt_1_1"]+
-        "(<strong>#{pr_full_name}</strong>)"+
-        I18n["protocol_information"]["change_primary_pi"]["warning_prompt_1_2"]+
-        "(<strong>#{primary_pi_full_name}</strong>)"+
-        I18n["protocol_information"]["change_primary_pi"]["warning_prompt_1_3"]+
-        "(<strong>#{protocol_id}</strong>)."
-      message2 = I18n["protocol_information"]["change_primary_pi"]["warning_prompt_2"]
-
-      form.hide()
-      $('.modal-body').append("<h1 class='change_ppi_prompt' style='color:red;'>#{warning}</h1><p class='change_ppi_prompt' style='font-size:14px;'>#{message1}</p><p class='change_ppi_prompt' style='font-size:14px;'>#{message2}</p>")
-    else
-      form.submit()
-
-  $(document).on 'click', '#cancel_protocol_rights_button', (event) ->
-    $form = $("form.protocol_role_form")
-    if $form.is(':hidden')
-      # on a warning modal, show form again
-      $('.change_ppi_prompt').remove()
-      $form.show()
-    else
-      # cancel
-      $(this).closest('.modal').modal('hide')
-  #**************** Add Authorized User Form End ****************

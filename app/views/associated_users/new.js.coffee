@@ -19,7 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 <% if @errors.present? %> #User already associated with Protocol
-$("#modal_errors").html("<%= escape_javascript(render( 'shared/modal_errors', errors: @errors )) %>")
+$("#modal_place #modal_errors").html("<%= escape_javascript(render( 'shared/modal_errors', errors: @errors )) %>")
 $('#authorized_user_search').val('')
 <% elsif @identity.present? %># User selected, go to 'User Form'
 $("#modal_place").html("<%= escape_javascript(render( 'associated_users/user_form', protocol: @protocol, project_role: @project_role, identity: @identity, current_pi: @current_pi, header_text: @header_text )) %>")
@@ -32,7 +32,7 @@ identities_bloodhound = new Bloodhound(
     Bloodhound.tokenizers.whitespace datum.value
   queryTokenizer: Bloodhound.tokenizers.whitespace
   remote:
-    url: '/dashboard/associated_users/search_identities?term=%QUERY',
+    url: '/associated_users/search_identities?term=%QUERY',
     wildcard: '%QUERY'
 )
 identities_bloodhound.initialize() # Initialize the Bloodhound suggestion engine
@@ -53,7 +53,7 @@ $('#authorized_user_search').typeahead(
   $("#loading_authorized_user_spinner").removeClass('hidden')
   $.ajax
     type: 'get'
-    url: '/dashboard/associated_users/new.js'
+    url: '/associated_users/new.js'
     data:
       protocol_id: $(this).data('protocol-id')
       identity_id: suggestion.value

@@ -25,6 +25,7 @@ class ProtocolsController < ApplicationController
   before_filter :initialize_service_request,  unless: :from_portal?,  except: [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
   before_filter :authorize_identity,          unless: :from_portal?,  except: [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
   before_filter :set_portal
+  before_filter :find_protocol,               only: [:edit, :update, :view_details]
 
   def new
     @protocol_type          = params[:protocol_type]
@@ -36,7 +37,8 @@ class ProtocolsController < ApplicationController
 
   def create
     protocol_class                          = params[:protocol][:type].capitalize.constantize
-    @protocol                               = protocol_class.new(params[:protocol])
+    attrs                                   = fix_date_params
+    @protocol                               = protocol_class.new(attrs)
     @service_request                        = ServiceRequest.find(params[:srid])
     @protocol.study_type_question_group_id  = StudyTypeQuestionGroup.active_id
 
@@ -47,14 +49,17 @@ class ProtocolsController < ApplicationController
       end
 
       @protocol.save
-      @service_request.update_attributes(protocol: @protocol, status: 'draft')
+
+      @service_request.update_attribute(:protocol, @protocol)
+      @service_request.update_attribute(:status, 'draft')
+      @service_request.sub_service_requests.update_all(status: 'draft')
 
       if USE_EPIC && @protocol.selected_for_epic
         @protocol.ensure_epic_user
         Notifier.notify_for_epic_user_approval(@protocol).deliver unless QUEUE_EPIC
       end
 
-      flash[:success] = "#{@protocol.type} Created!"
+      flash[:success] = I18n.t('protocols.created', protocol_type: @protocol.type)
     else
       @errors = @protocol.errors
     end
@@ -62,7 +67,6 @@ class ProtocolsController < ApplicationController
 
   def edit
     @service_request                        = ServiceRequest.find(params[:srid])
-    @protocol                               = Protocol.find(params[:id])
     @protocol.study_type_question_group_id  = StudyTypeQuestionGroup.active_id
 
     @protocol.populate_for_edit
@@ -75,18 +79,18 @@ class ProtocolsController < ApplicationController
   end
 
   def update
+    attrs            = fix_date_params
     @service_request = ServiceRequest.find(params[:srid])
-    @protocol        = Protocol.find(params[:id])
 
-    if @protocol.update_attributes(params[:protocol].merge(study_type_question_group_id: StudyTypeQuestionGroup.active_id))
-      flash[:success] = "#{@protocol.type} Updated!"
+    if @protocol.update_attributes(attrs.merge(study_type_question_group_id: StudyTypeQuestionGroup.active_id))
+      flash[:success] = I18n.t('protocols.updated', protocol_type: @protocol.type)
     else
       @errors = @protocol.errors
     end
-    @protocol.validate_nct = true
 
-    if @service_request.status == "first_draft"
-      @service_request.update_attributes(status: "draft")
+    if @service_request.status == 'first_draft'
+      @service_request.update_attributes(status: 'draft')
+      @service_request.sub_service_requests.update_all(status: 'draft')
     end
   end
 
@@ -100,9 +104,15 @@ class ProtocolsController < ApplicationController
     @protocol = Protocol.find(@protocol.id)#Protocol type has been converted, this is a reload
     @protocol.populate_for_edit
 
-    flash[:success] = "Protocol Type Updated!"
+    flash[:success] = t(:protocols)[:change_type][:updated]
     if @protocol_type == "Study" && @protocol.sponsor_name.nil? && @protocol.selected_for_epic.nil?
-      flash[:alert] = "Please complete Sponsor Name and Publish Study in Epic"
+      flash[:alert] = t(:protocols)[:change_type][:new_study_warning]
+    end
+  end
+
+  def view_details
+    respond_to do |format|
+      format.js
     end
   end
 
@@ -155,6 +165,10 @@ class ProtocolsController < ApplicationController
 
   private
 
+  def find_protocol
+    @protocol = Protocol.find(params[:id])
+  end
+
   def resolve_layout
     if from_portal?
       @user = current_user
@@ -168,6 +182,7 @@ class ProtocolsController < ApplicationController
   end
 
   def set_portal
+    # Where is this used? - Kyle Glick
     @portal = params[:portal]
   end
 
@@ -208,5 +223,35 @@ class ProtocolsController < ApplicationController
       # ActiveRecord::Base.connection.close
     end
     # end
+  end
+
+  def convert_date_for_save attrs, date_field
+    if attrs[date_field] && attrs[date_field].present?
+      attrs[date_field] = Time.strptime(attrs[date_field], "%m/%d/%Y")
+    end
+
+    attrs
+  end
+
+  def fix_date_params
+    attrs               = params[:protocol]
+
+    #### fix dates so they are saved correctly ####
+    attrs                                        = convert_date_for_save attrs, :start_date
+    attrs                                        = convert_date_for_save attrs, :end_date
+    attrs                                        = convert_date_for_save attrs, :funding_start_date
+    attrs                                        = convert_date_for_save attrs, :potential_funding_start_date
+
+    if attrs[:human_subjects_info_attributes]
+      attrs[:human_subjects_info_attributes]     = convert_date_for_save attrs[:human_subjects_info_attributes], :irb_approval_date
+      attrs[:human_subjects_info_attributes]     = convert_date_for_save attrs[:human_subjects_info_attributes], :irb_expiration_date
+    end
+
+    if attrs[:vertebrate_animals_info_attributes]
+      attrs[:vertebrate_animals_info_attributes] = convert_date_for_save attrs[:vertebrate_animals_info_attributes], :iacuc_approval_date
+      attrs[:vertebrate_animals_info_attributes] = convert_date_for_save attrs[:vertebrate_animals_info_attributes], :iacuc_expiration_date
+    end
+
+    attrs
   end
 end

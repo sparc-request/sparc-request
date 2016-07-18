@@ -1,6 +1,6 @@
 require "rails_helper"
 
-RSpec.describe Dashboard::AssociatedUserUpdater do
+RSpec.describe AssociatedUserUpdater do
   let!(:primary_pi) { create(:identity) }
   let!(:identity) { create(:identity) }
 
@@ -12,7 +12,7 @@ RSpec.describe Dashboard::AssociatedUserUpdater do
         role: "important",
         project_rights: "to-party")
 
-      Dashboard::AssociatedUserUpdater.new(id: project_role.id, project_role: { role: "not-important" })
+      AssociatedUserUpdater.new(id: project_role.id, project_role: { role: "not-important" })
 
       expect(project_role.reload.role).to eq("not-important")
     end
@@ -26,7 +26,7 @@ RSpec.describe Dashboard::AssociatedUserUpdater do
         role: "primary-pi",
         project_rights: "to-party")
 
-      Dashboard::AssociatedUserUpdater.new(id: project_role.id, project_role: { role: "primary-pi" })
+      AssociatedUserUpdater.new(id: project_role.id, project_role: { role: "primary-pi" })
 
       expect(primary_pi.project_roles(0).first.role).to eq("general-access-user")
       expect(project_role.reload.role).to eq("primary-pi")
@@ -52,7 +52,7 @@ RSpec.describe Dashboard::AssociatedUserUpdater do
         mailer_stub
       end
 
-      Dashboard::AssociatedUserUpdater.new(id: project_role.id, project_role: { role: "not-important" })
+      AssociatedUserUpdater.new(id: project_role.id, project_role: { role: "not-important" })
     end
   end
 
@@ -66,7 +66,7 @@ RSpec.describe Dashboard::AssociatedUserUpdater do
         project_rights: "to-party")
       allow(UserMailer).to receive(:authorized_user_changed)
 
-      Dashboard::AssociatedUserUpdater.new(id: project_role.id, project_role: { role: "not-important" })
+      AssociatedUserUpdater.new(id: project_role.id, project_role: { role: "not-important" })
 
       expect(UserMailer).not_to have_received(:authorized_user_changed)
     end
@@ -102,7 +102,7 @@ RSpec.describe Dashboard::AssociatedUserUpdater do
           mailer_stub
         end
 
-        Dashboard::AssociatedUserUpdater.new(id: project_role.id,
+        AssociatedUserUpdater.new(id: project_role.id,
           project_role: { epic_access: false })
       end
     end
@@ -123,7 +123,7 @@ RSpec.describe Dashboard::AssociatedUserUpdater do
           mailer_stub
         end
 
-        Dashboard::AssociatedUserUpdater.new(id: project_role.id,
+        AssociatedUserUpdater.new(id: project_role.id,
           project_role: { epic_access: true })
       end
     end
@@ -146,7 +146,7 @@ RSpec.describe Dashboard::AssociatedUserUpdater do
           mailer_stub
         end
 
-        Dashboard::AssociatedUserUpdater.new(id: project_role.id,
+        AssociatedUserUpdater.new(id: project_role.id,
           project_role: { epic_rights_attributes: [{ right: "correct", position: 2 }] })
       end
     end
@@ -160,7 +160,7 @@ RSpec.describe Dashboard::AssociatedUserUpdater do
         role: "important",
         project_rights: "to-party")
 
-      updater = Dashboard::AssociatedUserUpdater.new(id: project_role.id, project_role: { role: nil })
+      updater = AssociatedUserUpdater.new(id: project_role.id, project_role: { role: nil })
 
       expect(updater.protocol_role.role).to eq(nil)
     end
@@ -176,7 +176,7 @@ RSpec.describe Dashboard::AssociatedUserUpdater do
           role: "important",
           project_rights: "to-party")
 
-        updater = Dashboard::AssociatedUserUpdater.new(id: project_role.id, project_role: { role: nil })
+        updater = AssociatedUserUpdater.new(id: project_role.id, project_role: { role: nil })
 
         expect(updater.successful?).to eq(false)
       end
@@ -189,7 +189,7 @@ RSpec.describe Dashboard::AssociatedUserUpdater do
           role: "important",
           project_rights: "to-party")
 
-        updater = Dashboard::AssociatedUserUpdater.new(id: project_role.id, project_role: { role: "not-important" })
+        updater = AssociatedUserUpdater.new(id: project_role.id, project_role: { role: "not-important" })
 
         expect(updater.successful?).to eq(true)
       end

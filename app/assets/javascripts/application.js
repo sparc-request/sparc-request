@@ -51,3 +51,5 @@
 //= require ajax_handler
 //= require review
 //= require survey_submit
+//= require global
+//= require associated_users_form

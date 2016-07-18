@@ -53,5 +53,7 @@
 //= require filterrific/filterrific-jquery
 //= require_tree .
 //= require ../service_calendar
+//= require global
+//= require associated_users_form
 
 window.Sparc = {};

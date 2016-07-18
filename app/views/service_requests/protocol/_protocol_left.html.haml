@@ -24,4 +24,4 @@
     = t(:proper)[:protocol][:percent_effort_notice]
   .service-list
     = render 'service_requests/protocol/service_list', service_request: @service_request, sub_service_request: @sub_service_request
-  = render 'service_requests/protocol/protocol_display', service_request: @service_request
+  = render 'service_requests/protocol/protocol_display', service_request: @service_request, protocol: @service_request.protocol

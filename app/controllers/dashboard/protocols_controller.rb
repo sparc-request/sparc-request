@@ -28,7 +28,6 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   before_filter :protocol_authorizer_edit,                        only: [:edit, :update, :update_protocol_type]
 
   def index
-
     admin_orgs   = @user.authorized_admin_organizations
     @admin       = !admin_orgs.empty?
 
@@ -94,12 +93,10 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def create
-    protocol_class = params[:protocol][:type].capitalize.constantize
-
-    attrs = params[:protocol]
-
-    @protocol = protocol_class.new(attrs)
-    @protocol.study_type_question_group_id = StudyTypeQuestionGroup.active_id
+    protocol_class                          = params[:protocol][:type].capitalize.constantize
+    attrs                                   = fix_date_params
+    @protocol                               = protocol_class.new(attrs)
+    @protocol.study_type_question_group_id  = StudyTypeQuestionGroup.active_id
 
     if @protocol.valid?
       unless @protocol.project_roles.map(&:identity_id).include? current_user.id
@@ -114,7 +111,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
         Notifier.notify_for_epic_user_approval(@protocol).deliver unless QUEUE_EPIC
       end
 
-      flash[:success] = "#{@protocol.type} Created!"
+      flash[:success] = I18n.t('protocols.created', protocol_type: @protocol.type)
     else
       @errors = @protocol.errors
     end
@@ -143,15 +140,14 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def update
-    attrs = params[:protocol]
-
+    attrs               = fix_date_params
     permission_to_edit  = @authorization.present? ? @authorization.can_edit? : false
 
     # admin is not able to activate study_type_question_group
     if !permission_to_edit && @protocol.update_attributes(attrs)
-      flash[:success] = "#{@protocol.type} Updated!"
+      flash[:success] = I18n.t('protocols.updated', protocol_type: @protocol.type)
     elsif permission_to_edit && @protocol.update_attributes(attrs.merge(study_type_question_group_id: StudyTypeQuestionGroup.active_id))
-      flash[:success] = "#{@protocol.type} Updated!"
+      flash[:success] = I18n.t('protocols.updated', protocol_type: @protocol.type)
     else
       @errors = @protocol.errors
     end
@@ -174,9 +170,9 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     @protocol = Protocol.find(@protocol.id)#Protocol type has been converted, this is a reload
     @protocol.populate_for_edit
 
-    flash[:success] = "Protocol Type Updated!"
+    flash[:success] = t(:protocols)[:change_type][:updated]
     if @protocol_type == "Study" && @protocol.sponsor_name.nil? && @protocol.selected_for_epic.nil?
-      flash[:alert] = "Please complete Sponsor Name and Publish Study in Epic"
+      flash[:alert] = t(:protocols)[:change_type][:new_study_warning]
     end
   end
 
@@ -240,5 +236,35 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     else
       @protocol.activate
     end
+  end
+
+  def convert_date_for_save attrs, date_field
+    if attrs[date_field] && attrs[date_field].present?
+      attrs[date_field] = Time.strptime(attrs[date_field], "%m/%d/%Y")
+    end
+
+    attrs
+  end
+
+  def fix_date_params
+    attrs               = params[:protocol]
+
+    #### fix dates so they are saved correctly ####
+    attrs                                        = convert_date_for_save attrs, :start_date
+    attrs                                        = convert_date_for_save attrs, :end_date
+    attrs                                        = convert_date_for_save attrs, :funding_start_date
+    attrs                                        = convert_date_for_save attrs, :potential_funding_start_date
+
+    if attrs[:human_subjects_info_attributes]
+      attrs[:human_subjects_info_attributes]     = convert_date_for_save attrs[:human_subjects_info_attributes], :irb_approval_date
+      attrs[:human_subjects_info_attributes]     = convert_date_for_save attrs[:human_subjects_info_attributes], :irb_expiration_date
+    end
+
+    if attrs[:vertebrate_animals_info_attributes]
+      attrs[:vertebrate_animals_info_attributes] = convert_date_for_save attrs[:vertebrate_animals_info_attributes], :iacuc_approval_date
+      attrs[:vertebrate_animals_info_attributes] = convert_date_for_save attrs[:vertebrate_animals_info_attributes], :iacuc_expiration_date
+    end
+
+    attrs
   end
 end

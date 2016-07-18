@@ -19,7 +19,8 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 - if service_request.protocol
   = request_submitted_warning_display(service_request)
-  = render 'protocols/summary', protocol: service_request.protocol, protocol_type: service_request.protocol.type, service_request: service_request
+  = render 'protocols/summary', protocol: protocol, protocol_type: protocol.type, service_request: service_request
+  = render 'associated_users/table', protocol: protocol
 - else
   .col-sm-12.protocol-container.text-center
     = link_to t(:protocols)[:studies][:new], new_protocol_path(srid: service_request.id, protocol_type: 'Study'), class: 'btn btn-success'

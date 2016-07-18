@@ -19,7 +19,6 @@
 // TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.*/
 
 // replaced require_tree .
-@import 'proper/associated_users';
 @import 'proper/confirmation';
 @import 'proper/contact_forms';
 @import 'proper/custom_jquery_ui';
@@ -47,3 +46,5 @@
 @import '960';
 @import 'jquery.toastmessage';
 @import 'twitter_typeahead';
+@import 'associated_user_form';
+@import 'protocol_form';

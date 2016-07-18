@@ -17,22 +17,9 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.modal-dialog.view-protocol-details-modal
-  .modal-content
-    .modal-header
-      %button.close{ type: 'button', data: { dismiss: 'modal' } }
-        %span{ aria: { hidden: 'true' } } &times;
-      %h4.text-center 
-        = protocol.type + t(:dashboard)[:protocols][:view_details][:header] + protocol.id.to_s
-    .modal-body
-      #modal_errors
-      .row
-        .col-lg-12
-          .panel-group
-            - if protocol.type == "Study"
-              = render partial: 'dashboard/protocols/view_details/study_fields', locals: {protocol: protocol}
-            - elsif protocol.type == "Project"
-              = render partial: 'dashboard/protocols/view_details/project_fields', locals: {protocol: protocol}
-    .modal-footer
-      %button.btn.btn-default{ type: 'button', data: { dismiss: 'modal' } }
-        = t(:actions)[:close]
+= render 'protocols/view_details/study_information', protocol: protocol
+= render 'protocols/view_details/optional_information', protocol: protocol
+= render 'protocols/view_details/research_involving', protocol: protocol
+= render 'protocols/view_details/study_type', protocol: protocol
+= render 'protocols/view_details/impact_areas', protocol: protocol
+= render 'protocols/view_details/affiliations', protocol: protocol

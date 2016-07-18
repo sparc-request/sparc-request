@@ -101,10 +101,16 @@ SparcRails::Application.routes.draw do
     end
   end
 
-   resources :projects, controller: :protocols, except: [:index, :show, :destroy] do
+  resources :projects, controller: :protocols, except: [:index, :show, :destroy] do
   end
 
   resources :studies, controller: :protocols, except: [:index, :show, :destroy] do
+  end
+
+  resources :associated_users, except: [:show] do
+    collection do
+      get :search_identities
+    end
   end
 
   resources :catalogs, only: [] do

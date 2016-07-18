@@ -17,26 +17,10 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-module Dashboard::AssociatedUsersHelper
-  
-  def associated_users_edit_button(pr, permission_to_edit)
-    content_tag(:button,
-      raw(
-        content_tag(:span, '', class: 'glyphicon glyphicon-edit', aria: { hidden: 'true' })
-      ),
-      type: 'button', data: { project_role_id: pr.id, permission: permission_to_edit.to_s },
-      class: "btn btn-warning actions-button edit-associated-user-button #{permission_to_edit ? '' : 'disabled'}"
-    )
-  end
-
-  def associated_users_delete_button(pr, permission_to_edit)
-    content_tag(:button,
-      raw(
-        content_tag(:span, '', class: 'glyphicon glyphicon-remove', aria: { hidden: 'true' })
-      ),
-      type: 'button', data: { project_role_id: pr.id, identity_role: pr.role, identity_id: pr.identity_id, permission: permission_to_edit.to_s }, 
-      class: "btn btn-danger actions-button delete-associated-user-button #{permission_to_edit ? '' : 'disabled'}"
-    )
-  end
-end
+<% if @errors.present? %>
+$("#modal_place #modal_errors").html("<%= escape_javascript(render( 'shared/modal_errors', errors: @errors )) %>")
+<% else %>
+$("#modal_place").modal 'hide'
+$("#associated-users-table").bootstrapTable 'refresh', {silent: true}
+$("#flashes_container").html("<%= escape_javascript(render( 'shared/flash' )) %>")
+<% end %>

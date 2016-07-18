@@ -20,4 +20,5 @@
 
 $("#protocol-form-display").html("<%= escape_javascript(render( '/protocols/form/protocol_form', protocol: @protocol, protocol_type: @protocol_type, service_request: @service_request )) %>")
 $("#flashes_container").html("<%= escape_javascript(render( 'shared/flash' )) %>")
+$(".datetimepicker").datetimepicker(format: 'MM/DD/YYYY', allowInputToggle: true)
 $(".selectpicker").selectpicker()

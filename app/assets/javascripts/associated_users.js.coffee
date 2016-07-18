@@ -17,64 +17,46 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-#= require cart
-#= require navigation
-
 $(document).ready ->
-  $(document).on('mouseenter', '.step-btn', ->
-    $(this).addClass('hover')
-    $(this).siblings('.right-arrow').addClass('hover')
-  ).on('mouseleave', '.step-btn', ->
-    $(this).removeClass('hover')
-    $(this).siblings('.right-arrow').removeClass('hover')
-  )
 
-  $(document).on('mouseenter', '.right-arrow', ->
-    $(this).addClass('hover')
-    $(this).siblings('.step-btn').addClass('hover')
-  ).on('mouseleave', '.right-arrow', ->
-    $(this).removeClass('hover')
-    $(this).siblings('.step-btn').removeClass('hover')
-  )
-
-  $(document).on 'click', '.service-view a', ->
-    description = $(".service-description-#{$(this).data('id')}")
-    if description.hasClass('hidden')
-      $('.service-description').addClass('hidden')
-      description.removeClass('hidden')
-    else
-      description.addClass('hidden')
-
-  $('.protocol-select-help a').tooltip()
-
-  $(document).on 'click', '.view-protocol-details-button', ->
-    protocol_id = $(this).data('protocol-id')
+  $(document).on 'click', '#new-associated-user-button', ->
     $.ajax
-      method: 'get'
-      url: "/dashboard/protocols/#{protocol_id}/view_details"
+      type: 'get'
+      url: '/associated_users/new.js'
+      data:
+        protocol_id: $(this).data('protocol-id')
     return false
 
+  $(document).on 'click', '.edit-associated-user-button', (event) ->
+    project_role_id = $(this).data('project-role-id')
+    $.ajax
+      type: 'get'
+      url: "/associated_users/#{project_role_id}/edit.js"
+      success: ->
+        if $('#project_role_role').val() == 'other'
+          $('.role_dependent.other').show()
+        if $('#project_role_identity_attributes_credentials').val() == 'other'
+          $('.credentials_dependent.other').show()
+    return false
 
+  $(document).on 'click', '.delete-associated-user-button:not(.disabled)', ->
+    project_role_id        = $(this).data('project-role-id')
+    current_user_id        = parseInt($('#current_user_id').val(), 10)
+    pr_identity_role       = $(this).data('identity-role')
+    pr_identity_id         = $(this).data('identity-id')
 
-
-
-
-
-  $('.edit-study').hide() unless $('.edit_study_id').val() != ""
-  $('.edit-project').hide() unless $('.edit_project_id').val() != ""
-
-  $('.edit_study_id').change ->
-    if ($(this).val() == "")
-      $('.edit-study').hide()
+    if current_user_id == pr_identity_id
+      confirm_message = I18n['authorized_users']['delete']['self_remove_warning']
     else
-      $('.edit-study').show()
+      confirm_message = I18n['authorized_users']['delete']['remove_warning']
 
-  $('.edit_project_id').change ->
-    if ($(this).val() == "")
-      $('.edit-project').hide()
+    if pr_identity_role == 'primary-pi'
+      alert I18n['authorized_users']['delete']['pi_warning']
+    else if current_user_id == pr_identity_id
+      alert I18n['proper']['protocol']['authorized_users']['remove_self_warning']
     else
-      $('.edit-project').show()
-
-  $('#redirect').button()
-  
+      if confirm(confirm_message)
+        $.ajax
+          type: 'delete'
+          url: "/associated_users/#{project_role_id}"
+    return false

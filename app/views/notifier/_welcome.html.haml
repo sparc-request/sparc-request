@@ -1,0 +1,18 @@
+- welcome_text = @service_request.status == "get_a_cost_estimate" ? I18n.t('notifier.welcome_obtain_research_pricing') : I18n.t('notifier.welcome_submit')
+- if @role == 'pi' || @role == 'primary-pi'
+  %p= I18n.t('notifier.body1', :full_name => @identity.full_name)
+  %p{:style => 'display: inline;'}
+    = I18n.t('notifier.body2_pi', :welcome => welcome_text, :application_title => I18n.t('application_title'), :root_url => ROOT_URL, :protocol_type => @protocol.type.downcase)
+  %strong= t(:notifier)[:body3_pi]
+- else
+  %p= I18n.t('notifier.body2_non_pi', :welcome => welcome_text, :application_title => I18n.t('application_title'), :root_url => ROOT_URL, :protocol_type => @protocol.type.downcase)
+%br
+- if @approval_link
+  %p
+    = t(:notifier)[:body7]
+    %a{:style => "color: red; font-weight: bold;", :href => @approval_link}= t(:notifier)[:link]
+    ="."
+%p
+  %a{:style => "color: blue; font-weight: bold;", :href => @portal_link}=@portal_text
+%br
+%br

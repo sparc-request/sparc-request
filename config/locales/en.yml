@@ -1662,7 +1662,7 @@ en:
     p_id: "Project ID"
     p_info: "Project Information"
     p_title: "Project Title"
-    requester:  "Requester"
+    requester:  "(Requester)"
     role: "Role"
     s_name: "Sponsor Name"
     service: "Service"

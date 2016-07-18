@@ -28,7 +28,7 @@
 
   %body
     = render "welcome"
-    = render "project_information"
+    = render "project_information", protocol: @protocol
     = render "user_information"
     - if @ssr_deleted
       = render "deleted_services"

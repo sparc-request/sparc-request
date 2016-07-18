@@ -35,19 +35,19 @@ class PastSubsidy < ActiveRecord::Base
   def pi_contribution
     # This ensures that if pi_contribution is null (new record),
     # then it will reflect the full cost of the request.
-    total_at_approval - (total_at_approval * percent_subsidy) || total_at_approval
+    total_at_approval.to_f - (total_at_approval.to_f * percent_subsidy) || total_at_approval.to_f
   end
 
   def approved_cost
     # Calculates cost of subsidy (amount subsidized)
     # stored total - pi_contribution then convert from cents to dollars
-    ( total_at_approval - pi_contribution ) / 100.0
+    ( total_at_approval.to_f - pi_contribution ) / 100.0
   end
 
   def approved_percent_of_total
     # Calculates the percent of total_at_approval that is subsidized
     # (stored total - pi_contribution) / stored total then convert to percent
-    total = total_at_approval
+    total = total_at_approval.to_f
 
     if total.nil? || total == 0
       0.00

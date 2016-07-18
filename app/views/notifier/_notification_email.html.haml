@@ -27,119 +27,26 @@
     %title= t(:notifier)[:service_request]
 
   %body
-    = render "welcome", service_request: @service_request, role: @role, identity: @identity, protocol: @protocol, approval_link: @approval_link, portal_link: @portal_link, portal_text: @portal_text
-
-    %table{:style => 'border: 1px solid black; border-collapse: collapse; width: 100%;', :cellpadding => 3}
-      %thead
-        %tr{:style => 'border: 1px solid black;'}
-          %td{:colspan => 2}
-            %strong= t(:notifier)[:p_info]
-      %tbody
-        %tr{:style => 'border: 1px solid black;'}
-          %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:notifier)[:p_id]
-          %td{:style => 'border: 1px solid black;'}= @protocol.id
-        %tr{:style => 'border: 1px solid black;'}
-          %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:notifier)[:title1]
-          %td{:style => 'border: 1px solid black;'}= @protocol.short_title
-        %tr{:style => 'border: 1px solid black;'}
-          %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:notifier)[:title2]
-          %td{:style => 'border: 1px solid black;'}= @protocol.title
-        %tr{:style => 'border: 1px solid black;'}
-          %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:notifier)[:s_name]
-          %td{:style => 'border: 1px solid black;'}= @protocol.sponsor_name
-        %tr{:style => 'border: 1px solid black;'}
-          %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:notifier)[:source]
-          %td{:style => 'border: 1px solid black;'}= (@protocol.funding_source or @protocol.potential_funding_source or "").capitalize
-
-    %br
-    %br
-
-    %table{:style => 'border: 1px solid black; border-collapse: collapse; width: 100%;', :cellpadding => 3}
-      %thead
-        %tr{:style => 'border: 1px solid black;'}
-          %td{:colspan => 4}
-            %strong= t(:notifier)[:u_info]
-        %tr
-          %th{:style => 'border: 1px solid black; text-align: left;'}= t(:notifier)[:name]
-          %th{:style => 'border: 1px solid black;'}= t(:notifier)[:contact_info]
-          %th{:style => 'border: 1px solid black;'}= t(:notifier)[:role]
-          - if !@protocol.selected_for_epic.nil?
-            %th{:style => 'border: 1px solid black;'}= t(:notifier)[:epic_access]
-      %tbody
-        - @protocol.project_roles.each do |pr|
-          %tr{:style => 'border: 1px solid black;'}
-            %td{:style => 'border: 1px solid black;'}= pr.identity.full_name
-            %td{:style => 'border: 1px solid black;'}= pr.identity.email
-            - if pr.identity.id == @triggered_by
-              %td{:style => 'border: 1px solid black; text-align: center;'}= pr.role.upcase + " " + t(:notifier)[:requester]
-            - if !@protocol.selected_for_epic.nil?
-              %td{:style => 'border: 1px solid black; text-align: center;'}= pr.epic_access == 1 ? "Yes" : "No"
-
+    = render "welcome"
+    = render "project_information"
+    = render "user_information"
     - if @ssr_deleted
-      %br
-      %br
-
-      %table{:style => 'border: 1px solid black; border-collapse: collapse; width: 100%;', :cellpadding => 3}
-        %tbody
-          %tr{:style => 'border: 1px solid black;'}
-            %td{:style => 'border: 1px solid black; font-weight: bold;'}= t(:notifier)[:all_on_request]
+      = render "deleted_services"
 
     - elsif @audit_report.present? && @audit_report[:line_items].present?
-      %br
-      %br
+      = render "audit_action"
 
-      %table{:style => 'border: 1px solid black; border-collapse: collapse; width: 100%;', :cellpadding => 3}
-        %thead
-          %tr{:style => 'border: 1px solid black;'}
-            %th{:style => 'border: 1px solid black; text-align: left;'}= t(:notifier)[:service]
-            %th{:style => 'border: 1px solid black;'}= t(:notifier)[:action]
-
-        %tbody
-          - @audit_report[:line_items].each do |last_change|
-            - service = Service.find(last_change.audited_changes["service_id"])
-            %tr{:style => 'border: 1px solid black;'}
-              %td{:style => 'border: 1px solid black;'}= service.name
-              %td{:style => 'border: 1px solid black; text-align: center;'}= AUDIT_ACTIONS[last_change.action]
-    %hr
     %br
-    - if @service_request.has_per_patient_per_visit_services? and @service_request.arms.count >0 and @provide_arm_info
-      %table{:style => 'border: 1px solid black; border-collapse: collapse; width: 100%;', :cellpadding => 3}
-        %thead
-          %tr{:style => 'border: 1px solid black;'}
-            %td{:colspan => 3}
-              %strong= t(:notifier)[:arm_data]
-          %tr{:style => 'border: 1px solid black;'}
-            %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:notifier)[:arm_name]
-            %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:notifier)[:arm_subject_count]
-            %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:notifier)[:arm_visit_count]
-        %tbody
-          - @service_request.arms.each do |arm|
-            %tr{:style => 'border: 1px solid black;'}
-              %td{:style => 'border: 1px solid black;'}= arm.name
-              %td{:style => 'border: 1px solid black;'}= arm.subject_count
-              %td{:style => 'border: 1px solid black;'}= arm.visit_count
+    %br
 
-    %table{:style => 'border: 1px solid black; border-collapse: collapse; width: 100%;', :cellpadding => 3}
-      %thead
-        %tr{:style => 'border: 1px solid black;'}
-          %td{:colspan => 3}
-            %strong= t(:notifier)[:u_info]
-        %tr
-          %th{:style => 'border: 1px solid black; text-align: left;'}= t(:notifier)[:sr_id_acronym]
-          %th{:style => 'border: 1px solid black;'}= t(:notifier)[:organization]
-          %th{:style => 'border: 1px solid black;'}= t(:notifier)[:status]
-      %tbody
-        - @protocol.sub_service_requests.each do |ssr|
-          %tr{:style => 'border: 1px solid black;'}
-            %td{:style => 'border: 1px solid black;'}= ssr.display_id
-            %td{:style => 'border: 1px solid black;'}= ssr.org_tree_display
-            %td{:style => 'border: 1px solid black;'}= AVAILABLE_STATUSES[ssr.status]
+    - if @service_request.has_per_patient_per_visit_services? and @service_request.arms.count >0 and @provide_arm_info
+      = render "arm_information"
+
+    = render "srid_information"
+    
     %p= t(:notifier)[:body6]
     
     %p= t(:issue_contact)
 
     - if @role == 'pi' || @role == 'primary-pi'
-      - @service_request.service_list.map{|k, v| v[:acks]}.flatten.uniq.each do |ack|
-        %p{:style => 'font-size: small;'}=ack
-
-
+      = render "acknowledgments"

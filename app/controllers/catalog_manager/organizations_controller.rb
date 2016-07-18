@@ -47,6 +47,7 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
   def update_organization
     @attributes.delete(:id)
     if @organization.update_attributes(@attributes)
+      @organization.update_descendants_availability(@attributes[:is_available])
       flash[:notice] = "#{@organization.name} saved correctly."
     else
       flash[:alert] = "Failed to update #{@organization.name}."

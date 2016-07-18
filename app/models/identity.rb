@@ -153,15 +153,11 @@ class Identity < ActiveRecord::Base
     @is_super_user ||= self.super_users.count > 0
   end
 
-  def is_service_provider?(args)
+  def is_service_provider?(ssr)
     is_provider = false
     orgs =[]
-    args = [args]
-    args.flatten.each do |ssr|
-      binding.pry
-      orgs << ssr.organization << ssr.organization.parents
-      orgs.flatten!
-    end
+    orgs << ssr.organization << ssr.organization.parents
+    orgs.flatten!
     
     orgs.each do |org|
       provider_ids = org.service_providers_lookup.map{|x| x.identity_id}

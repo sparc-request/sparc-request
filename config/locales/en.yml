@@ -2061,6 +2061,7 @@ en:
     subspecialty: "Subspecialty:"
     subspecialty_prompt: "Select a Subspecialty"
     update_button: "Update Authorized User"
+    other: "Please Specify"
 
   # User list partial
   user_list:

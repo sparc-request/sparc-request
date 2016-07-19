@@ -27,14 +27,13 @@
 .protocol-left
   border-right-style: dotted
   border-right-color: #ccc
-
-  .page-header
-    margin-top: 0px
-    h3
-      margin: 0
   .service-list
     display: inline-block
     width: 100%
+    .page-header
+      margin-top: 0px
+      h3
+        margin: 0
     .service-view
       display: inline-block
       width: 100%
@@ -61,14 +60,18 @@
     font-style: italic
     color: red
 
-  #protocol-summary
-    .row
-      margin: 0
-    .row:not(:last-child)
-      padding-bottom: 3px
-      border-bottom: 1px solid #EEE
-      margin-bottom: 3px
+  .protocol-information
+    .page-header
+      h3
+        margin: 0
+    #protocol-summary
+      .row
+        margin: 0
+      .row:not(:last-child)
+        padding-bottom: 3px
+        border-bottom: 1px solid #EEE
+        margin-bottom: 3px
 
-  #associated-users-table
-    thead
-      background: $sparc-blue
+    #associated-users-table
+      thead
+        background: $sparc-blue

@@ -26,6 +26,6 @@
     = hidden_field_tag :validates, ''
     = hidden_field_tag :current_location, @page
     = render 'errors'
-    = render 'service_requests/service_details/service_details_left', service_request: @service_request, sub_service_request: @sub_service_request
+    = render 'service_requests/service_details/service_details_left', service_request: @service_request, sub_service_request: @sub_service_request, protocol: @service_request.protocol
     = render 'service_requests/service_details/service_details_right', service_request: @service_request, sub_service_request: @sub_service_request, line_items: @line_items
 = render 'service_requests/navigation/footer', service_request: @service_request, css_class: @css_class, back: @back, forward: @forward

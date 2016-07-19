@@ -18,14 +18,5 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .col-md-9.protocol-left
-  .service-list
-    .page-header
-      %h3
-        = t(:proper)[:protocol][:review_services_notice]
-        %small
-          = t(:proper)[:protocol][:review_services_instructions]
-    %p.percent-effort-warning
-      = t(:proper)[:protocol][:percent_effort_notice]
-      = render 'service_requests/protocol/service_list', service_request: @service_request, sub_service_request: @sub_service_request
-  .protocol-information
-    = render 'service_requests/protocol/protocol_display', service_request: @service_request, protocol: @service_request.protocol
+  = render 'service_requests/protocol/service_list', service_request: @service_request, sub_service_request: @sub_service_request
+  = render 'service_requests/protocol/protocol_display', service_request: @service_request, protocol: @service_request.protocol

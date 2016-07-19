@@ -22,7 +22,7 @@
 #= require cart
 #= require right_navigation
 
-$ ->
+$(document).ready ->
   # handle removing an arm and clicking save & continue - set subjects and visits to 1
   # show/hide remove arm link depending on how many arms exist,  hide when on one arm remains
   nested_field_count = $('form .fields:visible').length
@@ -121,22 +121,21 @@ $ ->
         go = false
     return go
 
-$('.units_per_quantity').live 'change', ->
-  max = parseInt($(this).attr('data-qty_max'), 10)
-  user_input = parseInt($(this).val(), 10)
-  if user_input > max
-    $(this).css({'border': '2px solid red'})
-    $('#unit_max_error').css({'border': '2px solid red'})
-    $('#unit_quantity').html(user_input)
-    $('#unit_max').html(max + ".")
-    $('#unit_max_error').show()
-    $(this).val(max)
-  else
-    $('#unit_max_error').hide()
-    $('#unit_max_error').css('border', '')
-    $(this).css('border', '')
+  $('.units_per_quantity').live 'change', ->
+    max = parseInt($(this).attr('data-qty_max'), 10)
+    user_input = parseInt($(this).val(), 10)
+    if user_input > max
+      $(this).css({'border': '2px solid red'})
+      $('#unit_max_error').css({'border': '2px solid red'})
+      $('#unit_quantity').html(user_input)
+      $('#unit_max').html(max + ".")
+      $('#unit_max_error').show()
+      $(this).val(max)
+    else
+      $('#unit_max_error').hide()
+      $('#unit_max_error').css('border', '')
+      $(this).css('border', '')
 
-$(document).ready ->
   $('input[value="Screening Phase"]').each ->
     $(this).parent("div").append('<img src="/assets/information.png" class="screening_info_img">')
   $('img.screening_info_img').qtip

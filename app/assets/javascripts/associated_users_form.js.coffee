@@ -74,7 +74,7 @@ $(document).ready ->
       message2 = I18n["protocol_information"]["change_primary_pi"]["warning_prompt_2"]
 
       form.hide()
-      $('.modal-body').append("<h1 class='change_ppi_prompt' style='color:red;'>#{warning}</h1><p class='change_ppi_prompt' style='font-size:14px;'>#{message1}</p><p class='change_ppi_prompt' style='font-size:14px;'>#{message2}</p>")
+      $('.modal-body').append("<h1 class='change_ppi_prompt text-center' style='color:red;'>#{warning}</h1><p class='change_ppi_prompt text-center' style='font-size:14px;'>#{message1}</p><p class='change_ppi_prompt text-center' style='font-size:14px;'>#{message2}</p>")
     else
       form.submit()
 

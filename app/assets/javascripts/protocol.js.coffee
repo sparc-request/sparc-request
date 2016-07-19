@@ -54,27 +54,3 @@ $(document).ready ->
       method: 'get'
       url: "/dashboard/protocols/#{protocol_id}/view_details"
     return false
-
-
-
-
-
-
-
-  $('.edit-study').hide() unless $('.edit_study_id').val() != ""
-  $('.edit-project').hide() unless $('.edit_project_id').val() != ""
-
-  $('.edit_study_id').change ->
-    if ($(this).val() == "")
-      $('.edit-study').hide()
-    else
-      $('.edit-study').show()
-
-  $('.edit_project_id').change ->
-    if ($(this).val() == "")
-      $('.edit-project').hide()
-    else
-      $('.edit-project').show()
-
-  $('#redirect').button()
-  

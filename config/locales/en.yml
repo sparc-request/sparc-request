@@ -355,12 +355,13 @@ en:
     # PROTOCOL #
     ############
     protocol:
-      review_services_notice: "Please review Services below."
+      review_services_notice: "Review Services"
       percent_effort_notice: "If Professional Services are covered by % effort, please indicate in Step 2."
       selection_help:
         question: "Which type of Protocol should I choose?"
         study_response: "Choose 'New Study' for a research study with defined aims and outcomes."
         project_response: "Choose 'New Project' for non-study-specific Service Requests or anything that is not a research study."
+      review_protocol_notice: "Review Protocol Information"
       previously_submitted_warning: "The request that you are editing has been previously submitted and can not be moved to another %{protocol_type}."
       authorized_users:
         self_remove_warning: "You can't remove yourself as an Authorized User of this Protocol. Please complete this request first or create a new request."

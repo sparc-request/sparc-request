@@ -324,11 +324,11 @@ $(document).ready ->
     .on 'typeahead:select', (event, suggestion) ->
       $("#protocol_project_roles_attributes_0_identity_id[type='hidden']").val(suggestion.value)
       $("#protocol_project_roles_attributes_0_identity_id[type='text']").hide()
-      $("#primary_pi_name").text("#{suggestion.label}").show()
+      $("#primary_pi_name").text("#{suggestion.label}").removeClass('hidden')
       $("#user-select-clear-icon").show()
 
     $('#user-select-clear-icon').live 'click', ->
-      $("#primary_pi_name").text("").hide()
+      $("#primary_pi_name").text("").addClass('hidden')
       $('#user-select-clear-icon').hide()
       $("#protocol_project_roles_attributes_0_identity_id[type='hidden']").val('')
       $("#protocol_project_roles_attributes_0_identity_id[type='text']").val('').show()

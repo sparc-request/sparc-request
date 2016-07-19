@@ -73,8 +73,8 @@ RSpec.describe "User views documents table", js: true do
     before :each do
       document_with_access.sub_service_requests = [ssr]
       document_with_access.reload
-
       @page = go_to_show_protocol(protocol.id)
+      wait_for_javascript_to_finish
     end
 
     scenario 'and sees the document link and enabled edit/delete buttons for access documents' do

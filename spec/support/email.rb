@@ -15,7 +15,7 @@ module EmailHelpers
     expect(mail).to have_xpath "//table//strong[text()='User Information']"
     expect(mail).to have_xpath "//th[text()='User Name']/following-sibling::th[text()='Contact Information']/following-sibling::th[text()='Role']"
     service_request.protocol.project_roles.each do |role|
-      expect(mail).to have_xpath "//td[text()='#{role.identity.full_name}']/following-sibling::td[text()='#{role.identity.email}']/following-sibling::td[text()=#{role.role.upcase}']"
+      expect(mail).to have_xpath "//td[text()='#{role.identity.full_name}']/following-sibling::td[text()='#{role.identity.email}']/following-sibling::td[text()='PRIMARY-PI (Requester)']"
     end
   end
 

@@ -32,10 +32,10 @@ name_header_style = wb.styles.add_style sz: 12, b: true, bg_color: 'ADADAD', ali
 wb.add_worksheet(name: "Review") do |sheet|
 
   sheet.add_row ["#{@protocol.class.to_s} Information"], :style => header_style
-  sheet.add_row ["#{@protocol.class.to_s} ID:", @protocol.id], :style => default
-  sheet.add_row ['Short Title:', @protocol.short_title], :style => default
-  sheet.add_row ["#{@protocol.class.to_s} Title:", @protocol.short_title], :style => default
-  sheet.add_row ["Funding Source:", @protocol.display_funding_source_value], :style => default
+  sheet.add_row ["#{@protocol.class.to_s} ID", @protocol.id], :style => default
+  sheet.add_row ['Short Title', @protocol.short_title], :style => default
+  sheet.add_row ["#{@protocol.class.to_s} Title", @protocol.short_title], :style => default
+  sheet.add_row ["Funding Source", @protocol.display_funding_source_value], :style => default
   
   sheet.add_row
 

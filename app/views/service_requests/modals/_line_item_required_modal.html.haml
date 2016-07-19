@@ -17,20 +17,19 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-#submit-error-modal.hidden
+#line-item-required-modal.hidden
   .modal-dialog
     .modal-content
       .modal-header
         %button.close{ type: 'button', data: { dismiss: 'modal' } }
           %span{ aria: { hidden: 'true' } } &times;
         %h4.text-center#modal-title
-          = t(:proper)[:cart][:submit_error][:header]
+          = t(:proper)[:cart][:must_have_line_item_error][:header]
       .modal-body
         #modal_errors
-        .form-group
-          = t(:proper)[:cart][:submit_error][:warning_text]
-        .form-group
-          = t(:proper)[:cart][:submit_error][:service_required]
+        .form-group.text-center
+          = t(:proper)[:cart][:must_have_line_item_error][:warning]
+          = t(:proper)[:cart][:must_have_line_item_error][:return_to_catalog]
       .modal-footer
         .center-block
           %button.btn.btn-default{ type: 'button', data: { dismiss: 'modal' } }

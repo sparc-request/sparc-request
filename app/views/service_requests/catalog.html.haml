@@ -26,10 +26,10 @@
 = render 'catalogs/catalog_center', organization: @organization, service_request: @service_request, from_portal: @from_portal
 = render 'catalogs/catalog_right', service_request: @service_request, sub_service_request: @sub_service_request, line_items: @line_items
 
-= render 'catalogs/modals/submit_error_modal'
-= render 'catalogs/modals/new_request_modal'
-= render 'catalogs/modals/request_submitted_modal', service_request: @service_request
-= render 'catalogs/modals/login_required_modal'
+= render 'service_requests/modals/submit_error_modal'
+= render 'service_requests/modals/new_request_modal'
+= render 'service_requests/modals/request_submitted_modal', service_request: @service_request
+= render 'service_requests/modals/login_required_modal'
 
 - if @ctrc_ssr_id
   #ctrc-dialog

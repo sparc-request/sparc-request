@@ -18,26 +18,12 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#= require cart
 #= require navigation
+#= require cart
+#= require right_navigation
+#= require associated_users
 
 $(document).ready ->
-  $(document).on('mouseenter', '.step-btn', ->
-    $(this).addClass('hover')
-    $(this).siblings('.right-arrow').addClass('hover')
-  ).on('mouseleave', '.step-btn', ->
-    $(this).removeClass('hover')
-    $(this).siblings('.right-arrow').removeClass('hover')
-  )
-
-  $(document).on('mouseenter', '.right-arrow', ->
-    $(this).addClass('hover')
-    $(this).siblings('.step-btn').addClass('hover')
-  ).on('mouseleave', '.right-arrow', ->
-    $(this).removeClass('hover')
-    $(this).siblings('.step-btn').removeClass('hover')
-  )
-
   $(document).on 'click', '.service-view a', ->
     description = $(".service-description-#{$(this).data('id')}")
     if description.hasClass('hidden')

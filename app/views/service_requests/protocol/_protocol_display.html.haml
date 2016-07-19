@@ -21,10 +21,17 @@
   .page-header
     %h3
       = t(:proper)[:protocol][:review_protocol_notice]
+      %small
+        = t(:proper)[:protocol][:review_protocol_instructions]
   = request_submitted_warning_display(service_request)
   = render 'protocols/summary', protocol: protocol, protocol_type: protocol.type, service_request: service_request
   = render 'associated_users/table', protocol: protocol
 - else
+  .page-header
+    %h3
+      = t(:proper)[:protocol][:create_protocol_notice]
+      %small
+        = t(:proper)[:protocol][:create_protocol_instructions]
   .col-sm-12.protocol-container.text-center
     = link_to t(:protocols)[:studies][:new], new_protocol_path(srid: service_request.id, protocol_type: 'Study'), class: 'btn btn-success'
     = link_to t(:protocols)[:projects][:new], new_protocol_path(srid: service_request.id, protocol_type: 'Project'), class: 'btn btn-success'

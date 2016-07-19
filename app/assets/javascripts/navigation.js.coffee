@@ -19,6 +19,23 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 $(document).ready ->
+
+  $(document).on('mouseenter', '.step-btn', ->
+    $(this).addClass('hover')
+    $(this).siblings('.right-arrow').addClass('hover')
+  ).on('mouseleave', '.step-btn', ->
+    $(this).removeClass('hover')
+    $(this).siblings('.right-arrow').removeClass('hover')
+  )
+
+  $(document).on('mouseenter', '.right-arrow', ->
+    $(this).addClass('hover')
+    $(this).siblings('.step-btn').addClass('hover')
+  ).on('mouseleave', '.right-arrow', ->
+    $(this).removeClass('hover')
+    $(this).siblings('.step-btn').removeClass('hover')
+  )
+  
   $('.navigation_link').live 'click', ->
     if $(this).parent('div.exit').size() >= 1
       $('#processing_request').show()

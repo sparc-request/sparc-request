@@ -21,3 +21,7 @@
   = hidden_field_tag :line_item_count, line_items.size
   - line_items.each do |line_item|
     = render 'service_requests/right_navigation/cart_line_item', line_item: line_item, service_request: service_request, sub_service_request: sub_service_request
+
+= render 'service_requests/modals/has_fulfillments_modal'
+= render 'service_requests/modals/remove_request_modal'
+= render 'service_requests/modals/line_item_required_modal'

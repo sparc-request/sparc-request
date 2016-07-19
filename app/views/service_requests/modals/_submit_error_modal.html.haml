@@ -17,25 +17,21 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.col-sm-12.steps
-  .container-fluid
-    .steps-banner-container
-      %ul#steps-banner
-        %li
-          = link_to raw(t(:proper)[:navigation][:steps][:step1]), 'javascript:void(0)', class: 'btn step-btn step-btn-blue'
-          .right-arrow.right-arrow-blue
-        %li
-          = link_to raw(t(:proper)[:navigation][:steps][:step2]), 'javascript:void(0)', class: 'btn step-btn step-btn-light-blue'
-          .right-arrow.right-arrow-light-blue
-        %li
-          = link_to raw(t(:proper)[:navigation][:steps][:step3]), 'javascript:void(0)', class: 'btn step-btn step-btn-orange'
-          .right-arrow.right-arrow-orange
-        %li
-          = link_to raw(t(:proper)[:navigation][:steps][:step4]), 'javascript:void(0)', class: 'btn step-btn step-btn-red'
-          .right-arrow.right-arrow-red
-        %li
-          = link_to raw(t(:proper)[:navigation][:steps][:step5]), 'javascript:void(0)', class: 'btn step-btn step-btn-green'
-          .right-arrow.right-arrow-green
-.col-sm-12.ui-corner-all.step-header{ class: css_class }
-  %h4
-    = step
+#submit-error-modal.hidden
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %button.close{ type: 'button', data: { dismiss: 'modal' } }
+          %span{ aria: { hidden: 'true' } } &times;
+        %h4.text-center#modal-title
+          = t(:proper)[:cart][:submit_error][:header]
+      .modal-body
+        #modal_errors
+        .form-group
+          = t(:proper)[:cart][:submit_error][:warning]
+        .form-group
+          = t(:proper)[:cart][:submit_error][:service_required]
+      .modal-footer
+        .center-block
+          %button.btn.btn-default{ type: 'button', data: { dismiss: 'modal' } }
+            = t(:actions)[:close]

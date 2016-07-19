@@ -356,27 +356,49 @@ en:
     ############
     protocol:
       review_services_notice: "Review Services"
+      review_services_instructions: "Please review the SPARC Request Services you have selected"
+      create_protocol_notice: "Create Protocol"
+      create_protocol_instructions: "Create a Protocol and add all relevant information"
+      review_protocol_notice: "Review Protocol Information"
+      review_protocol_instructions: "Review your Protocol Information and add Authorized Users"
       percent_effort_notice: "If Professional Services are covered by % effort, please indicate in Step 2."
       selection_help:
         question: "Which type of Protocol should I choose?"
         study_response: "Choose 'New Study' for a research study with defined aims and outcomes."
         project_response: "Choose 'New Project' for non-study-specific Service Requests or anything that is not a research study."
-      review_protocol_notice: "Review Protocol Information"
       previously_submitted_warning: "The request that you are editing has been previously submitted and can not be moved to another %{protocol_type}."
       authorized_users:
         self_remove_warning: "You can't remove yourself as an Authorized User of this Protocol. Please complete this request first or create a new request."
+
+    ###################
+    # SERVICE DETAILS #
+    ###################
+    service_details:
+      enter_dates_notice: "Enter Dates"
+      instructions: "Next, please enter the following information specific to your %{protocol_type}. This information will help us generate applicable service fees for your review."
+
     ########
     # CART #
     ########
     cart:
       header: "My Services"
       to_catalog: "Return to Catalog"
-      has_fulfillments: "This line item has one or more fulfillments associated with it and can not be deleted."
-      remove_request_confirm: "This action will delete this service request and you will be redirected to your Dashboard. Click OK to proceed."
+      has_fulfillments:
+        header: "Remove Service"
+        warning: "This line item has one or more fulfillments associated with it and can not be deleted."
+      remove_request:
+        header: "Remove Service"
+        warning: "This action will delete this service request and you will be redirected to your Dashboard. Click OK to proceed."
       submit_error:
         header: "Submission Error"
-        warning_text: "Please ensure that you have added all necessary research services to your \"My Services\" cart before proceeding. For a listing of available services to add, click on any of the Programs listed on the left-hand side of the page. Services will appear in the middle of the screen. Add services by clicking \"Add\"."
+        warning: "Please ensure that you have added all necessary research services to your \"My Services\" cart before proceeding. For a listing of available services to add, click on any of the Programs listed on the left-hand side of the page. Services will appear in the middle of the screen. Add services by clicking \"Add\"."
         service_required: "You must add at least 1 service to your cart before clicking \"Continue\"."
+      must_have_line_item_error:
+        header: "Submission Error"
+        warning: "You must have at least 1 Service in your \"My Services\" cart in order to complete a Service Request."
+        return_to_catalog: "If you wish to change your requested Services, please click 'Return to Catalog'."
+
+
 
     ##############
     # NAVIGATION #

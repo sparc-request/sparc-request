@@ -48,8 +48,9 @@ $(document).ready ->
     request_submitted = $(this).data('request-submitted')
     spinner = $('<span class="spinner"><img src="/assets/catalog_manager/spinner_small.gif"/></span>')
 
-    if has_fulfillments == 1
-      alert(I18n['proper']['catalog']['cart']['has_fulfillments'])
+    if has_fulfillments == 0
+      $('#modal_place').html($('#has-fulfillments-modal').html())
+      $('#modal_place').modal('show')
     else if request_submitted == 1
       button = $(this)
       $('#modal_place').html($('#request-submitted-modal').html())
@@ -59,10 +60,16 @@ $(document).ready ->
         button.replaceWith(spinner)
         removeService(srid, id, false, spinner)
     else
-      if li_count == 1 and ssrid != ''
-        if confirm(I18n['proper']['catalog']['cart']['remove_request_confirm'])
-          $(this).replaceWith(spinner)
+      if ssrid != '' && li_count == 1 # Redirect to the Dashboard if the user deletes the last Service on an SSR
+        $('#modal_place').html($('#remove-request-modal').html())
+        $('#modal_place').modal('show')
+
+        $(document).on 'click', '#modal_place .yes-button', ->
+          button.replaceWith(spinner)
           removeService(srid, id, true, spinner)
+      else if li_count == 1 && window.location.pathname.indexOf('catalog') == -1 # Do not allow the user to remove the last service except in the catalog
+        $('#modal_place').html($('#line-item-required-modal').html())
+        $('#modal_place').modal('show')
       else
         $(this).replaceWith(spinner)
         removeService(srid, id, false, spinner)

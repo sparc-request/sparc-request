@@ -550,7 +550,7 @@ en:
             rate: "Indirect Cost Rate:"
 
     #####################
-    # SERVICE  S #
+    # SERVICE  CALENDAR #
     #####################
     service_calendars:
       consolidated_request:

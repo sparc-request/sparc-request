@@ -21,4 +21,7 @@ $ ->
   $(".datetimepicker").datetimepicker(format: 'MM/DD/YYYY', allowInputToggle: true)
   $(".selectpicker").selectpicker()
 
+  set_required_fields
+
+(exports ? this).set_required_fields = () ->
   $('.required').append('*')

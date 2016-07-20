@@ -176,6 +176,28 @@ en:
 
 
 
+  arms:
+    add: "Add Arm"
+    remove: "Remove Arm"
+    edit: "Edit Arm"
+    created: "Arm Created!"
+    updated: "Arm Updated!"
+    destroyed: "Arm Destroyed!"
+    form_fields:
+      arm: "Arm:"
+      name: "Arm Name:"
+      subject_count: "Subject Count:"
+      visit_count: "Visit Count:"
+    table_fields:
+      name: "Arm Name"
+      subject_count: "Subject Count"
+      visit_count: "Visit Count"
+    delete_warning: "Are you sure you want to delete this arm?"
+
+
+
+
+
   protocols:
     new: "New Protocol"
     edit: "Edit %{protocol_type} Information"
@@ -485,16 +507,6 @@ en:
     ##########
     arms:
       manage: "Manage Arms"
-      add: "Add Arm"
-      remove: "Remove Arm"
-      edit: "Edit Arm"
-      created: "Arm Created!"
-      updated: "Arm Updated!"
-      destroyed: "Arm Destroyed!"
-      arm: "Arm:"
-      name: "Arm Name:"
-      subject_count: "Subject Count:"
-      visit_count: "Visit Count:"
 
     ###############
     #  DOCUMENTS  #

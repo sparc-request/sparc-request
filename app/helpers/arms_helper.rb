@@ -18,26 +18,27 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-module AssociatedUsersHelper
-  
-  def authorized_users_edit_button(project_role)
+module ArmsHelper
+
+  def arms_edit_button(arm, arms_editable)
     content_tag(:button,
       raw(
         content_tag(:span, '', class: 'glyphicon glyphicon-edit', aria: { hidden: 'true' })
       ),
-      type: 'button', data: { project_role_id: project_role.id },
-      class: "btn btn-warning actions-button edit-associated-user-button"
+      type: 'button', data: { arm_id: arm.id },
+      class: "btn btn-warning edit-arm-button",
+      disabled: !arms_editable
     )
   end
-  
-  def authorized_users_delete_button(project_role, current_user)
+
+  def arms_delete_button(arm, arms_editable, arm_count)
     content_tag(:button,
       raw(
         content_tag(:span, '', class: 'glyphicon glyphicon-remove', aria: { hidden: 'true' })
       ),
-      type: 'button', data: { project_role_id: project_role.id, identity_role: project_role.role, identity_id: project_role.identity_id }, 
-      class: "btn btn-danger actions-button delete-associated-user-button",
-      disabled: project_role.identity_id == current_user.id
+      type: 'button', data: { arm_id: arm.id },
+      class: "btn btn-danger delete-arm-button",
+      disabled: !arms_editable || arm_count == 1
     )
   end
 end

@@ -17,7 +17,33 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.col-sm-9.service-details-left  
-  = render 'service_requests/service_details/details_dates', service_request: service_request, protocol: protocol
-  - if (sub_service_request.nil? ? service_request.has_per_patient_per_visit_services? : sub_service_request.has_per_patient_per_visit_services?)
-    = render 'service_requests/service_details/details_arms', service_request: service_request
+.modal-dialog
+  .modal-content
+    = form_for arm, remote: true, url: arm_path(arm), html: { class: "form-horizontal", role: "form" } do |a|
+      .modal-header
+        %button.close{ type: 'button', data: { dismiss: 'modal' } }
+          %span{ aria: { hidden:'true' } } &times;
+          %span.sr-only &times;
+        %h4.modal-title.text-center
+          = t(:arms)[:edit]
+      .modal-body
+        #modal_errors
+        .row
+          .col-md-12
+            .form-group
+              = a.label :name, t(:arms)[:form_fields][:name], class: "col-sm-4 control-label required"
+              .col-sm-7
+                = a.text_field :name, { class: 'form-control' }
+            .form-group
+              = a.label :subject_count, t(:arms)[:form_fields][:subject_count], class: "col-sm-4 control-label required"
+              .col-sm-7
+                = a.text_field :subject_count, { class: 'form-control' }
+            .form-group
+              = a.label :visit_count, t(:arms)[:form_fields][:visit_count], class: "col-sm-4 control-label required"
+              .col-sm-7
+                = a.text_field :visit_count, { class: 'form-control' }
+      .modal-footer
+        .center-block
+          %button.btn.btn-default{ type: 'button', data: { dismiss: 'modal' } }
+            = t(:actions)[:close]
+          %input.btn.btn-primary#edit-arm-form-button{ type: 'submit', value: t(:actions)[:save] }

@@ -46,7 +46,7 @@ class Dashboard::ArmsController < Dashboard::BaseController
     @selected_arm = arm_builder.arm
 
     if @selected_arm.valid?
-      flash[:success] = t(:dashboard)[:arms][:created]
+      flash[:success] = t(:arms)[:created]
     else
       @errors = @selected_arm.errors
     end
@@ -65,7 +65,7 @@ class Dashboard::ArmsController < Dashboard::BaseController
     @service_request = ServiceRequest.find(params[:service_request_id])
     @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
     if @arm.update_attributes(params[:arm])
-      flash[:success] = t(:dashboard)[:arms][:updated]
+      flash[:success] = t(:arms)[:updated]
     else
       @errors = @arm.errors
     end
@@ -80,7 +80,7 @@ class Dashboard::ArmsController < Dashboard::BaseController
     @service_request = destroyer.service_request
     @selected_arm = destroyer.selected_arm
 
-    flash[:alert] = t(:dashboard)[:arms][:destroyed]
+    flash[:alert] = t(:arms)[:destroyed]
   end
 
   private

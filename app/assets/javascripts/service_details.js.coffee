@@ -23,6 +23,41 @@
 #= require right_navigation
 
 $(document).ready ->
+  $(document).on 'click', '#new-arm-button', ->
+    $.ajax
+      type: 'get'
+      url: '/arms/new'
+      data:
+        protocol_id: $(this).data('protocol-id')
+    return false
+
+  $(document).on 'click', '#add-arm-form-button', ->
+    $(this).attr('disabled','disabled')
+    $(this).closest('form').submit()
+
+  $(document).on 'click', '.edit-arm-button', ->
+    arm_id = $(this).data('arm-id')
+    $.ajax
+      type: 'get'
+      url: "/arms/#{arm_id}/edit"
+
+  $(document).on 'click', '#edit-arm-form-button', ->
+    $(this).attr('disabled','disabled')
+    $(this).closest('form').submit()
+
+  $(document).on 'click', '.delete-arm-button', ->
+    if confirm(I18n['arms']['delete_warning'])
+      arm_id = $(this).data('arm-id')
+      $.ajax
+        type: 'delete'
+        url: "/arms/#{arm_id}"
+
+
+
+
+
+
+
   # handle removing an arm and clicking save & continue - set subjects and visits to 1
   # show/hide remove arm link depending on how many arms exist,  hide when on one arm remains
   nested_field_count = $('form .fields:visible').length

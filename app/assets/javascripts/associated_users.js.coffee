@@ -39,7 +39,7 @@ $(document).ready ->
           $('.credentials_dependent.other').show()
     return false
 
-  $(document).on 'click', '.delete-associated-user-button:not(.disabled)', ->
+  $(document).on 'click', '.delete-associated-user-button', ->
     project_role_id        = $(this).data('project-role-id')
     current_user_id        = parseInt($('#current_user_id').val(), 10)
     pr_identity_role       = $(this).data('identity-role')

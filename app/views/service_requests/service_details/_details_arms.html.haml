@@ -23,31 +23,20 @@
       = t(:proper)[:service_details][:arm_information_notice]
       %small
         = t(:proper)[:service_details][:arm_information_instructions]
-  .arm-info
-    - x = 0
-    = nested_form_for protocol, method: :post do |f|
-      .arm-header.col-sm-12
-        .arm-cell.col-sm-4
-          = t(:service_request_details)[:name]
-        .arm-cell.col-sm-3
-          = t(:service_request_details)[:number_of_subjects]
-        .arm-cell.col-sm-3
-          = t(:service_request_details)[:number_of_visits]
-        .col-sm-2
-      - unlocked = service_request.arms_editable?
-      .arms
-        = f.fields_for :arms do |arm|
-          = arm.hidden_field :new_with_draft, value: unlocked
-          - cannot_remove_class = can_be_deleted?(arm.object) ? nil : 'cannot_remove'
-          .arm-cell.col-sm-4
-            = arm.text_field :name, disabled: !unlocked
-          .arm-cell.skinny_fields.col-sm-3
-            = arm.text_field :subject_count, disabled: !unlocked, :'data-minimum_subject_count' => arm.object.minimum_subject_count, :'data-in_cwf' => arm_has_subject_data?(arm.object), class: 'arm_subject_count'
-          .arm-cell.skinny_fields.col-sm-3
-            = arm.text_field :visit_count, disabled: !unlocked, :'data-minimum_visit_count' => arm.object.minimum_visit_count, :'data-in_cwf' => arm_has_subject_data?(arm.object), class: 'arm_visit_count'
-          .arm-cell.col-sm-2{id: "#{x+=1}"}
-            = arm.link_to_remove "Remove Arm", class: "remove_arm btn btn-sm btn-danger #{cannot_remove_class}" unless !unlocked
-      - if unlocked
-        .add-arm
-          = f.link_to_add "Add Arm", :arms, class: "btn btn-sm btn-success"
-        %br
+  .bootstrap-table-dropdown-overflow
+    #arms-custom-toolbar
+      %button.btn.btn-success#new-arm-button{ data: { protocol_id: service_request.protocol_id } }
+        = t(:arms)[:add]
+    %table#arms-table{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', 'show-toggle' => 'true', url: arms_path(format: :json, srid: service_request.id), striped: 'true', toolbar: '#arms-custom-toolbar' } }
+      %thead.primary-header
+        %tr
+          %th{ data: { field: 'name', align: 'left', sortable: 'true' } }
+            = t(:arms)[:table_fields][:name]
+          %th{ data: { field: 'subject_count', align: 'left', sortable: 'true' } }
+            = t(:arms)[:table_fields][:subject_count]
+          %th{ data: { field: 'visit_count', align: 'left', sortable: 'true' } }
+            = t(:arms)[:table_fields][:visit_count]
+          %th{ data: { field: 'edit', align: 'center', sortable: 'false' } }
+            = t(:actions)[:edit]
+          %th{ data: { field: 'delete', align: 'center', sortable: 'false' } }
+            = t(:actions)[:delete]

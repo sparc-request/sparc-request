@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160712191814) do
+ActiveRecord::Schema.define(version: 20160720151213) do
 
   create_table "admin_rates", force: :cascade do |t|
     t.integer  "line_item_id", limit: 4
@@ -184,6 +184,12 @@ ActiveRecord::Schema.define(version: 20160712191814) do
   add_index "charges", ["service_id"], name: "index_charges_on_service_id", using: :btree
   add_index "charges", ["service_request_id"], name: "index_charges_on_service_request_id", using: :btree
 
+  create_table "click_counters", force: :cascade do |t|
+    t.integer  "click_count", limit: 4
+    t.datetime "created_at",            null: false
+    t.datetime "updated_at",            null: false
+  end
+
   create_table "clinical_providers", force: :cascade do |t|
     t.integer  "identity_id",     limit: 4
     t.integer  "organization_id", limit: 4
@@ -270,7 +276,6 @@ ActiveRecord::Schema.define(version: 20160712191814) do
     t.datetime "document_updated_at"
     t.string   "doc_type_other",        limit: 255
     t.integer  "protocol_id",           limit: 4
-    t.integer  "service_request_id",    limit: 4
   end
 
   add_index "documents", ["protocol_id"], name: "index_documents_on_protocol_id", using: :btree
@@ -656,6 +661,7 @@ ActiveRecord::Schema.define(version: 20160712191814) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "admin_filter",      limit: 255
+    t.string   "sorted_by",         limit: 255
   end
 
   create_table "protocols", force: :cascade do |t|
@@ -694,7 +700,6 @@ ActiveRecord::Schema.define(version: 20160712191814) do
     t.boolean  "selected_for_epic"
     t.boolean  "archived",                                                                    default: false
     t.integer  "study_type_question_group_id",          limit: 4
-    t.integer  "requester_id",                          limit: 4
   end
 
   add_index "protocols", ["next_ssr_id"], name: "index_protocols_on_next_ssr_id", using: :btree

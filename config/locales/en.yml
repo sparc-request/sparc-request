@@ -193,6 +193,7 @@ en:
       subject_count: "Subject Count"
       visit_count: "Visit Count"
     delete_warning: "Are you sure you want to delete this arm?"
+    screening_tooltip: "Enter the number of subjects you expect to screen as well as how many screening visits are required. If no screening phase is required, you can change the name of the Arm to meet your needs."
 
 
 
@@ -407,7 +408,7 @@ en:
       enter_dates_notice: "Timeline"
       enter_dates_instructions: "Dates will be used to generate applicable service fees"
       arm_information_notice: "Arm Information"
-      arm_information_instructions: "Used to build your Service Calendar"
+      arm_information_instructions: "Add all necessary arms and we will build your Service Calendar"
       start_date: "Start Date"
       end_date: "End Date"
       recruitment_start: "Estimated Recruitment Start Date"

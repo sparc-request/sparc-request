@@ -20,13 +20,23 @@
 
 module ArmsHelper
 
+  def arm_name_helper(arm)
+    returning_html = content_tag(:span, arm.name)
+
+    if arm.name == 'Screening Phase'
+      returning_html += content_tag(:img, '', src: '/assets/information.png', class: 'screening-info').html_safe
+    end
+
+    returning_html
+  end
+
   def arms_edit_button(arm, arms_editable)
     content_tag(:button,
       raw(
         content_tag(:span, '', class: 'glyphicon glyphicon-edit', aria: { hidden: 'true' })
       ),
       type: 'button', data: { arm_id: arm.id },
-      class: "btn btn-warning edit-arm-button",
+      class: 'btn btn-warning edit-arm-button',
       disabled: !arms_editable
     )
   end
@@ -37,7 +47,7 @@ module ArmsHelper
         content_tag(:span, '', class: 'glyphicon glyphicon-remove', aria: { hidden: 'true' })
       ),
       type: 'button', data: { arm_id: arm.id },
-      class: "btn btn-danger delete-arm-button",
+      class: 'btn btn-danger delete-arm-button',
       disabled: !arms_editable || arm_count == 1
     )
   end

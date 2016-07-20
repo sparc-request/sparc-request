@@ -25,7 +25,7 @@
     .sub_text
       = t(:protocols)[:studies][:optional_information][:subtext]
   .panel-body
-    .form-group.row
+    .form-group.row#udak-number
       = form.label :udak_project_number, t(:protocols)[:studies][:optional_information][:udak_project_number], class: 'col-lg-2 control-label'
       .col-lg-10
         = form.text_field :udak_project_number, class: 'form-control'

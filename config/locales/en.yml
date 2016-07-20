@@ -57,6 +57,9 @@ en:
     send: "Send"
     upload: "Upload"
 
+  additional_details:
+    add: 'Add Additional Details'
+
   constants:
     yes_select: "Yes"
     no_select: "No"

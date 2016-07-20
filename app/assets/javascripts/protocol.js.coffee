@@ -38,5 +38,5 @@ $(document).ready ->
     protocol_id = $(this).data('protocol-id')
     $.ajax
       method: 'get'
-      url: "/dashboard/protocols/#{protocol_id}/view_details"
+      url: "/protocols/#{protocol_id}/view_details"
     return false

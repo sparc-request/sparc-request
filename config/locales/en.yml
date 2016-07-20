@@ -189,6 +189,9 @@ en:
       sponsor: "Sponsor Name:"
       funding_source: "Funding Source:"
       potential_source: "Potential Funding Source:"
+    view_details:
+      button: "View %{protocol_type} Details"
+      header: "%{protocol_type} Details: #%{protocol_id}"
     change_type:
       header: "Change Protocol Type"
       type: "Protocol Type:"
@@ -203,12 +206,12 @@ en:
       information:
         header: "Study Information"
         subtext: "Necessary to obtain correct pricing"
-        short_title: "Short Title: *"
-        title: "Study Title: *"
-        funding_status: "Proposal Funding Status: *"
-        funding_source: "Funding Source: *"
-        potential_funding_source: "Potential Funding Source: *"
-        funding_source_internal: "Please Specify: *"
+        short_title: "Short Title:"
+        title: "Study Title:"
+        funding_status: "Proposal Funding Status:"
+        funding_source: "Funding Source:"
+        potential_funding_source: "Potential Funding Source:"
+        funding_source_internal: "Please Specify:"
         funding_source_federal:
           title: "Federal Grant Title:"
           code: "Federal Grant Code:"
@@ -217,8 +220,9 @@ en:
           non_phs_sponsor: "Federal Non-PHS Sponsor:"
           serial_number: "Federal Grant Serial Number:"
         phase: "Study Phase:"
-        sponsor: "Sponsor Name: *"
-        push_to_epic: "Publish Study in Epic: *"
+        sponsor: "Sponsor Name:"
+        push_to_epic: "Publish Study in Epic:"
+        study_type_questions: "Study Type Questions:"
       optional_information:
         header: "Optional Information"
         subtext: "Used for reporting purposes and saved for your future use"
@@ -228,6 +232,7 @@ en:
         potential_start_date: "Potential Funding Start Date:"
         start_date: "Funding Start Date:"
       research_involving:
+        none: "No Research Types selected"
         header: "Research Involving"
         subtext: "Check all that apply"
         humans:
@@ -256,24 +261,27 @@ en:
           number: "Patent Number:"
           inventors: "Inventors:"
       study_type:
+        none: "No Study Types selected"
         header: "Study Type"
         subtext: "Check all that apply"
       impact_areas:
+        none: "No Impact Areas selected"
         header: "Impact Areas"
         subtext: "Check all that apply"
         other: "Please Specify:"
       affiliations:
+        none: "No Affiliations selected"
         header: "Affiliations, Collaborations, and Memberships"
         subtext: "Check all that apply"
     projects:
       new: "New Project"
       information:
         header: "Project Information"
-        short_title: "Short Title: *"
-        title: "Project Title: *"
-        funding_status: "Proposal Funding Status: *"
-        funding_source: "Funding Source: *"
-        potential_funding_source: "Potential Funding Source: *"
+        short_title: "Short Title:"
+        title: "Project Title:"
+        funding_status: "Proposal Funding Status:"
+        funding_source: "Funding Source:"
+        potential_funding_source: "Potential Funding Source:"
         description: "Brief Description:"
         rate: "Indirect Cost Rate:"
     prompts:
@@ -286,7 +294,7 @@ en:
     authorized_users:
       header: "Authorized Users"
       subtext: "Primary PI Required"
-      primary_pi: "Primary PI: *"
+      primary_pi: "Primary PI:"
 
 
 
@@ -650,9 +658,6 @@ en:
         archive: "Archive"
         unarchive: "Unarchive"
 
-      summary:
-        view_details: "View %{protocol_type} Details"
-
       documents:
         header: "Documents"
         add_document: "Add Document"
@@ -662,83 +667,6 @@ en:
         view_consolidated: "View Consolidated Request"
         export_consolidated: "Export Consolidated Request"
         add_services: "Add Services"
-
-      view_details:
-        header: " Details: #"
-        studies:
-          information:
-            header: "Study Information"
-            short_title: "Short Title:"
-            title: "Study Title:"
-            funding_status: "Proposal Funding Status:"
-            funding_source: "Funding Source:"
-            potential_funding_source: "Potential Funding Source:"
-            funding_source_internal: "Internal Funding Source:"
-            funding_source_federal:
-              title: "Federal Grant Title:"
-              code: "Federal Grant Code:"
-              phs_sponsor: "Federal PHS Sponsor:"
-              separator: "-OR-"
-              non_phs_sponsor: "Federal Non-PHS Sponsor:"
-              serial_number: "Federal Grant Serial Number:"
-            phase: "Study Phase:"
-            sponsor: "Sponsor Name:"
-            push_to_epic: "Publish Study in Epic:"
-            study_type_questions: "Study-Type Questions"
-          optional_information:
-            header: "Optional Information"
-            udak_project_number: "Financial Account (UDAK #):"
-            rate: "Indirect Cost Rate:"
-            rfa: "Funding Opportunity # / RFA:"
-            potential_start_date: "Potential Funding Start Date:"
-            start_date: "Funding Start Date:"
-          research_involving:
-            header: "Research Involving"
-            none: "No Research Types selected"
-            humans:
-              header: "Human Subjects"
-              nct_number: "NCT# (National Clinical Trials Number):"
-              hr_number: "HR #:"
-              pro_number: "PRO #:"
-              record_irb: "IRB of Record:"
-              submission_type: "Submission Type:"
-              pending_approval: "Application/Approval Pending?:"
-              irb_approval_date: "IRB Approval Date:"
-              irb_expiration_date: "IRB Expiration Date:"
-            vertebrates:
-              header: "Vertebrate Animals"
-              iacuc_number: "IACUC #:"
-              iacuc_name: "Name of IACUC:"
-              iacuc_approval_date: "IACUC Approval Date:"
-              iacuc_expiration_date: "IACUC Expiration Date:"
-            products:
-              header: "Investigational Products"
-              ind_number: "IND #:"
-              ind_on_hold: "IND on Hold?:"
-              ide_number: "IDE# / HDE# / HUD#:"
-            ip_patents:
-              header: "IP/Patents"
-              number: "Patent Number:"
-              inventors: "Inventors:"
-          study_type:
-            header: "Study Type"
-            none: "No Study Types selected"
-          impact_areas:
-            header: "Impact Areas"
-            none: "No Impact Areas selected"
-          affiliations:
-            header: "Affiliations, Collaborations, and Memberships"
-            none: "No Affiliations selected"
-        projects:
-          information:
-            header: "Project Information"
-            short_title: "Short Title:"
-            title: "Project Title:"
-            funding_status: "Proposal Funding Status:"
-            funding_source: "Funding Source:"
-            potential_funding_source: "Potential Funding Source:"
-            description: "Brief Description:"
-            rate: "Indirect Cost Rate:"
 
     #####################
     # SERVICE CALENDARS #

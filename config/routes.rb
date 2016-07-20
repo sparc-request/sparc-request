@@ -98,6 +98,7 @@ SparcRails::Application.routes.draw do
       get :approve_epic_rights
       get :push_to_epic
       get :push_to_epic_status
+      get :view_details
     end
   end
 

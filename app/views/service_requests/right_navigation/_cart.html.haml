@@ -17,10 +17,15 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.line-items
-  = hidden_field_tag :line_item_count, line_items.size
-  - line_items.each do |line_item|
-    = render 'service_requests/right_navigation/cart_line_item', line_item: line_item, service_request: service_request, sub_service_request: sub_service_request
+.panel.panel-default
+  .panel-heading.text-center
+    %h4.panel-title
+      = t(:proper)[:cart][:header] + protocol_id_display(sub_service_request, service_request)
+  .panel-body.cart
+    .line-items
+      = hidden_field_tag :line_item_count, line_items.size
+      - line_items.each do |line_item|
+        = render 'service_requests/right_navigation/cart_line_item', line_item: line_item, service_request: service_request, sub_service_request: sub_service_request, allow_delete: allow_delete
 
 = render 'service_requests/modals/has_fulfillments_modal'
 = render 'service_requests/modals/remove_request_modal'

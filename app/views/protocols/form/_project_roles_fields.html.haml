@@ -27,7 +27,7 @@
   .panel-body
     = form.fields_for :project_roles do |pr_form|
       .form-group.row
-        = pr_form.label :identity_id, t(:protocols)[:authorized_users][:primary_pi], class: 'col-lg-2 control-label'
+        = pr_form.label :identity_id, t(:protocols)[:authorized_users][:primary_pi], class: 'col-lg-2 control-label required'
         .col-lg-10
           = pr_form.text_field :identity_id, placeholder: t(:constants)[:prompts][:search_for_user], class: 'form-control'
           %label#primary_pi_name.hidden

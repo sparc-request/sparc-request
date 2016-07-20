@@ -23,7 +23,7 @@
       %button.close{ type: 'button', data: { dismiss: 'modal' } }
         %span{ aria: { hidden: 'true' } } &times;
       %h4.text-center 
-        = protocol.type + t(:dashboard)[:protocols][:view_details][:header] + protocol.id.to_s
+        = I18n.t('protocols.view_details.header', protocol_type: protocol.type, protocol_id: protocol.id)
     .modal-body
       #modal_errors
       .row

@@ -19,17 +19,11 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #= require navigation
-
-(exports ? this).formatMoney = (n, t=',', d='.', c='$') ->
-  s = if n < 0 then "-#{c}" else c
-  i = Math.abs(n).toFixed(2)
-  j = (if (i.length > 3 && i > 0) then i.length % 3 else 0)
-  s += i.substr(0, j) + t if j
-  return s + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t)
+#= require cart
+#= require navigation
 
 $(document).ready ->
-
-#****************** SERVICE SUBSIDY BEGIN ***************************#
+  #****************** SERVICE SUBSIDY BEGIN ***************************#
   $(document).on 'click', '.add_subsidy_button', ->
     data =
       'subsidy' :
@@ -45,9 +39,9 @@ $(document).ready ->
       type: 'DELETE'
       url: "/subsidies/#{subsidy_id}"
 
-#****************** SERVICE SUBSIDY END ***************************#
+  #****************** SERVICE SUBSIDY END ***************************#
 
-#****************** SUBSIDY FORM BEGIN ***************************#
+  #****************** SUBSIDY FORM BEGIN ***************************#
   $(document).on 'change', '#pi_contribution', ->
     # When user changes PI Contribution, the Percent Subsidy and Subsidy Cost fields are recalculated & displayed
     max_percent = $(this).data('max-percentage')
@@ -157,5 +151,3 @@ $(document).ready ->
         Ok: ->
           $(this).dialog('close')
     redisplay_form_values(subsidy_id, percent, pi_contribution, current_cost)
-
-  validate_subsidy = () ->

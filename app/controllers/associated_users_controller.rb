@@ -96,17 +96,8 @@ class AssociatedUsersController < ApplicationController
   def destroy
     @protocol           = @protocol_role.protocol
     epic_access         = @protocol_role.epic_access
-    protocol_role_clone = @protocol_role.clone
     
     @protocol_role.destroy
-    
-    if @current_user_destroyed = protocol_role_clone.identity_id == @user.id
-      @protocol_type      = @protocol.type
-      @permission_to_edit = false
-
-      # If the user is no longer an authorized user, if they're not an admin, go to dashboard
-      @return_to_dashboard = !@admin
-    end
 
     flash.now[:alert] = t(:authorized_users)[:destroyed]
 

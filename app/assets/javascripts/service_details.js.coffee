@@ -33,7 +33,6 @@ $(document).ready ->
 
   $(document).on 'click', '#add-arm-form-button', ->
     $(this).attr('disabled','disabled')
-    $(this).closest('form').submit()
 
   $(document).on 'click', '.edit-arm-button', ->
     arm_id = $(this).data('arm-id')

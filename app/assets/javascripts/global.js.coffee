@@ -21,7 +21,14 @@ $ ->
   $(".datetimepicker").datetimepicker(format: 'MM/DD/YYYY', allowInputToggle: true)
   $(".selectpicker").selectpicker()
 
-  set_required_fields
+  set_required_fields()
 
 (exports ? this).set_required_fields = () ->
   $('.required').append('*')
+
+(exports ? this).formatMoney = (n, t=',', d='.', c='$') ->
+  s = if n < 0 then "-#{c}" else c
+  i = Math.abs(n).toFixed(2)
+  j = (if (i.length > 3 && i > 0) then i.length % 3 else 0)
+  s += i.substr(0, j) + t if j
+  return s + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t)

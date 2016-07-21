@@ -17,15 +17,33 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-= javascript_include_tag 'service_subsidy'
-
-= render '/service_requests/navigation/steps', step: @step_text, css_class: @css_class
-.col-sm-12.body-container
-  = form_tag navigate_service_request_path(@service_request), id: 'navigation_form', class: 'form-horizontal' do
-    = hidden_field_tag :location, ''
-    = hidden_field_tag :validates, ''
-    = hidden_field_tag :current_location, @page
-    = render 'errors'
-    = render 'service_requests/service_subsidy/service_subsidy_left', service_request: @service_request, has_subsidy: @has_subsidy, eligible_for_subsidy: @eligible_for_subsidy
-    = render 'service_requests/service_subsidy/service_subsidy_right', service_request: @service_request, sub_service_request: @sub_service_request, line_items: @line_items
-= render 'service_requests/navigation/footer', service_request: @service_request, css_class: @css_class, back: @back, forward: @forward
+.approved_subsidy
+  - if subsidy.present?
+    %h4= "Current Effective Subsidy"
+    %table.table.table-condensed#approved_subsidy_table
+      %thead
+        %tr.default
+          %th= "Request Cost at Approval"
+          %th= t(:fulfillments)[:subsidies][:percent]
+          %th= t(:fulfillments)[:subsidies][:pi]
+          %th= "Subsidy Cost"
+          %th= "Approved By"
+          %th= "Approved At"
+      %tbody
+        %tr
+          %td.approved_request_cost
+            = number_to_currency(subsidy.total_at_approval/100.0)
+          %td.subsidy_percent
+            = display_as_percent(subsidy.percent_subsidy)
+          %td.subsidy_contribution
+            = number_to_currency(subsidy.pi_contribution/100.0)
+          %td.subsidy_effective_current_cost
+            = number_to_currency(subsidy.approved_cost)
+          %td.approved_by
+            = subsidy.approver.try(:full_name)
+          %td.approved_at
+            = format_datetime(subsidy.approved_at)
+  - else
+    %span= "There is no current effective subsidy."
+  %br
+  %br

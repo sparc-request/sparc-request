@@ -27,6 +27,11 @@ module EmailHelpers
   def assert_email_srid_information
     expect(mail).to have_xpath "//th[text()='SRID']/following-sibling::th[text()='Organization']/following-sibling::th[text()='Status']"
     service_request.protocol.sub_service_requests.each do |ssr|
+      puts "********************"
+      puts ssr.org_tree_display.inspect
+      puts ssr.org_tree_display
+      puts ssr.inspect
+      puts "********************"
       status = AVAILABLE_STATUSES[ssr.status]
       expect(mail).to have_xpath "//td[text()='#{ssr.display_id}']/following-sibling::td[text()='#{ssr.org_tree_display}']/following-sibling::td[text()='#{status}']"
     end

@@ -49,7 +49,7 @@ SparcRails::Application.routes.draw do
 
   resources :contact_forms, only: [:new, :create]
 
-  resources :subsidies, only: [:create, :update, :destroy]
+  resources :subsidies, only: [:new, :create, :edit, :update, :destroy]
 
   resources :service_requests, only: [:show] do
     resources :projects, except: [:index, :show, :destroy]

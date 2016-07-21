@@ -17,9 +17,12 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.page-header
-  %h3
-    = sub_service_request.organization.name
-.ssr-subsidies
-  = render 'subsidies/approved_subsidy', subsidy: sub_service_request.approved_subsidy
-  = render 'subsidies/pending_subsidy', subsidy: sub_service_request.pending_subsidy, sub_service_request: sub_service_request
+.panel.panel-primary
+  .panel-heading.subsidy-header
+    %h3.panel-title
+      = sub_service_request.organization.name
+  .panel-body
+    #approved-subsidy
+      = render 'subsidies/approved_subsidy', subsidy: sub_service_request.approved_subsidy, admin: false
+    #pending-subsidy
+      = render 'subsidies/pending_subsidy', subsidy: sub_service_request.pending_subsidy, sub_service_request: sub_service_request, admin: false

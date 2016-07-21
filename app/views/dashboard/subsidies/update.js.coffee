@@ -17,10 +17,9 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-$("#modal_errors").html("<%= escape_javascript(render(partial: 'shared/modal_errors', locals: {errors: @errors})) %>")
+$("#modal_errors").html("<%= escape_javascript(render( 'shared/modal_errors', errors: @errors )) %>")
 <% unless @errors %>
-$("#pending_subsidy").html("<%= escape_javascript(render(:partial =>'dashboard/subsidies/pending_subsidy', locals: { sub_service_request: @sub_service_request, subsidy: @subsidy, admin: @admin })) %>");
+$("#pending-subsidy").html("<%= escape_javascript(render( 'subsidies/pending_subsidy', sub_service_request: @sub_service_request, subsidy: @subsidy, admin: @admin )) %>");
 $("#modal_place").modal 'hide'
-$("#flashes_container").html("<%= escape_javascript(render('shared/flash')) %>")
+$("#flashes_container").html("<%= escape_javascript(render( 'shared/flash' )) %>")
 <% end %>

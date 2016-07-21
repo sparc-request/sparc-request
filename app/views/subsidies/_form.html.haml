@@ -17,16 +17,14 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 .modal-dialog
   .modal-content
     .modal-header
-      %button.close{type: 'button', data: {dismiss: 'modal'}}
-        %span{aria: {hidden:'true'}} &times;
+      %button.close{ type: 'button', data: { dismiss: 'modal' } }
+        %span{ aria: { hidden:'true' } } &times;
         %span.sr-only &times;
       %h4.modal-title.text-center
         = header_text
-
     .modal-body
       #modal_errors
       .row
@@ -35,33 +33,32 @@
             %tbody
               %tr
                 %th.col-sm-4
-                  = t(:dashboard)[:subsidies][:form][:request_cost]
-                %td.col-sm-7.text-right#subsidy_form_table_request_cost{data: { cost: subsidy.total_request_cost }}
+                  = t(:subsidies)[:form][:request_cost]
+                %td.col-sm-7.text-right#subsidy_form_table_request_cost{ data: { cost: subsidy.total_request_cost } }
                   = number_to_currency(subsidy.total_request_cost / 100.0)
-          = form_for subsidy, {remote: true, url: (subsidy.new_record? ? dashboard_subsidies_path : dashboard_subsidy_path(subsidy)), html: {role: "form"}} do |form|
+          = form_for subsidy, remote: true, url: path, html: { role: "form" } do |form|
             = form.hidden_field :sub_service_request_id
-            = hidden_field_tag 'admin', admin
+            = hidden_field_tag :admin, admin
             .form-group
-              = form.label "percent_subsidy", t(:dashboard)[:subsidies][:form][:percent], class: "col-sm-4 control-label"
+              = form.label :percent_subsidy, t(:subsidies)[:form][:percent], class: "col-sm-4 control-label"
               .input-group.col-sm-7
-                = form.text_field "percent_subsidy", { class: 'form-control', value: display_as_percent(subsidy.percent_subsidy) }
+                = form.text_field :percent_subsidy, { class: 'form-control', value: display_as_percent(subsidy.percent_subsidy) }
                 %span.input-group-addon %
             .form-group
-              = form.label "pi_contribution", t(:dashboard)[:subsidies][:form][:pi], class: "col-sm-4 control-label"
+              = form.label :pi_contribution, t(:subsidies)[:form][:pi], class: "col-sm-4 control-label"
               .input-group.col-sm-7
                 %span.input-group-addon $
-                = form.text_field "pi_contribution", { class: 'form-control', value: (cents_to_dollars_float(subsidy.pi_contribution)).to_s }
+                = form.text_field :pi_contribution, { class: 'form-control', value: (cents_to_dollars_float(subsidy.pi_contribution)).to_s }
             .row
               .col-md-12
                 %table.table.table-condensed.table-bordered
                   %tbody
                     %tr
                       %th.col-sm-4
-                        = t(:dashboard)[:subsidies][:form][:cost]
-                      %td.col-sm-7.text-right#subsidy_form_table_subsidy_cost{data: { cost: subsidy.current_cost }}
+                        = t(:subsidies)[:form][:cost]
+                      %td.col-sm-7.text-right#subsidy_form_table_subsidy_cost{ data: { cost: subsidy.current_cost } }
                         = number_to_currency(subsidy.current_cost)
-
             .modal-footer
-              %button.btn.btn-default{type: 'button', data: {dismiss: 'modal'}}
+              %button.btn.btn-default{ type: 'button', data: { dismiss: 'modal' } }
                 = t(:actions)[:close]
-              %input.btn.btn-primary{type: 'submit', value: t(:actions)[:save]}
+              %input.btn.btn-primary{ type: 'submit', value: t(:actions)[:save] }

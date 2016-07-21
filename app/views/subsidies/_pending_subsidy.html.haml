@@ -17,35 +17,51 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.pending_subsidy
-  - if subsidy.present?
-    - max_percentage = sub_service_request.organization.subsidy_map.max_percentage
-    - max_dollar_cap = sub_service_request.organization.subsidy_map.max_dollar_cap
-    %table
+- if subsidy.present?
+  .panel.panel-default
+    .panel-heading
+      %h4.panel-title
+        = t(:subsidies)[:pending][:header]
+    %table.table.table-condensed#pending-subsidy-table
       %thead
-        %tr
-          %th= "Subsidy Pending Approval"
-        %tr
-          %th= "Current Request Cost"
-          %th= "Percent Subsidy"
-          %th= "PI Contribution"
-          %th= "Subsidy Cost"
-          %th= "Delete Subsidy"
+        %tr.default
+          %th
+            = t(:subsidies)[:pending][:request_cost]
+          %th
+            = t(:subsidies)[:pending][:percent]
+          %th
+            = t(:subsidies)[:pending][:pi_contribution]
+          %th
+            = t(:subsidies)[:pending][:cost]
+          - if admin
+            %th.text-center
+              = t(:subsidies)[:pending][:approve]
+          %th.text-center
+            = t(:actions)[:edit]
+          %th.text-center
+            = t(:actions)[:delete]
       %tbody
         %tr
-          %td.request_cost{data: { subsidy_id: subsidy.id, cost: subsidy.total_request_cost }}
-            = number_to_currency(subsidy.total_request_cost / 100.0)
-          %td.percent_subsidy
-            = text_field_tag "percent_subsidy", display_as_percent(subsidy.percent_subsidy), { class: "subsidy_input", data: { subsidy_id: subsidy.id, max_percentage: max_percentage, max_dollar_cap: max_dollar_cap, percent_subsidy: subsidy.percent_subsidy } }
-          %td.pi_contribution
-            = text_field_tag "pi_contribution", cents_to_dollars_float(subsidy.pi_contribution), { class: "subsidy_input", data: { subsidy_id: subsidy.id, max_percentage: max_percentage, max_dollar_cap: max_dollar_cap, pi_contribution: subsidy.pi_contribution } }
-          %td.subsidy_cost{data: { subsidy_id: subsidy.id, cost: subsidy.current_cost }}
+          %td.request-cost
+            = number_to_currency(subsidy.total_request_cost/100.0)
+          %td.subsidy-percent
+            = display_as_percent(subsidy.percent_subsidy)
+          %td.subsidy-contribution
+            = number_to_currency(subsidy.pi_contribution/100.0)
+          %td.subsidy-effective-current-cost
             = number_to_currency(subsidy.current_cost)
-          %td.delete_subsidy
-            %button.delete_subsidy_button{ type: "button", data: { subsidy_id: subsidy.id }}
-              %span= "Delete"
-    #submit_error{:style => "display: none"}
-      .message
-  - else
-    %button{ type: "button", class: 'light-blue-button add_subsidy_button btn btn-primary', data: { sub_service_request_id: sub_service_request.id }}
-      %span= t(:fulfillments)[:subsidies][:link]
+          - if admin
+            %td.text-center.approve-subsidy
+              %button.btn.btn-sm.btn-success#approve-subsidy-button{ data: { subsidy_id: subsidy.id } }
+                %span.glyphicon.glyphicon-ok
+          %td.text-center.edit-subsidy
+            .btn.btn-warning.btn-sm#edit-subsidy-button{ data: { subsidy_id: subsidy.id, admin: admin.to_s } }
+              %span.glyphicon.glyphicon-edit
+          %td.text-center.delete-subsidy
+            %button.btn.btn-sm.btn-danger.delete-subsidy-button{ data: { subsidy_id: subsidy.id } }
+              %span.glyphicon.glyphicon-remove
+- else
+  .col-xs-12
+    %button.btn.btn-sm.btn-success#add-subsidy-button{ data: { ssrid: sub_service_request.id, admin: admin.to_s } }
+      %span
+        = t(:subsidies)[:add]

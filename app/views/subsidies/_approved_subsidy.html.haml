@@ -17,33 +17,73 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.approved_subsidy
-  - if subsidy.present?
-    %h4= "Current Effective Subsidy"
-    %table.table.table-condensed#approved_subsidy_table
+-# Copyright © 2011 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+- if subsidy.present?
+  .panel.panel-default
+    .panel-heading
+      %h4.panel-title.pull-left
+        = t(:subsidies)[:approved][:header]
+      .pull-right
+        - if admin
+          %button.btn.btn-sm.btn-default.notes.list{ data: { notable_type: "Subsidy", notable_id: subsidy.id } }
+            = t(:models)[:note][:plural]
+      .clearfix
+    %table.table.table-condensed#approved-subsidy-table
       %thead
         %tr.default
-          %th= "Request Cost at Approval"
-          %th= t(:fulfillments)[:subsidies][:percent]
-          %th= t(:fulfillments)[:subsidies][:pi]
-          %th= "Subsidy Cost"
-          %th= "Approved By"
-          %th= "Approved At"
+          %th
+            = t(:subsidies)[:approved][:request_cost]
+          %th
+            = t(:subsidies)[:approved][:percent]
+          %th
+            = t(:subsidies)[:approved][:pi_contribution]
+          %th
+            = t(:subsidies)[:approved][:cost]
+          %th
+            = t(:subsidies)[:approved][:approved_by]
+          %th
+            = t(:subsidies)[:approved][:approved_at]
+          - if admin
+            %th.text-center
+              = t(:actions)[:delete]
       %tbody
         %tr
-          %td.approved_request_cost
+          %td.request-cost
             = number_to_currency(subsidy.total_at_approval/100.0)
-          %td.subsidy_percent
+          %td.subsidy-percent
             = display_as_percent(subsidy.percent_subsidy)
-          %td.subsidy_contribution
+          %td.subsidy-contribution
             = number_to_currency(subsidy.pi_contribution/100.0)
-          %td.subsidy_effective_current_cost
+          %td.subsidy-effective-current-cost
             = number_to_currency(subsidy.approved_cost)
-          %td.approved_by
+          %td.approved-by
             = subsidy.approver.try(:full_name)
-          %td.approved_at
+          %td.approved-at
             = format_datetime(subsidy.approved_at)
-  - else
-    %span= "There is no current effective subsidy."
-  %br
-  %br
+          - if admin
+            %td.text-center.delete-subsidy
+              %button.btn.btn-sm.btn-danger.delete-subsidy-button{ data: { subsidy_id: subsidy.id } }
+                %span.glyphicon.glyphicon-remove
+- else
+  %span
+    = t(:subsidies)[:approved][:none]
+  %hr

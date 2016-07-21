@@ -323,6 +323,39 @@ en:
 
 
 
+  subsidies:
+    add: "Request a Subsidy"
+    new: "New Subsidy Pending Approval"
+    edit: "Edit Subsidy Pending Approval"
+    created: "Subsidy Created!"
+    updated: "Subsidy Updated!"
+    destroyed: "Subsidy Destroyed!"
+    delete_confirm: "Are you sure that you would like to delete this subsidy?"
+    approved:
+      header: "Current Effective Subsidy"
+      request_cost: "Cost at Approval"
+      percent: "% Subsidy"
+      pi_contribution: "PI Contribution"
+      cost: "Subsidy Cost"
+      approved_by: "Approved By"
+      approved_at: "Approved At"
+      none: "There is no current effective subsidy."
+    pending:
+      header: "Subsidy Pending Approval"
+      request_cost: "Current Cost"
+      percent: "% Subsidy"
+      pi_contribution: "PI Contribution"
+      cost: "Subsidy Cost"
+    form:
+      request_cost: "Current Request Cost:"
+      percent: "Percent Subsidy:"
+      pi: "PI Contribution:"
+      cost: "Subsidy Cost:"
+
+
+
+
+
   proper:
     ##########
     # HEADER #
@@ -849,35 +882,7 @@ en:
     #  SUBSIDIES  #
     ###############
     subsidies:
-      new: "New Subsidy Pending Approval"
-      edit: "Edit Subsidy Pending Approval"
-      created: "Subsidy Created!"
-      updated: "Subsidy Updated!"
-      destroyed: "Subsidy Destroyed!"
-      subsidy_information:
-        header: "Subsidy Information"
-        approved:
-          header: "Current Effective Subsidy"
-          request_cost: "Cost at Approval"
-          percent: "% Subsidy"
-          pi_contribution: "PI Contribution"
-          cost: "Subsidy Cost"
-          approved_by: "Approved By"
-          approved_at: "Approved At"
-          none: "There is no current effective subsidy."
-        pending:
-          header: "Subsidy Pending Approval"
-          request_cost: "Current Cost"
-          percent: "% Subsidy"
-          pi_contribution: "PI Contribution"
-          cost: "Subsidy Current Cost"
-          approve: "Approve"
-        add: "Request a Subsidy"
-      form:
-        request_cost: "Current Request Cost:"
-        percent: "Percent Subsidy:"
-        pi: "PI Contribution:"
-        cost: "Subsidy Cost:"
+      header: "Subsidy Information"
 
 
     ##################

@@ -21,16 +21,16 @@
 $(document).ready ->
 
 #****************** SUBSIDY INFORMATION BEGIN ***************************#
-  $(document).on 'click', '#add_subsidy_button', ->
+  $(document).on 'click', '#add-subsidy-button', ->
     data =
-      'sub_service_request_id': $(this).data('sub-service-request-id'),
+      'sub_service_request_id': $(this).data('ssrid'),
       'admin'                 : $(this).data('admin')
     $.ajax
       type: 'GET'
       url:  "/dashboard/subsidies/new"
       data: data
 
-  $(document).on 'click', '#edit_subsidy_button', ->
+  $(document).on 'click', '#edit-subsidy-button', ->
     id = $(this).data('subsidy-id')
     data = 'admin' : $(this).data('admin')
     $.ajax
@@ -38,15 +38,15 @@ $(document).ready ->
       url:  "/dashboard/subsidies/#{id}/edit"
       data: data
 
-  $(document).on 'click', '.delete_subsidy_button', ->
+  $(document).on 'click', '.delete-subsidy-button', ->
     subsidy_id = $(this).data('subsidy-id')
 
-    if confirm("Are you sure that you would like to delete this subsidy?")
+    if confirm(I18n['subsidies']['delete_confirm'])
       $.ajax
         type: 'DELETE'
         url: "/dashboard/subsidies/#{subsidy_id}"
 
-  $(document).on 'click', '#approve_subsidy_button', ->
+  $(document).on 'click', '#approve-subsidy-button', ->
     id = $(this).data('subsidy-id')
     $.ajax
       type: 'PATCH'

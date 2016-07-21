@@ -23,8 +23,9 @@ class Dashboard::SubsidiesController < Dashboard::BaseController
 
   def new
     @subsidy = PendingSubsidy.new(sub_service_request_id: params[:sub_service_request_id])
-    @header_text = t(:dashboard)[:subsidies][:new]
+    @header_text = t(:subsidies)[:new]
     @admin = params[:admin] == 'true'
+    @path = dashboard_subsidies_path
   end
 
   def create
@@ -34,7 +35,7 @@ class Dashboard::SubsidiesController < Dashboard::BaseController
       @subsidy.save
       @sub_service_request = @subsidy.sub_service_request
       @admin = params[:admin] == 'true'
-      flash[:success] = t(:dashboard)[:subsidies][:created]
+      flash[:success] = t(:subsidies)[:created]
       unless @admin
         redirect_to dashboard_sub_service_request_path(@sub_service_request, format: :js)
       end
@@ -45,8 +46,9 @@ class Dashboard::SubsidiesController < Dashboard::BaseController
 
   def edit
     @subsidy = PendingSubsidy.find(params[:id])
-    @header_text = t(:dashboard)[:subsidies][:edit]
+    @header_text = t(:subsidies)[:edit]
     @admin = params[:admin] == 'true'
+    @path = dashboard_subsidy_path(@subsidy)
   end
 
   def update
@@ -55,7 +57,7 @@ class Dashboard::SubsidiesController < Dashboard::BaseController
     format_percent_subsidy_param
     if @subsidy.update_attributes(params[:pending_subsidy].except(:pi_contribution))
       @admin = params[:admin] == 'true'
-      flash[:success] = t(:dashboard)[:subsidies][:updated]
+      flash[:success] = t(:subsidies)[:updated]
       unless @admin
         redirect_to dashboard_sub_service_request_path(@sub_service_request, format: :js)
       end
@@ -70,7 +72,7 @@ class Dashboard::SubsidiesController < Dashboard::BaseController
     @sub_service_request = @subsidy.sub_service_request
     if @subsidy.destroy
       @admin = true
-      flash[:alert] = t(:dashboard)[:subsidies][:destroyed]
+      flash[:alert] = t(:subsidies)[:destroyed]
     end
   end
 
@@ -79,7 +81,7 @@ class Dashboard::SubsidiesController < Dashboard::BaseController
     subsidy = subsidy.grant_approval(current_user)
     @sub_service_request = subsidy.sub_service_request.reload
     @admin = true
-    flash[:success] = t(:dashboard)[:subsidies][:approved]
+    flash[:success] = t(:subsidies)[:approved]
   end
 
   private

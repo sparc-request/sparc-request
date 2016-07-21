@@ -21,4 +21,5 @@
   = raw(t(:proper)[:service_subsidy][:eligible_notice])
 - service_request.sub_service_requests.each do |ssr|
   - if ssr.eligible_for_subsidy?
-    = render 'subsidies/subsidy', sub_service_request: ssr
+    %div{ id: "subsidy-#{ssr.id}" }
+      = render 'subsidies/subsidy', sub_service_request: ssr

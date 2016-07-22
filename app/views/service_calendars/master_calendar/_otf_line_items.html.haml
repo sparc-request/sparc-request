@@ -160,7 +160,7 @@
         %th.otf{ colspan: (@study_tracker) ? 13 : 16 }
           = value[:name]
         - value[:line_items].each do |line_item|
-          - locked = !line_item.sub_service_request.can_be_edited?
+          - locked = !line_item.sub_service_request.can_be_edited? || line_item.sub_service_request.status == 'complete'
           %tr.line_item.otfs{ class: [cycle('odd', '', name: 'otfs'), locked ? 'locked' : ''], :"data-unit_factor" => line_item.service.displayed_pricing_map.unit_factor }
             %td.service_name
               = line_item.service.name
@@ -201,7 +201,7 @@
                     - else
                       = text_field_tag "service_request[line_items_attributes][#{line_item.id}][quantity]", line_item.quantity, |
                        unit_minimum: line_item.service.displayed_pricing_map.quantity_minimum, units_per_qty_max: line_item.service.displayed_pricing_map.units_per_qty_max, class: 'line_item_quantity', current_quantity: line_item.quantity, previous_quantity: line_item.quantity, |
-                       update: update_otf_qty_and_units_per_qty_service_request_service_calendars_path(@service_request, line_item_id: line_item.id, type: 'qty') |
+                       update: update_otf_qty_and_units_per_qty_service_request_service_calendars_path(@service_request, line_item_id: line_item.id, type: 'qty')
               - else
                 %td{ colspan: 2 }
                   %span

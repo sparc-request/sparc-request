@@ -251,7 +251,7 @@ class ServiceCalendarsController < ApplicationController
     @service = @line_items_visit.line_item.service if params[:check]
 
     @line_items_visit.visits.each do |visit|
-      next unless value[:line_items].include?(liv.line_item) && liv.line_item.sub_service_request.can_be_edited?
+      next unless value[:line_items].include?(liv.line_item) && liv.line_item.sub_service_request.can_be_edited? && liv.line_item.sub_service_request.status != 'complete'
       if params[:uncheck]
         visit.update_attributes(quantity: 0, research_billing_qty: 0, insurance_billing_qty: 0, effort_billing_qty: 0)
       elsif params[:check]
@@ -272,7 +272,7 @@ class ServiceCalendarsController < ApplicationController
       next unless @sub_service_request.nil? || @sub_service_request.organization.name == value[:process_ssr_organization_name]
 
       @arm.line_items_visits.each do |liv|
-        next unless value[:line_items].include?(liv.line_item) && liv.line_item.sub_service_request.can_be_edited?
+        next unless value[:line_items].include?(liv.line_item) && liv.line_item.sub_service_request.can_be_edited? && liv.line_item.sub_service_request.status != 'complete'
         visit = liv.visits[column_id - 1] # columns start with 1 but visits array positions start at 0
         if params[:check]
           visit.update_attributes quantity: liv.line_item.service.displayed_pricing_map.unit_minimum, research_billing_qty: liv.line_item.service.displayed_pricing_map.unit_minimum, insurance_billing_qty: 0, effort_billing_qty: 0

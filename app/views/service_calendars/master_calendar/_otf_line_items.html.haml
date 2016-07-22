@@ -160,7 +160,7 @@
         %th.otf{ colspan: (@study_tracker) ? 13 : 16 }
           = value[:name]
         - value[:line_items].each do |line_item|
-          - locked = !line_item.sub_service_request.can_be_edited? || line_item.sub_service_request.status == 'complete'
+          - locked = !line_item.sub_service_request.can_be_edited? || line_item.sub_service_request.is_complete?
           %tr.line_item.otfs{ class: [cycle('odd', '', name: 'otfs'), locked ? 'locked' : ''], :"data-unit_factor" => line_item.service.displayed_pricing_map.unit_factor }
             %td.service_name
               = line_item.service.name

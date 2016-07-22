@@ -40,6 +40,7 @@
 //= require jquery.cookie
 //= require jquery.form
 //= require jquery_ujs
+//= require jquery.remotipart
 //= require jquery_nested_form
 //= require json2
 //= require infotip

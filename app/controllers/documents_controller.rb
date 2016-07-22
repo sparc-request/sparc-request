@@ -24,7 +24,7 @@ class DocumentsController < ApplicationController
   before_filter :initialize_service_request
   before_filter :authorize_identity
   before_filter :find_document,             only: [:edit, :update, :destroy]
-  before_filter :find_protocol,             only: [:index, :new, :create, :edit]
+  before_filter :find_protocol,             only: [:index, :new, :create, :edit, :update]
 
   def index
     @documents = @protocol.documents
@@ -46,6 +46,8 @@ class DocumentsController < ApplicationController
     else
       @errors = @document.errors
     end
+
+    render 'create', format: :js, type: :script
   end
 
   def edit
@@ -64,7 +66,7 @@ class DocumentsController < ApplicationController
   end
 
   def destroy
-    Dashboard::DocumentRemover.new(params[:id])
+    DocumentRemover.new(params[:id])
     
     flash.now[:success] = t(:documents)[:destroyed]
   end

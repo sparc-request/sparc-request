@@ -38,7 +38,6 @@ class Dashboard::DocumentsController < Dashboard::BaseController
     @document     = @protocol.documents.new
     @action       = 'new'
     @header_text  = t(:documents)[:add]
-    @path         = dashboard_documents_path(@document)
   end
 
   def create
@@ -57,7 +56,6 @@ class Dashboard::DocumentsController < Dashboard::BaseController
   def edit
     @action       = 'edit'
     @header_text  = t(:documents)[:edit]
-    @path         = dashboard_document_path(@document)
   end
 
   def update
@@ -71,7 +69,7 @@ class Dashboard::DocumentsController < Dashboard::BaseController
   end
 
   def destroy
-    Dashboard::DocumentRemover.new(params[:id])
+    DocumentRemover.new(params[:id])
     
     flash.now[:success] = t(:documents)[:destroyed]
   end

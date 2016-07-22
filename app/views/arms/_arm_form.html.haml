@@ -17,14 +17,34 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-/////////////////////////////////////////////
-//
-// PROJECT - Edit Project
-//
-/////////////////////////////////////////////
-
-= render partial: 'service_requests/steps'
-.clear
-.edit_project
-  = render partial: 'projects/form', locals: {project: @protocol, service_request: @service_request, portal: @portal, current_step: cookies['current_step']}
+.modal-dialog
+  .modal-content
+    = form_for arm, url: path, remote: true, html: { class: "form-horizontal", role: "form" } do |a|
+      .modal-header
+        %button.close{ type: 'button', data: { dismiss: 'modal' } }
+          %span{ aria: { hidden:'true' } } &times;
+          %span.sr-only &times;
+        %h4.modal-title.text-center
+          = t(:arms)[:add]
+      .modal-body
+        #modal_errors
+        .row
+          .col-md-12
+            = hidden_field_tag :protocol_id, protocol.id
+            .form-group
+              = a.label :name, t(:arms)[:form_fields][:name], class: "col-sm-4 control-label required"
+              .col-sm-7
+                = a.text_field :name, { class: 'form-control' }
+            .form-group
+              = a.label :subject_count, t(:arms)[:form_fields][:subject_count], class: "col-sm-4 control-label required"
+              .col-sm-7
+                = a.text_field :subject_count, { class: 'form-control' }
+            .form-group
+              = a.label :visit_count, t(:arms)[:form_fields][:visit_count], class: "col-sm-4 control-label required"
+              .col-sm-7
+                = a.text_field :visit_count, { class: 'form-control' }
+      .modal-footer
+        .center-block
+          %button.btn.btn-default{ type: 'button', data: { dismiss: 'modal' } }
+            = t(:actions)[:close]
+          %input.btn.btn-primary#add-arm-form-button{ type: 'submit', value: t(:actions)[:add] }

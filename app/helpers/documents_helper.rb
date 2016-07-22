@@ -18,7 +18,25 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$("<%= @tr_id %>").remove()
-if $(".document-table tr").size() == 1
-  $(".document-table").replaceWith("<%= escape_javascript(t("documents.no_documents")) %>")
+module DocumentsHelper
 
+  def display_document_title(document)
+    link_to document.document_file_name, document.document.url
+  end
+
+  def documents_edit_button(document)
+    content_tag(:button,
+      raw(
+        content_tag(:span, '', class: "glyphicon glyphicon-edit", aria: { hidden: "true" })
+      ), type: 'button', class: "btn btn-warning actions-button document-edit", data: { document_id: document.id }
+    )
+  end
+
+  def documents_delete_button(document)
+    content_tag(:button,
+      raw(
+        content_tag(:span, '', class: "glyphicon glyphicon-remove", aria: { hidden: "true" })
+      ), type: 'button', class: "btn btn-danger actions-button document-delete", data: { document_id: document.id }
+    )
+  end
+end

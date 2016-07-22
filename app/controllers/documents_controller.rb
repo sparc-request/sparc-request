@@ -18,60 +18,72 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class ArmsController < ApplicationController
+class DocumentsController < ApplicationController
   respond_to :html, :js, :json
 
   before_filter :initialize_service_request
   before_filter :authorize_identity
-  before_filter :find_arm, only: [:edit, :update, :destroy]
+  before_filter :find_document,             only: [:edit, :update, :destroy]
+  before_filter :find_protocol,             only: [:index, :new, :create, :edit]
 
   def index
-    service_request = ServiceRequest.find( params[:srid] )
-    @arms           = service_request.arms
-    @arms_editable  = service_request.arms_editable?
-    @arm_count      = @arms.count
+    @documents = @protocol.documents
   end
 
   def new
-    @protocol     = Protocol.find( params[:protocol_id] )
-    @arm          = @protocol.arms.new
-    @header_text  = t(:arms)[:add]
-    @path         = arms_path(@arm)
+    @document     = @protocol.documents.new
+    @header_text  = t(:documents)[:add]
+    @path         = documents_path(@document)
   end
 
   def create
-    arm = Arm.create( params[:arm].merge(protocol_id: params[:protocol_id]) )
+    @document = Document.create( params[:document].merge(protocol_id: params[:protocol_id] ) )
 
-    if arm.valid?
-      flash[:success] = t(:arms)[:created]
+    if @document.valid?
+      assign_organization_access
+
+      flash.now[:success] = t(:documents)[:created]
     else
-      @errors = arm.errors
+      @errors = @document.errors
     end
   end
 
   def edit
-    @protocol    = @arm.protocol
-    @header_text = t(:arms)[:edit]
-    @path        = arm_path(@arm)
+    @header_text  = t(:documents)[:edit]
+    @path         = documents_path(@document)
   end
 
   def update
-    if @arm.update_attributes( params[:arm] )
-      flash[:success] = t(:arms)[:updated]
+    if @document.update_attributes(params[:document])
+      assign_organization_access
+
+      flash.now[:success] = t(:documents)[:updated]
     else
-      @errors = @arm.errors
+      @errors = @document.errors
     end
   end
 
   def destroy
-    @arm.destroy
+    Dashboard::DocumentRemover.new(params[:id])
     
-    flash[:alert] = t(:arms)[:destroyed]
+    flash.now[:success] = t(:documents)[:destroyed]
   end
 
   private
 
-  def find_arm
-    @arm = Arm.find( params[:id] )
+  def find_document
+    @document = Document.find(params[:id])
+  end
+
+  def find_protocol
+    if @document
+      @protocol = @document.protocol
+    else
+      @protocol = Protocol.find(params[:protocol_id])
+    end
+  end
+
+  def assign_organization_access
+    @document.sub_service_requests = @protocol.sub_service_requests.where(organization_id: params[:org_ids])
   end
 end

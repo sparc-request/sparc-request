@@ -18,22 +18,9 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-# /////////////////////////////////////////////
-# //
-# // STUDY - Create.js for New Studies
-# //
-# /////////////////////////////////////////////
-
-<%- if @current_step == 'return_to_service_request' %>
-<%- if @portal == 'true' %>
-  window.location.href = "<%= portal_root_path %>"
-<%- else %>
-  window.location.href = "<%= protocol_service_request_path @service_request %>"
-<%- end %>
-<%- else %>
-  #This is to re-enable the submit, it is disabled to prevent multiple posts, if you click rapidly.
-  $('a.continue_button').click ->
-    $('form').submit()
-
-  $('.new_study').html("<%= escape_javascript(render partial: 'studies/form', locals: {study: @protocol, service_request: @service_request, portal: @portal, current_step: @current_step}) %>")
-<%- end %>
+$("#modal_place #modal_errors").html("<%= escape_javascript(render( 'shared/modal_errors', errors: @errors )) %>")
+<% unless @errors %>
+$("#documents-table").bootstrapTable 'refresh', {silent: true}
+$("#flashes_container").html("<%= escape_javascript(render( 'shared/flash' )) %>")
+$("#modal_place").modal 'hide'
+<% end %>

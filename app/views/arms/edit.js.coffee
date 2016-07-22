@@ -18,6 +18,6 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$("#modal_place").html("<%= escape_javascript(render( 'arms/edit_arm_form', arm: @arm )) %>");
+$("#modal_place").html("<%= escape_javascript(render( 'arms/arm_form', arm: @arm, protocol: @protocol, header_text: @header_text, path: @path )) %>");
 $("#modal_place").modal 'show'
 set_required_fields()

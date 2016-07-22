@@ -20,7 +20,7 @@
 
 module Dashboard::DocumentsHelper
 
-  def display_document_title(document, permission)
+  def dashboard_display_document_title(document, permission)
     if permission
       link_to document.document_file_name, document.document.url
     else
@@ -28,7 +28,7 @@ module Dashboard::DocumentsHelper
     end
   end
 
-  def document_edit_button(document, permission)
+  def dashboard_document_edit_button(document, permission)
     content_tag(:button,
       raw(
         content_tag(:span, '', class: "glyphicon glyphicon-edit", aria: {hidden: "true"})
@@ -36,7 +36,7 @@ module Dashboard::DocumentsHelper
     )
   end
 
-  def document_delete_button(document, permission)
+  def dashboard_document_delete_button(document, permission)
     content_tag(:button,
       raw(
         content_tag(:span, '', class: "glyphicon glyphicon-remove", aria: {hidden: "true"})

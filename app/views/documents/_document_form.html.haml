@@ -19,31 +19,38 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .modal-dialog
   .modal-content
-    = form_for arm, remote: true, url: arm_path(arm), html: { class: "form-horizontal", role: "form" } do |a|
+    = form_for document, format: :js, remote: true, multipart: true, authenticity_token: form_authenticity_token, html: { class: 'form-horizontal', role: 'form' } do |form|
       .modal-header
         %button.close{ type: 'button', data: { dismiss: 'modal' } }
           %span{ aria: { hidden:'true' } } &times;
           %span.sr-only &times;
         %h4.modal-title.text-center
-          = t(:arms)[:edit]
+          = header_text
       .modal-body
         #modal_errors
         .row
           .col-md-12
+            = hidden_field_tag :protocol_id, form.object.protocol.id
             .form-group
-              = a.label :name, t(:arms)[:form_fields][:name], class: "col-sm-4 control-label required"
+              = form.label :doc_type, t(:documents)[:form_fields][:document_type], class: 'col-sm-4 control-label required'
               .col-sm-7
-                = a.text_field :name, { class: 'form-control' }
+                = form.select :doc_type, options_for_select(DOCUMENT_TYPES, document.doc_type), { prompt: t(:documents)[:select_type] }, class: 'form-control selectpicker'
+            .form-group#doc-type-other-field{ display_if(document.doc_type == 'other') }
+              = form.label :doc_type_other, t(:documents)[:form_fields][:specify_doc_type], class: 'col-sm-4 control-label required'
+              .col-sm-7
+                = form.text_field :doc_type_other, class: 'form-control'
             .form-group
-              = a.label :subject_count, t(:arms)[:form_fields][:subject_count], class: "col-sm-4 control-label required"
+              = form.label :document, t(:documents)[:form_fields][:document], class: 'col-sm-4 control-label required'
               .col-sm-7
-                = a.text_field :subject_count, { class: 'form-control' }
+                %p.help-block
+                  = document.document_file_name
+                = form.file_field :document
             .form-group
-              = a.label :visit_count, t(:arms)[:form_fields][:visit_count], class: "col-sm-4 control-label required"
+              = form.label :org_ids, t(:documents)[:form_fields][:access], class: 'col-sm-4 control-label'
               .col-sm-7
-                = a.text_field :visit_count, { class: 'form-control' }
+                = select_tag :org_ids, options_from_collection_for_select(document.protocol.organizations.distinct.sort_by(&:name), :id, :name, document.sub_service_requests.map(&:organization_id)), class: 'form-control selectpicker', multiple: true
       .modal-footer
         .center-block
           %button.btn.btn-default{ type: 'button', data: { dismiss: 'modal' } }
             = t(:actions)[:close]
-          %input.btn.btn-primary#edit-arm-form-button{ type: 'submit', value: t(:actions)[:save] }
+          %input.btn.btn-primary{ type: 'submit', value: t(:actions)[:upload] }

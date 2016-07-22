@@ -117,6 +117,9 @@ SparcRails::Application.routes.draw do
   resources :arms, only: [:index, :new, :create, :edit, :update, :destroy] do
   end
 
+  resources :documents, only: [:index, :new, :create, :edit, :update, :destroy] do
+  end
+  
   resources :catalogs, only: [] do
     member do
       post 'update_description'

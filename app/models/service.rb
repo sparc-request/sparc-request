@@ -178,7 +178,7 @@ class Service < ActiveRecord::Base
       service_abbreviation = "(#{line_item.sub_service_request.ssr_id}) " + service_abbreviation
     end
 
-    return service_abbreviation
+    service_abbreviation
   end
 
   # Will check for nil display dates on the service's pricing maps

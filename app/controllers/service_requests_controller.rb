@@ -239,7 +239,6 @@ class ServiceRequestsController < ApplicationController
     @service_request.previous_submitted_at = @service_request.submitted_at
 
     to_notify = []
-
     if @sub_service_request
       if @sub_service_request.status != 'get_a_cost_estimate'
         to_notify << @sub_service_request.id
@@ -385,10 +384,9 @@ class ServiceRequestsController < ApplicationController
 
         if @service_request.status == 'first_draft'
           ssr.update_attribute :status, 'first_draft'
-          ssr.update_past_status(current_user)
         elsif ssr.status.nil? || (ssr.can_be_edited? && ssr_has_changed?(@service_request, ssr))
           ssr.update_attribute :status, 'draft'
-          ssr.update_past_status(current_user)
+          ssr.update_past_status(current_user) unless ssr.status.nil?
         end
       end
 
@@ -612,7 +610,6 @@ class ServiceRequestsController < ApplicationController
           sub_service_request = @service_request.sub_service_requests.find_or_create_by(organization_id: org_id.to_i)
           sub_service_request.documents << doc_object
           sub_service_request.save
-          sub_service_request.update_past_status(current_user)
         end
 
         # remove access
@@ -631,7 +628,6 @@ class ServiceRequestsController < ApplicationController
             @sub_service_request.documents << newDocument
             @sub_service_request.documents.delete doc_object
             @sub_service_request.save
-            @sub_service_request.update_past_status(current_user)
           else
             new_doc = document || doc_object.document
             doc_object.update_attributes(document: new_doc, doc_type: doc_type, doc_type_other: doc_type_other)
@@ -643,7 +639,6 @@ class ServiceRequestsController < ApplicationController
           sub_service_request = @service_request.sub_service_requests.find_by_organization_id org_id.to_i
           sub_service_request.documents << newDocument
           sub_service_request.save
-          sub_service_request.update_past_status(current_user)
         end
       end
 
@@ -664,7 +659,7 @@ class ServiceRequestsController < ApplicationController
       service_request.update_attribute(:submitted_at, Time.now)
     end
     service_request.update_status(status)
-    service_request.sub_service_requests  .each {|ssr| ssr.update_past_status(current_user)}
+    service_request.sub_service_requests.each {|ssr| ssr.update_past_status(current_user)}
   end
 
   def authorize_protocol_edit_request

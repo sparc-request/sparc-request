@@ -377,12 +377,12 @@ class ServiceRequestsController < ApplicationController
       @service_request.previous_submitted_at = @service_request.submitted_at
 
       @new_line_items.each do |li|
-        ssr = @service_request.sub_service_requests.where(organization_id: li.service.process_ssrs_organization.id).first_or_create
+        ssr = find_or_create_sub_service_request(li, @service_request)
         li.update_attribute(:sub_service_request_id, ssr.id)
 
         if @service_request.status == 'first_draft'
           ssr.update_attribute :status, 'first_draft'
-        elsif ssr.status.nil? || (ssr.can_be_edited? && ssr_has_changed?(@service_request, ssr))
+        elsif ssr.status.nil? || (ssr.can_be_edited? && ssr_has_changed?(@service_request, ssr) && (ssr.status != 'complete'))
           ssr.update_attribute :status, 'draft'
         end
       end
@@ -672,5 +672,18 @@ class ServiceRequestsController < ApplicationController
         render partial: 'service_requests/authorization_error', locals: { error: 'You are not allowed to edit this Request.' }
       end
     end
+  end
+
+  # Returns either an existing sub service request (if the line item's belongs to the sub service request)
+  def find_or_create_sub_service_request(line_item, service_request)
+    organization = line_item.service.process_ssrs_organization
+    service_request.sub_service_requests.each do |ssr|
+      if (ssr.organization == organization) && (ssr.status != 'complete')
+        return ssr
+      end
+    end
+    next_ssr_id = service_request.sub_service_requests.group_by(&:ssr_id).keys.last.to_i + 1
+
+    SubServiceRequest.create(service_request_id: service_request.id, organization_id: organization.id, status: service_request.status, ssr_id: "000#{next_ssr_id.to_s}")
   end
 end

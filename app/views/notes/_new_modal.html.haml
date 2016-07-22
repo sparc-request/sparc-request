@@ -17,18 +17,14 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-= form_for [:dashboard, note], {remote: true, html: {class: 'form', role: 'form'} } do |form|
-  = form.hidden_field :notable_id
-  = form.hidden_field :notable_type
-  = form.hidden_field :identity_id
-  .form-group.row
-    = form.label 'body', t(:dashboard)[:notes][:new][:note], class: 'col-sm-3 control-label'
-    .col-sm-6
-      = form.text_area :body, { class: 'form-control', rows: 6 }
-  .form-group.row
-    .col-sm-1.col-sm-offset-3
-      %input.btn.btn-primary{type: 'submit', value: t(:actions)[:add]}
-    .col-sm-1
-      %button.btn.btn-default{type: 'button', data: {dismiss: 'modal'}}
-        = t(:actions)[:cancel]
+.modal-dialog.modal-lg#new-note-modal
+  .modal-content
+    .modal-header
+      %button.close{ type: 'button', data: { dismiss: 'modal' } }
+        %span{ aria: { hidden:'true' } } &times;
+      %h4.modal-title.text-center
+        = I18n.t('notes.new', notable_type: notable_type.underscore.humanize.titleize)
+    .modal-body
+      #modal_errors
+      .form-content
+        = render 'notes/new', note: note, in_dashboard: in_dashboard

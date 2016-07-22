@@ -17,36 +17,6 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-class Dashboard::NotesController < Dashboard::BaseController
-  respond_to :json, :html
-
-  before_action :find_notable
-
-  def index
-    @notes = @notable.notes
-  end
-
-  def new
-    @note = Note.new(note_params.merge(identity_id: current_user.id))
-  end
-
-  def create
-    if note_params[:body].present? # don't create empty notes
-      @note = Note.create(note_params.merge(identity_id: current_user.id))
-    end
-    @notes = @notable.notes
-  end
-
-  private
-
-  def note_params
-    params.require(:note).permit(:identity_id, :notable_type, :notable_id, :body)
-  end
-
-  def find_notable
-    @notable_id = params[:note][:notable_id]
-    @notable_type = params[:note][:notable_type]
-    @notable = @notable_type.constantize.find(@notable_id)
-  end
-end
+$("#modal_place").html("<%= escape_javascript(render( 'index', notable_id: @notable_id, notable_type: @notable_type )) %>")
+$("#modal_place").modal 'show'
+$('#notes-table').bootstrapTable()

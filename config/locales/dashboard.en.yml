@@ -119,18 +119,7 @@ en:
     #  NOTES  #
     ###########
     notes:
-      index:
-        header: " Notes"
-        none_message1: "This "
-        none_message2: " currently has no notes."
-        user: "User"
-        date: "Date"
-        add: "Add Note"
-
-      new:
-        header1: "New "
-        header2: " Note"
-        note: "Note:"
+      header: "%{notable_type} Notes"
 
     ###################
     #  NOTIFICATIONS  #

@@ -17,6 +17,13 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-$("#modal_place").html("<%= escape_javascript(render(partial: 'index', locals: { notes: @notes, notable_id: @notable_id, notable_type: @notable_type })) %>")
-$("#modal_place").modal 'show'
+<% if @errors %>
+$("#modal_place #modal_errors").html("<%= escape_javascript(render( 'shared/modal_errors', errors: @errors )) %>")
+<% elsif @in_dashboard %>
+$("#modal_place").html("<%= escape_javascript(render( 'index', notable_id: @notable_id, notable_type: @notable_type )) %>")
+$('#notes-table').bootstrapTable()
+<% else %>
+$("#notes-table").bootstrapTable 'refresh', {silent: true}
+$("#flashes_container").html("<%= escape_javascript(render( 'shared/flash' )) %>")
+$("#modal_place").modal 'hide'
+<% end %>

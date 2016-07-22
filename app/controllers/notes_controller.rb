@@ -18,6 +18,47 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$(".center-block").html("<%= escape_javascript(render(partial: 'new', locals: { note: @note, notable_type: @notable_type })) %>");
-#$("#modal_place").modal 'show'
-#$(".modal-content").find(":input").not("[type='hidden'],[type='button']").first().focus()
+class NotesController < ApplicationController
+  respond_to :js, :json
+
+  before_action :find_notable
+  before_action :set_in_dashboard
+
+  def index
+    respond_to do |format|
+      format.js
+      format.json {
+        @notes = @notable.notes
+      }
+    end
+  end
+
+  def new
+    @note = Note.new(note_params.merge(identity_id: current_user.id))
+  end
+
+  def create
+    @note = Note.create(note_params.merge(identity_id: current_user.id))
+    if @note.valid?
+      flash[:success] = t(:notes)[:created]
+    else
+      @errors = @note.errors
+    end
+  end
+
+  private
+
+  def note_params
+    params.require(:note).permit(:identity_id, :notable_type, :notable_id, :body)
+  end
+
+  def find_notable
+    @notable_id = params[:note][:notable_id]
+    @notable_type = params[:note][:notable_type]
+    @notable = @notable_type.constantize.find(@notable_id)
+  end
+
+  def set_in_dashboard
+    @in_dashboard = params[:in_dashboard] == 'true'
+  end
+end

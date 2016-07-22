@@ -53,6 +53,8 @@ en:
         first_name: "First Name"
         last_name: "Last Name"
         password_confirmation: "Password Confirmation"
+      note:
+        body: "Note"
       protocol:
         human_subjects_info: "The NCT #"
 
@@ -215,6 +217,21 @@ en:
     note:
       singular: "Note"
       plural: "Notes"
+
+  ###########
+  #  NOTES  #
+  ###########
+  notes:
+    add: "Add Note"
+    new: "New %{notable_type} Note"
+    created: "Note Created!"
+    none: "This %{notable_type} currently has no notes."
+    table_fields:
+      user: "User"
+      date: "Date"
+      note: "Note"
+    form_fields:
+      note: "Note:"
 
   #############
   # PROTOCOLS #

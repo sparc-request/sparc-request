@@ -21,3 +21,4 @@
   .page-header
     %h3
       = t(:proper)[:document_management][:notes_notice]
+  = render 'notes/table', notable_type: 'ServiceRequest', notable_id: service_request.id, notes: service_request.notes, in_dashboard: false

@@ -120,6 +120,9 @@ SparcRails::Application.routes.draw do
   resources :documents, only: [:index, :new, :create, :edit, :update, :destroy] do
   end
   
+  resources :notes, only: [:index, :new, :create] do
+  end
+
   resources :catalogs, only: [] do
     member do
       post 'update_description'
@@ -231,8 +234,6 @@ SparcRails::Application.routes.draw do
         put :destroy_line_items
       end
     end
-
-    resources :notes, only: [:index, :new, :create]
 
     resources :notifications, only: [:index, :new, :create] do
       member do

@@ -127,7 +127,7 @@ en:
       documents_notice: "Documents"
       documents_instructions: "Visible to Authorized Users and selected Service Providers"
       notes_notice: "Notes"
-      notes_instructions:
+      notes_instructions: "Important notes for your Service Request"
 
     ########
     # CART #

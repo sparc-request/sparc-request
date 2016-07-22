@@ -251,7 +251,6 @@ class ServiceCalendarsController < ApplicationController
     @service = @line_items_visit.line_item.service if params[:check]
 
     @line_items_visit.visits.each do |visit|
-      next unless value[:line_items].include?(liv.line_item) && liv.line_item.sub_service_request.can_be_edited? && !liv.line_item.sub_service_request.is_complete?
       if params[:uncheck]
         visit.update_attributes(quantity: 0, research_billing_qty: 0, insurance_billing_qty: 0, effort_billing_qty: 0)
       elsif params[:check]

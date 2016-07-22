@@ -19,6 +19,6 @@
         - else
           %td{:style => 'border: 1px solid black; text-align: center;'}= pr.role.upcase
         - if !@protocol.selected_for_epic.nil?
-          %td{:style => 'border: 1px solid black; text-align: center;'}= pr.epic_access == 1 ? "Yes" : "No"
+          %td{:style => 'border: 1px solid black; text-align: center;'}= pr.epic_access == true ? "Yes" : "No"
 %br
 %br

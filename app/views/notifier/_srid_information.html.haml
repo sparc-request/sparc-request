@@ -1,6 +1,10 @@
 %table{:style => 'border: 1px solid black; border-collapse: collapse; width: 100%;', :cellpadding => 3}
+  %thead
+    %tr{:style => 'border: 1px solid black;'}
+      %td{:colspan => 4}
+        %strong= t(:notifier)[:srid_info]
   %tr
-    %th{:style => 'border: 1px solid black; text-align: left;'}= t(:notifier)[:sr_id_acronym]
+    %th{:style => 'border: 1px solid black;'}= t(:notifier)[:sr_id_acronym]
     %th{:style => 'border: 1px solid black;'}= t(:notifier)[:organization]
     %th{:style => 'border: 1px solid black;'}= t(:notifier)[:status]
   %tbody

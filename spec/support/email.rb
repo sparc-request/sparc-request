@@ -24,7 +24,24 @@ module EmailHelpers
     end
   end
 
+  def assert_email_user_information_with_epic_col
+    #assert correct project roles information is included in notification email
+    service_request.protocol.update_attribute(:selected_for_epic, true)
+    expect(mail).to have_xpath "//table//strong[text()='User Information']"
+    expect(mail).to have_xpath "//th[text()='User Name']/following-sibling::th[text()='Contact Information']/following-sibling::th[text()='Role']/following-sibling::th[text()='Epic Access']"
+    service_request.protocol.project_roles.each do |role|
+      if identity.id == role.identity.id
+        requester_flag = " (Requester)"
+      else
+        requester_flag = ""
+      end
+      binding.pry
+      expect(mail).to have_xpath "//td[text()='#{role.identity.full_name}']/following-sibling::td[text()='#{role.identity.email}']/following-sibling::td[text()='#{role.role.upcase}#{requester_flag}']/following-sibling::td[text()='#{role.epic_access}']"
+    end
+  end
+
   def assert_email_srid_information
+    expect(mail).to have_xpath "//table//strong[text()='Service Request Information']"
     expect(mail).to have_xpath "//th[text()='SRID']/following-sibling::th[text()='Organization']/following-sibling::th[text()='Status']"
     service_request.protocol.sub_service_requests.each do |ssr|
       status = AVAILABLE_STATUSES[ssr.status]
@@ -33,6 +50,7 @@ module EmailHelpers
   end
 
   def assert_notification_email_tables
+    assert_email_user_information_with_epic_col
     assert_email_project_information
     assert_email_user_information
     assert_email_srid_information

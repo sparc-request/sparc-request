@@ -1645,6 +1645,7 @@ en:
     body6: "A list of requested services is attached."
     body7: "To approve the charges associated with the selected services please click"
     contact_info: "Contact Information"
+    epic_access: "Epic Access"
     link: "HERE"
     name: "User Name"
     notice:
@@ -1669,6 +1670,7 @@ en:
     service: "Service"
     service_request: "Service Request"
     source: "Funding Source"
+    srid_info: "Service Request Information"
     sr_id: "Service Request ID:"
     sr_id_acronym: "SRID"
     ssr_ids: "Sub Service Request IDs:"

@@ -168,6 +168,7 @@ en:
         save_and_exit: "Save as Draft"
         get_cost_estimate: "Get a Cost Estimate"
         save_and_continue: "Save and Continue →"
+        submit: "Submit Request →"
 
     ####################
     # RIGHT NAVIGATION #

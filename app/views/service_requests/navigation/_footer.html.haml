@@ -30,4 +30,4 @@
       - if service_request.submitted_at.blank? && service_request.protocol.present?
         = link_to t(:proper)[:navigation][:bottom][:save_and_exit], 'save_and_exit', class: 'btn btn-default'
   .col-sm-3.text-right
-    = link_to t(:proper)[:navigation][:bottom][:save_and_continue], forward, class: 'btn btn-default'
+    = link_to controller.action_name == 'review' ? t(:proper)[:navigation][:bottom][:submit] : t(:proper)[:navigation][:bottom][:save_and_continue], forward, class: 'btn btn-default'

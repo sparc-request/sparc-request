@@ -30,12 +30,12 @@
     = render 'service_requests/protocol/protocol_display', service_request: @service_request, protocol: @service_request.protocol
     = render 'service_requests/document_management/documents', service_request: @service_request
     = render 'service_requests/document_management/notes', service_request: @service_request
-    / #service_calendar_container
-    /   - if @service_request.has_per_patient_per_visit_services?
-    /     - @service_request.arms.each do |arm|
-    /       = render '/service_calendars/master_calendar/pppv_calendar', service_request: @service_request, tab: @tab, arm: arm, portal: @portal, thead_class: @thead_class
-    /   = render '/service_calendars/master_calendar/otf_calendar', thead_class: @thead_class
-    /   = render 'service_requests/review/review_totals', thead_class: @thead_class
+    #service_calendar_container
+      - if @service_request.has_per_patient_per_visit_services?
+        - @service_request.arms.each do |arm|
+          = render '/service_calendars/master_calendar/pppv_calendar', service_request: @service_request, tab: @tab, arm: arm, portal: @portal, thead_class: @thead_class
+      = render '/service_calendars/master_calendar/otf_calendar', thead_class: @thead_class
+      = render 'service_requests/review/review_totals', thead_class: @thead_class
     
 
     / %div.review-bottom-navigation

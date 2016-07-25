@@ -20,18 +20,24 @@
 @import 'proper/colors'
 @import 'proper/steps'
 @import 'proper/right_navigation'
-
-.page-header
-  h3
-    margin: 0
-
-.protocol-information
+#review-page
   .page-header
-    margin-top: 0px
+    h3
+      margin: 0
 
-.panel
-  border-color: $sparc-red !important
-  .panel-heading, thead
-    background: $sparc-red !important
-    border: 0
+  .protocol-information
+    .page-header
+      margin-top: 0px
+    #protocol-summary
+      .row
+        margin: 0
+      .row:not(:last-child)
+        padding-bottom: 3px
+        border-bottom: 1px solid #EEE
+        margin-bottom: 3px
 
+  .panel
+    border-color: $sparc-red !important
+    .panel-heading, thead
+      background: $sparc-red !important
+      border: 0

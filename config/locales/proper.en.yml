@@ -87,7 +87,7 @@ en:
       create_protocol_notice: "Create Protocol"
       create_protocol_instructions: "Create a Protocol and add all relevant information"
       review_protocol_notice: "Protocol Information"
-      review_protocol_instructions: "Review your Protocol and add Authorized Users"
+      review_protocol_instructions: "Review your Protocol and Authorized Users"
       percent_effort_notice: "If Professional Services are covered by % effort, please indicate in Step 2."
       selection_help:
         question: "Which type of Protocol should I choose?"
@@ -166,6 +166,7 @@ en:
       bottom:
         back: "← Go Back"
         save_and_exit: "Save as Draft"
+        get_cost_estimate: "Get a Cost Estimate"
         save_and_continue: "Save and Continue →"
 
     ####################

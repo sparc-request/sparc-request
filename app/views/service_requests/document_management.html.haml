@@ -20,9 +20,7 @@
 = javascript_include_tag 'document_management'
 
 = render '/service_requests/navigation/steps', step: @step_text, css_class: @css_class
-.col-sm-12.body-container
-  #upload_message{:style => 'display:none'}
-    = t("documents.message")
+.col-sm-12.body-container#documents-page
   = form_tag navigate_service_request_path(@service_request), id: 'navigation_form', class: 'form-horizontal', multipart: true do
     = hidden_field_tag :location, ''
     = hidden_field_tag :validates, ''

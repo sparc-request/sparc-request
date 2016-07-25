@@ -20,55 +20,48 @@
 @import 'proper/colors'
 @import 'proper/steps'
 @import 'proper/right_navigation'
+#protocols-page
+  .protocol-left
+    .panel
+      border-color: $sparc-blue !important
+      .panel-heading, thead
+        background: $sparc-blue !important
+        border: 0
+    
+    .percent-effort-warning, .previously-submitted-warning
+      font-style: italic
+      color: red
 
-.body-container
-  margin-bottom: 20px
-
-.protocol-left
-  .service-list
-    display: inline-block
-    width: 100%
-    .page-header
-      margin-top: 0px
-      h3
-        margin: 0
-    .service-view
+    .service-list
       display: inline-block
       width: 100%
-      .service
+      .page-header
+        margin-top: 0px
+        h3
+          margin: 0
+      .service-view
+        display: inline-block
         width: 100%
-        border: 0px
-        text-align: left
-        color: $link
-        white-space: pre-wrap
+        .service
+          width: 100%
+          border: 0px
+          text-align: left
+          color: $link
+          white-space: pre-wrap
 
-    .service-view:not(:last-child)
-      padding-bottom: 5px
-      border-bottom: 1px solid #eee
-      margin-bottom: 5px
+      .service-view:not(:last-child)
+        padding-bottom: 5px
+        border-bottom: 1px solid #eee
+        margin-bottom: 5px
 
-  .panel
-    border-color: $sparc-blue !important
-    .panel-heading
-      background: $sparc-blue !important
-      border: 0
-
-  .percent-effort-warning, .previously-submitted-warning
-    font-style: italic
-    color: red
-
-  .protocol-information
-    .page-header
-      h3
-        margin: 0
-    #protocol-summary
-      .row
-        margin: 0
-      .row:not(:last-child)
-        padding-bottom: 3px
-        border-bottom: 1px solid #EEE
-        margin-bottom: 3px
-
-    #associated-users-table
-      thead
-        background: $sparc-blue
+    .protocol-information
+      .page-header
+        h3
+          margin: 0
+      #protocol-summary
+        .row
+          margin: 0
+        .row:not(:last-child)
+          padding-bottom: 3px
+          border-bottom: 1px solid #EEE
+          margin-bottom: 3px

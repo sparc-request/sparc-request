@@ -20,8 +20,14 @@
 .bottom-nav.col-sm-12.ui-corner-all{ class: css_class }
   .col-sm-3.text-left
     = link_to t(:proper)[:navigation][:bottom][:back], back, class: 'btn btn-default'
-  .col-sm-6.text-center
-    - if service_request.submitted_at.blank? && service_request.protocol.present?
+  - if controller.action_name == 'review'
+    .col-sm-3.text-center
       = link_to t(:proper)[:navigation][:bottom][:save_and_exit], 'save_and_exit', class: 'btn btn-default'
+    .col-sm-3.text-center
+      = link_to t(:proper)[:navigation][:bottom][:get_cost_estimate], obtain_research_pricing_service_request_path, class: 'btn btn-default'
+  - else
+    .col-sm-6.text-center
+      - if service_request.submitted_at.blank? && service_request.protocol.present?
+        = link_to t(:proper)[:navigation][:bottom][:save_and_exit], 'save_and_exit', class: 'btn btn-default'
   .col-sm-3.text-right
     = link_to t(:proper)[:navigation][:bottom][:save_and_continue], forward, class: 'btn btn-default'

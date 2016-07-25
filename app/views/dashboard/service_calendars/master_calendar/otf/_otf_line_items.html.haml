@@ -29,7 +29,6 @@
           - if %w('first_draft' 'draft').include?(line_item.sub_service_request.status)
             - next if portal
             - next if service_request != current_request
-            - next if service_request != current_request
           %tr.line_item.otfs{ :"data-unit_factor" => line_item.service.displayed_pricing_map.unit_factor }
             %td.service_name
               = line_item.service.name

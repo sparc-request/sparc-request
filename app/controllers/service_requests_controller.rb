@@ -21,14 +21,13 @@
 require 'generate_request_grant_billing_pdf'
 
 class ServiceRequestsController < ApplicationController
-  before_filter :initialize_service_request,      except: [:approve_changes]
-  before_filter :authorize_identity,              except: [:approve_changes, :show]
-  before_filter :authenticate_identity!,          except: [:catalog, :add_service, :remove_service, :ask_a_question, :feedback]
-  before_filter :authorize_protocol_edit_request, only: :catalog
-  before_filter :prepare_catalog,                 only: :catalog
-
-  layout false,                                   only: [:ask_a_question, :feedback]
   respond_to :js, :json, :html
+
+  before_filter :initialize_service_request,      except: [:approve_changes, :get_help, :feedback]
+  before_filter :authorize_identity,              except: [:approve_changes, :get_help, :feedback, :show]
+  before_filter :authenticate_identity!,          except: [:catalog, :add_service, :remove_service, :ask_a_question, :get_help, :feedback]
+  before_filter :authorize_protocol_edit_request, only:   [:catalog]
+  before_filter :prepare_catalog,                 only:   [:catalog]
 
   def show
     @protocol = @service_request.protocol
@@ -322,15 +321,25 @@ class ServiceRequestsController < ApplicationController
     end
   end
 
-  def save_and_exit
-    if @sub_service_request #if editing a sub service request, update status
-      @sub_service_request.update_attribute(:status, 'draft')
-    else
-      update_service_request_status(@service_request, 'draft')
-      @service_request.ensure_ssr_ids
-    end
+  def get_help
+    # We don't need any variables, simply render a modal from JS render
+  end
 
-    redirect_to dashboard_root_path
+  def save_and_exit
+    respond_to do |format|
+      format.html {
+        if @sub_service_request #if editing a sub service request, update status
+          @sub_service_request.update_attribute(:status, 'draft')
+        else
+          update_service_request_status(@service_request, 'draft')
+          @service_request.ensure_ssr_ids
+        end
+
+        redirect_to dashboard_root_path
+      }
+
+      format.js
+    end
   end
 
   def refresh_service_calendar

@@ -29,7 +29,7 @@ module ApplicationHelper
     content_tag(:ul, list.html_safe, class: 'nav navbar-nav')
   end
 
-  def show_welcome_message current_user, bootstrap = false
+  def show_welcome_message(current_user, bootstrap = false)
     returning_html = ""
     if current_user
       returning_html += content_tag(:span, t(:dashboard)[:navbar][:logged_in_as] + current_user.email + " ") + link_to('Logout', destroy_identity_session_path, method: :delete, class: bootstrap ? "btn btn-warning" : "")

@@ -22,12 +22,12 @@
     = link_to t(:proper)[:navigation][:bottom][:back], back, class: 'btn btn-default'
   - if controller.action_name == 'review'
     .col-sm-3.text-center
-      = link_to t(:proper)[:navigation][:bottom][:save_and_exit], 'save_and_exit', class: 'btn btn-default'
+      = save_as_draft_button
     .col-sm-3.text-center
       = link_to t(:proper)[:navigation][:bottom][:get_cost_estimate], obtain_research_pricing_service_request_path, class: 'btn btn-default'
   - else
     .col-sm-6.text-center
       - if service_request.submitted_at.blank? && service_request.protocol.present?
-        = link_to t(:proper)[:navigation][:bottom][:save_and_exit], 'save_and_exit', class: 'btn btn-default'
+        = save_as_draft_button
   .col-sm-3.text-right
     = link_to controller.action_name == 'review' ? t(:proper)[:navigation][:bottom][:submit] : t(:proper)[:navigation][:bottom][:save_and_continue], forward, class: 'btn btn-default'

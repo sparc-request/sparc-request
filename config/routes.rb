@@ -67,6 +67,7 @@ SparcRails::Application.routes.draw do
       post 'navigate'
       get 'refresh_service_calendar'
       get 'save_and_exit'
+      get 'get_help'
       get 'approve_changes'
     end
 

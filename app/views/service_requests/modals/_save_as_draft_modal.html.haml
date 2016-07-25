@@ -17,21 +17,20 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-#remove-request-modal.hidden
+#save-as-draft-modal
   .modal-dialog
     .modal-content
       .modal-header
         %button.close{ type: 'button', data: { dismiss: 'modal' } }
           %span{ aria: { hidden: 'true' } } &times;
         %h4.text-center#modal-title
-          = t(:proper)[:cart][:remove_request][:header]
+          = t(:proper)[:navigation][:save_as_draft][:header]
       .modal-body
         #modal_errors
-        .form-group.text-center
-          = t(:proper)[:cart][:remove_request][:warning]
+        .form-group
+          = t(:proper)[:navigation][:save_as_draft][:body]
       .modal-footer
         .center-block
-          %a.btn.btn-default.yes-button{ data: { dismiss: 'modal' } }
-            = t(:constants)[:yes_select]
+          = link_to t(:constants)[:yes_select], save_and_exit_service_request_path, class: 'btn btn-default yes-button'
           %button.btn.btn-default{ type: 'button', data: { dismiss: 'modal' } }
             = t(:constants)[:no_select]

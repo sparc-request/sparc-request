@@ -29,11 +29,11 @@
         .modal-body
           #modal_errors
           .form-group.row
-            = label_tag 'feedback[email]', t(:proper)[:right_navigation][:feedback][:email], class: 'col-lg-2 control-label'
+            = label_tag 'feedback[email]', t(:proper)[:right_navigation][:feedback][:email], class: 'col-lg-2 control-label required'
             .col-lg-10
               = text_field_tag 'feedback[email]', nil, { size: 35 }
           .form-group.row
-            = label_tag 'feedback[message]', t(:proper)[:right_navigation][:feedback][:feedback], class: 'col-lg-2 control-label'
+            = label_tag 'feedback[message]', t(:proper)[:right_navigation][:feedback][:feedback], class: 'col-lg-2 control-label required'
             .col-lg-10
               = text_area_tag 'feedback[message]', nil, { cols: 65, rows: 10 }
         .modal-footer

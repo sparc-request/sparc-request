@@ -18,11 +18,6 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 $(document).ready ->
-  $(document).on 'click', '.faq-button', ->
-    $('#modal_place').html($('#cart-help-modal').html())
-    $("#modal_place").modal 'show'
-    return false
-
   $(document).on 'click', '.help-question', ->
     id = $(this).data('id')
     $("#help-answer#{id}").removeClass('hidden')

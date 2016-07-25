@@ -165,10 +165,13 @@ en:
         step5: "STEP 5:<br />Submission<br />Confirmation"
       bottom:
         back: "← Go Back"
-        save_and_exit: "Save as Draft"
+        save_as_draft: "Save as Draft"
         get_cost_estimate: "Get a Cost Estimate"
         save_and_continue: "Save and Continue →"
         submit: "Submit Request →"
+      save_as_draft:
+        header: "Save as Draft"
+        body: "This study will be saved as a draft and no notifications or emails will be sent to Service Providers. Do you wish to proceed?"
 
     ####################
     # RIGHT NAVIGATION #
@@ -190,15 +193,15 @@ en:
         answer_6: "The SUCCESS Center is happy to assist you! Please contact us at success@musc.edu or (843) 792-3357."
       feedback:
         header: "Feedback"
-        email: "Email:*"
-        feedback: "Feedback:*"
+        email: "Email:"
+        feedback: "Feedback:"
         submitted: "Thank you for providing your feedback!"
       redcap_survey: 'https://redcap.musc.edu/surveys/?s=A37TNJWJPL'
       contact:
         header: "Contact Us"
         subject: "Subject:"
-        email: "Email:*"
-        message: "Message:*"
+        email: "Email:"
+        message: "Message:"
         submitted: "Message sent successfully!"
 
       ctrc_lock: "SCTR Research Nexus services are already present on this request (%{protocol_id}-%{ssr_id}) pertaining to this %{protocol_type}, '%{short_title}'. Please call (843) 792-8688 to edit the existing request."

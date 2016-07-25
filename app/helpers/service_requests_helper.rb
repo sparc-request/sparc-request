@@ -68,7 +68,7 @@ module ServiceRequestsHelper
     if USE_FAQ_LINK
       link_to t(:proper)[:right_navigation][:faqs][:header], FAQ_URL, target: :blank, class: 'btn btn-primary btn-lg btn-block'
     else
-      content_tag(:button, t(:proper)[:right_navigation][:faqs][:header], class: 'faq-button btn btn-primary btn-lg btn-block', href: 'javascript:void(0)')
+      link_to t(:proper)[:right_navigation][:faqs][:header], get_help_service_request_path, remote: true, class: 'btn btn-primary btn-lg btn-block'
     end
   end
 
@@ -88,6 +88,10 @@ module ServiceRequestsHelper
     else
       ""
     end
+  end
+
+  def save_as_draft_button
+    link_to t(:proper)[:navigation][:bottom][:save_as_draft], save_and_exit_service_request_path, remote: true, class: 'btn btn-default'
   end
 
   private

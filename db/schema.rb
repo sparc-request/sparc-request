@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160712191814) do
+ActiveRecord::Schema.define(version: 20160725191310) do
 
   create_table "admin_rates", force: :cascade do |t|
     t.integer  "line_item_id", limit: 4
@@ -184,6 +184,12 @@ ActiveRecord::Schema.define(version: 20160712191814) do
   add_index "charges", ["service_id"], name: "index_charges_on_service_id", using: :btree
   add_index "charges", ["service_request_id"], name: "index_charges_on_service_request_id", using: :btree
 
+  create_table "click_counters", force: :cascade do |t|
+    t.integer  "click_count", limit: 4
+    t.datetime "created_at",            null: false
+    t.datetime "updated_at",            null: false
+  end
+
   create_table "clinical_providers", force: :cascade do |t|
     t.integer  "identity_id",     limit: 4
     t.integer  "organization_id", limit: 4
@@ -270,7 +276,6 @@ ActiveRecord::Schema.define(version: 20160712191814) do
     t.datetime "document_updated_at"
     t.string   "doc_type_other",        limit: 255
     t.integer  "protocol_id",           limit: 4
-    t.integer  "service_request_id",    limit: 4
   end
 
   add_index "documents", ["protocol_id"], name: "index_documents_on_protocol_id", using: :btree
@@ -421,6 +426,18 @@ ActiveRecord::Schema.define(version: 20160712191814) do
   end
 
   add_index "ip_patents_info", ["protocol_id"], name: "index_ip_patents_info_on_protocol_id", using: :btree
+
+  create_table "items", force: :cascade do |t|
+    t.text     "content",          limit: 65535
+    t.string   "type",             limit: 255
+    t.text     "description",      limit: 65535
+    t.boolean  "required"
+    t.integer  "questionnaire_id", limit: 4
+    t.datetime "created_at",                     null: false
+    t.datetime "updated_at",                     null: false
+  end
+
+  add_index "items", ["questionnaire_id"], name: "index_items_on_questionnaire_id", using: :btree
 
   create_table "line_items", force: :cascade do |t|
     t.integer  "service_request_id",     limit: 4
@@ -694,7 +711,6 @@ ActiveRecord::Schema.define(version: 20160712191814) do
     t.boolean  "selected_for_epic"
     t.boolean  "archived",                                                                    default: false
     t.integer  "study_type_question_group_id",          limit: 4
-    t.integer  "requester_id",                          limit: 4
   end
 
   add_index "protocols", ["next_ssr_id"], name: "index_protocols_on_next_ssr_id", using: :btree
@@ -715,6 +731,14 @@ ActiveRecord::Schema.define(version: 20160712191814) do
   end
 
   add_index "question_groups", ["api_id"], name: "uq_question_groups_api_id", unique: true, using: :btree
+
+  create_table "questionnaires", force: :cascade do |t|
+    t.integer  "service_id", limit: 4
+    t.datetime "created_at",           null: false
+    t.datetime "updated_at",           null: false
+  end
+
+  add_index "questionnaires", ["service_id"], name: "index_questionnaires_on_service_id", using: :btree
 
   create_table "questions", force: :cascade do |t|
     t.integer  "survey_section_id",      limit: 4
@@ -1215,4 +1239,6 @@ ActiveRecord::Schema.define(version: 20160712191814) do
   add_index "visits", ["research_billing_qty"], name: "index_visits_on_research_billing_qty", using: :btree
   add_index "visits", ["visit_group_id"], name: "index_visits_on_visit_group_id", using: :btree
 
+  add_foreign_key "items", "questionnaires"
+  add_foreign_key "questionnaires", "services"
 end

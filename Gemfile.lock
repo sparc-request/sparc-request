@@ -252,6 +252,10 @@ GEM
     mustache (0.99.8)
     mysql2 (0.3.20)
     nested_form (0.3.2)
+    nested_form_fields (0.7.8)
+      coffee-rails (>= 3.2.1)
+      jquery-rails
+      rails (>= 3.2.0)
     net-scp (1.2.1)
       net-ssh (>= 2.6.5)
     net-sftp (2.1.2)
@@ -528,6 +532,7 @@ DEPENDENCIES
   momentjs-rails (>= 2.8.1)
   mysql2 (~> 0.3.18)
   nested_form
+  nested_form_fields
   newrelic_rpm
   nokogiri
   nori

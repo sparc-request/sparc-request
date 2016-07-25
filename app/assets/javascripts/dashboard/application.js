@@ -53,5 +53,6 @@
 //= require filterrific/filterrific-jquery
 //= require_tree .
 //= require ../service_calendar
+//= require nested_form_fields
 
 window.Sparc = {};

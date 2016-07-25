@@ -127,7 +127,7 @@ class Dashboard::ServiceCalendarsController < ApplicationController
         else
           @line_items_visit.arm.line_items_visits
         end
-    @service_request.update_attribute(:status, "draft") if @sub_service_request
+    @sub_service_request.update_attribute(:status, "draft") if @sub_service_request
     @service_request.update_attribute(:status, "draft")
   end
 

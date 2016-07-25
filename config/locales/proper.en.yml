@@ -109,6 +109,7 @@ en:
       end_date: "End Date"
       recruitment_start: "Estimated Recruitment Start Date"
       recruitment_end: "Estimated Recruitment End Date"
+      arms_header: "Arms"
 
     ###################
     # SERVICE SUBSIDY #
@@ -124,10 +125,12 @@ en:
     # DOCUMENT MANAGEMENT #
     #######################
     document_management:
-      documents_notice: "Documents"
+      documents_notice: "Shared Documents"
       documents_instructions: "Visible to Authorized Users and selected Service Providers"
-      notes_notice: "Notes"
+      notes_notice: "Service Request Notes"
       notes_instructions: "Important notes for your Service Request"
+      documents_title: "Documents"
+      notes_title: "Notes"
 
     ########
     # CART #

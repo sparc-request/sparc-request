@@ -193,7 +193,7 @@ en:
   # DOCUMENTS #
   #############
   documents:
-    add: "Add a New Document"
+    add: "Add a Document"
     edit: "Edit Document"
     created: "Document Uploaded!"
     updated: "Document Updated!"
@@ -222,7 +222,7 @@ en:
   #  NOTES  #
   ###########
   notes:
-    add: "Add Note"
+    add: "Add a Note"
     new: "New %{notable_type} Note"
     created: "Note Created!"
     none: "This %{notable_type} currently has no notes."

@@ -21,4 +21,9 @@
   .page-header
     %h3
       = t(:proper)[:document_management][:notes_notice]
-  = render 'notes/table', notable_type: 'ServiceRequest', notable_id: service_request.id, notes: service_request.notes, in_dashboard: false
+  .panel.panel-primary#documents-panel
+    .panel-heading
+      %h1.panel-title
+        = t(:proper)[:document_management][:notes_title]
+    .panel-body
+      = render 'notes/table', notable_type: 'ServiceRequest', notable_id: service_request.id, notes: service_request.notes, in_dashboard: false

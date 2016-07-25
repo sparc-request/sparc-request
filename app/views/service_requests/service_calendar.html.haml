@@ -26,7 +26,6 @@
     = hidden_field_tag :location, ''
     = hidden_field_tag :validates, ''
     = hidden_field_tag :current_location, @page
-    = render :partial => 'errors'
     .pricing-message= t(:message)[:red_message]
     %ul.billing-info
       %li= t(:calendar_page)[:billing_legend][:research]

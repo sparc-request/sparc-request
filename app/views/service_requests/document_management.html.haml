@@ -21,11 +21,10 @@
 
 = render '/service_requests/navigation/steps', step: @step_text, css_class: @css_class
 .col-sm-12.body-container#documents-page
-  = form_tag navigate_service_request_path(@service_request), id: 'navigation_form', class: 'form-horizontal', multipart: true do
+  = form_tag navigate_service_request_path(@service_request) do
     = hidden_field_tag :location, ''
     = hidden_field_tag :validates, ''
     = hidden_field_tag :current_location, @page
-    = render 'errors'
     = render 'service_requests/document_management/document_management_left', service_request: @service_request
     = render 'service_requests/document_management/document_management_right', service_request: @service_request, sub_service_request: @sub_service_request, line_items: @line_items
 = render 'service_requests/navigation/footer', service_request: @service_request, css_class: @css_class, back: @back, forward: @forward

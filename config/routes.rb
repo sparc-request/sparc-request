@@ -124,6 +124,9 @@ SparcRails::Application.routes.draw do
   resources :notes, only: [:index, :new, :create] do
   end
 
+  resources :sub_service_requests, only: [:show] do
+  end
+  
   resources :catalogs, only: [] do
     member do
       post 'update_description'

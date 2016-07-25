@@ -34,6 +34,7 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
 
   def update
     @organization = Organization.find(params[:id])
+    @tag_list = @organization.tag_list
     update_organization
     save_pricing_setups
     set_org_tags
@@ -72,8 +73,17 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
   end
 
   def set_org_tags
-    unless @attributes[:tag_list] || @organization.type == 'Institution'
+    new_org_tags = @attributes[:tag_list]
+
+    if !new_org_tags || @organization.type = 'Institution'
       @attributes[:tag_list] = ""
+    # elsif new_org_tags.size < @tag_list.size
+    #   tags_to_delete = @tag_list - new_org_tags
+    #   puts "<>"*100
+    #   puts tags_to_delete.inspect
+    #   tags_to_delete.each do |tag|
+    #     @organization.tag_list.remove(tag)
+    #   end
     end
   end
 end

@@ -270,7 +270,6 @@ ActiveRecord::Schema.define(version: 20160712191814) do
     t.datetime "document_updated_at"
     t.string   "doc_type_other",        limit: 255
     t.integer  "protocol_id",           limit: 4
-    t.integer  "service_request_id",    limit: 4
   end
 
   add_index "documents", ["protocol_id"], name: "index_documents_on_protocol_id", using: :btree
@@ -694,7 +693,6 @@ ActiveRecord::Schema.define(version: 20160712191814) do
     t.boolean  "selected_for_epic"
     t.boolean  "archived",                                                                    default: false
     t.integer  "study_type_question_group_id",          limit: 4
-    t.integer  "requester_id",                          limit: 4
   end
 
   add_index "protocols", ["next_ssr_id"], name: "index_protocols_on_next_ssr_id", using: :btree

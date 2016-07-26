@@ -20,7 +20,7 @@
 
 - if @merged || !@portal || tab == 'calendar'
   %tr.totals_section.begin_totals
-    %td.col-sm-5{ colspan: 5 }
+    %td.col-sm-5{ colspan: 6 }
       %strong= t(:calendar_page)[:labels][:maximum_direct]
     - 5.times do |i|
       %td.col-sm-1.text-center{ class: "visit_column_#{i + 1} max_direct_per_patient arm_#{arm.id}" }
@@ -30,7 +30,7 @@
 
   - if USE_INDIRECT_COST
     %tr.totals_section
-      %td.col-sm-5{ colspan: 5 }
+      %td.col-sm-5{ colspan: 6 }
         %strong= t(:calendar_page)[:labels][:maximum_indirect]
       - 5.times do |i|
         %td.col-sm-1.text-center{ class: "visit_column_#{i + 1} max_indirect_per_patient arm_#{arm.id}" }
@@ -39,7 +39,7 @@
         %td
 
   %tr.totals_section
-    %td.col-sm-5{ colspan: 5 }
+    %td.col-sm-5{ colspan: 6 }
       %strong= t(:calendar_page)[:labels][:maximum_per]
     - 5.times do |i|
       %td.col-sm-1.text-center{ class: "visit_column_#{i + 1} max_total_per_patient arm_#{arm.id}" }
@@ -48,7 +48,7 @@
       %td
 
   %tr.totals_section.grand-totals
-    %td.col-sm-5{ colspan: 5 }
+    %td.col-sm-5{ colspan: 6 }
       %strong= t(:calendar_page)[:labels][:total_costs] + " -- " + arm.name
     %td.col-sm-5{ colspan: 5 }
     -if @merged

@@ -25,7 +25,6 @@ class Subsidy < ActiveRecord::Base
   has_many :notes, as: :notable
 
   attr_accessible :sub_service_request_id
-  attr_accessible :pi_contribution
   attr_accessible :overridden
   attr_accessible :status
   attr_accessible :percent_subsidy
@@ -41,18 +40,21 @@ class Subsidy < ActiveRecord::Base
   validates_presence_of :pi_contribution
   validate :contribution_caps
 
+  def pi_contribution
+    # This ensures that if pi_contribution is null (new record),
+    # then it will reflect the full cost of the request.
+    total_request_cost.to_f - (total_request_cost.to_f * percent_subsidy) || total_request_cost.to_f
+  end
+
   # Generates error messages if user input is out of parameters
   def contribution_caps
-    dollar_cap, percent_cap = max_dollar_cap, max_percentage
-    request_cost = total_request_cost()
-    subsidy_cost = (request_cost - pi_contribution)
-
+    subsidy_cost = (total_request_cost.to_f - pi_contribution)
     if pi_contribution < 0
       errors.add(:pi_contribution, "can not be less than 0")
-    elsif dollar_cap.present? and dollar_cap > 0 and (subsidy_cost / 100.0) > dollar_cap
-      errors.add(:requested_funding, "can not be greater than the cap of #{dollar_cap}")
-    elsif percent_cap.present? and percent_cap > 0 and percent_subsidy * 100 > percent_cap
-      errors.add(:percent_subsidy, "can not be greater than the cap of #{percent_cap}")
+    elsif max_dollar_cap.present? and max_dollar_cap > 0 and (subsidy_cost / 100.0) > max_dollar_cap
+      errors.add(:requested_funding, "can not be greater than the cap of #{max_dollar_cap}")
+    elsif max_percentage.present? and max_percentage > 0 and percent_subsidy * 100 > max_percentage
+      errors.add(:percent_subsidy, "can not be greater than the cap of #{max_percentage}")
     elsif pi_contribution > total_request_cost
       errors.add(:pi_contribution, "can not be greater than the total request cost")
     end

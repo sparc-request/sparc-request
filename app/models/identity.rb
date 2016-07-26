@@ -65,7 +65,6 @@ class Identity < ActiveRecord::Base
   has_many :catalog_managers, dependent: :destroy
   has_many :clinical_providers, dependent: :destroy
   has_many :protocol_service_requests, through: :protocols, source: :service_requests
-  has_many :requested_service_requests, class_name: 'ServiceRequest', foreign_key: 'service_requester_id'
   has_many :catalog_manager_rights, class_name: 'CatalogManager'
   has_many :service_providers, dependent: :destroy
   has_many :received_toast_messages, class_name: 'ToastMessage', foreign_key: 'to', dependent: :destroy
@@ -232,7 +231,7 @@ class Identity < ActiveRecord::Base
 
   # Only users with request or approve rights can edit.
   def can_edit_service_request? sr
-    (sr.service_requester_id == self.id or sr.service_requester_id.nil?) || has_correct_project_role?(sr)
+    has_correct_project_role?(sr)
   end
 
   # If a user has request or approve rights AND the request is editable, then the user can edit.

@@ -35,7 +35,7 @@
           %td.approved_request_cost
             = number_to_currency(approved.total_at_approval/100.0)
           %td.subsidy_percent
-            = approved.approved_percent_of_total
+            = display_as_percent(approved.percent_subsidy)
           %td.subsidy_contribution
             = number_to_currency(approved.pi_contribution/100.0)
           %td.subsidy_effective_current_cost
@@ -68,7 +68,7 @@
           %td.request_cost{data: { subsidy_id: pending.id, cost: pending.total_request_cost }}
             = number_to_currency(pending.total_request_cost / 100.0)
           %td.percent_subsidy
-            = text_field_tag "percent_subsidy", pending.current_percent_of_total, { class: "subsidy_input", data: { subsidy_id: pending.id, max_percentage: max_percentage, max_dollar_cap: max_dollar_cap } }
+            = text_field_tag "percent_subsidy", display_as_percent(pending.percent_subsidy), { class: "subsidy_input", data: { subsidy_id: pending.id, max_percentage: max_percentage, max_dollar_cap: max_dollar_cap, percent_subsidy: pending.percent_subsidy } }
           %td.pi_contribution
             = text_field_tag "pi_contribution", cents_to_dollars_float(pending.pi_contribution), { class: "subsidy_input", data: { subsidy_id: pending.id, max_percentage: max_percentage, max_dollar_cap: max_dollar_cap, pi_contribution: pending.pi_contribution } }
           %td.subsidy_cost{data: { subsidy_id: pending.id, cost: pending.current_cost }}
@@ -79,5 +79,5 @@
     #submit_error{:style => "display: none"}
       .message
   - else
-    %button.add_subsidy_button{ type: "button", data: { sub_service_request_id: sub_service_request.id }}
+    %button{ type: "button", class: 'light-blue-button add_subsidy_button btn btn-primary', data: { sub_service_request_id: sub_service_request.id }}
       %span= t(:fulfillments)[:subsidies][:link]

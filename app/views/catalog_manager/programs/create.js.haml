@@ -20,21 +20,24 @@
 
 :plain
   $('#catalog').jstree(
-    'create_node', 
-    $("#PROVIDER#{@provider.id}"),
-    1, 
-    { attr: 
-      { id: "PROGRAM#{@program.id}"},
-      data: {attr: 
-        {cid: "#{@program.id}", object_type: "program", class: "program"}, 
-        title: "#{@program.name}"}},
+    'create_node',
+    $("#PROVIDER#{@parent_org.id}"),
+    1,
+    { attr:
+      { id: "PROGRAM#{@organization.id}"},
+      data: {attr:
+        {cid: "#{@organization.id}",
+         class: "program",
+         object_type: "program"},
+         title: "#{@organization.name}"}
+         },
  
-      function(){ 
-        $('#catalog').jstree('create_node', 
-        $("#PROGRAM#{@program.id}"), 'inside', 
+      function(){
+        $('#catalog').jstree('create_node',
+        $("#PROGRAM#{@organization.id}"), 'inside',
         {data: 'Create New Core'},
- 
-      function(){ $('#catalog').jstree('create_node', 
-        $("#PROGRAM#{@program.id}"), 'inside', 
-        {data: 'Create New Service'}, 
+
+      function(){ $('#catalog').jstree('create_node',
+        $("#PROGRAM#{@organization.id}"), 'inside',
+        {data: 'Create New Service'},
         true)}); })

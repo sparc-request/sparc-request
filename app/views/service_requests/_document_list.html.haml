@@ -18,7 +18,9 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-- if (@sub_service_request.nil? ? @service_request.documents.size >= 1 : @sub_service_request.documents.size >= 1)
+= stylesheet_link_tag 'hover_effect'
+
+- if (@sub_service_request.nil? ? @service_request.protocol.documents.size >= 1 : @sub_service_request.documents.size >= 1)
   %table.document-table
     - if review
       %tr
@@ -31,7 +33,7 @@
         %th.document-actions-header= t("documents.headers.actions")
       %th= t('documents.headers.version')
 
-    - @service_request.documents.each do |document|
+    - @service_request.protocol.documents.each do |document|
       - next unless @sub_service_request.nil? or @sub_service_request.documents.include? document
       %tr.document{:id => "document_id_#{document.id}"}
         %td{:style => "text-align:left"}
@@ -43,10 +45,10 @@
         %td.document-title= link_to document.document_file_name, document.document.url
         - if not review
           %td
-            = link_to t("documents.edit_button"), "/service_requests/#{@service_request.id}/edit_document/#{document.id}", :remote => true, :class => 'document_edit blue-button'
+            = link_to t("documents.edit_button"), "/service_requests/#{@service_request.id}/edit_document/#{document.id}", :remote => true, :class => 'document_edit blue-button button-hover'
             %br.document-button-seperator
             %br
-            = link_to t("documents.delete_button"), "/service_requests/#{@service_request.id}/delete_document/#{document.id}", :remote => true, :class => 'document_delete blue-button'
+            = link_to t("documents.delete_button"), "/service_requests/#{@service_request.id}/delete_document/#{document.id}", :remote => true, :class => 'document_delete blue-button button-hover'
         %td= document.updated_at.strftime("%m/%d/%Y at %I:%M%p")
 - else
   - if review # let's show the table with the no documents text

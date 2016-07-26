@@ -43,6 +43,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
       default_filter_params[:admin_filter] = "for_identity #{@user.id}"
       params[:filterrific][:admin_filter] = "for_identity #{@user.id}" if params[:filterrific]
     end
+
     @filterrific =
       initialize_filterrific(Protocol, params[:filterrific],
         default_filter_params: default_filter_params,
@@ -94,7 +95,10 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
   def create
     protocol_class = params[:protocol][:type].capitalize.constantize
-    @protocol = protocol_class.new(params[:protocol])
+
+    attrs = fix_date_params
+
+    @protocol = protocol_class.new(attrs)
     @protocol.study_type_question_group_id = StudyTypeQuestionGroup.active_id
 
     if @protocol.valid?
@@ -125,7 +129,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     end
 
     @protocol.populate_for_edit
- 
+
     session[:breadcrumbs].
       clear.
       add_crumbs(protocol_id: @protocol.id, edit_protocol: true)
@@ -139,9 +143,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def update
-    attrs               = params[:protocol]
-    attrs[:start_date]  = Time.strptime(attrs[:start_date], "%m-%d-%Y") if attrs[:start_date]
-    attrs[:end_date]    = Time.strptime(attrs[:end_date],   "%m-%d-%Y") if attrs[:end_date]
+    attrs = fix_date_params
 
     permission_to_edit  = @authorization.present? ? @authorization.can_edit? : false
 
@@ -239,4 +241,35 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
       @protocol.activate
     end
   end
+
+  def convert_date_for_save attrs, date_field
+    if attrs[date_field] && attrs[date_field].present?
+      attrs[date_field] = Time.strptime(attrs[date_field], "%m/%d/%Y")
+    end
+
+    attrs
+  end
+
+  def fix_date_params
+    attrs               = params[:protocol]
+
+    #### fix dates so they are saved correctly ####
+    attrs                                        = convert_date_for_save attrs, :start_date
+    attrs                                        = convert_date_for_save attrs, :end_date
+    attrs                                        = convert_date_for_save attrs, :funding_start_date
+    attrs                                        = convert_date_for_save attrs, :potential_funding_start_date
+
+    if attrs[:human_subjects_info_attributes]
+      attrs[:human_subjects_info_attributes]     = convert_date_for_save attrs[:human_subjects_info_attributes], :irb_approval_date
+      attrs[:human_subjects_info_attributes]     = convert_date_for_save attrs[:human_subjects_info_attributes], :irb_expiration_date
+    end
+
+    if attrs[:vertebrate_animals_info_attributes]
+      attrs[:vertebrate_animals_info_attributes] = convert_date_for_save attrs[:vertebrate_animals_info_attributes], :iacuc_approval_date
+      attrs[:vertebrate_animals_info_attributes] = convert_date_for_save attrs[:vertebrate_animals_info_attributes], :iacuc_expiration_date
+    end
+
+    attrs
+  end
+
 end

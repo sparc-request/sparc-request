@@ -43,34 +43,5 @@ RSpec.describe 'edit an institution', js: true do
       first("#save_button").click
       expect(page).to have_content( 'Medical University of South Carolina saved successfully' )
     end
-
-
-    context "adding and removing tags" do
-      before :each do
-        @institution = Organization.where(abbreviation: "MUSC").first
-        wait_for_javascript_to_finish
-      end
-
-      it "should list the tags" do
-        expect(page).to have_css("#institution_tag_list_ctrc")
-      end
-
-      it "should be able to check a tag box" do
-        find('#institution_tag_list_ctrc').click
-        first("#save_button").click
-        expect(page).to have_content( 'Medical University of South Carolina saved successfully' )
-        expect(find('#institution_tag_list_ctrc')).to be_checked
-        expect(@institution.tag_list).to eq(['ctrc'])
-      end
-    end
-
-
-    context "viewing user rights section" do
-      it "should show user rights section" do
-        find('#user_rights').click
-        sleep 3
-        expect(find('#su_info')).to be_visible
-      end
-    end
   end
 end

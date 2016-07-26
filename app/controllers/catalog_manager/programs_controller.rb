@@ -18,56 +18,21 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class CatalogManager::ProgramsController < CatalogManager::AppController
-  respond_to :js, :html, :json
-  layout false
-
+class CatalogManager::ProgramsController < CatalogManager::OrganizationsController
   def create
-    @provider = Provider.find(params[:provider_id])
-    @program = Program.new({:name => params[:name], :abbreviation => params[:name], :parent_id => @provider.id})
-    @program.build_subsidy_map()
-    @program.save
-    
-    respond_with [:catalog_manager, @program]
+    @parent_org = Provider.find(params[:provider_id])
+    @organization = Program.new({name: params[:name], abbreviation: params[:name], parent_id: @parent_org.id})
+    super
   end
 
   def show
-    @organization = Organization.find params[:id]
-    @program = Program.find params[:id]
-    @program.setup_available_statuses
+    @path = catalog_manager_program_path
+    super
   end
   
   def update
-    @program = Program.find(params[:id])
-
-    unless params[:program][:tag_list]
-      params[:program][:tag_list] = ""
-    end
-
-    params[:program].delete(:id)
-
-    if @program.update_attributes(params[:program])
-      flash[:notice] = "#{@program.name} saved correctly."
-    else
-      flash[:alert] = "Failed to update #{@program.name}."
-    end
-    
-    params[:pricing_setups].each do |ps|
-      if ps[1]['id'].blank?
-        ps[1].delete(:id)
-        ps[1].delete(:newly_created)
-        @program.pricing_setups.build(ps[1])
-      else
-        ps_id = ps[1]['id']
-        ps[1].delete(:id)
-        @program.pricing_setups.find(ps_id).update_attributes(ps[1])        
-      end
-      @program.save
-    end if params[:pricing_setups]
-  
-    @program.setup_available_statuses      
-    @entity = @program
-    respond_with @program, :location => catalog_manager_program_path(@program)
+    @attributes = params[:program]
+    super
   end
 
 end

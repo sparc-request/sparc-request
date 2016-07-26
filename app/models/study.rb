@@ -20,7 +20,7 @@
 
 class Study < Protocol
   validates :sponsor_name,                presence: true
-  validates :selected_for_epic,           inclusion: [true, false]
+  validates :selected_for_epic,           inclusion: [true, false], :if => [:is_epic?]
   validate  :validate_study_type_answers, if: [:selected_for_epic?, "StudyTypeQuestionGroup.active.pluck(:id).first == changed_attributes()['study_type_question_group_id'] || StudyTypeQuestionGroup.active.pluck(:id).first == study_type_question_group_id"]
 
   def classes
@@ -132,5 +132,9 @@ class Study < Protocol
     if has_errors
       errors.add(:study_type_answers, "must be selected")
     end
+  end
+
+  def is_epic?
+    USE_EPIC
   end
 end

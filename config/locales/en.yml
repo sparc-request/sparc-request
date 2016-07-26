@@ -62,9 +62,11 @@ en:
     no_select: "No"
     prompts:
       any: "- Any -"
+      please_specify: "Please specify: *"
       select: "---Please Select---"
       search_for_user: "Search for a User"
       select_one: "Select One"
+
 
   calendars:
     pppv:
@@ -264,6 +266,7 @@ en:
       college: "College:"
       college_prompt: "Select a College"
       department: "Department:"
+      phone: "Phone:"
       department_prompt: "Select a Department"
       subspecialty: "Subspecialty:"
       subspecialty_prompt: "Select a Subspecialty"
@@ -282,6 +285,7 @@ en:
     #  DOCUMENTS  #
     ###############
     documents:
+      header: "Documents"
       add: "Add a New Document"
       edit: "Edit Document"
       created: "Document Uploaded!"
@@ -292,9 +296,10 @@ en:
         title: "Title"
         uploaded: "Uploaded"
       form:
-        document_type: "Document Type:"
-        document_type_other: "Other Document Type:"
-        document: "Document:"
+        document_type: "Document Type:*"
+        specify_doc_type: "Please Specify:*"
+        document: "Document:*"
+        access: "Allow Access:"
 
     #################
     #  EPIC QUEUES  #
@@ -320,9 +325,9 @@ en:
         edit: " Edit Fulfillment"
         delete: " Delete Fulfillment"
       form:
-        date: "Fulfillment Date:"
-        time: "Quantity:"
-        time_unit: "Qty Type:"
+        date: "Fulfillment Date:*"
+        time: "Quantity:*"
+        time_unit: "Qty Type:*"
 
     ################
     #  LINE ITEMS  #
@@ -456,6 +461,10 @@ en:
         email: "Email"
         phone: "Phone"
         rights: "Proxy Rights"
+
+      documents:
+        header: "Documents"
+        add_document: "Add Document"
 
       service_requests:
         header: "Service Requests"
@@ -682,6 +691,14 @@ en:
             date: "Date Approved"
             type: "Type"
             by: "Approved By"
+          subsidy:
+            header: "Subsidy History"
+            request_cost: "Request Cost at Approval"
+            percent: "% Subsidy"
+            contribution: "PI Contribution"
+            subsidy_cost: "Subsidy Cost"
+            approved_by: "Approved By"
+            date: "Date Approved"
 
         notifications:
           header: "Notifications"
@@ -699,7 +716,7 @@ en:
         header: "Subsidy Information"
         approved:
           header: "Current Effective Subsidy"
-          request_cost: "Request Cost at Approval"
+          request_cost: "Cost at Approval"
           percent: "% Subsidy"
           pi_contribution: "PI Contribution"
           cost: "Subsidy Cost"
@@ -708,12 +725,12 @@ en:
           none: "There is no current effective subsidy."
         pending:
           header: "Subsidy Pending Approval"
-          request_cost: "Request Current Cost"
+          request_cost: "Current Cost"
           percent: "% Subsidy"
           pi_contribution: "PI Contribution"
           cost: "Subsidy Current Cost"
           approve: "Approve"
-        add: "Add a Subsidy"
+        add: "Request a Subsidy"
       form:
         request_cost: "Current Request Cost:"
         percent: "Percent Subsidy:"
@@ -1211,7 +1228,7 @@ en:
       delete: "Delete Subsidy"
       effective_current_total_cost: "Subsidy Current Cost"
       header: "Subsidy Information"
-      link: "Add a Subsidy"
+      link: "Request a Subsidy"
       no_subsidy: "No subsidy has been requested for this service request."
       percent: "% Subsidy"
       pi: "PI Contribution"

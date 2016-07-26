@@ -57,6 +57,11 @@ li:not(.ui-tabs-active)
   #template_tab:hover, #billing_strategy_tab:hover, #quantity_tab:hover, #calendar_tab:hover
     background: #4372A2
 
+.locked-billing-type
+  display: inline-table
+  width: 33%
+  text-align: center
+
 .move_visits
   padding: 2px !important
   margin-left: 5px
@@ -135,10 +140,10 @@ li:not(.ui-tabs-active)
     border-top: 1px solid #adadad
   .section_header th, .sub_section_header th, .totals_section td, .line_item td
     padding: 5px
-  .subject_count
+  .status, .subject_count
     padding: 5px 0
     text-align: center
-  .odd
+  .odd:not(.locked)
     background: #E8E8E8
   input
     &.visit_window_before, &.visit_window_after
@@ -178,6 +183,10 @@ li:not(.ui-tabs-active)
 .total_cell
   font-weight: bold !important
   background-color: #CCCCCC
+
+tr.locked
+  color: black
+  background-color: #E198A4
 
 .ui-tabs-active
   #template_tab, #billing_strategy_tab, #quantity_tab, #calendar_tab

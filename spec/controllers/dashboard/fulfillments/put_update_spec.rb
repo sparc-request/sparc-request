@@ -8,6 +8,7 @@ RSpec.describe Dashboard::FulfillmentsController do
           instance_double(Fulfillment, id: 1)
         end
         allow(@fulfillment).to receive(:update_attributes).and_return(true)
+        allow(@fulfillment).to receive(:line_item)
 
         log_in_dashboard_identity(obj: build_stubbed(:identity))
 
@@ -33,6 +34,7 @@ RSpec.describe Dashboard::FulfillmentsController do
           instance_double(Fulfillment, id: 1)
         end
         allow(@fulfillment).to receive(:update_attributes).and_return(false)
+        allow(@fulfillment).to receive(:line_item)
         allow(@fulfillment).to receive(:errors).and_return("my errors")
 
         logged_in_user = build_stubbed(:identity)

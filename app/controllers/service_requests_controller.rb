@@ -131,8 +131,9 @@ class ServiceRequestsController < ApplicationController
 
   def protocol
     cookies.delete :current_step
-    @service_request.update_attribute(:service_requester_id, current_user.id) if @service_request.service_requester_id.nil?
-    
+
+    @service_request.sub_service_requests.where(service_requester_id: nil).update_all(service_requester_id: current_user.id)
+
     if session[:saved_protocol_id]
       @service_request.protocol = Protocol.find session[:saved_protocol_id]
       session.delete :saved_protocol_id
@@ -462,7 +463,7 @@ class ServiceRequestsController < ApplicationController
 
   def delete_documents
     # deletes a document unless we are working with a sub_service_request
-    @document = @service_request.documents.find params[:document_id]
+    @document = @service_request.protocol.documents.find params[:document_id]
     @tr_id = "#document_id_#{@document.id}"
 
     if @sub_service_request.nil?
@@ -475,7 +476,7 @@ class ServiceRequestsController < ApplicationController
   end
 
   def edit_documents
-    @document = @service_request.documents.find params[:document_id]
+    @document = @service_request.protocol.documents.find params[:document_id]
     @service_list = @service_request.service_list
   end
 
@@ -585,12 +586,13 @@ class ServiceRequestsController < ApplicationController
     process_ssr_organization_ids = params[:process_ssr_organization_ids]
     document_id = params[:document_id]
     doc_object = Document.find(document_id) if document_id
-    document = params[:document]
+    document = params[:document].present? || !params[:document_id].present? ? params[:document] : doc_object.document
     doc_type = params[:doc_type]
     doc_type_other = params[:doc_type_other]
     upload_clicked = params[:upload_clicked]
+    doc_type_valid = !doc_type.empty? && (doc_type != 'other' || (doc_type == 'other' && !doc_type_other.empty?))
 
-    if !doc_type.empty? && process_ssr_organization_ids && document
+    if doc_type_valid && process_ssr_organization_ids && document
       # have all required ingredients for successful document
       if document_id # update existing document
         org_ids = doc_object.sub_service_requests.map{|ssr| ssr.organization_id.to_s}
@@ -616,7 +618,7 @@ class ServiceRequestsController < ApplicationController
         if doc_object
           if @sub_service_request and doc_object.sub_service_requests.size > 1
             new_doc = document ? document : doc_object.document # if no new document provided use the old document
-            newDocument = Document.create(document: new_doc, doc_type: params[:doc_type], doc_type_other: params[:doc_type_other], service_request_id: @service_request.id)
+            newDocument = Document.create(document: new_doc, doc_type: params[:doc_type], doc_type_other: params[:doc_type_other], protocol_id: @service_request.protocol_id)
             @sub_service_request.documents << newDocument
             @sub_service_request.documents.delete doc_object
             @sub_service_request.save
@@ -626,7 +628,7 @@ class ServiceRequestsController < ApplicationController
           end
         end
       else # new document
-        newDocument = Document.create(document: document, doc_type: doc_type, doc_type_other: doc_type_other, service_request_id: @service_request.id)
+        newDocument = Document.create(document: document, doc_type: doc_type, doc_type_other: doc_type_other, protocol_id: @service_request.protocol_id)
         process_ssr_organization_ids.each do |org_id|
           sub_service_request = @service_request.sub_service_requests.find_by_organization_id org_id.to_i
           sub_service_request.documents << newDocument
@@ -634,12 +636,13 @@ class ServiceRequestsController < ApplicationController
         end
       end
 
-    elsif upload_clicked == "1" && ((doc_type == "" || !process_ssr_organization_ids) || !document)
+    elsif upload_clicked == "1" && ((doc_type == "" || !process_ssr_organization_ids) || !document || doc_type == 'other' && doc_type_other.empty?)
       # collect errors
       doc_errors = {}
       doc_errors[:recipients] = ["You must select at least one recipient"] if !process_ssr_organization_ids
       doc_errors[:document] = ["You must select a document to upload"] if !document
       doc_errors[:doc_type] = ["You must provide a document type"] if doc_type == ""
+      doc_errors[:doc_type_other] = ["You must specify the document type"] if doc_type == 'other' && doc_type_other.empty?
       errors << doc_errors
     end
   end
@@ -657,7 +660,7 @@ class ServiceRequestsController < ApplicationController
       authorized  = if @sub_service_request
                       current_user.can_edit_sub_service_request?(@sub_service_request)
                     else
-                      current_user.can_edit_service_request?(@service_request)
+                      @service_request.status == 'first_draft' || current_user.can_edit_service_request?(@service_request)
                     end
 
       protocol = @sub_service_request ? @sub_service_request.service_request.protocol : @service_request.protocol

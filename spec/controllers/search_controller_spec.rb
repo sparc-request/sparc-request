@@ -230,6 +230,30 @@ RSpec.describe SearchController do
 
       expect(results).to eq [ { 'label' => 'No Results' } ]
     end
+
+    it 'should not return services which belong to a locked organization' do
+      organization = create( :organization )
+      ssr = create( :sub_service_request_without_validations,
+                    organization: organization,
+                    service_request: service_request,
+                    status: 'on_hold' )
+      service = create( :service,
+                        organization: organization,
+                        name: 'Super Specific Service Name and Number 1234567890' )
+      EDITABLE_STATUSES[organization.id] = ['draft']
+
+      session['service_request_id'] = service_request.id
+
+      get :services, {
+        format: :json,
+        id: nil,
+        term: service.name,
+      }.with_indifferent_access
+
+      results = JSON.parse(response.body)
+
+      expect(results).to eq [ { 'label' => 'No Results' } ]
+    end
   end
 
   describe 'GET identities' do

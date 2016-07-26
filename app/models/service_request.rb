@@ -24,7 +24,6 @@ class ServiceRequest < ActiveRecord::Base
 
   audited
 
-  belongs_to :service_requester, :class_name => "Identity", :foreign_key => "service_requester_id"
   belongs_to :protocol
   has_many :sub_service_requests, :dependent => :destroy
   has_many :line_items, -> { includes(:service) }, :dependent => :destroy
@@ -32,10 +31,9 @@ class ServiceRequest < ActiveRecord::Base
   has_many :charges, :dependent => :destroy
   has_many :tokens, :dependent => :destroy
   has_many :approvals, :dependent => :destroy
-  has_many :documents, :dependent => :destroy
   has_many :arms, :through => :protocol
   has_many :notes, as: :notable, dependent: :destroy
-
+  
   after_save :set_original_submitted_date
 
   validation_group :protocol do
@@ -91,13 +89,11 @@ class ServiceRequest < ActiveRecord::Base
 
   attr_accessible :protocol_id
   attr_accessible :status
-  attr_accessible :service_requester_id
   attr_accessible :notes
   attr_accessible :approved
   attr_accessible :consult_arranged_date
   attr_accessible :pppv_complete_date
   attr_accessible :pppv_in_process_date
-  attr_accessible :requester_contacted_date
   attr_accessible :submitted_at
   attr_accessible :line_items_attributes
   attr_accessible :sub_service_requests_attributes

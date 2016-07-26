@@ -47,3 +47,6 @@ $(document).ready ->
       $('td.visit input').each ->
         $(this).attr('disabled', true)
     $('#navigation_form').submit()
+
+  $(document).on 'click', '.form-submit-button', ->
+    $('#service-request-form').submit()

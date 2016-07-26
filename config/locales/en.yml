@@ -210,6 +210,19 @@ en:
     select_type: "Please Select Type"
     delete_confirm: "Are you sure you want to delete the selected Document from this protocol?"
 
+  #############################
+  # VALIDATION ERROR MESSAGES #
+  #############################
+  errors:
+    service_requests:
+      protocol_missing: "You must create a Protocol before continuing"
+      protocol_errors: "The selected Protocol has errors which must be fixed. Please edit the Protocol before continuing"
+      line_items_missing: "No Services have been detected in your Cart. Please return to the Catalog and add Services before continuing"
+    protocols:
+      start_date_missing: "Start Date can\'t be blank"
+      end_date_missing: "End Date can\'t be blank"
+      date_range_invalid: "Start Date must come before End Date"
+
   ##########
   # MODELS #
   ##########

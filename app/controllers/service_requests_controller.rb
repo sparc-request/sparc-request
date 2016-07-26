@@ -28,71 +28,38 @@ class ServiceRequestsController < ApplicationController
   before_filter :authenticate_identity!,          except: [:catalog, :add_service, :remove_service, :ask_a_question, :get_help, :feedback]
   before_filter :authorize_protocol_edit_request, only:   [:catalog]
   before_filter :prepare_catalog,                 only:   [:catalog]
+  before_filter :setup_navigation
 
   def show
     @protocol = @service_request.protocol
     @admin_offset = params[:admin_offset]
 
-    # TODO: this gives an error in the spec tests, because they think
-    # it's trying to render html instead of xlsx
-    #
-    #   render xlsx: "show", filename: "service_request_#{@service_request.id}", disposition: "inline"
-    #
-    # So I did this instead, but I don't know if it's right:
-    #
     respond_to do |format|
       format.xlsx do
-        render xlsx: "show", filename: "service_request_#{@service_request.protocol.id}", disposition: "inline"
+        render xlsx: "show", filename: "service_request_#{@protocol.id}", disposition: "inline"
       end
     end
   end
 
   def navigate
-    errors = []
-    # need to save and navigate to the right page
+    case session[:location]
+    when 'protocol'
+      @service_request.group_valid?(:protocol)
+    when 'service_details'
+      details_params = params[:study] ? params[:study] : params[:project]
+      details_params = convert_date_for_save(details_params, :start_date)
+      details_params = convert_date_for_save(details_params, :end_date)
 
-    #### add logic to save data
-    referrer = request.referrer.split('/').last
-
-    @service_request.update_attributes(params[:service_request])
-
-    #### if study/project attributes are available (step 2 arms nested form), update them
-    if params[:study]
-      @service_request.protocol.update_attributes(params[:study])
-    elsif params[:project]
-      @service_request.protocol.update_attributes(params[:project])
+      @service_request.protocol.update_attributes( details_params ) if @service_request.protocol
+      @service_request.group_valid?(:service_details)
     end
+    
+    @errors = @service_request.errors
 
-    if params[:current_location] == 'service_details'
-      @service_request.reload
-    end
-
-    location = params["location"]
-    additional_params = request.referrer.split('/').last.split('?').size == 2 ? "?" + request.referrer.split('/').last.split('?').last : nil
-    validates = params["validates"]
-
-    if (@validation_groups[location].nil? or @validation_groups[location].map{|vg| @service_request.group_valid? vg.to_sym}.all?) and (validates.blank? or @service_request.group_valid? validates.to_sym) and errors.empty?
-      @service_request.save(validate: false)
-      redirect_to "/service_requests/#{@service_request.id}/#{location}#{additional_params}"
+    if @errors.any?
+      render action: @page
     else
-      if @validation_groups[location]
-        @validation_groups[location].each do |vg|
-          errors << @service_request.grouped_errors[vg.to_sym].messages unless @service_request.grouped_errors[vg.to_sym].messages.empty?
-        end
-      end
-
-      unless validates.blank?
-        errors << @service_request.grouped_errors[validates.to_sym].messages unless @service_request.grouped_errors[validates.to_sym].empty?
-      end
-
-      session[:errors] = errors.compact.flatten.first # TODO I DON'T LIKE THIS AT ALL
-
-      if @page != 'navigate'
-        send @page.to_sym
-        render action: @page
-      else
-        redirect_to :back
-      end
+      redirect_to "/service_requests/#{@service_request.id}/#{@forward}"
     end
   end
 
@@ -124,14 +91,7 @@ class ServiceRequestsController < ApplicationController
   end
 
   def protocol
-    cookies.delete :current_step
-
     @service_request.sub_service_requests.where(service_requester_id: nil).update_all(service_requester_id: current_user.id)
-
-    if session[:saved_protocol_id]
-      @service_request.protocol = Protocol.find session[:saved_protocol_id]
-      session.delete :saved_protocol_id
-    end
   end
 
   def service_details
@@ -139,7 +99,6 @@ class ServiceRequestsController < ApplicationController
   end
 
   def service_calendar
-    #use session so we know what page to show when tabs are switched
     session[:service_calendar_pages] = params[:pages] if params[:pages]
 
     # TODO: why is @page not set here?  if it's not supposed to be set
@@ -184,7 +143,6 @@ class ServiceRequestsController < ApplicationController
   #     @back = 'service_details'
   #   end
   # end
-
 
   def service_subsidy
     # this is only if the calendar totals page is not going to be used.
@@ -464,6 +422,20 @@ class ServiceRequestsController < ApplicationController
   end
 
   private
+
+  def setup_navigation
+    session[:current_location]  = action_name unless action_name == 'navigate'
+    @page                       = session[:current_location]
+
+    c = YAML.load_file(Rails.root.join('config', 'navigation.yml'))[@page]
+    unless c.nil?
+      @step_text = c['step_text']
+      @css_class = c['css_class']
+      @back = c['back']
+      @catalog = c['catalog']
+      @forward = c['forward']
+    end
+  end
 
   # Send notifications to all users.
   def send_notifications(service_request, sub_service_request)

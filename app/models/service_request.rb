@@ -37,15 +37,13 @@ class ServiceRequest < ActiveRecord::Base
   after_save :set_original_submitted_date
 
   validation_group :protocol do
-    # validates :protocol_id, :presence => {:message => "You must identify the service request with a study/project before continuing."}
-    validate :protocol_page
+    validate :validate_line_items
+    validate :validate_protocol
   end
 
   validation_group :service_details do
-    # TODO: Fix validations for this area
-    # validates :visit_count, :numericality => { :greater_than => 0, :message => "You must specify the estimated total number of visits (greater than zero) before continuing.", :if => :has_per_patient_per_visit_services?}
-    # validates :subject_count, :numericality => {:message => "You must specify the estimated total number of subjects before continuing.", :if => :has_per_patient_per_visit_services?}
-    validate :service_details_forward
+    validate :validate_line_items
+    validate :validate_service_details
   end
 
   validation_group :service_details_back do
@@ -106,65 +104,34 @@ class ServiceRequest < ActiveRecord::Base
 
   #after_save :fix_missing_visits
 
-  def protocol_page
-    if self.protocol_id.blank?
-      errors.add(:protocol_id, "You must identify the service request with a study/project before continuing.")
-    elsif not self.protocol.valid?
-      errors.add(:protocol, "Errors in the selected study/project have been detected.  Please click Edit Study/Project to correct")
-    end
-
+  def validate_line_items
     if self.line_items.empty?
-      errors.add(:no_services, "Your cart is empty. Please return to the Catalog to add services to continue.")
+      errors.add(:base, I18n.t(:errors)[:service_requests][:line_items_missing])
     end
   end
 
-  def service_details_back
-    service_details_page('back')
+  def validate_protocol
+    if self.protocol_id.blank?
+      errors.add(:base, I18n.t(:errors)[:service_requests][:protocol_missing])
+    elsif !self.protocol.valid?
+      errors.add(:base, I18n.t(:errors)[:service_requests][:protocol_errors])
+    end
   end
 
-  def service_details_forward
-    service_details_page('forward')
-  end
-
-  def service_details_page(direction)
-    if direction == 'forward'
-      if self.line_items.empty?
-        errors.add(:no_services, "Your cart is empty. Please return to the Catalog to add services to continue.")
+  def validate_service_details
+    if protocol
+      if protocol.start_date.nil?
+        errors.add(:base, I18n.t(:errors)[:protocols][:start_date_missing])
       end
+      if protocol.end_date.nil?
+        errors.add(:base, I18n.t(:errors)[:protocols][:end_date_missing])
+      end
+      if protocol.start_date && protocol.end_date && protocol.start_date > protocol.end_date
+        errors.add(:base, I18n.t(:errors)[:protocols][:date_range_invalid])
+      end
+    else
+      protocol
     end
-
-    unless direction == 'back' && ((status == 'first_draft') || (status == 'draft' && !submitted_at.present?))
-      #validate start date and end date
-      if protocol
-        if protocol.start_date.nil?
-          errors.add(:start_date, "You must specify the start date of the study.")
-        end
-        if protocol.end_date.nil?
-          errors.add(:end_date, "You must specify the end date of the study.")
-        end
-        if protocol.start_date and protocol.end_date and protocol.start_date > protocol.end_date
-          errors.add(:invalid_date, "You must chose a start date before the end date.")
-        end
-      end
-
-      #validate arm name, subjects, and visits
-      if has_per_patient_per_visit_services?
-        visitError = false
-        subjectError = false
-        nameError = false
-        arms.each do |arm|
-          unless arm.valid_visit_count? then visitError = true end
-          unless arm.valid_subject_count? then subjectError = true end
-          unless arm.valid_name? then nameError = true end
-          if visitError and subjectError and nameError then break end
-        end
-
-        if visitError then errors.add(:visit_count, "You must specify the estimated total number of visits (greater than zero) before continuing.") end
-        if subjectError then errors.add(:subject_count, "You must specify the estimated total number of subjects before continuing.") end
-        if nameError then errors.add(:name, "You must specify a name for each arm before continuing.") end
-      end
-    end
-
   end
 
   def service_calendar_back

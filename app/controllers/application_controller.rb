@@ -23,13 +23,12 @@ class ApplicationController < ActionController::Base
   helper :all
   helper_method :current_user
   helper_method :xeditable?
-  before_filter :setup_navigation
   before_action :configure_permitted_parameters, if: :devise_controller?
 
   protected
 
   def configure_permitted_parameters
-    devise_parameter_sanitizer.for(:sign_up) { |u|  u.permit!}
+    devise_parameter_sanitizer.for(:sign_up) { |u| u.permit!}
   end
 
   def current_user
@@ -37,7 +36,7 @@ class ApplicationController < ActionController::Base
   end
 
   def prepare_catalog
-    if session['sub_service_request_id'] and @sub_service_request
+    if session[:sub_service_request_id] and @sub_service_request
       @institutions = @sub_service_request.organization.parents.select{|x| x.type == 'Institution'}
     else
       @institutions = Institution.order('`order`')
@@ -281,27 +280,17 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def setup_navigation
-    #TODO - this could definitely be done a better way
-    @page = if params[:action] == 'navigate'
-        params[:action] = params[:current_location] || request.referrer.split('/').last.split('?').first
-      else
-        params[:action]
-      end
-
-
-    c = YAML.load_file(Rails.root.join('config', 'navigation.yml'))[@page]
-    unless c.nil?
-      @step_text = c['step_text']
-      @css_class = c['css_class']
-      @back = c['back']
-      @catalog = c['catalog']
-      @forward = c['forward']
-      @validation_groups = c['validation_groups']
-    end
-  end
-
   def xeditable? object=nil
     true
+  end
+
+  private
+
+  def convert_date_for_save(attrs, date_field)
+    if attrs[date_field] && attrs[date_field].present?
+      attrs[date_field] = Time.strptime(attrs[date_field], "%m/%d/%Y")
+    end
+
+    attrs
   end
 end

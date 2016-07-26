@@ -478,8 +478,8 @@ class Protocol < ActiveRecord::Base
   def has_line_items_of_type?(current_request, portal, type)
     return self.service_requests.detect do |sr|
       next unless ((type == "otf") ? sr.has_one_time_fee_services? : sr.has_per_patient_per_visit_services?)
-      true unless ['first_draft'].include?(sr.status)
-      !portal && current_request == sr
+      #Only return first_draft sr's if NOT in portal, AND the current_request == the sr variable
+      sr.status == "first_draft" ? (!portal && current_request == sr) : true
     end
   end
 

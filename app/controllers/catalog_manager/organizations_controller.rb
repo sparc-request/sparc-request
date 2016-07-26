@@ -77,13 +77,6 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
 
     if !new_org_tags || @organization.type = 'Institution'
       @attributes[:tag_list] = ""
-    # elsif new_org_tags.size < @tag_list.size
-    #   tags_to_delete = @tag_list - new_org_tags
-    #   puts "<>"*100
-    #   puts tags_to_delete.inspect
-    #   tags_to_delete.each do |tag|
-    #     @organization.tag_list.remove(tag)
-    #   end
     end
   end
 end

@@ -874,6 +874,7 @@ en:
       decrement: "-"
       increment: "+"
       day: "Day"
+      status: "Status"
     labels:
       direct_cost: "Total Direct Cost"
       grand_total_direct: "Grand Total: Direct Costs"

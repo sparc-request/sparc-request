@@ -30,6 +30,7 @@ class ServiceRequestsController < ApplicationController
   before_filter :prepare_catalog,                 only:   [:catalog]
   before_filter :setup_navigation
 
+  before_filter :check_for_subsidy,               only:   [:service_subsidy, :document_management]
   def show
     @protocol = @service_request.protocol
     @admin_offset = params[:admin_offset]
@@ -101,10 +102,6 @@ class ServiceRequestsController < ApplicationController
   def service_calendar
     session[:service_calendar_pages] = params[:pages] if params[:pages]
 
-    # TODO: why is @page not set here?  if it's not supposed to be set
-    # then there should be a comment as to why it's set in #review but
-    # not here
-
     @service_request.arms.each do |arm|
       #check each ARM for line_items_visits (in other words, it's a new arm)
       if arm.line_items_visits.empty?
@@ -136,8 +133,7 @@ class ServiceRequestsController < ApplicationController
     end
   end
 
-  # do not delete.  Method will be needed if calendar totals page is
-  # used.
+  # do not delete. Method will be needed if calendar totals page is used
   # def calendar_totals
   #   if @service_request.arms.blank?
   #     @back = 'service_details'
@@ -149,16 +145,14 @@ class ServiceRequestsController < ApplicationController
     if @service_request.arms.blank?
       @back = 'service_details'
     end
-    @has_subsidy = @service_request.sub_service_requests.map(&:has_subsidy?).any?
-    @eligible_for_subsidy = @service_request.sub_service_requests.map(&:eligible_for_subsidy?).any?
 
-    if not @has_subsidy and not @eligible_for_subsidy
+    if !@has_subsidy && !@eligible_for_subsidy
       redirect_to "/service_requests/#{@service_request.id}/document_management"
     end
   end
 
   def document_management
-    unless @service_request.sub_service_requests.map(&:has_subsidy?).any?
+    unless @has_subsidy || @eligible_for_subsidy 
       @back = 'service_calendar'
     end
   end
@@ -280,7 +274,6 @@ class ServiceRequestsController < ApplicationController
   end
 
   def get_help
-    # We don't need any variables, simply render a modal from JS render
   end
 
   def save_and_exit
@@ -435,6 +428,11 @@ class ServiceRequestsController < ApplicationController
       @catalog = c['catalog']
       @forward = c['forward']
     end
+  end
+
+  def check_for_subsidy
+    @has_subsidy          = @service_request.sub_service_requests.map(&:has_subsidy?).any?
+    @eligible_for_subsidy = @service_request.sub_service_requests.map(&:eligible_for_subsidy?).any?
   end
 
   # Send notifications to all users.

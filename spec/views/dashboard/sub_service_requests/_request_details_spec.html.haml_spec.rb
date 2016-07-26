@@ -3,6 +3,16 @@ require 'rails_helper'
 RSpec.describe 'dashboard/sub_service_requests/_request_details', type: :view do
   include RSpecHtmlMatchers
 
+  context "Export to excel" do
+    it "should display service_request_id and sub_service_request_id in href" do
+      protocol = stub_protocol
+      service_request = stub_service_request(protocol: protocol)
+      sub_service_request = stub_sub_service_request(service_request: service_request)
+      render_request_details(protocol: protocol, service_request: service_request, sub_service_request: sub_service_request)
+      expect(response).to have_tag('a', with: { href: "/service_requests/#{service_request.id}.xlsx?admin_offset=1&sub_service_request_id=#{sub_service_request.id}" }, text: "Export to Excel")
+    end
+  end
+
   context "USE_EPIC truthy" do
     it "should display 'Send to Epic' button" do
       stub_const("USE_EPIC", true)

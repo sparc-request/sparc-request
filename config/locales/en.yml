@@ -693,12 +693,12 @@ en:
             by: "Approved By"
           subsidy:
             header: "Subsidy History"
+            date: "Date Approved"
             request_cost: "Request Cost at Approval"
             percent: "% Subsidy"
             contribution: "PI Contribution"
             subsidy_cost: "Subsidy Cost"
             approved_by: "Approved By"
-            date: "Date Approved"
 
         notifications:
           header: "Notifications"

@@ -199,6 +199,12 @@ module Dashboard::SubServiceRequestsHelper
     ssr_admin_button(ssr, user, permission_to_edit, admin_access)
   end
 
+  def display_owner(ssr)
+    if ssr.owner_id.present?
+      Identity.find(ssr.owner_id).full_name
+    end
+  end
+
   private
 
   def ssr_view_button(ssr)

@@ -30,15 +30,16 @@ class Dashboard::SubsidiesController < Dashboard::BaseController
   def create
     format_percent_subsidy_param
     @subsidy = PendingSubsidy.new(params[:pending_subsidy].except(:pi_contribution))
-    if @subsidy.save(validate: false)
-      @sub_service_request = @subsidy.sub_service_request
-      @admin = params[:admin] == 'true'
-      flash[:success] = t(:dashboard)[:subsidies][:created]
-      unless @admin
-        redirect_to dashboard_sub_service_request_path(@sub_service_request, format: :js)
-      end
+    if params[:admin] == 'true'
+      @subsidy.save(validate: false)
+      perform_subsidy_creation(params[:admin])
     else
-      @errors = @subsidy.errors
+      if @subsidy.valid?
+        @subsidy.save 
+        perform_subsidy_creation(params[:admin])
+      else
+        @errors = @subsidy.errors
+      end
     end
   end
 
@@ -52,16 +53,17 @@ class Dashboard::SubsidiesController < Dashboard::BaseController
     @subsidy = PendingSubsidy.find(params[:id])
     @sub_service_request = @subsidy.sub_service_request
     format_percent_subsidy_param
-    @subsidy.assign_attributes(params[:pending_subsidy].except(:pi_contribution))
-    if @subsidy.save(validate: false)
-      @admin = params[:admin] == 'true'
-      flash[:success] = t(:dashboard)[:subsidies][:updated]
-      unless @admin
-        redirect_to dashboard_sub_service_request_path(@sub_service_request, format: :js)
-      end
+    if params[:admin] == 'true'
+      @subsidy.assign_attributes(params[:pending_subsidy].except(:pi_contribution))
+      @subsidy.save(validate: false)
+      perform_subsidy_update(params[:admin])
     else
-      @errors = @subsidy.errors
-      @subsidy.reload
+      if @subsidy.update_attributes(params[:pending_subsidy].except(:pi_contribution))
+        perform_subsidy_update(params[:admin])
+      else
+        @errors = @subsidy.errors
+        @subsidy.reload
+      end
     end
   end
 
@@ -87,6 +89,23 @@ class Dashboard::SubsidiesController < Dashboard::BaseController
   def format_percent_subsidy_param
     if !params[:pending_subsidy].nil? && params[:pending_subsidy][:percent_subsidy].present?
       params[:pending_subsidy][:percent_subsidy] = ((params[:pending_subsidy][:percent_subsidy].gsub(/[^\d^\.]/, '').to_f) / 100)
+    end
+  end
+
+  def perform_subsidy_creation(admin_param)
+    @sub_service_request = @subsidy.sub_service_request
+    @admin = admin_param == 'true'
+    flash[:success] = t(:dashboard)[:subsidies][:created]
+    unless @admin
+      redirect_to dashboard_sub_service_request_path(@sub_service_request, format: :js)
+    end
+  end
+
+  def perform_subsidy_update(admin_param)
+    @admin = admin_param == 'true'
+    flash[:success] = t(:dashboard)[:subsidies][:updated]
+    unless @admin
+      redirect_to dashboard_sub_service_request_path(@sub_service_request, format: :js)
     end
   end
 end

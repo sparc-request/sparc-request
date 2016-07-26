@@ -49,7 +49,7 @@ class ProtocolFilter < ActiveRecord::Base
         admin_filter: self.admin_filter,
         search_query: self.search_query,
         with_organization: self.with_organization,
-        with_status: self.with_status
+        with_status: self.with_status,
         sorted_by: self.sorted_by
       }
     )

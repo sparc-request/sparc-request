@@ -93,10 +93,10 @@
                   - @protocol.arms.each do |arm|
                     .arm_calendar_container.calendar-container{ data: { arm_id: arm.id } }
                       - next if arm.visit_groups.empty?
-                      = render partial: '/dashboard/service_calendars/master_calendar/pppv/pppv_calendar', locals: { service_request: @service_request, arm: arm, page: @pages[arm.id], pages: @pages, review: false, merged: true, study_tracker: false }
+                      = render 'service_calendars/master_calendar/pppv/pppv_calendar', service_request: @service_request, arm: arm, page: @pages[arm.id], pages: @pages, review: false, merged: true, study_tracker: false
                 - if @protocol.has_line_items_of_type?(@service_request, @portal, "otf")
                   .calendar-container
-                    = render partial: '/dashboard/service_calendars/master_calendar/otf/otf_calendar', locals: { service_request: @service_request, sub_service_request: nil, portal: true, merged: true, tab: @tab, review: false, study_tracker: false, protocol: @protocol }
+                    = render 'service_calendars/master_calendar/otf/otf_calendar', service_request: @service_request, sub_service_request: nil, portal: true, merged: true, tab: @tab, review: false, study_tracker: false, protocol: @protocol
                 - unless @protocol.has_line_items_of_type?(@service_request, @portal, "pppv") || @protocol.has_line_items_of_type?(@service_request, @portal, "otf")
                   = render 'shared/alert', message: t(:dashboard)[:service_calendars][:consolidated_request][:services][:none]
     .modal-footer

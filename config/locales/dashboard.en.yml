@@ -217,6 +217,7 @@ en:
       modify_request: "Modify Request"
       srid: "SRID"
       organization: "Organization"
+      owner: "Owner"
       status: "Status"
       notifications: "Notifications"
       actions:

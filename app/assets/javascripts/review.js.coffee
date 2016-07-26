@@ -19,10 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #= require navigation
-#= require cart
-#= require right_navigation
 #= require protocol
-#= require associated_users
 #= require document_management
 
 $(document).ready ->

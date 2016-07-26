@@ -188,12 +188,12 @@ RSpec.describe Service, type: :model do
     context "service abbreviation" do
 
       it "should return the abbreviation" do
-        expect(service.display_service_abbreviation).to eq("abc")
+        expect(service.display_service_abbreviation(line_item2)).to eq("(0001) abc")
       end
 
       it "should concatenate cpt code to the abbreviation if it exists" do
         service.update_attributes(cpt_code: "def")
-        expect(service.display_service_abbreviation).to eq("abc (def)")
+        expect(service.display_service_abbreviation(line_item2)).to eq("(0001) abc (def)")
       end
     end
   end

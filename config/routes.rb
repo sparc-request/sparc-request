@@ -323,6 +323,7 @@ SparcRails::Application.routes.draw do
         get :approval_history
         get :subsidy_history
         get :refresh_service_calendar
+        get :refresh_tab
       end
     end
 

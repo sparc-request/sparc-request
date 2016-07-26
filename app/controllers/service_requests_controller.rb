@@ -682,8 +682,9 @@ class ServiceRequestsController < ApplicationController
         return ssr
       end
     end
-    next_ssr_id = service_request.sub_service_requests.group_by(&:ssr_id).keys.last.to_i + 1
+    sub_service_request = service_request.sub_service_requests.create(organization_id: organization.id)
+    service_request.ensure_ssr_ids
 
-    SubServiceRequest.create(service_request_id: service_request.id, organization_id: organization.id, status: service_request.status, ssr_id: "000#{next_ssr_id.to_s}")
+    sub_service_request
   end
 end

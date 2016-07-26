@@ -47,7 +47,7 @@
   %br
 
 .role_other.form-group
-  = label_tag "project_role[role_other]", "   "
+  = label_tag "project_role[role_other]", t(:user_details)[:other] + ":*"
   = text_field_tag "project_role[role_other]", project_role.role_other, :class => 'form-control'
   %br
   %br

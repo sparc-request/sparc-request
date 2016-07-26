@@ -23,7 +23,7 @@
       #sla-custom-toolbar
         %button.btn.btn-success#otf_service_new{type: "button", aria: {label: "Add Line Item"}, data: {sub_service_request_id: sub_service_request.id}}
           = t(:dashboard)[:study_level_activities][:add]
-      %table.study_level_activities{id: "study-level-activities-table", data: {toggle: 'table', search: "true", "show-columns" => "true", "show-refresh" => "true", "show-toggle" => "true", url: dashboard_line_items_path(format: :json, sub_service_request_id: sub_service_request.id), striped: "true", toolbar: "#sla-custom-toolbar", "show-export" => "false", "export-types" => ['excel']}}
+      %table.study_level_activities.bootstrap_table{id: "study-level-activities-table", data: {toggle: 'table', search: "true", "show-columns" => "true", "show-refresh" => "true", "show-toggle" => "true", url: dashboard_line_items_path(format: :json, sub_service_request_id: sub_service_request.id), striped: "true", toolbar: "#sla-custom-toolbar", "show-export" => "false", "export-types" => ['excel']}}
         %thead.primary-header
           %tr
             %th{data: {class: 'fulfillments_button', align: "left", field: "fulfillments_button", switchable: 'false'}}

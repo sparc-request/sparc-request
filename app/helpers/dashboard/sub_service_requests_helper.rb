@@ -200,9 +200,7 @@ module Dashboard::SubServiceRequestsHelper
   end
 
   def display_owner(ssr)
-    if ssr.owner_id.present?
-      Identity.find(ssr.owner_id).full_name
-    end
+    ssr.owner.full_name if ssr.owner_id.present?
   end
 
   private

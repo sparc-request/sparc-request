@@ -403,8 +403,8 @@ module ApplicationHelper
     name, path = details
     if current_user
       case identifier
-      when 'protocols'
-        render_navbar_link(identifier, name, path) unless current_user.clinical_providers.empty? && !current_user.is_super_user?
+      when 'fulfillment'
+        content_tag :li, link_to(name.to_s, path, target: '_blank'), class: 'dashboard' unless current_user.clinical_providers.empty? && !current_user.is_super_user?
       when 'catalog_manager/catalog'
         render_navbar_link(identifier, name, path) unless current_user.catalog_managers.empty?
       when 'report'

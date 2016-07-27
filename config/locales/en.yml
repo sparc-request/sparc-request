@@ -402,6 +402,7 @@ en:
         user: "User"
         subject: "Subject"
         time: "Time"
+        owner: "(Owner)"
       form:
         select_header: "Send Notification"
         select: "Select User:"

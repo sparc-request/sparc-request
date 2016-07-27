@@ -45,4 +45,12 @@ module Dashboard::NotificationsHelper
       format_datetime(notification.updated_at)
     end
   end
+
+  def display_service_provider(service_provider, ssr_owner_id)
+    returning_html = content_tag(:span, service_provider.identity.full_name)
+    if service_provider.identity_id == ssr_owner_id
+      returning_html += content_tag(:strong, t(:dashboard)[:notifications][:table][:owner], class: 'text-primary dropdown-identifier')
+    end
+    returning_html
+  end
 end

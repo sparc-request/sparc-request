@@ -49,7 +49,7 @@ module Dashboard::NotificationsHelper
   def display_authorized_users(project_role, ssr_requester_id)
     returning_html = content_tag(:span, display_user_role(project_role)+": "+project_role.identity.full_name)
     if project_role.identity_id == ssr_requester_id
-      returning_html += content_tag(:strong, t(:dashboard)[:notifications][:table][:owner], class: 'text-primary dropdown-identifier')
+      returning_html += content_tag(:strong, t(:dashboard)[:notifications][:table][:requester], class: 'text-primary dropdown-identifier')
     end
     returning_html
   end

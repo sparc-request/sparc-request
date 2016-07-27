@@ -30,14 +30,14 @@ class Dashboard::SubsidiesController < Dashboard::BaseController
   def create
     format_percent_subsidy_param
     @subsidy = PendingSubsidy.new(params[:pending_subsidy].except(:pi_contribution))
-    admin_params = params[:admin]
-    if admin_params == true
+    admin_param = params[:admin]
+    if admin_param == true
       @subsidy.save(validate: false)
-      perform_subsidy_creation(admin_params)
+      perform_subsidy_creation(admin_param)
     else
       if @subsidy.valid?
         @subsidy.save 
-        perform_subsidy_creation(admin_params)
+        perform_subsidy_creation
       else
         @errors = @subsidy.errors
       end
@@ -53,15 +53,15 @@ class Dashboard::SubsidiesController < Dashboard::BaseController
   def update
     @subsidy = PendingSubsidy.find(params[:id])
     @sub_service_request = @subsidy.sub_service_request
-    admin_params = params[:admin]
+    admin_param = params[:admin]
     format_percent_subsidy_param
-    if admin_params == true
+    if admin_param == true
       @subsidy.assign_attributes(params[:pending_subsidy].except(:pi_contribution))
       @subsidy.save(validate: false)
-      perform_subsidy_update(admin_params)
+      perform_subsidy_update(admin_param)
     else
       if @subsidy.update_attributes(params[:pending_subsidy].except(:pi_contribution))
-        perform_subsidy_update(admin_params)
+        perform_subsidy_update
       else
         @errors = @subsidy.errors
         @subsidy.reload
@@ -94,7 +94,7 @@ class Dashboard::SubsidiesController < Dashboard::BaseController
     end
   end
 
-  def perform_subsidy_creation(admin_param)
+  def perform_subsidy_creation(admin_param=false)
     @sub_service_request = @subsidy.sub_service_request
     @admin = admin_param == 'true'
     flash[:success] = t(:dashboard)[:subsidies][:created]
@@ -103,7 +103,7 @@ class Dashboard::SubsidiesController < Dashboard::BaseController
     end
   end
 
-  def perform_subsidy_update(admin_param)
+  def perform_subsidy_update(admin_param=false)
     @admin = admin_param == 'true'
     flash[:success] = t(:dashboard)[:subsidies][:updated]
     unless @admin

@@ -311,6 +311,10 @@ class SubServiceRequest < ActiveRecord::Base
     end
   end
 
+  def is_complete?
+    return status == 'complete'
+  end
+
   def find_editable_id(id)
     parent_ids = Organization.find(id).parents.map(&:id)
     EDITABLE_STATUSES.keys.each do |org_id|

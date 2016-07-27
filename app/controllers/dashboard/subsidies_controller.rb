@@ -30,13 +30,14 @@ class Dashboard::SubsidiesController < Dashboard::BaseController
   def create
     format_percent_subsidy_param
     @subsidy = PendingSubsidy.new(params[:pending_subsidy].except(:pi_contribution))
-    if params[:admin] == 'true'
+    admin_params = params[:admin]
+    if admin_params == true
       @subsidy.save(validate: false)
-      perform_subsidy_creation(params[:admin])
+      perform_subsidy_creation(admin_params)
     else
       if @subsidy.valid?
         @subsidy.save 
-        perform_subsidy_creation(params[:admin])
+        perform_subsidy_creation(admin_params)
       else
         @errors = @subsidy.errors
       end
@@ -52,14 +53,15 @@ class Dashboard::SubsidiesController < Dashboard::BaseController
   def update
     @subsidy = PendingSubsidy.find(params[:id])
     @sub_service_request = @subsidy.sub_service_request
+    admin_params = params[:admin]
     format_percent_subsidy_param
-    if params[:admin] == 'true'
+    if admin_params == true
       @subsidy.assign_attributes(params[:pending_subsidy].except(:pi_contribution))
       @subsidy.save(validate: false)
-      perform_subsidy_update(params[:admin])
+      perform_subsidy_update(admin_params)
     else
       if @subsidy.update_attributes(params[:pending_subsidy].except(:pi_contribution))
-        perform_subsidy_update(params[:admin])
+        perform_subsidy_update(admin_params)
       else
         @errors = @subsidy.errors
         @subsidy.reload

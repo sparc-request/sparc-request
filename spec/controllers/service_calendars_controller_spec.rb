@@ -318,6 +318,26 @@ RSpec.describe ServiceCalendarsController do
 
       expect(visit.quantity).to eq(8 + 17 + 42)
     end
+
+    it 'should update the status to draft' do
+      visit = arm1.visits[0]
+      service_request.update_attributes(status: 'submitted')
+      service_request.sub_service_requests.update_all(status: 'submitted')
+
+      session[:service_request_id] = service_request.id
+      session[:sub_service_request_id] = line_item.sub_service_request.id
+
+      xhr :get, :update, {
+        :format              => :js,
+        :tab                 => 'foo',
+        :service_request_id  => service_request.id,
+        :line_item           => line_item.id,
+        :visit               => visit.id,
+      }.with_indifferent_access
+
+      expect(assigns(:service_request).status).to eq 'draft'
+      expect(assigns(:sub_service_request).status).to eq 'draft'
+    end
   end
 
   context('calendar methods') do

@@ -190,7 +190,6 @@ module ApplicationHelper
                                               "/service_requests/#{service_request.id}/toggle_calendar_column/#{n}/#{arm.id}?#{action}=true&portal=#{portal}",
                                               remote: true, role: 'button', class: 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only', id: "check_all_column_#{n}", data: ( visit_group.any_visit_quantities_customized?(service_request) ? { confirm: "This will reset custom values for this column, do you wish to continue?"} : nil)),
                                       width: 60, class: 'visit_number')
-      #binding.pry
       end
     end
 
@@ -398,5 +397,29 @@ module ApplicationHelper
       else
         type.to_s
     end
+  end
+
+  def navbar_link identifier, details
+    name, path = details
+    if current_user
+      case identifier
+      when 'fulfillment'
+        content_tag :li, link_to(name.to_s, path, target: '_blank'), class: 'dashboard' unless current_user.clinical_providers.empty? && !current_user.is_super_user?
+      when 'catalog_manager/catalog'
+        render_navbar_link(identifier, name, path) unless current_user.catalog_managers.empty?
+      when 'report'
+        render_navbar_link(identifier, name, path) unless !current_user.is_super_user?
+      else
+        render_navbar_link(identifier, name, path)
+      end
+    else
+      render_navbar_link(identifier, name, path)
+    end
+  end
+
+  def render_navbar_link identifier, name, path
+    path_controller = Rails.application.routes.recognize_path(path)[:controller]
+    request_controller = Rails.application.routes.recognize_path(request.url)[:controller]
+    content_tag :li, link_to(name.to_s, path, target: '_blank', class: path_controller == request_controller ? 'highlighted' : ''), class: 'dashboard'
   end
 end

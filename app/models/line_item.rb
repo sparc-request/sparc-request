@@ -395,8 +395,8 @@ class LineItem < ActiveRecord::Base
       service_abbreviation = service.abbreviation
     end
 
-    unless sub_service_request.ssr_id.nil?
-      service_abbreviation = "(#{sub_service_request.ssr_id}) " + service_abbreviation
+    unless self.sub_service_request.ssr_id.nil?
+      service_abbreviation = "(#{self.sub_service_request.ssr_id}) " + service_abbreviation
     end
 
     service_abbreviation

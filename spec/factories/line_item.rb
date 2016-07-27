@@ -64,5 +64,6 @@ FactoryGirl.define do
     factory :line_item_with_service, traits: [:with_service, :with_service_request]
     factory :one_time_fee_line_item, traits: [:one_time_fee]
     factory :per_patient_per_visit_line_item, traits: [:per_patient_per_visit]
+    factory :line_item_without_validations, traits: [:without_validations]
   end
 end

@@ -1,8 +1,12 @@
 class QuestionnairesController < ApplicationController
+  before_action :find_service
   layout 'additional_details'
 
+  def index
+
+  end
+
   def new
-    @service = Service.find(params[:service_id])
     @questionnaire = Questionnaire.new
     @questionnaire.items.build
   end
@@ -11,13 +15,17 @@ class QuestionnairesController < ApplicationController
     @questionnaire = Questionnaire.new(questionnaire_params)
     @questionnaire.service = Service.find(params[:service_id])
     if @questionnaire.save
-      redirect_to :back
+      redirect_to service_questionnaires_path(@service)
     else
       render :new
     end
   end
 
   private
+
+  def find_service
+    @service = Service.find(params[:service_id])
+  end
 
   def questionnaire_params
     params.require(:questionnaire).permit!

@@ -522,8 +522,10 @@ ActiveRecord::Schema.define(version: 20160719150112) do
     t.datetime "created_at",                         null: false
     t.datetime "updated_at",                         null: false
     t.datetime "deleted_at"
+    t.integer  "changed_by",             limit: 4
   end
 
+  add_index "past_statuses", ["changed_by"], name: "index_past_statuses_on_changed_by", using: :btree
   add_index "past_statuses", ["sub_service_request_id"], name: "index_past_statuses_on_sub_service_request_id", using: :btree
 
   create_table "past_subsidies", force: :cascade do |t|
@@ -1007,18 +1009,20 @@ ActiveRecord::Schema.define(version: 20160719150112) do
     t.string   "status",                 limit: 255, default: "Pending"
     t.integer  "approved_by",            limit: 4
     t.datetime "approved_at"
-    t.float    "percent_subsidy",        limit: 24,  default: 0.0
+    t.float    "percent_subsidy",        limit: 24
   end
 
   add_index "subsidies", ["sub_service_request_id"], name: "index_subsidies_on_sub_service_request_id", using: :btree
 
   create_table "subsidy_maps", force: :cascade do |t|
-    t.integer  "organization_id", limit: 4
-    t.decimal  "max_dollar_cap",            precision: 12, scale: 4, default: 0.0
-    t.decimal  "max_percentage",            precision: 5,  scale: 2, default: 0.0
-    t.datetime "created_at",                                                       null: false
-    t.datetime "updated_at",                                                       null: false
+    t.integer  "organization_id",    limit: 4
+    t.decimal  "max_dollar_cap",                   precision: 12, scale: 4, default: 0.0
+    t.decimal  "max_percentage",                   precision: 5,  scale: 2, default: 0.0
+    t.datetime "created_at",                                                              null: false
+    t.datetime "updated_at",                                                              null: false
     t.datetime "deleted_at"
+    t.float    "default_percentage", limit: 24,                             default: 0.0
+    t.text     "instructions",       limit: 65535
   end
 
   add_index "subsidy_maps", ["organization_id"], name: "index_subsidy_maps_on_organization_id", using: :btree

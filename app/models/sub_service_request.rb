@@ -382,7 +382,7 @@ class SubServiceRequest < ActiveRecord::Base
   def update_past_status identity
     old_status = self.past_statuses.last
     if @prev_status and (not old_status or old_status.status != @prev_status)
-      self.past_statuses.create(status: @prev_status, date: Time.now, changed_by: identity.id)
+      self.past_statuses.create(status: @prev_status, date: Time.now, changed_by_id: identity.id)
     end
   end
 

@@ -387,8 +387,9 @@ class ServiceRequestsController < ApplicationController
         if @service_request.status == 'first_draft'
           ssr.update_attribute :status, 'first_draft'
         elsif ssr.status.nil? || (ssr.can_be_edited? && ssr_has_changed?(@service_request, ssr) && (ssr.status != 'complete'))
+          previous_status = ssr.status
           ssr.update_attribute :status, 'draft'
-          ssr.update_past_status(current_user) unless ssr.status.nil?
+          ssr.update_past_status(current_user) unless previous_status.nil?
         end
       end
 

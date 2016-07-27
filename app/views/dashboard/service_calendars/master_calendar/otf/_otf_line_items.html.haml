@@ -24,14 +24,16 @@
     %th{ colspan: 13 }= t(:calendar_page)[:headers][:other_services]
 
     - protocol.service_requests.each do |service_request|
-      - if %w('first_draft' 'draft').include?(service_request.status)
-        - next if portal
-        - next if service_request != current_request
       - service_request.service_list(true).each do |_, value| # get only one time fee services
         - value[:line_items].each do |line_item|
+          - if %w('first_draft' 'draft').include?(line_item.sub_service_request.status)
+            - next if portal
+            - next if service_request != current_request
           %tr.line_item.otfs{ :"data-unit_factor" => line_item.service.displayed_pricing_map.unit_factor }
             %td.service_name
               = line_item.service.name
+            %td.service_status
+              = line_item.service_request.status.capitalize
             - unless portal || study_tracker
               %td.service_rate{ class: "service_rate_#{line_item.id}" }= display_service_rate line_item
             %td.your_cost{ :"data-your_cost" => line_item.applicable_rate }= display_your_cost line_item

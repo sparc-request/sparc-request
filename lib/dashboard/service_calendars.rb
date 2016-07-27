@@ -142,7 +142,7 @@ module Dashboard
           arm.line_items_visits.each do |line_items_visit|
             line_item = line_items_visit.line_item
             next unless value[:line_items].include?(line_item)
-            if %w(first_draft draft).include?(line_item.service_request.status)
+            if %w(first_draft draft).include?(line_item.sub_service_request.status)
               next if portal
               next if service_request != line_item.service_request
             end

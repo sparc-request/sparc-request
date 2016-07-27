@@ -53,7 +53,7 @@
       %br
 
     .credentials_other.form-group
-      = label_tag "identity[credentials_other]", "  "
+      = label_tag "identity[credentials_other]", t(:user_details)[:other] + ":*"
       = text_field_tag "identity[credentials_other]", identity.credentials_other, :class => 'form-control'
       %br
       %br

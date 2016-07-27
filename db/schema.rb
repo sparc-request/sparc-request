@@ -522,8 +522,10 @@ ActiveRecord::Schema.define(version: 20160719150112) do
     t.datetime "created_at",                         null: false
     t.datetime "updated_at",                         null: false
     t.datetime "deleted_at"
+    t.integer  "changed_by",             limit: 4
   end
 
+  add_index "past_statuses", ["changed_by"], name: "index_past_statuses_on_changed_by", using: :btree
   add_index "past_statuses", ["sub_service_request_id"], name: "index_past_statuses_on_sub_service_request_id", using: :btree
 
   create_table "past_subsidies", force: :cascade do |t|

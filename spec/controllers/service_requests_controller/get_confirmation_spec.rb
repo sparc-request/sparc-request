@@ -80,6 +80,27 @@ RSpec.describe ServiceRequestsController do
         expect(ssr2.status).to eq 'submitted'
       end
 
+      it 'should create a past status for each sub service request' do
+        service_request.sub_service_requests.each { |ssr| ssr.destroy }
+
+        ssr1 = create(:sub_service_request,
+                      service_request_id: service_request.id,
+                      status: 'draft',
+                      organization_id: provider.id)
+        ssr2 = create(:sub_service_request,
+                      service_request_id: service_request.id,
+                      status: 'draft',
+                      organization_id: core.id)
+
+        xhr :get, :confirmation, id: service_request.id
+
+        ps1 = PastStatus.find_by(sub_service_request_id: ssr1.id)
+        ps2 = PastStatus.find_by(sub_service_request_id: ssr2.id)
+
+        expect(ps1.status).to eq('draft')
+        expect(ps2.status).to eq('draft')
+      end
+
       it 'should send an email if services are set to send to epic' do
         stub_const("QUEUE_EPIC", false)
         stub_const("USE_EPIC", true)

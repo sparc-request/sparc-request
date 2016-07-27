@@ -195,9 +195,9 @@ class Organization < ActiveRecord::Base
 
   def update_descendants_availability(is_available)
     if is_available == "false"
-      all_child_organizations.each do |org|
-        org.update_attribute(:is_available, false)
-      end
+      children = Organization.where(id: all_child_organizations << self)
+      children.update_all(is_available: false)
+      Service.where(organization_id: children).update_all(is_available: false)
     end
   end
 

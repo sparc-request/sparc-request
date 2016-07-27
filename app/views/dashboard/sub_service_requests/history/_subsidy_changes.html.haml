@@ -20,9 +20,11 @@
 .col-xs-12
   #history-custom-toolbar
     = render 'dashboard/sub_service_requests/history/history_buttons', sub_service_request: sub_service_request, tab: tab
-  %table.ssr_history_table{ id: "subsidy-history-table", data: { toggle: 'table', search: "true", "show-columns" => "true", "show-refresh" => "true", "show-toggle" => "true", url: subsidy_history_dashboard_sub_service_request_path(id: sub_service_request.id, format: :json), striped: "true", toolbar: "#history-custom-toolbar", "show-export" => "false", "export-types" => ['excel'] } }
+  %table.ssr_history_table{ id: "subsidy-history-table", data: { toggle: 'table', search: "true", "show-columns" => "true", "show-refresh" => "true", "show-toggle" => "true", url: subsidy_history_dashboard_sub_service_request_path(id: sub_service_request.id, format: :json), striped: "true", toolbar: "#history-custom-toolbar", sort_name: 'date', sort_order: 'desc', "show-export" => "false", "export-types" => ['excel'] } }
     %thead.primary-header
       %tr
+        %th{ data: { class: 'date', align: "left", sortable: "true", field: "date" } }
+          = t(:dashboard)[:sub_service_requests][:tabs][:history][:subsidy][:date]
         %th{ data: { class: 'request-cost', align: "left", sortable: "true", field: "request_cost", sorter: "dateSorter" } }
           = t(:dashboard)[:sub_service_requests][:tabs][:history][:subsidy][:request_cost]
         %th{ data: { class: 'percent', align: "left", sortable: "true", field: "percent" } }
@@ -33,5 +35,3 @@
           = t(:dashboard)[:sub_service_requests][:tabs][:history][:subsidy][:subsidy_cost]
         %th{ data: { class: 'approved-by', align: "left", sortable: "true", field: "approved_by" } }
           = t(:dashboard)[:sub_service_requests][:tabs][:history][:subsidy][:approved_by]
-        %th{ data: { class: 'date', align: "left", sortable: "true", field: "date" } }
-          = t(:dashboard)[:sub_service_requests][:tabs][:history][:subsidy][:date]

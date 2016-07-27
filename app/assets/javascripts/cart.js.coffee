@@ -18,6 +18,20 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 $(document).ready ->
+  $(document).on 'click', '.cart-toggle .btn', ->
+    tab = $(this).data('tab')
+    if !$(this).hasClass('active')
+      $(this).addClass('active' )
+      $(this).siblings('.btn').removeClass('active')
+      $('.ssr-tab').addClass('hidden')
+      if tab == 'active'
+        $('.active-ssrs').removeClass('hidden')
+      else if tab == 'complete'
+        $('.complete-ssrs').removeClass('hidden')
+      else if tab == 'locked'
+        $('.locked-ssrs').removeClass('hidden')
+        
+
   $(document).on 'click', '.add-service', ->
     id = $(this).data('id')
     srid = $(this).data('srid')
@@ -42,13 +56,13 @@ $(document).ready ->
   $(document).on 'click', '.remove-service', ->
     id = $(this).data('id')
     srid = $(this).data('srid')
-    ssrid = $(this).data('ssrid')
+    editing_ssr = $(this).data('editing-ssr')
     li_count = parseInt($('#line_item_count').val())
     has_fulfillments = $(this).data('has-fulfillments')
     request_submitted = $(this).data('request-submitted')
     spinner = $('<span class="spinner"><img src="/assets/catalog_manager/spinner_small.gif"/></span>')
 
-    if has_fulfillments == 0
+    if has_fulfillments == 1
       $('#modal_place').html($('#has-fulfillments-modal').html())
       $('#modal_place').modal('show')
     else if request_submitted == 1
@@ -60,7 +74,7 @@ $(document).ready ->
         button.replaceWith(spinner)
         removeService(srid, id, false, spinner)
     else
-      if ssrid != '' && li_count == 1 # Redirect to the Dashboard if the user deletes the last Service on an SSR
+      if editing_ssr == 1 && li_count == 1 # Redirect to the Dashboard if the user deletes the last Service on an SSR
         $('#modal_place').html($('#remove-request-modal').html())
         $('#modal_place').modal('show')
 

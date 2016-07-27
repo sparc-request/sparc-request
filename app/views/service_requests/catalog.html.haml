@@ -24,7 +24,7 @@
 
 = render 'catalogs/service_accordion', institutions: @institutions, organization: @organization, locked_org_ids: @locked_org_ids
 = render 'catalogs/catalog_center', organization: @organization, service_request: @service_request, from_portal: @from_portal
-= render 'catalogs/catalog_right', service_request: @service_request, sub_service_request: @sub_service_request, line_items: @line_items
+= render 'catalogs/catalog_right', service_request: @service_request, sub_service_request: @sub_service_request, sub_service_requests: @sub_service_requests, line_items_count: @line_items_count
 
 = render 'service_requests/modals/submit_error_modal'
 = render 'service_requests/modals/new_request_modal'

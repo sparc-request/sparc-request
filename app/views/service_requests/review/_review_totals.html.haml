@@ -22,15 +22,15 @@
     .col-sm-3
       = t(:proper)[:review][:total_direct]
     .col-sm-9
-      = display_grand_total_direct_costs @service_request, @line_items
+      = display_grand_total_direct_costs(@service_request, @line_items)
   - if USE_INDIRECT_COST
     .form-group
       .col-sm-3
         = t(:proper)[:review][:total_indirect]
       .col-sm-9
-        = display_grand_total_indirect_costs @service_request, @line_items
+        = display_grand_total_indirect_costs(@service_request, @line_items)
   .form-group
     .col-sm-3
       = t(:proper)[:review][:grand_total]
     .col-sm-9
-      = display_grand_total @service_request, @line_items
+      = display_grand_total(@service_request, @line_items)

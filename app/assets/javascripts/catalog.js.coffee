@@ -47,6 +47,7 @@ $(document).ready ->
     collapsible: true
     active: false
 
+
   $(document).on 'click', '.institution-header, .provider-header', ->
     $('#processing-request').removeClass('hidden')
     id    = $(this).data('id')

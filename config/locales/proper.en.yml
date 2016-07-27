@@ -165,6 +165,10 @@ en:
     ########
     cart:
       header: "My Services"
+      view_active: "View Active"
+      view_complete: "View Complete"
+      no_services_message: "You do not have any requested Services in '%{type}' status"
+      no_locked_services_message: "You do not have any requested Services which have been locked by the Service Provider"
       to_catalog: "Return to Catalog"
       has_fulfillments:
         header: "Remove Service"

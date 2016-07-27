@@ -123,13 +123,14 @@ class ApplicationController < ActionController::Base
   # Initialize the instance variables used with service requests:
   #   @service_request
   #   @sub_service_request
-  #   @line_items
+  #   @line_items_count
   #
   # These variables are initialized from params (if set) or cookies.
   def initialize_service_request
     @service_request = nil
     @sub_service_request = nil
-    @line_items = nil
+    @line_items_count = nil
+    @sub_service_requests = {}
 
     if params[:edit_original]
       # If editing the original service request, we delete the sub
@@ -175,7 +176,7 @@ class ApplicationController < ActionController::Base
       else
         @service_request = ServiceRequest.new(status: 'first_draft')
         @service_request.save(validate: false)
-        @line_items = []
+        @line_items_count = []
         session[:service_request_id] = @service_request.id
       end
     else
@@ -192,7 +193,8 @@ class ApplicationController < ActionController::Base
     protocol = Protocol.find(params[:protocol_id].to_i)
     if (params[:has_draft] == 'true')
       @service_request = protocol.service_requests.last
-      @line_items = @service_request.try(:line_items)
+      @line_items_count = @service_request.try(:line_items).try(:count)
+      @sub_service_requests = @service_request.cart_sub_service_requests
       @sub_service_request = @service_request.sub_service_requests.last
       session[:service_request_id] = @service_request.id
       if @sub_service_request
@@ -203,15 +205,16 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  # Set @service_request, @sub_service_request, and @line_items from the
+  # Set @service_request, @sub_service_request, and @line_items_count from the
   # ids stored in the session.
   def use_existing_service_request
     @service_request = ServiceRequest.find session[:service_request_id]
     if session[:sub_service_request_id]
       @sub_service_request = @service_request.sub_service_requests.find session[:sub_service_request_id]
-      @line_items = @sub_service_request.try(:line_items)
+      @line_items_count = @sub_service_request.try(:line_items).try(:count)
     else
-      @line_items = @service_request.try(:line_items)
+      @line_items_count = @service_request.try(:line_items).try(:count)
+      @sub_service_requests = @service_request.cart_sub_service_requests
     end
   end
 

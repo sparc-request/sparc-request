@@ -22,28 +22,42 @@
 .service-details-right,
 .service-subsidy-right,
 .document-management-right
-  .panel
+  .cart
+    min-height: 300px
     margin-bottom: 0px
+    .cart-toggle
+      display: inline-flex
+      width: 100%
+      .btn
+        border-radius: 0
+        padding-left: 6px
+        padding-right: 6px
 
-    .cart
-      min-height: 200px
-
-      .line-item
-        display: inline-flex
+    .list-group
+      display: inline-block
+      width: 100%
+      .list-group-item
+        display: inline-block
         width: 100%
-        div
-          padding: 0px
-          margin: auto
-        @media ( max-width: 768px )
-          .col-sm-10
-            width: 83.3333%
-          .vol-dm-2
-            width: 16.6666%
-
-      .line-item:not(:last-child)
+        padding: 0
+        .ssr-header
+          padding: 5px
+          background: #eeeeee
+        .line-item
+          display: inline-flex
+          padding-left: 0
+          padding-right: 0
+          padding-top: 3px
+        .line-item:not(:last-child)
+          padding-bottom: 3px
+          border-bottom: 1px solid #eee
+      .list-group-item:first-child
+        border-top: 0
+      .list-group-item:not(:last-child)
+        margin-bottom: -6px
         padding-bottom: 5px
-        border-bottom: 1px solid #EEE
-        margin-bottom: 5px
+      .list-group-item:last-child
+        border-bottom: 0
 
   .nav-buttons
     a,

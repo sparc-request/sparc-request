@@ -225,7 +225,7 @@ class ServiceRequest < ActiveRecord::Base
       return if existing_service_ids.include?(service.id)
     end
 
-    line_items = [ ]
+    line_items = []
 
     # add service to line items
     line_items << create_line_item(
@@ -491,20 +491,22 @@ class ServiceRequest < ActiveRecord::Base
     return if not self.has_per_patient_per_visit_services?
 
     p = self.protocol
-    if p.arms.empty?
-      arm = p.arms.create(
-        name: 'Screening Phase',
-        visit_count: 1,
-        subject_count: 1,
-        new_with_draft: true)
-      self.per_patient_per_visit_line_items.each do |li|
-        arm.create_line_items_visit(li)
-      end
-    else
-      p.arms.each do |arm|
-        p.service_requests.each do |sr|
-          sr.per_patient_per_visit_line_items.each do |li|
-            arm.create_line_items_visit(li) if arm.line_items_visits.where(:line_item_id => li.id).empty?
+    if p
+      if p.arms.empty?
+        arm = p.arms.create(
+          name: 'Screening Phase',
+          visit_count: 1,
+          subject_count: 1,
+          new_with_draft: true)
+        self.per_patient_per_visit_line_items.each do |li|
+          arm.create_line_items_visit(li)
+        end
+      else
+        p.arms.each do |arm|
+          p.service_requests.each do |sr|
+            sr.per_patient_per_visit_line_items.each do |li|
+              arm.create_line_items_visit(li) if arm.line_items_visits.where(:line_item_id => li.id).empty?
+            end
           end
         end
       end
@@ -540,6 +542,22 @@ class ServiceRequest < ActiveRecord::Base
   
   def has_non_first_draft_ssrs?
     sub_service_requests.where.not(status: 'first_draft').any?
+  end
+
+  def cart_sub_service_requests
+    locked = []
+    active = []
+    self.sub_service_requests.where.not(status: 'complete').each do |ssr|
+      if ssr.can_be_edited?
+        active << ssr
+      else
+        locked << ssr
+      end
+    end
+
+    complete  = self.sub_service_requests.where(status: 'complete')
+
+    { active: active, complete: complete, locked: locked }
   end
 
   private

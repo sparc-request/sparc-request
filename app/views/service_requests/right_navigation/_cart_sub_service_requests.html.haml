@@ -17,10 +17,11 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.line-item
-  .col-sm-10
-    = line_item.display_service_abbreviation
-  .col-sm-2.text-center
-    - if line_item.sub_service_request.can_be_edited? && allow_delete
-      %button.btn.btn-sm.btn-danger.remove-service.pull-right{ type: 'button', data: { id: line_item.id, srid: service_request.id, ssrid: sub_service_request ? sub_service_request.id : '', has_fulfillments: one_time_fee_fulfillments?(line_item.id) ? 1 : 0, request_submitted: service_request.submitted_at? ? 1 : 0 } }
-        %span.glyphicon.glyphicon-remove{ aria: { hidden: 'true' } }
+- if sub_service_requests.any?
+  - sub_service_requests.each do |ssr|
+    = render 'service_requests/right_navigation/cart_sub_service_request', service_request: service_request, sub_service_request: ssr, allow_delete: allow_delete, editing_ssr: editing_ssr
+- else
+  - if tab == 'locked'
+    = render 'shared/alert', message: t(:proper)[:cart][:no_locked_services_message]
+  - else
+    = render 'shared/alert', message: I18n.t('proper.cart.no_services_message', type: tab.humanize)

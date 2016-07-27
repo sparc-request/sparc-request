@@ -17,11 +17,15 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-= javascript_include_tag 'service_subsidy'
-
-= render '/service_requests/navigation/steps', step: @step_text, css_class: @css_class
-.col-sm-12.body-container#service-subsidy-page
-  = form_tag navigate_service_request_path(@service_request), id: 'service-request-form', class: 'form-horizontal' do
-    = render 'service_requests/service_subsidy/service_subsidy_left', service_request: @service_request, has_subsidy: @has_subsidy, eligible_for_subsidy: @eligible_for_subsidy
-    = render 'service_requests/service_subsidy/service_subsidy_right', service_request: @service_request, sub_service_request: @sub_service_request, sub_service_requests: @sub_service_requests, line_items_count: @line_items_count
-= render 'service_requests/navigation/footer', service_request: @service_request, css_class: @css_class, back: @back, forward: @forward
+.list-group-item
+  .col-sm-12.ssr-header
+    %h5.list-group-item-heading.text-center
+      = sub_service_request.organization.name
+  - sub_service_request.line_items.each do |li|
+    .col-sm-12.line-item
+      .col-sm-9
+        = li.service.abbreviation
+      .col-sm-3
+        - if sub_service_request.can_be_edited? && allow_delete
+          %button.btn.btn-sm.btn-danger.remove-service.pull-right{ type: 'button', data: { id: li.id, srid: service_request.id, editing_ssr: editing_ssr ? 1 : 0, has_fulfillments: one_time_fee_fulfillments?(li.id) ? 1 : 0, request_submitted: service_request.submitted_at? ? 1 : 0 } }
+            %span.glyphicon.glyphicon-remove{ aria: { hidden: 'true' } }

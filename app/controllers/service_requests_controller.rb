@@ -43,7 +43,7 @@ class ServiceRequestsController < ApplicationController
   end
 
   def navigate
-    case session[:location]
+    case session[:current_location]
     when 'protocol'
       @service_request.group_valid?(:protocol)
     when 'service_details'
@@ -312,26 +312,17 @@ class ServiceRequestsController < ApplicationController
   # methods only used by ajax requests
 
   def add_service
-    id = params[:service_id].sub('service-', '').to_i
-    @new_line_items = []
     existing_service_ids = @service_request.line_items.map(&:service_id)
 
-    if existing_service_ids.include? id
-      render text: 'Service exists in line items'
-    else
-      service = Service.find id
-
-      @new_line_items = @service_request.create_line_items_for_service(
-          service: service,
-          optional: true,
-          existing_service_ids: existing_service_ids,
-          recursive_call: false)
+    unless existing_service_ids.include?( params[:service_id] )
+      service        = Service.find( params[:service_id] )
+      new_line_items = @service_request.create_line_items_for_service( service: service, optional: true, existing_service_ids: existing_service_ids, recursive_call: false ) || []
 
       # create sub_service_requests
       @service_request.reload
       @service_request.previous_submitted_at = @service_request.submitted_at
 
-      @new_line_items.each do |li|
+      new_line_items.each do |li|
         ssr = find_or_create_sub_service_request(li, @service_request)
         li.update_attribute(:sub_service_request_id, ssr.id)
 
@@ -342,15 +333,16 @@ class ServiceRequestsController < ApplicationController
         end
       end
 
-      @service_request.ensure_ssr_ids if @service_request.status != 'first_draft'
+      @service_request.ensure_ssr_ids
+
+      find_cart_ssrs_and_line_items
     end
   end
 
   def remove_service
-    id = params[:line_item_id].sub('line_item-', '').to_i
-
-    @line_item = @service_request.line_items.find(id)
-    service = @line_item.service
+    @line_item            = @service_request.line_items.find( params[:line_item_id] )
+    @line_items           = @sub_service_request ? @sub_service_request.line_items : @service_request.line_items
+    service               = @line_item.service
     line_item_service_ids = @service_request.line_items.map(&:service_id)
 
     # look at related services and set them to optional
@@ -363,14 +355,13 @@ class ServiceRequestsController < ApplicationController
 
     @line_items.where(service_id: service.id).each do |li|
       ssr = li.sub_service_request
-      ssr.update_attribute :status, 'draft' if ssr.can_be_edited? && ssr.status != 'first_draft'
+      ssr.update_attribute(:status, 'draft') if ssr.can_be_edited? && ssr.status != 'first_draft'
       li.destroy
     end
 
     @line_items.reload
 
-    #@service_request = current_user.service_requests.find session[:service_request_id]
-    @service_request = ServiceRequest.find session[:service_request_id]
+    @service_request = ServiceRequest.find(session[:service_request_id])
     @page = request.referrer.split('/').last # we need for pages other than the catalog
 
     # Have the protocol clean up the arms
@@ -392,7 +383,7 @@ class ServiceRequestsController < ApplicationController
 
     @service_request.reload
 
-    @line_items = (@sub_service_request.nil? ? @service_request.line_items : @sub_service_request.line_items)
+    find_cart_ssrs_and_line_items
     render formats: [:js]
   end
 
@@ -428,6 +419,11 @@ class ServiceRequestsController < ApplicationController
       @catalog = c['catalog']
       @forward = c['forward']
     end
+  end
+
+  def find_cart_ssrs_and_line_items
+    @line_items_count     = @sub_service_request ? @sub_service_request.line_items.count : @service_request.line_items.count
+    @sub_service_requests = @service_request.cart_sub_service_requests
   end
 
   def check_for_subsidy

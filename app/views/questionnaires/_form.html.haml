@@ -1,0 +1,32 @@
+.panel.panel-primary
+  .panel-heading
+    Additional Details Form Builder
+  .panel-body
+    = form_for [service, questionnaire], html: { class: 'form-horizontal' } do |f|
+      = f.nested_fields_for :items do |i|
+        .form-group
+          = i.label :content, class: 'col-sm-2 control-label'
+          .col-sm-10
+            = i.text_area :content, class: 'form-control'
+        .form-group
+          = i.label :type, class: 'col-sm-2 control-label'
+          .col-sm-10
+            = i.select :type, options_for_select(ADDITIONAL_DETAIL_QUESTION_TYPES),
+              {include_blank: true}, {class: 'form-control'}
+        .form-group
+          = i.label :description, class: 'col-sm-2 control-label'
+          .col-sm-10
+            = i.text_area :description, class: 'form-control', placeholder: 'Description (optional)'
+        .form-group
+          .col-sm-offset-2.col-sm-10
+            .checkbox
+              = i.label :required do
+                = i.check_box :required, {}, 1, 0
+                Required
+        .form-group
+          .col-sm-offset-2.col-sm-10
+            = i.remove_nested_fields_link 'Remove Question', class: 'btn btn-danger'
+      .form-group
+        .col-sm-offset-2.col-sm-10
+          = f.add_nested_fields_link :items, 'Add another Question', class: 'btn btn-primary'
+          = f.submit class: 'btn btn-success'

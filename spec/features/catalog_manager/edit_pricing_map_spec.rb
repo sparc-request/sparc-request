@@ -30,7 +30,7 @@ RSpec.describe 'edit pricing map', js: true do
             organization_id: Program.first.id,
             display_date: '2000-01-01',
             effective_date: '2000-01-01')
-
+  
     click_link('MUSC Research Data Request (CDW)')
     wait_for_javascript_to_finish
   end

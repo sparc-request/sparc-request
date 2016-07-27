@@ -80,7 +80,8 @@ RSpec.describe "User views documents table", js: true do
 
     scenario 'and sees the document link and enabled edit/delete buttons for access documents' do
       doc = @page.documents(text: document_with_access.document_file_name).first
-      
+      wait_for_javascript_to_finish
+
       expect(doc).to have_selector('td.title a', text: document_with_access.document_file_name)
       expect(doc).to have_enabled_edit_button
       expect(doc).to have_enabled_remove_button
@@ -88,6 +89,7 @@ RSpec.describe "User views documents table", js: true do
 
     scenario 'and sees the document title (no link) and disabled edit/delete buttons for no access documents' do
       doc = @page.documents(text: document_no_access.document_file_name).first
+      wait_for_javascript_to_finish
 
       expect(doc).not_to have_selector('td.title a', text: document_no_access.document_file_name)
       expect(doc).to have_selector('td.title', text: document_no_access.document_file_name)

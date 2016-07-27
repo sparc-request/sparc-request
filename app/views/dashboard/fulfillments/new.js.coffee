@@ -20,5 +20,5 @@
 
 $("#modal_place").html("<%= escape_javascript(render(:partial =>'dashboard/study_level_activities/fulfillment_form', locals: { fulfillment: @fulfillment, header_text: @header_text })) %>");
 $("#modal_place").modal 'show'
-$("#date_fulfilled_field").datetimepicker(format: 'MM-DD-YYYY')
 $(".selectpicker").selectpicker()
+$(".datetimepicker").datetimepicker(format: 'MM/DD/YYYY', allowInputToggle: true)

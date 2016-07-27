@@ -137,7 +137,7 @@ RSpec.describe IdentitiesController do
       expect(assigns(:can_edit)).to eq true
     end
 
-    it 'should set error if role is blank' do
+    it 'should set errors if role is blank' do
       session[:identity_id] = identity.id
       xhr :get, :add_to_protocol, {
         format: :js,
@@ -151,11 +151,10 @@ RSpec.describe IdentitiesController do
           id: identity.id,
         }
       }.with_indifferent_access
-      expect(assigns(:error)).to eq "Role can't be blank"
-      expect(assigns(:error_field)).to eq 'role'
+      expect(assigns(:errors)[:user_role]).to eq "Role can't be blank"
     end
 
-    it 'should set error if role other and role_other is blank' do
+    it 'should set errors if role other and role_other is blank' do
       session[:identity_id] = identity.id
       xhr :get, :add_to_protocol, {
         format: :js,
@@ -170,8 +169,26 @@ RSpec.describe IdentitiesController do
           id: identity.id,
         }
       }.with_indifferent_access
-      expect(assigns(:error)).to eq "'Other' role can't be blank"
-      expect(assigns(:error_field)).to eq 'role'
+      expect(assigns(:errors)[:user_role]).to eq "'Other' role can't be blank"
+    end
+
+    it 'should set errors if credential other and credential_other is blank' do
+      session[:identity_id] = identity.id
+      xhr :get, :add_to_protocol, {
+        format: :js,
+        id: identity.id,
+        can_edit: true,
+        project_role: {
+          id: project_role.id,
+          role: 'head honcho'
+        },
+        identity: {
+          id: identity.id,
+          credentials: 'other',
+          credentials_other: ''
+        }
+      }.with_indifferent_access
+      expect(assigns(:errors)[:credentials_other]).to eq "'Other' credential can't be blank"
     end
 
     it 'should set protocol type' do

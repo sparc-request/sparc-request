@@ -49,7 +49,7 @@ arm_r_totals = {}
     sheet.add_row protocol_header_row, :style => header_style
     sheet.add_row ["SPARC #{@protocol.class.to_s} ID:",@protocol.id], :style => default
     sheet.add_row ["Short Title:",@protocol.short_title], :style => default
-    sheet.add_row ["Protocol Title:", @protocol.short_title], :style => default
+    sheet.add_row ["Protocol Title:", @protocol.title], :style => default
     sheet.add_row ["Sponsor:", @protocol.sponsor_name], :style => default
     sheet.add_row ["Primary PI Name:", @protocol.primary_principal_investigator.full_name], :style => default
 
@@ -193,7 +193,7 @@ wb.insert_worksheet(0, name: "Summary") do |sheet|
 
   sheet.add_row ["SPARC #{@protocol.class.to_s} ID:", "", @protocol.id], :style => default
   sheet.add_row ["Short Title:", "", @protocol.short_title], :style => default
-  sheet.add_row ["Protocol Title:", "", @protocol.short_title], :style => default
+  sheet.add_row ["Protocol Title:", "", @protocol.title], :style => default
   sheet.add_row ["Sponsor:", "", @protocol.sponsor_name], :style => default
   sheet.add_row ["Primary PI Name:", "", @protocol.primary_principal_investigator.full_name], :style => default
   sheet.add_row ["Business Manager:", "", @protocol.billing_managers.map(&:full_name).try(:join, ', ')], :style => default

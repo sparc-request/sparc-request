@@ -79,7 +79,8 @@ RSpec.describe CatalogManager::InstitutionsController do
     end
 
     it 'should assign @attributes' do
-      expect(assigns(:attributes)).to eq(@params[:institution])
+      params = ActionController::Parameters.new( name: 'New Institution Name', tag_list: "" )
+      expect(assigns(:attributes)).to eq(params)
     end
 
     it 'should assign @organization' do

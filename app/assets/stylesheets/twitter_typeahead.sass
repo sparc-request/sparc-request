@@ -22,7 +22,6 @@
   max-height: 200px
   overflow-y: auto
   margin-top: 12px
-  padding: 8px 0
   background-color: #fff
   border: 1px solid #ccc
   border: 1px solid rgba(0, 0, 0, 0.2)
@@ -30,20 +29,23 @@
   box-shadow: 0 5px 10px rgba(0,0,0,.2)
 
 .tt-suggestion
-  padding: 3px 20px
-  margin: 3px 0
+  width: 100%
+  padding: 0 20px
+  background-color: #fff
+  border-top: 1px solid #eee
+  border-bottom: 1px solid #eee
+  border-left: 0
+  border-right: 0
   cursor: pointer
-
-.tt-suggestion:not(:last-child)
-  border-bottom: 1px solid #EEE
+  font-size: 12px
+.tt-suggestion:first-child
+  border-top-width: 2px
+.tt-suggestion:last-child
+  border-bottom-width: 2px
+.tt-suggestion:hover
+  background-color: #EEE
 
 .catalog-center
   .tt-menu
     width: 100%
     max-height: 460px
-  .tt-suggestion
-    font-size: 12px
-    margin-top: 0
-    border: 0
-  .tt-suggestion:nth-child(odd)
-    background-color: #eeeeee

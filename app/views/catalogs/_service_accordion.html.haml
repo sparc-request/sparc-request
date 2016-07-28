@@ -23,5 +23,4 @@
       %h4.panel-title
         = t(:proper)[:catalog][:accordion][:header]
     .panel-body
-      #institution-accordion
-        = institution_accordion(institutions, locked_org_ids.nil? ? [] : locked_org_ids, organization)
+      = render 'catalogs/accordion/institutions', institutions: institutions, locked_ids: locked_org_ids ? locked_org_ids : [], ssr_org: organization

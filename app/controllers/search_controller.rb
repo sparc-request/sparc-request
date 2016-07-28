@@ -45,7 +45,7 @@ class SearchController < ApplicationController
         parents:        s.parents.map(&:abbreviation).join(' | '),
         label:          s.name,
         value:          s.id,
-        description:    s.description || "No Description Available",
+        description:    s.description || t(:proper)[:catalog][:no_description_available],
         sr_id:          session[:service_request_id],
         abbreviation:   s.abbreviation,
         cpt_code:       s.cpt_code,

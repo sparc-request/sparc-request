@@ -51,9 +51,9 @@ en:
     # CATALOG #
     ###########
     catalog:
+      no_description: "No description available."
       accordion:
         header: "Browse Service Catalog"
-        no_description: "No description available."
       center:
         search_placeholder: "Search by Service Name or CPT Code..."
         welcome: "Welcome to the SPARC Request Services Catalog"

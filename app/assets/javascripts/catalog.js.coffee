@@ -21,52 +21,19 @@
 #= require cart
 
 $(document).ready ->
-  ### Related to locked service requests ###
-  $('#ctrc-dialog').dialog
-    autoOpen: false
-    modal: true
-    width: 375
-    height: 200
-    buttons: [{
-      text: 'Ok'
-      click: ->
-        $(this).dialog('close')
-    }]
-
-  $(document).on 'click', '.locked a', ->
-    if $(this).text() == 'Research Nexus **LOCKED**'
-      $('#ctrc-dialog').dialog('open')
-
-  ### Organization Accordion Logic ###
-  $('#institution-accordion').accordion
-    heightStyle: 'content'
-    collapsible: true
-
-  $('.provider-accordion').accordion
-    heightStyle: 'content'
-    collapsible: true
-    active: false
-
-
-  $(document).on 'click', '.institution-header, .provider-header', ->
-    $('#processing-request').removeClass('hidden')
-    id    = $(this).data('id')
-    $.ajax
-      type: 'POST'
-      url: "/catalogs/#{id}/update_description"
-      success: ->
-        $('#processing-request').addClass('hidden')
-
-  $(document).on 'click', '.program-link', ->
-    $('#processing-request').removeClass('hidden')
+  ### ACCORDION LOGIC ###
+  $(document).on 'click', '.institution-header, .provider-header, .program-link', ->
+    $(this).addClass('clicked')
     id    = $(this).data('id')
     data  = process_ssr_found : $(this).data('process-ssr-found') 
     $.ajax
       type: 'POST'
       data: data
       url: "/catalogs/#{id}/update_description"
-      success: ->
-        $('#processing-request').addClass('hidden')
+
+  $(document).on 'click', '.program-link', ->
+    $('.program-link').removeClass('clicked')
+    $(this).addClass('clicked')
 
   $(document).on 'click', '.core-header', ->
     $('.service-description').addClass('hidden')
@@ -79,20 +46,15 @@ $(document).ready ->
     else
       description.addClass('hidden')
 
-
-
-
-
-
-  # Initialize Authorized Users Searcher
-  identities_bloodhound = new Bloodhound(
+  ### SERVICE SEARCH BLOODHOUND ###
+  services_bloodhound = new Bloodhound(
     datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
     queryTokenizer: Bloodhound.tokenizers.whitespace,
     remote:
       url: '/search/services?term=%QUERY',
       wildcard: '%QUERY'
   )
-  identities_bloodhound.initialize() # Initialize the Bloodhound suggestion engine
+  services_bloodhound.initialize() # Initialize the Bloodhound suggestion engine
   $('#service-query').typeahead(
     {
       minLength: 3,
@@ -100,15 +62,15 @@ $(document).ready ->
     },
     {
       displayKey: 'term',
-      source: identities_bloodhound,
+      source: services_bloodhound,
       limit: 100,
       templates: {
-        suggestion: Handlebars.compile('<div data-toggle="tooltip" data-placement="right" title="{{description}}">
+        suggestion: Handlebars.compile('<button class="text-left" data-toggle="tooltip" data-placement="bottom" title="{{description}}">
                                           <span>{{parents}}</span><br>
                                           <span><strong>Service: {{label}}</strong></span><br>
                                           <span><strong>Abbreviation: {{abbreviation}}</strong></span><br>
                                           <span><strong>CPT Code: {{cpt_code}}</strong></span>
-                                        </div>')
+                                        </button>')
       }
     }
   ).on('typeahead:render', (event, a, b, c) ->
@@ -121,6 +83,7 @@ $(document).ready ->
       url: "/service_requests/#{srid}/add_service/#{id}"
   )
 
+  ### CONTINUE BUTTON ###
   $(document).on 'click', '.submit-request-button', ->
     signed_in = parseInt($('#signed_in').val())
     if signed_in == 0

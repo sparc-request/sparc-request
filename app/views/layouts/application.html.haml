@@ -52,11 +52,6 @@
       .flash
         = render 'shared/flash'
       #inner-content.row
-        #processing-request.ui-corner-all.hidden
-          %br
-            = t(:cm_index)[:processing]
-          %br 
-          = image_tag 'spinner.gif'
         = yield
       = render 'shared/footer'
       = render 'shared/piwik_tracking' if Rails.env == 'production'

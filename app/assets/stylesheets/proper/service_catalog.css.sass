@@ -20,52 +20,41 @@
 @import 'proper/colors'
 
 /* RELATED TO THE INSTITUTION ACCORDION */
-#institution-accordion
-  .btn
-    white-space: normal
-
-.ui-accordion-header
-  background: #0078ae url("/assets/jquery-ui/ui-bg_glass_45_0078ae_1x400.png") repeat-x scroll 50% 50% !important
-  border: 0px !important
-
-.ui-accordion-header.ui-state-hover,
-.ui-accordion-header.ui-state-focus
+.institution-header, .provider-header, .core-header
+  background: $sparc-light-blue
   color: white !important
+  cursor: pointer
+  h4
+    font-size: 14px
 
-.provider-header
-  background: #0775B0 !important
-  + .provider 
-    h4
-      padding-left: 5%
-      padding-right: 5%
-      line-height: 100%
-.provider-header:hover
-  background: #0065A0 !important
+#institution-accordion
+  .panel-body
+    padding-top: 4px
+    padding-right: 5px
 
-.blue-provider
-  background: $sparc-blue !important
-.blue-provider.btn:hover
-  background: $sparc-blue-hover !important
+    .panel-body
+      padding: 0
 
-.green-provider
-  background: $sparc-green !important
-.green-provider.btn:hover
-  background : $sparc-green-hover !important
+      table
+        width: 100%
+        tr
+          cursor: pointer
+          td
+            font-size: 12px
+            .program-link
+              padding: 5px
+              border: 1px solid #DDD
+            .program-link.clicked
+              background: #E6E6E6
+              border-color: #ADADAD
+              box-shadow: 0 3px 5px rgba(0, 0, 0, 0.125) inset
+            .program-link:not(.clicked):hover
+              background: #E6E6E6
+              border-color: #ADADAD
+            .program-link.clicked:hover
+              background: #D4D4D4
+              border-color: #8C8C8C
 
-.light-blue-provider
-  background: $sparc-light-blue !important
-.light-blue-provider.btn:hover
-  background: $sparc-light-blue-hover !important
-
-.red-provider
-  background: $sparc-red !important
-.red-provider.btn:hover
-  background: $sparc-red-hover !important
-
-.orange-provider
-  background: $sparc-orange !important
-.orange-provider.btn:hover
-  background: $sparc-orange-hover !important
 
 .blue-provider,
 .green-provider,
@@ -74,6 +63,38 @@
 .orange-provider
   h1
     color: white
+
+.blue-provider
+  background: $sparc-blue !important
+.green-provider
+  background: $sparc-green !important
+.light-blue-provider
+  background: $sparc-light-blue !important
+.red-provider
+  background: $sparc-red !important
+.orange-provider
+  background: $sparc-orange !important
+
+.institution-header.blue-provider:hover,
+.provider-header.blue-provider:hover,
+.core-header.blue-provider:hover,
+  background: $sparc-blue-hover !important
+.institution-header.green-provider:hover,
+.provider-header.green-provider:hover,
+.core-header.green-provider:hover,
+  background : $sparc-green-hover !important
+.institution-header.light-blue-provider:hover,
+.provider-header.light-blue-provider:hover,
+.core-header.light-blue-provider:hover,
+  background: $sparc-light-blue-hover !important
+.institution-header.red-provider:hover,
+.provider-header.red-provider:hover,
+.core-header.red-provider:hover,
+  background: $sparc-red-hover !important
+.institution-header.orange-provider:hover,
+.provider-header.orange-provider:hover,
+.core-header.orange-provider:hover,
+  background: $sparc-orange-hover !important
 
 .service-view
   display: inline-block

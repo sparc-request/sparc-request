@@ -1,4 +1,34 @@
+# Copyright © 2011 MUSC Foundation for Research Development
+# All rights reserved.
+
+# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+# disclaimer in the documentation and/or other materials provided with the distribution.
+
+# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+# derived from this software without specific prior written permission.
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 module ServiceRequestsHelper
+
+  def protocol_id_display(sub_service_request, service_request)
+    if sub_service_request && sub_service_request.service_request.protocol.present?
+      " SRID: #{sub_service_request.service_request.protocol.id}"
+    elsif service_request && service_request.protocol.present?
+      " SRID: #{service_request.protocol.id}"
+    else
+      ""
+    end
+  end
 
   def current_organizations(service_request, sub_service_request)
     organizations = {}
@@ -14,45 +44,12 @@ module ServiceRequestsHelper
    organizations
   end
 
-  def institution_accordion(institutions, locked_ids, organization=nil)
-    returning_html    = ""
-    process_ssr_found = nil
-
-    institutions.each do |institution|
-      next unless (organization.nil? || (process_ssr_found = ssr_org == institution) || organization.parents.include?(institution))
-      locked = locked_ids.include?(institution.id)
-
-      returning_html += content_tag(:h3, organization_name_display(institution, locked), class: ['btn institution-header', institution.css_class, locked ? 'locked' : ''], data: { id: institution.id })
-      returning_html += content_tag(:div,
-                          content_tag(:div, provider_accordion(institution.providers, locked_ids, organization, process_ssr_found), class: 'provider-accordion'),
-                          class: 'institution'
-                        )
-
-    end
-
-    returning_html.html_safe
-  end
-
-  def core_accordion(organization, ssr_org, service_request, locked_ids, process_ssr_found)
-    returning_html = ""
-
-    if ssr_org.present? && !process_ssr_found
-      returning_html += core_html(ssr_org, organization, service_request, false)
-    else
-      organization.cores.where(is_available: [true, nil]).order('`order`').each do |core|
-        returning_html += core_html(core, organization, service_request, locked_ids.include?(core.id))
-      end
-    end
-
-    returning_html.html_safe
-  end
-
   def organization_name_display(organization, locked)
     locked ? organization.name+" **LOCKED**" : organization.name
   end
 
   def organization_description_display(organization)
-    organization.description.present? ? raw(organization.description) : t(:proper)[:catalog][:accordion][:no_description]
+    organization.description.present? ? raw(organization.description) : t(:proper)[:catalog][:no_description]
   end
 
   def display_service_in_catalog(service, service_request)
@@ -80,60 +77,7 @@ module ServiceRequestsHelper
     end
   end
 
-  def protocol_id_display(sub_service_request, service_request)
-    if sub_service_request && sub_service_request.service_request.protocol.present?
-      " SRID: #{sub_service_request.service_request.protocol.id}"
-    elsif service_request && service_request.protocol.present?
-      " SRID: #{service_request.protocol.id}"
-    else
-      ""
-    end
-  end
-
   def save_as_draft_button
     link_to t(:proper)[:navigation][:bottom][:save_as_draft], save_and_exit_service_request_path, remote: true, class: 'btn btn-default'
-  end
-
-  private
-
-  def provider_accordion(providers, locked_ids, organization, process_ssr_found)
-    returning_html = ""
-
-    providers.each do |provider|
-      next unless (organization.nil? || process_ssr_found || (process_ssr_found = ssr_org == provider) || organization.parents.include?(provider))
-      locked = locked_ids.include?(provider.id)
-
-      returning_html += content_tag(:h3, organization_name_display(provider, locked), class: ['btn', provider.css_class, 'provider-header', locked ? 'locked' : ''], data: { id: provider.id })
-      returning_html += content_tag(:div, program_accordion(provider.programs, locked_ids, organization, process_ssr_found), class: 'provider')
-    end
-
-    returning_html.html_safe
-  end
-
-  def program_accordion(programs, locked_ids, organization, process_ssr_found)
-    returning_html = ""
-
-    programs.each do |program|
-      next unless (organization.nil? || process_ssr_found || (process_ssr_found = ssr_org == program) || organization.parents.include?(program))
-      locked = locked_ids.include?(program.id)
-
-      returning_html += content_tag(:h4, organization_name_display(program, locked), class: ['btn btn-default btn-sm full program-link', locked ? 'locked' : ''], data: { id: program.id, process_ssr_found: process_ssr_found })
-    end
-
-    returning_html.html_safe
-  end
-
-  def core_html(core, parent, service_request, locked)
-    services = ""
-    
-    core.services.order('`order`, `name`').each do |service|
-      services += display_service_in_catalog(service, service_request)
-    end
-
-    [ content_tag(:h3, organization_name_display(core, locked), class: ['btn core-header', css_class(parent), locked ? 'locked' : '']),
-      content_tag(:div,
-        content_tag(:div, organization_description_display(core), class: 'description core-description col-sm-12')+services.html_safe,
-        class: 'core-view'
-      )].join('').html_safe
   end
 end

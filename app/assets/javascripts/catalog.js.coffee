@@ -84,7 +84,6 @@ $(document).ready ->
 
 
 
-
   # Initialize Authorized Users Searcher
   identities_bloodhound = new Bloodhound(
     datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
@@ -112,13 +111,15 @@ $(document).ready ->
                                         </div>')
       }
     }
-  ).on 'typeahead:select', (event, suggestion) ->
+  ).on('typeahead:render', (event, a, b, c) ->
+    $('[data-toggle="tooltip"]').tooltip()
+  ).on('typeahead:select', (event, suggestion) ->
     srid = $(this).data('srid')
     id = suggestion.value
     $.ajax
       type: 'POST'
       url: "/service_requests/#{srid}/add_service/#{id}"
-
+  )
 
   $(document).on 'click', '.submit-request-button', ->
     signed_in = parseInt($('#signed_in').val())

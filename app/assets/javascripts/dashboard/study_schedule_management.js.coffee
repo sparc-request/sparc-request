@@ -35,7 +35,6 @@ $ ->
   $(document).on 'click', '#add_arm_form_button', ->
     $this = $(this)
     $this.attr('disabled','disabled')
-    $this.closest('form').submit()
 
   $(document).on 'click', '#remove_arm_button', ->
     data =

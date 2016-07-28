@@ -36,6 +36,7 @@ class Dashboard::NotesController < Dashboard::BaseController
       @note = Note.create(note_params.merge(identity_id: current_user.id))
     end
     @notes = @notable.notes
+    @selector = "#{@note.notable_type.downcase}_notes"
   end
 
   private

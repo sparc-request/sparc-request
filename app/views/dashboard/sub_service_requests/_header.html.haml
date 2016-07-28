@@ -25,8 +25,10 @@
       %h4.panel-title.pull-left
         = "#{sub_service_request.protocol.short_title} > #{sub_service_request.organization.name} (#{sub_service_request.protocol.id}-#{sub_service_request.ssr_id})"
       .pull-right
-        %button.btn.btn-sm.btn-default.notes.list{data: { notable_type: "SubServiceRequest", notable_id: sub_service_request.id }}
+        %button.btn.btn-sm.btn-success.notes.list{data: { notable_type: "SubServiceRequest", notable_id: sub_service_request.id }}
           = t(:models)[:note][:plural]
+          %span#subservicerequest_notes.badge
+            = sub_service_request.notes.count
       .clearfix
 
     %table.table.table-bordered.table-condensed

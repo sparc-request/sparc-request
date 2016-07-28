@@ -40,6 +40,8 @@
 //= require jquery_nested_form
 //= require jquery.cookie
 //= require jquery.form
+//= require jquery-ui
+//= require jquery.qtip.min
 //= require editable/bootstrap-editable
 //= require editable/rails
 //= require nprogress

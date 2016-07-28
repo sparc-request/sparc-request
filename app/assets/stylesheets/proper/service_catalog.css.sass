@@ -44,18 +44,18 @@
             .program-link
               padding: 5px
               border: 1px solid #DDD
+            .program-link:not(.clicked):hover
+              background: #E6E6E6
+              border-color: #ADADAD
             .program-link.clicked
               background: #E6E6E6
               border-color: #ADADAD
               box-shadow: 0 3px 5px rgba(0, 0, 0, 0.125) inset
-            .program-link:not(.clicked):hover
-              background: #E6E6E6
-              border-color: #ADADAD
             .program-link.clicked:hover
               background: #D4D4D4
               border-color: #8C8C8C
 
-
+/* HANDLING INSTITUTION COLORING */
 .blue-provider,
 .green-provider,
 .light-blue-provider,
@@ -75,27 +75,65 @@
 .orange-provider
   background: $sparc-orange !important
 
-.institution-header.blue-provider:hover,
-.provider-header.blue-provider:hover,
-.core-header.blue-provider:hover,
+.institution-header.blue-provider:not(.clicked):hover,
+.provider-header.blue-provider:not(.clicked):hover,
+.core-header.blue-provider:not(.clicked):hover,
   background: $sparc-blue-hover !important
-.institution-header.green-provider:hover,
-.provider-header.green-provider:hover,
-.core-header.green-provider:hover,
+.institution-header.green-provider:not(.clicked):hover,
+.provider-header.green-provider:not(.clicked):hover,
+.core-header.green-provider:not(.clicked):hover,
   background : $sparc-green-hover !important
-.institution-header.light-blue-provider:hover,
-.provider-header.light-blue-provider:hover,
-.core-header.light-blue-provider:hover,
+.institution-header.light-blue-provider:not(.clicked):hover,
+.provider-header.light-blue-provider:not(.clicked):hover,
+.core-header.light-blue-provider:not(.clicked):hover,
   background: $sparc-light-blue-hover !important
-.institution-header.red-provider:hover,
-.provider-header.red-provider:hover,
-.core-header.red-provider:hover,
+.institution-header.red-provider:not(.clicked):hover,
+.provider-header.red-provider:not(.clicked):hover,
+.core-header.red-provider:not(.clicked):hover,
   background: $sparc-red-hover !important
-.institution-header.orange-provider:hover,
-.provider-header.orange-provider:hover,
-.core-header.orange-provider:hover,
+.institution-header.orange-provider:not(.clicked):hover,
+.provider-header.orange-provider:not(.clicked):hover,
+.core-header.orange-provider:not(.clicked):hover,
   background: $sparc-orange-hover !important
 
+.blue-provider.clicked
+  background: $sparc-blue-hover !important
+  border-color: #ADADAD
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.125) inset
+.green-provider.clicked
+  background: $sparc-green-hover !important
+  border-color: #ADADAD
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.125) inset
+.light-blue-provider.clicked
+  background: $sparc-light-blue-hover !important
+  border-color: #ADADAD
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.125) inset
+.red-provider.clicked
+  background: $sparc-red-hover !important
+  border-color: #ADADAD
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.125) inset
+.orange-provider.clicked
+  background: $sparc-orange-hover !important
+  border-color: #ADADAD
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.125) inset
+
+.blue-provider.clicked:hover
+  background: $sparc-blue-clicked-hover !important
+  border-color: #8C8C8C
+.green-provider.clicked:hover
+  background: $sparc-green-clicked-hover !important
+  border-color: #8C8C8C
+.light-blue-provider.clicked:hover
+  background: $sparc-light-blue-clicked-hover !important
+  border-color: #8C8C8C
+.red-provider.clicked:hover
+  background: $sparc-red-clicked-hover !important
+  border-color: #8C8C8C
+.orange-provider.clicked:hover
+  background: $sparc-orange-clicked-hover !important
+  border-color: #8C8C8C
+
+/* HANDLING CORE AND SERVICE LIST STYLING */
 .service-view
   display: inline-block
   .title

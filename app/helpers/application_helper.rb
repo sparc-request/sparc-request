@@ -44,9 +44,9 @@ module ApplicationHelper
   def css_class(organization)
     case organization.type
     when 'Institution'
-      organization.css_class
+      organization.css_class.empty? ? 'light-blue-provider' : organization.css_class
     when 'Provider'
-      organization.css_class
+      organization.css_class.empty? ? 'light-blue-provider' : organization.css_class
     when 'Program'
       css_class(organization.provider)
     when 'Core'

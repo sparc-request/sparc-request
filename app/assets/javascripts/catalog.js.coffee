@@ -23,17 +23,20 @@
 $(document).ready ->
   ### ACCORDION LOGIC ###
   $(document).on 'click', '.institution-header, .provider-header, .program-link', ->
+    if $(this).hasClass('institution-header')
+      $('.institution-header').removeClass('clicked')
+    else if $(this).hasClass('provider-header')
+      $('.provider-header').removeClass('clicked')
+    else if $(this).hasClass('program-link')
+      $('.program-link').removeClass('clicked')
     $(this).addClass('clicked')
+    
     id    = $(this).data('id')
     data  = process_ssr_found : $(this).data('process-ssr-found') 
     $.ajax
       type: 'POST'
       data: data
       url: "/catalogs/#{id}/update_description"
-
-  $(document).on 'click', '.program-link', ->
-    $('.program-link').removeClass('clicked')
-    $(this).addClass('clicked')
 
   $(document).on 'click', '.core-header', ->
     $('.service-description').addClass('hidden')
@@ -65,7 +68,7 @@ $(document).ready ->
       source: services_bloodhound,
       limit: 100,
       templates: {
-        suggestion: Handlebars.compile('<button class="text-left" data-toggle="tooltip" data-placement="bottom" title="{{description}}">
+        suggestion: Handlebars.compile('<button class="text-left" data-container="body" data-placement="right" data-toggle="tooltip" data-animation="false" title="{{description}}">
                                           <span>{{parents}}</span><br>
                                           <span><strong>Service: {{label}}</strong></span><br>
                                           <span><strong>Abbreviation: {{abbreviation}}</strong></span><br>

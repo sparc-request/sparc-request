@@ -23,7 +23,7 @@
     - locked = locked_ids.include?(p.id)
 
     .panel.panel-default
-      .panel-heading.provider-header{ class: [p.css_class, locked ? 'locked' : ''], data: { id: p.id, toggle: 'collapse', target: ".provider-#{p.id}", parent: "#institution-#{i.id}" } }
+      .panel-heading.provider-header{ class: [css_class(p), locked ? 'locked' : ''], data: { id: p.id, toggle: 'collapse', target: ".provider-#{p.id}", parent: "#institution-#{i.id}" } }
         %h4.panel-title.text-center
           = organization_name_display(p, locked)
       .panel-collapse.collapse{ class: "provider-#{p.id}" }

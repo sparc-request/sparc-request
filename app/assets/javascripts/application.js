@@ -45,7 +45,6 @@
 //= require nprogress
 //= require nprogress-ajax
 //= require json2
-//= require infotip
 //= require underscore-min
 //= require form_manager
 //= require form_fx_manager

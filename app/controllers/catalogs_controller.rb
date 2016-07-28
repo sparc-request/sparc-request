@@ -24,7 +24,6 @@ class CatalogsController < ApplicationController
 
   def update_description
     @organization 		  = Organization.find params[:id]
-    @from_portal        = session[:from_portal]
     @process_ssr_found  = params[:process_ssr_found] == 'true'
     @ssr_org            = @sub_service_request.organization if @sub_service_request
 

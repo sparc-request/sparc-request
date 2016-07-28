@@ -167,7 +167,8 @@ en:
       header: "My Services"
       view_active: "View Active"
       view_complete: "View Complete"
-      no_services_message: "You do not have any requested Services in '%{type}' status"
+      no_active_services_message: "You do not have any active requested Services"
+      no_complete_services_message: "You do not have any requested Services in 'Complete' status"
       no_locked_services_message: "You do not have any requested Services which have been locked by the Service Provider"
       to_catalog: "Return to Catalog"
       has_fulfillments:

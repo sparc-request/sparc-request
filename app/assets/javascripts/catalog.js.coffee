@@ -79,69 +79,55 @@ $(document).ready ->
     else
       description.addClass('hidden')
 
-  ### Search Logic ###
-  autoComplete = $('#service-query').autocomplete
-    source: '/search/services'
-    minLength: 2
-    search: (event, ui) ->
-      $("#service-query").after('<img src="/assets/spinner.gif" class="catalog-search-spinner" />')
-    open: (event, ui) ->
-      $('.catalog-search-spinner').remove()
-      $('.service-name').qtip
-        content: { text: false}
-        position:
-          corner:
-            target: "rightMiddle"
-            tooltip: "leftMiddle"
 
-          adjust: screen: true
 
-        show:
-          delay: 0
-          when: "mouseover"
-          solo: true
 
-        hide:
-          delay: 0
-          when: "mouseout"
-          solo: true
-        
-        style:
-          tip: true
-          border:
-            width: 0
-            radius: 4
 
-          name: "light"
-          width: 250
 
-    close: (event, ui) ->
-      $('.catalog-search-spinner').remove()
-      $('.catalog-search-clear-icon').remove()
 
-  .data("uiAutocomplete")._renderItem = (ul, item) ->    
-    label = item.label
-    unless item.label is 'No Results'
-      label = "#{item.parents}<br>
-              <span class='service-name' title='#{item.description}'>
-              #{item.label}<br> 
-              CPT Code: #{item.cpt_code}<br> 
-              Abbreviation: #{item.abbreviation}</span><br>
-              <button id='service-#{item.value}' 
-              sr_id='#{item.sr_id}' 
-              from_portal='#{item.from_portal}' 
-              first_service='#{item.first_service}' 
-              style='font-size: 11px;' 
-              class='add_service'>Add to Cart</button>
-              <span class='service-description'>#{item.description}</span>"
+  # Initialize Authorized Users Searcher
+  identities_bloodhound = new Bloodhound(
+    datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
+    queryTokenizer: Bloodhound.tokenizers.whitespace,
+    remote:
+      url: '/search/services?term=%QUERY',
+      wildcard: '%QUERY'
+  )
+  identities_bloodhound.initialize() # Initialize the Bloodhound suggestion engine
+  $('#service-query').typeahead(
+    {
+      minLength: 3,
+      hint: false,
+    },
+    {
+      displayKey: 'term',
+      source: identities_bloodhound,
+      limit: 100,
+      templates: {
+        suggestion: Handlebars.compile('<div data-toggle="tooltip" data-placement="right" title="{{description}}">
+                                          <span>{{parents}}</span><br>
+                                          <span><strong>Service: {{label}}</strong></span><br>
+                                          <span><strong>Abbreviation: {{abbreviation}}</strong></span><br>
+                                          <span><strong>CPT Code: {{cpt_code}}</strong></span>
+                                        </div>')
+      }
+    }
+  ).on 'typeahead:select', (event, suggestion) ->
+    srid = $(this).data('srid')
+    id = suggestion.value
+    $.ajax
+      type: 'POST'
+      url: "/service_requests/#{srid}/add_service/#{id}"
 
-    $("<li class='search_result'></li>")
-    .data("ui-autocomplete-item", item)
-    .append(label)
-    .appendTo(ul)
 
   $(document).on 'click', '.submit-request-button', ->
-    if $('#line_item_count').val() <= 0
+    signed_in = parseInt($('#signed_in').val())
+    if signed_in == 0
+      $('#modal_place').html($('#login-required-modal').html())
+      $('#modal_place').modal('show')
+      $('.modal #login-required-modal').removeClass('hidden')
+      return false
+    else if $('#line_item_count').val() <= 0
       $('#modal_place').html($('#submit-error-modal').html())
       $('#modal_place').modal('show')
       $('.modal #submit-error-modal').removeClass('hidden')

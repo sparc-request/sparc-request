@@ -42,21 +42,20 @@ class SearchController < ApplicationController
     
     results = results.map { |s|
       {
-        :parents      => s.parents.map(&:abbreviation).join(' | '),
-        :label        => s.name,
-        :value        => s.id,
-        :description  => s.description,
-        :sr_id        => session[:service_request_id],
-        :from_portal  => session[:from_portal],
-        :first_service => first_service,
-        :abbreviation => s.abbreviation,
-        :cpt_code     => s.cpt_code
+        parents:        s.parents.map(&:abbreviation).join(' | '),
+        label:          s.name,
+        value:          s.id,
+        description:    s.description || "No Description Available",
+        sr_id:          session[:service_request_id],
+        abbreviation:   s.abbreviation,
+        cpt_code:       s.cpt_code,
+        term:           params[:term]
       }
     }
 
     results = [{:label => 'No Results'}] if results.empty?
 
-    render :json => results.to_json
+    render json: results.to_json
   end
 
   def identities

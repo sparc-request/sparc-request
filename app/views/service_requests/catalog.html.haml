@@ -21,6 +21,7 @@
 = javascript_include_tag "right_navigation"
 = stylesheet_link_tag "proper/right_navigation"
 = hidden_field_tag :signed_in, identity_signed_in? ? 1 : 0
+= hidden_field_tag :has_protocol, @service_request.protocol ? 1 : 0
 
 = render 'catalogs/service_accordion', institutions: @institutions, organization: @organization, locked_org_ids: @locked_org_ids
 = render 'catalogs/catalog_center', organization: @organization, service_request: @service_request, from_portal: @from_portal

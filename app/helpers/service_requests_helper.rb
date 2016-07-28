@@ -33,14 +33,14 @@ module ServiceRequestsHelper
     returning_html.html_safe
   end
 
-  def core_accordion(organization, ssr_org, service_request, locked_ids, process_ssr_found, from_portal)
+  def core_accordion(organization, ssr_org, service_request, locked_ids, process_ssr_found)
     returning_html = ""
 
     if ssr_org.present? && !process_ssr_found
-      returning_html += core_html(ssr_org, organization, service_request, false, from_portal)
+      returning_html += core_html(ssr_org, organization, service_request, false)
     else
       organization.cores.where(is_available: [true, nil]).order('`order`').each do |core|
-        returning_html += core_html(core, organization, service_request, locked_ids.include?(core.id), from_portal)
+        returning_html += core_html(core, organization, service_request, locked_ids.include?(core.id))
       end
     end
 
@@ -55,9 +55,9 @@ module ServiceRequestsHelper
     organization.description.present? ? raw(organization.description) : t(:proper)[:catalog][:accordion][:no_description]
   end
 
-  def display_service_in_catalog(service, service_request, from_portal)
+  def display_service_in_catalog(service, service_request)
     if [true, nil].include?(service.is_available) && service.current_pricing_map
-      render 'service', service: service, service_request: service_request, from_portal: from_portal
+      render 'service', service: service, service_request: service_request
     else
       ""
     end
@@ -123,11 +123,11 @@ module ServiceRequestsHelper
     returning_html.html_safe
   end
 
-  def core_html(core, parent, service_request, locked, from_portal)
+  def core_html(core, parent, service_request, locked)
     services = ""
     
     core.services.order('`order`, `name`').each do |service|
-      services += display_service_in_catalog(service, service_request, from_portal)
+      services += display_service_in_catalog(service, service_request)
     end
 
     [ content_tag(:h3, organization_name_display(core, locked), class: ['btn core-header', css_class(parent), locked ? 'locked' : '']),

@@ -40,8 +40,6 @@
 //= require jquery_nested_form
 //= require jquery.cookie
 //= require jquery.form
-//= require jquery-ui
-//= require jquery.qtip.min
 //= require editable/bootstrap-editable
 //= require editable/rails
 //= require nprogress
@@ -52,6 +50,7 @@
 //= require form_manager
 //= require form_fx_manager
 //= require twitter/typeahead.min
+//= require handlebars-v4.0.5
 //= require assert
 //= require ajax_handler
 

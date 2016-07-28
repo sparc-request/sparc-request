@@ -162,7 +162,6 @@ class ApplicationController < ActionController::Base
         use_existing_service_request
         validate_existing_service_request
       elsif params[:from_portal]
-        session[:from_portal] = params[:from_portal]
         create_or_use_request_from_portal(params)
       else
         # If the cookie is nil (as with visiting the main catalog for

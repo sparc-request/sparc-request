@@ -35,16 +35,10 @@ $(document).ready ->
   $(document).on 'click', '.add-service', ->
     id = $(this).data('id')
     srid = $(this).data('srid')
-    from_portal = $(this).data('from-portal')
+    has_protocol = parseInt($('#has_protocol').val())
     li_count = parseInt($('#line_item_count').val())
-    signed_in = parseInt($('#signed_in').val())
 
-    if signed_in == 0
-      $('#modal_place').html($('#login-required-modal').html())
-      $('#modal_place').modal('show')
-      $('.modal #login-required-modal').removeClass('hidden')
-      return false
-    else if from_portal == 0 && li_count == 0
+    if has_protocol == 0 && li_count == 0
       $('#modal_place').html($('#new-request-modal').html())
       $('#modal_place').modal('show')
 

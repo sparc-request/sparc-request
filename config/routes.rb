@@ -128,10 +128,8 @@ SparcRails::Application.routes.draw do
 
   match 'service_requests/:id/add_service/:service_id' => 'service_requests#add_service', via: [:get, :post]
   match 'service_requests/:id/remove_service/:line_item_id' => 'service_requests#remove_service', via: [:all]
-  match 'service_requests/:id/select_calendar_row/:line_items_visit_id' => 'service_calendars#select_calendar_row', via: [:get, :post]
-  match 'service_requests/:id/unselect_calendar_row/:line_items_visit_id' => 'service_calendars#unselect_calendar_row', via: [:get, :post]
-  match 'service_requests/:id/select_calendar_column/:column_id/:arm_id' => 'service_calendars#select_calendar_column', via: [:get, :post]
-  match 'service_requests/:id/unselect_calendar_column/:column_id/:arm_id' => 'service_calendars#unselect_calendar_column', via: [:get, :post]
+  match 'service_requests/:id/toggle_calendar_row/:line_items_visit_id' => 'service_calendars#toggle_calendar_row', via: [:post]
+  match 'service_requests/:id/toggle_calendar_column/:column_id/:arm_id' => 'service_calendars#toggle_calendar_column', via: [:get]
   match 'service_requests/:id/delete_document/:document_id' => 'service_requests#delete_documents', via: [:all]
   match 'service_requests/:id/edit_document/:document_id' => 'service_requests#edit_documents', via: [:get, :post]
   match 'service_requests/:id/new_document' => 'service_requests#new_document', via: [:get, :post]
@@ -285,10 +283,8 @@ SparcRails::Application.routes.draw do
         put 'update_otf_qty_and_units_per_qty'
         put 'move_visit_position'
         put 'show_move_visits'
-        post 'select_calendar_row'
-        post 'unselect_calendar_row'
-        post 'select_calendar_column'
-        post 'unselect_calendar_column'
+        post 'toggle_calendar_row'
+        post 'toggle_calendar_column'
       end
     end
 

@@ -65,6 +65,29 @@ RSpec.describe ServiceRequestsController do
           expect(ssr2.status).to eq 'draft'
         end
 
+        it 'should create a past status for each SubServiceRequest' do
+          service_request.sub_service_requests.each(&:destroy)
+
+          session[:identity_id] = jug2.id
+
+          ssr1 = create(:sub_service_request,
+                        service_request_id: service_request.id,
+                        status: 'first_draft',
+                        organization_id: provider.id)
+          ssr2 = create(:sub_service_request,
+                        service_request_id: service_request.id,
+                        status: 'first_draft',
+                        organization_id: core.id)
+
+          xhr :get, :save_and_exit, id: service_request.id
+
+          ps1 = PastStatus.find_by(sub_service_request_id: ssr1.id)
+          ps2 = PastStatus.find_by(sub_service_request_id: ssr2.id)
+
+          expect(ps1.status).to eq('first_draft')
+          expect(ps2.status).to eq('first_draft')
+        end
+
         it 'should set ssr_id correctly when next_ssr_id > 9999' do
           service_request.protocol.update_attribute(:next_ssr_id, 10_042)
 

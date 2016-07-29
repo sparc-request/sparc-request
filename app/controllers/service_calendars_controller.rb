@@ -128,8 +128,7 @@ class ServiceCalendarsController < ApplicationController
       else
         @line_items_visit.arm.line_items_visits
       end
-    @sub_service_request.update_attribute(:status, "draft") if @sub_service_request
-    @service_request.update_attribute(:status, "draft")
+    @line_item.sub_service_request.update_attribute(:status, "draft") if @line_item.sub_service_request
   end
 
   def rename_visit
@@ -211,6 +210,7 @@ class ServiceCalendarsController < ApplicationController
     elsif params[:type] == 'units_per_qty'
       line_item.update_attributes(units_per_quantity: val)
     end
+    line_item.sub_service_request.update_attribute(:status, "draft") if line_item.sub_service_request
   end
 
   def show_move_visits
@@ -256,8 +256,8 @@ class ServiceCalendarsController < ApplicationController
         visit.update_attributes(quantity: @service.displayed_pricing_map.unit_minimum, research_billing_qty: @service.displayed_pricing_map.unit_minimum, insurance_billing_qty: 0, effort_billing_qty: 0)
       end
     end
+
     @sub_service_request.update_attribute(:status, "draft") if @sub_service_request
-    @service_request.update_attribute(:status, "draft")
 
     render partial: 'update_service_calendar'
   end
@@ -280,8 +280,8 @@ class ServiceCalendarsController < ApplicationController
           
       end
     end
+
     @sub_service_request.update_attribute(:status, "draft") if @sub_service_request
-    @service_request.update_attribute(:status, "draft")
 
     render partial: 'update_service_calendar'
   end

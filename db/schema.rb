@@ -429,7 +429,7 @@ ActiveRecord::Schema.define(version: 20160725191310) do
 
   create_table "items", force: :cascade do |t|
     t.text     "content",          limit: 65535
-    t.string   "type",             limit: 255
+    t.string   "item_type",        limit: 255
     t.text     "description",      limit: 65535
     t.boolean  "required"
     t.integer  "questionnaire_id", limit: 4

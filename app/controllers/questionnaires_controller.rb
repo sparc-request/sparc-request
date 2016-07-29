@@ -11,6 +11,11 @@ class QuestionnairesController < ApplicationController
     @questionnaire.items.build
   end
 
+  def edit
+    @questionnaire = Questionnaire.find(params[:id])
+    @questionnaire.items.build
+  end
+
   def create
     @questionnaire = Questionnaire.new(questionnaire_params)
     @questionnaire.service = Service.find(params[:service_id])

@@ -13,9 +13,9 @@
           .col-sm-10
             = i.text_area :content, class: 'form-control'
         .form-group
-          = i.label :type, class: 'col-sm-2 control-label'
+          = i.label :item_type, class: 'col-sm-2 control-label'
           .col-sm-10
-            = i.select :type, options_for_select(ADDITIONAL_DETAIL_QUESTION_TYPES),
+            = i.select :item_type, options_for_select(ADDITIONAL_DETAIL_QUESTION_TYPES),
               {include_blank: true}, {class: 'form-control'}
         .form-group
           = i.label :description, class: 'col-sm-2 control-label'

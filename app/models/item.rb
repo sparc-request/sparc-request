@@ -1,4 +1,4 @@
 class Item < ActiveRecord::Base
   belongs_to :questionnaire
-  validates :content, :type, :required, presence: true
+  validates :content, :item_type, :required, presence: true
 end

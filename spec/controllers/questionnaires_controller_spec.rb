@@ -19,6 +19,26 @@ RSpec.describe QuestionnairesController do
     end
   end
 
+  describe '#edit' do
+    it 'should return the correct Questionnaire' do
+      service = create(:service)
+      questionnaire = create(:questionnaire)
+
+      get :edit, service_id: service, id: questionnaire
+
+      expect(assigns(:questionnaire)).to eq questionnaire
+    end
+
+    it 'should return the correct Questionnaire' do
+      service = create(:service)
+      questionnaire = create(:questionnaire)
+
+      get :edit, service_id: service, id: questionnaire
+
+      expect(response).to render_template :edit
+    end
+  end
+
   describe '#create' do
     context 'success' do
       it 'should create a new Questionnaire record' do

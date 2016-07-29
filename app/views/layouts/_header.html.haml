@@ -19,7 +19,9 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 %nav.navbar.navbar-default
   .navbar-header
-    = navbar_links
+    %ul.nav.navbar-nav
+      - NAVBAR_LINKS.each do |identifier, data|
+        = navbar_link(identifier, data)
   %p.navbar-text.navbar-right.welcome-nav
     - if current_user.present?
       %span

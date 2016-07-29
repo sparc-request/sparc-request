@@ -20,17 +20,6 @@
 
 module ApplicationHelper
 
-  def navbar_links
-    list = ""
-    puts "!"*50
-    puts controller_name
-    NAVBAR_LINKS.each do |label, data|
-      list += content_tag(:li, link_to(data[0], data[1], target: :blank))
-    end
-
-    content_tag(:ul, list.html_safe, class: 'nav navbar-nav')
-  end
-
   def show_welcome_message(current_user, bootstrap = false)
     returning_html = ""
     if current_user
@@ -382,12 +371,12 @@ module ApplicationHelper
     end
   end
 
-  def navbar_link identifier, details
-    name, path = details
+  def navbar_link(identifier, data)
+    name, path = data
     if current_user
       case identifier
       when 'fulfillment'
-        content_tag :li, link_to(name.to_s, path, target: '_blank'), class: 'dashboard' unless current_user.clinical_providers.empty? && !current_user.is_super_user?
+        content_tag(:li, link_to(name.to_s, path, target: :blank)) unless current_user.clinical_providers.empty? && !current_user.is_super_user?
       when 'catalog_manager/catalog'
         render_navbar_link(identifier, name, path) unless current_user.catalog_managers.empty?
       when 'report'
@@ -400,7 +389,7 @@ module ApplicationHelper
     end
   end
 
-  def render_navbar_link identifier, name, path
+  def render_navbar_link(identifier, name, path)
     path_controller = Rails.application.routes.recognize_path(path)[:controller]
     request_controller = Rails.application.routes.recognize_path(request.url)[:controller]
     content_tag :li, link_to(name.to_s, path, target: '_blank', class: path_controller == request_controller ? 'highlighted' : ''), class: 'dashboard'

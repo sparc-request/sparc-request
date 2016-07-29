@@ -3,6 +3,10 @@
     Additional Details Form Builder
   .panel-body
     = form_for [service, questionnaire], html: { class: 'form-horizontal' } do |f|
+      .form-group
+        = f.label :name, 'Form Name', class: 'col-sm-2 control-label'
+        .col-sm-10
+          = f.text_field :name, class: 'form-control'
       = f.nested_fields_for :items do |i|
         .form-group
           = i.label :content, class: 'col-sm-2 control-label'

@@ -18,9 +18,8 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 %ul.navbar
-  - NAVBAR_LINKS.each do |name, path|
-    %li.dashboard
-      = link_to name.to_s, path, target: '_blank'
+  - NAVBAR_LINKS.each do |identifier, details|
+    = navbar_link identifier, details
   .right-section
     - if current_user.present?
       .user-login-section

@@ -171,7 +171,7 @@ module ApplicationHelper
         end
 
         checked = filtered_line_items_visits.each.map{|liv| liv.visits[n.to_i-1].research_billing_qty >= 1}.all?
-        action = checked == true ? 'unselect_calendar_column' : 'select_calendar_column'
+        action = checked == true ? 'uncheck' : 'check'
         icon = checked == true ? 'ui-icon-close' : 'ui-icon-check'
         returning_html += content_tag(:th,
                                       ((USE_EPIC) ?
@@ -187,7 +187,7 @@ module ApplicationHelper
                                       text_field_tag("arm_#{arm.id}_visit_name_#{n}", visit_name, class: "visit_name", size: 10, :'data-arm_id' => arm.id, :'data-visit_position' => n - 1, :'data-service_request_id' => service_request.id) +
                                       tag(:br) +
                                       link_to((content_tag(:span, '', class: "ui-button-icon-primary ui-icon #{icon}") + content_tag(:span, 'Check All', class: 'ui-button-text')),
-                                              "/service_requests/#{service_request.id}/#{action}/#{n}/#{arm.id}?portal=#{portal}",
+                                              "/service_requests/#{service_request.id}/toggle_calendar_column/#{n}/#{arm.id}?#{action}=true&portal=#{portal}",
                                               remote: true, role: 'button', class: 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only', id: "check_all_column_#{n}", data: ( visit_group.any_visit_quantities_customized?(service_request) ? { confirm: "This will reset custom values for this column, do you wish to continue?"} : nil)),
                                       width: 60, class: 'visit_number')
       end
@@ -378,5 +378,29 @@ module ApplicationHelper
       else
         type.to_s
     end
+  end
+
+  def navbar_link identifier, details
+    name, path = details
+    if current_user
+      case identifier
+      when 'fulfillment'
+        content_tag :li, link_to(name.to_s, path, target: '_blank'), class: 'dashboard' unless current_user.clinical_providers.empty? && !current_user.is_super_user?
+      when 'catalog_manager/catalog'
+        render_navbar_link(identifier, name, path) unless current_user.catalog_managers.empty?
+      when 'report'
+        render_navbar_link(identifier, name, path) unless !current_user.is_super_user?
+      else
+        render_navbar_link(identifier, name, path)
+      end
+    else
+      render_navbar_link(identifier, name, path)
+    end
+  end
+
+  def render_navbar_link identifier, name, path
+    path_controller = Rails.application.routes.recognize_path(path)[:controller]
+    request_controller = Rails.application.routes.recognize_path(request.url)[:controller]
+    content_tag :li, link_to(name.to_s, path, target: '_blank', class: path_controller == request_controller ? 'highlighted' : ''), class: 'dashboard'
   end
 end

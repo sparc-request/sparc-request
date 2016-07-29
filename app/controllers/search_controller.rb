@@ -24,7 +24,7 @@ class SearchController < ApplicationController
   def services
     term              = params[:term].strip
     service_request   = ServiceRequest.find(session[:service_request_id])
-    locked_ssrs       = service_request.sub_service_requests.reject{ |ssr| ssr.can_be_edited? }
+    locked_ssrs       = service_request.sub_service_requests.reject{ |ssr| ssr.can_be_edited? && !ssr.is_complete?}
     locked_org_ids    = locked_ssrs.map(&:organization_id)
     locked_child_ids  = Organization.authorized_child_organizations(locked_org_ids).map(&:id)
 
@@ -33,13 +33,13 @@ class SearchController < ApplicationController
                 where(organization: (Organization.available_cores | Organization.available_programs)).
                 where.not(organization_id: locked_org_ids + locked_child_ids).
                 reject { |s| (s.current_pricing_map rescue false) == false } # Why is this here?
-    
+
     unless @sub_service_request.nil?
       results = results.reject{|s| s.parents.exclude? @sub_service_request.organization}
     end
 
     first_service = service_request.line_items.count == 0
-    
+
     results = results.map { |s|
       {
         parents:        s.parents.map(&:abbreviation).join(' | '),
@@ -60,7 +60,7 @@ class SearchController < ApplicationController
 
   def identities
     term = params[:term].strip
-    results = Identity.search(term).map do |i| 
+    results = Identity.search(term).map do |i|
       {
        :label              => i.display_name,
        :value              => i.id,

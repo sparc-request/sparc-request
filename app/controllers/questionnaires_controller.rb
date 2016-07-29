@@ -3,7 +3,7 @@ class QuestionnairesController < ApplicationController
   layout 'additional_details'
 
   def index
-
+    @questionnaires = @service.questionnaires
   end
 
   def new

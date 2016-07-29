@@ -1,0 +1,29 @@
+.panel.panel-primary
+  .panel-heading
+    Additional Detail Forms
+  .panel-body
+    %table.table.table-striped.table-bordered.table-hover
+      %thead
+        %tr
+          %th
+            Form Name
+          %th
+            Service Name
+          %th
+            Edit
+          %th
+            Delete
+      %tbody
+        - @questionnaires.each do |questionnaire|
+          %tr
+            %td
+              = questionnaire.name
+            %td
+              = @service.name
+            %td
+              = link_to edit_service_questionnaire_path(@service, questionnaire), class: 'btn btn-info' do
+                %span.glyphicon.glyphicon-pencil
+            %td
+              = link_to service_questionnaire_path(@service, questionnaire),
+                method: :delete, class: 'btn btn-danger' do
+                %span.glyphicon.glyphicon-remove

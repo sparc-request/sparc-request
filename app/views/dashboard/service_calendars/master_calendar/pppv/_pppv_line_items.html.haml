@@ -33,8 +33,9 @@
   - livs.each do |liv|
     %tr
       %td{ colspan: 2 }= liv.service.display_service_name
-      %td= liv.line_item.sub_service_request.status.capitalize
-      - unless tab == 'calendar'
+      - if tab == 'calendar'
+        %td= liv.line_item.sub_service_request.status.humanize
+      - else
         %td.service_rate{ class: "service_rate_#{liv.id}" }= display_service_rate liv.line_item
       %td.your_cost.text-center
         - if tab != 'calendar'

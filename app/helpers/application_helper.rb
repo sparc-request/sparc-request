@@ -22,8 +22,10 @@ module ApplicationHelper
 
   def navbar_links
     list = ""
-    NAVBAR_LINKS.each do |name, path|
-      list += content_tag(:li, link_to(name.to_s, path, target: :blank))
+    puts "!"*50
+    puts controller_name
+    NAVBAR_LINKS.each do |label, data|
+      list += content_tag(:li, link_to(data[0], data[1], target: :blank))
     end
 
     content_tag(:ul, list.html_safe, class: 'nav navbar-nav')

@@ -28,8 +28,7 @@
     - if organization.type == "Program"
       - if organization.services.any? && (sub_service_request.nil? || process_ssr_found || organization.parents.include?(ssr_org))
         .program-services
-          - organization.services.order('`order`, `name`').each do |service|
-            = display_service_in_catalog(service, service_request)
+          = render 'catalogs/accordion/services', services: organization.services.order('`order`, `name`'), service_request: service_request
 
       - if organization.cores.any?
         = render 'catalogs/accordion/cores', program: organization, cores: organization.cores, ssr_org: ssr_org, service_request: service_request, locked_ids: locked_org_ids, process_ssr_found: process_ssr_found

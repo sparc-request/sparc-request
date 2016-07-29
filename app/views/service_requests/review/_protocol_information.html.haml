@@ -17,10 +17,8 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.documents
+.protocol-information
   .page-header
     %h3
-      = t(:proper)[:document_management][:documents_notice]
-      %small
-        = t(:proper)[:document_management][:documents_instructions]
-  = render 'documents/table', protocol: service_request.protocol, permission_to_edit: true, in_dashboard: false
+      = t(:proper)[:review][:protocol_information_notice]
+  = render 'protocols/summary', protocol: protocol, protocol_type: protocol.type, service_request: service_request, allow_edit: false

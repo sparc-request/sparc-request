@@ -22,63 +22,63 @@ $(document).ready ->
   # $('.selectpicker').selectpicker()
 
   # $(".visit_name").live 'mouseover', ->
-  $(".visit_name").qtip
-    overwrite: false
-    content: I18n["service_calendar_toasts"]["visit_name"]
-    position:
-      corner:
-        target: 'bottomLeft'
-    show:
-      ready: false
+  #$(".visit_name").qtip
+  #  overwrite: false
+  #  content: I18n["service_calendar_toasts"]["visit_name"]
+  #  position:
+  #    corner:
+  #      target: 'bottomLeft'
+  #  show:
+  #    ready: false
 
   # $('.visit_day').live 'mouseover', ->
-  $('.visit_day').qtip
-    overwrite: false
-    content: I18n["service_calendar_toasts"]["visit_day"]
-    position:
-      corner:
-        target: 'topLeft'
-        tooltip: 'bottomLeft'
-    show:
-      ready: false
+  #$('.visit_day').qtip
+  #  overwrite: false
+  #  content: I18n["service_calendar_toasts"]["visit_day"]
+  #  position:
+  #    corner:
+  #      target: 'topLeft'
+  #      tooltip: 'bottomLeft'
+  #  show:
+  #    ready: false
 
-  $('.visit_window_before').qtip
-    overwrite: false
-    content: I18n["service_calendar_toasts"]["visit_window_before"]
-    position:
-      corner:
-        target: 'topLeft'
-        tooltip: 'bottomLeft'
-    show:
-      ready: false
+  #$('.visit_window_before').qtip
+  #  overwrite: false
+  #  content: I18n["service_calendar_toasts"]["visit_window_before"]
+  #  position:
+  #    corner:
+  #      target: 'topLeft'
+  #      tooltip: 'bottomLeft'
+  #  show:
+  #    ready: false
 
-  $('.visit_window_after').qtip
-    overwrite: false
-    content: I18n["service_calendar_toasts"]["visit_window_after"]
-    position:
-      corner:
-        target: 'topLeft'
-        tooltip: 'bottomLeft'
-    show:
-      ready: false
+  #$('.visit_window_after').qtip
+  #  overwrite: false
+  #  content: I18n["service_calendar_toasts"]["visit_window_after"]
+  #  position:
+  #    corner:
+  #      target: 'topLeft'
+  #      tooltip: 'bottomLeft'
+  #  show:
+  #    ready: false
 
   # $('.billing_type_list').live 'mouseover', ->
-  $('.billing_type_list').qtip
-    overwrite: false
-    content: 'R = Research<br />T = Third Party (Patient Insurance)<br />% = % Effort'
-    position:
-      corner:
-        target: 'topMiddle'
-        tooltip: 'bottomLeft'
-    show:
-      ready: false
-    style:
-      tip: true
-      border:
-        width: 0
-        radius: 4
-      name: 'light'
-      width: 260
+  #$('.billing_type_list').qtip
+  #  overwrite: false
+  #  content: 'R = Research<br />T = Third Party (Patient Insurance)<br />% = % Effort'
+  #  position:
+  #    corner:
+  #      target: 'topMiddle'
+  #      tooltip: 'bottomLeft'
+  #  show:
+  #    ready: false
+  #  style:
+  #    tip: true
+  #    border:
+  #      width: 0
+  #      radius: 4
+  #    name: 'light'
+  #    width: 260
 
   changing_tabs_calculating_rates = ->
     arm_ids = []

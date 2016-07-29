@@ -20,11 +20,13 @@
 @import 'proper/colors'
 #documents-page
   .document-management-left
-    .panel
-      border-color: $sparc-orange !important
-      .panel-heading, thead
-        background: $sparc-orange !important
-        border: 0
+    thead
+      background: $sparc-orange !important
+
+    .documents, .notes
+      display: inline-block
+      width: 100%
+      margin-bottom: 20px
 
     .documents
       .page-header

@@ -17,10 +17,22 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.documents
-  .page-header
-    %h3
-      = t(:proper)[:document_management][:documents_notice]
-      %small
-        = t(:proper)[:document_management][:documents_instructions]
-  = render 'documents/table', protocol: service_request.protocol, permission_to_edit: true, in_dashboard: false
+.calendar-container
+  - if service_request.has_per_patient_per_visit_services?
+    .pppv-calendars
+      .page-header
+        %h3
+          = t(:proper)[:review][:pppv_calendars_notice]
+      - service_request.arms.each do |arm|
+        - next if arm.visit_groups.empty?
+        = render 'service_calendars/master_calendar/pppv/pppv_calendar', service_request: service_request, sub_service_request: sub_service_request, pages: pages, tab: tab, arm: arm, page: pages[arm.id], portal: portal, review: true, merged: true, study_tracker: false
+  .otf-calendars
+    .page-header
+      %h3
+        = t(:proper)[:review][:otf_calendar_notice]
+    = render 'service_calendars/master_calendar/otf/otf_calendar', service_request: service_request, sub_service_request: sub_service_request, tab: tab, portal: true, merged: true, review: true, study_tracker: false, protocol: service_request.protocol
+  .totals
+    .page-header
+      %h3
+        = t(:proper)[:review][:totals_notice] 
+    = render 'service_requests/review/review_totals', service_request: service_request, sub_service_request: sub_service_request

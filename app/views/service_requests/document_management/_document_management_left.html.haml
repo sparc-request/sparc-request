@@ -20,28 +20,3 @@
 .col-md-9.document-management-left
   = render 'service_requests/document_management/documents', service_request: service_request
   = render 'service_requests/document_management/notes', service_request: service_request
-
-
-
-
-
-
-
-  / .document_upload_instructions
-  /   = t("documents.upload_instructions_html")
-  / .document-management-container
-  /   = render 'document_list', review: false, thead_class: 'orange-provider'
-
-  /   %td
-  /     = link_to t("documents.add_button"), "/service_requests/#{service_request.id}/new_document", :remote => true, :class => "document_upload_button blue-button btn btn-primary btn-lg button-hover", :location => 'document_management'
-
-  /   .document_upload{:style=>'display:none'}
-  /     = render 'document_form', :provider_css => 'orange-provider'
-
-  / .service_request_notes
-  /   #request_notes_table
-  /     = render '/notes/request_notes', notes: service_request.notes, notable_id: service_request.id, notable_type: "ServiceRequest", thead_class: "orange-provider"
-
-  /   %a.new_request_note_button.button-hover.blue-button= "Add Note"
-  /   #note_form{style: 'display:none'}
-  /     = render '/notes/note_form', service_request: service_request

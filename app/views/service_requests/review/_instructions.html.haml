@@ -17,19 +17,11 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.calendar-container
-  - if service_request.has_per_patient_per_visit_services?
-    .page-header
-      %h3
-        = t(:proper)[:review][:pppv_calendars_notice]
-    - service_request.arms.each do |arm|
-      - next if arm.visit_groups.empty?
-      = render 'service_calendars/master_calendar/pppv/pppv_calendar', service_request: service_request, arm: arm, page: pages[arm.id], pages: pages, review: false, merged: true, study_tracker: false
-  .page-header
-    %h3
-      = t(:proper)[:review][:otf_calendar_notice]
-  = render 'service_calendars/master_calendar/otf/otf_calendar', service_request: service_request, sub_service_request: nil, portal: true, merged: true, tab: tab, review: false, study_tracker: false, protocol: protocol
-  .page-header
-    %h3
-      = t(:proper)[:review][:totals_notice] 
-  = render 'service_requests/review/review_totals'
+.well.review-instructions
+  %ol
+    %li
+      = t(:proper)[:review][:instructions][:first]
+    %li
+      = t(:proper)[:review][:instructions][:second]
+    %li
+      = t(:proper)[:review][:instructions][:third]

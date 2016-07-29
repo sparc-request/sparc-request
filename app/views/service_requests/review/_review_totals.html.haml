@@ -17,20 +17,20 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.review-totals
+- line_items = sub_service_request ? sub_service_request.line_items : service_request.line_items
+.form-group
+  .col-sm-3
+    = t(:proper)[:review][:total_direct]
+  .col-sm-9
+    = display_grand_total_direct_costs(service_request, line_items)
+- if USE_INDIRECT_COST
   .form-group
     .col-sm-3
-      = t(:proper)[:review][:total_direct]
+      = t(:proper)[:review][:total_indirect]
     .col-sm-9
-      = display_grand_total_direct_costs(@service_request, @line_items)
-  - if USE_INDIRECT_COST
-    .form-group
-      .col-sm-3
-        = t(:proper)[:review][:total_indirect]
-      .col-sm-9
-        = display_grand_total_indirect_costs(@service_request, @line_items)
-  .form-group
-    .col-sm-3
-      = t(:proper)[:review][:grand_total]
-    .col-sm-9
-      = display_grand_total(@service_request, @line_items)
+      = display_grand_total_indirect_costs(service_request, line_items)
+.form-group
+  .col-sm-3
+    = t(:proper)[:review][:grand_total]
+  .col-sm-9
+    = display_grand_total(service_request, line_items)

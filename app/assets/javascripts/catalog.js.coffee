@@ -25,8 +25,11 @@ $(document).ready ->
   $(document).on 'click', '.institution-header, .provider-header, .program-link', ->
     if $(this).hasClass('institution-header')
       $('.institution-header').removeClass('clicked')
+      $('.provider-header').removeClass('clicked')
+      $('.program-link').removeClass('clicked')
     else if $(this).hasClass('provider-header')
       $('.provider-header').removeClass('clicked')
+      $('.program-link').removeClass('clicked')
     else if $(this).hasClass('program-link')
       $('.program-link').removeClass('clicked')
     $(this).addClass('clicked')

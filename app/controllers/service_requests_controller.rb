@@ -240,11 +240,11 @@ class ServiceRequestsController < ApplicationController
       end
     end
 
-    send_confirmation_notifications to_notify
+    send_confirmation_notifications(to_notify)
     render formats: [:html]
   end
 
-  def send_confirmation_notifications to_notify
+  def send_confirmation_notifications(to_notify)
     if @service_request.previous_submitted_at.nil?
       send_notifications(@service_request, @sub_service_request)
     elsif @sub_service_request

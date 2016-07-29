@@ -52,18 +52,4 @@ $(document).ready ->
         url: "/arms/#{arm_id}"
 
   $('#arms-table').on 'all.bs.table', ->
-    $('img.screening-info').qtip
-      content: I18n['arms']['screening_tooltip']
-      position:
-        corner:
-          target: "topRight"
-          tooltip: "bottomLeft"
-
-      style:
-        tip: true
-        border:
-          width: 0
-          radius: 4
-
-        name: "light"
-        width: 250
+    $('img.screening-info').tooltip()

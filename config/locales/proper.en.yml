@@ -91,6 +91,7 @@ en:
       percent_effort_notice: "If Professional Services are covered by % effort, please indicate in Step 2."
       selection_help:
         question: "Which type of Protocol should I choose?"
+        tooltip:
         study_response: "Choose 'New Study' for a research study with defined aims and outcomes."
         project_response: "Choose 'New Project' for non-study-specific Service Requests or anything that is not a research study."
       previously_submitted_warning: "The request that you are editing has been previously submitted and can not be moved to another %{protocol_type}."
@@ -109,7 +110,6 @@ en:
       end_date: "End Date"
       recruitment_start: "Estimated Recruitment Start Date"
       recruitment_end: "Estimated Recruitment End Date"
-      arms_header: "Arms"
 
     ###################
     # SERVICE SUBSIDY #
@@ -129,13 +129,19 @@ en:
       documents_instructions: "Visible to Authorized Users and selected Service Providers"
       notes_notice: "Service Request Notes"
       notes_instructions: "Important notes for your Service Request"
-      documents_title: "Documents"
-      notes_title: "Notes"
 
     ##########
     # REVIEW #
     ##########
     review:
+      instructions:
+        first: "Review your request"
+        second: "Make changes if necessary"
+        third: "Click 'Save as Draft', 'Get a Cost Estimate', or 'Submit Request'"
+      protocol_information_notice: "Protocol Information"
+      authorized_users_notice: "Authorized Users"
+      documents_notice: "Documents"
+      notes_notice: "Notes"
       pppv_calendars_notice: "Per Patient/Visit Calendars"
       otf_calendar_notice: "One Time Fees"
       totals_notice: "Total Costs"

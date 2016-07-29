@@ -23,9 +23,30 @@
     h3
       margin: 0
 
+  .review-instructions
+    display: table
+    margin: 0 auto
+    ol
+      list-style-position: inside
+      padding: 0
+      margin: 0
+      font-weight: bold
+
+  .protocol-information, .authorized-users, .documents, .notes, .totals, .form-group
+    display: inline-block
+    width: 100%
+
+    thead
+      background: $sparc-red !important
+
   .protocol-information
     .page-header
       margin-top: 0px
+    .panel
+      border-color: $sparc-red !important
+      .panel-heading
+        background: $sparc-red !important
+        border: 0
     #protocol-summary
       .row
         margin: 0
@@ -34,17 +55,20 @@
         border-bottom: 1px solid #EEE
         margin-bottom: 3px
 
-  .protocol-information, .documents, .notes
-    .panel
-      border-color: $sparc-red !important
-      .panel-heading, thead
-        background: $sparc-red !important
-        border: 0
+  .authorized-users, .documents, .notes
+    .page-header
+      margin-bottom: 0
 
   .calendar-container
+    display: inline-block
     .panel
       border-color: $sparc-red !important
       .panel-heading
         background: $sparc-red !important
         color: white
         border: 0
+
+  .totals
+    .form-group:not(:last-child)
+      padding-bottom: 15px
+      border-bottom: 1px solid #EEE

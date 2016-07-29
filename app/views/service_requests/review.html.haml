@@ -21,13 +21,13 @@
 
 = render 'service_requests/navigation/steps', step: @step_text, css_class: @css_class
 .col-sm-12.body-container#review-page
-  = form_tag navigate_service_request_path(@service_request), id: 'navigation_form' do
-    = hidden_field_tag :location, ''
-    = hidden_field_tag :validates, ''
-    = render 'service_requests/protocol/protocol_display', service_request: @service_request, protocol: @service_request.protocol
-    = render 'service_requests/document_management/documents', service_request: @service_request
-    = render 'service_requests/document_management/notes', service_request: @service_request
-    = render 'service_requests/review/review_calendars', service_request: @service_request, protocol: @service_request.protocol, pages: @pages, tab: @tab
+  = form_tag navigate_service_request_path(@service_request), id: 'service-request-form' do
+    = render 'service_requests/review/instructions'
+    = render 'service_requests/review/protocol_information', service_request: @service_request, protocol: @service_request.protocol
+    = render 'service_requests/review/authorized_users', service_request: @service_request, protocol: @service_request.protocol
+    = render 'service_requests/review/documents', protocol: @service_request.protocol
+    = render 'service_requests/review/notes', notable_id: @service_request.id, notable_type: 'ServiceRequest'
+    = render 'service_requests/review/calendars', service_request: @service_request, sub_service_request: @sub_service_request, pages: @pages, tab: @tab, arm: @arm, portal: @portal
 = render 'service_requests/navigation/footer', service_request: @service_request, css_class: @css_class, back: @back, forward: @forward
 
 - if SYSTEM_SATISFACTION_SURVEY

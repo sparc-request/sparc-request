@@ -202,6 +202,7 @@ en:
       type: "Type"
       title: "Title"
       uploaded: "Uploaded"
+      shared_with: "Service Provider Access"
     form_fields:
       document_type: "Document Type:"
       specify_doc_type: "Please Specify:"

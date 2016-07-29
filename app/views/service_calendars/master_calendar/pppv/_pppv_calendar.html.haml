@@ -26,6 +26,6 @@
     %h3.panel-title= t(:calendar_page)[:per_patient] + ' -- ' + arm.name
   %table{ class: 'table table-bordered', style: 'width: 100%;' }
     %thead
-      = render 'service_calendars/master_calendar/pppv/pppv_header', service_request: service_request, arm: arm, tab: @tab, portal: @portal, sub_service_request: @sub_service_request, review: review, page: page, pages: pages, merged: merged, visit_groups: visit_groups
+      = render 'service_calendars/master_calendar/pppv/pppv_header', service_request: service_request, arm: arm, tab: tab, portal: portal, sub_service_request: sub_service_request, review: review, page: page, pages: pages, merged: merged, visit_groups: visit_groups
     %tbody
-      = render 'service_calendars/master_calendar/pppv/pppv_line_items', service_request: service_request, arm: arm, tab: @tab, portal: @portal, sub_service_request: @sub_service_request, review: review, study_tracker: study_tracker
+      = render 'service_calendars/master_calendar/pppv/pppv_line_items', service_request: service_request, arm: arm, tab: tab, portal: portal, sub_service_request: sub_service_request, review: review, study_tracker: study_tracker

@@ -688,6 +688,7 @@ en:
             date: "Date Changed"
             from: "Status Changed From"
             to: "Status Changed To"
+            by: "Changed by"
           approval:
             header: "Approval History"
             date: "Date Approved"
@@ -875,6 +876,7 @@ en:
       decrement: "-"
       increment: "+"
       day: "Day"
+      status: "Status"
     labels:
       direct_cost: "Total Direct Cost"
       grand_total_direct: "Grand Total: Direct Costs"

@@ -64,6 +64,7 @@ RSpec.describe "calender totals", js: true do
     it "should update total costs when a visit is checked", js: true do
       visit_id = arm1.line_items_visits.first.visits[1].id
       page.check("visits_#{visit_id}")
+      wait_for_javascript_to_finish
       expect(first(".total_#{arm1.line_items_visits.first.id}")).to have_exact_text("$30.00")
     end
 

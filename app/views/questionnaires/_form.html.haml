@@ -16,7 +16,7 @@
           = i.label :item_type, class: 'col-sm-2 control-label'
           .col-sm-10
             = i.select :item_type, options_for_select(ADDITIONAL_DETAIL_QUESTION_TYPES),
-              {include_blank: true}, {class: 'form-control'}
+              {}, {class: 'form-control'}
         .form-group
           = i.label :description, class: 'col-sm-2 control-label'
           .col-sm-10

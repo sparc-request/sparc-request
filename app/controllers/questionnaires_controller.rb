@@ -1,5 +1,6 @@
 class QuestionnairesController < ApplicationController
   before_action :find_service
+  before_action :find_questionnaire, only: [:edit, :update]
   layout 'additional_details'
 
   def index
@@ -12,8 +13,6 @@ class QuestionnairesController < ApplicationController
   end
 
   def edit
-    @questionnaire = Questionnaire.find(params[:id])
-    @questionnaire.items.build
   end
 
   def create
@@ -26,7 +25,20 @@ class QuestionnairesController < ApplicationController
     end
   end
 
+  def update
+    @questionnaire.update_attributes(questionnaire_params)
+    if @questionnaire.save
+      redirect_to service_questionnaires_path(@service)
+    else
+      render :edit
+    end
+  end
+
   private
+
+  def find_questionnaire
+    @questionnaire = Questionnaire.find(params[:id])
+  end
 
   def find_service
     @service = Service.find(params[:service_id])

@@ -45,21 +45,21 @@ RSpec.describe QuestionnairesController do
         service = create(:service)
 
         expect{ post :create, service_id: service, questionnaire: {
-          :items_attributes=>{ '0'=>{'content'=>'test', 'type'=>'text', 'required'=>'1'} }
+          'name'=>'string', :items_attributes=>{ '0'=>{'content'=>'test', 'item_type'=>'text', 'required'=>'1'} }
         }}.to change{ Questionnaire.count }.by(1)
       end
       it 'should create a new Item record' do
         service = create(:service)
 
         expect{ post :create, service_id: service, questionnaire: {
-          :items_attributes=>{ '0'=>{'content'=>'test', 'type'=>'text', 'required'=>'1'} }
+          'name'=>'string', :items_attributes=>{ '0'=>{'content'=>'test', 'item_type'=>'text', 'required'=>'1'} }
         }}.to change{ Item.count }.by(1)
       end
       it 'should redirect to the index action' do
         service = create(:service)
 
         post :create, service_id: service, questionnaire: {
-          :items_attributes=>{ '0'=>{'content'=>'test', 'type'=>'text', 'required'=>'1'} }
+          'name'=>'string', :items_attributes=>{ '0'=>{'content'=>'test', 'item_type'=>'text', 'required'=>'1'} }
         }
 
         expect(response).to redirect_to action: :index, service_id: service.id
@@ -89,6 +89,35 @@ RSpec.describe QuestionnairesController do
           :items_attributes=>{ '0'=>{'content'=>'test'} }
         }}.not_to change{ Item.count }
       end
+    end
+  end
+
+  describe '#update' do
+    it 'should redirect to #index' do
+      service = create(:service)
+      questionnaire = create(:questionnaire, service: service)
+      create(:item, questionnaire: questionnaire)
+
+      patch :update, service_id: service, id: questionnaire, questionnaire: {
+        "name"=>"#{questionnaire.name}", :items_attributes=>{ '0'=>{'content'=>'testy',
+                                                                    'item_type'=>'text', 'required'=>'1'}
+      }
+      }
+
+      expect(response).to redirect_to action: :index, service_id: service
+    end
+    it 'should render edit on validation error' do
+      service = create(:service)
+      questionnaire = create(:questionnaire, service: service)
+      create(:item, questionnaire: questionnaire)
+
+      patch :update, service_id: service, id: questionnaire, questionnaire: {
+        "name"=>"#{questionnaire.name}", :items_attributes=>{ '0'=>{'content'=>'',
+                                                                    'item_type'=>'text', 'required'=>'1'}
+      }
+      }
+
+      expect(response).to render_template :edit
     end
   end
 end

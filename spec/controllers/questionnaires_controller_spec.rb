@@ -120,5 +120,31 @@ RSpec.describe QuestionnairesController do
       expect(response).to render_template :edit
     end
   end
+
+  describe '#destroy' do
+    it 'should destroy the requested object' do
+      service = create(:service)
+      questionnaire = create(:questionnaire, service: service)
+
+      expect{ delete :destroy, service_id: service, id: questionnaire}.to change{ Questionnaire.count }.by(-1)
+    end
+
+    it 'should destroy dependent objects' do
+      service = create(:service)
+      questionnaire = create(:questionnaire, service: service)
+      create(:item, questionnaire: questionnaire)
+
+      expect{ delete :destroy, service_id: service, id: questionnaire}.to change{ Item.count }.by(-1)
+    end
+    it 'should destroy dependent objects' do
+      service = create(:service)
+      questionnaire = create(:questionnaire, service: service)
+      create(:item, questionnaire: questionnaire)
+
+      delete :destroy, service_id: service, id: questionnaire
+
+      expect(response).to redirect_to action: :index, service_id: service
+    end
+  end
 end
 

@@ -1,6 +1,6 @@
 class QuestionnairesController < ApplicationController
   before_action :find_service
-  before_action :find_questionnaire, only: [:edit, :update]
+  before_action :find_questionnaire, only: [:edit, :update, :destroy]
   layout 'additional_details'
 
   def index
@@ -32,6 +32,11 @@ class QuestionnairesController < ApplicationController
     else
       render :edit
     end
+  end
+
+  def destroy
+    @questionnaire.destroy
+    redirect_to service_questionnaires_path(@service)
   end
 
   private

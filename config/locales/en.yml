@@ -370,6 +370,15 @@ en:
       subtext: "Primary PI Required"
       primary_pi: "Primary PI:"
 
+  ####################
+  # SERVICE CALENDAR #
+  ####################
+  service_calendar:
+    tabs:
+      template: "Template Tab"
+      billing: "Quantity/Billing Tab"
+      pricing: "Consolidated Request Tab"
+
   #############
   # SUBSIDIES #
   #############

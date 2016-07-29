@@ -111,6 +111,15 @@ en:
       recruitment_start: "Estimated Recruitment Start Date"
       recruitment_end: "Estimated Recruitment End Date"
 
+    ####################
+    # SERVICE CALENDAR #
+    ####################
+    service_calendar:
+      r_description: "R - Research Coverage"
+      t_description: "T - Third Party (PT Insurance) Coverage"
+      p_description: "% - Percent Effort"
+
+
     ###################
     # SERVICE SUBSIDY #
     ###################

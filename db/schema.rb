@@ -733,9 +733,10 @@ ActiveRecord::Schema.define(version: 20160725191310) do
   add_index "question_groups", ["api_id"], name: "uq_question_groups_api_id", unique: true, using: :btree
 
   create_table "questionnaires", force: :cascade do |t|
+    t.string   "name",       limit: 255
     t.integer  "service_id", limit: 4
-    t.datetime "created_at",           null: false
-    t.datetime "updated_at",           null: false
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
   end
 
   add_index "questionnaires", ["service_id"], name: "index_questionnaires_on_service_id", using: :btree

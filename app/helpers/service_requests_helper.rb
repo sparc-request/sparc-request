@@ -52,14 +52,6 @@ module ServiceRequestsHelper
     organization.description.present? ? raw(organization.description) : t(:proper)[:catalog][:no_description]
   end
 
-  def display_service_in_catalog(service, service_request)
-    if [true, nil].include?(service.is_available) && service.current_pricing_map
-      render 'service', service: service, service_request: service_request
-    else
-      ""
-    end
-  end
-
   # RIGHT NAVIGATION BUTTONS
   def faq_helper
     if USE_FAQ_LINK

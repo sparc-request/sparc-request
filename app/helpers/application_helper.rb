@@ -391,7 +391,6 @@ module ApplicationHelper
 
   def render_navbar_link(identifier, name, path)
     path_controller = Rails.application.routes.recognize_path(path)[:controller]
-    request_controller = Rails.application.routes.recognize_path(request.url)[:controller]
-    content_tag :li, link_to(name.to_s, path, target: '_blank', class: path_controller == request_controller ? 'highlighted' : ''), class: 'dashboard'
+    content_tag :li, link_to(name.to_s, path, target: '_blank', class: path_controller == controller_name ? 'highlighted' : ''), class: 'dashboard'
   end
 end

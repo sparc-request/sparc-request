@@ -125,6 +125,10 @@ class Identity < ActiveRecord::Base
     "#{first_name.try(:humanize)} #{last_name.try(:humanize)}".lstrip.rstrip
   end
 
+  def last_name_first
+    "#{last_name.try(:humanize)}, #{first_name.try(:humanize)}"
+  end
+
  # Returns this user's first and last name humanized, with their email.
   def display_name
     "#{first_name.try(:humanize)} #{last_name.try(:humanize)} (#{email})".lstrip.rstrip

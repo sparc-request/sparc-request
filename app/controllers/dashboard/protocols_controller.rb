@@ -49,7 +49,8 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
         default_filter_params: default_filter_params,
         select_options: {
           with_status: AVAILABLE_STATUSES.invert,
-          with_organization: Dashboard::GroupedOrganizations.new(@organizations).collect_grouped_options
+          with_organization: Dashboard::GroupedOrganizations.new(@organizations).collect_grouped_options,
+          with_owner: build_with_owner_params
         },
         persistence_id: false #resets filters on page reload
       ) || return
@@ -227,6 +228,18 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   private
+
+  def build_with_owner_params
+    service_providers = Identity.joins(:service_providers).where(service_providers: {
+                                organization: Organization.authorized_for_identity(current_user.id) })
+                                .distinct.order("last_name")
+    service_providers_params = []
+
+    service_providers.each do |sp|
+      service_providers_params << [sp.last_name_first, sp.id]
+    end
+    service_providers_params
+  end
 
   def find_protocol
     @protocol = Protocol.find(params[:id])

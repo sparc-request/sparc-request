@@ -133,7 +133,8 @@ class Protocol < ActiveRecord::Base
       :admin_filter,
       :show_archived,
       :with_status,
-      :with_organization
+      :with_organization,
+      :with_owner
     ]
   )
 
@@ -201,6 +202,15 @@ class Protocol < ActiveRecord::Base
     return nil if org_id.reject!(&:blank?) == []
     joins(:sub_service_requests).
     where(sub_service_requests: { organization_id: org_id }).distinct
+  }
+
+  scope :with_owner, -> (owner_id) {
+    #get orgs where one on the service providers is the selected owner (i.e. select Wenjun, first find all orgs where she is an SP)
+    #join SSR's to Protocol and find Protocol where ssr org ID is one of the orgs from above
+    joins(:sub_service_requests).
+    where(sub_service_requests:
+         {organization: Organization.joins(:service_providers).
+                                     where(service_providers: {identity_id: owner_id})})
   }
 
   def is_study?

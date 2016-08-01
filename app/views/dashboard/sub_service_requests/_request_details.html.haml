@@ -34,7 +34,7 @@
             %button.btn.btn-sm.btn-warning#admin_approvals_button{ data: { sub_service_request_id: sub_service_request.id }}
               = t(:dashboard)[:sub_service_requests][:tabs][:request_details][:options][:core_approvals]
         %td.text-center
-          = link_to t(:dashboard)[:sub_service_requests][:tabs][:request_details][:options][:export_to_excel], service_request_path(service_request, format: :xlsx, admin_offset: 1), :class => "export_to_excel_button btn btn-sm btn-primary"
+          = link_to t(:dashboard)[:sub_service_requests][:tabs][:request_details][:options][:export_to_excel], service_request_path(service_request, format: :xlsx, admin_offset: 1, sub_service_request_id: sub_service_request.id), :class => "export_to_excel_button btn btn-sm btn-primary"
         %td.text-center
           %button.btn.btn-sm.btn-danger#delete_ssr_button{ data: { sub_service_request_id: sub_service_request.id }}
             %span

@@ -206,7 +206,9 @@ class ServiceRequestsController < ApplicationController
   end
 
   def document_management
-    unless @service_request.sub_service_requests.map(&:has_subsidy?).any?
+    has_subsidy = @service_request.sub_service_requests.map(&:has_subsidy?).any?
+    eligible_for_subsidy = @service_request.sub_service_requests.map(&:eligible_for_subsidy?).any?
+    unless (has_subsidy || eligible_for_subsidy)
       @back = 'service_calendar'
     end
   end
@@ -239,13 +241,13 @@ class ServiceRequestsController < ApplicationController
     @service_request.previous_submitted_at = @service_request.submitted_at
 
     to_notify = []
-
     if @sub_service_request
       if @sub_service_request.status != 'get_a_cost_estimate'
         to_notify << @sub_service_request.id
       end
 
       @sub_service_request.update_attribute(:status, 'get_a_cost_estimate')
+      @sub_service_request.update_past_status(current_user)
     else
       to_notify = update_service_request_status(@service_request, 'get_a_cost_estimate')
     end
@@ -266,6 +268,7 @@ class ServiceRequestsController < ApplicationController
       end
 
       @sub_service_request.update_attributes(status: 'submitted', nursing_nutrition_approved: false, lab_approved: false, imaging_approved: false, committee_approved: false)
+      @sub_service_request.update_past_status(current_user)
     else
       to_notify = update_service_request_status(@service_request, 'submitted')
       @service_request.update_arm_minimum_counts
@@ -330,11 +333,11 @@ class ServiceRequestsController < ApplicationController
   def save_and_exit
     if @sub_service_request #if editing a sub service request, update status
       @sub_service_request.update_attribute(:status, 'draft')
+      @sub_service_request.update_past_status(current_user)
     else
       update_service_request_status(@service_request, 'draft')
       @service_request.ensure_ssr_ids
     end
-
     redirect_to dashboard_root_path
   end
 
@@ -377,13 +380,15 @@ class ServiceRequestsController < ApplicationController
       @service_request.previous_submitted_at = @service_request.submitted_at
 
       @new_line_items.each do |li|
-        ssr = @service_request.sub_service_requests.where(organization_id: li.service.process_ssrs_organization.id).first_or_create
+        ssr = find_or_create_sub_service_request(li, @service_request)
         li.update_attribute(:sub_service_request_id, ssr.id)
 
         if @service_request.status == 'first_draft'
           ssr.update_attribute :status, 'first_draft'
-        elsif ssr.status.nil? || (ssr.can_be_edited? && ssr_has_changed?(@service_request, ssr))
+        elsif ssr.status.nil? || (ssr.can_be_edited? && ssr_has_changed?(@service_request, ssr) && (ssr.status != 'complete'))
+          previous_status = ssr.status
           ssr.update_attribute :status, 'draft'
+          ssr.update_past_status(current_user) unless previous_status.nil?
         end
       end
 
@@ -408,7 +413,10 @@ class ServiceRequestsController < ApplicationController
 
     @line_items.where(service_id: service.id).each do |li|
       ssr = li.sub_service_request
-      ssr.update_attribute :status, 'draft' if ssr.can_be_edited? && ssr.status != 'first_draft'
+      if ssr.can_be_edited? && ssr.status != 'first_draft'
+        ssr.update_attribute(:status, 'draft')
+        ssr.update_past_status(current_user)
+      end
       li.destroy
     end
 
@@ -653,6 +661,7 @@ class ServiceRequestsController < ApplicationController
       service_request.update_attribute(:submitted_at, Time.now)
     end
     service_request.update_status(status)
+    service_request.sub_service_requests.each {|ssr| ssr.update_past_status(current_user)}
   end
 
   def authorize_protocol_edit_request
@@ -672,5 +681,19 @@ class ServiceRequestsController < ApplicationController
         render partial: 'service_requests/authorization_error', locals: { error: 'You are not allowed to edit this Request.' }
       end
     end
+  end
+
+  # Returns either an existing sub service request (if the line item's belongs to the sub service request)
+  def find_or_create_sub_service_request(line_item, service_request)
+    organization = line_item.service.process_ssrs_organization
+    service_request.sub_service_requests.each do |ssr|
+      if (ssr.organization == organization) && (ssr.status != 'complete')
+        return ssr
+      end
+    end
+    sub_service_request = service_request.sub_service_requests.create(organization_id: organization.id)
+    service_request.ensure_ssr_ids if service_request.protocol.present?
+
+    sub_service_request
   end
 end

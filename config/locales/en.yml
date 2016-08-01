@@ -325,9 +325,9 @@ en:
         edit: " Edit Fulfillment"
         delete: " Delete Fulfillment"
       form:
-        date: "Fulfillment Date:"
-        time: "Quantity:"
-        time_unit: "Qty Type:"
+        date: "Fulfillment Date:*"
+        time: "Quantity:*"
+        time_unit: "Qty Type:*"
 
     ################
     #  LINE ITEMS  #
@@ -578,6 +578,7 @@ en:
       modify_request: "Modify Request"
       srid: "SRID"
       organization: "Organization"
+      owner: "Owner"
       status: "Status"
       notifications: "Notifications"
       actions:
@@ -686,6 +687,7 @@ en:
             date: "Date Changed"
             from: "Status Changed From"
             to: "Status Changed To"
+            by: "Changed by"
           approval:
             header: "Approval History"
             date: "Date Approved"
@@ -693,12 +695,12 @@ en:
             by: "Approved By"
           subsidy:
             header: "Subsidy History"
+            date: "Date Approved"
             request_cost: "Request Cost at Approval"
             percent: "% Subsidy"
             contribution: "PI Contribution"
             subsidy_cost: "Subsidy Cost"
             approved_by: "Approved By"
-            date: "Date Approved"
 
         notifications:
           header: "Notifications"
@@ -873,6 +875,7 @@ en:
       decrement: "-"
       increment: "+"
       day: "Day"
+      status: "Status"
     labels:
       direct_cost: "Total Direct Cost"
       grand_total_direct: "Grand Total: Direct Costs"
@@ -937,6 +940,7 @@ en:
     default_statuses: "Default Statuses:"
     description: "Description"
     disabled: "Do not display in SPARC"
+    disabled_at: "Disabled at: %{disabled_parent}"
     epic_info: "Epic Interface"
     errors: "Effective Date, Display Dates, Percent of Fee, and Rates are required on all pricing setups."
     gen_info: "General Information"
@@ -1427,6 +1431,7 @@ en:
     split_notify: "Split/Notify Here"
     css_class: "Color"
     disabled: "Do not display in SPARC"
+    disabled_at: "Disabled at: %{disabled_parent}"
     one_time_fee: "One Time Fee"
     core_facility: "Core/Facility Based Services"
     service_center_cost: "Service Center Cost"
@@ -2074,6 +2079,7 @@ en:
     subspecialty: "Subspecialty:"
     subspecialty_prompt: "Select a Subspecialty"
     update_button: "Update Authorized User"
+    other: "Please Specify"
 
   # User list partial
   user_list:

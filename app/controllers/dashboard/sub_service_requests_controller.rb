@@ -39,7 +39,7 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
         arm_id                            = params[:arm_id] if params[:arm_id]
         page                              = params[:page]   if params[:page]
         session[:service_calendar_pages]  = params[:pages]  if params[:pages]
-        
+
         if page && arm_id
           session[:service_calendar_pages]          = {} unless session[:service_calendar_pages].present?
           session[:service_calendar_pages][arm_id]  = page
@@ -65,9 +65,10 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
       }
 
       format.html { # Admin Edit
+        cookies['admin-tab'] = 'details-tab' unless cookies['admin-tab']
         session[:service_calendar_pages] = params[:pages] if params[:pages]
         session[:breadcrumbs].add_crumbs(protocol_id: @sub_service_request.protocol.id, sub_service_request_id: @sub_service_request.id).clear(:notifications)
-        
+
         if @user.can_edit_fulfillment?(@sub_service_request.organization)
           @service_request  = @sub_service_request.service_request
           @protocol         = @sub_service_request.protocol
@@ -82,6 +83,7 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
 
   def update
     if @sub_service_request.update_attributes(params[:sub_service_request])
+      @sub_service_request.update_past_status(current_user)
       flash[:success] = 'Request Updated!'
     else
       @errors = @sub_service_request.errors
@@ -117,13 +119,13 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
 
     session[:service_calendar_pages] = params[:pages] if params[:pages]
     session[:service_calendar_pages][arm_id] = page if page && arm_id
-    
+
     @pages = {}
     @service_request.arms.each do |arm|
       new_page = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i
       @pages[arm.id] = @service_request.set_visit_page(new_page, arm)
     end
-    
+
     @tab = 'calendar'
   end
 
@@ -181,6 +183,14 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
     @subsidies = PastSubsidy.where(sub_service_request_id: @sub_service_request.id)
   end
   #History Table Methods End
+
+  #Tab Change Ajax
+  def refresh_tab
+    @service_request = @sub_service_request.service_request
+    @protocol = Protocol.find(params[:protocol_id])
+    @partial_name = params[:partial_name]
+  end
+
 
 private
 

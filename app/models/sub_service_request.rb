@@ -24,7 +24,7 @@ class SubServiceRequest < ActiveRecord::Base
 
   audited
 
-  after_save :update_past_status, :update_org_tree
+  after_save :update_org_tree
 
   belongs_to :service_requester, class_name: "Identity", foreign_key: "service_requester_id"
   belongs_to :owner, :class_name => 'Identity', :foreign_key => "owner_id"
@@ -311,6 +311,10 @@ class SubServiceRequest < ActiveRecord::Base
     end
   end
 
+  def is_complete?
+    return status == 'complete'
+  end
+
   def find_editable_id(id)
     parent_ids = Organization.find(id).parents.map(&:id)
     EDITABLE_STATUSES.keys.each do |org_id|
@@ -379,10 +383,10 @@ class SubServiceRequest < ActiveRecord::Base
   # Callback which gets called after the ssr is saved to ensure that the
   # past status is properly updated.  It should not normally be
   # necessarily to call this method.
-  def update_past_status
+  def update_past_status identity
     old_status = self.past_statuses.last
     if @prev_status and (not old_status or old_status.status != @prev_status)
-      self.past_statuses.create(status: @prev_status, date: Time.now)
+      self.past_statuses.create(status: @prev_status, date: Time.now, changed_by_id: identity.id)
     end
   end
 

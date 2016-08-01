@@ -24,6 +24,7 @@ Capybara.ignore_hidden_elements = true
 RSpec.describe 'as a user on catalog page', js: true do
   before :each do
     default_catalog_manager_setup
+    wait_for_javascript_to_finish
   end
 
   it 'the user should create a pricing map' do

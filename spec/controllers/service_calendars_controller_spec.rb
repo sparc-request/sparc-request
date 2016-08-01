@@ -324,7 +324,6 @@ RSpec.describe ServiceCalendarsController do
       service_request.sub_service_requests.update_all(status: 'submitted')
 
       session[:service_request_id] = service_request.id
-      session[:sub_service_request_id] = line_item.sub_service_request.id
 
       xhr :get, :update, {
         :format              => :js,
@@ -333,8 +332,7 @@ RSpec.describe ServiceCalendarsController do
         :line_item           => line_item.id,
         :visit               => visit.id,
       }.with_indifferent_access
-
-      expect(assigns(:sub_service_request).status).to eq 'draft'
+      expect(sub_service_request.status).to eq 'draft'
     end
   end
 

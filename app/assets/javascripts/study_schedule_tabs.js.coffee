@@ -1,5 +1,5 @@
 $(document).ready ->
-  $(document).on 'click', '.schedule_tabs a', (e) ->
+  $(document).on 'click', '.schedule-tabs a', (e) ->
     e.preventDefault()
 
     url = $(this).attr("data-url")
@@ -16,5 +16,4 @@ $(document).ready ->
         pane.tab('show')
 
   # load first tab content
-  $('#service_calendar .tab-content .tab-pane.active').load $('#service_calendar .active a').attr("data-url"), (result) ->
-    $('#service_calendar .active a').tab('show')
+  refresh_study_schedule()

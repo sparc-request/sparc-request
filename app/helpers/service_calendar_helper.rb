@@ -20,30 +20,6 @@
 
 module ServiceCalendarHelper
 
-  def select_row(line_items_visit, tab, portal, locked)
-    checked = line_items_visit.visits.map{|v| v.research_billing_qty >= 1}.all?
-    check_param = checked ? 'uncheck' : 'check'
-    icon = checked ? 'ui-icon-close' : 'ui-icon-check'
-
-    if !locked
-      link_to(
-          (content_tag(:span, '', :class => "ui-button-icon-primary ui-icon #{icon}") + content_tag(:span, 'Check All', :class => 'ui-button-text')),
-          "/service_requests/#{line_items_visit.line_item.service_request.id}/toggle_calendar_row/#{line_items_visit.id}?#{check_param}=true&portal=#{portal}",
-          :method  => :post,
-          :remote  => true,
-          :role    => 'button',
-          :class   => "ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only service_calendar_row",
-          :id      => "check_row_#{line_items_visit.id}_#{tab}",
-          data:    ( line_items_visit.any_visit_quantities_customized? ? { confirm: "This will reset custom values for this row, do you wish to continue?" } : nil))
-    else
-      content_tag(:a,
-        (content_tag(:span, '', class: 'ui-button-icon-primary ui-icon ui-icon-locked') + content_tag(:span, 'Check All', :class => 'ui-button-text')),
-        class: 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only',
-        role: 'button'
-      )
-    end
-  end
-
   def currency_converter cents
     number_to_currency(Service.cents_to_dollars(cents))
   end

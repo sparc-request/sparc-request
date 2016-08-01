@@ -52,8 +52,10 @@
 //= require twitter/typeahead.min
 //= require filterrific/filterrific-jquery
 //= require_tree .
+
 //= require ../service_calendar
 //= require global
 //= require associated_users_form
+//= require study_schedule_tabs
 
 window.Sparc = {};

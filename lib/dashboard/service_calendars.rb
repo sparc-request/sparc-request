@@ -210,34 +210,42 @@ module Dashboard
     end
 
     def self.select_row(line_items_visit, tab, portal)
-      checked = line_items_visit.visits.all? { |v| v.research_billing_qty >= 1  }
+      checked     = line_items_visit.visits.all? { |v| v.research_billing_qty >= 1  }
       check_param = checked ? 'uncheck' : 'check'
-      icon = checked ? 'glyphicon-remove' : 'glyphicon-ok'
+      icon        = checked ? 'glyphicon-remove' : 'glyphicon-ok'
+      url         = "/dashboard/service_calendars/toggle_calendar_row?#{check_param}=true&service_request_id=#{line_items_visit.line_item.service_request.id}&line_items_visit_id=#{line_items_visit.id}&portal=#{portal}"
 
       link_to(
-          (content_tag(:span, '', class: "glyphicon #{icon}")),
-          "/dashboard/service_calendars/toggle_calendar_row?#{check_param}=true&service_request_id=#{line_items_visit.line_item.service_request.id}&line_items_visit_id=#{line_items_visit.id}&&portal=#{portal}",
-          method: :post,
-          remote: true,
-          role: 'button',
-          class: 'btn btn-primary service_calendar_row',
-          id: "check_row_#{line_items_visit.id}_#{tab}",
-          data: (line_items_visit.any_visit_quantities_customized? ? { confirm: 'This will reset custom values for this row, do you wish to continue?' } : nil))
+        content_tag(:span, '', class: "glyphicon #{icon}"),
+        'javascript:void(0)',
+        method: :post,
+        remote: true,
+        role: 'button',
+        class: 'btn btn-primary service-calendar-row',
+        id: "check_row_#{line_items_visit.id}_#{tab}",
+        data: { url: url }
+      )
     end
 
-    def self.select_column(visit_group, n, portal, sub_service_request)
-      arm_id = visit_group.arm_id
-      filtered_livs = visit_group.line_items_visits.joins(:line_item).where(line_items: { service_request_id: sub_service_request.service_request_id })
-      checked = filtered_livs.all? { |l| l.visits[n.to_i].research_billing_qty >= 1 }
-      icon = checked ? 'glyphicon-remove' : 'glyphicon-ok'
-      check_param = checked ? 'uncheck' : 'check'
-      
-      url = "/dashboard/service_calendars/toggle_calendar_column?#{check_param}=true&sub_service_request_id=#{sub_service_request.id}&column_id=#{n + 1}&arm_id=#{arm_id}&portal=#{portal}"
+    def self.select_column(visit_group, n, portal, service_request, sub_service_request)
+      arm_id        = visit_group.arm_id
+      filtered_livs = visit_group.line_items_visits.joins(:line_item).where(line_items: { service_request_id: service_request.id })
+      checked       = filtered_livs.all? { |l| l.visits[n.to_i].research_billing_qty >= 1 }
+      check_param   = checked ? 'uncheck' : 'check'
+      icon          = checked ? 'glyphicon-remove' : 'glyphicon-ok'
+      url           = "/dashboard/service_calendars/toggle_calendar_column?#{check_param}=true&service_request_id=#{service_request.id}&column_id=#{n + 1}&arm_id=#{arm_id}&portal=#{portal}"
+      url           += "&sub_service_request_id=#{sub_service_request.id}" if sub_service_request
 
-      link_to(content_tag(:span, '', class: "glyphicon #{icon}"), url,
-              method: :post, remote: true, role: 'button', class: 'visit_number btn btn-primary',
-              id: "check_all_column_#{n+1}",
-              data: (visit_group.any_visit_quantities_customized?(sub_service_request.service_request) ? { confirm: 'This will reset custom values for this column, do you wish to continue?' } : nil))
+      link_to(
+        content_tag(:span, '', class: "glyphicon #{icon}"),
+        'javascript:void(0)',
+        method: :post,
+        remote: true,
+        role: 'button',
+        class: 'btn btn-primary service-calendar-column',
+        id: "check_all_column_#{n+1}",
+        data: { url: url }
+      )
     end
   end
 end

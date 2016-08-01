@@ -37,6 +37,6 @@ $(document).ready ->
   $(document).on 'click', '.view-protocol-details-button', ->
     protocol_id = $(this).data('protocol-id')
     $.ajax
-      method: 'get'
+      type: 'get'
       url: "/protocols/#{protocol_id}/view_details"
     return false

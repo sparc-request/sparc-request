@@ -24,5 +24,5 @@ $(document).ready ->
   $(document).on 'click', 'tbody tr', ->
     ssrid = $(this).data('ssrid')
     $.ajax
-      method: 'GET'
+      type: 'GET'
       url: "/dashboard/sub_service_requests/#{ssrid}.js"

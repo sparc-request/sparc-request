@@ -1,4 +1,3 @@
-
 # Copyright © 2011 MUSC Foundation for Research Development
 # All rights reserved.
 
@@ -28,11 +27,12 @@ class ServiceCalendarsController < ApplicationController
 
   def table
     #use session so we know what page to show when tabs are switched
-    @tab = params[:tab]
-    @portal = params[:portal] 
-    @study_tracker = params[:study_tracker] == "true"
-    @protocol = @service_request.protocol
+    @tab            = params[:tab]
+    @portal         = params[:portal] 
+    @study_tracker  = params[:study_tracker] == "true"
+    @protocol       = @service_request.protocol
     setup_calendar_pages
+    
     # TODO: This needs to be changed for one time fees page in arms
     if @sub_service_request
       @candidate_one_time_fees, @candidate_per_patient_per_visit = @sub_service_request.candidate_services.partition { |x| x.one_time_fee }

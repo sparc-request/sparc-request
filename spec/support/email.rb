@@ -35,7 +35,6 @@ module EmailHelpers
       else
         requester_flag = ""
       end
-      binding.pry
       expect(mail).to have_xpath "//td[text()='#{role.identity.full_name}']/following-sibling::td[text()='#{role.identity.email}']/following-sibling::td[text()='#{role.role.upcase}#{requester_flag}']/following-sibling::td[text()='#{role.epic_access}']"
     end
   end

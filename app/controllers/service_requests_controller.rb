@@ -271,8 +271,6 @@ class ServiceRequestsController < ApplicationController
       @sub_service_request.update_past_status(current_user)
     else
       to_notify = update_service_request_status(@service_request, 'submitted')
-      puts "<>"*100
-      puts to_notify.inspect
       @service_request.update_arm_minimum_counts
 
       @service_request.sub_service_requests.each do |ssr|

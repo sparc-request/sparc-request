@@ -207,6 +207,7 @@ module ServiceCalendarHelper
   #############################################
   # Other
   #############################################
+
   def visits_to_move arm
     unless arm.visit_groups.empty?
       vgs = arm.visit_groups

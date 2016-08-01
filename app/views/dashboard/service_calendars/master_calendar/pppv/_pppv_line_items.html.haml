@@ -34,7 +34,7 @@
     %tr
       %td{ colspan: 2 }= liv.service.display_service_name
       - if tab == 'calendar'
-        %td= liv.line_item.sub_service_request.status.humanize
+        %td= AVAILABLE_STATUSES[liv.line_item.sub_service_request.status]
       - else
         %td.service_rate{ class: "service_rate_#{liv.id}" }= display_service_rate liv.line_item
       %td.your_cost.text-center

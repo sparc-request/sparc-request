@@ -27,9 +27,11 @@
               %td
                 = @service.name
               %td
-                = link_to edit_service_questionnaire_path(@service, questionnaire), class: 'btn btn-info' do
-                  %span.glyphicon.glyphicon-pencil
+                .text-center
+                  = link_to edit_service_questionnaire_path(@service, questionnaire), class: 'btn btn-info' do
+                    %span.glyphicon.glyphicon-pencil
               %td
-                = link_to service_questionnaire_path(@service, questionnaire),
-                  method: :delete, class: 'btn btn-danger' do
-                  %span.glyphicon.glyphicon-remove
+                .text-center
+                  = link_to service_questionnaire_path(@service, questionnaire),
+                    method: :delete, class: 'btn btn-danger' do
+                    %span.glyphicon.glyphicon-remove

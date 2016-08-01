@@ -94,18 +94,18 @@ class Dashboard::SubsidiesController < Dashboard::BaseController
     end
   end
 
-  def perform_subsidy_creation(admin=false)
+  def perform_subsidy_creation(admin_param=false)
     @sub_service_request = @subsidy.sub_service_request
-    @admin = admin
+    @admin = admin_param
     flash[:success] = t(:dashboard)[:subsidies][:created]
     unless @admin
       redirect_to dashboard_sub_service_request_path(@sub_service_request, format: :js)
     end
   end
 
-  def perform_subsidy_update(admin=false)
+  def perform_subsidy_update(admin_param=false)
     flash[:success] = t(:dashboard)[:subsidies][:updated]
-    @admin = admin
+    @admin = admin_param
     unless @admin
       redirect_to dashboard_sub_service_request_path(@sub_service_request, format: :js)
     end

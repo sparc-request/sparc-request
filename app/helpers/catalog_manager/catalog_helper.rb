@@ -61,6 +61,22 @@ module CatalogManager::CatalogHelper
 
     tree.join(' / ')
   end
+
+  def disabled_parent organization
+    if organization.parent.is_available
+      organization.name
+    else
+      disabled_parent(organization.parent)
+    end
+  end
+
+  def disabled_service_parent service
+    if service.organization.is_available
+      service.name
+    else
+      disabled_parent(service.organization)
+    end
+  end
 end
 
 def display_name object

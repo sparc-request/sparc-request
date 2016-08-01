@@ -32,14 +32,16 @@ RSpec.describe "subsidy page", js: true do
       add_visits
       subsidy_map.destroy
       subsidy.destroy
-      subsidy_map = create(:subsidy_map, organization_id: program.id, max_dollar_cap: (sub_service_request.direct_cost_total / 100), max_percentage: 50.00)
+      subsidy_map = create(:subsidy_map, organization_id: program.id, max_dollar_cap: 1000, max_percentage: 50.00)
       program.update_attribute(:subsidy_map, subsidy_map)
+      @max_dollar_cap = subsidy_map.max_dollar_cap.to_f
+      @max_percentage = subsidy_map.max_percentage.to_f
       @direct_cost = (sub_service_request.direct_cost_total / 100.00)
       visit service_subsidy_service_request_path service_request.id
     end
 
     it 'should display request cost in the pi contribution field' do
-      click_button 'Add a Subsidy'
+      click_button 'Request a Subsidy'
       
       wait_for_javascript_to_finish
       pi_field_value = find('#pi_contribution').value
@@ -47,25 +49,62 @@ RSpec.describe "subsidy page", js: true do
     end
 
     it 'should adjust the pi contribution if a subsidy percentage is added' do
-      click_button 'Add a Subsidy'
+      click_button 'Request a Subsidy'
       wait_for_javascript_to_finish
       find('#percent_subsidy').set("30\n")
+      percent_subsidy = (find('#percent_subsidy').value.to_f) / 100
       wait_for_javascript_to_finish
-      new_contribution = @direct_cost - (@direct_cost * 0.3)
+      adjusted_pi_contribution = @direct_cost - (@direct_cost * percent_subsidy)
       pi_field_value = find('#pi_contribution').value.gsub(/,/, '')
-      expect(pi_field_value).to eq(new_contribution.to_s + '0')
+      expect(pi_field_value).to eq('$' + adjusted_pi_contribution.to_s + '0')
     end
 
     it 'should adjust the subsidy percent if the pi contribution is changed' do
-      click_button 'Add a Subsidy'
+      click_button 'Request a Subsidy'
       wait_for_javascript_to_finish
-      new_pi_contribution = (@direct_cost - 1000)
-      find('#pi_contribution').set("#{new_pi_contribution.to_s}\n")
+      find('#pi_contribution').set("6000\n")
       wait_for_javascript_to_finish
-      subsidy_cost = @direct_cost - new_pi_contribution
+
+      subsidy_cost = @direct_cost - 6000
       percent_subsidy = ((subsidy_cost / @direct_cost) * 100).round(2)
       percent_field_value = find('#percent_subsidy').value
       expect(percent_field_value).to eq(percent_subsidy.to_s)
+    end
+
+    context 'validating max percent' do
+
+      it 'should hit the validations if the entered percent is higher than the max percent' do
+        click_button 'Request a Subsidy'
+        wait_for_javascript_to_finish
+        find('#percent_subsidy').set("60\n")
+        expect(page).to have_content("The Percent Subsidy cannot be greater than the max percent of 50.0")
+      end
+
+      it 'should hit the validations if the entered pi contribution results in a percent subsidy greater than the max' do
+        click_button 'Request a Subsidy'
+        wait_for_javascript_to_finish
+        find('#pi_contribution').set("3000\n")
+        expect(page).to have_content("The Percent Subsidy cannot be greater than the max percent of 50.0")
+      end
+    end
+
+    context 'validating max dollar cap' do
+
+      it 'should hit the validations if the entered percent causes subsidy cost to be higher than max dollar cap' do
+        program.subsidy_map.update_attribute(:max_dollar_cap, 1000)
+        click_button 'Request a Subsidy'
+        wait_for_javascript_to_finish
+        find('#percent_subsidy').set("45\n")
+        expect(page).to have_content("The Subsidy Cost cannot be greater than the max dollar cap of 1000.0")
+      end
+
+      it 'should hit the validations if the entered pi contribution causes subsidy cost to be higher than max dollar cap' do
+        program.subsidy_map.update_attribute(:max_dollar_cap, 1000)
+        click_button 'Request a Subsidy'
+        wait_for_javascript_to_finish
+        find('#pi_contribution').set("5000\n")
+        expect(page).to have_content("The Subsidy Cost cannot be greater than the max dollar cap of 1000.0")
+      end
     end
   end
 end

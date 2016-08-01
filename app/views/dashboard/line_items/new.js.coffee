@@ -21,4 +21,4 @@
 $("#modal_place").html("<%= escape_javascript(render(:partial =>'dashboard/study_level_activities/study_level_activity_form', locals: { line_item: @line_item, header_text: @header_text })) %>");
 $("#modal_place").modal 'show'
 $(".selectpicker").selectpicker()
-$(".datetimepicker").datetimepicker(format: 'MM-DD-YYYY', allowInputToggle: true)
+$(".datetimepicker").datetimepicker(format: 'MM/DD/YYYY', allowInputToggle: true)

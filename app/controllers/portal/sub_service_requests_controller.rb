@@ -58,7 +58,7 @@ class Portal::SubServiceRequestsController < Portal::BaseController
     if @sub_service_request.update_attributes(params[:sub_service_request])
       @sub_service_request.update_based_on_status(saved_status)
       @sub_service_request.generate_approvals(@user, params)
-      @sub_service_request.distribute_surveys if @sub_service_request.status == 'complete' and @sub_service_request.status != saved_status #status is complete and it was something different before
+      @sub_service_request.distribute_surveys if @sub_service_request.is_complete? and @sub_service_request.status != saved_status #status is complete and it was something different before
       @service_request = @sub_service_request.service_request
       @protocol = @service_request.protocol
       @approvals = [@service_request.approvals, @sub_service_request.approvals].flatten
@@ -81,7 +81,6 @@ class Portal::SubServiceRequestsController < Portal::BaseController
     else
       Hash.new
     end
-
 
     if @protocol.update_attributes(attrs)
       redirect_to portal_admin_sub_service_request_path(@sub_service_request)
@@ -246,7 +245,7 @@ class Portal::SubServiceRequestsController < Portal::BaseController
     # deletes a group of documents
     sub_service_request = SubServiceRequest.find(params[:id])
     service_request = sub_service_request.service_request
-    document = service_request.documents.find params[:document_id]
+    document = service_request.protocol.documents.find params[:document_id]
     @tr_id = "#document_id_#{document.id}"
 
     sub_service_request.documents.delete document
@@ -257,7 +256,7 @@ class Portal::SubServiceRequestsController < Portal::BaseController
   def edit_documents
     @sub_service_request = SubServiceRequest.find(params[:id])
     service_request = @sub_service_request.service_request
-    @document = service_request.documents.find params[:document_id]
+    @document = service_request.protocol.documents.find params[:document_id]
     @service_list = service_request.service_list
   end
 

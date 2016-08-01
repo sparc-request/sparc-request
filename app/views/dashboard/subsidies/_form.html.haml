@@ -38,19 +38,19 @@
                   = t(:dashboard)[:subsidies][:form][:request_cost]
                 %td.col-sm-7.text-right#subsidy_form_table_request_cost{data: { cost: subsidy.total_request_cost }}
                   = number_to_currency(subsidy.total_request_cost / 100.0)
-          .form-group
-            = label_tag "current_percent_subsidy_of_total", t(:dashboard)[:subsidies][:form][:percent], class: "col-sm-4 control-label"
-            .input-group.col-sm-7
-              = text_field_tag "current_percent_subsidy_of_total", subsidy.current_percent_of_total, {class: 'form-control'}
-              %span.input-group-addon %
           = form_for subsidy, {remote: true, url: (subsidy.new_record? ? dashboard_subsidies_path : dashboard_subsidy_path(subsidy)), html: {role: "form"}} do |form|
             = form.hidden_field :sub_service_request_id
             = hidden_field_tag 'admin', admin
             .form-group
+              = form.label "percent_subsidy", t(:dashboard)[:subsidies][:form][:percent], class: "col-sm-4 control-label"
+              .input-group.col-sm-7
+                = form.text_field "percent_subsidy", { class: 'form-control', value: display_as_percent(subsidy.percent_subsidy) }
+                %span.input-group-addon %
+            .form-group
               = form.label "pi_contribution", t(:dashboard)[:subsidies][:form][:pi], class: "col-sm-4 control-label"
               .input-group.col-sm-7
                 %span.input-group-addon $
-                = form.text_field "pi_contribution", { class: 'form-control', value: cents_to_dollars_float(subsidy.pi_contribution) }
+                = form.text_field "pi_contribution", { class: 'form-control', value: (cents_to_dollars_float(subsidy.pi_contribution)).to_s }
             .row
               .col-md-12
                 %table.table.table-condensed.table-bordered

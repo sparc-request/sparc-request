@@ -69,6 +69,15 @@ $(document).ready ->
 
   $(document).on 'click', '.ssr_tab a', ->
     $.cookie('admin-tab', $(this).attr('id'), {path: '/'})
+    ##Refresh Tabs Ajax
+    protocol_id = $(this).parents('ul').data('protocol-id')
+    ssr_id = $(this).parents('ul').data('ssr-id')
+    partial_name = $(this).data('partial-name')
+
+    $.ajax
+      type: 'GET'
+      url: "/dashboard/sub_service_requests/#{ssr_id}/refresh_tab"
+      data: {"protocol_id": protocol_id, "ssr_id": ssr_id, "partial_name": partial_name}
 
   # ADMIN TAB LISTENER END
   # STUDY SCHEDULE TAB BEGIN
@@ -121,11 +130,15 @@ $(document).ready ->
   # HISTORY LISTENERS BEGIN
 
   $(document).on 'click', '.history_button', ->
+    $('#history-spinner').removeClass('hidden')
     ssr_id = $(this).data("sub-service-request-id")
     data = 'partial': $(this).data('table')
     $.ajax
       type: 'GET'
       url: "/dashboard/sub_service_requests/#{ssr_id}/change_history_tab"
       data: data
+      success: ->
+        $('#history-spinner').addClass('hidden')
+
 
   # HISTORY LISTENERS END

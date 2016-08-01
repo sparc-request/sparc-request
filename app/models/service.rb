@@ -71,14 +71,16 @@ class Service < ActiveRecord::Base
 
   validate :validate_pricing_maps_present
 
-  alias :process_ssrs_organization :organization
-
   ###############################################
   # Validations
   def validate_pricing_maps_present
     errors.add(:service, "must contain at least 1 pricing map.") if pricing_maps.length < 1
   end
   ###############################################
+
+  def process_ssrs_organization
+    organization.process_ssrs_parent
+  end
 
   # Return the parent organizations of the service.  Note that this
   # returns the organizations in the reverse order of
@@ -163,7 +165,7 @@ class Service < ActiveRecord::Base
     return service_name
   end
 
-  def display_service_abbreviation
+  def display_service_abbreviation(line_item)
     if self.abbreviation.blank?
       service_abbreviation = self.name
     elsif self.cpt_code and !self.cpt_code.blank?
@@ -172,7 +174,11 @@ class Service < ActiveRecord::Base
       service_abbreviation = self.abbreviation
     end
 
-    return service_abbreviation
+    unless line_item.sub_service_request.ssr_id.nil?
+      service_abbreviation = "(#{line_item.sub_service_request.ssr_id}) " + service_abbreviation
+    end
+
+    service_abbreviation
   end
 
   # Will check for nil display dates on the service's pricing maps

@@ -19,8 +19,8 @@ module Dashboard
         elements :core_options, "div.core-select li"
         
         # these appear if user is an admin
-        element :my_protocols_checkbox, "#filterrific_for_identity_id"
-        element :my_admin_organizations_checkbox, "#filterrific_filtered_for_admin"
+        element :my_protocols_checkbox, ".identity-protocols input"
+        element :my_admin_organizations_checkbox, ".admin-protocols input"
 
         element :apply_filter_button, :button, "Filter"
 

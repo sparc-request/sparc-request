@@ -19,5 +19,5 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 $("#filterrific_form").html("<%= escape_javascript(render(partial: '/dashboard/protocol_filters/filter_protocols_form', locals: {filterrific: @filterrific, current_user: @user, admin: @admin})) %>")
-$("#filterrific_results").html("<%= escape_javascript(render(partial: '/dashboard/protocols/protocols_list', locals: {protocols: @protocols, admin_protocols: @admin_protocols})) %>")
+$("#filterrific_results").html("<%= escape_javascript(render(partial: '/dashboard/protocols/protocols_list', locals: {protocols: @protocols, current_user: @user, admin_protocols: @admin_protocols})) %>")
 $(".selectpicker").selectpicker()

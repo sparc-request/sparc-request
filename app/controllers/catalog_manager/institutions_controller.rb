@@ -18,38 +18,19 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class CatalogManager::InstitutionsController < CatalogManager::AppController
-  respond_to :js, :html, :json
-  layout false
-
+class CatalogManager::InstitutionsController < CatalogManager::OrganizationsController
   def create
-    @institution = Institution.create({:name => params[:name], :abbreviation => params[:name], :is_available => false})
-    @user.catalog_manager_rights.create :organization_id => @institution.id
- 
-    respond_with [:catalog_manger, @institution]
+    @organization = Institution.create({name: params[:name], abbreviation: params[:name], is_available: false})
+    @user.catalog_manager_rights.create( organization_id: @organization.id )
   end
 
   def show
-    @institution = Institution.find(params[:id])
-    @institution.setup_available_statuses
+    @path = catalog_manager_institution_path
+    super
   end
 
   def update
-    @institution = Institution.find(params[:id])
-
-    unless params[:institution][:tag_list]
-      params[:institution][:tag_list] = ""
-    end
-    
-    params[:institution].delete(:id)
-    if @institution.update_attributes(params[:institution])
-      flash[:notice] = "#{@institution.name} saved correctly."
-    else
-      flash[:alert] = "Failed to update #{@institution.name}."
-    end
-    
-    @institution.setup_available_statuses
-    @entity = @institution
-    respond_with @institution, :location => catalog_manager_institution_path(@institution)
+    @attributes = params[:institution]
+    super
   end
 end

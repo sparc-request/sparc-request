@@ -34,7 +34,7 @@
       / Human Subjects selected begin
       .human_subjects_dependent{ display_if(rt_form.object.human_subjects) }
         = form.fields_for :human_subjects_info do |hs_form|
-          .form-group.row
+          .form-group.row.nct-number
             = hs_form.label :nct_number, t(:protocols)[:studies][:research_involving][:humans][:nct_number], class: 'col-lg-2 control-label'
             .col-lg-10
               = hs_form.text_field :nct_number, class: 'form-control'
@@ -67,14 +67,12 @@
           .form-group.row.irb_approval_date
             = hs_form.label :irb_approval_date, t(:protocols)[:studies][:research_involving][:humans][:irb_approval_date], class: 'col-lg-2 control-label'
             .col-lg-10
-              = hs_form.text_field :irb_approval_date, class: 'form-control', value: (protocol.human_subjects_info.irb_approval_date.strftime('%_m/%d/%Y') rescue nil)
-              = hs_form.hidden_field :irb_approval_date
+              = hs_form.text_field :irb_approval_date, class: 'datetimepicker form-control', value: (protocol.human_subjects_info.irb_approval_date.strftime('%_m/%d/%Y') rescue nil)
 
           .form-group.row.irb_expiration_date
             = hs_form.label :irb_expiration_date, t(:protocols)[:studies][:research_involving][:humans][:irb_expiration_date], class: 'col-lg-2 control-label'
             .col-lg-10
-              = hs_form.text_field :irb_expiration_date, class: 'form-control', value: (protocol.human_subjects_info.irb_expiration_date.strftime('%_m/%d/%Y') rescue nil)
-              = hs_form.hidden_field :irb_expiration_date
+              = hs_form.text_field :irb_expiration_date, class: 'datetimepicker form-control', value: (protocol.human_subjects_info.irb_expiration_date.strftime('%_m/%d/%Y') rescue nil)
 
           .form-group.row
             = form.label :study_phase, t(:protocols)[:studies][:information][:phase], class: 'col-lg-2 control-label'
@@ -101,16 +99,14 @@
               = va_form.text_field :name_of_iacuc, class: 'form-control'
 
           .form-group.row
-            = va_form.hidden_field :iacuc_approval_date
             = va_form.label :iacuc_approval_date, t(:protocols)[:studies][:research_involving][:vertebrates][:iacuc_approval_date], class: 'col-lg-2 control-label'
             .col-lg-10
-              = va_form.text_field :iacuc_approval_date, class: 'form-control', value: (protocol.vertebrate_animals.iacuc_approval_date.strftime('%_m/%d/%Y') rescue nil)
+              = va_form.text_field :iacuc_approval_date, class: 'datetimepicker form-control', value: (protocol.vertebrate_animals_info.iacuc_approval_date.strftime('%_m/%d/%Y') rescue nil)
 
           .form-group.row
-            = va_form.hidden_field :iacuc_expiration_date
             = va_form.label :iacuc_expiration_date, t(:protocols)[:studies][:research_involving][:vertebrates][:iacuc_expiration_date], class: 'col-lg-2 control-label'
             .col-lg-10
-              = va_form.text_field :iacuc_expiration_date, class: 'form-control', value: (protocol.vertebrate_animals.iacuc_expiration_date.strftime('%_m/%d/%Y') rescue nil)
+              = va_form.text_field :iacuc_expiration_date, class: 'datetimepicker form-control', value: (protocol.vertebrate_animals_info.iacuc_expiration_date.strftime('%_m/%d/%Y') rescue nil)
       / Vertebrate Animals selected end
 
       .form-group.row.investigational_products
@@ -125,6 +121,11 @@
             = ip_form.label :ind_number, t(:protocols)[:studies][:research_involving][:products][:ind_number], class: 'col-lg-2 control-label'
             .col-lg-10
               = ip_form.text_field :ind_number, class: 'form-control'
+
+          .form-group.row#ind-on-hold-group{ display_if(!ip_form.object.ind_number.blank?) }
+            = ip_form.label :ind_on_hold, t(:protocols)[:studies][:research_involving][:products][:ind_on_hold], class: 'col-lg-2 control-label'
+            .col-lg-1
+              = ip_form.check_box :ind_on_hold, class: 'form-control'
 
           .form-group.row
             = ip_form.label :ide_number, t(:protocols)[:studies][:research_involving][:products][:ide_number], class: 'col-lg-2 control-label'

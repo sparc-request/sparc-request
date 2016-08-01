@@ -67,23 +67,28 @@ class Organization < ActiveRecord::Base
 
   # TODO: In rails 5, the .or operator will be added for ActiveRecord queries. We should try to 
   #       condense this to a single query at that point
-  scope :authorized_for_identity, -> (identity_id, sp_only=false) {
-    super_user_orgs                 = joins(:super_users).where(super_users: {identity_id: identity_id} ).distinct
-    service_provider_orgs           = joins(:service_providers).where(service_providers: {identity_id: identity_id} ).distinct
-
-    super_user_orgs_children        = authorized_child_organizations(super_user_orgs.pluck(:id))
-    service_provider_orgs_children  = authorized_child_organizations(service_provider_orgs.pluck(:id))
-    
-    # To get around merge-and in activerecord, we get all the organizations as an array, then convert it back
-    # to an ActiveRecord Relation through another query on the IDs
-    if sp_only
-      Organization.where(id: (service_provider_orgs | service_provider_orgs_children)).where.not(id: (super_user_orgs | super_user_orgs_children)).distinct
-    else
-      Organization.where(id: (super_user_orgs | super_user_orgs_children | service_provider_orgs | service_provider_orgs_children) ).distinct
-    end
+  scope :authorized_for_identity, -> (identity_id) {
+    orgs = includes(:super_users, :service_providers).where("super_users.identity_id = ? or service_providers.identity_id = ?", identity_id, identity_id).references(:super_users, :service_providers).uniq(:organizations)
+    where(id: orgs + Organization.authorized_child_organizations(orgs.map(&:id))).distinct
   }
 
   scope :in_cwf, -> { joins(:tags).where(tags: { name: 'clinical work fulfillment' }) }
+
+  scope :available_institutions, -> {
+    Organization.where(type: 'Institution', is_available: true)
+  }
+
+  scope :available_providers, -> {
+    Organization.where(type: 'Provider', is_available: true, parent: available_institutions)
+  }
+
+  scope :available_programs, -> {
+    Organization.where(type: 'Program', is_available: true, parent: available_providers)
+  }
+
+  scope :available_cores, -> {
+    Organization.where(type: 'Core', is_available: true, parent: available_programs)
+  }
 
   def label
     abbreviation || name
@@ -176,6 +181,7 @@ class Organization < ActiveRecord::Base
 
   # Returns an array of all children (and children of children) of this organization (deep search).
   # Optionally includes self
+  # TODO: doesn't actually include self, look into this
   def all_children (all_children=[], include_self=true, orgs)
     self.children(orgs).each do |child|
       all_children << child
@@ -185,6 +191,14 @@ class Organization < ActiveRecord::Base
     all_children << self if include_self
 
     all_children.uniq
+  end
+
+  def update_descendants_availability(is_available)
+    if is_available == "false"
+      children = Organization.where(id: all_child_organizations << self)
+      children.update_all(is_available: false)
+      Service.where(organization_id: children).update_all(is_available: false)
+    end
   end
 
   # Returns an array of all services that are offered by this organization as well of all of its
@@ -393,6 +407,7 @@ class Organization < ActiveRecord::Base
   private
 
   def self.authorized_child_organizations(org_ids)
+    org_ids = org_ids.flatten.compact
     if org_ids.empty?
       []
     else

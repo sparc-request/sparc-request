@@ -85,6 +85,8 @@ GEM
     audited-activerecord (4.2.0)
       activerecord (~> 4.0)
       audited (= 4.2.0)
+    autoprefixer-rails (6.3.6.2)
+      execjs
     axiom-types (0.1.1)
       descendants_tracker (~> 0.0.4)
       ice_nine (~> 0.11.0)
@@ -98,8 +100,9 @@ GEM
       rails (>= 3.1)
     bcrypt (3.1.10)
     bluecloth (2.2.0)
-    bootstrap-sass (3.2.0.2)
-      sass (~> 3.2)
+    bootstrap-sass (3.3.6)
+      autoprefixer-rails (>= 5.2.1)
+      sass (>= 3.3.4)
     bootstrap-select-rails (1.6.3)
     bootstrap3-datetimepicker-rails (4.17.37)
       momentjs-rails (>= 2.8.1)
@@ -384,7 +387,7 @@ GEM
     rvm-capistrano (1.5.6)
       capistrano (~> 2.15.4)
     safe_yaml (1.0.4)
-    sass (3.4.19)
+    sass (3.4.22)
     sass-rails (5.0.4)
       railties (>= 4.0.0, < 5.0)
       sass (~> 3.1)
@@ -488,7 +491,7 @@ DEPENDENCIES
   axlsx
   axlsx_rails
   bluecloth
-  bootstrap-sass (~> 3.2.0)
+  bootstrap-sass
   bootstrap-select-rails
   bootstrap3-datetimepicker-rails
   bullet

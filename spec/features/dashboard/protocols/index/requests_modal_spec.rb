@@ -19,7 +19,6 @@ RSpec.describe 'requests modal', js: true do
   let!(:service_request) do
     create(:service_request_without_validations,
       protocol: protocol,
-      service_requester: jug2,
       status: 'draft')
   end
 

@@ -318,6 +318,26 @@ RSpec.describe ServiceCalendarsController do
 
       expect(visit.quantity).to eq(8 + 17 + 42)
     end
+
+    it 'should update the status to draft' do
+      visit = arm1.visits[0]
+      service_request.update_attributes(status: 'submitted')
+      service_request.sub_service_requests.update_all(status: 'submitted')
+
+      session[:service_request_id] = service_request.id
+      session[:sub_service_request_id] = line_item.sub_service_request.id
+
+      xhr :get, :update, {
+        :format              => :js,
+        :tab                 => 'foo',
+        :service_request_id  => service_request.id,
+        :line_item           => line_item.id,
+        :visit               => visit.id,
+      }.with_indifferent_access
+
+      expect(assigns(:service_request).status).to eq 'draft'
+      expect(assigns(:sub_service_request).status).to eq 'draft'
+    end
   end
 
   context('calendar methods') do
@@ -350,7 +370,7 @@ RSpec.describe ServiceCalendarsController do
     build_project
     build_arms
 
-    describe 'POST select_calendar_row' do
+    describe 'GET toggle_calendar_row checked' do
 
       it 'should set line item' do
         liv = LineItemsVisit.for(arm1, line_item1)
@@ -359,10 +379,11 @@ RSpec.describe ServiceCalendarsController do
         add_visits_to_arm_line_item(arm1, line_item1, 3)
 
         session[:service_request_id] = service_request.id
-        post :select_calendar_row, {
+        post :toggle_calendar_row, {
           :id                   => service_request.id,
           :line_items_visit_id  => liv.id,
-          :format               => :js
+          :format               => :js,
+          :check                => true
         }.with_indifferent_access
 
         expect(assigns(:line_items_visit)).to eq liv
@@ -375,12 +396,12 @@ RSpec.describe ServiceCalendarsController do
         add_visits_to_arm_line_item(arm1, line_item1, 3)
 
         session[:service_request_id] = service_request.id
-        post :select_calendar_row, {
+        post :toggle_calendar_row, {
           :id                   => service_request.id,
           :line_items_visit_id  => liv.id,
-          :format               => :js
+          :format               => :js,
+          :check                => true,
         }.with_indifferent_access
-
         expect(liv.visits.count).to eq 3
         expect(liv.visits[0].quantity).to               eq 100
         expect(liv.visits[0].research_billing_qty).to   eq 100
@@ -397,7 +418,7 @@ RSpec.describe ServiceCalendarsController do
       end
     end
 
-    describe 'GET unselect_calendar_row' do
+    describe 'GET toggle_calendar_row, uncheck' do
       it 'should set line item' do
         liv = LineItemsVisit.for(arm1, line_item1)
 
@@ -405,10 +426,11 @@ RSpec.describe ServiceCalendarsController do
         add_visits_to_arm_line_item(arm1, line_item1, 3)
 
         session[:service_request_id] = service_request.id
-        post :unselect_calendar_row, {
+        post :toggle_calendar_row, {
           :id                   => service_request.id,
           :line_items_visit_id  => liv.id,
-          :format               => :js
+          :format               => :js,
+          :uncheck              => true
         }.with_indifferent_access
 
         expect(assigns(:line_items_visit)).to eq liv
@@ -421,10 +443,11 @@ RSpec.describe ServiceCalendarsController do
         add_visits_to_arm_line_item(arm1, line_item1, 3)
 
         session[:service_request_id] = service_request.id
-        post :unselect_calendar_row, {
+        post :toggle_calendar_row, {
           :id                   => service_request.id,
           :line_items_visit_id  => liv.id,
-          :format               => :js
+          :format               => :js,
+          :uncheck              => true,
         }.with_indifferent_access
 
         expect(liv.visits.count).to eq 3
@@ -442,8 +465,8 @@ RSpec.describe ServiceCalendarsController do
         expect(liv.visits[2].effort_billing_qty).to     eq 0
       end
     end
-
-    describe 'GET select_calendar_column' do
+    
+    describe 'GET toggle_calendar_column, checked' do
       it 'should update each of the visits' do
         pricing_map1.update_attribute(:unit_minimum, 100)
         pricing_map2.update_attribute(:unit_minimum, 100)
@@ -454,30 +477,63 @@ RSpec.describe ServiceCalendarsController do
         add_visits_to_arm_line_item(arm1, line_item3, 3)
 
         session[:service_request_id] = service_request.id
-        post :select_calendar_column, {
+        post :toggle_calendar_column, {
           :id            => service_request.id,
           :column_id     => 2, # 1-based
           :arm_id        => arm1.id,
           :format        => :js,
+          :check         => true,
         }.with_indifferent_access
 
         liv = LineItemsVisit.for(arm1, line_item1)
-        expect(liv.visits[1].quantity).to               eq 100
-        expect(liv.visits[1].research_billing_qty).to   eq 100
-        expect(liv.visits[1].insurance_billing_qty).to  eq 0
-        expect(liv.visits[1].effort_billing_qty).to     eq 0
-        expect(liv.visits[1].quantity).to               eq 100
-        expect(liv.visits[1].research_billing_qty).to   eq 100
-        expect(liv.visits[1].insurance_billing_qty).to  eq 0
-        expect(liv.visits[1].effort_billing_qty).to     eq 0
+
         expect(liv.visits[1].quantity).to               eq 100
         expect(liv.visits[1].research_billing_qty).to   eq 100
         expect(liv.visits[1].insurance_billing_qty).to  eq 0
         expect(liv.visits[1].effort_billing_qty).to     eq 0
       end
+
+      it 'should not update locked visits' do
+        locked_org = create(:organization)
+        
+        EDITABLE_STATUSES[locked_org.id] = ['draft']
+
+                              create( :sub_service_request_without_validations,
+                                      service_request: service_request,
+                                      organization: locked_org,
+                                      status: 'on_hold' )
+        locked_service      = create( :service,
+                                      pricing_map_count: 1,
+                                      organization: locked_org )
+        locked_line_item    = create( :line_item,
+                                      service_id: service1.id,
+                                      service_request_id: service_request.id,
+                                      sub_service_request_id: sub_service_request.id )
+
+        locked_pricing_map  = locked_service.pricing_maps[0]
+        locked_pricing_map.update_attributes(display_date: Date.today, unit_minimum: 100)
+        
+        add_visits_to_arm_line_item(arm1, locked_line_item, 3)
+
+        session[:service_request_id] = service_request.id
+        post :toggle_calendar_column, {
+          :id            => service_request.id,
+          :column_id     => 2, # 1-based
+          :arm_id        => arm1.id,
+          :format        => :js,
+          :check         => true,
+        }.with_indifferent_access
+
+        liv = LineItemsVisit.for(arm1, locked_line_item)
+
+        expect(liv.visits[0].quantity).to               eq 0
+        expect(liv.visits[0].research_billing_qty).to   eq 0
+        expect(liv.visits[0].insurance_billing_qty).to  eq 0
+        expect(liv.visits[0].effort_billing_qty).to     eq 0
+      end
     end
 
-    describe 'GET unselect_calendar_column' do
+    describe 'POST toggle_calendar_column, uncheck' do
       it 'should update each of the visits' do
         pricing_map1.update_attribute(:unit_minimum, 100)
         pricing_map2.update_attribute(:unit_minimum, 100)
@@ -488,26 +544,64 @@ RSpec.describe ServiceCalendarsController do
         add_visits_to_arm_line_item(arm1, line_item3, 3)
 
         session[:service_request_id] = service_request.id
-        post :unselect_calendar_column, {
+        post :toggle_calendar_column, {
           :id            => service_request.id,
           :column_id     => 2, # 1-based
           :arm_id        => arm1.id,
           :format        => :js,
+          :uncheck       => true,
         }.with_indifferent_access
 
         liv = LineItemsVisit.for(arm1, line_item1)
+
         expect(liv.visits[1].quantity).to               eq 0
         expect(liv.visits[1].research_billing_qty).to   eq 0
         expect(liv.visits[1].insurance_billing_qty).to  eq 0
         expect(liv.visits[1].effort_billing_qty).to     eq 0
-        expect(liv.visits[1].quantity).to               eq 0
-        expect(liv.visits[1].research_billing_qty).to   eq 0
-        expect(liv.visits[1].insurance_billing_qty).to  eq 0
-        expect(liv.visits[1].effort_billing_qty).to     eq 0
-        expect(liv.visits[1].quantity).to               eq 0
-        expect(liv.visits[1].research_billing_qty).to   eq 0
-        expect(liv.visits[1].insurance_billing_qty).to  eq 0
-        expect(liv.visits[1].effort_billing_qty).to     eq 0
+      end
+
+      it 'should not update locked visits' do
+        locked_org = create(:organization)
+        
+        EDITABLE_STATUSES[locked_org.id] = ['draft']
+
+                              create( :sub_service_request_without_validations,
+                                      service_request: service_request,
+                                      organization: locked_org,
+                                      status: 'on_hold' )
+        locked_service      = create( :service,
+                                      pricing_map_count: 1,
+                                      organization: locked_org )
+        locked_line_item    = create( :line_item,
+                                      service_id: service1.id,
+                                      service_request_id: service_request.id,
+                                      sub_service_request_id: sub_service_request.id)
+
+        locked_pricing_map  = locked_service.pricing_maps[0]
+        locked_pricing_map.update_attributes(display_date: Date.today, unit_minimum: 100)
+
+        add_visits_to_arm_line_item(arm1, locked_line_item, 3)
+
+        # Set all of the quantities to 100 before-hand
+        liv = LineItemsVisit.for(arm1, locked_line_item)
+        liv.visits[0].update_attributes(  quantity: 100,
+                                          research_billing_qty: 100,
+                                          insurance_billing_qty: 100,
+                                          effort_billing_qty: 100  )
+        
+        session[:service_request_id] = service_request.id
+        post :toggle_calendar_column, {
+          :id            => service_request.id,
+          :column_id     => 2, # 1-based
+          :arm_id        => arm1.id,
+          :format        => :js,
+          :uncheck       => true,
+        }.with_indifferent_access
+
+        expect(liv.visits[0].quantity).to               eq 100
+        expect(liv.visits[0].research_billing_qty).to   eq 100
+        expect(liv.visits[0].insurance_billing_qty).to  eq 100
+        expect(liv.visits[0].effort_billing_qty).to     eq 100
       end
     end
   end

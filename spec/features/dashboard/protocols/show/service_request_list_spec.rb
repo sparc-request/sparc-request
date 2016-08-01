@@ -28,11 +28,11 @@ RSpec.describe 'service request list', js: true do
         it 'should create a new Note and display it in modal' do
           service_request = create(:service_request_without_validations,
                                    protocol: protocol,
-                                   service_requester: user,
                                    status: 'draft')
           create(:sub_service_request,
                  service_request: service_request,
-                 organization: create(:organization))
+                 organization: create(:organization),
+                 status: 'draft')
 
           page = go_to_show_protocol(protocol.id)
           page.service_requests.first.notes_button.click
@@ -52,11 +52,9 @@ RSpec.describe 'service request list', js: true do
 
   describe 'displayed SubServiceRequest' do
     let!(:protocol) { create(:unarchived_study_without_validations, primary_pi: user) }
-    let!(:service_requester) { create(:identity, first_name: 'Some', last_name: 'Guy') }
     let!(:service_request) do
       create(:service_request_without_validations,
       protocol: protocol,
-      service_requester: service_requester,
       status: 'draft')
     end
     let!(:organization) do
@@ -69,7 +67,8 @@ RSpec.describe 'service request list', js: true do
       create(:sub_service_request,
         ssr_id: '1234',
         service_request: service_request,
-        organization_id: organization.id)
+        organization_id: organization.id,
+        status: 'draft')
     end
 
     describe 'sending notifications' do
@@ -127,11 +126,9 @@ RSpec.describe 'service request list', js: true do
 
   describe 'buttons' do
     let!(:protocol) { create(:unarchived_study_without_validations, primary_pi: user) }
-    let!(:service_requester) { create(:identity, first_name: 'Some', last_name: 'Guy') }
     let!(:service_request) do
       create(:service_request_without_validations,
         protocol: protocol,
-        service_requester: service_requester,
         status: 'draft')
     end
     let!(:organization) do
@@ -146,7 +143,8 @@ RSpec.describe 'service request list', js: true do
         id: 9999,
         ssr_id: '1234',
         service_request: service_request,
-        organization_id: organization.id)
+        organization_id: organization.id,
+        status: 'draft')
     end
 
     scenario 'user clicks "Modify Request" button' do

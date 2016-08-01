@@ -23,6 +23,8 @@ en:
   about_title: "About SPARC Request"
   activerecord:
     attributes:
+      fulfillment:
+        time: "Quantity"
       human_subjects_info:
         nct_number: "The NCT #"
       protocol:
@@ -60,9 +62,11 @@ en:
     no_select: "No"
     prompts:
       any: "- Any -"
+      please_specify: "Please specify: *"
       select: "---Please Select---"
       search_for_user: "Search for a User"
       select_one: "Select One"
+
 
   calendars:
     pppv:
@@ -153,7 +157,7 @@ en:
         subtext: "Check all that apply"
         humans:
           header: "Human Subjects:"
-          nct_number: "NCT #:"
+          nct_number: "NCT# (National Clinical Trials Number):"
           hr_number: "HR #:"
           pro_number: "PRO #:"
           record_irb: "IRB of Record:"
@@ -262,6 +266,7 @@ en:
       college: "College:"
       college_prompt: "Select a College"
       department: "Department:"
+      phone: "Phone:"
       department_prompt: "Select a Department"
       subspecialty: "Subspecialty:"
       subspecialty_prompt: "Select a Subspecialty"
@@ -280,6 +285,7 @@ en:
     #  DOCUMENTS  #
     ###############
     documents:
+      header: "Documents"
       add: "Add a New Document"
       edit: "Edit Document"
       created: "Document Uploaded!"
@@ -290,9 +296,10 @@ en:
         title: "Title"
         uploaded: "Uploaded"
       form:
-        document_type: "Document Type:"
-        document_type_other: "Other Document Type:"
-        document: "Document:"
+        document_type: "Document Type:*"
+        specify_doc_type: "Please Specify:*"
+        document: "Document:*"
+        access: "Allow Access:"
 
     #################
     #  EPIC QUEUES  #
@@ -310,17 +317,17 @@ en:
       destroyed: "Fulfillment Destroyed!"
       table:
         date: "Fulfillment Date"
-        time_unit: "Time Unit"
-        time: "Time"
+        time_unit: "Qty Type"
+        time: "Quantity"
         actions: "Actions"
       actions:
         notes: " Notes"
         edit: " Edit Fulfillment"
         delete: " Delete Fulfillment"
       form:
-        date: "Fulfillment Date:"
-        time: "Time:"
-        time_unit: "Time Unit:"
+        date: "Fulfillment Date:*"
+        time: "Quantity:*"
+        time_unit: "Qty Type:*"
 
     ################
     #  LINE ITEMS  #
@@ -410,7 +417,7 @@ en:
       archived: "Archived"
       status: "Status"
       my_protocols: "My Protocols"
-      my_admin_orgs: "My Admin Organizations"
+      my_admin_protocols: "My Admin Protocols"
       organization: "Organization"
       filter: "Filter"
       saved_filters:
@@ -455,6 +462,10 @@ en:
         phone: "Phone"
         rights: "Proxy Rights"
 
+      documents:
+        header: "Documents"
+        add_document: "Add Document"
+
       service_requests:
         header: "Service Requests"
         view_consolidated: "View Consolidated Request"
@@ -495,7 +506,7 @@ en:
             none: "No Research Types selected"
             humans:
               header: "Human Subjects"
-              nct_number: "NCT #:"
+              nct_number: "NCT# (National Clinical Trials Number):"
               hr_number: "HR #:"
               pro_number: "PRO #:"
               record_irb: "IRB of Record:"
@@ -513,7 +524,7 @@ en:
               header: "Investigational Products"
               ind_number: "IND #:"
               ind_on_hold: "IND on Hold?:"
-              ide_number: "IDE #:"
+              ide_number: "IDE# / HDE# / HUD#:"
             ip_patents:
               header: "IP/Patents"
               number: "Patent Number:"
@@ -567,6 +578,7 @@ en:
       modify_request: "Modify Request"
       srid: "SRID"
       organization: "Organization"
+      owner: "Owner"
       status: "Status"
       notifications: "Notifications"
       actions:
@@ -675,11 +687,20 @@ en:
             date: "Date Changed"
             from: "Status Changed From"
             to: "Status Changed To"
+            by: "Changed by"
           approval:
             header: "Approval History"
             date: "Date Approved"
             type: "Type"
             by: "Approved By"
+          subsidy:
+            header: "Subsidy History"
+            date: "Date Approved"
+            request_cost: "Request Cost at Approval"
+            percent: "% Subsidy"
+            contribution: "PI Contribution"
+            subsidy_cost: "Subsidy Cost"
+            approved_by: "Approved By"
 
         notifications:
           header: "Notifications"
@@ -697,7 +718,7 @@ en:
         header: "Subsidy Information"
         approved:
           header: "Current Effective Subsidy"
-          request_cost: "Request Cost at Approval"
+          request_cost: "Cost at Approval"
           percent: "% Subsidy"
           pi_contribution: "PI Contribution"
           cost: "Subsidy Cost"
@@ -706,12 +727,12 @@ en:
           none: "There is no current effective subsidy."
         pending:
           header: "Subsidy Pending Approval"
-          request_cost: "Request Current Cost"
+          request_cost: "Current Cost"
           percent: "% Subsidy"
           pi_contribution: "PI Contribution"
           cost: "Subsidy Current Cost"
           approve: "Approve"
-        add: "Add a Subsidy"
+        add: "Request a Subsidy"
       form:
         request_cost: "Current Request Cost:"
         percent: "Percent Subsidy:"
@@ -854,6 +875,7 @@ en:
       decrement: "-"
       increment: "+"
       day: "Day"
+      status: "Status"
     labels:
       direct_cost: "Total Direct Cost"
       grand_total_direct: "Grand Total: Direct Costs"
@@ -918,6 +940,7 @@ en:
     default_statuses: "Default Statuses:"
     description: "Description"
     disabled: "Do not display in SPARC"
+    disabled_at: "Disabled at: %{disabled_parent}"
     epic_info: "Epic Interface"
     errors: "Effective Date, Display Dates, Percent of Fee, and Rates are required on all pricing setups."
     gen_info: "General Information"
@@ -1108,7 +1131,7 @@ en:
     iacuc_approval_date: "IACUC Approval Date:"
     iacuc_expiration_date: "IACUC Expiration Date:"
     iacuc_number: "IACUC #:"
-    ide_number: "IDE#:"
+    ide_number: "IDE# / HDE# / HUD#:"
     impact: "Impact Areas"
     ind_number: "IND#:"
     ind_on_hold: "IND on Hold?"
@@ -1120,7 +1143,7 @@ en:
     irb_expiration_date: "IRB Expiration Date:"
     irb_of_record: "IRB of Record:"
     name_of_iacuc: "Name of IACUC:"
-    nct_number: "NCT #:"
+    nct_number: "NCT# (National Clinical Trials Number):"
     needed_info: "Information needed to obtain correct pricing"
     optional_text: "Optional Information"
     optional_text2: "(used for reporting purposes and saved for your future use)"
@@ -1209,7 +1232,7 @@ en:
       delete: "Delete Subsidy"
       effective_current_total_cost: "Subsidy Current Cost"
       header: "Subsidy Information"
-      link: "Add a Subsidy"
+      link: "Request a Subsidy"
       no_subsidy: "No subsidy has been requested for this service request."
       percent: "% Subsidy"
       pi: "PI Contribution"
@@ -1408,6 +1431,7 @@ en:
     split_notify: "Split/Notify Here"
     css_class: "Color"
     disabled: "Do not display in SPARC"
+    disabled_at: "Disabled at: %{disabled_parent}"
     one_time_fee: "One Time Fee"
     core_facility: "Core/Facility Based Services"
     service_center_cost: "Service Center Cost"
@@ -1823,7 +1847,6 @@ en:
 
   # Right navigation
   right_navigation:
-    ask_a_question: "Ask A Question"
     catalog: "Back to Catalog"
     dashboard: "Dashboard"
     faq: "Help/FAQs"
@@ -2043,6 +2066,7 @@ en:
     subspecialty: "Subspecialty:"
     subspecialty_prompt: "Select a Subspecialty"
     update_button: "Update Authorized User"
+    other: "Please Specify"
 
   # User list partial
   user_list:

@@ -41,6 +41,7 @@ class Protocol < ActiveRecord::Base
   has_many :study_type_answers,           dependent: :destroy
   has_many :notes, as: :notable,          dependent: :destroy
   has_many :study_type_questions,         through: :study_type_question_group
+  has_many :documents,                    dependent: :destroy
 
   belongs_to :study_type_question_group
 
@@ -129,8 +130,7 @@ class Protocol < ActiveRecord::Base
     default_filter_params: { show_archived: 0 },
     available_filters: [
       :search_query,
-      :for_identity_id,
-      :filtered_for_admin,
+      :admin_filter,
       :show_archived,
       :with_status,
       :with_organization
@@ -140,16 +140,18 @@ class Protocol < ActiveRecord::Base
   scope :search_query, -> (search_term) {
     # Searches protocols based on short_title, title, id, and associated_users
     # Protects against SQL Injection with ActiveRecord::Base::sanitize
-    like_search_term = ActiveRecord::Base::sanitize("%#{search_term}%")
+
+    # inserts ! so that we can escape special characters
+    escaped_search_term = search_term.to_s.gsub(/[!%_]/) { |x| '!' + x }
+
+    like_search_term = ActiveRecord::Base::sanitize("%#{escaped_search_term}%")
     exact_search_term = ActiveRecord::Base::sanitize(search_term)
 
     #TODO temporary replacement for "MATCH(identities.first_name, identities.last_name) AGAINST (#{exact_search_term})"
-    where_clause = search_term.to_s.split.map do |term|
-      "CONCAT(identities.first_name, identities.last_name) LIKE #{ActiveRecord::Base::sanitize("%#{term}%")}"
-    end
+    where_clause = ["CONCAT(identities.first_name, ' ', identities.last_name) LIKE #{like_search_term} escape '!'"]
 
-    where_clause += ["protocols.short_title like #{like_search_term}",
-      "protocols.title like #{like_search_term}",
+    where_clause += ["protocols.short_title like #{like_search_term} escape '!'",
+      "protocols.title like #{like_search_term} escape '!'",
       "protocols.id = #{exact_search_term}"]
 
     joins(:identities).
@@ -164,30 +166,23 @@ class Protocol < ActiveRecord::Base
       where.not(project_roles: { project_rights: 'none' })
   }
 
+  scope :admin_filter, -> (params) {
+    filter, id  = params.split(" ")
+    if filter == 'for_admin'
+      for_admin(id)
+    elsif filter == 'for_identity'
+      for_identity_id(id)
+    end
+  }
+
   scope :for_admin, -> (identity_id) {
     # returns protocols with ssrs in orgs authorized for identity_id
     return nil if identity_id == '0'
-    joins(:organizations).
-      merge( Organization.authorized_for_identity(identity_id) ).distinct
-  }
 
-  scope :filtered_for_admin, -> (identity_id) {
-    # returns protocols with ssrs in orgs authorized for identity_id
-    return nil if identity_id == '0'
+    ssrs = SubServiceRequest.where.not(status: 'first_draft').where(organization_id: Organization.authorized_for_identity(identity_id))
 
-    # We want to find all protocols where the user is an Admin AND Authorized User
-    # as they will be filtered out by the SP Only Organizations queries
-    sp_only_admin_orgs        = Organization.authorized_for_identity(identity_id, true)
-
-    if sp_only_admin_orgs.any?
-      admin_protocols           = for_admin(identity_id)
-      authorized_user_protocols = joins(:project_roles).where(project_roles: { identity_id: identity_id }) & admin_protocols
-      visible_admin_protocols   = admin_protocols.to_a.reject { |p| p.should_be_hidden_for_sp?(sp_only_admin_orgs) }
-      
-      where(id: (authorized_user_protocols | visible_admin_protocols)).distinct
-    else
-      for_admin(identity_id)
-    end
+    joins(:sub_service_requests).
+      merge(ssrs).distinct
   }
 
   scope :show_archived, -> (boolean) {
@@ -196,14 +191,14 @@ class Protocol < ActiveRecord::Base
 
   scope :with_status, -> (status) {
     # returns protocols with ssrs in status
-    return nil if status == "" or status == [""]
+    return nil if status.reject!(&:blank?) == []
     joins(:sub_service_requests).
     where(sub_service_requests: { status: status }).distinct
   }
 
   scope :with_organization, -> (org_id) {
     # returns protocols with ssrs in org_id
-    return nil if org_id == "" or org_id == [""]
+    return nil if org_id.reject!(&:blank?) == []
     joins(:sub_service_requests).
     where(sub_service_requests: { organization_id: org_id }).distinct
   }
@@ -451,35 +446,11 @@ class Protocol < ActiveRecord::Base
     return self.service_requests.detect { |sr| !['first_draft'].include?(sr.status) }
   end
 
-  def has_per_patient_per_visit? current_request, portal
+  def has_line_items_of_type?(current_request, portal, type)
     return self.service_requests.detect do |sr|
-      if sr.has_per_patient_per_visit_services?
-        if ['first_draft'].include?(sr.status)
-          if portal
-            false
-          elsif current_request == sr
-            true
-          end
-        else
-          true
-        end
-      end
-    end
-  end
-
-  def has_one_time_fees? current_request, portal
-    return self.service_requests.detect do |sr|
-      if sr.has_one_time_fee_services?
-        if ['first_draft'].include?(sr.status)
-          if portal
-            false
-          elsif current_request == sr
-            true
-          end
-        else
-          true
-        end
-      end
+      next unless ((type == "otf") ? sr.has_one_time_fee_services? : sr.has_per_patient_per_visit_services?)
+      #Only return first_draft sr's if NOT in portal, AND the current_request == the sr variable
+      sr.status == "first_draft" ? (!portal && current_request == sr) : true
     end
   end
 
@@ -524,8 +495,8 @@ class Protocol < ActiveRecord::Base
     end
   end
 
-  def should_be_hidden_for_sp?(sp_only_admin_orgs)
-    (service_requests.reject { |sr| sr.should_be_hidden_for_sp?(sp_only_admin_orgs) }).empty?
+  def has_non_first_draft_ssrs?
+    sub_service_requests.where.not(status: 'first_draft').any?
   end
 
   private

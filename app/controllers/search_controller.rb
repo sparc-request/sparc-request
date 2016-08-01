@@ -22,17 +22,24 @@ class SearchController < ApplicationController
   before_filter :initialize_service_request
   before_filter :authorize_identity
   def services
-    term = params[:term].strip
-    results = Service.where("(name LIKE ? OR abbreviation LIKE ? OR cpt_code LIKE ?) AND is_available != ?", "%#{term}%", "%#{term}%", "%#{term}%", "0")
-                     .reject{|s| (s.parents.map(&:is_available).compact.all? == false) or ((s.current_pricing_map rescue false) == false)}
-    
+    term              = params[:term].strip
+    service_request   = ServiceRequest.find(session[:service_request_id])
+    locked_ssrs       = service_request.sub_service_requests.reject{ |ssr| ssr.can_be_edited? && !ssr.is_complete?}
+    locked_org_ids    = locked_ssrs.map(&:organization_id)
+    locked_child_ids  = Organization.authorized_child_organizations(locked_org_ids).map(&:id)
+
+    results = Service.
+                where("(name LIKE ? OR abbreviation LIKE ? OR cpt_code LIKE ?) AND is_available = ?", "%#{term}%", "%#{term}%", "%#{term}%", "1").
+                where(organization: (Organization.available_cores | Organization.available_programs)).
+                where.not(organization_id: locked_org_ids + locked_child_ids).
+                reject { |s| (s.current_pricing_map rescue false) == false } # Why is this here?
+
     unless @sub_service_request.nil?
       results = results.reject{|s| s.parents.exclude? @sub_service_request.organization}
     end
 
-    service_request = ServiceRequest.find(session[:service_request_id])
     first_service = service_request.line_items.count == 0
-    
+
     results = results.map { |s|
       {
         :parents      => s.parents.map(&:abbreviation).join(' | '),
@@ -41,7 +48,9 @@ class SearchController < ApplicationController
         :description  => s.description,
         :sr_id        => session[:service_request_id],
         :from_portal  => session[:from_portal],
-        :first_service => first_service
+        :first_service => first_service,
+        :abbreviation => s.abbreviation,
+        :cpt_code     => s.cpt_code
       }
     }
 
@@ -52,7 +61,7 @@ class SearchController < ApplicationController
 
   def identities
     term = params[:term].strip
-    results = Identity.search(term).map do |i| 
+    results = Identity.search(term).map do |i|
       {
        :label              => i.display_name,
        :value              => i.id,

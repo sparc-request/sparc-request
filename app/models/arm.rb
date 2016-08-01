@@ -43,6 +43,10 @@ class Arm < ActiveRecord::Base
   validates :visit_count, numericality: { greater_than: 0 }
   validates :subject_count, numericality: { greater_than: 0 }
 
+  def sanitized_name
+    name.gsub(/\[|\]|\*|\/|\\|\?|\:/, ' ')
+  end
+
   def update_liv_subject_counts
 
     self.line_items_visits.each do |liv|

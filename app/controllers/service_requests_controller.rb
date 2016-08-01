@@ -338,7 +338,6 @@ class ServiceRequestsController < ApplicationController
       update_service_request_status(@service_request, 'draft')
       @service_request.ensure_ssr_ids
     end
-
     redirect_to dashboard_root_path
   end
 

@@ -31,9 +31,6 @@ $(document).ready ->
         protocol_id: $(this).data('protocol-id')
     return false
 
-  $(document).on 'click', '#add-arm-form-button', ->
-    $(this).attr('disabled','disabled')
-
   $(document).on 'click', '.edit-arm-button', ->
     arm_id = $(this).data('arm-id')
     $.ajax
@@ -52,4 +49,4 @@ $(document).ready ->
         url: "/arms/#{arm_id}"
 
   $('#arms-table').on 'all.bs.table', ->
-    $('img.screening-info').tooltip()
+    $('.screening-info').tooltip()

@@ -24,7 +24,7 @@ module ArmsHelper
     returning_html = content_tag(:span, arm.name)
 
     if arm.name == 'Screening Phase'
-      returning_html += content_tag(:img, '', src: '/assets/information.png', class: 'screening-info', title: t(:arms)[:screening_tooltip], data: { toggle: 'tooltip' }).html_safe
+      returning_html += content_tag(:span, '', class: 'glyphicon glyphicon-question-sign screening-info', title: t(:arms)[:screening_tooltip], data: { toggle: 'tooltip' })
     end
 
     returning_html

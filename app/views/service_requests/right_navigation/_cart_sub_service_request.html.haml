@@ -20,7 +20,7 @@
 .list-group-item
   .col-sm-12.ssr-header
     %h5.list-group-item-heading.text-center
-      = sub_service_request.organization.name
+      = ssr_name_display(sub_service_request)
   - sub_service_request.line_items.each do |li|
     .col-sm-12.line-item
       .col-sm-9

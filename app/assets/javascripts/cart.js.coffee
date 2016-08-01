@@ -28,8 +28,6 @@ $(document).ready ->
         $('.active-ssrs').removeClass('hidden')
       else if tab == 'complete'
         $('.complete-ssrs').removeClass('hidden')
-      else if tab == 'locked'
-        $('.locked-ssrs').removeClass('hidden')
         
 
   $(document).on 'click', '.add-service', ->

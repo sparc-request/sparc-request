@@ -52,12 +52,8 @@ module ServiceRequestsHelper
     organization.description.present? ? raw(organization.description) : t(:proper)[:catalog][:no_description]
   end
 
-  def display_service_in_catalog(service, service_request)
-    if [true, nil].include?(service.is_available) && service.current_pricing_map
-      render 'service', service: service, service_request: service_request
-    else
-      ""
-    end
+  def ssr_name_display(sub_service_request)
+    sub_service_request.organization.name + (sub_service_request.ssr_id ? "(#{sub_service_request.ssr_id})" : "")
   end
 
   # RIGHT NAVIGATION BUTTONS

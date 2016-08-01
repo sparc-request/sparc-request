@@ -28,5 +28,5 @@
           = organization_name_display(p, locked)
       .panel-collapse.collapse{ class: "provider-#{p.id}" }
         .panel-body
-          = render 'catalogs/accordion/programs', programs: p.programs, locked_ids: locked_ids, ssr_org: ssr_org, process_ssr_found: process_ssr_found
+          = render 'catalogs/accordion/programs', programs: p.programs.order('name ASC'), locked_ids: locked_ids, ssr_org: ssr_org, process_ssr_found: process_ssr_found
 

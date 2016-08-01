@@ -27,33 +27,38 @@
   h4
     font-size: 14px
 
-#institution-accordion
-  .panel-body
-    padding-top: 4px
-    padding-right: 5px
+.service-catalog
+  .panel-group
+    margin-bottom: 0
 
+  #institution-accordion
     .panel-body
-      padding: 0
+      padding-top: 4px
+      padding-right: 5px
+      padding-bottom: 5px
 
-      table
-        width: 100%
-        tr
-          cursor: pointer
-          td
-            font-size: 12px
-            .program-link
-              padding: 5px
-              border: 1px solid #DDD
-            .program-link:not(.clicked):hover
-              background: #E6E6E6
-              border-color: #ADADAD
-            .program-link.clicked
-              background: #E6E6E6
-              border-color: #ADADAD
-              box-shadow: 0 3px 5px rgba(0, 0, 0, 0.125) inset
-            .program-link.clicked:hover
-              background: #D4D4D4
-              border-color: #8C8C8C
+      .panel-body
+        padding: 0
+
+        table
+          width: 100%
+          tr
+            cursor: pointer
+            td
+              font-size: 12px
+              .program-link
+                padding: 5px
+                border: 1px solid #DDD
+              .program-link:not(.clicked):hover
+                background: #E6E6E6
+                border-color: #ADADAD
+              .program-link.clicked
+                background: #E6E6E6
+                border-color: #ADADAD
+                box-shadow: 0 3px 5px rgba(0, 0, 0, 0.125) inset
+              .program-link.clicked:hover
+                background: #D4D4D4
+                border-color: #8C8C8C
 
 /* HANDLING INSTITUTION COLORING */
 .blue-provider,

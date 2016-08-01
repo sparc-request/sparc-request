@@ -115,9 +115,10 @@ en:
     # SERVICE CALENDAR #
     ####################
     service_calendar:
-      r_description: "R - Research Coverage"
-      t_description: "T - Third Party (PT Insurance) Coverage"
-      p_description: "% - Percent Effort"
+      legend:
+        research: "R - Research Coverage"
+        third_party: "T - Third Party (PT Insurance) Coverage"
+        effort: "% - Percent Effort"
 
 
     ###################
@@ -182,9 +183,11 @@ en:
       header: "My Services"
       view_active: "View Active"
       view_complete: "View Complete"
+      tab_headers:
+        active: "Active"
+        complete: "Completed"
       no_active_services_message: "You do not have any active requested Services"
       no_complete_services_message: "You do not have any requested Services in 'Complete' status"
-      no_locked_services_message: "You do not have any requested Services which have been locked by the Service Provider"
       to_catalog: "Return to Catalog"
       has_fulfillments:
         header: "Remove Service"

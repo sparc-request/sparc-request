@@ -537,19 +537,10 @@ class ServiceRequest < ActiveRecord::Base
   end
 
   def cart_sub_service_requests
-    locked = []
-    active = []
-    self.sub_service_requests.where.not(status: 'complete').each do |ssr|
-      if ssr.can_be_edited?
-        active << ssr
-      else
-        locked << ssr
-      end
-    end
-
+    active    = self.sub_service_requests.where.not(status: 'complete').select(&:can_be_edited?)
     complete  = self.sub_service_requests.where(status: 'complete')
 
-    { active: active, complete: complete, locked: locked }
+    { active: active, complete: complete }
   end
 
   private

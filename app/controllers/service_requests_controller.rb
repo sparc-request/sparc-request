@@ -270,12 +270,15 @@ class ServiceRequestsController < ApplicationController
       @sub_service_request.update_attributes(status: 'submitted', nursing_nutrition_approved: false, lab_approved: false, imaging_approved: false, committee_approved: false)
       @sub_service_request.update_past_status(current_user)
     else
-      to_notify = update_service_request_status(@service_request, 'submitted')
-      @service_request.update_arm_minimum_counts
-
       @service_request.sub_service_requests.each do |ssr|
         ssr.update_attributes(nursing_nutrition_approved: false, lab_approved: false, imaging_approved: false, committee_approved: false)
+        if ssr.status != 'submitted'
+          to_notify << ssr.id
+        end
       end
+
+      update_service_request_status(@service_request, 'submitted')
+      @service_request.update_arm_minimum_counts
     end
 
     should_push_to_epic = @sub_service_request ? @sub_service_request.should_push_to_epic? : @service_request.should_push_to_epic?

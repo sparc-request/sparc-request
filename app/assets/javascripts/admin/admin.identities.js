@@ -1,3 +1,5 @@
+// Copyright © 2011-2016 MUSC Foundation for Research Development.
+// All rights reserved.
 angular.module('app').factory("Identity",  ['$resource', function($resource) {
   return $resource("/admin/identities/:id", 
 		  {id: '@id'}, 

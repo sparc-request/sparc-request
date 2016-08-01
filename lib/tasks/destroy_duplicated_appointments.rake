@@ -1,3 +1,5 @@
+# Copyright © 2011-2016 MUSC Foundation for Research Development.
+# All rights reserved.
 namespace :data do
   desc "Delete unused/duplicated procedures and appointments"
   task :destroy_appointments => :environment do

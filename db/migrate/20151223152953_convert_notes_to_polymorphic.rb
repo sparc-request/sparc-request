@@ -1,3 +1,5 @@
+# Copyright © 2011-2016 MUSC Foundation for Research Development.
+# All rights reserved.
 class ConvertNotesToPolymorphic < ActiveRecord::Migration
   def self.up
     #Convert Notes Table

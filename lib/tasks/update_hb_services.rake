@@ -1,3 +1,5 @@
+# Copyright © 2011-2016 MUSC Foundation for Research Development.
+# All rights reserved.
 desc "Adding eap_id to services and updating columns"
 task :add_eap_id => :environment do
 

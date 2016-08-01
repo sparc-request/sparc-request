@@ -1,3 +1,5 @@
+# Copyright © 2011-2016 MUSC Foundation for Research Development.
+# All rights reserved.
 namespace :data do
   desc "Create CSV report of individual subject calendar data"
   task :subject_calendar_report => :environment do

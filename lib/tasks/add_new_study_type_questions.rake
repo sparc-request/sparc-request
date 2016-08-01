@@ -1,3 +1,5 @@
+# Copyright © 2011-2016 MUSC Foundation for Research Development.
+# All rights reserved.
 desc "add new study type questions"
 task :add_new_study_type_questions => :environment do
 	friendly_ids = ['certificate_of_conf', 'higher_level_of_privacy', 'access_study_info', 'epic_inbasket', 'research_active', 'restrict_sending']

@@ -1,3 +1,5 @@
+# Copyright © 2011-2016 MUSC Foundation for Research Development.
+# All rights reserved.
 namespace :data do
   desc "Give user a generic password"
   task :give_user_generic_password => :environment do

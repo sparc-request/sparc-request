@@ -1,3 +1,5 @@
+# Copyright © 2011-2016 MUSC Foundation for Research Development.
+# All rights reserved.
 class StudyTypeQuestion < ActiveRecord::Base
   default_scope { order('`order`') }
   belongs_to :study_type_question_group

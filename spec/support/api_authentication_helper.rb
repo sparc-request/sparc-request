@@ -1,3 +1,5 @@
+# Copyright © 2011-2016 MUSC Foundation for Research Development.
+# All rights reserved.
 module ApiAuthenticationHelper
 
   def http_login(username=REMOTE_SERVICE_NOTIFIER_USERNAME, password=REMOTE_SERVICE_NOTIFIER_PASSWORD)

@@ -1,3 +1,5 @@
+# Copyright © 2011-2016 MUSC Foundation for Research Development.
+# All rights reserved.
 desc 'Remove first_draft requests that are over 30 days old'
 task :remove_historical_first_draft => :environment do
   Rails.application.eager_load!

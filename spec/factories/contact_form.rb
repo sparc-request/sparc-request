@@ -1,3 +1,5 @@
+# Copyright © 2011-2016 MUSC Foundation for Research Development.
+# All rights reserved.
 FactoryGirl.define do
   factory :contact_form, class: ContactForm do
     subject 'SPARC-Request'

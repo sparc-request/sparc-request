@@ -1,3 +1,5 @@
+# Copyright © 2011-2016 MUSC Foundation for Research Development.
+# All rights reserved.
 $(document).ready ->
   $(document).on 'click', '.schedule_tabs a', (e) ->
     e.preventDefault()

@@ -1,5 +1,5 @@
 Dir.glob(Rails.root + '**/*{.rb,.haml,.coffee,.example,.rake,.ru,.js,.erb,.scss,.sass,.css}') do |file|
-  query = "Copyright © 2011 MUSC Foundation for Research Development"
+  query = "Copyright © 2011-2016 MUSC Foundation for Research Development."
   updated_copyright = "Copyright © 2011-2016 MUSC Foundation for Research Development."
   if File.read(file) =~ /#{query}/
     code_file = File.read(file)

@@ -1,3 +1,5 @@
+# Copyright © 2011-2016 MUSC Foundation for Research Development.
+# All rights reserved.
 namespace :data do
   desc "Give user a role for protocols"
   task :give_user_role_for_protocols => :environment do |t|

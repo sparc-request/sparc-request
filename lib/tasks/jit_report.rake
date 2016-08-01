@@ -1,3 +1,5 @@
+# Copyright © 2011-2016 MUSC Foundation for Research Development.
+# All rights reserved.
 desc 'JIT report'
 task :jit_report => :environment do
   ssrs = SubServiceRequest.where(:organization_id => 14, :status => 'ctrc_approved')

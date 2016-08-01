@@ -1,3 +1,5 @@
+# Copyright © 2011-2016 MUSC Foundation for Research Development.
+# All rights reserved.
 class CreateStudyTypeQuestions < ActiveRecord::Migration
   def change
     create_table :study_type_questions do |t|

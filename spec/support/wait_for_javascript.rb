@@ -1,3 +1,5 @@
+# Copyright © 2011-2016 MUSC Foundation for Research Development.
+# All rights reserved.
 module WaitForJavascript
 
   def wait_for_javascript_to_finish(seconds=15)

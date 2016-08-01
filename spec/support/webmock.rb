@@ -1,3 +1,5 @@
+# Copyright © 2011-2016 MUSC Foundation for Research Development.
+# All rights reserved.
 WebMock.disable_net_connect!(allow_localhost: true)
 
 RSpec.configure do |config|

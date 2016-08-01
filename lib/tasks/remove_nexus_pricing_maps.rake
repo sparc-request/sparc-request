@@ -1,3 +1,5 @@
+# Copyright © 2011-2016 MUSC Foundation for Research Development.
+# All rights reserved.
 desc 'Remove nexus pricing maps created on or after 08-01-2015'
 task remove_nexus_pricing_maps: :environment do
 

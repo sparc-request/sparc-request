@@ -1,3 +1,5 @@
+# Copyright © 2011-2016 MUSC Foundation for Research Development.
+# All rights reserved.
 # This migration comes from acts_as_taggable_on_engine (originally 5)
 # This migration is added to circumvent issue #623 and have special characters
 # work properly

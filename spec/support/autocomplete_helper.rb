@@ -1,3 +1,5 @@
+# Copyright © 2011-2016 MUSC Foundation for Research Development.
+# All rights reserved.
 module AutocompleteHelper
   # Fill jquery autocomplete field with options[:with] and
   # exposes dropdown with options for you to click.

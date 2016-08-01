@@ -1,3 +1,5 @@
+# Copyright © 2011-2016 MUSC Foundation for Research Development.
+# All rights reserved.
 namespace :reports do
   desc "Create human subject report for all protocols"
   task :protocol_human_subjects_report => :environment do

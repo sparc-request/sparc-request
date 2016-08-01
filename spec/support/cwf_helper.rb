@@ -1,3 +1,5 @@
+# Copyright © 2011-2016 MUSC Foundation for Research Development.
+# All rights reserved.
 module CwfHelper
 
   def cwf_sends_api_put_request_for_resource(klass, object_id, params)

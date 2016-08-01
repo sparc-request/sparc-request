@@ -1,3 +1,5 @@
+# Copyright © 2011-2016 MUSC Foundation for Research Development.
+# All rights reserved.
 require 'rails_helper'
 
 RSpec.describe 'dashboard/documents/documents_table', type: :view do

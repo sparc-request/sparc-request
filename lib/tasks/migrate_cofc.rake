@@ -1,3 +1,5 @@
+# Copyright © 2011-2016 MUSC Foundation for Research Development.
+# All rights reserved.
 desc "Move Cofc Answer"
 task :migrate_cofc => :environment do
 	protocols = Protocol.all

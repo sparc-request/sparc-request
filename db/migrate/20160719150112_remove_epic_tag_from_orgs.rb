@@ -1,3 +1,5 @@
+# Copyright © 2011-2016 MUSC Foundation for Research Development.
+# All rights reserved.
 class RemoveEpicTagFromOrgs < ActiveRecord::Migration
   def change
     Organization.all.each do |org|

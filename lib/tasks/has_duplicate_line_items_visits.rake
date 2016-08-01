@@ -1,3 +1,5 @@
+# Copyright © 2011-2016 MUSC Foundation for Research Development.
+# All rights reserved.
 task :has_duplicate_line_items_visits => :environment do
 
   def prompt(*args)

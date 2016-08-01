@@ -1,3 +1,5 @@
+# Copyright © 2011-2016 MUSC Foundation for Research Development.
+# All rights reserved.
 class SetNullMaxDollarCapsTo0 < ActiveRecord::Migration
   def change
     null_max_dollar_caps = SubsidyMap.where(max_dollar_cap: nil)

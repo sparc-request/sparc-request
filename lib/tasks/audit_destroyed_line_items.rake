@@ -1,3 +1,5 @@
+# Copyright © 2011-2016 MUSC Foundation for Research Development.
+# All rights reserved.
 namespace :data do
   desc "List out all destroyed line items for a given service and protocol id"
   task :audit_destroyed_line_items => :environment do

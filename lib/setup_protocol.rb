@@ -1,3 +1,5 @@
+# Copyright © 2011-2016 MUSC Foundation for Research Development.
+# All rights reserved.
 class SetupProtocol
   def initialize(portal, protocol, user, service_request_id)
     @portal = portal

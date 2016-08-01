@@ -1,3 +1,5 @@
+# Copyright © 2011-2016 MUSC Foundation for Research Development.
+# All rights reserved.
 class RemoteServiceNotifierJob < Struct.new(:object_id, :object_class, :action)
 
   class RemoteServiceNotifierError < StandardError

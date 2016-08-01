@@ -1,3 +1,5 @@
+// Copyright © 2011-2016 MUSC Foundation for Research Development.
+// All rights reserved.
 /*!
  * jQuery Form Plugin
  * version: 2.93 (30-NOV-2011)

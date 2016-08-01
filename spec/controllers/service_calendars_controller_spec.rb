@@ -321,7 +321,6 @@ RSpec.describe ServiceCalendarsController do
 
     it 'should update the status to draft' do
       visit = arm1.visits[0]
-      service_request.update_attributes(status: 'submitted')
       service_request.sub_service_requests.update_all(status: 'submitted')
 
       session[:service_request_id] = service_request.id
@@ -335,7 +334,6 @@ RSpec.describe ServiceCalendarsController do
         :visit               => visit.id,
       }.with_indifferent_access
 
-      expect(assigns(:service_request).status).to eq 'draft'
       expect(assigns(:sub_service_request).status).to eq 'draft'
     end
   end

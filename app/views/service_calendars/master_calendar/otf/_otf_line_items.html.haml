@@ -32,7 +32,7 @@
             %td.service_name
               = line_item.service.name
             %td.service_status
-              = line_item.service_request.status.capitalize
+              = AVAILABLE_STATUSES[line_item.sub_service_request.status]
             - unless portal || study_tracker
               %td.service_rate{ class: "service_rate_#{line_item.id}" }= display_service_rate line_item
             %td.your_cost{ :"data-your_cost" => line_item.applicable_rate }= display_your_cost line_item

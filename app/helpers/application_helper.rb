@@ -190,7 +190,6 @@ module ApplicationHelper
                                               "/service_requests/#{service_request.id}/toggle_calendar_column/#{n}/#{arm.id}?#{action}=true&portal=#{portal}",
                                               remote: true, role: 'button', class: 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only', id: "check_all_column_#{n}", data: ( visit_group.any_visit_quantities_customized?(service_request) ? { confirm: "This will reset custom values for this column, do you wish to continue?"} : nil)),
                                       width: 60, class: 'visit_number')
-      #binding.pry
       end
     end
 
@@ -398,5 +397,31 @@ module ApplicationHelper
       else
         type.to_s
     end
+  end
+
+  def navbar_link identifier, details, highlighted_link
+    name, path = details
+    highlighted = identifier == highlighted_link
+
+    conditions = false
+
+    if current_user
+      conditions = case identifier
+      when 'sparc_fulfillment'
+        current_user.clinical_providers.empty? && !current_user.is_super_user?
+      when 'sparc_catalog'
+        current_user.catalog_managers.empty?
+      when 'sparc_report'
+        !current_user.is_super_user?
+      else
+        false
+      end
+    end
+
+    render_navbar_link(name, path, highlighted) unless conditions
+  end
+
+  def render_navbar_link name, path, highlighted
+    content_tag :li, link_to(name.to_s, path, target: '_blank', class: highlighted ? 'highlighted' : ''), class: 'dashboard nav-bar-link'
   end
 end

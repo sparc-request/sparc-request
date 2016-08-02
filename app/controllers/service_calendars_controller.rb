@@ -1,3 +1,4 @@
+
 # Copyright © 2011 MUSC Foundation for Research Development
 # All rights reserved.
 
@@ -129,7 +130,6 @@ class ServiceCalendarsController < ApplicationController
       end
     @sub_service_request.update_attribute(:status, "draft") if @sub_service_request
     @service_request.update_attribute(:status, "draft")
-    render partial: 'update_service_calendar'
   end
 
   def rename_visit
@@ -270,7 +270,7 @@ class ServiceCalendarsController < ApplicationController
       next unless @sub_service_request.nil? || @sub_service_request.organization.name == value[:process_ssr_organization_name]
 
       @arm.line_items_visits.each do |liv|
-        next unless value[:line_items].include?(liv.line_item)
+        next unless value[:line_items].include?(liv.line_item) && liv.line_item.sub_service_request.can_be_edited? && !liv.line_item.sub_service_request.is_complete?
         visit = liv.visits[column_id - 1] # columns start with 1 but visits array positions start at 0
         if params[:check]
           visit.update_attributes quantity: liv.line_item.service.displayed_pricing_map.unit_minimum, research_billing_qty: liv.line_item.service.displayed_pricing_map.unit_minimum, insurance_billing_qty: 0, effort_billing_qty: 0

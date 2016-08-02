@@ -126,7 +126,7 @@
       - next unless value[:line_items].include?(line_item)
       - line_items_visits << line_items_visit
       - pricing_map = line_item.service.displayed_pricing_map
-      - locked = !line_item.sub_service_request.can_be_edited?
+      - locked = !line_item.sub_service_request.can_be_edited? || line_item.sub_service_request.is_complete?
       %tr.line_item{:'data-line_items_visit_id' => line_items_visit.id, :class => [cycle('odd', '', :name => 'pppvs'), locked ? 'locked' : '']}
         - if @portal
           - if line_item.service.is_available

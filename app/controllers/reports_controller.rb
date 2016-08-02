@@ -28,6 +28,10 @@ class ReportsController < ApplicationController
   before_filter :set_user
   before_filter :set_show_navbar
 
+  def set_highlighted_link
+    @highlighted_link ||= 'sparc_report'
+  end
+
   def current_user
     current_identity
   end

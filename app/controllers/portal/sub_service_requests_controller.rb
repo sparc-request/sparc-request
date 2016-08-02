@@ -58,7 +58,7 @@ class Portal::SubServiceRequestsController < Portal::BaseController
     if @sub_service_request.update_attributes(params[:sub_service_request])
       @sub_service_request.update_based_on_status(saved_status)
       @sub_service_request.generate_approvals(@user, params)
-      @sub_service_request.distribute_surveys if @sub_service_request.status == 'complete' and @sub_service_request.status != saved_status #status is complete and it was something different before
+      @sub_service_request.distribute_surveys if @sub_service_request.is_complete? and @sub_service_request.status != saved_status #status is complete and it was something different before
       @service_request = @sub_service_request.service_request
       @protocol = @service_request.protocol
       @approvals = [@service_request.approvals, @sub_service_request.approvals].flatten

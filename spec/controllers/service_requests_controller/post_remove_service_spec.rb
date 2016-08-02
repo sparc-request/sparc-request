@@ -128,6 +128,45 @@ RSpec.describe ServiceRequestsController do
       expect(service_request.sub_service_requests).not_to include(ssr2)
     end
 
+    it 'should create a past status for the SubServiceRequest that still has a Service in the ServiceRequest' do
+      protocol = create(:study_without_validations,
+                         primary_pi: jug2)
+
+      service_request = create(:service_request_without_validations,
+                               status: 'submitted',
+                               protocol: protocol)
+
+      ssr = create(:sub_service_request,
+                    service_request_id: service_request.id,
+                    status: 'submitted',
+                    organization_id: core.id)
+
+      service1 = create(:service,
+                         organization_id: core.id)
+      service2 = create(:service,
+                         organization_id: core.id)
+
+      line_item1 = create(:line_item_without_validations,
+                          service_request: service_request,
+                          sub_service_request: ssr,
+                          service: service1)
+      line_item2 = create(:line_item_without_validations,
+                          service_request: service_request,
+                          sub_service_request: ssr,
+                          service: service2)
+
+      post :remove_service, {
+            id: service_request.id,
+            service_id: service1.id,
+            line_item_id: line_item1.id,
+            format: :js
+            }.with_indifferent_access
+
+      ps1 = PastStatus.find_by(sub_service_request_id: ssr.id)
+
+      expect(ps1.status).to eq('submitted')
+    end
+
     it 'should set @page' do
       allow(controller.request).to receive(:referrer).and_return('http://example.com/foo/bar')
 

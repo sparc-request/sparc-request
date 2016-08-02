@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160802184929) do
+ActiveRecord::Schema.define(version: 20160802185633) do
 
   create_table "admin_rates", force: :cascade do |t|
     t.integer  "line_item_id", limit: 4
@@ -734,6 +734,17 @@ ActiveRecord::Schema.define(version: 20160802184929) do
 
   add_index "question_groups", ["api_id"], name: "uq_question_groups_api_id", unique: true, using: :btree
 
+  create_table "questionnaire_responses", force: :cascade do |t|
+    t.integer  "submission_id", limit: 4
+    t.integer  "item_id",       limit: 4
+    t.text     "content",       limit: 65535
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
+  end
+
+  add_index "questionnaire_responses", ["item_id"], name: "index_questionnaire_responses_on_item_id", using: :btree
+  add_index "questionnaire_responses", ["submission_id"], name: "index_questionnaire_responses_on_submission_id", using: :btree
+
   create_table "questionnaires", force: :cascade do |t|
     t.string   "name",       limit: 255
     t.integer  "service_id", limit: 4
@@ -1253,6 +1264,8 @@ ActiveRecord::Schema.define(version: 20160802184929) do
   add_index "visits", ["visit_group_id"], name: "index_visits_on_visit_group_id", using: :btree
 
   add_foreign_key "items", "questionnaires"
+  add_foreign_key "questionnaire_responses", "items"
+  add_foreign_key "questionnaire_responses", "submissions"
   add_foreign_key "questionnaires", "services"
   add_foreign_key "submissions", "identities"
   add_foreign_key "submissions", "services"

@@ -1,4 +1,5 @@
 class Submission < ActiveRecord::Base
   belongs_to :service
   belongs_to :identity
+  has_many :questionnaire_responses
 end

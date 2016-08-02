@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160725191310) do
+ActiveRecord::Schema.define(version: 20160802184929) do
 
   create_table "admin_rates", force: :cascade do |t|
     t.integer  "line_item_id", limit: 4
@@ -540,8 +540,10 @@ ActiveRecord::Schema.define(version: 20160725191310) do
     t.datetime "created_at",                         null: false
     t.datetime "updated_at",                         null: false
     t.datetime "deleted_at"
+    t.integer  "changed_by_id",          limit: 4
   end
 
+  add_index "past_statuses", ["changed_by_id"], name: "index_past_statuses_on_changed_by_id", using: :btree
   add_index "past_statuses", ["sub_service_request_id"], name: "index_past_statuses_on_sub_service_request_id", using: :btree
 
   create_table "past_subsidies", force: :cascade do |t|
@@ -1024,6 +1026,16 @@ ActiveRecord::Schema.define(version: 20160725191310) do
 
   add_index "submission_emails", ["organization_id"], name: "index_submission_emails_on_organization_id", using: :btree
 
+  create_table "submissions", force: :cascade do |t|
+    t.integer  "service_id",  limit: 4
+    t.integer  "identity_id", limit: 4
+    t.datetime "created_at",            null: false
+    t.datetime "updated_at",            null: false
+  end
+
+  add_index "submissions", ["identity_id"], name: "index_submissions_on_identity_id", using: :btree
+  add_index "submissions", ["service_id"], name: "index_submissions_on_service_id", using: :btree
+
   create_table "subsidies", force: :cascade do |t|
     t.datetime "created_at",                                             null: false
     t.datetime "updated_at",                                             null: false
@@ -1242,4 +1254,6 @@ ActiveRecord::Schema.define(version: 20160725191310) do
 
   add_foreign_key "items", "questionnaires"
   add_foreign_key "questionnaires", "services"
+  add_foreign_key "submissions", "identities"
+  add_foreign_key "submissions", "services"
 end

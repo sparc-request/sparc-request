@@ -35,10 +35,10 @@
     - elsif @audit_report.present? && @audit_report[:line_items].present?
       = render "audit_action"
 
-    - if @service_request.has_per_patient_per_visit_services? and @service_request.arms.count > 0 and @provide_arm_info
+    - if @service_request.has_per_patient_per_visit_services? and @service_request.arms.count > 0
       = render "arm_information"
-
-    = render "srid_information"
+    - if @ssrs_to_be_displayed
+      = render "srid_information"
     
     %p= t(:notifier)[:body6]
     

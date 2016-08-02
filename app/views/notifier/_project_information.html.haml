@@ -2,13 +2,13 @@
   %thead
     %tr{:style => 'border: 1px solid black;'}
       %td{:colspan => 2}
-        - if protocol.type == "Project"
+        - if protocol.type.capitalize == "Project"
           %strong= t(:notifier)[:p_info]
         - else
           %strong= t(:notifier)[:study_info]
   %tbody
     %tr{:style => 'border: 1px solid black;'}
-      - if protocol.type == "Project"
+      - if protocol.type.capitalize == "Project"
         %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:notifier)[:p_id]
       - else
         %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:notifier)[:study_id]
@@ -17,7 +17,7 @@
       %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:notifier)[:title1]
       %td{:style => 'border: 1px solid black;'}= protocol.short_title
     %tr{:style => 'border: 1px solid black;'}
-      - if protocol.type == "Project"
+      - if protocol.type.capitalize == "Project"
         %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:notifier)[:p_title]
       - else
         %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:notifier)[:study_title]

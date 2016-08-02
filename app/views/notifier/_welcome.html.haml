@@ -7,12 +7,8 @@
 - else
   %p= I18n.t('notifier.body2_non_pi', :welcome => welcome_text, :application_title => I18n.t('application_title'), :root_url => ROOT_URL, :protocol_type => @protocol.type.downcase)
 %br
-- if @approval_link
+- if @portal_text
   %p
-    = t(:notifier)[:body7]
-    %a{:style => "color: red; font-weight: bold;", :href => @approval_link}= t(:notifier)[:link]
-    ="."
-%p
-  %a{:style => "color: blue; font-weight: bold;", :href => @portal_link}=@portal_text
+    %a{:style => "color: blue; font-weight: bold;", :href => @portal_link}=@portal_text
 %br
 %br

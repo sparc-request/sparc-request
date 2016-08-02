@@ -55,9 +55,7 @@ class Notifier < ActionMailer::Base
     @protocol = service_request.protocol
     @service_request = service_request
     @portal_link = DASHBOARD_LINK + "?default_protocol=#{@protocol.id}"
-    @portal_text = "To VIEW and/or MAKE any changes to this request, please click here."
-    @provide_arm_info = false
-
+    @ssrs_to_be_displayed = service_request.sub_service_requests
     @triggered_by = user_current.id
     @ssr_ids = service_request.sub_service_requests.map{ |ssr| ssr.id }.join(", ")
 
@@ -77,11 +75,10 @@ class Notifier < ActionMailer::Base
     @approval_link = nil
     @portal_link = DASHBOARD_LINK
     @portal_text = "Administrators/Service Providers, Click Here"
-    @provide_arm_info = false
 
     @triggered_by = user_current.id
     @ssr_ids = service_request.sub_service_requests.map{ |ssr| ssr.id }.join(", ")
-
+    @ssrs_to_be_displayed = service_request.sub_service_requests
     attachments["service_request_#{@service_request.protocol.id}.xlsx"] = xls
 
     # only send these to the correct person in the production env
@@ -97,13 +94,21 @@ class Notifier < ActionMailer::Base
     @role = 'none'
     @approval_link = nil
     @audit_report = audit_report
-    @provide_arm_info = audit_report.nil? ? true : SubServiceRequest.find(@audit_report[:sub_service_request_id]).has_per_patient_per_visit_services?
+    # @provide_arm_info = audit_report.nil? ? true : SubServiceRequest.find(@audit_report[:sub_service_request_id]).has_per_patient_per_visit_services?
     @ssr_deleted = ssr_deleted
 
     @portal_link = DASHBOARD_LINK
     @portal_text = "Administrators/Service Providers, Click Here"
 
     @triggered_by = user_current.id
+    @ssrs_to_be_displayed = []
+
+    @service_request.sub_service_requests.each do |ssr|
+      if service_provider.identity.is_service_provider?(ssr)
+        @ssrs_to_be_displayed << ssr
+      end
+    end
+    # if the current user is service provider, only show SSR's that are associated with them
     @ssr_ids = service_request.sub_service_requests.map{ |ssr| ssr.id }.join(", ")
 
     attachments_to_add.each do |file_name, document|

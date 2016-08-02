@@ -8,7 +8,7 @@
     %th{:style => 'border: 1px solid black;'}= t(:notifier)[:organization]
     %th{:style => 'border: 1px solid black;'}= t(:notifier)[:status]
   %tbody
-    - @protocol.sub_service_requests.each do |ssr|
+    - @ssrs_to_be_displayed.each do |ssr|
       %tr{:style => 'border: 1px solid black;'}
         %td{:style => 'border: 1px solid black; text-align: center;'}= ssr.display_id
         %td{:style => 'border: 1px solid black; text-align: center;'}= ssr.org_tree_display

@@ -36,10 +36,12 @@ RSpec.describe Notifier do
                                     units_per_qty_max: 20) }
   let(:identity)          { Identity.first }
   let(:organization)      { Organization.first }
+  let(:non_service_provider_org)  { create(:organization) }
   let(:service_provider)  { create(:service_provider,
                                     identity: identity,
                                     organization: organization,
                                     service: service3) }
+  let!(:non_service_provider_ssr) { create(:sub_service_request, ssr_id: "0004", service_request_id: service_request.id, organization_id: non_service_provider_org.id,status: "draft")}
 
   before { add_visits }
 
@@ -56,7 +58,6 @@ RSpec.describe Notifier do
                                                                         xls,
                                                                         identity,
                                                                         audit) }
-
       it 'should render default tables' do
         assert_notification_email_tables
       end
@@ -69,6 +70,26 @@ RSpec.describe Notifier do
         expect(mail).to have_xpath("//table//strong[text()='Protocol Arm Information']")
         service_request.arms.each do |arm|
           expect(mail).to have_xpath("//td[text()='#{arm.name}']/following-sibling::td[text()='#{arm.subject_count}']/following-sibling::td[text()='#{arm.visit_count}']")
+        end
+      end
+
+      context 'when protocol has selected for epic' do
+        before do
+          service_request.protocol.update_attribute(:selected_for_epic, true)
+        end
+
+        it 'should show epic column' do
+          expect(mail.body).to have_xpath "//table//strong[text()='User Information']"
+          expect(mail.body).to have_xpath "//th[text()='User Name']/following-sibling::th[text()='Contact Information']/following-sibling::th[text()='Role']/following-sibling::th[text()='Epic Access']"
+          service_request.protocol.project_roles.each do |role|
+            if identity.id == role.identity.id
+              requester_flag = " (Requester)"
+            else
+              requester_flag = ""
+            end
+            user_epic_access = role.epic_access == false ? "No" : "Yes"
+            expect(mail.body).to have_xpath "//td[text()='#{role.identity.full_name}']/following-sibling::td[text()='#{role.identity.email}']/following-sibling::td[text()='#{role.role.upcase}#{requester_flag}']/following-sibling::td[text()='#{user_epic_access}']"
+          end
         end
       end
 
@@ -203,28 +224,31 @@ RSpec.describe Notifier do
                                                             approval,
                                                             identity) }
 
-      it 'should not have audited information table' do
-        expect(mail).not_to have_xpath("//th[text()='Service']/following-sibling::th[text()='Action']")
-      end
-
       it 'should not have Arm information table' do
-        expect(mail).not_to have_xpath("//table//strong[text()='Protocol Arm Information']")
+        expect(mail.body.parts.first.body).to have_xpath("//table//strong[text()='Protocol Arm Information']")
       end
     end
 
     context 'admin' do
-      let(:xls)                       { ' ' }
+      let(:xls)                       { Array.new }
       let(:submission_email_address)  { 'success@musc.edu' }
       let(:mail)                      { Notifier.notify_admin(service_request,
                                                               submission_email_address,
                                                               xls,
                                                               identity) }
-      it 'should not have audited information table' do
-        expect(mail).not_to have_xpath("//th[text()='Service']/following-sibling::th[text()='Action']")
-      end
 
       it 'should not have Arm information table' do
-        expect(mail).not_to have_xpath("//table//strong[text()='Protocol Arm Information']")
+        expect(mail.body.parts.first.body).to have_xpath("//table//strong[text()='Protocol Arm Information']")
+      end
+
+      it 'should have a SR table' do
+        expect(mail).to have_xpath "//table//strong[text()='Service Request Information']"
+        expect(mail).to have_xpath "//th[text()='SRID']/following-sibling::th[text()='Organization']/following-sibling::th[text()='Status']"
+
+        service_request.protocol.sub_service_requests.each do |ssr|
+          ssr_status = AVAILABLE_STATUSES[ssr.status]
+          expect(mail.body.parts.first.body).to have_xpath "//tr//td[text()='#{ssr.display_id}']/following-sibling::td[text()='#{ssr.org_tree_display}']/following-sibling::td[text()='#{ssr_status}']"
+        end
       end
     end
   end

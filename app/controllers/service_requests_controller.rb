@@ -53,6 +53,8 @@ class ServiceRequestsController < ApplicationController
 
       @service_request.protocol.update_attributes( details_params ) if @service_request.protocol
       @service_request.group_valid?(:service_details)
+    when 'service_calendar'
+      
     end
     
     @errors = @service_request.errors

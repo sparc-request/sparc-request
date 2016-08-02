@@ -17,17 +17,20 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-- process_ssr_found = false
+- institution_is_process_ssr = false
 
 .panel-group#institution-accordion
-  - institutions.each do |i|
-    -next unless (ssr_org.nil? || (process_ssr_found = ssr_org == i) || ssr_org.parents.include?(i))
+  - institutions.where(is_available: [nil, true]).each do |i|
+    - # Skip the institution if:
+    - # 1. We are editing an SSR
+    - # 2. The institution is not the ssr_org or an ancestor of ssr_org
+    - next if ssr_org && !((institution_is_process_ssr = ssr_org == i) || ssr_org.parents.include?(i))
     - locked = locked_ids.include?(i.id)
 
     .panel.panel-default
-      .panel-heading.institution-header.clicked{ class: [i.css_class, locked ? 'locked' : ''], data: { id: i.id, toggle: 'collapse', target: ".institution-#{i.id}", parent: '#institution-accordion' } }
+      .panel-heading.institution-header.clicked{ class: [i.css_class, locked ? 'locked' : ''], data: { id: i.id, process_ssr_found: institution_is_process_ssr.to_s, toggle: 'collapse', target: ".institution-#{i.id}", parent: '#institution-accordion' } }
         %h4.panel-title.text-center
           = organization_name_display(i, locked)
       .panel-collapse.collapse.in{ class: "institution-#{i.id}" }
         .panel-body
-          = render 'catalogs/accordion/providers', providers: i.providers, locked_ids: locked_ids, ssr_org: ssr_org, process_ssr_found: process_ssr_found, i: i
+          = render 'catalogs/accordion/providers', providers: i.providers.where(is_available: [nil, true]).order('`order`'), locked_ids: locked_ids, ssr_org: ssr_org, institution_is_process_ssr: institution_is_process_ssr, i: i

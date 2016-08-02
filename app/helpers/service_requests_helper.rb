@@ -53,7 +53,7 @@ module ServiceRequestsHelper
   end
 
   def ssr_name_display(sub_service_request)
-    sub_service_request.organization.name + (sub_service_request.ssr_id ? "(#{sub_service_request.ssr_id})" : "")
+    sub_service_request.organization.name + (sub_service_request.ssr_id ? " (#{sub_service_request.ssr_id})" : "")
   end
 
   # RIGHT NAVIGATION BUTTONS

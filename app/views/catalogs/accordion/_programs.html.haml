@@ -20,10 +20,14 @@
 %table
   %tbody
     - programs.each do |p|
-      - next unless (ssr_org.nil? || process_ssr_found || (process_ssr_found = ssr_org == p) || ssr_org.parents.include?(p))
+      - # Skip the program if:
+      - # 1. We are editing an SSR
+      - # 2. The provider was not the process_ssr organization
+      - # 3. The program is not the ssr_org or an ancestor of the ssr_org
+      - next if ssr_org && !provider_is_process_ssr && !((program_is_process_ssr = ssr_org == p) || ssr_org.parents.include?(p))
       - locked = locked_ids.include?(p.id)
 
       %tr
         %td
-          %div.program-link.text-center{ data: { id: p.id } }
+          %div.program-link.text-center{ data: { id: p.id, process_ssr_found: program_is_process_ssr.to_s } }
             = organization_name_display(p, locked)

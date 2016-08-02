@@ -20,14 +20,14 @@
 .core-accordion
   - if ssr_org.present? && !process_ssr_found
     .panel.panel-default
-      .panel-heading.core-header{ class: [css_class(program), locked ? 'locked' : ''] }
+      .panel-heading.core-header{ class: css_class(program) }
         %h4.panel-title.text-center
-          = organization_name_display(ssr_org, locked)
+          = organization_name_display(ssr_org, false)
       .panel-body
         = render 'catalogs/accordion/services', services: ssr_org.services, service_request: service_request
   - else
     .panel-group{ id: "program-#{program.id}"}
-      - cores.where(is_available: [true, nil]).order('`order`').each do |c|
+      - cores.each do |c|
         - locked = locked_ids.include?(c.id)
 
         .panel.panel-default

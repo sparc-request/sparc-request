@@ -371,26 +371,29 @@ module ApplicationHelper
     end
   end
 
-  def navbar_link(identifier, data)
-    name, path = data
+  def navbar_link(identifier, details, highlighted_link)
+    name, path = details
+    highlighted = identifier == highlighted_link
+
+    conditions = false
+
     if current_user
-      case identifier
-      when 'fulfillment'
-        content_tag(:li, link_to(name.to_s, path, target: :blank)) unless current_user.clinical_providers.empty? && !current_user.is_super_user?
-      when 'catalog_manager/catalog'
-        render_navbar_link(identifier, name, path) unless current_user.catalog_managers.empty?
-      when 'report'
-        render_navbar_link(identifier, name, path) unless !current_user.is_super_user?
+      conditions = case identifier
+      when 'sparc_fulfillment'
+        current_user.clinical_providers.empty? && !current_user.is_super_user?
+      when 'sparc_catalog'
+        current_user.catalog_managers.empty?
+      when 'sparc_report'
+        !current_user.is_super_user?
       else
-        render_navbar_link(identifier, name, path)
+        false
       end
-    else
-      render_navbar_link(identifier, name, path)
     end
+
+    render_navbar_link(name, path, highlighted) unless conditions
   end
 
-  def render_navbar_link(identifier, name, path)
-    path_controller = Rails.application.routes.recognize_path(path)[:controller]
-    content_tag :li, link_to(name.to_s, path, target: '_blank', class: path_controller == controller_name ? 'highlighted' : ''), class: 'dashboard'
+  def render_navbar_link name, path, highlighted
+    content_tag(:li, link_to(name.to_s, path, target: '_blank', class: highlighted ? 'highlighted' : ''), class: 'dashboard nav-bar-link')
   end
 end

@@ -28,7 +28,7 @@
     - locked = locked_ids.include?(i.id)
 
     .panel.panel-default
-      .panel-heading.institution-header.clicked{ class: [i.css_class, locked ? 'locked' : ''], data: { id: i.id, process_ssr_found: institution_is_process_ssr.to_s, toggle: 'collapse', target: ".institution-#{i.id}", parent: '#institution-accordion' } }
+      .panel-heading.institution-header.clicked{ class: [i.css_class, locked ? 'bg-danger text-danger' : ''], data: { id: i.id, process_ssr_found: institution_is_process_ssr.to_s, toggle: 'collapse', target: ".institution-#{i.id}", parent: '#institution-accordion' } }
         %h4.panel-title.text-center
           = organization_name_display(i, locked)
       .panel-collapse.collapse.in{ class: "institution-#{i.id}" }

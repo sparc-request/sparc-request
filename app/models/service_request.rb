@@ -537,7 +537,7 @@ class ServiceRequest < ActiveRecord::Base
   end
 
   def cart_sub_service_requests
-    active    = self.sub_service_requests.where.not(status: 'complete').select(&:can_be_edited?)
+    active    = self.sub_service_requests.where.not(status: 'complete')
     complete  = self.sub_service_requests.where(status: 'complete')
 
     { active: active, complete: complete }

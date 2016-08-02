@@ -45,7 +45,10 @@ module ServiceRequestsHelper
   end
 
   def organization_name_display(organization, locked)
-    locked ? organization.name+" **LOCKED**" : organization.name
+    header  = content_tag(:span, organization.name)
+    header += content_tag(:span, '', class: 'glyphicon glyphicon-lock locked') if locked
+
+    header
   end
 
   def organization_description_display(organization)
@@ -53,7 +56,10 @@ module ServiceRequestsHelper
   end
 
   def ssr_name_display(sub_service_request)
-    sub_service_request.organization.name + (sub_service_request.ssr_id ? " (#{sub_service_request.ssr_id})" : "")
+    header  = content_tag(:span, sub_service_request.organization.name + (sub_service_request.ssr_id ? " (#{sub_service_request.ssr_id})" : ""))
+    header += content_tag(:span, '', class: 'glyphicon glyphicon-lock locked') if !sub_service_request.can_be_edited?
+
+    header
   end
 
   # RIGHT NAVIGATION BUTTONS

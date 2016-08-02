@@ -477,6 +477,18 @@ class ServiceRequest < ActiveRecord::Base
     identities.flatten.uniq
   end
 
+  def service_ids
+    line_items.map(&:service_id)
+  end
+
+  def services_associated_to_sr
+    service_ids.map{ |si| Service.find(si) }
+  end
+
+  def additional_detail_services
+    services_associated_to_sr.select { |s| s.has_additional_details }
+  end
+
   # Change the status of the service request and all the sub service
   # requests to the given status.
   def update_status(new_status, use_validation=true)

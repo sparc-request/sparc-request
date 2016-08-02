@@ -145,6 +145,10 @@ class Service < ActiveRecord::Base
     cents.to_i / 100.0
   end
 
+  def has_additional_details
+    questionnaires.present?
+  end
+
   # Display pricing formatting for reporting
   def report_pricing currency
     '$' + sprintf("%.2f", currency.to_f / 100.0)

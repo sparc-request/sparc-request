@@ -208,7 +208,7 @@ en:
       phase: "Select a Study Phase"
       submission_type: "Select a Submission Type"
     authorized_users:
-      header: "Authorized Users"
+      header: "Add Primary PI (required)"
       subtext: "Primary PI Required"
       primary_pi: "Primary PI: *"
 

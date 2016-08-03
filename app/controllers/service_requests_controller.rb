@@ -696,4 +696,8 @@ class ServiceRequestsController < ApplicationController
 
     sub_service_request
   end
+
+  def set_highlighted_link
+    @highlighted_link ||= 'sparc_request'
+  end
 end

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160720151213) do
+ActiveRecord::Schema.define(version: 20160727152900) do
 
   create_table "admin_rates", force: :cascade do |t|
     t.integer  "line_item_id", limit: 4
@@ -103,8 +103,8 @@ ActiveRecord::Schema.define(version: 20160720151213) do
     t.integer  "subject_count",         limit: 4,   default: 1
     t.integer  "protocol_id",           limit: 4
     t.boolean  "new_with_draft",                    default: false
-    t.integer  "minimum_visit_count",   limit: 4,   default: 0
-    t.integer  "minimum_subject_count", limit: 4,   default: 0
+    t.integer  "minimum_visit_count",   limit: 4
+    t.integer  "minimum_subject_count", limit: 4
   end
 
   add_index "arms", ["protocol_id"], name: "index_arms_on_protocol_id", using: :btree
@@ -183,12 +183,6 @@ ActiveRecord::Schema.define(version: 20160720151213) do
 
   add_index "charges", ["service_id"], name: "index_charges_on_service_id", using: :btree
   add_index "charges", ["service_request_id"], name: "index_charges_on_service_request_id", using: :btree
-
-  create_table "click_counters", force: :cascade do |t|
-    t.integer  "click_count", limit: 4
-    t.datetime "created_at",            null: false
-    t.datetime "updated_at",            null: false
-  end
 
   create_table "clinical_providers", force: :cascade do |t|
     t.integer  "identity_id",     limit: 4
@@ -528,10 +522,10 @@ ActiveRecord::Schema.define(version: 20160720151213) do
     t.datetime "created_at",                         null: false
     t.datetime "updated_at",                         null: false
     t.datetime "deleted_at"
-    t.integer  "changed_by",             limit: 4
+    t.integer  "changed_by_id",          limit: 4
   end
 
-  add_index "past_statuses", ["changed_by"], name: "index_past_statuses_on_changed_by", using: :btree
+  add_index "past_statuses", ["changed_by_id"], name: "index_past_statuses_on_changed_by_id", using: :btree
   add_index "past_statuses", ["sub_service_request_id"], name: "index_past_statuses_on_sub_service_request_id", using: :btree
 
   create_table "past_subsidies", force: :cascade do |t|
@@ -1016,20 +1010,18 @@ ActiveRecord::Schema.define(version: 20160720151213) do
     t.string   "status",                 limit: 255, default: "Pending"
     t.integer  "approved_by",            limit: 4
     t.datetime "approved_at"
-    t.float    "percent_subsidy",        limit: 24
+    t.float    "percent_subsidy",        limit: 24,  default: 0.0
   end
 
   add_index "subsidies", ["sub_service_request_id"], name: "index_subsidies_on_sub_service_request_id", using: :btree
 
   create_table "subsidy_maps", force: :cascade do |t|
-    t.integer  "organization_id",    limit: 4
-    t.decimal  "max_dollar_cap",                   precision: 12, scale: 4, default: 0.0
-    t.decimal  "max_percentage",                   precision: 5,  scale: 2, default: 0.0
-    t.datetime "created_at",                                                              null: false
-    t.datetime "updated_at",                                                              null: false
+    t.integer  "organization_id", limit: 4
+    t.decimal  "max_dollar_cap",            precision: 12, scale: 4, default: 0.0
+    t.decimal  "max_percentage",            precision: 5,  scale: 2, default: 0.0
+    t.datetime "created_at",                                                       null: false
+    t.datetime "updated_at",                                                       null: false
     t.datetime "deleted_at"
-    t.float    "default_percentage", limit: 24,                             default: 0.0
-    t.text     "instructions",       limit: 65535
   end
 
   add_index "subsidy_maps", ["organization_id"], name: "index_subsidy_maps_on_organization_id", using: :btree

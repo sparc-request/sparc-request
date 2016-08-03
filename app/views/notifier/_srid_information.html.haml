@@ -9,8 +9,13 @@
     %th{:style => 'border: 1px solid black;'}= t(:notifier)[:status]
   %tbody
     - @ssrs_to_be_displayed.each do |ssr|
+      - link = DASHBOARD_LINK + '/sub_service_requests/' + ssr.id.to_s
       %tr{:style => 'border: 1px solid black;'}
-        %td{:style => 'border: 1px solid black; text-align: center;'}= ssr.display_id
+        - if @role == 'none'
+          %td{:style => 'text-align: center;'}
+            %a{:style => 'color: blue; font-weight: bold;', :href => link}=ssr.display_id
+        - else
+          %td{:style => 'border: 1px solid black; text-align: center;'}= ssr.display_id
         %td{:style => 'border: 1px solid black; text-align: center;'}= ssr.org_tree_display
         %td{:style => 'border: 1px solid black; text-align: center;'}= AVAILABLE_STATUSES[ssr.status]
 %br

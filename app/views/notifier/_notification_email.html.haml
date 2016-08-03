@@ -29,14 +29,14 @@
   %body
     = render "welcome"
     = render "project_information", protocol: @protocol
+    - if @service_request.has_per_patient_per_visit_services? and @service_request.arms.count > 0
+      = render "arm_information"
     = render "user_information"
     - if @ssr_deleted
       = render "deleted_services"
     - elsif @audit_report.present? && @audit_report[:line_items].present?
       = render "audit_action"
 
-    - if @service_request.has_per_patient_per_visit_services? and @service_request.arms.count > 0
-      = render "arm_information"
     - if @ssrs_to_be_displayed
       = render "srid_information"
     
@@ -44,5 +44,5 @@
     
     %p= t(:issue_contact)
 
-    - if @role == 'pi' || @role == 'primary-pi'
+    - if @role != 'none'
       = render "acknowledgments"

@@ -504,8 +504,6 @@ class ServiceRequestsController < ApplicationController
     else
       sub_service_requests = service_request.sub_service_requests
     end
-
-    send_admin_notifications(sub_service_requests, xls)
     send_service_provider_notifications(service_request, sub_service_requests, xls)
   end
 
@@ -522,14 +520,6 @@ class ServiceRequestsController < ApplicationController
     service_request.protocol.project_roles.each do |project_role|
       next if project_role.project_rights == 'none'
       Notifier.notify_user(project_role, service_request, xls, approval, current_user).deliver_now unless project_role.identity.email.blank?
-    end
-  end
-
-  def send_admin_notifications(sub_service_requests, xls)
-    sub_service_requests.each do |sub_service_request|
-      sub_service_request.organization.submission_emails_lookup.each do |submission_email|
-        Notifier.notify_admin(sub_service_request.service_request, submission_email.email, xls, current_user).deliver
-      end
     end
   end
 

@@ -54,7 +54,7 @@ class Notifier < ActionMailer::Base
 
     @protocol = service_request.protocol
     @service_request = service_request
-    @portal_link = DASHBOARD_LINK + "?default_protocol=#{@protocol.id}"
+    @portal_link = DASHBOARD_LINK + "/protocols/#{@protocol.id}"
     @ssrs_to_be_displayed = service_request.sub_service_requests
     @triggered_by = user_current.id
     @ssr_ids = service_request.sub_service_requests.map{ |ssr| ssr.id }.join(", ")
@@ -68,26 +68,6 @@ class Notifier < ActionMailer::Base
     mail(:to => email, :from => NO_REPLY_FROM, :subject => subject)
   end
 
-  def notify_admin(service_request, submission_email_address, xls, user_current)
-    @protocol = service_request.protocol
-    @service_request = service_request
-    @role = 'none'
-    @approval_link = nil
-    @portal_link = DASHBOARD_LINK
-    @portal_text = "Administrators/Service Providers, Click Here"
-
-    @triggered_by = user_current.id
-    @ssr_ids = service_request.sub_service_requests.map{ |ssr| ssr.id }.join(", ")
-    @ssrs_to_be_displayed = service_request.sub_service_requests
-    attachments["service_request_#{@service_request.protocol.id}.xlsx"] = xls
-
-    # only send these to the correct person in the production env
-    email = Rails.env == 'production' ?  submission_email_address : DEFAULT_MAIL_TO
-    subject = Rails.env == 'production' ? "#{I18n.t('application_title')} service request" : "[#{Rails.env.capitalize} - EMAIL TO #{submission_email_address}] #{I18n.t('application_title')} service request"
-
-    mail(:to => email, :from => NO_REPLY_FROM, :subject => subject)
-  end
-
   def notify_service_provider service_provider, service_request, attachments_to_add, user_current, audit_report=nil, ssr_deleted=false
     @protocol = service_request.protocol
     @service_request = service_request
@@ -97,7 +77,7 @@ class Notifier < ActionMailer::Base
     # @provide_arm_info = audit_report.nil? ? true : SubServiceRequest.find(@audit_report[:sub_service_request_id]).has_per_patient_per_visit_services?
     @ssr_deleted = ssr_deleted
 
-    @portal_link = DASHBOARD_LINK
+    @portal_link = DASHBOARD_LINK + "/protocols/#{@protocol.id}"
     @portal_text = "Administrators/Service Providers, Click Here"
 
     @triggered_by = user_current.id

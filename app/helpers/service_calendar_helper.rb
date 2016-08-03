@@ -20,6 +20,17 @@
 
 module ServiceCalendarHelper
 
+
+
+
+
+
+
+
+
+
+
+
   def currency_converter cents
     number_to_currency(Service.cents_to_dollars(cents))
   end

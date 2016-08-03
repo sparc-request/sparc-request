@@ -118,6 +118,9 @@ SparcRails::Application.routes.draw do
   resources :arms, only: [:index, :new, :create, :edit, :update, :destroy] do
   end
 
+  resources :visit_groups, only: [:update] do
+  end
+  
   resources :documents, only: [:index, :new, :create, :edit, :update, :destroy] do
   end
   

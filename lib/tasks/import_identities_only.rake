@@ -1,3 +1,5 @@
+# Copyright © 2011-2016 MUSC Foundation for Research Development.
+# All rights reserved.
 namespace :data do
   desc "Import identities (only) from CSV"
   task :import_identities_only, [:uid_domain] => :environment do |t, args|

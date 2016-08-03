@@ -1,3 +1,5 @@
+# Copyright © 2011-2016 MUSC Foundation for Research Development.
+# All rights reserved.
 desc "Fix disassociated documents"
 task :fix_disassociated_documents => :environment do
   class DocumentSubServiceRequest < ActiveRecord::Base

@@ -1,3 +1,5 @@
+# Copyright © 2011-2016 MUSC Foundation for Research Development.
+# All rights reserved.
 # Percent subsidy is held.
 # Calculating percent subsidy based on pi contribution for both
 # PastSubsidy and Subsidy tables

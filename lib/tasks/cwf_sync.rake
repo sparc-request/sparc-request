@@ -1,3 +1,5 @@
+# Copyright © 2011-2016 MUSC Foundation for Research Development.
+# All rights reserved.
 desc 'Sync data with CWF'
 
 namespace :cwf_sync do

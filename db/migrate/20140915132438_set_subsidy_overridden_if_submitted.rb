@@ -1,3 +1,5 @@
+# Copyright © 2011-2016 MUSC Foundation for Research Development.
+# All rights reserved.
 class SetSubsidyOverriddenIfSubmitted < ActiveRecord::Migration
   def up
     ssrs = SubServiceRequest.where(:status => "submitted")

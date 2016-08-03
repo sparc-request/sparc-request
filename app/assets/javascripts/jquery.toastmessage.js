@@ -1,3 +1,5 @@
+// Copyright © 2011-2016 MUSC Foundation for Research Development.
+// All rights reserved.
 /*
  * Copyright 2010 akquinet
  * Licensed under the Apache License, Version 2.0 (the "License");

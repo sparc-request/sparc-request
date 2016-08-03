@@ -1,4 +1,5 @@
-/* bootstrap-accessibility requires that the JS file be loaded at the bottom of the layout template (application.html.haml) */
+/* Copyright © 2011-2016 MUSC Foundation for Research Development.*/
+/* All rights reserved.*//* bootstrap-accessibility requires that the JS file be loaded at the bottom of the layout template (application.html.haml) */
 
 /*
 /* after upgrading bootstrap.min, replace "../fonts/" with "fonts/"

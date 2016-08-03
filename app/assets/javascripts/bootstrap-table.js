@@ -1,3 +1,5 @@
+// Copyright © 2011-2016 MUSC Foundation for Research Development.
+// All rights reserved.
 /**
  * @author zhixin wen <wenzhixin2010@gmail.com>
  * version: 1.8.1

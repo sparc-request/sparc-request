@@ -1,3 +1,5 @@
+# Copyright © 2011-2016 MUSC Foundation for Research Development.
+# All rights reserved.
 module ServiceRequestsHelper
 
   def current_organizations(service_request, sub_service_request)

@@ -1,3 +1,5 @@
+# Copyright © 2011-2016 MUSC Foundation for Research Development.
+# All rights reserved.
 #####  Import services using a DHHS fee schedule and pricing file
 namespace :data do
   desc "Import professional services using the CPT code mapping"

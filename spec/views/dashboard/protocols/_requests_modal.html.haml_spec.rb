@@ -1,3 +1,5 @@
+# Copyright © 2011-2016 MUSC Foundation for Research Development.
+# All rights reserved.
 # TODO rewrite with stubs
 require 'rails_helper'
 

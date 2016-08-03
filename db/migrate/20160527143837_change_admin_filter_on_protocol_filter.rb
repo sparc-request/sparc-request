@@ -1,3 +1,5 @@
+# Copyright © 2011-2016 MUSC Foundation for Research Development.
+# All rights reserved.
 class ChangeAdminFilterOnProtocolFilter < ActiveRecord::Migration
   def up
     remove_column :protocol_filters, :for_admin

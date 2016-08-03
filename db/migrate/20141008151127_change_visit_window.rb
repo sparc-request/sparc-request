@@ -1,3 +1,5 @@
+# Copyright © 2011-2016 MUSC Foundation for Research Development.
+# All rights reserved.
 class ChangeVisitWindow < ActiveRecord::Migration
   def up
     add_column :visit_groups, :window_after, :integer, :default => 0

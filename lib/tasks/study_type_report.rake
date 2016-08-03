@@ -1,3 +1,5 @@
+# Copyright © 2011-2016 MUSC Foundation for Research Development.
+# All rights reserved.
 desc "Study type report"
 task :study_type_report => :environment do 
   CSV.open('tmp/study_type_answers.csv', 'wb') do |csv|

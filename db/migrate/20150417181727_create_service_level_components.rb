@@ -1,3 +1,5 @@
+# Copyright © 2011-2016 MUSC Foundation for Research Development.
+# All rights reserved.
 class CreateServiceLevelComponents < ActiveRecord::Migration
   def change
     create_table :service_level_components do |t|

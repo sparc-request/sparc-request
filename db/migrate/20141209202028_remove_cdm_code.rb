@@ -1,3 +1,5 @@
+# Copyright © 2011-2016 MUSC Foundation for Research Development.
+# All rights reserved.
 class RemoveCdmCode < ActiveRecord::Migration
   def up
     charge_codes = Service.where("charge_code is not null and charge_code != ''")

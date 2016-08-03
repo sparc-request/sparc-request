@@ -1,3 +1,5 @@
+# Copyright © 2011-2016 MUSC Foundation for Research Development.
+# All rights reserved.
 class DefaultUnfundedRateToFederal < ActiveRecord::Migration
   def change
     pricing_setups = PricingSetup.all

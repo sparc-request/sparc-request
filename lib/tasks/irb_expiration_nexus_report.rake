@@ -1,3 +1,5 @@
+# Copyright © 2011-2016 MUSC Foundation for Research Development.
+# All rights reserved.
 namespace :reports do
   desc "Create nexus IRB expiration report"
   task :irb_nexus_report => :environment do

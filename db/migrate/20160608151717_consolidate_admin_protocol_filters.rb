@@ -1,3 +1,5 @@
+# Copyright © 2011-2016 MUSC Foundation for Research Development.
+# All rights reserved.
 class ConsolidateAdminProtocolFilters < ActiveRecord::Migration
   def change
     add_column :protocol_filters, :admin_filter, :string

@@ -1,3 +1,5 @@
+# Copyright © 2011-2016 MUSC Foundation for Research Development.
+# All rights reserved.
 namespace :data do
   desc "Import cores and services from CSV"
   task :import_cores_and_services, [:uid_domain] => :environment do |t, args|

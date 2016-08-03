@@ -1,3 +1,5 @@
+# Copyright © 2011-2016 MUSC Foundation for Research Development.
+# All rights reserved.
 namespace :data do
   desc "Create CSV report of all one time fee line items under a given provider"
   task :one_time_fee_report => :environment do

@@ -1,3 +1,5 @@
+# Copyright © 2011-2016 MUSC Foundation for Research Development.
+# All rights reserved.
 desc "Create an Associated Survey"
 task associate_survey: :environment do
   def prompt(*args)

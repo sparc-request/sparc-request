@@ -1,3 +1,5 @@
+# Copyright © 2011-2016 MUSC Foundation for Research Development.
+# All rights reserved.
 class CreateDashboardFilters < ActiveRecord::Migration
   def change
     create_table :protocol_filters do |t|

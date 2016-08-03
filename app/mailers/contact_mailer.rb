@@ -1,3 +1,5 @@
+# Copyright © 2011-2016 MUSC Foundation for Research Development.
+# All rights reserved.
 class ContactMailer < ApplicationMailer
 
   def contact_us_email(contact_form)

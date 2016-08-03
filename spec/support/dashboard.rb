@@ -1,3 +1,5 @@
+# Copyright © 2011-2016 MUSC Foundation for Research Development.
+# All rights reserved.
 # Same as stub_controller, but for controllers which inherit from
 # Dashboard::BaseController
 def log_in_dashboard_identity(opts = {})

@@ -1,3 +1,5 @@
+# Copyright © 2011-2016 MUSC Foundation for Research Development.
+# All rights reserved.
 require 'open-uri'
 
 desc "Download the iCal version of the google calendar"

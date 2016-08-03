@@ -1,3 +1,5 @@
+// Copyright © 2011-2016 MUSC Foundation for Research Development.
+// All rights reserved.
 /// <reference path="http://code.jquery.com/jquery-1.4.1-vsdoc.js" />
 /*
 * Print Element Plugin 1.2

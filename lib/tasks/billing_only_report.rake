@@ -1,3 +1,5 @@
+# Copyright © 2011-2016 MUSC Foundation for Research Development.
+# All rights reserved.
 namespace :reports do
   desc "Create billing only report for CWF"
   task :billing_only_report => :environment do

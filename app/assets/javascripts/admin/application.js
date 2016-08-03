@@ -1,3 +1,5 @@
+// Copyright © 2011-2016 MUSC Foundation for Research Development.
+// All rights reserved.
 //= require admin/jquery.min
 //= require admin/bootstrap.min
 // require admin/validator.min

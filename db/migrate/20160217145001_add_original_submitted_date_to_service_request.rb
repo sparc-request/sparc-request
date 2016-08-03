@@ -1,3 +1,5 @@
+# Copyright © 2011-2016 MUSC Foundation for Research Development.
+# All rights reserved.
 class AddOriginalSubmittedDateToServiceRequest < ActiveRecord::Migration
   def change
     add_column(:service_requests, :original_submitted_date, :date) unless ServiceRequest.column_names.include?('original_submitted_date')

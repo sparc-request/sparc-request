@@ -1,3 +1,5 @@
+# Copyright © 2011-2016 MUSC Foundation for Research Development.
+# All rights reserved.
 class SetNullTimeframeToMin < ActiveRecord::Migration
   def change
     null_timeframe_values = Fulfillment.where(timeframe: nil).where.not(time: nil)

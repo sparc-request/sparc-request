@@ -1,3 +1,5 @@
+# Copyright © 2011-2016 MUSC Foundation for Research Development.
+# All rights reserved.
 ##### this task is very specific to a MUSC data import.  it should not be used otherwise #####
 
 desc 'Disable non-PB Services'

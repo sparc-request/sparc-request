@@ -1,3 +1,5 @@
+# Copyright © 2011-2016 MUSC Foundation for Research Development.
+# All rights reserved.
 task :completed_procedures => :environment do
 
   def prompt(*args)

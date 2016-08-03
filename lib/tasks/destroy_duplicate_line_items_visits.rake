@@ -1,3 +1,5 @@
+# Copyright © 2011-2016 MUSC Foundation for Research Development.
+# All rights reserved.
 task :destroy_duplicate_line_items_visits => :environment do
 
   arms = Arm.joins(:protocol).where(protocols: {selected_for_epic: true})

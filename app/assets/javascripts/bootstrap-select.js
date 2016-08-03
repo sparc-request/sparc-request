@@ -1,3 +1,5 @@
+// Copyright © 2011-2016 MUSC Foundation for Research Development.
+// All rights reserved.
 /*!
  * Bootstrap-select v1.7.2 (http://silviomoreto.github.io/bootstrap-select)
  *

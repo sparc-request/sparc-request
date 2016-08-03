@@ -8,13 +8,15 @@ RSpec.describe 'dashboard/protocols/index', type: :view do
     assign(:filterrific, double('filterrific',
       select_options: {
         with_status: [],
-        with_organization: []
+        with_organization: [],
+        sorted_by: "id_asc"
       },
       with_status: [],
       search_query: '',
       show_archived: 0,
       admin_filter: "for_identity #{jug2.id}",
-      with_organization: false
+      with_organization: false,
+      sorted_by: "id_asc"
     ))
   end
 

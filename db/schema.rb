@@ -103,8 +103,8 @@ ActiveRecord::Schema.define(version: 20160727152900) do
     t.integer  "subject_count",         limit: 4,   default: 1
     t.integer  "protocol_id",           limit: 4
     t.boolean  "new_with_draft",                    default: false
-    t.integer  "minimum_visit_count",   limit: 4,   default: 0
-    t.integer  "minimum_subject_count", limit: 4,   default: 0
+    t.integer  "minimum_visit_count",   limit: 4
+    t.integer  "minimum_subject_count", limit: 4
   end
 
   add_index "arms", ["protocol_id"], name: "index_arms_on_protocol_id", using: :btree
@@ -657,6 +657,7 @@ ActiveRecord::Schema.define(version: 20160727152900) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "admin_filter",      limit: 255
+    t.string   "sorted_by",         limit: 255
   end
 
   create_table "protocols", force: :cascade do |t|
@@ -1009,20 +1010,18 @@ ActiveRecord::Schema.define(version: 20160727152900) do
     t.string   "status",                 limit: 255, default: "Pending"
     t.integer  "approved_by",            limit: 4
     t.datetime "approved_at"
-    t.float    "percent_subsidy",        limit: 24
+    t.float    "percent_subsidy",        limit: 24,  default: 0.0
   end
 
   add_index "subsidies", ["sub_service_request_id"], name: "index_subsidies_on_sub_service_request_id", using: :btree
 
   create_table "subsidy_maps", force: :cascade do |t|
-    t.integer  "organization_id",    limit: 4
-    t.decimal  "max_dollar_cap",                   precision: 12, scale: 4, default: 0.0
-    t.decimal  "max_percentage",                   precision: 5,  scale: 2, default: 0.0
-    t.datetime "created_at",                                                              null: false
-    t.datetime "updated_at",                                                              null: false
+    t.integer  "organization_id", limit: 4
+    t.decimal  "max_dollar_cap",            precision: 12, scale: 4, default: 0.0
+    t.decimal  "max_percentage",            precision: 5,  scale: 2, default: 0.0
+    t.datetime "created_at",                                                       null: false
+    t.datetime "updated_at",                                                       null: false
     t.datetime "deleted_at"
-    t.float    "default_percentage", limit: 24,                             default: 0.0
-    t.text     "instructions",       limit: 65535
   end
 
   add_index "subsidy_maps", ["organization_id"], name: "index_subsidy_maps_on_organization_id", using: :btree

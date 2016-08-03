@@ -692,7 +692,7 @@ class ServiceRequestsController < ApplicationController
       end
     end
     sub_service_request = service_request.sub_service_requests.create(organization_id: organization.id)
-    service_request.ensure_ssr_ids if service_request.protocol.present?
+    service_request.ensure_ssr_ids
 
     sub_service_request
   end

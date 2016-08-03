@@ -26,6 +26,11 @@ class Dashboard::BaseController < ActionController::Base
   before_filter :authenticate_identity!
   before_filter :set_user
   before_filter :establish_breadcrumber
+  before_filter :set_highlighted_link
+
+  def set_highlighted_link
+    @highlighted_link ||= 'sparc_dashboard'
+  end
 
   def current_user
     current_identity

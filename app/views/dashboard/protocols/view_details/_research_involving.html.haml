@@ -80,14 +80,14 @@
                 %label.col-lg-3
                   = t(:dashboard)[:protocols][:view_details][:studies][:research_involving][:humans][:irb_approval_date]
                 .col-lg-9
-                  = human_info.irb_approval_date
+                  = format_date(human_info.irb_approval_date)
 
             %tr
               %td
                 %label.col-lg-3
                   = t(:dashboard)[:protocols][:view_details][:studies][:research_involving][:humans][:irb_expiration_date]
                 .col-lg-9
-                  = human_info.irb_expiration_date
+                  = format_date(human_info.irb_expiration_date)
             %tr
               %td
                 %label.col-lg-3
@@ -122,13 +122,13 @@
                 %label.col-lg-3
                   = t(:dashboard)[:protocols][:view_details][:studies][:research_involving][:vertebrates][:iacuc_approval_date]
                 .col-lg-9
-                  = vertebrate_info.iacuc_approval_date
+                  = format_date(vertebrate_info.iacuc_approval_date)
             %tr
               %td
                 %label.col-lg-3
                   = t(:dashboard)[:protocols][:view_details][:studies][:research_involving][:vertebrates][:iacuc_expiration_date]
                 .col-lg-9
-                  = vertebrate_info.iacuc_expiration_date
+                  = format_date(vertebrate_info.iacuc_expiration_date)
 
     / Investigational Products
     - if research_types_info.investigational_products

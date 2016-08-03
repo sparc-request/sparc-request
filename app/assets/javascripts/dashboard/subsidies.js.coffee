@@ -67,7 +67,7 @@ $(document).ready ->
     current_cost = recalculate_current_cost(total_request_cost, percent_subsidy)
     redisplay_form_values(percent_subsidy, pi_contribution, current_cost)
 
-  $(document).on 'change', '#current_percent_subsidy_of_total', ->
+  $(document).on 'change', '#pending_subsidy_percent_subsidy', ->
     # When user changes Percent Subsidy, the PI Contribution and Subsidy Cost fields are recalculated & displayed
     percent_subsidy = parseFloat($(this).val()) / 100.0
     total_request_cost = parseFloat($("#subsidy_form_table_request_cost").data("cost")) / 100.0
@@ -88,8 +88,9 @@ $(document).ready ->
   recalculate_percent_subsidy = (total_request_cost, pi_contribution) ->
     percentage = (total_request_cost - pi_contribution) / total_request_cost
     return if isNaN(percentage) then 0 else percentage
+
   redisplay_form_values = (percent_subsidy, pi_contribution, current_cost) ->
-    $("#current_percent_subsidy_of_total").val( (percent_subsidy*100.0).toFixed(2) )
+    $('#pending_subsidy_percent_subsidy').val( (percent_subsidy*100.0).toFixed(2) )
     $("#pending_subsidy_pi_contribution").val( format_currency(pi_contribution) )
     $("#subsidy_form_table_subsidy_cost").text( format_currency(current_cost) )
 
@@ -99,3 +100,7 @@ $(document).ready ->
 
 
 #****************** SUBSIDY FORM END ***************************#
+
+  $(document).on 'click', '#details-tab', ->
+    $("#pending_subsidy").load(location.href + " #pending_subsidy")
+

@@ -14,10 +14,6 @@ RSpec.describe 'dashboard/service_requests/protocol_service_request_show', type:
       archived: false)
   end
 
-  let!(:service_requester) do
-    create(:identity, first_name: 'Some', last_name: 'Guy')
-  end
-
   let!(:organization) do
     create(:organization,
       type: 'Institution',
@@ -41,7 +37,6 @@ RSpec.describe 'dashboard/service_requests/protocol_service_request_show', type:
         service_request = create(:service_request_without_validations,
           id: 9999,
           protocol: protocol,
-          service_requester: jug2,
           status: 'submitted',
           submitted_at: DateTime.now)
         create(:sub_service_request,
@@ -60,7 +55,6 @@ RSpec.describe 'dashboard/service_requests/protocol_service_request_show', type:
         service_request = create(:service_request_without_validations,
           id: 9999,
           protocol: protocol,
-          service_requester: jug2,
           status: 'draft')
         create(:sub_service_request,
           ssr_id: '0001',
@@ -78,7 +72,6 @@ RSpec.describe 'dashboard/service_requests/protocol_service_request_show', type:
     let!(:service_request) do
       create(:service_request_without_validations,
         protocol: protocol,
-        service_requester: service_requester,
         status: 'draft')
     end
 

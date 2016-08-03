@@ -122,12 +122,12 @@ module Dashboard::SubServiceRequestsHelper
   #ctrc can see all ssr's.
   def user_can_view_ssr?(study_tracker, ssr, user)
     can_view = false
-    if user.is_super_user? || user.clinical_provider_for_ctrc? || (user.is_service_provider?(ssr) && (study_tracker == false)) 
+    if user.is_super_user? || user.clinical_provider_for_ctrc? || (user.is_service_provider?(ssr) && (study_tracker == false))
       can_view = true
     else
       ssr.line_items.each do |line_item|
         clinical_provider_cores(user).each do |core|
-          if line_item.core == core 
+          if line_item.core == core
             can_view = true
           end
         end
@@ -199,6 +199,10 @@ module Dashboard::SubServiceRequestsHelper
     ssr_admin_button(ssr, user, permission_to_edit, admin_access)
   end
 
+  def display_owner(ssr)
+    ssr.owner.full_name if ssr.owner_id.present?
+  end
+
   private
 
   def ssr_view_button(ssr)
@@ -207,7 +211,7 @@ module Dashboard::SubServiceRequestsHelper
 
   def ssr_edit_button(ssr, user, permission_to_edit)
     # The SSR must not be locked, and the user must either be an authorized user or an authorized admin
-    if ssr.can_be_edited? && permission_to_edit
+    if ssr.can_be_edited? && permission_to_edit && !ssr.is_complete?
       content_tag(:button, t(:dashboard)[:service_requests][:actions][:edit], class: 'edit-service-request btn btn-warning btn-sm', type: 'button', data: { permission: permission_to_edit.to_s, url: "/service_requests/#{ssr.service_request.id}/catalog?sub_service_request_id=#{ssr.id}"})
     else
       ''

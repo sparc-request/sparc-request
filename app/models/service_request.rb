@@ -24,7 +24,6 @@ class ServiceRequest < ActiveRecord::Base
 
   audited
 
-  belongs_to :service_requester, :class_name => "Identity", :foreign_key => "service_requester_id"
   belongs_to :protocol
   has_many :sub_service_requests, :dependent => :destroy
   has_many :line_items, -> { includes(:service) }, :dependent => :destroy
@@ -90,13 +89,11 @@ class ServiceRequest < ActiveRecord::Base
 
   attr_accessible :protocol_id
   attr_accessible :status
-  attr_accessible :service_requester_id
   attr_accessible :notes
   attr_accessible :approved
   attr_accessible :consult_arranged_date
   attr_accessible :pppv_complete_date
   attr_accessible :pppv_in_process_date
-  attr_accessible :requester_contacted_date
   attr_accessible :submitted_at
   attr_accessible :line_items_attributes
   attr_accessible :sub_service_requests_attributes
@@ -488,8 +485,7 @@ class ServiceRequest < ActiveRecord::Base
     self.assign_attributes(status: new_status)
 
     self.sub_service_requests.each do |ssr|
-      next unless ssr.can_be_edited?
-
+      next unless ssr.can_be_edited? && !ssr.is_complete?
       available = AVAILABLE_STATUSES.keys
       editable = EDITABLE_STATUSES[ssr.organization_id] || available
 

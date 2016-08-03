@@ -24,8 +24,9 @@ class SubServiceRequest < ActiveRecord::Base
 
   audited
 
-  after_save :update_past_status, :update_org_tree
+  after_save :update_org_tree
 
+  belongs_to :service_requester, class_name: "Identity", foreign_key: "service_requester_id"
   belongs_to :owner, :class_name => 'Identity', :foreign_key => "owner_id"
   belongs_to :service_request
   belongs_to :organization
@@ -45,8 +46,6 @@ class SubServiceRequest < ActiveRecord::Base
   has_one :protocol, through: :service_request
 
   delegate :percent_subsidy, to: :approved_subsidy, allow_nil: true
-  delegate :approved_percent_of_total, to: :approved_subsidy, allow_nil: true
-  alias_attribute :approved_percent_subsidy, :approved_percent_of_total
 
   # service_request_id & ssr_id together form a unique id for the sub service request
   attr_accessible :service_request_id
@@ -67,6 +66,8 @@ class SubServiceRequest < ActiveRecord::Base
   attr_accessible :in_work_fulfillment
   attr_accessible :routing
   attr_accessible :documents
+  attr_accessible :service_requester_id
+  attr_accessible :requester_contacted_date
 
   accepts_nested_attributes_for :line_items, allow_destroy: true
   accepts_nested_attributes_for :payments, allow_destroy: true
@@ -74,11 +75,11 @@ class SubServiceRequest < ActiveRecord::Base
   scope :in_work_fulfillment, -> { where(in_work_fulfillment: true) }
 
   def consult_arranged_date=(date)
-    write_attribute(:consult_arranged_date, Time.strptime(date, "%m-%d-%Y")) if date.present?
+    write_attribute(:consult_arranged_date, Time.strptime(date, "%m/%d/%Y")) if date.present?
   end
 
   def requester_contacted_date=(date)
-    write_attribute(:requester_contacted_date, Time.strptime(date, "%m-%d-%Y")) if date.present?
+    write_attribute(:requester_contacted_date, Time.strptime(date, "%m/%d/%Y")) if date.present?
   end
 
   # Make sure that @prev_status is set whenever status is changed for update_past_status method.
@@ -310,6 +311,10 @@ class SubServiceRequest < ActiveRecord::Base
     end
   end
 
+  def is_complete?
+    return status == 'complete'
+  end
+
   def find_editable_id(id)
     parent_ids = Organization.find(id).parents.map(&:id)
     EDITABLE_STATUSES.keys.each do |org_id|
@@ -378,10 +383,10 @@ class SubServiceRequest < ActiveRecord::Base
   # Callback which gets called after the ssr is saved to ensure that the
   # past status is properly updated.  It should not normally be
   # necessarily to call this method.
-  def update_past_status
+  def update_past_status identity
     old_status = self.past_statuses.last
     if @prev_status and (not old_status or old_status.status != @prev_status)
-      self.past_statuses.create(status: @prev_status, date: Time.now)
+      self.past_statuses.create(status: @prev_status, date: Time.now, changed_by_id: identity.id)
     end
   end
 

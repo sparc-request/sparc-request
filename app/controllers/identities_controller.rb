@@ -44,14 +44,16 @@ class IdentitiesController < ApplicationController
 
   def add_to_protocol
     @can_edit = params[:can_edit]
-    @error = nil
-    @error_field = nil
+    @errors = {}
+
     if params[:project_role][:role].blank?
-      @error = "Role can't be blank"
-      @error_field = 'role'
+      @errors[:user_role] = "Role can't be blank"
     elsif params[:project_role][:role] == 'other' and params[:project_role][:role_other].blank?
-      @error = "'Other' role can't be blank"
-      @error_field = 'role'
+      @errors[:user_role] = "'Other' role can't be blank"
+    end
+
+    if params[:identity][:credentials] == 'other' and params[:identity][:credentials_other].blank?
+      @errors[:credentials_other] = "'Other' credential can't be blank"
     end
 
     @protocol_type = session[:protocol_type]

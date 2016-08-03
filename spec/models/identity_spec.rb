@@ -174,22 +174,6 @@ RSpec.describe "Identity" do
         end
       end
 
-      describe "can edit fulfillment" do
-
-        it "should return true if the user is a super user for an organization's parent" do
-          expect(user.can_edit_fulfillment?(provider)).to eq(true)
-        end
-
-        it "should return true if the user is a service provider for a given organization" do
-          expect(user.can_edit_fulfillment?(institution)).to eq(true)
-        end
-
-        it "should return false if these conditions are not met" do
-          random_user = create(:identity)
-          expect(random_user.can_edit_fulfillment?(institution)).to eq(false)
-        end
-      end
-
       describe "can edit core" do
 
         it "should return true if the user is a clinical provider on the given core" do

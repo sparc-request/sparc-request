@@ -258,7 +258,6 @@ class ServiceCalendarsController < ApplicationController
     end
 
     @sub_service_request.update_attribute(:status, "draft") if @sub_service_request
-
     render partial: 'update_service_calendar'
   end
 

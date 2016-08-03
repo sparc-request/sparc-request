@@ -50,7 +50,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
         select_options: {
           with_status: AVAILABLE_STATUSES.invert,
           with_organization: Dashboard::GroupedOrganizations.new(@organizations).collect_grouped_options,
-          with_owner: build_with_owner_params
+          with_owner: build_with_owner_params,
           sorted_by: Protocol.options_for_sorted_by
         },
         persistence_id: false #resets filters on page reload

@@ -51,7 +51,7 @@ class ProtocolFilter < ActiveRecord::Base
         search_query: self.search_query,
         with_organization: self.with_organization,
         with_status: self.with_status,
-        with_owner: self.with_owner
+        with_owner: self.with_owner,
         sorted_by: self.sorted_by
       }
     )

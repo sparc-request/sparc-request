@@ -134,7 +134,7 @@ class Protocol < ActiveRecord::Base
       :show_archived,
       :with_status,
       :with_organization,
-      :with_owner
+      :with_owner,
       :sorted_by
     ]
   )

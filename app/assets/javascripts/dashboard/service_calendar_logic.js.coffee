@@ -62,8 +62,8 @@ $(document).ready ->
   #  show:
   #    ready: false
 
-  # $('.billing_type_list').live 'mouseover', ->
-  #$('.billing_type_list').qtip
+  # $('.billing-type-list').live 'mouseover', ->
+  #$('.billing-type-list').qtip
   #  overwrite: false
   #  content: 'R = Research<br />T = Third Party (Patient Insurance)<br />% = % Effort'
   #  position:
@@ -99,7 +99,7 @@ $(document).ready ->
   else if $('.line_item_visit_pricing').is(':visible')
     changing_tabs_calculating_rates()
 
-  $(document).on 'change', '.visit_group_select .selectpicker', ->
+  $(document).on 'change', '.visit-group-select .selectpicker', ->
     page = $(this).find('option:selected').attr('page')
 
     $.ajax

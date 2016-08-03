@@ -393,7 +393,7 @@ module ApplicationHelper
     render_navbar_link(name, path, highlighted) unless conditions
   end
 
-  def render_navbar_link name, path, highlighted
+  def render_navbar_link(name, path, highlighted)
     content_tag(:li, link_to(name.to_s, path, target: '_blank', class: highlighted ? 'highlighted' : ''), class: 'dashboard nav-bar-link')
   end
 end

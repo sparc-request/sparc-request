@@ -140,19 +140,23 @@ en:
       billing: "Quantity/Billing Tab"
       pricing: "Consolidated Request Tab"
     pppv:
-      header: "Per Patient/Visit Services"
+      header: "Per Patient/Visit Services -- %{arm_name}"
       header_fields:
         service: "Service Name"
+        status: "Status"
         unit_cost: "Unit Costs"
         your_cost: "Your Cost"
         quantity_type: "Clinical Qty Type"
-        subject_count: "Subject Count"
+        subject_count: "N"
         page_select:
           previous: "View Previous"
           next: "View Next"
         total_per_patient: "Total Per Patient"
         total_per_study: "Total Per Study"
         service_rate: "Service Rate"
+        research: "R"
+        third_party: "T"
+        percent: "%"
       interactables:
         edit_subject_count: "Edit Subject Count"
       labels:

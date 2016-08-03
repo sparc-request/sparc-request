@@ -25,12 +25,12 @@
           = t(:proper)[:review][:pppv_calendars_notice]
       - service_request.arms.each do |arm|
         - next if arm.visit_groups.empty?
-        = render 'service_calendars/master_calendar/pppv/pppv_calendar', service_request: service_request, sub_service_request: sub_service_request, pages: pages, tab: tab, arm: arm, page: pages[arm.id], portal: portal, review: true, merged: true, study_tracker: false
+        = render 'service_calendars/master_calendar/pppv/pppv_calendar', service_request: service_request, sub_service_request: sub_service_request, pages: pages, tab: tab, arm: arm, page: pages[arm.id], portal: portal, review: true, merged: true
   .otf-calendars
     .page-header
       %h3
         = t(:proper)[:review][:otf_calendar_notice]
-    = render 'service_calendars/master_calendar/otf/otf_calendar', service_request: service_request, sub_service_request: sub_service_request, tab: tab, portal: true, merged: true, review: true, study_tracker: false, protocol: service_request.protocol
+    = render 'service_calendars/master_calendar/otf/otf_calendar', service_request: service_request, sub_service_request: sub_service_request, tab: tab, portal: true, merged: true, review: true, protocol: service_request.protocol
   .totals
     .page-header
       %h3

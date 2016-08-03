@@ -20,7 +20,7 @@
 - if @protocol.has_line_items_of_type?(@service_request, @portal, "pppv")
   - @protocol.arms.each do |arm|
     - next if arm.visit_groups.empty?
-    = render "service_calendars/master_calendar/pppv/pppv_calendar", tab: @tab, arm: arm, service_request: @service_request, sub_service_request: @sub_service_request, page: @pages[arm.id], pages: @pages, merged: @merged, review: @review, portal: @portal, study_tracker: @study_tracker
+    = render "dashboard/service_calendars/master_calendar/pppv/pppv_calendar", tab: @tab, arm: arm, service_request: @service_request, sub_service_request: @sub_service_request, page: @pages[arm.id], pages: @pages, merged: @merged, review: @review, portal: @portal
 - if @protocol.has_line_items_of_type?(@service_request, @portal, "otf")
-  = render "service_calendars/master_calendar/otf/otf_calendar", tab: @tab, service_request: @service_request, sub_service_request: @sub_service_request, merged: @merged, review: @review, portal: @portal, study_tracker: @study_tracker, protocol: @protocol
+  = render "dashboard/service_calendars/master_calendar/otf/otf_calendar", tab: @tab, service_request: @service_request, sub_service_request: @sub_service_request, merged: @merged, review: @review, portal: @portal, protocol: @protocol
 = render 'dashboard/service_calendars/merged_grand_totals', service_request: @service_request

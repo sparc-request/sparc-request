@@ -24,9 +24,14 @@ class ApplicationController < ActionController::Base
   helper_method :current_user
   helper_method :xeditable?
   before_filter :setup_navigation
+  before_filter :set_highlighted_link  # default is to not highlight a link
   before_action :configure_permitted_parameters, if: :devise_controller?
 
   protected
+
+  def set_highlighted_link  # default value, override inside controllers
+    @highlighted_link ||= ''
+  end
 
   def configure_permitted_parameters
     devise_parameter_sanitizer.for(:sign_up) { |u|  u.permit!}
@@ -277,7 +282,7 @@ class ApplicationController < ActionController::Base
       authenticate_identity!
       return true
     end
-    
+
     if @sub_service_request.nil?
       authorization_error "The service request you are trying to access is not editable.",
                           "SR#{session[:service_request_id]}"

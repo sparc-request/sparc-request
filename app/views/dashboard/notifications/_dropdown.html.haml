@@ -20,9 +20,7 @@
 %select.selectpicker.new-notification{ title: t(:dashboard)[:notifications][:table][:send], data: { style: "btn-success new_notification_button", live_search: 'true', sub_service_request_id: sub_service_request.ssr_id } }
   %optgroup{ label: t(:dashboard)[:notifications][:table][:authorized_users]}
     - sub_service_request.service_request.protocol.project_roles.each do |pr|
-      %option{ data: { identity_id: pr.identity_id, sub_service_request_id: sub_service_request.id, is_service_provider: 'false', current_user_id: user.id } } 
-        = "#{display_user_role(pr)}: #{pr.identity.full_name} #{sub_service_request.service_requester_id == pr.identity_id ? '(Requester)' : ''}"
+      %option{ data: { identity_id: pr.identity_id, sub_service_request_id: sub_service_request.id, is_service_provider: 'false', current_user_id: user.id, content: display_authorized_user(pr, sub_service_request.service_requester_id) } } 
   %optgroup{ label: t(:dashboard)[:notifications][:table][:service_providers]}
     - sub_service_request.organization.service_providers.includes(:identity).sort_by { |sp| sp.identity.last_name }.each do |sp|
-      %option{ data: { identity_id: sp.identity.id, sub_service_request_id: sub_service_request.id, is_service_provider: 'true', current_user_id: user.id } }
-        = sp.identity.full_name
+      %option{ data: { identity_id: sp.identity.id, sub_service_request_id: sub_service_request.id, is_service_provider: 'true', current_user_id: user.id, content: display_service_provider(sp, sub_service_request.owner_id) } }

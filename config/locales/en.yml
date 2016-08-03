@@ -402,6 +402,8 @@ en:
         user: "User"
         subject: "Subject"
         time: "Time"
+        owner: "(Owner)"
+        requester: "(Requester)"
       form:
         select_header: "Send Notification"
         select: "Select User:"
@@ -419,6 +421,7 @@ en:
       my_protocols: "My Protocols"
       my_admin_protocols: "My Admin Protocols"
       organization: "Organization"
+      sort_by: "Sort By"
       filter: "Filter"
       saved_filters:
         header: "Recently Saved Filters"

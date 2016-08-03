@@ -26,7 +26,12 @@ class CatalogManager::AppController < ActionController::Base
 
   before_filter :authenticate_identity!
   before_filter :set_user
-  
+  before_filter :set_highlighted_link
+
+  def set_highlighted_link
+    @highlighted_link ||= 'sparc_catalog'
+  end
+
   def current_user
     current_identity
   end

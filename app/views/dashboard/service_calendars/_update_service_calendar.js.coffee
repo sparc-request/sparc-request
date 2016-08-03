@@ -19,7 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 $('#service_calendar .custom-tab.active a').click()
-
+$("#sub_service_request_header").html("<%= escape_javascript(render(partial: 'dashboard/sub_service_requests/header', locals: {sub_service_request: @sub_service_request})) %>")
 # TODO render _direct_cost_total or equivalent
 if "<%= @errors %>"
   alert "<%= raw(@errors) %>"

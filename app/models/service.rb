@@ -165,22 +165,6 @@ class Service < ActiveRecord::Base
     return service_name
   end
 
-  def display_service_abbreviation(line_item)
-    if self.abbreviation.blank?
-      service_abbreviation = self.name
-    elsif self.cpt_code and !self.cpt_code.blank?
-      service_abbreviation = self.abbreviation + " (#{self.cpt_code})"
-    else
-      service_abbreviation = self.abbreviation
-    end
-
-    unless line_item.sub_service_request.ssr_id.nil?
-      service_abbreviation = "(#{line_item.sub_service_request.ssr_id}) " + service_abbreviation
-    end
-
-    service_abbreviation
-  end
-
   # Will check for nil display dates on the service's pricing maps
   def verify_display_dates
     is_valid = true

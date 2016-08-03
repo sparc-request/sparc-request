@@ -293,4 +293,26 @@ RSpec.describe "Line Item" do
       expect(otf_line_item.valid?).to_not be
     end
   end
+
+  context "service abbreviation" do
+    let!(:organization) { create(:organization) }
+    let!(:protocol)     { create(:study_without_validations, primary_pi: create(:identity)) }
+    let!(:sr)           { create(:service_request_without_validations, protocol: protocol) }
+    let!(:ssr)          { create(:sub_service_request_without_validations, service_request: sr, organization: organization) }
+    let!(:service)      { create(:service, abbreviation: 'abc') }
+    let!(:line_item)    { create(:line_item_without_validations, service: service, sub_service_request: ssr) }
+
+    before :each do
+      ssr.update_attribute(:ssr_id, "0001")
+    end
+
+    it "should return the abbreviation" do
+      expect(line_item.display_service_abbreviation).to eq("(0001) abc")
+    end
+
+    it "should concatenate cpt code to the abbreviation if it exists" do
+      service.update_attributes(cpt_code: "def")
+      expect(line_item.display_service_abbreviation).to eq("(0001) abc (def)")
+    end
+  end
 end

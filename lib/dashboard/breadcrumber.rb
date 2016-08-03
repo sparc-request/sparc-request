@@ -56,7 +56,7 @@ class Dashboard::Breadcrumber
 
   def protocol_label_and_url
     protocol_id = @crumbs[:protocol_id]
-    protocol_id ? [Protocol.find(protocol_id).try(:short_title), "/dashboard/protocols/#{protocol_id}"] : nil
+    protocol_id ? ["(#{protocol_id}) " + Protocol.find(protocol_id).try(:short_title), "/dashboard/protocols/#{protocol_id}"] : nil
   end
 
   def ssr_label_and_url

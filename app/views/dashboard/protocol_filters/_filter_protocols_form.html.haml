@@ -51,6 +51,10 @@
           = form.label :with_organization, t(:dashboard)[:protocol_filters][:organization], class: 'col-lg-3 control-label'
           .col-lg-9.drop-underneath
             = form.select :with_organization, filterrific.select_options[:with_organization], {}, class: "form-control selectpicker core-select", multiple: true, data: { none_selected_text: t(:constants)[:prompts][:any] }
+        .form-group.row
+          = form.label :sorted_by, t(:dashboard)[:protocol_filters][:sort_by], class: 'col-lg-3 control-label'
+          .col-lg-9
+            = form.select :sorted_by, filterrific.select_options[:sorted_by], {}, class: 'form-control selectpicker sort-select'
         - if admin
           %hr
           .form-group.row

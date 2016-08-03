@@ -658,6 +658,7 @@ ActiveRecord::Schema.define(version: 20160729194811) do
     t.datetime "updated_at"
     t.string   "admin_filter",      limit: 255
     t.string   "with_owner",        limit: 255
+    t.string   "sorted_by",         limit: 255
   end
 
   add_index "protocol_filters", ["with_owner"], name: "index_protocol_filters_on_with_owner", using: :btree

@@ -284,21 +284,6 @@ class Identity < ActiveRecord::Base
     false
   end
 
-  # Determines whether the user has permission to access the admin portal for a given organization.
-  # Returns true if the user is a super user or service provider for the given organization or
-  # any of its parents. (Recursively calls itself to climb the tree of parents)
-  def can_edit_fulfillment? organization
-    arr = []
-    arr << self.super_users.map(&:organization_id)
-    arr << self.service_providers.map(&:organization_id)
-    arr = arr.flatten.uniq
-    if organization.type == 'Institution'
-      arr.include? organization.id
-    else
-      can_edit_fulfillment? organization.parent or arr.include? organization.id
-    end
-  end
-
   ###############################################################################
   ########################### COLLECTION METHODS ################################
   ###############################################################################

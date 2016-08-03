@@ -19,6 +19,9 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class AddIndexesToProceduresAndAppointments < ActiveRecord::Migration
+  class Appointment < ActiveRecord::Base; end
+  class Procedure < ActiveRecord::Base; end
+
   def change
   	add_index :procedures, :appointment_id
   	add_index :procedures, :visit_id

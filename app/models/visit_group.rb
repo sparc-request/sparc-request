@@ -36,22 +36,15 @@ class VisitGroup < ActiveRecord::Base
   belongs_to :arm
   has_many :visits, :dependent => :destroy
   has_many :line_items_visits, through: :visits
-  has_many :appointments
 
   acts_as_list scope: :arm
 
   after_create :set_default_name
-  after_save :set_arm_edited_flag_on_subjects
-  before_destroy :remove_appointments
 
   with_options if: :day? do |vg|
     # with respect to the other VisitGroups associated with the same arm
     vg.validate :day_must_be_in_order
     vg.validates :day, numericality: { only_integer: true }
-  end
-
-  def set_arm_edited_flag_on_subjects
-    self.arm.set_arm_edited_flag_on_subjects
   end
 
   def set_default_name
@@ -86,16 +79,6 @@ class VisitGroup < ActiveRecord::Base
 
 
   private
-  def remove_appointments
-    appointments = self.appointments
-    appointments.each do |app|
-      if app.completed?
-        app.update_attributes(position: self.position, name: self.name, visit_group_id: nil)
-      else
-        app.destroy
-      end
-    end
-  end
 
   def day_must_be_in_order
     position_col = VisitGroup.arel_table[:position]

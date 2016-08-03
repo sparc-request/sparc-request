@@ -190,22 +190,6 @@ RSpec.describe "Identity" do
         end
       end
 
-      describe "can edit core" do
-
-        it "should return true if the user is a clinical provider on the given core" do
-          expect(user2.can_edit_core?(core.id)).to eq(true)
-        end
-
-        it "should return true if the user is a super user on the given core" do
-          expect(user.can_edit_core?(core.id)).to eq(true)
-        end
-
-        it "should return false if the user is not a clinical provider on a given core" do
-          random_user = create(:identity)
-          expect(random_user.can_edit_core?(core.id)).to eq(false)
-        end
-      end
-
       describe "clinical provider for ctrc" do
 
         it "should return true if the user is a clinical provider on the ctrc" do

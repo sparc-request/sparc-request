@@ -22,7 +22,6 @@ RSpec.describe Dashboard::ArmBuilder do
       # TODO find a way to move these expectations into individual examples
       expect(@new_arm).to receive(:create_line_items_visit).with("PPPVLineItem").ordered
       expect(@new_arm).to receive(:default_visit_days).ordered
-      expect(@new_arm).to receive(:populate_subjects).ordered
 
       @builder = Dashboard::ArmBuilder.new(arm_attributes_for_creation)
     end
@@ -57,17 +56,12 @@ RSpec.describe Dashboard::ArmBuilder do
       # TODO find a way to move these expectations into individual examples
       allow(@new_arm).to receive(:create_line_items_visit).with("PPPVLineItem").ordered
       expect(@new_arm).to receive(:default_visit_days).ordered
-      allow(@new_arm).to receive(:populate_subjects)
 
       @builder = Dashboard::ArmBuilder.new(arm_attributes_for_creation)
     end
 
     it "should set :arm to created Arm, with a LineItemsVisit for each PPV LineItem under Protocol, and default visit days" do
       expect(@builder.arm).to eq(@new_arm)
-    end
-
-    it "should not populate subjects for new Arm" do
-      expect(@new_arm).not_to have_received(:populate_subjects)
     end
   end
 
@@ -82,7 +76,6 @@ RSpec.describe Dashboard::ArmBuilder do
 
       allow(@new_arm).to receive(:create_line_items_visit)
       allow(@new_arm).to receive(:default_visit_days)
-      allow(@new_arm).to receive(:populate_subjects)
 
       @builder = Dashboard::ArmBuilder.new(arm_attributes_for_creation)
     end
@@ -94,7 +87,6 @@ RSpec.describe Dashboard::ArmBuilder do
     it "should not perform any setup on new Arm" do
       expect(@new_arm).not_to have_received(:create_line_items_visit)
       expect(@new_arm).not_to have_received(:default_visit_days)
-      expect(@new_arm).not_to have_received(:populate_subjects)
     end
   end
 end

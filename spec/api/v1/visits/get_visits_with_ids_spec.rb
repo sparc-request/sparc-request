@@ -5,16 +5,12 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
   describe 'GET /v1/visits.json' do
 
     before do
-      Visit.skip_callback(:save, :after, :set_arm_edited_flag_on_subjects)
-
       5.times do
         visit = build(:visit)
         visit.save validate: false
       end
 
-      @visit_ids = Visit.pluck(:id)
-      
-      Visit.set_callback(:save, :after, :set_arm_edited_flag_on_subjects)
+      @visit_ids = Visit.pluck(:id)      
     end
 
     context 'with ids' do

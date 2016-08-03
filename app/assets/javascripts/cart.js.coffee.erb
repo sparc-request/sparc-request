@@ -99,11 +99,8 @@ $(document).ready ->
     ssr_id = $(this).attr('ssr_id')
     id = $(this).attr('id')
     li_count = $('#line_item_count').val()
-    has_fulfillments = Boolean($(this).data("has_fulfillments"))
     request_submitted = Boolean($(this).data("request_submitted"))
-    if has_fulfillments
-      alert(I18n["has_fulfillments"])
-    else if request_submitted
+    if request_submitted
       requestSubmittedDialog(sr_id, id)
     else
       if li_count == "1" and ssr_id != ''

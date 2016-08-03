@@ -33,17 +33,9 @@ $ ->
   $(document).on 'nested:fieldRemoved:arms', (event) ->
     field = event.field
     button = field.find('.remove_arm')
-
-    if button.hasClass('cannot_remove')
-      button.show()
-      field.show()
-      hiddenField = button.prev('input[type=hidden]')
-      hiddenField.val('0')
-      alert("This arm has subject data and cannot be removed")
-    else
-      field.find('.skinny_fields input').val('1')
-      nested_field_count -= 1
-      toggleRemoveLink()
+    field.find('.skinny_fields input').val('1')
+    nested_field_count -= 1
+    toggleRemoveLink()
 
   $(document).on 'nested:fieldAdded:arms', ->
     nested_field_count += 1
@@ -90,28 +82,6 @@ $ ->
 
   $('#recruitment_start_date').attr("readOnly", true)
   $('#recruitment_end_date').attr("readOnly", true)
-
-  # If any sub service requests are in cwf, the visit and subject counts can not be decreased. Decreasing the counts in this case
-  # causes patient data to be deleted
-  $(document).on('change', '.arm_subject_count', ->
-    in_cwf = $(this).data('in_cwf')
-    if in_cwf
-      new_count = $(this).val()
-      min_count = $(this).data('minimum_subject_count')
-      if new_count < min_count
-        alert(I18n["service_details_alerts"]["subject_count"])
-        $(this).val(min_count)
-  )
-
-  $(document).on('change', '.arm_visit_count', ->
-    in_cwf = $(this).data('in_cwf')
-    if in_cwf
-      new_count = $(this).val()
-      min_count = $(this).data('minimum_visit_count')
-      if new_count < min_count
-        alert(I18n["service_details_alerts"]["visit_count"])
-        $(this).val(min_count)
-  )
 
   $('#navigation_form').submit ->
     go = true

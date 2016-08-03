@@ -19,6 +19,8 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class AddServiceIdToProcedures < ActiveRecord::Migration
+  class Procedure < ActiveRecord::Base; end
+  
   def change
     add_column :procedures, :service_id, :integer
   end

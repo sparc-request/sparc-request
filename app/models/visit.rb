@@ -25,8 +25,6 @@ class Visit < ActiveRecord::Base
 
   audited
 
-  has_many :procedures
-  has_many :appointments, :through => :procedures
   belongs_to :visit_group
   belongs_to :line_items_visit
 
@@ -38,8 +36,6 @@ class Visit < ActiveRecord::Base
   attr_accessible :insurance_billing_qty # (T) qty billed to the patients insurance or third party
   attr_accessible :effort_billing_qty    # (%) qty billing to % effort
 
-  after_save :set_arm_edited_flag_on_subjects
-
   validates :research_billing_qty, :numericality => {:only_integer => true}
   validates :insurance_billing_qty, :numericality => {:only_integer => true}
   validates :effort_billing_qty, :numericality => {:only_integer => true}
@@ -48,10 +44,6 @@ class Visit < ActiveRecord::Base
   # creates the visit if it does not exist.
   def self.for(line_items_visit, visit_group)
     return Visit.find_or_create_by(line_items_visit_id: line_items_visit.id, visit_group_id: visit_group.id)
-  end
-
-  def set_arm_edited_flag_on_subjects
-    self.visit_group.arm.set_arm_edited_flag_on_subjects
   end
 
   def cost(per_unit_cost = self.line_items_visit.per_unit_cost(self.line_items_visit.quantity_total))

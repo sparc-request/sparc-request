@@ -19,6 +19,8 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class AddPositionAndNameToAppointments < ActiveRecord::Migration
+  class Appointment < ActiveRecord::Base; end
+  
   def change
     add_column :appointments, :position, :integer
     add_column :appointments, :name, :string

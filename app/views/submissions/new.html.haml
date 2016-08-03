@@ -2,16 +2,15 @@
   .panel-heading
     Questionnaire Submission
   .panel-body
-    = form_for [@service, @submission], html: { class: 'form-horizontal' } do |f|
+    = form_for [@service, @submission] do |f|
       = f.hidden_field :identity_id, value: current_identity.id
       = f.hidden_field :service_id, value: @service.id
       - @questionnaire.items.each do |item|
         = f.fields_for :questionnaire_responses do |qr|
           = qr.hidden_field :item_id, value: item.id
           .form-group
-            = qr.label item.content, class: 'col-sm-2 control-label'
-            .col-sm-10
-              = qr.text_field :content, class: 'form-control'
+            = qr.label item.content
+            = qr.text_field :content, class: 'form-control'
       .form-group
         .col-sm-offset-2.col-sm-10
           = f.submit class: 'btn btn-success'

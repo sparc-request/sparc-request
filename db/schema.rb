@@ -103,8 +103,8 @@ ActiveRecord::Schema.define(version: 20160727152900) do
     t.integer  "subject_count",         limit: 4,   default: 1
     t.integer  "protocol_id",           limit: 4
     t.boolean  "new_with_draft",                    default: false
-    t.integer  "minimum_visit_count",   limit: 4,   default: 0
-    t.integer  "minimum_subject_count", limit: 4,   default: 0
+    t.integer  "minimum_visit_count",   limit: 4
+    t.integer  "minimum_subject_count", limit: 4
   end
 
   add_index "arms", ["protocol_id"], name: "index_arms_on_protocol_id", using: :btree

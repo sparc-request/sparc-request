@@ -362,7 +362,7 @@ class ServiceRequestsController < ApplicationController
   def add_service
     id = params[:service_id].sub('service-', '').to_i
     @new_line_items = []
-    existing_service_ids = @service_request.line_items.map(&:service_id)
+    existing_service_ids = @service_request.line_items.reject{ |line_item| line_item.status == 'complete' }.map(&:service_id)
 
     if existing_service_ids.include? id
       render text: 'Service exists in line items'

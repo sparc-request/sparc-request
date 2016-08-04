@@ -44,6 +44,7 @@ class Notifier < ActionMailer::Base
   end
 
   def notify_user(project_role, service_request, xls, approval, user_current)
+    
     @identity = project_role.identity
     @role = project_role.role
 
@@ -52,6 +53,7 @@ class Notifier < ActionMailer::Base
       @approval_link = approve_changes_service_request_url(service_request, :approval_id => approval.id)
     end
 
+    @full_name = @identity.full_name
     @protocol = service_request.protocol
     @service_request = service_request
     @portal_link = DASHBOARD_LINK + "/protocols/#{@protocol.id}"
@@ -74,8 +76,8 @@ class Notifier < ActionMailer::Base
     @role = 'none'
     @approval_link = nil
     @audit_report = audit_report
-    # @provide_arm_info = audit_report.nil? ? true : SubServiceRequest.find(@audit_report[:sub_service_request_id]).has_per_patient_per_visit_services?
     @ssr_deleted = ssr_deleted
+    @full_name = service_provider.identity.full_name
 
     @portal_link = DASHBOARD_LINK + "/protocols/#{@protocol.id}"
     @portal_text = "Administrators/Service Providers, Click Here"

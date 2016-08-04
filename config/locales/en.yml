@@ -1643,11 +1643,6 @@ en:
     arm_subject_count: "Subject Count"
     arm_visit_count: "Visit Count"
     body1: "Dear %{full_name},"
-     
-
-    body2_non_pi: "%{welcome} in %{application_title} and is awaiting your review in SPARCDashboard. Please ensure services chosen are appropriate and can be provided. Communicate any necessary changes to the study team and request they “Submit to Start Services” once ready to proceed."
-    body2_pi: "%{welcome} in %{application_title}. You can review or edit this request in SPARCDashboard. An email has been sent to the service provider(s) to review and ensure the services are appropriate."
-    body3_pi: "Please note the services will not start until this request is submitted through SPARCDashboard."
     body6: "A list of requested services is attached."
     body7: "To approve the charges associated with the selected services please click"
     contact_info: "Contact Information"

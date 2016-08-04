@@ -28,7 +28,7 @@
 
   %body
     = render "welcome"
-    = render "project_information", protocol: @protocol
+    = render "protocol_information", protocol: @protocol
     - if @service_request.has_per_patient_per_visit_services? and @service_request.arms.count > 0
       = render "arm_information"
     = render "user_information"

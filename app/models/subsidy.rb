@@ -34,7 +34,6 @@ class Subsidy < ActiveRecord::Base
   delegate :max_dollar_cap, :max_percentage, :default_percentage, to: :subsidy_map, allow_nil: true
   alias_attribute :total_request_cost, :direct_cost_total
 
-  validates_presence_of :pi_contribution
   validate :contribution_caps
 
   def current_percent

@@ -32,7 +32,7 @@ RSpec.describe "subsidy page", js: true do
       add_visits
       subsidy_map.destroy
       subsidy.destroy
-      subsidy_map = create(:subsidy_map, organization_id: program.id, max_dollar_cap: 100000, max_percentage: 50.00, default_percentage: 0.1, instructions: "Lorem ipsum")
+      subsidy_map = create(:subsidy_map, organization_id: program.id, max_dollar_cap: 1000, max_percentage: 50.00, default_percentage: 0.1, instructions: "Lorem ipsum")
       program.update_attribute(:subsidy_map, subsidy_map)
       @max_dollar_cap = subsidy_map.max_dollar_cap.to_f
       @max_percentage = subsidy_map.max_percentage.to_f

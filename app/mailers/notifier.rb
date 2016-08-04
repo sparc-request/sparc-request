@@ -88,6 +88,7 @@ class Notifier < ActionMailer::Base
         @ssrs_to_be_displayed << ssr
       end
     end
+
     # if the current user is service provider, only show SSR's that are associated with them
     @ssr_ids = service_request.sub_service_requests.map{ |ssr| ssr.id }.join(", ")
 

@@ -25,11 +25,13 @@ module EmailHelpers
   end
 
   def assert_email_srid_information
+    # expect(mail.body).to have_xpath "//td//a[@href='/dashboard/sub_service_requests/1']/@href"
     expect(mail.body).to have_xpath "//table//strong[text()='Service Request Information']"
     expect(mail.body).to have_xpath "//th[text()='SRID']/following-sibling::th[text()='Organization']/following-sibling::th[text()='Status']"
     # Service Provider is only associated with one of the two SSR's
     status = AVAILABLE_STATUSES[service_request.protocol.sub_service_requests.first.status]
-    expect(mail.body).to have_xpath "//td[text()='#{service_request.protocol.sub_service_requests.first.display_id}']/following-sibling::td[text()='#{service_request.protocol.sub_service_requests.first.org_tree_display}']/following-sibling::td[text()='#{status}']"
+    expect(mail.body).to have_xpath "//td//a[@href='/dashboard/sub_service_requests/#{service_request.protocol.sub_service_requests.first.id}']['#{service_request.protocol.sub_service_requests.first.display_id}']/@href"
+    expect(mail.body).to have_xpath "//td[text()='#{service_request.protocol.sub_service_requests.first.org_tree_display}']/following-sibling::td[text()='#{status}']"
   end
 
   def assert_notification_email_tables

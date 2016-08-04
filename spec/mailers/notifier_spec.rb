@@ -66,7 +66,7 @@ RSpec.describe Notifier do
         expect(mail).not_to have_xpath("//th[text()='Service']/following-sibling::th[text()='Action']")
       end
 
-      it 'should not have audited information table' do
+      it 'should have audited information table' do
         expect(mail).to have_xpath("//table//strong[text()='Protocol Arm Information']")
         service_request.arms.each do |arm|
           expect(mail).to have_xpath("//td[text()='#{arm.name}']/following-sibling::td[text()='#{arm.subject_count}']/following-sibling::td[text()='#{arm.visit_count}']")
@@ -148,7 +148,6 @@ RSpec.describe Notifier do
 
         it 'should have audited information table' do
           assert_notification_email_tables
-          expect(mail).not_to have_xpath "//table//strong[text()='Protocol Arm Information']"
           expect(mail).to have_xpath "//th[text()='Service']/following-sibling::th[text()='Action']"
           expect(mail).to have_xpath "//td[text()='#{service2.name}']/following-sibling::td[text()='Removed']"
           expect(mail).to have_xpath "//td[text()='#{service3.name}']/following-sibling::td[text()='Added']"
@@ -224,30 +223,16 @@ RSpec.describe Notifier do
                                                             approval,
                                                             identity) }
 
-      it 'should not have Arm information table' do
-        expect(mail.body.parts.first.body).to have_xpath("//table//strong[text()='Protocol Arm Information']")
-      end
-    end
-
-    context 'admin' do
-      let(:xls)                       { Array.new }
-      let(:submission_email_address)  { 'success@musc.edu' }
-      let(:mail)                      { Notifier.notify_admin(service_request,
-                                                              submission_email_address,
-                                                              xls,
-                                                              identity) }
-
-      it 'should not have Arm information table' do
+      it 'should have Arm information table' do
         expect(mail.body.parts.first.body).to have_xpath("//table//strong[text()='Protocol Arm Information']")
       end
 
-      it 'should have a SR table' do
+      it 'should show all SSRs in the SR table' do
         expect(mail).to have_xpath "//table//strong[text()='Service Request Information']"
         expect(mail).to have_xpath "//th[text()='SRID']/following-sibling::th[text()='Organization']/following-sibling::th[text()='Status']"
-
         service_request.protocol.sub_service_requests.each do |ssr|
-          ssr_status = AVAILABLE_STATUSES[ssr.status]
-          expect(mail.body.parts.first.body).to have_xpath "//tr//td[text()='#{ssr.display_id}']/following-sibling::td[text()='#{ssr.org_tree_display}']/following-sibling::td[text()='#{ssr_status}']"
+          status = AVAILABLE_STATUSES[ssr.status]
+          expect(mail.body.parts.first.body).to have_xpath "//td[text()='#{ssr.display_id}']/following-sibling::td[text()='#{ssr.org_tree_display}']/following-sibling::td[text()='#{status}']"
         end
       end
     end

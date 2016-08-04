@@ -26,6 +26,6 @@
       .col-sm-9
         = li.service.abbreviation
       .col-sm-3
-        - if sub_service_request.can_be_edited? && allow_delete
+        - if sub_service_request.can_be_edited? && allow_delete && sub_service_request.status != 'complete' && line_item.optional?
           %button.btn.btn-xs.btn-danger.remove-service.pull-right{ type: 'button', data: { id: li.id, srid: service_request.id, editing_ssr: editing_ssr ? 1 : 0, has_fulfillments: one_time_fee_fulfillments?(li.id) ? 1 : 0, request_submitted: service_request.submitted_at? ? 1 : 0 } }
             %span.glyphicon.glyphicon-remove{ aria: { hidden: 'true' } }

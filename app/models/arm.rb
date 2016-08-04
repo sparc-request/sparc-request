@@ -49,6 +49,7 @@ class Arm < ActiveRecord::Base
   validates :subject_count, numericality: { greater_than: 0 }
 
   def sanitized_name
+    #Sanitized for Excel
     name.gsub(/\[|\]|\*|\/|\\|\?|\:/, ' ')
   end
 

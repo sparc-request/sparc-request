@@ -315,7 +315,6 @@ SparcRails::Application.routes.draw do
 
     resources :sub_service_requests, except: [:new, :create, :edit]do
       member do
-        patch :update_from_project_study_information
         put :push_to_epic
         get :change_history_tab
         get :status_history

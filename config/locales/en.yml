@@ -383,9 +383,8 @@ en:
       phase: "Select a Study Phase"
       submission_type: "Select a Submission Type"
     authorized_users:
-      header: "Authorized Users"
-      subtext: "Primary PI Required"
-      primary_pi: "Primary PI:"
+      header: "Add Primary PI"
+      primary_pi: "Primary PI: *"
 
   #############
   # SUBSIDIES #
@@ -418,6 +417,8 @@ en:
       percent: "Percent Subsidy:"
       pi: "PI Contribution:"
       cost: "Subsidy Cost:"
+
+
 
 
 

@@ -316,7 +316,7 @@ class ServiceRequestsController < ApplicationController
   # methods only used by ajax requests
 
   def add_service
-    existing_service_ids = @service_request.line_items.map(&:service_id)
+    existing_service_ids = @service_request.line_items.reject{ |line_item| line_item.status == 'complete' }.map(&:service_id)
 
     unless existing_service_ids.include?( params[:service_id] )
       service        = Service.find( params[:service_id] )

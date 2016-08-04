@@ -51,6 +51,7 @@ class LineItem < ActiveRecord::Base
   accepts_nested_attributes_for :fulfillments, allow_destroy: true
 
   delegate :one_time_fee, to: :service
+  delegate :status, to: :sub_service_request
 
   validates :service_id, numericality: true, presence: true
   validates :service_request_id, numericality:  true

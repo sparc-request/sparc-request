@@ -32,8 +32,9 @@ $ ->
       url: '/dashboard/arms/new'
       data: data
 
-  $(document).on 'click', '#add_arm_form_button', ->
-    $(this).attr('disabled','disabled')
+  ## This is keyed off of form submit, instead of button click, because chrome does stupid things.
+  $(document).on 'submit', 'form#new_arm', ->
+    $('form#new_arm input#add_arm_form_button').attr('disabled','disabled')
 
   $(document).on 'click', '#remove_arm_button', ->
     data =

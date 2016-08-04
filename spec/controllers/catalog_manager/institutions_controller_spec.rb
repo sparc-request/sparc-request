@@ -79,8 +79,7 @@ RSpec.describe CatalogManager::InstitutionsController do
     end
 
     it 'should assign @attributes' do
-      params = ActionController::Parameters.new( name: 'New Institution Name', tag_list: "" )
-      expect(assigns(:attributes)).to eq(params)
+      expect(assigns(:attributes)).to eq(@params[:institution])
     end
 
     it 'should assign @organization' do
@@ -97,7 +96,7 @@ RSpec.describe CatalogManager::InstitutionsController do
     end
 
     it 'should not set organization tags' do
-      expect(assigns(:attributes)[:tag_list]).to be_empty
+      expect(assigns(:attributes)[:tag_list]).to be_nil
     end
 
     it { is_expected.to render_template "organizations/update" }

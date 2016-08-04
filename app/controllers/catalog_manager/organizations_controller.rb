@@ -34,7 +34,6 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
 
   def update
     @organization = Organization.find(params[:id])
-    @tag_list = @organization.tag_list
     update_organization
     save_pricing_setups
     set_org_tags
@@ -74,9 +73,7 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
   end
 
   def set_org_tags
-    new_org_tags = @attributes[:tag_list]
-
-    if !new_org_tags || @organization.type = 'Institution'
+    unless @attributes[:tag_list] || @organization.type == 'Institution'
       @attributes[:tag_list] = ""
     end
   end

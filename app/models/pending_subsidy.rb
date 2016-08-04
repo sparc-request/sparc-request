@@ -27,7 +27,7 @@ class PendingSubsidy < Subsidy
   def default_values
     self.status ||= 'Pending'
   end
-  
+
   def current_cost
     # Calculates cost of subsidy (amount subsidized)
     # SSR direct_cost_total - pi_contribution then convert from cents to dollars

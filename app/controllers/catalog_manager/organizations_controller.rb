@@ -60,7 +60,7 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
         if ps[1]['id'].blank?
           ps[1].delete(:id)
           ps[1].delete(:newly_created)
-          @organization.pricing_setups.build(ps[1])
+          @orga   nization.pricing_setups.build(ps[1])
         else
           # @organization.pricing_setups.find(ps[1]['id']).update_attributes(ps[1])
           ps_id = ps[1]['id']

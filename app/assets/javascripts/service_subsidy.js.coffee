@@ -63,7 +63,7 @@ $(document).ready ->
       message = "The Percent Subsidy cannot be greater than the max percent of #{max_percent}."
       current_cost = recalculate_current_cost(total_request_cost, current_percent_subsidy)
       display_error_and_reset(subsidy_id, current_percent_subsidy, original_pi_contribution, current_cost, max_percent, message)
-    else if recalculate_current_cost(total_request_cost, (percent_subsidy / 100)) > max_dollar_cap
+    else if recalculate_current_cost(total_request_cost, (percent_subsidy)) > max_dollar_cap
       message = "The Subsidy Cost cannot be greater than the max dollar cap of #{max_dollar_cap}."
       current_cost = recalculate_current_cost(total_request_cost, current_percent_subsidy)
       display_error_and_reset(subsidy_id, current_percent_subsidy, original_pi_contribution, current_cost, max_percent, message)

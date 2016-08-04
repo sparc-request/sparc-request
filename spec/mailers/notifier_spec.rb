@@ -36,12 +36,12 @@ RSpec.describe Notifier do
                                     units_per_qty_max: 20) }
   let(:identity)          { Identity.first }
   let(:organization)      { Organization.first }
-  let(:non_service_provider_org)  { create(:organization) }
+  let(:non_service_provider_org)  { create(:organization, name: 'BLAH', process_ssrs: 0, is_available: 1) }
   let(:service_provider)  { create(:service_provider,
                                     identity: identity,
                                     organization: organization,
                                     service: service3) }
-  let!(:non_service_provider_ssr) { create(:sub_service_request, ssr_id: "0004", service_request_id: service_request.id, organization_id: non_service_provider_org.id,status: "draft")}
+  let!(:non_service_provider_ssr) { create(:sub_service_request, ssr_id: "0004", service_request_id: service_request.id, organization_id: non_service_provider_org.id, status: "draft", org_tree_display: "SCTR1/BLAH")}
 
   before { add_visits }
 

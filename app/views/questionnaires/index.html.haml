@@ -16,6 +16,8 @@
             %th
               Service Name
             %th
+              Active?
+            %th
               Edit
             %th
               Delete
@@ -26,6 +28,8 @@
                 = questionnaire.name
               %td
                 = @service.name
+              %td
+                = questionnaire.active
               %td
                 .text-center
                   = link_to edit_service_questionnaire_path(@service, questionnaire), class: 'btn btn-info' do

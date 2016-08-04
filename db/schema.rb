@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160802185633) do
+ActiveRecord::Schema.define(version: 20160804133457) do
 
   create_table "admin_rates", force: :cascade do |t|
     t.integer  "line_item_id", limit: 4
@@ -748,8 +748,9 @@ ActiveRecord::Schema.define(version: 20160802185633) do
   create_table "questionnaires", force: :cascade do |t|
     t.string   "name",       limit: 255
     t.integer  "service_id", limit: 4
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
+    t.datetime "created_at",                             null: false
+    t.datetime "updated_at",                             null: false
+    t.boolean  "active",                 default: false
   end
 
   add_index "questionnaires", ["service_id"], name: "index_questionnaires_on_service_id", using: :btree

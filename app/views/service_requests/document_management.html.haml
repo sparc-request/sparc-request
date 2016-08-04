@@ -35,7 +35,8 @@
     .document_upload_instructions= t("documents.upload_instructions_html")
     .document-management-container
       - @service_request.additional_detail_services.each do |service|
-        = link_to 'test', new_service_submission_path(service), target: '_blank'
+        %h1
+          = link_to "Take Additional Details Survey for #{service.name}", new_service_submission_path(service), target: '_blank'
       = render :partial => 'document_list', :locals => {:review => false, :thead_class => 'orange-provider'}
       .clear
       %br

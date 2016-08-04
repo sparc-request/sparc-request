@@ -87,7 +87,7 @@ arm_r_totals = {}
     #Displays line_items_visits, grouped by organization from the sub service request
     arm.line_items_visits.includes(:line_item).group_by{|liv| liv.line_item.sub_service_request}.each do |sub_service_request, line_items_visits|
       next if ["draft", "first_draft"].include?(sub_service_request.status)
-      ssr_row = [sub_service_request.organization.name, "", "", "", ""]
+      ssr_row = ["#{sub_service_request.organization.name}(#{sub_service_request.ssr_id})", "", "", "", ""]
       ((arm.visit_groups.count * 3) + 5).times {ssr_row << ""}
       sheet.add_row ssr_row, :style => org_header_style
 

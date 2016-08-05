@@ -25,7 +25,6 @@ module EmailHelpers
   end
 
   def assert_email_srid_information
-    # expect(mail.body).to have_xpath "//td//a[@href='/dashboard/sub_service_requests/1']/@href"
     expect(mail.body).to have_xpath "//table//strong[text()='Service Request Information']"
     expect(mail.body).to have_xpath "//th[text()='SRID']/following-sibling::th[text()='Organization']/following-sibling::th[text()='Status']"
     # Service Provider is only associated with one of the two SSR's

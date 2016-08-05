@@ -173,7 +173,7 @@ en:
         maximum_per_patient: "Maximum Total Per Patient"
         total_costs: "Total Costs (Per Patient/Visit Services) Per Study -- %{arm_name}"
     otf:
-      header: "Services"
+      header: "One Time Fee Services"
       header_fields:
         number: "#"
         unit_type: "Unit Type"

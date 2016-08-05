@@ -38,7 +38,7 @@
       %td.unit-type.text-center
         = liv.line_item.service.displayed_pricing_map.unit_type
       %td.subject-count.text-center
-        %a.edit-subject-count{ href: '#', data: { type: 'text', pk: liv.line_item.id, name: 'quantity', title: t(:calendars)[:pppv][:editable_fields][:subject_count], value: liv.subject_count, url: "/dashboard/line_items_visits/#{liv.id}" } }
+        %a.edit-subject-count{ href: '#', data: { type: 'text', pk: liv.line_item.id, name: 'quantity', title: t(:calendars)[:pppv][:editable_fields][:subject_count], value: liv.subject_count, url: dashboard_line_items_visit_path(liv) } }
       %td.text-center
         = Dashboard::ServiceCalendars.select_row(liv, tab, portal, locked)
       - visits      = liv.visits.paginate(page: page.to_i, per_page: 5)

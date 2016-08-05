@@ -208,8 +208,7 @@ en:
       phase: "Select a Study Phase"
       submission_type: "Select a Submission Type"
     authorized_users:
-      header: "Authorized Users"
-      subtext: "Primary PI Required"
+      header: "Add Primary PI"
       primary_pi: "Primary PI: *"
 
   proper:
@@ -402,6 +401,8 @@ en:
         user: "User"
         subject: "Subject"
         time: "Time"
+        owner: "(Owner)"
+        requester: "(Requester)"
       form:
         select_header: "Send Notification"
         select: "Select User:"
@@ -419,6 +420,7 @@ en:
       my_protocols: "My Protocols"
       my_admin_protocols: "My Admin Protocols"
       organization: "Organization"
+      sort_by: "Sort By"
       filter: "Filter"
       saved_filters:
         header: "Recently Saved Filters"

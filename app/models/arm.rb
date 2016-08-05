@@ -44,10 +44,12 @@ class Arm < ActiveRecord::Base
   after_save :update_liv_subject_counts
 
   validates :name, presence: true
+  validates_uniqueness_of :name, scope: :protocol
   validates :visit_count, numericality: { greater_than: 0 }
   validates :subject_count, numericality: { greater_than: 0 }
 
   def sanitized_name
+    #Sanitized for Excel
     name.gsub(/\[|\]|\*|\/|\\|\?|\:/, ' ')
   end
 

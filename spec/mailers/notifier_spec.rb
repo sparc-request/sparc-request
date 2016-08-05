@@ -227,7 +227,6 @@ RSpec.describe Notifier do
       end
 
       it 'should show all SSRs in the SR table' do
-        sub_service_request.update_attribute(:org_tree_display, "SCTR1/Office of Biomedical Informatics")
         expect(mail).to have_xpath "//table//strong[text()='Service Request Information']"
         expect(mail).to have_xpath "//th[text()='SRID']/following-sibling::th[text()='Organization']/following-sibling::th[text()='Status']"
         service_request.protocol.sub_service_requests.each do |ssr|

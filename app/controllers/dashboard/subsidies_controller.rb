@@ -106,8 +106,8 @@ class Dashboard::SubsidiesController < Dashboard::BaseController
   def perform_subsidy_update(admin_param=false)
     @admin = admin_param == 'true'
     flash[:success] = t(:dashboard)[:subsidies][:updated]
-    # unless @admin
-    #   redirect_to dashboard_sub_service_request_path(@sub_service_request, format: :js)
-    # end
+    unless @admin
+      redirect_to dashboard_sub_service_request_path(@sub_service_request, format: :js)
+    end
   end
 end

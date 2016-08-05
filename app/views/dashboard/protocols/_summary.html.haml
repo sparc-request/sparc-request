@@ -5,7 +5,7 @@
     .pull-right
       %button.btn.btn-sm.btn-success.notes.list{ data: { notable_type: "Protocol", notable_id: protocol.id } }
         = protocol_type + t(:dashboard)[:protocols][:summary][:notes]
-        %span#protocol_notes.badge
+        %span.badge{id: "protocol_#{protocol.id}_notes"}
           = protocol.notes.count
       %button.btn.btn-sm.btn-info.view-protocol-details-button{ data: { protocol_id: protocol.id } }
         = t(:dashboard)[:protocols][:summary][:view_details1] + protocol_type + t(:dashboard)[:protocols][:summary][:view_details2]

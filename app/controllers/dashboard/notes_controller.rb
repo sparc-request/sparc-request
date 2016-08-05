@@ -34,7 +34,7 @@ class Dashboard::NotesController < Dashboard::BaseController
   def create
     if note_params[:body].present? # don't create empty notes
       @note = Note.create(note_params.merge(identity_id: current_user.id))
-      @selector = "#{@notable_type.downcase}_notes"
+      @selector = "#{@note.unique_selector}_notes"
     end
     @notes = @notable.notes
   end

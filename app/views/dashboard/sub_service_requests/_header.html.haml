@@ -27,7 +27,7 @@
       .pull-right
         %button.btn.btn-sm.btn-success.notes.list{data: { notable_type: "SubServiceRequest", notable_id: sub_service_request.id }}
           = t(:models)[:note][:plural]
-          %span#subservicerequest_notes.badge
+          %span.badge{id: "subservicerequest_#{sub_service_request.id}_notes"}
             = sub_service_request.notes.count
       .clearfix
 

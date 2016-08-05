@@ -18,37 +18,4 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class Dashboard::LineItemsVisitsController < Dashboard::BaseController
-  respond_to :json, :js, :html
-
-  # Used for x-editable update and validations
-  def update
-    @line_items_visit = LineItemsVisit.find( params[:id] )
-
-    if @line_items_visit.update_attributes( params[:line_items_visit] )
-      render nothing: true
-    else
-      render json: @line_items_visit.errors, status: :unprocessable_entity
-    end
-  end
-
-  def destroy
-    @line_items_visit = LineItemsVisit.find(params[:id])
-    @sub_service_request = @line_items_visit.line_item.sub_service_request
-    @service_request = @sub_service_request.service_request
-    @selected_arm = @service_request.arms.first
-    line_item = @line_items_visit.line_item
-    @line_items = @sub_service_request.line_items
-
-    ActiveRecord::Base.transaction do
-      @line_items_visit.remove_procedures
-      if @line_items_visit.destroy
-        line_item.destroy unless line_item.line_items_visits.count > 0
-        # Have to reload the service request to get the correct direct cost total for the subsidy
-        @service_request = @sub_service_request.service_request
-        @candidate_one_time_fees, @candidate_per_patient_per_visit = @sub_service_request.candidate_services.partition(&:one_time_fee)
-        render 'dashboard/sub_service_requests/add_line_item'
-      end
-    end
-  end
-end
+$('#service-calendar .custom-tab.active a').click()

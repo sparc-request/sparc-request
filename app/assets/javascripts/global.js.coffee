@@ -33,6 +33,13 @@ $ ->
   s += i.substr(0, j) + t if j
   return s + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t)
 
+(exports ? this).humanize_string = (string) ->
+  new_str = ''
+  arr     = string.split('_')
+  for word in arr
+    new_str += word.charAt(0).toUpperCase() + word.slice(1) + ' '
+  return new_str
+
 (exports ? this).refresh_study_schedule = () ->
   $('#service-calendar .tab-content .tab-pane.active').load $('#service-calendar .active a').attr("data-url"), (result) ->
     $('#service-calendar .active a').tab('show')

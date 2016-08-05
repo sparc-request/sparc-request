@@ -90,14 +90,7 @@ $(document).ready ->
       calculate_max_rates(arm_ids[i])
       i++
 
-  if $('.line_item_visit_template').is(':visible')
-    changing_tabs_calculating_rates()
-  else if $('.line_item_visit_billing').is(':visible')
-    changing_tabs_calculating_rates()
-  else if $('.line_item_visit_quantity').is(':visible')
-    changing_tabs_calculating_rates()
-  else if $('.line_item_visit_pricing').is(':visible')
-    changing_tabs_calculating_rates()
+  changing_tabs_calculating_rates()
 
   $(document).on 'change', '.visit-group-select .selectpicker', ->
     page = $(this).find('option:selected').attr('page')

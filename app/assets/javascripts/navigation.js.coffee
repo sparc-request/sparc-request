@@ -20,18 +20,18 @@
 
 $(document).ready ->
 
-  $(document).on('mouseenter', '.step-btn', ->
+  $(document).on('mouseenter, focus', '.step-btn', ->
     $(this).addClass('hover')
     $(this).siblings('.right-arrow').addClass('hover')
-  ).on('mouseleave', '.step-btn', ->
+  ).on('mouseleave, focusout', '.step-btn', ->
     $(this).removeClass('hover')
     $(this).siblings('.right-arrow').removeClass('hover')
   )
 
-  $(document).on('mouseenter', '.right-arrow', ->
+  $(document).on('mouseenter, focus', '.right-arrow', ->
     $(this).addClass('hover')
     $(this).siblings('.step-btn').addClass('hover')
-  ).on('mouseleave', '.right-arrow', ->
+  ).on('mouseleave, focusout', '.right-arrow', ->
     $(this).removeClass('hover')
     $(this).siblings('.step-btn').removeClass('hover')
   )

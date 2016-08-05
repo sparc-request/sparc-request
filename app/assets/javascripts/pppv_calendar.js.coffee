@@ -32,7 +32,7 @@ $(document).ready ->
   $.fn.editable.defaults.error = (response, newValue) ->
     error_msgs = []
     $.each JSON.parse(response.responseText), (key, value) ->
-      error_msgs.push(key+' '+value)
+      error_msgs.push(humanize_string(key)+' '+value)
     return error_msgs.join("<br>")
 
   $('.window-before').editable
@@ -55,41 +55,30 @@ $(document).ready ->
       data = 'visit_group': { 'name': params.value }
       return data
 
-  $('.edit-subject-count').editable
-    validate: (val) ->
-      n = ~~Number(val)
-      max_subject_count = $(this).data('max-subject-count')
-      if String(n) != val || n < 0
-        return "quantity must be a nonnegative number"
-      else if n > max_subject_count
-        return "The N cannot exceed the maximum subject count of the arm (" + max_subject_count + ")"
-
   $('.edit-your-cost').editable
-    title: 'Edit your cost'
     display: (value) ->
       # display field as currency, edit as quantity
       $(this).text("$" + parseFloat(value).toFixed(2))
-    validate: (value) ->
-      n = +value;
-      if isNaN(n) || n < 0
-        return "cost must be a nonnegative number"
     params: (params) ->
-      data = 'line_item': {'displayed_cost': params.value}
+      data = 'line_item': { 'displayed_cost': params.value }
       return data
 
-  validate_billing_qty = (val) ->
-    n = ~~Number(val)
-    if String(n) != val || n < 0
-      return "quantity must be a positive number"
+  $('.edit-subject-count').editable
+    params: (params) ->
+      data = 'line_items_visit': { 'subject_count': params.value }
+      return data
 
   $('.edit-research-billing-qty').editable
-    title: 'Edit research billing quantity'
-    validate: validate_billing_qty
+    params: (params) ->
+      data = 'visit': { 'research_billing_qty': params.value }
+      return data
 
   $('.edit-insurance-billing-qty').editable
-    title: 'Edit insurance billing quantity'
-    validate: validate_billing_qty
+    params: (params) ->
+      data = 'visit': { 'insurance_billing_qty': params.value }
+      return data
 
   $('.edit-effort-billing-qty').editable
-    title: 'Edit effort billing quantity'
-    validate: validate_billing_qty
+    params: (params) ->
+      data = 'visit': { 'effort_billing_qty': params.value }
+      return data

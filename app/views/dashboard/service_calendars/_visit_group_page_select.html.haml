@@ -23,7 +23,6 @@
   - path_method = method(:refresh_service_calendar_dashboard_sub_service_request_path)
 - else
   - path_method = method(:table_dashboard_service_calendars_path)
-- page = pages[arm.id].to_i == 0 ? 1 : pages[arm.id].to_i
 - url_data = { sub_service_request_id: sub_service_request.try(:id), service_request_id: service_request.try(:id), pages: pages, arm_id: arm.id, tab: tab, portal: portal, format: :js }
 
 .col-xs-2

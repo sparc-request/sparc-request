@@ -48,7 +48,7 @@
           = display_service_rate liv.line_item
       %td.your_cost.text-center
         - if tab != 'calendar'
-          %a.edit-your-cost{ href: '#', data: { type: 'text', pk: liv.line_item.id, name: 'displayed_cost', value: "#{number_with_precision(Service.cents_to_dollars(liv.line_item.applicable_rate), precision: 2)}", url: "/dashboard/line_items/#{liv.line_item.id}.js" } }
+          %a.edit-your-cost{ href: 'javascript:void(0)', data: { type: 'text', pk: liv.line_item.id, name: 'displayed_cost', title: t(:calendars)[:pppv][:editable_fields][:your_cost], value:number_with_precision(Service.cents_to_dollars(liv.line_item.applicable_rate), precision: 2), id: liv.line_item.id, url: "/dashboard/line_items/#{liv.line_item.id}.js" } }
         - else
           %span
             = number_with_precision(Service.cents_to_dollars(liv.line_item.applicable_rate), precision: 2)

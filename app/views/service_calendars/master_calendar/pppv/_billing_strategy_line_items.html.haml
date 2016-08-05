@@ -24,13 +24,27 @@
   - locked = !ssr.can_be_edited?
 
   %tr.organization-header{ class: locked ? 'bg-danger text-danger' : '' }
-    %th{ colspan: 14 }
+    %th.col-sm-6{ colspan: 7 }
       = display_org_name(org_name, ssr, locked)
+    - visit_groups.count.times do
+      %th.col-sm-1.billing-type-list.text-center
+        .row
+          .col-xs-4.billing-type{ data: { toggle: 'tooltip', animation: 'false', title: t(:proper)[:service_calendar][:tooltips][:r] } }
+            = t(:calendars)[:pppv][:header_fields][:research]
+          .col-xs-4.billing-type{ data: { toggle: 'tooltip', animation: 'false', title: t(:proper)[:service_calendar][:tooltips][:t] } }
+            = t(:calendars)[:pppv][:header_fields][:third_party]
+          .col-xs-4.billing-type{ data: { toggle: 'tooltip', animation: 'false', title: t(:proper)[:service_calendar][:tooltips][:effort] } }
+            = t(:calendars)[:pppv][:header_fields][:percent]
+    - (5 - visit_groups.count).times do
+      %th.col-sm-1 &nbsp;
+    %th.col-sm-1{ colspan: 2 }
 
   - livs.each do |liv|
     %tr{ class: locked ? 'bg-danger text-danger' : '' }
       %td.service-name{ colspan: 2 }
         = liv.service.display_service_name
+      %td.status.text-center
+        = AVAILABLE_STATUSES[liv.line_item.sub_service_request.status]
       %td.service-rate.text-center
         = display_service_rate(liv.line_item)
       %td.your-cost.text-center
@@ -39,8 +53,6 @@
         = liv.line_item.service.displayed_pricing_map.unit_type
       %td.subject-count.text-center
         %a.edit-subject-count{ href: '#', data: { type: 'text', pk: liv.line_item.id, name: 'quantity', title: t(:calendars)[:pppv][:editable_fields][:subject_count], value: liv.subject_count, url: "/dashboard/line_items_visits/#{liv.id}" } }
-      %td.text-center
-        = Dashboard::ServiceCalendars.select_row(liv, tab, portal, locked)
       - visits      = liv.visits.paginate(page: page.to_i, per_page: 5)
       - totals_hash = liv.try(:per_subject_subtotals, visits)
       - visits.each_with_index do |v, index|

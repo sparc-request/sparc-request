@@ -26,7 +26,7 @@
     = hidden_field_tag :validates, ''
     .form-group
       %p.instructions
-        = t(:proper)[:cost_estimate_warning]
+        = t(:proper)[:confirmation][:cost_estimate_warning]
     .form-group
       = render 'service_requests/confirmation/confirmation_details', service_request: @service_request
     .form-group.text-center

@@ -26,14 +26,7 @@ class ServiceCalendarsController < ApplicationController
   layout false
 
   def table
-    respond_to do |format|
-      format.html{
-        @tab = 'template'
-      }
-      format.js{
-        @tab = params[:tab]
-      }
-    end
+    @tab            = params[:tab]
     @review         = false
     @portal         = false
     @merged         = false

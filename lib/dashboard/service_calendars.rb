@@ -166,11 +166,6 @@ module Dashboard
       grouped_livs
     end
 
-    def self.set_check(obj)
-      count = obj.visits.where('research_billing_qty = 0 and insurance_billing_qty = 0').count
-      count != 0
-    end
-
     def self.glyph_class(obj)
       count = obj.visits.where('research_billing_qty = 0 and insurance_billing_qty = 0').count
       count == 0 ? 'glyphicon-remove' : 'glyphicon-ok'
@@ -209,11 +204,11 @@ module Dashboard
       options_for_select(arr, cur_page)
     end
 
-    def self.select_row(line_items_visit, tab, portal)
+    def self.select_row(line_items_visit, tab, portal, locked=false)
       checked     = line_items_visit.visits.all? { |v| v.research_billing_qty >= 1  }
       check_param = checked ? 'uncheck' : 'check'
       icon        = checked ? 'glyphicon-remove' : 'glyphicon-ok'
-      url         = "/dashboard/service_calendars/toggle_calendar_row?#{check_param}=true&service_request_id=#{line_items_visit.line_item.service_request.id}&line_items_visit_id=#{line_items_visit.id}&portal=#{portal}"
+      url         = (portal ? '/dashboard' : '') + "/service_calendars/toggle_calendar_row?#{check_param}=true&service_request_id=#{line_items_visit.line_item.service_request.id}&line_items_visit_id=#{line_items_visit.id}&portal=#{portal}"
 
       link_to(
         content_tag(:span, '', class: "glyphicon #{icon}"),
@@ -223,7 +218,8 @@ module Dashboard
         role: 'button',
         class: 'btn btn-primary service-calendar-row',
         id: "check_row_#{line_items_visit.id}_#{tab}",
-        data: { url: url }
+        data: { url: url },
+        disabled: locked
       )
     end
 
@@ -233,8 +229,8 @@ module Dashboard
       checked       = filtered_livs.all? { |l| l.visits[n.to_i].research_billing_qty >= 1 }
       check_param   = checked ? 'uncheck' : 'check'
       icon          = checked ? 'glyphicon-remove' : 'glyphicon-ok'
-      url           = "/dashboard/service_calendars/toggle_calendar_column?#{check_param}=true&service_request_id=#{service_request.id}&column_id=#{n + 1}&arm_id=#{arm_id}&portal=#{portal}"
-      url           += "&sub_service_request_id=#{sub_service_request.id}" if sub_service_request
+      url           = (portal ? '/dashboard' : '') + "/service_calendars/toggle_calendar_column?#{check_param}=true&service_request_id=#{service_request.id}&column_id=#{n + 1}&arm_id=#{arm_id}&portal=#{portal}"
+      url          += "&sub_service_request_id=#{sub_service_request.id}" if sub_service_request
 
       link_to(
         content_tag(:span, '', class: "glyphicon #{icon}"),

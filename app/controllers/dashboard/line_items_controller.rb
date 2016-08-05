@@ -72,9 +72,17 @@ class Dashboard::LineItemsController < Dashboard::BaseController
     @sub_service_request = @line_item.sub_service_request
     @otf = @line_item.service.one_time_fee
     if @line_item.update_attributes(params[:line_item])
-      flash[:success] = @otf ? t(:dashboard)[:study_level_activities][:updated] : t(:dashboard)[:line_items][:updated]
+      if @otf
+      flash[:success] = t(:dashboard)[:study_level_activities][:updated]
+      else
+        render nothing: true
+      end
     else
-      @errors = @line_item.errors
+      if @otf
+        @errors = @line_item.errors
+      else
+        render json: @line_item.errors, status: :unprocessable_entity
+      end
     end
   end
 

@@ -75,22 +75,6 @@ SparcRails::Application.routes.draw do
       post 'ask_a_question'
       post 'feedback'
     end
-
-    resource :service_calendars, only: [:update, :index] do
-      member do
-        get 'table'
-        get 'merged_calendar'
-      end
-      collection do
-        put 'rename_visit'
-        put 'set_day'
-        put 'set_window_before'
-        put 'set_window_after'
-        put 'update_otf_qty_and_units_per_qty'
-        put 'move_visit_position'
-        put 'show_move_visits'
-      end
-    end
   end
 
   resources :protocols, except: [:index, :show, :destroy] do
@@ -103,11 +87,9 @@ SparcRails::Application.routes.draw do
     end
   end
 
-  resources :projects, controller: :protocols, except: [:index, :show, :destroy] do
-  end
+  resources :projects, controller: :protocols, except: [:index, :show, :destroy]
 
-  resources :studies, controller: :protocols, except: [:index, :show, :destroy] do
-  end
+  resources :studies, controller: :protocols, except: [:index, :show, :destroy]
 
   resources :associated_users, except: [:show] do
     collection do
@@ -115,20 +97,33 @@ SparcRails::Application.routes.draw do
     end
   end
 
-  resources :arms, only: [:index, :new, :create, :edit, :update, :destroy] do
-  end
+  resources :arms, only: [:index, :new, :create, :edit, :update, :destroy]
 
-  resources :visit_groups, only: [:update] do
+  resource :service_calendars, only: [:update, :index] do
+    member do
+      get 'table'
+      get 'merged_calendar'
+    end
+    collection do
+      put 'rename_visit'
+      put 'set_day'
+      put 'set_window_before'
+      put 'set_window_after'
+      put 'update_otf_qty_and_units_per_qty'
+      put 'move_visit_position'
+      put 'show_move_visits'
+      post 'toggle_calendar_row'
+      post 'toggle_calendar_column'
+    end
   end
-  
-  resources :documents, only: [:index, :new, :create, :edit, :update, :destroy] do
-  end
-  
-  resources :notes, only: [:index, :new, :create] do
-  end
+    
+  resources :visit_groups, only: [:update]
 
-  resources :sub_service_requests, only: [:show] do
-  end
+  resources :documents, only: [:index, :new, :create, :edit, :update, :destroy]
+  
+  resources :notes, only: [:index, :new, :create]
+
+  resources :sub_service_requests, only: [:show]
   
   resources :catalogs, only: [] do
     member do
@@ -145,8 +140,6 @@ SparcRails::Application.routes.draw do
 
   match 'service_requests/:id/add_service/:service_id' => 'service_requests#add_service', via: [:get, :post]
   match 'service_requests/:id/remove_service/:line_item_id' => 'service_requests#remove_service', via: [:all]
-  match 'service_requests/:id/toggle_calendar_row/:line_items_visit_id' => 'service_calendars#toggle_calendar_row', via: [:post]
-  match 'service_requests/:id/toggle_calendar_column/:column_id/:arm_id' => 'service_calendars#toggle_calendar_column', via: [:get]
   match 'service_requests/:id/delete_document/:document_id' => 'service_requests#delete_documents', via: [:all]
   match 'service_requests/:id/edit_document/:document_id' => 'service_requests#edit_documents', via: [:get, :post]
   match 'service_requests/:id/new_document' => 'service_requests#new_document', via: [:get, :post]
@@ -227,7 +220,7 @@ SparcRails::Application.routes.draw do
       end
     end
 
-    resources :line_items_visits, only: [:destroy]
+    resources :line_items_visits, only: [:update, :destroy]
 
     resources :messages, only: [:index, :new, :create]
 
@@ -325,7 +318,7 @@ SparcRails::Application.routes.draw do
       end
     end
 
-    resources :visits, only: [:destroy]
+    resources :visits, only: [:update, :destroy]
 
     resources :visit_groups, only: [:new, :create, :update, :destroy] do
       collection do

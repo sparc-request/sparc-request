@@ -21,6 +21,17 @@
 class Dashboard::VisitsController < Dashboard::BaseController
   respond_to :json, :js, :html
 
+  # Used for x-editable update and validations
+  def update
+    @visit = Visit.find( params[:id] )
+
+    if @visit.update_attributes( params[:visit] )
+      render nothing: true
+    else
+      render json: @visit.errors, status: :unprocessable_entity
+    end
+  end
+
   def destroy
     @visit = Visit.find(params[:id])
     line_item = @visit.line_items_visit.line_item

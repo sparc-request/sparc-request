@@ -45,8 +45,13 @@ class VisitGroup < ActiveRecord::Base
   before_destroy :remove_appointments
 
   validates :name, presence: true
-  validates :day, numericality: { only_integer: true }
-  validate :day_must_be_in_order
+  validates :day,
+            :window_before,
+            :window_after,
+             numericality: { only_integer: true }, allow_blank: true
+
+  validate :day_must_be_in_order if Proc.new { |vg| vg.day.present? }
+  
   # with_options if: :day? do |vg|
   #   # with respect to the other VisitGroups associated with the same arm
   #   vg.validate :day_must_be_in_order

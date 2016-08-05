@@ -21,6 +21,7 @@
 class VisitGroupsController < ApplicationController
   respond_to :json
 
+  # Used for x-editable update and validations
   def update
     @visit_group = VisitGroup.find(params[:id])
 

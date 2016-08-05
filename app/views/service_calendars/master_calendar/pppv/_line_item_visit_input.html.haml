@@ -17,18 +17,27 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
-- base_url = "/dashboard/service_calendars.js?visit=#{visit.id}&portal=true&service_request_id=#{line_item.service_request_id}"
-
 - case tab
 - when 'template'
-  = check_box_tag "visits_#{visit.id}", 1, (visit.research_billing_qty.to_i > 0 || visit.insurance_billing_qty.to_i > 0 || visit.effort_billing_qty.to_i > 0), class: "line_item_visit_template visits_#{visit.id}", data: { arm_id: arm.id }, update: "#{base_url}&tab=template"
+  = check_box_tag "visits_#{visit.id}", 1, (visit.research_billing_qty.to_i > 0 || visit.insurance_billing_qty.to_i > 0 || visit.effort_billing_qty.to_i > 0), class: "line_item_visit_template visits_#{visit.id}", data: { arm_id: arm.id }, update: "/dashboard/service_calendars?tab=template", disabled: locked
 - when 'billing_strategy'
   .row
-    .col-xs-4.text-center
-      %a{ href: '#', data: { type: 'text', pk: "#{visit.id}", name: 'qty', value: visit.research_billing_qty, url: "#{base_url}&tab=billing_strategy&column=research_billing_qty" }, class: 'edit-research-billing-qty' }
-    .col-xs-4.text-center
-      %a{ href: '#', data: { type: 'text', pk: visit.id, name: 'qty', value: visit.insurance_billing_qty, url: "#{base_url}&tab=billing_strategy&column=insurance_billing_qty" }, class: 'edit-insurance-billing-qty' }
-    .col-xs-4.text-center
-      %a{ href: '#', data: { type: 'text', pk: visit.id, name: 'qty', value: visit.effort_billing_qty, url: "#{base_url}&tab=billing_strategy&column=effort_billing_qty" }, class: 'edit-effort-billing-qty' }
+    - if locked
+      .col-xs-4.text-center
+        .research-billing-qty
+          = visit.research_billing_qty
+      .col-xs-4.text-center
+        .insurance-billing-qty
+          = visit.insurance_billing_qty
+      .col-xs-4.text-center
+        .effort-billing-qty
+          = visit.effort_billing_qty
+    - else
+      .col-xs-4.text-center
+        %a.edit-research-billing-qty{ href: 'javascript:void(0)', data: { name: 'research_qty', title: t(:calendars)[:pppv][:editable_fields][:research], value: visit.research_billing_qty, url: dashboard_visit_path(visit) } }
+      .col-xs-4.text-center
+        %a.edit-insurance-billing-qty{ href: 'javascript:void(0)', data: { name: 'third_party_qty', title: t(:calendars)[:pppv][:editable_fields][:third_party], value: visit.insurance_billing_qty, url: dashboard_visit_path(visit) } }
+      .col-xs-4.text-center
+        %a.edit-effort-billing-qty{ href: 'javascript:void(0)', data: { name: 'percent_effort_qty', title: t(:calendars)[:pppv][:editable_fields][:percent], value: visit.effort_billing_qty, url: dashboard_visit_path(visit) } }
 - when 'calendar'
-  = label_tag nil, qty_cost_label(visit.research_billing_qty + visit.insurance_billing_qty, currency_converter(totals_hash["#{visit.id}"])), class: 'line_item_visit_pricing'
+  = label_tag nil, qty_cost_label(visit.research_billing_qty + visit.insurance_billing_qty, currency_converter(totals_hash["#{visit.id}"])) || "0 - $0.00", class: 'line_item_visit_pricing'

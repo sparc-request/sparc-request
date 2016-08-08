@@ -9,14 +9,16 @@ RSpec.describe 'dashboard/protocols/index', type: :view do
       select_options: {
         with_status: [],
         with_organization: [],
-        sorted_by: "id_asc"
+        sorted_by: "id_asc",
+        with_owner: []
       },
       with_status: [],
       search_query: '',
       show_archived: 0,
       admin_filter: "for_identity #{jug2.id}",
       with_organization: false,
-      sorted_by: "id_asc"
+      sorted_by: "id_asc",
+      with_owner: ["#{jug2.id}"]
     ))
   end
 

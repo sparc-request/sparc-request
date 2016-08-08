@@ -18,31 +18,16 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class Note < ActiveRecord::Base
-  audited
+FactoryGirl.define do
 
-  belongs_to :identity
-  belongs_to :notable, polymorphic: true
+  factory :note do
+    body         { Faker::Lorem.sentence(1) }
+    notable_type { "Protocol" }
 
-  attr_accessible :body, :identity_id, :notable_type, :notable_id
+    trait :without_validations do
+      to_create { |instance| instance.save(validate: false) }
+    end
 
-  validates_presence_of :body, :identity_id
-
-  def unique_selector
-    "#{notable_type.downcase}_#{notable_id}"
+    factory :note_without_validations, traits: [:without_validations]
   end
-
-  ### audit reporting methods ###
-
-  def audit_label audit
-    subject = appointment.calendar.subject
-    subject_label = subject.respond_to?(:audit_label) ? subject.audit_label(audit) : "Subject #{subject.id}"
-    return "Note for #{subject_label} on #{appointment.visit_group.name}"
-  end
-
-  def audit_excluded_fields
-    {'create' => ['identity_id', 'appointment_id']}
-  end
-
-  ### end audit reporting methods ###
 end

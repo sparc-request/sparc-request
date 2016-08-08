@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160719150112) do
+ActiveRecord::Schema.define(version: 20160727152900) do
 
   create_table "admin_rates", force: :cascade do |t|
     t.integer  "line_item_id", limit: 4
@@ -103,8 +103,8 @@ ActiveRecord::Schema.define(version: 20160719150112) do
     t.integer  "subject_count",         limit: 4,   default: 1
     t.integer  "protocol_id",           limit: 4
     t.boolean  "new_with_draft",                    default: false
-    t.integer  "minimum_visit_count",   limit: 4,   default: 0
-    t.integer  "minimum_subject_count", limit: 4,   default: 0
+    t.integer  "minimum_visit_count",   limit: 4
+    t.integer  "minimum_subject_count", limit: 4
   end
 
   add_index "arms", ["protocol_id"], name: "index_arms_on_protocol_id", using: :btree
@@ -657,6 +657,7 @@ ActiveRecord::Schema.define(version: 20160719150112) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "admin_filter",      limit: 255
+    t.string   "sorted_by",         limit: 255
   end
 
   create_table "protocols", force: :cascade do |t|

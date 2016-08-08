@@ -14,6 +14,7 @@ RSpec.describe 'dashboard/sub_service_requests/_header', type: :view do
       allow(logged_in_user).to receive(:unread_notification_count).
         with(sub_service_request.id).and_return("12345")
       stub_current_user(logged_in_user)
+      allow(sub_service_request).to receive(:notes).and_return(["1"])
 
       render "dashboard/sub_service_requests/header", sub_service_request: sub_service_request
 
@@ -36,6 +37,7 @@ RSpec.describe 'dashboard/sub_service_requests/_header', type: :view do
         allow(logged_in_user).to receive(:unread_notification_count).
           with(sub_service_request.id).and_return("12345")
         stub_current_user(logged_in_user)
+        allow(sub_service_request).to receive(:notes).and_return(["1"])
 
         render "dashboard/sub_service_requests/header", sub_service_request: sub_service_request
 
@@ -59,6 +61,7 @@ RSpec.describe 'dashboard/sub_service_requests/_header', type: :view do
         allow(logged_in_user).to receive(:unread_notification_count).
           with(sub_service_request).and_return("12345")
         stub_current_user(logged_in_user)
+        allow(sub_service_request).to receive(:notes).and_return(["1"])
 
         render "dashboard/sub_service_requests/header", sub_service_request: sub_service_request
 
@@ -86,6 +89,7 @@ RSpec.describe 'dashboard/sub_service_requests/_header', type: :view do
             allow(logged_in_user).to receive_messages(unread_notification_count: 12345,
               clinical_provider_rights?: true)
             stub_current_user(logged_in_user)
+            allow(sub_service_request).to receive(:notes).and_return(["1"])
 
             render "dashboard/sub_service_requests/header", sub_service_request: sub_service_request
 
@@ -107,6 +111,7 @@ RSpec.describe 'dashboard/sub_service_requests/_header', type: :view do
             allow(logged_in_user).to receive_messages(unread_notification_count: 12345,
               clinical_provider_rights?: false)
             stub_current_user(logged_in_user)
+            allow(sub_service_request).to receive(:notes).and_return(["1"])
 
             render "dashboard/sub_service_requests/header", sub_service_request: sub_service_request
 
@@ -127,6 +132,7 @@ RSpec.describe 'dashboard/sub_service_requests/_header', type: :view do
           logged_in_user = build_stubbed(:identity)
           allow(logged_in_user).to receive_messages(unread_notification_count: 12345)
           stub_current_user(logged_in_user)
+          allow(sub_service_request).to receive(:notes).and_return(["1"])
 
           render "dashboard/sub_service_requests/header", sub_service_request: sub_service_request
 
@@ -146,6 +152,7 @@ RSpec.describe 'dashboard/sub_service_requests/_header', type: :view do
         logged_in_user = build_stubbed(:identity)
         allow(logged_in_user).to receive_messages(unread_notification_count: 12345)
         stub_current_user(logged_in_user)
+        allow(sub_service_request).to receive(:notes).and_return(["1"])
 
         render "dashboard/sub_service_requests/header", sub_service_request: sub_service_request
 
@@ -162,6 +169,7 @@ RSpec.describe 'dashboard/sub_service_requests/_header', type: :view do
     allow(logged_in_user).to receive(:unread_notification_count).
       with(sub_service_request).and_return("12345")
     stub_current_user(logged_in_user)
+    allow(sub_service_request).to receive(:notes).and_return(["1"])
 
     render "dashboard/sub_service_requests/header", sub_service_request: sub_service_request
 
@@ -176,6 +184,7 @@ RSpec.describe 'dashboard/sub_service_requests/_header', type: :view do
     allow(logged_in_user).to receive(:unread_notification_count).
       with(sub_service_request).and_return("12345")
     stub_current_user(logged_in_user)
+    allow(sub_service_request).to receive(:notes).and_return(["1"])
 
     render "dashboard/sub_service_requests/header", sub_service_request: sub_service_request
 

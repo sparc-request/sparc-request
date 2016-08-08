@@ -496,6 +496,8 @@ class ServiceRequestsController < ApplicationController
 
   # Send notifications to all users.
   def send_notifications(service_request, sub_service_request)
+    @service_list_false = service_request.service_list(false)
+    @service_list_true = service_request.service_list(true)
     xls = render_to_string action: 'show', formats: [:xlsx]
     send_user_notifications(service_request, xls)
 
@@ -557,6 +559,20 @@ class ServiceRequestsController < ApplicationController
 
   def send_individual_service_provider_notification(service_request, sub_service_request, service_provider, xls, audit_report=nil, ssr_deleted=false)
     attachments = {}
+
+    @service_list_true = @service_request.service_list(true, service_provider)
+    @service_list_false = @service_request.service_list(false, service_provider)
+
+    # Retrieves the valid line items for service provider to calculate total direct cost in the xls 
+    line_items = []
+    @service_request.sub_service_requests.each do |ssr|
+      if service_provider.identity.is_service_provider?(ssr)
+        line_items << SubServiceRequest.find(ssr).line_items
+      end
+    end
+
+    @line_items = line_items.flatten
+    xls = render_to_string action: 'show', formats: [:xlsx]
     attachments["service_request_#{service_request.id}.xlsx"] = xls
 
     #TODO this is not very multi-institutional
@@ -570,7 +586,6 @@ class ServiceRequestsController < ApplicationController
       previously_submitted_at = service_request.previous_submitted_at.nil? ? Time.now.utc : service_request.previous_submitted_at.utc
       audit_report = sub_service_request.audit_report(current_user, previously_submitted_at, Time.now.utc)
     end
-
     Notifier.notify_service_provider(service_provider, service_request, attachments, current_user, audit_report, ssr_deleted).deliver_now
   end
 

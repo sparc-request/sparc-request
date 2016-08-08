@@ -145,6 +145,7 @@ en:
         service: "Service Name"
         status: "Status"
         unit_cost: "Unit Costs"
+        service_rate: "Service Rate"
         your_cost: "Your Cost"
         quantity_type: "Clinical Qty Type"
         subject_count: "N"
@@ -153,7 +154,6 @@ en:
           next: "View Next"
         total_per_patient: "Total Per Patient"
         total_per_study: "Total Per Study"
-        service_rate: "Service Rate"
         research: "R"
         third_party: "T"
         percent: "%"
@@ -175,6 +175,15 @@ en:
     otf:
       header: "One Time Fee Services"
       header_fields:
+        service: "Service Name"
+        status: "Status"
+        unit_cost: "Unit Costs"
+        service_rate: "Service Rate"
+        your_cost: "Your Cost"
+        unit_type: "Unit Type #"
+        qty_type: "Qty Type #"
+        total_per_study: "Total Per Study"
+
         number: "#"
         unit_type: "Unit Type"
         quantity_type: "Qty Type"

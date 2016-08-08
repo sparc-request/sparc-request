@@ -660,7 +660,7 @@ class ServiceRequestsController < ApplicationController
       service_request.previous_submitted_at = @service_request.submitted_at
       service_request.update_attribute(:submitted_at, Time.now)
     end
-     
+    
     service_request.sub_service_requests.each {|ssr| ssr.update_past_status(current_user)}
 
     to_notify = service_request.update_status(status)

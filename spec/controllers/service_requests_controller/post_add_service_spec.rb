@@ -56,7 +56,7 @@ RSpec.describe ServiceRequestsController do
     it 'should give an error if the ServiceRequest already has a LineItem for the Service' do
       create(:line_item,
              service_id: new_service.id,
-             service_request_id: service_request.id)
+             service_request_id: service_request.id, sub_service_request_id: sub_service_request.id)
 
       post :add_service, {
              :id          => service_request.id,

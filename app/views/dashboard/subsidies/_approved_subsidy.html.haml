@@ -24,8 +24,10 @@
       %h4.panel-title.pull-left
         = t(:dashboard)[:subsidies][:subsidy_information][:approved][:header]
       .pull-right
-        %button.btn.btn-sm.btn-default.notes.list{data: { notable_type: "Subsidy", notable_id: subsidy.id }}
+        %button.btn.btn-sm.btn-success.notes.list{data: { notable_type: "Subsidy", notable_id: subsidy.id }}
           = t(:models)[:note][:plural]
+          %span.badge{id: "subsidy_#{subsidy.id}_notes"}
+            = subsidy.notes.count
       .clearfix
     %table.table.table-condensed#approved_subsidy_table
       %thead

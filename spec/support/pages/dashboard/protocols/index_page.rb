@@ -19,6 +19,8 @@ module Dashboard
         elements :core_options, "div.core-select li"
         
         # these appear if user is an admin
+        element :owner_select, "div.owner-select button"
+        elements :owner_options, "div.owner-select li"
         element :my_protocols_checkbox, ".identity-protocols input"
         element :my_admin_organizations_checkbox, ".admin-protocols input"
 
@@ -44,6 +46,17 @@ module Dashboard
           end
           page.find("body").click # seems like Capybara page is available in this context
           wait_until_core_options_invisible
+        end
+
+        # select an owner (service provider) :owner_select by text
+        def select_owner(*owners)
+          owner_select.click
+          wait_for_owner_options
+          owners.each do |owner|
+            owner_options(text: /\A#{owner}\Z/).first.click
+          end
+          page.find("body").click
+          wait_until_owner_options_invisible
         end
       end
 

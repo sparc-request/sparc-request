@@ -41,7 +41,7 @@ RSpec.describe Notifier do
                                     identity: identity,
                                     organization: organization,
                                     service: service3) }
-  let!(:non_service_provider_ssr) { create(:sub_service_request, ssr_id: "0004", service_request_id: service_request.id, organization_id: non_service_provider_org.id, status: "draft", org_tree_display: "SCTR1/BLAH")}
+  let!(:non_service_provider_ssr) { create(:sub_service_request, ssr_id: "0004", service_request_id: service_request.id, organization_id: non_service_provider_org.id, status: "get_a_cost_estimate", org_tree_display: "SCTR1/BLAH")}
 
   before { add_visits }
 
@@ -51,7 +51,12 @@ RSpec.describe Notifier do
     let(:audit)                   { sub_service_request.audit_report(identity,
                                                                       previously_submitted_at,
                                                                       Time.now.utc) }
-    context 'service providers' do
+    context 'service providers with SR status of get_a_cost_estimate' do
+
+      before do
+        service_request.update_attribute(:status, 'get_a_cost_estimate')
+      end
+
       let(:xls)                     { Array.new }
       let(:mail)                    { Notifier.notify_service_provider(service_provider,
                                                                         service_request,
@@ -76,6 +81,12 @@ RSpec.describe Notifier do
           expect(mail).to have_xpath("//td[text()='#{arm.name}']/following-sibling::td[text()='#{arm.subject_count}']/following-sibling::td[text()='#{arm.visit_count}']")
         end
       end
+
+    context 'service providers with status submitted' do
+      before do
+        service_request.update_attribute(:status, 'submitted')
+      end
+    end
 
       context 'when protocol has selected for epic' do
         before do
@@ -212,7 +223,7 @@ RSpec.describe Notifier do
           expect(mail).to have_xpath("//td[text()='#{service.name}']/following-sibling::td[text()='Removed']")
         end
         it "should have the correct subject" do
-          expect(mail).to have_subject("#{service_request.protocol.id} - [Test - EMAIL TO glennj@musc.edu] SPARC Request service request")
+          expect(mail).to have_subject("#{service_request.protocol.id} - [Test - EMAIL TO glennj@musc.edu] SPARCRequest service request")
         end
       end
     end
@@ -225,9 +236,14 @@ RSpec.describe Notifier do
                                                             service_request,
                                                             xls,
                                                             approval,
-                                                            identity) }
+                                                            identity
+                                                            ) }
       it 'should have Arm information table' do
         expect(mail.body.parts.first.body).to have_xpath("//table//strong[text()='Protocol Arm Information']")
+      end
+
+      it 'should NOT have a notes reminder message' do
+        expect(mail.body.parts.first.body).not_to have_xpath "//p[text()='*Note(s) are included with this submission.']"
       end
 
       it 'should show all SSRs in the SR table' do
@@ -246,13 +262,12 @@ RSpec.describe Notifier do
               identity_id:  identity.id, 
               notable_id: service_request.id)
       end
-      let(:status)                    { 'submitted' }
       let(:xls)                       { ' ' }
       let(:submission_email_address)  { 'success@musc.edu' }
       let(:mail)                      { Notifier.notify_admin(service_request,
                                                               submission_email_address,
                                                               xls,
-                                                              identity, status) }
+                                                              identity) }
       it 'should display the Protocol Information Table' do
         expect(mail.body.parts.first.body).to have_xpath "//table//strong[text()='Project Information']"
         expect(mail.body.parts.first.body).to have_xpath "//th[text()='Project ID']/following-sibling::td[text()='#{service_request.protocol.id}']"

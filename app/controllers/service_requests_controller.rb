@@ -237,7 +237,6 @@ class ServiceRequestsController < ApplicationController
 
   def obtain_research_pricing
     # TODO: refactor into the ServiceRequest model
-    @action = "obtain_research_pricing"
     @protocol = @service_request.protocol
     @service_request.previous_submitted_at = @service_request.submitted_at
 
@@ -258,7 +257,6 @@ class ServiceRequestsController < ApplicationController
   end
 
   def confirmation
-    @action = "get_a_cost_estimate"
     @protocol = @service_request.protocol
     @service_request.previous_submitted_at = @service_request.submitted_at
 
@@ -518,11 +516,10 @@ class ServiceRequestsController < ApplicationController
     else
       approval = false
     end
-    status = service_request.status
     # send e-mail to all folks with view and above
     service_request.protocol.project_roles.each do |project_role|
       next if project_role.project_rights == 'none'
-      Notifier.notify_user(project_role, service_request, xls, approval, current_user, status).deliver_now unless project_role.identity.email.blank?
+      Notifier.notify_user(project_role, service_request, xls, approval, current_user).deliver_now unless project_role.identity.email.blank?
     end
   end
 
@@ -533,10 +530,9 @@ class ServiceRequestsController < ApplicationController
   end
 
   def send_admin_notifications(service_request, sub_service_requests, xls)
-    status = service_request.status
     sub_service_requests.each do |sub_service_request|
       sub_service_request.organization.submission_emails_lookup.each do |submission_email|
-        Notifier.notify_admin(service_request, submission_email.email, xls, current_user, status).deliver
+        Notifier.notify_admin(service_request, submission_email.email, xls, current_user).deliver
       end
     end
   end
@@ -582,8 +578,7 @@ class ServiceRequestsController < ApplicationController
       previously_submitted_at = service_request.previous_submitted_at.nil? ? Time.now.utc : service_request.previous_submitted_at.utc
       audit_report = sub_service_request.audit_report(current_user, previously_submitted_at, Time.now.utc)
     end
-    status = service_request.status
-    Notifier.notify_service_provider(service_provider, service_request, attachments, current_user, status, audit_report, ssr_deleted).deliver_now
+    Notifier.notify_service_provider(service_provider, service_request, attachments, current_user, audit_report, ssr_deleted).deliver_now
   end
 
   def send_epic_notification_for_user_approval(protocol)

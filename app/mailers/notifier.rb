@@ -43,9 +43,9 @@ class Notifier < ActionMailer::Base
     mail(:to => email, :cc => cc, :from => @identity.email, :subject => subject)
   end
 
-  def notify_user(project_role, service_request, xls, approval, user_current, status)
-    @status = status
-
+  def notify_user(project_role, service_request, xls, approval, user_current)
+    @status = service_request.status
+    @notes = []
     @identity = project_role.identity
     @role = project_role.role
     @full_name = @identity.full_name
@@ -67,9 +67,9 @@ class Notifier < ActionMailer::Base
     mail(:to => email, :from => NO_REPLY_FROM, :subject => subject)
   end
 
-  def notify_admin(service_request, submission_email_address, xls, user_current, status)
+  def notify_admin(service_request, submission_email_address, xls, user_current)
     @notes = service_request.notes
-    @status = status
+    @status = service_request.status
     @role = 'none'
     @full_name = submission_email_address
     @triggered_by = user_current.id
@@ -89,9 +89,9 @@ class Notifier < ActionMailer::Base
     mail(:to => email, :from => NO_REPLY_FROM, :subject => subject)
   end
 
-  def notify_service_provider(service_provider, service_request, attachments_to_add, user_current, status, audit_report=nil, ssr_deleted=false)
+  def notify_service_provider(service_provider, service_request, attachments_to_add, user_current, audit_report=nil, ssr_deleted=false)
     @notes = service_request.notes
-    @status = status
+    @status = service_request.status
     @role = 'none'
     @full_name = service_provider.identity.full_name
     @triggered_by = user_current.id

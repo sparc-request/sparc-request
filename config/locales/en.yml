@@ -1686,7 +1686,7 @@ en:
     # Language for 'Get a Cost Estimate'
     service_provider_intro_1: "%{welcome} in %{application_title} and is awaiting your review in "
     sparc_dashboard: "SPARCDashboard"
-    sparc_dashboard_period: "."
+    sparc_dashboard_period: "SPARCDashboard."
     service_provider_intro_2: ".  Please ensure services chosen are appropriate and can be provided. Communicate any necessary changes to the study team and request they “Submit to Start Services” once ready to proceed."
     source: "Funding Source"
     srid_info: "Service Request Information"

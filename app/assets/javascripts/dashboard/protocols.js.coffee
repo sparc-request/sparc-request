@@ -161,7 +161,7 @@ $(document).ready ->
         sort_name         = $(this).data('sort-name')
         sort_order        = $(this).data('sort-order')
         sorted_by         = "#{sort_name}_#{sort_order}"
-        page              = parseInt($('.pagination li.active span').prop('textContent'))
+        page              = parseInt($('.pagination li.active span').prop('textContent')) || 1
         new_sort_order    = if $(this).data('sort-order') == 'asc' then 'desc' else 'asc'
         data = 
           'page': page

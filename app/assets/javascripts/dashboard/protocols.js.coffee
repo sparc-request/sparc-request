@@ -148,3 +148,35 @@ $(document).ready ->
             url: "/dashboard/protocols/#{protocol_id}/update_protocol_type"
             data: data
       # Protocol Edit End
+
+
+
+      # Protocol Table Sorting
+      $(document).on 'click', '.protocol-sort', ->
+        search_query      = $('#search_query').val()
+        show_archived     = $('#show_archived').val()
+        with_status       = $('#with_status').val()
+        with_organization = $('#with_organization').val()
+        admin_filter      = $('#admin_filter').val()
+        sort_name         = $(this).data('sort-name')
+        sort_order        = $(this).data('sort-order')
+        sorted_by         = "#{sort_name}_#{sort_order}"
+        page              = parseInt($('.pagination li.active span').prop('textContent'))
+        new_sort_order    = if $(this).data('sort-order') == 'asc' then 'desc' else 'asc'
+        data = 
+          'page': page
+          'filterrific':
+            'search_query': search_query
+            'show_archived': show_archived
+            'with_status': with_status
+            'with_organization': with_organization
+            'admin_filter': admin_filter
+            'sorted_by': sorted_by
+        $.ajax
+          type: 'get'
+          url: "/dashboard/protocols.js"
+          data: data
+          success: ->
+            $(".protocol-sort[name='#{sort_name}']").data('sort-order', new_sort_order)
+            $(".protocol-sort[name='#{sort_name}']").children(".#{sort_order}").addClass('sort-active')
+            $(".protocol-sort[name='#{sort_name}']").children(".#{new_sort_order}").removeClass('sort-active')

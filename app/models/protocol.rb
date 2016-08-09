@@ -214,9 +214,9 @@ class Protocol < ActiveRecord::Base
       order('TRIM(REPLACE(short_title, CHAR(9), " ")) ASC')
     when 'short_title_desc'
       order('TRIM(REPLACE(short_title, CHAR(9), " ")) DESC')
-    when 'pi_asc'
+    when 'pis_asc'
       joins(project_roles: :identity).where(project_roles: { role: 'primary-pi' }).order('.identities.first_name ASC')
-    when 'pi_desc'
+    when 'pis_desc'
       joins(project_roles: :identity).where(project_roles: { role: 'primary-pi' }).order('.identities.first_name DESC')
     end
   }
@@ -227,8 +227,8 @@ class Protocol < ActiveRecord::Base
       ['ID (9-0)', 'id_desc'],
       ['Short Title (A-Z)', 'short_title_asc'],
       ['Short Title (Z-A)', 'short_title_desc'],
-      ['PI (A-Z)', 'pi_asc'],
-      ['PI (Z-A)', 'pi_desc']
+      ['PI (A-Z)', 'pis_asc'],
+      ['PI (Z-A)', 'pis_desc']
     ]
   end
 

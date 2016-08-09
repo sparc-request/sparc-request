@@ -1,0 +1,22 @@
+%table{:style => 'border: 1px solid black; border-collapse: collapse; width: 100%;', :cellpadding => 3}
+  %thead
+    %tr{:style => 'border: 1px solid black;'}
+      %td{:colspan => 4}
+        %strong= t(:notifier)[:srid_info]
+  %tr
+    %th{:style => 'border: 1px solid black;'}= t(:notifier)[:sr_id_acronym]
+    %th{:style => 'border: 1px solid black;'}= t(:notifier)[:organization]
+    %th{:style => 'border: 1px solid black;'}= t(:notifier)[:status]
+  %tbody
+    - @ssrs_to_be_displayed.each do |ssr|
+      - link = DASHBOARD_LINK + '/sub_service_requests/' + ssr.id.to_s
+      %tr{:style => 'border: 1px solid black;'}
+        - if @role == 'none'
+          %td{:style => 'text-align: center;'}
+            %a{:style => 'color: blue; font-weight: bold;', :href => link}=ssr.display_id
+        - else
+          %td{:style => 'border: 1px solid black; text-align: center;'}= ssr.display_id
+        %td{:style => 'border: 1px solid black; text-align: center;'}= ssr.org_tree_display
+        %td{:style => 'border: 1px solid black; text-align: center;'}= AVAILABLE_STATUSES[ssr.status]
+%br
+%br

@@ -504,8 +504,7 @@ class ServiceRequestsController < ApplicationController
     else
       sub_service_requests = service_request.sub_service_requests
     end
-
-    send_admin_notifications(sub_service_requests, xls)
+    send_admin_notifications(service_request, sub_service_requests, xls)
     send_service_provider_notifications(service_request, sub_service_requests, xls)
   end
 
@@ -525,17 +524,17 @@ class ServiceRequestsController < ApplicationController
     end
   end
 
-  def send_admin_notifications(sub_service_requests, xls)
-    sub_service_requests.each do |sub_service_request|
-      sub_service_request.organization.submission_emails_lookup.each do |submission_email|
-        Notifier.notify_admin(sub_service_request.service_request, submission_email.email, xls, current_user).deliver
-      end
-    end
-  end
-
   def send_service_provider_notifications(service_request, sub_service_requests, xls) #all sub-service requests on service request
     sub_service_requests.each do |sub_service_request|
       send_ssr_service_provider_notifications(service_request, sub_service_request, xls)
+    end
+  end
+
+  def send_admin_notifications(service_request, sub_service_requests, xls)
+    sub_service_requests.each do |sub_service_request|
+      sub_service_request.organization.submission_emails_lookup.each do |submission_email|
+        Notifier.notify_admin(service_request, submission_email.email, xls, current_user).deliver
+      end
     end
   end
 
@@ -580,7 +579,6 @@ class ServiceRequestsController < ApplicationController
       previously_submitted_at = service_request.previous_submitted_at.nil? ? Time.now.utc : service_request.previous_submitted_at.utc
       audit_report = sub_service_request.audit_report(current_user, previously_submitted_at, Time.now.utc)
     end
-
     Notifier.notify_service_provider(service_provider, service_request, attachments, current_user, audit_report, ssr_deleted).deliver_now
   end
 

@@ -1659,6 +1659,7 @@ en:
     non_service_provider_intro_submitted_1: "%{welcome} in %{application_title}.  Visit "
     non_service_provider_intro_submitted_2: " to view the status or make any updates to your request."
     note: "*Note: upon submission, services selected to go to Epic will be sent daily at 4:30pm."
+    notes_present:  "*Note(s) are included with this submission."
     notice:
       approve: "Approve Account"
       body1: "Request for new SPARC Request account submitted and awaiting approval"

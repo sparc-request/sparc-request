@@ -42,12 +42,13 @@
 
     - if @ssrs_to_be_displayed
       = render "srid_information"
+
+    - if @notes
+      %p= t(:notifier)[:notes_present]
     
     %p= t(:notifier)[:body6]
     
     %p= t(:issue_contact)
     
-    - if @notes
-      = render "notes"
     - if @role != 'none'
       = render "acknowledgments"

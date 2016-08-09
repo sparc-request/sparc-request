@@ -68,6 +68,7 @@ class Notifier < ActionMailer::Base
   end
 
   def notify_admin(service_request, submission_email_address, xls, user_current, status)
+    @notes = service_request.notes
     @status = status
     @role = 'none'
     @full_name = submission_email_address

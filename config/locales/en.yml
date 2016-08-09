@@ -417,6 +417,7 @@ en:
       header: "Filter Protocols"
       archived: "Archived"
       status: "Status"
+      service_providers: "Owner"
       my_protocols: "My Protocols"
       my_admin_protocols: "My Admin Protocols"
       organization: "Organization"

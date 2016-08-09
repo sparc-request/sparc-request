@@ -134,6 +134,7 @@ class Protocol < ActiveRecord::Base
       :show_archived,
       :with_status,
       :with_organization,
+      :with_owner,
       :sorted_by
     ]
   )
@@ -202,6 +203,14 @@ class Protocol < ActiveRecord::Base
     return nil if org_id.reject!(&:blank?) == []
     joins(:sub_service_requests).
     where(sub_service_requests: { organization_id: org_id }).distinct
+  }
+
+  scope :with_owner, -> (owner_id) {
+    return nil if owner_id.reject!(&:blank?) == []
+    joins(:sub_service_requests).
+    where(sub_service_requests:
+         {organization: Organization.joins(:service_providers).
+                                     where(service_providers: {identity_id: owner_id})})
   }
 
   scope :sorted_by, -> (key) {

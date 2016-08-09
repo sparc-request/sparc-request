@@ -44,11 +44,19 @@
       %td.service-name{ colspan: 2 }
         = liv.service.display_service_name
       %td.status.text-center
+<<<<<<< Updated upstream
         = AVAILABLE_STATUSES[liv.line_item.sub_service_request.status]
       %td.service-rate.text-center
         = display_service_rate(liv.line_item)
       %td.your-cost.text-center
         = number_with_precision(Service.cents_to_dollars(liv.line_item.applicable_rate), precision: 2)
+=======
+        = AVAILABLE_STATUSES[ssr.status]
+      %td.service-rate.text-center
+        = display_service_rate(liv.line_item)
+      %td.your-cost.text-center
+        = "$#{number_with_precision(Service.cents_to_dollars(liv.line_item.applicable_rate), precision: 2)}"
+>>>>>>> Stashed changes
       %td.unit-type.text-center
         = liv.line_item.service.displayed_pricing_map.unit_type
       %td.subject-count.text-center

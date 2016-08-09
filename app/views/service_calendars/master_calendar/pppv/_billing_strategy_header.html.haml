@@ -39,5 +39,9 @@
   %th.col-sm-1.text-center
     = t(:calendars)[:pppv][:header_fields][:service_rate]
   %th.col-sm-1.text-center
+<<<<<<< Updated upstream
     = t(:calendars)[:pppv][:header_fields][:your_cost]
+=======
+    = raw(t(:calendars)[:pppv][:header_fields][:your_cost])
+>>>>>>> Stashed changes
   = render 'service_calendars/master_calendar/pppv/visit_groups', service_request: service_request, arm: arm, tab: tab, visit_groups: visit_groups

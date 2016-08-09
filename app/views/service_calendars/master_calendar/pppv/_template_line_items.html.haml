@@ -34,7 +34,11 @@
       %td.service-rate.text-center
         = display_service_rate(liv.line_item)
       %td.your-cost.text-center
+<<<<<<< Updated upstream
         = number_with_precision(Service.cents_to_dollars(liv.line_item.applicable_rate), precision: 2)
+=======
+        = "$#{number_with_precision(Service.cents_to_dollars(liv.line_item.applicable_rate), precision: 2)}"
+>>>>>>> Stashed changes
       %td.unit-type.text-center
         = liv.line_item.service.displayed_pricing_map.unit_type
       %td.subject-count.text-center
@@ -53,4 +57,8 @@
       %td.text-center.pppv-per-study-line-item-total
         = Dashboard::ServiceCalendars.display_visit_based_direct_cost_per_study(liv)
 
+<<<<<<< Updated upstream
 = render 'service_calendars/master_calendar/pppv/pppv_totals', service_request: service_request, arm: arm, tab: tab, line_items_visits: line_items_visits.flatten
+=======
+= render 'service_calendars/master_calendar/pppv/pppv_totals', service_request: service_request, arm: arm, tab: tab, line_items_visits: line_items_visits.flatten
+>>>>>>> Stashed changes

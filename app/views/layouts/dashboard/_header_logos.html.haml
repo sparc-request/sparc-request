@@ -17,6 +17,7 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+<<<<<<< Updated upstream:app/views/layouts/dashboard/_header_logos.html.haml
 #header
   #org-logo.col-md-4.hidden-sm.hidden-xs
     %a{:href => HEADER_LINK_1}
@@ -27,3 +28,40 @@
   #institution-logo.col-md-4.hidden-xs
     %a{:href => HEADER_LINK_3, :target => '_blank'}
       = image_tag "/assets/#{CUSTOM_ASSET_PATH}institution_logo_136x86.gif", :alt => 'institution_logo'
+=======
+<<<<<<< Updated upstream:app/views/catalogs/_signin_dialog_box.html.haml
+
+%div.signin_dialog.center
+  = t :initial_signin_dialog
+  %clear
+  %br
+  %br
+  .container_6
+    #left_signin_button.proceed_with_shib.ui-button.ui-button-text.ui-widget.ui-state-default.ui-corner-all.ui-button-text-only
+      = link_to(t(:proceed_to_shibboleth), identity_omniauth_authorize_path(:shibboleth))
+    %br
+    %br
+    #right_signin_button.proceed_with_database.ui-button.ui-button-text.ui-widget.ui-state-default.ui-corner-all.ui-button-text-only
+      = link_to(t(:proceed_to_database), "javascript:void(0);")
+=======
+%tr
+  %th.col-sm-2.text-center{ colspan: 2, rowspan: 2 }
+    = t(:calendars)[:otf][:header_fields][:service]
+  %th.col-sm-1.text-center{ rowspan: 2 }
+    = t(:calendars)[:otf][:header_fields][:status]
+  %th.col-sm-2.text-center{ colspan: 2 }
+    = t(:calendars)[:otf][:header_fields][:unit_cost]
+  %th.col-sm-3.text-center{ colspan: 3, rowspan: 2 }
+    = t(:calendars)[:otf][:header_fields][:unit_type]
+  %th.col-sm-3.text-center{ colspan: 3, rowspan: 2 }
+    = t(:calendars)[:otf][:header_fields][:qty_type]
+  %th.col-sm-1.text-center{ colspan: 1, rowspan: 2 }
+    = t(:calendars)[:otf][:header_fields][:total_per_study]
+
+%tr
+  %th.col-sm-1.text-center
+    = t(:calendars)[:otf][:header_fields][:service_rate]
+  %th.col-sm-1.text-center
+    = raw(t(:calendars)[:otf][:header_fields][:your_cost])
+>>>>>>> Stashed changes:app/views/service_calendars/master_calendar/otf/_otf_header.html.haml
+>>>>>>> Stashed changes:app/views/catalogs/_signin_dialog_box.html.haml

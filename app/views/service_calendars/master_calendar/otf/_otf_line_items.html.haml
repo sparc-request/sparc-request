@@ -16,4 +16,39 @@
 -# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+<<<<<<< Updated upstream:app/views/service_calendars/master_calendar/otf/_otf_line_items.html.haml
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+=======
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+<<<<<<< Updated upstream:app/views/shared/_user_details.html.haml
+
+= javascript_include_tag 'user_details'
+=======
+- protocol.service_requests.each do |service_request|
+  - service_request.service_list(true).each do |_, value| # get only one time fee services and group them
+    - ssr    = value[:line_items][0].sub_service_request
+    - locked = !ssr.can_be_edited?
+    
+    %tr.organization-header{ class: locked ? 'bg-danger text-danger' : '' }
+      %th{ colspan: 14 }
+        = display_org_name(value[:name], ssr, locked)
+    - value[:line_items].each do |line_item|
+      %tr
+        %td.service-name{ colspan: 2 }
+          = line_item.service.display_service_name
+        %td.status.text-center
+          = AVAILABLE_STATUSES[ssr.status]
+        %td.service-rate.text-center
+          = display_service_rate(line_item)
+        %td.your-cost.text-center
+          = "$#{number_with_precision(Service.cents_to_dollars(line_item.applicable_rate), precision: 2)}"
+        %td.unit-type-number.text-center{ colspan: 3 }
+          = line_item.service.try(:displayed_pricing_map).try(:otf_unit_type).try(:humanize)
+          = text_field_tag "service_request[line_items_attributes][#{line_item.id}][units_per_quantity]", line_item.units_per_quantity, |
+           'data-qty_max' => line_item.service.displayed_pricing_map.units_per_qty_max, class: 'units_per_quantity', current_units_per_quantity: line_item.units_per_quantity, |
+           update: update_otf_qty_and_units_per_qty_service_calendars_path(service_request, line_item_id: line_item.id, type: 'units_per_qty') |
+        %td.quantity-type-number.text-center{ colspan: 3 }
+        %td.total-per-study.text-center
+    
+>>>>>>> Stashed changes:app/views/service_calendars/master_calendar/otf/_otf_line_items.html.haml
+>>>>>>> Stashed changes:app/views/shared/_user_details.html.haml

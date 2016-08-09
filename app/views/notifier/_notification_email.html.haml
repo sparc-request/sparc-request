@@ -27,7 +27,10 @@
     %title= t(:notifier)[:service_request]
 
   %body
-    = render "welcome"
+    - if @status == 'get_a_cost_estimate'
+      = render "welcome"
+    - else
+      = render "welcome_for_submitted_status"
     = render "protocol_information", protocol: @protocol
     - if @service_request.has_per_patient_per_visit_services? and @service_request.arms.count > 0
       = render "arm_information"
@@ -43,6 +46,8 @@
     %p= t(:notifier)[:body6]
     
     %p= t(:issue_contact)
-
+    
+    - if @notes
+      = render "notes"
     - if @role != 'none'
       = render "acknowledgments"

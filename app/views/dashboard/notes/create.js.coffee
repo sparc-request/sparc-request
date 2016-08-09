@@ -20,6 +20,7 @@
 if $(".modal-content").length > 0
   # dashboard notes modals
   $("#modal_place").html("<%= escape_javascript(render(partial: 'index', locals: { notes: @notes, notable_id: @notable_id, notable_type: @notable_type })) %>")
+  $("span#<%= @selector %>").html("<%= escape_javascript(@notes.count.to_s) %>")
 else
   #sparc proper service request notes in step 3
   $("#request_notes_table").html("<%= escape_javascript(render(partial: '/notes/request_notes', locals: { notes: @notes, thead_class: 'orange-provider'  } )) %>")

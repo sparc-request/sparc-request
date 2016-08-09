@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160727152900) do
+ActiveRecord::Schema.define(version: 20160729194811) do
 
   create_table "admin_rates", force: :cascade do |t|
     t.integer  "line_item_id", limit: 4
@@ -525,7 +525,11 @@ ActiveRecord::Schema.define(version: 20160727152900) do
     t.integer  "changed_by_id",          limit: 4
   end
 
+<<<<<<< HEAD
   add_index "past_statuses", ["changed_by_id"], name: "index_past_statuses_on_changed_by_id", using: :btree
+=======
+  add_index "past_statuses", ["changed_by_id"], name: "index_past_statuses_on_changed_by", using: :btree
+>>>>>>> master
   add_index "past_statuses", ["sub_service_request_id"], name: "index_past_statuses_on_sub_service_request_id", using: :btree
 
   create_table "past_subsidies", force: :cascade do |t|
@@ -657,8 +661,14 @@ ActiveRecord::Schema.define(version: 20160727152900) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "admin_filter",      limit: 255
+<<<<<<< HEAD
+=======
+    t.string   "with_owner",        limit: 255
+>>>>>>> master
     t.string   "sorted_by",         limit: 255
   end
+
+  add_index "protocol_filters", ["with_owner"], name: "index_protocol_filters_on_with_owner", using: :btree
 
   create_table "protocols", force: :cascade do |t|
     t.string   "type",                                  limit: 255

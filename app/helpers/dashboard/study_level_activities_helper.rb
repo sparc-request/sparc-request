@@ -34,13 +34,13 @@ module Dashboard::StudyLevelActivitiesHelper
     return "$#{cost}"
   end
 
-  def sla_options_buttons line_item_id
+  def sla_options_buttons line_item
     options = raw(
       content_tag(:li, raw(
         content_tag(:button, raw(content_tag(:span, '', class: "glyphicon glyphicon-sunglasses", aria: {hidden: "true"}))+t(:dashboard)[:study_level_activities][:actions][:details], type: 'button', class: 'btn btn-default form-control actions-button otf_details list'))
       )+
       content_tag(:li, raw(
-        content_tag(:button, raw(content_tag(:span, '', class: "glyphicon glyphicon-list-alt", aria: {hidden: "true"}))+t(:dashboard)[:study_level_activities][:actions][:notes], type: 'button', class: 'btn btn-default form-control actions-button notes list', data: {notable_id: line_item_id, notable_type: "LineItem"}))
+        content_tag(:button, raw(content_tag(:span, '', class: "glyphicon glyphicon-list-alt", aria: {hidden: "true"}))+t(:dashboard)[:study_level_activities][:actions][:notes]+raw(content_tag(:span, line_item.notes.count, class: "badge", id: "lineitem_#{line_item.id}_notes")), type: 'button', class: 'btn btn-default form-control actions-button notes list dropdown_badge', data: {notable_id: line_item.id, notable_type: "LineItem"}))
       )+
       content_tag(:li, raw(
         content_tag(:button, raw(content_tag(:span, '', class: "glyphicon glyphicon-usd", aria: {hidden: "true"}))+t(:dashboard)[:study_level_activities][:actions][:admin_rate], type: 'button', class: 'btn btn-default form-control actions-button otf_admin_rate'))
@@ -75,10 +75,10 @@ module Dashboard::StudyLevelActivitiesHelper
     raw content_tag(:button, 'List', id: "list-#{line_item_id}", type: 'button', class: 'btn btn-success otf_fulfillment_list', title: 'List', type: "button", aria: {label: "List Fulfillments"}, data: {line_item_id: line_item_id})
   end
 
-  def fulfillment_options_buttons fulfillment_id
+  def fulfillment_options_buttons fulfillment
     options = raw(
       content_tag(:li, raw(
-        content_tag(:button, raw(content_tag(:span, '', class: "glyphicon glyphicon-list-alt", aria: {hidden: "true"}))+t(:dashboard)[:fulfillments][:actions][:notes], type: 'button', class: 'btn btn-default form-control actions-button notes list', data: {notable_id: fulfillment_id, notable_type: "Fulfillment"}))
+        content_tag(:button, raw(content_tag(:span, '', class: "glyphicon glyphicon-list-alt", aria: {hidden: "true"}))+t(:dashboard)[:fulfillments][:actions][:notes]+raw(content_tag(:span, fulfillment.notes.count, class: "badge", id: "fulfillment_#{fulfillment.id}_notes")), type: 'button', class: 'btn btn-default form-control actions-button notes list dropdown_badge', data: {notable_id: fulfillment.id, notable_type: "Fulfillment"}))
       )+
       content_tag(:li, raw(
         content_tag(:button, raw(content_tag(:span, '', class: "glyphicon glyphicon-edit", aria: {hidden: "true"}))+t(:dashboard)[:fulfillments][:actions][:edit], type: 'button', class: 'btn btn-default form-control actions-button otf_fulfillment_edit'))

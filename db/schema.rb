@@ -525,11 +525,6 @@ ActiveRecord::Schema.define(version: 20160729194811) do
     t.integer  "changed_by_id",          limit: 4
   end
 
-<<<<<<< HEAD
-  add_index "past_statuses", ["changed_by_id"], name: "index_past_statuses_on_changed_by_id", using: :btree
-=======
-  add_index "past_statuses", ["changed_by_id"], name: "index_past_statuses_on_changed_by", using: :btree
->>>>>>> master
   add_index "past_statuses", ["sub_service_request_id"], name: "index_past_statuses_on_sub_service_request_id", using: :btree
 
   create_table "past_subsidies", force: :cascade do |t|

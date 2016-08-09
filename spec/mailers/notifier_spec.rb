@@ -62,6 +62,10 @@ RSpec.describe Notifier do
         assert_notification_email_tables
       end
 
+      it 'should NOT have a notes reminder message' do
+        expect(mail).not_to have_xpath "//p[text()='*Note(s) are included with this submission.']"
+      end
+
       it 'should not have audited information table' do
         expect(mail).not_to have_xpath("//th[text()='Service']/following-sibling::th[text()='Action']")
       end
@@ -237,12 +241,18 @@ RSpec.describe Notifier do
     end
 
     context 'admin' do
+      before do
+        create(:note_without_validations,
+              identity_id:  identity.id, 
+              notable_id: service_request.id)
+      end
+      let(:status)                    { 'submitted' }
       let(:xls)                       { ' ' }
       let(:submission_email_address)  { 'success@musc.edu' }
       let(:mail)                      { Notifier.notify_admin(service_request,
                                                               submission_email_address,
                                                               xls,
-                                                              identity) }
+                                                              identity, status) }
       it 'should display the Protocol Information Table' do
         expect(mail.body.parts.first.body).to have_xpath "//table//strong[text()='Project Information']"
         expect(mail.body.parts.first.body).to have_xpath "//th[text()='Project ID']/following-sibling::td[text()='#{service_request.protocol.id}']"
@@ -274,6 +284,10 @@ RSpec.describe Notifier do
           expect(mail.body.parts.first.body).to have_xpath "//td//a[@href='/dashboard/sub_service_requests/#{ssr.id}']['#{ssr.display_id}']/@href"
           expect(mail.body.parts.first.body).to have_xpath "//td[text()='#{ssr.org_tree_display}']/following-sibling::td[text()='#{status}']"
         end        
+      end
+
+      it 'should have a notes reminder message' do
+        expect(mail.body.parts.first.body).to have_xpath "//p[text()='*Note(s) are included with this submission.']"
       end
 
       it 'should not have Arm information table' do

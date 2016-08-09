@@ -234,12 +234,8 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     service_providers = Identity.joins(:service_providers).where(service_providers: {
                                 organization: Organization.authorized_for_identity(current_user.id) })
                                 .distinct.order("last_name")
-    service_providers_params = []
-
-    service_providers.each do |sp|
-      service_providers_params << [sp.last_name_first, sp.id]
-    end
-    service_providers_params
+                                
+    service_providers.map{|s| [s.last_name_first, s.id]}
   end
 
   def find_protocol

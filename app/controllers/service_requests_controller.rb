@@ -412,12 +412,14 @@ class ServiceRequestsController < ApplicationController
     end
 
     @line_items.where(service_id: service.id).each do |li|
-      ssr = li.sub_service_request
-      if ssr.can_be_edited? && ssr.status != 'first_draft'
-        ssr.update_attribute(:status, 'draft')
-        ssr.update_past_status(current_user)
+      if li.status != 'complete'
+        ssr = li.sub_service_request
+        if ssr.can_be_edited? && ssr.status != 'first_draft'
+          ssr.update_attribute(:status, 'draft')
+          ssr.update_past_status(current_user)
+        end
+        li.destroy
       end
-      li.destroy
     end
 
     @line_items.reload

@@ -44,23 +44,15 @@
       %td.service-name{ colspan: 2 }
         = liv.service.display_service_name
       %td.status.text-center
-<<<<<<< Updated upstream
-        = AVAILABLE_STATUSES[liv.line_item.sub_service_request.status]
-      %td.service-rate.text-center
-        = display_service_rate(liv.line_item)
-      %td.your-cost.text-center
-        = number_with_precision(Service.cents_to_dollars(liv.line_item.applicable_rate), precision: 2)
-=======
         = AVAILABLE_STATUSES[ssr.status]
       %td.service-rate.text-center
         = display_service_rate(liv.line_item)
       %td.your-cost.text-center
         = "$#{number_with_precision(Service.cents_to_dollars(liv.line_item.applicable_rate), precision: 2)}"
->>>>>>> Stashed changes
       %td.unit-type.text-center
         = liv.line_item.service.displayed_pricing_map.unit_type
       %td.subject-count.text-center
-        %a.edit-subject-count{ href: '#', data: { type: 'text', pk: liv.line_item.id, name: 'quantity', title: t(:calendars)[:pppv][:editable_fields][:subject_count], value: liv.subject_count, url: dashboard_line_items_visit_path(liv) } }
+        %a.edit-subject-count{ href: 'javascript:void(0)', data: { name: 'subject_count', title: t(:calendars)[:pppv][:editable_fields][:subject_count], value: liv.subject_count, url: dashboard_line_items_visit_path(liv) } }
       - visits      = liv.visits.paginate(page: page.to_i, per_page: 5)
       - totals_hash = liv.try(:per_subject_subtotals, visits)
       - visits.each_with_index do |v, index|

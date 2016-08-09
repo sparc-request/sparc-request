@@ -81,3 +81,9 @@ $(document).ready ->
     params: (params) ->
       data = 'visit': { 'effort_billing_qty': params.value }
       return data
+
+  $('.edit-qty').editable
+
+  $('.edit-units-per-qty').editable
+
+

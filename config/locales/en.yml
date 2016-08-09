@@ -145,16 +145,8 @@ en:
         service: "Service Name"
         status: "Status"
         unit_cost: "Unit Costs"
-<<<<<<< Updated upstream
-        service_rate: "Service Rate"
-=======
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-        your_cost: "Your Cost"
-=======
         service_rate: "Service Rate"
         your_cost: "Your<br>Cost"
->>>>>>> Stashed changes
         quantity_type: "Clinical Qty Type"
         subject_count: "N"
         page_select:
@@ -183,7 +175,6 @@ en:
     otf:
       header: "One Time Fee Services"
       header_fields:
-<<<<<<< Updated upstream
         service: "Service Name"
         status: "Status"
         unit_cost: "Unit Costs"
@@ -192,38 +183,9 @@ en:
         unit_type: "Unit Type #"
         qty_type: "Qty Type #"
         total_per_study: "Total Per Study"
-
-=======
-<<<<<<< Updated upstream
->>>>>>> Stashed changes
-        number: "#"
-        unit_type: "Unit Type"
-        quantity_type: "Qty Type"
-        your_cost: "Your Cost"
-        total_per_study: "Total Per Study"
-        unit_costs: "Unit Costs"
-        service_rate: "Service Rate"
-=======
-        service: "Service Name"
-        status: "Status"
-        unit_cost: "Unit Costs"
-        service_rate: "Service Rate"
-        your_cost: "Your<br>Cost"
-        unit_type: "Unit Type #"
-        qty_type: "Qty Type #"
-        total_per_study: "Total Per Study"
->>>>>>> Stashed changes
-        other_services: "Other Services"
-      details:
-        nan: "Please enter a valid number."
-        text1: "Quantity of"
-        text2: "is less than the unit minimum of"
-        text3: "Quantity is being reset to the previous value."
-        text4: "Units Per Quantity of"
-        text5: "is more than the maximum allowed of"
-        text6: "Units Per Quantity is being set to the maximum allowed value."
-      merged:
-        total_study: "Study Cost Totals"
+      editable_fields:
+        quantity: "Edit Qty"
+        unit_quantity: "Edit Units per Qty"
 
   #############
   # CONSTANTS #

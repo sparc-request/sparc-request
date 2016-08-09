@@ -21,18 +21,18 @@
   %th.col-sm-2.text-center{ colspan: 2, rowspan: 2 }
     = t(:calendars)[:otf][:header_fields][:service]
   %th.col-sm-1.text-center{ rowspan: 2 }
-    Status
+    = t(:calendars)[:otf][:header_fields][:status]
   %th.col-sm-2.text-center{ colspan: 2 }
-    Unit Costs
+    = t(:calendars)[:otf][:header_fields][:unit_cost]
   %th.col-sm-3.text-center{ colspan: 3, rowspan: 2 }
-    Unit Type #
+    = t(:calendars)[:otf][:header_fields][:unit_type]
   %th.col-sm-3.text-center{ colspan: 3, rowspan: 2 }
-    Qty Type #
+    = t(:calendars)[:otf][:header_fields][:qty_type]
   %th.col-sm-1.text-center{ colspan: 1, rowspan: 2 }
-    Total Per Study
+    = t(:calendars)[:otf][:header_fields][:total_per_study]
 
 %tr
   %th.col-sm-1.text-center
-    Service Rate
+    = t(:calendars)[:otf][:header_fields][:service_rate]
   %th.col-sm-1.text-center
-    Your Cost
+    = raw(t(:calendars)[:otf][:header_fields][:your_cost])

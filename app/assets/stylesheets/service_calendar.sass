@@ -19,11 +19,27 @@
 /* TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.*/
 .calendar-container
   .table-bordered
+    height: 100%
     thead
       tr:not(:first-child)
         border-bottom: 1px solid #ddd
       th
         border-bottom: 0
+    .maximum-total-direct-cost-per-patient,
+    .maximum-total-indirect-cost-per-patient,
+    .maximum-total-per-patient,
+    .total-per-patient-per-visit-cost-per-study
+      background: #f5f5f5
+
+    td.unit-type-number,
+    td.qty-type-number
+      height: 100%
+      padding: 0
+      div
+        height: 100%
+        padding: 8px 15px
+      div:first-child
+        border-right: 1px solid #DDD
 
 .schedule-tabs
   padding: 5px 0px 0px 0px

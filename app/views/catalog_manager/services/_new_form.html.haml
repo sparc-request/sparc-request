@@ -67,7 +67,7 @@
               %th= t(:organization_form)[:tag_list]
               %td
                 - Tag.all.each do |tag|
-                  %span{:style => "margin-right:10px;"}
+                  %span{:style => "margin-right:40px;"}
                     %span= f.label tag.name.gsub("ctrc", t(:organization_form)[:ctrc_label])
                     %span= f.check_box :tag_list, { :multiple => true }, tag.name, nil
       %br

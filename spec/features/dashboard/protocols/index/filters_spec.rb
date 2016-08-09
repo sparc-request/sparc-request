@@ -263,6 +263,28 @@ RSpec.describe "filters", js: :true do
     end
   end
 
+  describe "Owner Dropdown" do
+    it 'should only display protocols with sub service requests that have the specified service provider' do
+      person = create(:identity, first_name: "Wilson", last_name: "Fisk")
+      organization1 = create(:organization, name: 'MagikarpLLC')
+      organization2 = create(:organization, name: 'Union Allied')
+      create(:service_provider, organization: organization1, identity: user)
+      create(:service_provider, organization: organization2, identity: user)
+      create(:service_provider, organization: organization2, identity: person)
+      protocol1 = create_protocol(archived: false, short_title: 'Magikarp Protocol', organization: organization1)
+      protocol1 = create_protocol(archived: false, short_title: 'Construction', organization: organization2)
+
+      visit_protocols_index_page
+
+      wait_for_javascript_to_finish
+      @page.filter_protocols.select_owner("Fisk, Wilson")
+      @page.filter_protocols.apply_filter_button.click
+
+      expect(@page.search_results).to have_protocols(text: "Construction")
+      expect(@page.search_results).to have_no_protocols(text: "Magikarp Protocol")
+    end
+  end
+
   describe "My Admin Protocols" do
     let(:organization) { create(:organization, admin: user, name: "MegaCorp") }
 

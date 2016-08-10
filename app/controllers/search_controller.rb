@@ -24,7 +24,7 @@ class SearchController < ApplicationController
   def services
     term              = params[:term].strip
     service_request   = ServiceRequest.find(session[:service_request_id])
-    locked_ssrs       = service_request.sub_service_requests.reject{ |ssr| ssr.can_be_edited? && !ssr.is_complete?}
+    locked_ssrs       = service_request.sub_service_requests.reject{ |ssr| ssr.can_be_edited? }
     locked_org_ids    = locked_ssrs.map(&:organization_id)
     locked_child_ids  = Organization.authorized_child_organizations(locked_org_ids).map(&:id)
 

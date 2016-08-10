@@ -66,8 +66,27 @@ class Notifier < ActionMailer::Base
     mail(:to => email, :from => NO_REPLY_FROM, :subject => subject)
   end
 
+  def notify_admin(service_request, submission_email_address, xls, user_current)
+    @role = 'none'
+    @full_name = submission_email_address
+    @triggered_by = user_current.id
+
+    @protocol = service_request.protocol
+    @service_request = service_request
+    @ssrs_to_be_displayed = service_request.sub_service_requests
+
+    @portal_link = DASHBOARD_LINK + "/protocols/#{@protocol.id}"
+    @portal_text = "Administrators/Service Providers, Click Here"
+
+    attachments["service_request_#{@service_request.protocol.id}.xlsx"] = xls
+
+    email = Rails.env == 'production' ?  submission_email_address : DEFAULT_MAIL_TO
+    subject = Rails.env == 'production' ? "#{I18n.t('application_title')} service request" : "[#{Rails.env.capitalize} - EMAIL TO #{submission_email_address}] #{I18n.t('application_title')} service request"
+
+    mail(:to => email, :from => NO_REPLY_FROM, :subject => subject)
+  end
+
   def notify_service_provider service_provider, service_request, attachments_to_add, user_current, audit_report=nil, ssr_deleted=false
-    
     @role = 'none'
     @full_name = service_provider.identity.full_name
     @triggered_by = user_current.id

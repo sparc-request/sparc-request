@@ -412,12 +412,14 @@ class ServiceRequestsController < ApplicationController
     end
 
     @line_items.where(service_id: service.id).each do |li|
-      ssr = li.sub_service_request
-      if ssr.can_be_edited? && ssr.status != 'first_draft'
-        ssr.update_attribute(:status, 'draft')
-        ssr.update_past_status(current_user)
+      if li.status != 'complete'
+        ssr = li.sub_service_request
+        if ssr.can_be_edited? && ssr.status != 'first_draft'
+          ssr.update_attribute(:status, 'draft')
+          ssr.update_past_status(current_user)
+        end
+        li.destroy
       end
-      li.destroy
     end
 
     @line_items.reload
@@ -506,6 +508,7 @@ class ServiceRequestsController < ApplicationController
     else
       sub_service_requests = service_request.sub_service_requests
     end
+    send_admin_notifications(service_request, sub_service_requests, xls)
     send_service_provider_notifications(service_request, sub_service_requests, xls)
   end
 
@@ -528,6 +531,14 @@ class ServiceRequestsController < ApplicationController
   def send_service_provider_notifications(service_request, sub_service_requests, xls) #all sub-service requests on service request
     sub_service_requests.each do |sub_service_request|
       send_ssr_service_provider_notifications(service_request, sub_service_request, xls)
+    end
+  end
+
+  def send_admin_notifications(service_request, sub_service_requests, xls)
+    sub_service_requests.each do |sub_service_request|
+      sub_service_request.organization.submission_emails_lookup.each do |submission_email|
+        Notifier.notify_admin(service_request, submission_email.email, xls, current_user).deliver
+      end
     end
   end
 

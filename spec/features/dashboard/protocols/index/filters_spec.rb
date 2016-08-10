@@ -53,6 +53,32 @@ RSpec.describe "filters", js: :true do
         expect(new_filter.show_archived).to eq(true)
       end
     end
+
+    context "admin user clicks save" do
+      it "should allow admin user to save filter" do
+        organization = create(:organization, name: 'Union Allied')
+        create(:service_provider, organization_id: organization.id, identity_id: user.id)
+
+        visit_protocols_index_page
+        expect do
+          @page.instance_exec do
+            filter_protocols.archived_checkbox.click
+            filter_protocols.select_status("Active", "Complete")
+            filter_protocols.select_owner("Doe, John")
+            filter_protocols.save_link.click
+            wait_for_filter_form_modal
+            filter_form_modal.name_field.set("MyFilter")
+            filter_form_modal.save_button.click
+          end
+          expect(@page.recently_saved_filters).to have_filters(text: "MyFilter")
+        end.to change { ProtocolFilter.count }.by(1)
+
+        new_filter = ProtocolFilter.last
+        expect(new_filter.with_status).to eq(['ctrc_approved', 'complete'])
+        expect(new_filter.show_archived).to eq(true)
+        expect(new_filter.with_owner).to eq(["#{user.id}"])
+      end
+    end
   end
 
   describe "recently saved filters" do

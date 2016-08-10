@@ -86,7 +86,7 @@ $(document).ready ->
         if data["filterrific[with_organization][]"].length
           data["filterrific[with_organization][]"] = $("#filterrific_with_organization").val()
 
-        if data["filterrific[with_owner][]"].length
+        if data["filterrific[with_owner][]"] && data["filterrific[with_owner][]"].length
           data["filterrific[with_owner][]"] = $("#filterrific_with_owner").val()
 
         $.ajax

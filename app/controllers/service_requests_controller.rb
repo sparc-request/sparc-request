@@ -306,14 +306,12 @@ class ServiceRequestsController < ApplicationController
       send_notifications(@service_request, @sub_service_request)
     elsif @sub_service_request
       if to_notify.include? @sub_service_request.id
-        xls = render_to_string action: 'show', formats: [:xlsx]
-        send_ssr_service_provider_notifications(@service_request, @sub_service_request, xls)
+        send_ssr_service_provider_notifications(@service_request, @sub_service_request)
       end
     else
-      xls = render_to_string action: 'show', formats: [:xlsx]
       @service_request.sub_service_requests.each do |ssr|
         if to_notify.include? ssr.id
-          send_ssr_service_provider_notifications(@service_request, ssr, xls)
+          send_ssr_service_provider_notifications(@service_request, ssr)
         end
       end
     end
@@ -439,8 +437,7 @@ class ServiceRequestsController < ApplicationController
       ssr = @service_request.sub_service_requests.find_by_organization_id(org_id)
       if !['first_draft', 'draft'].include?(@service_request.status) and !@service_request.submitted_at.nil? and @service_request.submitted_at > ssr.created_at
         @protocol = @service_request.protocol
-        xls = @protocol.nil? ? nil : render_to_string(action: 'show', formats: [:xlsx])
-        send_ssr_service_provider_notifications(@service_request, ssr, xls, ssr_deleted=true)
+        send_ssr_service_provider_notifications(@service_request, ssr, ssr_deleted=true)
       end
       ssr.destroy
     end

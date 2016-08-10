@@ -50,7 +50,7 @@ RSpec.describe Notifier do
 
   before { add_visits }
 
-  # GET A COST ESTIMATE
+  # SUBMITTED
   before do
     service_request.update_attribute(:status, "submitted")
   end
@@ -68,6 +68,10 @@ RSpec.describe Notifier do
 
       it 'should NOT have a notes reminder message' do
         expect(mail).not_to have_xpath "//p[text()='*Note(s) are included with this submission.']"
+      end
+
+      it 'should NOT have a upon submission reminder' do
+        expect(mail).not_to have_xpath "//p[text()='*Note: upon submission, services selected to go to Epic will be sent daily at 4:30pm.']"
       end
 
       it 'should not have audited information table' do
@@ -103,6 +107,10 @@ RSpec.describe Notifier do
       it 'should NOT have a notes reminder message' do
         expect(mail.body.parts.first.body).not_to have_xpath "//p[text()='*Note(s) are included with this submission.']"
       end
+
+      it 'should have a upon submission reminder' do
+        expect(mail.body.parts.first.body).to have_xpath "//p[text()='*Note: upon submission, services selected to go to Epic will be sent daily at 4:30pm.']"
+      end
     end
 
     context 'admin' do
@@ -122,6 +130,10 @@ RSpec.describe Notifier do
 
       it 'should NOT have a notes reminder message' do
         expect(mail.body.parts.first.body).not_to have_xpath "//p[text()='*Note(s) are included with this submission.']"
+      end
+
+      it 'should NOT have a upon submission reminder' do
+        expect(mail.body.parts.first.body).not_to have_xpath "//p[text()='*Note: upon submission, services selected to go to Epic will be sent daily at 4:30pm.']"
       end
     end
   end
@@ -146,6 +158,10 @@ RSpec.describe Notifier do
         expect(mail).to have_xpath "//p[text()='*Note(s) are included with this submission.']"
       end
 
+      it 'should NOT have a upon submission reminder' do
+        expect(mail).not_to have_xpath "//p[text()='*Note: upon submission, services selected to go to Epic will be sent daily at 4:30pm.']"
+      end
+
       it 'should not have audited information table' do
         expect(mail).not_to have_xpath("//th[text()='Service']/following-sibling::th[text()='Action']")
       end
@@ -178,6 +194,10 @@ RSpec.describe Notifier do
       it 'should NOT have a notes reminder message' do
         expect(mail.body.parts.first.body).not_to have_xpath "//p[text()='*Note(s) are included with this submission.']"
       end
+
+      it 'should have a upon submission reminder' do
+        expect(mail.body.parts.first.body).to have_xpath "//p[text()='*Note: upon submission, services selected to go to Epic will be sent daily at 4:30pm.']"
+      end
     end
 
     context 'admin' do
@@ -197,6 +217,10 @@ RSpec.describe Notifier do
 
       it 'should NOT have a notes reminder message' do
         expect(mail.body.parts.first.body).to have_xpath "//p[text()='*Note(s) are included with this submission.']"
+      end
+
+      it 'should NOT have a upon submission reminder' do
+        expect(mail.body.parts.first.body).not_to have_xpath "//p[text()='*Note: upon submission, services selected to go to Epic will be sent daily at 4:30pm.']"
       end
     end
   end

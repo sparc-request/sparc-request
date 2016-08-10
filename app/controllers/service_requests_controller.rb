@@ -498,23 +498,32 @@ class ServiceRequestsController < ApplicationController
 
   # Send notifications to all users.
   def send_notifications(service_request, sub_service_request)
-    @service_list_false = service_request.service_list(false)
-    @service_list_true = service_request.service_list(true)
-    xls = render_to_string action: 'show', formats: [:xlsx]
-    send_user_notifications(service_request, xls)
+    send_user_notifications(service_request)
 
     if sub_service_request then
       sub_service_requests = [ sub_service_request ]
     else
       sub_service_requests = service_request.sub_service_requests
     end
-    send_admin_notifications(service_request, sub_service_requests, xls)
-    send_service_provider_notifications(service_request, sub_service_requests, xls)
+    send_admin_notifications(service_request, sub_service_requests)
+    send_service_provider_notifications(service_request, sub_service_requests)
   end
 
-  def send_user_notifications(service_request, xls)
+  def send_user_notifications(service_request)
     # Does an approval need to be created?  Check that the user
     # submitting has approve rights.
+    @service_list_false = service_request.service_list(false)
+    @service_list_true = service_request.service_list(true)
+
+    line_items = []
+    @service_request.sub_service_requests.each do |ssr|
+      line_items << SubServiceRequest.find(ssr).line_items
+    end
+
+    @line_items = line_items.flatten
+
+    xls = render_to_string action: 'show', formats: [:xlsx]
+
     if service_request.protocol.project_roles.detect{|pr| pr.identity_id == current_user.id}.project_rights != "approve"
       approval = service_request.approvals.create
     else
@@ -528,13 +537,25 @@ class ServiceRequestsController < ApplicationController
     end
   end
 
-  def send_service_provider_notifications(service_request, sub_service_requests, xls) #all sub-service requests on service request
+  def send_service_provider_notifications(service_request, sub_service_requests) #all sub-service requests on service request
     sub_service_requests.each do |sub_service_request|
-      send_ssr_service_provider_notifications(service_request, sub_service_request, xls)
+      send_ssr_service_provider_notifications(service_request, sub_service_request)
     end
   end
 
-  def send_admin_notifications(service_request, sub_service_requests, xls)
+  def send_admin_notifications(service_request, sub_service_requests)
+    @service_list_false = service_request.service_list(false)
+    @service_list_true = service_request.service_list(true)
+
+    line_items = []
+    @service_request.sub_service_requests.each do |ssr|
+      line_items << SubServiceRequest.find(ssr).line_items
+    end
+
+    @line_items = line_items.flatten
+
+    xls = render_to_string action: 'show', formats: [:xlsx]
+
     sub_service_requests.each do |sub_service_request|
       sub_service_request.organization.submission_emails_lookup.each do |submission_email|
         Notifier.notify_admin(service_request, submission_email.email, xls, current_user).deliver
@@ -542,12 +563,12 @@ class ServiceRequestsController < ApplicationController
     end
   end
 
-  def send_ssr_service_provider_notifications(service_request, sub_service_request, xls, ssr_deleted=false) #single sub-service request
+  def send_ssr_service_provider_notifications(service_request, sub_service_request, ssr_deleted=false) #single sub-service request
     previously_submitted_at = service_request.previous_submitted_at.nil? ? Time.now.utc : service_request.previous_submitted_at.utc
     audit_report = sub_service_request.audit_report(current_user, previously_submitted_at, Time.now.utc)
 
     sub_service_request.organization.service_providers.where("(`service_providers`.`hold_emails` != 1 OR `service_providers`.`hold_emails` IS NULL)").each do |service_provider|
-      send_individual_service_provider_notification(service_request, sub_service_request, service_provider, xls, audit_report, ssr_deleted)
+      send_individual_service_provider_notification(service_request, sub_service_request, service_provider, audit_report, ssr_deleted)
     end
   end
 
@@ -568,7 +589,7 @@ class ServiceRequestsController < ApplicationController
     return false
   end
 
-  def send_individual_service_provider_notification(service_request, sub_service_request, service_provider, xls, audit_report=nil, ssr_deleted=false)
+  def send_individual_service_provider_notification(service_request, sub_service_request, service_provider, audit_report=nil, ssr_deleted=false)
     attachments = {}
 
     @service_list_true = @service_request.service_list(true, service_provider)

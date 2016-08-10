@@ -76,7 +76,7 @@
               %th= t(:organization_form)[:tag_list] #not present in institutions
               %td
                 - Tag.where.not(name: "epic").each do |tag|
-                  %span{style: "margin-right:10px;"}
+                  %span{style: "margin-right:30px;"}
                     %span= f.label (t(:tags)[tag.name.gsub(" ", "_").to_sym] ? t(:tags)[tag.name.gsub(" ", "_").to_sym] : tag.name.humanize)
                     %span= f.check_box :tag_list, { multiple: true }, tag.name, nil
 
@@ -140,11 +140,20 @@
               %tr
                 %th= t(:organization_form)[:subsidy_max_percent]
                 %td.subsidy_percentage= f_subsidy_map.text_field :max_percentage
+
+              -if @organization.type == 'Program'
+                %tr
+                  %th= t(:organization_form)[:subsidy_default_percentage]
+                  %td.subsidy_default_percentage= f_subsidy_map.text_field :default_percentage
               %tr
                 %th= t(:organization_form)[:subsidy_max_dollar]
 
                 %td.subsidy_dollar= f_subsidy_map.text_field :max_dollar_cap, value: number_with_precision(f_subsidy_map.object.max_dollar_cap, precision: 2)
               = render 'catalog_manager/shared/excluded_funding_sources', entity: @organization
+              -if @organization.type == 'Program'
+                 %tr
+                    %th= t(:organization_form)[:subsidy_instructions]
+                    %td.subsidy_default_percentage= f_subsidy_map.text_field :instructions
 
       %fieldset.parent
         .legend= t(:organization_form)[:associated_surveys]

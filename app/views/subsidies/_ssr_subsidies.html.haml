@@ -34,7 +34,7 @@
           %td.approved_request_cost
             = number_to_currency(approved.total_at_approval/100.0)
           %td.subsidy_percent
-            = display_as_percent(approved.percent_subsidy)
+            = display_as_percent(approved.current_percent)
           %td.subsidy_contribution
             = number_to_currency(approved.pi_contribution/100.0)
           %td.subsidy_effective_current_cost
@@ -67,7 +67,7 @@
           %td.request_cost{ data: { subsidy_id: pending.id, cost: pending.total_request_cost }}
             = number_to_currency(pending.total_request_cost / 100.0)
           %td.percent_subsidy
-            = text_field_tag "percent_subsidy", display_as_percent(pending.current_percent), { class: "subsidy_input", data: { subsidy_id: pending.id, max_percentage: max_percentage, max_dollar_cap: max_dollar_cap, percent_subsidy: pending.percent_subsidy } }
+            = text_field_tag "percent_subsidy", display_as_percent(pending.current_percent), { class: "subsidy_input", data: { subsidy_id: pending.id, max_percentage: max_percentage, max_dollar_cap: max_dollar_cap, percent_subsidy: pending.current_percent } }
           %td.pi_contribution
             = text_field_tag "pi_contribution", cents_to_dollars_float(pending.pi_contribution), { class: "subsidy_input", data: { subsidy_id: pending.id, max_percentage: max_percentage, max_dollar_cap: max_dollar_cap, pi_contribution: pending.pi_contribution } }
           %td.subsidy_cost{ data: { subsidy_id: pending.id, cost: pending.current_cost }}

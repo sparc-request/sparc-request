@@ -84,6 +84,10 @@ textarea {
 
 .export-consolidated-request {
   display: inline-block;
+
+  a {
+    margin-left: 5px;
+  }
 }
 
 .service-requests-table {

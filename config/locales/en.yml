@@ -206,6 +206,7 @@ en:
   # DOCUMENTS #
   #############
   documents:
+    none: "No Documents Found"
     add: "Add a Document"
     edit: "Edit Document"
     created: "Document Uploaded!"

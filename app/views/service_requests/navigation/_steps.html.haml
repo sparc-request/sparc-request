@@ -22,20 +22,15 @@
     .steps-banner-container
       %ul#steps-banner
         %li
-          = link_to raw(t(:proper)[:navigation][:steps][:step1]), 'javascript:void(0)', class: 'btn step-btn step-btn-blue'
-          .right-arrow.right-arrow-blue
+          = step_nav_button(t(:proper)[:navigation][:steps][:step1], 'blue', protocol_service_request_path(service_request))
         %li
-          = link_to raw(t(:proper)[:navigation][:steps][:step2]), 'javascript:void(0)', class: 'btn step-btn step-btn-light-blue'
-          .right-arrow.right-arrow-light-blue
+          = step_nav_button(t(:proper)[:navigation][:steps][:step2], 'light-blue', service_details_service_request_path(service_request))
         %li
-          = link_to raw(t(:proper)[:navigation][:steps][:step3]), 'javascript:void(0)', class: 'btn step-btn step-btn-orange'
-          .right-arrow.right-arrow-orange
+          = step_nav_button(t(:proper)[:navigation][:steps][:step3], 'orange',document_management_service_request_path(service_request))
         %li
-          = link_to raw(t(:proper)[:navigation][:steps][:step4]), 'javascript:void(0)', class: 'btn step-btn step-btn-red'
-          .right-arrow.right-arrow-red
+          = step_nav_button(t(:proper)[:navigation][:steps][:step4], 'red',review_service_request_path(service_request))
         %li
-          = link_to raw(t(:proper)[:navigation][:steps][:step5]), 'javascript:void(0)', class: 'btn step-btn step-btn-green'
-          .right-arrow.right-arrow-green
+          = step_nav_button(t(:proper)[:navigation][:steps][:step5], 'green',confirmation_service_request_path(service_request))
 .col-sm-12.ui-corner-all.step-header{ class: css_class }
   %h4
     = step

@@ -39,41 +39,47 @@
           width: 20%
         li:first-child
           z-index: 5
-          left: 64px
+          left: 68px
         li:nth-child(2)
           z-index: 4
-          left: 32px
+          left: 34px
         li:nth-child(3)
           z-index: 3
         li:nth-child(4)
           z-index: 2
-          right: 32px
+          right: 34px
         li:nth-child(5)
           z-index: 1
-          right: 64px
+          right: 68px
       @media (max-width: 768px)
         li
           width: 100%
       li
-        display: flex
+        a:focus
+          outline: 0
+        a:hover
+          text-decoration: none
         a
-          width: 80%
-          margin-top: auto
-          margin-bottom: auto
-          color: white
-          border-radius: 0
-          outline: none
-          box-shadow: 0 0 0
-          font-size: 13px
-
-      .right-arrow
-        width: 0
-        height: 0
-        border-top: 50px solid transparent
-        border-bottom: 50px solid transparent
-        border-left: 45px solid
-      .right-arrow:hover
-        cursor: pointer
+          display: flex
+          width: 100%
+          .step-text
+            padding: 8px 0
+            width: 80%
+            margin-top: auto
+            margin-bottom: auto
+            color: white
+            border-radius: 0
+            outline: none
+            box-shadow: 0 0 0
+            font-size: 13px
+          .right-arrow
+            width: 0
+            height: 0
+            border-top: 50px solid transparent
+            border-bottom: 50px solid transparent
+            border-left: 45px solid
+          .right-arrow:hover
+            cursor: pointer
 
       .step-btn-blue
         background: $sparc-blue
@@ -97,25 +103,25 @@
         background: $sparc-green-hover
 
       .right-arrow-blue
-        border-left-color: $sparc-blue
+        border-left-color: $sparc-blue !important
       .right-arrow-blue.hover
-        border-left-color: $sparc-blue-hover
+        border-left-color: $sparc-blue-hover !important
       .right-arrow-light-blue
-        border-left-color: $sparc-light-blue
+        border-left-color: $sparc-light-blue !important
       .right-arrow-light-blue.hover
-        border-left-color: $sparc-light-blue-hover
+        border-left-color: $sparc-light-blue-hover !important
       .right-arrow-orange
-        border-left-color: $sparc-orange
+        border-left-color: $sparc-orange !important
       .right-arrow-orange.hover
-        border-left-color: $sparc-orange-hover
+        border-left-color: $sparc-orange-hover !important
       .right-arrow-red
-        border-left-color: $sparc-red
+        border-left-color: $sparc-red !important
       .right-arrow-red.hover
-        border-left-color: $sparc-red-hover
+        border-left-color: $sparc-red-hover !important
       .right-arrow-green
-        border-left-color: $sparc-green
+        border-left-color: $sparc-green !important
       .right-arrow-green.hover
-        border-left-color: $sparc-green-hover
+        border-left-color: $sparc-green-hover !important
 
 .step-header
   color: white

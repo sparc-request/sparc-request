@@ -41,7 +41,7 @@
               = t(:dashboard)[:service_requests][:view_ssr][:documents][:header]
           - if sub_service_request.documents.empty?
             .panel-body
-              = render 'shared/alert', message: t(:dashboard)[:service_requests][:view_ssr][:documents][:none]
+              = render 'shared/alert', message: t(:documents)[:none]
           - else
             %table.table.table-striped
               %thead

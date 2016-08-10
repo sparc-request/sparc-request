@@ -20,20 +20,10 @@
 
 $(document).ready ->
 
-  $(document).on('mouseenter, focus', '.step-btn', ->
-    $(this).addClass('hover')
-    $(this).siblings('.right-arrow').addClass('hover')
-  ).on('mouseleave, focusout', '.step-btn', ->
-    $(this).removeClass('hover')
-    $(this).siblings('.right-arrow').removeClass('hover')
-  )
-
-  $(document).on('mouseenter, focus', '.right-arrow', ->
-    $(this).addClass('hover')
-    $(this).siblings('.step-btn').addClass('hover')
-  ).on('mouseleave, focusout', '.right-arrow', ->
-    $(this).removeClass('hover')
-    $(this).siblings('.step-btn').removeClass('hover')
+  $(document).on('mouseenter focus', '.step-btn', ->
+    $(this).children().addClass('hover')
+  ).on('mouseleave focusout', '.step-btn', ->
+    $(this).children().removeClass('hover')
   )
   
   $('.navigation_link').live 'click', ->

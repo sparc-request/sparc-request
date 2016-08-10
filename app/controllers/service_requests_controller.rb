@@ -24,11 +24,11 @@ class ServiceRequestsController < ApplicationController
   respond_to :js, :json, :html
 
   before_filter :initialize_service_request,      except: [:approve_changes, :get_help, :feedback]
+  before_filter :validate_step,                   only:   [:protocol, :service_details, :service_calendar, :service_subsidy, :document_management, :review, :obtain_research_pricing, :confirmation]
   before_filter :authorize_identity,              except: [:approve_changes, :get_help, :feedback, :show]
   before_filter :authenticate_identity!,          except: [:catalog, :add_service, :remove_service, :ask_a_question, :get_help, :feedback]
   before_filter :authorize_protocol_edit_request, only:   [:catalog]
   before_filter :prepare_catalog,                 only:   [:catalog]
-  before_filter :validate_step,                   only:   [:protocol, :service_details, :service_calendar, :service_subsidy, :document_management, :review, :obtain_research_pricing, :confirmation]
   before_filter :setup_navigation
 
   before_filter :check_for_subsidy,               only:   [:service_subsidy, :document_management]
@@ -420,19 +420,19 @@ class ServiceRequestsController < ApplicationController
   def validate_step
     case action_name
     when 'protocol'
-      redirect_to catalog_service_request_path(@service_request) unless @service_request.group_valid?(:catalog)
+      redirect_to catalog_service_request_path(@service_request) and return unless @service_request.group_valid?(:catalog)
     when -> (n) { ['service_details', 'save_and_exit'].include?(n) }
-      redirect_to catalog_service_request_path(@service_request) unless @service_request.group_valid?(:catalog)
-      redirect_to protocol_service_request_path(@service_request) unless @service_request.group_valid?(:protocol)
+      redirect_to catalog_service_request_path(@service_request) and return unless @service_request.group_valid?(:catalog)
+      redirect_to protocol_service_request_path(@service_request) and return unless @service_request.group_valid?(:protocol)
     when 'service_calendar'
-      redirect_to catalog_service_request_path(@service_request) unless @service_request.group_valid?(:catalog)
-      redirect_to protocol_service_request_path(@service_request) unless @service_request.group_valid?(:protocol)
-      redirect_to service_details_service_request_path(@service_request) unless @service_request.group_valid?(:service_details)
+      redirect_to catalog_service_request_path(@service_request) and return unless @service_request.group_valid?(:catalog)
+      redirect_to protocol_service_request_path(@service_request) and return unless @service_request.group_valid?(:protocol)
+      redirect_to service_details_service_request_path(@service_request) and return unless @service_request.group_valid?(:service_details)
     else
-      redirect_to catalog_service_request_path(@service_request) unless @service_request.group_valid?(:catalog)
-      redirect_to protocol_service_request_path(@service_request) unless @service_request.group_valid?(:protocol)
-      redirect_to service_details_service_request_path(@service_request) unless @service_request.group_valid?(:service_details)
-      redirect_to service_calendar_service_request_path(@service_request) unless @service_request.group_valid?(:service_calendar)
+      redirect_to catalog_service_request_path(@service_request) and return unless @service_request.group_valid?(:catalog)
+      redirect_to protocol_service_request_path(@service_request) and return unless @service_request.group_valid?(:protocol)
+      redirect_to service_details_service_request_path(@service_request) and return unless @service_request.group_valid?(:service_details)
+      redirect_to service_calendar_service_request_path(@service_request) and return unless @service_request.group_valid?(:service_calendar)
     end
   end
 

@@ -21,7 +21,7 @@
   .panel.panel-default
     .panel-heading
       %h3.panel-title
-        = t(:calendar_page)[:headers][:services]
+        = t(:calendars)[:otf][:header]
     %table{ class: "table table-bordered" }
       %thead
         = render 'dashboard/service_calendars/master_calendar/otf/otf_header', service_request: service_request,  tab: tab, portal: portal, sub_service_request: sub_service_request, review: review, merged: merged

@@ -210,7 +210,6 @@ en:
           role: "Role"
           rights: "Proxy Rights"
         services:
-          header: "Services"
           none: "There are no services associated with this protocol."
 
     ######################
@@ -229,8 +228,6 @@ en:
         edit: "Edit"
         admin_edit: "Admin Edit"
       view_ssr:
-        services:
-          none: "No Services"
         documents:
           header: "Documents"
           none: "No Documents"

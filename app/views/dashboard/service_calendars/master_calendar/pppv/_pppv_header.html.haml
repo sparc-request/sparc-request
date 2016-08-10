@@ -22,10 +22,10 @@
     = t(:calendars)[:pppv][:header_fields][:service]
 
   - if tab == 'calendar'
-    %th.col-sm-2.text-center{ rowspan: 2 }
+    %th.col-sm-1.text-center{ rowspan: 2 }
       = t(:calendars)[:pppv][:header_fields][:status]
     %th.col-sm-1.text-center{ rowspan: 2 }
-      = t(:calendars)[:pppv][:header_fields][:your_cost]
+      = raw(t(:calendars)[:pppv][:header_fields][:your_cost])
     %th.col-sm-1.text-center{ rowspan: 2 }
       = t(:calendars)[:pppv][:header_fields][:quantity_type]
   - else
@@ -54,7 +54,7 @@
     %th.col-sm-1.text-center
       = t(:calendars)[:pppv][:header_fields][:service_rate]
     %th.col-sm-1.text-center
-      = t(:calendars)[:pppv][:header_fields][:your_cost]
+      = raw(t(:calendars)[:pppv][:header_fields][:your_cost])
   = render 'dashboard/service_calendars/visit_groups', service_request: service_request, arm: arm, visit_groups: visit_groups, tab: tab
 
 

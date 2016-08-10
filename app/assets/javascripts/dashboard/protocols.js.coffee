@@ -158,11 +158,8 @@ $(document).ready ->
         with_status       = $('#with_status').val()
         with_organization = $('#with_organization').val()
         admin_filter      = $('#admin_filter').val()
-        sort_name         = $(this).data('sort-name')
-        sort_order        = $(this).data('sort-order')
-        sorted_by         = "#{sort_name}_#{sort_order}"
+        sorted_by         = "#{$(this).data('sort-name')} #{$(this).data('sort-order')}"
         page              = parseInt($('.pagination li.active span').prop('textContent')) || 1
-        new_sort_order    = if $(this).data('sort-order') == 'asc' then 'desc' else 'asc'
         data = 
           'page': page
           'filterrific':
@@ -176,7 +173,3 @@ $(document).ready ->
           type: 'get'
           url: "/dashboard/protocols.js"
           data: data
-          success: ->
-            $(".protocol-sort[name='#{sort_name}']").data('sort-order', new_sort_order)
-            $(".protocol-sort[name='#{sort_name}']").children(".#{sort_order}").addClass('sort-active')
-            $(".protocol-sort[name='#{sort_name}']").children(".#{new_sort_order}").removeClass('sort-active')

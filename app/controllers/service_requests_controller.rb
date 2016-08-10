@@ -511,13 +511,7 @@ class ServiceRequestsController < ApplicationController
     # submitting has approve rights.
     @service_list_false = service_request.service_list(false)
     @service_list_true = service_request.service_list(true)
-
-    line_items = []
-    @service_request.sub_service_requests.each do |ssr|
-      line_items << SubServiceRequest.find(ssr).line_items
-    end
-
-    @line_items = line_items.flatten
+    @line_items = @service_request.line_items
 
     xls = render_to_string action: 'show', formats: [:xlsx]
 
@@ -543,13 +537,7 @@ class ServiceRequestsController < ApplicationController
   def send_admin_notifications(service_request, sub_service_requests)
     @service_list_false = service_request.service_list(false)
     @service_list_true = service_request.service_list(true)
-
-    line_items = []
-    @service_request.sub_service_requests.each do |ssr|
-      line_items << SubServiceRequest.find(ssr).line_items
-    end
-
-    @line_items = line_items.flatten
+    @line_items = @service_request.line_items
 
     xls = render_to_string action: 'show', formats: [:xlsx]
 

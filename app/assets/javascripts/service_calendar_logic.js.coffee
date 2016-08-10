@@ -83,7 +83,11 @@ $(document).ready ->
       return data
 
   $('.edit-qty').editable
+    params: (params) ->
+      data = 'line_item': { 'quantity': params.value }
+      return data
 
   $('.edit-units-per-qty').editable
-
-
+    params: (params) ->
+      data = 'line_item': { 'units_per_quantity': params.value }
+      return data

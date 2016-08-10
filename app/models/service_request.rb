@@ -36,46 +36,22 @@ class ServiceRequest < ActiveRecord::Base
   
   after_save :set_original_submitted_date
 
+  validation_group :catalog do
+    validate :validate_line_items
+  end
+
   validation_group :protocol do
     validate :validate_line_items
     validate :validate_protocol
   end
 
   validation_group :service_details do
-    validate :validate_line_items
     validate :validate_service_details
+    validate :validate_arms
   end
 
   validation_group :service_calendar do
-    #insert group specific validation
-    validate :service_calendar_forward
-  end
-
-  validation_group :service_calendar_back do
-    validate :service_calendar_back
-  end
-
-  validation_group :calendar_totals do
-  end
-
-  validation_group :service_subsidy do
-    #insert group specific validation
-  end
-
-  validation_group :document_management do
-    #insert group specific validation
-  end
-
-  validation_group :review do
-    #insert group specific validation
-  end
-
-  validation_group :obtain_research_pricing do
-    #insert group specific validation
-  end
-
-  validation_group :confirmation do
-    #insert group specific validation
+    validate :validate_service_calendar
   end
 
   attr_accessible :protocol_id
@@ -127,18 +103,13 @@ class ServiceRequest < ActiveRecord::Base
     end
   end
 
-  def service_calendar_back
-    service_calendar_page('back')
+  def validate_arms
+    if has_per_patient_per_visit_services? && protocol && protocol.arms.empty?
+      errors.add(:base, I18n.t(:errors)[:service_requests][:arms_missing])
+    end
   end
 
-  def service_calendar_forward
-    service_calendar_page('forward')
-  end
-
-  def service_calendar_page(direction)
-    return if direction == 'back' && ((status == 'first_draft') || (status == 'draft' && !submitted_at.present?))
-    return unless has_per_patient_per_visit_services?
-
+  def validate_service_calendar
     if USE_EPIC
       self.arms.each do |arm|
         days = arm.visit_groups.map(&:day)
@@ -147,24 +118,8 @@ class ServiceRequest < ActiveRecord::Base
         invalid_day_errors = false
 
         unless days.all?{|x| !x.blank?}
-          errors.add(:visit_group, "Please specify a study day for each visit on (#{arm.name}).")
+          errors.add(:base, I18n.t('errors.arms.visit_day_missing', arm_name: arm.name))
           visit_group_errors = true
-        end
-
-        unless days.all?{|day| day.is_a? Fixnum}
-          errors.add(:invalid_day, "Please enter a valid number for each study day (#{arm.name}).")
-          invalid_day_errors = true
-        end
-
-        errors.add(:out_of_order, "Please make sure study days are in sequential order (#{arm.name}).") unless visit_group_errors or invalid_day_errors or days.each_cons(2).all?{|i,j| i <= j}
-
-        unless visit_group_errors
-          day_entries = Hash.new(0)
-          days.each do |day|
-            day_entries[day] += 1
-          end
-
-          errors.add(:duplicate_days, "Visits can not have the same study day (#{arm.name}).") unless day_entries.values.all?{|count| count == 1}
         end
       end
     end

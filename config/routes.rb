@@ -116,7 +116,8 @@ SparcRails::Application.routes.draw do
       post 'toggle_calendar_column'
     end
   end
-    
+  
+  resources :line_items, only: [:update]
   resources :visit_groups, only: [:update]
 
   resources :documents, only: [:index, :new, :create, :edit, :update, :destroy]

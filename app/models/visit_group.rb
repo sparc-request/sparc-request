@@ -51,12 +51,6 @@ class VisitGroup < ActiveRecord::Base
              numericality: { only_integer: true }, allow_blank: true
 
   validate :day_must_be_in_order if Proc.new { |vg| vg.day.present? }
-  
-  # with_options if: :day? do |vg|
-  #   # with respect to the other VisitGroups associated with the same arm
-  #   vg.validate :day_must_be_in_order
-  #   vg.validates :day, numericality: { only_integer: true }
-  # end
 
   def set_arm_edited_flag_on_subjects
     self.arm.set_arm_edited_flag_on_subjects
@@ -94,6 +88,7 @@ class VisitGroup < ActiveRecord::Base
 
 
   private
+  
   def remove_appointments
     appointments = self.appointments
     appointments.each do |app|

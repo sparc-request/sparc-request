@@ -56,8 +56,9 @@ class LineItem < ActiveRecord::Base
   validates :service_id, numericality: true, presence: true
   validates :service_request_id, numericality:  true
 
-  validates :quantity, numericality: true, on: :update, if: Proc.new { |li| li.service.one_time_fee }
+  validates :quantity, numericality: { only_integer: true }, on: :update, if: Proc.new { |li| li.service.one_time_fee }
   validate :quantity_must_be_smaller_than_max_and_greater_than_min, on: :update, if: Proc.new { |li| li.service.one_time_fee }
+  validates :units_per_quantity, numericality: { only_integer: true, greater_than_or_equal_to: 0 }, on: :update, if: Proc.new { |li| li.service.one_time_fee }
 
   after_destroy :remove_procedures
 

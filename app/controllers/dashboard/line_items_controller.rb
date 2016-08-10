@@ -73,7 +73,7 @@ class Dashboard::LineItemsController < Dashboard::BaseController
     @otf = @line_item.service.one_time_fee
     if @line_item.update_attributes(params[:line_item])
       if @otf
-      flash[:success] = t(:dashboard)[:study_level_activities][:updated]
+        flash[:success] = t(:dashboard)[:study_level_activities][:updated]
       else
         render nothing: true
       end

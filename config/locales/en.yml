@@ -171,7 +171,7 @@ en:
         maximum_direct: "Maximum Total Direct Costs Per Patient"
         maximum_indirect: "Maximum Total Indirect Costs Per Patient"
         maximum_per_patient: "Maximum Total Per Patient"
-        total_costs: "Total Costs (Per Patient/Visit Services) Per Study -- %{arm_name}"
+        total_costs: "Total Costs (Per Patient/Visit Services) Per Study"
     otf:
       header: "One Time Fee Services"
       header_fields:
@@ -186,6 +186,8 @@ en:
       editable_fields:
         quantity: "Edit Qty"
         unit_quantity: "Edit Units per Qty"
+      totals:
+        total_direct: "Total Costs (One Time Fee Services) Per Study"
 
   #############
   # CONSTANTS #
@@ -226,6 +228,8 @@ en:
   # VALIDATION ERROR MESSAGES #
   #############################
   errors:
+    arms:
+      visit_day_missing: "Please specify a study day for each visit (%{arm_name})"
     line_items_visits:
       subject_count_invalid: "Subject Count cannot exceed the Arm Subject Count (%{arm_subject_count})"
     protocols:
@@ -233,9 +237,10 @@ en:
       end_date_missing: "End Date can\'t be blank"
       date_range_invalid: "Start Date must come before End Date"
     service_requests:
+      line_items_missing: "No Services have been detected in your Cart. Please return to the Catalog and add Services before continuing"
       protocol_missing: "You must create a Protocol before continuing"
       protocol_errors: "The selected Protocol has errors which must be fixed. Please edit the Protocol before continuing"
-      line_items_missing: "No Services have been detected in your Cart. Please return to the Catalog and add Services before continuing"
+      arms_missing: "You must create Arms before proceeding to the Service Calendar"
 
   ##########
   # MODELS #

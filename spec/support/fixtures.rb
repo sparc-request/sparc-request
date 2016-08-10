@@ -169,7 +169,7 @@ def build_service_request
   let!(:core_16)             { create(:core, parent_id: program.id, abbreviation: "Lab and Biorepository") }
   let!(:core_15)             { create(:core, parent_id: program.id, abbreviation: "Imaging") }
   let!(:core_62)             { create(:core, parent_id: program.id, abbreviation: "PWF Services") }
-  let!(:sub_service_request) { create(:sub_service_request, ssr_id: "0001", service_request_id: service_request.id, organization_id: program.id,status: "draft")}
+  let!(:sub_service_request) { create(:sub_service_request, ssr_id: "0001", service_request_id: service_request.id, organization_id: program.id,status: "draft", org_tree_display: "SCTR1/Office of Biomedical Informatics")}
 
 
   before :each do

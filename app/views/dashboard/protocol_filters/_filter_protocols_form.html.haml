@@ -61,6 +61,10 @@
             = form.select :sorted_by, filterrific.select_options[:sorted_by], {}, class: 'form-control selectpicker sort-select'
         - if admin
           %hr
+          .form-group.row
+            = form.label :with_owner, t(:dashboard)[:protocol_filters][:service_providers], class: 'col-lg-3 control-label'
+            .col-lg-9
+              = form.select :with_owner, filterrific.select_options[:with_owner], {}, class: "form-control selectpicker owner-select", multiple: true, data: { none_selected_text: t(:constants)[:prompts][:any] }
           .form-group.row.identity-protocols
             = form.label :admin_filter, t(:dashboard)[:protocol_filters][:my_protocols], class: 'col-lg-10 control-label'
             .col-lg-2

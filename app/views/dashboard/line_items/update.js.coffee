@@ -22,7 +22,7 @@
 $("#modal_errors").html("<%= escape_javascript(render(partial: 'shared/modal_errors', locals: {errors: @errors})) %>")
 <% unless @errors %>
 $("#study-level-activities-table").bootstrapTable 'refresh', {silent: true};
-$(".table").html("<%= escape_javascript(render(sub_service_requests/header')) %>");
+$(".table").html("<%= escape_javascript(render('sub_service_requests/header')) %>");
 $("#modal_place").modal 'hide';
 <% end %>
 <% end %>

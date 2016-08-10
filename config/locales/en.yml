@@ -417,6 +417,7 @@ en:
       header: "Filter Protocols"
       archived: "Archived"
       status: "Status"
+      service_providers: "Owner"
       my_protocols: "My Protocols"
       my_admin_protocols: "My Admin Protocols"
       organization: "Organization"
@@ -691,7 +692,7 @@ en:
             to: "Status Changed To"
             by: "Changed by"
           approval:
-            header: "Approval History"
+            header: "Administrative Approvals History"
             date: "Date Approved"
             type: "Type"
             by: "Approved By"
@@ -938,7 +939,7 @@ en:
     core: "Core"
     cpt_code: "CPT Code"
     css_class: "Color"
-    ctrc_label: "Nexus"
+    ctrc_label: "Administrative Approvals"
     default_statuses: "Default Statuses:"
     description: "Description"
     disabled: "Do not display in SPARC"
@@ -1474,7 +1475,7 @@ en:
     color_blank: "Select a Color"
     errors: "Effective Date, Display Dates, Percent of Fee, and Rates are required on all pricing setups."
     show_in_cwf: "Show in Fulfillment"
-    ctrc_label: "Nexus"
+    ctrc_label: "Administrative Approvals"
 
   # Indirect cost rates, default values used to prepopulate forms
   indirect_cost_rates:
@@ -2053,7 +2054,7 @@ en:
 
   # Tag label overrides
   tags:
-    ctrc: "Nexus"
+    ctrc: "Administrative Approvals"
     clinical_work_fulfillment: "Fulfillment"
     ctrc_clinical_services: "Nexus clinical services"
 

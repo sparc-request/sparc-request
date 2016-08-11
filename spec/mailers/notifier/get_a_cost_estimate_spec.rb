@@ -67,23 +67,16 @@ RSpec.describe Notifier do
                                                                         xls,
                                                                         identity,
                                                                         audit) }
+    it 'should display service provider intro message and link' do
+      get_a_cost_estimate_intro_for_service_providers
+    end
+
     it 'should render default tables' do
       assert_notification_email_tables_for_service_provider
     end
 
     it 'should NOT have a notes reminder message' do
-      expect(mail).not_to have_xpath "//p[text()='*Note(s) are included with this submission.']"
-    end
-
-    it 'should not have audited information table' do
-      expect(mail).not_to have_xpath("//th[text()='Service']/following-sibling::th[text()='Action']")
-    end
-
-    it 'should have audited information table' do
-      expect(mail).to have_xpath("//table//strong[text()='Protocol Arm Information']")
-      service_request.arms.each do |arm|
-        expect(mail).to have_xpath("//td[text()='#{arm.name}']/following-sibling::td[text()='#{arm.subject_count}']/following-sibling::td[text()='#{arm.visit_count}']")
-      end
+      get_a_cost_estimate_does_not_have_notes(mail)
     end
   end
 
@@ -102,16 +95,16 @@ RSpec.describe Notifier do
                                                             approval,
                                                             identity
                                                             ) }
+    it 'should have user intro message' do
+      get_a_cost_estimate_intro_for_general_users
+    end
+
     it 'should render default tables' do
       assert_notification_email_tables_for_user
     end
 
-    it 'should have Arm information table' do
-      expect(mail.body.parts.first.body).to have_xpath("//table//strong[text()='Protocol Arm Information']")
-    end
-
     it 'should NOT have a notes reminder message' do
-      expect(mail.body.parts.first.body).not_to have_xpath "//p[text()='*Note(s) are included with this submission.']"
+      get_a_cost_estimate_does_not_have_notes(mail.body.parts.first.body)
     end
   end
 
@@ -127,16 +120,16 @@ RSpec.describe Notifier do
                                                               submission_email_address,
                                                               xls,
                                                               identity) }
+    it 'should display admin intro message and link' do
+      get_a_cost_estimate_intro_for_admin
+    end
+
     it 'should render default tables' do
       assert_notification_email_tables_for_admin
     end
 
-    it 'should have Arm information table' do
-      expect(mail.body.parts.first.body).to have_xpath("//table//strong[text()='Protocol Arm Information']")
-    end
-
     it 'should NOT have a notes reminder message' do
-      expect(mail.body.parts.first.body).not_to have_xpath "//p[text()='*Note(s) are included with this submission.']"
+      get_a_cost_estimate_does_not_have_notes(mail.body.parts.first.body)
     end
   end
 end

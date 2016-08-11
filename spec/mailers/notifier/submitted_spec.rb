@@ -101,6 +101,7 @@ RSpec.describe Notifier do
       end
 
       it 'should have Arm information table' do
+        binding.pry
         expect(mail.body.parts.first.body).to have_xpath("//table//strong[text()='Protocol Arm Information']")
       end
 

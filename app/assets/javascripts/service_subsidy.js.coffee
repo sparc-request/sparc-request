@@ -58,6 +58,8 @@ $(document).ready ->
     total_request_cost = parseFloat($(".request_cost[data-subsidy-id='#{subsidy_id}']").data("cost")) / 100.0
     percent_subsidy = (recalculate_percent_subsidy(total_request_cost, pi_contribution) * 100).toFixed(2)
     original_pi_contribution = recalculate_pi_contribution(total_request_cost, percent_subsidy_subsidy)
+    console.log(pi_contribution)
+    console.log(percent_subsidy)
 
     if parseFloat(percent_subsidy) > parseFloat(max_percent)
       message = "The Percent Subsidy cannot be greater than the max percent of #{max_percent}."
@@ -100,6 +102,8 @@ $(document).ready ->
     total_request_cost = parseFloat($(".request_cost[data-subsidy-id='#{subsidy_id}']").data("cost")) / 100.0
     pi_contribution = recalculate_pi_contribution(total_request_cost, percent_subsidy)
     original_subsidy = recalculate_percent_subsidy(total_request_cost, original_pi_contribution)
+    console.log(pi_contribution)
+    console.log(percent_subsidy)
 
     if (parseFloat(percent_subsidy * 100)) > parseFloat(max_percent)
       message = "The Percent Subsidy cannot be greater than the max percent of #{max_percent}."

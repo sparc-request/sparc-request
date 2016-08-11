@@ -20,10 +20,11 @@
 - status_tab = tab == 'status_changes'
 - approval_tab = tab == 'approval_changes'
 - subsidy_tab = tab == 'subsidy_changes'
-%button.btn.history_button#status_history_button{ class: status_tab ? 'btn-primary' : 'btn-default', disabled: status_tab, data: { table: "status_changes", sub_service_request_id: sub_service_request.id } } 
+%button.btn.history_button#status_history_button{ class: status_tab ? 'btn-primary' : 'btn-default', disabled: status_tab, data: { table: "status_changes", sub_service_request_id: sub_service_request.id } }
   = t(:dashboard)[:sub_service_requests][:tabs][:history][:status][:header]
-%button.btn.history_button#approval_history_button{ class: approval_tab ? 'btn-primary' : 'btn-default', disabled: approval_tab, data: { table: "approval_changes", sub_service_request_id: sub_service_request.id } } 
-  = t(:dashboard)[:sub_service_requests][:tabs][:history][:approval][:header]
+- if @sub_service_request.organization.tag_list.include?('ctrc')
+  %button.btn.history_button#approval_history_button{ class: approval_tab ? 'btn-primary' : 'btn-default', disabled: approval_tab, data: { table: "approval_changes", sub_service_request_id: sub_service_request.id } }
+    = t(:dashboard)[:sub_service_requests][:tabs][:history][:approval][:header]
 - if sub_service_request.eligible_for_subsidy?
   %button.btn.history_button#subsidy-history-button{ class: subsidy_tab ? 'btn-primary' : 'btn-default', disabled: subsidy_tab, data: { table: "subsidy_changes", sub_service_request_id: sub_service_request.id } }
     = t(:dashboard)[:sub_service_requests][:tabs][:history][:subsidy][:header]

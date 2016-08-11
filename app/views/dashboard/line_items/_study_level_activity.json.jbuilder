@@ -8,5 +8,5 @@ json.quantity_type line_item.service.current_effective_pricing_map.quantity_type
 json.cost sla_cost_display(line_item)
 json.date_started format_date(line_item.in_process_date)
 json.date_completed format_date(line_item.complete_date)
-json.options sla_options_buttons(line_item.id)
+json.options sla_options_buttons(line_item)
 json.fulfillments_button fulfillments_drop_button(line_item.id)

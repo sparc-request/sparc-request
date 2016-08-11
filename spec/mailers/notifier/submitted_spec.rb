@@ -54,7 +54,10 @@ RSpec.describe Notifier do
   before do
     service_request.update_attribute(:status, "submitted")
   end
+
+  ############# WITHOUT NOTES #########################
   context 'without notes' do
+
     context 'service_provider' do
       let(:xls)                     { Array.new }
       let(:mail)                    { Notifier.notify_service_provider(service_provider,
@@ -62,8 +65,9 @@ RSpec.describe Notifier do
                                                                           xls,
                                                                           identity,
                                                                           audit) }
-      it 'should display service provider intro message and link' do
-        submitted_intro_for_service_providers_and_admin
+      # Expected service provider message is defined under submitted_service_provider_and_admin_message
+      it 'should display service provider intro message, conclusion, link, and should not display acknowledgments' do
+        submitted_intro_for_service_providers_and_admin(mail)
       end
 
       it 'should render default tables' do
@@ -90,7 +94,8 @@ RSpec.describe Notifier do
                                                               approval,
                                                               identity
                                                               ) }
-      it 'should have user intro message' do
+      # Expected user message is defined under submitted_general_users_message
+      it 'should have user intro message, conclusion, and acknowledgments' do
         submitted_intro_for_general_users
       end
 
@@ -105,14 +110,17 @@ RSpec.describe Notifier do
     end
 
     context 'admin' do
+
       let(:xls)                       { ' ' }
       let(:submission_email_address)  { 'success@musc.edu' }
       let(:mail)                      { Notifier.notify_admin(service_request,
                                                                 submission_email_address,
                                                                 xls,
                                                                 identity) }
-      it 'should display admin intro message and link' do
-        submitted_intro_for_service_providers_and_admin
+
+      # Expected admin message is defined under submitted_service_provider_and_admin_message
+      it 'should display admin intro message, conclusion, link, and should not display acknowledgments' do
+        submitted_intro_for_service_providers_and_admin(mail.body.parts.first.body)
       end
 
       it 'should render default tables' do
@@ -125,12 +133,16 @@ RSpec.describe Notifier do
       end
     end
   end
+
+  ############# WITH NOTES #########################
   context 'with notes' do
+
     before do
       create(:note_without_validations,
             identity_id:  identity.id, 
             notable_id: service_request.id)
     end
+
     context 'service_provider' do
       let(:xls)                     { Array.new }
       let(:mail)                    { Notifier.notify_service_provider(service_provider,
@@ -138,6 +150,11 @@ RSpec.describe Notifier do
                                                                           xls,
                                                                           identity,
                                                                           audit) }
+      # Expected service provider message is defined under submitted_service_provider_and_admin_message
+      it 'should display admin intro message, conclusion, link, and should not display acknowledgments' do
+        submitted_intro_for_service_providers_and_admin(mail)
+      end
+
       it 'should render default tables' do
         assert_notification_email_tables_for_service_provider
       end
@@ -151,6 +168,7 @@ RSpec.describe Notifier do
         expect(mail).not_to have_xpath("//th[text()='Service']/following-sibling::th[text()='Action']")
       end
     end
+
     context 'users' do
       let(:xls)                     { ' ' }
       let(:project_role)            { service_request.protocol.project_roles.select{ |role| role.project_rights != 'none' && !role.identity.email.blank? }.first }
@@ -161,6 +179,11 @@ RSpec.describe Notifier do
                                                               approval,
                                                               identity
                                                               ) }
+      # Expected user message is defined under submitted_general_users_message
+      it 'should have user intro message, conclusion, and acknowledgments' do
+        submitted_intro_for_general_users
+      end
+
       it 'should render default tables' do
         assert_notification_email_tables_for_user
       end
@@ -178,6 +201,11 @@ RSpec.describe Notifier do
                                                                 submission_email_address,
                                                                 xls,
                                                                 identity) }
+      # Expected service provider message is defined under submitted_service_provider_and_admin_message
+      it 'should display admin intro message, conclusion, link, and should not display acknowledgments' do
+        submitted_intro_for_service_providers_and_admin(mail.body.parts.first.body)
+      end
+
       it 'should render default tables' do
         assert_notification_email_tables_for_admin
       end

@@ -67,7 +67,8 @@ RSpec.describe Notifier do
                                                                         xls,
                                                                         identity,
                                                                         audit) }
-    it 'should display service provider intro message and link' do
+    # Expected service provider message is defined under get_a_cost_estimate_service_provider_admin_message
+    it 'should display service_provider intro message, link, conclusion, and should not display acknowledgments' do
       get_a_cost_estimate_intro_for_service_providers
     end
 
@@ -95,7 +96,8 @@ RSpec.describe Notifier do
                                                             approval,
                                                             identity
                                                             ) }
-    it 'should have user intro message' do
+    # Expected user message is defined under get_a_cost_estimate_general_users
+    it 'should have user intro message, conclusion, and acknowledgments' do
       get_a_cost_estimate_intro_for_general_users
     end
 
@@ -120,7 +122,8 @@ RSpec.describe Notifier do
                                                               submission_email_address,
                                                               xls,
                                                               identity) }
-    it 'should display admin intro message and link' do
+    # Expected admin message is defined under get_a_cost_estimate_service_provider_admin_message
+    it 'should display admin intro message, link, conclusion, and should not display acknowledgments' do
       get_a_cost_estimate_intro_for_admin
     end
 

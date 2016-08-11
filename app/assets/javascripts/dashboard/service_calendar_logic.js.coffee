@@ -19,7 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 $(document).ready ->
-  # $('.selectpicker').selectpicker()
+  $('.selectpicker').selectpicker()
 
   # $(".visit_name").live 'mouseover', ->
   #$(".visit_name").qtip
@@ -81,7 +81,7 @@ $(document).ready ->
   #    width: 260
 
   changing_tabs_calculating_rates()
-
+  setup_xeditable_fields()
   $(document).on 'change', '.visit-group-select .selectpicker', ->
     page = $(this).find('option:selected').attr('page')
 

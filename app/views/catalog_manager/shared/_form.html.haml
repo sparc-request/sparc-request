@@ -140,10 +140,9 @@
               %tr
                 %th= t(:organization_form)[:subsidy_max_percent]
                 %td.subsidy_percentage= f_subsidy_map.text_field :max_percentage
-              -if ['Program', 'Provider'].include?(@organization.type)
-                %tr
-                  %th= t(:organization_form)[:subsidy_default_percentage]
-                  %td.subsidy_default_percentage= f_subsidy_map.text_field :default_percentage
+              %tr
+                %th= t(:organization_form)[:subsidy_default_percentage]
+                %td.subsidy_default_percentage= f_subsidy_map.text_field :default_percentage, value: display_as_percent(f_subsidy_map.object.default_percentage)
               %tr
                 %th= t(:organization_form)[:subsidy_max_dollar]
 

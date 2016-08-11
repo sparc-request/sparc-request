@@ -18,72 +18,89 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#= require navigation
-
 $(document).ready ->
-  #Survey
-  survey_offered = false
-  route_to = ""
-  $('#participate_in_survey').dialog
-    resizable: false,
-    height: 220,
-    modal: true,
-    autoOpen: false,
-    buttons:
-      "Yes": ->
-        $('#processing_request').show()
-        survey_offered = true
-        $(this).dialog("close")
-        service_request_id = $('#service_request_id').val()
-        $('#participate_in_survey').load "/surveys/system-satisfaction-survey", {survey_version: ""}, ->
-          $('#survey_form').append("<input type='hidden' id='redirect_to' name='redirect_to' value='#{route_to}'>")
-          $('#survey_form div.next_section').append("<input type='button' name='cancel' value='Cancel'/>")
-          $('#surveyor').dialog
-            position:
-              my: "center bottom"
-              at: "center"
-              of: $('body')
-            autoOpen: false
-            modal: true
-            width: 980
-            title: 'SPARC Request Satisfaction Survey'
-            closeOnEscape: false
+#  survey_offered = false
+#  
+#  $(document).on 'click', '.get-a-cost-estimate, .form-submit-button', (event) ->
+#    button = $(this)
+#
+#    if !survey_offered
+#      event.preventDefault()
+#      $('#modal_place').html($('#participate-in-survey-modal').html())
+#      $('#modal_place').modal('show')
+#
+#      $(document).on 'click', '#modal_place .yes-button', ->
+#        survey_offered = true
+#        $('#modal_place').load "/surveys/system-satisfaction-survey", {survey_version: ""}, ->
+#          $('#survey_form').append("<input type='hidden' id='redirect_to' name='redirect_to' value='#{button.attr('href')}'>")
+#          $('#survey_form div.next_section').append("<input type='button' name='cancel' value='Cancel'/>")
+#
+#        $(document).on 'click', '.survey-submit-button', ->
+#          $('#survey_form').submit()
+#
+#      $(document).on 'click', '#modal_place .no-button', ->
+#        if button.hasClass('form-submit-button')
+#          $('#service-request-form').submit()
+#        else
+#          window.location = button.attr('href')
 
-          $('#surveyor').dialog('open')
-          $('#processing_request').hide()
-          $("#surveyor input[name='cancel']").click (event) ->
-            auth_token = $("form#survey_form input[name='authenticity_token']").attr('value')
-            response_set_path = $('form#survey_form').attr('action') + "?authenticity_token=#{auth_token}"
-            $('#surveyor').dialog('close')
-            $('#participate_in_survey').html('')
-            $.ajax
-              type: "DELETE"
-              url: response_set_path
-              success: ->
-                window.location.href = route_to
 
-        $('#welcome_msg').hide()
-        $('#feedback').hide()
-        $('.ask-a-question').hide()
-      "No": ->
-        survey_offered = true
-        $(this).dialog("close")
-        $('#submit_services1, #submit_services2, #get_a_cost_estimate').unbind('click')
-        $('#submit_services1, #submit_services2, #get_a_cost_estimate').click ->
-          return false
-        window.location.href = route_to
 
-  $(document).on('click', '#submit_services1, #submit_services2, #get_a_cost_estimate', (event)->
-    event.preventDefault()
-    route_to = $(this).attr('href')
 
-    if survey_offered == false
-      $("#participate_in_survey").dialog("open")
-      return false
-    else
-      # this should never be the case but just in case some browser allows it let's just redirect to confirmation page
-      $(this).unbind('click')
-      $(this).click ->
-        return false
-      window.location.href = route_to
-  )
+
+
+
+
+
+
+
+
+  #route_to = ""
+  #$('#participate_in_survey').dialog
+  #  resizable: false,
+  #  height: 220,
+  #  modal: true,
+  #  autoOpen: false,
+  #  buttons:
+  #    "Yes": ->
+  #      $('#processing_request').show()
+  #      survey_offered = true
+  #      $(this).dialog("close")
+  #     service_request_id = $('#service_request_id').val()
+  #      $('#participate_in_survey').load "/surveys/system-satisfaction-survey", {survey_version: ""}, ->
+  #        $('#survey_form').append("<input type='hidden' id='redirect_to' name='redirect_to' value='#{route_to}'>")
+  #        $('#survey_form div.next_section').append("<input type='button' name='cancel' value='Cancel'/>")
+  #        $('#surveyor').dialog
+  #          position:
+  #            my: "center bottom"
+  #            at: "center"
+  #            of: $('body')
+  #         autoOpen: false
+  #          modal: true
+  #          width: 980
+  #          title: 'SPARC Request Satisfaction Survey'
+  #          closeOnEscape: false
+  #
+  #        $('#surveyor').dialog('open')
+  #        $('#processing_request').hide()
+  #        $("#surveyor input[name='cancel']").click (event) ->
+  #          auth_token = $("form#survey_form input[name='authenticity_token']").attr('value')
+  #          response_set_path = $('form#survey_form').attr('action') + "?authenticity_token=#{auth_token}"
+  #          $('#surveyor').dialog('close')
+  #          $('#participate_in_survey').html('')
+  #          $.ajax
+  #            type: "DELETE"
+  #            url: response_set_path
+  #            success: ->
+  #              window.location.href = route_to
+  #
+  #      $('#welcome_msg').hide()
+  #      $('#feedback').hide()
+  #      $('.ask-a-question').hide()
+  #    "No": ->
+  #      survey_offered = true
+  #      $(this).dialog("close")
+  #      $('#submit_services1, #submit_services2, #get_a_cost_estimate').unbind('click')
+  #      $('#submit_services1, #submit_services2, #get_a_cost_estimate').click ->
+  #        return false
+  #      window.location.href = route_to

@@ -44,7 +44,7 @@
       .qty
         height: 100%
         padding: 8px 15px
-      .unit-type,
+      .unit-type.col-sm-6,
       .qty-type
         border-right: 1px solid #DDD
 
@@ -60,3 +60,15 @@
     margin: 0
     .col-xs-4
       padding: 0
+
+/* This is being caused by a strange bug which adds the 'active' class to the <li>s the first time the dropdown is rendered in the service calendar. When we can figure out why it's happening and remove it, remove this styling */
+.visit-group-select
+  .dropdown-menu
+    width: 250px
+    li.active
+      a
+        background-color: white
+        color: #333
+      a:hover
+        background-color: #f5f5f5
+        color: #262626

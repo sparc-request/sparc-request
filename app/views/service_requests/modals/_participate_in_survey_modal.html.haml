@@ -17,17 +17,21 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.bottom-nav.col-sm-12.ui-corner-all{ class: css_class }
-  .col-sm-3.text-left
-    = link_to t(:proper)[:navigation][:bottom][:back], back, class: 'btn btn-default'
-  - if controller.action_name == 'review'
-    .col-sm-3.text-center
-      = save_as_draft_button
-    .col-sm-3.text-center
-      = link_to t(:proper)[:navigation][:bottom][:get_cost_estimate], obtain_research_pricing_service_request_path, class: 'btn btn-default get-a-cost-estimate'
-  - else
-    .col-sm-6.text-center
-      - if service_request.submitted_at.blank? && service_request.protocol.present?
-        = save_as_draft_button
-  .col-sm-3.text-right
-    = link_to controller.action_name == 'review' ? t(:proper)[:navigation][:bottom][:submit] : t(:proper)[:navigation][:bottom][:save_and_continue], 'javascript:void(0)', class: 'btn btn-default form-submit-button'
+#participate-in-survey-modal.hidden
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %button.close{ type: 'button', data: { dismiss: 'modal' } }
+          %span{ aria: { hidden: 'true' } } &times;
+        %h4.text-center#modal-title
+          = t(:proper)[:survey][:header]
+      .modal-body
+        #modal_errors
+        .form-group.text-center
+          = t(:proper)[:survey][:participate]
+      .modal-footer
+        .center-block
+          %a.btn.btn-default.yes-button
+            = t(:constants)[:yes_select]
+          %a.btn.btn-default.no-button
+            = t(:constants)[:no_select]

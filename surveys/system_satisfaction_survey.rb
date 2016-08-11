@@ -20,7 +20,7 @@
 
 survey "System Satisfaction survey", default_mandatory: 'false' do
   section "System Satisfaction" do
-    question_1 "1) Are you satisfied with your use of SPARC Request <span class='underline'>today</span>?", pick: 'one'
+    question_1 "Are you satisfied with your use of SPARC Request <span class='underline'>today</span>?", pick: 'one'
     answer_yes "Yes"
     answer_no "No"
 

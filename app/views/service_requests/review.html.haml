@@ -32,5 +32,5 @@
 
 - if SYSTEM_SATISFACTION_SURVEY
   = javascript_include_tag 'system_satisfaction'
-  #participate_in_survey{ title: t(:sr_review)[:participate_in_survey_title] }
-    = t(:sr_review)[:participate_in_survey]
+  = hidden_field_tag :use_system_satisfaction, 'true'
+  = render 'service_requests/modals/participate_in_survey_modal'

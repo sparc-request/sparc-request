@@ -163,6 +163,13 @@ en:
       total_indirect: "Total Indirect Cost:"
       grand_total: "Grand Total:"
 
+    ##############################
+    # SYSTEM SATISFACTION SURVEY #
+    ##############################
+    survey:
+      header: "System Satisfaction Survey"
+      participate: "Would you like to participate in a brief 1 question SPARC Request satisfaction survey?"
+
     ################
     # CONFIRMATION #
     ################

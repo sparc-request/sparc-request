@@ -96,7 +96,7 @@ $(document).ready ->
     max_dollar_cap = $(this).data('max-dollar-cap')
     subsidy_id = $(this).data('subsidy-id')
     percent_subsidy = parseFloat($(this).val()) / 100.0
-    original_pi_contribution = parseFloat($('#pi_contribution').val().replace('$', ''))
+    original_pi_contribution = parseFloat($('#pi_contribution').val().replace('$', '').replace(',', ''))
     total_request_cost = parseFloat($(".request_cost[data-subsidy-id='#{subsidy_id}']").data("cost")) / 100.0
     pi_contribution = recalculate_pi_contribution(total_request_cost, percent_subsidy)
     original_subsidy = recalculate_percent_subsidy(total_request_cost, original_pi_contribution)
@@ -133,10 +133,10 @@ $(document).ready ->
 
   recalculate_pi_contribution = (total_request_cost, percent_subsidy) ->
     contribution = total_request_cost - (total_request_cost * percent_subsidy)
-    return if isNaN(contribution) then 0 else contribution
+    return if isNaN(contribution) then total_request_cost else contribution
   recalculate_percent_subsidy = (total_request_cost, pi_contribution) ->
     percentage = (total_request_cost - pi_contribution) / total_request_cost
-    return if isNaN(percentage) then 0 else percentage
+    return if isNaN(percentage) then 1 else percentage
   recalculate_current_cost = (total_request_cost, percent_subsidy) ->
     current = total_request_cost * percent_subsidy
     return if isNaN(current) then 0 else current

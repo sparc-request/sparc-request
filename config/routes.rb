@@ -99,17 +99,12 @@ SparcRails::Application.routes.draw do
 
   resources :arms, only: [:index, :new, :create, :edit, :update, :destroy]
 
-  resource :service_calendars, only: [:update, :index] do
+  resource :service_calendars, only: [] do
     member do
       get 'table'
       get 'merged_calendar'
     end
     collection do
-      put 'rename_visit'
-      put 'set_day'
-      put 'set_window_before'
-      put 'set_window_after'
-      put 'update_otf_qty_and_units_per_qty'
       put 'move_visit_position'
       put 'show_move_visits'
       post 'toggle_calendar_row'

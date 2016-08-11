@@ -26,11 +26,10 @@ class ServiceCalendarsController < ApplicationController
   layout false
 
   def table
-    @tab            = params[:tab]
-    @review         = false
-    @portal         = false
-    @merged         = false
-    @protocol       = @service_request.protocol
+    @tab      = params[:tab]
+    @review   = params[:review] == 'true'
+    @portal   = params[:portal] == 'true'
+    @merged   = false
     setup_calendar_pages
     
     # TODO: This needs to be changed for one time fees page in arms
@@ -39,176 +38,13 @@ class ServiceCalendarsController < ApplicationController
     end
   end
 
-  def update
-    @portal              = params[:portal]
-    @sub_service_request = SubServiceRequest.find(params[:id]) if params[:id]
-    @user                = current_identity
-    visit                = Visit.find params[:visit] rescue nil
-    @line_items_visit    = LineItemsVisit.find params[:line_items_visit] rescue nil
-    @line_item           = LineItem.find params[:line_item] rescue nil
-    tab                  = params[:tab]
-    checked              = params[:checked]
-    qty                  = params[:undefined].nil? ? params[:qty].to_i : params[:undefined][:qty].to_i
-    column               = params[:column]
-
-    case tab
-    when 'template'
-      if @line_items_visit
-        # TODO: not sure what's going on here (why is @line_items_visit
-        # set above, then set again below?  what are we doing here, and
-        # why do we not care about checked in this case?)
-        @line_items_visit.update_attribute(:subject_count, qty)
-      elsif visit.research_billing_qty.to_i <= 0 and checked == 'true'
-        # set quantity and research billing qty to 1
-        line_item = visit.line_items_visit.line_item
-        service = line_item.service
-
-        visit.attributes = {
-          quantity: service.displayed_pricing_map.unit_minimum,
-          research_billing_qty: service.displayed_pricing_map.unit_minimum
-        }
-        visit.save
-
-      elsif checked == 'false'
-        visit.update_attributes(
-          quantity: 0,
-          research_billing_qty: 0,
-          insurance_billing_qty: 0,
-          effort_billing_qty: 0
-        )
-      end
-
-    when 'quantity'
-      if qty < 0
-        @errors = "Quantity must be greater than zero"
-      else
-        visit.update_attribute(:quantity, qty)
-      end
-
-    when 'billing_strategy'
-      if @line_items_visit
-        # TODO: not sure what's going on here (why is @line_items_visit
-        # set above, then set again below?  what are we doing here, and
-        # why do we not care about checked in this case?)
-        @line_items_visit.update_attribute(:subject_count, qty)
-      end
-
-      if visit
-        if qty < 0
-          @errors = "Quantity must be greater than zero"
-        else
-          #update the total quantity to reflect the 3 billing qty total
-          total = visit.quantity_total
-
-          visit.attributes = {
-            column => qty,
-            quantity: total
-          }
-          visit.save
-        end
-      end
-    end
-
-    @visit = visit
-    @visit_td = visit.nil? ? "" : ".visits_#{visit.id}"
-    @line_items_visit = visit.line_items_visit if @line_items_visit.nil?
-    @line_item = @line_items_visit.line_item if @line_item.nil?
-    @line_item_total_td = ".total_#{@line_items_visit.id}"
-    @line_item_total_study_td = ".total_#{@line_items_visit.id}_per_study"
-    @arm_id = '.arm_' + @line_items_visit.arm.id.to_s
-
-    @line_items_visits =
-      if @sub_service_request
-        @line_items_visit.arm.line_items_visits.joins(:line_item)
-          .where(line_items: { sub_service_request_id: @sub_service_request.id } )
-      elsif @service_request
-        @line_items_visit.arm.line_items_visits.joins(:line_item)
-          .where(line_items: { service_request_id: @service_request.id } )
-      else
-        @line_items_visit.arm.line_items_visits
-      end
-    @sub_service_request.update_attribute(:status, "draft") if @sub_service_request
-    @service_request.update_attribute(:status, "draft")
-  end
-
-  def rename_visit
-    name = params[:name]
-    position = params[:visit_position].to_i
-    arm = Arm.find params[:arm_id]
-    arm.visit_groups[position].update_attributes(name: name)
-  end
-
-  def set_day
-    day = params[:day]
-    position = params[:position].to_i
-    arm = Arm.find params[:arm_id]
-    portal = params[:portal]
-
-    if !arm.update_visit_group_day(day, position, portal)
-      respond_to do |format|
-        format.js { render status: 418, json: clean_messages(arm.errors.messages) }
-      end
-    end
-  end
-
-  def set_window_before
-    window_before = params[:window_before]
-    position = params[:position].to_i
-    arm = Arm.find params[:arm_id]
-
-    if !arm.update_visit_group_window_before(window_before, position)
-      respond_to do |format|
-        format.js { render status: 418, json: clean_messages(arm.errors.messages) }
-      end
-    end
-  end
-
-  def set_window_after
-    window_after = params[:window_after]
-    position = params[:position].to_i
-    arm = Arm.find params[:arm_id]
-
-    if !arm.update_visit_group_window_after(window_after, position)
-      respond_to do |format|
-        format.js { render status: 418, json: clean_messages(arm.errors.messages) }
-      end
-    end
-  end
-
   def merged_calendar
-    arm_id = params[:arm_id] if params[:arm_id]
-    @arm = Arm.find arm_id if arm_id
-    page = params[:page] if params[:page]
-    session[:service_calendar_pages] = params[:pages] if params[:pages]
-    session[:service_calendar_pages][arm_id] = page if page && arm_id
-    @tab = params[:tab]
-    @portal = params[:portal]
-    @pages = {}
-    @protocol = @arm.protocol rescue @service_request.protocol
-    @protocol.arms.each do |arm|
-      new_page = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i
-      @pages[arm.id] = @service_request.set_visit_page new_page, arm
-    end
+    @tab    = params[:tab]
+    @review = params[:review] == 'true'
+    @portal = params[:portal] == 'true'
     @merged = true
-  end
 
-  def update_otf_qty_and_units_per_qty
-    line_item = LineItem.find params[:line_item_id]
-
-    val = params[:val]
-    if params[:type] == 'qty'
-      line_item.quantity = val
-      if line_item.valid?
-        line_item.save
-      else
-        line_item.reload
-        respond_to do |format|
-          format.js { render status: 500, json: clean_errors(line_item.errors) }
-        end
-      end
-    elsif params[:type] == 'units_per_qty'
-      line_item.update_attributes(units_per_quantity: val)
-    end
+    setup_calendar_pages
   end
 
   def show_move_visits
@@ -284,20 +120,19 @@ class ServiceCalendarsController < ApplicationController
     render partial: 'update_service_calendar'
   end
 
-  
-
   private
 
   def setup_calendar_pages
-    @pages = {}
-    page = params[:page] if params[:page]
-    arm_id = params[:arm_id] if params[:arm_id]
-    @arm = Arm.find(arm_id) if arm_id
-    session[:service_calendar_pages] = params[:pages] if params[:pages]
-    session[:service_calendar_pages][arm_id] = page if page && arm_id
+    @pages  = {}
+    page    = params[:page] if params[:page]
+    arm_id  = params[:arm_id] if params[:arm_id]
+
+    session[:service_calendar_pages]          = params[:pages] if params[:pages]
+    session[:service_calendar_pages][arm_id]  = page if page && arm_id
+    
     @service_request.arms.each do |arm|
-      new_page = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i
-      @pages[arm.id] = @service_request.set_visit_page(new_page, arm)
+      new_page        = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i
+      @pages[arm.id]  = @service_request.set_visit_page(new_page, arm)
     end
   end
 end

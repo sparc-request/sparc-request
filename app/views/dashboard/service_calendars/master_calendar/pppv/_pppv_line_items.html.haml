@@ -44,7 +44,7 @@
         %td
           = AVAILABLE_STATUSES[liv.line_item.sub_service_request.status]
       - else
-        %td.service_rate{ class: "service_rate_#{liv.id}" }
+        %td.service_rate.text-center{ class: "service_rate_#{liv.id}" }
           = display_service_rate liv.line_item
       %td.your_cost.text-center
         - if tab != 'calendar'

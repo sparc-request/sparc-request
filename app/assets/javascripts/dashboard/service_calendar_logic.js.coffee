@@ -80,16 +80,6 @@ $(document).ready ->
   #    name: 'light'
   #    width: 260
 
-  changing_tabs_calculating_rates = ->
-    arm_ids = []
-    $('.arm_calendar_container').each (index, arm) ->
-      if $(arm).is(':hidden') == false then arm_ids.push $(arm).data('arm_id')
-
-    i = 0
-    while i < arm_ids.length
-      calculate_max_rates(arm_ids[i])
-      i++
-
   changing_tabs_calculating_rates()
 
   $(document).on 'change', '.visit-group-select .selectpicker', ->

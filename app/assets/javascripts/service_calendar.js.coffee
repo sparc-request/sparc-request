@@ -52,7 +52,7 @@ $(document).ready ->
     calculate_max_rates(arm_ids[i])
     i++
 
-(exports ? this).calculate_max_rates = (arm_id) ->
+calculate_max_rates = (arm_id) ->
   for num in [1..$('.visit-group-box:visible').length]
     column = '.visit-' + num
     visits = $(".arm-calendar-container-#{arm_id}:visible #{column}.visit")

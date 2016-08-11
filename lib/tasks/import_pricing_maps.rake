@@ -73,24 +73,23 @@ namespace :data do
                                               :full_rate => Service.dollars_to_cents(row['full_rate'].to_s.strip.gsub("$", "").gsub(",", "")),
                                               :corporate_rate => (row['corporate_rate'].blank? ? nil : Service.dollars_to_cents(row['corporate_rate'].to_s.strip.gsub("$", "").gsub(",", ""))),
                                               :federal_rate => (row['federal_rate'].blank? ? nil : Service.dollars_to_cents(row['federal_rate'].to_s.strip.gsub("$", "").gsub(",", ""))),
-                                              :member_rate => (row['member_rate'].blank? ? nil : Service.dollars_to_cents(row['member_rate'].to_s.strip.gsub("$", "").gsub(",", ""))), 
-                                              :other_rate => (row['other_rate'].blank? ? nil : Service.dollars_to_cents(row['other_rate'].to_s.strip.gsub("$", "").gsub(",", ""))), 
-                                              :is_one_time_fee => (row['is_one_time_fee'] == 'Y' ? true : false),
+                                              :member_rate => (row['member_rate'].blank? ? nil : Service.dollars_to_cents(row['member_rate'].to_s.strip.gsub("$", "").gsub(",", ""))),
+                                              :other_rate => (row['other_rate'].blank? ? nil : Service.dollars_to_cents(row['other_rate'].to_s.strip.gsub("$", "").gsub(",", ""))),
                                               :unit_type => row['unit_type'],
                                               :quantity_type => row['quantity_type'],
                                               :unit_factor => row['unit_factor'],
-                                              :unit_minimum => row['unit_minimum'], 
-                                              :quantity_minimum => row['quantity_minimum'], 
+                                              :unit_minimum => row['unit_minimum'],
+                                              :quantity_minimum => row['quantity_minimum'],
                                               :units_per_qty_max => row['units_per_qty_max'],
                                               :display_date => Date.strptime(row['display_date'], "%m/%d/%y"),
                                               :effective_date => Date.strptime(row['effective_date'], "%m/%d/%y")
                                               )
 
         if pricing_map.valid?
-          #puts service.inspect
-          #puts pricing_map.inspect
+          puts service.inspect
+          puts pricing_map.inspect
           puts "Pricing map created for #{service.name}"
-          pricing_map.save
+          # pricing_map.save
         else
           puts "#"*50
           puts "Error importing pricing map"

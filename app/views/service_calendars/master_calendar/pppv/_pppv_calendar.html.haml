@@ -17,7 +17,7 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-- visit_groups = arm.visit_groups.paginate(page: page)
+- visit_groups = arm.visit_groups.page(page)
 .panel.panel-primary.calendar-container{ class: "arm-calendar-container-#{arm.id}", data: { arm_id: arm.id } }
   .panel-heading
     %h3.panel-title

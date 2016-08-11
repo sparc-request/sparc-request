@@ -26,7 +26,7 @@
   %tr.organization-header{ class: locked ? 'bg-danger text-danger' : '' }
     %th.col-sm-6{ colspan: 7 }
       = display_org_name(org_name, ssr, locked)
-    - visit_groups.count.times do
+    - visit_groups.each do
       %th.col-sm-1.billing-type-list.text-center
         .row
           .col-xs-4.billing-type{ data: { toggle: 'tooltip', animation: 'false', title: t(:proper)[:service_calendar][:tooltips][:r] } }

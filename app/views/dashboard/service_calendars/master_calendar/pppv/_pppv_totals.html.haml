@@ -24,7 +24,7 @@
       %strong
         = t(:calendar_page)[:labels][:maximum_direct]
     - 5.times do |i|
-      %td.col-sm-1.text-center{ class: "visit_column_#{i + 1} max_direct_per_patient arm_#{arm.id}" }
+      %td.col-sm-1.text-center{ class: "visit_column_#{i + 1} visit-#{i + 1} max-direct-per-patient arm_#{arm.id}" }
     %td.col-sm-1.text-center{ class: "pp_max_total_direct_cost arm_#{arm.id}"}
       = display_max_total_direct_cost_per_patient arm, line_items_visits
     - if merged
@@ -35,7 +35,7 @@
       %td.col-sm-5{ colspan: 6 }
         %strong= t(:calendar_page)[:labels][:maximum_indirect]
       - 5.times do |i|
-        %td.col-sm-1.text-center{ class: "visit_column_#{i + 1} max_indirect_per_patient arm_#{arm.id}" }
+        %td.col-sm-1.text-center{ class: "visit_column_#{i + 1} visit-#{i + 1} max-indirect-per-patient arm_#{arm.id}" }
       %td.col-sm-1.text-center{ class: "pp_max_total_indirect_cost arm_#{arm.id}"}
         = display_max_total_indirect_cost_per_patient arm, line_items_visits
       - if merged
@@ -46,7 +46,7 @@
       %strong
         = t(:calendar_page)[:labels][:maximum_per]
     - 5.times do |i|
-      %td.col-sm-1.text-center{ class: "visit_column_#{i + 1} max_total_per_patient arm_#{arm.id}" }
+      %td.col-sm-1.text-center{ class: "visit_column_#{i + 1} visit-#{i + 1} max-total-per-patient arm_#{arm.id}" }
     %td.col-sm-1.text-center{ class: "pp_max_total arm_#{arm.id}"}
       = display_max_total_cost_per_patient arm, line_items_visits
     - if merged

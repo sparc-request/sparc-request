@@ -69,7 +69,7 @@
       - unit_minimum = liv.service.displayed_pricing_map.unit_minimum
       - totals_hash = liv.try(:per_subject_subtotals, visits)
       - visits.each_with_index do |v, index|
-        %td.text-center.visit{ visit_column: index + 1, class: "visit_column_#{index + 1} arm_#{arm.id}", data: { cents: (totals_hash["#{v.id}"] || 0) } }
+        %td.text-center.visit{ visit_column: index + 1, class: "visit_column_#{index + 1} visit-#{index + 1} arm_#{arm.id}", data: { cents: (totals_hash["#{v.id}"] || 0) } }
           = render 'dashboard/service_calendars/master_calendar/pppv/line_item_visit_input', arm: arm, line_item: liv.line_item, visit: v, tab: tab, totals_hash: totals_hash, unit_minimum: unit_minimum, portal: portal, service_request: service_request
       - (5 - visits.size).times do
         %td &nbsp;

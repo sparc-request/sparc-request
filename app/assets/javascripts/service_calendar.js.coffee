@@ -72,3 +72,73 @@ calculate_max_rates = (arm_id) ->
     $(".arm-calendar-container-#{arm_id}:visible #{column}.max-direct-per-patient").html(direct_total_display)
     $(".arm-calendar-container-#{arm_id}:visible #{column}.max-indirect-per-patient").html(indirect_total_display)
     $(".arm-calendar-container-#{arm_id}:visible #{column}.max-total-per-patient").html(max_total_display)
+
+(exports ? this).setup_xeditable_fields = () ->
+  # Override x-editable defaults
+  $.fn.editable.defaults.send = 'always'
+  $.fn.editable.defaults.ajaxOptions =
+    type: "PUT",
+    dataType: "json"
+  $.fn.editable.defaults.error = (response, newValue) ->
+    error_msgs = []
+    $.each JSON.parse(response.responseText), (key, value) ->
+      error_msgs.push(humanize_string(key)+' '+value)
+    return error_msgs.join("<br>")
+
+  $('.window-before').editable
+    params: (params) ->
+      data = 'visit_group': { 'window_before': params.value }
+      return data
+
+  $('.day').editable
+    params: (params) ->
+      data = 'visit_group': { 'day': params.value }
+      return data
+
+  $('.window-after').editable
+    params: (params) ->
+      data = 'visit_group': { 'window_after': params.value }
+      return data
+
+  $('.visit-group-name').editable
+    params: (params) ->
+      data = 'visit_group': { 'name': params.value }
+      return data
+
+  $('.edit-your-cost').editable
+    display: (value) ->
+      # display field as currency, edit as quantity
+      $(this).text("$" + parseFloat(value).toFixed(2))
+    params: (params) ->
+      data = 'line_item': { 'displayed_cost': params.value }
+      return data
+
+  $('.edit-subject-count').editable
+    params: (params) ->
+      data = 'line_items_visit': { 'subject_count': params.value }
+      return data
+
+  $('.edit-research-billing-qty').editable
+    params: (params) ->
+      data = 'visit': { 'research_billing_qty': params.value }
+      return data
+
+  $('.edit-insurance-billing-qty').editable
+    params: (params) ->
+      data = 'visit': { 'insurance_billing_qty': params.value }
+      return data
+
+  $('.edit-effort-billing-qty').editable
+    params: (params) ->
+      data = 'visit': { 'effort_billing_qty': params.value }
+      return data
+
+  $('.edit-qty').editable
+    params: (params) ->
+      data = 'line_item': { 'quantity': params.value }
+      return data
+
+  $('.edit-units-per-qty').editable
+    params: (params) ->
+      data = 'line_item': { 'units_per_quantity': params.value }
+      return data

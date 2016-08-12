@@ -69,9 +69,9 @@ class Dashboard::LineItemsController < Dashboard::BaseController
   end
 
   def update
-    @sub_service_request = @line_item.sub_service_request
-    @otf = @line_item.service.one_time_fee
-    if @line_item.update_attributes(params[:line_item])
+    @sub_service_request  = @line_item.sub_service_request
+    @otf                  = @line_item.service.one_time_fee
+    if @line_item.displayed_cost_valid?(params[:line_item][:displayed_cost]) && @line_item.update_attributes(params[:line_item])
       if @otf
         flash[:success] = t(:dashboard)[:study_level_activities][:updated]
       else

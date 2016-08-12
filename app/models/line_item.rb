@@ -65,12 +65,21 @@ class LineItem < ActiveRecord::Base
   # TODO: order by date/id instead of just by date?
   default_scope { order('line_items.id ASC') }
 
+  def displayed_cost_valid?(displayed_cost)
+    return true if displayed_cost.nil?
+    is_float  = /\A-?[0-9]+(\.[0-9]*)?\z/ =~ displayed_cost
+    num       = displayed_cost.to_f
+    errors.add(:displayed_cost, I18n.t(:errors)[:line_items][:displayed_cost_numeric]) if is_float.nil?
+    errors.add(:displayed_cost, I18n.t(:errors)[:line_items][:displayed_cost_gte_zero]) if num < 0
+    return is_float && num >= 0
+  end
+
   def displayed_cost
     '%.2f' % (applicable_rate / 100.0)
   end
 
   def displayed_cost=(dollars)
-    admin_rates.new( admin_cost: dollars.blank? ? nil : Service.dollars_to_cents(dollars) )
+    admin_rates.new( admin_cost: Service.dollars_to_cents(dollars) )
   end
 
   def pricing_scheme

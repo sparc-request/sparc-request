@@ -36,7 +36,7 @@
             = hidden_field_tag :service_request_id, service_request.id
             = hidden_field_tag :sub_service_request_id, sub_service_request.id
             .form-group
-              = a.label :name, t(:arms)[:form_fields][:name], class: "col-sm-4 control-label required"
+              = a.label :name, t(:arms)[:form_fields][:name], class: "col-sm-4 control-label required", title: t(:arms)[:name_tooltip], data: { toggle: 'tooltip', animation: 'false' }
               .col-sm-7
                 = a.text_field :name, { class: 'form-control' }
             .form-group

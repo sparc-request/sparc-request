@@ -44,9 +44,18 @@ class Arm < ActiveRecord::Base
   after_save :update_liv_subject_counts
 
   validates :name, presence: true
-  validates_uniqueness_of :name, scope: :protocol
+  validates_format_of :name, with: /\A([A-Za-z0-9][A-Za-z0-9]*([ ][A-Za-z0-9])?)*\z/
+  validate :name_unique_to_protocol
+
   validates :visit_count, numericality: { greater_than: 0 }
   validates :subject_count, numericality: { greater_than: 0 }
+
+  def name_unique_to_protocol
+    arm_names = self.protocol.arms.where.not(id: self.id).pluck(:name)
+    arm_names = arm_names.map(&:downcase)
+
+    errors.add(:name, I18n.t(:errors)[:arms][:name_unique]) if arm_names.include?(self.name.downcase)
+  end
 
   def sanitized_name
     #Sanitized for Excel
@@ -54,7 +63,6 @@ class Arm < ActiveRecord::Base
   end
 
   def update_liv_subject_counts
-
     self.line_items_visits.each do |liv|
       if ['first_draft', 'draft', nil].include?(liv.line_item.service_request.status)
         liv.update_attributes(:subject_count => self.subject_count)

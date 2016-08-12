@@ -28,6 +28,10 @@ class ApplicationController < ActionController::Base
 
   protected
 
+  def after_sign_in_path_for(resource)
+    "/service_requests/#{session[:service_request_id]}/catalog"
+  end
+
   def set_highlighted_link  # default value, override inside controllers
     @highlighted_link ||= ''
   end

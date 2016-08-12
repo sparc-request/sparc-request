@@ -44,6 +44,8 @@ en:
   ################
   activerecord:
     attributes:
+      arm:
+        name: "Arm Name"
       fulfillment:
         time: "Quantity"
       human_subjects_info:
@@ -79,6 +81,7 @@ en:
       visit_count: "Visit Count"
     delete_warning: "Are you sure you want to delete this arm?"
     screening_tooltip: "Enter the number of subjects you expect to screen as well as how many screening visits are required. If no screening phase is required, you can change the name of the Arm to meet your needs."
+    name_tooltip: "Arm Name may contain only letters, numbers, and single spaces and must be unique on your Protocol"
 
   ####################
   # AUTHORIZED USERS #
@@ -234,6 +237,10 @@ en:
   errors:
     arms:
       visit_day_missing: "Please specify a study day for each visit (%{arm_name})"
+      name_unique: 'must be unique to the Protocol'
+    line_items:
+      displayed_cost_numeric: 'must be a number'
+      displayed_cost_gte_zero: 'must be greater than or equal to 0'
     line_items_visits:
       subject_count_invalid: "Subject Count cannot exceed the Arm Subject Count (%{arm_subject_count})"
     protocols:

@@ -147,7 +147,7 @@ class Service < ActiveRecord::Base
   end
 
   def has_additional_details
-    questionnaires.present?
+    questionnaires.active.present?
   end
 
   # Display pricing formatting for reporting

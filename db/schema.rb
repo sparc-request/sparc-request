@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160804133457) do
+ActiveRecord::Schema.define(version: 20160812151440) do
 
   create_table "admin_rates", force: :cascade do |t|
     t.integer  "line_item_id", limit: 4
@@ -426,6 +426,15 @@ ActiveRecord::Schema.define(version: 20160804133457) do
   end
 
   add_index "ip_patents_info", ["protocol_id"], name: "index_ip_patents_info_on_protocol_id", using: :btree
+
+  create_table "item_options", force: :cascade do |t|
+    t.string   "content",    limit: 255
+    t.integer  "item_id",    limit: 4
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  add_index "item_options", ["item_id"], name: "index_item_options_on_item_id", using: :btree
 
   create_table "items", force: :cascade do |t|
     t.text     "content",          limit: 65535
@@ -1268,6 +1277,7 @@ ActiveRecord::Schema.define(version: 20160804133457) do
   add_index "visits", ["research_billing_qty"], name: "index_visits_on_research_billing_qty", using: :btree
   add_index "visits", ["visit_group_id"], name: "index_visits_on_visit_group_id", using: :btree
 
+  add_foreign_key "item_options", "items"
   add_foreign_key "items", "questionnaires"
   add_foreign_key "questionnaire_responses", "items"
   add_foreign_key "questionnaire_responses", "submissions"

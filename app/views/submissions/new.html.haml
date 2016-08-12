@@ -16,7 +16,7 @@
               = qr.text_field :content, class: 'form-control'
             - if item.item_type == 'email'
               = qr.email_field :content, class: 'form-control'
-            - if item.item_type == 'number'
+            - if item.item_type == 'number' || item.item_type == 'zipcode'
               = qr.number_field :content, class: 'form-control'
             - if item.item_type == 'phone'
               = qr.telephone_field :content, class: 'form-control'
@@ -27,6 +27,8 @@
             - if item.item_type == 'state'
               = qr.select :content, options_for_select(us_states), {},
                 { class: 'form-control' }
+            - if item.item_type == 'time'
+              = qr.time_field :content, class: 'form-control'
       .form-group
         .col-sm-offset-10.col-sm-2
           = f.submit class: 'btn btn-success'

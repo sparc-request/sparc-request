@@ -10,7 +10,16 @@
           = qr.hidden_field :item_id, value: item.id
           .form-group
             = qr.label item.content
-            = qr.text_field :content, class: 'form-control'
+            - if item.item_type == 'textarea'
+              = qr.text_area :content, class: 'form-control'
+            - if item.item_type == 'text' &&
+              = qr.text_field :content, class: 'form-control'
+            - if item.item_type == 'email'
+              = qr.email_field :content, class: 'form-control'
+            - if item.item_type == 'number'
+              = qr.number_field :content, class: 'form-control'
+            - if item.item_type == 'phone'
+              = qr.telephone_field :content, class: 'form-control'
       .form-group
         .col-sm-offset-10.col-sm-2
           = f.submit class: 'btn btn-success'

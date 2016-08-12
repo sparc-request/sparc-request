@@ -12,6 +12,12 @@
             = qr.label item.content
             - if item.item_type == 'textarea'
               = qr.text_area :content, class: 'form-control'
+            - if item.item_type == 'radio_button'
+              - item.item_options.each do |item_option|
+                .radio
+                  = qr.label :content do
+                    = qr.radio_button :content, item_option.content
+                    = item_option.content
             - if item.item_type == 'text' &&
               = qr.text_field :content, class: 'form-control'
             - if item.item_type == 'email'

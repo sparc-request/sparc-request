@@ -16,22 +16,22 @@
           = i.label :item_type, class: 'col-sm-2 control-label'
           .col-sm-10
             = i.select :item_type, options_for_select(ADDITIONAL_DETAIL_QUESTION_TYPES),
-              {}, {class: 'form-control'}
-        - i.object.item_options.build if i.object.item_options.nil?
-        %h5.text-center
-          Add Options
-        %hr
-        = i.nested_fields_for :item_options, html: { class: 'form-horizontal' } do |io|
-          .col-sm-offset-2
-            .form-group
-              = io.label :content, class: 'col-sm-2 control-label'
-              .col-sm-8
-                = io.text_field :content, class: 'form-control'
-            .form-group
-              .col-sm-offset-2.col-sm-10
-                %span
-                  = io.remove_nested_fields_link 'Remove Option', class: 'btn btn-danger'
-                  = i.add_nested_fields_link :item_options, 'Add another Option', class: 'btn btn-primary'
+              {}, {class: 'form-control select-type', data: { item_form_id: '__nested_field_for_replace_with_index__' } }
+        %div{ class: 'item-options hidden', data: { item_form_id: '__nested_field_for_replace_with_index__' } }
+          %h5.text-center
+            Add Options
+          %hr
+          = i.nested_fields_for :item_options, html: { class: 'form-horizontal' } do |io|
+            .col-sm-offset-2
+              .form-group
+                = io.label :content, class: 'col-sm-2 control-label'
+                .col-sm-8
+                  = io.text_field :content, class: 'form-control'
+              .form-group
+                .col-sm-offset-2.col-sm-10
+                  %span
+                    = io.remove_nested_fields_link 'Remove Option', class: 'btn btn-danger'
+                    = i.add_nested_fields_link :item_options, 'Add another Option', class: 'btn btn-primary'
         .form-group
           = i.label :description, class: 'col-sm-2 control-label'
           .col-sm-10

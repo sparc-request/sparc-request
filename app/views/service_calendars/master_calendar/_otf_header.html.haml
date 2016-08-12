@@ -21,7 +21,6 @@
   %th{ rowspan: 2, style: @review ? '' : 'height: 88px', class: @review ? '' : 'services_header' }= t(:calendar_page)[:headers][:services]
   %th{ rowspan: 2 }= t(:calendar_page)[:headers][:status]
 
-
   - if @study_tracker && !@merged # display study tracker otf header
     %th.qty_unit_header.width-130= t(:calendar_page)[:headers][:number]
     %th.qty_unit_header.width-130= t(:calendar_page)[:headers][:unit_type]

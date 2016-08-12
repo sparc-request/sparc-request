@@ -25,6 +25,7 @@ class ServiceRequestsController < ApplicationController
 
   before_filter :initialize_service_request,      except: [:approve_changes, :get_help, :feedback]
   before_filter :validate_step,                   only:   [:protocol, :service_details, :service_calendar, :service_subsidy, :document_management, :review, :obtain_research_pricing, :confirmation]
+  before_filter :set_navigation_errors,           only:   [:protocol, :service_details, :service_calendar, :service_subsidy, :document_management, :review, :obtain_research_pricing, :confirmation]
   before_filter :authorize_identity,              except: [:approve_changes, :get_help, :feedback, :show]
   before_filter :authenticate_identity!,          except: [:catalog, :add_service, :remove_service, :ask_a_question, :get_help, :feedback]
   before_filter :authorize_protocol_edit_request, only:   [:catalog]
@@ -417,23 +418,55 @@ class ServiceRequestsController < ApplicationController
 
   private
 
+  # Each of these helper methods assigns session[:errors] to persist the errors through the
+  # redirect_to so that the user has an explanation
   def validate_step
     case action_name
     when 'protocol'
-      redirect_to catalog_service_request_path(@service_request) and return unless @service_request.group_valid?(:catalog)
+      validate_catalog
     when -> (n) { ['service_details', 'save_and_exit'].include?(n) }
-      redirect_to catalog_service_request_path(@service_request) and return unless @service_request.group_valid?(:catalog)
-      redirect_to protocol_service_request_path(@service_request) and return unless @service_request.group_valid?(:protocol)
+      validate_catalog && validate_protocol
     when 'service_calendar'
-      redirect_to catalog_service_request_path(@service_request) and return unless @service_request.group_valid?(:catalog)
-      redirect_to protocol_service_request_path(@service_request) and return unless @service_request.group_valid?(:protocol)
-      redirect_to service_details_service_request_path(@service_request) and return unless @service_request.group_valid?(:service_details)
+      validate_catalog && validate_protocol && validate_service_details
     else
-      redirect_to catalog_service_request_path(@service_request) and return unless @service_request.group_valid?(:catalog)
-      redirect_to protocol_service_request_path(@service_request) and return unless @service_request.group_valid?(:protocol)
-      redirect_to service_details_service_request_path(@service_request) and return unless @service_request.group_valid?(:service_details)
-      redirect_to service_calendar_service_request_path(@service_request) and return unless @service_request.group_valid?(:service_calendar)
+      validate_catalog && validate_protocol && validate_service_details && validate_service_calendar
     end
+  end
+
+  def validate_catalog
+    unless @service_request.group_valid?(:catalog)
+      session[:errors] = @service_request.errors
+      redirect_to catalog_service_request_path(@service_request) and return false
+    end
+    return true
+  end
+
+  def validate_protocol
+    unless @service_request.group_valid?(:protocol)
+      session[:errors] = @service_request.errors
+      redirect_to protocol_service_request_path(@service_request) and return false
+    end
+    return true
+  end
+
+  def validate_service_details
+    unless @service_request.group_valid?(:service_details)
+      session[:errors] = @service_request.errors
+      redirect_to service_details_service_request_path(@service_request) and return false
+    end
+    return true
+  end
+
+  def validate_service_calendar
+    unless @service_request.group_valid?(:service_calendar)
+      session[:errors] = @service_request.errors
+      redirect_to service_calendar_service_request_path(@service_request) and return false
+    end
+    return true
+  end
+
+  def set_navigation_errors
+    @errors = session[:errors]
   end
 
   def setup_navigation

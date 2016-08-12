@@ -33,7 +33,7 @@
   - livs.each do |liv|
     %tr
       %td{ colspan: 2 }= liv.service.display_service_name
-      %td{ colspan: 1}= AVAILABLE_STATUSES[liv.line_item.sub_service_request.status]
+      %td{ colspan: 1 }= AVAILABLE_STATUSES[liv.line_item.sub_service_request.status]
       -unless tab == 'calendar'
         %td.service_rate{ class: "service_rate_#{liv.id}" }= display_service_rate liv.line_item
       %td.your_cost.text-center

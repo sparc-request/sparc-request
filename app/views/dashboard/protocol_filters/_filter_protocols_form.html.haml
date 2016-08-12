@@ -50,7 +50,7 @@
         .form-group.row
           = form.label :with_organization, t(:dashboard)[:protocol_filters][:organization], class: 'col-lg-3 control-label'
           .col-lg-9.drop-underneath
-            %select.selectpicker.form-control.core-select{ multiple: true, name: "filterrific[with_organization][]", data: { none_selected_text: t(:constants)[:prompts][:any] } }
+            %select.selectpicker.form-control.core-select#filterrific_with_organization{ multiple: true, name: "filterrific[with_organization][]", data: { none_selected_text: t(:constants)[:prompts][:any] } }
               - filterrific.select_options[:with_organization].each do |org_type|
                 %optgroup{ label: org_type[0] }
                   - org_type[1].each do |org|

@@ -83,7 +83,7 @@ $(document).ready ->
         if data["filterrific[with_status][]"].length
           data["filterrific[with_status][]"] = $("#filterrific_with_status").val()
 
-        if data["filterrific[with_organization][]"].length
+        if data["filterrific[with_organization][]"] && data["filterrific[with_organization][]"].length
           data["filterrific[with_organization][]"] = $("#filterrific_with_organization").val()
 
         if data["filterrific[with_owner][]"] && data["filterrific[with_owner][]"].length

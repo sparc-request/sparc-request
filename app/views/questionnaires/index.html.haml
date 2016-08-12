@@ -35,9 +35,9 @@
               %td
                 .text-center
                   - if questionnaire.active?
-                    = link_to 'Disable Questionnaire', service_update_questionnaire_path(@service, questionnaire), method: :patch, class: 'btn btn-danger'
+                    = link_to 'Disable Questionnaire', service_update_questionnaire_path(@service, questionnaire), method: :patch, class: 'btn btn-danger active-questionnaire'
                   - else
-                    = link_to 'Activate Questionnaire', service_update_questionnaire_path(@service, questionnaire), method: :patch, class: 'btn btn-success'
+                    = link_to 'Activate Questionnaire', service_update_questionnaire_path(@service, questionnaire), method: :patch, class: 'btn btn-success inactive-questionnaire'
               %td
                 .text-center
                   = link_to edit_service_questionnaire_path(@service, questionnaire), class: 'btn btn-info' do

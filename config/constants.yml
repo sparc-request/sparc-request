@@ -751,7 +751,9 @@ user_credentials: { "MD": 'md',
                     "DNP": 'dnp',
                     "ADN": 'adn',
                     "BA": 'ba',
-                    "Other": 'other' }
+                    "MBA": 'mba',
+                    "Other": 'other',
+                    "None": 'none'}
 audit_actions: { 'create': 'Added',
                  'destroy': 'Removed'}
 additional_detail_question_types: {

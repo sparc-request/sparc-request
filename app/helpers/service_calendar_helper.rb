@@ -22,13 +22,14 @@ module ServiceCalendarHelper
 
   def select_row(line_items_visit, tab, portal, locked)
     checked = line_items_visit.visits.map{|v| v.research_billing_qty >= 1}.all?
-    action = checked == true ? 'unselect_calendar_row' : 'select_calendar_row'
-    icon = checked == true ? 'ui-icon-close' : 'ui-icon-check'
+    check_param = checked ? 'uncheck' : 'check'
+    icon = checked ? 'ui-icon-close' : 'ui-icon-check'
 
     if !locked
       link_to(
           (content_tag(:span, '', :class => "ui-button-icon-primary ui-icon #{icon}") + content_tag(:span, 'Check All', :class => 'ui-button-text')),
-          "/service_requests/#{line_items_visit.line_item.service_request.id}/#{action}/#{line_items_visit.id}?portal=#{portal}",
+          "/service_requests/#{line_items_visit.line_item.service_request.id}/toggle_calendar_row/#{line_items_visit.id}?#{check_param}=true&portal=#{portal}",
+          :method  => :post,
           :remote  => true,
           :role    => 'button',
           :class   => "ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only service_calendar_row",

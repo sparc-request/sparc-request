@@ -23,9 +23,11 @@
     %span{ id: "arm-name-display-#{arm.id}" }
       Service Name
   - if tab != 'calendar'
-    %th.col-sm-2.text-center{ colspan: 2 }
+    %th.col-sm-2.text-center{ colspan: 2}
       Unit Costs
   - else
+    %th.col-sm-2.text-center{ rowspan: 2}
+      Status
     %th.col-sm-1.text-center{ rowspan: 2 }
       Your Cost
     %th.col-sm-1.text-center{ rowspan: 2 }

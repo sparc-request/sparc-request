@@ -20,8 +20,11 @@
 
 class Dashboard::SubServiceRequestsController < Dashboard::BaseController
   before_action :find_sub_service_request,  except: :index
-  before_filter :protocol_authorizer,       only: :update_from_project_study_information
-  before_filter :authorize_admin,           only: :show, unless: :format_js?
+  before_filter :find_service_request,      only: :index
+  before_filter :find_permissions,          only: :index
+  before_filter :find_admin_orgs,           unless: :show_js?
+  before_filter :authorize_protocol,        only: :index
+  before_filter :authorize_admin,           except: :index, unless: :show_js?
 
   respond_to :json, :js, :html
 
@@ -39,7 +42,7 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
         arm_id                            = params[:arm_id] if params[:arm_id]
         page                              = params[:page]   if params[:page]
         session[:service_calendar_pages]  = params[:pages]  if params[:pages]
-        
+
         if page && arm_id
           session[:service_calendar_pages]          = {} unless session[:service_calendar_pages].present?
           session[:service_calendar_pages][arm_id]  = page
@@ -65,23 +68,21 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
       }
 
       format.html { # Admin Edit
+        cookies['admin-tab'] = 'details-tab' unless cookies['admin-tab']
         session[:service_calendar_pages] = params[:pages] if params[:pages]
         session[:breadcrumbs].add_crumbs(protocol_id: @sub_service_request.protocol.id, sub_service_request_id: @sub_service_request.id).clear(:notifications)
         
-        if @user.can_edit_fulfillment?(@sub_service_request.organization)
-          @service_request  = @sub_service_request.service_request
-          @protocol         = @sub_service_request.protocol
+        @service_request  = @sub_service_request.service_request
+        @protocol         = @sub_service_request.protocol
 
-          render
-        else
-          redirect_to dashboard_root_path
-        end
+        render
       }
     end
   end
 
   def update
     if @sub_service_request.update_attributes(params[:sub_service_request])
+      @sub_service_request.update_past_status(current_user)
       flash[:success] = 'Request Updated!'
     else
       @errors = @sub_service_request.errors
@@ -117,35 +118,14 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
 
     session[:service_calendar_pages] = params[:pages] if params[:pages]
     session[:service_calendar_pages][arm_id] = page if page && arm_id
-    
+
     @pages = {}
     @service_request.arms.each do |arm|
       new_page = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i
       @pages[arm.id] = @service_request.set_visit_page(new_page, arm)
     end
-    
+
     @tab = 'calendar'
-  end
-
-  def update_from_project_study_information
-    attrs = params[@protocol.type.downcase.to_sym]
-
-    if @protocol.update_attributes(attrs.merge(study_type_question_group_id: StudyTypeQuestionGroup.active.pluck(:id).first))
-      redirect_to portal_admin_sub_service_request_path(@sub_service_request)
-    else
-      @user_toasts = @user.received_toast_messages.select { |x| x.sending_class == 'SubServiceRequest' }
-      @service_request = @sub_service_request.service_request
-      @protocol.populate_for_edit if @protocol.type == 'Study'
-      @candidate_one_time_fees, @candidate_per_patient_per_visit = @sub_service_request.candidate_services.partition(&:one_time_fee)
-      @subsidy = @sub_service_request.subsidy
-      @notifications = @user.all_notifications.where(sub_service_request_id: @sub_service_request.id)
-      @service_list = @service_request.service_list
-      @related_service_requests = @protocol.all_child_sub_service_requests
-      @approvals = [@service_request.approvals, @sub_service_request.approvals].flatten
-      @selected_arm = @service_request.arms.first
-
-      render action: 'show'
-    end
   end
 
   def push_to_epic
@@ -182,30 +162,54 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
   end
   #History Table Methods End
 
+  #Tab Change Ajax
+  def refresh_tab
+    @service_request = @sub_service_request.service_request
+    @protocol = Protocol.find(params[:protocol_id])
+    @partial_name = params[:partial_name]
+  end
+
+
 private
 
   def find_sub_service_request
     @sub_service_request = SubServiceRequest.find(params[:id])
   end
 
-  def protocol_authorizer
-    @protocol = Protocol.find(params[:protocol_id])
-    authorized_user = ProtocolAuthorizer.new(@protocol, @user)
-
-    if (request.get? && !authorized_user.can_view?) || (!request.get? && !authorized_user.can_edit?)
-      @protocol = nil
-      render partial: 'service_requests/authorization_error', locals: { error: 'You are not allowed to access this protocol.' }
-    end
+  def find_service_request
+    @service_request = ServiceRequest.find(params[:srid])
   end
 
-  def authorize_admin
-    unless (@user.authorized_admin_organizations & @sub_service_request.org_tree).any?
-      @protocol = nil
+  def find_permissions
+    project_roles = @service_request.protocol.project_roles
+
+    @permission_to_edit = project_roles.where(identity_id: @user.id, project_rights: ['approve', 'request']).any?
+    @permission_to_view = project_roles.where(identity_id: @user.id, project_rights: ['view', 'approve', 'request']).any?
+  end
+
+  def find_admin_orgs
+    @admin_orgs = @user.authorized_admin_organizations
+  end
+
+  def authorize_protocol
+    unless @permission_to_view || Protocol.for_admin(@user.id).include?(@service_request.protocol)
+      @sub_service_request  = nil
+      @service_request      = nil
+      @permission_to_edit   = nil
+      @permission_to_view   = nil
+
       render partial: 'service_requests/authorization_error', locals: { error: 'You are not allowed to access this Sub Service Request.' }
     end
   end
 
-  def format_js?
-    request.format.js?
+  def authorize_admin
+    unless (@admin_orgs & @sub_service_request.org_tree).any?
+      @sub_service_request = nil
+      render partial: 'service_requests/authorization_error', locals: { error: 'You are not allowed to access this Sub Service Request.' }
+    end
+  end
+
+  def show_js?
+    action_name == 'show' && request.format.js?
   end
 end

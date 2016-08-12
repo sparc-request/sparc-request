@@ -127,13 +127,15 @@ class Protocol < ActiveRecord::Base
   }
 
   filterrific(
-    default_filter_params: { show_archived: 0 },
+    default_filter_params: { show_archived: 0, sorted_by: 'asc' },
     available_filters: [
       :search_query,
       :admin_filter,
       :show_archived,
       :with_status,
-      :with_organization
+      :with_organization,
+      :with_owner,
+      :sorted_by
     ]
   )
 
@@ -202,6 +204,42 @@ class Protocol < ActiveRecord::Base
     joins(:sub_service_requests).
     where(sub_service_requests: { organization_id: org_id }).distinct
   }
+
+  scope :with_owner, -> (owner_id) {
+    return nil if owner_id.reject!(&:blank?) == []
+    joins(:sub_service_requests).
+    where(sub_service_requests:
+         {organization: Organization.joins(:service_providers).
+                                     where(service_providers: {identity_id: owner_id})})
+  }
+
+  scope :sorted_by, -> (key) {
+    case key
+    when 'id_asc'
+      order(id: :asc)
+    when 'id_desc'
+      order(id: :desc)
+    when 'short_title_asc'
+      order('TRIM(REPLACE(short_title, CHAR(9), " ")) ASC')
+    when 'short_title_desc'
+      order('TRIM(REPLACE(short_title, CHAR(9), " ")) DESC')
+    when 'pi_asc'
+      joins(project_roles: :identity).where(project_roles: { role: 'primary-pi' }).order('.identities.first_name ASC')
+    when 'pi_desc'
+      joins(project_roles: :identity).where(project_roles: { role: 'primary-pi' }).order('.identities.first_name DESC')
+    end
+  }
+
+  def self.options_for_sorted_by
+    [
+      ['ID (0-9)', 'id_asc'],
+      ['ID (9-0)', 'id_desc'],
+      ['Short Title (A-Z)', 'short_title_asc'],
+      ['Short Title (Z-A)', 'short_title_desc'],
+      ['PI (A-Z)', 'pi_asc'],
+      ['PI (Z-A)', 'pi_desc']
+    ]
+  end
 
   def is_study?
     self.type == 'Study'

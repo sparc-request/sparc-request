@@ -497,8 +497,7 @@ class ServiceRequest < ActiveRecord::Base
     self.assign_attributes(status: new_status)
 
     self.sub_service_requests.each do |ssr|
-      next unless ssr.can_be_edited?
-
+      next unless ssr.can_be_edited? && !ssr.is_complete?
       available = AVAILABLE_STATUSES.keys
       editable = EDITABLE_STATUSES[ssr.organization_id] || available
 
@@ -518,16 +517,18 @@ class ServiceRequest < ActiveRecord::Base
 
   # Make sure that all the sub service requests have an ssr id
   def ensure_ssr_ids
-    next_ssr_id = self.protocol.next_ssr_id || 1
+    if self.protocol
+      next_ssr_id = self.protocol.next_ssr_id || 1
 
-    self.sub_service_requests.each do |ssr|
-      if not ssr.ssr_id then
-        ssr.update_attributes(ssr_id: "%04d" % next_ssr_id)
-        next_ssr_id += 1
+      self.sub_service_requests.each do |ssr|
+        if not ssr.ssr_id then
+          ssr.update_attributes(ssr_id: "%04d" % next_ssr_id)
+          next_ssr_id += 1
+        end
       end
-    end
 
-    self.protocol.update_attributes(next_ssr_id: next_ssr_id)
+      self.protocol.update_attributes(next_ssr_id: next_ssr_id)
+    end
   end
 
   def add_or_update_arms

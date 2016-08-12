@@ -18,8 +18,9 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .line_item
-  %div= line_item.service.display_service_abbreviation
-  - if line_item.sub_service_request.can_be_edited?
+  %div
+    = line_item.display_service_abbreviation
+  - if line_item.sub_service_request.can_be_edited? && !line_item.sub_service_request.is_complete? && line_item.optional?
     = link_to(image_tag('cancel.png'), 'javascript:void(0);', :class => 'remove-button', :'data-has_fulfillments' => one_time_fee_fulfillments?(line_item.id), :id => "line_item-#{line_item.id}", :sr_id => "#{@service_request.id}", :ssr_id => "#{@sub_service_request.nil? ? '' : @sub_service_request.id}", :'data-request_submitted' => "#{@service_request.submitted_at?}")
 
 #request_submitted_dialog{style: 'display:none;', title: t(:cart)[:request_submitted1]}

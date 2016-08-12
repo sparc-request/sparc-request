@@ -58,10 +58,11 @@ development:
   system_satisfaction_survey: false
   editable_statuses: { 14: ['first_draft', 'draft', 'submitted', nil, 'get_a_cost_estimate', 'awaiting_pi_approval'],
                      48: ['draft', 'submitted'] }
-  navbar_links: { Dashboard:        'http://localhost:3000/dashboard',
-                  SPARCFulfillment: 'https://cwf-d.obis.musc.edu',
-                  SPARCCatalog:     'http://localhost:3000/catalog_manager',
-                  SPARCReport:      'http://localhost:3000/reports' }
+  navbar_links: { sparc_request:              ['SPARCRequest', 'http://localhost:3000/'],
+                  sparc_dashboard:            ['SPARCDashboard', 'http://localhost:3000/dashboard'],
+                  sparc_fulfillment:          ['SPARCFulfillment', 'https://cwf-d.obis.musc.edu/identities/sign_in'],
+                  sparc_catalog:              ['SPARCCatalog', 'http://localhost:3000/catalog_manager'],
+                  sparc_report:               ['SPARCReport', 'http://localhost:3000/reports'] }
   # API
   remote_service_notifier_protocol: "http"
   remote_service_notifier_host: "127.0.0.1:5001"
@@ -92,10 +93,11 @@ test:
   header_link_3: http://www.musc.edu
   editable_statuses: { 14: ['first_draft', 'draft', 'submitted', nil, 'get_a_cost_estimate', 'awaiting_pi_approval'],
                      48: ['draft', 'submitted'] }
-  navbar_links: { Dashboard:        'http://localhost:3000/dashboard',
-                  SPARCFulfillment: 'https://cwf-d.obis.musc.edu',
-                  SPARCCatalog:     'http://localhost:3000/catalog_manager',
-                  SPARCReport:      'http://localhost:3000/reports' }
+  navbar_links: { sparc_request:              ['SPARCRequest', 'http://localhost:3000/'],
+                  sparc_dashboard:            ['SPARCDashboard', 'http://localhost:3000/dashboard'],
+                  sparc_fulfillment:          ['SPARCFulfillment', 'https://cwf-d.obis.musc.edu/identities/sign_in'],
+                  sparc_catalog:              ['SPARCCatalog', 'http://localhost:3000/catalog_manager'],
+                  sparc_report:               ['SPARCReport', 'http://localhost:3000/reports'] }
   use_indirect_cost: false
   use_shiboleth: true
   use_shibboleth_only: false # set to true to turn off database authentication sign in options

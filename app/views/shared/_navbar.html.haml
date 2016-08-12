@@ -1,7 +1,6 @@
 %ul.navbar
-  - NAVBAR_LINKS.each do |name, path|
-    %li.dashboard
-      = link_to name.to_s, path, target: '_blank'
+  - NAVBAR_LINKS.each do |identifier, details|
+    = navbar_link identifier, details, @highlighted_link
   .right-section
     - if current_user.present?
       .user-login-section

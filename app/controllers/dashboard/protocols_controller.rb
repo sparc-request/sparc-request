@@ -32,7 +32,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     admin_orgs   = @user.authorized_admin_organizations
     @admin       = !admin_orgs.empty?
 
-    default_filter_params = { show_archived: 0 }
+    default_filter_params = { show_archived: 0, sorted_by: 'id_asc' }
 
     # if we are an admin we want to default to admin organizations
     if @admin
@@ -49,7 +49,9 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
         default_filter_params: default_filter_params,
         select_options: {
           with_status: AVAILABLE_STATUSES.invert,
-          with_organization: Dashboard::GroupedOrganizations.new(@organizations).collect_grouped_options
+          with_organization: Dashboard::GroupedOrganizations.new(@organizations).collect_grouped_options,
+          with_owner: build_with_owner_params,
+          sorted_by: Protocol.options_for_sorted_by
         },
         persistence_id: false #resets filters on page reload
       ) || return
@@ -227,6 +229,14 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   private
+
+  def build_with_owner_params
+    service_providers = Identity.joins(:service_providers).where(service_providers: {
+                                organization: Organization.authorized_for_identity(current_user.id) })
+                                .distinct.order("last_name")
+                                
+    service_providers.map{|s| [s.last_name_first, s.id]}
+  end
 
   def find_protocol
     @protocol = Protocol.find(params[:id])

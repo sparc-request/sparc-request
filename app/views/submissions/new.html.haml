@@ -20,6 +20,13 @@
               = qr.number_field :content, class: 'form-control'
             - if item.item_type == 'phone'
               = qr.telephone_field :content, class: 'form-control'
+            - if item.item_type == 'country'
+              = qr.country_select :content,
+                { priority_countries: ['US'], include_blank: true },
+                { class: 'form-control' }
+            - if item.item_type == 'state'
+              = qr.select :content, options_for_select(us_states), {},
+                { class: 'form-control' }
       .form-group
         .col-sm-offset-10.col-sm-2
           = f.submit class: 'btn btn-success'

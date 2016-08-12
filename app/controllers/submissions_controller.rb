@@ -1,5 +1,6 @@
 class SubmissionsController < ApplicationController
   layout 'additional_details'
+  include AdditionalDetails::StatesHelper
 
   def new
     @service = Service.find(params[:service_id])

@@ -383,7 +383,7 @@ class SubServiceRequest < ActiveRecord::Base
   # Callback which gets called after the ssr is saved to ensure that the
   # past status is properly updated.  It should not normally be
   # necessarily to call this method.
-  def update_past_status identity
+  def update_past_status(identity)
     old_status = self.past_statuses.last
     if @prev_status and (not old_status or old_status.status != @prev_status)
       self.past_statuses.create(status: @prev_status, date: Time.now, changed_by_id: identity.id)

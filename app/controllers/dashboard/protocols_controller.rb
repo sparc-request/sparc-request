@@ -238,7 +238,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
       @protocol.activate
     end
   end
-
+  
   def fix_date_params
     attrs               = params[:protocol]
 

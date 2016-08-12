@@ -25,7 +25,7 @@
           = t(:proper)[:review][:pppv_calendars_notice]
       - service_request.arms.each do |arm|
         - next if arm.visit_groups.empty?
-        = render 'service_calendars/master_calendar/pppv/pppv_calendar', tab: tab, arm: arm, service_request: service_request, sub_service_request: sub_service_request, page: pages[arm.id], pages: pages, review: true, portal: portal
+        = render 'service_calendars/master_calendar/pppv/pppv_calendar', tab: tab, arm: arm, service_request: service_request, sub_service_request: sub_service_request, page: pages[arm.id], pages: pages, review: true, portal: portal, merged: false
   .otf-calendars
     .page-header
       %h3

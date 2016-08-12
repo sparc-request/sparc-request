@@ -53,7 +53,7 @@ $(document).ready ->
     i++
 
 calculate_max_rates = (arm_id) ->
-  for num in [1..$('.visit-group-box:visible').length]
+  for num in [1..$(".arm-calendar-container-#{arm_id} .visit-group-box:visible").length]
     column = '.visit-' + num
     visits = $(".arm-calendar-container-#{arm_id}:visible #{column}.visit")
 
@@ -112,6 +112,7 @@ calculate_max_rates = (arm_id) ->
     params: (params) ->
       data = 'line_item': { 'displayed_cost': params.value }
       return data
+    success: ->
 
   $('.edit-subject-count').editable
     params: (params) ->

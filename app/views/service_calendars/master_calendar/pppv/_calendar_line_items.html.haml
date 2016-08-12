@@ -23,10 +23,12 @@
   - ssr    = livs[0].sub_service_request
   - locked = !ssr.can_be_edited?
 
+  -# SSR Header Row
   %tr.organization-header{ class: locked ? 'bg-danger text-danger' : '' }
     %th{ colspan: 14 }
       = display_org_name(org_name, ssr, locked)
 
+  -# Line Items Visits
   - livs.each do |liv|
     %tr{ class: locked ? 'bg-danger text-danger' : '' }
       %td.service-name{ colspan: 2 }

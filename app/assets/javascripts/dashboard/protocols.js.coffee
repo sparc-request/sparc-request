@@ -120,7 +120,7 @@ $(document).ready ->
         protocol_id = $(this).data('protocol-id')
         $.ajax
           method: 'get'
-          url: "/dashboard/service_calendars/view_full_calendar.js?portal=true&protocol_id=#{protocol_id}"
+          url: "/service_calendars/view_full_calendar.js?portal=true&protocol_id=#{protocol_id}"
 
       $(document).on 'click', '.view-service-request', ->
         id = $(this).data('sub-service-request-id')

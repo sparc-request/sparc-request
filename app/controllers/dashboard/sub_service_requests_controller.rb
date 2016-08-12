@@ -54,11 +54,9 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
         @protocol         = @service_request.protocol
         @tab              = 'calendar'
         @portal           = true
-        @thead_class      = 'default_calendar'
         @review           = true
-        @selected_arm     = Arm.find arm_id if arm_id
-        @pages            = {}
 
+        @pages            = {}
         @service_request.arms.each do |arm|
           new_page = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i
           @pages[arm.id] = @service_request.set_visit_page(new_page, arm)

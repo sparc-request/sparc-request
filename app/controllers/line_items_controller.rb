@@ -29,7 +29,7 @@ class LineItemsController < ApplicationController
     if @line_item.update_attributes(params[:line_item])
       @service_request.update_attributes(status: 'draft')
       @line_item.sub_service_request.update_attributes(status: 'draft')
-      render nothing: true
+      render partial: 'update_service_calendar'
     else
       render json: @line_item.errors, status: :unprocessable_entity
     end

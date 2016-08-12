@@ -103,6 +103,7 @@ SparcRails::Application.routes.draw do
     member do
       get 'table'
       get 'merged_calendar'
+      get 'view_full_calendar'
     end
     collection do
       put 'move_visit_position'
@@ -243,7 +244,6 @@ SparcRails::Application.routes.draw do
 
     resources :protocols, except: [:destroy] do
       member do
-        get :view_full_calendar
         patch :update_protocol_type
         get :display_requests
         patch :archive
@@ -259,7 +259,6 @@ SparcRails::Application.routes.draw do
       scope '/protocols', controller: :protocols, except: [:destroy] do
         resources :test, except: [:destroy] do
           member do
-            get :view_full_calendar
             patch :update_protocol_type
             get :display_requests
             patch :archive
@@ -271,26 +270,6 @@ SparcRails::Application.routes.draw do
     resources :protocol_filters, only: [:new, :create]
 
     resources :services, only: [:show]
-
-    resource :service_calendars, only: [:update, :index] do
-      member do
-        get 'table'
-        get 'merged_calendar'
-        get 'view_full_calendar'
-      end
-
-      collection do
-        put 'rename_visit'
-        put 'set_day'
-        put 'set_window_before'
-        put 'set_window_after'
-        put 'update_otf_qty_and_units_per_qty'
-        put 'move_visit_position'
-        put 'show_move_visits'
-        post 'toggle_calendar_row'
-        post 'toggle_calendar_column'
-      end
-    end
 
     resources :service_requests, only: [:show]
 

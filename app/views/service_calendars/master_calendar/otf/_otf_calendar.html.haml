@@ -17,13 +17,12 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-- if (sub_service_request.nil? ? service_request.has_one_time_fee_services? : sub_service_request.has_one_time_fee_services?)
-  .panel.panel-primary.calendar-container
-    .panel-heading
-      %h3.panel-title
-        = t(:calendars)[:otf][:header]
-    %table.table.table-bordered
-      %thead
-        = render 'service_calendars/master_calendar/otf/otf_header', tab: tab, service_request: service_request, sub_service_request: sub_service_request, review: review, portal: portal
-      %tbody
-        = render 'service_calendars/master_calendar/otf/otf_line_items', tab: tab, service_request: service_request, sub_service_request: sub_service_request, review: review, portal: portal
+.panel.panel-primary.calendar-container
+  .panel-heading
+    %h3.panel-title
+      = t(:calendars)[:otf][:header]
+  %table.table.table-bordered
+    %thead
+      = render 'service_calendars/master_calendar/otf/otf_header', tab: tab, service_request: service_request, sub_service_request: sub_service_request, review: review, portal: portal
+    %tbody
+      = render 'service_calendars/master_calendar/otf/otf_line_items', tab: tab, service_request: service_request, sub_service_request: sub_service_request, review: review, portal: portal

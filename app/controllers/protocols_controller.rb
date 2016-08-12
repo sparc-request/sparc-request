@@ -224,7 +224,7 @@ class ProtocolsController < ApplicationController
     end
     # end
   end
-
+  
   def fix_date_params
     attrs               = params[:protocol]
 

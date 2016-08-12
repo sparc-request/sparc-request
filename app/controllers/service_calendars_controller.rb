@@ -19,11 +19,13 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class ServiceCalendarsController < ApplicationController
+  respond_to :html, :js
+  layout false
+  
   before_filter :initialize_service_request
   before_filter(except: [:merged_calendar, :rename_visit]) do |c|
     params[:portal] == 'true' ? true : c.send(:authorize_identity)
   end
-  layout false
 
   def table
     @tab      = params[:tab]
@@ -36,6 +38,11 @@ class ServiceCalendarsController < ApplicationController
     if @sub_service_request
       @candidate_one_time_fees, @candidate_per_patient_per_visit = @sub_service_request.candidate_services.partition { |x| x.one_time_fee }
     end
+
+    respond_to do |format|
+      format.js
+      format.html
+    end
   end
 
   def merged_calendar
@@ -45,6 +52,27 @@ class ServiceCalendarsController < ApplicationController
     @merged = true
 
     setup_calendar_pages
+
+    respond_to do |format|
+      format.js
+      format.html
+    end
+  end
+
+  def view_full_calendar
+    @tab              = 'calendar'
+    @review           = false
+    @portal           = true
+    @merged           = true
+    @protocol         = Protocol.find(params[:protocol_id])
+    @service_request  = @protocol.any_service_requests_to_display?
+
+    setup_calendar_pages
+
+    respond_to do |format|
+      format.js
+      format.html
+    end
   end
 
   def show_move_visits
@@ -79,9 +107,10 @@ class ServiceCalendarsController < ApplicationController
   end
 
   def toggle_calendar_row
-    @line_items_visit = LineItemsVisit.find(params[:line_items_visit_id])
-    @sub_service_request = @line_items_visit.line_item.sub_service_request
-    @service = @line_items_visit.line_item.service if params[:check]
+    @line_items_visit     = LineItemsVisit.find(params[:line_items_visit_id])
+    @sub_service_request  = @line_items_visit.line_item.sub_service_request
+    @service              = @line_items_visit.line_item.service if params[:check]
+    @portal               = params[:portal] == 'true'
 
     @line_items_visit.visits.each do |visit|
       if params[:uncheck]
@@ -90,15 +119,22 @@ class ServiceCalendarsController < ApplicationController
         visit.update_attributes(quantity: @service.displayed_pricing_map.unit_minimum, research_billing_qty: @service.displayed_pricing_map.unit_minimum, insurance_billing_qty: 0, effort_billing_qty: 0)
       end
     end
-    @sub_service_request.update_attribute(:status, "draft") if @sub_service_request
+
+    # Update the sub service request only if we are not in portal; admin's actions should not affect the status
+    if @sub_service_request && !@portal
+      @sub_service_request.update_attribute(:status, "draft")
+      @sub_service_request.update_past_status(@user)
+    end
+
     @service_request.update_attribute(:status, "draft")
-    
+
     render partial: 'update_service_calendar'
   end
 
   def toggle_calendar_column
     column_id = params[:column_id].to_i
-    @arm = Arm.find(params[:arm_id])
+    @arm      = Arm.find(params[:arm_id])
+    @portal   = params[:portal] == 'true'
 
     @service_request.service_list(false).each do |_key, value|
       next unless @sub_service_request.nil? || @sub_service_request.organization.name == value[:process_ssr_organization_name]
@@ -114,7 +150,13 @@ class ServiceCalendarsController < ApplicationController
           
       end
     end
-    @sub_service_request.update_attribute(:status, "draft") if @sub_service_request
+
+    # Update the sub service request only if we are not in portal; admin's actions should not affect the status
+    if @sub_service_request && !@portal
+      @sub_service_request.update_attribute(:status, "draft")
+      @sub_service_request.update_past_status(@user)
+    end
+
     @service_request.update_attribute(:status, "draft")
 
     render partial: 'update_service_calendar'

@@ -27,6 +27,12 @@
         border-bottom: 1px solid #ddd
       th
         border-bottom: 0
+      th.service-header
+        width: 12%
+      th.subject-count-header
+        width: 6%
+      th.select-row-header
+        width: 5%
     td.unit-type-number,
     td.qty-type-number
       height: 100%
@@ -51,7 +57,7 @@
   padding: 8px 0 !important
   .row
     margin: 0
-    .col-xs-4
+    .col-xs-4, .col-sm-12
       padding: 0
 
 .maximum-total-direct-cost-per-patient,
@@ -72,6 +78,9 @@
       a
         background-color: white
         color: #333
-      a:hover
+      a:hover, a:focus
         background-color: #f5f5f5
         color: #262626
+      a:focus
+        outline: thin dotted
+        outline-offset: -2px

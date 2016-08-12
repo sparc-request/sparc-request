@@ -18,6 +18,8 @@
             %th
               Active?
             %th
+              Activate
+            %th
               Edit
             %th
               Delete
@@ -30,6 +32,9 @@
                 = @service.name
               %td
                 = questionnaire.active
+              %td
+                .text-center
+                  = link_to 'Activate Questionnaire', service_update_questionnaire_path(@service, questionnaire), method: :patch, class: 'btn btn-success'
               %td
                 .text-center
                   = link_to edit_service_questionnaire_path(@service, questionnaire), class: 'btn btn-info' do

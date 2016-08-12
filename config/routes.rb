@@ -26,6 +26,7 @@ SparcRails::Application.routes.draw do
   resources :services do
     resources :questionnaires
     resources :submissions
+    resources :update_questionnaires, only: [:update]
   end
 
   if USE_SHIBBOLETH_ONLY

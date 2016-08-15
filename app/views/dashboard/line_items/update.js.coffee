@@ -23,7 +23,7 @@ $("#modal_errors").html("<%= escape_javascript(render( 'shared/modal_errors', er
 <% unless @errors %>
 $("#study-level-activities-table").bootstrapTable 'refresh', {silent: true}
 $(".table").html("<%= escape_javascript(render( 'sub_service_requests/header' )) %>")
-$("#modal_place").modal 'hide';
+$("#modal_place").modal('hide')
 <% end %>
 <% end %>
 $("#flashes_container").html("<%= escape_javascript(render('shared/flash')) %>")

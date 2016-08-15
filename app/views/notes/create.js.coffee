@@ -21,6 +21,7 @@
 $("#modal_place #modal_errors").html("<%= escape_javascript(render( 'shared/modal_errors', errors: @errors )) %>")
 <% elsif @in_dashboard %>
 $("#modal_place").html("<%= escape_javascript(render( 'index', notable_id: @notable_id, notable_type: @notable_type )) %>")
+$("span#<%= @selector %>").html("<%= escape_javascript(@notes.count.to_s) %>")
 $('#notes-table').bootstrapTable()
 <% else %>
 $("#notes-table").bootstrapTable 'refresh', {silent: true}

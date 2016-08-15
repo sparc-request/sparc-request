@@ -86,9 +86,13 @@ namespace :data do
                                               )
 
         if pricing_map.valid?
-          puts service.inspect
-          puts pricing_map.inspect
-          puts "Pricing map created for #{service.name}"
+          puts "New pricing map created for #{service.name}"
+          puts "  full_rate = $ #{pricing_map.full_rate / 100}"
+          puts "  corporate_rate = $ #{pricing_map.corporate_rate / 100}"
+          puts "  federal_rate = $ #{pricing_map.federal_rate / 100}"
+          puts "  member_rate = $ #{pricing_map.member_rate / 100}"
+          puts "  other_rate = $ #{pricing_map.other_rate / 100}"
+          puts ""
           pricing_map.save
         else
           puts "#"*50

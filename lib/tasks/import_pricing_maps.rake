@@ -89,7 +89,7 @@ namespace :data do
           puts service.inspect
           puts pricing_map.inspect
           puts "Pricing map created for #{service.name}"
-          # pricing_map.save
+          pricing_map.save
         else
           puts "#"*50
           puts "Error importing pricing map"

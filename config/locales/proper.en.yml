@@ -115,6 +115,10 @@ en:
     # SERVICE CALENDAR #
     ####################
     service_calendar:
+      move_visit:
+        header: "Move Visit"
+        visit_group: "Visit"
+        position: "Position"
       legend:
         research: "R - Research Coverage"
         third_party: "T - Third Party (PT Insurance) Coverage"

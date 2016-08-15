@@ -52,6 +52,6 @@
         = render 'shared/flash'
       #inner-content.row
         = yield
-      = render 'shared/footer'
+      = render 'layouts/footer'
       = render 'shared/piwik_tracking' if Rails.env == 'production'
       = render 'shared/modal'

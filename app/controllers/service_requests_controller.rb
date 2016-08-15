@@ -52,6 +52,8 @@ class ServiceRequestsController < ApplicationController
       details_params = params[:study] ? params[:study] : params[:project]
       details_params = convert_date_for_save(details_params, :start_date)
       details_params = convert_date_for_save(details_params, :end_date)
+      details_params = convert_date_for_save(details_params, :recruitment_start_date)
+      details_params = convert_date_for_save(details_params, :recruitment_end_date)
 
       @service_request.protocol.update_attributes( details_params ) if @service_request.protocol
       @service_request.group_valid?(:service_details)

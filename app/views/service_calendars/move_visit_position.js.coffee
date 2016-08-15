@@ -17,5 +17,5 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-$(".arm_id_<%= @arm.id %>.service_calendar").replaceWith("<%= escape_javascript(render :partial => '/service_calendars/master_calendar/pppv_calendar', :locals => {:tab => @tab, :arm => @arm, :service_request => @service_request, :portal => @portal}) %>")
+$('#modal_place').modal('hide')
+$('.schedule-tabs .custom-tab.active a').click()

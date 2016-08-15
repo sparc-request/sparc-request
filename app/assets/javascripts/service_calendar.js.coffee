@@ -42,6 +42,14 @@ $(document).ready ->
       data:
         page: page
 
+  $(document).on 'click', '.move-visit-button', ->
+    arm_id = $(this).data('arm-id')
+    $.ajax
+      type: 'GET'
+      url: '/service_calendars/show_move_visits'
+      data: arm_id: arm_id
+    return false
+
 (exports ? this).changing_tabs_calculating_rates = ->
   arm_ids = []
   $('.calendar-container').each (index, arm) ->

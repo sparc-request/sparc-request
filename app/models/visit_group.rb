@@ -25,7 +25,7 @@ class VisitGroup < ActiveRecord::Base
   include Comparable
 
   audited
-
+  
   attr_accessible :name
   attr_accessible :position
   attr_accessible :arm_id

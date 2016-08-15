@@ -76,34 +76,15 @@ class ServiceCalendarsController < ApplicationController
   end
 
   def show_move_visits
-    @arm = Arm.find params[:arm_id]
-    @tab = params[:tab]
-    @portal = params[:portal]
+    @arm = Arm.find( params[:arm_id] )
   end
 
   def move_visit_position
-    @arm = Arm.find params[:arm_id]
-    @tab = params[:tab]
+    arm       = Arm.find( params[:arm_id] )
+    vg        = arm.visit_groups.find( params[:visit_group].to_i )
+    position  = params[:position].blank? ? arm.visit_groups.count : params[:position].to_i
 
-    @portal = params[:portal]
-    @protocol = @service_request.protocol
-
-    visit_to_move = params[:visit_to_move].to_i
-    move_to_position = params[:move_to_position].to_i
-
-    if @portal
-      @candidate_per_patient_per_visit = @sub_service_request.candidate_services.reject { |x| x.one_time_fee }
-    end
-    setup_calendar_pages
-
-    @arm.visit_groups.reload
-    vg = @arm.visit_groups.find_by_position visit_to_move
-    vg.reload
-
-    vg.insert_at(move_to_position)
-
-    @arm.reload
-    @arm.visit_groups.reload
+    vg.insert_at( position - 1 )
   end
 
   def toggle_calendar_row

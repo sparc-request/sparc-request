@@ -1,15 +1,18 @@
 $ ->
+  needOptions = ['radio_button', 'checkbox', 'dropdown', 'multiple_dropdown']
+
+  showOptions = (selection, array) ->
+    $.inArray(selection, array) > -1
+
   $('.select-type').on 'change', ->
     itemId = $(this).data('item-form-id')
-    if $(this).val() == 'radio_button'
-      $(".item-options[data-item-form-id=#{itemId}]").removeClass('hidden')
-    else if $(this).val() == 'checkbox'
-      $(".item-options[data-item-form-id=#{itemId}]").removeClass('hidden')
-    else if $(this).val() == 'dropdown'
-      $(".item-options[data-item-form-id=#{itemId}]").removeClass('hidden')
-    else if $(this).val() == 'multiple_dropdown'
+    if showOptions($(this).val(), needOptions)
       $(".item-options[data-item-form-id=#{itemId}]").removeClass('hidden')
     else
       $(".item-options[data-item-form-id=#{itemId}]").addClass('hidden')
 
+  $.each $('.select-type :selected'), (key, value) ->
+    itemFormId = $(value).parent().data('item-form-id')
+    if showOptions($(value).val(), needOptions)
+      $(".item-options[data-item-form-id=#{itemFormId}]").removeClass('hidden')
 

@@ -156,7 +156,7 @@ module Dashboard
           livs = Array.new
           arm.line_items_visits.each do |line_items_visit|
             line_item = line_items_visit.line_item
-            next unless value[:line_items].include?(line_item)
+            next if !value[:line_items].include?(line_item) || line_item.sub_service_request_id != sub_service_request.id
             livs << line_items_visit
           end
           grouped_livs[value[:name]] = livs unless livs.empty?

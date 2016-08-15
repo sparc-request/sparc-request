@@ -49,10 +49,10 @@ class Notifier < ActionMailer::Base
     @identity = project_role.identity
     @role = project_role.role
     @full_name = @identity.full_name
-    @triggered_by = user_current.id
 
     @protocol = service_request.protocol
     @service_request = service_request
+    @service_requester_id = @service_request.sub_service_requests.first.service_requester_id
 
     @portal_link = DASHBOARD_LINK + "/protocols/#{@protocol.id}"
 
@@ -72,10 +72,10 @@ class Notifier < ActionMailer::Base
     @status = service_request.status
     @role = 'none'
     @full_name = submission_email_address
-    @triggered_by = user_current.id
 
     @protocol = service_request.protocol
     @service_request = service_request
+    @service_requester_id = @service_request.sub_service_requests.first.service_requester_id
     @ssrs_to_be_displayed = service_request.sub_service_requests
 
     @portal_link = DASHBOARD_LINK + "/protocols/#{@protocol.id}"
@@ -94,10 +94,10 @@ class Notifier < ActionMailer::Base
     @status = service_request.status
     @role = 'none'
     @full_name = service_provider.identity.full_name
-    @triggered_by = user_current.id
 
     @protocol = service_request.protocol
     @service_request = service_request
+    @service_requester_id = @service_request.sub_service_requests.first.service_requester_id
 
     @audit_report = audit_report
     @ssr_deleted = ssr_deleted
@@ -112,7 +112,7 @@ class Notifier < ActionMailer::Base
         @ssrs_to_be_displayed << ssr
       end
     end
-    
+
     attachments_to_add.each do |file_name, document|
       next if document.nil?
       attachments["#{file_name}"] = document

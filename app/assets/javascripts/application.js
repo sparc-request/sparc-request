@@ -53,7 +53,6 @@
 //= require assert
 //= require ajax_handler
 
-//= require survey_submit
 //= require global
 //= require associated_users_form
 //= require study_schedule_tabs

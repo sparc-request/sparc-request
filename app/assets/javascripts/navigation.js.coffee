@@ -27,6 +27,6 @@ $(document).ready ->
 
   # We dont want the extra handler on the submit button if we need to use the system
   # satisfaction survey so that we can preventDefault the submit in system_satisfaction.js.coffee
-  #if $('#use_system_satisfaction').val() != 'true'
-  $(document).on 'click', '.form-submit-button', ->
-    $('#service-request-form').submit()
+  if $('#use_system_satisfaction').val() != 'true'
+    $(document).on 'click', '.form-submit-button', ->
+      $('#service-request-form').submit()

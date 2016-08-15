@@ -20,13 +20,15 @@
 !!!
 %html
   %head
+    %title
+      = t(:proper)[:header]
     = stylesheet_link_tag 'application'
-    = surveyor_includes
     = stylesheet_link_tag 'system_satisfaction'
+    = surveyor_includes
     = csrf_meta_tags
     :javascript
       window.I18n = #{current_translations.to_json.html_safe};
-  %body
+  %body#body
     #surveyor-modal.modal-dialog
       .modal-content
         .modal-header
@@ -40,23 +42,7 @@
             = yield
         .modal-footer
           .center-block
-            %a.btn.btn-default.survey-submit-button
+            %a.btn.btn-default#survey-submit-button
               = t(:actions)[:submit]
             %a.btn.btn-default{ data: { dismiss: 'modal' } }
               = t(:actions)[:cancel]
-
-
-/ !!!
-/ %html
-/   %head
-/     %title
-/       = t(:proper)[:header]
-/     = stylesheet_link_tag 'application'
-/     = surveyor_includes
-/     = csrf_meta_tags
-/     :javascript
-/       window.I18n = #{current_translations.to_json.html_safe};
-/   %body#body
-/     #container
-/       #inner-content.row
-/         = yield

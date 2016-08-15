@@ -15,7 +15,7 @@
         .form-group
           = i.label :item_type, class: 'col-sm-2 control-label'
           .col-sm-10
-            = i.select :item_type, options_for_select(ADDITIONAL_DETAIL_QUESTION_TYPES),
+            = i.select :item_type, options_for_select(ADDITIONAL_DETAIL_QUESTION_TYPES, i.object.item_type),
               {}, {class: 'form-control select-type', data: { item_form_id: '__nested_field_for_replace_with_index__' } }
         %div{ class: 'item-options hidden', data: { item_form_id: '__nested_field_for_replace_with_index__' } }
           %h5.text-center

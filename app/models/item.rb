@@ -4,5 +4,5 @@ class Item < ActiveRecord::Base
   has_many :item_options, dependent: :destroy
   validates :content, :item_type, :required, presence: true
 
-  accepts_nested_attributes_for :item_options
+  accepts_nested_attributes_for :item_options, allow_destroy: true
 end

@@ -17,35 +17,22 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-!!!
-%html
-  %head
-    %title
-      = t(:proper)[:header]
-    = stylesheet_link_tag 'application'
-    = javascript_include_tag "application"
-    /[if IE]
-      = stylesheet_link_tag 'ie'
-    /[if gt IE 7]
-      = stylesheet_link_tag 'ie8_plus'
-    /[if lt IE 8]
-      = javascript_include_tag "ie7_warning"
-    = csrf_meta_tags
-    :javascript
-      window.I18n = #{current_translations.to_json.html_safe};
-
-  %body#body
-    #container
-      #header
-        = render 'layouts/header_logos', in_dashboard: false
-        %input#current_user_id{ type: 'hidden', value: @user.try(:id) }
-      = render 'layouts/header', user: @user
-      .flash
-        = render 'shared/flash'
-      #inner-content.row
-        = yield
-      = render 'layouts/footer'
-      = render 'shared/piwik_tracking' if Rails.env == 'production'
-      = render 'shared/ie7_modal'
-      = render 'shared/modal'
+#ie7-warning-modal.hidden
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %button.close{ type: 'button', data: { dismiss: 'modal' } }
+          %span{ aria: { hidden: 'true' } } &times;
+        %h4.text-center#modal-title
+          = t(:ie_warning)[:header]
+      .modal-body
+        .form-group.row
+          %p
+            = t(:ie_warning)[:text1]
+        .form-group.row
+          %p
+            = t(:ie_warning)[:text2]
+      .modal-footer
+        .center-block
+          %button.btn.btn-default{ type: 'button', data: { dismiss: 'modal' } }
+            = t(:actions)[:close]

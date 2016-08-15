@@ -231,27 +231,13 @@ en:
     select_type: "Please Select Type"
     delete_confirm: "Are you sure you want to delete the selected Document from this protocol?"
 
-  #############################
-  # VALIDATION ERROR MESSAGES #
-  #############################
-  errors:
-    arms:
-      visit_day_missing: "Please specify a study day for each visit (%{arm_name})"
-      name_unique: 'must be unique to the Protocol'
-    line_items:
-      displayed_cost_numeric: 'must be a number'
-      displayed_cost_gte_zero: 'must be greater than or equal to 0'
-    line_items_visits:
-      subject_count_invalid: "Subject Count cannot exceed the Arm Subject Count (%{arm_subject_count})"
-    protocols:
-      start_date_missing: "Start Date can\'t be blank"
-      end_date_missing: "End Date can\'t be blank"
-      date_range_invalid: "Start Date must come before End Date"
-    service_requests:
-      line_items_missing: "No Services have been detected in your Cart. Please return to the Catalog and add Services before continuing"
-      protocol_missing: "You must create a Protocol before continuing"
-      protocol_errors: "The selected Protocol has errors which must be fixed. Please edit the Protocol before continuing"
-      arms_missing: "You must create Arms before proceeding to the Service Calendar"
+  ###############
+  # IE7 WARNING #
+  ###############
+  ie_warning:
+    header: "Internet Explorer Version Warning"
+    text1: "Your browser version is out of date. SPARC Request does not support Internet Explorer versions older than version 8."
+    text2: "Using versions lower than 8 can cause data curruption, and other serious problems using this tool."
 
   ##########
   # MODELS #
@@ -430,6 +416,27 @@ en:
       pi: "PI Contribution:"
       cost: "Subsidy Cost:"
 
+  #############################
+  # VALIDATION ERROR MESSAGES #
+  #############################
+  errors:
+    arms:
+      visit_day_missing: "Please specify a study day for each visit (%{arm_name})"
+      name_unique: 'must be unique to the Protocol'
+    line_items:
+      displayed_cost_numeric: 'must be a number'
+      displayed_cost_gte_zero: 'must be greater than or equal to 0'
+    line_items_visits:
+      subject_count_invalid: "Subject Count cannot exceed the Arm Subject Count (%{arm_subject_count})"
+    protocols:
+      start_date_missing: "Start Date can\'t be blank"
+      end_date_missing: "End Date can\'t be blank"
+      date_range_invalid: "Start Date must come before End Date"
+    service_requests:
+      line_items_missing: "No Services have been detected in your Cart. Please return to the Catalog and add Services before continuing"
+      protocol_missing: "You must create a Protocol before continuing"
+      protocol_errors: "The selected Protocol has errors which must be fixed. Please edit the Protocol before continuing"
+      arms_missing: "You must create Arms before proceeding to the Service Calendar"
 
 
 
@@ -463,6 +470,32 @@ en:
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  ###########################################################################################
+  ###########################################################################################
+  ###########################################################################################
+  # THE YML BELOW THIS POINT IS EITHER UNUSED OR USED IN THE CATALOG MANAGER OR POTENTIALLY #
+  # WENT UN-NOTICED WHILE EXTRACTING YML FOR THE NEW PROPER AND DASHBOARD UPGRADES.         #
+  # PLEAES DO NOT ADD ANY NEW YML TO THE BELOW AND INSTEAD ADD IT WITH CONISTENT FORMATTING #
+  # TO THE ABOVE AND OTHER YML FILES (PROPER/DASHBOARD). THANK YOU.                                            #
+  ###########################################################################################
+  ###########################################################################################
+  ###########################################################################################
 
   # Admin Dashboard
   admin_dashboard:

@@ -53,20 +53,20 @@ $(document).ready ->
     max_percent = $(this).data('max-percentage')
     max_dollar_cap = $(this).data('max-dollar-cap')
     subsidy_id = $(this).data('subsidy-id')
-    percent_subsidy_subsidy = (parseFloat($('#percent_subsidy').val()) / 100.0)
+    current_percent_subsidy = (parseFloat($('#percent_subsidy').val()) / 100.0)
     pi_contribution = parseFloat $(this).val().replace('$', '').replace(',', '')
     total_request_cost = parseFloat($(".request_cost[data-subsidy-id='#{subsidy_id}']").data("cost")) / 100.0
     percent_subsidy = (recalculate_percent_subsidy(total_request_cost, pi_contribution) * 100).toFixed(2)
-    original_pi_contribution = recalculate_pi_contribution(total_request_cost, percent_subsidy_subsidy)
+    original_pi_contribution = recalculate_pi_contribution(total_request_cost, current_percent_subsidy)
 
     if parseFloat(percent_subsidy) > parseFloat(max_percent)
       message = "The Percent Subsidy cannot be greater than the max percent of #{max_percent}."
-      current_cost = recalculate_current_cost(total_request_cost, percent_subsidy_subsidy)
-      display_error_and_reset(subsidy_id, percent_subsidy_subsidy, original_pi_contribution, current_cost, max_percent, message)
+      current_cost = recalculate_current_cost(total_request_cost, current_percent_subsidy)
+      display_error_and_reset(subsidy_id, current_percent_subsidy, original_pi_contribution, current_cost, max_percent, message)
     else if recalculate_current_cost(total_request_cost, (percent_subsidy / 100)) > max_dollar_cap
       message = "The Subsidy Cost cannot be greater than the max dollar cap of #{max_dollar_cap}."
-      current_cost = recalculate_current_cost(total_request_cost, percent_subsidy_subsidy)
-      display_error_and_reset(subsidy_id, percent_subsidy_subsidy, original_pi_contribution, current_cost, max_percent, message)
+      current_cost = recalculate_current_cost(total_request_cost, current_percent_subsidy)
+      display_error_and_reset(subsidy_id, current_percent_subsidy, original_pi_contribution, current_cost, max_percent, message)
     else
 
       if isNaN(pi_contribution)

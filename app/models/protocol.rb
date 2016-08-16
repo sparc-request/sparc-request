@@ -227,17 +227,6 @@ class Protocol < ActiveRecord::Base
     end
   }
 
-  def self.options_for_sorted_by
-    [
-      ['ID (0-9)', 'id_asc'],
-      ['ID (9-0)', 'id_desc'],
-      ['Short Title (A-Z)', 'short_title_asc'],
-      ['Short Title (Z-A)', 'short_title_desc'],
-      ['PI (A-Z)', 'pis_asc'],
-      ['PI (Z-A)', 'pis_desc']
-    ]
-  end
-
   def is_study?
     self.type == 'Study'
   end

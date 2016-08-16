@@ -159,7 +159,7 @@ $(document).ready ->
         with_organization = $('#with_organization').val()
         admin_filter      = $('#admin_filter').val()
         sorted_by         = "#{$(this).data('sort-name')} #{$(this).data('sort-order')}"
-        page              = parseInt($('.pagination li.active span').prop('textContent')) || 1
+        page              = $('#page').val() || 1
         data = 
           'page': page
           'filterrific':

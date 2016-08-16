@@ -49,8 +49,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
         select_options: {
           with_status: AVAILABLE_STATUSES.invert,
           with_organization: Dashboard::GroupedOrganizations.new(@organizations).collect_grouped_options,
-          with_owner: build_with_owner_params,
-          sorted_by: Protocol.options_for_sorted_by
+          with_owner: build_with_owner_params
         },
         persistence_id: false #resets filters on page reload
       ) || return
@@ -246,12 +245,11 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   def setup_sorting_variables
     # Set filterrific params for sorting logic, store sorted by to re-apply styling
     @filterrific_params = params[:filterrific] ? params[:filterrific].except(:sorted_by) : @default_filter_params
+    @page               = params[:page]
     @sorted_by          = params[:filterrific][:sorted_by] if params[:filterrific]
     @sort_name          = @sorted_by.split(' ')[0] if @sorted_by
     @sort_order         = @sorted_by.split(' ')[1] if @sorted_by
     @new_sort_order     = (@sort_order == 'asc' ? 'desc' : 'asc') if @sort_order
-    puts "!"*50
-    puts @new_sort_order
   end
 
   def conditionally_activate_protocol

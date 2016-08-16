@@ -30,6 +30,7 @@ class ServiceRequestsController < ApplicationController
   before_filter :authenticate_identity!,          except: [:catalog, :add_service, :remove_service, :ask_a_question, :get_help, :feedback]
   before_filter :authorize_protocol_edit_request, only:   [:catalog]
   before_filter :prepare_catalog,                 only:   [:catalog]
+  before_filter :find_locked_org_ids,             only:   [:catalog]
   before_filter :setup_navigation
 
   before_filter :check_for_subsidy,               only:   [:service_subsidy, :document_management]
@@ -74,27 +75,6 @@ class ServiceRequestsController < ApplicationController
 
   def catalog
     # uses a before filter defined in application controller named 'prepare_catalog', extracted so that devise controllers could use as well
-    @locked_org_ids = []
-
-    if @service_request.protocol.present?
-      @ctrc_ssr_id    = @service_request.protocol.find_sub_service_request_with_ctrc(@service_request)
-
-      @service_request.sub_service_requests.each do |ssr|
-        organization = ssr.organization
-
-        if organization.has_editable_statuses?
-          self_or_parent_id = ssr.find_editable_id(organization.id)
-          if !EDITABLE_STATUSES[self_or_parent_id].include?(ssr.status)
-            @locked_org_ids << self_or_parent_id
-            @locked_org_ids << organization.all_children(Organization.all).map(&:id)
-          end
-        end
-      end
-
-      unless @locked_org_ids.empty?
-        @locked_org_ids = @locked_org_ids.flatten.uniq
-      end
-    end
   end
 
   def protocol

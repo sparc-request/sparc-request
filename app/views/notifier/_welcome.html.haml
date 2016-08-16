@@ -1,4 +1,4 @@
-- welcome_text = @service_request.status == "get_a_cost_estimate" ? I18n.t('notifier.welcome_obtain_research_pricing') : I18n.t('notifier.welcome_submit')
+- welcome_text = I18n.t('notifier.welcome_obtain_research_pricing')
 - if @role != 'none'
   %p= I18n.t('notifier.body1', :full_name => @full_name)
   %p{ :style => 'display: inline;' }

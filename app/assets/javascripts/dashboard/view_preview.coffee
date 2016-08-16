@@ -8,3 +8,5 @@ $ ->
       type: 'GET'
       url: "/services/#{serviceId}/questionnaire/preview"
       data: values
+      error: (error) ->
+        sweetAlert("Error", "Nothing to Preview", "error")

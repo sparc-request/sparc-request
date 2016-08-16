@@ -214,7 +214,7 @@ module Dashboard
 
     def self.select_column(visit_group, n, portal, sub_service_request)
       arm_id = visit_group.arm_id
-      filtered_livs = visit_group.line_items_visits.joins(:line_item).where(line_items: { service_request_id: sub_service_request.service_request_id })
+      filtered_livs = visit_group.line_items_visits.joins(:line_item).where(line_items: { sub_service_request_id: sub_service_request.id })
       checked = filtered_livs.all? { |l| l.visits[n.to_i].research_billing_qty >= 1 }
       icon = checked ? 'glyphicon-remove' : 'glyphicon-ok'
       check_param = checked ? 'uncheck' : 'check'

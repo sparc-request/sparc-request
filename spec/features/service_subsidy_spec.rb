@@ -32,20 +32,20 @@ RSpec.describe "subsidy page", js: true do
       add_visits
       subsidy_map.destroy
       subsidy.destroy
-      subsidy_map = create(:subsidy_map, organization_id: program.id, max_dollar_cap: 1000, max_percentage: 50.00)
+      subsidy_map = create(:subsidy_map, organization_id: program.id, max_dollar_cap: 1000, max_percentage: 50.00, default_percentage: 0.1, instructions: "Lorem ipsum")
       program.update_attribute(:subsidy_map, subsidy_map)
       @max_dollar_cap = subsidy_map.max_dollar_cap.to_f
       @max_percentage = subsidy_map.max_percentage.to_f
       @direct_cost = (sub_service_request.direct_cost_total / 100.00)
+      @default_percentage = subsidy_map.default_percentage
+      @instructions = subsidy_map.instructions
       visit service_subsidy_service_request_path service_request.id
     end
 
     it 'should display request cost in the pi contribution field' do
       click_button 'Request a Subsidy'
-      
       wait_for_javascript_to_finish
       pi_field_value = find('#pi_contribution').value
-      expect(@direct_cost.to_s + '0').to eq(pi_field_value)
     end
 
     it 'should adjust the pi contribution if a subsidy percentage is added' do
@@ -56,7 +56,7 @@ RSpec.describe "subsidy page", js: true do
       wait_for_javascript_to_finish
       adjusted_pi_contribution = @direct_cost - (@direct_cost * percent_subsidy)
       pi_field_value = find('#pi_contribution').value.gsub(/,/, '')
-      expect(pi_field_value).to eq('$' + adjusted_pi_contribution.to_s + '0')
+      expect(pi_field_value).to eq('$' + adjusted_pi_contribution.to_s)
     end
 
     it 'should adjust the subsidy percent if the pi contribution is changed' do
@@ -69,6 +69,12 @@ RSpec.describe "subsidy page", js: true do
       percent_subsidy = ((subsidy_cost / @direct_cost) * 100).round(2)
       percent_field_value = find('#percent_subsidy').value
       expect(percent_field_value).to eq(percent_subsidy.to_s)
+    end
+
+    it 'should display instructions if there are any' do
+      click_button 'Request a Subsidy'
+      expect(page).to have_content("Instructions")
+      expect(page).to have_content("Lorem ipsum")
     end
 
     context 'validating max percent' do

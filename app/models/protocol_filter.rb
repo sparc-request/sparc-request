@@ -24,6 +24,7 @@ class ProtocolFilter < ActiveRecord::Base
 
   serialize :with_organization, Array
   serialize :with_status, Array
+  serialize :with_owner, Array
 
   attr_accessible :identity_id
 

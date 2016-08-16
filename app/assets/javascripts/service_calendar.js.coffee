@@ -21,6 +21,12 @@
 #= require navigation
 
 $(document).ready ->
+  $(document).on 'click', '.page-change-arrow', ->
+    unless $(this).attr('disabled')
+      $.ajax
+        type: 'GET'
+        url: $(this).data('url')
+
   $(document).on 'click', '.service-calendar-row', ->
     if confirm(I18n['calendars']['confirm_row_select'])
       $.ajax

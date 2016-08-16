@@ -1,0 +1,17 @@
+.panel.panel-primary
+  .panel-heading
+    Questionnaire Submission
+  .panel-body
+    = form_for [@service, @submission] do |f|
+      = f.hidden_field :identity_id, value: current_identity.id
+      = f.hidden_field :service_id, value: @service.id
+      - @questionnaire.items.each do |item|
+        = f.fields_for :questionnaire_responses do |qr|
+          = qr.hidden_field :item_id, value: item.id
+          .form-group
+            = qr.label item.content
+            = render "submissions/form_partials/#{item.item_type}_form_partial", item: item, qr: qr
+      - unless controller_name == 'previews'
+        .form-group
+          .col-sm-offset-10.col-sm-2
+            = f.submit class: 'btn btn-success'

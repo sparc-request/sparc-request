@@ -2,6 +2,7 @@
   .panel-heading
     Additional Details Form Builder
   .panel-body
+    = hidden_field_tag 'service_id', service.id
     = form_for [service, questionnaire], html: { class: 'form-horizontal' } do |f|
       .form-group
         = f.label :name, 'Form Name', class: 'col-sm-2 control-label'
@@ -51,3 +52,4 @@
         .col-sm-offset-2.col-sm-10
           = f.add_nested_fields_link :items, 'Add another Question', class: 'btn btn-primary'
           = f.submit class: 'btn btn-success'
+          = link_to 'View Preview', '#', id: 'view-preview', class: 'btn btn-info'

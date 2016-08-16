@@ -133,9 +133,9 @@ module Dashboard
     # Organization B, which belongs to Organization C, return "C > B > A".
     # This "hierarchy" stops at a process_ssrs Organization.
     def self.display_organization_hierarchy(line_items_visit)
-      parent_organizations = line_items_visit.line_item.service.parents
+      parent_organizations = line_items_visit.line_item.service.parents.reverse
       root = parent_organizations.find_index { |org| org.process_ssrs? } || (parent_organizations.length - 1)
-      parent_organizations[0..root].map(&:abbreviation).join(' > ')
+      parent_organizations[0..root].map(&:abbreviation).reverse.join(' > ')
     end
 
     def self.pppv_line_items_visits_to_display(arm, service_request, sub_service_request, opts = {})

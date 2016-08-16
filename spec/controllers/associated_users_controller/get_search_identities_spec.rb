@@ -1,4 +1,3 @@
-# coding: utf-8
 # Copyright © 2011 MUSC Foundation for Research Development
 # All rights reserved.
 
@@ -18,45 +17,48 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+require 'rails_helper'
 
-# Stub out all the methods in ApplicationController so we're not testing
-# them. opts allows you to specify the logged in user. Default behavior is
-# to query the identities table for the record with id session[:identity_id].
-# Sometimes it's desirable to use a mock Identity object; do stub_controller(obj: <mock identity>)
-# in this case. If you don't want to use the session variable, do stub_controller(id: <identity id>).
-def stub_controller(opts = {})
-  before(:each) do
-    allow(controller).to receive(:current_user) do
-      if opts[:id]
-        Identity.find_by_id(opts[:id])
-      elsif opts[:obj]
-        opts[:obj]
-      else
-        Identity.find_by_id(session[:identity_id])
-      end
+RSpec.describe AssociatedUsersController, type: :controller do
+  stub_controller
+  let!(:before_filters) { find_before_filters }
+  let!(:logged_in_user) { create(:identity, first_name: 'Bob', last_name: 'Dole') }
+
+  describe '#search_identities' do
+    it 'should call before_filter #initialize_service_request' do
+      expect(before_filters.include?(:initialize_service_request)).to eq(true)
     end
 
-    allow(controller).to receive(:authorize_identity) { }
+    it 'should call before_filter #authorize_identity' do
+      expect(before_filters.include?(:authorize_identity)).to eq(true)
+    end
 
-    allow(controller).to receive(:authenticate_identity!) { }
+    # it 'should return JSON' do
+    #   protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
+    #   sr        = create(:service_request_without_validations, protocol: protocol)
+
+    #   session[:service_request_id] = sr.id
+
+    #   xhr :get, :search_identities, {
+    #     term: 'Bob'
+    #   }
+      
+    #   json = JSON.parse(response.body)
+    # end
+
+    # it 'should respond ok' do
+    #   protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
+    #   sr        = create(:service_request_without_validations, protocol: protocol)
+
+    #   session[:service_request_id] = sr.id
+
+    #   xhr :get, :search_identities, {
+    #     term: 'Bob'
+    #   }
+      
+    #   json = JSON.parse(response.body)
+
+    #   expect(controller).to respond_with(:ok)
+    # end
   end
-end
-
-# Same as stub_controller, but for controllers which inherit from
-# Portal::BaseController
-def stub_portal_controller
-  before(:each) do
-    allow(controller).to receive(:authenticate_identity!) do
-    end
-
-    allow(controller).to receive(:current_identity) do
-      Identity.find_by_id(session[:identity_id])
-    end
-  end
-end
-
-alias :stub_catalog_manager_controller :stub_portal_controller
-
-def find_before_filters
-  controller._process_action_callbacks.select{ |f| f.kind == :before }.map(&:filter)
 end

@@ -24,11 +24,11 @@ class AssociatedUsersController < ApplicationController
   before_filter :initialize_service_request
   before_filter :authorize_identity
   before_filter :find_protocol_role,          only: [:edit, :destroy]
-  before_filter :find_protocol,               only: [:index, :new, :create, :edit, :update, :destroy]
+  before_filter :find_protocol,               only: [:index, :new, :edit, :destroy]
 
   def index
+    @current_user   = current_user
     @protocol_roles = @protocol.project_roles
-    @current_user = current_user
 
     respond_to do |format|
       format.json
@@ -94,9 +94,9 @@ class AssociatedUsersController < ApplicationController
   end
 
   def destroy
-    @protocol           = @protocol_role.protocol
     epic_access         = @protocol_role.epic_access
-    
+    protocol_role_clone = @protocol_role.clone
+
     @protocol_role.destroy
 
     flash.now[:alert] = t(:authorized_users)[:destroyed]

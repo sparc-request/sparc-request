@@ -26,9 +26,8 @@ class ArmsController < ApplicationController
   before_filter :find_arm, only: [:edit, :update, :destroy]
 
   def index
-    service_request = ServiceRequest.find( params[:srid] )
-    @arms           = service_request.arms
-    @arms_editable  = service_request.arms_editable?
+    @arms           = @service_request.arms
+    @arms_editable  = @service_request.arms_editable?
     @arm_count      = @arms.count
   end
 

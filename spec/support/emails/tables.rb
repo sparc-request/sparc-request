@@ -14,7 +14,7 @@ module EmailHelpers
     expect(mail_response).to have_xpath "//table//strong[text()='User Information']"
     expect(mail_response).to have_xpath "//th[text()='User Name']/following-sibling::th[text()='Contact Information']/following-sibling::th[text()='Role']"
     service_request.protocol.project_roles.each do |role|
-      if identity.id == role.identity.id
+      if identity.id == service_request.sub_service_requests.first.service_requester_id
         requester_flag = " (Requester)"
       else
         requester_flag = ""

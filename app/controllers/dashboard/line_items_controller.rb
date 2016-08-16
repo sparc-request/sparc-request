@@ -75,7 +75,7 @@ class Dashboard::LineItemsController < Dashboard::BaseController
       if @otf
         flash[:success] = t(:dashboard)[:study_level_activities][:updated]
       else
-        render nothing: true
+        render partial: 'service_calendars/update_service_calendar'
       end
     else
       if @otf

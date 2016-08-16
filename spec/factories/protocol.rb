@@ -37,6 +37,8 @@ FactoryGirl.define do
     federal_non_phs_sponsor      { Faker::Lorem.word }
     federal_phs_sponsor          { Faker::Lorem.word }
     requester_id                 1
+    start_date                   { '2015-10-15' }
+    end_date                     { '2015-10-15' }
 
     trait :without_validations do
       to_create { |instance| instance.save(validate: false) }

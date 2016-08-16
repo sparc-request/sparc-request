@@ -149,6 +149,7 @@ class ServiceCalendarsController < ApplicationController
     @pages  = {}
     page    = params[:page] if params[:page]
     arm_id  = params[:arm_id] if params[:arm_id]
+    @arm    = Arm.find(arm_id) if arm_id
 
     session[:service_calendar_pages]          = params[:pages] if params[:pages]
     session[:service_calendar_pages][arm_id]  = page if page && arm_id

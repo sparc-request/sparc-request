@@ -87,7 +87,8 @@ RSpec.describe AssociatedUsersController, type: :controller do
         identity_id: other_user.id
       }
 
-      expect(assigns(:project_role)).to be
+      expect(assigns(:project_role).class).to eq(ProjectRole)
+      expect(assigns(:project_role).protocol).to eq(protocol)
       expect(assigns(:project_role).identity).to eq(other_user)
     end
 

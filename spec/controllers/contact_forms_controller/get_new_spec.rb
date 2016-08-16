@@ -17,21 +17,28 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+require 'rails_helper'
 
-class LineItemsController < ApplicationController
-  respond_to :json, :js, :html
+RSpec.describe ContactFormsController, type: :controller do
+  stub_controller
+  
+  describe '#new' do
+    it 'should assign @contact_form' do
+      xhr :get, :new
 
-  # Used for x-editable update and validations
-  def update
-    @line_item        = LineItem.find( params[:id] )
-    @service_request  = ServiceRequest.find( params[:srid] )
+      expect(assigns(:contact_form).class).to eq(ContactForm)
+    end
 
-    if @line_item.update_attributes(params[:line_item])
-      @service_request.update_attributes(status: 'draft')
-      @line_item.sub_service_request.update_attributes(status: 'draft')
-      render partial: 'service_calendars/update_service_calendar'
-    else
-      render json: @line_item.errors, status: :unprocessable_entity
+    it 'should render template' do
+      xhr :get, :new
+
+      expect(controller).to render_template(:new)
+    end
+
+    it 'should respond ok' do
+      xhr :get, :new
+
+      expect(controller).to respond_with(:ok)
     end
   end
 end

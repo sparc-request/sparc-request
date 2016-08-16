@@ -41,8 +41,7 @@ class Dashboard::DocumentsController < Dashboard::BaseController
   end
 
   def create
-    @document = Document.create(params[:document])
-    @document.update_attributes(protocol_id: @protocol.id)
+    @document = @protocol.documents.create( params[:document] )
 
     if @document.valid?
       assign_organization_access

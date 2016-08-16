@@ -24,7 +24,7 @@ class DocumentsController < ApplicationController
   before_filter :initialize_service_request
   before_filter :authorize_identity
   before_filter :find_document,             only: [:edit, :update, :destroy]
-  before_filter :find_protocol,             only: [:index, :new, :create, :edit, :update]
+  before_filter :find_protocol,             only: [:index, :new, :create, :update]
 
   def index
     @documents = @protocol.documents
@@ -37,7 +37,7 @@ class DocumentsController < ApplicationController
   end
 
   def create
-    @document = Document.create( params[:document].merge(protocol_id: params[:protocol_id] ) )
+    @document = @protocol.documents.create( params[:document] )
 
     if @document.valid?
       assign_organization_access
@@ -52,7 +52,7 @@ class DocumentsController < ApplicationController
 
   def edit
     @header_text  = t(:documents)[:edit]
-    @path         = documents_path(@document)
+    @path         = document_path(@document)
   end
 
   def update

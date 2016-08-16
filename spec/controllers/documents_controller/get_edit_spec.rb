@@ -17,14 +17,15 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 require 'rails_helper'
 
-RSpec.describe ArmsController, type: :controller do
+RSpec.describe DocumentsController, type: :controller do
   stub_controller
   let!(:before_filters) { find_before_filters }
   let!(:logged_in_user) { create(:identity) }
 
-  describe '#new' do
+  describe '#edit' do
     it 'should call before_filter #initialize_service_request' do
       expect(before_filters.include?(:initialize_service_request)).to eq(true)
     end
@@ -33,83 +34,75 @@ RSpec.describe ArmsController, type: :controller do
       expect(before_filters.include?(:authorize_identity)).to eq(true)
     end
 
-    it 'should assign @protocol' do
-      protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
-      sr       = create(:service_request_without_validations, protocol: protocol)
-      
+    it 'should assign @document' do
+      protocol    = create(:protocol_without_validations, primary_pi: logged_in_user)
+      sr          = create(:service_request_without_validations, protocol: protocol)
+      doc         = create(:document, protocol: protocol)
+
       session[:service_request_id] = sr.id
 
-      xhr :get, :new, {
-        protocol_id: protocol.id
+      xhr :get, :edit, {
+        id: doc.id
       }
 
-      expect(assigns(:protocol)).to eq(protocol)
-    end
-
-    it 'should assign @arm' do
-      protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
-      sr       = create(:service_request_without_validations, protocol: protocol)
-      
-      session[:service_request_id] = sr.id
-
-      xhr :get, :new, {
-        protocol_id: protocol.id
-      }
-
-      expect(assigns(:arm).class).to eq(Arm)
-      expect(assigns(:arm).protocol).to eq(protocol)
+      expect(assigns(:document)).to eq(doc)
     end
 
     it 'should assign @header_text' do
-      protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
-      sr       = create(:service_request_without_validations, protocol: protocol)
-      
+      protocol    = create(:protocol_without_validations, primary_pi: logged_in_user)
+      sr          = create(:service_request_without_validations, protocol: protocol)
+      doc         = create(:document, protocol: protocol)
+
       session[:service_request_id] = sr.id
 
-      xhr :get, :new, {
-        protocol_id: protocol.id
+      xhr :get, :edit, {
+        id: doc.id
       }
 
       expect(assigns(:header_text)).to be
     end
 
     it 'should assign @path' do
-      protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
-      sr       = create(:service_request_without_validations, protocol: protocol)
-      
+      protocol    = create(:protocol_without_validations, primary_pi: logged_in_user)
+      sr          = create(:service_request_without_validations, protocol: protocol)
+      doc         = create(:document, protocol: protocol)
+
       session[:service_request_id] = sr.id
 
-      xhr :get, :new, {
-        protocol_id: protocol.id
+      xhr :get, :edit, {
+        id: doc.id
       }
 
-      expect(assigns(:path)).to eq(arms_path(assigns(:arm)))
+      expect(assigns(:path)).to eq(document_path(assigns(:document)))
     end
 
     it 'should render template' do
-      protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
-      sr       = create(:service_request_without_validations, protocol: protocol)
-      
+      protocol    = create(:protocol_without_validations, primary_pi: logged_in_user)
+      sr          = create(:service_request_without_validations, protocol: protocol)
+      doc         = create(:document, protocol: protocol)
+
       session[:service_request_id] = sr.id
 
-      xhr :get, :new, {
-        protocol_id: protocol.id
+      xhr :get, :edit, {
+        id: doc.id
       }
 
-      expect(controller).to render_template(:new)      
+      expect(controller).to render_template(:edit)
     end
 
     it 'should respond ok' do
-      protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
-      sr       = create(:service_request_without_validations, protocol: protocol)
-      
+      protocol    = create(:protocol_without_validations, primary_pi: logged_in_user)
+      sr          = create(:service_request_without_validations, protocol: protocol)
+      doc         = create(:document, protocol: protocol)
+
       session[:service_request_id] = sr.id
 
-      xhr :get, :new, {
-        protocol_id: protocol.id
+      xhr :get, :edit, {
+        id: doc.id
       }
 
       expect(controller).to respond_with(:ok)
     end
   end
 end
+

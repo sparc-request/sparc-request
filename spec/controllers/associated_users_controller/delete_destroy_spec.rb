@@ -62,6 +62,39 @@ RSpec.describe AssociatedUsersController, type: :controller do
       expect(assigns(:protocol)).to eq(protocol)
     end
 
+    it 'should destroy project_role' do
+      protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
+      sr        = create(:service_request_without_validations, protocol: protocol)
+      pr        = create(:project_role, identity: other_user, protocol: protocol)
+
+      session[:service_request_id] = sr.id
+
+      xhr :delete, :destroy, {
+        id: pr.id
+      }
+
+      expect(ProjectRole.count).to eq(1)
+    end
+
+    context 'USE_EPIC && protocol.selected_for_epic && epic_access && !QUEUE_EPIC' do
+      it 'should notify primary pi' do
+        protocol  = create(:protocol_without_validations, primary_pi: logged_in_user, selected_for_epic: true)
+        sr        = create(:service_request_without_validations, protocol: protocol)
+        pr        = create(:project_role, identity: other_user, protocol: protocol, epic_access: true)
+
+        stub_const("USE_EPIC", true)
+        stub_const("QUEUE_EPIC", false)
+
+        session[:service_request_id] = sr.id
+
+        expect {
+          xhr :delete, :destroy, {
+            id: pr.id
+          }
+        }.to change(ActionMailer::Base.deliveries, :count).by(1)
+      end
+    end
+
     it 'should render template' do
       protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr        = create(:service_request_without_validations, protocol: protocol)

@@ -141,10 +141,17 @@
                 %th= t(:organization_form)[:subsidy_max_percent]
                 %td.subsidy_percentage= f_subsidy_map.text_field :max_percentage
               %tr
+                %th= t(:organization_form)[:subsidy_default_percentage]
+                %td.subsidy_default_percentage= f_subsidy_map.text_field :default_percentage, value: display_as_percent(f_subsidy_map.object.default_percentage)
+              %tr
                 %th= t(:organization_form)[:subsidy_max_dollar]
 
                 %td.subsidy_dollar= f_subsidy_map.text_field :max_dollar_cap, value: number_with_precision(f_subsidy_map.object.max_dollar_cap, precision: 2)
               = render 'catalog_manager/shared/excluded_funding_sources', entity: @organization
+              -if ['Program', 'Provider'].include?(@organization.type)
+                %tr
+                  %th= t(:organization_form)[:subsidy_instructions]
+                  %td.subsidy_instructions= f_subsidy_map.text_field :instructions
 
       %fieldset.parent
         .legend= t(:organization_form)[:associated_surveys]

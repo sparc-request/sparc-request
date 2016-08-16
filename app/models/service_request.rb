@@ -27,13 +27,14 @@ class ServiceRequest < ActiveRecord::Base
   belongs_to :protocol
   has_many :sub_service_requests, :dependent => :destroy
   has_many :line_items, -> { includes(:service) }, :dependent => :destroy
+  has_many :line_items_visits, through: :line_items
   has_many :subsidies, through: :sub_service_requests
   has_many :charges, :dependent => :destroy
   has_many :tokens, :dependent => :destroy
   has_many :approvals, :dependent => :destroy
   has_many :arms, :through => :protocol
   has_many :notes, as: :notable, dependent: :destroy
-  
+
   after_save :set_original_submitted_date
 
   validation_group :protocol do
@@ -569,7 +570,7 @@ class ServiceRequest < ActiveRecord::Base
 
     {:line_items => line_item_audits}
   end
-  
+
   def has_non_first_draft_ssrs?
     sub_service_requests.where.not(status: 'first_draft').any?
   end

@@ -10,9 +10,6 @@ class QuestionnairesController < ApplicationController
   def new
     @questionnaire = Questionnaire.new
     @questionnaire.items.build
-    @questionnaire.items.each do |item|
-      item.item_options.build
-    end
   end
 
   def edit

@@ -61,13 +61,13 @@
       - next unless sub_service_request.nil? || sub_service_request.organization.name == value[:process_ssr_organization_name]
       %tr.sub_section_header
         %th{ colspan: 9 }= value[:name]
-        - sub_service_request.one_time_fee_line_items.each do |line_item|
+        - line_items = sub_service_request.nil? ? value[:line_items] : sub_service_request.one_time_fee_line_items
+        - line_items.each do |line_item|
           %tr.line_item
             %td.service_name= line_item.service.name
             %td.your_cost= display_your_cost line_item
             %td{ colspan: 6 }
             %td= display_one_time_fee_direct_cost line_item
-
 
   - elsif study_tracker # display study tracker calendar otf line items
     %th{ colspan: 6 }

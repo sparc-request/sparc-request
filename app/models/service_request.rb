@@ -342,7 +342,7 @@ class ServiceRequest < ActiveRecord::Base
     page
   end
 
-  def service_list is_one_time_fee=nil
+  def service_list(is_one_time_fee=nil, service_provider=nil)
     items = []
     case is_one_time_fee
     when nil
@@ -351,6 +351,10 @@ class ServiceRequest < ActiveRecord::Base
       items = one_time_fee_line_items
     when false
       items = per_patient_per_visit_line_items
+    end
+
+    if service_provider
+      items = service_provider_line_items(service_provider, items)
     end
 
     groupings = {}
@@ -388,6 +392,17 @@ class ServiceRequest < ActiveRecord::Base
     end
 
     groupings
+  end
+
+  # Returns the line items that a service provider is associated with
+  def service_provider_line_items(service_provider, items)
+    service_provider_items = []
+    items.map(&:sub_service_request_id).each do |ssr|
+      if service_provider.identity.is_service_provider?(SubServiceRequest.find(ssr))
+        service_provider_items << SubServiceRequest.find(ssr).line_items
+      end
+    end
+    service_provider_items.flatten.uniq
   end
 
   def has_one_time_fee_services?
@@ -500,6 +515,7 @@ class ServiceRequest < ActiveRecord::Base
     end
 
     self.save(validate: use_validation)
+    
     to_notify
   end
 

@@ -35,7 +35,6 @@ class ProtocolFilter < ActiveRecord::Base
   attr_accessible :with_organization
   attr_accessible :with_status
   attr_accessible :with_owner
-  attr_accessible :sorted_by
 
   scope :latest_for_user, -> (identity_id, limit) {
     where(identity_id: identity_id).
@@ -53,7 +52,6 @@ class ProtocolFilter < ActiveRecord::Base
         with_organization: self.with_organization,
         with_status: self.with_status,
         with_owner: self.with_owner,
-        sorted_by: self.sorted_by
       }
     )
   end

@@ -55,10 +55,6 @@
                 %optgroup{ label: org_type[0] }
                   - org_type[1].each do |org|
                     %option{ value: org[1], selected: filterrific.with_organization && filterrific.with_organization.include?(org[1]), data: {content: org[0]} }
-        .form-group.row
-          = form.label :sorted_by, t(:dashboard)[:protocol_filters][:sort_by], class: 'col-lg-3 control-label'
-          .col-lg-9
-            = form.select :sorted_by, filterrific.select_options[:sorted_by], {}, class: 'form-control selectpicker sort-select'
         - if admin
           %hr
           .form-group.row

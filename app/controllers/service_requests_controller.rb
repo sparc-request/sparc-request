@@ -520,7 +520,6 @@ class ServiceRequestsController < ApplicationController
     else
       approval = false
     end
-
     # send e-mail to all folks with view and above
     service_request.protocol.project_roles.each do |project_role|
       next if project_role.project_rights == 'none'

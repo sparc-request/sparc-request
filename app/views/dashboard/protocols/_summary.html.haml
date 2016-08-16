@@ -3,8 +3,10 @@
     %h4.panel-title.pull-left
       = protocol_type + t(:dashboard)[:protocols][:summary][:header]
     .pull-right
-      %button.btn.btn-sm.btn-default.notes.list{ data: { notable_type: "Protocol", notable_id: protocol.id } }
+      %button.btn.btn-sm.btn-success.notes.list{ data: { notable_type: "Protocol", notable_id: protocol.id } }
         = protocol_type + t(:dashboard)[:protocols][:summary][:notes]
+        %span.badge{id: "protocol_#{protocol.id}_notes"}
+          = protocol.notes.count
       %button.btn.btn-sm.btn-info.view-protocol-details-button{ data: { protocol_id: protocol.id } }
         = t(:dashboard)[:protocols][:summary][:view_details1] + protocol_type + t(:dashboard)[:protocols][:summary][:view_details2]
       = edit_protocol_button_display(protocol, permission_to_edit)

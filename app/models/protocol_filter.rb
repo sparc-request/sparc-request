@@ -24,6 +24,7 @@ class ProtocolFilter < ActiveRecord::Base
 
   serialize :with_organization, Array
   serialize :with_status, Array
+  serialize :with_owner, Array
 
   attr_accessible :identity_id
 
@@ -33,6 +34,8 @@ class ProtocolFilter < ActiveRecord::Base
   attr_accessible :search_query
   attr_accessible :with_organization
   attr_accessible :with_status
+  attr_accessible :with_owner
+  attr_accessible :sorted_by
 
   scope :latest_for_user, -> (identity_id, limit) {
     where(identity_id: identity_id).
@@ -48,7 +51,9 @@ class ProtocolFilter < ActiveRecord::Base
         admin_filter: self.admin_filter,
         search_query: self.search_query,
         with_organization: self.with_organization,
-        with_status: self.with_status
+        with_status: self.with_status,
+        with_owner: self.with_owner,
+        sorted_by: self.sorted_by
       }
     )
   end

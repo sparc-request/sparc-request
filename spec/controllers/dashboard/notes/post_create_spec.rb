@@ -44,10 +44,11 @@ RSpec.describe Dashboard::NotesController do
         @notable_obj = findable_stub(MyNotableType) do
           MyNotableType.new(2)
         end
+
+        @note = build_stubbed(:note)
         allow(@notable_obj).to receive(:notes).and_return("all my notes")
 
-        allow(Note).to receive(:create).
-          and_return("my new note")
+        allow(Note).to receive(:create).and_return(@note)
 
         log_in_dashboard_identity(obj: @logged_in_user)
         xhr :get, :create, note: { identity_id: "-1", notable_type: "MyNotableType",
@@ -64,7 +65,7 @@ RSpec.describe Dashboard::NotesController do
       end
 
       it "should assign @note to the newly created Note" do
-        expect(assigns(:note)).to eq("my new note")
+        expect(assigns(:note)).to eq(@note)
       end
 
       it "should assign @notes to notable object's Notes" do

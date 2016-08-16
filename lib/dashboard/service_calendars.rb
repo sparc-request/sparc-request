@@ -142,10 +142,6 @@ module Dashboard
           arm.line_items_visits.each do |line_items_visit|
             line_item = line_items_visit.line_item
             next unless value[:line_items].include?(line_item)
-            if %w(first_draft draft).include?(line_item.sub_service_request.status)
-              next if portal
-              next if service_request != line_item.service_request
-            end
             livs << line_items_visit
           end
           grouped_livs[value[:name]] = livs unless livs.empty?
@@ -162,7 +158,6 @@ module Dashboard
           grouped_livs[value[:name]] = livs unless livs.empty?
         end
       end
-
       grouped_livs
     end
 
@@ -227,11 +222,11 @@ module Dashboard
 
     def self.select_column(visit_group, n, portal, sub_service_request)
       arm_id = visit_group.arm_id
-      filtered_livs = visit_group.line_items_visits.joins(:line_item).where(line_items: { service_request_id: sub_service_request.service_request_id })
+      filtered_livs = visit_group.line_items_visits.joins(:line_item).where(line_items: { sub_service_request_id: sub_service_request.id })
       checked = filtered_livs.all? { |l| l.visits[n.to_i].research_billing_qty >= 1 }
       icon = checked ? 'glyphicon-remove' : 'glyphicon-ok'
       check_param = checked ? 'uncheck' : 'check'
-      
+
       url = "/dashboard/service_calendars/toggle_calendar_column?#{check_param}=true&sub_service_request_id=#{sub_service_request.id}&column_id=#{n + 1}&arm_id=#{arm_id}&portal=#{portal}"
 
       link_to(content_tag(:span, '', class: "glyphicon #{icon}"), url,

@@ -25,13 +25,15 @@ class Dashboard::SubsidiesController < Dashboard::BaseController
     @subsidy = PendingSubsidy.new(sub_service_request_id: params[:sub_service_request_id])
     @header_text = t(:dashboard)[:subsidies][:new]
     @admin = params[:admin] == 'true'
+    @subsidy.percent_subsidy = @subsidy.default_percentage
   end
 
   def create
     format_percent_subsidy_param
     @subsidy = PendingSubsidy.new(params[:pending_subsidy].except(:pi_contribution))
-    admin_param = params[:admin]
-    if (admin_param == 'true') && (params[:pending_subsidy][:percent_subsidy] != 0)
+    admin_param = params[:admin] == 'true'
+
+    if admin_param && (params[:pending_subsidy][:percent_subsidy] != 0)
       @subsidy.save(validate: false)
       perform_subsidy_creation(admin_param)
     else
@@ -53,9 +55,10 @@ class Dashboard::SubsidiesController < Dashboard::BaseController
   def update
     @subsidy = PendingSubsidy.find(params[:id])
     @sub_service_request = @subsidy.sub_service_request
-    admin_param = params[:admin]
+    admin_param = params[:admin] == 'true'
     format_percent_subsidy_param
-    if (admin_param == 'true') && (params[:pending_subsidy][:percent_subsidy] != 0)
+
+    if admin_param && (params[:pending_subsidy][:percent_subsidy] != 0)
       @subsidy.assign_attributes(params[:pending_subsidy].except(:pi_contribution))
       @subsidy.save(validate: false)
       perform_subsidy_update(admin_param)
@@ -96,7 +99,7 @@ class Dashboard::SubsidiesController < Dashboard::BaseController
 
   def perform_subsidy_creation(admin_param=false)
     @sub_service_request = @subsidy.sub_service_request
-    @admin = admin_param == 'true'
+    @admin = admin_param
     flash[:success] = t(:dashboard)[:subsidies][:created]
     unless @admin
       redirect_to dashboard_sub_service_request_path(@sub_service_request, format: :js)
@@ -104,7 +107,7 @@ class Dashboard::SubsidiesController < Dashboard::BaseController
   end
 
   def perform_subsidy_update(admin_param=false)
-    @admin = admin_param == 'true'
+    @admin = admin_param
     flash[:success] = t(:dashboard)[:subsidies][:updated]
     unless @admin
       redirect_to dashboard_sub_service_request_path(@sub_service_request, format: :js)

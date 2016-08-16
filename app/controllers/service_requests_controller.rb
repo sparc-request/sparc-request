@@ -25,7 +25,6 @@ class ServiceRequestsController < ApplicationController
 
   before_filter :initialize_service_request,      except: [:approve_changes, :get_help, :feedback]
   before_filter :validate_step,                   only:   [:protocol, :service_details, :service_calendar, :service_subsidy, :document_management, :review, :obtain_research_pricing, :confirmation]
-  before_filter :set_navigation_errors,           only:   [:protocol, :service_details, :service_calendar, :service_subsidy, :document_management, :review, :obtain_research_pricing, :confirmation]
   before_filter :authorize_identity,              except: [:approve_changes, :get_help, :feedback, :show]
   before_filter :authenticate_identity!,          except: [:catalog, :add_service, :remove_service, :ask_a_question, :get_help, :feedback]
   before_filter :authorize_protocol_edit_request, only:   [:catalog]
@@ -144,15 +143,9 @@ class ServiceRequestsController < ApplicationController
   end
 
   def review
-    arm_id = params[:arm_id].to_s if params[:arm_id]
-    page = params[:page] if params[:page]
-    session[:service_calendar_pages] = params[:pages] if params[:pages]
-    session[:service_calendar_pages][arm_id] = page if page && arm_id
-    @thead_class = 'red-provider'
     @review = true
     @portal = false
-    @service_list = @service_request.service_list
-    @protocol = @service_request.protocol
+    @merged = false
 
     # Reset all the page numbers to 1 at the start of the review request
     # step.
@@ -160,9 +153,6 @@ class ServiceRequestsController < ApplicationController
     @service_request.arms.each do |arm|
       @pages[arm.id] = 1
     end
-
-    @tab = 'calendar'
-    @review = true
   end
 
   def obtain_research_pricing
@@ -416,7 +406,9 @@ class ServiceRequestsController < ApplicationController
 
   def validate_catalog
     unless @service_request.group_valid?(:catalog)
-      session[:errors] = @service_request.errors
+      @service_request.errors.full_messages.each do |m|
+        flash[:error] = m
+      end
       redirect_to catalog_service_request_path(@service_request) and return false
     end
     return true
@@ -424,7 +416,9 @@ class ServiceRequestsController < ApplicationController
 
   def validate_protocol
     unless @service_request.group_valid?(:protocol)
-      session[:errors] = @service_request.errors
+      @service_request.errors.full_messages.each do |m|
+        flash[:error] = m
+      end
       redirect_to protocol_service_request_path(@service_request) and return false
     end
     return true
@@ -432,7 +426,9 @@ class ServiceRequestsController < ApplicationController
 
   def validate_service_details
     unless @service_request.group_valid?(:service_details)
-      session[:errors] = @service_request.errors
+      @service_request.errors.full_messages.each do |m|
+        flash[:error] = m
+      end
       redirect_to service_details_service_request_path(@service_request) and return false
     end
     return true
@@ -440,14 +436,12 @@ class ServiceRequestsController < ApplicationController
 
   def validate_service_calendar
     unless @service_request.group_valid?(:service_calendar)
-      session[:errors] = @service_request.errors
+      @service_request.errors.full_messages.each do |m|
+        flash[:error] = m
+      end
       redirect_to service_calendar_service_request_path(@service_request) and return false
     end
     return true
-  end
-
-  def set_navigation_errors
-    @errors = session[:errors]
   end
 
   def setup_navigation

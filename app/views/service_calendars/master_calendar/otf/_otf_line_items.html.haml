@@ -27,6 +27,7 @@
       = display_org_name(value[:name], ssr, locked)
 
   - value[:line_items].each do |line_item|
+    - next if portal && merged && ['first_draft', 'draft'].include?(ssr.status)
     - displayed_pricing_map = line_item.service.displayed_pricing_map
     - otf_unit_type         = displayed_pricing_map.try(:otf_unit_type)
     - otf_qty_type          = displayed_pricing_map.try(:quantity_type)

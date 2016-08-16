@@ -30,6 +30,7 @@
 
   -# Line Items Visits
   - livs.each do |liv|
+    - next if portal && merged && ['first_draft', 'draft'].include?(ssr.status)
     %tr{ class: locked ? 'bg-danger text-danger' : '' }
       %td.service-name{ colspan: 2 }
         = liv.service.display_service_name

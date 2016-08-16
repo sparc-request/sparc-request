@@ -73,7 +73,6 @@ class ServiceCalendarsController < ApplicationController
       format.js
       format.html
     end
-    line_item.sub_service_request.update_attribute(:status, "draft") if line_item.sub_service_request
   end
 
   def show_move_visits

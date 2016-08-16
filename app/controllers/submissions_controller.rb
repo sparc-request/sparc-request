@@ -4,7 +4,7 @@ class SubmissionsController < ApplicationController
 
   def new
     @service = Service.find(params[:service_id])
-    @questionnaire = @service.questionnaires.first
+    @questionnaire = @service.questionnaires.active.first
     @submission = Submission.new
     @submission.questionnaire_responses.build
   end

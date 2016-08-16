@@ -49,6 +49,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
         select_options: {
           with_status: AVAILABLE_STATUSES.invert,
           with_organization: Dashboard::GroupedOrganizations.new(@organizations).collect_grouped_options,
+          with_owner: build_with_owner_params,
           sorted_by: Protocol.options_for_sorted_by
         },
         persistence_id: false #resets filters on page reload
@@ -229,6 +230,14 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   private
+
+  def build_with_owner_params
+    service_providers = Identity.joins(:service_providers).where(service_providers: {
+                                organization: Organization.authorized_for_identity(current_user.id) })
+                                .distinct.order("last_name")
+                                
+    service_providers.map{|s| [s.last_name_first, s.id]}
+  end
 
   def find_protocol
     @protocol = Protocol.find(params[:id])

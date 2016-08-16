@@ -14,7 +14,7 @@
       %tr{:style => 'border: 1px solid black;'}
         %td{:style => 'border: 1px solid black; text-align: center;'}= pr.identity.full_name
         %td{:style => 'border: 1px solid black; text-align: center;'}= pr.identity.email
-        - if pr.identity.id == @triggered_by
+        - if pr.identity.id == @service_requester_id
           %td{:style => 'border: 1px solid black; text-align: center;'}= pr.role.upcase + " " + t(:notifier)[:requester]
         - else
           %td{:style => 'border: 1px solid black; text-align: center;'}= pr.role.upcase

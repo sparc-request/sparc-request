@@ -648,6 +648,7 @@ en:
     sub_service_requests:
       header:
         status: "Status"
+        lock_message: "Request is in a locked status, and cannot be changed."
         owner: "Owner"
         fulfillment:
           header: "Fulfillment"
@@ -976,6 +977,8 @@ en:
     subsidy_info: "Subsidy Information"
     subsidy_max_dollar: "Max Dollar Cap"
     subsidy_max_percent: "Max Percentage"
+    subsidy_default_percentage: "Default Percentage"
+    subsidy_instructions: "Instructions"
     super_users: "Super Users"
     tag_list: "Tags"
     user_rights: "User Rights"
@@ -1464,6 +1467,8 @@ en:
     pricing_setup: "Pricing Setup"
     subsidy_info: "Subsidy Information"
     subsidy_max_percent: "Max Percentage"
+    subsidy_default_percentage: "Default Percentage"
+    subsidy_instructions: "Instructions"
     subsidy_max_dollar: "Max Dollar Cap"
     actions: "Actions:"
     submit_button: "Save"

@@ -515,6 +515,7 @@ class ServiceRequest < ActiveRecord::Base
     end
 
     self.save(validate: use_validation)
+    
     to_notify
   end
 

@@ -89,7 +89,7 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
     updater = Dashboard::AssociatedUserUpdater.new(id: params[:id], project_role: params[:project_role])
     
     if updater.successful?
-      #We care about this because the new rights will determine what is rendered
+      # We care about this because the new rights will determine what is rendered
       if @current_user_updated = params[:project_role][:identity_id].to_i == @user.id
         @protocol_type      = @protocol.type
         protocol_role       = updater.protocol_role
@@ -110,9 +110,19 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
   end
 
   def destroy
+    modified_user       = Identity.find(@protocol_role.identity_id)
     @protocol           = @protocol_role.protocol
     epic_access         = @protocol_role.epic_access
     protocol_role_clone = @protocol_role.clone
+    action              = "destroy"
+    @send_email         = send_email?(@protocol)
+
+    # Alert authorized users of deleted authorized user
+    if SEND_AUTHORIZED_USER_EMAILS && @send_email
+      @protocol.emailed_associated_users.each do |project_role|
+        UserMailer.authorized_user_changed(project_role.identity, @protocol, modified_user, action).deliver unless project_role.identity.email.blank?
+      end
+    end
     
     @protocol_role.destroy
     
@@ -146,6 +156,16 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
   end
 
 private
+
+  def send_email?(protocol)
+    # Iterate through ssr's to collect status'
+    statuses = []
+    protocol.sub_service_requests.each do |ssr|
+      statuses << ssr.status
+    end
+    # Do not send email if all statuses for protocol are 'draft'
+    !(statuses.uniq.length == 1 && statuses.first == "draft")
+  end
 
   def find_protocol_role
     @protocol_role = ProjectRole.find(params[:id])

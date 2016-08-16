@@ -23,6 +23,8 @@ $(document).ready ->
 
   # SERVICE REQUEST INFO LISTENERS BEGIN
 
+  $("#service_request_status_dropdown .btn-danger").tooltip(trigger: 'click')
+
   $(document).on 'change', '#sub_service_request_owner', ->
     ssr_id = $(this).data('sub_service_request_id')
     owner_id = $(this).val()

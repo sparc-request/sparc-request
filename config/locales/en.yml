@@ -647,6 +647,7 @@ en:
     sub_service_requests:
       header:
         status: "Status"
+        lock_message: "Request is in a locked status, and cannot be changed."
         owner: "Owner"
         fulfillment:
           header: "Fulfillment"

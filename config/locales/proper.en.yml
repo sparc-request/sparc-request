@@ -23,7 +23,7 @@ en:
     ##########
     # HEADER #
     ##########
-    header: "SPARC Request"
+    header: "SPARCRequest"
 
     ##########
     # NAVBAR #

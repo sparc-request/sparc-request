@@ -142,10 +142,6 @@ module Dashboard
           arm.line_items_visits.each do |line_items_visit|
             line_item = line_items_visit.line_item
             next unless value[:line_items].include?(line_item)
-            if %w(first_draft draft).include?(line_item.sub_service_request.status)
-              next if portal
-              next if service_request != line_item.service_request
-            end
             livs << line_items_visit
           end
           grouped_livs[value[:name]] = livs unless livs.empty?
@@ -162,7 +158,6 @@ module Dashboard
           grouped_livs[value[:name]] = livs unless livs.empty?
         end
       end
-
       grouped_livs
     end
 
@@ -225,7 +220,9 @@ module Dashboard
 
     def self.select_column(visit_group, n, portal, service_request, sub_service_request)
       arm_id        = visit_group.arm_id
-      filtered_livs = visit_group.line_items_visits.joins(:line_item).where(line_items: { service_request_id: service_request.id })
+      # If we are in proper, we want to use service request, othewise in dashboard, we use SSR for admin study schedule
+      liv_query     = sub_service_request ? { sub_service_request_id: sub_service_request.id } : { service_request_id: service_request.id }
+      filtered_livs = visit_group.line_items_visits.joins(:line_item).where(line_items: liv_query)
       checked       = filtered_livs.all? { |l| l.visits[n.to_i].research_billing_qty >= 1 }
       check_param   = checked ? 'uncheck' : 'check'
       icon          = checked ? 'glyphicon-remove' : 'glyphicon-ok'

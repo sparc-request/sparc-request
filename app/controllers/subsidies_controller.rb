@@ -26,6 +26,7 @@ class SubsidiesController < ApplicationController
     @header_text = t(:subsidies)[:new]
     @admin = false
     @path = subsidies_path
+    @subsidy.percent_subsidy = @subsidy.default_percentage
   end
 
   def create
@@ -46,10 +47,6 @@ class SubsidiesController < ApplicationController
     @header_text = t(:subsidies)[:edit]
     @admin = false
     @path = subsidy_path(@subsidy)
-    
-    puts "!"*50
-    puts @subsidy.inspect
-
   end
 
   def update

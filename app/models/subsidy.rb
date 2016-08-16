@@ -29,15 +29,11 @@ class Subsidy < ActiveRecord::Base
   attr_accessible :status
   attr_accessible :percent_subsidy
 
-  delegate :organization, to: :sub_service_request, allow_nil: true
+  delegate :organization, :direct_cost_total, to: :sub_service_request, allow_nil: true
   delegate :subsidy_map, to: :organization, allow_nil: true
-  delegate :max_dollar_cap, to: :subsidy_map, allow_nil: true
-  delegate :max_percentage, to: :subsidy_map, allow_nil: true
-
-  delegate :direct_cost_total, to: :sub_service_request, allow_nil: true
+  delegate :max_dollar_cap, :max_percentage, :default_percentage, to: :subsidy_map, allow_nil: true
   alias_attribute :total_request_cost, :direct_cost_total
 
-  validates_presence_of :pi_contribution
   validate :contribution_caps
 
   def pi_contribution

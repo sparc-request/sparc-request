@@ -47,7 +47,7 @@ RSpec.describe ServiceCalendarsController do
       xhr :post, :move_visit_position, {
         arm_id: arm.id,
         visit_group: vg1.id,
-        position: '3'
+        position: 3
       }
 
       expect(vg1.reload.position).to eq(2)

@@ -18,8 +18,60 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$('.user-details-left').html("<%= escape_javascript(render :partial => 'shared/user_details_left', :locals => {:identity => @identity, :project_role => @project_role, :can_edit => @can_edit}) %>")
-$('.user-details-right').html("<%= escape_javascript(render :partial => 'shared/user_details_right', :locals => {:identity => @identity, :project_role => @project_role, :can_edit => @can_edit}) %>")
-$('.user-details-js').html("<%= escape_javascript(render :partial => 'shared/user_details') %>")
-$('.user-details-left').show()
-$('.user-details-right').show()
+require 'rails_helper'
+
+RSpec.describe IdentitiesController do
+  stub_controller
+
+  describe '#approve_account' do
+    it 'should assign @identity' do
+      identity = create(:identity)
+
+      xhr :get, :approve_account, {
+        id: identity.id
+      }
+
+      expect(assigns(:identity)).to eq(identity)
+    end
+
+    it 'should update approved status' do
+      identity = create(:identity)
+
+      xhr :get, :approve_account, {
+        id: identity.id
+      }
+
+      expect(identity.reload.approved).to eq(true)      
+    end
+
+    it 'should send notifications' do
+      identity = create(:identity)
+
+      expect {
+        xhr :get, :approve_account, {
+          id: identity.id
+        }
+      }.to change(ActionMailer::Base.deliveries, :count).by(1)
+    end
+
+    it 'should render template' do
+      identity = create(:identity)
+
+      xhr :get, :approve_account, {
+        id: identity.id
+      }
+
+      expect(controller).to render_template(:approve_account)
+    end
+
+    it 'should respond ok' do
+      identity = create(:identity)
+
+      xhr :get, :approve_account, {
+        id: identity.id
+      }
+
+      expect(controller).to respond_with(:ok)
+    end
+  end
+end

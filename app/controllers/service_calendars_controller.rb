@@ -90,21 +90,20 @@ class ServiceCalendarsController < ApplicationController
     @portal               = params[:portal] == 'true'
 
     @line_items_visit.visits.each do |visit|
-      if params[:uncheck]
-        visit.update_attributes(quantity: 0, research_billing_qty: 0, insurance_billing_qty: 0, effort_billing_qty: 0)
-      elsif params[:check]
+      if params[:check]
         visit.update_attributes(quantity: @service.displayed_pricing_map.unit_minimum, research_billing_qty: @service.displayed_pricing_map.unit_minimum, insurance_billing_qty: 0, effort_billing_qty: 0)
+      elsif params[:uncheck]
+        visit.update_attributes(quantity: 0, research_billing_qty: 0, insurance_billing_qty: 0, effort_billing_qty: 0)
       end
     end
 
-    # Update the sub service request only if we are not in portal; admin's actions should not affect the status
-    if !@portal
-      @sub_service_request = @line_items_visit.line_item.sub_service_request
-      @sub_service_request.update_attribute(:status, "draft")
-      @sub_service_request.update_past_status(@user)
+    # Update the sub service request only if we are not in dashboard; admin's actions should not affect the status
+    unless @portal
+      sub_service_request = @line_items_visit.line_item.sub_service_request
+      sub_service_request.update_attribute(:status, "draft")
+      sub_service_request.update_past_status(current_user)
+      @service_request.update_attribute(:status, "draft")
     end
-
-    @service_request.update_attribute(:status, "draft")
 
     render partial: 'update_service_calendar'
   end
@@ -125,17 +124,18 @@ class ServiceCalendarsController < ApplicationController
         elsif params[:uncheck]
           visit.update_attributes quantity: 0, research_billing_qty: 0, insurance_billing_qty: 0, effort_billing_qty: 0
         end
-          
       end
     end
 
-    # Update the sub service request only if we are not in portal; admin's actions should not affect the status
-    if @sub_service_request && !@portal
-      @sub_service_request.update_attribute(:status, "draft")
-      @sub_service_request.update_past_status(@user)
+    # Update the sub service request only if we are not in dashboard; admin's actions should not affect the status
+    unless @portal
+      @arm.line_items.map(&:sub_service_request).uniq.each do |ssr|
+        next if @sub_service_request && ssr != @sub_service_request
+        ssr.update_attribute(:status, "draft")
+        ssr.update_past_status(current_user)
+      end
+      @service_request.update_attribute(:status, "draft")
     end
-
-    @service_request.update_attribute(:status, "draft")
 
     render partial: 'update_service_calendar'
   end

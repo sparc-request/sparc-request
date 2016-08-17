@@ -18,17 +18,60 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class IdentitiesController < ApplicationController
+require 'rails_helper'
 
-  def approve_account
-    @identity = Identity.find params[:id]
-    @identity.update_attribute(:approved, true)
-    Notifier.account_status_change(@identity, true).deliver unless @identity.email.blank?
-  end
+RSpec.describe IdentitiesController do
+  stub_controller
 
-  def disapprove_account
-    @identity = Identity.find params[:id]
-    @identity.update_attribute(:approved, false)
-    Notifier.account_status_change(@identity, false).deliver unless @identity.email.blank?
+  describe '#disapprove_account' do
+    it 'should assign @identity' do
+      identity = create(:identity)
+
+      xhr :get, :disapprove_account, {
+        id: identity.id
+      }
+
+      expect(assigns(:identity)).to eq(identity)
+    end
+
+    it 'should update approved status' do
+      identity = create(:identity)
+
+      xhr :get, :disapprove_account, {
+        id: identity.id
+      }
+
+      expect(identity.reload.approved).to eq(false)      
+    end
+
+    it 'should send notifications' do
+      identity = create(:identity)
+
+      expect {
+        xhr :get, :disapprove_account, {
+          id: identity.id
+        }
+      }.to change(ActionMailer::Base.deliveries, :count).by(1)
+    end
+
+    it 'should render template' do
+      identity = create(:identity)
+
+      xhr :get, :disapprove_account, {
+        id: identity.id
+      }
+
+      expect(controller).to render_template(:disapprove_account)
+    end
+
+    it 'should respond ok' do
+      identity = create(:identity)
+
+      xhr :get, :disapprove_account, {
+        id: identity.id
+      }
+
+      expect(controller).to respond_with(:ok)
+    end
   end
 end

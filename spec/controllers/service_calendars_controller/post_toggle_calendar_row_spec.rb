@@ -35,95 +35,70 @@ RSpec.describe ServiceCalendarsController do
     end
 
     it 'should assign @line_items_visit' do
-      org      = create(:organization)
-      service  = create(:service)
-      protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
-      sr       = create(:service_request_without_validations, protocol: protocol)
-      ssr      = create(:sub_service_request_without_validations, organization: org, service_request: sr)
-      arm      = create(:arm, protocol: protocol)
-      li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
-      liv      = create(:line_items_visit, line_item: li, arm: arm)
-      vg       = create(:visit_group, arm: arm)
-      v        = create(:visit, line_items_visit: liv, visit_group: vg)
-
-      session[:service_request_id] = sr.id
-
-      xhr :post, :toggle_calendar_row, {
-        line_items_visit_id: liv.id,
-        check: 'true'
-      }
-
-      expect(assigns(:line_items_visit)).to eq(liv)
-    end
-
-    it 'should assign @portal' do
-      org      = create(:organization)
-      service  = create(:service)
-      protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
-      sr       = create(:service_request_without_validations, protocol: protocol)
-      ssr      = create(:sub_service_request_without_validations, organization: org, service_request: sr)
-      arm      = create(:arm, protocol: protocol)
-      li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
-      liv      = create(:line_items_visit, line_item: li, arm: arm)
-      vg       = create(:visit_group, arm: arm)
-      v        = create(:visit, line_items_visit: liv, visit_group: vg)
+      org       = create(:organization)
+      service   = create(:service)
+      protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
+      sr        = create(:service_request_without_validations, protocol: protocol, status: 'on_hold')
+      ssr       = create(:sub_service_request_without_validations, organization: org, service_request: sr, status: 'on_hold')
+      arm       = create(:arm, protocol: protocol)
+      li        = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
+      liv       = create(:line_items_visit, line_item: li, arm: arm)
+      vg        = create(:visit_group, arm: arm)
+      v         = create(:visit, line_items_visit: liv, visit_group: vg)
 
       session[:service_request_id] = sr.id
 
       xhr :post, :toggle_calendar_row, {
         line_items_visit_id: liv.id,
         check: 'true',
-        portal: 'false'
+        portal: 'true'
       }
 
-      expect(assigns(:portal)).to eq(false)
+      expect(assigns(:line_items_visit)).to eq(liv)
     end
 
-    context 'uncheck' do
-      it 'should update visits' do
-        org      = create(:organization)
-        service  = create(:service)
-        protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
-        sr       = create(:service_request_without_validations, protocol: protocol)
-        ssr      = create(:sub_service_request_without_validations, organization: org, service_request: sr)
-        arm      = create(:arm, protocol: protocol)
-        li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
-        liv      = create(:line_items_visit, line_item: li, arm: arm)
-        vg       = create(:visit_group, arm: arm)
-        v        = create(:visit, line_items_visit: liv, visit_group: vg, quantity: 1, research_billing_qty: 1, insurance_billing_qty: 1, effort_billing_qty: 1)
+    it 'should assign @portal' do
+      org       = create(:organization)
+      service   = create(:service)
+      protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
+      sr        = create(:service_request_without_validations, protocol: protocol, status: 'on_hold')
+      ssr       = create(:sub_service_request_without_validations, organization: org, service_request: sr, status: 'on_hold')
+      arm       = create(:arm, protocol: protocol)
+      li        = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
+      liv       = create(:line_items_visit, line_item: li, arm: arm)
+      vg        = create(:visit_group, arm: arm)
+      v         = create(:visit, line_items_visit: liv, visit_group: vg)
 
-        session[:service_request_id] = sr.id
+      session[:service_request_id] = sr.id
 
-        xhr :post, :toggle_calendar_row, {
-          line_items_visit_id: liv.id,
-          uncheck: 'true'
-        }
+      xhr :post, :toggle_calendar_row, {
+        line_items_visit_id: liv.id,
+        check: 'true',
+        portal: 'true'
+      }
 
-        expect(v.reload.quantity).to eq(0)
-        expect(v.reload.research_billing_qty).to eq(0)
-        expect(v.reload.insurance_billing_qty).to eq(0)
-        expect(v.reload.effort_billing_qty).to eq(0)
-      end
+      expect(assigns(:portal)).to eq(true)
     end
 
     context 'check' do
       it 'should update visits' do
-        org      = create(:organization)
-        service  = create(:service)
-        protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
-        sr       = create(:service_request_without_validations, protocol: protocol)
-        ssr      = create(:sub_service_request_without_validations, organization: org, service_request: sr)
-        arm      = create(:arm, protocol: protocol)
-        li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
-        liv      = create(:line_items_visit, line_item: li, arm: arm)
-        vg       = create(:visit_group, arm: arm)
-        v        = create(:visit, line_items_visit: liv, visit_group: vg, quantity: 0, research_billing_qty: 0, insurance_billing_qty: 1, effort_billing_qty: 1)
+        org       = create(:organization)
+        service   = create(:service)
+        protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
+        sr        = create(:service_request_without_validations, protocol: protocol, status: 'on_hold')
+        ssr       = create(:sub_service_request_without_validations, organization: org, service_request: sr, status: 'on_hold')
+        arm       = create(:arm, protocol: protocol)
+        li        = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
+        liv       = create(:line_items_visit, line_item: li, arm: arm)
+        vg        = create(:visit_group, arm: arm)
+        v         = create(:visit, line_items_visit: liv, visit_group: vg, quantity: 0, research_billing_qty: 0, insurance_billing_qty: 1, effort_billing_qty: 1)
 
         session[:service_request_id] = sr.id
 
         xhr :post, :toggle_calendar_row, {
           line_items_visit_id: liv.id,
-          check: 'true'
+          check: 'true',
+          portal: 'true'
         }
 
         expect(v.reload.quantity).to eq(1)
@@ -133,45 +108,150 @@ RSpec.describe ServiceCalendarsController do
       end
     end
 
+    context 'uncheck' do
+      it 'should update visits' do
+        org       = create(:organization)
+        service   = create(:service)
+        protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
+        sr        = create(:service_request_without_validations, protocol: protocol, status: 'on_hold')
+        ssr       = create(:sub_service_request_without_validations, organization: org, service_request: sr, status: 'on_hold')
+        arm       = create(:arm, protocol: protocol)
+        li        = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
+        liv       = create(:line_items_visit, line_item: li, arm: arm)
+        vg        = create(:visit_group, arm: arm)
+        v         = create(:visit, line_items_visit: liv, visit_group: vg, quantity: 1, research_billing_qty: 1, insurance_billing_qty: 1, effort_billing_qty: 1)
+
+        session[:service_request_id] = sr.id
+
+        xhr :post, :toggle_calendar_row, {
+          line_items_visit_id: liv.id,
+          uncheck: 'true',
+          portal: 'true'
+        }
+
+        expect(v.reload.quantity).to eq(0)
+        expect(v.reload.research_billing_qty).to eq(0)
+        expect(v.reload.insurance_billing_qty).to eq(0)
+        expect(v.reload.effort_billing_qty).to eq(0)
+      end
+    end
+
+    context 'not in dashboard' do
+      it 'should update sub service request status' do
+        org       = create(:organization)
+        service   = create(:service)
+        protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
+        sr        = create(:service_request_without_validations, protocol: protocol, status: 'on_hold')
+        ssr       = create(:sub_service_request_without_validations, organization: org, service_request: sr, status: 'on_hold')
+        arm       = create(:arm, protocol: protocol)
+        li        = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
+        liv       = create(:line_items_visit, line_item: li, arm: arm)
+        vg        = create(:visit_group, arm: arm)
+        v         = create(:visit, line_items_visit: liv, visit_group: vg)
+
+        session[:identity_id]        = logged_in_user.id
+        session[:service_request_id] = sr.id
+
+        xhr :post, :toggle_calendar_row, {
+          line_items_visit_id: liv.id,
+          check: 'true',
+          portal: 'false'
+        }
+
+        expect(ssr.reload.status).to eq('draft')
+      end
+
+      it 'should create past status' do
+        org       = create(:organization)
+        service   = create(:service)
+        protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
+        sr        = create(:service_request_without_validations, protocol: protocol, status: 'on_hold')
+        ssr       = create(:sub_service_request_without_validations, organization: org, service_request: sr, status: 'on_hold')
+        arm       = create(:arm, protocol: protocol)
+        li        = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
+        liv       = create(:line_items_visit, line_item: li, arm: arm)
+        vg        = create(:visit_group, arm: arm)
+        v         = create(:visit, line_items_visit: liv, visit_group: vg)
+
+        session[:identity_id]        = logged_in_user.id
+        session[:service_request_id] = sr.id
+
+        xhr :post, :toggle_calendar_row, {
+          line_items_visit_id: liv.id,
+          check: 'true',
+          portal: 'false'
+        }
+
+        expect(PastStatus.count).to eq(1)
+        expect(PastStatus.first.sub_service_request).to eq(ssr)
+      end
+
+      it 'should update service request status' do
+        org       = create(:organization)
+        service   = create(:service)
+        protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
+        sr        = create(:service_request_without_validations, protocol: protocol, status: 'on_hold')
+        ssr       = create(:sub_service_request_without_validations, organization: org, service_request: sr, status: 'on_hold')
+        arm       = create(:arm, protocol: protocol)
+        li        = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
+        liv       = create(:line_items_visit, line_item: li, arm: arm)
+        vg        = create(:visit_group, arm: arm)
+        v         = create(:visit, line_items_visit: liv, visit_group: vg)
+
+        session[:identity_id]        = logged_in_user.id
+        session[:service_request_id] = sr.id
+
+        xhr :post, :toggle_calendar_row, {
+          line_items_visit_id: liv.id,
+          check: 'true',
+          portal: 'false'
+        }
+
+        expect(sr.reload.status).to eq('draft')
+      end
+    end
+
     it 'should render template' do
-      org      = create(:organization)
-      service  = create(:service)
-      protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
-      sr       = create(:service_request_without_validations, protocol: protocol)
-      ssr      = create(:sub_service_request_without_validations, organization: org, service_request: sr)
-      arm      = create(:arm, protocol: protocol)
-      li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
-      liv      = create(:line_items_visit, line_item: li, arm: arm)
-      vg       = create(:visit_group, arm: arm)
-      v        = create(:visit, line_items_visit: liv, visit_group: vg)
+      org       = create(:organization)
+      service   = create(:service)
+      protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
+      sr        = create(:service_request_without_validations, protocol: protocol, status: 'on_hold')
+      ssr       = create(:sub_service_request_without_validations, organization: org, service_request: sr, status: 'on_hold')
+      arm       = create(:arm, protocol: protocol)
+      li        = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
+      liv       = create(:line_items_visit, line_item: li, arm: arm)
+      vg        = create(:visit_group, arm: arm)
+      v         = create(:visit, line_items_visit: liv, visit_group: vg)
 
       session[:service_request_id] = sr.id
 
       xhr :post, :toggle_calendar_row, {
         line_items_visit_id: liv.id,
-        check: 'true'
+        check: 'true',
+        portal: 'true'
       }
 
       expect(controller).to render_template(partial: '_update_service_calendar')
     end
 
     it 'should respond ok' do
-      org      = create(:organization)
-      service  = create(:service)
-      protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
-      sr       = create(:service_request_without_validations, protocol: protocol)
-      ssr      = create(:sub_service_request_without_validations, organization: org, service_request: sr)
-      arm      = create(:arm, protocol: protocol)
-      li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
-      liv      = create(:line_items_visit, line_item: li, arm: arm)
-      vg       = create(:visit_group, arm: arm)
-      v        = create(:visit, line_items_visit: liv, visit_group: vg)
+      org       = create(:organization)
+      service   = create(:service)
+      protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
+      sr        = create(:service_request_without_validations, protocol: protocol, status: 'on_hold')
+      ssr       = create(:sub_service_request_without_validations, organization: org, service_request: sr, status: 'on_hold')
+      arm       = create(:arm, protocol: protocol)
+      li        = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
+      liv       = create(:line_items_visit, line_item: li, arm: arm)
+      vg        = create(:visit_group, arm: arm)
+      v         = create(:visit, line_items_visit: liv, visit_group: vg)
 
       session[:service_request_id] = sr.id
 
       xhr :post, :toggle_calendar_row, {
         line_items_visit_id: liv.id,
-        check: 'true'
+        check: 'true',
+        portal: 'true'
       }
 
       expect(controller).to respond_with(:ok)

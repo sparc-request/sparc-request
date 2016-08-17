@@ -35,13 +35,8 @@ SparcRails::Application.routes.draw do
                }
   end
 
-  resources :identities, only: [:show] do
-    collection do
-      post 'add_to_protocol'
-    end
-
+  resources :identities, only: [] do
     member do
-      post 'show'
       get 'approve_account'
       get 'disapprove_account'
     end

@@ -30,9 +30,9 @@ class ServiceRequestsController < ApplicationController
   before_filter :authorize_protocol_edit_request, only:   [:catalog]
   before_filter :prepare_catalog,                 only:   [:catalog]
   before_filter :find_locked_org_ids,             only:   [:catalog]
+  before_filter :check_for_subsidy,               only:   [:service_subsidy, :document_management]
   before_filter :setup_navigation
 
-  before_filter :check_for_subsidy,               only:   [:service_subsidy, :document_management]
   def show
     @protocol = @service_request.protocol
     @admin_offset = params[:admin_offset]

@@ -189,45 +189,6 @@ RSpec.describe ApplicationController, type: :controller do
     end
   end
 
-  describe '#setup_navigation' do
-    build_service_request_with_study
-
-    context 'action is not navigate' do
-      before(:each) { session[:service_request_id] = service_request.id }
-
-      it 'should always set @page to params[:action]' do
-        routes.draw { get 'not_navigate' => 'anonymous#not_navigate' }
-        get :not_navigate, current_location: 'http://www.example.com/something/something/darkside'
-        expect(assigns(:page)).to eq 'not_navigate'
-
-        allow(controller.request).to receive(:referrer).and_return('http://www.example.com/foo/bar')
-        get :not_navigate
-        expect(assigns(:page)).to eq 'not_navigate'
-      end
-    end
-
-    context 'action is navigate' do
-      before(:each) { session[:service_request_id] = service_request.id }
-
-      context 'params[:current_location] present' do
-        it 'should assign @page to page referred to by params[:current_location]' do
-          routes.draw { get 'navigate' => 'anonymous#navigate' }
-          get :navigate, current_location: 'my current location'
-          expect(assigns(:page)).to eq 'my current location'
-        end
-      end
-
-      context 'params[:current_location] absent' do
-        it 'should assign @page to page referred to by request referrer' do
-          routes.draw { get 'navigate' => 'anonymous#navigate' }
-          allow(controller.request).to receive(:referrer).and_return('http://www.example.com/foo/bar')
-          get :navigate
-          expect(assigns(:page)).to eq 'bar'
-        end
-      end
-    end
-  end
-
   describe '#initialize_service_request' do
     build_service_request_with_study
 

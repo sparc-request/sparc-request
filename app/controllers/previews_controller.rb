@@ -1,6 +1,6 @@
 class PreviewsController < ApplicationController
 
-  def show
+  def create
     @service = Service.find(params[:service_id])
     @questionnaire = Questionnaire.new(questionnaire_params)
     @submission = Submission.new

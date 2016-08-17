@@ -26,7 +26,7 @@ SparcRails::Application.routes.draw do
   resources :services do
     resources :questionnaires
     resource :questionnaire do
-      resource :preview, only: [:show]
+      resource :preview, only: [:create]
     end
     resources :submissions
     resources :update_questionnaires, only: [:update]

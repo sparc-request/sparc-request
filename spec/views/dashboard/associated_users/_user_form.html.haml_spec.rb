@@ -1,8 +1,8 @@
 require 'rails_helper'
 
 RSpec.describe 'dashboard/associated_users/_user_form', type: :view do
+	
 	let_there_be_lane
-	let_there_be_j
 
 	def render_user_form(epic = false)
 		project_role = build_stubbed(:project_role)

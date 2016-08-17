@@ -19,7 +19,7 @@ class AdditionalDetails::QuestionnairesController < ApplicationController
     @questionnaire = Questionnaire.new(questionnaire_params)
     @questionnaire.service = Service.find(params[:service_id])
     if @questionnaire.save
-      redirect_to service_questionnaires_path(@service)
+      redirect_to service_additional_details_questionnaires_path(@service)
     else
       render :new
     end
@@ -28,7 +28,7 @@ class AdditionalDetails::QuestionnairesController < ApplicationController
   def update
     @questionnaire.update_attributes(questionnaire_params)
     if @questionnaire.save
-      redirect_to service_questionnaires_path(@service)
+      redirect_to service_additional_details_questionnaires_path(@service)
     else
       render :edit
     end
@@ -36,7 +36,7 @@ class AdditionalDetails::QuestionnairesController < ApplicationController
 
   def destroy
     @questionnaire.destroy
-    redirect_to service_questionnaires_path(@service)
+    redirect_to service_additional_details_questionnaires_path(@service)
   end
 
   private

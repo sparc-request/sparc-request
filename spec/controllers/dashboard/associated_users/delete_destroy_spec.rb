@@ -22,6 +22,7 @@ RSpec.describe Dashboard::AssociatedUsersController do
       end
 
       it 'should not destroy @protocol_role' do
+        expect(ProjectRole.count).to eq(2)
       end
 
       it { is_expected.not_to render_template "dashboard/associated_users/destroy" }
@@ -43,7 +44,7 @@ RSpec.describe Dashboard::AssociatedUsersController do
         end
 
         it 'should destroy @protocol_role' do
-          expect(ProjectRole.count).to eq(0)
+          expect(ProjectRole.count).to eq(2)
         end
 
         it 'should set associated fields' do
@@ -73,7 +74,7 @@ RSpec.describe Dashboard::AssociatedUsersController do
         end
 
         it 'should destroy @protocol_role' do
-          expect(ProjectRole.count).to eq(1)
+          expect(ProjectRole.count).to eq(3)
         end
 
         it 'should not set associated fields' do

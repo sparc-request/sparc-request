@@ -104,6 +104,56 @@ RSpec.describe 'Protocol' do
     end
   end
 
+  describe "email_about_change_in_authorized_user(modified_user, action)" do
+    context "SEND_AUTHORIZED_USER_EMAILS: TRUE && SSRs all have status of 'draft'" do
+      it 'should not send emails' do
+        identity     = create(:identity)
+        action       = 'added'
+        organization = create(:organization)
+        create(:sub_service_request_without_validations, service_request: service_request, organization: organization, status: 'draft')
+        stub_const("SEND_AUTHORIZED_USER_EMAILS", true)
+        mail_response = project.email_about_change_in_authorized_user(identity, action)
+        expect(mail_response).to eq nil
+      end
+    end
+
+    context "SEND_AUTHORIZED_USER_EMAILS: FALSE && SSRs all have status of 'draft'" do
+      it 'should not send emails' do
+        identity     = create(:identity)
+        action       = 'added'
+        organization = create(:organization)
+        create(:sub_service_request_without_validations, service_request: service_request, organization: organization, status: 'draft')
+        stub_const("SEND_AUTHORIZED_USER_EMAILS", false)
+        mail_response = project.email_about_change_in_authorized_user(identity, action)
+        expect(mail_response).to eq nil
+      end
+    end
+
+    context "SEND_AUTHORIZED_USER_EMAILS: TRUE && one SSR has status of 'complete'" do
+      it 'should send emails' do
+        identity     = create(:identity)
+        action       = 'added'
+        organization = create(:organization)
+        create(:sub_service_request_without_validations, service_request: service_request, organization: organization, status: 'complete')
+        stub_const("SEND_AUTHORIZED_USER_EMAILS", true)
+        mail_response = project.email_about_change_in_authorized_user(identity, action)
+        expect(mail_response).to eq(project.project_roles)
+      end
+    end
+
+    context "SEND_AUTHORIZED_USER_EMAILS: FALSE && one SSR has status of 'complete'" do
+      it 'should not send emails' do
+        identity     = create(:identity)
+        action       = 'added'
+        organization = create(:organization)
+        create(:sub_service_request_without_validations, service_request: service_request, organization: organization, status: 'complete')
+        stub_const("SEND_AUTHORIZED_USER_EMAILS", false)
+        mail_response = project.email_about_change_in_authorized_user(identity, action)
+        expect(mail_response).to eq nil
+      end
+    end     
+  end
+
   describe ".notify_remote_around_update?", delay: true do
 
     context ":short_title update present" do

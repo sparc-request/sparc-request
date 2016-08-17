@@ -259,6 +259,8 @@ class Protocol < ActiveRecord::Base
 
   def email_about_change_in_authorized_user(modified_user, action)
     # Alert authorized users of deleted authorized user
+    # Send emails if SEND_AUTHORIZED_USER_EMAILS is set to true and if there are any non-draft SSRs
+    # For example:  if a SR has SSRs all with a status of 'draft', don't send emails
     if SEND_AUTHORIZED_USER_EMAILS && sub_service_requests.where.not(status: 'draft').any?
       emailed_associated_users.each do |project_role|
         UserMailer.authorized_user_changed(project_role.identity, self, modified_user, action).deliver unless project_role.identity.email.blank?

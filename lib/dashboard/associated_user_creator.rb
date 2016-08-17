@@ -3,6 +3,8 @@ module Dashboard
     attr_reader :protocol_role
 
     def initialize(params)
+      action = "add"
+      modified_user = Identity.find(params[:identity_id])
       protocol = Protocol.find(params[:protocol_id])
       @protocol_role = protocol.project_roles.build(params)
 
@@ -14,11 +16,8 @@ module Dashboard
           end
         end
         @protocol_role.save
-        if SEND_AUTHORIZED_USER_EMAILS
-          protocol.emailed_associated_users.each do |project_role|
-            UserMailer.authorized_user_changed(project_role.identity, protocol).deliver unless project_role.identity.email.blank?
-          end
-        end
+        
+        protocol.email_about_change_in_authorized_user(modified_user, action)
 
         if USE_EPIC && protocol.selected_for_epic && !QUEUE_EPIC
           Notifier.notify_for_epic_user_approval(protocol).deliver

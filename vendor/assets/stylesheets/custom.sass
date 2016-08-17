@@ -42,6 +42,14 @@
   .underline
     :text-decoration underline
 
+  // This is required for IE, empty li elements were displaying
+  ol li.quiet
+    display: none
+
+  ol li.text.optional
+    list-style-image: url(data:0)
+  //
+
   input
     :font-size 1em
     :border 1px none

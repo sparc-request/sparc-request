@@ -20,115 +20,124 @@
 
 require 'rails_helper'
 
-RSpec.describe ArmsController, type: :controller do
+RSpec.describe NotesController, type: :controller do
   stub_controller
-  let!(:before_filters) { find_before_filters }
   let!(:logged_in_user) { create(:identity) }
 
-  describe '#update' do
-    it 'should call before_filter #initialize_service_request' do
-      expect(before_filters.include?(:initialize_service_request)).to eq(true)
-    end
-
-    it 'should call before_filter #authorize_identity' do
-      expect(before_filters.include?(:authorize_identity)).to eq(true)
-    end
-
-    it 'should assign @arm' do
+  describe '#index' do
+    it 'should assign @notable_id' do
       protocol    = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr          = create(:service_request_without_validations, protocol: protocol)
-      arm         = create(:arm_without_validations, protocol: protocol)
-      arm_params  = { name: 'Armada', subject_count: 1, visit_count: 1 }
+      note_params = { notable_id: sr.id, notable_type: 'ServiceRequest' }
 
       session[:service_request_id] = sr.id
 
-      xhr :put, :update, {
-        id: arm.id,
-        arm: arm_params
+      xhr :get, :index, {
+        note: note_params
       }
 
-      expect(assigns(:arm)).to eq(arm)
+      expect(assigns(:notable_id)).to eq(sr.id.to_s)
     end
 
-    context 'arm valid' do
-      it 'should update arm' do
-        protocol    = create(:protocol_without_validations, primary_pi: logged_in_user)
-        sr          = create(:service_request_without_validations, protocol: protocol)
-        arm         = create(:arm_without_validations, protocol: protocol)
-        arm_params  = { name: 'Armada', subject_count: 1, visit_count: 1 }
+    it 'should assign @notable_type' do
+      protocol    = create(:protocol_without_validations, primary_pi: logged_in_user)
+      sr          = create(:service_request_without_validations, protocol: protocol)
+      note_params = { notable_id: sr.id, notable_type: 'ServiceRequest' }
 
-        session[:service_request_id] = sr.id
+      session[:service_request_id] = sr.id
 
-        xhr :put, :update, {
-          id: arm.id,
-          arm: arm_params
-        }
+      xhr :get, :index, {
+        note: note_params
+      }
 
-        expect(arm.reload.name).to eq('Armada')
-      end
+      expect(assigns(:notable_type)).to eq('ServiceRequest')
     end
 
-    context 'arm invalid' do
-      it 'should not update arm' do
+    it 'should assign @notable' do
+      protocol    = create(:protocol_without_validations, primary_pi: logged_in_user)
+      sr          = create(:service_request_without_validations, protocol: protocol)
+      note_params = { notable_id: sr.id, notable_type: 'ServiceRequest' }
+
+      session[:service_request_id] = sr.id
+
+      xhr :get, :index, {
+        note: note_params
+      }
+
+      expect(assigns(:notable)).to eq(sr)
+    end
+
+    it 'should assign @in_dashboard' do
+      protocol    = create(:protocol_without_validations, primary_pi: logged_in_user)
+      sr          = create(:service_request_without_validations, protocol: protocol)
+      note_params = { notable_id: sr.id, notable_type: 'ServiceRequest' }
+
+      session[:service_request_id] = sr.id
+
+      xhr :get, :index, {
+        note: note_params,
+        in_dashboard: 'true'
+      }
+
+      expect(assigns(:in_dashboard)).to eq(true)
+    end
+
+    context 'format: json' do
+      it 'should assign @notes' do
         protocol    = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr          = create(:service_request_without_validations, protocol: protocol)
-        arm         = create(:arm_without_validations, protocol: protocol)
-        arm_params  = { name: 'Mi Armigo', subject_count: -1, visit_count: -1 }
+                      create(:note, notable: sr, identity: logged_in_user)
+        note_params = { notable_id: sr.id, notable_type: 'ServiceRequest' }
 
         session[:service_request_id] = sr.id
 
-        xhr :put, :update, {
-          id: arm.id,
-          arm: arm_params
+        xhr :get, :index, {
+          note: note_params,
+          format: :json
         }
 
-        expect(arm.reload.name).to_not eq('Mi Armigo')
+        expect(assigns(:notes)).to eq(sr.notes)
       end
 
-      it 'should assign @errors' do
+      it 'should render template' do
         protocol    = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr          = create(:service_request_without_validations, protocol: protocol)
-        arm         = create(:arm_without_validations, protocol: protocol)
-        arm_params  = { name: '', subject_count: -1, visit_count: -1 }
+        note_params = { notable_id: sr.id, notable_type: 'ServiceRequest' }
 
         session[:service_request_id] = sr.id
 
-        xhr :put, :update, {
-          id: arm.id,
-          arm: arm_params
+        xhr :get, :index, {
+          note: note_params,
+          format: :json
         }
 
-        expect(assigns(:errors)).to be
+        expect(controller).to render_template(:index)
       end
     end
 
     it 'should render template' do
       protocol    = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr          = create(:service_request_without_validations, protocol: protocol)
-      arm         = create(:arm_without_validations, protocol: protocol)
-      arm_params  = { name: 'Armada', subject_count: 1, visit_count: 1 }
+      note_params = { notable_id: sr.id, notable_type: 'ServiceRequest' }
 
       session[:service_request_id] = sr.id
 
-      xhr :put, :update, {
-        id: arm.id,
-        arm: arm_params
+      xhr :get, :index, {
+        note: note_params
       }
 
-      expect(controller).to render_template(:update)
+      expect(controller).to render_template(:index)
     end
 
     it 'should respond ok' do
       protocol    = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr          = create(:service_request_without_validations, protocol: protocol)
-      arm         = create(:arm_without_validations, protocol: protocol)
-      arm_params  = { name: 'Armada', subject_count: 1, visit_count: 1 }
+      note_params = { notable_id: sr.id, notable_type: 'ServiceRequest' }
 
       session[:service_request_id] = sr.id
 
-      xhr :put, :update, {
-        id: arm.id,
-        arm: arm_params
+      xhr :get, :index, {
+        note: note_params
       }
 
       expect(controller).to respond_with(:ok)

@@ -21,6 +21,9 @@
 class VisitGroupsController < ApplicationController
   respond_to :json
 
+  before_filter :initialize_service_request
+  before_filter :authorize_identity
+
   # Used for x-editable update and validations
   def update
     @visit_group = VisitGroup.find(params[:id])

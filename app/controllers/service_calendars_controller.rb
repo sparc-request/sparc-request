@@ -23,21 +23,15 @@ class ServiceCalendarsController < ApplicationController
   layout false
   
   before_filter :initialize_service_request
-  before_filter(except: [:merged_calendar, :rename_visit]) do |c|
-    params[:portal] == 'true' ? true : c.send(:authorize_identity)
-  end
+  before_filter :authorize_identity
 
   def table
-    @tab      = params[:tab]
-    @review   = params[:review] == 'true'
-    @portal   = params[:portal] == 'true'
-    @merged   = false
+    @tab    = params[:tab]
+    @review = params[:review] == 'true'
+    @portal = params[:portal] == 'true'
+    @merged = false
+
     setup_calendar_pages
-    
-    # TODO: This needs to be changed for one time fees page in arms
-    if @sub_service_request
-      @candidate_one_time_fees, @candidate_per_patient_per_visit = @sub_service_request.candidate_services.partition { |x| x.one_time_fee }
-    end
 
     respond_to do |format|
       format.js
@@ -82,14 +76,16 @@ class ServiceCalendarsController < ApplicationController
   def move_visit_position
     arm       = Arm.find( params[:arm_id] )
     vg        = arm.visit_groups.find( params[:visit_group].to_i )
-    position  = params[:position].blank? ? arm.visit_groups.count : params[:position].to_i
 
-    vg.insert_at( position - 1 )
+    if params[:position].blank?
+      vg.move_to_bottom
+    else
+      vg.insert_at( params[:position].to_i - 1 )
+    end
   end
 
   def toggle_calendar_row
     @line_items_visit     = LineItemsVisit.find(params[:line_items_visit_id])
-    @sub_service_request  = @line_items_visit.line_item.sub_service_request
     @service              = @line_items_visit.line_item.service if params[:check]
     @portal               = params[:portal] == 'true'
 
@@ -102,7 +98,8 @@ class ServiceCalendarsController < ApplicationController
     end
 
     # Update the sub service request only if we are not in portal; admin's actions should not affect the status
-    if @sub_service_request && !@portal
+    if !@portal
+      @sub_service_request = @line_items_visit.line_item.sub_service_request
       @sub_service_request.update_attribute(:status, "draft")
       @sub_service_request.update_past_status(@user)
     end

@@ -309,24 +309,6 @@ RSpec.describe 'SubServiceRequest' do
           expect(ssr1.service_request.id).to eq(service_request.id)
         end
       end
-
-      context "candidate statuses" do
-
-        before :each do
-          org1.tag_list = "ctrc"
-          org1.save
-        end
-
-        it "should contain 'ctrc approved' and 'ctrc review' if the organization is ctrc" do
-          sub_service_request.update_attributes(organization_id: org1.id)
-          expect(sub_service_request.candidate_statuses).to include('ctrc approved', 'ctrc review')
-        end
-
-        it "should not contain ctrc statuses if the organization is not ctrc" do
-          sub_service_request.update_attributes(organization_id: org2.id)
-          expect(sub_service_request.candidate_statuses).not_to include('ctrc approved', 'ctrc review')
-        end
-      end
     end
 
     describe "sub service request ownership" do

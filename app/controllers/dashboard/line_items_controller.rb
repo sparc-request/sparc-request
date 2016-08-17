@@ -116,7 +116,6 @@ class Dashboard::LineItemsController < Dashboard::BaseController
     end
 
     if updated_service_relations && @line_item.update_attributes(params[:line_item])
-      @candidate_one_time_fees = @sub_service_request.candidate_services.select(&:one_time_fee)
       render 'dashboard/sub_service_requests/add_otf_line_item'
     else
       @line_item.reload
@@ -140,9 +139,6 @@ class Dashboard::LineItemsController < Dashboard::BaseController
     end
 
     if updated_service_relations && @line_item.update_attributes(params[:line_item])
-      # Have to reload the service request to get the correct direct cost total for the subsidy
-      @candidate_one_time_fees = @sub_service_request.candidate_services.select(&:one_time_fee)
-      @candidate_per_patient_per_visit = @sub_service_request.candidate_services.reject(&:one_time_fee)
       render 'dashboard/sub_service_requests/add_line_item'
     else
       @line_item.reload

@@ -14,7 +14,7 @@ class AdditionalDetails::SubmissionsController < ApplicationController
     @questionnaire = @service.questionnaires.active
     @submission = Submission.new(submission_params)
     if @submission.save
-      redirect_to service_questionnaires_path(@service)
+      redirect_to service_additional_details_questionnaires_path(@service)
     else
       render :new
     end

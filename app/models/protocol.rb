@@ -43,6 +43,13 @@ class Protocol < ActiveRecord::Base
   has_many :study_type_questions,         through: :study_type_question_group
   has_many :documents,                    dependent: :destroy
 
+  has_many :principal_investigators2, -> { where(project_roles: { role: %w(pi primary-pi) }) },
+    source: :identity, through: :project_roles
+  has_many :billing_managers2, -> { where(project_roles: { role: 'business-grants-manager' }) },
+    source: :identity, through: :project_roles
+  has_many :coordinators2, -> { where(project_roles: { role: 'research-assistant-coordinator' }) },
+    source: :identity, through: :project_roles
+
   belongs_to :study_type_question_group
 
   attr_accessible :affiliations_attributes
@@ -276,6 +283,10 @@ class Protocol < ActiveRecord::Base
     primary_pi_project_role.try(:identity)
   end
 
+  def primary_pi_project_role2
+    project_roles.find_by(role: 'primary-pi')
+  end
+
   def primary_pi_project_role
     project_roles.detect { |pr| pr.role == 'primary-pi' }
   end
@@ -296,6 +307,10 @@ class Protocol < ActiveRecord::Base
     coordinators.map(&:email).try(:join, ', ')
   end
 
+  def coordinator_emails2
+    coordinators2.pluck(:email).try(:join, ', ')
+  end
+
   def emailed_associated_users
     project_roles.reject {|pr| pr.project_rights == 'none'}
   end
@@ -305,16 +320,33 @@ class Protocol < ActiveRecord::Base
     errors.add(:base, "Only one Primary PI is allowed. Please ensure that only one exists") if project_roles.select { |pr| pr.role == 'primary-pi'}.count > 1
   end
 
+  def primary_pi_exists2
+    errors.add(:base, "You must add a Primary PI to the study/project") unless project_roles.where(role: 'primary-pi').any?
+    errors.add(:base, "Only one Primary PI is allowed. Please ensure that only one exists") if project_roles.where(role: 'primary-pi').count > 1
+  end
+
   def role_for identity
     project_roles.detect{|pr| pr.identity_id == identity.id}.try(:role)
+  end
+
+  def role_for2(identity)
+    project_roles.find_by(identity_id: identity.try(:id)).try(:role)
   end
 
   def role_other_for identity
     project_roles.detect{|pr| pr.identity_id == identity.id}.try(:role)
   end
 
-  def subspecialty_for identity
+  def role_other_for2(identity)
+    role_for(identity)
+  end
+
+  def subspecialty_for(identity)
     identity.subspecialty
+  end
+
+  def all_child_sub_service_requests2
+    sub_service_requests
   end
 
   def all_child_sub_service_requests
@@ -413,11 +445,19 @@ class Protocol < ActiveRecord::Base
            self.last_epic_push_status == 'sent_study'
   end
 
+  def push_to_epic_in_progress2?
+    %w(started sent_study).include? last_epic_push_status
+  end
+
   # Returns true if the most push to epic has completed.  Returns false
   # if no push has been initiated.
   def push_to_epic_complete?
     return self.last_epic_push_status == 'complete' ||
            self.last_epic_push_status == 'failed'
+  end
+
+  def push_to_epic_complete2?
+    %w(complete failed).include? last_epic_push_status
   end
 
   def populate_for_edit
@@ -445,6 +485,10 @@ class Protocol < ActiveRecord::Base
     return self.service_requests.any? { |sr| sr.should_push_to_epic? }
   end
 
+  def should_push_to_epic2?
+    service_requests.any?(&:should_push_to_epic?)
+  end
+
   def has_nexus_services?
     self.service_requests.each do |sr|
       if sr.has_ctrc_clinical_services? and sr.status != 'first_draft'
@@ -453,6 +497,11 @@ class Protocol < ActiveRecord::Base
     end
 
     return false
+  end
+
+  def has_nexus_services2?
+    service_requests.where.not(status: 'first_draft').
+      any?(&:has_ctrc_clinical_services?)
   end
 
   def find_sub_service_request_with_ctrc(service_request)
@@ -465,8 +514,16 @@ class Protocol < ActiveRecord::Base
     return nil
   end
 
+  def find_sub_service_request_with_ctrc2(sr)
+    sr.sub_service_requests.find(&:ctrc?).try(:ssr_id)
+  end
+
   def any_service_requests_to_display?
     return self.service_requests.detect { |sr| !['first_draft'].include?(sr.status) }
+  end
+
+  def any_service_requests_to_display2?
+    service_requests.where.not(status: 'first_draft').first
   end
 
   def has_line_items_of_type?(current_request, portal, type)
@@ -478,27 +535,53 @@ class Protocol < ActiveRecord::Base
   end
 
   def direct_cost_total service_request
-    total = 0
-    self.service_requests.each do |sr|
-      next if ['first_draft'].include?(sr.status) && sr != service_request
-      total += sr.direct_cost_total
+    begin
+      total = 0
+      self.service_requests.each do |sr|
+        next if ['first_draft'].include?(sr.status) && sr != service_request
+        total += sr.direct_cost_total
+      end
+      return total
+    rescue NoMethodError
+      return -1
     end
-    return total
+  end
+
+  def direct_cost_total2(service_request)
+    begin
+      service_requests.where('status != ? OR id = ?', 'first_draft', service_request.id).
+        to_a.sum(&:direct_cost_total)
+    rescue NoMethodError
+      return -1
+    end
   end
 
   def indirect_cost_total service_request
-    total = 0
-    if USE_INDIRECT_COST
-      self.service_requests.each do |sr|
-        next if ['first_draft', 'draft'].include?(sr.status) && sr != service_request
-        total += sr.indirect_cost_total
+    begin
+      total = 0
+      if USE_INDIRECT_COST
+        self.service_requests.each do |sr|
+          next if ['first_draft', 'draft'].include?(sr.status) && sr != service_request
+          total += sr.indirect_cost_total
+        end
       end
+      return total
+    rescue NoMethodError
+      return -1
     end
-    return total
   end
 
-  def grand_total service_request
-    return direct_cost_total(service_request) + indirect_cost_total(service_request)
+  def indirect_cost_total2(service_request)
+    begin
+      if USE_INDIRECT_COST
+        service_requests.where('(status != ? AND status != ?) OR id = ?', 'first_draft', 'draft', service_request.id).
+          to_a.sum(&:indirect_cost_total)
+      else
+        0
+      end
+    rescue NoMethodError
+      return -1
+    end
   end
 
   def arm_cleanup

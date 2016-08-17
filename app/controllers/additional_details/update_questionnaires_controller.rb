@@ -1,11 +1,11 @@
-class UpdateQuestionnairesController < ApplicationController
+class AdditionalDetails::UpdateQuestionnairesController < ApplicationController
 
   def update
     @service = Service.find(params[:service_id])
     @questionnaire = Questionnaire.find(params[:id])
     update_questionnaire(@questionnaire)
     if @questionnaire.save
-      redirect_to service_questionnaires_path(@service)
+      redirect_to service_additional_details_questionnaires_path(@service)
     else
       redirect_to :back
     end

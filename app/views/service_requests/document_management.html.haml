@@ -36,7 +36,7 @@
     .document-management-container
       - @service_request.additional_detail_services.each do |service|
         %h1
-          = link_to "Take Additional Details Survey for #{service.name}", new_service_submission_path(service), target: '_blank'
+          = link_to "Take Additional Details Survey for #{service.name}", new_service_additional_details_submission_path(service), target: '_blank'
       = render :partial => 'document_list', :locals => {:review => false, :thead_class => 'orange-provider'}
       .clear
       %br

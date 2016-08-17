@@ -1,4 +1,4 @@
-class QuestionnairesController < ApplicationController
+class AdditionalDetails::QuestionnairesController < ApplicationController
   before_action :find_service
   before_action :find_questionnaire, only: [:edit, :update, :destroy]
   layout 'additional_details'

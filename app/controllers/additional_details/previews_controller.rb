@@ -1,4 +1,4 @@
-class PreviewsController < ApplicationController
+class AdditionalDetails::PreviewsController < ApplicationController
 
   def create
     @service = Service.find(params[:service_id])

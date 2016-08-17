@@ -2,7 +2,7 @@
   .panel-heading
     Questionnaire Submission
   .panel-body
-    = form_for [@service, @submission] do |f|
+    = form_for [@service, :additional_details, @submission] do |f|
       = f.hidden_field :identity_id, value: current_identity.id
       = f.hidden_field :service_id, value: @service.id
       - @questionnaire.items.each do |item|
@@ -12,7 +12,7 @@
           = qr.hidden_field :item_id, value: item.id
           .form-group
             = qr.label item.content
-            = render "submissions/form_partials/#{item.item_type}_form_partial", item: item, qr: qr
+            = render "additional_details/submissions/form_partials/#{item.item_type}_form_partial", item: item, qr: qr
             - if qr.object.errors.any?
               .alert.alert-danger
                 %ul.list-unstyled

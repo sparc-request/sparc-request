@@ -4,7 +4,7 @@
   .panel-body
     .row
       .col-sm-offset-10.col-sm-2
-        = link_to new_service_questionnaire_path(@service), class: 'btn btn-success' do
+        = link_to new_service_additional_details_questionnaire_path(@service), class: 'btn btn-success' do
           Create new
           %span.glyphicon.glyphicon-plus
     .row
@@ -35,15 +35,15 @@
               %td
                 .text-center
                   - if questionnaire.active?
-                    = link_to 'Disable Questionnaire', service_update_questionnaire_path(@service, questionnaire), method: :patch, class: 'btn btn-danger active-questionnaire'
+                    = link_to 'Disable Questionnaire', service_additional_details_update_questionnaire_path(@service, questionnaire), method: :patch, class: 'btn btn-danger active-questionnaire'
                   - else
-                    = link_to 'Activate Questionnaire', service_update_questionnaire_path(@service, questionnaire), method: :patch, class: 'btn btn-success inactive-questionnaire'
+                    = link_to 'Activate Questionnaire', service_additional_details_update_questionnaire_path(@service, questionnaire), method: :patch, class: 'btn btn-success inactive-questionnaire'
               %td
                 .text-center
-                  = link_to edit_service_questionnaire_path(@service, questionnaire), class: 'btn btn-info' do
+                  = link_to edit_service_additional_details_questionnaire_path(@service, questionnaire), class: 'btn btn-info' do
                     %span.glyphicon.glyphicon-pencil
               %td
                 .text-center
-                  = link_to service_questionnaire_path(@service, questionnaire),
+                  = link_to service_additional_details_questionnaire_path(@service, questionnaire),
                     method: :delete, class: 'btn btn-danger' do
                     %span.glyphicon.glyphicon-remove

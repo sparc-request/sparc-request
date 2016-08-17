@@ -1,4 +1,4 @@
-class SubmissionsController < ApplicationController
+class AdditionalDetails::SubmissionsController < ApplicationController
   layout 'additional_details'
   include AdditionalDetails::StatesHelper
 

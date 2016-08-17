@@ -24,12 +24,14 @@ SparcRails::Application.routes.draw do
   mount Surveyor::Engine => "/surveys", :as => "surveyor"
 
   resources :services do
-    resources :questionnaires
-    resource :questionnaire do
-      resource :preview, only: [:create]
+    namespace :additional_details do
+      resources :questionnaires
+      resource :questionnaire do
+        resource :preview, only: [:create]
+      end
+      resources :submissions
+      resources :update_questionnaires, only: [:update]
     end
-    resources :submissions
-    resources :update_questionnaires, only: [:update]
   end
 
   if USE_SHIBBOLETH_ONLY

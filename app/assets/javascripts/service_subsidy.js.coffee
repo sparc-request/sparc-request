@@ -56,14 +56,14 @@ $(document).ready ->
     current_percent_subsidy = (parseFloat($('#percent_subsidy').val()) / 100.0)
     pi_contribution = parseFloat $(this).val()
     total_request_cost = parseFloat($(".request_cost[data-subsidy-id='#{subsidy_id}']").data("cost")) / 100.0
-    percent_subsidy = (recalculate_percent_subsidy(total_request_cost, pi_contribution) * 100).toFixed(2)
+    percent_subsidy = (recalculate_percent_subsidy(total_request_cost, pi_contribution) * 100).toFixed(2) / 100.0
     original_pi_contribution = recalculate_pi_contribution(total_request_cost, current_percent_subsidy)
 
-    if parseFloat(percent_subsidy) > parseFloat(max_percent)
+    if (parseFloat(percent_subsidy) * 100) > parseFloat(max_percent)
       message = "The Percent Subsidy cannot be greater than the max percent of #{max_percent}."
       current_cost = recalculate_current_cost(total_request_cost, current_percent_subsidy)
       display_error_and_reset(subsidy_id, current_percent_subsidy, original_pi_contribution, current_cost, max_percent, message)
-    else if recalculate_current_cost(total_request_cost, (percent_subsidy / 100)) > max_dollar_cap
+    else if recalculate_current_cost(total_request_cost, (percent_subsidy)) > max_dollar_cap
       message = "The Subsidy Cost cannot be greater than the max dollar cap of #{max_dollar_cap}."
       current_cost = recalculate_current_cost(total_request_cost, current_percent_subsidy)
       display_error_and_reset(subsidy_id, current_percent_subsidy, original_pi_contribution, current_cost, max_percent, message)

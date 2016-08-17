@@ -82,6 +82,17 @@ RSpec.describe Notifier do
       it 'should not have audited information table' do
         expect(mail).not_to have_xpath("//th[text()='Service']/following-sibling::th[text()='Action']")
       end
+
+      context 'when protocol has selected for epic' do
+
+        before do
+          service_request.protocol.update_attribute(:selected_for_epic, true)
+        end
+
+        it 'should show epic column' do
+          assert_email_user_information_when_selected_for_epic(mail.body)
+        end
+      end
     end
 
     context 'users' do
@@ -107,6 +118,17 @@ RSpec.describe Notifier do
         does_not_have_a_reminder_note(mail.body.parts.first.body)
         does_have_a_submission_reminder(mail.body.parts.first.body)
       end
+
+      context 'when protocol has selected for epic' do
+
+        before do
+          service_request.protocol.update_attribute(:selected_for_epic, true)
+        end
+
+        it 'should show epic column' do
+          assert_email_user_information_when_selected_for_epic(mail.body.parts.first.body)
+        end
+      end
     end
 
     context 'admin' do
@@ -130,6 +152,17 @@ RSpec.describe Notifier do
       it 'should have a notes reminder message but not a submission reminder' do
         does_not_have_a_reminder_note(mail.body.parts.first.body)
         does_not_have_a_submission_reminder(mail.body.parts.first.body)
+      end
+
+      context 'when protocol has selected for epic' do
+
+        before do
+          service_request.protocol.update_attribute(:selected_for_epic, true)
+        end
+
+        it 'should show epic column' do
+          assert_email_user_information_when_selected_for_epic(mail.body.parts.first.body)
+        end
       end
     end
   end

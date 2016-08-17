@@ -25,7 +25,7 @@ class SubsidiesController < ApplicationController
     @sub_service_request = SubServiceRequest.find params[:subsidy][:sub_service_request_id]
     @subsidy = PendingSubsidy.new(sub_service_request_id: @sub_service_request.id)
     @subsidy.percent_subsidy = @subsidy.default_percentage
-    @subsidy.save
+    @subsidy.save(validate: false)
   end
 
   def update

@@ -53,6 +53,8 @@ class Subsidy < ActiveRecord::Base
       errors.add(:percent_subsidy, "can not be greater than the cap of #{max_percentage}")
     elsif pi_contribution > total_request_cost
       errors.add(:pi_contribution, "can not be greater than the total request cost")
+    elsif percent_subsidy == 0
+      errors.add(:percent_subsidy, "can not be 0")
     end
   end
 

@@ -20,6 +20,7 @@ RSpec.describe 'dashboard/protocols/index', type: :view do
       sorted_by: "id_asc",
       with_owner: ["#{jug2.id}"]
     ))
+    assign(:filterrific_params, { test: 'test' } )
   end
 
   describe 'Protocol filters' do
@@ -178,7 +179,7 @@ RSpec.describe 'dashboard/protocols/index', type: :view do
 
           render
 
-          expect(response).not_to have_content('Requests')
+          expect(response).not_to have_selector('button', text: 'Requests')
         end
       end
 

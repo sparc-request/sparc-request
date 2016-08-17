@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe QuestionnairesController do
+RSpec.describe AdditionalDetails::QuestionnairesController do
 
   describe '#new' do
     it 'should instantiate a new Questionnaire object' do

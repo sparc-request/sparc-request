@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160812151440) do
+ActiveRecord::Schema.define(version: 20160817153153) do
 
   create_table "admin_rates", force: :cascade do |t|
     t.integer  "line_item_id", limit: 4
@@ -751,8 +751,9 @@ ActiveRecord::Schema.define(version: 20160812151440) do
     t.integer  "submission_id", limit: 4
     t.integer  "item_id",       limit: 4
     t.text     "content",       limit: 65535
-    t.datetime "created_at",                  null: false
-    t.datetime "updated_at",                  null: false
+    t.boolean  "required",                    default: false
+    t.datetime "created_at",                                  null: false
+    t.datetime "updated_at",                                  null: false
   end
 
   add_index "questionnaire_responses", ["item_id"], name: "index_questionnaire_responses_on_item_id", using: :btree

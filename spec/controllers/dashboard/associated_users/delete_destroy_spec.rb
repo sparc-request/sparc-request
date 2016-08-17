@@ -1,6 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe Dashboard::AssociatedUsersController do
+  let_there_be_lane
+  let_there_be_j
+  fake_login_for_each_test
+  build_service_request_with_study
+
   describe 'DELETE destroy' do
     context "when not authorized" do
       before :each do

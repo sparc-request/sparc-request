@@ -2,5 +2,12 @@
   .modal-content
     .modal-header
       %button{ class: 'close', data: { dismiss: 'modal' } }
+        %span
+          &times;
+      .modal-title
+        Additional Detail Survey Preview
     .modal-body
       = render 'additional_details/submissions/form'
+    .modal-footer
+      %button{ class: 'btn btn-default', data: { dismiss: 'modal' } }
+        Close

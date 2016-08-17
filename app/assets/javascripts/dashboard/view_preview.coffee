@@ -1,10 +1,9 @@
 $ ->
   $('#view-preview').on 'click', ->
-    $('input[name=_method]').val('post')
     values = {}
     $.each $('.questionnaire-form').serializeArray(), (i, field) ->
       matchId = /\[id\]/
-      unless field.name.match(matchId)
+      unless field.name.match(matchId) || field.name == '_method'
         values[field.name] = field.value
     serviceId = $('#service_id').val()
     $.ajax

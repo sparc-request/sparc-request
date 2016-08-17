@@ -1,17 +1,20 @@
 require "rails_helper"
 
 RSpec.describe Dashboard::AssociatedUserCreator do
-  let_there_be_lane
-  let_there_be_j
-  fake_login_for_each_test
-  build_service_request_with_study
+
   context "params[:project_role] describes a valid ProjectRole" do
     before(:each) do
-      identity = create(:identity)
-      @project_role_attrs = { protocol_id: study.id,
-        identity_id: identity.id,
+      @identity = create(:identity)
+      @user          = create(:identity)
+      @protocol      = create(:protocol_without_validations, selected_for_epic: false, funding_status: 'funded', funding_source: 'federal')
+      create(:project_role, protocol: @protocol, identity: @user, project_rights: 'approve', role: 'primary-pi')
+      @ssr = create(:sub_service_request, status: 'not_draft', organization: create(:organization), service_request: create(:service_request_without_validations, protocol: @protocol))
+
+      @project_role_attrs = { protocol_id: @protocol.id,
+        identity_id: @identity.id,
         role: "important",
         project_rights: "to-party" }
+
     end
 
     it "#successful? should return true" do
@@ -31,8 +34,8 @@ RSpec.describe Dashboard::AssociatedUserCreator do
     context "SEND_AUTHORIZED_USER_EMAILS: true && send_email: true" do
       it "should send authorized user changed emails" do
         stub_const("SEND_AUTHORIZED_USER_EMAILS", true)
-        service_request.sub_service_requests.first.update_attribute(:status, 'complete')
-        expect(UserMailer).to receive(:authorized_user_changed).thrice do
+        @ssr.update_attribute(:status, 'complete')
+        expect(UserMailer).to receive(:authorized_user_changed).twice do
           mailer = double("mailer")
           expect(mailer).to receive(:deliver)
           mailer
@@ -53,7 +56,7 @@ RSpec.describe Dashboard::AssociatedUserCreator do
     context "SEND_AUTHORIZED_USER_EMAILS false && send_email: true" do
       it "should not send authorized user changed emails" do
         stub_const("SEND_AUTHORIZED_USER_EMAILS", false)
-        service_request.sub_service_requests.first.update_attribute(:status, 'complete')
+        @ssr.update_attribute(:status, 'complete')
         allow(UserMailer).to receive(:authorized_user_changed)
         Dashboard::AssociatedUserCreator.new(@project_role_attrs)
         expect(UserMailer).not_to have_received(:authorized_user_changed)

@@ -115,7 +115,6 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
     epic_access         = @protocol_role.epic_access
     protocol_role_clone = @protocol_role.clone
     action              = "destroy"
-
     @protocol.email_about_change_in_authorized_user(modified_user, action)
     
     @protocol_role.destroy

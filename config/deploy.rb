@@ -35,6 +35,8 @@ ssh_options[:forward_agent] = true
 set :stages, %w(testing demo demo2 staging production testing_rails_4)
 set :default_stage, "testing"
 
+set :whenever_identifier, ->{ "#{fetch(:application)}_#{fetch(:stage)}" }
+
 after "deploy:update_code", "db:symlink"
 
 namespace :deploy do
@@ -124,34 +126,34 @@ namespace :survey do
         run "cd #{current_path} && rake surveyor FILE=#{ENV['FILE']} RAILS_ENV=#{rails_env}"
       end
     else
-      raise "FILE must be specified (eg. cap survey:parse FILE=surveys/your_survey.rb)" 
+      raise "FILE must be specified (eg. cap survey:parse FILE=surveys/your_survey.rb)"
     end
   end
 end
 
 namespace :delayed_job do
-  desc "Start delayed_job process" 
+  desc "Start delayed_job process"
   task :start, :roles => :app do
     run "cd #{current_path} && RAILS_ENV=#{rails_env} bundle exec script/delayed_job start"
   end
 
-  desc "Stop delayed_job process" 
+  desc "Stop delayed_job process"
   task :stop, :roles => :app do
     run "cd #{current_path} && RAILS_ENV=#{rails_env} bundle exec script/delayed_job stop"
   end
 
-  desc "Restart delayed_job process" 
+  desc "Restart delayed_job process"
   task :restart, :roles => :app do
-    run "cd #{current_path} && RAILS_ENV=#{rails_env} bundle exec script/delayed_job restart" 
+    run "cd #{current_path} && RAILS_ENV=#{rails_env} bundle exec script/delayed_job restart"
   end
 end
 
-after "deploy:start", "delayed_job:start" 
-after "deploy:stop", "delayed_job:stop" 
+after "deploy:start", "delayed_job:start"
+after "deploy:stop", "delayed_job:stop"
 after "deploy:restart", "delayed_job:restart"
 
-before "deploy:migrate", 'mysql:backup' 
-before "deploy", 'mysql:backup' 
+before "deploy:migrate", 'mysql:backup'
+before "deploy", 'mysql:backup'
 after "mysql:backup", "mysql:cleanup_backups"
 
 require 'capistrano/ext/multistage'

@@ -234,4 +234,53 @@ RSpec.describe 'ServiceRequest' do
       end
     end
   end
+
+  describe '#service_ids' do
+    it 'should return an array of service ids' do
+      service_request = create(:service_request_without_validations)
+      LineItem.first.update_attribute(:service_request_id, service_request.id)
+      line_item = LineItem.first
+
+      result = service_request.service_ids
+
+      expect(result).to eq([line_item.service.id])
+    end
+  end
+
+  describe '#services_associated_to_sr' do
+    it 'should return an array of Service objects' do
+      service_request = create(:service_request_without_validations)
+      LineItem.first.update_attribute(:service_request_id, service_request.id)
+      line_item = LineItem.first
+
+      result = service_request.services_associated_to_sr
+
+      expect(result).to eq([Service.find(line_item.service.id)])
+    end
+  end
+
+  describe '#additional_detail_services' do
+    it 'should select the services that have additional details' do
+      service_request = create(:service_request_without_validations)
+      create(:service)
+      create(:questionnaire, active: true, service: Service.first)
+      LineItem.first.update_attribute(:service_request_id, service_request.id)
+      LineItem.first.update_attribute(:service_id, Service.first.id)
+
+      result = service_request.additional_detail_services
+
+      expect(result).to eq([Service.first])
+    end
+    it 'should select the services that have additional details' do
+      service_request = create(:service_request_without_validations)
+      service = create(:service)
+      create(:questionnaire, active: true, service: Service.first)
+      LineItem.first.update_attribute(:service_request_id, service_request.id)
+      LineItem.first.update_attribute(:service_id, Service.first.id)
+
+      result = service_request.additional_detail_services
+
+      expect(result).not_to eq([service])
+    end
+  end
 end

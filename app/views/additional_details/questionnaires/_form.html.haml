@@ -49,12 +49,12 @@
             = i.remove_nested_fields_link 'Remove Question', class: 'btn btn-danger'
       %hr
       .form-group
-        .col-sm-offset-2.col-sm-10
+        .col-sm-offset-2.col-sm-12
           = f.add_nested_fields_link :items, 'Add another Question', class: 'btn btn-primary'
           = f.submit class: 'btn btn-success'
           = link_to 'javascript:;', id: 'view-preview', class: 'btn btn-info' do
             View Preview
             %span.glyphicon.glyphicon-search
-              = link_to 'Return to Questionnaires',
-                service_additional_details_questionnaires_path(service), 
-                class: 'btn btn-default'
+          = link_to 'Return to Questionnaires',
+            service_additional_details_questionnaires_path(service), 
+            class: 'btn btn-warning'

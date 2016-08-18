@@ -31,7 +31,6 @@
 @import 'project';
 @import 'protocol';
 @import 'related_service_requests';
-@import 'service_calendar';
 @import 'service_requests';
 @import 'services';
 @import 'study_level_charges';
@@ -50,3 +49,5 @@
 @import 'jquery-ui';
 @import '960';
 @import 'jquery.toastmessage';
+
+@import 'service_calendar';

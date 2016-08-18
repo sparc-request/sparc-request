@@ -35,6 +35,7 @@
             = hidden_field_tag :schedule_tab, schedule_tab
             = hidden_field_tag :service_request_id, service_request.id
             = hidden_field_tag :sub_service_request_id, sub_service_request.id
+            -binding.pry
             .form-group
               = a.label "name", t(:dashboard)[:arms][:name], class: "col-sm-4 control-label"
               .col-sm-7= a.text_field "name", {class: 'form-control'}

@@ -2,6 +2,9 @@
   width: 95%
 
 .visit-before-container, .visit-day-container, .visit-after-container
+  // Bootstrap mixin. Equivalent to .col-xs-4.
+  // See: http://getbootstrap.com/css/#grid-less
+  // Also see: http://getbootstrap.com/css/#less
   @include make-xs-column(4)
   @extend .text-center
   padding: 0

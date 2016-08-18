@@ -38,7 +38,7 @@
         = form.hidden_field :protocol_id
         .row
           .col-lg-12
-            = form.fields_for :identity, do |identity_form|
+            = form.fields_for identity do |identity_form|
               .form-group.row.role_dependent.commons_name.do-not-display
                 = identity_form.label :era_commons_name, t(:dashboard)[:authorized_users][:era], class: 'col-lg-3 control-label'
                 .col-lg-9

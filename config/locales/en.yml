@@ -1918,8 +1918,8 @@ en:
     recruitment_start_date: "Estimated Recruitment Start Date"
     services_required: "You can't continue unless you have services in your cart."
     services: "My Services"
-    study_end_date: "Estimated Study End Date"
-    study_start_date: "Estimated Study Start Date"
+    study_end_date: "Estimated Study End Date *"
+    study_start_date: "Estimated Study Start Date *"
 
   # Service Request review page
   sr_review:

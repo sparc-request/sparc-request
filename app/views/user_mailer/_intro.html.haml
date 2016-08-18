@@ -1,0 +1,8 @@
+%p= "Dear #{@send_to.try(:full_name)},"
+%p{ :style => 'display: inline;' }
+  - if @action == "destroy"
+    = t(:mailer)[:delete_intro]
+  - if @action == "add"
+    = t(:mailer)[:add_intro]
+%p{ :style => 'display: inline;' }
+  %a{:style => "color: blue; font-weight: bold;", :href => @protocol_link}=t(:mailer)[:sparc_dashboard_period]

@@ -6,7 +6,7 @@ RSpec.describe Dashboard::AssociatedUserCreator do
     before(:each) do
       @identity = create(:identity)
       @user          = create(:identity)
-      @protocol      = create(:protocol_without_validations, selected_for_epic: false, funding_status: 'funded', funding_source: 'federal')
+      @protocol      = create(:protocol_without_validations, selected_for_epic: false, funding_status: 'funded', funding_source: 'federal', type: 'Study')
       create(:project_role, protocol: @protocol, identity: @user, project_rights: 'approve', role: 'primary-pi')
       @ssr = create(:sub_service_request, status: 'not_draft', organization: create(:organization), service_request: create(:service_request_without_validations, protocol: @protocol))
 
@@ -34,7 +34,6 @@ RSpec.describe Dashboard::AssociatedUserCreator do
     context "SEND_AUTHORIZED_USER_EMAILS: true && send_email: true" do
       it "should send authorized user changed emails" do
         stub_const("SEND_AUTHORIZED_USER_EMAILS", true)
-        @ssr.update_attribute(:status, 'complete')
         expect(UserMailer).to receive(:authorized_user_changed).twice do
           mailer = double("mailer")
           expect(mailer).to receive(:deliver)
@@ -45,8 +44,9 @@ RSpec.describe Dashboard::AssociatedUserCreator do
     end
 
     context "SEND_AUTHORIZED_USER_EMAILS: true && send_email: false" do
-      it "should send authorized user changed emails" do
+      it "should NOT send authorized user changed emails" do
         stub_const("SEND_AUTHORIZED_USER_EMAILS", true)
+        @ssr.update_attribute(:status, 'draft')
         allow(UserMailer).to receive(:authorized_user_changed)
         Dashboard::AssociatedUserCreator.new(@project_role_attrs)
         expect(UserMailer).not_to have_received(:authorized_user_changed)
@@ -74,7 +74,7 @@ RSpec.describe Dashboard::AssociatedUserCreator do
 
     context "USE_EPIC == true && Protocol selected for epic && protocol.selected_for_epic: true && QUEUE_EPIC == false" do
       it "should notify for epic user approval" do
-        service_request.protocol.update_attribute(:selected_for_epic, true)
+        @protocol.update_attribute(:selected_for_epic, true)
         stub_const("USE_EPIC", true)
         stub_const("QUEUE_EPIC", false)
         allow(Notifier).to receive(:notify_for_epic_user_approval) do

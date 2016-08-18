@@ -22,18 +22,10 @@
 %html
   %head
     %title Additional Details
-    = stylesheet_link_tag "#{CUSTOM_ASSET_PATH}dashboard/application"
-    = javascript_include_tag 'dashboard/application'
+    = stylesheet_link_tag "#{CUSTOM_ASSET_PATH}additional_details/application"
+    = javascript_include_tag 'additional_details/application'
     = javascript_include_tag 'jquery.qtip.min.js'
-    /[if IE]
-      = stylesheet_link_tag 'ie'
-    /[if gt IE 7]
-      = stylesheet_link_tag 'ie8_plus'
-    /[if lt IE 8]
-      = javascript_include_tag "ie7_warning"
     = csrf_meta_tags
-    :javascript
-      window.I18n = #{current_translations.to_json.html_safe};
 
   %body{ style: 'background: none;' }
     .container

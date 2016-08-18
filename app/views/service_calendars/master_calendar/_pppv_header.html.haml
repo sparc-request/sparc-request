@@ -48,8 +48,8 @@
       - if @portal
         %th.number_of_subjects_header{:rowspan => 1}= t(:calendar_page)[:headers][:subjects]
       - else
-        %th.your_cost_header= t(:calendar_page)[:headers][:your_cost]
-        %th.service_rate_header= t(:calendar_page)[:headers][:service_rate]
+        %th.your_cost_header= t(:calendar_page)[:headers][:service_rate]
+        %th.service_rate_header= t(:calendar_page)[:headers][:your_cost]
         %th.number_of_subjects_header{:rowspan => 1}= t(:calendar_page)[:headers][:subjects]
       = generate_visit_header_row(arm, @service_request, @pages[arm.id].to_i, nil)
 

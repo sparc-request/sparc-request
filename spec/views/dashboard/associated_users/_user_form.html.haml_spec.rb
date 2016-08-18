@@ -5,8 +5,8 @@ RSpec.describe 'dashboard/associated_users/_user_form', type: :view do
 	let_there_be_lane
 
 	def render_user_form(epic = false)
-		project_role = build_stubbed(:project_role)
 		protocol = build(:unarchived_study_without_validations, id: 1, primary_pi: jug2, selected_for_epic: epic)
+		project_role = build(:project_role, id: 1, protocol_id: protocol.id, identity_id: jug2.id, role: 'consultant', epic_access: 0)
 		stub_const("USE_EPIC", epic)
 		render "dashboard/associated_users/user_form", header_text: "Edit Authorized User", 
 																									 identity: jug2,

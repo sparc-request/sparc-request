@@ -6,8 +6,10 @@ class AdditionalDetails::UpdateQuestionnairesController < ApplicationController
     update_questionnaire(@questionnaire)
     if @questionnaire.save
       redirect_to service_additional_details_questionnaires_path(@service)
+      flash[:notice] = 'Questionnaire updated'
     else
-      redirect_to :back
+      redirect_to service_additional_details_questionnaires_path(@service)
+      flash[:error] = 'Something went wrong'
     end
   end
 

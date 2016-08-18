@@ -38,7 +38,7 @@
     - if @portal
       %th.your_cost_header{:rowspan => 2}= t(:calendar_page)[:headers][:your_cost]
     - else
-      %th.unit_costs_header{:colspan => 2}= t(:calendar_page)[:headers][:unit_costs]    
+      %th.unit_costs_header{:colspan => 2}= t(:calendar_page)[:headers][:unit_costs]
     %th.qty_type_header{:rowspan => 2}= t(:calendar_page)[:headers][:clinical_qty]
     %th{:colspan => 6, :height => 40, :width => 375}
       = generate_visit_navigation(arm, @service_request, @pages, tab, portal, portal ? @sub_service_request.try(:id) : nil)
@@ -48,8 +48,8 @@
       - if @portal
         %th.number_of_subjects_header{:rowspan => 1}= t(:calendar_page)[:headers][:subjects]
       - else
-        %th.your_cost_header= t(:calendar_page)[:headers][:service_rate]
-        %th.service_rate_header= t(:calendar_page)[:headers][:your_cost]
+        %th.service_rate_header= t(:calendar_page)[:headers][:service_rate]
+        %th.your_cost_header= t(:calendar_page)[:headers][:your_cost]
         %th.number_of_subjects_header{:rowspan => 1}= t(:calendar_page)[:headers][:subjects]
       = generate_visit_header_row(arm, @service_request, @pages[arm.id].to_i, nil)
 

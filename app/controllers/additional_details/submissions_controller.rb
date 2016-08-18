@@ -4,14 +4,14 @@ class AdditionalDetails::SubmissionsController < ApplicationController
 
   def new
     @service = Service.find(params[:service_id])
-    @questionnaire = @service.questionnaires.active
+    @questionnaire = @service.questionnaires.active.first
     @submission = Submission.new
     @submission.questionnaire_responses.build
   end
 
   def create
     @service = Service.find(params[:service_id])
-    @questionnaire = @service.questionnaires.active
+    @questionnaire = @service.questionnaires.active.first
     @submission = Submission.new(submission_params)
     if @submission.save
       redirect_to service_additional_details_questionnaires_path(@service)

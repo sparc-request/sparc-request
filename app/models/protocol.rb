@@ -208,9 +208,8 @@ class Protocol < ActiveRecord::Base
   scope :with_owner, -> (owner_id) {
     return nil if owner_id.reject!(&:blank?) == []
     joins(:sub_service_requests).
-    where(sub_service_requests:
-         {organization: Organization.joins(:service_providers).
-                                     where(service_providers: {identity_id: owner_id})})
+    where(sub_service_requests: {owner_id: owner_id}).
+    where.not(sub_service_requests: {status: 'first_draft'})
   }
 
   scope :sorted_by, -> (key) {

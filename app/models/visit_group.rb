@@ -45,8 +45,6 @@ class VisitGroup < ActiveRecord::Base
   before_destroy :remove_appointments
 
   validates :name, presence: true
-  validates :position, presence: true
-  validates :day, presence: true
 
   with_options if: :day? do |vg|
     # with respect to the other VisitGroups associated with the same arm
@@ -58,11 +56,11 @@ class VisitGroup < ActiveRecord::Base
     self.arm.set_arm_edited_flag_on_subjects
   end
 
-  # def set_default_name
-  #   if name.nil? || name == ""
-  #     self.update_attributes(:name => "Visit #{self.position}")
-  #   end
-  # end
+  def set_default_name
+    if name.nil? || name == ""
+      self.update_attributes(:name => "Visit #{self.position}")
+    end
+  end
 
   def <=> (other_vg)
     return self.day <=> other_vg.day
@@ -104,7 +102,6 @@ class VisitGroup < ActiveRecord::Base
   def day_must_be_in_order
     position_col = VisitGroup.arel_table[:position]
     day_col = VisitGroup.arel_table[:day]
-
     if arm.visit_groups.where(position_col.lt(position).and(day_col.gteq(day)).or(
                               position_col.gt(position).and(day_col.lteq(day)))).any?
       errors.add(:day, 'must be in order')

@@ -32,8 +32,10 @@ class Service < ActiveRecord::Base
   belongs_to :organization, -> { includes(:pricing_setups) }
   belongs_to :revenue_code_range
   # set ":inverse_of => :service" so that the first pricing map can be validated before the service has been saved
-  has_many :pricing_maps, :inverse_of => :service, :dependent => :destroy 
+  has_many :pricing_maps, :inverse_of => :service, :dependent => :destroy
   has_many :service_providers, :dependent => :destroy
+  has_many :sub_service_requests, through: :line_items
+  has_many :service_requests, through: :sub_service_requests
   has_many :line_items, :dependent => :destroy
   has_many :identities, :through => :service_providers
 

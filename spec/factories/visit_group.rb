@@ -21,7 +21,7 @@
 FactoryGirl.define do
 
   factory :visit_group do
-  	name 					{ "Visit Group" }
+  	name 					{ "Visit #{self.position}" }
   	position				{ 0 }
 
     trait :without_validations do

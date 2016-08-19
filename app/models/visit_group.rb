@@ -44,6 +44,10 @@ class VisitGroup < ActiveRecord::Base
   after_save :set_arm_edited_flag_on_subjects
   before_destroy :remove_appointments
 
+  validates :name, presence: true
+  validates :position, presence: true
+  validates :day, presence: true
+
   with_options if: :day? do |vg|
     # with respect to the other VisitGroups associated with the same arm
     vg.validate :day_must_be_in_order
@@ -54,11 +58,11 @@ class VisitGroup < ActiveRecord::Base
     self.arm.set_arm_edited_flag_on_subjects
   end
 
-  def set_default_name
-    if name.nil? || name == ""
-      self.update_attributes(:name => "Visit #{self.position}")
-    end
-  end
+  # def set_default_name
+  #   if name.nil? || name == ""
+  #     self.update_attributes(:name => "Visit #{self.position}")
+  #   end
+  # end
 
   def <=> (other_vg)
     return self.day <=> other_vg.day

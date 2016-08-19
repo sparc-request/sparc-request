@@ -502,6 +502,7 @@ class ServiceRequestsController < ApplicationController
     else
       sub_service_requests = service_request.sub_service_requests
     end
+    
     send_admin_notifications(service_request, sub_service_requests)
     send_service_provider_notifications(service_request, sub_service_requests)
   end

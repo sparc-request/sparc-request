@@ -539,15 +539,18 @@ class ServiceRequestsController < ApplicationController
   end
 
   def send_admin_notifications(service_request, sub_service_requests)
-    @service_list_false = service_request.service_list(false)
-    @service_list_true = service_request.service_list(true)
-    @line_items = @service_request.line_items
-
-    xls = render_to_string action: 'show', formats: [:xlsx]
-
+    # Iterates through each SSR to find the correct admin email.
+    # Passes the correct SSR to display in the attachment and email.
     sub_service_requests.each do |sub_service_request|
       sub_service_request.organization.submission_emails_lookup.each do |submission_email|
-        Notifier.notify_admin(service_request, submission_email.email, xls, current_user).deliver
+        
+        @service_list_false = service_request.service_list(false, nil, sub_service_request)
+        @service_list_true = service_request.service_list(true, nil, sub_service_request)
+        
+        @line_items = sub_service_request.line_items
+        xls = render_to_string action: 'show', formats: [:xlsx]
+        display_ssr = sub_service_request
+        Notifier.notify_admin(service_request, submission_email.email, xls, current_user, display_ssr).deliver
       end
     end
   end

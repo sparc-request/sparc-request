@@ -20,9 +20,9 @@
 
 FactoryGirl.define do
   factory :arm do
-    name          { Faker::Lorem.word }
-    subject_count 1
-    visit_count   1
+    sequence(:name) { |n| "Arm #{n}" }
+    subject_count   1
+    visit_count     1
 
     transient do
       line_item_count   0

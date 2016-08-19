@@ -44,59 +44,6 @@ class ApplicationController < ActionController::Base
     current_identity
   end
 
-  def prepare_catalog
-    if session[:sub_service_request_id] and @sub_service_request
-      @institutions = Institution.where(id: @sub_service_request.organization.parents.select{|x| x.type == 'Institution'}.map(&:id))
-    else
-      @institutions = Institution.order('`order`')
-    end
-
-    if USE_GOOGLE_CALENDAR
-      curTime = Time.now.utc
-      startMin = curTime
-      startMax  = (curTime + 1.month)
-
-      @events = []
-      begin
-        #to parse file and get events
-        cal_file = File.open(Rails.root.join("tmp", "basic.ics"))
-
-        cals = Icalendar.parse(cal_file)
-
-        cal = cals.first
-
-        events = cal.events.sort { |x, y| y.dtstart <=> x.dtstart }
-
-        events.each do |event|
-          next if Time.parse(event.dtstart.to_s) > startMax
-          break if Time.parse(event.dtstart.to_s) < startMin
-          @events << create_calendar_event(event)
-        end
-
-        @events.reverse!
-
-        Alert.where(alert_type: ALERT_TYPES['google_calendar'], status: ALERT_STATUSES['active']).update_all(status: ALERT_STATUSES['clear'])
-      rescue Exception => e
-        active_alert = Alert.where(alert_type: ALERT_TYPES['google_calendar'], status: ALERT_STATUSES['active']).first_or_initialize
-        if Rails.env == 'production' && active_alert.new_record?
-          active_alert.save
-          ExceptionNotifier::Notifier.exception_notification(request.env, e).deliver unless request.remote_ip == '128.23.150.107' # this is an ignored IP address, MUSC security causes issues when they pressure test,  this should be extracted/configurable
-        end
-      end
-    end
-
-    if USE_NEWS_FEED
-      page = Nokogiri::HTML(open("https://www.sparcrequestblog.com"))
-      articles = page.css('article.post').take(3)
-      @news = []
-      articles.each do |article|
-        @news << {title: (article.at_css('.entry-title') ? article.at_css('.entry-title').text : ""),
-                  link: (article.at_css('.entry-title a') ? article.at_css('.entry-title a')[:href] : ""),
-                  date: (article.at_css('.date') ? article.at_css('.date').text : "") }
-      end
-    end
-  end
-
   def create_calendar_event event
     all_day = !event.dtstart.to_s.include?("UTC")
     start_time = Time.parse(event.dtstart.to_s).in_time_zone("Eastern Time (US & Canada)")
@@ -313,13 +260,5 @@ class ApplicationController < ActionController::Base
 
   def xeditable? object=nil
     true
-  end
-
-  def convert_date_for_save(attrs, date_field)
-    if attrs[date_field] && attrs[date_field].present?
-      attrs[date_field] = Time.strptime(attrs[date_field], "%m/%d/%Y")
-    end
-
-    attrs
   end
 end

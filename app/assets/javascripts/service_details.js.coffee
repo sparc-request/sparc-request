@@ -20,7 +20,6 @@
 
 #= require navigation
 #= require cart
-#= require right_navigation
 
 $(document).ready ->
   $(document).on 'click', '#new-arm-button', ->

@@ -18,6 +18,13 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-toggle_form_slide()
-$('#ask_a_question_header').html('Question sent!')
-setTimeout (-> $('#ask_a_question_header').html('Ask us a question!')), 2000
+require 'rails_helper'
+
+RSpec.describe ServiceRequestsController, type: :controller do
+  stub_controller
+  let!(:before_filters) { find_before_filters }
+  let!(:logged_in_user) { create(:identity) }
+
+  describe '#get_help' do
+  end
+end

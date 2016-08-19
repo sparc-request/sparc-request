@@ -119,7 +119,7 @@ RSpec.describe SearchController do
       s1    = create(:service, organization: org, name: 'Service 123')
       s2    = create(:service, organization: org2, name: 'Service 321')
 
-      EDITABLE_STATUSES[org.id]     = ['draft']
+      stub_const("EDITABLE_STATUSES", { org.id => ['draft'] })
       session[:service_request_id]  = sr.id
 
       xhr :get, :services, {

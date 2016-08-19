@@ -1,78 +1,171 @@
+# Copyright © 2011 MUSC Foundation for Research Development
+# All rights reserved.
+
+# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+# disclaimer in the documentation and/or other materials provided with the distribution.
+
+# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+# derived from this software without specific prior written permission.
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 require 'rails_helper'
 
-RSpec.describe ServiceRequestsController do
+RSpec.describe ServiceRequestsController, type: :controller do
   stub_controller
-  let_there_be_lane
-  let_there_be_j
-  build_service_request
-  build_project
-  build_arms
+  let!(:before_filters) { find_before_filters }
+  let!(:logged_in_user) { create(:identity) }
 
-  before(:each) { arm1.update_attribute(:visit_count, 200) }
+  describe '#review' do
+    it 'should call before_filter #initialize_service_request' do
+      expect(before_filters.include?(:initialize_service_request)).to eq(true)
+    end
 
-  describe 'GET review' do
-    shared_examples_for 'always' do
-      it 'should set @tab to full calendar' do
-        expect(assigns(:tab)).to eq 'calendar'
-      end
+    it 'should call before_filter #validate_step' do
+      expect(before_filters.include?(:validate_step)).to eq(true)
+    end
 
-      it "should set @protocol to the ServiceRequest's Protocol" do
-        expect(assigns(:service_request).protocol).to eq service_request.protocol
-      end
+    it 'should call before_filter #setup_navigation' do
+      expect(before_filters.include?(:setup_navigation)).to eq(true)
+    end
 
-      it "should set @service_list to the service request's service list" do
-        expect(assigns(:service_request).service_list).to eq service_request.service_list
-      end
-
-      it 'should reset page for each Arm to 1' do
-        expect(assigns(:pages)).to eq(arm1.id => 1, arm2.id => 1)
-      end
-
-      it 'should set @review to true' do
-        expect(assigns(:review)).to be true
-      end
-
-      it 'should set @portal to false' do
-        expect(assigns(:portal)).to be false
-      end
-
-      it 'should set @thead_class to \'red-provider\'' do
-        expect(assigns(:thead_class)).to eq 'red-provider'
-      end
+    it 'should call before_filter #authorize_identity' do
+      expect(before_filters.include?(:authorize_identity)).to eq(true)
     end
     
-    context 'with params[:arm_id] and params[:page]' do
-      before do
-        session[:service_calendar_pages] = { arm1.id.to_s => '1' }
-        xhr :get, :review, id: service_request.id, arm_id: arm1.id, page: 2
-      end
-
-      it "should change that Arm's service calendar's page to params[:arm_id]" do
-        expect(session[:service_calendar_pages][arm1.id.to_s]).to eq '2'
-      end
-
-      include_examples 'always'
+    it 'should call before_filter #authenticate_identity!' do
+      expect(before_filters.include?(:authenticate_identity!)).to eq(true)
     end
 
-    context 'with params[:pages]' do
-      before do
-        xhr :get, :review, { id: service_request.id, pages: { arm1.id.to_s => 42 } }.with_indifferent_access
-      end
+    it 'should assign @tab to \'calendar\'' do
+      org      = create(:organization)
+      service  = create(:service, organization: org, one_time_fee: true)
+      protocol = create(:protocol_federally_funded, primary_pi: logged_in_user)
+      sr       = create(:service_request_without_validations, protocol: protocol)
+      ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
+      li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
-      it 'should set service_calendar_pages to params[:pages]' do
-        expect(session[:service_calendar_pages]).to eq(arm1.id.to_s => '42')
-      end
+      session[:service_request_id] = sr.id
 
-      include_examples 'always'
+      xhr :get, :review, {
+        id: sr.id
+      }
+
+      expect(assigns(:tab)).to eq('calendar')
     end
 
-    context 'without params[:pages]' do
-      before do
-        arm1.update_attribute(:visit_count, 200)
-        xhr :get, :review, { id: service_request.id }.with_indifferent_access
-      end
+    it 'should assign @review to true' do
+      org      = create(:organization)
+      service  = create(:service, organization: org, one_time_fee: true)
+      protocol = create(:protocol_federally_funded, primary_pi: logged_in_user)
+      sr       = create(:service_request_without_validations, protocol: protocol)
+      ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
+      li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
-      include_examples 'always'
+      session[:service_request_id] = sr.id
+
+      xhr :get, :review, {
+        id: sr.id
+      }
+
+      expect(assigns(:review)).to eq(true)
+    end
+
+    it 'should assign @portal to false' do
+      org      = create(:organization)
+      service  = create(:service, organization: org, one_time_fee: true)
+      protocol = create(:protocol_federally_funded, primary_pi: logged_in_user)
+      sr       = create(:service_request_without_validations, protocol: protocol)
+      ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
+      li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
+
+      session[:service_request_id] = sr.id
+
+      xhr :get, :review, {
+        id: sr.id
+      }
+
+      expect(assigns(:portal)).to eq(false)
+    end
+
+    it 'should assign @merged to false' do
+      org      = create(:organization)
+      service  = create(:service, organization: org, one_time_fee: true)
+      protocol = create(:protocol_federally_funded, primary_pi: logged_in_user)
+      sr       = create(:service_request_without_validations, protocol: protocol)
+      ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
+      li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
+
+      session[:service_request_id] = sr.id
+
+      xhr :get, :review, {
+        id: sr.id
+      }
+
+      expect(assigns(:merged)).to eq(false)
+    end
+
+    it 'should assign @pages' do
+      org      = create(:organization)
+      service  = create(:service, organization: org, one_time_fee: true)
+      protocol = create(:protocol_federally_funded, primary_pi: logged_in_user)
+      sr       = create(:service_request_without_validations, protocol: protocol)
+      ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
+      li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
+      arm1     = create(:arm, protocol: protocol)
+      arm2     = create(:arm, protocol: protocol)
+      pages    = { arm1.id => 1, arm2.id => 1 }
+
+      session[:service_request_id] = sr.id
+
+      xhr :get, :review, {
+        id: sr.id
+      }
+
+      expect(assigns(:pages)).to eq(pages)
+    end
+
+    it 'should render template' do
+      org      = create(:organization)
+      service  = create(:service, organization: org, one_time_fee: true)
+      protocol = create(:protocol_federally_funded, primary_pi: logged_in_user)
+      sr       = create(:service_request_without_validations, protocol: protocol)
+      ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
+      li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
+
+      session[:service_request_id] = sr.id
+
+      xhr :get, :review, {
+        id: sr.id
+      }
+
+      expect(controller).to render_template(:review)
+    end
+
+    it 'should respond_with ok' do
+      org      = create(:organization)
+      service  = create(:service, organization: org, one_time_fee: true)
+      protocol = create(:protocol_federally_funded, primary_pi: logged_in_user)
+      sr       = create(:service_request_without_validations, protocol: protocol)
+      ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
+      li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
+
+      session[:service_request_id] = sr.id
+
+      xhr :get, :review, {
+        id: sr.id
+      }
+
+      expect(controller).to respond_with(:ok)
     end
   end
 end

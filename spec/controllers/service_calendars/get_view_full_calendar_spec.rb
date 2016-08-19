@@ -40,7 +40,9 @@ RSpec.describe ServiceCalendarsController do
 
       session[:service_request_id] = sr.id
 
-      xhr :get, :view_full_calendar
+      xhr :get, :view_full_calendar, {
+        protocol_id: protocol.id
+      }
 
       expect(assigns(:tab)).to eq('calendar')
     end
@@ -51,7 +53,9 @@ RSpec.describe ServiceCalendarsController do
 
       session[:service_request_id] = sr.id
 
-      xhr :get, :view_full_calendar
+      xhr :get, :view_full_calendar, {
+        protocol_id: protocol.id
+      }
 
       expect(assigns(:review)).to eq(false)
     end
@@ -62,7 +66,9 @@ RSpec.describe ServiceCalendarsController do
 
       session[:service_request_id] = sr.id
 
-      xhr :get, :view_full_calendar
+      xhr :get, :view_full_calendar, {
+        protocol_id: protocol.id
+      }
 
       expect(assigns(:portal)).to eq(true)
     end
@@ -73,7 +79,9 @@ RSpec.describe ServiceCalendarsController do
 
       session[:service_request_id] = sr.id
 
-      xhr :get, :view_full_calendar
+      xhr :get, :view_full_calendar, {
+        protocol_id: protocol.id
+      }
 
       expect(assigns(:merged)).to eq(true)
     end
@@ -86,7 +94,9 @@ RSpec.describe ServiceCalendarsController do
 
       session[:service_request_id] = sr.id
 
-      xhr :get, :view_full_calendar
+      xhr :get, :view_full_calendar, {
+        protocol_id: protocol.id
+      }
 
       expect(assigns(:pages).count).to eq(2)
       expect(assigns(:pages)[arm1.id]).to be
@@ -101,66 +111,37 @@ RSpec.describe ServiceCalendarsController do
       session[:service_request_id] = sr.id
 
       xhr :get, :view_full_calendar, {
+        protocol_id: protocol.id,
         arm_id: arm.id
       }
 
       expect(assigns(:arm)).to eq(arm)
     end
 
-    context 'format: js' do
-      it 'should render template' do
-        protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
-        sr       = create(:service_request_without_validations, protocol: protocol)
+    it 'should render template' do
+      protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
+      sr       = create(:service_request_without_validations, protocol: protocol)
 
-        session[:service_request_id] = sr.id
+      session[:service_request_id] = sr.id
 
-        xhr :get, :view_full_calendar, {
-          format: :js
-        }
+      xhr :get, :view_full_calendar, {
+        protocol_id: protocol.id
+      }
 
-        expect(controller).to render_template(:view_full_calendar)
-      end
-
-      it 'should respond ok' do
-        protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
-        sr       = create(:service_request_without_validations, protocol: protocol)
-
-        session[:service_request_id] = sr.id
-
-        xhr :get, :view_full_calendar, {
-          format: :js
-        }
-
-        expect(controller).to respond_with(:ok)
-      end
+      expect(controller).to render_template(:view_full_calendar)
     end
 
-    context 'format: html' do
-      it 'should render template' do
-        protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
-        sr       = create(:service_request_without_validations, protocol: protocol)
+    it 'should respond ok' do
+      protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
+      sr       = create(:service_request_without_validations, protocol: protocol)
 
-        session[:service_request_id] = sr.id
+      session[:service_request_id] = sr.id
 
-        xhr :get, :view_full_calendar, {
-          format: :html
-        }
+      xhr :get, :view_full_calendar, {
+        protocol_id: protocol.id
+      }
 
-        expect(controller).to render_template(:view_full_calendar)
-      end
-
-      it 'should respond ok' do
-        protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
-        sr       = create(:service_request_without_validations, protocol: protocol)
-
-        session[:service_request_id] = sr.id
-
-        xhr :get, :view_full_calendar, {
-          format: :html
-        }
-
-        expect(controller).to respond_with(:ok)
-      end
+      expect(controller).to respond_with(:ok)
     end
   end
 end

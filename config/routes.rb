@@ -67,7 +67,6 @@ SparcRails::Application.routes.draw do
     end
 
     collection do
-      post 'ask_a_question'
       post 'feedback'
     end
   end

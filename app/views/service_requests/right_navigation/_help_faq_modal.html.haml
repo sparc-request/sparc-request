@@ -27,30 +27,25 @@
           = t(:proper)[:right_navigation][:faqs][:header]
       .modal-body
         #modal_errors
-        %ul
-          %li
-            = link_to t(:proper)[:right_navigation][:faqs][:question_1], 'javascript:void(0)', class: 'help-question', data: { id: 1 }
-            %span.help-answer.hidden{ id: "help-answer-1" }
+        .card
+          .list-group
+            = link_to t(:proper)[:right_navigation][:faqs][:question_1], 'javascript:void(0)', class: 'list-group-item list-group-item-action list-group-item-info help-question', data: { id: 1 }
+            %li.list-group-item.help-answer.hidden{ id: "help-answer-1" }
               = t(:proper)[:right_navigation][:faqs][:answer_1]
-          %li
-            = link_to t(:proper)[:right_navigation][:faqs][:question_2], 'javascript:void(0)', class: 'help-question', data: { id: 2 }
-            %span.help-answer.hidden{ id: "help-answer-2" }
+            = link_to t(:proper)[:right_navigation][:faqs][:question_2], 'javascript:void(0)', class: 'list-group-item list-group-item-action list-group-item-info help-question', data: { id: 2 }
+            %li.list-group-item.help-answer.hidden{ id: "help-answer-2" }
               = t(:proper)[:right_navigation][:faqs][:answer_2]
-          %li
-            = link_to t(:proper)[:right_navigation][:faqs][:question_3], 'javascript:void(0)', class: 'help-question', data: { id: 3 }
-            %span.help-answer.hidden{ id: "help-answer-3" }
+            = link_to t(:proper)[:right_navigation][:faqs][:question_3], 'javascript:void(0)', class: 'list-group-item list-group-item-action list-group-item-info help-question', data: { id: 3 }
+            %li.list-group-item.help-answer.hidden{ id: "help-answer-3" }
               = t(:proper)[:right_navigation][:faqs][:answer_3]
-          %li
-            = link_to t(:proper)[:right_navigation][:faqs][:question_4], 'javascript:void(0)', class: 'help-question', data: { id: 4 }
-            %span.help-answer.hidden{ id: "help-answer-4" }
+            = link_to t(:proper)[:right_navigation][:faqs][:question_4], 'javascript:void(0)', class: 'list-group-item list-group-item-action list-group-item-info help-question', data: { id: 4 }
+            %li.list-group-item.help-answer.hidden{ id: "help-answer-4" }
               = t(:proper)[:right_navigation][:faqs][:answer_4]
-          %li
-            = link_to t(:proper)[:right_navigation][:faqs][:question_5], 'javascript:void(0)', class: 'help-question', data: { id: 5 }
-            %span.help-answer.hidden{ id: "help-answer-5" }
+            = link_to t(:proper)[:right_navigation][:faqs][:question_5], 'javascript:void(0)', class: 'list-group-item list-group-item-action list-group-item-info help-question', data: { id: 5 }
+            %li.list-group-item.help-answer.hidden{ id: "help-answer-5" }
               = t(:proper)[:right_navigation][:faqs][:answer_5]
-          %li
-            = link_to t(:proper)[:right_navigation][:faqs][:question_6], 'javascript:void(0)', class: 'help-question', data: { id: 6 }
-            %span.help-answer.hidden{ id: "help-answer-6" }
+            = link_to t(:proper)[:right_navigation][:faqs][:question_6], 'javascript:void(0)', class: 'list-group-item list-group-item-action list-group-item-info help-question', data: { id: 6 }
+            %li.list-group-item.help-answer.hidden{ id: "help-answer-6" }
               = t(:proper)[:right_navigation][:faqs][:answer_6]
       .modal-footer
         .center-block

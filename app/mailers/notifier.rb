@@ -22,17 +22,6 @@
 class Notifier < ActionMailer::Base
   helper ApplicationHelper
 
-  def ask_a_question quick_question
-    @quick_question = quick_question
-
-    # TODO: this process needs to be moved to a helper method
-    # it's repeated in each action with slightly different information
-    email = Rails.env == 'production' ? ADMIN_MAIL_TO : DEFAULT_MAIL_TO
-    subject = Rails.env == 'production' ? "New Question from #{I18n.t('application_title')}" : "[#{Rails.env.capitalize} - EMAIL TO #{ADMIN_MAIL_TO}] New Question from #{I18n.t('application_title')}"
-
-    mail(:to => email, :from => @quick_question.from, :subject => subject)
-  end
-
   def new_identity_waiting_for_approval identity
     @identity = identity
 

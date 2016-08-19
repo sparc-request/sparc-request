@@ -44,7 +44,7 @@ $(document).ready ->
   $(document).on 'click', '.core-header', ->
     $('.service-description').addClass('hidden')
 
-  $(document).on 'click', '.service-view a', ->
+  $(document).on 'click', '.service', ->
     description = $(".service-description-#{$(this).data('id')}")
     if description.hasClass('hidden')
       $('.service-description').addClass('hidden')

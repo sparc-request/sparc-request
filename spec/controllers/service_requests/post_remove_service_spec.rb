@@ -1,272 +1,279 @@
+# Copyright © 2011 MUSC Foundation for Research Development
+# All rights reserved.
+
+# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+# disclaimer in the documentation and/or other materials provided with the distribution.
+
+# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+# derived from this software without specific prior written permission.
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 require 'rails_helper'
 
-RSpec.describe ServiceRequestsController do
+RSpec.describe ServiceRequestsController, type: :controller do
   stub_controller
+  let!(:before_filters) { find_before_filters }
+  let!(:logged_in_user) { create(:identity) }
 
-  let_there_be_lane
-  let_there_be_j
-  build_service_request_with_study
+  before(:each) do
+    allow(controller.request).to receive(:referrer).and_return('http://example.com')
+  end
 
-  describe 'POST remove_service' do
-
-    before do
-      session[:identity_id] = jug2.id
+  describe '#remove_service' do
+    it 'should call before_filter #initialize_service_request' do
+      expect(before_filters.include?(:initialize_service_request)).to eq(true)
     end
 
-    before(:each) do
-      allow(controller.request).to receive(:referrer).and_return('http://example.com')
+    it 'should call before_filter #authorize_identity' do
+      expect(before_filters.include?(:authorize_identity)).to eq(true)
     end
 
-    let!(:core2) { create(:core, parent_id: program.id) }
+    it 'should set required related services to optional' do
+      org      = create(:organization, process_ssrs: true)
+      service  = create(:service, organization: org)
+      service2 = create(:service, organization: org)
+      protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
+      sr       = create(:service_request_without_validations, protocol: protocol)
+      ssr      = create(:sub_service_request_without_validations, organization: org, service_request: sr)
+      li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
+      li2      = create(:line_item, service_request: sr, sub_service_request: ssr, service: service2)
+      ServiceRelation.create(service_id: service.id, related_service_id: service2.id, optional: false)
 
-    let!(:service1) { service = create( :service, organization_id: core.id) }
-    let!(:service2) { service = create( :service, organization_id: core.id) }
-    let!(:service3) { service = create( :service, organization_id: core2.id) }
-    
-    let!(:ssr1) { create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id) }
-    let!(:ssr2) { create(:sub_service_request, service_request_id: service_request.id, organization_id: core2.id) }
+      session[:service_request_id] = sr.id
 
-    let!(:line_item1) { create(:line_item, service_id: service1.id, service_request_id: service_request.id, sub_service_request_id: ssr1.id) }
-    let!(:line_item2) { create(:line_item, service_id: service2.id, service_request_id: service_request.id, sub_service_request_id: ssr1.id) }
-    let!(:line_item3) { create(:line_item, service_id: service3.id, service_request_id: service_request.id, sub_service_request_id: ssr2.id) }
+      xhr :post, :remove_service, {
+        id: sr.id,
+        line_item_id: li.id
+      }
 
-
-    it 'should mark LineItems of related Services of Service as optional' do
-      # make service2 a related Service of service1,
-      # so expect service2's LineItem to be optional
-      create(:service_relation, service: service1, related_service: service2)
-      line_item2.update_attributes(optional: false)
-
-      post :remove_service, {
-        :id            => service_request.id,
-        :service_id    => service1.id,
-        :line_item_id  => line_item1.id,
-        :format        => :js,
-      }.with_indifferent_access
-
-      expect(line_item2.reload.optional).to eq(true)
+      expect(li2.reload.optional).to eq(true)
     end
 
-    it 'should delete any LineItems for the removed Service' do
-      post :remove_service, {
-        :id            => service_request.id,
-        :service_id    => service1.id,
-        :line_item_id  => line_item1.id,
-        :format        => :js,
-      }.with_indifferent_access
+    it 'should delete line item' do
+      org      = create(:organization, process_ssrs: true)
+      service  = create(:service, organization: org)
+      protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
+      sr       = create(:service_request_without_validations, protocol: protocol)
+      ssr      = create(:sub_service_request_without_validations, organization: org, service_request: sr)
+      li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
-      service_request.reload
-      expect(service_request.line_items).not_to include(line_item1)
-      expect(service_request.line_items).to include(line_item2)
-      expect(service_request.line_items).to include(line_item3)
+      session[:service_request_id] = sr.id
+
+      xhr :post, :remove_service, {
+        id: sr.id,
+        line_item_id: li.id
+      }
+
+      expect(sr.line_items.count).to eq(0)
     end
 
-    it "should destroy each Arm of Protocol's only if ServiceRequest has no Services" do
-      post :remove_service, {
-        :id            => service_request.id,
-        :service_id    => service1.id,
-        :line_item_id  => line_item1.id,
-        :format        => :js,
-      }.with_indifferent_access
+    it 'should not delete complete line item' do
+      org      = create(:organization, process_ssrs: true)
+      service  = create(:service, organization: org)
+      protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
+      sr       = create(:service_request_without_validations, protocol: protocol)
+      ssr      = create(:sub_service_request_without_validations, organization: org, service_request: sr, status: 'complete')
+      li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
-      service_request.reload
-      expect(Arm.count).to eq 2
+      session[:service_request_id] = sr.id
 
-      post :remove_service, {
-        :id            => service_request.id,
-        :service_id    => service2.id,
-        :line_item_id  => line_item2.id,
-        :format        => :js,
-      }.with_indifferent_access
+      xhr :post, :remove_service, {
+        id: sr.id,
+        line_item_id: li.id
+      }
 
-      service_request.reload
-      expect(Arm.count).to eq 2
-
-      post :remove_service, {
-        :id            => service_request.id,
-        :service_id    => service3.id,
-        :line_item_id  => line_item3.id,
-        :format        => :js,
-      }.with_indifferent_access
-
-      service_request.reload
-      expect(Arm.count).to eq 0
+      expect(sr.line_items.count).to eq(1)
     end
 
-    it 'should delete SubServiceRequests for Organizations that no longer have a Service in the ServiceRequest' do
-      post :remove_service, {
-        :id            => service_request.id,
-        :service_id    => service1.id,
-        :line_item_id  => line_item1.id,
-        :format        => :js,
-      }.with_indifferent_access
+    context 'ssr is locked' do
+      it 'should not update status' do
+        org      = create(:organization, process_ssrs: true)
+        service  = create(:service, organization: org)
+        protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
+        sr       = create(:service_request_without_validations, protocol: protocol)
+        ssr      = create(:sub_service_request_without_validations, organization: org, service_request: sr, status: 'on_hold')
+        li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
+                   create(:line_item, service_request: sr, sub_service_request: ssr, service: create(:service, organization: org))
 
-      service_request.reload
-      expect(service_request.sub_service_requests).to include(ssr1)
-      expect(service_request.sub_service_requests).to include(ssr2)
+        session[:service_request_id] = sr.id
+        stub_const("EDITABLE_STATUSES", { org.id => ['first_draft'] })
 
-      post :remove_service, {
-        :id            => service_request.id,
-        :service_id    => service2.id,
-        :line_item_id  => line_item2.id,
-        :format        => :js,
-      }.with_indifferent_access
+        xhr :post, :remove_service, {
+          id: sr.id,
+          line_item_id: li.id
+        }
 
-      service_request.reload
-      expect(service_request.sub_service_requests).not_to include(ssr1)
-      expect(service_request.sub_service_requests).to include(ssr2)
-
-      post :remove_service, {
-        :id            => service_request.id,
-        :service_id    => service3.id,
-        :line_item_id  => line_item3.id,
-        :format        => :js,
-      }.with_indifferent_access
-
-      service_request.reload
-      expect(service_request.sub_service_requests).not_to include(ssr1)
-      expect(service_request.sub_service_requests).not_to include(ssr2)
-    end
-
-    it 'should create a past status for the SubServiceRequest that still has a Service in the ServiceRequest' do
-      protocol = create(:study_without_validations,
-                         primary_pi: jug2)
-
-      service_request = create(:service_request_without_validations,
-                               status: 'submitted',
-                               protocol: protocol)
-
-      ssr = create(:sub_service_request,
-                    service_request_id: service_request.id,
-                    status: 'submitted',
-                    organization_id: core.id)
-
-      service1 = create(:service,
-                         organization_id: core.id)
-      service2 = create(:service,
-                         organization_id: core.id)
-
-      line_item1 = create(:line_item_without_validations,
-                          service_request: service_request,
-                          sub_service_request: ssr,
-                          service: service1)
-      line_item2 = create(:line_item_without_validations,
-                          service_request: service_request,
-                          sub_service_request: ssr,
-                          service: service2)
-
-      post :remove_service, {
-            id: service_request.id,
-            service_id: service1.id,
-            line_item_id: line_item1.id,
-            format: :js
-            }.with_indifferent_access
-
-      ps1 = PastStatus.find_by(sub_service_request_id: ssr.id)
-
-      expect(ps1.status).to eq('submitted')
-    end
-
-    it 'should set @page' do
-      allow(controller.request).to receive(:referrer).and_return('http://example.com/foo/bar')
-
-      session[:service_request_id] = service_request.id
-      post :remove_service, {
-        :id            => service_request.id,
-        :service_id    => service1.id,
-        :line_item_id  => line_item1.id,
-        :format        => :js,
-      }.with_indifferent_access
-
-      expect(assigns(:page)).to eq 'bar'
-    end
-
-    it 'should raise an exception if a Service is removed twice' do
-      session[:service_request_id] = service_request.id
-
-      post :remove_service, {
-        :id            => service_request.id,
-        :service_id    => service1.id,
-        :line_item_id  => line_item1.id,
-        :format        => :js,
-      }.with_indifferent_access
-
-      expect {
-        post :remove_service, {
-          :id            => service_request.id,
-          :service_id    => service1.id,
-          :line_item_id  => line_item1.id,
-          :format        => :js,
-        }.with_indifferent_access
-      }.to raise_error(ActiveRecord::RecordNotFound)
-    end
-
-    context 'ServiceRequest not in draft or first_draft and has been submitted' do
-
-      before(:each) { service_request.update_attribute(:status, 'not_draft') }
-
-      context 'removed SubServiceRequest created before submit time' do
-
-        it 'should send notifications to the service provider' do
-          service_request.update_attribute(:submitted_at, Time.zone.now)
-          ssr2.update_attribute(:created_at, Time.zone.now.ago(60))
-
-          expect(controller).to receive(:send_ssr_service_provider_notifications)
-          post :remove_service, {
-                 :id            => service_request.id,
-                 :service_id    => service3.id,
-                 :line_item_id  => line_item3.id,
-                 :format        => :js,
-               }.with_indifferent_access
-        end
-      end
-
-      context 'removed SubServiceRequest created after submit time' do
-
-        it 'should not send notifications to the service provider' do
-          service_request.update_attribute(:submitted_at, Time.zone.now.ago(60))
-          ssr2.update_attribute(:created_at, Time.zone.now)
-
-          expect(controller).to_not receive(:send_ssr_service_provider_notifications)
-          post :remove_service, {
-                 :id            => service_request.id,
-                 :service_id    => service1.id,
-                 :line_item_id  => line_item1.id,
-                 :format        => :js,
-               }.with_indifferent_access
-        end
+        expect(ssr.reload.status).to eq('on_hold')
       end
     end
 
-    context 'SubServiceRequest not specified' do
+    context 'ssr is not locked' do
+      it 'should update status' do
+        org      = create(:organization, process_ssrs: true)
+        service  = create(:service, organization: org)
+        protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
+        sr       = create(:service_request_without_validations, protocol: protocol)
+        ssr      = create(:sub_service_request_without_validations, organization: org, service_request: sr, status: 'on_hold')
+        li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
+                   create(:line_item, service_request: sr, sub_service_request: ssr, service: create(:service, organization: org))
 
-      it 'should set @line_items to the ServiceRequest LineItems' do
-        post :remove_service, {
-               :id            => service_request.id,
-               :service_id    => service1.id,
-               :line_item_id  => line_item1.id,
-               :format        => :js,
-             }.with_indifferent_access
+        session[:service_request_id] = sr.id
+        session[:identity_id]        = logged_in_user.id
 
-        expect(assigns(:line_items)).to eq(service_request.reload.line_items)
+        xhr :post, :remove_service, {
+          id: sr.id,
+          line_item_id: li.id
+        }
+
+        expect(ssr.reload.status).to eq('draft')
+      end
+
+      it 'should create past status' do
+        org      = create(:organization, process_ssrs: true)
+        service  = create(:service, organization: org)
+        protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
+        sr       = create(:service_request_without_validations, protocol: protocol)
+        ssr      = create(:sub_service_request_without_validations, organization: org, service_request: sr, status: 'on_hold')
+        li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
+                   create(:line_item, service_request: sr, sub_service_request: ssr, service: create(:service, organization: org))
+
+        session[:service_request_id] = sr.id
+        session[:identity_id]        = logged_in_user.id
+
+        xhr :post, :remove_service, {
+          id: sr.id,
+          line_item_id: li.id
+        }
+
+        expect(PastStatus.count).to eq(1)
+        expect(PastStatus.first.sub_service_request_id).to eq(ssr.id)
       end
     end
 
-    context 'SubServiceRequest specified' do
+    context 'ssr is first_draft' do
+      it 'should not update status' do
+        org      = create(:organization, process_ssrs: true)
+        service  = create(:service, organization: org)
+        protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
+        sr       = create(:service_request_without_validations, protocol: protocol)
+        ssr      = create(:sub_service_request_without_validations, organization: org, service_request: sr, status: 'first_draft')
+        li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
+                   create(:line_item, service_request: sr, sub_service_request: ssr, service: create(:service, organization: org))
 
-      before(:each) { session[:sub_service_request_id] = ssr1.id }
+        session[:service_request_id] = sr.id
 
-      it 'should set @line_items to the SubServiceRequest LineItems' do
-        line_item1.update_attributes(sub_service_request_id: ssr1.id)
-        line_item2.update_attributes(sub_service_request_id: ssr1.id)
-        post :remove_service, {
-               :id            => service_request.id,
-               :service_id    => service1.id,
-               :line_item_id  => line_item1.id,
-               :format        => :js,
-             }.with_indifferent_access
-        expect(assigns(:line_items)).to eq(ssr1.reload.line_items)
+        xhr :post, :remove_service, {
+          id: sr.id,
+          line_item_id: li.id
+        }
+
+        expect(ssr.reload.status).to eq('first_draft')
       end
+    end
+
+    context 'last line item in ssr' do
+      it 'should delete ssr' do
+        org      = create(:organization, process_ssrs: true)
+        service  = create(:service, organization: org)
+        protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
+        sr       = create(:service_request_without_validations, protocol: protocol)
+        ssr      = create(:sub_service_request_without_validations, organization: org, service_request: sr, status: 'first_draft')
+        li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
+
+        session[:service_request_id] = sr.id
+        session[:identity_id]        = logged_in_user.id
+
+        xhr :post, :remove_service, {
+          id: sr.id,
+          line_item_id: li.id
+        }
+
+        expect(sr.sub_service_requests.count).to eq(0)
+      end
+    end
+
+    it 'should assign @line_items_count' do
+      org      = create(:organization, process_ssrs: true)
+      service  = create(:service, organization: org)
+      protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
+      sr       = create(:service_request_without_validations, protocol: protocol)
+      ssr      = create(:sub_service_request_without_validations, organization: org, service_request: sr, status: 'first_draft')
+      li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
+                 create(:line_item, service_request: sr, sub_service_request: ssr, service: create(:service, organization: org))
+
+      session[:service_request_id] = sr.id
+
+      xhr :post, :remove_service, {
+        id: sr.id,
+        line_item_id: li.id
+      }
+
+      expect(assigns(:line_items_count)).to eq(1)
+    end
+
+    it 'should assign @sub_service_requests' do
+      org      = create(:organization, process_ssrs: true)
+      service  = create(:service, organization: org)
+      protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
+      sr       = create(:service_request_without_validations, protocol: protocol)
+      ssr      = create(:sub_service_request_without_validations, organization: org, service_request: sr, status: 'first_draft')
+      li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
+                 create(:line_item, service_request: sr, sub_service_request: ssr, service: create(:service, organization: org))
+
+      session[:service_request_id] = sr.id
+
+      xhr :post, :remove_service, {
+        id: sr.id,
+        line_item_id: li.id
+      }
+
+      expect(assigns(:sub_service_requests)[:active].count + assigns(:sub_service_requests)[:complete].count).to eq(1)
+    end
+
+    it 'should render template' do
+      org      = create(:organization, process_ssrs: true)
+      service  = create(:service, organization: org)
+      protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
+      sr       = create(:service_request_without_validations, protocol: protocol)
+      ssr      = create(:sub_service_request_without_validations, organization: org, service_request: sr)
+      li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
+
+      session[:service_request_id] = sr.id
+
+      xhr :post, :remove_service, {
+        id: sr.id,
+        line_item_id: li.id
+      }
+
+      expect(controller).to render_template(:remove_service)
+    end
+
+    it 'should respond ok' do
+      org      = create(:organization, process_ssrs: true)
+      service  = create(:service, organization: org)
+      protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
+      sr       = create(:service_request_without_validations, protocol: protocol)
+      ssr      = create(:sub_service_request_without_validations, organization: org, service_request: sr)
+      li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
+
+      session[:service_request_id] = sr.id
+
+      xhr :post, :remove_service, {
+        id: sr.id,
+        line_item_id: li.id
+      }
+
+      expect(controller).to respond_with(:ok)
     end
   end
 end

@@ -20,67 +20,67 @@
 
 require 'rails_helper'
 
-RSpec.describe ServiceRequestsController do
+RSpec.describe ServiceRequestsController, type: :controller do
   stub_controller
   let!(:before_filters) { find_before_filters }
   let!(:logged_in_user) { create(:identity) }
 
-  describe '#show' do
-    it 'should call before_filter #initialize_service_request' do
-      expect(before_filters.include?(:initialize_service_request)).to eq(true)
+  describe '#feedback' do
+    context 'valid' do
+      it 'should notify' do
+        protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
+        sr       = create(:service_request_without_validations, protocol: protocol)
+        feedback = { message: 'hi', email: 'asd123@musc.edu' }
+
+        session[:service_request_id] = sr.id
+
+        expect {
+          xhr :post, :feedback, {
+            id: sr.id,
+            feedback: feedback
+          }
+        }.to change(ActionMailer::Base.deliveries, :count).by(1)
+      end
     end
 
-    it 'should call before_filter #authenticate_identity' do
-      expect(before_filters.include?(:authenticate_identity!)).to eq(true)
-    end
+    context 'invalid' do
+      it 'should assign @errors' do
+        protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
+        sr       = create(:service_request_without_validations, protocol: protocol)
+        feedback = { message: '', email: '' }
 
-    it 'should assign @protocol' do
-      protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
-      sr       = create(:service_request_without_validations, protocol: protocol)
+        session[:service_request_id] = sr.id
 
-      session[:service_request_id] = sr.id
+        xhr :post, :feedback, {
+          id: sr.id
+        }
 
-      xhr :get, :show, {
-        id: sr.id
-      }
-
-      expect(assigns(:protocol)).to eq(protocol)
-    end
-
-    it 'should assign @admin_offset' do
-      protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
-      sr       = create(:service_request_without_validations, protocol: protocol)
-
-      session[:service_request_id] = sr.id
-
-      xhr :get, :show, {
-        id: sr.id,
-        admin_offset: '10'
-      }
-
-      expect(assigns(:admin_offset)).to eq('10')
+        expect(assigns(:errors)).to be
+      end
     end
 
     it 'should render template' do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
+      feedback = { message: 'hi', email: 'asd123@musc.edu' }
 
       session[:service_request_id] = sr.id
 
-      xhr :get, :show, {
+      xhr :post, :feedback, {
         id: sr.id
       }
 
-      expect(controller).to render_template(:show)
+      expect(controller).to render_template(:feedback)
     end
 
     it 'should respond ok' do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
+      feedback = { message: 'hi', email: 'asd123@musc.edu' }
 
       session[:service_request_id] = sr.id
 
-      xhr :get, :show, {
+      xhr :post, :feedback, {
         id: sr.id
       }
 

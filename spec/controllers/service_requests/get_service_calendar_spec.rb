@@ -1,124 +1,196 @@
+# Copyright © 2011 MUSC Foundation for Research Development
+# All rights reserved.
+
+# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+# disclaimer in the documentation and/or other materials provided with the distribution.
+
+# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+# derived from this software without specific prior written permission.
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 require 'rails_helper'
-require 'timecop'
 
-RSpec.describe ServiceRequestsController do
+RSpec.describe ServiceRequestsController, type: :controller do
   stub_controller
+  let!(:before_filters) { find_before_filters }
+  let!(:logged_in_user) { create(:identity) }
 
-  let_there_be_lane
-  let_there_be_j
-  build_service_request_with_project
-
-  describe 'GET service_calendar' do
-    let!(:service) do
-      service = create(:service, pricing_map_count: 1)
-      service.pricing_maps[0].update_attributes(display_date: Date.today)
-      service
+  describe '#service_calendar' do
+    it 'should call before_filter #initialize_service_request' do
+      expect(before_filters.include?(:initialize_service_request)).to eq(true)
     end
 
-    let!(:one_time_fee_service) do
-      service = create(:service, pricing_map_count: 1, one_time_fee: true)
-      service.pricing_maps[0].update_attributes(display_date: Date.today)
-      service
+    it 'should call before_filter #validate_step' do
+      expect(before_filters.include?(:validate_step)).to eq(true)
     end
 
-    let!(:pricing_map)              { service.pricing_maps[0] }
-    let!(:one_time_fee_pricing_map) { one_time_fee_service.pricing_maps[0] }
+    it 'should call before_filter #setup_navigation' do
+      expect(before_filters.include?(:setup_navigation)).to eq(true)
+    end
 
-    let!(:line_item)                { create(:line_item, service_id: service.id, service_request_id: service_request.id) }
-    let!(:one_time_fee_line_item)   { create(:line_item, service_id: service.id, service_request_id: service_request.id) }
+    it 'should call before_filter #authorize_identity' do
+      expect(before_filters.include?(:authorize_identity)).to eq(true)
+    end
+    
+    it 'should call before_filter #authenticate_identity!' do
+      expect(before_filters.include?(:authenticate_identity!)).to eq(true)
+    end
 
-    context 'page passed in params[:pages]' do
-      it 'should set the page' do
-        arm1.update_attribute(:visit_count, 5)
-        get :service_calendar, { id: service_request.id, pages: { arm1.id.to_s => 42 } }.with_indifferent_access
-        expect(session[:service_calendar_pages]).to eq(arm1.id.to_s => '42')
+    it 'should assign session[:service_calendar_pages] if params[:pages]' do
+      org      = create(:organization)
+      service  = create(:service, organization: org)
+      protocol = create(:protocol_federally_funded, primary_pi: logged_in_user)
+      sr       = create(:service_request_without_validations, protocol: protocol)
+      ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
+                 create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
+      arm      = create(:arm, protocol: protocol)
+      pages    = { arm.id => '3' }
+      
+      session[:service_request_id] = sr.id
+
+      xhr :get, :service_calendar, {
+        id: sr.id,
+        pages: pages
+      }
+
+      expect(session[:service_calendar_pages]).to eq(pages)
+    end
+
+    context 'does not have line items visits' do
+      it 'should create line items visits' do
+        org      = create(:organization)
+        service  = create(:service, organization: org)
+        protocol = create(:protocol_federally_funded, primary_pi: logged_in_user)
+        sr       = create(:service_request_without_validations, protocol: protocol)
+        ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
+                   create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
+                   create(:arm, protocol: protocol)
+
+        session[:service_request_id] = sr.id
+
+        xhr :get, :service_calendar, {
+          id: sr.id
+        }
+
+        expect(LineItemsVisit.count).to eq(1)
       end
     end
 
-    context 'Arm have no LineItemsVisits' do
-      it 'should create LineItemsVisits for Arm' do
-        arm1.line_items_visits.each(&:destroy)
-        get :service_calendar, id: service_request.id
-        expect(arm1.reload.line_items_visits).to_not be_empty
-      end
-    end
+    context 'has line items visits' do
+      context 'subject count changed' do
+        it 'should update line items visits subject count' do
+          org       = create(:organization)
+          service   = create(:service, organization: org)
+          protocol  = create(:protocol_federally_funded, primary_pi: logged_in_user)
+          sr        = create(:service_request_without_validations, protocol: protocol)
+          ssr       = create(:sub_service_request_without_validations, service_request: sr, organization: org)
+          line_item = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
+          arm       = create(:arm, protocol: protocol, subject_count: 3)
+          # This fakes the process of having already gone to the calendar and gone back to service
+          # details and updating the arm's subject count
+          liv       = build(:line_items_visit, arm: arm, line_item: line_item, subject_count: 5)
+          liv.save(validate: false)
 
-    context 'Arm has LineItemVisits' do
-      let!(:liv) { LineItemsVisit.for(arm1, line_item) }
-      context 'LineItemsVisit subject_count not set' do
-        it 'should set subject count on the per patient per visit line items' do
-          arm1.update_attribute(:subject_count, 5)
+          session[:service_request_id] = sr.id
 
-          liv.update_attribute(:subject_count, nil)
-          get :service_calendar, { id: service_request.id, pages: { arm1.id => 42 } }.with_indifferent_access
-          liv.reload
+          xhr :get, :service_calendar, {
+            id: sr.id
+          }
 
-          expect(liv.subject_count).to eq 5
+          expect(liv.reload.subject_count).to eq(3)
         end
       end
 
-      context 'LineItemsVisit subject_count exceeds Arm subject_count' do
-        it 'should set subject count on the per patient per visit line items' do
-          arm1.update_attribute(:subject_count, 5)
+      context 'visit count decreased' do
+        it 'should update visit group count' do
+          org       = create(:organization)
+          service   = create(:service, organization: org)
+          protocol  = create(:protocol_federally_funded, primary_pi: logged_in_user)
+          sr        = create(:service_request_without_validations, protocol: protocol)
+          ssr       = create(:sub_service_request_without_validations, service_request: sr, organization: org)
+          line_item = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
+          arm       = create(:arm, protocol: protocol, visit_count: 1)
+                      create(:line_items_visit, arm: arm, line_item: line_item)
+                      create(:visit_group, arm: arm)
+                      create(:visit_group, arm: arm)
 
-          liv.update_attribute(:subject_count, 6)
-          get :service_calendar, { id: service_request.id, pages: { arm1.id => 42 } }.with_indifferent_access
+          session[:service_request_id] = sr.id
 
-          liv.reload
-          expect(liv.subject_count).to eq 5
+          xhr :get, :service_calendar, {
+            id: sr.id
+          }
+
+          expect(VisitGroup.count).to eq(1)
         end
       end
 
-      context 'LineItemsVisit subject_count set and smaller than Arm subject_count' do
-        it 'should NOT set subject count on the per patient per visit line items' do
-          arm1.update_attribute(:subject_count, 5)
+      context 'visit count increased' do
+        it 'should update visit group count' do
+          org       = create(:organization)
+          service   = create(:service, organization: org)
+          protocol  = create(:protocol_federally_funded, primary_pi: logged_in_user)
+          sr        = create(:service_request_without_validations, protocol: protocol)
+          ssr       = create(:sub_service_request_without_validations, service_request: sr, organization: org)
+          line_item = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
+          arm       = create(:arm, protocol: protocol, visit_count: 2)
+                      create(:line_items_visit, arm: arm, line_item: line_item)
+                      create(:visit_group, arm: arm)
 
-          liv.update_attribute(:subject_count, 4)
-          get :service_calendar, { id: service_request.id, pages: { arm1.id => 42 } }.with_indifferent_access
-          liv.reload
-          expect(liv.subject_count).to eq 4
-        end
-      end
+          session[:service_request_id] = sr.id
 
-      context "status of ServiceRequest is 'first_draft'" do
-        it 'should set subject count on the per patient per visit line items' do
-          service_request.update_attributes(status: 'first_draft')
-          arm1.update_attribute(:subject_count, 5)
+          xhr :get, :service_calendar, {
+            id: sr.id
+          }
 
-          liv.update_attribute(:subject_count, 4)
-
-          session[:service_request_id] = service_request.id
-          get :service_calendar, { id: service_request.id, pages: { arm1.id => 42 } }.with_indifferent_access
-
-          liv.reload
-          expect(liv.subject_count).to eq 5
-        end
-      end
-
-      context 'Per patient per visit line item lacking visits' do
-        it 'should create visits if too few on per patient per visit line items' do
-          arm1.update_attribute(:visit_count, 5)
-
-          add_visits_to_arm_line_item(arm1, line_item, 0)
-
-          get :service_calendar, { id: service_request.id, pages: { arm1.id => 42 } }.with_indifferent_access
-
-          liv.reload
-          expect(liv.visits.count).to eq 5
+          expect(VisitGroup.count).to eq(2)
         end
       end
     end
-  end
 
-  def add_visits_to_arm_line_item(arm, line_item, n = arm.visit_count)
-    line_items_visit = LineItemsVisit.for(arm, line_item)
+    it 'should render template' do
+      org      = create(:organization)
+      service  = create(:service, organization: org)
+      protocol = create(:protocol_federally_funded, primary_pi: logged_in_user)
+      sr       = create(:service_request_without_validations, protocol: protocol)
+      ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
+                 create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
+                 create(:arm, protocol: protocol)
 
-    n.times do |index|
-      create(:visit_group, arm_id: arm.id, day: index)
+      session[:service_request_id] = sr.id
+
+      xhr :get, :service_calendar, {
+        id: sr.id
+      }
+
+      expect(controller).to render_template(:service_calendar)
     end
 
-    n.times do |index|
-      create(:visit, quantity: 0, line_items_visit_id: line_items_visit.id, visit_group_id: arm.visit_groups[index].id)
+    it 'should respond ok' do
+      org      = create(:organization)
+      service  = create(:service, organization: org)
+      protocol = create(:protocol_federally_funded, primary_pi: logged_in_user)
+      sr       = create(:service_request_without_validations, protocol: protocol)
+      ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
+                 create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
+                 create(:arm, protocol: protocol)
+
+      session[:service_request_id] = sr.id
+
+      xhr :get, :service_calendar, {
+        id: sr.id
+      }
+
+      expect(controller).to respond_with(:ok)
     end
   end
 end

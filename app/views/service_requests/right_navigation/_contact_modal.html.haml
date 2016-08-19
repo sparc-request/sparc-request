@@ -31,15 +31,15 @@
           .form-group.row
             = f.label :subject, t(:proper)[:right_navigation][:contact][:subject], class: 'col-lg-2 control-label'
             .col-lg-10
-              = f.text_field :subject, size: 35
+              = f.text_field :subject, size: 35, class: 'form-control'
           .form-group.row
             = f.label :email, t(:proper)[:right_navigation][:contact][:email], class: 'col-lg-2 control-label required'
             .col-lg-10
-              = f.text_field :email, size: 35
+              = f.text_field :email, size: 35, class: 'form-control'
           .form-group.row
             = f.label :message, t(:proper)[:right_navigation][:contact][:message], class: 'col-lg-2 control-label required'
             .col-lg-10
-              = f.text_area :message, cols: 65, rows: 10
+              = f.text_area :message, cols: 65, rows: 10, class: 'form-control'
         .modal-footer
           .center-block
             %button.btn.btn-default{ type: 'button', data: { dismiss: 'modal' } }

@@ -49,7 +49,7 @@
       - visits.each_with_index do |v, index|
         %td.text-center.visit{ class: "visit-#{index+1}", data: { cents: totals_hash["#{v.id}"] || 0.00 } }
           = render 'service_calendars/master_calendar/pppv/line_item_visit_input', arm: arm, line_item: liv.line_item, visit: v, tab: tab, portal: portal, service_request: service_request, totals_hash: totals_hash
-      - (5 - liv.visits.size).times do
+      - (5 - visits.size).times do
         %td &nbsp;
       %td.text-center.pppv-per-patient-line-item-total
         = display_visit_based_direct_cost(liv)

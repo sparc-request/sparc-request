@@ -29,6 +29,8 @@ $(document).ready ->
       else if tab == 'complete'
         $('.complete-ssrs').removeClass('hidden')
         
+  $(document).on 'click', '#modal_place .yes-button', ->
+    addService($(this).data('srid'), $(this).data('service-id'))
 
   $(document).on 'click', '.add-service', ->
     id = $(this).data('id')
@@ -39,9 +41,8 @@ $(document).ready ->
     if has_protocol == 0 && li_count == 0
       $('#modal_place').html($('#new-request-modal').html())
       $('#modal_place').modal('show')
-
-      $(document).on 'click', '#modal_place .yes-button', ->
-        addService(srid, id)
+      $('#modal_place .yes-button').data('srid', srid)
+      $('#modal_place .yes-button').data('service-id', id)
     else
       addService(srid, id)
 
@@ -84,6 +85,10 @@ addService = (srid, id) ->
   $.ajax
     type: 'POST'
     url: "/service_requests/#{srid}/add_service/#{id}"
+    error: (data, textStatus, jqXHR) ->
+      json = JSON.parse(data.responseText)
+      $('#modal_place').html(json['modal'])
+      $('#modal_place').modal('show')
 
 removeService = (srid, id, move_on, spinner) ->
   $.ajax

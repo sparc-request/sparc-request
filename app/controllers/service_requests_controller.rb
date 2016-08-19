@@ -24,14 +24,12 @@ class ServiceRequestsController < ApplicationController
   respond_to :js, :json, :html
 
   before_filter :initialize_service_request,      except: [:approve_changes, :get_help, :feedback]
-  before_filter :validate_step,                   only:   [:protocol, :service_details, :service_calendar, :service_subsidy, :document_management, :review, :obtain_research_pricing, :confirmation]
+  before_filter :validate_step,                   only:   [:protocol, :service_details, :service_calendar, :service_subsidy, :document_management, :review, :obtain_research_pricing, :confirmation, :save_and_exit]
+  before_filter :setup_navigation,                only:   [:protocol, :service_details, :service_calendar, :service_subsidy, :document_management, :review]
   before_filter :authorize_identity,              except: [:approve_changes, :get_help, :feedback, :show]
-  before_filter :authenticate_identity!,          except: [:catalog, :add_service, :remove_service, :ask_a_question, :get_help, :feedback]
+  before_filter :authenticate_identity!,          except: [:catalog, :add_service, :remove_service, :get_help, :feedback]
   before_filter :authorize_protocol_edit_request, only:   [:catalog]
-  before_filter :prepare_catalog,                 only:   [:catalog]
   before_filter :find_locked_org_ids,             only:   [:catalog]
-  before_filter :check_for_subsidy,               only:   [:service_subsidy, :document_management]
-  before_filter :setup_navigation
 
   def show
     @protocol = @service_request.protocol
@@ -73,7 +71,14 @@ class ServiceRequestsController < ApplicationController
   # service request wizard pages
 
   def catalog
-    # uses a before filter defined in application controller named 'prepare_catalog', extracted so that devise controllers could use as well
+    if session[:sub_service_request_id] && @sub_service_request
+      @institutions = Institution.where(id: @sub_service_request.organization.parents.select{|x| x.type == 'Institution'}.map(&:id))
+    else
+      @institutions = Institution.order('`order`')
+    end
+
+    setup_catalog_calendar
+    setup_catalog_news_feed
   end
 
   def protocol
@@ -126,6 +131,9 @@ class ServiceRequestsController < ApplicationController
   # end
 
   def service_subsidy
+    @has_subsidy          = @service_request.sub_service_requests.map(&:has_subsidy?).any?
+    @eligible_for_subsidy = @service_request.sub_service_requests.map(&:eligible_for_subsidy?).any?
+
     # this is only if the calendar totals page is not going to be used.
     if @service_request.arms.blank?
       @back = 'service_details'
@@ -137,12 +145,16 @@ class ServiceRequestsController < ApplicationController
   end
 
   def document_management
+    @has_subsidy          = @service_request.sub_service_requests.map(&:has_subsidy?).any?
+    @eligible_for_subsidy = @service_request.sub_service_requests.map(&:eligible_for_subsidy?).any?
+
     unless @has_subsidy || @eligible_for_subsidy 
       @back = 'service_calendar'
     end
   end
 
   def review
+    @tab    = 'calendar'
     @review = true
     @portal = false
     @merged = false
@@ -162,9 +174,7 @@ class ServiceRequestsController < ApplicationController
 
     to_notify = []
     if @sub_service_request
-      if @sub_service_request.status != 'get_a_cost_estimate'
-        to_notify << @sub_service_request.id
-      end
+      to_notify << @sub_service_request.id unless @sub_service_request.status == 'get_a_cost_estimate'
 
       @sub_service_request.update_attribute(:status, 'get_a_cost_estimate')
       @sub_service_request.update_past_status(current_user)
@@ -172,7 +182,7 @@ class ServiceRequestsController < ApplicationController
       to_notify = update_service_request_status(@service_request, 'get_a_cost_estimate')
     end
 
-    send_confirmation_notifications to_notify
+    send_confirmation_notifications(to_notify)
     render formats: [:html]
   end
 
@@ -183,72 +193,34 @@ class ServiceRequestsController < ApplicationController
     to_notify = []
 
     if @sub_service_request
-      if @sub_service_request.status != 'submitted'
-        to_notify << @sub_service_request.id
-      end
+      to_notify << @sub_service_request.id unless @sub_service_request.status == 'submitted'
 
       @sub_service_request.update_attributes(status: 'submitted', nursing_nutrition_approved: false, lab_approved: false, imaging_approved: false, committee_approved: false)
       @sub_service_request.update_past_status(current_user)
     else
       to_notify = update_service_request_status(@service_request, 'submitted')
+      
       @service_request.update_arm_minimum_counts
-
-      @service_request.sub_service_requests.each do |ssr|
-        ssr.update_attributes(nursing_nutrition_approved: false, lab_approved: false, imaging_approved: false, committee_approved: false)
-      end
+      @service_request.sub_service_requests.update_all(nursing_nutrition_approved: false, lab_approved: false, imaging_approved: false, committee_approved: false)
     end
 
     should_push_to_epic = @sub_service_request ? @sub_service_request.should_push_to_epic? : @service_request.should_push_to_epic?
 
-    if should_push_to_epic
+    if should_push_to_epic && USE_EPIC && @protocol.selected_for_epic
       # Send a notification to Lane et al to create users in Epic.  Once
       # that has been done, one of them will click a link which calls
       # approve_epic_rights.
-      if USE_EPIC
-        if @protocol.selected_for_epic
-          @protocol.ensure_epic_user
-          if QUEUE_EPIC
-            EpicQueue.create(protocol_id: @protocol.id) unless EpicQueue.where(protocol_id: @protocol.id).size == 1
-          else
-            @protocol.awaiting_approval_for_epic_push
-            send_epic_notification_for_user_approval(@protocol)
-          end
-        end
+      @protocol.ensure_epic_user
+      if QUEUE_EPIC
+        EpicQueue.create(protocol_id: @protocol.id) unless EpicQueue.where(protocol_id: @protocol.id).size == 1
+      else
+        @protocol.awaiting_approval_for_epic_push
+        send_epic_notification_for_user_approval(@protocol)
       end
     end
 
     send_confirmation_notifications(to_notify)
     render formats: [:html]
-  end
-
-  def send_confirmation_notifications(to_notify)
-    if @service_request.previous_submitted_at.nil?
-      send_notifications(@service_request, @sub_service_request)
-    elsif @sub_service_request
-      if to_notify.include? @sub_service_request.id
-        send_ssr_service_provider_notifications(@service_request, @sub_service_request)
-      end
-    else
-      @service_request.sub_service_requests.each do |ssr|
-        if to_notify.include? ssr.id
-          send_ssr_service_provider_notifications(@service_request, ssr)
-        end
-      end
-    end
-  end
-
-  def approve_changes
-    @service_request = ServiceRequest.find params[:id]
-    @approval = @service_request.approvals.where(id: params[:approval_id]).first
-    @previously_approved = true
-
-    if @approval and @approval.identity.nil?
-      @approval.update_attributes(identity_id: current_user.id, approval_date: Time.now)
-      @previously_approved = false
-    end
-  end
-
-  def get_help
   end
 
   def save_and_exit
@@ -258,7 +230,7 @@ class ServiceRequestsController < ApplicationController
           @sub_service_request.update_attribute(:status, 'draft')
           @sub_service_request.update_past_status(current_user)
         else
-          update_service_request_status(@service_request, 'draft')
+          update_service_request_status(@service_request, 'draft', false)
           @service_request.ensure_ssr_ids
         end
 
@@ -269,28 +241,12 @@ class ServiceRequestsController < ApplicationController
     end
   end
 
-  def refresh_service_calendar
-    arm_id = params[:arm_id].to_s if params[:arm_id]
-    @arm = Arm.find arm_id if arm_id
-    @portal = params[:portal] if params[:portal]
-    @thead_class = @portal == 'true' ? 'default_calendar' : 'red-provider'
-    page = params[:page] if params[:page]
-    session[:service_calendar_pages] = params[:pages] if params[:pages]
-    session[:service_calendar_pages][arm_id] = page if page && arm_id
-    @pages = {}
-    @service_request.arms.each do |arm|
-      new_page = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i
-      @pages[arm.id] = @service_request.set_visit_page new_page, arm
-    end
-    @tab = 'calendar'
-  end
-
-  # methods only used by ajax requests
-
   def add_service
     existing_service_ids = @service_request.line_items.reject{ |line_item| line_item.status == 'complete' }.map(&:service_id)
 
-    unless existing_service_ids.include?( params[:service_id] )
+    if existing_service_ids.include?( params[:service_id].to_i )
+      render json: { modal: render_to_string(partial: 'service_requests/modals/service_already_added_modal') }, status: :unprocessable_entity
+    else
       service        = Service.find( params[:service_id] )
       new_line_items = @service_request.create_line_items_for_service( service: service, optional: true, existing_service_ids: existing_service_ids, recursive_call: false ) || []
 
@@ -303,24 +259,25 @@ class ServiceRequestsController < ApplicationController
         li.update_attribute(:sub_service_request_id, ssr.id)
 
         if @service_request.status == 'first_draft'
-          ssr.update_attribute :status, 'first_draft'
+          ssr.update_attribute(:status, 'first_draft')
         elsif ssr.status.nil? || (ssr.can_be_edited? && ssr_has_changed?(@service_request, ssr) && (ssr.status != 'complete'))
           previous_status = ssr.status
-          ssr.update_attribute :status, 'draft'
+          ssr.update_attribute(:status, 'draft')
           ssr.update_past_status(current_user) unless previous_status.nil?
         end
       end
 
       @service_request.ensure_ssr_ids
 
-      find_cart_ssrs_and_line_items
+      @line_items_count     = @sub_service_request ? @sub_service_request.line_items.count : @service_request.line_items.count
+      @sub_service_requests = @service_request.cart_sub_service_requests
     end
   end
 
   def remove_service
-    @line_item            = @service_request.line_items.find( params[:line_item_id] )
-    @line_items           = @sub_service_request ? @sub_service_request.line_items : @service_request.line_items
-    service               = @line_item.service
+    line_item             = @service_request.line_items.find( params[:line_item_id] )
+    line_items            = @sub_service_request ? @sub_service_request.line_items : @service_request.line_items
+    service               = line_item.service
     line_item_service_ids = @service_request.line_items.map(&:service_id)
 
     # look at related services and set them to optional
@@ -331,7 +288,7 @@ class ServiceRequestsController < ApplicationController
       end
     end
 
-    @line_items.where(service_id: service.id).each do |li|
+    line_items.where(service_id: service.id).each do |li|
       if li.status != 'complete'
         ssr = li.sub_service_request
         if ssr.can_be_edited? && ssr.status != 'first_draft'
@@ -342,7 +299,7 @@ class ServiceRequestsController < ApplicationController
       end
     end
 
-    @line_items.reload
+    line_items.reload
 
     @service_request = ServiceRequest.find(session[:service_request_id])
     @page = request.referrer.split('/').last # we need for pages other than the catalog
@@ -365,16 +322,11 @@ class ServiceRequestsController < ApplicationController
 
     @service_request.reload
 
-    find_cart_ssrs_and_line_items
-    render formats: [:js]
+    @line_items_count     = @sub_service_request ? @sub_service_request.line_items.count : @service_request.line_items.count
+    @sub_service_requests = @service_request.cart_sub_service_requests
   end
 
-  def ask_a_question
-    from = params['quick_question']['email'].blank? ? NO_REPLY_FROM : params['quick_question']['email']
-    body = params['quick_question']['body'].blank? ? 'No question asked' : params['quick_question']['body']
-
-    quick_question = QuickQuestion.create to: DEFAULT_MAIL_TO, from: from, body: body
-    Notifier.ask_a_question(quick_question).deliver
+  def get_help
   end
 
   def feedback
@@ -384,6 +336,17 @@ class ServiceRequestsController < ApplicationController
       flash.now[:success] = t(:proper)[:right_navigation][:feedback][:submitted]
     else
       @errors = feedback.errors
+    end
+  end
+
+  def approve_changes
+    @service_request = ServiceRequest.find params[:id]
+    @approval = @service_request.approvals.where(id: params[:approval_id]).first
+    @previously_approved = true
+
+    if @approval and @approval.identity.nil?
+      @approval.update_attributes(identity_id: current_user.id, approval_date: Time.now)
+      @previously_approved = false
     end
   end
 
@@ -458,14 +421,53 @@ class ServiceRequestsController < ApplicationController
     end
   end
 
-  def find_cart_ssrs_and_line_items
-    @line_items_count     = @sub_service_request ? @sub_service_request.line_items.count : @service_request.line_items.count
-    @sub_service_requests = @service_request.cart_sub_service_requests
+  def setup_catalog_calendar
+    if USE_GOOGLE_CALENDAR
+      curTime = Time.now.utc
+      startMin = curTime
+      startMax  = (curTime + 1.month)
+
+      @events = []
+      begin
+        #to parse file and get events
+        cal_file = File.open(Rails.root.join("tmp", "basic.ics"))
+
+        cals = Icalendar.parse(cal_file)
+
+        cal = cals.first
+
+        events = cal.events.sort { |x, y| y.dtstart <=> x.dtstart }
+
+        events.each do |event|
+          next if Time.parse(event.dtstart.to_s) > startMax
+          break if Time.parse(event.dtstart.to_s) < startMin
+          @events << create_calendar_event(event)
+        end
+
+        @events.reverse!
+
+        Alert.where(alert_type: ALERT_TYPES['google_calendar'], status: ALERT_STATUSES['active']).update_all(status: ALERT_STATUSES['clear'])
+      rescue Exception => e
+        active_alert = Alert.where(alert_type: ALERT_TYPES['google_calendar'], status: ALERT_STATUSES['active']).first_or_initialize
+        if Rails.env == 'production' && active_alert.new_record?
+          active_alert.save
+          ExceptionNotifier::Notifier.exception_notification(request.env, e).deliver unless request.remote_ip == '128.23.150.107' # this is an ignored IP address, MUSC security causes issues when they pressure test,  this should be extracted/configurable
+        end
+      end
+    end
   end
 
-  def check_for_subsidy
-    @has_subsidy          = @service_request.sub_service_requests.map(&:has_subsidy?).any?
-    @eligible_for_subsidy = @service_request.sub_service_requests.map(&:eligible_for_subsidy?).any?
+  def setup_catalog_news_feed
+    if USE_NEWS_FEED
+      page = Nokogiri::HTML(open("https://www.sparcrequestblog.com"))
+      articles = page.css('article.post').take(3)
+      @news = []
+      articles.each do |article|
+        @news << {title: (article.at_css('.entry-title') ? article.at_css('.entry-title').text : ""),
+                  link: (article.at_css('.entry-title a') ? article.at_css('.entry-title a')[:href] : ""),
+                  date: (article.at_css('.date') ? article.at_css('.date').text : "") }
+      end
+    end
   end
 
   # Send notifications to all users.
@@ -531,6 +533,18 @@ class ServiceRequestsController < ApplicationController
     end
   end
 
+  def send_confirmation_notifications(to_notify)
+    if @service_request.previous_submitted_at.nil?
+      send_notifications(@service_request, @sub_service_request)
+    elsif @sub_service_request
+      send_ssr_service_provider_notifications(@service_request, @sub_service_request) if to_notify.include?(@sub_service_request.id)
+    else
+      @service_request.sub_service_requests.each do |ssr|
+        send_ssr_service_provider_notifications(@service_request, ssr) if to_notify.include?(ssr.id)
+      end
+    end
+  end
+
   def ssr_has_changed?(service_request, sub_service_request) #specific ssr has changed?
     previously_submitted_at = service_request.previous_submitted_at.nil? ? Time.now.utc : service_request.previous_submitted_at.utc
     unless sub_service_request.audit_report(current_user, previously_submitted_at, Time.now.utc)[:line_items].empty?
@@ -584,12 +598,12 @@ class ServiceRequestsController < ApplicationController
     Notifier.notify_for_epic_user_approval(protocol).deliver unless QUEUE_EPIC
   end
 
-  def update_service_request_status(service_request, status)
+  def update_service_request_status(service_request, status, validate=true)
     if (status == 'submitted')
       service_request.previous_submitted_at = @service_request.submitted_at
       service_request.update_attribute(:submitted_at, Time.now)
     end
-    to_notify = service_request.update_status(status)
+    to_notify = service_request.update_status(status, validate)
     service_request.sub_service_requests.each {|ssr| ssr.update_past_status(current_user)}
 
     to_notify
@@ -630,5 +644,13 @@ class ServiceRequestsController < ApplicationController
 
   def set_highlighted_link
     @highlighted_link ||= 'sparc_request'
+  end
+
+  def convert_date_for_save(attrs, date_field)
+    if attrs[date_field] && attrs[date_field].present?
+      attrs[date_field] = Time.strptime(attrs[date_field], "%m/%d/%Y")
+    end
+
+    attrs
   end
 end

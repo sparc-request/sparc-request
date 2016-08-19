@@ -1,90 +1,174 @@
+# Copyright © 2011 MUSC Foundation for Research Development
+# All rights reserved.
+
+# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+# disclaimer in the documentation and/or other materials provided with the distribution.
+
+# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+# derived from this software without specific prior written permission.
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 require 'rails_helper'
 
-RSpec.describe ServiceRequestsController do
+RSpec.describe ServiceRequestsController, type: :controller do
   stub_controller
+  let!(:before_filters) { find_before_filters }
+  let!(:logged_in_user) { create(:identity) }
 
-  let_there_be_lane
-  let_there_be_j
-  build_service_request_with_project
+  describe '#service_calendar' do
+    it 'should call before_filter #initialize_service_request' do
+      expect(before_filters.include?(:initialize_service_request)).to eq(true)
+    end
 
-  describe 'GET service_subsidy' do
+    it 'should call before_filter #validate_step' do
+      expect(before_filters.include?(:validate_step)).to eq(true)
+    end
 
-    before(:each) { session[:service_request_id] = service_request.id }
+    it 'should call before_filter #setup_navigation' do
+      expect(before_filters.include?(:setup_navigation)).to eq(true)
+    end
 
-    context 'no SubServiceRequests' do
+    it 'should call before_filter #authorize_identity' do
+      expect(before_filters.include?(:authorize_identity)).to eq(true)
+    end
+    
+    it 'should call before_filter #authenticate_identity!' do
+      expect(before_filters.include?(:authenticate_identity!)).to eq(true)
+    end
 
-      before(:each) do
-        service_request.sub_service_requests.each { |ssr| ssr.destroy }
-        service_request.reload
-        get :service_subsidy, id: service_request.id
-      end
+    it 'should assign @has_subsidy' do
+      org      = create(:organization)
+                 create(:subsidy_map, organization: org, max_dollar_cap: 100, max_percentage: 100)
+      service  = create(:service, organization: org)
+      protocol = create(:protocol_federally_funded, primary_pi: logged_in_user)
+      sr       = create(:service_request_without_validations, protocol: protocol)
+      ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
+      li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
+      arm      = create(:arm, protocol: protocol)
+      liv      = create(:line_items_visit, arm: arm, line_item: li)
+      vg       = create(:visit_group, arm: arm, day: 1)
+                 create(:visit, visit_group: vg, line_items_visit: liv)
+                 create(:subsidy, sub_service_request: ssr)
 
-      it 'should set has_subsidies to false if there are no sub service requests' do
-        expect(assigns(:has_subsidy)).to eq false
-      end
+      session[:service_request_id] = sr.id
 
-      it 'should set eligible for subsidy to false if there are no sub service requests' do
-        expect(assigns(:eligible_for_subsidy)).to eq false
-      end
+      xhr :get, :service_subsidy, {
+        id: sr.id
+      }
 
-      it 'should redirect to document_management' do
-        expect(response).to redirect_to "/service_requests/#{service_request.id}/document_management"
+      expect(assigns(:has_subsidy)).to eq(true)
+    end
+
+    it 'should assign @eligible_for_study' do
+      org      = create(:organization)
+                 create(:subsidy_map, organization: org, max_dollar_cap: 100, max_percentage: 100)
+      service  = create(:service, organization: org)
+      protocol = create(:protocol_federally_funded, primary_pi: logged_in_user)
+      sr       = create(:service_request_without_validations, protocol: protocol)
+      ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
+      li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
+      arm      = create(:arm, protocol: protocol)
+      liv      = create(:line_items_visit, arm: arm, line_item: li)
+      vg       = create(:visit_group, arm: arm, day: 1)
+                 create(:visit, visit_group: vg, line_items_visit: liv)
+
+      session[:service_request_id] = sr.id
+
+      xhr :get, :service_subsidy, {
+        id: sr.id
+      }
+
+      expect(assigns(:eligible_for_subsidy)).to eq(true)
+    end
+
+    context 'arms blank' do
+      it 'should assign @back to service_details' do
+        org      = create(:organization)
+        service  = create(:service, organization: org, one_time_fee: true)
+        protocol = create(:protocol_federally_funded, primary_pi: logged_in_user)
+        sr       = create(:service_request_without_validations, protocol: protocol)
+        ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
+        li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
+
+        session[:service_request_id] = sr.id
+
+        xhr :get, :service_subsidy, {
+          id: sr.id
+        }
       end
     end
 
-    context 'SubServiceRequest has a Subsidy' do
+    it 'should redirect if !@has_subsidy && !@eligible_for_subsidy' do
+      org      = create(:organization)
+      service  = create(:service, organization: org)
+      protocol = create(:protocol_federally_funded, primary_pi: logged_in_user)
+      sr       = create(:service_request_without_validations, protocol: protocol)
+      ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
+      li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
+      arm      = create(:arm, protocol: protocol)
+      liv      = create(:line_items_visit, arm: arm, line_item: li)
+      vg       = create(:visit_group, arm: arm, day: 1)
+                 create(:visit, visit_group: vg, line_items_visit: liv)
 
-      before(:each) { get :service_subsidy, id: service_request.id }
+      session[:service_request_id] = sr.id
 
-      it 'has subsidy should return true' do
-        expect(assigns(:has_subsidy)).to eq true
-      end
+      xhr :get, :service_subsidy, {
+        id: sr.id
+      }
 
-      it 'should responsd with status 200' do
-        expect(response.status).to eq 200
-      end
+      expect(controller).to redirect_to("/service_requests/#{sr.id}/document_management")
     end
 
-    context 'SubServiceRequest does not have a subsidy but is eligible for one' do
+    it 'should render template' do
+      org      = create(:organization)
+                 create(:subsidy_map, organization: org, max_dollar_cap: 100, max_percentage: 100)
+      service  = create(:service, organization: org)
+      protocol = create(:protocol_federally_funded, primary_pi: logged_in_user)
+      sr       = create(:service_request_without_validations, protocol: protocol)
+      ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
+      li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
+      arm      = create(:arm, protocol: protocol)
+      liv      = create(:line_items_visit, arm: arm, line_item: li)
+      vg       = create(:visit_group, arm: arm, day: 1)
+                 create(:visit, visit_group: vg, line_items_visit: liv)
 
-      before(:each) do
-        sub_service_request.subsidies.destroy_all
-        sub_service_request.reload
-        sub_service_request.organization.subsidy_map.update_attributes(
-          max_dollar_cap: 100,
-          max_percentage: 100)
+      session[:service_request_id] = sr.id
 
-        get :service_subsidy, id: service_request.id
-      end
+      xhr :get, :service_subsidy, {
+        id: sr.id
+      }
 
-      it 'has subsidy should return false' do
-        expect(assigns(:has_subsidy)).to eq false
-      end
-
-      it 'eligible for subsidy should return true' do
-        expect(assigns(:eligible_for_subsidy)).to eq true
-      end
+      expect(controller).to render_template(:service_subsidy)
     end
 
-    context 'with sub service request' do
-      context 'SubServiceRequest does not have a subsidy and is not eligible for one' do
+    it 'should respond ok' do
+      org      = create(:organization)
+                 create(:subsidy_map, organization: org, max_dollar_cap: 100, max_percentage: 100)
+      service  = create(:service, organization: org)
+      protocol = create(:protocol_federally_funded, primary_pi: logged_in_user)
+      sr       = create(:service_request_without_validations, protocol: protocol)
+      ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
+      li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
+      arm      = create(:arm, protocol: protocol)
+      liv      = create(:line_items_visit, arm: arm, line_item: li)
+      vg       = create(:visit_group, arm: arm, day: 1)
+                 create(:visit, visit_group: vg, line_items_visit: liv)
 
-        before(:each) do
-          subsidy.destroy
-          subsidy_map.destroy
-          # make sure before we start the test that the ssr is not eligible for subsidy
-          expect(sub_service_request.eligible_for_subsidy?).to eq false
+      session[:service_request_id] = sr.id
 
-          # call service_subsidy
-          get :service_subsidy, id: service_request.id
-
-          sub_service_request.reload
-        end
-
-        it 'should redirect to document_management' do
-          expect(response).to redirect_to "/service_requests/#{service_request.id}/document_management"
-        end
-      end
+      xhr :get, :service_subsidy, {
+        id: sr.id
+      }
     end
   end
 end

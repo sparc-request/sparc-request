@@ -55,6 +55,7 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
         @tab              = 'calendar'
         @portal           = true
         @review           = true
+        @merged           = false
 
         @pages            = {}
         @service_request.arms.each do |arm|

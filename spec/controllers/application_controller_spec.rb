@@ -28,7 +28,6 @@ RSpec.describe ApplicationController, type: :controller do
     end
 
     def show
-      prepare_catalog
       render nothing: true
     end
 
@@ -151,44 +150,6 @@ RSpec.describe ApplicationController, type: :controller do
     end
   end
 
-  describe '#prepare_catalog' do
-    build_service_request_with_study
-
-    before(:each) do
-      # make Institution list for sub_service_request distinct from
-      # list of all Institutions
-      create(:institution)
-    end
-
-    context 'session[:sub_service_request_id] present and @sub_service_request non-nil' do
-      it 'should set @institutions to the @sub_service_request\'s Institutions' do
-        session[:sub_service_request_id] = sub_service_request.id
-        controller.instance_variable_set(:@sub_service_request, sub_service_request)
-        routes.draw { get 'show' => 'anonymous#show' }
-        get :show
-        expect(assigns(:institutions)).to eq [institution]
-      end
-    end
-
-    context 'session[:sub_service_request_id] present but @sub_service_request nil' do
-      it 'should set @institutions to all Institutions' do
-        session[:sub_service_request_id] = sub_service_request.id
-        routes.draw { get 'show' => 'anonymous#show' }
-        get :show
-        expect(assigns(:institutions)).to eq Institution.order('`order`')
-      end
-    end
-
-    context 'session[:sub_service_request_id] absent but @sub_service_request set' do
-      it 'should set @institutions to all Institutions' do
-        controller.instance_variable_set(:@sub_service_request, sub_service_request)
-        routes.draw { get 'show' => 'anonymous#show' }
-        get :show
-        expect(assigns(:institutions)).to eq Institution.order('`order`')
-      end
-    end
-  end
-
   describe '#initialize_service_request' do
     build_service_request_with_study
 
@@ -216,10 +177,6 @@ RSpec.describe ApplicationController, type: :controller do
           it 'should set @sub_service_request' do
             expect(assigns(:sub_service_request)).to eq sub_service_request
           end
-
-          it "should set @line_items to the SubServiceRequest's LineItems" do
-            expect(assigns(:line_items)).to eq sub_service_request.line_items
-          end
         end
 
         context 'session[:sub_service_request_id] absent' do
@@ -227,10 +184,6 @@ RSpec.describe ApplicationController, type: :controller do
 
           it 'should not set @sub_service_request' do
             expect(assigns(:sub_service_request)).to_not be
-          end
-
-          it "should set @line_items to the ServiceRequest's LineItems" do
-            expect(assigns(:line_items)).to eq service_request.line_items
           end
         end
       end

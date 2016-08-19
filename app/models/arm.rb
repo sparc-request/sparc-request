@@ -169,8 +169,11 @@ class Arm < ActiveRecord::Base
     end
   end
 
-  def create_visit_group position=nil, name=''
-    if not visit_group = self.visit_groups.create(position: position, name: name) then
+  def create_visit_group(position=nil, name='')
+    visit_group = self.visit_groups.create(position: position, name: name)
+    
+    unless visit_group.valid?
+      self.errors.add(:base, visit_group.errors.full_messages)
       return false
     end
 

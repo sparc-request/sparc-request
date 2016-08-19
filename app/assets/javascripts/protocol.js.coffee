@@ -20,7 +20,6 @@
 
 #= require navigation
 #= require cart
-#= require right_navigation
 #= require associated_users
 
 $(document).ready ->

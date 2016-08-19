@@ -204,6 +204,9 @@ en:
       no_active_services_message: "You do not have any active requested Services"
       no_complete_services_message: "You do not have any requested Services in 'Complete' status"
       to_catalog: "Return to Catalog"
+      service_exists:
+        header: "Service Already Present"
+        warning: "You have already added this service to your cart"
       has_fulfillments:
         header: "Remove Service"
         warning: "This line item has one or more fulfillments associated with it and can not be deleted."
@@ -244,7 +247,7 @@ en:
     ####################
     right_navigation:
       faqs:
-        header: "Help/FAQs"
+        header: "Frequently Asked Questions"
         question_1: "May I submit a request for services for multiple research studies/projects simultaneously?"
         answer_1: "No. Please browse and select services for only one research study/project at a time."
         question_2: "May I select and add services from multiple Service Providers and Programs at one time?"
@@ -269,5 +272,4 @@ en:
         email: "Email:"
         message: "Message:"
         submitted: "Message sent successfully!"
-
       ctrc_lock: "SCTR Research Nexus services are already present on this request (%{protocol_id}-%{ssr_id}) pertaining to this %{protocol_type}, '%{short_title}'. Please call (843) 792-8688 to edit the existing request."

@@ -579,7 +579,7 @@ class ServiceRequestsController < ApplicationController
     @service_list_true = @service_request.service_list(true, service_provider)
     @service_list_false = @service_request.service_list(false, service_provider)
 
-    # Retrieves the valid line items for service provider to calculate total direct cost in the xls 
+    # Retrieves the valid line items for service provider to calculate total direct cost in the xls
     line_items = []
     @service_request.sub_service_requests.each do |ssr|
       if service_provider.identity.is_service_provider?(ssr)

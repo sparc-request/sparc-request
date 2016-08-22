@@ -390,8 +390,8 @@ class Protocol < ActiveRecord::Base
   end
 
   def ensure_epic_user
-    self.primary_pi_project_role.set_epic_rights
-    self.primary_pi_project_role.save
+    primary_pi_project_role.set_epic_rights.save
+    project_roles.reload
   end
 
   # Returns true if there is a push to epic in progress, false

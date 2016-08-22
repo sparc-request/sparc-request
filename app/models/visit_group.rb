@@ -45,6 +45,7 @@ class VisitGroup < ActiveRecord::Base
   before_destroy :remove_appointments
 
   validates :name, presence: true
+  validates :position, presence: true
 
   with_options if: :day? do |vg|
     # with respect to the other VisitGroups associated with the same arm
@@ -106,5 +107,6 @@ class VisitGroup < ActiveRecord::Base
                               position_col.gt(position).and(day_col.lteq(day)))).any?
       errors.add(:day, 'must be in order')
     end
+    
   end
 end

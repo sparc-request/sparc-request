@@ -2,10 +2,6 @@ desc 'Moves a Service to another Organization'
 
 task :move_service, [:service_id, :organization_id] => :environment do |t, args|
   ActiveRecord::Base.transaction do
-    # TODO Remove following two lines after testing.
-    o = Organization.create(name: 'Epic Research Program', process_ssrs: true)
-    o.update_attribute(:id, 243)
-
     service = Service.find(args[:service_id])
     dest_org = Organization.find(args[:organization_id])
 
@@ -39,8 +35,6 @@ task :move_service, [:service_id, :organization_id] => :environment do |t, args|
         end
       end
     end
-
-    binding.pry; raise ActiveRecord::Rollback
   end
 end
 

@@ -7,7 +7,7 @@
       %th{:style => 'border: 1px solid black;'}= t(:notifier)[:name]
       %th{:style => 'border: 1px solid black;'}= t(:notifier)[:contact_info]
       %th{:style => 'border: 1px solid black;'}= t(:notifier)[:role]
-      - if !@protocol.selected_for_epic.nil?
+      - if @protocol.selected_for_epic == true
         %th{:style => 'border: 1px solid black;'}= t(:notifier)[:epic_access]
   %tbody
     - @protocol.project_roles.each do |pr|
@@ -18,7 +18,7 @@
           %td{:style => 'border: 1px solid black; text-align: center;'}= pr.role.upcase + " " + t(:notifier)[:requester]
         - else
           %td{:style => 'border: 1px solid black; text-align: center;'}= pr.role.upcase
-        - if !@protocol.selected_for_epic.nil?
+        - if @protocol.selected_for_epic == true
           %td{:style => 'border: 1px solid black; text-align: center;'}= pr.epic_access == true ? "Yes" : "No"
 %br
 %br

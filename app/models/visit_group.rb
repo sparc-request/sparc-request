@@ -107,6 +107,5 @@ class VisitGroup < ActiveRecord::Base
                               position_col.gt(position).and(day_col.lteq(day)))).any?
       errors.add(:day, 'must be in order')
     end
-    
   end
 end

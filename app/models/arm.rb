@@ -137,7 +137,7 @@ class Arm < ActiveRecord::Base
     direct_costs_for_visit_based_service(line_items_visits) + indirect_costs_for_visit_based_service(line_items_visits)
   end
 
-  def add_visit position=self.visit_groups.count+1, day=position-1, window_before=0, window_after=0, name="Visit #{position}", portal=false
+  def add_visit position=self.visit_groups.count+1, day=position-1, window_before=0, window_after=0, name="Visit #{day}", portal=false
     result = self.transaction do
       if not self.create_visit_group(position, name) then
         raise ActiveRecord::Rollback
@@ -351,7 +351,7 @@ class Arm < ActiveRecord::Base
     count = visit_count - last_position
     count.times do |index|
       position = last_position + 1
-      VisitGroup.create(arm_id: self.id, name: "Visit #{position}", position: position, day: position)
+      VisitGroup.create(arm_id: self.id, name: "Visit #{position}", position: position, day: position-1)
       last_position += 1
     end
     self.reload

@@ -351,7 +351,7 @@ class Arm < ActiveRecord::Base
     count = visit_count - last_position
     count.times do |index|
       position = last_position + 1
-      VisitGroup.create(arm_id: self.id, name: "Visit #{position}", position: position, day: position-1)
+      VisitGroup.create(arm_id: self.id, name: "Visit #{position}", position: position, day: position)
       last_position += 1
     end
     self.reload

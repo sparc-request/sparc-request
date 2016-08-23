@@ -35,6 +35,8 @@ task :move_service, [:service_id, :organization_id] => :environment do |t, args|
         end
       end
     end
+
+    service.update!(organization_id: dest_org.id)
   end
 end
 

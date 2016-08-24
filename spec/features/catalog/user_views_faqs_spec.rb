@@ -17,17 +17,33 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-$(document).ready ->
-  $(document).on 'click', '.help-question', ->
-    id = $(this).data('id')
-    answer = $("#modal_place #help-answer-#{id}")
-    if answer.hasClass('hidden')
-      $('#modal_place .help-answer').addClass('hidden')
-      answer.removeClass('hidden')
-    else
-      answer.addClass('hidden')
 
-  $(document).on 'click', 'button.feedback-button', ->
-    $('#modal_place').html($('#feedback-modal').html())
-    $('#modal_place').modal 'show'
-    return false
+require 'rails_helper'
+
+RSpec.describe 'User views frequently asked questions', js: true do
+  let_there_be_lane
+  fake_login_for_each_test
+
+  scenario 'and sees the help/faq modal' do
+    visit root_path
+    wait_for_javascript_to_finish
+
+    click_link 'Help/FAQs'
+    wait_for_javascript_to_finish
+
+    expect(page).to have_selector('#modal-title', text: 'Help/FAQs', visible: true)
+  end
+
+  context 'and clicks a question' do
+    scenario 'and sees the answer' do
+      visit root_path
+      wait_for_javascript_to_finish
+
+      click_link 'Help/FAQs'
+      wait_for_javascript_to_finish
+      first('.help-question').click
+
+      expect(first('.help-answer')).to be_visible
+    end
+  end
+end

@@ -65,17 +65,17 @@ module ServiceRequestsHelper
   # RIGHT NAVIGATION BUTTONS
   def faq_helper
     if USE_FAQ_LINK
-      link_to t(:proper)[:right_navigation][:faqs][:header], FAQ_URL, target: :blank, class: 'btn btn-primary btn-lg btn-block'
+      link_to t(:proper)[:right_navigation][:faqs][:header], FAQ_URL, target: :blank, class: 'btn btn-primary btn-lg btn-block help-faq-button'
     else
-      link_to t(:proper)[:right_navigation][:faqs][:header], get_help_service_request_path, remote: true, class: 'btn btn-primary btn-lg btn-block'
+      link_to t(:proper)[:right_navigation][:faqs][:header], get_help_service_request_path, remote: true, class: 'btn btn-primary btn-lg btn-block help-faq-button'
     end
   end
 
   def feedback_helper
     if USE_FEEDBACK_LINK
-      link_to t(:proper)[:right_navigation][:feedback][:header], t(:proper)[:right_navigation][:redcap_survey], target: :blank, class: 'btn btn-primary btn-lg btn-block'
+      link_to t(:proper)[:right_navigation][:feedback][:header], t(:proper)[:right_navigation][:redcap_survey], target: :blank, class: 'feedback-button btn btn-primary btn-lg btn-block'
     else
-      content_tag(:button, t(:proper)[:right_navigation][:feedback][:header], class: 'feedback-button btn btn-primary btn-lg btn-block', href: 'javascript:void(0)')
+      content_tag(:button, t(:proper)[:right_navigation][:feedback][:header], class: 'feedback-button btn btn-primary btn-lg btn-block')
     end
   end
 

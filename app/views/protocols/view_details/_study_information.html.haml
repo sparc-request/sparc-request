@@ -41,7 +41,7 @@
           %label.col-lg-4
             = t(:protocols)[:studies][:information][:funding_status]
           .col-lg-8
-            = protocol.funding_status.nil? ? '' : protocol.funding_status.capitalize
+            = protocol.funding_status.nil? ? '' : protocol.funding_status.titleize
 
       / Funding Source
       %tr.row

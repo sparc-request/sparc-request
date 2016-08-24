@@ -40,7 +40,7 @@ class ProtocolsController < ApplicationController
     attrs                                   = fix_date_params
     @protocol                               = protocol_class.new(attrs)
     @service_request                        = ServiceRequest.find(params[:srid])
-    @protocol.study_type_question_group_id  = StudyTypeQuestionGroup.active_id
+    @protocol.study_type_question_group_id  = StudyTypeQuestionGroup.active_id if protocol_class == Study
 
     if @protocol.valid?
       unless @protocol.project_roles.map(&:identity_id).include? current_user.id

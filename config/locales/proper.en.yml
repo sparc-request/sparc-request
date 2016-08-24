@@ -247,7 +247,7 @@ en:
     ####################
     right_navigation:
       faqs:
-        header: "Frequently Asked Questions"
+        header: "Help/FAQs"
         question_1: "May I submit a request for services for multiple research studies/projects simultaneously?"
         answer_1: "No. Please browse and select services for only one research study/project at a time."
         question_2: "May I select and add services from multiple Service Providers and Programs at one time?"

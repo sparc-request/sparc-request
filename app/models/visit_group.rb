@@ -44,6 +44,9 @@ class VisitGroup < ActiveRecord::Base
   after_save :set_arm_edited_flag_on_subjects
   before_destroy :remove_appointments
 
+  validates :name, presence: true
+  validates :position, presence: true
+
   with_options if: :day? do |vg|
     # with respect to the other VisitGroups associated with the same arm
     vg.validate :day_must_be_in_order
@@ -100,7 +103,6 @@ class VisitGroup < ActiveRecord::Base
   def day_must_be_in_order
     position_col = VisitGroup.arel_table[:position]
     day_col = VisitGroup.arel_table[:day]
-
     if arm.visit_groups.where(position_col.lt(position).and(day_col.gteq(day)).or(
                               position_col.gt(position).and(day_col.lteq(day)))).any?
       errors.add(:day, 'must be in order')

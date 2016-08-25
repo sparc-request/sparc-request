@@ -27,6 +27,7 @@ class ServiceRequest < ActiveRecord::Base
   belongs_to :protocol
   has_many :sub_service_requests, :dependent => :destroy
   has_many :line_items, -> { includes(:service) }, :dependent => :destroy
+  has_many :services, through: :line_items
   has_many :line_items_visits, through: :line_items
   has_many :subsidies, through: :sub_service_requests
   has_many :charges, :dependent => :destroy
@@ -493,16 +494,8 @@ class ServiceRequest < ActiveRecord::Base
     identities.flatten.uniq
   end
 
-  def service_ids
-    line_items.map(&:service_id)
-  end
-
-  def services_associated_to_sr
-    service_ids.map{ |si| Service.find(si) }
-  end
-
   def additional_detail_services
-    services_associated_to_sr.select { |s| s.has_additional_details }
+    services.joins(:questionnaires)
   end
 
   # Change the status of the service request and all the sub service
@@ -528,7 +521,7 @@ class ServiceRequest < ActiveRecord::Base
     end
 
     self.save(validate: use_validation)
-    
+
     to_notify
   end
 

@@ -306,18 +306,15 @@ class ServiceRequestsController < ApplicationController
   end
 
   def send_confirmation_notifications to_notify
-    if @service_request.previous_submitted_at.nil?
-      send_notifications(@service_request, @sub_service_request)
-    elsif @sub_service_request
-      if to_notify.include? @sub_service_request.id
-        send_ssr_service_provider_notifications(@service_request, @sub_service_request)
-      end
+    if @sub_service_request
+      send_notifications(@service_request, [@sub_service_request]) if to_notify.include? @sub_service_request.id
     else
+      sub_service_requests = []
       @service_request.sub_service_requests.each do |ssr|
-        if to_notify.include? ssr.id
-          send_ssr_service_provider_notifications(@service_request, ssr)
-        end
+        sub_service_requests << ssr if to_notify.include? ssr.id
       end
+
+      send_notifications(@service_request, sub_service_requests) unless sub_service_requests.empty? # if nothing is set to notify then we shouldn't send out e-mails
     end
   end
 
@@ -498,15 +495,8 @@ class ServiceRequestsController < ApplicationController
   private
 
   # Send notifications to all users.
-  def send_notifications(service_request, sub_service_request)
+  def send_notifications(service_request, sub_service_requests)
     send_user_notifications(service_request)
-
-    if sub_service_request then
-      sub_service_requests = [ sub_service_request ]
-    else
-      sub_service_requests = service_request.sub_service_requests
-    end
-    
     send_admin_notifications(service_request, sub_service_requests)
     send_service_provider_notifications(service_request, sub_service_requests)
   end
@@ -527,8 +517,8 @@ class ServiceRequestsController < ApplicationController
     end
     # send e-mail to all folks with view and above
     service_request.protocol.project_roles.each do |project_role|
-      next if project_role.project_rights == 'none'
-      Notifier.notify_user(project_role, service_request, xls, approval, current_user).deliver_now unless project_role.identity.email.blank?
+      next if project_role.project_rights == 'none' || project_role.identity.email.blank?
+      Notifier.notify_user(project_role, service_request, xls, approval, current_user).deliver_now
     end
   end
 
@@ -587,7 +577,7 @@ class ServiceRequestsController < ApplicationController
     @service_list_true = @service_request.service_list(true, service_provider)
     @service_list_false = @service_request.service_list(false, service_provider)
 
-    # Retrieves the valid line items for service provider to calculate total direct cost in the xls 
+    # Retrieves the valid line items for service provider to calculate total direct cost in the xls
     line_items = []
     @service_request.sub_service_requests.each do |ssr|
       if service_provider.identity.is_service_provider?(ssr)

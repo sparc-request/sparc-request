@@ -28,42 +28,42 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   before_filter :protocol_authorizer_edit,                        only: [:edit, :update, :update_protocol_type]
 
   def index
-
     admin_orgs   = @user.authorized_admin_organizations
     @admin       = !admin_orgs.empty?
 
-    default_filter_params = { show_archived: 0, sorted_by: 'id_asc' }
+    @default_filter_params = { show_archived: 0 }
 
     # if we are an admin we want to default to admin organizations
     if @admin
       @organizations = Dashboard::IdentityOrganizations.new(@user.id).admin_organizations_with_protocols
-      default_filter_params[:admin_filter] = "for_admin #{@user.id}"
+      @default_filter_params[:admin_filter] = "for_admin #{@user.id}"
     else
       @organizations = Dashboard::IdentityOrganizations.new(@user.id).general_user_organizations_with_protocols
-      default_filter_params[:admin_filter] = "for_identity #{@user.id}"
+      @default_filter_params[:admin_filter] = "for_identity #{@user.id}"
       params[:filterrific][:admin_filter] = "for_identity #{@user.id}" if params[:filterrific]
     end
 
     @filterrific =
       initialize_filterrific(Protocol, params[:filterrific],
-        default_filter_params: default_filter_params,
+        default_filter_params: @default_filter_params,
         select_options: {
           with_status: AVAILABLE_STATUSES.invert,
           with_organization: Dashboard::GroupedOrganizations.new(@organizations).collect_grouped_options,
-          with_owner: build_with_owner_params,
-          sorted_by: Protocol.options_for_sorted_by
+          with_owner: build_with_owner_params
         },
         persistence_id: false #resets filters on page reload
       ) || return
 
-    @protocols = @filterrific.find.page(params[:page])
+    @protocols          = @filterrific.find.page(params[:page])
 
-    @admin_protocols  = Protocol.for_admin(@user.id).pluck(:id)
-    @protocol_filters = ProtocolFilter.latest_for_user(@user.id, 5)
+    @admin_protocols    = Protocol.for_admin(@user.id).pluck(:id)
+    @protocol_filters   = ProtocolFilter.latest_for_user(@user.id, 5)
     #toggles the display of the navigation bar, instead of breadcrumbs
     @show_navbar      = true
     @show_messages    = true
     session[:breadcrumbs].clear
+
+    setup_sorting_variables
 
     respond_to do |format|
       format.html
@@ -240,6 +240,16 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
   def find_protocol
     @protocol = Protocol.find(params[:id])
+  end
+
+  def setup_sorting_variables
+    # Set filterrific params for sorting logic, store sorted by to re-apply styling
+    @filterrific_params = params[:filterrific] ? params[:filterrific].except(:sorted_by) : @default_filter_params
+    @page               = params[:page]
+    @sorted_by          = params[:filterrific][:sorted_by] if params[:filterrific]
+    @sort_name          = @sorted_by.split(' ')[0] if @sorted_by
+    @sort_order         = @sorted_by.split(' ')[1] if @sorted_by
+    @new_sort_order     = (@sort_order == 'asc' ? 'desc' : 'asc') if @sort_order
   end
 
   def conditionally_activate_protocol

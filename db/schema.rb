@@ -688,8 +688,6 @@ ActiveRecord::Schema.define(version: 20160817153153) do
     t.string   "with_owner",        limit: 255
   end
 
-  add_index "protocol_filters", ["with_owner"], name: "index_protocol_filters_on_with_owner", using: :btree
-
   create_table "protocols", force: :cascade do |t|
     t.string   "type",                                  limit: 255
     t.integer  "next_ssr_id",                           limit: 4
@@ -1078,12 +1076,14 @@ ActiveRecord::Schema.define(version: 20160817153153) do
   add_index "subsidies", ["sub_service_request_id"], name: "index_subsidies_on_sub_service_request_id", using: :btree
 
   create_table "subsidy_maps", force: :cascade do |t|
-    t.integer  "organization_id", limit: 4
-    t.decimal  "max_dollar_cap",            precision: 12, scale: 4, default: 0.0
-    t.decimal  "max_percentage",            precision: 5,  scale: 2, default: 0.0
-    t.datetime "created_at",                                                       null: false
-    t.datetime "updated_at",                                                       null: false
+    t.integer  "organization_id",    limit: 4
+    t.decimal  "max_dollar_cap",                   precision: 12, scale: 4, default: 0.0
+    t.decimal  "max_percentage",                   precision: 5,  scale: 2, default: 0.0
+    t.datetime "created_at",                                                              null: false
+    t.datetime "updated_at",                                                              null: false
     t.datetime "deleted_at"
+    t.float    "default_percentage", limit: 24,                             default: 0.0
+    t.text     "instructions",       limit: 65535
   end
 
   add_index "subsidy_maps", ["organization_id"], name: "index_subsidy_maps_on_organization_id", using: :btree

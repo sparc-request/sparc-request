@@ -127,7 +127,7 @@ class Protocol < ActiveRecord::Base
   }
 
   filterrific(
-    default_filter_params: { show_archived: 0, sorted_by: 'asc' },
+    default_filter_params: { show_archived: 0 },
     available_filters: [
       :search_query,
       :admin_filter,
@@ -214,32 +214,18 @@ class Protocol < ActiveRecord::Base
   }
 
   scope :sorted_by, -> (key) {
-    case key
-    when 'id_asc'
-      order(id: :asc)
-    when 'id_desc'
-      order(id: :desc)
-    when 'short_title_asc'
-      order('TRIM(REPLACE(short_title, CHAR(9), " ")) ASC')
-    when 'short_title_desc'
-      order('TRIM(REPLACE(short_title, CHAR(9), " ")) DESC')
-    when 'pi_asc'
-      joins(project_roles: :identity).where(project_roles: { role: 'primary-pi' }).order('.identities.first_name ASC')
-    when 'pi_desc'
-      joins(project_roles: :identity).where(project_roles: { role: 'primary-pi' }).order('.identities.first_name DESC')
+    arr         = key.split(' ')
+    sort_name   = arr[0]
+    sort_order  = arr[1]
+    case sort_name
+    when 'id'
+      order("id #{sort_order.upcase}")
+    when 'short_title'
+      order("TRIM(REPLACE(short_title, CHAR(9), ' ')) #{sort_order.upcase}")
+    when 'pis'
+      joins(project_roles: :identity).where(project_roles: { role: 'primary-pi' }).order(".identities.first_name #{sort_order.upcase}")
     end
   }
-
-  def self.options_for_sorted_by
-    [
-      ['ID (0-9)', 'id_asc'],
-      ['ID (9-0)', 'id_desc'],
-      ['Short Title (A-Z)', 'short_title_asc'],
-      ['Short Title (Z-A)', 'short_title_desc'],
-      ['PI (A-Z)', 'pi_asc'],
-      ['PI (Z-A)', 'pi_desc']
-    ]
-  end
 
   def is_study?
     self.type == 'Study'

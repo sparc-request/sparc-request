@@ -44,12 +44,13 @@
       = generate_visit_navigation(arm, @service_request, @pages, tab, portal, portal ? @sub_service_request.try(:id) : nil)
     %th{:rowspan => 2}= t(:calendar_page)[:headers][:total_per_patient]
     %th.total_per_study{:rowspan => 2}= t(:calendar_page)[:headers][:total_per_study]
-
     %tr.table_header
-      %th.number_of_subjects_header{:rowspan => 1}= t(:calendar_page)[:headers][:subjects]
-      - unless @portal
+      - if @portal
+        %th.number_of_subjects_header{:rowspan => 1}= t(:calendar_page)[:headers][:subjects]
+      - else
         %th.service_rate_header= t(:calendar_page)[:headers][:service_rate]
         %th.your_cost_header= t(:calendar_page)[:headers][:your_cost]
+        %th.number_of_subjects_header{:rowspan => 1}= t(:calendar_page)[:headers][:subjects]
       = generate_visit_header_row(arm, @service_request, @pages[arm.id].to_i, nil)
 
 

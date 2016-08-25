@@ -27,13 +27,14 @@ class ServiceRequest < ActiveRecord::Base
   belongs_to :protocol
   has_many :sub_service_requests, :dependent => :destroy
   has_many :line_items, -> { includes(:service) }, :dependent => :destroy
+  has_many :line_items_visits, through: :line_items
   has_many :subsidies, through: :sub_service_requests
   has_many :charges, :dependent => :destroy
   has_many :tokens, :dependent => :destroy
   has_many :approvals, :dependent => :destroy
   has_many :arms, :through => :protocol
   has_many :notes, as: :notable, dependent: :destroy
-  
+
   after_save :set_original_submitted_date
 
   validation_group :protocol do
@@ -342,7 +343,7 @@ class ServiceRequest < ActiveRecord::Base
     page
   end
 
-  def service_list is_one_time_fee=nil
+  def service_list(is_one_time_fee=nil, service_provider=nil)
     items = []
     case is_one_time_fee
     when nil
@@ -351,6 +352,10 @@ class ServiceRequest < ActiveRecord::Base
       items = one_time_fee_line_items
     when false
       items = per_patient_per_visit_line_items
+    end
+
+    if service_provider
+      items = service_provider_line_items(service_provider, items)
     end
 
     groupings = {}
@@ -388,6 +393,17 @@ class ServiceRequest < ActiveRecord::Base
     end
 
     groupings
+  end
+
+  # Returns the line items that a service provider is associated with
+  def service_provider_line_items(service_provider, items)
+    service_provider_items = []
+    items.map(&:sub_service_request_id).each do |ssr|
+      if service_provider.identity.is_service_provider?(SubServiceRequest.find(ssr))
+        service_provider_items << SubServiceRequest.find(ssr).line_items
+      end
+    end
+    service_provider_items.flatten.uniq
   end
 
   def has_one_time_fee_services?
@@ -512,6 +528,7 @@ class ServiceRequest < ActiveRecord::Base
     end
 
     self.save(validate: use_validation)
+    
     to_notify
   end
 
@@ -581,7 +598,7 @@ class ServiceRequest < ActiveRecord::Base
 
     {:line_items => line_item_audits}
   end
-  
+
   def has_non_first_draft_ssrs?
     sub_service_requests.where.not(status: 'first_draft').any?
   end

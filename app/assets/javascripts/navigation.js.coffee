@@ -20,13 +20,21 @@
 
 $(document).ready ->
   $('.navigation_link').live 'click', ->
-    if $(this).parent('div.exit').size() >= 1
-      $('#processing_request').show()
-    location = $(this).attr('location')
-    validates = $(this).attr('validates')
-    $('#location').val(location)
-    $('#validates').val(validates)
-    if location == 'service_subsidy'
-      $('td.visit input').each ->
-        $(this).attr('disabled', true)
-    $('#navigation_form').submit()
+    if ($('#percent_subsidy').length == 1) && ($('#percent_subsidy').val() == '0.0' || $('#percent_subsidy').val() == '0.00')
+      $("#submit_error .message").html('The percent subsidy cannot be zero')
+      $("#submit_error").dialog
+        modal: true
+        buttons:
+          Ok: ->
+            $(this).dialog('close')
+    else
+      if $(this).parent('div.exit').size() >= 1
+        $('#processing_request').show()
+      location = $(this).attr('location')
+      validates = $(this).attr('validates')
+      $('#location').val(location)
+      $('#validates').val(validates)
+      if location == 'service_subsidy'
+        $('td.visit input').each ->
+          $(this).attr('disabled', true)
+      $('#navigation_form').submit()

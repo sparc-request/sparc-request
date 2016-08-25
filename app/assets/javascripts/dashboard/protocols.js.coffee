@@ -140,3 +140,26 @@ $(document).ready ->
           protocol_id         = $(this).data('protocol-id')
           window.location     = "/?protocol_id=#{protocol_id}&from_portal=true"
       # Protocol Show End
+
+      # Protocol Table Sorting
+      $(document).on 'click', '.protocol-sort', ->
+        search_query      = $('#search_query').val()
+        show_archived     = $('#show_archived').val()
+        with_status       = $('#with_status').val()
+        with_organization = $('#with_organization').val()
+        admin_filter      = $('#admin_filter').val()
+        sorted_by         = "#{$(this).data('sort-name')} #{$(this).data('sort-order')}"
+        page              = $('#page').val() || 1
+        data = 
+          'page': page
+          'filterrific':
+            'search_query': search_query
+            'show_archived': show_archived
+            'with_status': with_status
+            'with_organization': with_organization
+            'admin_filter': admin_filter
+            'sorted_by': sorted_by
+        $.ajax
+          type: 'get'
+          url: "/dashboard/protocols.js"
+          data: data

@@ -27,6 +27,8 @@ class SubsidiesController < ApplicationController
     @admin = false
     @path = subsidies_path
     @subsidy.percent_subsidy = @subsidy.default_percentage
+
+    @subsidy.save(validate: false)
   end
 
   def create

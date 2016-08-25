@@ -17,7 +17,12 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
+= hidden_field_tag :search_query, filterrific_params[:search_query]
+= hidden_field_tag :show_archived, filterrific_params[:show_archived]
+= hidden_field_tag :with_status, filterrific_params[:with_status]
+= hidden_field_tag :with_organization, filterrific_params[:with_organization]
+= hidden_field_tag :admin_filter, filterrific_params[:admin_filter]
+= hidden_field_tag :page, page
 .panel.panel-primary
   .panel-heading
     .pull-left
@@ -39,14 +44,25 @@
     .clearfix
   %table.table.table-hover
     %tr
-      %th
+      %th.col-sm-1
         = t(:dashboard)[:protocols][:table][:id]
-      %th
+        %span.protocol-sort{ name: 'id', data: { sort_name: 'id', sort_order: 'asc' } }
+          %span.glyphicon.glyphicon-triangle-top.asc
+          %span.glyphicon.glyphicon-triangle-bottom.desc
+      %th.col-sm-4
         = t(:dashboard)[:protocols][:table][:short_title]
-      %th
+        %span.protocol-sort{ name: 'short_title', data: { sort_name: 'short_title', sort_order: 'asc' } }
+          %span.glyphicon.glyphicon-triangle-top.asc
+          %span.glyphicon.glyphicon-triangle-bottom.desc
+      %th.col-sm-3
         = t(:dashboard)[:protocols][:table][:pis]
-      %th
-      %th
+        %span.protocol-sort{ name: 'pis', data: { sort_name: 'pis', sort_order: 'asc' } }
+          %span.glyphicon.glyphicon-triangle-top.asc
+          %span.glyphicon.glyphicon-triangle-bottom.desc
+      %th.col-sm-2.text-center
+        = t(:dashboard)[:protocols][:table][:requests]
+      %th.col-sm-2.text-center
+        = t(:dashboard)[:protocols][:table][:archive]
     - protocols.each do |protocol|
       %tr.protocols_index_row{ data: { protocol_id: protocol.id }}
         %td.id
@@ -55,9 +71,9 @@
           = short_title_display protocol
         %td.pis
           = pis_display protocol
-        %td.requests
+        %td.requests.text-center
           = display_requests_button(protocol, admin_protocols, current_user)
-        %td.archive
+        %td.archive.text-center
           = display_archive_button(protocol, admin_protocols, current_user)
   .pull-right
     = will_paginate protocols, renderer: BootstrapPagination::Rails

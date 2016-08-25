@@ -285,7 +285,6 @@ class Arm < ActiveRecord::Base
     items = self.line_items_visits.map do |liv|
       liv.line_item.service.one_time_fee ? nil : liv.line_item
     end.compact
-
     groupings = {}
     items.each do |line_item|
       service = line_item.service

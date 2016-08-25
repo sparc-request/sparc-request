@@ -79,6 +79,16 @@ RSpec.describe Notifier do
     it 'should NOT have a notes reminder message' do
       get_a_cost_estimate_does_not_have_notes(mail)
     end
+
+    context 'when protocol has selected for epic' do
+      before do
+        service_request.protocol.update_attribute(:selected_for_epic, true)
+      end
+
+      it 'should show epic column' do
+        assert_email_user_information_when_selected_for_epic(mail.body)
+      end
+    end
   end
 
   context 'users' do
@@ -108,6 +118,17 @@ RSpec.describe Notifier do
     it 'should NOT have a notes reminder message' do
       get_a_cost_estimate_does_not_have_notes(mail.body.parts.first.body)
     end
+
+    context 'when protocol has selected for epic' do
+
+      before do
+        service_request.protocol.update_attribute(:selected_for_epic, true)
+      end
+
+      it 'should show epic column' do
+        assert_email_user_information_when_selected_for_epic(mail.body.parts.first.body)
+      end
+    end
   end
 
   context 'admin' do
@@ -117,22 +138,38 @@ RSpec.describe Notifier do
             notable_id: service_request.id)
     end
     let(:xls)                       { ' ' }
-    let(:submission_email_address)  { 'success@musc.edu' }
+    let!(:submission_email) { create(:submission_email, 
+                                      email: 'success@musc.edu', 
+                                      organization_id: organization.id) }
+    
     let(:mail)                      { Notifier.notify_admin(service_request,
-                                                              submission_email_address,
+                                                              submission_email,
                                                               xls,
-                                                              identity) }
+                                                              identity,
+                                                              service_request.protocol.sub_service_requests.first) }
     # Expected admin message is defined under get_a_cost_estimate_service_provider_admin_message
     it 'should display admin intro message, link, conclusion, and should not display acknowledgments' do
       get_a_cost_estimate_intro_for_admin
     end
 
     it 'should render default tables' do
+      service_request.protocol.sub_service_requests.first.update_attribute(:organization_id, organization.id)
       assert_notification_email_tables_for_admin
     end
 
     it 'should NOT have a notes reminder message' do
       get_a_cost_estimate_does_not_have_notes(mail.body.parts.first.body)
+    end
+
+    context 'when protocol has selected for epic' do
+
+      before do
+        service_request.protocol.update_attribute(:selected_for_epic, true)
+      end
+
+      it 'should show epic column' do
+        assert_email_user_information_when_selected_for_epic(mail.body.parts.first.body)
+      end
     end
   end
 end

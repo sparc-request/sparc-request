@@ -24,7 +24,7 @@
 
 .col-lg-9
   #filterrific_results
-    = render 'dashboard/protocols/protocols_list', protocols: @protocols, current_user: @user, admin_protocols: @admin_protocols
+    = render 'dashboard/protocols/protocols_list', protocols: @protocols, current_user: @user, admin_protocols: @admin_protocols, filterrific_params: @filterrific_params, page: @page
 
 :javascript
   $(document).ready( function() {

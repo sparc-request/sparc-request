@@ -56,7 +56,7 @@ class Notifier < ActionMailer::Base
     mail(:to => email, :from => NO_REPLY_FROM, :subject => subject)
   end
 
-  def notify_admin(service_request, submission_email_address, xls, user_current)
+  def notify_admin(service_request, submission_email_address, xls, user_current, ssr_to_be_displayed)
     @notes = service_request.notes
     @status = service_request.status
     @role = 'none'
@@ -65,7 +65,7 @@ class Notifier < ActionMailer::Base
     @protocol = service_request.protocol
     @service_request = service_request
     @service_requester_id = @service_request.sub_service_requests.first.service_requester_id
-    @ssrs_to_be_displayed = service_request.sub_service_requests
+    @ssrs_to_be_displayed = [ssr_to_be_displayed]
 
     @portal_link = DASHBOARD_LINK + "/protocols/#{@protocol.id}"
     @portal_text = "Administrators/Service Providers, Click Here"

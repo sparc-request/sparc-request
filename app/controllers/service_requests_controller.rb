@@ -34,6 +34,10 @@ class ServiceRequestsController < ApplicationController
   def show
     @protocol = @service_request.protocol
     @admin_offset = params[:admin_offset]
+    @service_list_true = @service_request.service_list(true)
+    @service_list_false = @service_request.service_list(false)
+    @line_items = @service_request.line_items
+
 
     respond_to do |format|
       format.xlsx do
@@ -233,7 +237,6 @@ class ServiceRequestsController < ApplicationController
           update_service_request_status(@service_request, 'draft', false)
           @service_request.ensure_ssr_ids
         end
-
         redirect_to dashboard_root_path
       }
 
@@ -471,14 +474,8 @@ class ServiceRequestsController < ApplicationController
   end
 
   # Send notifications to all users.
-  def send_notifications(service_request, sub_service_request)
+  def send_notifications(service_request, sub_service_requests)
     send_user_notifications(service_request)
-
-    if sub_service_request then
-      sub_service_requests = [ sub_service_request ]
-    else
-      sub_service_requests = service_request.sub_service_requests
-    end
     send_admin_notifications(service_request, sub_service_requests)
     send_service_provider_notifications(service_request, sub_service_requests)
   end
@@ -499,8 +496,8 @@ class ServiceRequestsController < ApplicationController
     end
     # send e-mail to all folks with view and above
     service_request.protocol.project_roles.each do |project_role|
-      next if project_role.project_rights == 'none'
-      Notifier.notify_user(project_role, service_request, xls, approval, current_user).deliver_now unless project_role.identity.email.blank?
+      next if project_role.project_rights == 'none' || project_role.identity.email.blank?
+      Notifier.notify_user(project_role, service_request, xls, approval, current_user).deliver_now
     end
   end
 
@@ -511,15 +508,18 @@ class ServiceRequestsController < ApplicationController
   end
 
   def send_admin_notifications(service_request, sub_service_requests)
-    @service_list_false = service_request.service_list(false)
-    @service_list_true = service_request.service_list(true)
-    @line_items = @service_request.line_items
-
-    xls = render_to_string action: 'show', formats: [:xlsx]
-
+    # Iterates through each SSR to find the correct admin email.
+    # Passes the correct SSR to display in the attachment and email.
     sub_service_requests.each do |sub_service_request|
       sub_service_request.organization.submission_emails_lookup.each do |submission_email|
-        Notifier.notify_admin(service_request, submission_email.email, xls, current_user).deliver
+        
+        @service_list_false = service_request.service_list(false, nil, sub_service_request)
+        @service_list_true = service_request.service_list(true, nil, sub_service_request)
+        
+        @line_items = sub_service_request.line_items
+        xls = render_to_string action: 'show', formats: [:xlsx]
+        display_ssr = sub_service_request
+        Notifier.notify_admin(service_request, submission_email.email, xls, current_user, display_ssr).deliver
       end
     end
   end
@@ -534,14 +534,12 @@ class ServiceRequestsController < ApplicationController
   end
 
   def send_confirmation_notifications(to_notify)
-    if @service_request.previous_submitted_at.nil?
-      send_notifications(@service_request, @sub_service_request)
-    elsif @sub_service_request
-      send_ssr_service_provider_notifications(@service_request, @sub_service_request) if to_notify.include?(@sub_service_request.id)
+    if @sub_service_request && to_notify.include?(@sub_service_request.id)
+      send_notifications(@service_request, [@sub_service_request])
     else
-      @service_request.sub_service_requests.each do |ssr|
-        send_ssr_service_provider_notifications(@service_request, ssr) if to_notify.include?(ssr.id)
-      end
+      sub_service_requests = @service_request.sub_service_requests.where(id: to_notify)
+
+      send_notifications(@service_request, sub_service_requests) unless sub_service_requests.empty? # if nothing is set to notify then we shouldn't send out e-mails
     end
   end
 
@@ -568,7 +566,7 @@ class ServiceRequestsController < ApplicationController
     @service_list_true = @service_request.service_list(true, service_provider)
     @service_list_false = @service_request.service_list(false, service_provider)
 
-    # Retrieves the valid line items for service provider to calculate total direct cost in the xls 
+    # Retrieves the valid line items for service provider to calculate total direct cost in the xls
     line_items = []
     @service_request.sub_service_requests.each do |ssr|
       if service_provider.identity.is_service_provider?(ssr)

@@ -5,9 +5,9 @@
         %span
           &times;
       .modal-title
-        Additional Detail Survey Preview
+        = t(:additional_details)[:preview_title]
     .modal-body
       = render 'additional_details/submissions/form'
     .modal-footer
       %button{ class: 'btn btn-default', data: { dismiss: 'modal' } }
-        Close
+        = t(:additional_details)[:close_preview]

@@ -1,7 +1,7 @@
 %br
 = qr.label :content, class: 'radio-inline' do
   = qr.radio_button :content, 'yes'
-  Yes
+  = t(:additional_details)[:yes_label]
 = qr.label :content, class: 'radio-inline' do
   = qr.radio_button :content, 'no'
-  No
+  = t(:additional_details)[:no_label]

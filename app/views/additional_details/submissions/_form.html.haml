@@ -1,6 +1,6 @@
 .panel.panel-primary
   .panel-heading
-    Questionnaire Submission
+    = t(:additional_details)[:questionnaire_submission]
   .panel-body
     = form_for [@service, :additional_details, @submission] do |f|
       = f.hidden_field :identity_id, value: current_identity.id

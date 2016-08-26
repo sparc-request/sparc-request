@@ -1,6 +1,6 @@
 .panel.panel-primary
   .panel-heading
-    Additional Details Form Builder
+    = t(:additional_details)[:form_builder_title]
   .panel-body
     = hidden_field_tag 'service_id', service.id
     = form_for [service, :additional_details, questionnaire], html: { class: 'form-horizontal questionnaire-form' } do |f|
@@ -20,7 +20,7 @@
               {}, {class: 'form-control select-type', data: { item_form_id: '__nested_field_for_replace_with_index__' } }
         %div{ class: 'item-options hidden', data: { item_form_id: '__nested_field_for_replace_with_index__' } }
           %h5.text-center
-            Add Options
+            = t(:additional_details)[:add_options]
           %hr
           - i.object.item_options.build unless i.object.item_options.any?
           = i.nested_fields_for :item_options, html: { class: 'form-horizontal' } do |io|
@@ -32,12 +32,12 @@
               .form-group
                 .col-sm-offset-2.col-sm-10
                   %span
-                    = io.remove_nested_fields_link 'Remove Option', class: 'btn btn-danger'
+                    = io.remove_nested_fields_link t(:additional_details)[:remove_option], class: 'btn btn-danger'
                     = i.add_nested_fields_link :item_options, 'Add another Option', class: 'btn btn-primary'
         .form-group
           = i.label :description, class: 'col-sm-2 control-label'
           .col-sm-10
-            = i.text_area :description, class: 'form-control', placeholder: 'Description (optional)'
+            = i.text_area :description, class: 'form-control', placeholder: t(:additional_details)[:description_placeholder]
         .form-group
           .col-sm-offset-2.col-sm-10
             .checkbox
@@ -46,15 +46,15 @@
                 Required
         .form-group
           .col-sm-offset-2.col-sm-10
-            = i.remove_nested_fields_link 'Remove Question', class: 'btn btn-danger'
+            = i.remove_nested_fields_link t(:additional_details)[:remove_question], class: 'btn btn-danger'
       %hr
       .form-group
         .col-sm-offset-2.col-sm-12
-          = f.add_nested_fields_link :items, 'Add another Question', class: 'btn btn-primary'
+          = f.add_nested_fields_link :items, t(:additional_details)[:add_question], class: 'btn btn-primary'
           = f.submit class: 'btn btn-success'
           = link_to 'javascript:;', id: 'view-preview', class: 'btn btn-info' do
-            View Preview
+            = t(:additional_details)[:view_preview]
             %span.glyphicon.glyphicon-search
-          = link_to 'Return to Questionnaires',
+          = link_to t(:additional_details)[:return_to_questionnaires],
             service_additional_details_questionnaires_path(service), 
             class: 'btn btn-warning'

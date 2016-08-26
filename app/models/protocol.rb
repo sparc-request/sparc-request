@@ -288,7 +288,7 @@ class Protocol < ActiveRecord::Base
   end
 
   def coordinator_emails
-    coordinators.pluck(:email).try(:join, ', ')
+    coordinators.pluck(:email).join(', ')
   end
 
   def emailed_associated_users

@@ -369,27 +369,4 @@ RSpec.describe Service, type: :model do
       end
     end
   end
-
-  describe '#has_additional_details' do
-    context 'with association' do
-      it 'should return true' do
-        service = create(:service)
-        create(:questionnaire, active: true, service: service)
-
-        result = service.has_additional_details
-
-        expect(result).to eq true
-      end
-    end
-    context 'with no association' do
-      it 'should return false' do
-        service = create(:service)
-        create(:questionnaire, active: false, service: service)
-
-        result = service.has_additional_details
-
-        expect(result).to eq false
-      end
-    end
-  end
 end

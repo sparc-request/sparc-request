@@ -5,6 +5,8 @@ module Dashboard
     def initialize(params)
       @protocol_role = ProjectRole.find(params[:id])
       protocol = @protocol_role.protocol
+      modified_user = Identity.find(protocol_role.identity_id)
+      action = 'update'
 
       epic_rights = @protocol_role.epic_rights.to_a # use to_a to eval ActiveRecord::Relation
       @protocol_role.assign_attributes(params[:project_role])
@@ -27,7 +29,7 @@ module Dashboard
 
         if SEND_AUTHORIZED_USER_EMAILS
           protocol.emailed_associated_users.each do |project_role|
-            UserMailer.authorized_user_changed(project_role.identity, protocol).deliver unless project_role.identity.email.blank?
+            UserMailer.authorized_user_changed(project_role.identity, protocol, modified_user, action).deliver unless project_role.identity.email.blank?
           end
         end
 

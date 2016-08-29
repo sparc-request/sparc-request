@@ -27,7 +27,7 @@ task update_copyright: :environment do
       updated_code_file = code_file.gsub(/#{query}/, updated_copyright)
 
       File.open(file, 'w') { |file| file.write(updated_code_file) }
-    else
+    elsif File.readlines(file).grep(/#{query}/).size < 0
       header = "# Copyright © 2011-2016 MUSC Foundation for Research Development~\n"
       header += "# All rights reserved.~\n\n"
       header += "# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~\n\n"

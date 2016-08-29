@@ -38,7 +38,7 @@ RSpec.describe Dashboard::Breadcrumber do
       @breadcrumber.add_crumb(:protocol_id, 1)
 
       breadcrumbs = @breadcrumber.breadcrumbs
-      expect(breadcrumbs).to have_tag('li', text: "My Protocol")
+      expect(breadcrumbs).to have_tag('li', text: "(1) My Protocol")
     end
   end
 
@@ -51,7 +51,7 @@ RSpec.describe Dashboard::Breadcrumber do
       @breadcrumber.add_crumbs(protocol_id: 1, sub_service_request_id: 2)
 
       breadcrumbs = @breadcrumber.breadcrumbs
-      expect(breadcrumbs).to have_tag('a', with: { href: "/dashboard/protocols/1" }, text: "My Protocol" )
+      expect(breadcrumbs).to have_tag('a', with: { href: "/dashboard/protocols/1" }, text: "(1) My Protocol" )
       expect(breadcrumbs).to have_tag('li', text: "MegaCorp")
     end
   end
@@ -77,7 +77,7 @@ RSpec.describe Dashboard::Breadcrumber do
 
         expect(breadcrumbs).to have_tag('a', count: 3) # expect correct number of links, so the following is exhaustive
         expect(breadcrumbs).to have_tag('a', with: { href: "/dashboard/protocols" }, text: "Dashboard")
-        expect(breadcrumbs).to have_tag('a', with: { href: "/dashboard/protocols/1" }, text: "My Protocol")
+        expect(breadcrumbs).to have_tag('a', with: { href: "/dashboard/protocols/1" }, text: "(1) My Protocol")
         expect(breadcrumbs).to have_tag('li', text: "Edit")
         expect(breadcrumbs).to match(/Dashboard.*My Protocol.*Edit/) # expect correct order
       end

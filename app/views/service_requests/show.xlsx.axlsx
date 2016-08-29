@@ -32,17 +32,17 @@ name_header_style = wb.styles.add_style sz: 12, b: true, bg_color: 'ADADAD', ali
 wb.add_worksheet(name: "Review") do |sheet|
 
   sheet.add_row ["#{@protocol.class.to_s} Information"], :style => header_style
-  sheet.add_row ["#{@protocol.class.to_s} ID:", @protocol.id], :style => default
-  sheet.add_row ['Short Title:', @protocol.short_title], :style => default
-  sheet.add_row ["#{@protocol.class.to_s} Title:", @protocol.short_title], :style => default
-  sheet.add_row ["Funding Source:", @protocol.display_funding_source_value], :style => default
+  sheet.add_row ["#{@protocol.class.to_s} ID", @protocol.id], :style => default
+  sheet.add_row ['Short Title', @protocol.short_title], :style => default
+  sheet.add_row ["#{@protocol.class.to_s} Title", @protocol.short_title], :style => default
+  sheet.add_row ["Funding Source", @protocol.display_funding_source_value], :style => default
   
   sheet.add_row
 
   sheet.add_row ["Authorized Users"], :style => header_style
   proxy_row = ["Name", "Role", "", "Proxy Rights"]
 
-  has_per_patient_per_visit_services = @sub_service_request.nil? ? @service_request.has_per_patient_per_visit_services? : @sub_service_request.has_per_patient_per_visit_services?
+  has_per_patient_per_visit_services = @sub_service_request.nil? ? (!@service_list_false.empty? && @service_request.has_per_patient_per_visit_services?) : (!@service_list_false.empty?)
 
   visit_count = 0
   if has_per_patient_per_visit_services
@@ -132,13 +132,16 @@ wb.add_worksheet(name: "Review") do |sheet|
 
       sheet.add_row(r_t_row, :style => centered)
 
-      @service_request.service_list(false).each do |key, value|
-        next unless @sub_service_request.nil? or @sub_service_request.organization.name == value[:process_ssr_organization_name]
+      @service_list_false.each do |key, value|
+        next if @sub_service_request.present? && @sub_service_request.organization.name != value[:process_ssr_organization_name]
+
         services_sub_header_rows << sheet.add_row([value[:name]], :style => sub_header_style)
 
         arm.line_items_visits.each do |line_items_visit|
           line_item = line_items_visit.line_item
-          next unless value[:line_items].include?(line_item)
+
+          next if value[:line_items].exclude?(line_item) || (@sub_service_request.present? && line_item.sub_service_request_id != @sub_service_request.id)
+
           totals_hash = line_items_visit.try(:per_subject_rt_indicated) 
           service_row = [line_item.service.name, ""]
 
@@ -199,14 +202,14 @@ wb.add_worksheet(name: "Review") do |sheet|
   service_rows = []
   services_sub_header_rows = []
   services_sub_header_rows << sheet.add_row(['Other Services'], :style => name_header_style)
-  @service_request.service_list(true).each do |key, value|
+  @service_list_true.each do |key, value|
     next unless @sub_service_request.nil? or @sub_service_request.organization.name == value[:process_ssr_organization_name]
     services_sub_header_rows << sheet.add_row([value[:name]], :style => sub_header_style)
+    line_items = @sub_service_request.nil? ? value[:line_items] : @sub_service_request.one_time_fee_line_items
 
-    value[:line_items].each do |line_item|
+    line_items.each do |line_item|
       service_row = [line_item.service.name, ""]
       line_item_total = display_one_time_fee_direct_cost(line_item)
-
       if @admin_offset
         line_item.pricing_scheme = 'effective'
         line_item_total = display_one_time_fee_direct_cost(line_item)
@@ -214,8 +217,12 @@ wb.add_worksheet(name: "Review") do |sheet|
         line_item.pricing_scheme = 'displayed'
       end
       
-      service_row += [display_your_cost(line_item), ""]
-     
+      if !@service_list_true.empty? && !@service_list_false.empty?
+        service_row += [display_your_cost(line_item), ""]
+      else
+        service_row += [display_your_cost(line_item), "", ""]
+      end
+
       if has_per_patient_per_visit_services 
         (visit_count*2 + 1).times do
           service_row << ''
@@ -226,6 +233,7 @@ wb.add_worksheet(name: "Review") do |sheet|
       service_rows << sheet.add_row(service_row, :style => default)
     end
   end
+
   merge_service_rows << service_rows
   merge_sub_header_rows << services_sub_header_rows
 

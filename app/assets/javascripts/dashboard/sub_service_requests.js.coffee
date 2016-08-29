@@ -23,6 +23,8 @@ $(document).ready ->
 
   # SERVICE REQUEST INFO LISTENERS BEGIN
 
+  $("#service_request_status_dropdown .btn-danger").tooltip()
+
   $(document).on 'change', '#sub_service_request_owner', ->
     ssr_id = $(this).data('sub_service_request_id')
     owner_id = $(this).val()
@@ -69,6 +71,15 @@ $(document).ready ->
 
   $(document).on 'click', '.ssr_tab a', ->
     $.cookie('admin-tab', $(this).attr('id'), {path: '/'})
+    ##Refresh Tabs Ajax
+    protocol_id = $(this).parents('ul').data('protocol-id')
+    ssr_id = $(this).parents('ul').data('ssr-id')
+    partial_name = $(this).data('partial-name')
+
+    $.ajax
+      type: 'GET'
+      url: "/dashboard/sub_service_requests/#{ssr_id}/refresh_tab"
+      data: {"protocol_id": protocol_id, "ssr_id": ssr_id, "partial_name": partial_name}
 
   # ADMIN TAB LISTENER END
   # STUDY SCHEDULE TAB BEGIN

@@ -1,0 +1,17 @@
+%table{:style => 'border: 1px solid black; border-collapse: collapse; width: 100%;', :cellpadding => 3}
+  %thead
+    %tr{:style => 'border: 1px solid black;'}
+      %td{:colspan => 3}
+        %strong= t(:notifier)[:arm_data]
+    %tr{:style => 'border: 1px solid black;'}
+      %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:notifier)[:arm_name]
+      %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:notifier)[:arm_subject_count]
+      %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:notifier)[:arm_visit_count]
+  %tbody
+    - @service_request.arms.each do |arm|
+      %tr{:style => 'border: 1px solid black;'}
+        %td{:style => 'border: 1px solid black;'}= arm.name
+        %td{:style => 'border: 1px solid black;'}= arm.subject_count
+        %td{:style => 'border: 1px solid black;'}= arm.visit_count
+%br
+%br

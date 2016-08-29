@@ -20,7 +20,6 @@
 
 FactoryGirl.define do
   factory :sub_service_request do
-    owner_id           { Random.rand(1000) }
     service_requester_id { Random.rand(1000) }
 
     trait :without_validations do
@@ -52,7 +51,7 @@ FactoryGirl.define do
 
     trait :with_subsidy do
       after(:create) do |sub_service_request, evaluator|
-        create(:subsidy, sub_service_request: sub_service_request)
+        create(:subsidy_without_validations, sub_service_request: sub_service_request)
       end
     end
 

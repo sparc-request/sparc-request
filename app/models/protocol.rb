@@ -133,7 +133,9 @@ class Protocol < ActiveRecord::Base
       :admin_filter,
       :show_archived,
       :with_status,
-      :with_organization
+      :with_organization,
+      :with_owner,
+      :sorted_by
     ]
   )
 
@@ -201,6 +203,27 @@ class Protocol < ActiveRecord::Base
     return nil if org_id.reject!(&:blank?) == []
     joins(:sub_service_requests).
     where(sub_service_requests: { organization_id: org_id }).distinct
+  }
+
+  scope :with_owner, -> (owner_id) {
+    return nil if owner_id.reject!(&:blank?) == []
+    joins(:sub_service_requests).
+    where(sub_service_requests: {owner_id: owner_id}).
+    where.not(sub_service_requests: {status: 'first_draft'})
+  }
+
+  scope :sorted_by, -> (key) {
+    arr         = key.split(' ')
+    sort_name   = arr[0]
+    sort_order  = arr[1]
+    case sort_name
+    when 'id'
+      order("id #{sort_order.upcase}")
+    when 'short_title'
+      order("TRIM(REPLACE(short_title, CHAR(9), ' ')) #{sort_order.upcase}")
+    when 'pis'
+      joins(project_roles: :identity).where(project_roles: { role: 'primary-pi' }).order(".identities.first_name #{sort_order.upcase}")
+    end
   }
 
   def is_study?
@@ -449,8 +472,8 @@ class Protocol < ActiveRecord::Base
   def has_line_items_of_type?(current_request, portal, type)
     return self.service_requests.detect do |sr|
       next unless ((type == "otf") ? sr.has_one_time_fee_services? : sr.has_per_patient_per_visit_services?)
-      true unless ['first_draft'].include?(sr.status)
-      !portal && current_request == sr
+      #Only return first_draft sr's if NOT in portal, AND the current_request == the sr variable
+      sr.status == "first_draft" ? (!portal && current_request == sr) : true
     end
   end
 

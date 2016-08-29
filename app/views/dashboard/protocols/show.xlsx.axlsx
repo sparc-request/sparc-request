@@ -41,7 +41,7 @@ arm_r_totals = {}
 
 # Page for each arm
 @protocol.arms.each do |arm|
-  wb.add_worksheet(name: "#{arm.name}") do |sheet|
+  wb.add_worksheet(name: "#{arm.sanitized_name}") do |sheet|
 
     #Repeating protocol information on the top of each page
     protocol_header_row = ["#{@protocol.class.to_s} Information", "", "", "", ""]
@@ -49,13 +49,13 @@ arm_r_totals = {}
     sheet.add_row protocol_header_row, :style => header_style
     sheet.add_row ["SPARC #{@protocol.class.to_s} ID:",@protocol.id], :style => default
     sheet.add_row ["Short Title:",@protocol.short_title], :style => default
-    sheet.add_row ["Protocol Title:", @protocol.short_title], :style => default
+    sheet.add_row ["Protocol Title:", @protocol.title], :style => default
     sheet.add_row ["Sponsor:", @protocol.sponsor_name], :style => default
     sheet.add_row ["Primary PI Name:", @protocol.primary_principal_investigator.full_name], :style => default
 
     #Header Section
     arm_header_row = ["Selected Services", "CPT Code", "Negotiated Reimbursement (NR)", "Hospital Cost (Service Rate)", "Research Cost (Your Cost)"]
-    arm_label_row = [arm.name, "", "", "", ""]
+    arm_label_row = [arm.sanitized_name, "", "", "", ""]
     label_row = ["", "", "", "", ""]
 
     #Column headers and labels for each visit_group, meaning each visit / appointment
@@ -87,7 +87,7 @@ arm_r_totals = {}
     #Displays line_items_visits, grouped by organization from the sub service request
     arm.line_items_visits.includes(:line_item).group_by{|liv| liv.line_item.sub_service_request}.each do |sub_service_request, line_items_visits|
       next if ["draft", "first_draft"].include?(sub_service_request.status)
-      ssr_row = [sub_service_request.organization.name, "", "", "", ""]
+      ssr_row = ["#{sub_service_request.organization.name}(#{sub_service_request.ssr_id})", "", "", "", ""]
       ((arm.visit_groups.count * 3) + 5).times {ssr_row << ""}
       sheet.add_row ssr_row, :style => org_header_style
 
@@ -174,17 +174,17 @@ arm_r_totals = {}
     sheet.add_row financial_row.flatten, :style => @line_item_style_array
     sheet.add_row bottom_totals.flatten, :style => @line_item_style_array
 
-    arm_summary_row = ["#{arm.name}: Summary", "", "Negotiated Costs", "", "Research Cost"]
+    arm_summary_row = ["#{arm.sanitized_name}: Summary", "", "Negotiated Costs", "", "Research Cost"]
     ((arm.visit_groups.count * 3) + 5).times {arm_summary_row << ""}
     sheet.add_row arm_summary_row, :style => header_style
-    sheet.add_row ["#{arm.name}: Total Direct Costs",
+    sheet.add_row ["#{arm.sanitized_name}: Total Direct Costs",
       "",
       "=#{total_nr_per_study_column}#{principle_row_no+4}",
       "",
       "=#{total_r_cost_per_study_column}#{principle_row_no+4}"], :style => [default, default, money, default, money]
     grand_totals_row = sheet.rows.length
-    arm_nr_totals[arm.name] = "C#{grand_totals_row}"
-    arm_r_totals[arm.name] = "E#{grand_totals_row}"
+    arm_nr_totals[arm.sanitized_name] = "C#{grand_totals_row}"
+    arm_r_totals[arm.sanitized_name] = "E#{grand_totals_row}"
   end
 end
 
@@ -193,7 +193,7 @@ wb.insert_worksheet(0, name: "Summary") do |sheet|
 
   sheet.add_row ["SPARC #{@protocol.class.to_s} ID:", "", @protocol.id], :style => default
   sheet.add_row ["Short Title:", "", @protocol.short_title], :style => default
-  sheet.add_row ["Protocol Title:", "", @protocol.short_title], :style => default
+  sheet.add_row ["Protocol Title:", "", @protocol.title], :style => default
   sheet.add_row ["Sponsor:", "", @protocol.sponsor_name], :style => default
   sheet.add_row ["Primary PI Name:", "", @protocol.primary_principal_investigator.full_name], :style => default
   sheet.add_row ["Business Manager:", "", @protocol.billing_managers.map(&:full_name).try(:join, ', ')], :style => default
@@ -203,7 +203,7 @@ wb.insert_worksheet(0, name: "Summary") do |sheet|
   sheet.add_row ["Arm", "", "# of Subjects", "# of Visits", "", "", ""], :style => sub_header_style
 
   @protocol.arms.each do |arm|
-    sheet.add_row [arm.name, "", arm.subject_count, arm.visit_count, "", "", ""], :style => default
+    sheet.add_row [arm.sanitized_name, "", arm.subject_count, arm.visit_count, "", "", ""], :style => default
   end
 
   sheet.add_row ["Other Services", "", "Negotiated Reimbursement (NR)", "Research Cost (Your Cost)", "Procedure Occurrence (N)", "NR", "R Cost"], :style => header_style
@@ -219,7 +219,7 @@ wb.insert_worksheet(0, name: "Summary") do |sheet|
     sr.line_items.where(services: {one_time_fee: true}).each do |li|
       next if ["draft", "first_draft"].include?(li.sub_service_request.status)
       li_row = sheet.rows.length + 1
-      sheet.add_row [li.service.name, "", "0", cents_to_dollars(li.applicable_rate), li.quantity, "=C#{li_row}*E#{li_row}", "=D#{li_row}*E#{li_row}"], :style => [default, default, money, money, default, money, money]
+      sheet.add_row ["#{li.service.name} (#{li.sub_service_request.ssr_id})", "", "0", cents_to_dollars(li.applicable_rate), li.quantity, "=C#{li_row}*E#{li_row}", "=D#{li_row}*E#{li_row}"], :style => [default, default, money, money, default, money, money]
     end
   end
 
@@ -232,7 +232,7 @@ wb.insert_worksheet(0, name: "Summary") do |sheet|
   sheet.add_row ["Total Study Level", "", "", "", "", "=#{study_level_n_total_cell}", "=#{study_level_r_total_cell}"], :style => [default, default, default, default, default, money, money]
   study_budget_start_row = sheet.rows.length
   @protocol.arms.each do |arm|
-    sheet.add_row [arm.name, "", "", "", "", "='#{arm.name}'!#{arm_nr_totals[arm.name]}", "='#{arm.name}'!#{arm_r_totals[arm.name]}"], :style => [default, default, default, default, default, money, money]
+    sheet.add_row [arm.sanitized_name, "", "", "", "", "='#{arm.sanitized_name}'!#{arm_nr_totals[arm.sanitized_name]}", "='#{arm.sanitized_name}'!#{arm_r_totals[arm.sanitized_name]}"], :style => [default, default, default, default, default, money, money]
   end
   study_budget_end_row = sheet.rows.length
   sheet.add_row ["Total Direct Cost", "", "", "", "", "=SUM(F#{study_budget_start_row}:F#{study_budget_end_row})", "=SUM(G#{study_budget_start_row}:G#{study_budget_end_row})"], :style => [row_header_style, row_header_style, row_header_style, row_header_style, row_header_style, bold_money, bold_money]

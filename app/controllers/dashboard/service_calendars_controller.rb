@@ -264,60 +264,25 @@ class Dashboard::ServiceCalendarsController < ApplicationController
     @arm.visit_groups.reload
   end
 
-  def select_calendar_row
-    @line_items_visit = LineItemsVisit.find(params[:line_items_visit_id])
-    @service = @line_items_visit.line_item.service
-    @sub_service_request = @line_items_visit.line_item.sub_service_request
-    failed_visit_list = ''
-    @line_items_visit.visits.each do |visit|
-      visit.attributes = {
-          quantity: @service.displayed_pricing_map.unit_minimum,
-          research_billing_qty: @service.displayed_pricing_map.unit_minimum,
-          insurance_billing_qty: 0,
-          effort_billing_qty: 0
-      }
-
-      visit.save
-    end
-
-    @errors = "The follow visits for #{@service.name} were not checked because they exceeded the linked quantity limit: #{failed_visit_list}" if failed_visit_list.empty? == false
-
-    render partial: 'update_service_calendar'
-  end
-
-  def unselect_calendar_row
+  def toggle_calendar_row
     @line_items_visit = LineItemsVisit.find(params[:line_items_visit_id])
     @sub_service_request = @line_items_visit.line_item.sub_service_request
+    @service = @line_items_visit.line_item.service if params[:check]
+
     @line_items_visit.visits.each do |visit|
-      visit.update_attributes(quantity: 0, research_billing_qty: 0, insurance_billing_qty: 0, effort_billing_qty: 0)
-    end
-
-    render partial: 'update_service_calendar'
-  end
-
-  def select_calendar_column
-    column_id = params[:column_id].to_i
-    @arm = Arm.find params[:arm_id]
-
-    @service_request.service_list(false).each do |_key, value|
-      next unless @sub_service_request.nil? || @sub_service_request.organization.name == value[:process_ssr_organization_name]
-
-      @arm.line_items_visits.each do |liv|
-        next unless value[:line_items].include?(liv.line_item)
-        visit = liv.visits[column_id - 1] # columns start with 1 but visits array positions start at 0
-        visit.update_attributes(
-            quantity: liv.line_item.service.displayed_pricing_map.unit_minimum,
-            research_billing_qty: liv.line_item.service.displayed_pricing_map.unit_minimum,
-            insurance_billing_qty: 0,
-            effort_billing_qty: 0
-        )
+      if params[:uncheck]
+        visit.update_attributes(quantity: 0, research_billing_qty: 0, insurance_billing_qty: 0, effort_billing_qty: 0)
+      elsif params[:check]
+        visit.update_attributes(quantity: @service.displayed_pricing_map.unit_minimum, research_billing_qty: @service.displayed_pricing_map.unit_minimum, insurance_billing_qty: 0, effort_billing_qty: 0)
       end
     end
-
+    @sub_service_request.update_attribute(:status, "draft") if @sub_service_request
+    @service_request.update_attribute(:status, "draft")
+    
     render partial: 'update_service_calendar'
   end
 
-  def unselect_calendar_column
+  def toggle_calendar_column
     column_id = params[:column_id].to_i
     @arm = Arm.find(params[:arm_id])
 
@@ -327,9 +292,15 @@ class Dashboard::ServiceCalendarsController < ApplicationController
       @arm.line_items_visits.each do |liv|
         next unless value[:line_items].include?(liv.line_item)
         visit = liv.visits[column_id - 1] # columns start with 1 but visits array positions start at 0
-        visit.update_attributes quantity: 0, research_billing_qty: 0, insurance_billing_qty: 0, effort_billing_qty: 0
+        if params[:check]
+          visit.update_attributes quantity: liv.line_item.service.displayed_pricing_map.unit_minimum, research_billing_qty: liv.line_item.service.displayed_pricing_map.unit_minimum, insurance_billing_qty: 0, effort_billing_qty: 0
+        elsif params[:uncheck]
+          visit.update_attributes quantity: 0, research_billing_qty: 0, insurance_billing_qty: 0, effort_billing_qty: 0
+        end
       end
     end
+    @sub_service_request.update_attribute(:status, "draft") if @sub_service_request
+    @service_request.update_attribute(:status, "draft")
 
     render partial: 'update_service_calendar'
   end

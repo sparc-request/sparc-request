@@ -27,13 +27,14 @@ class ServiceRequest < ActiveRecord::Base
   belongs_to :protocol
   has_many :sub_service_requests, :dependent => :destroy
   has_many :line_items, -> { includes(:service) }, :dependent => :destroy
+  has_many :line_items_visits, through: :line_items
   has_many :subsidies, through: :sub_service_requests
   has_many :charges, :dependent => :destroy
   has_many :tokens, :dependent => :destroy
   has_many :approvals, :dependent => :destroy
   has_many :arms, :through => :protocol
   has_many :notes, as: :notable, dependent: :destroy
-  
+
   after_save :set_original_submitted_date
 
   validation_group :protocol do
@@ -342,15 +343,21 @@ class ServiceRequest < ActiveRecord::Base
     page
   end
 
-  def service_list is_one_time_fee=nil
-    items = []
-    case is_one_time_fee
-    when nil
-      items = line_items
-    when true
-      items = one_time_fee_line_items
-    when false
-      items = per_patient_per_visit_line_items
+  def service_list(is_one_time_fee=nil, service_provider=nil, admin_ssr=nil)
+    items = if service_provider
+      service_provider_line_items(service_provider, line_items)
+    elsif admin_ssr
+      admin_ssr.line_items
+    else
+      line_items
+    end
+
+    items = if is_one_time_fee == true
+      items.select { |i| i.service.one_time_fee? }
+    elsif is_one_time_fee == false
+      items.select { |i| !i.service.one_time_fee? }
+    else
+      items
     end
 
     groupings = {}
@@ -388,6 +395,17 @@ class ServiceRequest < ActiveRecord::Base
     end
 
     groupings
+  end
+
+  # Returns the line items that a service provider is associated with
+  def service_provider_line_items(service_provider, items)
+    service_provider_items = []
+    items.map(&:sub_service_request_id).each do |ssr|
+      if service_provider.identity.is_service_provider?(SubServiceRequest.find(ssr))
+        service_provider_items << SubServiceRequest.find(ssr).line_items
+      end
+    end
+    service_provider_items.flatten.uniq
   end
 
   def has_one_time_fee_services?
@@ -485,8 +503,7 @@ class ServiceRequest < ActiveRecord::Base
     self.assign_attributes(status: new_status)
 
     self.sub_service_requests.each do |ssr|
-      next unless ssr.can_be_edited?
-
+      next unless ssr.can_be_edited? && !ssr.is_complete?
       available = AVAILABLE_STATUSES.keys
       editable = EDITABLE_STATUSES[ssr.organization_id] || available
 
@@ -501,21 +518,24 @@ class ServiceRequest < ActiveRecord::Base
     end
 
     self.save(validate: use_validation)
+    
     to_notify
   end
 
   # Make sure that all the sub service requests have an ssr id
   def ensure_ssr_ids
-    next_ssr_id = self.protocol.next_ssr_id || 1
+    if self.protocol
+      next_ssr_id = self.protocol.next_ssr_id || 1
 
-    self.sub_service_requests.each do |ssr|
-      if not ssr.ssr_id then
-        ssr.update_attributes(ssr_id: "%04d" % next_ssr_id)
-        next_ssr_id += 1
+      self.sub_service_requests.each do |ssr|
+        if not ssr.ssr_id then
+          ssr.update_attributes(ssr_id: "%04d" % next_ssr_id)
+          next_ssr_id += 1
+        end
       end
-    end
 
-    self.protocol.update_attributes(next_ssr_id: next_ssr_id)
+      self.protocol.update_attributes(next_ssr_id: next_ssr_id)
+    end
   end
 
   def add_or_update_arms
@@ -568,7 +588,7 @@ class ServiceRequest < ActiveRecord::Base
 
     {:line_items => line_item_audits}
   end
-  
+
   def has_non_first_draft_ssrs?
     sub_service_requests.where.not(status: 'first_draft').any?
   end

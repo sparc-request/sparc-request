@@ -44,23 +44,20 @@ class Notifier < ActionMailer::Base
   end
 
   def notify_user(project_role, service_request, xls, approval, user_current)
+    @status = service_request.status
+    @notes = []
     @identity = project_role.identity
     @role = project_role.role
-
-    @approval_link = nil
-    if approval and project_role.project_rights == 'approve'
-      @approval_link = approve_changes_service_request_url(service_request, :approval_id => approval.id)
-    end
+    @full_name = @identity.full_name
 
     @protocol = service_request.protocol
     @service_request = service_request
-    @portal_link = DASHBOARD_LINK + "?default_protocol=#{@protocol.id}"
-    @portal_text = "To VIEW and/or MAKE any changes to this request, please click here."
-    @provide_arm_info = false
+    @service_requester_id = @service_request.sub_service_requests.first.service_requester_id
 
-    @triggered_by = user_current.id
-    @ssr_ids = service_request.sub_service_requests.map{ |ssr| ssr.id }.join(", ")
+    @portal_link = DASHBOARD_LINK + "/protocols/#{@protocol.id}"
 
+    @ssrs_to_be_displayed = service_request.sub_service_requests
+    
     attachments["service_request_#{@service_request.protocol.id}.xlsx"] = xls
 
     # only send these to the correct person in the production env
@@ -70,41 +67,51 @@ class Notifier < ActionMailer::Base
     mail(:to => email, :from => NO_REPLY_FROM, :subject => subject)
   end
 
-  def notify_admin(service_request, submission_email_address, xls, user_current)
+  def notify_admin(service_request, submission_email_address, xls, user_current, ssr_to_be_displayed)
+    @notes = service_request.notes
+    @status = service_request.status
+    @role = 'none'
+    @full_name = submission_email_address
+
     @protocol = service_request.protocol
     @service_request = service_request
-    @role = 'none'
-    @approval_link = nil
-    @portal_link = DASHBOARD_LINK
-    @portal_text = "Administrators/Service Providers, Click Here"
-    @provide_arm_info = false
+    @service_requester_id = @service_request.sub_service_requests.first.service_requester_id
+    @ssrs_to_be_displayed = [ssr_to_be_displayed]
 
-    @triggered_by = user_current.id
-    @ssr_ids = service_request.sub_service_requests.map{ |ssr| ssr.id }.join(", ")
+    @portal_link = DASHBOARD_LINK + "/protocols/#{@protocol.id}"
+    @portal_text = "Administrators/Service Providers, Click Here"
 
     attachments["service_request_#{@service_request.protocol.id}.xlsx"] = xls
 
-    # only send these to the correct person in the production env
     email = Rails.env == 'production' ?  submission_email_address : DEFAULT_MAIL_TO
     subject = Rails.env == 'production' ? "#{I18n.t('application_title')} service request" : "[#{Rails.env.capitalize} - EMAIL TO #{submission_email_address}] #{I18n.t('application_title')} service request"
 
     mail(:to => email, :from => NO_REPLY_FROM, :subject => subject)
   end
 
-  def notify_service_provider service_provider, service_request, attachments_to_add, user_current, audit_report=nil, ssr_deleted=false
+  def notify_service_provider(service_provider, service_request, attachments_to_add, user_current, audit_report=nil, ssr_deleted=false)
+    @notes = service_request.notes
+    @status = service_request.status
+    @role = 'none'
+    @full_name = service_provider.identity.full_name
+
     @protocol = service_request.protocol
     @service_request = service_request
-    @role = 'none'
-    @approval_link = nil
-    @audit_report = audit_report
-    @provide_arm_info = audit_report.nil? ? true : SubServiceRequest.find(@audit_report[:sub_service_request_id]).has_per_patient_per_visit_services?
-    @ssr_deleted = ssr_deleted
+    @service_requester_id = @service_request.sub_service_requests.first.service_requester_id
 
-    @portal_link = DASHBOARD_LINK
+    @audit_report = audit_report
+    @ssr_deleted = ssr_deleted
+    
+    @portal_link = DASHBOARD_LINK + "/protocols/#{@protocol.id}"
     @portal_text = "Administrators/Service Providers, Click Here"
 
-    @triggered_by = user_current.id
-    @ssr_ids = service_request.sub_service_requests.map{ |ssr| ssr.id }.join(", ")
+    # if the current user is service provider, only show SSR's that are associated with them
+    @ssrs_to_be_displayed = []
+    @service_request.sub_service_requests.each do |ssr|
+      if service_provider.identity.is_service_provider?(ssr)
+        @ssrs_to_be_displayed << ssr
+      end
+    end
 
     attachments_to_add.each do |file_name, document|
       next if document.nil?

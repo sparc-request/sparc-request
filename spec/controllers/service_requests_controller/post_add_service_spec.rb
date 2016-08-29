@@ -56,7 +56,7 @@ RSpec.describe ServiceRequestsController do
     it 'should give an error if the ServiceRequest already has a LineItem for the Service' do
       create(:line_item,
              service_id: new_service.id,
-             service_request_id: service_request.id)
+             service_request_id: service_request.id, sub_service_request_id: sub_service_request.id)
 
       post :add_service, {
              :id          => service_request.id,
@@ -169,6 +169,32 @@ RSpec.describe ServiceRequestsController do
       expect(service_request.line_items[-3].sub_service_request).to eq core_ssr
       expect(service_request.line_items[-2].sub_service_request).to eq core_ssr
       expect(service_request.line_items[-1].sub_service_request).to eq core2_ssr
+    end
+
+    it 'should create a past status for the SubServiceRequest' do
+      protocol = create(:study_without_validations,
+                         primary_pi: jug2)
+
+      service_request = create(:service_request_without_validations,
+                               status: 'submitted',
+                               protocol: protocol)
+
+      ssr1 = create(:sub_service_request,
+                    service_request_id: service_request.id,
+                    status: 'submitted',
+                    organization_id: core.id)
+      service = create(:service,
+                       organization_id: core.id)
+
+      post :add_service, {
+            id: service_request.id,
+            service_id: service.id,
+            format: :js
+            }.with_indifferent_access
+
+      ps1 = PastStatus.find_by(sub_service_request_id: ssr1.id)
+
+      expect(ps1.status).to eq('submitted')
     end
   end
 end

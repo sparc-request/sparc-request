@@ -53,6 +53,32 @@ RSpec.describe "filters", js: :true do
         expect(new_filter.show_archived).to eq(true)
       end
     end
+
+    context "admin user clicks save" do
+      it "should allow admin user to save filter" do
+        organization = create(:organization, name: 'Union Allied')
+        create(:service_provider, organization_id: organization.id, identity_id: user.id)
+
+        visit_protocols_index_page
+        expect do
+          @page.instance_exec do
+            filter_protocols.archived_checkbox.click
+            filter_protocols.select_status("Active", "Complete")
+            filter_protocols.select_owner("Doe, John")
+            filter_protocols.save_link.click
+            wait_for_filter_form_modal
+            filter_form_modal.name_field.set("MyFilter")
+            filter_form_modal.save_button.click
+          end
+          expect(@page.recently_saved_filters).to have_filters(text: "MyFilter")
+        end.to change { ProtocolFilter.count }.by(1)
+
+        new_filter = ProtocolFilter.last
+        expect(new_filter.with_status).to eq(['ctrc_approved', 'complete'])
+        expect(new_filter.show_archived).to eq(true)
+        expect(new_filter.with_owner).to eq(["#{user.id}"])
+      end
+    end
   end
 
   describe "recently saved filters" do
@@ -260,6 +286,32 @@ RSpec.describe "filters", js: :true do
       expect(@page.search_results).to have_protocols(text: "title %")
       expect(@page.search_results).to have_no_protocols(text: "_Title")
       expect(@page.search_results).to have_protocols(text: "a%a")
+    end
+  end
+
+  describe "Owner Dropdown" do
+    it 'should only display protocols with sub service requests that have the specified service provider' do
+      person = create(:identity, first_name: "Wilson", last_name: "Fisk")
+      organization1 = create(:organization, name: 'MagikarpLLC')
+      organization2 = create(:organization, name: 'Union Allied')
+      create(:service_provider, organization: organization1, identity: user)
+      create(:service_provider, organization: organization2, identity: user)
+      create(:service_provider, organization: organization2, identity: person)
+      protocol1 = create(:protocol_without_validations, type: 'Study', archived: false, short_title: 'Magikarp Protocol')
+      protocol2 = create(:protocol_without_validations, type: 'Study', archived: false, short_title: 'Construction')
+      service_request1 = create(:service_request_without_validations, protocol: protocol1)
+      service_request2 = create(:service_request_without_validations, protocol: protocol2)
+      ssr1 = create(:sub_service_request, service_request: service_request1, organization: organization1, status: 'draft')
+      ssr2 = create(:sub_service_request, service_request: service_request2, organization: organization2, status: 'draft', owner: person)
+
+      visit_protocols_index_page
+
+      wait_for_javascript_to_finish
+      @page.filter_protocols.select_owner("Fisk, Wilson")
+      @page.filter_protocols.apply_filter_button.click
+
+      expect(@page.search_results).to have_protocols(text: "Construction")
+      expect(@page.search_results).to have_no_protocols(text: "Magikarp Protocol")
     end
   end
 

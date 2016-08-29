@@ -65,14 +65,18 @@
 
           %tr
             %th= t(:organization_form)[:disabled]
-            %td= f.check_box :is_available, {checked: (@organization.is_available.nil? ? false : !@organization.is_available) }, false, true
+            %td
+              = f.check_box :is_available, {checked: (@organization.is_available.nil? ? false : !@organization.is_available), disabled: @organization.parent.nil? ? false : !@organization.parent.is_available }, false, true
+              %span
+                - unless (@organization.type == 'Institution') || @organization.parent.is_available
+                  = I18n.t('organization_form.disabled_at', disabled_parent: disabled_parent(@organization))
 
           - unless @organization.type == 'Institution'
             %tr
               %th= t(:organization_form)[:tag_list] #not present in institutions
               %td
-                - Tag.all.each do |tag|
-                  %span{style: "margin-right:10px;"}
+                - Tag.where.not(name: "epic").each do |tag|
+                  %span{style: "margin-right:30px;"}
                     %span= f.label (t(:tags)[tag.name.gsub(" ", "_").to_sym] ? t(:tags)[tag.name.gsub(" ", "_").to_sym] : tag.name.humanize)
                     %span= f.check_box :tag_list, { multiple: true }, tag.name, nil
 
@@ -137,10 +141,17 @@
                 %th= t(:organization_form)[:subsidy_max_percent]
                 %td.subsidy_percentage= f_subsidy_map.text_field :max_percentage
               %tr
+                %th= t(:organization_form)[:subsidy_default_percentage]
+                %td.subsidy_default_percentage= f_subsidy_map.text_field :default_percentage, value: display_as_percent(f_subsidy_map.object.default_percentage)
+              %tr
                 %th= t(:organization_form)[:subsidy_max_dollar]
 
                 %td.subsidy_dollar= f_subsidy_map.text_field :max_dollar_cap, value: number_with_precision(f_subsidy_map.object.max_dollar_cap, precision: 2)
               = render 'catalog_manager/shared/excluded_funding_sources', entity: @organization
+              -if ['Program', 'Provider'].include?(@organization.type)
+                %tr
+                  %th= t(:organization_form)[:subsidy_instructions]
+                  %td.subsidy_instructions= f_subsidy_map.text_field :instructions
 
       %fieldset.parent
         .legend= t(:organization_form)[:associated_surveys]

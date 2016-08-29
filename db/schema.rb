@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160712191814) do
+ActiveRecord::Schema.define(version: 20160810145343) do
 
   create_table "admin_rates", force: :cascade do |t|
     t.integer  "line_item_id", limit: 4
@@ -270,7 +270,6 @@ ActiveRecord::Schema.define(version: 20160712191814) do
     t.datetime "document_updated_at"
     t.string   "doc_type_other",        limit: 255
     t.integer  "protocol_id",           limit: 4
-    t.integer  "service_request_id",    limit: 4
   end
 
   add_index "documents", ["protocol_id"], name: "index_documents_on_protocol_id", using: :btree
@@ -523,8 +522,10 @@ ActiveRecord::Schema.define(version: 20160712191814) do
     t.datetime "created_at",                         null: false
     t.datetime "updated_at",                         null: false
     t.datetime "deleted_at"
+    t.integer  "changed_by_id",          limit: 4
   end
 
+  add_index "past_statuses", ["changed_by_id"], name: "index_past_statuses_on_changed_by_id", using: :btree
   add_index "past_statuses", ["sub_service_request_id"], name: "index_past_statuses_on_sub_service_request_id", using: :btree
 
   create_table "past_subsidies", force: :cascade do |t|
@@ -656,6 +657,8 @@ ActiveRecord::Schema.define(version: 20160712191814) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "admin_filter",      limit: 255
+    t.string   "sorted_by",         limit: 255
+    t.string   "with_owner",        limit: 255
   end
 
   create_table "protocols", force: :cascade do |t|
@@ -694,7 +697,6 @@ ActiveRecord::Schema.define(version: 20160712191814) do
     t.boolean  "selected_for_epic"
     t.boolean  "archived",                                                                    default: false
     t.integer  "study_type_question_group_id",          limit: 4
-    t.integer  "requester_id",                          limit: 4
   end
 
   add_index "protocols", ["next_ssr_id"], name: "index_protocols_on_next_ssr_id", using: :btree
@@ -1015,12 +1017,14 @@ ActiveRecord::Schema.define(version: 20160712191814) do
   add_index "subsidies", ["sub_service_request_id"], name: "index_subsidies_on_sub_service_request_id", using: :btree
 
   create_table "subsidy_maps", force: :cascade do |t|
-    t.integer  "organization_id", limit: 4
-    t.decimal  "max_dollar_cap",            precision: 12, scale: 4, default: 0.0
-    t.decimal  "max_percentage",            precision: 5,  scale: 2, default: 0.0
-    t.datetime "created_at",                                                       null: false
-    t.datetime "updated_at",                                                       null: false
+    t.integer  "organization_id",    limit: 4
+    t.decimal  "max_dollar_cap",                   precision: 12, scale: 4, default: 0.0
+    t.decimal  "max_percentage",                   precision: 5,  scale: 2, default: 0.0
+    t.datetime "created_at",                                                              null: false
+    t.datetime "updated_at",                                                              null: false
     t.datetime "deleted_at"
+    t.float    "default_percentage", limit: 24,                             default: 0.0
+    t.text     "instructions",       limit: 65535
   end
 
   add_index "subsidy_maps", ["organization_id"], name: "index_subsidy_maps_on_organization_id", using: :btree

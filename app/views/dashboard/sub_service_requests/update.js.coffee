@@ -22,8 +22,12 @@
 $("#sub_service_request_header").html("<%= escape_javascript(render(partial: 'dashboard/sub_service_requests/header', locals: { sub_service_request: @sub_service_request })) %>");
 $("#subsidy_information").html("<%= escape_javascript(render(partial: 'dashboard/subsidies/subsidy', locals: { sub_service_request: @sub_service_request, admin: true })) %>");
 
+$("#status-history-table").bootstrapTable 'refresh'
+
 $(".selectpicker").selectpicker()
 $("#flashes_container").html("<%= escape_javascript(render('shared/flash')) %>")
+
+$("#service_request_status_dropdown .btn-danger").tooltip(trigger: 'click')
 <% else %>
 $("#flashes_container").html("<%= escape_javascript(render(partial: 'shared/modal_errors', locals: {errors: @errors})) %>")
 <% end %>

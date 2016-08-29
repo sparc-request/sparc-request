@@ -18,10 +18,10 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 - line_items_visits = []
-- Dashboard::ServiceCalendars.pppv_line_items_visits_to_display(arm, service_request, sub_service_request, merged: @merged, portal: @portal, review: @review).each do |org, livs|
+- Dashboard::ServiceCalendars.pppv_line_items_visits_to_display(arm, service_request, sub_service_request, merged: @merged).each do |org, livs|
   - if @tab == 'billing_strategy'
     %tr.sub_section_header
-      %th.col-sm-5{ colspan: 5 }= org
+      %th.col-sm-5{ colspan: 6 }= org
       - 5.times do
         %th.col-sm-1.billing_type_list{ style: 'text-align:center' }
           %span.billing_type R
@@ -31,8 +31,11 @@
     %tr.sub_section_header
       %th{ colspan: 12 }= org
   - livs.each do |liv|
+    - next if %w(draft first_draft).include?(liv.sub_service_request.status) && @merged
+    - line_items_visits << liv
     %tr
       %td{ colspan: 2 }= liv.service.display_service_name
+      %td{ colspan: 1 }= AVAILABLE_STATUSES[liv.line_item.sub_service_request.status]
       - unless tab == 'calendar'
         %td.service_rate{ class: "service_rate_#{liv.id}" }= display_service_rate liv.line_item
       %td.your_cost.text-center

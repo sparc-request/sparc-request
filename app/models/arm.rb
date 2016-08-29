@@ -44,8 +44,14 @@ class Arm < ActiveRecord::Base
   after_save :update_liv_subject_counts
 
   validates :name, presence: true
+  validates_uniqueness_of :name, scope: :protocol
   validates :visit_count, numericality: { greater_than: 0 }
   validates :subject_count, numericality: { greater_than: 0 }
+
+  def sanitized_name
+    #Sanitized for Excel
+    name.gsub(/\[|\]|\*|\/|\\|\?|\:/, ' ')
+  end
 
   def update_liv_subject_counts
 
@@ -280,7 +286,6 @@ class Arm < ActiveRecord::Base
     items = self.line_items_visits.map do |liv|
       liv.line_item.service.one_time_fee ? nil : liv.line_item
     end.compact
-
     groupings = {}
     items.each do |line_item|
       service = line_item.service

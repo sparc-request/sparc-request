@@ -1,0 +1,21 @@
+- welcome_text = I18n.t('notifier.welcome_obtain_research_pricing')
+- if @role != 'none'
+  %p= I18n.t('notifier.body1', :full_name => @full_name)
+  %p{ :style => 'display: inline;' }
+    = I18n.t('notifier.non_service_provider_intro_1', :welcome => welcome_text, :application_title => I18n.t('application_title'), :root_url => ROOT_URL, :protocol_type => @protocol.type.downcase)
+  %p{ :style => 'display: inline;' }
+    %a{:style => "color: blue; font-weight: bold;", :href => @portal_link}=t(:notifier)[:sparc_dashboard]
+  %p{ :style => 'display: inline;' }= t(:notifier)[:non_service_provider_intro_2]
+  %strong= t(:notifier)[:non_service_provider_intro_3]
+- else
+  %p= I18n.t('notifier.body1', :full_name => @full_name)
+  %p{ :style => 'display: inline;' }= I18n.t('notifier.service_provider_intro_1', :welcome => welcome_text, :application_title => I18n.t('application_title'), :root_url => ROOT_URL, :protocol_type => @protocol.type.downcase)
+  %p{ :style => 'display: inline;' }
+    %a{:style => "color: blue; font-weight: bold;", :href => @portal_link}=t(:notifier)[:sparc_dashboard]
+  %p{ :style => 'display: inline;' }= t(:notifier)[:service_provider_intro_2]
+%br
+- if @portal_text
+  %p
+    %a{:style => "color: blue; font-weight: bold;", :href => @portal_link}=@portal_text
+%br
+%br

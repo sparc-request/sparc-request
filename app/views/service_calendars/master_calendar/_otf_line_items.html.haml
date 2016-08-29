@@ -24,11 +24,9 @@
       = t(:calendar_page)[:headers][:other_services]
 
     - @protocol.service_requests.each do |service_request|
-      - if %w('first_draft' 'draft').include?(service_request.status)
-        - next if @portal
-        - next if service_request != current_request
       - service_request.service_list(true).each do |_, value| # get only one time fee services
         - value[:line_items].each do |line_item|
+          - next if %w('first_draft' 'draft').include?(line_item.sub_service_request.status)
           %tr.line_item.otfs{ class: cycle('odd', '', name: 'otfs'), :"data-unit_factor" => line_item.service.displayed_pricing_map.unit_factor }
             %td.service_name
               = line_item.service.name
@@ -160,7 +158,8 @@
         %th.otf{ colspan: (@study_tracker) ? 13 : 16 }
           = value[:name]
         - value[:line_items].each do |line_item|
-          - locked = !line_item.sub_service_request.can_be_edited?
+          - next if %w('first_draft' 'draft').include?(line_item.sub_service_request.status)
+          - locked = !line_item.sub_service_request.can_be_edited? || line_item.sub_service_request.is_complete?
           %tr.line_item.otfs{ class: [cycle('odd', '', name: 'otfs'), locked ? 'locked' : ''], :"data-unit_factor" => line_item.service.displayed_pricing_map.unit_factor }
             %td.service_name
               = line_item.service.name
@@ -201,7 +200,7 @@
                     - else
                       = text_field_tag "service_request[line_items_attributes][#{line_item.id}][quantity]", line_item.quantity, |
                        unit_minimum: line_item.service.displayed_pricing_map.quantity_minimum, units_per_qty_max: line_item.service.displayed_pricing_map.units_per_qty_max, class: 'line_item_quantity', current_quantity: line_item.quantity, previous_quantity: line_item.quantity, |
-                       update: update_otf_qty_and_units_per_qty_service_request_service_calendars_path(@service_request, line_item_id: line_item.id, type: 'qty') |
+                       update: update_otf_qty_and_units_per_qty_service_request_service_calendars_path(@service_request, line_item_id: line_item.id, type: 'qty')
               - else
                 %td{ colspan: 2 }
                   %span

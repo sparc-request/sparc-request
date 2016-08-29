@@ -23,8 +23,8 @@
     .navbar-header
       - if @show_navbar
         %ul.nav.navbar-nav
-          - NAVBAR_LINKS.each do |name, path|
-            %li= link_to name.to_s, path, target: '_blank'
+          - NAVBAR_LINKS.each do |identifier, details|
+            = navbar_link(identifier, details, @highlighted_link)
       - else
         %ol.breadcrumb
           = session[:breadcrumbs].breadcrumbs

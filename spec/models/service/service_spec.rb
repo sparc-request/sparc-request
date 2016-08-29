@@ -171,7 +171,7 @@ RSpec.describe Service, type: :model do
 
   describe "display attribute" do
 
-    let!(:service) { create(:service, name: "Foo", abbreviation: "abc") }
+    let!(:service)    { create(:service, name: "Foo", abbreviation: "abc") }
 
     context "service name" do
 
@@ -182,18 +182,6 @@ RSpec.describe Service, type: :model do
       it "should concatenate cpt code to the name if it exists" do
         service.update_attributes(cpt_code: "Bar")
         expect(service.display_service_name).to eq("Foo (Bar)")
-      end
-    end
-
-    context "service abbreviation" do
-
-      it "should return the abbreviation" do
-        expect(service.display_service_abbreviation).to eq("abc")
-      end
-
-      it "should concatenate cpt code to the abbreviation if it exists" do
-        service.update_attributes(cpt_code: "def")
-        expect(service.display_service_abbreviation).to eq("abc (def)")
       end
     end
   end

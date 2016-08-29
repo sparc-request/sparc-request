@@ -19,19 +19,17 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 %tr.section_header
-
   - if merged # display merged calendar otf line items
     %th{ colspan: 13 }= t(:calendar_page)[:headers][:other_services]
-
     - protocol.service_requests.each do |service_request|
-      - if %w('first_draft' 'draft').include?(service_request.status)
-        - next if portal
-        - next if service_request != current_request
       - service_request.service_list(true).each do |_, value| # get only one time fee services
         - value[:line_items].each do |line_item|
+          - next if %w(first_draft draft).include?(line_item.sub_service_request.status)
           %tr.line_item.otfs{ :"data-unit_factor" => line_item.service.displayed_pricing_map.unit_factor }
             %td.service_name
               = line_item.service.name
+            %td.service_status
+              = AVAILABLE_STATUSES[line_item.sub_service_request.status]
             - unless portal || study_tracker
               %td.service_rate{ class: "service_rate_#{line_item.id}" }= display_service_rate line_item
             %td.your_cost{ :"data-your_cost" => line_item.applicable_rate }= display_your_cost line_item
@@ -60,13 +58,15 @@
       - next unless sub_service_request.nil? || sub_service_request.organization.name == value[:process_ssr_organization_name]
       %tr.sub_section_header
         %th{ colspan: 9 }= value[:name]
-        - value[:line_items].each do |line_item|
+        - line_items = sub_service_request.nil? ? value[:line_items] : sub_service_request.one_time_fee_line_items
+        - line_items.each do |line_item|
           %tr.line_item
             %td.service_name= line_item.service.name
+            %td.service_status
+              = AVAILABLE_STATUSES[line_item.sub_service_request.status]
             %td.your_cost= display_your_cost line_item
             %td{ colspan: 6 }
             %td= display_one_time_fee_direct_cost line_item
-
 
   - elsif study_tracker # display study tracker calendar otf line items
     %th{ colspan: 6 }

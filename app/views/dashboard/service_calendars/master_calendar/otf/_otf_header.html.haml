@@ -19,6 +19,7 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 %tr.table_header
   %th= t(:calendar_page)[:headers][:services]
+  %th{ rowspan: 2 }= t(:calendar_page)[:headers][:status]
   - if study_tracker && !merged # display study tracker otf header
     %th.qty_unit_header= t(:calendar_page)[:headers][:number]
     %th.qty_unit_header= t(:calendar_page)[:headers][:unit_type]

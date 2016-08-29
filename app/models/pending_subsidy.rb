@@ -34,32 +34,23 @@ class PendingSubsidy < Subsidy
     ( total_request_cost - pi_contribution ) / 100.0
   end
 
-  def current_percent_of_total
-    # Calculates the percent of total request cost that is subsidized
-    # (SSR direct_cost_total - pi_contribution) / direct_cost_total then convert to percent
-    total = total_request_cost.to_f
-    contribution = ( pi_contribution || total ).to_f
-    ((( total - contribution ) / total ) * 100.0 ).round(2)
-  end
-
   def grant_approval approver
     # Creates a new ApprovedSubsidy from this PendingSubsidy
     # Remove current approved subsidy if exists, save notes
-    current_approved_subsidy = sub_service_request.approved_subsidy
 
+    current_approved_subsidy = sub_service_request.approved_subsidy
     if current_approved_subsidy.present?
       # log the past subsidy
       PastSubsidy.create(current_approved_subsidy.attributes.except("id", "status", "created_at", "updated_at", "deleted_at", "overridden"))
       ApprovedSubsidy.where(sub_service_request_id: sub_service_request_id).destroy_all
     end
-
     # Create new approved subsidy from pending attributes
     new_attributes = self.attributes.except("id", "status", "created_at", "updated_at", "deleted_at").merge!({approved_by: approver.id})
-    newly_approved = ApprovedSubsidy.create(new_attributes)
+    newly_approved = ApprovedSubsidy.new(new_attributes)
+    newly_approved.save(validate: false)
 
     # Delete pending subsidy
     self.destroy
-
     return newly_approved
   end
 end

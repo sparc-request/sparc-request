@@ -58,7 +58,7 @@ module Dashboard
             filtered_line_items_visits = line_items_visits.select { |x| x.line_item.service_request_id == service_request.id }
           end
           checked = filtered_line_items_visits.each.map { |l| l.visits[n.to_i-1].research_billing_qty >= 1 ? true : false }.all?
-          action = checked ? 'unselect_calendar_column' : 'select_calendar_column'
+          action = checked ? 'uncheck' : 'check'
           icon = checked ? 'ui-icon-close' : 'ui-icon-check'
           returning_html += content_tag(:span,
                                         ((USE_EPIC) ?
@@ -74,7 +74,7 @@ module Dashboard
                                             text_field_tag("arm_#{arm.id}_visit_name_#{n}", visit_name, class: 'visit_name', size: 10, :'data-arm_id' => arm.id, :'data-visit_position' => n - 1, :'data-service_request_id' => service_request.id) +
                                             tag(:br) +
                                             link_to((content_tag(:span, '', class: "ui-button-icon-primary ui-icon #{icon}") + content_tag(:span, 'Check All', class: 'ui-button-text')),
-                                                    "/dashboard/service_requests/#{service_request.id}/#{action}/#{n}/#{arm.id}?portal=#{portal}",
+                                                    "/dashboard/service_requests/#{service_request.id}/toggle_calendar_row?#{action}=true /#{n}/#{arm.id}?portal=#{portal}",
                                                     remote: true, role: 'button', class: 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only', id: "check_all_column_#{n}", data: (visit_group.any_visit_quantities_customized?(service_request) ? {confirm: 'This will reset custom values for this column, do you wish to continue?'} : nil)),
                                         width: 60, class: 'visit_number')
         end
@@ -129,41 +129,28 @@ module Dashboard
       raw(returning_html)
     end
 
-    # this was extracted mostly verbatum from a partial
-    # TODO understand
-    def self.pppv_line_items_visits_to_display(arm, service_request, sub_service_request, opts={})
-      merged = opts[:merged]
-      portal = opts[:portal]
-      grouped_livs = Hash.new
+    # Given line_items_visit belonging to Organization A, which belongs to
+    # Organization B, which belongs to Organization C, return "C > B > A".
+    # This "hierarchy" stops at a process_ssrs Organization.
+    def self.display_organization_hierarchy(line_items_visit)
+      parent_organizations = line_items_visit.line_item.service.parents.reverse
+      root = parent_organizations.find_index { |org| org.process_ssrs? } || (parent_organizations.length - 1)
+      parent_organizations[0..root].map(&:abbreviation).reverse.join(' > ')
+    end
 
-      if merged
-        arm.service_list.each do |_, value| # get only per patient/per visit services and group them
-          livs = Array.new
-          arm.line_items_visits.each do |line_items_visit|
-            line_item = line_items_visit.line_item
-            next unless value[:line_items].include?(line_item)
-            if %w(first_draft draft).include?(line_item.service_request.status)
-              next if portal
-              next if service_request != line_item.service_request
-            end
-            livs << line_items_visit
-          end
-          grouped_livs[value[:name]] = livs unless livs.empty?
-        end
+    def self.pppv_line_items_visits_to_display(arm, service_request, sub_service_request, opts = {})
+      if opts[:merged]
+        arm.line_items_visits.joins(line_item: :sub_service_request).
+          where.not(sub_service_requests: { status: %w(first_draft draft) }).
+          joins(line_item: :service).
+          where(services: { one_time_fee: false })
       else
-        service_request.service_list(false).each do |_, value| # get only per patient/per visit services and group them
-          next unless sub_service_request.nil? || sub_service_request.organization.name == value[:process_ssr_organization_name]
-          livs = Array.new
-          arm.line_items_visits.each do |line_items_visit|
-            line_item = line_items_visit.line_item
-            next unless value[:line_items].include?(line_item)
-            livs << line_items_visit
-          end
-          grouped_livs[value[:name]] = livs unless livs.empty?
-        end
+        (sub_service_request || service_request).line_items_visits.
+          joins(line_item: :service).
+          where(services: { one_time_fee: false }, arm_id: arm.id)
+      end.group_by do |liv|
+        self.display_organization_hierarchy(liv)
       end
-
-      grouped_livs
     end
 
     def self.set_check(obj)
@@ -211,12 +198,12 @@ module Dashboard
 
     def self.select_row(line_items_visit, tab, portal)
       checked = line_items_visit.visits.all? { |v| v.research_billing_qty >= 1  }
-      action = checked ? 'unselect_calendar_row' : 'select_calendar_row'
+      check_param = checked ? 'uncheck' : 'check'
       icon = checked ? 'glyphicon-remove' : 'glyphicon-ok'
 
       link_to(
           (content_tag(:span, '', class: "glyphicon #{icon}")),
-          "/dashboard/service_calendars/#{action}?service_request_id=#{line_items_visit.line_item.service_request.id}&line_items_visit_id=#{line_items_visit.id}&&portal=#{portal}",
+          "/dashboard/service_calendars/toggle_calendar_row?#{check_param}=true&service_request_id=#{line_items_visit.line_item.service_request.id}&line_items_visit_id=#{line_items_visit.id}&&portal=#{portal}",
           method: :post,
           remote: true,
           role: 'button',
@@ -227,15 +214,12 @@ module Dashboard
 
     def self.select_column(visit_group, n, portal, sub_service_request)
       arm_id = visit_group.arm_id
-      filtered_livs = visit_group.line_items_visits.joins(:line_item).where(line_items: { service_request_id: sub_service_request.service_request_id })
+      filtered_livs = visit_group.line_items_visits.joins(:line_item).where(line_items: { sub_service_request_id: sub_service_request.id })
       checked = filtered_livs.all? { |l| l.visits[n.to_i].research_billing_qty >= 1 }
       icon = checked ? 'glyphicon-remove' : 'glyphicon-ok'
-      method = if checked
-                 'unselect_calendar_column'
-               else
-                 'select_calendar_column'
-               end
-      url = "/dashboard/service_calendars/#{method}.js?sub_service_request_id=#{sub_service_request.id}&column_id=#{n + 1}&arm_id=#{arm_id}&portal=#{portal}"
+      check_param = checked ? 'uncheck' : 'check'
+
+      url = "/dashboard/service_calendars/toggle_calendar_column?#{check_param}=true&sub_service_request_id=#{sub_service_request.id}&column_id=#{n + 1}&arm_id=#{arm_id}&portal=#{portal}"
 
       link_to(content_tag(:span, '', class: "glyphicon #{icon}"), url,
               method: :post, remote: true, role: 'button', class: 'visit_number btn btn-primary',

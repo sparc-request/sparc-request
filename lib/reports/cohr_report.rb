@@ -106,8 +106,7 @@ class CohrReport < Report
                 
 
               
-              next if not ssr.status == 'complete' || ssr.past_statuses.where(:status => 'complete').count > 0
-              next if not ssr.status == 'complete'
+              next if not ssr.is_complete? || ssr.past_statuses.where(:status => 'complete').count > 0
               complete_date = li.sub_service_request.past_statuses.try(:last).try(:date)
               next if not complete_date
               next if @from_date and complete_date <= @from_date

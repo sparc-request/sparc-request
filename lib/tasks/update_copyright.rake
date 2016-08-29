@@ -8,7 +8,7 @@ task update_copyright: :environment do
 
       File.open(file, 'w') { |file| file.write(updated_code_file) }
     else
-      header = "# Copyright \u00A9 2011 MUSC Foundation for Research Development~\n"
+      header = "# Copyright © 2011-2016 MUSC Foundation for Research Development~\n"
       header += "# All rights reserved.~\n\n"
       header += "# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~\n\n"
       header += "# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.~\n\n"

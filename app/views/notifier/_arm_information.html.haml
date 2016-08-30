@@ -1,11 +1,12 @@
 %table.table{cellpadding: 3}
-  %tr.skinny-black-border
-    %td{:colspan => 3}
-      %strong= t(:notifier)[:arm_data]
-  %tr.skinny-black-border
-    %th.table-header.left= t(:notifier)[:arm_name]
-    %th.table-header.left= t(:notifier)[:arm_subject_count]
-    %th.table-header.left= t(:notifier)[:arm_visit_count]
+  %thead
+    %tr.skinny-black-border
+      %td{:colspan => 3}
+        %strong= t(:notifier)[:arm_data]
+    %tr.skinny-black-border
+      %th.table-header.left= t(:notifier)[:arm_name]
+      %th.table-header.left= t(:notifier)[:arm_subject_count]
+      %th.table-header.left= t(:notifier)[:arm_visit_count]
   %tbody
     - @service_request.arms.each do |arm|
       %tr.skinny-black-border

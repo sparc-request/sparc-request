@@ -173,11 +173,10 @@ class Arm < ActiveRecord::Base
     end
   end
 
-  def create_visit_group position=0, name="Visit #{position}"
-    if not visit_group = self.visit_groups.create(position: position, name: name) then
+  def create_visit_group position=self.visit_groups.count, name="Visit #{position}", day=position+1
+    if not visit_group = self.visit_groups.create(position: position, name: name, day: day) then
       return false
     end
-
     # Add visits to each line item under the service request
     self.line_items_visits.each do |liv|
       if not liv.add_visit(visit_group) then

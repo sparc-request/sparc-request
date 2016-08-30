@@ -46,12 +46,8 @@ class VisitGroup < ActiveRecord::Base
 
   validates :name, presence: true
   validates :position, presence: true
-
-  with_options if: :day? do |vg|
-    # with respect to the other VisitGroups associated with the same arm
-    vg.validate :day_must_be_in_order
-    vg.validates :day, numericality: { only_integer: true }
-  end
+  validates :day, presence: true, numericality: { only_integer: true }
+  validate :day_must_be_in_order
 
   def set_arm_edited_flag_on_subjects
     self.arm.set_arm_edited_flag_on_subjects

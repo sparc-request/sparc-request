@@ -21,13 +21,19 @@
 FactoryGirl.define do
 
   factory :visit_group do
-  	name 					{ "Visit #{self.position}" }
-  	position				{ 0 }
 
-    trait :without_validations do
-      to_create { |instance| instance.save(validate: false) }
-    end
+	position			{ 0 }
+	day						{ 1 }
+	name 					{ "Visit #{self.position}" }
 
-    factory :visit_group_without_validations, traits: [:without_validations]
+	trait :without_validations do
+	  to_create { |instance| instance.save(validate: false) }
+	end
+
+	trait :with_arm do
+		arm 				{ FactoryGirl.create(:arm) }
+	end
+
+	factory :visit_group_without_validations, traits: [:without_validations]
   end
 end

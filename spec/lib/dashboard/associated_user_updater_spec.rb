@@ -35,7 +35,7 @@ RSpec.describe Dashboard::AssociatedUserUpdater do
     end
   end
 
-  context "SEND_AUTHORIZED_USER_EMAILS == true" do
+  context "SEND_AUTHORIZED_USER_EMAILS == true && protocol has non-draft status" do
     it "should notify associated users about user change" do
       protocol = create(:study_without_validations, primary_pi: primary_pi)
       user = create(:identity)
@@ -51,6 +51,31 @@ RSpec.describe Dashboard::AssociatedUserUpdater do
         mailer_stub
       end
       expect(UserMailer).to receive(:authorized_user_changed) do
+        mailer_stub = double('mailer')
+        expect(mailer_stub).to receive(:deliver)
+        mailer_stub
+      end
+
+      Dashboard::AssociatedUserUpdater.new(id: project_role.id, project_role: { role: "not-important" })
+    end
+  end
+
+  context "SEND_AUTHORIZED_USER_EMAILS == true && protocol has draft status" do
+    it "should notify associated users about user change" do
+      protocol = create(:study_without_validations, primary_pi: primary_pi)
+      user = create(:identity)
+      create(:sub_service_request, status: 'draft', organization: create(:organization), service_request: create(:service_request_without_validations, protocol: protocol))
+      stub_const("SEND_AUTHORIZED_USER_EMAILS", true)
+      project_role = ProjectRole.create(identity_id: identity.id,
+        protocol_id: protocol.id,
+        role: "important",
+        project_rights: "to-party")
+      expect(UserMailer).not_to receive(:authorized_user_changed) do
+        mailer_stub = double('mailer')
+        expect(mailer_stub).to receive(:deliver)
+        mailer_stub
+      end
+      expect(UserMailer).not_to receive(:authorized_user_changed) do
         mailer_stub = double('mailer')
         expect(mailer_stub).to receive(:deliver)
         mailer_stub

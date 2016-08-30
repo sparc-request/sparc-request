@@ -102,7 +102,7 @@ RSpec.describe Dashboard::AssociatedUsersController do
           expect(UserMailer).to have_received(:authorized_user_changed).twice
         end
 
-        it 'blah' do
+        it 'should render appropriate template' do
           xhr :delete, :destroy, id: @protocol_role.id
           expect(response).to render_template "dashboard/associated_users/destroy"
           expect(response.status).to eq(200)

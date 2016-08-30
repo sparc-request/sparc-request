@@ -31,7 +31,7 @@ RSpec.describe Dashboard::AssociatedUserCreator do
       expect(creator.protocol_role).to eq(ProjectRole.last)
     end
 
-    context "SEND_AUTHORIZED_USER_EMAILS: true && send_email: true" do
+    context "SEND_AUTHORIZED_USER_EMAILS: true && protocol has non-draft status" do
       it "should send authorized user changed emails" do
         stub_const("SEND_AUTHORIZED_USER_EMAILS", true)
         expect(UserMailer).to receive(:authorized_user_changed).twice do
@@ -43,7 +43,7 @@ RSpec.describe Dashboard::AssociatedUserCreator do
       end
     end
 
-    context "SEND_AUTHORIZED_USER_EMAILS: true && send_email: false" do
+    context "SEND_AUTHORIZED_USER_EMAILS: true && protocol has draft status" do
       it "should NOT send authorized user changed emails" do
         stub_const("SEND_AUTHORIZED_USER_EMAILS", true)
         @ssr.update_attribute(:status, 'draft')
@@ -53,19 +53,10 @@ RSpec.describe Dashboard::AssociatedUserCreator do
       end
     end
 
-    context "SEND_AUTHORIZED_USER_EMAILS false && send_email: true" do
+    context "SEND_AUTHORIZED_USER_EMAILS false" do
       it "should not send authorized user changed emails" do
         stub_const("SEND_AUTHORIZED_USER_EMAILS", false)
         @ssr.update_attribute(:status, 'complete')
-        allow(UserMailer).to receive(:authorized_user_changed)
-        Dashboard::AssociatedUserCreator.new(@project_role_attrs)
-        expect(UserMailer).not_to have_received(:authorized_user_changed)
-      end
-    end
-
-    context "SEND_AUTHORIZED_USER_EMAILS false && send_email: false" do
-      it "should not send authorized user changed emails" do
-        stub_const("SEND_AUTHORIZED_USER_EMAILS", false)
         allow(UserMailer).to receive(:authorized_user_changed)
         Dashboard::AssociatedUserCreator.new(@project_role_attrs)
         expect(UserMailer).not_to have_received(:authorized_user_changed)

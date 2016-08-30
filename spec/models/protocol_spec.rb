@@ -132,6 +132,10 @@ RSpec.describe 'Protocol' do
     context "SEND_AUTHORIZED_USER_EMAILS: TRUE && one SSR has status of 'complete'" do
       it 'should send emails' do
         identity     = create(:identity)
+        ProjectRole.create(identity_id: identity.id,
+          protocol_id: project.id,
+          role: "important",
+          project_rights: "to-party")
         action       = 'added'
         organization = create(:organization)
         create(:sub_service_request_without_validations, service_request: service_request, organization: organization, status: 'complete')

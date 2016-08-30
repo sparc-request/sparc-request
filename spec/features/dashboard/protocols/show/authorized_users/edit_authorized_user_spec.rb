@@ -23,9 +23,7 @@ require 'rails_helper'
 RSpec.feature 'User wants to edit an authorized user', js: true do
   let!(:logged_in_user) { create(:identity, last_name: "Doe", first_name: "John", ldap_uid: "johnd", email: "johnd@musc.edu", password: "p4ssword", password_confirmation: "p4ssword", college: "college_of_medicine", department: "other", credentials: "ba", institution: "medical_university_of_south_carolina", approved: true) }
 
-  let!(:other_user) { create(:identity, last_name: "Doe", first_name: "Jane", ldap_uid: "janed", email: "janed@musc.edu", password: "p4ssword", password_confirmation: "p4ssword", approved: true) }
-
-  
+  let!(:other_user) { create(:identity, last_name: "Doe", first_name: "Jane", ldap_uid: "janed", email: "janed@musc.edu", password: "p4ssword", password_confirmation: "p4ssword", approved: true) } 
 
   before(:each) { stub_const('USE_LDAP', false) }
 

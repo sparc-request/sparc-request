@@ -42,7 +42,7 @@ wb.add_worksheet(name: "Review") do |sheet|
   sheet.add_row ["Authorized Users"], :style => header_style
   proxy_row = ["Name", "Role", "", "Proxy Rights"]
 
-  has_per_patient_per_visit_services = @sub_service_request.nil? ? (!@service_list_false.empty? && @service_request.has_per_patient_per_visit_services?) : (!@service_list_false.empty? && @sub_service_request.has_per_patient_per_visit_services?)
+  has_per_patient_per_visit_services = @sub_service_request.nil? ? (!@service_list_false.empty? && @service_request.has_per_patient_per_visit_services?) : (!@service_list_false.empty?)
 
   visit_count = 0
   if has_per_patient_per_visit_services
@@ -133,12 +133,15 @@ wb.add_worksheet(name: "Review") do |sheet|
       sheet.add_row(r_t_row, :style => centered)
 
       @service_list_false.each do |key, value|
-        next unless @sub_service_request.nil? or @sub_service_request.organization.name == value[:process_ssr_organization_name]
+        next if @sub_service_request.present? && @sub_service_request.organization.name != value[:process_ssr_organization_name]
+
         services_sub_header_rows << sheet.add_row([value[:name]], :style => sub_header_style)
 
         arm.line_items_visits.each do |line_items_visit|
           line_item = line_items_visit.line_item
-          next if !value[:line_items].include?(line_item) || line_item.sub_service_request_id != @sub_service_request.try(:id)
+
+          next if value[:line_items].exclude?(line_item) || (@sub_service_request.present? && line_item.sub_service_request_id != @sub_service_request.id)
+
           totals_hash = line_items_visit.try(:per_subject_rt_indicated) 
           service_row = [line_item.service.name, ""]
 

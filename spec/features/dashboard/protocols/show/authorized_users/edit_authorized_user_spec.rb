@@ -25,6 +25,8 @@ RSpec.feature 'User wants to edit an authorized user', js: true do
 
   let!(:other_user) { create(:identity, last_name: "Doe", first_name: "Jane", ldap_uid: "janed", email: "janed@musc.edu", password: "p4ssword", password_confirmation: "p4ssword", approved: true) }
 
+  
+
   before(:each) { stub_const('USE_LDAP', false) }
 
   context 'which is not assigned to themself' do
@@ -33,6 +35,7 @@ RSpec.feature 'User wants to edit an authorized user', js: true do
                   create(:project_role, protocol: protocol, identity: other_user, project_rights: 'approve', role: 'business-grants-manager')
       protocol
     end
+    let!(:ssr) { create(:sub_service_request, status: 'not_draft', organization: create(:organization), service_request: create(:service_request_without_validations, protocol: protocol))}
 
     context 'and has permission to edit the protocol' do
       fake_login_for_each_test("johnd")
@@ -138,6 +141,7 @@ RSpec.feature 'User wants to edit an authorized user', js: true do
                   create(:project_role, protocol: protocol, identity: logged_in_user, project_rights: 'approve', role: 'mentor')
       protocol
     end
+    let!(:ssr) { create(:sub_service_request, status: 'not_draft', organization: create(:organization), service_request: create(:service_request_without_validations, protocol: protocol))}
 
     fake_login_for_each_test("johnd")
 

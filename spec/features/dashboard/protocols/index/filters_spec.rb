@@ -306,8 +306,12 @@ RSpec.describe "filters", js: :true do
       create(:service_provider, organization: organization1, identity: user)
       create(:service_provider, organization: organization2, identity: user)
       create(:service_provider, organization: organization2, identity: person)
-      protocol1 = create_protocol(archived: false, short_title: 'Magikarp Protocol', organization: organization1)
-      protocol1 = create_protocol(archived: false, short_title: 'Construction', organization: organization2)
+      protocol1 = create(:protocol_without_validations, type: 'Study', archived: false, short_title: 'Magikarp Protocol')
+      protocol2 = create(:protocol_without_validations, type: 'Study', archived: false, short_title: 'Construction')
+      service_request1 = create(:service_request_without_validations, protocol: protocol1)
+      service_request2 = create(:service_request_without_validations, protocol: protocol2)
+      ssr1 = create(:sub_service_request, service_request: service_request1, organization: organization1, status: 'draft')
+      ssr2 = create(:sub_service_request, service_request: service_request2, organization: organization2, status: 'draft', owner: person)
 
       visit_protocols_index_page
 

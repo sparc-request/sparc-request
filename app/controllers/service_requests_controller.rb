@@ -539,8 +539,7 @@ class ServiceRequestsController < ApplicationController
         
         @line_items = sub_service_request.line_items
         xls = render_to_string action: 'show', formats: [:xlsx]
-        display_ssr = sub_service_request
-        Notifier.notify_admin(service_request, submission_email.email, xls, current_user, display_ssr).deliver
+        Notifier.notify_admin(service_request, submission_email.email, xls, current_user, sub_service_request).deliver
       end
     end
   end

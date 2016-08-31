@@ -38,7 +38,7 @@ RSpec.describe Arm, type: :model do
       context 'Arm has the same number of VisitGroups as visit_count' do
         it 'should not create any VisitGroups' do
           arm = create(:arm, visit_count: 2, subject_count: 1)
-          create_list(:visit_group, 2, arm: arm)
+          list_visits(2, arm)
 
           expect { arm.create_line_items_visit line_item }.to_not change { arm.visit_groups.count }
         end
@@ -47,11 +47,17 @@ RSpec.describe Arm, type: :model do
       context 'Arm has more VisitGroups than visit_count' do
         it 'should not create any VisitGroups' do
           arm = create(:arm, visit_count: 2, subject_count: 1)
-          create_list(:visit_group, 3, :without_validations, arm: arm)
+          list_visits(3, arm)
           
           expect { arm.create_line_items_visit line_item }.to_not change { arm.visit_groups.count }
         end
       end
     end
+  end
+end
+
+def list_visits( n, arm )
+  n.times do |i|
+    create(:visit_group, arm: arm, position: i, day: i + 1)
   end
 end

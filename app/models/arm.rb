@@ -79,7 +79,6 @@ class Arm < ActiveRecord::Base
     self.update_attribute(:visit_count, 1) if self.visit_count.nil?
 
     create_visit_groups(visit_count)
-
     liv = LineItemsVisit.for(self, line_item)
     liv.create_visits
 

@@ -19,11 +19,18 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 FactoryGirl.define do
+	sequence :position do |n|
+		n
+	end
+
+	sequence :day do |n|
+		n
+	end
 
   factory :visit_group do
 
-	position			{ 0 }
-	day						{ 1 }
+	position
+	day
 	name 					{ "Visit #{self.position}" }
 
 	trait :without_validations do

@@ -177,4 +177,69 @@ RSpec.describe 'Protocol' do
       expect{ study.push_to_epic(EPIC_INTERFACE) }.to change(EpicQueueRecord, :count).by(1)
     end
   end
+
+  describe "#with_status" do
+    
+    context "return protocols with ssrs that have searched_status with param of string" do
+
+      before :each do
+        @organization = create(:organization)
+        @protocol1 = create(:study_without_validations)
+        @sr1 = create(:service_request_without_validations, protocol_id: @protocol1.id)
+        @ssr1 = create(:sub_service_request_without_validations, service_request_id: @sr1.id, organization: @organization, status: "searched_status")
+        
+        @protocol2 = create(:study_without_validations)
+        @sr2 = create(:service_request_without_validations, protocol_id: @protocol2.id)
+        @ssr2 = create(:sub_service_request_without_validations, service_request_id: @sr2.id, organization: @organization, status: "searched_status")
+
+        @protocol3 = create(:study_without_validations)
+        @sr3 = create(:service_request_without_validations, protocol_id: @protocol3.id)
+        create(:sub_service_request_without_validations, service_request_id: @sr3.id, organization: @organization, status: "not_searched_status")
+      end
+
+      it "will return 2/3 protocols" do
+        response = Protocol.with_status("searched_status")
+        protocols_with_searched_for_status = [@protocol1.id, @protocol2.id]
+        expect(response.pluck(:id)).to eq(protocols_with_searched_for_status)
+      end
+
+      it "will return 0 protocols" do
+        @ssr1.update_attribute(:status, "not_searched_status")
+        @ssr2.update_attribute(:status, "not_searched_status")
+        response = Protocol.with_status("searched_status")
+        expect(response).to eq []
+      end
+    end
+
+    context "return protocols with ssrs that have searched_status with param of array" do
+
+      before :each do
+        @organization = create(:organization)
+        @protocol1 = create(:study_without_validations)
+        @sr1 = create(:service_request_without_validations, protocol_id: @protocol1.id)
+        @ssr1 = create(:sub_service_request_without_validations, service_request_id: @sr1.id, organization: @organization, status: "searched_status")
+        
+        @protocol2 = create(:study_without_validations)
+        @sr2 = create(:service_request_without_validations, protocol_id: @protocol2.id)
+        @ssr2 = create(:sub_service_request_without_validations, service_request_id: @sr2.id, organization: @organization, status: "searched_status")
+
+        @protocol3 = create(:study_without_validations)
+        @sr3 = create(:service_request_without_validations, protocol_id: @protocol3.id)
+        create(:sub_service_request_without_validations, service_request_id: @sr3.id, organization: @organization, status: "not_searched_status")
+      end
+
+      it "will return 2/3 protocols" do
+        response = Protocol.with_status(["", "searched_status"])
+        protocols_with_searched_for_status = [@protocol1.id, @protocol2.id]
+        expect(response.pluck(:id)).to eq(protocols_with_searched_for_status)
+      end
+
+      it "will return 0 protocols" do
+        @ssr1.update_attribute(:status, "not_searched_status")
+        @ssr2.update_attribute(:status, "not_searched_status")
+        response = Protocol.with_status(["","searched_status"])
+        expect(response).to eq []
+      end
+    end
+  end
 end

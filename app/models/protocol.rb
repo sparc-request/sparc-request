@@ -193,6 +193,7 @@ class Protocol < ActiveRecord::Base
 
   scope :with_status, -> (status) {
     # returns protocols with ssrs in status
+    status = status.split.flatten << ""
     return nil if status.reject!(&:blank?) == []
     joins(:sub_service_requests).
     where(sub_service_requests: { status: status }).distinct

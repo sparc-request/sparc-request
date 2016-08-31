@@ -38,8 +38,8 @@ RSpec.describe Arm, type: :model do
       context 'Arm has the same number of VisitGroups as visit_count' do
         it 'should not create any VisitGroups' do
           arm = create(:arm, visit_count: 2, subject_count: 1)
-          create_list(:visit_group, 2, :without_validations, arm: arm)
-          
+          create_list(:visit_group, 2, arm: arm)
+
           expect { arm.create_line_items_visit line_item }.to_not change { arm.visit_groups.count }
         end
       end

@@ -201,13 +201,15 @@ class Protocol < ActiveRecord::Base
 
   scope :with_organization, -> (org_id) {
     # returns protocols with ssrs in org_id
-    return nil if org_id.reject!(&:blank?) == []
+    org_id = org_id.split.flatten.reject(&:blank?)
+    return nil if org_id.empty?
     joins(:sub_service_requests).
       where(sub_service_requests: { organization_id: org_id }).distinct
   }
 
   scope :with_owner, -> (owner_id) {
-    return nil if owner_id.reject!(&:blank?) == []
+    owner_id = owner_id.split.flatten.reject(&:blank?)
+    return nil if owner_id.empty?
     joins(:sub_service_requests).
     where(sub_service_requests: {owner_id: owner_id}).
       where.not(sub_service_requests: {status: 'first_draft'})

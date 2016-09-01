@@ -69,6 +69,8 @@ en:
 
 
   calendars:
+    confirm_row_select: "This will reset custom values for this row, do you wish to continue?"
+    confirm_column_select: "This will reset custom values for this column, do you wish to continue?"
     pppv:
       header: "Per Patient/Visit Services"
       header_fields:

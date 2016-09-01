@@ -21,7 +21,7 @@
   .panel-heading{ class: css_class(organization) }
     %h1.panel-title.text-center
       = organization.name
-  .panel-body#program-display
+  .panel-body{ class: "#{organization.type.downcase}-display" }
     .description
       = organization_description_display(organization)
 

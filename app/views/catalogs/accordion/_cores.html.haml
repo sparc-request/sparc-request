@@ -23,8 +23,11 @@
       .panel-heading.core-header{ class: css_class(program) }
         %h4.panel-title.text-center
           = organization_name_display(ssr_org, false)
-      .panel-body
-        = render 'catalogs/accordion/services', services: ssr_org.services, service_request: service_request
+      .panel-body.core-display
+        .description
+          = organization_description_display(c)
+        .core-services
+          = render 'catalogs/accordion/services', services: ssr_org.services, service_request: service_request
   - else
     .panel-group{ id: "program-#{program.id}"}
       - cores.each do |c|
@@ -35,8 +38,9 @@
             %h4.panel-title.text-center
               = organization_name_display(c, locked)
           .panel-collapse.collapse{ class: "core-#{c.id}" }
-            .panel-body
+            .panel-body.core-display
               .description
                 = organization_description_display(c)
-              = render 'catalogs/accordion/services', services: c.services, service_request: service_request
+              .core-services
+                = render 'catalogs/accordion/services', services: c.services, service_request: service_request
 

@@ -28,6 +28,7 @@ $(document).ready ->
         $('.active-ssrs').removeClass('hidden')
       else if tab == 'complete'
         $('.complete-ssrs').removeClass('hidden')
+    return false
         
   $(document).on 'click', '#modal_place .yes-button', ->
     addService($(this).data('srid'), $(this).data('service-id'))

@@ -40,6 +40,7 @@ class VisitGroup < ActiveRecord::Base
 
   acts_as_list scope: :arm
 
+  after_create :set_default_name
   after_save :set_arm_edited_flag_on_subjects
   before_destroy :remove_appointments
 
@@ -50,6 +51,12 @@ class VisitGroup < ActiveRecord::Base
 
   def set_arm_edited_flag_on_subjects
     self.arm.set_arm_edited_flag_on_subjects
+  end
+
+  def set_default_name
+    if name.nil? || name == ""
+      self.update_attributes(:name => "Visit #{self.position}")
+    end
   end
 
   def <=> (other_vg)

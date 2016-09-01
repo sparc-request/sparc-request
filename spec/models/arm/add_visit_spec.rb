@@ -6,7 +6,6 @@ RSpec.describe Arm, type: :model do
 
     context 'position not specified' do
       let!(:arm) { create(:arm, visit_count: 2, line_item_count: 2, name: "My Good Arm") }
-
       it 'should add a new VisitGroup to the end' do
         orig_vg_ids = arm.visit_groups.map &:id
         # expect change in number of VisitGroups

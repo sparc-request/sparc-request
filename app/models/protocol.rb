@@ -193,24 +193,24 @@ class Protocol < ActiveRecord::Base
 
   scope :with_status, -> (status) {
     # returns protocols with ssrs in status
-    status = status.split.flatten << ""
-    return nil if status.reject!(&:blank?) == []
+    status = status.split.flatten.reject(&:blank?)
+    return nil if status.empty?
     joins(:sub_service_requests).
-    where(sub_service_requests: { status: status }).distinct
+      where(sub_service_requests: { status: status }).distinct
   }
 
   scope :with_organization, -> (org_id) {
     # returns protocols with ssrs in org_id
     return nil if org_id.reject!(&:blank?) == []
     joins(:sub_service_requests).
-    where(sub_service_requests: { organization_id: org_id }).distinct
+      where(sub_service_requests: { organization_id: org_id }).distinct
   }
 
   scope :with_owner, -> (owner_id) {
     return nil if owner_id.reject!(&:blank?) == []
     joins(:sub_service_requests).
     where(sub_service_requests: {owner_id: owner_id}).
-    where.not(sub_service_requests: {status: 'first_draft'})
+      where.not(sub_service_requests: {status: 'first_draft'})
   }
 
   scope :sorted_by, -> (key) {

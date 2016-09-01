@@ -194,13 +194,13 @@ RSpec.describe 'Protocol' do
 
         @protocol3 = create(:study_without_validations)
         @sr3 = create(:service_request_without_validations, protocol_id: @protocol3.id)
-        create(:sub_service_request_without_validations, service_request_id: @sr3.id, organization: @organization, status: "not_searched_status")
+        @ssr3 = create(:sub_service_request_without_validations, service_request_id: @sr3.id, organization: @organization, status: "not_searched_status")
       end
 
-      it "will return 2/3 protocols" do
+      it "will return protocols with searched_status" do
         response = Protocol.with_status("searched_status")
         protocols_with_searched_for_status = [@protocol1.id, @protocol2.id]
-        expect(response.pluck(:id)).to eq(protocols_with_searched_for_status)
+        expect(response.pluck(:id).sort).to eq(protocols_with_searched_for_status)
       end
 
       it "will return 0 protocols" do
@@ -208,6 +208,13 @@ RSpec.describe 'Protocol' do
         @ssr2.update_attribute(:status, "not_searched_status")
         response = Protocol.with_status("searched_status")
         expect(response).to eq []
+      end
+
+      it "will return all protocols with searched_status and another_searched_status" do
+        @ssr3.update_attribute(:status, "another_searched_status")
+        response = Protocol.with_status("searched_status another_searched_status")
+        protocols_with_searched_for_status = [@protocol1.id, @protocol2.id, @protocol3.id]
+        expect(response.pluck(:id).sort).to eq(protocols_with_searched_for_status)
       end
     end
 
@@ -225,13 +232,13 @@ RSpec.describe 'Protocol' do
 
         @protocol3 = create(:study_without_validations)
         @sr3 = create(:service_request_without_validations, protocol_id: @protocol3.id)
-        create(:sub_service_request_without_validations, service_request_id: @sr3.id, organization: @organization, status: "not_searched_status")
+        @ssr3 = create(:sub_service_request_without_validations, service_request_id: @sr3.id, organization: @organization, status: "not_searched_status")
       end
 
-      it "will return 2/3 protocols" do
+      it "will return protocols with searched_status" do
         response = Protocol.with_status(["", "searched_status"])
         protocols_with_searched_for_status = [@protocol1.id, @protocol2.id]
-        expect(response.pluck(:id)).to eq(protocols_with_searched_for_status)
+        expect(response.pluck(:id).sort).to eq(protocols_with_searched_for_status)
       end
 
       it "will return 0 protocols" do
@@ -239,6 +246,13 @@ RSpec.describe 'Protocol' do
         @ssr2.update_attribute(:status, "not_searched_status")
         response = Protocol.with_status(["","searched_status"])
         expect(response).to eq []
+      end
+
+      it "will return all protocols with searched_status and another_searched_status" do
+        @ssr3.update_attribute(:status, "another_searched_status")
+        response = Protocol.with_status(["", "searched_status", "another_searched_status"])
+        protocols_with_searched_for_status = [@protocol1.id, @protocol2.id, @protocol3.id]
+        expect(response.pluck(:id).sort).to eq(protocols_with_searched_for_status)
       end
     end
   end

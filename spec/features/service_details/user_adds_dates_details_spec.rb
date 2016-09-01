@@ -20,7 +20,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'User wants to edit an authorized user', js: true do
+RSpec.describe 'User sets timeline dates', js: true do
   let_there_be_lane
   let_there_be_j
 
@@ -31,39 +31,26 @@ RSpec.describe 'User wants to edit an authorized user', js: true do
     provider    = create(:provider, name: "Provider", parent: institution)
     program     = create(:program, name: "Program", parent: provider, process_ssrs: true)
     service     = create(:service, name: "Service", abbreviation: "Service", organization: program)
-    @protocol   = create(:protocol_federally_funded, type: 'Study', primary_pi: jug2)
+    @protocol   = create(:protocol_federally_funded, type: 'Study', primary_pi: jug2, start_date: nil, end_date: nil)
     @sr         = create(:service_request_without_validations, status: 'first_draft', protocol: @protocol)
     ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: program, status: 'first_draft')
                   create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
-    @auth_u     = create(:project_role, identity: jpl6, protocol: @protocol, role: 'technician')
+                  create(:pricing_setup, organization: program)
   end
 
-  context 'and clicks the edit button' do
-    scenario 'and sees the edit user modal' do
-      visit protocol_service_request_path(@sr)
+  context 'and submits the form' do
+    scenario 'and sees the dates applied to the protocol' do
+      visit service_details_service_request_path(@sr)
       wait_for_javascript_to_finish
 
-      all('.edit-associated-user-button').last.click
+      fill_in 'study_start_date', with: '01/02/2016'
+      fill_in 'study_end_date', with: '03/04/2016'
+
+      click_link 'Save and Continue →'
       wait_for_javascript_to_finish
 
-      expect(page).to have_selector('#modal-title', text: 'Edit Authorized User', visible: true)
-    end
-
-    context 'and fills out and submits the form' do
-      scenario 'and sees the updated authorized user' do
-        visit protocol_service_request_path(@sr)
-        wait_for_javascript_to_finish
-
-        all('.edit-associated-user-button').last.click
-        wait_for_javascript_to_finish
-        
-        bootstrap_select '#project_role_role', 'PD/PI'
-        sos
-        click_button 'Save'
-        wait_for_javascript_to_finish
-        sos
-        expect(@auth_u.reload.role).to eq('pi')
-      end
+      expect(@protocol.reload.start_date.to_date).to eq('2/1/2016'.to_date)
+      expect(@protocol.reload.end_date.to_date).to eq('4/3/2016'.to_date)
     end
   end
 end

@@ -25,7 +25,7 @@
           %span{ aria: { hidden:'true' } } &times;
           %span.sr-only &times;
         %h4.modal-title.text-center
-          = t(:arms)[:add]
+          = @header_text
       .modal-body
         #modal_errors
         .row
@@ -47,4 +47,7 @@
         .center-block
           %button.btn.btn-default{ type: 'button', data: { dismiss: 'modal' } }
             = t(:actions)[:close]
-          %input.btn.btn-primary#add-arm-form-button{ type: 'submit', value: t(:actions)[:add] }
+          - if @header_text == 'Add Arm'
+            %input.btn.btn-primary#add-arm-form-button{ type: 'submit', value: t(:actions)[:add] }
+          - else
+            %input.btn.btn-primary{ type: 'submit', value: t(:actions)[:save] }

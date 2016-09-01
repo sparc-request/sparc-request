@@ -27,8 +27,6 @@ RSpec.describe 'User wants to delete an authorized user', js: true do
   fake_login_for_each_test
 
   before :each do
-    stub_const('USE_LDAP', false)
-    
     institution = create(:institution, name: "Institution")
     provider    = create(:provider, name: "Provider", parent: institution)
     program     = create(:program, name: "Program", parent: provider, process_ssrs: true)

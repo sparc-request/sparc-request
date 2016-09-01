@@ -134,11 +134,15 @@ RSpec.describe Notifier do
     context 'admin' do
 
       let(:xls)                       { ' ' }
-      let(:submission_email_address)  { 'success@musc.edu' }
+      let!(:submission_email) { create(:submission_email, 
+                                      email: 'success@musc.edu', 
+                                      organization_id: organization.id) }
+
       let(:mail)                      { Notifier.notify_admin(service_request,
-                                                                submission_email_address,
+                                                                submission_email,
                                                                 xls,
-                                                                identity) }
+                                                                identity,
+                                                                service_request.protocol.sub_service_requests.first) }
 
       # Expected admin message is defined under submitted_service_provider_and_admin_message
       it 'should display admin intro message, conclusion, link, and should not display acknowledgments' do
@@ -146,6 +150,7 @@ RSpec.describe Notifier do
       end
 
       it 'should render default tables' do
+        service_request.protocol.sub_service_requests.first.update_attribute(:organization_id, organization.id)
         assert_notification_email_tables_for_admin
       end
 
@@ -229,17 +234,22 @@ RSpec.describe Notifier do
 
     context 'admin' do
       let(:xls)                       { ' ' }
-      let(:submission_email_address)  { 'success@musc.edu' }
+      let!(:submission_email) { create(:submission_email, 
+                                      email: 'success@musc.edu', 
+                                      organization_id: organization.id) }
+
       let(:mail)                      { Notifier.notify_admin(service_request,
-                                                                submission_email_address,
+                                                                submission_email,
                                                                 xls,
-                                                                identity) }
+                                                                identity,
+                                                                service_request.protocol.sub_service_requests.first) }
       # Expected service provider message is defined under submitted_service_provider_and_admin_message
       it 'should display admin intro message, conclusion, link, and should not display acknowledgments' do
         submitted_intro_for_service_providers_and_admin(mail.body.parts.first.body)
       end
 
       it 'should render default tables' do
+        service_request.protocol.sub_service_requests.first.update_attribute(:organization_id, organization.id)
         assert_notification_email_tables_for_admin
       end
 

@@ -23,7 +23,7 @@
 #= require navigation
 
 $(document).ready ->
-  $(document).on 'click', '#add-subsidy-button', ->
+  $(document).on 'click', '.add-subsidy-button', ->
     data =
       'ssrid': $(this).data('ssrid'),
     $.ajax
@@ -32,7 +32,7 @@ $(document).ready ->
       data: data
     return false
 
-  $(document).on 'click', '#edit-subsidy-button', ->
+  $(document).on 'click', '.edit-subsidy-button', ->
     id = $(this).data('subsidy-id')
     $.ajax
       type: 'GET'

@@ -27,12 +27,12 @@ class SubsidiesController < ApplicationController
     @admin = false
     @path = subsidies_path
     @subsidy.percent_subsidy = @subsidy.default_percentage
+    @action = 'new'
   end
 
   def create
     format_percent_subsidy_param
     @subsidy = PendingSubsidy.new(params[:pending_subsidy].except(:pi_contribution))
-    binding.pry
     if @subsidy.valid?
       @subsidy.save
       @sub_service_request = @subsidy.sub_service_request
@@ -48,6 +48,7 @@ class SubsidiesController < ApplicationController
     @header_text = t(:subsidies)[:edit]
     @admin = false
     @path = subsidy_path(@subsidy)
+    @action = 'edit'
   end
 
   def update

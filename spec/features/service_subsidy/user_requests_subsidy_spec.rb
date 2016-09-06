@@ -30,19 +30,39 @@ RSpec.describe 'User requests a new subsidy', js: true do
     provider    = create(:provider, name: "Provider", parent: institution)
     program     = create(:program, name: "Program", parent: provider, process_ssrs: true)
     service     = create(:service, name: "Service", abbreviation: "Service", organization: program)
-    @protocol   = create(:protocol_federally_funded, type: 'Study', primary_pi: jug2, start_date: nil, end_date: nil)
+    @protocol   = create(:protocol_federally_funded, type: 'Study', primary_pi: jug2)
     @sr         = create(:service_request_without_validations, status: 'first_draft', protocol: @protocol)
     ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: program, status: 'first_draft')
                   create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
                   create(:arm, protocol: @protocol, visit_count: 1)
+                  create(:subsidy_map, organization: program, max_dollar_cap: 100, max_percentage: 100)
   end
 
-  context 'and clicks \'Request a Subsidy\''
+  context 'and clicks \'Request a Subsidy\'' do
     scenario 'and sees the subsidy modal' do
+      visit service_subsidy_service_request_path(@sr)
+      wait_for_javascript_to_finish
+
+      click_button 'Request a Subsidy'
+      wait_for_javascript_to_finish
+
+      expect(page).to have_selector(".modal-dialog", text: "New Subsidy Pending Approval", visible: true)
     end
 
     context 'and fills out the form and submits' do
       scenario 'and sees the new pending subsidy' do
+        visit service_subsidy_service_request_path(@sr)
+        wait_for_javascript_to_finish
+
+        click_button 'Request a Subsidy'
+        wait_for_javascript_to_finish
+
+        fill_in 'pending_subsidy_percent_subsidy', with: '3'
+
+        click_button 'Save'
+        wait_for_javascript_to_finish
+
+        expect(page).to have_selector('.pending-subsidy', visible: true)
       end
     end
   end

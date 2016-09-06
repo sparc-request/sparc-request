@@ -19,7 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 $("#modal_place #modal_errors").html("<%= escape_javascript(render( 'shared/modal_errors', errors: @errors )) %>")
 <% unless @errors %>
-$("#pending-subsidy").html("<%= escape_javascript(render( 'subsidies/pending_subsidy', sub_service_request: @sub_service_request, subsidy: @subsidy, admin: @admin )) %>");
+$("#subsidy-<%= @sub_service_request.id %> .pending-subsidy").html("<%= escape_javascript(render( 'subsidies/pending_subsidy', sub_service_request: @sub_service_request, subsidy: @subsidy, admin: @admin )) %>");
 $("#modal_place").modal 'hide'
 $("#flashes_container").html("<%= escape_javascript(render( 'shared/flash' )) %>")
 <% end %>

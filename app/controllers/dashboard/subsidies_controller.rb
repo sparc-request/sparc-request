@@ -26,6 +26,7 @@ class Dashboard::SubsidiesController < Dashboard::BaseController
     @header_text = t(:subsidies)[:new]
     @admin = params[:admin] == 'true'
     @path = dashboard_subsidies_path
+    @action = 'new'
     @subsidy.percent_subsidy = @subsidy.default_percentage
   end
 
@@ -52,6 +53,7 @@ class Dashboard::SubsidiesController < Dashboard::BaseController
     @header_text = t(:subsidies)[:edit]
     @admin = params[:admin] == 'true'
     @path = dashboard_subsidy_path(@subsidy)
+    @action = 'edit'
   end
 
   def update

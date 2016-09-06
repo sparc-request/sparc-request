@@ -22,7 +22,6 @@ require 'rails_helper'
 
 RSpec.describe 'User edits an arm', js: true do
   let_there_be_lane
-  let_there_be_j
 
   fake_login_for_each_test
 

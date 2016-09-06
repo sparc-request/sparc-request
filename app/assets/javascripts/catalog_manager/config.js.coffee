@@ -80,7 +80,6 @@ $ ->
           month = "1#{month}" if date_string.length == 10
           formatted_month = if(month.length < 2) then ("0" + month) else month
           "#{year}-#{formatted_month}-#{day}"
-
         else
           old_format      = /(\d?\d)\/(\d?\d)\/(\d{4})/
           from_db_format = /(\d{4})-(\d\d)-(\d\d)/

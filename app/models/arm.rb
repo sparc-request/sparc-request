@@ -230,7 +230,7 @@ class Arm < ActiveRecord::Base
     before = self.visit_groups[position - 1] unless position == 0
     current = self.visit_groups[position]
     after = self.visit_groups[position + 1] unless position >= self.visit_groups.size - 1
-    if portal and USE_EPIC
+    if portal == 'true' and USE_EPIC
       valid_day = Integer(day) rescue false
       if !valid_day
         self.errors.add(:invalid_day, "You've entered an invalid number for the day. Please enter a valid number.")

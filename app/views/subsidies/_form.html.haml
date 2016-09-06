@@ -36,7 +36,7 @@
                   = t(:subsidies)[:form][:request_cost]
                 %td.col-sm-7.text-right#subsidy_form_table_request_cost{ data: { cost: subsidy.total_request_cost } }
                   = number_to_currency(subsidy.total_request_cost / 100.0)
-          = form_for subsidy, remote: true, url: path, html: { role: "form" } do |form|
+          = form_for subsidy, remote: true, url: path, html: { role: "form", method: :post } do |form|
             = form.hidden_field :sub_service_request_id
             = hidden_field_tag :admin, admin
             .form-group

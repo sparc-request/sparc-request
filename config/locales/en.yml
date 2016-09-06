@@ -24,6 +24,7 @@ en:
   ###########
   actions:
     add: "Add"
+    approve: "Approve"
     cancel: "Cancel"
     close: "Close"
     continue: "Continue"

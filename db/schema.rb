@@ -663,7 +663,6 @@ ActiveRecord::Schema.define(version: 20160810145343) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "admin_filter",      limit: 255
-    t.string   "sorted_by",         limit: 255
     t.string   "with_owner",        limit: 255
   end
 

@@ -266,7 +266,7 @@ SparcRails::Application.routes.draw do
 
     resources :studies, controller: :protocols, except: [:destroy]
 
-    resources :subsidies, except: [:index] do
+    resources :subsidies, except: [:index, :show] do
       member do
         patch :approve
       end

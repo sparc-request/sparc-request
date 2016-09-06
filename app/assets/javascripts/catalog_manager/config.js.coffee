@@ -77,9 +77,8 @@ $ ->
         return "" unless date_string
         if action is 'send'
           [garbage, month, day, year] = date_string.match(/(\d)\/(\d?\d)\/(\d{4})/)
-          month = "1#{month}" if date_string.length == 10
-          formatted_month = if(month.length < 2) then ("0" + month) else month
-          "#{year}-#{formatted_month}-#{day}"
+          month_int = parseFloat(month)
+          "#{year}-#{month_int}-#{day}"
         else
           old_format      = /(\d?\d)\/(\d?\d)\/(\d{4})/
           from_db_format = /(\d{4})-(\d\d)-(\d\d)/
@@ -88,8 +87,7 @@ $ ->
           else
             [garbage, year, month, day] = date_string.match(from_db_format)
           month_int = parseFloat(month)
-          formatted_month = if(month_int < 10) then month.charAt(1) else month
-          "#{formatted_month}/#{day}/#{year}"
+          "#{month_int}/#{day}/#{year}"
       catch error
         ""
 

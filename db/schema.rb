@@ -657,7 +657,6 @@ ActiveRecord::Schema.define(version: 20160810145343) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "admin_filter",      limit: 255
-    t.string   "sorted_by",         limit: 255
     t.string   "with_owner",        limit: 255
   end
 
@@ -1011,7 +1010,7 @@ ActiveRecord::Schema.define(version: 20160810145343) do
     t.string   "status",                 limit: 255, default: "Pending"
     t.integer  "approved_by",            limit: 4
     t.datetime "approved_at"
-    t.float    "percent_subsidy",        limit: 24,  default: 0.0
+    t.float    "percent_subsidy",        limit: 24
   end
 
   add_index "subsidies", ["sub_service_request_id"], name: "index_subsidies_on_sub_service_request_id", using: :btree

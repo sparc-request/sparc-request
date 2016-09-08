@@ -51,7 +51,7 @@ class ServiceRequestsReport < ReportingModule
     attrs["Protocol Short Title"] = "service_request.try(:protocol).try(:short_title)"
     attrs["Full Protocol Title"] = "service_request.try(:protocol).try(:title)"
 
-    attrs["Date Submitted"] = "service_request.submitted_at.strftime('%Y-%m-%d')"
+    attrs["Date Submitted"] = "submitted_at.strftime('%Y-%m-%d')"
 
     if params[:institution_id]
       attrs[Institution] = [params[:institution_id], :abbreviation]

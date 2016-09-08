@@ -11,17 +11,10 @@ namespace :data do
 
     skipped_services << ['REASON','EAP ID','CPT Code','Charge Code','Revenue Code','Send to Epic','Procedure Name','Service Rate','Corporate Rate ','Federal Rate','Member Rate','Other Rate','Is One Time Fee?','Clinical Qty Type','Unit Factor','Qty Min','Display Date','Effective Date']
 
-    ranges = {}
+    # Hash value defaults to an empty array
+    ranges = Hash.new { |h, k| h[k] = [] }
     CSV.foreach(ENV['range_file'], :headers => true, :encoding => 'windows-1251:utf-8') do |row|
-      ### POS used so that we can have same org with different ranges
-      org_plus_pos = row['ORG ID'] + "-" + row['POS']
-      ranges[org_plus_pos] = []
-
-      justification = row['From'].size
-
-      Range.new(row['From'].to_i, row['To'].to_i).each do |r|
-        ranges[org_plus_pos] << r.to_s.rjust(justification, '0')
-      end
+      ranges[row['ORG ID']] << Range.new(row['From'], row['To'])
     end
 
     Service.transaction do
@@ -29,7 +22,10 @@ namespace :data do
         begin
           eap_id = row['EAP ID']
 
-          range = ranges.select{|k,v| v.include? eap_id}
+          # ranges that contain our eap_id
+          range = ranges.select do |org_id, org_ranges|
+            org_ranges.any? { |org_range| org_range.include?(eap_id) }
+          end
 
           if range.empty?
             puts "No EAP ID range exists, skipping #{eap_id} - #{row['Procedure Name']}"
@@ -38,7 +34,7 @@ namespace :data do
             raise "Overlapping ranges: :\n\n#{row.inspect}\n\n#{ranges.inspect}"
             skipped_services << ['Multiple EAP ID ranges found'] + row.fields
           else
-            organization_id = range.keys.first.split('-').first # looks like 123-1
+            organization_id = range.keys.first.to_i
 
             attrs = {:eap_id => row['EAP ID'], :organization_id => organization_id}
 

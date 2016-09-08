@@ -15,7 +15,6 @@ namespace :data do
     CSV.foreach(ENV['range_file'], :headers => true, :encoding => 'windows-1251:utf-8') do |row|
       ### POS used so that we can have same org with different ranges
       org_plus_pos = row['ORG ID'] + "-" + row['POS']
-      ranges[org_plus_pos] = Range.new(row['From'].to_i, row['To'].to_i)
       ranges[org_plus_pos] = []
 
       justification = row['From'].size

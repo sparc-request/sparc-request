@@ -136,12 +136,12 @@ class Arm < ActiveRecord::Base
     direct_costs_for_visit_based_service(line_items_visits) + indirect_costs_for_visit_based_service(line_items_visits)
   end
 
-  def add_visit position=self.visit_groups.count+1, day=position, window_before=0, window_after=0, name="Visit #{day}", portal=false
+  def add_visit position=self.visit_groups.count+1, day=position-1, window_before=0, window_after=0, name="Visit #{day}", portal=false
     result = self.transaction do
       if not self.create_visit_group(position, name) then
         raise ActiveRecord::Rollback
       end
-      position = position.to_i - 1 unless position.blank?
+      position = position.to_i-1 unless position.blank?
       if USE_EPIC
         if not self.update_visit_group_day(day, position, portal) then
           raise ActiveRecord::Rollback
@@ -153,7 +153,6 @@ class Arm < ActiveRecord::Base
           raise ActiveRecord::Rollback
         end
       end
-
       # Reload to force refresh of the visits
       self.reload
 
@@ -171,7 +170,7 @@ class Arm < ActiveRecord::Base
     end
   end
 
-  def create_visit_group position=self.visit_groups.count+1, name="Visit #{position}", day=position+1
+  def create_visit_group position=self.visit_groups.count+1, name="Visit #{position-1}", day=position-1
     if not visit_group = self.visit_groups.create(position: position, name: name, day: day) then
       return false
     end

@@ -32,7 +32,7 @@ FactoryGirl.define do
 	position
 	day
 	name 					{ "Visit #{self.position}" }
-
+	
 	trait :without_validations do
 	  to_create { |instance| instance.save(validate: false) }
 	end

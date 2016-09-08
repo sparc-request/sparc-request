@@ -48,7 +48,7 @@ class VisitGroup < ActiveRecord::Base
   validates :day,
             :window_before,
             :window_after,
-             numericality: { only_integer: true }, allow_blank: true
+             numericality: { only_integer: true }
 
   validate :day_must_be_in_order if Proc.new { |vg| vg.day.present? }
 

@@ -352,7 +352,8 @@ class Arm < ActiveRecord::Base
     count = visit_count - last_position
     count.times do |index|
       position = last_position + 1
-      VisitGroup.create(arm_id: self.id, name: "Visit #{position}", position: position)
+      # We need to do a .new.save(validate: false) so that we can allow a blank day here, but not when the user edits them
+      VisitGroup.new(arm_id: self.id, name: "Visit #{position}", position: position).save(validate: false)
       last_position += 1
     end
     self.reload

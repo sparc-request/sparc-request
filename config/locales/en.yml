@@ -214,8 +214,11 @@ en:
   #############
   documents:
     none: "No Documents Found"
-    add: "Add a Document"
-    edit: "Edit Document"
+    add_document: "Add a Document"
+    add:
+      header: "Add Document"
+    edit:
+      header: "Edit Document"
     created: "Document Uploaded!"
     updated: "Document Updated!"
     destroyed: "Document Destroyed!"

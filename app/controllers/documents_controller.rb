@@ -32,7 +32,7 @@ class DocumentsController < ApplicationController
 
   def new
     @document     = @protocol.documents.new
-    @header_text  = t(:documents)[:add]
+    @header_text  = t(:documents)[:add][:header]
     @path         = documents_path(@document)
   end
 
@@ -51,7 +51,7 @@ class DocumentsController < ApplicationController
   end
 
   def edit
-    @header_text  = t(:documents)[:edit]
+    @header_text  = t(:documents)[:edit][:header]
     @path         = document_path(@document)
   end
 

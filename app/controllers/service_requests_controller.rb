@@ -25,7 +25,7 @@ class ServiceRequestsController < ApplicationController
 
   before_filter :initialize_service_request,      except: [:approve_changes, :get_help, :feedback]
   before_filter :validate_step,                   only:   [:protocol, :service_details, :service_calendar, :service_subsidy, :document_management, :review, :obtain_research_pricing, :confirmation, :save_and_exit]
-  before_filter :setup_navigation,                only:   [:navigate, :protocol, :service_details, :service_calendar, :service_subsidy, :document_management, :review]
+  before_filter :setup_navigation,                only:   [:navigate, :protocol, :service_details, :service_calendar, :service_subsidy, :document_management, :review, :obtain_research_pricing, :confirmation]
   before_filter :authorize_identity,              except: [:approve_changes, :get_help, :feedback, :show]
   before_filter :authenticate_identity!,          except: [:catalog, :add_service, :remove_service, :get_help, :feedback]
   before_filter :authorize_protocol_edit_request, only:   [:catalog]

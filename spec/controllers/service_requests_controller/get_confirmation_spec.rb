@@ -88,7 +88,7 @@ RSpec.describe ServiceRequestsController do
           expect(service_request.sub_service_requests.first.submitted_at).to eq(Time.now)
         end
       end
-      x`
+
       it 'should create a past status for each sub service request' do
         service_request.sub_service_requests.each { |ssr| ssr.destroy }
 

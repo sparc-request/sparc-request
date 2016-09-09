@@ -138,7 +138,7 @@ class Arm < ActiveRecord::Base
 
   def add_visit position=self.visit_groups.count+1, day=position-1, window_before=0, window_after=0, name="Visit #{day}", portal=false
     result = self.transaction do
-      if not self.create_visit_group(position, name) then
+      if not self.create_visit_group(position, name, day) then
         raise ActiveRecord::Rollback
       end
       position = position.to_i-1 unless position.blank?
@@ -171,7 +171,7 @@ class Arm < ActiveRecord::Base
   end
 
   def create_visit_group position=self.visit_groups.count+1, name="Visit #{position-1}", day=position-1
-    if not visit_group = self.visit_groups.create(position: position, name: name, day: day) then
+    if not visit_group = self.visit_groups.create(position: position, name: name, day: day, arm_id: self.id) then
       return false
     end
     # Add visits to each line item under the service request

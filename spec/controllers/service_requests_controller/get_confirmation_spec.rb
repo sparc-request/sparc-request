@@ -80,6 +80,15 @@ RSpec.describe ServiceRequestsController do
         expect(ssr2.status).to eq 'submitted'
       end
 
+      it "should set the service request's sub service requests' submitted_at to Time.now" do
+        time = Time.parse('2012-06-01 12:34:56')
+        Timecop.freeze(time) do
+          service_request.update_attribute(:submitted_at, nil)
+          xhr :get, :confirmation, id: service_request.id
+          expect(service_request.sub_service_requests.first.submitted_at).to eq(Time.now)
+        end
+      end
+
       it 'should create a past status for each sub service request' do
         service_request.sub_service_requests.each { |ssr| ssr.destroy }
 

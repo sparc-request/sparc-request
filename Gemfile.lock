@@ -575,3 +575,6 @@ DEPENDENCIES
   will_paginate
   will_paginate-bootstrap
   x-editable-rails
+
+BUNDLED WITH
+   1.11.2

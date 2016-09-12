@@ -39,7 +39,6 @@ class Dashboard::VisitGroupsController < Dashboard::BaseController
     @visit_group = VisitGroup.new(params[:visit_group])
     if @visit_group.valid?
       if @arm.add_visit(@visit_group.position, @visit_group.day, @visit_group.window_before, @visit_group.window_after, @visit_group.name, 'true')
-        @arm.increment!(:minimum_visit_count)
         @service_request.relevant_service_providers_and_super_users.each do |identity|
           create_visit_change_toast(identity, @sub_service_request) unless identity == @user
         end

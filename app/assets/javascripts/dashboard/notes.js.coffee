@@ -42,4 +42,15 @@ $ ->
       type: 'GET'
       url: '/dashboard/notes/new'
       data: data
+
+  $(document).on 'click', 'button.notes.cancel',  ->
+    id = $(this).data('notable-id')
+    type = $(this).data('notable-type')
+    data = note:
+      notable_id: id
+      notable_type: type
+    $.ajax
+      type: 'GET'
+      url: '/dashboard/notes'
+      data: data
   # NOTES LISTENERS END

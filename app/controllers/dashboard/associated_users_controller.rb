@@ -89,7 +89,7 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
     updater = Dashboard::AssociatedUserUpdater.new(id: params[:id], project_role: params[:project_role])
     
     if updater.successful?
-      #We care about this because the new rights will determine what is rendered
+      # We care about this because the new rights will determine what is rendered
       if @current_user_updated = params[:project_role][:identity_id].to_i == @user.id
         @protocol_type      = @protocol.type
         protocol_role       = updater.protocol_role
@@ -110,9 +110,12 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
   end
 
   def destroy
+    modified_user       = @protocol_role.identity
     @protocol           = @protocol_role.protocol
     epic_access         = @protocol_role.epic_access
     protocol_role_clone = @protocol_role.clone
+    
+    @protocol.email_about_change_in_authorized_user(modified_user, "destroy")
     
     @protocol_role.destroy
     

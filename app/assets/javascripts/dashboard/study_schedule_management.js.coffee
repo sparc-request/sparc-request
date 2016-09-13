@@ -214,6 +214,7 @@ $ ->
       'protocol_id'             : $('#study_schedule_buttons').data('protocol-id')
       'sub_service_request_id'  : $('#study_schedule_buttons').data('sub-service-request-id')
       'service_request_id'      : $('#study_schedule_buttons').data('service-request-id')
+      'line_item_count'         : $('#line_item_count').data('line-item-count')
     $.ajax
       type: 'GET'
       url: '/dashboard/multiple_line_items/edit_line_items'

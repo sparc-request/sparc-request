@@ -72,6 +72,15 @@ $ ->
       url: "/dashboard/fulfillments"
       data: "line_item_id" : line_item_id
 
+  # This listener is also used in fulfillment notes
+  $(document).on 'click', 'button#fulfillments_back', ->
+    id = $(this).data('line-item-id')
+    console.log(id)
+    $.ajax
+      type: 'GET'
+      url: "/dashboard/fulfillments"
+      data: "line_item_id" : id
+
   # Fulfillment Bindings
 
   $(document).on 'click', '.otf_fulfillment_new', ->

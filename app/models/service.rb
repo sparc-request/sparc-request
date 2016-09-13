@@ -36,6 +36,8 @@ class Service < ActiveRecord::Base
   has_many :service_providers, :dependent => :destroy
   has_many :line_items, :dependent => :destroy
   has_many :identities, :through => :service_providers
+  has_many :questionnaires
+  has_many :submissions
 
   # Services that this service depends on
   # TODO: Andrew thinks "related services" is a bad name

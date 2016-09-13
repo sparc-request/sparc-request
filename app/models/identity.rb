@@ -56,6 +56,7 @@ class Identity < ActiveRecord::Base
   attr_accessible :approved
   #### END DEVISE SETUP ####
 
+  has_many :submissions
   has_many :approvals, dependent: :destroy
   has_many :project_roles, dependent: :destroy
   has_many :protocols, through: :project_roles

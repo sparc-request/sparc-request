@@ -1,0 +1,2 @@
+module AdditionalDetails::ApplicationHelper
+end

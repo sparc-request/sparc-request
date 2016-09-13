@@ -184,6 +184,12 @@ ActiveRecord::Schema.define(version: 20160908144020) do
   add_index "charges", ["service_id"], name: "index_charges_on_service_id", using: :btree
   add_index "charges", ["service_request_id"], name: "index_charges_on_service_request_id", using: :btree
 
+  create_table "click_counters", force: :cascade do |t|
+    t.integer  "click_count", limit: 4
+    t.datetime "created_at",            null: false
+    t.datetime "updated_at",            null: false
+  end
+
   create_table "clinical_providers", force: :cascade do |t|
     t.integer  "identity_id",     limit: 4
     t.integer  "organization_id", limit: 4
@@ -420,6 +426,27 @@ ActiveRecord::Schema.define(version: 20160908144020) do
   end
 
   add_index "ip_patents_info", ["protocol_id"], name: "index_ip_patents_info_on_protocol_id", using: :btree
+
+  create_table "item_options", force: :cascade do |t|
+    t.string   "content",    limit: 255
+    t.integer  "item_id",    limit: 4
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  add_index "item_options", ["item_id"], name: "index_item_options_on_item_id", using: :btree
+
+  create_table "items", force: :cascade do |t|
+    t.text     "content",          limit: 65535
+    t.string   "item_type",        limit: 255
+    t.text     "description",      limit: 65535
+    t.boolean  "required"
+    t.integer  "questionnaire_id", limit: 4
+    t.datetime "created_at",                     null: false
+    t.datetime "updated_at",                     null: false
+  end
+
+  add_index "items", ["questionnaire_id"], name: "index_items_on_questionnaire_id", using: :btree
 
   create_table "line_items", force: :cascade do |t|
     t.integer  "service_request_id",     limit: 4
@@ -718,6 +745,28 @@ ActiveRecord::Schema.define(version: 20160908144020) do
 
   add_index "question_groups", ["api_id"], name: "uq_question_groups_api_id", unique: true, using: :btree
 
+  create_table "questionnaire_responses", force: :cascade do |t|
+    t.integer  "submission_id", limit: 4
+    t.integer  "item_id",       limit: 4
+    t.text     "content",       limit: 65535
+    t.boolean  "required",                    default: false
+    t.datetime "created_at",                                  null: false
+    t.datetime "updated_at",                                  null: false
+  end
+
+  add_index "questionnaire_responses", ["item_id"], name: "index_questionnaire_responses_on_item_id", using: :btree
+  add_index "questionnaire_responses", ["submission_id"], name: "index_questionnaire_responses_on_submission_id", using: :btree
+
+  create_table "questionnaires", force: :cascade do |t|
+    t.string   "name",       limit: 255
+    t.integer  "service_id", limit: 4
+    t.datetime "created_at",                             null: false
+    t.datetime "updated_at",                             null: false
+    t.boolean  "active",                 default: false
+  end
+
+  add_index "questionnaires", ["service_id"], name: "index_questionnaires_on_service_id", using: :btree
+
   create_table "questions", force: :cascade do |t|
     t.integer  "survey_section_id",      limit: 4
     t.integer  "question_group_id",      limit: 4
@@ -1002,6 +1051,16 @@ ActiveRecord::Schema.define(version: 20160908144020) do
 
   add_index "submission_emails", ["organization_id"], name: "index_submission_emails_on_organization_id", using: :btree
 
+  create_table "submissions", force: :cascade do |t|
+    t.integer  "service_id",  limit: 4
+    t.integer  "identity_id", limit: 4
+    t.datetime "created_at",            null: false
+    t.datetime "updated_at",            null: false
+  end
+
+  add_index "submissions", ["identity_id"], name: "index_submissions_on_identity_id", using: :btree
+  add_index "submissions", ["service_id"], name: "index_submissions_on_service_id", using: :btree
+
   create_table "subsidies", force: :cascade do |t|
     t.datetime "created_at",                                             null: false
     t.datetime "updated_at",                                             null: false
@@ -1220,4 +1279,11 @@ ActiveRecord::Schema.define(version: 20160908144020) do
   add_index "visits", ["research_billing_qty"], name: "index_visits_on_research_billing_qty", using: :btree
   add_index "visits", ["visit_group_id"], name: "index_visits_on_visit_group_id", using: :btree
 
+  add_foreign_key "item_options", "items"
+  add_foreign_key "items", "questionnaires"
+  add_foreign_key "questionnaire_responses", "items"
+  add_foreign_key "questionnaire_responses", "submissions"
+  add_foreign_key "questionnaires", "services"
+  add_foreign_key "submissions", "identities"
+  add_foreign_key "submissions", "services"
 end

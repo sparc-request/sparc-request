@@ -30,6 +30,5 @@ RSpec.describe 'dashboard/notifications/_dropdown', type: :view do
       expect(response.include?("Primary-pi: Jane Doe")).to eq(true);
       expect(response.include?("Dr. Feelgood")).to eq(true);
     end
-
   end
 end

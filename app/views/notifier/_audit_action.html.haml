@@ -1,14 +1,14 @@
-%table{:style => 'border: 1px solid black; border-collapse: collapse; width: 100%;', :cellpadding => 3}
+%table.table{cellpadding: 3}
   %thead
-    %tr{:style => 'border: 1px solid black;'}
-      %th{:style => 'border: 1px solid black; text-align: left;'}= t(:notifier)[:service]
-      %th{:style => 'border: 1px solid black;'}= t(:notifier)[:action]
+    %tr.skinny-black-border.left
+      %th.skinny-black-border= t(:notifier)[:service]
+      %th.skinny-black-border= t(:notifier)[:action]
 
   %tbody
     - @audit_report[:line_items].each do |last_change|
       - service = Service.find(last_change.audited_changes["service_id"])
-      %tr{:style => 'border: 1px solid black;'}
-        %td{:style => 'border: 1px solid black;'}= service.name
-        %td{:style => 'border: 1px solid black; text-align: center;'}= AUDIT_ACTIONS[last_change.action]
+      %tr.skinny-black-border
+        %td.skinny-black-border= service.name
+        %td.skinny-black-border.center= AUDIT_ACTIONS[last_change.action]
 %br
 %br

@@ -37,6 +37,8 @@ RSpec.feature "create Service", js: true do
   end
 
   def fill_in_service_form_service_level_components
+    find('input#service_one_time_fee').click
+    wait_for_javascript_to_finish
     find(".service_level_components").click
     wait_for_javascript_to_finish
     find(:css, ".service_component_field").set("Test service component 1")
@@ -61,7 +63,7 @@ RSpec.feature "create Service", js: true do
       page.execute_script %Q{ $("a.ui-state-default:contains('15')").trigger("click") } # click on day 15
 
       fill_in "pricing_maps_blank_pricing_map_full_rate", with: 4321
-      fill_in "clinical_quantity_", with: "Each"
+      fill_in "otf_quantity_type_", with: "Each"
       find('#unit_factor_').click
     end
   end

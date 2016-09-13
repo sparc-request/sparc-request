@@ -52,12 +52,11 @@ module EmailHelpers
     # Expect table to show all SSR's with hyper-link
     expect(mail.body.parts.first.body).to have_xpath "//table//strong[text()='Service Request Information']"
     expect(mail.body.parts.first.body).to have_xpath "//th[text()='SRID']/following-sibling::th[text()='Organization']/following-sibling::th[text()='Status']"
-
-    service_request.protocol.sub_service_requests.each do |ssr|
-      status = AVAILABLE_STATUSES[ssr.status]
-      expect(mail.body.parts.first.body).to have_xpath "//td//a[@href='/dashboard/sub_service_requests/#{ssr.id}']['#{ssr.display_id}']/@href"
-      expect(mail.body.parts.first.body).to have_xpath "//td[text()='#{ssr.org_tree_display}']/following-sibling::td[text()='#{status}']"
-    end        
+    # Only display SSRs that are associated with that submission email
+    displayed_service_request = service_request.protocol.sub_service_requests.first
+    status = AVAILABLE_STATUSES[displayed_service_request.status]
+    expect(mail.body.parts.first.body).to have_xpath "//td//a[@href='/dashboard/sub_service_requests/#{displayed_service_request.id}']['#{displayed_service_request.display_id}']/@href"
+    expect(mail.body.parts.first.body).to have_xpath "//td[text()='#{displayed_service_request.org_tree_display}']/following-sibling::td[text()='#{status}']"       
   end
 
   def assert_email_srid_information_for_user

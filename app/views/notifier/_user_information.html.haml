@@ -1,24 +1,24 @@
-%table{:style => 'border: 1px solid black; border-collapse: collapse; width: 100%;', :cellpadding => 3}
+%table.table{cellpadding: 3}
   %thead
-    %tr{:style => 'border: 1px solid black;'}
+    %tr.skinny-black-border
       %td{:colspan => 4}
         %strong= t(:notifier)[:u_info]
     %tr
-      %th{:style => 'border: 1px solid black;'}= t(:notifier)[:name]
-      %th{:style => 'border: 1px solid black;'}= t(:notifier)[:contact_info]
-      %th{:style => 'border: 1px solid black;'}= t(:notifier)[:role]
+      %th.skinny-black-border= t(:notifier)[:name]
+      %th.skinny-black-border= t(:notifier)[:contact_info]
+      %th.skinny-black-border= t(:notifier)[:role]
       - if !@protocol.selected_for_epic.nil?
-        %th{:style => 'border: 1px solid black;'}= t(:notifier)[:epic_access]
+        %th.skinny-black-border= t(:notifier)[:epic_access]
   %tbody
     - @protocol.project_roles.each do |pr|
-      %tr{:style => 'border: 1px solid black;'}
-        %td{:style => 'border: 1px solid black; text-align: center;'}= pr.identity.full_name
-        %td{:style => 'border: 1px solid black; text-align: center;'}= pr.identity.email
+      %tr.skinny-black-border
+        %td.skinny-black-border.center= pr.identity.full_name
+        %td.skinny-black-border.center= pr.identity.email
         - if pr.identity.id == @service_requester_id
-          %td{:style => 'border: 1px solid black; text-align: center;'}= pr.role.upcase + " " + t(:notifier)[:requester]
+          %td.skinny-black-border.center= pr.role.upcase + " " + t(:notifier)[:requester]
         - else
-          %td{:style => 'border: 1px solid black; text-align: center;'}= pr.role.upcase
+          %td.skinny-black-border.center= pr.role.upcase
         - if !@protocol.selected_for_epic.nil?
-          %td{:style => 'border: 1px solid black; text-align: center;'}= pr.epic_access == true ? "Yes" : "No"
+          %td.skinny-black-border.center= pr.epic_access == true ? "Yes" : "No"
 %br
 %br

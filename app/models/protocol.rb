@@ -198,25 +198,28 @@ class Protocol < ActiveRecord::Base
     where(archived: boolean)
   }
 
-  scope :with_status, -> (status) {
-    # returns protocols with ssrs in status
-    return nil if status.reject!(&:blank?) == []
+  scope :with_status, -> (statuses) {
+    # returns protocols with ssrs in statuses
+    statuses = statuses.split.flatten.reject(&:blank?)
+    return nil if statuses.empty?
     joins(:sub_service_requests).
-    where(sub_service_requests: { status: status }).distinct
+      where(sub_service_requests: { status: statuses }).distinct
   }
 
-  scope :with_organization, -> (org_id) {
-    # returns protocols with ssrs in org_id
-    return nil if org_id.reject!(&:blank?) == []
+  scope :with_organization, -> (org_ids) {
+    # returns protocols with ssrs in org_ids
+    org_ids = org_ids.split.flatten.reject(&:blank?)
+    return nil if org_ids.empty?
     joins(:sub_service_requests).
-    where(sub_service_requests: { organization_id: org_id }).distinct
+      where(sub_service_requests: { organization_id: org_ids }).distinct
   }
 
-  scope :with_owner, -> (owner_id) {
-    return nil if owner_id.reject!(&:blank?) == []
+  scope :with_owner, -> (owner_ids) {
+    owner_ids = owner_ids.split.flatten.reject(&:blank?)
+    return nil if owner_ids.empty?
     joins(:sub_service_requests).
-    where(sub_service_requests: {owner_id: owner_id}).
-    where.not(sub_service_requests: {status: 'first_draft'})
+    where(sub_service_requests: {owner_id: owner_ids}).
+      where.not(sub_service_requests: {status: 'first_draft'})
   }
 
   scope :sorted_by, -> (key) {

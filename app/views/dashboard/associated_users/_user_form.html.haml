@@ -88,7 +88,6 @@
               = form.label :role_other, t(:dashboard)[:authorized_users][:role_specify], class: 'col-lg-3 control-label'
               .col-lg-9
                 = form.text_field :role_other, class: 'form-control'
-
             - if USE_EPIC && protocol != nil && protocol.selected_for_epic
               .form-group.row
                 = form.label :epic_access, t(:dashboard)[:authorized_users][:epic_access], class: 'col-lg-3 control-label'

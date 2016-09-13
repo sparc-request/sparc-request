@@ -272,7 +272,7 @@ class Protocol < ActiveRecord::Base
     # For example:  if a SR has SSRs all with a status of 'draft', don't send emails
     if SEND_AUTHORIZED_USER_EMAILS && sub_service_requests.where.not(status: 'draft').any?
       alert_users = emailed_associated_users << modified_role
-      alert_users.flatten.each do |project_role|
+      alert_users.flatten.uniq.each do |project_role|
         UserMailer.authorized_user_changed(project_role.identity, self, modified_role, action).deliver unless project_role.identity.email.blank?
       end
     end

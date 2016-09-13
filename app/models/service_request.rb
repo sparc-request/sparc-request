@@ -344,19 +344,21 @@ class ServiceRequest < ActiveRecord::Base
     page
   end
 
-  def service_list(is_one_time_fee=nil, service_provider=nil)
-    items = []
-    case is_one_time_fee
-    when nil
-      items = line_items
-    when true
-      items = one_time_fee_line_items
-    when false
-      items = per_patient_per_visit_line_items
+  def service_list(is_one_time_fee=nil, service_provider=nil, admin_ssr=nil)
+    items = if service_provider
+      service_provider_line_items(service_provider, line_items)
+    elsif admin_ssr
+      admin_ssr.line_items
+    else
+      line_items
     end
 
-    if service_provider
-      items = service_provider_line_items(service_provider, items)
+    items = if is_one_time_fee == true
+      items.select { |i| i.service.one_time_fee? }
+    elsif is_one_time_fee == false
+      items.select { |i| !i.service.one_time_fee? }
+    else
+      items
     end
 
     groupings = {}

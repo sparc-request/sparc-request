@@ -49,8 +49,12 @@
           = t(:dashboard)[:notes][:index][:none_message1] + notable_type + t(:dashboard)[:notes][:index][:none_message2]
     .modal-footer
       .center-block
-        %button.btn.btn-default{type: 'button', data: {dismiss: 'modal'}}
-          = t(:actions)[:close]
+        - if notable_type == "Fulfillment"
+          %button#fulfillments_back.btn.btn-default{type: 'button', data: {line_item_id: notable.line_item.id}}
+            = t(:actions)[:close]
+        - else
+          %button.btn.btn-default{type: 'button', data: {dismiss: 'modal'}}
+            = t(:actions)[:close]
         %button.btn.btn-primary.note.new{type: "button", aria: {label: "New Note"}, data: {notable_id: notable_id, notable_type: notable_type}}
           %span.glyphicon.glyphicon-plus{aria: {hidden: "true"}}
           %span

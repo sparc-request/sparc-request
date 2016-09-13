@@ -18,4 +18,36 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$(".center-block").html("<%= escape_javascript(render(partial: 'new', locals: { notable: @notable, note: @note, notable_type: @notable_type })) %>");
+require 'date'
+require 'rails_helper'
+
+RSpec.describe 'Protocol' do
+  let_there_be_lane
+  let_there_be_j
+  build_service_request_with_study()
+  build_service_request_with_project()
+  build_study_type_question_groups()
+  build_study_type_questions()
+  build_study_type_answers()
+
+  describe "#virgin_project?" do
+    context "project is virgin" do
+      before :each do
+        project.update_attributes(selected_for_epic: nil)
+      end
+
+      it "should return true" do
+        expect(project.virgin_project?).to eq true
+      end
+    end
+    context "project is not a virgin" do
+      before :each do
+        project.update_attributes(selected_for_epic: false)
+      end
+
+      it "should return true" do
+        expect(project.virgin_project?).to eq false
+      end
+    end
+  end
+end

@@ -18,4 +18,55 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$(".center-block").html("<%= escape_javascript(render(partial: 'new', locals: { notable: @notable, note: @note, notable_type: @notable_type })) %>");
+require 'date'
+require 'rails_helper'
+
+RSpec.describe 'Protocol' do
+  let_there_be_lane
+  let_there_be_j
+  build_service_request_with_study()
+  build_service_request_with_project()
+  build_study_type_question_groups()
+  build_study_type_questions()
+  build_study_type_answers()
+
+  describe "#active?" do
+
+    context "study is inactive" do
+      before :each do
+        study.update_attributes(study_type_question_group_id: StudyTypeQuestionGroup.where(active:false).pluck(:id).first)
+      end
+
+      it "should return false" do
+        expect(study.active?).to eq false
+      end
+    end
+    context "study is active" do
+      before :each do
+        study.update_attributes(study_type_question_group_id: StudyTypeQuestionGroup.where(active:true).pluck(:id).first)
+      end
+
+      it "should return true" do
+        expect(study.active?).to eq true
+      end
+    end
+    context "project is inactive" do
+      before :each do
+        project.update_attributes(study_type_question_group_id: StudyTypeQuestionGroup.where(active:false).pluck(:id).first)
+      end
+
+      it "should return false" do
+        expect(project.active?).to eq false
+      end
+    end
+    context "project is active" do
+      before :each do
+        project.update_attributes(study_type_question_group_id: StudyTypeQuestionGroup.where(active:true).pluck(:id).first)
+      end
+
+      it "should return true" do
+        expect(project.active?).to eq true
+      end
+    end
+  end
+end

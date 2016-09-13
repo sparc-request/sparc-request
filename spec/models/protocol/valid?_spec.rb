@@ -18,4 +18,23 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$(".center-block").html("<%= escape_javascript(render(partial: 'new', locals: { notable: @notable, note: @note, notable_type: @notable_type })) %>");
+require 'date'
+require 'rails_helper'
+
+RSpec.describe 'Protocol' do
+  let_there_be_lane
+  let_there_be_j
+  build_service_request_with_study()
+  build_service_request_with_project()
+  build_study_type_question_groups()
+  build_study_type_questions()
+  build_study_type_answers()
+
+  describe 'should validate funding source for projects' do
+    it 'should raise an exception if funding source is nil' do
+      project = Project.create(attributes_for(:protocol))
+      project.funding_source = nil
+      expect(project.valid?).to eq false
+    end
+  end
+end

@@ -18,4 +18,22 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$(".center-block").html("<%= escape_javascript(render(partial: 'new', locals: { notable: @notable, note: @note, notable_type: @notable_type })) %>");
+require 'date'
+require 'rails_helper'
+
+RSpec.describe 'Protocol' do
+  let_there_be_lane
+  let_there_be_j
+  build_service_request_with_study()
+  build_service_request_with_project()
+  build_study_type_question_groups()
+  build_study_type_questions()
+  build_study_type_answers()
+
+  describe "push to epic" do
+    it "should create a record of the protocols push" do
+      study.update_attribute(:selected_for_epic, true)
+      expect{ study.push_to_epic(EPIC_INTERFACE) }.to change(EpicQueueRecord, :count).by(1)
+    end
+  end
+end

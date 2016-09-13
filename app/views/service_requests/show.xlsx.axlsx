@@ -42,7 +42,7 @@ wb.add_worksheet(name: "Review") do |sheet|
   sheet.add_row ["Authorized Users"], :style => header_style
   proxy_row = ["Name", "Role", "", "Proxy Rights"]
 
-  has_per_patient_per_visit_services = @sub_service_request.nil? ? (!@service_list_false.empty? && @service_request.has_per_patient_per_visit_services?) : (!@service_list_false.empty?)
+  has_per_patient_per_visit_services = !@service_list_false.empty?
 
   visit_count = 0
   if has_per_patient_per_visit_services

@@ -1,4 +1,4 @@
--# Copyright © 2011 MUSC Foundation for Research Development
+-# Copyright © 2011-2016 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -48,3 +48,9 @@
               = t(:dashboard)[:service_requests][:notifications]
             %th.col-md-5{ data: { field: 'actions', align: 'center' }, colspan: 4 }
               = t(:dashboard)[:service_requests][:actions][:header]
+    - if service_request.additional_detail_services.present?
+      - service_request.additional_detail_services.each do |service|
+        - unless Submission.where(service: service, identity: current_identity).present?
+          %div.alert.alert-warning
+            %h5.text-center
+              = link_to t("additional_details.dashboard_complete_details", service_name: service.name), new_service_additional_details_submission_path(service)

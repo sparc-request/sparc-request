@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2016 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -67,7 +67,7 @@ class Notifier < ActionMailer::Base
     mail(:to => email, :from => NO_REPLY_FROM, :subject => subject)
   end
 
-  def notify_admin(service_request, submission_email_address, xls, user_current, ssr_to_be_displayed)
+  def notify_admin(service_request, submission_email_address, xls, user_current, ssr)
     @notes = service_request.notes
     @status = service_request.status
     @role = 'none'
@@ -76,7 +76,7 @@ class Notifier < ActionMailer::Base
     @protocol = service_request.protocol
     @service_request = service_request
     @service_requester_id = @service_request.sub_service_requests.first.service_requester_id
-    @ssrs_to_be_displayed = [ssr_to_be_displayed]
+    @ssrs_to_be_displayed = [ssr]
 
     @portal_link = DASHBOARD_LINK + "/protocols/#{@protocol.id}"
     @portal_text = "Administrators/Service Providers, Click Here"

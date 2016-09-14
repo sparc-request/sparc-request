@@ -110,7 +110,6 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
   end
 
   def destroy
-    modified_role       = @protocol_role
     @protocol           = @protocol_role.protocol
     epic_access         = @protocol_role.epic_access
     protocol_role_clone = @protocol_role.clone
@@ -128,7 +127,7 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
     flash.now[:alert] = 'Authorized User Removed!'
 
     if @protocol_role.destroyed?
-      @protocol.email_about_change_in_authorized_user(modified_role, "destroy")
+      @protocol.email_about_change_in_authorized_user(@protocol_role, "destroy")
     end
 
     if USE_EPIC && @protocol.selected_for_epic && epic_access && !QUEUE_EPIC

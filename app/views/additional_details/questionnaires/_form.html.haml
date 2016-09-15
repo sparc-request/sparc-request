@@ -1,0 +1,60 @@
+.panel.panel-primary
+  .panel-heading
+    = t(:additional_details)[:form_builder_title]
+  .panel-body
+    = hidden_field_tag 'service_id', service.id
+    = form_for [service, :additional_details, questionnaire], html: { class: 'form-horizontal questionnaire-form' } do |f|
+      .form-group
+        = f.label :name, 'Form Name', class: 'col-sm-2 control-label'
+        .col-sm-10
+          = f.text_field :name, class: 'form-control'
+      = f.nested_fields_for :items do |i|
+        .form-group
+          = i.label :content, class: 'col-sm-2 control-label'
+          .col-sm-10
+            = i.text_area :content, class: 'form-control'
+        .form-group
+          = i.label :item_type, class: 'col-sm-2 control-label'
+          .col-sm-10
+            = i.select :item_type, options_for_select(ADDITIONAL_DETAIL_QUESTION_TYPES, i.object.item_type),
+              {}, {class: 'form-control select-type', data: { item_form_id: '__nested_field_for_replace_with_index__' } }
+        %div{ class: 'item-options hidden', data: { item_form_id: '__nested_field_for_replace_with_index__' } }
+          %h5.text-center
+            = t(:additional_details)[:add_options]
+          %hr
+          - i.object.item_options.build unless i.object.item_options.any?
+          = i.nested_fields_for :item_options, html: { class: 'form-horizontal' } do |io|
+            .col-sm-offset-2
+              .form-group
+                = io.label :content, class: 'col-sm-2 control-label'
+                .col-sm-8
+                  = io.text_field :content, class: 'form-control'
+              .form-group
+                .col-sm-offset-2.col-sm-10
+                  %span
+                    = io.remove_nested_fields_link t(:additional_details)[:remove_option], class: 'btn btn-danger'
+                    = i.add_nested_fields_link :item_options, 'Add another Option', class: 'btn btn-primary'
+        .form-group
+          = i.label :description, class: 'col-sm-2 control-label'
+          .col-sm-10
+            = i.text_area :description, class: 'form-control', placeholder: t(:additional_details)[:description_placeholder]
+        .form-group
+          .col-sm-offset-2.col-sm-10
+            .checkbox
+              = i.label :required do
+                = i.check_box :required, {}, 1, 0
+                Required
+        .form-group
+          .col-sm-offset-2.col-sm-10
+            = i.remove_nested_fields_link t(:additional_details)[:remove_question], class: 'btn btn-danger'
+      %hr
+      .form-group
+        .col-sm-offset-2.col-sm-12
+          = f.add_nested_fields_link :items, t(:additional_details)[:add_question], class: 'btn btn-primary'
+          = f.submit class: 'btn btn-success'
+          = link_to 'javascript:;', id: 'view-preview', class: 'btn btn-info' do
+            = t(:additional_details)[:view_preview]
+            %span.glyphicon.glyphicon-search
+          = link_to t(:additional_details)[:return_to_questionnaires],
+            service_additional_details_questionnaires_path(service), 
+            class: 'btn btn-warning'

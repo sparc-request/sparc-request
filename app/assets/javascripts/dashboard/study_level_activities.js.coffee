@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2016 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -71,6 +71,15 @@ $ ->
       type: 'GET'
       url: "/dashboard/fulfillments"
       data: "line_item_id" : line_item_id
+
+  # This listener is also used in fulfillment notes
+  $(document).on 'click', 'button#fulfillments_back', ->
+    id = $(this).data('line-item-id')
+    console.log(id)
+    $.ajax
+      type: 'GET'
+      url: "/dashboard/fulfillments"
+      data: "line_item_id" : id
 
   # Fulfillment Bindings
 

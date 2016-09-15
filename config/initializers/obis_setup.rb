@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2016 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -91,6 +91,7 @@ end
 begin
   constant_file                  = File.join(Rails.root, 'config', 'constants'+CONSTANTS_YML_OVERRIDE+'.yml')
   config                         = YAML::load_file(constant_file)
+  ADDITIONAL_DETAIL_QUESTION_TYPES = config['additional_detail_question_types']
   AFFILIATION_TYPES              = config['affiliations']
   IMPACT_AREAS                   = config['impact_areas']
   EPIC_RIGHTS                    = config['epic_rights']

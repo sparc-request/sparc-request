@@ -1,0 +1,5 @@
+%br
+- item.item_options.each do |item_option|
+  = qr.label :content, class: 'radio-inline' do
+    = qr.radio_button :content, item_option.content
+    = item_option.content

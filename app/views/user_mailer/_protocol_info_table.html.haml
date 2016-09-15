@@ -1,0 +1,30 @@
+%table{:style => 'border: 1px solid #000; width: 100%; border-collapse: collapse;'}
+  %thead
+    %tr{:style => 'border: 1px solid black;'}
+      %td{:colspan => 2}
+        - if @protocol.type.capitalize == "Project"
+          %strong= t(:notifier)[:p_info]
+        - else
+          %strong= t(:notifier)[:study_info]
+  %tbody
+    %tr{:style => 'border: 1px solid black;'}
+      - if @protocol.type.capitalize == "Project"
+        %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:notifier)[:p_id]
+      - else
+        %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:notifier)[:study_id]
+      %td{:style => 'border: 1px solid black;'}= @protocol.id
+    %tr{:style => 'border: 1px solid black;'}
+      %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:notifier)[:title1]
+      %td{:style => 'border: 1px solid black;'}= @protocol.try(:short_title)
+    %tr{:style => 'border: 1px solid black;'}
+      - if @protocol.type.capitalize == "Project"
+        %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:notifier)[:p_title]
+      - else
+        %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:notifier)[:study_title]
+      %td{:style => 'border: 1px solid black;'}= @protocol.try(:title)
+    %tr{:style => 'border: 1px solid black;'}
+      %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:notifier)[:s_name]
+      %td{:style => 'border: 1px solid black;'}= @protocol.try(:sponsor_name)
+    %tr{:style => 'border: 1px solid black;'}
+      %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:notifier)[:source]
+      %td{:style => 'border: 1px solid black;'}= (@protocol.funding_source or @protocol.potential_funding_source or "").capitalize

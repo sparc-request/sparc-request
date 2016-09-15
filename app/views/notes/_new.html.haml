@@ -29,7 +29,7 @@
 
   .modal-footer
     - if in_dashboard
-      %button.btn.btn-default.notes.cancel{type: 'button', data: {notable_id: notable.id, notable_type: notable_type}}
+      %button.btn.btn-default.notes.cancel{type: 'button', data: {notable_id: notable_id, notable_type: notable_type}}
         = t(:actions)[:cancel]
     - else
       %button.btn.btn-default{ type: 'button', data: { dismiss: 'modal' } }

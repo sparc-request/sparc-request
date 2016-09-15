@@ -20,7 +20,7 @@
 <% if @in_dashboard %>
 $('.modal-title').html("<%= I18n.t('notes.new', notable_type: @notable_type.underscore.humanize.titleize) %>")
 $('.modal-footer').remove()
-$('.form-content').html("<%= escape_javascript(render( 'notes/new', note: @note, notable_type: @notable_type, in_dashboard: @in_dashboard )) %>")
+$('.form-content').html("<%= escape_javascript(render( 'notes/new', note: @note, notable_id: @notable_id, notable_type: @notable_type, in_dashboard: @in_dashboard )) %>")
 <% else %>
 $('#modal_place').html("<%= escape_javascript(render( 'notes/new_modal', note: @note, notable_type: @notable_type, in_dashboard: @in_dashboard )) %>")
 $('#modal_place').modal('show')

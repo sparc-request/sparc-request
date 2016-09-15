@@ -53,6 +53,6 @@ $ ->
       notable_type: type
     $.ajax
       type: 'GET'
-      url: '/dashboard/notes'
+      url: '/notes'
       data: data
   # NOTES LISTENERS END

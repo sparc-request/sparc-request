@@ -20,7 +20,7 @@
 = javascript_include_tag 'service_calendar_logic'
 = hidden_field_tag :indirect_rate, @service_request.protocol.indirect_cost_rate
 
-- if @service_request.has_per_patient_per_visit_services?
+- if @sub_service_request ? @sub_service_request.has_per_patient_per_visit_services? : @service_request.has_per_patient_per_visit_services?
   - @service_request.arms.each do |arm|
     - next if arm.visit_groups.empty?
     = render 'service_calendars/master_calendar/pppv/pppv_calendar', tab: @tab, arm: arm, service_request: @service_request, sub_service_request: @sub_service_request, page: @pages[arm.id], pages: @pages, review: @review, portal: @portal, merged: @merged

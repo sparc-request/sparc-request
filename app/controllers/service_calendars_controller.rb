@@ -26,10 +26,11 @@ class ServiceCalendarsController < ApplicationController
   before_filter :authorize_identity
 
   def table
-    @tab    = params[:tab]
-    @review = params[:review] == 'true'
-    @portal = params[:portal] == 'true'
-    @merged = false
+    @tab                  = params[:tab]
+    @review               = params[:review] == 'true'
+    @portal               = params[:portal] == 'true'
+    @merged               = false
+    @sub_service_request  = SubServiceRequest.find(params[:sub_service_request_id]) if params[:sub_service_request_id]
 
     setup_calendar_pages
 
@@ -40,10 +41,11 @@ class ServiceCalendarsController < ApplicationController
   end
 
   def merged_calendar
-    @tab    = params[:tab]
-    @review = params[:review] == 'true'
-    @portal = params[:portal] == 'true'
-    @merged = true
+    @tab                  = params[:tab]
+    @review               = params[:review] == 'true'
+    @portal               = params[:portal] == 'true'
+    @merged               = true
+    @sub_service_request  = SubServiceRequest.find(params[:sub_service_request_id]) if params[:sub_service_request_id]
 
     setup_calendar_pages
 
@@ -73,8 +75,8 @@ class ServiceCalendarsController < ApplicationController
   end
 
   def move_visit_position
-    arm       = Arm.find( params[:arm_id] )
-    vg        = arm.visit_groups.find( params[:visit_group].to_i )
+    arm = Arm.find( params[:arm_id] )
+    vg  = arm.visit_groups.find( params[:visit_group].to_i )
 
     if params[:position].blank?
       vg.move_to_bottom
@@ -87,6 +89,7 @@ class ServiceCalendarsController < ApplicationController
     @line_items_visit     = LineItemsVisit.find(params[:line_items_visit_id])
     @service              = @line_items_visit.line_item.service if params[:check]
     @portal               = params[:portal] == 'true'
+    @sub_service_request  = SubServiceRequest.find(params[:sub_service_request_id]) if params[:sub_service_request_id]
 
     @line_items_visit.visits.each do |visit|
       if params[:check]
@@ -108,15 +111,16 @@ class ServiceCalendarsController < ApplicationController
   end
 
   def toggle_calendar_column
-    column_id = params[:column_id].to_i
-    @arm      = Arm.find(params[:arm_id])
-    @portal   = params[:portal] == 'true'
+    column_id             = params[:column_id].to_i
+    @arm                  = Arm.find(params[:arm_id])
+    @portal               = params[:portal] == 'true'
+    @sub_service_request  = SubServiceRequest.find(params[:sub_service_request_id]) if params[:sub_service_request_id]
 
     @service_request.service_list(false).each do |_key, value|
       next unless @sub_service_request.nil? || @sub_service_request.organization.name == value[:process_ssr_organization_name]
 
       @arm.line_items_visits.each do |liv|
-        next unless value[:line_items].include?(liv.line_item) && liv.line_item.sub_service_request.can_be_edited? && !liv.line_item.sub_service_request.is_complete?
+        next if value[:line_items].exclude?(liv.line_item) || (!@portal && (!liv.line_item.sub_service_request.can_be_edited? || liv.line_item.sub_service_request.is_complete?))
         visit = liv.visits[column_id - 1] # columns start with 1 but visits array positions start at 0
         if params[:check]
           visit.update_attributes quantity: liv.line_item.service.displayed_pricing_map.unit_minimum, research_billing_qty: liv.line_item.service.displayed_pricing_map.unit_minimum, insurance_billing_qty: 0, effort_billing_qty: 0

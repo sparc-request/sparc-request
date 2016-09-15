@@ -23,12 +23,12 @@
   %head
     %title
       = t(:additional_details)[:additional_details_title]
-    = stylesheet_link_tag "#{CUSTOM_ASSET_PATH}additional_details/application"
+    = stylesheet_link_tag "additional_details/application"
     = javascript_include_tag 'additional_details/application'
-    = javascript_include_tag 'jquery.qtip.min.js'
     = csrf_meta_tags
 
-  %body.no-background
+  %body
+    = render 'additional_details/shared/navbar'
     .container
       .flash
         = render "shared/flash"

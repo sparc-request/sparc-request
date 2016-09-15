@@ -21,6 +21,11 @@
 en:
   dashboard:
     ###########
+    # HEADER #
+    ##########
+    header: "SPARC Request Dashboard"
+
+    ###########
     #  ADMIN  #
     ###########
     admin:

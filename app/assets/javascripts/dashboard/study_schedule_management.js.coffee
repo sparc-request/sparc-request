@@ -72,9 +72,8 @@ $ ->
       url: '/dashboard/arms/navigate'
       data: data
 
-  $(document).on 'click', '#edit_arm_form_button', ->
-    $(this).attr('disabled','disabled')
-    $(this).closest('form').submit()
+  $(document).on 'submit', 'form#edit_arm', ->
+    $("#edit_arm_form_button").attr('disabled','disabled')
 
   $(document).on 'change', "#arm_form_select", ->
     data =
@@ -141,6 +140,9 @@ $ ->
       url: '/dashboard/visit_groups/navigate'
       data: data
 
+  $(document).on 'submit', 'form#edit_visit_group', ->
+    $("#edit_visit_group_form_button").attr('disabled','disabled')
+
   $(document).on 'change', "#vg_form_arm_select", ->
     arm_id = $(this).val()
     data =
@@ -167,6 +169,9 @@ $ ->
         type: 'GET'
         url: '/dashboard/visit_groups/navigate'
         data: data
+
+  $(document).on 'submit', '#add_visit_group', ->
+    $("#add_visit_group_form_button").attr('disabled','disabled')
 
   $(document).on 'click', '#remove_visit_group_form_button', ->
     $(this).attr('disabled','disabled')
@@ -205,9 +210,8 @@ $ ->
       url: '/dashboard/multiple_line_items/new_line_items'
       data: data
 
-  $(document).on 'click', '#add_line_items_form_button', ->
-    $(this).attr('disabled','disabled')
-    $(this).closest('form').submit()
+  $(document).on 'submit', 'form#new_service', ->
+    $("#add_line_items_form_button").attr('disabled','disabled')
 
   $(document).on 'click', '#remove_service_button', ->
     data =
@@ -230,8 +234,7 @@ $ ->
       url: '/dashboard/multiple_line_items/edit_line_items'
       data: data
 
-  $(document).on 'click', '#remove_line_items_form_button', ->
-    $(this).attr('disabled','disabled')
-    $(this).closest('form').submit()
+  $(document).on 'submit', '#destroy_service', ->
+    $("#remove_line_items_form_button").attr('disabled','disabled')
 
 ##          **END MANAGE LINE ITEMS**               ##

@@ -20,6 +20,10 @@
 $ ->
   $(".datetimepicker").datetimepicker(format: 'MM/DD/YYYY', allowInputToggle: true)
   $(".selectpicker").selectpicker()
+  $('[data-toggle="tooltip"]').tooltip()
+
+  $(document).ajaxComplete ->
+    $('[data-toggle="tooltip"]').tooltip()
 
 (exports ? this).formatMoney = (n, t=',', d='.', c='$') ->
   s = if n < 0 then "-#{c}" else c

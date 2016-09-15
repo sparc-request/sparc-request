@@ -24,7 +24,6 @@
         = t(:proper)[:protocol][:review_protocol_notice]
         %small
           = t(:proper)[:protocol][:review_protocol_instructions]
-    = request_submitted_warning_display(service_request)
     = render 'protocols/summary', protocol: protocol, protocol_type: protocol.type, service_request: service_request, allow_edit: true
     = render 'associated_users/table', protocol: protocol
   - else

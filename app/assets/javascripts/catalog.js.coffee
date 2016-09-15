@@ -22,7 +22,7 @@
 
 $(document).ready ->
   ### ACCORDION LOGIC ###
-  $(document).on 'click', '.institution-header, .provider-header, .program-link', ->
+  $(document).on 'click', '.institution-header, .provider-header, .program-link:not(.locked-program)', ->
     if $(this).hasClass('institution-header')
       $('.institution-header').removeClass('clicked')
       $('.provider-header').removeClass('clicked')
@@ -40,6 +40,10 @@ $(document).ready ->
       type: 'POST'
       data: data
       url: "/catalogs/#{id}/update_description"
+
+  $(document).on 'click', '.program-link.locked-program', ->
+    $('#modal_place').html($('#locked-organization-modal').html())
+    $('#modal_place').modal('show')
 
   $(document).on 'click', '.core-header', ->
     $('.service-description').addClass('hidden')

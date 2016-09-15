@@ -22,6 +22,7 @@ FactoryGirl.define do
 
   factory :visit_group do
   	name { Faker::Lorem.sentence(1) }
+    day  1
 
     trait :without_validations do
       to_create { |instance| instance.save(validate: false) }

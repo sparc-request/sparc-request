@@ -37,7 +37,7 @@ class Dashboard::DocumentsController < Dashboard::BaseController
   def new
     @document     = @protocol.documents.new
     @action       = 'new'
-    @header_text  = t(:documents)[:add]
+    @header_text  = t(:documents)[:add][:header]
   end
 
   def create
@@ -54,7 +54,7 @@ class Dashboard::DocumentsController < Dashboard::BaseController
 
   def edit
     @action       = 'edit'
-    @header_text  = t(:documents)[:edit]
+    @header_text  = t(:documents)[:edit][:header]
   end
 
   def update

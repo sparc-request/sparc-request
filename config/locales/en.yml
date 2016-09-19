@@ -274,9 +274,9 @@ en:
       updated: "Arm Updated!"
       destroyed: "Arm Destroyed!"
       arm: "Arm:"
-      name: "Arm Name:"
-      subject_count: "Subject Count:"
-      visit_count: "Visit Count:"
+      name: "Arm Name: *"
+      subject_count: "Subject Count: *"
+      visit_count: "Visit Count: *"
 
     ######################
     #  AUTHORIZED USERS  #

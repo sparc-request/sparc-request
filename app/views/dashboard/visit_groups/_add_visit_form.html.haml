@@ -20,7 +20,7 @@
 
 .modal-dialog
   .modal-content
-    = form_for visit_group, {remote: true, url: dashboard_visit_groups_path(visit_group), html: {class: "form-horizontal new_visit", role: "form"}} do |a|
+    = form_for visit_group, {remote: true, url: dashboard_visit_groups_path(visit_group), html: {class: "form-horizontal", id: "add_visit_group", role: "form"}} do |a|
       .modal-header
         %button.close{type: 'button', data: {dismiss: 'modal'}}
           %span{aria: {hidden:'true'}} &times;

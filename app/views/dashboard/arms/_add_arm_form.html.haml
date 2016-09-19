@@ -20,7 +20,7 @@
 
 .modal-dialog
   .modal-content
-    = form_for arm, {remote: true, url: dashboard_arms_path(arm), html: {class: "form-horizontal new_visit", role: "form"}} do |a|
+    = form_for arm, {remote: true, url: dashboard_arms_path(arm), html: {class: "form-horizontal", role: "form"}} do |a|
       .modal-header
         %button.close{type: 'button', data: {dismiss: 'modal'}}
           %span{aria: {hidden:'true'}} &times;

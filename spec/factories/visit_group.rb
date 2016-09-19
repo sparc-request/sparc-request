@@ -19,28 +19,28 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 FactoryGirl.define do
-	sequence :position do |n|
-		n
-	end
+  sequence :position do |n|
+    n
+  end
 
-	sequence :day do |n|
-		n
-	end
+  sequence :day do |n|
+    n
+  end
 
   factory :visit_group do
 
-	position
-	day
-	name 					{ "Visit #{self.position}" }
-	
-	trait :without_validations do
-	  to_create { |instance| instance.save(validate: false) }
-	end
+  position
+  day
+  name           { "Visit #{self.position}" }
 
-	trait :with_arm do
-		arm 				{ FactoryGirl.create(:arm) }
-	end
+  trait :without_validations do
+    to_create { |instance| instance.save(validate: false) }
+  end
 
-	factory :visit_group_without_validations, traits: [:without_validations]
+  trait :with_arm do
+    arm         { FactoryGirl.create(:arm) }
+  end
+
+  factory :visit_group_without_validations, traits: [:without_validations]
   end
 end

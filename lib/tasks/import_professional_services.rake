@@ -61,7 +61,6 @@ namespace :data do
             effective_date = row.fetch('Effective Date').match("[0-1]?[0-9]/[0-3]?[0-9]/[0-9]{4}") ? Date.strptime(row.fetch('Effective Date'), "%m/%d/%Y") : Date.strptime(row.fetch('Effective Date'), "%m/%d/%y") # four digit or two digit year makes a difference
             display_date = row.fetch('Display Date').match("[0-1]?[0-9]/[0-3]?[0-9]/[0-9]{4}") ? Date.strptime(row.fetch('Display Date'), "%m/%d/%Y") : Date.strptime(row.fetch('Display Date'), "%m/%d/%y") # see above
 
-            puts "Corporate rate: #{corporate_rate}"
             pricing_map = service.pricing_maps.build(
                                                   :full_rate => full_rate,
                                                   :corporate_rate => corporate_rate,

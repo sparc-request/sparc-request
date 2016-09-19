@@ -50,7 +50,7 @@
             .form-group
               = a.label "position", t(:dashboard)[:visit_groups][:position], class: "col-sm-4 control-label"
               .col-sm-7
-                = a.select "position", options_from_collection_for_select(arm.visit_groups, 'position', 'insertion_name'), {include_blank: 'add as last'}, :class => "form-control selectpicker"
+                = a.select "position", content_tag(:option, 'Add as last', :value=>"#{arm.visit_groups.count+1}") + options_from_collection_for_select(arm.visit_groups, 'position', 'insertion_name'), {include_blank: 'Nothing selected'}, :class => "form-control selectpicker"
             .form-group
               = a.label "window_before", t(:dashboard)[:visit_groups][:window_before], class: "col-sm-4 control-label"
               .col-sm-7

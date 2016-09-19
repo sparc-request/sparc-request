@@ -57,7 +57,6 @@ RSpec.describe 'protocol sorting', js: :true do
   it 'should have a visual cue' do
     protocol1 = create(:study_without_validations, primary_pi: user)
     page      = visit_protocols_index_page
-
     page.first('.protocol-sort').click()
     wait_for_javascript_to_finish
 

@@ -27,6 +27,7 @@
       %h4.modal-title.text-center
         = notable_type.underscore.humanize.titleize + t(:dashboard)[:notes][:index][:header]
     .modal-body
+      #modal_errors
       - if notes.any?
         .details-table
           .details-header.text-center

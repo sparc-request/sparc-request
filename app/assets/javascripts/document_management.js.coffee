@@ -53,10 +53,12 @@ $(document).ready ->
     $(this).hide()
 
   $("#save_request_note").click ->
-    data = note:
-      notable_id: $(this).data('notable-id')
-      notable_type: $(this).data('notable-type')
-      body: $("#new_note_text").val()
+    data =
+      in_proper: true
+      note:
+        notable_id: $(this).data('notable-id')
+        notable_type: $(this).data('notable-type')
+        body: $("#new_note_text").val()
     $("#new_note_text").val("")
     $.ajax
       type: 'POST'

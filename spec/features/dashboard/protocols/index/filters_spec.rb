@@ -55,11 +55,16 @@ RSpec.describe "filters", js: :true do
   describe "save" do
     context "user clicks save" do
       it "should allow user to save filter" do
+        organization = create(:institution, name: 'Union Allied')
+        create(:service_provider, organization_id: organization.id, identity_id: user.id)
+        protocol = create_protocol(archived: false, short_title: "Shady Business", organization: organization)
+
         visit_protocols_index_page
         expect do
           @page.instance_exec do
             filter_protocols.archived_checkbox.click
             filter_protocols.select_status("Active", "Complete")
+            filter_protocols.select_core("Union Allied")
             filter_protocols.save_link.click
             wait_for_filter_form_modal
             filter_form_modal.name_field.set("MyFilter")
@@ -70,20 +75,23 @@ RSpec.describe "filters", js: :true do
 
         new_filter = ProtocolFilter.last
         expect(new_filter.with_status).to eq(['ctrc_approved', 'complete'])
+        expect(new_filter.with_organization).to eq(["#{organization.id}"])
         expect(new_filter.show_archived).to eq(true)
       end
     end
 
     context "admin user clicks save" do
       it "should allow admin user to save filter" do
-        organization = create(:organization, name: 'Union Allied')
+        organization = create(:institution, name: 'Union Allied')
         create(:service_provider, organization_id: organization.id, identity_id: user.id)
+        protocol = create_protocol(archived: false, short_title: "Shady Business", organization: organization)
 
         visit_protocols_index_page
         expect do
           @page.instance_exec do
             filter_protocols.archived_checkbox.click
             filter_protocols.select_status("Active", "Complete")
+            filter_protocols.select_core("Union Allied")
             filter_protocols.select_owner("Doe, John")
             filter_protocols.save_link.click
             wait_for_filter_form_modal
@@ -96,6 +104,7 @@ RSpec.describe "filters", js: :true do
         new_filter = ProtocolFilter.last
         expect(new_filter.with_status).to eq(['ctrc_approved', 'complete'])
         expect(new_filter.show_archived).to eq(true)
+        expect(new_filter.with_organization).to eq(["#{organization.id}"])
         expect(new_filter.with_owner).to eq(["#{user.id}"])
       end
     end

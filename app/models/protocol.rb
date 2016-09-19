@@ -267,13 +267,14 @@ class Protocol < ActiveRecord::Base
     update_attribute(:study_type_question_group_id, StudyTypeQuestionGroup.active.pluck(:id).first)
   end
 
-  def email_about_change_in_authorized_user(modified_user, action)
+  def email_about_change_in_authorized_user(modified_role, action)
     # Alert authorized users of deleted authorized user
     # Send emails if SEND_AUTHORIZED_USER_EMAILS is set to true and if there are any non-draft SSRs
     # For example:  if a SR has SSRs all with a status of 'draft', don't send emails
     if SEND_AUTHORIZED_USER_EMAILS && sub_service_requests.where.not(status: 'draft').any?
-      emailed_associated_users.each do |project_role|
-        UserMailer.authorized_user_changed(project_role.identity, self, modified_user, action).deliver unless project_role.identity.email.blank?
+      alert_users = emailed_associated_users << modified_role
+      alert_users.flatten.uniq.each do |project_role|
+        UserMailer.authorized_user_changed(project_role.identity, self, modified_role, action).deliver unless project_role.identity.email.blank?
       end
     end
   end

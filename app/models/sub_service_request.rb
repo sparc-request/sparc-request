@@ -449,10 +449,7 @@ class SubServiceRequest < ActiveRecord::Base
   ##########################
 
   def distribute_surveys
-
-    # e-mail primary PI and requester
     primary_pi = service_request.protocol.primary_principal_investigator
-    requester = service_request.sub_service_requests.first.service_requester
 
     # send all available surveys at once
     available_surveys = line_items.map{|li| li.service.available_surveys}.flatten.compact.uniq
@@ -461,8 +458,8 @@ class SubServiceRequest < ActiveRecord::Base
     unless available_surveys.blank?
       SurveyNotification.service_survey(available_surveys, primary_pi, self).deliver
     # only send survey email to both users if they are unique
-      if primary_pi != requester
-        SurveyNotification.service_survey(available_surveys, requester, self).deliver
+      if primary_pi != service_requester
+        SurveyNotification.service_survey(available_surveys, service_requester, self).deliver
       end
     end
   end

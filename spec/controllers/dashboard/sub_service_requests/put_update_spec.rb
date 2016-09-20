@@ -79,9 +79,7 @@ RSpec.describe Dashboard::SubServiceRequestsController do
     context 'ssr status is complete' do
       context 'org has associated surveys' do
         before :each do
-          # allow(@sub_service_request).to receive(:distribute_surveys)
           create(:super_user, identity: @logged_in_user, organization: @organization)
-          @service_request = create(:service_request_without_validations)
           @service         = create(:service_without_validations, organization_id:  @organization.id)
           @line_item      = create(:line_item_without_validations, service_request_id: @service_request.id,                          service_id:  @service.id,
                                       sub_service_request_id: @sub_service_request.id)
@@ -108,9 +106,7 @@ RSpec.describe Dashboard::SubServiceRequestsController do
     context 'org has associated surveys' do
       context 'ssr status is not complete' do
         before :each do
-          # allow(@sub_service_request).to receive(:distribute_surveys)
           create(:super_user, identity: @logged_in_user, organization: @organization)
-          @service_request = create(:service_request_without_validations)
           @service         = create(:service_without_validations, organization_id:  @organization.id)
           @line_item      = create(:line_item_without_validations, service_request_id: @service_request.id,                          service_id:  @service.id,
                                       sub_service_request_id: @sub_service_request.id)

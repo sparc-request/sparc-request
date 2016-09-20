@@ -447,13 +447,11 @@ class SubServiceRequest < ActiveRecord::Base
   ##########################
   ## SURVEY DISTRIBUTTION ##
   ##########################
-
+  # Distributes all available surveys to primary pi and ssr requester
   def distribute_surveys
     primary_pi = service_request.protocol.primary_principal_investigator
-
     # send all available surveys at once
     available_surveys = line_items.map{|li| li.service.available_surveys}.flatten.compact.uniq
-
     # do nothing if we don't have any available surveys
     unless available_surveys.blank?
       SurveyNotification.service_survey(available_surveys, primary_pi, self).deliver

@@ -5,6 +5,8 @@ json.service sla_service_name_display(line_item)
 json.charge_code line_item.service.charge_code
 json.quantity_requested line_item.quantity
 json.quantity_type line_item.service.current_effective_pricing_map.quantity_type
+json.unit_type "unit_type"
+json.unit_requested "unit_requested"
 json.cost sla_cost_display(line_item)
 json.date_started format_date(line_item.in_process_date)
 json.date_completed format_date(line_item.complete_date)

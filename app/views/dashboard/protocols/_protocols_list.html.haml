@@ -1,4 +1,4 @@
--# Copyright © 2011 MUSC Foundation for Research Development
+-# Copyright © 2011-2016 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -21,6 +21,7 @@
 = hidden_field_tag :show_archived, filterrific_params[:show_archived]
 = hidden_field_tag :with_status, filterrific_params[:with_status]
 = hidden_field_tag :with_organization, filterrific_params[:with_organization]
+= hidden_field_tag :with_owner, filterrific_params[:with_owner]
 = hidden_field_tag :admin_filter, filterrific_params[:admin_filter]
 = hidden_field_tag :page, page
 .panel.panel-primary

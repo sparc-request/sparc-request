@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2016 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -22,8 +22,6 @@ $(document).ready ->
 
 
   # SERVICE REQUEST INFO LISTENERS BEGIN
-
-  $("#service_request_status_dropdown .btn-danger").tooltip()
 
   $(document).on 'change', '#sub_service_request_owner', ->
     ssr_id = $(this).data('sub_service_request_id')
@@ -86,6 +84,18 @@ $(document).ready ->
 
   $(document).on 'click', '.ss_tab a', ->
     $.cookie('admin-ss-tab', $(this).attr('id'), {path: '/'})
+
+  $(document).on 'click', '.service_calendar_row', ->
+    if confirm(I18n['calendars']['confirm_row_select'])
+      $.ajax
+        type: 'post'
+        url: $(this).data('url')
+
+  $(document).on 'click', '.service_calendar_column', ->
+    if confirm(I18n['calendars']['confirm_column_select'])
+      $.ajax
+        type: 'post'
+        url: $(this).data('url')
 
   # STUDY SCHEDULE TAB END
   # TIMELINE LISTENERS BEGIN

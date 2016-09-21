@@ -1,3 +1,23 @@
+# Copyright © 2011-2016 MUSC Foundation for Research Development~
+# All rights reserved.~
+
+# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
+
+# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.~
+
+# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following~
+# disclaimer in the documentation and/or other materials provided with the distribution.~
+
+# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products~
+# derived from this software without specific prior written permission.~
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,~
+# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT~
+# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL~
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS~
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
+# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
+
 require 'action_view'
 
 include ActionView::Helpers::FormOptionsHelper
@@ -200,16 +220,20 @@ module Dashboard
       checked = line_items_visit.visits.all? { |v| v.research_billing_qty >= 1  }
       check_param = checked ? 'uncheck' : 'check'
       icon = checked ? 'glyphicon-remove' : 'glyphicon-ok'
-
+      url = "/dashboard/service_calendars/toggle_calendar_row?#{check_param}=true&service_request_id=#{line_items_visit.line_item.service_request.id}&line_items_visit_id=#{line_items_visit.id}&&portal=#{portal}"
+      
       link_to(
-          (content_tag(:span, '', class: "glyphicon #{icon}")),
-          "/dashboard/service_calendars/toggle_calendar_row?#{check_param}=true&service_request_id=#{line_items_visit.line_item.service_request.id}&line_items_visit_id=#{line_items_visit.id}&&portal=#{portal}",
-          method: :post,
-          remote: true,
-          role: 'button',
-          class: 'btn btn-primary service_calendar_row',
-          id: "check_row_#{line_items_visit.id}_#{tab}",
-          data: (line_items_visit.any_visit_quantities_customized? ? { confirm: 'This will reset custom values for this row, do you wish to continue?' } : nil))
+        content_tag(:span, '', class: "glyphicon #{icon}"),
+        'javascript:void(0)',
+        method: :post,
+        remote: true,
+        role: 'button',
+        class: 'btn btn-primary service_calendar_row',
+        id: "check_row_#{line_items_visit.id}_#{tab}",
+        data: {
+          url: url
+        }
+      )
     end
 
     def self.select_column(visit_group, n, portal, sub_service_request)
@@ -218,13 +242,20 @@ module Dashboard
       checked = filtered_livs.all? { |l| l.visits[n.to_i].research_billing_qty >= 1 }
       icon = checked ? 'glyphicon-remove' : 'glyphicon-ok'
       check_param = checked ? 'uncheck' : 'check'
-
       url = "/dashboard/service_calendars/toggle_calendar_column?#{check_param}=true&sub_service_request_id=#{sub_service_request.id}&column_id=#{n + 1}&arm_id=#{arm_id}&portal=#{portal}"
 
-      link_to(content_tag(:span, '', class: "glyphicon #{icon}"), url,
-              method: :post, remote: true, role: 'button', class: 'visit_number btn btn-primary',
-              id: "check_all_column_#{n+1}",
-              data: (visit_group.any_visit_quantities_customized?(sub_service_request.service_request) ? { confirm: 'This will reset custom values for this column, do you wish to continue?' } : nil))
+      link_to(
+        content_tag(:span, '', class: "glyphicon #{icon}"),
+        'javascript:void(0)',
+        method: :post,
+        remote: true,
+        role: 'button',
+        class: 'visit_number btn btn-primary service_calendar_column',
+        id: "check_all_column_#{n+1}",
+        data: {
+          url: url
+        }
+      )
     end
   end
 end

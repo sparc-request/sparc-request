@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2016 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -32,10 +32,14 @@ class Dashboard::NotesController < Dashboard::BaseController
   end
 
   def create
-    if note_params[:body].present? # don't create empty notes
-      @note = Note.create(note_params.merge(identity_id: current_user.id))
+    @note = Note.new(note_params.merge(identity_id: current_user.id))
+    if @note.save
       @selector = "#{@note.unique_selector}_notes"
+    else
+      @errors = @note.errors
     end
+
+    @in_proper = params[:in_proper]
     @notes = @notable.notes
   end
 

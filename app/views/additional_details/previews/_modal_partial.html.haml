@@ -1,0 +1,13 @@
+.modal-dialog.modal-lg
+  .modal-content
+    .modal-header
+      %button{ class: 'close', data: { dismiss: 'modal' } }
+        %span
+          &times;
+      .modal-title
+        = t(:additional_details)[:preview_title]
+    .modal-body
+      = render 'additional_details/submissions/form'
+    .modal-footer
+      %button{ class: 'btn btn-default', data: { dismiss: 'modal' } }
+        = t(:additional_details)[:close_preview]

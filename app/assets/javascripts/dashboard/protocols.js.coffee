@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2016 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -83,7 +83,7 @@ $(document).ready ->
         if data["filterrific[with_status][]"].length
           data["filterrific[with_status][]"] = $("#filterrific_with_status").val()
 
-        if data["filterrific[with_organization][]"].length
+        if data["filterrific[with_organization][]"] && data["filterrific[with_organization][]"].length
           data["filterrific[with_organization][]"] = $("#filterrific_with_organization").val()
 
         if data["filterrific[with_owner][]"] && data["filterrific[with_owner][]"].length
@@ -160,6 +160,7 @@ $(document).ready ->
         show_archived     = $('#show_archived').val()
         with_status       = $('#with_status').val()
         with_organization = $('#with_organization').val()
+        with_owner        = $('#with_owner').val()
         admin_filter      = $('#admin_filter').val()
         sorted_by         = "#{$(this).data('sort-name')} #{$(this).data('sort-order')}"
         page              = $('#page').val() || 1
@@ -170,6 +171,7 @@ $(document).ready ->
             'show_archived': show_archived
             'with_status': with_status
             'with_organization': with_organization
+            'with_owner': with_owner
             'admin_filter': admin_filter
             'sorted_by': sorted_by
         $.ajax

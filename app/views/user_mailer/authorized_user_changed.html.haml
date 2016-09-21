@@ -1,4 +1,4 @@
--# Copyright © 2011 MUSC Foundation for Research Development
+-# Copyright © 2011-2016 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -17,56 +17,16 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-%p= "Dear #{@send_to.try(:full_name)},"
-%p
-  = t(:mailer)[:header1]
-  = link_to(t(:mailer)[:link1], root_url)
-  = t(:mailer)[:header2]
-  = @protocol.try(:type).try(:humanize)
-  = t(:mailer)[:header3]
-%p
-  = t(:mailer)[:body1]
-  %strong= link_to t(:mailer)[:link2], dashboard_root_url(:protocol => 'https', :default_protocol => @protocol.id)
-%p
-  %table{:style => 'border: 1px solid #000; width: 100%; border-collapse: collapse;'}
-    %tr
-      %td{:colspan => 2, :style => 'border: 1px solid #000'}
-        %strong= t(:mailer)[:p_info]
-    %tr
-      %td{:style => 'border: 1px solid #000'}
-        %strong= t(:mailer)[:p_id]
-      %td{:style => 'border: 1px solid #000'}= @protocol.id
-    %tr
-      %td{:style => 'border: 1px solid #000'}
-        %strong= t(:mailer)[:title1]
-      %td{:style => 'border: 1px solid #000'}= @protocol.try(:short_title)
-    %tr
-      %td{:style => 'border: 1px solid #000'}
-        %strong= t(:mailer)[:title2]
-      %td{:style => 'border: 1px solid #000'}= @protocol.try(:title)
-    %tr
-      %td{:style => 'border: 1px solid #000'}
-        %strong= t(:mailer)[:s_name]
-      %td{:style => 'border: 1px solid #000'}= @protocol.try(:sponsor_name)
-    %tr
-      %td{:style => 'border: 1px solid #000'}
-        %strong= @protocol.funding_status == "funded" ? "Funding Source:" : "Potential Funding Source:"
-      %td{:style => 'border: 1px solid #000'}= @protocol.funding_status == "funded" ? @protocol.try(:funding_source) : @protocol.try(:potential_funding_source)
-%p
-  %table{:style => 'border: 1px solid #000; width: 100%; border-collapse: collapse;'}
-    %tr
-      %th{:colspan => 3, :style => 'border: 1px solid #000'}
-        %strong= t(:mailer)[:user_info]
-    %tr
-      %th{:style => 'border: 1px solid #000'}
-        %strong= t(:mailer)[:name]
-      %th{:style => 'border: 1px solid #000'}
-        %strong= t(:mailer)[:role]
-      %th{:style => 'border: 1px solid #000'}
-        %strong= t(:mailer)[:proxy]
-    - @protocol.project_roles(true).each do |user|
-      %tr
-        %td{:style => 'border: 1px solid #000'}= user.identity.try(:full_name)
-        %td{:style => 'border: 1px solid #000; text-align: center'}= USER_ROLES.detect{|k,v| v == user.role}.try(:first)
-        %td{:style => 'border: 1px solid #000; text-align: center'}= user.try(:display_rights)
+%body
+  = render "intro"
+  %br
+  %br
+  = render "protocol_info_table"
+  %br
+  %br
+  = render "user_info_table"
+  %br
+  %br
+  %p= t(:issue_contact)
+  %br
+  = render "acknowledgments"

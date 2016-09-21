@@ -57,6 +57,35 @@ en:
     send: "Send"
     upload: "Upload"
 
+  additional_details:
+    additional_details_title: 'Additional Details'
+    add: 'Add Additional Details'
+    preview_title: 'Additional Detail Survey Preview'
+    close_preview: 'Close'
+    form_builder_title: 'Additional Details Form Builder'
+    description_placeholder: 'Description (optional)'
+    add_options: 'Add Options'
+    remove_option: 'Remove Option'
+    remove_question: 'Remove Question'
+    add_question: 'Add another Question'
+    view_preview: 'View Preview'
+    return_to_questionnaires: 'Return to Questionnaires'
+    questionnaire_index_title: 'Additional Detail Forms'
+    create_new_questionnaire: 'Create new'
+    form_name: 'Form Name'
+    service_name: 'Service Name'
+    active: 'Active'
+    activate: 'Activate'
+    edit_questionnaire: 'Edit'
+    delete_questionnaire: 'Delete'
+    disable_questionnaire: 'Disable Questionnaire'
+    activate_questionnaire: 'Activate Questionnaire'
+    questionnaire_submission: 'Questionnaire Submission'
+    yes_label: 'Yes'
+    no_label: 'No'
+    dashboard_complete_details: "Please complete the required Additional Details for %{service_name}"
+    take_additional_detail_survey: "Take Additional Details Survey for %{service_name}"
+
   constants:
     yes_select: "Yes"
     no_select: "No"
@@ -69,6 +98,8 @@ en:
 
 
   calendars:
+    confirm_row_select: "This will reset custom values for this row, do you wish to continue?"
+    confirm_column_select: "This will reset custom values for this column, do you wish to continue?"
     pppv:
       header: "Per Patient/Visit Services"
       header_fields:
@@ -243,9 +274,9 @@ en:
       updated: "Arm Updated!"
       destroyed: "Arm Destroyed!"
       arm: "Arm:"
-      name: "Arm Name:"
-      subject_count: "Subject Count:"
-      visit_count: "Visit Count:"
+      name: "Arm Name: *"
+      subject_count: "Subject Count: *"
+      visit_count: "Visit Count: *"
 
     ######################
     #  AUTHORIZED USERS  #
@@ -421,6 +452,7 @@ en:
       my_protocols: "My Protocols"
       my_admin_protocols: "My Admin Protocols"
       organization: "Organization"
+      inactive: "(Inactive)"
       sort_by: "Sort By"
       filter: "Filter"
       saved_filters:
@@ -760,9 +792,9 @@ en:
       destroyed: "Visit Destroyed!"
       arm: "Arm:"
       visit: "Visit:"
-      name: "Name:"
-      day: "Day:"
-      position: "Position:"
+      name: "Name: *"
+      day: "Day: *"
+      position: "Position: *"
       window_before: "Window Before:"
       window_after: "Window After:"
 
@@ -923,7 +955,7 @@ en:
   # Catalog Manager Organization Form
   organization_form:
     abbreviation: "Abbreviation"
-    ack_language: "Acknowledgement Language"
+    ack_language: "Acknowledgment Language"
     actions: "Actions:"
     add_map: "Add Pricing Map"
     associated_surveys: "Surveys"
@@ -945,6 +977,7 @@ en:
     description: "Description"
     disabled: "Do not display in SPARC"
     disabled_at: "Disabled at: %{disabled_parent}"
+    eap_id: 'EAP ID'
     epic_info: "Epic Interface"
     errors: "Effective Date, Display Dates, Percent of Fee, and Rates are required on all pricing setups."
     gen_info: "General Information"
@@ -966,7 +999,7 @@ en:
     send_to_epic: "Send To Epic"
     service_center_cost: "Service Center Cost"
     service_error: "There are no service providers anywhere on this tree."
-    service_level_components: "Service Level Components"
+    service_level_components: "Service Level Components (for SPARCFulfillment)"
     service_provider_required_message: "You must have at least one service provider either at the provider, program, or core level"
     service_providers: "Service Providers"
     split_notify: "Split/Notify Here"
@@ -1418,70 +1451,6 @@ en:
     subspecialty_prompt: "Select a Subspecialty"
     subspecialty: "Subspecialty:"
 
-  # Catalog Manager - Organization Form
-  organization_form:
-    service_level_components: "Service Level Components"
-    gen_info: "General Information"
-    user_rights: "User Rights"
-    pricing: "Pricing"
-    epic_info: "Epic Interface"
-    program: "Program"
-    core: "Core"
-    name: "Name"
-    abbreviation: "Abbreviation"
-    description: "Description"
-    ack_language: "Acknowledgement Language"
-    order: "Order"
-    tag_list: "Tags"
-    is_ctrc: "Is CTRC?"
-    split_notify: "Split/Notify Here"
-    css_class: "Color"
-    disabled: "Do not display in SPARC"
-    disabled_at: "Disabled at: %{disabled_parent}"
-    one_time_fee: "One Time Fee"
-    core_facility: "Core/Facility Based Services"
-    service_center_cost: "Service Center Cost"
-    hospital_based_services: "Hospital Based Services"
-    eap_id: 'EAP ID'
-    cpt_code: "CPT Code"
-    send_to_epic: "Send To Epic"
-    charge_code: "Charge Code"
-    revenue_code: "Revenue Code"
-    pricing_maps: "Pricing Maps"
-    add_map: "Add Pricing Map"
-    related_services: "Related Services"
-    associated_surveys: "Surveys"
-    submission_emails: "Submission E-mails"
-    super_users: "Super Users"
-    service_providers: "Service Providers"
-    service_provider_required_message: "You must have at least one service provider either at the provider, program, or core level"
-    new_sp: "New Service Provider"
-    service_error: "There are no service providers anywhere on this tree."
-    cm_rights: "Catalog Manager Rights"
-    clinical_work_fulfillment: "Fulfillment"
-    clinical_providers: "Fulfillment Provider Rights:"
-    new_cm: "New Catalog Manager"
-    auto_price_adj: "Automatic Pricing Adjustment"
-    change_rates: "Increase or Decrease Rates"
-    pricing_setup: "Pricing Setup"
-    subsidy_info: "Subsidy Information"
-    subsidy_max_percent: "Max Percentage"
-    subsidy_default_percentage: "Default Percentage"
-    subsidy_instructions: "Instructions"
-    subsidy_max_dollar: "Max Dollar Cap"
-    actions: "Actions:"
-    submit_button: "Save"
-    cancel_button: "Cancel"
-    blank_field_errors: "Name and Order are required on the Service.  Effective Date, Display Date, and Service Rate are required on all Pricing Maps."
-    per_patient_errors: "Clinical Quantity Type, Unit Factor, and Units Per Qty Maximum are required on all Per Patient Pricing Maps."
-    otf_field_errors: "If the Pricing Map is a one time fee (the box is checked), Quantity Type, Quantity Minimum, Unit Type, and Unit Maximum are required."
-    status_legend: "Status Options (Use default statuses below or click to create custom service request statuses)"
-    default_statuses: "Default Statuses:"
-    color_blank: "Select a Color"
-    errors: "Effective Date, Display Dates, Percent of Fee, and Rates are required on all pricing setups."
-    show_in_cwf: "Show in Fulfillment"
-    ctrc_label: "Administrative Approvals"
-
   # Indirect cost rates, default values used to prepopulate forms
   indirect_cost_rates:
     internal_and_college: "0"
@@ -1575,22 +1544,23 @@ en:
 
   # Mailer
   mailer:
-    body1: "To VIEW and/or MAKE any changes to this request,"
-    header1: "Authorized Users have been edited or added in"
-    header2: "for your"
-    header3: "listed below."
-    link1: "SPARC Request"
-    link2: "please click here."
+    add_intro: "An Authorized User has been added in"
+    contact_information: "Contact Information"
+    delete_intro: "An Authorized User has been deleted in"
+    epic_access: "Epic Access"
     name: "Name:"
     p_id: "Protocol ID:"
     p_info: "Protocol Information"
-    proxy: "Proxy Rights"
+    proxy: "SPARC Proxy Rights"
     received: "You have received a new notification on your SPARC Request User Dashboard. Please login  @ %{portal_root_url} to retrieve it. Thank you."
     role: "Role:"
     s_name: "Sponsor Name"
+    sparc_dashboard_period: "SPARCDashboard."
     title1: "Short Title:"
     title2: "Project Title:"
+    update:  "An Authorized User has been modified in"
     user_info: "User Information:"
+    user_modification: "User Modification"
 
   # New/editing projects
   sr_project:
@@ -1918,8 +1888,8 @@ en:
     recruitment_start_date: "Estimated Recruitment Start Date"
     services_required: "You can't continue unless you have services in your cart."
     services: "My Services"
-    study_end_date: "Estimated Study End Date"
-    study_start_date: "Estimated Study Start Date"
+    study_end_date: "Estimated Study End Date *"
+    study_start_date: "Estimated Study Start Date *"
 
   # Service Request review page
   sr_review:

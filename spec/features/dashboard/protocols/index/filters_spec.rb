@@ -1,3 +1,23 @@
+# Copyright © 2011-2016 MUSC Foundation for Research Development~
+# All rights reserved.~
+
+# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
+
+# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.~
+
+# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following~
+# disclaimer in the documentation and/or other materials provided with the distribution.~
+
+# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products~
+# derived from this software without specific prior written permission.~
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,~
+# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT~
+# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL~
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS~
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
+# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
+
 require "rails_helper"
 
 RSpec.describe "filters", js: :true do
@@ -35,11 +55,16 @@ RSpec.describe "filters", js: :true do
   describe "save" do
     context "user clicks save" do
       it "should allow user to save filter" do
+        organization = create(:institution, name: 'Union Allied')
+        create(:service_provider, organization_id: organization.id, identity_id: user.id)
+        protocol = create_protocol(archived: false, short_title: "Shady Business", organization: organization)
+
         visit_protocols_index_page
         expect do
           @page.instance_exec do
             filter_protocols.archived_checkbox.click
             filter_protocols.select_status("Active", "Complete")
+            filter_protocols.select_core("Union Allied")
             filter_protocols.save_link.click
             wait_for_filter_form_modal
             filter_form_modal.name_field.set("MyFilter")
@@ -50,20 +75,23 @@ RSpec.describe "filters", js: :true do
 
         new_filter = ProtocolFilter.last
         expect(new_filter.with_status).to eq(['ctrc_approved', 'complete'])
+        expect(new_filter.with_organization).to eq(["#{organization.id}"])
         expect(new_filter.show_archived).to eq(true)
       end
     end
 
     context "admin user clicks save" do
       it "should allow admin user to save filter" do
-        organization = create(:organization, name: 'Union Allied')
+        organization = create(:institution, name: 'Union Allied')
         create(:service_provider, organization_id: organization.id, identity_id: user.id)
+        protocol = create_protocol(archived: false, short_title: "Shady Business", organization: organization)
 
         visit_protocols_index_page
         expect do
           @page.instance_exec do
             filter_protocols.archived_checkbox.click
             filter_protocols.select_status("Active", "Complete")
+            filter_protocols.select_core("Union Allied")
             filter_protocols.select_owner("Doe, John")
             filter_protocols.save_link.click
             wait_for_filter_form_modal
@@ -76,6 +104,7 @@ RSpec.describe "filters", js: :true do
         new_filter = ProtocolFilter.last
         expect(new_filter.with_status).to eq(['ctrc_approved', 'complete'])
         expect(new_filter.show_archived).to eq(true)
+        expect(new_filter.with_organization).to eq(["#{organization.id}"])
         expect(new_filter.with_owner).to eq(["#{user.id}"])
       end
     end

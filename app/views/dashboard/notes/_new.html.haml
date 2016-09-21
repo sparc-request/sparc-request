@@ -1,4 +1,4 @@
--# Copyright © 2011 MUSC Foundation for Research Development
+-# Copyright © 2011-2016 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -30,5 +30,5 @@
     .col-sm-1.col-sm-offset-3
       %input.btn.btn-primary{type: 'submit', value: t(:actions)[:add]}
     .col-sm-1
-      %button.btn.btn-default{type: 'button', data: {dismiss: 'modal'}}
+      %button.btn.btn-default.notes.cancel{type: 'button', data: {notable_id: notable.id, notable_type: notable_type}}
         = t(:actions)[:cancel]

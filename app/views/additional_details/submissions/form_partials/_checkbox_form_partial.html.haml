@@ -1,0 +1,5 @@
+%br
+- item.item_options.each do |item_option|
+  = qr.label :content, class: 'checkbox-inline' do
+    = qr.check_box :content, {}, item_option.content, nil
+    = item_option.content

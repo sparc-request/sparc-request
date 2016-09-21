@@ -1,4 +1,4 @@
--# Copyright © 2011 MUSC Foundation for Research Development
+-# Copyright © 2011-2016 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -20,7 +20,7 @@
 
 .modal-dialog
   .modal-content
-    = form_for arm, {remote: true, url: dashboard_arms_path(arm), html: {class: "form-horizontal new_visit", role: "form"}} do |a|
+    = form_for arm, {remote: true, url: dashboard_arms_path(arm), html: {class: "form-horizontal", role: "form"}} do |a|
       .modal-header
         %button.close{type: 'button', data: {dismiss: 'modal'}}
           %span{aria: {hidden:'true'}} &times;
@@ -40,10 +40,10 @@
               .col-sm-7= a.text_field "name", {class: 'form-control'}
             .form-group
               = a.label "subject_count", t(:dashboard)[:arms][:subject_count], class: "col-sm-4 control-label"
-              .col-sm-7= a.text_field "subject_count", {class: 'form-control'}
+              .col-sm-7= a.text_field "subject_count", {class: 'form-control', value: ''}
             .form-group
               = a.label "visit_count", t(:dashboard)[:arms][:visit_count], class: "col-sm-4 control-label"
-              .col-sm-7= a.text_field "visit_count", {class: 'form-control'}
+              .col-sm-7= a.text_field "visit_count", {class: 'form-control', value: ''}
       .modal-footer
         .center-block
           %button.btn.btn-default{type: 'button', data: {dismiss: 'modal'}}

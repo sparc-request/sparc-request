@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2016 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -20,6 +20,10 @@
 $ ->
   $(".datetimepicker").datetimepicker(format: 'MM/DD/YYYY', allowInputToggle: true)
   $(".selectpicker").selectpicker()
+  $('[data-toggle="tooltip"]').tooltip()
+
+  $(document).ajaxComplete ->
+    $('[data-toggle="tooltip"]').tooltip()
 
 (exports ? this).formatMoney = (n, t=',', d='.', c='$') ->
   s = if n < 0 then "-#{c}" else c

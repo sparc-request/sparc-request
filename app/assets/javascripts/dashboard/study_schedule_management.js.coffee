@@ -210,7 +210,7 @@ $ ->
     $(this).closest('form').submit()
 
   $(document).on 'click', '#remove_service_button', ->
-    line_item_count = $('#line_item_count').data('line-item-count')
+    line_item_count = $('#study_schedule_buttons').data('line-item-count')
     data =
       'protocol_id'             : $('#study_schedule_buttons').data('protocol-id')
       'sub_service_request_id'  : $('#study_schedule_buttons').data('sub-service-request-id')

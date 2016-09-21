@@ -18,7 +18,7 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-#study_schedule_buttons{ data: { protocol_id: service_request.protocol_id, sub_service_request_id: sub_service_request.id, service_request_id: service_request.id } }
+#study_schedule_buttons{ data: { protocol_id: service_request.protocol_id, sub_service_request_id: sub_service_request.id, service_request_id: service_request.id, line_item_count: sub_service_request.line_items.count } }
   .row
     .col-sm-4.col-md-4.text-center
       = t(:dashboard)[:arms][:manage]

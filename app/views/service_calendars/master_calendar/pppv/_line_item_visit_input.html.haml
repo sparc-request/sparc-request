@@ -19,7 +19,7 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE
 - case tab
 - when 'template'
-  = check_box_tag "visit-#{visit.id}", 1, (visit.research_billing_qty.to_i > 0 || visit.insurance_billing_qty.to_i > 0 || visit.effort_billing_qty.to_i > 0), class: "visit-quantity", data: { visit_id: visit.id, portal: portal, ssrid: sub_service_request ? sub_service_request.id : '' }, update: "/service_calendars?tab=#{tab}&arm_id=#{arm.id}&pages=#{pages}&merged=#{merged}&portal=#{portal}&review=#{review}", disabled: locked
+  = check_box_tag "visit-#{visit.id}", 1, (visit.research_billing_qty.to_i > 0 || visit.insurance_billing_qty.to_i > 0 || visit.effort_billing_qty.to_i > 0), class: "visit-quantity", data: { visit_id: visit.id, portal: portal, ssrid: sub_service_request ? sub_service_request.id : '' }, update: "/service_calendars.js?tab=#{tab}&arm_id=#{arm.id}&pages=#{pages}&merged=#{merged}&portal=#{portal}&review=#{review}", disabled: locked
 - when 'billing_strategy'
   .row
     - if locked

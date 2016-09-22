@@ -1,4 +1,4 @@
--# Copyright © 2011 MUSC Foundation for Research Development
+-# Copyright © 2011-2016 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -72,29 +72,30 @@
                     %span= f.check_box :tag_list, { :multiple => true }, tag.name, nil
       %br
 
-      %fieldset.service_level_components.parent
-        .legend
-          = t(:organization_form)[:service_level_components]
+      #components_wrapper{:style => "display: none;"}
+        %fieldset.service_level_components.parent
+          .legend
+            = t(:organization_form)[:service_level_components]
 
-        %fieldset.single_fieldset
-          .secondary_header Components
-          %table
-            %tbody
-              = f.hidden_field :components
-              - if @service.components
-                - components = @service.components.split(",")
-                - components_length = components.length
-                - (0...components_length).each do |i|
-                  %tr{id: "service_component_position_#{i}"}
-                    %td
-                      %input.service_component_field{ value: components[i], position: i, type: 'text'}
-                      %button.delete{type: "button", position: i} Remove
-              %tr{id: "service_component_position_#{components_length}"}
-                %td
-                  %input.service_component_field{ position: components_length, type: 'text' }
+          %fieldset.single_fieldset
+            .secondary_header Components
+            %table
+              %tbody
+                = f.hidden_field :components
+                - if @service.components
+                  - components = @service.components.split(",")
+                  - components_length = components.length
+                  - (0...components_length).each do |i|
+                    %tr{id: "service_component_position_#{i}"}
+                      %td
+                        %input.service_component_field{ value: components[i], position: i, type: 'text'}
+                        %button.delete{type: "button", position: i} Remove
+                %tr{id: "service_component_position_#{components_length}"}
+                  %td
+                    %input.service_component_field{ position: components_length, type: 'text' }
 
-          %button.add{type: "button"} Add components
-      %br
+            %button.add{type: "button"} Add components
+        %br
 
       #epic_wrapper{:style => "display:none;"}
         %fieldset#epic_fieldset.parent

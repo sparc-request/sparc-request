@@ -1,3 +1,23 @@
+# Copyright © 2011-2016 MUSC Foundation for Research Development~
+# All rights reserved.~
+
+# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
+
+# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.~
+
+# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following~
+# disclaimer in the documentation and/or other materials provided with the distribution.~
+
+# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products~
+# derived from this software without specific prior written permission.~
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,~
+# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT~
+# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL~
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS~
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
+# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
+
 # encoding: UTF-8
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
@@ -183,6 +203,12 @@ ActiveRecord::Schema.define(version: 20160908144020) do
 
   add_index "charges", ["service_id"], name: "index_charges_on_service_id", using: :btree
   add_index "charges", ["service_request_id"], name: "index_charges_on_service_request_id", using: :btree
+
+  create_table "click_counters", force: :cascade do |t|
+    t.integer  "click_count", limit: 4
+    t.datetime "created_at",            null: false
+    t.datetime "updated_at",            null: false
+  end
 
   create_table "clinical_providers", force: :cascade do |t|
     t.integer  "identity_id",     limit: 4
@@ -421,6 +447,27 @@ ActiveRecord::Schema.define(version: 20160908144020) do
 
   add_index "ip_patents_info", ["protocol_id"], name: "index_ip_patents_info_on_protocol_id", using: :btree
 
+  create_table "item_options", force: :cascade do |t|
+    t.string   "content",    limit: 255
+    t.integer  "item_id",    limit: 4
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  add_index "item_options", ["item_id"], name: "index_item_options_on_item_id", using: :btree
+
+  create_table "items", force: :cascade do |t|
+    t.text     "content",          limit: 65535
+    t.string   "item_type",        limit: 255
+    t.text     "description",      limit: 65535
+    t.boolean  "required"
+    t.integer  "questionnaire_id", limit: 4
+    t.datetime "created_at",                     null: false
+    t.datetime "updated_at",                     null: false
+  end
+
+  add_index "items", ["questionnaire_id"], name: "index_items_on_questionnaire_id", using: :btree
+
   create_table "line_items", force: :cascade do |t|
     t.integer  "service_request_id",     limit: 4
     t.integer  "sub_service_request_id", limit: 4
@@ -657,7 +704,6 @@ ActiveRecord::Schema.define(version: 20160908144020) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "admin_filter",      limit: 255
-    t.string   "sorted_by",         limit: 255
     t.string   "with_owner",        limit: 255
   end
 
@@ -717,6 +763,28 @@ ActiveRecord::Schema.define(version: 20160908144020) do
   end
 
   add_index "question_groups", ["api_id"], name: "uq_question_groups_api_id", unique: true, using: :btree
+
+  create_table "questionnaire_responses", force: :cascade do |t|
+    t.integer  "submission_id", limit: 4
+    t.integer  "item_id",       limit: 4
+    t.text     "content",       limit: 65535
+    t.boolean  "required",                    default: false
+    t.datetime "created_at",                                  null: false
+    t.datetime "updated_at",                                  null: false
+  end
+
+  add_index "questionnaire_responses", ["item_id"], name: "index_questionnaire_responses_on_item_id", using: :btree
+  add_index "questionnaire_responses", ["submission_id"], name: "index_questionnaire_responses_on_submission_id", using: :btree
+
+  create_table "questionnaires", force: :cascade do |t|
+    t.string   "name",       limit: 255
+    t.integer  "service_id", limit: 4
+    t.datetime "created_at",                             null: false
+    t.datetime "updated_at",                             null: false
+    t.boolean  "active",                 default: false
+  end
+
+  add_index "questionnaires", ["service_id"], name: "index_questionnaires_on_service_id", using: :btree
 
   create_table "questions", force: :cascade do |t|
     t.integer  "survey_section_id",      limit: 4
@@ -1002,6 +1070,16 @@ ActiveRecord::Schema.define(version: 20160908144020) do
 
   add_index "submission_emails", ["organization_id"], name: "index_submission_emails_on_organization_id", using: :btree
 
+  create_table "submissions", force: :cascade do |t|
+    t.integer  "service_id",  limit: 4
+    t.integer  "identity_id", limit: 4
+    t.datetime "created_at",            null: false
+    t.datetime "updated_at",            null: false
+  end
+
+  add_index "submissions", ["identity_id"], name: "index_submissions_on_identity_id", using: :btree
+  add_index "submissions", ["service_id"], name: "index_submissions_on_service_id", using: :btree
+
   create_table "subsidies", force: :cascade do |t|
     t.datetime "created_at",                                             null: false
     t.datetime "updated_at",                                             null: false
@@ -1012,7 +1090,7 @@ ActiveRecord::Schema.define(version: 20160908144020) do
     t.string   "status",                 limit: 255, default: "Pending"
     t.integer  "approved_by",            limit: 4
     t.datetime "approved_at"
-    t.float    "percent_subsidy",        limit: 24,  default: 0.0
+    t.float    "percent_subsidy",        limit: 24
   end
 
   add_index "subsidies", ["sub_service_request_id"], name: "index_subsidies_on_sub_service_request_id", using: :btree
@@ -1220,4 +1298,11 @@ ActiveRecord::Schema.define(version: 20160908144020) do
   add_index "visits", ["research_billing_qty"], name: "index_visits_on_research_billing_qty", using: :btree
   add_index "visits", ["visit_group_id"], name: "index_visits_on_visit_group_id", using: :btree
 
+  add_foreign_key "item_options", "items"
+  add_foreign_key "items", "questionnaires"
+  add_foreign_key "questionnaire_responses", "items"
+  add_foreign_key "questionnaire_responses", "submissions"
+  add_foreign_key "questionnaires", "services"
+  add_foreign_key "submissions", "identities"
+  add_foreign_key "submissions", "services"
 end

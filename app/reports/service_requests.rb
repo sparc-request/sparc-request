@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2016 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -30,7 +30,7 @@ class ServiceRequestsReport < ReportingModule
   # see app/reports/test_report.rb for all options
   def default_options
     {
-      "Date Range" => {:field_type => :date_range, :for => "service_requests_submitted_at", :from => "2012-03-01".to_date, :to => Date.today},
+      "Date Range" => {:field_type => :date_range, :for => "submitted_at", :from => "2012-03-01".to_date, :to => Date.today},
       Institution => {:field_type => :select_tag, :has_dependencies => "true"},
       Provider => {:field_type => :select_tag, :dependency => '#institution_id', :dependency_id => 'parent_id'},
       Program => {:field_type => :select_tag, :dependency => '#provider_id', :dependency_id => 'parent_id'},
@@ -51,7 +51,7 @@ class ServiceRequestsReport < ReportingModule
     attrs["Protocol Short Title"] = "service_request.try(:protocol).try(:short_title)"
     attrs["Full Protocol Title"] = "service_request.try(:protocol).try(:title)"
 
-    attrs["Date Submitted"] = "service_request.submitted_at.strftime('%Y-%m-%d')"
+    attrs["Date Submitted"] = "submitted_at.strftime('%Y-%m-%d')"
 
     if params[:institution_id]
       attrs[Institution] = [params[:institution_id], :abbreviation]
@@ -147,8 +147,8 @@ class ServiceRequestsReport < ReportingModule
       ssr_organization_ids = [ssr_organization_ids, org.all_children(organizations).map(&:id)].flatten
     end
 
-    if args[:service_requests_submitted_at_from] and args[:service_requests_submitted_at_to]
-      submitted_at = args[:service_requests_submitted_at_from].to_time.strftime("%Y-%m-%d 00:00:00")..args[:service_requests_submitted_at_to].to_time.strftime("%Y-%m-%d 23:59:59")
+    if args[:submitted_at_from] and args[:submitted_at_to]
+      submitted_at = args[:submitted_at_from].to_time.strftime("%Y-%m-%d 00:00:00")..args[:submitted_at_to].to_time.strftime("%Y-%m-%d 23:59:59")
     end
 
     # default values if none are provided
@@ -166,7 +166,7 @@ class ServiceRequestsReport < ReportingModule
     submitted_at ||= self.default_options["Date Range"][:from]..self.default_options["Date Range"][:to]
     statuses = args[:status] || AVAILABLE_STATUSES.keys # use all if none are selected
 
-    return :sub_service_requests => {:organization_id => ssr_organization_ids, :status => statuses}, :service_requests => {:submitted_at => submitted_at}, :services => {:organization_id => service_organization_ids}
+    return :sub_service_requests => {:organization_id => ssr_organization_ids, :status => statuses, :submitted_at => submitted_at}, :services => {:organization_id => service_organization_ids}
   end
 
   # Return only uniq records for
@@ -177,7 +177,7 @@ class ServiceRequestsReport < ReportingModule
   end
 
   def order
-    "service_requests.submitted_at ASC"
+    "sub_service_requests.submitted_at ASC"
   end
 
   ##################  END QUERY SETUP   #####################

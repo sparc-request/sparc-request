@@ -1,4 +1,4 @@
--# Copyright © 2011 MUSC Foundation for Research Development
+-# Copyright © 2011-2016 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -50,7 +50,11 @@
         .form-group.row
           = form.label :with_organization, t(:dashboard)[:protocol_filters][:organization], class: 'col-lg-3 control-label'
           .col-lg-9.drop-underneath
-            = form.select :with_organization, filterrific.select_options[:with_organization], {}, class: "form-control selectpicker core-select", multiple: true, data: { none_selected_text: t(:constants)[:prompts][:any] }
+            = form.select :with_organization, nil, {}, class: "form-control selectpicker core-select", multiple: true, data: { none_selected_text: t(:constants)[:prompts][:any] } do
+              = filterrific.select_options[:with_organization].each do |org_type, orgs|
+                %optgroup{ label: org_type }
+                  - orgs.each do |name, id|
+                    %option{ value: id, selected: filterrific.with_organization && filterrific.with_organization.include?(id), data: {content: name} }
         - if admin
           %hr
           .form-group.row

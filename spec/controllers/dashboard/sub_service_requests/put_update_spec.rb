@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2016 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -27,11 +27,12 @@ RSpec.describe Dashboard::SubServiceRequestsController do
       @other_user     = create(:identity)
 
       log_in_dashboard_identity(obj: @logged_in_user)
-
+      service_requester = create(:identity)
       @protocol             = create(:protocol_without_validations, primary_pi: @other_user)
       @service_request      = create(:service_request_without_validations, protocol: @protocol)
       @organization         = create(:organization)
-      @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, organization: @organization)
+      @survey = create(:survey, access_code: 'sctr-customer-satisfaction-survey')
+      @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, organization: @organization, service_requester_id:  service_requester.id)
     end
 
     #####AUTHORIZATION#####
@@ -61,7 +62,6 @@ RSpec.describe Dashboard::SubServiceRequestsController do
     context 'instance variables' do
       before :each do
         create(:super_user, identity: @logged_in_user, organization: @organization)
-
         put :update, id: @sub_service_request.id, format: :js
       end
 
@@ -73,6 +73,62 @@ RSpec.describe Dashboard::SubServiceRequestsController do
 
       it { is_expected.to render_template "dashboard/sub_service_requests/update" }
       it { is_expected.to respond_with :ok }
+    end
+
+    #####SURVEYS#####
+    context 'ssr status is complete' do
+      context 'org has associated surveys' do
+        before :each do
+          create(:super_user, identity: @logged_in_user, organization: @organization)
+          @service         = create(:service_without_validations, organization_id:  @organization.id)
+          @line_item      = create(:line_item_without_validations, service_request_id: @service_request.id,                          service_id:  @service.id,
+                                      sub_service_request_id: @sub_service_request.id)
+          @organization.associated_surveys.create survey_id: @survey.id
+        end
+
+        it 'should distribute surveys' do 
+          expect_any_instance_of(SubServiceRequest).to receive(:distribute_surveys)
+          put :update, sub_service_request: {status: 'complete'}, id: @sub_service_request.id, format: :js
+        end
+      end
+
+      context 'org does not have associated surveys' do
+        before :each do
+          create(:super_user, identity: @logged_in_user, organization: @organization)
+        end
+        it 'should not distribute surveys' do
+          expect_any_instance_of(SubServiceRequest).to_not receive(:distribute_surveys)
+          put :update, sub_service_request: {status: 'complete'}, id: @sub_service_request.id, format: :js
+        end
+      end
+    end
+
+    context 'org has associated surveys' do
+      context 'ssr status is not complete' do
+        before :each do
+          create(:super_user, identity: @logged_in_user, organization: @organization)
+          @service         = create(:service_without_validations, organization_id:  @organization.id)
+          @line_item      = create(:line_item_without_validations, service_request_id: @service_request.id,                          service_id:  @service.id,
+                                      sub_service_request_id: @sub_service_request.id)
+          @organization.associated_surveys.create survey_id: @survey.id
+        end
+        it 'should not distribute surveys' do
+          expect_any_instance_of(SubServiceRequest).to_not receive(:distribute_surveys)
+          put :update, sub_service_request: {status: 'not_complete'}, id: @sub_service_request.id, format: :js
+        end
+      end
+    end
+
+    context 'org does not have associated surveys' do
+      context 'ssr status is not complete' do
+        before :each do
+          create(:super_user, identity: @logged_in_user, organization: @organization)
+        end
+        it 'should not distribute surveys' do
+          expect_any_instance_of(SubServiceRequest).to_not receive(:distribute_surveys)
+          put :update, sub_service_request: {status: 'not_complete'}, id: @sub_service_request.id, format: :js
+        end
+      end
     end
   end
 end

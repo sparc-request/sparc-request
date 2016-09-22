@@ -1,5 +1,5 @@
 # coding: utf-8
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2016 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -117,7 +117,10 @@ RSpec.describe "review page", js: true do
         click_button("No")
         wait_for_javascript_to_finish
       end
-      @email = all_emails.find { |email| email.subject == "Epic Rights Approval"}
+
+      # Find 'Epic Rights Approval' email, and grab the HTML part.
+      email = all_emails.find { |e| e.subject == "Epic Rights Approval" }
+      @email = email.parts.find { |e| e.content_type.include?('html') }
       service_request.update_attributes(status: 'submitted')
     end
 
@@ -147,7 +150,9 @@ RSpec.describe "review page", js: true do
         clear_emails
         visit Capybara::Node::Simple.new(@email.body.to_s).find_link("Send to Primary PI")['href']
 
-        @email = all_emails.find { |email| email.subject == "Epic Rights User Approval"}
+        # Find 'Epic Rights Approval' email, and grab the HTML part.
+        email = all_emails.find { |e| e.subject == "Epic Rights User Approval" }
+        @email = email.parts.find { |e| e.content_type.include?('html') }
       end
 
       it "should send an email to the Primary PI" do

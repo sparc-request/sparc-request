@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2016 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -36,14 +36,18 @@ class Dashboard::VisitGroupsController < Dashboard::BaseController
     @service_request = ServiceRequest.find(params[:service_request_id])
     @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
     @arm =  Arm.find(params[:visit_group][:arm_id])
-    if @arm.add_visit(params[:visit_group][:position], params[:visit_group][:day], params[:visit_group][:window_before], params[:visit_group][:window_after], params[:visit_group][:name], 'true')
-      @arm.increment!(:minimum_visit_count)
-      @service_request.relevant_service_providers_and_super_users.each do |identity|
-        create_visit_change_toast(identity, @sub_service_request) unless identity == @user
+    @visit_group = VisitGroup.new(params[:visit_group])
+    if @visit_group.valid?
+      if @arm.add_visit(@visit_group.position, @visit_group.day, @visit_group.window_before, @visit_group.window_after, @visit_group.name, 'true')
+        @service_request.relevant_service_providers_and_super_users.each do |identity|
+          create_visit_change_toast(identity, @sub_service_request) unless identity == @user
+        end
+        flash[:success] = t(:dashboard)[:visit_groups][:created]
+      else
+        @errors = @arm.errors
       end
-      flash[:success] = t(:dashboard)[:visit_groups][:created]
     else
-      @errors = @arm.errors
+      @errors = @visit_group.errors
     end
   end
 

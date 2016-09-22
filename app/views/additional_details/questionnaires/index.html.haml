@@ -1,0 +1,49 @@
+.panel.panel-primary
+  .panel-heading
+    = t(:additional_details)[:questionnaire_index_title]
+  .panel-body
+    .row
+      .col-sm-offset-10.col-sm-2
+        = link_to new_service_additional_details_questionnaire_path(@service), class: 'btn btn-success' do
+          = t(:additional_details)[:create_new_questionnaire]
+          %span.glyphicon.glyphicon-plus
+    .row
+      %table.table.table-striped.table-bordered.table-hover
+        %thead
+          %tr
+            %th
+              = t(:additional_details)[:form_name]
+            %th
+              = t(:additional_details)[:service_name]
+            %th
+              = t(:additional_details)[:active]
+            %th
+              = t(:additional_details)[:activate]
+            %th
+              = t(:additional_details)[:edit_questionnaire]
+            %th
+              = t(:additional_details)[:delete_questionnaire]
+        %tbody
+          - @questionnaires.each do |questionnaire|
+            %tr
+              %td
+                = questionnaire.name
+              %td
+                = @service.name
+              %td
+                = questionnaire.active
+              %td
+                .text-center
+                  - if questionnaire.active?
+                    = link_to t(:additional_details)[:disable_questionnaire], service_additional_details_update_questionnaire_path(@service, questionnaire), method: :patch, class: 'btn btn-danger active-questionnaire'
+                  - else
+                    = link_to t(:additional_details)[:activate_questionnaire], service_additional_details_update_questionnaire_path(@service, questionnaire), method: :patch, class: 'btn btn-success inactive-questionnaire'
+              %td
+                .text-center
+                  = link_to edit_service_additional_details_questionnaire_path(@service, questionnaire), class: 'btn btn-info' do
+                    %span.glyphicon.glyphicon-pencil
+              %td
+                .text-center
+                  = link_to service_additional_details_questionnaire_path(@service, questionnaire),
+                    method: :delete, class: 'btn btn-danger' do
+                    %span.glyphicon.glyphicon-remove

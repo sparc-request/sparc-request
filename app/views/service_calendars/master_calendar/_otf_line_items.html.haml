@@ -1,4 +1,4 @@
--# Copyright © 2011 MUSC Foundation for Research Development
+-# Copyright © 2011-2016 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -26,7 +26,7 @@
     - @protocol.service_requests.each do |service_request|
       - service_request.service_list(true).each do |_, value| # get only one time fee services
         - value[:line_items].each do |line_item|
-          - next if %w('first_draft' 'draft').include?(line_item.sub_service_request.status)
+          - next if %w(first_draft).include?(line_item.sub_service_request.status)
           %tr.line_item.otfs{ class: cycle('odd', '', name: 'otfs'), :"data-unit_factor" => line_item.service.displayed_pricing_map.unit_factor }
             %td.service_name
               = line_item.service.name
@@ -158,7 +158,7 @@
         %th.otf{ colspan: (@study_tracker) ? 13 : 16 }
           = value[:name]
         - value[:line_items].each do |line_item|
-          - next if %w('first_draft' 'draft').include?(line_item.sub_service_request.status)
+          - next if %w(first_draft).include?(line_item.sub_service_request.status)
           - locked = !line_item.sub_service_request.can_be_edited? || line_item.sub_service_request.is_complete?
           %tr.line_item.otfs{ class: [cycle('odd', '', name: 'otfs'), locked ? 'locked' : ''], :"data-unit_factor" => line_item.service.displayed_pricing_map.unit_factor }
             %td.service_name

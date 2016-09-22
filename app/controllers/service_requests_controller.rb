@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2016 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -540,8 +540,7 @@ class ServiceRequestsController < ApplicationController
         
         @line_items = sub_service_request.line_items
         xls = render_to_string action: 'show', formats: [:xlsx]
-        display_ssr = sub_service_request
-        Notifier.notify_admin(service_request, submission_email.email, xls, current_user, display_ssr).deliver
+        Notifier.notify_admin(service_request, submission_email.email, xls, current_user, sub_service_request).deliver
       end
     end
   end

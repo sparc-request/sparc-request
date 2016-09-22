@@ -1,4 +1,4 @@
--# Copyright © 2011 MUSC Foundation for Research Development
+-# Copyright © 2011-2016 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -20,7 +20,7 @@
 
 .modal-dialog
   .modal-content
-    = form_for visit_group, {remote: true, url: dashboard_visit_groups_path(visit_group), html: {class: "form-horizontal new_visit", role: "form"}} do |a|
+    = form_for visit_group, {remote: true, url: dashboard_visit_groups_path(visit_group), html: {class: "form-horizontal", id: "add_visit_group", role: "form"}} do |a|
       .modal-header
         %button.close{type: 'button', data: {dismiss: 'modal'}}
           %span{aria: {hidden:'true'}} &times;
@@ -50,7 +50,7 @@
             .form-group
               = a.label "position", t(:dashboard)[:visit_groups][:position], class: "col-sm-4 control-label"
               .col-sm-7
-                = a.select "position", options_from_collection_for_select(arm.visit_groups, 'position', 'insertion_name'), {include_blank: 'add as last'}, :class => "form-control selectpicker"
+                = a.select "position", content_tag(:option, 'Add as last', :value=>"#{arm.visit_groups.count+1}") + options_from_collection_for_select(arm.visit_groups, 'position', 'insertion_name'), {include_blank: 'Nothing selected'}, :class => "form-control selectpicker"
             .form-group
               = a.label "window_before", t(:dashboard)[:visit_groups][:window_before], class: "col-sm-4 control-label"
               .col-sm-7

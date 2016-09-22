@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2016 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -27,6 +27,7 @@ class ServiceRequest < ActiveRecord::Base
   belongs_to :protocol
   has_many :sub_service_requests, :dependent => :destroy
   has_many :line_items, -> { includes(:service) }, :dependent => :destroy
+  has_many :services, through: :line_items
   has_many :line_items_visits, through: :line_items
   has_many :subsidies, through: :sub_service_requests
   has_many :charges, :dependent => :destroy
@@ -495,6 +496,10 @@ class ServiceRequest < ActiveRecord::Base
     identities.flatten.uniq
   end
 
+  def additional_detail_services
+    services.joins(:questionnaires)
+  end
+
   # Change the status of the service request and all the sub service
   # requests to the given status.
   def update_status(new_status, use_validation=true)
@@ -518,7 +523,7 @@ class ServiceRequest < ActiveRecord::Base
     end
 
     self.save(validate: use_validation)
-    
+
     to_notify
   end
 

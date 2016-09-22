@@ -28,21 +28,24 @@
     %title= t(:notifier)[:service_request]
 
   %body
-    - if @status == 'get_a_cost_estimate'
-      = render "welcome"
-    - if @status == 'submitted'
-      = render "welcome_for_submitted_status"
+    - if @ssr_deleted == true
+      = render "deleted_all_services_from_cart"
+    - else
+      - if @status == 'get_a_cost_estimate'
+        = render "welcome"
+      - if @status == 'submitted'
+        = render "welcome_for_submitted_status"
     = render "protocol_information", protocol: @protocol
     - if @service_request.has_per_patient_per_visit_services? and @service_request.arms.count > 0
       = render "arm_information"
     = render "user_information"
-    - if @ssr_deleted
-      = render "deleted_services"
-    - elsif @audit_report.present? && @audit_report[:line_items].present?
-      = render "audit_action"
-
+    / - if @audit_report.present? && @audit_report[:line_items].present?
+    /   = render "audit_action"
     - if @ssrs_to_be_displayed
-      = render "srid_information"
+      - if @ssr_deleted == false
+        = render "srid_information"
+      - else
+        = render "deleted_srid_information"
     - if @status == "submitted" && @role == 'none' && !@notes.empty?
       %p= t(:notifier)[:notes_present]
     

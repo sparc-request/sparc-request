@@ -91,6 +91,7 @@ class Notifier < ActionMailer::Base
 
   def notify_service_provider(service_provider, service_request, attachments_to_add, user_current, audit_report=nil, ssr_deleted=false)
     @notes = service_request.notes
+
     @status = service_request.status
     @role = 'none'
     @full_name = service_provider.identity.full_name
@@ -113,9 +114,28 @@ class Notifier < ActionMailer::Base
       end
     end
 
-    attachments_to_add.each do |file_name, document|
-      next if document.nil?
-      attachments["#{file_name}"] = document
+    # deleted_ssr_ids = []
+    # @deleted_line_items.each do |li|
+    #   deleted_ssr_ids << li[:audited_changes]['sub_service_request_id']
+    # end
+
+    # deleted_ssrs = []
+    # deleted_ssr_ids.uniq.each do |ssr_id|
+    #   deleted_ssrs << SubServiceRequest.find(ssr_id)
+    # end
+
+    # @deleted_ssrs_to_be_displayed = []
+    # deleted_ssrs.each do |deleted_ssr|
+    #   if service_provider.identity.is_service_provider?(deleted_ssr)
+    #     @deleted_ssrs_to_be_displayed << deleted_ssr
+    #   end
+    # end
+
+    if @ssr_deleted == false
+      attachments_to_add.each do |file_name, document|
+        next if document.nil?
+        attachments["#{file_name}"] = document
+      end
     end
 
     # only send these to the correct person in the production env

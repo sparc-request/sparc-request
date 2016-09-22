@@ -431,13 +431,20 @@ class ServiceRequestsController < ApplicationController
     @service_request.protocol.arm_cleanup if @service_request.protocol
 
     # clean up sub_service_requests
-    @service_request.reload
+    # @service_request.reload
+    # ssr = @service_request.sub_service_requests.find_by_organization_id(org_id)
+    # if @service_request.line_items.count.zero?
+    #   send_ssr_service_provider_notifications(@service_request, ssr, ssr_deleted=true)
+    # end
 
     to_delete = @service_request.sub_service_requests.map(&:organization_id) - @service_request.service_list.keys
     to_delete.each do |org_id|
       ssr = @service_request.sub_service_requests.find_by_organization_id(org_id)
-      if !['first_draft', 'draft'].include?(@service_request.status) and !@service_request.submitted_at.nil? and @service_request.submitted_at > ssr.created_at
+      # if !['first_draft', 'draft'].include?(@service_request.status) and !@service_request.submitted_at.nil? and @service_request.submitted_at > ssr.created_at
+      if @service_request.line_items.count.zero?
+
         @protocol = @service_request.protocol
+  
         send_ssr_service_provider_notifications(@service_request, ssr, ssr_deleted=true)
       end
       ssr.destroy
@@ -549,8 +556,7 @@ class ServiceRequestsController < ApplicationController
     audit_report = sub_service_request.audit_report(current_user, previously_submitted_at, Time.now.utc)
 
     sub_service_request.organization.service_providers.where("(`service_providers`.`hold_emails` != 1 OR `service_providers`.`hold_emails` IS NULL)").each do |service_provider|
-      send_individual_service_provider_notification(service_request, sub_service_request, service_provider, audit_report, ssr_deleted)
-    end
+      send_individual_service_provider_notification(service_request, sub_service_request, service_provider, audit_report, ssr_deleted) end
   end
 
   def ssr_has_changed?(service_request, sub_service_request) #specific ssr has changed?
@@ -572,7 +578,6 @@ class ServiceRequestsController < ApplicationController
 
   def send_individual_service_provider_notification(service_request, sub_service_request, service_provider, audit_report=nil, ssr_deleted=false)
     attachments = {}
-
     @service_list_true = @service_request.service_list(true, service_provider)
     @service_list_false = @service_request.service_list(false, service_provider)
 

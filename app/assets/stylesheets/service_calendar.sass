@@ -26,6 +26,7 @@
   .table-bordered
     height: 100%
     thead
+      border-top: 1px solid white
       tr:not(:first-child)
         border-bottom: 1px solid #ddd
       th
@@ -36,20 +37,26 @@
         width: 6%
       th.select-row-header
         width: 5%
-    td.unit-type-number,
-    td.qty-type-number
-      height: 100%
-      padding: 0
-      .unit-type,
-      .units-per-qty,
-      .qty-type,
-      .qty
+    tbody
+      td.unit-type-number,
+      td.qty-type-number
         height: 100%
-        padding: 8px 15px
-      .unit-type.col-sm-6,
-      .qty-type
-        border-right: 1px solid #DDD
+        padding: 0
+        .unit-type,
+        .units-per-qty,
+        .qty-type,
+        .qty
+          height: 100%
+          padding: 8px 15px
+        .unit-type.col-sm-6,
+        .qty-type
+          border-right: 1px solid #DDD
+      .organization-header
+        background: #CCC
 
+.service-calendar-row,
+.service-calendar-column
+  border: 1px solid #666
 .schedule-tabs
   padding: 5px 0px 0px 0px
 

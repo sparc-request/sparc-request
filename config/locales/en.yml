@@ -84,6 +84,13 @@ en:
     screening_tooltip: "Enter the number of subjects you expect to screen as well as how many screening visits are required. If no screening phase is required, you can change the name of the Arm to meet your needs."
     name_tooltip: "Arm Name may contain only letters, numbers, and single spaces and must be unique on your Protocol"
 
+  #######################
+  # AUTHORIZATION ERROR #
+  #######################
+  authorization_error:
+    header: "Authorization Error"
+    link: "Return to your Dashboard"
+
   ####################
   # AUTHORIZED USERS #
   ####################

@@ -43,7 +43,7 @@
       = render 'layouts/dashboard/dashboard_header', user: @user
       .flash
         = render "shared/flash"
-      #inner-content
+      #inner-content.row
         = yield
   %footer
     = render 'layouts/footer'

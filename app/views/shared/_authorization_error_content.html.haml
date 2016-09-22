@@ -1,4 +1,4 @@
--# Copyright © 2011 MUSC Foundation for Research Development
+-# Copyright © 2011-2016 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -17,19 +17,17 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-- visit_groups = arm.visit_groups.page(page)
-.panel.panel-primary.calendar-container{ class: "arm-calendar-container-#{arm.id}", data: { arm_id: arm.id } }
-  .panel-heading
-    .pull-left
-      %h3.panel-title
-        = I18n.t('calendars.pppv.header', arm_name: arm.name)
-    - unless portal || review
-      .pull-right
-        %button.btn.btn-warning.move-visit-button{ data: { arm_id: arm.id } }
-          = t(:proper)[:service_calendar][:move_visit][:header]
-    .clearfix
-  %table.table.table-bordered
-    %thead.bg-primary
-      = render "service_calendars/master_calendar/pppv/#{tab}_header", service_request: service_request, sub_service_request: sub_service_request, arm: arm, tab: tab, pages: pages, page: page, review: review, portal: portal, visit_groups: visit_groups
-    %tbody
-      = render "service_calendars/master_calendar/pppv/#{tab}_line_items", service_request: service_request, sub_service_request: sub_service_request, arm: arm, tab: tab, pages: pages, page: page, review: review, portal: portal, merged: merged, consolidated: consolidated, visit_groups: visit_groups
+.col-sm-3
+.col-sm-6
+  .panel.panel-default
+    .panel-body
+      .page-header.text-center
+        %h1
+          = t(:authorization_error)[:header]
+      .text-center
+        .alert.alert-danger.text-center
+          = raw(error)
+      %br
+      .text-center
+        = link_to t(:authorization_error)[:link], DASHBOARD_LINK, class: 'btn btn-warning'
+.col-sm-3

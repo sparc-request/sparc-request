@@ -134,6 +134,7 @@ module Dashboard
       checked     = line_items_visit.visits.all? { |v| v.research_billing_qty >= 1  }
       check_param = checked ? 'uncheck' : 'check'
       icon        = checked ? 'glyphicon-remove' : 'glyphicon-ok'
+      klass       = checked ? 'btn-danger' : 'btn-success'
       url         = "/service_calendars/toggle_calendar_row?#{check_param}=true&service_request_id=#{line_items_visit.line_item.service_request.id}&line_items_visit_id=#{line_items_visit.id}&portal=#{portal.to_s}"
       url        += "&sub_service_request_id=#{sub_service_request.id}" if sub_service_request
 
@@ -143,7 +144,7 @@ module Dashboard
         method: :post,
         remote: true,
         role: 'button',
-        class: 'btn btn-primary service-calendar-row',
+        class: "btn #{klass} service-calendar-row",
         id: "check-all-row-#{line_items_visit.id}",
         data: { url: url },
         disabled: locked
@@ -158,6 +159,7 @@ module Dashboard
       checked       = filtered_livs.all? { |l| l.visits[n.to_i].research_billing_qty >= 1 }
       check_param   = checked ? 'uncheck' : 'check'
       icon          = checked ? 'glyphicon-remove' : 'glyphicon-ok'
+      klass       = checked ? 'btn-danger' : 'btn-success'
       url           = "/service_calendars/toggle_calendar_column?#{check_param}=true&service_request_id=#{service_request.id}&column_id=#{n + 1}&arm_id=#{arm_id}&portal=#{portal.to_s}"
       url          += "&sub_service_request_id=#{sub_service_request.id}" if sub_service_request
 
@@ -167,7 +169,7 @@ module Dashboard
         method: :post,
         remote: true,
         role: 'button',
-        class: 'btn btn-primary service-calendar-column',
+        class: "btn #{klass} service-calendar-column",
         id: "check-all-column-#{n+1}",
         data: { url: url }
       )

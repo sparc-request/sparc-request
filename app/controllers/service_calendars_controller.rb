@@ -34,19 +34,20 @@ class ServiceCalendarsController < ApplicationController
   respond_to :html, :js
   layout false
   
-  before_filter :initialize_service_request, if: Proc.new{ params[:sub_service_request_id].nil? }
-  before_filter :find_dashboard_requests, if: Proc.new{ params[:sub_service_request_id].present? }
+  before_filter :initialize_service_request,      if: Proc.new{ params[:portal] == 'false' }
+  before_filter :setup_dashboard_requests,        except: [:merged_calendar, :view_full_calendar], if: Proc.new{ params[:portal] == 'true' }
+  before_filter :setup_dashboard_merged_requests, only: [:merged_calendar, :view_full_calendar], if: Proc.new{ params[:portal] == 'true' }
   before_filter :authorize_identity
 
   def update
-    visit                 = Visit.find(params[:visit_id])
-    @arm                  = Arm.find(params[:arm_id])
-    @tab                  = params[:tab]
-    @merged               = params[:merged] == 'true'
-    @portal               = params[:portal] == 'true'
-    @review               = params[:review] == 'true'
-    @consolidated         = false
-    @pages                = eval(params[:pages])
+    visit         = Visit.find(params[:visit_id])
+    @arm          = Arm.find(params[:arm_id])
+    @tab          = params[:tab]
+    @merged       = params[:merged] == 'true'
+    @portal       = params[:portal] == 'true'
+    @review       = params[:review] == 'true'
+    @consolidated = false
+    @pages        = eval(params[:pages])
 
     if params[:checked] == 'true'
       unit_minimum = visit.line_items_visit.line_item.service.displayed_pricing_map.unit_minimum
@@ -96,13 +97,13 @@ class ServiceCalendarsController < ApplicationController
   end
 
   def view_full_calendar
-    @tab              = 'calendar'
-    @review           = false
-    @portal           = true
-    @merged           = true
-    @consolidated     = true
-    @protocol         = Protocol.find(params[:protocol_id])
-    @service_request  = @protocol.any_service_requests_to_display?
+    @tab                = 'calendar'
+    @review             = false
+    @portal             = true
+    @merged             = true
+    @consolidated       = true
+    @protocol           = Protocol.find(params[:protocol_id])
+    @service_request    = @protocol.any_service_requests_to_display?
 
     setup_calendar_pages
 
@@ -127,9 +128,9 @@ class ServiceCalendarsController < ApplicationController
   end
 
   def toggle_calendar_row
-    @line_items_visit     = LineItemsVisit.find(params[:line_items_visit_id])
-    @service              = @line_items_visit.line_item.service if params[:check]
-    @portal               = params[:portal] == 'true'
+    @line_items_visit  = LineItemsVisit.find(params[:line_items_visit_id])
+    @service           = @line_items_visit.line_item.service if params[:check]
+    @portal            = params[:portal] == 'true'
 
     @line_items_visit.visits.each do |visit|
       if params[:check]
@@ -151,9 +152,9 @@ class ServiceCalendarsController < ApplicationController
   end
 
   def toggle_calendar_column
-    column_id             = params[:column_id].to_i
-    @arm                  = Arm.find(params[:arm_id])
-    @portal               = params[:portal] == 'true'
+    column_id  = params[:column_id].to_i
+    @arm       = Arm.find(params[:arm_id])
+    @portal    = params[:portal] == 'true'
 
     @service_request.service_list(false).each do |_key, value|
       next unless @sub_service_request.nil? || @sub_service_request.organization.name == value[:process_ssr_organization_name]
@@ -184,13 +185,14 @@ class ServiceCalendarsController < ApplicationController
 
   private
 
-  def dashboard_sub_service_request
-    params[:sub_service_request_id].present?
+  def setup_dashboard_requests
+    @sub_service_request  = SubServiceRequest.find(params[:sub_service_request_id])
+    @service_request      = @sub_service_request.service_request
   end
 
-  def find_dashboard_requests
-    sub_service_request  = SubServiceRequest.find(params[:sub_service_request_id])
-    @service_request     = sub_service_request.service_request
+  def setup_dashboard_merged_requests
+    sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
+    @service_request    = sub_service_request.service_request
   end
 
   def setup_calendar_pages

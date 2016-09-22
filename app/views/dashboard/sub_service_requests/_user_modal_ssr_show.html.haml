@@ -63,5 +63,8 @@
 
     .modal-footer
       .center-block
+        - if show_view_ssr_back
+          %button.btn.btn-default.view-ssr-back-button{ type: 'button', data: { protocol_id: @protocol.id } }
+            = t(:actions)[:back]
         %button.btn.btn-default{ type: 'button', data: { dismiss: 'modal' } }
           = t(:actions)[:close]

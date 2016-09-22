@@ -127,9 +127,11 @@ $(document).ready ->
 
       $(document).on 'click', '.view-service-request', ->
         id = $(this).data('sub-service-request-id')
+        show_view_ssr_back = $(this).data('show-view-ssr-back')
         $.ajax
           method: 'GET'
           url: "/dashboard/sub_service_requests/#{id}.js"
+          data: show_view_ssr_back: show_view_ssr_back
 
       $(document).on 'click', '.edit-service-request', ->
         if $(this).data('permission')
@@ -139,6 +141,18 @@ $(document).ready ->
         if $(this).data('permission')
           protocol_id         = $(this).data('protocol-id')
           window.location     = "/?protocol_id=#{protocol_id}&from_portal=true"
+
+      $(document).on 'click', '.view-ssr-back-button', ->
+        protocol_id = $(this).data('protocol-id')
+        $.ajax
+          type: 'GET'
+          url: "/dashboard/protocols/#{protocol_id}/display_requests"
+          success: (data) ->
+            $('#modal_place').html(data.modal)
+            $('#modal_place').modal 'show'
+            $('.service-requests-table').bootstrapTable()
+            $('.service-requests-table').on 'all.bs.table', ->
+              $(this).find('.selectpicker').selectpicker()
       # Protocol Show End
 
       # Protocol Edit Begin

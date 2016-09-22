@@ -34,6 +34,7 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
     @admin_orgs           = @user.authorized_admin_organizations
     @sub_service_requests = service_request.sub_service_requests.where.not(status: 'first_draft') # TODO: Remove Historical first_draft SSRs and remove this
     @permission_to_edit   = protocol.project_roles.where(identity: @user, project_rights: ['approve', 'request']).any?
+    @show_view_ssr_back   = params[:show_view_ssr_back]
   end
 
   def show
@@ -48,16 +49,17 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
           session[:service_calendar_pages][arm_id]  = page
         end
 
-        @service_request  = @sub_service_request.service_request
-        @service_list     = @service_request.service_list
-        @line_items       = @sub_service_request.line_items
-        @protocol         = @service_request.protocol
-        @tab              = 'calendar'
-        @portal           = true
-        @thead_class      = 'default_calendar'
-        @review           = true
-        @selected_arm     = Arm.find arm_id if arm_id
-        @pages            = {}
+        @service_request    = @sub_service_request.service_request
+        @service_list       = @service_request.service_list
+        @line_items         = @sub_service_request.line_items
+        @protocol           = @service_request.protocol
+        @tab                = 'calendar'
+        @portal             = true
+        @thead_class        = 'default_calendar'
+        @review             = true
+        @selected_arm       = Arm.find arm_id if arm_id
+        @pages              = {}
+        @show_view_ssr_back = params[:show_view_ssr_back] == "true"
 
         @service_request.arms.each do |arm|
           new_page = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i

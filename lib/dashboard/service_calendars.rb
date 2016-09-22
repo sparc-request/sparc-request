@@ -26,87 +26,6 @@ include ActionView::Helpers::NumberHelper
 
 module Dashboard
   module ServiceCalendars
-    def self.generate_visit_header_row(arm, service_request, page, sub_service_request, portal = nil)
-      base_url = "/dashboard/service_requests/#{service_request.id}/service_calendars"
-      day_url = base_url + '/set_day'
-      window_before_url = base_url + '/set_window_before'
-      window_after_url = base_url + '/set_window_after'
-      page = page == 0 ? 1 : page
-      beginning_visit = (page * 5) - 4
-      ending_visit = (page * 5) > arm.visit_count ? arm.visit_count : (page * 5)
-      returning_html = ''
-      line_items_visits = arm.line_items_visits
-      visit_groups = arm.visit_groups
-
-      (beginning_visit .. ending_visit).each do |n|
-        visit_name = visit_groups[n - 1].name || "Visit #{n}"
-        visit_group = visit_groups[n - 1]
-
-        if params[:action] == 'review' || params[:action] == 'show' || params[:action] == 'refresh_service_calendar'
-          returning_html += content_tag(:th, content_tag(:span, visit_name), width: 60, class: 'visit_number')
-        elsif @merged
-          returning_html += content_tag(:th,
-                                        ((USE_EPIC) ?
-                                            label_tag('decrement', t(:calendar_page)[:headers][:decrement], class: 'decrement_days') +
-                                                label_tag('day', t(:calendar_page)[:headers][:day]) +
-                                                label_tag('increment', t(:calendar_page)[:headers][:increment], class: 'increment_days') +
-                                                tag(:br) +
-                                                content_tag(:span, visit_group.window_before, style: 'display:inline-block;width:25px;') +
-                                                content_tag(:span, visit_group.day, style: 'display:inline-block;width:25px;') +
-                                                content_tag(:span, visit_group.window_after, style: 'display:inline-block;width:25px;') +
-                                                tag(:br) : label_tag('')) +
-                                            content_tag(:span, visit_name, style: 'display:inline-block;width:75px;') +
-                                            tag(:br), class: 'col-lg-1')
-        elsif @tab != 'template'
-          returning_html += content_tag(:span,
-                                        ((USE_EPIC) ?
-                                            label_tag('decrement', t(:calendar_page)[:headers][:decrement], class: 'decrement_days') +
-                                                label_tag('day', t(:calendar_page)[:headers][:day]) +
-                                                label_tag('increment', t(:calendar_page)[:headers][:increment], class: 'increment_days') +
-                                                tag(:br) +
-                                                text_field_tag('window_before', visit_group.window_before, class: "visit_window visit_window_before position_#{n} input_small", size: 1, :'data-position' => n - 1, :'data-window-before' => visit_group.window_before, update: "#{window_before_url}?arm_id=#{arm.id}&portal=#{portal}") +
-                                                text_field_tag('day', visit_group.day, class: "visit_day position_#{n}", maxlength: 4, size: 4, :'data-position' => n - 1, :'data-day' => visit_group.day, update: "#{day_url}?arm_id=#{arm.id}&portal=#{portal}") +
-                                                text_field_tag('window_after', visit_group.window_after, class: "visit_window visit_window_after position_#{n} input_small", size: 1, :'data-position' => n - 1, :'data-window-after' => visit_group.window_after, update: "#{window_after_url}?arm_id=#{arm.id}&portal=#{portal}") +
-                                                tag(:br)
-                                        : label_tag('')) +
-                                            text_field_tag("arm_#{arm.id}_visit_name_#{n}", visit_name, class: 'visit_name', size: 10, :'data-arm_id' => arm.id, :'data-visit_position' => n - 1, :'data-service_request_id' => service_request.id) +
-                                            tag(:br))
-        else
-          if sub_service_request
-            filtered_line_items_visits = line_items_visits.select { |x| x.line_item.sub_service_request_id == sub_service_request.id }
-          else
-            filtered_line_items_visits = line_items_visits.select { |x| x.line_item.service_request_id == service_request.id }
-          end
-          checked = filtered_line_items_visits.each.map { |l| l.visits[n.to_i-1].research_billing_qty >= 1 ? true : false }.all?
-          action = checked ? 'uncheck' : 'check'
-          icon = checked ? 'ui-icon-close' : 'ui-icon-check'
-          returning_html += content_tag(:span,
-                                        ((USE_EPIC) ?
-                                            label_tag('decrement', t(:calendar_page)[:headers][:decrement], class: 'decrement_days') +
-                                                label_tag('day', t(:calendar_page)[:headers][:day]) +
-                                                label_tag('increment', t(:calendar_page)[:headers][:increment], class: 'increment_days') +
-                                                tag(:br) +
-                                                text_field_tag('window_before', visit_group.window_before, class: "visit_window visit_window_before position_#{n} input_small", size: 1, :'data-position' => n - 1, :'data-window-before' => visit_group.window_before, update: "#{window_before_url}?arm_id=#{arm.id}&portal=#{portal}") +
-                                                text_field_tag('day', visit_group.day, class: "visit_day position_#{n}", maxlength: 4, size: 4, :'data-position' => n - 1, :'data-day' => visit_group.day, update: "#{day_url}?arm_id=#{arm.id}&portal=#{portal}") +
-                                                text_field_tag('window_after', visit_group.window_after, class: "visit_window visit_window_after position_#{n} input_small", size: 1, :'data-position' => n - 1, :'data-window-after' => visit_group.window_after, update: "#{window_after_url}?arm_id=#{arm.id}&portal=#{portal}") +
-                                                tag(:br)
-                                        : label_tag('')) +
-                                            text_field_tag("arm_#{arm.id}_visit_name_#{n}", visit_name, class: 'visit_name', size: 10, :'data-arm_id' => arm.id, :'data-visit_position' => n - 1, :'data-service_request_id' => service_request.id) +
-                                            tag(:br) +
-                                            link_to((content_tag(:span, '', class: "ui-button-icon-primary ui-icon #{icon}") + content_tag(:span, 'Check All', class: 'ui-button-text')),
-                                                    "/dashboard/service_requests/#{service_request.id}/toggle_calendar_row?#{action}=true /#{n}/#{arm.id}?portal=#{portal}",
-                                                    remote: true, role: 'button', class: 'ui-button ui-widget ui-state-default ui-corner-all ui-button-icon-only', id: "check_all_column_#{n}", data: (visit_group.any_visit_quantities_customized?(service_request) ? {confirm: 'This will reset custom values for this column, do you wish to continue?'} : nil)),
-                                        width: 60, class: 'visit_number')
-        end
-      end
-
-      ((page * 5) - arm.visit_count).times do
-        returning_html += content_tag(:th, '', class: 'visit_number col-lg-1')
-      end
-
-      raw(returning_html)
-    end
-
     def self.generate_visit_navigation(arm, service_request, pages, tab, portal=nil, ssr_id=nil)
       page = pages[arm.id].to_i == 0 ? 1 : pages[arm.id].to_i
 
@@ -161,7 +80,7 @@ module Dashboard
     def self.pppv_line_items_visits_to_display(arm, service_request, sub_service_request, opts = {})
       if opts[:merged]
         arm.line_items_visits.joins(line_item: :sub_service_request).
-          where.not(sub_service_requests: { status: %w(first_draft draft) }).
+          where.not(sub_service_requests: { status: opts[:consolidated] ? %w(first_draft draft) : %w(first_draft) }).
           joins(line_item: :service).
           where(services: { one_time_fee: false })
       else

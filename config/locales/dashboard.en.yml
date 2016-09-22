@@ -215,7 +215,7 @@ en:
           role: "Role"
           rights: "Proxy Rights"
         services:
-          none: "There are no services associated with this protocol."
+          none: "This protocol does not have any services outside of 'draft' status."
 
     ######################
     #  SERVICE REQUESTS  #

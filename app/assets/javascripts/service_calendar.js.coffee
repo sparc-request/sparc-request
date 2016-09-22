@@ -65,8 +65,8 @@ $(document).ready ->
       data: 
         checked:  checked
         visit_id: $(this).data('visit-id')
-        portal:   $(this).data('portal')
-        ssrid:    $(this).data('ssrid')
+        portal: $(this).data('portal')
+        sub_service_request_id: $(this).data('ssrid')
       url: $(this).attr('update')
 
 (exports ? this).changing_tabs_calculating_rates = ->

@@ -29,7 +29,7 @@
           %span.billing_type %
   - else
     %tr.sub_section_header
-      %th{ colspan: 12 }= org
+      %th{ colspan: 13 }= org
   - livs.each do |liv|
     - next if %w(draft first_draft).include?(liv.sub_service_request.status) && @merged
     - line_items_visits << liv

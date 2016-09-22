@@ -57,7 +57,7 @@
     - service_request.service_list(true).each do |_, value| # get only one time fee services and group them
       - next unless sub_service_request.nil? || sub_service_request.organization.name == value[:process_ssr_organization_name]
       %tr.sub_section_header
-        %th{ colspan: 9 }= value[:name]
+        %th{ colspan: 10 }= value[:name]
         - line_items = sub_service_request.nil? ? value[:line_items] : sub_service_request.one_time_fee_line_items
         - line_items.each do |line_item|
           %tr.line_item

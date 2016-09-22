@@ -104,7 +104,7 @@ SparcRails::Application.routes.draw do
 
   resources :arms, only: [:index, :new, :create, :edit, :update, :destroy]
 
-  resource :service_calendars, only: [] do
+  resource :service_calendars, only: [:update] do
     member do
       get 'table'
       get 'merged_calendar'

@@ -55,7 +55,7 @@
       - totals_hash = liv.try(:per_subject_subtotals, visits)
       - visits.each_with_index do |v, index|
         %td.text-center.visit{ class: "visit-#{index+1}", data: { cents: totals_hash["#{v.id}"] || 0.00 } }
-          = render 'service_calendars/master_calendar/pppv/line_item_visit_input', arm: arm, line_item: liv.line_item, visit: v, tab: tab, portal: portal, service_request: service_request, locked: locked
+          = render 'service_calendars/master_calendar/pppv/line_item_visit_input', arm: arm, line_item: liv.line_item, visit: v, tab: tab, portal: portal, service_request: service_request, sub_service_request: sub_service_request, pages: pages, merged: merged, portal: portal, review: review, locked: locked
       - (5 - visits.size).times do
         %td &nbsp;
 

@@ -56,6 +56,19 @@ $(document).ready ->
       data: arm_id: arm_id
     return false
 
+  $(document).on 'change', '.visit-quantity', ->
+    checked = $(this).is(':checked')
+    obj     = $(this)
+
+    $.ajax
+      type: 'PUT'
+      data: 
+        checked:  checked
+        visit_id: $(this).data('visit-id')
+        portal:   $(this).data('portal')
+        ssrid:    $(this).data('ssrid')
+      url: $(this).attr('update')
+
 (exports ? this).changing_tabs_calculating_rates = ->
   arm_ids = []
   $('.calendar-container').each (index, arm) ->

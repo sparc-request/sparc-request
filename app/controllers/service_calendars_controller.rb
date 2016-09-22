@@ -25,6 +25,33 @@ class ServiceCalendarsController < ApplicationController
   before_filter :initialize_service_request
   before_filter :authorize_identity
 
+  def update
+    @sub_service_request  = SubServiceRequest.find(params[:ssrid]) unless params[:ssrid].blank?
+    visit                 = Visit.find(params[:visit_id])
+    @arm                  = Arm.find(params[:arm_id])
+    @tab                  = params[:tab]
+    @merged               = params[:merged] == 'true'
+    @portal               = params[:portal] == 'true'
+    @review               = params[:review] == 'true'
+    @pages                = eval(params[:pages])
+
+    if params[:checked] == 'true'
+      unit_minimum = visit.line_items_visit.line_item.service.displayed_pricing_map.unit_minimum
+
+      visit.update_attributes(
+        quantity: unit_minimum,
+        research_billing_qty: unit_minimum
+      )
+    else
+      visit.update_attributes(
+        quantity: 0,
+        research_billing_qty: 0,
+        insurance_billing_qty: 0,
+        effort_billing_qty: 0
+      )
+    end
+  end
+  
   def table
     @tab                  = params[:tab]
     @review               = params[:review] == 'true'

@@ -19,15 +19,32 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 FactoryGirl.define do
+  sequence :position do |n|
+    n
+  end
+
+  sequence :day do |n|
+    n
+  end
 
   factory :visit_group do
-  	name { Faker::Lorem.sentence(1) }
-    day  1
+  	name          { Faker::Lorem.sentence(1) }
+    day           1
+    window_before 0
+    window_after  0
 
-    trait :without_validations do
-      to_create { |instance| instance.save(validate: false) }
-    end
+  position
+  day
+  name           { "Visit #{self.position}" }
 
-    factory :visit_group_without_validations, traits: [:without_validations]
+  trait :without_validations do
+    to_create { |instance| instance.save(validate: false) }
+  end
+
+  trait :with_arm do
+    arm         { FactoryGirl.create(:arm) }
+  end
+
+  factory :visit_group_without_validations, traits: [:without_validations]
   end
 end

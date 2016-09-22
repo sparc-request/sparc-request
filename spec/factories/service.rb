@@ -122,5 +122,6 @@ FactoryGirl.define do
     factory :service_without_callback_notify_remote_service_after_create, traits: [:without_callback_notify_remote_service_after_create]
     factory :one_time_fee_service, traits: [:one_time_fee]
     factory :per_patient_per_visit_service, traits: [:per_patient_per_visit]
+    factory :service_without_validations, traits: [:without_validations]
   end
 end

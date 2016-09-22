@@ -19,13 +19,14 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 <% if @otf %>
+<% if @errors %>
 $("#modal_errors").html("<%= escape_javascript(render( 'shared/modal_errors', errors: @errors )) %>")
-<% unless @errors %>
+<% else %>
 $("#study-level-activities-table").bootstrapTable 'refresh', {silent: true}
-$(".table").html("<%= escape_javascript(render( 'sub_service_requests/header' )) %>")
 $("#modal_place").modal('hide')
 <% end %>
 <% end %>
+
 $("#flashes_container").html("<%= escape_javascript(render('shared/flash')) %>")
 $("#sub_service_request_header").html("<%= escape_javascript(render( 'dashboard/sub_service_requests/header', sub_service_request: @sub_service_request )) %>")
 $(".selectpicker").selectpicker()

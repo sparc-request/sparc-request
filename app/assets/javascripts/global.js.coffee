@@ -20,6 +20,10 @@
 $ ->
   $(".datetimepicker").datetimepicker(format: 'MM/DD/YYYY', allowInputToggle: true)
   $(".selectpicker").selectpicker()
+  $('[data-toggle="tooltip"]').tooltip()
+  
+  $(document).ajaxComplete ->
+    $('[data-toggle="tooltip"]').tooltip()
 
   set_required_fields()
 

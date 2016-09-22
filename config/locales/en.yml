@@ -488,8 +488,6 @@ en:
 
 
 
-
-
   ###########################################################################################
   ###########################################################################################
   ###########################################################################################
@@ -1760,4 +1758,3 @@ en:
     message: "To begin to search and add authorized users to this study/project, type in the first or last name of the user.  Select as appropriate."
     search_box_header: "User Search"
     search_placeholder: "Search for user..."
-

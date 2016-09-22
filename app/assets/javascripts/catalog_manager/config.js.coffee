@@ -87,9 +87,7 @@ $ ->
             [garbage, month, day, year] = date_string.match(old_format)
           else
             [garbage, year, month, day] = date_string.match(from_db_format)
-          month_int = parseFloat(month)
-          formatted_month = if(month_int < 10) then month.charAt(1) else month
-          "#{formatted_month}/#{day}/#{year}"
+          "#{parseFloat(month)}/#{day}/#{year}"
       catch error
         ""
 

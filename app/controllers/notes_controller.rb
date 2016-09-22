@@ -42,6 +42,7 @@ class NotesController < ApplicationController
     @selector = "#{@note.unique_selector}_notes"
 
     if @note.valid?
+      @selector = "#{@note.unique_selector}_notes"
       flash[:success] = t(:notes)[:created]
     else
       @errors = @note.errors

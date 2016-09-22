@@ -75,7 +75,6 @@ class Arm < ActiveRecord::Base
     self.update_attribute(:visit_count, 1) if self.visit_count.nil?
 
     create_visit_groups(visit_count)
-
     liv = LineItemsVisit.for(self, line_item)
     liv.create_visits
 
@@ -133,13 +132,12 @@ class Arm < ActiveRecord::Base
     direct_costs_for_visit_based_service(line_items_visits) + indirect_costs_for_visit_based_service(line_items_visits)
   end
 
-  def add_visit position=nil, day=nil, window_before=0, window_after=0, name='', portal=false
+  def add_visit position=self.visit_groups.count+1, day=position-1, window_before=0, window_after=0, name="Visit #{day}", portal=false
     result = self.transaction do
-      if not self.create_visit_group(position, name) then
+      if not self.create_visit_group(position, name, day) then
         raise ActiveRecord::Rollback
       end
-      position = position.to_i - 1 unless position.blank?
-
+      position = position.to_i-1 unless position.blank?
       if USE_EPIC
         if not self.update_visit_group_day(day, position, portal) then
           raise ActiveRecord::Rollback
@@ -151,7 +149,6 @@ class Arm < ActiveRecord::Base
           raise ActiveRecord::Rollback
         end
       end
-
       # Reload to force refresh of the visits
       self.reload
 
@@ -169,14 +166,10 @@ class Arm < ActiveRecord::Base
     end
   end
 
-  def create_visit_group(position=nil, name='')
-    visit_group = self.visit_groups.create(position: position, name: name)
-    
-    unless visit_group.valid?
-      self.errors.add(:base, visit_group.errors.full_messages)
+  def create_visit_group position=self.visit_groups.count+1, name="Visit #{position-1}", day=position-1
+    unless visit_group = self.visit_groups.create(position: position, name: name, day: day, arm_id: self.id)
       return false
     end
-
     # Add visits to each line item under the service request
     self.line_items_visits.each do |liv|
       if not liv.add_visit(visit_group) then
@@ -227,12 +220,11 @@ class Arm < ActiveRecord::Base
     end
   end
 
-  def update_visit_group_day day, position, portal= false
+  def update_visit_group_day day, position, portal=false
     position = position.blank? ? self.visit_groups.count - 1 : position.to_i
     before = self.visit_groups[position - 1] unless position == 0
     current = self.visit_groups[position]
     after = self.visit_groups[position + 1] unless position >= self.visit_groups.size - 1
-
     if portal == 'true' and USE_EPIC
       valid_day = Integer(day) rescue false
       if !valid_day
@@ -253,7 +245,6 @@ class Arm < ActiveRecord::Base
         end
       end
     end
-
     return current.update_attributes(:day => day)
   end
 
@@ -352,8 +343,7 @@ class Arm < ActiveRecord::Base
     count = visit_count - last_position
     count.times do |index|
       position = last_position + 1
-      # We need to do a .new.save(validate: false) so that we can allow a blank day here, but not when the user edits them
-      VisitGroup.new(arm_id: self.id, name: "Visit #{position}", position: position).save(validate: false)
+      VisitGroup.create(arm_id: self.id, name: "Visit #{position}", position: position, day: position)
       last_position += 1
     end
     self.reload

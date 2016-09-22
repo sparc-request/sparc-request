@@ -20,7 +20,7 @@
 
 .modal-dialog
   .modal-content
-    = form_tag(create_line_items_dashboard_multiple_line_items_path, method: "put", class: "form-horizontal new_visit", remote: true) do
+    = form_tag(create_line_items_dashboard_multiple_line_items_path, method: "put", class: "form-horizontal", id: "new_service", remote: true) do
       .modal-header
         %button.close{type: 'button', data: {dismiss: 'modal'}}
           %span{aria: {hidden:'true'}} &times;

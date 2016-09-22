@@ -52,4 +52,3 @@ $(document).ready ->
 
   $(document).on 'click', '#details-tab', ->
     $("#pending_subsidy").load(location.href + " #pending_subsidy")
-

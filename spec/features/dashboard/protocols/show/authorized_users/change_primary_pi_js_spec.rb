@@ -102,7 +102,6 @@ RSpec.feature 'User messes with the change Primary PI Warning Dialog JS', js: tr
 
     context 'and submits the changes' do
       scenario 'and sees the warning message' do
-        # binding.pry
         given_i_have_clicked_the_edit_authorized_user_button
         when_i_set_the_user_to_primary_pi
         when_i_submit_in_edit

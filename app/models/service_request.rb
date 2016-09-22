@@ -444,22 +444,20 @@ class ServiceRequest < ActiveRecord::Base
 
   # Make sure that all the sub service requests have an ssr id
   def ensure_ssr_ids
-    if self.protocol
-      next_ssr_id = self.protocol.next_ssr_id || 1
+    next_ssr_id = self.protocol ? self.protocol.next_ssr_id : 1
 
-      self.sub_service_requests.each do |ssr|
-        if not ssr.ssr_id then
-          ssr.update_attributes(ssr_id: "%04d" % next_ssr_id)
-          next_ssr_id += 1
-        end
+    self.sub_service_requests.each do |ssr|
+      unless ssr.ssr_id
+        ssr.update_attributes(ssr_id: "%04d" % next_ssr_id)
+        next_ssr_id += 1
       end
-
-      self.protocol.update_attributes(next_ssr_id: next_ssr_id)
     end
+
+    self.protocol.update_attributes(next_ssr_id: next_ssr_id) if self.protocol
   end
 
   def add_or_update_arms
-    return if not self.has_per_patient_per_visit_services?
+    return unless self.has_per_patient_per_visit_services?
 
     p = self.protocol
     if p

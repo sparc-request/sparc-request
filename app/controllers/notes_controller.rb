@@ -38,8 +38,8 @@ class NotesController < ApplicationController
   end
 
   def create
-    @note     = Note.create(note_params.merge(identity_id: current_user.id))
-    @selector = "#{@note.unique_selector}_notes"
+    @note  = Note.create(note_params.merge(identity_id: current_user.id))
+    @notes = @notable.notes
 
     if @note.valid?
       @selector = "#{@note.unique_selector}_notes"

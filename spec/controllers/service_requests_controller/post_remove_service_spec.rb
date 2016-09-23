@@ -43,8 +43,8 @@ RSpec.describe ServiceRequestsController do
     let!(:service2) { service = create( :service, organization_id: core.id) }
     let!(:service3) { service = create( :service, organization_id: core2.id) }
     
-    let!(:ssr1) { create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id) }
-    let!(:ssr2) { create(:sub_service_request, service_request_id: service_request.id, organization_id: core2.id) }
+    let!(:ssr1) { create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id, submitted_at: Time.now) }
+    let!(:ssr2) { create(:sub_service_request, service_request_id: service_request.id, organization_id: core2.id, submitted_at: Time.now) }
 
     let!(:line_item1) { create(:line_item, service_id: service1.id, service_request_id: service_request.id, sub_service_request_id: ssr1.id) }
     let!(:line_item2) { create(:line_item, service_id: service2.id, service_request_id: service_request.id, sub_service_request_id: ssr1.id) }
@@ -228,10 +228,13 @@ RSpec.describe ServiceRequestsController do
       context 'removed SubServiceRequest created before submit time' do
 
         it 'should send notifications to the service provider' do
-          service_request.update_attribute(:submitted_at, Time.zone.now)
-          ssr2.update_attribute(:created_at, Time.zone.now.ago(60))
+          
+          line_item.destroy
+          line_item1.destroy
+          line_item2.destroy
+          sub_service_request.update_attribute(:submitted_at, Time.now)
 
-          expect(controller).to receive(:send_ssr_service_provider_notifications)
+          expect(controller).to receive(:send_ssr_service_provider_notifications).thrice
           post :remove_service, {
                  :id            => service_request.id,
                  :service_id    => service3.id,

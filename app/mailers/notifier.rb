@@ -44,6 +44,7 @@ class Notifier < ActionMailer::Base
   end
 
   def notify_user(project_role, service_request, xls, approval, user_current)
+    @ssr_deleted = false
     @status = service_request.status
     @notes = []
     @identity = project_role.identity
@@ -68,6 +69,7 @@ class Notifier < ActionMailer::Base
   end
 
   def notify_admin(service_request, submission_email_address, xls, user_current, ssr)
+    @ssr_deleted = false
     @notes = service_request.notes
     @status = service_request.status
     @role = 'none'

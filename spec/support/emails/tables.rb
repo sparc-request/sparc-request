@@ -68,6 +68,13 @@ module EmailHelpers
     expect(mail.body).to have_xpath "//td[text()='#{service_request.protocol.sub_service_requests.first.org_tree_display}']/following-sibling::td[text()='#{status}']"
   end
 
+  def assert_email_deleted_srid_information_for_service_provider
+    expect(mail.body).to have_xpath "//table//strong[text()='Service Request Information']"
+    expect(mail.body).to have_xpath "//th[text()='SRID']/following-sibling::th[text()='Organization']"
+    expect(mail.body).to have_xpath "//td//strike['#{service_request.protocol.sub_service_requests.first.display_id}']"
+    expect(mail.body).to have_xpath "//td//strike[text()='#{service_request.protocol.sub_service_requests.first.org_tree_display}']"
+  end
+
   def assert_email_srid_information_for_admin
     # Expect table to show all SSR's with hyper-link
     expect(mail.body.parts.first.body).to have_xpath "//table//strong[text()='Service Request Information']"
@@ -94,6 +101,12 @@ module EmailHelpers
     assert_email_project_information(mail.body)
     assert_email_user_information(mail.body)
     assert_email_srid_information_for_service_provider
+  end
+
+  def assert_notification_email_tables_for_service_provider_with_all_services_deleted
+    assert_email_project_information(mail.body)
+    assert_email_user_information(mail.body)
+    assert_email_deleted_srid_information_for_service_provider
   end
 
   def assert_notification_email_tables_for_admin

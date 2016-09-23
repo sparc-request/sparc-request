@@ -25,7 +25,6 @@ module Dashboard
     def initialize(params)
       @protocol_role = ProjectRole.find(params[:id])
       protocol = @protocol_role.protocol
-      modified_user = Identity.find(protocol_role.identity_id)
 
       epic_rights = @protocol_role.epic_rights.to_a # use to_a to eval ActiveRecord::Relation
       @protocol_role.assign_attributes(params[:project_role])
@@ -46,7 +45,11 @@ module Dashboard
         # must come after the use of ActiveModel::Dirty methods above
         @protocol_role.save
 
-        protocol.email_about_change_in_authorized_user(modified_user, "update")
+        if SEND_AUTHORIZED_USER_EMAILS
+          protocol.emailed_associated_users.each do |project_role|
+            UserMailer.authorized_user_changed(project_role.identity, protocol).deliver unless project_role.identity.email.blank?
+          end
+        end
 
         if USE_EPIC && protocol.selected_for_epic && !QUEUE_EPIC
           if access_removed

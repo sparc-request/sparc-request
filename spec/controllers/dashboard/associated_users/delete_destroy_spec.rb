@@ -24,15 +24,13 @@ RSpec.describe Dashboard::AssociatedUsersController do
   describe 'DELETE destroy' do
     context "when not authorized" do
       before :each do
-        @protocol = build_stubbed(:protocol, selected_for_epic: false)
         @protocol_role = findable_stub(ProjectRole) do
           instance_double(ProjectRole,
             id: 1,
             epic_access: false,
-            protocol: @protocol)
+            protocol: build_stubbed(:protocol, selected_for_epic: false))
         end
-        allow(@protocol).to receive(:email_about_change_in_authorized_user)
-
+        
         log_in_dashboard_identity(obj: build_stubbed(:identity))
 
         xhr :delete, :destroy, id: @protocol_role.id
@@ -50,23 +48,13 @@ RSpec.describe Dashboard::AssociatedUsersController do
         before :each do
           @user           = create(:identity)
           @protocol       = create(:protocol_without_validations, selected_for_epic: false, funding_status: 'funded', funding_source: 'federal')
-          create(:sub_service_request, status: 'not_draft', organization: create(:organization), service_request: create(:service_request_without_validations, protocol: @protocol))
           @protocol_role  = create(:project_role, protocol: @protocol, identity: @user, project_rights: 'approve', role: 'primary-pi')
 
           allow(Notifier).to receive(:notify_primary_pi_for_epic_user_removal)
-          allow(UserMailer).to receive(:authorized_user_changed) do
-            mailer = double()
-            expect(mailer).to receive(:deliver)
-            mailer
-          end
 
           log_in_dashboard_identity(obj: @user)
 
           xhr :delete, :destroy, id: @protocol_role.id
-        end
-
-        it 'should email authorized user' do
-          expect(UserMailer).to have_received(:authorized_user_changed)
         end
 
         it 'should destroy @protocol_role' do
@@ -90,26 +78,20 @@ RSpec.describe Dashboard::AssociatedUsersController do
           @user          = create(:identity)
           @protocol      = create(:protocol_without_validations, selected_for_epic: false, funding_status: 'funded', funding_source: 'federal')
                            create(:project_role, protocol: @protocol, identity: @user, project_rights: 'approve', role: 'primary-pi')
-          @ssr = create(:sub_service_request, status: 'not_draft', organization: create(:organization), service_request: create(:service_request_without_validations, protocol: @protocol))
-          @user_to_delete = create(:identity)
-          @protocol_role = create(:project_role, protocol: @protocol, identity: @user_to_delete, project_rights: 'approve', role: 'consultant')
+          @protocol_role = create(:project_role, protocol: @protocol, identity: create(:identity), project_rights: 'approve', role: 'consultant')
 
           allow(Notifier).to receive(:notify_primary_pi_for_epic_user_removal)
-          allow(UserMailer).to receive(:authorized_user_changed) do
-            mailer = double()
-            expect(mailer).to receive(:deliver)
-            mailer
-          end
-          log_in_dashboard_identity(obj: @user)    
+
+          log_in_dashboard_identity(obj: @user)
+
+          xhr :delete, :destroy, id: @protocol_role.id
         end
 
         it 'should destroy @protocol_role' do
-          xhr :delete, :destroy, id: @protocol_role.id
           expect(ProjectRole.count).to eq(1)
         end
 
         it 'should not set associated fields' do
-          xhr :delete, :destroy, id: @protocol_role.id
           expect(assigns(:current_user_destroyed)).to eq(false)
           expect(assigns(:protocol_type)).to eq(nil)
           expect(assigns(:permission_to_edit)).to eq(nil)
@@ -117,24 +99,8 @@ RSpec.describe Dashboard::AssociatedUsersController do
           expect(assigns(:return_to_dashboard)).to eq(nil)
         end
 
-        it 'should email authorized user' do
-          xhr :delete, :destroy, id: @protocol_role.id
-          expect(UserMailer).to have_received(:authorized_user_changed).twice
-        end
-
-        it 'should render appropriate template' do
-          xhr :delete, :destroy, id: @protocol_role.id
-          expect(response).to render_template "dashboard/associated_users/destroy"
-          expect(response.status).to eq(200)
-        end
-
-        context "SSRs with status draft" do 
-          it 'should not email user' do
-            @ssr.update_attribute(:status, 'draft')
-            xhr :delete, :destroy, id: @protocol_role.id
-            expect(UserMailer).not_to have_received(:authorized_user_changed)
-          end
-        end
+        it { is_expected.to render_template "dashboard/associated_users/destroy" }
+        it { is_expected.to respond_with :ok }
       end
 
       context 'USE_EPIC == true, QUEUE_EPIC == false, Protocol associated with @protocol_role is selected for epic, and @protocol_role had epic access' do

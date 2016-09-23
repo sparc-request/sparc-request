@@ -262,13 +262,13 @@ $(document).ready ->
 
   $(document).on 'change', 'input[name="protocol[investigational_products_info_attributes][exemption_type]"]', ->
     $('.inv-device-number-field').appendTo($(this).closest('.row'))
-    $('#protocol_investigational_products_info_attributes_inv_device_number').prop('type', 'text')
+    $('#protocol_investigational_products_info_attributes_inv_device_number').removeClass('hidden')
 
   $(document).on 'click', '.clear-inv-device-number-button', (event) ->
     # prevent form submit?
     event.preventDefault()
     $('#protocol_investigational_products_info_attributes_exemption_type_').prop('checked', true)
-    $('#protocol_investigational_products_info_attributes_inv_device_number').prop('type', 'hidden').val('')
+    $('#protocol_investigational_products_info_attributes_inv_device_number').addClass('hidden').val('')
   ###END INVESTIGATIONAL PRODUCTS FIELDS DISPLAY###
 
 

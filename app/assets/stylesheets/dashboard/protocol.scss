@@ -20,7 +20,7 @@
 
 .protocol-sort {
   float: right;
-
+  padding: 0 5px;
   span {
     clear: left;
     float: left;
@@ -119,4 +119,8 @@ textarea {
 
 .drop-underneath {
   margin-top: 20px;
+}
+
+.filter-identifier {
+  margin-left: 10px;
 }

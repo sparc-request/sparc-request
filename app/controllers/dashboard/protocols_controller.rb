@@ -264,7 +264,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
   def convert_date_for_save attrs, date_field
     if attrs[date_field] && attrs[date_field].present?
-      attrs[date_field] = Time.strptime(attrs[date_field], "%m/%d/%Y")
+      attrs[date_field] = Time.strptime(attrs[date_field].strip, "%m/%d/%Y")
     end
 
     attrs

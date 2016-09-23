@@ -22,9 +22,8 @@ require 'rails_helper'
 
 def add_visits_to_arm_line_item(arm, line_item, n=arm.visit_count)
   line_items_visit = LineItemsVisit.for(arm, line_item)
-
   n.times do |index|
-    create(:visit_group, arm_id: arm.id, day: index )
+    create(:visit_group, arm_id: arm.id, day: arm.visit_groups.count + index, position: arm.visit_groups.count + index)
   end
 
   n.times do |index|

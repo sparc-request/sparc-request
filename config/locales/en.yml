@@ -274,9 +274,9 @@ en:
       updated: "Arm Updated!"
       destroyed: "Arm Destroyed!"
       arm: "Arm:"
-      name: "Arm Name:"
-      subject_count: "Subject Count:"
-      visit_count: "Visit Count:"
+      name: "Arm Name: *"
+      subject_count: "Subject Count: *"
+      visit_count: "Visit Count: *"
 
     ######################
     #  AUTHORIZED USERS  #
@@ -452,6 +452,7 @@ en:
       my_protocols: "My Protocols"
       my_admin_protocols: "My Admin Protocols"
       organization: "Organization"
+      inactive: "(Inactive)"
       sort_by: "Sort By"
       filter: "Filter"
       saved_filters:
@@ -640,6 +641,8 @@ en:
       destroyed: "Study Level Activity Destroyed!"
       table:
         service: "Service"
+        unit_type: "Unit Type"
+        unit_requested: "Unit Requested"
         quantity_requested: "Qty Requested"
         quantity_type: "Qty Type"
         cost: "Cost"
@@ -791,9 +794,9 @@ en:
       destroyed: "Visit Destroyed!"
       arm: "Arm:"
       visit: "Visit:"
-      name: "Name:"
-      day: "Day:"
-      position: "Position:"
+      name: "Name: *"
+      day: "Day: *"
+      position: "Position: *"
       window_before: "Window Before:"
       window_after: "Window After:"
 
@@ -2092,4 +2095,3 @@ en:
     message: "To begin to search and add authorized users to this study/project, type in the first or last name of the user.  Select as appropriate."
     search_box_header: "User Search"
     search_placeholder: "Search for user..."
-

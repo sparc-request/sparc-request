@@ -27,7 +27,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
     before do
       VisitGroup.skip_callback(:save, :after, :set_arm_edited_flag_on_subjects)
 
-      @visit_group = create(:visit_group)
+      @visit_group = create(:visit_group, :with_arm)
     end
 
     context 'response params' do

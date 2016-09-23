@@ -21,4 +21,4 @@
 	= hidden_field_tag :line_item_count, @line_items.size
 	= hidden_field_tag :dashboard_link, DASHBOARD_LINK
 	- @line_items.each do |line_item|
-		= render 'catalogs/cart_line_item', line_item: line_item
+		= render 'catalogs/cart_line_item', line_item: line_item, line_items: @line_items

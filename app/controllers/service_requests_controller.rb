@@ -432,19 +432,12 @@ class ServiceRequestsController < ApplicationController
 
     # clean up sub_service_requests
     # @service_request.reload
-    # ssr = @service_request.sub_service_requests.find_by_organization_id(org_id)
-    # if @service_request.line_items.count.zero?
-    #   send_ssr_service_provider_notifications(@service_request, ssr, ssr_deleted=true)
-    # end
 
     to_delete = @service_request.sub_service_requests.map(&:organization_id) - @service_request.service_list.keys
     to_delete.each do |org_id|
       ssr = @service_request.sub_service_requests.find_by_organization_id(org_id)
-      # if !['first_draft', 'draft'].include?(@service_request.status) and !@service_request.submitted_at.nil? and @service_request.submitted_at > ssr.created_at
-      if @service_request.line_items.count.zero?
-
+      if @service_request.line_items.count.zero? && !ssr.submitted_at.nil?
         @protocol = @service_request.protocol
-  
         send_ssr_service_provider_notifications(@service_request, ssr, ssr_deleted=true)
       end
       ssr.destroy

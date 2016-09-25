@@ -641,6 +641,8 @@ en:
       destroyed: "Study Level Activity Destroyed!"
       table:
         service: "Service"
+        unit_type: "Unit Type"
+        unit_requested: "Unit Requested"
         quantity_requested: "Qty Requested"
         quantity_type: "Qty Type"
         cost: "Cost"
@@ -2094,4 +2096,3 @@ en:
     message: "To begin to search and add authorized users to this study/project, type in the first or last name of the user.  Select as appropriate."
     search_box_header: "User Search"
     search_placeholder: "Search for user..."
-

@@ -214,14 +214,18 @@ $ ->
     $("#add_line_items_form_button").attr('disabled','disabled')
 
   $(document).on 'click', '#remove_service_button', ->
+    line_item_count = $('#study_schedule_buttons').data('line-item-count')
     data =
       'protocol_id'             : $('#study_schedule_buttons').data('protocol-id')
       'sub_service_request_id'  : $('#study_schedule_buttons').data('sub-service-request-id')
       'service_request_id'      : $('#study_schedule_buttons').data('service-request-id')
-    $.ajax
-      type: 'GET'
-      url: '/dashboard/multiple_line_items/edit_line_items'
-      data: data
+    if line_item_count == 1
+      sweetAlert("You can't delete the last service on a request")
+    else
+      $.ajax
+        type: 'GET'
+        url: '/dashboard/multiple_line_items/edit_line_items'
+        data: data
 
   $(document).on 'change', "#remove_service_id", ->
     data =

@@ -21,16 +21,20 @@
 require "rails_helper"
 
 RSpec.describe Dashboard::AssociatedUserCreator do
+
   context "params[:project_role] describes a valid ProjectRole" do
     before(:each) do
-      protocol = create(:protocol_without_validations,
-        primary_pi: create(:identity),
-        selected_for_epic: true)
-      identity = create(:identity)
-      @project_role_attrs = { protocol_id: protocol.id,
-        identity_id: identity.id,
+      @identity = create(:identity)
+      @user          = create(:identity)
+      @protocol      = create(:protocol_without_validations, selected_for_epic: false, funding_status: 'funded', funding_source: 'federal', type: 'Study')
+      create(:project_role, protocol: @protocol, identity: @user, project_rights: 'approve', role: 'primary-pi')
+      @ssr = create(:sub_service_request, status: 'not_draft', organization: create(:organization), service_request: create(:service_request_without_validations, protocol: @protocol))
+
+      @project_role_attrs = { protocol_id: @protocol.id,
+        identity_id: @identity.id,
         role: "important",
         project_rights: "to-party" }
+
     end
 
     it "#successful? should return true" do
@@ -47,7 +51,7 @@ RSpec.describe Dashboard::AssociatedUserCreator do
       expect(creator.protocol_role).to eq(ProjectRole.last)
     end
 
-    context "SEND_AUTHORIZED_USER_EMAILS true" do
+    context "SEND_AUTHORIZED_USER_EMAILS: true && protocol has non-draft status" do
       it "should send authorized user changed emails" do
         stub_const("SEND_AUTHORIZED_USER_EMAILS", true)
         expect(UserMailer).to receive(:authorized_user_changed).twice do
@@ -55,24 +59,33 @@ RSpec.describe Dashboard::AssociatedUserCreator do
           expect(mailer).to receive(:deliver)
           mailer
         end
-
         Dashboard::AssociatedUserCreator.new(@project_role_attrs)
+      end
+    end
+
+    context "SEND_AUTHORIZED_USER_EMAILS: true && protocol has draft status" do
+      it "should NOT send authorized user changed emails" do
+        stub_const("SEND_AUTHORIZED_USER_EMAILS", true)
+        @ssr.update_attribute(:status, 'draft')
+        allow(UserMailer).to receive(:authorized_user_changed)
+        Dashboard::AssociatedUserCreator.new(@project_role_attrs)
+        expect(UserMailer).not_to have_received(:authorized_user_changed)
       end
     end
 
     context "SEND_AUTHORIZED_USER_EMAILS false" do
       it "should not send authorized user changed emails" do
         stub_const("SEND_AUTHORIZED_USER_EMAILS", false)
+        @ssr.update_attribute(:status, 'complete')
         allow(UserMailer).to receive(:authorized_user_changed)
-
         Dashboard::AssociatedUserCreator.new(@project_role_attrs)
-
         expect(UserMailer).not_to have_received(:authorized_user_changed)
       end
     end
 
-    context "USE_EPIC == true && Protocol selected for epic && QUEUE_EPIC == false" do
+    context "USE_EPIC == true && Protocol selected for epic && protocol.selected_for_epic: true && QUEUE_EPIC == false" do
       it "should notify for epic user approval" do
+        @protocol.update_attribute(:selected_for_epic, true)
         stub_const("USE_EPIC", true)
         stub_const("QUEUE_EPIC", false)
         allow(Notifier).to receive(:notify_for_epic_user_approval) do
@@ -90,7 +103,7 @@ RSpec.describe Dashboard::AssociatedUserCreator do
 
   context "params[:project_role] does not describe a valid ProjectRole" do
     before(:each) do
-      protocol = create(:protocol_without_validations,
+      protocol = create(:study_without_validations,
         primary_pi: create(:identity),
         selected_for_epic: true)
       identity = create(:identity)

@@ -1,0 +1,2 @@
+- @protocol.service_requests.first.service_list.map{|k, v| v[:acks]}.flatten.uniq.each do |ack|
+  %p{:style => 'font-size: small;'}=ack

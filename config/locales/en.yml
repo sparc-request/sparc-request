@@ -1546,22 +1546,23 @@ en:
 
   # Mailer
   mailer:
-    body1: "To VIEW and/or MAKE any changes to this request,"
-    header1: "Authorized Users have been edited or added in"
-    header2: "for your"
-    header3: "listed below."
-    link1: "SPARC Request"
-    link2: "please click here."
+    add_intro: "An Authorized User has been added in"
+    contact_information: "Contact Information"
+    delete_intro: "An Authorized User has been deleted in"
+    epic_access: "Epic Access"
     name: "Name:"
     p_id: "Protocol ID:"
     p_info: "Protocol Information"
-    proxy: "Proxy Rights"
+    proxy: "SPARC Proxy Rights"
     received: "You have received a new notification on your SPARC Request User Dashboard. Please login  @ %{portal_root_url} to retrieve it. Thank you."
     role: "Role:"
     s_name: "Sponsor Name"
+    sparc_dashboard_period: "SPARCDashboard."
     title1: "Short Title:"
     title2: "Project Title:"
+    update:  "An Authorized User has been modified in"
     user_info: "User Information:"
+    user_modification: "User Modification"
 
   # New/editing projects
   sr_project:

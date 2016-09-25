@@ -21,10 +21,12 @@
 class UserMailer < ActionMailer::Base
   default :from => NO_REPLY_FROM 
 
-  def authorized_user_changed(user, protocol)
+  def authorized_user_changed(user, protocol, modified_user, action)
+    @action = action
+    @modified_user = modified_user
     @send_to = user
     @protocol = protocol
-
+    @protocol_link = DASHBOARD_LINK + "/protocols/#{@protocol.id}"
     send_message("#{I18n.t('application_title')} Authorized Users")
   end
 

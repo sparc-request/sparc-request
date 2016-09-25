@@ -12,7 +12,7 @@ RSpec.describe UserMailer do
       @modified_identity        = create(:identity)
       @identity                 = create(:identity)
       @protocol_role            = create(:project_role, protocol: study, identity: @modified_identity, project_rights: 'approve', role: 'consultant')
-      @mail = UserMailer.authorized_user_changed(@identity, study, @modified_identity, 'add')
+      @mail = UserMailer.authorized_user_changed(@identity, study, @protocol_role, 'add')
     end
   
     it "should display the 'added' message" do
@@ -45,7 +45,7 @@ RSpec.describe UserMailer do
       @modified_identity        = create(:identity)
       @identity                 = create(:identity)
       @protocol_role            = create(:project_role, protocol: study, identity: @modified_identity, project_rights: 'approve', role: 'consultant')
-      @mail = UserMailer.authorized_user_changed(@identity, study, @modified_identity, 'destroy')
+      @mail = UserMailer.authorized_user_changed(@identity, study, @protocol_role, 'destroy')
     end
 
     it "should display the 'deleted' message" do

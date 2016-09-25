@@ -23,7 +23,6 @@ module Dashboard
     attr_reader :protocol_role
 
     def initialize(params)
-      modified_user = Identity.find(params[:identity_id])
       protocol = Protocol.find(params[:protocol_id])
       @protocol_role = protocol.project_roles.build(params)
 
@@ -36,7 +35,7 @@ module Dashboard
         end
         @protocol_role.save
         
-        protocol.email_about_change_in_authorized_user(modified_user, "add")
+        protocol.email_about_change_in_authorized_user(@protocol_role, "add")
 
         if USE_EPIC && protocol.selected_for_epic && !QUEUE_EPIC
           Notifier.notify_for_epic_user_approval(protocol).deliver

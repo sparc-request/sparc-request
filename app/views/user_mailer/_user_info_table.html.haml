@@ -12,9 +12,9 @@
         %th{:style => 'border: 1px solid black;'}= t(:notifier)[:epic_access]
   %tbody
     %tr{:style => 'border: 1px solid black;'}
-      %td{:style => 'border: 1px solid black; text-align: center;'}= @modified_user.full_name
-      %td{:style => 'border: 1px solid black; text-align: center;'}= @modified_user.email
-      %td{:style => 'border: 1px solid black; text-align: center;'}= @modified_user.project_roles.first.role.upcase
-      %td{:style => 'border: 1px solid black; text-align: center;'}= @modified_user.project_roles.first.display_rights
+      %td{:style => 'border: 1px solid black; text-align: center;'}= @modified_role.identity.full_name
+      %td{:style => 'border: 1px solid black; text-align: center;'}= @modified_role.identity.email
+      %td{:style => 'border: 1px solid black; text-align: center;'}= @modified_role.role.upcase
+      %td{:style => 'border: 1px solid black; text-align: center;'}= @modified_role.display_rights
       - if !@protocol.selected_for_epic.nil?
-        %td{:style => 'border: 1px solid black; text-align: center;'}= @modified_user.project_roles.first.epic_access == true ? "Yes" : "No"
+        %td{:style => 'border: 1px solid black; text-align: center;'}= @modified_role.epic_access == true ? "Yes" : "No"

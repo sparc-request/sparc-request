@@ -1,23 +1,3 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development~
-# All rights reserved.~
-
-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
-
-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.~
-
-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following~
-# disclaimer in the documentation and/or other materials provided with the distribution.~
-
-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products~
-# derived from this software without specific prior written permission.~
-
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,~
-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT~
-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL~
-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS~
-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
-
 # encoding: UTF-8
 # This file is auto-generated from the current state of the database. Instead
 # of editing this file, please use the migrations feature of Active Record to
@@ -203,12 +183,6 @@ ActiveRecord::Schema.define(version: 20160908144020) do
 
   add_index "charges", ["service_id"], name: "index_charges_on_service_id", using: :btree
   add_index "charges", ["service_request_id"], name: "index_charges_on_service_request_id", using: :btree
-
-  create_table "click_counters", force: :cascade do |t|
-    t.integer  "click_count", limit: 4
-    t.datetime "created_at",            null: false
-    t.datetime "updated_at",            null: false
-  end
 
   create_table "clinical_providers", force: :cascade do |t|
     t.integer  "identity_id",     limit: 4
@@ -1090,7 +1064,7 @@ ActiveRecord::Schema.define(version: 20160908144020) do
     t.string   "status",                 limit: 255, default: "Pending"
     t.integer  "approved_by",            limit: 4
     t.datetime "approved_at"
-    t.float    "percent_subsidy",        limit: 24
+    t.float    "percent_subsidy",        limit: 24,  default: 0.0
   end
 
   add_index "subsidies", ["sub_service_request_id"], name: "index_subsidies_on_sub_service_request_id", using: :btree

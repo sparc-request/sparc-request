@@ -25,8 +25,23 @@ RSpec.describe UserMailer do
       protocol_information_table
     end
 
-    it "should display the User information table" do
-      user_information_table
+    context 'when protocol has selected for epic' do
+      before do
+        study.update_attribute(:selected_for_epic, true)
+      end
+
+      it 'should show epic column' do
+        user_information_table_with_epic_col
+      end
+    end
+
+    context 'when protocol does not have selected for epic' do
+      before do
+        study.update_attribute(:selected_for_epic, false)
+      end
+      it 'should not show epic col' do
+        user_information_table_without_epic_col
+      end
     end
 
     it "should display message conclusion" do
@@ -58,8 +73,23 @@ RSpec.describe UserMailer do
       protocol_information_table
     end
 
-    it "should display the User information table" do
-      user_information_table
+    context 'when protocol has selected for epic' do
+      before do
+        study.update_attribute(:selected_for_epic, true)
+      end
+
+      it 'should show epic column' do
+        user_information_table_with_epic_col
+      end
+    end
+
+    context 'when protocol does not have selected for epic' do
+      before do
+        study.update_attribute(:selected_for_epic, false)
+      end
+      it 'should not show epic col' do
+        user_information_table_without_epic_col
+      end
     end
 
     it "should display message conclusion" do

@@ -59,6 +59,23 @@ module EmailHelpers
     end
   end
 
+  def assert_email_user_information_when_not_selected_for_epic(mail_response)
+    # Should display 'Epic Access' column
+    expect(mail_response).to have_xpath "//table//strong[text()='User Information']"
+    expect(mail_response).to have_xpath "//th[text()='User Name']/following-sibling::th[text()='Contact Information']/following-sibling::th[text()='Role']"
+    expect(mail_response).not_to have_xpath "//following-sibling::th[text()='Epic Access']"
+    service_request.protocol.project_roles.each do |role|
+      if identity.id == service_request.sub_service_requests.first.service_requester_id
+        requester_flag = " (Requester)"
+      else
+        requester_flag = ""
+      end
+      user_epic_access = role.epic_access == false ? "No" : "Yes"
+      expect(mail_response).to have_xpath "//td[text()='#{role.identity.full_name}']/following-sibling::td[text()='#{role.identity.email}']/following-sibling::td[text()='#{role.role.upcase}#{requester_flag}']"
+      expect(mail_response).not_to have_xpath "//following-sibling::td[text()='#{user_epic_access}']"
+    end
+  end
+
   def assert_email_srid_information_for_service_provider
     # Expect table to show only SSR's (hyper-link) that are associated with service provider 
     expect(mail.body).to have_xpath "//table//strong[text()='Service Request Information']"

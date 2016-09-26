@@ -21,11 +21,11 @@
 - visit_groups.each_with_index do |visit_group, index|
   %th.visit_group_box.col-sm-1
     .row.text-center
-      .no-padding.xs-col-4.text-center
+      .col-xs-4.no-padding.text-center
         %span{ id: "visit-before-display-#{visit_group.id}" }= visit_group.window_before || 0
-      .no-padding.xs-col-4.text-center
+      .col-xs-4.no-padding.text-center
         %span{ id: "visit-day-display-#{visit_group.id}" }= visit_group.day
-      .no-padding.xs-col-4.text-center
+      .col-xs-4.no-padding.text-center
         %span{ id: "visit-after-display-#{visit_group.id}" }= visit_group.window_after || 0
     .row.visit_group_names.text-center
       .col-sm-12.text-center{ data: { visit_group_id: visit_group.id } }

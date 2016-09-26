@@ -221,18 +221,18 @@ RSpec.describe ServiceRequestsController do
       }.to raise_error(ActiveRecord::RecordNotFound)
     end
 
-    context 'ServiceRequest not in draft or first_draft and has been submitted' do
+    context 'SSR has been previously submitted' do
 
-      before(:each) { service_request.update_attribute(:status, 'not_draft') }
+      before(:each) { sub_service_request.update_attribute(:submitted_at, Time.now) }
 
-      context 'removed SubServiceRequest created before submit time' do
-
-        it 'should send notifications to the service provider' do
-          
+      context 'removed all SSRs' do
+        before :each do
           line_item.destroy
           line_item1.destroy
           line_item2.destroy
-          sub_service_request.update_attribute(:submitted_at, Time.now)
+        end
+ 
+        it 'should send notifications to the service provider' do
 
           expect(controller).to receive(:send_ssr_service_provider_notifications).thrice
           post :remove_service, {
@@ -244,20 +244,30 @@ RSpec.describe ServiceRequestsController do
         end
       end
 
-      context 'removed SubServiceRequest created after submit time' do
-
-        it 'should not send notifications to the service provider' do
-          service_request.update_attribute(:submitted_at, Time.zone.now.ago(60))
-          ssr2.update_attribute(:created_at, Time.zone.now)
-
-          expect(controller).to_not receive(:send_ssr_service_provider_notifications)
+      context 'removed one SSR' do
+        it 'should not send notifications to the service_provider' do
+          expect(controller).not_to receive(:send_ssr_service_provider_notifications)
           post :remove_service, {
+                   :id            => service_request.id,
+                   :service_id    => service3.id,
+                   :line_item_id  => line_item3.id,
+                   :format        => :js,
+                 }.with_indifferent_access
+        end
+      end
+    end
+
+    context 'SSR has not been previously submitted' do
+      before(:each) { sub_service_request.update_attribute(:submitted_at, nil) }
+
+      it 'should not send notifications to the service_provider' do
+        expect(controller).not_to receive(:send_ssr_service_provider_notifications)
+        post :remove_service, {
                  :id            => service_request.id,
-                 :service_id    => service1.id,
-                 :line_item_id  => line_item1.id,
+                 :service_id    => service3.id,
+                 :line_item_id  => line_item3.id,
                  :format        => :js,
                }.with_indifferent_access
-        end
       end
     end
 

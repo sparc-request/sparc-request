@@ -431,7 +431,7 @@ class ServiceRequestsController < ApplicationController
     @service_request.protocol.arm_cleanup if @service_request.protocol
 
     # clean up sub_service_requests
-    # @service_request.reload
+    @service_request.reload
 
     to_delete = @service_request.sub_service_requests.map(&:organization_id) - @service_request.service_list.keys
     to_delete.each do |org_id|

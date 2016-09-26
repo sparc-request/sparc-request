@@ -28,7 +28,7 @@
     %title= t(:notifier)[:service_request]
 
   %body
-    - if @ssr_deleted == true
+    - if @ssr_deleted
       = render "deleted_all_services_from_cart"
     - else
       - if @status == 'get_a_cost_estimate'
@@ -39,13 +39,15 @@
     - if @service_request.has_per_patient_per_visit_services? and @service_request.arms.count > 0
       = render "arm_information"
     = render "user_information"
-    / - if @audit_report.present? && @audit_report[:line_items].present?
-    /   = render "audit_action"
     - if @ssrs_to_be_displayed
-      - if @ssr_deleted == false
-        = render "srid_information"
-      - else
+      - if @ssr_deleted
         = render "deleted_srid_information"
+      - else
+        = render "srid_information"
+  
+    - if !@ssr_deleted && @audit_report.present? && @audit_report[:line_items].present?
+      = render "audit_action"
+
     - if @status == "submitted" && @role == 'none' && !@notes.empty?
       %p= t(:notifier)[:notes_present]
     

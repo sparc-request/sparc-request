@@ -1617,7 +1617,6 @@ en:
   notifier:
     action: "Action"
     admin_data: "Admin Information"
-    all_on_request: "All Services on Request Have Been Deleted"
     arm_data: "Protocol Arm Information"
     arm_name: "Arm Name"
     arm_subject_count: "Subject Count"

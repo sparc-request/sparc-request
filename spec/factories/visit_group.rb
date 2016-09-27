@@ -29,7 +29,6 @@ FactoryGirl.define do
 
   factory :visit_group do
   	name          { Faker::Lorem.sentence(1) }
-    day           1
     window_before 0
     window_after  0
 

@@ -60,19 +60,25 @@ module EmailHelpers
   end
 
   def assert_email_srid_information_for_service_provider
+    ssrs_to_be_displayed = service_request.ssrs_associated_with_service_provider(service_provider)
     # Expect table to show only SSR's (hyper-link) that are associated with service provider 
     expect(mail.body).to have_xpath "//table//strong[text()='Service Request Information']"
     expect(mail.body).to have_xpath "//th[text()='SRID']/following-sibling::th[text()='Organization']/following-sibling::th[text()='Status']"
-    status = AVAILABLE_STATUSES[service_request.protocol.sub_service_requests.first.status]
-    expect(mail.body).to have_xpath "//td//a[@href='/dashboard/sub_service_requests/#{service_request.protocol.sub_service_requests.first.id}']['#{service_request.protocol.sub_service_requests.first.display_id}']/@href"
-    expect(mail.body).to have_xpath "//td[text()='#{service_request.protocol.sub_service_requests.first.org_tree_display}']/following-sibling::td[text()='#{status}']"
+    ssrs_to_be_displayed.each do |ssr_to_be_displayed|
+      status = AVAILABLE_STATUSES[ssr_to_be_displayed.status]
+      expect(mail.body).to have_xpath "//td//a[@href='/dashboard/sub_service_requests/#{ssr_to_be_displayed.id}']['#{ssr_to_be_displayed.display_id}']/@href"
+      expect(mail.body).to have_xpath "//td[text()='#{ssr_to_be_displayed.org_tree_display}']/following-sibling::td[text()='#{status}']"
+    end
   end
 
   def assert_email_deleted_srid_information_for_service_provider
+    ssrs_to_be_displayed = service_request.ssrs_associated_with_service_provider(service_provider)
     expect(mail.body).to have_xpath "//table//strong[text()='Service Request Information']"
     expect(mail.body).to have_xpath "//th[text()='SRID']/following-sibling::th[text()='Organization']"
-    expect(mail.body).to have_xpath "//td//strike['#{service_request.protocol.sub_service_requests.first.display_id}']"
-    expect(mail.body).to have_xpath "//td//strike[text()='#{service_request.protocol.sub_service_requests.first.org_tree_display}']"
+    ssrs_to_be_displayed.each do |ssr_to_be_displayed|
+      expect(mail.body).to have_xpath "//td//strike['#{ssr_to_be_displayed.display_id}']"
+      expect(mail.body).to have_xpath "//td//strike[text()='#{ssr_to_be_displayed.org_tree_display}']"
+    end
   end
 
   def assert_email_srid_information_for_admin

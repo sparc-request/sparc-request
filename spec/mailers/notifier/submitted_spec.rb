@@ -85,6 +85,7 @@ RSpec.describe Notifier do
                                                                           xls,
                                                                           identity,
                                                                           audit) }
+
       # Expected service provider message is defined under submitted_service_provider_and_admin_message
       it 'should display service provider intro message, conclusion, link, and should not display acknowledgments' do
         submitted_intro_for_service_providers_and_admin(mail)

@@ -108,32 +108,10 @@ class Notifier < ActionMailer::Base
     @portal_link = DASHBOARD_LINK + "/protocols/#{@protocol.id}"
     @portal_text = "Administrators/Service Providers, Click Here"
 
-    # if the current user is service provider, only show SSR's that are associated with them
-    @ssrs_to_be_displayed = []
-    @service_request.sub_service_requests.each do |ssr|
-      if service_provider.identity.is_service_provider?(ssr)
-        @ssrs_to_be_displayed << ssr
-      end
-    end
+    # only display the ssrs that are associated with service_provider
+    @ssrs_to_be_displayed = @service_request.ssrs_associated_with_service_provider(service_provider)
 
-    # deleted_ssr_ids = []
-    # @deleted_line_items.each do |li|
-    #   deleted_ssr_ids << li[:audited_changes]['sub_service_request_id']
-    # end
-
-    # deleted_ssrs = []
-    # deleted_ssr_ids.uniq.each do |ssr_id|
-    #   deleted_ssrs << SubServiceRequest.find(ssr_id)
-    # end
-
-    # @deleted_ssrs_to_be_displayed = []
-    # deleted_ssrs.each do |deleted_ssr|
-    #   if service_provider.identity.is_service_provider?(deleted_ssr)
-    #     @deleted_ssrs_to_be_displayed << deleted_ssr
-    #   end
-    # end
-
-    if @ssr_deleted == false
+    if !@ssr_deleted
       attachments_to_add.each do |file_name, document|
         next if document.nil?
         attachments["#{file_name}"] = document

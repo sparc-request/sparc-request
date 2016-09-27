@@ -51,7 +51,7 @@
     - if @status == "submitted" && @role == 'none' && !@notes.empty?
       %p= t(:notifier)[:notes_present]
     
-    - if @ssr_deleted == false
+    - if !@ssr_deleted
       %p= t(:notifier)[:body6]
     
     %p= t(:issue_contact)

@@ -29,6 +29,8 @@ en:
         nct_number: "The NCT #"
       protocol:
         human_subjects_info: "The NCT #"
+      investigational_products_info:
+        inv_device_number: "Investigational device number"
   admin_portal_title: "SPARC Request Administration"
   application_title: "SPARCRequest"
   bug_enhancement_link: "Report a bug or request an enhancement"
@@ -203,10 +205,14 @@ en:
           iacuc_approval_date: "IACUC Approval Date:"
           iacuc_expiration_date: "IACUC Expiration Date:"
         products:
+          clear: "clear"
           header: "Investigational Products:"
           ind_number: "IND #:"
           ind_on_hold: "IND on Hold?:"
-          ide_number: "IDE# / HDE# / HUD#:"
+          numbers:
+            ide: "IDE #:"
+            hde: "HDE #:"
+            hud: "HUD #:"
         ip_patents:
           header: "IP/Patents:"
           number: "Patent Number:"
@@ -556,10 +562,15 @@ en:
               iacuc_approval_date: "IACUC Approval Date:"
               iacuc_expiration_date: "IACUC Expiration Date:"
             products:
+              clear: "Clear"
               header: "Investigational Products"
               ind_number: "IND #:"
               ind_on_hold: "IND on Hold?:"
               ide_number: "IDE# / HDE# / HUD#:"
+              numbers:
+                ide: "IDE #:"
+                hde: "HDE #:"
+                hud: "HUD #:"
             ip_patents:
               header: "IP/Patents"
               number: "Patent Number:"
@@ -1155,6 +1166,7 @@ en:
     approval_pending: "Application/Approval Pending:"
     study_type_questions: "Study type questions *"
     attributes: "Study Attributes"
+    clear: "Clear"
     code_blank: "Select a Federal Grant Code"
     description: "Before you can complete a service request, please tell us more about your research study. This information will be used by our staff to decide the best way to process your request."
     epic: "Epic Information"
@@ -1186,6 +1198,10 @@ en:
     name_of_iacuc: "Name of IACUC:"
     nct_number: "NCT# (National Clinical Trials Number):"
     needed_info: "Information needed to obtain correct pricing"
+    numbers:
+      hde: "HDE #:"
+      hud: "HUD #:"
+      ide: "IDE #:"
     optional_text: "Optional Information"
     optional_text2: "(used for reporting purposes and saved for your future use)"
     options: "Optional"
@@ -1560,7 +1576,6 @@ en:
     sparc_dashboard_period: "SPARCDashboard."
     title1: "Short Title:"
     title2: "Project Title:"
-    update:  "An Authorized User has been modified in"
     user_info: "User Information:"
     user_modification: "User Modification"
 

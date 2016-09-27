@@ -83,7 +83,7 @@ RSpec.describe CatalogManager::CatalogHelper do
       program     = create(:program, name: 'Program', parent_id: provider.id, is_available: false)
       core        = create(:core, name: 'Core', parent_id: program.id, is_available: false)
 
-      expect(helper.disabled_parent(core)).to eq(provider.name)
+      expect(helper.disabled_parent(core)).to eq("Disabled at: #{provider.name}")
     end
   end
 
@@ -95,7 +95,7 @@ RSpec.describe CatalogManager::CatalogHelper do
       core        = create(:core, name: 'Core', parent_id: program.id, is_available: false)
       service     = create(:service, name: 'Service', organization_id: core.id, is_available: false)
 
-      expect(helper.disabled_service_parent(service)).to eq(provider.name)
+      expect(helper.disabled_service_parent(service)).to eq("Disabled at: #{provider.name}")
     end
   end
 end

@@ -68,8 +68,7 @@
             %td
               = f.check_box :is_available, {checked: (@organization.is_available.nil? ? false : !@organization.is_available), disabled: @organization.parent.nil? ? false : !@organization.parent.is_available }, false, true
               %span
-                - unless (@organization.type == 'Institution') || @organization.parent.is_available
-                  = I18n.t('organization_form.disabled_at', disabled_parent: disabled_parent(@organization))
+                = disabled_parent(@organization)
 
           - unless @organization.type == 'Institution'
             %tr

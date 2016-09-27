@@ -158,10 +158,11 @@ class ServiceRequestsController < ApplicationController
   end
 
   def review
-    @tab    = 'calendar'
-    @review = true
-    @portal = false
-    @merged = false
+    @tab          = 'calendar'
+    @review       = true
+    @portal       = false
+    @merged       = false
+    @consolidated = true
 
     # Reset all the page numbers to 1 at the start of the review request
     # step.

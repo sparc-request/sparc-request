@@ -56,6 +56,7 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
         @portal           = true
         @review           = true
         @merged           = false
+        @consolidated     = false
 
         @pages            = {}
         @service_request.arms.each do |arm|

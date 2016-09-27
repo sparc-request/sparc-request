@@ -24,7 +24,7 @@
   - locked = !ssr.can_be_edited?
 
   -# SSR Header Row
-  %tr.organization-header{ class: locked ? 'bg-danger text-danger' : '' }
+  %tr.organization-header{ class: locked ? 'text-danger' : '' }
     %th{ colspan: 14 }
       = display_org_name(org_name, ssr, locked)
 

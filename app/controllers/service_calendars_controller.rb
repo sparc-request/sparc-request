@@ -173,7 +173,8 @@ class ServiceCalendarsController < ApplicationController
     # Update the sub service request only if we are not in dashboard; admin's actions should not affect the status
     unless @portal
       @arm.line_items.map(&:sub_service_request).uniq.each do |ssr|
-        next if @sub_service_request && ssr != @sub_service_request
+        next if (@sub_service_request && ssr != @sub_service_request)
+        next unless ssr.can_be_edited?
         ssr.update_attribute(:status, "draft")
         ssr.update_past_status(current_user)
       end

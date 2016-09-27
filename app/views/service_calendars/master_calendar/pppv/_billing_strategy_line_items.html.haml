@@ -24,7 +24,7 @@
   - locked = !ssr.can_be_edited?
 
   -# SSR Header Row
-  %tr.organization-header{ class: locked ? 'bg-danger text-danger' : '' }
+  %tr.organization-header{ class: locked ? 'text-danger' : '' }
     %th.col-sm-6{ colspan: portal ? 6 : 7 }
       = display_org_name(org_name, ssr, locked)
     - visit_groups.each do
@@ -62,7 +62,10 @@
           = liv.line_item.service.displayed_pricing_map.unit_type
 
       %td.subject-count.text-center
-        %a.edit-subject-count{ href: 'javascript:void(0)', data: { name: 'subject_count', title: t(:calendars)[:pppv][:editable_fields][:subject_count], value: liv.subject_count, url: dashboard_line_items_visit_path(liv, srid: service_request.id) } }
+        - if locked
+          = liv.subject_count
+        - else
+          %a.edit-subject-count{ href: 'javascript:void(0)', data: { name: 'subject_count', title: t(:calendars)[:pppv][:editable_fields][:subject_count], value: liv.subject_count, url: dashboard_line_items_visit_path(liv, srid: service_request.id) } }
       - visits      = liv.visits.paginate(page: page.to_i, per_page: 5)
       - totals_hash = liv.try(:per_subject_subtotals, visits)
       - visits.each_with_index do |v, index|

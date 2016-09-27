@@ -28,9 +28,7 @@
       .modal-body
         #modal_errors
         .form-group.text-center
-          = t(:proper)[:catalog][:locked_organization][:warning1]
-        .form-group.text-center
-          = t(:proper)[:catalog][:locked_organization][:warning2]
+          = raw(t(:proper)[:catalog][:locked_organization][:warning])
       .modal-footer
         .center-block
           %button.btn.btn-default{ type: 'button', data: { dismiss: 'modal' } }

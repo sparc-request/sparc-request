@@ -68,6 +68,7 @@ class SubServiceRequest < ActiveRecord::Base
   attr_accessible :documents
   attr_accessible :service_requester_id
   attr_accessible :requester_contacted_date
+  attr_accessible :submitted_at
 
   accepts_nested_attributes_for :line_items, allow_destroy: true
   accepts_nested_attributes_for :payments, allow_destroy: true

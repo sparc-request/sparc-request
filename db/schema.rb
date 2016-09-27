@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160908144020) do
+ActiveRecord::Schema.define(version: 20160921130908) do
 
   create_table "admin_rates", force: :cascade do |t|
     t.integer  "line_item_id", limit: 4
@@ -183,12 +183,6 @@ ActiveRecord::Schema.define(version: 20160908144020) do
 
   add_index "charges", ["service_id"], name: "index_charges_on_service_id", using: :btree
   add_index "charges", ["service_request_id"], name: "index_charges_on_service_request_id", using: :btree
-
-  create_table "click_counters", force: :cascade do |t|
-    t.integer  "click_count", limit: 4
-    t.datetime "created_at",            null: false
-    t.datetime "updated_at",            null: false
-  end
 
   create_table "clinical_providers", force: :cascade do |t|
     t.integer  "identity_id",     limit: 4
@@ -405,13 +399,14 @@ ActiveRecord::Schema.define(version: 20160908144020) do
   add_index "impact_areas", ["protocol_id"], name: "index_impact_areas_on_protocol_id", using: :btree
 
   create_table "investigational_products_info", force: :cascade do |t|
-    t.integer  "protocol_id", limit: 4
-    t.string   "ind_number",  limit: 255
+    t.integer  "protocol_id",       limit: 4
+    t.string   "ind_number",        limit: 255
     t.boolean  "ind_on_hold"
-    t.string   "ide_number",  limit: 255
-    t.datetime "created_at",              null: false
-    t.datetime "updated_at",              null: false
+    t.string   "inv_device_number", limit: 255
+    t.datetime "created_at",                                 null: false
+    t.datetime "updated_at",                                 null: false
     t.datetime "deleted_at"
+    t.string   "exemption_type",    limit: 255, default: ""
   end
 
   add_index "investigational_products_info", ["protocol_id"], name: "index_investigational_products_info_on_protocol_id", using: :btree
@@ -1070,7 +1065,7 @@ ActiveRecord::Schema.define(version: 20160908144020) do
     t.string   "status",                 limit: 255, default: "Pending"
     t.integer  "approved_by",            limit: 4
     t.datetime "approved_at"
-    t.float    "percent_subsidy",        limit: 24
+    t.float    "percent_subsidy",        limit: 24,  default: 0.0
   end
 
   add_index "subsidies", ["sub_service_request_id"], name: "index_subsidies_on_sub_service_request_id", using: :btree

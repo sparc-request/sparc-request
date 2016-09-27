@@ -43,7 +43,6 @@ class AssociatedUserUpdater
 
       # must come after the use of ActiveModel::Dirty methods above
       @protocol_role.save
-      protocol.email_about_change_in_authorized_user(@protocol_role, "update")
 
       if USE_EPIC && protocol.selected_for_epic && !QUEUE_EPIC
         if access_removed

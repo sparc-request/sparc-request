@@ -26,8 +26,7 @@ RSpec.describe AssociatedUserUpdater do
 
   context "params[:project_role] describes a valid ProjectRole" do
     it "should update ProjectRole from params[:id] with params[:project_role]" do
-      protocol = create(:study_without_validations, primary_pi: primary_pi)
-      create(:sub_service_request, status: 'not_draft', organization: create(:organization), service_request: create(:service_request_without_validations, protocol: protocol))
+      protocol = create(:protocol_without_validations, primary_pi: primary_pi)
       project_role = ProjectRole.create(identity_id: identity.id,
         protocol_id: protocol.id,
         role: "important",
@@ -41,8 +40,7 @@ RSpec.describe AssociatedUserUpdater do
 
   context "changing role to 'primary-pi'" do
     it "should change current primary pi to a general-access-user" do
-      protocol = create(:study_without_validations, primary_pi: primary_pi)
-      create(:sub_service_request, status: 'not_draft', organization: create(:organization), service_request: create(:service_request_without_validations, protocol: protocol))
+      protocol = create(:protocol_without_validations, primary_pi: primary_pi)
       project_role = ProjectRole.create(identity_id: identity.id,
         protocol_id: protocol.id,
         role: "primary-pi",
@@ -55,75 +53,9 @@ RSpec.describe AssociatedUserUpdater do
     end
   end
 
-  context "SEND_AUTHORIZED_USER_EMAILS == true && protocol has non-draft status" do
-    it "should notify associated users about user change" do
-      protocol = create(:study_without_validations, primary_pi: primary_pi)
-      user = create(:identity)
-      create(:sub_service_request, status: 'not_draft', organization: create(:organization), service_request: create(:service_request_without_validations, protocol: protocol))
-      stub_const("SEND_AUTHORIZED_USER_EMAILS", true)
-      project_role = ProjectRole.create(identity_id: identity.id,
-        protocol_id: protocol.id,
-        role: "important",
-        project_rights: "to-party")
-      expect(UserMailer).to receive(:authorized_user_changed) do
-        mailer_stub = double('mailer')
-        expect(mailer_stub).to receive(:deliver)
-        mailer_stub
-      end
-      expect(UserMailer).to receive(:authorized_user_changed) do
-        mailer_stub = double('mailer')
-        expect(mailer_stub).to receive(:deliver)
-        mailer_stub
-      end
-
-      AssociatedUserUpdater.new(id: project_role.id, project_role: { role: "not-important" })
-    end
-  end
-
-  context "SEND_AUTHORIZED_USER_EMAILS == true && protocol has draft status" do
-    it "should notify associated users about user change" do
-      protocol = create(:study_without_validations, primary_pi: primary_pi)
-      user = create(:identity)
-      create(:sub_service_request, status: 'draft', organization: create(:organization), service_request: create(:service_request_without_validations, protocol: protocol))
-      stub_const("SEND_AUTHORIZED_USER_EMAILS", true)
-      project_role = ProjectRole.create(identity_id: identity.id,
-        protocol_id: protocol.id,
-        role: "important",
-        project_rights: "to-party")
-      expect(UserMailer).not_to receive(:authorized_user_changed) do
-        mailer_stub = double('mailer')
-        expect(mailer_stub).to receive(:deliver)
-        mailer_stub
-      end
-      expect(UserMailer).not_to receive(:authorized_user_changed) do
-        mailer_stub = double('mailer')
-        expect(mailer_stub).to receive(:deliver)
-        mailer_stub
-      end
-
-      AssociatedUserUpdater.new(id: project_role.id, project_role: { role: "not-important" })
-    end
-  end
-
-  context "SEND_AUTHORIZED_USER_EMAILS == false" do
-    it "should not notify associated users about user change" do
-      protocol = create(:study_without_validations, primary_pi: primary_pi)
-      stub_const("SEND_AUTHORIZED_USER_EMAILS", false)
-      project_role = ProjectRole.create(identity_id: identity.id,
-        protocol_id: protocol.id,
-        role: "important",
-        project_rights: "to-party")
-      allow(UserMailer).to receive(:authorized_user_changed)
-
-      AssociatedUserUpdater.new(id: project_role.id, project_role: { role: "not-important" })
-
-      expect(UserMailer).not_to have_received(:authorized_user_changed)
-    end
-  end
-
   context "USE_EPIC == true && Protocol selected for epic && QUEUE_EPIC == false" do
     let(:protocol) do
-      create(:study_without_validations,
+      create(:protocol_without_validations,
         primary_pi: primary_pi,
         selected_for_epic: true)
     end
@@ -141,7 +73,6 @@ RSpec.describe AssociatedUserUpdater do
           project_rights: "to-party",
           epic_access: true)
 
-        create(:sub_service_request, status: 'not_draft', organization: create(:organization), service_request: create(:service_request_without_validations, protocol: protocol))
 
         expect(Notifier).to receive(:notify_for_epic_access_removal) do |p, pr|
           # make sure the correct objects are being passed
@@ -166,7 +97,6 @@ RSpec.describe AssociatedUserUpdater do
           project_rights: "to-party",
           epic_access: false)
 
-        create(:sub_service_request, status: 'not_draft', organization: create(:organization), service_request: create(:service_request_without_validations, protocol: protocol))
 
         expect(Notifier).to receive(:notify_for_epic_user_approval) do |p|
           # make sure the correct objects are being passed
@@ -190,7 +120,6 @@ RSpec.describe AssociatedUserUpdater do
           epic_access: false)
         project_role.epic_rights.create(right: "left", position: 1)
 
-        create(:sub_service_request, status: 'not_draft', organization: create(:organization), service_request: create(:service_request_without_validations, protocol: protocol))
 
         expect(Notifier).to receive(:notify_for_epic_rights_changes) do |p, pr, epic_rights|
           # make sure the correct objects are being passed
@@ -209,7 +138,7 @@ RSpec.describe AssociatedUserUpdater do
 
   describe "#protocol_role" do
     it "should return updated ProjectRole, regardless of validity" do
-      protocol = create(:study_without_validations, primary_pi: primary_pi)
+      protocol = create(:protocol_without_validations, primary_pi: primary_pi)
       project_role = ProjectRole.create(identity_id: identity.id,
         protocol_id: protocol.id,
         role: "important",
@@ -222,7 +151,7 @@ RSpec.describe AssociatedUserUpdater do
   end
 
   describe "#successful?" do
-    let(:protocol) { create(:study_without_validations, primary_pi: primary_pi) }
+    let(:protocol) { create(:protocol_without_validations, primary_pi: primary_pi) }
 
     context "update resulted in invalid ProjectRole" do
       it "should return false" do

@@ -20,7 +20,7 @@
 
 require "rails_helper"
 
-RSpec.describe Dashboard::DocumentRemover do
+RSpec.describe DocumentRemover do
   before(:each) do
     @protocol             = create(:unarchived_study_without_validations)
     @document             = create(:document, protocol: @protocol)
@@ -31,7 +31,7 @@ RSpec.describe Dashboard::DocumentRemover do
     @sub_service_request1.documents << @document
     @sub_service_request2.documents << @document
 
-    Dashboard::DocumentRemover.new(@document.id)
+    DocumentRemover.new(@document.id)
   end
 
   it "should remove Document from the specified Protocol" do

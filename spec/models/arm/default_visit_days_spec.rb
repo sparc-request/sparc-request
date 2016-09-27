@@ -22,7 +22,8 @@ require 'rails_helper'
 
 RSpec.describe Arm, type: :model do
   describe '#default_visit_days' do
-    let!(:arm)    { create(:arm, visit_count: 2, line_item_count: 1) }
+    let!(:protocol) { create(:protocol_without_validations) }
+    let!(:arm)      { create(:arm, protocol: protocol, visit_count: 2, line_item_count: 1) }
     before(:each) do
       VisitGroup.all.each { |vg| vg.update_attributes(day: 0) }
     end

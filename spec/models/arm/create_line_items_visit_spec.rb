@@ -22,12 +22,13 @@ require 'rails_helper'
 
 RSpec.describe Arm, type: :model do
   describe '#create_line_items_visit' do
+    let!(:protocol)        { create(:protocol_without_validations) }
     let!(:service_request) { create(:service_request_without_validations) }
     let!(:line_item)       { create(:line_item_with_service, service_request: service_request) }
 
     context 'visit_count is nil' do
       it 'should set visit_count to 1' do
-        arm = create(:arm_without_validations, visit_count: nil)
+        arm = create(:arm_without_validations, protocol: protocol, visit_count: nil)
         arm.create_line_items_visit line_item
         expect(arm.visit_count).to eq 1
       end
@@ -35,7 +36,7 @@ RSpec.describe Arm, type: :model do
 
     context 'visit_count is positive' do
       it 'should create enough VisitGroups to match visit_count' do
-        arm = create(:arm, visit_count: 2, subject_count: 1)
+        arm = create(:arm, protocol: protocol, visit_count: 2, subject_count: 1)
 
         arm.create_line_items_visit(line_item)
 
@@ -43,7 +44,7 @@ RSpec.describe Arm, type: :model do
       end
 
       it 'should create a LineItemsVisit for LineItem with new Visits' do
-        arm = create(:arm, visit_count: 2, subject_count: 1)
+        arm = create(:arm, protocol: protocol, visit_count: 2, subject_count: 1)
 
         arm.create_line_items_visit(line_item)
 
@@ -57,7 +58,7 @@ RSpec.describe Arm, type: :model do
 
       context 'Arm has the same number of VisitGroups as visit_count' do
         it 'should not create any VisitGroups' do
-          arm = create(:arm, visit_count: 2, subject_count: 1)
+          arm = create(:arm, protocol: protocol, visit_count: 2, subject_count: 1)
           create_list(:visit_group, 2, arm: arm)
 
           expect { arm.create_line_items_visit line_item }.to_not change { arm.visit_groups.count }
@@ -66,7 +67,7 @@ RSpec.describe Arm, type: :model do
 
       context 'Arm has more VisitGroups than visit_count' do
         it 'should not create any VisitGroups' do
-          arm = create(:arm, visit_count: 2, subject_count: 1)
+          arm = create(:arm, protocol: protocol, visit_count: 2, subject_count: 1)
           create_list(:visit_group, 3, arm: arm)
           
           expect { arm.create_line_items_visit line_item }.to_not change { arm.visit_groups.count }

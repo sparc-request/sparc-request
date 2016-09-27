@@ -76,7 +76,7 @@ RSpec.describe AssociatedUserUpdater do
         mailer_stub
       end
 
-      Dashboard::AssociatedUserUpdater.new(id: project_role.id, project_role: { role: "not-important" })
+      AssociatedUserUpdater.new(id: project_role.id, project_role: { role: "not-important" })
     end
   end
 

@@ -28,33 +28,43 @@
     %title= t(:notifier)[:service_request]
 
   %body
-    - if @ssr_deleted
+    /***** EMAIL INTRO *****
+    - case @status
+    - when 'all_ssrs_deleted'
       = render "deleted_all_services_from_cart"
-    - else
-      - if @status == 'get_a_cost_estimate'
-        = render "welcome"
-      - if @status == 'submitted'
-        = render "welcome_for_submitted_status"
+    - when 'get_a_cost_estimate'
+      = render "welcome"
+    - when 'submitted'
+      = render "welcome_for_submitted_status"
+    /***** END EMAIL INTRO *****
+
+    /***** EMAIL TABLES *****
     = render "protocol_information", protocol: @protocol
+
     - if @service_request.has_per_patient_per_visit_services? and @service_request.arms.count > 0
       = render "arm_information"
+
     = render "user_information"
+
     - if @ssrs_to_be_displayed
-      - if @ssr_deleted
+      - if @status == 'all_ssrs_deleted'
         = render "deleted_srid_information"
       - else
         = render "srid_information"
   
-    - if !@ssr_deleted && @audit_report.present? && @audit_report[:line_items].present?
+    - if @status != 'all_ssrs_deleted' && @audit_report.present? && @audit_report[:line_items].present?
       = render "audit_action"
+    /***** END EMAIL TABLES *****
 
+    /***** OTHER EMAIL TIDBITS *****
     - if @status == "submitted" && @role == 'none' && !@notes.empty?
       %p= t(:notifier)[:notes_present]
     
-    - if !@ssr_deleted
+    - if @status != 'all_ssrs_deleted'
       %p= t(:notifier)[:body6]
     
     %p= t(:issue_contact)
     
     - if @role != 'none'
       = render "acknowledgments"
+    /***** END OTHER EMAIL TIDBITS *****

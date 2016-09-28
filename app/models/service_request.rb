@@ -598,7 +598,7 @@ class ServiceRequest < ActiveRecord::Base
     sub_service_requests.where.not(status: 'first_draft').any?
   end
 
-  def ssrs_associated_with_service_provider service_provider
+  def ssrs_associated_with_service_provider (service_provider)
     ssrs_to_be_displayed = []
     self.sub_service_requests.each do |ssr|
       if service_provider.identity.is_service_provider?(ssr)

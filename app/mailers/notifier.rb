@@ -44,7 +44,6 @@ class Notifier < ActionMailer::Base
   end
 
   def notify_user(project_role, service_request, xls, approval, user_current)
-    @ssr_deleted = false
     @status = service_request.status
     @notes = []
     @identity = project_role.identity
@@ -69,7 +68,6 @@ class Notifier < ActionMailer::Base
   end
 
   def notify_admin(service_request, submission_email_address, xls, user_current, ssr)
-    @ssr_deleted = false
     @notes = service_request.notes
     @status = service_request.status
     @role = 'none'
@@ -91,10 +89,15 @@ class Notifier < ActionMailer::Base
     mail(:to => email, :from => NO_REPLY_FROM, :subject => subject)
   end
 
-  def notify_service_provider(service_provider, service_request, attachments_to_add, user_current, audit_report=nil, ssr_deleted=false)
+  def notify_service_provider(service_provider, service_request, attachments_to_add, user_current, audit_report=nil, all_ssrs_deleted=false)
     @notes = service_request.notes
 
-    @status = service_request.status
+    if all_ssrs_deleted
+      @status = 'all_ssrs_deleted'
+    else
+      @status = service_request.status
+    end
+    
     @role = 'none'
     @full_name = service_provider.identity.full_name
 
@@ -103,7 +106,6 @@ class Notifier < ActionMailer::Base
     @service_requester_id = @service_request.sub_service_requests.first.service_requester_id
 
     @audit_report = audit_report
-    @ssr_deleted = ssr_deleted
     
     @portal_link = DASHBOARD_LINK + "/protocols/#{@protocol.id}"
     @portal_text = "Administrators/Service Providers, Click Here"
@@ -111,7 +113,7 @@ class Notifier < ActionMailer::Base
     # only display the ssrs that are associated with service_provider
     @ssrs_to_be_displayed = @service_request.ssrs_associated_with_service_provider(service_provider)
 
-    if !@ssr_deleted
+    if !all_ssrs_deleted
       attachments_to_add.each do |file_name, document|
         next if document.nil?
         attachments["#{file_name}"] = document

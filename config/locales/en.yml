@@ -988,7 +988,7 @@ en:
     ctrc_label: "Administrative Approvals"
     default_statuses: "Default Statuses:"
     description: "Description"
-    disabled: "Do not display in SPARC"
+    disabled: "Display in SPARC"
     disabled_at: "Disabled at: %{disabled_parent}"
     eap_id: 'EAP ID'
     epic_info: "Epic Interface"

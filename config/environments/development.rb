@@ -46,7 +46,6 @@ SparcRails::Application.configure do
   config.assets.debug = true
 
   config.action_mailer.default_url_options = { :host => 'localhost:3000' }
-  config.action_mailer.delivery_method = :letter_opener
 
   config.log_level = :debug
 
@@ -54,4 +53,11 @@ SparcRails::Application.configure do
   config.to_prepare do
     DeviseFilters.add_filters
   end
+
+  config.middleware.use ExceptionNotification::Rack,
+    email: {
+      ignore_if: ->(env, exception) { ['128.23.150.107'].include?(env['REMOTE_ADDR']) },
+      sender_address: 'donotreply@musc.edu',
+      exception_recipients: YAML.load_file(Rails.root.join('config', 'application.yml'))[Rails.env]['exception_recipients'] || []
+    }
 end

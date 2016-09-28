@@ -270,7 +270,7 @@ class ServiceRequestsController < ApplicationController
       if @sub_service_request.status != 'submitted'
         to_notify << @sub_service_request.id
       end
-      
+
       @sub_service_request.update_attribute(:submitted_at, Time.now) unless @sub_service_request.status == 'submitted'
       @sub_service_request.update_attributes(status: 'submitted', nursing_nutrition_approved: false, lab_approved: false, imaging_approved: false, committee_approved: false)
       @sub_service_request.update_past_status(current_user)
@@ -534,10 +534,10 @@ class ServiceRequestsController < ApplicationController
     # Passes the correct SSR to display in the attachment and email.
     sub_service_requests.each do |sub_service_request|
       sub_service_request.organization.submission_emails_lookup.each do |submission_email|
-        
+
         @service_list_false = service_request.service_list(false, nil, sub_service_request)
         @service_list_true = service_request.service_list(true, nil, sub_service_request)
-        
+
         @line_items = sub_service_request.line_items
         xls = render_to_string action: 'show', formats: [:xlsx]
         Notifier.notify_admin(service_request, submission_email.email, xls, current_user, sub_service_request).deliver

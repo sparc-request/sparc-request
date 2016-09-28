@@ -97,7 +97,6 @@ SparcRails::Application.configure do
     email: {
       ignore_if: ->(env, exception) { ['128.23.150.107'].include?(env['REMOTE_ADDR']) },
       sender_address: 'donotreply@musc.edu',
-      exception_recipients: ['catesa@musc.edu', 'johstu@musc.edu', 'leonarjp@musc.edu', 'wiel@musc.edu', 'lohrp@musc.edu', 'holtw@musc.edu']
+      exception_recipients: YAML.load_file(Rails.root.join('config', 'application.yml'))[Rails.env]['exception_recipients'] || []
     }
-
 end

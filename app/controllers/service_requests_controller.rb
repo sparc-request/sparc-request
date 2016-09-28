@@ -595,8 +595,8 @@ class ServiceRequestsController < ApplicationController
     end
 
     if audit_report.nil?
-      previously_submitted_at = service_request.previous_submitted_at.nil? ? Time.now.utc : service_request.previous_submitted_at.utc
-      audit_report = sub_service_request.audit_report(current_user, previously_submitted_at, Time.now.utc)
+      previously_submitted_at = service_request.previous_submitted_at.nil? ? Time.now : service_request.previous_submitted_at
+      audit_report = sub_service_request.audit_report(current_user, previously_submitted_at, Time.now.tomorrow)
     end
     Notifier.notify_service_provider(service_provider, service_request, attachments, current_user, audit_report, ssr_deleted).deliver_now
   end

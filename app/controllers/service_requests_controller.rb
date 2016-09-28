@@ -265,6 +265,18 @@ class ServiceRequestsController < ApplicationController
     @service_request.previous_submitted_at = @service_request.submitted_at
 
     to_notify = []
+    audit_report = sub_service_request.audit_report(current_user, service_request.previous_submitted_at, Time.now.tomorrow)
+
+    if @service_request.submitted_at.present? && audit_report.present?
+      send_service_provider_notifications(@service_request, sub_service_requests, audit_report)
+
+      request_amendment_notify = []
+      @service_request.sub_service_requests.each do |ssr|
+        request_amendment_notify << ssr.id
+      end
+      audit_report = sub_service_request.audit_report(current_user, service_request.previous_submitted_at, Time.now.tomorrow)
+      send_confirmation_notifications to_notify
+    end
 
     if @sub_service_request
       if @sub_service_request.status != 'submitted'
@@ -523,9 +535,9 @@ class ServiceRequestsController < ApplicationController
     end
   end
 
-  def send_service_provider_notifications(service_request, sub_service_requests) #all sub-service requests on service request
+  def send_service_provider_notifications(service_request, sub_service_requests, audit_report) #all sub-service requests on service request
     sub_service_requests.each do |sub_service_request|
-      send_ssr_service_provider_notifications(service_request, sub_service_request)
+      send_ssr_service_provider_notifications(service_request, sub_service_request, false, audit_report)
     end
   end
 
@@ -545,17 +557,15 @@ class ServiceRequestsController < ApplicationController
     end
   end
 
-  def send_ssr_service_provider_notifications(service_request, sub_service_request, ssr_deleted=false) #single sub-service request
-    previously_submitted_at = service_request.previous_submitted_at.nil? ? Time.now.utc : service_request.previous_submitted_at.utc
-    audit_report = sub_service_request.audit_report(current_user, previously_submitted_at, Time.now.utc)
-
+  def send_ssr_service_provider_notifications(service_request, sub_service_request, ssr_deleted=false, audit_report=false) #single sub-service request
     sub_service_request.organization.service_providers.where("(`service_providers`.`hold_emails` != 1 OR `service_providers`.`hold_emails` IS NULL)").each do |service_provider|
-      send_individual_service_provider_notification(service_request, sub_service_request, service_provider, audit_report, ssr_deleted) end
+      send_individual_service_provider_notification(service_request, sub_service_request, service_provider, audit_report, ssr_deleted)
+    end
   end
 
   def ssr_has_changed?(service_request, sub_service_request) #specific ssr has changed?
-    previously_submitted_at = service_request.previous_submitted_at.nil? ? Time.now.utc : service_request.previous_submitted_at.utc
-    unless sub_service_request.audit_report(current_user, previously_submitted_at, Time.now.utc)[:line_items].empty?
+    previously_submitted_at = service_request.previous_submitted_at.nil? ? Time.now : service_request.previous_submitted_at
+    unless sub_service_request.audit_report(current_user, previously_submitted_at, Time.now.tomorrow)[:line_items].empty?
       return true
     end
     return false
@@ -594,10 +604,10 @@ class ServiceRequestsController < ApplicationController
       attachments["request_for_grant_billing_#{service_request.id}.pdf"] = request_for_grant_billing_form
     end
 
-    if audit_report.nil?
-      previously_submitted_at = service_request.previous_submitted_at.nil? ? Time.now : service_request.previous_submitted_at
-      audit_report = sub_service_request.audit_report(current_user, previously_submitted_at, Time.now.tomorrow)
-    end
+    # if audit_report.nil?
+    #   previously_submitted_at = service_request.previous_submitted_at.nil? ? Time.now : service_request.previous_submitted_at
+    #   audit_report = sub_service_request.audit_report(current_user, previously_submitted_at, Time.now.tomorrow)
+    # end
     Notifier.notify_service_provider(service_provider, service_request, attachments, current_user, audit_report, ssr_deleted).deliver_now
   end
 

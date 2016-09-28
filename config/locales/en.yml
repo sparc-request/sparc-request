@@ -1669,6 +1669,7 @@ en:
     p_info: "Project Information"
     p_title: "Project Title"
     proxy: "Proxy Rights:"
+    request_amendment: "Request Amendment"
     requester:  "(Requester)"
     role: "Role"
     s_name: "Sponsor Name"

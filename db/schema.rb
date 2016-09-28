@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160908144020) do
+ActiveRecord::Schema.define(version: 20160928140834) do
 
   create_table "admin_rates", force: :cascade do |t|
     t.integer  "line_item_id", limit: 4
@@ -399,13 +399,14 @@ ActiveRecord::Schema.define(version: 20160908144020) do
   add_index "impact_areas", ["protocol_id"], name: "index_impact_areas_on_protocol_id", using: :btree
 
   create_table "investigational_products_info", force: :cascade do |t|
-    t.integer  "protocol_id", limit: 4
-    t.string   "ind_number",  limit: 255
+    t.integer  "protocol_id",       limit: 4
+    t.string   "ind_number",        limit: 255
     t.boolean  "ind_on_hold"
-    t.string   "ide_number",  limit: 255
-    t.datetime "created_at",              null: false
-    t.datetime "updated_at",              null: false
+    t.string   "inv_device_number", limit: 255
+    t.datetime "created_at",                                 null: false
+    t.datetime "updated_at",                                 null: false
     t.datetime "deleted_at"
+    t.string   "exemption_type",    limit: 255, default: ""
   end
 
   add_index "investigational_products_info", ["protocol_id"], name: "index_investigational_products_info_on_protocol_id", using: :btree

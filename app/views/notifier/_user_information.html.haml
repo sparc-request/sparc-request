@@ -27,7 +27,7 @@
       %th.skinny-black-border= t(:notifier)[:name]
       %th.skinny-black-border= t(:notifier)[:contact_info]
       %th.skinny-black-border= t(:notifier)[:role]
-      - if @protocol.selected_for_epic == true
+      - if @protocol.selected_for_epic
         %th.skinny-black-border= t(:notifier)[:epic_access]
   %tbody
     - @protocol.project_roles.each do |pr|
@@ -38,7 +38,7 @@
           %td.skinny-black-border.center= pr.role.upcase + " " + t(:notifier)[:requester]
         - else
           %td.skinny-black-border.center= pr.role.upcase
-        - if @protocol.selected_for_epic == true
+        - if @protocol.selected_for_epic
           %td.skinny-black-border.center= pr.epic_access == true ? "Yes" : "No"
 %br
 %br

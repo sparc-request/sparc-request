@@ -216,7 +216,7 @@ module ApplicationHelper
       (beginning_visit..ending_visit).each do |visit_number|
         visit_group = arm.visit_groups[visit_number - 1]
 
-        unless visit_group.day.nil?
+        if visit_group.day.present?
           arr << ["--#{visit_group.name}/Day #{visit_group.day}".html_safe, parent_page: page]
         else
           arr << ["--#{visit_group.name}".html_safe, parent_page: page]

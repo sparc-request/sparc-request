@@ -48,6 +48,14 @@ class Arm < ActiveRecord::Base
   validates :visit_count, numericality: { greater_than: 0 }
   validates :subject_count, numericality: { greater_than: 0 }
 
+  validate do |arm|
+    arm.visit_groups.each do |visit_group|
+      if !visit_group.valid? && visit_group.errors.full_messages.first.include?('order')
+        errors[:base] << visit_group.errors.full_messages.first
+      end
+    end
+  end
+
   def sanitized_name
     #Sanitized for Excel
     name.gsub(/\[|\]|\*|\/|\\|\?|\:/, ' ')
@@ -347,7 +355,8 @@ class Arm < ActiveRecord::Base
     count = visit_count - last_position
     count.times do |index|
       position = last_position + 1
-      VisitGroup.create(arm_id: self.id, name: "Visit #{position}", position: position, day: position)
+      visit_group = VisitGroup.new(arm_id: self.id, name: "Visit #{position}", position: position)
+      visit_group.save(validate: false)
       last_position += 1
     end
     self.reload

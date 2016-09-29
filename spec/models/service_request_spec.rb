@@ -235,6 +235,27 @@ RSpec.describe 'ServiceRequest' do
     end
   end
 
+  describe 'ssrs_associated_with_service_provider' do
+    context 'service_provider is associated with sub_service_requests' do
+
+      it 'should return all ssrs associated with the service_provider' do
+        expect(service_request.ssrs_associated_with_service_provider(service_provider)).to eq(service_request.sub_service_requests)
+      end
+    end
+
+    context 'service_provider is not associated with sub_service_requests' do
+      
+      before :each do
+        identity = create(:identity)
+        @service_provider2 = create(:service_provider, identity_id: identity.id)
+      end
+
+      it 'should return empty array' do
+        expect(service_request.ssrs_associated_with_service_provider(@service_provider2)).to eq([])
+      end
+    end
+  end
+
   describe '#additional_detail_services' do
     it 'should select the services that have additional details' do
       service_request = create(:service_request_without_validations)

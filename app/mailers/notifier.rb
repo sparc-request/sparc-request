@@ -68,7 +68,7 @@ class Notifier < ActionMailer::Base
     mail(:to => email, :from => NO_REPLY_FROM, :subject => subject)
   end
 
-  def notify_admin(service_request, submission_email_address, xls, user_current, ssr)
+  def notify_admin(service_request, submission_email_address, xls, user_current, ssr, audit_report=nil)
     @ssr_deleted = false
     @notes = service_request.notes
     @status = service_request.status
@@ -83,6 +83,7 @@ class Notifier < ActionMailer::Base
     @portal_link = DASHBOARD_LINK + "/protocols/#{@protocol.id}"
     @portal_text = "Administrators/Service Providers, Click Here"
 
+    @audit_report = audit_report
     attachments["service_request_#{@service_request.protocol.id}.xlsx"] = xls
 
     email = Rails.env == 'production' ?  submission_email_address : DEFAULT_MAIL_TO

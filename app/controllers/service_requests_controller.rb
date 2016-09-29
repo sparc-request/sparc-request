@@ -265,17 +265,15 @@ class ServiceRequestsController < ApplicationController
     @service_request.previous_submitted_at = @service_request.submitted_at
 
     to_notify = []
-    audit_report = sub_service_request.audit_report(current_user, service_request.previous_submitted_at, Time.now.tomorrow)
-
-    if @service_request.submitted_at.present? && audit_report.present?
-      send_service_provider_notifications(@service_request, sub_service_requests, audit_report)
-
-      request_amendment_notify = []
-      @service_request.sub_service_requests.each do |ssr|
-        request_amendment_notify << ssr.id
+    send_request_amendment = service_request_has_changed_ssr?(@service_request)
+    if @service_request.submitted_at.present? && send_request_amendment
+      if @sub_service_request
+        send_service_provider_notifications(@service_request, [@sub_service_request], send_request_amendment)
+        send_admin_notifications(@service_request, [@sub_service_request], send_request_amendment)
+      else
+        send_service_provider_notifications(@service_request, @service_request.sub_service_requests, send_request_amendment)
+        send_admin_notifications(@service_request, @service_request.sub_service_requests, send_request_amendment)
       end
-      audit_report = sub_service_request.audit_report(current_user, service_request.previous_submitted_at, Time.now.tomorrow)
-      send_confirmation_notifications to_notify
     end
 
     if @sub_service_request
@@ -535,16 +533,23 @@ class ServiceRequestsController < ApplicationController
     end
   end
 
-  def send_service_provider_notifications(service_request, sub_service_requests, audit_report) #all sub-service requests on service request
+  def send_service_provider_notifications(service_request, sub_service_requests, send_request_amendment=false) #all sub-service requests on service request
     sub_service_requests.each do |sub_service_request|
-      send_ssr_service_provider_notifications(service_request, sub_service_request, false, audit_report)
+      send_ssr_service_provider_notifications(service_request, sub_service_request, false, send_request_amendment)
     end
   end
 
-  def send_admin_notifications(service_request, sub_service_requests)
+  def send_admin_notifications(service_request, sub_service_requests, send_request_amendment=false)
     # Iterates through each SSR to find the correct admin email.
     # Passes the correct SSR to display in the attachment and email.
     sub_service_requests.each do |sub_service_request|
+
+      if send_request_amendment
+        audit_report = sub_service_request.audit_report(current_user, service_request.previous_submitted_at, Time.now.tomorrow)
+      else
+        audit_report = nil
+      end
+
       sub_service_request.organization.submission_emails_lookup.each do |submission_email|
         
         @service_list_false = service_request.service_list(false, nil, sub_service_request)
@@ -552,20 +557,26 @@ class ServiceRequestsController < ApplicationController
         
         @line_items = sub_service_request.line_items
         xls = render_to_string action: 'show', formats: [:xlsx]
-        Notifier.notify_admin(service_request, submission_email.email, xls, current_user, sub_service_request).deliver
+        Notifier.notify_admin(service_request, submission_email.email, xls, current_user, sub_service_request, audit_report).deliver
       end
     end
   end
 
-  def send_ssr_service_provider_notifications(service_request, sub_service_request, ssr_deleted=false, audit_report=false) #single sub-service request
+  def send_ssr_service_provider_notifications(service_request, sub_service_request, ssr_deleted=false, send_request_amendment= false) #single sub-service request
+    if send_request_amendment
+      audit_report = sub_service_request.audit_report(current_user, service_request.previous_submitted_at, Time.now.tomorrow)
+    else
+      audit_report = nil
+    end
+
     sub_service_request.organization.service_providers.where("(`service_providers`.`hold_emails` != 1 OR `service_providers`.`hold_emails` IS NULL)").each do |service_provider|
       send_individual_service_provider_notification(service_request, sub_service_request, service_provider, audit_report, ssr_deleted)
     end
   end
 
   def ssr_has_changed?(service_request, sub_service_request) #specific ssr has changed?
-    previously_submitted_at = service_request.previous_submitted_at.nil? ? Time.now : service_request.previous_submitted_at
-    unless sub_service_request.audit_report(current_user, previously_submitted_at, Time.now.tomorrow)[:line_items].empty?
+    # previously_submitted_at = service_request.previous_submitted_at.nil? ? Time.now : service_request.previous_submitted_at
+    unless sub_service_request.audit_report(current_user, service_request.submitted_at, Time.now.tomorrow)[:line_items].empty?
       return true
     end
     return false

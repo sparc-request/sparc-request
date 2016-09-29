@@ -70,7 +70,9 @@ class Notifier < ActionMailer::Base
   def notify_admin(service_request, submission_email_address, xls, user_current, ssr, audit_report=nil)
     @ssr_deleted = false
     @notes = service_request.notes
-    @status = service_request.status
+
+    @status = audit_report.present? ? 'request_amendment' : service_request.status
+
     @role = 'none'
     @full_name = submission_email_address
 
@@ -93,8 +95,10 @@ class Notifier < ActionMailer::Base
 
   def notify_service_provider(service_provider, service_request, attachments_to_add, user_current, audit_report=nil, all_ssrs_deleted=false)
     @notes = service_request.notes
-
-    if all_ssrs_deleted
+    binding.pry
+    if audit_report.present?
+      @status = 'request_amendment'
+    elsif all_ssrs_deleted
       @status = 'all_ssrs_deleted'
     else
       @status = service_request.status

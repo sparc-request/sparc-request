@@ -120,6 +120,12 @@ module EmailHelpers
     end
   end
 
+  def assert_email_request_amendment(mail)
+    binding.pry
+    expect(mail).to have_xpath "//table//strong[text()='Request Amendment']"
+    expect(mail).to have_xpath "//th[text()='SRID']/following-sibling::th[text()='Service']/following-sibling::th[text()='Action']"
+  end
+
   def assert_notification_email_tables_for_service_provider
     assert_email_project_information(mail.body)
     assert_email_user_information(mail.body)
@@ -130,6 +136,13 @@ module EmailHelpers
     assert_email_project_information(mail.body)
     assert_email_user_information(mail.body)
     assert_email_deleted_srid_information_for_service_provider
+  end
+
+  def assert_notification_email_tables_for_service_provider_request_amendment
+    assert_email_project_information(mail.body)
+    assert_email_user_information(mail.body)
+    assert_email_srid_information_for_service_provider
+    assert_email_request_amendment(mail.body)
   end
 
   def assert_notification_email_tables_for_admin

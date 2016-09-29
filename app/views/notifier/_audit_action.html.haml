@@ -29,7 +29,9 @@
       %th.skinny-black-border= t(:notifier)[:action]
 
   %tbody
+
     - @audit_report[:line_items].each do |last_change|
+      - binding.pry
       - service = Service.find(last_change.audited_changes["service_id"])
       - if last_change.action == 'destroy'
         - ssr = SubServiceRequest.find(last_change.audited_changes['sub_service_request_id'])

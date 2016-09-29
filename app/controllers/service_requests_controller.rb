@@ -449,7 +449,7 @@ class ServiceRequestsController < ApplicationController
       ssr = @service_request.sub_service_requests.find_by_organization_id(org_id)
       if @service_request.line_items.count.zero? && !ssr.submitted_at.nil?
         @protocol = @service_request.protocol
-        send_ssr_service_provider_notifications(@service_request, ssr, ssr_deleted=true)
+        send_ssr_service_provider_notifications(@service_request, ssr, true)
       end
       ssr.destroy
     end
@@ -562,7 +562,7 @@ class ServiceRequestsController < ApplicationController
     end
   end
 
-  def send_ssr_service_provider_notifications(service_request, sub_service_request, ssr_deleted=false, send_request_amendment= false) #single sub-service request
+  def send_ssr_service_provider_notifications(service_request, sub_service_request, all_ssrs_deleted=false, send_request_amendment= false) #single sub-service request
     if send_request_amendment
       audit_report = sub_service_request.audit_report(current_user, service_request.previous_submitted_at, Time.now.tomorrow)
     else
@@ -570,7 +570,7 @@ class ServiceRequestsController < ApplicationController
     end
 
     sub_service_request.organization.service_providers.where("(`service_providers`.`hold_emails` != 1 OR `service_providers`.`hold_emails` IS NULL)").each do |service_provider|
-      send_individual_service_provider_notification(service_request, sub_service_request, service_provider, audit_report, ssr_deleted)
+      send_individual_service_provider_notification(service_request, sub_service_request, service_provider, audit_report, all_ssrs_deleted)
     end
   end
 
@@ -591,7 +591,7 @@ class ServiceRequestsController < ApplicationController
     return false
   end
 
-  def send_individual_service_provider_notification(service_request, sub_service_request, service_provider, audit_report=nil, ssr_deleted=false)
+  def send_individual_service_provider_notification(service_request, sub_service_request, service_provider, audit_report=nil, all_ssrs_deleted=false)
     attachments = {}
     @service_list_true = @service_request.service_list(true, service_provider)
     @service_list_false = @service_request.service_list(false, service_provider)
@@ -619,7 +619,7 @@ class ServiceRequestsController < ApplicationController
     #   previously_submitted_at = service_request.previous_submitted_at.nil? ? Time.now : service_request.previous_submitted_at
     #   audit_report = sub_service_request.audit_report(current_user, previously_submitted_at, Time.now.tomorrow)
     # end
-    Notifier.notify_service_provider(service_provider, service_request, attachments, current_user, audit_report, ssr_deleted).deliver_now
+    Notifier.notify_service_provider(service_provider, service_request, attachments, current_user, audit_report, all_ssrs_deleted).deliver_now
   end
 
   def send_epic_notification_for_user_approval(protocol)

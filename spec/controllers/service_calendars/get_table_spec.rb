@@ -67,10 +67,10 @@ RSpec.describe ServiceCalendarsController do
       session[:service_request_id] = sr.id
 
       xhr :get, :table, {
-        portal: 'true'
+        portal: 'false'
       }
 
-      expect(assigns(:portal)).to eq(true)
+      expect(assigns(:portal)).to eq(false)
     end
 
     it 'should assign @merged' do

@@ -71,8 +71,8 @@ module Dashboard
         element :cancel_button, :button, text: "Close"
       end
 
-      element :enabled_add_document_button, '#document-new:not(.disabled)', text: 'Add a New Document'
-      element :disabled_add_document_button, '#document-new.disabled', text: 'Add a New Document'
+      element :enabled_add_document_button, '#document-new:not(.disabled)', text: 'Add New Document'
+      element :disabled_add_document_button, '#document-new.disabled', text: 'Add New Document'
       sections :documents, '#documents-table tbody tr' do
         element :enabled_edit_button, ".document-edit:not(.disabled)"
         element :disabled_edit_button, ".document-edit.disabled"

@@ -34,7 +34,7 @@ class ServiceCalendarsController < ApplicationController
   respond_to :html, :js
   layout false
   
-  before_filter :initialize_service_request,      if: Proc.new{ params[:portal] == 'false' }
+  before_filter :initialize_service_request,      if: Proc.new{ params[:portal] != 'true' }
   before_filter :setup_dashboard_requests,        except: [:merged_calendar, :view_full_calendar], if: Proc.new{ params[:portal] == 'true' }
   before_filter :setup_dashboard_merged_requests, only: [:merged_calendar, :view_full_calendar], if: Proc.new{ params[:portal] == 'true' }
   before_filter :authorize_identity

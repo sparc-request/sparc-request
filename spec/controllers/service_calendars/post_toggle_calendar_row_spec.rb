@@ -47,11 +47,12 @@ RSpec.describe ServiceCalendarsController do
       v         = create(:visit, line_items_visit: liv, visit_group: vg)
 
       session[:service_request_id] = sr.id
+      session[:identity_id] = logged_in_user.id
 
       xhr :post, :toggle_calendar_row, {
         line_items_visit_id: liv.id,
         check: 'true',
-        portal: 'true'
+        portal: 'false'
       }
 
       expect(assigns(:line_items_visit)).to eq(liv)
@@ -70,14 +71,15 @@ RSpec.describe ServiceCalendarsController do
       v         = create(:visit, line_items_visit: liv, visit_group: vg)
 
       session[:service_request_id] = sr.id
+      session[:identity_id] = logged_in_user.id
 
       xhr :post, :toggle_calendar_row, {
         line_items_visit_id: liv.id,
         check: 'true',
-        portal: 'true'
+        portal: 'false'
       }
 
-      expect(assigns(:portal)).to eq(true)
+      expect(assigns(:portal)).to eq(false)
     end
 
     context 'check' do
@@ -94,11 +96,12 @@ RSpec.describe ServiceCalendarsController do
         v         = create(:visit, line_items_visit: liv, visit_group: vg, quantity: 0, research_billing_qty: 0, insurance_billing_qty: 1, effort_billing_qty: 1)
 
         session[:service_request_id] = sr.id
+        session[:identity_id] = logged_in_user.id
 
         xhr :post, :toggle_calendar_row, {
           line_items_visit_id: liv.id,
           check: 'true',
-          portal: 'true'
+          portal: 'false'
         }
 
         expect(v.reload.quantity).to eq(1)
@@ -122,11 +125,12 @@ RSpec.describe ServiceCalendarsController do
         v         = create(:visit, line_items_visit: liv, visit_group: vg, quantity: 1, research_billing_qty: 1, insurance_billing_qty: 1, effort_billing_qty: 1)
 
         session[:service_request_id] = sr.id
+        session[:identity_id] = logged_in_user.id
 
         xhr :post, :toggle_calendar_row, {
           line_items_visit_id: liv.id,
           uncheck: 'true',
-          portal: 'true'
+          portal: 'false'
         }
 
         expect(v.reload.quantity).to eq(0)
@@ -149,8 +153,8 @@ RSpec.describe ServiceCalendarsController do
         vg        = create(:visit_group, arm: arm)
         v         = create(:visit, line_items_visit: liv, visit_group: vg)
 
-        session[:identity_id]        = logged_in_user.id
         session[:service_request_id] = sr.id
+        session[:identity_id]        = logged_in_user.id
 
         xhr :post, :toggle_calendar_row, {
           line_items_visit_id: liv.id,
@@ -173,8 +177,8 @@ RSpec.describe ServiceCalendarsController do
         vg        = create(:visit_group, arm: arm)
         v         = create(:visit, line_items_visit: liv, visit_group: vg)
 
-        session[:identity_id]        = logged_in_user.id
         session[:service_request_id] = sr.id
+        session[:identity_id]        = logged_in_user.id
 
         xhr :post, :toggle_calendar_row, {
           line_items_visit_id: liv.id,
@@ -198,8 +202,8 @@ RSpec.describe ServiceCalendarsController do
         vg        = create(:visit_group, arm: arm)
         v         = create(:visit, line_items_visit: liv, visit_group: vg)
 
-        session[:identity_id]        = logged_in_user.id
         session[:service_request_id] = sr.id
+        session[:identity_id]        = logged_in_user.id
 
         xhr :post, :toggle_calendar_row, {
           line_items_visit_id: liv.id,
@@ -224,11 +228,12 @@ RSpec.describe ServiceCalendarsController do
       v         = create(:visit, line_items_visit: liv, visit_group: vg)
 
       session[:service_request_id] = sr.id
+      session[:identity_id]        = logged_in_user.id
 
       xhr :post, :toggle_calendar_row, {
         line_items_visit_id: liv.id,
         check: 'true',
-        portal: 'true'
+        portal: 'false'
       }
 
       expect(controller).to render_template(partial: '_update_service_calendar')
@@ -247,11 +252,12 @@ RSpec.describe ServiceCalendarsController do
       v         = create(:visit, line_items_visit: liv, visit_group: vg)
 
       session[:service_request_id] = sr.id
+      session[:identity_id]        = logged_in_user.id
 
       xhr :post, :toggle_calendar_row, {
         line_items_visit_id: liv.id,
         check: 'true',
-        portal: 'true'
+        portal: 'false'
       }
 
       expect(controller).to respond_with(:ok)

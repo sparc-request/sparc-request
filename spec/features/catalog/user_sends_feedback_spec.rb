@@ -24,6 +24,10 @@ RSpec.describe 'User clicks Feedback', js: true do
   let_there_be_lane
   fake_login_for_each_test
 
+  before :each do
+    stub_const("USE_FEEDBACK_LINK", false)
+  end
+
   scenario 'and sees the feedback modal' do
     visit root_path
     wait_for_javascript_to_finish

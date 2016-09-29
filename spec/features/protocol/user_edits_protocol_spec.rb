@@ -40,7 +40,7 @@ RSpec.describe 'User edits protocol', js: true do
       visit protocol_service_request_path(@sr)
       wait_for_javascript_to_finish
 
-      click_button 'Edit Study Information'
+      click_link 'Edit Study Information'
       wait_for_javascript_to_finish
 
       expect(page).to have_content('Change Protocol Type')
@@ -51,7 +51,7 @@ RSpec.describe 'User edits protocol', js: true do
         visit protocol_service_request_path(@sr)
         wait_for_javascript_to_finish
 
-        click_button 'Edit Study Information'
+        click_link 'Edit Study Information'
         wait_for_javascript_to_finish
       end
     end

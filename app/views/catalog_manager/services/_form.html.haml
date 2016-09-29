@@ -67,7 +67,7 @@
             %tr
               %th= f.label :disabled, t(:organization_form)[:disabled]
               %td
-                = f.check_box :is_available, {:checked => !@service.is_available, disabled: !@service.organization.is_available }, false, true
+                = f.check_box :is_available, {:checked => @service.is_available, disabled: !@service.organization.is_available }
                 - if !@service.organization.is_available
                   %span
                     = disabled_parent(@service.organization)

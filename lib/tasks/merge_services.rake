@@ -13,9 +13,12 @@ task :merge_services, [:services_list] => :environment do |t, args|
     end
 
     # 68 no longer a process_ssrs. Fix organization_id on SSR's belonging to 68.
-    # Only care about SSR's with LineItems.
-    ssrs = SubServiceRequest.where(organization_id: 68).joins(:line_items)
-    ssrs.each do |ssr|
+    ssrs = []
+    SubServiceRequest.where(organization_id: 68).each do |ssr|
+      if ssr.line_items.empty?
+        ssr.destroy
+        next
+      end
       # Pick an arbitrary service, and make
       # ssr belong to the service's process_ssrs_parent.
       process_ssrs_parent = ssr.line_items.first.service.organization.process_ssrs_parent
@@ -23,13 +26,15 @@ task :merge_services, [:services_list] => :environment do |t, args|
       if process_ssrs_parent
         ssr.update!(organization_id: process_ssrs_parent.id)
       end
+
+      ssr.reload
+      ssrs << ssr
     end
 
     # Great. Now shuffle LineItems between SSR's as needed
     ssrs_count = ssrs.length
     ssrs_processed = 0
     ssrs.each do |ssr|
-      ssr.reload
       ssrs_processed += 1
       puts "Processing SSR #{ssrs_processed}/#{ssrs_count}"
 
@@ -79,41 +84,3 @@ def merge_service(old_service_id, new_service_id)
 
   old_service.destroy
 end
-
-#   new_service.service_requests.each do |sr|
-#     # SSR's that contain new_service LineItems
-#     ssrs = sr.sub_service_requests.
-#       where.not(organization_id: dest_org_process_ssrs.id).
-#       joins(:line_items).
-#       where(line_items: { service_id: new_service.id })
-#
-#     ssrs.each do |ssr|
-#       if ssr_contains_just_this_service?(ssr, new_service)
-#         # Don't really need to move anything. Just move the SSR
-#         # to another Organization.
-#         ssr.update!(organization_id: dest_org_process_ssrs.id)
-#       else
-#         # Find a destination SSR for service. Use an existing one
-#         # or create one if necessary.
-#         dest_ssr = sr.sub_service_requests.where(status: ssr.status).
-#           find_or_create_by(organization_id: dest_org_process_ssrs.id)
-#
-#         # Move over old SSR attributes, if we're creating a new SSR.
-#         if ssr.id != dest_ssr.id
-#           old_attributes = ssr.attributes
-#           # ! needed, since only it will return the _other_ attributes
-#           copy_over_attributes = old_attributes.
-#             slice!(%w(id ssr_id organization_id))
-#           dest_ssr.attributes(copy_over_attributes).save(false)
-#         end
-#
-#         # Move LineItems.
-#         ssr.line_items.where(service: new_service).each do |li|
-#           li.update!(sub_service_request_id: dest_ssr.id)
-#         end
-#       end
-#     end
-#
-#     sr.ensure_ssr_ids
-#   end
-# end

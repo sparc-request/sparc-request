@@ -173,7 +173,7 @@ $(document).ready ->
 
   ###END PUBLISH IN EPIC BUTTON STATES###
 
-  if $("input[name='protocol[selected_for_epic]'][value='true']").parent().hasClass('active')
+  if $(".active > input[name='protocol[selected_for_epic]']").val() == 'true'
     $(study_type_form).show()
     $(certificate_of_confidence_dropdown).show_elt()
 

@@ -475,6 +475,7 @@ class SubServiceRequest < ActiveRecord::Base
     filtered_audit_trail = {:line_items => []}
 
     full_trail = service_request.audit_report(identity, start_date, end_date)
+
     full_line_items_audits = full_trail[:line_items]
 
     full_line_items_audits.each do |k, audits|

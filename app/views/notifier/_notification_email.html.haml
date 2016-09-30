@@ -59,7 +59,7 @@
     /***** END EMAIL TABLES *****
 
     /***** OTHER EMAIL TIDBITS *****
-    - if @status == "submitted" && @role == 'none' && !@notes.empty?
+    - if (@status == "submitted" || @status == "request_amendment") && @role == 'none' && !@notes.empty?
       %p= t(:notifier)[:notes_present]
     
     - if @status != 'all_ssrs_deleted'

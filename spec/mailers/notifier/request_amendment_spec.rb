@@ -66,52 +66,174 @@ RSpec.describe Notifier do
   before { add_visits }
 
   ############# WITHOUT NOTES #########################
-  before do
-    array = [auditable_id: service_request.line_items.first.id,
-             action: "destroy",
-             audited_changes: 
-                { "sub_service_request_id"=>service_request.sub_service_requests.first.id },
-              ]
-    @audit = { line_items: array,
-             sub_service_request_id: service_request.sub_service_requests.first.id }
-    
-    service_request.update_attribute(:status, "submitted")
-
-  end
-
-  context 'service_provider' do
-    let(:audit)                   { sub_service_request.audit_report(identity,
-                                                                      service_request.submitted_at,
-                                                                      Time.now.tomorrow) }
-    let(:xls)                     { Array.new }
-    let(:mail)                    { Notifier.notify_service_provider(service_provider,
-                                                                        service_request,
-                                                                        xls,
-                                                                        identity,
-                                                                        @audit, false) }
-    # Expected service provider message is defined under request_amendment_intro
-    it 'should display service provider intro message, conclusion, link, and should not display acknowledgments' do
-      binding.pry
-      request_amendment_intro(mail)
-    end
-
-    it 'should render default tables' do
-      assert_notification_email_tables_for_service_provider_request_amendment
-    end
-
-    it 'should not have a reminder note or submission reminder' do
-      does_not_have_a_reminder_note(mail)
-      does_not_have_a_submission_reminder(mail)
-    end
-
-    context 'when protocol has selected for epic' do
-
+  ############# ADDED AND DELETED LINE_ITEMS ###############
+  context 'without notes' do
+    context 'added and deleted line_items' do
       before do
-        service_request.protocol.update_attribute(:selected_for_epic, true)
+       audit_with_deleted = AuditRecovery.create
+       audit_with_deleted.update_attributes(auditable_id: service_request.line_items.first.id, 
+                                         action: "destroy", 
+                                         audited_changes: 
+                                        { "sub_service_request_id"=>service_request.sub_service_requests.first.id,
+                                          "service_id"=>service3.id })
+        audit_with_added = AuditRecovery.create
+        audit_with_added.update_attributes(auditable_id: service_request.line_items.last.id, 
+                                         action: "create", 
+                                         audited_changes: 
+                                        { "sub_service_request_id"=>service_request.sub_service_requests.first.id,
+                                          "service_id"=>service3.id })
+
+        @audit = { line_items: [audit_with_deleted, audit_with_added],
+                 sub_service_request_id: service_request.sub_service_requests.first.id }
+
+        service_request.update_attribute(:status, "submitted")
+
       end
 
-      it 'should show epic column' do
-        assert_email_user_information_when_selected_for_epic(mail.body)
+      context 'service_provider' do
+        let(:audit)                   { sub_service_request.audit_report(identity,
+                                                                          service_request.submitted_at,
+                                                                          Time.now.tomorrow) }
+        let(:xls)                     { Array.new }
+        let(:mail)                    { Notifier.notify_service_provider(service_provider,
+                                                                            service_request,
+                                                                            xls,
+                                                                            identity,
+                                                                            @audit, false) }
+        # Expected service provider message is defined under request_amendment_intro
+        it 'should display service provider intro message, conclusion, link, and should not display acknowledgments' do
+          request_amendment_intro(mail)
+        end
+
+        it 'should render default tables' do
+          assert_notification_email_tables_for_service_provider_request_amendment
+          assert_email_request_amendment_for_added(mail.body)
+          assert_email_request_amendment_for_deleted(mail.body)
+        end
+
+        it 'should not have a reminder note or submission reminder' do
+          does_not_have_a_reminder_note(mail)
+          does_not_have_a_submission_reminder(mail)
+        end
+
+        context 'when protocol has selected for epic' do
+
+          before do
+            service_request.protocol.update_attribute(:selected_for_epic, true)
+          end
+
+          it 'should show epic column' do
+            assert_email_user_information_when_selected_for_epic(mail.body)
+          end
+        end
+      end
+    end
+
+    context 'added line_items' do
+      before do
+        audit_with_added = AuditRecovery.create
+        audit_with_added.update_attributes(auditable_id: service_request.line_items.last.id, 
+                                         action: "create", 
+                                         audited_changes: 
+                                        { "sub_service_request_id"=>service_request.sub_service_requests.first.id,
+                                          "service_id"=>service3.id })
+
+        @audit = { line_items: [audit_with_added],
+                 sub_service_request_id: service_request.sub_service_requests.first.id }
+
+        service_request.update_attribute(:status, "submitted")
+
+      end
+
+      context 'service_provider' do
+        let(:audit)                   { sub_service_request.audit_report(identity,
+                                                                          service_request.submitted_at,
+                                                                          Time.now.tomorrow) }
+        let(:xls)                     { Array.new }
+        let(:mail)                    { Notifier.notify_service_provider(service_provider,
+                                                                            service_request,
+                                                                            xls,
+                                                                            identity,
+                                                                            @audit, false) }
+        # Expected service provider message is defined under request_amendment_intro
+        it 'should display service provider intro message, conclusion, link, and should not display acknowledgments' do
+          request_amendment_intro(mail)
+        end
+
+        it 'should render default tables' do
+          assert_notification_email_tables_for_service_provider_request_amendment
+          assert_email_request_amendment_for_added(mail.body)
+        end
+
+        it 'should not have a reminder note or submission reminder' do
+          does_not_have_a_reminder_note(mail)
+          does_not_have_a_submission_reminder(mail)
+        end
+
+        context 'when protocol has selected for epic' do
+
+          before do
+            service_request.protocol.update_attribute(:selected_for_epic, true)
+          end
+
+          it 'should show epic column' do
+            assert_email_user_information_when_selected_for_epic(mail.body)
+          end
+        end
+      end
+    end
+
+    context 'deleted line_items' do
+      before do
+        audit_with_deleted = AuditRecovery.create
+        audit_with_deleted.update_attributes(auditable_id: service_request.line_items.last.id, 
+                                         action: "destroy", 
+                                         audited_changes: 
+                                        { "sub_service_request_id"=>service_request.sub_service_requests.first.id,
+                                          "service_id"=>service3.id })
+
+        @audit = { line_items: [audit_with_deleted],
+                 sub_service_request_id: service_request.sub_service_requests.first.id }
+
+        service_request.update_attribute(:status, "submitted")
+
+      end
+
+      context 'service_provider' do
+        let(:audit)                   { sub_service_request.audit_report(identity,
+                                                                          service_request.submitted_at,
+                                                                          Time.now.tomorrow) }
+        let(:xls)                     { Array.new }
+        let(:mail)                    { Notifier.notify_service_provider(service_provider,
+                                                                            service_request,
+                                                                            xls,
+                                                                            identity,
+                                                                            @audit, false) }
+        # Expected service provider message is defined under request_amendment_intro
+        it 'should display service provider intro message, conclusion, link, and should not display acknowledgments' do
+          request_amendment_intro(mail)
+        end
+
+        it 'should render default tables' do
+          assert_notification_email_tables_for_service_provider_request_amendment
+          assert_email_request_amendment_for_deleted(mail.body)
+        end
+
+        it 'should not have a reminder note or submission reminder' do
+          does_not_have_a_reminder_note(mail)
+          does_not_have_a_submission_reminder(mail)
+        end
+
+        context 'when protocol has selected for epic' do
+
+          before do
+            service_request.protocol.update_attribute(:selected_for_epic, true)
+          end
+
+          it 'should show epic column' do
+            assert_email_user_information_when_selected_for_epic(mail.body)
+          end
+        end
       end
     end
   end
@@ -120,6 +242,21 @@ RSpec.describe Notifier do
   context 'with notes' do
 
     before do
+      audit_with_deleted = AuditRecovery.create
+      audit_with_deleted.update_attributes(auditable_id: service_request.line_items.first.id, 
+                                       action: "destroy", 
+                                       audited_changes: 
+                                      { "sub_service_request_id"=>service_request.sub_service_requests.first.id,
+                                        "service_id"=>service3.id })
+      audit_with_added = AuditRecovery.create
+      audit_with_added.update_attributes(auditable_id: service_request.line_items.last.id, 
+                                       action: "create", 
+                                       audited_changes: 
+                                      { "sub_service_request_id"=>service_request.sub_service_requests.first.id,
+                                        "service_id"=>service3.id })
+
+      @audit = { line_items: [audit_with_deleted, audit_with_added],
+               sub_service_request_id: service_request.sub_service_requests.first.id }
       service_request.update_attribute(:status, "submitted")
       create(:note_without_validations,
             identity_id:  identity.id, 
@@ -127,19 +264,24 @@ RSpec.describe Notifier do
     end
 
     context 'service_provider' do
+      let(:audit)                   { sub_service_request.audit_report(identity,
+                                                                        service_request.submitted_at,
+                                                                        Time.now.tomorrow) }
       let(:xls)                     { Array.new }
       let(:mail)                    { Notifier.notify_service_provider(service_provider,
                                                                           service_request,
                                                                           xls,
                                                                           identity,
-                                                                          audit) }
-      # Expected service provider message is defined under submitted_service_provider_and_admin_message
-      it 'should display admin intro message, conclusion, link, and should not display acknowledgments' do
-        submitted_intro_for_service_providers_and_admin(mail)
+                                                                          @audit, false) }
+      # Expected service provider message is defined under request_amendment_intro
+      it 'should display service provider intro message, conclusion, link, and should not display acknowledgments' do
+        request_amendment_intro(mail)
       end
 
       it 'should render default tables' do
-        assert_notification_email_tables_for_service_provider
+        assert_notification_email_tables_for_service_provider_request_amendment
+        assert_email_request_amendment_for_added(mail.body)
+        assert_email_request_amendment_for_deleted(mail.body)
       end
 
       it 'should have a notes reminder message but not a submission reminder' do

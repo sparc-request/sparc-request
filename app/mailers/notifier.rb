@@ -95,7 +95,6 @@ class Notifier < ActionMailer::Base
 
   def notify_service_provider(service_provider, service_request, attachments_to_add, user_current, audit_report=nil, all_ssrs_deleted=false)
     @notes = service_request.notes
-    binding.pry
     if audit_report.present?
       @status = 'request_amendment'
     elsif all_ssrs_deleted

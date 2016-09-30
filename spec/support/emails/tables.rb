@@ -121,9 +121,30 @@ module EmailHelpers
   end
 
   def assert_email_request_amendment(mail)
-    binding.pry
     expect(mail).to have_xpath "//table//strong[text()='Request Amendment']"
     expect(mail).to have_xpath "//th[text()='SRID']/following-sibling::th[text()='Service']/following-sibling::th[text()='Action']"
+  end
+
+  def assert_email_request_amendment_for_added(mail)
+    @audit[:line_items].each do |li|
+      service = Service.find(li.audited_changes["service_id"])
+      ssr = LineItem.find(li.auditable_id).sub_service_request
+      expect(mail).to have_xpath "//td//a[@href='/dashboard/sub_service_requests/#{ssr.id}']['#{ssr.display_id}']/@href"
+      expect(mail).to have_xpath "//td['#{ssr.display_id}']"
+      expect(mail).to have_xpath "//td['#{service.name}']"
+      expect(mail).to have_xpath "//td['Added']"
+    end
+  end
+
+  def assert_email_request_amendment_for_deleted(mail)
+    @audit[:line_items].each do |li|
+      service = Service.find(li.audited_changes["service_id"])
+      ssr = SubServiceRequest.find(li.audited_changes['sub_service_request_id'])
+      expect(mail).to have_xpath "//td//a[@href='/dashboard/sub_service_requests/#{ssr.id}']['#{ssr.display_id}']/@href"
+      expect(mail).to have_xpath "//td//strike['#{ssr.display_id}']"
+      expect(mail).to have_xpath "//td//strike['#{service.name}']"
+      expect(mail).to have_xpath "//td//strike['Deleted']"
+    end
   end
 
   def assert_notification_email_tables_for_service_provider

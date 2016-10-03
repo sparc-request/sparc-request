@@ -25,7 +25,7 @@ SparcRails::Application.configure do
   # every request. This slows down response time but is perfect for development
   # since you don't have to restart the web server when you make code changes.
   config.cache_classes = false
-  
+
   # Do not eager load code on boot.
   config.eager_load = false
 
@@ -56,4 +56,10 @@ SparcRails::Application.configure do
   config.assets.debug = true
 
   config.action_mailer.default_url_options = { :host => 'sparc-d.obis.musc.edu' }
+  config.middleware.use ExceptionNotification::Rack,
+    email: {
+      ignore_if: ->(env, exception) { ['128.23.150.107'].include?(env['REMOTE_ADDR']) },
+      sender_address: 'donotreply@musc.edu',
+      exception_recipients: YAML.load_file(Rails.root.join('config', 'application.yml'))[Rails.env]['exception_recipients'] || []
+    }
 end

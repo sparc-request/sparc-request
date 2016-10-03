@@ -19,6 +19,11 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 class ConvertNotesToPolymorphic < ActiveRecord::Migration
+
+  class ServiceRequest < ActiveRecord::Base
+    attr_accessible :service_requester_id
+  end
+
   def self.up
     #Convert Notes Table
     change_column :notes, :body, :text

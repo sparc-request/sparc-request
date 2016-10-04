@@ -63,18 +63,8 @@ module CatalogManager::CatalogHelper
   end
 
   def disabled_parent organization
-    if organization.parent.is_available
-      organization.name
-    else
-      disabled_parent(organization.parent)
-    end
-  end
-
-  def disabled_service_parent service
-    if service.organization.is_available
-      service.name
-    else
-      disabled_parent(service.organization)
+    if (orgs = organization.parents.insert(0, organization).select{|org| !org.is_available}).any?
+      I18n.t('organization_form.disabled_at', disabled_parent: orgs.last.name)
     end
   end
 end

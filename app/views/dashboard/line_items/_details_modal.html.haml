@@ -68,12 +68,12 @@
             = format_date(line_item.created_at)
         .detail
           .field.col-xs-4
-            = t(:dashboard)[:study_level_activities][:details][:in_process_date]
+            = t(:dashboard)[:study_level_activities][:details][:in_process]
           .col-xs-8
             = format_date(line_item.in_process_date)
         .detail
           .field.col-xs-4
-            = t(:dashboard)[:study_level_activities][:details][:complete_date]
+            = t(:dashboard)[:study_level_activities][:details][:complete]
           .col-xs-8
             = format_date(line_item.complete_date)
     .modal-footer

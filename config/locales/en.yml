@@ -680,8 +680,8 @@ en:
         quantity_type: "Quantity Type"
         cost: "Cost"
         received: "Received"
-        in_process_date: "In Process Date"
-        complete_date: "Complete Date"
+        in_process: "In Process Date"
+        complete: "Complete Date"
       admin_rate:
         header: "Add Admin Rate"
         cost: "Cost:"

@@ -21,6 +21,7 @@
 class ConvertNotesToPolymorphic < ActiveRecord::Migration
 
   class ServiceRequest < ActiveRecord::Base
+    belongs_to :service_requester, class_name: "Identity", foreign_key: "service_requester_id"
     attr_accessible :service_requester_id
   end
 

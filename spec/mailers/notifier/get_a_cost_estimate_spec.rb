@@ -64,9 +64,6 @@ RSpec.describe Notifier do
   let!(:non_service_provider_ssr) { create(:sub_service_request, ssr_id: "0004", status: "get_a_cost_estimate", service_request_id: service_request.id, organization_id: non_service_provider_org.id, org_tree_display: "SCTR1/BLAH")}
 
   let(:previously_submitted_at) { service_request.submitted_at.nil? ? Time.now.utc : service_request.submitted_at.utc }
-  let(:audit)                   { sub_service_request.audit_report(identity,
-                                                                      previously_submitted_at,
-                                                                      Time.now.utc) }
 
   before { add_visits }
 
@@ -86,7 +83,7 @@ RSpec.describe Notifier do
                                                                         service_request,
                                                                         xls,
                                                                         identity,
-                                                                        audit) }
+                                                                        []) }
     # Expected service provider message is defined under get_a_cost_estimate_service_provider_admin_message
     it 'should display service_provider intro message, link, conclusion, and should not display acknowledgments' do
       get_a_cost_estimate_intro_for_service_providers

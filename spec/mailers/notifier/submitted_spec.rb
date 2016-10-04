@@ -64,9 +64,6 @@ RSpec.describe Notifier do
   let!(:non_service_provider_ssr) { create(:sub_service_request, ssr_id: "0004", status: "submitted", service_request_id: service_request.id, organization_id: non_service_provider_org.id, org_tree_display: "SCTR1/BLAH")}
 
   let(:previously_submitted_at) { service_request.submitted_at.nil? ? Time.now.utc : service_request.submitted_at.utc }
-  let(:audit)                   { sub_service_request.audit_report(identity,
-                                                                      previously_submitted_at,
-                                                                      Time.now.utc) }
 
   before { add_visits }
 
@@ -84,7 +81,7 @@ RSpec.describe Notifier do
                                                                           service_request,
                                                                           xls,
                                                                           identity,
-                                                                          audit) }
+                                                                          []) }
 
       # Expected service provider message is defined under submitted_service_provider_and_admin_message
       it 'should display service provider intro message, conclusion, link, and should not display acknowledgments' do
@@ -208,7 +205,7 @@ RSpec.describe Notifier do
                                                                           service_request,
                                                                           xls,
                                                                           identity,
-                                                                          audit) }
+                                                                          []) }
       # Expected service provider message is defined under submitted_service_provider_and_admin_message
       it 'should display admin intro message, conclusion, link, and should not display acknowledgments' do
         submitted_intro_for_service_providers_and_admin(mail)

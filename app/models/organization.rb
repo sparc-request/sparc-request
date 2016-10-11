@@ -42,7 +42,7 @@ class Organization < ActiveRecord::Base
   has_many :identities, :through => :catalog_managers
   has_many :services, :dependent => :destroy
   has_many :sub_service_requests, :dependent => :destroy
-  has_many :protocols, through: :sub_service_requests 
+  has_many :protocols, through: :sub_service_requests
   has_many :available_statuses, :dependent => :destroy
   has_many :org_children, class_name: "Organization", foreign_key: :parent_id
 
@@ -66,7 +66,7 @@ class Organization < ActiveRecord::Base
   accepts_nested_attributes_for :submission_emails
   accepts_nested_attributes_for :available_statuses, :allow_destroy => true
 
-  # TODO: In rails 5, the .or operator will be added for ActiveRecord queries. We should try to 
+  # TODO: In rails 5, the .or operator will be added for ActiveRecord queries. We should try to
   #       condense this to a single query at that point
   scope :authorized_for_identity, -> (identity_id) {
     orgs = includes(:super_users, :service_providers).where("super_users.identity_id = ? or service_providers.identity_id = ?", identity_id, identity_id).references(:super_users, :service_providers).uniq(:organizations)
@@ -195,7 +195,11 @@ class Organization < ActiveRecord::Base
   end
 
   def update_descendants_availability(is_available)
-    if is_available == "false"
+    if is_available == "0"
+      puts '#' * 50
+      puts "in update"
+      puts '#' * 50
+
       children = Organization.where(id: all_child_organizations << self)
       children.update_all(is_available: false)
       Service.where(organization_id: children).update_all(is_available: false)

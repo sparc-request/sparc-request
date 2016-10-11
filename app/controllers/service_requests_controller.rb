@@ -265,15 +265,11 @@ class ServiceRequestsController < ApplicationController
     @service_request.previous_submitted_at = @service_request.submitted_at
 
     to_notify = []
-    send_request_amendment = service_request_has_changed_ssr?(@service_request)
-    if @service_request.submitted_at.present? && send_request_amendment
-      if @sub_service_request
-        send_service_provider_notifications(@service_request, [@sub_service_request], send_request_amendment)
-        send_admin_notifications(@service_request, [@sub_service_request], send_request_amendment)
-      else
-        send_service_provider_notifications(@service_request, @service_request.sub_service_requests, send_request_amendment)
-        send_admin_notifications(@service_request, @service_request.sub_service_requests, send_request_amendment)
-      end
+
+    # Determine whether services have been added/deleted and send request amendment email
+    request_amendment = service_request_has_changed_ssr?(@service_request)
+    if @service_request.submitted_at.present? && request_amendment
+      send_request_amendment(@service_request, @sub_service_requests)
     end
 
     if @sub_service_request
@@ -504,6 +500,17 @@ class ServiceRequestsController < ApplicationController
   end
 
   private
+  # Request amendment is only sent to service providers and admin
+  def send_request_amendment(service_request, sub_service_request)
+      if sub_service_request
+        send_service_provider_notifications(service_request, [sub_service_request], request_amendment)
+        send_admin_notifications(service_request, [sub_service_request], request_amendment)
+      else
+        send_service_provider_notifications(service_request, service_request.sub_service_requests, request_amendment)
+        send_admin_notifications(service_request, service_request.sub_service_requests, request_amendment)
+      end
+    end
+  end
 
   # Send notifications to all users.
   def send_notifications(service_request, sub_service_requests)
@@ -533,18 +540,18 @@ class ServiceRequestsController < ApplicationController
     end
   end
 
-  def send_service_provider_notifications(service_request, sub_service_requests, send_request_amendment=false) #all sub-service requests on service request
+  def send_service_provider_notifications(service_request, sub_service_requests, request_amendment=false) #all sub-service requests on service request
     sub_service_requests.each do |sub_service_request|
-      send_ssr_service_provider_notifications(service_request, sub_service_request, false, send_request_amendment)
+      send_ssr_service_provider_notifications(service_request, sub_service_request, false, request_amendment)
     end
   end
 
-  def send_admin_notifications(service_request, sub_service_requests, send_request_amendment=false)
+  def send_admin_notifications(service_request, sub_service_requests, request_amendment=false)
     # Iterates through each SSR to find the correct admin email.
     # Passes the correct SSR to display in the attachment and email.
     sub_service_requests.each do |sub_service_request|
 
-      if send_request_amendment
+      if request_amendment
         audit_report = sub_service_request.audit_report(current_user, service_request.previous_submitted_at, Time.now.tomorrow)
       else
         audit_report = nil
@@ -562,12 +569,9 @@ class ServiceRequestsController < ApplicationController
     end
   end
 
-  def send_ssr_service_provider_notifications(service_request, sub_service_request, all_ssrs_deleted=false, send_request_amendment= false) #single sub-service request
-    if send_request_amendment
-      audit_report = sub_service_request.audit_report(current_user, service_request.previous_submitted_at, Time.now.tomorrow)
-    else
-      audit_report = nil
-    end
+  def send_ssr_service_provider_notifications(service_request, sub_service_request, all_ssrs_deleted=false, request_amendment= false) #single sub-service request
+
+    audit_report = request_amendment ? sub_service_request.audit_report(current_user, service_request.previous_submitted_at, Time.now.tomorrow) : nil
 
     sub_service_request.organization.service_providers.where("(`service_providers`.`hold_emails` != 1 OR `service_providers`.`hold_emails` IS NULL)").each do |service_provider|
       send_individual_service_provider_notification(service_request, sub_service_request, service_provider, audit_report, all_ssrs_deleted)
@@ -615,10 +619,6 @@ class ServiceRequestsController < ApplicationController
       attachments["request_for_grant_billing_#{service_request.id}.pdf"] = request_for_grant_billing_form
     end
 
-    # if audit_report.nil?
-    #   previously_submitted_at = service_request.previous_submitted_at.nil? ? Time.now : service_request.previous_submitted_at
-    #   audit_report = sub_service_request.audit_report(current_user, previously_submitted_at, Time.now.tomorrow)
-    # end
     Notifier.notify_service_provider(service_provider, service_request, attachments, current_user, audit_report, all_ssrs_deleted).deliver_now
   end
 

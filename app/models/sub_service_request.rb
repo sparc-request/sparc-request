@@ -336,6 +336,13 @@ class SubServiceRequest < ActiveRecord::Base
     end
   end
 
+  def update_status(status)
+    if status == 'submitted'
+      self.update_attribute(:submitted_at, Time.now) unless self.status == 'submitted'
+      self.update_attributes(status: 'submitted', nursing_nutrition_approved: false, lab_approved: false, imaging_approved: false, committee_approved: false)
+    end
+  end
+
   def switch_to_new_service_request
     old_sr = self.service_request
     new_sr = old_sr.dup
@@ -471,7 +478,7 @@ class SubServiceRequest < ActiveRecord::Base
 
   # filtered audit trail based off service requests and only return data that we need
   # in future may want to return full filtered audit trail, currently this is only used in e-mailing service providers
-  def audit_report identity, start_date, end_date=Time.now.tomorrow
+  def audit_report(identity, start_date, end_date=Time.now.tomorrow.utc)
     filtered_audit_trail = {:line_items => []}
 
     full_trail = service_request.audit_report(identity, start_date, end_date)

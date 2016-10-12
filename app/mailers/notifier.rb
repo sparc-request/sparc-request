@@ -67,17 +67,17 @@ class Notifier < ActionMailer::Base
     mail(:to => email, :from => NO_REPLY_FROM, :subject => subject)
   end
 
-  def notify_admin(service_request, submission_email_address, xls, user_current, ssr, audit_report=nil)
+  def notify_admin(submission_email_address, xls, user_current, ssr, audit_report=nil)
     @ssr_deleted = false
-    @notes = service_request.notes
+    @notes = ssr.service_request.notes
 
-    @status = audit_report.present? ? 'request_amendment' : service_request.status
+    @status = audit_report.present? ? 'request_amendment' : ssr.service_request.status
 
     @role = 'none'
     @full_name = submission_email_address
 
-    @protocol = service_request.protocol
-    @service_request = service_request
+    @protocol = ssr.service_request.protocol
+    @service_request = ssr.service_request
     @service_requester_id = @service_request.sub_service_requests.first.service_requester_id
     @ssrs_to_be_displayed = [ssr]
 

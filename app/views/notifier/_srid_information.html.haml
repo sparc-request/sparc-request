@@ -37,9 +37,6 @@
         - else
           %td.skinny-black-border.center= ssr.display_id
         %td.skinny-black-border.center= ssr.org_tree_display
-        - if @status == 'request_amendment'
-          %td.skinny-black-border.center= 'Submitted'
-        - else
-          %td.skinny-black-border.center= AVAILABLE_STATUSES[ssr.status]
+        %td.skinny-black-border.center= AVAILABLE_STATUSES[ssr.status]
 %br
 %br

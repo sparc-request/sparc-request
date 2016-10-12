@@ -1,0 +1,5 @@
+$('#submissionModal .modal-footer .update-submission').remove()
+$('#submissionModal .modal-footer .create-submission').remove()
+$('#submissionModal .modal-footer').html("<button type='button' class='btn btn-default' data-dismiss='modal'>Close</button>")
+$('#submissionModal').modal('show')
+$('#submissionModal .modal-body').html("<%= j render 'submission_info' %>")

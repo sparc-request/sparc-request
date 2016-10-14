@@ -268,7 +268,7 @@ class ServiceRequestsController < ApplicationController
 
     # Grab ssrs that have been previously submitted 
     previously_submitted_ssrs = @service_request.sub_service_requests.where.not(submitted_at: nil)
-    send_request_amendment_email_evaluation(previously_submitted_ssrs)
+    send_request_amendment_email_evaluation(previously_submitted_ssrs) unless previously_submitted_ssrs.empty?
 
     #### END REQUEST AMENDMENT EMAIL ####
 
@@ -549,6 +549,7 @@ class ServiceRequestsController < ApplicationController
   end
 
   def send_service_provider_notifications(sub_service_requests, request_amendment=false) #all sub-service requests on service request
+    
     sub_service_requests.each do |sub_service_request|
       send_ssr_service_provider_notifications(sub_service_request, false, request_amendment)
     end
@@ -576,6 +577,7 @@ class ServiceRequestsController < ApplicationController
   end
 
   def send_ssr_service_provider_notifications(sub_service_request, all_ssrs_deleted=false, request_amendment= false) #single sub-service request
+
     audit_report = request_amendment ? sub_service_request.audit_report(current_user, sub_service_request.service_request.previous_submitted_at.utc, Time.now.tomorrow.utc) : nil
     request_amendment ? sub_service_request.update_status('submitted') : ''
  
@@ -585,8 +587,8 @@ class ServiceRequestsController < ApplicationController
   end
 
   def ssr_has_changed?(service_request, sub_service_request) #specific ssr has changed?
-    # previously_submitted_at = service_request.previous_submitted_at.nil? ? Time.now : service_request.previous_submitted_at
-    unless sub_service_request.audit_report(current_user, service_request.submitted_at, Time.now.tomorrow)[:line_items].empty?
+    # previously_submitted_at = service_request.previous_submitted_at.nil? ? Time.now : service_request.previous_submitted_a
+    unless sub_service_request.audit_report(current_user, service_request.previous_submitted_at, Time.now.tomorrow)[:line_items].empty?
       return true
     end
     return false
@@ -603,7 +605,6 @@ class ServiceRequestsController < ApplicationController
 
   def send_individual_service_provider_notification(sub_service_request, service_provider, audit_report=nil, all_ssrs_deleted=false)
     attachments = {}
-
     @service_list_true = @service_request.service_list(true, service_provider)
     @service_list_false = @service_request.service_list(false, service_provider)
 
@@ -618,14 +619,13 @@ class ServiceRequestsController < ApplicationController
     @line_items = line_items.flatten
     xls = render_to_string action: 'show', formats: [:xlsx]
     attachments["service_request_#{sub_service_request.service_request.id}.xlsx"] = xls
-
     #TODO this is not very multi-institutional
     # generate the required forms pdf if it's required
+
     if sub_service_request.organization.tag_list.include? 'required forms'
       request_for_grant_billing_form = RequestGrantBillingPdf.generate_pdf service_request
       attachments["request_for_grant_billing_#{sub_service_request.service_request.id}.pdf"] = request_for_grant_billing_form
     end
-
     Notifier.notify_service_provider(service_provider, sub_service_request.service_request, attachments, current_user, audit_report, all_ssrs_deleted).deliver_now
   end
 

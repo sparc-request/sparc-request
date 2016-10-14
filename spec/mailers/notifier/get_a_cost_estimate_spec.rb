@@ -181,8 +181,7 @@ RSpec.describe Notifier do
                                       email: 'success@musc.edu', 
                                       organization_id: organization.id) }
     
-    let(:mail)                      { Notifier.notify_admin(service_request,
-                                                              submission_email,
+    let(:mail)                      { Notifier.notify_admin(submission_email,
                                                               xls,
                                                               identity,
                                                               service_request.protocol.sub_service_requests.first) }

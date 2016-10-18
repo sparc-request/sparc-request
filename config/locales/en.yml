@@ -499,7 +499,6 @@ en:
 
 
 
-
   ###########################################################################################
   ###########################################################################################
   ###########################################################################################
@@ -681,7 +680,7 @@ en:
     ctrc_label: "Administrative Approvals"
     default_statuses: "Default Statuses:"
     description: "Description"
-    disabled: "Do not display in SPARC"
+    disabled: "Display in SPARC"
     disabled_at: "Disabled at: %{disabled_parent}"
     eap_id: 'EAP ID'
     epic_info: "Epic Interface"
@@ -1296,7 +1295,6 @@ en:
   notifier:
     action: "Action"
     admin_data: "Admin Information"
-    all_on_request: "All Services on Request Have Been Deleted"
     arm_data: "Protocol Arm Information"
     arm_name: "Arm Name"
     arm_subject_count: "Subject Count"
@@ -1305,6 +1303,7 @@ en:
     body6: "A list of requested services is attached."
     body7: "To approve the charges associated with the selected services please click"
     contact_info: "Contact Information"
+    deleted_all_services_from_cart: "All services have been deleted in SPARCRequest for the %{protocol_type} below to which you have been granted access."
     epic_access: "Epic Access"
     link: "HERE"
     name: "User Name"

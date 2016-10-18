@@ -1,0 +1,32 @@
+- @questionnaires.each do |questionnaire|
+  %tr
+    %td
+      .text-center
+        = questionnaire.name
+    %td
+      .text-center
+        = link_to service_additional_details_submissions_path(@service), class: 'btn btn-primary' do
+          Responses
+          %span.badge
+            = questionnaire.submissions.count
+    %td
+      .text-center
+        = @service.name
+    %td
+      .text-center
+        = questionnaire.active
+    %td
+      .text-center
+        - if questionnaire.active?
+          = link_to t(:additional_details)[:disable_questionnaire], service_additional_details_update_questionnaire_path(@service, questionnaire), method: :patch, class: 'btn btn-danger active-questionnaire', remote: true
+        - else
+          = link_to t(:additional_details)[:activate_questionnaire], service_additional_details_update_questionnaire_path(@service, questionnaire), method: :patch, class: 'btn btn-success inactive-questionnaire', remote: true
+    %td
+      .text-center
+        = link_to edit_service_additional_details_questionnaire_path(@service, questionnaire), class: 'btn btn-info' do
+          %span.glyphicon.glyphicon-pencil
+    %td
+      .text-center
+        = link_to service_additional_details_questionnaire_path(@service, questionnaire),
+          method: :delete, class: 'btn btn-danger' do
+          %span.glyphicon.glyphicon-remove

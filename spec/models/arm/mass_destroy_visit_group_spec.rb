@@ -31,15 +31,14 @@ RSpec.describe Arm, type: :model do
     end
 
     context 'number of VisitGroups exceeds visit_count' do
-      let(:arm) do
-        a = create(:arm, protocol: protocol, visit_count: 2, line_item_count: 1)
-        a.update_attributes(visit_count: 1)
-        a
-      end
 
       it 'should remove extra VisitGroups from the end' do
+        arm = create(:arm, visit_count: 2, line_item_count: 1)
+        arm.update_attributes(visit_count: 1)
+        arm.reload
         first_vg_id = arm.visit_groups.first.id
-        expect { arm.mass_destroy_visit_group }.to change { arm.visit_groups.size }.from(2).to(1)
+        arm.mass_destroy_visit_group
+        expect(arm.visit_groups.size).to eq(1)
         expect(arm.reload.visit_groups.first.id).to eq first_vg_id
       end
     end

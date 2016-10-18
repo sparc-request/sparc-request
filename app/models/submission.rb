@@ -1,6 +1,7 @@
 class Submission < ActiveRecord::Base
   belongs_to :service
   belongs_to :identity
-  has_many :questionnaire_responses
+  belongs_to :questionnaire
+  has_many :questionnaire_responses, dependent: :destroy
   accepts_nested_attributes_for :questionnaire_responses
 end

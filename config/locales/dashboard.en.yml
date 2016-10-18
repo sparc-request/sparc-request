@@ -259,8 +259,8 @@ en:
       form:
         service: "Service:"
         quantity_requested: "Quantity Requested:"
-        in_process_date: "In Process Date:"
-        complete_date: "Complete Date:"
+        in_process: "In Process Date:"
+        complete: "Complete Date:"
       actions:
         details: " Details"
         notes: " Notes"

@@ -78,9 +78,15 @@ class Notifier < ActionMailer::Base
     mail(:to => email, :from => NO_REPLY_FROM, :subject => subject)
   end
 
-  def notify_service_provider(service_provider, service_request, attachments_to_add, user_current, audit_report=nil, ssr_deleted=false)
+  def notify_service_provider(service_provider, service_request, attachments_to_add, user_current, audit_report=nil, all_ssrs_deleted=false)
     @notes = service_request.notes
-    @status = service_request.status
+
+    if all_ssrs_deleted
+      @status = 'all_ssrs_deleted'
+    else
+      @status = service_request.status
+    end
+    
     @role = 'none'
     @full_name = service_provider.identity.full_name
 
@@ -89,22 +95,18 @@ class Notifier < ActionMailer::Base
     @service_requester_id = @service_request.sub_service_requests.first.service_requester_id
 
     @audit_report = audit_report
-    @ssr_deleted = ssr_deleted
     
     @portal_link = DASHBOARD_LINK + "/protocols/#{@protocol.id}"
     @portal_text = "Administrators/Service Providers, Click Here"
 
-    # if the current user is service provider, only show SSR's that are associated with them
-    @ssrs_to_be_displayed = []
-    @service_request.sub_service_requests.each do |ssr|
-      if service_provider.identity.is_service_provider?(ssr)
-        @ssrs_to_be_displayed << ssr
-      end
-    end
+    # only display the ssrs that are associated with service_provider
+    @ssrs_to_be_displayed = @service_request.ssrs_associated_with_service_provider(service_provider)
 
-    attachments_to_add.each do |file_name, document|
-      next if document.nil?
-      attachments["#{file_name}"] = document
+    if !all_ssrs_deleted
+      attachments_to_add.each do |file_name, document|
+        next if document.nil?
+        attachments["#{file_name}"] = document
+      end
     end
 
     # only send these to the correct person in the production env

@@ -217,7 +217,7 @@ $ ->
       'sub_service_request_id'  : $('#study_schedule_buttons').data('sub-service-request-id')
       'service_request_id'      : $('#study_schedule_buttons').data('service-request-id')
     if line_item_count == 1
-      sweetAlert("You can't delete the last service on a request")
+      sweetAlert("Warning", "Please add a new service(s) prior to removing the last service; To remove all services use the 'Delete Request' button.")
     else
       $.ajax
         type: 'GET'

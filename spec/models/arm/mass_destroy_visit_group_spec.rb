@@ -33,7 +33,7 @@ RSpec.describe Arm, type: :model do
     context 'number of VisitGroups exceeds visit_count' do
 
       it 'should remove extra VisitGroups from the end' do
-        arm = create(:arm, visit_count: 2, line_item_count: 1)
+        arm = create(:arm, visit_count: 2, line_item_count: 1, protocol: protocol)
         arm.update_attributes(visit_count: 1)
         arm.reload
         first_vg_id = arm.visit_groups.first.id

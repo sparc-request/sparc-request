@@ -31,7 +31,7 @@ RSpec.describe Arm, type: :model do
       end
 
       it 'should not set specfied VisitGroup\'s window_after' do
-        expect(arm.reload.visit_groups[0].window_after).to eq nil
+        expect(arm.reload.visit_groups[0].window_after).to eq(0)
       end
     end
 

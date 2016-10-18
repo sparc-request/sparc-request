@@ -1,12 +1,12 @@
 require 'rails_helper'
 
-RSpec.describe 'dashboard/associated_users/_select_user_form', type: :view do
+RSpec.describe '/associated_users/_select_user_form', type: :view do
 
   let_there_be_lane
 
   def render_user_search_form
     protocol = build(:unarchived_study_without_validations, id: 1, primary_pi: jug2)
-    render "dashboard/associated_users/select_user_form", header_text: "Add Authorized User",
+    render "/associated_users/select_user_form", header_text: "Add Authorized User",
                                                           protocol: protocol
   end
 

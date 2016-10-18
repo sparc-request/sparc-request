@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'dashboard/associated_users/_user_form', type: :view do
+RSpec.describe '/associated_users/_user_form', type: :view do
 
   let_there_be_lane
 
@@ -8,7 +8,7 @@ RSpec.describe 'dashboard/associated_users/_user_form', type: :view do
     protocol = build(:unarchived_study_without_validations, id: 1, primary_pi: jug2, selected_for_epic: epic)
     project_role = build(:project_role, id: 1, protocol_id: protocol.id, identity_id: jug2.id, role: 'consultant', epic_access: 0)
     stub_const("USE_EPIC", epic)
-    render "dashboard/associated_users/user_form", header_text: "Edit Authorized User",
+    render "/associated_users/user_form", header_text: "Edit Authorized User",
                                                    identity: jug2,
                                                    protocol: protocol,
                                                    current_pi: jug2,
@@ -20,14 +20,14 @@ RSpec.describe 'dashboard/associated_users/_user_form', type: :view do
     it 'should show the correct header and labels' do
       render_user_form
       expect(response).to have_selector('h4', text: "Edit Authorized User")
-      expect(response).to have_selector('label', text: t(:dashboard)[:authorized_users][:credentials])
-      expect(response).to have_selector('label', text: t(:dashboard)[:authorized_users][:institution])
-      expect(response).to have_selector('label', text: t(:dashboard)[:authorized_users][:college])
-      expect(response).to have_selector('label', text: t(:dashboard)[:authorized_users][:department])
-      expect(response).to have_selector('label', text: t(:dashboard)[:authorized_users][:phone])
-      expect(response).to have_selector('label', text: t(:dashboard)[:authorized_users][:role])
-      expect(response).to have_selector('label', text: t(:dashboard)[:authorized_users][:rights][:header])
-      expect(response).to have_selector('label', text: t(:dashboard)[:authorized_users][:college])
+      expect(response).to have_selector('label', text: t(:authorized_users)[:form_fields][:credentials])
+      expect(response).to have_selector('label', text: t(:authorized_users)[:form_fields][:institution])
+      expect(response).to have_selector('label', text: t(:authorized_users)[:form_fields][:college])
+      expect(response).to have_selector('label', text: t(:authorized_users)[:form_fields][:department])
+      expect(response).to have_selector('label', text: t(:authorized_users)[:form_fields][:phone])
+      expect(response).to have_selector('label', text: t(:authorized_users)[:form_fields][:role])
+      expect(response).to have_selector('label', text: t(:authorized_users)[:rights][:header])
+      expect(response).to have_selector('label', text: t(:authorized_users)[:form_fields][:college])
     end
 
     it 'should show the correct buttons' do

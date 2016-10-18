@@ -48,9 +48,5 @@
               = t(:dashboard)[:service_requests][:notifications]
             %th.col-md-5{ data: { field: 'actions', align: 'center' }, colspan: 4 }
               = t(:dashboard)[:service_requests][:actions][:header]
-    - if service_request.additional_detail_services.present?
-      - service_request.additional_detail_services.each do |service|
-        - unless Submission.where(service: service, identity: current_identity).present?
-          %div.alert.alert-warning
-            %h5.text-center
-              = link_to t("additional_details.dashboard_complete_details", service_name: service.name), new_service_additional_details_submission_path(service)
+    .complete-additional-details
+      = render "additional_details/dashboard_complete_additional_details", service_request: service_request

@@ -1,0 +1,28 @@
+- if submissions.any?
+  - submissions.each do |submission|
+    %tr
+      %td
+        .text-center
+          = submission.id
+      %td
+        .text-center
+          = Identity.find(submission.identity_id).email
+      %td
+        .text-center
+          = link_to service_additional_details_submission_path(@service, submission),
+            remote: true, class: 'btn btn-primary' do
+            %span.glyphicon.glyphicon-search
+      %td
+        .text-center
+          = link_to edit_service_additional_details_submission_path(@service, submission),
+            remote: true, class: 'btn btn-warning' do
+            %span.glyphicon.glyphicon-edit
+      %td
+        .text-center
+          = link_to 'javascript:void(0);', class: 'btn btn-danger delete-submission', data: { id: "#{submission.id}", service_id: "#{@service.id}" } do
+            %span.glyphicon.glyphicon-remove
+- else
+  %tr.warning
+    %td{ colspan: '5' }
+      .text-center
+        No records found

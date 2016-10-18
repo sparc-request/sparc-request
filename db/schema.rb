@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160908144020) do
+ActiveRecord::Schema.define(version: 20160930185037) do
 
   create_table "admin_rates", force: :cascade do |t|
     t.integer  "line_item_id", limit: 4
@@ -399,13 +399,14 @@ ActiveRecord::Schema.define(version: 20160908144020) do
   add_index "impact_areas", ["protocol_id"], name: "index_impact_areas_on_protocol_id", using: :btree
 
   create_table "investigational_products_info", force: :cascade do |t|
-    t.integer  "protocol_id", limit: 4
-    t.string   "ind_number",  limit: 255
+    t.integer  "protocol_id",       limit: 4
+    t.string   "ind_number",        limit: 255
     t.boolean  "ind_on_hold"
-    t.string   "ide_number",  limit: 255
-    t.datetime "created_at"
-    t.datetime "updated_at"
+    t.string   "inv_device_number", limit: 255
+    t.datetime "created_at",                                 null: false
+    t.datetime "updated_at",                                 null: false
     t.datetime "deleted_at"
+    t.string   "exemption_type",    limit: 255, default: ""
   end
 
   add_index "investigational_products_info", ["protocol_id"], name: "index_investigational_products_info_on_protocol_id", using: :btree
@@ -1045,13 +1046,15 @@ ActiveRecord::Schema.define(version: 20160908144020) do
   add_index "submission_emails", ["organization_id"], name: "index_submission_emails_on_organization_id", using: :btree
 
   create_table "submissions", force: :cascade do |t|
-    t.integer  "service_id",  limit: 4
-    t.integer  "identity_id", limit: 4
-    t.datetime "created_at",            null: false
-    t.datetime "updated_at",            null: false
+    t.integer  "service_id",       limit: 4
+    t.integer  "identity_id",      limit: 4
+    t.integer  "questionnaire_id", limit: 4
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
   end
 
   add_index "submissions", ["identity_id"], name: "index_submissions_on_identity_id", using: :btree
+  add_index "submissions", ["questionnaire_id"], name: "index_submissions_on_questionnaire_id", using: :btree
   add_index "submissions", ["service_id"], name: "index_submissions_on_service_id", using: :btree
 
   create_table "subsidies", force: :cascade do |t|
@@ -1064,7 +1067,7 @@ ActiveRecord::Schema.define(version: 20160908144020) do
     t.string   "status",                 limit: 255, default: "Pending"
     t.integer  "approved_by",            limit: 4
     t.datetime "approved_at"
-    t.float    "percent_subsidy",        limit: 24
+    t.float    "percent_subsidy",        limit: 24,  default: 0.0
   end
 
   add_index "subsidies", ["sub_service_request_id"], name: "index_subsidies_on_sub_service_request_id", using: :btree
@@ -1278,5 +1281,6 @@ ActiveRecord::Schema.define(version: 20160908144020) do
   add_foreign_key "questionnaire_responses", "submissions"
   add_foreign_key "questionnaires", "services"
   add_foreign_key "submissions", "identities"
+  add_foreign_key "submissions", "questionnaires"
   add_foreign_key "submissions", "services"
 end

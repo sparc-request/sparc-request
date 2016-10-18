@@ -497,7 +497,7 @@ class ServiceRequest < ActiveRecord::Base
   end
 
   def additional_detail_services
-    services.joins(:questionnaires)
+    services.joins(:questionnaires).where(questionnaires: { active: true })
   end
 
   # Change the status of the service request and all the sub service
@@ -596,6 +596,16 @@ class ServiceRequest < ActiveRecord::Base
 
   def has_non_first_draft_ssrs?
     sub_service_requests.where.not(status: 'first_draft').any?
+  end
+
+  def ssrs_associated_with_service_provider (service_provider)
+    ssrs_to_be_displayed = []
+    self.sub_service_requests.each do |ssr|
+      if service_provider.identity.is_service_provider?(ssr)
+        ssrs_to_be_displayed << ssr
+      end
+    end
+    ssrs_to_be_displayed
   end
 
   private

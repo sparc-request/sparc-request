@@ -234,7 +234,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     service_providers = Identity.joins(:service_providers).where(service_providers: {
                                 organization: Organization.authorized_for_identity(current_user.id) })
                                 .distinct.order("last_name")
-                                
+
     service_providers.map{|s| [s.last_name_first, s.id]}
   end
 
@@ -262,7 +262,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     end
   end
 
-  def convert_date_for_save attrs, date_field
+  def convert_date_for_save(attrs, date_field)
     if attrs[date_field] && attrs[date_field].present?
       attrs[date_field] = Time.strptime(attrs[date_field].strip, "%m/%d/%Y")
     end

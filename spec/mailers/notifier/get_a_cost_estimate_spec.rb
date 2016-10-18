@@ -109,6 +109,17 @@ RSpec.describe Notifier do
         assert_email_user_information_when_selected_for_epic(mail.body)
       end
     end
+
+    context 'when protocol is not selected for epic' do
+
+      before do
+        service_request.protocol.update_attribute(:selected_for_epic, false)
+      end
+
+      it 'should not show epic column' do
+        assert_email_user_information_when_not_selected_for_epic(mail.body)
+      end
+    end
   end
 
   context 'users' do
@@ -147,6 +158,17 @@ RSpec.describe Notifier do
 
       it 'should show epic column' do
         assert_email_user_information_when_selected_for_epic(mail.body.parts.first.body)
+      end
+    end
+
+    context 'when protocol is not selected for epic' do
+
+      before do
+        service_request.protocol.update_attribute(:selected_for_epic, false)
+      end
+
+      it 'should not show epic column' do
+        assert_email_user_information_when_not_selected_for_epic(mail.body.parts.first.body)
       end
     end
   end
@@ -189,6 +211,17 @@ RSpec.describe Notifier do
 
       it 'should show epic column' do
         assert_email_user_information_when_selected_for_epic(mail.body.parts.first.body)
+      end
+    end
+
+    context 'when protocol is not selected for epic' do
+
+      before do
+        service_request.protocol.update_attribute(:selected_for_epic, false)
+      end
+
+      it 'should not show epic column' do
+        assert_email_user_information_when_not_selected_for_epic(mail.body.parts.first.body)
       end
     end
   end

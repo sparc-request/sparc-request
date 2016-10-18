@@ -35,7 +35,7 @@
 
       - if show_program_services
         .program-services
-          - organization.services.order('`order`, `name`').each do |service|
+          - organization.services.includes(:pricing_maps).order('`order`, `name`').each do |service|
             = display_service_in_catalog(service, service_request, from_portal)
     %br
     - unless organization.cores.empty?
@@ -56,7 +56,7 @@
           .core_view
             .provider-description.description.ui-widget.ui-widget-content.ui-corner-all
               = raw core.description
-            - core.services.order('`order`, `name`').each do |service|
+            - core.services.includes(:pricing_maps).order('`order`, `name`').each do |service|
               = display_service_in_catalog(service, service_request, from_portal)
 
 - else
@@ -85,4 +85,3 @@
 
         #red_description.section
         #blue_description.section
-

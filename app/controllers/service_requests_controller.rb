@@ -404,9 +404,8 @@ class ServiceRequestsController < ApplicationController
 
   def remove_service
     id = params[:line_item_id].sub('line_item-', '').to_i
-    ssr = LineItem.find(id).sub_service_request
-
     @line_item = @service_request.line_items.find(id)
+    ssr = @line_item.sub_service_request
     service = @line_item.service
     line_item_service_ids = @service_request.line_items.map(&:service_id)
 
@@ -442,10 +441,12 @@ class ServiceRequestsController < ApplicationController
     @service_request.reload
 
     @protocol = @service_request.protocol
-
-    if ssr.line_items.empty? && !ssr.submitted_at.nil?
-      send_ssr_service_provider_notifications(ssr, true)
+    
+    if ssr.line_items.empty?
       ssr.destroy
+      if !ssr.submitted_at.nil?
+        send_ssr_service_provider_notifications(@service_request, ssr, true)
+      end
     end
 
     @service_request.reload

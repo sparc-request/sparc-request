@@ -252,6 +252,17 @@ RSpec.describe ServiceRequestsController do
                  :format        => :js,
                }.with_indifferent_access
         end
+
+        it 'should not delete SSR (ssr1)' do
+          post :remove_service, {
+                 :id            => service_request.id,
+                 :service_id    => service3.id,
+                 :line_item_id  => line_item1.id,
+                 :format        => :js,
+               }.with_indifferent_access
+          ssrs = [sub_service_request, ssr1, ssr2]
+          expect(service_request.sub_service_requests).to eq(ssrs)
+        end
       end
 
       context 'SSR has one service and it is removed' do
@@ -263,6 +274,17 @@ RSpec.describe ServiceRequestsController do
                    :line_item_id  => line_item3.id,
                    :format        => :js,
                  }.with_indifferent_access
+        end
+
+        it 'should delete SSR (ssr2)' do
+          post :remove_service, {
+                 :id            => service_request.id,
+                 :service_id    => service3.id,
+                 :line_item_id  => line_item3.id,
+                 :format        => :js,
+               }.with_indifferent_access
+          remaining_ssrs = [sub_service_request, ssr1]
+          expect(service_request.sub_service_requests).to eq(remaining_ssrs)
         end
       end
     end

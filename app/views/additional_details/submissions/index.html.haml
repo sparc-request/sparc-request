@@ -1,0 +1,29 @@
+= render 'additional_details/submissions/submission_modal'
+= javascript_include_tag 'dashboard/update_submission'
+= javascript_include_tag 'dashboard/delete_submission'
+.panel.panel-primary
+  .panel-heading
+    = "#{@service.name}"
+  .panel-body
+    .row
+      %table.table.table-striped.table-bordered.table-hover
+        %thead
+          %tr
+            %th
+              .text-center
+                Submission
+            %th
+              .text-center
+                Completed By
+            %th
+              .text-center
+                Show
+            %th
+              .text-center
+                Edit
+            %th
+              .text-center
+                Delete
+        %tbody.submissions-index-table
+          = render "submission_index_table", submissions: @submissions
+

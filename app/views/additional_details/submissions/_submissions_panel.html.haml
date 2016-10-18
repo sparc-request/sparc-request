@@ -1,0 +1,50 @@
+.panel.panel-default
+  .panel-heading
+    %h4.panel-title
+      Additional Detail Submissions
+  .panel-body
+    %table.table.table-striped.table-bordered.table-hover
+      %thead
+        %tr
+          %th.text-center
+            = 'ID'
+          %th.text-center
+            = 'Service Name'
+          %th.text-center
+            = 'View'
+          %th.text-center
+            = 'Edit'
+          %th.text-center
+            = 'Delete'
+      %tbody
+        - protocol.service_requests.each do |service_request|
+          - service_request.additional_detail_services.each do |service|
+            - submissions = Submission.where(service: service, identity: current_identity)
+            - if submissions.any?
+              - submissions.each do |submission|
+                %tr{ class: "submission", data: { id: "#{submission.id}", service_id: "#{service.id}" } }
+                  %td
+                    .text-center
+                      = submission.id
+                  %td
+                    .text-center
+                      = link_to "#{service.name}",
+                        service_additional_details_questionnaires_path(service),
+                        target: '_blank'
+                  %td.text-center
+                    = link_to service_additional_details_submission_path(service, submission),
+                      remote: true, class: 'btn btn-primary' do
+                      %span.glyphicon.glyphicon-search
+
+                  %td.text-center
+                    = link_to edit_service_additional_details_submission_path(service, submission),
+                      remote: true, class: 'btn btn-warning' do
+                      %span.glyphicon.glyphicon-edit
+                  %td.text-center
+                    = link_to "javascript:void(0);", class: 'btn btn-danger delete-submission', data: { id: "#{submission.id}", service_id: "#{service.id}", sr_id: "#{service_request.id}", protocol_id: "#{protocol.id}" } do
+                      %span.glyphicon.glyphicon-remove
+            - else
+              %tr.warning
+                %td{ colspan: '5' }
+                  .text-center
+                    No records found

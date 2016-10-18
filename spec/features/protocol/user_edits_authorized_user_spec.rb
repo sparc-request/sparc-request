@@ -58,10 +58,10 @@ RSpec.describe 'User wants to edit an authorized user', js: true do
         wait_for_javascript_to_finish
         
         bootstrap_select '#project_role_role', 'PD/PI'
-        sos
+
         click_button 'Save'
         wait_for_javascript_to_finish
-        sos
+
         expect(@auth_u.reload.role).to eq('pi')
       end
     end

@@ -336,6 +336,7 @@ class SubServiceRequest < ActiveRecord::Base
     end
   end
 
+  # Method is ready for expansion
   def update_status(status)
     if status == 'submitted'
       self.update_attribute(:submitted_at, Time.now) unless self.status == 'submitted'

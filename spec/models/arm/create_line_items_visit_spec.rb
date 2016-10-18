@@ -58,7 +58,7 @@ RSpec.describe Arm, type: :model do
 
       context 'Arm has the same number of VisitGroups as visit_count' do
         it 'should not create any VisitGroups' do
-          arm = create(:arm, visit_count: 2, subject_count: 1)
+          arm = create(:arm, protocol: protocol, visit_count: 2, subject_count: 1)
           create(:visit_group, name: 'Visit Group 1', position: 1, day: 1, arm: arm)
           create(:visit_group, name: 'Visit Group 2', position: 2, day: 2, arm: arm)
           arm.reload
@@ -69,7 +69,7 @@ RSpec.describe Arm, type: :model do
 
       context 'Arm has more VisitGroups than visit_count' do
         it 'should not create any VisitGroups' do
-          arm = create(:arm, visit_count: 2, subject_count: 1)
+          arm = create(:arm, protocol: protocol, visit_count: 2, subject_count: 1)
           create(:visit_group, name: 'Visit Group 1', position: 1, day: 1, arm: arm)
           create(:visit_group, name: 'Visit Group 2', position: 2, day: 2, arm: arm)
           create(:visit_group, name: 'Visit Group 3', position: 3, day: 3, arm: arm)

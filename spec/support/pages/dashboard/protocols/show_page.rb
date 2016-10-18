@@ -71,8 +71,8 @@ module Dashboard
         element :cancel_button, :button, text: "Close"
       end
 
-      element :enabled_add_document_button, '#document-new:not(.disabled)', text: 'Add New Document'
-      element :disabled_add_document_button, '#document-new.disabled', text: 'Add New Document'
+      element :enabled_add_document_button, '#document-new:not(.disabled)', text: 'Add a Document'
+      element :disabled_add_document_button, '#document-new.disabled', text: 'Add a Document'
       sections :documents, '#documents-table tbody tr' do
         element :enabled_edit_button, ".document-edit:not(.disabled)"
         element :disabled_edit_button, ".document-edit.disabled"
@@ -81,7 +81,7 @@ module Dashboard
       end
 
       # modal appears after clicking Add Document Button
-      section :document_modal, '.modal-dialog', text: /(Add a New|Edit) Document/ do
+      section :document_modal, '.modal-dialog', text: /(Add|Edit) Document/ do
         element :x_button, "button.close"
 
         element :doc_type_dropdown, "button[data-id='document_doc_type']"

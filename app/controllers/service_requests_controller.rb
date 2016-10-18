@@ -398,8 +398,8 @@ class ServiceRequestsController < ApplicationController
 
   def remove_service
     id = params[:line_item_id].sub('line_item-', '').to_i
-
     @line_item = @service_request.line_items.find(id)
+    ssr = @line_item.sub_service_request
     service = @line_item.service
     line_item_service_ids = @service_request.line_items.map(&:service_id)
 
@@ -434,14 +434,13 @@ class ServiceRequestsController < ApplicationController
     # clean up sub_service_requests
     @service_request.reload
 
-    to_delete = @service_request.sub_service_requests.map(&:organization_id) - @service_request.service_list.keys
-    to_delete.each do |org_id|
-      ssr = @service_request.sub_service_requests.find_by_organization_id(org_id)
-      if @service_request.line_items.count.zero? && !ssr.submitted_at.nil?
-        @protocol = @service_request.protocol
+    @protocol = @service_request.protocol
+    
+    if ssr.line_items.empty?
+      ssr.destroy
+      if !ssr.submitted_at.nil?
         send_ssr_service_provider_notifications(@service_request, ssr, true)
       end
-      ssr.destroy
     end
 
     @service_request.reload

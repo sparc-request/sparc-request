@@ -225,28 +225,49 @@ RSpec.describe ServiceRequestsController do
 
       before(:each) { sub_service_request.update_attribute(:submitted_at, Time.now) }
 
-      context 'removed all SSRs' do
+      context 'removed all services (line_item1 & line_item2) for SSR' do
         before :each do
-          line_item.destroy
           line_item1.destroy
-          line_item2.destroy
         end
  
         it 'should send notifications to the service provider' do
-
-          expect(controller).to receive(:send_ssr_service_provider_notifications).thrice
+          expect(controller).to receive(:send_ssr_service_provider_notifications)
           post :remove_service, {
                  :id            => service_request.id,
                  :service_id    => service3.id,
-                 :line_item_id  => line_item3.id,
+                 :line_item_id  => line_item2.id,
                  :format        => :js,
                }.with_indifferent_access
         end
       end
 
-      context 'removed one SSR' do
-        it 'should not send notifications to the service_provider' do
+      context 'removed one of two services for SSR' do
+ 
+        it 'should not send notifications to the service provider' do
           expect(controller).not_to receive(:send_ssr_service_provider_notifications)
+          post :remove_service, {
+                 :id            => service_request.id,
+                 :service_id    => service3.id,
+                 :line_item_id  => line_item1.id,
+                 :format        => :js,
+               }.with_indifferent_access
+        end
+
+        it 'should not delete SSR (ssr1)' do
+          post :remove_service, {
+                 :id            => service_request.id,
+                 :service_id    => service3.id,
+                 :line_item_id  => line_item1.id,
+                 :format        => :js,
+               }.with_indifferent_access
+          ssrs = [sub_service_request, ssr1, ssr2]
+          expect(service_request.sub_service_requests).to eq(ssrs)
+        end
+      end
+
+      context 'SSR has one service and it is removed' do
+        it 'should send notifications to the service_provider' do
+          expect(controller).to receive(:send_ssr_service_provider_notifications)
           post :remove_service, {
                    :id            => service_request.id,
                    :service_id    => service3.id,
@@ -254,20 +275,17 @@ RSpec.describe ServiceRequestsController do
                    :format        => :js,
                  }.with_indifferent_access
         end
-      end
-    end
 
-    context 'SSR has not been previously submitted' do
-      before(:each) { sub_service_request.update_attribute(:submitted_at, nil) }
-
-      it 'should not send notifications to the service_provider' do
-        expect(controller).not_to receive(:send_ssr_service_provider_notifications)
-        post :remove_service, {
+        it 'should delete SSR (ssr2)' do
+          post :remove_service, {
                  :id            => service_request.id,
                  :service_id    => service3.id,
                  :line_item_id  => line_item3.id,
                  :format        => :js,
                }.with_indifferent_access
+          remaining_ssrs = [sub_service_request, ssr1]
+          expect(service_request.sub_service_requests).to eq(remaining_ssrs)
+        end
       end
     end
 

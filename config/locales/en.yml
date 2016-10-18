@@ -658,8 +658,8 @@ en:
         quantity_requested: "Qty Requested"
         quantity_type: "Qty Type"
         cost: "Cost"
-        in_process: "In Process"
-        complete: "Complete"
+        in_process: "In Process Date"
+        complete: "Complete Date"
         actions: "Actions"
       form:
         service: "Service:"
@@ -681,8 +681,8 @@ en:
         quantity_type: "Quantity Type"
         cost: "Cost"
         received: "Received"
-        in_process: "In Process"
-        complete: "Complete"
+        in_process: "In Process Date"
+        complete: "Complete Date"
       admin_rate:
         header: "Add Admin Rate"
         cost: "Cost:"

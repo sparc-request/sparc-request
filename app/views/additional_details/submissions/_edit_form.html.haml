@@ -1,0 +1,8 @@
+= f.fields_for :questionnaire_responses do |qr|
+  - item = qr.object.item
+  - if item.required?
+    = qr.hidden_field :required, value: true
+  = qr.hidden_field :item_id, value: item.id
+  %div{ class: "form-group item-#{item.id}" }
+    = qr.label item.content
+    = render "additional_details/submissions/form_partials/#{item.item_type}_form_partial", item: item, qr: qr

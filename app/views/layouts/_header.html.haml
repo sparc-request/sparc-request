@@ -18,14 +18,15 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 %nav.navbar.navbar-default
-  .navbar-header
-    %ul.nav.navbar-nav
-      - NAVBAR_LINKS.each do |identifier, data|
-        = navbar_link(identifier, data, @highlighted_link)
-  %p.navbar-text.navbar-right.welcome-nav
-    - if current_user.present?
-      %span
-        = I18n.t('proper.navbar.logged_in', email: current_user.email)
-      = link_to t(:proper)[:navbar][:logout], destroy_identity_session_path, method: :delete, class: 'btn btn-warning'
-    - else
-      = link_to t(:proper)[:navbar][:login], new_identity_session_path, class: 'btn btn-primary'
+  .container-fluid
+    .navbar-header
+      %ul.nav.navbar-nav
+        - NAVBAR_LINKS.each do |identifier, data|
+          = navbar_link(identifier, data, @highlighted_link)
+    %p.navbar-text.navbar-right.welcome-nav
+      - if current_user.present?
+        %span
+          = I18n.t('proper.navbar.logged_in', email: current_user.email)
+        = link_to t(:proper)[:navbar][:logout], destroy_identity_session_path, method: :delete, class: 'btn btn-warning'
+      - else
+        = link_to t(:proper)[:navbar][:login], new_identity_session_path, class: 'btn btn-primary'

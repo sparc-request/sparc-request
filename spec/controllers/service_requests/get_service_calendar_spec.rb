@@ -121,8 +121,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
           line_item = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
           arm       = create(:arm, protocol: protocol, visit_count: 1)
                       create(:line_items_visit, arm: arm, line_item: line_item)
-                      create(:visit_group, arm: arm)
-                      create(:visit_group, arm: arm)
+                      create(:visit_group, arm: arm) # Create an extra Visit Group
 
           session[:service_request_id] = sr.id
 
@@ -130,7 +129,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
             id: sr.id
           }
 
-          expect(VisitGroup.count).to eq(1)
+          expect(arm.visit_groups.count).to eq(1)
         end
       end
 
@@ -142,17 +141,18 @@ RSpec.describe ServiceRequestsController, type: :controller do
           sr        = create(:service_request_without_validations, protocol: protocol)
           ssr       = create(:sub_service_request_without_validations, service_request: sr, organization: org)
           line_item = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
-          arm       = create(:arm, protocol: protocol, visit_count: 2)
+          arm       = create(:arm, protocol: protocol, visit_count: 1)
                       create(:line_items_visit, arm: arm, line_item: line_item)
-                      create(:visit_group, arm: arm)
+          
+          arm.update_attribute(:visit_count, 2) # Update Visit Count to force Mass Create Visit Group
 
           session[:service_request_id] = sr.id
 
           xhr :get, :service_calendar, {
             id: sr.id
           }
-
-          expect(VisitGroup.count).to eq(2)
+          
+          expect(arm.visit_groups.count).to eq(2)
         end
       end
     end

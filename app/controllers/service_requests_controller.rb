@@ -435,10 +435,12 @@ class ServiceRequestsController < ApplicationController
     @service_request.reload
 
     @protocol = @service_request.protocol
-
-    if ssr.line_items.empty? && !ssr.submitted_at.nil?
-      send_ssr_service_provider_notifications(@service_request, ssr, true)
+    
+    if ssr.line_items.empty?
       ssr.destroy
+      if !ssr.submitted_at.nil?
+        send_ssr_service_provider_notifications(@service_request, ssr, true)
+      end
     end
 
     @service_request.reload

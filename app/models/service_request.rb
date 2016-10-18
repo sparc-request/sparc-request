@@ -497,7 +497,7 @@ class ServiceRequest < ActiveRecord::Base
   end
 
   def additional_detail_services
-    services.joins(:questionnaires)
+    services.joins(:questionnaires).where(questionnaires: { active: true })
   end
 
   # Change the status of the service request and all the sub service

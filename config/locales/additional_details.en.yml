@@ -47,3 +47,10 @@ en:
     no_label: 'No'
     dashboard_complete_details: "Please complete the required Additional Details for %{service_name}"
     take_additional_detail_survey: "Take Additional Details Survey for %{service_name}"
+
+    submissions:
+      header: "Additional Detail Submissions"
+      table_fields:
+        id: "ID"
+        service: "Service Name"
+      none: "No Records Found"

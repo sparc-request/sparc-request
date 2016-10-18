@@ -39,6 +39,7 @@ en:
     send: "Send"
     submit: "Submit"
     upload: "Upload"
+    view: "View"
 
   ################
   # ACTIVERECORD #

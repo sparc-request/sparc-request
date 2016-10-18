@@ -33,6 +33,193 @@ RSpec.describe ServiceRequestsController do
 
   describe 'GET confirmation' do
 
+    context 'previously submitted ssr that has deleted services' do
+      before :each do
+        @identity = Identity.find(jug2.id)
+        service = create(:service,
+                      organization_id: provider.id,
+                      name: 'ABCD',
+                      one_time_fee: true)
+        @submission_email = provider.submission_emails.create(email: 'hedwig@owlpost.com')
+        service_request.update_attribute(:submitted_at, Time.now.yesterday)
+        service_request.sub_service_requests.each do |ssr|
+          ssr.update_attribute(:submitted_at, Time.now.yesterday)
+          ssr.update_attribute(:status, 'submitted')
+        end
+        @attachments = {"service_request_1.xlsx"=>""}
+        @xls = ""
+        audit_with_deleted = AuditRecovery.create
+        audit_with_deleted.update_attributes(auditable_id: service_request.line_items.first.id, 
+                                             action: "destroy", 
+                                             auditable_type: 'LineItem',
+                                             user_id: jug2.id,
+                                             audited_changes: 
+                                            { "sub_service_request_id"=>service_request.sub_service_requests.first.id, "service_id"=>service.id}, created_at: Time.now - 5.hours)
+        @audit = { line_items: [audit_with_deleted],
+               sub_service_request_id: service_request.sub_service_requests.first.id }
+
+      end
+      it 'should send request amendment email to service provider' do
+        allow(Notifier).to receive(:notify_service_provider).with(service_provider, service_request, @attachments, @identity, @audit, false) do
+            mailer = double('mail') # TODO what is the return type of #notifiy_...?
+            expect(mailer).to receive(:deliver_now)
+            mailer
+          end
+        xhr :get, :confirmation, id: service_request.id, format: :js
+        expect(Notifier).to have_received(:notify_service_provider).with(service_provider, service_request, @attachments, @identity, @audit, false)
+      end
+
+      it 'should send request amendment email to admin' do
+        
+        allow(Notifier).to receive(:notify_admin).with(@submission_email.email, @xls, @identity, service_request.sub_service_requests.first, @audit) do
+            mailer = double('mail') # TODO what is the return type of #notifiy_...?
+            expect(mailer).to receive(:deliver)
+            mailer
+          end
+        xhr :get, :confirmation, id: service_request.id, format: :js
+        expect(Notifier).to have_received(:notify_admin).with(@submission_email.email, @xls, @identity, service_request.sub_service_requests.first, @audit)
+      end
+    end
+
+    context 'previously submitted ssr that has added services' do
+      before :each do
+        @identity = Identity.find(jug2.id)
+        service = create(:service,
+                      organization_id: provider.id,
+                      name: 'ABCD',
+                      one_time_fee: true)
+        @submission_email = provider.submission_emails.create(email: 'hedwig@owlpost.com')
+        service_request.update_attribute(:submitted_at, Time.now.yesterday)
+        service_request.sub_service_requests.each do |ssr|
+          ssr.update_attribute(:submitted_at, Time.now.yesterday)
+          ssr.update_attribute(:status, 'submitted')
+        end
+        sr_id = service_request.id
+        @attachments = {"service_request_#{sr_id}.xlsx"=>""}
+        @xls = ""
+        audit_with_added = AuditRecovery.create
+        audit_with_added.update_attributes(auditable_id: service_request.line_items.first.id, 
+                                             action: "create", 
+                                             auditable_type: 'LineItem',
+                                             user_id: jug2.id,
+                                             audited_changes: 
+                                            { "sub_service_request_id"=>service_request.sub_service_requests.first.id, "service_id"=>service.id}, created_at: Time.now - 5.hours)
+        @audit = { line_items: [audit_with_added],
+               sub_service_request_id: service_request.sub_service_requests.first.id }
+      end
+
+      it 'should send request amendment email to service provider' do
+        allow(Notifier).to receive(:notify_service_provider).with(service_provider, service_request, @attachments, @identity, @audit, false) do
+            mailer = double('mail') # TODO what is the return type of #notifiy_...?
+            expect(mailer).to receive(:deliver_now)
+            mailer
+          end
+        xhr :get, :confirmation, id: service_request.id, format: :js
+        expect(Notifier).to have_received(:notify_service_provider).with(service_provider, service_request, @attachments, @identity, @audit, false)
+      end
+
+      it 'should send request amendment email to admin' do
+        allow(Notifier).to receive(:notify_admin).with(@submission_email.email, @xls, @identity, service_request.sub_service_requests.first, @audit) do
+            mailer = double('mail') # TODO what is the return type of #notifiy_...?
+            expect(mailer).to receive(:deliver)
+            mailer
+          end
+        xhr :get, :confirmation, id: service_request.id, format: :js
+        expect(Notifier).to have_received(:notify_admin).with(@submission_email.email, @xls, @identity, service_request.sub_service_requests.first, @audit)
+      end
+    end
+
+    context 'previously submitted ssr that has both added and deleted services' do
+      before :each do
+        @identity = Identity.find(jug2.id)
+        service = create(:service,
+                      organization_id: provider.id,
+                      name: 'ABCD',
+                      one_time_fee: true)
+        @submission_email = provider.submission_emails.create(email: 'hedwig@owlpost.com')
+        service_request.update_attribute(:submitted_at, Time.now.yesterday)
+        service_request.sub_service_requests.each do |ssr|
+          ssr.update_attribute(:submitted_at, Time.now.yesterday)
+          ssr.update_attribute(:status, 'submitted')
+        end
+        sr_id = service_request.id
+        @attachments = {"service_request_#{sr_id}.xlsx"=>""}
+        @xls = ""
+
+        audit_with_deleted = AuditRecovery.create
+        audit_with_deleted.update_attributes(auditable_id: service_request.line_items.first.id, 
+                                             action: "destroy", 
+                                             auditable_type: 'LineItem',
+                                             user_id: jug2.id,
+                                             audited_changes: 
+                                            { "sub_service_request_id"=>service_request.sub_service_requests.first.id, "service_id"=>service.id }, created_at: Time.now - 5.hours)
+        audit_with_added = AuditRecovery.create
+        audit_with_added.update_attributes(auditable_id: service_request.line_items.last.id, 
+                                             action: "create", 
+                                             auditable_type: 'LineItem',
+                                             user_id: jug2.id,
+                                             audited_changes: 
+                                            { "sub_service_request_id"=>service_request.sub_service_requests.first.id, "service_id"=>service.id }, created_at: Time.now - 4.hours)
+        @audit = { line_items: [audit_with_deleted, audit_with_added],
+               sub_service_request_id: service_request.sub_service_requests.first.id }
+      end
+
+      it 'should send request amendment email to service provider' do
+        allow(Notifier).to receive(:notify_service_provider).with(service_provider, service_request, @attachments, @identity, @audit, false) do
+            mailer = double('mail') # TODO what is the return type of #notifiy_...?
+            expect(mailer).to receive(:deliver_now)
+            mailer
+          end
+        xhr :get, :confirmation, id: service_request.id, format: :js
+        expect(Notifier).to have_received(:notify_service_provider).with(service_provider, service_request, @attachments, @identity, @audit, false)
+      end
+
+      it 'should send request amendment email to admin' do
+        allow(Notifier).to receive(:notify_admin).with(@submission_email.email, @xls, @identity, service_request.sub_service_requests.first, @audit) do
+            mailer = double('mail') # TODO what is the return type of #notifiy_...?
+            expect(mailer).to receive(:deliver)
+            mailer
+          end
+        xhr :get, :confirmation, id: service_request.id, format: :js
+        expect(Notifier).to have_received(:notify_admin).with(@submission_email.email, @xls, @identity, service_request.sub_service_requests.first, @audit)
+      end
+    end
+
+    context 'previously submitted ssr that does NOT have added or deleted services' do
+      before :each do
+        @identity = Identity.find(jug2.id)
+        @submission_email = provider.submission_emails.create(email: 'hedwig@owlpost.com')
+        service_request.update_attribute(:submitted_at, Time.now.yesterday)
+        service_request.sub_service_requests.each do |ssr|
+          ssr.update_attribute(:submitted_at, Time.now.yesterday)
+          ssr.update_attribute(:status, 'submitted')
+        end
+        @attachments = {"service_request_1.xlsx"=>""}
+        @xls = ""
+        @audit = nil
+      end
+
+      it 'should NOT send request amendment email to service provider' do
+        allow(Notifier).to receive(:notify_service_provider) do
+            mailer = double('mail') # TODO what is the return type of #notifiy_...?
+            expect(mailer).to receive(:deliver_now)
+            mailer
+          end
+        xhr :get, :confirmation, id: service_request.id, format: :js
+        expect(Notifier).not_to have_received(:notify_service_provider)
+      end
+
+      it 'should NOT send request amendment email to admin' do
+        allow(Notifier).to receive(:notify_admin) do
+            mailer = double('mail') # TODO what is the return type of #notifiy_...?
+            expect(mailer).to receive(:deliver)
+            mailer
+          end
+        xhr :get, :confirmation, id: service_request.id, format: :js
+        expect(Notifier).not_to have_received(:notify_admin)
+      end
+    end
+
     context 'with project' do
 
       it "should set the service request's status to submitted" do
@@ -163,180 +350,6 @@ RSpec.describe ServiceRequestsController do
         end
 
         xhr :get, :confirmation, id: service_request.id, format: :js
-      end
-
-
-      context 'previously submitted ssr that has deleted services' do
-        before :each do
-          @service_provider = ServiceProvider.find(jug2.id)
-          @identity = Identity.find(jug2.id)
-          service = create(:service,
-                        organization_id: provider.id,
-                        name: 'ABCD',
-                        one_time_fee: true)
-          @submission_email = provider.submission_emails.create(email: 'hedwig@owlpost.com')
-          service_request.update_attribute(:submitted_at, Time.now.yesterday)
-          service_request.sub_service_requests.each do |ssr|
-            ssr.update_attribute(:submitted_at, Time.now.yesterday)
-          end
-          @attachments = {"service_request_1.xlsx"=>""}
-          @xls = ""
-          audit_with_deleted = AuditRecovery.create
-          audit_with_deleted.update_attributes(auditable_id: service_request.line_items.first.id, 
-                                               action: "destroy", 
-                                               auditable_type: 'LineItem',
-                                               user_id: jug2.id,
-                                               audited_changes: 
-                                              { "sub_service_request_id"=>service_request.sub_service_requests.first.id, "service_id"=>service.id}, created_at: Time.now - 5.hours)
-          @audit = { line_items: [audit_with_deleted],
-                 sub_service_request_id: service_request.sub_service_requests.first.id }
-        end
-        it 'should send request amendment email to service provider' do
-          deliverer = double()
-          expect(deliverer).to receive(:deliver_now)
-          allow(Notifier).to receive(:notify_service_provider).with(@service_provider, service_request, @attachments, @identity, @audit, false) do |notify|
-            expect(notify).to eq(@service_provider)
-            deliverer
-          end
-          xhr :get, :confirmation, id: service_request.id, format: :js
-        end
-
-        it 'should send request amendment email to admin' do
-          deliverer = double()
-          expect(deliverer).to receive(:deliver)
-          allow(Notifier).to receive(:notify_admin).with(@submission_email.email, @xls, @identity, service_request.sub_service_requests.first, @audit) do |notify|
-            expect(notify).to eq(@submission_email.email)
-            deliverer
-          end
-          xhr :get, :confirmation, id: service_request.id, format: :js
-        end
-      end
-
-      context 'previously submitted ssr that has added services' do
-        before :each do
-          @service_provider = ServiceProvider.find(jug2.id)
-          @identity = Identity.find(jug2.id)
-          service = create(:service,
-                        organization_id: provider.id,
-                        name: 'ABCD',
-                        one_time_fee: true)
-          @submission_email = provider.submission_emails.create(email: 'hedwig@owlpost.com')
-          service_request.update_attribute(:submitted_at, Time.now.yesterday)
-          service_request.sub_service_requests.each do |ssr|
-            ssr.update_attribute(:submitted_at, Time.now.yesterday)
-          end
-          @attachments = {"service_request_1.xlsx"=>""}
-          @xls = ""
-          audit_with_added = AuditRecovery.create
-          audit_with_added.update_attributes(auditable_id: service_request.line_items.first.id, 
-                                               action: "create", 
-                                               auditable_type: 'LineItem',
-                                               user_id: jug2.id,
-                                               audited_changes: 
-                                              { "sub_service_request_id"=>service_request.sub_service_requests.first.id, "service_id"=>service.id}, created_at: Time.now - 5.hours)
-          @audit = { line_items: [audit_with_added],
-                 sub_service_request_id: service_request.sub_service_requests.first.id }
-        end
-
-        it 'should send request amendment email to service provider' do
-          deliverer = double()
-          expect(deliverer).to receive(:deliver_now)
-          allow(Notifier).to receive(:notify_service_provider).with(@service_provider, service_request, @attachments, @identity, @audit, false) do |notify|
-            expect(notify).to eq(@service_provider)
-            deliverer
-          end
-          xhr :get, :confirmation, id: service_request.id, format: :js
-        end
-
-        it 'should send request amendment email to admin' do
-          deliverer = double()
-          expect(deliverer).to receive(:deliver)
-          allow(Notifier).to receive(:notify_admin).with(@submission_email.email, @xls, @identity, service_request.sub_service_requests.first, @audit) do |notify|
-            expect(notify).to eq(@submission_email.email)
-            deliverer
-          end
-          xhr :get, :confirmation, id: service_request.id, format: :js
-        end
-      end
-
-      context 'previously submitted ssr that has both added and deleted services' do
-        before :each do
-          @service_provider = ServiceProvider.find(jug2.id)
-          @identity = Identity.find(jug2.id)
-          service = create(:service,
-                        organization_id: provider.id,
-                        name: 'ABCD',
-                        one_time_fee: true)
-          @submission_email = provider.submission_emails.create(email: 'hedwig@owlpost.com')
-          service_request.update_attribute(:submitted_at, Time.now.yesterday)
-          service_request.sub_service_requests.each do |ssr|
-            ssr.update_attribute(:submitted_at, Time.now.yesterday)
-          end
-          @attachments = {"service_request_1.xlsx"=>""}
-          @xls = ""
-
-          audit_with_deleted = AuditRecovery.create
-          audit_with_deleted.update_attributes(auditable_id: service_request.line_items.first.id, 
-                                               action: "destroy", 
-                                               auditable_type: 'LineItem',
-                                               user_id: jug2.id,
-                                               audited_changes: 
-                                              { "sub_service_request_id"=>service_request.sub_service_requests.first.id, "service_id"=>service.id }, created_at: Time.now - 5.hours)
-          audit_with_added = AuditRecovery.create
-          audit_with_added.update_attributes(auditable_id: service_request.line_items.last.id, 
-                                               action: "create", 
-                                               auditable_type: 'LineItem',
-                                               user_id: jug2.id,
-                                               audited_changes: 
-                                              { "sub_service_request_id"=>service_request.sub_service_requests.first.id, "service_id"=>service.id }, created_at: Time.now - 4.hours)
-          @audit = { line_items: [audit_with_deleted, audit_with_added],
-                 sub_service_request_id: service_request.sub_service_requests.first.id }
-        end
-
-        it 'should send request amendment email to service provider' do
-          deliverer = double()
-          expect(deliverer).to receive(:deliver_now)
-          allow(Notifier).to receive(:notify_service_provider).with(@service_provider, service_request, @attachments, @identity, @audit, false) do |notify|
-            expect(notify).to eq(@service_provider)
-            deliverer
-          end
-          xhr :get, :confirmation, id: service_request.id, format: :js
-        end
-
-        it 'should send request amendment email to admin' do
-          deliverer = double()
-          expect(deliverer).to receive(:deliver)
-          allow(Notifier).to receive(:notify_admin).with(@submission_email.email, @xls, @identity, service_request.sub_service_requests.first, @audit) do |notify|
-            expect(notify).to eq(@submission_email.email)
-            deliverer
-          end
-          xhr :get, :confirmation, id: service_request.id, format: :js
-        end
-      end
-
-      context 'previously submitted ssr that does not have added or deleted services' do
-        before :each do
-          @service_provider = ServiceProvider.find(jug2.id)
-          @identity = Identity.find(jug2.id)
-          @submission_email = provider.submission_emails.create(email: 'hedwig@owlpost.com')
-          service_request.update_attribute(:submitted_at, Time.now.yesterday)
-          service_request.sub_service_requests.each do |ssr|
-            ssr.update_attribute(:submitted_at, Time.now.yesterday)
-          end
-          @attachments = {"service_request_1.xlsx"=>""}
-          @xls = ""
-          @audit = nil
-        end
-
-        it 'should send request amendment email to service provider' do
-          xhr :get, :confirmation, id: service_request.id, format: :js
-          expect(Notifier).not_to receive(:notify_service_provider)
-        end
-
-        it 'should send request amendment email to admin' do
-          xhr :get, :confirmation, id: service_request.id, format: :js
-          expect(Notifier).not_to receive(:notify_admin)
-        end
       end
     end
   end

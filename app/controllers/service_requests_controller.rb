@@ -702,11 +702,11 @@ class ServiceRequestsController < ApplicationController
 
   def update_service_request_status(service_request, status)
     if (status == 'submitted')
-  
       service_request.previous_submitted_at = @service_request.submitted_at
       service_request.update_attribute(:submitted_at, Time.now)
       service_request.sub_service_requests.where.not(status: 'submitted').update_all(submitted_at: Time.now)
     end
+
     to_notify = service_request.update_status(status)
     service_request.sub_service_requests.each {|ssr| ssr.update_past_status(current_user)}
 

@@ -588,8 +588,8 @@ class ServiceRequestsController < ApplicationController
   end
 
   def ssr_has_changed?(service_request, sub_service_request) #specific ssr has changed?
-    # previously_submitted_at = service_request.previous_submitted_at.nil? ? Time.now : service_request.previous_submitted_a
-    unless sub_service_request.audit_report(current_user, service_request.previous_submitted_at, Time.now.tomorrow)[:line_items].empty?
+    previously_submitted_at = service_request.previous_submitted_at.nil? ? Time.now.utc : service_request.previous_submitted_at.utc
+    unless sub_service_request.audit_report(current_user, previously_submitted_at, Time.now.tomorrow.utc)[:line_items].empty?
       return true
     end
     return false

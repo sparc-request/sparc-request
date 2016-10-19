@@ -196,10 +196,6 @@ class Organization < ActiveRecord::Base
 
   def update_descendants_availability(is_available)
     if is_available == "0"
-      puts '#' * 50
-      puts "in update"
-      puts '#' * 50
-
       children = Organization.where(id: all_child_organizations << self)
       children.update_all(is_available: false)
       Service.where(organization_id: children).update_all(is_available: false)

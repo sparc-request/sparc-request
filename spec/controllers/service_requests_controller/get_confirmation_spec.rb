@@ -61,7 +61,7 @@ RSpec.describe ServiceRequestsController do
       end
       it 'should send request amendment email to service provider' do
         allow(Notifier).to receive(:notify_service_provider).with(service_provider, service_request, @attachments, @identity, @audit, false) do
-            mailer = double('mail') # TODO what is the return type of #notifiy_...?
+            mailer = double('mail') 
             expect(mailer).to receive(:deliver_now)
             mailer
           end
@@ -72,7 +72,7 @@ RSpec.describe ServiceRequestsController do
       it 'should send request amendment email to admin' do
         
         allow(Notifier).to receive(:notify_admin).with(@submission_email.email, @xls, @identity, service_request.sub_service_requests.first, @audit) do
-            mailer = double('mail') # TODO what is the return type of #notifiy_...?
+            mailer = double('mail') 
             expect(mailer).to receive(:deliver)
             mailer
           end
@@ -110,7 +110,7 @@ RSpec.describe ServiceRequestsController do
 
       it 'should send request amendment email to service provider' do
         allow(Notifier).to receive(:notify_service_provider).with(service_provider, service_request, @attachments, @identity, @audit, false) do
-            mailer = double('mail') # TODO what is the return type of #notifiy_...?
+            mailer = double('mail') 
             expect(mailer).to receive(:deliver_now)
             mailer
           end
@@ -120,7 +120,7 @@ RSpec.describe ServiceRequestsController do
 
       it 'should send request amendment email to admin' do
         allow(Notifier).to receive(:notify_admin).with(@submission_email.email, @xls, @identity, service_request.sub_service_requests.first, @audit) do
-            mailer = double('mail') # TODO what is the return type of #notifiy_...?
+            mailer = double('mail') 
             expect(mailer).to receive(:deliver)
             mailer
           end
@@ -138,6 +138,7 @@ RSpec.describe ServiceRequestsController do
                       one_time_fee: true)
         @submission_email = provider.submission_emails.create(email: 'hedwig@owlpost.com')
         service_request.update_attribute(:submitted_at, Time.now.yesterday)
+        service_request.update_attribute(:status, 'submitted')
         service_request.sub_service_requests.each do |ssr|
           ssr.update_attribute(:submitted_at, Time.now.yesterday)
           ssr.update_attribute(:status, 'submitted')
@@ -166,7 +167,7 @@ RSpec.describe ServiceRequestsController do
 
       it 'should send request amendment email to service provider' do
         allow(Notifier).to receive(:notify_service_provider).with(service_provider, service_request, @attachments, @identity, @audit, false) do
-            mailer = double('mail') # TODO what is the return type of #notifiy_...?
+            mailer = double('mail') 
             expect(mailer).to receive(:deliver_now)
             mailer
           end
@@ -176,7 +177,7 @@ RSpec.describe ServiceRequestsController do
 
       it 'should send request amendment email to admin' do
         allow(Notifier).to receive(:notify_admin).with(@submission_email.email, @xls, @identity, service_request.sub_service_requests.first, @audit) do
-            mailer = double('mail') # TODO what is the return type of #notifiy_...?
+            mailer = double('mail') 
             expect(mailer).to receive(:deliver)
             mailer
           end
@@ -201,7 +202,7 @@ RSpec.describe ServiceRequestsController do
 
       it 'should NOT send request amendment email to service provider' do
         allow(Notifier).to receive(:notify_service_provider) do
-            mailer = double('mail') # TODO what is the return type of #notifiy_...?
+            mailer = double('mail') 
             expect(mailer).to receive(:deliver_now)
             mailer
           end
@@ -211,7 +212,7 @@ RSpec.describe ServiceRequestsController do
 
       it 'should NOT send request amendment email to admin' do
         allow(Notifier).to receive(:notify_admin) do
-            mailer = double('mail') # TODO what is the return type of #notifiy_...?
+            mailer = double('mail') 
             expect(mailer).to receive(:deliver)
             mailer
           end

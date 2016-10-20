@@ -26,6 +26,8 @@ require 'spec_helper'
 require 'site_prism'
 require 'tilt/coffee'
 require 'tilt/sass'
+require 'audited'
+load "audited/sweeper.rb"
 
 RSpec.configure do |config|
   # TODO mark spec types explicitly

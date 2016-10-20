@@ -268,24 +268,18 @@ class ServiceRequestsController < ApplicationController
 
     # Grab ssrs that have been previously submitted 
     previously_submitted_ssrs = @service_request.sub_service_requests.where.not(submitted_at: nil)
-    puts "*********************"
-    puts previously_submitted_ssrs.inspect
     send_request_amendment_email_evaluation(previously_submitted_ssrs) unless previously_submitted_ssrs.empty?
 
     #### END REQUEST AMENDMENT EMAIL ####
 
     to_notify = []
     if @sub_service_request
-      puts "HERE"
       if @sub_service_request.status != 'submitted'
         to_notify << @sub_service_request.id
       end
-      puts to_notify.inspect
       @sub_service_request.update_status('submitted')
       @sub_service_request.update_past_status(current_user)
     else
-      puts "THERE"
-      puts to_notify.inspect
       to_notify = update_service_request_status(@service_request, 'submitted')
       @service_request.update_arm_minimum_counts
 
@@ -313,10 +307,7 @@ class ServiceRequestsController < ApplicationController
       end
     end
 
-    puts "&&&&&&&&&&&&&&&&&&"
-    puts to_notify.inspect
-
-    send_confirmation_notifications to_notify
+    send_confirmation_notifications(to_notify) unless to_notify.empty?
 
     render formats: [:html]
   end
@@ -518,6 +509,8 @@ class ServiceRequestsController < ApplicationController
         request_amendment_ssrs << ssr
       end
     end
+    puts "********"
+    puts request_amendment_ssrs.inspect
     if request_amendment_ssrs.present?
       send_request_amendment(request_amendment_ssrs)
     end
@@ -587,8 +580,11 @@ class ServiceRequestsController < ApplicationController
   end
 
   def send_ssr_service_provider_notifications(sub_service_request, all_ssrs_deleted=false, request_amendment= false) #single sub-service request
-
+    puts "((((((((("
+    puts request_amendment.inspect
     audit_report = request_amendment ? sub_service_request.audit_report(current_user, sub_service_request.service_request.previous_submitted_at.utc, Time.now.tomorrow.utc) : nil
+    puts "&&&&&&&&&&&&"
+    puts audit_report.inspect
     request_amendment ? sub_service_request.update_status('submitted') : ''
  
     sub_service_request.organization.service_providers.where("(`service_providers`.`hold_emails` != 1 OR `service_providers`.`hold_emails` IS NULL)").each do |service_provider|

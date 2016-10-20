@@ -48,9 +48,7 @@ RSpec.describe ServiceRequestsController do
         end
         @attachments = {"service_request_1.xlsx"=>""}
         @xls = ""
-      end
-      
-      it 'should send request amendment email to service provider' do
+
         service_request.sub_service_requests.each do |ssr|
           ssr.line_items.first.destroy
           ssr.reload
@@ -59,7 +57,9 @@ RSpec.describe ServiceRequestsController do
         
         @audit.first.update_attribute(:created_at, Time.now - 5.hours)
         @audit.first.update_attribute(:user_id, @identity.id)
+      end
 
+      it 'should send request amendment email to service provider' do
         allow(Notifier).to receive(:notify_service_provider) do
             mailer = double('mail') 
             expect(mailer).to receive(:deliver_now)
@@ -70,21 +70,20 @@ RSpec.describe ServiceRequestsController do
       end
 
       it 'should send request amendment email to admin' do
-        
-        allow(Notifier).to receive(:notify_admin).with(@submission_email.email, @xls, @identity, service_request.sub_service_requests.first, @audit) do
+        allow(Notifier).to receive(:notify_admin) do
             mailer = double('mail') 
             expect(mailer).to receive(:deliver)
             mailer
           end
         xhr :get, :confirmation, id: service_request.id, format: :js
-        expect(Notifier).to have_received(:notify_admin).with(@submission_email.email, @xls, @identity, service_request.sub_service_requests.first, @audit)
+        expect(Notifier).to have_received(:notify_admin)
       end
     end
 
     context 'previously submitted ssr that has added services' do
       before :each do
         @identity = Identity.find(jug2.id)
-        service = create(:service,
+        @service = create(:service,
                       organization_id: provider.id,
                       name: 'ABCD',
                       one_time_fee: true)
@@ -97,42 +96,42 @@ RSpec.describe ServiceRequestsController do
         sr_id = service_request.id
         @attachments = {"service_request_#{sr_id}.xlsx"=>""}
         @xls = ""
-        audit_with_added = create(:audit_without_validations,
-                                   auditable_id: service_request.line_items.last.id, 
-                                   action: "create", 
-                                   auditable_type: 'LineItem',
-                                   user_id: jug2.id,
-                                   audited_changes: 
-                                  { "sub_service_request_id"=>service_request.sub_service_requests.first.id, "service_id"=>service.id }, created_at: Time.now - 4.hours)
-        @audit = { line_items: [audit_with_added],
-               sub_service_request_id: service_request.sub_service_requests.first.id }
+
+        service_request.sub_service_requests.each do |ssr|
+          create(:line_item_without_validations, sub_service_request_id: ssr.id, service_id: @service.id)
+          ssr.reload
+          @audit = AuditRecovery.where("auditable_id = '#{ssr.line_items.first.id}' AND auditable_type = 'LineItem'")
+        end
+
+        @audit.first.update_attribute(:created_at, Time.now - 5.hours)
+        @audit.first.update_attribute(:user_id, @identity.id)
       end
 
-      it 'should send request amendment email to service provider' do
-        allow(Notifier).to receive(:notify_service_provider).with(service_provider, service_request, @attachments, @identity, @audit, false) do
+      it 'should send request amendment email to service provider' do       
+        allow(Notifier).to receive(:notify_service_provider) do
             mailer = double('mail') 
             expect(mailer).to receive(:deliver_now)
             mailer
           end
         xhr :get, :confirmation, id: service_request.id, format: :js
-        expect(Notifier).to have_received(:notify_service_provider).with(service_provider, service_request, @attachments, @identity, @audit, false)
+        expect(Notifier).to have_received(:notify_service_provider)
       end
 
       it 'should send request amendment email to admin' do
-        allow(Notifier).to receive(:notify_admin).with(@submission_email.email, @xls, @identity, service_request.sub_service_requests.first, @audit) do
+        allow(Notifier).to receive(:notify_admin) do
             mailer = double('mail') 
             expect(mailer).to receive(:deliver)
             mailer
           end
         xhr :get, :confirmation, id: service_request.id, format: :js
-        expect(Notifier).to have_received(:notify_admin).with(@submission_email.email, @xls, @identity, service_request.sub_service_requests.first, @audit)
+        expect(Notifier).to have_received(:notify_admin)
       end
     end
 
     context 'previously submitted ssr that has both added and deleted services' do
       before :each do
         @identity = Identity.find(jug2.id)
-        service = create(:service,
+        @service = create(:service,
                       organization_id: provider.id,
                       name: 'ABCD',
                       one_time_fee: true)
@@ -146,43 +145,36 @@ RSpec.describe ServiceRequestsController do
         sr_id = service_request.id
         @attachments = {"service_request_#{sr_id}.xlsx"=>""}
         @xls = ""
-        audit_with_deleted = create(:audit_without_validations, 
-                                     auditable_id: service_request.line_items.first.id, 
-                                     action: "destroy", 
-                                     auditable_type: 'LineItem',
-                                     user_id: jug2.id,
-                                     audited_changes: 
-                                    { "sub_service_request_id"=>service_request.sub_service_requests.first.id, "service_id"=>service.id}, created_at: Time.now - 5.hours)
+        service_request.sub_service_requests.each do |ssr|
+          ssr.line_items.first.destroy
+          ssr.reload
+          create(:line_item_without_validations, sub_service_request_id: ssr.id, service_id: @service.id)
+          ssr.reload
+          @audit = AuditRecovery.where("auditable_id = '#{ssr.line_items.first.id}' AND auditable_type = 'LineItem'")
+        end
 
-        audit_with_added = create(:audit_without_validations,
-                                   auditable_id: service_request.line_items.last.id, 
-                                   action: "create", 
-                                   auditable_type: 'LineItem',
-                                   user_id: jug2.id,
-                                   audited_changes: 
-                                  { "sub_service_request_id"=>service_request.sub_service_requests.first.id, "service_id"=>service.id }, created_at: Time.now - 4.hours)
-        @audit = { line_items: [audit_with_deleted, audit_with_added],
-               sub_service_request_id: service_request.sub_service_requests.first.id }
+        @audit.first.update_attribute(:created_at, Time.now - 5.hours)
+        @audit.first.update_attribute(:user_id, @identity.id)
       end
 
       it 'should send request amendment email to service provider' do
-        allow(Notifier).to receive(:notify_service_provider).with(service_provider, service_request, @attachments, @identity, @audit, false) do
+        allow(Notifier).to receive(:notify_service_provider) do
             mailer = double('mail') 
             expect(mailer).to receive(:deliver_now)
             mailer
           end
         xhr :get, :confirmation, id: service_request.id, format: :js
-        expect(Notifier).to have_received(:notify_service_provider).with(service_provider, service_request, @attachments, @identity, @audit, false)
+        expect(Notifier).to have_received(:notify_service_provider)
       end
 
       it 'should send request amendment email to admin' do
-        allow(Notifier).to receive(:notify_admin).with(@submission_email.email, @xls, @identity, service_request.sub_service_requests.first, @audit) do
+        allow(Notifier).to receive(:notify_admin) do
             mailer = double('mail') 
             expect(mailer).to receive(:deliver)
             mailer
           end
         xhr :get, :confirmation, id: service_request.id, format: :js
-        expect(Notifier).to have_received(:notify_admin).with(@submission_email.email, @xls, @identity, service_request.sub_service_requests.first, @audit)
+        expect(Notifier).to have_received(:notify_admin)
       end
     end
 

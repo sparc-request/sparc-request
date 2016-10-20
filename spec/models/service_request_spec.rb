@@ -55,22 +55,36 @@ RSpec.describe 'ServiceRequest' do
     context "a line_item has been created or destroyed for this service_request" do
       before :each do
         @identity = create(:identity)
-        audit_with_deleted = AuditRecovery.create
-        audit_with_deleted.update_attributes(auditable_id: service_request.line_items.first.id, 
-                                             action: "destroy", 
-                                             auditable_type: 'LineItem',
-                                             user_id: @identity.id,
-                                             audited_changes: 
-                                            { "sub_service_request_id"=>service_request.sub_service_requests.first.id, "service_id"=>service.id }, created_at: Time.now - 5.hours)
-        audit_with_added = AuditRecovery.create
-        audit_with_added.update_attributes(auditable_id: service_request.line_items.last.id, 
-                                             action: "create", 
-                                             auditable_type: 'LineItem',
-                                             user_id: @identity.id,
-                                             audited_changes: 
-                                            { "sub_service_request_id"=>service_request.sub_service_requests.first.id, "service_id"=>service.id }, created_at: Time.now - 4.hours)
+        service_request.sub_service_requests.each do |ssr|
+          ssr.line_items.first.destroy
+          ssr.reload
+          create(:line_item_without_validations, sub_service_request_id: ssr.id, service_id: service.id)
+          ssr.reload
+          @audits = AuditRecovery.where("auditable_id = '#{ssr.line_items.first.id}' AND auditable_type = 'LineItem'")
+        end
+        @audits.each do |audit|
+          audit.first.update_attribute(:created_at, Time.now - 5.hours)
+          audit.first.update_attribute(:user_id, @identity.id)
+        end
 
-        @audit = [[audit_with_deleted], [audit_with_added]]
+
+        # @identity = create(:identity)
+        # audit_with_deleted = AuditRecovery.create
+        # audit_with_deleted.update_attributes(auditable_id: service_request.line_items.first.id, 
+        #                                      action: "destroy", 
+        #                                      auditable_type: 'LineItem',
+        #                                      user_id: @identity.id,
+        #                                      audited_changes: 
+        #                                     { "sub_service_request_id"=>service_request.sub_service_requests.first.id, "service_id"=>service.id }, created_at: Time.now - 5.hours)
+        # audit_with_added = AuditRecovery.create
+        # audit_with_added.update_attributes(auditable_id: service_request.line_items.last.id, 
+        #                                      action: "create", 
+        #                                      auditable_type: 'LineItem',
+        #                                      user_id: @identity.id,
+        #                                      audited_changes: 
+        #                                     { "sub_service_request_id"=>service_request.sub_service_requests.first.id, "service_id"=>service.id }, created_at: Time.now - 4.hours)
+
+        # @audit = [[audit_with_deleted], [audit_with_added]]
         # @service_provider = create(:service_provider, identity_id: identity.id)
       end
 

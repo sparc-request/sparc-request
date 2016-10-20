@@ -122,7 +122,7 @@ test:
   send_authorized_user_emails: true
   no_reply_from: "no-reply@musc.edu"
   system_satisfaction_survey: true
-  use_separate_audit_database: true # needs to be false for tests to run in travis-ci, or for them to run for anyone without an audit database configuration
+  use_separate_audit_database: false # needs to be false for tests to run in travis-ci, or for them to run for anyone without an audit database configuration
   # API
   remote_service_notifier_protocol: "https"
   remote_service_notifier_host: "127.0.0.1:5000"

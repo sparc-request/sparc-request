@@ -48,26 +48,25 @@ RSpec.describe ServiceRequestsController do
         end
         @attachments = {"service_request_1.xlsx"=>""}
         @xls = ""
-        audit_with_deleted = create(:audit_without_validations, 
-                                     auditable_id: service_request.line_items.first.id, 
-                                     action: "destroy", 
-                                     auditable_type: 'LineItem',
-                                     user_id: jug2.id,
-                                     audited_changes: 
-                                    { "sub_service_request_id"=>service_request.sub_service_requests.first.id, "service_id"=>service.id}, created_at: Time.now - 5.hours)
-    
-        @audit = { line_items: [audit_with_deleted],
-               sub_service_request_id: service_request.sub_service_requests.first.id }
-
       end
+      
       it 'should send request amendment email to service provider' do
-        allow(Notifier).to receive(:notify_service_provider).with(service_provider, service_request, @attachments, @identity, @audit, false) do
+        service_request.sub_service_requests.each do |ssr|
+          ssr.line_items.first.destroy
+          ssr.reload
+          @audit = AuditRecovery.where("auditable_id = '#{ssr.line_items.first.id}' AND auditable_type = 'LineItem'")
+        end
+        
+        @audit.first.update_attribute(:created_at, Time.now - 5.hours)
+        @audit.first.update_attribute(:user_id, @identity.id)
+
+        allow(Notifier).to receive(:notify_service_provider) do
             mailer = double('mail') 
             expect(mailer).to receive(:deliver_now)
             mailer
           end
         xhr :get, :confirmation, id: service_request.id, format: :js
-        expect(Notifier).to have_received(:notify_service_provider).with(service_provider, service_request, @attachments, @identity, @audit, false)
+        expect(Notifier).to have_received(:notify_service_provider)
       end
 
       it 'should send request amendment email to admin' do

@@ -48,13 +48,14 @@ RSpec.describe ServiceRequestsController do
         end
         @attachments = {"service_request_1.xlsx"=>""}
         @xls = ""
-        audit_with_deleted = AuditRecovery.create
-        audit_with_deleted.update_attributes(auditable_id: service_request.line_items.first.id, 
-                                             action: "destroy", 
-                                             auditable_type: 'LineItem',
-                                             user_id: jug2.id,
-                                             audited_changes: 
-                                            { "sub_service_request_id"=>service_request.sub_service_requests.first.id, "service_id"=>service.id}, created_at: Time.now - 5.hours)
+        audit_with_deleted = create(:audit_without_validations, 
+                                     auditable_id: service_request.line_items.first.id, 
+                                     action: "destroy", 
+                                     auditable_type: 'LineItem',
+                                     user_id: jug2.id,
+                                     audited_changes: 
+                                    { "sub_service_request_id"=>service_request.sub_service_requests.first.id, "service_id"=>service.id}, created_at: Time.now - 5.hours)
+    
         @audit = { line_items: [audit_with_deleted],
                sub_service_request_id: service_request.sub_service_requests.first.id }
 
@@ -97,13 +98,13 @@ RSpec.describe ServiceRequestsController do
         sr_id = service_request.id
         @attachments = {"service_request_#{sr_id}.xlsx"=>""}
         @xls = ""
-        audit_with_added = AuditRecovery.create
-        audit_with_added.update_attributes(auditable_id: service_request.line_items.first.id, 
-                                             action: "create", 
-                                             auditable_type: 'LineItem',
-                                             user_id: jug2.id,
-                                             audited_changes: 
-                                            { "sub_service_request_id"=>service_request.sub_service_requests.first.id, "service_id"=>service.id}, created_at: Time.now - 5.hours)
+        audit_with_added = create(:audit_without_validations,
+                                   auditable_id: service_request.line_items.last.id, 
+                                   action: "create", 
+                                   auditable_type: 'LineItem',
+                                   user_id: jug2.id,
+                                   audited_changes: 
+                                  { "sub_service_request_id"=>service_request.sub_service_requests.first.id, "service_id"=>service.id }, created_at: Time.now - 4.hours)
         @audit = { line_items: [audit_with_added],
                sub_service_request_id: service_request.sub_service_requests.first.id }
       end
@@ -146,21 +147,21 @@ RSpec.describe ServiceRequestsController do
         sr_id = service_request.id
         @attachments = {"service_request_#{sr_id}.xlsx"=>""}
         @xls = ""
+        audit_with_deleted = create(:audit_without_validations, 
+                                     auditable_id: service_request.line_items.first.id, 
+                                     action: "destroy", 
+                                     auditable_type: 'LineItem',
+                                     user_id: jug2.id,
+                                     audited_changes: 
+                                    { "sub_service_request_id"=>service_request.sub_service_requests.first.id, "service_id"=>service.id}, created_at: Time.now - 5.hours)
 
-        audit_with_deleted = AuditRecovery.create
-        audit_with_deleted.update_attributes(auditable_id: service_request.line_items.first.id, 
-                                             action: "destroy", 
-                                             auditable_type: 'LineItem',
-                                             user_id: jug2.id,
-                                             audited_changes: 
-                                            { "sub_service_request_id"=>service_request.sub_service_requests.first.id, "service_id"=>service.id }, created_at: Time.now - 5.hours)
-        audit_with_added = AuditRecovery.create
-        audit_with_added.update_attributes(auditable_id: service_request.line_items.last.id, 
-                                             action: "create", 
-                                             auditable_type: 'LineItem',
-                                             user_id: jug2.id,
-                                             audited_changes: 
-                                            { "sub_service_request_id"=>service_request.sub_service_requests.first.id, "service_id"=>service.id }, created_at: Time.now - 4.hours)
+        audit_with_added = create(:audit_without_validations,
+                                   auditable_id: service_request.line_items.last.id, 
+                                   action: "create", 
+                                   auditable_type: 'LineItem',
+                                   user_id: jug2.id,
+                                   audited_changes: 
+                                  { "sub_service_request_id"=>service_request.sub_service_requests.first.id, "service_id"=>service.id }, created_at: Time.now - 4.hours)
         @audit = { line_items: [audit_with_deleted, audit_with_added],
                sub_service_request_id: service_request.sub_service_requests.first.id }
       end

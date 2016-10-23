@@ -31,29 +31,6 @@ RSpec.describe Notifier do
                                     organization_id: program.id,
                                     name: 'ABCD',
                                     one_time_fee: true) }
-  let(:pricing_setup)     { create(:pricing_setup,
-                                    organization_id: program.id,
-                                    display_date: Time.now - 1.day,
-                                    federal: 50,
-                                    corporate: 50,
-                                    other: 50,
-                                    member: 50,
-                                    college_rate_type: 'federal',
-                                    federal_rate_type: 'federal',
-                                    industry_rate_type: 'federal',
-                                    investigator_rate_type: 'federal',
-                                    internal_rate_type: 'federal',
-                                    foundation_rate_type: 'federal') }
-  let(:pricing_map)       { create(:pricing_map,
-                                    unit_minimum: 1,
-                                    unit_factor: 1,
-                                    service: service3,
-                                    quantity_type: 'Each',
-                                    quantity_minimum: 5,
-                                    otf_unit_type: 'Week',
-                                    display_date: Time.now - 1.day,
-                                    full_rate: 2000,
-                                    units_per_qty_max: 20) }
   let(:identity)          { Identity.first }
   let(:organization)      { Organization.first }
   let(:non_service_provider_org)  { create(:organization, name: 'BLAH', process_ssrs: 0, is_available: 1) }
@@ -61,14 +38,11 @@ RSpec.describe Notifier do
                                     identity: identity,
                                     organization: organization,
                                     service: service3) }
-  # let!(:non_service_provider_ssr) { create(:sub_service_request, ssr_id: "0004", status: "submitted", service_request_id: service_request.id, organization_id: non_service_provider_org.id, org_tree_display: "SCTR1/BLAH")}
-
 
   before { add_visits }
 
   # SUBMITTED
   before :each do
-
     service_request.update_attribute(:submitted_at, Time.now.yesterday)
     service_request.sub_service_requests.each do |ssr|
       ssr.update_attribute(:submitted_at, Time.now.yesterday)

@@ -111,7 +111,7 @@ class Notifier < ActionMailer::Base
     @portal_text = "Administrators/Service Providers, Click Here"
 
     # only display the ssrs that are associated with service_provider
-    @ssrs_to_be_displayed = ssrs_to_be_displayed_in_email(service_provider, @service_request, @audit_report, ssr_destroyed)
+    @ssrs_to_be_displayed = @service_request.ssrs_to_be_displayed_in_email(service_provider, @audit_report, ssr_destroyed)
 
     if !ssr_destroyed
       attachments_to_add.each do |file_name, document|

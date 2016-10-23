@@ -608,6 +608,17 @@ class ServiceRequest < ActiveRecord::Base
     ssrs_to_be_displayed
   end
 
+  def ssrs_to_be_displayed_in_email(service_provider, audit_report, ssr_destroyed)
+    if ssr_destroyed
+      deleted_li_ssr_id = audit_report.values.first.first.audited_changes['sub_service_request_id']
+      ssr = SubServiceRequest.find(deleted_li_ssr_id)
+      ssrs_to_be_displayed = [ssr] if service_provider.identity.is_service_provider?(ssr)
+    else
+      ssrs_to_be_displayed = self.ssrs_associated_with_service_provider(service_provider)
+    end
+    return ssrs_to_be_displayed
+  end
+
   private
 
   def set_original_submitted_date

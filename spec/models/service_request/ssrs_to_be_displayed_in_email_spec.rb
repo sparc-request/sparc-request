@@ -19,7 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 require 'rails_helper'
 
-RSpec.describe SubServiceRequest, type: :model do
+RSpec.describe ServiceRequest, type: :model do
   let_there_be_lane
   let_there_be_j
   build_service_request_with_study
@@ -45,13 +45,13 @@ RSpec.describe SubServiceRequest, type: :model do
         @report = service_request.sub_service_requests.first.audit_report(@identity, Time.now.yesterday - 4.hours, Time.now.tomorrow)
       end
       it "should return the ssr with deleted line_item" do
-        expect(service_request.sub_service_requests.first.ssrs_to_be_displayed_in_email(service_provider, service_request, @report, true)).to eq([service_request.sub_service_requests.first])
+        expect(service_request.ssrs_to_be_displayed_in_email(service_provider, @report, true)).to eq([service_request.sub_service_requests.first])
       end
     end
 
     context "ssr_deleted == false" do
       it "should return all ssrs belonging to service_provider" do
-        expect(service_request.sub_service_requests.first.ssrs_to_be_displayed_in_email(service_provider, service_request, @report, false)).to eq(service_request.sub_service_requests)
+        expect(service_request.ssrs_to_be_displayed_in_email(service_provider, @report, false)).to eq(service_request.sub_service_requests)
       end
     end
   end

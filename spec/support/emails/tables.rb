@@ -22,10 +22,10 @@ module EmailHelpers
 
   def assert_email_project_information(mail_response)
     #assert correct protocol information is included in notification email
-    expect(mail_response).to have_xpath "//table//strong[text()='Project Information']"
-    expect(mail_response).to have_xpath "//th[text()='Project ID']/following-sibling::td[text()='#{service_request.protocol.id}']"
+    expect(mail_response).to have_xpath "//table//strong[text()='#{service_request.protocol.type} Information']"
+    expect(mail_response).to have_xpath "//th[text()='#{service_request.protocol.type} ID']/following-sibling::td[text()='#{service_request.protocol.id}']"
     expect(mail_response).to have_xpath "//th[text()='Short Title']/following-sibling::td[text()='#{service_request.protocol.short_title}']"
-    expect(mail_response).to have_xpath "//th[text()='Project Title']/following-sibling::td[text()='#{service_request.protocol.title}']"
+    expect(mail_response).to have_xpath "//th[text()='#{service_request.protocol.type} Title']/following-sibling::td[text()='#{service_request.protocol.title}']"
     expect(mail_response).to have_xpath "//th[text()='Sponsor Name']/following-sibling::td[text()='#{service_request.protocol.sponsor_name}']"
     expect(mail_response).to have_xpath "//th[text()='Funding Source']/following-sibling::td[text()='#{service_request.protocol.funding_source.capitalize}']"
   end

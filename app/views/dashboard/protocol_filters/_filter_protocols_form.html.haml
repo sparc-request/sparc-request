@@ -54,7 +54,7 @@
               = filterrific.select_options[:with_organization].each do |org_type, orgs|
                 %optgroup{ label: org_type }
                   - orgs.each do |name, id|
-                    %option{ value: id, selected: filterrific.with_organization && filterrific.with_organization.include?(id), data: {content: name} }
+                    %option{ value: id, selected: filterrific.with_organization && filterrific.with_organization.include?(id.to_s), data: {content: name} }
         - if admin
           %hr
           .form-group.row

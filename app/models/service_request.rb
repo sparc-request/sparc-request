@@ -615,7 +615,7 @@ class ServiceRequest < ActiveRecord::Base
     else
       ssrs_to_be_displayed = self.ssrs_associated_with_service_provider(service_provider)
     end
-    return ssrs_to_be_displayed
+    ssrs_to_be_displayed
   end
 
   private

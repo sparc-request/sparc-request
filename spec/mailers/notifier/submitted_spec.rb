@@ -84,6 +84,7 @@ RSpec.describe Notifier do
                                                                           service_request,
                                                                           xls,
                                                                           identity,
+                                                                          service_request.protocol.sub_service_requests.first,
                                                                           audit) }
 
       # Expected service provider message is defined under submitted_service_provider_and_admin_message
@@ -208,6 +209,7 @@ RSpec.describe Notifier do
                                                                           service_request,
                                                                           xls,
                                                                           identity,
+                                                                          service_request.protocol.sub_service_requests.first,
                                                                           audit) }
       # Expected service provider message is defined under submitted_service_provider_and_admin_message
       it 'should display admin intro message, conclusion, link, and should not display acknowledgments' do

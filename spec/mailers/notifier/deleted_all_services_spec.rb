@@ -65,7 +65,7 @@ RSpec.describe Notifier do
                                                                         service_request,
                                                                         xls,
                                                                         identity,
-                                                                        @report, true) }
+                                                                        @report, true, service_request.sub_service_requests.first) }
     # Expected service provider message is defined under deleted_all_services_intro_for_service_providers
     it 'should display service provider intro message, conclusion, link, and should not display acknowledgments' do
       deleted_all_services_intro_for_service_providers(mail)

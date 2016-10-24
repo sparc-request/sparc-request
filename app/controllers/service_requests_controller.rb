@@ -436,10 +436,10 @@ class ServiceRequestsController < ApplicationController
     @service_request.previous_submitted_at = @service_request.submitted_at
     @protocol = @service_request.protocol
 
-    if !ssr.submitted_at.nil? && ssr.line_items.empty? 
-      send_ssr_service_provider_notifications(@service_request, ssr, true)
-      ssr.destroy
-    elsif ssr.line_items.empty?
+    if ssr.line_items.empty?
+      if !ssr.submitted_at.nil?
+        send_ssr_service_provider_notifications(@service_request, ssr, true)
+      end
       ssr.destroy
     end
 
@@ -597,7 +597,8 @@ class ServiceRequestsController < ApplicationController
       previously_submitted_at = service_request.previous_submitted_at.nil? ? Time.now.utc : service_request.previous_submitted_at.utc
       audit_report = sub_service_request.audit_report(current_user, previously_submitted_at, Time.now.utc)
     end
-    Notifier.notify_service_provider(service_provider, service_request, attachments, current_user, audit_report, ssr_destroyed).deliver_now
+    ssr_id = sub_service_request.id
+    Notifier.notify_service_provider(service_provider, service_request, attachments, current_user, ssr_id, audit_report, ssr_destroyed).deliver_now
   end
 
   def send_epic_notification_for_user_approval(protocol)

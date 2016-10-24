@@ -27,31 +27,14 @@ RSpec.describe ServiceRequest, type: :model do
   describe "#ssrs_to_be_displayed_in_email" do
       
     context "ssr_deleted == true" do
-      before :each do
-        @identity = Identity.find(jug2.id)
-        service_request.update_attribute(:submitted_at, Time.now.yesterday)
-        service_request.sub_service_requests.each do |ssr|
-          ssr.update_attribute(:submitted_at, Time.now.yesterday)
-          ssr.update_attribute(:status, 'submitted')
-          li_id = ssr.line_items.first.id
-          ssr.line_items.first.destroy!
-          ssr.save!
-          service_request.reload
-          @audit = AuditRecovery.where("auditable_id = '#{li_id}' AND auditable_type = 'LineItem' AND action = 'destroy'")
-        end
-        
-        @audit.first.update_attribute(:created_at, Time.now - 5.hours)
-        @audit.first.update_attribute(:user_id, @identity.id)
-        @report = service_request.sub_service_requests.first.audit_report(@identity, Time.now.yesterday - 4.hours, Time.now.tomorrow)
-      end
       it "should return the ssr with deleted line_item" do
-        expect(service_request.ssrs_to_be_displayed_in_email(service_provider, @report, true)).to eq([service_request.sub_service_requests.first])
+        expect(service_request.ssrs_to_be_displayed_in_email(service_provider, @report, true, service_request.sub_service_requests.first.id)).to eq([service_request.sub_service_requests.first])
       end
     end
 
     context "ssr_deleted == false" do
       it "should return all ssrs belonging to service_provider" do
-        expect(service_request.ssrs_to_be_displayed_in_email(service_provider, @report, false)).to eq(service_request.sub_service_requests)
+        expect(service_request.ssrs_to_be_displayed_in_email(service_provider, @report, false, service_request.sub_service_requests)).to eq(service_request.sub_service_requests)
       end
     end
   end

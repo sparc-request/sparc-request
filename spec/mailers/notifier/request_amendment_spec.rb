@@ -74,9 +74,6 @@ RSpec.describe Notifier do
       end
 
       context 'service_provider' do
-        let(:audit)                   { sub_service_request.audit_report(identity,
-                                                                          service_request.submitted_at,
-                                                                          Time.now.tomorrow) }
         let(:xls)                     { Array.new }
         let(:mail)                    { Notifier.notify_service_provider(service_provider,
                                                                         service_request,
@@ -119,7 +116,8 @@ RSpec.describe Notifier do
         ssr = service_request.sub_service_requests.first
         ssr.update_attribute(:submitted_at, Time.now.yesterday)
         ssr.update_attribute(:status, 'submitted')
-        
+        ssr.save!
+        service_request.reload
         created_li = create(:line_item_without_validations, sub_service_request_id: ssr.id, service_id: service3.id)
         @created_li_id = created_li.id
         ssr.save!
@@ -135,9 +133,6 @@ RSpec.describe Notifier do
       end
 
       context 'service_provider' do
-        let(:audit)                   { sub_service_request.audit_report(identity,
-                                                                          service_request.submitted_at,
-                                                                          Time.now.tomorrow) }
         let(:xls)                     { Array.new }
         let(:mail)                    { Notifier.notify_service_provider(service_provider,
                                                                         service_request,
@@ -193,9 +188,6 @@ RSpec.describe Notifier do
       end
 
       context 'service_provider' do
-        let(:audit)                   { sub_service_request.audit_report(identity,
-                                                                          service_request.submitted_at,
-                                                                          Time.now.tomorrow) }
         let(:xls)                     { Array.new }
         let(:mail)                    { Notifier.notify_service_provider(service_provider,
                                                                         service_request,
@@ -236,35 +228,35 @@ RSpec.describe Notifier do
   context 'with notes' do
 
     before do
+      create(:note_without_validations,
+            identity_id:  identity.id, 
+            notable_id: service_request.id)
       service_request.update_attribute(:submitted_at, Time.now.yesterday)
-        ssr = service_request.sub_service_requests.first
-        ssr.update_attribute(:submitted_at, Time.now.yesterday)
-        ssr.update_attribute(:status, 'submitted')
-        @li_id = ssr.line_items.first.id
-        ssr.line_items.first.destroy!
-        ssr.save!
-        service_request.reload
+      ssr = service_request.sub_service_requests.first
+      ssr.update_attribute(:submitted_at, Time.now.yesterday)
+      ssr.update_attribute(:status, 'submitted')
+      @li_id = ssr.line_items.first.id
+      ssr.line_items.first.destroy!
+      ssr.save!
+      service_request.reload
 
-        created_li = create(:line_item_without_validations, sub_service_request_id: ssr.id, service_id: service3.id)
-        @created_li_id = created_li.id
-        ssr.save!
-        service_request.reload
+      created_li = create(:line_item_without_validations, sub_service_request_id: ssr.id, service_id: service3.id)
+      @created_li_id = created_li.id
+      ssr.save!
+      service_request.reload
 
-        @audit1 = AuditRecovery.where("auditable_id = '#{@li_id}' AND auditable_type = 'LineItem' AND action = 'destroy'")
-        @audit2 = AuditRecovery.where("auditable_id = '#{@created_li_id}' AND auditable_type = 'LineItem' AND action = 'create'")
+      @audit1 = AuditRecovery.where("auditable_id = '#{@li_id}' AND auditable_type = 'LineItem' AND action = 'destroy'")
+      @audit2 = AuditRecovery.where("auditable_id = '#{@created_li_id}' AND auditable_type = 'LineItem' AND action = 'create'")
 
-        @audit1.first.update_attribute(:created_at, Time.now - 5.hours)
-        @audit1.first.update_attribute(:user_id, identity.id)
-        @audit2.first.update_attribute(:created_at, Time.now - 5.hours)
-        @audit2.first.update_attribute(:user_id, identity.id)
+      @audit1.first.update_attribute(:created_at, Time.now - 5.hours)
+      @audit1.first.update_attribute(:user_id, identity.id)
+      @audit2.first.update_attribute(:created_at, Time.now - 5.hours)
+      @audit2.first.update_attribute(:user_id, identity.id)
 
-        @report = ssr.audit_report(identity, Time.now.yesterday - 4.hours, Time.now.tomorrow)
+      @report = ssr.audit_report(identity, Time.now.yesterday - 4.hours, Time.now.tomorrow)
     end
 
     context 'service_provider' do
-      let(:audit)                   { sub_service_request.audit_report(identity,
-                                                                        service_request.submitted_at,
-                                                                        Time.now.tomorrow) }
       let(:xls)                     { Array.new }
       let(:mail)                    { Notifier.notify_service_provider(service_provider,
                                                                         service_request,

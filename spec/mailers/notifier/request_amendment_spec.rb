@@ -47,33 +47,33 @@ RSpec.describe Notifier do
   context 'without notes' do
     context 'added and deleted line_items' do
       before :each do
-        @identity = Identity.find(jug2.id)
+
         @service = create(:service,
                       organization_id: provider.id,
                       name: 'ABCD',
                       one_time_fee: true)
-        @submission_email = provider.submission_emails.create(email: 'hedwig@owlpost.com')
         service_request.update_attribute(:submitted_at, Time.now.yesterday)
-        service_request.update_attribute(:status, 'submitted')
-        service_request.sub_service_requests.each do |ssr|
-          ssr.update_attribute(:submitted_at, Time.now.yesterday)
-          ssr.update_attribute(:status, 'submitted')
-        end
-
-        sr_id = service_request.id
-        @attachments = {"service_request_#{sr_id}.xlsx"=>""}
-        @xls = ""
         ssr = service_request.sub_service_requests.first
-        ssr.line_items.first.destroy
-        ssr.reload
-        create(:line_item_without_validations, sub_service_request_id: ssr.id, service_id: @service.id)
-        ssr.reload
-        @audit = AuditRecovery.where("auditable_id = '#{ssr.line_items.first.id}' AND auditable_type = 'LineItem'")
-        binding.pry
+        ssr.update_attribute(:submitted_at, Time.now.yesterday)
+        ssr.update_attribute(:status, 'submitted')
+        @li_id = ssr.line_items.first.id
+        ssr.line_items.first.destroy!
+        ssr.save!
+        service_request.reload
+        created_li = create(:line_item_without_validations, sub_service_request_id: ssr.id, service_id: @service.id)
+        @created_li_id = created_li.id
+        ssr.save!
+        service_request.reload
 
-        @audit.first.update_attribute(:created_at, Time.now - 5.hours)
-        @audit.first.update_attribute(:user_id, @identity.id)
-        @report = service_request.sub_service_requests.first.audit_report(identity, Time.now.yesterday - 4.hours, Time.now.tomorrow)
+        @audit1 = AuditRecovery.where("auditable_id = '#{@li_id}' AND auditable_type = 'LineItem' AND action = 'destroy'")
+        @audit2 = AuditRecovery.where("auditable_id = '#{@created_li_id}' AND auditable_type = 'LineItem' AND action = 'create'")
+
+        @audit1.first.update_attribute(:created_at, Time.now - 5.hours)
+        @audit1.first.update_attribute(:user_id, identity.id)
+        @audit2.first.update_attribute(:created_at, Time.now - 5.hours)
+        @audit2.first.update_attribute(:user_id, identity.id)
+
+        @report = ssr.audit_report(identity, Time.now.yesterday - 4.hours, Time.now.tomorrow)
       end
 
       context 'service_provider' do

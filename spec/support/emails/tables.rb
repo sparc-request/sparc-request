@@ -128,7 +128,7 @@ module EmailHelpers
   def assert_email_request_amendment_for_added(mail)
     @report[:line_items].each do |li|
       service = Service.find(li.audited_changes["service_id"])
-      ssr = LineItem.find(li.auditable_id).sub_service_request
+      ssr = SubServiceRequest.find(li.audited_changes['sub_service_request_id'])
       expect(mail).to have_xpath "//td//a[@href='/dashboard/sub_service_requests/#{ssr.id}']['#{ssr.display_id}']/@href"
       expect(mail).to have_xpath "//td['#{ssr.display_id}']"
       expect(mail).to have_xpath "//td['#{service.name}']"
@@ -137,7 +137,6 @@ module EmailHelpers
   end
 
   def assert_email_request_amendment_for_deleted(mail)
-    binding.pry
     @report[:line_items].each do |li|
       service = Service.find(li.audited_changes["service_id"])
       ssr = SubServiceRequest.find(li.audited_changes['sub_service_request_id'])

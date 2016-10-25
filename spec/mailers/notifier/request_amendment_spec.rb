@@ -48,10 +48,6 @@ RSpec.describe Notifier do
     context 'added and deleted line_items' do
       before :each do
 
-        @service = create(:service,
-                      organization_id: provider.id,
-                      name: 'ABCD',
-                      one_time_fee: true)
         service_request.update_attribute(:submitted_at, Time.now.yesterday)
         ssr = service_request.sub_service_requests.first
         ssr.update_attribute(:submitted_at, Time.now.yesterday)
@@ -60,7 +56,8 @@ RSpec.describe Notifier do
         ssr.line_items.first.destroy!
         ssr.save!
         service_request.reload
-        created_li = create(:line_item_without_validations, sub_service_request_id: ssr.id, service_id: @service.id)
+
+        created_li = create(:line_item_without_validations, sub_service_request_id: ssr.id, service_id: service3.id)
         @created_li_id = created_li.id
         ssr.save!
         service_request.reload
@@ -118,17 +115,22 @@ RSpec.describe Notifier do
 
     context 'added line_items' do
       before do
-        audit_with_added = AuditRecovery.create
-        audit_with_added.update_attributes(auditable_id: service_request.line_items.last.id, 
-                                         action: "create", 
-                                         audited_changes: 
-                                        { "sub_service_request_id"=>service_request.sub_service_requests.first.id,
-                                          "service_id"=>service3.id })
+        service_request.update_attribute(:submitted_at, Time.now.yesterday)
+        ssr = service_request.sub_service_requests.first
+        ssr.update_attribute(:submitted_at, Time.now.yesterday)
+        ssr.update_attribute(:status, 'submitted')
+        
+        created_li = create(:line_item_without_validations, sub_service_request_id: ssr.id, service_id: service3.id)
+        @created_li_id = created_li.id
+        ssr.save!
+        service_request.reload
 
-        @audit = { line_items: [audit_with_added],
-                 sub_service_request_id: service_request.sub_service_requests.first.id }
+        @audit2 = AuditRecovery.where("auditable_id = '#{@created_li_id}' AND auditable_type = 'LineItem' AND action = 'create'")
 
-        service_request.update_attribute(:status, "submitted")
+        @audit2.first.update_attribute(:created_at, Time.now - 5.hours)
+        @audit2.first.update_attribute(:user_id, identity.id)
+
+        @report = ssr.audit_report(identity, Time.now.yesterday - 4.hours, Time.now.tomorrow)
 
       end
 
@@ -138,10 +140,11 @@ RSpec.describe Notifier do
                                                                           Time.now.tomorrow) }
         let(:xls)                     { Array.new }
         let(:mail)                    { Notifier.notify_service_provider(service_provider,
-                                                                            service_request,
-                                                                            xls,
-                                                                            identity,
-                                                                            @audit, false) }
+                                                                        service_request,
+                                                                        xls,
+                                                                        identity,
+                                                                        service_request.sub_service_requests.first.id,
+                                                                        @report, false) }
         # Expected service provider message is defined under request_amendment_intro
         it 'should display service provider intro message, conclusion, link, and should not display acknowledgments' do
           request_amendment_intro(mail)
@@ -172,18 +175,21 @@ RSpec.describe Notifier do
 
     context 'deleted line_items' do
       before do
-        audit_with_deleted = AuditRecovery.create
-        audit_with_deleted.update_attributes(auditable_id: service_request.line_items.last.id, 
-                                         action: "destroy", 
-                                         audited_changes: 
-                                        { "sub_service_request_id"=>service_request.sub_service_requests.first.id,
-                                          "service_id"=>service3.id })
+        service_request.update_attribute(:submitted_at, Time.now.yesterday)
+        ssr = service_request.sub_service_requests.first
+        ssr.update_attribute(:submitted_at, Time.now.yesterday)
+        ssr.update_attribute(:status, 'submitted')
+        @li_id = ssr.line_items.first.id
+        ssr.line_items.first.destroy!
+        ssr.save!
+        service_request.reload
 
-        @audit = { line_items: [audit_with_deleted],
-                 sub_service_request_id: service_request.sub_service_requests.first.id }
+        @audit1 = AuditRecovery.where("auditable_id = '#{@li_id}' AND auditable_type = 'LineItem' AND action = 'destroy'")
 
-        service_request.update_attribute(:status, "submitted")
-
+        @audit1.first.update_attribute(:created_at, Time.now - 5.hours)
+        @audit1.first.update_attribute(:user_id, identity.id)
+      
+        @report = ssr.audit_report(identity, Time.now.yesterday - 4.hours, Time.now.tomorrow)
       end
 
       context 'service_provider' do
@@ -192,10 +198,11 @@ RSpec.describe Notifier do
                                                                           Time.now.tomorrow) }
         let(:xls)                     { Array.new }
         let(:mail)                    { Notifier.notify_service_provider(service_provider,
-                                                                            service_request,
-                                                                            xls,
-                                                                            identity,
-                                                                            @audit, false) }
+                                                                        service_request,
+                                                                        xls,
+                                                                        identity,
+                                                                        service_request.sub_service_requests.first.id,
+                                                                        @report, false) }
         # Expected service provider message is defined under request_amendment_intro
         it 'should display service provider intro message, conclusion, link, and should not display acknowledgments' do
           request_amendment_intro(mail)
@@ -229,25 +236,29 @@ RSpec.describe Notifier do
   context 'with notes' do
 
     before do
-      audit_with_deleted = AuditRecovery.create
-      audit_with_deleted.update_attributes(auditable_id: service_request.line_items.first.id, 
-                                       action: "destroy", 
-                                       audited_changes: 
-                                      { "sub_service_request_id"=>service_request.sub_service_requests.first.id,
-                                        "service_id"=>service3.id })
-      audit_with_added = AuditRecovery.create
-      audit_with_added.update_attributes(auditable_id: service_request.line_items.last.id, 
-                                       action: "create", 
-                                       audited_changes: 
-                                      { "sub_service_request_id"=>service_request.sub_service_requests.first.id,
-                                        "service_id"=>service3.id })
+      service_request.update_attribute(:submitted_at, Time.now.yesterday)
+        ssr = service_request.sub_service_requests.first
+        ssr.update_attribute(:submitted_at, Time.now.yesterday)
+        ssr.update_attribute(:status, 'submitted')
+        @li_id = ssr.line_items.first.id
+        ssr.line_items.first.destroy!
+        ssr.save!
+        service_request.reload
 
-      @audit = { line_items: [audit_with_deleted, audit_with_added],
-               sub_service_request_id: service_request.sub_service_requests.first.id }
-      service_request.update_attribute(:status, "submitted")
-      create(:note_without_validations,
-            identity_id:  identity.id, 
-            notable_id: service_request.id)
+        created_li = create(:line_item_without_validations, sub_service_request_id: ssr.id, service_id: service3.id)
+        @created_li_id = created_li.id
+        ssr.save!
+        service_request.reload
+
+        @audit1 = AuditRecovery.where("auditable_id = '#{@li_id}' AND auditable_type = 'LineItem' AND action = 'destroy'")
+        @audit2 = AuditRecovery.where("auditable_id = '#{@created_li_id}' AND auditable_type = 'LineItem' AND action = 'create'")
+
+        @audit1.first.update_attribute(:created_at, Time.now - 5.hours)
+        @audit1.first.update_attribute(:user_id, identity.id)
+        @audit2.first.update_attribute(:created_at, Time.now - 5.hours)
+        @audit2.first.update_attribute(:user_id, identity.id)
+
+        @report = ssr.audit_report(identity, Time.now.yesterday - 4.hours, Time.now.tomorrow)
     end
 
     context 'service_provider' do
@@ -256,10 +267,11 @@ RSpec.describe Notifier do
                                                                         Time.now.tomorrow) }
       let(:xls)                     { Array.new }
       let(:mail)                    { Notifier.notify_service_provider(service_provider,
-                                                                          service_request,
-                                                                          xls,
-                                                                          identity,
-                                                                          @audit, false) }
+                                                                        service_request,
+                                                                        xls,
+                                                                        identity,
+                                                                        service_request.sub_service_requests.first.id,
+                                                                        @report, false) }
       # Expected service provider message is defined under request_amendment_intro
       it 'should display service provider intro message, conclusion, link, and should not display acknowledgments' do
         request_amendment_intro(mail)

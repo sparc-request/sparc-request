@@ -83,7 +83,9 @@ RSpec.describe Notifier do
                                                                         service_request,
                                                                         xls,
                                                                         identity,
+                                                                        service_request.sub_service_requests.first,
                                                                         []) }
+
     # Expected service provider message is defined under get_a_cost_estimate_service_provider_admin_message
     it 'should display service_provider intro message, link, conclusion, and should not display acknowledgments' do
       get_a_cost_estimate_intro_for_service_providers

@@ -25,35 +25,12 @@ RSpec.describe Notifier do
   let_there_be_lane
   let_there_be_j
   fake_login_for_each_test
-  build_service_request_with_project
+  build_service_request_with_study
 
   let(:service3)           { create(:service,
                                     organization_id: program.id,
                                     name: 'ABCD',
                                     one_time_fee: true) }
-  let(:pricing_setup)     { create(:pricing_setup,
-                                    organization_id: program.id,
-                                    display_date: Time.now - 1.day,
-                                    federal: 50,
-                                    corporate: 50,
-                                    other: 50,
-                                    member: 50,
-                                    college_rate_type: 'federal',
-                                    federal_rate_type: 'federal',
-                                    industry_rate_type: 'federal',
-                                    investigator_rate_type: 'federal',
-                                    internal_rate_type: 'federal',
-                                    foundation_rate_type: 'federal') }
-  let(:pricing_map)       { create(:pricing_map,
-                                    unit_minimum: 1,
-                                    unit_factor: 1,
-                                    service: service3,
-                                    quantity_type: 'Each',
-                                    quantity_minimum: 5,
-                                    otf_unit_type: 'Week',
-                                    display_date: Time.now - 1.day,
-                                    full_rate: 2000,
-                                    units_per_qty_max: 20) }
   let(:identity)          { Identity.first }
   let(:organization)      { Organization.first }
   let(:non_service_provider_org)  { create(:organization, name: 'BLAH', process_ssrs: 0, is_available: 1) }
@@ -69,25 +46,34 @@ RSpec.describe Notifier do
   ############# ADDED AND DELETED LINE_ITEMS ###############
   context 'without notes' do
     context 'added and deleted line_items' do
-      before do
-       audit_with_deleted = AuditRecovery.create
-       audit_with_deleted.update_attributes(auditable_id: service_request.line_items.first.id, 
-                                         action: "destroy", 
-                                         audited_changes: 
-                                        { "sub_service_request_id"=>service_request.sub_service_requests.first.id,
-                                          "service_id"=>service3.id })
-        audit_with_added = AuditRecovery.create
-        audit_with_added.update_attributes(auditable_id: service_request.line_items.last.id, 
-                                         action: "create", 
-                                         audited_changes: 
-                                        { "sub_service_request_id"=>service_request.sub_service_requests.first.id,
-                                          "service_id"=>service3.id })
+      before :each do
+        @identity = Identity.find(jug2.id)
+        @service = create(:service,
+                      organization_id: provider.id,
+                      name: 'ABCD',
+                      one_time_fee: true)
+        @submission_email = provider.submission_emails.create(email: 'hedwig@owlpost.com')
+        service_request.update_attribute(:submitted_at, Time.now.yesterday)
+        service_request.update_attribute(:status, 'submitted')
+        service_request.sub_service_requests.each do |ssr|
+          ssr.update_attribute(:submitted_at, Time.now.yesterday)
+          ssr.update_attribute(:status, 'submitted')
+        end
 
-        @audit = { line_items: [audit_with_deleted, audit_with_added],
-                 sub_service_request_id: service_request.sub_service_requests.first.id }
+        sr_id = service_request.id
+        @attachments = {"service_request_#{sr_id}.xlsx"=>""}
+        @xls = ""
+        ssr = service_request.sub_service_requests.first
+        ssr.line_items.first.destroy
+        ssr.reload
+        create(:line_item_without_validations, sub_service_request_id: ssr.id, service_id: @service.id)
+        ssr.reload
+        @audit = AuditRecovery.where("auditable_id = '#{ssr.line_items.first.id}' AND auditable_type = 'LineItem'")
+        binding.pry
 
-        service_request.update_attribute(:status, "submitted")
-
+        @audit.first.update_attribute(:created_at, Time.now - 5.hours)
+        @audit.first.update_attribute(:user_id, @identity.id)
+        @report = service_request.sub_service_requests.first.audit_report(identity, Time.now.yesterday - 4.hours, Time.now.tomorrow)
       end
 
       context 'service_provider' do
@@ -96,10 +82,11 @@ RSpec.describe Notifier do
                                                                           Time.now.tomorrow) }
         let(:xls)                     { Array.new }
         let(:mail)                    { Notifier.notify_service_provider(service_provider,
-                                                                            service_request,
-                                                                            xls,
-                                                                            identity,
-                                                                            @audit, false) }
+                                                                        service_request,
+                                                                        xls,
+                                                                        identity,
+                                                                        service_request.sub_service_requests.first.id,
+                                                                        @report, false) }
         # Expected service provider message is defined under request_amendment_intro
         it 'should display service provider intro message, conclusion, link, and should not display acknowledgments' do
           request_amendment_intro(mail)

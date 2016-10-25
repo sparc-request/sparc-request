@@ -93,10 +93,11 @@ class Notifier < ActionMailer::Base
     mail(:to => email, :from => NO_REPLY_FROM, :subject => subject)
   end
 
-  def notify_service_provider(service_provider, service_request, attachments_to_add, user_current, audit_report=nil, all_ssrs_deleted=false)
+  def notify_service_provider(service_provider, service_request, attachments_to_add, user_current, ssr_id, audit_report=nil, ssr_destroyed=false)
     @notes = service_request.notes
-    if all_ssrs_deleted
-      @status = 'all_ssrs_deleted'
+
+    if ssr_destroyed
+      @status = 'ssr_destroyed'
     elsif audit_report.present?
       @status = 'request_amendment'
     else
@@ -116,9 +117,9 @@ class Notifier < ActionMailer::Base
     @portal_text = "Administrators/Service Providers, Click Here"
 
     # only display the ssrs that are associated with service_provider
-    @ssrs_to_be_displayed = @service_request.ssrs_associated_with_service_provider(service_provider)
+    @ssrs_to_be_displayed = @service_request.ssrs_to_be_displayed_in_email(service_provider, @audit_report, ssr_destroyed, ssr_id)
 
-    if !all_ssrs_deleted
+    if !ssr_destroyed
       attachments_to_add.each do |file_name, document|
         next if document.nil?
         attachments["#{file_name}"] = document

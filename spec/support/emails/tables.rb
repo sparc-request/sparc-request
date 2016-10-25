@@ -22,10 +22,10 @@ module EmailHelpers
 
   def assert_email_project_information(mail_response)
     #assert correct protocol information is included in notification email
-    expect(mail_response).to have_xpath "//table//strong[text()='Project Information']"
-    expect(mail_response).to have_xpath "//th[text()='Project ID']/following-sibling::td[text()='#{service_request.protocol.id}']"
+    expect(mail_response).to have_xpath "//table//strong[text()='#{service_request.protocol.type} Information']"
+    expect(mail_response).to have_xpath "//th[text()='#{service_request.protocol.type} ID']/following-sibling::td[text()='#{service_request.protocol.id}']"
     expect(mail_response).to have_xpath "//th[text()='Short Title']/following-sibling::td[text()='#{service_request.protocol.short_title}']"
-    expect(mail_response).to have_xpath "//th[text()='Project Title']/following-sibling::td[text()='#{service_request.protocol.title}']"
+    expect(mail_response).to have_xpath "//th[text()='#{service_request.protocol.type} Title']/following-sibling::td[text()='#{service_request.protocol.title}']"
     expect(mail_response).to have_xpath "//th[text()='Sponsor Name']/following-sibling::td[text()='#{service_request.protocol.sponsor_name}']"
     expect(mail_response).to have_xpath "//th[text()='Funding Source']/following-sibling::td[text()='#{service_request.protocol.funding_source.capitalize}']"
   end
@@ -126,7 +126,7 @@ module EmailHelpers
   end
 
   def assert_email_request_amendment_for_added(mail)
-    @audit[:line_items].each do |li|
+    @report[:line_items].each do |li|
       service = Service.find(li.audited_changes["service_id"])
       ssr = LineItem.find(li.auditable_id).sub_service_request
       expect(mail).to have_xpath "//td//a[@href='/dashboard/sub_service_requests/#{ssr.id}']['#{ssr.display_id}']/@href"
@@ -137,7 +137,8 @@ module EmailHelpers
   end
 
   def assert_email_request_amendment_for_deleted(mail)
-    @audit[:line_items].each do |li|
+    binding.pry
+    @report[:line_items].each do |li|
       service = Service.find(li.audited_changes["service_id"])
       ssr = SubServiceRequest.find(li.audited_changes['sub_service_request_id'])
       expect(mail).to have_xpath "//td//a[@href='/dashboard/sub_service_requests/#{ssr.id}']['#{ssr.display_id}']/@href"

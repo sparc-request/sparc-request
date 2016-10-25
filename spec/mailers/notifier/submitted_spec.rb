@@ -74,14 +74,15 @@ RSpec.describe Notifier do
 
   ############# WITHOUT NOTES #########################
   context 'without notes' do
-
     context 'service_provider' do
       let(:xls)                     { Array.new }
       let(:mail)                    { Notifier.notify_service_provider(service_provider,
                                                                           service_request,
                                                                           xls,
                                                                           identity,
-                                                                          []) }
+                                                                          service_request.sub_service_requests.first.id,
+                                                                          [],
+                                                                          false) }
 
       # Expected service provider message is defined under submitted_service_provider_and_admin_message
       it 'should display service provider intro message, conclusion, link, and should not display acknowledgments' do
@@ -204,7 +205,10 @@ RSpec.describe Notifier do
                                                                           service_request,
                                                                           xls,
                                                                           identity,
-                                                                          []) }
+                                                                          service_request.sub_service_requests.first.id,
+                                                                          [],
+                                                                          false) }
+
       # Expected service provider message is defined under submitted_service_provider_and_admin_message
       it 'should display admin intro message, conclusion, link, and should not display acknowledgments' do
         submitted_intro_for_service_providers_and_admin(mail)

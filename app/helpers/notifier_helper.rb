@@ -21,7 +21,7 @@
 module NotifierHelper
   def intro_determination(status)
     case status
-    when 'all_ssrs_deleted'
+    when 'ssr_destroyed'
       render "notifier/deleted_all_services_from_cart"
     when 'get_a_cost_estimate'
       render "notifier/welcome"
@@ -40,7 +40,7 @@ module NotifierHelper
 
   def display_srid_table(ssrs_to_be_displayed, status)
     if ssrs_to_be_displayed
-      if status == 'all_ssrs_deleted'
+      if status == 'ssr_destroyed'
         render "deleted_srid_information"
       else
         render "srid_information"

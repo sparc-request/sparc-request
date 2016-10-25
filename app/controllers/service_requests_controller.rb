@@ -439,14 +439,14 @@ class ServiceRequestsController < ApplicationController
 
     # clean up sub_service_requests
     @service_request.reload
-
+    @service_request.previous_submitted_at = @service_request.submitted_at
     @protocol = @service_request.protocol
-    
+
     if ssr.line_items.empty?
-      ssr.destroy
       if !ssr.submitted_at.nil?
         send_ssr_service_provider_notifications(@service_request, ssr, true)
       end
+      ssr.destroy
     end
 
     @service_request.reload
@@ -579,12 +579,9 @@ class ServiceRequestsController < ApplicationController
     end
   end
 
-  def send_ssr_service_provider_notifications(sub_service_request, all_ssrs_deleted=false, request_amendment= false) #single sub-service request
-    puts "((((((((("
-    puts request_amendment.inspect
+  def send_ssr_service_provider_notifications(sub_service_request, ssr_destroyed=false, request_amendment= false) #single sub-service request
     audit_report = request_amendment ? sub_service_request.audit_report(current_user, sub_service_request.service_request.previous_submitted_at.utc, Time.now.tomorrow.utc) : nil
-    puts "&&&&&&&&&&&&"
-    puts audit_report.inspect
+
     request_amendment ? sub_service_request.update_status('submitted') : ''
  
     sub_service_request.organization.service_providers.where("(`service_providers`.`hold_emails` != 1 OR `service_providers`.`hold_emails` IS NULL)").each do |service_provider|
@@ -609,7 +606,7 @@ class ServiceRequestsController < ApplicationController
     return false
   end
 
-  def send_individual_service_provider_notification(sub_service_request, service_provider, audit_report=nil, all_ssrs_deleted=false)
+  def send_individual_service_provider_notification(sub_service_request, service_provider, audit_report=nil, ssr_destroyed=false)
     attachments = {}
     @service_list_true = @service_request.service_list(true, service_provider)
     @service_list_false = @service_request.service_list(false, service_provider)
@@ -632,7 +629,14 @@ class ServiceRequestsController < ApplicationController
       request_for_grant_billing_form = RequestGrantBillingPdf.generate_pdf service_request
       attachments["request_for_grant_billing_#{sub_service_request.service_request.id}.pdf"] = request_for_grant_billing_form
     end
-    Notifier.notify_service_provider(service_provider, sub_service_request.service_request, attachments, current_user, audit_report, all_ssrs_deleted).deliver_now
+
+    if audit_report.nil?
+      previously_submitted_at = service_request.previous_submitted_at.nil? ? Time.now.utc : service_request.previous_submitted_at.utc
+      audit_report = sub_service_request.audit_report(current_user, previously_submitted_at, Time.now.utc)
+    end
+    
+    ssr_id = sub_service_request.id
+    Notifier.notify_service_provider(service_provider, sub_service_request.service_request, attachments, current_user, ssr_id, audit_report, ssr_destroyed).deliver_now
   end
 
   def send_epic_notification_for_user_approval(protocol)

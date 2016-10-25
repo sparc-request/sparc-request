@@ -25,35 +25,12 @@ RSpec.describe Notifier do
   let_there_be_lane
   let_there_be_j
   fake_login_for_each_test
-  build_service_request_with_project
+  build_service_request_with_study
 
   let(:service3)           { create(:service,
                                     organization_id: program.id,
                                     name: 'ABCD',
                                     one_time_fee: true) }
-  let(:pricing_setup)     { create(:pricing_setup,
-                                    organization_id: program.id,
-                                    display_date: Time.now - 1.day,
-                                    federal: 50,
-                                    corporate: 50,
-                                    other: 50,
-                                    member: 50,
-                                    college_rate_type: 'federal',
-                                    federal_rate_type: 'federal',
-                                    industry_rate_type: 'federal',
-                                    investigator_rate_type: 'federal',
-                                    internal_rate_type: 'federal',
-                                    foundation_rate_type: 'federal') }
-  let(:pricing_map)       { create(:pricing_map,
-                                    unit_minimum: 1,
-                                    unit_factor: 1,
-                                    service: service3,
-                                    quantity_type: 'Each',
-                                    quantity_minimum: 5,
-                                    otf_unit_type: 'Week',
-                                    display_date: Time.now - 1.day,
-                                    full_rate: 2000,
-                                    units_per_qty_max: 20) }
   let(:identity)          { Identity.first }
   let(:organization)      { Organization.first }
   let(:non_service_provider_org)  { create(:organization, name: 'BLAH', process_ssrs: 0, is_available: 1) }
@@ -61,18 +38,25 @@ RSpec.describe Notifier do
                                     identity: identity,
                                     organization: organization,
                                     service: service3) }
-  let!(:non_service_provider_ssr) { create(:sub_service_request, ssr_id: "0004", status: "submitted", service_request_id: service_request.id, organization_id: non_service_provider_org.id, org_tree_display: "SCTR1/BLAH")}
-
-  let(:previously_submitted_at) { service_request.submitted_at.nil? ? Time.now.utc : service_request.submitted_at.utc }
-  let(:audit)                   { sub_service_request.audit_report(identity,
-                                                                      previously_submitted_at,
-                                                                      Time.now.utc) }
 
   before { add_visits }
 
   # SUBMITTED
-  before do
-    service_request.update_attribute(:status, "submitted")
+  before :each do
+    service_request.update_attribute(:submitted_at, Time.now.yesterday)
+    service_request.sub_service_requests.each do |ssr|
+      ssr.update_attribute(:submitted_at, Time.now.yesterday)
+      ssr.update_attribute(:status, 'submitted')
+      li_id = ssr.line_items.first.id
+      ssr.line_items.first.destroy!
+      ssr.save!
+      service_request.reload
+      @audit = AuditRecovery.where("auditable_id = '#{li_id}' AND auditable_type = 'LineItem' AND action = 'destroy'")
+    end
+    
+    @audit.first.update_attribute(:created_at, Time.now - 5.hours)
+    @audit.first.update_attribute(:user_id, identity.id)
+    @report = service_request.sub_service_requests.first.audit_report(identity, Time.now.yesterday - 4.hours, Time.now.tomorrow)
   end
 
   context 'service_provider' do
@@ -81,7 +65,8 @@ RSpec.describe Notifier do
                                                                         service_request,
                                                                         xls,
                                                                         identity,
-                                                                        audit, true) }
+                                                                        service_request.sub_service_requests.first.id,
+                                                                        @report, true) }
     # Expected service provider message is defined under deleted_all_services_intro_for_service_providers
     it 'should display service provider intro message, conclusion, link, and should not display acknowledgments' do
       deleted_all_services_intro_for_service_providers(mail)

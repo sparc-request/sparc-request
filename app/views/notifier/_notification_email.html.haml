@@ -48,7 +48,7 @@
     - if display_notes?(@status, @role, @notes)
       %p= t(:notifier)[:notes_present]
     
-    - if @status != 'all_ssrs_deleted'
+    - if @status != 'ssr_destroyed'
       %p= t(:notifier)[:body6]
     
     %p= t(:issue_contact)

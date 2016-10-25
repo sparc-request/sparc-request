@@ -566,7 +566,6 @@ en:
               header: "Investigational Products"
               ind_number: "IND #:"
               ind_on_hold: "IND on Hold?:"
-              ide_number: "IDE# / HDE# / HUD#:"
               numbers:
                 ide: "IDE #:"
                 hde: "HDE #:"
@@ -1184,7 +1183,6 @@ en:
     iacuc_approval_date: "IACUC Approval Date:"
     iacuc_expiration_date: "IACUC Expiration Date:"
     iacuc_number: "IACUC #:"
-    ide_number: "IDE# / HDE# / HUD#:"
     impact: "Impact Areas"
     ind_number: "IND#:"
     ind_on_hold: "IND on Hold?"

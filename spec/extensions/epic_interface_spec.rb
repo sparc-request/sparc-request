@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2016 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -80,12 +80,12 @@ RSpec.describe EpicInterface do
         'wsdl' => "http://localhost:#{server.port}/wsdl",
         'study_root' => '1.2.3.4')
   }
-  
+
   build_study_type_question_groups
 
   let!(:study) {
     human_subjects_info = build(:human_subjects_info, pro_number: nil, hr_number: nil)
-    investigational_products_info = build(:investigational_products_info, ide_number: nil)
+    investigational_products_info = build(:investigational_products_info, inv_device_number: nil)
     study = build(:study, human_subjects_info: human_subjects_info, investigational_products_info: investigational_products_info, study_type_question_group_id: active_study_type_question_group.id)
     study.save(validate: false)
     study
@@ -93,7 +93,7 @@ RSpec.describe EpicInterface do
 
   build_study_type_answers
   build_study_type_questions
-  
+
 
   let!(:provider) {
     create(
@@ -428,7 +428,7 @@ RSpec.describe EpicInterface do
     end
 
     it 'should emit a subjectOf for an ide number' do
-      study.investigational_products_info.update_attributes(ide_number: '12345678')
+      study.investigational_products_info.update_attributes(inv_device_number: '12345678')
 
       epic_interface.send_study_creation(study)
 
@@ -450,7 +450,7 @@ RSpec.describe EpicInterface do
           'env' => 'http://www.w3.org/2003/05/soap-envelope',
           'rpe' => 'urn:ihe:qrph:rpe:2009',
           'hl7' => 'urn:hl7-org:v3')
-      
+
       expect(node).to include(expected.root)
     end
 
@@ -488,11 +488,11 @@ RSpec.describe EpicInterface do
       end
 
       it 'should have value = NO_COFC' do
-        
+
 
         answers = [true, false, false, false, true, true]
         update_answers(false, answers)
-        
+
         epic_interface.send_study_creation(study)
 
         xml = <<-END
@@ -522,7 +522,7 @@ RSpec.describe EpicInterface do
         answers = [true, true, nil, nil, nil, nil]
         update_answers(false, answers)
         question_id = [ stq_higher_level_of_privacy.id, stq_certificate_of_conf.id, stq_access_study_info.id, stq_epic_inbasket.id, stq_research_active.id, stq_restrict_sending.id]
-        
+
         answers.each_with_index do |ans, index|
           StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: question_id[index], answer: ans)
         end
@@ -612,7 +612,7 @@ RSpec.describe EpicInterface do
 
         answers = [true, false, false, false, true, false]
         update_answers(false, answers)
-        
+
         epic_interface.send_study_creation(study)
 
         xml = <<-END
@@ -641,7 +641,7 @@ RSpec.describe EpicInterface do
 
         answers = [false, nil, nil, true, true, true]
         update_answers(false, answers)
-        
+
         epic_interface.send_study_creation(study)
 
         xml = <<-END
@@ -698,7 +698,7 @@ RSpec.describe EpicInterface do
         'env' => 'http://www.w3.org/2003/05/soap-envelope',
         'rpe' => 'urn:ihe:qrph:rpe:2009',
         'hl7' => 'urn:hl7-org:v3')
-       
+
         expect(node[0]).to be_equivalent_to(expected.root)
 
       end
@@ -707,7 +707,7 @@ RSpec.describe EpicInterface do
 
         answers = [false, true, false, false, false, false]
         update_answers(true, answers)
-        
+
         epic_interface.send_study_creation(study)
 
         xml = <<-END
@@ -731,11 +731,11 @@ RSpec.describe EpicInterface do
 
         expect(node[1]).to be_equivalent_to(expected.root)
       end
-      
+
       it 'return a study type of 1' do
         answers = [true, nil, nil, nil, nil, nil]
         update_answers(true, answers)
-        
+
         epic_interface.send_study_creation(study)
 
         xml = <<-END
@@ -756,7 +756,7 @@ RSpec.describe EpicInterface do
         'env' => 'http://www.w3.org/2003/05/soap-envelope',
         'rpe' => 'urn:ihe:qrph:rpe:2009',
         'hl7' => 'urn:hl7-org:v3')
-        
+
         expect(node[0]).to be_equivalent_to(expected.root)
       end
 
@@ -764,7 +764,7 @@ RSpec.describe EpicInterface do
 
         answers = [false, true, true, nil, nil, nil]
         update_answers(true, answers)
-        
+
         epic_interface.send_study_creation(study)
 
         xml = <<-END
@@ -793,7 +793,7 @@ RSpec.describe EpicInterface do
 
         answers = [false, true, false, false, true, false]
         update_answers(true, answers)
-        
+
         epic_interface.send_study_creation(study)
 
         xml = <<-END
@@ -822,7 +822,7 @@ RSpec.describe EpicInterface do
 
         answers = [false, false, nil, false, true, true]
         update_answers(true, answers)
-        
+
         epic_interface.send_study_creation(study)
 
         xml = <<-END

@@ -1,4 +1,4 @@
--# Copyright © 2011 MUSC Foundation for Research Development
+-# Copyright © 2011-2016 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -150,15 +150,15 @@
               %td
                 %label.col-lg-3
                   = t(:dashboard)[:protocols][:view_details][:studies][:research_involving][:products][:ind_on_hold]
-                .col-lg-
-                  = products_info.ind_on_hold ? t(:constants)[:yes_select] : t(:constants)[:no_select]
-            %tr
-              %td
-                %label.col-lg-3
-
-                  = t(:dashboard)[:protocols][:view_details][:studies][:research_involving][:products][:ide_number]
                 .col-lg-9
-                  = products_info.ide_number
+                  = products_info.ind_on_hold ? t(:constants)[:yes_select] : t(:constants)[:no_select]
+            - if products_info.exemption_type.present?
+              %tr
+                %td
+                  %label.col-lg-3
+                    = t(:dashboard)[:protocols][:view_details][:studies][:research_involving][:products][:numbers][products_info.exemption_type.to_sym]
+                  .col-lg-9
+                    = products_info.inv_device_number
 
     / IP/Patents
     - if research_types_info.ip_patents

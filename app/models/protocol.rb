@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2016 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -33,6 +33,7 @@ class Protocol < ActiveRecord::Base
   has_many :project_roles,                dependent: :destroy
   has_many :identities,                   through: :project_roles
   has_many :service_requests
+  has_many :services,                     through: :service_requests
   has_many :sub_service_requests,         through: :service_requests
   has_many :organizations,                through: :sub_service_requests
   has_many :affiliations,                 dependent: :destroy
@@ -42,6 +43,13 @@ class Protocol < ActiveRecord::Base
   has_many :notes, as: :notable,          dependent: :destroy
   has_many :study_type_questions,         through: :study_type_question_group
   has_many :documents,                    dependent: :destroy
+
+  has_many :principal_investigators, -> { where(project_roles: { role: %w(pi primary-pi) }) },
+    source: :identity, through: :project_roles
+  has_many :billing_managers, -> { where(project_roles: { role: 'business-grants-manager' }) },
+    source: :identity, through: :project_roles
+  has_many :coordinators, -> { where(project_roles: { role: 'research-assistant-coordinator' }) },
+    source: :identity, through: :project_roles
 
   belongs_to :study_type_question_group
 
@@ -191,25 +199,28 @@ class Protocol < ActiveRecord::Base
     where(archived: boolean)
   }
 
-  scope :with_status, -> (status) {
-    # returns protocols with ssrs in status
-    return nil if status.reject!(&:blank?) == []
+  scope :with_status, -> (statuses) {
+    # returns protocols with ssrs in statuses
+    statuses = statuses.split.flatten.reject(&:blank?)
+    return nil if statuses.empty?
     joins(:sub_service_requests).
-    where(sub_service_requests: { status: status }).distinct
+      where(sub_service_requests: { status: statuses }).distinct
   }
 
-  scope :with_organization, -> (org_id) {
-    # returns protocols with ssrs in org_id
-    return nil if org_id.reject!(&:blank?) == []
+  scope :with_organization, -> (org_ids) {
+    # returns protocols with ssrs in org_ids
+    org_ids = org_ids.split.flatten.reject(&:blank?)
+    return nil if org_ids.empty?
     joins(:sub_service_requests).
-    where(sub_service_requests: { organization_id: org_id }).distinct
+      where(sub_service_requests: { organization_id: org_ids }).distinct
   }
 
-  scope :with_owner, -> (owner_id) {
-    return nil if owner_id.reject!(&:blank?) == []
+  scope :with_owner, -> (owner_ids) {
+    owner_ids = owner_ids.split.flatten.reject(&:blank?)
+    return nil if owner_ids.empty?
     joins(:sub_service_requests).
-    where(sub_service_requests: {owner_id: owner_id}).
-    where.not(sub_service_requests: {status: 'first_draft'})
+    where(sub_service_requests: {owner_id: owner_ids}).
+      where.not(sub_service_requests: {status: 'first_draft'})
   }
 
   scope :sorted_by, -> (key) {
@@ -256,6 +267,18 @@ class Protocol < ActiveRecord::Base
     update_attribute(:study_type_question_group_id, StudyTypeQuestionGroup.active.pluck(:id).first)
   end
 
+  def email_about_change_in_authorized_user(modified_role, action)
+    # Alert authorized users of deleted authorized user
+    # Send emails if SEND_AUTHORIZED_USER_EMAILS is set to true and if there are any non-draft SSRs
+    # For example:  if a SR has SSRs all with a status of 'draft', don't send emails
+    if SEND_AUTHORIZED_USER_EMAILS && sub_service_requests.where.not(status: 'draft').any?
+      alert_users = emailed_associated_users << modified_role
+      alert_users.flatten.uniq.each do |project_role|
+        UserMailer.authorized_user_changed(project_role.identity, self, modified_role, action).deliver unless project_role.identity.email.blank?
+      end
+    end
+  end
+
   def validate_funding_source
     if self.funding_status == "funded" && self.funding_source.blank?
       errors.add(:funding_source, "You must select a funding source")
@@ -268,32 +291,20 @@ class Protocol < ActiveRecord::Base
     errors.add(:base, "All users must be assigned a proxy right") unless self.project_roles.map(&:project_rights).find_all(&:nil?).empty?
   end
 
-  def principal_investigators
-    project_roles.reject{|pr| !['pi', 'primary-pi'].include?(pr.role)}.map(&:identity)
-  end
-
   def primary_principal_investigator
     primary_pi_project_role.try(:identity)
   end
 
   def primary_pi_project_role
-    project_roles.detect { |pr| pr.role == 'primary-pi' }
-  end
-
-  def billing_managers
-    project_roles.reject{|pr| pr.role != 'business-grants-manager'}.map(&:identity)
+    project_roles.find_by(role: 'primary-pi')
   end
 
   def billing_business_manager_email
     billing_business_manager_static_email.blank? ?  billing_managers.map(&:email).try(:join, ', ') : billing_business_manager_static_email
   end
 
-  def coordinators
-    project_roles.select{|pr| pr.role == 'research-assistant-coordinator'}.map(&:identity)
-  end
-
   def coordinator_emails
-    coordinators.map(&:email).try(:join, ', ')
+    coordinators.pluck(:email).join(', ')
   end
 
   def emailed_associated_users
@@ -305,27 +316,20 @@ class Protocol < ActiveRecord::Base
     errors.add(:base, "Only one Primary PI is allowed. Please ensure that only one exists") if project_roles.select { |pr| pr.role == 'primary-pi'}.count > 1
   end
 
-  def role_for identity
-    project_roles.detect{|pr| pr.identity_id == identity.id}.try(:role)
+  def role_for(identity)
+    project_roles.find_by(identity_id: identity.id).try(:role)
   end
 
-  def role_other_for identity
-    project_roles.detect{|pr| pr.identity_id == identity.id}.try(:role)
+  def role_other_for(identity)
+    role_for(identity)
   end
 
-  def subspecialty_for identity
+  def subspecialty_for(identity)
     identity.subspecialty
   end
 
   def all_child_sub_service_requests
-    arr = []
-    self.service_requests.each do |sr|
-      sr.sub_service_requests.each do |ssr|
-        arr << ssr
-      end
-    end
-
-    arr
+    sub_service_requests
   end
 
   def display_protocol_id_and_title
@@ -402,22 +406,20 @@ class Protocol < ActiveRecord::Base
   end
 
   def ensure_epic_user
-    self.primary_pi_project_role.set_epic_rights
-    self.primary_pi_project_role.save
+    primary_pi_project_role.set_epic_rights.save
+    project_roles.reload
   end
 
   # Returns true if there is a push to epic in progress, false
   # otherwise.  If no push has been initiated, return false.
   def push_to_epic_in_progress?
-    return self.last_epic_push_status == 'started' ||
-           self.last_epic_push_status == 'sent_study'
+    %w(started sent_study).include? last_epic_push_status
   end
 
   # Returns true if the most push to epic has completed.  Returns false
   # if no push has been initiated.
   def push_to_epic_complete?
-    return self.last_epic_push_status == 'complete' ||
-           self.last_epic_push_status == 'failed'
+    %w(complete failed).include? last_epic_push_status
   end
 
   def populate_for_edit
@@ -442,31 +444,20 @@ class Protocol < ActiveRecord::Base
   end
 
   def should_push_to_epic?
-    return self.service_requests.any? { |sr| sr.should_push_to_epic? }
+    service_requests.any?(&:should_push_to_epic?)
   end
 
   def has_nexus_services?
-    self.service_requests.each do |sr|
-      if sr.has_ctrc_clinical_services? and sr.status != 'first_draft'
-        return true
-      end
-    end
-
-    return false
+    service_requests.where.not(status: 'first_draft').
+      any?(&:has_ctrc_clinical_services?)
   end
 
   def find_sub_service_request_with_ctrc(service_request)
-    service_request.sub_service_requests.each do |ssr|
-      if ssr.ctrc?
-        return ssr.ssr_id
-      end
-    end
-
-    return nil
+    service_request.sub_service_requests.find(&:ctrc?).try(:ssr_id)
   end
 
   def any_service_requests_to_display?
-    return self.service_requests.detect { |sr| !['first_draft'].include?(sr.status) }
+    service_requests.where.not(status: 'first_draft').first
   end
 
   def has_line_items_of_type?(current_request, portal, type)
@@ -477,28 +468,22 @@ class Protocol < ActiveRecord::Base
     end
   end
 
-  def direct_cost_total service_request
-    total = 0
-    self.service_requests.each do |sr|
-      next if ['first_draft'].include?(sr.status) && sr != service_request
-      total += sr.direct_cost_total
-    end
-    return total
+  def direct_cost_total(service_request)
+    service_requests.where('status != ? OR id = ?', 'first_draft', service_request.id).
+      to_a.sum(&:direct_cost_total)
   end
 
-  def indirect_cost_total service_request
-    total = 0
+  def indirect_cost_total(service_request)
     if USE_INDIRECT_COST
-      self.service_requests.each do |sr|
-        next if ['first_draft', 'draft'].include?(sr.status) && sr != service_request
-        total += sr.indirect_cost_total
-      end
+      service_requests.where('(status != ? AND status != ?) OR id = ?', 'first_draft', 'draft', service_request.id).
+        to_a.sum(&:indirect_cost_total)
+    else
+      0
     end
-    return total
   end
 
-  def grand_total service_request
-    return direct_cost_total(service_request) + indirect_cost_total(service_request)
+  def grand_total(service_request)
+    direct_cost_total(service_request) + indirect_cost_total(service_request)
   end
 
   def arm_cleanup

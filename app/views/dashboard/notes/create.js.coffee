@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2016 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -17,12 +17,21 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-if $(".modal-content").length > 0
-  # dashboard notes modals
-  $("#modal_place").html("<%= escape_javascript(render(partial: 'index', locals: { notes: @notes, notable_id: @notable_id, notable_type: @notable_type })) %>")
-  $("span#<%= @selector %>").html("<%= escape_javascript(@notes.count.to_s) %>")
-else
-  #sparc proper service request notes in step 3
-  $("#request_notes_table").html("<%= escape_javascript(render(partial: '/notes/request_notes', locals: { notes: @notes, thead_class: 'orange-provider'  } )) %>")
-  $('.new_request_note_button').show()
-  $('#note_form').hide()
+
+<% if @in_proper %>
+#sparc proper service request notes in step 3
+$("#request_notes_table").html("<%= escape_javascript(render(partial: '/notes/request_notes', locals: { notes: @notes, thead_class: 'orange-provider'  } )) %>")
+$('.new_request_note_button').show()
+$('#note_form').hide()
+<% else %>
+
+# dashboard notes modals
+<% if @errors %>
+$("#modal_errors").html("<%= escape_javascript(render(partial: 'shared/modal_errors', locals: {errors: @errors})) %>")
+<% else %>
+
+$("#modal_place").html("<%= escape_javascript(render(partial: 'index', locals: { notable: @notable, notes: @notes, notable_id: @notable_id, notable_type: @notable_type })) %>")
+$("span#<%= @selector %>").html("<%= escape_javascript(@notes.count.to_s) %>")
+<% end %>
+
+<% end %>

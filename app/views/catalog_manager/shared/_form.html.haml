@@ -1,4 +1,4 @@
--# Copyright © 2011 MUSC Foundation for Research Development
+-# Copyright © 2011-2016 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -66,10 +66,10 @@
           %tr
             %th= t(:organization_form)[:disabled]
             %td
-              = f.check_box :is_available, {checked: (@organization.is_available.nil? ? false : !@organization.is_available), disabled: @organization.parent.nil? ? false : !@organization.parent.is_available }, false, true
-              %span
-                - unless (@organization.type == 'Institution') || @organization.parent.is_available
-                  = I18n.t('organization_form.disabled_at', disabled_parent: disabled_parent(@organization))
+              = f.check_box :is_available, {checked: @organization.is_available, disabled: @organization.parent ? !@organization.parent.is_available : false }
+              - if @organization.parent && !@organization.parent.is_available
+                %span
+                  = disabled_parent(@organization)
 
           - unless @organization.type == 'Institution'
             %tr

@@ -1,4 +1,4 @@
--# Copyright © 2011 MUSC Foundation for Research Development
+-# Copyright © 2011-2016 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -82,7 +82,6 @@
                     = @service_request.protocol.display_protocol_id_and_title
                   = link_to t('study_assignment.edit_project'), edit_service_request_project_path(@service_request, @service_request.protocol, portal: false), class: 'edit-project blue-button btn btn-primary button-hover'
                 %br
-              = t(:study_assignment)[:previously_submitted_project]
 
   .grid_3.protocol-view-right.right.col-md-3
     #services.ui-widget.ui-widget-content.cart-view

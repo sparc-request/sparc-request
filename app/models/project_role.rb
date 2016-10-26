@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2016 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -46,7 +46,7 @@ class ProjectRole < ActiveRecord::Base
   validates :project_rights, :presence => true
 
   scope :primary_pis, -> { where(role: "primary-pi") }
-  
+
   def can_edit?
     !(project_rights == "view" || project_rights == "none")
   end
@@ -181,5 +181,6 @@ class ProjectRole < ActiveRecord::Base
         self.epic_rights = rights
       end
     end
+    self
   end
 end

@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2016 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -19,14 +19,28 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 FactoryGirl.define do
+  sequence :position do |n|
+    n
+  end
+
+  sequence :day do |n|
+    n
+  end
 
   factory :visit_group do
-  	name                       { "" }
 
-    trait :without_validations do
-      to_create { |instance| instance.save(validate: false) }
-    end
+  position
+  day
+  name           { "Visit #{self.position}" }
 
-    factory :visit_group_without_validations, traits: [:without_validations]
+  trait :without_validations do
+    to_create { |instance| instance.save(validate: false) }
+  end
+
+  trait :with_arm do
+    arm         { FactoryGirl.create(:arm) }
+  end
+
+  factory :visit_group_without_validations, traits: [:without_validations]
   end
 end

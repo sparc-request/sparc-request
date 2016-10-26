@@ -1,4 +1,4 @@
-// Copyright © 2011 MUSC Foundation for Research Development
+// Copyright © 2011-2016 MUSC Foundation for Research Development
 // All rights reserved.
 
 // Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -31,13 +31,13 @@
 @import 'project';
 @import 'protocol';
 @import 'related_service_requests';
-@import 'service_calendar';
 @import 'service_requests';
 @import 'services';
 @import 'study_level_charges';
 @import 'sub_service_requests';
 @import 'twitter_typeahead';
 @import 'users';
+@import 'sweetalert';
 
 // original require files
 @import 'bootstrap-sprockets';
@@ -50,3 +50,5 @@
 @import 'jquery-ui';
 @import '960';
 @import 'jquery.toastmessage';
+
+@import 'service_calendar';

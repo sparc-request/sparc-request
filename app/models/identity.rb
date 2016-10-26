@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2016 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -56,6 +56,7 @@ class Identity < ActiveRecord::Base
   attr_accessible :approved
   #### END DEVISE SETUP ####
 
+  has_many :submissions
   has_many :approvals, dependent: :destroy
   has_many :project_roles, dependent: :destroy
   has_many :protocols, through: :project_roles

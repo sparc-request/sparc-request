@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2016 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -48,6 +48,14 @@ class Arm < ActiveRecord::Base
   validates :visit_count, numericality: { greater_than: 0 }
   validates :subject_count, numericality: { greater_than: 0 }
 
+  validate do |arm|
+    arm.visit_groups.each do |visit_group|
+      if !visit_group.valid? && visit_group.errors.full_messages.first.include?('order')
+        errors[:base] << visit_group.errors.full_messages.first
+      end
+    end
+  end
+
   def sanitized_name
     #Sanitized for Excel
     name.gsub(/\[|\]|\*|\/|\\|\?|\:/, ' ')
@@ -79,7 +87,6 @@ class Arm < ActiveRecord::Base
     self.update_attribute(:visit_count, 1) if self.visit_count.nil?
 
     create_visit_groups(visit_count)
-
     liv = LineItemsVisit.for(self, line_item)
     liv.create_visits
 
@@ -137,13 +144,12 @@ class Arm < ActiveRecord::Base
     direct_costs_for_visit_based_service(line_items_visits) + indirect_costs_for_visit_based_service(line_items_visits)
   end
 
-  def add_visit position=nil, day=nil, window_before=0, window_after=0, name='', portal=false
+  def add_visit position=self.visit_groups.count+1, day=position-1, window_before=0, window_after=0, name="Visit #{day}", portal=false
     result = self.transaction do
-      if not self.create_visit_group(position, name) then
+      if not self.create_visit_group(position, name, day) then
         raise ActiveRecord::Rollback
       end
-      position = position.to_i - 1 unless position.blank?
-
+      position = position.to_i-1 unless position.blank?
       if USE_EPIC
         if not self.update_visit_group_day(day, position, portal) then
           raise ActiveRecord::Rollback
@@ -155,7 +161,6 @@ class Arm < ActiveRecord::Base
           raise ActiveRecord::Rollback
         end
       end
-
       # Reload to force refresh of the visits
       self.reload
 
@@ -173,11 +178,10 @@ class Arm < ActiveRecord::Base
     end
   end
 
-  def create_visit_group position=nil, name=''
-    if not visit_group = self.visit_groups.create(position: position, name: name) then
+  def create_visit_group position=self.visit_groups.count+1, name="Visit #{position-1}", day=position-1
+    if not visit_group = self.visit_groups.create(position: position, name: name, day: day, arm_id: self.id) then
       return false
     end
-
     # Add visits to each line item under the service request
     self.line_items_visits.each do |liv|
       if not liv.add_visit(visit_group) then
@@ -228,12 +232,11 @@ class Arm < ActiveRecord::Base
     end
   end
 
-  def update_visit_group_day day, position, portal= false
+  def update_visit_group_day day, position, portal=false
     position = position.blank? ? self.visit_groups.count - 1 : position.to_i
     before = self.visit_groups[position - 1] unless position == 0
     current = self.visit_groups[position]
     after = self.visit_groups[position + 1] unless position >= self.visit_groups.size - 1
-
     if portal == 'true' and USE_EPIC
       valid_day = Integer(day) rescue false
       if !valid_day
@@ -254,7 +257,6 @@ class Arm < ActiveRecord::Base
         end
       end
     end
-
     return current.update_attributes(:day => day)
   end
 
@@ -353,7 +355,8 @@ class Arm < ActiveRecord::Base
     count = visit_count - last_position
     count.times do |index|
       position = last_position + 1
-      VisitGroup.create(arm_id: self.id, name: "Visit #{position}", position: position)
+      visit_group = VisitGroup.new(arm_id: self.id, name: "Visit #{position}", position: position)
+      visit_group.save(validate: false)
       last_position += 1
     end
     self.reload

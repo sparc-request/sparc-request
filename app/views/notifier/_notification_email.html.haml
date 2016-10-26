@@ -1,4 +1,4 @@
--# Copyright © 2011 MUSC Foundation for Research Development
+-# Copyright © 2011-2016 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -22,32 +22,49 @@
 %html{ :xmlns => "http://www.w3.org/1999/xhtml", :"xml:lang" => "en", :lang => "en" }
 
   %head
+    = stylesheet_link_tag 'proper/notification_email'
     %meta{ :"http-equiv" => "content-type", :content => "text/html;charset=UTF-8" }
 
     %title= t(:notifier)[:service_request]
 
   %body
-    - if @status == 'get_a_cost_estimate'
+    /***** EMAIL INTRO *****
+    - case @status
+    - when 'ssr_destroyed'
+      = render "deleted_all_services_from_cart"
+    - when 'get_a_cost_estimate'
       = render "welcome"
-    - if @status == 'submitted'
+    - when 'submitted'
       = render "welcome_for_submitted_status"
+    /***** END EMAIL INTRO *****
+
+    /***** EMAIL TABLES *****
     = render "protocol_information", protocol: @protocol
+
     - if @service_request.has_per_patient_per_visit_services? and @service_request.arms.count > 0
       = render "arm_information"
+
     = render "user_information"
-    - if @ssr_deleted
-      = render "deleted_services"
-    - elsif @audit_report.present? && @audit_report[:line_items].present?
-      = render "audit_action"
 
     - if @ssrs_to_be_displayed
-      = render "srid_information"
+      - if @status == 'ssr_destroyed'
+        = render "deleted_srid_information"
+      - else
+        = render "srid_information"
+  
+    - if @status != 'ssr_destroyed' && @audit_report.present? && @audit_report[:line_items].present?
+      = render "audit_action"
+    /***** END EMAIL TABLES *****
+
+    /***** OTHER EMAIL TIDBITS *****
     - if @status == "submitted" && @role == 'none' && !@notes.empty?
       %p= t(:notifier)[:notes_present]
     
-    %p= t(:notifier)[:body6]
+    - if @status != 'ssr_destroyed'
+      %p= t(:notifier)[:body6]
     
     %p= t(:issue_contact)
     
     - if @role != 'none'
       = render "acknowledgments"
+    /***** END OTHER EMAIL TIDBITS *****

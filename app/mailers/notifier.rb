@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2016 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -67,7 +67,7 @@ class Notifier < ActionMailer::Base
     mail(:to => email, :from => NO_REPLY_FROM, :subject => subject)
   end
 
-  def notify_admin(service_request, submission_email_address, xls, user_current, ssr_to_be_displayed)
+  def notify_admin(service_request, submission_email_address, xls, user_current, ssr)
     @notes = service_request.notes
     @status = service_request.status
     @role = 'none'
@@ -76,7 +76,7 @@ class Notifier < ActionMailer::Base
     @protocol = service_request.protocol
     @service_request = service_request
     @service_requester_id = @service_request.sub_service_requests.first.service_requester_id
-    @ssrs_to_be_displayed = [ssr_to_be_displayed]
+    @ssrs_to_be_displayed = [ssr]
 
     @portal_link = DASHBOARD_LINK + "/protocols/#{@protocol.id}"
     @portal_text = "Administrators/Service Providers, Click Here"
@@ -89,9 +89,15 @@ class Notifier < ActionMailer::Base
     mail(:to => email, :from => NO_REPLY_FROM, :subject => subject)
   end
 
-  def notify_service_provider(service_provider, service_request, attachments_to_add, user_current, audit_report=nil, ssr_deleted=false)
+  def notify_service_provider(service_provider, service_request, attachments_to_add, user_current, ssr_id, audit_report=nil, ssr_destroyed=false)
     @notes = service_request.notes
-    @status = service_request.status
+
+    if ssr_destroyed
+      @status = 'ssr_destroyed'
+    else
+      @status = service_request.status
+    end
+    
     @role = 'none'
     @full_name = service_provider.identity.full_name
 
@@ -100,22 +106,18 @@ class Notifier < ActionMailer::Base
     @service_requester_id = @service_request.sub_service_requests.first.service_requester_id
 
     @audit_report = audit_report
-    @ssr_deleted = ssr_deleted
     
     @portal_link = DASHBOARD_LINK + "/protocols/#{@protocol.id}"
     @portal_text = "Administrators/Service Providers, Click Here"
 
-    # if the current user is service provider, only show SSR's that are associated with them
-    @ssrs_to_be_displayed = []
-    @service_request.sub_service_requests.each do |ssr|
-      if service_provider.identity.is_service_provider?(ssr)
-        @ssrs_to_be_displayed << ssr
-      end
-    end
+    # only display the ssrs that are associated with service_provider
+    @ssrs_to_be_displayed = @service_request.ssrs_to_be_displayed_in_email(service_provider, @audit_report, ssr_destroyed, ssr_id)
 
-    attachments_to_add.each do |file_name, document|
-      next if document.nil?
-      attachments["#{file_name}"] = document
+    if !ssr_destroyed
+      attachments_to_add.each do |file_name, document|
+        next if document.nil?
+        attachments["#{file_name}"] = document
+      end
     end
 
     # only send these to the correct person in the production env

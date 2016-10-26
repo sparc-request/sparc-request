@@ -1,24 +1,44 @@
-%table{:style => 'border: 1px solid black; border-collapse: collapse; width: 100%;', :cellpadding => 3}
+-# Copyright © 2011-2016 MUSC Foundation for Research Development~
+-# All rights reserved.~
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.~
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following~
+-# disclaimer in the documentation and/or other materials provided with the distribution.~
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products~
+-# derived from this software without specific prior written permission.~
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,~
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT~
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL~
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS~
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
+
+%table.table{cellpadding: 3}
   %thead
-    %tr{:style => 'border: 1px solid black;'}
+    %tr.skinny-black-border
       %td{:colspan => 4}
         %strong= t(:notifier)[:u_info]
     %tr
-      %th{:style => 'border: 1px solid black;'}= t(:notifier)[:name]
-      %th{:style => 'border: 1px solid black;'}= t(:notifier)[:contact_info]
-      %th{:style => 'border: 1px solid black;'}= t(:notifier)[:role]
+      %th.skinny-black-border= t(:notifier)[:name]
+      %th.skinny-black-border= t(:notifier)[:contact_info]
+      %th.skinny-black-border= t(:notifier)[:role]
       - if @protocol.selected_for_epic
-        %th{:style => 'border: 1px solid black;'}= t(:notifier)[:epic_access]
+        %th.skinny-black-border= t(:notifier)[:epic_access]
   %tbody
     - @protocol.project_roles.each do |pr|
-      %tr{:style => 'border: 1px solid black;'}
-        %td{:style => 'border: 1px solid black; text-align: center;'}= pr.identity.full_name
-        %td{:style => 'border: 1px solid black; text-align: center;'}= pr.identity.email
+      %tr.skinny-black-border
+        %td.skinny-black-border.center= pr.identity.full_name
+        %td.skinny-black-border.center= pr.identity.email
         - if pr.identity.id == @service_requester_id
-          %td{:style => 'border: 1px solid black; text-align: center;'}= pr.role.upcase + " " + t(:notifier)[:requester]
+          %td.skinny-black-border.center= pr.role.upcase + " " + t(:notifier)[:requester]
         - else
-          %td{:style => 'border: 1px solid black; text-align: center;'}= pr.role.upcase
+          %td.skinny-black-border.center= pr.role.upcase
         - if @protocol.selected_for_epic
-          %td{:style => 'border: 1px solid black; text-align: center;'}= pr.epic_access == true ? "Yes" : "No"
+          %td.skinny-black-border.center= pr.epic_access == true ? "Yes" : "No"
 %br
 %br

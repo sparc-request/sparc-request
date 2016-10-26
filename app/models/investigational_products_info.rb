@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2016 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -19,6 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class InvestigationalProductsInfo < ActiveRecord::Base
+  EXEMPTION_TYPES = ["ide", "hde", "hud", ""].freeze
   self.table_name = 'investigational_products_info'
 
   audited
@@ -27,7 +28,18 @@ class InvestigationalProductsInfo < ActiveRecord::Base
 
   attr_accessible :protocol_id
   attr_accessible :ind_number
-  attr_accessible :ide_number
+  attr_accessible :inv_device_number
+  attr_accessible :exemption_type
   attr_accessible :ind_on_hold
-end
 
+  validates :exemption_type, inclusion: { in: EXEMPTION_TYPES, message: "not among #{EXEMPTION_TYPES.map(&:upcase).join(', ')}" }
+  validate :inv_device_number_present_when_exemption_type_present
+
+  private
+
+  def inv_device_number_present_when_exemption_type_present
+    if exemption_type.present? && inv_device_number.blank?
+      errors.add(:inv_device_number, "(#{exemption_type.upcase}#) can't be blank")
+    end
+  end
+end

@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2016 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -144,7 +144,7 @@ class EpicInterface
   def send_study_creation(study)
     message = study_creation_message(study)
     call('RetrieveProtocolDefResponse', message)
-    
+
 
     # TODO: handle response from the server
   end
@@ -207,7 +207,7 @@ class EpicInterface
         emit_study_type(xml, study)
         emit_ide_number(xml, study)
         emit_cofc(xml, study)
-   
+
       }
     }
     return xml.target!
@@ -302,7 +302,7 @@ class EpicInterface
 
     study_type = Portal::StudyTypeFinder.new(study).study_type
 
-    if study_type 
+    if study_type
       xml.subjectOf(typeCode: 'SUBJ') {
         xml.studyCharacteristic(classCode: 'OBS', moodCode: 'EVN') {
           xml.code(code: 'STUDYTYPE')
@@ -311,15 +311,15 @@ class EpicInterface
       }
     end
   end
-  
-  def emit_ide_number(xml, study)
-    ide_number = study.investigational_products_info.try(:ide_number)
 
-    if study.investigational_products_info && !ide_number.blank? then
+  def emit_ide_number(xml, study)
+    inv_device_number = study.investigational_products_info.try(:inv_device_number)
+
+    if study.investigational_products_info && !inv_device_number.blank? then
       xml.subjectOf(typeCode: 'SUBJ') {
         xml.studyCharacteristic(classCode: 'OBS', moodCode: 'EVN') {
           xml.code(code: 'RGFT2')
-          xml.value(value: ide_number)
+          xml.value(value: inv_device_number)
         }
       }
     end

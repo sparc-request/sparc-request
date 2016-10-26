@@ -1,4 +1,4 @@
--# Copyright © 2011 MUSC Foundation for Research Development
+-# Copyright © 2011-2016 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -20,7 +20,7 @@
 
 .modal-dialog
   .modal-content
-    = form_tag(destroy_line_items_dashboard_multiple_line_items_path, method: "put", class: "form-horizontal new_visit", remote: true) do
+    = form_tag(destroy_line_items_dashboard_multiple_line_items_path, method: "put", class: "form-horizontal", id: "destroy_service", remote: true) do
       .modal-header
         %button.close{type: 'button', data: {dismiss: 'modal'}}
           %span{aria: {hidden:'true'}} &times;

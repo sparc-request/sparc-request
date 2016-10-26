@@ -1,19 +1,39 @@
+-# Copyright © 2011-2016 MUSC Foundation for Research Development~
+-# All rights reserved.~
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.~
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following~
+-# disclaimer in the documentation and/or other materials provided with the distribution.~
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products~
+-# derived from this software without specific prior written permission.~
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,~
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT~
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL~
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS~
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
+
 - welcome_text = I18n.t('notifier.welcome_submit')
 - if @role != 'none'
   %p= I18n.t('notifier.body1', :full_name => @full_name)
-  %p{ :style => 'display: inline;' }
+  %p.inline
     = I18n.t('notifier.non_service_provider_intro_submitted_1', :welcome => welcome_text, :application_title => I18n.t('application_title'), :root_url => ROOT_URL, :protocol_type => @protocol.type.downcase)
-  %p{ :style => 'display: inline;' }
-    %a{:style => "color: blue; font-weight: bold;", :href => @portal_link}=t(:notifier)[:sparc_dashboard]
-  %p{ :style => 'display: inline;' }= t(:notifier)[:non_service_provider_intro_submitted_2]
+  %p.inline
+    %a.link{href: @portal_link}=t(:notifier)[:sparc_dashboard]
+  %p.inline= t(:notifier)[:non_service_provider_intro_submitted_2]
   %p= t(:notifier)[:note]
 - else
   %p= I18n.t('notifier.body1', :full_name => @full_name)
-  %p{ :style => 'display: inline;' }= I18n.t('notifier.service_provider_intro_submitted_1', :welcome => welcome_text, :application_title => I18n.t('application_title'), :root_url => ROOT_URL, :protocol_type => @protocol.type.downcase)
-  %p{ :style => 'display: inline;' }
-    %a{:style => "color: blue; font-weight: bold;", :href => @portal_link}=t(:notifier)[:sparc_dashboard_period]
+  %p.inline= I18n.t('notifier.service_provider_intro_submitted_1', :welcome => welcome_text, :application_title => I18n.t('application_title'), :root_url => ROOT_URL, :protocol_type => @protocol.type.downcase)
+  %p.inline
+    %a.link{href: @portal_link}=t(:notifier)[:sparc_dashboard_period]
 %br
 - if @portal_text
   %p
-    %a{:style => "color: blue; font-weight: bold;", :href => @portal_link}=@portal_text
+    %a.link{href: @portal_link}=@portal_text
 %br

@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2016 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -89,7 +89,7 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
     updater = Dashboard::AssociatedUserUpdater.new(id: params[:id], project_role: params[:project_role])
     
     if updater.successful?
-      #We care about this because the new rights will determine what is rendered
+      # We care about this because the new rights will determine what is rendered
       if @current_user_updated = params[:project_role][:identity_id].to_i == @user.id
         @protocol_type      = @protocol.type
         protocol_role       = updater.protocol_role
@@ -113,7 +113,7 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
     @protocol           = @protocol_role.protocol
     epic_access         = @protocol_role.epic_access
     protocol_role_clone = @protocol_role.clone
-    
+        
     @protocol_role.destroy
     
     if @current_user_destroyed = protocol_role_clone.identity_id == @user.id
@@ -125,6 +125,10 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
     end
 
     flash.now[:alert] = 'Authorized User Removed!'
+
+    if @protocol_role.destroyed?
+      @protocol.email_about_change_in_authorized_user(@protocol_role, "destroy")
+    end
 
     if USE_EPIC && @protocol.selected_for_epic && epic_access && !QUEUE_EPIC
       Notifier.notify_primary_pi_for_epic_user_removal(@protocol, protocol_role_clone).deliver

@@ -1,3 +1,23 @@
+# Copyright © 2011-2016 MUSC Foundation for Research Development~
+# All rights reserved.~
+
+# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
+
+# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.~
+
+# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following~
+# disclaimer in the documentation and/or other materials provided with the distribution.~
+
+# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products~
+# derived from this software without specific prior written permission.~
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,~
+# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT~
+# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL~
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS~
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
+# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
+
 require "rails_helper"
 
 RSpec.describe Dashboard::AssociatedUserUpdater do
@@ -33,45 +53,6 @@ RSpec.describe Dashboard::AssociatedUserUpdater do
     end
   end
 
-  context "SEND_AUTHORIZED_USER_EMAILS == true" do
-    it "should notify associated users about user change" do
-      protocol = create(:protocol_without_validations, primary_pi: primary_pi)
-      stub_const("SEND_AUTHORIZED_USER_EMAILS", true)
-      project_role = ProjectRole.create(identity_id: identity.id,
-        protocol_id: protocol.id,
-        role: "important",
-        project_rights: "to-party")
-      expect(UserMailer).to receive(:authorized_user_changed).with(primary_pi, protocol) do
-        mailer_stub = double('mailer')
-        expect(mailer_stub).to receive(:deliver)
-        mailer_stub
-      end
-      expect(UserMailer).to receive(:authorized_user_changed).with(identity, protocol) do
-        mailer_stub = double('mailer')
-        expect(mailer_stub).to receive(:deliver)
-        mailer_stub
-      end
-
-      Dashboard::AssociatedUserUpdater.new(id: project_role.id, project_role: { role: "not-important" })
-    end
-  end
-
-  context "SEND_AUTHORIZED_USER_EMAILS == false" do
-    it "should not notify associated users about user change" do
-      protocol = create(:protocol_without_validations, primary_pi: primary_pi)
-      stub_const("SEND_AUTHORIZED_USER_EMAILS", false)
-      project_role = ProjectRole.create(identity_id: identity.id,
-        protocol_id: protocol.id,
-        role: "important",
-        project_rights: "to-party")
-      allow(UserMailer).to receive(:authorized_user_changed)
-
-      Dashboard::AssociatedUserUpdater.new(id: project_role.id, project_role: { role: "not-important" })
-
-      expect(UserMailer).not_to have_received(:authorized_user_changed)
-    end
-  end
-
   context "USE_EPIC == true && Protocol selected for epic && QUEUE_EPIC == false" do
     let(:protocol) do
       create(:protocol_without_validations,
@@ -91,6 +72,7 @@ RSpec.describe Dashboard::AssociatedUserUpdater do
           role: "important",
           project_rights: "to-party",
           epic_access: true)
+
 
         expect(Notifier).to receive(:notify_for_epic_access_removal) do |p, pr|
           # make sure the correct objects are being passed
@@ -115,6 +97,7 @@ RSpec.describe Dashboard::AssociatedUserUpdater do
           project_rights: "to-party",
           epic_access: false)
 
+
         expect(Notifier).to receive(:notify_for_epic_user_approval) do |p|
           # make sure the correct objects are being passed
           expect(p.id).to eq(protocol.id)
@@ -136,6 +119,7 @@ RSpec.describe Dashboard::AssociatedUserUpdater do
           project_rights: "to-party",
           epic_access: false)
         project_role.epic_rights.create(right: "left", position: 1)
+
 
         expect(Notifier).to receive(:notify_for_epic_rights_changes) do |p, pr, epic_rights|
           # make sure the correct objects are being passed
@@ -188,6 +172,7 @@ RSpec.describe Dashboard::AssociatedUserUpdater do
           protocol_id: protocol.id,
           role: "important",
           project_rights: "to-party")
+
 
         updater = Dashboard::AssociatedUserUpdater.new(id: project_role.id, project_role: { role: "not-important" })
 

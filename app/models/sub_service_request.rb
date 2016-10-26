@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2016 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -68,6 +68,7 @@ class SubServiceRequest < ActiveRecord::Base
   attr_accessible :documents
   attr_accessible :service_requester_id
   attr_accessible :requester_contacted_date
+  attr_accessible :submitted_at
 
   accepts_nested_attributes_for :line_items, allow_destroy: true
   accepts_nested_attributes_for :payments, allow_destroy: true
@@ -447,23 +448,17 @@ class SubServiceRequest < ActiveRecord::Base
   ##########################
   ## SURVEY DISTRIBUTTION ##
   ##########################
-
+  # Distributes all available surveys to primary pi and ssr requester
   def distribute_surveys
-
-    # e-mail primary PI and requester
     primary_pi = service_request.protocol.primary_principal_investigator
-    requester = service_request.service_requester
-
     # send all available surveys at once
     available_surveys = line_items.map{|li| li.service.available_surveys}.flatten.compact.uniq
-
     # do nothing if we don't have any available surveys
-
     unless available_surveys.blank?
       SurveyNotification.service_survey(available_surveys, primary_pi, self).deliver
     # only send survey email to both users if they are unique
-      if primary_pi != requester
-        SurveyNotification.service_survey(available_surveys, requester, self).deliver
+      if primary_pi != service_requester
+        SurveyNotification.service_survey(available_surveys, service_requester, self).deliver
       end
     end
   end

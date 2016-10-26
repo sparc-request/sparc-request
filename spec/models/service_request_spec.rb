@@ -54,53 +54,53 @@ RSpec.describe 'ServiceRequest' do
   describe "audit report" do
     context "a line_item has been created or destroyed for this service_request" do
       before :each do
+        organization = create(:organization)
+        service = create(:service,
+                        organization_id: organization.id,
+                        name: 'ABCD',
+                        one_time_fee: true) 
         @identity = create(:identity)
-        service_request.sub_service_requests.each do |ssr|
-          ssr.line_items.first.destroy
-          ssr.reload
-          create(:line_item_without_validations, sub_service_request_id: ssr.id, service_id: service.id)
-          ssr.reload
-          @audits = AuditRecovery.where("auditable_id = '#{ssr.line_items.first.id}' AND auditable_type = 'LineItem'")
-        end
-        @audits.each do |audit|
-          audit.first.update_attribute(:created_at, Time.now - 5.hours)
-          audit.first.update_attribute(:user_id, @identity.id)
-        end
+        create(:service_provider,
+                identity: @identity,
+                organization: organization,
+                service: service) 
+        service_request.update_attribute(:submitted_at, Time.now.yesterday)
+        ssr = service_request.sub_service_requests.first
+        ssr.update_attribute(:submitted_at, Time.now.yesterday)
+        ssr.update_attribute(:status, 'submitted')
+        @li_id = ssr.line_items.first.id
+        ssr.line_items.first.destroy!
+        ssr.save!
+        service_request.reload
 
+        created_li = create(:line_item_without_validations, sub_service_request_id: ssr.id, service_id: service.id)
+        @created_li_id = created_li.id
+        ssr.save!
+        service_request.reload
 
-        # @identity = create(:identity)
-        # audit_with_deleted = AuditRecovery.create
-        # audit_with_deleted.update_attributes(auditable_id: service_request.line_items.first.id, 
-        #                                      action: "destroy", 
-        #                                      auditable_type: 'LineItem',
-        #                                      user_id: @identity.id,
-        #                                      audited_changes: 
-        #                                     { "sub_service_request_id"=>service_request.sub_service_requests.first.id, "service_id"=>service.id }, created_at: Time.now - 5.hours)
-        # audit_with_added = AuditRecovery.create
-        # audit_with_added.update_attributes(auditable_id: service_request.line_items.last.id, 
-        #                                      action: "create", 
-        #                                      auditable_type: 'LineItem',
-        #                                      user_id: @identity.id,
-        #                                      audited_changes: 
-        #                                     { "sub_service_request_id"=>service_request.sub_service_requests.first.id, "service_id"=>service.id }, created_at: Time.now - 4.hours)
+        @audit1 = AuditRecovery.where("auditable_id = '#{@li_id}' AND auditable_type = 'LineItem' AND action = 'destroy'")
+        @audit2 = AuditRecovery.where("auditable_id = '#{@created_li_id}' AND auditable_type = 'LineItem' AND action = 'create'")
 
-        # @audit = [[audit_with_deleted], [audit_with_added]]
-        # @service_provider = create(:service_provider, identity_id: identity.id)
+        @audit1.first.update_attribute(:created_at, Time.now - 5.hours)
+        @audit1.first.update_attribute(:user_id, @identity.id)
+        @audit2.first.update_attribute(:created_at, Time.now - 5.hours)
+        @audit2.first.update_attribute(:user_id, @identity.id)
+
+        @report = service_request.audit_report(@identity, Time.now.yesterday - 4.hours, Time.now.tomorrow)
       end
 
       it "should return a audit report" do
-        expect(service_request.audit_report(@identity, Time.now.yesterday.utc, Time.now.tomorrow.utc).first.last.values).to eq(@audit)
+        expect(service_request.audit_report(@identity, Time.now.yesterday.utc, Time.now.tomorrow.utc)).to eq(@report)
       end
     end
 
     context "a line_item has NOT been created or destroyed for this service_request" do
       before :each do
         @identity = create(:identity)
-        @audit = { line_items: {}}
       end
       
       it "should NOT return a audit report" do
-        expect(service_request.audit_report(@identity, Time.now.yesterday.utc, Time.now.tomorrow.utc)).to eq(@audit)
+        expect(service_request.audit_report(@identity, Time.now.yesterday.utc, Time.now.tomorrow.utc)).to eq({:line_items=>{}})
       end
     end
   end

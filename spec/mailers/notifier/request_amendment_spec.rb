@@ -118,8 +118,9 @@ RSpec.describe Notifier do
         ssr.update_attribute(:status, 'submitted')
         ssr.save!
         service_request.reload
-        created_li = create(:line_item_without_validations, sub_service_request_id: ssr.id, service_id: service3.id)
+        created_li = create(:line_item_without_validations, sub_service_request_id: ssr.id, service_id: service3.id, service_request_id: service_request.id)
         @created_li_id = created_li.id
+        ssr.reload
         ssr.save!
         service_request.reload
 
@@ -129,7 +130,6 @@ RSpec.describe Notifier do
         @audit2.first.update_attribute(:user_id, identity.id)
 
         @report = ssr.audit_report(identity, Time.now.yesterday - 4.hours, Time.now.tomorrow)
-
       end
 
       context 'service_provider' do

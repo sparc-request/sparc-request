@@ -509,8 +509,6 @@ class ServiceRequestsController < ApplicationController
         request_amendment_ssrs << ssr
       end
     end
-    puts "********"
-    puts request_amendment_ssrs.inspect
     if request_amendment_ssrs.present?
       send_request_amendment(request_amendment_ssrs)
     end
@@ -585,7 +583,7 @@ class ServiceRequestsController < ApplicationController
     request_amendment ? sub_service_request.update_status('submitted') : ''
  
     sub_service_request.organization.service_providers.where("(`service_providers`.`hold_emails` != 1 OR `service_providers`.`hold_emails` IS NULL)").each do |service_provider|
-      send_individual_service_provider_notification(sub_service_request, service_provider, audit_report, all_ssrs_deleted)
+      send_individual_service_provider_notification(sub_service_request, service_provider, audit_report, ssr_destroyed)
     end
   end
 
@@ -631,7 +629,7 @@ class ServiceRequestsController < ApplicationController
     end
 
     if audit_report.nil?
-      previously_submitted_at = service_request.previous_submitted_at.nil? ? Time.now.utc : service_request.previous_submitted_at.utc
+      previously_submitted_at = sub_service_request.service_request.previous_submitted_at.nil? ? Time.now.utc : service_request.previous_submitted_at.utc
       audit_report = sub_service_request.audit_report(current_user, previously_submitted_at, Time.now.utc)
     end
     

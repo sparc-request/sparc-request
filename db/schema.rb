@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160810145343) do
+ActiveRecord::Schema.define(version: 20160930185037) do
 
   create_table "admin_rates", force: :cascade do |t|
     t.integer  "line_item_id", limit: 4
@@ -399,13 +399,14 @@ ActiveRecord::Schema.define(version: 20160810145343) do
   add_index "impact_areas", ["protocol_id"], name: "index_impact_areas_on_protocol_id", using: :btree
 
   create_table "investigational_products_info", force: :cascade do |t|
-    t.integer  "protocol_id", limit: 4
-    t.string   "ind_number",  limit: 255
+    t.integer  "protocol_id",       limit: 4
+    t.string   "ind_number",        limit: 255
     t.boolean  "ind_on_hold"
-    t.string   "ide_number",  limit: 255
-    t.datetime "created_at",              null: false
-    t.datetime "updated_at",              null: false
+    t.string   "inv_device_number", limit: 255
+    t.datetime "created_at",                                 null: false
+    t.datetime "updated_at",                                 null: false
     t.datetime "deleted_at"
+    t.string   "exemption_type",    limit: 255, default: ""
   end
 
   add_index "investigational_products_info", ["protocol_id"], name: "index_investigational_products_info_on_protocol_id", using: :btree
@@ -420,6 +421,27 @@ ActiveRecord::Schema.define(version: 20160810145343) do
   end
 
   add_index "ip_patents_info", ["protocol_id"], name: "index_ip_patents_info_on_protocol_id", using: :btree
+
+  create_table "item_options", force: :cascade do |t|
+    t.string   "content",    limit: 255
+    t.integer  "item_id",    limit: 4
+    t.datetime "created_at",             null: false
+    t.datetime "updated_at",             null: false
+  end
+
+  add_index "item_options", ["item_id"], name: "index_item_options_on_item_id", using: :btree
+
+  create_table "items", force: :cascade do |t|
+    t.text     "content",          limit: 65535
+    t.string   "item_type",        limit: 255
+    t.text     "description",      limit: 65535
+    t.boolean  "required"
+    t.integer  "questionnaire_id", limit: 4
+    t.datetime "created_at",                     null: false
+    t.datetime "updated_at",                     null: false
+  end
+
+  add_index "items", ["questionnaire_id"], name: "index_items_on_questionnaire_id", using: :btree
 
   create_table "line_items", force: :cascade do |t|
     t.integer  "service_request_id",     limit: 4
@@ -657,7 +679,6 @@ ActiveRecord::Schema.define(version: 20160810145343) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "admin_filter",      limit: 255
-    t.string   "sorted_by",         limit: 255
     t.string   "with_owner",        limit: 255
   end
 
@@ -717,6 +738,28 @@ ActiveRecord::Schema.define(version: 20160810145343) do
   end
 
   add_index "question_groups", ["api_id"], name: "uq_question_groups_api_id", unique: true, using: :btree
+
+  create_table "questionnaire_responses", force: :cascade do |t|
+    t.integer  "submission_id", limit: 4
+    t.integer  "item_id",       limit: 4
+    t.text     "content",       limit: 65535
+    t.boolean  "required",                    default: false
+    t.datetime "created_at",                                  null: false
+    t.datetime "updated_at",                                  null: false
+  end
+
+  add_index "questionnaire_responses", ["item_id"], name: "index_questionnaire_responses_on_item_id", using: :btree
+  add_index "questionnaire_responses", ["submission_id"], name: "index_questionnaire_responses_on_submission_id", using: :btree
+
+  create_table "questionnaires", force: :cascade do |t|
+    t.string   "name",       limit: 255
+    t.integer  "service_id", limit: 4
+    t.datetime "created_at",                             null: false
+    t.datetime "updated_at",                             null: false
+    t.boolean  "active",                 default: false
+  end
+
+  add_index "questionnaires", ["service_id"], name: "index_questionnaires_on_service_id", using: :btree
 
   create_table "questions", force: :cascade do |t|
     t.integer  "survey_section_id",      limit: 4
@@ -966,6 +1009,7 @@ ActiveRecord::Schema.define(version: 20160810145343) do
     t.string   "routing",                    limit: 255
     t.text     "org_tree_display",           limit: 65535
     t.integer  "service_requester_id",       limit: 4
+    t.datetime "submitted_at"
   end
 
   add_index "sub_service_requests", ["organization_id"], name: "index_sub_service_requests_on_organization_id", using: :btree
@@ -1000,6 +1044,18 @@ ActiveRecord::Schema.define(version: 20160810145343) do
   end
 
   add_index "submission_emails", ["organization_id"], name: "index_submission_emails_on_organization_id", using: :btree
+
+  create_table "submissions", force: :cascade do |t|
+    t.integer  "service_id",       limit: 4
+    t.integer  "identity_id",      limit: 4
+    t.integer  "questionnaire_id", limit: 4
+    t.datetime "created_at",                 null: false
+    t.datetime "updated_at",                 null: false
+  end
+
+  add_index "submissions", ["identity_id"], name: "index_submissions_on_identity_id", using: :btree
+  add_index "submissions", ["questionnaire_id"], name: "index_submissions_on_questionnaire_id", using: :btree
+  add_index "submissions", ["service_id"], name: "index_submissions_on_service_id", using: :btree
 
   create_table "subsidies", force: :cascade do |t|
     t.datetime "created_at",                                             null: false
@@ -1219,4 +1275,12 @@ ActiveRecord::Schema.define(version: 20160810145343) do
   add_index "visits", ["research_billing_qty"], name: "index_visits_on_research_billing_qty", using: :btree
   add_index "visits", ["visit_group_id"], name: "index_visits_on_visit_group_id", using: :btree
 
+  add_foreign_key "item_options", "items"
+  add_foreign_key "items", "questionnaires"
+  add_foreign_key "questionnaire_responses", "items"
+  add_foreign_key "questionnaire_responses", "submissions"
+  add_foreign_key "questionnaires", "services"
+  add_foreign_key "submissions", "identities"
+  add_foreign_key "submissions", "questionnaires"
+  add_foreign_key "submissions", "services"
 end

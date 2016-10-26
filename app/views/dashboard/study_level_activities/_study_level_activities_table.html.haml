@@ -1,4 +1,4 @@
--# Copyright © 2011 MUSC Foundation for Research Development
+-# Copyright © 2011-2016 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -29,6 +29,10 @@
             %th{data: {class: 'fulfillments_button', align: "left", field: "fulfillments_button", switchable: 'false'}}
             %th{data: {class: 'service', align: "left", field: "service"}}
               = t(:dashboard)[:study_level_activities][:table][:service]
+            %th{data: {class: 'unit_requested', align: "left", field: "unit_requested", visible: "false"}}
+              = t(:dashboard)[:study_level_activities][:table][:unit_requested]
+            %th{data: {class: 'unit_type', align: "left", field: "unit_type", visible: "false"}}
+              = t(:dashboard)[:study_level_activities][:table][:unit_type]
             %th{data: {class: 'qty_req', align: "left", sortable: "true", field: "quantity_requested"}}
               = t(:dashboard)[:study_level_activities][:table][:quantity_requested]
             %th{data: {class: 'qty_rem', align: "left", sortable: "true", field: "quantity_type"}}

@@ -1,4 +1,4 @@
--# Copyright © 2011 MUSC Foundation for Research Development
+-# Copyright © 2011-2016 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -27,6 +27,7 @@
       %h4.modal-title.text-center
         = notable_type.underscore.humanize.titleize + t(:dashboard)[:notes][:index][:header]
     .modal-body
+      #modal_errors
       - if notes.any?
         .details-table
           .details-header.text-center
@@ -49,8 +50,12 @@
           = t(:dashboard)[:notes][:index][:none_message1] + notable_type + t(:dashboard)[:notes][:index][:none_message2]
     .modal-footer
       .center-block
-        %button.btn.btn-default{type: 'button', data: {dismiss: 'modal'}}
-          = t(:actions)[:close]
+        - if notable_type == "Fulfillment"
+          %button#fulfillments_back.btn.btn-default{type: 'button', data: {line_item_id: notable.line_item.id}}
+            = t(:actions)[:close]
+        - else
+          %button.btn.btn-default{type: 'button', data: {dismiss: 'modal'}}
+            = t(:actions)[:close]
         %button.btn.btn-primary.note.new{type: "button", aria: {label: "New Note"}, data: {notable_id: notable_id, notable_type: notable_type}}
           %span.glyphicon.glyphicon-plus{aria: {hidden: "true"}}
           %span

@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2016 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -38,6 +38,8 @@ class Service < ActiveRecord::Base
   has_many :service_requests, through: :sub_service_requests
   has_many :line_items, :dependent => :destroy
   has_many :identities, :through => :service_providers
+  has_many :questionnaires
+  has_many :submissions
 
   # Services that this service depends on
   # TODO: Andrew thinks "related services" is a bad name

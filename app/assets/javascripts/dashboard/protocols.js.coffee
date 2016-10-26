@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2016 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -72,6 +72,9 @@ $(document).ready ->
           url:  "/dashboard/protocols/#{protocol_id}/archive.js"
           data: { protocol_id: protocol_id }
 
+      $(document).on 'submit', '#filterrific-no-ajax-auto-submit', ->
+        $('#filterrific_sorted_by').val("#{$('.protocol-sort').data('sort-name')} #{$('.protocol-sort').data('sort-order')}")
+
       $(document).on 'click', '#save_filters_link', ->
         data = {} #Grab form values
 
@@ -83,7 +86,7 @@ $(document).ready ->
         if data["filterrific[with_status][]"].length
           data["filterrific[with_status][]"] = $("#filterrific_with_status").val()
 
-        if data["filterrific[with_organization][]"].length
+        if data["filterrific[with_organization][]"] && data["filterrific[with_organization][]"].length
           data["filterrific[with_organization][]"] = $("#filterrific_with_organization").val()
 
         if data["filterrific[with_owner][]"] && data["filterrific[with_owner][]"].length
@@ -156,22 +159,28 @@ $(document).ready ->
 
       # Protocol Table Sorting
       $(document).on 'click', '.protocol-sort', ->
-        search_query      = $('#search_query').val()
-        show_archived     = $('#show_archived').val()
-        with_status       = $('#with_status').val()
-        with_organization = $('#with_organization').val()
-        admin_filter      = $('#admin_filter').val()
         sorted_by         = "#{$(this).data('sort-name')} #{$(this).data('sort-order')}"
         page              = $('#page').val() || 1
-        data = 
-          'page': page
-          'filterrific':
-            'search_query': search_query
-            'show_archived': show_archived
-            'with_status': with_status
-            'with_organization': with_organization
-            'admin_filter': admin_filter
-            'sorted_by': sorted_by
+
+        data = {} #Grab form values
+
+        # REVIEW this is not fetching values from multiselects
+        $.each $('form#filterrific-no-ajax-auto-submit').serializeArray(), (i, field) ->
+          data[field.name] = field.value
+
+        data["page"] = page
+        data["filterrific[sorted_by]"] = sorted_by
+
+        # manually enter those in
+        if data["filterrific[with_status][]"].length
+          data["filterrific[with_status][]"] = $("#filterrific_with_status").val()
+
+        if data["filterrific[with_organization][]"] && data["filterrific[with_organization][]"].length
+          data["filterrific[with_organization][]"] = $("#filterrific_with_organization").val()
+
+        if data["filterrific[with_owner][]"] && data["filterrific[with_owner][]"].length
+          data["filterrific[with_owner][]"] = $("#filterrific_with_owner").val()
+
         $.ajax
           type: 'get'
           url: "/dashboard/protocols.js"

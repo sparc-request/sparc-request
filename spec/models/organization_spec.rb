@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2016 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -221,13 +221,13 @@ RSpec.describe 'organization' do
 
   describe 'update descendants availability' do
 
-    it 'should update all descendants availability to false when input is false' do 
+    it 'should update all descendants availability to false when input is false' do
       provider  = create(:provider, is_available: true)
       program   = create(:program, parent: provider, is_available: true)
       core      = create(:core, parent: program, is_available: true)
       service   = create(:service, organization: core, is_available: true)
 
-      provider.update_descendants_availability("false")
+      provider.update_descendants_availability("0")
 
       program.reload
       core.reload
@@ -238,7 +238,7 @@ RSpec.describe 'organization' do
       expect(service.is_available).to eq(false)
     end
 
-    it 'should not update all descendants availability when input is true' do 
+    it 'should not update all descendants availability when input is true' do
       provider  = create(:provider, is_available: true)
       program   = create(:program, parent: provider, is_available: true)
       core      = create(:core, parent: program, is_available: true)

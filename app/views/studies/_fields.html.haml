@@ -1,4 +1,4 @@
--# Copyright © 2011 MUSC Foundation for Research Development
+-# Copyright © 2011-2016 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -96,7 +96,7 @@
           %legend= t(:study_form)[:epic]
           .epic-questions
             .field
-              = f.label :selected_for_epic, t(:study_form)[:push_to_epic]        
+              = f.label :selected_for_epic, t(:study_form)[:push_to_epic]
               -#= f.hidden_field :study_type_question_group_id, :value => study.study_type_question_group_id == StudyTypeQuestionGroup.where(active:false).pluck(:id).first ? 'inactive' : 'active'
               %span.non_standard_usage_of_radio_buttons
                 = f.radio_button :selected_for_epic, true
@@ -111,7 +111,7 @@
                     = answer.label :answer, answer.object.study_type_question.question, class: "long"
                     = answer.select :answer, options_for_select([['Yes', true], ['No', false]], answer.object.answer), {include_blank: "Select One"}, id: "study_type_answer_#{answer.object.study_type_question.friendly_id}_answer"
                     = answer.hidden_field :study_type_question_id
-              
+
 
     %td.box-padding
       &nbsp;
@@ -232,10 +232,14 @@
                 = ip.label :ind_on_hold, t(:study_form)[:ind_on_hold]
                 = ip.check_box :ind_on_hold
 
-              .field.ide_number
-                = ip.label :ide_number, t(:study_form)[:ide_number]
-                = ip.text_field :ide_number
-
+              .field.inv_device_number
+                - InvestigationalProductsInfo::EXEMPTION_TYPES.each_with_index do |exemption_type, n|
+                  / Hide radio button for no exemption. There's a clear button for that.
+                  = ip.radio_button :exemption_type, exemption_type, class: ("hidden" unless exemption_type.present?)
+                  = ip.label :exemption_type, t(:study_form)[:numbers][exemption_type.to_sym], class: ("hidden" unless exemption_type.present?)
+                = ip.text_field :inv_device_number, class: ['form-control', ("hidden" unless ip.object.exemption_type.present?)]
+                %button.clear-inv-device-number-button
+                  = t(:study_form)[:clear]
 
             = f.fields_for :research_types_info do |rt|
               .field.ip_patents

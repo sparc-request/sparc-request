@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2016 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -23,7 +23,8 @@ FactoryGirl.define do
   factory :investigational_products_info do
     ind_number  { Random.rand(20000).to_s }
     ind_on_hold { false }
-    ide_number  { Random.rand(20000).to_s }
+    exemption_type "ide"
+    inv_device_number  { Random.rand(20000).to_s }
 
     trait :ind_on_hold do
       ind_on_hold true

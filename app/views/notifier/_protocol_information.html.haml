@@ -1,32 +1,52 @@
-%table{:style => 'border: 1px solid black; border-collapse: collapse; width: 100%;', :cellpadding => 3}
+-# Copyright © 2011-2016 MUSC Foundation for Research Development~
+-# All rights reserved.~
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.~
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following~
+-# disclaimer in the documentation and/or other materials provided with the distribution.~
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products~
+-# derived from this software without specific prior written permission.~
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,~
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT~
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL~
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS~
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
+
+%table.table{cellpadding: 3}
   %thead
-    %tr{:style => 'border: 1px solid black;'}
+    %tr.skinny-black-border
       %td{:colspan => 2}
         - if protocol.type.capitalize == "Project"
           %strong= t(:notifier)[:p_info]
         - else
           %strong= t(:notifier)[:study_info]
   %tbody
-    %tr{:style => 'border: 1px solid black;'}
+    %tr.skinny-black-border
       - if protocol.type.capitalize == "Project"
-        %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:notifier)[:p_id]
+        %th.table-header.left= t(:notifier)[:p_id]
       - else
-        %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:notifier)[:study_id]
-      %td{:style => 'border: 1px solid black;'}= protocol.id
-    %tr{:style => 'border: 1px solid black;'}
-      %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:notifier)[:title1]
-      %td{:style => 'border: 1px solid black;'}= protocol.short_title
-    %tr{:style => 'border: 1px solid black;'}
+        %th.table-header.left= t(:notifier)[:study_id]
+      %td.skinny-black-border= protocol.id
+    %tr.skinny-black-border
+      %th.table-header.left= t(:notifier)[:title1]
+      %td.skinny-black-border= protocol.short_title
+    %tr.skinny-black-border
       - if protocol.type.capitalize == "Project"
-        %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:notifier)[:p_title]
+        %th.table-header.left= t(:notifier)[:p_title]
       - else
-        %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:notifier)[:study_title]
-      %td{:style => 'border: 1px solid black;'}= protocol.title
-    %tr{:style => 'border: 1px solid black;'}
-      %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:notifier)[:s_name]
-      %td{:style => 'border: 1px solid black;'}= protocol.sponsor_name
-    %tr{:style => 'border: 1px solid black;'}
-      %th{:style => 'border: 1px solid black; width:200px; text-align:left;'}= t(:notifier)[:source]
-      %td{:style => 'border: 1px solid black;'}= (protocol.funding_source or protocol.potential_funding_source or "").capitalize
+        %th.table-header.left= t(:notifier)[:study_title]
+      %td.skinny-black-border= protocol.title
+    %tr.skinny-black-border
+      %th.table-header.left= t(:notifier)[:s_name]
+      %td.skinny-black-border= protocol.sponsor_name
+    %tr.skinny-black-border
+      %th.table-header.left= t(:notifier)[:source]
+      %td.skinny-black-border= (protocol.funding_source or protocol.potential_funding_source or "").capitalize
 %br
 %br

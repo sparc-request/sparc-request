@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2016 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -36,14 +36,14 @@ $(document).ready ->
       'true'             : ['.iacuc_number', '.name_of_iacuc', '.iacuc_approval_date',
                             '.iacuc_expiration_date']
     '#study_research_types_info_attributes_investigational_products' :
-      'true'             : ['.ind_number', '.ide_number']
+      'true'             : ['.ind_number', '.inv_device_number']
     '#study_research_types_info_attributes_ip_patents':
       'true'             : ['.patent_number', '.inventors']
     '#study_investigational_products_info_attributes_ind_number':
       'true'             : ['.ind_on_hold']
     '#study_impact_areas_attributes_6__destroy':
       'true'             : ['.impact_other']
-    
+
 
   FormFxManager.registerListeners($('.edit-project-view'), display_dependencies)
 
@@ -67,7 +67,7 @@ $(document).ready ->
 
   $.prototype.hide_visual_error = () ->
     this.removeClass('visual_error')
-    if $('.visual_error').length == 0 
+    if $('.visual_error').length == 0
       $('.study_type div').removeClass('field_with_errors')
       if $('#errorExplanation ul li').size() == 1
         $('#errorExplanation').remove()
@@ -110,7 +110,7 @@ $(document).ready ->
     new_value = $(e.target).val()
     if new_value == 'false'
       $(higher_level_of_privacy_dropdown).show_elt()
-    else if new_value == 'true' 
+    else if new_value == 'true'
       $(higher_level_of_privacy_dropdown).hide_elt()
       $(access_required_dropdown).hide_elt()
       $(epic_inbasket_dropdown).hide_elt()
@@ -132,7 +132,7 @@ $(document).ready ->
       $(research_active_dropdown).hide_elt()
       $(restrict_sending_dropdown).hide_elt()
     return
- 
+
   $(document).on 'change', access_required_dropdown, (e) ->
     new_value = $(e.target).val()
     if new_value == 'false' || new_value == nil
@@ -145,16 +145,16 @@ $(document).ready ->
       $(restrict_sending_dropdown).hide_elt()
     return
 
-  # When the epic box answers hit the validations with an unselected field, 
+  # When the epic box answers hit the validations with an unselected field,
   # the html.haml sets display to none for unselected fields
-  # So if the user has not filled out one of the 
-  # required fields in the epic box, it will hit this code and display 
+  # So if the user has not filled out one of the
+  # required fields in the epic box, it will hit this code and display
   # the appropriate fields that need to be filled out with a visual cue of red border
   if $('#errorExplanation ul li:contains("Study type answers")').length > 0
     $(study_selected_for_epic_button).change()
     if $(certificate_of_confidence_dropdown).is(':visible')
       $(certificate_of_confidence_dropdown).change()
-    if $(higher_level_of_privacy_dropdown).val() == 'true' 
+    if $(higher_level_of_privacy_dropdown).val() == 'true'
       $(access_required_dropdown).show_elt()
       $(higher_level_of_privacy_dropdown).change()
     if $(higher_level_of_privacy_dropdown).val() == 'false'
@@ -248,9 +248,17 @@ $(document).ready ->
   setupDatePicker('#iacuc_expiration_date', '#study_vertebrate_animals_info_attributes_iacuc_expiration_date')
   $('#iacuc_expiration_date').attr("readOnly", true)
 
+  $(document).on 'change', 'input[name="study[investigational_products_info_attributes][exemption_type]"]', ->
+    $('#study_investigational_products_info_attributes_inv_device_number').removeClass('hidden')
+
+  $(document).on 'click', '.clear-inv-device-number-button', (event) ->
+    # prevent form submit?
+    event.preventDefault()
+    $('#study_investigational_products_info_attributes_exemption_type_').prop('checked', true)
+    $('#study_investigational_products_info_attributes_inv_device_number').addClass('hidden').val('')
+
   #This is to disabled the submit after you click once, so you cant fire multiple posts at once.
   $("form").submit ->
     unless $('#study_research_types_info_attributes_human_subjects').is(':checked')
       $('#study_human_subjects_info_attributes_nct_number').val('')
     $('a.continue_button').unbind('click');
-

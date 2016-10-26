@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2016 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -27,7 +27,6 @@ $("#status-history-table").bootstrapTable 'refresh'
 $(".selectpicker").selectpicker()
 $("#flashes_container").html("<%= escape_javascript(render('shared/flash')) %>")
 
-$("#service_request_status_dropdown .btn-danger").tooltip(trigger: 'click')
 <% else %>
 $("#flashes_container").html("<%= escape_javascript(render(partial: 'shared/modal_errors', locals: {errors: @errors})) %>")
 <% end %>

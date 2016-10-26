@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2016 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -185,7 +185,7 @@ RSpec.describe LineItemsVisit do
       describe "add visit" do
 
         it "should add a visit" do
-          vg = arm1.visit_groups.create(position: nil)
+          vg = arm1.visit_groups.create(position: arm1.visit_groups.count, day: arm1.visit_groups.count, name: "Visit Group")
           @line_items_visit.add_visit(vg)
           expect(@line_items_visit.visits.count).to eq(11)
         end
@@ -194,7 +194,7 @@ RSpec.describe LineItemsVisit do
       describe "remove visit" do
 
         it "should delete a visit" do
-          vg = arm1.visit_groups.create(position: nil)
+          vg = arm1.visit_groups.create(position: arm1.visit_groups.count, day: arm1.visit_groups.count, name: "Visit Group")
           @line_items_visit.add_visit(vg)
           @line_items_visit.remove_visit(vg)
           expect(@line_items_visit.visits.count).to eq(10)

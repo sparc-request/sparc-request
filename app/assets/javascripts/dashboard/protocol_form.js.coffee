@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2016 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -259,6 +259,16 @@ $(document).ready ->
     else
       $('#ind-on-hold-group').hide()
       $('#protocol_investigational_products_info_attributes_ind_on_hold').attr('checked', false)
+
+  $(document).on 'change', 'input[name="protocol[investigational_products_info_attributes][exemption_type]"]', ->
+    $('.inv-device-number-field').appendTo($(this).closest('.row'))
+    $('#protocol_investigational_products_info_attributes_inv_device_number').removeClass('hidden')
+
+  $(document).on 'click', '.clear-inv-device-number-button', (event) ->
+    # prevent form submit?
+    event.preventDefault()
+    $('#protocol_investigational_products_info_attributes_exemption_type_').prop('checked', true)
+    $('#protocol_investigational_products_info_attributes_inv_device_number').addClass('hidden').val('')
   ###END INVESTIGATIONAL PRODUCTS FIELDS DISPLAY###
 
 

@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2016 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -54,7 +54,7 @@ $(document).ready ->
     max_dollar_cap = $(this).data('max-dollar-cap')
     subsidy_id = $(this).data('subsidy-id')
     current_percent_subsidy = (parseFloat($('#percent_subsidy').val()) / 100.0)
-    pi_contribution = parseFloat $(this).val()
+    pi_contribution = parseFloat $(this).val().replace('$', '').replace(',', '')
     total_request_cost = parseFloat($(".request_cost[data-subsidy-id='#{subsidy_id}']").data("cost")) / 100.0
     percent_subsidy = (recalculate_percent_subsidy(total_request_cost, pi_contribution) * 100).toFixed(2) / 100.0
     original_pi_contribution = recalculate_pi_contribution(total_request_cost, current_percent_subsidy)
@@ -96,7 +96,7 @@ $(document).ready ->
     max_dollar_cap = $(this).data('max-dollar-cap')
     subsidy_id = $(this).data('subsidy-id')
     percent_subsidy = parseFloat($(this).val()) / 100.0
-    original_pi_contribution = parseFloat($('#pi_contribution').val().replace('$', ''))
+    original_pi_contribution = parseFloat($('#pi_contribution').val().replace('$', '').replace(',', ''))
     total_request_cost = parseFloat($(".request_cost[data-subsidy-id='#{subsidy_id}']").data("cost")) / 100.0
     pi_contribution = recalculate_pi_contribution(total_request_cost, percent_subsidy)
     original_subsidy = recalculate_percent_subsidy(total_request_cost, original_pi_contribution)
@@ -133,10 +133,10 @@ $(document).ready ->
 
   recalculate_pi_contribution = (total_request_cost, percent_subsidy) ->
     contribution = total_request_cost - (total_request_cost * percent_subsidy)
-    return if isNaN(contribution) then 0 else contribution
+    return if isNaN(contribution) then total_request_cost else contribution
   recalculate_percent_subsidy = (total_request_cost, pi_contribution) ->
     percentage = (total_request_cost - pi_contribution) / total_request_cost
-    return if isNaN(percentage) then 0 else percentage
+    return if isNaN(percentage) then 1 else percentage
   recalculate_current_cost = (total_request_cost, percent_subsidy) ->
     current = total_request_cost * percent_subsidy
     return if isNaN(current) then 0 else current
@@ -157,5 +157,8 @@ $(document).ready ->
         Ok: ->
           $(this).dialog('close')
     redisplay_form_values(subsidy_id, percent, pi_contribution, current_cost)
+
+
+  $("#pi_contribution").val( format_currency($("#pi_contribution").val()) )
 
   validate_subsidy = () ->

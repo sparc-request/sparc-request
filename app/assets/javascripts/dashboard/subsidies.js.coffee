@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2016 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -59,6 +59,8 @@ $(document).ready ->
     # When user changes PI Contribution, the Percent Subsidy and Subsidy Cost fields are recalculated & displayed
     pi_contribution = parseFloat $(this).val()
     total_request_cost = parseFloat($("#subsidy_form_table_request_cost").data("cost")) / 100.0
+    if isNaN(pi_contribution)
+      pi_contribution = 0
     if pi_contribution > total_request_cost
       pi_contribution = total_request_cost
     else if pi_contribution < 0
@@ -71,6 +73,8 @@ $(document).ready ->
     # When user changes Percent Subsidy, the PI Contribution and Subsidy Cost fields are recalculated & displayed
     percent_subsidy = parseFloat($(this).val()) / 100.0
     total_request_cost = parseFloat($("#subsidy_form_table_request_cost").data("cost")) / 100.0
+    if isNaN(percent_subsidy)
+      percent_subsidy = 0
     if percent_subsidy > 1
       percent_subsidy = 1.0
     else if percent_subsidy < 0
@@ -81,10 +85,10 @@ $(document).ready ->
 
   recalculate_current_cost = (total_request_cost, percent_subsidy) ->
     current = total_request_cost * percent_subsidy
-    return if isNaN(current) then 0 else current
+    return if isNaN(current) then 1 else current
   recalculate_pi_contribution = (total_request_cost, percent_subsidy) ->
     contribution = total_request_cost - (total_request_cost * percent_subsidy)
-    return if isNaN(contribution) then 0 else contribution
+    return if isNaN(contribution) then total_request_cost else contribution
   recalculate_percent_subsidy = (total_request_cost, pi_contribution) ->
     percentage = (total_request_cost - pi_contribution) / total_request_cost
     return if isNaN(percentage) then 0 else percentage

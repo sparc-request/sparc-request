@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2016 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -83,19 +83,7 @@ RSpec.describe CatalogManager::CatalogHelper do
       program     = create(:program, name: 'Program', parent_id: provider.id, is_available: false)
       core        = create(:core, name: 'Core', parent_id: program.id, is_available: false)
 
-      expect(helper.disabled_parent(core)).to eq(provider.name)
-    end
-  end
-
-  context '#disabled_service_parent' do
-    it 'should return the name of the highest disabled organization in the tree' do
-      institution = create(:institution, name: 'Institution', is_available: true)
-      provider    = create(:provider, name: 'Provider', parent_id: institution.id, is_available: false)
-      program     = create(:program, name: 'Program', parent_id: provider.id, is_available: false)
-      core        = create(:core, name: 'Core', parent_id: program.id, is_available: false)
-      service     = create(:service, name: 'Service', organization_id: core.id, is_available: false)
-
-      expect(helper.disabled_service_parent(service)).to eq(provider.name)
+      expect(helper.disabled_parent(core)).to eq("Disabled at: #{provider.name}")
     end
   end
 end

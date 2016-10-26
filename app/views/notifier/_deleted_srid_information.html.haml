@@ -1,0 +1,17 @@
+%table.table{cellpadding: 3}
+  %thead
+    %tr.skinny-black-border
+      %td{:colspan => 2}
+        %strong= t(:notifier)[:srid_info]
+  %tr
+    %th.skinny-black-border= t(:notifier)[:sr_id_acronym]
+    %th.skinny-black-border= t(:notifier)[:organization]
+  %tbody
+    - @ssrs_to_be_displayed.each do |ssr|
+      %tr.skinny-black-border
+        %td.skinny-black-border.center
+          %strike= ssr.display_id
+        %td.skinny-black-border.center
+          %strike= ssr.org_tree_display
+%br
+%br

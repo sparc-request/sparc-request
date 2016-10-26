@@ -1,0 +1,25 @@
+%nav.navbar.navbar-default.navbar-fixed-top
+  .container-fluid
+    .navbar-header
+      %button{ class: 'navbar-toggle collapsed',
+      data: { toggle: 'collapse', target: '#navbar' } }
+        %span.sr-only Toggle navigation
+        %span.icon-bar
+        %span.icon-bar
+        %span.icon-bar
+      .hidden-xs.hidden-sm
+        = link_to 'SPARCRequest', root_path, class: 'navbar-brand'
+    .collapse.navbar-collapse#navbar
+      - if identity_signed_in?
+        %p.navbar-text
+          = "Signed in as #{current_identity.email}"
+      %ul.nav.navbar-nav.navbar-right
+        %li
+          - if identity_signed_in?
+            = link_to destroy_identity_session_path, method: :delete do
+              Log out
+              %i.glyphicon.glyphicon-log-out
+        %li
+          = link_to root_path do
+            Return to Home
+            %i.glyphicon.glyphicon-home

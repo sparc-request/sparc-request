@@ -1,3 +1,23 @@
+# Copyright © 2011-2016 MUSC Foundation for Research Development~
+# All rights reserved.~
+
+# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:~
+
+# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.~
+
+# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following~
+# disclaimer in the documentation and/or other materials provided with the distribution.~
+
+# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products~
+# derived from this software without specific prior written permission.~
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,~
+# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT~
+# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL~
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS~
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
+# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
+
 require 'rails_helper'
 
 RSpec.describe ServiceRequestsController do
@@ -23,8 +43,8 @@ RSpec.describe ServiceRequestsController do
     let!(:service2) { service = create( :service, organization_id: core.id) }
     let!(:service3) { service = create( :service, organization_id: core2.id) }
     
-    let!(:ssr1) { create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id) }
-    let!(:ssr2) { create(:sub_service_request, service_request_id: service_request.id, organization_id: core2.id) }
+    let!(:ssr1) { create(:sub_service_request, service_request_id: service_request.id, organization_id: core.id, submitted_at: Time.now) }
+    let!(:ssr2) { create(:sub_service_request, service_request_id: service_request.id, organization_id: core2.id, submitted_at: Time.now) }
 
     let!(:line_item1) { create(:line_item, service_id: service1.id, service_request_id: service_request.id, sub_service_request_id: ssr1.id) }
     let!(:line_item2) { create(:line_item, service_id: service2.id, service_request_id: service_request.id, sub_service_request_id: ssr1.id) }
@@ -201,39 +221,70 @@ RSpec.describe ServiceRequestsController do
       }.to raise_error(ActiveRecord::RecordNotFound)
     end
 
-    context 'ServiceRequest not in draft or first_draft and has been submitted' do
+    context 'SSR has been previously submitted' do
 
-      before(:each) { service_request.update_attribute(:status, 'not_draft') }
+      before(:each) { sub_service_request.update_attribute(:submitted_at, Time.now) }
 
-      context 'removed SubServiceRequest created before submit time' do
-
+      context 'removed all services (line_item1 & line_item2) for SSR' do
+        before :each do
+          line_item1.destroy
+        end
+ 
         it 'should send notifications to the service provider' do
-          service_request.update_attribute(:submitted_at, Time.zone.now)
-          ssr2.update_attribute(:created_at, Time.zone.now.ago(60))
-
           expect(controller).to receive(:send_ssr_service_provider_notifications)
+          post :remove_service, {
+                 :id            => service_request.id,
+                 :service_id    => service3.id,
+                 :line_item_id  => line_item2.id,
+                 :format        => :js,
+               }.with_indifferent_access
+        end
+      end
+
+      context 'removed one of two services for SSR' do
+ 
+        it 'should not send notifications to the service provider' do
+          expect(controller).not_to receive(:send_ssr_service_provider_notifications)
+          post :remove_service, {
+                 :id            => service_request.id,
+                 :service_id    => service3.id,
+                 :line_item_id  => line_item1.id,
+                 :format        => :js,
+               }.with_indifferent_access
+        end
+
+        it 'should not delete SSR (ssr1)' do
+          post :remove_service, {
+                 :id            => service_request.id,
+                 :service_id    => service3.id,
+                 :line_item_id  => line_item1.id,
+                 :format        => :js,
+               }.with_indifferent_access
+          ssrs = [sub_service_request, ssr1, ssr2]
+          expect(service_request.sub_service_requests).to eq(ssrs)
+        end
+      end
+
+      context 'SSR has one service and it is removed' do
+        it 'should send notifications to the service_provider' do
+          expect(controller).to receive(:send_ssr_service_provider_notifications)
+          post :remove_service, {
+                   :id            => service_request.id,
+                   :service_id    => service3.id,
+                   :line_item_id  => line_item3.id,
+                   :format        => :js,
+                 }.with_indifferent_access
+        end
+
+        it 'should delete SSR (ssr2)' do
           post :remove_service, {
                  :id            => service_request.id,
                  :service_id    => service3.id,
                  :line_item_id  => line_item3.id,
                  :format        => :js,
                }.with_indifferent_access
-        end
-      end
-
-      context 'removed SubServiceRequest created after submit time' do
-
-        it 'should not send notifications to the service provider' do
-          service_request.update_attribute(:submitted_at, Time.zone.now.ago(60))
-          ssr2.update_attribute(:created_at, Time.zone.now)
-
-          expect(controller).to_not receive(:send_ssr_service_provider_notifications)
-          post :remove_service, {
-                 :id            => service_request.id,
-                 :service_id    => service1.id,
-                 :line_item_id  => line_item1.id,
-                 :format        => :js,
-               }.with_indifferent_access
+          remaining_ssrs = [sub_service_request, ssr1]
+          expect(service_request.sub_service_requests).to eq(remaining_ssrs)
         end
       end
     end

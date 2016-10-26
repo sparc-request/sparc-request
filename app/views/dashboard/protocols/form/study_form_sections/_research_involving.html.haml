@@ -1,4 +1,4 @@
--# Copyright © 2011 MUSC Foundation for Research Development
+-# Copyright © 2011-2016 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -127,10 +127,21 @@
             .col-lg-1
               = ip_form.check_box :ind_on_hold, class: 'form-control'
 
+          - InvestigationalProductsInfo::EXEMPTION_TYPES.each_with_index do |exemption_type, n|
+            / Hide radio button for no exemption. There's a clear button for that.
+            .form-group.row.inv-device{ class: ("hidden" unless exemption_type.present?) }
+              .col-sm-2
+                .radio.pull-right
+                  = ip_form.label :exemption_type do
+                    = ip_form.radio_button :exemption_type, exemption_type
+                    = t(:protocols)[:studies][:research_involving][:products][:numbers][exemption_type.to_sym]
+              - if exemption_type == ip_form.object.exemption_type
+                .col-sm-10.inv-device-number-field
+                  = ip_form.text_field :inv_device_number, class: 'form-control'
           .form-group.row
-            = ip_form.label :ide_number, t(:protocols)[:studies][:research_involving][:products][:ide_number], class: 'col-lg-2 control-label'
-            .col-lg-10
-              = ip_form.text_field :ide_number, class: 'form-control'
+            .col-sm-2
+              %button.btn.btn-danger.clear-inv-device-number-button.pull-right
+                = t(:protocols)[:studies][:research_involving][:products][:clear]
       / Investigational Products selected end
 
       .form-group.row.ip_patents

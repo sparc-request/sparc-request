@@ -1,0 +1,12 @@
+.panel.panel-default
+  .panel-body
+    - @items.zip(@questionnaire_responses).each do |item, qr|
+      - if qr.item_id == item.id
+        %ul.list-group
+          %li.list-group-item
+            %h4.list-group-item-heading
+              = item.content
+            %p.list-group-item-text
+              = qr.content
+      - unless item == @items.last
+        %hr

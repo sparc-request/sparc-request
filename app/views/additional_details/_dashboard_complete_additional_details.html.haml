@@ -1,0 +1,7 @@
+- if service_request.additional_detail_services.present?
+  - service_request.additional_detail_services.each do |service|
+    - unless Submission.where(service: service, identity: current_identity).present?
+      %div.alert.alert-warning
+        %h5.text-center
+          = link_to t("additional_details.dashboard_complete_details", service_name: service.name),
+            new_service_additional_details_submission_path(service, protocol_id: @protocol.id, sr_id: service_request.id), remote: true

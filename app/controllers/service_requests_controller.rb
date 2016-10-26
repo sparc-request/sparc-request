@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2016 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -270,7 +270,8 @@ class ServiceRequestsController < ApplicationController
       if @sub_service_request.status != 'submitted'
         to_notify << @sub_service_request.id
       end
-
+      
+      @sub_service_request.update_attribute(:submitted_at, Time.now) unless @sub_service_request.status == 'submitted'
       @sub_service_request.update_attributes(status: 'submitted', nursing_nutrition_approved: false, lab_approved: false, imaging_approved: false, committee_approved: false)
       @sub_service_request.update_past_status(current_user)
     else
@@ -397,8 +398,8 @@ class ServiceRequestsController < ApplicationController
 
   def remove_service
     id = params[:line_item_id].sub('line_item-', '').to_i
-
     @line_item = @service_request.line_items.find(id)
+    ssr = @line_item.sub_service_request
     service = @line_item.service
     line_item_service_ids = @service_request.line_items.map(&:service_id)
 
@@ -432,13 +433,12 @@ class ServiceRequestsController < ApplicationController
 
     # clean up sub_service_requests
     @service_request.reload
+    @service_request.previous_submitted_at = @service_request.submitted_at
+    @protocol = @service_request.protocol
 
-    to_delete = @service_request.sub_service_requests.map(&:organization_id) - @service_request.service_list.keys
-    to_delete.each do |org_id|
-      ssr = @service_request.sub_service_requests.find_by_organization_id(org_id)
-      if !['first_draft', 'draft'].include?(@service_request.status) and !@service_request.submitted_at.nil? and @service_request.submitted_at > ssr.created_at
-        @protocol = @service_request.protocol
-        send_ssr_service_provider_notifications(@service_request, ssr, ssr_deleted=true)
+    if ssr.line_items.empty?
+      if !ssr.submitted_at.nil?
+        send_ssr_service_provider_notifications(@service_request, ssr, true)
       end
       ssr.destroy
     end
@@ -539,19 +539,18 @@ class ServiceRequestsController < ApplicationController
         
         @line_items = sub_service_request.line_items
         xls = render_to_string action: 'show', formats: [:xlsx]
-        display_ssr = sub_service_request
-        Notifier.notify_admin(service_request, submission_email.email, xls, current_user, display_ssr).deliver
+        Notifier.notify_admin(service_request, submission_email.email, xls, current_user, sub_service_request).deliver
       end
     end
   end
 
-  def send_ssr_service_provider_notifications(service_request, sub_service_request, ssr_deleted=false) #single sub-service request
+  def send_ssr_service_provider_notifications(service_request, sub_service_request, ssr_destroyed=false) #single sub-service request
+
     previously_submitted_at = service_request.previous_submitted_at.nil? ? Time.now.utc : service_request.previous_submitted_at.utc
     audit_report = sub_service_request.audit_report(current_user, previously_submitted_at, Time.now.utc)
 
     sub_service_request.organization.service_providers.where("(`service_providers`.`hold_emails` != 1 OR `service_providers`.`hold_emails` IS NULL)").each do |service_provider|
-      send_individual_service_provider_notification(service_request, sub_service_request, service_provider, audit_report, ssr_deleted)
-    end
+      send_individual_service_provider_notification(service_request, sub_service_request, service_provider, audit_report, ssr_destroyed) end
   end
 
   def ssr_has_changed?(service_request, sub_service_request) #specific ssr has changed?
@@ -571,9 +570,8 @@ class ServiceRequestsController < ApplicationController
     return false
   end
 
-  def send_individual_service_provider_notification(service_request, sub_service_request, service_provider, audit_report=nil, ssr_deleted=false)
+  def send_individual_service_provider_notification(service_request, sub_service_request, service_provider, audit_report=nil, ssr_destroyed=false)
     attachments = {}
-
     @service_list_true = @service_request.service_list(true, service_provider)
     @service_list_false = @service_request.service_list(false, service_provider)
 
@@ -595,12 +593,12 @@ class ServiceRequestsController < ApplicationController
       request_for_grant_billing_form = RequestGrantBillingPdf.generate_pdf service_request
       attachments["request_for_grant_billing_#{service_request.id}.pdf"] = request_for_grant_billing_form
     end
-
     if audit_report.nil?
       previously_submitted_at = service_request.previous_submitted_at.nil? ? Time.now.utc : service_request.previous_submitted_at.utc
       audit_report = sub_service_request.audit_report(current_user, previously_submitted_at, Time.now.utc)
     end
-    Notifier.notify_service_provider(service_provider, service_request, attachments, current_user, audit_report, ssr_deleted).deliver_now
+    ssr_id = sub_service_request.id
+    Notifier.notify_service_provider(service_provider, service_request, attachments, current_user, ssr_id, audit_report, ssr_destroyed).deliver_now
   end
 
   def send_epic_notification_for_user_approval(protocol)
@@ -678,6 +676,7 @@ class ServiceRequestsController < ApplicationController
     if (status == 'submitted')
       service_request.previous_submitted_at = @service_request.submitted_at
       service_request.update_attribute(:submitted_at, Time.now)
+      service_request.sub_service_requests.where.not(status: 'submitted').update_all(submitted_at: Time.now)
     end
     to_notify = service_request.update_status(status)
     service_request.sub_service_requests.each {|ssr| ssr.update_past_status(current_user)}

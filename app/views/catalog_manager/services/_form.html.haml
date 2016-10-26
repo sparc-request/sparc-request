@@ -1,4 +1,4 @@
--# Copyright © 2011 MUSC Foundation for Research Development
+-# Copyright © 2011-2016 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -63,46 +63,54 @@
             %tr
               %th= f.label :one_time_fee, t(:organization_form)[:one_time_fee]
               %td= f.check_box :one_time_fee, :class => "one_time_fee", :'data-pricing_map_ids' => pricing_map_ids(@service), :disabled => (@service.line_items_count > 0)
+
             %tr
               %th= f.label :disabled, t(:organization_form)[:disabled]
               %td
-                = f.check_box :is_available, {:checked => (@service.is_available.nil? ? false : !@service.is_available), disabled: !@service.organization.is_available }, false, true
-                %span
-                  - unless @service.organization.is_available
-                    = I18n.t('organization_form.disabled_at', disabled_parent: disabled_service_parent(@service))
+                = f.check_box :is_available, {:checked => @service.is_available, disabled: !@service.organization.is_available }
+                - if !@service.organization.is_available
+                  %span
+                    = disabled_parent(@service.organization)
+
+            %tr
+              %th
+                = t(:additional_details)[:add]
+              %td
+                = link_to t(:additional_details)[:add], service_additional_details_questionnaires_path(@service)
             %tr
               %th= t(:organization_form)[:tag_list]
               %td
                 - Tag.all.each do |tag|
+                  - next if tag.name == "clinical work fulfillment"
                   %span{:style => "margin-right:30px;"}
                     %span= f.label (t(:tags)[tag.name.gsub(" ", "_").to_sym] ? t(:tags)[tag.name.gsub(" ", "_").to_sym] : tag.name.humanize)
                     %span= f.check_box :tag_list, { :multiple => true }, tag.name, nil
 
       %br
+      #components_wrapper{:style => @service.one_time_fee ? "display: block;" : "display: none;"}
+        %fieldset.service_level_components.parent
+          .legend
+            = t(:organization_form)[:service_level_components]
 
-      %fieldset.service_level_components.parent
-        .legend
-          = t(:organization_form)[:service_level_components]
+          %fieldset.single_fieldset
+            .secondary_header Components
+            %table
+              %tbody
+                = f.hidden_field :components
+                - if @service.components
+                  - components = @service.components.split(",")
+                  - components_length = components.length
+                  - (0...components_length).each do |i|
+                    %tr{id: "service_component_position_#{i}"}
+                      %td
+                        %input.service_component_field{ value: components[i], position: i, type: 'text'}
+                        %button.delete{type: "button", position: i} Remove
+                %tr{id: "service_component_position_#{components_length}"}
+                  %td
+                    %input.service_component_field{ position: components_length, type: 'text' }
 
-        %fieldset.single_fieldset
-          .secondary_header Components
-          %table
-            %tbody
-              = f.hidden_field :components
-              - if @service.components
-                - components = @service.components.split(",")
-                - components_length = components.length
-                - (0...components_length).each do |i|
-                  %tr{id: "service_component_position_#{i}"}
-                    %td
-                      %input.service_component_field{ value: components[i], position: i, type: 'text'}
-                      %button.delete{type: "button", position: i} Remove
-              %tr{id: "service_component_position_#{components_length}"}
-                %td
-                  %input.service_component_field{ position: components_length, type: 'text' }
-
-          %button.add{type: "button"} Add components
-      %br
+            %button.add{type: "button"} Add components
+        %br
 
       #epic_wrapper{:style => @service.tag_list.include?("epic") ? "display: block;" : "display: none;"}
         %fieldset#epic_fieldset.parent

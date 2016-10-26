@@ -1,4 +1,4 @@
-// Copyright © 2011 MUSC Foundation for Research Development
+// Copyright © 2011-2016 MUSC Foundation for Research Development
 // All rights reserved.
 
 // Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -20,7 +20,7 @@
 
 .protocol-sort {
   float: right;
-
+  padding: 0 5px;
   span {
     clear: left;
     float: left;
@@ -119,4 +119,8 @@ textarea {
 
 .drop-underneath {
   margin-top: 20px;
+}
+
+.filter-identifier {
+  margin-left: 10px;
 }

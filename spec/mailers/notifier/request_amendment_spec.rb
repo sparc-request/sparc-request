@@ -80,7 +80,7 @@ RSpec.describe Notifier do
                                                                         xls,
                                                                         identity,
                                                                         service_request.sub_service_requests.first.id,
-                                                                        @report, false) }
+                                                                        @report, false, true) }
         # Expected service provider message is defined under request_amendment_intro
         it 'should display service provider intro message, conclusion, link, and should not display acknowledgments' do
           request_amendment_intro(mail)
@@ -139,7 +139,7 @@ RSpec.describe Notifier do
                                                                         xls,
                                                                         identity,
                                                                         service_request.sub_service_requests.first.id,
-                                                                        @report, false) }
+                                                                        @report, false, true) }
         # Expected service provider message is defined under request_amendment_intro
         it 'should display service provider intro message, conclusion, link, and should not display acknowledgments' do
           request_amendment_intro(mail)
@@ -194,7 +194,7 @@ RSpec.describe Notifier do
                                                                         xls,
                                                                         identity,
                                                                         service_request.sub_service_requests.first.id,
-                                                                        @report, false) }
+                                                                        @report, false, true) }
         # Expected service provider message is defined under request_amendment_intro
         it 'should display service provider intro message, conclusion, link, and should not display acknowledgments' do
           request_amendment_intro(mail)
@@ -263,7 +263,7 @@ RSpec.describe Notifier do
                                                                         xls,
                                                                         identity,
                                                                         service_request.sub_service_requests.first.id,
-                                                                        @report, false) }
+                                                                        @report, false, true) }
       # Expected service provider message is defined under request_amendment_intro
       it 'should display service provider intro message, conclusion, link, and should not display acknowledgments' do
         request_amendment_intro(mail)

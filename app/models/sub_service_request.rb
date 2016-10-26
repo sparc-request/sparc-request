@@ -336,14 +336,6 @@ class SubServiceRequest < ActiveRecord::Base
     end
   end
 
-  # Method is ready for expansion
-  def update_status(status)
-    if status == 'submitted'
-      self.update_attribute(:submitted_at, Time.now) unless self.status == 'submitted'
-      self.update_attributes(status: 'submitted', nursing_nutrition_approved: false, lab_approved: false, imaging_approved: false, committee_approved: false)
-    end
-  end
-
   def switch_to_new_service_request
     old_sr = self.service_request
     new_sr = old_sr.dup

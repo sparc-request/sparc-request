@@ -93,12 +93,12 @@ class Notifier < ActionMailer::Base
     mail(:to => email, :from => NO_REPLY_FROM, :subject => subject)
   end
 
-  def notify_service_provider(service_provider, service_request, attachments_to_add, user_current, ssr_id, audit_report=nil, ssr_destroyed=false)
+  def notify_service_provider(service_provider, service_request, attachments_to_add, user_current, ssr_id, audit_report=nil, ssr_destroyed=false, request_amendment=false)
     @notes = service_request.notes
 
     if ssr_destroyed
       @status = 'ssr_destroyed'
-    elsif audit_report.present?
+    elsif request_amendment
       @status = 'request_amendment'
     else
       @status = service_request.status

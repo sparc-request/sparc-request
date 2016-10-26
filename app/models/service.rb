@@ -325,4 +325,8 @@ class Service < ActiveRecord::Base
   def remotely_notifiable_attributes_to_watch_for_change
     ["components"]
   end
+
+  def identity_submission(identity)
+    submissions.where(identity: identity)
+  end
 end

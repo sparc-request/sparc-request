@@ -22,14 +22,14 @@
 - if @role != 'none'
   %p= I18n.t('notifier.body1', :full_name => @full_name)
   %p.inline
-    = I18n.t('notifier.non_service_provider_intro_1', :welcome => welcome_text, :application_title => I18n.t('application_title'), :root_url => ROOT_URL, :protocol_type => @protocol.type.downcase)
+    = I18n.t('notifier.non_service_provider_intro_1', :welcome => welcome_text, :application_title => t(:mailer)[:application_title], :root_url => ROOT_URL, :protocol_type => @protocol.type.downcase)
   %p.inline
     %a.link{href: @portal_link}=t(:notifier)[:sparc_dashboard]
   %p.inline= t(:notifier)[:non_service_provider_intro_2]
   %strong= t(:notifier)[:non_service_provider_intro_3]
 - else
   %p= I18n.t('notifier.body1', :full_name => @full_name)
-  %p.inline= I18n.t('notifier.service_provider_intro_1', :welcome => welcome_text, :application_title => I18n.t('application_title'), :root_url => ROOT_URL, :protocol_type => @protocol.type.downcase)
+  %p.inline= I18n.t('notifier.service_provider_intro_1', :welcome => welcome_text, :application_title => t(:mailer)[:application_title], :root_url => ROOT_URL, :protocol_type => @protocol.type.downcase)
   %p.inline
     %a.link{href: @portal_link}=t(:notifier)[:sparc_dashboard]
   %p.inline= t(:notifier)[:service_provider_intro_2]

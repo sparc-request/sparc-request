@@ -251,7 +251,6 @@ class ServiceRequestsController < ApplicationController
       end
 
       @sub_service_request.update_attribute(:status, 'get_a_cost_estimate')
-      @sub_service_request.update_past_status(current_user)
     else
       to_notify = update_service_request_status(@service_request, 'get_a_cost_estimate')
     end
@@ -273,7 +272,6 @@ class ServiceRequestsController < ApplicationController
       
       @sub_service_request.update_attribute(:submitted_at, Time.now) unless @sub_service_request.status == 'submitted'
       @sub_service_request.update_attributes(status: 'submitted', nursing_nutrition_approved: false, lab_approved: false, imaging_approved: false, committee_approved: false)
-      @sub_service_request.update_past_status(current_user)
     else
       to_notify = update_service_request_status(@service_request, 'submitted')
       @service_request.update_arm_minimum_counts
@@ -333,7 +331,6 @@ class ServiceRequestsController < ApplicationController
   def save_and_exit
     if @sub_service_request #if editing a sub service request, update status
       @sub_service_request.update_attribute(:status, 'draft')
-      @sub_service_request.update_past_status(current_user)
     else
       update_service_request_status(@service_request, 'draft')
       @service_request.ensure_ssr_ids
@@ -388,7 +385,6 @@ class ServiceRequestsController < ApplicationController
         elsif ssr.status.nil? || (ssr.can_be_edited? && ssr_has_changed?(@service_request, ssr) && (ssr.status != 'complete'))
           previous_status = ssr.status
           ssr.update_attribute :status, 'draft'
-          ssr.update_past_status(current_user) unless previous_status.nil?
         end
       end
 
@@ -416,7 +412,6 @@ class ServiceRequestsController < ApplicationController
         ssr = li.sub_service_request
         if ssr.can_be_edited? && ssr.status != 'first_draft'
           ssr.update_attribute(:status, 'draft')
-          ssr.update_past_status(current_user)
         end
         li.destroy
       end
@@ -679,7 +674,6 @@ class ServiceRequestsController < ApplicationController
       service_request.sub_service_requests.where.not(status: 'submitted').update_all(submitted_at: Time.now)
     end
     to_notify = service_request.update_status(status)
-    service_request.sub_service_requests.each {|ssr| ssr.update_past_status(current_user)}
 
     to_notify
   end

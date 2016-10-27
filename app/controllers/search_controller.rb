@@ -45,7 +45,9 @@ class SearchController < ApplicationController
         :parents      => s.parents.map(&:abbreviation).join(' | '),
         :label        => s.name,
         :value        => s.id,
-        :description  => s.description,
+        :description  => (s.description.nil? || s.description.blank?) ?
+                            t(:proper)[:catalog][:no_description] :
+                            s.description,
         :sr_id        => session[:service_request_id],
         :from_portal  => session[:from_portal],
         :first_service => first_service,

@@ -52,14 +52,15 @@ RSpec.describe AssociatedUserCreator do
 
     context "SEND_AUTHORIZED_USER_EMAILS: true && protocol has non-draft status" do
       it "should send authorized user changed emails" do
-        stub_const("SEND_AUTHORIZED_USER_EMAILS", true)
-        AssociatedUserCreator.new(@project_role_attrs)
-        
-        expect(UserMailer).to receive(:authorized_user_changed).twice do
+        stub_const("SEND_AUTHORIZED_USER_EMAILS", true)        
+        allow(UserMailer).to receive(:authorized_user_changed).twice do
           mailer = double("mailer")
           expect(mailer).to receive(:deliver)
           mailer
         end
+
+        AssociatedUserCreator.new(@project_role_attrs)
+        expect(UserMailer).to have_received(:authorized_user_changed).twice
       end
     end
 

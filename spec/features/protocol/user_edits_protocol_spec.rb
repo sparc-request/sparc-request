@@ -29,10 +29,12 @@ RSpec.describe 'User edits protocol', js: true do
     provider    = create(:provider, name: "Provider", parent: institution)
     program     = create(:program, name: "Program", parent: provider, process_ssrs: true)
     service     = create(:service, name: "Service", abbreviation: "Service", organization: program)
-    @protocol   = create(:protocol_federally_funded, type: 'Study', primary_pi: jug2)
+    @protocol   = create(:protocol_federally_funded, type: 'Project', primary_pi: jug2)
     @sr         = create(:service_request_without_validations, status: 'first_draft', protocol: @protocol)
     ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: program, status: 'first_draft')
                   create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
+    
+    StudyTypeQuestionGroup.create(active: 1)
   end
 
   context 'and clicks Edit Information' do
@@ -40,7 +42,7 @@ RSpec.describe 'User edits protocol', js: true do
       visit protocol_service_request_path(@sr)
       wait_for_javascript_to_finish
 
-      click_link 'Edit Study Information'
+      click_link 'Edit Project Information'
       wait_for_javascript_to_finish
 
       expect(page).to have_content('Change Protocol Type')
@@ -51,8 +53,15 @@ RSpec.describe 'User edits protocol', js: true do
         visit protocol_service_request_path(@sr)
         wait_for_javascript_to_finish
 
-        click_link 'Edit Study Information'
+        click_link 'Edit Project Information'
         wait_for_javascript_to_finish
+
+        fill_in 'protocol_short_title', with: 'Now this is a short title all about how my life got flipped-turned upside down'
+
+        click_button 'Save'
+        wait_for_javascript_to_finish
+
+        expect(@protocol.reload.short_title).to eq('Now this is a short title all about how my life got flipped-turned upside down')
       end
     end
   end

@@ -447,7 +447,7 @@ class ServiceRequestsController < ApplicationController
         ssr_destroyed = true
         request_amendment = false
         # only notify service providers of destroyed ssr
-        send_ssr_service_provider_notifications(ssr, ssr_destroyed, request_amendment)
+        send_ssr_service_provider_notifications(ssr, ssr_destroyed: true, request_amendment: false)
       end
       ssr.destroy
     end
@@ -517,18 +517,16 @@ class ServiceRequestsController < ApplicationController
 
   # Request amendment is only sent to service providers and admin
   def send_request_amendment(sub_service_requests)
-    request_amendment = true
     sub_service_requests = [sub_service_requests].flatten
-    send_service_provider_notifications(sub_service_requests, request_amendment)
-    send_admin_notifications(sub_service_requests, request_amendment)
+    send_service_provider_notifications(sub_service_requests, request_amendment: false)
+    send_admin_notifications(sub_service_requests, request_amendment: false)
   end
 
   # Send notifications to all users.
   def send_notifications(service_request, sub_service_requests)
-    request_amendment = false
     send_user_notifications(service_request)
-    send_admin_notifications(sub_service_requests, request_amendment)
-    send_service_provider_notifications(sub_service_requests, request_amendment)
+    send_admin_notifications(sub_service_requests, request_amendment: false)
+    send_service_provider_notifications(sub_service_requests, request_amendment: false)
   end
 
   def send_user_notifications(service_request)
@@ -552,14 +550,13 @@ class ServiceRequestsController < ApplicationController
     end
   end
 
-  def send_service_provider_notifications(sub_service_requests, request_amendment=false) #all sub-service requests on service request
+  def send_service_provider_notifications(sub_service_requests, request_amendment: false) #all sub-service requests on service request
     sub_service_requests.each do |sub_service_request|
-      ssr_destroyed = false
-      send_ssr_service_provider_notifications(sub_service_request, ssr_destroyed, request_amendment)
+      send_ssr_service_provider_notifications(sub_service_request, ssr_destroyed: false, request_amendment)
     end
   end
 
-  def send_admin_notifications(sub_service_requests, request_amendment=false)
+  def send_admin_notifications(sub_service_requests, request_amendment: false)
     # Iterates through each SSR to find the correct admin email.
     # Passes the correct SSR to display in the attachment and email.
     sub_service_requests.each do |sub_service_request|
@@ -578,7 +575,7 @@ class ServiceRequestsController < ApplicationController
     end
   end
 
-  def send_ssr_service_provider_notifications(sub_service_request, ssr_destroyed=false, request_amendment=false) #single sub-service request
+  def send_ssr_service_provider_notifications(sub_service_request, ssr_destroyed: false, request_amendment: false) #single sub-service request
     audit_report = request_amendment ? sub_service_request.audit_report(current_user, sub_service_request.service_request.previous_submitted_at.utc, Time.now.utc) : nil
  
     sub_service_request.organization.service_providers.where("(`service_providers`.`hold_emails` != 1 OR `service_providers`.`hold_emails` IS NULL)").each do |service_provider|

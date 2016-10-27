@@ -55,10 +55,6 @@ module NotifierHelper
   end
 
   def display_notes?(status, role, notes)
-    if (status == "submitted" || status == "request_amendment") && role == 'none' && !notes.empty?
-      return true
-    else
-      return false
-    end
+    (status == "submitted" || status == "request_amendment") && role == 'none' && !notes.empty?
   end
 end

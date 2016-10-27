@@ -56,14 +56,9 @@ en:
         header: "Browse Service Catalog"
       center:
         search_placeholder: "Search by Service Name or CPT Code..."
-        welcome: "Welcome to the SPARC Request Services Catalog"
-        description: "Search for services above or browse the catalog to your left"
+        welcome: "Welcome to SPARCRequest: Storefront of Research Services"
+        description: "Search for services above or browse the providers/services on the left sidebar"
         notice: "** You may only select services applicable to ONE Protocol at a time **"
-        website: "Website/Training:"
-        website_link: "http://academicdepartments.musc.edu/sctr/sparc_request"
-        blog: "Blog:"
-        blog_link: "http://www.sparcrequestblog.com"
-        pricing_warning: "Pricing is consistent across locations unless otherwise stated"
         news:
           header: "News"
           none: "There is no recent news. Please check back later."

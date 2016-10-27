@@ -59,6 +59,7 @@ RSpec.describe 'requests modal', js: true do
           add_note_button.click
         end
       end
+      wait_for_javascript_to_finish
 
       expect(page.index_notes_modal).to have_notes(text: 'my important note')
       expect(Note.count).to eq 1

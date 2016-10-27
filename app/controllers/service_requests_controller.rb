@@ -446,6 +446,7 @@ class ServiceRequestsController < ApplicationController
       if !ssr.submitted_at.nil?
         ssr_destroyed = true
         request_amendment = false
+        # only notify service providers of destroyed ssr
         send_ssr_service_provider_notifications(ssr, ssr_destroyed, request_amendment)
       end
       ssr.destroy
@@ -511,9 +512,7 @@ class ServiceRequestsController < ApplicationController
         request_amendment_ssrs << ssr
       end
     end
-    if request_amendment_ssrs.present?
-      send_request_amendment(request_amendment_ssrs)
-    end
+    send_request_amendment(request_amendment_ssrs) unless request_amendment_ssrs.empty?
   end
 
   # Request amendment is only sent to service providers and admin

@@ -86,11 +86,11 @@ RSpec.describe 'ServiceRequest' do
         @audit2.first.update_attribute(:created_at, Time.now - 5.hours)
         @audit2.first.update_attribute(:user_id, @identity.id)
 
-        @report = service_request.audit_report(@identity, Time.now.yesterday - 4.hours, Time.now.tomorrow)
+        @report = service_request.audit_report(@identity, Time.now.yesterday - 4.hours, Time.now)
       end
 
       it "should return a audit report" do
-        expect(service_request.audit_report(@identity, Time.now.yesterday.utc, Time.now.tomorrow.utc)).to eq(@report)
+        expect(service_request.audit_report(@identity, Time.now.yesterday.utc, Time.now.utc)).to eq(@report)
       end
     end
 
@@ -100,7 +100,7 @@ RSpec.describe 'ServiceRequest' do
       end
       
       it "should NOT return a audit report" do
-        expect(service_request.audit_report(@identity, Time.now.yesterday.utc, Time.now.tomorrow.utc)).to eq({:line_items=>{}})
+        expect(service_request.audit_report(@identity, Time.now.yesterday.utc, Time.now.utc)).to eq({:line_items=>{}})
       end
     end
   end

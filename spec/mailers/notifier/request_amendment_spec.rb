@@ -51,7 +51,7 @@ RSpec.describe Notifier do
         service_request.update_attribute(:submitted_at, Time.now.yesterday)
         deleted_and_created_line_item_audit_trail(service_request, service3, identity)
         ssr = service_request.sub_service_requests.first
-        @report = ssr.audit_report(identity, Time.now.yesterday - 4.hours, Time.now.tomorrow)
+        @report = ssr.audit_report(identity, Time.now.yesterday - 4.hours, Time.now)
       end
 
       context 'service_provider' do
@@ -96,7 +96,7 @@ RSpec.describe Notifier do
         service_request.update_attribute(:submitted_at, Time.now.yesterday)
         created_line_item_audit_trail(service_request, service3, identity)
         ssr = service_request.sub_service_requests.first
-        @report = ssr.audit_report(identity, Time.now.yesterday - 4.hours, Time.now.tomorrow) 
+        @report = ssr.audit_report(identity, Time.now.yesterday - 4.hours, Time.now) 
       end
 
       context 'service_provider' do
@@ -140,7 +140,7 @@ RSpec.describe Notifier do
         service_request.update_attribute(:submitted_at, Time.now.yesterday)
         deleted_line_item_audit_trail(service_request, service3, identity)
         ssr = service_request.sub_service_requests.first
-        @report = ssr.audit_report(identity, Time.now.yesterday - 4.hours, Time.now.tomorrow) 
+        @report = ssr.audit_report(identity, Time.now.yesterday - 4.hours, Time.now) 
       end
 
       context 'service_provider' do
@@ -190,7 +190,7 @@ RSpec.describe Notifier do
       service_request.update_attribute(:submitted_at, Time.now.yesterday)
       deleted_and_created_line_item_audit_trail(service_request, service3, identity)
       ssr = service_request.sub_service_requests.first
-      @report = ssr.audit_report(identity, Time.now.yesterday - 4.hours, Time.now.tomorrow)
+      @report = ssr.audit_report(identity, Time.now.yesterday - 4.hours, Time.now)
     end
 
     context 'service_provider' do

@@ -564,7 +564,7 @@ class ServiceRequestsController < ApplicationController
     # Passes the correct SSR to display in the attachment and email.
     sub_service_requests.each do |sub_service_request|
 
-      audit_report = request_amendment ? audit_report = sub_service_request.audit_report(current_user, sub_service_request.service_request.previous_submitted_at.utc, Time.now.tomorrow.utc) : nil
+      audit_report = request_amendment ? audit_report = sub_service_request.audit_report(current_user, sub_service_request.service_request.previous_submitted_at.utc, Time.now.utc) : nil
 
       sub_service_request.organization.submission_emails_lookup.each do |submission_email|
         
@@ -579,7 +579,7 @@ class ServiceRequestsController < ApplicationController
   end
 
   def send_ssr_service_provider_notifications(sub_service_request, ssr_destroyed=false, request_amendment=false) #single sub-service request
-    audit_report = request_amendment ? sub_service_request.audit_report(current_user, sub_service_request.service_request.previous_submitted_at.utc, Time.now.tomorrow.utc) : nil
+    audit_report = request_amendment ? sub_service_request.audit_report(current_user, sub_service_request.service_request.previous_submitted_at.utc, Time.now.utc) : nil
  
     sub_service_request.organization.service_providers.where("(`service_providers`.`hold_emails` != 1 OR `service_providers`.`hold_emails` IS NULL)").each do |service_provider|
       send_individual_service_provider_notification(sub_service_request, service_provider, audit_report, ssr_destroyed, request_amendment)
@@ -588,7 +588,7 @@ class ServiceRequestsController < ApplicationController
 
   def ssr_has_changed?(service_request, sub_service_request) #specific ssr has changed?
     previously_submitted_at = service_request.previous_submitted_at.nil? ? Time.now.utc : service_request.previous_submitted_at.utc
-    unless sub_service_request.audit_report(current_user, previously_submitted_at, Time.now.tomorrow.utc)[:line_items].empty?
+    unless sub_service_request.audit_report(current_user, previously_submitted_at, Time.now.utc)[:line_items].empty?
       return true
     end
     return false

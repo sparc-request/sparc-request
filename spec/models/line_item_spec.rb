@@ -267,11 +267,6 @@ RSpec.describe "Line Item" do
   end
 
   context "validations for one time fees" do
-    let!(:study)               { Study.create(attributes_for(:protocol)) }
-    let!(:organization)        { create(:organization, :pricing_setup_count => 1) }
-    let!(:service)             { create(:service, :organization_id => organization.id, :pricing_map_count => 1, one_time_fee: true) }
-    let!(:service_request)     { build(:service_request_without_validations, protocol_id: study.id) }
-    let!(:sub_service_request) { create(:sub_service_request, service_request_id: service_request.id, organization_id: organization.id) }
     let!(:pricing_map)         { create(:pricing_map, service_id: service.id, unit_type: 'ea', effective_date: Date.today, display_date: Date.today, full_rate: 600, exclude_from_indirect_cost: 0, unit_minimum: 1, units_per_qty_max: 10, quantity_minimum: 1) }
     let!(:otf_line_item)       { create(:line_item, service_request_id: service_request.id, service_id: service.id, sub_service_request_id: sub_service_request.id, quantity: 5, units_per_quantity: 1) }
 

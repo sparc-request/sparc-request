@@ -23,75 +23,25 @@ class ApplicationController < ActionController::Base
   helper :all
   helper_method :current_user
   helper_method :xeditable?
-  before_filter :setup_navigation
   before_filter :set_highlighted_link  # default is to not highlight a link
   before_action :configure_permitted_parameters, if: :devise_controller?
 
   protected
+
+  def after_sign_in_path_for(resource)
+    stored_location_for(resource) || "/service_requests/#{session[:service_request_id]}/catalog" || root_path
+  end
 
   def set_highlighted_link  # default value, override inside controllers
     @highlighted_link ||= ''
   end
 
   def configure_permitted_parameters
-    devise_parameter_sanitizer.for(:sign_up) { |u|  u.permit!}
+    devise_parameter_sanitizer.for(:sign_up) { |u| u.permit!}
   end
 
   def current_user
     current_identity
-  end
-
-  def prepare_catalog
-    if session['sub_service_request_id'] and @sub_service_request
-      @institutions = @sub_service_request.organization.parents.select{|x| x.type == 'Institution'}
-    else
-      @institutions = Institution.order('`order`')
-    end
-
-    if USE_GOOGLE_CALENDAR
-      curTime = Time.now.utc
-      startMin = curTime
-      startMax  = (curTime + 1.month)
-
-      @events = []
-      begin
-        #to parse file and get events
-        cal_file = File.open(Rails.root.join("tmp", "basic.ics"))
-
-        cals = Icalendar.parse(cal_file)
-
-        cal = cals.first
-
-        events = cal.events.sort { |x, y| y.dtstart <=> x.dtstart }
-
-        events.each do |event|
-          next if Time.parse(event.dtstart.to_s) > startMax
-          break if Time.parse(event.dtstart.to_s) < startMin
-          @events << create_calendar_event(event)
-        end
-
-        @events.reverse!
-
-        Alert.where(alert_type: ALERT_TYPES['google_calendar'], status: ALERT_STATUSES['active']).update_all(status: ALERT_STATUSES['clear'])
-      rescue Exception => e
-        active_alert = Alert.where(alert_type: ALERT_TYPES['google_calendar'], status: ALERT_STATUSES['active']).first_or_initialize
-        if Rails.env == 'production' && active_alert.new_record?
-          active_alert.save
-          ExceptionNotifier::Notifier.exception_notification(request.env, e).deliver unless request.remote_ip == '128.23.150.107' # this is an ignored IP address, MUSC security causes issues when they pressure test,  this should be extracted/configurable
-        end
-      end
-    end
-
-    if USE_NEWS_FEED
-      page = Nokogiri::HTML(open("https://www.sparcrequestblog.com"))
-      articles = page.css('article.post').take(3)
-      @news = []
-      articles.each do |article|
-        @news << {title: (article.at_css('.entry-title') ? article.at_css('.entry-title').text : ""),
-                  link: (article.at_css('.entry-title a') ? article.at_css('.entry-title a')[:href] : ""),
-                  date: (article.at_css('.date') ? article.at_css('.date').text : "") }
-      end
-    end
   end
 
   def create_calendar_event event
@@ -129,13 +79,14 @@ class ApplicationController < ActionController::Base
   # Initialize the instance variables used with service requests:
   #   @service_request
   #   @sub_service_request
-  #   @line_items
+  #   @line_items_count
   #
   # These variables are initialized from params (if set) or cookies.
   def initialize_service_request
     @service_request = nil
     @sub_service_request = nil
-    @line_items = nil
+    @line_items_count = nil
+    @sub_service_requests = {}
 
     if params[:edit_original]
       # If editing the original service request, we delete the sub
@@ -167,7 +118,6 @@ class ApplicationController < ActionController::Base
         use_existing_service_request
         validate_existing_service_request
       elsif params[:from_portal]
-        session[:from_portal] = params[:from_portal]
         create_or_use_request_from_portal(params)
       else
         # If the cookie is nil (as with visiting the main catalog for
@@ -181,7 +131,7 @@ class ApplicationController < ActionController::Base
       else
         @service_request = ServiceRequest.new(status: 'first_draft')
         @service_request.save(validate: false)
-        @line_items = []
+        @line_items_count = []
         session[:service_request_id] = @service_request.id
       end
     else
@@ -198,7 +148,8 @@ class ApplicationController < ActionController::Base
     protocol = Protocol.find(params[:protocol_id].to_i)
     if (params[:has_draft] == 'true')
       @service_request = protocol.service_requests.last
-      @line_items = @service_request.try(:line_items)
+      @line_items_count = @service_request.try(:line_items).try(:count)
+      @sub_service_requests = @service_request.cart_sub_service_requests
       @sub_service_request = @service_request.sub_service_requests.last
       session[:service_request_id] = @service_request.id
       if @sub_service_request
@@ -209,15 +160,16 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  # Set @service_request, @sub_service_request, and @line_items from the
+  # Set @service_request, @sub_service_request, and @line_items_count from the
   # ids stored in the session.
   def use_existing_service_request
     @service_request = ServiceRequest.find session[:service_request_id]
     if session[:sub_service_request_id]
       @sub_service_request = @service_request.sub_service_requests.find session[:sub_service_request_id]
-      @line_items = @sub_service_request.try(:line_items)
+      @line_items_count = @sub_service_request.try(:line_items).try(:count)
     else
-      @line_items = @service_request.try(:line_items)
+      @line_items_count = @service_request.try(:line_items).try(:count)
+      @sub_service_requests = @service_request.cart_sub_service_requests
     end
   end
 
@@ -253,15 +205,9 @@ class ApplicationController < ActionController::Base
       end
     end
 
-    # if the user has requested an account and it is pending approval we need to change the login message
-    signed_up_but_not_approved = false
-    if flash[:notice] == I18n.t("devise.registrations.identity.signed_up_but_not_approved") # use the local version of the text
-      signed_up_but_not_approved = true
-    end
-
     @service_request.save(validate: false)
     session[:service_request_id] = @service_request.id
-    redirect_to catalog_service_request_path(@service_request, signed_up_but_not_approved: signed_up_but_not_approved)
+    redirect_to catalog_service_request_path(@service_request)
   end
 
   def authorize_identity
@@ -292,23 +238,23 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def setup_navigation
-    #TODO - this could definitely be done a better way
-    @page = if params[:action] == 'navigate'
-        params[:action] = params[:current_location] || request.referrer.split('/').last.split('?').first
-      else
-        params[:action]
+  def find_locked_org_ids
+    @locked_org_ids = []
+    if @service_request.protocol.present?
+      @service_request.sub_service_requests.each do |ssr|
+        organization = ssr.organization
+        if organization.has_editable_statuses?
+          self_or_parent_id = ssr.find_editable_id(organization.id)
+          if !EDITABLE_STATUSES[self_or_parent_id].include?(ssr.status)
+            @locked_org_ids << self_or_parent_id
+            @locked_org_ids << organization.all_children(Organization.all).map(&:id)
+          end
+        end
       end
 
-
-    c = YAML.load_file(Rails.root.join('config', 'navigation.yml'))[@page]
-    unless c.nil?
-      @step_text = c['step_text']
-      @css_class = c['css_class']
-      @back = c['back']
-      @catalog = c['catalog']
-      @forward = c['forward']
-      @validation_groups = c['validation_groups']
+      unless @locked_org_ids.empty?
+        @locked_org_ids = @locked_org_ids.flatten.uniq
+      end
     end
   end
 

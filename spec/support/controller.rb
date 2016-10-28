@@ -56,3 +56,7 @@ def stub_portal_controller
 end
 
 alias :stub_catalog_manager_controller :stub_portal_controller
+
+def find_before_filters
+  controller._process_action_callbacks.select{ |f| f.kind == :before }.map(&:filter)
+end

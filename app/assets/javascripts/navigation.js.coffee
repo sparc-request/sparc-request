@@ -19,22 +19,14 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 $(document).ready ->
-  $('.navigation_link').live 'click', ->
-    if ($('#percent_subsidy').length == 1) && ($('#percent_subsidy').val() == '0.0' || $('#percent_subsidy').val() == '0.00')
-      $("#submit_error .message").html('The percent subsidy cannot be zero')
-      $("#submit_error").dialog
-        modal: true
-        buttons:
-          Ok: ->
-            $(this).dialog('close')
-    else
-      if $(this).parent('div.exit').size() >= 1
-        $('#processing_request').show()
-      location = $(this).attr('location')
-      validates = $(this).attr('validates')
-      $('#location').val(location)
-      $('#validates').val(validates)
-      if location == 'service_subsidy'
-        $('td.visit input').each ->
-          $(this).attr('disabled', true)
-      $('#navigation_form').submit()
+  $(document).on('mouseenter focus', '.step-btn', ->
+    $(this).children().addClass('hover')
+  ).on('mouseleave focusout', '.step-btn', ->
+    $(this).children().removeClass('hover')
+  )
+
+  # We dont want the extra handler on the submit button if we need to use the system
+  # satisfaction survey so that we can preventDefault the submit in system_satisfaction.js.coffee
+  if $('#use_system_satisfaction').val() != 'true'
+    $(document).on 'click', '.form-submit-button', ->
+      $('#service-request-form').submit()

@@ -22,14 +22,15 @@ require 'rails_helper'
 
 RSpec.describe Arm, type: :model do
   describe '#remove_visit' do
+    let!(:protocol) { create(:protocol_without_validations) }
 
     it "should decrease visit_count by 1" do
-      arm = create(:arm, visit_count: 1, line_item_count: 1)
+      arm = create(:arm, protocol: protocol, visit_count: 1, line_item_count: 1)
       expect { arm.remove_visit(1) }.to change { arm.visit_count }.by(-1)
     end
 
     it "should remove VisitGroup at the specified position" do
-      arm = create(:arm, visit_count: 3, line_item_count: 1)
+      arm = create(:arm, protocol: protocol, visit_count: 3, line_item_count: 1)
       first_vg = arm.visit_groups.first
       third_vg = arm.visit_groups.last
 

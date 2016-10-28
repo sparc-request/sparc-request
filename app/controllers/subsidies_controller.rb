@@ -19,24 +19,58 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class SubsidiesController < ApplicationController
-  before_filter :find_subsidy, only: [:update, :destroy]
+  respond_to :json, :js, :html
+
+  def new
+    @subsidy = PendingSubsidy.new(sub_service_request_id: params[:ssrid])
+    @header_text = t(:subsidies)[:new]
+    @admin = false
+    @path = subsidies_path
+    @subsidy.percent_subsidy = @subsidy.default_percentage
+    @action = 'new'
+  end
 
   def create
-    @sub_service_request = SubServiceRequest.find params[:subsidy][:sub_service_request_id]
-    @subsidy = PendingSubsidy.new(sub_service_request_id: @sub_service_request.id)
-    @subsidy.percent_subsidy = @subsidy.default_percentage
-    @subsidy.save(validate: false)
+    format_percent_subsidy_param
+    @subsidy = PendingSubsidy.new(params[:pending_subsidy].except(:pi_contribution))
+    if @subsidy.valid?
+      @subsidy.save
+      @sub_service_request = @subsidy.sub_service_request
+      @admin = false
+      flash[:success] = t(:subsidies)[:created]
+    else
+      @errors = @subsidy.errors
+    end
+  end
+
+  def edit
+    @subsidy = PendingSubsidy.find(params[:id])
+    @header_text = t(:subsidies)[:edit]
+    @admin = false
+    @path = subsidy_path(@subsidy)
+    @action = 'edit'
   end
 
   def update
+    @subsidy = PendingSubsidy.find(params[:id])
+    @sub_service_request = @subsidy.sub_service_request
     format_percent_subsidy_param
-    unless @subsidy.update_attributes(params[:subsidy].except(:pi_contribution))
-      @errors = @subsidy.errors.full_messages
+    if @subsidy.update_attributes(params[:pending_subsidy].except(:pi_contribution))
+      @admin = false
+      flash[:success] = t(:subsidies)[:updated]
+    else
+      @errors = @subsidy.errors
+      @subsidy.reload
     end
   end
 
   def destroy
-    @subsidy.destroy
+    @subsidy = Subsidy.find(params[:id])
+    @sub_service_request = @subsidy.sub_service_request
+    if @subsidy.destroy
+      @admin = false
+      flash[:alert] = t(:subsidies)[:destroyed]
+    end
   end
 
   private
@@ -47,8 +81,8 @@ class SubsidiesController < ApplicationController
   end
 
   def format_percent_subsidy_param
-    if !params[:subsidy].nil? && params[:subsidy][:percent_subsidy].present?
-      params[:subsidy][:percent_subsidy] = (params[:subsidy][:percent_subsidy].gsub(/[^\d^\.]/, '').to_f)
+    if !params[:pending_subsidy].nil? && params[:pending_subsidy][:percent_subsidy].present?
+      params[:pending_subsidy][:percent_subsidy] = ((params[:pending_subsidy][:percent_subsidy].gsub(/[^\d^\.]/, '').to_f) / 100)
     end
   end
 end

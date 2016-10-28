@@ -37,17 +37,16 @@ class Dashboard::DocumentsController < Dashboard::BaseController
   def new
     @document     = @protocol.documents.new
     @action       = 'new'
-    @header_text  = t(:dashboard)[:documents][:add]
+    @header_text  = t(:documents)[:add][:header]
   end
 
   def create
-    @document = Document.create(params[:document])
-    @document.update_attributes(protocol_id: @protocol.id)
+    @document = @protocol.documents.create( params[:document] )
 
     if @document.valid?
       assign_organization_access
 
-      flash.now[:success] = t(:dashboard)[:documents][:created]
+      flash.now[:success] = t(:documents)[:created]
     else
       @errors = @document.errors
     end
@@ -55,33 +54,23 @@ class Dashboard::DocumentsController < Dashboard::BaseController
 
   def edit
     @action       = 'edit'
-    @header_text  = t(:dashboard)[:documents][:edit]
+    @header_text  = t(:documents)[:edit][:header]
   end
 
   def update
     if @document.update_attributes(params[:document])
       assign_organization_access
 
-      flash.now[:success] = t(:dashboard)[:documents][:updated]
+      flash.now[:success] = t(:documents)[:updated]
     else
       @errors = @document.errors
     end
   end
 
   def destroy
-    Dashboard::DocumentRemover.new(params[:id])
+    DocumentRemover.new(params[:id])
     
-    flash.now[:success] = t(:dashboard)[:documents][:destroyed]
-  end
-
-  def protocol_index
-    @documents          = Document.where(service_request: @protocol.service_requests)
-    @permission_to_edit = @protocol.project_roles.where(identity: @user, project_rights: ['approve', 'request']).any?
-
-    if !@permission_to_edit
-      admin_orgs = @user.authorized_admin_organizations
-      @documents = @documents.reject { |document| (admin_orgs & document.sub_service_requests.map(&:org_tree).flatten.uniq).empty? }
-    end
+    flash.now[:success] = t(:documents)[:destroyed]
   end
 
   private

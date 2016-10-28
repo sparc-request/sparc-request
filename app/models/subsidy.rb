@@ -46,15 +46,15 @@ class Subsidy < ActiveRecord::Base
   def contribution_caps
     subsidy_cost = (total_request_cost.to_f - pi_contribution)
     if pi_contribution < 0
-      errors.add(:pi_contribution, "can not be less than 0")
+      errors.add(:pi_contribution, "must be greater than or equal to 0")
     elsif max_dollar_cap.present? and max_dollar_cap > 0 and (subsidy_cost / 100.0) > max_dollar_cap
-      errors.add(:requested_funding, "can not be greater than the cap of #{max_dollar_cap}")
+      errors.add(:requested_funding, "must be less than than the cap of #{max_dollar_cap}")
     elsif max_percentage.present? and max_percentage > 0 and percent_subsidy * 100 > max_percentage
-      errors.add(:percent_subsidy, "can not be greater than the cap of #{max_percentage}")
+      errors.add(:percent_subsidy, "must be less than than the cap of #{max_percentage}")
     elsif pi_contribution > total_request_cost
-      errors.add(:pi_contribution, "can not be greater than the total request cost")
+      errors.add(:pi_contribution, "must be less than than the total request cost")
     elsif percent_subsidy == 0
-      errors.add(:percent_subsidy, "can not be 0")
+      errors.add(:percent_subsidy, "must not be 0")
     end
   end
 

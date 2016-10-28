@@ -21,10 +21,10 @@
 module Dashboard
   module Notes
     class IndexModal < SitePrism::Section
-      element :new_note_button, "button", text: "Add Note"
+      element :new_note_button, "button", text: "Add a Note"
 
       # list of notes
-      elements :notes, ".detail"
+      elements :notes, ".note"
 
       # appears after clicking :new_note_button
       element :message_area, :field, "Note:"

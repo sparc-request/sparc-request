@@ -18,22 +18,3 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 $ ->
-  $(".datetimepicker").datetimepicker(format: 'MM/DD/YYYY', allowInputToggle: true)
-  $(".selectpicker").selectpicker()
-  $('[data-toggle="tooltip"]').tooltip()
-
-  $(document).ajaxComplete ->
-    $('[data-toggle="tooltip"]').tooltip()
-
-(exports ? this).formatMoney = (n, t=',', d='.', c='$') ->
-  s = if n < 0 then "-#{c}" else c
-  i = Math.abs(n).toFixed(2)
-  j = (if (i.length > 3 && i > 0) then i.length % 3 else 0)
-  s += i.substr(0, j) + t if j
-  return s + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t)
-
-(exports ? this).refresh_study_schedule = () ->
-  $('#service_calendar .tab-content .tab-pane.active').load $('#service_calendar .active a').attr("data-url"), (result) ->
-    $('#service_calendar .active a').tab('show')
-
-

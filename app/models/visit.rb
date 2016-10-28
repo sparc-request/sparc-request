@@ -38,11 +38,12 @@ class Visit < ActiveRecord::Base
   attr_accessible :insurance_billing_qty # (T) qty billed to the patients insurance or third party
   attr_accessible :effort_billing_qty    # (%) qty billing to % effort
 
-  after_save :set_arm_edited_flag_on_subjects
+  validates :research_billing_qty, numericality: { only_integer: true }
+  validates :insurance_billing_qty, numericality: { only_integer: true }
+  validates :effort_billing_qty, numericality: { only_integer: true }
+            
 
-  validates :research_billing_qty, :numericality => {:only_integer => true}
-  validates :insurance_billing_qty, :numericality => {:only_integer => true}
-  validates :effort_billing_qty, :numericality => {:only_integer => true}
+  after_save :set_arm_edited_flag_on_subjects
 
   # Find a Visit for the given "line items visit" and visit group.  This
   # creates the visit if it does not exist.

@@ -1,0 +1,2 @@
+module VisitGroupsHelper
+end

@@ -23,8 +23,9 @@ require 'rails_helper'
 RSpec.describe Arm, type: :model do
   describe '#service_list' do
     before(:all) do
-      @sr   = create(:service_request_without_validations)
-      @arm  = create(:arm, service_request: @sr)
+      p     = create(:protocol_without_validations)
+      @sr   = create(:service_request_without_validations, protocol: p)
+      @arm  = create(:arm, protocol: p, service_request: @sr)
 
       # org1(not ssrs) <- org2(not ssrs)* <- s1(not otf)
       @org1 = create(:organization, process_ssrs: false, parent: nil)

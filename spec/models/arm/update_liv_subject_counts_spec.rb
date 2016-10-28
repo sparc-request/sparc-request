@@ -21,12 +21,13 @@
 require 'rails_helper'
 
 RSpec.describe Arm, type: :model do
-  let!(:arm) { create(:arm, subject_count: 3) }
-  let!(:liv) { create(:line_items_visit, line_item: li, arm: arm, subject_count: nil) }
+  let!(:protocol) { create(:protocol_without_validations) }
+  let!(:arm)      { create(:arm, protocol: protocol, subject_count: 3) }
+  let!(:liv)      { create(:line_items_visit, line_item: li, arm: arm, subject_count: 0) }
 
   shared_examples_for 'change LineItemsVisit\'s subject_count' do
     it 'should set LineItemsVisit\'s subject_count to Arm\'s subject_count' do
-      expect { arm.reload.update_liv_subject_counts }.to change { liv.reload.subject_count }.from(nil).to(3)
+      expect { arm.reload.update_liv_subject_counts }.to change { liv.reload.subject_count }.from(0).to(3)
     end
   end
 
@@ -48,7 +49,7 @@ RSpec.describe Arm, type: :model do
     context 'LineItemsVisit belongs to a ServiceRequest in nil status' do
       let!(:sr)  { create(:service_request_without_validations, status: nil) }
       let!(:li)  { create(:line_item_with_service, service_request: sr) }
-      let!(:liv) { create(:line_items_visit, line_item: li, arm: arm, subject_count: nil) }
+      let!(:liv) { create(:line_items_visit, line_item: li, arm: arm, subject_count: 0) }
 
       it_behaves_like 'change LineItemsVisit\'s subject_count'
     end

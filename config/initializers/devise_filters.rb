@@ -27,7 +27,6 @@ module DeviseFilters
       Devise::RegistrationsController,
       Devise::PasswordsController
     ].each do |controller|
-      controller.before_filter :prepare_catalog
       controller.before_filter :initialize_service_request
     end
 

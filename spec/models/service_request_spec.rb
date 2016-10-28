@@ -27,9 +27,9 @@ RSpec.describe 'ServiceRequest' do
   build_service_request_with_project
 
   describe "set visit page" do
-
-    let!(:service_request)  { FactoryGirl.create(:service_request_without_validations) }
-    let!(:arm)              { create(:arm, visit_count: 10)}
+    let!(:protocol)         { create(:protocol_without_validations) }
+    let!(:service_request)  { create(:service_request_without_validations, protocol: protocol) }
+    let!(:arm)              { create(:arm, protocol: protocol, visit_count: 10)}
 
     it "should return 1 if arm visit count <= 5" do
       arm.update_attributes(visit_count: 0)

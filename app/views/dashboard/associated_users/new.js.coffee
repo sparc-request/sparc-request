@@ -19,12 +19,12 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 <% if @errors.present? %> #User already associated with Protocol
-$("#modal_errors").html("<%= escape_javascript(render(partial: 'shared/modal_errors', locals: {errors: @errors})) %>")
+$("#modal_errors").html("<%= escape_javascript(render( 'shared/modal_errors', errors: @errors )) %>")
 $('#authorized_user_search').val('')
 <% elsif @identity.present? %># User selected, go to 'User Form'
-$("#modal_place").html("<%= escape_javascript(render(partial: 'dashboard/associated_users/user_form', locals: { protocol: @protocol, project_role: @project_role, identity: @identity, current_pi: @current_pi, header_text: @header_text })) %>")
+$("#modal_place").html("<%= escape_javascript(render( 'associated_users/user_form', protocol: @protocol, project_role: @project_role, identity: @identity, current_pi: @current_pi, header_text: @header_text )) %>")
 <% else %># User not selected, go to 'Select User Form'
-$("#modal_place").html("<%= escape_javascript(render(partial: 'dashboard/associated_users/select_user_form', locals: { protocol: @protocol, header_text: @header_text })) %>")
+$("#modal_place").html("<%= escape_javascript(render( 'associated_users/select_user_form', protocol: @protocol, header_text: @header_text )) %>")
 
 # Initialize Authorized Users Searcher
 identities_bloodhound = new Bloodhound(
@@ -57,7 +57,8 @@ $('#authorized_user_search').typeahead(
     data:
       protocol_id: $(this).data('protocol-id')
       identity_id: suggestion.value
-
+    success: ->
+      $("#loading_authorized_user_spinner").addClass('hidden')
 <% end %>
 
 $("#modal_place").modal 'show'

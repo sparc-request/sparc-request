@@ -30,7 +30,7 @@
   %body
     /***** EMAIL INTRO *****
     - case @status
-    - when 'all_ssrs_deleted'
+    - when 'ssr_destroyed'
       = render "deleted_all_services_from_cart"
     - when 'get_a_cost_estimate'
       = render "welcome"
@@ -47,12 +47,12 @@
     = render "user_information"
 
     - if @ssrs_to_be_displayed
-      - if @status == 'all_ssrs_deleted'
+      - if @status == 'ssr_destroyed'
         = render "deleted_srid_information"
       - else
         = render "srid_information"
   
-    - if @status != 'all_ssrs_deleted' && @audit_report.present? && @audit_report[:line_items].present?
+    - if @status != 'ssr_destroyed' && @audit_report.present? && @audit_report[:line_items].present?
       = render "audit_action"
     /***** END EMAIL TABLES *****
 
@@ -60,10 +60,10 @@
     - if @status == "submitted" && @role == 'none' && !@notes.empty?
       %p= t(:notifier)[:notes_present]
     
-    - if @status != 'all_ssrs_deleted'
+    - if @status != 'ssr_destroyed'
       %p= t(:notifier)[:body6]
     
-    %p= t(:issue_contact)
+    %p= t(:mailer)[:issue_contact]
     
     - if @role != 'none'
       = render "acknowledgments"

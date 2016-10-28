@@ -29,18 +29,20 @@ $ ->
       notable_type: type
     $.ajax
       type: 'GET'
-      url: '/dashboard/notes'
+      url: '/notes.js'
       data: data
 
   $(document).on 'click', 'button.note.new',  ->
     id = $(this).data('notable-id')
     type = $(this).data('notable-type')
-    data = note:
-      notable_id: id
-      notable_type: type
+    data = 
+      note:
+        notable_id: id
+        notable_type: type
+      in_dashboard : true
     $.ajax
       type: 'GET'
-      url: '/dashboard/notes/new'
+      url: '/notes/new'
       data: data
 
   $(document).on 'click', 'button.notes.cancel',  ->
@@ -51,6 +53,6 @@ $ ->
       notable_type: type
     $.ajax
       type: 'GET'
-      url: '/dashboard/notes'
+      url: '/notes'
       data: data
   # NOTES LISTENERS END

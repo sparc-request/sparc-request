@@ -17,306 +17,55 @@
 /* DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS*/
 /* INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR*/
 /* TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.*/
+@import 'proper/colors'
+#protocols-page
+  .protocol-left
+    .panel
+      border-color: $sparc-blue !important
+      .panel-heading, thead
+        background: $sparc-blue !important
+        border: 0
+    
+    .percent-effort-warning, .previously-submitted-warning
+      font-style: italic
+      color: $sparc-red
 
-.approval_pending
-  margin-top: 10px
-
-.edit-project-view
-  font-size: 12px
-  font-family: "Calibri", Arial, sans-serif
-  border: 3px solid #003366
-  button.add-authorized-user
-    cursor: pointer
-  .info
-    width: 440px
-    padding: 10px
-    float: left
-    height: 100%
-    min-height: 390px
-  .description
-    padding: 0 12px 12px
-  .user-details, .user_added_message
-    margin-top: 10px
-  .add-user-details
-    float: right
-    height: 100%
-  .search-container
-    border-bottom: 10px solid #fff
-    padding: 8px
-    width: 340px !important
-  .user-d
-    padding: 8px
-    width: 340px !important
-    margin-left: -5px
-  .user-details
-    label
-      width: 100px
-      float: left
-    select
-      width: 250px
-    .details
-      padding: 10px
-  .search-results
-    height: 185px
-    overflow: auto
-    margin-bottom: 20px
-    .user
-      border: 1px solid #E8E8E8
-      border-bottom: none
-      padding: 3px
-      background: #fff
-      &:hover
-        background-color: #AAE
-        cursor: pointer
-  .add-user-details
-    .user-manager-view .user-details
-      border: 1px solid #ECECEC
+    .service-list, .protocol-information
+      display: inline-block
       width: 100%
-      height: 30px
-    .center .add-user
-      margin-top: 10px
-    label
-      width: 130px
-      font-weight: bold
-      padding: 1px 1px 1px 10px
-    input
-      width: 190px
-    select
-      width: 195px
-    label, input
-      float: left
-  .authorized-users
-    margin-top: 10px
-    border: 1px solid #fff
-    border-collapse: collapse
-    width: 100%
-    th
-      &.authorized-users-section
-        width: 50%
-        text-align: center
-      &.proxy-rights
-        font-size: 10px
-        text-align: center
-    .authorized-users-section
-      background: #E8E8E8
-    th
-      background: #E8E8E8
-      border: 1px solid #fff
-      text-align: left
-      height: 35px
-    td
-      border: 1px solid #fff
-      text-align: left
-      height: 35px
-      &.none, &.view, &.request, &.approve
-        text-align: center !important
-  .box
-    vertical-align: top
-    width: 100%
-    height: auto
-    margin-left: 8px
-    padding-top: 20px
-    .search_container
-      padding: 10px
-      margin-bottom: 40px
-    .info
-      fieldset
-        padding: 1px 7px 5px 7px
-        margin-top: 10px
+
+    .service-list
+      display: inline-block
+      width: 100%
+      .page-header
+        margin-top: 0px
+        h3
+          margin: 0
+      .service-view
+        display: inline-block
+        width: 100%
+        .service
+          width: 100%
+          border: 0px
+          text-align: left
+          color: $link
+          white-space: pre-wrap
+
+      .service-view:not(:last-child)
+        padding-bottom: 5px
+        border-bottom: 1px solid #eee
         margin-bottom: 5px
-        border: 1px solid #003366
-        .field
-          padding: 2px
-      hr
-        color: #fff
-      label
-        width: 125px
-        display: block
-        float: left
-        margin-right: 10px
-        padding: 2px
-        &.long
-          width: 375px
-      span.non_standard_usage_of_radio_buttons
-        label, input
-          width: auto !important
-          display: inline-block
-          float: none
-          margin: 3px 0px 0px
-          padding: 0px
-        label
-          margin-right: 10px
-      input
-        width: auto
-        display: block
-        float: left
-        &[type=text]
-          width: 375px
-        &[type=checkbox]
-          margin-top: 2px
-      select
-        width: 375px
-      textarea
-        width: 375
-        min-width: 100%
-        max-width: 100%
-        height: 300px
-      option
-        max-width: 375px
-      .research-type
-        display: block
-        float: left
-        width: 100%
-      .human-subjects, .vertebrate-animals
-        padding-left: 40px
-      .human-subjects input[type=text], .vertebrate-animals input[type=text], .human-subjects select
-        width: 335px
-      .study-type
-        display: block
-        float: left
-        width: 100%
-        .study-type-fields
-          padding-left: 40px
-      .field
-        display: block
-        float: left
-        clear: both
-        margin-top: 4px
-        width: 100%
+      .panel:last-child
+        margin-bottom: 0
 
-.field_with_errors label
-  background: red
-  color: #fff
-
-legend
-  font-weight: bold
-
-h3.needed_info
-  color: #C43149
-
-.new-project-button
-  background: #4fd934
-  background-image: -webkit-linear-gradient(top, #4fd934, #358f35)
-  background-image: -moz-linear-gradient(top, #4fd934, #358f35)
-  background-image: -ms-linear-gradient(top, #4fd934, #358f35)
-  background-image: -o-linear-gradient(top, #4fd934, #358f35)
-  background-image: linear-gradient(to bottom, #4fd934, #358f35)
-  -webkit-border-radius: 11
-  -moz-border-radius: 11
-  border-radius: 11px
-  display: inline-block
-  margin-bottom: 40px
-  text-shadow: 0px 2px 3px #666666
-  -webkit-box-shadow: 0px 3px 10px #666666
-  -moz-box-shadow: 0px 3px 10px #666666
-  box-shadow: 0px 3px 10px #666666
-  font-family: Arial
-  color: #ffffff
-  font-size: 23px
-  padding: 9px 20px 10px 20px
-  text-decoration: none
-
-.new-study-button
-  -webkit-border-radius: 11
-  -moz-border-radius: 11
-  border-radius: 11px
-  display: inline-block
-  margin-bottom: 40px
-  text-shadow: 0px 2px 3px #666666
-  -webkit-box-shadow: 0px 3px 10px #666666
-  -moz-box-shadow: 0px 3px 10px #666666
-  box-shadow: 0px 3px 10px #666666
-  font-family: Arial
-  color: #ffffff
-  font-size: 23px
-  background: #3497d9
-  padding: 9px 20px 10px 20px
-  text-decoration: none
-
-#project.project-select
-  .new-project, .edit-project
-    background-color: #FFF
-    padding: 5px 20px
-    font-size: 15px
-
-.project-details
-  margin-left: 10px
-  width: 670px
-  min-height: 200px
-  .project-select, .study-select, .type-select, .new-project, .new-study
-    margin: 20px
-    text-align: center
-
-#protocol_Research_Study
-  margin-right: 20px
-
-.protocol-view-right
-  margin-top: -10px !important
-  margin-right: -10px !important
-  width: 226px !important
-  padding: 2px !important
-
-.previously_submitted
-  text-align: center
-
-#push_to_epic_status
-  margin-top: 10px
-
-.service-list
-  .provider-header
-    font-weight: bold
-    font-size: 17px
-  .service-name
-    padding: 5px
-    margin: 4px 4px 4px 15px
-    color: #FFF
-    opacity: 0.6
-    background-color: #003366
-
-#service_request_protocol_id
-  width: 300px
-
-.study_phase
-  margin-bottom: 5px
-
-#study.study-select
-  .new-study, .edit-study
-    background-color: #FFF
-    padding: 5px 20px
-    font-size: 15px
-
-#study.study-select .edit-study, #project.project-select .edit-project
-  width: 80px
-  display: inline
-
-.type-select
-  padding-top: 30px
-
-.user_added_message
-  background: yellow !important
-  p
-    padding: 10px
-
-.user-details-left input, .user-details-right input
-  width: 248px !important
-
-.user-details-left select, .user-details-right select
-  width: 255px !important
-
-#user_detail_errors
-  display: none
-
-.visual_error
-  border-color: red
-  border-width: 2px
-
-.hidden
-  visibility: hidden
-
-.clear-inv-device-number-button
-  display: block
-
-.inv_device_number
-  input, label
-    display: inline !important
-    float: none !important
+    .protocol-information
+      .page-header
+        h3
+          margin: 0
+      #protocol-summary
+        .row
+          margin: 0
+        .row:not(:last-child)
+          padding-bottom: 3px
+          border-bottom: 1px solid #EEE
+          margin-bottom: 3px

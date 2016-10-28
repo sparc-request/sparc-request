@@ -22,10 +22,11 @@ require 'rails_helper'
 
 RSpec.describe Arm, type: :model do
   describe '#add_visit' do
-    let(:arm) { Arm.create(visit_count: 1, subject_count: 1, name: "My Good Arm") }
+    let!(:protocol) { create(:protocol_without_validations) }
+    let(:arm)       { create(:arm, protocol: protocol, visit_count: 1, subject_count: 1, name: "My Good Arm") }
 
     context 'position not specified' do
-      let!(:arm) { create(:arm, visit_count: 2, line_item_count: 2, name: "My Good Arm") }
+      let!(:arm) { create(:arm, protocol: protocol, visit_count: 2, line_item_count: 2, name: "My Good Arm") }
       it 'should add a new VisitGroup to the end' do
         orig_vg_ids = arm.visit_groups.map &:id
         # expect change in number of VisitGroups
@@ -58,7 +59,7 @@ RSpec.describe Arm, type: :model do
     end
 
     context 'position specified' do
-      let!(:arm) { create(:arm, visit_count: 2, line_item_count: 2, name: "My Good Arm") }
+      let!(:arm) { create(:arm, protocol: protocol, visit_count: 2, line_item_count: 2, name: "My Good Arm") }
 
       it 'should add a new VisitGroup to that position' do
         arm.visit_groups.last.update_attribute(:day, 3)
@@ -91,7 +92,7 @@ RSpec.describe Arm, type: :model do
 
     context 'name specified' do
       it 'should set VisitGroup name' do
-        arm = create(:arm)
+        arm = create(:arm, protocol: protocol)
 
         arm.add_visit(0, 0, 0, 0, 'Visit Group Name')
         
@@ -100,7 +101,7 @@ RSpec.describe Arm, type: :model do
     end
 
     context 'USE_EPIC == true' do
-      let(:arm) { create(:arm) }
+      let(:arm) { create(:arm, protocol: protocol) }
 
       before(:each) do
         stub_const("USE_EPIC", true)
@@ -117,7 +118,7 @@ RSpec.describe Arm, type: :model do
     end
 
     context 'USE_EPIC == false' do
-      let(:arm) { create(:arm) }
+      let(:arm) { create(:arm, protocol: protocol) }
 
       before(:each) do
         stub_const("USE_EPIC", false)

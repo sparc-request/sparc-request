@@ -49,16 +49,16 @@ RSpec.describe Dashboard::AssociatedUsersController do
         log_in_dashboard_identity(obj: identity)
 
         @new_project_roles_attrs = {identity_id: other_user.id}
-        associated_user_creator = instance_double(Dashboard::AssociatedUserCreator,
+        associated_user_creator = instance_double(AssociatedUserCreator,
           successful?: true)
-        allow(Dashboard::AssociatedUserCreator).to receive(:new).
+        allow(AssociatedUserCreator).to receive(:new).
           and_return(associated_user_creator)
 
         xhr :post, :create, protocol_id: protocol.id, project_role: @new_project_roles_attrs, format: :js
       end
 
-      it "should use Dashboard::AssociatedUserCreator to create ProjectRole" do
-        expect(Dashboard::AssociatedUserCreator).to have_received(:new).
+      it "should use AssociatedUserCreator to create ProjectRole" do
+        expect(AssociatedUserCreator).to have_received(:new).
           with(@new_project_roles_attrs)
       end
 
@@ -78,18 +78,18 @@ RSpec.describe Dashboard::AssociatedUsersController do
         @new_project_roles_attrs = {identity_id: other_user.id}
         new_project_role = build_stubbed(:project_role)
         allow(new_project_role).to receive(:errors).and_return("my errors")
-        associated_user_creator = instance_double(Dashboard::AssociatedUserCreator,
+        associated_user_creator = instance_double(AssociatedUserCreator,
           successful?: false,
           protocol_role: new_project_role)
 
-        allow(Dashboard::AssociatedUserCreator).to receive(:new).
+        allow(AssociatedUserCreator).to receive(:new).
           and_return(associated_user_creator)
 
         xhr :post, :create, protocol_id: protocol.id, project_role: @new_project_roles_attrs, format: :js
       end
 
-      it "should use Dashboard::AssociatedUserCreator to (attempt) to create ProjectRole" do
-        expect(Dashboard::AssociatedUserCreator).to have_received(:new).
+      it "should use AssociatedUserCreator to (attempt) to create ProjectRole" do
+        expect(AssociatedUserCreator).to have_received(:new).
           with(@new_project_roles_attrs)
       end
 
@@ -108,12 +108,12 @@ RSpec.describe Dashboard::AssociatedUsersController do
 
         @new_project_roles_attrs  = {identity_id: identity.id}
         project_role              = instance_double(ProjectRole, can_edit?: true, can_view?: true)
-        associated_user_creator   = instance_double(Dashboard::AssociatedUserCreator,
+        associated_user_creator   = instance_double(AssociatedUserCreator,
           successful?: true)
 
         allow(associated_user_creator).to receive(:protocol_role).
           and_return(project_role)
-        allow(Dashboard::AssociatedUserCreator).to receive(:new).
+        allow(AssociatedUserCreator).to receive(:new).
           and_return(associated_user_creator)
         
         xhr :post, :create, protocol_id: protocol.id, project_role: @new_project_roles_attrs, format: :js

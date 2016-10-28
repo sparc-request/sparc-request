@@ -19,13 +19,11 @@
 // TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 // replaced require_tree .
-@import 'associated_users';
 @import 'cover_letters';
 @import 'documents';
 @import 'epic_queues';
 @import 'layout';
 @import 'notifications';
-@import 'nprogress_config';
 @import 'payments';
 @import 'printer_friendly_requests';
 @import 'project';
@@ -35,7 +33,6 @@
 @import 'services';
 @import 'study_level_charges';
 @import 'sub_service_requests';
-@import 'twitter_typeahead';
 @import 'users';
 @import 'sweetalert';
 
@@ -47,8 +44,10 @@
 @import 'bootstrap-table-custom';
 @import 'bootstrap-datetimepicker';
 @import 'editable/bootstrap-editable';
-@import 'jquery-ui';
 @import '960';
 @import 'jquery.toastmessage';
-
+@import 'twitter_typeahead';
+@import 'associated_user_form';
+@import 'protocol_form';
 @import 'service_calendar';
+@import 'nprogress_config';

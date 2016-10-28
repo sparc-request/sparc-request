@@ -21,29 +21,11 @@
 class CatalogsController < ApplicationController
   before_filter :initialize_service_request
   before_filter :authorize_identity
-
+  before_filter :find_locked_org_ids,       only: [:update_description]
+  
   def update_description
-    @organization 		= Organization.find params[:id]
-    @service_request 	= ServiceRequest.find session[:service_request_id]
-    @from_portal      = session[:from_portal]
-    @program_is_process_ssr = params[:program_is_process_ssr] == 'true'
-
-    @locked_org_ids = []
-    if @service_request.protocol.present?
-      @service_request.sub_service_requests.each do |ssr|
-        organization = ssr.organization
-        if organization.has_editable_statuses?
-          self_or_parent_id = ssr.find_editable_id(organization.id)
-          if !EDITABLE_STATUSES[self_or_parent_id].include?(ssr.status)
-            @locked_org_ids << self_or_parent_id
-            @locked_org_ids << organization.all_children(Organization.all).map(&:id)
-          end
-        end
-      end
-
-      unless @locked_org_ids.empty?
-        @locked_org_ids = @locked_org_ids.flatten.uniq
-      end
-    end
+    @organization 		  = Organization.find params[:id]
+    @process_ssr_found  = params[:process_ssr_found] == 'true'
+    @ssr_org            = @sub_service_request.organization if @sub_service_request
   end
 end

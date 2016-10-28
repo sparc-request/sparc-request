@@ -17,38 +17,27 @@
 /* DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS*/
 /* INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR*/
 /* TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.*/
-
-// ConfirmationView
-
-.confirmation-button
-  display: inline-block
-  background: #2C9A4D
-  margin: 20px
-  padding: 7px
-  border-radius: 5px
-  a
-    font-size: 14px
+@import 'proper/colors'
+#confirmation-page
+  .instructions
     font-weight: bold
-    color: #FFF
-    text-decoration: none
-    letter-spacing: 1px
-    margin: 0 50px
+    color: $sparc-red
 
-.confirmation-details
-  margin-left: 10px
-  .links
-    text-align: center
-  table
-    width: 100%
-    border: 1px solid #E8E8E8
-    border-collapse: collapse
-    th
-      background: #2C9A4D
-      color: #fff
-    th, td
-      text-align: left
-      padding: 4px
-      border: 1px solid #E8E8E8
-  p.instructions
-    color: #c43149
+  .page-header
+    margin-top: 0
+    h3
+      margin: 0
 
+  thead
+    background: $sparc-green
+    color: white
+
+  tbody
+    tr:hover
+      background: #eee
+      cursor: pointer
+
+  .btn-success
+    background: $sparc-green
+  .btn-success:hover
+    background: $sparc-green-hover

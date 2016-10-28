@@ -248,13 +248,15 @@ wb.add_worksheet(name: "Review") do |sheet|
   end
   
   direct_cost_total_row << "" if @admin_offset
- 
-  @line_items.each{|li| li.pricing_scheme = 'effective'} if @admin_offset
+  
+  line_items = @sub_service_request ? @sub_service_request.line_items : @service_request.line_items
+  
+  line_items.each{|li| li.pricing_scheme = 'effective'} if @admin_offset
 
   if has_per_patient_per_visit_services
-    direct_cost_total_row += ["Total Direct Cost", "", "", display_grand_total_direct_costs(@service_request, @line_items)]
+    direct_cost_total_row += ["Total Direct Cost", "", "", display_grand_total_direct_costs(@service_request, line_items)]
   else
-    direct_cost_total_row += ["Total Direct Cost", display_grand_total_direct_costs(@service_request, @line_items)]
+    direct_cost_total_row += ["Total Direct Cost", display_grand_total_direct_costs(@service_request, line_items)]
   end
 
   direct_cost_total_row = sheet.add_row(direct_cost_total_row, :style => row_header_style)
@@ -271,9 +273,9 @@ wb.add_worksheet(name: "Review") do |sheet|
     indirect_cost_total_row << "" if @admin_offset
   
     if has_per_patient_per_visit_services
-      indirect_cost_total_row += ["Total Indirect Cost", "", "", display_grand_total_indirect_costs(@service_request, @line_items)]
+      indirect_cost_total_row += ["Total Indirect Cost", "", "", display_grand_total_indirect_costs(@service_request, line_items)]
     else
-      indirect_cost_total_row += ["Total Indirect Cost", display_grand_total_indirect_costs(@service_request, @line_items)]
+      indirect_cost_total_row += ["Total Indirect Cost", display_grand_total_indirect_costs(@service_request, line_items)]
     end
 
     indirect_cost_total_row = sheet.add_row(indirect_cost_total_row, :style => row_header_style)
@@ -289,9 +291,9 @@ wb.add_worksheet(name: "Review") do |sheet|
 
   grand_total_row << "" if @admin_offset
   if has_per_patient_per_visit_services
-    grand_total_row += ["Grand Total", "", "", display_grand_total(@service_request, @line_items)]
+    grand_total_row += ["Grand Total", "", "", display_grand_total(@service_request, line_items)]
   else
-    grand_total_row += ["Grand Total", display_grand_total(@service_request, @line_items)]
+    grand_total_row += ["Grand Total", display_grand_total(@service_request, line_items)]
   end
 
   grand_total_row = sheet.add_row(grand_total_row, :style => row_header_style)

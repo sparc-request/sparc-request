@@ -20,7 +20,6 @@
 
 .panel-group#ssr_show_panel
   .panel.panel-primary
-
     .panel-heading
       %h4.panel-title.pull-left
         = "#{sub_service_request.protocol.short_title} > #{sub_service_request.organization.name} (#{sub_service_request.protocol.id}-#{sub_service_request.ssr_id})"
@@ -50,7 +49,7 @@
           %td.text-center#service_request_status_dropdown
             = select_tag "sub_service_request_status", options_for_select(sub_service_request ? sub_service_request.organization.get_available_statuses.invert : [], sub_service_request.try(:status)), :'data-sub_service_request_id' => sub_service_request.id, class: 'selectpicker', disabled: sub_service_request.is_complete?
             - if sub_service_request.is_complete?
-              .btn.btn-danger{data: {toggle: "tooltip"}, title: t(:dashboard)[:sub_service_requests][:header][:lock_message]}
+              .btn.btn-danger{ data: {toggle: "tooltip"}, title: t(:dashboard)[:sub_service_requests][:header][:lock_message] }
                 %span.glyphicon.glyphicon-lock
           %td.text-center#service_request_owner_dropdown
             = service_request_owner_display(sub_service_request)

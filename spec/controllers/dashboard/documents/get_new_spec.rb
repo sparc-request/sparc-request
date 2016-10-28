@@ -63,7 +63,7 @@ RSpec.describe Dashboard::DocumentsController do
       end
 
       it 'should assign @header_text' do
-        expect(assigns(:header_text)).to eq('Add a New Document')
+        expect(assigns(:header_text)).to eq('Add Document')
       end
 
       it { is_expected.to respond_with :ok }

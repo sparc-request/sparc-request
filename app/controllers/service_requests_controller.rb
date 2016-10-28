@@ -444,8 +444,6 @@ class ServiceRequestsController < ApplicationController
 
     if ssr.line_items.empty?
       if !ssr.submitted_at.nil?
-        ssr_destroyed = true
-        request_amendment = false
         # only notify service providers of destroyed ssr
         send_ssr_service_provider_notifications(ssr, ssr_destroyed: true, request_amendment: false)
       end
@@ -518,8 +516,8 @@ class ServiceRequestsController < ApplicationController
   # Request amendment is only sent to service providers and admin
   def send_request_amendment(sub_service_requests)
     sub_service_requests = [sub_service_requests].flatten
-    send_service_provider_notifications(sub_service_requests, request_amendment: false)
-    send_admin_notifications(sub_service_requests, request_amendment: false)
+    send_service_provider_notifications(sub_service_requests, request_amendment: true)
+    send_admin_notifications(sub_service_requests, request_amendment: true)
   end
 
   # Send notifications to all users.
@@ -552,7 +550,7 @@ class ServiceRequestsController < ApplicationController
 
   def send_service_provider_notifications(sub_service_requests, request_amendment: false) #all sub-service requests on service request
     sub_service_requests.each do |sub_service_request|
-      send_ssr_service_provider_notifications(sub_service_request, ssr_destroyed: false, request_amendment)
+      send_ssr_service_provider_notifications(sub_service_request, ssr_destroyed: false, request_amendment: request_amendment)
     end
   end
 

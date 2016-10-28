@@ -68,9 +68,9 @@ module SparcRails
     # config.i18n.default_locale = :de
     # see /initializers/obis_setup.rb and application.yml for overriding the :en locale for custom text specific to your institution
     # and, you don't need to override all of the text, only the sets of texts you need customized
-    config.i18n.load_path += Dir[Rails.root.join('proper', '*.{rb,yml}').to_s]
-    config.i18n.load_path += Dir[Rails.root.join('dashboard', '*.{rb,yml}').to_s]
-    config.i18n.load_path += Dir[Rails.root.join('additional_details', '*.{rb,yml}').to_s]
+    config.i18n.load_path += Dir[Rails.root.join('config/locales/proper', '*.{rb,yml}').to_s]
+    config.i18n.load_path += Dir[Rails.root.join('config/locales/dashboard', '*.{rb,yml}').to_s]
+    config.i18n.load_path += Dir[Rails.root.join('config/locales/additional_details', '*.{rb,yml}').to_s]
     config.i18n.fallbacks = [:en]
 
     # Configure the default encoding used in templates for Ruby 1.9.

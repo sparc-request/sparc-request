@@ -21,6 +21,17 @@
 class Dashboard::VisitsController < Dashboard::BaseController
   respond_to :json, :js, :html
 
+  # Used for x-editable update and validations
+  def update
+    @visit = Visit.find( params[:id] )
+
+    if @visit.update_attributes( params[:visit] )
+      render nothing: true
+    else
+      render json: @visit.errors, status: :unprocessable_entity
+    end
+  end
+
   def destroy
     @visit = Visit.find(params[:id])
     line_item = @visit.line_items_visit.line_item
@@ -36,7 +47,6 @@ class Dashboard::VisitsController < Dashboard::BaseController
       # Have to reload the service request to get the correct direct cost total for the subsidy
       @subsidy.try(:sub_service_request).try(:reload)
       @subsidy.try(:fix_pi_contribution, percent)
-      @candidate_per_patient_per_visit = @sub_service_request.candidate_services.reject(&:one_time_fee)
       render 'dashboard/service_requests/add_per_patient_per_visit_visit'
     end
   end

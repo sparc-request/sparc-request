@@ -130,13 +130,11 @@
           - InvestigationalProductsInfo::EXEMPTION_TYPES.each_with_index do |exemption_type, n|
             / Hide radio button for no exemption. There's a clear button for that.
             .form-group.row.inv-device{ class: ("hidden" unless exemption_type.present?) }
-              .col-sm-2
-                .radio.pull-right
-                  = ip_form.label :exemption_type do
-                    = ip_form.radio_button :exemption_type, exemption_type
-                    = t(:protocols)[:studies][:research_involving][:products][:numbers][exemption_type.to_sym]
+              = ip_form.label "exemption_type_#{exemption_type}", t(:protocols)[:studies][:research_involving][:products][:numbers][exemption_type.to_sym], class: 'col-lg-2 control-label'
+              .col-lg-1.text-center
+                = ip_form.radio_button :exemption_type, exemption_type, class: 'form-control exemption-radio'
               - if exemption_type == ip_form.object.exemption_type
-                .col-sm-10.inv-device-number-field
+                .col-lg-9.inv-device-number-field
                   = ip_form.text_field :inv_device_number, class: 'form-control'
           .form-group.row
             .col-sm-2

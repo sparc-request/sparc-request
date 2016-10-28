@@ -27,7 +27,7 @@ class UserMailer < ActionMailer::Base
     @send_to = user
     @protocol = protocol
     @protocol_link = DASHBOARD_LINK + "/protocols/#{@protocol.id}"
-    send_message("#{I18n.t('application_title')} Authorized Users")
+    send_message("#{t(:mailer)[:application_title]} Authorized Users")
   end
 
   def notification_received(user, ssr)
@@ -35,9 +35,9 @@ class UserMailer < ActionMailer::Base
 
     if ssr.present?
       is_service_provider = @send_to.is_service_provider?(ssr)
-      send_message("New #{I18n.t('application_title')} Notification", is_service_provider, ssr.id.to_s)
+      send_message("New #{t(:mailer)[:application_title]} Notification", is_service_provider, ssr.id.to_s)
     else
-      send_message("New #{I18n.t('application_title')} Notification")
+      send_message("New #{t(:mailer)[:application_title]} Notification")
     end
   end
 
@@ -47,7 +47,7 @@ class UserMailer < ActionMailer::Base
   #   @procedure = procedure
   #   @sub_service_request = ssr
 
-  #   send_message("New #{I18n.t('application_title')} Individual Subject Procedure Notification")
+  #   send_message("New #{t(:mailer)[:application_title]} Individual Subject Procedure Notification")
   # end
 
   private

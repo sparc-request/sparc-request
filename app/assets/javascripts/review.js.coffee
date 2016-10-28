@@ -19,26 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #= require navigation
+#= require protocol
+#= require document_management
 
 $(document).ready ->
-  #Save as Draft Notification
-  notification_open = false
-  $('#draft_notification').dialog
-    resizable: false,
-    height: 220,
-    modal: true,
-    autoOpen: false,
-    buttons:
-      "Yes": ->
-        sr_id = $(this).data('sr-id')
-        window.location = "/service_requests/#{sr_id}/save_and_exit"
-
-      "No": ->
-        notification_open = false
-        $(this).dialog('close')
-
-  $(document).on('click', '#save-as-draft', (event) ->
-    event.preventDefault()
-    if notification_open == false
-      $('#draft_notification').dialog('open')
-  )

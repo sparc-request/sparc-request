@@ -368,23 +368,10 @@ class SubServiceRequest < ActiveRecord::Base
     !self.in_work_fulfillment?
   end
 
-  # TODO: Verify that this method is no longer needed or being used
-  def candidate_statuses
-    candidates = ["draft", "submitted", "in process", "complete"]
-    #candidates.unshift("submitted") if self.can_be_edited?
-    #candidates.unshift("draft") if self.can_be_edited?
-    candidates << "ctrc review" if self.ctrc?
-    candidates << "ctrc approved" if self.ctrc?
-    candidates << "awaiting pi approval"
-    candidates << "on hold"
-
-    candidates
-  end
-
   # Callback which gets called after the ssr is saved to ensure that the
   # past status is properly updated.  It should not normally be
   # necessarily to call this method.
-  def update_past_status identity
+  def update_past_status(identity)
     old_status = self.past_statuses.last
     if @prev_status and (not old_status or old_status.status != @prev_status)
       self.past_statuses.create(status: @prev_status, date: Time.now, changed_by_id: identity.id)

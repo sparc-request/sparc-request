@@ -22,7 +22,8 @@ require 'rails_helper'
 
 RSpec.describe Arm, type: :model do
   describe '#mass_create_visit_group' do
-    let(:arm) { create(:arm, visit_count: 2, line_item_count: 2) }
+    let!(:protocol) { create(:protocol_without_validations) }
+    let(:arm)       { create(:arm, protocol: protocol, visit_count: 2, line_item_count: 2) }
 
     before(:each) do
       arm.update(visit_count: 5)

@@ -17,82 +17,17 @@
 /* DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS*/
 /* INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR*/
 /* TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.*/
+.bottom-nav
+  display: flex
+  padding: 15px
 
-// Navigation Bar
-.continue
-  margin-top: 15px
-  width: 940px
-  clear: both
-  a
-    cursor: pointer
-    text-decoration: none
-    font-size: 18px
-    color: #fff
-    line-height: 36px
   div
-    display: inline-block
-    zoom: 1
-    *display: inline
-    height: 36px
-    vertical-align: middle
-    &.exit
-      width: 405px
-      min-width: 405px
-      a
-        margin: 0 0 0 60px
-        vertical-align: 8px
-        padding-left: 85px
-    &.nav-forward
-      width: 252px
-      margin-right: 12px
-      vertical-align: bottom
-      text-align: right
-      img
-        vertical-align: middle
-        padding-right: 5px
-        padding-bottom: 2px
-    &.nav-backward
-      width: 252px
-      margin-left: 12px
-      vertical-align: bottom
-      img
-        vertical-align: middle
-        padding-right: 5px
-        padding-bottom: 2px
-    .continue-spinner
-      padding-left: 0px !important
-      padding-right: 5px !important
-      padding-top: 2px !important
-      padding-bottom: 2px !important
-    .return-spinner
-      padding-left: 5px !important
-      padding-right: 0px !important
-      padding-top: 2px !important
-      padding-bottom: 2px !important
+    padding: 0px
 
-.review-bottom-navigation 
-  div.return-to-step-3, div.submit-request
-    img
-      vertical-align: middle
-      padding-right: 5px
-      padding-bottom: 2px
-
-.return-to-step-3
-  padding-left: 12px
-  width: 250px
-
-.return-to-step-3, .save-as-draft, .obtain-research-pricing, .submit-request
-  float: left
-  height: 32px
-
-.return-to-step-3 .return-to-previous a img
-  vertical-align: middle
-
-.save-as-draft, .obtain-research-pricing
-  width: 205px
-
-.submit-request
-  width: 258px
-  a img
-    vertical-align: middle
-
+  @media( max-width: 768px )
+    .col-sm-3
+      width: 25%
+    .col-sm-6
+      width: 50%
+    .col-sm-3, .col-sm-6
+      padding: 0px 15px

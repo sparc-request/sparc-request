@@ -30,6 +30,7 @@
     .clearfix
 
   = form_for_filterrific filterrific, remote: true, html: { id: 'filterrific-no-ajax-auto-submit', autocomplete: 'off' } do |form|
+    = form.hidden_field :sorted_by
     .panel-body
       #protocol_filter_form_display
         .form-group.row
@@ -54,7 +55,7 @@
               = filterrific.select_options[:with_organization].each do |org_type, orgs|
                 %optgroup{ label: org_type }
                   - orgs.each do |name, id|
-                    %option{ value: id, selected: filterrific.with_organization && filterrific.with_organization.include?(id.to_s), data: {content: name} }
+                    %option{ value: id, selected: filterrific.with_organization && filterrific.with_organization.include?(id), data: {content: name} }
         - if admin
           %hr
           .form-group.row

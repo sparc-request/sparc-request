@@ -61,18 +61,18 @@ RSpec.describe Dashboard::AssociatedUsersController do
           build_stubbed(:project_role, protocol: @protocol)
         end
 
-        project_role_updater = instance_double(Dashboard::AssociatedUserUpdater,
+        project_role_updater = instance_double(AssociatedUserUpdater,
           successful?: true, # valid in this context
           protocol_role: @project_role)
 
-        allow(Dashboard::AssociatedUserUpdater).to receive(:new).
+        allow(AssociatedUserUpdater).to receive(:new).
           and_return(project_role_updater)
 
         xhr :put, :update, id: @project_role.id, protocol_id: @protocol.id, project_role: {identity_id: '1'}
       end
 
       it 'should update @protocol_role using params[:project_role] using ProtocolUpdater' do
-        expect(Dashboard::AssociatedUserUpdater).to have_received(:new).
+        expect(AssociatedUserUpdater).to have_received(:new).
           with(id: @project_role.id.to_s, project_role: {identity_id: '1'})
       end
 
@@ -100,11 +100,11 @@ RSpec.describe Dashboard::AssociatedUsersController do
         end
         allow(@project_role).to receive(:errors).and_return("my errors")
 
-        @project_role_updater = instance_double(Dashboard::AssociatedUserUpdater,
+        @project_role_updater = instance_double(AssociatedUserUpdater,
           successful?: false, # valid in this context
           protocol_role: @project_role)
 
-        allow(Dashboard::AssociatedUserUpdater).to receive(:new).and_return(@project_role_updater)
+        allow(AssociatedUserUpdater).to receive(:new).and_return(@project_role_updater)
 
         xhr :put, :update, id: @project_role.id, protocol_id: @protocol.id, project_role: {identity_id: '1'}
       end

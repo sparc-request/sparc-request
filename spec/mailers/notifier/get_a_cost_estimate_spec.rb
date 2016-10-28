@@ -83,8 +83,11 @@ RSpec.describe Notifier do
                                                                         service_request,
                                                                         xls,
                                                                         identity,
-                                                                        service_request.sub_service_requests.first,
-                                                                        []) }
+                                                                        service_request.sub_service_requests.first.id, 
+                                                                        audit) }
+    it 'should display correct subject' do
+      expect(mail).to have_subject("#{service_request.protocol.id} - [Test - EMAIL TO glennj@musc.edu] SPARCRequest service request")
+    end
 
     # Expected service provider message is defined under get_a_cost_estimate_service_provider_admin_message
     it 'should display service_provider intro message, link, conclusion, and should not display acknowledgments' do

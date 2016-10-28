@@ -17,44 +17,21 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-.devise_form#login{:style => "padding-left:0"}
-  - if USE_SHIBBOLETH
-    .grid_6.prefix_3.suffix_3.box.sign_in_selection#shibboleth_sign_in_button
-      .info
-        .center
-          = link_to t(:signin)[:button1], identity_omniauth_authorize_path(:shibboleth), :class => 'blue-button devise_option_button btn btn-primary'
-  - if USE_SHIBBOLETH && !USE_SHIBBOLETH_ONLY
-    .clear
-    .sign_in_options
-      %br
-      \- OR -
-      %br
-      %br
-    .clear
-  - if !USE_SHIBBOLETH_ONLY
-    .grid_6.prefix_3.suffix_3.box.sign_in_selection
-      .info
-        .center
-          = link_to t(:signin)[:button2], "javascript:void(0);", :class => 'toggle_outside_user_sign_in blue-button devise_option_button btn btn-primary'
-
-        #outside_sign_in_form
-          = form_for(resource, :as => resource_name, :url => session_path(resource_name)) do |f|
-            .field
-              = f.label(:ldap_uid, t(:login_name))
-              = f.text_field :ldap_uid, :size => '30', :style => 'width:auto'
-            .field
-              = f.label(:password, t(:login_password))
-              = f.password_field :password
-            - if devise_mapping.rememberable?
-              .field
-                = f.label(:remember_me, t(:remember_user))
-                = f.check_box :remember_me
-            .clear
-            #button
-              = f.submit t(:signin)[:button3], :class => 'blue-button devise_submit_button btn btn-primary'
-              = link_to t(:devise)[:cancel], catalog_service_request_path(@service_request), :class => 'blue-button devise_cancel_button btn btn-primary'
-          .clear
-          .links
-            = render "devise/shared/links"
-          %br
+= javascript_include_tag 'login'
+.devise-form
+  .col-md-3
+  .col-md-6.text-center
+    %h1.page-header
+      = t(:devise)[:sessions][:header]
+    .form-group.login-buttons
+      - if USE_SHIBBOLETH
+        = link_to t(:devise)[:sessions][:institution_users], identity_omniauth_authorize_path(:shibboleth), class: 'btn btn-primary omniauth-login-button'
+      %a.btn.btn-primary.standard-login-button
+        = t(:devise)[:sessions][:other_users]
+    .form-group.sign-up-button
+      = link_to t(:devise)[:sessions][:sign_up], new_identity_registration_path
+    .form-group.return-button
+      %a.btn.btn-primary{ href: root_path }
+        = t(:devise)[:sessions][:return]
+    = render 'login_form'
+  .col-md-3

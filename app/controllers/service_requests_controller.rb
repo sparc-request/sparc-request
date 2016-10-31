@@ -192,7 +192,6 @@ class ServiceRequestsController < ApplicationController
   end
 
   def confirmation
-    binding.pry
     @protocol = @service_request.protocol
     @service_request.previous_submitted_at = @service_request.submitted_at
 

@@ -83,8 +83,7 @@ RSpec.describe Notifier do
                                                                         service_request,
                                                                         xls,
                                                                         identity,
-                                                                        service_request.sub_service_requests.first.id, 
-                                                                        audit) }
+                                                                        service_request.sub_service_requests.first.id) }
     it 'should display correct subject' do
       expect(mail).to have_subject("#{service_request.protocol.id} - [Test - EMAIL TO glennj@musc.edu] SPARCRequest service request")
     end

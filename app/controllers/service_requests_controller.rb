@@ -263,12 +263,7 @@ class ServiceRequestsController < ApplicationController
           ssr.update_attribute(:status, 'first_draft')
         elsif ssr.status.nil? || (ssr.can_be_edited? && ssr_has_changed?(@service_request, ssr) && (ssr.status != 'complete'))
           previous_status = ssr.status
-<<<<<<< HEAD
-          ssr.update_attribute :status, 'draft'
-=======
           ssr.update_attribute(:status, 'draft')
-          ssr.update_past_status(current_user) unless previous_status.nil?
->>>>>>> master
         end
       end
 
@@ -601,12 +596,7 @@ class ServiceRequestsController < ApplicationController
       service_request.update_attribute(:submitted_at, Time.now)
       service_request.sub_service_requests.where.not(status: 'submitted').update_all(submitted_at: Time.now)
     end
-<<<<<<< HEAD
-    to_notify = service_request.update_status(status)
-=======
     to_notify = service_request.update_status(status, validate)
-    service_request.sub_service_requests.each {|ssr| ssr.update_past_status(current_user)}
->>>>>>> master
 
     to_notify
   end

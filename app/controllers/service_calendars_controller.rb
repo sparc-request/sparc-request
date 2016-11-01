@@ -158,7 +158,6 @@ class ServiceCalendarsController < ApplicationController
     arm = Arm.find params[:arm_id]
 
     if !arm.update_visit_group_window_before(window_before, position)
-      puts '!'*50
       respond_to do |format|
         format.js { render status: 418, json: clean_messages(arm.errors.messages) }
       end

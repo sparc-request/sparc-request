@@ -22,6 +22,9 @@ require 'rails_helper'
 
 RSpec.describe Arm, type: :model do
   describe '#update_visit_group_day' do
+    let!(:protocol) { create(:protocol_without_validations) }
+    let(:arm)       { create(:arm, protocol: protocol, visit_count: 3, line_item_count: 1) }
+
     it 'should update VisitGroup\'s day' do
       arm.update_visit_group_day '4', 2
       expect(arm.reload.visit_groups[2].day).to eq 4
@@ -39,8 +42,6 @@ RSpec.describe Arm, type: :model do
         expect(arm.errors[:out_of_order]).to be_empty
       end
     end
-
-    let(:arm) { create(:arm, visit_count: 3, line_item_count: 1) }
 
     context 'USE_EPIC == true and portal == "true"' do
       before(:each) { stub_const("USE_EPIC", true) }

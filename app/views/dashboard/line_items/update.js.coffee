@@ -20,15 +20,13 @@
 
 <% if @otf %>
 <% if @errors %>
-$("#modal_errors").html("<%= escape_javascript(render(partial: 'shared/modal_errors', locals: {errors: @errors})) %>")
-
+$("#modal_errors").html("<%= escape_javascript(render( 'shared/modal_errors', errors: @errors )) %>")
 <% else %>
 $("#study-level-activities-table").bootstrapTable 'refresh', {silent: true}
-$("#modal_place").modal 'hide'
-
+$("#modal_place").modal('hide')
 <% end %>
 <% end %>
 
 $("#flashes_container").html("<%= escape_javascript(render('shared/flash')) %>")
-$("#sub_service_request_header").html("<%= escape_javascript(render(partial: 'dashboard/sub_service_requests/header', locals: {sub_service_request: @sub_service_request})) %>")
+$("#sub_service_request_header").html("<%= escape_javascript(render( 'dashboard/sub_service_requests/header', sub_service_request: @sub_service_request )) %>")
 $(".selectpicker").selectpicker()

@@ -1,0 +1,57 @@
+-# Copyright © 2011-2016 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+%tr.maximum-total-direct-cost-per-patient{ class: "arm-#{arm.id} " }
+  %td.col-sm-5{ colspan: tab == 'template' ? 8 : 7 }
+    %strong
+      = t(:calendars)[:pppv][:totals][:maximum_direct]
+  - 5.times do |i|
+    %td.col-sm-1.text-center{ class: "max-direct-per-patient visit-#{i+1}" }
+  %td.col-sm-1.text-center
+    = display_max_total_direct_cost_per_patient(arm, line_items_visits)
+  %td.col-sm-1.text-center
+
+- if USE_INDIRECT_COST
+  %tr.maximum-total-indirect-cost-per-patient{ class: "arm-#{arm.id} " }
+    %td.col-sm-5{ colspan: tab == 'template' ? 8 : 7 }
+      %strong
+        = t(:calendars)[:pppv][:totals][:maximum_indirect]
+    - 5.times do |i|
+      %td.col-sm-1.text-center{ class: "max-indirect-per-patient visit-#{i+1}" }
+    %td.col-sm-1.text-center
+      = display_max_total_indirect_cost_per_patient(arm, line_items_visits)
+    %td.col-sm-1.text-center
+
+%tr.maximum-total-per-patient{ class: "arm-#{arm.id} " }
+  %td.col-sm-5{ colspan: tab == 'template' ? 8 : 7 }
+    %strong
+      = t(:calendars)[:pppv][:totals][:maximum_per_patient]
+  - 5.times do |i|
+    %td.col-sm-1.text-center{ class: "max-total-per-patient visit-#{i+1}" }
+  %td.col-sm-1.text-center
+    = display_max_total_cost_per_patient(arm, line_items_visits)
+  %td.col-sm-1.text-center
+
+%tr.total-per-patient-per-visit-cost-per-study{ class: "arm-#{arm.id} " }
+  %td.col-sm-5{ colspan: tab == 'template' ? 8 : 7 }
+    %strong
+      = I18n.t('calendars.pppv.totals.total_costs', arm_name: arm.name)
+  %td.col-sm-5{ colspan: 6 }
+  %td.col-sm-1.text-center
+    = display_total_cost_per_arm(arm, line_items_visits)

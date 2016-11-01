@@ -75,22 +75,6 @@ class Organization < ActiveRecord::Base
 
   scope :in_cwf, -> { joins(:tags).where(tags: { name: 'clinical work fulfillment' }) }
 
-  scope :available_institutions, -> {
-    Organization.where(type: 'Institution', is_available: true)
-  }
-
-  scope :available_providers, -> {
-    Organization.where(type: 'Provider', is_available: true, parent: available_institutions)
-  }
-
-  scope :available_programs, -> {
-    Organization.where(type: 'Program', is_available: true, parent: available_providers)
-  }
-
-  scope :available_cores, -> {
-    Organization.where(type: 'Core', is_available: true, parent: available_programs)
-  }
-
   def label
     abbreviation || name
   end

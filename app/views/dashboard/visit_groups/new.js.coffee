@@ -18,6 +18,6 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$("#modal_place").html("<%= escape_javascript(render(:partial =>'dashboard/visit_groups/add_visit_form', locals: {protocol: @protocol, visit_group: @visit_group, arm: @arm, schedule_tab: @schedule_tab, current_page: @current_page, service_request: @service_request, sub_service_request: @sub_service_request, study_tracker: @study_tracker})) %>");
+$("#modal_place").html("<%= escape_javascript(render( 'dashboard/visit_groups/add_visit_form', protocol: @protocol, visit_group: @visit_group, arm: @arm, schedule_tab: @schedule_tab, current_page: @current_page, service_request: @service_request, sub_service_request: @sub_service_request )) %>");
 $("#modal_place").modal 'show'
 $(".selectpicker").selectpicker()

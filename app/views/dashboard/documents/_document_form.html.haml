@@ -19,10 +19,10 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .modal-dialog
   .modal-content
-    = form_for ([:dashboard, document]), {format: :js, remote: true, multipart: true, authenticity_token: form_authenticity_token, html: {class: "form-horizontal", role: "form"}} do |form|
+    = form_for ([:dashboard, document]), remote: true, multipart: true, authenticity_token: form_authenticity_token, html: { class: 'form-horizontal', role: 'form' } do |form|
       .modal-header
-        %button.close{type: 'button', data: {dismiss: 'modal'}}
-          %span{aria: {hidden:'true'}} &times;
+        %button.close{ type: 'button', data: { dismiss: 'modal' } }
+          %span{ aria: { hidden:'true' } } &times;
           %span.sr-only &times;
         %h4.modal-title.text-center
           = header_text
@@ -32,25 +32,25 @@
           .col-md-12
             = hidden_field_tag :protocol_id, form.object.protocol.id
             .form-group
-              = form.label "doc_type", t(:dashboard)[:documents][:form][:document_type], class: "col-sm-4 control-label"
+              = form.label :doc_type, t(:documents)[:form_fields][:document_type], class: 'col-sm-4 control-label required'
               .col-sm-7
-                = form.select "doc_type", options_for_select(DOCUMENT_TYPES, document.doc_type), {prompt: "Select Type"}, class: "form-control selectpicker"
-            .form-group#doc_type_other_field{ display_if(document.doc_type == 'other') }
-              = form.label "doc_type_other", t(:dashboard)[:documents][:form][:specify_doc_type], class: "col-sm-4 control-label"
+                = form.select :doc_type, options_for_select(DOCUMENT_TYPES, document.doc_type), { prompt: t(:documents)[:select_type] }, class: 'form-control selectpicker'
+            .form-group#doc-type-other-field{ display_if(document.doc_type == 'other') }
+              = form.label :doc_type_other, t(:documents)[:form_fields][:specify_doc_type], class: 'col-sm-4 control-label required'
               .col-sm-7
-                = form.text_field "doc_type_other", {class: 'form-control'}
+                = form.text_field :doc_type_other, {class: 'form-control'}
             .form-group
-              = form.label "document", t(:dashboard)[:documents][:form][:document], class: "col-sm-4 control-label"
+              = form.label :document, t(:documents)[:form_fields][:document], class: 'col-sm-4 control-label required'
               .col-sm-7
                 %p.help-block
                   = document.document_file_name
-                = form.file_field "document"
+                = form.file_field :document
             .form-group
-              = form.label "org_ids", t(:dashboard)[:documents][:form][:access], class: "col-sm-4 control-label"
+              = form.label :org_ids, t(:documents)[:form_fields][:access], class: 'col-sm-4 control-label'
               .col-sm-7
-                = select_tag "org_ids", document_org_access_collection(document, action), class: "form-control selectpicker", multiple: true
+                = select_tag :org_ids, document_org_access_collection(document, action), class: 'form-control selectpicker', multiple: true
       .modal-footer
         .center-block
-          %button.btn.btn-default{type: 'button', data: {dismiss: 'modal'}}
+          %button.btn.btn-default{ type: 'button', data: { dismiss: 'modal' } }
             = t(:actions)[:close]
-          %input.btn.btn-primary{type: 'submit', value: t(:actions)[:upload]}
+          %input.btn.btn-primary{ type: 'submit', value: t(:actions)[:upload] }

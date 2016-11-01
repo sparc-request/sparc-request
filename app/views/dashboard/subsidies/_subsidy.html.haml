@@ -17,13 +17,12 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 .panel.panel-default
   .panel-heading
     %h4.panel-title
-      = t(:dashboard)[:subsidies][:subsidy_information][:header]
+      = t(:dashboard)[:subsidies][:header]
   .panel-body
-    #approved_subsidy
-      = render partial: 'dashboard/subsidies/approved_subsidy', locals: { sub_service_request: sub_service_request, subsidy: sub_service_request.approved_subsidy, admin: admin }
-    #pending_subsidy
-      = render partial: 'dashboard/subsidies/pending_subsidy', locals: { sub_service_request: sub_service_request, subsidy: sub_service_request.pending_subsidy, admin: admin }
+    #approved-subsidy
+      = render 'subsidies/approved_subsidy', sub_service_request: sub_service_request, subsidy: sub_service_request.approved_subsidy, admin: admin
+    #pending-subsidy
+      = render 'subsidies/pending_subsidy', sub_service_request: sub_service_request, subsidy: sub_service_request.pending_subsidy, admin: admin

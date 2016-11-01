@@ -18,4 +18,4 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$(".arm-calendar-container-<%= @arm.id %>").html("<%= escape_javascript(render :partial => 'dashboard/service_calendars/master_calendar/pppv/pppv_calendar', :locals => {:service_request => @service_request, :tab => @tab, :arm => @arm, :portal => @portal, :thead_class => @thead_class, :review => true, page: @pages[@arm.id], pages: @pages, merged: false, study_tracker: false }) %>")
+$(".arm-calendar-container-<%= @arm.id %>").html("<%= escape_javascript(render( 'dashboard/service_calendars/master_calendar/pppv/pppv_calendar', :locals => {:service_request => @service_request, :tab => @tab, :arm => @arm, :portal => @portal, :thead_class => @thead_class, :review => true, page: @pages[@arm.id], pages: @pages, merged: false )) %>")

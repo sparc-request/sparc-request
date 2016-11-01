@@ -24,7 +24,7 @@
     %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
     %meta{:name => "viewport", :content => "width=device-width, initial-scale=1"}/
     %meta{ "http-equiv"=>"X-UA-Compatible", "content"=>"IE=edge"}    
-    %title= t 'application_title'
+    %title= t(:mailer)[:application_title]
     = stylesheet_link_tag    "admin/application"
     = javascript_include_tag "admin/application"
     = csrf_meta_tags

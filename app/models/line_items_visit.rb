@@ -36,7 +36,16 @@ class LineItemsVisit < ActiveRecord::Base
   attr_accessible :subject_count  # number of subjects for this visit grouping
   attr_accessible :hidden
 
+  validates_numericality_of :subject_count
+  validate :subject_count_valid
+
   after_save :set_arm_edited_flag_on_subjects
+
+  def subject_count_valid
+    if subject_count && subject_count > arm.subject_count
+      errors.add(:blank, I18n.t('errors.line_items_visits.subject_count_invalid', arm_subject_count: arm.subject_count))
+    end
+  end
 
   def set_arm_edited_flag_on_subjects
     self.arm.set_arm_edited_flag_on_subjects

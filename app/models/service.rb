@@ -211,6 +211,7 @@ class Service < ActiveRecord::Base
   #This method is only used for the service pricing report
   def pricing_map_for_date(date)
     unless pricing_maps.empty?
+      
       current_maps = self.pricing_maps.select { |x| x.display_date.to_date <= date.to_date }
       if current_maps.empty?
         return false

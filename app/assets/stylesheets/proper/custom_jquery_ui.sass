@@ -68,19 +68,6 @@
 .no-close .ui-dialog-titlebar-close
   display: none
 
-.qtip-content ul
-  margin-left: 10px
-  list-style-position: outside
-  li
-    margin-bottom: 10px
-    .help_question
-      display: block
-      margin-bottom: 5px
-      text-decoration: underline
-      cursor: pointer
-    .help_answer
-      font-style: italic
-
 .service-search-result
   padding: 5px
   .name
@@ -92,9 +79,6 @@
   font-family: "Calibri", "Helvetica Neue", Helvetica,sans-serif
   padding: 5px
 
-span#infotip img
-  margin: 0px 0px -3px 10px
-
 .core-accordion
   h3.locked
     background: red !important
@@ -102,30 +86,22 @@ span#infotip img
       color: #003366 !important
 
 .ui-accordion
-  .ui-accordion-content
-    padding: 2px 4px !important
   .ui-accordion-header
     margin-top: 5px !important
-  .ui-accordion-content h4
-    margin: 2px 0 !important
-    a
-      font-size: 12px !important
-      font-weight: normal !important
-  .ui-accordion-content h4:not(.locked) a
-    color: #003366 !important
-    &:hover
-      color: red !important
+  .ui-accordion-header.ui-state-active
+    border-bottom-left-radius: 0 !important
+    border-bottom-right-radius: 0 !important
   .ui-accordion-content
-    h4.locked
-      background: red !important
+    padding: 2px 4px !important
+    border-left: 1px solid black
+    border-right: 1px solid black
+    border-bottom: 1px solid black
+    
+    h4
+      margin: 2px 0 !important
       a
-        color: white !important
-        &:hover
-          color: #003366 !important
-    h3.locked
-      background: red !important
-      &:hover
-        color: #003366 !important
+        font-size: 12px !important
+        font-weight: normal !important
 
 .ui-autocomplete
   list-style: none

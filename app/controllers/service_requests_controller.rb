@@ -202,7 +202,7 @@ class ServiceRequestsController < ApplicationController
 
       @sub_service_request.update_attribute(:submitted_at, Time.now) unless @sub_service_request.status == 'submitted'
       @sub_service_request.update_attributes(status: 'submitted', nursing_nutrition_approved: false,
-                                             lab_approved: false, imaging_approved: false, committee_approved: false) if EDITABLE_STATUSES.INCLUDE?(@sub_service_request.status)
+                                             lab_approved: false, imaging_approved: false, committee_approved: false) if UPDATABLE_STATUSES.include?(@sub_service_request.status)
       @sub_service_request.update_past_status(current_user)
     else
       to_notify = update_service_request_status(@service_request, 'submitted')

@@ -382,7 +382,7 @@ class SubServiceRequest < ActiveRecord::Base
   end
 
   def update_past_status
-    if @prev_status.blank? && @prev_status != self.status
+    if !@prev_status.blank? && @prev_status != self.status
       past_status = self.past_statuses.create(status: @prev_status, date: Time.now)
       user_id = AuditRecovery.where(auditable_id: past_status.id, auditable_type: 'PastStatus').first.user_id
       past_status.update_attribute(:changed_by_id, user_id)

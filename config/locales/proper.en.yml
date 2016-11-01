@@ -37,9 +37,8 @@ en:
     # FOOTER #
     ##########
     footer:
-      mail_to: "hundc@musc.edu"
-      mail_link: "Listserv"
-      mail_subject: "SPARC Request Listserv"
+      listserv: "Listserv"
+      listserv_subject: "SPARC Request Listserv"
       sparc_blog: "Blog"
       sparc_blog_url: "https://sparcrequestblog.com/"
       sctr: "SCTR"

@@ -24,6 +24,7 @@ development:
   feedback_mail_to: "hundc@musc.edu"
   contact_us_mail_to: "success@musc.edu"
   contact_us_cc: "sparcrequest@gmail.com"
+  listserv_mail_to: "hundc@musc.edu"
   new_user_cc: "amcates@gmail.com, no-reply@musc.edu"
   system_satisfaction_survey_cc: 'amcates@gmail.com, catesa@musc.edu'
   root_url: "https://andrews-mac-pro.thurmond-gazes.musc.edu"
@@ -88,6 +89,7 @@ test:
   feedback_mail_to: "hundc@musc.edu"
   contact_us_mail_to: "success@musc.edu"
   contact_us_cc: "sparcrequest@gmail.com"
+  listserv_mail_to: "hundc@musc.edu"
   new_user_cc: "amcates@gmail.com, no-reply@musc.edu"
   system_satisfaction_survey_cc: 'amcates@gmail.com, catesa@musc.edu'
   root_url: /

@@ -675,7 +675,7 @@ class ServiceRequestsController < ApplicationController
 
   def update_service_request_status(service_request, status)
     sub_service_requests = service_request.sub_service_requests.where(status: UPDATABLE_STATUSES) 
-
+    
     if (status == 'submitted')
       service_request.previous_submitted_at = @service_request.submitted_at
       service_request.update_attribute(:submitted_at, Time.now)

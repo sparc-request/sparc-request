@@ -471,13 +471,7 @@ class SubServiceRequest < ActiveRecord::Base
       next if test_actions.subset? actions
 
       audit = audits.sort_by(&:created_at).last
-      # create action
-      if audit.audited_changes["sub_service_request_id"].nil?
-        filtered_audit_trail[:line_items] << audit if LineItem.find(audit.auditable_id).sub_service_request_id == self.id
-      # destroy action
-      else
-        filtered_audit_trail[:line_items] << audit if audit.audited_changes["sub_service_request_id"] == self.id
-      end
+      filtered_audit_trail[:line_items] << audit if audit.audited_changes["sub_service_request_id"] == self.id
     end
     filtered_audit_trail[:sub_service_request_id] = self.id
     filtered_audit_trail

@@ -269,8 +269,7 @@ class ServiceCalendarsController < ApplicationController
     @arm = Arm.find(params[:arm_id])
 
     @service_request.service_list(false).each do |_key, value|
-      next unless @sub_service_request.nil? || @sub_service_request.organization.name == value[:process_ssr_organization_name]
-      next if !@sub_service_request.can_be_edited?
+      next unless @sub_service_request.nil? || @sub_service_request.organization.name == value[:process_ssr_organization_name] || @sub_service_request.can_be_edited?
 
       @arm.line_items_visits.each do |liv|
         next unless value[:line_items].include?(liv.line_item) && liv.line_item.sub_service_request.can_be_edited? && !liv.line_item.sub_service_request.is_complete?

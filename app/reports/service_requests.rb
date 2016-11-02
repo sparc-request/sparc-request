@@ -30,7 +30,7 @@ class ServiceRequestsReport < ReportingModule
   # see app/reports/test_report.rb for all options
   def default_options
     {
-      "Submission Date Range" => {:field_type => :date_range, :for => "submitted_at", :from => "2012-03-01".to_date, :to => Date.today},
+      "Date Range" => {:field_type => :date_range, :for => "submitted_at", :from => "2012-03-01".to_date, :to => Date.today},
       Institution => {:field_type => :select_tag, :has_dependencies => "true"},
       Provider => {:field_type => :select_tag, :dependency => '#institution_id', :dependency_id => 'parent_id'},
       Program => {:field_type => :select_tag, :dependency => '#provider_id', :dependency_id => 'parent_id'},
@@ -46,12 +46,12 @@ class ServiceRequestsReport < ReportingModule
     attrs = {}
 
     attrs["SRID"] = :display_id
-    attrs["Date Submitted"] = "submitted_at.strftime('%Y-%m-%d')"
     attrs["Status"] = :formatted_status
 
     attrs["Protocol Short Title"] = "service_request.try(:protocol).try(:short_title)"
     attrs["Full Protocol Title"] = "service_request.try(:protocol).try(:title)"
 
+    attrs["Date Submitted"] = "submitted_at.strftime('%Y-%m-%d')"
 
     if params[:institution_id]
       attrs[Institution] = [params[:institution_id], :abbreviation]

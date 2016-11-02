@@ -30,9 +30,6 @@ $(document).ready ->
       else if tab == 'complete'
         $('.complete-ssrs').removeClass('hidden')
     return false
-        
-  $(document).on 'click', '#modal_place .yes-button', ->
-    addService($(this).data('srid'), $(this).data('service-id'))
 
   $(document).on 'click', '.add-service', ->
     id = $(this).data('id')
@@ -45,6 +42,9 @@ $(document).ready ->
       $('#modal_place').modal('show')
       $('#modal_place .yes-button').data('srid', srid)
       $('#modal_place .yes-button').data('service-id', id)
+      $('#modal_place .yes-button').on 'click', (e) ->
+        console.log('yes button')
+        addService(srid, id)
     else
       addService(srid, id)
 
@@ -65,7 +65,7 @@ $(document).ready ->
       $('#modal_place').html($('#request-submitted-modal').html())
       $('#modal_place').modal('show')
 
-      $(document).on 'click', '#modal_place .yes-button', ->
+      $('#modal_place .yes-button').on 'click', (e) ->
         button.replaceWith(spinner)
         removeService(srid, id, false, spinner)
     else
@@ -73,7 +73,7 @@ $(document).ready ->
         $('#modal_place').html($('#remove-request-modal').html())
         $('#modal_place').modal('show')
 
-        $(document).on 'click', '#modal_place .yes-button', ->
+        $('#modal_place .yes-button').on 'click', (e) ->
           button.replaceWith(spinner)
           removeService(srid, id, true, spinner)
       else if li_count == 1 && window.location.pathname.indexOf('catalog') == -1 # Do not allow the user to remove the last service except in the catalog

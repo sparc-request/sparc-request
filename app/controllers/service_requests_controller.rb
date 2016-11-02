@@ -259,11 +259,9 @@ class ServiceRequestsController < ApplicationController
       # create sub_service_requests
       @service_request.reload
       @service_request.previous_submitted_at = @service_request.submitted_at
-
       new_line_items.each do |li|
         ssr = find_or_create_sub_service_request(li, @service_request)
         li.update_attribute(:sub_service_request_id, ssr.id)
-
         if @service_request.status == 'first_draft'
           ssr.update_attribute(:status, 'first_draft')
         elsif ssr.status.nil? || (ssr.can_be_edited? && ssr_has_changed?(@service_request, ssr) && (ssr.status != 'complete'))

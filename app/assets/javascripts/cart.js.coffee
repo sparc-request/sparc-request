@@ -43,7 +43,6 @@ $(document).ready ->
       $('#modal_place .yes-button').data('srid', srid)
       $('#modal_place .yes-button').data('service-id', id)
       $('#modal_place .yes-button').on 'click', (e) ->
-        console.log('yes button')
         addService(srid, id)
     else
       addService(srid, id)

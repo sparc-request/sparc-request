@@ -53,7 +53,7 @@
       #header
         = render 'shared/header_logos', in_dashboard: true
         %input#current_user_id{type: 'hidden', value: @user.try(:id)}
-      = render 'layouts/dashboard/dashboard_header', user: @user
+      = render 'layouts/dashboard/navbar', user: @user
 
       .notification_dialog
       .flash

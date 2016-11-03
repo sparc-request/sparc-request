@@ -37,7 +37,7 @@ $(document).ready ->
   ###############
   # ADD SERVICE #
   ###############
-  $(document).on 'click', '#modal_place .add-service .yes-button', ->
+  $(document).on 'click', '#modal_place .new-request .yes-button', ->
     srid = $(this).data('srid')
     id = $(this).data('service-id')
     addService(srid, id)

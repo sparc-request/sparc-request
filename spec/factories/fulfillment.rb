@@ -22,7 +22,7 @@ FactoryGirl.define do
 
   factory :fulfillment do
     timeframe    { Faker::Lorem.word }
-    time         { "Right Now" }
-    date         { Time.now }
+    time         { 1.00 }
+    date         { '01/01/2016' }
   end
 end

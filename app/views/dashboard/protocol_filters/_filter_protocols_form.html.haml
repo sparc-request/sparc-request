@@ -30,6 +30,7 @@
     .clearfix
 
   = form_for_filterrific filterrific, remote: true, html: { id: 'filterrific-no-ajax-auto-submit', autocomplete: 'off' } do |form|
+    = form.hidden_field :sorted_by
     .panel-body
       #protocol_filter_form_display
         .form-group.row

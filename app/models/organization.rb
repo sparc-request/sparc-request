@@ -75,22 +75,6 @@ class Organization < ActiveRecord::Base
 
   scope :in_cwf, -> { joins(:tags).where(tags: { name: 'clinical work fulfillment' }) }
 
-  scope :available_institutions, -> {
-    Organization.where(type: 'Institution', is_available: true)
-  }
-
-  scope :available_providers, -> {
-    Organization.where(type: 'Provider', is_available: true, parent: available_institutions)
-  }
-
-  scope :available_programs, -> {
-    Organization.where(type: 'Program', is_available: true, parent: available_providers)
-  }
-
-  scope :available_cores, -> {
-    Organization.where(type: 'Core', is_available: true, parent: available_programs)
-  }
-
   def label
     abbreviation || name
   end
@@ -196,10 +180,6 @@ class Organization < ActiveRecord::Base
 
   def update_descendants_availability(is_available)
     if is_available == "0"
-      puts '#' * 50
-      puts "in update"
-      puts '#' * 50
-
       children = Organization.where(id: all_child_organizations << self)
       children.update_all(is_available: false)
       Service.where(organization_id: children).update_all(is_available: false)

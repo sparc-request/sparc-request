@@ -22,11 +22,11 @@
   = hidden_field_tag :service_request_id, service_request.id
   = hidden_field_tag :sub_service_request_id, sub_service_request.id
   .form-group
-    = a.label "name", t(:dashboard)[:arms][:name], class: "col-sm-4 control-label"
+    = a.label "name", t(:arms)[:form_fields][:name], class: "col-sm-4 control-label required"
     .col-sm-7
       = a.text_field "name", {class: 'form-control'}
   .form-group
-    = a.label "subject_count", t(:dashboard)[:arms][:subject_count], class: "col-sm-4 control-label"
+    = a.label "subject_count", t(:arms)[:form_fields][:subject_count], class: "col-sm-4 control-label required"
     .col-sm-7
       = a.text_field "subject_count", {class: 'form-control'}
   .modal-footer

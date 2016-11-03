@@ -82,8 +82,9 @@ module Dashboard::ServiceRequestsHelper
 
   def owners_for_select(ssr)
     if ssr
-      unless ssr.candidate_owners.empty?
-        candidate_owners = ssr.candidate_owners.map {|x| [x.full_name, x.id]}
+      owners = ssr.candidate_owners
+      if owners.any?
+        candidate_owners = owners.map {|x| [x.full_name, x.id]}
         return options_for_select(candidate_owners, ssr.owner_id)
       else
         return options_for_select([])

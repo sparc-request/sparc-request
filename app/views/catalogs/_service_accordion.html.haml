@@ -17,46 +17,10 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-.clear
-#institution_accordion
-  - # we have a sub_service_request time to do some special stuff
-  - if @sub_service_request
-    - ssr_org = @sub_service_request.organization
-
-  - institutions.each do |institution|
-    - next unless institution.is_available? or institution.is_available.nil?
-    - if @sub_service_request
-      - next unless (institution_is_process_ssr = ssr_org == institution) or ssr_org.parents.include?(institution)
-    - institution_locked = locked_org_ids.present? ? locked_org_ids.include?(institution.id) : false
-    %h3{ class: institution.css_class+(institution_locked ? 'locked' : '') }
-      - if institution_locked
-        = display_locked_organization(institution.name)
-      - else
-        = link_to institution.name, update_description_catalog_path(institution)
-    %div.institution
-      .provider_accordion
-        - institution.providers.order('`order`').each do |provider|
-          - next unless provider.is_available? or provider.is_available.nil?
-
-          - if @sub_service_request && !institution_is_process_ssr
-            - next unless (provider_is_process_ssr = ssr_org == provider) or ssr_org.parents.include?(provider)
-          
-          - provider_locked = locked_org_ids.present? ? locked_org_ids.include?(provider.id) : false
-          %h3{ class: "#{provider.css_class} provider_header #{provider_locked ? 'locked' : ''}" }
-            - if provider_locked
-              = display_locked_organization(provider.name)
-            - else
-              = link_to provider.name, update_description_catalog_path(provider)
-          %div.provider
-            - provider.programs.order('`order`').each do |program|
-              - next unless (program.is_available? || program.is_available.nil?) && program.has_active_pricing_setup
-
-              - if @sub_service_request && !provider_is_process_ssr
-                - next unless (program_is_process_ssr = ssr_org == program) or ssr_org.parents.include?(program)
-
-              - program_locked = locked_org_ids.present? ? locked_org_ids.include?(program.id) : false
-              %h4{ class: "#{cycle('even', provider.css_class + '-odd')} #{program_locked ? 'locked' : ''}" }
-                - if program_locked
-                  = display_locked_organization(program.name)
-                - else
-                  = link_to program.name, update_description_catalog_path(program, sub_service_request_id: @sub_service_request.try(:id), program_is_process_ssr: program_is_process_ssr), class: 'program-link', remote: true, method: :post
+.col-md-3.service-catalog
+  .panel.panel-primary
+    .panel-heading.text-center
+      %h4.panel-title
+        = t(:proper)[:catalog][:accordion][:header]
+    .panel-body
+      = render 'catalogs/accordion/institutions', institutions: institutions, locked_ids: locked_org_ids ? locked_org_ids : [], ssr_org: ssr_org

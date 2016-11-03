@@ -49,8 +49,8 @@ $ ->
 
   $(document).on 'change', '#document_doc_type', ->
     if $(this).val() == 'other'
-      $('#doc_type_other_field').show()
+      $('#doc-type-other-field').show()
     else
-      $('#doc_type_other_field').hide()
+      $('#doc-type-other-field').hide()
 
   # DOCUMENTS LISTENERS END

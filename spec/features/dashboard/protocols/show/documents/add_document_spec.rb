@@ -35,11 +35,11 @@ RSpec.feature 'User wants to add a document', js: true do
       wait_for_javascript_to_finish
     end
 
-    scenario 'and sees the enabled \'Add a New Document\' button' do
+    scenario 'and sees the enabled \'Add a Document\' button' do
       expect(@page).to have_enabled_add_document_button
     end
 
-    context 'and clicks \'Add a New Document\'' do
+    context 'and clicks \'Add a Document\'' do
       before :each do
         give_user_admin_access_to_protocol
 

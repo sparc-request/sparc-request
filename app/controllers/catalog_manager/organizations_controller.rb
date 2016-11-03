@@ -34,9 +34,9 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
 
   def update
     @organization = Organization.find(params[:id])
+    set_org_tags
     update_organization
     save_pricing_setups
-    set_org_tags
     @organization.setup_available_statuses
     @entity = @organization
     render 'catalog_manager/organizations/update'

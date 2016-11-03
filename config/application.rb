@@ -51,6 +51,7 @@ module SparcRails
 
     config.action_dispatch.default_headers.merge!({'X-Frame-Options' => 'ALLOWALL', 'X-UA-Compatible' => 'IE=edge,chrome=1'})
 
+    config.action_view.field_error_proc = Proc.new { |html_tag, instance| html_tag }
     # Only load the plugins named here, in the order given (default is alphabetical).
     # :all can be used as a placeholder for all plugins not explicitly named.
     # config.plugins = [ :exception_notification, :ssl_requirement, :all ]
@@ -67,6 +68,9 @@ module SparcRails
     # config.i18n.default_locale = :de
     # see /initializers/obis_setup.rb and application.yml for overriding the :en locale for custom text specific to your institution
     # and, you don't need to override all of the text, only the sets of texts you need customized
+    config.i18n.load_path += Dir[Rails.root.join('config/locales/proper', '*.{rb,yml}').to_s]
+    config.i18n.load_path += Dir[Rails.root.join('config/locales/dashboard', '*.{rb,yml}').to_s]
+    config.i18n.load_path += Dir[Rails.root.join('config/locales/additional_details', '*.{rb,yml}').to_s]
     config.i18n.fallbacks = [:en]
 
     # Configure the default encoding used in templates for Ruby 1.9.
@@ -102,11 +106,5 @@ module SparcRails
       margin_top: '2in',
       margin_bottom: '1in',
       print_media_type: true
-
-    config.to_prepare do
-      Devise::SessionsController.layout "custom_devise"
-      Devise::RegistrationsController.layout "custom_devise"
-      Devise::PasswordsController.layout "custom_devise"
-    end
   end
 end

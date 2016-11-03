@@ -50,9 +50,9 @@ module Dashboard::ProjectsHelper
 
   def display_funding_source_title(project)
     if project.funding_status == 'funded'
-      'Funding Source:'
+      t(:protocols)[:summary][:funding_source]
     elsif project.funding_status == 'pending_funding'
-      'Potential Funding Source:'
+      t(:protocols)[:summary][:potential_source]
     else
       ''
     end

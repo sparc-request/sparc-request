@@ -54,6 +54,7 @@ en:
       no_description: "No description available."
       accordion:
         header: "Browse Service Catalog"
+      back_to_top: "Back to Top"
       center:
         search_placeholder: "Search by Service Name or CPT Code..."
         welcome: "Welcome to SPARCRequest: Storefront of Research Services"

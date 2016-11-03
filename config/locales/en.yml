@@ -203,12 +203,6 @@ en:
     merged_totals:
       header: "Study Cost Totals"
       grand_total: "Grand Total"
-
-  ###########
-  # CATALOG #
-  ###########
-  catalog:
-    back_to_top: "Back to Top"
  
   #############
   # CONSTANTS #

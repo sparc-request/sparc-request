@@ -1,0 +1,95 @@
+/* Copyright © 2011-2016 MUSC Foundation for Research Development*/
+/* All rights reserved.*/
+
+/* Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:*/
+
+/* 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.*/
+
+/* 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following*/
+/* disclaimer in the documentation and/or other materials provided with the distribution.*/
+
+/* 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products*/
+/* derived from this software without specific prior written permission.*/
+
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,*/
+/* BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT*/
+/* SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL*/
+/* DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS*/
+/* INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR*/
+/* TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.*/
+#container
+  #header
+    height: 102px
+    width: 100%
+    display: table
+    margin-bottom: 10px
+
+    div
+      text-align: center
+
+    .org-logo
+      margin-left: 50px
+      margin-top: 15px
+
+    .sparc-request-header
+      margin-top: 15px
+
+    .institution-logo
+      margin-top: 15px
+      margin-left: 25px
+
+  .navbar
+    @media(max-width: 768px)
+      .navbar-nav
+        width: 100%
+        margin-left: 0px
+        margin-right: 0px
+
+      .navbar-right
+        padding: 10px 15px
+        margin: 0
+
+    @media(min-width: 768px)
+      .welcome-nav
+        margin: 9px 0
+
+        a
+          margin-left: 10px
+
+    .navbar-nav li
+      a:hover,
+      a:focus
+        background-color: #e7e7e7
+        color: #555
+
+  #inner-content
+    margin-left: auto
+    margin-right: auto
+    padding-left: 15px
+    padding-right: 15px
+    width: 100%
+    @media (min-width: 1170px)
+      width: 1170px
+
+    .steps, .step-header, .body-container
+      margin-bottom: 20px
+
+.footer
+  margin-left: auto
+  margin-right: auto
+  height: 100px
+  width: 100%
+  margin-top: 40px
+  padding-top: 40px
+  padding-bottom: 40px
+  border-top: 1px solid #eee
+
+  ul
+    list-style-type: none
+    padding: 0
+
+    li
+      display: inline
+
+    li + li
+      margin-left: 10px

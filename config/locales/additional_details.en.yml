@@ -20,7 +20,11 @@
 
 en:
   additional_details:
-    additional_details_title: 'Additional Details'
+    ##########
+    # HEADER #
+    ##########
+    header: "SPARC Request | Additional Details"
+
     add: 'Add Additional Details'
     preview_title: 'Additional Detail Survey Preview'
     close_preview: 'Close'

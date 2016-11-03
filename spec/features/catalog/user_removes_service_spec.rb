@@ -60,4 +60,76 @@ RSpec.describe 'User removes service from cart', js: true do
       expect(page).to_not have_selector('.ssr-header span', text: @program.name)
     end
   end
+
+  context 'on a submitted request' do
+    scenario 'and sees the warning modal' do
+      p   = create(:study_without_validations, primary_pi: jug2)
+      sr  = create(:service_request_without_validations, protocol: p, status: 'submitted', submitted_at: '2016-01-01')
+      ssr = create(:sub_service_request_without_validations, service_request: sr, organization: @program, status: 'first_draft')
+            create(:line_item, service_request: sr, sub_service_request: ssr, service: @service, optional: true)
+
+      visit catalog_service_request_path(sr)
+      wait_for_javascript_to_finish
+
+      find('.line-item .remove-service').click
+      wait_for_javascript_to_finish
+
+      expect(page).to have_selector('.modal-content.request-submitted', visible: true)
+    end
+
+    context 'and clicks yes' do
+      scenario 'and does not see the service in the cart' do
+        p   = create(:study_without_validations, primary_pi: jug2)
+        sr  = create(:service_request_without_validations, protocol: p, status: 'submitted', submitted_at: '2016-01-01')
+        ssr = create(:sub_service_request_without_validations, service_request: sr, organization: @program, status: 'first_draft')
+              create(:line_item, service_request: sr, sub_service_request: ssr, service: @service, optional: true)
+
+        visit catalog_service_request_path(sr)
+        wait_for_javascript_to_finish
+
+        find('.line-item .remove-service').click
+        wait_for_javascript_to_finish
+
+        find('#modal_place .yes-button').click
+        wait_for_javascript_to_finish
+
+        expect(page).to_not have_selector('.line-item div', text: @service.abbreviation)
+      end
+    end
+  end
+
+  context 'with fulfillments' do
+    scenario 'and sees the warning modal, not allowing them to do so' do
+      sr  = create(:service_request_without_validations, status: 'first_draft')
+      ssr = create(:sub_service_request_without_validations, service_request: sr, organization: @program, status: 'first_draft')
+      li  = create(:line_item, service_request: sr, sub_service_request: ssr, service: @service, optional: true)
+            create(:fulfillment, line_item: li)
+
+      visit catalog_service_request_path(sr)
+      wait_for_javascript_to_finish
+
+      find('.line-item .remove-service').click
+      wait_for_javascript_to_finish
+
+      expect(page).to have_selector('.modal-content.has-fulfillments', visible: true)
+    end
+  end
+
+  context 'which is the last one in the cart' do
+    context 'and is not in the catalog' do
+      scenario 'and sees the warning modal, not allowing them to do so' do
+        sr  = create(:service_request_without_validations, status: 'first_draft')
+        ssr = create(:sub_service_request_without_validations, service_request: sr, organization: @program, status: 'first_draft')
+        li  = create(:line_item, service_request: sr, sub_service_request: ssr, service: @service, optional: true)
+
+        visit protocol_service_request_path(sr)
+        wait_for_javascript_to_finish
+
+        find('.line-item .remove-service').click
+        wait_for_javascript_to_finish
+        
+        expect(page).to have_selector('.modal-content.line-item-required', visible: true)
+      end
+    end
+  end
 end

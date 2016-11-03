@@ -19,16 +19,16 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #request-submitted-modal.hidden
   .modal-dialog
-    .modal-content
+    .modal-content.request-submitted
       .modal-header
         %button.close{ type: 'button', data: { dismiss: 'modal' } }
           %span{ aria: { hidden: 'true' } } &times;
         %h4.text-center#modal-title
-          = t(:proper)[:catalog][:request_submitted][:header]
+          = t(:proper)[:cart][:request_submitted][:header]
       .modal-body
         #modal_errors
         .form-group.text-center
-          = I18n.t('proper.catalog.request_submitted.warning', protocol_id: display_protocol_id(service_request))
+          = I18n.t('proper.cart.request_submitted.warning', protocol_id: display_protocol_id(service_request))
       .modal-footer
         .center-block
           %a.btn.btn-default.yes-button{ data: { dismiss: 'modal' } }

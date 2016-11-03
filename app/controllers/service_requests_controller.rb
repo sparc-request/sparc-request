@@ -325,9 +325,12 @@ class ServiceRequestsController < ApplicationController
     end
 
     @service_request.reload
-
     @line_items_count     = @sub_service_request ? @sub_service_request.line_items.count : @service_request.line_items.count
     @sub_service_requests = @service_request.cart_sub_service_requests
+
+    respond_to do |format|
+      format.js {render layout: false}
+    end
   end
 
   def get_help
@@ -569,7 +572,7 @@ class ServiceRequestsController < ApplicationController
     line_items = []
     @service_request.sub_service_requests.each do |ssr|
       if service_provider.identity.is_service_provider?(ssr)
-        line_items << SubServiceRequest.find(ssr).line_items
+        line_items << SubServiceRequest.find(ssr.id).line_items
       end
     end
 

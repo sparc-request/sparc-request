@@ -44,7 +44,6 @@ class Arm < ActiveRecord::Base
   after_save :update_liv_subject_counts
 
   validates :name, presence: true
-  validates_format_of :name, with: /\A([A-Za-z0-9][A-Za-z0-9]*([ ][A-Za-z0-9])?)*\z/
   validates_uniqueness_of :name, scope: :protocol
   validates :visit_count, numericality: { greater_than: 0 }
   validates :subject_count, numericality: { greater_than: 0 }

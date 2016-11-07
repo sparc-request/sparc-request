@@ -205,7 +205,8 @@ class ServiceRequestsController < ApplicationController
     if @sub_service_request
       to_notify << @sub_service_request.id unless @sub_service_request.status == 'submitted'
       @sub_service_request.update_attribute(:submitted_at, Time.now) unless @sub_service_request.status == 'submitted'
-      @sub_service_request.update_attributes(status: 'submitted', nursing_nutrition_approved: false, lab_approved: false, imaging_approved: false, committee_approved: false)
+      @sub_service_request.update_attributes(status: 'submitted', nursing_nutrition_approved: false,
+                                             lab_approved: false, imaging_approved: false, committee_approved: false) if UPDATABLE_STATUSES.include?(@sub_service_request.status)
       @sub_service_request.update_past_status(current_user)
     else
       to_notify = update_service_request_status(@service_request, 'submitted')
@@ -620,13 +621,14 @@ class ServiceRequestsController < ApplicationController
   end
 
   def update_service_request_status(service_request, status, validate=true)
+    sub_service_requests = service_request.sub_service_requests.where(status: UPDATABLE_STATUSES) 
     if (status == 'submitted')
       service_request.previous_submitted_at = service_request.submitted_at
       service_request.update_attribute(:submitted_at, Time.now)
-      service_request.sub_service_requests.where.not(status: 'submitted').update_all(submitted_at: Time.now)
+      sub_service_requests.update_all(submitted_at: Time.now)
     end
     to_notify = service_request.update_status(status, validate)
-    service_request.sub_service_requests.each {|ssr| ssr.update_past_status(current_user)}
+    sub_service_requests.each { |ssr| ssr.update_past_status(current_user) }
 
     to_notify
   end

@@ -37,7 +37,6 @@ $(document).ready ->
   study_selected_for_epic_button = '#selected_for_epic_button'
   certificate_of_confidence_dropdown = '#study_type_answer_certificate_of_conf_answer'
   higher_level_of_privacy_dropdown = '#study_type_answer_higher_level_of_privacy_answer'
-  access_required_dropdown = '#study_type_answer_access_study_info_answer'
   epic_inbasket_dropdown = '#study_type_answer_epic_inbasket_answer'
   research_active_dropdown = '#study_type_answer_research_active_answer'
   restrict_sending_dropdown = '#study_type_answer_restrict_sending_answer'
@@ -207,37 +206,19 @@ $(document).ready ->
       $(higher_level_of_privacy_dropdown).show_elt()
     else
       $(higher_level_of_privacy_dropdown).hide_elt()
-      $(access_required_dropdown).hide_elt()
       $(epic_inbasket_dropdown).hide_elt()
       $(research_active_dropdown).hide_elt()
       $(restrict_sending_dropdown).hide_elt()
     return
 
   $(document).on 'change', higher_level_of_privacy_dropdown, (e) ->
-    new_value = $(e.target).val()
-    if new_value == 'false'
-      $(access_required_dropdown).hide_elt()
-      $(epic_inbasket_dropdown).show_elt()
-      $(research_active_dropdown).show_elt()
-      $(restrict_sending_dropdown).show_elt()
-    else
-      $(access_required_dropdown).show_elt()
-      $(epic_inbasket_dropdown).hide_elt()
-      $(research_active_dropdown).hide_elt()
-      $(restrict_sending_dropdown).hide_elt()
-    return
+    $(epic_inbasket_dropdown).show_elt()
 
-  $(document).on 'change', access_required_dropdown, (e) ->
-    new_value = $(e.target).val()
-    if new_value == 'false'
-      $(epic_inbasket_dropdown).show_elt()
-      $(research_active_dropdown).show_elt()
-      $(restrict_sending_dropdown).show_elt()
-    else
-      $(epic_inbasket_dropdown).hide_elt()
-      $(research_active_dropdown).hide_elt()
-      $(restrict_sending_dropdown).hide_elt()
-    return
+  $(document).on 'change', epic_inbasket_dropdown, (e) ->
+    $(research_active_dropdown).show_elt()
+
+  $(document).on 'change', research_active_dropdown, (e) ->
+    $(restrict_sending_dropdown).show_elt()
   ###END EPIC BUTTON FIELDS DISPLAY###
 
 

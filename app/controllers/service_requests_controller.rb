@@ -572,7 +572,7 @@ class ServiceRequestsController < ApplicationController
     line_items = []
     @service_request.sub_service_requests.each do |ssr|
       if service_provider.identity.is_service_provider?(ssr)
-        line_items << SubServiceRequest.find(ssr.id).line_items
+        line_items << ssr.line_items
       end
     end
 

@@ -62,7 +62,7 @@ class ServiceRequestsController < ApplicationController
     when 'service_calendar'
       @service_request.group_valid?(:service_calendar)
     end
-    
+
     @errors = @service_request.errors
 
     if @errors.any?
@@ -111,17 +111,11 @@ class ServiceRequestsController < ApplicationController
             liv.update_attribute(:subject_count, arm.subject_count)
           end
         end
-        #Arm.visit_count has benn increased, so create new visit group, and populate the visits
-        if arm.visit_count > arm.visit_groups.count
-          ActiveRecord::Base.transaction do
-            arm.mass_create_visit_group
-          end
-        end
-        #Arm.visit_count has been decreased, destroy visit group (and visits)
-        if arm.visit_count < arm.visit_groups.count
-          ActiveRecord::Base.transaction do
-            arm.mass_destroy_visit_group
-          end
+
+        # make sure data is correct - safely create and remove extra data
+        ActiveRecord::Base.transaction do
+          arm.mass_create_visit_group
+          arm.mass_destroy_visit_group
         end
       end
     end
@@ -152,7 +146,7 @@ class ServiceRequestsController < ApplicationController
     @has_subsidy          = @service_request.sub_service_requests.map(&:has_subsidy?).any?
     @eligible_for_subsidy = @service_request.sub_service_requests.map(&:eligible_for_subsidy?).any?
 
-    unless @has_subsidy || @eligible_for_subsidy 
+    unless @has_subsidy || @eligible_for_subsidy
       @back = 'service_calendar'
     end
   end
@@ -205,7 +199,7 @@ class ServiceRequestsController < ApplicationController
       @sub_service_request.update_past_status(current_user)
     else
       to_notify = update_service_request_status(@service_request, 'submitted')
-      
+
       @service_request.update_arm_minimum_counts
       @service_request.sub_service_requests.update_all(nursing_nutrition_approved: false, lab_approved: false, imaging_approved: false, committee_approved: false)
     end
@@ -514,10 +508,10 @@ class ServiceRequestsController < ApplicationController
     # Passes the correct SSR to display in the attachment and email.
     sub_service_requests.each do |sub_service_request|
       sub_service_request.organization.submission_emails_lookup.each do |submission_email|
-        
+
         @service_list_false = service_request.service_list(false, nil, sub_service_request)
         @service_list_true = service_request.service_list(true, nil, sub_service_request)
-        
+
         @line_items = sub_service_request.line_items
         xls = render_to_string action: 'show', formats: [:xlsx]
         Notifier.notify_admin(service_request, submission_email.email, xls, current_user, sub_service_request).deliver

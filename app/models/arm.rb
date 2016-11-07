@@ -351,20 +351,13 @@ class Arm < ActiveRecord::Base
   end
 
   def get_visit_group_ids
-    vg_ids = []
-    self.visit_groups.each do |vg|
-      if vg.visits.count == 0
-        vg_ids << vg.id
-      end
-    end
-
-    vg_ids
+    self.visit_groups.map(&:id)
   end
 
   def create_visits(vg_ids)
     self.line_items_visits.each do |liv|
       vg_ids.each do |id|
-        Visit.create(visit_group_id: id, line_items_visit_id: liv.id)
+        Visit.find_or_create_by(visit_group_id: id, line_items_visit_id: liv.id)
       end
     end
     self.reload

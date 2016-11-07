@@ -56,6 +56,5 @@ module Portal
 	      end
 	  	end
 	  end
-
   end
 end

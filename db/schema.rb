@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160930185037) do
+ActiveRecord::Schema.define(version: 20161107190306) do
 
   create_table "admin_rates", force: :cascade do |t|
     t.integer  "line_item_id", limit: 4
@@ -972,10 +972,10 @@ ActiveRecord::Schema.define(version: 20160930185037) do
 
   create_table "study_type_questions", force: :cascade do |t|
     t.integer  "order",                        limit: 4
-    t.string   "question",                     limit: 255
+    t.text     "question",                     limit: 65535
     t.string   "friendly_id",                  limit: 255
-    t.datetime "created_at",                               null: false
-    t.datetime "updated_at",                               null: false
+    t.datetime "created_at",                                 null: false
+    t.datetime "updated_at",                                 null: false
     t.integer  "study_type_question_group_id", limit: 4
   end
 

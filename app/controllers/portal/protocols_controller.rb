@@ -189,13 +189,6 @@ class Portal::ProtocolsController < Portal::BaseController
     @protocol = Protocol.find(params[:id])
   end
 
-  # TODO: Move this somewhere else. Short on time, though. - nb
-  def merge_attributes(protocol, data)
-    protocol.instance_values.each do |k, v|
-      data.merge!({k => v}) unless data.include?(k)
-    end
-  end
-
   def fix_funding(data)
     if data["funding_status"] == "pending_funding" && data["_type"] != "project"
       data.delete("funding_source")

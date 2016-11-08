@@ -266,10 +266,12 @@ class Arm < ActiveRecord::Base
     if !valid || valid < 0
       self.errors.add(:invalid_window_before, "You've entered an invalid number for the before window. Please enter a positive valid number")
       return false
+    else
+      visit_group = self.visit_groups[position]
+      visit_group.window_before = window_before
+      visit_group.save(validate: false) # Avoid validation of attribute 'day'
+      return true
     end
-
-    visit_group = self.visit_groups[position]
-    return visit_group.update_attributes(:window_before => window_before)
   end
 
   def update_visit_group_window_after window_after, position, portal = false
@@ -278,10 +280,12 @@ class Arm < ActiveRecord::Base
     if !valid || valid < 0
       self.errors.add(:invalid_window_after, "You've entered an invalid number for the after window. Please enter a positive valid number")
       return false
+    else
+      visit_group = self.visit_groups[position]
+      visit_group.window_after = window_after
+      visit_group.save(validate: false) # Avoid validation of attribute 'day'
+      return true
     end
-
-    visit_group = self.visit_groups[position]
-    return visit_group.update_attributes(:window_after => window_after)
   end
 
   def service_list

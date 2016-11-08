@@ -276,8 +276,6 @@ class Dashboard::ServiceCalendarsController < ApplicationController
         visit.update_attributes(quantity: @service.displayed_pricing_map.unit_minimum, research_billing_qty: @service.displayed_pricing_map.unit_minimum, insurance_billing_qty: 0, effort_billing_qty: 0)
       end
     end
-    @sub_service_request.update_attribute(:status, "draft") if @sub_service_request
-    @service_request.update_attribute(:status, "draft")
     
     render partial: 'update_service_calendar'
   end
@@ -299,8 +297,6 @@ class Dashboard::ServiceCalendarsController < ApplicationController
         end
       end
     end
-    @sub_service_request.update_attribute(:status, "draft") if @sub_service_request
-    @service_request.update_attribute(:status, "draft")
 
     render partial: 'update_service_calendar'
   end

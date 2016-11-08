@@ -312,7 +312,7 @@ en:
       epic_access: "Epic EMR Access?:*"
       rights:
         header: "User Rights:*"
-        none: Study/Project Member Only
+        none: "Study/Project Member Only"
         view: "View Rights"
         request: "Request/Approve Services"
         approve: "Authorized/Change Study Charges"

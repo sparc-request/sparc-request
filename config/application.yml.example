@@ -58,6 +58,7 @@ development:
   system_satisfaction_survey: false
   editable_statuses: { 14: ['first_draft', 'draft', 'submitted', nil, 'get_a_cost_estimate', 'awaiting_pi_approval'],
                      48: ['draft', 'submitted'] }
+  updatable_statuses: [ 'first_draft', 'draft', 'get_a_cost_estimate', 'awaiting_pi_approval']
   navbar_links: { sparc_request:              ['SPARCRequest', 'http://localhost:3000/'],
                   sparc_dashboard:            ['SPARCDashboard', 'http://localhost:3000/dashboard'],
                   sparc_fulfillment:          ['SPARCFulfillment', 'https://cwf-d.obis.musc.edu/identities/sign_in'],
@@ -93,6 +94,7 @@ test:
   header_link_3: http://www.musc.edu
   editable_statuses: { 14: ['first_draft', 'draft', 'submitted', nil, 'get_a_cost_estimate', 'awaiting_pi_approval'],
                      48: ['draft', 'submitted'] }
+  updatable_statuses: [ 'first_draft', 'draft', 'get_a_cost_estimate', 'awaiting_pi_approval']
   navbar_links: { sparc_request:              ['SPARCRequest', 'http://localhost:3000/'],
                   sparc_dashboard:            ['SPARCDashboard', 'http://localhost:3000/dashboard'],
                   sparc_fulfillment:          ['SPARCFulfillment', 'https://cwf-d.obis.musc.edu/identities/sign_in'],

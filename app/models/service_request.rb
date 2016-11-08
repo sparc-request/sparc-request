@@ -511,11 +511,10 @@ class ServiceRequest < ActiveRecord::Base
       next unless ssr.can_be_edited? && !ssr.is_complete?
       available = AVAILABLE_STATUSES.keys
       editable = EDITABLE_STATUSES[ssr.organization_id] || available
-
       changeable = available & editable
 
-      if changeable.include? new_status
-        if ssr.status != new_status
+      if changeable.include?(new_status)
+        if (ssr.status != new_status) && UPDATABLE_STATUSES.include?(ssr.status)
           ssr.update_attribute(:status, new_status)
           to_notify << ssr.id
         end

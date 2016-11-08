@@ -73,9 +73,10 @@ RSpec.describe ServiceRequestsController do
           service_request.protocol.update_attribute(:next_ssr_id, 42)
 
           service_request.sub_service_requests.each(&:destroy)
-          ssr1 = create(:sub_service_request, service_request_id: service_request.id, ssr_id: nil, organization_id: core.id)
-          ssr2 = create(:sub_service_request, service_request_id: service_request.id, ssr_id: nil, organization_id: core.id)
+          ssr1 = create(:sub_service_request, service_request_id: service_request.id, ssr_id: nil, organization_id: core.id, status: 'first_draft')
+          ssr2 = create(:sub_service_request, service_request_id: service_request.id, ssr_id: nil, organization_id: core.id, status: 'first_draft')
 
+          session[:identity_id] = jug2.id
           get :save_and_exit, id: service_request.id
 
           ssr1.reload

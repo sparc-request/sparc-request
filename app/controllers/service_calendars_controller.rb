@@ -250,6 +250,8 @@ class ServiceCalendarsController < ApplicationController
     @sub_service_request = @line_items_visit.line_item.sub_service_request
     @service = @line_items_visit.line_item.service if params[:check]
 
+    return unless @sub_service_request.can_be_edited?
+
     @line_items_visit.visits.each do |visit|
       if params[:uncheck]
         visit.update_attributes(quantity: 0, research_billing_qty: 0, insurance_billing_qty: 0, effort_billing_qty: 0)
@@ -258,7 +260,7 @@ class ServiceCalendarsController < ApplicationController
       end
     end
 
-    @sub_service_request.update_attribute(:status, "draft") if @sub_service_request
+    @sub_service_request.update_attribute(:status, "draft") if @sub_service_request && @sub_service_request.can_be_edited?
     render partial: 'update_service_calendar'
   end
 
@@ -267,7 +269,7 @@ class ServiceCalendarsController < ApplicationController
     @arm = Arm.find(params[:arm_id])
 
     @service_request.service_list(false).each do |_key, value|
-      next unless @sub_service_request.nil? || @sub_service_request.organization.name == value[:process_ssr_organization_name]
+      next unless @sub_service_request.nil? || @sub_service_request.organization.name == value[:process_ssr_organization_name] || @sub_service_request.can_be_edited?
 
       @arm.line_items_visits.each do |liv|
         next unless value[:line_items].include?(liv.line_item) && liv.line_item.sub_service_request.can_be_edited? && !liv.line_item.sub_service_request.is_complete?
@@ -281,7 +283,7 @@ class ServiceCalendarsController < ApplicationController
       end
     end
 
-    @sub_service_request.update_attribute(:status, "draft") if @sub_service_request
+    @sub_service_request.update_attribute(:status, "draft") if @sub_service_request && @sub_service_request.can_be_edited?
 
     render partial: 'update_service_calendar'
   end

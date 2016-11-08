@@ -82,14 +82,10 @@ RSpec.describe ServiceRequestsController do
       it 'should should set status on all the sub service request' do
         service_request.sub_service_requests.each { |ssr| ssr.destroy }
 
-        ssr1 = create(:sub_service_request,
-                      service_request_id: service_request.id,
-                      ssr_id: nil,
-                      organization_id: provider.id)
-        ssr2 = create(:sub_service_request,
-                      service_request_id: service_request.id,
-                      ssr_id: nil,
-                      organization_id: core.id)
+        ssr1 = create(:sub_service_request, service_request_id: service_request.id, ssr_id: nil,
+                      organization_id: provider.id, status: 'first_draft')
+        ssr2 = create(:sub_service_request, service_request_id: service_request.id, ssr_id: nil,
+                      organization_id: core.id, status: 'first_draft')
 
         xhr :get, :confirmation, id: service_request.id
 

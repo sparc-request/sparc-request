@@ -23,6 +23,7 @@ class Study < Protocol
   validates :selected_for_epic,           inclusion: [true, false], :if => [:is_epic?]
   validate  :validate_study_type_answers, if: [:selected_for_epic?, "StudyTypeQuestionGroup.active.pluck(:id).first == changed_attributes()['study_type_question_group_id'] || StudyTypeQuestionGroup.active.pluck(:id).first == study_type_question_group_id"]
 
+
   def classes
     return [ 'project' ] # for backward-compatibility
   end
@@ -111,18 +112,12 @@ class Study < Protocol
       elsif answers["certificate_of_conf"].answer == false
         if (answers["higher_level_of_privacy"].answer.nil?)
           has_errors = true
-        elsif (answers["higher_level_of_privacy"].answer == false)
-          if answers["epic_inbasket"].answer.nil? || answers["research_active"].answer.nil? || answers["restrict_sending"].answer.nil?
-            has_errors = true
-          end
-        elsif (answers["higher_level_of_privacy"].answer == true)
-          if (answers["access_study_info"].answer.nil?)
-            has_errors = true
-          elsif (answers["access_study_info"].answer == false)
-            if answers["epic_inbasket"].answer.nil? || answers["research_active"].answer.nil? || answers["restrict_sending"].answer.nil?
-              has_errors = true
-            end
-          end
+        elsif (answers["epic_inbasket"].answer.nil?)
+          has_errors = true
+        elsif (answers["research_active"].answer.nil?)
+          has_errors = true
+        elsif (answers["restrict_sending"].answer.nil?)
+          has_errors = true
         end
       end
     rescue => e

@@ -263,6 +263,10 @@ class Protocol < ActiveRecord::Base
     study_type_question_group.active
   end
 
+  def version
+    study_type_question_group.version
+  end
+
   def activate
     update_attribute(:study_type_question_group_id, StudyTypeQuestionGroup.active.pluck(:id).first)
   end

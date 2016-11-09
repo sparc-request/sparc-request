@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161107190306) do
+ActiveRecord::Schema.define(version: 20161108135128) do
 
   create_table "admin_rates", force: :cascade do |t|
     t.integer  "line_item_id", limit: 4
@@ -965,7 +965,8 @@ ActiveRecord::Schema.define(version: 20161107190306) do
   end
 
   create_table "study_type_question_groups", force: :cascade do |t|
-    t.boolean  "active",     default: false
+    t.integer  "version",    limit: 4
+    t.boolean  "active",               default: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end

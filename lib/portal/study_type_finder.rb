@@ -25,7 +25,8 @@ module Portal
   	def initialize(study)
   		@study = study
   		@active_answers = Array.new
-  		@inactive_answers = Array.new
+  		@inactive_answers_version_1 = Array.new
+      @inactive_answers_version_2 = Array.new
   		@study_type = nil
   	end
 
@@ -35,23 +36,41 @@ module Portal
 	  			StudyTypeQuestion.active.find_each do |stq|
 	          @active_answers << stq.study_type_answers.find_by_protocol_id(@study.id).answer 
 	        end
-	        STUDY_TYPE_ANSWERS_VERSION_2.each do |k, v|
+	        STUDY_TYPE_ANSWERS_VERSION_3.each do |k, v|
 	          if v == @active_answers
 	            @study_type = k
 	            break
 	          end
 	        end
 	        @study_type
-	      elsif !@study.active?
-	        StudyTypeQuestion.inactive.find_each do |stq|
-	          @inactive_answers << stq.study_type_answers.find_by_protocol_id(@study.id).answer 
-	        end
-	        STUDY_TYPE_ANSWERS.each do |k, v|
-	          if v == @inactive_answers
-	            @study_type = k
-	            break
-	          end
-	        end
+	      elsif @study.version == 1
+          # VERSION 1 STQ
+          StudyTypeQuestion.joins(:study_type_question_group).where(study_type_question_groups: { version: 1 }).find_each do |stq|
+            @inactive_answers_version_1 << stq.study_type_answers.find_by_protocol_id(@study.id).answer 
+          end
+
+           # VERSION 1 STA
+          STUDY_TYPE_ANSWERS.each do |k, v|
+            if v == @inactive_answers_version_1
+              @study_type = k
+              break
+            end
+          end
+        elsif @study.version == 2
+          # VERSION 2 STQ
+          StudyTypeQuestion.joins(:study_type_question_group).where(study_type_question_groups: { version: 2 }).find_each do |stq|
+            @inactive_answers_version_2 << stq.study_type_answers.find_by_protocol_id(@study.id).answer
+          end
+
+	       
+
+          # VERSION 2 STA
+          STUDY_TYPE_ANSWERS_VERSION_2.each do |k, v|
+            if v == @inactive_answers_version_2
+              @study_type = k
+              break
+            end
+          end
 	        @study_type
 	      end
 	  	end

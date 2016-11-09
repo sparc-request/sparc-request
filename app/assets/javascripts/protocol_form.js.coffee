@@ -55,6 +55,7 @@ $(document).ready ->
 
   $.prototype.hide_elt = () ->
     this[0].selectedIndex = 0
+    this.selectpicker('refresh')
     this.closest('.row').hide()
     return this
 
@@ -204,11 +205,14 @@ $(document).ready ->
     new_value = $(e.target).val()
     if new_value == 'false'
       $(higher_level_of_privacy_dropdown).show_elt()
-    else
+      $('.study_type_note').hide()
+    else if new_value == 'true'
       $(higher_level_of_privacy_dropdown).hide_elt()
       $(epic_inbasket_dropdown).hide_elt()
       $(research_active_dropdown).hide_elt()
       $(restrict_sending_dropdown).hide_elt()
+      $('.study_type_note').show()
+      $('.study_type_note').addClass('red_note').html('Note: De-identified  Research  Participant')
     return
 
   $(document).on 'change', higher_level_of_privacy_dropdown, (e) ->
@@ -219,9 +223,25 @@ $(document).ready ->
 
   $(document).on 'change', research_active_dropdown, (e) ->
     $(restrict_sending_dropdown).show_elt()
+
+  $(document).on 'change', restrict_sending_dropdown, (e) ->
+    data = { 1: $(certificate_of_confidence_dropdown).val(), 2: $(higher_level_of_privacy_dropdown).val(), 3: $(epic_inbasket_dropdown).val(), 4: $(research_active_dropdown).val(), 5: $(restrict_sending_dropdown).val() }
+    determine_study_type(data)
+     
   ###END EPIC BUTTON FIELDS DISPLAY###
 
-
+determine_study_type = (answers) ->
+  array_values = new Array()
+  for k,v of answers
+    array_values.push(v)
+  console.log(array_values)
+  nil_value = $.inArray('', array_values) > -1
+  console.log(nil_value)
+  if nil_value == false
+    $.ajax
+      type: 'POST'
+      data: answers
+      url: "/study_type/determine_study_type"
 
   ###HUMAN SUBJECTS FIELDS DISPLAY###
   $(document).on 'change', '#protocol_research_types_info_attributes_human_subjects', ->

@@ -134,6 +134,23 @@ study_type_answers_version_3: { '1' : [true,    ~,    ~,    ~,    ~],
                                 '16': [false, false, true, true, false],
                                 '17': [false, false, true, false, true],
                                 '0': [false, false, true, true, true] }
+study_type_notes:             { '1' : 'De-identified  Research  Participant',
+                                '3' : 'Break-The-Glass  for research  associated  encounters',
+                                '4' : 'Break-The-Glass  for research  associated  encounters: no  notification, pink  header, no  MyChart access.',
+                                '5' : 'Break-The-Glass  for research  associated  encounters: no  notification, no  pink  header, MyChart access.',
+                                '6' : 'Break-The-Glass  for research  associated  encounters: no  notification, pink  header, MyChart access.',
+                                '7' : 'Break-The-Glass  for research  associated  encounters: notification, no  pink  header, no  MyChart access.',
+                                '8' : 'Break-The-Glass  for research  associated  encounters: notification, pink  header, no  MyChart access.',
+                                '9' : 'Break-The-Glass  for research  associated  encounters: notification, no  pink  header, MyChart access.',
+                                '10': 'Break-The-Glass  for research  associated  encounters: notification, pink  header, MyChart access.',
+                                '11': 'Full Epic  Functionality:    no  notification, no  pink  header, no  MyChart access.',
+                                '12': 'Full Epic  Functionality:    no  notification, pink  header, no  MyChart access.',
+                                '13': 'Full Epic  Functionality:    no  notification, no  pink  header, MyChart access.',
+                                '14': 'Full Epic  Functionality:    no  notification, pink  header, MyChart access.',
+                                '15': 'Full Epic  Functionality:    notification, no  pink  header, no  MyChart access.',
+                                '16': 'Full Epic  Functionality:    notification, pink  header, no  MyChart access.',
+                                '17': 'Full Epic  Functionality:    notification, no  pink  header, MyChart access.',
+                                '0': 'Full Epic  Functionality:  notification, pink  header, MyChart access.' }
 
 funding_statuses: { 'Pending Funding': 'pending_funding',
                     'Funded': 'funded' }

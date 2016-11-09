@@ -438,7 +438,6 @@ en:
   #############################
   errors:
     arms:
-<<<<<<< HEAD
       manage: "Manage Arms"
       add: "Add Arm"
       remove: "Remove Arm"
@@ -535,10 +534,8 @@ en:
     ################
     #  LINE ITEMS  #
     ################
-=======
       visit_day_missing: "Please specify a study day for each visit (%{arm_name})"
       name_unique: 'must be unique to the Protocol'
->>>>>>> master
     line_items:
       displayed_cost_numeric: 'must be a number'
       displayed_cost_gte_zero: 'must be greater than or equal to 0'

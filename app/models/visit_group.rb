@@ -25,7 +25,7 @@ class VisitGroup < ActiveRecord::Base
   include Comparable
 
   audited
-
+  
   attr_accessible :name
   attr_accessible :position
   attr_accessible :arm_id
@@ -45,7 +45,10 @@ class VisitGroup < ActiveRecord::Base
 
   validates :name, presence: true
   validates :position, presence: true
-  validates :day, presence: true, numericality: { only_integer: true }
+  validates :day,
+            :window_before,
+            :window_after,
+            presence: true, numericality: { only_integer: true }
   validate :day_must_be_in_order
 
   def set_arm_edited_flag_on_subjects
@@ -78,6 +81,7 @@ class VisitGroup < ActiveRecord::Base
 
 
   private
+  
   def remove_appointments
     appointments = self.appointments
     appointments.each do |app|

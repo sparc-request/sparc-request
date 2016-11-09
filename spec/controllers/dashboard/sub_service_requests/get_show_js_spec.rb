@@ -48,40 +48,11 @@ RSpec.describe Dashboard::SubServiceRequestsController do
         expect(assigns(:protocol)).to eq(@protocol)
         expect(assigns(:tab)).to eq('calendar')
         expect(assigns(:portal)).to eq(true)
-        expect(assigns(:thead_class)).to eq('default_calendar')
         expect(assigns(:review)).to eq(true)
       end
       
       it { is_expected.to render_template "dashboard/sub_service_requests/show" }
       it { is_expected.to respond_with :ok }
-    end
-
-    context '@selected_arm' do
-      context 'params[:arm_id] assigned' do
-        before :each do
-          xhr :get, :show, id: @sub_service_request.id, arm_id: @arm.id, format: :js
-        end
-
-        it 'should be assigned' do
-          expect(assigns(:selected_arm)).to eq(@arm)
-        end
-
-        it { is_expected.to render_template "dashboard/sub_service_requests/show" }
-        it { is_expected.to respond_with :ok }
-      end
-
-      context 'params[:arm_id] not assigned' do
-        before :each do
-          xhr :get, :show, id: @sub_service_request.id, format: :js
-        end
-
-        it 'should not be assigned' do
-          expect(assigns(:selected_arm)).to eq(nil)
-        end
-
-        it { is_expected.to render_template "dashboard/sub_service_requests/show" }
-        it { is_expected.to respond_with :ok }
-      end
     end
 
     context '@pages' do

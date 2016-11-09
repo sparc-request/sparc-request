@@ -17,79 +17,29 @@
 /* DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS*/
 /* INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR*/
 /* TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.*/
-
-.dotted-border
-  padding-right: 22px
-  border-right-style: dotted
-  border-right-color: #ccc
-  width: 680px
-
-.service-details .instructions
-  background-color: #FFF
-  padding: 25px 0
-  width: 100%
-  margin: 0
-
-// ServiceRequestSetupView
-.service-request-setup-view
-  .service-details
-    background: #0775B0 !important
-    width: 670px
-    margin-left: 10px
-    height: 100%
-    .one-time-fees thead
-      border: 0
-      background-color: #FFF
-  .one-time-fees
+@import 'proper/colors'
+#service-details-page
+  .date-details, .arm-details
+    display: inline-block
     width: 100%
-    border-style: none
-    border-spacing: 0
-    td, th
-      padding: 5px 10px
-      border-style: none
-  table td
-    margin: 10px
-  input
-    width: 90%
-    font-size: 25
-    &[type=submit]
-      float: right
-      margin: 30px 0
-      width: auto
-      font-size: inherit
-  .arm-info
-    width: 100%
-    background: #0775B0 !important
-    .arm-header
-      font-weight: bold
-      color: #0775B0
-      background-color: #FFFFFF
-    .arm-cell
-      width: 170px
-      float: left
-      padding: 5px 6px
-      text-align: center
-      position: relative
-      margin-right: 8px
-      .screening_info_img
-        position: absolute
-        top: 7px
-        left: 180px
-    .arm-cell-right
-      float: right !important
-    .arm-cell
-      #start_date, #end_date, #recruitment_start_date, #recruitment_end_date
-        width: 85%
-        vertical-align: text-bottom
-    .add-arm .add_nested_fields
-      padding: 5px 15px
-      width: 50px
-      margin: 0px 10px
-      display: block
-      background: #2C9A4D !important
-      border: 0px !important
-      border-radius: 3px
-    .remove_nested_fields
-      background: #C43149 !important
-      border: 0px !important
 
+  .date-details
+    .page-header
+      margin-top: 0px
+      h3
+        margin: 0
+    @media( min-width: 1200px )
+      #recruitment-start, #recruitment-end
+        .col-lg-10
+          padding-top: 20px
+
+  .arm-details
+    .page-header
+      h3
+        margin: 0
+    thead
+      background: $sparc-light-blue !important
+
+  .screening-info
+    color: $sparc-light-blue
+    margin-left: 3px

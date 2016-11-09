@@ -92,7 +92,6 @@ $ ->
 
   $(document).on 'click', '#add_visit_group_button', ->
     data =
-      'study_tracker': $('#study_tracker_hidden_field').val() || null
       'current_page'            : $(".visit_dropdown").first().attr('page')
       'schedule_tab'            : $('#current_tab').attr('value')
       'protocol_id'             : $('#study_schedule_buttons').data('protocol-id')
@@ -106,7 +105,6 @@ $ ->
   $(document).on 'change', '#visit_group_arm_id', ->
     arm_id = $(this).find('option:selected').val()
     data =
-      'study_tracker': $('#study_tracker_hidden_field').val() || null
       'current_page'            : $("#visits_select_for_#{arm_id}").val()
       'schedule_tab'            : $('#current_tab').attr('value')
       'protocol_id'             : $('#study_schedule_buttons').data('protocol-id')
@@ -180,7 +178,6 @@ $ ->
     arm_id = $('#vg_form_arm_select').val()
     page = $("#visits_select_for_#{arm_id}").val()
     data =
-      'study_tracker': $('#study_tracker_hidden_field').val() || null
       'sub_service_request_id'  : $('#study_schedule_buttons').data('sub-service-request-id')
       'service_request_id'      : $('#study_schedule_buttons').data('service-request-id')
       'page'                    : page

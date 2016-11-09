@@ -19,7 +19,6 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Dashboard::AssociatedUsersController < Dashboard::BaseController
-  layout nil
   respond_to :html, :json, :js
   
   before_filter :find_protocol_role,                              only: [:edit, :destroy]
@@ -40,7 +39,7 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
   def edit
     @identity     = @protocol_role.identity
     @current_pi   = @protocol.primary_principal_investigator
-    @header_text  = t(:dashboard)[:authorized_users][:edit][:header]
+    @header_text  = t(:authorized_users)[:edit][:header]
 
     respond_to do |format|
       format.js
@@ -48,7 +47,7 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
   end
 
   def new
-    @header_text = t(:dashboard)[:authorized_users][:add][:header]
+    @header_text = t(:authorized_users)[:add][:header]
 
     if params[:identity_id] # if user selected
       @identity     = Identity.find(params[:identity_id])
@@ -68,14 +67,14 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
   end
 
   def create
-    creator = Dashboard::AssociatedUserCreator.new(params[:project_role])
+    creator = AssociatedUserCreator.new(params[:project_role])
 
     if creator.successful?
       if @current_user_created = params[:project_role][:identity_id].to_i == @user.id
         @permission_to_edit = creator.protocol_role.can_edit?
       end
 
-      flash.now[:success] = 'Authorized User Added!'
+      flash.now[:success] = t(:authorized_users)[:created]
     else
       @errors = creator.protocol_role.errors
     end
@@ -86,7 +85,7 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
   end
 
   def update
-    updater = Dashboard::AssociatedUserUpdater.new(id: params[:id], project_role: params[:project_role])
+    updater = AssociatedUserUpdater.new(id: params[:id], project_role: params[:project_role])
     
     if updater.successful?
       # We care about this because the new rights will determine what is rendered
@@ -99,7 +98,7 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
         @return_to_dashboard = !(protocol_role.can_view? || @admin)
       end
 
-      flash.now[:success] = 'Authorized User Updated!'
+      flash.now[:success] = t(:authorized_users)[:updated]
     else
       @errors = updater.protocol_role.errors
     end
@@ -124,7 +123,7 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
       @return_to_dashboard = !@admin
     end
 
-    flash.now[:alert] = 'Authorized User Removed!'
+    flash.now[:alert] = t(:authorized_users)[:destroyed]
 
     if @protocol_role.destroyed?
       @protocol.email_about_change_in_authorized_user(@protocol_role, "destroy")

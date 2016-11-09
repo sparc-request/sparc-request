@@ -20,9 +20,9 @@
 
 FactoryGirl.define do
   factory :arm do
-    name { Faker::Lorem.sentence(3) }
-    subject_count 1
-    visit_count 1
+    sequence(:name) { |n| "Arm #{n}" }
+    subject_count   1
+    visit_count     1
 
     transient do
       line_item_count   0
@@ -40,7 +40,7 @@ FactoryGirl.define do
         vgs = []
         arm.visit_count.times do |n|
           vgs << arm.visit_groups.create(name: "Visit #{n}", position: n + 1, day: n,
-                        window_before: nil, window_after: nil)
+                        window_before: 0, window_after: 0)
         end
 
         evaluator.line_item_count.times do |n|

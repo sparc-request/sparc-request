@@ -27,12 +27,17 @@ FactoryGirl.define do
     n
   end
 
+  sequence :name do |n|
+    "Visit #{n}"
+  end
+
   factory :visit_group do
-
-  position
-  day
-  name           { "Visit #{self.position}" }
-
+    position
+    day
+  	name          
+    window_before 0
+    window_after  0
+  
   trait :without_validations do
     to_create { |instance| instance.save(validate: false) }
   end

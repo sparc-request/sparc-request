@@ -22,7 +22,8 @@ require 'rails_helper'
 
 RSpec.describe Arm, type: :model do
   describe '#update_visit_group_window_after' do
-    let(:arm) { create(:arm, visit_count: 1, line_item_count:1) }
+    let!(:protocol) { create(:protocol_without_validations) }
+    let(:arm)       { create(:arm, protocol: protocol, visit_count: 1, line_item_count:1) }
 
     shared_examples 'window_after invalid' do
       it 'should add a message to errors[:invalid_window_after]' do
@@ -30,7 +31,7 @@ RSpec.describe Arm, type: :model do
       end
 
       it 'should not set specfied VisitGroup\'s window_after' do
-        expect(arm.reload.visit_groups[0].window_after).to eq nil
+        expect(arm.reload.visit_groups[0].window_after).to eq(0)
       end
     end
 

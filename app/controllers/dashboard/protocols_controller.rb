@@ -22,7 +22,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
   respond_to :html, :json, :xlsx
 
-  before_filter :find_protocol,                                   only: [:show, :edit, :update, :update_protocol_type, :display_requests, :archive, :view_full_calendar, :view_details]
+  before_filter :find_protocol,                                   only: [:show, :edit, :update, :update_protocol_type, :display_requests, :archive, :view_details]
   before_filter :find_admin_for_protocol,                         only: [:show, :edit, :update, :update_protocol_type, :display_requests]
   before_filter :protocol_authorizer_view,                        only: [:show, :view_full_calendar, :display_requests]
   before_filter :protocol_authorizer_edit,                        only: [:edit, :update, :update_protocol_type]
@@ -96,12 +96,10 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def create
-    protocol_class = params[:protocol][:type].capitalize.constantize
-
-    attrs = fix_date_params
-
-    @protocol = protocol_class.new(attrs)
-    @protocol.study_type_question_group_id = StudyTypeQuestionGroup.active_id
+    protocol_class                          = params[:protocol][:type].capitalize.constantize
+    attrs                                   = fix_date_params
+    @protocol                               = protocol_class.new(attrs)
+    @protocol.study_type_question_group_id  = StudyTypeQuestionGroup.active_id
 
     if @protocol.valid?
       unless @protocol.project_roles.map(&:identity_id).include? current_user.id
@@ -116,7 +114,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
         Notifier.notify_for_epic_user_approval(@protocol).deliver unless QUEUE_EPIC
       end
 
-      flash[:success] = "#{@protocol.type} Created!"
+      flash[:success] = I18n.t('protocols.created', protocol_type: @protocol.type)
     else
       @errors = @protocol.errors
     end
@@ -145,15 +143,14 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def update
-    attrs = fix_date_params
-
+    attrs               = fix_date_params
     permission_to_edit  = @authorization.present? ? @authorization.can_edit? : false
 
     # admin is not able to activate study_type_question_group
     if !permission_to_edit && @protocol.update_attributes(attrs)
-      flash[:success] = "#{@protocol.type} Updated!"
+      flash[:success] = I18n.t('protocols.updated', protocol_type: @protocol.type)
     elsif permission_to_edit && @protocol.update_attributes(attrs.merge(study_type_question_group_id: StudyTypeQuestionGroup.active_id))
-      flash[:success] = "#{@protocol.type} Updated!"
+      flash[:success] = I18n.t('protocols.updated', protocol_type: @protocol.type)
     else
       @errors = @protocol.errors
     end
@@ -176,39 +173,14 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     @protocol = Protocol.find(@protocol.id)#Protocol type has been converted, this is a reload
     @protocol.populate_for_edit
 
-    flash[:success] = "Protocol Type Updated!"
+    flash[:success] = t(:protocols)[:change_type][:updated]
     if @protocol_type == "Study" && @protocol.sponsor_name.nil? && @protocol.selected_for_epic.nil?
-      flash[:alert] = "Please complete Sponsor Name and Publish Study in Epic"
+      flash[:alert] = t(:protocols)[:change_type][:new_study_warning]
     end
   end
 
   def archive
     @protocol.toggle!(:archived)
-    respond_to do |format|
-      format.js
-    end
-  end
-
-  def view_full_calendar
-    @service_request  = @protocol.any_service_requests_to_display?
-    arm_id            = params[:arm_id] if params[:arm_id]
-    page              = params[:page] if params[:page]
-
-    session[:service_calendar_pages]          = params[:pages] if params[:pages]
-    session[:service_calendar_pages][arm_id]  = page if page && arm_id
-
-    @tab    = 'calendar'
-    @portal = params[:portal]
-
-    if @service_request
-      @pages = {}
-      @protocol.arms.each do |arm|
-        new_page        = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i
-        @pages[arm.id]  = @service_request.set_visit_page(new_page, arm)
-      end
-    end
-
-    @merged = true
     respond_to do |format|
       format.js
     end
@@ -269,7 +241,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
     attrs
   end
-
+  
   def fix_date_params
     attrs               = params[:protocol]
 
@@ -291,5 +263,4 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
     attrs
   end
-
 end

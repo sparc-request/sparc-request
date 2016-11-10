@@ -253,6 +253,15 @@ class FakeEpicServer < WEBrick::HTTPServer
   end
 
   def initialize(options)
+    options = { Port: 0,               # automatically determine port
+                Logger: Rails.logger,  # send regular log to rails
+                AccessLog: [ ],        # disable access log
+                FakeEpicServlet: {
+                  keep_received: true,
+                  received: epic_received,
+                  results: epic_results
+                }
+              }.merge(options)
     super(options)
 
     mount "/", FakeEpicServlet, options[:FakeEpicServlet] || { }
@@ -273,4 +282,3 @@ if $0 == __FILE__ then
   trap "INT" do server.shutdown end
   server.start
 end
-

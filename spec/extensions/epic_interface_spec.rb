@@ -50,15 +50,7 @@ RSpec.describe EpicInterface do
   # block.
   before :all do
     require 'webrick'
-    server = FakeEpicServer.new(
-        Port: 0,               # automatically determine port
-        Logger: Rails.logger,  # send regular log to rails
-        AccessLog: [ ],        # disable access log
-        FakeEpicServlet: {
-          keep_received: true,
-          received: epic_received,
-          results: epic_results
-        })
+    server = FakeEpicServer.new
     thread = Thread.new { server.start }
   end
 

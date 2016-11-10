@@ -41,7 +41,8 @@ def start_fake_epic_server(epic_received, epic_results)
   require 'fake_epic_soap_server'
 
   Rails.logger.info("Starting fake epic server")
-  server = FakeEpicServer.new
+  server = FakeEpicServer.new(FakeEpicServlet: { received: epic_received,
+                                                 results: epic_results})
   thread = Thread.new { server.start }
   timeout(10) { while server.status != :Running; end }
   at_exit { server.shutdown; thread.join }

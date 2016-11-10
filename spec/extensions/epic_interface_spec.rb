@@ -50,7 +50,8 @@ RSpec.describe EpicInterface do
   # block.
   before :all do
     require 'webrick'
-    server = FakeEpicServer.new
+    server = FakeEpicServer.new(FakeEpicServlet: { received: epic_received,
+                                                   results: epic_results })
     thread = Thread.new { server.start }
   end
 

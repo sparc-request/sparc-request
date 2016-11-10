@@ -252,15 +252,14 @@ class FakeEpicServer < WEBrick::HTTPServer
     response.body = wsdl()
   end
 
-  def initialize(options)
+  def initialize(options = {})
+    fakeEpicServlet = { keep_received: true }.
+      merge(options.delete(:FakeEpicServlet))
+
     options = { Port: 0,               # automatically determine port
                 Logger: Rails.logger,  # send regular log to rails
                 AccessLog: [ ],        # disable access log
-                FakeEpicServlet: {
-                  keep_received: true,
-                  received: epic_received,
-                  results: epic_results
-                }
+                FakeEpicServlet: fakeEpicServlet
               }.merge(options)
     super(options)
 

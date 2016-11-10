@@ -203,7 +203,7 @@ RSpec.feature 'User wants to add an authorized user', js: true do
         # navigate to page
         @page = Dashboard::Protocols::ShowPage.new
         @page.load(id: protocol.id)
-        
+
         given_i_have_clicked_the_add_authorized_user_button
         when_i_select_a_user_from_the_search('John Doe')
         when_i_set_the_role_to('Consultant')
@@ -303,9 +303,6 @@ RSpec.feature 'User wants to add an authorized user', js: true do
 
   def then_i_should_see_the_new_primary_pi
     wait_for_javascript_to_finish
-    #TODO: Implement feature to reload PD/PIs on Protocol Tab when a new user / edit user is done
-    #expect(page).to_not have_selector(".protocol-accordion-title", text: "Julia Glenn")
-    #expect(page).to have_selector(".protocol-accordion-title", text: "Brian Kelsey")
     within(find('.panel', text: 'Authorized Users')) do
       expect(page).to have_selector('td', text: 'Jane Doe')
       expect(page).to have_selector('td', text: 'Primary PI')

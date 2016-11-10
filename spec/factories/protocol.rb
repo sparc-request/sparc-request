@@ -96,12 +96,6 @@ FactoryGirl.define do
       project_role nil
     end
 
-    # TODO: get this to work!
-    # after(:build) do |protocol, evaluator|
-    #   create_list(:project_role, evaluator.project_role_count,
-    #     protocol: protocol, identity: evaluator.pi)
-    # end
-
     after(:build) do |protocol, evaluator|
       protocol.build_ip_patents_info(attributes_for(:ip_patents_info)) unless protocol.ip_patents_info
       protocol.build_human_subjects_info(attributes_for(:human_subjects_info)) unless protocol.human_subjects_info
@@ -110,12 +104,15 @@ FactoryGirl.define do
       protocol.build_vertebrate_animals_info(attributes_for(:vertebrate_animals_info)) unless protocol.vertebrate_animals_info
     end
 
-    after(:create) do |protocol, evaluator|
-      # TODO: replace
-      if evaluator.identity && evaluator.project_rights && evaluator.role
-        create(:project_role, protocol_id: protocol.id, identity_id: evaluator.identity.id, project_rights: evaluator.project_rights, role: evaluator.role)
-      end
-    end
+    # after(:create) do |protocol, evaluator|
+    #   # TODO: replace
+    #   if evaluator.identity && evaluator.project_rights && evaluator.role
+    #     create(:project_role, protocol_id: protocol.id,
+    #       identity_id: evaluator.identity.id,
+    #       project_rights: evaluator.project_rights,
+    #       role: evaluator.role)
+    #   end
+    # end
 
     before(:create) do |protocol, evaluator|
       if evaluator.primary_pi

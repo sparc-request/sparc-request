@@ -239,15 +239,15 @@ RSpec.describe Service, type: :model do
 
     it 'should return the most recent pricing map in the past if there is more than one' do
       service = create(:service, pricing_map_count: 2)
-      service.pricing_maps[0].effective_date = Date.today - 1
-      service.pricing_maps[1].effective_date = Date.today - 2
-      expect(service.current_effective_pricing_map).to eq service.pricing_maps[0]
+      service.pricing_maps[0].update(effective_date: Date.today - 1)
+      service.pricing_maps[1].update(effective_date: Date.today - 2)
+      expect(service.reload.current_effective_pricing_map).to eq service.pricing_maps[0]
     end
 
     it 'should return the pricing map in the past if one is in the past and one is in the future' do
       service = create(:service, pricing_map_count: 2)
-      service.pricing_maps[0].effective_date = Date.today + 1
-      service.pricing_maps[1].effective_date = Date.today - 1
+      service.pricing_maps[0].update(effective_date: Date.today + 1)
+      service.pricing_maps[1].update(effective_date: Date.today - 1)
       expect(service.current_effective_pricing_map).to eq service.pricing_maps[1]
     end
   end
@@ -262,11 +262,11 @@ RSpec.describe Service, type: :model do
     it 'should return the pricing map for the given date if there is a pricing map with a effective date of that date' do
       service = create(:service, pricing_map_count: 5)
       base_date = Date.parse('2012-01-01')
-      service.pricing_maps[0].effective_date = base_date + 1
-      service.pricing_maps[1].effective_date = base_date
-      service.pricing_maps[2].effective_date = base_date - 1
-      service.pricing_maps[3].effective_date = base_date - 2
-      service.pricing_maps[4].effective_date = base_date - 3
+      service.pricing_maps[0].update(effective_date: base_date + 1)
+      service.pricing_maps[1].update(effective_date: base_date)
+      service.pricing_maps[2].update(effective_date: base_date - 1)
+      service.pricing_maps[3].update(effective_date: base_date - 2)
+      service.pricing_maps[4].update(effective_date: base_date - 3)
       expect(service.effective_pricing_map_for_date(base_date)).to eq service.pricing_maps[1]
     end
 

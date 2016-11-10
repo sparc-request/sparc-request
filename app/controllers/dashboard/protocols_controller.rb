@@ -87,6 +87,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def new
+    @action = params['action']
     @protocol_type          = params[:protocol_type]
     @protocol               = @protocol_type.capitalize.constantize.new
     @protocol.requester_id  = current_user.id
@@ -120,12 +121,8 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def edit
-    @protocol_type      = @protocol.type
+    @action = params['action']
     @permission_to_edit = @authorization.nil? ? false : @authorization.can_edit?
-
-    if @permission_to_edit
-      @protocol.study_type_question_group_id = StudyTypeQuestionGroup.active_id
-    end
 
     @protocol.populate_for_edit
 
@@ -148,7 +145,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     # admin is not able to activate study_type_question_group
     if !permission_to_edit && @protocol.update_attributes(attrs)
       flash[:success] = I18n.t('protocols.updated', protocol_type: @protocol.type)
-    elsif permission_to_edit && @protocol.update_attributes(attrs.merge(study_type_question_group_id: StudyTypeQuestionGroup.active_id))
+    elsif permission_to_edit && @protocol.update_attributes(attrs)
       flash[:success] = I18n.t('protocols.updated', protocol_type: @protocol.type)
     else
       @errors = @protocol.errors

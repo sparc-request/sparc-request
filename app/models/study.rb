@@ -32,6 +32,14 @@ class Study < Protocol
     Portal::StudyTypeFinder.new(self).study_type
   end
 
+  def study_type_answers
+    study_type_answers = []
+    StudyTypeQuestion.joins(:study_type_question_group).where(study_type_question_groups: { version: version }).find_each do |stq|
+      study_type_answers << stq.study_type_answers.find_by_protocol_id(id)
+    end
+    study_type_answers
+  end
+
   def populate_for_edit
     super
     self.build_research_types_info           unless self.research_types_info

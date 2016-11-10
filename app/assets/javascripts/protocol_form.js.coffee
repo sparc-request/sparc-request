@@ -207,22 +207,52 @@ $(document).ready ->
       $(higher_level_of_privacy_dropdown).show_elt()
       $('.study_type_note').hide()
     else if new_value == 'true'
+      data = { 1: $(certificate_of_confidence_dropdown).val(), 2: $(higher_level_of_privacy_dropdown).val(), 3: $(epic_inbasket_dropdown).val(), 4: $(research_active_dropdown).val(), 5: $(restrict_sending_dropdown).val() }
+      determine_study_type(data)
       $(higher_level_of_privacy_dropdown).hide_elt()
       $(epic_inbasket_dropdown).hide_elt()
       $(research_active_dropdown).hide_elt()
       $(restrict_sending_dropdown).hide_elt()
-      $('.study_type_note').show()
-      $('.study_type_note').addClass('red_note').html('Note: De-identified  Research  Participant')
+    else
+      $(higher_level_of_privacy_dropdown).hide_elt()
+      $(epic_inbasket_dropdown).hide_elt()
+      $(research_active_dropdown).hide_elt()
+      $(restrict_sending_dropdown).hide_elt()
+      $('.study_type_note').hide()
     return
 
   $(document).on 'change', higher_level_of_privacy_dropdown, (e) ->
-    $(epic_inbasket_dropdown).show_elt()
+    if $(e.target).val() == ''
+      $(epic_inbasket_dropdown).hide_elt()
+      $(research_active_dropdown).hide_elt()
+      $(restrict_sending_dropdown).hide_elt()
+      $('.study_type_note').hide()
+    else
+      data = { 1: $(certificate_of_confidence_dropdown).val(), 2: $(higher_level_of_privacy_dropdown).val(), 3: $(epic_inbasket_dropdown).val(), 4: $(research_active_dropdown).val(), 5: $(restrict_sending_dropdown).val() }
+      determine_study_type(data)
+      $(epic_inbasket_dropdown).show_elt()
+    return
 
   $(document).on 'change', epic_inbasket_dropdown, (e) ->
-    $(research_active_dropdown).show_elt()
+    if $(e.target).val() == ''
+      $(research_active_dropdown).hide_elt()
+      $(restrict_sending_dropdown).hide_elt()
+      $('.study_type_note').hide()
+    else
+      data = { 1: $(certificate_of_confidence_dropdown).val(), 2: $(higher_level_of_privacy_dropdown).val(), 3: $(epic_inbasket_dropdown).val(), 4: $(research_active_dropdown).val(), 5: $(restrict_sending_dropdown).val() }
+      determine_study_type(data)
+      $(research_active_dropdown).show_elt()
+    return
 
   $(document).on 'change', research_active_dropdown, (e) ->
-    $(restrict_sending_dropdown).show_elt()
+    if $(e.target).val() == ''
+      $(restrict_sending_dropdown).hide_elt()
+      $('.study_type_note').hide()
+    else
+      data = { 1: $(certificate_of_confidence_dropdown).val(), 2: $(higher_level_of_privacy_dropdown).val(), 3: $(epic_inbasket_dropdown).val(), 4: $(research_active_dropdown).val(), 5: $(restrict_sending_dropdown).val() }
+      determine_study_type(data)
+      $(restrict_sending_dropdown).show_elt()
+    return
 
   $(document).on 'change', restrict_sending_dropdown, (e) ->
     data = { 1: $(certificate_of_confidence_dropdown).val(), 2: $(higher_level_of_privacy_dropdown).val(), 3: $(epic_inbasket_dropdown).val(), 4: $(research_active_dropdown).val(), 5: $(restrict_sending_dropdown).val() }
@@ -234,14 +264,14 @@ determine_study_type = (answers) ->
   array_values = new Array()
   for k,v of answers
     array_values.push(v)
-  console.log(array_values)
   nil_value = $.inArray('', array_values) > -1
-  console.log(nil_value)
-  if nil_value == false
+  if array_values[0] == 'true' || nil_value == false
     $.ajax
       type: 'POST'
       data: answers
-      url: "/study_type/determine_study_type"
+      url: "/study_type/determine_study_type_note"
+      success: ->
+        $('.study_type_note').show()
 
   ###HUMAN SUBJECTS FIELDS DISPLAY###
   $(document).on 'change', '#protocol_research_types_info_attributes_human_subjects', ->

@@ -139,6 +139,6 @@
                     = answer_form.label :answer, answer_form.object.study_type_question.question, class: "long"
                   .col-lg-4
                     = answer_form.select :answer, options_for_select([['Yes', true], ['No', false]], answer_form.object.answer), { include_blank: 'Select One' }, { class: 'selectpicker', id: "study_type_answer_#{answer_form.object.study_type_question.friendly_id}_answer" }
-    .study_type_note
+    #study_type_note.red_note
     
 

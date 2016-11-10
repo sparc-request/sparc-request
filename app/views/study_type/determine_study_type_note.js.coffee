@@ -17,4 +17,4 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-$('.study_type_note').html('<%= escape_javascript(label_tag "note", t(:protocols)[:studies][:information][:note] + @note, class: "red_note") %>').show()
+$('#study_type_note').html('<%= escape_javascript(label_tag "note", t(:protocols)[:studies][:information][:note] + @note) %>').show()

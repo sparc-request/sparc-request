@@ -205,7 +205,7 @@ $(document).ready ->
     new_value = $(e.target).val()
     if new_value == 'false'
       $(higher_level_of_privacy_dropdown).show_elt()
-      $('.study_type_note').hide()
+      $('#study_type_note').hide()
     else if new_value == 'true'
       data = { 1: $(certificate_of_confidence_dropdown).val(), 2: $(higher_level_of_privacy_dropdown).val(), 3: $(epic_inbasket_dropdown).val(), 4: $(research_active_dropdown).val(), 5: $(restrict_sending_dropdown).val() }
       determine_study_type(data)
@@ -218,7 +218,7 @@ $(document).ready ->
       $(epic_inbasket_dropdown).hide_elt()
       $(research_active_dropdown).hide_elt()
       $(restrict_sending_dropdown).hide_elt()
-      $('.study_type_note').hide()
+      $('#study_type_note').hide()
     return
 
   $(document).on 'change', higher_level_of_privacy_dropdown, (e) ->
@@ -226,7 +226,7 @@ $(document).ready ->
       $(epic_inbasket_dropdown).hide_elt()
       $(research_active_dropdown).hide_elt()
       $(restrict_sending_dropdown).hide_elt()
-      $('.study_type_note').hide()
+      $('#study_type_note').hide()
     else
       data = { 1: $(certificate_of_confidence_dropdown).val(), 2: $(higher_level_of_privacy_dropdown).val(), 3: $(epic_inbasket_dropdown).val(), 4: $(research_active_dropdown).val(), 5: $(restrict_sending_dropdown).val() }
       determine_study_type(data)
@@ -237,7 +237,7 @@ $(document).ready ->
     if $(e.target).val() == ''
       $(research_active_dropdown).hide_elt()
       $(restrict_sending_dropdown).hide_elt()
-      $('.study_type_note').hide()
+      $('#study_type_note').hide()
     else
       data = { 1: $(certificate_of_confidence_dropdown).val(), 2: $(higher_level_of_privacy_dropdown).val(), 3: $(epic_inbasket_dropdown).val(), 4: $(research_active_dropdown).val(), 5: $(restrict_sending_dropdown).val() }
       determine_study_type(data)
@@ -247,7 +247,7 @@ $(document).ready ->
   $(document).on 'change', research_active_dropdown, (e) ->
     if $(e.target).val() == ''
       $(restrict_sending_dropdown).hide_elt()
-      $('.study_type_note').hide()
+      $('#study_type_note').hide()
     else
       data = { 1: $(certificate_of_confidence_dropdown).val(), 2: $(higher_level_of_privacy_dropdown).val(), 3: $(epic_inbasket_dropdown).val(), 4: $(research_active_dropdown).val(), 5: $(restrict_sending_dropdown).val() }
       determine_study_type(data)
@@ -271,7 +271,7 @@ determine_study_type = (answers) ->
       data: answers
       url: "/study_type/determine_study_type_note"
       success: ->
-        $('.study_type_note').show()
+        $('#study_type_note').show()
 
   ###HUMAN SUBJECTS FIELDS DISPLAY###
   $(document).on 'change', '#protocol_research_types_info_attributes_human_subjects', ->

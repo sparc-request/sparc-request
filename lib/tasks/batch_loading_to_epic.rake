@@ -76,8 +76,9 @@ namespace :epic do
         protocol_ids.each do |id|
           begin
             p = Protocol.find id
+            q = EpicQueue.find_by_protocol_id(p.id)
 
-            p.push_to_epic(EPIC_INTERFACE)
+            p.push_to_epic(EPIC_INTERFACE, q.origin)
 
             # loop until the push is either complete or fails
             while not ['complete', 'failed'].include? p.last_epic_push_status
@@ -107,7 +108,7 @@ namespace :epic do
         end
         puts "Sent => #{sent.inspect.to_s}"
         puts "Failed => #{failed.inspect.to_s}"
-        
+
         Notifier.epic_queue_complete(sent, failed).deliver
       else
         puts "Batch load aborted"

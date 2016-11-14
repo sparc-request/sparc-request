@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160930185037) do
+ActiveRecord::Schema.define(version: 20161109162634) do
 
   create_table "admin_rates", force: :cascade do |t|
     t.integer  "line_item_id", limit: 4
@@ -284,6 +284,7 @@ ActiveRecord::Schema.define(version: 20160930185037) do
     t.string   "status",      limit: 255
     t.datetime "created_at",              null: false
     t.datetime "updated_at",              null: false
+    t.string   "origin",      limit: 255
   end
 
   create_table "epic_queues", force: :cascade do |t|

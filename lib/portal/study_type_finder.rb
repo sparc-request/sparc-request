@@ -43,7 +43,7 @@ module Portal
 	          end
 	        end
 	        @study_type
-	      elsif @study.version == 1
+	      elsif @study.version_type == 1
           # VERSION 1 STQ
           StudyTypeQuestion.joins(:study_type_question_group).where(study_type_question_groups: { version: 1 }).find_each do |stq|
             @inactive_answers_version_1 << stq.study_type_answers.find_by_protocol_id(@study.id).answer 
@@ -56,13 +56,11 @@ module Portal
               break
             end
           end
-        elsif @study.version == 2
+        elsif @study.version_type == 2
           # VERSION 2 STQ
           StudyTypeQuestion.joins(:study_type_question_group).where(study_type_question_groups: { version: 2 }).find_each do |stq|
             @inactive_answers_version_2 << stq.study_type_answers.find_by_protocol_id(@study.id).answer
           end
-
-	       
 
           # VERSION 2 STA
           STUDY_TYPE_ANSWERS_VERSION_2.each do |k, v|

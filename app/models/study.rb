@@ -32,9 +32,19 @@ class Study < Protocol
     Portal::StudyTypeFinder.new(self).study_type
   end
 
-  def study_type_answers
+  def determine_note(study_type)
+    STUDY_TYPE_NOTES.each do |k, v|
+      if k == study_type
+        @note = v
+        break
+      end
+    end
+    @note
+  end
+
+  def display_answers
     study_type_answers = []
-    StudyTypeQuestion.joins(:study_type_question_group).where(study_type_question_groups: { version: version }).find_each do |stq|
+    StudyTypeQuestion.joins(:study_type_question_group).where(study_type_question_groups: { version: version_type }).find_each do |stq|
       study_type_answers << stq.study_type_answers.find_by_protocol_id(id)
     end
     study_type_answers

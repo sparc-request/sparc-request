@@ -260,11 +260,11 @@ class Protocol < ActiveRecord::Base
   end
 
   def active?
-    study_type_question_group.active
+    study_type_question_group.nil? ? false : study_type_question_group.active
   end
 
-  def version
-    study_type_question_group.version
+  def version_type
+    study_type_question_group.nil? ? nil : study_type_question_group.version
   end
 
   def activate

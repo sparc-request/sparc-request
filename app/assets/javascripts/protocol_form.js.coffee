@@ -158,6 +158,11 @@ $(document).ready ->
   ### FORM FIELDS LOGIC ###
   #######################################################################################
 
+  ### INITIAL PAGE LOAD EDIT STUDY IN SPARCRequest #######################
+  if $('#study_selected_for_epic_true_button').hasClass('active')
+    $('#study_type_answer_certificate_of_conf_answer').show_elt()
+    $('#study_type_note').show()
+
   ###FUNDING STATUS FIELDS DISPLAY###
   $(document).on 'change', '#protocol_funding_status', ->
     $('.funding_status_dependent').hide()

@@ -22,7 +22,7 @@ class Dashboard::ProtocolFiltersController < Dashboard::BaseController
   respond_to :html, :json
 
   def new
-    @protocol_filter = @user.protocol_filters.new(params[:filterrific])
+    @protocol_filter = @user.protocol_filters.new(params[:filterrific].except(:sorted_by))
   end
 
   def create
@@ -31,7 +31,7 @@ class Dashboard::ProtocolFiltersController < Dashboard::BaseController
     else
       flash[:alert] = 'Search Failed to Save.'
     end
-    
+
     @protocol_filters = ProtocolFilter.latest_for_user(@user.id, 5)
   end
 end

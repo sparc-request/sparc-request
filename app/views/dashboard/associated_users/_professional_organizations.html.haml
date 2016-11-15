@@ -3,21 +3,21 @@
   = fields_for(:project_role) do |pr_form|
     = pr_form.fields_for(:identity_attributes) do |identity_form|
       - state[:prev_selected].each do |prev_selected_pro_org|
-        = user_form_group(name: prev_selected_pro_org.org_type, classes: 'professional-organization-form-group') do
+        = user_form_group(name: prev_selected_pro_org.org_type, label: org_type_label(prev_selected_pro_org)) do
           = select_tag(prev_selected_pro_org.org_type,
                        options_from_collection_for_select([prev_selected_pro_org] + prev_selected_pro_org.siblings, 'id', 'name', prev_selected_pro_org.id),
                        include_blank: t(:authorized_users)[:form_fields][:select_one],
                        class: 'form-control selectpicker')
       - if state[:not_selected].empty?
         -# state[:last_selected] is the bottom of the tree
-        = user_form_group(name: :professional_organization_id, label: t(:authorized_users)[:form_fields][state[:last_selected].org_type.to_sym], form: identity_form, classes: 'professional-organization-form-group') do
+        = user_form_group(name: :professional_organization_id, label: org_type_label(state[:last_selected]), form: identity_form) do
           = identity_form.select :professional_organization_id, options_from_collection_for_select(state[:last_selected].siblings, 'id', 'name', state[:last_selected].id), { include_blank: t(:authorized_users)[:form_fields][:select_one] }, class: 'form-control selectpicker'
       - else
         -# state[:last_selected] is not the bottom of the tree
         - if state[:last_selected]
-          = user_form_group(name: state[:last_selected].org_type, form: identity_form, classes: 'professional-organization-form-group') do
+          = user_form_group(name: state[:last_selected].org_type, label: org_type_label(state[:last_selected]), form: identity_form) do
             = identity_form.select state[:last_selected].org_type, options_from_collection_for_select(state[:last_selected].siblings, 'id', 'name', state[:last_selected].id), { include_blank: t(:authorized_users)[:form_fields][:select_one] }, class: 'form-control selectpicker'
-        = user_form_group(name: state[:not_selected].first.org_type, classes: 'professional-organization-form-group') do
+        = user_form_group(name: state[:not_selected].first.org_type, label: org_type_label(state[:not_selected].last.first)) do
           = select_tag(state[:not_selected].first.org_type,
                        options_from_collection_for_select(state[:not_selected], 'id', 'name'),
                        include_blank: t(:authorized_users)[:form_fields][:select_one],

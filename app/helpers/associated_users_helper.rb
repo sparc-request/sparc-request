@@ -47,6 +47,10 @@ module AssociatedUsersHelper
     end
   end
 
+  def org_type_label(professional_organization)
+    professional_organization.org_type.capitalize + ":"
+  end
+
   def authorized_users_edit_button(project_role)
     content_tag(:button,
       raw(

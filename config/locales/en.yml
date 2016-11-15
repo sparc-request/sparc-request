@@ -120,6 +120,8 @@ en:
       college: "College:"
       college_prompt: "Select a College"
       department: "Department:"
+      division: "Division:"
+      entity: "Entity:"
       phone: "Phone:"
       department_prompt: "Select a Department"
       subspecialty: "Subspecialty:"
@@ -128,6 +130,7 @@ en:
       role_prompt: "Select a Role"
       role_specify: "Please Specify:*"
       epic_access: "Epic EMR Access?:*"
+      select_one: "Select one"
     rights:
       header: "User Rights:*"
       none: Study/Project Member Only

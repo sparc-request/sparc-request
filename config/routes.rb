@@ -117,16 +117,16 @@ SparcRails::Application.routes.draw do
       post 'toggle_calendar_column'
     end
   end
-  
+
   resources :line_items, only: [:update]
   resources :visit_groups, only: [:update]
 
   resources :documents, only: [:index, :new, :create, :edit, :update, :destroy]
-  
+
   resources :notes, only: [:index, :new, :create]
 
   resources :sub_service_requests, only: [:show]
-  
+
   resources :catalogs, only: [] do
     member do
       post 'update_description'
@@ -203,6 +203,7 @@ SparcRails::Application.routes.draw do
     resources :associated_users, only: [:index, :new, :create, :edit, :update, :destroy] do
       collection do
         get :search_identities
+        get :update_professional_organization_form_items
       end
     end
 

@@ -3,7 +3,6 @@ class CreateProfessionalOrganizationsTable < ActiveRecord::Migration
     create_table :professional_organizations do |t|
       t.text :name
       t.string :org_type
-      t.integer :depth, default: 0
       t.integer :parent_id
     end
 

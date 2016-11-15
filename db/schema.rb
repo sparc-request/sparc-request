@@ -655,7 +655,6 @@ ActiveRecord::Schema.define(version: 20161114183325) do
   create_table "professional_organizations", force: :cascade do |t|
     t.text    "name",      limit: 65535
     t.string  "org_type",  limit: 255
-    t.integer "depth",     limit: 4,     default: 0
     t.integer "parent_id", limit: 4
   end
 

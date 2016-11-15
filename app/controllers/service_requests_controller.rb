@@ -62,7 +62,7 @@ class ServiceRequestsController < ApplicationController
     when 'service_calendar'
       @service_request.group_valid?(:service_calendar)
     end
-    
+
     @errors = @service_request.errors
 
     if @errors.any?
@@ -152,7 +152,7 @@ class ServiceRequestsController < ApplicationController
     @has_subsidy          = @service_request.sub_service_requests.map(&:has_subsidy?).any?
     @eligible_for_subsidy = @service_request.sub_service_requests.map(&:eligible_for_subsidy?).any?
 
-    unless @has_subsidy || @eligible_for_subsidy 
+    unless @has_subsidy || @eligible_for_subsidy
       @back = 'service_calendar'
     end
   end
@@ -206,7 +206,7 @@ class ServiceRequestsController < ApplicationController
       @sub_service_request.update_past_status(current_user)
     else
       to_notify = update_service_request_status(@service_request, 'submitted')
-      
+
       @service_request.update_arm_minimum_counts
       @service_request.sub_service_requests.update_all(nursing_nutrition_approved: false, lab_approved: false, imaging_approved: false, committee_approved: false)
     end
@@ -219,7 +219,7 @@ class ServiceRequestsController < ApplicationController
       # approve_epic_rights.
       @protocol.ensure_epic_user
       if QUEUE_EPIC
-        EpicQueue.create(protocol_id: @protocol.id) unless EpicQueue.where(protocol_id: @protocol.id).size == 1
+        EpicQueue.create(protocol_id: @protocol.id, identity_id: current_user.id) unless EpicQueue.where(protocol_id: @protocol.id).size == 1
       else
         @protocol.awaiting_approval_for_epic_push
         send_epic_notification_for_user_approval(@protocol)
@@ -515,10 +515,10 @@ class ServiceRequestsController < ApplicationController
     # Passes the correct SSR to display in the attachment and email.
     sub_service_requests.each do |sub_service_request|
       sub_service_request.organization.submission_emails_lookup.each do |submission_email|
-        
+
         @service_list_false = service_request.service_list(false, nil, sub_service_request)
         @service_list_true = service_request.service_list(true, nil, sub_service_request)
-        
+
         @line_items = sub_service_request.line_items
         xls = render_to_string action: 'show', formats: [:xlsx]
         Notifier.notify_admin(service_request, submission_email.email, xls, current_user, sub_service_request).deliver
@@ -598,7 +598,7 @@ class ServiceRequestsController < ApplicationController
   end
 
   def update_service_request_status(service_request, status, validate=true)
-    sub_service_requests = service_request.sub_service_requests.where(status: UPDATABLE_STATUSES) 
+    sub_service_requests = service_request.sub_service_requests.where(status: UPDATABLE_STATUSES)
     if (status == 'submitted')
       service_request.previous_submitted_at = @service_request.submitted_at
       service_request.update_attribute(:submitted_at, Time.now)

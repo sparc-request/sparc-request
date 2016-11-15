@@ -76,9 +76,13 @@ namespace :epic do
         protocol_ids.each do |id|
           begin
             p = Protocol.find id
-            q = EpicQueue.find_by_protocol_id(p.id)
+            q = EpicQueue.find_by_protocol_id(p.id) rescue false
 
-            p.push_to_epic(EPIC_INTERFACE, q.origin)
+            if q
+              p.push_to_epic(EPIC_INTERFACE, "submission", q.identity_id)
+            else
+              p.push_to_epic(EPIC_INTERFACE, "command_line")
+            end
 
             # loop until the push is either complete or fails
             while not ['complete', 'failed'].include? p.last_epic_push_status
@@ -94,7 +98,6 @@ namespace :epic do
             else
               puts "#{p.short_title} (#{p.id}) sent to Epic"
               sent << p.id
-              q = EpicQueue.find_by_protocol_id(p.id) rescue false
               q.destroy if q
             end
           rescue Exception => e

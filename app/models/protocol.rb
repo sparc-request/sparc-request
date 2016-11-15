@@ -370,7 +370,7 @@ class Protocol < ActiveRecord::Base
   # Note: this method is called inside a child thread by the service
   # requests controller.  Be careful adding code here that might not be
   # thread-safe.
-  def push_to_epic(epic_interface, origin)
+  def push_to_epic(epic_interface, origin, identity_id=nil)
     begin
       self.last_epic_push_time = Time.now
       self.last_epic_push_status = 'started'
@@ -382,13 +382,13 @@ class Protocol < ActiveRecord::Base
       self.last_epic_push_status = 'complete'
       save(validate: false)
 
-      EpicQueueRecord.create(protocol_id: self.id, status: self.last_epic_push_status, origin: origin)
+      EpicQueueRecord.create(protocol_id: self.id, status: self.last_epic_push_status, origin: origin, identity_id: identity_id)
     rescue Exception => e
       Rails.logger.info("Push to Epic failed.")
 
       self.last_epic_push_status = 'failed'
       save(validate: false)
-      EpicQueueRecord.create(protocol_id: self.id, status: self.last_epic_push_status, origin: origin)
+      EpicQueueRecord.create(protocol_id: self.id, status: self.last_epic_push_status, origin: origin, identity_id: identity_id)
       raise e
     end
   end

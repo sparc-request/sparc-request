@@ -122,6 +122,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
   def edit
     @action = params['action']
+    @protocol_type      = @protocol.type
     @permission_to_edit = @authorization.nil? ? false : @authorization.can_edit?
 
     @protocol.populate_for_edit

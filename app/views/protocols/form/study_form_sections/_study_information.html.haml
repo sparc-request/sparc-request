@@ -1,3 +1,4 @@
+
 -# Copyright © 2011 MUSC Foundation for Research Development
 -# All rights reserved.
 
@@ -117,3 +118,6 @@
                 .col-lg-4
                   = answer_form.select :answer, options_for_select([['Yes', true], ['No', false]], answer_form.object.answer), { include_blank: 'Select One' }, { class: 'selectpicker', id: "study_type_answer_#{answer_form.object.study_type_question.friendly_id}_answer" }
     #study_type_note.red_note
+      - if protocol.active?
+        - note = protocol.determine_note(protocol.determine_study_type)
+        = form.label :note, t(:protocols)[:studies][:information][:note] + note

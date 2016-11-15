@@ -67,7 +67,6 @@ class ProtocolsController < ApplicationController
 
   def edit
     @service_request                        = ServiceRequest.find(params[:srid])
-    @protocol.study_type_question_group_id  = StudyTypeQuestionGroup.active_id
 
     @protocol.populate_for_edit
     @protocol.valid?

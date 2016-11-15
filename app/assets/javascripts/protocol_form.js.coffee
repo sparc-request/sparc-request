@@ -63,6 +63,19 @@ $(document).ready ->
     this.closest('.row').show()
     return this
 
+  determine_study_type = (answers) ->
+    array_values = new Array()
+    for k,v of answers
+      array_values.push(v)
+    nil_value = $.inArray('', array_values) > -1
+    if array_values[0] == 'true' || nil_value == false
+      $.ajax
+        type: 'POST'
+        data: answers
+        url: "/study_type/determine_study_type_note"
+        success: ->
+          $('#study_type_note').show()
+
   # $.prototype.hide_visual_error = () ->
   #   this.removeClass('visual_error')
   #   if $('.visual_error').length == 0
@@ -264,19 +277,6 @@ $(document).ready ->
     determine_study_type(data)
      
   ###END EPIC BUTTON FIELDS DISPLAY###
-
-determine_study_type = (answers) ->
-  array_values = new Array()
-  for k,v of answers
-    array_values.push(v)
-  nil_value = $.inArray('', array_values) > -1
-  if array_values[0] == 'true' || nil_value == false
-    $.ajax
-      type: 'POST'
-      data: answers
-      url: "/study_type/determine_study_type_note"
-      success: ->
-        $('#study_type_note').show()
 
   ###HUMAN SUBJECTS FIELDS DISPLAY###
   $(document).on 'change', '#protocol_research_types_info_attributes_human_subjects', ->

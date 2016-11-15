@@ -41,9 +41,6 @@ RSpec.describe "User views Status History tab", js: true do
     visit dashboard_sub_service_request_path(ssr)
     wait_for_javascript_to_finish
 
-    find('#history-tab').click
-    wait_for_javascript_to_finish
-
     bootstrap_select("#sub_service_request_status", "On Hold")
 
     expect(PastStatus.first.changed_by_id).to eq(jug2.id)

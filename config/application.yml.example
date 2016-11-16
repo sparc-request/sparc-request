@@ -21,7 +21,10 @@
 development:
   default_mail_to: catesa@musc.edu
   admin_mail_to: catesa@musc.edu
-  feedback_mail_to: "glennj@musc.edu, hundc@musc.edu"
+  feedback_mail_to: "hutsonk@musc.edu"
+  contact_us_mail_to: "success@musc.edu"
+  contact_us_cc: "sparcrequest@gmail.com"
+  listserv_mail_to: "hewwe@musc.edu, hutsonk@musc.edu"
   new_user_cc: "amcates@gmail.com, no-reply@musc.edu"
   system_satisfaction_survey_cc: 'amcates@gmail.com, catesa@musc.edu'
   root_url: "https://andrews-mac-pro.thurmond-gazes.musc.edu"
@@ -36,10 +39,10 @@ development:
   use_ldap: true
   suppress_ldap_for_user_search: true # allow the use of LDAP but suppress its use within the project/study "User Search" box
   wkhtmltopdf_location: '/usr/local/bin/wkhtmltopdf'
-  approve_epic_rights_mail_to: "glennj@musc.edu, forney@musc.edu, crossoml@musc.edu"
+  approve_epic_rights_mail_to: "forney@musc.edu, crossoml@musc.edu"
   use_epic: true
   queue_epic: true
-  queue_epic_load_error_to: 'glennj@musc.edu, hundc@musc.edu, forney@musc.edu, crossoml@musc.edu, success@musc.edu'
+  queue_epic_load_error_to: 'hutsonk@musc.edu, forney@musc.edu, crossoml@musc.edu, success@musc.edu'
   queue_epic_edit_ldap_uids: ['jug2@musc.edu']
   use_google_calendar: true
   # insert sub-directory path to override the three header images + account sign-in image and override application.css
@@ -89,7 +92,10 @@ development:
 test:
   default_mail_to: nobody@nowhere.com
   admin_mail_to: catesa@musc.edu
-  feedback_mail_to: "glennj@musc.edu, hundc@musc.edu"
+  feedback_mail_to: "hutsonk@musc.edu"
+  contact_us_mail_to: "success@musc.edu"
+  contact_us_cc: "sparcrequest@gmail.com"
+  listserv_mail_to: "hewwe@musc.edu, hutsonk@musc.edu"
   new_user_cc: "amcates@gmail.com, no-reply@musc.edu"
   system_satisfaction_survey_cc: 'amcates@gmail.com, catesa@musc.edu'
   root_url: /
@@ -110,10 +116,10 @@ test:
   use_shibboleth_only: false # set to true to turn off database authentication sign in options
   use_ldap: true
   wkhtmltopdf_location: '/usr/local/bin/wkhtmltopdf'
-  approve_epic_rights_mail_to: "glennj@musc.edu, forney@musc.edu, crossoml@musc.edu"
+  approve_epic_rights_mail_to: "forney@musc.edu, crossoml@musc.edu"
   use_epic: true
   queue_epic: false
-  queue_epic_load_error_to: 'glennj@musc.edu, hundc@musc.edu, forney@musc.edu, crossoml@musc.edu, success@musc.edu'
+  queue_epic_load_error_to: 'hutsonk@musc.edu, forney@musc.edu, crossoml@musc.edu, success@musc.edu'
   queue_epic_edit_ldap_uids: ['jug2']
   use_google_calendar: true
   # insert sub-directory path to override the three header images + account sign-in image and override application.css

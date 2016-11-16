@@ -48,7 +48,8 @@ RSpec.describe 'dashboard/service_requests/protocol_service_request_show', type:
       service_request: service_request,
       user: jug2,
       admin: false,
-      permission_to_edit: permission_to_edit)
+      permission_to_edit: permission_to_edit,
+      show_view_ssr_back: false)
   end
 
   describe 'header' do

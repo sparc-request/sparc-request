@@ -284,10 +284,12 @@ class EpicInterface
   end
 
   def emit_cofc(xml, study)
-    if study.active?
-      cofc = study.study_type_answers.where(study_type_question_id: StudyTypeQuestion.where(study_type_question_group_id: StudyTypeQuestionGroup.where(active:true).pluck(:id)).where(order:1).first.id).first.answer == true ? 'YES_COFC' : 'NO_COFC'
-    else
-      cofc = study.study_type_answers.where(study_type_question_id: StudyTypeQuestion.where(study_type_question_group_id: StudyTypeQuestionGroup.where(active:false).pluck(:id)).where(order:2).first.id).first.answer == true ? 'YES_COFC' : 'NO_COFC'
+    if study.version_type == 3
+      cofc = study.study_type_answers.where(study_type_question_id: StudyTypeQuestion.where(study_type_question_group_id: StudyTypeQuestionGroup.where(version: 3).pluck(:id)).where(order:1).first.id).first.answer == true ? 'YES_COFC' : 'NO_COFC'
+    elsif study.version_type == 2
+      cofc = study.study_type_answers.where(study_type_question_id: StudyTypeQuestion.where(study_type_question_group_id: StudyTypeQuestionGroup.where(version: 2).pluck(:id)).where(order:1).first.id).first.answer == true ? 'YES_COFC' : 'NO_COFC'
+    elsif study.version_type == 1
+      cofc = study.study_type_answers.where(study_type_question_id: StudyTypeQuestion.where(study_type_question_group_id: StudyTypeQuestionGroup.where(version: 1).pluck(:id)).where(order:2).first.id).first.answer == true ? 'YES_COFC' : 'NO_COFC'
     end
 
     xml.subjectOf(typeCode: 'SUBJ') {

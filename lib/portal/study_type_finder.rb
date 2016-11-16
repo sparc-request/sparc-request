@@ -56,6 +56,7 @@ module Portal
               break
             end
           end
+
         elsif @study.version_type == 2
           # VERSION 2 STQ
           StudyTypeQuestion.joins(:study_type_question_group).where(study_type_question_groups: { version: 2 }).find_each do |stq|
@@ -69,9 +70,9 @@ module Portal
               break
             end
           end
-	        @study_type
 	      end
 	  	end
+      @study_type
 	  end
   end
 end

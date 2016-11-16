@@ -481,14 +481,13 @@ RSpec.describe EpicInterface do
 
       expect(node[0]).to be_equivalent_to(expected.root)
     end
-    describe 'emitting a subjectOf for an INACTIVE study type' do
+    describe 'emitting a subjectOf for an version 1 study type' do
 
       before :each do
         study.update_attributes(study_type_question_group_id: StudyTypeQuestionGroup.where(version: 1).pluck(:id).first)
       end
 
       it 'should have value = NO_COFC' do
-
 
         answers = [true, false, false, false, true, true]
         update_answers(1, answers)
@@ -513,7 +512,7 @@ RSpec.describe EpicInterface do
         'env' => 'http://www.w3.org/2003/05/soap-envelope',
         'rpe' => 'urn:ihe:qrph:rpe:2009',
         'hl7' => 'urn:hl7-org:v3')
-        expect(node[0]).to be_equivalent_to(expected.root)
+        expect(node[1]).to be_equivalent_to(expected.root)
       end
 
       it 'should have value = YES_COFC' do
@@ -547,7 +546,7 @@ RSpec.describe EpicInterface do
         'rpe' => 'urn:ihe:qrph:rpe:2009',
         'hl7' => 'urn:hl7-org:v3')
 
-        expect(node[0]).to be_equivalent_to(expected.root)
+        expect(node[1]).to be_equivalent_to(expected.root)
       end
 
       it 'should return a study_type of 1' do
@@ -603,7 +602,7 @@ RSpec.describe EpicInterface do
         'env' => 'http://www.w3.org/2003/05/soap-envelope',
         'rpe' => 'urn:ihe:qrph:rpe:2009',
         'hl7' => 'urn:hl7-org:v3')
-        binding.pry
+
         expect(node[0]).to be_equivalent_to(expected.root)
       end
 
@@ -666,7 +665,7 @@ RSpec.describe EpicInterface do
       end
     end
 
-    describe 'emitting a subjectOf for an ACTIVE study type' do
+    describe 'emitting a subjectOf for an version 2 study type' do
 
       before :each do
         study.update_attributes(study_type_question_group_id: StudyTypeQuestionGroup.where(version: 2).pluck(:id).first)
@@ -930,6 +929,210 @@ RSpec.describe EpicInterface do
     end
 
   end # send_study_creation
+
+  describe 'emitting a subjectOf for an version 3 study type' do
+
+    before :each do
+      study.update_attributes(study_type_question_group_id: StudyTypeQuestionGroup.where(version: 3).pluck(:id).first)
+    end
+
+    it 'should return YES_COFC' do
+
+      answers = [true, nil, nil, nil, nil, nil]
+      update_answers(3, answers)
+
+      epic_interface.send_study_creation(study)
+
+      xml = <<-END
+        <subjectOf typeCode="SUBJ"
+                  xmlns='urn:hl7-org:v3'
+                  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
+          <studyCharacteristic classCode="OBS" moodCode="EVN">
+            <code code="RGCL3"/>
+            <value value="YES_COFC"/>
+          </studyCharacteristic>
+        </subjectOf>
+      END
+
+      expected = Nokogiri::XML(xml)
+
+      node = epic_received[0].xpath(
+      '//env:Body/rpe:RetrieveProtocolDefResponse/rpe:protocolDef/hl7:plannedStudy/hl7:subjectOf',
+      'env' => 'http://www.w3.org/2003/05/soap-envelope',
+      'rpe' => 'urn:ihe:qrph:rpe:2009',
+      'hl7' => 'urn:hl7-org:v3')
+
+      expect(node[1]).to be_equivalent_to(expected.root)
+
+    end
+
+    it 'should return NO_COFC' do
+
+      answers = [false, true, false, false, false, false]
+      update_answers(2, answers)
+
+      epic_interface.send_study_creation(study)
+
+      xml = <<-END
+        <subjectOf typeCode="SUBJ"
+                  xmlns='urn:hl7-org:v3'
+                  xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
+          <studyCharacteristic classCode="OBS" moodCode="EVN">
+            <code code="RGCL3"/>
+            <value value="NO_COFC"/>
+          </studyCharacteristic>
+        </subjectOf>
+      END
+
+      expected = Nokogiri::XML(xml)
+
+      node = epic_received[0].xpath(
+      '//env:Body/rpe:RetrieveProtocolDefResponse/rpe:protocolDef/hl7:plannedStudy/hl7:subjectOf',
+      'env' => 'http://www.w3.org/2003/05/soap-envelope',
+      'rpe' => 'urn:ihe:qrph:rpe:2009',
+      'hl7' => 'urn:hl7-org:v3')
+
+      expect(node[1]).to be_equivalent_to(expected.root)
+    end
+
+    it 'return a study type of 1' do
+      answers = [true, nil, nil, nil, nil]
+      update_answers(3, answers)
+
+      epic_interface.send_study_creation(study)
+
+      xml = <<-END
+        <subjectOf typeCode="SUBJ"
+                    xmlns='urn:hl7-org:v3'
+                    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
+          <studyCharacteristic classCode="OBS" moodCode="EVN">
+            <code code="STUDYTYPE" />
+            <value value="1" />
+          </studyCharacteristic>
+        </subjectOf>
+      END
+
+      expected = Nokogiri::XML(xml)
+
+      node = epic_received[0].xpath(
+      '//env:Body/rpe:RetrieveProtocolDefResponse/rpe:protocolDef/hl7:plannedStudy/hl7:subjectOf',
+      'env' => 'http://www.w3.org/2003/05/soap-envelope',
+      'rpe' => 'urn:ihe:qrph:rpe:2009',
+      'hl7' => 'urn:hl7-org:v3')
+
+      expect(node[0]).to be_equivalent_to(expected.root)
+    end
+
+    it 'return a study type of 3' do
+
+      answers = [false, true, false, false, false]
+      update_answers(3, answers)
+
+      epic_interface.send_study_creation(study)
+
+      xml = <<-END
+        <subjectOf typeCode="SUBJ"
+                    xmlns='urn:hl7-org:v3'
+                    xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
+          <studyCharacteristic classCode="OBS" moodCode="EVN">
+            <code code="STUDYTYPE" />
+            <value value="3" />
+          </studyCharacteristic>
+        </subjectOf>
+      END
+
+      expected = Nokogiri::XML(xml)
+
+      node = epic_received[0].xpath(
+      '//env:Body/rpe:RetrieveProtocolDefResponse/rpe:protocolDef/hl7:plannedStudy/hl7:subjectOf',
+      'env' => 'http://www.w3.org/2003/05/soap-envelope',
+      'rpe' => 'urn:ihe:qrph:rpe:2009',
+      'hl7' => 'urn:hl7-org:v3')
+
+      expect(node[0]).to be_equivalent_to(expected.root)
+    end
+
+    it 'should emit a subjectOf for the category grouper GOV if its funding source is not industry' do
+      study.update_attributes(funding_source: 'college')
+
+      epic_interface.send_study_creation(study)
+
+      xml = <<-END
+        <subjectOf typeCode="SUBJ"
+                   xmlns='urn:hl7-org:v3'
+                   xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
+          <studyCharacteristic classCode="OBS" moodCode="EVN">
+            <code code="RGCL1" />
+            <value value="GOV" />
+          </studyCharacteristic>
+        </subjectOf>
+      END
+
+      expected = Nokogiri::XML(xml)
+
+      node = epic_received[0].xpath(
+          '//env:Body/rpe:RetrieveProtocolDefResponse/rpe:protocolDef/hl7:plannedStudy/hl7:subjectOf',
+          'env' => 'http://www.w3.org/2003/05/soap-envelope',
+          'rpe' => 'urn:ihe:qrph:rpe:2009',
+          'hl7' => 'urn:hl7-org:v3')
+
+      expect(node[0]).to be_equivalent_to(expected.root)
+    end
+
+    it 'should emit a subjectOf for the category grouper CORP if its funding source is industry' do
+      study.update_attributes(funding_source: 'industry')
+
+      epic_interface.send_study_creation(study)
+
+      xml = <<-END
+        <subjectOf typeCode="SUBJ"
+                   xmlns='urn:hl7-org:v3'
+                   xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
+          <studyCharacteristic classCode="OBS" moodCode="EVN">
+            <code code="RGCL1" />
+            <value value="CORP" />
+          </studyCharacteristic>
+        </subjectOf>
+      END
+
+      expected = Nokogiri::XML(xml)
+
+      node = epic_received[0].xpath(
+          '//env:Body/rpe:RetrieveProtocolDefResponse/rpe:protocolDef/hl7:plannedStudy/hl7:subjectOf',
+          'env' => 'http://www.w3.org/2003/05/soap-envelope',
+          'rpe' => 'urn:ihe:qrph:rpe:2009',
+          'hl7' => 'urn:hl7-org:v3')
+
+      expect(node[0]).to be_equivalent_to(expected.root)
+    end
+
+    it 'should emit a subjectOf for the category grouper GOV if its potential funding source is other' do
+      study.update_attributes(potential_funding_source: 'other')
+
+      epic_interface.send_study_creation(study)
+
+      xml = <<-END
+        <subjectOf typeCode="SUBJ"
+                   xmlns='urn:hl7-org:v3'
+                   xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
+          <studyCharacteristic classCode="OBS" moodCode="EVN">
+            <code code="RGCL1" />
+            <value value="GOV" />
+          </studyCharacteristic>
+        </subjectOf>
+      END
+
+      expected = Nokogiri::XML(xml)
+
+      node = epic_received[0].xpath(
+          '//env:Body/rpe:RetrieveProtocolDefResponse/rpe:protocolDef/hl7:plannedStudy/hl7:subjectOf',
+          'env' => 'http://www.w3.org/2003/05/soap-envelope',
+          'rpe' => 'urn:ihe:qrph:rpe:2009',
+          'hl7' => 'urn:hl7-org:v3')
+
+      expect(node[0]).to be_equivalent_to(expected.root)
+    end
+  end
 
   describe 'send_billing_calendar' do
     before :each do
@@ -1252,14 +1455,20 @@ RSpec.describe EpicInterface do
   end
 
   def update_answers (version, answer_array)
-    if version == 2
+    if version == 3
+      answer1_version_3.update_attributes(answer: answer_array[0])
+      answer2_version_3.update_attributes(answer: answer_array[1])
+      answer3_version_3.update_attributes(answer: answer_array[2])
+      answer4_version_3.update_attributes(answer: answer_array[3])
+      answer5_version_3.update_attributes(answer: answer_array[4])
+    elsif version == 2
       answer1_version_2.update_attributes(answer: answer_array[0])
       answer2_version_2.update_attributes(answer: answer_array[1])
       answer3_version_2.update_attributes(answer: answer_array[2])
       answer4_version_2.update_attributes(answer: answer_array[3])
       answer5_version_2.update_attributes(answer: answer_array[4])
       answer6_version_2.update_attributes(answer: answer_array[5])
-    else
+    elsif version == 1
       answer1_version_1.update_attributes(answer: answer_array[0])
       answer2_version_1.update_attributes(answer: answer_array[1])
       answer3_version_1.update_attributes(answer: answer_array[2])

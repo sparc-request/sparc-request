@@ -109,7 +109,7 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
   end
 
   def update_professional_organization_form_items
-    @professional_organization = ProfessionalOrganization.find(params[:last_selected_id])
+    @professional_organization = ProfessionalOrganization.find_by_id(params[:last_selected_id])
     respond_to do |format|
       format.js
     end

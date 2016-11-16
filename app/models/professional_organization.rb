@@ -24,7 +24,7 @@ class ProfessionalOrganization < ActiveRecord::Base
     ProfessionalOrganization.where(parent_id: id)
   end
 
-  def siblings
+  def self_and_siblings
     ProfessionalOrganization.where(parent_id: parent_id)
   end
 end

@@ -32,18 +32,19 @@ module AssociatedUsersHelper
       class: %w(row form-group) + [classes])
   end
 
+  # TODO document this
   def professional_organization_state(professional_organization)
     if professional_organization
       {
-        prev_selected: professional_organization.parents,
-        last_selected: professional_organization,
-        not_selected: professional_organization.children
+        dont_submit_selected: professional_organization.parents + (professional_organization.children.empty? ? [] : [professional_organization]),
+        dont_submit_unselected: professional_organization.children,
+        submit_selected: professional_organization.children.empty? ? professional_organization : nil
       }
     else
       {
-        prev_selected: [],
-        last_selected: nil,
-        not_selected: ProfessionalOrganization.where(parent_id: nil)
+        dont_submit_selected: [],
+        dont_submit_unselected: ProfessionalOrganization.where(parent_id: nil),
+        submit_selected: nil
       }
     end
   end

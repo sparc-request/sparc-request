@@ -22,7 +22,7 @@ class Dashboard::ProtocolFiltersController < Dashboard::BaseController
   respond_to :html, :json
 
   def new
-    @protocol_filter = @user.protocol_filters.new(params[:filterrific])
+    @protocol_filter = @user.protocol_filters.new(params[:filterrific].except(:sorted_by))
   end
 
   def create

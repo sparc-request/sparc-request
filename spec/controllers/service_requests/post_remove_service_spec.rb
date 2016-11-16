@@ -275,5 +275,133 @@ RSpec.describe ServiceRequestsController, type: :controller do
 
       expect(controller).to respond_with(:ok)
     end
+    context 'SSR has been previously submitted' do
+
+      before :each do
+        @org      = create(:organization, process_ssrs: true)
+        @org1     = create(:organization, process_ssrs: true)
+        @service  = create(:service, organization: @org)
+        @service1 = create(:service, organization: @org1)
+        protocol = create(:study_without_validations, primary_pi: logged_in_user)
+        @sr       = create(:service_request_without_validations, protocol: protocol)
+        @ssr      = create(:sub_service_request_without_validations, organization: @org, service_request_id: @sr.id, submitted_at: Time.now.yesterday)
+        @ssr1     = create(:sub_service_request_without_validations, organization: @org, service_request_id: @sr.id, submitted_at: Time.now.yesterday)
+        @li       = create(:line_item, service_request: @sr, sub_service_request: @ssr, service: @service1)
+        @li_1     = create(:line_item, service_request: @sr, sub_service_request: @ssr, service: @service)
+                    create(:line_item, service_request: @sr, sub_service_request: @ssr1, service: @service1)
+                    create(:line_item, service_request: @sr, sub_service_request: @ssr1, service: @service)
+                   create(:service_provider, identity: logged_in_user, organization: @org)
+        @li_id = @li.id
+      end
+
+      context 'removed all services (line_item1 & line_item2) for SSR' do
+ 
+        it 'should send notifications to the service provider' do
+          @li_1.destroy
+          session[:service_request_id] = @sr.id
+          session[:identity_id]        = logged_in_user.id
+
+          allow(Notifier).to receive(:notify_service_provider) do
+            mailer = double('mail') 
+            expect(mailer).to receive(:deliver_now)
+            mailer
+          end
+
+          post :remove_service, {
+                 :id            => @sr.id,
+                 :service_id    => @service.id,
+                 :line_item_id  => @li_id,
+                 :format        => :js,
+               }.with_indifferent_access
+
+          expect(Notifier).to have_received(:notify_service_provider)
+        end
+      end
+
+      context 'removed one of two services for SSR' do
+ 
+        it 'should not send notifications to the service provider' do
+          # expect(controller).not_to receive(:send_ssr_service_provider_notifications)
+          session[:service_request_id] = @sr.id
+          session[:identity_id]        = logged_in_user.id
+
+          allow(Notifier).to receive(:notify_service_provider) do
+            mailer = double('mail') 
+            expect(mailer).to receive(:deliver_now)
+            mailer
+          end
+
+          post :remove_service, {
+                 :id            => @sr.id,
+                 :service_id    => @service.id,
+                 :line_item_id  => @li_id,
+                 :format        => :js,
+               }.with_indifferent_access
+          expect(Notifier).not_to have_received(:notify_service_provider)
+        end
+
+        it 'should not delete SSR (ssr1)' do
+          session[:service_request_id] = @sr.id
+          session[:identity_id]        = logged_in_user.id
+
+          post :remove_service, {
+                 :id            => @sr.id,
+                 :service_id    => @service.id,
+                 :line_item_id  => @li_id,
+                 :format        => :js,
+               }.with_indifferent_access
+          ssrs = [@ssr, @ssr1]
+          expect(@sr.sub_service_requests).to eq(ssrs)
+        end
+      end
+    end
+
+    context 'SSR has one service and it is removed' do
+      before :each do
+        @org      = create(:organization, process_ssrs: true)
+        @service  = create(:service, organization: @org)
+        @service1 = create(:service, organization: @org1)
+        protocol = create(:study_without_validations, primary_pi: logged_in_user)
+        @sr       = create(:service_request_without_validations, protocol: protocol)
+        @ssr      = create(:sub_service_request_without_validations, organization: @org, service_request_id: @sr.id, submitted_at: Time.now.yesterday)
+        @li       = create(:line_item, service_request: @sr, sub_service_request: @ssr, service: @service)
+                   create(:service_provider, identity: logged_in_user, organization: @org)
+        @li_id = @li.id
+      end
+
+      it 'should send notifications to the service_provider' do
+
+        session[:service_request_id] = @sr.id
+        session[:identity_id]        = logged_in_user.id
+
+        allow(Notifier).to receive(:notify_service_provider) do
+          mailer = double('mail') 
+          expect(mailer).to receive(:deliver_now)
+          mailer
+        end
+
+        post :remove_service, {
+               :id            => @sr.id,
+               :service_id    => @service.id,
+               :line_item_id  => @li_id,
+               :format        => :js,
+             }.with_indifferent_access
+
+        expect(Notifier).to have_received(:notify_service_provider)
+      end
+
+      it 'should delete SSR' do
+        session[:service_request_id] = @sr.id
+        session[:identity_id]        = logged_in_user.id
+
+        post :remove_service, {
+               :id            => @sr.id,
+               :service_id    => @service.id,
+               :line_item_id  => @li_id,
+               :format        => :js,
+             }.with_indifferent_access
+        expect(@sr.sub_service_requests).to eq([])
+      end
+    end
   end
 end

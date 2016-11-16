@@ -56,20 +56,24 @@ class Notifier < ActionMailer::Base
     mail(:to => email, :from => NO_REPLY_FROM, :subject => subject)
   end
 
-  def notify_admin(service_request, submission_email_address, xls, user_current, ssr)
-    @notes = service_request.notes
-    @status = service_request.status
+  def notify_admin(submission_email_address, xls, user_current, ssr, audit_report=nil)
+    @ssr_deleted = false
+    @notes = ssr.service_request.notes
+
+    @status = audit_report.present? ? 'request_amendment' : ssr.service_request.status
+
     @role = 'none'
     @full_name = submission_email_address
 
-    @protocol = service_request.protocol
-    @service_request = service_request
+    @protocol = ssr.service_request.protocol
+    @service_request = ssr.service_request
     @service_requester_id = @service_request.sub_service_requests.first.service_requester_id
     @ssrs_to_be_displayed = [ssr]
 
     @portal_link = DASHBOARD_LINK + "/protocols/#{@protocol.id}"
     @portal_text = "Administrators/Service Providers, Click Here"
 
+    @audit_report = audit_report
     attachments["service_request_#{@service_request.protocol.id}.xlsx"] = xls
 
     email = Rails.env == 'production' ?  submission_email_address : DEFAULT_MAIL_TO
@@ -78,11 +82,13 @@ class Notifier < ActionMailer::Base
     mail(:to => email, :from => NO_REPLY_FROM, :subject => subject)
   end
 
-  def notify_service_provider(service_provider, service_request, attachments_to_add, user_current, ssr_id, audit_report=nil, ssr_destroyed=false)
+  def notify_service_provider(service_provider, service_request, attachments_to_add, user_current, ssr_id, audit_report=nil, ssr_destroyed=false, request_amendment=false)
     @notes = service_request.notes
 
     if ssr_destroyed
       @status = 'ssr_destroyed'
+    elsif request_amendment
+      @status = 'request_amendment'
     else
       @status = service_request.status
     end

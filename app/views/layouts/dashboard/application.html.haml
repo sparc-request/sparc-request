@@ -39,8 +39,8 @@
     #container
       #header
         = render 'layouts/header_logos'
-        %input#current_user_id{type: 'hidden', value: @user.try(:id)}
-      = render 'layouts/dashboard/dashboard_header', user: @user
+        %input#current_user_id{ type: 'hidden', value: @user.try(:id) }
+      = render 'layouts/dashboard/navbar', user: @user
       .flash
         = render "shared/flash"
       #inner-content.row

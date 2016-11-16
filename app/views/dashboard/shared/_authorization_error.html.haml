@@ -40,7 +40,7 @@
       #header
         = render 'layouts/dashboard/header_logos', in_dashboard: true
         %input#current_user_id{type: 'hidden', value: @user.try(:id)}
-      = render 'layouts/dashboard/dashboard_header', user: @user
+      = render 'layouts/dashboard/navbar', user: @user
       .flash
         = render "shared/flash"
       #inner-content.row

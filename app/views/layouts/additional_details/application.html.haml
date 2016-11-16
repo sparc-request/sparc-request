@@ -17,13 +17,36 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-#header
-  #org-logo.col-md-4.hidden-sm.hidden-xs
-    %a{:href => HEADER_LINK_1}
-      = image_tag "/assets/#{CUSTOM_ASSET_PATH}org_logo_197x57.png", :alt => 'org_logo'
-  #department-title.col-md-4
-    %a{:href => HEADER_LINK_2}
-      = image_tag "/assets/#{CUSTOM_ASSET_PATH}department_name_460_by_60.gif",class: 'header_logo_2', :alt => "department_logo"
-  #institution-logo.col-md-4.hidden-xs
-    %a{:href => HEADER_LINK_3, :target => '_blank'}
-      = image_tag "/assets/#{CUSTOM_ASSET_PATH}institution_logo_136x86.gif", :alt => 'institution_logo'
+
+!!!
+%html
+  %head
+    %title
+      = t(:additional_details)[:header]
+    = stylesheet_link_tag "additional_details/application"
+    = javascript_include_tag 'additional_details/application'
+    /[if IE]
+      = stylesheet_link_tag 'ie'
+    /[if gt IE 7]
+      = stylesheet_link_tag 'ie8_plus'
+    /[if lt IE 8]
+      = javascript_include_tag "ie7_warning"
+    = csrf_meta_tags
+    :javascript
+      window.I18n = #{current_translations.to_json.html_safe};
+
+  %body#body
+    #container
+      #header
+        = render 'layouts/header_logos'
+        %input#current_user_id{ type: 'hidden', value: @user.try(:id) }
+      = render 'layouts/navbar'
+      .flash
+        = render "shared/flash"
+      #inner-content.row
+        = yield
+  %footer
+    = render 'layouts/footer'
+    = render 'shared/piwik_tracking' if Rails.env == 'production'
+    = render 'shared/ie7_modal'
+    = render 'shared/modal'

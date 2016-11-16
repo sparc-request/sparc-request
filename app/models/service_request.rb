@@ -444,7 +444,7 @@ class ServiceRequest < ActiveRecord::Base
 
   # Make sure that all the sub service requests have an ssr id
   def ensure_ssr_ids
-    next_ssr_id = self.protocol ? self.protocol.next_ssr_id : 1
+    next_ssr_id = self.protocol && self.protocol.next_ssr_id.present? ? self.protocol.next_ssr_id : 1
 
     self.sub_service_requests.each do |ssr|
       unless ssr.ssr_id

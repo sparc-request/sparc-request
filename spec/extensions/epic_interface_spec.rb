@@ -86,7 +86,7 @@ RSpec.describe EpicInterface do
   let!(:study) {
     human_subjects_info = build(:human_subjects_info, pro_number: nil, hr_number: nil)
     investigational_products_info = build(:investigational_products_info, inv_device_number: nil)
-    study = build(:study, human_subjects_info: human_subjects_info, investigational_products_info: investigational_products_info, study_type_question_group_id: active_study_type_question_group.id)
+    study = build(:study, human_subjects_info: human_subjects_info, investigational_products_info: investigational_products_info, study_type_question_group_id: study_type_question_group_version_3.id)
     study.save(validate: false)
     study
   }
@@ -308,7 +308,7 @@ RSpec.describe EpicInterface do
     end
 
     it 'should not emit a subjectOf for a Billing Business Manager without Epic Access Rights' do
-      study.update_attributes(study_type_question_group_id: StudyTypeQuestionGroup.where(active:true).pluck(:id).first)
+      study.update_attributes(study_type_question_group_id: StudyTypeQuestionGroup.where(version: 2).pluck(:id).first)
       identity = create(
           :identity,
           ldap_uid: 'happyhappyjoyjoy@musc.edu')
@@ -484,14 +484,14 @@ RSpec.describe EpicInterface do
     describe 'emitting a subjectOf for an INACTIVE study type' do
 
       before :each do
-        study.update_attributes(study_type_question_group_id: StudyTypeQuestionGroup.where(active:false).pluck(:id).first)
+        study.update_attributes(study_type_question_group_id: StudyTypeQuestionGroup.where(version: 1).pluck(:id).first)
       end
 
       it 'should have value = NO_COFC' do
 
 
         answers = [true, false, false, false, true, true]
-        update_answers(false, answers)
+        update_answers(1, answers)
 
         epic_interface.send_study_creation(study)
 
@@ -513,15 +513,14 @@ RSpec.describe EpicInterface do
         'env' => 'http://www.w3.org/2003/05/soap-envelope',
         'rpe' => 'urn:ihe:qrph:rpe:2009',
         'hl7' => 'urn:hl7-org:v3')
-
-        expect(node[1]).to be_equivalent_to(expected.root)
+        expect(node[0]).to be_equivalent_to(expected.root)
       end
 
       it 'should have value = YES_COFC' do
 
         answers = [true, true, nil, nil, nil, nil]
-        update_answers(false, answers)
-        question_id = [ stq_higher_level_of_privacy.id, stq_certificate_of_conf.id, stq_access_study_info.id, stq_epic_inbasket.id, stq_research_active.id, stq_restrict_sending.id]
+        update_answers(1, answers)
+        question_id = [ stq_higher_level_of_privacy_version_1.id, stq_certificate_of_conf_version_1.id, stq_access_study_info_version_1.id, stq_epic_inbasket_version_1.id, stq_research_active_version_1.id, stq_restrict_sending_version_1.id]
 
         answers.each_with_index do |ans, index|
           StudyTypeAnswer.create(protocol_id: study.id, study_type_question_id: question_id[index], answer: ans)
@@ -548,12 +547,12 @@ RSpec.describe EpicInterface do
         'rpe' => 'urn:ihe:qrph:rpe:2009',
         'hl7' => 'urn:hl7-org:v3')
 
-        expect(node[1]).to be_equivalent_to(expected.root)
+        expect(node[0]).to be_equivalent_to(expected.root)
       end
 
       it 'should return a study_type of 1' do
         answers = [true, true, nil, nil, nil, nil]
-        update_answers(false, answers)
+        update_answers(1, answers)
 
         epic_interface.send_study_creation(study)
 
@@ -582,7 +581,7 @@ RSpec.describe EpicInterface do
       it 'should return a study_type of 2' do
 
         answers = [true, false, true, nil, nil, nil]
-        update_answers(false, answers)
+        update_answers(1, answers)
 
         epic_interface.send_study_creation(study)
 
@@ -604,14 +603,14 @@ RSpec.describe EpicInterface do
         'env' => 'http://www.w3.org/2003/05/soap-envelope',
         'rpe' => 'urn:ihe:qrph:rpe:2009',
         'hl7' => 'urn:hl7-org:v3')
-
+        binding.pry
         expect(node[0]).to be_equivalent_to(expected.root)
       end
 
       it 'should return a study_type of 5' do
 
         answers = [true, false, false, false, true, false]
-        update_answers(false, answers)
+        update_answers(1, answers)
 
         epic_interface.send_study_creation(study)
 
@@ -640,7 +639,7 @@ RSpec.describe EpicInterface do
       it 'should return a study_type of 15' do
 
         answers = [false, nil, nil, true, true, true]
-        update_answers(false, answers)
+        update_answers(1, answers)
 
         epic_interface.send_study_creation(study)
 
@@ -670,13 +669,13 @@ RSpec.describe EpicInterface do
     describe 'emitting a subjectOf for an ACTIVE study type' do
 
       before :each do
-        study.update_attributes(study_type_question_group_id: StudyTypeQuestionGroup.where(active:true).pluck(:id).first)
+        study.update_attributes(study_type_question_group_id: StudyTypeQuestionGroup.where(version: 2).pluck(:id).first)
       end
 
       it 'should return YES_COFC' do
 
         answers = [true, true, nil, nil, nil, nil]
-        update_answers(true, answers)
+        update_answers(2, answers)
 
         epic_interface.send_study_creation(study)
 
@@ -706,7 +705,7 @@ RSpec.describe EpicInterface do
        it 'should return NO_COFC' do
 
         answers = [false, true, false, false, false, false]
-        update_answers(true, answers)
+        update_answers(2, answers)
 
         epic_interface.send_study_creation(study)
 
@@ -734,7 +733,7 @@ RSpec.describe EpicInterface do
 
       it 'return a study type of 1' do
         answers = [true, nil, nil, nil, nil, nil]
-        update_answers(true, answers)
+        update_answers(2, answers)
 
         epic_interface.send_study_creation(study)
 
@@ -763,7 +762,7 @@ RSpec.describe EpicInterface do
       it 'return a study type of 2' do
 
         answers = [false, true, true, nil, nil, nil]
-        update_answers(true, answers)
+        update_answers(2, answers)
 
         epic_interface.send_study_creation(study)
 
@@ -792,7 +791,7 @@ RSpec.describe EpicInterface do
       it 'return a study type of 5' do
 
         answers = [false, true, false, false, true, false]
-        update_answers(true, answers)
+        update_answers(2, answers)
 
         epic_interface.send_study_creation(study)
 
@@ -821,7 +820,7 @@ RSpec.describe EpicInterface do
       it 'return a study type of 11' do
 
         answers = [false, false, nil, false, true, true]
-        update_answers(true, answers)
+        update_answers(2, answers)
 
         epic_interface.send_study_creation(study)
 
@@ -1252,21 +1251,21 @@ RSpec.describe EpicInterface do
     # TODO: add tests for the full study message
   end
 
-  def update_answers (active, answer_array)
-    if active == true
-      active_answer1.update_attributes(answer: answer_array[0])
-      active_answer2.update_attributes(answer: answer_array[1])
-      active_answer3.update_attributes(answer: answer_array[2])
-      active_answer4.update_attributes(answer: answer_array[3])
-      active_answer5.update_attributes(answer: answer_array[4])
-      active_answer6.update_attributes(answer: answer_array[5])
+  def update_answers (version, answer_array)
+    if version == 2
+      answer1_version_2.update_attributes(answer: answer_array[0])
+      answer2_version_2.update_attributes(answer: answer_array[1])
+      answer3_version_2.update_attributes(answer: answer_array[2])
+      answer4_version_2.update_attributes(answer: answer_array[3])
+      answer5_version_2.update_attributes(answer: answer_array[4])
+      answer6_version_2.update_attributes(answer: answer_array[5])
     else
-      answer1.update_attributes(answer: answer_array[0])
-      answer2.update_attributes(answer: answer_array[1])
-      answer3.update_attributes(answer: answer_array[2])
-      answer4.update_attributes(answer: answer_array[3])
-      answer5.update_attributes(answer: answer_array[4])
-      answer6.update_attributes(answer: answer_array[5])
+      answer1_version_1.update_attributes(answer: answer_array[0])
+      answer2_version_1.update_attributes(answer: answer_array[1])
+      answer3_version_1.update_attributes(answer: answer_array[2])
+      answer4_version_1.update_attributes(answer: answer_array[3])
+      answer5_version_1.update_attributes(answer: answer_array[4])
+      answer6_version_1.update_attributes(answer: answer_array[5])
     end
   end
 end

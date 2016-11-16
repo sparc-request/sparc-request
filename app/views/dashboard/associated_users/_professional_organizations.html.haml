@@ -1,5 +1,4 @@
 - state = professional_organization_state(professional_organization)
-- puts state.inspect
 .professional-organization-form
   = fields_for(:project_role) do |pr_form|
     = pr_form.fields_for(:identity_attributes) do |identity_form|

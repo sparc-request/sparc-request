@@ -1,7 +1,7 @@
 task :initialize_professional_organizations => :environment do
-ProfessionalOrganization.create(name: 'MUHA', org_type: 'entity')
-ProfessionalOrganization.create(name: 'MUSCP', org_type: 'entity')
-musc = ProfessionalOrganization.create(name: 'MUSC', org_type: 'entity')
+ProfessionalOrganization.create(name: 'MUHA', org_type: 'institution')
+ProfessionalOrganization.create(name: 'MUSCP', org_type: 'institution')
+musc = ProfessionalOrganization.create(name: 'MUSC', org_type: 'institution')
 
 College_of_Dental_Medicine = ProfessionalOrganization.create(name: "College of Dental Medicine", org_type: 'college', parent_id: musc.id)
 College_of_Graduate_Studies = ProfessionalOrganization.create(name: "College of Graduate Studies", org_type: 'college', parent_id: musc.id)

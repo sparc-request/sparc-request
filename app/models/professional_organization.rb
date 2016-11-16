@@ -1,6 +1,6 @@
 class ProfessionalOrganization < ActiveRecord::Base
   # In order from most general to least.
-  ORG_TYPES = ['entity', 'college', 'department', 'division'].freeze
+  ORG_TYPES = ['institution', 'college', 'department', 'division'].freeze
   audited
 
   attr_accessible :name

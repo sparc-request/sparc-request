@@ -128,6 +128,7 @@ GEM
       capybara (>= 2.3.0, < 2.6.0)
       json
     choice (0.2.0)
+    chronic (0.10.2)
     climate_control (0.0.3)
       activesupport (>= 3.0)
     cocaine (0.5.8)
@@ -495,6 +496,8 @@ GEM
       addressable (>= 2.3.6)
       crack (>= 0.3.2)
       hashdiff
+    whenever (0.9.7)
+      chronic (>= 0.6.3)
     will_paginate (3.0.7)
     will_paginate-bootstrap (1.0.1)
       will_paginate (>= 3.0.3)
@@ -601,6 +604,7 @@ DEPENDENCIES
   twitter-typeahead-rails
   uglifier (>= 1.0.3)
   webmock
+  whenever
   will_paginate
   will_paginate-bootstrap
   x-editable-rails

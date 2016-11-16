@@ -65,6 +65,7 @@ gem 'surveyor', :git => 'https://github.com/sparc-request/surveyor.git', branch:
 gem 'therubyracer', '0.10.2', :platforms => :ruby
 gem 'twitter-typeahead-rails'
 gem 'uglifier', '>= 1.0.3'
+gem 'whenever', require: false
 gem 'will_paginate'
 gem 'will_paginate-bootstrap'
 gem 'x-editable-rails'

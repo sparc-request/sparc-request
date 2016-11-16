@@ -21,15 +21,18 @@
 module AssociatedUsersHelper
   # TODO document this
   def user_form_group(form: nil, name:, classes: [], label: nil)
-    name_sym = name.to_sym
+    form_group_classes = %w(row form-group) + [classes]
+    label_class = 'col-lg-3 control-label'
+    label_text = label || t(:authorized_users)[:form_fields][name.to_sym]
+    label = if form
+              form.label(name, label_text, class: label_class)
+            else
+              content_tag(:label, label_text, class: label_class)
+            end
+    input_container = content_tag(:div, class: 'col-lg-9') { yield }
     content_tag(:div,
-      form ?
-        (form.label(name, label || t(:authorized_users)[:form_fields][name_sym], class: 'col-lg-3 control-label') +
-          content_tag(:div, class: 'col-lg-9') { yield })
-      :
-        (content_tag(:label, label || t(:authorized_users)[:form_fields][name_sym], class: 'col-lg-3 control-label') +
-          content_tag(:div, class: 'col-lg-9') { yield }),
-      class: %w(row form-group) + [classes])
+                label + input_container,
+                class: form_group_classes)
   end
 
   # TODO document this
@@ -46,6 +49,28 @@ module AssociatedUsersHelper
         dont_submit_unselected: ProfessionalOrganization.where(parent_id: nil),
         submit_selected: nil
       }
+    end
+  end
+
+  def professional_organization_dropdown(form: nil, choices_from:)
+    select_class = 'form-control selectpicker'
+    prompt = t(:authorized_users)[:form_fields][:select_one]
+    options = if choices_from.kind_of?(ProfessionalOrganization)
+                options_from_collection_for_select(choices_from.self_and_siblings, 'id', 'name', choices_from.id)
+              else
+                options_from_collection_for_select(choices_from, 'id', 'name')
+              end
+
+    if form
+      form.select(:professional_organization_id,
+                  options,
+                  { include_blank: prompt },
+                  class: select_class)
+    else
+      select_tag(nil,
+                 options,
+                 include_blank: prompt,
+                 class: select_class)
     end
   end
 

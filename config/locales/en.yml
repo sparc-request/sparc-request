@@ -1271,7 +1271,7 @@ en:
     phone: "Phone:"
     rights:
       header: "User Rights:"
-      none: 'Study/Project Member Only'
+      none: 'Member Only'
       view: 'View Rights'
       request: 'Request/Approve Services'
       approve: 'Authorize/Change Study Charges'

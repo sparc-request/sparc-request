@@ -19,6 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 module AssociatedUsersHelper
+  # TODO document this
   def user_form_group(form: nil, name:, classes: [], label: nil)
     name_sym = name.to_sym
     content_tag(:div,

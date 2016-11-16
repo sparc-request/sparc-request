@@ -17,7 +17,7 @@
         - if state[:last_selected]
           = user_form_group(name: state[:last_selected].org_type, label: org_type_label(state[:last_selected]), form: identity_form) do
             = identity_form.select state[:last_selected].org_type, options_from_collection_for_select(state[:last_selected].siblings, 'id', 'name', state[:last_selected].id), { include_blank: t(:authorized_users)[:form_fields][:select_one] }, class: 'form-control selectpicker'
-        = user_form_group(name: state[:not_selected].first.org_type, label: org_type_label(state[:not_selected].last.first)) do
+        = user_form_group(name: state[:not_selected].first.org_type, label: org_type_label(state[:not_selected].first)) do
           = select_tag(state[:not_selected].first.org_type,
                        options_from_collection_for_select(state[:not_selected], 'id', 'name'),
                        include_blank: t(:authorized_users)[:form_fields][:select_one],

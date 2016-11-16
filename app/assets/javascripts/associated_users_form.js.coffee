@@ -88,7 +88,7 @@ $(document).ready ->
       # cancel
       $(this).closest('.modal').modal('hide')
 
-  $(document).on 'changed.bs.select', '.professional-organization-form-group select', ->
+  $(document).on 'changed.bs.select', '.professional-organization-form select', ->
     last_selected = $(this).val()
     $.ajax
       type: 'get'

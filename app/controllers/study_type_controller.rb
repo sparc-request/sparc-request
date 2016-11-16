@@ -48,7 +48,7 @@ class StudyTypeController < ApplicationController
     params.delete('controller')
     params.delete('action')
     @study_type_answers = []
-    if params['1'] == 'true'
+    if params['ans1'] == 'true'
       params.values.each do |value|
         @study_type_answers = [true, nil, nil, nil, nil]
       end

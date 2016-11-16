@@ -29,7 +29,7 @@
     - if protocol.has_non_first_draft_ssrs? 
       - protocol.service_requests.each do |sr|
         - if sr.has_non_first_draft_ssrs?
-          = render 'dashboard/service_requests/protocol_service_request_show', service_request: sr, protocol: protocol, user: user, permission_to_edit: permission_to_edit, view_only: view_only
+          = render 'dashboard/service_requests/protocol_service_request_show', service_request: sr, protocol: protocol, user: user, permission_to_edit: permission_to_edit, view_only: view_only, show_view_ssr_back: show_view_ssr_back
     - else
       %button.btn.btn-success.btn-sm#add-services-button{ class: permission_to_edit ? '' : 'disabled', type: 'button', data: { permission: permission_to_edit.to_s, protocol_id: protocol.id, action: 'new request' } }
         = t(:dashboard)[:protocols][:service_requests][:add_services]

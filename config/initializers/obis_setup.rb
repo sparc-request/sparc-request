@@ -25,6 +25,9 @@ begin
   ADMIN_MAIL_TO                             = application_config['admin_mail_to']
   EPIC_RIGHTS_MAIL_TO                       = application_config['approve_epic_rights_mail_to']
   FEEDBACK_MAIL_TO                          = application_config['feedback_mail_to']
+  CONTACT_US_MAIL_TO                        = application_config['contact_us_mail_to']
+  CONTACT_US_CC                             = application_config['contact_us_cc']
+  LISTSERV_MAIL_TO                          = application_config['listserv_mail_to']
   NEW_USER_CC                               = application_config['new_user_cc']
   SYSTEM_SATISFACTION_SURVEY_CC             = application_config['system_satisfaction_survey_cc']
   ROOT_URL                                  = application_config['root_url']
@@ -54,6 +57,7 @@ begin
   SYSTEM_SATISFACTION_SURVEY                = application_config['system_satisfaction_survey'] || false
   NO_REPLY_FROM                             = application_config['no_reply_from']
   EDITABLE_STATUSES                         = application_config['editable_statuses'] || {}
+  UPDATABLE_STATUSES                        = application_config['updatable_statuses'] || []
   REMOTE_SERVICE_NOTIFIER_PROTOCOL          = application_config['remote_service_notifier_protocol']
   REMOTE_SERVICE_NOTIFIER_HOST              = application_config['remote_service_notifier_host']
   REMOTE_SERVICE_NOTIFIER_PATH              = application_config['remote_service_notifier_path']

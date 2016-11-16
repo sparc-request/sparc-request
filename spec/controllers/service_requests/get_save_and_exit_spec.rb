@@ -141,26 +141,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
           expect(sr.reload.status).to eq('draft')
           expect(ssr.reload.status).to eq('draft')
         end
-
-        it 'should create past statuses' do
-          org      = create(:organization)
-          service  = create(:service, organization: org)
-          protocol = create(:protocol_federally_funded, primary_pi: logged_in_user)
-          sr       = create(:service_request_without_validations, protocol: protocol)
-          ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org, status: 'on_hold')
-                     create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
-
-          session[:identity_id]            = logged_in_user.id
-          session[:service_request_id]     = sr.id
-
-          xhr :get, :save_and_exit, {
-            id: sr.id,
-            format: :html
-          }
-
-          expect(PastStatus.count).to eq(1)
-          expect(PastStatus.first.sub_service_request).to eq(ssr)
-        end
       end
 
       it 'should redirect to dashboard' do

@@ -17,6 +17,7 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-$('#modal_place').html("<%= escape_javascript(render( 'dashboard/sub_service_requests/user_modal_ssr_show', sub_service_request: @sub_service_request, service_request: @service_request, service_list: @service_list, tab: @tab, portal: @portal, review: @review, consolidated: @consolidated, pages: @pages, merged: @merged, protocol: @protocol )) %>")
+
+$('#modal_place').html("<%= escape_javascript(render( 'dashboard/sub_service_requests/user_modal_ssr_show', sub_service_request: @sub_service_request, show_view_ssr_back: @show_view_ssr_back, service_request: @service_request, service_list: @service_list, tab: @tab, portal: @portal, review: @review, consolidated: @consolidated, pages: @pages, merged: @merged, protocol: @protocol )) %>")
 $('#modal_place').modal 'show'
 $('.selectpicker').selectpicker()

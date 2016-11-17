@@ -22,6 +22,12 @@ begin
   application_config ||= YAML.load_file(Rails.root.join('config', 'application.yml'))[Rails.env]
 
   DEFAULT_MAIL_TO                           = application_config['default_mail_to']
+
+  # Flag must be enabled for the system to
+  # send emails to actual users.
+  # Otherwise all emails will be routed to DEFAULT_MAIL_TO
+  SEND_EMAILS_TO_REAL_USERS                 = application_config['send_emails_to_real_users']
+
   ADMIN_MAIL_TO                             = application_config['admin_mail_to']
   EPIC_RIGHTS_MAIL_TO                       = application_config['approve_epic_rights_mail_to']
   FEEDBACK_MAIL_TO                          = application_config['feedback_mail_to']

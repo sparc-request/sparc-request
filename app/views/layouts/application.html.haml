@@ -38,8 +38,6 @@ d-# Copyright © 2011-2016 MUSC Foundation for Research Development
   %body#body
     #container
       #header
-        - if @user.try(:approved) == false
-          = javascript_include_tag 'identity_not_approved'
         = render 'layouts/header_logos', in_dashboard: false
         %input#current_user_id{ type: 'hidden', value: @user.try(:id) }
       = render 'layouts/header', user: @user
@@ -51,5 +49,4 @@ d-# Copyright © 2011-2016 MUSC Foundation for Research Development
     = render 'layouts/footer'
     = render 'shared/piwik_tracking' if Rails.env == 'production'
     = render 'shared/ie7_modal'
-    = render 'shared/not_approved_modal'
     = render 'shared/modal'

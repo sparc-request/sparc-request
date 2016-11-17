@@ -32,9 +32,9 @@ class Study < Protocol
     Portal::StudyTypeFinder.new(self).study_type
   end
 
-  def determine_note(study_type)
+  def determine_note
     STUDY_TYPE_NOTES.each do |k, v|
-      if k == study_type
+      if k == determine_study_type
         @note = v
         break
       end

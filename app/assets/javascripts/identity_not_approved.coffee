@@ -19,7 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 $(document).ready ->
-  $('#modal_place').html($('#ie7-warning-modal').html()).removeClass('hidden')
+  $('#modal_place').html($('#not-approved-warning-modal').html()).removeClass('hidden')
   $('#modal_place').modal
     show: true,
     keyboard: false,

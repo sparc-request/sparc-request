@@ -23,7 +23,6 @@ class AdditionalDetails::SubmissionsController < ApplicationController
     @submission = Submission.new
     @submission.questionnaire_responses.build
     respond_to do |format|
-      format.html
       format.js
     end
   end
@@ -32,6 +31,9 @@ class AdditionalDetails::SubmissionsController < ApplicationController
     @service = Service.find(params[:service_id])
     @submission = Submission.find(params[:id])
     @questionnaire = @service.questionnaires.active.first
+    respond_to do |format|
+      format.js
+    end
   end
 
   def create
@@ -45,10 +47,8 @@ class AdditionalDetails::SubmissionsController < ApplicationController
     respond_to do |format|
       if @submission.save
         format.js
-        format.html
       else
         format.js
-        format.html { render :new }
       end
     end
   end
@@ -56,6 +56,7 @@ class AdditionalDetails::SubmissionsController < ApplicationController
   def update
     @service = Service.find(params[:service_id])
     @submission = Submission.find(params[:id])
+    @service_request = ServiceRequest.find(params[:sr_id])
     @submission.update_attributes(submission_params)
     respond_to do |format|
       if @submission.save

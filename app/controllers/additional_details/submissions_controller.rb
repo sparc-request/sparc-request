@@ -38,8 +38,10 @@ class AdditionalDetails::SubmissionsController < ApplicationController
     @service = Service.find(params[:service_id])
     @questionnaire = @service.questionnaires.active.first
     @submission = Submission.new(submission_params)
-    @protocol = Protocol.find(params[:protocol_id])
-    @service_request = ServiceRequest.find(params[:sr_id])
+    @protocol = Protocol.find(submission_params[:protocol_id])
+    @submissions = @protocol.submissions
+    @line_item = LineItem.find(submission_params[:line_item_id])
+    @service_request = @line_item.service_request
     respond_to do |format|
       if @submission.save
         format.js
@@ -66,13 +68,14 @@ class AdditionalDetails::SubmissionsController < ApplicationController
 
   def destroy
     @service = Service.find(params[:service_id])
-    @submissions = @service.submissions
     @submission = Submission.find(params[:id])
     if params[:protocol_id]
       @protocol = Protocol.find(params[:protocol_id])
+      @submissions = @protocol.submissions
     end
-    if params[:sr_id]
-      @service_request = ServiceRequest.find(params[:sr_id])
+    if params[:line_item_id]
+      @line_item = LineItem.find(params[:line_item_id])
+      @service_request = ServiceRequest.find(@line_item.service_request_id)
     end
     respond_to do |format|
       if @submission.destroy

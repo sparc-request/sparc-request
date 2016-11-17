@@ -304,7 +304,7 @@ en:
       updated: "Protocol Type Updated!"
       new_study_warning: "Please complete Sponsor Name and Publish Study in Epic"
     studies:
-      new: "New Study"
+      new: "New Research Study"
       information:
         header: "Study Information"
         subtext: "Necessary to obtain correct pricing"

@@ -24,6 +24,8 @@
 ############################################
 ## portal:        Are we accessing the calendar from the dashboard? True or False
 ##
+## admin:         Are we accessing the calendar by clicking Admin Edit from the dashboard? True or False
+##
 ## merged:        Are we accessing the Consolidated Request calendar? True or False
 ##
 ## review:        Are we viewing the Step 4 Review calendar? True or False
@@ -70,6 +72,7 @@ class ServiceCalendarsController < ApplicationController
     @tab          = params[:tab]
     @review       = params[:review] == 'true'
     @portal       = params[:portal] == 'true'
+    @admin        = @portal && @sub_service_request.present?
     @merged       = false
     @consolidated = false
 
@@ -85,6 +88,7 @@ class ServiceCalendarsController < ApplicationController
     @tab          = params[:tab]
     @review       = params[:review] == 'true'
     @portal       = params[:portal] == 'true'
+    @admin        = @portal && @sub_service_request.present?
     @merged       = true
     @consolidated = false
 
@@ -100,6 +104,7 @@ class ServiceCalendarsController < ApplicationController
     @tab                = 'calendar'
     @review             = false
     @portal             = true
+    @admin              = false
     @merged             = true
     @consolidated       = true
     @protocol           = Protocol.find(params[:protocol_id])

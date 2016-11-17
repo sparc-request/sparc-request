@@ -305,8 +305,8 @@ class SubServiceRequest < ActiveRecord::Base
   # Can't edit a request if it's placed in an uneditable status
   def can_be_edited?
     if organization.has_editable_statuses?
-       self_or_parent_id = find_editable_id(self.organization.id)
-       EDITABLE_STATUSES[self_or_parent_id].include?(self.status)
+      self_or_parent_id = find_editable_id(self.organization.id)
+      EDITABLE_STATUSES[self_or_parent_id].include?(self.status)
     else
       true
     end
@@ -473,11 +473,11 @@ class SubServiceRequest < ActiveRecord::Base
 
       audit = audits.sort_by(&:created_at).last
       # create action
-      if audit.audited_changes["sub_service_request_id"].nil?
-        filtered_audit_trail[:line_items] << audit if LineItem.find(audit.auditable_id).sub_service_request_id == self.id
-      # destroy action
-      else
-        filtered_audit_trail[:line_items] << audit if audit.audited_changes["sub_service_request_id"] == self.id
+      if audit.audited_changes["sub_service_request_id"].nil?    
+        filtered_audit_trail[:line_items] << audit if LineItem.find(audit.auditable_id).sub_service_request_id == self.id   
+      # destroy action   
+      else   
+        filtered_audit_trail[:line_items] << audit if audit.audited_changes["sub_service_request_id"] == self.id   
       end
     end
     filtered_audit_trail[:sub_service_request_id] = self.id

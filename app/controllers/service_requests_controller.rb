@@ -263,11 +263,9 @@ class ServiceRequestsController < ApplicationController
       # create sub_service_requests
       @service_request.reload
       @service_request.previous_submitted_at = @service_request.submitted_at
-
       new_line_items.each do |li|
         ssr = find_or_create_sub_service_request(li, @service_request)
         li.update_attribute(:sub_service_request_id, ssr.id)
-
         if @service_request.status == 'first_draft'
           ssr.update_attribute(:status, 'first_draft')
         elsif ssr.status.nil? || (ssr.can_be_edited? && ssr_has_changed?(@service_request, ssr) && (ssr.status != 'complete'))
@@ -332,9 +330,12 @@ class ServiceRequestsController < ApplicationController
     end
 
     @service_request.reload
-
     @line_items_count     = @sub_service_request ? @sub_service_request.line_items.count : @service_request.line_items.count
     @sub_service_requests = @service_request.cart_sub_service_requests
+
+    respond_to do |format|
+      format.js {render layout: false}
+    end
   end
 
   def get_help
@@ -597,7 +598,7 @@ class ServiceRequestsController < ApplicationController
     line_items = []
     @service_request.sub_service_requests.each do |ssr|
       if service_provider.identity.is_service_provider?(ssr)
-        line_items << SubServiceRequest.find(ssr.id).line_items
+        line_items << ssr.line_items
       end
     end
 

@@ -34,6 +34,7 @@ class LineItem < ActiveRecord::Base
   has_many :procedures
   has_many :admin_rates, dependent: :destroy
   has_many :notes, as: :notable, dependent: :destroy
+  has_many :submissions, dependent: :destroy
 
   attr_accessible :service_request_id
   attr_accessible :sub_service_request_id
@@ -62,7 +63,6 @@ class LineItem < ActiveRecord::Base
 
   after_destroy :remove_procedures
 
-  # TODO: order by date/id instead of just by date?
   default_scope { order('line_items.id ASC') }
 
   def displayed_cost_valid?(displayed_cost)

@@ -35,7 +35,6 @@ end
 
 RSpec.describe EpicInterface do
   server = nil
-  port = nil
   thread = nil
 
   # This array holds the messages received by the epic interface.
@@ -50,15 +49,8 @@ RSpec.describe EpicInterface do
   # block.
   before :all do
     require 'webrick'
-    server = FakeEpicServer.new(
-        Port: 0,               # automatically determine port
-        Logger: Rails.logger,  # send regular log to rails
-        AccessLog: [ ],        # disable access log
-        FakeEpicServlet: {
-          keep_received: true,
-          received: epic_received,
-          results: epic_results
-        })
+    server = FakeEpicServer.new(FakeEpicServlet: { received: epic_received,
+                                                   results: epic_results })
     thread = Thread.new { server.start }
   end
 
@@ -127,13 +119,13 @@ RSpec.describe EpicInterface do
           :identity,
           ldap_uid: 'happyhappyjoyjoy@musc.edu')
 
-      pi_role = create(
-          :project_role,
-          protocol:        study,
-          identity:        identity,
-          project_rights:  "approve",
-          role:            "primary-pi",
-          epic_access:     true, )
+      create(
+        :project_role,
+        protocol:        study,
+        identity:        identity,
+        project_rights:  "approve",
+        role:            "primary-pi",
+        epic_access:     true, )
 
       epic_interface.send_study_creation(study)
 
@@ -164,13 +156,13 @@ RSpec.describe EpicInterface do
           :identity,
           ldap_uid: 'happyhappyjoyjoy@musc.edu')
 
-      pi_role = create(
-          :project_role,
-          protocol:        study,
-          identity:        identity,
-          project_rights:  "approve",
-          role:            "business-grants-manager",
-          epic_access:     true, )
+      create(
+        :project_role,
+        protocol:        study,
+        identity:        identity,
+        project_rights:  "approve",
+        role:            "business-grants-manager",
+        epic_access:     true, )
 
       epic_interface.send_study_creation(study)
 
@@ -201,13 +193,13 @@ RSpec.describe EpicInterface do
           :identity,
           ldap_uid: 'happyhappyjoyjoy@musc.edu')
 
-      pi_role = create(
-          :project_role,
-          protocol:        study,
-          identity:        identity,
-          project_rights:  "approve",
-          role:            "co-investigator",
-          epic_access:     true, )
+      create(
+        :project_role,
+        protocol:        study,
+        identity:        identity,
+        project_rights:  "approve",
+        role:            "co-investigator",
+        epic_access:     true, )
 
       epic_interface.send_study_creation(study)
 
@@ -238,13 +230,13 @@ RSpec.describe EpicInterface do
           :identity,
           ldap_uid: 'happyhappyjoyjoy@musc.edu')
 
-      pi_role = create(
-          :project_role,
-          protocol:        study,
-          identity:        identity,
-          project_rights:  "approve",
-          role:            "research-nurse",
-          epic_access:     true, )
+      create(
+        :project_role,
+        protocol:        study,
+        identity:        identity,
+        project_rights:  "approve",
+        role:            "research-nurse",
+        epic_access:     true, )
 
       epic_interface.send_study_creation(study)
 
@@ -275,13 +267,13 @@ RSpec.describe EpicInterface do
           :identity,
           ldap_uid: 'happyhappyjoyjoy@musc.edu')
 
-      pi_role = create(
-          :project_role,
-          protocol:        study,
-          identity:        identity,
-          project_rights:  "approve",
-          role:            "grad-research-assistant",
-          epic_access:     true, )
+      create(
+        :project_role,
+        protocol:        study,
+        identity:        identity,
+        project_rights:  "approve",
+        role:            "grad-research-assistant",
+        epic_access:     true, )
 
       epic_interface.send_study_creation(study)
 
@@ -313,13 +305,13 @@ RSpec.describe EpicInterface do
           :identity,
           ldap_uid: 'happyhappyjoyjoy@musc.edu')
 
-      pi_role = create(
-          :project_role,
-          protocol:        study,
-          identity:        identity,
-          project_rights:  "approve",
-          role:            "business-grants-manager",
-          epic_access:     false, )
+      create(
+        :project_role,
+        protocol:        study,
+        identity:        identity,
+        project_rights:  "approve",
+        role:            "business-grants-manager",
+        epic_access:     false, )
 
       epic_interface.send_study_creation(study)
 
@@ -971,12 +963,12 @@ RSpec.describe EpicInterface do
           :identity,
           ldap_uid: 'happyhappyjoyjoy@musc.edu')
 
-      pi_role = create(
-          :project_role,
-          protocol:        study,
-          identity:        identity,
-          project_rights:  "approve",
-          role:            "primary-pi")
+      create(
+        :project_role,
+        protocol:        study,
+        identity:        identity,
+        project_rights:  "approve",
+        role:            "primary-pi")
 
       epic_interface.send_billing_calendar(study)
 
@@ -1007,7 +999,7 @@ RSpec.describe EpicInterface do
     end
 
     it 'should send an arm as a cell' do
-      service_request = FactoryGirl.create(:service_request_without_validations,
+      FactoryGirl.create(:service_request_without_validations,
                                             protocol: study,
                                             status: 'draft')
 
@@ -1068,7 +1060,7 @@ RSpec.describe EpicInterface do
     end
 
     it 'should send two arms as two cells' do
-      service_request = FactoryGirl.create(:service_request_without_validations,
+      FactoryGirl.create(:service_request_without_validations,
                                             protocol: study,
                                             status: 'draft')
 

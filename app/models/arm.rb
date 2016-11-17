@@ -173,7 +173,9 @@ class Arm < ActiveRecord::Base
     # Add visits to each line item under the service request
     self.line_items_visits.each do |liv|
       if not liv.add_visit(visit_group) then
-        self.errors.initialize_dup(liv.errors) # TODO: is this the right way to do this?
+        # NOTE any error messages present in the Arm at this point are replaced
+        # by those of the liv.
+        self.errors.initialize_dup(liv.errors)
         return false
       end
     end

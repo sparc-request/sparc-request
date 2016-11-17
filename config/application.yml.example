@@ -88,6 +88,7 @@ development:
   about_sparc_url: http://academicdepartments.musc.edu/sctr/sparc_request
   use_about_sparc_link: true
   use_feedback_link: true
+  send_emails_to_real_users: false
 
 test:
   default_mail_to: nobody@nowhere.com
@@ -152,3 +153,4 @@ test:
   about_sparc_url: http://academicdepartments.musc.edu/sctr/sparc_request
   use_about_sparc_link: false
   use_feedback_link: true
+  send_emails_to_real_users: false

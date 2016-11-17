@@ -500,7 +500,7 @@ RSpec.describe EpicInterface do
                     xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'>
             <studyCharacteristic classCode="OBS" moodCode="EVN">
               <code code="RGCL3"/>
-              <value value="NO_COFC"/>
+              <value value="YES_COFC"/>
             </studyCharacteristic>
           </subjectOf>
         END

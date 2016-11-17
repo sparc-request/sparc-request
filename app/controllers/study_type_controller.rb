@@ -19,19 +19,9 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class StudyTypeController < ApplicationController
   before_filter :clean_up_params,               only: [:determine_study_type_note]
-  def determine_study_type_note
-    study_type = determine_study_type(@study_type_answers)
-    @note = determine_note(study_type)
-  end
 
-  def determine_study_type(study_type_answers)
-    STUDY_TYPE_ANSWERS_VERSION_3.each do |k, v|
-      if v == study_type_answers
-        @study_type = k
-        break
-      end
-    end
-    @study_type
+  def determine_study_type_note
+    @note = StudyTypeFinder.new(nil, @study_type_answers).determine_study_type_note
   end
 
   def determine_note(study_type)

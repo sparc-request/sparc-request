@@ -29,17 +29,11 @@ class Study < Protocol
   end
 
   def determine_study_type
-    Portal::StudyTypeFinder.new(self).study_type
+    StudyTypeFinder.new(self).study_type
   end
 
-  def determine_note
-    STUDY_TYPE_NOTES.each do |k, v|
-      if k == determine_study_type
-        @note = v
-        break
-      end
-    end
-    @note
+  def determine_study_type_note
+    StudyTypeFinder.new(self).determine_study_type_note
   end
 
   def display_answers

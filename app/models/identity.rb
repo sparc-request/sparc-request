@@ -73,11 +73,6 @@ class Identity < ActiveRecord::Base
   has_many :received_messages, class_name: 'Message', foreign_key: 'to'
   has_many :approved_subsidies, class_name: 'ApprovedSubsidy', foreign_key: 'approved_by'
 
-  # TODO: Identity doesn't really have many sub service requests; an
-  # identity is the owner of many sub service requests.  We need a
-  # better name here.
-  # has_many :sub_service_requests, foreign_key: 'owner_id'
-
   attr_accessible :ldap_uid
   attr_accessible :email
   attr_accessible :last_name
@@ -161,7 +156,7 @@ class Identity < ActiveRecord::Base
     orgs =[]
     orgs << ssr.organization << ssr.organization.parents
     orgs.flatten!
-    
+
     orgs.each do |org|
       provider_ids = org.service_providers_lookup.map{|x| x.identity_id}
       if provider_ids.include?(self.id)
@@ -330,7 +325,7 @@ class Identity < ActiveRecord::Base
     orgs = Organization.all
     organizations = []
     arr = organizations_for_users(orgs, su_only)
-    
+
     arr.each do |org|
       organizations << org.all_children(orgs)
     end

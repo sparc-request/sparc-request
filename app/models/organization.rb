@@ -166,7 +166,6 @@ class Organization < ActiveRecord::Base
 
   # Returns an array of all children (and children of children) of this organization (deep search).
   # Optionally includes self
-  # TODO: doesn't actually include self, look into this
   def all_children (all_children=[], include_self=true, orgs)
     self.children(orgs).each do |child|
       all_children << child

@@ -63,7 +63,6 @@ class LineItem < ActiveRecord::Base
 
   after_destroy :remove_procedures
 
-  # TODO: order by date/id instead of just by date?
   default_scope { order('line_items.id ASC') }
 
   def displayed_cost_valid?(displayed_cost)

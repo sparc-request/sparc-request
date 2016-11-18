@@ -130,7 +130,7 @@ class ServiceCalendarsController < ApplicationController
     @service           = @line_items_visit.line_item.service if params[:check]
     @portal            = params[:portal] == 'true'
 
-    return unless @sub_service_request.can_be_edited?
+    return unless @line_items_visit.sub_service_request.can_be_edited?
 
     @line_items_visit.visits.each do |visit|
       if params[:check]

@@ -16,7 +16,6 @@ ProfessionalOrganization.create(name: "Oral and Maxillofacial Surgery", org_type
 ProfessionalOrganization.create(name: "Oral Rehabilitation (includes: Advanced Education General Dentistry (AEGD) Endodontics, Implant Prosthodontics, Removable Prosthodontics, Restorative Dentistry)", org_type: 'department', parent_id: College_of_Dental_Medicine.id)
 ProfessionalOrganization.create(name: "Pediatric Dentistry and Orthodontics (includes: Craniofacial Genetics, Orthodontics, Pediatric Dentistry)", org_type: 'department', parent_id: College_of_Dental_Medicine.id)
 ProfessionalOrganization.create(name: "Stomatology (includes: Oral Medicine, Radiology and Emergency Services, Oral Pathology, Periodontics)", org_type: 'department', parent_id: College_of_Dental_Medicine.id)
-ProfessionalOrganization.create(name: "Other", org_type: 'department', parent_id: College_of_Dental_Medicine.id)
 
 ProfessionalOrganization.create(name: "Biochemistry and Molecular Biology", org_type: 'department', parent_id: College_of_Graduate_Studies.id)
 ProfessionalOrganization.create(name: "Biomedical Imaging", org_type: 'department', parent_id: College_of_Graduate_Studies.id)
@@ -31,12 +30,10 @@ ProfessionalOrganization.create(name: "Neuroscience Institute", org_type: 'depar
 ProfessionalOrganization.create(name: "Pathology and Laboratory Medicine", org_type: 'department', parent_id: College_of_Graduate_Studies.id)
 ProfessionalOrganization.create(name: "Public Health Science", org_type: 'department', parent_id: College_of_Graduate_Studies.id)
 ProfessionalOrganization.create(name: "Regenerative Medicine and Cell Biology", org_type: 'department', parent_id: College_of_Graduate_Studies.id)
-ProfessionalOrganization.create(name: "Other", org_type: 'department', parent_id: College_of_Graduate_Studies.id)
 
 ProfessionalOrganization.create(name: "Department of Health Sciences and Research", org_type: 'department', parent_id: College_of_Health_Professions.id)
 dep_of_health_professions = ProfessionalOrganization.create(name: "Department of Health Professions", org_type: 'department', parent_id: College_of_Health_Professions.id)
 ProfessionalOrganization.create(name: "Department of Healthcare Leadership and Management", org_type: 'department', parent_id: College_of_Health_Professions.id)
-ProfessionalOrganization.create(name: "Other", org_type: 'department', parent_id: College_of_Health_Professions.id)
 
 ProfessionalOrganization.create(name: "Clinical Education", org_type: 'division', parent_id: dep_of_health_professions.id)
 ProfessionalOrganization.create(name: "Anesthesia for Nurses", org_type: 'division', parent_id: dep_of_health_professions.id)
@@ -70,7 +67,6 @@ ProfessionalOrganization.create(name: "Radiology", parent_id: College_of_Medicin
 ProfessionalOrganization.create(name: "Regenerative Medicine and Cell Biology", parent_id: College_of_Medicine.id, org_type: 'department')
 dep_of_surg = ProfessionalOrganization.create(name: "Surgery", parent_id: College_of_Medicine.id, org_type: 'department')
 ProfessionalOrganization.create(name: "Urology", parent_id: College_of_Medicine.id, org_type: 'department')
-ProfessionalOrganization.create(name: "Other", parent_id: College_of_Medicine.id, org_type: 'department')
 
 ProfessionalOrganization.create(name: "Cardiology", org_type: 'division', parent_id: dep_of_medicine.id)
 ProfessionalOrganization.create(name: "Emergency Medicine", org_type: 'division', parent_id: dep_of_medicine.id)
@@ -143,6 +139,5 @@ ProfessionalOrganization.create(name: "Center for Cancer Drug Discovery", org_ty
 ProfessionalOrganization.create(name: "Kennedy Center for Pharmacy Innovation", org_type: 'department', parent_id: College_of_Pharmacy.id)
 ProfessionalOrganization.create(name: "Medication Safety and Efficacy Program", org_type: 'department', parent_id: College_of_Pharmacy.id)
 ProfessionalOrganization.create(name: "SCORxE Program", org_type: 'department', parent_id: College_of_Pharmacy.id)
-ProfessionalOrganization.create(name: "Other", org_type: 'department', parent_id: College_of_Pharmacy.id)
 
 end

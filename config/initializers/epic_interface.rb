@@ -29,7 +29,7 @@ class EpicReceivedMessages < Array
     super
     @keep = false
   end
-  
+
   def <<(body)
     super(body) if @keep
   end
@@ -40,17 +40,9 @@ def start_fake_epic_server(epic_received, epic_results)
   require 'webrick'
   require 'fake_epic_soap_server'
 
-  # TODO: duplicated with spec/extensions/epic_interface_spec.rb
   Rails.logger.info("Starting fake epic server")
-  server = FakeEpicServer.new(
-      Port: 0,                # automatically determine port
-      Logger: Rails.logger,   # send regular log to rails
-      AccessLog: [ ],         # disable access log
-      FakeEpicServlet: {
-        keep_received: true,
-        received: epic_received,
-        results: epic_results,
-      })
+  server = FakeEpicServer.new(FakeEpicServlet: { received: epic_received,
+                                                 results: epic_results})
   thread = Thread.new { server.start }
   timeout(10) { while server.status != :Running; end }
   at_exit { server.shutdown; thread.join }
@@ -78,4 +70,3 @@ end
 # Finally, construct the interface itself
 Rails.logger.info("Creating epic interface")
 EPIC_INTERFACE = EpicInterface.new(epic_config)
-

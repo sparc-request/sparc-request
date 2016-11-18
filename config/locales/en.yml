@@ -24,6 +24,7 @@ en:
   ###########
   actions:
     add: "Add"
+    back: "Back"
     approve: "Approve"
     cancel: "Cancel"
     close: "Close"
@@ -203,7 +204,7 @@ en:
     merged_totals:
       header: "Study Cost Totals"
       grand_total: "Grand Total"
-
+ 
   #############
   # CONSTANTS #
   #############
@@ -1270,7 +1271,7 @@ en:
     phone: "Phone:"
     rights:
       header: "User Rights:"
-      none: 'Study/Project Member Only'
+      none: 'Member Only'
       view: 'View Rights'
       request: 'Request/Approve Services'
       approve: 'Authorize/Change Study Charges'
@@ -1482,6 +1483,8 @@ en:
     p_info: "Project Information"
     p_title: "Project Title"
     proxy: "Proxy Rights:"
+    request_amendment: "Request Amendment"
+    request_amendment_intro:  "Services have been added or deleted in SPARCRequest and is awaiting your review in"
     requester:  "(Requester)"
     role: "Role"
     s_name: "Sponsor Name"

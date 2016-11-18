@@ -134,12 +134,12 @@ $(document).ready ->
       $(higher_level_of_privacy_dropdown).show_elt()
       $('#study_type_note').hide()
     else if new_value == 'true'
-      data = { ans1: $(certificate_of_confidence_dropdown).val(), ans2: $(higher_level_of_privacy_dropdown).val(), ans3: $(epic_inbasket_dropdown).val(), ans4: $(research_active_dropdown).val(), ans5: $(restrict_sending_dropdown).val() }
-      determine_study_type(data)
       $(higher_level_of_privacy_dropdown).hide_elt()
       $(epic_inbasket_dropdown).hide_elt()
       $(research_active_dropdown).hide_elt()
       $(restrict_sending_dropdown).hide_elt()
+      data = { ans1: $(certificate_of_confidence_dropdown).val(), ans2: $(higher_level_of_privacy_dropdown).val(), ans3: $(epic_inbasket_dropdown).val(), ans4: $(research_active_dropdown).val(), ans5: $(restrict_sending_dropdown).val() }
+      determine_study_type(data)
     else
       $(higher_level_of_privacy_dropdown).hide_elt()
       $(epic_inbasket_dropdown).hide_elt()

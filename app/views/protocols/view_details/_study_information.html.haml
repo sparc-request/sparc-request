@@ -115,8 +115,4 @@
                   = render partial: 'protocols/view_details/epic_questions_answers', locals: { answer: answer }
                 - elsif !answer.study_type_question.study_type_question_group.active && !protocol.active? && answer.answer != nil
                   = render partial: 'protocols/view_details/epic_questions_answers', locals: { answer: answer }
-            #study_type_note.red_note
-              - if protocol.active?
-                %label.col-lg-10
-                  - note = protocol.determine_note(protocol.determine_study_type)
-                  = t(:protocols)[:studies][:information][:note] + note          
+            = render partial: 'protocols/view_details/red_note', locals: { protocol: protocol }         

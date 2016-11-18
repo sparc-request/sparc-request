@@ -101,6 +101,6 @@
         = render partial: 'dashboard/protocols/form/study_form_sections/interactive_form', locals: { protocol: protocol, form: form }
       - else
         = render partial: 'dashboard/protocols/form/study_form_sections/readonly_form', locals: { protocol: protocol, form: form }
-    = render partial: 'dashboard/protocols/form/study_form_sections/red_note', locals: { protocol: protocol }
+    = render partial: 'dashboard/protocols/form/study_form_sections/red_note', locals: { protocol: protocol, form: form }
     
 

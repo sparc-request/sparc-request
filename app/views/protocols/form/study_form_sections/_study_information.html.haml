@@ -96,4 +96,4 @@
         = form.text_field :sponsor_name, class: 'form-control'
     - if USE_EPIC
       = render partial: 'protocols/form/study_form_sections/interactive_form', locals: { protocol: protocol, form: form }
-    = render partial: 'protocols/form/study_form_sections/red_note', locals: { protocol: protocol }
+    = render partial: 'protocols/form/study_form_sections/red_note', locals: { protocol: protocol, form: form }

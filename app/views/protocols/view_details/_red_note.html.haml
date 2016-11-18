@@ -20,5 +20,6 @@
 
 #study_type_note.red_note
   - if protocol.active?
-    - note = protocol.determine_study_type_note
-    = form.label :note, t(:protocols)[:studies][:information][:note] + note
+    %label.col-lg-10
+      - note = protocol.determine_study_type_note
+      = t(:protocols)[:studies][:information][:note] + note 

@@ -38,7 +38,7 @@ RSpec.describe 'dashboard/protocols/show', type: :view do
     assign(:user, jug2)
     assign(:protocol_type, 'Study')
     assign(:permission_to_edit, false)
-    
+    assign(:submissions, [create(:submission, protocol: protocol, service: create(:service))])
     render
   end
 

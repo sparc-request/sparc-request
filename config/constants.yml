@@ -839,7 +839,7 @@ user_credentials: { "MD": 'md',
                     "Other": 'other',
                     "None": 'none'}
 audit_actions: { 'create': 'Added',
-                 'destroy': 'Removed'}
+                 'destroy': 'Deleted'}
 additional_detail_question_types: {
   'Text': 'text',
   'Text Area': 'textarea',

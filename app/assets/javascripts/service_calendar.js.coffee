@@ -108,9 +108,10 @@ calculate_max_rates = (arm_id) ->
     dataType: "json"
   $.fn.editable.defaults.error = (response, newValue) ->
     error_msgs = []
-    $.each JSON.parse(response.responseText), (key, value) ->
-      error_msgs.push(humanize_string(key)+' '+value)
-    return error_msgs.join("<br>")
+    $.each JSON.parse(response.responseText), (attr, errors) ->
+      for err in errors
+        error_msgs.push(humanize_string(attr)+err)
+    return error_msgs.join("\n")
 
   $('.window-before').editable
     params: (params) ->

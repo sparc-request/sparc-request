@@ -39,9 +39,11 @@ RSpec.describe ServiceCalendarsController do
       sr       = create(:service_request_without_validations, protocol: protocol)
 
       session[:service_request_id] = sr.id
+      session[:identity_id] = logged_in_user.id
 
       xhr :get, :view_full_calendar, {
-        protocol_id: protocol.id
+        protocol_id: protocol.id,
+        portal: 'true'
       }
 
       expect(assigns(:tab)).to eq('calendar')
@@ -52,9 +54,11 @@ RSpec.describe ServiceCalendarsController do
       sr       = create(:service_request_without_validations, protocol: protocol)
 
       session[:service_request_id] = sr.id
+      session[:identity_id] = logged_in_user.id
 
       xhr :get, :view_full_calendar, {
-        protocol_id: protocol.id
+        protocol_id: protocol.id,
+        portal: 'true'
       }
 
       expect(assigns(:review)).to eq(false)
@@ -65,9 +69,11 @@ RSpec.describe ServiceCalendarsController do
       sr       = create(:service_request_without_validations, protocol: protocol)
 
       session[:service_request_id] = sr.id
+      session[:identity_id] = logged_in_user.id
 
       xhr :get, :view_full_calendar, {
-        protocol_id: protocol.id
+        protocol_id: protocol.id,
+        portal: 'true'
       }
 
       expect(assigns(:portal)).to eq(true)
@@ -78,9 +84,11 @@ RSpec.describe ServiceCalendarsController do
       sr       = create(:service_request_without_validations, protocol: protocol)
 
       session[:service_request_id] = sr.id
+      session[:identity_id] = logged_in_user.id
 
       xhr :get, :view_full_calendar, {
-        protocol_id: protocol.id
+        protocol_id: protocol.id,
+        portal: 'true'
       }
 
       expect(assigns(:merged)).to eq(true)
@@ -93,9 +101,11 @@ RSpec.describe ServiceCalendarsController do
       arm2      = create(:arm, protocol: protocol, name: "Arm 2")
 
       session[:service_request_id] = sr.id
+      session[:identity_id] = logged_in_user.id
 
       xhr :get, :view_full_calendar, {
-        protocol_id: protocol.id
+        protocol_id: protocol.id,
+        portal: 'true'
       }
 
       expect(assigns(:pages).count).to eq(2)
@@ -109,9 +119,11 @@ RSpec.describe ServiceCalendarsController do
       arm      = create(:arm, protocol: protocol, name: "Arm")
 
       session[:service_request_id] = sr.id
+      session[:identity_id] = logged_in_user.id
 
       xhr :get, :view_full_calendar, {
         protocol_id: protocol.id,
+        portal: 'true',
         arm_id: arm.id
       }
 
@@ -123,9 +135,11 @@ RSpec.describe ServiceCalendarsController do
       sr       = create(:service_request_without_validations, protocol: protocol)
 
       session[:service_request_id] = sr.id
+      session[:identity_id] = logged_in_user.id
 
       xhr :get, :view_full_calendar, {
-        protocol_id: protocol.id
+        protocol_id: protocol.id,
+        portal: 'true'
       }
 
       expect(controller).to render_template(:view_full_calendar)
@@ -136,9 +150,11 @@ RSpec.describe ServiceCalendarsController do
       sr       = create(:service_request_without_validations, protocol: protocol)
 
       session[:service_request_id] = sr.id
+      session[:identity_id] = logged_in_user.id
 
       xhr :get, :view_full_calendar, {
-        protocol_id: protocol.id
+        protocol_id: protocol.id,
+        portal: 'true'
       }
 
       expect(controller).to respond_with(:ok)

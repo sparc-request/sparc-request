@@ -1050,11 +1050,15 @@ ActiveRecord::Schema.define(version: 20161108135128) do
     t.integer  "service_id",       limit: 4
     t.integer  "identity_id",      limit: 4
     t.integer  "questionnaire_id", limit: 4
+    t.integer  "protocol_id",      limit: 4
+    t.integer  "line_item_id",     limit: 4
     t.datetime "created_at",                 null: false
     t.datetime "updated_at",                 null: false
   end
 
   add_index "submissions", ["identity_id"], name: "index_submissions_on_identity_id", using: :btree
+  add_index "submissions", ["line_item_id"], name: "index_submissions_on_line_item_id", using: :btree
+  add_index "submissions", ["protocol_id"], name: "index_submissions_on_protocol_id", using: :btree
   add_index "submissions", ["questionnaire_id"], name: "index_submissions_on_questionnaire_id", using: :btree
   add_index "submissions", ["service_id"], name: "index_submissions_on_service_id", using: :btree
 
@@ -1282,6 +1286,8 @@ ActiveRecord::Schema.define(version: 20161108135128) do
   add_foreign_key "questionnaire_responses", "submissions"
   add_foreign_key "questionnaires", "services"
   add_foreign_key "submissions", "identities"
+  add_foreign_key "submissions", "line_items"
+  add_foreign_key "submissions", "protocols"
   add_foreign_key "submissions", "questionnaires"
   add_foreign_key "submissions", "services"
 end

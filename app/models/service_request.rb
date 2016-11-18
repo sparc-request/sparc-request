@@ -426,11 +426,10 @@ class ServiceRequest < ActiveRecord::Base
       next unless ssr.can_be_edited? && !ssr.is_complete?
       available = AVAILABLE_STATUSES.keys
       editable = EDITABLE_STATUSES[ssr.organization_id] || available
-
       changeable = available & editable
 
-      if changeable.include? new_status
-        if ssr.status != new_status
+      if changeable.include?(new_status)
+        if (ssr.status != new_status) && UPDATABLE_STATUSES.include?(ssr.status)
           ssr.update_attribute(:status, new_status)
           to_notify << ssr.id
         end
@@ -444,7 +443,7 @@ class ServiceRequest < ActiveRecord::Base
 
   # Make sure that all the sub service requests have an ssr id
   def ensure_ssr_ids
-    next_ssr_id = self.protocol ? self.protocol.next_ssr_id : 1
+    next_ssr_id = self.protocol && self.protocol.next_ssr_id.present? ? self.protocol.next_ssr_id : 1
 
     self.sub_service_requests.each do |ssr|
       unless ssr.ssr_id
@@ -500,12 +499,12 @@ class ServiceRequest < ActiveRecord::Base
     true #self.sub_service_requests.all?{|ssr| ssr.arms_editable?}
   end
 
-  def audit_report identity, start_date=self.previous_submitted_at.utc, end_date=Time.now.utc
+  def audit_report( identity, start_date=self.previous_submitted_at.utc, end_date=Time.now.utc )
     line_item_audits = AuditRecovery.where("audited_changes LIKE '%service_request_id: #{self.id}%' AND
                                       auditable_type = 'LineItem' AND user_id = #{identity.id} AND action IN ('create', 'destroy') AND
                                       created_at BETWEEN '#{start_date}' AND '#{end_date}'")
                                     .group_by(&:auditable_id)
-
+                                    
     {:line_items => line_item_audits}
   end
 

@@ -20,6 +20,7 @@
 = javascript_include_tag 'protocol'
 
 = render '/service_requests/navigation/steps', service_request: @service_request, step: @step_text, css_class: @css_class
+= render 'service_requests/modals/request_submitted_modal', service_request: @service_request
 .col-sm-12.body-container#protocols-page
   = form_tag navigate_service_request_path(@service_request), id: 'service-request-form' do
     = render 'shared/modal_errors', errors: @errors

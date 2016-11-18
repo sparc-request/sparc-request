@@ -35,9 +35,8 @@ class ServiceCalendarsController < ApplicationController
   layout false
   
   before_filter :initialize_service_request,      if: Proc.new{ params[:portal] != 'true' }
-  before_filter :setup_dashboard_requests,        except: [:merged_calendar, :view_full_calendar], if: Proc.new{ params[:portal] == 'true' }
-  before_filter :setup_dashboard_merged_requests, only: [:merged_calendar, :view_full_calendar], if: Proc.new{ params[:portal] == 'true' }
-  before_filter :authorize_identity
+  before_filter :authorize_identity,              if: Proc.new { params[:portal] != 'true' }
+  before_filter :authorize_dashboard_access,      if: Proc.new { params[:portal] == 'true' }
 
   def update
     visit         = Visit.find(params[:visit_id])
@@ -102,7 +101,6 @@ class ServiceCalendarsController < ApplicationController
     @portal             = true
     @merged             = true
     @consolidated       = true
-    @protocol           = Protocol.find(params[:protocol_id])
     @service_request    = @protocol.any_service_requests_to_display?
 
     setup_calendar_pages
@@ -132,6 +130,8 @@ class ServiceCalendarsController < ApplicationController
     @service           = @line_items_visit.line_item.service if params[:check]
     @portal            = params[:portal] == 'true'
 
+    return unless @line_items_visit.sub_service_request.can_be_edited?
+
     @line_items_visit.visits.each do |visit|
       if params[:check]
         visit.update_attributes(quantity: @service.displayed_pricing_map.unit_minimum, research_billing_qty: @service.displayed_pricing_map.unit_minimum, insurance_billing_qty: 0, effort_billing_qty: 0)
@@ -157,7 +157,7 @@ class ServiceCalendarsController < ApplicationController
     @portal    = params[:portal] == 'true'
 
     @service_request.service_list(false).each do |_key, value|
-      next unless @sub_service_request.nil? || @sub_service_request.organization.name == value[:process_ssr_organization_name]
+      next unless @sub_service_request.nil? || @sub_service_request.organization.name == value[:process_ssr_organization_name] || @sub_service_request.can_be_edited?
 
       @arm.line_items_visits.each do |liv|
         next if value[:line_items].exclude?(liv.line_item) || (!@portal && (!liv.line_item.sub_service_request.can_be_edited? || liv.line_item.sub_service_request.is_complete?))
@@ -186,14 +186,34 @@ class ServiceCalendarsController < ApplicationController
 
   private
 
-  def setup_dashboard_requests
-    @sub_service_request  = SubServiceRequest.find(params[:sub_service_request_id])
-    @service_request      = @sub_service_request.service_request
+  def authorize_dashboard_access
+    if params[:sub_service_request_id]
+      authorize_admin
+    else
+      authorize_protocol
+    end
   end
 
-  def setup_dashboard_merged_requests
-    sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
-    @service_request    = sub_service_request.service_request
+  def authorize_protocol
+    @protocol           = Protocol.find(params[:protocol_id])
+    permission_to_view  = @protocol.project_roles.where(identity_id: current_user.id, project_rights: ['approve', 'request']).any?
+
+    unless permission_to_view || Protocol.for_admin(current_user.id).include?(@protocol)
+      @protocol = nil
+
+      render partial: 'service_requests/authorization_error', locals: { error: 'You are not allowed to access this Sub Service Request.' }
+    end
+  end
+
+  def authorize_admin
+    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
+    @service_request     = @sub_service_request.service_request
+
+    unless (current_user.authorized_admin_organizations & @sub_service_request.org_tree).any?
+      @sub_service_request = nil
+      @service_request = nil
+      render partial: 'service_requests/authorization_error', locals: { error: 'You are not allowed to access this Sub Service Request.' }
+    end
   end
 
   def setup_calendar_pages

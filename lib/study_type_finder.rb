@@ -28,7 +28,7 @@ class StudyTypeFinder
 
 	def study_type
     if @study.nil?
-      @study_type = determine_study_type(StudyTypeQuestionGroup.active.pluck(:id), @answers)
+      @study_type = determine_study_type(StudyTypeQuestionGroup.active.pluck(:id).first, @answers)
 		elsif @study.study_type_answers.present?
       answers = collect_answers(@study, @study.version_type)
       @study_type = determine_study_type(@study.version_type, answers)

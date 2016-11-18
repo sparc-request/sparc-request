@@ -199,7 +199,7 @@ en:
     merged_totals:
       header: "Study Cost Totals"
       grand_total: "Grand Total"
- 
+
   #############
   # CONSTANTS #
   #############
@@ -459,11 +459,6 @@ en:
       credentials: "Credentials:"
       credentials_prompt: "Select a Credential"
       credentials_specify: "Please Specify:*"
-      institution: "Institution:"
-      institution_prompt: "Select an Institution"
-      college: "College:"
-      college_prompt: "Select a College"
-      department: "Department:"
       phone: "Phone:"
       department_prompt: "Select a Department"
       subspecialty: "Subspecialty:"
@@ -1345,18 +1340,12 @@ en:
   # Portal Editing user for study/project
   portal_user_form:
     add_user: "Add User"
-    college_prompt: "Select a College"
-    college: "College:"
     credential_prompt: "Select a Credential"
     credentials: "Credentials:"
-    department_prompt: "Select a Department"
-    department: "Department:"
     edit_user: "Edit User"
     email: "E-mail:"
     epic_access: "Epic EMR Access?:"
     era: "ERA Commons Name:"
-    institution_prompt: "Select an Institution"
-    institution: "Institution:"
     name: "Name:"
     credentials_other: "Other Credentials:"
     phone: "Phone:"
@@ -1618,18 +1607,12 @@ en:
   # Portal Editing user for study/project
   portal_user_form:
     add_user: "Add User"
-    college_prompt: "Select a College"
-    college: "College:"
     credential_prompt: "Select a Credential"
     credentials: "Credentials:"
-    department_prompt: "Select a Department"
-    department: "Department:"
     edit_user: "Edit User"
     email: "E-mail:"
     epic_access: "Epic EMR Access?:*"
     era: "ERA Commons Name:"
-    institution_prompt: "Select an Institution"
-    institution: "Institution:"
     name: "Name:"
     phone: "Phone:"
     rights:
@@ -1976,16 +1959,8 @@ en:
   # User details partial
   user_details:
     add_button: "Add Authorized User"
-    college: "College"
-    college_select: "Select a College"
-    credentials: "Credentials"
-    credentials_select: "Select a Credential"
-    department: "Department"
-    department_select: "Select a Department"
     ec_name: "ERA Commons Name"
     email: "Email"
-    institution: "Institution"
-    institution_select: "Select an Institution"
     name: "Name"
     phone: "Phone"
     role: "Role"

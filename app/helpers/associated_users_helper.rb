@@ -19,7 +19,11 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 module AssociatedUsersHelper
-  # TODO document this
+  # Returns div.form-group for Authorized User forms.
+  # name - Sets label text from t(:authorized_users)[:form_fields][name.to_sym]
+  #        Also used in form helpers.
+  # classes - HTML classes to add to form-group.
+  # label - Override localized label text.
   def user_form_group(form: nil, name:, classes: [], label: nil)
     form_group_classes = %w(row form-group) + [classes]
     label_class = 'col-lg-3 control-label'
@@ -35,7 +39,10 @@ module AssociatedUsersHelper
                 class: form_group_classes)
   end
 
-  # TODO document this
+  # Generates state for portion of Authorized User form concerned with their
+  # professional organizations.
+  # professional_organization - Last professional organization selected in form.
+  #   Pass a falsy value for initial state.
   def professional_organization_state(professional_organization)
     if professional_organization
       {
@@ -52,6 +59,11 @@ module AssociatedUsersHelper
     end
   end
 
+  # Generate a dropdown for choosing a professional organization.
+  # choices_from - If a ProfessionalOrganization, returns a select populated
+  #   with it (as selected option) and its siblings. Otherwise, choices_from
+  #   should be a collection of ProfessionalOrganizations to be presented as
+  #   options.
   def professional_organization_dropdown(form: nil, choices_from:)
     select_class = 'form-control selectpicker'
     prompt = t(:authorized_users)[:form_fields][:select_one]
@@ -74,6 +86,8 @@ module AssociatedUsersHelper
     end
   end
 
+  # Convert ProfessionalOrganization's org_type to a label for Authorized Users
+  # form.
   def org_type_label(professional_organization)
     professional_organization.org_type.capitalize + ":"
   end

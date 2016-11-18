@@ -1049,13 +1049,13 @@ ActiveRecord::Schema.define(version: 20161115153644) do
   add_index "submission_emails", ["organization_id"], name: "index_submission_emails_on_organization_id", using: :btree
 
   create_table "submissions", force: :cascade do |t|
+    t.integer  "service_id",       limit: 4
     t.integer  "identity_id",      limit: 4
     t.integer  "questionnaire_id", limit: 4
     t.integer  "protocol_id",      limit: 4
     t.integer  "line_item_id",     limit: 4
     t.datetime "created_at",                 null: false
     t.datetime "updated_at",                 null: false
-    t.integer  "service_id",       limit: 4
   end
 
   add_index "submissions", ["identity_id"], name: "index_submissions_on_identity_id", using: :btree

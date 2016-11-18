@@ -1,5 +1,5 @@
 class AddIdentityIdToEpicQueue < ActiveRecord::Migration
   def change
-    add_column :epic_queues, :identity_id, :integer
+    add_reference(:epic_queues, :identity)
   end
 end

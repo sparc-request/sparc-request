@@ -17,11 +17,40 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS~
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
+def created_line_item_audit_trail(service_request, service3, identity)
+  ssr = service_request.sub_service_requests.first
+  ssr.update_attribute(:submitted_at, Time.now.yesterday)
+  ssr.update_attribute(:status, 'submitted')
+  ssr.save!
+  service_request.reload
+  created_li = create(:line_item_without_validations, sub_service_request_id: ssr.id, service_id: service3.id, service_request_id: service_request.id)
+  created_li_id = created_li.id
+  ssr.reload
+  ssr.save!
+  service_request.reload
 
-class ContactMailer < ApplicationMailer
+  audit2 = AuditRecovery.where("auditable_id = '#{created_li_id}' AND auditable_type = 'LineItem' AND action = 'create'")
 
-  def contact_us_email(contact_form)
-    @contact_form = contact_form
-    mail(to: CONTACT_US_MAIL_TO, cc: CONTACT_US_CC, from: "#{contact_form.email}", subject: "#{contact_form.subject}")
-  end
+  audit2.first.update_attribute(:created_at, Time.now - 5.hours)
+  audit2.first.update_attribute(:user_id, identity.id)
+end
+
+def deleted_line_item_audit_trail(service_request, service3, identity)
+  ssr = service_request.sub_service_requests.first
+  ssr.update_attribute(:submitted_at, Time.now.yesterday)
+  ssr.update_attribute(:status, 'submitted')
+  li_id = ssr.line_items.first.id
+  ssr.line_items.first.destroy!
+  ssr.save!
+  service_request.reload
+
+  audit1 = AuditRecovery.where("auditable_id = '#{li_id}' AND auditable_type = 'LineItem' AND action = 'destroy'")
+
+  audit1.first.update_attribute(:created_at, Time.now - 5.hours)
+  audit1.first.update_attribute(:user_id, identity.id)
+end
+
+def deleted_and_created_line_item_audit_trail(service_request, service3, identity)
+  deleted_line_item_audit_trail(service_request, service3, identity)
+  created_line_item_audit_trail(service_request, service3, identity)
 end

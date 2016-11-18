@@ -61,6 +61,213 @@ RSpec.describe ServiceRequestsController, type: :controller do
       expect(assigns(:service_request).previous_submitted_at).to eq(sr.submitted_at)
     end
 
+    context 'previously submitted ssr that has deleted services' do
+      before :each do
+        @org         = create(:organization)
+        service     = create(:service, organization: @org, one_time_fee: true)
+        protocol    = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
+        @sr          = create(:service_request_without_validations, protocol: protocol, submitted_at: Time.now.yesterday)
+        @ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, status: 'submitted', submitted_at: Time.now.yesterday)
+        li          = create(:line_item, service_request: @sr, sub_service_request: @ssr, service: service)
+        li_1        = create(:line_item, service_request: @sr, sub_service_request: @ssr, service: service)
+                      create(:service_provider, identity: logged_in_user, organization: @org)
+        
+        ssr_li_id   = @ssr.line_items.first.id
+        @ssr.line_items.first.destroy!
+        audit = AuditRecovery.where("auditable_id = '#{ssr_li_id}' AND auditable_type = 'LineItem' AND action = 'destroy'")
+        audit.first.update_attribute(:created_at, Time.now - 5.hours)
+        audit.first.update_attribute(:user_id, logged_in_user.id)
+      end
+
+      it 'should send request amendment email to service provider' do
+        session[:identity_id]        = logged_in_user.id
+        session[:service_request_id] = @sr.id
+        session[:sub_service_request_id] = @ssr.id
+
+        allow(Notifier).to receive(:notify_service_provider) do
+          mailer = double('mail') 
+          expect(mailer).to receive(:deliver_now)
+          mailer
+        end
+
+        xhr :get, :confirmation, {
+          id: @sr.id
+        }
+
+        expect(Notifier).to have_received(:notify_service_provider)
+      end
+
+      it 'should send request amendment email to admin' do
+        @org.submission_emails.create(email: 'hedwig@owlpost.com')
+        session[:identity_id]        = logged_in_user.id
+        session[:service_request_id] = @sr.id
+        session[:sub_service_request_id] = @ssr.id
+
+        allow(Notifier).to receive(:notify_admin) do
+          mailer = double('mail') 
+          expect(mailer).to receive(:deliver)
+          mailer
+        end
+        xhr :get, :confirmation, {
+          id: @sr.id
+        }
+        expect(Notifier).to have_received(:notify_admin)
+      end
+    end
+
+    context 'previously submitted ssr that has added services' do
+      before :each do
+        @org         = create(:organization)
+        service     = create(:service, organization: @org, one_time_fee: true)
+        protocol    = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
+        @sr          = create(:service_request_without_validations, protocol: protocol, submitted_at: Time.now.yesterday)
+        @ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, status: 'submitted', submitted_at: Time.now.yesterday)
+        li          = create(:line_item, service_request: @sr, sub_service_request: @ssr, service: service)
+        li_1        = create(:line_item, service_request: @sr, sub_service_request: @ssr, service: service)
+                      create(:service_provider, identity: logged_in_user, organization: @org)
+        
+        audit = AuditRecovery.where("auditable_id = '#{li_1.id}' AND auditable_type = 'LineItem' AND action = 'create'")
+        audit.first.update_attribute(:created_at, Time.now - 5.hours)
+        audit.first.update_attribute(:user_id, logged_in_user.id)
+      end
+
+      it 'should send request amendment email to service provider' do
+        session[:identity_id]        = logged_in_user.id
+        session[:service_request_id] = @sr.id
+        session[:sub_service_request_id] = @ssr.id
+
+        allow(Notifier).to receive(:notify_service_provider) do
+          mailer = double('mail') 
+          expect(mailer).to receive(:deliver_now)
+          mailer
+        end
+        xhr :get, :confirmation, {
+          id: @sr.id
+        }
+        expect(Notifier).to have_received(:notify_service_provider)
+      end
+
+      it 'should send request amendment email to admin' do
+        @org.submission_emails.create(email: 'hedwig@owlpost.com')
+
+        session[:identity_id]        = logged_in_user.id
+        session[:service_request_id] = @sr.id
+        session[:sub_service_request_id] = @ssr.id
+
+        allow(Notifier).to receive(:notify_admin) do
+            mailer = double('mail') 
+            expect(mailer).to receive(:deliver)
+            mailer
+          end
+        xhr :get, :confirmation, {
+          id: @sr.id
+        }
+        expect(Notifier).to have_received(:notify_admin)
+      end
+    end
+
+    context 'previously submitted ssr that has both added and deleted services' do
+      before :each do
+        @org         = create(:organization)
+        service     = create(:service, organization: @org, one_time_fee: true)
+        protocol    = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
+        @sr          = create(:service_request_without_validations, protocol: protocol, submitted_at: Time.now.yesterday)
+        @ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, status: 'submitted', submitted_at: Time.now.yesterday)
+        li          = create(:line_item, service_request: @sr, sub_service_request: @ssr, service: service)
+        li_1        = create(:line_item, service_request: @sr, sub_service_request: @ssr, service: service)
+                      create(:service_provider, identity: logged_in_user, organization: @org)
+        
+        audit = AuditRecovery.where("auditable_id = '#{li_1.id}' AND auditable_type = 'LineItem' AND action = 'create'")
+        audit.first.update_attribute(:created_at, Time.now - 5.hours)
+        audit.first.update_attribute(:user_id, logged_in_user.id)
+
+        ssr_li_id   = @ssr.line_items.first.id
+        @ssr.line_items.first.destroy!
+
+        audit_1 = AuditRecovery.where("auditable_id = '#{ssr_li_id}' AND auditable_type = 'LineItem' AND action = 'destroy'")
+        audit_1.first.update_attribute(:created_at, Time.now - 5.hours)
+        audit_1.first.update_attribute(:user_id, logged_in_user.id)
+      end
+
+      it 'should send request amendment email to service provider' do
+        session[:identity_id]        = logged_in_user.id
+        session[:service_request_id] = @sr.id
+        session[:sub_service_request_id] = @ssr.id
+
+        allow(Notifier).to receive(:notify_service_provider) do
+            mailer = double('mail') 
+            expect(mailer).to receive(:deliver_now)
+            mailer
+          end
+        xhr :get, :confirmation, {
+          id: @sr.id
+        }
+        expect(Notifier).to have_received(:notify_service_provider)
+      end
+
+      it 'should send request amendment email to admin' do
+        @org.submission_emails.create(email: 'hedwig@owlpost.com')
+
+        session[:identity_id]        = logged_in_user.id
+        session[:service_request_id] = @sr.id
+        session[:sub_service_request_id] = @ssr.id
+
+        allow(Notifier).to receive(:notify_admin) do
+            mailer = double('mail') 
+            expect(mailer).to receive(:deliver)
+            mailer
+          end
+        xhr :get, :confirmation, {
+          id: @sr.id
+        }
+        expect(Notifier).to have_received(:notify_admin)
+      end
+    end
+
+    context 'previously submitted ssr that does NOT have added or deleted services' do
+      before :each do
+        @org         = create(:organization)
+        service     = create(:service, organization: @org, one_time_fee: true)
+        protocol    = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
+        @sr          = create(:service_request_without_validations, protocol: protocol, submitted_at: Time.now.yesterday)
+        @ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, status: 'submitted', submitted_at: Time.now.yesterday)
+      end
+
+      it 'should NOT send request amendment email to service provider' do
+        session[:identity_id]        = logged_in_user.id
+        session[:service_request_id] = @sr.id
+        session[:sub_service_request_id] = @ssr.id
+
+        allow(Notifier).to receive(:notify_service_provider) do
+          mailer = double('mail') 
+          expect(mailer).not_to receive(:deliver_now)
+          mailer
+        end
+        xhr :get, :confirmation, {
+          id: @sr.id
+        }
+        expect(Notifier).not_to have_received(:notify_service_provider)
+      end
+
+      it 'should NOT send request amendment email to admin' do
+        @org.submission_emails.create(email: 'hedwig@owlpost.com')
+
+        session[:identity_id]        = logged_in_user.id
+        session[:service_request_id] = @sr.id
+        session[:sub_service_request_id] = @ssr.id
+
+        allow(Notifier).to receive(:notify_admin) do
+            mailer = double('mail') 
+            expect(mailer).to receive(:deliver)
+            mailer
+          end
+        xhr :get, :confirmation, {
+          id: @sr.id
+        }
+        expect(Notifier).not_to have_received(:notify_admin)
+      end
+    end
+
     context 'editing sub service request' do
       context 'status not submitted' do
         it 'should notify' do

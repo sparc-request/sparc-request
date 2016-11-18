@@ -19,7 +19,8 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 %p
   = I18n.t('notifier.body1', :full_name => @full_name)
+%p.inline=t(:notifier)[:request_amendment_intro]
 %p.inline
-  = I18n.t('notifier.deleted_all_services_from_cart', protocol_type: @protocol.type)
+  %a.link{href: @portal_link}=t(:notifier)[:sparc_dashboard_period]
 %br
 %br

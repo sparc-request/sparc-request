@@ -20,8 +20,9 @@
 
 require 'rails_helper'
 
-RSpec.describe StudyTypeController, type: :controller do
 
+RSpec.describe StudyTypeController, type: :controller do
+  build_study_type_question_groups
   describe "GET #determine_study_type_note" do
     it "returns study_type note 0" do
       params = {ans1: "false", ans2: "false", ans3: "true", ans4: "true", ans5: "true", controller: "study_type", action: "determine_study_type_note"}

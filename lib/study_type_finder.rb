@@ -28,17 +28,15 @@ class StudyTypeFinder
 
 	def study_type
     if @study.nil?
-      @study_type = determine_study_type(StudyTypeQuestionGroup.active.pluck(:id).first, @answers)
+      study_type = determine_study_type(3, @answers)
 		elsif @study.study_type_answers.present?
-      answers = collect_answers(@study, @study.version_type)
-      @study_type = determine_study_type(@study.version_type, answers)
+      study_type = determine_study_type(@study.version_type, collect_answers(@study))
   	end
-    @study_type
+    study_type
   end
 
-  def collect_answers(study, version)
-    answers = StudyTypeQuestion.joins(:study_type_question_group).where(study_type_question_groups: { version: version })
-    answers.map{ |ans| ans.study_type_answers.find_by_protocol_id(study.id) }.map(&:answer)
+  def collect_answers(study)
+    @study.display_answers.map(&:answer)
   end
 
   def determine_study_type(version, answers)
@@ -50,10 +48,10 @@ class StudyTypeFinder
     when 1
       study_type_ans_constant = STUDY_TYPE_ANSWERS
     end
-    @study_type = study_type_ans_constant.key(answers)
+    study_type_ans_constant.key(answers)
   end
 
   def determine_study_type_note
-    @note = STUDY_TYPE_NOTES[study_type]
+    STUDY_TYPE_NOTES[study_type]
   end
 end

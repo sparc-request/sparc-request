@@ -23,41 +23,22 @@ class StudyTypeFinder
 	def initialize(study, answers=nil)
 		@study = study
     @answers = answers
-		@active_answers = Array.new
-		@inactive_answers_version_1 = Array.new
-    @inactive_answers_version_2 = Array.new
 		@study_type = nil
 	end
 
 	def study_type
     if @study.nil?
-      @study_type = determine_study_type(3, @answers)
+      @study_type = determine_study_type(StudyTypeQuestionGroup.active.pluck(:id), @answers)
 		elsif @study.study_type_answers.present?
-			if @study.active?
-        # VERSION 3 STQ
-  			StudyTypeQuestion.active.find_each do |stq|
-          @active_answers << stq.study_type_answers.find_by_protocol_id(@study.id).answer 
-        end
-        @study_type = determine_study_type(3, @active_answers)
-
-      elsif @study.version_type == 1
-        # VERSION 1 STQ
-        StudyTypeQuestion.joins(:study_type_question_group).where(study_type_question_groups: { version: 1 }).find_each do |stq|
-          @inactive_answers_version_1 << stq.study_type_answers.find_by_protocol_id(@study.id).answer 
-        end
-
-        @study_type = determine_study_type(1, @inactive_answers_version_1)
-
-      elsif @study.version_type == 2
-        # VERSION 2 STQ
-        StudyTypeQuestion.joins(:study_type_question_group).where(study_type_question_groups: { version: 2 }).find_each do |stq|
-          @inactive_answers_version_2 << stq.study_type_answers.find_by_protocol_id(@study.id).answer
-        end
-
-        @study_type = determine_study_type(2, @inactive_answers_version_2)
-      end
+      answers = collect_answers(@study, @study.version_type)
+      @study_type = determine_study_type(@study.version_type, answers)
   	end
     @study_type
+  end
+
+  def collect_answers(study, version)
+    answers = StudyTypeQuestion.joins(:study_type_question_group).where(study_type_question_groups: { version: version })
+    answers.map{ |ans| ans.study_type_answers.find_by_protocol_id(study.id) }.map(&:answer)
   end
 
   def determine_study_type(version, answers)
@@ -69,23 +50,10 @@ class StudyTypeFinder
     when 1
       study_type_ans_constant = STUDY_TYPE_ANSWERS
     end
-
-    study_type_ans_constant.each do |k, v|
-      if v == answers
-        @study_type = k
-        break
-      end
-    end
-    @study_type
+    @study_type = study_type_ans_constant.key(answers)
   end
 
   def determine_study_type_note
-    STUDY_TYPE_NOTES.each do |k, v|
-      if k == study_type
-        @note = v
-        break
-      end
-    end
-    @note
+    @note = STUDY_TYPE_NOTES[study_type]
   end
 end

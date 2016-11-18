@@ -18,35 +18,15 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class StudyTypeController < ApplicationController
-  before_filter :clean_up_params,               only: [:determine_study_type_note]
+  before_filter :extract_answers,               only: [:determine_study_type_note]
 
   def determine_study_type_note
     @note = StudyTypeFinder.new(nil, @study_type_answers).determine_study_type_note
   end
 
-  def determine_note(study_type)
-    STUDY_TYPE_NOTES.each do |k, v|
-      if k == study_type
-        @note = v
-        break
-      end
-    end
-    @note
-  end
-
-  def clean_up_params
-    params.delete('controller')
-    params.delete('action')
-    @study_type_answers = []
-    if params['ans1'] == 'true'
-      params.values.each do |value|
-        @study_type_answers = [true, nil, nil, nil, nil]
-      end
-    else
-      params.values.each do |value|
-        @study_type_answers << value.to_s.eql?('true') ? true : false
-      end
-    end
-    @study_type_answers 
+  def extract_answers
+    extracted_params = params.extract!(:ans1, :ans2, :ans3, :ans4, :ans5)
+    boolean_params = extracted_params.transform_values {|val| val.to_s.eql?('true') ? true : val.eql?('') ? nil : false}
+    @study_type_answers = boolean_params.values  
   end
 end

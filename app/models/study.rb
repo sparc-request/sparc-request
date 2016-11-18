@@ -37,11 +37,8 @@ class Study < Protocol
   end
 
   def display_answers
-    study_type_answers = []
-    StudyTypeQuestion.joins(:study_type_question_group).where(study_type_question_groups: { version: version_type }).find_each do |stq|
-      study_type_answers << stq.study_type_answers.find_by_protocol_id(id)
-    end
-    study_type_answers
+    answers = StudyTypeQuestion.joins(:study_type_question_group).where(study_type_question_groups: { version: version_type })
+    answers.map{ |ans| ans.study_type_answers.find_by_protocol_id(id) }
   end
 
   def populate_for_edit

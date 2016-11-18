@@ -434,6 +434,102 @@ en:
   #############################
   errors:
     arms:
+      manage: "Manage Arms"
+      add: "Add Arm"
+      remove: "Remove Arm"
+      edit: "Edit Arm"
+      created: "Arm Created!"
+      updated: "Arm Updated!"
+      destroyed: "Arm Destroyed!"
+      arm: "Arm:"
+      name: "Arm Name: *"
+      subject_count: "Subject Count: *"
+      visit_count: "Visit Count: *"
+
+    ######################
+    #  AUTHORIZED USERS  #
+    ######################
+    authorized_users:
+      add:
+        header: "Add Authorized User"
+        select: "Select User:"
+      edit:
+        header: "Edit Authorized User"
+      era: "ERA Commons Name:"
+      credentials: "Credentials:"
+      credentials_prompt: "Select a Credential"
+      credentials_specify: "Please Specify:*"
+      institution: "Institution:"
+      institution_prompt: "Select an Institution"
+      college: "College:"
+      college_prompt: "Select a College"
+      department: "Department:"
+      phone: "Phone:"
+      department_prompt: "Select a Department"
+      subspecialty: "Subspecialty:"
+      subspecialty_prompt: "Select a Subspecialty"
+      role: "Role:*"
+      role_prompt: "Select a Role"
+      role_specify: "Please Specify:*"
+      epic_access: "Epic EMR Access?:*"
+      rights:
+        header: "User Rights:*"
+        none: "Study/Project Member Only"
+        view: "View Rights"
+        request: "Request/Approve Services"
+        approve: "Authorized/Change Study Charges"
+
+    ###############
+    #  DOCUMENTS  #
+    ###############
+    documents:
+      header: "Documents"
+      add: "Add a New Document"
+      edit: "Edit Document"
+      created: "Document Uploaded!"
+      updated: "Document Updated!"
+      destroyed: "Document Destroyed!"
+      table:
+        type: "Type"
+        title: "Title"
+        uploaded: "Uploaded"
+      form:
+        document_type: "Document Type:*"
+        specify_doc_type: "Please Specify:*"
+        document: "Document:*"
+        access: "Allow Access:"
+
+    #################
+    #  EPIC QUEUES  #
+    #################
+    epic_queues:
+      header: "Epic Queues"
+    ##################
+    #  FULFILLMENTS  #
+    ##################
+    fulfillments:
+      add: "Add Fulfillment"
+      edit: "Edit Fulfillment"
+      created: "Fulfillment Created!"
+      updated: "Fulfillment Updated!"
+      destroyed: "Fulfillment Destroyed!"
+      table:
+        date: "Fulfillment Date"
+        time_unit: "Qty Type"
+        time: "Quantity"
+        actions: "Actions"
+      actions:
+        notes: " Notes"
+        edit: " Edit Fulfillment"
+        delete: " Delete Fulfillment"
+      form:
+        date: "Fulfillment Date:*"
+        time: "Quantity:*"
+        time_unit: "Qty Type:*"
+
+    ################
+    #  LINE ITEMS  #
+    ################
       visit_day_missing: "Please specify a study day for each visit (%{arm_name})"
       name_unique: 'must be unique to the Protocol'
     line_items:

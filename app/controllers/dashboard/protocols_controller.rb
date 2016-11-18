@@ -72,6 +72,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def show
+    @submissions = @protocol.submissions
     respond_to do |format|
       format.js   { render }
       format.html {

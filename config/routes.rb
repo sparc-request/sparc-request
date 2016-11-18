@@ -272,8 +272,6 @@ SparcRails::Application.routes.draw do
 
     resources :protocol_filters, only: [:new, :create]
 
-    resources :services, only: [:show]
-
     resources :service_requests, only: [:show]
 
     resources :studies, controller: :protocols, except: [:destroy]

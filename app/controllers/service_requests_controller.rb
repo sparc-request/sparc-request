@@ -62,7 +62,7 @@ class ServiceRequestsController < ApplicationController
     when 'service_calendar'
       @service_request.group_valid?(:service_calendar)
     end
-    
+
     @errors = @service_request.errors
 
     if @errors.any?
@@ -152,7 +152,7 @@ class ServiceRequestsController < ApplicationController
     @has_subsidy          = @service_request.sub_service_requests.map(&:has_subsidy?).any?
     @eligible_for_subsidy = @service_request.sub_service_requests.map(&:eligible_for_subsidy?).any?
 
-    unless @has_subsidy || @eligible_for_subsidy 
+    unless @has_subsidy || @eligible_for_subsidy
       @back = 'service_calendar'
     end
   end
@@ -173,7 +173,6 @@ class ServiceRequestsController < ApplicationController
   end
 
   def obtain_research_pricing
-    # TODO: refactor into the ServiceRequest model
     @protocol = @service_request.protocol
     @service_request.previous_submitted_at = @service_request.submitted_at
 
@@ -197,7 +196,7 @@ class ServiceRequestsController < ApplicationController
 
     #### REQUEST AMENDMENT EMAIL ####
 
-    # Grab ssrs that have been previously submitted 
+    # Grab ssrs that have been previously submitted
     previously_submitted_ssrs = @service_request.sub_service_requests.where.not(submitted_at: nil)
     #### END REQUEST AMENDMENT EMAIL ####
 
@@ -210,7 +209,7 @@ class ServiceRequestsController < ApplicationController
       @sub_service_request.update_past_status(current_user)
     else
       to_notify = update_service_request_status(@service_request, 'submitted')
-      
+
       @service_request.update_arm_minimum_counts
       @service_request.sub_service_requests.update_all(nursing_nutrition_approved: false, lab_approved: false, imaging_approved: false, committee_approved: false)
     end
@@ -263,11 +262,9 @@ class ServiceRequestsController < ApplicationController
       # create sub_service_requests
       @service_request.reload
       @service_request.previous_submitted_at = @service_request.submitted_at
-
       new_line_items.each do |li|
         ssr = find_or_create_sub_service_request(li, @service_request)
         li.update_attribute(:sub_service_request_id, ssr.id)
-
         if @service_request.status == 'first_draft'
           ssr.update_attribute(:status, 'first_draft')
         elsif ssr.status.nil? || (ssr.can_be_edited? && ssr_has_changed?(@service_request, ssr) && (ssr.status != 'complete'))
@@ -332,9 +329,12 @@ class ServiceRequestsController < ApplicationController
     end
 
     @service_request.reload
-
     @line_items_count     = @sub_service_request ? @sub_service_request.line_items.count : @service_request.line_items.count
     @sub_service_requests = @service_request.cart_sub_service_requests
+
+    respond_to do |format|
+      format.js {render layout: false}
+    end
   end
 
   def get_help
@@ -481,8 +481,8 @@ class ServiceRequestsController < ApplicationController
     end
   end
 
-  # A request amendment email is sent to service providers 
-  # and admin of ssrs that have had services added/deleted and have been previously submitted 
+  # A request amendment email is sent to service providers
+  # and admin of ssrs that have had services added/deleted and have been previously submitted
   def send_request_amendment_email_evaluation(previously_submitted_ssrs)
     request_amendment_ssrs = []
     previously_submitted_ssrs.each do |ssr|
@@ -542,10 +542,9 @@ class ServiceRequestsController < ApplicationController
       audit_report = request_amendment ? audit_report = sub_service_request.audit_report(current_user, sub_service_request.service_request.previous_submitted_at.utc, Time.now.utc) : nil
 
       sub_service_request.organization.submission_emails_lookup.each do |submission_email|
-        
         @service_list_false = sub_service_request.service_request.service_list(false, nil, sub_service_request)
         @service_list_true = sub_service_request.service_request.service_list(true, nil, sub_service_request)
-        
+
         @line_items = sub_service_request.line_items
         xls = render_to_string action: 'show', formats: [:xlsx]
         Notifier.notify_admin(submission_email.email, xls, current_user, sub_service_request, audit_report).deliver
@@ -555,7 +554,7 @@ class ServiceRequestsController < ApplicationController
 
   def send_ssr_service_provider_notifications(sub_service_request, ssr_destroyed: false, request_amendment: false) #single sub-service request
     audit_report = request_amendment ? sub_service_request.audit_report(current_user, sub_service_request.service_request.previous_submitted_at.utc, Time.now.utc) : nil
- 
+
     sub_service_request.organization.service_providers.where("(`service_providers`.`hold_emails` != 1 OR `service_providers`.`hold_emails` IS NULL)").each do |service_provider|
       send_individual_service_provider_notification(sub_service_request, service_provider, audit_report, ssr_destroyed, request_amendment)
     end
@@ -597,7 +596,7 @@ class ServiceRequestsController < ApplicationController
     line_items = []
     @service_request.sub_service_requests.each do |ssr|
       if service_provider.identity.is_service_provider?(ssr)
-        line_items << SubServiceRequest.find(ssr.id).line_items
+        line_items << ssr.line_items
       end
     end
 
@@ -611,7 +610,7 @@ class ServiceRequestsController < ApplicationController
       request_for_grant_billing_form = RequestGrantBillingPdf.generate_pdf service_request
       attachments["request_for_grant_billing_#{sub_service_request.service_request.id}.pdf"] = request_for_grant_billing_form
     end
-    
+
     ssr_id = sub_service_request.id
     Notifier.notify_service_provider(service_provider, sub_service_request.service_request, attachments, current_user, ssr_id, audit_report, ssr_destroyed, request_amendment).deliver_now
   end
@@ -621,14 +620,20 @@ class ServiceRequestsController < ApplicationController
   end
 
   def update_service_request_status(service_request, status, validate=true)
-    sub_service_requests = service_request.sub_service_requests.where(status: UPDATABLE_STATUSES) 
+    requests = []
+    service_request.sub_service_requests.each do |ssr|
+      if UPDATABLE_STATUSES.include?(ssr.status)
+        requests << ssr
+      end
+    end
+
     if (status == 'submitted')
       service_request.previous_submitted_at = service_request.submitted_at
       service_request.update_attribute(:submitted_at, Time.now)
-      sub_service_requests.update_all(submitted_at: Time.now)
+      requests.each { |ssr| ssr.update_attributes(submitted_at: Time.now) }
     end
     to_notify = service_request.update_status(status, validate)
-    sub_service_requests.each { |ssr| ssr.update_past_status(current_user) }
+    requests.each { |ssr| ssr.update_past_status(current_user) }
 
     to_notify
   end

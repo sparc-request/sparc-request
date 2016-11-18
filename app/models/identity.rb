@@ -73,11 +73,6 @@ class Identity < ActiveRecord::Base
   has_many :submissions
   has_many :super_users, dependent: :destroy
 
-  # TODO: Identity doesn't really have many sub service requests; an
-  # identity is the owner of many sub service requests.  We need a
-  # better name here.
-  # has_many :sub_service_requests, foreign_key: 'owner_id'
-
   attr_accessible :catalog_overlord
   attr_accessible :credentials
   attr_accessible :credentials_other

@@ -191,16 +191,6 @@ RSpec.describe LineItemsVisit do
         end
       end
 
-      describe "remove visit" do
-
-        it "should delete a visit" do
-          vg = arm1.visit_groups.create(position: arm1.visit_groups.count, day: arm1.visit_groups.count, name: "Visit Group")
-          @line_items_visit.add_visit(vg)
-          @line_items_visit.remove_visit(vg)
-          expect(@line_items_visit.visits.count).to eq(10)
-        end
-      end
-
       describe 'any visit quantities customized' do
         let!(:protocol)          { create(:protocol_without_validations) }
         let!(:arm)               { create(:arm, protocol: protocol) }

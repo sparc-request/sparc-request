@@ -55,6 +55,7 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
         @protocol           = @service_request.protocol
         @tab                = 'calendar'
         @portal             = true
+        @admin              = false
         @review             = true
         @merged             = false
         @consolidated       = false

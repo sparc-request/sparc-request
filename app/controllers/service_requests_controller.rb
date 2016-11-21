@@ -161,6 +161,7 @@ class ServiceRequestsController < ApplicationController
     @tab          = 'calendar'
     @review       = true
     @portal       = false
+    @admin        = false
     @merged       = false
     @consolidated = true
 

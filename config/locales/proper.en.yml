@@ -56,9 +56,9 @@ en:
       back_to_top: "Back to Top"
       center:
         search_placeholder: "Search by Service Name or CPT Code..."
-        welcome: "Welcome to SPARCRequest: Storefront of Research Services"
+        welcome: "Welcome to SPARCRequest:<br>Storefront of Research Services"
         description: "Search for services above or browse the providers/services on the left sidebar"
-        notice: "** You may only select services applicable to ONE Protocol at a time **"
+        notice: "** You may only select services applicable to ONE Study/Project at a time **"
         news:
           header: "News"
           none: "There is no recent news. Please check back later."

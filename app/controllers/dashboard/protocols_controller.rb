@@ -125,7 +125,8 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   def edit
     @protocol_type      = @protocol.type
     @permission_to_edit = @authorization.nil? ? false : @authorization.can_edit?
-
+    @in_dashboard       = true
+    
     if @permission_to_edit
       @protocol.study_type_question_group_id = StudyTypeQuestionGroup.active_id
     end

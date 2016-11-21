@@ -23,5 +23,5 @@
   - content_for :error_messages do
     = render 'shared/modal_errors', errors: @errors
 #protocol
-  = render 'protocols/form/edit_protocol_type', protocol: @protocol, protocol_type: @protocol_type, service_request: @service_request
+  = render 'protocols/form/edit_protocol_type', protocol: @protocol, protocol_type: @protocol_type, service_request: @service_request, in_dashboard: @in_dashboard
   = render 'protocols/form/protocol_form', protocol: @protocol, protocol_type: @protocol_type, service_request: @service_request

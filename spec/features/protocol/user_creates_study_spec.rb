@@ -36,12 +36,12 @@ RSpec.describe 'User creates project', js: true do
     StudyTypeQuestionGroup.create(active: true)
   end
 
-  context 'and clicks \'New Study\'' do
+  context 'and clicks \'New Research Study\'' do
     scenario 'and sees the study form' do
       visit protocol_service_request_path(@sr)
       wait_for_javascript_to_finish
 
-      click_link 'New Study'
+      click_link 'New Research Study'
       wait_for_javascript_to_finish
 
       expect(page).to have_content('Study Information')
@@ -53,7 +53,7 @@ RSpec.describe 'User creates project', js: true do
       visit protocol_service_request_path(@sr)
       wait_for_javascript_to_finish
 
-      click_link 'New Study'
+      click_link 'New Research Study'
       wait_for_javascript_to_finish
 
       fill_in 'protocol_short_title', with: 'asd'

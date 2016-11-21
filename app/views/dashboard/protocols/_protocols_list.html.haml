@@ -67,7 +67,8 @@
     - protocols.each do |protocol|
       %tr.protocols_index_row{ data: { protocol_id: protocol.id }}
         %td.id
-          = protocol.id
+          %button.btn.btn-sm.btn-info
+            = protocol.id
         %td.title
           = short_title_display protocol
         %td.pis

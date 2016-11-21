@@ -27,14 +27,14 @@
         = t(:proper)[:catalog][:center][:calendar][:none]
       - @events.each do |event|
         .calendar-event
-          .date
+          %strong.date.col-sm-3.bg-primary.text-center
             = event[:month]
             .day
               = event[:day]
-          .location
-            .title
+          .location.col-sm-9
+            %strong.title.col-sm-12
               = event[:title]
-            .time
+            %em.time.col-sm-12
               - if event[:all_day]
                 = t(:proper)[:catalog][:center][:calendar][:all_day]
               - else

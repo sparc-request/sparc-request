@@ -21,5 +21,5 @@
 class EpicQueueRecord < ActiveRecord::Base
   audited
 
-  attr_accessible :protocol_id, :status
+  attr_accessible :protocol_id, :status, :origin, :identity_id
 end

@@ -26,6 +26,14 @@ RSpec.describe 'User creates study', js: true do
   build_study_type_question_groups
   build_study_type_questions
 
+  def visit_create_study_form
+    page = Dashboard::Protocols::IndexPage.new
+    page.load
+    page.search_results.new_protocol_button.click
+    page.search_results.new_study_option.click
+    page
+  end
+
   before :each do
     institution = create(:institution, name: "Institution")
     provider    = create(:provider, name: "Provider", parent: institution)
@@ -38,10 +46,7 @@ RSpec.describe 'User creates study', js: true do
 
   context 'selects "Publish Study in Epic" and selects answers that give study_type 1' do
     scenario 'should show note for study_type 1' do
-      visit protocol_service_request_path(@sr)
-      wait_for_javascript_to_finish
-
-      click_link 'New Study'
+      visit_create_study_form
       wait_for_javascript_to_finish
 
       find('#study_selected_for_epic_true_button').click
@@ -55,10 +60,7 @@ RSpec.describe 'User creates study', js: true do
   end
   context 'selects "Publish Study in Epic" and selects answers that give study_type 11' do
     scenario 'should show note for study_type 1' do
-      visit protocol_service_request_path(@sr)
-      wait_for_javascript_to_finish
-
-      click_link 'New Study'
+      visit_create_study_form
       wait_for_javascript_to_finish
 
       find('#study_selected_for_epic_true_button').click

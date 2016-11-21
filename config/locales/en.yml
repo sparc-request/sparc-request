@@ -119,13 +119,13 @@ en:
       phone: "Phone:"
       subspecialty: "Subspecialty:"
       subspecialty_prompt: "Select a Subspecialty"
+      rights: "User Rights:*"
       role: "Role:*"
       role_prompt: "Select a Role"
       role_specify: "Please Specify:*"
       epic_access: "Epic EMR Access?:*"
       select_one: "Select one"
     rights:
-      header: "User Rights:*"
       none: Study/Project Member Only
       view: "View Rights"
       request: "Request/Approve Services"

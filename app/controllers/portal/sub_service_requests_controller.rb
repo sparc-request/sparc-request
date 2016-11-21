@@ -22,7 +22,7 @@ class Portal::SubServiceRequestsController < Portal::BaseController
   respond_to :json, :js, :html
 
   before_filter :protocol_authorizer, :only => [:update_from_project_study_information]
-      
+
   def show
     @sub_service_request = SubServiceRequest.find(params[:id])
     @admin = true
@@ -99,11 +99,11 @@ class Portal::SubServiceRequestsController < Portal::BaseController
       unless @protocol.errors.messages[:sponsor_name].nil?
         @protocol.errors.messages[:sponsor_name].uniq!
       end
-      
+
       render action: 'show'
 
     end
-  end   
+  end
 
   def add_note
     @sub_service_request = SubServiceRequest.find(params[:id])
@@ -177,7 +177,7 @@ class Portal::SubServiceRequestsController < Portal::BaseController
 
     @study_tracker = params[:study_tracker] == "true"
     @line_items = @sub_service_request.line_items
-    
+
     if @sub_service_request.create_line_item(
         service_id: params[:new_service_id],
         sub_service_request_id: params[:sub_service_request_id])
@@ -282,7 +282,7 @@ class Portal::SubServiceRequestsController < Portal::BaseController
   def push_to_epic
     sub_service_request = SubServiceRequest.find(params[:id])
     begin
-      sub_service_request.service_request.protocol.push_to_epic(EPIC_INTERFACE)
+      sub_service_request.service_request.protocol.push_to_epic(EPIC_INTERFACE, "portal_push", current_user.id)
 
       respond_to do |format|
         format.json {

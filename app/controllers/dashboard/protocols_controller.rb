@@ -124,7 +124,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   def edit
     @protocol_type      = @protocol.type
     @permission_to_edit = @authorization.nil? ? false : @authorization.can_edit?
-
+    @in_dashboard       = true
     @protocol.populate_for_edit
 
     session[:breadcrumbs].

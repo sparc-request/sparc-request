@@ -23,13 +23,14 @@ $(document).ready ->
   $(document).on 'click', '#protocol-type-button', ->
     protocol_id = $(this).data('protocol-id')
     srid        = $(this).data('srid')
+    in_dashboard = if $(this).data('in-dashboard') == 1 then '/dashboard' else ''
     data = 
       type : $("#protocol_type").val()
       srid : srid
     if confirm(I18n['protocols']['change_type']['warning'])
       $.ajax
         type: 'PATCH'
-        url: "/protocols/#{protocol_id}/update_protocol_type"
+        url: "#{in_dashboard}/protocols/#{protocol_id}/update_protocol_type"
         data: data
   # Protocol Edit End
 

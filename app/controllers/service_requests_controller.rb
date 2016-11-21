@@ -161,6 +161,7 @@ class ServiceRequestsController < ApplicationController
     @tab          = 'calendar'
     @review       = true
     @portal       = false
+    @admin        = false
     @merged       = false
     @consolidated = true
 
@@ -222,7 +223,7 @@ class ServiceRequestsController < ApplicationController
       # approve_epic_rights.
       @protocol.ensure_epic_user
       if QUEUE_EPIC
-        EpicQueue.create(protocol_id: @protocol.id) unless EpicQueue.where(protocol_id: @protocol.id).size == 1
+        EpicQueue.create(protocol_id: @protocol.id, identity_id: current_user.id) unless EpicQueue.where(protocol_id: @protocol.id).size == 1
       else
         @protocol.awaiting_approval_for_epic_push
         send_epic_notification_for_user_approval(@protocol)
@@ -544,7 +545,6 @@ class ServiceRequestsController < ApplicationController
       sub_service_request.organization.submission_emails_lookup.each do |submission_email|
         @service_list_false = sub_service_request.service_request.service_list(false, nil, sub_service_request)
         @service_list_true = sub_service_request.service_request.service_list(true, nil, sub_service_request)
-
         @line_items = sub_service_request.line_items
         xls = render_to_string action: 'show', formats: [:xlsx]
         Notifier.notify_admin(submission_email.email, xls, current_user, sub_service_request, audit_report).deliver

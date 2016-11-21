@@ -27,5 +27,5 @@
         = label_tag "protocol_type", t(:protocols)[:change_type][:type], class: 'col-lg-2 control-label'
         .col-lg-10
           = select_tag "protocol_type", options_for_select([[t(:protocols)[:change_type][:project], 'Project'], [t(:protocols)[:change_type][:study], 'Study']], protocol_type), class: 'selectpicker'
-          %button.btn.btn-warning#protocol-type-button{ data: { protocol_id: protocol.id } }
+          %button.btn.btn-warning#protocol-type-button{ data: { protocol_id: protocol.id, in_dashboard: in_dashboard ? 1 : 0 } }
             = t(:protocols)[:change_type][:change_button]

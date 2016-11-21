@@ -5,7 +5,7 @@
       = form.object.selected_for_epic ? t(:constants)[:yes_select] : t(:constants)[:no_select]
       - if form.object.selected_for_epic
         = form.hidden_field :selected_for_epic, value: true
-      - elsif !form.object.selected_for_epic
+      - else
         = form.hidden_field :selected_for_epic, value: false
 .form-group.row.selected_for_epic_dependent#readonly{ display_if(protocol.selected_for_epic) }
   = form.label :study_type_questions, t(:study_form)[:study_type_questions], class: 'col-lg-2 control-label'

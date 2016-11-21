@@ -89,7 +89,6 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def new
-    @action = params['action']
     @protocol_type          = params[:protocol_type]
     @protocol               = @protocol_type.capitalize.constantize.new
     @protocol.requester_id  = current_user.id
@@ -123,7 +122,6 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def edit
-    @action = params['action']
     @protocol_type      = @protocol.type
     @permission_to_edit = @authorization.nil? ? false : @authorization.can_edit?
 

@@ -62,24 +62,6 @@ epic_push_status_text: { 'started': '',
 study_types: { 'clinical_trials': 'Clinical Trials',
                'basic_science': 'Basic Science',
                'translational_science': 'Translational Science' }
-study_type_questions: ["1a. Does your study require a higher level of privacy for the participants?",
-                        "1b. Does your study have a Certificate of Confidentiality?",
-                        "1c. Do participants enrolled in your study require a second DEIDENTIFIED Medical Record that is not connected to their primary record in Epic?",
-                        "2. Do you wish to receive a notification via Epic InBasket when your research participants are admitted to the hospital or ED?",
-                        "3. Do you wish to remove the 'Research: Active' indicator in the Patient Header for your study participants?",
-                        "4. Do you need to restrict the sending of study related results, such as laboratory and radiology results, to a participants MyChart?"]
-
-study_type_questions_version_2: ["1. Does your study have a Certificate of Confidentiality?*",
-                                 "2. Does your study require a higher level of privacy for the participants?*",
-                                 "2b. Do participants enrolled in your study require a second DEIDENTIFIED Medical Record that is not connected to their primary record in Epic?*",
-                                 "3. Do you wish to receive a notification via Epic InBasket when your research participants are admitted to the hospital or ED?*",
-                                 "4. Do you wish to remove the 'Research: Active' indicator in the Patient Header for your study participants?*",
-                                 "5. Do you need to restrict the sending of study related results, such as laboratory and radiology results, to a participants MyChart?*"]
-study_type_questions_version_3: ["1. Does your Informed Consent provide information to the participant specifically stating their study participation be kept private from anyone outside the research team? (i.e. your study has a Certificate of Confidentiality or involves sensitive data collection which requires de-identification of the research participant in Epic.)",
-                                 "2. Does your study require a higher level of privacy protection for the participants? (Your study needs 'break the glass' functionality in Epic because it is collection sensitive data, such as HIV/sexually transmitted disease, sexual practice/attitudes, illegal substance, etc., which needs higher privacy protection, yet not complete de-identification of the study participant.)",
-                                 "3. Is it appropriate for study team members to receive Epic InBasket notifications if research participants in this study are hospitalized or admitted to the Emergency Department?",
-                                 "4. Is it appropriate to display the pink 'Research:Active indicator in the Patient Header for all study participants?",
-                                 "5. Is it appropriate for all study participants to receive associated test results, such as labs and/or imaging findings, via MyChart?"]
 
 study_type_answers: {  '1' : [true, true,   ~,     ~,     ~,     ~],
                        '2' : [true, false, true,   ~,     ~,     ~],

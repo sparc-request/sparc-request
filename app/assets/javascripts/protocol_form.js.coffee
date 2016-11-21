@@ -68,13 +68,15 @@ $(document).ready ->
     for k,v of answers
       array_values.push(v)
     nil_value = $.inArray('', array_values) > -1
-    if array_values[0] == 'true' || nil_value == false
+    if array_values[0] == 'true' || !nil_value
       $.ajax
         type: 'POST'
         data: answers
         url: "/study_type/determine_study_type_note"
         success: ->
           $('#study_type_note').show()
+        errors: ->
+          sweetAlert("Oops...", "Something went wrong!", "error")
 
   #########################
   ### FORM FIELDS LOGIC ###

@@ -23,9 +23,6 @@ def let_there_be_lane
       last_name:             'Glenn',
       first_name:            'Julia',
       ldap_uid:              'jug2',
-      institution:           'medical_university_of_south_carolina',
-      college:               'college_of_medicine',
-      department:            'other',
       email:                 'glennj@musc.edu',
       credentials:           'ba',
       catalog_overlord:      true,
@@ -40,9 +37,6 @@ def let_there_be_j
       last_name:             'Leonard',
       first_name:            'Jason',
       ldap_uid:              'jpl6@musc.edu',
-      institution:           'medical_university_of_south_carolina',
-      college:               'college_of_medecine',
-      department:            'other',
       email:                 'leonarjp@musc.edu',
       credentials:           'BS,    MRA',
       catalog_overlord:      true,
@@ -303,7 +297,7 @@ def build_empty_study
 end
 
 def build_fake_notification
-  let!(:sender) {create(:identity, last_name:'Glenn2', first_name:'Julia2', ldap_uid:'jug3', institution:'medical_university_of_south_carolina', college:'college_of_medecine', department:'other', email:'glennj2@musc.edu', credentials:'BS,    MRA', catalog_overlord: true, password:'p4ssword', password_confirmation:'p4ssword', approved: true)}
+  let!(:sender) {create(:identity, last_name:'Glenn2', first_name:'Julia2', ldap_uid:'jug3', email:'glennj2@musc.edu', credentials:'BS,    MRA', catalog_overlord: true, password:'p4ssword', password_confirmation:'p4ssword', approved: true)}
   let!(:notification) {create(:notification, sub_service_request_id: sub_service_request.id, originator_id: sender.id)}
   let!(:message) {create(:message, notification_id: notification.id, to: jug2.id, from: sender.id, email: "test@test.org", subject: "test message", body: "This is a test, and only a test")}
   let!(:user_notification) {create(:user_notification, identity_id: jug2.id, notification_id: notification.id, read: false)}

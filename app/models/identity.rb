@@ -41,50 +41,48 @@ class Identity < ActiveRecord::Base
   email_regexp = /\A[^@\s]+@([^@\s]+\.)+[^@\s]+\z/
   password_length = 6..128
 
+  attr_accessible :approved
+  attr_accessible :company
   attr_accessible :email
   attr_accessible :password
   attr_accessible :password_confirmation
-  attr_accessible :remember_me
-  attr_accessible :company
   attr_accessible :reason
-  attr_accessible :approved
+  attr_accessible :remember_me
   #### END DEVISE SETUP ####
 
-  has_many :submissions
+  belongs_to :professional_organization
   has_many :approvals, dependent: :destroy
-  has_many :project_roles, dependent: :destroy
-  has_many :protocols, through: :project_roles
-  has_many :projects, -> { where("protocols.type = 'Project'")}, through: :project_roles, source: :protocol
-  has_many :studies, -> { where("protocols.type = 'Study'")}, through: :project_roles, source: :protocol
-  has_many :super_users, dependent: :destroy
+  has_many :approved_subsidies, class_name: 'ApprovedSubsidy', foreign_key: 'approved_by'
+  has_many :catalog_manager_rights, class_name: 'CatalogManager'
   has_many :catalog_managers, dependent: :destroy
   has_many :clinical_providers, dependent: :destroy
-  has_many :protocol_service_requests, through: :protocols, source: :service_requests
-  has_many :catalog_manager_rights, class_name: 'CatalogManager'
-  has_many :service_providers, dependent: :destroy
-  has_many :received_toast_messages, class_name: 'ToastMessage', foreign_key: 'to', dependent: :destroy
-  has_many :sent_toast_messages, class_name: 'ToastMessage', foreign_key: 'from', dependent: :destroy
   has_many :notes, dependent: :destroy
+  has_many :project_roles, dependent: :destroy
+  has_many :projects, -> { where("protocols.type = 'Project'")}, through: :project_roles, source: :protocol
   has_many :protocol_filters, dependent: :destroy
-
-  has_many :sent_notifications, class_name: "Notification", foreign_key: 'originator_id'
-  has_many :received_notifications, class_name: "Notification", foreign_key: 'other_user_id'
-  has_many :sent_messages, class_name: 'Message', foreign_key: 'from'
+  has_many :protocol_service_requests, through: :protocols, source: :service_requests
+  has_many :protocols, through: :project_roles
   has_many :received_messages, class_name: 'Message', foreign_key: 'to'
-  has_many :approved_subsidies, class_name: 'ApprovedSubsidy', foreign_key: 'approved_by'
+  has_many :received_notifications, class_name: "Notification", foreign_key: 'other_user_id'
+  has_many :received_toast_messages, class_name: 'ToastMessage', foreign_key: 'to', dependent: :destroy
+  has_many :sent_messages, class_name: 'Message', foreign_key: 'from'
+  has_many :sent_notifications, class_name: "Notification", foreign_key: 'originator_id'
+  has_many :sent_toast_messages, class_name: 'ToastMessage', foreign_key: 'from', dependent: :destroy
+  has_many :service_providers, dependent: :destroy
+  has_many :studies, -> { where("protocols.type = 'Study'")}, through: :project_roles, source: :protocol
+  has_many :submissions
+  has_many :super_users, dependent: :destroy
 
-  attr_accessible :ldap_uid
-  attr_accessible :email
-  attr_accessible :last_name
-  attr_accessible :first_name
-  attr_accessible :institution
-  attr_accessible :college
-  attr_accessible :department
-  attr_accessible :era_commons_name
+  attr_accessible :catalog_overlord
   attr_accessible :credentials
   attr_accessible :credentials_other
+  attr_accessible :email
+  attr_accessible :era_commons_name
+  attr_accessible :first_name
+  attr_accessible :last_name
+  attr_accessible :ldap_uid
   attr_accessible :phone
-  attr_accessible :catalog_overlord
+  attr_accessible :professional_organization_id
   attr_accessible :subspecialty
 
   cattr_accessor :current_user

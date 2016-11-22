@@ -35,7 +35,7 @@
 class ServiceCalendarsController < ApplicationController
   respond_to :html, :js
   layout false
-  
+
   before_filter :initialize_service_request,      if: Proc.new{ params[:portal] != 'true' }
   before_filter :authorize_identity,              if: Proc.new { params[:portal] != 'true' }
   before_filter :authorize_dashboard_access,      if: Proc.new { params[:portal] == 'true' }
@@ -43,13 +43,13 @@ class ServiceCalendarsController < ApplicationController
   def update
     visit         = Visit.find(params[:visit_id])
     @arm          = Arm.find(params[:arm_id])
+    @admin        = params[:admin] == 'true'
     @tab          = params[:tab]
     @merged       = params[:merged] == 'true'
     @portal       = params[:portal] == 'true'
     @review       = params[:review] == 'true'
     @consolidated = false
     @pages        = eval(params[:pages])
-
     if params[:checked] == 'true'
       unit_minimum = visit.line_items_visit.line_item.service.displayed_pricing_map.unit_minimum
 
@@ -66,7 +66,7 @@ class ServiceCalendarsController < ApplicationController
       )
     end
   end
-  
+
   def table
     @tab          = params[:tab]
     @review       = params[:review] == 'true'
@@ -229,7 +229,7 @@ class ServiceCalendarsController < ApplicationController
 
     session[:service_calendar_pages]          = params[:pages] if params[:pages]
     session[:service_calendar_pages][arm_id]  = page if page && arm_id
-    
+
     @service_request.arms.each do |arm|
       new_page        = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i
       @pages[arm.id]  = @service_request.set_visit_page(new_page, arm)

@@ -273,6 +273,11 @@ class Protocol < ActiveRecord::Base
     update_attribute(:study_type_question_group_id, StudyTypeQuestionGroup.active.pluck(:id).first)
   end
 
+  def display_answers
+    answers = StudyTypeQuestion.joins(:study_type_question_group).where(study_type_question_groups: { version: version_type })
+    answers.map{ |ans| ans.study_type_answers.find_by_protocol_id(id) }
+  end
+
   def email_about_change_in_authorized_user(modified_role, action)
     # Alert authorized users of deleted authorized user
     # Send emails if SEND_AUTHORIZED_USER_EMAILS is set to true and if there are any non-draft SSRs

@@ -144,9 +144,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     permission_to_edit  = @authorization.present? ? @authorization.can_edit? : false
 
     # admin is not able to activate study_type_question_group
-    if !permission_to_edit && @protocol.update_attributes(attrs)
-      flash[:success] = I18n.t('protocols.updated', protocol_type: @protocol.type)
-    elsif permission_to_edit && @protocol.update_attributes(attrs)
+    if @protocol.update_attributes(attrs)
       flash[:success] = I18n.t('protocols.updated', protocol_type: @protocol.type)
     else
       @errors = @protocol.errors
@@ -162,14 +160,10 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     # Using update_attribute here is intentional, type is a protected attribute
     protocol_role       = @protocol.project_roles.find_by(identity_id: @user.id)
     @permission_to_edit = protocol_role.nil? ? false : protocol_role.can_edit?
-    @protocol_type      = params[:type]
+    @protocol.type      = params[:type]
+    @protocol_type = params[:type]
 
-    @protocol.update_attribute(:type, @protocol_type)
-    conditionally_activate_protocol
-
-    @protocol = Protocol.find(@protocol.id)#Protocol type has been converted, this is a reload
     @protocol.populate_for_edit
-
     flash[:success] = t(:protocols)[:change_type][:updated]
     if @protocol_type == "Study" && @protocol.sponsor_name.nil? && @protocol.selected_for_epic.nil?
       flash[:alert] = t(:protocols)[:change_type][:new_study_warning]
@@ -219,16 +213,6 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     @sort_name          = @sorted_by.split(' ')[0] if @sorted_by
     @sort_order         = @sorted_by.split(' ')[1] if @sorted_by
     @new_sort_order     = (@sort_order == 'asc' ? 'desc' : 'asc') if @sort_order
-  end
-
-  def conditionally_activate_protocol
-    if @admin
-      if @protocol_type == "Study" && @protocol.virgin_project?
-        @protocol.activate
-      end
-    else
-      @protocol.activate
-    end
   end
 
   def convert_date_for_save(attrs, date_field)

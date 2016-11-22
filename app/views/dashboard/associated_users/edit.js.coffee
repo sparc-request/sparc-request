@@ -21,3 +21,5 @@
 $("#modal_place").html("<%= escape_javascript(render(partial: 'associated_users/user_form', locals: { protocol: @protocol, project_role: @protocol_role, identity: @identity, current_pi: @current_pi, header_text: @header_text })) %>")
 $("#modal_place").modal 'show'
 $(".selectpicker").selectpicker()
+
+window.update_disabled_hidden_form_items()

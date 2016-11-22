@@ -249,8 +249,8 @@ en:
   ###############
   ie_warning:
     header: "Internet Explorer Version Warning"
-    text1: "Your browser version is out of date. SPARC Request does not support Internet Explorer versions older than version 8."
-    text2: "Using versions lower than 8 can cause data curruption, and other serious problems using this tool."
+    text1: "Your browser version is out of date. SPARCRequest does not support Internet Explorer versions older than version 8."
+    text2: "Using versions lower than 8 can cause data curruption and other serious problems using this tool."
 
   ##########
   # MODELS #
@@ -401,6 +401,14 @@ en:
     authorized_users:
       header: "Add Primary PI"
       primary_pi: "Primary PI: *"
+
+  ########################
+  # NOT APPROVED WARNING #
+  ########################
+  not_approved_warning:
+    header: "Account not Approved"
+    text1: "Your account has not yet been approved for use in SPARCRequest."
+    text2: "If you believe this is incorrect, please contact the SUCCESS center at (843) 792-8300 or success@musc.edu."
 
   #############
   # SUBSIDIES #
@@ -1907,10 +1915,6 @@ en:
     step_3: "STEP 3: <br /> Notes & <br /> Documents"
     step_4: "STEP 4: <br /> Review Your <br /> Request"
     step_5: "STEP 5: <br /> Submission <br /> Confirmation"
-
-  ie_warning:
-    text1: "Your browser version is out of date. SPARC Request does not support Internet Explorer versions older than version 8."
-    text2: "Using versions lower than 8 can cause data curruption, and other serious problems using this tool."
 
   protocol:
     study_schedule:

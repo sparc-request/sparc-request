@@ -19,6 +19,8 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 SparcRails::Application.routes.draw do
+  post 'study_type/determine_study_type_note'
+
   match '/direct_link_to/:survey_code', :to => 'surveyor#create', :as => 'direct_link_survey', :via => :get
   match '/surveys/:survey_code/:response_set_code', :to => 'surveyor#destroy', :via => :delete
   mount Surveyor::Engine => "/surveys", :as => "surveyor"
@@ -203,6 +205,7 @@ SparcRails::Application.routes.draw do
     resources :associated_users, only: [:index, :new, :create, :edit, :update, :destroy] do
       collection do
         get :search_identities
+        get :update_professional_organization_form_items
       end
     end
 

@@ -450,6 +450,8 @@ class ServiceRequest < ActiveRecord::Base
         ssr.update_attributes(ssr_id: "%04d" % next_ssr_id)
         next_ssr_id += 1
       end
+      # If we have created a protocol, we don't want to ensure that the ssr_ids are sequential because the user may remove SSRs
+      next_ssr_id += 1 unless self.protocol
     end
 
     self.protocol.update_attributes(next_ssr_id: next_ssr_id) if self.protocol

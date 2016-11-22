@@ -21,18 +21,14 @@
   .modal-dialog
     .modal-content
       .modal-header
-        %button.close{ type: 'button', data: { dismiss: 'modal' } }
-          %span{ aria: { hidden: 'true' } } &times;
         %h4.text-center#modal-title
           = t(:ie_warning)[:header]
       .modal-body
-        .form-group.row
+        .form-group
           %p
             = t(:ie_warning)[:text1]
-        .form-group.row
+        .form-group
           %p
             = t(:ie_warning)[:text2]
       .modal-footer
         .center-block
-          %button.btn.btn-default{ type: 'button', data: { dismiss: 'modal' } }
-            = t(:actions)[:close]

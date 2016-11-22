@@ -116,21 +116,16 @@ en:
       credentials: "Credentials:"
       credentials_prompt: "Select a Credential"
       credentials_specify: "Please Specify:*"
-      institution: "Institution:"
-      institution_prompt: "Select an Institution"
-      college: "College:"
-      college_prompt: "Select a College"
-      department: "Department:"
       phone: "Phone:"
-      department_prompt: "Select a Department"
       subspecialty: "Subspecialty:"
       subspecialty_prompt: "Select a Subspecialty"
+      rights: "User Rights:*"
       role: "Role:*"
       role_prompt: "Select a Role"
       role_specify: "Please Specify:*"
       epic_access: "Epic EMR Access?:*"
+      select_one: "Select one"
     rights:
-      header: "User Rights:*"
       none: Study/Project Member Only
       view: "View Rights"
       request: "Request/Approve Services"
@@ -204,7 +199,7 @@ en:
     merged_totals:
       header: "Study Cost Totals"
       grand_total: "Grand Total"
- 
+
   #############
   # CONSTANTS #
   #############
@@ -249,8 +244,8 @@ en:
   ###############
   ie_warning:
     header: "Internet Explorer Version Warning"
-    text1: "Your browser version is out of date. SPARC Request does not support Internet Explorer versions older than version 8."
-    text2: "Using versions lower than 8 can cause data curruption, and other serious problems using this tool."
+    text1: "Your browser version is out of date. SPARCRequest does not support Internet Explorer versions older than version 8."
+    text2: "Using versions lower than 8 can cause data curruption and other serious problems using this tool."
 
   ##########
   # MODELS #
@@ -325,6 +320,7 @@ en:
         sponsor: "Sponsor Name:"
         push_to_epic: "Publish Study in Epic:"
         study_type_questions: "Study Type Questions:"
+        note: "Note: "
       optional_information:
         header: "Optional Information"
         subtext: "Used for reporting purposes and saved for your future use"
@@ -402,6 +398,14 @@ en:
       header: "Add Primary PI"
       primary_pi: "Primary PI: *"
 
+  ########################
+  # NOT APPROVED WARNING #
+  ########################
+  not_approved_warning:
+    header: "Account not Approved"
+    text1: "Your account has not yet been approved for use in SPARCRequest."
+    text2: "If you believe this is incorrect, please contact the SUCCESS center at (843) 792-8300 or success@musc.edu."
+
   #############
   # SUBSIDIES #
   #############
@@ -464,11 +468,6 @@ en:
       credentials: "Credentials:"
       credentials_prompt: "Select a Credential"
       credentials_specify: "Please Specify:*"
-      institution: "Institution:"
-      institution_prompt: "Select an Institution"
-      college: "College:"
-      college_prompt: "Select a College"
-      department: "Department:"
       phone: "Phone:"
       department_prompt: "Select a Department"
       subspecialty: "Subspecialty:"
@@ -1350,18 +1349,12 @@ en:
   # Portal Editing user for study/project
   portal_user_form:
     add_user: "Add User"
-    college_prompt: "Select a College"
-    college: "College:"
     credential_prompt: "Select a Credential"
     credentials: "Credentials:"
-    department_prompt: "Select a Department"
-    department: "Department:"
     edit_user: "Edit User"
     email: "E-mail:"
     epic_access: "Epic EMR Access?:"
     era: "ERA Commons Name:"
-    institution_prompt: "Select an Institution"
-    institution: "Institution:"
     name: "Name:"
     credentials_other: "Other Credentials:"
     phone: "Phone:"
@@ -1623,18 +1616,12 @@ en:
   # Portal Editing user for study/project
   portal_user_form:
     add_user: "Add User"
-    college_prompt: "Select a College"
-    college: "College:"
     credential_prompt: "Select a Credential"
     credentials: "Credentials:"
-    department_prompt: "Select a Department"
-    department: "Department:"
     edit_user: "Edit User"
     email: "E-mail:"
     epic_access: "Epic EMR Access?:*"
     era: "ERA Commons Name:"
-    institution_prompt: "Select an Institution"
-    institution: "Institution:"
     name: "Name:"
     phone: "Phone:"
     rights:
@@ -1908,10 +1895,6 @@ en:
     step_4: "STEP 4: <br /> Review Your <br /> Request"
     step_5: "STEP 5: <br /> Submission <br /> Confirmation"
 
-  ie_warning:
-    text1: "Your browser version is out of date. SPARC Request does not support Internet Explorer versions older than version 8."
-    text2: "Using versions lower than 8 can cause data curruption, and other serious problems using this tool."
-
   protocol:
     study_schedule:
       add_arm: "Add Arm"
@@ -1981,16 +1964,8 @@ en:
   # User details partial
   user_details:
     add_button: "Add Authorized User"
-    college: "College"
-    college_select: "Select a College"
-    credentials: "Credentials"
-    credentials_select: "Select a Credential"
-    department: "Department"
-    department_select: "Select a Department"
     ec_name: "ERA Commons Name"
     email: "Email"
-    institution: "Institution"
-    institution_select: "Select an Institution"
     name: "Name"
     phone: "Phone"
     role: "Role"

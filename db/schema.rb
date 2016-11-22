@@ -970,17 +970,18 @@ ActiveRecord::Schema.define(version: 20161122130742) do
   end
 
   create_table "study_type_question_groups", force: :cascade do |t|
-    t.boolean  "active",     default: false
+    t.integer  "version",    limit: 4
+    t.boolean  "active",               default: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   create_table "study_type_questions", force: :cascade do |t|
     t.integer  "order",                        limit: 4
-    t.string   "question",                     limit: 255
+    t.text     "question",                     limit: 65535
     t.string   "friendly_id",                  limit: 255
-    t.datetime "created_at",                               null: false
-    t.datetime "updated_at",                               null: false
+    t.datetime "created_at",                                 null: false
+    t.datetime "updated_at",                                 null: false
     t.integer  "study_type_question_group_id", limit: 4
   end
 

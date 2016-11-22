@@ -21,9 +21,27 @@
 require 'rails_helper'
 
 RSpec.feature 'User wants to edit an authorized user', js: true do
-  let!(:logged_in_user) { create(:identity, last_name: "Doe", first_name: "John", ldap_uid: "johnd", email: "johnd@musc.edu", password: "p4ssword", password_confirmation: "p4ssword", college: "college_of_medicine", department: "other", credentials: "ba", institution: "medical_university_of_south_carolina", approved: true) }
+  # Create ProfessionalOrganization heirarchy
+  before(:each) do
+    institution = ProfessionalOrganization.create(name: "An Institution", org_type: "institution")
+    college = ProfessionalOrganization.create(parent_id: institution.id, name: "A College", org_type: "college")
+    department = ProfessionalOrganization.create(parent_id: college.id, name: "A Department", org_type: "department")
+    @division = ProfessionalOrganization.create(parent_id: department.id, name: "A Division", org_type: "division")
+  end
 
-  let!(:other_user) { create(:identity, last_name: "Doe", first_name: "Jane", ldap_uid: "janed", email: "janed@musc.edu", password: "p4ssword", password_confirmation: "p4ssword", approved: true) }
+  let!(:logged_in_user) do
+    create(:identity, last_name: "Doe", first_name: "John", ldap_uid: "johnd",
+      email: "johnd@musc.edu", password: "p4ssword",
+      password_confirmation: "p4ssword", credentials: "ba", approved: true,
+      professional_organization_id: @division.id)
+  end
+
+  let!(:other_user) do
+    create(:identity, last_name: "Doe", first_name: "Jane", ldap_uid: "janed",
+      email: "janed@musc.edu", password: "p4ssword",
+      password_confirmation: "p4ssword", approved: true,
+      professional_organization_id: @division.id)
+  end
 
   before(:each) { stub_const('USE_LDAP', false) }
 
@@ -274,9 +292,10 @@ RSpec.feature 'User wants to edit an authorized user', js: true do
   def then_i_should_see_the_user_information
     expect(@page.authorized_user_modal).to have_content("John Doe (johnd@musc.edu)")
     expect(@page.authorized_user_modal).to have_credentials_dropdown(text: "BA")
-    expect(@page.authorized_user_modal).to have_institution_dropdown(text: "Medical University of South Carolina")
-    expect(@page.authorized_user_modal).to have_college_dropdown(text: "College of Medicine")
-    expect(@page.authorized_user_modal).to have_department_dropdown(text: "Other")
+    expect(@page.authorized_user_modal).to have_institution_dropdown(text: "An Institution")
+    expect(@page.authorized_user_modal).to have_college_dropdown(text: "A College")
+    expect(@page.authorized_user_modal).to have_department_dropdown(text: "A Department")
+    expect(@page.authorized_user_modal).to have_division_dropdown(text: "A Division")
     expect(page).to have_content(logged_in_user.phone)
     expect(@page.authorized_user_modal).to have_role_dropdown(text: "Primary PI")
   end

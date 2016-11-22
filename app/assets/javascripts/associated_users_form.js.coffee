@@ -87,4 +87,12 @@ $(document).ready ->
     else
       # cancel
       $(this).closest('.modal').modal('hide')
+
+  $(document).on 'changed.bs.select', '.professional-organization-form select', ->
+    last_selected = $(this).val()
+    $.ajax
+      type: 'get'
+      url: '/dashboard/associated_users/update_professional_organization_form_items.js'
+      data:
+        last_selected_id: last_selected
   #**************** Add Authorized User Form End ****************

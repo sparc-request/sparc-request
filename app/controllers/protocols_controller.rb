@@ -68,9 +68,7 @@ class ProtocolsController < ApplicationController
   def edit
     @protocol_type                          = @protocol.type
     @service_request                        = ServiceRequest.find(params[:srid])
-    @protocol.study_type_question_group_id  = StudyTypeQuestionGroup.active_id
     @in_dashboard                           = false
-
     @protocol.populate_for_edit
     @protocol.valid?
     @errors = @protocol.errors
@@ -99,17 +97,13 @@ class ProtocolsController < ApplicationController
   def update_protocol_type
     @protocol       = Protocol.find(params[:id])
     @protocol_type  = params[:type]
-
-    @protocol.update_attribute(:type, @protocol_type)
-    @protocol.activate
-
-    @protocol = Protocol.find(@protocol.id)#Protocol type has been converted, this is a reload
+    @protocol.type  = params[:type]
     @protocol.populate_for_edit
 
     flash[:success] = t(:protocols)[:change_type][:updated]
     if @protocol_type == "Study" && @protocol.sponsor_name.nil? && @protocol.selected_for_epic.nil?
       flash[:alert] = t(:protocols)[:change_type][:new_study_warning]
-    end
+    end  
   end
 
   def view_details

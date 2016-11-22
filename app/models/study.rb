@@ -23,12 +23,17 @@ class Study < Protocol
   validates :selected_for_epic,           inclusion: [true, false], :if => [:is_epic?]
   validate  :validate_study_type_answers, if: [:selected_for_epic?, "StudyTypeQuestionGroup.active.pluck(:id).first == changed_attributes()['study_type_question_group_id'] || StudyTypeQuestionGroup.active.pluck(:id).first == study_type_question_group_id"]
 
+
   def classes
     return [ 'project' ] # for backward-compatibility
   end
 
   def determine_study_type
-    Portal::StudyTypeFinder.new(self).study_type
+    StudyTypeFinder.new(self).study_type
+  end
+
+  def determine_study_type_note
+    StudyTypeFinder.new(self).determine_study_type_note
   end
 
   def populate_for_edit
@@ -95,7 +100,7 @@ class Study < Protocol
     project_roles.build(role: "primary-pi", project_rights: "approve") unless project_roles.primary_pis.any?
   end
 
-  FRIENDLY_IDS = ["certificate_of_conf", "higher_level_of_privacy", "access_study_info", "epic_inbasket", "research_active", "restrict_sending"]
+  FRIENDLY_IDS = ["certificate_of_conf", "higher_level_of_privacy", "epic_inbasket", "research_active", "restrict_sending"]
 
   def validate_study_type_answers
     answers = {}
@@ -111,18 +116,12 @@ class Study < Protocol
       elsif answers["certificate_of_conf"].answer == false
         if (answers["higher_level_of_privacy"].answer.nil?)
           has_errors = true
-        elsif (answers["higher_level_of_privacy"].answer == false)
-          if answers["epic_inbasket"].answer.nil? || answers["research_active"].answer.nil? || answers["restrict_sending"].answer.nil?
-            has_errors = true
-          end
-        elsif (answers["higher_level_of_privacy"].answer == true)
-          if (answers["access_study_info"].answer.nil?)
-            has_errors = true
-          elsif (answers["access_study_info"].answer == false)
-            if answers["epic_inbasket"].answer.nil? || answers["research_active"].answer.nil? || answers["restrict_sending"].answer.nil?
-              has_errors = true
-            end
-          end
+        elsif (answers["epic_inbasket"].answer.nil?)
+          has_errors = true
+        elsif (answers["research_active"].answer.nil?)
+          has_errors = true
+        elsif (answers["restrict_sending"].answer.nil?)
+          has_errors = true
         end
       end
     rescue => e

@@ -262,11 +262,20 @@ class Protocol < ActiveRecord::Base
   end
 
   def active?
-    study_type_question_group.active
+    study_type_question_group.nil? ? false : study_type_question_group.active
+  end
+
+  def version_type
+    study_type_question_group.nil? ? nil : study_type_question_group.version
   end
 
   def activate
     update_attribute(:study_type_question_group_id, StudyTypeQuestionGroup.active.pluck(:id).first)
+  end
+
+  def display_answers
+    answers = StudyTypeQuestion.joins(:study_type_question_group).where(study_type_question_groups: { version: version_type })
+    answers.map{ |ans| ans.study_type_answers.find_by_protocol_id(id) }
   end
 
   def email_about_change_in_authorized_user(modified_role, action)

@@ -320,6 +320,7 @@ en:
         sponsor: "Sponsor Name:"
         push_to_epic: "Publish Study in Epic:"
         study_type_questions: "Study Type Questions:"
+        note: "Note: "
       optional_information:
         header: "Optional Information"
         subtext: "Used for reporting purposes and saved for your future use"

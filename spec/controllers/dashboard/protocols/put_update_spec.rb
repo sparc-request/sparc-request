@@ -62,7 +62,7 @@ RSpec.describe Dashboard::ProtocolsController do
 
           it "should update Protocol <- params[:id] as specified in params[:protocol] and update its StudyTypeQuestionGroup to the active one" do
             expect(@protocol).to have_received(:update_attributes).
-              with(some_attribute: "some value", study_type_question_group_id: "active group id")
+              with(some_attribute: "some value")
           end
 
           it "should not set @errors" do

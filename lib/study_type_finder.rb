@@ -18,44 +18,40 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-module Portal
+class StudyTypeFinder
 
-  class StudyTypeFinder
+	def initialize(study, answers=nil)
+		@study = study
+    @answers = answers
+		@study_type = nil
+	end
 
-  	def initialize(study)
-  		@study = study
-  		@active_answers = Array.new
-  		@inactive_answers = Array.new
-  		@study_type = nil
+	def study_type
+    if @study.nil?
+      study_type = determine_study_type(3, @answers)
+		elsif @study.study_type_answers.present?
+      study_type = determine_study_type(@study.version_type, collect_answers(@study))
   	end
+    study_type
+  end
 
-  	def study_type
-  		if @study.study_type_answers.present?
-  			if @study.active?
-	  			StudyTypeQuestion.active.find_each do |stq|
-	          @active_answers << stq.study_type_answers.find_by_protocol_id(@study.id).answer 
-	        end
-	        STUDY_TYPE_ANSWERS_VERSION_2.each do |k, v|
-	          if v == @active_answers
-	            @study_type = k
-	            break
-	          end
-	        end
-	        @study_type
-	      elsif !@study.active?
-	        StudyTypeQuestion.inactive.find_each do |stq|
-	          @inactive_answers << stq.study_type_answers.find_by_protocol_id(@study.id).answer 
-	        end
-	        STUDY_TYPE_ANSWERS.each do |k, v|
-	          if v == @inactive_answers
-	            @study_type = k
-	            break
-	          end
-	        end
-	        @study_type
-	      end
-	  	end
-	  end
+  def collect_answers(study)
+    @study.display_answers.map(&:answer)
+  end
 
+  def determine_study_type(version, answers)
+    case version
+    when 3
+      study_type_ans_constant = STUDY_TYPE_ANSWERS_VERSION_3
+    when 2
+      study_type_ans_constant = STUDY_TYPE_ANSWERS_VERSION_2
+    when 1
+      study_type_ans_constant = STUDY_TYPE_ANSWERS
+    end
+    study_type_ans_constant.key(answers)
+  end
+
+  def determine_study_type_note
+    STUDY_TYPE_NOTES[study_type]
   end
 end

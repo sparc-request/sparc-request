@@ -58,10 +58,6 @@ RSpec.describe Dashboard::ProtocolsController do
           xhr :patch, :update_protocol_type, id: @protocol.id, type: "Project"
         end
 
-        it 'should update Protocol type to params[:type]' do
-          expect(@protocol).to have_received(:update_attribute).with(:type, "Project")
-        end
-
         it 'should populate Protocol for edit' do
           expect(@protocol).to have_received(:populate_for_edit)
         end

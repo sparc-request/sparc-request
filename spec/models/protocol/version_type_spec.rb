@@ -25,20 +25,19 @@ RSpec.describe 'Protocol' do
   let_there_be_lane
   let_there_be_j
   build_service_request_with_study()
-  build_service_request_with_project()
   build_study_type_question_groups()
   build_study_type_questions()
   build_study_type_answers()
 
-  describe "#active?" do
+  describe "#version_type" do
 
-    context "study is inactive" do
+    context "study is version_1" do
       before :each do
-        study.update_attributes(study_type_question_group_id: StudyTypeQuestionGroup.where(active:false).pluck(:id).first)
+        study.update_attributes(study_type_question_group_id: StudyTypeQuestionGroup.where(version: 1).pluck(:id).first)
       end
 
-      it "should return false" do
-        expect(study.active?).to eq false
+      it "should return version 1" do
+        expect(study.version_type).to eq 1
       end
     end
     context "study is nil" do
@@ -46,35 +45,26 @@ RSpec.describe 'Protocol' do
         study.update_attributes(study_type_question_group_id: nil)
       end
 
-      it "should return false" do
-        expect(study.active?).to eq false
+      it "should return nil" do
+        expect(study.version_type).to eq nil
       end
     end
-    context "study is active" do
+    context "study is version 2" do
       before :each do
-        study.update_attributes(study_type_question_group_id: StudyTypeQuestionGroup.where(active:true).pluck(:id).first)
+        study.update_attributes(study_type_question_group_id: StudyTypeQuestionGroup.where(version: 2).pluck(:id).first)
       end
 
       it "should return true" do
-        expect(study.active?).to eq true
+        expect(study.version_type).to eq 2
       end
     end
-    context "project is inactive" do
+    context "project is version 3" do
       before :each do
-        project.update_attributes(study_type_question_group_id: StudyTypeQuestionGroup.where(active:false).pluck(:id).first)
+        study.update_attributes(study_type_question_group_id: StudyTypeQuestionGroup.where(version: 3).pluck(:id).first)
       end
 
       it "should return false" do
-        expect(project.active?).to eq false
-      end
-    end
-    context "project is active" do
-      before :each do
-        project.update_attributes(study_type_question_group_id: StudyTypeQuestionGroup.where(active:true).pluck(:id).first)
-      end
-
-      it "should return true" do
-        expect(project.active?).to eq true
+        expect(study.version_type).to eq 3
       end
     end
   end

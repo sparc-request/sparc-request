@@ -284,11 +284,10 @@ class EpicInterface
   end
 
   def emit_cofc(xml, study)
-    if study.active?
-      cofc = study.study_type_answers.where(study_type_question_id: StudyTypeQuestion.where(study_type_question_group_id: StudyTypeQuestionGroup.where(active:true).pluck(:id)).where(order:1).first.id).first.answer == true ? 'YES_COFC' : 'NO_COFC'
-    else
-      cofc = study.study_type_answers.where(study_type_question_id: StudyTypeQuestion.where(study_type_question_group_id: StudyTypeQuestionGroup.where(active:false).pluck(:id)).where(order:2).first.id).first.answer == true ? 'YES_COFC' : 'NO_COFC'
-    end
+    # Certificate of confidentiality question is the first question for 
+    # versions 2 and 3, but the second question for version 1
+    order = study.version_type == 3 || 2 ? 1 : 2
+    cofc = study.study_type_answers.where(study_type_question_id: StudyTypeQuestion.where(study_type_question_group_id: StudyTypeQuestionGroup.where(version: study.version_type).pluck(:id)).where(order:order).first.id).first.answer == true ? 'YES_COFC' : 'NO_COFC'
 
     xml.subjectOf(typeCode: 'SUBJ') {
       xml.studyCharacteristic(classCode: 'OBS', moodCode: 'EVN') {
@@ -300,7 +299,7 @@ class EpicInterface
 
   def emit_study_type(xml, study)
 
-    study_type = Portal::StudyTypeFinder.new(study).study_type
+    study_type = StudyTypeFinder.new(study).study_type
 
     if study_type
       xml.subjectOf(typeCode: 'SUBJ') {

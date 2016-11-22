@@ -1,4 +1,4 @@
-# Copyright © 2011 MUSC Foundation for Research Development
+# Copyright © 2011-2016 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -17,12 +17,16 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+class StudyTypeController < ApplicationController
+  before_filter :extract_answers,               only: [:determine_study_type_note]
 
-$("#protocol-form-display").html("<%= escape_javascript(render( '/protocols/form/protocol_form', protocol: @protocol, protocol_type: @protocol_type, service_request: @service_request )) %>")
-$("#flashes_container").html("<%= escape_javascript(render( 'shared/flash' )) %>")
-$(".datetimepicker").datetimepicker(format: 'MM/DD/YYYY', allowInputToggle: true)
-$(".selectpicker").selectpicker()
+  def determine_study_type_note
+    @note = StudyTypeFinder.new(nil, @study_type_answers).determine_study_type_note
+  end
 
-if $("input[name='protocol[selected_for_epic]']").val()
-  $('.selected_for_epic_dependent').show()
-  $('#study_type_answer_certificate_of_conf_answer').show_elt()
+  def extract_answers
+    extracted_params = params.extract!(:ans1, :ans2, :ans3, :ans4, :ans5)
+    boolean_params = extracted_params.transform_values {|val| val.to_s.eql?('true') ? true : val.eql?('') ? nil : false}
+    @study_type_answers = boolean_params.values  
+  end
+end

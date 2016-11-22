@@ -38,7 +38,7 @@ ProfessionalOrganization.create(name: "Department of Healthcare Leadership and M
 ProfessionalOrganization.create(name: "Clinical Education", org_type: 'division', parent_id: dep_of_health_professions.id)
 ProfessionalOrganization.create(name: "Anesthesia for Nurses", org_type: 'division', parent_id: dep_of_health_professions.id)
 ProfessionalOrganization.create(name: "Cardivascular Perfusion", org_type: 'division', parent_id: dep_of_health_professions.id)
-ProfessionalOrganization.create(name: "Healtcare Studies", org_type: 'division', parent_id: dep_of_health_professions.id)
+ProfessionalOrganization.create(name: "Healthcare Studies", org_type: 'division', parent_id: dep_of_health_professions.id)
 ProfessionalOrganization.create(name: "Occupational Therapy", org_type: 'division', parent_id: dep_of_health_professions.id)
 ProfessionalOrganization.create(name: "Physical Therapy", org_type: 'division', parent_id: dep_of_health_professions.id)
 ProfessionalOrganization.create(name: "Physician Assistant", org_type: 'division', parent_id: dep_of_health_professions.id)

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20161115153644) do
+ActiveRecord::Schema.define(version: 20161122130742) do
 
   create_table "admin_rates", force: :cascade do |t|
     t.integer  "line_item_id", limit: 4
@@ -448,20 +448,18 @@ ActiveRecord::Schema.define(version: 20161115153644) do
     t.integer  "service_request_id",     limit: 4
     t.integer  "sub_service_request_id", limit: 4
     t.integer  "service_id",             limit: 4
-    t.string   "ssr_id",                 limit: 255
-    t.boolean  "optional",                           default: true
+    t.boolean  "optional",                         default: true
     t.integer  "quantity",               limit: 4
     t.datetime "complete_date"
     t.datetime "in_process_date"
-    t.datetime "created_at",                                        null: false
-    t.datetime "updated_at",                                        null: false
+    t.datetime "created_at",                                      null: false
+    t.datetime "updated_at",                                      null: false
     t.datetime "deleted_at"
-    t.integer  "units_per_quantity",     limit: 4,   default: 1
+    t.integer  "units_per_quantity",     limit: 4, default: 1
   end
 
   add_index "line_items", ["service_id"], name: "index_line_items_on_service_id", using: :btree
   add_index "line_items", ["service_request_id"], name: "index_line_items_on_service_request_id", using: :btree
-  add_index "line_items", ["ssr_id"], name: "index_line_items_on_ssr_id", using: :btree
   add_index "line_items", ["sub_service_request_id"], name: "index_line_items_on_sub_service_request_id", using: :btree
 
   create_table "line_items_visits", force: :cascade do |t|

@@ -21,6 +21,13 @@
   %th.visit-group-box.col-sm-1{ class: "visit-group-#{index+1}" }
     .row.text-center
       .col-xs-4.no-padding.text-center
+        +
+      .col-xs-4.no-padding.text-center
+        Day
+      .col-xs-4.no-padding.text-center
+        = "-"
+    .row.text-center
+      .col-xs-4.no-padding.text-center
         - if portal || tab == 'calendar'
           = visit_group.window_before
         - else

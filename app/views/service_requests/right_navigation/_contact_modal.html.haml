@@ -35,7 +35,7 @@
           .form-group.row
             = f.label :email, t(:proper)[:right_navigation][:contact][:email], class: 'col-lg-2 control-label required'
             .col-lg-10
-              = f.text_field :email, size: 35, class: 'form-control'
+              = f.text_field :email, value: @identity && @identity.email, size: 35, class: 'form-control'
           .form-group.row
             = f.label :message, t(:proper)[:right_navigation][:contact][:message], class: 'col-lg-2 control-label required'
             .col-lg-10

@@ -78,6 +78,7 @@ begin
   CREATE_AN_ACCOUNT                         = application_config['create_an_account']
   ABOUT_SPARC_URL                           = application_config['about_sparc_url'] || nil
   USE_FEEDBACK_LINK                         = application_config['use_feedback_link'] || false
+  FEEDBACK_LINK                             = application_config['feedback_link'] || "#"
   NAVBAR_LINKS                              = application_config['navbar_links'] || {}
 
   if LOCALE_OVERRIDE

@@ -19,9 +19,9 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 class ContactFormsController < ApplicationController
-
   def new
     @contact_form = ContactForm.new
+    @identity = current_identity
   end
 
   def create

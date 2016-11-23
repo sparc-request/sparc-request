@@ -83,6 +83,7 @@ development:
   about_sparc_url: http://academicdepartments.musc.edu/sctr/sparc_request
   use_about_sparc_link: true
   use_feedback_link: true
+  feedback_link: "http://something.com"
   send_emails_to_real_users: false
 
 test:

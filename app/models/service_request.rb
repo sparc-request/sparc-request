@@ -120,7 +120,7 @@ class ServiceRequest < ActiveRecord::Base
         invalid_day_errors = false
 
         unless days.all?{|x| !x.blank?}
-          errors.add(:base, I18n.t('errors.arms.visit_day_missing', arm_name: arm.name))
+          errors.add(:base, I18n.t('errors.fulfillments.visit_day_missing', arm_name: arm.name))
           visit_group_errors = true
         end
       end
@@ -506,7 +506,7 @@ class ServiceRequest < ActiveRecord::Base
                                       auditable_type = 'LineItem' AND user_id = #{identity.id} AND action IN ('create', 'destroy') AND
                                       created_at BETWEEN '#{start_date}' AND '#{end_date}'")
                                     .group_by(&:auditable_id)
-                                    
+
     {:line_items => line_item_audits}
   end
 

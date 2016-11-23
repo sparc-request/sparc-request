@@ -25,6 +25,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   before_filter :find_admin_for_protocol,                         only: [:show, :edit, :update, :update_protocol_type, :display_requests]
   before_filter :protocol_authorizer_view,                        only: [:show, :view_full_calendar, :display_requests]
   before_filter :protocol_authorizer_edit,                        only: [:edit, :update, :update_protocol_type]
+  before_filter :update_protocol_data,                            only: [:update]       
 
   def index
     admin_orgs   = @user.authorized_admin_organizations
@@ -142,7 +143,6 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   def update
     attrs               = fix_date_params
     permission_to_edit  = @authorization.present? ? @authorization.can_edit? : false
-
     # admin is not able to activate study_type_question_group
     if @protocol.update_attributes(attrs)
       flash[:success] = I18n.t('protocols.updated', protocol_type: @protocol.type)
@@ -162,6 +162,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     @permission_to_edit = protocol_role.nil? ? false : protocol_role.can_edit?
     @protocol.type      = params[:type]
     @protocol_type = params[:type]
+    @protocol.study_type_question_group_id = StudyTypeQuestionGroup.active_id
 
     @protocol.populate_for_edit
     flash[:success] = t(:protocols)[:change_type][:updated]
@@ -192,6 +193,14 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   private
+
+  def update_protocol_data
+    if params[:updated_protocol_type] == 'true' && params[:protocol][:type] == 'Study'
+      @protocol.update_attribute(:type, params[:protocol][:type])
+      @protocol.update_attribute(:study_type_question_group_id, StudyTypeQuestionGroup.active_id)
+      @protocol = Protocol.find(params[:id]) #Protocol reload
+    end
+  end
 
   def build_with_owner_params
     service_providers = Identity.joins(:service_providers).where(service_providers: {

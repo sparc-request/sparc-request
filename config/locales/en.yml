@@ -126,7 +126,7 @@ en:
       epic_access: "Epic EMR Access?:*"
       select_one: "Select one"
     rights:
-      none: Study/Project Member Only
+      none: Member Only
       view: "View Rights"
       request: "Request/Approve Services"
       approve: "Authorized/Change Study Charges"
@@ -478,7 +478,7 @@ en:
       epic_access: "Epic EMR Access?:*"
       rights:
         header: "User Rights:*"
-        none: "Study/Project Member Only"
+        none: "Member Only"
         view: "View Rights"
         request: "Request/Approve Services"
         approve: "Authorized/Change Study Charges"
@@ -1627,7 +1627,7 @@ en:
     rights:
       approve: 'Authorize/Change Study Charges'
       header: "User Rights:*"
-      none: 'Study/Project Member Only'
+      none: 'Member Only'
       request: 'Request/Approve Services'
       view: 'View Rights'
     role_prompt: "Select a Role"

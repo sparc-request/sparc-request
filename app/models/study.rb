@@ -89,13 +89,6 @@ class Study < Protocol
     affiliations.sort_by(&:position)
   end
 
-  def setup_study_type_answers
-    StudyTypeQuestion.find_each do |stq|
-      study_type_answer = study_type_answers.detect{|obj| obj.study_type_question_id == stq.id}
-      study_type_answer = study_type_answers.build(study_type_question_id: stq.id) unless study_type_answer
-    end
-  end
-
   def setup_project_roles
     project_roles.build(role: "primary-pi", project_rights: "approve") unless project_roles.primary_pis.any?
   end

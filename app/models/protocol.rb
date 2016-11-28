@@ -439,6 +439,13 @@ class Protocol < ActiveRecord::Base
     end
   end
 
+  def setup_study_type_answers
+    StudyTypeQuestion.find_each do |stq|
+      study_type_answer = study_type_answers.detect{|obj| obj.study_type_question_id == stq.id}
+      study_type_answer = study_type_answers.build(study_type_question_id: stq.id) unless study_type_answer
+    end
+  end
+
   def create_arm(args)
     arm = self.arms.new(args)
     if arm.valid?

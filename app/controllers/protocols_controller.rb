@@ -26,6 +26,7 @@ class ProtocolsController < ApplicationController
   before_filter :authorize_identity,          unless: :from_portal?,  except: [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
   before_filter :set_portal
   before_filter :find_protocol,               only: [:edit, :update, :view_details]
+  before_filter :update_protocol_data,                            only: [:update]
 
   def new
     @protocol_type          = params[:protocol_type]
@@ -99,6 +100,7 @@ class ProtocolsController < ApplicationController
     @protocol_type  = params[:type]
     @protocol.type  = params[:type]
     @protocol.populate_for_edit
+    @protocol.study_type_question_group_id = StudyTypeQuestionGroup.active_id
 
     flash[:success] = t(:protocols)[:change_type][:updated]
     if @protocol_type == "Study" && @protocol.sponsor_name.nil? && @protocol.selected_for_epic.nil?
@@ -160,6 +162,14 @@ class ProtocolsController < ApplicationController
   end
 
   private
+
+  def update_protocol_data
+    if params[:updated_protocol_type] == 'true' && params[:protocol][:type] == 'Study'
+      @protocol.update_attribute(:type, params[:protocol][:type])
+      @protocol.update_attribute(:study_type_question_group_id, StudyTypeQuestionGroup.active_id)
+      @protocol = Protocol.find(params[:id]) #Protocol reload
+    end
+  end
 
   def find_protocol
     @protocol = Protocol.find(params[:id])

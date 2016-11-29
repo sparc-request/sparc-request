@@ -19,7 +19,16 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 module Dashboard::ProtocolsHelper
-
+  def break_before_parenthetical(s)
+    i = s.index('(')
+    if i.present?
+      beginning = s[0...i]
+      ending = s[i..-1]
+      raw(beginning +'<br>'+ ending)
+    else
+      s
+    end
+  end
   def consolidated_request_buttons_display(protocol)
     if !protocol.has_first_draft_service_request? && protocol.service_requests.present?
       raw(

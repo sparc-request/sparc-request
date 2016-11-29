@@ -185,8 +185,13 @@ $(document).ready ->
     return
 
   $(document).on 'change', restrict_sending_dropdown, (e) ->
-    data = { ans1: $(certificate_of_confidence_dropdown).val(), ans2: $(higher_level_of_privacy_dropdown).val(), ans3: $(epic_inbasket_dropdown).val(), ans4: $(research_active_dropdown).val(), ans5: $(restrict_sending_dropdown).val() }
-    determine_study_type(data)
+    new_value = $(e.target).val()
+    if new_value != ''
+      data = { ans1: $(certificate_of_confidence_dropdown).val(), ans2: $(higher_level_of_privacy_dropdown).val(), ans3: $(epic_inbasket_dropdown).val(), ans4: $(research_active_dropdown).val(), ans5: $(restrict_sending_dropdown).val() }
+      determine_study_type(data)
+    else
+      $('#study_type_note').hide()
+    return
      
   ###END EPIC BUTTON FIELDS DISPLAY###
 

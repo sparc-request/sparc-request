@@ -136,6 +136,7 @@ en:
       email: "Email"
       phone: "Phone"
       rights: "Proxy Rights"
+      epic_emr_access: 'EPIC EMR Access'
 
   #############
   # CALENDARS #

@@ -34,7 +34,7 @@
           = visit.effort_billing_qty
     - else
       .col-xs-4.text-center.no-padding
-        %a.edit-research-billing-qty{ href: 'javascript:void(0)', data: { name: 'research_qty', title: t(:calendars)[:pppv][:editable_fields][:research], value: visit.research_billing_qty, url: dashboard_visit_path(visit) } }
+        %a.edit-research-billing-qty{ href: 'javascript:void(0)', data: { arm_id: arm.id, name: 'research_qty', title: t(:calendars)[:pppv][:editable_fields][:research], value: visit.research_billing_qty, url: dashboard_visit_path(visit) } }
       .col-xs-4.text-center.no-padding
         %a.edit-insurance-billing-qty{ href: 'javascript:void(0)', data: { name: 'third_party_qty', title: t(:calendars)[:pppv][:editable_fields][:third_party], value: visit.insurance_billing_qty, url: dashboard_visit_path(visit) } }
       .col-xs-4.text-center.no-padding

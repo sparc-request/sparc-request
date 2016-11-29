@@ -101,6 +101,25 @@ calculate_max_rates = (arm_id) ->
     $(".arm-calendar-container-#{arm_id}:visible #{column}.max-total-per-patient").html(max_total_display)
 
 (exports ? this).setup_xeditable_fields = () ->
+  reload_calendar = (arm_id) ->
+    # E.g. "billing-strategy-tab" -> "billing_strategy"
+    tab = $('li.custom-tab.active a').last().attr('id')
+    tab = tab.substring(0, tab.indexOf("tab") - 1).replace("-", "_");
+
+    # Reload calendar
+    $.get '/service_calendars/table.js', {
+      tab: tab,
+      review: $("#review").val(),
+      portal: $("#portal").val(),
+      admin: $("#admin").val(),
+      merged: $("#merged").val(),
+      consolidated: $("#consolidated").val(),
+      pages: $("pages").val(),
+      arm_id: arm_id,
+      protocol_id: $('#protocol_id').val(),
+      sub_service_request_id: $('#sub_service_request_id').val()
+    }
+    
   # Override x-editable defaults
   $.fn.editable.defaults.send = 'always'
   $.fn.editable.defaults.ajaxOptions =
@@ -147,28 +166,14 @@ calculate_max_rates = (arm_id) ->
       data = 'line_items_visit': { 'subject_count': params.value }
       return data
     success: () ->
-      # E.g. "billing-strategy-tab" -> "billing_strategy"
-      tab = $('li.custom-tab.active a').last().attr('id')
-      tab = tab.substring(0, tab.indexOf("tab") - 1).replace("-", "_");
-
-      # Reload calendar
-      $.get '/service_calendars/table.js', {
-        tab: tab,
-        review: $("#review").val(),
-        portal: $("#portal").val(),
-        admin: $("#admin").val(),
-        merged: $("#merged").val(),
-        consolidated: $("#consolidated").val(),
-        pages: $("pages").val(),
-        arm_id: $(this).data('armId'),
-        protocol_id: $('#protocol_id').val(),
-        sub_service_request_id: $('#sub_service_request_id').val()
-      }
+      reload_calendar($(this).data('armId'))
 
   $('.edit-research-billing-qty').editable
     params: (params) ->
       data = 'visit': { 'research_billing_qty': params.value }
       return data
+    success: () ->
+      reload_calendar($(this).data('armId'))
 
   $('.edit-insurance-billing-qty').editable
     params: (params) ->

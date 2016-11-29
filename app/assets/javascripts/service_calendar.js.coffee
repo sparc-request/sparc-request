@@ -119,7 +119,7 @@ calculate_max_rates = (arm_id) ->
       protocol_id: $('#protocol_id').val(),
       sub_service_request_id: $('#sub_service_request_id').val()
     }
-    
+
   # Override x-editable defaults
   $.fn.editable.defaults.send = 'always'
   $.fn.editable.defaults.ajaxOptions =
@@ -141,6 +141,7 @@ calculate_max_rates = (arm_id) ->
     params: (params) ->
       data = 'visit_group': { 'day': params.value }
       return data
+    emptytext: '(?)'
 
   $('.window-after').editable
     params: (params) ->
@@ -151,6 +152,7 @@ calculate_max_rates = (arm_id) ->
     params: (params) ->
       data = 'visit_group': { 'name': params.value }
       return data
+    emptytext: '(?)'
 
   $('.edit-your-cost').editable
     display: (value) ->

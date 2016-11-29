@@ -157,13 +157,14 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def update_protocol_type
-    # Using update_attribute here is intentional, type is a protected attribute
     protocol_role       = @protocol.project_roles.find_by(identity_id: @user.id)
     @permission_to_edit = protocol_role.nil? ? false : protocol_role.can_edit?
-    @protocol.type      = params[:type]
-    @protocol_type = params[:type]
-    @protocol.study_type_question_group_id = StudyTypeQuestionGroup.active_id
 
+    # Setting type and study_type_question_group, not actually saving
+    @protocol.type      = params[:type]
+    @protocol.study_type_question_group_id = StudyTypeQuestionGroup.active_id
+    
+    @protocol_type = params[:type]
     @protocol.populate_for_edit
     flash[:success] = t(:protocols)[:change_type][:updated]
     if @protocol_type == "Study" && @protocol.sponsor_name.nil? && @protocol.selected_for_epic.nil?
@@ -197,7 +198,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   def update_protocol_data
     if params[:updated_protocol_type] == 'true' && params[:protocol][:type] == 'Study'
       @protocol.update_attribute(:type, params[:protocol][:type])
-      @protocol.update_attribute(:study_type_question_group_id, StudyTypeQuestionGroup.active_id)
+      @protocol.activate
       @protocol = Protocol.find(params[:id]) #Protocol reload
     end
   end

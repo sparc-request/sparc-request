@@ -18,7 +18,16 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 = javascript_include_tag 'service_calendar_logic'
+
 = hidden_field_tag :indirect_rate, @service_request.protocol.indirect_cost_rate
+= hidden_field_tag :review, @review
+= hidden_field_tag :portal, @portal
+= hidden_field_tag :admin, @admin
+= hidden_field_tag :merged, @merged
+= hidden_field_tag :consolidated, @consolidated
+= hidden_field_tag :pages, @pages
+= hidden_field_tag :protocol_id, @service_request.protocol_id
+= hidden_field_tag :sub_service_request_id, @sub_service_request.try(:id)
 
 - if @sub_service_request ? @sub_service_request.has_per_patient_per_visit_services? : @service_request.has_per_patient_per_visit_services?
   - @service_request.arms.each do |arm|

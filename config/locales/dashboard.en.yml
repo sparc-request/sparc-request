@@ -158,6 +158,7 @@ en:
     protocol_filters:
       header: "Filter Protocols"
       archived: "Archived"
+      inactive: "(inactive)"
       status: "Status"
       organization: "Organization"
       owner: "Owner"

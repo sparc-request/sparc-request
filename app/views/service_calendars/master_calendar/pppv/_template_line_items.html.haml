@@ -21,7 +21,7 @@
 - Dashboard::ServiceCalendars.pppv_line_items_visits_to_display(arm, service_request, sub_service_request, merged: merged, portal: portal, review: review, consolidated: consolidated).each do |org_name, livs|
   - line_items_visits << livs
   - ssr    = livs[0].sub_service_request
-  - locked = !ssr.can_be_edited? && !admin
+  - locked = !ssr.can_be_edited? && !session[:admin_edit]
 
   -# SSR Header Row
   %tr.organization-header{ class: locked ? 'text-danger' : '' }

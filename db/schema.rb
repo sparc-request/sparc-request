@@ -16,15 +16,15 @@ ActiveRecord::Schema.define(version: 20161122130742) do
   create_table "admin_rates", force: :cascade do |t|
     t.integer  "line_item_id", limit: 4
     t.integer  "admin_cost",   limit: 4
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "affiliations", force: :cascade do |t|
     t.integer  "protocol_id", limit: 4
     t.string   "name",        limit: 255
-    t.datetime "created_at",              null: false
-    t.datetime "updated_at",              null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.datetime "deleted_at"
   end
 
@@ -33,8 +33,8 @@ ActiveRecord::Schema.define(version: 20161122130742) do
   create_table "alerts", force: :cascade do |t|
     t.string   "alert_type", limit: 255
     t.string   "status",     limit: 255
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "answers", force: :cascade do |t|
@@ -53,8 +53,8 @@ ActiveRecord::Schema.define(version: 20161122130742) do
     t.integer  "display_length",         limit: 4
     t.string   "custom_class",           limit: 255
     t.string   "custom_renderer",        limit: 255
-    t.datetime "created_at",                           null: false
-    t.datetime "updated_at",                           null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.string   "default_value",          limit: 255
     t.string   "api_id",                 limit: 255
     t.string   "display_type",           limit: 255
@@ -67,8 +67,8 @@ ActiveRecord::Schema.define(version: 20161122130742) do
 
   create_table "appointments", force: :cascade do |t|
     t.integer  "calendar_id",     limit: 4
-    t.datetime "created_at",                  null: false
-    t.datetime "updated_at",                  null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.integer  "visit_group_id",  limit: 4
     t.integer  "position",        limit: 4
     t.string   "name",            limit: 255
@@ -84,8 +84,8 @@ ActiveRecord::Schema.define(version: 20161122130742) do
     t.integer  "service_request_id",     limit: 4
     t.integer  "identity_id",            limit: 4
     t.datetime "approval_date"
-    t.datetime "created_at",                                                       null: false
-    t.datetime "updated_at",                                                       null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.datetime "deleted_at"
     t.string   "approval_type",          limit: 255, default: "Resource Approval"
     t.integer  "sub_service_request_id", limit: 4
@@ -98,8 +98,8 @@ ActiveRecord::Schema.define(version: 20161122130742) do
   create_table "arms", force: :cascade do |t|
     t.string   "name",                  limit: 255
     t.integer  "visit_count",           limit: 4,   default: 1
-    t.datetime "created_at",                                        null: false
-    t.datetime "updated_at",                                        null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.integer  "subject_count",         limit: 4,   default: 1
     t.integer  "protocol_id",           limit: 4
     t.boolean  "new_with_draft",                    default: false
@@ -113,8 +113,8 @@ ActiveRecord::Schema.define(version: 20161122130742) do
     t.integer  "surveyable_id",   limit: 4
     t.string   "surveyable_type", limit: 255
     t.integer  "survey_id",       limit: 4
-    t.datetime "created_at",                  null: false
-    t.datetime "updated_at",                  null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "associated_surveys", ["survey_id"], name: "index_associated_surveys_on_survey_id", using: :btree
@@ -146,16 +146,16 @@ ActiveRecord::Schema.define(version: 20161122130742) do
   create_table "available_statuses", force: :cascade do |t|
     t.integer  "organization_id", limit: 4
     t.string   "status",          limit: 255
-    t.datetime "created_at",                  null: false
-    t.datetime "updated_at",                  null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "available_statuses", ["organization_id"], name: "index_available_statuses_on_organization_id", using: :btree
 
   create_table "calendars", force: :cascade do |t|
     t.integer  "subject_id", limit: 4
-    t.datetime "created_at",           null: false
-    t.datetime "updated_at",           null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "calendars", ["subject_id"], name: "index_calendars_on_subject_id", using: :btree
@@ -163,8 +163,8 @@ ActiveRecord::Schema.define(version: 20161122130742) do
   create_table "catalog_managers", force: :cascade do |t|
     t.integer  "identity_id",        limit: 4
     t.integer  "organization_id",    limit: 4
-    t.datetime "created_at",                   null: false
-    t.datetime "updated_at",                   null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.datetime "deleted_at"
     t.boolean  "edit_historic_data"
   end
@@ -176,8 +176,8 @@ ActiveRecord::Schema.define(version: 20161122130742) do
     t.integer  "service_request_id", limit: 4
     t.integer  "service_id",         limit: 4
     t.decimal  "charge_amount",                precision: 12, scale: 4
-    t.datetime "created_at",                                            null: false
-    t.datetime "updated_at",                                            null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.datetime "deleted_at"
   end
 
@@ -187,8 +187,8 @@ ActiveRecord::Schema.define(version: 20161122130742) do
   create_table "clinical_providers", force: :cascade do |t|
     t.integer  "identity_id",     limit: 4
     t.integer  "organization_id", limit: 4
-    t.datetime "created_at",                null: false
-    t.datetime "updated_at",                null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "clinical_providers", ["identity_id"], name: "index_clinical_providers_on_identity_id", using: :btree
@@ -205,8 +205,8 @@ ActiveRecord::Schema.define(version: 20161122130742) do
   create_table "cover_letters", force: :cascade do |t|
     t.text     "content",                limit: 65535
     t.integer  "sub_service_request_id", limit: 4
-    t.datetime "created_at",                           null: false
-    t.datetime "updated_at",                           null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "cover_letters", ["sub_service_request_id"], name: "index_cover_letters_on_sub_service_request_id", using: :btree
@@ -221,8 +221,8 @@ ActiveRecord::Schema.define(version: 20161122130742) do
     t.datetime "failed_at"
     t.string   "locked_by",  limit: 255
     t.string   "queue",      limit: 255
-    t.datetime "created_at",                           null: false
-    t.datetime "updated_at",                           null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "delayed_jobs", ["priority", "run_at"], name: "delayed_jobs_priority", using: :btree
@@ -231,8 +231,8 @@ ActiveRecord::Schema.define(version: 20161122130742) do
     t.integer  "question_id",       limit: 4
     t.integer  "question_group_id", limit: 4
     t.string   "rule",              limit: 255
-    t.datetime "created_at",                    null: false
-    t.datetime "updated_at",                    null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "dependencies", ["question_group_id"], name: "index_dependencies_on_question_group_id", using: :btree
@@ -251,8 +251,8 @@ ActiveRecord::Schema.define(version: 20161122130742) do
     t.text     "text_value",     limit: 65535
     t.string   "string_value",   limit: 255
     t.string   "response_other", limit: 255
-    t.datetime "created_at",                   null: false
-    t.datetime "updated_at",                   null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "dependency_conditions", ["answer_id"], name: "index_dependency_conditions_on_answer_id", using: :btree
@@ -262,8 +262,8 @@ ActiveRecord::Schema.define(version: 20161122130742) do
   create_table "documents", force: :cascade do |t|
     t.datetime "deleted_at"
     t.string   "doc_type",              limit: 255
-    t.datetime "created_at",                        null: false
-    t.datetime "updated_at",                        null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.string   "document_file_name",    limit: 255
     t.string   "document_content_type", limit: 255
     t.integer  "document_file_size",    limit: 4
@@ -282,31 +282,31 @@ ActiveRecord::Schema.define(version: 20161122130742) do
   create_table "epic_queue_records", force: :cascade do |t|
     t.integer  "protocol_id", limit: 4
     t.string   "status",      limit: 255
-    t.datetime "created_at",              null: false
-    t.datetime "updated_at",              null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.string   "origin",      limit: 255
     t.integer  "identity_id", limit: 4
   end
 
   create_table "epic_queues", force: :cascade do |t|
     t.integer  "protocol_id", limit: 4
-    t.datetime "created_at",            null: false
-    t.datetime "updated_at",            null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.integer  "identity_id", limit: 4
   end
 
   create_table "epic_rights", force: :cascade do |t|
     t.integer  "project_role_id", limit: 4
     t.string   "right",           limit: 255
-    t.datetime "created_at",                  null: false
-    t.datetime "updated_at",                  null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "excluded_funding_sources", force: :cascade do |t|
     t.integer  "subsidy_map_id", limit: 4
     t.string   "funding_source", limit: 255
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.datetime "deleted_at"
   end
 
@@ -315,8 +315,8 @@ ActiveRecord::Schema.define(version: 20161122130742) do
   create_table "feedbacks", force: :cascade do |t|
     t.text     "message",    limit: 65535
     t.string   "email",      limit: 255
-    t.datetime "created_at",               null: false
-    t.datetime "updated_at",               null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "fulfillments", force: :cascade do |t|
@@ -324,8 +324,8 @@ ActiveRecord::Schema.define(version: 20161122130742) do
     t.string   "timeframe",     limit: 255
     t.string   "time",          limit: 255
     t.datetime "date"
-    t.datetime "created_at",                null: false
-    t.datetime "updated_at",                null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.datetime "deleted_at"
     t.string   "unit_type",     limit: 255
     t.string   "quantity_type", limit: 255
@@ -343,8 +343,8 @@ ActiveRecord::Schema.define(version: 20161122130742) do
     t.string   "submission_type",     limit: 255
     t.datetime "irb_approval_date"
     t.datetime "irb_expiration_date"
-    t.datetime "created_at",                      null: false
-    t.datetime "updated_at",                      null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.datetime "deleted_at"
     t.boolean  "approval_pending"
     t.string   "nct_number",          limit: 255
@@ -361,8 +361,8 @@ ActiveRecord::Schema.define(version: 20161122130742) do
     t.string   "credentials",                  limit: 255
     t.string   "subspecialty",                 limit: 255
     t.string   "phone",                        limit: 255
-    t.datetime "created_at",                                                                        null: false
-    t.datetime "updated_at",                                                                        null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.datetime "deleted_at"
     t.boolean  "catalog_overlord"
     t.string   "credentials_other",            limit: 255
@@ -391,8 +391,8 @@ ActiveRecord::Schema.define(version: 20161122130742) do
   create_table "impact_areas", force: :cascade do |t|
     t.integer  "protocol_id", limit: 4
     t.string   "name",        limit: 255
-    t.datetime "created_at",              null: false
-    t.datetime "updated_at",              null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.datetime "deleted_at"
     t.string   "other_text",  limit: 255
   end
@@ -404,8 +404,8 @@ ActiveRecord::Schema.define(version: 20161122130742) do
     t.string   "ind_number",        limit: 255
     t.boolean  "ind_on_hold"
     t.string   "inv_device_number", limit: 255
-    t.datetime "created_at",                                 null: false
-    t.datetime "updated_at",                                 null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.datetime "deleted_at"
     t.string   "exemption_type",    limit: 255, default: ""
   end
@@ -416,8 +416,8 @@ ActiveRecord::Schema.define(version: 20161122130742) do
     t.integer  "protocol_id",   limit: 4
     t.string   "patent_number", limit: 255
     t.text     "inventors",     limit: 65535
-    t.datetime "created_at",                  null: false
-    t.datetime "updated_at",                  null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.datetime "deleted_at"
   end
 
@@ -452,8 +452,8 @@ ActiveRecord::Schema.define(version: 20161122130742) do
     t.integer  "quantity",               limit: 4
     t.datetime "complete_date"
     t.datetime "in_process_date"
-    t.datetime "created_at",                                      null: false
-    t.datetime "updated_at",                                      null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.datetime "deleted_at"
     t.integer  "units_per_quantity",     limit: 4, default: 1
   end
@@ -466,8 +466,8 @@ ActiveRecord::Schema.define(version: 20161122130742) do
     t.integer  "arm_id",        limit: 4
     t.integer  "line_item_id",  limit: 4
     t.integer  "subject_count", limit: 4
-    t.datetime "created_at",              null: false
-    t.datetime "updated_at",              null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "line_items_visits", ["arm_id"], name: "index_line_items_visits_on_arm_id", using: :btree
@@ -484,8 +484,8 @@ ActiveRecord::Schema.define(version: 20161122130742) do
     t.integer  "from",            limit: 4
     t.string   "email",           limit: 255
     t.text     "body",            limit: 65535
-    t.datetime "created_at",                    null: false
-    t.datetime "updated_at",                    null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "messages", ["notification_id"], name: "index_messages_on_notification_id", using: :btree
@@ -493,8 +493,8 @@ ActiveRecord::Schema.define(version: 20161122130742) do
   create_table "notes", force: :cascade do |t|
     t.integer  "identity_id",  limit: 4
     t.text     "body",         limit: 65535
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.integer  "notable_id",   limit: 4
     t.string   "notable_type", limit: 255
   end
@@ -506,8 +506,8 @@ ActiveRecord::Schema.define(version: 20161122130742) do
   create_table "notifications", force: :cascade do |t|
     t.integer  "sub_service_request_id", limit: 4
     t.integer  "originator_id",          limit: 4
-    t.datetime "created_at",                         null: false
-    t.datetime "updated_at",                         null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.string   "subject",                limit: 255
     t.integer  "other_user_id",          limit: 4
     t.boolean  "read_by_originator"
@@ -528,8 +528,8 @@ ActiveRecord::Schema.define(version: 20161122130742) do
     t.text     "ack_language", limit: 65535
     t.boolean  "process_ssrs",               default: false
     t.boolean  "is_available",               default: true
-    t.datetime "created_at",                                 null: false
-    t.datetime "updated_at",                                 null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.datetime "deleted_at"
   end
 
@@ -540,8 +540,8 @@ ActiveRecord::Schema.define(version: 20161122130742) do
     t.integer  "sub_service_request_id", limit: 4
     t.string   "status",                 limit: 255
     t.datetime "date"
-    t.datetime "created_at",                         null: false
-    t.datetime "updated_at",                         null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.datetime "deleted_at"
     t.integer  "changed_by_id",          limit: 4
   end
@@ -564,8 +564,8 @@ ActiveRecord::Schema.define(version: 20161122130742) do
 
   create_table "payment_uploads", force: :cascade do |t|
     t.integer  "payment_id",        limit: 4
-    t.datetime "created_at",                    null: false
-    t.datetime "updated_at",                    null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.string   "file_file_name",    limit: 255
     t.string   "file_content_type", limit: 255
     t.integer  "file_file_size",    limit: 4
@@ -582,8 +582,8 @@ ActiveRecord::Schema.define(version: 20161122130742) do
     t.date     "date_received"
     t.string   "payment_method",         limit: 255
     t.text     "details",                limit: 65535
-    t.datetime "created_at",                                                    null: false
-    t.datetime "updated_at",                                                    null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.float    "percent_subsidy",        limit: 24
   end
 
@@ -600,8 +600,8 @@ ActiveRecord::Schema.define(version: 20161122130742) do
     t.decimal  "federal_rate",                           precision: 12, scale: 4
     t.decimal  "corporate_rate",                         precision: 12, scale: 4
     t.date     "effective_date"
-    t.datetime "created_at",                                                                      null: false
-    t.datetime "updated_at",                                                                      null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.datetime "deleted_at"
     t.date     "display_date"
     t.decimal  "other_rate",                             precision: 12, scale: 4
@@ -639,8 +639,8 @@ ActiveRecord::Schema.define(version: 20161122130742) do
     t.integer  "appointment_id",   limit: 4
     t.integer  "visit_id",         limit: 4
     t.boolean  "completed",                                           default: false
-    t.datetime "created_at",                                                          null: false
-    t.datetime "updated_at",                                                          null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.integer  "line_item_id",     limit: 4
     t.integer  "r_quantity",       limit: 4
     t.integer  "service_id",       limit: 4
@@ -664,8 +664,8 @@ ActiveRecord::Schema.define(version: 20161122130742) do
     t.integer  "identity_id",    limit: 4
     t.string   "project_rights", limit: 255
     t.string   "role",           limit: 255
-    t.datetime "created_at",                                 null: false
-    t.datetime "updated_at",                                 null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.datetime "deleted_at"
     t.string   "role_other",     limit: 255
     t.boolean  "epic_access",                default: false
@@ -708,8 +708,8 @@ ActiveRecord::Schema.define(version: 20161122130742) do
     t.string   "federal_grant_code_id",                 limit: 255
     t.string   "federal_non_phs_sponsor",               limit: 255
     t.string   "federal_phs_sponsor",                   limit: 255
-    t.datetime "created_at",                                                                                  null: false
-    t.datetime "updated_at",                                                                                  null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.datetime "deleted_at"
     t.string   "potential_funding_source_other",        limit: 255
     t.string   "funding_source_other",                  limit: 255
@@ -737,8 +737,8 @@ ActiveRecord::Schema.define(version: 20161122130742) do
     t.string   "display_type",           limit: 255
     t.string   "custom_class",           limit: 255
     t.string   "custom_renderer",        limit: 255
-    t.datetime "created_at",                           null: false
-    t.datetime "updated_at",                           null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.string   "api_id",                 limit: 255
   end
 
@@ -783,8 +783,8 @@ ActiveRecord::Schema.define(version: 20161122130742) do
     t.integer  "display_width",          limit: 4
     t.string   "custom_class",           limit: 255
     t.string   "custom_renderer",        limit: 255
-    t.datetime "created_at",                           null: false
-    t.datetime "updated_at",                           null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.integer  "correct_answer_id",      limit: 4
     t.string   "api_id",                 limit: 255
   end
@@ -798,8 +798,8 @@ ActiveRecord::Schema.define(version: 20161122130742) do
     t.string   "to",         limit: 255
     t.string   "from",       limit: 255
     t.text     "body",       limit: 65535
-    t.datetime "created_at",               null: false
-    t.datetime "updated_at",               null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "reports", force: :cascade do |t|
@@ -809,8 +809,8 @@ ActiveRecord::Schema.define(version: 20161122130742) do
     t.integer  "xlsx_file_size",         limit: 4
     t.datetime "xlsx_updated_at"
     t.string   "report_type",            limit: 255
-    t.datetime "created_at",                         null: false
-    t.datetime "updated_at",                         null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "research_types_info", force: :cascade do |t|
@@ -819,8 +819,8 @@ ActiveRecord::Schema.define(version: 20161122130742) do
     t.boolean  "vertebrate_animals"
     t.boolean  "investigational_products"
     t.boolean  "ip_patents"
-    t.datetime "created_at",                         null: false
-    t.datetime "updated_at",                         null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.datetime "deleted_at"
   end
 
@@ -832,8 +832,8 @@ ActiveRecord::Schema.define(version: 20161122130742) do
     t.string   "access_code",            limit: 255
     t.datetime "started_at"
     t.datetime "completed_at"
-    t.datetime "created_at",                         null: false
-    t.datetime "updated_at",                         null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.string   "api_id",                 limit: 255
     t.integer  "sub_service_request_id", limit: 4
   end
@@ -855,8 +855,8 @@ ActiveRecord::Schema.define(version: 20161122130742) do
     t.string   "string_value",      limit: 255
     t.string   "response_other",    limit: 255
     t.string   "response_group",    limit: 255
-    t.datetime "created_at",                      null: false
-    t.datetime "updated_at",                      null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.integer  "survey_section_id", limit: 4
     t.string   "api_id",            limit: 255
   end
@@ -874,8 +874,8 @@ ActiveRecord::Schema.define(version: 20161122130742) do
     t.integer  "applied_org_id", limit: 4
     t.string   "vendor",         limit: 255
     t.integer  "version",        limit: 4
-    t.datetime "created_at",                 null: false
-    t.datetime "updated_at",                 null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "service_providers", force: :cascade do |t|
@@ -883,8 +883,8 @@ ActiveRecord::Schema.define(version: 20161122130742) do
     t.integer  "organization_id",    limit: 4
     t.integer  "service_id",         limit: 4
     t.boolean  "is_primary_contact"
-    t.datetime "created_at",                   null: false
-    t.datetime "updated_at",                   null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.boolean  "hold_emails"
     t.datetime "deleted_at"
   end
@@ -897,8 +897,8 @@ ActiveRecord::Schema.define(version: 20161122130742) do
     t.integer  "service_id",            limit: 4
     t.integer  "related_service_id",    limit: 4
     t.boolean  "optional"
-    t.datetime "created_at",                                      null: false
-    t.datetime "updated_at",                                      null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.datetime "deleted_at"
     t.boolean  "linked_quantity",                 default: false
     t.integer  "linked_quantity_total", limit: 4
@@ -916,8 +916,8 @@ ActiveRecord::Schema.define(version: 20161122130742) do
     t.datetime "pppv_complete_date"
     t.datetime "pppv_in_process_date"
     t.datetime "submitted_at"
-    t.datetime "created_at",                          null: false
-    t.datetime "updated_at",                          null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.datetime "deleted_at"
     t.date     "original_submitted_date"
   end
@@ -936,8 +936,8 @@ ActiveRecord::Schema.define(version: 20161122130742) do
     t.string   "charge_code",           limit: 255
     t.string   "revenue_code",          limit: 255
     t.integer  "organization_id",       limit: 4
-    t.datetime "created_at",                                                                   null: false
-    t.datetime "updated_at",                                                                   null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.datetime "deleted_at"
     t.boolean  "send_to_epic",                                                 default: false
     t.integer  "revenue_code_range_id", limit: 4
@@ -954,8 +954,8 @@ ActiveRecord::Schema.define(version: 20161122130742) do
   create_table "sessions", force: :cascade do |t|
     t.string   "session_id", limit: 255,   null: false
     t.text     "data",       limit: 65535
-    t.datetime "created_at",               null: false
-    t.datetime "updated_at",               null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "sessions", ["session_id"], name: "index_sessions_on_session_id", using: :btree
@@ -965,8 +965,8 @@ ActiveRecord::Schema.define(version: 20161122130742) do
     t.integer  "protocol_id",            limit: 4
     t.integer  "study_type_question_id", limit: 4
     t.boolean  "answer"
-    t.datetime "created_at",                       null: false
-    t.datetime "updated_at",                       null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   create_table "study_type_question_groups", force: :cascade do |t|
@@ -980,16 +980,16 @@ ActiveRecord::Schema.define(version: 20161122130742) do
     t.integer  "order",                        limit: 4
     t.text     "question",                     limit: 65535
     t.string   "friendly_id",                  limit: 255
-    t.datetime "created_at",                                 null: false
-    t.datetime "updated_at",                                 null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.integer  "study_type_question_group_id", limit: 4
   end
 
   create_table "study_types", force: :cascade do |t|
     t.integer  "protocol_id", limit: 4
     t.string   "name",        limit: 255
-    t.datetime "created_at",              null: false
-    t.datetime "updated_at",              null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.datetime "deleted_at"
   end
 
@@ -1002,8 +1002,8 @@ ActiveRecord::Schema.define(version: 20161122130742) do
     t.string   "ssr_id",                     limit: 255
     t.datetime "status_date"
     t.string   "status",                     limit: 255
-    t.datetime "created_at",                                               null: false
-    t.datetime "updated_at",                                               null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.datetime "deleted_at"
     t.datetime "consult_arranged_date"
     t.datetime "requester_contacted_date"
@@ -1026,8 +1026,8 @@ ActiveRecord::Schema.define(version: 20161122130742) do
   add_index "sub_service_requests", ["status"], name: "index_sub_service_requests_on_status", using: :btree
 
   create_table "subjects", force: :cascade do |t|
-    t.datetime "created_at",                      null: false
-    t.datetime "updated_at",                      null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.integer  "arm_id",              limit: 4
     t.string   "name",                limit: 255
     t.string   "mrn",                 limit: 255
@@ -1044,8 +1044,8 @@ ActiveRecord::Schema.define(version: 20161122130742) do
   create_table "submission_emails", force: :cascade do |t|
     t.integer  "organization_id", limit: 4
     t.string   "email",           limit: 255
-    t.datetime "created_at",                  null: false
-    t.datetime "updated_at",                  null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.datetime "deleted_at"
   end
 
@@ -1068,8 +1068,8 @@ ActiveRecord::Schema.define(version: 20161122130742) do
   add_index "submissions", ["service_id"], name: "index_submissions_on_service_id", using: :btree
 
   create_table "subsidies", force: :cascade do |t|
-    t.datetime "created_at",                                             null: false
-    t.datetime "updated_at",                                             null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.datetime "deleted_at"
     t.boolean  "overridden"
     t.integer  "sub_service_request_id", limit: 4
@@ -1086,8 +1086,8 @@ ActiveRecord::Schema.define(version: 20161122130742) do
     t.integer  "organization_id",    limit: 4
     t.decimal  "max_dollar_cap",                   precision: 12, scale: 4, default: 0.0
     t.decimal  "max_percentage",                   precision: 5,  scale: 2, default: 0.0
-    t.datetime "created_at",                                                              null: false
-    t.datetime "updated_at",                                                              null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.datetime "deleted_at"
     t.float    "default_percentage", limit: 24,                             default: 0.0
     t.text     "instructions",       limit: 65535
@@ -1098,8 +1098,8 @@ ActiveRecord::Schema.define(version: 20161122130742) do
   create_table "super_users", force: :cascade do |t|
     t.integer  "identity_id",     limit: 4
     t.integer  "organization_id", limit: 4
-    t.datetime "created_at",                null: false
-    t.datetime "updated_at",                null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.datetime "deleted_at"
   end
 
@@ -1116,8 +1116,8 @@ ActiveRecord::Schema.define(version: 20161122130742) do
     t.string   "common_identifier",      limit: 255
     t.integer  "display_order",          limit: 4
     t.string   "custom_class",           limit: 255
-    t.datetime "created_at",                           null: false
-    t.datetime "updated_at",                           null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "survey_sections", ["survey_id"], name: "index_survey_sections_on_survey_id", using: :btree
@@ -1126,8 +1126,8 @@ ActiveRecord::Schema.define(version: 20161122130742) do
     t.integer  "survey_id",   limit: 4
     t.string   "locale",      limit: 255
     t.text     "translation", limit: 65535
-    t.datetime "created_at",                null: false
-    t.datetime "updated_at",                null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "survey_translations", ["survey_id"], name: "index_survey_translations_on_survey_id", using: :btree
@@ -1144,8 +1144,8 @@ ActiveRecord::Schema.define(version: 20161122130742) do
     t.datetime "inactive_at"
     t.string   "css_url",                limit: 255
     t.string   "custom_class",           limit: 255
-    t.datetime "created_at",                                       null: false
-    t.datetime "updated_at",                                       null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.integer  "display_order",          limit: 4
     t.string   "api_id",                 limit: 255
     t.integer  "survey_version",         limit: 4,     default: 0
@@ -1181,8 +1181,8 @@ ActiveRecord::Schema.define(version: 20161122130742) do
     t.string   "sending_class",    limit: 255
     t.integer  "sending_class_id", limit: 4
     t.string   "message",          limit: 255
-    t.datetime "created_at",                   null: false
-    t.datetime "updated_at",                   null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "toast_messages", ["sending_class_id"], name: "index_toast_messages_on_sending_class_id", using: :btree
@@ -1191,8 +1191,8 @@ ActiveRecord::Schema.define(version: 20161122130742) do
     t.integer  "service_request_id", limit: 4
     t.integer  "identity_id",        limit: 4
     t.string   "token",              limit: 255
-    t.datetime "created_at",                     null: false
-    t.datetime "updated_at",                     null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.datetime "deleted_at"
   end
 
@@ -1213,8 +1213,8 @@ ActiveRecord::Schema.define(version: 20161122130742) do
     t.string   "string_value",   limit: 255
     t.string   "response_other", limit: 255
     t.string   "regexp",         limit: 255
-    t.datetime "created_at",                   null: false
-    t.datetime "updated_at",                   null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "validation_conditions", ["answer_id"], name: "index_validation_conditions_on_answer_id", using: :btree
@@ -1225,8 +1225,8 @@ ActiveRecord::Schema.define(version: 20161122130742) do
     t.integer  "answer_id",  limit: 4
     t.string   "rule",       limit: 255
     t.string   "message",    limit: 255
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "validations", ["answer_id"], name: "index_validations_on_answer_id", using: :btree
@@ -1248,8 +1248,8 @@ ActiveRecord::Schema.define(version: 20161122130742) do
     t.string   "name_of_iacuc",         limit: 255
     t.datetime "iacuc_approval_date"
     t.datetime "iacuc_expiration_date"
-    t.datetime "created_at",                        null: false
-    t.datetime "updated_at",                        null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.datetime "deleted_at"
   end
 
@@ -1258,8 +1258,8 @@ ActiveRecord::Schema.define(version: 20161122130742) do
   create_table "visit_groups", force: :cascade do |t|
     t.string   "name",          limit: 255
     t.integer  "arm_id",        limit: 4
-    t.datetime "created_at",                            null: false
-    t.datetime "updated_at",                            null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.integer  "position",      limit: 4
     t.integer  "day",           limit: 4
     t.integer  "window_before", limit: 4,   default: 0
@@ -1271,8 +1271,8 @@ ActiveRecord::Schema.define(version: 20161122130742) do
   create_table "visits", force: :cascade do |t|
     t.integer  "quantity",              limit: 4,   default: 0
     t.string   "billing",               limit: 255
-    t.datetime "created_at",                                    null: false
-    t.datetime "updated_at",                                    null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.datetime "deleted_at"
     t.integer  "research_billing_qty",  limit: 4,   default: 0
     t.integer  "insurance_billing_qty", limit: 4,   default: 0

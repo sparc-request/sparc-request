@@ -165,7 +165,7 @@ module Dashboard
 
       link_to(
         content_tag(:span, '', class: "glyphicon #{icon}"),
-        'javascript:void(0)',
+        '#',
         method: :post,
         remote: true,
         role: 'button',

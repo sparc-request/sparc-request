@@ -71,17 +71,26 @@ class Dashboard::LineItemsController < Dashboard::BaseController
   def update
     @sub_service_request  = @line_item.sub_service_request
     @otf                  = @line_item.service.one_time_fee
-    if @line_item.displayed_cost_valid?(params[:line_item][:displayed_cost]) && @line_item.update_attributes(params[:line_item])
-      if @otf
-        flash[:success] = t(:dashboard)[:study_level_activities][:updated]
-      else
-        render partial: 'service_calendars/update_service_calendar'
+    success = @line_item.displayed_cost_valid?(params[:line_item][:displayed_cost]) && @line_item.update_attributes(params[:line_item])
+
+    respond_to do |format|
+      format.js do
+        if success
+          if @otf
+            flash[:success] = t(:dashboard)[:study_level_activities][:updated]
+          else
+            render partial: 'service_calendars/update_service_calendar'
+          end
+        elsif @otf
+          @errors = @line_item.errors
+        end
       end
-    else
-      if @otf
-        @errors = @line_item.errors
-      else
-        render json: @line_item.errors, status: :unprocessable_entity
+      format.json do
+        if success
+          render json: { success: true }
+        else
+          render json: @line_item.errors, status: :unprocessable_entity
+        end
       end
     end
   end

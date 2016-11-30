@@ -32,6 +32,7 @@
 .form-group.row.selected_for_epic_dependent{ display_if(protocol.selected_for_epic) }
   = form.label :study_type_questions, t(:protocols)[:studies][:information][:study_type_questions], class: 'col-lg-2 control-label required'
   .col-lg-10
+    - action_name == 'update_protocol_type' ? protocol.setup_study_type_answers : ''
     = form.fields_for :study_type_answers, protocol.study_type_answers do |answer_form|
       - if answer_form.object.study_type_question.study_type_question_group.active
         .form-group.row{ id: "study_type_answer_#{answer_form.object.study_type_question.friendly_id}", style: "#{answer_form.object.answer != nil ? 'display:block' : 'display:none;'}" }

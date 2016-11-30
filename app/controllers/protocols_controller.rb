@@ -26,7 +26,6 @@ class ProtocolsController < ApplicationController
   before_filter :authorize_identity,          unless: :from_portal?,  except: [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
   before_filter :set_portal
   before_filter :find_protocol,               only: [:edit, :update, :view_details]
-  before_filter :update_protocol_data,                            only: [:update]
 
   def new
     @protocol_type          = params[:protocol_type]
@@ -80,6 +79,13 @@ class ProtocolsController < ApplicationController
   end
 
   def update
+
+    if params[:updated_protocol_type] == 'true' && params[:protocol][:type] == 'Study'
+      @protocol.update_attribute(:type, params[:protocol][:type])
+      @protocol.activate
+      @protocol = Protocol.find(params[:id]) #Protocol reload
+    end
+
     attrs            = fix_date_params
     @service_request = ServiceRequest.find(params[:srid])
 
@@ -164,14 +170,6 @@ class ProtocolsController < ApplicationController
   end
 
   private
-
-  def update_protocol_data
-    if params[:updated_protocol_type] == 'true' && params[:protocol][:type] == 'Study'
-      @protocol.update_attribute(:type, params[:protocol][:type])
-      @protocol.activate
-      @protocol = Protocol.find(params[:id]) #Protocol reload
-    end
-  end
 
   def find_protocol
     @protocol = Protocol.find(params[:id])

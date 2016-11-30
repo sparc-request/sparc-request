@@ -33,7 +33,6 @@ $(document).ready ->
     else if $(this).hasClass('program-link')
       $('.program-link').removeClass('clicked')
     $(this).addClass('clicked')
-    
     id    = $(this).data('id')
     data  = process_ssr_found : $(this).data('process-ssr-found') 
     $.ajax
@@ -42,8 +41,12 @@ $(document).ready ->
       url: "/catalogs/#{id}/update_description"
 
   $(document).on 'click', '.program-link.locked-program', ->
-    $('#modal_place').html($('#locked-organization-modal').html())
-    $('#modal_place').modal('show')
+    organizationId = $(this).data('id')
+    protocolId = $('.protocol-id').val()
+    serviceRequestId = $('.service-request-id').val()
+    $.ajax
+      type: 'GET'
+      url: "/locked_organizations?org_id=#{organizationId}&protocol_id=#{protocolId}&service_request_id=#{serviceRequestId}"
 
   $(document).on 'click', '.core-header', ->
     $('.service-description').addClass('hidden')

@@ -74,7 +74,7 @@ en:
         warning: "Deleting this service from the service cart will be irreversible and will cause it to be deleted from the associated protocol (%{protocol_id}). Are you sure you want to proceed?"
       locked_organization:
         header: "Locked Organization"
-        warning: "This Organization has locked your request, pending approval.<br>Please wait for the Organization to finish processing your request.<br><br>If this is incorrect, please contact them directly."
+        warning: "%{organization} services are already present on request %{request} pertaining to this Study/Project, %{title}.<br>Please contact %{contact_name} at %{contact_info} to edit existing request."
 
     ############
     # PROTOCOL #

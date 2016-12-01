@@ -71,7 +71,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
         expect(sr.line_items.count).to eq(1)
       end
 
-      it 'should not render template' do
+      it 'should render template' do
         org      = create(:organization, process_ssrs: true)
         service  = create(:service, organization: org)
         protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
@@ -86,10 +86,10 @@ RSpec.describe ServiceRequestsController, type: :controller do
           service_id: service.id
         }
 
-        expect(controller).to_not render_template(:add_service)
+        expect(controller).to render_template(:add_service)
       end
 
-      it 'should respond unprocessable_entity' do
+      it 'should respond ok' do
         org      = create(:organization, process_ssrs: true)
         service  = create(:service, organization: org)
         protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
@@ -104,7 +104,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
           service_id: service.id
         }
 
-        expect(controller).to respond_with(:unprocessable_entity)
+        expect(controller).to respond_with(:ok)
       end
     end
 

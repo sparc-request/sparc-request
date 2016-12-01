@@ -106,6 +106,10 @@ class Organization < ActiveRecord::Base
     end
   end
 
+  def update_ssr_org_name
+    self.sub_service_requests.each{ |ssr| ssr.update_attribute(:org_tree_display, self.name) }
+  end
+
   def service_providers_lookup
     if !service_providers.empty?
       return service_providers

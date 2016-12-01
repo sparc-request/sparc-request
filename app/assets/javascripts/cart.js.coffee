@@ -86,9 +86,6 @@ addService = (srid, id) ->
   $.ajax
     type: 'POST'
     url: "/service_requests/#{srid}/add_service/#{id}"
-    error: (data, textStatus, jqXHR) ->
-      $('#modal_place').html(data.responseText)
-      $('#modal_place').modal('show')
 
 removeService = (srid, id, move_on, spinner) ->
   $.ajax

@@ -230,6 +230,9 @@ class ServiceRequestsController < ApplicationController
       end
     end
     send_request_amendment_email_evaluation(previously_submitted_ssrs) unless previously_submitted_ssrs.empty?
+
+    # if ssr has been previously submitted (has a submitted_at date), then we do not want to resend confirmation notification
+    to_notify = to_notify.map{ |ssr_id| SubServiceRequest.find(ssr_id)  }.select {|ssr| ssr["submitted_at"] == nil}
     send_confirmation_notifications(to_notify) unless to_notify.empty?
     render formats: [:html]
   end
@@ -541,7 +544,6 @@ class ServiceRequestsController < ApplicationController
     sub_service_requests.each do |sub_service_request|
 
       audit_report = request_amendment ? audit_report = sub_service_request.audit_report(current_user, sub_service_request.service_request.previous_submitted_at.utc, Time.now.utc) : nil
-
       sub_service_request.organization.submission_emails_lookup.each do |submission_email|
         @service_list_false = sub_service_request.service_request.service_list(false, nil, sub_service_request)
         @service_list_true = sub_service_request.service_request.service_list(true, nil, sub_service_request)
@@ -620,13 +622,13 @@ class ServiceRequestsController < ApplicationController
 
   def update_service_request_status(service_request, status, validate=true)
     requests = []
-    to_be_updated_ssrs = status == 'submitted' ? service_request.sub_service_requests.where(submitted_at: nil) : service_request.sub_service_requests
 
-    to_be_updated_ssrs.each do |ssr|
+    service_request.sub_service_requests.each do |ssr|
       if UPDATABLE_STATUSES.include?(ssr.status)
         requests << ssr
       end
     end
+
     if (status == 'submitted')
       service_request.previous_submitted_at = service_request.submitted_at
       service_request.update_attribute(:submitted_at, Time.now)

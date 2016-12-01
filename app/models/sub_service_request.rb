@@ -368,19 +368,6 @@ class SubServiceRequest < ActiveRecord::Base
     !self.in_work_fulfillment?
   end
 
-  # TODO: Verify that this method is no longer needed or being used
-  def candidate_statuses
-    candidates = ["draft", "submitted", "in process", "complete"]
-    #candidates.unshift("submitted") if self.can_be_edited?
-    #candidates.unshift("draft") if self.can_be_edited?
-    candidates << "ctrc review" if self.ctrc?
-    candidates << "ctrc approved" if self.ctrc?
-    candidates << "awaiting pi approval"
-    candidates << "on hold"
-
-    candidates
-  end
-
   def update_past_status
     if !@prev_status.blank? && @prev_status != self.status
       past_status = self.past_statuses.create(status: @prev_status, date: Time.now)

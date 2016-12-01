@@ -622,7 +622,6 @@ class ServiceRequestsController < ApplicationController
 
   def update_service_request_status(service_request, status, validate=true)
     requests = []
-
     service_request.sub_service_requests.each do |ssr|
       if UPDATABLE_STATUSES.include?(ssr.status)
         requests << ssr

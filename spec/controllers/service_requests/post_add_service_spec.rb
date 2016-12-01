@@ -35,7 +35,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
     end
 
     context 'service already in cart' do
-      it 'should return error modal' do
+      it 'should assign @duplicate_service' do
         org      = create(:organization, process_ssrs: true)
         service  = create(:service, organization: org)
         protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
@@ -50,7 +50,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
           service_id: service.id
         }
 
-        expect(response.body).to be
+        expect(assigns(:duplicate_service)).to eq(true)
       end
 
       it 'should not create line item' do

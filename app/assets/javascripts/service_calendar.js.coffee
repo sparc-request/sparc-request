@@ -105,20 +105,11 @@ calculate_max_rates = (arm_id) ->
     # E.g. "billing-strategy-tab" -> "billing_strategy"
     tab = $('li.custom-tab.active a').last().attr('id')
     tab = tab.substring(0, tab.indexOf("tab") - 1).replace("-", "_");
-
+    data = $('#service-calendars').data()
+    data.tab = tab
+    data.arm_id = arm_id
     # Reload calendar
-    $.get '/service_calendars/table.js', {
-      tab: tab,
-      review: $("#review").val(),
-      portal: $("#portal").val(),
-      admin: $("#admin").val(),
-      merged: $("#merged").val(),
-      consolidated: $("#consolidated").val(),
-      pages: $("pages").val(),
-      arm_id: arm_id,
-      protocol_id: $('#protocol_id').val(),
-      sub_service_request_id: $('#sub_service_request_id').val()
-    }
+    $.get '/service_calendars/table.js', data
 
   # Override x-editable defaults
   $.fn.editable.defaults.send = 'always'

@@ -37,7 +37,7 @@ class ApplicationController < ActionController::Base
   end
 
   def configure_permitted_parameters
-    devise_parameter_sanitizer.for(:sign_up) { |u| u.permit!}
+    devise_parameter_sanitizer.permit(:sign_up)
   end
 
   def current_user

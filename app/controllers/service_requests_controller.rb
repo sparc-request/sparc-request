@@ -554,7 +554,6 @@ class ServiceRequestsController < ApplicationController
 
   def send_ssr_service_provider_notifications(sub_service_request, ssr_destroyed: false, request_amendment: false) #single sub-service request
     audit_report = request_amendment ? sub_service_request.audit_report(current_user, sub_service_request.service_request.previous_submitted_at.utc, Time.now.utc) : nil
-
     sub_service_request.organization.service_providers.where("(`service_providers`.`hold_emails` != 1 OR `service_providers`.`hold_emails` IS NULL)").each do |service_provider|
       send_individual_service_provider_notification(sub_service_request, service_provider, audit_report, ssr_destroyed, request_amendment)
     end
@@ -621,12 +620,13 @@ class ServiceRequestsController < ApplicationController
 
   def update_service_request_status(service_request, status, validate=true)
     requests = []
-    service_request.sub_service_requests.each do |ssr|
+    to_be_updated_ssrs = status == 'submitted' ? service_request.sub_service_requests.where(submitted_at: nil) : service_request.sub_service_requests
+
+    to_be_updated_ssrs.each do |ssr|
       if UPDATABLE_STATUSES.include?(ssr.status)
         requests << ssr
       end
     end
-
     if (status == 'submitted')
       service_request.previous_submitted_at = service_request.submitted_at
       service_request.update_attribute(:submitted_at, Time.now)

@@ -232,7 +232,7 @@ class ServiceRequestsController < ApplicationController
     send_request_amendment_email_evaluation(previously_submitted_ssrs) unless previously_submitted_ssrs.empty?
 
     # if ssr has been previously submitted (has a submitted_at date), then we do not want to resend confirmation notification
-    to_notify = to_notify.map{ |ssr_id| SubServiceRequest.find(ssr_id)  }.select {|ssr| ssr["submitted_at"] == nil}
+    to_notify = to_notify.map{ |ssr_id| SubServiceRequest.find(ssr_id) }.select { |ssr| ssr["submitted_at"] == nil }
     send_confirmation_notifications(to_notify) unless to_notify.empty?
     render formats: [:html]
   end

@@ -81,11 +81,13 @@ $(document).ready ->
                                           <span><strong>Abbreviation: {{abbreviation}}</strong></span><br>
                                           <span><strong>CPT Code: {{cpt_code}}</strong></span>
                                         </button>')
+        notFound: Handlebars.compile('<div class="tt-suggestion">No Results</div>')
       }
     }
   ).on('typeahead:render', (event, a, b, c) ->
     $('[data-toggle="tooltip"]').tooltip()
   ).on('typeahead:select', (event, suggestion) ->
+    asd
     srid = $(this).data('srid')
     id = suggestion.value
     $.ajax

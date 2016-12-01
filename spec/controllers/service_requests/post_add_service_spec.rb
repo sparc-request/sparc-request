@@ -211,7 +211,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
           service  = create(:service, organization: org)
           protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
           sr       = create(:service_request_without_validations, protocol: protocol)
-          ssr      = create(:sub_service_request_without_validations, organization: org, service_request: sr, status: 'on_hold')
+          ssr      = create(:sub_service_request_without_validations, organization: org, service_request: sr)
 
           session[:service_request_id] = sr.id
           session[:identity_id]        = logged_in_user.id
@@ -220,7 +220,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
             id: sr.id,
             service_id: service.id
           }
-
           expect(sr.sub_service_requests.first.status).to eq('draft')
         end
       end

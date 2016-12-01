@@ -29,7 +29,8 @@ RSpec.describe 'dashboard/protocols/requests_modal', type: :view do
       protocol: protocol,
       user: jug2,
       permission_to_edit: false,
-      view_only: true
+      view_only: true,
+      show_view_ssr_back: true
   end
 
   it 'should render Service Requests with Sub Service Requests' do

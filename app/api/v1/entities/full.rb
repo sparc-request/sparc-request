@@ -74,7 +74,6 @@ module V1
     expose  :service_request_id,
             :sub_service_request_id,
             :service_id,
-            :ssr_id,
             :optional,
             :quantity,
             :units_per_quantity,

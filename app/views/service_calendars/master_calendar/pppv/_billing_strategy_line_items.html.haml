@@ -21,7 +21,7 @@
 - Dashboard::ServiceCalendars.pppv_line_items_visits_to_display(arm, service_request, sub_service_request, merged: merged, portal: portal, review: review, consolidated: consolidated).each do |org_name, livs|
   - line_items_visits << livs
   - ssr    = livs[0].sub_service_request
-  - locked = !ssr.can_be_edited?
+  - locked = !ssr.can_be_edited? && !admin
 
   -# SSR Header Row
   %tr.organization-header{ class: locked ? 'text-danger' : '' }
@@ -30,15 +30,15 @@
     - visit_groups.each do
       %th.col-sm-1.billing-type-list.text-center
         .row
-          .col-xs-4.billing-type{ data: { toggle: 'tooltip', animation: 'false', title: t(:proper)[:service_calendar][:tooltips][:r] } }
+          .col-xs-4.billing-type.no-padding{ data: { toggle: 'tooltip', animation: 'false', title: t(:proper)[:service_calendar][:tooltips][:r] } }
             = t(:calendars)[:pppv][:header_fields][:research]
-          .col-xs-4.billing-type{ data: { toggle: 'tooltip', animation: 'false', title: t(:proper)[:service_calendar][:tooltips][:t] } }
+          .col-xs-4.billing-type.no-padding{ data: { toggle: 'tooltip', animation: 'false', title: t(:proper)[:service_calendar][:tooltips][:t] } }
             = t(:calendars)[:pppv][:header_fields][:third_party]
-          .col-xs-4.billing-type{ data: { toggle: 'tooltip', animation: 'false', title: t(:proper)[:service_calendar][:tooltips][:effort] } }
+          .col-xs-4.billing-type.no-padding{ data: { toggle: 'tooltip', animation: 'false', title: t(:proper)[:service_calendar][:tooltips][:effort] } }
             = t(:calendars)[:pppv][:header_fields][:percent]
     - (5 - visit_groups.count).times do
       %th.col-sm-1 &nbsp;
-    
+
     - unless portal
       %th.col-sm-1{ colspan: 2 }
 
@@ -65,7 +65,7 @@
         - if locked
           = liv.subject_count
         - else
-          %a.edit-subject-count{ href: 'javascript:void(0)', data: { name: 'subject_count', title: t(:calendars)[:pppv][:editable_fields][:subject_count], value: liv.subject_count, url: dashboard_line_items_visit_path(liv, srid: service_request.id) } }
+          %a.edit-subject-count{ href: 'javascript:void(0)', data: { arm_id: arm.id, name: 'subject_count', title: t(:calendars)[:pppv][:editable_fields][:subject_count], value: liv.subject_count, url: dashboard_line_items_visit_path(liv, srid: service_request.id) } }
       - visits      = liv.visits.paginate(page: page.to_i, per_page: 5)
       - totals_hash = liv.try(:per_subject_subtotals, visits)
       - visits.each_with_index do |v, index|

@@ -33,7 +33,7 @@ RSpec.describe 'Protocol' do
   describe "push to epic" do
     it "should create a record of the protocols push" do
       study.update_attribute(:selected_for_epic, true)
-      expect{ study.push_to_epic(EPIC_INTERFACE) }.to change(EpicQueueRecord, :count).by(1)
+      expect{ study.push_to_epic(EPIC_INTERFACE, "test") }.to change(EpicQueueRecord, :count).by(1)
     end
   end
 end

@@ -23,13 +23,14 @@ $(document).ready ->
   $(document).on 'click', '#protocol-type-button', ->
     protocol_id = $(this).data('protocol-id')
     srid        = $(this).data('srid')
+    in_dashboard = if $(this).data('in-dashboard') == 1 then '/dashboard' else ''
     data = 
       type : $("#protocol_type").val()
       srid : srid
     if confirm(I18n['protocols']['change_type']['warning'])
       $.ajax
         type: 'PATCH'
-        url: "/protocols/#{protocol_id}/update_protocol_type"
+        url: "#{in_dashboard}/protocols/#{protocol_id}/update_protocol_type"
         data: data
   # Protocol Edit End
 
@@ -37,7 +38,6 @@ $(document).ready ->
   study_selected_for_epic_button = '#selected_for_epic_button'
   certificate_of_confidence_dropdown = '#study_type_answer_certificate_of_conf_answer'
   higher_level_of_privacy_dropdown = '#study_type_answer_higher_level_of_privacy_answer'
-  access_required_dropdown = '#study_type_answer_access_study_info_answer'
   epic_inbasket_dropdown = '#study_type_answer_epic_inbasket_answer'
   research_active_dropdown = '#study_type_answer_research_active_answer'
   restrict_sending_dropdown = '#study_type_answer_restrict_sending_answer'
@@ -56,6 +56,7 @@ $(document).ready ->
 
   $.prototype.hide_elt = () ->
     this[0].selectedIndex = 0
+    this.selectpicker('refresh')
     this.closest('.row').hide()
     return this
 
@@ -63,100 +64,29 @@ $(document).ready ->
     this.closest('.row').show()
     return this
 
-  # $.prototype.hide_visual_error = () ->
-  #   this.removeClass('visual_error')
-  #   if $('.visual_error').length == 0
-  #     $('.study_type div').removeClass('field_with_errors')
-  #     if $('#errorExplanation ul li').size() == 1
-  #       $('#errorExplanation').remove()
-  #     else
-  #       $('#errorExplanation ul li:contains("Study type questions must be selected")').remove()
-
-  # add_and_check_visual_error_on_submit = (dropdown) ->
-  #   if dropdown.is(':visible') && dropdown.val() == ''
-  #     dropdown.addClass('visual_error')
-  #     dropdown.on 'change', (e) ->
-  #       dropdown.hide_visual_error()
-
-  # add_and_check_visual_error_on_field_change = (dropdown) ->
-  #   siblings = dropdown.parent('.row').siblings().find('.visual_error')
-  #   if siblings
-  #     for sibling in siblings
-  #       if !$(sibling).is(':visible')
-  #         $(sibling).hide_visual_error()
-
-  # When the epic box answers hit the validations with an unselected field,
-  # the html.haml sets display to none for unselected fields
-  # So if the user has not filled out one of the
-  # required fields in the epic box, it will hit this code and display
-  # the appropriate fields that need to be filled out with a visual cue of red border
-  if $('.field_with_errors label:contains("Study type questions")').length > 0
-    $(study_selected_for_epic_button).change()
-    if $(certificate_of_confidence_dropdown).is(':visible')
-      $(certificate_of_confidence_dropdown).change()
-    if $(higher_level_of_privacy_dropdown).val() == 'true'
-      $(access_required_dropdown).show_elt()
-      $(access_required_dropdown).change()
-    if $(higher_level_of_privacy_dropdown).val() == 'false'
-      $(higher_level_of_privacy_dropdown).change()
-    if $(certificate_of_confidence_dropdown) != "" && $(higher_level_of_privacy_dropdown).val() != "" && $(access_required_dropdown).val() == 'false'
-      $(access_required_dropdown).change()
-    add_and_check_visual_error_on_submit($(certificate_of_confidence_dropdown))
-    add_and_check_visual_error_on_submit($(higher_level_of_privacy_dropdown))
-    add_and_check_visual_error_on_submit($(access_required_dropdown))
-    add_and_check_visual_error_on_submit($(epic_inbasket_dropdown))
-    add_and_check_visual_error_on_submit(research_active_dropdown)
-    add_and_check_visual_error_on_submit($(restrict_sending_dropdown))
-
-    $(certificate_of_confidence_dropdown).on 'change', (e) ->
-      add_and_check_visual_error_on_field_change($(certificate_of_confidence_dropdown))
-
-    $(higher_level_of_privacy_dropdown).on 'change', (e) ->
-      add_and_check_visual_error_on_field_change($(higher_level_of_privacy_dropdown))
-
-    $(access_required_dropdown).on 'change', (e) ->
-      add_and_check_visual_error_on_field_change($(access_required_dropdown))
-
-  #### This was written for an edge case in admin/portal.
-  #### When you go from a virgin project (selected_for_epic = nil/ never been a study)
-  #### to a study, the Epic Box should be editable instead of only displaying the epic box data.
-
-  if $('#study_can_edit_admin_study').val() == "can_edit_study"
-    $('#actions input[type="submit"]').on 'click', (e) ->
-      if $('input[name=\'study[selected_for_epic]\']:checked').val() == 'true'
-        if $(certificate_of_confidence_dropdown).val() == ''
-          epic_box_alert_message()
-          add_and_check_visual_error_on_submit($(certificate_of_confidence_dropdown))
-          return false
-        if $(certificate_of_confidence_dropdown).val() == 'false'
-          if $(higher_level_of_privacy_dropdown).val() == ''
-            epic_box_alert_message()
-            add_and_check_visual_error_on_submit($(higher_level_of_privacy_dropdown))
-            return false
-          if $(higher_level_of_privacy_dropdown).val() == 'true'
-            if $(access_required_dropdown).val() == ''
-              epic_box_alert_message()
-              add_and_check_visual_error_on_submit($(access_required_dropdown))
-              return false
-            if $(access_required_dropdown).val() == 'false'
-              if $(epic_inbasket_dropdown).val() == '' ||$(research_active_dropdown).val() == '' || $(restrict_sending_dropdown).val() == ''
-                epic_box_alert_message()
-                add_and_check_visual_error_on_submit($(epic_inbasket_dropdown))
-                add_and_check_visual_error_on_submit(research_active_dropdown)
-                add_and_check_visual_error_on_submit($(restrict_sending_dropdown))
-                return false
-          else if $(higher_level_of_privacy_dropdown).val() == 'false'
-            if $(epic_inbasket_dropdown).val() == '' ||$(research_active_dropdown).val() == '' || $(restrict_sending_dropdown).val() == ''
-              epic_box_alert_message()
-              add_and_check_visual_error_on_submit($(epic_inbasket_dropdown))
-              add_and_check_visual_error_on_submit(research_active_dropdown)
-              add_and_check_visual_error_on_submit($(restrict_sending_dropdown))
-              return false
-  ######## End of send to epic study question logic ##############
+  determine_study_type = (answers) ->
+    array_values = new Array()
+    for k,v of answers
+      array_values.push(v)
+    nil_value = $.inArray('', array_values) > -1
+    if array_values[0] == 'true' || !nil_value
+      $.ajax
+        type: 'POST'
+        data: answers
+        url: "/study_type/determine_study_type_note"
+        success: ->
+          $('#study_type_note').show()
+        errors: ->
+          sweetAlert("Oops...", "Something went wrong!", "error")
 
   #########################
   ### FORM FIELDS LOGIC ###
   #######################################################################################
+
+  ### INITIAL PAGE LOAD EDIT STUDY IN SPARCRequest #######################
+  if $('#study_selected_for_epic_true_button').hasClass('active')
+    $('#study_type_answer_certificate_of_conf_answer').show_elt()
+    $('#study_type_note').show()
 
   ###FUNDING STATUS FIELDS DISPLAY###
   $(document).on 'change', '#protocol_funding_status', ->
@@ -205,42 +135,65 @@ $(document).ready ->
     new_value = $(e.target).val()
     if new_value == 'false'
       $(higher_level_of_privacy_dropdown).show_elt()
-    else
+      $('#study_type_note').hide()
+    else if new_value == 'true'
       $(higher_level_of_privacy_dropdown).hide_elt()
-      $(access_required_dropdown).hide_elt()
       $(epic_inbasket_dropdown).hide_elt()
       $(research_active_dropdown).hide_elt()
       $(restrict_sending_dropdown).hide_elt()
+      data = { ans1: $(certificate_of_confidence_dropdown).val(), ans2: $(higher_level_of_privacy_dropdown).val(), ans3: $(epic_inbasket_dropdown).val(), ans4: $(research_active_dropdown).val(), ans5: $(restrict_sending_dropdown).val() }
+      determine_study_type(data)
+    else
+      $(higher_level_of_privacy_dropdown).hide_elt()
+      $(epic_inbasket_dropdown).hide_elt()
+      $(research_active_dropdown).hide_elt()
+      $(restrict_sending_dropdown).hide_elt()
+      $('#study_type_note').hide()
     return
 
   $(document).on 'change', higher_level_of_privacy_dropdown, (e) ->
-    new_value = $(e.target).val()
-    if new_value == 'false'
-      $(access_required_dropdown).hide_elt()
-      $(epic_inbasket_dropdown).show_elt()
-      $(research_active_dropdown).show_elt()
-      $(restrict_sending_dropdown).show_elt()
-    else
-      $(access_required_dropdown).show_elt()
+    if $(e.target).val() == ''
       $(epic_inbasket_dropdown).hide_elt()
       $(research_active_dropdown).hide_elt()
       $(restrict_sending_dropdown).hide_elt()
+      $('#study_type_note').hide()
+    else
+      data = { ans1: $(certificate_of_confidence_dropdown).val(), ans2: $(higher_level_of_privacy_dropdown).val(), ans3: $(epic_inbasket_dropdown).val(), ans4: $(research_active_dropdown).val(), ans5: $(restrict_sending_dropdown).val() }
+      determine_study_type(data)
+      $(epic_inbasket_dropdown).show_elt()
     return
 
-  $(document).on 'change', access_required_dropdown, (e) ->
-    new_value = $(e.target).val()
-    if new_value == 'false'
-      $(epic_inbasket_dropdown).show_elt()
-      $(research_active_dropdown).show_elt()
-      $(restrict_sending_dropdown).show_elt()
-    else
-      $(epic_inbasket_dropdown).hide_elt()
+  $(document).on 'change', epic_inbasket_dropdown, (e) ->
+    if $(e.target).val() == ''
       $(research_active_dropdown).hide_elt()
       $(restrict_sending_dropdown).hide_elt()
+      $('#study_type_note').hide()
+    else
+      data = { ans1: $(certificate_of_confidence_dropdown).val(), ans2: $(higher_level_of_privacy_dropdown).val(), ans3: $(epic_inbasket_dropdown).val(), ans4: $(research_active_dropdown).val(), ans5: $(restrict_sending_dropdown).val() }
+      determine_study_type(data)
+      $(research_active_dropdown).show_elt()
     return
+
+  $(document).on 'change', research_active_dropdown, (e) ->
+    if $(e.target).val() == ''
+      $(restrict_sending_dropdown).hide_elt()
+      $('#study_type_note').hide()
+    else
+      data = { ans1: $(certificate_of_confidence_dropdown).val(), ans2: $(higher_level_of_privacy_dropdown).val(), ans3: $(epic_inbasket_dropdown).val(), ans4: $(research_active_dropdown).val(), ans5: $(restrict_sending_dropdown).val() }
+      determine_study_type(data)
+      $(restrict_sending_dropdown).show_elt()
+    return
+
+  $(document).on 'change', restrict_sending_dropdown, (e) ->
+    new_value = $(e.target).val()
+    if new_value != ''
+      data = { ans1: $(certificate_of_confidence_dropdown).val(), ans2: $(higher_level_of_privacy_dropdown).val(), ans3: $(epic_inbasket_dropdown).val(), ans4: $(research_active_dropdown).val(), ans5: $(restrict_sending_dropdown).val() }
+      determine_study_type(data)
+    else
+      $('#study_type_note').hide()
+    return
+     
   ###END EPIC BUTTON FIELDS DISPLAY###
-
-
 
   ###HUMAN SUBJECTS FIELDS DISPLAY###
   $(document).on 'change', '#protocol_research_types_info_attributes_human_subjects', ->

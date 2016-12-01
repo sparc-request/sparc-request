@@ -32,8 +32,8 @@ module ServiceRequestsHelper
 
   def current_organizations(service_request, sub_service_request)
     organizations = {}
-    
-    if sub_service_request.present? 
+
+    if sub_service_request.present?
       organizations[sub_service_request.organization_id] = sub_service_request.organization.name
     else
       service_request.sub_service_requests.each do |ssr|
@@ -73,7 +73,7 @@ module ServiceRequestsHelper
 
   def feedback_helper
     if USE_FEEDBACK_LINK
-      link_to t(:proper)[:right_navigation][:feedback][:header], t(:proper)[:right_navigation][:redcap_survey], target: :blank, class: 'feedback-button btn btn-primary btn-lg btn-block'
+      link_to t(:proper)[:right_navigation][:feedback][:header], FEEDBACK_LINK, target: :blank, class: 'feedback-button btn btn-primary btn-lg btn-block'
     else
       content_tag(:button, t(:proper)[:right_navigation][:feedback][:header], class: 'feedback-button btn btn-primary btn-lg btn-block')
     end

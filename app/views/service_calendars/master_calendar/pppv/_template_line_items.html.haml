@@ -21,7 +21,7 @@
 - Dashboard::ServiceCalendars.pppv_line_items_visits_to_display(arm, service_request, sub_service_request, merged: merged, portal: portal, review: review, consolidated: consolidated).each do |org_name, livs|
   - line_items_visits << livs
   - ssr    = livs[0].sub_service_request
-  - locked = !ssr.can_be_edited?
+  - locked = !ssr.can_be_edited? && !admin
 
   -# SSR Header Row
   %tr.organization-header{ class: locked ? 'text-danger' : '' }
@@ -51,7 +51,7 @@
         - if locked
           = liv.subject_count
         - else
-          %a.edit-subject-count{ class: locked ? 'locked' : '', href: 'javascript:void(0)', data: { name: 'subject_count', title: t(:calendars)[:pppv][:editable_fields][:subject_count], value: liv.subject_count, url: dashboard_line_items_visit_path(liv, srid: service_request.id) } }
+          %a.edit-subject-count{ class: locked ? 'locked' : '', href: 'javascript:void(0)', data: { arm_id: arm.id, name: 'subject_count', title: t(:calendars)[:pppv][:editable_fields][:subject_count], value: liv.subject_count, url: dashboard_line_items_visit_path(liv, srid: service_request.id) } }
       %td.text-center
         = Dashboard::ServiceCalendars.select_row(liv, sub_service_request, portal, locked)
       - visits      = liv.visits.paginate(page: page.to_i, per_page: 5)

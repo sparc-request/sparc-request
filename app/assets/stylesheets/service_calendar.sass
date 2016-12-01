@@ -25,7 +25,7 @@
 
 .calendar-container
   width: 100%
-  
+
   .panel-title
     width: 100%
 
@@ -75,6 +75,9 @@
   .row
     margin: 0
 
+th.visit-group-box
+  vertical-align: top !important
+
 .maximum-total-direct-cost-per-patient,
 .maximum-total-indirect-cost-per-patient,
 .maximum-total-per-patient,
@@ -84,6 +87,10 @@
 .total-cost-one-time-fees,
 .grand-total-cost
   background: #f5f5f5
+
+th.visit-group-select > div
+  padding-left: 0
+  padding-right: 0
 
 /* This is being caused by a strange bug which adds the 'active' class to the <li>s the first time the dropdown is rendered in the service calendar. When we can figure out why it's happening and remove it, remove this styling */
 .visit-group-select

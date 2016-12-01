@@ -23,7 +23,6 @@
   = form_for ([:dashboard, protocol]), as: :protocol, remote: true, html: { class: 'form-horizontal', autocomplete: 'off' } do |form|
     = form.hidden_field :requester_id
     = form.hidden_field :type
-
     - if @protocol.type.capitalize == "Study"
       .edit-study-view.container-fluid
         .row.user-edit-protocol-view

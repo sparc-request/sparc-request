@@ -17,47 +17,16 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+class StudyTypeController < ApplicationController
+  before_filter :extract_answers,               only: [:determine_study_type_note]
 
-module Entity
-  @entity_classes = [ ]
-
-  class << self
-    attr_reader :entity_classes
+  def determine_study_type_note
+    @note = StudyTypeFinder.new(nil, @study_type_answers).determine_study_type_note
   end
 
-  def self.included(subclass)
-    @entity_classes << subclass
-  end
-
-  def assign_obisid
-    if not self.obisid then
-      self.obisid = generate_unique_obisid()
-    end
-
-    return true
-  end
-
-  def generate_unique_obisid
-    obisid = nil
-
-    begin
-      obisid = SecureRandom.hex(16)
-    end until unique_obisid?(obisid)
-
-    return obisid
-  end
-
-  def unique_obisid?(obisid)
-    return self.class.where(:obisid => obisid).length == 0
-  end
-
-  # TODO: Can't do this in a mixin, because it overrides the method
-  # defined by the class in which this module is mixed-into
-  # def type
-  #   raise NotImplementedError, "#type not implemented for #{self.class.name}"
-  # end
-
-  def classes
-    return [ type().downcase ]
+  def extract_answers
+    extracted_params = params.extract!(:ans1, :ans2, :ans3, :ans4, :ans5)
+    boolean_params = extracted_params.transform_values {|val| val.to_s.eql?('true') ? true : val.eql?('') ? nil : false}
+    @study_type_answers = boolean_params.values  
   end
 end

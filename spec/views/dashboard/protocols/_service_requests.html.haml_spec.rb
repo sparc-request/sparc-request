@@ -28,7 +28,8 @@ RSpec.describe 'dashboard/service_requests/service_requests', type: :view do
       protocol: protocol,
       user: jug2,
       permission_to_edit: permission_to_edit,
-      view_only: false
+      view_only: false,
+      show_view_ssr_back: false
   end
 
   context 'Protocol has no SubServiceRequests' do

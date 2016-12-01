@@ -50,7 +50,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
           service_id: service.id
         }
 
-        expect(response.body['modal']).to be
+        expect(response.body).to be
       end
 
       it 'should not create line item' do

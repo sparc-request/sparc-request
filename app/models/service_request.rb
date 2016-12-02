@@ -430,9 +430,7 @@ class ServiceRequest < ActiveRecord::Base
       if changeable.include?(new_status)
         if (ssr.status != new_status) && UPDATABLE_STATUSES.include?(ssr.status)
           ssr.update_attribute(:status, new_status)
-          if ssr.submitted_at.nil?
-            to_notify << ssr.id
-          end
+          to_notify << ssr.id unless !ssr.submitted_at.nil?
         end
       end
     end

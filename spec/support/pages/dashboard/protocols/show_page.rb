@@ -53,9 +53,10 @@ module Dashboard
         # these appear after selecting a user
         element :credentials_dropdown, "button[data-id='project_role_identity_attributes_credentials']"
         element :specify_other_credentials, "#project_role_identity_attributes_credentials_other"
-        element :institution_dropdown, "button[data-id='project_role_identity_attributes_institution']"
-        element :college_dropdown, "button[data-id='project_role_identity_attributes_college']"
-        element :department_dropdown, "button[data-id='project_role_identity_attributes_department']"
+        element :institution_dropdown, "button[data-id='select-pro-org-institution']"
+        element :college_dropdown, "button[data-id='select-pro-org-college']"
+        element :department_dropdown, "button[data-id='select-pro-org-department']"
+        element :division_dropdown, "button[data-id='select-pro-org-division']"
         element :role_dropdown, "button[data-id='project_role_role']"
         element :specify_other_role, "#project_role_role_other"
         # rights radio buttons

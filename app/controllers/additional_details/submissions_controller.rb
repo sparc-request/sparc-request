@@ -23,7 +23,6 @@ class AdditionalDetails::SubmissionsController < ApplicationController
     @submission = Submission.new
     @submission.questionnaire_responses.build
     respond_to do |format|
-      format.html
       format.js
     end
   end
@@ -32,21 +31,24 @@ class AdditionalDetails::SubmissionsController < ApplicationController
     @service = Service.find(params[:service_id])
     @submission = Submission.find(params[:id])
     @questionnaire = @service.questionnaires.active.first
+    respond_to do |format|
+      format.js
+    end
   end
 
   def create
     @service = Service.find(params[:service_id])
     @questionnaire = @service.questionnaires.active.first
     @submission = Submission.new(submission_params)
-    @protocol = Protocol.find(params[:protocol_id])
-    @service_request = ServiceRequest.find(params[:sr_id])
+    @protocol = Protocol.find(submission_params[:protocol_id])
+    @submissions = @protocol.submissions
+    @line_item = LineItem.find(submission_params[:line_item_id])
+    @service_request = @line_item.service_request
     respond_to do |format|
       if @submission.save
         format.js
-        format.html
       else
         format.js
-        format.html { render :new }
       end
     end
   end
@@ -54,6 +56,7 @@ class AdditionalDetails::SubmissionsController < ApplicationController
   def update
     @service = Service.find(params[:service_id])
     @submission = Submission.find(params[:id])
+    @service_request = ServiceRequest.find(params[:sr_id])
     @submission.update_attributes(submission_params)
     respond_to do |format|
       if @submission.save
@@ -66,13 +69,14 @@ class AdditionalDetails::SubmissionsController < ApplicationController
 
   def destroy
     @service = Service.find(params[:service_id])
-    @submissions = @service.submissions
     @submission = Submission.find(params[:id])
     if params[:protocol_id]
       @protocol = Protocol.find(params[:protocol_id])
+      @submissions = @protocol.submissions
     end
-    if params[:sr_id]
-      @service_request = ServiceRequest.find(params[:sr_id])
+    if params[:line_item_id]
+      @line_item = LineItem.find(params[:line_item_id])
+      @service_request = ServiceRequest.find(@line_item.service_request_id)
     end
     respond_to do |format|
       if @submission.destroy

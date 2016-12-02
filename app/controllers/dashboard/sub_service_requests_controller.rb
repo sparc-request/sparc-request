@@ -34,6 +34,7 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
     @admin_orgs           = @user.authorized_admin_organizations
     @sub_service_requests = service_request.sub_service_requests.where.not(status: 'first_draft') # TODO: Remove Historical first_draft SSRs and remove this
     @permission_to_edit   = protocol.project_roles.where(identity: @user, project_rights: ['approve', 'request']).any?
+    @show_view_ssr_back   = params[:show_view_ssr_back]
   end
 
   def show
@@ -48,17 +49,18 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
           session[:service_calendar_pages][arm_id]  = page
         end
 
-        @service_request  = @sub_service_request.service_request
-        @service_list     = @service_request.service_list
-        @line_items       = @sub_service_request.line_items
-        @protocol         = @service_request.protocol
-        @tab              = 'calendar'
-        @portal           = true
-        @review           = true
-        @merged           = false
-        @consolidated     = false
-
-        @pages            = {}
+        @service_request    = @sub_service_request.service_request
+        @service_list       = @service_request.service_list
+        @line_items         = @sub_service_request.line_items
+        @protocol           = @service_request.protocol
+        @tab                = 'calendar'
+        @portal             = true
+        @admin              = false
+        @review             = true
+        @merged             = false
+        @consolidated       = false
+        @show_view_ssr_back = params[:show_view_ssr_back] == "true"
+        @pages              = {}
         @service_request.arms.each do |arm|
           new_page = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i
           @pages[arm.id] = @service_request.set_visit_page(new_page, arm)
@@ -71,7 +73,7 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
         cookies['admin-tab'] = 'details-tab' unless cookies['admin-tab']
         session[:service_calendar_pages] = params[:pages] if params[:pages]
         session[:breadcrumbs].add_crumbs(protocol_id: @sub_service_request.protocol.id, sub_service_request_id: @sub_service_request.id).clear(:notifications)
-        
+
         @service_request  = @sub_service_request.service_request
         @protocol         = @sub_service_request.protocol
 
@@ -132,7 +134,7 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
 
   def push_to_epic
     begin
-      @sub_service_request.service_request.protocol.push_to_epic(EPIC_INTERFACE)
+      @sub_service_request.service_request.protocol.push_to_epic(EPIC_INTERFACE, "admin_push", current_user.id)
       flash[:success] = 'Request Pushed to Epic!'
     rescue
       flash[:alert] = $!.message

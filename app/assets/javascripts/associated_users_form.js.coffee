@@ -21,17 +21,9 @@ $(document).ready ->
 
   #**************** Add Authorized User Form Begin ****************
 
-  # Credentials - Dropdown
-  $(document).on 'changed.bs.select', '#project_role_identity_attributes_credentials', ->
-    if $(this).val() == 'other'
-      $('.credentials_dependent.other').removeClass('hidden')
-    else
-      $('.credentials_dependent.other').addClass('hidden')
-
-  # Role - Dropdown
-  $(document).on 'changed.bs.select', '#project_role_role', ->
+  window.update_disabled_hidden_form_items = () ->
     $('.role_dependent').addClass('hidden')
-    switch $(this).val()
+    switch $('#project_role_role').val()
       when 'other'
         $('.role_dependent.other').removeClass('hidden')
       when 'business-grants-manager'
@@ -51,6 +43,17 @@ $(document).ready ->
         $('input[name="project_role[project_rights]"]').attr('disabled', false).attr('checked', false)
         $('.role_dependent.commons_name').removeClass('hidden')
         $('.role_dependent.subspecialty').removeClass('hidden')
+
+  # Credentials - Dropdown
+  $(document).on 'changed.bs.select', '#project_role_identity_attributes_credentials', ->
+    if $(this).val() == 'other'
+      $('.credentials_dependent.other').removeClass('hidden')
+    else
+      $('.credentials_dependent.other').addClass('hidden')
+
+  # Role - Dropdown
+  $(document).on 'changed.bs.select', '#project_role_role', ->
+    window.update_disabled_hidden_form_items()
 
   # Renders warning when changing Primary PI
   $(document).on 'click', '#save_protocol_rights_button', ->
@@ -87,4 +90,12 @@ $(document).ready ->
     else
       # cancel
       $(this).closest('.modal').modal('hide')
+
+  $(document).on 'changed.bs.select', '.professional-organization-form select', ->
+    last_selected = $(this).val()
+    $.ajax
+      type: 'get'
+      url: '/dashboard/associated_users/update_professional_organization_form_items.js'
+      data:
+        last_selected_id: last_selected
   #**************** Add Authorized User Form End ****************

@@ -158,11 +158,12 @@ en:
     protocol_filters:
       header: "Filter Protocols"
       archived: "Archived"
+      inactive: "(inactive)"
       status: "Status"
+      organization: "Organization"
+      owner: "Owner"
       my_protocols: "My Protocols"
       my_admin_protocols: "My Admin Protocols"
-      organization: "Organization"
-      sort_by: "Sort By"
       filter: "Filter"
       saved_filters:
         header: "Recently Saved Filters"

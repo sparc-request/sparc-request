@@ -1,6 +1,6 @@
-= hidden_field_tag 'sr_id', params[:sr_id]
-= hidden_field_tag 'protocol_id', params[:protocol_id]
+= f.hidden_field :protocol_id, value: params[:protocol_id]
 = f.hidden_field :questionnaire_id, value: @questionnaire.id
+= f.hidden_field :line_item_id, value: params[:line_item_id]
 - @questionnaire.items.each do |item|
   = f.fields_for :questionnaire_responses do |qr|
     - if item.required?

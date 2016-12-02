@@ -19,7 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class ProtocolsController < ApplicationController
-  
+
   respond_to :html, :js, :json
 
   before_filter :initialize_service_request,  unless: :from_portal?,  except: [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
@@ -66,9 +66,9 @@ class ProtocolsController < ApplicationController
   end
 
   def edit
+    @protocol_type                          = @protocol.type
     @service_request                        = ServiceRequest.find(params[:srid])
-    @protocol.study_type_question_group_id  = StudyTypeQuestionGroup.active_id
-
+    @in_dashboard                           = false
     @protocol.populate_for_edit
     @protocol.valid?
     @errors = @protocol.errors
@@ -79,6 +79,13 @@ class ProtocolsController < ApplicationController
   end
 
   def update
+
+    if params[:updated_protocol_type] == 'true' && params[:protocol][:type] == 'Study'
+      @protocol.update_attribute(:type, params[:protocol][:type])
+      @protocol.activate
+      @protocol = Protocol.find(params[:id]) #Protocol reload
+    end
+
     attrs            = fix_date_params
     @service_request = ServiceRequest.find(params[:srid])
 
@@ -96,18 +103,17 @@ class ProtocolsController < ApplicationController
 
   def update_protocol_type
     @protocol       = Protocol.find(params[:id])
-    @protocol_type  = params[:type]
 
-    @protocol.update_attribute(:type, @protocol_type)
-    @protocol.activate
+    # Setting type and study_type_question_group, not actually saving
+    @protocol.type  = params[:type]
+    @protocol.study_type_question_group_id = StudyTypeQuestionGroup.active_id
 
-    @protocol = Protocol.find(@protocol.id)#Protocol type has been converted, this is a reload
+    @protocol_type = params[:type]
     @protocol.populate_for_edit
-
     flash[:success] = t(:protocols)[:change_type][:updated]
     if @protocol_type == "Study" && @protocol.sponsor_name.nil? && @protocol.selected_for_epic.nil?
       flash[:alert] = t(:protocols)[:change_type][:new_study_warning]
-    end
+    end  
   end
 
   def view_details
@@ -207,7 +213,7 @@ class ProtocolsController < ApplicationController
     # Thread.new do
     begin
       # Do the actual push.  This might take a while...
-      protocol.push_to_epic(EPIC_INTERFACE)
+      protocol.push_to_epic(EPIC_INTERFACE, "pi_email_approval", current_user.id)
       errors = EPIC_INTERFACE.errors
       session[:errors] = errors unless errors.empty?
       @epic_errors = true unless errors.empty?
@@ -224,7 +230,7 @@ class ProtocolsController < ApplicationController
     end
     # end
   end
-  
+
   def convert_date_for_save(attrs, date_field)
     if attrs[date_field] && attrs[date_field].present?
       attrs[date_field] = Time.strptime(attrs[date_field], "%m/%d/%Y")
@@ -232,7 +238,7 @@ class ProtocolsController < ApplicationController
 
     attrs
   end
-  
+
   def fix_date_params
     attrs               = params[:protocol]
 

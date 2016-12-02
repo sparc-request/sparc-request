@@ -37,9 +37,8 @@ en:
     # FOOTER #
     ##########
     footer:
-      mail_to: "hundc@musc.edu"
-      mail_link: "Listserv"
-      mail_subject: "SPARC Request Listserv"
+      listserv: "Listserv"
+      listserv_subject: "SPARC Request Listserv"
       sparc_blog: "Blog"
       sparc_blog_url: "https://sparcrequestblog.com/"
       sctr: "SCTR"
@@ -54,11 +53,12 @@ en:
       no_description: "No description available."
       accordion:
         header: "Browse Service Catalog"
+      back_to_top: "Back to Top"
       center:
         search_placeholder: "Search by Service Name or CPT Code..."
-        welcome: "Welcome to SPARCRequest: Storefront of Research Services"
+        welcome: "Welcome to SPARCRequest:<br>Storefront of Research Services"
         description: "Search for services above or browse the providers/services on the left sidebar"
-        notice: "** You may only select services applicable to ONE Protocol at a time **"
+        notice: "** You may only select services applicable to ONE Study/Project at a time **"
         news:
           header: "News"
           none: "There is no recent news. Please check back later."
@@ -87,11 +87,8 @@ en:
       review_protocol_notice: "Protocol Information"
       review_protocol_instructions: "Review your Protocol and Authorized Users"
       percent_effort_notice: "If Professional Services are covered by % effort, please indicate in Step 2."
-      selection_help:
-        question: "Which type of Protocol should I choose?"
-        tooltip:
-        study_response: "Choose 'New Study' for a research study with defined aims and outcomes."
-        project_response: "Choose 'New Project' for non-study-specific Service Requests or anything that is not a research study."
+      study_tooltip: "Choose 'New Research Study' for a Research Study with defined aims and outcomes."
+      project_tooltip: "Choose 'New Project' for non-study-specific Service Requests or anything that is not a Research Study."
       previously_submitted_warning: "The request that you are editing has been previously submitted and can not be moved to another %{protocol_type}."
       authorized_users:
         self_remove_warning: "You can't remove yourself as an Authorized User of this Protocol. Please complete this request first or create a new request."

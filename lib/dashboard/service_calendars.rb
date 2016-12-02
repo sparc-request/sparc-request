@@ -144,7 +144,7 @@ module Dashboard
         method: :post,
         remote: true,
         role: 'button',
-        class: "btn #{klass} service-calendar-row",
+        class: "btn btn-xs #{klass} service-calendar-row",
         id: "check-all-row-#{line_items_visit.id}",
         data: { url: url },
         disabled: locked
@@ -165,11 +165,11 @@ module Dashboard
 
       link_to(
         content_tag(:span, '', class: "glyphicon #{icon}"),
-        'javascript:void(0)',
+        '#',
         method: :post,
         remote: true,
         role: 'button',
-        class: "btn #{klass} service-calendar-column",
+        class: "btn btn-xs #{klass} service-calendar-column",
         id: "check-all-column-#{n+1}",
         data: { url: url }
       )

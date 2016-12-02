@@ -63,7 +63,7 @@ class Portal::ProtocolsController < Portal::BaseController
     @protocol.valid?
     respond_to do |format|
       format.html
-    end   
+    end
   end
 
   def update
@@ -80,17 +80,6 @@ class Portal::ProtocolsController < Portal::BaseController
     else
       @protocol.populate_for_edit if @protocol.type == "Study"
       render :action => 'edit'
-    end
-  end
-
-  # @TODO: add to an authorization filter?
-  def add_associated_user
-    @protocol = Protocol.find(params[:id])
-
-    @project_role = @protocol.project_roles.build(:identity_id => @user.id)
-    respond_to do |format|
-      format.js
-      format.html
     end
   end
 
@@ -198,13 +187,6 @@ class Portal::ProtocolsController < Portal::BaseController
 
   def find_protocol
     @protocol = Protocol.find(params[:id])
-  end
-
-  # TODO: Move this somewhere else. Short on time, though. - nb
-  def merge_attributes(protocol, data)
-    protocol.instance_values.each do |k, v|
-      data.merge!({k => v}) unless data.include?(k)
-    end
   end
 
   def fix_funding(data)

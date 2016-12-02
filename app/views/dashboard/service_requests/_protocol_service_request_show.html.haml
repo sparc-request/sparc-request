@@ -33,7 +33,7 @@
   .panel-body
     .bootstrap-table-dropdown-overflow
       %div{ class: "service-requests-custom-toolbar-#{service_request.id}" }
-      %table.service-requests-table{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', 'show-toggle' => 'true', url: dashboard_sub_service_requests_path(format: :json, srid: service_request.id), striped: 'true', toolbar: ".service-requests-custom-toolbar-#{service_request.id}" } }
+      %table.service-requests-table{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', 'show-toggle' => 'true', url: dashboard_sub_service_requests_path(format: :json, srid: service_request.id, show_view_ssr_back: show_view_ssr_back), striped: 'true', toolbar: ".service-requests-custom-toolbar-#{service_request.id}" } }
         %thead.primary-header
           %tr
             %th.col-md-2{ data: { field: 'srid', align: 'left', sortable: 'true' } }

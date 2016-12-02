@@ -21,6 +21,7 @@
 en:
   additional_details:
     additional_details_title: 'Additional Details'
+    document_page_header: 'Additional Detail Submissions'
     add: 'Add Additional Details'
     preview_title: 'Additional Detail Survey Preview'
     close_preview: 'Close'
@@ -47,6 +48,9 @@ en:
     no_label: 'No'
     dashboard_complete_details: "Please complete the required Additional Details for %{service_name}"
     take_additional_detail_survey: "Take Additional Details Survey for %{service_name}"
+    complete_or_view: 'Complete/View'
+    completed: 'Completed'
+    document_complete_details: 'Complete Additional Details'
 
     submissions:
       header: "Additional Detail Submissions"

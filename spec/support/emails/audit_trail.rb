@@ -17,45 +17,40 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS~
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
+def created_line_item_audit_trail(service_request, service3, identity)
+  ssr = service_request.sub_service_requests.first
+  ssr.update_attribute(:submitted_at, Time.now.yesterday)
+  ssr.update_attribute(:status, 'submitted')
+  ssr.save!
+  service_request.reload
+  created_li = create(:line_item_without_validations, sub_service_request_id: ssr.id, service_id: service3.id, service_request_id: service_request.id)
+  created_li_id = created_li.id
+  ssr.reload
+  ssr.save!
+  service_request.reload
 
-module Portal
+  audit2 = AuditRecovery.where("auditable_id = '#{created_li_id}' AND auditable_type = 'LineItem' AND action = 'create'")
 
-  class StudyTypeFinder
+  audit2.first.update_attribute(:created_at, Time.now - 5.hours)
+  audit2.first.update_attribute(:user_id, identity.id)
+end
 
-  	def initialize(study)
-  		@study = study
-  		@active_answers = Array.new
-  		@inactive_answers = Array.new
-  		@study_type = nil
-  	end
+def deleted_line_item_audit_trail(service_request, service3, identity)
+  ssr = service_request.sub_service_requests.first
+  ssr.update_attribute(:submitted_at, Time.now.yesterday)
+  ssr.update_attribute(:status, 'submitted')
+  li_id = ssr.line_items.first.id
+  ssr.line_items.first.destroy!
+  ssr.save!
+  service_request.reload
 
-  	def study_type
-  		if @study.study_type_answers.present?
-  			if @study.active?
-	  			StudyTypeQuestion.active.find_each do |stq|
-	          @active_answers << stq.study_type_answers.find_by_protocol_id(@study.id).answer 
-	        end
-	        STUDY_TYPE_ANSWERS_VERSION_2.each do |k, v|
-	          if v == @active_answers
-	            @study_type = k
-	            break
-	          end
-	        end
-	        @study_type
-	      elsif !@study.active?
-	        StudyTypeQuestion.inactive.find_each do |stq|
-	          @inactive_answers << stq.study_type_answers.find_by_protocol_id(@study.id).answer 
-	        end
-	        STUDY_TYPE_ANSWERS.each do |k, v|
-	          if v == @inactive_answers
-	            @study_type = k
-	            break
-	          end
-	        end
-	        @study_type
-	      end
-	  	end
-	  end
+  audit1 = AuditRecovery.where("auditable_id = '#{li_id}' AND auditable_type = 'LineItem' AND action = 'destroy'")
 
-  end
+  audit1.first.update_attribute(:created_at, Time.now - 5.hours)
+  audit1.first.update_attribute(:user_id, identity.id)
+end
+
+def deleted_and_created_line_item_audit_trail(service_request, service3, identity)
+  deleted_line_item_audit_trail(service_request, service3, identity)
+  created_line_item_audit_trail(service_request, service3, identity)
 end

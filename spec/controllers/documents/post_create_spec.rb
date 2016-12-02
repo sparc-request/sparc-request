@@ -69,9 +69,10 @@ RSpec.describe DocumentsController, type: :controller do
       it 'should create document' do
         protocol    = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr          = create(:service_request_without_validations, protocol: protocol)
-        doc_params  = { doc_type: 'Neurology', document: Rack::Test::UploadedFile.new(File.join('doc', 'musc_installation_example.txt'),'txt/plain') }
+        doc_params  = { doc_type: 'Neurology', document: Rack::Test::UploadedFile.new(File.join('doc', 'musc_installation_example.txt'),'text/plain') }
 
         session[:service_request_id] = sr.id
+
 
         xhr :post, :create, {
           protocol_id: protocol.id,
@@ -86,7 +87,7 @@ RSpec.describe DocumentsController, type: :controller do
         sr          = create(:service_request_without_validations, protocol: protocol)
         org         = create(:organization)
         ssr         = create(:sub_service_request_without_validations, organization: org, service_request: sr)
-        doc_params  = { doc_type: 'Neurology', document: Rack::Test::UploadedFile.new(File.join('doc', 'musc_installation_example.txt'),'txt/plain') }
+        doc_params  = { doc_type: 'Neurology', document: Rack::Test::UploadedFile.new(File.join('doc', 'musc_installation_example.txt'),'text/plain') }
 
         session[:service_request_id] = sr.id
 

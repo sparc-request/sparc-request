@@ -87,7 +87,6 @@ $(document).ready ->
   ).on('typeahead:render', (event, a, b, c) ->
     $('[data-toggle="tooltip"]').tooltip()
   ).on('typeahead:select', (event, suggestion) ->
-    asd
     srid = $(this).data('srid')
     id = suggestion.value
     $.ajax

@@ -29,31 +29,41 @@
       %th.skinny-black-border= t(:notifier)[:action]
 
   %tbody
-
-    - @audit_report[:line_items].each do |last_change|
+    - @audit_report = action_name == 'notify_user' ? @audit_report[:line_items].values.flatten : @audit_report[:line_items]
+    - @audit_report.each do |last_change|
       - service = Service.find(last_change.audited_changes["service_id"])
       - if last_change.action == 'destroy'
-        - ssr = SubServiceRequest.find(last_change.audited_changes['sub_service_request_id'])
+        - if !SubServiceRequest.where(id: last_change.audited_changes['sub_service_request_id']).empty?
+          - ssr = SubServiceRequest.find(last_change.audited_changes['sub_service_request_id'])
+        - else
+          - ssr = nil
       - else
         - ssr = LineItem.find(last_change.auditable_id).sub_service_request
-      - link = DASHBOARD_LINK + '/sub_service_requests/' + ssr.id.to_s
-      - if last_change.action == 'destroy'
-        %tr.skinny-black-border
-          - if @role == 'none'
-            %td.center
-              %a.link{href: link}
+      - if !ssr.nil?
+        - link = DASHBOARD_LINK + '/sub_service_requests/' + ssr.id.to_s
+        - if last_change.action == 'destroy'
+          %tr.skinny-black-border
+            - if @role == 'none'
+              %td.left
+                %a.link{href: link}
+                  %strike=ssr.display_id
+            - else
+              %td.left
                 %strike=ssr.display_id
-          %td.skinny-black-border
-            %strike= service.name
-          %td.skinny-black-border.center
-            %strike= AUDIT_ACTIONS[last_change.action]
-      - else
-        %tr.skinny-black-border
-          - if @role == 'none'
-            %td.center
-              %a.link{href: link}=ssr.display_id
-          %td.skinny-black-border= service.name
-          %td.skinny-black-border.center= AUDIT_ACTIONS[last_change.action]
+            %td.skinny-black-border
+              %strike= service.name
+            %td.skinny-black-border.center
+              %strike= AUDIT_ACTIONS[last_change.action]
+        - else
+          %tr.skinny-black-border
+            - if @role == 'none'
+              %td.left
+                %a.link{href: link}=ssr.display_id
+            - else
+              %td.left
+                =ssr.display_id
+            %td.skinny-black-border= service.name
+            %td.skinny-black-border.center= AUDIT_ACTIONS[last_change.action]
 
 %br
 %br

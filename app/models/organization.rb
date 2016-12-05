@@ -107,7 +107,7 @@ class Organization < ActiveRecord::Base
   end
 
   def update_ssr_org_name
-    self.sub_service_requests.each{ |ssr| ssr.update_attribute(:org_tree_display, self.name) }
+    self.sub_service_requests.each{ |ssr| ssr.update_org_tree }
   end
 
   def service_providers_lookup

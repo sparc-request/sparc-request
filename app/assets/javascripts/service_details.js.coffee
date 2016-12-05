@@ -49,3 +49,6 @@ $(document).ready ->
 
   $('#arms-table').on 'all.bs.table', ->
     $('.screening-info').tooltip()
+
+  $('#arms-table').on 'all.bs.table', ->
+    $('.name-validation').tooltip()

@@ -455,6 +455,7 @@ en:
       name: "Arm Name: *"
       subject_count: "Subject Count: *"
       visit_count: "Visit Count: *"
+      name_unique: "has to be unique within a study/project"
 
     ######################
     #  AUTHORIZED USERS  #

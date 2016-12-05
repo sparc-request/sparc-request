@@ -182,7 +182,6 @@ class ServiceRequestsController < ApplicationController
       to_notify << @sub_service_request.id unless @sub_service_request.status == 'get_a_cost_estimate'
 
       @sub_service_request.update_attribute(:status, 'get_a_cost_estimate')
-      @sub_service_request.update_past_status(current_user)
     else
       to_notify = update_service_request_status(@service_request, 'get_a_cost_estimate')
     end
@@ -205,9 +204,9 @@ class ServiceRequestsController < ApplicationController
     if @sub_service_request
       to_notify << @sub_service_request.id unless @sub_service_request.status == 'submitted'
       @sub_service_request.update_attribute(:submitted_at, Time.now) unless @sub_service_request.status == 'submitted'
+
       @sub_service_request.update_attributes(status: 'submitted', nursing_nutrition_approved: false,
                                              lab_approved: false, imaging_approved: false, committee_approved: false) if UPDATABLE_STATUSES.include?(@sub_service_request.status)
-      @sub_service_request.update_past_status(current_user)
     else
       to_notify = update_service_request_status(@service_request, 'submitted')
 
@@ -239,14 +238,12 @@ class ServiceRequestsController < ApplicationController
       format.html {
         if @sub_service_request #if editing a sub service request, update status
           @sub_service_request.update_attribute(:status, 'draft')
-          @sub_service_request.update_past_status(current_user)
         else
           update_service_request_status(@service_request, 'draft', false)
           @service_request.ensure_ssr_ids
         end
         redirect_to dashboard_root_path
       }
-
       format.js
     end
   end
@@ -271,7 +268,6 @@ class ServiceRequestsController < ApplicationController
         elsif ssr.status.nil? || (ssr.can_be_edited? && ssr_has_changed?(@service_request, ssr) && (ssr.status != 'complete'))
           previous_status = ssr.status
           ssr.update_attribute(:status, 'draft')
-          ssr.update_past_status(current_user) unless previous_status.nil?
         end
       end
 
@@ -302,7 +298,6 @@ class ServiceRequestsController < ApplicationController
       if li.status != 'complete'
         if ssr.can_be_edited? && ssr.status != 'first_draft'
           ssr.update_attribute(:status, 'draft')
-          ssr.update_past_status(current_user)
         end
         li.destroy
       end
@@ -633,7 +628,6 @@ class ServiceRequestsController < ApplicationController
       requests.each { |ssr| ssr.update_attributes(submitted_at: Time.now) }
     end
     to_notify = service_request.update_status(status, validate)
-    requests.each { |ssr| ssr.update_past_status(current_user) }
 
     to_notify
   end

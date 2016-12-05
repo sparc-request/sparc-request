@@ -222,25 +222,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
           }
           expect(sr.sub_service_requests.first.status).to eq('draft')
         end
-
-        it 'should create past status' do
-          org      = create(:organization, process_ssrs: true)
-          service  = create(:service, organization: org)
-          protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
-          sr       = create(:service_request_without_validations, protocol: protocol)
-          ssr      = create(:sub_service_request_without_validations, organization: org, service_request: sr, status: 'on_hold')
-
-          session[:service_request_id] = sr.id
-          session[:identity_id]        = logged_in_user.id
-
-          xhr :post, :add_service, {
-            id: sr.id,
-            service_id: service.id
-          }
-
-          expect(PastStatus.count).to eq(1)
-          expect(PastStatus.first.sub_service_request_id).to eq(ssr.id)
-        end
       end
 
       it 'should assign @line_items_count' do

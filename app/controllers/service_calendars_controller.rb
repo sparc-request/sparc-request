@@ -149,7 +149,6 @@ class ServiceCalendarsController < ApplicationController
     unless @portal
       sub_service_request = @line_items_visit.line_item.sub_service_request
       sub_service_request.update_attribute(:status, "draft")
-      sub_service_request.update_past_status(current_user)
       @service_request.update_attribute(:status, "draft")
     end
 
@@ -181,7 +180,6 @@ class ServiceCalendarsController < ApplicationController
         next if (@sub_service_request && ssr != @sub_service_request)
         next unless ssr.can_be_edited?
         ssr.update_attribute(:status, "draft")
-        ssr.update_past_status(current_user)
       end
       @service_request.update_attribute(:status, "draft")
     end

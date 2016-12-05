@@ -57,6 +57,8 @@ SparcRails::Application.routes.draw do
 
   resources :contact_forms, only: [:new, :create]
 
+  resource :locked_organizations, only: [:show]
+
   resources :subsidies, only: [:new, :create, :edit, :update, :destroy]
 
   resources :service_requests, only: [:show] do

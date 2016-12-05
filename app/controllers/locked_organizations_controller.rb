@@ -17,38 +17,13 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+class LockedOrganizationsController < ApplicationController
 
-#= require navigation
-#= require cart
-
-$(document).ready ->
-  $(document).on 'click', '#new-arm-button', ->
-    $.ajax
-      type: 'get'
-      url: '/arms/new'
-      data:
-        protocol_id: $(this).data('protocol-id')
-    return false
-
-  $(document).on 'click', '.edit-arm-button', ->
-    arm_id = $(this).data('arm-id')
-    $.ajax
-      type: 'get'
-      url: "/arms/#{arm_id}/edit"
-
-  $(document).on 'click', '#edit-arm-form-button', ->
-    $(this).attr('disabled','disabled')
-    $(this).closest('form').submit()
-
-  $(document).on 'click', '.delete-arm-button', ->
-    if confirm(I18n['arms']['delete_warning'])
-      arm_id = $(this).data('arm-id')
-      $.ajax
-        type: 'delete'
-        url: "/arms/#{arm_id}"
-
-  $('#arms-table').on 'all.bs.table', ->
-    $('.screening-info').tooltip()
-
-  $('#arms-table').on 'all.bs.table', ->
-    $('.name-validation').tooltip()
+  def show
+    @organization = Organization.find(params[:org_id])
+    @service_provider = @organization.service_providers.where(is_primary_contact: true).first
+    @identity = Identity.find(@service_provider.identity_id)
+    @protocol = Protocol.find(params[:protocol_id])
+    @ssr = SubServiceRequest.where(service_request_id: params[:service_request_id], organization_id: @organization.id).first
+  end
+end

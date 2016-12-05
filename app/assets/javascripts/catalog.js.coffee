@@ -101,9 +101,7 @@ $(document).ready ->
   $(document).on 'click', '.submit-request-button', ->
     signed_in = parseInt($('#signed_in').val())
     if signed_in == 0
-      $('#modal_place').html($('#login-required-modal').html())
-      $('#modal_place').modal('show')
-      $('.modal #login-required-modal').removeClass('hidden')
+      window.location.replace('/identities/sign_in')
       return false
     else if $('#line_item_count').val() <= 0
       $('#modal_place').html($('#submit-error-modal').html())

@@ -109,7 +109,7 @@ class ProtocolsController < ApplicationController
     @protocol.study_type_question_group_id = StudyTypeQuestionGroup.active_id
 
     @protocol_type = params[:type]
-    @protocol = @protocol.becomes(@protocol_type.constantize)
+    @protocol = @protocol.becomes(@protocol_type.constantize) unless @protocol_type.nil?
     @protocol.populate_for_edit
     
     flash[:success] = t(:protocols)[:change_type][:updated]

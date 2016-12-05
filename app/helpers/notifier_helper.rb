@@ -49,6 +49,7 @@ module NotifierHelper
   end
 
   def display_audit_table(status, audit_report)
+    binding.pry
     if status == 'request_amendment' && audit_report.present? && audit_report[:line_items].present?
       render "audit_action"
     end
@@ -56,5 +57,18 @@ module NotifierHelper
 
   def display_notes?(status, role, notes)
     (status == "submitted" || status == "request_amendment") && role == 'none' && !notes.empty?
+  end
+
+  def determine_ssr(last_change)
+    if last_change.action == 'destroy'
+      if !SubServiceRequest.where(id: last_change.audited_changes['sub_service_request_id']).empty?
+        ssr = SubServiceRequest.find(last_change.audited_changes['sub_service_request_id'])
+      else
+        ssr = nil
+      end
+    else
+      ssr = LineItem.find(last_change.auditable_id).sub_service_request
+    end
+    ssr
   end
 end

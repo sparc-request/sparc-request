@@ -113,8 +113,59 @@ RSpec.describe Notifier do
         end
 
         it 'should render default tables' do
+          binding.pry
           assert_notification_email_tables_for_service_provider_request_amendment
           assert_email_request_amendment_for_added(mail.body)
+        end
+
+        it 'should not have a reminder note or submission reminder' do
+          does_not_have_a_reminder_note(mail)
+          does_not_have_a_submission_reminder(mail)
+        end
+
+        context 'when protocol has selected for epic' do
+
+          before do
+            service_request.protocol.update_attribute(:selected_for_epic, true)
+          end
+
+          it 'should show epic column' do
+            assert_email_user_information_when_selected_for_epic(mail.body)
+          end
+        end
+      end
+    end
+
+    context 'added line_items' do
+      before do
+        service_request.update_attribute(:submitted_at, Time.now.yesterday)
+        created_line_item_audit_trail(service_request, service3, identity)
+        service = create(:service,
+                          organization_id: organization.id,
+                          name: 'ABCD',
+                          one_time_fee: true)
+        created_line_item_audit_trail(service_request, service, identity)
+        @report = service_request.audit_report(identity, Time.now.yesterday - 4.hours, Time.now) 
+      end
+
+      context 'authorized users' do
+        let(:xls)                     { Array.new }
+        let(:project_role)            { service_request.protocol.project_roles.select{ |role| role.project_rights != 'none' && !role.identity.email.blank? }.first }
+        let(:approval)                { service_request.approvals.create }
+        let(:mail)                    { Notifier.notify_user(project_role,
+                                                            service_request,
+                                                            xls,
+                                                            approval,
+                                                            identity,
+                                                            @report
+                                                            ) }
+        # Expected service provider message is defined under request_amendment_intro
+        it 'should display service provider intro message, conclusion, link, and should not display acknowledgments' do
+          request_amendment_intro(mail)
+        end
+
+        it 'should render default tables' do
+          assert_email_request_amendment_for_added(mail.body, true)
         end
 
         it 'should not have a reminder note or submission reminder' do

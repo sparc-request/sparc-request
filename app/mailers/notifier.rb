@@ -34,7 +34,7 @@ class Notifier < ActionMailer::Base
     mail(:to => email, :cc => cc, :from => @identity.email, :subject => subject)
   end
 
-   def notify_user(project_role, service_request, xls, approval, user_current, audit_report)
+   def notify_user(project_role, service_request, xls, approval, user_current, audit_report=nil)
     @status = audit_report.present? ? 'request_amendment' : service_request.status
     @notes = []
     @identity = project_role.identity

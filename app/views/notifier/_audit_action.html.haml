@@ -29,17 +29,13 @@
       %th.skinny-black-border= t(:notifier)[:action]
 
   %tbody
+
     - @audit_report = action_name == 'notify_user' ? @audit_report[:line_items].values.flatten : @audit_report[:line_items]
     - @audit_report.each do |last_change|
       - service = Service.find(last_change.audited_changes["service_id"])
-      - if last_change.action == 'destroy'
-        - if !SubServiceRequest.where(id: last_change.audited_changes['sub_service_request_id']).empty?
-          - ssr = SubServiceRequest.find(last_change.audited_changes['sub_service_request_id'])
-        - else
-          - ssr = nil
-      - else
-        - ssr = LineItem.find(last_change.auditable_id).sub_service_request
+      - ssr = determine_ssr(last_change)
       - if !ssr.nil?
+        - binding.pry
         - link = DASHBOARD_LINK + '/sub_service_requests/' + ssr.id.to_s
         - if last_change.action == 'destroy'
           %tr.skinny-black-border

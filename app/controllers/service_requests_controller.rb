@@ -199,6 +199,8 @@ class ServiceRequestsController < ApplicationController
     previously_submitted_ssrs = @service_request.sub_service_requests.where.not(submitted_at: nil)
     #### END REQUEST AMENDMENT EMAIL ####
 
+    # Flag for authorized users: when a new service has been added from
+    # a new ssr, only send the request amendment and not the initial confirmation email
     send_request_amendment_and_not_initial = @service_request.original_submitted_date.present? && !previously_submitted_ssrs.empty?
 
     @service_request.previous_submitted_at = @service_request.submitted_at
@@ -505,7 +507,7 @@ class ServiceRequestsController < ApplicationController
     send_admin_notifications(sub_service_requests, request_amendment: true)
   end
 
-  def send_notifications(service_request, sub_service_requests, send_request_amendment_and_not_initial)
+  def send_notifications(service_request, sub_service_requests, send_request_amendment_and_not_initial= nil)
     send_request_amendment_and_not_initial ? '' : send_user_notifications(service_request, request_amendment: false)
     send_admin_notifications(sub_service_requests, request_amendment: false)
     send_service_provider_notifications(sub_service_requests, request_amendment: false)
@@ -562,12 +564,12 @@ class ServiceRequestsController < ApplicationController
     end
   end
 
-  def send_confirmation_notifications(to_notify, send_request_amendment)
+  def send_confirmation_notifications(to_notify, send_request_amendment_and_not_initial= nil)
     if @sub_service_request && to_notify.include?(@sub_service_request.id)
-      send_notifications(@service_request, [@sub_service_request], send_request_amendment)
+      send_notifications(@service_request, [@sub_service_request], send_request_amendment_and_not_initial)
     else
       sub_service_requests = @service_request.sub_service_requests.where(id: to_notify)
-      send_notifications(@service_request, sub_service_requests, send_request_amendment) unless sub_service_requests.empty? # if nothing is set to notify then we shouldn't send out e-mails
+      send_notifications(@service_request, sub_service_requests, send_request_amendment_and_not_initial) unless sub_service_requests.empty? # if nothing is set to notify then we shouldn't send out e-mails
     end
   end
 

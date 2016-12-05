@@ -252,7 +252,7 @@ class ServiceRequestsController < ApplicationController
     existing_service_ids = @service_request.line_items.reject{ |line_item| line_item.status == 'complete' }.map(&:service_id)
 
     if existing_service_ids.include?( params[:service_id].to_i )
-      render json: { modal: render_to_string(partial: 'service_requests/modals/service_already_added_modal') }, status: :unprocessable_entity
+      @duplicate_service = true
     else
       service        = Service.find( params[:service_id] )
       new_line_items = @service_request.create_line_items_for_service( service: service, optional: true, existing_service_ids: existing_service_ids, recursive_call: false ) || []

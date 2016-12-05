@@ -112,7 +112,6 @@ $(document).ready ->
 
   $(window).scroll ->
     if $(this).scrollTop() > 50
-      console.log('here')
       $('.back-to-top').removeClass('hidden')
     else
       $('.back-to-top').addClass('hidden')

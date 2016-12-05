@@ -77,26 +77,22 @@ module ServiceCalendarHelper
 
   def display_total_cost_per_arm arm, line_items_visits=nil
     line_items_visits ||= arm.line_items_visits
-    sum = 0
     sum = arm.total_costs_for_visit_based_service(line_items_visits)
     currency_converter sum
   end
 
   # Displays grand totals per study
   def display_total_direct_cost_per_study_pppvs service_request
-    sum = 0
     sum = service_request.total_direct_costs_per_patient
     currency_converter sum
   end
 
   def display_total_indirect_cost_per_study_pppvs service_request
-    sum = 0
     sum = service_request.total_indirect_costs_per_patient
     currency_converter sum
   end
 
   def display_total_cost_per_study_pppvs service_request
-    sum = 0
     sum = service_request.total_costs_per_patient
     currency_converter(sum)
   end
@@ -116,19 +112,16 @@ module ServiceCalendarHelper
 
   # Display grand totals per study
   def display_total_direct_cost_per_study_otfs service_request, line_items
-    sum = 0
     sum = service_request.total_direct_costs_one_time line_items
     currency_converter sum
   end
 
   def display_total_indirect_cost_per_study_otfs service_request, line_items
-    sum = 0
     sum = service_request.total_indirect_costs_one_time line_items
     currency_converter sum
   end
 
   def display_total_cost_per_study_otfs service_request, line_items
-    sum = 0
     sum = service_request.total_costs_one_time line_items
     currency_converter sum
   end
@@ -137,43 +130,36 @@ module ServiceCalendarHelper
   # Grand Totals
   #############################################
   def display_ssr_grand_total sub_service_request
-    sum = 0
     sum = sub_service_request.grand_total
     currency_converter sum
   end
 
   def display_grand_total_direct_costs service_request, line_items
-    sum = 0
     sum = service_request.direct_cost_total line_items
     currency_converter sum
   end
 
   def display_grand_total_indirect_costs service_request, line_items
-    sum = 0
     sum = service_request.indirect_cost_total line_items
     currency_converter sum
   end
 
   def display_grand_total service_request, line_items
-    sum = 0
     sum = service_request.grand_total line_items
     currency_converter sum
   end
 
   def display_study_grand_total_direct_costs protocol, service_request
-    sum = 0
     sum = protocol.direct_cost_total service_request
     currency_converter sum
   end
 
   def display_study_grand_total_indirect_costs protocol, service_request
-    sum = 0
     sum = protocol.indirect_cost_total service_request
     currency_converter sum
   end
 
   def display_study_grand_total protocol, service_request
-    sum = 0
     sum = protocol.grand_total service_request
     currency_converter sum
   end

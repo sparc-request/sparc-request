@@ -43,11 +43,11 @@ class ServiceCalendarsController < ApplicationController
   def update
     visit         = Visit.find(params[:visit_id])
     @arm          = Arm.find(params[:arm_id])
-    @admin        = params[:admin] == 'true'
     @tab          = params[:tab]
     @merged       = params[:merged] == 'true'
     @portal       = params[:portal] == 'true'
     @review       = params[:review] == 'true'
+    @admin        = params[:admin] == 'true'
     @consolidated = false
     @pages        = eval(params[:pages])
     if params[:checked] == 'true'

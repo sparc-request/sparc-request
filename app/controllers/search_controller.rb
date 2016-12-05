@@ -52,8 +52,6 @@ class SearchController < ApplicationController
       }
     }
 
-    results = [{label: 'No Results'}] if results.empty?
-
     render json: results.to_json
   end
 end

@@ -84,6 +84,7 @@ $(document).ready ->
                                           <span><strong>Abbreviation: {{abbreviation}}</strong></span><br>
                                           <span><strong>CPT Code: {{cpt_code}}</strong></span>
                                         </button>')
+        notFound: '<div class="tt-suggestion">No Results</div>'
       }
     }
   ).on('typeahead:render', (event, a, b, c) ->

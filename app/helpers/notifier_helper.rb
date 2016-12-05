@@ -49,7 +49,6 @@ module NotifierHelper
   end
 
   def display_audit_table(status, audit_report)
-    binding.pry
     if status == 'request_amendment' && audit_report.present? && audit_report[:line_items].present?
       render "audit_action"
     end

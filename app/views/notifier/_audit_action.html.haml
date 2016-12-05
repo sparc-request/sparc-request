@@ -35,7 +35,6 @@
       - service = Service.find(last_change.audited_changes["service_id"])
       - ssr = determine_ssr(last_change)
       - if !ssr.nil?
-        - binding.pry
         - link = DASHBOARD_LINK + '/sub_service_requests/' + ssr.id.to_s
         - if last_change.action == 'destroy'
           %tr.skinny-black-border

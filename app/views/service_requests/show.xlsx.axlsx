@@ -174,9 +174,6 @@ wb.add_worksheet(name: "Review") do |sheet|
           line_items_visit.line_item.pricing_scheme = 'effective' if @admin_offset
 
           service_row << display_visit_based_direct_cost(line_items_visit)
-          puts '#' * 50
-          puts line_items_visit.inspect
-          puts '#' * 50
           service_row << display_visit_based_direct_cost_per_study(line_items_visit)
           service_rows << sheet.add_row(service_row, :style => styles_array)
         end

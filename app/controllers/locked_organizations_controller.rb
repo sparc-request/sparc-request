@@ -17,21 +17,13 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-= javascript_include_tag "catalog"
+class LockedOrganizationsController < ApplicationController
 
-= hidden_field_tag :signed_in, identity_signed_in? ? 1 : 0
-= hidden_field_tag :has_protocol, @service_request.protocol ? 1 : 0
-= hidden_field_tag :service_request_id, @service_request.id, class: 'service-request-id'
-- if !@service_request.protocol.nil?
-  = hidden_field_tag :protocol_id, @service_request.protocol.id, class: 'protocol-id'
-
-= render 'catalogs/about_section'
-= render 'catalogs/service_accordion', institutions: @institutions, ssr_org: @sub_service_request.try(:organization), locked_org_ids: @locked_org_ids
-= render 'catalogs/catalog_center', service_request: @service_request, from_portal: @from_portal, organization: nil
-= render 'catalogs/catalog_right', service_request: @service_request, sub_service_request: @sub_service_request, sub_service_requests: @sub_service_requests, line_items_count: @line_items_count
-= render 'catalogs/back_to_top'
-
-= render 'service_requests/modals/submit_error_modal'
-= render 'service_requests/modals/new_request_modal'
-= render 'service_requests/modals/request_submitted_modal', service_request: @service_request
-= render 'service_requests/modals/login_required_modal'
+  def show
+    @organization = Organization.find(params[:org_id])
+    @service_provider = @organization.service_providers.where(is_primary_contact: true).first
+    @identity = Identity.find(@service_provider.identity_id)
+    @protocol = Protocol.find(params[:protocol_id])
+    @ssr = SubServiceRequest.where(service_request_id: params[:service_request_id], organization_id: @organization.id).first
+  end
+end

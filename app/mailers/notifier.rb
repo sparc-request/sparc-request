@@ -53,7 +53,7 @@ class Notifier < ActionMailer::Base
 
     # only send these to the correct person in the production env
     email = @identity.email
-    subject = "#{t(:mailer)[:application_title]} service request"
+    subject = "#{@protocol.id} - #{t(:mailer)[:application_title]} service request"
 
     mail(:to => email, :from => NO_REPLY_FROM, :subject => subject)
   end
@@ -79,7 +79,7 @@ class Notifier < ActionMailer::Base
     attachments["service_request_#{@service_request.protocol.id}.xlsx"] = xls
 
     email =  submission_email_address
-    subject = "#{t(:mailer)[:application_title]} service request"
+    subject = "#{@protocol.id} - #{t(:mailer)[:application_title]} service request"
 
     mail(:to => email, :from => NO_REPLY_FROM, :subject => subject)
   end

@@ -230,7 +230,7 @@ class SubServiceRequest < ActiveRecord::Base
     return total
   end
 
-  # Returns the grant total cost of the sub-service-request
+  # Returns the grand total cost of the sub-service-request
   def grand_total
     self.direct_cost_total + self.indirect_cost_total
   end
@@ -471,11 +471,11 @@ class SubServiceRequest < ActiveRecord::Base
 
       audit = audits.sort_by(&:created_at).last
       # create action
-      if audit.audited_changes["sub_service_request_id"].nil?    
-        filtered_audit_trail[:line_items] << audit if LineItem.find(audit.auditable_id).sub_service_request_id == self.id   
-      # destroy action   
-      else   
-        filtered_audit_trail[:line_items] << audit if audit.audited_changes["sub_service_request_id"] == self.id   
+      if audit.audited_changes["sub_service_request_id"].nil?
+        filtered_audit_trail[:line_items] << audit if LineItem.find(audit.auditable_id).sub_service_request_id == self.id
+      # destroy action
+      else
+        filtered_audit_trail[:line_items] << audit if audit.audited_changes["sub_service_request_id"] == self.id
       end
     end
     filtered_audit_trail[:sub_service_request_id] = self.id

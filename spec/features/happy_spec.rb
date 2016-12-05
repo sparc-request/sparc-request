@@ -20,7 +20,7 @@
 
 require 'rails_helper'
 
-RSpec.describe "typical use case in Proper", js: true do
+RSpec.describe "User submitting a ServiceRequest", js: true do
   # TODO excerise login process instead of using fake_login_for_each_test
   let!(:user) do
     create(:identity,
@@ -33,10 +33,8 @@ RSpec.describe "typical use case in Proper", js: true do
            approved: true)
   end
 
-  fake_login_for_each_test("johnd")
-
   it "is happy" do
-    # organization structure:
+    # Organization structure and Services:
     institution = create(:organization, type: "Institution")
 
     provider_non_split = create(:organization, :with_pricing_setup, type: "Provider", parent_id: institution.id)
@@ -56,7 +54,16 @@ RSpec.describe "typical use case in Proper", js: true do
     # Visit catalog page
     visit "/"
 
+    # Log in:
+    click_link("Login / Sign Up")
+    expect(page).to have_css("a", text: /Outside User Login/)
+    find("a", text: /Outside User Login/).click
+    fill_in "Login", with: "johnd"
+    fill_in "Password", with: "p4ssword"
+    find("input[value='Login']").click
+
     # Add Core 1 Services
+    expect(page).to have_css("span", text: provider_non_split.name)
     find("span", text: provider_non_split.name).click
     find("span", text: program_split.name).click
     find("span", text: core1.name).click
@@ -69,6 +76,8 @@ RSpec.describe "typical use case in Proper", js: true do
     add_service_buttons[1].click
     expect(page).to have_css("a", text: /Yes/)
     find("a", text: /Yes/).click
+
+    # Add Core 2 Services
     find("span", text: provider_split.name).click
     find("span", text: program_non_split.name).click
     find("span", text: core2.name).click
@@ -84,7 +93,8 @@ RSpec.describe "typical use case in Proper", js: true do
       expect(page).to have_content(otf_service_core_2.abbreviation)
       expect(page).to have_content(pppv_service_core_2.abbreviation)
     end
-    click_link("Continue")
+    wait_for_javascript_to_finish
+    find("a", text: /Continue/).click
 
     # Step 1
     expect(page).to have_link("New Project")

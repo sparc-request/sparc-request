@@ -284,38 +284,27 @@ wb.add_worksheet(name: "Review") do |sheet|
 
   ##SSR Total
   if @sub_service_request
-    ssr_total_row = has_per_patient_per_visit_services ? ["", "", "", "", ""] : ["", "", "", ""]
+    ssr_total_row = ["", "", "", "", ""]
     if has_per_patient_per_visit_services
-      (visit_count*2 - 3).times do
+      (visit_count*2).times do
         ssr_total_row << ""
       end
     end
 
-    ssr_total_row << "" if @admin_offset
-    if has_per_patient_per_visit_services
-      ssr_total_row += ["#{@sub_service_request.organization.abbreviation} Total", "", "", display_ssr_grand_total(@sub_service_request)]
-    else
-      ssr_total_row += ["#{@sub_service_request.organization.abbreviation} Total", display_ssr_grand_total(@sub_service_request)]
-    end
+    ssr_total_row += ["#{@sub_service_request.organization.abbreviation} Total", display_ssr_grand_total(@sub_service_request)]
     ssr_total_row = sheet.add_row(ssr_total_row, :style => row_header_style)
   end
 
   ##Total
-  grand_total_row = has_per_patient_per_visit_services ? ["", "", "", "", ""] : ["", "", "", ""]
+  grand_total_row = ["", "", "", "", ""]
 
   if has_per_patient_per_visit_services
-    (visit_count*2 - 3).times do
+    (visit_count*2).times do
       grand_total_row << ""
     end
   end
 
-  grand_total_row << "" if @admin_offset
-  if has_per_patient_per_visit_services
-    grand_total_row += ["Total Cost", "", "", display_study_grand_total(@service_request.protocol, @service_request)]
-  else
-    grand_total_row += ["Total Cost", display_study_grand_total(@service_request.protocol, @service_request)]
-  end
-
+  grand_total_row += ["Total Cost", display_study_grand_total(@service_request.protocol, @service_request)]
   grand_total_row = sheet.add_row(grand_total_row, :style => row_header_style)
 
   ###### style and merge cells ######

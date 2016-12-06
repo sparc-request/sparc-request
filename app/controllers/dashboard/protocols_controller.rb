@@ -170,7 +170,10 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     @protocol.study_type_question_group_id = StudyTypeQuestionGroup.active_id
     
     @protocol_type = params[:type]
+
+    @protocol = @protocol.becomes(@protocol_type.constantize) unless @protocol_type.nil?
     @protocol.populate_for_edit
+    
     flash[:success] = t(:protocols)[:change_type][:updated]
     if @protocol_type == "Study" && @protocol.sponsor_name.nil? && @protocol.selected_for_epic.nil?
       flash[:alert] = t(:protocols)[:change_type][:new_study_warning]

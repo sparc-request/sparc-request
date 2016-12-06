@@ -114,7 +114,7 @@ class ApplicationController < ActionController::Base
     else
       # For controllers other than the service requests controller, we
       # look up the service request, but do not display any errors.
-      use_existing_service_request(params[:service_request_id])
+      use_existing_service_request(params[:service_request_id] || params[:srid])
     end
   end
 

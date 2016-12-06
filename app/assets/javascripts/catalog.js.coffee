@@ -21,6 +21,8 @@
 #= require cart
 
 $(document).ready ->
+  getSRId = () ->
+    $('input[name="service_request_id"]').val()
   ### ACCORDION LOGIC ###
   $(document).on 'click', '.institution-header, .provider-header, .program-link:not(.locked-program)', ->
     if $(this).hasClass('institution-header')
@@ -34,7 +36,9 @@ $(document).ready ->
       $('.program-link').removeClass('clicked')
     $(this).addClass('clicked')
     id    = $(this).data('id')
-    data  = process_ssr_found : $(this).data('process-ssr-found') 
+    data =
+      process_ssr_found: $(this).data('process-ssr-found')
+      service_request_id: getSRId()
     $.ajax
       type: 'POST'
       data: data

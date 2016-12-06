@@ -23,6 +23,9 @@
 # You can use CoffeeScript in this file: http://jashkenas.github.com/coffee-script/
 $(document).ready ->
   Sparc.protocol =
+    getSRId = () ->
+      $('input[name="service_request_id"]').val()
+
     ready: ->
       $('.service-requests-table').on 'all.bs.table', ->
         $(this).find('.selectpicker').selectpicker() #Find descendant selectpickers

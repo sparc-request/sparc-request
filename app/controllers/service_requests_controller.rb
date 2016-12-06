@@ -192,20 +192,20 @@ class ServiceRequestsController < ApplicationController
   end
 
   def confirmation
+
     @protocol = @service_request.protocol
     
-    #### REQUEST AMENDMENT EMAIL ####
+    #### FOR REQUEST AMENDMENT EMAIL ####
     # Grab ssrs that have been previously submitted
-    previously_submitted_ssrs = @service_request.sub_service_requests.where.not(submitted_at: nil)
-    #### END REQUEST AMENDMENT EMAIL ####
+    # Setting this to an array is necessary to grab the correct ssrs
+    previously_submitted_ssrs = @service_request.sub_service_requests.where.not(submitted_at: nil).to_a
+    #### END FOR REQUEST AMENDMENT EMAIL ####
 
     # Flag for authorized users: when a new service has been added from
     # a new ssr, only send the request amendment and not the initial confirmation email
     send_request_amendment_and_not_initial = @service_request.original_submitted_date.present? && !previously_submitted_ssrs.empty?
-
     @service_request.previous_submitted_at = @service_request.submitted_at
 
-    
     to_notify = []
     if @sub_service_request
       to_notify << @sub_service_request.id unless @sub_service_request.status == 'submitted' || !@sub_service_request.submitted_at.nil?
@@ -234,7 +234,6 @@ class ServiceRequestsController < ApplicationController
         send_epic_notification_for_user_approval(@protocol)
       end
     end
-
     send_request_amendment_email_evaluation(previously_submitted_ssrs) unless previously_submitted_ssrs.empty?
     send_confirmation_notifications(to_notify, send_request_amendment_and_not_initial) unless to_notify.empty?
     render formats: [:html]

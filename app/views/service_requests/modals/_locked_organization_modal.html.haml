@@ -28,7 +28,7 @@
       .modal-body
         #modal_errors
         .form-group.text-center
-          = raw(t('proper.catalog.locked_organization.warning', organization: organization.name, request: "#{protocol.id}-#{ssr.ssr_id}", title: "#{protocol.short_title}", contact_name: "#{identity.first_name} #{identity.last_name}", contact_info: identity.phone.blank? ? identity.email : identity.phone))
+          = raw(t('proper.catalog.locked_organization.warning', organization: organization.name, request: "#{protocol.id}-#{ssr.ssr_id}", protocol_type: "#{protocol.type}", title: "#{protocol.short_title}", contact_name: "#{identity.first_name} #{identity.last_name}", contact_info: identity.phone.blank? ? identity.email : identity.phone))
       .modal-footer
         .center-block
           %button.btn.btn-default{ type: 'button', data: { dismiss: 'modal' } }

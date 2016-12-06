@@ -40,9 +40,9 @@ RSpec.describe SearchController do
       s1  = create(:service, organization: org, name: 'Serve me Well')
       s2  = create(:service, organization: org, name: 'Evres me Poorly')
       
-      session[:service_request_id] = sr.id
 
       xhr :get, :services, {
+        service_request_id: sr.id,
         term: 'Serve'
       }
 
@@ -59,9 +59,9 @@ RSpec.describe SearchController do
       s1  = create(:service, organization: org, abbreviation: 'Serve me Well')
       s2  = create(:service, organization: org, abbreviation: 'Evres me Poorly')
 
-      session[:service_request_id] = sr.id
 
       xhr :get, :services, {
+        service_request_id: sr.id,
         term: 'Serve'
       }
 
@@ -77,9 +77,9 @@ RSpec.describe SearchController do
       s1  = create(:service, organization: org, cpt_code: 1234)
       s2  = create(:service, organization: org, cpt_code: 4321)
 
-      session[:service_request_id] = sr.id
 
       xhr :get, :services, {
+        service_request_id: sr.id,
         term: '1234'
       }
 
@@ -95,9 +95,9 @@ RSpec.describe SearchController do
       s1  = create(:service, organization: org, name: 'Service 123', is_available: 1)
       s2  = create(:service, organization: org, name: 'Service 321', is_available: 0)
 
-      session[:service_request_id] = sr.id
 
       xhr :get, :services, {
+        service_request_id: sr.id,
         term: 'Service'
       }
 
@@ -120,9 +120,9 @@ RSpec.describe SearchController do
       s2    = create(:service, organization: org2, name: 'Service 321')
 
       stub_const("EDITABLE_STATUSES", { org.id => ['draft'] })
-      session[:service_request_id]  = sr.id
 
       xhr :get, :services, {
+        service_request_id: sr.id,
         term: 'Service'
       }
 
@@ -141,10 +141,10 @@ RSpec.describe SearchController do
         s1    = create(:service, organization: org, name: 'Service 123')
         s2    = create(:service, organization: org2, name: 'Service 321')
 
-        session[:service_request_id]      = sr.id
         session[:sub_service_request_id]  = ssr.id
 
         xhr :get, :services, {
+        service_request_id: sr.id,
           term: 'Service'
         }
 

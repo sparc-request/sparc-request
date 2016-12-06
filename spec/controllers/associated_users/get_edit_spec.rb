@@ -38,9 +38,9 @@ RSpec.describe AssociatedUsersController, type: :controller do
       sr       = create(:service_request_without_validations, protocol: protocol)
       pr       = protocol.project_roles.first
 
-      session[:service_request_id] = sr.id
 
       xhr :get, :edit, {
+        service_request_id: sr.id,
         id: pr.id
       }
 
@@ -52,9 +52,9 @@ RSpec.describe AssociatedUsersController, type: :controller do
       sr       = create(:service_request_without_validations, protocol: protocol)
       pr       = protocol.project_roles.first
 
-      session[:service_request_id] = sr.id
 
       xhr :get, :edit, {
+        service_request_id: sr.id,
         id: pr.id
       }
 
@@ -66,9 +66,9 @@ RSpec.describe AssociatedUsersController, type: :controller do
       sr       = create(:service_request_without_validations, protocol: protocol)
       pr       = protocol.project_roles.first
 
-      session[:service_request_id] = sr.id
 
       xhr :get, :edit, {
+        service_request_id: sr.id,
         id: pr.id
       }
 
@@ -80,9 +80,9 @@ RSpec.describe AssociatedUsersController, type: :controller do
       sr       = create(:service_request_without_validations, protocol: protocol)
       pr       = protocol.project_roles.first
 
-      session[:service_request_id] = sr.id
 
       xhr :get, :edit, {
+        service_request_id: sr.id,
         id: pr.id
       }
 
@@ -94,9 +94,9 @@ RSpec.describe AssociatedUsersController, type: :controller do
       sr       = create(:service_request_without_validations, protocol: protocol)
       pr       = protocol.project_roles.first
 
-      session[:service_request_id] = sr.id
 
       xhr :get, :edit, {
+        service_request_id: sr.id,
         id: pr.id
       }
 
@@ -108,9 +108,9 @@ RSpec.describe AssociatedUsersController, type: :controller do
       sr       = create(:service_request_without_validations, protocol: protocol)
       pr       = protocol.project_roles.first
 
-      session[:service_request_id] = sr.id
 
       xhr :get, :edit, {
+        service_request_id: sr.id,
         id: pr.id
       }
 
@@ -122,9 +122,9 @@ RSpec.describe AssociatedUsersController, type: :controller do
       sr       = create(:service_request_without_validations, protocol: protocol)
       pr       = protocol.project_roles.first
 
-      session[:service_request_id] = sr.id
 
       xhr :get, :edit, {
+        service_request_id: sr.id,
         id: pr.id
       }
 

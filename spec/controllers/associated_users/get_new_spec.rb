@@ -38,9 +38,9 @@ RSpec.describe AssociatedUsersController, type: :controller do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
 
-      session[:service_request_id] = sr.id
 
       xhr :get, :new, {
+        service_request_id: sr.id,
         protocol_id: protocol.id,
         identity_id: other_user.id
       }
@@ -52,9 +52,9 @@ RSpec.describe AssociatedUsersController, type: :controller do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
 
-      session[:service_request_id] = sr.id
 
       xhr :get, :new, {
+        service_request_id: sr.id,
         protocol_id: protocol.id,
         identity_id: other_user.id
       }
@@ -66,9 +66,9 @@ RSpec.describe AssociatedUsersController, type: :controller do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
 
-      session[:service_request_id] = sr.id
 
       xhr :get, :new, {
+        service_request_id: sr.id,
         protocol_id: protocol.id,
         identity_id: other_user.id
       }
@@ -80,9 +80,9 @@ RSpec.describe AssociatedUsersController, type: :controller do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
 
-      session[:service_request_id] = sr.id
 
       xhr :get, :new, {
+        service_request_id: sr.id,
         protocol_id: protocol.id,
         identity_id: other_user.id
       }
@@ -96,9 +96,9 @@ RSpec.describe AssociatedUsersController, type: :controller do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
 
-      session[:service_request_id] = sr.id
 
       xhr :get, :new, {
+        service_request_id: sr.id,
         protocol_id: protocol.id,
         identity_id: other_user.id
       }
@@ -111,9 +111,9 @@ RSpec.describe AssociatedUsersController, type: :controller do
         protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr       = create(:service_request_without_validations, protocol: protocol)
 
-        session[:service_request_id] = sr.id
 
         xhr :get, :new, {
+        service_request_id: sr.id,
           protocol_id: protocol.id,
           identity_id: logged_in_user.id
         }
@@ -126,9 +126,9 @@ RSpec.describe AssociatedUsersController, type: :controller do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
 
-      session[:service_request_id] = sr.id
 
       xhr :get, :new, {
+        service_request_id: sr.id,
         protocol_id: protocol.id,
         identity_id: other_user.id
       }
@@ -140,9 +140,9 @@ RSpec.describe AssociatedUsersController, type: :controller do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
 
-      session[:service_request_id] = sr.id
 
       xhr :get, :new, {
+        service_request_id: sr.id,
         protocol_id: protocol.id,
         identity_id: other_user.id
       }

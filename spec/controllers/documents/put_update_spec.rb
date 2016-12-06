@@ -40,9 +40,9 @@ RSpec.describe DocumentsController, type: :controller do
       doc         = create(:document, protocol: protocol)
       doc_params  = { doc_type: 'Neurology' }
 
-      session[:service_request_id] = sr.id
 
       xhr :put, :update, {
+        service_request_id: sr.id,
         id: doc.id,
         document: doc_params
       }
@@ -56,9 +56,9 @@ RSpec.describe DocumentsController, type: :controller do
       doc         = create(:document, protocol: protocol)
       doc_params  = { doc_type: 'Neurology' }
 
-      session[:service_request_id] = sr.id
 
       xhr :put, :update, {
+        service_request_id: sr.id,
         id: doc.id,
         document: doc_params
       }
@@ -73,9 +73,9 @@ RSpec.describe DocumentsController, type: :controller do
         doc         = create(:document, protocol: protocol)
         doc_params  = { doc_type: 'Neurology' }
 
-        session[:service_request_id] = sr.id
 
         xhr :put, :update, {
+        service_request_id: sr.id,
           id: doc.id,
           document: doc_params
         }
@@ -91,9 +91,9 @@ RSpec.describe DocumentsController, type: :controller do
         doc         = create(:document, protocol: protocol, doc_type: 'Blah')
         doc_params  = { doc_type: '' }
 
-        session[:service_request_id] = sr.id
 
         xhr :put, :update, {
+        service_request_id: sr.id,
           id: doc.id,
           document: doc_params
         }
@@ -107,9 +107,9 @@ RSpec.describe DocumentsController, type: :controller do
         doc         = create(:document, protocol: protocol)
         doc_params  = { doc_type: '' }
 
-        session[:service_request_id] = sr.id
 
         xhr :put, :update, {
+        service_request_id: sr.id,
           id: doc.id,
           document: doc_params
         }
@@ -124,9 +124,9 @@ RSpec.describe DocumentsController, type: :controller do
       doc         = create(:document, protocol: protocol)
       doc_params  = { doc_type: 'Neurology' }
 
-      session[:service_request_id] = sr.id
 
       xhr :put, :update, {
+        service_request_id: sr.id,
         id: doc.id,
         document: doc_params
       }
@@ -140,9 +140,9 @@ RSpec.describe DocumentsController, type: :controller do
       doc         = create(:document, protocol: protocol)
       doc_params  = { doc_type: 'Neurology' }
 
-      session[:service_request_id] = sr.id
 
       xhr :put, :update, {
+        service_request_id: sr.id,
         id: doc.id,
         document: doc_params
       }

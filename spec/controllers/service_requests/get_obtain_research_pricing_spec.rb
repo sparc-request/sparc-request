@@ -37,7 +37,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
     it 'should call before_filter #authorize_identity' do
       expect(before_filters.include?(:authorize_identity)).to eq(true)
     end
-    
+
     it 'should call before_filter #authenticate_identity!' do
       expect(before_filters.include?(:authenticate_identity!)).to eq(true)
     end
@@ -51,7 +51,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
       session[:identity_id]        = logged_in_user.id
-      session[:service_request_id] = sr.id
 
       xhr :get, :obtain_research_pricing, {
         id: sr.id
@@ -72,8 +71,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
                      create(:service_provider, identity: logged_in_user, organization: org)
 
           session[:identity_id]            = logged_in_user.id
-          session[:service_request_id]     = sr.id
-          session[:sub_service_request_id] = ssr.id
+
 
           # previously_submitted_at is null so we get 2 emails
           expect {
@@ -93,8 +91,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
         li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
         session[:identity_id]            = logged_in_user.id
-        session[:service_request_id]     = sr.id
-        session[:sub_service_request_id] = ssr.id
+
 
         xhr :get, :obtain_research_pricing, {
           id: sr.id
@@ -112,8 +109,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
         li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
         session[:identity_id]            = logged_in_user.id
-        session[:service_request_id]     = sr.id
-        session[:sub_service_request_id] = ssr.id
+
 
         xhr :get, :obtain_research_pricing, {
           id: sr.id
@@ -135,7 +131,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
                    create(:service_provider, identity: logged_in_user, organization: org)
 
         session[:identity_id]            = logged_in_user.id
-        session[:service_request_id]     = sr.id
 
         xhr :get, :obtain_research_pricing, {
           id: sr.id
@@ -154,7 +149,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
                    create(:service_provider, identity: logged_in_user, organization: org)
 
         session[:identity_id]            = logged_in_user.id
-        session[:service_request_id]     = sr.id
 
         # previously_submitted_at is null so we get 2 emails
         expect {
@@ -174,7 +168,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
       session[:identity_id]        = logged_in_user.id
-      session[:service_request_id] = sr.id
 
       xhr :get, :obtain_research_pricing, {
         id: sr.id
@@ -192,8 +185,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
       session[:identity_id]        = logged_in_user.id
-      session[:service_request_id] = sr.id
-      
+
       xhr :get, :obtain_research_pricing, {
         id: sr.id
       }

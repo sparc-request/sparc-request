@@ -31,6 +31,7 @@
         .row
           .col-md-12
             = hidden_field_tag :protocol_id, form.object.protocol.id
+            = hidden_field_tag :service_request_id, service_request.id
             .form-group
               = form.label :doc_type, t(:documents)[:form_fields][:document_type], class: 'col-sm-4 control-label required'
               .col-sm-7

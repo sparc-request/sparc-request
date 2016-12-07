@@ -23,10 +23,10 @@
 # You can use CoffeeScript in this file: http://jashkenas.github.com/coffee-script/
 $(document).ready ->
   Sparc.protocol =
-    getSRId = () ->
-      $('input[name="service_request_id"]').val()
-
     ready: ->
+      getSRId = () ->
+        $('input[name="service_request_id"]').val()
+
       $('.service-requests-table').on 'all.bs.table', ->
         $(this).find('.selectpicker').selectpicker() #Find descendant selectpickers
 
@@ -119,6 +119,8 @@ $(document).ready ->
         $.ajax
           method: 'get'
           url: "/dashboard/protocols/#{protocol_id}/view_details"
+          data:
+            service_request_id: $("input[name='service_request_id']").val()
 
       $(document).on 'click', '.edit-protocol-information-button', ->
         if $(this).data('permission')

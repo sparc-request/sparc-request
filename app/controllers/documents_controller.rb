@@ -67,7 +67,7 @@ class DocumentsController < ApplicationController
 
   def destroy
     DocumentRemover.new(params[:id])
-    
+
     flash.now[:success] = t(:documents)[:destroyed]
   end
 

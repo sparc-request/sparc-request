@@ -208,7 +208,7 @@ class ServiceRequestsController < ApplicationController
 
     to_notify = []
     if @sub_service_request
-      to_notify << @sub_service_request.id unless @sub_service_request.status == 'submitted' || !@sub_service_request.submitted_at.nil?
+      to_notify << @sub_service_request.id unless @sub_service_request.status == 'submitted' || !@sub_service_request.previously_submitted?
       @sub_service_request.update_attribute(:submitted_at, Time.now) unless @sub_service_request.status == 'submitted'
       @sub_service_request.update_attributes(status: 'submitted', nursing_nutrition_approved: false,
                                              lab_approved: false, imaging_approved: false, committee_approved: false) if UPDATABLE_STATUSES.include?(@sub_service_request.status)
@@ -507,6 +507,8 @@ class ServiceRequestsController < ApplicationController
   end
 
   def send_notifications(service_request, sub_service_requests, send_request_amendment_and_not_initial= nil)
+    # If user has added a new service related to a new ssr and edited an existing ssr, 
+    # we only want to send a request amendment email and not an initial submit email
     send_request_amendment_and_not_initial ? '' : send_user_notifications(service_request, request_amendment: false)
     send_admin_notifications(sub_service_requests, request_amendment: false)
     send_service_provider_notifications(sub_service_requests, request_amendment: false)
@@ -635,12 +637,12 @@ class ServiceRequestsController < ApplicationController
     if (status == 'submitted')
       service_request.previous_submitted_at = service_request.submitted_at
       service_request.update_attribute(:submitted_at, Time.now)
-      requests.each { |ssr| ssr.update_attribute(:submitted_at, Time.now) }
+      requests.each { |ssr| ssr.update_attributes(submitted_at: Time.now) }
     end
 
     requests.each { |ssr| ssr.update_past_status(current_user) }
     service_request.reload
-
+    binding.pry
     to_notify
   end
 

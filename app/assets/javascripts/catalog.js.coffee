@@ -88,7 +88,7 @@ $(document).ready ->
       }
     }
   ).on('typeahead:render', (event, a, b, c) ->
-    $('[data-toggle="tooltip"]').tooltip()
+    $('[data-toggle="tooltip"]').tooltip({ 'delay' : { show: 1000, hide: 500 } })
   ).on('typeahead:select', (event, suggestion) ->
     srid = $(this).data('srid')
     id = suggestion.value

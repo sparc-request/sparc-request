@@ -105,7 +105,7 @@ $(document).ready ->
   $(document).on 'click', '.submit-request-button', ->
     signed_in = parseInt($('#signed_in').val())
     if signed_in == 0
-      window.location.replace('/identities/sign_in')
+      window.location.href = $('#login-link').attr('href')
       return false
     else if $('#line_item_count').val() <= 0
       $('#modal_place').html($('#submit-error-modal').html())

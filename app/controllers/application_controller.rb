@@ -103,7 +103,7 @@ class ApplicationController < ActionController::Base
         # the first time), then create a new service request.
         create_new_service_request
       end
-    elsif params[:controller] == 'devise/sessions'
+    elsif params[:controller] == 'devise/sessions' || params[:controller] == 'identities/sessions'
       if params[:id]
         use_existing_service_request(params[:id])
       else

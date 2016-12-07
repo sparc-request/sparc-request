@@ -49,7 +49,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
         protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr       = create(:service_request_without_validations, protocol: protocol)
 
-
         xhr :get, :catalog, {
           id: sr.id
         }
@@ -70,9 +69,8 @@ RSpec.describe ServiceRequestsController, type: :controller do
         sr       = create(:service_request_without_validations, protocol: protocol)
         ssr      = create(:sub_service_request_without_validations, organization: prgrm, service_request: sr)
 
-        session[:sub_service_request_id]  = ssr.id
-
         xhr :get, :catalog, {
+          sub_service_request_id: ssr.id,
           id: sr.id
         }
 

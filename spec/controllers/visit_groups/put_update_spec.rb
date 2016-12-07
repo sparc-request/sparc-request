@@ -43,6 +43,7 @@ RSpec.describe VisitGroupsController, type: :controller do
 
       xhr :put, :update, {
         id: vg.id,
+        service_request_id: sr.id,
         visit_group: vg_params
       }
 
@@ -59,6 +60,7 @@ RSpec.describe VisitGroupsController, type: :controller do
 
         xhr :put, :update, {
           id: vg.id,
+          service_request_id: sr.id,
           visit_group: vg_params
         }
 
@@ -74,6 +76,7 @@ RSpec.describe VisitGroupsController, type: :controller do
 
         xhr :put, :update, {
           id: vg.id,
+          service_request_id: sr.id,
           visit_group: vg_params
         }
 
@@ -89,6 +92,7 @@ RSpec.describe VisitGroupsController, type: :controller do
 
         xhr :put, :update, {
           id: vg.id,
+          service_request_id: sr.id,
           visit_group: vg_params
         }
 
@@ -106,6 +110,7 @@ RSpec.describe VisitGroupsController, type: :controller do
 
         xhr :put, :update, {
           id: vg.id,
+          service_request_id: sr.id,
           visit_group: vg_params
         }
 
@@ -121,6 +126,7 @@ RSpec.describe VisitGroupsController, type: :controller do
 
         xhr :put, :update, {
           id: vg.id,
+          service_request_id: sr.id,
           visit_group: vg_params
         }
 
@@ -136,6 +142,7 @@ RSpec.describe VisitGroupsController, type: :controller do
 
         xhr :put, :update, {
           id: vg.id,
+          service_request_id: sr.id,
           visit_group: vg_params
         }
 

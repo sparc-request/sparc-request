@@ -159,6 +159,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
         sr       = create(:service_request_without_validations, protocol: protocol)
         ServiceRelation.create(service_id: service.id, related_service_id: service2.id, optional: false)
 
+        session[:identity_id] = logged_in_user.id
 
         xhr :post, :add_service, {
           id: sr.id,
@@ -195,6 +196,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
           sr       = create(:service_request_without_validations, protocol: protocol)
           ssr      = create(:sub_service_request_without_validations, organization: org, service_request: sr)
 
+          session[:identity_id] = logged_in_user.id
 
           xhr :post, :add_service, {
             id: sr.id,

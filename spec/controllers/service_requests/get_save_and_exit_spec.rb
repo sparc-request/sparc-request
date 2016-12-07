@@ -84,9 +84,9 @@ RSpec.describe ServiceRequestsController, type: :controller do
           ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
                      create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
-
           xhr :get, :save_and_exit, {
             id: sr.id,
+            sub_service_request_id: ssr.id,
             format: :html
           }
 
@@ -105,6 +105,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
           session[:identity_id]            = logged_in_user.id
 
           xhr :get, :save_and_exit, {
+            sub_service_request_id: ssr.id,
             id: sr.id,
             format: :html
           }

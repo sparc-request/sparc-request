@@ -39,7 +39,7 @@ RSpec.describe SearchController do
       org = create(:organization)
       s1  = create(:service, organization: org, name: 'Serve me Well')
       s2  = create(:service, organization: org, name: 'Evres me Poorly')
-      
+
 
       xhr :get, :services, {
         service_request_id: sr.id,
@@ -141,10 +141,9 @@ RSpec.describe SearchController do
         s1    = create(:service, organization: org, name: 'Service 123')
         s2    = create(:service, organization: org2, name: 'Service 321')
 
-        session[:sub_service_request_id]  = ssr.id
-
         xhr :get, :services, {
-        service_request_id: sr.id,
+          service_request_id: sr.id,
+          sub_service_request_id: ssr.id,
           term: 'Service'
         }
 

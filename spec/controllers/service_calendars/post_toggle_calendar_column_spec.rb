@@ -66,7 +66,7 @@ RSpec.describe ServiceCalendarsController do
       v         = create(:visit, line_items_visit: liv, visit_group: vg)
 
       session[:identity_id] = logged_in_user.id
-      
+
       xhr :post, :toggle_calendar_column, {
         service_request_id: sr.id,
         arm_id: arm.id,
@@ -205,7 +205,7 @@ RSpec.describe ServiceCalendarsController do
           portal: 'false'
         }
 
-        expect(sr.reload.status).to eq('draft')        
+        expect(sr.reload.status).to eq('draft')
       end
 
       context 'editing sub service request' do
@@ -223,11 +223,11 @@ RSpec.describe ServiceCalendarsController do
           vg        = create(:visit_group, arm: arm)
           v         = create(:visit, line_items_visit: liv, visit_group: vg, quantity: 1, research_billing_qty: 1, insurance_billing_qty: 1, effort_billing_qty: 1)
 
-          session[:sub_service_request_id] = ssr.id
           session[:identity_id] = logged_in_user.id
 
           xhr :post, :toggle_calendar_column, {
-        service_request_id: sr.id,
+            sub_service_request_id: ssr.id,
+            service_request_id: sr.id,
             arm_id: arm.id,
             check: 'true',
             portal: 'false'

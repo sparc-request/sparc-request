@@ -207,7 +207,7 @@ class ServiceRequestsController < ApplicationController
 
     to_notify = []
     if @sub_service_request
-      to_notify << @sub_service_request.id unless @sub_service_request.status == 'submitted' || !@sub_service_request.previously_submitted?
+      to_notify << @sub_service_request.id unless @sub_service_request.status == 'submitted' || @sub_service_request.previously_submitted?
       @sub_service_request.update_attribute(:submitted_at, Time.now) unless @sub_service_request.status == 'submitted'
 
       @sub_service_request.update_attributes(status: 'submitted', nursing_nutrition_approved: false,
@@ -635,7 +635,7 @@ class ServiceRequestsController < ApplicationController
       requests.each { |ssr| ssr.update_attributes(submitted_at: Time.now) }
     end
 
-    requests.each { |ssr| ssr.update_past_status(current_user) }
+    requests.each { |ssr| ssr.update_past_status }
     service_request.reload
     to_notify
   end

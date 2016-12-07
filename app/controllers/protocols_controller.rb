@@ -79,6 +79,13 @@ class ProtocolsController < ApplicationController
   end
 
   def update
+
+    if params[:updated_protocol_type] == 'true' && params[:protocol][:type] == 'Study'
+      @protocol.update_attribute(:type, params[:protocol][:type])
+      @protocol.activate
+      @protocol = Protocol.find(params[:id]) #Protocol reload
+    end
+
     attrs            = fix_date_params
     @service_request = ServiceRequest.find(params[:srid])
 
@@ -96,10 +103,15 @@ class ProtocolsController < ApplicationController
 
   def update_protocol_type
     @protocol       = Protocol.find(params[:id])
-    @protocol_type  = params[:type]
-    @protocol.type  = params[:type]
-    @protocol.populate_for_edit
 
+    # Setting type and study_type_question_group, not actually saving
+    @protocol.type  = params[:type]
+    @protocol.study_type_question_group_id = StudyTypeQuestionGroup.active_id
+
+    @protocol_type = params[:type]
+    @protocol = @protocol.becomes(@protocol_type.constantize) unless @protocol_type.nil?
+    @protocol.populate_for_edit
+    
     flash[:success] = t(:protocols)[:change_type][:updated]
     if @protocol_type == "Study" && @protocol.sponsor_name.nil? && @protocol.selected_for_epic.nil?
       flash[:alert] = t(:protocols)[:change_type][:new_study_warning]

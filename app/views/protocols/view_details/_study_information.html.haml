@@ -115,4 +115,4 @@
                   = render partial: 'protocols/view_details/epic_questions_answers', locals: { answer: answer }
                 - elsif !answer.study_type_question.study_type_question_group.active && !protocol.active? && answer.answer != nil
                   = render partial: 'protocols/view_details/epic_questions_answers', locals: { answer: answer }
-            = render partial: 'protocols/view_details/red_note', locals: { protocol: protocol }         
+            = render partial: 'protocols/view_details/study_type_note', locals: { protocol: protocol }         

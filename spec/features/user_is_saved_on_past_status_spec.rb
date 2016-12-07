@@ -18,29 +18,32 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class Document < ActiveRecord::Base
-  audited
+require 'rails_helper'
 
-  include Paperclip::Glue
-  has_and_belongs_to_many :sub_service_requests
-  belongs_to :protocol
-  has_attached_file :document #, :preserve_files => true
-  validates_attachment :document, :content_type => {:content_type => %w(text/plain image/jpeg image/jpg image/png application/pdf application/msword application/vnd.openxmlformats-officedocument.wordprocessingml.document)}
+RSpec.describe "User views Status History tab", js: true do
+  let_there_be_lane
+  fake_login_for_each_test
 
-  attr_accessible :document
-  attr_accessible :doc_type
-  attr_accessible :doc_type_other
-  attr_accessible :sub_service_requests
-  attr_accessible :protocol_id
+  scenario "and changes the status of the SSR to a new status" do
+    organization    = create(:organization, process_ssrs: true)
+    super_user      = create(:super_user,
+                              identity_id: jug2.id,
+                              organization_id: organization.id)
+    protocol        = create(:protocol_without_validations, primary_pi: jug2)
+    service_request = create(:service_request_without_validations, protocol: protocol)
+    ssr             = create(:sub_service_request_without_validations,
+                              organization: organization,
+                              service_request: service_request,
+                              status: 'draft')
+    survey          = create(:survey,
+                              access_code: 'sctr-customer-satisfaction-survey')
 
-  validates :doc_type, :document, presence: true
-  validates :doc_type_other, presence: true, if: Proc.new { |doc| doc.doc_type == 'other' }
+    visit dashboard_sub_service_request_path(ssr)
+    wait_for_javascript_to_finish
 
-  def display_document_type
-    self.doc_type == "other" ? self.doc_type_other.try(:humanize) : DOCUMENT_TYPES.key(self.doc_type)
+    bootstrap_select("#sub_service_request_status", "On Hold")
+
+    expect(PastStatus.first.changed_by_id).to eq(jug2.id)
   end
 
-  def all_organizations
-    sub_service_requests.map(&:org_tree).flatten.uniq
-  end
 end

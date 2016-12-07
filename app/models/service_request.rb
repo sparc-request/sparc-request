@@ -34,6 +34,7 @@ class ServiceRequest < ActiveRecord::Base
   has_many :tokens, :dependent => :destroy
   has_many :approvals, :dependent => :destroy
   has_many :arms, :through => :protocol
+  has_many :visit_groups, through: :arms
   has_many :notes, as: :notable, dependent: :destroy
 
   after_save :set_original_submitted_date
@@ -112,6 +113,11 @@ class ServiceRequest < ActiveRecord::Base
   end
 
   def validate_service_calendar
+    vg = visit_groups.to_a.find { |vg| !vg.in_order? }
+    if vg
+      errors.add(:base, I18n.t('errors.visit_groups.days_out_of_order', arm_name: vg.arm.name))
+    end
+
     if USE_EPIC
       self.arms.each do |arm|
         days = arm.visit_groups.map(&:day)

@@ -21,6 +21,9 @@
 
 = hidden_field_tag :signed_in, identity_signed_in? ? 1 : 0
 = hidden_field_tag :has_protocol, @service_request.protocol ? 1 : 0
+= hidden_field_tag :service_request_id, @service_request.id, class: 'service-request-id'
+- if !@service_request.protocol.nil?
+  = hidden_field_tag :protocol_id, @service_request.protocol.id, class: 'protocol-id'
 
 = render 'catalogs/about_section'
 = render 'catalogs/service_accordion', institutions: @institutions, ssr_org: @sub_service_request.try(:organization), locked_org_ids: @locked_org_ids
@@ -31,5 +34,3 @@
 = render 'service_requests/modals/submit_error_modal'
 = render 'service_requests/modals/new_request_modal'
 = render 'service_requests/modals/request_submitted_modal', service_request: @service_request
-= render 'service_requests/modals/login_required_modal'
-= render 'service_requests/modals/locked_organization_modal'

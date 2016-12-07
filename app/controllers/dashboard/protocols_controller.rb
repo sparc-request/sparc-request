@@ -140,9 +140,14 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def update
+    if params[:updated_protocol_type] == 'true' && params[:protocol][:type] == 'Study'
+      @protocol.update_attribute(:type, params[:protocol][:type])
+      @protocol.activate
+      @protocol = Protocol.find(params[:id]) #Protocol reload
+    end
+    
     attrs               = fix_date_params
     permission_to_edit  = @authorization.present? ? @authorization.can_edit? : false
-
     # admin is not able to activate study_type_question_group
     if @protocol.update_attributes(attrs)
       flash[:success] = I18n.t('protocols.updated', protocol_type: @protocol.type)
@@ -157,13 +162,18 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def update_protocol_type
-    # Using update_attribute here is intentional, type is a protected attribute
     protocol_role       = @protocol.project_roles.find_by(identity_id: @user.id)
     @permission_to_edit = protocol_role.nil? ? false : protocol_role.can_edit?
+
+    # Setting type and study_type_question_group, not actually saving
     @protocol.type      = params[:type]
+    @protocol.study_type_question_group_id = StudyTypeQuestionGroup.active_id
+    
     @protocol_type = params[:type]
 
+    @protocol = @protocol.becomes(@protocol_type.constantize) unless @protocol_type.nil?
     @protocol.populate_for_edit
+    
     flash[:success] = t(:protocols)[:change_type][:updated]
     if @protocol_type == "Study" && @protocol.sponsor_name.nil? && @protocol.selected_for_epic.nil?
       flash[:alert] = t(:protocols)[:change_type][:new_study_warning]

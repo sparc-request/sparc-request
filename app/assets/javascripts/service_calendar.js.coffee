@@ -62,7 +62,7 @@ $(document).ready ->
 
     $.ajax
       type: 'PUT'
-      data: 
+      data:
         checked:  checked
         visit_id: $(this).data('visit-id')
         portal: $(this).data('portal')
@@ -101,6 +101,16 @@ calculate_max_rates = (arm_id) ->
     $(".arm-calendar-container-#{arm_id}:visible #{column}.max-total-per-patient").html(max_total_display)
 
 (exports ? this).setup_xeditable_fields = () ->
+  reload_calendar = (arm_id) ->
+    # E.g. "billing-strategy-tab" -> "billing_strategy"
+    tab = $('li.custom-tab.active a').last().attr('id')
+    tab = tab.substring(0, tab.indexOf("tab") - 1).replace("-", "_");
+    data = $('#service-calendars').data()
+    data.tab = tab
+    data.arm_id = arm_id
+    # Reload calendar
+    $.get '/service_calendars/table.js', data
+
   # Override x-editable defaults
   $.fn.editable.defaults.send = 'always'
   $.fn.editable.defaults.ajaxOptions =
@@ -122,6 +132,7 @@ calculate_max_rates = (arm_id) ->
     params: (params) ->
       data = 'visit_group': { 'day': params.value }
       return data
+    emptytext: '(?)'
 
   $('.window-after').editable
     params: (params) ->
@@ -132,6 +143,7 @@ calculate_max_rates = (arm_id) ->
     params: (params) ->
       data = 'visit_group': { 'name': params.value }
       return data
+    emptytext: '(?)'
 
   $('.edit-your-cost').editable
     display: (value) ->
@@ -146,11 +158,15 @@ calculate_max_rates = (arm_id) ->
     params: (params) ->
       data = 'line_items_visit': { 'subject_count': params.value }
       return data
+    success: () ->
+      reload_calendar($(this).data('armId'))
 
   $('.edit-research-billing-qty').editable
     params: (params) ->
       data = 'visit': { 'research_billing_qty': params.value }
       return data
+    success: () ->
+      reload_calendar($(this).data('armId'))
 
   $('.edit-insurance-billing-qty').editable
     params: (params) ->

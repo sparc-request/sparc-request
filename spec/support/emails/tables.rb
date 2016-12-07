@@ -39,7 +39,7 @@ module EmailHelpers
       else
         requester_flag = ""
       end
-      expect(mail_response).to have_xpath "//td[text()='#{role.identity.full_name}']/following-sibling::td[text()='#{role.identity.email}']/following-sibling::td[text()='#{role.role.upcase}#{requester_flag}']"
+      expect(mail_response).to have_xpath "//td[text()='#{role.identity.full_name}']/following-sibling::td[text()='#{role.identity.email}']/following-sibling::td[text()='#{role.role.titleize}#{requester_flag}']"
     end
   end
 
@@ -55,7 +55,7 @@ module EmailHelpers
       end
 
       user_epic_access = role.epic_access == false ? "No" : "Yes"
-      expect(mail_response).to have_xpath "//td[text()='#{role.identity.full_name}']/following-sibling::td[text()='#{role.identity.email}']/following-sibling::td[text()='#{role.role.upcase}#{requester_flag}']/following-sibling::td[text()='#{user_epic_access}']"
+      expect(mail_response).to have_xpath "//td[text()='#{role.identity.full_name}']/following-sibling::td[text()='#{role.identity.email}']/following-sibling::td[text()='#{role.role.titleize}#{requester_flag}']/following-sibling::td[text()='#{user_epic_access}']"
     end
   end
 
@@ -71,7 +71,7 @@ module EmailHelpers
         requester_flag = ""
       end
       user_epic_access = role.epic_access == false ? "No" : "Yes"
-      expect(mail_response).to have_xpath "//td[text()='#{role.identity.full_name}']/following-sibling::td[text()='#{role.identity.email}']/following-sibling::td[text()='#{role.role.upcase}#{requester_flag}']"
+      expect(mail_response).to have_xpath "//td[text()='#{role.identity.full_name}']/following-sibling::td[text()='#{role.identity.email}']/following-sibling::td[text()='#{role.role.titleize}#{requester_flag}']"
       expect(mail_response).not_to have_xpath "//following-sibling::td[text()='#{user_epic_access}']"
     end
   end

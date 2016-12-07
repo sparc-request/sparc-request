@@ -44,7 +44,8 @@ class Arm < ActiveRecord::Base
   after_save :update_liv_subject_counts
 
   validates :name, presence: true
-  validates_format_of :name, with: /\A([A-Za-z0-9][A-Za-z0-9]*([ ][A-Za-z0-9])?)*\z/
+  validates :name, format: { with: /\A([A-Za-z0-9][A-Za-z0-9]*([ ][A-Za-z0-9])?)*\z/, 
+                   message: "can not contain any of the following characters: [ ] * / \\ ? : " }
   validate :name_unique_to_protocol
 
   validates :visit_count, numericality: { greater_than: 0 }

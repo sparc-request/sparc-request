@@ -17,30 +17,13 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+class LockedOrganizationsController < ApplicationController
 
-class Document < ActiveRecord::Base
-  audited
-
-  include Paperclip::Glue
-  has_and_belongs_to_many :sub_service_requests
-  belongs_to :protocol
-  has_attached_file :document #, :preserve_files => true
-  validates_attachment :document, :content_type => {:content_type => %w(text/plain image/jpeg image/jpg image/png application/pdf application/msword application/vnd.openxmlformats-officedocument.wordprocessingml.document)}
-
-  attr_accessible :document
-  attr_accessible :doc_type
-  attr_accessible :doc_type_other
-  attr_accessible :sub_service_requests
-  attr_accessible :protocol_id
-
-  validates :doc_type, :document, presence: true
-  validates :doc_type_other, presence: true, if: Proc.new { |doc| doc.doc_type == 'other' }
-
-  def display_document_type
-    self.doc_type == "other" ? self.doc_type_other.try(:humanize) : DOCUMENT_TYPES.key(self.doc_type)
-  end
-
-  def all_organizations
-    sub_service_requests.map(&:org_tree).flatten.uniq
+  def show
+    @organization = Organization.find(params[:org_id])
+    @service_provider = @organization.service_providers.where(is_primary_contact: true).first
+    @identity = Identity.find(@service_provider.identity_id)
+    @protocol = Protocol.find(params[:protocol_id])
+    @ssr = SubServiceRequest.where(service_request_id: params[:service_request_id], organization_id: @organization.id).first
   end
 end

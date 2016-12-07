@@ -21,7 +21,7 @@
 class Study < Protocol
   validates :sponsor_name,                presence: true
   validates :selected_for_epic,           inclusion: [true, false], :if => [:is_epic?]
-  validate  :validate_study_type_answers, if: [:selected_for_epic?, "StudyTypeQuestionGroup.active.pluck(:id).first == changed_attributes()['study_type_question_group_id'] || StudyTypeQuestionGroup.active.pluck(:id).first == study_type_question_group_id"]
+  validate  :validate_study_type_answers, if: [:selected_for_epic?, "StudyTypeQuestionGroup.active.pluck(:id).first == study_type_question_group_id"]
 
 
   def classes
@@ -63,6 +63,13 @@ class Study < Protocol
     study_types.sort_by(&:position)
   end
 
+  def setup_study_type_answers
+    StudyTypeQuestion.find_each do |stq|
+      study_type_answer = study_type_answers.detect{|obj| obj.study_type_question_id == stq.id}
+      study_type_answer = study_type_answers.build(study_type_question_id: stq.id) unless study_type_answer
+    end
+  end
+
   def setup_impact_areas
     position = 1
     obj_names = ImpactArea::TYPES.map{|k,v| k}
@@ -87,13 +94,6 @@ class Study < Protocol
     end
 
     affiliations.sort_by(&:position)
-  end
-
-  def setup_study_type_answers
-    StudyTypeQuestion.find_each do |stq|
-      study_type_answer = study_type_answers.detect{|obj| obj.study_type_question_id == stq.id}
-      study_type_answer = study_type_answers.build(study_type_question_id: stq.id) unless study_type_answer
-    end
   end
 
   def setup_project_roles

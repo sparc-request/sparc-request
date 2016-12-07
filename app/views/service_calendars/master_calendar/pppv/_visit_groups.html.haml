@@ -34,9 +34,9 @@
           %a.window-before{ href: 'javascript:void(0)', data: { name: 'window_before', title: t(:calendars)[:pppv][:editable_fields][:window_before], value: visit_group.window_before, url: visit_group_path(visit_group) } }
       .col-xs-4.no-padding.text-center
         - if portal || tab == 'calendar'
-          = visit_group.day || "!"
+          = visit_group.day
         - else
-          %a.day{ href: 'javascript:void(0)', data: { name: 'day', value: visit_group.day || "!", title: t(:calendars)[:pppv][:editable_fields][:day], url: visit_group_path(visit_group) } }
+          %a.day{ href: 'javascript:void(0)', data: { name: 'day', value: visit_group.day, title: t(:calendars)[:pppv][:editable_fields][:day], url: visit_group_path(visit_group) } }
       .col-xs-4.no-padding.text-center
         - if portal || tab == 'calendar'
           = visit_group.window_after

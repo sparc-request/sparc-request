@@ -642,7 +642,6 @@ class ServiceRequestsController < ApplicationController
 
     requests.each { |ssr| ssr.update_past_status(current_user) }
     service_request.reload
-    binding.pry
     to_notify
   end
 

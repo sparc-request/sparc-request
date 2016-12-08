@@ -23,6 +23,7 @@
 $(document).ready ->
   getSRId = () ->
     $('input[name="service_request_id"]').val()
+
   ### ACCORDION LOGIC ###
   $(document).on 'click', '.institution-header, .provider-header, .program-link:not(.locked-program)', ->
     if $(this).hasClass('institution-header')
@@ -68,7 +69,7 @@ $(document).ready ->
     datumTokenizer: Bloodhound.tokenizers.obj.whitespace('value'),
     queryTokenizer: Bloodhound.tokenizers.whitespace,
     remote:
-      url: '/search/services?term=%QUERY',
+      url: "/search/services?term=%QUERY&service_request_id=#{getSRId()}",
       wildcard: '%QUERY'
   )
   services_bloodhound.initialize() # Initialize the Bloodhound suggestion engine
@@ -99,6 +100,8 @@ $(document).ready ->
     $.ajax
       type: 'POST'
       url: "/service_requests/#{srid}/add_service/#{id}"
+      data:
+        service_request_id: getSRId()
   )
 
   ### CONTINUE BUTTON ###

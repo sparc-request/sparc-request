@@ -33,8 +33,23 @@
     - @audit_report = action_name == 'notify_user' ? @audit_report[:line_items].values.flatten : @audit_report[:line_items]
     - @audit_report.each do |last_change|
       - service = Service.find(last_change.audited_changes["service_id"])
-      - ssr = determine_ssr(last_change)
-      - if !ssr.nil?
+      - ssr = determine_ssr(last_change, action_name)
+      - if SubServiceRequest.where(id: last_change.audited_changes['sub_service_request_id']).empty?
+        - if last_change.action == 'destroy'
+          %tr.skinny-black-border
+            %td.left
+              %strike="#{@service_request.try(:protocol).try(:id)}-#{ssr.audited_changes['ssr_id'] || 'DRAFT'}"
+            %td.skinny-black-border
+              %strike= service.name
+            %td.skinny-black-border.center
+              %strike= AUDIT_ACTIONS[last_change.action]
+        - else
+          %tr.skinny-black-border
+            %td.left
+              =ssr.display_id
+            %td.skinny-black-border= service.name
+            %td.skinny-black-border.center= AUDIT_ACTIONS[last_change.action]
+      - else
         - link = DASHBOARD_LINK + '/sub_service_requests/' + ssr.id.to_s
         - if last_change.action == 'destroy'
           %tr.skinny-black-border

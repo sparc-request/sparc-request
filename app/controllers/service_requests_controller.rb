@@ -191,9 +191,7 @@ class ServiceRequestsController < ApplicationController
   end
 
   def confirmation
-
     @protocol = @service_request.protocol
-    
     #### FOR REQUEST AMENDMENT EMAIL ####
     # Grab ssrs that have been previously submitted
     # Setting this to an array is necessary to grab the correct ssrs
@@ -233,6 +231,7 @@ class ServiceRequestsController < ApplicationController
         send_epic_notification_for_user_approval(@protocol)
       end
     end
+
     send_request_amendment_email_evaluation(previously_submitted_ssrs) unless previously_submitted_ssrs.empty?
     send_confirmation_notifications(to_notify, send_request_amendment_and_not_initial) unless to_notify.empty?
     render formats: [:html]
@@ -491,7 +490,14 @@ class ServiceRequestsController < ApplicationController
         request_amendment_ssrs << ssr
       end
     end
-    send_request_amendment(request_amendment_ssrs) unless request_amendment_ssrs.empty?
+
+    destroyed_or_created_ssr = AuditRecovery.where("audited_changes LIKE '%service_request_id: #{@service_request.id}%' AND auditable_type = 'SubServiceRequest' AND action in ('destroy', 'create') AND created_at BETWEEN '#{@service_request.previous_submitted_at.utc}' AND '#{Time.now.utc}'")
+
+    if !request_amendment_ssrs.empty?
+      send_request_amendment(request_amendment_ssrs)
+    elsif !destroyed_or_created_ssr.empty?
+      send_user_notifications(@service_request, request_amendment: true)
+    end
   end
 
   def send_request_amendment(sub_service_requests)
@@ -513,6 +519,7 @@ class ServiceRequestsController < ApplicationController
     # Does an approval need to be created?  Check that the user
     # submitting has approve rights.
     audit_report = request_amendment ? service_request.audit_report(current_user, service_request.previous_submitted_at.utc, Time.now.utc) : nil
+
     @service_list_false = service_request.service_list(false)
     @service_list_true = service_request.service_list(true)
     @line_items = @service_request.line_items

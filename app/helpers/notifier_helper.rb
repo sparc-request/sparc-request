@@ -58,13 +58,14 @@ module NotifierHelper
     (status == "submitted" || status == "request_amendment") && role == 'none' && !notes.empty?
   end
 
-  def determine_ssr(last_change)
+  def determine_ssr(last_change, action_name)
     ssr_id = last_change.audited_changes['sub_service_request_id']
     if last_change.action == 'destroy'
-      if !SubServiceRequest.where(id: ssr_id).empty?
-        ssr = SubServiceRequest.find(ssr_id)
+      if SubServiceRequest.where(id: ssr_id).empty? && action_name == 'notify_user'
+        deleted_ssrs = AuditRecovery.where("audited_changes LIKE '%service_request_id: #{@service_request.id}%' AND auditable_type = 'SubServiceRequest' AND action = 'destroy' AND created_at BETWEEN '#{@service_request.previous_submitted_at.utc}' AND '#{Time.now.utc}'")
+        ssr = deleted_ssrs.select{ |ssr| ssr.auditable_id == last_change.audited_changes['sub_service_request_id'] }.first
       else
-        ssr = nil
+        ssr = SubServiceRequest.find(ssr_id)
       end
     else
       ssr = LineItem.find(last_change.auditable_id).sub_service_request

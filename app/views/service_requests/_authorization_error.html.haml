@@ -18,24 +18,36 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-!!! 1.1
-%html{"xml:lang" => "en", xmlns: "http://www.w3.org/1999/xhtml"}
+!!!
+%html
   %head
-    %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
-    = stylesheet_link_tag '960', "#{CUSTOM_ASSET_PATH}application", 'jquery-ui', media: 'all'
-  %body
-    #container.container
-      = render 'shared/header_logos', in_dashboard: false
-      #title
-        %h1
-          = t 'application_title'
-      #content.container_12
-        %br
-        %br
-        .grid_3 &nbsp;
-        .grid_6.authorization_error.ui-corner-all
-          #auth_error
-            = raw(error)
-          %br
-          = link_to 'Click here to return to your dashboard', DASHBOARD_LINK 
-        .grid_3 &nbsp;
+    %title
+      = t(:proper)[:header]
+    = stylesheet_link_tag 'application'
+    = javascript_include_tag "application"
+    /[if IE]
+      = stylesheet_link_tag 'ie'
+    /[if gt IE 7]
+      = stylesheet_link_tag 'ie8_plus'
+    /[if lt IE 8]
+      = javascript_include_tag "ie7_warning"
+    = csrf_meta_tags
+    :javascript
+      window.I18n = #{current_translations.to_json.html_safe};
+
+  %body#body
+    #container
+      #header
+        = render 'layouts/header_logos', in_dashboard: false
+        %input#current_user_id{ type: 'hidden', value: @user.try(:id) }
+      = render 'layouts/header', user: @user
+      .flash
+        = render 'shared/flash'
+      #inner-content.row
+        = render 'shared/authorization_error_content', error: error
+  %footer
+    = render 'layouts/footer'
+    = render 'shared/piwik_tracking' if Rails.env == 'production'
+    = render 'shared/ie7_modal'
+    = render 'shared/modal'
+        

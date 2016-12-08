@@ -53,9 +53,10 @@ module Dashboard
         # these appear after selecting a user
         element :credentials_dropdown, "button[data-id='project_role_identity_attributes_credentials']"
         element :specify_other_credentials, "#project_role_identity_attributes_credentials_other"
-        element :institution_dropdown, "button[data-id='project_role_identity_attributes_institution']"
-        element :college_dropdown, "button[data-id='project_role_identity_attributes_college']"
-        element :department_dropdown, "button[data-id='project_role_identity_attributes_department']"
+        element :institution_dropdown, "button[data-id='select-pro-org-institution']"
+        element :college_dropdown, "button[data-id='select-pro-org-college']"
+        element :department_dropdown, "button[data-id='select-pro-org-department']"
+        element :division_dropdown, "button[data-id='select-pro-org-division']"
         element :role_dropdown, "button[data-id='project_role_role']"
         element :specify_other_role, "#project_role_role_other"
         # rights radio buttons
@@ -71,8 +72,8 @@ module Dashboard
         element :cancel_button, :button, text: "Close"
       end
 
-      element :enabled_add_document_button, '#document-new:not(.disabled)', text: 'Add a New Document'
-      element :disabled_add_document_button, '#document-new.disabled', text: 'Add a New Document'
+      element :enabled_add_document_button, '#document-new:not(.disabled)', text: 'Add a Document'
+      element :disabled_add_document_button, '#document-new.disabled', text: 'Add a Document'
       sections :documents, '#documents-table tbody tr' do
         element :enabled_edit_button, ".document-edit:not(.disabled)"
         element :disabled_edit_button, ".document-edit.disabled"
@@ -81,7 +82,7 @@ module Dashboard
       end
 
       # modal appears after clicking Add Document Button
-      section :document_modal, '.modal-dialog', text: /(Add a New|Edit) Document/ do
+      section :document_modal, '.modal-dialog', text: /(Add|Edit) Document/ do
         element :x_button, "button.close"
 
         element :doc_type_dropdown, "button[data-id='document_doc_type']"

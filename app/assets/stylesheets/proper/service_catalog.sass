@@ -17,276 +17,218 @@
 /* DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS*/
 /* INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR*/
 /* TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.*/
+@import 'proper/colors'
 
-// RootView
-
-#about
-  height: 50px
-  width: 240px
-  float: left
-
-  a
-    margin-left: 33px
-    margin-right: 32px
-
-  img
-    padding-top: 10px
-
-#account
-  width: 230px
-  height: 50px
-  background: #FFF
-  margin: -2px 0 0 -2px
-  img
-    margin-left: 16px
-
-.ask-a-question-form
-  padding: 4px
-
-.ask-a-question-form-container
-  padding: 0
-  background: #FFF
-  color: #808080
-  height: auto
-  width: 173px
-  border-left: 1px solid #CCC
-  border-right: 1px solid #CCC
-  display: none
-
-#blog
-  height: 300px
-  overflow: scroll
-  .date
-    font-style: italic
-
-#calendar
-  height: 300px
-  overflow: scroll
-  .calendar-event
-    .location, .date
-      float: left
-    .location
-      padding-left: 5px
-      width: 75%
-  .date
-    color: #FFF
-    text-align: center
-    width: 45px
-    font-weight: bold
-    .day
-      font-size: 20px
-  .time
-    font-style: italic
-
-#calendar-blog
-  margin-top: 30px
-  width: 100%
-  h1
-    color: #227BA5
-  th
-    text-align: left
-  td
-    padding: 0px 3px
-  .half
-    width: 50%
-  .full
-    width: 100%
-  .title
-    font-weight: bold
-    color: #000
-    a
-      font-weight: bold
-      color: #000
-
-#cart-help
-  float: right
+.about-section
+  margin-bottom: 20px
+  
+/* RELATED TO THE INSTITUTION ACCORDION */
+.institution-header, .provider-header, .core-header
+  background: $sparc-light-blue
+  color: white !important
   cursor: pointer
-
-.catalog-middle
-  margin-left: 5px
-  margin-right: 5px
-
-.catalog-search-spinner, .catalog-search-clear-icon
-  float: right
-  margin-right: 5px
-  z-index: 999 !important
-
-.catalog-search-spinner, .user-search-spinner
-  margin-top: -22px
-  width: 16px
-  height: 16px
-
-.catalog-search-clear-icon, .user-search-clear-icon
-  margin-top: -21px
-  width: 14px
-  height: 14px
-  cursor: pointer
-
-.catalog-view
-  .left
-    width: 199px
-    float: left
-    padding: 10px 0 0 10px
-  .middle
-    width: 471px
-    padding: 10px 0 0 10px
-    float: left
-    height: 700px
-    overflow: scroll
-
-.catalog-view-right
-  background: #E8E8E8
-  width: 226px !important
-  padding: 2px !important
-
-.green-provider-odd
-  background: #7EAE8D
-
-.institution
-  background: #E8E8E8 !important
-
-#institution_accordion
-  border: 1px #000
-  padding: 0px 5px
-  h3
-    border-radius: 5px !important
-
-div#institution_accordion h3.provider_header
-  background: url("/assets/jquery-ui/ui-bg_glass_45_0078ae_1x400.png") repeat-x scroll 50% 50% #0078AE
-  border: 1px solid #77D5F7
-
-#left_signin_button, #right_signin_button
-  width: 215px
-  padding: 10px
-
-.light-blue-provider-odd
-  background: #8AB6CB
-
-.orange-provider-odd
-  background: #CAA27B
-
-#processing_request
-  background: #fff
-  border: 1px solid #000
-  left: 45%
-  padding: 3px
-  top: 200px
-  position: fixed
-  text-align: center
-  width: 200px
-  z-index: 5
-
-.program-details-view .program-name
-  color: white
-
-.program-details-view .description, .provider-details-view .description
-  margin-bottom: 10px !important
-  padding: 5px !important
-
-.provider_accordion
-  width: 97% !important
-  float: right
-
-.provider-details-view .provider-name, .program-details-view .program-name
-  padding: 5px
-  font-size: 13px
-
-.provider-details-view .provider-name
-  color: white
-  border-radius: 5px
-
-.right
-  width: 243px
-  float: left
-  margin-left: 10px
-  #services
-    margin: 10px auto
-    width: 92%
-    border: 3px solid #000
-    h3
-      padding: 4px
-      background: #53B6E0
-      font-size: 14px
-      color: #fff
-      font-weight: normal
-      margin: 0px
+  h4
+    font-size: 14px
 
 .service-catalog
-  background: #E8E8E8
+  .panel-group
+    margin-bottom: 0
 
-  .ui-accordion-content h4
-    padding: 4px 6px
+  #institution-accordion
+    .panel-body
+      padding-top: 4px
+      padding-right: 5px
+      padding-bottom: 5px
+
+      .panel-body
+        padding: 0
+
+        table
+          width: 100%
+          tr
+            cursor: pointer
+            td
+              font-size: 12px
+              .program-link
+                padding: 5px
+                border: 1px solid #DDD
+              .program-link:not(.clicked):hover
+                background: #E6E6E6
+                border-color: #ADADAD
+              .program-link.clicked
+                background: #E6E6E6
+                border-color: #ADADAD
+                box-shadow: 0 3px 5px rgba(0, 0, 0, 0.125) inset
+              .program-link.clicked:hover
+                background: #D4D4D4
+                border-color: #8C8C8C
+
+/* HANDLING INSTITUTION COLORING */
+.blue-provider,
+.green-provider,
+.light-blue-provider,
+.red-provider,
+.orange-provider
+  h1
+    color: white
+
+.blue-provider
+  background: $sparc-blue !important
+.green-provider
+  background: $sparc-green !important
+.light-blue-provider
+  background: $sparc-light-blue !important
+.red-provider
+  background: $sparc-red !important
+.orange-provider
+  background: $sparc-orange !important
+
+.institution-header.blue-provider:not(.clicked):hover,
+.provider-header.blue-provider:not(.clicked):hover,
+.core-header.blue-provider:not(.clicked):hover,
+  background: $sparc-blue-hover !important
+.institution-header.green-provider:not(.clicked):hover,
+.provider-header.green-provider:not(.clicked):hover,
+.core-header.green-provider:not(.clicked):hover,
+  background : $sparc-green-hover !important
+.institution-header.light-blue-provider:not(.clicked):hover,
+.provider-header.light-blue-provider:not(.clicked):hover,
+.core-header.light-blue-provider:not(.clicked):hover,
+  background: $sparc-light-blue-hover !important
+.institution-header.red-provider:not(.clicked):hover,
+.provider-header.red-provider:not(.clicked):hover,
+.core-header.red-provider:not(.clicked):hover,
+  background: $sparc-red-hover !important
+.institution-header.orange-provider:not(.clicked):hover,
+.provider-header.orange-provider:not(.clicked):hover,
+.core-header.orange-provider:not(.clicked):hover,
+  background: $sparc-orange-hover !important
+
+.blue-provider.clicked
+  background: $sparc-blue-hover !important
+  border: 1px solid #5D5D5D !important
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.125) inset
+.green-provider.clicked
+  background: $sparc-green-hover !important
+  border: 1px solid #5D5D5D !important
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.125) inset
+.light-blue-provider.clicked
+  background: $sparc-light-blue-hover !important
+  border: 1px solid #5D5D5D !important
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.125) inset
+.red-provider.clicked
+  background: $sparc-red-hover !important
+  border: 1px solid #5D5D5D !important
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.125) inset
+.orange-provider.clicked
+  background: $sparc-orange-hover !important
+  border: 1px solid #5D5D5D !important
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.125) inset
+
+.blue-provider.clicked:hover
+  background: $sparc-blue-clicked-hover !important
+  border-color: #4C4C4C !important
+.green-provider.clicked:hover
+  background: $sparc-green-clicked-hover !important
+  border-color: #4C4C4C !important
+.light-blue-provider.clicked:hover
+  background: $sparc-light-blue-clicked-hover !important
+  border-color: #4C4C4C !important
+.red-provider.clicked:hover
+  background: $sparc-red-clicked-hover !important
+  border-color: #4C4C4C !important
+.orange-provider.clicked:hover
+  background: $sparc-orange-clicked-hover !important
+  border-color: #4C4C4C !important
+
+/* HANDLING CORE AND SERVICE LIST STYLING */
+.service-view
+  display: inline-block
+  .title
+    div
+      margin: auto
+      .service
+        text-align: left
+        border: 0
+        color: $link
+        white-space: pre-wrap
+
+.service-view:not(:last-child)
+  padding-bottom: 5px
+  border-bottom: 1px solid #EEE
+  margin-bottom: 5px
+
+.program-services,
+.core-accordion
+  padding-top: 15px !important
+
+.description
+  font-size: 14px
+
+.core-description
+  padding-top: 15px
+  padding-bottom: 10px
 
 .service-description
-  font-size: 12px !important
-  font-family: "Calibri", "Helvetica Neue", Helvetica,sans-serif !important
+  padding-top: 5px
 
-#service_request_protocol_id
-  height: 50px
-  width: 250px
+/* RELATED TO THE CENTER CATALOG ELEMENTS */
+.catalog-center
+  padding-left: 0 !important
+  padding-right: 0 !important
 
-  float: right
-  text-align: center
-  font-size: 20px
+  #search
+    margin-bottom: 20px
+    .twitter-typeahead
+      width: 100%
 
-  span
-    line-height: 50px
+  #welcome-message
+    border-bottom: 1px solid black
+    margin-bottom: 10px
+    .page-header
+      margin-top: 0
+      color: $sparc-light-blue
+    h3
+      margin-top: 0
 
-.service-view
-  margin: 4px 0
-  button
-    float: right
-    font-size: 13.5px
-    padding: 3px 6px
-  .title
-    background: #E8E8E8
-    display: block
-    padding: 6px
-    height: auto
-  .name
-    display: block
-    float: left
-    max-width: 385px
-    a
-      color: #00E
-      font-size: 13.5px
-      font-family: "Calibri",Arial,sans-serif
-  .description
-    display: block
-    padding: 6px
+  #calendar-blog
+    display: inline-block
+    @media( min-width: 768px )
+      .news-container
+        padding-left: 0
+        padding-right: 8px
 
-.signin_dialog
-  margin-top: 30px
+      .catalog-calendar
+        padding-left: 8px
+        padding-right: 0
+        .calendar-event
+          display: inline-block
+          .date
+            background: $sparc-light-blue
+            border-radius: 3px
+            .day
+              font-size: 20px
+          .location
+            padding-right: 0
+            .title
+              display: inline-block
 
-.ui-accordion .ui-accordion-content h4
-  &.green-provider-odd a, &.orange-provider-odd a, &.light-blue-provider-odd a
-    color: #FFF !important
+    .col-sm-12
+      padding-left: 0
+      padding-right: 0
 
-.welcome
-  overflow: hidden
-  background-color: #fff
-  border-left: 1px outset black
-  border-right: 1px outset black
+    .panel
+      .blog-link:not(:last-child),
+      .calendar-event:not(:last-child)
+        padding-bottom: 5px
+        margin-bottom: 5px
+        border-bottom: 1px solid #eee
 
-#welcome_msg
-  text-align: right
-  padding: 6px
-  background: white url("/assets/welcome_msg_background_gradient.png") left top repeat-x
+textarea
+  resize: none
+  border: 1px solid #DDD
 
-#welcome_message
-  text-align: center
-  h1
-    font-size: 19px
-    color: #0099ff
-  #blue_description
-    color: #0099ff
-  #red_description
-    color: red
-    font-size: 120%
-  .section
-    margin-top: 10px
-  .large_section
-    font-size: 14px
-  .provider-details-view a
-    color: #0000EE !important
-
+.back-to-top
+  position: fixed
+  right: 20px
+  bottom: 20px

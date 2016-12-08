@@ -19,6 +19,8 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 SparcRails::Application.routes.draw do
+  post 'study_type/determine_study_type_note'
+
   match '/direct_link_to/:survey_code', :to => 'surveyor#create', :as => 'direct_link_survey', :via => :get
   match '/surveys/:survey_code/:response_set_code', :to => 'surveyor#destroy', :via => :delete
   mount Surveyor::Engine => "/surveys", :as => "surveyor"
@@ -46,13 +48,8 @@ SparcRails::Application.routes.draw do
                }
   end
 
-  resources :identities, only: [:show] do
-    collection do
-      post 'add_to_protocol'
-    end
-
+  resources :identities, only: [] do
     member do
-      post 'show'
       get 'approve_account'
       get 'disapprove_account'
     end
@@ -60,7 +57,9 @@ SparcRails::Application.routes.draw do
 
   resources :contact_forms, only: [:new, :create]
 
-  resources :subsidies, only: [:create, :update, :destroy]
+  resource :locked_organizations, only: [:show]
+
+  resources :subsidies, only: [:new, :create, :edit, :update, :destroy]
 
   resources :service_requests, only: [:show] do
     resources :projects, except: [:index, :show, :destroy]
@@ -78,51 +77,59 @@ SparcRails::Application.routes.draw do
       post 'navigate'
       get 'refresh_service_calendar'
       get 'save_and_exit'
+      get 'get_help'
       get 'approve_changes'
     end
 
     collection do
-      post 'ask_a_question'
       post 'feedback'
-    end
-
-    resource :service_calendars, only: [:update, :index] do
-      member do
-        get 'table'
-        get 'merged_calendar'
-      end
-      collection do
-        put 'rename_visit'
-        put 'set_day'
-        put 'set_window_before'
-        put 'set_window_after'
-        put 'update_otf_qty_and_units_per_qty'
-        put 'move_visit_position'
-        put 'show_move_visits'
-      end
     end
   end
 
   resources :protocols, except: [:index, :show, :destroy] do
     member do
+      patch :update_protocol_type
       get :approve_epic_rights
       get :push_to_epic
-    end
-  end
-
-  resources :projects, except: [:index, :show, :destroy] do
-    member do
       get :push_to_epic_status
+      get :view_details
     end
   end
 
-  resources :studies, except: [:index, :show, :destroy] do
-    resources :identities, only: [:show]
+  resources :projects, controller: :protocols, except: [:index, :show, :destroy]
 
+  resources :studies, controller: :protocols, except: [:index, :show, :destroy]
+
+  resources :associated_users, except: [:show] do
+    collection do
+      get :search_identities
+    end
+  end
+
+  resources :arms, only: [:index, :new, :create, :edit, :update, :destroy]
+
+  resource :service_calendars, only: [:update] do
     member do
-      get :push_to_epic_status
+      get 'table'
+      get 'merged_calendar'
+      get 'view_full_calendar'
+    end
+    collection do
+      get 'show_move_visits'
+      post 'move_visit_position'
+      post 'toggle_calendar_row'
+      post 'toggle_calendar_column'
     end
   end
+
+  resources :line_items, only: [:update]
+  resources :visit_groups, only: [:update]
+
+  resources :documents, only: [:index, :new, :create, :edit, :update, :destroy]
+
+  resources :notes, only: [:index, :new, :create]
+
+  resources :sub_service_requests, only: [:show]
 
   resources :catalogs, only: [] do
     member do
@@ -139,11 +146,6 @@ SparcRails::Application.routes.draw do
 
   match 'service_requests/:id/add_service/:service_id' => 'service_requests#add_service', via: [:get, :post]
   match 'service_requests/:id/remove_service/:line_item_id' => 'service_requests#remove_service', via: [:all]
-  match 'service_requests/:id/toggle_calendar_row/:line_items_visit_id' => 'service_calendars#toggle_calendar_row', via: [:post]
-  match 'service_requests/:id/toggle_calendar_column/:column_id/:arm_id' => 'service_calendars#toggle_calendar_column', via: [:get]
-  match 'service_requests/:id/delete_document/:document_id' => 'service_requests#delete_documents', via: [:all]
-  match 'service_requests/:id/edit_document/:document_id' => 'service_requests#edit_documents', via: [:get, :post]
-  match 'service_requests/:id/new_document' => 'service_requests#new_document', via: [:get, :post]
 
   ##### sparc-services routes brought in and namespaced
   namespace :catalog_manager do
@@ -205,6 +207,7 @@ SparcRails::Application.routes.draw do
     resources :associated_users, only: [:index, :new, :create, :edit, :update, :destroy] do
       collection do
         get :search_identities
+        get :update_professional_organization_form_items
       end
     end
 
@@ -221,7 +224,7 @@ SparcRails::Application.routes.draw do
       end
     end
 
-    resources :line_items_visits, only: [:destroy]
+    resources :line_items_visits, only: [:update, :destroy]
 
     resources :messages, only: [:index, :new, :create]
 
@@ -233,8 +236,6 @@ SparcRails::Application.routes.draw do
         put :destroy_line_items
       end
     end
-
-    resources :notes, only: [:index, :new, :create]
 
     resources :notifications, only: [:index, :new, :create] do
       member do
@@ -250,7 +251,6 @@ SparcRails::Application.routes.draw do
 
     resources :protocols, except: [:destroy] do
       member do
-        get :view_full_calendar
         patch :update_protocol_type
         get :display_requests
         patch :archive
@@ -266,7 +266,6 @@ SparcRails::Application.routes.draw do
       scope '/protocols', controller: :protocols, except: [:destroy] do
         resources :test, except: [:destroy] do
           member do
-            get :view_full_calendar
             patch :update_protocol_type
             get :display_requests
             patch :archive
@@ -277,33 +276,11 @@ SparcRails::Application.routes.draw do
 
     resources :protocol_filters, only: [:new, :create]
 
-    resources :services, only: [:show]
-
-    resource :service_calendars, only: [:update, :index] do
-      member do
-        get 'table'
-        get 'merged_calendar'
-        get 'view_full_calendar'
-      end
-
-      collection do
-        put 'rename_visit'
-        put 'set_day'
-        put 'set_window_before'
-        put 'set_window_after'
-        put 'update_otf_qty_and_units_per_qty'
-        put 'move_visit_position'
-        put 'show_move_visits'
-        post 'toggle_calendar_row'
-        post 'toggle_calendar_column'
-      end
-    end
-
     resources :service_requests, only: [:show]
 
     resources :studies, controller: :protocols, except: [:destroy]
 
-    resources :subsidies, except: [:index] do
+    resources :subsidies, except: [:index, :show] do
       member do
         patch :approve
       end
@@ -321,7 +298,7 @@ SparcRails::Application.routes.draw do
       end
     end
 
-    resources :visits, only: [:destroy]
+    resources :visits, only: [:update, :destroy]
 
     resources :visit_groups, only: [:new, :create, :update, :destroy] do
       collection do

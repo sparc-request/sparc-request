@@ -19,23 +19,19 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 class ContactFormsController < ApplicationController
-
   def new
     @contact_form = ContactForm.new
-    respond_to do |format|
-      format.js
-    end
+    @identity = current_identity
   end
 
   def create
     @contact_form = ContactForm.new(contact_form_params)
-    respond_to do |format|
-      if @contact_form.valid?
-        ContactMailer.contact_us_email(@contact_form).deliver_now
-        format.html { head :ok, content_type: 'text/html' }
-      else
-        format.js { render :new }
-      end
+
+    if @contact_form.valid?
+      ContactMailer.contact_us_email(@contact_form).deliver_now
+      flash.now[:success] = t(:proper)[:right_navigation][:contact][:submitted]
+    else
+      @errors = @contact_form.errors
     end
   end
 

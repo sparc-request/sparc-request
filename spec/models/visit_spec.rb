@@ -26,7 +26,7 @@ RSpec.describe 'Visit' do
   let_there_be_j
   build_service_request_with_study
 
-  let!(:arm)               { create(:arm) }
+  let!(:arm)               { create(:arm, protocol: study) }
   let!(:line_items_visit1) { create(:line_items_visit, arm_id: arm.id, line_item_id: line_item.id) }
   let!(:visit_group)       { create(:visit_group, arm_id: arm.id)}
   let!(:visit1)            { create(:visit, line_items_visit_id: line_items_visit1.id, visit_group_id: visit_group.id) }

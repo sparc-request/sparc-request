@@ -34,9 +34,9 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
 
   def update
     @organization = Organization.find(params[:id])
+    set_org_tags
     update_organization
     save_pricing_setups
-    set_org_tags
     @organization.setup_available_statuses
     @entity = @organization
     render 'catalog_manager/organizations/update'
@@ -46,7 +46,9 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
 
   def update_organization
     @attributes.delete(:id)
+    name_change = @attributes[:name] != @organization.name
     if @organization.update_attributes(@attributes)
+      @organization.update_ssr_org_name if name_change
       @organization.update_descendants_availability(@attributes[:is_available])
       flash[:notice] = "#{@organization.name} saved correctly."
     else

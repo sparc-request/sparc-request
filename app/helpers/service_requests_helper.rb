@@ -20,10 +20,20 @@
 
 module ServiceRequestsHelper
 
+  def protocol_id_display(sub_service_request, service_request)
+    if sub_service_request && sub_service_request.service_request.protocol.present?
+      " SRID: #{sub_service_request.service_request.protocol.id}"
+    elsif service_request && service_request.protocol.present?
+      " SRID: #{service_request.protocol.id}"
+    else
+      ""
+    end
+  end
+
   def current_organizations(service_request, sub_service_request)
     organizations = {}
-    
-    if sub_service_request.present? 
+
+    if sub_service_request.present?
       organizations[sub_service_request.organization_id] = sub_service_request.organization.name
     else
       service_request.sub_service_requests.each do |ssr|
@@ -32,5 +42,53 @@ module ServiceRequestsHelper
     end
 
    organizations
+  end
+
+  def organization_name_display(organization, locked)
+    header  = content_tag(:span, organization.name)
+    header += content_tag(:span, '', class: 'glyphicon glyphicon-lock locked') if locked
+
+    header
+  end
+
+  def organization_description_display(organization)
+    organization.description.present? ? raw(organization.description) : t(:proper)[:catalog][:no_description]
+  end
+
+  def ssr_name_display(sub_service_request)
+    header  = content_tag(:span, sub_service_request.organization.name + (sub_service_request.ssr_id ? " (#{sub_service_request.ssr_id})" : ""))
+    header += content_tag(:span, '', class: 'glyphicon glyphicon-lock locked') if !sub_service_request.can_be_edited?
+
+    header
+  end
+
+  # RIGHT NAVIGATION BUTTONS
+  def faq_helper
+    if USE_FAQ_LINK
+      link_to t(:proper)[:right_navigation][:faqs][:header], FAQ_URL, target: :blank, class: 'btn btn-primary btn-lg btn-block help-faq-button'
+    else
+      link_to t(:proper)[:right_navigation][:faqs][:header], get_help_service_request_path, remote: true, class: 'btn btn-primary btn-lg btn-block help-faq-button'
+    end
+  end
+
+  def feedback_helper
+    if USE_FEEDBACK_LINK
+      link_to t(:proper)[:right_navigation][:feedback][:header], FEEDBACK_LINK, target: :blank, class: 'feedback-button btn btn-primary btn-lg btn-block'
+    else
+      content_tag(:button, t(:proper)[:right_navigation][:feedback][:header], class: 'feedback-button btn btn-primary btn-lg btn-block')
+    end
+  end
+
+  def save_as_draft_button
+    link_to t(:proper)[:navigation][:bottom][:save_as_draft], save_and_exit_service_request_path, remote: true, class: 'btn btn-default'
+  end
+
+  def step_nav_button(text, color, url)
+    link_to(
+      (content_tag(:div, raw(text), class: "btn step-text step-btn-#{color}")+
+      content_tag(:div, '', class: "right-arrow right-arrow-#{color}")),
+      url,
+      class: 'step-btn'
+    )
   end
 end

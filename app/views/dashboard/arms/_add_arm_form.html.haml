@@ -20,13 +20,13 @@
 
 .modal-dialog
   .modal-content
-    = form_for arm, {remote: true, url: dashboard_arms_path(arm), html: {class: "form-horizontal", role: "form"}} do |a|
+    = form_for arm, remote: true, url: dashboard_arms_path(arm), html: {class: "form-horizontal", role: "form"} do |a|
       .modal-header
-        %button.close{type: 'button', data: {dismiss: 'modal'}}
-          %span{aria: {hidden:'true'}} &times;
+        %button.close{ type: 'button', data: { dismiss: 'modal' } }
+          %span{ aria: { hidden:'true' } } &times;
           %span.sr-only &times;
-        %h4#add_arm.modal-title.text-center
-          = t(:dashboard)[:arms][:add]
+        %h4.modal-title.text-center
+          = t(:arms)[:add]
       .modal-body
         #modal_errors
         .row
@@ -36,16 +36,19 @@
             = hidden_field_tag :service_request_id, service_request.id
             = hidden_field_tag :sub_service_request_id, sub_service_request.id
             .form-group
-              = a.label "name", t(:dashboard)[:arms][:name], class: "col-sm-4 control-label"
-              .col-sm-7= a.text_field "name", {class: 'form-control'}
+              = a.label :name, t(:arms)[:form_fields][:name], class: "col-sm-4 control-label required", title: t(:arms)[:name_tooltip], data: { toggle: 'tooltip', animation: 'false' }
+              .col-sm-7
+                = a.text_field :name, { class: 'form-control' }
             .form-group
-              = a.label "subject_count", t(:dashboard)[:arms][:subject_count], class: "col-sm-4 control-label"
-              .col-sm-7= a.text_field "subject_count", {class: 'form-control', value: ''}
+              = a.label :subject_count, t(:arms)[:form_fields][:subject_count], class: "col-sm-4 control-label required"
+              .col-sm-7
+                = a.text_field :subject_count, { class: 'form-control', value: '' }
             .form-group
-              = a.label "visit_count", t(:dashboard)[:arms][:visit_count], class: "col-sm-4 control-label"
-              .col-sm-7= a.text_field "visit_count", {class: 'form-control', value: ''}
+              = a.label :visit_count, t(:arms)[:form_fields][:visit_count], class: "col-sm-4 control-label required"
+              .col-sm-7
+                = a.text_field :visit_count, { class: 'form-control', value: '' }
       .modal-footer
         .center-block
-          %button.btn.btn-default{type: 'button', data: {dismiss: 'modal'}}
+          %button.btn.btn-default{ type: 'button', data: { dismiss: 'modal' } }
             = t(:actions)[:close]
-          %input.btn.btn-primary#add_arm_form_button{type: 'submit', value: t(:actions)[:add]}
+          %input.btn.btn-primary#add_arm_form_button{ type: 'submit', value: t(:actions)[:add] }

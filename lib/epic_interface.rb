@@ -144,7 +144,7 @@ class EpicInterface
   def send_study_creation(study)
     message = study_creation_message(study)
     call('RetrieveProtocolDefResponse', message)
-    
+
 
     # TODO: handle response from the server
   end
@@ -207,7 +207,7 @@ class EpicInterface
         emit_study_type(xml, study)
         emit_ide_number(xml, study)
         emit_cofc(xml, study)
-   
+
       }
     }
     return xml.target!
@@ -284,11 +284,10 @@ class EpicInterface
   end
 
   def emit_cofc(xml, study)
-    if study.active?
-      cofc = study.study_type_answers.where(study_type_question_id: StudyTypeQuestion.where(study_type_question_group_id: StudyTypeQuestionGroup.where(active:true).pluck(:id)).where(order:1).first.id).first.answer == true ? 'YES_COFC' : 'NO_COFC'
-    else
-      cofc = study.study_type_answers.where(study_type_question_id: StudyTypeQuestion.where(study_type_question_group_id: StudyTypeQuestionGroup.where(active:false).pluck(:id)).where(order:2).first.id).first.answer == true ? 'YES_COFC' : 'NO_COFC'
-    end
+    # Certificate of confidentiality question is the first question for 
+    # versions 2 and 3, but the second question for version 1
+    order = study.version_type == 3 || 2 ? 1 : 2
+    cofc = study.study_type_answers.where(study_type_question_id: StudyTypeQuestion.where(study_type_question_group_id: StudyTypeQuestionGroup.where(version: study.version_type).pluck(:id)).where(order:order).first.id).first.answer == true ? 'YES_COFC' : 'NO_COFC'
 
     xml.subjectOf(typeCode: 'SUBJ') {
       xml.studyCharacteristic(classCode: 'OBS', moodCode: 'EVN') {
@@ -300,9 +299,9 @@ class EpicInterface
 
   def emit_study_type(xml, study)
 
-    study_type = Portal::StudyTypeFinder.new(study).study_type
+    study_type = StudyTypeFinder.new(study).study_type
 
-    if study_type 
+    if study_type
       xml.subjectOf(typeCode: 'SUBJ') {
         xml.studyCharacteristic(classCode: 'OBS', moodCode: 'EVN') {
           xml.code(code: 'STUDYTYPE')
@@ -311,15 +310,15 @@ class EpicInterface
       }
     end
   end
-  
-  def emit_ide_number(xml, study)
-    ide_number = study.investigational_products_info.try(:ide_number)
 
-    if study.investigational_products_info && !ide_number.blank? then
+  def emit_ide_number(xml, study)
+    inv_device_number = study.investigational_products_info.try(:inv_device_number)
+
+    if study.investigational_products_info && !inv_device_number.blank? then
       xml.subjectOf(typeCode: 'SUBJ') {
         xml.studyCharacteristic(classCode: 'OBS', moodCode: 'EVN') {
           xml.code(code: 'RGFT2')
-          xml.value(value: ide_number)
+          xml.value(value: inv_device_number)
         }
       }
     end

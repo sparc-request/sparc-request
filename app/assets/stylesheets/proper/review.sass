@@ -17,91 +17,60 @@
 /* DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS*/
 /* INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR*/
 /* TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.*/
+@import 'proper/colors'
+#review-page
+  .page-header
+    h3
+      margin: 0
 
-// ReviewView
-
-.notes table thead tr th
-  text-align: left
-
-.project-information
-  th, td
-    text-align: left
-    padding: 4px
-    border: 1px solid #E8E8E8
-
-.project-information, .project-roles, .service-requests
-  width: 100%
-  border: 1px solid #E8E8E8
-  border-collapse: collapse
-  margin-bottom: 20px
-
-.project-information th.light-blue-provider, .service-requests th.green-provider, .project-roles th.light-blue-provider
-  color: #fff
-
-.project-roles
-  th, td
-    text-align: left
-    padding: 4px
-    border: 1px solid #E8E8E8
-
-.review-bottom-navigation
-  div
-    height: 36px
-    vertical-align: middle
-  a
-    color: #fff
-    font-size: 18px
-    line-height: 36px
-
-.review-details
-  margin-left: 10px
-  .documents .light-blue-provider, .notes .light-blue-provider
-    color: white
-  table
-    width: 924px
-    border: 1px solid #E8E8E8
-    border-collapse: collapse
-    th
-      font-weight: bold
-      border: 1px solid #E8E8E8 !important
-      width: 298px
-      padding: 5px
-    td
-      border: 1px solid #E8E8E8 !important
-      width: 298px
-      padding: 5px
-      font-weight: normal
-    th.no-right-border
-      border-right: 1px solid #E8E8E8
-    tr
-      &.total-row td
-        font-weight: bold
-        &.total-description
-          text-align: left
-      td.grey
-        background-color: #ccc
-  .notes
-    margin-bottom: 20px
-    margin-top: 20px
-    pre
+  .review-instructions
+    display: table
+    margin: 0 auto
+    ol
+      list-style-position: inside
+      padding: 0
+      margin: 0
       font-weight: bold
 
-.review-details #service_calendar_container table
-  td, th
-    width: 82px !important
+  .protocol-information, .authorized-users, .documents, .notes, .totals, .form-group
+    display: inline-block
+    width: 100%
 
-.review_instructions
-  border: 1px solid #000
-  list-style-type: decimal
-  margin: -10px auto 10px auto
-  font-weight: bold
-  padding: 10px
-  width: 50%
+    thead
+      background: $sparc-red !important
 
-.service-requests
-  th, td
-    text-align: left
-    padding: 4px
-    border: 1px solid #E8E8E8
+  .protocol-information
+    .page-header
+      margin-top: 0px
+    .panel
+      border-color: $sparc-red !important
+      .panel-heading
+        background: $sparc-red !important
+        border: 0
+    #protocol-summary
+      .row
+        margin: 0
+      .row:not(:last-child)
+        padding-bottom: 3px
+        border-bottom: 1px solid #EEE
+        margin-bottom: 3px
 
+  .authorized-users, .documents, .notes
+    .page-header
+      margin-bottom: 0
 
+  .calendar-container
+    display: inline-block
+    .panel
+      border-color: $sparc-red !important
+      .panel-heading
+        background: $sparc-red !important
+        color: white
+        border: 0
+    .bg-primary
+      background: $sparc-red !important
+
+  .totals
+    .form-group:not(:last-child)
+      padding-bottom: 15px
+      border-bottom: 1px solid #EEE

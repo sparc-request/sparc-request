@@ -17,27 +17,21 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+= javascript_include_tag 'confirmation'
 
-= stylesheet_link_tag 'hover_effect'
-
-- if SYSTEM_SATISFACTION_SURVEY != false
-  = javascript_include_tag 'system_satisfaction'
-= form_tag navigate_service_request_path(@service_request), {id: 'navigation_form', class: 'root-view', multipart: true} do
-  = hidden_field_tag :location, ''
-  = hidden_field_tag :validates, ''
-  = render partial: 'steps'
-  .grid_12
-    .view-anchor
-      .confirmation-view
-        .confirmation-details
-          %p.instructions
-            = t(:sr_confirmation)[:instructions]
-          = render partial: 'confirmation_details'
-          - if USE_EPIC and not QUEUE_EPIC
-            = render partial: 'protocols/push_to_epic'
-          .links
-            .confirmation-button.button-hover
-              = link_to t(:sr_confirmation)[:download_button], service_request_path(format: :xlsx)
-            .confirmation-button.button-hover
-              = link_to t(:sr_confirmation)[:portal_button], DASHBOARD_LINK, class: "user-portal"
-    .footer
+= render '/service_requests/navigation/steps', service_request: @service_request, step: @step_text, css_class: @css_class
+.col-sm-12.body-container#confirmation-page
+  = form_tag navigate_service_request_path(@service_request) do
+    = hidden_field_tag :location, ''
+    = hidden_field_tag :validates, ''
+    .form-group
+      %p.instructions
+        = t(:sr_confirmation)[:instructions]
+    .form-group
+      = render 'service_requests/confirmation/confirmation_details', service_request: @service_request
+    - if USE_EPIC && !QUEUE_EPIC
+      .form-group
+        = render 'protocols/push_to_epic', protocol: @protocol
+    .form-group.text-center
+      = link_to t(:proper)[:confirmation][:download_request], service_request_path(format: :xlsx), class: 'btn btn-lg btn-success'
+      = link_to t(:proper)[:confirmation][:to_dashboard], DASHBOARD_LINK, class: 'btn btn-lg btn-success'

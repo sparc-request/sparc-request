@@ -1,0 +1,60 @@
+# Copyright © 2011 MUSC Foundation for Research Development
+# All rights reserved.
+
+# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+# disclaimer in the documentation and/or other materials provided with the distribution.
+
+# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+# derived from this software without specific prior written permission.
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+en:
+  additional_details:
+    additional_details_title: 'Additional Details'
+    document_page_header: 'Additional Detail Submissions'
+    add: 'Add Additional Details'
+    preview_title: 'Additional Detail Survey Preview'
+    close_preview: 'Close'
+    form_builder_title: 'Additional Details Form Builder'
+    description_placeholder: 'Description (optional)'
+    add_options: 'Add Options'
+    remove_option: 'Remove Option'
+    remove_question: 'Remove Question'
+    add_question: 'Add another Question'
+    view_preview: 'View Preview'
+    return_to_questionnaires: 'Return to Questionnaires'
+    questionnaire_index_title: 'Additional Detail Forms'
+    create_new_questionnaire: 'Create new'
+    form_name: 'Form Name'
+    service_name: 'Service Name'
+    active: 'Active'
+    activate: 'Activate'
+    edit_questionnaire: 'Edit'
+    delete_questionnaire: 'Delete'
+    disable_questionnaire: 'Disable Questionnaire'
+    activate_questionnaire: 'Activate Questionnaire'
+    questionnaire_submission: 'Questionnaire Submission'
+    yes_label: 'Yes'
+    no_label: 'No'
+    dashboard_complete_details: "Please complete the required Additional Details for %{service_name}"
+    take_additional_detail_survey: "Take Additional Details Survey for %{service_name}"
+    complete_or_view: 'Complete/View'
+    completed: 'Completed'
+    document_complete_details: 'Complete Additional Details'
+
+    submissions:
+      header: "Additional Detail Submissions"
+      table_fields:
+        id: "ID"
+        service: "Service Name"
+      none: "No Records Found"

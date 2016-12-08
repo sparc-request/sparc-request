@@ -2,7 +2,7 @@ $ ->
   $(document).on 'click', '.delete-submission', ->
     id = $(this).data('id')
     serviceId = $(this).data('service-id')
-    srId = $(this).data('sr-id')
+    lineItemId = $(this).data('line-item-id')
     protocolId = $(this).data('protocol-id')
     swal {
       title: 'Are you sure?'
@@ -13,10 +13,10 @@ $ ->
       confirmButtonText: 'Delete'
       closeOnConfirm: true
     }, ->
-      if srId != undefined && protocolId != undefined
+      if lineItemId != undefined && protocolId != undefined
         $.ajax
           type: 'DELETE'
-          url: "/services/#{serviceId}/additional_details/submissions/#{id}?protocol_id=#{protocolId}&sr_id=#{srId}"
+          url: "/services/#{serviceId}/additional_details/submissions/#{id}?protocol_id=#{protocolId}&line_item_id=#{lineItemId}"
           success: ->
             swal('Deleted', 'Submission Deleted', "success")
       else

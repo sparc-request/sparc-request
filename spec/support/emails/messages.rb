@@ -21,12 +21,22 @@
 module EmailHelpers
   # Email messages based on the action (status:  submitted, get_a_cost_estimate, ***more to come)
 
+  #### REQUEST AMENDMENT MESSAGE ####
+  def request_amendment_intro(mail_response)
+    # Expected message:  
+    # 'Services have been added or deleted in SPARCRequest and is awaiting your review in SPARCDashboard.'
+    expect(mail_response).to have_xpath("//p[normalize-space(text()) = 'Services have been added or deleted in SPARCRequest and is awaiting your review in']")
+    expect(mail_response).to have_xpath "//p//a[@href='/dashboard/protocols/#{service_request.protocol.id}'][text()= 'SPARCDashboard.']/@href"
+    expect(mail_response).to have_xpath("//p[normalize-space(text()) = 'A list of requested services is attached.']")
+    expect(mail_response).to have_xpath("//p[normalize-space(text()) = 'Please contact the SUCCESS Center at (843) 792-8300 or success@musc.edu for assistance with this process or with any questions you may have.']")
+  end
+
   #### DELETE ALL SERVICES MESSAGE ####
   def deleted_all_services_intro_for_service_providers(mail_response)
     # Expected message:  
     # 'All services have been deleted in SPARCRequest for the Study 
     # below to which you have been granted access.'
-    expect(mail_response).to have_xpath("//p[normalize-space(text()) = 'All services have been deleted in SPARCRequest for the Project below to which you have been granted access.']")
+    expect(mail_response).to have_xpath("//p[normalize-space(text()) = 'All services have been deleted in SPARCRequest for the #{service_request.protocol.type} below to which you have been granted access.']")
     expect(mail_response).not_to have_xpath("//p[normalize-space(text()) = 'A list of requested services is attached.']")
     expect(mail_response).to have_xpath("//p[normalize-space(text()) = 'Please contact the SUCCESS Center at (843) 792-8300 or success@musc.edu for assistance with this process or with any questions you may have.']")
   end

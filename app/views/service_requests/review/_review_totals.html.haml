@@ -18,20 +18,20 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-%table.service_calendar.review_totals
-  %tr.section_header
-    %tr.totals_section
-      %td{:colspan => 7}
-      %td.total_cell= t(:sr_review)[:calendar][:totals][:direct_cost]
-      %td.total_cell{:id => 'grand_total_direct'}= display_grand_total_direct_costs @service_request, @line_items
-
-    - if USE_INDIRECT_COST
-      %tr.totals_section
-        %td{:colspan => 7}
-        %td.total_cell= t(:sr_review)[:calendar][:totals][:indirect_cost]
-        %td.total_cell{:id => 'grand_total_indirect'}= display_grand_total_indirect_costs @service_request, @line_items
-
-    %tr.totals_section
-      %td{:colspan => 7}
-      %td.total_cell= t(:sr_review)[:calendar][:totals][:grand]
-      %td.total_cell{:id => 'grand_total'}= display_grand_total @service_request, @line_items
+- line_items = sub_service_request ? sub_service_request.line_items : service_request.line_items
+.form-group
+  .col-sm-3
+    = t(:proper)[:review][:total_direct]
+  .col-sm-9
+    = display_grand_total_direct_costs(service_request, line_items)
+- if USE_INDIRECT_COST
+  .form-group
+    .col-sm-3
+      = t(:proper)[:review][:total_indirect]
+    .col-sm-9
+      = display_grand_total_indirect_costs(service_request, line_items)
+.form-group
+  .col-sm-3
+    = t(:proper)[:review][:grand_total]
+  .col-sm-9
+    = display_grand_total(service_request, line_items)

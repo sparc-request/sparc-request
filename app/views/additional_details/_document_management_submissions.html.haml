@@ -1,0 +1,44 @@
+.page-header
+  %h3
+    = t(:additional_details)[:document_page_header]
+%table.table.table-striped.table-bordered.table-hover
+  %thead.primary-header.document-submissions-header
+    %tr
+      %th.text-center
+        = t(:additional_details)[:service_name]
+      %th.text-center
+        = t(:additional_details)[:complete_or_view]
+      %th.text-center
+        = t(:additional_details)[:completed]
+      %th.text-center
+        = t(:additional_details)[:edit_questionnaire]
+      %th.text-center
+        = t(:additional_details)[:delete_questionnaire]
+  %tbody
+    - service_request.additional_detail_services.each do |service|
+      %tr
+        %td
+          = service.name
+        %td
+          .text-center
+            - if service.identity_submission(current_identity).present?
+              = link_to service_additional_details_submission_path(service, service.identity_submission(current_identity).first),
+                remote: true, class: 'btn btn-primary' do
+                %span.glyphicon.glyphicon-search
+            - else
+              = link_to new_service_additional_details_submission_path(service, protocol_id: @service_request.protocol_id, sr_id: @service_request.id), remote: true, class: 'btn btn-primary' do
+                = t(:additional_details)[:document_complete_details]
+                %span.glyphicon.glyphicon-modal-window
+        %td
+          .text-center
+            = service.identity_submission(current_identity).present? ? "True" : "False"
+        %td
+          .text-center
+            - if service.identity_submission(current_identity).present?
+              = link_to edit_service_additional_details_submission_path(service, service.identity_submission(current_identity).first, sr_id: @service_request.id), remote: true, class: 'btn btn-warning' do
+                %span.glyphicon.glyphicon-edit
+        %td
+          .text-center
+            - if service.identity_submission(current_identity).present?
+              = link_to "javascript:void(0);", class: 'btn btn-danger delete-submission', data: { id: "#{service.identity_submission(current_identity).first.id}", service_id: "#{service.id}", sr_id: "#{@service_request.id}", protocol_id: "#{@service_request.protocol_id}" } do
+                %span.glyphicon.glyphicon-remove

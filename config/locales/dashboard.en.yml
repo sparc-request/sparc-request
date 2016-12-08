@@ -357,7 +357,6 @@ en:
     subsidies:
       header: "Subsidy Information"
 
-
     ##################
     #  VISIT GROUPS  #
     ##################
@@ -376,6 +375,6 @@ en:
       visit: "Visit:"
       name: "Name:"
       day: "Day:"
-      position: "Position:"
+      position: "Insert into Position:"
       window_before: "Window Before:"
       window_after: "Window After:"

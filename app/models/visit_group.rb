@@ -64,7 +64,7 @@ class VisitGroup < ActiveRecord::Base
   end
 
   def insertion_name
-    "insert before " + name
+    "Before #{name}" + (day.present? ? " (Day #{day})" : "")
   end
 
   ### audit reporting methods ###

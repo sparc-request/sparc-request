@@ -36,7 +36,7 @@
             .form-group
               = label_tag :position, t(:proper)[:service_calendar][:move_visit][:position], class: 'col-lg-3 control-label'
               .col-lg-7
-                = select_tag :position, options_from_collection_for_select(arm.visit_groups, 'position', 'insertion_name'), include_blank: 'add as last', class: 'form-control selectpicker'
+                = select_tag :position, options_from_collection_for_select(arm.visit_groups, 'position', 'insertion_name') + content_tag(:option, t(:visit_groups)[:prompts][:add_as_last], value: "#{arm.visit_groups.count+1}"), class: 'form-control selectpicker'
       .modal-footer
         .center-block
           %button.btn.btn-default{ type: 'button', data: { dismiss: 'modal' } }

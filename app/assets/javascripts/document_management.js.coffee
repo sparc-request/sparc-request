@@ -42,7 +42,7 @@ $(document).ready ->
       type: 'GET'
       url: "/documents/#{document_id}/edit"
       data:
-          service_request_id: getSRId()
+        service_request_id: getSRId()
 
   $(document).on 'click', '.document-delete', ->
     row_index   = $(this).parents('tr').data('index')

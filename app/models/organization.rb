@@ -107,6 +107,7 @@ class Organization < ActiveRecord::Base
   end
 
   def update_ssr_org_name
+    self.org_children.each{ |org| org.update_ssr_org_name }
     self.sub_service_requests.each{ |ssr| ssr.update_org_tree }
   end
 

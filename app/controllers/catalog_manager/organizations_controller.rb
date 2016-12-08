@@ -46,7 +46,7 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
 
   def update_organization
     @attributes.delete(:id)
-    name_change = @attributes[:name] != @organization.name
+    name_change = @attributes[:name] != @organization.name || @attributes[:abbreviation] != @organization.abbreviation
     if @organization.update_attributes(@attributes)
       @organization.update_ssr_org_name if name_change
       @organization.update_descendants_availability(@attributes[:is_available])

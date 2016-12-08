@@ -69,7 +69,6 @@ RSpec.describe Dashboard::ProtocolsController do
 
         it 'should populate Protocol for edit' do
           expect(@protocol.study_type_question_group_id).to eq(@study_type_question_group_version_3.id)
-          expect(@protocol).to have_received(:populate_for_edit)
         end
 
         it { is_expected.to render_template "dashboard/protocols/update_protocol_type" }

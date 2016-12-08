@@ -22,3 +22,4 @@ $(".tab-content [data-partial-name='<%= escape_javascript(@partial_name) %>']").
 $("li.ss_tab.active a").click()
 $(".bootstrap_table").bootstrapTable()
 $(".datetimepicker").datetimepicker(format: 'MM/DD/YYYY', allowInputToggle: true)
+$(".new-notification").selectpicker()

@@ -18,37 +18,32 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#= require navigation
-#= require cart
+require 'rails_helper'
 
-$(document).ready ->
-  $(document).on 'click', '#new-arm-button', ->
-    $.ajax
-      type: 'get'
-      url: '/arms/new'
-      data:
-        protocol_id: $(this).data('protocol-id')
-    return false
+RSpec.describe "User views Status History tab", js: true do
+  let_there_be_lane
+  fake_login_for_each_test
 
-  $(document).on 'click', '.edit-arm-button', ->
-    arm_id = $(this).data('arm-id')
-    $.ajax
-      type: 'get'
-      url: "/arms/#{arm_id}/edit"
+  scenario "and changes the status of the SSR to a new status" do
+    organization    = create(:organization, process_ssrs: true)
+    super_user      = create(:super_user,
+                              identity_id: jug2.id,
+                              organization_id: organization.id)
+    protocol        = create(:protocol_without_validations, primary_pi: jug2)
+    service_request = create(:service_request_without_validations, protocol: protocol)
+    ssr             = create(:sub_service_request_without_validations,
+                              organization: organization,
+                              service_request: service_request,
+                              status: 'draft')
+    survey          = create(:survey,
+                              access_code: 'sctr-customer-satisfaction-survey')
 
-  $(document).on 'click', '#edit-arm-form-button', ->
-    $(this).attr('disabled','disabled')
-    $(this).closest('form').submit()
+    visit dashboard_sub_service_request_path(ssr)
+    wait_for_javascript_to_finish
 
-  $(document).on 'click', '.delete-arm-button', ->
-    if confirm(I18n['arms']['delete_warning'])
-      arm_id = $(this).data('arm-id')
-      $.ajax
-        type: 'delete'
-        url: "/arms/#{arm_id}"
+    bootstrap_select("#sub_service_request_status", "On Hold")
 
-  $('#arms-table').on 'all.bs.table', ->
-    $('.screening-info').tooltip()
+    expect(PastStatus.first.changed_by_id).to eq(jug2.id)
+  end
 
-  $('#arms-table').on 'all.bs.table', ->
-    $('.name-validation').tooltip()
+end

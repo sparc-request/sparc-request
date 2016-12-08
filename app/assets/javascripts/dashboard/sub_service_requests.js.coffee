@@ -35,7 +35,7 @@ $(document).ready ->
     status = $(this).val()
     data = 'sub_service_request' : 'status' : status
     $.ajax
-      type: 'PATCH'
+      type: 'PUT'
       url: "/dashboard/sub_service_requests/#{ssr_id}"
       data: data
 

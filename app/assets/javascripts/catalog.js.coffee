@@ -33,7 +33,6 @@ $(document).ready ->
     else if $(this).hasClass('program-link')
       $('.program-link').removeClass('clicked')
     $(this).addClass('clicked')
-    
     id    = $(this).data('id')
     data  = process_ssr_found : $(this).data('process-ssr-found') 
     $.ajax
@@ -42,8 +41,12 @@ $(document).ready ->
       url: "/catalogs/#{id}/update_description"
 
   $(document).on 'click', '.program-link.locked-program', ->
-    $('#modal_place').html($('#locked-organization-modal').html())
-    $('#modal_place').modal('show')
+    organizationId = $(this).data('id')
+    protocolId = $('.protocol-id').val()
+    serviceRequestId = $('.service-request-id').val()
+    $.ajax
+      type: 'GET'
+      url: "/locked_organizations?org_id=#{organizationId}&protocol_id=#{protocolId}&service_request_id=#{serviceRequestId}"
 
   $(document).on 'click', '.core-header', ->
     $('.service-description').addClass('hidden')
@@ -81,10 +84,11 @@ $(document).ready ->
                                           <span><strong>Abbreviation: {{abbreviation}}</strong></span><br>
                                           <span><strong>CPT Code: {{cpt_code}}</strong></span>
                                         </button>')
+        notFound: '<div class="tt-suggestion">No Results</div>'
       }
     }
   ).on('typeahead:render', (event, a, b, c) ->
-    $('[data-toggle="tooltip"]').tooltip()
+    $('[data-toggle="tooltip"]').tooltip({ 'delay' : { show: 1000, hide: 500 } })
   ).on('typeahead:select', (event, suggestion) ->
     srid = $(this).data('srid')
     id = suggestion.value
@@ -97,9 +101,7 @@ $(document).ready ->
   $(document).on 'click', '.submit-request-button', ->
     signed_in = parseInt($('#signed_in').val())
     if signed_in == 0
-      $('#modal_place').html($('#login-required-modal').html())
-      $('#modal_place').modal('show')
-      $('.modal #login-required-modal').removeClass('hidden')
+      window.location.replace('/identities/sign_in')
       return false
     else if $('#line_item_count').val() <= 0
       $('#modal_place').html($('#submit-error-modal').html())
@@ -109,7 +111,6 @@ $(document).ready ->
 
   $(window).scroll ->
     if $(this).scrollTop() > 50
-      console.log('here')
       $('.back-to-top').removeClass('hidden')
     else
       $('.back-to-top').addClass('hidden')

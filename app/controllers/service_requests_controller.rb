@@ -510,7 +510,7 @@ class ServiceRequestsController < ApplicationController
   def send_notifications(service_request, sub_service_requests, send_request_amendment_and_not_initial= nil)
     # If user has added a new service related to a new ssr and edited an existing ssr, 
     # we only want to send a request amendment email and not an initial submit email
-    send_request_amendment_and_not_initial ? '' : send_user_notifications(service_request, request_amendment: false)
+    send_user_notifications(service_request, request_amendment: false) unless send_request_amendment_and_not_initial
     send_admin_notifications(sub_service_requests, request_amendment: false)
     send_service_provider_notifications(sub_service_requests, request_amendment: false)
   end
@@ -519,7 +519,6 @@ class ServiceRequestsController < ApplicationController
     # Does an approval need to be created?  Check that the user
     # submitting has approve rights.
     audit_report = request_amendment ? service_request.audit_report(current_user, service_request.previous_submitted_at.utc, Time.now.utc) : nil
-
     @service_list_false = service_request.service_list(false)
     @service_list_true = service_request.service_list(true)
     @line_items = @service_request.line_items

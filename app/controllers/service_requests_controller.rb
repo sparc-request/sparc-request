@@ -492,7 +492,10 @@ class ServiceRequestsController < ApplicationController
     end
 
     destroyed_or_created_ssr = [@service_request.deleted_ssrs_since_previous_submission, @service_request.created_ssrs_since_previous_submission].flatten
-
+    # If an existing SSR has had services added/deleted, send a request amendment 
+    # (If an SSR has been deleted or created, this is also seen in the email)
+    # The destroyed_or_created_ssr determines whether authorized users need a request amendment email 
+    # regarding the destroyed or newly created SSR
     if !request_amendment_ssrs.empty?
       send_request_amendment(request_amendment_ssrs)
     elsif !destroyed_or_created_ssr.empty?
@@ -641,7 +644,6 @@ class ServiceRequestsController < ApplicationController
       requests.each { |ssr| ssr.update_attributes(submitted_at: Time.now) }
     end
 
-    requests.each { |ssr| ssr.update_past_status }
     service_request.reload
     to_notify
   end

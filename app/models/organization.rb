@@ -107,8 +107,7 @@ class Organization < ActiveRecord::Base
   end
 
   def update_ssr_org_name
-    SubServiceRequest.where(organization: self.all_child_organizations).each(:&update_org_tree)
-    self.sub_service_requests.each{ |ssr| ssr.update_org_tree }
+    SubServiceRequest.where( organization: self.all_child_organizations<<self ).each(&:update_org_tree)
   end
 
   def service_providers_lookup

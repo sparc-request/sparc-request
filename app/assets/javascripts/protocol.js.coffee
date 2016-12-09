@@ -38,4 +38,6 @@ $(document).ready ->
     $.ajax
       type: 'get'
       url: "/protocols/#{protocol_id}/view_details"
+      data:
+        service_request_id: $("input[name='service_request_id']").val()
     return false

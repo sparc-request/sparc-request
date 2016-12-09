@@ -29,7 +29,7 @@ class ApplicationController < ActionController::Base
   protected
 
   def after_sign_in_path_for(resource)
-    stored_location_for(resource) || "/service_requests/#{session[:service_request_id]}/catalog" || root_path
+    stored_location_for(resource) || root_path
   end
 
   def set_highlighted_link  # default value, override inside controllers
@@ -88,34 +88,11 @@ class ApplicationController < ActionController::Base
     @line_items_count = nil
     @sub_service_requests = {}
 
-    if params[:edit_original]
-      # If editing the original service request, we delete the sub
-      # service request id (remember, a sub service request is a service
-      # request that has been split out).
-      session.delete(:sub_service_request_id)
-    end
-
     if params[:controller] == 'service_requests'
-      if params[:action] == 'catalog' and params[:id].nil?
-        # Catalog is the main service requests page; this is where the
-        # service request is first created.  We will create the service
-        # request in a moment.
-        #
-        # If the "go back" button is used, then params[:id] will be
-        # non-nil, and we will not create a new service request.
-        session.delete(:service_request_id)
-        session.delete(:sub_service_request_id)
-      else
-        # For all other service request controller actions, we go ahead
-        # and set the cookie.
-        session[:service_request_id] = params[:id] if params[:id]
-        session[:sub_service_request_id] = params[:sub_service_request_id] if params[:sub_service_request_id]
-      end
-
-      if session[:service_request_id]
+      if ServiceRequest.exists?(id: params[:id])
         # If the cookie is non-nil, then lookup the service request.  If
         # the service request is not found, display an error.
-        use_existing_service_request
+        use_existing_service_request(params[:id])
         validate_existing_service_request
       elsif params[:from_portal]
         create_or_use_request_from_portal(params)
@@ -123,21 +100,19 @@ class ApplicationController < ActionController::Base
         # If the cookie is nil (as with visiting the main catalog for
         # the first time), then create a new service request.
         create_new_service_request
-        session.delete(:from_portal)
       end
-    elsif params[:controller] == 'devise/sessions'
-      if session[:service_request_id]
-        use_existing_service_request
+    elsif params[:controller] == 'devise/sessions' || params[:controller] == 'identities/sessions'
+      if params[:id]
+        use_existing_service_request(params[:id])
       else
         @service_request = ServiceRequest.new(status: 'first_draft')
         @service_request.save(validate: false)
         @line_items_count = []
-        session[:service_request_id] = @service_request.id
       end
     else
       # For controllers other than the service requests controller, we
       # look up the service request, but do not display any errors.
-      use_existing_service_request
+      use_existing_service_request(params[:service_request_id] || params[:srid])
     end
   end
 
@@ -151,10 +126,6 @@ class ApplicationController < ActionController::Base
       @line_items_count = @service_request.try(:line_items).try(:count)
       @sub_service_requests = @service_request.cart_sub_service_requests
       @sub_service_request = @service_request.sub_service_requests.last
-      session[:service_request_id] = @service_request.id
-      if @sub_service_request
-        session[:sub_service_request_id] = @sub_service_request.id
-      end
     else
       create_new_service_request(true)
     end
@@ -162,10 +133,10 @@ class ApplicationController < ActionController::Base
 
   # Set @service_request, @sub_service_request, and @line_items_count from the
   # ids stored in the session.
-  def use_existing_service_request
-    @service_request = ServiceRequest.find session[:service_request_id]
-    if session[:sub_service_request_id]
-      @sub_service_request = @service_request.sub_service_requests.find session[:sub_service_request_id]
+  def use_existing_service_request(id)
+    @service_request = ServiceRequest.find(id)
+    if params[:sub_service_request_id]
+      @sub_service_request = @service_request.sub_service_requests.find params[:sub_service_request_id]
       @line_items_count = @sub_service_request.try(:line_items).try(:count)
     else
       @line_items_count = @service_request.try(:line_items).try(:count)
@@ -184,7 +155,7 @@ class ApplicationController < ActionController::Base
     if @service_request.nil?
       authorization_error "The service request you are trying to access can not be found.",
                           "SR#{params[:id]}"
-    elsif session[:sub_service_request_id] and @sub_service_request.nil?
+    elsif params[:sub_service_request_id] and @sub_service_request.nil?
       authorization_error "The service request you are trying to access can not be found.",
                           "SSR#{params[:sub_service_request_id]}"
     end
@@ -206,7 +177,6 @@ class ApplicationController < ActionController::Base
     end
 
     @service_request.save(validate: false)
-    session[:service_request_id] = @service_request.id
     redirect_to catalog_service_request_path(@service_request)
   end
 
@@ -231,10 +201,10 @@ class ApplicationController < ActionController::Base
 
     if @sub_service_request.nil?
       authorization_error "The service request you are trying to access is not editable.",
-                          "SR#{session[:service_request_id]}"
+                          "SR#{params[:id]}"
     else
       authorization_error "The service request you are trying to access is not editable.",
-                          "SSR#{session[:sub_service_request_id]}"
+                          "SSR#{params[:sub_service_request_id]}"
     end
   end
 

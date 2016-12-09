@@ -36,11 +36,10 @@ RSpec.describe ArmsController, type: :controller do
     it 'should assign @protocol' do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
-      
-      session[:service_request_id] = sr.id
 
       xhr :get, :new, {
-        protocol_id: protocol.id
+        protocol_id: protocol.id,
+        service_request_id: sr.id
       }
 
       expect(assigns(:protocol)).to eq(protocol)
@@ -49,11 +48,10 @@ RSpec.describe ArmsController, type: :controller do
     it 'should assign @arm' do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
-      
-      session[:service_request_id] = sr.id
 
       xhr :get, :new, {
-        protocol_id: protocol.id
+        protocol_id: protocol.id,
+        service_request_id: sr.id
       }
 
       expect(assigns(:arm).class).to eq(Arm)
@@ -63,11 +61,10 @@ RSpec.describe ArmsController, type: :controller do
     it 'should assign @header_text' do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
-      
-      session[:service_request_id] = sr.id
 
       xhr :get, :new, {
-        protocol_id: protocol.id
+        protocol_id: protocol.id,
+        service_request_id: sr.id
       }
 
       expect(assigns(:header_text)).to be
@@ -76,11 +73,10 @@ RSpec.describe ArmsController, type: :controller do
     it 'should assign @path' do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
-      
-      session[:service_request_id] = sr.id
 
       xhr :get, :new, {
-        protocol_id: protocol.id
+        protocol_id: protocol.id,
+        service_request_id: sr.id
       }
 
       expect(assigns(:path)).to eq(arms_path(assigns(:arm)))
@@ -89,24 +85,22 @@ RSpec.describe ArmsController, type: :controller do
     it 'should render template' do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
-      
-      session[:service_request_id] = sr.id
 
       xhr :get, :new, {
-        protocol_id: protocol.id
+        protocol_id: protocol.id,
+        service_request_id: sr.id
       }
 
-      expect(controller).to render_template(:new)      
+      expect(controller).to render_template(:new)
     end
 
     it 'should respond ok' do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
-      
-      session[:service_request_id] = sr.id
 
       xhr :get, :new, {
-        protocol_id: protocol.id
+        protocol_id: protocol.id,
+        service_request_id: sr.id
       }
 
       expect(controller).to respond_with(:ok)

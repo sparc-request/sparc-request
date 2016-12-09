@@ -21,10 +21,11 @@
 
 #protocol-form-display
   = form_for protocol, as: :protocol, remote: true, html: { class: 'form-horizontal', autocomplete: 'off' } do |form|
+    -# TODO rename :srid to :service_request_id in controller action
+    = hidden_field_tag :service_request_id, service_request.id
     = hidden_field_tag :srid, service_request.id
     = form.hidden_field :requester_id
     = form.hidden_field :type
-
     - if protocol.type.capitalize == "Study"
       .edit-study-view.container-fluid
         .row.user-edit-protocol-view

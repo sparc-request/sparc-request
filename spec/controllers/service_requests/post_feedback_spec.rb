@@ -32,8 +32,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
         sr       = create(:service_request_without_validations, protocol: protocol)
         feedback = { message: 'hi', email: 'asd123@musc.edu' }
 
-        session[:service_request_id] = sr.id
-
         expect {
           xhr :post, :feedback, {
             id: sr.id,
@@ -49,8 +47,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
         sr       = create(:service_request_without_validations, protocol: protocol)
         feedback = { message: '', email: '' }
 
-        session[:service_request_id] = sr.id
-
         xhr :post, :feedback, {
           id: sr.id
         }
@@ -64,8 +60,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
       sr       = create(:service_request_without_validations, protocol: protocol)
       feedback = { message: 'hi', email: 'asd123@musc.edu' }
 
-      session[:service_request_id] = sr.id
-
       xhr :post, :feedback, {
         id: sr.id
       }
@@ -77,8 +71,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
       feedback = { message: 'hi', email: 'asd123@musc.edu' }
-
-      session[:service_request_id] = sr.id
 
       xhr :post, :feedback, {
         id: sr.id

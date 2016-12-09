@@ -32,33 +32,5 @@ RSpec.describe AssociatedUsersController, type: :controller do
     it 'should call before_filter #authorize_identity' do
       expect(before_filters.include?(:authorize_identity)).to eq(true)
     end
-
-    # it 'should return JSON' do
-    #   protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
-    #   sr        = create(:service_request_without_validations, protocol: protocol)
-
-    #   session[:service_request_id] = sr.id
-
-    #   xhr :get, :search_identities, {
-    #     term: 'Bob'
-    #   }
-      
-    #   json = JSON.parse(response.body)
-    # end
-
-    # it 'should respond ok' do
-    #   protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
-    #   sr        = create(:service_request_without_validations, protocol: protocol)
-
-    #   session[:service_request_id] = sr.id
-
-    #   xhr :get, :search_identities, {
-    #     term: 'Bob'
-    #   }
-      
-    #   json = JSON.parse(response.body)
-
-    #   expect(controller).to respond_with(:ok)
-    # end
   end
 end

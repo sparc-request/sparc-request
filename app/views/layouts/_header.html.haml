@@ -29,4 +29,4 @@
           = I18n.t('proper.navbar.logged_in', email: current_user.email)
         = link_to t(:proper)[:navbar][:logout], destroy_identity_session_path, method: :delete, class: 'btn btn-warning'
       - else
-        = link_to t(:proper)[:navbar][:login], new_identity_session_path, class: 'btn btn-primary'
+        = link_to t(:proper)[:navbar][:login], new_identity_session_path(redirect_to: catalog_service_request_path(id: service_request.id)), class: 'btn btn-primary', id: 'login-link'

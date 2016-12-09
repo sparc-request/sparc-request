@@ -45,7 +45,7 @@ class SearchController < ApplicationController
         label:          s.name,
         value:          s.id,
         description:    (s.description.nil? || s.description.blank?) ? t(:proper)[:catalog][:no_description] : s.description,
-        sr_id:          session[:service_request_id],
+        sr_id:          @service_request.id,
         abbreviation:   s.abbreviation,
         cpt_code:       s.cpt_code,
         term:           params[:term]

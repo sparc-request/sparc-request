@@ -22,12 +22,16 @@
 #= require cart
 
 $(document).ready ->
+  getSRId = ->
+    $("input[name='service_request_id']").val()
+
   $(document).on 'click', '#new-arm-button', ->
     $.ajax
       type: 'get'
       url: '/arms/new'
       data:
         protocol_id: $(this).data('protocol-id')
+        service_request_id: getSRId()
     return false
 
   $(document).on 'click', '.edit-arm-button', ->
@@ -35,6 +39,8 @@ $(document).ready ->
     $.ajax
       type: 'get'
       url: "/arms/#{arm_id}/edit"
+      data:
+        service_request_id: getSRId()
 
   $(document).on 'click', '#edit-arm-form-button', ->
     $(this).attr('disabled','disabled')
@@ -45,7 +51,7 @@ $(document).ready ->
       arm_id = $(this).data('arm-id')
       $.ajax
         type: 'delete'
-        url: "/arms/#{arm_id}"
+        url: "/arms/#{arm_id}?service_request_id=#{getSRId()}"
 
   $('#arms-table').on 'all.bs.table', ->
     $('.screening-info').tooltip()

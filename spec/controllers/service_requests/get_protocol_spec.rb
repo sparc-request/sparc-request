@@ -54,7 +54,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
       ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org, service_requester_id: nil)
                  create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
-      session[:service_request_id] = sr.id
       session[:identity_id]        = logged_in_user.id
 
       xhr :get, :protocol, {
@@ -72,7 +71,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
       ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
                  create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
-      session[:service_request_id] = sr.id
       session[:identity_id]        = logged_in_user.id
 
       xhr :get, :protocol, {
@@ -90,7 +88,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
       ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
                  create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
-      session[:service_request_id] = sr.id
       session[:identity_id]        = logged_in_user.id
 
       xhr :get, :protocol, {

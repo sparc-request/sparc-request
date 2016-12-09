@@ -50,7 +50,6 @@ RSpec.describe 'view SSR back button', js: true do
       wait_for_javascript_to_finish
       click_button 'Back'
       wait_for_javascript_to_finish
-      save_and_open_screenshot
 
       expect(page).to have_selector(".modal-title", text: "#{@protocol.short_title}")
       end

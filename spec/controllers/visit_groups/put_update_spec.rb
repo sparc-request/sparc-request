@@ -41,10 +41,9 @@ RSpec.describe VisitGroupsController, type: :controller do
       vg        = create(:visit_group, arm: arm, day: 1, name: "Visit Me Baby One More Time")
       vg_params = { day: 5 }
 
-      session[:service_request_id] = sr.id
-
       xhr :put, :update, {
         id: vg.id,
+        service_request_id: sr.id,
         visit_group: vg_params
       }
 
@@ -59,10 +58,9 @@ RSpec.describe VisitGroupsController, type: :controller do
         vg        = create(:visit_group, arm: arm, day: 1, name: "Visit Me Baby One More Time")
         vg_params = { day: 5 }
 
-        session[:service_request_id] = sr.id
-
         xhr :put, :update, {
           id: vg.id,
+          service_request_id: sr.id,
           visit_group: vg_params
         }
 
@@ -76,14 +74,13 @@ RSpec.describe VisitGroupsController, type: :controller do
         vg        = create(:visit_group, arm: arm, day: 1, name: "Visit Me Baby One More Time")
         vg_params = { day: 5 }
 
-        session[:service_request_id] = sr.id
-
         xhr :put, :update, {
           id: vg.id,
+          service_request_id: sr.id,
           visit_group: vg_params
         }
 
-        expect(response.body).to be_blank        
+        expect(response.body).to be_blank
       end
 
       it 'should respond ok' do
@@ -93,10 +90,9 @@ RSpec.describe VisitGroupsController, type: :controller do
         vg        = create(:visit_group, arm: arm, day: 1, name: "Visit Me Baby One More Time")
         vg_params = { day: 5 }
 
-        session[:service_request_id] = sr.id
-
         xhr :put, :update, {
           id: vg.id,
+          service_request_id: sr.id,
           visit_group: vg_params
         }
 
@@ -112,10 +108,9 @@ RSpec.describe VisitGroupsController, type: :controller do
         vg        = create(:visit_group, arm: arm, day: 1, name: "Visit Me Baby One More Time")
         vg_params = { name: nil }
 
-        session[:service_request_id] = sr.id
-
         xhr :put, :update, {
           id: vg.id,
+          service_request_id: sr.id,
           visit_group: vg_params
         }
 
@@ -129,10 +124,9 @@ RSpec.describe VisitGroupsController, type: :controller do
         vg        = create(:visit_group, arm: arm, day: 1, name: "Visit Me Baby One More Time")
         vg_params = { name: nil }
 
-        session[:service_request_id] = sr.id
-
         xhr :put, :update, {
           id: vg.id,
+          service_request_id: sr.id,
           visit_group: vg_params
         }
 
@@ -146,10 +140,9 @@ RSpec.describe VisitGroupsController, type: :controller do
         vg        = create(:visit_group, arm: arm, day: 1, name: "Visit Me Baby One More Time")
         vg_params = { name: nil }
 
-        session[:service_request_id] = sr.id
-
         xhr :put, :update, {
           id: vg.id,
+          service_request_id: sr.id,
           visit_group: vg_params
         }
 

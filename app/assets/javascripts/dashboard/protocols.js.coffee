@@ -24,6 +24,9 @@
 $(document).ready ->
   Sparc.protocol =
     ready: ->
+      getSRId = () ->
+        $('input[name="service_request_id"]').val()
+
       $('.service-requests-table').on 'all.bs.table', ->
         $(this).find('.selectpicker').selectpicker() #Find descendant selectpickers
 
@@ -116,6 +119,8 @@ $(document).ready ->
         $.ajax
           method: 'get'
           url: "/dashboard/protocols/#{protocol_id}/view_details"
+          data:
+            service_request_id: $("input[name='service_request_id']").val()
 
       $(document).on 'click', '.edit-protocol-information-button', ->
         if $(this).data('permission')

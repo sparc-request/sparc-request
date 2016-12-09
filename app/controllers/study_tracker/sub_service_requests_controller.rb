@@ -28,8 +28,6 @@ class StudyTracker::SubServiceRequestsController < StudyTracker::BaseController
     # methods without having to call #show, in case we add unintended
     # side-effects to #show
 
-    session[:sub_service_request_id] = @sub_service_request.id
-    session[:service_request_id] = @sub_service_request.service_request_id
     session[:service_calendar_pages] = params[:pages] if params[:pages]
 
     @service_request = @sub_service_request.service_request

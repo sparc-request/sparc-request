@@ -39,10 +39,9 @@ RSpec.describe DocumentsController, type: :controller do
       sr          = create(:service_request_without_validations, protocol: protocol)
       doc         = create(:document, protocol: protocol)
 
-      session[:service_request_id] = sr.id
-
       xhr :get, :edit, {
-        id: doc.id
+        id: doc.id,
+        service_request_id: sr.id
       }
 
       expect(assigns(:document)).to eq(doc)
@@ -53,10 +52,9 @@ RSpec.describe DocumentsController, type: :controller do
       sr          = create(:service_request_without_validations, protocol: protocol)
       doc         = create(:document, protocol: protocol)
 
-      session[:service_request_id] = sr.id
-
       xhr :get, :edit, {
-        id: doc.id
+        id: doc.id,
+        service_request_id: sr.id
       }
 
       expect(assigns(:header_text)).to be
@@ -67,10 +65,9 @@ RSpec.describe DocumentsController, type: :controller do
       sr          = create(:service_request_without_validations, protocol: protocol)
       doc         = create(:document, protocol: protocol)
 
-      session[:service_request_id] = sr.id
-
       xhr :get, :edit, {
-        id: doc.id
+        id: doc.id,
+        service_request_id: sr.id
       }
 
       expect(assigns(:path)).to eq(document_path(assigns(:document)))
@@ -81,10 +78,9 @@ RSpec.describe DocumentsController, type: :controller do
       sr          = create(:service_request_without_validations, protocol: protocol)
       doc         = create(:document, protocol: protocol)
 
-      session[:service_request_id] = sr.id
-
       xhr :get, :edit, {
-        id: doc.id
+        id: doc.id,
+        service_request_id: sr.id
       }
 
       expect(controller).to render_template(:edit)
@@ -95,14 +91,12 @@ RSpec.describe DocumentsController, type: :controller do
       sr          = create(:service_request_without_validations, protocol: protocol)
       doc         = create(:document, protocol: protocol)
 
-      session[:service_request_id] = sr.id
-
       xhr :get, :edit, {
-        id: doc.id
+        id: doc.id,
+        service_request_id: sr.id
       }
 
       expect(controller).to respond_with(:ok)
     end
   end
 end
-

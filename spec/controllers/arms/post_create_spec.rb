@@ -39,9 +39,8 @@ RSpec.describe ArmsController, type: :controller do
         sr          = create(:service_request_without_validations, protocol: protocol)
         arm_params  = { name: 'Armada', subject_count: 1, visit_count: 1 }
 
-        session[:service_request_id] = sr.id
-
         xhr :post, :create, {
+          service_request_id: sr.id,
           protocol_id: protocol.id,
           arm: arm_params
         }
@@ -56,9 +55,8 @@ RSpec.describe ArmsController, type: :controller do
         sr          = create(:service_request_without_validations, protocol: protocol)
         arm_params  = { name: '', subject_count: -1, visit_count: -1 }
 
-        session[:service_request_id] = sr.id
-
         xhr :post, :create, {
+          service_request_id: sr.id,
           protocol_id: protocol.id,
           arm: arm_params
         }
@@ -71,9 +69,8 @@ RSpec.describe ArmsController, type: :controller do
         sr          = create(:service_request_without_validations, protocol: protocol)
         arm_params  = { name: '', subject_count: -1, visit_count: -1 }
 
-        session[:service_request_id] = sr.id
-
         xhr :post, :create, {
+          service_request_id: sr.id,
           protocol_id: protocol.id,
           arm: arm_params
         }
@@ -87,9 +84,8 @@ RSpec.describe ArmsController, type: :controller do
       sr          = create(:service_request_without_validations, protocol: protocol)
       arm_params  = { name: 'Armada', subject_count: 1, visit_count: 1 }
 
-      session[:service_request_id] = sr.id
-
       xhr :post, :create, {
+        service_request_id: sr.id,
         protocol_id: protocol.id,
         arm: arm_params
       }
@@ -102,9 +98,8 @@ RSpec.describe ArmsController, type: :controller do
       sr          = create(:service_request_without_validations, protocol: protocol)
       arm_params  = { name: 'Armada', subject_count: 1, visit_count: 1 }
 
-      session[:service_request_id] = sr.id
-
       xhr :post, :create, {
+        service_request_id: sr.id,
         protocol_id: protocol.id,
         arm: arm_params
       }

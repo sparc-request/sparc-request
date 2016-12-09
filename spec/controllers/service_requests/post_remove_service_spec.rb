@@ -49,7 +49,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
       li2      = create(:line_item, service_request: sr, sub_service_request: ssr, service: service2)
       ServiceRelation.create(service_id: service.id, related_service_id: service2.id, optional: false)
 
-      session[:service_request_id] = sr.id
 
       xhr :post, :remove_service, {
         id: sr.id,
@@ -67,7 +66,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
       ssr      = create(:sub_service_request_without_validations, organization: org, service_request: sr)
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
-      session[:service_request_id] = sr.id
 
       xhr :post, :remove_service, {
         id: sr.id,
@@ -85,7 +83,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
       ssr      = create(:sub_service_request_without_validations, organization: org, service_request: sr, status: 'complete')
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
-      session[:service_request_id] = sr.id
 
       xhr :post, :remove_service, {
         id: sr.id,
@@ -105,7 +102,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
         li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
                    create(:line_item, service_request: sr, sub_service_request: ssr, service: create(:service, organization: org))
 
-        session[:service_request_id] = sr.id
         stub_const("EDITABLE_STATUSES", { org.id => ['first_draft'] })
 
         xhr :post, :remove_service, {
@@ -127,7 +123,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
         li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
                    create(:line_item, service_request: sr, sub_service_request: ssr, service: create(:service, organization: org))
 
-        session[:service_request_id] = sr.id
         session[:identity_id]        = logged_in_user.id
 
         xhr :post, :remove_service, {
@@ -147,7 +142,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
         li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
                    create(:line_item, service_request: sr, sub_service_request: ssr, service: create(:service, organization: org))
 
-        session[:service_request_id] = sr.id
         session[:identity_id]        = logged_in_user.id
 
         xhr :post, :remove_service, {
@@ -170,7 +164,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
         li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
                    create(:line_item, service_request: sr, sub_service_request: ssr, service: create(:service, organization: org))
 
-        session[:service_request_id] = sr.id
 
         xhr :post, :remove_service, {
           id: sr.id,
@@ -190,7 +183,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
         ssr      = create(:sub_service_request_without_validations, organization: org, service_request: sr, status: 'first_draft')
         li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
-        session[:service_request_id] = sr.id
         session[:identity_id]        = logged_in_user.id
 
         xhr :post, :remove_service, {
@@ -211,7 +203,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
                  create(:line_item, service_request: sr, sub_service_request: ssr, service: create(:service, organization: org))
 
-      session[:service_request_id] = sr.id
 
       xhr :post, :remove_service, {
         id: sr.id,
@@ -230,7 +221,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
                  create(:line_item, service_request: sr, sub_service_request: ssr, service: create(:service, organization: org))
 
-      session[:service_request_id] = sr.id
 
       xhr :post, :remove_service, {
         id: sr.id,
@@ -248,7 +238,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
       ssr      = create(:sub_service_request_without_validations, organization: org, service_request: sr)
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
-      session[:service_request_id] = sr.id
 
       xhr :post, :remove_service, {
         id: sr.id,
@@ -266,7 +255,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
       ssr      = create(:sub_service_request_without_validations, organization: org, service_request: sr)
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
-      session[:service_request_id] = sr.id
 
       xhr :post, :remove_service, {
         id: sr.id,
@@ -295,14 +283,13 @@ RSpec.describe ServiceRequestsController, type: :controller do
       end
 
       context 'removed all services (line_item1 & line_item2) for SSR' do
- 
+
         it 'should send notifications to the service provider' do
           @li_1.destroy
-          session[:service_request_id] = @sr.id
           session[:identity_id]        = logged_in_user.id
 
           allow(Notifier).to receive(:notify_service_provider) do
-            mailer = double('mail') 
+            mailer = double('mail')
             expect(mailer).to receive(:deliver_now)
             mailer
           end
@@ -319,14 +306,13 @@ RSpec.describe ServiceRequestsController, type: :controller do
       end
 
       context 'removed one of two services for SSR' do
- 
+
         it 'should not send notifications to the service provider' do
           # expect(controller).not_to receive(:send_ssr_service_provider_notifications)
-          session[:service_request_id] = @sr.id
           session[:identity_id]        = logged_in_user.id
 
           allow(Notifier).to receive(:notify_service_provider) do
-            mailer = double('mail') 
+            mailer = double('mail')
             expect(mailer).to receive(:deliver_now)
             mailer
           end
@@ -341,7 +327,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
         end
 
         it 'should not delete SSR (ssr1)' do
-          session[:service_request_id] = @sr.id
           session[:identity_id]        = logged_in_user.id
 
           post :remove_service, {
@@ -371,11 +356,10 @@ RSpec.describe ServiceRequestsController, type: :controller do
 
       it 'should send notifications to the service_provider' do
 
-        session[:service_request_id] = @sr.id
         session[:identity_id]        = logged_in_user.id
 
         allow(Notifier).to receive(:notify_service_provider) do
-          mailer = double('mail') 
+          mailer = double('mail')
           expect(mailer).to receive(:deliver_now)
           mailer
         end
@@ -391,7 +375,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
       end
 
       it 'should delete SSR' do
-        session[:service_request_id] = @sr.id
         session[:identity_id]        = logged_in_user.id
 
         post :remove_service, {

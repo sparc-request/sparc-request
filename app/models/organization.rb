@@ -105,8 +105,10 @@ class Organization < ActiveRecord::Base
       return self.parents.select {|x| x.process_ssrs}.first
     end
   end
-
+  
+  #TODO SubServiceRequest.where(organization: self.all_child_organizations).each(:&update_org_tree)
   def update_ssr_org_name
+    self.org_children.each{ |org| org.update_ssr_org_name }
     self.sub_service_requests.each{ |ssr| ssr.update_org_tree }
   end
 
@@ -186,6 +188,8 @@ class Organization < ActiveRecord::Base
       children = Organization.where(id: all_child_organizations << self)
       children.update_all(is_available: false)
       Service.where(organization_id: children).update_all(is_available: false)
+    else
+      Service.where(organization_id: self.id).update_all(is_available: true)
     end
   end
 

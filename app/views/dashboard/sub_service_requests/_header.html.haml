@@ -40,7 +40,7 @@
           %th
             = t(:dashboard)[:sub_service_requests][:header][:fulfillment][:header]
           %th
-            = t(:dashboard)[:sub_service_requests][:header][:cost]
+            = "#{sub_service_request.organization.abbreviation} #{t(:dashboard)[:sub_service_requests][:header][:cost]}"
           %th
             = t(:dashboard)[:sub_service_requests][:header][:user_cost]
 
@@ -58,4 +58,4 @@
           %td.effective_cost
             = number_to_currency(effective_current_total(sub_service_request))
           %td.display_cost
-            = number_to_currency(user_display_total(sub_service_request))
+            = number_to_currency(user_display_protocol_total(sub_service_request.protocol, sub_service_request.service_request))

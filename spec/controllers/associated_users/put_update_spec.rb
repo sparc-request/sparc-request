@@ -41,9 +41,9 @@ RSpec.describe AssociatedUsersController, type: :controller do
         pr        = create(:project_role, identity: other_user, protocol: protocol, role: 'noob')
         pr_params = { role: 'not noob' }
 
-        session[:service_request_id] = sr.id
 
         xhr :put, :update, {
+        service_request_id: sr.id,
           id: pr.id,
           project_role: pr_params
         }
@@ -59,9 +59,9 @@ RSpec.describe AssociatedUsersController, type: :controller do
         pr        = create(:project_role, identity: other_user, protocol: protocol, role: 'noob')
         pr_params = { role: nil }
 
-        session[:service_request_id] = sr.id
 
         xhr :put, :update, {
+        service_request_id: sr.id,
           id: pr.id,
           project_role: pr_params
         }
@@ -75,9 +75,9 @@ RSpec.describe AssociatedUsersController, type: :controller do
         pr        = create(:project_role, identity: other_user, protocol: protocol, role: 'noob')
         pr_params = { role: nil }
 
-        session[:service_request_id] = sr.id
 
         xhr :put, :update, {
+        service_request_id: sr.id,
           id: pr.id,
           project_role: pr_params
         }
@@ -92,9 +92,9 @@ RSpec.describe AssociatedUsersController, type: :controller do
       pr        = create(:project_role, identity: other_user, protocol: protocol, role: 'noob')
       pr_params = { role: 'not noob' }
 
-      session[:service_request_id] = sr.id
 
       xhr :put, :update, {
+        service_request_id: sr.id,
         id: pr.id,
         project_role: pr_params
       }
@@ -108,9 +108,9 @@ RSpec.describe AssociatedUsersController, type: :controller do
       pr        = create(:project_role, identity: other_user, protocol: protocol, role: 'noob')
       pr_params = { role: 'not noob' }
 
-      session[:service_request_id] = sr.id
 
       xhr :put, :update, {
+        service_request_id: sr.id,
         id: pr.id,
         project_role: pr_params
       }

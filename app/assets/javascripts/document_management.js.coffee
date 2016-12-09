@@ -22,8 +22,13 @@
 #= require cart
 
 $(document).ready ->
+  getSRId = ->
+    $("input[name='service_request_id']").val()
+
   $(document).on 'click', '#document-new', ->
-    data = 'protocol_id': $(this).data('protocol-id')
+    data =
+      protocol_id: $(this).data('protocol-id')
+      service_request_id: getSRId()
     $.ajax
       type: 'GET'
       url: '/documents/new'
@@ -36,6 +41,8 @@ $(document).ready ->
     $.ajax
       type: 'GET'
       url: "/documents/#{document_id}/edit"
+      data:
+        service_request_id: getSRId()
 
   $(document).on 'click', '.document-delete', ->
     row_index   = $(this).parents('tr').data('index')
@@ -43,7 +50,7 @@ $(document).ready ->
     if confirm I18n['documents']['delete_confirm']
       $.ajax
         type: 'DELETE'
-        url: "/documents/#{document_id}"
+        url: "/documents/#{document_id}?service_request_id=#{getSRId()}"
 
   $(document).on 'change', '#document_doc_type', ->
     if $(this).val() == 'other'
@@ -62,4 +69,5 @@ $(document).ready ->
           notable_type: notable_type
           notable_id: notable_id
         in_dashboard: false
+        service_request_id: getSRId()
     return false

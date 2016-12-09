@@ -38,8 +38,6 @@ RSpec.describe ServiceRequestsController do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
 
-      session[:service_request_id] = sr.id
-
       xhr :get, :show, {
         id: sr.id
       }
@@ -50,8 +48,6 @@ RSpec.describe ServiceRequestsController do
     it 'should assign @admin_offset' do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
-
-      session[:service_request_id] = sr.id
 
       xhr :get, :show, {
         id: sr.id,
@@ -65,8 +61,6 @@ RSpec.describe ServiceRequestsController do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
 
-      session[:service_request_id] = sr.id
-
       xhr :get, :show, {
         id: sr.id
       }
@@ -77,8 +71,6 @@ RSpec.describe ServiceRequestsController do
     it 'should respond ok' do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
-
-      session[:service_request_id] = sr.id
 
       xhr :get, :show, {
         id: sr.id

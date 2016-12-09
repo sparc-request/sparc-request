@@ -25,7 +25,7 @@
         %small
           = t(:proper)[:protocol][:review_protocol_instructions]
     = render 'protocols/summary', protocol: protocol, protocol_type: protocol.type, service_request: service_request, allow_edit: true
-    = render 'associated_users/table', protocol: protocol
+    = render 'associated_users/table', protocol: protocol, service_request: service_request
   - else
     .page-header
       %h3
@@ -33,5 +33,5 @@
         %small
           = t(:proper)[:protocol][:create_protocol_instructions]
     .col-sm-12.protocol-container.text-center
-      = link_to t(:protocols)[:studies][:new], new_protocol_path(srid: service_request.id, protocol_type: 'Study'), class: 'btn btn-lg btn-success new-study', title: t(:proper)[:protocol][:study_tooltip], data: { toggle: 'tooltip' }
-      = link_to t(:protocols)[:projects][:new], new_protocol_path(srid: service_request.id, protocol_type: 'Project'), class: 'btn btn-lg btn-primary new-project', title: t(:proper)[:protocol][:project_tooltip], data: { toggle: 'tooltip' }
+      = link_to t(:protocols)[:studies][:new], new_protocol_path(srid: service_request.id, protocol_type: 'Study', service_request_id: service_request.id), class: 'btn btn-lg btn-success new-study', title: t(:proper)[:protocol][:study_tooltip], data: { toggle: 'tooltip' }
+      = link_to t(:protocols)[:projects][:new], new_protocol_path(srid: service_request.id, protocol_type: 'Project', service_request_id: service_request.id), class: 'btn btn-lg btn-primary new-project', title: t(:proper)[:protocol][:project_tooltip], data: { toggle: 'tooltip' }

@@ -33,5 +33,5 @@
     .form-group.return-button
       %a.btn.btn-primary{ href: root_path }
         = t(:devise)[:sessions][:return]
-    = render 'login_form'
+    = render 'login_form', redirect_to: @redirect_to
   .col-md-3

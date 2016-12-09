@@ -37,10 +37,9 @@ RSpec.describe AssociatedUsersController, type: :controller do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
 
-      session[:service_request_id] = sr.id
-
       xhr :get, :index, {
-        protocol_id: protocol.id
+        protocol_id: protocol.id,
+        service_request_id: sr.id
       }
 
       expect(assigns(:protocol)).to eq(protocol)
@@ -51,10 +50,9 @@ RSpec.describe AssociatedUsersController, type: :controller do
       sr       = create(:service_request_without_validations, protocol: protocol)
 
       session[:identity_id] = logged_in_user.id
-      session[:service_request_id] = sr.id
-
       xhr :get, :index, {
-        protocol_id: protocol.id
+        protocol_id: protocol.id,
+        service_request_id: sr.id
       }
 
       expect(assigns(:current_user)).to eq(logged_in_user)
@@ -64,10 +62,9 @@ RSpec.describe AssociatedUsersController, type: :controller do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
 
-      session[:service_request_id] = sr.id
-
       xhr :get, :index, {
-        protocol_id: protocol.id
+        protocol_id: protocol.id,
+        service_request_id: sr.id
       }
 
       expect(assigns(:protocol_roles)).to eq(protocol.project_roles)
@@ -77,10 +74,9 @@ RSpec.describe AssociatedUsersController, type: :controller do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
 
-      session[:service_request_id] = sr.id
-
       xhr :get, :index, {
-        protocol_id: protocol.id
+        protocol_id: protocol.id,
+        service_request_id: sr.id
       }
 
       expect(controller).to render_template(:index)
@@ -90,10 +86,9 @@ RSpec.describe AssociatedUsersController, type: :controller do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
 
-      session[:service_request_id] = sr.id
-
       xhr :get, :index, {
-        protocol_id: protocol.id
+        protocol_id: protocol.id,
+        service_request_id: sr.id
       }
 
       expect(controller).to respond_with(:ok)

@@ -36,11 +36,16 @@
       window.I18n = #{current_translations.to_json.html_safe};
 
   %body#body
+    - if @service_request
+      = hidden_field_tag :service_request_id, @service_request.id, disabled: true
+    - if @sub_service_request
+      = hidden_field_tag :sub_service_request_id, @sub_service_request.id, disabled: true
+
     #container
       #header
         = render 'layouts/header_logos', location: "proper"
         %input#current_user_id{ type: 'hidden', value: @user.try(:id) }
-      = render 'layouts/header', user: @user
+      = render 'layouts/header', user: @user, service_request: @service_request
       .flash
         = render 'shared/flash'
       #inner-content.row

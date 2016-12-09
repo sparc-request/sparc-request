@@ -36,10 +36,8 @@ RSpec.describe ArmsController, type: :controller do
     it 'should assign @arms' do
       protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
       @sr       = create(:service_request_without_validations, protocol: protocol)
-      
-      session[:service_request_id] = @sr.id
 
-      xhr :get, :index
+      xhr :get, :index, service_request_id: @sr.id
 
       expect(assigns(:arms)).to eq(@sr.arms)
     end
@@ -47,10 +45,8 @@ RSpec.describe ArmsController, type: :controller do
     it 'should assign @arms_editable' do
       protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
       @sr       = create(:service_request_without_validations, protocol: protocol)
-      
-      session[:service_request_id] = @sr.id
 
-      xhr :get, :index
+      xhr :get, :index, service_request_id: @sr.id
 
       expect(assigns(:arms_editable)).to eq(@sr.arms_editable?)
     end
@@ -58,10 +54,8 @@ RSpec.describe ArmsController, type: :controller do
     it 'should assign @arm_count' do
       protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
       @sr       = create(:service_request_without_validations, protocol: protocol)
-      
-      session[:service_request_id] = @sr.id
 
-      xhr :get, :index
+      xhr :get, :index, service_request_id: @sr.id
 
       expect(assigns(:arm_count)).to eq(@sr.arms.count)
     end
@@ -69,21 +63,17 @@ RSpec.describe ArmsController, type: :controller do
     it 'should render template' do
       protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
       @sr       = create(:service_request_without_validations, protocol: protocol)
-      
-      session[:service_request_id] = @sr.id
 
-      xhr :get, :index
+      xhr :get, :index, service_request_id: @sr.id
 
       expect(controller).to render_template(:index)
     end
-    
+
     it 'should respond ok' do
       protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
       @sr       = create(:service_request_without_validations, protocol: protocol)
-      
-      session[:service_request_id] = @sr.id
 
-      xhr :get, :index
+      xhr :get, :index, service_request_id: @sr.id
 
       expect(controller).to respond_with :ok
     end

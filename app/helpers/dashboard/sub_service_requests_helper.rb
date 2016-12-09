@@ -96,6 +96,10 @@ module Dashboard::SubServiceRequestsHelper
     return (sub_service_request.direct_cost_total / 100.0)
   end
 
+  def user_display_protocol_total protocol, service_request
+    return (protocol.grand_total(service_request) / 100.0)
+  end
+
   def effective_current_total sub_service_request
     sub_service_request.set_effective_date_for_cost_calculations
     total = (sub_service_request.direct_cost_total / 100.0)

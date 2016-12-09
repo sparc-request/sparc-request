@@ -31,9 +31,9 @@ RSpec.describe NotesController, type: :controller do
       note_params = { notable_id: sr.id, notable_type: 'ServiceRequest' }
 
       session[:identity_id] = logged_in_user.id
-      session[:service_request_id] = sr.id
 
       xhr :get, :new, {
+        service_request_id: sr.id,
         note: note_params
       }
 
@@ -46,9 +46,9 @@ RSpec.describe NotesController, type: :controller do
       note_params = { notable_id: sr.id, notable_type: 'ServiceRequest' }
 
       session[:identity_id] = logged_in_user.id
-      session[:service_request_id] = sr.id
 
       xhr :get, :new, {
+        service_request_id: sr.id,
         note: note_params
       }
 
@@ -61,9 +61,9 @@ RSpec.describe NotesController, type: :controller do
       note_params = { notable_id: sr.id, notable_type: 'ServiceRequest' }
 
       session[:identity_id] = logged_in_user.id
-      session[:service_request_id] = sr.id
 
       xhr :get, :new, {
+        service_request_id: sr.id,
         note: note_params
       }
 
@@ -76,9 +76,9 @@ RSpec.describe NotesController, type: :controller do
       note_params = { notable_id: sr.id, notable_type: 'ServiceRequest' }
 
       session[:identity_id] = logged_in_user.id
-      session[:service_request_id] = sr.id
 
       xhr :get, :new, {
+        service_request_id: sr.id,
         note: note_params,
         in_dashboard: 'true'
       }
@@ -92,9 +92,9 @@ RSpec.describe NotesController, type: :controller do
       note_params = { notable_id: sr.id, notable_type: 'ServiceRequest' }
 
       session[:identity_id] = logged_in_user.id
-      session[:service_request_id] = sr.id
 
       xhr :get, :new, {
+        service_request_id: sr.id,
         note: note_params
       }
 
@@ -108,9 +108,9 @@ RSpec.describe NotesController, type: :controller do
       note_params = { notable_id: sr.id, notable_type: 'ServiceRequest' }
 
       session[:identity_id] = logged_in_user.id
-      session[:service_request_id] = sr.id
 
       xhr :get, :new, {
+        service_request_id: sr.id,
         note: note_params
       }
 
@@ -123,9 +123,9 @@ RSpec.describe NotesController, type: :controller do
       note_params = { notable_id: sr.id, notable_type: 'ServiceRequest' }
 
       session[:identity_id] = logged_in_user.id
-      session[:service_request_id] = sr.id
 
       xhr :get, :new, {
+        service_request_id: sr.id,
         note: note_params
       }
 

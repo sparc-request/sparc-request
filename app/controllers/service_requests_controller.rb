@@ -75,7 +75,7 @@ class ServiceRequestsController < ApplicationController
   # service request wizard pages
 
   def catalog
-    if session[:sub_service_request_id] && @sub_service_request
+    if @sub_service_request
       @institutions = Institution.where(id: @sub_service_request.organization.parents.select{|x| x.type == 'Institution'}.map(&:id))
     else
       @institutions = Institution.order('`order`')
@@ -305,7 +305,7 @@ class ServiceRequestsController < ApplicationController
 
     line_items.reload
 
-    @service_request = ServiceRequest.find(session[:service_request_id])
+    @service_request.reload
     @page = request.referrer.split('/').last # we need for pages other than the catalog
 
     # Have the protocol clean up the arms

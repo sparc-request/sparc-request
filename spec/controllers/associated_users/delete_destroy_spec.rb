@@ -39,10 +39,9 @@ RSpec.describe AssociatedUsersController, type: :controller do
       sr        = create(:service_request_without_validations, protocol: protocol)
       pr        = create(:project_role, identity: other_user, protocol: protocol)
 
-      session[:service_request_id] = sr.id
-
       xhr :delete, :destroy, {
-        id: pr.id
+        id: pr.id,
+        service_request_id: sr.id
       }
 
       expect(assigns(:protocol_role)).to eq(pr)
@@ -53,10 +52,9 @@ RSpec.describe AssociatedUsersController, type: :controller do
       sr        = create(:service_request_without_validations, protocol: protocol)
       pr        = create(:project_role, identity: other_user, protocol: protocol)
 
-      session[:service_request_id] = sr.id
-
       xhr :delete, :destroy, {
-        id: pr.id
+        id: pr.id,
+        service_request_id: sr.id
       }
 
       expect(assigns(:protocol)).to eq(protocol)
@@ -67,10 +65,9 @@ RSpec.describe AssociatedUsersController, type: :controller do
       sr        = create(:service_request_without_validations, protocol: protocol)
       pr        = create(:project_role, identity: other_user, protocol: protocol)
 
-      session[:service_request_id] = sr.id
-
       xhr :delete, :destroy, {
-        id: pr.id
+        id: pr.id,
+        service_request_id: sr.id
       }
 
       expect(ProjectRole.count).to eq(1)
@@ -85,10 +82,9 @@ RSpec.describe AssociatedUsersController, type: :controller do
         stub_const("USE_EPIC", true)
         stub_const("QUEUE_EPIC", false)
 
-        session[:service_request_id] = sr.id
-
         expect {
           xhr :delete, :destroy, {
+            service_request_id: sr.id,
             id: pr.id
           }
         }.to change(ActionMailer::Base.deliveries, :count).by(1)
@@ -100,10 +96,9 @@ RSpec.describe AssociatedUsersController, type: :controller do
       sr        = create(:service_request_without_validations, protocol: protocol)
       pr        = create(:project_role, identity: other_user, protocol: protocol)
 
-      session[:service_request_id] = sr.id
-
       xhr :delete, :destroy, {
-        id: pr.id
+        id: pr.id,
+        service_request_id: sr.id
       }
 
       expect(controller).to render_template(:destroy)
@@ -114,10 +109,9 @@ RSpec.describe AssociatedUsersController, type: :controller do
       sr        = create(:service_request_without_validations, protocol: protocol)
       pr        = create(:project_role, identity: other_user, protocol: protocol)
 
-      session[:service_request_id] = sr.id
-
       xhr :delete, :destroy, {
-        id: pr.id
+        id: pr.id,
+        service_request_id: sr.id
       }
 
       expect(controller).to respond_with(:ok)

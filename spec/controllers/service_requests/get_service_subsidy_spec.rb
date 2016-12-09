@@ -41,7 +41,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
     it 'should call before_filter #authorize_identity' do
       expect(before_filters.include?(:authorize_identity)).to eq(true)
     end
-    
+
     it 'should call before_filter #authenticate_identity!' do
       expect(before_filters.include?(:authenticate_identity!)).to eq(true)
     end
@@ -59,8 +59,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
       vg       = create(:visit_group, arm: arm, day: 1)
                  create(:visit, visit_group: vg, line_items_visit: liv)
                  create(:subsidy, sub_service_request: ssr)
-
-      session[:service_request_id] = sr.id
 
       xhr :get, :service_subsidy, {
         id: sr.id
@@ -82,8 +80,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
       vg       = create(:visit_group, arm: arm, day: 1)
                  create(:visit, visit_group: vg, line_items_visit: liv)
 
-      session[:service_request_id] = sr.id
-
       xhr :get, :service_subsidy, {
         id: sr.id
       }
@@ -99,8 +95,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
         sr       = create(:service_request_without_validations, protocol: protocol)
         ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
         li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
-
-        session[:service_request_id] = sr.id
 
         xhr :get, :service_subsidy, {
           id: sr.id
@@ -119,8 +113,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
       liv      = create(:line_items_visit, arm: arm, line_item: li)
       vg       = create(:visit_group, arm: arm, day: 1)
                  create(:visit, visit_group: vg, line_items_visit: liv)
-
-      session[:service_request_id] = sr.id
 
       xhr :get, :service_subsidy, {
         id: sr.id
@@ -142,8 +134,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
       vg       = create(:visit_group, arm: arm, day: 1)
                  create(:visit, visit_group: vg, line_items_visit: liv)
 
-      session[:service_request_id] = sr.id
-
       xhr :get, :service_subsidy, {
         id: sr.id
       }
@@ -163,8 +153,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
       liv      = create(:line_items_visit, arm: arm, line_item: li)
       vg       = create(:visit_group, arm: arm, day: 1)
                  create(:visit, visit_group: vg, line_items_visit: liv)
-
-      session[:service_request_id] = sr.id
 
       xhr :get, :service_subsidy, {
         id: sr.id

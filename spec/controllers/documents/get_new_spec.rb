@@ -38,10 +38,9 @@ RSpec.describe DocumentsController, type: :controller do
       protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr        = create(:service_request_without_validations, protocol: protocol)
 
-      session[:service_request_id] = sr.id
-
       xhr :get, :new, {
-        protocol_id: protocol.id
+        protocol_id: protocol.id,
+        service_request_id: sr.id
       }
 
       expect(assigns(:protocol)).to eq(protocol)
@@ -51,10 +50,9 @@ RSpec.describe DocumentsController, type: :controller do
       protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr        = create(:service_request_without_validations, protocol: protocol)
 
-      session[:service_request_id] = sr.id
-
       xhr :get, :new, {
-        protocol_id: protocol.id
+        protocol_id: protocol.id,
+        service_request_id: sr.id
       }
 
       expect(assigns(:document).class).to eq(Document)
@@ -65,10 +63,9 @@ RSpec.describe DocumentsController, type: :controller do
       protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr        = create(:service_request_without_validations, protocol: protocol)
 
-      session[:service_request_id] = sr.id
-
       xhr :get, :new, {
-        protocol_id: protocol.id
+        protocol_id: protocol.id,
+        service_request_id: sr.id
       }
 
       expect(assigns(:header_text)).to be
@@ -78,10 +75,9 @@ RSpec.describe DocumentsController, type: :controller do
       protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr        = create(:service_request_without_validations, protocol: protocol)
 
-      session[:service_request_id] = sr.id
-
       xhr :get, :new, {
-        protocol_id: protocol.id
+        protocol_id: protocol.id,
+        service_request_id: sr.id
       }
 
       expect(assigns(:path)).to eq(documents_path(assigns(:document)))
@@ -91,10 +87,9 @@ RSpec.describe DocumentsController, type: :controller do
       protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr        = create(:service_request_without_validations, protocol: protocol)
 
-      session[:service_request_id] = sr.id
-
       xhr :get, :new, {
-        protocol_id: protocol.id
+        protocol_id: protocol.id,
+        service_request_id: sr.id
       }
 
       expect(controller).to render_template(:new)
@@ -104,14 +99,12 @@ RSpec.describe DocumentsController, type: :controller do
       protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr        = create(:service_request_without_validations, protocol: protocol)
 
-      session[:service_request_id] = sr.id
-
       xhr :get, :new, {
-        protocol_id: protocol.id
+        protocol_id: protocol.id,
+        service_request_id: sr.id
       }
 
       expect(controller).to respond_with(:ok)
     end
   end
 end
-

@@ -51,8 +51,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
         ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
                    create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
-        session[:service_request_id] = sr.id
-
         xhr :get, :save_and_exit, {
           id: sr.id
         }
@@ -67,8 +65,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
         sr       = create(:service_request_without_validations, protocol: protocol)
         ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
                    create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
-
-        session[:service_request_id] = sr.id
 
         xhr :get, :save_and_exit, {
           id: sr.id
@@ -88,11 +84,9 @@ RSpec.describe ServiceRequestsController, type: :controller do
           ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
                      create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
-          session[:service_request_id]     = sr.id
-          session[:sub_service_request_id] = ssr.id
-
           xhr :get, :save_and_exit, {
             id: sr.id,
+            sub_service_request_id: ssr.id,
             format: :html
           }
 
@@ -109,10 +103,9 @@ RSpec.describe ServiceRequestsController, type: :controller do
                      create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
           session[:identity_id]            = logged_in_user.id
-          session[:service_request_id]     = sr.id
-          session[:sub_service_request_id] = ssr.id
 
           xhr :get, :save_and_exit, {
+            sub_service_request_id: ssr.id,
             id: sr.id,
             format: :html
           }
@@ -131,8 +124,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
           ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org, status: 'first_draft')
                      create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
-          session[:service_request_id] = sr.id
-          session[:identity_id]        = logged_in_user.id
 
           xhr :get, :save_and_exit, {
             id: sr.id,
@@ -152,8 +143,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
         ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
                    create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
-        session[:service_request_id] = sr.id
-
         xhr :get, :save_and_exit, {
           id: sr.id,
           format: :html
@@ -169,8 +158,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
         sr       = create(:service_request_without_validations, protocol: protocol)
         ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
                    create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
-
-        session[:service_request_id] = sr.id
 
         xhr :get, :save_and_exit, {
           id: sr.id,

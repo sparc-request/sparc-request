@@ -38,10 +38,9 @@ RSpec.describe ArmsController, type: :controller do
       sr        = create(:service_request_without_validations, protocol: protocol)
       arm       = create(:arm_without_validations, protocol: protocol)
 
-      session[:service_request_id] = sr.id
-
       xhr :delete, :destroy, {
-        id: arm.id
+        id: arm.id,
+        service_request_id: sr.id
       }
 
       expect(assigns(:arm)).to eq(arm)
@@ -52,10 +51,9 @@ RSpec.describe ArmsController, type: :controller do
       sr        = create(:service_request_without_validations, protocol: protocol)
       arm       = create(:arm_without_validations, protocol: protocol)
 
-      session[:service_request_id] = sr.id
-
       xhr :delete, :destroy, {
-        id: arm.id
+        id: arm.id,
+        service_request_id: sr.id
       }
 
       expect(Arm.where(id: arm.id).empty?).to eq(true)
@@ -66,10 +64,9 @@ RSpec.describe ArmsController, type: :controller do
       sr        = create(:service_request_without_validations, protocol: protocol)
       arm       = create(:arm_without_validations, protocol: protocol)
 
-      session[:service_request_id] = sr.id
-
       xhr :delete, :destroy, {
-        id: arm.id
+        id: arm.id,
+        service_request_id: sr.id
       }
 
       expect(controller).to render_template(:destroy)
@@ -80,10 +77,9 @@ RSpec.describe ArmsController, type: :controller do
       sr        = create(:service_request_without_validations, protocol: protocol)
       arm       = create(:arm_without_validations, protocol: protocol)
 
-      session[:service_request_id] = sr.id
-
       xhr :delete, :destroy, {
-        id: arm.id
+        id: arm.id,
+        service_request_id: sr.id
       }
 
       expect(controller).to respond_with(:ok)

@@ -18,12 +18,16 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 $(document).ready ->
+  getSRId = () ->
+    $('input[name="service_request_id"]').val()
+
   $(document).on 'click', '#new-associated-user-button', ->
     $.ajax
       type: 'get'
       url: '/associated_users/new.js'
       data:
         protocol_id: $(this).data('protocol-id')
+        service_request_id: getSRId()
     return false
 
   $(document).on 'click', '.edit-associated-user-button', (event) ->
@@ -31,6 +35,8 @@ $(document).ready ->
     $.ajax
       type: 'get'
       url: "/associated_users/#{project_role_id}/edit.js"
+      data:
+        service_request_id: getSRId()
       success: ->
         if $('#project_role_role').val() == 'other'
           $('.role_dependent.other').show()
@@ -57,5 +63,5 @@ $(document).ready ->
       if confirm(confirm_message)
         $.ajax
           type: 'delete'
-          url: "/associated_users/#{project_role_id}"
+          url: "/associated_users/#{project_role_id}?service_request_id=#{getSRId()}"
     return false

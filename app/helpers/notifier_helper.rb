@@ -62,7 +62,7 @@ module NotifierHelper
     ssr_id = last_change.audited_changes['sub_service_request_id']
     if last_change.action == 'destroy'
       if SubServiceRequest.where(id: ssr_id).empty? && action_name == 'notify_user'
-        deleted_ssrs = AuditRecovery.where("audited_changes LIKE '%service_request_id: #{@service_request.id}%' AND auditable_type = 'SubServiceRequest' AND action = 'destroy' AND created_at BETWEEN '#{@service_request.previous_submitted_at.utc}' AND '#{Time.now.utc}'")
+        deleted_ssrs = @service_request.deleted_ssrs_since_previous_submission
         ssr = deleted_ssrs.select{ |ssr| ssr.auditable_id == ssr_id }.first
       else
         ssr = SubServiceRequest.find(ssr_id)

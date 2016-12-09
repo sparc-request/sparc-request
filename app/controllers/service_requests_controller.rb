@@ -491,7 +491,7 @@ class ServiceRequestsController < ApplicationController
       end
     end
 
-    destroyed_or_created_ssr = AuditRecovery.where("audited_changes LIKE '%service_request_id: #{@service_request.id}%' AND auditable_type = 'SubServiceRequest' AND action in ('destroy', 'create') AND created_at BETWEEN '#{@service_request.previous_submitted_at.utc}' AND '#{Time.now.utc}'")
+    destroyed_or_created_ssr = [@service_request.deleted_ssrs_since_previous_submission, @service_request.created_ssrs_since_previous_submission].flatten
 
     if !request_amendment_ssrs.empty?
       send_request_amendment(request_amendment_ssrs)

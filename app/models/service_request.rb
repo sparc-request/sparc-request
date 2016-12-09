@@ -319,6 +319,14 @@ class ServiceRequest < ActiveRecord::Base
     groupings
   end
 
+  def deleted_ssrs_since_previous_submission
+    AuditRecovery.where("audited_changes LIKE '%service_request_id: #{id}%' AND auditable_type = 'SubServiceRequest' AND action = 'destroy' AND created_at BETWEEN '#{previous_submitted_at.utc}' AND '#{Time.now.utc}'")
+  end
+
+  def created_ssrs_since_previous_submission
+    AuditRecovery.where("audited_changes LIKE '%service_request_id: #{id}%' AND auditable_type = 'SubServiceRequest' AND action = 'create' AND created_at BETWEEN '#{previous_submitted_at.utc}' AND '#{Time.now.utc}'")
+  end
+
   # Returns the line items that a service provider is associated with
   def service_provider_line_items(service_provider, items)
     service_provider_items = []

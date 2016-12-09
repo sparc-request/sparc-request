@@ -30,7 +30,7 @@ class ServiceRequestsReport < ReportingModule
   # see app/reports/test_report.rb for all options
   def default_options
     {
-      "Date Range" => {:field_type => :date_range, :for => "submitted_at", :from => "2012-03-01".to_date, :to => Date.today},
+      "Submission Date Range" => {:field_type => :date_range, :for => "submitted_at", :from => "2012-03-01".to_date, :to => Date.today},
       Institution => {:field_type => :select_tag, :has_dependencies => "true"},
       Provider => {:field_type => :select_tag, :dependency => '#institution_id', :dependency_id => 'parent_id'},
       Program => {:field_type => :select_tag, :dependency => '#provider_id', :dependency_id => 'parent_id'},
@@ -46,12 +46,12 @@ class ServiceRequestsReport < ReportingModule
     attrs = {}
 
     attrs["SRID"] = :display_id
+    attrs["Date Submitted"] = "submitted_at.strftime('%Y-%m-%d')"
     attrs["Status"] = :formatted_status
 
     attrs["Protocol Short Title"] = "service_request.try(:protocol).try(:short_title)"
     attrs["Full Protocol Title"] = "service_request.try(:protocol).try(:title)"
 
-    attrs["Date Submitted"] = "submitted_at.strftime('%Y-%m-%d')"
 
     if params[:institution_id]
       attrs[Institution] = [params[:institution_id], :abbreviation]
@@ -163,7 +163,7 @@ class ServiceRequestsReport < ReportingModule
 
     ssr_organization_ids = Organization.all.map(&:id) if ssr_organization_ids.compact.empty? # use all if none are selected
 
-    submitted_at ||= self.default_options["Date Range"][:from]..self.default_options["Date Range"][:to]
+    submitted_at ||= self.default_options["Submission Date Range"][:from]..self.default_options["Submission Date Range"][:to]
     statuses = args[:status] || AVAILABLE_STATUSES.keys # use all if none are selected
 
     return :sub_service_requests => {:organization_id => ssr_organization_ids, :status => statuses, :submitted_at => submitted_at}, :services => {:organization_id => service_organization_ids}

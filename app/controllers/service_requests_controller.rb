@@ -208,7 +208,7 @@ class ServiceRequestsController < ApplicationController
       @sub_service_request.update_attributes(status: 'submitted', nursing_nutrition_approved: false,
                                              lab_approved: false, imaging_approved: false, committee_approved: false) if UPDATABLE_STATUSES.include?(@sub_service_request.status)
     else
-      to_notify = update_service_request_status(@service_request, 'submitted')
+      to_notify = update_service_request_status(@service_request, 'submitted', true, true)
 
       @service_request.update_arm_minimum_counts
       @service_request.sub_service_requests.update_all(nursing_nutrition_approved: false, lab_approved: false, imaging_approved: false, committee_approved: false)
@@ -614,10 +614,10 @@ class ServiceRequestsController < ApplicationController
     Notifier.notify_for_epic_user_approval(protocol).deliver unless QUEUE_EPIC
   end
 
-  def update_service_request_status(service_request, status, validate=true)
+  def update_service_request_status(service_request, status, validate=true, submit=false)
     requests = []
     service_request.sub_service_requests.each do |ssr|
-      if UPDATABLE_STATUSES.include?(ssr.status)
+      if UPDATABLE_STATUSES.include?(ssr.status) || !submit
         requests << ssr
       end
     end
@@ -625,9 +625,8 @@ class ServiceRequestsController < ApplicationController
     if (status == 'submitted')
       service_request.previous_submitted_at = service_request.submitted_at
       service_request.update_attribute(:submitted_at, Time.now)
-      requests.each { |ssr| ssr.update_attributes(submitted_at: Time.now) }
     end
-    to_notify = service_request.update_status(status, validate)
+    to_notify = service_request.update_status(status, validate, submit)
 
     to_notify
   end

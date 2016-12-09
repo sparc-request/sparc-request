@@ -192,17 +192,20 @@ class ServiceRequestsController < ApplicationController
 
   def confirmation
     @protocol = @service_request.protocol
-    @service_request.previous_submitted_at = @service_request.submitted_at
-
-    #### REQUEST AMENDMENT EMAIL ####
-
+    #### FOR REQUEST AMENDMENT EMAIL ####
     # Grab ssrs that have been previously submitted
-    previously_submitted_ssrs = @service_request.sub_service_requests.where.not(submitted_at: nil)
-    #### END REQUEST AMENDMENT EMAIL ####
+    # Setting this to an array is necessary to grab the correct ssrs
+    previously_submitted_ssrs = @service_request.sub_service_requests.where.not(submitted_at: nil).to_a
+    #### END FOR REQUEST AMENDMENT EMAIL ####
+
+    # Flag for authorized users: when a new service has been added from
+    # a new ssr, only send the request amendment and not the initial confirmation email
+    send_request_amendment_and_not_initial = @service_request.original_submitted_date.present? && !previously_submitted_ssrs.empty?
+    @service_request.previous_submitted_at = @service_request.submitted_at
 
     to_notify = []
     if @sub_service_request
-      to_notify << @sub_service_request.id unless @sub_service_request.status == 'submitted'
+      to_notify << @sub_service_request.id unless @sub_service_request.status == 'submitted' || @sub_service_request.previously_submitted?
       @sub_service_request.update_attribute(:submitted_at, Time.now) unless @sub_service_request.status == 'submitted'
 
       @sub_service_request.update_attributes(status: 'submitted', nursing_nutrition_approved: false,
@@ -228,8 +231,9 @@ class ServiceRequestsController < ApplicationController
         send_epic_notification_for_user_approval(@protocol)
       end
     end
+
     send_request_amendment_email_evaluation(previously_submitted_ssrs) unless previously_submitted_ssrs.empty?
-    send_confirmation_notifications(to_notify) unless to_notify.empty?
+    send_confirmation_notifications(to_notify, send_request_amendment_and_not_initial) unless to_notify.empty?
     render formats: [:html]
   end
 
@@ -486,26 +490,36 @@ class ServiceRequestsController < ApplicationController
         request_amendment_ssrs << ssr
       end
     end
-    send_request_amendment(request_amendment_ssrs) unless request_amendment_ssrs.empty?
+
+    destroyed_or_created_ssr = AuditRecovery.where("audited_changes LIKE '%service_request_id: #{@service_request.id}%' AND auditable_type = 'SubServiceRequest' AND action in ('destroy', 'create') AND created_at BETWEEN '#{@service_request.previous_submitted_at.utc}' AND '#{Time.now.utc}'")
+
+    if !request_amendment_ssrs.empty?
+      send_request_amendment(request_amendment_ssrs)
+    elsif !destroyed_or_created_ssr.empty?
+      send_user_notifications(@service_request, request_amendment: true)
+    end
   end
 
-  # Request amendment is only sent to service providers and admin
   def send_request_amendment(sub_service_requests)
     sub_service_requests = [sub_service_requests].flatten
+    send_user_notifications(sub_service_requests.first.service_request, request_amendment: true)
     send_service_provider_notifications(sub_service_requests, request_amendment: true)
     send_admin_notifications(sub_service_requests, request_amendment: true)
   end
 
-  # Send notifications to all users.
-  def send_notifications(service_request, sub_service_requests)
-    send_user_notifications(service_request)
+  def send_notifications(service_request, sub_service_requests, send_request_amendment_and_not_initial= nil)
+    # If user has added a new service related to a new ssr and edited an existing ssr, 
+    # we only want to send a request amendment email and not an initial submit email
+    send_request_amendment_and_not_initial ? '' : send_user_notifications(service_request, request_amendment: false)
     send_admin_notifications(sub_service_requests, request_amendment: false)
     send_service_provider_notifications(sub_service_requests, request_amendment: false)
   end
 
-  def send_user_notifications(service_request)
+  def send_user_notifications(service_request, request_amendment: false)
     # Does an approval need to be created?  Check that the user
     # submitting has approve rights.
+    audit_report = request_amendment ? service_request.audit_report(current_user, service_request.previous_submitted_at.utc, Time.now.utc) : nil
+
     @service_list_false = service_request.service_list(false)
     @service_list_true = service_request.service_list(true)
     @line_items = @service_request.line_items
@@ -520,7 +534,7 @@ class ServiceRequestsController < ApplicationController
     # send e-mail to all folks with view and above
     service_request.protocol.project_roles.each do |project_role|
       next if project_role.project_rights == 'none' || project_role.identity.email.blank?
-      Notifier.notify_user(project_role, service_request, xls, approval, current_user).deliver_now
+      Notifier.notify_user(project_role, service_request, xls, approval, current_user, audit_report).deliver_now
     end
   end
 
@@ -536,7 +550,6 @@ class ServiceRequestsController < ApplicationController
     sub_service_requests.each do |sub_service_request|
 
       audit_report = request_amendment ? audit_report = sub_service_request.audit_report(current_user, sub_service_request.service_request.previous_submitted_at.utc, Time.now.utc) : nil
-
       sub_service_request.organization.submission_emails_lookup.each do |submission_email|
         @service_list_false = sub_service_request.service_request.service_list(false, nil, sub_service_request)
         @service_list_true = sub_service_request.service_request.service_list(true, nil, sub_service_request)
@@ -549,19 +562,17 @@ class ServiceRequestsController < ApplicationController
 
   def send_ssr_service_provider_notifications(sub_service_request, ssr_destroyed: false, request_amendment: false) #single sub-service request
     audit_report = request_amendment ? sub_service_request.audit_report(current_user, sub_service_request.service_request.previous_submitted_at.utc, Time.now.utc) : nil
-
     sub_service_request.organization.service_providers.where("(`service_providers`.`hold_emails` != 1 OR `service_providers`.`hold_emails` IS NULL)").each do |service_provider|
       send_individual_service_provider_notification(sub_service_request, service_provider, audit_report, ssr_destroyed, request_amendment)
     end
   end
 
-  def send_confirmation_notifications(to_notify)
+  def send_confirmation_notifications(to_notify, send_request_amendment_and_not_initial= nil)
     if @sub_service_request && to_notify.include?(@sub_service_request.id)
-      send_notifications(@service_request, [@sub_service_request])
+      send_notifications(@service_request, [@sub_service_request], send_request_amendment_and_not_initial)
     else
       sub_service_requests = @service_request.sub_service_requests.where(id: to_notify)
-
-      send_notifications(@service_request, sub_service_requests) unless sub_service_requests.empty? # if nothing is set to notify then we shouldn't send out e-mails
+      send_notifications(@service_request, sub_service_requests, send_request_amendment_and_not_initial) unless sub_service_requests.empty? # if nothing is set to notify then we shouldn't send out e-mails
     end
   end
 
@@ -616,19 +627,23 @@ class ServiceRequestsController < ApplicationController
 
   def update_service_request_status(service_request, status, validate=true)
     requests = []
+
     service_request.sub_service_requests.each do |ssr|
       if UPDATABLE_STATUSES.include?(ssr.status)
         requests << ssr
       end
     end
 
+    to_notify = service_request.update_status(status, validate)
+
     if (status == 'submitted')
       service_request.previous_submitted_at = service_request.submitted_at
       service_request.update_attribute(:submitted_at, Time.now)
       requests.each { |ssr| ssr.update_attributes(submitted_at: Time.now) }
     end
-    to_notify = service_request.update_status(status, validate)
 
+    requests.each { |ssr| ssr.update_past_status }
+    service_request.reload
     to_notify
   end
 

@@ -89,6 +89,10 @@ class SubServiceRequest < ActiveRecord::Base
     super(status)
   end
 
+  def previously_submitted?
+    !submitted_at.nil?
+  end
+
   def formatted_status
     if AVAILABLE_STATUSES.has_key? status
       AVAILABLE_STATUSES[status]

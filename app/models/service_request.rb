@@ -425,10 +425,9 @@ class ServiceRequest < ActiveRecord::Base
   # requests to the given status.
   def update_status(new_status, use_validation=true)
     to_notify = []
-
     self.assign_attributes(status: new_status)
 
-    self.sub_service_requests.each do |ssr|
+    sub_service_requests.each do |ssr|
       next unless ssr.can_be_edited? && !ssr.is_complete?
       available = AVAILABLE_STATUSES.keys
       editable = EDITABLE_STATUSES[ssr.organization_id] || available
@@ -437,7 +436,8 @@ class ServiceRequest < ActiveRecord::Base
       if changeable.include?(new_status)
         if (ssr.status != new_status) && UPDATABLE_STATUSES.include?(ssr.status)
           ssr.update_attribute(:status, new_status)
-          to_notify << ssr.id
+          # Do not notify (initial submit email) if ssr has been previously submitted
+          to_notify << ssr.id unless ssr.previously_submitted?
         end
       end
     end

@@ -269,26 +269,101 @@ RSpec.describe ServiceRequestsController, type: :controller do
     end
 
     context 'editing sub service request' do
-      context 'status not submitted' do
-        it 'should notify' do
-          org      = create(:organization)
-          service  = create(:service, organization: org, one_time_fee: true)
-          protocol = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
-          sr       = create(:service_request_without_validations, protocol: protocol)
-          ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org, status: 'draft')
-          li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
-                     create(:service_provider, identity: logged_in_user, organization: org)
+      context 'no session[:sub_service_request_id] = ssr.id' do
+        context 'status not submitted' do
+          context 'submitted_at: nil' do
+            it 'should notify' do
+              org      = create(:organization)
+              service  = create(:service, organization: org, one_time_fee: true)
+              protocol = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
+              sr       = create(:service_request_without_validations, protocol: protocol)
+              ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org, status: 'draft', submitted_at: nil)
+              li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
+                         create(:service_provider, identity: logged_in_user, organization: org)
 
-          session[:identity_id]            = logged_in_user.id
-          session[:service_request_id]     = sr.id
-          session[:sub_service_request_id] = ssr.id
+              session[:identity_id]            = logged_in_user.id
+              session[:service_request_id]     = sr.id
 
-          # previously_submitted_at is null so we get 2 emails
-          expect {
-            xhr :get, :confirmation, {
-              id: sr.id
-            }
-          }.to change(ActionMailer::Base.deliveries, :count).by(2)
+              # previously_submitted_at is null so we get 2 emails
+              expect {
+                xhr :get, :confirmation, {
+                  id: sr.id
+                }
+              }.to change(ActionMailer::Base.deliveries, :count).by(2)
+            end
+          end
+        end
+
+        context 'status not submitted' do
+          context 'submitted_at: Time.now' do
+            it 'should NOT notify' do
+              org      = create(:organization)
+              service  = create(:service, organization: org, one_time_fee: true)
+              protocol = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
+              sr       = create(:service_request_without_validations, protocol: protocol)
+              ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org, status: 'draft', submitted_at: Time.now)
+              li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
+                         create(:service_provider, identity: logged_in_user, organization: org)
+
+              session[:identity_id]            = logged_in_user.id
+              session[:service_request_id]     = sr.id
+
+              # previously_submitted_at is null so we get 2 emails
+              expect {
+                xhr :get, :confirmation, {
+                  id: sr.id
+                }
+              }.to change(ActionMailer::Base.deliveries, :count).by(0)
+            end
+          end
+        end
+      end
+
+      context 'session[:sub_service_request_id] = ssr.id' do
+        context 'submitted_at: nil' do
+          it 'should notify' do
+            org      = create(:organization)
+            service  = create(:service, organization: org, one_time_fee: true)
+            protocol = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
+            sr       = create(:service_request_without_validations, protocol: protocol)
+            ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org, status: 'draft', submitted_at: nil)
+            li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
+                       create(:service_provider, identity: logged_in_user, organization: org)
+
+            session[:identity_id]            = logged_in_user.id
+            session[:service_request_id]     = sr.id
+            session[:sub_service_request_id] = ssr.id
+
+            # previously_submitted_at is null so we get 2 emails
+            expect {
+              xhr :get, :confirmation, {
+                id: sr.id
+              }
+            }.to change(ActionMailer::Base.deliveries, :count).by(2)
+          end
+        end
+
+        context 'submitted_at: Time.now' do
+          it 'should NOT notify' do
+            org      = create(:organization)
+            service  = create(:service, organization: org, one_time_fee: true)
+            protocol = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
+            sr       = create(:service_request_without_validations, protocol: protocol)
+            ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org, status: 'draft', submitted_at: Time.now)
+            li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
+                       create(:service_provider, identity: logged_in_user, organization: org)
+
+            session[:identity_id]            = logged_in_user.id
+            session[:service_request_id]     = sr.id
+            session[:sub_service_request_id] = ssr.id
+
+            # previously_submitted_at is null so we get 2 emails
+            expect {
+              xhr :get, :confirmation, {
+                id: sr.id
+              }
+            }.to change(ActionMailer::Base.deliveries, :count).by(0)
+          end
         end
       end
 

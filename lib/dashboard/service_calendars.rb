@@ -138,17 +138,8 @@ module Dashboard
       url         = "/service_calendars/toggle_calendar_row?#{check_param}=true&service_request_id=#{line_items_visit.line_item.service_request.id}&line_items_visit_id=#{line_items_visit.id}&portal=#{portal.to_s}"
       url        += "&sub_service_request_id=#{sub_service_request.id}" if sub_service_request
 
-      link_to(
-        content_tag(:span, '', class: "glyphicon #{icon}"),
-        'javascript:void(0)',
-        method: :post,
-        remote: true,
-        role: 'button',
-        class: "btn btn-xs #{klass} service-calendar-row",
-        id: "check-all-row-#{line_items_visit.id}",
-        data: { url: url },
-        disabled: locked
-      )
+      content_tag(:span, '', class: "glyphicon #{icon} btn btn-xs #{klass} service-calendar-row",
+                  id: "check-all-row-#{line_items_visit.id}", data: { url: url }, disabled: locked)
     end
 
     def self.select_column(visit_group, n, portal, service_request, sub_service_request)

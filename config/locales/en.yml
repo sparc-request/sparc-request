@@ -84,7 +84,7 @@ en:
       visit_count: "Visit Count"
     delete_warning: "Are you sure you want to delete this arm?"
     screening_tooltip: "Enter the number of subjects you expect to screen as well as how many screening visits are required. If no screening phase is required, you can change the name of the Arm to meet your needs."
-    name_tooltip: "Arm Name must be unique within a protocol, and the following special characters are not allowed: [ ] * / \ ? : )."
+    name_tooltip: "Arm Name must be unique within a protocol, and the following special characters are not allowed: [ ] * / \\ ? : )."
 
   #######################
   # AUTHORIZATION ERROR #

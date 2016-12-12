@@ -157,7 +157,7 @@ class Notifier < ActionMailer::Base
     @ssr = sub_service_request
 
     email_to = identity.email
-    subject = "#{t(:mailer)[:application_title]} - service request deleted"
+    subject = "#{sub_service_request.service_request.protocol.id} - #{t(:mailer)[:application_title]} - service request deleted"
 
     mail(:to => email_to, :from => NO_REPLY_FROM, :subject => subject)
   end
@@ -166,7 +166,7 @@ class Notifier < ActionMailer::Base
     @protocol = protocol
     @primary_pi = @protocol.primary_principal_investigator
 
-    subject = 'Epic Rights Approval'
+    subject = "#{@protocol.id} - Epic Rights Approval"
 
     mail(:to => EPIC_RIGHTS_MAIL_TO, :from => NO_REPLY_FROM, :subject => subject)
   end
@@ -176,7 +176,7 @@ class Notifier < ActionMailer::Base
     @primary_pi = @protocol.primary_principal_investigator
 
     email_to = @primary_pi.email
-    subject = 'Epic Rights User Approval'
+    subject = "#{@protocol.id} - Epic Rights User Approval"
 
     mail(:to => email_to, :from => NO_REPLY_FROM, :subject => subject)
   end
@@ -186,7 +186,7 @@ class Notifier < ActionMailer::Base
     @primary_pi = @protocol.primary_principal_investigator
     @project_role = project_role
 
-    subject = 'Epic User Removal'
+    subject = "#{@protocol.id} - Epic User Removal"
 
     mail(:to => EPIC_RIGHTS_MAIL_TO, :from => NO_REPLY_FROM, :subject => subject)
   end
@@ -195,7 +195,7 @@ class Notifier < ActionMailer::Base
     @protocol = protocol
     @project_role = project_role
 
-    subject = 'Remove Epic Access'
+    subject = "#{@protocol.id} - Remove Epic Access"
 
     mail(:to => EPIC_RIGHTS_MAIL_TO, :from => NO_REPLY_FROM, :subject => subject)
   end
@@ -206,7 +206,7 @@ class Notifier < ActionMailer::Base
     @added_rights = project_role.epic_rights - previous_rights
     @removed_rights = previous_rights - project_role.epic_rights
 
-    subject = 'Update Epic Access'
+    subject = "#{@protocol.id} - Update Epic Access"
 
     mail(:to => EPIC_RIGHTS_MAIL_TO, :from => NO_REPLY_FROM, :subject => subject)
   end
@@ -214,7 +214,7 @@ class Notifier < ActionMailer::Base
   def epic_queue_error protocol, error=nil
     @protocol = protocol
     @error = error
-    mail(:to => QUEUE_EPIC_LOAD_ERROR_TO, :from => NO_REPLY_FROM, :subject => "Error batch loading protocol to Epic")
+    mail(:to => QUEUE_EPIC_LOAD_ERROR_TO, :from => NO_REPLY_FROM, :subject => "#{@protocol.id} - Error batch loading protocol to Epic")
   end
 
   def epic_queue_report

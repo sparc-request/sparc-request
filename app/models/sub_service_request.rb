@@ -329,6 +329,12 @@ class SubServiceRequest < ActiveRecord::Base
     end
   end
 
+  def set_to_draft(admin)
+    if !admin && status != 'draft'
+      self.update_attributes(status: 'draft')
+    end
+  end
+
   # If the ssr can't be edited AND it's a request that restricts editing AND there are multiple ssrs under it's service request
   # (no need to create a new sr if there's only one ssr) AND it's previous status was an editable one
   # AND it's new status is an uneditable one, then create a new sr and place the ssr under it. Probably don't need the last condition.

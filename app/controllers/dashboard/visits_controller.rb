@@ -24,8 +24,10 @@ class Dashboard::VisitsController < Dashboard::BaseController
   # Used for x-editable update and validations
   def update
     @visit = Visit.find( params[:id] )
+    admin = params[:service_request_id] ? false : true
 
     if @visit.update_attributes( params[:visit] )
+      @visit.line_items_visit.sub_service_request.set_to_draft(@admin)
       render nothing: true
     else
       render json: @visit.errors, status: :unprocessable_entity

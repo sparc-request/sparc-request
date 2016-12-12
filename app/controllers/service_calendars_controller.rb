@@ -51,7 +51,7 @@ class ServiceCalendarsController < ApplicationController
     @consolidated = false
     @pages        = eval(params[:pages])
 
-    update_sub_service_request_status(visit.line_items_visit.sub_service_request, @admin)
+    visit.line_items_visit.sub_service_request.set_to_draft(@admin)
 
     if params[:checked] == 'true'
       unit_minimum = visit.line_items_visit.line_item.service.displayed_pricing_map.unit_minimum
@@ -234,12 +234,6 @@ class ServiceCalendarsController < ApplicationController
     @service_request.arms.each do |arm|
       new_page        = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i
       @pages[arm.id]  = @service_request.set_visit_page(new_page, arm)
-    end
-  end
-
-  def update_sub_service_request_status(sub_service_request, admin)
-    if !admin && sub_service_request.status != 'draft'
-      sub_service_request.update_attributes(status: 'draft')
     end
   end
 end

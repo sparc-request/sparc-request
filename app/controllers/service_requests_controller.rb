@@ -68,7 +68,8 @@ class ServiceRequestsController < ApplicationController
     if @errors.any?
       render action: @page
     else
-      redirect_to "/service_requests/#{@service_request.id}/#{@forward}"
+      ssr_id_params = @sub_service_request ? "?sub_service_request_id=#{@sub_service_request.id}" : ""
+      redirect_to "/service_requests/#{@service_request.id}/#{@forward}" + ssr_id_params
     end
   end
 
@@ -144,7 +145,8 @@ class ServiceRequestsController < ApplicationController
     end
 
     if !@has_subsidy && !@eligible_for_subsidy
-      redirect_to "/service_requests/#{@service_request.id}/document_management"
+      ssr_id_params = @sub_service_request ? "?sub_service_request_id=#{@sub_service_request.id}" : ""
+      redirect_to "/service_requests/#{@service_request.id}/document_management" + ssr_id_params
     end
   end
 
@@ -246,7 +248,7 @@ class ServiceRequestsController < ApplicationController
           update_service_request_status(@service_request, 'draft', false)
           @service_request.ensure_ssr_ids
         end
-        redirect_to dashboard_root_path
+        redirect_to dashboard_root_path, sub_service_request_id: @sub_service_request.try(:id)
       }
       format.js
     end
@@ -383,7 +385,7 @@ class ServiceRequestsController < ApplicationController
       @service_request.errors.full_messages.each do |m|
         flash[:error] = m
       end
-      redirect_to catalog_service_request_path(@service_request) and return false
+      redirect_to catalog_service_request_path(@service_request, sub_service_request_id: @sub_service_request.try(:id)) and return false
     end
     return true
   end
@@ -393,7 +395,7 @@ class ServiceRequestsController < ApplicationController
       @service_request.errors.full_messages.each do |m|
         flash[:error] = m
       end
-      redirect_to protocol_service_request_path(@service_request) and return false
+      redirect_to protocol_service_request_path(@service_request, sub_service_request_id: @sub_service_request.try(:id)) and return false
     end
     return true
   end
@@ -403,7 +405,7 @@ class ServiceRequestsController < ApplicationController
       @service_request.errors.full_messages.each do |m|
         flash[:error] = m
       end
-      redirect_to service_details_service_request_path(@service_request) and return false
+      redirect_to service_details_service_request_path(@service_request, sub_service_request_id: @sub_service_request.try(:id)) and return false
     end
     return true
   end
@@ -413,7 +415,7 @@ class ServiceRequestsController < ApplicationController
       @service_request.errors.full_messages.each do |m|
         flash[:error] = m
       end
-      redirect_to service_calendar_service_request_path(@service_request) and return false
+      redirect_to service_calendar_service_request_path(@service_request, sub_service_request_id: @sub_service_request.try(:id)) and return false
     end
     return true
   end

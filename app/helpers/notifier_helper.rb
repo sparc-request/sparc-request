@@ -51,10 +51,26 @@ module NotifierHelper
   def display_audit_table(status, audit_report)
     if status == 'request_amendment' && audit_report.present? && audit_report[:line_items].present?
       render "audit_action"
-    end
+    end   
   end
 
   def display_notes?(status, role, notes)
     (status == "submitted" || status == "request_amendment") && role == 'none' && !notes.empty?
+  end
+
+  def determine_ssr(last_change, action_name)
+    ssr_id = last_change.audited_changes['sub_service_request_id']
+    if last_change.action == 'destroy'
+      # This condition signifies a deleted SSR
+      if SubServiceRequest.where(id: ssr_id).empty? && action_name == 'notify_user'
+        deleted_ssrs = @service_request.deleted_ssrs_since_previous_submission
+        ssr = deleted_ssrs.select{ |ssr| ssr.auditable_id == ssr_id }.first
+      else
+        ssr = SubServiceRequest.find(ssr_id)
+      end
+    else
+      ssr = LineItem.find(last_change.auditable_id).sub_service_request
+    end
+    ssr
   end
 end

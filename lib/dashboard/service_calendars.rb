@@ -154,16 +154,11 @@ module Dashboard
       url           = "/service_calendars/toggle_calendar_column?#{check_param}=true&service_request_id=#{service_request.id}&column_id=#{n + 1}&arm_id=#{arm_id}&portal=#{portal.to_s}"
       url          += "&sub_service_request_id=#{sub_service_request.id}" if sub_service_request
 
-      link_to(
-        content_tag(:span, '', class: "glyphicon #{icon}"),
-        '#',
-        method: :post,
-        remote: true,
+      content_tag(:span, '',
         role: 'button',
-        class: "btn btn-xs #{klass} service-calendar-column",
+        class: "btn btn-xs #{klass} service-calendar-column glyphicon #{icon}",
         id: "check-all-column-#{n+1}",
-        data: { url: url }
-      )
+        data: { url: url })
     end
   end
 end

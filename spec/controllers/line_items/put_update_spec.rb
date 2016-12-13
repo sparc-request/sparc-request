@@ -125,7 +125,7 @@ RSpec.describe LineItemsController, type: :controller do
         expect(ssr.reload.status).to eq('draft')
       end
 
-      it 'should render template' do
+      it 'should render nothing' do
         protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr        = create(:service_request_without_validations, protocol: protocol)
         org       = create(:organization)
@@ -140,7 +140,7 @@ RSpec.describe LineItemsController, type: :controller do
           line_item: li_params
         }
 
-        expect(controller).to render_template(partial: 'service_calendars/_update_service_calendar')
+        expect(response.body).to be_blank
       end
 
       it 'should respond ok' do

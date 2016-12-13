@@ -30,7 +30,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     admin_orgs   = @user.authorized_admin_organizations
     @admin       = !admin_orgs.empty?
 
-    @default_filter_params = { show_archived: 0 }
+    @default_filter_params = { show_archived: 0, sorted_by: 'id desc' }
 
     # if we are an admin we want to default to admin organizations
     if @admin
@@ -53,10 +53,10 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
         persistence_id: false #resets filters on page reload
       ) || return
 
-    @protocols          = @filterrific.find.page(params[:page])
-
-    @admin_protocols    = Protocol.for_admin(@user.id).pluck(:id)
-    @protocol_filters   = ProtocolFilter.latest_for_user(@user.id, 5)
+    @protocols        = @filterrific.find.page(params[:page])
+    @admin_protocols  = Protocol.for_admin(@user.id).pluck(:id)
+    @protocol_filters = ProtocolFilter.latest_for_user(@user.id, 5)
+    
     #toggles the display of the navigation bar, instead of breadcrumbs
     @show_navbar      = true
     @show_messages    = true

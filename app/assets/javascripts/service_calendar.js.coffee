@@ -88,6 +88,7 @@ $(document).ready ->
       data:
         arm_id: $('#arm_id').val()
         visit_group_id: $(this).val()
+        service_request_id: getSRId()
 
 
 (exports ? this).changing_tabs_calculating_rates = ->

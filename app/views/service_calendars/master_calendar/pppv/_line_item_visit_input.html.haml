@@ -23,13 +23,13 @@
 - when 'billing_strategy'
   .row
     - if locked
-      .col-xs-4.text-center
+      .col-xs-4.text-center.no-padding
         .research-billing-qty
           = visit.research_billing_qty
-      .col-xs-4.text-center
+      .col-xs-4.text-center.no-padding
         .insurance-billing-qty
           = visit.insurance_billing_qty
-      .col-xs-4.text-center
+      .col-xs-4.text-center.no-padding
         .effort-billing-qty
           = visit.effort_billing_qty
     - else

@@ -34,6 +34,8 @@ $(document).ready ->
         url: $(this).data('url')
 
   $(document).on 'click', '.service-calendar-row', ->
+    return false if $(this).attr("disabled")
+
     if confirm(I18n['calendars']['confirm_row_select'])
       $.ajax
         type: 'post'

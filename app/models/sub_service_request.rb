@@ -312,7 +312,7 @@ class SubServiceRequest < ActiveRecord::Base
       self_or_parent_id = find_editable_id(self.organization.id)
       EDITABLE_STATUSES[self_or_parent_id].include?(self.status)
     else
-      true
+      !is_complete?
     end
   end
 

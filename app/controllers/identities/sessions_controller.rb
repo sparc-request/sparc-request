@@ -17,7 +17,19 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-$('#modal_place').html("<%= escape_javascript(render( 'service_calendars/move_visits_modal', arm: @arm, visit_group: @visit_group, service_request: @service_request)) %>")
-$('#modal_place').modal('show')
-$('.selectpicker').selectpicker()
-set_required_fields()
+
+class Identities::SessionsController < Devise::SessionsController
+  def new
+    # Redirect url after login.
+    @redirect_to = params[:redirect_to]
+    super
+  end
+
+  def create
+    self.resource = resource_class.new(sign_in_params)
+
+    # Pass redirect url to ApplicationController for redirect.
+    store_location_for(resource, params[:redirect_to])
+    super
+  end
+end

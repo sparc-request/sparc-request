@@ -27,7 +27,7 @@ class UserMailer < ActionMailer::Base
     @send_to = user
     @protocol = protocol
     @protocol_link = DASHBOARD_LINK + "/protocols/#{@protocol.id}"
-    send_message("#{t(:mailer)[:application_title]} Authorized Users")
+    send_message("#{@protocol.id} - #{t(:mailer)[:application_title]} Authorized Users")
   end
 
   def notification_received(user, ssr)

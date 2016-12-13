@@ -192,7 +192,7 @@ en:
       view_active: "View Active"
       view_complete: "View Complete"
       tab_headers:
-        active: "Active"
+        open: "Open"
         complete: "Completed"
       no_active_services_message: "You do not have any active requested Services"
       no_complete_services_message: "You do not have any requested Services in 'Complete' status"

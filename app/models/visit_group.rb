@@ -85,10 +85,7 @@ class VisitGroup < ActiveRecord::Base
 
   # TODO: remove after day_must_be_in_order validation is fixed.
   def in_order?
-    position_col = VisitGroup.arel_table[:position]
-    day_col = VisitGroup.arel_table[:day]
-    arm.visit_groups.where(position_col.lt(position).and(day_col.gteq(day)).or(
-                           position_col.gt(position).and(day_col.lteq(day)))).none?
+    arm.visit_groups.where("position < ? AND day >= ? OR position > ? AND day <= ?", position, day, position, day).none?
   end
 
   private

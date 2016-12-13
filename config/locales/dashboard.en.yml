@@ -297,8 +297,8 @@ en:
           in_fulfillment: "In Fulfillment"
           send_to_fulfillment: "Send to Fulfillment"
           not_enabled: "Not enabled in SPARCCatalog."
-        cost: "Current Cost"
-        user_cost: "User Display Cost"
+        cost: "Cost"
+        user_cost: "Total Cost"
 
       tabs:
         request_details:

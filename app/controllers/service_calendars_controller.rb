@@ -50,6 +50,9 @@ class ServiceCalendarsController < ApplicationController
     @admin        = params[:admin] == 'true'
     @consolidated = false
     @pages        = eval(params[:pages])
+
+    visit.line_items_visit.sub_service_request.set_to_draft(@admin)
+
     if params[:checked] == 'true'
       unit_minimum = visit.line_items_visit.line_item.service.displayed_pricing_map.unit_minimum
 

@@ -42,10 +42,9 @@ RSpec.describe CatalogsController, type: :controller do
       sr        = create(:service_request_without_validations, protocol: protocol)
       org       = create(:organization)
 
-      session[:service_request_id] = sr.id
-
       xhr :post, :update_description, {
-        id: org.id
+        id: org.id,
+        service_request_id: sr.id
       }
 
       expect(assigns(:organization)).to eq(org)
@@ -56,11 +55,10 @@ RSpec.describe CatalogsController, type: :controller do
       sr        = create(:service_request_without_validations, protocol: protocol)
       org       = create(:organization)
 
-      session[:service_request_id] = sr.id
-
       xhr :post, :update_description, {
         id: org.id,
-        process_ssr_found: 'true'
+        process_ssr_found: 'true',
+        service_request_id: sr.id
       }
 
       expect(assigns(:process_ssr_found)).to eq(true)
@@ -73,12 +71,11 @@ RSpec.describe CatalogsController, type: :controller do
         org       = create(:organization)
         ssr       = create(:sub_service_request_without_validations, service_request: sr, organization: org)
 
-      session[:service_request_id]     = sr.id
-      session[:sub_service_request_id] = ssr.id
-
       xhr :post, :update_description, {
         id: org.id,
-        process_ssr_found: 'true'
+        process_ssr_found: 'true',
+        service_request_id: sr.id,
+        sub_service_request_id: ssr.id
       }
 
       expect(assigns(:ssr_org)).to eq(org)
@@ -90,10 +87,9 @@ RSpec.describe CatalogsController, type: :controller do
       sr        = create(:service_request_without_validations, protocol: protocol)
       org       = create(:organization)
 
-      session[:service_request_id] = sr.id
-
       xhr :post, :update_description, {
-        id: org.id
+        id: org.id,
+        service_request_id: sr.id
       }
 
       expect(controller).to render_template(:update_description)
@@ -104,10 +100,9 @@ RSpec.describe CatalogsController, type: :controller do
       sr        = create(:service_request_without_validations, protocol: protocol)
       org       = create(:organization)
 
-      session[:service_request_id] = sr.id
-
       xhr :post, :update_description, {
-        id: org.id
+        id: org.id,
+        service_request_id: sr.id
       }
 
       expect(controller).to respond_with(:ok)

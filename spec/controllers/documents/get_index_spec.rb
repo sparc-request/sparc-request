@@ -39,9 +39,9 @@ RSpec.describe DocumentsController, type: :controller do
       sr        = create(:service_request_without_validations, protocol: protocol)
                   create(:document, protocol: protocol)
 
-      session[:service_request_id] = sr.id
 
       xhr :get, :index, {
+        service_request_id: sr.id,
         protocol_id: protocol.id
       }
 
@@ -53,9 +53,9 @@ RSpec.describe DocumentsController, type: :controller do
       sr        = create(:service_request_without_validations, protocol: protocol)
                   create(:document, protocol: protocol)
 
-      session[:service_request_id] = sr.id
 
       xhr :get, :index, {
+        service_request_id: sr.id,
         protocol_id: protocol.id
       }
 
@@ -67,9 +67,9 @@ RSpec.describe DocumentsController, type: :controller do
       sr        = create(:service_request_without_validations, protocol: protocol)
                   create(:document, protocol: protocol)
 
-      session[:service_request_id] = sr.id
 
       xhr :get, :index, {
+        service_request_id: sr.id,
         protocol_id: protocol.id
       }
 
@@ -81,9 +81,9 @@ RSpec.describe DocumentsController, type: :controller do
       sr        = create(:service_request_without_validations, protocol: protocol)
                   create(:document, protocol: protocol)
 
-      session[:service_request_id] = sr.id
 
       xhr :get, :index, {
+        service_request_id: sr.id,
         protocol_id: protocol.id
       }
 

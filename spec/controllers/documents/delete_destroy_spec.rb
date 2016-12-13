@@ -39,9 +39,9 @@ RSpec.describe DocumentsController, type: :controller do
       sr          = create(:service_request_without_validations, protocol: protocol)
       doc         = create(:document, protocol: protocol)
 
-      session[:service_request_id] = sr.id
 
       xhr :delete, :destroy, {
+        service_request_id: sr.id,
         id: doc.id
       }
 
@@ -53,9 +53,9 @@ RSpec.describe DocumentsController, type: :controller do
       sr          = create(:service_request_without_validations, protocol: protocol)
       doc         = create(:document, protocol: protocol)
 
-      session[:service_request_id] = sr.id
 
       xhr :delete, :destroy, {
+        service_request_id: sr.id,
         id: doc.id
       }
 
@@ -67,9 +67,9 @@ RSpec.describe DocumentsController, type: :controller do
       sr          = create(:service_request_without_validations, protocol: protocol)
       doc         = create(:document, protocol: protocol)
 
-      session[:service_request_id] = sr.id
 
       xhr :delete, :destroy, {
+        service_request_id: sr.id,
         id: doc.id
       }
 
@@ -81,9 +81,9 @@ RSpec.describe DocumentsController, type: :controller do
       sr          = create(:service_request_without_validations, protocol: protocol)
       doc         = create(:document, protocol: protocol)
 
-      session[:service_request_id] = sr.id
 
       xhr :delete, :destroy, {
+        service_request_id: sr.id,
         id: doc.id
       }
 

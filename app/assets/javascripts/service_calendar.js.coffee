@@ -21,6 +21,12 @@
 #= require navigation
 
 $(document).ready ->
+  getSRId = ->
+    $("input[name='service_request_id']").val()
+
+  getSSRId = ->
+    $("input[name='sub_service_request_id']").val()
+
   $(document).on 'click', '.page-change-arrow', ->
     unless $(this).attr('disabled')
       $.ajax
@@ -28,6 +34,8 @@ $(document).ready ->
         url: $(this).data('url')
 
   $(document).on 'click', '.service-calendar-row', ->
+    return false if $(this).attr("disabled")
+
     if confirm(I18n['calendars']['confirm_row_select'])
       $.ajax
         type: 'post'
@@ -53,7 +61,9 @@ $(document).ready ->
     $.ajax
       type: 'GET'
       url: '/service_calendars/show_move_visits'
-      data: arm_id: arm_id
+      data:
+        arm_id: arm_id
+        service_request_id: getSRId()
     return false
 
   $(document).on 'change', '.visit-quantity', ->
@@ -67,6 +77,8 @@ $(document).ready ->
         visit_id: $(this).data('visit-id')
         portal: $(this).data('portal')
         sub_service_request_id: $(this).data('ssrid')
+        service_request_id: getSRId()
+        sub_service_request_id: getSSRId()
       url: $(this).attr('update')
 
   $(document).on 'change', '#visit_group', ->
@@ -109,14 +121,18 @@ calculate_max_rates = (arm_id) ->
     $(".arm-calendar-container-#{arm_id}:visible #{column}.max-indirect-per-patient").html(indirect_total_display)
     $(".arm-calendar-container-#{arm_id}:visible #{column}.max-total-per-patient").html(max_total_display)
 
+getSRId = ->
+  $("input[name='service_request_id']").val()
+
 (exports ? this).setup_xeditable_fields = () ->
   reload_calendar = (arm_id) ->
     # E.g. "billing-strategy-tab" -> "billing_strategy"
     tab = $('li.custom-tab.active a').last().attr('id')
-    tab = tab.substring(0, tab.indexOf("tab") - 1).replace("-", "_");
+    tab = tab.substring(0, tab.indexOf("tab") - 1).replace("-", "_")
     data = $('#service-calendars').data()
     data.tab = tab
     data.arm_id = arm_id
+    data.service_request_id = getSRId()
     # Reload calendar
     $.get '/service_calendars/table.js', data
 
@@ -134,24 +150,36 @@ calculate_max_rates = (arm_id) ->
 
   $('.window-before').editable
     params: (params) ->
-      data = 'visit_group': { 'window_before': params.value }
-      return data
+      {
+        visit_group:
+          window_before: params.value
+        service_request_id: getSRId()
+      }
 
   $('.day').editable
     params: (params) ->
-      data = 'visit_group': { 'day': params.value }
-      return data
+      {
+        visit_group:
+          day: params.value
+        service_request_id: getSRId()
+      }
     emptytext: '(?)'
 
   $('.window-after').editable
     params: (params) ->
-      data = 'visit_group': { 'window_after': params.value }
-      return data
+      {
+        visit_group:
+          window_after: params.value
+        service_request_id: getSRId()
+      }
 
   $('.visit-group-name').editable
     params: (params) ->
-      data = 'visit_group': { 'name': params.value }
-      return data
+      {
+        visit_group:
+          name: params.value
+        service_request_id: getSRId()
+      }
     emptytext: '(?)'
 
   $('.edit-your-cost').editable
@@ -159,40 +187,61 @@ calculate_max_rates = (arm_id) ->
       # display field as currency, edit as quantity
       $(this).text("$" + parseFloat(value).toFixed(2))
     params: (params) ->
-      data = 'line_item': { 'displayed_cost': params.value }
-      return data
+      {
+        line_item:
+          displayed_cost: params.value
+        service_request_id: getSRId()
+      }
     success: ->
 
   $('.edit-subject-count').editable
     params: (params) ->
-      data = 'line_items_visit': { 'subject_count': params.value }
-      return data
+      {
+        line_items_visit:
+          subject_count: params.value
+        service_request_id: getSRId()
+      }
     success: () ->
       reload_calendar($(this).data('armId'))
 
   $('.edit-research-billing-qty').editable
     params: (params) ->
-      data = 'visit': { 'research_billing_qty': params.value }
-      return data
+      {
+        visit:
+          research_billing_qty: params.value
+        service_request_id: getSRId()
+      }
     success: () ->
       reload_calendar($(this).data('armId'))
 
   $('.edit-insurance-billing-qty').editable
     params: (params) ->
-      data = 'visit': { 'insurance_billing_qty': params.value }
-      return data
+      {
+        visit:
+          insurance_billing_qty: params.value
+        service_request_id: getSRId()
+      }
 
   $('.edit-effort-billing-qty').editable
     params: (params) ->
-      data = 'visit': { 'effort_billing_qty': params.value }
-      return data
+      {
+        visit:
+          effort_billing_qty: params.value
+        service_request_id: getSRId()
+      }
 
   $('.edit-qty').editable
     params: (params) ->
-      data = 'line_item': { 'quantity': params.value }
-      return data
+      {
+        line_item:
+          quantity: params.value
+        service_request_id: getSRId()
+      }
 
   $('.edit-units-per-qty').editable
     params: (params) ->
-      data = 'line_item': { 'units_per_quantity': params.value }
-      return data
+      {
+        line_item:
+          units_per_quantity: params.value
+        service_request_id: getSRId()
+      }

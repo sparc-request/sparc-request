@@ -89,6 +89,10 @@ class SubServiceRequest < ActiveRecord::Base
     super(status)
   end
 
+  def previously_submitted?
+    !submitted_at.nil?
+  end
+
   def formatted_status
     if AVAILABLE_STATUSES.has_key? status
       AVAILABLE_STATUSES[status]
@@ -308,7 +312,7 @@ class SubServiceRequest < ActiveRecord::Base
       self_or_parent_id = find_editable_id(self.organization.id)
       EDITABLE_STATUSES[self_or_parent_id].include?(self.status)
     else
-      true
+      !is_complete?
     end
   end
 
@@ -322,6 +326,12 @@ class SubServiceRequest < ActiveRecord::Base
       if (org_id == id) || parent_ids.include?(org_id)
         return org_id
       end
+    end
+  end
+
+  def set_to_draft(admin)
+    if !admin && status != 'draft'
+      self.update_attributes(status: 'draft')
     end
   end
 

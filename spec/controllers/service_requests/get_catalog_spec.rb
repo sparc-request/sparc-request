@@ -49,8 +49,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
         protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr       = create(:service_request_without_validations, protocol: protocol)
 
-        session[:service_request_id] = sr.id
-
         xhr :get, :catalog, {
           id: sr.id
         }
@@ -71,10 +69,8 @@ RSpec.describe ServiceRequestsController, type: :controller do
         sr       = create(:service_request_without_validations, protocol: protocol)
         ssr      = create(:sub_service_request_without_validations, organization: prgrm, service_request: sr)
 
-        session[:sub_service_request_id]  = ssr.id
-        session[:service_request_id]      = sr.id
-
         xhr :get, :catalog, {
+          sub_service_request_id: ssr.id,
           id: sr.id
         }
 
@@ -89,7 +85,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
         sr       = create(:service_request_without_validations, protocol: protocol)
 
         stub_const('USE_GOOGLE_CALENDAR', true)
-        session[:service_request_id] = sr.id
 
         xhr :get, :catalog, {
           id: sr.id
@@ -105,7 +100,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
         sr       = create(:service_request_without_validations, protocol: protocol)
 
         stub_const('USE_NEWS_FEED', true)
-        session[:service_request_id] = sr.id
 
         xhr :get, :catalog, {
           id: sr.id
@@ -119,7 +113,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
 
-      session[:service_request_id] = sr.id
 
       xhr :get, :catalog, {
         id: sr.id
@@ -132,7 +125,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
 
-      session[:service_request_id] = sr.id
 
       xhr :get, :catalog, {
         id: sr.id

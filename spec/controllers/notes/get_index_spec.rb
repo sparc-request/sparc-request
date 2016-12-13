@@ -30,9 +30,9 @@ RSpec.describe NotesController, type: :controller do
       sr          = create(:service_request_without_validations, protocol: protocol)
       note_params = { notable_id: sr.id, notable_type: 'ServiceRequest' }
 
-      session[:service_request_id] = sr.id
 
       xhr :get, :index, {
+        service_request_id: sr.id,
         note: note_params
       }
 
@@ -44,9 +44,9 @@ RSpec.describe NotesController, type: :controller do
       sr          = create(:service_request_without_validations, protocol: protocol)
       note_params = { notable_id: sr.id, notable_type: 'ServiceRequest' }
 
-      session[:service_request_id] = sr.id
 
       xhr :get, :index, {
+        service_request_id: sr.id,
         note: note_params
       }
 
@@ -58,9 +58,9 @@ RSpec.describe NotesController, type: :controller do
       sr          = create(:service_request_without_validations, protocol: protocol)
       note_params = { notable_id: sr.id, notable_type: 'ServiceRequest' }
 
-      session[:service_request_id] = sr.id
 
       xhr :get, :index, {
+        service_request_id: sr.id,
         note: note_params
       }
 
@@ -72,9 +72,9 @@ RSpec.describe NotesController, type: :controller do
       sr          = create(:service_request_without_validations, protocol: protocol)
       note_params = { notable_id: sr.id, notable_type: 'ServiceRequest' }
 
-      session[:service_request_id] = sr.id
 
       xhr :get, :index, {
+        service_request_id: sr.id,
         note: note_params,
         in_dashboard: 'true'
       }
@@ -89,9 +89,9 @@ RSpec.describe NotesController, type: :controller do
                       create(:note, notable: sr, identity: logged_in_user)
         note_params = { notable_id: sr.id, notable_type: 'ServiceRequest' }
 
-        session[:service_request_id] = sr.id
 
         xhr :get, :index, {
+        service_request_id: sr.id,
           note: note_params,
           format: :json
         }
@@ -104,9 +104,9 @@ RSpec.describe NotesController, type: :controller do
         sr          = create(:service_request_without_validations, protocol: protocol)
         note_params = { notable_id: sr.id, notable_type: 'ServiceRequest' }
 
-        session[:service_request_id] = sr.id
 
         xhr :get, :index, {
+        service_request_id: sr.id,
           note: note_params,
           format: :json
         }
@@ -120,9 +120,9 @@ RSpec.describe NotesController, type: :controller do
       sr          = create(:service_request_without_validations, protocol: protocol)
       note_params = { notable_id: sr.id, notable_type: 'ServiceRequest' }
 
-      session[:service_request_id] = sr.id
 
       xhr :get, :index, {
+        service_request_id: sr.id,
         note: note_params
       }
 
@@ -134,9 +134,9 @@ RSpec.describe NotesController, type: :controller do
       sr          = create(:service_request_without_validations, protocol: protocol)
       note_params = { notable_id: sr.id, notable_type: 'ServiceRequest' }
 
-      session[:service_request_id] = sr.id
 
       xhr :get, :index, {
+        service_request_id: sr.id,
         note: note_params
       }
 

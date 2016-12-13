@@ -52,7 +52,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
       session[:identity_id]        = logged_in_user.id
-      session[:service_request_id] = sr.id
 
       xhr :get, :confirmation, {
         id: sr.id
@@ -81,8 +80,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
 
       it 'should send request amendment email to service provider' do
         session[:identity_id]        = logged_in_user.id
-        session[:service_request_id] = @sr.id
-        session[:sub_service_request_id] = @ssr.id
 
         allow(Notifier).to receive(:notify_service_provider) do
           mailer = double('mail') 
@@ -91,6 +88,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
         end
 
         xhr :get, :confirmation, {
+          sub_service_request_id: @ssr.id,
           id: @sr.id
         }
 
@@ -100,8 +98,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
       it 'should send request amendment email to admin' do
         @org.submission_emails.create(email: 'hedwig@owlpost.com')
         session[:identity_id]        = logged_in_user.id
-        session[:service_request_id] = @sr.id
-        session[:sub_service_request_id] = @ssr.id
 
         allow(Notifier).to receive(:notify_admin) do
           mailer = double('mail') 
@@ -109,32 +105,123 @@ RSpec.describe ServiceRequestsController, type: :controller do
           mailer
         end
         xhr :get, :confirmation, {
+          sub_service_request_id: @ssr.id,
           id: @sr.id
         }
         expect(Notifier).to have_received(:notify_admin)
       end
+
+      it 'should send request amendment email to authorized users' do
+        @org.submission_emails.create(email: 'hedwig@owlpost.com')
+        session[:identity_id]        = logged_in_user.id
+        session[:service_request_id] = @sr.id
+        session[:sub_service_request_id] = @ssr.id
+
+        allow(Notifier).to receive(:notify_user) do
+          mailer = double('mail') 
+          expect(mailer).to receive(:deliver_now)
+          mailer
+        end
+        xhr :get, :confirmation, {
+          id: @sr.id
+        }
+        expect(Notifier).to have_received(:notify_user)
+      end
     end
 
-    context 'previously submitted ssr that has added services' do
+    context 'previously submitted SSR (existing SSR) that has added services' do
       before :each do
         @org         = create(:organization)
         service     = create(:service, organization: @org, one_time_fee: true)
         protocol    = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
-        @sr          = create(:service_request_without_validations, protocol: protocol, submitted_at: Time.now.yesterday)
-        @ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, status: 'submitted', submitted_at: Time.now.yesterday)
+        @sr          = create(:service_request_without_validations, protocol: protocol, submitted_at: Time.now.yesterday.utc)
+        @ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, status: 'submitted', submitted_at: Time.now.yesterday.utc)
         li          = create(:line_item, service_request: @sr, sub_service_request: @ssr, service: service)
         li_1        = create(:line_item, service_request: @sr, sub_service_request: @ssr, service: service)
                       create(:service_provider, identity: logged_in_user, organization: @org)
         
         audit = AuditRecovery.where("auditable_id = '#{li_1.id}' AND auditable_type = 'LineItem' AND action = 'create'")
-        audit.first.update_attribute(:created_at, Time.now - 5.hours)
+        audit.first.update_attribute(:created_at, Time.now.utc - 5.hours)
         audit.first.update_attribute(:user_id, logged_in_user.id)
       end
 
       it 'should send request amendment email to service provider' do
         session[:identity_id]        = logged_in_user.id
+
+        allow(Notifier).to receive(:notify_service_provider) do
+          mailer = double('mail') 
+          expect(mailer).to receive(:deliver_now)
+          mailer
+        end
+        xhr :get, :confirmation, {
+          sub_service_request_id: @ssr.id,
+          id: @sr.id
+        }
+        expect(Notifier).to have_received(:notify_service_provider)
+      end
+
+      it 'should send request amendment email to admin' do
+        @org.submission_emails.create(email: 'hedwig@owlpost.com')
+
+        session[:identity_id]        = logged_in_user.id
+
+        allow(Notifier).to receive(:notify_admin) do
+            mailer = double('mail') 
+            expect(mailer).to receive(:deliver)
+            mailer
+          end
+        xhr :get, :confirmation, {
+          sub_service_request_id: @ssr.id,
+          id: @sr.id
+        }
+        expect(Notifier).to have_received(:notify_admin)
+      end
+
+      it 'should send request amendment email to authorized users' do
+        @org.submission_emails.create(email: 'hedwig@owlpost.com')
+
+        session[:identity_id]        = logged_in_user.id
         session[:service_request_id] = @sr.id
         session[:sub_service_request_id] = @ssr.id
+
+        allow(Notifier).to receive(:notify_user) do
+            mailer = double('mail') 
+            expect(mailer).to receive(:deliver_now)
+            mailer
+          end
+        xhr :get, :confirmation, {
+          id: @sr.id
+        }
+        expect(Notifier).to have_received(:notify_user)
+      end
+    end
+
+    context 'added a service to a new SSR and resubmit SR' do
+      before :each do
+        @org         = create(:organization)
+        service     = create(:service, organization: @org, one_time_fee: true)
+        service2    = create(:service, organization: @org, one_time_fee: true)
+        protocol    = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
+        @sr          = create(:service_request_without_validations, protocol: protocol, submitted_at: Time.now.yesterday)
+        @ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, status: 'submitted', submitted_at: Time.now.yesterday)
+        li          = create(:line_item, service_request: @sr, sub_service_request: @ssr, service: service)
+
+        @ssr2        = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, status: 'draft', submitted_at: nil)
+        li_1        = create(:line_item, service_request: @sr, sub_service_request: @ssr2, service: service2)
+                      create(:service_provider, identity: logged_in_user, organization: @org)
+
+        audit = AuditRecovery.where("auditable_id = '#{li_1.id}' AND auditable_type = 'LineItem' AND action = 'create'")
+        audit.first.update_attribute(:created_at, Time.now)
+        audit.first.update_attribute(:user_id, logged_in_user.id)
+
+        audit_of_ssr = AuditRecovery.where("auditable_id = '#{@ssr2.id}' AND auditable_type = 'SubServiceRequest' AND action = 'create'")
+        audit_of_ssr.first.update_attribute(:created_at, Time.now)
+        audit_of_ssr.first.update_attribute(:user_id, logged_in_user.id)
+      end
+
+      it 'should send request amendment email to service provider' do
+        session[:identity_id]        = logged_in_user.id
+        session[:service_request_id] = @sr.id
 
         allow(Notifier).to receive(:notify_service_provider) do
           mailer = double('mail') 
@@ -152,7 +239,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
 
         session[:identity_id]        = logged_in_user.id
         session[:service_request_id] = @sr.id
-        session[:sub_service_request_id] = @ssr.id
 
         allow(Notifier).to receive(:notify_admin) do
             mailer = double('mail') 
@@ -163,6 +249,95 @@ RSpec.describe ServiceRequestsController, type: :controller do
           id: @sr.id
         }
         expect(Notifier).to have_received(:notify_admin)
+      end
+
+      it 'should send request amendment email to authorized users' do
+
+        session[:identity_id]        = logged_in_user.id
+        session[:service_request_id] = @sr.id
+
+        allow(Notifier).to receive(:notify_user) do
+            mailer = double('mail') 
+            expect(mailer).to receive(:deliver_now)
+            mailer
+          end
+        xhr :get, :confirmation, {
+          id: @sr.id
+        }
+        expect(Notifier).to have_received(:notify_user)
+      end
+    end
+
+    context 'deleted an entire SSR and resubmit SR' do
+      before :each do
+        @org         = create(:organization)
+        service     = create(:service, organization: @org, one_time_fee: true)
+        protocol    = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
+        @sr          = create(:service_request_without_validations, protocol: protocol, submitted_at: Time.now.yesterday.utc)
+        @ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, status: 'draft', submitted_at: nil)
+        @ssr2        = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, status: 'submitted', submitted_at: Time.now.yesterday.utc)
+        li          = create(:line_item, service_request: @sr, sub_service_request: @ssr, service: service)
+        li_1        = create(:line_item, service_request: @sr, sub_service_request: @ssr2, service: service)
+                      create(:service_provider, identity: logged_in_user, organization: @org)
+                      
+        @ssr.destroy
+        @sr.reload
+        audit = AuditRecovery.where("auditable_id = '#{li.id}' AND auditable_type = 'LineItem' AND action = 'destroy'")
+        audit.first.update_attribute(:created_at, Time.now.utc - 5.hours)
+        audit.first.update_attribute(:user_id, logged_in_user.id)
+
+        audit_of_ssr = AuditRecovery.where("auditable_id = '#{@ssr.id}' AND auditable_type = 'SubServiceRequest' AND action = 'destroy'")
+        audit_of_ssr.first.update_attribute(:created_at, Time.now.utc - 5.hours)
+        audit_of_ssr.first.update_attribute(:user_id, logged_in_user.id)
+
+      end
+
+      it 'should NOT send request amendment email to service provider' do
+        session[:identity_id]        = logged_in_user.id
+        session[:service_request_id] = @sr.id
+
+        allow(Notifier).to receive(:notify_service_provider) do
+          mailer = double('mail') 
+          expect(mailer).to receive(:deliver_now)
+          mailer
+        end
+        xhr :get, :confirmation, {
+          id: @sr.id
+        }
+        expect(Notifier).not_to have_received(:notify_service_provider)
+      end
+
+      it 'should NOT send request amendment email to admin' do
+        @org.submission_emails.create(email: 'hedwig@owlpost.com')
+
+        session[:identity_id]        = logged_in_user.id
+        session[:service_request_id] = @sr.id
+
+        allow(Notifier).to receive(:notify_admin) do
+            mailer = double('mail') 
+            expect(mailer).to receive(:deliver)
+            mailer
+        end
+        xhr :get, :confirmation, {
+          id: @sr.id
+        }
+        expect(Notifier).not_to have_received(:notify_admin)
+      end
+
+      it 'should send request amendment email to authorized users' do
+
+        session[:identity_id]        = logged_in_user.id
+        session[:service_request_id] = @sr.id
+
+        allow(Notifier).to receive(:notify_user) do
+            mailer = double('mail') 
+            expect(mailer).to receive(:deliver_now)
+            mailer
+        end
+        xhr :get, :confirmation, {
+          id: @sr.id
+        }
+        expect(Notifier).to have_received(:notify_user)
       end
     end
 
@@ -191,8 +366,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
 
       it 'should send request amendment email to service provider' do
         session[:identity_id]        = logged_in_user.id
-        session[:service_request_id] = @sr.id
-        session[:sub_service_request_id] = @ssr.id
 
         allow(Notifier).to receive(:notify_service_provider) do
             mailer = double('mail') 
@@ -200,6 +373,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
             mailer
           end
         xhr :get, :confirmation, {
+          sub_service_request_id: @ssr.id,
           id: @sr.id
         }
         expect(Notifier).to have_received(:notify_service_provider)
@@ -209,8 +383,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
         @org.submission_emails.create(email: 'hedwig@owlpost.com')
 
         session[:identity_id]        = logged_in_user.id
-        session[:service_request_id] = @sr.id
-        session[:sub_service_request_id] = @ssr.id
 
         allow(Notifier).to receive(:notify_admin) do
             mailer = double('mail') 
@@ -218,9 +390,28 @@ RSpec.describe ServiceRequestsController, type: :controller do
             mailer
           end
         xhr :get, :confirmation, {
+          sub_service_request_id: @ssr.id,
           id: @sr.id
         }
         expect(Notifier).to have_received(:notify_admin)
+      end
+
+      it 'should send request amendment email to authorized users' do
+        @org.submission_emails.create(email: 'hedwig@owlpost.com')
+
+        session[:identity_id]        = logged_in_user.id
+        session[:service_request_id] = @sr.id
+        session[:sub_service_request_id] = @ssr.id
+
+        allow(Notifier).to receive(:notify_user) do
+            mailer = double('mail') 
+            expect(mailer).to receive(:deliver_now)
+            mailer
+          end
+        xhr :get, :confirmation, {
+          id: @sr.id
+        }
+        expect(Notifier).to have_received(:notify_user)
       end
     end
 
@@ -235,8 +426,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
 
       it 'should NOT send request amendment email to service provider' do
         session[:identity_id]        = logged_in_user.id
-        session[:service_request_id] = @sr.id
-        session[:sub_service_request_id] = @ssr.id
 
         allow(Notifier).to receive(:notify_service_provider) do
           mailer = double('mail') 
@@ -244,6 +433,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
           mailer
         end
         xhr :get, :confirmation, {
+          sub_service_request_id: @ssr.id,
           id: @sr.id
         }
         expect(Notifier).not_to have_received(:notify_service_provider)
@@ -253,8 +443,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
         @org.submission_emails.create(email: 'hedwig@owlpost.com')
 
         session[:identity_id]        = logged_in_user.id
-        session[:service_request_id] = @sr.id
-        session[:sub_service_request_id] = @ssr.id
 
         allow(Notifier).to receive(:notify_admin) do
             mailer = double('mail') 
@@ -262,33 +450,125 @@ RSpec.describe ServiceRequestsController, type: :controller do
             mailer
           end
         xhr :get, :confirmation, {
+          sub_service_request_id: @ssr.id,
           id: @sr.id
         }
         expect(Notifier).not_to have_received(:notify_admin)
       end
+
+      it 'should NOT send request amendment email to authorized users' do
+        @org.submission_emails.create(email: 'hedwig@owlpost.com')
+
+        session[:identity_id]        = logged_in_user.id
+        session[:service_request_id] = @sr.id
+        session[:sub_service_request_id] = @ssr.id
+
+        allow(Notifier).to receive(:notify_user) do
+            mailer = double('mail') 
+            expect(mailer).to receive(:deliver_now)
+            mailer
+          end
+        xhr :get, :confirmation, {
+          id: @sr.id
+        }
+        expect(Notifier).not_to have_received(:notify_user)
+      end
     end
 
     context 'editing sub service request' do
-      context 'status not submitted' do
-        it 'should notify' do
-          org      = create(:organization)
-          service  = create(:service, organization: org, one_time_fee: true)
-          protocol = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
-          sr       = create(:service_request_without_validations, protocol: protocol)
-          ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org, status: 'draft')
-          li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
-                     create(:service_provider, identity: logged_in_user, organization: org)
+      context 'no session[:sub_service_request_id] = ssr.id' do
+        context 'status not submitted' do
+          context 'ssr submitted_at: nil' do
+            it 'should notify' do
+              org      = create(:organization)
+              service  = create(:service, organization: org, one_time_fee: true)
+              protocol = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
+              sr       = create(:service_request_without_validations, protocol: protocol)
+              ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org, status: 'draft', submitted_at: nil)
+              li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
+                         create(:service_provider, identity: logged_in_user, organization: org)
 
-          session[:identity_id]            = logged_in_user.id
-          session[:service_request_id]     = sr.id
-          session[:sub_service_request_id] = ssr.id
+              session[:identity_id]            = logged_in_user.id
+              session[:service_request_id]     = sr.id
 
-          # previously_submitted_at is null so we get 2 emails
-          expect {
-            xhr :get, :confirmation, {
-              id: sr.id
-            }
-          }.to change(ActionMailer::Base.deliveries, :count).by(2)
+              # previously_submitted_at is null so we get 2 emails
+              expect {
+                xhr :get, :confirmation, {
+                  id: sr.id
+                }
+              }.to change(ActionMailer::Base.deliveries, :count).by(2)
+            end
+          end
+        end
+
+        context 'status not submitted' do
+          context 'ssr submitted_at: Time.now' do
+            it 'should NOT notify' do
+              org      = create(:organization)
+              service  = create(:service, organization: org, one_time_fee: true)
+              protocol = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
+              sr       = create(:service_request_without_validations, protocol: protocol, submitted_at: Time.now)
+              ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org, status: 'draft', submitted_at: Time.now)
+              li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
+                         create(:service_provider, identity: logged_in_user, organization: org)
+
+              session[:identity_id]            = logged_in_user.id
+              session[:service_request_id]     = sr.id
+
+              expect {
+                xhr :get, :confirmation, {
+                  id: sr.id
+                }
+              }.to change(ActionMailer::Base.deliveries, :count).by(1)
+            end
+          end
+        end
+      end
+
+      context 'session[:sub_service_request_id] = ssr.id' do
+        context 'ssr submitted_at: nil' do
+          it 'should notify' do
+            org      = create(:organization)
+            service  = create(:service, organization: org, one_time_fee: true)
+            protocol = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
+            sr       = create(:service_request_without_validations, protocol: protocol)
+            ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org, status: 'draft', submitted_at: nil)
+            li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
+                       create(:service_provider, identity: logged_in_user, organization: org)
+
+            session[:identity_id]            = logged_in_user.id
+            session[:service_request_id]     = sr.id
+            session[:sub_service_request_id] = ssr.id
+
+            # previously_submitted_at is null so we get 2 emails
+            expect {
+              xhr :get, :confirmation, {
+                id: sr.id
+              }
+            }.to change(ActionMailer::Base.deliveries, :count).by(2)
+          end
+        end
+
+        context 'ssr submitted_at: Time.now' do
+          it 'should NOT notify' do
+            org      = create(:organization)
+            service  = create(:service, organization: org, one_time_fee: true)
+            protocol = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
+            sr       = create(:service_request_without_validations, protocol: protocol, submitted_at: Time.now)
+            ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org, status: 'draft', submitted_at: Time.now)
+            li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
+                       create(:service_provider, identity: logged_in_user, organization: org)
+
+            session[:identity_id]            = logged_in_user.id
+            session[:service_request_id]     = sr.id
+            session[:sub_service_request_id] = ssr.id
+
+            expect {
+              xhr :get, :confirmation, {
+                id: sr.id
+              }
+            }.to change(ActionMailer::Base.deliveries, :count).by(1)
+          end
         end
       end
 
@@ -301,10 +581,9 @@ RSpec.describe ServiceRequestsController, type: :controller do
         li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
         session[:identity_id]            = logged_in_user.id
-        session[:service_request_id]     = sr.id
-        session[:sub_service_request_id] = ssr.id
 
         xhr :get, :confirmation, {
+          sub_service_request_id: ssr.id,
           id: sr.id
         }
 
@@ -324,10 +603,9 @@ RSpec.describe ServiceRequestsController, type: :controller do
         li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
         session[:identity_id]            = logged_in_user.id
-        session[:service_request_id]     = sr.id
-        session[:sub_service_request_id] = ssr.id
 
         xhr :get, :confirmation, {
+          sub_service_request_id: ssr.id,
           id: sr.id
         }
 
@@ -345,13 +623,12 @@ RSpec.describe ServiceRequestsController, type: :controller do
           li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
           session[:identity_id]            = logged_in_user.id
-          session[:service_request_id]     = sr.id
-          session[:sub_service_request_id] = ssr.id
           stub_const("USE_EPIC", true)
           stub_const("QUEUE_EPIC", true)
           setup_valid_study_answers(protocol)
 
           xhr :get, :confirmation, {
+          sub_service_request_id: ssr.id,
             id: sr.id
           }
 
@@ -371,14 +648,13 @@ RSpec.describe ServiceRequestsController, type: :controller do
                      create(:service_provider, identity: logged_in_user, organization: org)
 
           session[:identity_id]            = logged_in_user.id
-          session[:service_request_id]     = sr.id
-          session[:sub_service_request_id] = ssr.id
           stub_const("USE_EPIC", true)
           setup_valid_study_answers(protocol)
 
           # previously_submitted_at is null so we get 2 emails
           expect {
             xhr :get, :confirmation, {
+              sub_service_request_id: ssr.id,
               id: sr.id
             }
           }.to change(ActionMailer::Base.deliveries, :count).by(3)
@@ -397,7 +673,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
                    create(:service_provider, identity: logged_in_user, organization: org)
 
         session[:identity_id]        = logged_in_user.id
-        session[:service_request_id] = sr.id
         time                         = Time.parse('2016-06-01 12:34:56')
         
         Timecop.freeze(time) do
@@ -418,7 +693,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
                    create(:service_provider, identity: logged_in_user, organization: org)
 
         session[:identity_id]        = logged_in_user.id
-        session[:service_request_id] = sr.id
 
         xhr :get, :confirmation, {
           id: sr.id
@@ -441,7 +715,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
                    create(:service_provider, identity: logged_in_user, organization: org)
 
         session[:identity_id]        = logged_in_user.id
-        session[:service_request_id] = sr.id
 
         # previously_submitted_at is null so we get 2 emails
         expect {
@@ -461,7 +734,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
           li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
           session[:identity_id]            = logged_in_user.id
-          session[:service_request_id]     = sr.id
           stub_const("USE_EPIC", true)
           stub_const("QUEUE_EPIC", true)
           setup_valid_study_answers(protocol)
@@ -486,14 +758,13 @@ RSpec.describe ServiceRequestsController, type: :controller do
                      create(:service_provider, identity: logged_in_user, organization: org)
 
           session[:identity_id]            = logged_in_user.id
-          session[:service_request_id]     = sr.id
-          session[:sub_service_request_id] = ssr.id
           stub_const("USE_EPIC", true)
           setup_valid_study_answers(protocol)
 
           # previously_submitted_at is null so we get 2 emails
           expect {
             xhr :get, :confirmation, {
+              sub_service_request_id: ssr.id,
               id: sr.id
             }
           }.to change(ActionMailer::Base.deliveries, :count).by(3)
@@ -510,7 +781,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
       session[:identity_id]        = logged_in_user.id
-      session[:service_request_id] = sr.id
 
       xhr :get, :confirmation, {
         id: sr.id
@@ -528,7 +798,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
       session[:identity_id]        = logged_in_user.id
-      session[:service_request_id] = sr.id
 
       xhr :get, :confirmation, {
         id: sr.id

@@ -42,9 +42,9 @@ RSpec.describe ServiceCalendarsController do
       vg2      = create(:visit_group, arm: arm, position: 2)
       vg3      = create(:visit_group, arm: arm, position: 3)
 
-      session[:service_request_id] = sr.id
 
       xhr :post, :move_visit_position, {
+        service_request_id: sr.id,
         arm_id: arm.id,
         visit_group: vg1.id,
         position: 3
@@ -64,9 +64,9 @@ RSpec.describe ServiceCalendarsController do
         vg2      = create(:visit_group, arm: arm, position: 2)
         vg3      = create(:visit_group, arm: arm, position: 3)
 
-        session[:service_request_id] = sr.id
 
         xhr :post, :move_visit_position, {
+        service_request_id: sr.id,
           arm_id: arm.id,
           visit_group: vg1.id,
           position: 4
@@ -86,9 +86,9 @@ RSpec.describe ServiceCalendarsController do
       vg2      = create(:visit_group, arm: arm, position: 2)
       vg3      = create(:visit_group, arm: arm, position: 3)
 
-      session[:service_request_id] = sr.id
 
       xhr :post, :move_visit_position, {
+        service_request_id: sr.id,
         arm_id: arm.id,
         visit_group: vg1.id,
         position: 3
@@ -105,9 +105,9 @@ RSpec.describe ServiceCalendarsController do
       vg2      = create(:visit_group, arm: arm, position: 2)
       vg3      = create(:visit_group, arm: arm, position: 3)
 
-      session[:service_request_id] = sr.id
 
       xhr :post, :move_visit_position, {
+        service_request_id: sr.id,
         arm_id: arm.id,
         visit_group: vg1.id,
         position: 3

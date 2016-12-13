@@ -46,10 +46,10 @@ RSpec.describe ServiceCalendarsController do
       vg        = create(:visit_group, arm: arm)
       v         = create(:visit, line_items_visit: liv, visit_group: vg)
 
-      session[:service_request_id] = sr.id
       session[:identity_id] = logged_in_user.id
 
       xhr :post, :toggle_calendar_row, {
+        service_request_id: sr.id,
         line_items_visit_id: liv.id,
         check: 'true',
         portal: 'false'
@@ -70,10 +70,10 @@ RSpec.describe ServiceCalendarsController do
       vg        = create(:visit_group, arm: arm)
       v         = create(:visit, line_items_visit: liv, visit_group: vg)
 
-      session[:service_request_id] = sr.id
       session[:identity_id] = logged_in_user.id
 
       xhr :post, :toggle_calendar_row, {
+        service_request_id: sr.id,
         line_items_visit_id: liv.id,
         check: 'true',
         portal: 'false'
@@ -95,10 +95,10 @@ RSpec.describe ServiceCalendarsController do
         vg        = create(:visit_group, arm: arm)
         v         = create(:visit, line_items_visit: liv, visit_group: vg, quantity: 0, research_billing_qty: 0, insurance_billing_qty: 1, effort_billing_qty: 1)
 
-        session[:service_request_id] = sr.id
         session[:identity_id] = logged_in_user.id
 
         xhr :post, :toggle_calendar_row, {
+        service_request_id: sr.id,
           line_items_visit_id: liv.id,
           check: 'true',
           portal: 'false'
@@ -124,10 +124,10 @@ RSpec.describe ServiceCalendarsController do
         vg        = create(:visit_group, arm: arm)
         v         = create(:visit, line_items_visit: liv, visit_group: vg, quantity: 1, research_billing_qty: 1, insurance_billing_qty: 1, effort_billing_qty: 1)
 
-        session[:service_request_id] = sr.id
         session[:identity_id] = logged_in_user.id
 
         xhr :post, :toggle_calendar_row, {
+        service_request_id: sr.id,
           line_items_visit_id: liv.id,
           uncheck: 'true',
           portal: 'false'
@@ -153,10 +153,10 @@ RSpec.describe ServiceCalendarsController do
         vg        = create(:visit_group, arm: arm)
         v         = create(:visit, line_items_visit: liv, visit_group: vg)
 
-        session[:service_request_id] = sr.id
         session[:identity_id]        = logged_in_user.id
 
         xhr :post, :toggle_calendar_row, {
+        service_request_id: sr.id,
           line_items_visit_id: liv.id,
           check: 'true',
           portal: 'false'
@@ -177,10 +177,10 @@ RSpec.describe ServiceCalendarsController do
         vg        = create(:visit_group, arm: arm)
         v         = create(:visit, line_items_visit: liv, visit_group: vg)
 
-        session[:service_request_id] = sr.id
         session[:identity_id]        = logged_in_user.id
 
         xhr :post, :toggle_calendar_row, {
+        service_request_id: sr.id,
           line_items_visit_id: liv.id,
           check: 'true',
           portal: 'false'
@@ -202,10 +202,10 @@ RSpec.describe ServiceCalendarsController do
         vg        = create(:visit_group, arm: arm)
         v         = create(:visit, line_items_visit: liv, visit_group: vg)
 
-        session[:service_request_id] = sr.id
         session[:identity_id]        = logged_in_user.id
 
         xhr :post, :toggle_calendar_row, {
+        service_request_id: sr.id,
           line_items_visit_id: liv.id,
           check: 'true',
           portal: 'false'
@@ -227,10 +227,10 @@ RSpec.describe ServiceCalendarsController do
       vg        = create(:visit_group, arm: arm)
       v         = create(:visit, line_items_visit: liv, visit_group: vg)
 
-      session[:service_request_id] = sr.id
       session[:identity_id]        = logged_in_user.id
 
       xhr :post, :toggle_calendar_row, {
+        service_request_id: sr.id,
         line_items_visit_id: liv.id,
         check: 'true',
         portal: 'false'
@@ -251,10 +251,10 @@ RSpec.describe ServiceCalendarsController do
       vg        = create(:visit_group, arm: arm)
       v         = create(:visit, line_items_visit: liv, visit_group: vg)
 
-      session[:service_request_id] = sr.id
       session[:identity_id]        = logged_in_user.id
 
       xhr :post, :toggle_calendar_row, {
+        service_request_id: sr.id,
         line_items_visit_id: liv.id,
         check: 'true',
         portal: 'false'

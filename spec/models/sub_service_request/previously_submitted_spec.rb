@@ -1,3 +1,4 @@
+# coding: utf-8
 # Copyright © 2011-2016 MUSC Foundation for Research Development
 # All rights reserved.
 
@@ -17,7 +18,39 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-$('#modal_place').html("<%= escape_javascript(render( 'service_calendars/move_visits_modal', arm: @arm, visit_group: @visit_group, service_request: @service_request)) %>")
-$('#modal_place').modal('show')
-$('.selectpicker').selectpicker()
-set_required_fields()
+
+require 'rails_helper'
+
+RSpec.describe 'SubServiceRequest' do
+
+  let_there_be_lane
+
+  context 'previously_submitted?' do
+    before :each do
+      @organization    = create(:organization, process_ssrs: true)
+      @protocol        = create(:protocol_without_validations, primary_pi: jug2)
+      @service_request = create(:service_request_without_validations, protocol: @protocol)
+    end
+
+    context "submitted ssr" do
+      it 'should not return true' do
+        ssr = create(:sub_service_request_without_validations,
+                      organization: @organization,
+                      service_request: @service_request,
+                      submitted_at: Time.now)
+
+        expect(ssr.previously_submitted?).to eq(true)
+      end
+    end
+    context "not submitted ssr" do
+      it 'should not return true' do
+        ssr = create(:sub_service_request_without_validations,
+                      organization: @organization,
+                      service_request: @service_request,
+                      submitted_at: nil)
+
+        expect(ssr.previously_submitted?).to eq(false)
+      end
+    end
+  end
+end

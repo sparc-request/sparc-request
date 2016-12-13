@@ -17,6 +17,8 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+getSRId = () ->
+  $('input[name="service_request_id"]').val()
 
 <% if @errors.present? %> #User already associated with Protocol
 $("#modal_errors").html("<%= escape_javascript(render( 'shared/modal_errors', errors: @errors )) %>")
@@ -32,7 +34,7 @@ identities_bloodhound = new Bloodhound(
     Bloodhound.tokenizers.whitespace datum.value
   queryTokenizer: Bloodhound.tokenizers.whitespace
   remote:
-    url: '/dashboard/associated_users/search_identities?term=%QUERY',
+    url: "/dashboard/associated_users/search_identities?term=%QUERY&service_request_id=#{getSRId()}",
     wildcard: '%QUERY'
 )
 identities_bloodhound.initialize() # Initialize the Bloodhound suggestion engine
@@ -57,6 +59,7 @@ $('#authorized_user_search').typeahead(
     data:
       protocol_id: $(this).data('protocol-id')
       identity_id: suggestion.value
+      service_request_id: getSRId()
     success: ->
       $("#loading_authorized_user_spinner").addClass('hidden')
 <% end %>

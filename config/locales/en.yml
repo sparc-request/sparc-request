@@ -469,6 +469,14 @@ en:
   # VISIT GROUPS #
   ################
   visit_groups:
+    form_fields:
+      arm: "Arm:"
+      visit: "Visit:"
+      name: "Name:"
+      day: "Day:"
+      position: "Insert into Position:"
+      window_before: "Window Before:"
+      window_after: "Window After:"
     prompts:
       add_as_last: "Add as last"
 

@@ -117,6 +117,7 @@ class ServiceCalendarsController < ApplicationController
 
   def show_move_visits
     @arm = Arm.find( params[:arm_id] )
+    @visit_group = params[:visit_group_id] ? @arm.visit_groups.find(params[:visit_group_id]) : @arm.visit_groups.first
   end
 
   def move_visit_position

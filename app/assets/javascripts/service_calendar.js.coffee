@@ -228,6 +228,8 @@ getSRId = ->
           quantity: params.value
         service_request_id: getSRId()
       }
+    success: ->
+      $('#service-calendar .custom-tab.active a').click()
 
   $('.edit-units-per-qty').editable
     params: (params) ->
@@ -236,3 +238,5 @@ getSRId = ->
           units_per_quantity: params.value
         service_request_id: getSRId()
       }
+    success: ->
+      $('#service-calendar .custom-tab.active a').click()

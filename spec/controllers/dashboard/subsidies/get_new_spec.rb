@@ -37,27 +37,24 @@ RSpec.describe Dashboard::SubsidiesController do
                                 service_request: @service_request,
                                 organization: @organization,
                                 status: 'draft')
+      xhr :get, :new, admin: 'true', sub_service_request_id: @ssr.id, format: :js
     end
 
     it 'should set @admin to params[:admin]' do
-      xhr :get, :new, admin: 'true', sub_service_request_id: @ssr.id, format: :js
       expect(assigns(:admin)).to eq(true)
     end
 
     it 'should set @subsidy to a new PendingSubsidy with default percentage and the current SSR id' do
-      xhr :get, :new, admin: 'true', sub_service_request_id: @ssr.id, format: :js
       expect(assigns(:subsidy).class.name).to eq('PendingSubsidy')
       expect(assigns(:subsidy).sub_service_request_id).to eq(@ssr.id)
       expect(assigns(:subsidy).percent_subsidy).to eq(@subsidy_map.default_percentage)
     end
 
     it 'should assign header text' do
-      xhr :get, :new, admin: 'true', sub_service_request_id: @ssr.id, format: :js
       expect(assigns(:header_text)).to be
     end
 
     it 'should assign @action to new' do
-      xhr :get, :new, admin: 'true', sub_service_request_id: @ssr.id, format: :js
       expect(assigns(:action)).to eq('new')
     end
   end

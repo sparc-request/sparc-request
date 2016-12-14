@@ -44,7 +44,7 @@
 
   -# Line Item Visits
   - livs.each do |liv|
-    %tr{ class: locked ? 'bg-danger text-danger' : '' }
+    %tr.pppv-line-item-row{ class: locked ? 'bg-danger text-danger' : '' }
       %td.service-name{ colspan: 2 }
         = liv.service.display_service_name
       %td.status.text-center

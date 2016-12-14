@@ -45,5 +45,4 @@ RSpec.describe "User views Status History tab", js: true do
 
     expect(PastStatus.first.changed_by_id).to eq(jug2.id)
   end
-
 end

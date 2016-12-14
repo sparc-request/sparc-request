@@ -40,6 +40,8 @@ RSpec.describe Dashboard::SubsidiesController do
       xhr :get, :new, admin: 'true', sub_service_request_id: @ssr.id, format: :js
     end
 
+    it { is_expected.to render_template "dashboard/subsidies/new" }
+
     it 'should set @admin to params[:admin]' do
       expect(assigns(:admin)).to eq(true)
     end

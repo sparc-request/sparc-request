@@ -52,8 +52,12 @@ RSpec.describe 'User views the catalog', js: true do
   end
 
   def visit_catalog_page(service_request:, sub_service_request: nil)
-    @page = CatalogPage.new
-    @page.load(id: service_request.id, sub_service_request_id: sub_service_request.try(:id))
+    params = if sub_service_request
+               "?sub_service_request_id=#{sub_service_request.id}"
+             else
+               ""
+             end
+    visit "/service_requests/#{service_request.id}/catalog/" + params
   end
 
   context 'when not editing a SubServiceRequest' do
@@ -62,13 +66,15 @@ RSpec.describe 'User views the catalog', js: true do
     end
 
     scenario 'sees Services belonging to each SubServiceRequest in the cart' do
-      expect(@page.cart).to have_content("Service1")
-      expect(@page.cart).to have_content("Service2")
+      cart = page.find(".panel", text: /My Services/)
+      expect(cart).to have_content("Service1")
+      expect(cart).to have_content("Service2")
     end
 
     scenario 'sees each Institution in the Service accordion' do
-      expect(@page.service_accordion).to have_content("Institution1")
-      expect(@page.service_accordion).to have_content("Institution2")
+      service_accordion = page.find(".panel", text: /Browse Service Catalog/)
+      expect(service_accordion).to have_content("Institution1")
+      expect(service_accordion).to have_content("Institution2")
     end
   end
 
@@ -78,13 +84,15 @@ RSpec.describe 'User views the catalog', js: true do
     end
 
     scenario 'sees Services belonging only to the SubServiceRequest in the cart' do
-      expect(@page.cart).to have_content("Service1")
-      expect(@page.cart).to_not have_content("Service2")
+      cart = page.find(".panel", text: /My Services/)
+      expect(cart).to have_content("Service1")
+      expect(cart).to_not have_content("Service2")
     end
 
     scenario 'sees only the Institution related to the SubServiceRequest' do
-      expect(@page.service_accordion).to have_content("Institution1")
-      expect(@page.service_accordion).not_to have_content("Institution2")
+      service_accordion = page.find(".panel", text: /Browse Service Catalog/)
+      expect(service_accordion).to have_content("Institution1")
+      expect(service_accordion).not_to have_content("Institution2")
     end
   end
 end

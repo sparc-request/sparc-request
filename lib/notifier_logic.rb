@@ -83,7 +83,7 @@ class NotifierLogic
 
     controller = set_instance_variables(@current_user, @service_request, service_list_false, service_list_true, line_items, protocol)
 
-    xls = controller.render_to_string template: "service_requests/show.xlsx.axlsx"
+    xls = controller.render_to_string action: 'show', formats: [:xlsx]
 
     if @service_request.protocol.project_roles.detect{|pr| pr.identity_id == @current_user.id}.project_rights != "approve"
       approval = @service_request.approvals.create

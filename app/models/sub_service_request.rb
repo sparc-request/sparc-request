@@ -74,6 +74,8 @@ class SubServiceRequest < ActiveRecord::Base
   accepts_nested_attributes_for :line_items, allow_destroy: true
   accepts_nested_attributes_for :payments, allow_destroy: true
 
+  validates :ssr_id, presence: true, uniqueness: { scope: :service_request_id }
+
   scope :in_work_fulfillment, -> { where(in_work_fulfillment: true) }
 
   def consult_arranged_date=(date)

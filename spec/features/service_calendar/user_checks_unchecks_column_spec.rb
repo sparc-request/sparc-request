@@ -52,31 +52,22 @@ RSpec.describe 'User checks and unchecks calendar columns', js: true do
     context 'check:' do
       scenario 'and sees all visits checked' do
         visit service_calendar_service_request_path(@sr)
-        wait_for_javascript_to_finish
-        
-        first('.service-calendar-column').click
-        wait_for_javascript_to_finish
 
-        all('.visit-quantity').each do |checkbox|
-          expect(checkbox).to be_checked
-        end
-      end
+        find('.service-calendar-column').click
+
+        expect(page).to have_css('.visit-quantity[checked]', count: 2)
+     end
     end
 
     context 'uncheck:' do
       scenario 'and sees all visits unchecked' do
         Visit.update_all(research_billing_qty: 1)
-
         visit service_calendar_service_request_path(@sr)
-        wait_for_javascript_to_finish
 
-        first('.service-calendar-column').click
-        wait_for_javascript_to_finish
+        find('.service-calendar-column').click
 
-        all('.visit-quantity').each do |checkbox|
-          expect(checkbox).to_not be_checked
-        end
-      end
+        expect(page).to have_css('.visit-quantity[checked]', count: 0)
+     end
     end
   end
 
@@ -86,24 +77,13 @@ RSpec.describe 'User checks and unchecks calendar columns', js: true do
     end
 
     context 'check:' do
-      scenario 'and sees the locked visits not checked' do
+      scenario 'and sees the not-locked visits checked and the locked visits not checked' do
         visit service_calendar_service_request_path(@sr)
-        wait_for_javascript_to_finish
 
-        first('.service-calendar-column').click
-        wait_for_javascript_to_finish
+        find('.service-calendar-column').click
 
+        expect(page).to have_css('.visit-quantity[checked]', count: 1)
         expect(all('.visit-quantity').last).to_not be_checked
-      end
-
-      scenario 'and sees the not-locked visits checked' do
-        visit service_calendar_service_request_path(@sr)
-        wait_for_javascript_to_finish
-
-        first('.service-calendar-column').click
-        wait_for_javascript_to_finish
-
-        expect(first('.visit-quantity')).to be_checked
       end
     end
 
@@ -112,24 +92,13 @@ RSpec.describe 'User checks and unchecks calendar columns', js: true do
         Visit.update_all(research_billing_qty: 1)
       end
 
-      scenario 'and sees the locked visits not unchecked' do
+      scenario 'and sees the not-locked visits unchecked and the locked visits checked' do
         visit service_calendar_service_request_path(@sr)
-        wait_for_javascript_to_finish
 
-        first('.service-calendar-column').click
-        wait_for_javascript_to_finish
+        find('.service-calendar-column').click
 
+        expect(page).to have_css('.visit-quantity:checked', count: 1)
         expect(all('.visit-quantity').last).to be_checked
-      end
-
-      scenario 'and sees the not-locked visits unchecked' do
-        visit service_calendar_service_request_path(@sr)
-        wait_for_javascript_to_finish
-
-        first('.service-calendar-column').click
-        wait_for_javascript_to_finish
-
-        expect(first('.visit-quantity')).to_not be_checked
       end
     end
   end

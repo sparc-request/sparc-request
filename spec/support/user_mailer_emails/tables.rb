@@ -12,7 +12,7 @@ module EmailHelpers
   def user_information_table_with_epic_col
     expect(@mail).to have_xpath "//table//strong[text()='User Information']"
     expect(@mail).to have_xpath "//th[text()='User Modification']/following-sibling::th[text()='Contact Information']/following-sibling::th[text()='Role']/following-sibling::th[text()='SPARC Proxy Rights']/following-sibling::th[text()='Epic Access']"
-    expect(@mail).to have_xpath "//td[text()='#{@modified_identity.full_name}']/following-sibling::td[text()='#{@modified_identity.email}']/following-sibling::td[text()='#{@modified_identity.project_roles.first.role.upcase}']/following-sibling::td[text()='#{@modified_identity.project_roles.first.display_rights}']"
+    expect(@mail).to have_xpath "//td[text()=\"#{@modified_identity.full_name}\"]/following-sibling::td[text()=\"#{@modified_identity.email}\"]/following-sibling::td[text()='#{@modified_identity.project_roles.first.role.upcase}']/following-sibling::td[text()='#{@modified_identity.project_roles.first.display_rights}']"
     if @modified_identity.project_roles.first.epic_access == false
       expect(@mail).to have_xpath "//td[text()='No']"
     else
@@ -24,7 +24,7 @@ module EmailHelpers
     expect(@mail).to have_xpath "//table//strong[text()='User Information']"
     expect(@mail).to have_xpath "//th[text()='User Modification']/following-sibling::th[text()='Contact Information']/following-sibling::th[text()='Role']/following-sibling::th[text()='SPARC Proxy Rights']"
     expect(@mail).not_to have_xpath "//following-sibling::th[text()='Epic Access']"
-    expect(@mail).to have_xpath "//td[text()='#{@modified_identity.full_name}']/following-sibling::td[text()='#{@modified_identity.email}']/following-sibling::td[text()='#{@modified_identity.project_roles.first.role.upcase}']/following-sibling::td[text()='#{@modified_identity.project_roles.first.display_rights}']"
+    expect(@mail).to have_xpath "//td[text()=\"#{@modified_identity.full_name}\"]/following-sibling::td[text()=\"#{@modified_identity.email}\"]/following-sibling::td[text()='#{@modified_identity.project_roles.first.role.upcase}']/following-sibling::td[text()='#{@modified_identity.project_roles.first.display_rights}']"
 
     if @modified_identity.project_roles.first.epic_access == false
       expect(@mail).not_to have_xpath "//td[text()='No']"

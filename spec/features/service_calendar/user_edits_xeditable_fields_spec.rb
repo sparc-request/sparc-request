@@ -43,6 +43,8 @@ RSpec.describe 'User sets each XEditable field', js: true do
     @liv      = create(:line_items_visit, line_item: @pppv_li, arm: @arm, subject_count: 1)
                 create(:visit, visit_group: vg, line_items_visit: @liv)
 
+    stub_const('EDITABLE_STATUSES', { })
+
     visit service_calendar_service_request_path(sr)
     wait_for_javascript_to_finish
   end

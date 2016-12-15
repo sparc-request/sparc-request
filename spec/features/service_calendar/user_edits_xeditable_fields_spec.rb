@@ -50,7 +50,7 @@ RSpec.describe 'User sets each XEditable field', js: true do
   context 'in the Template Tab' do
     context 'to a valid value' do
       scenario 'window before' do
-        first('.window-before.editable').click
+        find('.window-before.editable').click
         find('.editable-input input').set(5)
         find('.editable-submit').click
         wait_for_javascript_to_finish
@@ -59,7 +59,7 @@ RSpec.describe 'User sets each XEditable field', js: true do
       end
 
       scenario 'window after' do
-        first('.window-after.editable').click
+        find('.window-after.editable').click
         find('.editable-input input').set(5)
         find('.editable-submit').click
         wait_for_javascript_to_finish
@@ -68,7 +68,7 @@ RSpec.describe 'User sets each XEditable field', js: true do
       end
 
       scenario 'day' do
-        first('.day.editable').click
+        find('.day.editable').click
         find('.editable-input input').set(5)
         find('.editable-submit').click
         wait_for_javascript_to_finish
@@ -77,7 +77,7 @@ RSpec.describe 'User sets each XEditable field', js: true do
       end
 
       scenario 'visit name' do
-        first('.visit-group-name.editable').click
+        find('.visit-group-name.editable').click
         find('.editable-input input').set('Visit Me')
         find('.editable-submit').click
         wait_for_javascript_to_finish
@@ -86,7 +86,7 @@ RSpec.describe 'User sets each XEditable field', js: true do
       end
 
       scenario 'subject count' do
-        first('.edit-subject-count.editable').click
+        find('.edit-subject-count.editable').click
         find('.editable-input input').set(5)
         find('.editable-submit').click
         wait_for_javascript_to_finish
@@ -95,7 +95,7 @@ RSpec.describe 'User sets each XEditable field', js: true do
       end
 
       scenario 'unit type #' do
-        first('.edit-units-per-qty.editable').click
+        find('.edit-units-per-qty.editable').click
         find('.editable-input input').set(5)
         find('.editable-submit').click
         wait_for_javascript_to_finish
@@ -104,7 +104,7 @@ RSpec.describe 'User sets each XEditable field', js: true do
       end
 
       scenario 'qty type #' do
-        first('.edit-qty.editable').click
+        find('.edit-qty.editable').click
         find('.editable-input input').set(5)
         find('.editable-submit').click
         wait_for_javascript_to_finish
@@ -115,7 +115,7 @@ RSpec.describe 'User sets each XEditable field', js: true do
 
     context 'to an invalid value' do
       scenario 'window before' do
-        first('.window-before.editable').click
+        find('.window-before.editable').click
         find('.editable-input input').set('a lot')
         find('.editable-submit').click
         wait_for_javascript_to_finish
@@ -125,7 +125,7 @@ RSpec.describe 'User sets each XEditable field', js: true do
       end
 
       scenario 'window after' do
-        first('.window-after.editable').click
+        find('.window-after.editable').click
         find('.editable-input input').set('not a lot')
         find('.editable-submit').click
         wait_for_javascript_to_finish
@@ -135,7 +135,7 @@ RSpec.describe 'User sets each XEditable field', js: true do
       end
 
       scenario 'day' do
-        first('.day.editable').click
+        find('.day.editable').click
         find('.editable-input input').set('someday')
         find('.editable-submit').click
         wait_for_javascript_to_finish
@@ -145,7 +145,7 @@ RSpec.describe 'User sets each XEditable field', js: true do
       end
 
       scenario 'subject count' do
-        first('.edit-subject-count.editable').click
+        find('.edit-subject-count.editable').click
         find('.editable-input input').set('a number')
         find('.editable-submit').click
         wait_for_javascript_to_finish
@@ -155,7 +155,7 @@ RSpec.describe 'User sets each XEditable field', js: true do
       end
 
       scenario 'unit type #' do
-        first('.edit-units-per-qty.editable').click
+        find('.edit-units-per-qty.editable').click
         find('.editable-input input').set('a couple')
         find('.editable-submit').click
         wait_for_javascript_to_finish
@@ -165,7 +165,7 @@ RSpec.describe 'User sets each XEditable field', js: true do
       end
 
       scenario 'qty type #' do
-        first('.edit-qty.editable').click
+        find('.edit-qty.editable').click
         find('.editable-input input').set('none')
         find('.editable-submit').click
         wait_for_javascript_to_finish
@@ -184,7 +184,7 @@ RSpec.describe 'User sets each XEditable field', js: true do
 
     context 'to a valid value' do
       scenario 'window before' do
-        first('.window-before.editable').click
+        find('.window-before.editable').click
         find('.editable-input input').set(5)
         find('.editable-submit').click
         wait_for_javascript_to_finish
@@ -193,7 +193,7 @@ RSpec.describe 'User sets each XEditable field', js: true do
       end
 
       scenario 'window after' do
-        first('.window-after.editable').click
+        find('.window-after.editable').click
         find('.editable-input input').set(5)
         find('.editable-submit').click
         wait_for_javascript_to_finish
@@ -202,7 +202,7 @@ RSpec.describe 'User sets each XEditable field', js: true do
       end
 
       scenario 'day' do
-        first('.day.editable').click
+        find('.day.editable').click
         find('.editable-input input').set(5)
         find('.editable-submit').click
         wait_for_javascript_to_finish
@@ -211,7 +211,7 @@ RSpec.describe 'User sets each XEditable field', js: true do
       end
 
       scenario 'visit name' do
-        first('.visit-group-name.editable').click
+        find('.visit-group-name.editable').click
         find('.editable-input input').set('Visit Me')
         find('.editable-submit').click
         wait_for_javascript_to_finish
@@ -220,7 +220,7 @@ RSpec.describe 'User sets each XEditable field', js: true do
       end
 
       scenario 'subject count' do
-        first('.edit-subject-count.editable').click
+        find('.edit-subject-count.editable').click
         find('.editable-input input').set(5)
         find('.editable-submit').click
         wait_for_javascript_to_finish
@@ -229,7 +229,7 @@ RSpec.describe 'User sets each XEditable field', js: true do
       end
 
       scenario 'r' do
-        first('.edit-research-billing-qty.editable').click
+        find('.edit-research-billing-qty.editable').click
         find('.editable-input input').set(5)
         find('.editable-submit').click
         wait_for_javascript_to_finish
@@ -238,7 +238,7 @@ RSpec.describe 'User sets each XEditable field', js: true do
       end
 
       scenario 't' do
-        first('.edit-insurance-billing-qty.editable').click
+        find('.edit-insurance-billing-qty.editable').click
         find('.editable-input input').set(5)
         find('.editable-submit').click
         wait_for_javascript_to_finish
@@ -247,7 +247,7 @@ RSpec.describe 'User sets each XEditable field', js: true do
       end
 
       scenario '%' do
-        first('.edit-effort-billing-qty.editable').click
+        find('.edit-effort-billing-qty.editable').click
         find('.editable-input input').set(5)
         find('.editable-submit').click
         wait_for_javascript_to_finish
@@ -256,7 +256,7 @@ RSpec.describe 'User sets each XEditable field', js: true do
       end
 
       scenario 'unit type #' do
-        first('.edit-units-per-qty.editable').click
+        find('.edit-units-per-qty.editable').click
         find('.editable-input input').set(5)
         find('.editable-submit').click
         wait_for_javascript_to_finish
@@ -265,7 +265,7 @@ RSpec.describe 'User sets each XEditable field', js: true do
       end
 
       scenario 'qty type #' do
-        first('.edit-qty.editable').click
+        find('.edit-qty.editable').click
         find('.editable-input input').set(5)
         find('.editable-submit').click
         wait_for_javascript_to_finish
@@ -276,90 +276,81 @@ RSpec.describe 'User sets each XEditable field', js: true do
 
     context 'to an invalid value' do
       scenario 'window before' do
-        first('.window-before.editable').click
+        find('.window-before.editable').click
         find('.editable-input input').set('a lot')
         find('.editable-submit').click
-        wait_for_javascript_to_finish
 
         expect(page).to have_selector('.editable-error-block', visible: true)
         expect(page).to have_content('Window Before is not a number')
       end
 
       scenario 'window after' do
-        first('.window-after.editable').click
+        find('.window-after.editable').click
         find('.editable-input input').set('not a lot')
         find('.editable-submit').click
-        wait_for_javascript_to_finish
 
         expect(page).to have_selector('.editable-error-block', visible: true)
         expect(page).to have_content('Window After is not a number')
       end
 
       scenario 'day' do
-        first('.day.editable').click
+        find('.day.editable').click
         find('.editable-input input').set('someday')
         find('.editable-submit').click
-        wait_for_javascript_to_finish
 
         expect(page).to have_selector('.editable-error-block', visible: true)
         expect(page).to have_content('Day is not a number')
       end
 
       scenario 'subject count' do
-        first('.edit-subject-count.editable').click
+        find('.edit-subject-count.editable').click
         find('.editable-input input').set('a number')
         find('.editable-submit').click
-        wait_for_javascript_to_finish
 
         expect(page).to have_selector('.editable-error-block', visible: true)
         expect(page).to have_content('Subject Count is not a number')
       end
 
       scenario 'r' do
-        first('.edit-research-billing-qty.editable').click
+        find('.edit-research-billing-qty.editable').click
         find('.editable-input input').set('a number')
         find('.editable-submit').click
-        wait_for_javascript_to_finish
 
         expect(page).to have_selector('.editable-error-block', visible: true)
         expect(page).to have_content('Research Billing Qty is not a number')
       end
 
       scenario 't' do
-        first('.edit-insurance-billing-qty.editable').click
+        find('.edit-insurance-billing-qty.editable').click
         find('.editable-input input').set('not a number')
         find('.editable-submit').click
-        wait_for_javascript_to_finish
 
         expect(page).to have_selector('.editable-error-block', visible: true)
         expect(page).to have_content('Insurance Billing Qty is not a number')
       end
 
       scenario '%' do
-        first('.edit-effort-billing-qty.editable').click
+        find('.edit-effort-billing-qty.editable').click
         find('.editable-input input').set('imaginary number')
         find('.editable-submit').click
-        wait_for_javascript_to_finish
 
         expect(page).to have_selector('.editable-error-block', visible: true)
         expect(page).to have_content('Effort Billing Qty is not a number')
       end
 
       scenario 'unit type #' do
-        first('.edit-units-per-qty.editable').click
+        find('.edit-units-per-qty.editable').click
         find('.editable-input input').set('a couple')
         find('.editable-submit').click
-        wait_for_javascript_to_finish
 
         expect(page).to have_selector('.editable-error-block', visible: true)
         expect(page).to have_content('Units Per Quantity is not a number')
       end
 
       scenario 'qty type #' do
-        first('.edit-qty.editable').click
+        find('.edit-qty.editable').click
         find('.editable-input input').set('none')
         find('.editable-submit').click
-        wait_for_javascript_to_finish
 
         expect(page).to have_selector('.editable-error-block', visible: true)
         expect(page).to have_content('Quantity is not a number')

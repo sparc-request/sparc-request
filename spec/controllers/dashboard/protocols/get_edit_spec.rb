@@ -54,7 +54,7 @@ RSpec.describe Dashboard::ProtocolsController do
             @protocol       = findable_stub(Protocol) do
               build_stubbed(:protocol,
                 type: "Study",
-                study_type_question_group_id: inactive_study_type_question_group.id
+                study_type_question_group_id: study_type_question_group_version_1.id
               )
             end
 
@@ -78,7 +78,7 @@ RSpec.describe Dashboard::ProtocolsController do
           end
 
           it "should set StudyTypeQuestionGroup id to activate" do
-            expect(@protocol.study_type_question_group_id).to eq(active_study_type_question_group.id)
+            expect(@protocol.study_type_question_group_id).to eq(study_type_question_group_version_1.id)
           end
           it { is_expected.to respond_with :ok }
           it { is_expected.to render_template "dashboard/protocols/edit" }
@@ -91,7 +91,7 @@ RSpec.describe Dashboard::ProtocolsController do
             @protocol       = findable_stub(Protocol) do
               build_stubbed(:protocol,
                 type: "Study",
-                study_type_question_group_id: active_study_type_question_group.id
+                study_type_question_group_id: study_type_question_group_version_3.id
               )
             end
 
@@ -115,7 +115,7 @@ RSpec.describe Dashboard::ProtocolsController do
           end
 
           it "should set StudyTypeQuestionGroup id to active" do
-            expect(@protocol.study_type_question_group_id).to eq(active_study_type_question_group.id)
+            expect(@protocol.study_type_question_group_id).to eq(study_type_question_group_version_3.id)
           end
           it { is_expected.to respond_with :ok }
           it { is_expected.to render_template "dashboard/protocols/edit" }
@@ -146,7 +146,7 @@ RSpec.describe Dashboard::ProtocolsController do
         build_study_type_question_groups
         before :each do
           @logged_in_user = create(:identity)
-          @protocol       = create(:protocol_without_validations, type: 'Study', study_type_question_group_id: inactive_study_type_question_group.id)
+          @protocol       = create(:protocol_without_validations, type: 'Study', study_type_question_group_id: study_type_question_group_version_1.id)
           organization    = create(:organization)
           service_request = create(:service_request_without_validations, protocol: @protocol)
                             create(:sub_service_request_without_validations, organization: organization, service_request: service_request, status: 'draft')

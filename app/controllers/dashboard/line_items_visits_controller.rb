@@ -21,6 +21,21 @@
 class Dashboard::LineItemsVisitsController < Dashboard::BaseController
   respond_to :json, :js, :html
 
+  # Used for x-editable update and validations
+  def update
+    @line_items_visit = LineItemsVisit.find( params[:id] )
+    @service_request  = ServiceRequest.find( params[:srid] )
+
+    if @line_items_visit.update_attributes( params[:line_items_visit] )
+      @service_request.update_attributes(status: 'draft')
+      @line_items_visit.sub_service_request.update_attributes(status: 'draft')
+      render json: { success: true }
+    else
+      render json: @line_items_visit.errors, status: :unprocessable_entity
+    end
+
+  end
+
   def destroy
     @line_items_visit = LineItemsVisit.find(params[:id])
     @sub_service_request = @line_items_visit.line_item.sub_service_request
@@ -35,7 +50,6 @@ class Dashboard::LineItemsVisitsController < Dashboard::BaseController
         line_item.destroy unless line_item.line_items_visits.count > 0
         # Have to reload the service request to get the correct direct cost total for the subsidy
         @service_request = @sub_service_request.service_request
-        @candidate_one_time_fees, @candidate_per_patient_per_visit = @sub_service_request.candidate_services.partition(&:one_time_fee)
         render 'dashboard/sub_service_requests/add_line_item'
       end
     end

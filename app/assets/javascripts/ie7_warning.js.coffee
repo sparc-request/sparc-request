@@ -19,15 +19,8 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 $(document).ready ->
-  $('#ie7_warning').dialog({
-    autoOpen: true
-    dialogClass: "ie_warning"
-    title: 'Warning'
-    width: 750
-    modal: true
-    resizable: false
-    buttons:
-        Ok: ->
-          $(this).dialog('close')
-  })
-  $('.ie_warning').css('z-index', '5000')
+  $('#modal_place').html($('#ie7-warning-modal').html()).removeClass('hidden')
+  $('#modal_place').modal
+    show: true,
+    keyboard: false,
+    backdrop: 'static'

@@ -28,7 +28,6 @@ RSpec.describe ApplicationController, type: :controller do
     end
 
     def show
-      prepare_catalog
       render nothing: true
     end
 
@@ -151,83 +150,6 @@ RSpec.describe ApplicationController, type: :controller do
     end
   end
 
-  describe '#prepare_catalog' do
-    build_service_request_with_study
-
-    before(:each) do
-      # make Institution list for sub_service_request distinct from
-      # list of all Institutions
-      create(:institution)
-    end
-
-    context 'session[:sub_service_request_id] present and @sub_service_request non-nil' do
-      it 'should set @institutions to the @sub_service_request\'s Institutions' do
-        session[:sub_service_request_id] = sub_service_request.id
-        controller.instance_variable_set(:@sub_service_request, sub_service_request)
-        routes.draw { get 'show' => 'anonymous#show' }
-        get :show
-        expect(assigns(:institutions)).to eq [institution]
-      end
-    end
-
-    context 'session[:sub_service_request_id] present but @sub_service_request nil' do
-      it 'should set @institutions to all Institutions' do
-        session[:sub_service_request_id] = sub_service_request.id
-        routes.draw { get 'show' => 'anonymous#show' }
-        get :show
-        expect(assigns(:institutions)).to eq Institution.order('`order`')
-      end
-    end
-
-    context 'session[:sub_service_request_id] absent but @sub_service_request set' do
-      it 'should set @institutions to all Institutions' do
-        controller.instance_variable_set(:@sub_service_request, sub_service_request)
-        routes.draw { get 'show' => 'anonymous#show' }
-        get :show
-        expect(assigns(:institutions)).to eq Institution.order('`order`')
-      end
-    end
-  end
-
-  describe '#setup_navigation' do
-    build_service_request_with_study
-
-    context 'action is not navigate' do
-      before(:each) { session[:service_request_id] = service_request.id }
-
-      it 'should always set @page to params[:action]' do
-        routes.draw { get 'not_navigate' => 'anonymous#not_navigate' }
-        get :not_navigate, current_location: 'http://www.example.com/something/something/darkside'
-        expect(assigns(:page)).to eq 'not_navigate'
-
-        allow(controller.request).to receive(:referrer).and_return('http://www.example.com/foo/bar')
-        get :not_navigate
-        expect(assigns(:page)).to eq 'not_navigate'
-      end
-    end
-
-    context 'action is navigate' do
-      before(:each) { session[:service_request_id] = service_request.id }
-
-      context 'params[:current_location] present' do
-        it 'should assign @page to page referred to by params[:current_location]' do
-          routes.draw { get 'navigate' => 'anonymous#navigate' }
-          get :navigate, current_location: 'my current location'
-          expect(assigns(:page)).to eq 'my current location'
-        end
-      end
-
-      context 'params[:current_location] absent' do
-        it 'should assign @page to page referred to by request referrer' do
-          routes.draw { get 'navigate' => 'anonymous#navigate' }
-          allow(controller.request).to receive(:referrer).and_return('http://www.example.com/foo/bar')
-          get :navigate
-          expect(assigns(:page)).to eq 'bar'
-        end
-      end
-    end
-  end
-
   describe '#initialize_service_request' do
     build_service_request_with_study
 
@@ -238,38 +160,28 @@ RSpec.describe ApplicationController, type: :controller do
         end
       end
 
-      context 'session[:service_request_id] present' do
-        before(:each) { session[:service_request_id] = service_request.id }
-
+      context 'params[:service_request_id] present' do
         it 'should set @service_request' do
-          get :index
+          get :index, service_request_id: service_request.id
           expect(assigns(:service_request)).to eq service_request
         end
 
-        context 'session[:sub_service_request_id] present' do
+        context 'params[:sub_service_request_id] present' do
           before(:each) do
-            session[:sub_service_request_id] = sub_service_request.id
-            get :index
+            get :index, service_request_id: service_request.id,
+              sub_service_request_id: sub_service_request.id
           end
 
           it 'should set @sub_service_request' do
             expect(assigns(:sub_service_request)).to eq sub_service_request
           end
-
-          it "should set @line_items to the SubServiceRequest's LineItems" do
-            expect(assigns(:line_items)).to eq sub_service_request.line_items
-          end
         end
 
         context 'session[:sub_service_request_id] absent' do
-          before(:each) { get :index }
+          before(:each) { get :index, service_request_id: service_request.id }
 
           it 'should not set @sub_service_request' do
             expect(assigns(:sub_service_request)).to_not be
-          end
-
-          it "should set @line_items to the ServiceRequest's LineItems" do
-            expect(assigns(:line_items)).to eq service_request.line_items
           end
         end
       end

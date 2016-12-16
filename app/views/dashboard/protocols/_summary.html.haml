@@ -21,39 +21,45 @@
 .panel.panel-primary#summary-panel
   .panel-heading
     %h4.panel-title.pull-left
-      = protocol_type + t(:dashboard)[:protocols][:summary][:header]
+      = I18n.t('protocols.summary.header', protocol_type: protocol_type)
     .pull-right
-      %button.btn.btn-sm.btn-success.notes.list{ data: { notable_type: "Protocol", notable_id: protocol.id } }
-        = protocol_type + t(:dashboard)[:protocols][:summary][:notes]
+      %button.btn.btn-sm.btn-default.notes.list{ data: { notable_type: "Protocol", notable_id: protocol.id } }
+        = "#{protocol_type} #{t(:models)[:note][:plural]}"
         %span.badge{id: "protocol_#{protocol.id}_notes"}
           = protocol.notes.count
       %button.btn.btn-sm.btn-info.view-protocol-details-button{ data: { protocol_id: protocol.id } }
-        = t(:dashboard)[:protocols][:summary][:view_details1] + protocol_type + t(:dashboard)[:protocols][:summary][:view_details2]
+        = I18n.t('protocols.view_details.button', protocol_type: protocol_type)
       = edit_protocol_button_display(protocol, permission_to_edit)
     .clearfix
-  .panel-body#protocol-summary
-    %dl.dl-horizontal.pull-left
-      %dt #{protocol_type.capitalize} ID:
-      %dd
+  .panel-body#protocol-summary.text-left
+    .row
+      .col-sm-2
+        %label
+          = I18n.t('protocols.summary.id', protocol_type: protocol_type)
+      .col-sm-10
         = protocol.try(:id)
-
-      %dt
-        = t(:dashboard)[:protocols][:summary][:title]
-      %dd
+    .row
+      .col-sm-2
+        %label
+          = t(:protocols)[:summary][:title]
+      .col-sm-10
         = protocol.try(:title)
-
-      %dt
-        = t(:dashboard)[:protocols][:summary][:short_title]
-      %dd
+    .row
+      .col-sm-2
+        %label
+          = t(:protocols)[:summary][:short_title]
+      .col-sm-10
         = protocol.try(:short_title)
-
-      - if protocol_type == 'Study'
-        %dt
-          = t(:dashboard)[:protocols][:summary][:sponsor]
-        %dd
+    - if protocol_type == 'Study'
+      .row
+        .col-sm-2
+          %label
+            = t(:protocols)[:summary][:sponsor]
+        .col-sm-10
           = protocol.try(:sponsor_name)
-
-      %dt
-        = display_funding_source_title(protocol)
-      %dd
+    .row
+      .col-sm-2
+        %label
+          = display_funding_source_title(protocol)
+      .col-sm-10
         = display_funding_source(protocol)

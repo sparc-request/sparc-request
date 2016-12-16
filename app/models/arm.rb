@@ -44,16 +44,18 @@ class Arm < ActiveRecord::Base
   after_save :update_liv_subject_counts
 
   validates :name, presence: true
-  validates_uniqueness_of :name, scope: :protocol
+  validates :name, format: { with: /\A([A-Za-z0-9][A-Za-z0-9]*([ ][A-Za-z0-9])?)*\z/, 
+                   message: "can not contain any of the following characters: [ ] * / \\ ? : " }
+  validate :name_unique_to_protocol
+
   validates :visit_count, numericality: { greater_than: 0 }
   validates :subject_count, numericality: { greater_than: 0 }
 
-  validate do |arm|
-    arm.visit_groups.each do |visit_group|
-      if !visit_group.valid? && visit_group.errors.full_messages.first.include?('order')
-        errors[:base] << visit_group.errors.full_messages.first
-      end
-    end
+  def name_unique_to_protocol
+    arm_names = self.protocol.arms.where.not(id: self.id).pluck(:name)
+    arm_names = arm_names.map(&:downcase)
+
+    errors.add(:name, I18n.t(:errors)[:arms][:name_unique]) if arm_names.include?(self.name.downcase)
   end
 
   def sanitized_name
@@ -62,24 +64,11 @@ class Arm < ActiveRecord::Base
   end
 
   def update_liv_subject_counts
-
     self.line_items_visits.each do |liv|
       if ['first_draft', 'draft', nil].include?(liv.line_item.service_request.status)
         liv.update_attributes(:subject_count => self.subject_count)
       end
     end
-  end
-
-  def valid_visit_count?
-    return !visit_count.nil? && visit_count > 0
-  end
-
-  def valid_subject_count?
-    return !subject_count.nil? && subject_count > 0
-  end
-
-  def valid_name?
-    return !name.nil? && name.length > 0
   end
 
   def create_line_items_visit line_item
@@ -179,13 +168,15 @@ class Arm < ActiveRecord::Base
   end
 
   def create_visit_group position=self.visit_groups.count+1, name="Visit #{position-1}", day=position-1
-    if not visit_group = self.visit_groups.create(position: position, name: name, day: day, arm_id: self.id) then
+    unless visit_group = self.visit_groups.create(position: position, name: name, day: day, arm_id: self.id)
       return false
     end
     # Add visits to each line item under the service request
     self.line_items_visits.each do |liv|
       if not liv.add_visit(visit_group) then
-        self.errors.initialize_dup(liv.errors) # TODO: is this the right way to do this?
+        # NOTE any error messages present in the Arm at this point are replaced
+        # by those of the liv.
+        self.errors.initialize_dup(liv.errors)
         return false
       end
     end

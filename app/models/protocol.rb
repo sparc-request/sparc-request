@@ -31,6 +31,7 @@ class Protocol < ActiveRecord::Base
   has_one :investigational_products_info, dependent: :destroy
   has_one :ip_patents_info,               dependent: :destroy
   has_many :project_roles,                dependent: :destroy
+  has_one :primary_pi_role,               -> { where(role: 'primary-pi') }, class_name: "ProjectRole", dependent: :destroy
   has_many :identities,                   through: :project_roles
   has_many :service_requests
   has_many :services,                     through: :service_requests
@@ -43,6 +44,7 @@ class Protocol < ActiveRecord::Base
   has_many :notes, as: :notable,          dependent: :destroy
   has_many :study_type_questions,         through: :study_type_question_group
   has_many :documents,                    dependent: :destroy
+  has_many :submissions,                  dependent: :destroy
 
   has_many :principal_investigators, -> { where(project_roles: { role: %w(pi primary-pi) }) },
     source: :identity, through: :project_roles
@@ -233,7 +235,7 @@ class Protocol < ActiveRecord::Base
     when 'short_title'
       order("TRIM(REPLACE(short_title, CHAR(9), ' ')) #{sort_order.upcase}")
     when 'pis'
-      joins(project_roles: :identity).where(project_roles: { role: 'primary-pi' }).order(".identities.first_name #{sort_order.upcase}")
+      joins(primary_pi_role: :identity).order(".identities.first_name #{sort_order.upcase}")
     end
   }
 
@@ -260,11 +262,20 @@ class Protocol < ActiveRecord::Base
   end
 
   def active?
-    study_type_question_group.active
+    study_type_question_group.nil? ? false : study_type_question_group.active
+  end
+
+  def version_type
+    study_type_question_group.nil? ? nil : study_type_question_group.version
   end
 
   def activate
     update_attribute(:study_type_question_group_id, StudyTypeQuestionGroup.active.pluck(:id).first)
+  end
+
+  def display_answers
+    answers = StudyTypeQuestion.joins(:study_type_question_group).where(study_type_question_groups: { version: version_type })
+    answers.map{ |ans| ans.study_type_answers.find_by_protocol_id(id) }
   end
 
   def email_about_change_in_authorized_user(modified_role, action)
@@ -370,7 +381,7 @@ class Protocol < ActiveRecord::Base
   # Note: this method is called inside a child thread by the service
   # requests controller.  Be careful adding code here that might not be
   # thread-safe.
-  def push_to_epic(epic_interface)
+  def push_to_epic(epic_interface, origin, identity_id=nil)
     begin
       self.last_epic_push_time = Time.now
       self.last_epic_push_status = 'started'
@@ -382,13 +393,13 @@ class Protocol < ActiveRecord::Base
       self.last_epic_push_status = 'complete'
       save(validate: false)
 
-      EpicQueueRecord.create(protocol_id: self.id, status: self.last_epic_push_status)
+      EpicQueueRecord.create(protocol_id: self.id, status: self.last_epic_push_status, origin: origin, identity_id: identity_id)
     rescue Exception => e
       Rails.logger.info("Push to Epic failed.")
 
       self.last_epic_push_status = 'failed'
       save(validate: false)
-      EpicQueueRecord.create(protocol_id: self.id, status: self.last_epic_push_status)
+      EpicQueueRecord.create(protocol_id: self.id, status: self.last_epic_push_status, origin: origin, identity_id: identity_id)
       raise e
     end
   end

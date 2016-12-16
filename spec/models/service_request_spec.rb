@@ -27,9 +27,9 @@ RSpec.describe 'ServiceRequest' do
   build_service_request_with_project
 
   describe "set visit page" do
-
-    let!(:service_request)  { FactoryGirl.create(:service_request_without_validations) }
-    let!(:arm)              { create(:arm, visit_count: 10)}
+    let!(:protocol)         { create(:protocol_without_validations) }
+    let!(:service_request)  { create(:service_request_without_validations, protocol: protocol) }
+    let!(:arm)              { create(:arm, protocol: protocol, visit_count: 10)}
 
     it "should return 1 if arm visit count <= 5" do
       arm.update_attributes(visit_count: 0)
@@ -48,6 +48,60 @@ RSpec.describe 'ServiceRequest' do
 
     it "should return the pages passed if above conditions are not true" do
       expect(service_request.set_visit_page(2, arm)).to eq(2)
+    end
+  end
+
+  describe "audit report" do
+    context "a line_item has been created or destroyed for this service_request" do
+      before :each do
+        organization = create(:organization)
+        service = create(:service,
+                        organization_id: organization.id,
+                        name: 'ABCD',
+                        one_time_fee: true) 
+        @identity = create(:identity)
+        create(:service_provider,
+                identity: @identity,
+                organization: organization,
+                service: service) 
+        service_request.update_attribute(:submitted_at, Time.now.yesterday)
+        ssr = service_request.sub_service_requests.first
+        ssr.update_attribute(:submitted_at, Time.now.yesterday)
+        ssr.update_attribute(:status, 'submitted')
+        @li_id = ssr.line_items.first.id
+        ssr.line_items.first.destroy!
+        ssr.save!
+        service_request.reload
+
+        created_li = create(:line_item_without_validations, sub_service_request_id: ssr.id, service_id: service.id)
+        @created_li_id = created_li.id
+        ssr.save!
+        service_request.reload
+
+        @audit1 = AuditRecovery.where("auditable_id = '#{@li_id}' AND auditable_type = 'LineItem' AND action = 'destroy'")
+        @audit2 = AuditRecovery.where("auditable_id = '#{@created_li_id}' AND auditable_type = 'LineItem' AND action = 'create'")
+
+        @audit1.first.update_attribute(:created_at, Time.now - 5.hours)
+        @audit1.first.update_attribute(:user_id, @identity.id)
+        @audit2.first.update_attribute(:created_at, Time.now - 5.hours)
+        @audit2.first.update_attribute(:user_id, @identity.id)
+
+        @report = service_request.audit_report(@identity, Time.now.yesterday - 4.hours, Time.now)
+      end
+
+      it "should return a audit report" do
+        expect(service_request.audit_report(@identity, Time.now.yesterday.utc, Time.now.utc)).to eq(@report)
+      end
+    end
+
+    context "a line_item has NOT been created or destroyed for this service_request" do
+      before :each do
+        @identity = create(:identity)
+      end
+      
+      it "should NOT return a audit report" do
+        expect(service_request.audit_report(@identity, Time.now.yesterday.utc, Time.now.utc)).to eq({:line_items=>{}})
+      end
     end
   end
 

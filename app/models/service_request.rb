@@ -34,59 +34,27 @@ class ServiceRequest < ActiveRecord::Base
   has_many :tokens, :dependent => :destroy
   has_many :approvals, :dependent => :destroy
   has_many :arms, :through => :protocol
+  has_many :visit_groups, through: :arms
   has_many :notes, as: :notable, dependent: :destroy
 
   after_save :set_original_submitted_date
 
+  validation_group :catalog do
+    validate :validate_line_items
+  end
+
   validation_group :protocol do
-    # validates :protocol_id, :presence => {:message => "You must identify the service request with a study/project before continuing."}
-    validate :protocol_page
+    validate :validate_line_items
+    validate :validate_protocol
   end
 
   validation_group :service_details do
-    # TODO: Fix validations for this area
-    # validates :visit_count, :numericality => { :greater_than => 0, :message => "You must specify the estimated total number of visits (greater than zero) before continuing.", :if => :has_per_patient_per_visit_services?}
-    # validates :subject_count, :numericality => {:message => "You must specify the estimated total number of subjects before continuing.", :if => :has_per_patient_per_visit_services?}
-    validate :service_details_forward
-  end
-
-  validation_group :service_details_back do
-    # TODO: Fix validations for this area
-    # validates :visit_count, :numericality => { :greater_than => 0, :message => "You must specify the estimated total number of visits (greater than zero) before continuing.", :if => :has_visits?}
-    # validates :subject_count, :numericality => {:message => "You must specify the estimated total number of subjects before continuing.", :if => :has_visits?}
-    validate :service_details_back
+    validate :validate_service_details
+    validate :validate_arms
   end
 
   validation_group :service_calendar do
-    #insert group specific validation
-    validate :service_calendar_forward
-  end
-
-  validation_group :service_calendar_back do
-    validate :service_calendar_back
-  end
-
-  validation_group :calendar_totals do
-  end
-
-  validation_group :service_subsidy do
-    #insert group specific validation
-  end
-
-  validation_group :document_management do
-    #insert group specific validation
-  end
-
-  validation_group :review do
-    #insert group specific validation
-  end
-
-  validation_group :obtain_research_pricing do
-    #insert group specific validation
-  end
-
-  validation_group :confirmation do
-    #insert group specific validation
+    validate :validate_service_calendar
   end
 
   attr_accessible :protocol_id
@@ -108,78 +76,47 @@ class ServiceRequest < ActiveRecord::Base
 
   #after_save :fix_missing_visits
 
-  def protocol_page
-    if self.protocol_id.blank?
-      errors.add(:protocol_id, "You must identify the service request with a study/project before continuing.")
-    elsif not self.protocol.valid?
-      errors.add(:protocol, "Errors in the selected study/project have been detected.  Please click Edit Study/Project to correct")
-    end
-
+  def validate_line_items
     if self.line_items.empty?
-      errors.add(:no_services, "Your cart is empty. Please return to the Catalog to add services to continue.")
+      errors.add(:base, I18n.t(:errors)[:service_requests][:line_items_missing])
     end
   end
 
-  def service_details_back
-    service_details_page('back')
-  end
-
-  def service_details_forward
-    service_details_page('forward')
-  end
-
-  def service_details_page(direction)
-    if direction == 'forward'
-      if self.line_items.empty?
-        errors.add(:no_services, "Your cart is empty. Please return to the Catalog to add services to continue.")
-      end
+  def validate_protocol
+    if self.protocol_id.blank?
+      errors.add(:base, I18n.t(:errors)[:service_requests][:protocol_missing])
+    elsif !self.protocol.valid?
+      errors.add(:base, I18n.t(:errors)[:service_requests][:protocol_errors])
     end
+  end
 
-    unless direction == 'back' && ((status == 'first_draft') || (status == 'draft' && !submitted_at.present?))
-      #validate start date and end date
-      if protocol
-        if protocol.start_date.nil?
-          errors.add(:start_date, "You must specify the start date of the study.")
-        end
-        if protocol.end_date.nil?
-          errors.add(:end_date, "You must specify the end date of the study.")
-        end
-        if protocol.start_date and protocol.end_date and protocol.start_date > protocol.end_date
-          errors.add(:invalid_date, "You must chose a start date before the end date.")
-        end
+  def validate_service_details
+    if protocol
+      if protocol.start_date.nil?
+        errors.add(:base, I18n.t(:errors)[:protocols][:start_date_missing])
       end
-
-      #validate arm name, subjects, and visits
-      if has_per_patient_per_visit_services?
-        visitError = false
-        subjectError = false
-        nameError = false
-        arms.each do |arm|
-          unless arm.valid_visit_count? then visitError = true end
-          unless arm.valid_subject_count? then subjectError = true end
-          unless arm.valid_name? then nameError = true end
-          if visitError and subjectError and nameError then break end
-        end
-
-        if visitError then errors.add(:visit_count, "You must specify the estimated total number of visits (greater than zero) before continuing.") end
-        if subjectError then errors.add(:subject_count, "You must specify the estimated total number of subjects before continuing.") end
-        if nameError then errors.add(:name, "You must specify a name for each arm before continuing.") end
+      if protocol.end_date.nil?
+        errors.add(:base, I18n.t(:errors)[:protocols][:end_date_missing])
       end
+      if protocol.start_date && protocol.end_date && protocol.start_date > protocol.end_date
+        errors.add(:base, I18n.t(:errors)[:protocols][:date_range_invalid])
+      end
+    else
+      protocol
     end
-
   end
 
-  def service_calendar_back
-    service_calendar_page('back')
+  def validate_arms
+    if has_per_patient_per_visit_services? && protocol && protocol.arms.empty?
+      errors.add(:base, I18n.t(:errors)[:service_requests][:arms_missing])
+    end
   end
 
-  def service_calendar_forward
-    service_calendar_page('forward')
-  end
-
-  def service_calendar_page(direction)
-    return if direction == 'back' && ((status == 'first_draft') || (status == 'draft' && !submitted_at.present?))
-    return unless has_per_patient_per_visit_services?
+  def validate_service_calendar
+    vg = visit_groups.to_a.find { |vg| !vg.in_order? }
+    if vg
+      errors.add(:base, I18n.t('errors.visit_groups.days_out_of_order', arm_name: vg.arm.name))
+    end
 
     if USE_EPIC
       self.arms.each do |arm|
@@ -189,24 +126,8 @@ class ServiceRequest < ActiveRecord::Base
         invalid_day_errors = false
 
         unless days.all?{|x| !x.blank?}
-          errors.add(:visit_group, "Please specify a study day for each visit on (#{arm.name}).")
+          errors.add(:base, I18n.t('errors.fulfillments.visit_day_missing', arm_name: arm.name))
           visit_group_errors = true
-        end
-
-        unless days.all?{|day| day.is_a? Fixnum}
-          errors.add(:invalid_day, "Please enter a valid number for each study day (#{arm.name}).")
-          invalid_day_errors = true
-        end
-
-        errors.add(:out_of_order, "Please make sure study days are in sequential order (#{arm.name}).") unless visit_group_errors or invalid_day_errors or days.each_cons(2).all?{|i,j| i <= j}
-
-        unless visit_group_errors
-          day_entries = Hash.new(0)
-          days.each do |day|
-            day_entries[day] += 1
-          end
-
-          errors.add(:duplicate_days, "Visits can not have the same study day (#{arm.name}).") unless day_entries.values.all?{|count| count == 1}
         end
       end
     end
@@ -260,7 +181,7 @@ class ServiceRequest < ActiveRecord::Base
       return if existing_service_ids.include?(service.id)
     end
 
-    line_items = [ ]
+    line_items = []
 
     # add service to line items
     line_items << create_line_item(
@@ -398,6 +319,14 @@ class ServiceRequest < ActiveRecord::Base
     groupings
   end
 
+  def deleted_ssrs_since_previous_submission
+    AuditRecovery.where("audited_changes LIKE '%service_request_id: #{id}%' AND auditable_type = 'SubServiceRequest' AND action = 'destroy' AND created_at BETWEEN '#{previous_submitted_at.utc}' AND '#{Time.now.utc}'")
+  end
+
+  def created_ssrs_since_previous_submission
+    AuditRecovery.where("audited_changes LIKE '%service_request_id: #{id}%' AND auditable_type = 'SubServiceRequest' AND action = 'create' AND created_at BETWEEN '#{previous_submitted_at.utc}' AND '#{Time.now.utc}'")
+  end
+
   # Returns the line items that a service provider is associated with
   def service_provider_line_items(service_provider, items)
     service_provider_items = []
@@ -502,21 +431,21 @@ class ServiceRequest < ActiveRecord::Base
 
   # Change the status of the service request and all the sub service
   # requests to the given status.
-  def update_status(new_status, use_validation=true)
+  def update_status(new_status, use_validation=true, submit=false)
     to_notify = []
-
     self.assign_attributes(status: new_status)
 
-    self.sub_service_requests.each do |ssr|
+    sub_service_requests.each do |ssr|
       next unless ssr.can_be_edited? && !ssr.is_complete?
       available = AVAILABLE_STATUSES.keys
       editable = EDITABLE_STATUSES[ssr.organization_id] || available
       changeable = available & editable
 
       if changeable.include?(new_status)
-        if (ssr.status != new_status) && UPDATABLE_STATUSES.include?(ssr.status)
+        if (ssr.status != new_status) && (UPDATABLE_STATUSES.include?(ssr.status) || !submit)
           ssr.update_attribute(:status, new_status)
-          to_notify << ssr.id
+          # Do not notify (initial submit email) if ssr has been previously submitted
+          to_notify << ssr.id unless ssr.previously_submitted?
         end
       end
     end
@@ -528,38 +457,40 @@ class ServiceRequest < ActiveRecord::Base
 
   # Make sure that all the sub service requests have an ssr id
   def ensure_ssr_ids
-    if self.protocol
-      next_ssr_id = self.protocol.next_ssr_id || 1
+    next_ssr_id = self.protocol && self.protocol.next_ssr_id.present? ? self.protocol.next_ssr_id : 1
 
-      self.sub_service_requests.each do |ssr|
-        if not ssr.ssr_id then
-          ssr.update_attributes(ssr_id: "%04d" % next_ssr_id)
-          next_ssr_id += 1
-        end
+    self.sub_service_requests.each do |ssr|
+      unless ssr.ssr_id
+        ssr.update_attributes(ssr_id: "%04d" % next_ssr_id)
+        next_ssr_id += 1
       end
-
-      self.protocol.update_attributes(next_ssr_id: next_ssr_id)
+      # If we have created a protocol, we don't want to ensure that the ssr_ids are sequential because the user may remove SSRs
+      next_ssr_id += 1 unless self.protocol
     end
+
+    self.protocol.update_attributes(next_ssr_id: next_ssr_id) if self.protocol
   end
 
   def add_or_update_arms
-    return if not self.has_per_patient_per_visit_services?
+    return unless self.has_per_patient_per_visit_services?
 
     p = self.protocol
-    if p.arms.empty?
-      arm = p.arms.create(
-        name: 'Screening Phase',
-        visit_count: 1,
-        subject_count: 1,
-        new_with_draft: true)
-      self.per_patient_per_visit_line_items.each do |li|
-        arm.create_line_items_visit(li)
-      end
-    else
-      p.arms.each do |arm|
-        p.service_requests.each do |sr|
-          sr.per_patient_per_visit_line_items.each do |li|
-            arm.create_line_items_visit(li) if arm.line_items_visits.where(:line_item_id => li.id).empty?
+    if p
+      if p.arms.empty?
+        arm = p.arms.create(
+          name: 'Screening Phase',
+          visit_count: 1,
+          subject_count: 1,
+          new_with_draft: true)
+        self.per_patient_per_visit_line_items.each do |li|
+          arm.create_line_items_visit(li)
+        end
+      else
+        p.arms.each do |arm|
+          p.service_requests.each do |sr|
+            sr.per_patient_per_visit_line_items.each do |li|
+              arm.create_line_items_visit(li) if arm.line_items_visits.where(:line_item_id => li.id).empty?
+            end
           end
         end
       end
@@ -584,7 +515,7 @@ class ServiceRequest < ActiveRecord::Base
     true #self.sub_service_requests.all?{|ssr| ssr.arms_editable?}
   end
 
-  def audit_report identity, start_date=self.previous_submitted_at.utc, end_date=Time.now.utc
+  def audit_report( identity, start_date=self.previous_submitted_at.utc, end_date=Time.now.utc )
     line_item_audits = AuditRecovery.where("audited_changes LIKE '%service_request_id: #{self.id}%' AND
                                       auditable_type = 'LineItem' AND user_id = #{identity.id} AND action IN ('create', 'destroy') AND
                                       created_at BETWEEN '#{start_date}' AND '#{end_date}'")
@@ -597,7 +528,14 @@ class ServiceRequest < ActiveRecord::Base
     sub_service_requests.where.not(status: 'first_draft').any?
   end
 
-  def ssrs_associated_with_service_provider (service_provider)
+  def cart_sub_service_requests
+    active    = self.sub_service_requests.where.not(status: 'complete')
+    complete  = self.sub_service_requests.where(status: 'complete')
+
+    { active: active, complete: complete }
+  end
+
+  def ssrs_associated_with_service_provider(service_provider)
     ssrs_to_be_displayed = []
     self.sub_service_requests.each do |ssr|
       if service_provider.identity.is_service_provider?(ssr)

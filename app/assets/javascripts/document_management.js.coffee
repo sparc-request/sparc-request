@@ -19,48 +19,55 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #= require navigation
+#= require cart
 
 $(document).ready ->
+  getSRId = ->
+    $("input[name='service_request_id']").val()
 
-  $(".document_upload_button").click ->
-    $("#process_ssr_organization_ids").removeAttr('disabled')
-    $("#document").removeAttr('disabled')
-    $(".document_upload_button").hide()
-    $('#doc_type').change()
-
-  $(".document_edit").click ->
-    $("#process_ssr_organization_ids").removeAttr('disabled')
-    $("#document").removeAttr('disabled')
-    $(".document_upload_button").hide()
-    $('.document_edit span').html('Loading...')
-    $('.document_delete').hide()
-
-  $("#cancel_upload").live 'click', ->
-    $("#process_ssr_organization_ids").attr('disabled', 'disabled')
-    $("#document").attr('disabled', 'disabled')
-    $('.document_delete').show()
-
-  $(document).on('change', '#doc_type', ->
-    if $(this).val() == 'other'
-      $('.document_type_other').show()
-    else
-      $('.document_type_other').hide()
-  )
-
-  $(".new_request_note_button").click ->
-    $('#note_form').show()
-    $("#new_note_text").focus()
-    $(this).hide()
-
-  $("#save_request_note").click ->
+  $(document).on 'click', '#document-new', ->
     data =
-      in_proper: true
-      note:
-        notable_id: $(this).data('notable-id')
-        notable_type: $(this).data('notable-type')
-        body: $("#new_note_text").val()
-    $("#new_note_text").val("")
+      protocol_id: $(this).data('protocol-id')
+      service_request_id: getSRId()
     $.ajax
-      type: 'POST'
-      url: '/dashboard/notes'
+      type: 'GET'
+      url: '/documents/new'
       data: data
+    return false
+
+  $(document).on 'click', '.document-edit', ->
+    row_index   = $(this).parents('tr').data('index')
+    document_id = $(this).parents('table#documents-table').bootstrapTable('getData')[row_index].id
+    $.ajax
+      type: 'GET'
+      url: "/documents/#{document_id}/edit"
+      data:
+        service_request_id: getSRId()
+
+  $(document).on 'click', '.document-delete', ->
+    row_index   = $(this).parents('tr').data('index')
+    document_id = $(this).parents('table#documents-table').bootstrapTable('getData')[row_index].id
+    if confirm I18n['documents']['delete_confirm']
+      $.ajax
+        type: 'DELETE'
+        url: "/documents/#{document_id}?service_request_id=#{getSRId()}"
+
+  $(document).on 'change', '#document_doc_type', ->
+    if $(this).val() == 'other'
+      $('#doc-type-other-field').show()
+    else
+      $('#doc-type-other-field').hide()
+
+  $(document).on 'click', '#note-new', ->
+    notable_type = $(this).data('notable-type')
+    notable_id = $(this).data('notable-id')
+    $.ajax
+      type: 'GET'
+      url: '/notes/new'
+      data:
+        note:
+          notable_type: notable_type
+          notable_id: notable_id
+        in_dashboard: false
+        service_request_id: getSRId()
+    return false

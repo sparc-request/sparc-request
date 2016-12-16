@@ -21,14 +21,18 @@
 development:
   default_mail_to: catesa@musc.edu
   admin_mail_to: catesa@musc.edu
-  feedback_mail_to: "glennj@musc.edu, hundc@musc.edu"
+  feedback_mail_to: "hutsonk@musc.edu"
+  contact_us_mail_to: "success@musc.edu"
+  contact_us_cc: "sparcrequest@gmail.com"
+  listserv_mail_to: "hewwe@musc.edu, hutsonk@musc.edu"
   new_user_cc: "amcates@gmail.com, no-reply@musc.edu"
   system_satisfaction_survey_cc: 'amcates@gmail.com, catesa@musc.edu'
   root_url: "https://andrews-mac-pro.thurmond-gazes.musc.edu"
   dashboard_link: 'http://musc-pro.homelinux.net:3001/dashboard'
   create_an_account: false
   header_link_1: http://sctr.musc.edu
-  header_link_2: http://sctr.musc.edu
+  header_link_2_proper: http://localhost:3000/
+  header_link_2_dashboard: http://localhost:3000/dashboard
   header_link_3: http://www.musc.edu
   use_indirect_cost: false
   use_shiboleth: true
@@ -36,10 +40,10 @@ development:
   use_ldap: true
   suppress_ldap_for_user_search: true # allow the use of LDAP but suppress its use within the project/study "User Search" box
   wkhtmltopdf_location: '/usr/local/bin/wkhtmltopdf'
-  approve_epic_rights_mail_to: "glennj@musc.edu, forney@musc.edu, crossoml@musc.edu"
+  approve_epic_rights_mail_to: "forney@musc.edu, crossoml@musc.edu"
   use_epic: true
   queue_epic: true
-  queue_epic_load_error_to: 'glennj@musc.edu, hundc@musc.edu, forney@musc.edu, crossoml@musc.edu, success@musc.edu'
+  queue_epic_load_error_to: 'hutsonk@musc.edu, forney@musc.edu, crossoml@musc.edu, success@musc.edu'
   queue_epic_edit_ldap_uids: ['jug2@musc.edu']
   use_google_calendar: true
   # insert sub-directory path to override the three header images + account sign-in image and override application.css
@@ -56,8 +60,8 @@ development:
   no_reply_from: "no-reply@musc.edu"
   use_separate_audit_database: false # needs to be false at outset since new institutions may not use a separate audit database
   system_satisfaction_survey: false
-  editable_statuses: { 14: ['first_draft', 'draft', 'submitted', nil, 'get_a_cost_estimate', 'awaiting_pi_approval'],
-                     48: ['draft', 'submitted'] }
+  editable_statuses: { 14: ['first_draft', 'draft', 'submitted', nil, 'get_a_cost_estimate', 'awaiting_pi_approval', 'complete'],
+                     48: ['draft', 'submitted', 'complete'] }
   updatable_statuses: [ 'first_draft', 'draft', 'get_a_cost_estimate', 'awaiting_pi_approval']
   navbar_links: { sparc_request:              ['SPARCRequest', 'http://localhost:3000/'],
                   sparc_dashboard:            ['SPARCDashboard', 'http://localhost:3000/dashboard'],
@@ -80,17 +84,23 @@ development:
   about_sparc_url: http://academicdepartments.musc.edu/sctr/sparc_request
   use_about_sparc_link: true
   use_feedback_link: true
+  feedback_link: "http://something.com"
+  send_emails_to_real_users: false
 
 test:
   default_mail_to: nobody@nowhere.com
   admin_mail_to: catesa@musc.edu
-  feedback_mail_to: "glennj@musc.edu, hundc@musc.edu"
+  feedback_mail_to: "hutsonk@musc.edu"
+  contact_us_mail_to: "success@musc.edu"
+  contact_us_cc: "sparcrequest@gmail.com"
+  listserv_mail_to: "hewwe@musc.edu, hutsonk@musc.edu"
   new_user_cc: "amcates@gmail.com, no-reply@musc.edu"
   system_satisfaction_survey_cc: 'amcates@gmail.com, catesa@musc.edu'
   root_url: /
   dashboard_link: /dashboard
   header_link_1: http://sctr.musc.edu
-  header_link_2: http://sctr.musc.edu
+  header_link_2_proper: http://localhost:3000/
+  header_link_2_dashboard: http://localhost:3000/dashboard
   header_link_3: http://www.musc.edu
   editable_statuses: { 14: ['first_draft', 'draft', 'submitted', nil, 'get_a_cost_estimate', 'awaiting_pi_approval'],
                      48: ['draft', 'submitted'] }
@@ -105,10 +115,10 @@ test:
   use_shibboleth_only: false # set to true to turn off database authentication sign in options
   use_ldap: true
   wkhtmltopdf_location: '/usr/local/bin/wkhtmltopdf'
-  approve_epic_rights_mail_to: "glennj@musc.edu, forney@musc.edu, crossoml@musc.edu"
+  approve_epic_rights_mail_to: "forney@musc.edu, crossoml@musc.edu"
   use_epic: true
   queue_epic: false
-  queue_epic_load_error_to: 'glennj@musc.edu, hundc@musc.edu, forney@musc.edu, crossoml@musc.edu, success@musc.edu'
+  queue_epic_load_error_to: 'hutsonk@musc.edu, forney@musc.edu, crossoml@musc.edu, success@musc.edu'
   queue_epic_edit_ldap_uids: ['jug2']
   use_google_calendar: true
   # insert sub-directory path to override the three header images + account sign-in image and override application.css
@@ -141,3 +151,4 @@ test:
   about_sparc_url: http://academicdepartments.musc.edu/sctr/sparc_request
   use_about_sparc_link: false
   use_feedback_link: true
+  send_emails_to_real_users: false

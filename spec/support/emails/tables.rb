@@ -39,7 +39,7 @@ module EmailHelpers
       else
         requester_flag = ""
       end
-      expect(mail_response).to have_xpath "//td[text()='#{role.identity.full_name}']/following-sibling::td[text()='#{role.identity.email}']/following-sibling::td[text()='#{role.role.upcase}#{requester_flag}']"
+      expect(mail_response).to have_xpath "//td[text()='#{role.identity.full_name}']/following-sibling::td[text()='#{role.identity.email}']/following-sibling::td[text()='#{role.role.titleize}#{requester_flag}']"
     end
   end
 
@@ -55,7 +55,7 @@ module EmailHelpers
       end
 
       user_epic_access = role.epic_access == false ? "No" : "Yes"
-      expect(mail_response).to have_xpath "//td[text()='#{role.identity.full_name}']/following-sibling::td[text()='#{role.identity.email}']/following-sibling::td[text()='#{role.role.upcase}#{requester_flag}']/following-sibling::td[text()='#{user_epic_access}']"
+      expect(mail_response).to have_xpath "//td[text()='#{role.identity.full_name}']/following-sibling::td[text()='#{role.identity.email}']/following-sibling::td[text()='#{role.role.titleize}#{requester_flag}']/following-sibling::td[text()='#{user_epic_access}']"
     end
   end
 
@@ -71,7 +71,7 @@ module EmailHelpers
         requester_flag = ""
       end
       user_epic_access = role.epic_access == false ? "No" : "Yes"
-      expect(mail_response).to have_xpath "//td[text()='#{role.identity.full_name}']/following-sibling::td[text()='#{role.identity.email}']/following-sibling::td[text()='#{role.role.upcase}#{requester_flag}']"
+      expect(mail_response).to have_xpath "//td[text()='#{role.identity.full_name}']/following-sibling::td[text()='#{role.identity.email}']/following-sibling::td[text()='#{role.role.titleize}#{requester_flag}']"
       expect(mail_response).not_to have_xpath "//following-sibling::td[text()='#{user_epic_access}']"
     end
   end
@@ -120,6 +120,53 @@ module EmailHelpers
     end
   end
 
+  def assert_email_request_amendment(mail)
+    expect(mail).to have_xpath "//table//strong[text()='Request Amendment']"
+    expect(mail).to have_xpath "//th[text()='SRID']/following-sibling::th[text()='Service']/following-sibling::th[text()='Action']"
+  end
+
+  def assert_email_request_amendment_for_added(mail, for_authorized_users=false)
+    if for_authorized_users
+      @report[:line_items].values.flatten.each do |li|
+        service = Service.find(li.audited_changes["service_id"])
+        ssr = SubServiceRequest.find(li.audited_changes['sub_service_request_id'])
+        expect(mail).to have_xpath "//td['#{ssr.display_id}']"
+        expect(mail).to have_xpath "//td['#{service.name}']"
+        expect(mail).to have_xpath "//td['Added']"
+      end
+    else
+      @report[:line_items].each do |li|
+        service = Service.find(li.audited_changes["service_id"])
+        ssr = SubServiceRequest.find(li.audited_changes['sub_service_request_id'])
+        expect(mail).to have_xpath "//td//a[@href='/dashboard/sub_service_requests/#{ssr.id}']['#{ssr.display_id}']/@href"
+        expect(mail).to have_xpath "//td['#{ssr.display_id}']"
+        expect(mail).to have_xpath "//td['#{service.name}']"
+        expect(mail).to have_xpath "//td['Added']"
+      end
+    end
+  end
+
+  def assert_email_request_amendment_for_deleted(mail, for_authorized_users=false)
+    if for_authorized_users
+      @report[:line_items].values.flatten.each do |li|
+        service = Service.find(li.audited_changes["service_id"])
+        ssr = SubServiceRequest.find(li.audited_changes['sub_service_request_id'])
+        expect(mail).to have_xpath "//td//strike['#{ssr.display_id}']"
+        expect(mail).to have_xpath "//td//strike['#{service.name}']"
+        expect(mail).to have_xpath "//td//strike['Deleted']"
+      end
+    else
+      @report[:line_items].each do |li|
+        service = Service.find(li.audited_changes["service_id"])
+        ssr = SubServiceRequest.find(li.audited_changes['sub_service_request_id'])
+        expect(mail).to have_xpath "//td//a[@href='/dashboard/sub_service_requests/#{ssr.id}']['#{ssr.display_id}']/@href"
+        expect(mail).to have_xpath "//td//strike['#{ssr.display_id}']"
+        expect(mail).to have_xpath "//td//strike['#{service.name}']"
+        expect(mail).to have_xpath "//td//strike['Deleted']"
+      end
+    end
+  end
+
   def assert_notification_email_tables_for_service_provider
     assert_email_project_information(mail.body)
     assert_email_user_information(mail.body)
@@ -130,6 +177,13 @@ module EmailHelpers
     assert_email_project_information(mail.body)
     assert_email_user_information(mail.body)
     assert_email_deleted_srid_information_for_service_provider
+  end
+
+  def assert_notification_email_tables_for_service_provider_request_amendment
+    assert_email_project_information(mail.body)
+    assert_email_user_information(mail.body)
+    assert_email_srid_information_for_service_provider
+    assert_email_request_amendment(mail.body)
   end
 
   def assert_notification_email_tables_for_admin

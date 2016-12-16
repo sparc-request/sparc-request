@@ -1,8 +1,9 @@
 <% if @submission.save %>
 swal("Success!", "Submission saved", "success")
 $("#submissionModal").modal('hide')
-$(".additional-details-submissions-panel").html("<%= j render 'submissions_panel', protocol: @protocol %>")
+$(".additional-details-submissions-panel").html("<%= j render 'submissions_panel', protocol: @protocol, submissions: @submissions %>")
 $(".complete-additional-details").html("<%= j render 'additional_details/dashboard_complete_additional_details', service_request: @service_request %>")
+$('.document-management-submissions').html("<%= j render 'additional_details/document_management_submissions', service_request: @service_request %>")
 <% else %>
 swal("Error", "Submission did not save, check the form for errors", "error")
 <% @submission.questionnaire_responses.each do |qr| %>

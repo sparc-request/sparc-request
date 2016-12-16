@@ -18,66 +18,40 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-!!! 1.1
-%html{"xml:lang" => "en", xmlns: "http://www.w3.org/1999/xhtml"}
+!!!
+%html
   %head
-    %meta{content: "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
-    %meta{name: "viewport", content: "width=device-width, initial-scale=1"}/
     %title
-      = t 'application_title'
-    = stylesheet_link_tag '960', "#{CUSTOM_ASSET_PATH}application", 'jquery-ui', media: 'all'
+      = t(:proper)[:header]
+    = stylesheet_link_tag 'application'
+    = javascript_include_tag "application"
     /[if IE]
       = stylesheet_link_tag 'ie'
     /[if gt IE 7]
       = stylesheet_link_tag 'ie8_plus'
-    /[if lte IE 8]
-      = stylesheet_link_tag 'ie8_less'
-    /[if IE 9]
-      = stylesheet_link_tag 'ie9'
-    = stylesheet_link_tag 'navbar'
-    = javascript_include_tag "application"
-    = javascript_include_tag "feedback"
     /[if lt IE 8]
       = javascript_include_tag "ie7_warning"
     = csrf_meta_tags
     :javascript
       window.I18n = #{current_translations.to_json.html_safe};
+
   %body#body
-    // add the service_request_id for easy access to it
-    = hidden_field_tag(:service_request_id, @service_request.id) if @service_request
-    // load spinner and cancel images so they are cached
-    = image_tag 'spinner.gif', style: 'display:none'
-    = image_tag 'cancel.png', style: 'display:none'
-    #ie7_warning
-      %p
-        = t('ie_warning.text1')
-      %br
-      %p
-        = t('ie_warning.text2')
+    - if @service_request
+      = hidden_field_tag :service_request_id, @service_request.id, disabled: true
+    - if @sub_service_request
+      = hidden_field_tag :sub_service_request_id, @sub_service_request.id, disabled: true
 
-    #container.container
-      #processing_request.ui-corner-all
-        %br
-          = t(:cm_index)[:processing]
-        %br
-        = image_tag 'spinner.gif'
-      = render 'shared/header_logos', in_dashboard: false
-
-      .welcome.col-md-12
-        = render 'shared/navbar'
-        #about
-          - unless USE_ABOUT_SPARC_LINK
-            = link_to image_tag("#{CUSTOM_ASSET_PATH}about.png", class: 'button-hover'), "javascript:void(0);", class: "about_sparc_request"
-          - else
-            = link_to image_tag("#{CUSTOM_ASSET_PATH}about.png", class: 'button-hover'), ABOUT_SPARC_URL, target: "_blank"
-        #service_request_protocol_id{class: @sub_service_request.present? || @service_request.present? ? "" : "hidden"}
-          %span
-            &nbsp;
-            = protocol_id_display(@sub_service_request, @service_request)
-
-      #content.container_12.row
-        = content_for?(:content) ? yield(:content) : yield
-      .clear
-      = render 'shared/footer'
-      = render 'shared/piwik_tracking' if Rails.env == 'production'
-      = render 'shared/modal'
+    #container
+      #header
+        = render 'layouts/header_logos', location: "proper"
+        %input#current_user_id{ type: 'hidden', value: @user.try(:id) }
+      = render 'layouts/header', user: @user, service_request: @service_request
+      .flash
+        = render 'shared/flash'
+      #inner-content.row
+        = yield
+  %footer
+    = render 'layouts/footer'
+    = render 'shared/piwik_tracking' if Rails.env == 'production'
+    = render 'shared/ie7_modal'
+    = render 'shared/modal'

@@ -17,13 +17,4 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-$('#welcome_message').html("<%= escape_javascript render 'catalogs/description', organization: @organization, service_request: @service_request, from_portal: @from_portal %>")
-$('.core-accordion').accordion
-  heightStyle: 'content'
-  collapsible: true
-  beforeActivate: (event, ui) ->
-    if (url = (ui.newHeader.find('a').attr('href') or ui.oldHeader.find('a').attr('href'))) && url == 'javascript:void(0)'
-      event.preventDefault()
-
-$('#processing_request').hide()
+$('#welcome-message').html("<%= escape_javascript render 'catalogs/description', organization: @organization, service_request: @service_request, sub_service_request: @sub_service_request, ssr_org: @ssr_org, process_ssr_found: @process_ssr_found, locked_org_ids: @locked_org_ids %>")

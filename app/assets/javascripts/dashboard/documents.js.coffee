@@ -19,12 +19,17 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 $ ->
+  getSRId = ->
+    $("input[name='service_request_id']").val()
 
   # DOCUMENTS LISTENERS BEGIN
 
   $(document).on 'click', '#document-new', ->
     if $(this).data('permission')
-      data = 'protocol_id': $(this).data('protocol-id')
+      data =
+        protocol_id: $(this).data('protocol-id')
+        service_request_id: getSRId()
+
       $.ajax
         type: 'GET'
         url: '/dashboard/documents/new'
@@ -37,6 +42,8 @@ $ ->
       $.ajax
         type: 'GET'
         url: "/dashboard/documents/#{document_id}/edit"
+        data:
+          service_request_id: getSRId()
 
   $(document).on 'click', '.document-delete', ->
     if $(this).data('permission')
@@ -45,12 +52,12 @@ $ ->
       if confirm "Are you sure you want to delete the selected Document from this Protocol?"
         $.ajax
           type: 'DELETE'
-          url: "/dashboard/documents/#{document_id}"
+          url: "/dashboard/documents/#{document_id}?service_request_id=#{getSRId()}"
 
   $(document).on 'change', '#document_doc_type', ->
     if $(this).val() == 'other'
-      $('#doc_type_other_field').show()
+      $('#doc-type-other-field').show()
     else
-      $('#doc_type_other_field').hide()
+      $('#doc-type-other-field').hide()
 
   # DOCUMENTS LISTENERS END

@@ -69,17 +69,17 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
        end
      end
 
-     context 'valid query by institution that should return all rows and limit is three' do
+     context 'valid query by company that should return all rows and limit is three' do
        before do
          # update all identities to have the same institution
          Identity.all.each do |identity|
-           identity.institution = "U of Institution"
+           identity.company = "U of Institution"
            identity.save
          end
 
          params = { :depth => 'shallow',
                     :limit => 3,
-                    :query => { institution: "U of Institution" }
+                    :query => { company: "U of Institution" }
                   }
           cwf_sends_api_get_request_for_resources_by_params('identities', params)
        end
@@ -330,18 +330,18 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
        end
      end
 
-     context 'valid query by institution that should return all rows and limit is three' do
+     context 'valid query by company that should return all rows and limit is three' do
        before do
          @identity = Identity.first
          # update all identities to have the same institution
          Identity.all.each do |identity|
-           identity.institution = "U of Institution"
+           identity.company = "U of Institution"
            identity.save
          end
 
          params = { :depth => 'full',
                     :limit => 3,
-                    :query => { institution: "U of Institution" }
+                    :query => { company: "U of Institution" }
                   }
           cwf_sends_api_get_request_for_resources_by_params('identities', params)
        end
@@ -891,7 +891,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
         end
       end
 
-      context 'valid query by institution that should return all rows and limit is three' do
+      context 'valid query by company that should return all rows and limit is three' do
         before do
           @identity = Identity.first
           5.times do
@@ -901,13 +901,13 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
           end
           # update all identities to have the same institution
           Identity.all.each do |identity|
-            identity.institution = "U of Institution"
+            identity.company = "U of Institution"
             identity.save
           end
 
           params = { :depth => 'full_with_shallow_reflections',
                      :limit => 3,
-                     :query => { institution: "U of Institution" }
+                     :query => { company: "U of Institution" }
                    }
            cwf_sends_api_get_request_for_resources_by_params('identities', params)
         end

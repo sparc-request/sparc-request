@@ -18,6 +18,15 @@
 // INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 // TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+
+#protocols-table {
+  tbody {
+    tr {
+      cursor: pointer;
+    }
+  }
+}
+
 .protocol-sort {
   float: right;
   padding: 0 5px;
@@ -31,10 +40,10 @@
   }
 }
 
-.protocols_index_row{
-    .id,.title,.pis{
-        cursor: pointer;
-    }
+.protocols_index_row {
+  .id,.title,.pis {
+    cursor: pointer;
+  }
 }
 
 .do-not-display {
@@ -67,6 +76,10 @@
   padding-top: 11px;
 }
 
+.gray_note {
+  color: gray;
+}
+
 .investigational_products  .col-lg-10,
 .oral_health_cobre         .col-lg-10 {
   padding-top: 6px;
@@ -95,6 +108,10 @@ textarea {
 
 .export-consolidated-request {
   display: inline-block;
+
+  a {
+    margin-left: 5px;
+  }
 }
 
 .service-requests-table {
@@ -113,6 +130,10 @@ textarea {
         margin: 5px 5px 5px 0px;
     }
   }
+}
+
+.full-calendar-modal {
+  width: 95% !important;
 }
 
 /* Show Protocol End*/

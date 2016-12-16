@@ -36,7 +36,16 @@ class LineItemsVisit < ActiveRecord::Base
   attr_accessible :subject_count  # number of subjects for this visit grouping
   attr_accessible :hidden
 
+  validates_numericality_of :subject_count
+  validate :subject_count_valid
+
   after_save :set_arm_edited_flag_on_subjects
+
+  def subject_count_valid
+    if subject_count && subject_count > arm.subject_count
+      errors.add(:blank, I18n.t('errors.line_items_visits.subject_count_invalid', arm_subject_count: arm.subject_count))
+    end
+  end
 
   def set_arm_edited_flag_on_subjects
     self.arm.set_arm_edited_flag_on_subjects
@@ -177,12 +186,6 @@ class LineItemsVisit < ActiveRecord::Base
   # error.
   def add_visit visit_group
     self.visits.create(visit_group_id: visit_group.id)
-  end
-
-  ##TODO: This should not exist, arm.remove_visit does this correctly
-  def remove_visit visit_group
-    visit = self.visits.find_by_visit_group_id(visit_group.id)
-    visit.delete
   end
 
   def procedures

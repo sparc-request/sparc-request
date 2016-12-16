@@ -21,5 +21,6 @@
 FactoryGirl.define do
 
   factory :line_items_visit do
+    subject_count 1
   end
 end

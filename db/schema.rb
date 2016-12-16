@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20160930185037) do
+ActiveRecord::Schema.define(version: 20161122130742) do
 
   create_table "admin_rates", force: :cascade do |t|
     t.integer  "line_item_id", limit: 4
@@ -284,12 +284,15 @@ ActiveRecord::Schema.define(version: 20160930185037) do
     t.string   "status",      limit: 255
     t.datetime "created_at",              null: false
     t.datetime "updated_at",              null: false
+    t.string   "origin",      limit: 255
+    t.integer  "identity_id", limit: 4
   end
 
   create_table "epic_queues", force: :cascade do |t|
     t.integer  "protocol_id", limit: 4
     t.datetime "created_at",            null: false
     t.datetime "updated_at",            null: false
+    t.integer  "identity_id", limit: 4
   end
 
   create_table "epic_rights", force: :cascade do |t|
@@ -350,35 +353,33 @@ ActiveRecord::Schema.define(version: 20160930185037) do
   add_index "human_subjects_info", ["protocol_id"], name: "index_human_subjects_info_on_protocol_id", using: :btree
 
   create_table "identities", force: :cascade do |t|
-    t.string   "ldap_uid",               limit: 255
-    t.string   "email",                  limit: 255
-    t.string   "last_name",              limit: 255
-    t.string   "first_name",             limit: 255
-    t.string   "institution",            limit: 255
-    t.string   "college",                limit: 255
-    t.string   "department",             limit: 255
-    t.string   "era_commons_name",       limit: 255
-    t.string   "credentials",            limit: 255
-    t.string   "subspecialty",           limit: 255
-    t.string   "phone",                  limit: 255
-    t.datetime "created_at",                                                                  null: false
-    t.datetime "updated_at",                                                                  null: false
+    t.string   "ldap_uid",                     limit: 255
+    t.string   "email",                        limit: 255
+    t.string   "last_name",                    limit: 255
+    t.string   "first_name",                   limit: 255
+    t.string   "era_commons_name",             limit: 255
+    t.string   "credentials",                  limit: 255
+    t.string   "subspecialty",                 limit: 255
+    t.string   "phone",                        limit: 255
+    t.datetime "created_at",                                                                        null: false
+    t.datetime "updated_at",                                                                        null: false
     t.datetime "deleted_at"
     t.boolean  "catalog_overlord"
-    t.string   "credentials_other",      limit: 255
-    t.string   "encrypted_password",     limit: 255,   default: "",                           null: false
-    t.string   "reset_password_token",   limit: 255
+    t.string   "credentials_other",            limit: 255
+    t.string   "encrypted_password",           limit: 255,   default: "",                           null: false
+    t.string   "reset_password_token",         limit: 255
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
-    t.integer  "sign_in_count",          limit: 4,     default: 0
+    t.integer  "sign_in_count",                limit: 4,     default: 0
     t.datetime "current_sign_in_at"
     t.datetime "last_sign_in_at"
-    t.string   "current_sign_in_ip",     limit: 255
-    t.string   "last_sign_in_ip",        limit: 255
-    t.text     "reason",                 limit: 65535
-    t.string   "company",                limit: 255
-    t.boolean  "approved",                             default: false,                        null: false
-    t.string   "time_zone",              limit: 255,   default: "Eastern Time (US & Canada)"
+    t.string   "current_sign_in_ip",           limit: 255
+    t.string   "last_sign_in_ip",              limit: 255
+    t.text     "reason",                       limit: 65535
+    t.string   "company",                      limit: 255
+    t.boolean  "approved",                                   default: false,                        null: false
+    t.string   "time_zone",                    limit: 255,   default: "Eastern Time (US & Canada)"
+    t.integer  "professional_organization_id", limit: 4
   end
 
   add_index "identities", ["approved"], name: "index_identities_on_approved", using: :btree
@@ -447,20 +448,18 @@ ActiveRecord::Schema.define(version: 20160930185037) do
     t.integer  "service_request_id",     limit: 4
     t.integer  "sub_service_request_id", limit: 4
     t.integer  "service_id",             limit: 4
-    t.string   "ssr_id",                 limit: 255
-    t.boolean  "optional",                           default: true
+    t.boolean  "optional",                         default: true
     t.integer  "quantity",               limit: 4
     t.datetime "complete_date"
     t.datetime "in_process_date"
-    t.datetime "created_at",                                        null: false
-    t.datetime "updated_at",                                        null: false
+    t.datetime "created_at",                                      null: false
+    t.datetime "updated_at",                                      null: false
     t.datetime "deleted_at"
-    t.integer  "units_per_quantity",     limit: 4,   default: 1
+    t.integer  "units_per_quantity",     limit: 4, default: 1
   end
 
   add_index "line_items", ["service_id"], name: "index_line_items_on_service_id", using: :btree
   add_index "line_items", ["service_request_id"], name: "index_line_items_on_service_request_id", using: :btree
-  add_index "line_items", ["ssr_id"], name: "index_line_items_on_ssr_id", using: :btree
   add_index "line_items", ["sub_service_request_id"], name: "index_line_items_on_sub_service_request_id", using: :btree
 
   create_table "line_items_visits", force: :cascade do |t|
@@ -653,6 +652,12 @@ ActiveRecord::Schema.define(version: 20160930185037) do
   add_index "procedures", ["appointment_id"], name: "index_procedures_on_appointment_id", using: :btree
   add_index "procedures", ["line_item_id"], name: "index_procedures_on_line_item_id", using: :btree
   add_index "procedures", ["visit_id"], name: "index_procedures_on_visit_id", using: :btree
+
+  create_table "professional_organizations", force: :cascade do |t|
+    t.text    "name",      limit: 65535
+    t.string  "org_type",  limit: 255
+    t.integer "parent_id", limit: 4
+  end
 
   create_table "project_roles", force: :cascade do |t|
     t.integer  "protocol_id",    limit: 4
@@ -965,17 +970,18 @@ ActiveRecord::Schema.define(version: 20160930185037) do
   end
 
   create_table "study_type_question_groups", force: :cascade do |t|
-    t.boolean  "active",     default: false
+    t.integer  "version",    limit: 4
+    t.boolean  "active",               default: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   create_table "study_type_questions", force: :cascade do |t|
     t.integer  "order",                        limit: 4
-    t.string   "question",                     limit: 255
+    t.text     "question",                     limit: 65535
     t.string   "friendly_id",                  limit: 255
-    t.datetime "created_at",                               null: false
-    t.datetime "updated_at",                               null: false
+    t.datetime "created_at",                                 null: false
+    t.datetime "updated_at",                                 null: false
     t.integer  "study_type_question_group_id", limit: 4
   end
 
@@ -1049,11 +1055,15 @@ ActiveRecord::Schema.define(version: 20160930185037) do
     t.integer  "service_id",       limit: 4
     t.integer  "identity_id",      limit: 4
     t.integer  "questionnaire_id", limit: 4
+    t.integer  "protocol_id",      limit: 4
+    t.integer  "line_item_id",     limit: 4
     t.datetime "created_at",                 null: false
     t.datetime "updated_at",                 null: false
   end
 
   add_index "submissions", ["identity_id"], name: "index_submissions_on_identity_id", using: :btree
+  add_index "submissions", ["line_item_id"], name: "index_submissions_on_line_item_id", using: :btree
+  add_index "submissions", ["protocol_id"], name: "index_submissions_on_protocol_id", using: :btree
   add_index "submissions", ["questionnaire_id"], name: "index_submissions_on_questionnaire_id", using: :btree
   add_index "submissions", ["service_id"], name: "index_submissions_on_service_id", using: :btree
 
@@ -1281,6 +1291,8 @@ ActiveRecord::Schema.define(version: 20160930185037) do
   add_foreign_key "questionnaire_responses", "submissions"
   add_foreign_key "questionnaires", "services"
   add_foreign_key "submissions", "identities"
+  add_foreign_key "submissions", "line_items"
+  add_foreign_key "submissions", "protocols"
   add_foreign_key "submissions", "questionnaires"
   add_foreign_key "submissions", "services"
 end

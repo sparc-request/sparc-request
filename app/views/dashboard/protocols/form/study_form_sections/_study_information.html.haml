@@ -26,33 +26,33 @@
       = t(:protocols)[:studies][:information][:subtext]
   .panel-body.container-fluid
     .form-group.row
-      = form.label :short_title, t(:protocols)[:studies][:information][:short_title], class: 'col-lg-2 control-label'
+      = form.label :short_title, t(:protocols)[:studies][:information][:short_title], class: 'col-lg-2 control-label required'
       .col-lg-10
         = form.text_field :short_title, class: 'form-control'
 
     .form-group.row
-      = form.label :title, t(:protocols)[:studies][:information][:title], class: 'col-lg-2 control-label'
+      = form.label :title, t(:protocols)[:studies][:information][:title], class: 'col-lg-2 control-label required'
       .col-lg-10
         = form.text_field :title, class: 'form-control'
 
     .form-group.row#funding-status
-      = form.label :funding_status, t(:protocols)[:studies][:information][:funding_status], class: 'col-lg-2 control-label'
+      = form.label :funding_status, t(:protocols)[:studies][:information][:funding_status], class: 'col-lg-2 control-label required'
       .col-lg-10
         = form.select :funding_status, options_for_select(FUNDING_STATUSES, protocol.funding_status), { include_blank: t(:protocols)[:prompts][:status] }, class: 'selectpicker study'
 
     .form-group.row.funding_status_dependent.funded{ display_if(protocol.funding_status, "funded") }
-      = form.label :funding_source, t(:protocols)[:studies][:information][:funding_source], class: 'col-lg-2 control-label'
+      = form.label :funding_source, t(:protocols)[:studies][:information][:funding_source], class: 'col-lg-2 control-label required'
       .col-lg-10
         = form.select :funding_source, options_for_select(FUNDING_SOURCES, protocol.funding_source), { include_blank: t(:protocols)[:prompts][:source] }, class: 'selectpicker'
 
     .form-group.row.funding_status_dependent.pending_funding{ display_if(protocol.funding_status, "pending_funding") }
-      = form.label :potential_funding_source, t(:protocols)[:studies][:information][:potential_funding_source], class: 'col-lg-2 control-label'
+      = form.label :potential_funding_source, t(:protocols)[:studies][:information][:potential_funding_source], class: 'col-lg-2 control-label required'
       .col-lg-10
         = form.select :potential_funding_source, options_for_select(POTENTIAL_FUNDING_SOURCES, protocol.potential_funding_source), { include_blank: t(:protocols)[:prompts][:potential_source] }, class: 'selectpicker'
 
     / Internal Funded Pilot Project selected
     .form-group.row.funding_status_dependent.funding_source_dependent.internal{ display_if(protocol.funding_source, "internal") }
-      = form.label :funding_source_other, t(:protocols)[:studies][:information][:funding_source_internal], class: 'col-lg-2 control-label'
+      = form.label :funding_source_other, t(:protocols)[:studies][:information][:funding_source_internal], class: 'col-lg-2 control-label required'
       .col-lg-10
         = form.text_field :funding_source_other, class: 'form-control'
 
@@ -90,53 +90,18 @@
     / Federal selected end
 
     .form-group.row
-      = form.label :sponsor_name, t(:protocols)[:studies][:information][:sponsor], class: 'col-lg-2 control-label'
+      = form.label :sponsor_name, t(:protocols)[:studies][:information][:sponsor], class: 'col-lg-2 control-label required'
       .col-lg-10
         = form.text_field :sponsor_name, class: 'form-control'
 
     / Display epic questions as readonly for administrators who aren't an authorized user
     / with edit abilities
-    - if !permission_to_edit && admin && !protocol.virgin_project? && (!protocol.changed.include?('selected_for_epic') || protocol.changed_attributes()['selected_for_epic'])
-      - if USE_EPIC
-        .form-group.row
-          = form.label :selected_for_epic, t(:protocols)[:studies][:information][:push_to_epic], class: 'col-lg-2 form-control-label'
-          .col-lg-10
-            %span.epic_selected.display_epic_answers
-              = form.object.selected_for_epic ? t(:constants)[:yes_select] : t(:constants)[:no_select]
-              - if form.object.selected_for_epic
-                = form.hidden_field :selected_for_epic, value: true
-              - elsif !form.object.selected_for_epic
-                = form.hidden_field :selected_for_epic, value: false
-        .form-group.row.selected_for_epic_dependent#readonly{ display_if(protocol.selected_for_epic) }
-          = form.label :study_type_questions, t(:study_form)[:study_type_questions], class: 'col-lg-2 form-control-label'
-          .col-lg-10
-            = form.fields_for :study_type_answers, protocol.study_type_answers do |answer|
-              - if answer.object.study_type_question.study_type_question_group.active && protocol.active? && answer.object.answer != nil
-                = render partial: 'dashboard/protocols/form/study_form_sections/readonly_answer_field', locals: { answer: answer }
-              - elsif !answer.object.study_type_question.study_type_question_group.active && !protocol.active? && answer.object.answer != nil
-                = render partial: 'dashboard/protocols/form/study_form_sections/readonly_answer_field', locals: { answer: answer }
-
-    - else
-      - if USE_EPIC
-        .form-group.row
-          = form.label :selected_for_epic, t(:protocols)[:studies][:information][:push_to_epic], class: 'col-lg-2 form-control-label'
-          .col-lg-10
-            .btn-group#selected_for_epic_button{data: {toggle: "labels"}}
-              %label.radio-inline.btn.btn-default#study_selected_for_epic_true_button{ class: protocol.selected_for_epic? ? 'active' : ''}
-                = form.radio_button :selected_for_epic, 'true', id: "study_selected_for_epic_true", class: 'hidden'
-                = t(:constants)[:yes_select]
-              %label.radio-inline.btn.btn-default#study_selected_for_epic_false_button{ class: protocol.selected_for_epic == false ? 'active' : ''}
-                = form.radio_button :selected_for_epic, 'false', id: "study_selected_for_epic_false", class: 'hidden'
-                = t(:constants)[:no_select]
-        .form-group.row.selected_for_epic_dependent{ display_if(protocol.selected_for_epic) }
-          = form.label :study_type_questions, "", class: 'col-lg-2 form-control-label'
-          .col-lg-10
-            = form.fields_for :study_type_answers, protocol.study_type_answers do |answer_form|
-              - if answer_form.object.study_type_question.study_type_question_group.active
-                .form-group.row{ id: "study_type_answer_#{answer_form.object.study_type_question.friendly_id}", style: "#{answer_form.object.answer != nil ? 'display:block' : 'display:none;'}" }
-                  .col-lg-8
-                    = answer_form.hidden_field :study_type_question_id
-                    = answer_form.label :answer, answer_form.object.study_type_question.question, class: "long"
-                  .col-lg-4
-                    = answer_form.select :answer, options_for_select([['Yes', true], ['No', false]], answer_form.object.answer), { include_blank: 'Select One' }, { class: 'selectpicker', id: "study_type_answer_#{answer_form.object.study_type_question.friendly_id}_answer" }
+    - updated_protocol_type = action_name == 'update_protocol_type' ?  true : false
+    - if USE_EPIC
+      - if action_name == 'new' || updated_protocol_type
+        = render partial: 'dashboard/protocols/form/study_form_sections/interactive_form', locals: { protocol: protocol, form: form, updated_protocol_type: updated_protocol_type }
+      - else
+        = render partial: 'dashboard/protocols/form/study_form_sections/readonly_form', locals: { protocol: protocol, form: form }
+    = render partial: 'dashboard/protocols/form/study_form_sections/study_type_note', locals: { protocol: protocol, form: form }
+    
 

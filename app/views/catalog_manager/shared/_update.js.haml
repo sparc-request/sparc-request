@@ -74,10 +74,13 @@ show_unavailable = $("#show_all_services").find('.unavailable_button').data('sho
     }
     else {
       $("##{@entity.class.name.upcase}#{@entity.id}").addClass("entity_visibility");
+      $("##{@entity.class.name.upcase}#{@entity.id} li").addClass("entity_visibility");
     }
 - else
   :plain
     $("##{@entity.class.name.upcase}#{@entity.id}").removeClass("entity_visibility");
+    $("##{@entity.class.name.upcase}#{@entity.id} > ul > li[id*='SERVICE']").removeClass("entity_visibility");
+    $("##{@entity.class.name.upcase}#{@entity.id} > ul > li.new").removeClass("entity_visibility");
 
 
 :plain

@@ -19,43 +19,30 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class ProtocolsController < ApplicationController
-  respond_to :json, :js, :html
-  before_filter :initialize_service_request, unless: :from_portal?, :except => [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
-  before_filter :authorize_identity, unless: :from_portal?, :except => [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
-  before_filter :set_protocol_type, :except => [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
+
+  respond_to :html, :js, :json
+
+  before_filter :initialize_service_request,  unless: :from_portal?,  except: [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
+  before_filter :authorize_identity,          unless: :from_portal?,  except: [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
   before_filter :set_portal
+  before_filter :find_protocol,               only: [:edit, :update, :view_details]
 
   def new
-    @protocol = self.model_class.new
-    setup_protocol = SetupProtocol.new(params[:portal], @protocol, current_user, session[:service_request_id])
-    setup_protocol.setup
-    @epic_services = setup_protocol.set_epic_services
-    set_cookies
-    resolve_layout
+    @protocol_type          = params[:protocol_type]
+    @protocol               = @protocol_type.capitalize.constantize.new
+    @protocol.requester_id  = current_user.id
+    @service_request        = ServiceRequest.find(params[:srid])
+    @protocol.populate_for_edit
   end
 
   def create
+    protocol_class                          = params[:protocol][:type].capitalize.constantize
+    attrs                                   = fix_date_params
+    @protocol                               = protocol_class.new(attrs)
+    @service_request                        = ServiceRequest.find(params[:srid])
+    @protocol.study_type_question_group_id  = StudyTypeQuestionGroup.active_id if protocol_class == Study
 
-    unless from_portal?
-      @service_request = ServiceRequest.find session[:service_request_id]
-    end
-
-    @current_step = cookies['current_step']
-
-    new_protocol_attrs = params[:study] || params[:project] || Hash.new
-    @protocol = self.model_class.new(new_protocol_attrs.merge(study_type_question_group_id: StudyTypeQuestionGroup.active.pluck(:id).first))
-
-    @protocol.validate_nct = true
-
-    if @current_step == 'cancel'
-      @current_step = 'return_to_service_request'
-    elsif @current_step == 'go_back'
-      @current_step = 'protocol'
-      @protocol.populate_for_edit
-    elsif @current_step == 'protocol' and @protocol.group_valid? :protocol
-      @current_step = 'user_details'
-      @protocol.populate_for_edit
-    elsif @current_step == 'user_details' and @protocol.valid?
+    if @protocol.valid?
       unless @protocol.project_roles.map(&:identity_id).include? current_user.id
         # if current user is not authorized, add them as an authorized user
         @protocol.project_roles.new(identity_id: current_user.id, role: 'general-access-user', project_rights: 'approve')
@@ -63,86 +50,80 @@ class ProtocolsController < ApplicationController
 
       @protocol.save
 
-      @current_step = 'return_to_service_request'
+      @service_request.update_attribute(:protocol, @protocol)
+      @service_request.update_attribute(:status, 'draft')
+      @service_request.sub_service_requests.update_all(status: 'draft')
 
-      if @service_request
-        @service_request.update_attribute(:protocol_id, @protocol.id) unless @service_request.protocol.present?
-        @service_request.update_attribute(:status, 'draft')
-        @service_request.sub_service_requests.each do |ssr|
-          ssr.update_attribute(:status, 'draft')
-        end
-        @service_request.ensure_ssr_ids
+      @protocol.update_attribute(:next_ssr_id, @service_request.sub_service_requests.count + 1)
+
+      if USE_EPIC && @protocol.selected_for_epic
+        @protocol.ensure_epic_user
+        Notifier.notify_for_epic_user_approval(@protocol).deliver unless QUEUE_EPIC
       end
 
-      @current_step = 'return_to_service_request'
+      flash[:success] = I18n.t('protocols.created', protocol_type: @protocol.type)
     else
-      @protocol.populate_for_edit
-    end
-
-    cookies['current_step'] = @current_step
-
-    if @current_step != 'return_to_service_request'
-      resolve_layout
+      @errors = @protocol.errors
     end
   end
 
   def edit
-
-    @service_request = ServiceRequest.find session[:service_request_id]
-    @epic_services = @service_request.should_push_to_epic? if USE_EPIC
-    @protocol = current_user.protocols.find params[:id]
+    @protocol_type                          = @protocol.type
+    @service_request                        = ServiceRequest.find(params[:srid])
+    @in_dashboard                           = false
     @protocol.populate_for_edit
     @protocol.valid?
+    @errors = @protocol.errors
 
-    current_step_cookie = cookies['current_step']
-    cookies['current_step'] = 'protocol'
+    respond_to do |format|
+      format.html
+    end
   end
 
   def update
-    @service_request = ServiceRequest.find session[:service_request_id]
-    @current_step = cookies['current_step']
-    @protocol = current_user.protocols.find params[:id]
 
-    @protocol.validate_nct = true
-
-    attrs = if @protocol.type.downcase.to_sym == :study && params[:study]
-      params[:study]
-    elsif @protocol.type.downcase.to_sym == :project && params[:project]
-      params[:project]
-    else
-      Hash.new
+    if params[:updated_protocol_type] == 'true' && params[:protocol][:type] == 'Study'
+      @protocol.update_attribute(:type, params[:protocol][:type])
+      @protocol.activate
+      @protocol = Protocol.find(params[:id]) #Protocol reload
     end
 
-    @protocol.assign_attributes(attrs.merge(study_type_question_group_id: StudyTypeQuestionGroup.active.pluck(:id).first))
+    attrs            = fix_date_params
+    @service_request = ServiceRequest.find(params[:srid])
 
-    if @current_step == 'cancel'
-      @current_step = 'return_to_service_request'
-    elsif @current_step == 'go_back' and @protocol.valid?
-      @current_step = 'protocol'
-      @protocol.populate_for_edit
-    elsif @current_step == 'protocol' and @protocol.group_valid? :protocol
-      @current_step = 'user_details'
-      @protocol.populate_for_edit
-    elsif @current_step == 'user_details' and @protocol.valid?
-      @protocol.save
-      @current_step = 'return_to_service_request'
-      session[:saved_protocol_id] = @protocol.id
-
-      #Added as a safety net for older SRs
-      if @service_request.status == "first_draft"
-        @service_request.update_attributes(status: "draft")
-      end
-    elsif @current_step == 'go_back' and !@protocol.valid?
-      @current_step = 'user_details'
-      @protocol.populate_for_edit
+    if @protocol.update_attributes(attrs.merge(study_type_question_group_id: StudyTypeQuestionGroup.active_id))
+      flash[:success] = I18n.t('protocols.updated', protocol_type: @protocol.type)
     else
-      @protocol.populate_for_edit
+      @errors = @protocol.errors
     end
-    cookies['current_step'] = @current_step
+
+    if @service_request.status == 'first_draft'
+      @service_request.update_attributes(status: 'draft')
+      @service_request.sub_service_requests.update_all(status: 'draft')
+    end
   end
 
-  def set_protocol_type
-    raise NotImplementedError
+  def update_protocol_type
+    @protocol       = Protocol.find(params[:id])
+
+    # Setting type and study_type_question_group, not actually saving
+    @protocol.type  = params[:type]
+    @protocol.study_type_question_group_id = StudyTypeQuestionGroup.active_id
+
+    @protocol_type = params[:type]
+    @protocol = @protocol.becomes(@protocol_type.constantize) unless @protocol_type.nil?
+    @protocol.populate_for_edit
+    
+    flash[:success] = t(:protocols)[:change_type][:updated]
+    if @protocol_type == "Study" && @protocol.sponsor_name.nil? && @protocol.selected_for_epic.nil?
+      flash[:alert] = t(:protocols)[:change_type][:new_study_warning]
+    end  
+  end
+
+  def view_details
+    respond_to do |format|
+      format.js
+    end
   end
 
   def push_to_epic_status
@@ -194,6 +175,10 @@ class ProtocolsController < ApplicationController
 
   private
 
+  def find_protocol
+    @protocol = Protocol.find(params[:id])
+  end
+
   def resolve_layout
     if from_portal?
       @user = current_user
@@ -207,6 +192,7 @@ class ProtocolsController < ApplicationController
   end
 
   def set_portal
+    # Where is this used? - Kyle Glick
     @portal = params[:portal]
   end
 
@@ -231,7 +217,7 @@ class ProtocolsController < ApplicationController
     # Thread.new do
     begin
       # Do the actual push.  This might take a while...
-      protocol.push_to_epic(EPIC_INTERFACE)
+      protocol.push_to_epic(EPIC_INTERFACE, "pi_email_approval", current_user.id)
       errors = EPIC_INTERFACE.errors
       session[:errors] = errors unless errors.empty?
       @epic_errors = true unless errors.empty?
@@ -247,5 +233,35 @@ class ProtocolsController < ApplicationController
       # ActiveRecord::Base.connection.close
     end
     # end
+  end
+
+  def convert_date_for_save(attrs, date_field)
+    if attrs[date_field] && attrs[date_field].present?
+      attrs[date_field] = Time.strptime(attrs[date_field], "%m/%d/%Y")
+    end
+
+    attrs
+  end
+
+  def fix_date_params
+    attrs               = params[:protocol]
+
+    #### fix dates so they are saved correctly ####
+    attrs                                        = convert_date_for_save attrs, :start_date
+    attrs                                        = convert_date_for_save attrs, :end_date
+    attrs                                        = convert_date_for_save attrs, :funding_start_date
+    attrs                                        = convert_date_for_save attrs, :potential_funding_start_date
+
+    if attrs[:human_subjects_info_attributes]
+      attrs[:human_subjects_info_attributes]     = convert_date_for_save attrs[:human_subjects_info_attributes], :irb_approval_date
+      attrs[:human_subjects_info_attributes]     = convert_date_for_save attrs[:human_subjects_info_attributes], :irb_expiration_date
+    end
+
+    if attrs[:vertebrate_animals_info_attributes]
+      attrs[:vertebrate_animals_info_attributes] = convert_date_for_save attrs[:vertebrate_animals_info_attributes], :iacuc_approval_date
+      attrs[:vertebrate_animals_info_attributes] = convert_date_for_save attrs[:vertebrate_animals_info_attributes], :iacuc_expiration_date
+    end
+
+    attrs
   end
 end

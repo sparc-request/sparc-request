@@ -17,17 +17,6 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
- # def email_about_change_in_authorized_user(modified_role, action)
- #    # Alert authorized users of deleted authorized user
- #    # Send emails if SEND_AUTHORIZED_USER_EMAILS is set to true and if there are any non-draft SSRs
- #    # For example:  if a SR has SSRs all with a status of 'draft', don't send emails
- #    if SEND_AUTHORIZED_USER_EMAILS && sub_service_requests.where.not(status: 'draft').any?
- #      alert_users = emailed_associated_users << modified_role
- #      alert_users.flatten.uniq.each do |project_role|
- #        UserMailer.authorized_user_changed(project_role.identity, self, modified_role, action).deliver unless project_role.identity.email.blank?
- #      end
- #    end
- #  end
 require 'date'
 require 'rails_helper'
 

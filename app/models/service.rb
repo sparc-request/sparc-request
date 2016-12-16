@@ -42,7 +42,6 @@ class Service < ActiveRecord::Base
   has_many :submissions
 
   # Services that this service depends on
-  # TODO: Andrew thinks "related services" is a bad name
   has_many :service_relations, :dependent => :destroy
   has_many :related_services, :through => :service_relations
   has_many :required_services, -> { where("optional = ? and is_available = ?", false, true) }, :through => :service_relations, :source => :related_service
@@ -136,7 +135,6 @@ class Service < ActiveRecord::Base
   # Given a dollar amount as a String, return an integer number of
   # cents.
   def self.dollars_to_cents dollars
-    # TODO: should this return nil if passed in nil?
     dollars = dollars.gsub(',','')
     (BigDecimal(dollars) * 100).to_i
   end
@@ -211,6 +209,7 @@ class Service < ActiveRecord::Base
   #This method is only used for the service pricing report
   def pricing_map_for_date(date)
     unless pricing_maps.empty?
+
       current_maps = self.pricing_maps.select { |x| x.display_date.to_date <= date.to_date }
       if current_maps.empty?
         return false
@@ -235,8 +234,7 @@ class Service < ActiveRecord::Base
   def effective_pricing_map_for_date(date=Date.today)
     raise ArgumentError, "Service has no pricing maps" if self.pricing_maps.empty?
 
-    # TODO: use #where? (warning: potential performance issue)
-    current_maps = self.pricing_maps.select { |x| x.effective_date.to_date <= date.to_date }
+    current_maps = self.pricing_maps.where('effective_date <= ?', date.to_s(:db))
     raise ArgumentError, "Service has no current pricing maps" if current_maps.empty?
 
     sorted_maps = current_maps.sort { |lhs, rhs| lhs.effective_date <=> rhs.effective_date }
@@ -323,5 +321,9 @@ class Service < ActiveRecord::Base
 
   def remotely_notifiable_attributes_to_watch_for_change
     ["components"]
+  end
+
+  def identity_submission(identity)
+    submissions.where(identity: identity)
   end
 end

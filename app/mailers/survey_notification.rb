@@ -25,9 +25,9 @@ class SurveyNotification < ActionMailer::Base
     @response_set = response_set
     @identity = Identity.find response_set.user_id
 
-    email = Rails.env == 'production' ? ADMIN_MAIL_TO : DEFAULT_MAIL_TO
-    cc = Rails.env == 'production' ? SYSTEM_SATISFACTION_SURVEY_CC : nil
-    subject = Rails.env == 'production' ? "System satisfaction survey completed in #{I18n.t('application_title')}" : "[#{Rails.env.capitalize} - EMAIL TO #{ADMIN_MAIL_TO} AND CC TO #{SYSTEM_SATISFACTION_SURVEY_CC}] System satisfaction survey completed in #{I18n.t('application_title')}"
+    email = ADMIN_MAIL_TO
+    cc = SYSTEM_SATISFACTION_SURVEY_CC
+    subject = "System satisfaction survey completed in #{t(:mailer)[:application_title]}"
 
     mail(:to => email, :cc => cc, :from => @identity.email, :subject => subject)
   end
@@ -36,8 +36,8 @@ class SurveyNotification < ActionMailer::Base
     @identity = identity
     @surveys = surveys
     @ssr = ssr
-    email = Rails.env == 'production' ? @identity.email : DEFAULT_MAIL_TO
-    subject = Rails.env == 'production' ? "#{I18n.t('application_title')} Survey Notification" : "[#{Rails.env.capitalize} - EMAIL TO #{@identity.email}] #{I18n.t('application_title')} Survey Notification"
+    email = @identity.email
+    subject = "#{t(:mailer)[:application_title]} Survey Notification"
     mail(:to => email, :from => NO_REPLY_FROM, :subject => subject)
   end
 

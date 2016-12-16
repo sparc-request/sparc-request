@@ -75,22 +75,6 @@ class Organization < ActiveRecord::Base
 
   scope :in_cwf, -> { joins(:tags).where(tags: { name: 'clinical work fulfillment' }) }
 
-  scope :available_institutions, -> {
-    Organization.where(type: 'Institution', is_available: true)
-  }
-
-  scope :available_providers, -> {
-    Organization.where(type: 'Provider', is_available: true, parent: available_institutions)
-  }
-
-  scope :available_programs, -> {
-    Organization.where(type: 'Program', is_available: true, parent: available_providers)
-  }
-
-  scope :available_cores, -> {
-    Organization.where(type: 'Core', is_available: true, parent: available_programs)
-  }
-
   def label
     abbreviation || name
   end
@@ -120,6 +104,11 @@ class Organization < ActiveRecord::Base
     else
       return self.parents.select {|x| x.process_ssrs}.first
     end
+  end
+  
+  #TODO SubServiceRequest.where(organization: self.all_child_organizations).each(:&update_org_tree)
+  def update_ssr_org_name
+    SubServiceRequest.where( organization: self.all_child_organizations<<self ).each(&:update_org_tree)
   end
 
   def service_providers_lookup
@@ -182,7 +171,6 @@ class Organization < ActiveRecord::Base
 
   # Returns an array of all children (and children of children) of this organization (deep search).
   # Optionally includes self
-  # TODO: doesn't actually include self, look into this
   def all_children (all_children=[], include_self=true, orgs)
     self.children(orgs).each do |child|
       all_children << child
@@ -199,6 +187,8 @@ class Organization < ActiveRecord::Base
       children = Organization.where(id: all_child_organizations << self)
       children.update_all(is_available: false)
       Service.where(organization_id: children).update_all(is_available: false)
+    else
+      Service.where(organization_id: self.id).update_all(is_available: true)
     end
   end
 

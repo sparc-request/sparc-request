@@ -3,8 +3,8 @@ json.(@documents) do |doc|
 
 	json.id doc.id
 	json.type doc.display_document_type
-	json.title display_document_title(doc, has_access_to_doc)
+	json.title dashboard_display_document_title(doc, has_access_to_doc)
 	json.uploaded format_date(doc.created_at)
-	json.edit document_edit_button(doc, has_access_to_doc)
-	json.delete document_delete_button(doc, has_access_to_doc)
+	json.edit dashboard_document_edit_button(doc, has_access_to_doc)
+	json.delete dashboard_document_delete_button(doc, has_access_to_doc)
 end

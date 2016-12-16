@@ -64,7 +64,7 @@ RSpec.describe 'Notifications index', js: true do
         protocol.principal_investigators.map(&:full_name).each do |pi|
           @pi = "#{pi}"
         end
-   
+
         expect(page).to have_epic_queues(text: @pi)
       end
     end
@@ -77,7 +77,7 @@ RSpec.describe 'Notifications index', js: true do
         page = visit_epic_queues_index_page
         wait_for_javascript_to_finish
         date = protocol.last_epic_push_time.strftime("%m/%d/%Y %I:%M:%S %p")
-        
+
         expect(page).to have_epic_queues(text: "#{date}")
       end
     end
@@ -91,7 +91,7 @@ RSpec.describe 'Notifications index', js: true do
         wait_for_javascript_to_finish
 
         status = protocol.last_epic_push_status.capitalize
-        
+
         expect(page).to have_epic_queues(text: "#{status}")
       end
     end

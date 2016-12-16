@@ -17,77 +17,15 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 = javascript_include_tag 'protocol'
-= stylesheet_link_tag 'hover_effect'
-
-= form_tag navigate_service_request_path(@service_request), :id => 'navigation_form', :class =>'form-inline' do
-  = hidden_field_tag :location, ''
-  = hidden_field_tag :validates, ''
-  = hidden_field_tag :current_location, @page
-  = hidden_field_tag :protocol_id, @service_request.protocol_id
-  = render :partial => 'steps'
-  = render :partial => 'errors'
-  .grid_9.col-md-9
-    .select-project-view
-      .dotted-border.left
-        %p.instructions= t("study_assignment.instructions_1")
-        %br
-        .service-list
-          = render :partial => 'service_list'
-        %br
-        %br
-        %p.notice= t("study_assignment.notice")
-        %br
-        %hr
-        %br
-        - if @service_request.status == 'first_draft'
-          - if @service_request.protocol.present?
-            - if @service_request.protocol.type == 'Study'
-              .existing-study.center
-                #study.study-select
-                  #study-select
-                    .inline.form-group
-                      %strong
-                        = @service_request.protocol.display_protocol_id_and_title
-                      = link_to "Edit Study", edit_service_request_study_path(@service_request, @service_request.protocol, portal: false), class: 'edit-study blue-button btn btn-primary button-hover'
-            - if @service_request.protocol.type == 'Project'
-              .existing-project.center
-                #project.project-select
-                  #project-select
-                    .inline.form-group
-                      %strong
-                        = @service_request.protocol.display_protocol_id_and_title
-                      = link_to 'Edit Project', edit_service_request_project_path(@service_request, @service_request.protocol, portal: false), class: 'edit-project blue-button btn btn-primary button-hover'
-          - else
-            .type-select.center.form-group
-              - if @sub_service_request.nil?
-                = link_to t('study_assignment.research_study'), new_service_request_study_path(@service_request, portal: false), class: 'new-study-button btn btn-primary button-hover', title: t('study_assignment.tooltips.research_study_tooltip')
-                .divider
-                = link_to t('study_assignment.research_project'), new_service_request_project_path(@service_request, portal: false), class: 'new-project-button btn btn-primary button-hover', title: t('study_assignment.tooltips.research_project_tooltip')
-        - else
-          .previously_submitted
-            .inline.form-group
-              - if @service_request.protocol.type == 'Study'
-                #study.study-select
-                  = raw(t(:study_assignment)[:current_study])
-                  %strong
-                    = @service_request.protocol.display_protocol_id_and_title
-                  = link_to t('study_assignment.edit_study'), edit_service_request_study_path(@service_request, @service_request.protocol, portal: false), class: 'edit-study blue-button btn btn-primary button-hover'
-                %br
-              - if @service_request.protocol.type == 'Project'
-                #project.project-select
-                  = raw(t(:study_assignment)[:current_project])
-                  %strong
-                    = @service_request.protocol.display_protocol_id_and_title
-                  = link_to t('study_assignment.edit_project'), edit_service_request_project_path(@service_request, @service_request.protocol, portal: false), class: 'edit-project blue-button btn btn-primary button-hover'
-                %br
-
-  .grid_3.protocol-view-right.right.col-md-3
-    #services.ui-widget.ui-widget-content.cart-view
-      %h3
-        = t("study_assignment.sidebar_box.my_services")
-      .line-items= render :partial => 'catalogs/cart'
-    = navigation_link t(:right_navigation)[:catalog], @back, 'catalog-button btn btn-info btn-lg btn-block button-hover'
-    = render :partial => 'right_navigation'
-.continue.col-md-12= render :partial => 'service_requests/navigation'
+= stylesheet_link_tag 'associated_users_table'
+= render '/service_requests/navigation/steps', service_request: @service_request, step: @step_text, css_class: @css_class
+= render 'service_requests/modals/request_submitted_modal', service_request: @service_request
+.col-sm-12.body-container#protocols-page
+  = form_tag navigate_service_request_path(@service_request), id: 'service-request-form' do
+    - if @sub_service_request
+      = hidden_field_tag :sub_service_request_id, @sub_service_request.id
+    = render 'shared/modal_errors', errors: @errors
+    = render 'service_requests/protocol/protocol_left', service_request: @service_request, sub_service_request: @sub_service_request
+    = render 'service_requests/protocol/protocol_right', service_request: @service_request, sub_service_request: @sub_service_request, sub_service_requests: @sub_service_requests, line_items_count: @line_items_count
+= render 'service_requests/navigation/footer', service_request: @service_request, css_class: @css_class, back: @back, forward: @forward

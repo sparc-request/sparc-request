@@ -17,441 +17,111 @@
 /* DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS*/
 /* INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR*/
 /* TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.*/
-
-
- // * These are the catalog selector colors
- // * Light Blue: #8AB6CB
- // * Light Green: #7EAE8D
- // * Light Orange: #CAA27B
-
- // * Navy: #003366
- // * Light Blue: #227BA5
- // * Orange: #E09462
- // * Red: #ff3333
- // * Green: #2C9B4D
-
-*
-  margin: 0
-  padding: 0
-
-a
-  text-decoration: none
-
-.text-center
-  text-align: center
-.add-user
-  padding-bottom: 55px
-  margin-top: -60px
-  text-align: center
-
-.authorization_error
-  border: 2px solid black
-  text-align: center
-  font-size: 14px
-  font-weight: bold
-  padding: 30px 0
-  #auth_error
-    color: red
-  a:hover 
-    text-decoration: underline
-
-.blue-button
-  background-image: url("/assets/blue_button.png")
-  background-size: 100% 100%
-  background-repeat: no-repeat
-  text-align: center
-  padding: 5px 0px
-  cursor: pointer
-  color: #fff !important
-  text-decoration: none
-  a
-    color: #fff !important
-  button, input[type=submit]
-    background: none
-    border: none
-    padding: 0
-    color: #fff !important
-    cursor: pointer
-
-.blue-provider
-  background: #003366 !important
-
-body
-  background: white url("/assets/background_gradient.png") left top repeat-x
-  color: #222222
-  font-family: "Calibri", "Helvetica Neue", Helvetica, sans-serif
-  font-size: 75%
-  .ui-tabs .ui-tabs-panel
-    padding: 0px
-
-button
-  padding: 3px 6px
-
-.cart-view
-  padding: 3px
-  min-height: 200px
-  overflow: auto
-  div
-    &.line_item
-      padding: 4px 2px
-      width: 205px
-      overflow: auto
-      div
-        width: 180px
-        float: left
-    &.odd
-      background: #E8E8E8
-  .remove-button
-    float: right
-
-.cell-border td
-  border: 1px solid #ADADAD !important
-  border-bottom: none
-
-.center
-  width: 100%
-  text-align: center
-
-.clear
-  clear: both
+@import colors
 
 #container
-  width: 962px
-  height: 1050px
-  margin: 0 auto
-
   #header
-    padding-top: 10px
-    padding-bottom: 10px
     height: 102px
-    background: white left top repeat-x
-    border-left: outset 1px black
-    border-right: outset 1px black
+    width: 100%
+    display: table
+    margin-bottom: 10px
 
-    #org_logo
-      height: 100%
-      width: 25%
-      float: left
+    div
+      text-align: center
 
-      img
-        max-height: 100%
-        max-width: 77%
-        margin-left: 5%
-        margin-right: 18%
+    .org-logo
+      margin-left: 50px
+      margin-top: 15px
 
-    #sparc_request_header
-      height: 100%
-      width: 50%
-      float: left
+    .sparc-request-header
+      margin-top: 15px
 
-      img
-        max-height: 100%
-        max-width: 100%
+    .institution-logo
+      margin-top: 15px
+      margin-left: 25px
 
-    #institution_logo
-      height: 100%
-      width: 25%
-      float: left
+  .navbar
+    @media(max-width: 768px)
+      .navbar-nav
+        width: 100%
+        margin-left: 0px
+        margin-right: 0px
 
-      img
-        max-height: 100%
-        max-width: 77%
-        margin-left: 18%
-        margin-right: 5%
+      .navbar-right
+        padding: 10px 15px
+        margin: 0
 
-  #content
-    background: #FFF
-    // height: 1050px
-    height: 100%
-    width: 960px
-    border-left: outset 1px black
-    border-right: outset 1px black
+    @media(min-width: 768px)
+      .welcome-nav
+        margin: 9px 0
 
-    .pricing-message
-      padding-left: 10px
+        a
+          margin-left: 10px
 
-  #title
-    background: white url("/assets/banner.png") no-repeat
-    height: 136px
-    padding: 23px 0 0 23px
-    border-left: outset 1px black
-    border-right: outset 1px black
-    h1
-      margin-top: 32px
-      margin-left: 6px
-      color: #fff
-      font-size: 28px
-      font-weight: normal
+    .navbar-nav li
+      a:hover,
+      a:focus
+        background-color: #e7e7e7
+        color: #555
 
-.dark-blue-button
-  background-color: #036
-  border-radius: 0.3em
-  color: #FFF
-  height: 35px
-  font-size: 13px
-  border: none
-  width: 150px
+  #inner-content
+    width: 1300px
+    margin-left: auto
+    margin-right: auto
+    padding-left: 15px
+    padding-right: 15px
+    @media (min-width: 1300px)
+      width: 1300px
 
-div.full-centered
-  width: 100%
-  height: 100%
-  text-align: center
-
-
-.divider
-  width: 90px
-  height: auto
-  display: inline-block
-
-.error
-  border: 1px solid red
-
-#errorExplanation, .errorExplanation
-  border: 4px solid red
-  margin: 10px
-  padding: 15px
-  font-family: "Calibri", "Helvetica Neue", Arial,Helvetica,sans-serif
-  h2
-    font-size: 14px
-
-.even
-  background: #FFFFFF
-
-div.field_with_errors
-  display: inline
-
-.flash
-  float: left
-  #flash_notice
-    color: yellow
+    .steps, .step-header, .body-container
+      margin-bottom: 20px
 
 .footer
+  margin-left: auto
+  margin-right: auto
   height: 100px
-
-#footer
-  margin-top: 15px
-  background: #003366
-  text-align: center
-  padding: 18px 0
-  height: 18px
-  font-size: 14px
   width: 100%
-  color: #FFFFFF
-  a
-    text-decoration: none
-    color: #FFFFFF
+  margin-top: 40px
+  padding-top: 40px
+  padding-bottom: 40px
+  border-top: 1px solid #eee
 
-.green-provider
-  background: #2C9A4D !important
-
-.hidden
-  display: none
-
-#ie7_warning
-  display: none
-
-img
-  border: 0
-
-.inline .field_with_errors
-  display: inline-table
-
-input
-  &.search-services, &.search-identities
-    -webkit-transition: border linear 0.2s,box-shadow linear 0.2s
-    -moz-transition: border linear 0.2s,box-shadow linear 0.2s
-    -ms-transition: border linear 0.2s,box-shadow linear 0.2s
-    -o-transition: border linear 0.2s,box-shadow linear 0.2s
-    transition: border linear 0.2s,box-shadow linear 0.2s
-    -webkit-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1)
-    -moz-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1)
-    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1)
-    vertical-align: baseline
-    *vertical-align: middle
-    font-size: 13px
-    font-weight: normal
-    line-height: normal
-    font-family: "Calibri", "Helvetica Neue", Helvetica,Arial,sans-serif
-    display: inline-block
-    padding: 4px
-    color: #808080
-    border: 1px solid #ccc
-  &.search-services:focus, &.search-identities:focus
-    outline: 0
-    border-color: rgba(82, 168, 236, 0.8)
-    -webkit-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 8px rgba(82, 168, 236, 0.6)
-    -moz-box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 8px rgba(82, 168, 236, 0.6)
-    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1), 0 0 8px rgba(82, 168, 236, 0.6)
-  &.search-services::-moz-focus-inner, &.search-identites::-moz-focus-inner
-    border: 0
+  ul
+    list-style-type: none
     padding: 0
-  &.search-services
-    width: 381px
-    height: 20px
-    -webkit-border-radius: 14px 3px 3px 14px
-    -moz-border-radius: 14px 3px 3px 14px
-    border-radius: 14px 3px 3px 14px
-    margin-bottom: 1px
-    margin-left: 7px
-  &.search-identities
-    width: 209px
-    height: 18px
-    -webkit-border-radius: 3px
-    -moz-border-radius: 3px
 
-.left
-  float: left
+    li
+      display: inline
 
-.light-blue-provider
-  background: #0775B0 !important
+    li + li
+      margin-left: 10px
 
-.light-blue-button
-  background-color: #0775B0
-  border-radius: 0.3em
-  color: #FFF
-  height: 25px
-  font-size: 11px
-  border: none
-  width: 120px
+.full
+  width: 100%
 
-
-.line-items .line_item:nth-child(even)
-  background: #E8E8E8
-
-.odd
-  background: #E8E8E8
-
-.orange-provider
-  background: #F79739 !important
-  th
-    color: #fff
-
-p
-  &.instructions
-    margin-bottom: 10px
-    width: 100%
-    font-size: 14px
-    font-weight: bold
-    color: #003366
-  &.notice
-    text-align: center
-    width: 100%
-    font-style: italic
-    color: #C43149
-
-#processing_request
-  display: none
-
-.red
-  color: red
-
-.red-provider
-  color: #fff
-  background: #C43149 !important
-
-.required
-  color: red
-
-.return-to-step-3, .submit-request
-  cursor: pointer
-
-.right
-  float: right
-
-.right-align
+.control-label
+  margin-bottom: 0
+  padding-top: 7px
   text-align: right
 
-#search
-  background-image: url("/assets/search_bar.png")
-  background-size: 100% 100%
-  padding: 5px 0px
-  margin-bottom: 22px
+.body-container
+  margin-bottom: 20px
 
-.search_result
-  .service-name
-    font-weight: bold
-    &:hover
-      color: #0099FF
-  .service-description
-    display: none
+@media( max-width: 768px )
+  .col-sm-3
+    width: 25%
+  .col-sm-6
+    width: 50%
+  .col-sm-9
+    width: 75%
+  .col-sm-12
+    width: 100%
 
-.select-project-view .project-select select
-  margin-left: 8px
-  margin-right: 8px
+.pricing-message
+  color: red
 
-.skinny_fields
-  text-align: center
-  input
-    text-align: center
-    width: 140px
+.highlighted
+  background: #E7E7E7
 
-#sparc_logo_header
-  background: #FFF
-  border-left: 1px solid #B2B2B2
-  border-right: 1px solid #000
-  display: block
-  width: 960px
-  text-align: center
-  img
-    margin-left: 10px
-  #right_header
-    float: right
-
-.step-header
-  margin: 4px -2px
-  padding: 6px
-  color: #fff
-
-#steps_banner
-  margin-top: -10px
-  margin-left: -10px
-
-.steps_table
-  background: url("/assets/steps_no_text.png") repeat scroll 0 0 rgba(0, 0, 0, 0)
-  height: 100px
-  margin-left: -10px
-  margin-top: -10px
-  width: 959px
-  tr td
-    color: #FFFFFF
-    font-size: 13px
-    padding: 5px
-    text-align: center
-    width: 20%
-    vertical-align: top
-    padding-top: 22px
-
-#sub_service_request_header
-  float: right
-  margin-top: 5px
-  padding-right: 15px
-  font-size: 20px
-
-.submit-request-button, .catalog-button, .dashboard-button, .feedback-button, .ask-a-question-button, .faq-button
-  display: block
-  font-size: 20px
-  margin: 10px
-  cursor: pointer
-
-.submit-request-button, .catalog-button
-  background-image: url("/assets/green_button.png")
-  background-size: 100% 100%
-  text-align: center
-  padding: 5px 0px
-  color: #fff
-  text-decoration: none
-
-.submit-request-button, .dashboard-button
-  width: 206px
-
-tr
-  &.provider-header td
-    text-align: left
-  &.total-visit-based-services, &.total-one-time-fees, &.grand-totals
-    font-weight: bold
-
-ul
-  list-style-position: inside
-
-.white ul
-  background: white
+.locked
+  margin-left: 3px

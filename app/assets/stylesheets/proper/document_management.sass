@@ -17,97 +17,45 @@
 /* DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS*/
 /* INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR*/
 /* TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.*/
+@import 'proper/colors'
+#documents-page
+  .document-management-left
+    thead
+      background: $sparc-orange !important
 
-/*DOCUMENT MANAGEMENT STYLES*/
+    .documents, .notes
+      display: inline-block
+      width: 100%
+      margin-bottom: 20px
 
-.document
-  .document_edit, .document_delete
-    font-size: 15px
-    padding: 5px 10px
-
-.document-actions-header
-  width: 63px
-
-.document-button-seperator
-  margin-top: 5px
-
-.document_edit span
-  width: 75px
-
-.document-edit-container
-  font-size: 12px
-  background-color: #E1E1E1
-
-.document-management-container, .service_request_notes
-  margin: 10px
-  margin-right: 0px
-  padding: 10px
-  min-height: 50px
-  text-align: center
-  table
-    margin: 0 auto
-    border-collapse: collapse
-    width: 100%
-    td
-      border: 1px solid #CCC
-      padding: 5px
-    tr.header
-      text-align: center
-      background-color: #CCC
-      width: 630px
-    th
-      font-weight: bold
-      padding: 5px
-      border: 1px solid #CCC
-    tr.document:nth-child(odd)
-      background-color: #EEE
-
-.document-management-container button.add-new-document
-  margin-top: 15px
-
-.document-table
-  tbody tr th
-    text-align: left
-  tr.header th
-    text-align: center
-    &:nth-child(1)
-      text-align: left
-
-.document-title
-  word-break: break-all
-
-.document-title-header
-  width: 150px
-
-.document_upload
-  .upload_button, #cancel_upload
-    padding: 5px
-    font-size: 15px
-    display: block
-  .upload_button
-    margin-bottom: 5px
-
-.document_upload_button
-  width: 400px
-  font-size: 20px
-  display: block
-  margin: 0 auto
-
-.document_upload_instructions
-  border: 1px solid black
-  margin: 0 auto
-  padding: 7px
-  width: 510px
-  ul
-    list-style: decimal inside
-
-.new_request_note_button
-  width: 400px
-  font-size: 20px
-  display: block
-  margin: 0 auto
-
-#save_request_note
-  font-size: 15px
-  padding: 5px 10px
-
+    .documents
+      .page-header
+        margin-top: 0px
+        h3
+          margin: 0
+    .notes
+      .page-header
+        h3
+          margin: 0
+#documents-table
+  table-layout: fixed
+  word-wrap: break-word
+  th.type
+    width: 10%
+  th.title
+    width: 40%
+  th.uploaded
+    width: 30%
+  th.edit
+    width: 10%
+  th.delete
+    width: 10%
+#notes-table
+  table-layout: fixed
+  word-wrap: break-word
+  th.user
+    width: 20%
+  th.date
+    width: 20%
+  th.note
+    width: 60%

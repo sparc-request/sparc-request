@@ -21,10 +21,11 @@
   = render 'dashboard/protocols/summary', protocol: @protocol, protocol_type: @protocol_type, permission_to_edit: @permission_to_edit || @admin
   = render 'dashboard/associated_users/table', protocol: @protocol, permission_to_edit: @permission_to_edit || @admin
   = render 'dashboard/documents/documents_table', protocol: @protocol, permission_to_edit: @permission_to_edit || @admin
-  = render 'additional_details/submissions/submission_modal'
+  = render 'dashboard/service_requests/service_requests', protocol: @protocol, super_user_orgs: @super_user_orgs, permission_to_edit: @permission_to_edit, user: @user, view_only: false, show_view_ssr_back: @show_view_ssr_back
   .additional-details-submissions-panel
-    = render "additional_details/submissions/submissions_panel", protocol: @protocol
-  = render 'dashboard/service_requests/service_requests', protocol: @protocol, super_user_orgs: @super_user_orgs, permission_to_edit: @permission_to_edit, user: @user, view_only: false
+    = render "additional_details/submissions/submissions_panel", protocol: @protocol, submissions: @submissions
+
+= render 'additional_details/submissions/submission_modal'
 
 :javascript
   $(document).ready( function() {

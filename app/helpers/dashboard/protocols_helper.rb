@@ -19,7 +19,16 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 module Dashboard::ProtocolsHelper
-
+  def break_before_parenthetical(s)
+    i = s.index('(')
+    if i.present?
+      beginning = s[0...i]
+      ending = s[i..-1]
+      raw(beginning +'<br>'+ ending)
+    else
+      s
+    end
+  end
   def consolidated_request_buttons_display(protocol)
     if !protocol.has_first_draft_service_request? && protocol.service_requests.present?
       raw(
@@ -35,7 +44,7 @@ module Dashboard::ProtocolsHelper
 
   def edit_protocol_button_display(protocol, permission_to_edit)
     if permission_to_edit
-      content_tag( :button, t(:dashboard)[:protocols][:summary][:edit1] + protocol.type.capitalize + t(:dashboard)[:protocols][:summary][:edit2], type: 'button', class: 'edit-protocol-information-button btn btn-warning btn-sm', data: { permission: permission_to_edit.to_s, protocol_id: protocol.id })
+      content_tag( :button, I18n.t('protocols.edit', protocol_type: protocol.type), type: 'button', class: 'edit-protocol-information-button btn btn-warning btn-sm', data: { permission: permission_to_edit.to_s, protocol_id: protocol.id })
     end
   end
 

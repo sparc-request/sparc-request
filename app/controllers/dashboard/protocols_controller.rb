@@ -21,8 +21,7 @@
 class Dashboard::ProtocolsController < Dashboard::BaseController
 
   respond_to :html, :json, :xlsx
-
-  before_filter :find_protocol,                                   only: [:show, :edit, :update, :update_protocol_type, :display_requests, :archive, :view_full_calendar, :view_details]
+  before_filter :find_protocol,                                   only: [:show, :edit, :update, :update_protocol_type, :display_requests, :archive, :view_details]
   before_filter :find_admin_for_protocol,                         only: [:show, :edit, :update, :update_protocol_type, :display_requests]
   before_filter :protocol_authorizer_view,                        only: [:show, :view_full_calendar, :display_requests]
   before_filter :protocol_authorizer_edit,                        only: [:edit, :update, :update_protocol_type]
@@ -72,12 +71,14 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def show
+    @submissions = @protocol.submissions
     respond_to do |format|
       format.js   { render }
       format.html {
         session[:breadcrumbs].clear.add_crumbs(protocol_id: @protocol.id)
         @permission_to_edit = @authorization.present? ? @authorization.can_edit? : false
         @protocol_type      = @protocol.type.capitalize
+        @show_view_ssr_back = false
 
         render
       }
@@ -96,12 +97,10 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def create
-    protocol_class = params[:protocol][:type].capitalize.constantize
-
-    attrs = fix_date_params
-
-    @protocol = protocol_class.new(attrs)
-    @protocol.study_type_question_group_id = StudyTypeQuestionGroup.active_id
+    protocol_class                          = params[:protocol][:type].capitalize.constantize
+    attrs                                   = fix_date_params
+    @protocol                               = protocol_class.new(attrs)
+    @protocol.study_type_question_group_id  = StudyTypeQuestionGroup.active_id
 
     if @protocol.valid?
       unless @protocol.project_roles.map(&:identity_id).include? current_user.id
@@ -116,7 +115,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
         Notifier.notify_for_epic_user_approval(@protocol).deliver unless QUEUE_EPIC
       end
 
-      flash[:success] = "#{@protocol.type} Created!"
+      flash[:success] = I18n.t('protocols.created', protocol_type: @protocol.type)
     else
       @errors = @protocol.errors
     end
@@ -125,11 +124,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   def edit
     @protocol_type      = @protocol.type
     @permission_to_edit = @authorization.nil? ? false : @authorization.can_edit?
-
-    if @permission_to_edit
-      @protocol.study_type_question_group_id = StudyTypeQuestionGroup.active_id
-    end
-
+    @in_dashboard       = true
     @protocol.populate_for_edit
 
     session[:breadcrumbs].
@@ -145,15 +140,17 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def update
-    attrs = fix_date_params
-
+    if params[:updated_protocol_type] == 'true' && params[:protocol][:type] == 'Study'
+      @protocol.update_attribute(:type, params[:protocol][:type])
+      @protocol.activate
+      @protocol = Protocol.find(params[:id]) #Protocol reload
+    end
+    
+    attrs               = fix_date_params
     permission_to_edit  = @authorization.present? ? @authorization.can_edit? : false
-
     # admin is not able to activate study_type_question_group
-    if !permission_to_edit && @protocol.update_attributes(attrs)
-      flash[:success] = "#{@protocol.type} Updated!"
-    elsif permission_to_edit && @protocol.update_attributes(attrs.merge(study_type_question_group_id: StudyTypeQuestionGroup.active_id))
-      flash[:success] = "#{@protocol.type} Updated!"
+    if @protocol.update_attributes(attrs)
+      flash[:success] = I18n.t('protocols.updated', protocol_type: @protocol.type)
     else
       @errors = @protocol.errors
     end
@@ -165,20 +162,21 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def update_protocol_type
-    # Using update_attribute here is intentional, type is a protected attribute
     protocol_role       = @protocol.project_roles.find_by(identity_id: @user.id)
     @permission_to_edit = protocol_role.nil? ? false : protocol_role.can_edit?
-    @protocol_type      = params[:type]
 
-    @protocol.update_attribute(:type, @protocol_type)
-    conditionally_activate_protocol
+    # Setting type and study_type_question_group, not actually saving
+    @protocol.type      = params[:type]
+    @protocol.study_type_question_group_id = StudyTypeQuestionGroup.active_id
+    
+    @protocol_type = params[:type]
 
-    @protocol = Protocol.find(@protocol.id)#Protocol type has been converted, this is a reload
+    @protocol = @protocol.becomes(@protocol_type.constantize) unless @protocol_type.nil?
     @protocol.populate_for_edit
-
-    flash[:success] = "Protocol Type Updated!"
+    
+    flash[:success] = t(:protocols)[:change_type][:updated]
     if @protocol_type == "Study" && @protocol.sponsor_name.nil? && @protocol.selected_for_epic.nil?
-      flash[:alert] = "Please complete Sponsor Name and Publish Study in Epic"
+      flash[:alert] = t(:protocols)[:change_type][:new_study_warning]
     end
   end
 
@@ -189,34 +187,9 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     end
   end
 
-  def view_full_calendar
-    @service_request  = @protocol.any_service_requests_to_display?
-    arm_id            = params[:arm_id] if params[:arm_id]
-    page              = params[:page] if params[:page]
-
-    session[:service_calendar_pages]          = params[:pages] if params[:pages]
-    session[:service_calendar_pages][arm_id]  = page if page && arm_id
-
-    @tab    = 'calendar'
-    @portal = params[:portal]
-
-    if @service_request
-      @pages = {}
-      @protocol.arms.each do |arm|
-        new_page        = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i
-        @pages[arm.id]  = @service_request.set_visit_page(new_page, arm)
-      end
-    end
-
-    @merged = true
-    respond_to do |format|
-      format.js
-    end
-  end
-
   def display_requests
     permission_to_edit = @authorization.present? ? @authorization.can_edit? : false
-    modal              = render_to_string(partial: 'dashboard/protocols/requests_modal', locals: { protocol: @protocol, user: @user, permission_to_edit: permission_to_edit })
+    modal              = render_to_string(partial: 'dashboard/protocols/requests_modal', locals: { protocol: @protocol, user: @user, permission_to_edit: permission_to_edit, show_view_ssr_back: true })
 
     data = { modal: modal }
     render json: data
@@ -252,16 +225,6 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     @new_sort_order     = (@sort_order == 'asc' ? 'desc' : 'asc') if @sort_order
   end
 
-  def conditionally_activate_protocol
-    if @admin
-      if @protocol_type == "Study" && @protocol.virgin_project?
-        @protocol.activate
-      end
-    else
-      @protocol.activate
-    end
-  end
-
   def convert_date_for_save(attrs, date_field)
     if attrs[date_field] && attrs[date_field].present?
       attrs[date_field] = Time.strptime(attrs[date_field].strip, "%m/%d/%Y")
@@ -269,7 +232,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
     attrs
   end
-
+  
   def fix_date_params
     attrs               = params[:protocol]
 
@@ -291,5 +254,4 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
     attrs
   end
-
 end

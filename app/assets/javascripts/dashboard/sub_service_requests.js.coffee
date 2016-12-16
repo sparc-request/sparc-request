@@ -19,8 +19,6 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 $(document).ready ->
-
-
   # SERVICE REQUEST INFO LISTENERS BEGIN
 
   $(document).on 'change', '#sub_service_request_owner', ->
@@ -37,7 +35,7 @@ $(document).ready ->
     status = $(this).val()
     data = 'sub_service_request' : 'status' : status
     $.ajax
-      type: 'PATCH'
+      type: 'PUT'
       url: "/dashboard/sub_service_requests/#{ssr_id}"
       data: data
 

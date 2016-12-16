@@ -22,7 +22,7 @@ FactoryGirl.define do
   sequence :ldap_uid do |n|
     "ldap_uid#{n}@email.com"
   end
-  
+
   sequence :email do |n|
     "email#{n}@email.com"
   end
@@ -32,9 +32,6 @@ FactoryGirl.define do
     last_name             { Faker::Name.last_name }
     first_name            { Faker::Name.first_name }
     email
-    institution           { Faker::Company.name }
-    college               { Faker::Company.name }
-    department            { Faker::Company.name }
     era_commons_name      { Faker::Internet.user_name }
     credentials           { Faker::Name.suffix }
     subspecialty          { Faker::Lorem.word }

@@ -20,25 +20,28 @@
 .panel.panel-default#authorized-users-panel
   .panel-heading
     %h4.panel-title
-      = t(:dashboard)[:protocols][:authorized_users][:header]
+      = t(:authorized_users)[:header]
   .panel-body
     .bootstrap-table-dropdown-overflow
       #associated-users-custom-toolbar
         %button.btn.btn-success#new-associated-user-button{ class: permission_to_edit ? "" : "disabled", data: { protocol_id: protocol.id, permission: permission_to_edit.to_s } }
-          = t(:dashboard)[:protocols][:authorized_users][:add_user]
+          = t(:authorized_users)[:add_user]
       %table#associated-users-table{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', 'show-toggle' => 'true', url: dashboard_associated_users_path(format: :json, protocol_id: protocol.id), striped: 'true', toolbar: '#associated-users-custom-toolbar' } }
         %thead.primary-header
           %tr
             %th{ data: { field: 'name', align: 'left', sortable: 'true' } }
-              = t(:dashboard)[:protocols][:authorized_users][:name]
+              = t(:authorized_users)[:table_fields][:name]
             %th{ data: { field: 'role', align: 'left', sortable: 'true' } }
-              = t(:dashboard)[:protocols][:authorized_users][:role]
+              = t(:authorized_users)[:table_fields][:role]
             %th{ data: { field: 'email', align: 'left', sortable: 'false' } }
-              = t(:dashboard)[:protocols][:authorized_users][:email]
+              = t(:authorized_users)[:table_fields][:email]
             %th{ data: { field: 'phone', align: 'left', sortable: 'false' } }
-              = t(:dashboard)[:protocols][:authorized_users][:phone]
+              = t(:authorized_users)[:table_fields][:phone]
             %th{ data: { field: 'proxy_rights', align: 'left', sortable: 'true' } }
-              = t(:dashboard)[:protocols][:authorized_users][:rights]
+              = t(:authorized_users)[:table_fields][:rights]
+            - if protocol.selected_for_epic?
+              %th{ data: { field: 'epic_emr_access', align: 'center', sortable: 'true' } }
+                = t(:authorized_users)[:table_fields][:epic_emr_access]
             %th{ data: { field: 'edit', align: 'center', sortable: 'false' } }
               = t(:actions)[:edit]
             %th{ data: { field: 'delete', align: 'center', sortable: 'false' } }

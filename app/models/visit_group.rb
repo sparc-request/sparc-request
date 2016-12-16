@@ -45,7 +45,14 @@ class VisitGroup < ActiveRecord::Base
 
   validates :name, presence: true
   validates :position, presence: true
-  validates :day, presence: true, numericality: { only_integer: true }
+  validates :day,
+            :window_before,
+            :window_after,
+            presence: true, numericality: { only_integer: true }
+
+  # TODO: fix. Currently, this validation fails for all VisitGroups with
+  # position == 0. This fails because the position attribute is changed
+  # to 1 from 0 by, I think, acts_as_list before validations are performed.
   validate :day_must_be_in_order
 
   def set_arm_edited_flag_on_subjects
@@ -76,8 +83,13 @@ class VisitGroup < ActiveRecord::Base
     visits.any? { |visit| ((visit.quantities_customized?) && (visit.line_items_visit.line_item.service_request_id == service_request.id)) }
   end
 
+  # TODO: remove after day_must_be_in_order validation is fixed.
+  def in_order?
+    arm.visit_groups.where("position < ? AND day >= ? OR position > ? AND day <= ?", position, day, position, day).none?
+  end
 
   private
+
   def remove_appointments
     appointments = self.appointments
     appointments.each do |app|
@@ -90,10 +102,7 @@ class VisitGroup < ActiveRecord::Base
   end
 
   def day_must_be_in_order
-    position_col = VisitGroup.arel_table[:position]
-    day_col = VisitGroup.arel_table[:day]
-    if arm.visit_groups.where(position_col.lt(position).and(day_col.gteq(day)).or(
-                              position_col.gt(position).and(day_col.lteq(day)))).any?
+    unless in_order?
       errors.add(:day, 'must be in order')
     end
   end

@@ -18,6 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$("#modal_place").html("<%= escape_javascript(render(:partial =>'dashboard/arms/add_arm_form', locals: {protocol: @protocol, arm: @arm, current_page: @current_page, services: @services, schedule_tab: @schedule_tab, sub_service_request: @sub_service_request, service_request: @service_request})) %>");
+$("#modal_place").html("<%= escape_javascript(render( 'dashboard/arms/add_arm_form', protocol: @protocol, arm: @arm, current_page: @current_page, services: @services, schedule_tab: @schedule_tab, sub_service_request: @sub_service_request, service_request: @service_request )) %>");
 $("#modal_place").modal 'show'
-$(".selectpicker").selectpicker()
+$("[data-toggle='tooltip']").tooltip()
+set_required_fields()

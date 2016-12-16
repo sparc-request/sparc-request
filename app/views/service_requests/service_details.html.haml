@@ -17,104 +17,15 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 = javascript_include_tag 'service_details'
-= stylesheet_link_tag 'hover_effect'
 
-= form_tag navigate_service_request_path(@service_request), {:id => 'navigation_form', :class => 'service-request-setup-view'} do
-  = hidden_field_tag :location, ''
-  = hidden_field_tag :validates, ''
-  = hidden_field_tag :current_location, @page
-  = render :partial => 'steps'
-  = render :partial => 'errors'
-  .grid_9.col-md-9
-    .select-project-view
-      .dotted-border.left
-        .service-details
-          #show-visit-calendar-details
-            .visit-calendar-details
-              - if @service_request.has_one_time_fee_services?
-                .instructions= t(:service_request_details)[:one_time_fee_and_per_patient_instructions]
-              - else
-                .instructions= t(:service_request_details)[:per_patient_instructions]
-              = fields_for @service_request.protocol do |f|
-                .arm-info
-                  .arm-header
-                    .arm-cell= t(:service_request_details)[:study_start_date]
-                    .arm-cell.arm-cell-right= t(:service_request_details)[:study_end_date]
-                    .clear
-                  .clear
-                  .arms
-                    .arm-cell
-                      = text_field_tag :start_date, (@service_request.protocol.start_date.strftime('%_m/%d/%Y') rescue nil) # only used for datepicker
-                      = image_tag 'calendar_edit.png'
-                      = f.hidden_field :start_date
-                    .arm-cell.arm-cell-right
-                      = text_field_tag :end_date, (@service_request.protocol.end_date.strftime('%_m/%d/%Y') rescue nil) #only use for datepicker
-                      = image_tag 'calendar_edit.png'
-                      = f.hidden_field :end_date
-                    .clear
-                  .clear
-                - if @service_request.has_per_patient_per_visit_services?
-                  .arm-info
-                    .arm-header{:style => "padding-top:30px;"}
-                      .arm-cell= t(:service_request_details)[:recruitment_start_date]
-                      .arm-cell.arm-cell-right= t(:service_request_details)[:recruitment_end_date]
-                      .clear
-                    .clear
-                    .arms
-                      .arm-cell
-                        = text_field_tag :recruitment_start_date, (@service_request.protocol.recruitment_start_date.strftime('%_m/%d/%Y') rescue nil)
-                        = image_tag 'calendar_edit.png'
-                        = f.hidden_field :recruitment_start_date
-                      .arm-cell.arm-cell-right
-                        = text_field_tag :recruitment_end_date, (@service_request.protocol.recruitment_end_date.strftime('%_m/%d/%Y') rescue nil)
-                        = image_tag 'calendar_edit.png'
-                        = f.hidden_field :recruitment_end_date
-                      .clear
-                    .clear
-
-            - if (@sub_service_request.nil? ? @service_request.has_per_patient_per_visit_services? : @sub_service_request.has_per_patient_per_visit_services?)
-              %div{:style => "height:25px;background-color:#FFFFFF; clear:both;"}
-              .arm-info
-                - @x = 0
-                = nested_form_for @service_request.protocol, :method => :post do |f|
-                  .arm-header{:style => "padding-top:20px;"}
-                    .arm-cell= t(:service_request_details)[:name]
-                    .arm-cell= t(:service_request_details)[:number_of_subjects]
-                    .arm-cell= t(:service_request_details)[:number_of_visits]
-                    .clear
-                  .clear
-                  - unlocked = @service_request.arms_editable?
-                  .arms
-                    = f.fields_for :arms do |arm|
-                      - #arm.object.new_record? ? unlocked = true : unlocked = arm.object.new_with_draft
-                      = arm.hidden_field :new_with_draft, :value => unlocked
-                      - cannot_remove_class = can_be_deleted?(arm.object) ? nil : 'cannot_remove'
-                      .arm-cell= arm.text_field :name, :disabled => !unlocked
-                      .arm-cell.skinny_fields= arm.text_field :subject_count, :disabled => !unlocked, :'data-minimum_subject_count' => arm.object.minimum_subject_count, :'data-in_cwf' => arm_has_subject_data?(arm.object), :class => 'arm_subject_count'
-                      .arm-cell.skinny_fields= arm.text_field :visit_count, :disabled => !unlocked, :'data-minimum_visit_count' => arm.object.minimum_visit_count, :'data-in_cwf' => arm_has_subject_data?(arm.object), :class => 'arm_visit_count'
-                      .arm-cell{:id => "#{@x+=1}",:style => "padding:7px 0px; width:auto;"}= arm.link_to_remove "Remove Arm", {:class => "remove_arm ui-state-default ui-corner-top ui-tabs-selected ui-state-active button-hover #{cannot_remove_class}", :style => "padding: 4px 10px; border-radius: 3px;"} unless !unlocked
-                      .clear
-                    .clear
-                  - if unlocked
-                    .add-arm= f.link_to_add "Add Arm", :arms, {:class => "ui-state-default ui-corner-top ui-tabs-selected ui-state-active button-hover" }
-                    .clear
-                    %br
-
-          .visit-calendar-details{:style => ((@sub_service_request.nil? ? @service_request.line_items.empty? : @sub_service_request.line_items.empty?) ? '' : 'display:none')}
-            .instructions
-              = t(:service_request_details)[:services_required]
-  - has_per_patient = @sub_service_request.nil? ? @service_request.has_per_patient_per_visit_services? : @sub_service_request.has_per_patient_per_visit_services?
-  .grid_3.protocol-details-view-right.right.col-md-3{:class => (has_per_patient ? 'force_up' : '')}
-    #services.ui-widget.ui-widget-content.cart-view
-      %h3
-        = t(:service_request_details)[:services]
-      .line-items= render :partial => 'catalogs/cart', :locals => {:service_request => @service_request}
-    = navigation_link t(:right_navigation)[:catalog], @catalog, 'catalog-button btn btn-info btn-lg btn-block button-hover'
-    = render :partial => 'right_navigation'
-
-
-  .clear
-
-  .continue.col-md-12= render :partial => 'service_requests/navigation'
+= render '/service_requests/navigation/steps', service_request: @service_request, step: @step_text, css_class: @css_class
+= render 'service_requests/modals/request_submitted_modal', service_request: @service_request
+.col-sm-12.body-container#service-details-page
+  = form_tag navigate_service_request_path(@service_request), id: 'service-request-form' do
+    - if @sub_service_request
+      = hidden_field_tag :sub_service_request_id, @sub_service_request.id
+    = render 'shared/modal_errors', errors: @errors
+    = render 'service_requests/service_details/service_details_left', service_request: @service_request, sub_service_request: @sub_service_request, protocol: @service_request.protocol
+    = render 'service_requests/service_details/service_details_right', service_request: @service_request, sub_service_request: @sub_service_request, sub_service_requests: @sub_service_requests, line_items_count: @line_items_count
+= render 'service_requests/navigation/footer', service_request: @service_request, css_class: @css_class, back: @back, forward: @forward

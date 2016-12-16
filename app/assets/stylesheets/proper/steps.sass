@@ -1,0 +1,129 @@
+/* Copyright © 2011 MUSC Foundation for Research Development*/
+/* All rights reserved.*/
+
+/* Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:*/
+
+/* 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.*/
+
+/* 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following*/
+/* disclaimer in the documentation and/or other materials provided with the distribution.*/
+
+/* 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products*/
+/* derived from this software without specific prior written permission.*/
+
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,*/
+/* BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT*/
+/* SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL*/
+/* DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS*/
+/* INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR*/
+/* TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.*/
+@import 'proper/colors'
+
+.steps
+  padding: 0 !important
+  div
+    padding: 0
+
+  .steps-banner-container
+    display: flex
+
+    #steps-banner
+      list-style-type: none
+      padding: 0
+      margin: 0
+      width: 100%
+      @media (min-width: 768px)
+        li
+          float: left
+          position: relative
+          width: 20%
+        li:first-child
+          z-index: 5
+          left: 68px
+        li:nth-child(2)
+          z-index: 4
+          left: 34px
+        li:nth-child(3)
+          z-index: 3
+        li:nth-child(4)
+          z-index: 2
+          right: 34px
+        li:nth-child(5)
+          z-index: 1
+          right: 68px
+      @media (max-width: 768px)
+        li
+          width: 100%
+      li
+        a:focus
+          outline: 0
+        a:hover
+          text-decoration: none
+        a
+          display: flex
+          width: 100%
+          .step-text
+            padding: 8px 0
+            width: 80%
+            margin-top: auto
+            margin-bottom: auto
+            color: white
+            border-radius: 0
+            outline: none
+            box-shadow: 0 0 0
+            font-size: 13px
+          .right-arrow
+            width: 0
+            height: 0
+            border-top: 50px solid transparent
+            border-bottom: 50px solid transparent
+            border-left: 45px solid
+          .right-arrow:hover
+            cursor: pointer
+
+      .step-btn-blue
+        background: $sparc-blue
+      .step-btn-blue.hover
+        background: $sparc-blue-hover
+      .step-btn-light-blue
+        background: $sparc-light-blue
+      .step-btn-light-blue.hover
+        background: $sparc-light-blue-hover
+      .step-btn-orange
+        background: $sparc-orange
+      .step-btn-orange.hover
+        background: $sparc-orange-hover
+      .step-btn-red
+        background: $sparc-red
+      .step-btn-red.hover
+        background: $sparc-red-hover
+      .step-btn-green
+        background: $sparc-green
+      .step-btn-green.hover
+        background: $sparc-green-hover
+
+      .right-arrow-blue
+        border-left-color: $sparc-blue !important
+      .right-arrow-blue.hover
+        border-left-color: $sparc-blue-hover !important
+      .right-arrow-light-blue
+        border-left-color: $sparc-light-blue !important
+      .right-arrow-light-blue.hover
+        border-left-color: $sparc-light-blue-hover !important
+      .right-arrow-orange
+        border-left-color: $sparc-orange !important
+      .right-arrow-orange.hover
+        border-left-color: $sparc-orange-hover !important
+      .right-arrow-red
+        border-left-color: $sparc-red !important
+      .right-arrow-red.hover
+        border-left-color: $sparc-red-hover !important
+      .right-arrow-green
+        border-left-color: $sparc-green !important
+      .right-arrow-green.hover
+        border-left-color: $sparc-green-hover !important
+
+.step-header
+  color: white
+  h3
+    margin-top: 10px

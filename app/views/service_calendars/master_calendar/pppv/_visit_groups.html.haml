@@ -1,0 +1,52 @@
+-# Copyright © 2011 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+- visit_groups.each_with_index do |visit_group, index|
+  %th.visit-group-box.col-sm-1{ class: "visit-group-#{index+1}" }
+    .row.text-center
+      .col-xs-4.no-padding.text-center
+        +
+      .col-xs-4.no-padding.text-center
+        Day
+      .col-xs-4.no-padding.text-center
+        = "-"
+    .row.text-center
+      .col-xs-4.no-padding.text-center
+        - if portal || tab == 'calendar'
+          = visit_group.window_before
+        - else
+          %a.window-before{ href: 'javascript:void(0)', data: { name: 'window_before', title: t(:calendars)[:pppv][:editable_fields][:window_before], value: visit_group.window_before, url: visit_group_path(visit_group, service_request_id: service_request.id) } }
+      .col-xs-4.no-padding.text-center
+        - if portal || tab == 'calendar'
+          = visit_group.day
+        - else
+          %a.day{ href: 'javascript:void(0)', data: { name: 'day', value: visit_group.day, title: t(:calendars)[:pppv][:editable_fields][:day], url: visit_group_path(visit_group, service_request_id: service_request.id) } }
+      .col-xs-4.no-padding.text-center
+        - if portal || tab == 'calendar'
+          = visit_group.window_after
+        - else
+          %a.window-after{ href: 'javascript:void(0)', data: { name: 'window_after', title: t(:calendars)[:pppv][:editable_fields][:window_after], value: visit_group.window_after, url: visit_group_path(visit_group, service_request_id: service_request.id) } }
+    .row.visit-group-names.text-center
+      .col-sm-12.text-center{ data: { visit_group_id: visit_group.id } }
+        - if portal || tab == 'calendar'
+          = visit_group.name
+        - else
+          %a.visit-group-name{ href: 'javascript:void(0)', data: { name: 'name', title: t(:calendars)[:pppv][:editable_fields][:visit_name], value: visit_group.name, url: visit_group_path(visit_group, service_request_id: service_request.id) } }
+- (visit_groups.size...Visit.per_page).each do |index|
+  %th.col-sm-1.text-center

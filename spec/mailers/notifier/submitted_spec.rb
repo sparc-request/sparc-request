@@ -64,9 +64,6 @@ RSpec.describe Notifier do
   let!(:non_service_provider_ssr) { create(:sub_service_request, ssr_id: "0004", status: "submitted", service_request_id: service_request.id, organization_id: non_service_provider_org.id, org_tree_display: "SCTR1/BLAH")}
 
   let(:previously_submitted_at) { service_request.submitted_at.nil? ? Time.now.utc : service_request.submitted_at.utc }
-  let(:audit)                   { sub_service_request.audit_report(identity,
-                                                                      previously_submitted_at,
-                                                                      Time.now.utc) }
 
   before { add_visits }
 
@@ -77,16 +74,19 @@ RSpec.describe Notifier do
 
   ############# WITHOUT NOTES #########################
   context 'without notes' do
-
     context 'service_provider' do
       let(:xls)                     { Array.new }
       let(:mail)                    { Notifier.notify_service_provider(service_provider,
                                                                           service_request,
                                                                           xls,
                                                                           identity,
-                                                                          service_request.protocol.sub_service_requests.first,
-                                                                          audit) }
+                                                                          service_request.sub_service_requests.first.id,
+                                                                          [],
+                                                                          false) }
 
+      it 'should display correct subject' do
+        expect(mail).to have_subject("#{service_request.protocol.id} - SPARCRequest service request")
+      end
       # Expected service provider message is defined under submitted_service_provider_and_admin_message
       it 'should display service provider intro message, conclusion, link, and should not display acknowledgments' do
         submitted_intro_for_service_providers_and_admin(mail)
@@ -160,8 +160,7 @@ RSpec.describe Notifier do
                                       email: 'success@musc.edu', 
                                       organization_id: organization.id) }
 
-      let(:mail)                      { Notifier.notify_admin(service_request,
-                                                                submission_email,
+      let(:mail)                      { Notifier.notify_admin(submission_email,
                                                                 xls,
                                                                 identity,
                                                                 service_request.protocol.sub_service_requests.first) }
@@ -209,8 +208,10 @@ RSpec.describe Notifier do
                                                                           service_request,
                                                                           xls,
                                                                           identity,
-                                                                          service_request.protocol.sub_service_requests.first,
-                                                                          audit) }
+                                                                          service_request.sub_service_requests.first.id,
+                                                                          [],
+                                                                          false) }
+
       # Expected service provider message is defined under submitted_service_provider_and_admin_message
       it 'should display admin intro message, conclusion, link, and should not display acknowledgments' do
         submitted_intro_for_service_providers_and_admin(mail)
@@ -261,8 +262,7 @@ RSpec.describe Notifier do
                                       email: 'success@musc.edu', 
                                       organization_id: organization.id) }
 
-      let(:mail)                      { Notifier.notify_admin(service_request,
-                                                                submission_email,
+      let(:mail)                      { Notifier.notify_admin(submission_email,
                                                                 xls,
                                                                 identity,
                                                                 service_request.protocol.sub_service_requests.first) }

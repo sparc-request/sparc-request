@@ -19,7 +19,6 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 require 'rails_helper'
-require 'net/ldap' # TODO: not sure why this is necessary
 
 RSpec.describe "Identity" do
   let_there_be_lane
@@ -138,9 +137,9 @@ RSpec.describe "Identity" do
           expect(user.can_edit_sub_service_request?(sub_service_request)).to eq(true)
         end
 
-        it "should return true if not a nexus request, regardless of status" do
+        it "should return false if not a nexus request, if completed" do
           request.update_attributes(status: "complete")
-          expect(user.can_edit_sub_service_request?(request)).to eq(true)
+          expect(user.can_edit_sub_service_request?(request)).to eq(false)
         end
 
         it "should return false if the user does not have correct rights" do

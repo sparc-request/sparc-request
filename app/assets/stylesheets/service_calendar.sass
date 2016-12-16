@@ -1,0 +1,108 @@
+/* Copyright © 2011 MUSC Foundation for Research Development*/
+/* All rights reserved.*/
+
+/* Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:*/
+
+/* 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.*/
+
+/* 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following*/
+/* disclaimer in the documentation and/or other materials provided with the distribution.*/
+
+/* 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products*/
+/* derived from this software without specific prior written permission.*/
+
+/* THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,*/
+/* BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT*/
+/* SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL*/
+/* DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS*/
+/* INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR*/
+/* TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.*/
+.user-view-ssr-modal
+  width: 95%
+
+.no-padding
+  padding: 0
+
+.calendar-container
+  width: 100%
+
+  .panel-title
+    width: 100%
+
+  .table-bordered
+    height: 100%
+    thead
+      tr:not(:first-child)
+        border-bottom: 1px solid #ddd
+      th
+        border-bottom: 0
+      th.service-header
+        width: 12%
+      th.subject-count-header
+        width: 6%
+      th.select-row-header
+        width: 5%
+      .popover
+        color: black
+    tbody
+      td.unit-type-number,
+      td.qty-type-number
+        height: 100%
+        padding: 0
+        .unit-type,
+        .units-per-qty,
+        .qty-type,
+        .qty
+          height: 100%
+          padding: 8px 15px
+        .unit-type.col-sm-6,
+        .qty-type
+          border-right: 1px solid #DDD
+      .organization-header
+        background: #CCC
+
+.service-calendar-row,
+.service-calendar-column
+  border: 1px solid #666
+.schedule-tabs
+  padding: 5px 0px 0px 0px
+
+.tab-pane
+  padding-top: 10px
+
+.visit-group-box, .visit, .billing-type-list
+  padding: 8px 0 !important
+  .row
+    margin: 0
+
+th.visit-group-box
+  vertical-align: top !important
+
+.maximum-total-direct-cost-per-patient,
+.maximum-total-indirect-cost-per-patient,
+.maximum-total-per-patient,
+.total-per-patient-per-visit-cost-per-study,
+.total-one-time-fee-cost-per-study,
+.total-cost-per-arm,
+.total-cost-one-time-fees,
+.grand-total-cost
+  background: #f5f5f5
+
+th.visit-group-select > div
+  padding-left: 0
+  padding-right: 0
+
+/* This is being caused by a strange bug which adds the 'active' class to the <li>s the first time the dropdown is rendered in the service calendar. When we can figure out why it's happening and remove it, remove this styling */
+.visit-group-select
+  .dropdown-menu
+    width: 250px
+    li.active
+      a
+        background-color: white
+        color: #333
+      a:hover, a:focus
+        background-color: #f5f5f5
+        color: #262626
+      a:focus
+        outline: thin dotted
+        outline-offset: -2px

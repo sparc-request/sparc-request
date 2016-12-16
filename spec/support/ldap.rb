@@ -46,6 +46,7 @@ RSpec.configure do |config|
       { "givenname" => ['Brian'], "sn" => ['Kelsey'], "uid" => ['bjk7'], "mail" => ['kelsey@musc.edu'] },
       { "givenname" => ['Jason'], "sn" => ['Leonard'], "uid" => ['jpl6@musc.edu'], "mail" => ['leonarjp@musc.edu'] },
       { "givenname" => ['Julia'], "sn" => ['Glenn'], "uid" => ['jug2'], "mail" => ['glennj@musc.edu'] },
+      { "givenname" => ['John'], "sn" => ['Doe'], "uid" => ['joihnd'], "mail" => ['johnd@musc.edu']}
     ]
 
     attributes = ["uid", "sn", "givenname", "mail"]
@@ -59,6 +60,7 @@ RSpec.configure do |config|
     allow(ldap).to receive(:search).with(filter: create_ldap_filter('gary'), attributes: attributes).and_return([])
     allow(ldap).to receive(:search).with(filter: create_ldap_filter('error'), attributes: attributes).and_raise('error')
     allow(ldap).to receive(:search).with(filter: create_ldap_filter('duplicate'), attributes: attributes)
+    allow(ldap).to receive(:search).with(filter: create_ldap_filter('john'), attributes: attributes).and_return([results[6]])
 
     allow(Net::LDAP).to receive(:new).and_return(ldap)
   end

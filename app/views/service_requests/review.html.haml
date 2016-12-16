@@ -17,59 +17,30 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+= javascript_include_tag 'review'
 
-= stylesheet_link_tag 'hover_effect'
+= render 'service_requests/navigation/steps', service_request: @service_request, step: @step_text, css_class: @css_class
+.col-sm-12.body-container#review-page
+  = form_tag navigate_service_request_path(@service_request), id: 'service-request-form' do
+    - if @sub_service_request
+      = hidden_field_tag :sub_service_request_id, @sub_service_request.id
+    = render 'service_requests/review/instructions'
+    = render 'service_requests/review/protocol_information', service_request: @service_request, protocol: @service_request.protocol
+    = render 'service_requests/review/authorized_users', service_request: @service_request, protocol: @service_request.protocol
+    = render 'service_requests/review/documents', service_request: @service_request, protocol: @service_request.protocol
+    = render 'service_requests/review/notes', service_request: @service_request, notable_id: @service_request.id, notable_type: 'ServiceRequest'
+    = render 'service_requests/review/calendars', service_request: @service_request, sub_service_request: @sub_service_request, pages: @pages, tab: @tab, arm: @arm, portal: @portal, admin: @admin, review: @review, merged: @merged, consolidated: @consolidated
+= render 'service_requests/navigation/footer', service_request: @service_request, css_class: @css_class, back: @back, forward: @forward
 
-- if SYSTEM_SATISFACTION_SURVEY != false
+- if SYSTEM_SATISFACTION_SURVEY
   = javascript_include_tag 'system_satisfaction'
-= javascript_include_tag 'service_calendar.js'
-
-= form_tag navigate_service_request_path(@service_request), { id: 'navigation_form', class: 'root-view', multipart: true } do
-  = hidden_field_tag :location, ''
-  = hidden_field_tag :validates, ''
-  = render partial: 'steps'
-
-  - if SYSTEM_SATISFACTION_SURVEY
-    #participate_in_survey{ title: t(:sr_review)[:participate_in_survey_title] }
-      = t(:sr_review)[:participate_in_survey]
-  #draft_notification{ title: t(:sr_review)[:save_as_draft_notification_title], data: { sr_id: @service_request.id } }
-    = t(:sr_review)[:save_as_draft_notification]
-
-  .grid_12.col-md-12
-    .view-anchor
-      .review-view
-        .review-details
-          %p.instructions= raw(t(:sr_review)[:instructions])
-          .project
-            = render partial: 'service_requests/review/study_project_information', locals: { protocol: @protocol, provider_css: 'red-provider' }
-          .documents
-            = render partial: 'service_requests/document_list', locals: { service_list: @service_list, review: true, thead_class: @thead_class }
-          .notes
-            %table
-              %thead
-                %tr
-                  %th.red-provider= t(:sr_review)[:notes_header]
-              %tbody
-                %tr
-                  %td= render partial: '/notes/request_notes', locals: { notes: @service_request.notes, notable_id: @service_request.id, notable_type: "ServiceRequest", thead_class: @thead_class }
-          #service_calendar_container
-            - if @service_request.has_per_patient_per_visit_services?
-              - @service_request.arms.each do |arm|
-                = render partial: '/service_calendars/master_calendar/pppv_calendar', locals:  { service_request: @service_request, tab: @tab, arm: arm, portal: @portal, thead_class: @thead_class }
-            = render partial: '/service_calendars/master_calendar/otf_calendar', locals: { thead_class: @thead_class }
-            = render partial: 'service_requests/review/review_totals', locals: { thead_class: @thead_class }
-          %br
-          %br
-          %br
-
-          %div.review-bottom-navigation
-            .return-to-step-3.red-provider
-              .return-to-previous
-                = navigation_link t(:bottom_navigation)[:go_back], @back, "btn btn-success btn-lg button-hover"
-            .save-as-draft.red-provider
-              %a.btn.btn-success.btn-lg.button-hover#save-as-draft{href: 'javascript:void(0)'}
-                = t(:bottom_navigation)[:save_as_draft]
-            .obtain-research-pricing.red-provider
-              = link_to t(:bottom_navigation)[:get_cost_estimate], obtain_research_pricing_service_request_path, class: "btn btn-success btn-lg button-hover", id: 'get_a_cost_estimate'
-            .submit-request.red-provider
-              = link_to t(:bottom_navigation)[:submit_to_start], confirmation_service_request_path, class: "save-and-continue btn btn-success btn-lg button-hover", id: 'submit_services1'
+  = hidden_field_tag :use_system_satisfaction, 'true'
+  = render 'service_requests/modals/participate_in_survey_modal'
+  = stylesheet_link_tag('surveyor/reset',
+                        'surveyor/jquery-ui-1.10.0.custom',
+                        'surveyor/jquery-ui-timepicker-addon',
+                        'surveyor/ui.slider.extras',
+                        'surveyor/results',
+                        'surveyor',
+                        'custom')
+  = stylesheet_link_tag 'system_satisfaction'

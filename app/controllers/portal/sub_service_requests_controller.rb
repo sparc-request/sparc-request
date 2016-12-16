@@ -22,12 +22,10 @@ class Portal::SubServiceRequestsController < Portal::BaseController
   respond_to :json, :js, :html
 
   before_filter :protocol_authorizer, :only => [:update_from_project_study_information]
-      
+
   def show
     @sub_service_request = SubServiceRequest.find(params[:id])
     @admin = true
-    session[:sub_service_request_id] = @sub_service_request.id
-    session[:service_request_id] = @sub_service_request.service_request_id
     session[:service_calendar_pages] = params[:pages] if params[:pages]
     if @user.can_edit_fulfillment? @sub_service_request.organization
       @user_toasts = @user.received_toast_messages.select {|x| x.sending_class == 'SubServiceRequest'}.select {|y| y.sending_class_id == @sub_service_request.id}
@@ -37,7 +35,6 @@ class Portal::SubServiceRequestsController < Portal::BaseController
         raise ArgumentError, "Sub service request does not have a protocol; is it an invalid sub service request?"
       end
       @protocol.populate_for_edit if @protocol.type == "Study"
-      @candidate_one_time_fees, @candidate_per_patient_per_visit = @sub_service_request.candidate_services.partition {|x| x.one_time_fee}
       @subsidy = @sub_service_request.subsidy
       @notifications = @user.all_notifications.where(:sub_service_request_id => @sub_service_request.id)
       @service_list = @service_request.service_list
@@ -90,7 +87,6 @@ class Portal::SubServiceRequestsController < Portal::BaseController
       @user_toasts = []
       @service_request = @sub_service_request.service_request
       @protocol.populate_for_edit if @protocol.type == "Study"
-      @candidate_one_time_fees, @candidate_per_patient_per_visit = @sub_service_request.candidate_services.partition {|x| x.one_time_fee}
       @subsidy = @sub_service_request.subsidy
       @notifications = @user.all_notifications.where(:sub_service_request_id => @sub_service_request.id)
       @service_list = @service_request.service_list
@@ -101,11 +97,11 @@ class Portal::SubServiceRequestsController < Portal::BaseController
       unless @protocol.errors.messages[:sponsor_name].nil?
         @protocol.errors.messages[:sponsor_name].uniq!
       end
-      
+
       render action: 'show'
 
     end
-  end   
+  end
 
   def add_note
     @sub_service_request = SubServiceRequest.find(params[:id])
@@ -125,8 +121,6 @@ class Portal::SubServiceRequestsController < Portal::BaseController
     @subsidy = @sub_service_request.subsidy
     service = Service.find(params[:new_service_id])
     percent = @subsidy.try(:percent_subsidy).try(:*, 100)
-    @candidate_one_time_fees = @sub_service_request.candidate_services.select {|x| x.one_time_fee}
-    @candidate_per_patient_per_visit = @sub_service_request.candidate_services.reject {|x| x.one_time_fee}
     existing_service_ids = @service_request.line_items.map(&:service_id)
 
     # we don't have arms and we are adding a new per patient per visit service
@@ -178,11 +172,10 @@ class Portal::SubServiceRequestsController < Portal::BaseController
   def add_otf_line_item
     @sub_service_request = SubServiceRequest.find(params[:id])
     @service_request = @sub_service_request.service_request
-    @candidate_one_time_fees = @sub_service_request.candidate_services.select {|x| x.one_time_fee}
 
     @study_tracker = params[:study_tracker] == "true"
     @line_items = @sub_service_request.line_items
-    
+
     if @sub_service_request.create_line_item(
         service_id: params[:new_service_id],
         sub_service_request_id: params[:sub_service_request_id])
@@ -287,7 +280,7 @@ class Portal::SubServiceRequestsController < Portal::BaseController
   def push_to_epic
     sub_service_request = SubServiceRequest.find(params[:id])
     begin
-      sub_service_request.service_request.protocol.push_to_epic(EPIC_INTERFACE)
+      sub_service_request.service_request.protocol.push_to_epic(EPIC_INTERFACE, "portal_push", current_user.id)
 
       respond_to do |format|
         format.json {

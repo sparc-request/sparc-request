@@ -18,7 +18,8 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 <% if @errors.present? %>
-$("#modal_errors").html("<%= escape_javascript(render('shared/modal_errors', errors: @errors)) %>")
+$("#modal_place #modal_errors").html("<%= escape_javascript(render('shared/modal_errors', errors: @errors)) %>")
+$("#modal_place").scrollTop(0)
 <% else %>
 $("#modal_place").modal('hide')
 # Send the user back to dashboard if theyre a member and not an admin
@@ -29,7 +30,7 @@ window.location = "/dashboard"
 $("#summary-panel").html("<%= escape_javascript(render('dashboard/protocols/summary', protocol: @protocol, protocol_type: @protocol_type, permission_to_edit: @permission_to_edit || @admin)) %>")
 $("#authorized-users-panel").html("<%= escape_javascript(render('dashboard/associated_users/table', protocol: @protocol, permission_to_edit: @permission_to_edit || @admin)) %>")
 $("#documents-panel").html("<%= escape_javascript(render( 'dashboard/documents/documents_table', protocol: @protocol, permission_to_edit: @permission_to_edit || @admin )) %>")
-$("#service-requests-panel").html("<%= escape_javascript(render('dashboard/service_requests/service_requests', protocol: @protocol, permission_to_edit: @permission_to_edit, user: @user, view_only: false)) %>")
+$("#service-requests-panel").html("<%= escape_javascript(render('dashboard/service_requests/service_requests', protocol: @protocol, permission_to_edit: @permission_to_edit, user: @user, view_only: false, show_view_ssr_back: false)) %>")
 
 $("#associated-users-table").bootstrapTable()
 $("#documents-table").bootstrapTable()

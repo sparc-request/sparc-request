@@ -17,12 +17,12 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+= stylesheet_link_tag 'protocol_form'
 
-#protocol_form_display
+#protocol-form-display
   = form_for ([:dashboard, protocol]), as: :protocol, remote: true, html: { class: 'form-horizontal', autocomplete: 'off' } do |form|
     = form.hidden_field :requester_id
     = form.hidden_field :type
-
     - if @protocol.type.capitalize == "Study"
       .edit-study-view.container-fluid
         .row.user-edit-protocol-view
@@ -38,6 +38,7 @@
 
     .row#actions
       .col-lg-4
-      .col-lg-4
+      .col-lg-4.text-center
         %input.btn.btn-lg.btn-success{ type: "submit", value: t(:actions)[:save] }
-        = link_to t(:actions)[:cancel], protocol.id.present? ? dashboard_protocol_path(protocol) : dashboard_protocols_path, class: 'btn btn-lg btn-danger'
+        = link_to t(:actions)[:cancel], protocol.id.present? ? dashboard_protocol_path(protocol) : DASHBOARD_LINK, class: 'btn btn-lg btn-danger'
+      .col-lg-4

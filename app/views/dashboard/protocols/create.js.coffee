@@ -21,5 +21,6 @@
 <% unless @errors %>
 window.location = "<%= dashboard_protocol_path(@protocol) %>"
 <% else %>
-$("#flashes_container").html("<%= escape_javascript(render(partial: 'shared/modal_errors', locals: {errors: @errors})) %>")
+$("#flashes_container").html("<%= escape_javascript(render( 'shared/modal_errors', errors: @errors )) %>")
+$('#body').scrollTop(0)
 <% end %>

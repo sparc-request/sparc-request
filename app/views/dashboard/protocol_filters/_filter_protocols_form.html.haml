@@ -59,7 +59,7 @@
         - if admin
           %hr
           .form-group.row
-            = form.label :with_owner, t(:dashboard)[:protocol_filters][:service_providers], class: 'col-lg-3 control-label'
+            = form.label :with_owner, t(:dashboard)[:protocol_filters][:owner], class: 'col-lg-3 control-label'
             .col-lg-9
               = form.select :with_owner, filterrific.select_options[:with_owner], {}, class: "form-control selectpicker owner-select", multiple: true, data: { none_selected_text: t(:constants)[:prompts][:any] }
           .form-group.row.identity-protocols

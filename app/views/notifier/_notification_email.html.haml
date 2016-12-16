@@ -29,41 +29,29 @@
 
   %body
     /***** EMAIL INTRO *****
-    - case @status
-    - when 'ssr_destroyed'
-      = render "deleted_all_services_from_cart"
-    - when 'get_a_cost_estimate'
-      = render "welcome"
-    - when 'submitted'
-      = render "welcome_for_submitted_status"
+    = intro_determination(@status)
     /***** END EMAIL INTRO *****
 
     /***** EMAIL TABLES *****
     = render "protocol_information", protocol: @protocol
 
-    - if @service_request.has_per_patient_per_visit_services? and @service_request.arms.count > 0
-      = render "arm_information"
+    = display_arm_table(@service_request)
 
     = render "user_information"
 
-    - if @ssrs_to_be_displayed
-      - if @status == 'ssr_destroyed'
-        = render "deleted_srid_information"
-      - else
-        = render "srid_information"
-  
-    - if @status != 'ssr_destroyed' && @audit_report.present? && @audit_report[:line_items].present?
-      = render "audit_action"
+    = display_srid_table(@ssrs_to_be_displayed, @status)
+
+    = display_audit_table(@status, @audit_report)
     /***** END EMAIL TABLES *****
 
     /***** OTHER EMAIL TIDBITS *****
-    - if @status == "submitted" && @role == 'none' && !@notes.empty?
+    - if display_notes?(@status, @role, @notes)
       %p= t(:notifier)[:notes_present]
     
     - if @status != 'ssr_destroyed'
       %p= t(:notifier)[:body6]
     
-    %p= t(:issue_contact)
+    %p= t(:mailer)[:issue_contact]
     
     - if @role != 'none'
       = render "acknowledgments"

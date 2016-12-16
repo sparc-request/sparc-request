@@ -1,0 +1,270 @@
+# Copyright © 2011 MUSC Foundation for Research Development
+# All rights reserved.
+
+# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+# disclaimer in the documentation and/or other materials provided with the distribution.
+
+# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+# derived from this software without specific prior written permission.
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+en:
+  proper:
+    ##########
+    # HEADER #
+    ##########
+    header: "SPARCRequest"
+
+    ##########
+    # NAVBAR #
+    ##########
+    navbar:
+      logged_in: "Logged in as %{email}"
+      login: "Login / Sign Up"
+      logout: "Logout"
+
+    ##########
+    # FOOTER #
+    ##########
+    footer:
+      listserv: "Listserv"
+      listserv_subject: "SPARC Request Listserv"
+      sparc_blog: "Blog"
+      sparc_blog_url: "https://sparcrequestblog.com/"
+      sctr: "SCTR"
+      sctr_url: "http://sctr.musc.edu"
+      about: "About"
+      about_url: "http://academicdepartments.musc.edu/sctr/sparc_request"
+
+    ###########
+    # CATALOG #
+    ###########
+    catalog:
+      no_description: "No description available."
+      accordion:
+        header: "Browse Service Catalog"
+      back_to_top: "Back to Top"
+      center:
+        search_placeholder: "Search by Service Name or CPT Code..."
+        welcome: "Welcome to SPARCRequest:<br>Storefront of Research Services"
+        description: "Search for services above or browse the providers/services on the left sidebar"
+        notice: "** You may only select services applicable to ONE Study/Project at a time **"
+        news:
+          header: "News"
+          none: "There is no recent news. Please check back later."
+        calendar:
+          header: "Calendar"
+          all_day: "All Day"
+          none: "No events scheduled within a month from today."
+      new_request:
+        header: "New Request?"
+        warning: "Is this a new research study or project?"
+      request_submitted:
+        header: "Remove Service Warning"
+        warning: "Deleting this service from the service cart will be irreversible and will cause it to be deleted from the associated protocol (%{protocol_id}). Are you sure you want to proceed?"
+      locked_organization:
+        header: "Locked Organization"
+        warning: "%{organization} services are already present on request %{request} pertaining to this %{protocol_type}, %{title}.<br>Please contact %{contact_name} at %{contact_info} to edit existing request."
+
+    ############
+    # PROTOCOL #
+    ############
+    protocol:
+      review_services_notice: "Review Services"
+      review_services_instructions: "Please review the SPARC Request Services you have selected"
+      create_protocol_notice: "Create Protocol"
+      create_protocol_instructions: "Create a Protocol and add all relevant information"
+      review_protocol_notice: "Protocol Information"
+      review_protocol_instructions: "Review your Protocol and Authorized Users"
+      percent_effort_notice: "If Professional Services are covered by % effort, please indicate in Step 2."
+      study_tooltip: "Choose 'New Research Study' for a Research Study with defined aims and outcomes."
+      project_tooltip: "Choose 'New Project' for non-study-specific Service Requests or anything that is not a Research Study."
+      previously_submitted_warning: "The request that you are editing has been previously submitted and can not be moved to another %{protocol_type}."
+      authorized_users:
+        self_remove_warning: "You can't remove yourself as an Authorized User of this Protocol. Please complete this request first or create a new request."
+
+    ###################
+    # SERVICE DETAILS #
+    ###################
+    service_details:
+      enter_dates_notice: "Timeline"
+      enter_dates_instructions: "Used to generate applicable service fees"
+      arm_information_notice: "Arm Information"
+      arm_information_instructions: "Used to build your Service Calendar"
+      start_date: "Start Date"
+      end_date: "End Date"
+      recruitment_start: "Estimated Recruitment Start Date"
+      recruitment_end: "Estimated Recruitment End Date"
+
+    ####################
+    # SERVICE CALENDAR #
+    ####################
+    service_calendar:
+      move_visit:
+        header: "Move Visit"
+        visit_group: "Visit"
+        position: "Position"
+      legend:
+        research: "R - Research Coverage"
+        third_party: "T - Third Party (PT Insurance) Coverage"
+        effort: "% - Percent Effort"
+      tooltips:
+        r: "Research Coverage"
+        t: "Third Party (PT Insurance) Coverage"
+        effort: "Percent Effort"
+
+
+    ###################
+    # SERVICE SUBSIDY #
+    ###################
+    service_subsidy:
+      eligible_notice: "The services selected below may be eligible for a <b><i>funding award</i></b> or subsidy to cover some or all of the costs of the services. For example, SCTR (CTSA) provides funding awards for the Research Nexus."
+      not_eligible_notice: "None of the services you have selected are eligible for a subsidy."
+      request_funding_notice: "To request additional research funding go to "
+      request_funding_link: "sctr.musc.edu"
+      request_funding_url: "https://sctr.musc.edu/"
+
+    #######################
+    # DOCUMENT MANAGEMENT #
+    #######################
+    document_management:
+      documents_notice: "Shared Documents"
+      documents_instructions: "Visible to Authorized Users and selected Service Providers"
+      notes_notice: "Service Request Notes"
+      notes_instructions: "Important notes for your Service Request"
+
+    ##########
+    # REVIEW #
+    ##########
+    review:
+      instructions:
+        first: "Review your request"
+        second: "Make changes if necessary"
+        third: "Click 'Save as Draft', 'Get a Cost Estimate', or 'Submit Request'"
+      protocol_information_notice: "Protocol Information"
+      authorized_users_notice: "Authorized Users"
+      documents_notice: "Documents"
+      notes_notice: "Notes"
+      pppv_calendars_notice: "Per Patient/Visit Calendars"
+      otf_calendar_notice: "One Time Fees"
+      totals_notice: "Total Costs"
+      total_direct: "Total Direct Cost:"
+      total_indirect: "Total Indirect Cost:"
+      grand_total: "Grand Total:"
+
+    ##############################
+    # SYSTEM SATISFACTION SURVEY #
+    ##############################
+    survey:
+      header: "System Satisfaction Survey"
+      participate: "Would you like to participate in a brief 1 question SPARC Request satisfaction survey?"
+
+    ################
+    # CONFIRMATION #
+    ################
+    confirmation:
+      cost_estimate_warning: "You have successfully submitted a request to get a cost estimate. Emails have been submitted on your behalf and we will respond to your request shortly. Should you have any questions regarding your request, please contact the Service Providers listed below."
+      service_requests_notice: "My Service Requests"
+      download_request: "Download Service Request"
+      to_dashboard: "Go to Dashboard"
+      table_fields:
+        request_id: "Request ID"
+        institution: "Institution"
+        provider: "Provider"
+        program_core: "Program/Core"
+        contact: "Contact"
+      push_to_epic:
+        message: "Getting status of last push to Epic..."
+
+    ########
+    # CART #
+    ########
+    cart:
+      header: "My Services"
+      view_active: "View Active"
+      view_complete: "View Complete"
+      tab_headers:
+        open: "Open"
+        complete: "Completed"
+      no_active_services_message: "You do not have any active requested Services"
+      no_complete_services_message: "You do not have any requested Services in 'Complete' status"
+      to_catalog: "Return to Catalog"
+      service_exists:
+        header: "Service Already Present"
+        warning: "You have already added this service to your cart"
+      has_fulfillments:
+        header: "Remove Service"
+        warning: "This line item has one or more fulfillments associated with it and can not be deleted."
+      remove_request:
+        header: "Remove Service"
+        warning: "This action will delete this service request and you will be redirected to your Dashboard. Click OK to proceed."
+      submit_error:
+        header: "Submission Error"
+        warning: "Please ensure that you have added all necessary research services to your \"My Services\" cart before proceeding. For a listing of available services to add, click on any of the Programs listed on the left-hand side of the page. Services will appear in the middle of the screen. Add services by clicking \"Add\"."
+        service_required: "You must add at least 1 service to your cart before clicking \"Continue\"."
+      must_have_line_item_error:
+        header: "Submission Error"
+        warning: "You must have at least 1 Service in your \"My Services\" cart in order to complete a Service Request."
+        return_to_catalog: "If you wish to change your requested Services, please click 'Return to Catalog'."
+
+    ##############
+    # NAVIGATION #
+    ##############
+    navigation:
+      steps:
+        step1: "STEP 1:<br />Review Services &<br />Assign Protocol"
+        step2: "STEP 2:<br />Enter Service<br />Details"
+        step3: "STEP 3:<br />Notes &<br />Documents"
+        step4: "STEP 4:<br />Review Your<br />Request"
+        step5: "STEP 5:<br />Submission<br />Confirmation"
+      bottom:
+        back: "← Go Back"
+        save_as_draft: "Save as Draft"
+        get_cost_estimate: "Get a Cost Estimate"
+        save_and_continue: "Save and Continue →"
+        submit: "Submit Request →"
+      save_as_draft:
+        header: "Save as Draft"
+        body: "This study will be saved as a draft and no notifications or emails will be sent to Service Providers. Do you wish to proceed?"
+
+    ####################
+    # RIGHT NAVIGATION #
+    ####################
+    right_navigation:
+      faqs:
+        header: "Help/FAQs"
+        question_1: "May I submit a request for services for multiple research studies/projects simultaneously?"
+        answer_1: "No. Please browse and select services for only one research study/project at a time."
+        question_2: "May I select and add services from multiple Service Providers and Programs at one time?"
+        answer_2: "Yes. Please feel free to browse, select, and add services from any Service Provider, Program, and/or Core displayed in the system for any given research study/project."
+        question_3: "How many Authorized Users can I add?"
+        answer_3: "Add as many Authorized Users as you feel is pertinent. There is no limit."
+        question_4: "What is the difference  between a Research Study and a Project?"
+        answer_4: "A Research Study is an individual research protocol with defined aims and outcomes."
+        question_5: "How is SPARC Request calculating my indirect costs?"
+        answer_5: "The original requester for your study/project defined both the funding source of the study/project and the indirect cost rate. SPARC Request uses this data to calculate your total overall indirect costs."
+        question_6: "I\'m stuck! Who can I contact for assistance with SPARC Request?"
+        answer_6: "The SUCCESS Center is happy to assist you! Please contact us at success@musc.edu or (843) 792-3357."
+      feedback:
+        header: "Feedback"
+        email: "Email:"
+        feedback: "Feedback:"
+        submitted: "Thank you for providing your feedback!"
+      redcap_survey: 'https://redcap.musc.edu/surveys/?s=A37TNJWJPL'
+      contact:
+        header: "Contact Us"
+        subject: "Subject:"
+        email: "Email:"
+        message: "Message:"
+        submitted: "Message sent successfully!"
+      ctrc_lock: "SCTR Research Nexus services are already present on this request (%{protocol_id}-%{ssr_id}) pertaining to this %{protocol_type}, '%{short_title}'. Please call (843) 792-8688 to edit the existing request."

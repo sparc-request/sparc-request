@@ -23,7 +23,10 @@ require 'rails_helper'
 RSpec.describe 'dashboard/sub_service_requests/_header', type: :view do
   include RSpecHtmlMatchers
 
-  before(:each) { stub_const("CLINICAL_WORK_FULFILLMENT_URL", "www.future-url.org") }
+  before(:each) do
+    stub_const("CLINICAL_WORK_FULFILLMENT_URL", "www.future-url.org")
+    allow(view).to receive(:user_display_protocol_total).and_return(100)
+  end
 
   describe "status dropdown" do
     it "should be populated with statuses from associated Organization" do
@@ -217,7 +220,7 @@ RSpec.describe 'dashboard/sub_service_requests/_header', type: :view do
 
     render "dashboard/sub_service_requests/header", sub_service_request: sub_service_request
 
-    expect(response).to have_tag("td.display_cost", text: /\$543\.20/)
+    expect(response).to have_tag("td.display_cost", text: /\$100\.00/)
   end
 
   def stub_protocol
@@ -246,6 +249,7 @@ RSpec.describe 'dashboard/sub_service_requests/_header', type: :view do
     expect(d).to receive(:unset_effective_date_for_cost_calculations) do
       allow(d).to receive(:direct_cost_total).and_return(displayed_cost)
     end
+    allow(d).to receive(:service_request)
 
     d
   end
@@ -254,6 +258,7 @@ RSpec.describe 'dashboard/sub_service_requests/_header', type: :view do
     default_statuses = { "draft" => "Draft", "not_draft" => "NotDraft" }
     instance_double(Organization,
       name: "MegaCorp",
+      abbreviation: "MC",
       get_available_statuses: opts[:get_available_statuses].nil? ? default_statuses : opts[:get_available_statuses])
   end
 

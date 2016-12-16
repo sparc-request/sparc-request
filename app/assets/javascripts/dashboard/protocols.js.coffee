@@ -24,6 +24,9 @@
 $(document).ready ->
   Sparc.protocol =
     ready: ->
+      getSRId = () ->
+        $('input[name="service_request_id"]').val()
+
       $('.service-requests-table').on 'all.bs.table', ->
         $(this).find('.selectpicker').selectpicker() #Find descendant selectpickers
 
@@ -116,6 +119,8 @@ $(document).ready ->
         $.ajax
           method: 'get'
           url: "/dashboard/protocols/#{protocol_id}/view_details"
+          data:
+            service_request_id: $("input[name='service_request_id']").val()
 
       $(document).on 'click', '.edit-protocol-information-button', ->
         if $(this).data('permission')
@@ -126,13 +131,15 @@ $(document).ready ->
         protocol_id = $(this).data('protocol-id')
         $.ajax
           method: 'get'
-          url: "/dashboard/service_calendars/view_full_calendar.js?portal=true&protocol_id=#{protocol_id}"
+          url: "/service_calendars/view_full_calendar.js?portal=true&protocol_id=#{protocol_id}"
 
       $(document).on 'click', '.view-service-request', ->
         id = $(this).data('sub-service-request-id')
+        show_view_ssr_back = $(this).data('show-view-ssr-back')
         $.ajax
           method: 'GET'
           url: "/dashboard/sub_service_requests/#{id}.js"
+          data: show_view_ssr_back: show_view_ssr_back
 
       $(document).on 'click', '.edit-service-request', ->
         if $(this).data('permission')
@@ -142,20 +149,19 @@ $(document).ready ->
         if $(this).data('permission')
           protocol_id         = $(this).data('protocol-id')
           window.location     = "/?protocol_id=#{protocol_id}&from_portal=true"
-      # Protocol Show End
 
-      # Protocol Edit Begin
-      $(document).on 'click', '#protocol_type_button', ->
+      $(document).on 'click', '.view-ssr-back-button', ->
         protocol_id = $(this).data('protocol-id')
-        data = type : $("#protocol_type").val()
-        if confirm "This will change the type of this Project/Study.  Are you sure?"
-          $.ajax
-            type: 'PATCH'
-            url: "/dashboard/protocols/#{protocol_id}/update_protocol_type"
-            data: data
-      # Protocol Edit End
-
-
+        $.ajax
+          type: 'GET'
+          url: "/dashboard/protocols/#{protocol_id}/display_requests"
+          success: (data) ->
+            $('#modal_place').html(data.modal)
+            $('#modal_place').modal 'show'
+            $('.service-requests-table').bootstrapTable()
+            $('.service-requests-table').on 'all.bs.table', ->
+              $(this).find('.selectpicker').selectpicker()
+      # Protocol Show End
 
       # Protocol Table Sorting
       $(document).on 'click', '.protocol-sort', ->

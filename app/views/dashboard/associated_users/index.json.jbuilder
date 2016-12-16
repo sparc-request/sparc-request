@@ -3,6 +3,7 @@ json.(@protocol_roles) do |pr|
   json.name              "#{pr.identity.full_name} #{(pr.identity_id == @protocol.requester_id) ? '(Requester)' : ''}"
   json.role              USER_ROLES.detect { |_, v| v == pr.role }.first
   json.proxy_rights      PROXY_RIGHTS.key(pr.project_rights)
+  json.epic_emr_access   pr.epic_access? ? 'Yes' : 'No'
   json.email             pr.identity.email
   json.phone             pr.identity.phone
   json.protocol_id       pr.protocol_id

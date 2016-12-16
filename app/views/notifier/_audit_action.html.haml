@@ -20,15 +20,22 @@
 
 %table.table{cellpadding: 3}
   %thead
+    %tr.skinny-black-border
+      %td{:colspan => 3}
+        %strong= t(:notifier)[:request_amendment]
     %tr.skinny-black-border.left
+      %th.skinny-black-border= t(:notifier)[:sr_id_acronym]
       %th.skinny-black-border= t(:notifier)[:service]
       %th.skinny-black-border= t(:notifier)[:action]
 
   %tbody
-    - @audit_report[:line_items].each do |last_change|
-      - service = Service.find(last_change.audited_changes["service_id"])
-      %tr.skinny-black-border
-        %td.skinny-black-border= service.name
-        %td.skinny-black-border.center= AUDIT_ACTIONS[last_change.action]
+    - @audit_report = action_name == 'notify_user' ? @audit_report[:line_items].values.flatten : @audit_report[:line_items]
+    - @audit_report.each do |last_change|
+      - service_info = Service.find(last_change.audited_changes["service_id"])
+      - ssr = determine_ssr(last_change, action_name)
+      - if SubServiceRequest.where(id: last_change.audited_changes['sub_service_request_id']).empty?
+        = render "audit_new_or_destroyed_ssr", last_change: last_change, service_info: service_info, ssr: ssr
+      - else
+        = render "audit_edited_ssrs", last_change: last_change, service_info: service_info, ssr: ssr
 %br
 %br

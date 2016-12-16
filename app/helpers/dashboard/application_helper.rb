@@ -30,7 +30,7 @@ module Dashboard::ApplicationHelper
 
   def format_datetime date
     if date.present?
-      date.strftime('%D %I:%M %p')
+      date.strftime('%D %I:%M:%S %p')
     else
       ''
     end

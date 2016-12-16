@@ -36,7 +36,7 @@ wb.add_worksheet(name: "Review") do |sheet|
   sheet.add_row ['Short Title', @protocol.short_title], :style => default
   sheet.add_row ["#{@protocol.class.to_s} Title", @protocol.short_title], :style => default
   sheet.add_row ["Funding Source", @protocol.display_funding_source_value], :style => default
-  
+
   sheet.add_row
 
   sheet.add_row ["Authorized Users"], :style => header_style
@@ -68,7 +68,7 @@ wb.add_worksheet(name: "Review") do |sheet|
   sheet.add_row ["Document Uploads"], :style => header_style
 
   doc_row = ["Name", "Type", "", "Institution/Provider/Program/Core"]
-  if has_per_patient_per_visit_services 
+  if has_per_patient_per_visit_services
     (visit_count*2 + 2).times do
       doc_row << ""
     end
@@ -103,7 +103,7 @@ wb.add_worksheet(name: "Review") do |sheet|
       services_row << "Current Cost" if @admin_offset
       services_row += ["Your Cost", "# of Subjects"]
       num_visits = arm.visit_count
-      arm.visit_groups.each do |vg| 
+      arm.visit_groups.each do |vg|
         services_row << "#{vg.name}"
         services_row << ""
       end
@@ -124,8 +124,8 @@ wb.add_worksheet(name: "Review") do |sheet|
 
       r_t_row = ["", "", "", ""]
       r_t_row << "" if @admin_offset
-      
-      num_visits.times do 
+
+      num_visits.times do
         r_t_row << "R"
         r_t_row << "T"
       end
@@ -142,7 +142,7 @@ wb.add_worksheet(name: "Review") do |sheet|
 
           next if value[:line_items].exclude?(line_item) || (@sub_service_request.present? && line_item.sub_service_request_id != @sub_service_request.id)
 
-          totals_hash = line_items_visit.try(:per_subject_rt_indicated) 
+          totals_hash = line_items_visit.try(:per_subject_rt_indicated)
           service_row = [line_item.service.name, ""]
 
           if @admin_offset
@@ -216,19 +216,19 @@ wb.add_worksheet(name: "Review") do |sheet|
         service_row << display_your_cost(line_item)
         line_item.pricing_scheme = 'displayed'
       end
-      
+
       if !@service_list_true.empty? && !@service_list_false.empty?
         service_row += [display_your_cost(line_item), ""]
       else
         service_row += [display_your_cost(line_item), "", ""]
       end
 
-      if has_per_patient_per_visit_services 
+      if has_per_patient_per_visit_services
         (visit_count*2 + 1).times do
           service_row << ''
         end
       end
-      
+
       service_row << line_item_total
       service_rows << sheet.add_row(service_row, :style => default)
     end
@@ -237,63 +237,74 @@ wb.add_worksheet(name: "Review") do |sheet|
   merge_service_rows << service_rows
   merge_sub_header_rows << services_sub_header_rows
 
-  sheet.add_row 
+  line_items = @sub_service_request ? @sub_service_request.line_items : @service_request.line_items
+  line_items.each{|li| li.pricing_scheme = 'effective'} if @admin_offset
 
-  direct_cost_total_row = has_per_patient_per_visit_services ? ["", "", "", "", ""] : ["", "", "", ""]
-  
-  if has_per_patient_per_visit_services 
-    (visit_count*2 - 3).times do
-      direct_cost_total_row << ""
-    end
-  end
-  
-  direct_cost_total_row << "" if @admin_offset
- 
-  @line_items.each{|li| li.pricing_scheme = 'effective'} if @admin_offset
 
-  if has_per_patient_per_visit_services
-    direct_cost_total_row += ["Total Direct Cost", "", "", display_grand_total_direct_costs(@service_request, @line_items)]
-  else
-    direct_cost_total_row += ["Total Direct Cost", display_grand_total_direct_costs(@service_request, @line_items)]
-  end
-
-  direct_cost_total_row = sheet.add_row(direct_cost_total_row, :style => row_header_style)
-  
+  #Direct and Indirect Cost Subtotals
   if USE_INDIRECT_COST
+    sheet.add_row
+
+    direct_cost_total_row = has_per_patient_per_visit_services ? ["", "", "", "", ""] : ["", "", "", ""]
+
+    if has_per_patient_per_visit_services
+      (visit_count*2 - 3).times do
+        direct_cost_total_row << ""
+      end
+    end
+
+    direct_cost_total_row << "" if @admin_offset
+
+    if has_per_patient_per_visit_services
+      direct_cost_total_row += ["Total Direct Cost", "", "", display_study_grand_total_direct_costs(@service_request.protocol, @service_request)]
+    else
+      direct_cost_total_row += ["Total Direct Cost", display_study_grand_total_direct_costs(@service_request.protocol, @service_request)]
+    end
+
+    direct_cost_total_row = sheet.add_row(direct_cost_total_row, :style => row_header_style)
+
     indirect_cost_total_row = has_per_patient_per_visit_services ? ["", "", "", "", ""] : ["", "", "", ""]
 
-    if has_per_patient_per_visit_services 
+    if has_per_patient_per_visit_services
       (visit_count*2 - 3).times do
         indirect_cost_total_row << ""
       end
     end
-    
+
     indirect_cost_total_row << "" if @admin_offset
-  
+
     if has_per_patient_per_visit_services
-      indirect_cost_total_row += ["Total Indirect Cost", "", "", display_grand_total_indirect_costs(@service_request, @line_items)]
+      indirect_cost_total_row += ["Total Indirect Cost", "", "", display_study_grand_total_indirect_costs(@service_request.protocol, @service_request)]
     else
-      indirect_cost_total_row += ["Total Indirect Cost", display_grand_total_indirect_costs(@service_request, @line_items)]
+      indirect_cost_total_row += ["Total Indirect Cost", display_study_grand_total_indirect_costs(@service_request.protocol, @service_request)]
     end
 
     indirect_cost_total_row = sheet.add_row(indirect_cost_total_row, :style => row_header_style)
   end
-  
-  grand_total_row = has_per_patient_per_visit_services ? ["", "", "", "", ""] : ["", "", "", ""]
-  
-  if has_per_patient_per_visit_services 
-    (visit_count*2 - 3).times do
+
+  ##SSR Total
+  if @sub_service_request
+    ssr_total_row = ["", "", "", "", ""]
+    if has_per_patient_per_visit_services
+      (visit_count*2).times do
+        ssr_total_row << ""
+      end
+    end
+
+    ssr_total_row += ["#{@sub_service_request.organization.abbreviation} Total", display_ssr_grand_total(@sub_service_request)]
+    ssr_total_row = sheet.add_row(ssr_total_row, :style => row_header_style)
+  end
+
+  ##Total
+  grand_total_row = ["", "", "", "", ""]
+
+  if has_per_patient_per_visit_services
+    (visit_count*2).times do
       grand_total_row << ""
     end
   end
 
-  grand_total_row << "" if @admin_offset
-  if has_per_patient_per_visit_services
-    grand_total_row += ["Grand Total", "", "", display_grand_total(@service_request, @line_items)]
-  else
-    grand_total_row += ["Grand Total", display_grand_total(@service_request, @line_items)]
-  end
-
+  grand_total_row += ["Total Cost", display_study_grand_total(@service_request.protocol, @service_request)]
   grand_total_row = sheet.add_row(grand_total_row, :style => row_header_style)
 
   ###### style and merge cells ######
@@ -359,7 +370,7 @@ wb.add_worksheet(name: "Review") do |sheet|
   from_left = 4
   begin_column = alpha_array[visit_count + from_left - 3]
   end_column = alpha_array[visit_count + from_left - 2]
-  sheet.merge_cells("#{begin_column}#{direct_cost_total_row.index+1}:#{end_column}#{direct_cost_total_row.index+1}") if has_per_patient_per_visit_services
+  sheet.merge_cells("#{begin_column}#{direct_cost_total_row.index+1}:#{end_column}#{direct_cost_total_row.index+1}") if has_per_patient_per_visit_services if USE_INDIRECT_COST
   sheet.merge_cells("#{begin_column}#{indirect_cost_total_row.index+1}:#{end_column}#{indirect_cost_total_row.index+1}") if has_per_patient_per_visit_services if USE_INDIRECT_COST
   sheet.merge_cells("#{begin_column}#{grand_total_row.index+1}:#{end_column}#{grand_total_row.index+1}") if has_per_patient_per_visit_services
 

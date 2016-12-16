@@ -17,52 +17,18 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 = javascript_include_tag 'document_management'
-= javascript_include_tag 'cart'
-= stylesheet_link_tag 'hover_effect'
+= javascript_include_tag 'dashboard/create_submission'
+= javascript_include_tag 'dashboard/update_submission'
+= javascript_include_tag 'dashboard/delete_submission'
+= stylesheet_link_tag 'additional_details/styles/document_table'
 
-#upload_message{:style => 'display:none'}
-  = t("documents.message")
-
-= form_tag navigate_service_request_path(@service_request), {:id => 'navigation_form', :class => 'root-view', :multipart => true} do
-  = hidden_field_tag :location, ''
-  = hidden_field_tag :validates, ''
-  = hidden_field_tag :current_location, @page
-  = render :partial => 'steps'
-  = render :partial => 'errors'
-  .grid_9.col-md-9
-    .document_upload_instructions= t("documents.upload_instructions_html")
-    .document-management-container
-      - @service_request.additional_detail_services.each do |service|
-        %h1
-          = link_to t('additional_details.take_additional_detail_survey', service_name: service.name), new_service_additional_details_submission_path(service), target: '_blank'
-      = render :partial => 'document_list', :locals => {:review => false, :thead_class => 'orange-provider'}
-      .clear
-      %br
-      %br
-
-      %td= link_to t("documents.add_button"), "/service_requests/#{@service_request.id}/new_document", :remote => true, :class => "document_upload_button blue-button btn btn-primary btn-lg button-hover", :location => 'document_management'
-
-      .document_upload{:style=>'display:none'}
-        = render :partial => 'document_form', :locals => {:provider_css => 'orange-provider'}
-      .clear
-
-    .service_request_notes
-      #request_notes_table
-        = render partial: '/notes/request_notes', locals: { notes: @service_request.notes, notable_id: @service_request.id, notable_type: "ServiceRequest", thead_class: "orange-provider"  }
-
-      %br
-      %br
-
-      %a.new_request_note_button.button-hover.blue-button= "Add Note"
-      #note_form{style: 'display:none'}= render partial: '/notes/note_form', locals: { service_request: @service_request }
-      .clear
-
-  .grid_3.document-mgmt-view-right.right.col-md-3
-    = navigation_link t(:right_navigation)[:catalog], @catalog, 'catalog-button btn btn-info btn-lg btn-block button-hover'
-    = render :partial => 'right_navigation'
-
-  .clear
-
-  .continue.col-md-12= render :partial => 'service_requests/navigation'
+= render '/service_requests/navigation/steps', service_request: @service_request, step: @step_text, css_class: @css_class
+.col-sm-12.body-container#documents-page
+  = form_tag navigate_service_request_path(@service_request), id: 'service-request-form' do
+    - if @sub_service_request
+      = hidden_field_tag :sub_service_request_id, @sub_service_request.id
+    = render 'service_requests/document_management/document_management_left', service_request: @service_request
+    = render 'service_requests/document_management/document_management_right', service_request: @service_request, sub_service_request: @sub_service_request, sub_service_requests: @sub_service_requests, line_items_count: @line_items_count
+= render 'service_requests/navigation/footer', service_request: @service_request, css_class: @css_class, back: @back, forward: @forward
+= render 'additional_details/submissions/submission_modal'

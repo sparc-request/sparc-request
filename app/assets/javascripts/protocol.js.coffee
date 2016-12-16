@@ -18,48 +18,26 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#= require cart
 #= require navigation
+#= require cart
+#= require associated_users
 
 $(document).ready ->
-
-  $('.new-study-button').tooltip()
-  $('.new-project-button').tooltip()
-
-  infotip.setText('Research Study: An individual research study with defined aims and outcomes', '#infotip img')
-
-  $("input[name=protocol]:radio").change ->
-    if $(this).val() == 'Research Study'
-      $('.existing-study').show()
-      $('.edit-study').show() unless $('.edit_study_id').val() == ""
-      $('.existing-project').hide()
-      $('#study-select #service_request_protocol_id').removeAttr('disabled')
-      $('#project-select #service_request_protocol_id').attr('disabled', 'disabled')
-      infotip.setText('Research Study: An individual research study with defined aims and outcomes', '#infotip img')
+  $(document).on 'click', '.service-view a', ->
+    description = $(".service-description-#{$(this).data('id')}")
+    if description.hasClass('hidden')
+      $('.service-description').addClass('hidden')
+      description.removeClass('hidden')
     else
-      $('.existing-project').show()
-      $('.edit-project').show() unless $('.edit_project_id').val() == ""
-      $('.existing-study').hide()
-      $('#project-select #service_request_protocol_id').removeAttr('disabled')
-      $('#study-select #service_request_protocol_id').attr('disabled', 'disabled')
-      infotip.setText('Use "Project" for non-study specific service requests, or anything that is not a study.', '#infotip img')
+      description.addClass('hidden')
 
-  $("input[name=protocol]:radio:checked").change()
+  $('.protocol-select-help a').tooltip()
 
-  $('.edit-study').hide() unless $('.edit_study_id').val() != ""
-  $('.edit-project').hide() unless $('.edit_project_id').val() != ""
-
-  $('.edit_study_id').change ->
-    if ($(this).val() == "")
-      $('.edit-study').hide()
-    else
-      $('.edit-study').show()
-
-  $('.edit_project_id').change ->
-    if ($(this).val() == "")
-      $('.edit-project').hide()
-    else
-      $('.edit-project').show()
-
-  $('#redirect').button()
-  
+  $(document).on 'click', '.view-protocol-details-button', ->
+    protocol_id = $(this).data('protocol-id')
+    $.ajax
+      type: 'get'
+      url: "/protocols/#{protocol_id}/view_details"
+      data:
+        service_request_id: $("input[name='service_request_id']").val()
+    return false

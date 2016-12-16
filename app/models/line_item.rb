@@ -25,15 +25,16 @@ class LineItem < ActiveRecord::Base
   audited
 
   belongs_to :service_request
-  belongs_to :service, -> { includes(:pricing_maps, :organization) }, :counter_cache => true
+  belongs_to :service, -> { includes(:pricing_maps, :organization) }, counter_cache: true
   belongs_to :sub_service_request
-  has_many :fulfillments, :dependent => :destroy
+  has_many :fulfillments, dependent: :destroy
 
-  has_many :line_items_visits, :dependent => :destroy
-  has_many :arms, :through => :line_items_visits
+  has_many :line_items_visits, dependent: :destroy
+  has_many :arms, through: :line_items_visits
   has_many :procedures
-  has_many :admin_rates, :dependent => :destroy
+  has_many :admin_rates, dependent: :destroy
   has_many :notes, as: :notable, dependent: :destroy
+  has_many :submissions, dependent: :destroy
 
   attr_accessible :service_request_id
   attr_accessible :sub_service_request_id
@@ -48,7 +49,7 @@ class LineItem < ActiveRecord::Base
 
   attr_accessor :pricing_scheme
 
-  accepts_nested_attributes_for :fulfillments, :allow_destroy => true
+  accepts_nested_attributes_for :fulfillments, allow_destroy: true
 
   delegate :one_time_fee, to: :service
   delegate :status, to: :sub_service_request
@@ -56,20 +57,29 @@ class LineItem < ActiveRecord::Base
   validates :service_id, numericality: true, presence: true
   validates :service_request_id, numericality:  true
 
-  validates :quantity, :numericality => true, :on => :update, :if => Proc.new { |li| li.service.one_time_fee }
-  validate :quantity_must_be_smaller_than_max_and_greater_than_min, :on => :update, :if => Proc.new { |li| li.service.one_time_fee }
+  validates :quantity, numericality: { only_integer: true }, on: :update, if: Proc.new { |li| li.service.one_time_fee }
+  validate :quantity_must_be_smaller_than_max_and_greater_than_min, on: :update, if: Proc.new { |li| li.service.one_time_fee }
+  validates :units_per_quantity, numericality: { only_integer: true, greater_than_or_equal_to: 0 }, on: :update, if: Proc.new { |li| li.service.one_time_fee }
 
   after_destroy :remove_procedures
 
-  # TODO: order by date/id instead of just by date?
   default_scope { order('line_items.id ASC') }
+
+  def displayed_cost_valid?(displayed_cost)
+    return true if displayed_cost.nil?
+    is_float  = /\A-?[0-9]+(\.[0-9]*)?\z/ =~ displayed_cost
+    num       = displayed_cost.to_f
+    errors.add(:displayed_cost, I18n.t(:errors)[:line_items][:displayed_cost_numeric]) if is_float.nil?
+    errors.add(:displayed_cost, I18n.t(:errors)[:line_items][:displayed_cost_gte_zero]) if num < 0
+    return is_float && num >= 0
+  end
 
   def displayed_cost
     '%.2f' % (applicable_rate / 100.0)
   end
 
   def displayed_cost=(dollars)
-    admin_rates.new( admin_cost: dollars.blank? ? nil : Service.dollars_to_cents(dollars) )
+    admin_rates.new( admin_cost: Service.dollars_to_cents(dollars) )
   end
 
   def pricing_scheme

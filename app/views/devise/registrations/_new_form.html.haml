@@ -17,55 +17,46 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-.description= t(:signup)[:message]
-
-= form_for(resource, :as => resource_name, :url => registration_path(resource_name)) do |f| 
-  = devise_error_messages!
-
-  %br
-  .grid_7.box
-    .info
-      .field
-        = f.label(:last_name, t(:signup)[:lname])
-        = f.text_field :last_name
-
-      .field
-        = f.label(:first_name, t(:signup)[:fname])
-        = f.text_field :first_name
-
-      .field
-        = f.label(:company, t(:signup)[:company])
-        = f.text_field :company
-
-      .field
-        = f.label(:email, t(:signup)[:mail])
-        = f.text_field :email
-
-      .field
-        = f.label(:phone, t(:signup)[:phone])
-        = f.text_field :phone
-
-      .field
-        = f.label(:ldap_uid, t(:login_name))
-        = f.text_field :ldap_uid
-      
-      .field
-        = f.label(:password, t(:login_password))
-        = f.password_field :password
-      
-      .field
-        = f.label(:password_confirmation, t(:signup)[:confirm])
-        = f.password_field :password_confirmation
-
-      .field
-        = f.label(:reason, t(:signup)[:reason])
-        = f.text_area :reason
-
-      .create_user
-        = f.submit t(:signup)[:submit], :class => 'blue-button devise_submit_button'
-        = link_to t(:devise)[:cancel], catalog_service_request_path(@service_request), :class => 'blue-button devise_cancel_button'
-      
-      .links
-        = render "devise/shared/links"
-      .clear
+#sign-up-form
+  = form_for resource, as: resource_name, url: registration_path(resource_name) do |f|
+    - if resource.errors.any?
+      = render 'shared/modal_errors', errors: resource.errors
+    .form-group.field
+      = f.label :last_name, t(:devise)[:registrations][:last_name], class: 'col-sm-3'
+      .col-sm-9
+        = f.text_field :last_name, class: 'form-control'
+    .form-group.field
+      = f.label :first_name, t(:devise)[:registrations][:first_name], class: 'col-sm-3'
+      .col-sm-9
+        = f.text_field :first_name, class: 'form-control'
+    .form-group.field
+      = f.label :company, t(:devise)[:registrations][:company], class: 'col-sm-3'
+      .col-sm-9
+        = f.text_field :company, class: 'form-control'
+    .form-group.field
+      = f.label :email, t(:devise)[:registrations][:email], class: 'col-sm-3'
+      .col-sm-9
+        = f.text_field :email, class: 'form-control'
+    .form-group.field
+      = f.label :phone, t(:devise)[:registrations][:phone], class: 'col-sm-3'
+      .col-sm-9
+        = f.text_field :phone, class: 'form-control'
+    .form-group.field
+      = f.label :ldap_uid, t(:devise)[:registrations][:username], class: 'col-sm-3'
+      .col-sm-9
+        = f.text_field :ldap_uid, class: 'form-control'
+    .form-group.field
+      = f.label :password, t(:devise)[:registrations][:password], class: 'col-sm-3'
+      .col-sm-9
+        = f.password_field :password, class: 'form-control'
+    .form-group.field
+      = f.label :password_confirmation, t(:devise)[:registrations][:confirmation], class: 'col-sm-3'
+      .col-sm-9
+        = f.password_field :password_confirmation, class: 'form-control'
+    .form-group.field.last
+      = f.label :reason, t(:devise)[:registrations][:reason], class: 'col-sm-3'
+      .col-sm-9
+        = f.text_area :reason, class: 'form-control', rows: 5
+    .form-group.text-center
+      = f.submit t(:devise)[:registrations][:submit], class: 'btn btn-primary'
+      = link_to t(:actions)[:cancel], new_identity_session_path, class: 'btn btn-primary'

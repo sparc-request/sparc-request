@@ -17,15 +17,14 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS~
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
-
 #study_schedule_buttons{ data: { protocol_id: service_request.protocol_id, sub_service_request_id: sub_service_request.id, service_request_id: service_request.id, line_item_count: sub_service_request.line_items.count } }
   .row
     .col-sm-4.col-md-4.text-center
       = t(:dashboard)[:arms][:manage]
       #manage_arms
-        .btn.btn-success.btn-sm.glyphicon.glyphicon-plus#add_arm_button{title: t(:dashboard)[:arms][:add], type: "button", aria: {label: "Add Arm"}}
-        .btn.btn-danger.btn-sm.glyphicon.glyphicon-remove#remove_arm_button{title: t(:dashboard)[:arms][:remove], type: "button", aria: {label: "Remove Arm"}}
-        .btn.btn-warning.btn-sm.glyphicon.glyphicon-edit#edit_arm_button{title: t(:dashboard)[:arms][:edit], type: "button", aria: {label: "Edit Arm"}}
+        .btn.btn-success.btn-sm.glyphicon.glyphicon-plus#add_arm_button{title: t(:arms)[:add], type: "button", aria: {label: "Add Arm"}}
+        .btn.btn-danger.btn-sm.glyphicon.glyphicon-remove#remove_arm_button{title: t(:arms)[:remove], type: "button", aria: {label: "Remove Arm"}}
+        .btn.btn-warning.btn-sm.glyphicon.glyphicon-edit#edit_arm_button{title: t(:arms)[:edit], type: "button", aria: {label: "Edit Arm"}}
     .col-sm-4.col-md-4.text-center
       = t(:dashboard)[:visit_groups][:manage]
       #manage_visit_groups

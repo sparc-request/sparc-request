@@ -24,7 +24,6 @@
     %title SPARC Request Reporting
     = stylesheet_link_tag "#{CUSTOM_ASSET_PATH}dashboard/application"
     = javascript_include_tag 'dashboard/application'
-    = javascript_include_tag 'jquery.qtip.min.js'
     /[if IE]
       = stylesheet_link_tag 'ie'
     /[if gt IE 7]
@@ -52,7 +51,7 @@
         %br
         = image_tag 'spinner.gif'
       #header
-        = render 'shared/header_logos', in_dashboard: true
+        = render 'layouts/header_logos', in_dashboard: true, location: @location
         %input#current_user_id{type: 'hidden', value: @user.try(:id)}
       = render 'layouts/dashboard/dashboard_header', user: @user
 

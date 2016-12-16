@@ -17,24 +17,13 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 = javascript_include_tag 'service_subsidy'
-= javascript_include_tag 'cart'
 
-= form_tag navigate_service_request_path(@service_request), {:id => 'navigation_form', :class => 'service-request-setup-view'} do
-  = hidden_field_tag :location, ''
-  = hidden_field_tag :validates, ''
-  = hidden_field_tag :current_location, @page
-  = render :partial => 'steps'
-  #errors= render :partial => 'errors'
-  .grid_9
-    .select-project-view#service_subsidies
-      = render partial: 'subsidies/subsidy_data', locals: {service_request: @service_request}
-
-  .grid_3.service-subsidy-view-right.right
-    = navigation_link t(:right_navigation)[:catalog], @catalog, 'catalog-button button-hover'
-    = render :partial => 'right_navigation'
-
-  .clear
-
-  .continue= render :partial => 'service_requests/navigation'
+= render '/service_requests/navigation/steps', service_request: @service_request, step: @step_text, css_class: @css_class
+.col-sm-12.body-container#service-subsidy-page
+  = form_tag navigate_service_request_path(@service_request), id: 'service-request-form', class: 'form-horizontal' do
+    - if @sub_service_request
+      = hidden_field_tag :sub_service_request_id, @sub_service_request.id
+    = render 'service_requests/service_subsidy/service_subsidy_left', service_request: @service_request, has_subsidy: @has_subsidy, eligible_for_subsidy: @eligible_for_subsidy
+    = render 'service_requests/service_subsidy/service_subsidy_right', service_request: @service_request, sub_service_request: @sub_service_request, sub_service_requests: @sub_service_requests, line_items_count: @line_items_count
+= render 'service_requests/navigation/footer', service_request: @service_request, css_class: @css_class, back: @back, forward: @forward

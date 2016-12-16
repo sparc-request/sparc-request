@@ -17,6 +17,46 @@
 // DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 // INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 // TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#header
+  height: 102px
+  width: 100%
+  display: table
+  margin-bottom: 10px
+
+  div
+    text-align: center
+
+  .org-logo
+    margin-left: 50px
+    margin-top: 15px
+
+  .sparc-request-header
+    margin-top: 15px
+
+  .institution-logo
+    margin-top: 15px
+    margin-left: 25px
+
+.footer
+  margin-left: auto
+  margin-right: auto
+  height: 100px
+  width: 100%
+  margin-top: 40px
+  padding-top: 40px
+  padding-bottom: 40px
+  border-top: 1px solid #eee
+
+  ul
+    list-style-type: none
+    padding: 0
+
+    li
+      display: inline
+
+    li + li
+      margin-left: 10px
+        
 .panel-heading
   h3
     white-space: nowrap
@@ -63,9 +103,6 @@ h2.report_title
   background: none
   margin: 7px 0 0
 
-.highlighted
-  background-color: #e7e7e7
-
 #container nav.navbar-default .navbar-nav li
   a:hover,
   a:focus
@@ -76,11 +113,18 @@ h2.report_title
   margin: 9px 0
 
   a
-    margin: 0px 10px
+    margin-left: 10px
 
-.navbar ul.navbar-right
-  button
-    margin-right: 10px
+.navbar .navbar-right
+  margin: 0 !important
+
+  ul
+    margin-left: 10px
+    li:not(:last-child) button
+      margin-right: 10px
+
+.highlighted
+  background: #E7E7E7
 
 .accordion-heading
   cursor: pointer
@@ -90,7 +134,7 @@ h2.report_title
 
 #container > #inner-content
   // these are cwf specs
-  width: 1170px
+  width: 1300px !important
   margin-left: auto
   margin-right: auto
   padding-left: 15px
@@ -120,7 +164,6 @@ html, body
   height: 100%
 
 body
-  background: white url(/assets/dashboard/background_gradient.png) left top repeat-x
   color: #222222
   font-family: Verdana, Arial, Helvetica, sans-serif
   font-size: 75%
@@ -145,9 +188,6 @@ ul
 h2.title
   color: #00346A
 
-
-.required
-  color: red
 
 .error
   border: 1px solid red
@@ -179,32 +219,6 @@ h2.title
   margin: 25px
   cursor: pointer
 
-
-#container #header
-  height: 102px
-  display: table
-  margin: 0 auto
-
-#container #org_logo, #container #department_title, #container #institution_logo
-  float: left
-
-
-#container #org_logo
-  width: 270px
-  margin-top: 20px
-
-
-#container #department_title
-  width: 510px
-  margin: 22px 15px 0 -30px
-  text-align: center
-  a
-    font-weight: bold
-    font-size: 22px
-    font-family: "Times New Roman"
-    text-decoration: none
-    color: $white
-
 .button-disabled, .button-disabled:hover
   background: #CCC !important
   color: $light_gray !important
@@ -216,13 +230,9 @@ h2.title
   font-size: 14px
   font-weight: bold
 
-#container #institution_logo
-  width: 150px
-  margin: 5px 0 0 13px
-  text-align: right
-
 #container #main
   width: 941px
+
 #title
   color: #00346A
   margin-top: 50px
@@ -249,7 +259,7 @@ h2.title
   width: 33.33%
 
 #service_calendar_container,
-#service_calendar,
+#service-calendar,
 .service_calendar
   thead.ui-widget-header
     background: none repeat scroll 0 0 #0775B0 !important
@@ -733,11 +743,6 @@ div.permissions_dialog
     font-weight: normal
     color: green
 
-.step-header
-  margin: 8px
-  padding: 6px
-  color: $white
-
 .instructions
   margin-bottom: 10px
   width: 95%
@@ -784,14 +789,6 @@ div.permissions_dialog
 #cart-help
   float: right
 
-
-.qtip-content ul
-  margin-left: 10px
-  list-style-position: outside
-
-
-.qtip-content ul li
-  margin-bottom: 10px
 
 // CatalogView
 .catalog-view .left
@@ -1202,3 +1199,12 @@ div.permissions_dialog
   text-align: center
   width: 200px
   z-index: 5
+
+#protocol
+  .control-label
+    margin-bottom: 0
+    padding-top: 7px
+    text-align: right
+
+.locked
+  margin-left: 3px

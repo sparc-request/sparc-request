@@ -20,7 +20,7 @@
 
 require 'rails_helper'
 
-RSpec.describe Notifier do
+RSpec.describe NotifierLogic do
 
   let_there_be_lane
   let_there_be_j
@@ -67,29 +67,29 @@ RSpec.describe Notifier do
       #   expect(Notifier).not_to have_received(:notify_admin)
       # end
 
-      # it 'should NOT notify service providers' do
-      #   @sr.previous_submitted_at = @sr.submitted_at
-      #   allow(Notifier).to receive(:notify_service_provider) do
-      #     mailer = double('mail') 
-      #     expect(mailer).to receive(:deliver_now)
-      #     mailer
-      #   end
+      it 'should NOT notify service providers' do
+        @sr.previous_submitted_at = @sr.submitted_at
+        allow(Notifier).to receive(:notify_service_provider) do
+          mailer = double('mail') 
+          expect(mailer).to receive(:deliver_now)
+          mailer
+        end
         
-      #   NotifierLogic.new(@sr, logged_in_user, @previously_submitted_ssrs).send_request_amendment_email_evaluation unless @previously_submitted_ssrs.empty?
-      #   expect(Notifier).not_to have_received(:notify_service_provider)
-      # end
+        NotifierLogic.new(@sr, logged_in_user, @previously_submitted_ssrs).send_request_amendment_email_evaluation unless @previously_submitted_ssrs.empty?
+        expect(Notifier).not_to have_received(:notify_service_provider)
+      end
 
-      # it 'should NOT notify admin' do
-      #   @sr.previous_submitted_at = @sr.submitted_at
-      #   allow(Notifier).to receive(:notify_admin) do
-      #     mailer = double('mail') 
-      #     expect(mailer).to receive(:deliver)
-      #     mailer
-      #   end
+      it 'should NOT notify admin' do
+        @sr.previous_submitted_at = @sr.submitted_at
+        allow(Notifier).to receive(:notify_admin) do
+          mailer = double('mail') 
+          expect(mailer).to receive(:deliver)
+          mailer
+        end
         
-      #   NotifierLogic.new(@sr, logged_in_user, @previously_submitted_ssrs).send_request_amendment_email_evaluation unless @previously_submitted_ssrs.empty?
-      #   expect(Notifier).not_to have_received(:notify_admin)
-      # end
+        NotifierLogic.new(@sr, logged_in_user, @previously_submitted_ssrs).send_request_amendment_email_evaluation unless @previously_submitted_ssrs.empty?
+        expect(Notifier).not_to have_received(:notify_admin)
+      end
 
       it 'should send_user_notifications' do
         @notifier_logic =  NotifierLogic.new(@sr, logged_in_user, @previously_submitted_ssrs)

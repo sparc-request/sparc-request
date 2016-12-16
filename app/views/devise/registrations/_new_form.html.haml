@@ -19,6 +19,7 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #sign-up-form
   = form_for resource, as: resource_name, url: registration_path(resource_name) do |f|
+    = hidden_field_tag :service_request_id, service_request.id
     - if resource.errors.any?
       = render 'shared/modal_errors', errors: resource.errors
     .form-group.field

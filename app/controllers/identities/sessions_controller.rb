@@ -19,17 +19,11 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Identities::SessionsController < Devise::SessionsController
-  def new
-    # Redirect url after login.
-    @redirect_to = params[:redirect_to]
-    super
-  end
-
   def create
     self.resource = resource_class.new(sign_in_params)
 
     # Pass redirect url to ApplicationController for redirect.
-    store_location_for(resource, params[:redirect_to])
+    store_location_for(resource, catalog_service_request_path(@service_request.id))
     super
   end
 end

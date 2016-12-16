@@ -36,7 +36,6 @@ RSpec.describe 'Protocol' do
       STUDY_TYPE_ANSWERS_VERSION_3.each do |ans|
         update_answers(ans.last)
         study_type_note = STUDY_TYPE_NOTES[ans.first]
-        binding.pry
         expect(study.determine_study_type_note).to eq(study_type_note)
       end 
     end

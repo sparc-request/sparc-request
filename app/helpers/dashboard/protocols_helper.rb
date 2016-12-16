@@ -29,6 +29,7 @@ module Dashboard::ProtocolsHelper
       s
     end
   end
+  
   def consolidated_request_buttons_display(protocol)
     if !protocol.has_first_draft_service_request? && protocol.service_requests.present?
       raw(

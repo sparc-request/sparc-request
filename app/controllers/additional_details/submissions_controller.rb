@@ -18,6 +18,7 @@ class AdditionalDetails::SubmissionsController < ApplicationController
   end
 
   def new
+    binding.pry
     @service = Service.find(params[:service_id])
     @questionnaire = @service.questionnaires.active.first
     @submission = Submission.new

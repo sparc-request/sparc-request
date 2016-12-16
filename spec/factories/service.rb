@@ -68,6 +68,10 @@ FactoryGirl.define do
       one_time_fee false
     end
 
+    trait :with_active_questionnaire do
+      questionnaires [Questionnaire.new(name: "Test Questionnaire", service_id: nil, active: 1)]
+    end
+
     transient do
       line_item_count 0
       pricing_map_count 1
@@ -123,5 +127,6 @@ FactoryGirl.define do
     factory :one_time_fee_service, traits: [:one_time_fee]
     factory :per_patient_per_visit_service, traits: [:per_patient_per_visit]
     factory :service_without_validations, traits: [:without_validations]
+    factory :service_with_questionnaire, traits: [:with_active_questionnaire]
   end
 end

@@ -1,6 +1,7 @@
 class AdditionalDetails::UpdateQuestionnairesController < ApplicationController
 
   def update
+    binding.pry
     @service = Service.find(params[:service_id])
     @questionnaires = @service.questionnaires
     @questionnaire = Questionnaire.find(params[:id])

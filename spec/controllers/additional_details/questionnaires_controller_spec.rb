@@ -20,14 +20,14 @@
 
 require 'rails_helper'
 
-RSpec.describe AdditionalDetails::PreviewsController do
+RSpec.describe AdditionalDetails::QuestionnairesController do
 	describe '#create' do
 		before :each do
 			@service = create( :service )
-	    @questionnaire = create( :questionnaire, service: @service, active: false )
+	    @questionnaire = build( :questionnaire, service: @service, active: false )
 
-	  	xhr :post, :create, name: 'Some Program', service_id: @service, questionnaire: @questionnaire.attributes, format: :js
-	  end
+	  	xhr :post, :create, service_id: @service, questionnaire: @questionnaire.attributes, format: :js
+		 end
 
 	  it 'should assign @questionnaire' do
 	  	expect( assigns( :questionnaire ) ).to be_an_instance_of( Questionnaire )
@@ -37,15 +37,43 @@ RSpec.describe AdditionalDetails::PreviewsController do
 	  	expect( assigns( :service ) ).to be_an_instance_of( Service )
 		end
 
-    it 'should assign @submissions' do
-      expect( assigns( :submission ) ).to be_an_instance_of( Submission )
-    end
+    it { is_expected.to respond_with :found }
+	end
 
-    it 'should build questionnaire responses for @submission' do
-      expect( assigns( :submission ).questionnaire_responses ).to_not be_nil
-    end
+	describe '#update' do
 
-    it { is_expected.to render_template "previews/create" }
-    it { is_expected.to respond_with :ok }
+		before :each do
+
+			@service = create( :service )
+			@questionnaire= create( :questionnaire, service: @service, active: false )
+
+      @questionnaire.items.build
+
+			@question = { id: 1,
+                  content: 'This is the original text', 
+									item_type: "text", 
+									item_options_attributes: { "0" => { content: ""} }, 
+								  description: "", 
+								  required: "0" } 
+
+      @questionnaire.items << Item.create(@question)
+
+      @question[:content] = 'This is the changed text'
+
+      questionnaire_params = @questionnaire.attributes.merge( { items_attributes:  { "0" => @question } } )
+
+			@params = { name: "This should be changed", 
+									id: @questionnaire.id,
+									service_id: @service.id,
+									questionnaire: questionnaire_params }
+
+			xhr :put, :update, @params, format: :js
+		end
+
+		it 'should assign the question to the questionnaire' do
+			expect(@questionnaire.items[0]).to eq( Item.new( @question) )
+		end
+
+
 	end
 end

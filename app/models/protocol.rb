@@ -247,11 +247,6 @@ class Protocol < ActiveRecord::Base
     USE_EPIC
   end
 
-  # virgin project:  a project that has never been a study
-  def virgin_project?
-    selected_for_epic.nil?
-  end
-
   def is_project?
     self.type == 'Project'
   end

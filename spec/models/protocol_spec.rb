@@ -70,27 +70,6 @@ RSpec.describe 'Protocol' do
     end
   end
 
-  describe "#virgin_project?" do
-    context "project is virgin" do
-      before :each do
-        project.update_attributes(selected_for_epic: nil)
-      end
-
-      it "should return true" do
-        expect(project.virgin_project?).to eq true
-      end
-    end
-    context "project is not a virgin" do
-      before :each do
-        project.update_attributes(selected_for_epic: false)
-      end
-
-      it "should return true" do
-        expect(project.virgin_project?).to eq false
-      end
-    end
-  end
-
   describe "#activate" do
     context "protocol is not active" do
       before :each do

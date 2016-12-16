@@ -20,7 +20,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'User begins Service Request', js: true do
+RSpec.describe 'User views the catalog', js: true do
   let_there_be_lane
   fake_login_for_each_test
 
@@ -60,32 +60,39 @@ RSpec.describe 'User begins Service Request', js: true do
     visit "/service_requests/#{service_request.id}/catalog/" + params
   end
 
-  context 'editing a SubServiceRequest' do
-    before(:each) { visit_catalog_page(service_request: @sr, sub_service_request: @ssr1) }
-
-    scenario 'and sees the Protocol page with Services scoped to SubServiceRequest under edit' do
-      click_link("Continue")
-      expect(page).to have_content("STEP 1")
-
-      cart = page.find(".panel", text: /My Services/)
-
-      expect(cart).to have_content("Service1")
-      expect(cart).not_to have_content("Service2")
+  context 'when not editing a SubServiceRequest' do
+    before(:each) do
+      visit_catalog_page(service_request: @sr)
     end
-  end
 
-  context 'not editing a SubServiceRequest' do
-    before(:each) { visit_catalog_page(service_request: @sr) }
-
-    scenario 'and sees the Protocol page' do
-      click_link("Continue")
-      expect(page).to have_content("STEP 1")
-
+    scenario 'sees Services belonging to each SubServiceRequest in the cart' do
       cart = page.find(".panel", text: /My Services/)
-
       expect(cart).to have_content("Service1")
       expect(cart).to have_content("Service2")
     end
+
+    scenario 'sees each Institution in the Service accordion' do
+      service_accordion = page.find(".panel", text: /Browse Service Catalog/)
+      expect(service_accordion).to have_content("Institution1")
+      expect(service_accordion).to have_content("Institution2")
+    end
+  end
+
+  context 'when editing a SubServiceRequest' do
+    before(:each) do
+     visit_catalog_page(service_request: @sr, sub_service_request: @ssr1)
+    end
+
+    scenario 'sees Services belonging only to the SubServiceRequest in the cart' do
+      cart = page.find(".panel", text: /My Services/)
+      expect(cart).to have_content("Service1")
+      expect(cart).to_not have_content("Service2")
+    end
+
+    scenario 'sees only the Institution related to the SubServiceRequest' do
+      service_accordion = page.find(".panel", text: /Browse Service Catalog/)
+      expect(service_accordion).to have_content("Institution1")
+      expect(service_accordion).not_to have_content("Institution2")
+    end
   end
 end
-

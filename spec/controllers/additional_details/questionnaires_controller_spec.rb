@@ -50,15 +50,13 @@ RSpec.describe AdditionalDetails::QuestionnairesController do
       @questionnaire.items.build
 
 			@question = { id: 1,
-                  content: 'This is the original text', 
+                  content: 'This is the new question', 
 									item_type: "text", 
 									item_options_attributes: { "0" => { content: ""} }, 
 								  description: "", 
 								  required: "0" } 
 
       @questionnaire.items << Item.create(@question)
-
-      @question[:content] = 'This is the changed text'
 
       questionnaire_params = @questionnaire.attributes.merge( { items_attributes:  { "0" => @question } } )
 

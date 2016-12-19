@@ -102,8 +102,8 @@ class ApplicationController < ActionController::Base
         create_new_service_request
       end
     elsif params[:controller] == 'devise/sessions' || params[:controller] == 'identities/sessions'
-      if params[:id]
-        use_existing_service_request(params[:id])
+      if params[:id] || params[:service_request_id]
+        use_existing_service_request(params[:id] || params[:service_request_id])
       else
         @service_request = ServiceRequest.new(status: 'first_draft')
         @service_request.save(validate: false)

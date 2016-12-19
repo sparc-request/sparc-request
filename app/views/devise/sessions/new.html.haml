@@ -25,13 +25,13 @@
       = t(:devise)[:sessions][:header]
     .form-group.login-buttons
       - if USE_SHIBBOLETH
-        = link_to t(:devise)[:sessions][:institution_users], identity_shibboleth_omniauth_authorize_path, class: 'btn btn-primary omniauth-login-button'
+        = link_to t(:devise)[:sessions][:institution_users], identity_shibboleth_omniauth_authorize_path(service_request_id: @service_request.id), class: 'btn btn-primary omniauth-login-button'
       %a.btn.btn-primary.standard-login-button
         = t(:devise)[:sessions][:other_users]
     .form-group.sign-up-button
-      = link_to t(:devise)[:sessions][:sign_up], new_identity_registration_path
+      = link_to t(:devise)[:sessions][:sign_up], new_identity_registration_path(service_request_id: @service_request.id)
     .form-group.return-button
       %a.btn.btn-primary{ href: root_path }
         = t(:devise)[:sessions][:return]
-    = render 'login_form', redirect_to: @redirect_to
+    = render 'login_form', service_request: @service_request
   .col-md-3

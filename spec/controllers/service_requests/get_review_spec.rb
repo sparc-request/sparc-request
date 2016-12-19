@@ -41,7 +41,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
     it 'should call before_filter #authorize_identity' do
       expect(before_filters.include?(:authorize_identity)).to eq(true)
     end
-    
+
     it 'should call before_filter #authenticate_identity!' do
       expect(before_filters.include?(:authenticate_identity!)).to eq(true)
     end
@@ -53,8 +53,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
       sr       = create(:service_request_without_validations, protocol: protocol)
       ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
-
-      session[:service_request_id] = sr.id
 
       xhr :get, :review, {
         id: sr.id
@@ -71,8 +69,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
       ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
-      session[:service_request_id] = sr.id
-
       xhr :get, :review, {
         id: sr.id
       }
@@ -88,8 +84,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
       ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
-      session[:service_request_id] = sr.id
-
       xhr :get, :review, {
         id: sr.id
       }
@@ -104,8 +98,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
       sr       = create(:service_request_without_validations, protocol: protocol)
       ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
-
-      session[:service_request_id] = sr.id
 
       xhr :get, :review, {
         id: sr.id
@@ -125,8 +117,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
       arm2     = create(:arm, protocol: protocol)
       pages    = { arm1.id => 1, arm2.id => 1 }
 
-      session[:service_request_id] = sr.id
-
       xhr :get, :review, {
         id: sr.id
       }
@@ -142,8 +132,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
       ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
-      session[:service_request_id] = sr.id
-
       xhr :get, :review, {
         id: sr.id
       }
@@ -158,8 +146,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
       sr       = create(:service_request_without_validations, protocol: protocol)
       ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
-
-      session[:service_request_id] = sr.id
 
       xhr :get, :review, {
         id: sr.id

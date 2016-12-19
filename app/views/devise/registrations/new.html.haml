@@ -22,5 +22,5 @@
   .col-sm-6
     %h1.page-header.text-center
       = t(:devise)[:registrations][:header]
-    = render 'new_form'
+    = render 'new_form', service_request: @service_request
   .col-sm-3

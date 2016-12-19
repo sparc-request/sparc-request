@@ -29,5 +29,6 @@
 .form-group.row.selected_for_epic_dependent#readonly{ display_if(protocol.selected_for_epic) }
   = form.label :study_type_questions, t(:study_form)[:study_type_questions], class: 'col-lg-2 control-label'
   .col-lg-10
-    = form.fields_for :study_type_answers, protocol.display_answers do |answer|
-      = render partial: 'dashboard/protocols/form/study_form_sections/readonly_answer_field', locals: { answer: answer }
+    - if protocol.selected_for_epic 
+      = form.fields_for :study_type_answers, protocol.display_answers do |answer|
+        = render partial: 'dashboard/protocols/form/study_form_sections/readonly_answer_field', locals: { answer: answer }

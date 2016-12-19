@@ -33,7 +33,7 @@ RSpec.describe LineItemsController, type: :controller do
     it 'should call before_filter #authorize_identity' do
       expect(before_filters.include?(:authorize_identity)).to eq(true)
     end
-    
+
     it 'should assign @line_item' do
       protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr        = create(:service_request_without_validations, protocol: protocol)
@@ -42,8 +42,6 @@ RSpec.describe LineItemsController, type: :controller do
       service   = create(:service, one_time_fee: true)
       li        = create(:line_item_without_validations, sub_service_request: ssr, service: service, service_request: sr)
       li_params = { quantity: 2 }
-
-      session[:service_request_id] = sr.id
 
       xhr :put, :update, {
         id: li.id,
@@ -62,8 +60,6 @@ RSpec.describe LineItemsController, type: :controller do
       service   = create(:service, one_time_fee: true)
       li        = create(:line_item_without_validations, sub_service_request: ssr, service: service, service_request: sr)
       li_params = { quantity: 2 }
-
-      session[:service_request_id] = sr.id
 
       xhr :put, :update, {
         id: li.id,
@@ -84,8 +80,6 @@ RSpec.describe LineItemsController, type: :controller do
         li        = create(:line_item_without_validations, sub_service_request: ssr, quantity: 1, service: service, service_request: sr)
         li_params = { quantity: 2 }
 
-        session[:service_request_id] = sr.id
-
         xhr :put, :update, {
           id: li.id,
           srid: sr.id,
@@ -103,8 +97,6 @@ RSpec.describe LineItemsController, type: :controller do
         service   = create(:service, one_time_fee: true)
         li        = create(:line_item_without_validations, sub_service_request: ssr, service: service, service_request: sr)
         li_params = { quantity: 2 }
-
-        session[:service_request_id] = sr.id
 
         xhr :put, :update, {
           id: li.id,
@@ -124,8 +116,6 @@ RSpec.describe LineItemsController, type: :controller do
         li        = create(:line_item_without_validations, sub_service_request: ssr, service: service, service_request: sr)
         li_params = { quantity: 2 }
 
-        session[:service_request_id] = sr.id
-
         xhr :put, :update, {
           id: li.id,
           srid: sr.id,
@@ -135,7 +125,7 @@ RSpec.describe LineItemsController, type: :controller do
         expect(ssr.reload.status).to eq('draft')
       end
 
-      it 'should render template' do
+      it 'should render nothing' do
         protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr        = create(:service_request_without_validations, protocol: protocol)
         org       = create(:organization)
@@ -144,15 +134,13 @@ RSpec.describe LineItemsController, type: :controller do
         li        = create(:line_item_without_validations, sub_service_request: ssr, service: service, service_request: sr)
         li_params = { quantity: 2 }
 
-        session[:service_request_id] = sr.id
-
         xhr :put, :update, {
           id: li.id,
           srid: sr.id,
           line_item: li_params
         }
 
-        expect(controller).to render_template(partial: 'service_calendars/_update_service_calendar')
+        expect(response.body).to be_blank
       end
 
       it 'should respond ok' do
@@ -163,8 +151,6 @@ RSpec.describe LineItemsController, type: :controller do
         service   = create(:service, one_time_fee: true)
         li        = create(:line_item_without_validations, sub_service_request: ssr, service: service, service_request: sr)
         li_params = { quantity: 2 }
-
-        session[:service_request_id] = sr.id
 
         xhr :put, :update, {
           id: li.id,
@@ -186,8 +172,6 @@ RSpec.describe LineItemsController, type: :controller do
         li        = create(:line_item_without_validations, sub_service_request: ssr, service: service, service_request: sr)
         li_params = { quantity: nil }
 
-        session[:service_request_id] = sr.id
-
         xhr :put, :update, {
           id: li.id,
           srid: sr.id,
@@ -206,8 +190,6 @@ RSpec.describe LineItemsController, type: :controller do
         li        = create(:line_item_without_validations, sub_service_request: ssr, service: service, service_request: sr)
         li_params = { quantity: nil }
 
-        session[:service_request_id] = sr.id
-        
         xhr :put, :update, {
           id: li.id,
           srid: sr.id,

@@ -50,7 +50,7 @@
 
 %tr
   %th.col-sm-7{ colspan: portal ? 7 : 8 }
-  = render 'service_calendars/master_calendar/pppv/check_visit_columns', service_request: service_request, sub_service_request: sub_service_request, tab: tab, portal: portal, visit_groups: visit_groups
+  = render 'service_calendars/master_calendar/pppv/check_visit_columns', service_request: service_request, sub_service_request: sub_service_request, tab: tab, portal: portal, visit_groups: visit_groups, page: page
 
   -unless portal
     %th.col-sm-2{ colspan: 2 }

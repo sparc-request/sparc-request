@@ -50,6 +50,7 @@ class ReportsController < ApplicationController
   end
 
   def index
+    @location = "proper"
   end
 
   def setup

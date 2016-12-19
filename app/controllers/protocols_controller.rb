@@ -54,6 +54,8 @@ class ProtocolsController < ApplicationController
       @service_request.update_attribute(:status, 'draft')
       @service_request.sub_service_requests.update_all(status: 'draft')
 
+      @protocol.update_attribute(:next_ssr_id, @service_request.sub_service_requests.count + 1)
+
       if USE_EPIC && @protocol.selected_for_epic
         @protocol.ensure_epic_user
         Notifier.notify_for_epic_user_approval(@protocol).deliver unless QUEUE_EPIC
@@ -109,7 +111,9 @@ class ProtocolsController < ApplicationController
     @protocol.study_type_question_group_id = StudyTypeQuestionGroup.active_id
 
     @protocol_type = params[:type]
+    @protocol = @protocol.becomes(@protocol_type.constantize) unless @protocol_type.nil?
     @protocol.populate_for_edit
+    
     flash[:success] = t(:protocols)[:change_type][:updated]
     if @protocol_type == "Study" && @protocol.sponsor_name.nil? && @protocol.selected_for_epic.nil?
       flash[:alert] = t(:protocols)[:change_type][:new_study_warning]

@@ -39,7 +39,6 @@ RSpec.describe 'User views protocol details', js: true do
     scenario 'and sees the details modal' do
       visit protocol_service_request_path(@sr)
       wait_for_javascript_to_finish
-
       click_button 'View Study Details'
       wait_for_javascript_to_finish
 

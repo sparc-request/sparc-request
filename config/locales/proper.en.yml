@@ -74,7 +74,7 @@ en:
         warning: "Deleting this service from the service cart will be irreversible and will cause it to be deleted from the associated protocol (%{protocol_id}). Are you sure you want to proceed?"
       locked_organization:
         header: "Locked Organization"
-        warning: "This Organization has locked your request, pending approval.<br>Please wait for the Organization to finish processing your request.<br><br>If this is incorrect, please contact them directly."
+        warning: "%{organization} services are already present on request %{request} pertaining to this %{protocol_type}, %{title}.<br>Please contact %{contact_name} at %{contact_info} to edit existing request."
 
     ############
     # PROTOCOL #
@@ -194,7 +194,7 @@ en:
       view_active: "View Active"
       view_complete: "View Complete"
       tab_headers:
-        active: "Active"
+        open: "Open"
         complete: "Completed"
       no_active_services_message: "You do not have any active requested Services"
       no_complete_services_message: "You do not have any requested Services in 'Complete' status"

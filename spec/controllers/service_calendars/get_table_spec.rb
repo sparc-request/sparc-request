@@ -38,9 +38,8 @@ RSpec.describe ServiceCalendarsController do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
 
-      session[:service_request_id] = sr.id
-
       xhr :get, :table, {
+        service_request_id: sr.id,
         tab: 'template'
       }
 
@@ -51,9 +50,8 @@ RSpec.describe ServiceCalendarsController do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
 
-      session[:service_request_id] = sr.id
-
       xhr :get, :table, {
+        service_request_id: sr.id,
         review: 'true'
       }
 
@@ -64,9 +62,8 @@ RSpec.describe ServiceCalendarsController do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
 
-      session[:service_request_id] = sr.id
-
       xhr :get, :table, {
+        service_request_id: sr.id,
         portal: 'false'
       }
 
@@ -77,9 +74,7 @@ RSpec.describe ServiceCalendarsController do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
 
-      session[:service_request_id] = sr.id
-
-      xhr :get, :table
+      xhr :get, :table, service_request_id: sr.id
 
       expect(assigns(:merged)).to eq(false)
     end
@@ -90,9 +85,7 @@ RSpec.describe ServiceCalendarsController do
       arm1      = create(:arm, protocol: protocol, name: "Arm 1")
       arm2      = create(:arm, protocol: protocol, name: "Arm 2")
 
-      session[:service_request_id] = sr.id
-
-      xhr :get, :table
+      xhr :get, :table, service_request_id: sr.id
 
       expect(assigns(:pages).count).to eq(2)
       expect(assigns(:pages)[arm1.id]).to be
@@ -104,9 +97,8 @@ RSpec.describe ServiceCalendarsController do
       sr       = create(:service_request_without_validations, protocol: protocol)
       arm      = create(:arm, protocol: protocol, name: "Arm")
 
-      session[:service_request_id] = sr.id
-
       xhr :get, :table, {
+        service_request_id: sr.id,
         arm_id: arm.id
       }
 
@@ -118,9 +110,8 @@ RSpec.describe ServiceCalendarsController do
         protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr       = create(:service_request_without_validations, protocol: protocol)
 
-        session[:service_request_id] = sr.id
-
         xhr :get, :table, {
+          service_request_id: sr.id,
           format: :js
         }
 
@@ -131,9 +122,8 @@ RSpec.describe ServiceCalendarsController do
         protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr       = create(:service_request_without_validations, protocol: protocol)
 
-        session[:service_request_id] = sr.id
-
         xhr :get, :table, {
+          service_request_id: sr.id,
           format: :js
         }
 
@@ -146,9 +136,8 @@ RSpec.describe ServiceCalendarsController do
         protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr       = create(:service_request_without_validations, protocol: protocol)
 
-        session[:service_request_id] = sr.id
-
         xhr :get, :table, {
+          service_request_id: sr.id,
           format: :html
         }
 
@@ -159,9 +148,8 @@ RSpec.describe ServiceCalendarsController do
         protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr       = create(:service_request_without_validations, protocol: protocol)
 
-        session[:service_request_id] = sr.id
-
         xhr :get, :table, {
+          service_request_id: sr.id,
           format: :html
         }
 

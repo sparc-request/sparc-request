@@ -17,7 +17,7 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-#locked-organization-modal.hidden
+#locked-organization-modal
   .modal-dialog
     .modal-content
       .modal-header
@@ -28,7 +28,7 @@
       .modal-body
         #modal_errors
         .form-group.text-center
-          = raw(t(:proper)[:catalog][:locked_organization][:warning])
+          = raw(t('proper.catalog.locked_organization.warning', organization: organization.name, request: "#{protocol.id}-#{ssr.ssr_id}", protocol_type: "#{protocol.type}", title: "#{protocol.short_title}", contact_name: "#{identity.first_name} #{identity.last_name}", contact_info: identity.phone.blank? ? identity.email : identity.phone))
       .modal-footer
         .center-block
           %button.btn.btn-default{ type: 'button', data: { dismiss: 'modal' } }

@@ -25,6 +25,7 @@ class SubServiceRequest < ActiveRecord::Base
   audited
 
   after_save :update_org_tree
+  after_save :update_past_status
 
   belongs_to :service_requester, class_name: "Identity", foreign_key: "service_requester_id"
   belongs_to :owner, :class_name => 'Identity', :foreign_key => "owner_id"
@@ -73,6 +74,8 @@ class SubServiceRequest < ActiveRecord::Base
   accepts_nested_attributes_for :line_items, allow_destroy: true
   accepts_nested_attributes_for :payments, allow_destroy: true
 
+  validates :ssr_id, presence: true, uniqueness: { scope: :service_request_id }
+
   scope :in_work_fulfillment, -> { where(in_work_fulfillment: true) }
 
   def consult_arranged_date=(date)
@@ -83,10 +86,13 @@ class SubServiceRequest < ActiveRecord::Base
     write_attribute(:requester_contacted_date, Time.strptime(date, "%m/%d/%Y")) if date.present?
   end
 
-  # Make sure that @prev_status is set whenever status is changed for update_past_status method.
   def status= status
     @prev_status = self.status
     super(status)
+  end
+
+  def previously_submitted?
+    !submitted_at.nil?
   end
 
   def formatted_status
@@ -230,7 +236,7 @@ class SubServiceRequest < ActiveRecord::Base
     return total
   end
 
-  # Returns the grant total cost of the sub-service-request
+  # Returns the grand total cost of the sub-service-request
   def grand_total
     self.direct_cost_total + self.indirect_cost_total
   end
@@ -308,7 +314,7 @@ class SubServiceRequest < ActiveRecord::Base
       self_or_parent_id = find_editable_id(self.organization.id)
       EDITABLE_STATUSES[self_or_parent_id].include?(self.status)
     else
-      true
+      !is_complete?
     end
   end
 
@@ -322,6 +328,12 @@ class SubServiceRequest < ActiveRecord::Base
       if (org_id == id) || parent_ids.include?(org_id)
         return org_id
       end
+    end
+  end
+
+  def set_to_draft(admin)
+    if !admin && status != 'draft'
+      self.update_attributes(status: 'draft')
     end
   end
 
@@ -368,13 +380,11 @@ class SubServiceRequest < ActiveRecord::Base
     !self.in_work_fulfillment?
   end
 
-  # Callback which gets called after the ssr is saved to ensure that the
-  # past status is properly updated.  It should not normally be
-  # necessarily to call this method.
-  def update_past_status(identity)
-    old_status = self.past_statuses.last
-    if @prev_status and (not old_status or old_status.status != @prev_status)
-      self.past_statuses.create(status: @prev_status, date: Time.now, changed_by_id: identity.id)
+  def update_past_status
+    if !@prev_status.blank? && @prev_status != self.status
+      past_status = self.past_statuses.create(status: @prev_status, date: Time.now)
+      user_id = AuditRecovery.where(auditable_id: past_status.id, auditable_type: 'PastStatus').first.user_id
+      past_status.update_attribute(:changed_by_id, user_id)
     end
   end
 
@@ -473,11 +483,11 @@ class SubServiceRequest < ActiveRecord::Base
 
       audit = audits.sort_by(&:created_at).last
       # create action
-      if audit.audited_changes["sub_service_request_id"].nil?    
-        filtered_audit_trail[:line_items] << audit if LineItem.find(audit.auditable_id).sub_service_request_id == self.id   
-      # destroy action   
-      else   
-        filtered_audit_trail[:line_items] << audit if audit.audited_changes["sub_service_request_id"] == self.id   
+      if audit.audited_changes["sub_service_request_id"].nil?
+        filtered_audit_trail[:line_items] << audit if LineItem.find(audit.auditable_id).sub_service_request_id == self.id
+      # destroy action
+      else
+        filtered_audit_trail[:line_items] << audit if audit.audited_changes["sub_service_request_id"] == self.id
       end
     end
     filtered_audit_trail[:sub_service_request_id] = self.id

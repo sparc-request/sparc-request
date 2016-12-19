@@ -39,12 +39,14 @@ SparcRails::Application.routes.draw do
   if USE_SHIBBOLETH_ONLY
     devise_for :identities,
                controllers: {
-                 omniauth_callbacks: 'identities/omniauth_callbacks'
+                 omniauth_callbacks: 'identities/omniauth_callbacks',
+                 sessions: 'identities/sessions'
                }, path_names: { sign_in: 'auth/shibboleth' }
   else
     devise_for :identities,
                controllers: {
-                 omniauth_callbacks: 'identities/omniauth_callbacks'
+                 omniauth_callbacks: 'identities/omniauth_callbacks',
+                 sessions: 'identities/sessions'
                }
   end
 
@@ -56,6 +58,8 @@ SparcRails::Application.routes.draw do
   end
 
   resources :contact_forms, only: [:new, :create]
+
+  resource :locked_organizations, only: [:show]
 
   resources :subsidies, only: [:new, :create, :edit, :update, :destroy]
 

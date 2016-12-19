@@ -35,7 +35,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
     end
 
     context 'service already in cart' do
-      it 'should return error modal' do
+      it 'should assign @duplicate_service' do
         org      = create(:organization, process_ssrs: true)
         service  = create(:service, organization: org)
         protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
@@ -43,14 +43,12 @@ RSpec.describe ServiceRequestsController, type: :controller do
         ssr      = create(:sub_service_request_without_validations, organization: org, service_request: sr)
         li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
-        session[:service_request_id] = sr.id
-
         xhr :post, :add_service, {
           id: sr.id,
           service_id: service.id
         }
 
-        expect(response.body['modal']).to be
+        expect(assigns(:duplicate_service)).to eq(true)
       end
 
       it 'should not create line item' do
@@ -61,8 +59,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
         ssr      = create(:sub_service_request_without_validations, organization: org, service_request: sr)
         li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
-        session[:service_request_id] = sr.id
-
         xhr :post, :add_service, {
           id: sr.id,
           service_id: service.id
@@ -71,7 +67,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
         expect(sr.line_items.count).to eq(1)
       end
 
-      it 'should not render template' do
+      it 'should render template' do
         org      = create(:organization, process_ssrs: true)
         service  = create(:service, organization: org)
         protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
@@ -79,17 +75,15 @@ RSpec.describe ServiceRequestsController, type: :controller do
         ssr      = create(:sub_service_request_without_validations, organization: org, service_request: sr)
         li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
-        session[:service_request_id] = sr.id
-
         xhr :post, :add_service, {
           id: sr.id,
           service_id: service.id
         }
 
-        expect(controller).to_not render_template(:add_service)
+        expect(controller).to render_template(:add_service)
       end
 
-      it 'should respond unprocessable_entity' do
+      it 'should respond ok' do
         org      = create(:organization, process_ssrs: true)
         service  = create(:service, organization: org)
         protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
@@ -97,14 +91,12 @@ RSpec.describe ServiceRequestsController, type: :controller do
         ssr      = create(:sub_service_request_without_validations, organization: org, service_request: sr)
         li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
-        session[:service_request_id] = sr.id
-
         xhr :post, :add_service, {
           id: sr.id,
           service_id: service.id
         }
 
-        expect(controller).to respond_with(:unprocessable_entity)
+        expect(controller).to respond_with(:ok)
       end
     end
 
@@ -115,8 +107,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
           service  = create(:service, organization: org)
           protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
           sr       = create(:service_request_without_validations, protocol: protocol)
-
-          session[:service_request_id] = sr.id
 
           xhr :post, :add_service, {
             id: sr.id,
@@ -137,8 +127,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
           ssr      = create(:sub_service_request_without_validations, organization: org, service_request: sr)
           li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
-          session[:service_request_id] = sr.id
-
           xhr :post, :add_service, {
             id: sr.id,
             service_id: service2.id
@@ -153,8 +141,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
         service  = create(:service, organization: org)
         protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr       = create(:service_request_without_validations, protocol: protocol)
-
-        session[:service_request_id] = sr.id
 
         xhr :post, :add_service, {
           id: sr.id,
@@ -173,8 +159,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
         sr       = create(:service_request_without_validations, protocol: protocol)
         ServiceRelation.create(service_id: service.id, related_service_id: service2.id, optional: false)
 
-        session[:service_request_id] = sr.id
-        session[:identity_id]        = logged_in_user.id
+        session[:identity_id] = logged_in_user.id
 
         xhr :post, :add_service, {
           id: sr.id,
@@ -194,8 +179,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
           protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
           sr       = create(:service_request_without_validations, protocol: protocol, status: 'first_draft')
 
-          session[:service_request_id] = sr.id
-
           xhr :post, :add_service, {
             id: sr.id,
             service_id: service.id
@@ -213,33 +196,13 @@ RSpec.describe ServiceRequestsController, type: :controller do
           sr       = create(:service_request_without_validations, protocol: protocol)
           ssr      = create(:sub_service_request_without_validations, organization: org, service_request: sr)
 
-          session[:service_request_id] = sr.id
-          session[:identity_id]        = logged_in_user.id
+          session[:identity_id] = logged_in_user.id
 
           xhr :post, :add_service, {
             id: sr.id,
             service_id: service.id
           }
           expect(sr.sub_service_requests.first.status).to eq('draft')
-        end
-
-        it 'should create past status' do
-          org      = create(:organization, process_ssrs: true)
-          service  = create(:service, organization: org)
-          protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
-          sr       = create(:service_request_without_validations, protocol: protocol)
-          ssr      = create(:sub_service_request_without_validations, organization: org, service_request: sr, status: 'on_hold')
-
-          session[:service_request_id] = sr.id
-          session[:identity_id]        = logged_in_user.id
-
-          xhr :post, :add_service, {
-            id: sr.id,
-            service_id: service.id
-          }
-
-          expect(PastStatus.count).to eq(1)
-          expect(PastStatus.first.sub_service_request_id).to eq(ssr.id)
         end
       end
 
@@ -248,8 +211,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
         service  = create(:service, organization: org)
         protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr       = create(:service_request_without_validations, protocol: protocol)
-
-        session[:service_request_id] = sr.id
 
         xhr :post, :add_service, {
           id: sr.id,
@@ -265,8 +226,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
         protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr       = create(:service_request_without_validations, protocol: protocol)
 
-        session[:service_request_id] = sr.id
-
         xhr :post, :add_service, {
           id: sr.id,
           service_id: service.id
@@ -281,8 +240,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
         protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr       = create(:service_request_without_validations, protocol: protocol)
 
-        session[:service_request_id] = sr.id
-
         xhr :post, :add_service, {
           id: sr.id,
           service_id: service.id
@@ -296,8 +253,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
         service  = create(:service, organization: org)
         protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr       = create(:service_request_without_validations, protocol: protocol)
-
-        session[:service_request_id] = sr.id
 
         xhr :post, :add_service, {
           id: sr.id,

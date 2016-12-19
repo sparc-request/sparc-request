@@ -84,7 +84,7 @@ en:
       visit_count: "Visit Count"
     delete_warning: "Are you sure you want to delete this arm?"
     screening_tooltip: "Enter the number of subjects you expect to screen as well as how many screening visits are required. If no screening phase is required, you can change the name of the Arm to meet your needs."
-    name_tooltip: "Arm Name may contain only letters, numbers, and single spaces and must be unique on your Protocol"
+    name_tooltip: "Arm Name must be unique within a protocol, and the following special characters are not allowed: [ ] * / \\ ? : )."
 
   #######################
   # AUTHORIZATION ERROR #
@@ -455,6 +455,7 @@ en:
       name: "Arm Name: *"
       subject_count: "Subject Count: *"
       visit_count: "Visit Count: *"
+      name_unique: "has to be unique within a study/project"
 
     ######################
     #  AUTHORIZED USERS  #
@@ -542,6 +543,8 @@ en:
       displayed_cost_gte_zero: 'must be greater than or equal to 0'
     line_items_visits:
       subject_count_invalid: "Subject Count cannot exceed the Arm Subject Count (%{arm_subject_count})"
+    visit_groups:
+      days_out_of_order: "Please make sure visit days are in sequential order (%{arm_name})."
     protocols:
       start_date_missing: "Start Date can\'t be blank"
       end_date_missing: "End Date can\'t be blank"

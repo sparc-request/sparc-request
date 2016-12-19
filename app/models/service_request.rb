@@ -34,6 +34,7 @@ class ServiceRequest < ActiveRecord::Base
   has_many :tokens, :dependent => :destroy
   has_many :approvals, :dependent => :destroy
   has_many :arms, :through => :protocol
+  has_many :visit_groups, through: :arms
   has_many :notes, as: :notable, dependent: :destroy
 
   after_save :set_original_submitted_date
@@ -112,6 +113,11 @@ class ServiceRequest < ActiveRecord::Base
   end
 
   def validate_service_calendar
+    vg = visit_groups.to_a.find { |vg| !vg.in_order? }
+    if vg
+      errors.add(:base, I18n.t('errors.visit_groups.days_out_of_order', arm_name: vg.arm.name))
+    end
+
     if USE_EPIC
       self.arms.each do |arm|
         days = arm.visit_groups.map(&:day)
@@ -313,6 +319,14 @@ class ServiceRequest < ActiveRecord::Base
     groupings
   end
 
+  def deleted_ssrs_since_previous_submission
+    AuditRecovery.where("audited_changes LIKE '%service_request_id: #{id}%' AND auditable_type = 'SubServiceRequest' AND action = 'destroy' AND created_at BETWEEN '#{previous_submitted_at.utc}' AND '#{Time.now.utc}'")
+  end
+
+  def created_ssrs_since_previous_submission
+    AuditRecovery.where("audited_changes LIKE '%service_request_id: #{id}%' AND auditable_type = 'SubServiceRequest' AND action = 'create' AND created_at BETWEEN '#{previous_submitted_at.utc}' AND '#{Time.now.utc}'")
+  end
+
   # Returns the line items that a service provider is associated with
   def service_provider_line_items(service_provider, items)
     service_provider_items = []
@@ -417,21 +431,21 @@ class ServiceRequest < ActiveRecord::Base
 
   # Change the status of the service request and all the sub service
   # requests to the given status.
-  def update_status(new_status, use_validation=true)
+  def update_status(new_status, use_validation=true, submit=false)
     to_notify = []
-
     self.assign_attributes(status: new_status)
 
-    self.sub_service_requests.each do |ssr|
+    sub_service_requests.each do |ssr|
       next unless ssr.can_be_edited? && !ssr.is_complete?
       available = AVAILABLE_STATUSES.keys
       editable = EDITABLE_STATUSES[ssr.organization_id] || available
       changeable = available & editable
 
       if changeable.include?(new_status)
-        if (ssr.status != new_status) && UPDATABLE_STATUSES.include?(ssr.status)
+        if (ssr.status != new_status) && (UPDATABLE_STATUSES.include?(ssr.status) || !submit)
           ssr.update_attribute(:status, new_status)
-          to_notify << ssr.id
+          # Do not notify (initial submit email) if ssr has been previously submitted
+          to_notify << ssr.id unless ssr.previously_submitted?
         end
       end
     end

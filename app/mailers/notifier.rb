@@ -34,12 +34,13 @@ class Notifier < ActionMailer::Base
     mail(:to => email, :cc => cc, :from => @identity.email, :subject => subject)
   end
 
-  def notify_user(project_role, service_request, xls, approval, user_current)
-    @status = service_request.status
+  def notify_user(project_role, service_request, xls, approval, user_current, audit_report=nil)
+    @status = audit_report.present? ? 'request_amendment' : service_request.status
     @notes = []
     @identity = project_role.identity
     @role = project_role.role
     @full_name = @identity.full_name
+    @audit_report = audit_report
 
     @protocol = service_request.protocol
     @service_request = service_request
@@ -53,7 +54,7 @@ class Notifier < ActionMailer::Base
 
     # only send these to the correct person in the production env
     email = @identity.email
-    subject = "#{t(:mailer)[:application_title]} service request"
+    subject = "#{@protocol.id} - #{t(:mailer)[:application_title]} service request"
 
     mail(:to => email, :from => NO_REPLY_FROM, :subject => subject)
   end
@@ -79,7 +80,7 @@ class Notifier < ActionMailer::Base
     attachments["service_request_#{@service_request.protocol.id}.xlsx"] = xls
 
     email =  submission_email_address
-    subject = "#{t(:mailer)[:application_title]} service request"
+    subject = "#{@protocol.id} - #{t(:mailer)[:application_title]} service request"
 
     mail(:to => email, :from => NO_REPLY_FROM, :subject => subject)
   end
@@ -156,7 +157,7 @@ class Notifier < ActionMailer::Base
     @ssr = sub_service_request
 
     email_to = identity.email
-    subject = "#{t(:mailer)[:application_title]} - service request deleted"
+    subject = "#{sub_service_request.service_request.protocol.id} - #{t(:mailer)[:application_title]} - service request deleted"
 
     mail(:to => email_to, :from => NO_REPLY_FROM, :subject => subject)
   end
@@ -165,7 +166,7 @@ class Notifier < ActionMailer::Base
     @protocol = protocol
     @primary_pi = @protocol.primary_principal_investigator
 
-    subject = 'Epic Rights Approval'
+    subject = "#{@protocol.id} - Epic Rights Approval"
 
     mail(:to => EPIC_RIGHTS_MAIL_TO, :from => NO_REPLY_FROM, :subject => subject)
   end
@@ -175,7 +176,7 @@ class Notifier < ActionMailer::Base
     @primary_pi = @protocol.primary_principal_investigator
 
     email_to = @primary_pi.email
-    subject = 'Epic Rights User Approval'
+    subject = "#{@protocol.id} - Epic Rights User Approval"
 
     mail(:to => email_to, :from => NO_REPLY_FROM, :subject => subject)
   end
@@ -185,7 +186,7 @@ class Notifier < ActionMailer::Base
     @primary_pi = @protocol.primary_principal_investigator
     @project_role = project_role
 
-    subject = 'Epic User Removal'
+    subject = "#{@protocol.id} - Epic User Removal"
 
     mail(:to => EPIC_RIGHTS_MAIL_TO, :from => NO_REPLY_FROM, :subject => subject)
   end
@@ -194,7 +195,7 @@ class Notifier < ActionMailer::Base
     @protocol = protocol
     @project_role = project_role
 
-    subject = 'Remove Epic Access'
+    subject = "#{@protocol.id} - Remove Epic Access"
 
     mail(:to => EPIC_RIGHTS_MAIL_TO, :from => NO_REPLY_FROM, :subject => subject)
   end
@@ -205,7 +206,7 @@ class Notifier < ActionMailer::Base
     @added_rights = project_role.epic_rights - previous_rights
     @removed_rights = previous_rights - project_role.epic_rights
 
-    subject = 'Update Epic Access'
+    subject = "#{@protocol.id} - Update Epic Access"
 
     mail(:to => EPIC_RIGHTS_MAIL_TO, :from => NO_REPLY_FROM, :subject => subject)
   end
@@ -213,7 +214,7 @@ class Notifier < ActionMailer::Base
   def epic_queue_error protocol, error=nil
     @protocol = protocol
     @error = error
-    mail(:to => QUEUE_EPIC_LOAD_ERROR_TO, :from => NO_REPLY_FROM, :subject => "Error batch loading protocol to Epic")
+    mail(:to => QUEUE_EPIC_LOAD_ERROR_TO, :from => NO_REPLY_FROM, :subject => "#{@protocol.id} - Error batch loading protocol to Epic")
   end
 
   def epic_queue_report

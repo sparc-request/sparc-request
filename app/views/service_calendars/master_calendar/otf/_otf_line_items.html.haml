@@ -20,7 +20,7 @@
 - service_request.service_list(true).each do |_, value| # get only one time fee services and group them
   - next unless sub_service_request.nil? || sub_service_request.organization.name == value[:process_ssr_organization_name]
   - ssr = value[:line_items][0].sub_service_request
-  - next if ssr.status == 'first_draft' || (consolidated && ssr.status == 'draft')
+  - next if ssr.status == 'first_draft' || (!review && consolidated && ssr.status == 'draft')
   - locked = !ssr.can_be_edited? && !admin
   
   %tr.organization-header{ class: locked ? 'bg-danger text-danger' : '' }
@@ -31,7 +31,7 @@
     - displayed_pricing_map = line_item.service.displayed_pricing_map
     - otf_unit_type         = displayed_pricing_map.try(:otf_unit_type)
     - otf_qty_type          = displayed_pricing_map.try(:quantity_type)
-    %tr{ class: locked ? 'bg-danger text-danger' : '' }
+    %tr.otf-line-item-row{ class: locked ? 'bg-danger text-danger' : '' }
       %td.service-name{ colspan: 2 }
         = line_item.service.display_service_name
       %td.status.text-center

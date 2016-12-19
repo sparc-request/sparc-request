@@ -25,23 +25,67 @@ RSpec.describe 'User begins Service Request', js: true do
   fake_login_for_each_test
 
   before :each do
-    institution = create(:institution, name: "Institution")
-    provider    = create(:provider, name: "Provider", parent: institution)
-    @program    = create(:program, name: "Program", parent: provider, process_ssrs: true)
-    @service    = create(:service, name: "Service", abbreviation: "Service", organization: @program)
+    # Data setup:
+    #
+    # institution1        institution2
+    # |        |
+    # program1 program2
+    # |        |
+    # service1 service2
+    # |        |
+    # @ssr1    ssr2
+    # ^--------^---------sr----protocol
+    institution1 = create(:institution, name: "Institution1")
+    create(:institution, name: "Institution2")
+    provider    = create(:provider, name: "Provider", parent: institution1)
+    program1    = create(:program, name: "Program1", parent: provider, process_ssrs: true)
+    program2    = create(:program, name: "Program2", parent: provider, process_ssrs: true)
+    service1    = create(:service, name: "Service1", abbreviation: "Service1", organization: program1)
+    service2    = create(:service, name: "Service2", abbreviation: "Service2", organization: program2)
+
+    protocol = create(:protocol_without_validations, primary_pi: jug2)
+    @sr      = create(:service_request_without_validations, status: "first_draft", protocol_id: protocol.id)
+    @ssr1    = create(:sub_service_request_without_validations, service_request: @sr, organization: program1, status: "first-draft")
+    ssr2     = create(:sub_service_request_without_validations, service_request: @sr, organization: program2, status: "first-draft")
+    create(:line_item, service_request: @sr, sub_service_request: @ssr1, service: service1)
+    create(:line_item, service_request: @sr, sub_service_request: ssr2, service: service2)
   end
 
-  scenario 'and sees the Protocol page' do
-    sr  = create(:service_request_without_validations, status: 'first_draft')
-    ssr = create(:sub_service_request_without_validations, service_request: sr, organization: @program)
-          create(:line_item, service_request: sr, sub_service_request: ssr, service: @service)
+  def visit_catalog_page(service_request:, sub_service_request: nil)
+    params = if sub_service_request
+               "?sub_service_request_id=#{sub_service_request.id}"
+             else
+               ""
+             end
+    visit "/service_requests/#{service_request.id}/catalog/" + params
+  end
 
-    visit catalog_service_request_path(sr)
-    wait_for_javascript_to_finish
+  context 'editing a SubServiceRequest' do
+    before(:each) { visit_catalog_page(service_request: @sr, sub_service_request: @ssr1) }
 
-    click_link 'Continue'
-    wait_for_javascript_to_finish
+    scenario 'and sees the Protocol page with Services scoped to SubServiceRequest under edit' do
+      click_link("Continue")
+      expect(page).to have_content("STEP 1")
 
-    expect(page).to have_current_path(protocol_service_request_path(sr))
+      cart = page.find(".panel", text: /My Services/)
+
+      expect(cart).to have_content("Service1")
+      expect(cart).not_to have_content("Service2")
+    end
+  end
+
+  context 'not editing a SubServiceRequest' do
+    before(:each) { visit_catalog_page(service_request: @sr) }
+
+    scenario 'and sees the Protocol page' do
+      click_link("Continue")
+      expect(page).to have_content("STEP 1")
+
+      cart = page.find(".panel", text: /My Services/)
+
+      expect(cart).to have_content("Service1")
+      expect(cart).to have_content("Service2")
+    end
   end
 end
+

@@ -39,9 +39,8 @@ RSpec.describe ServiceCalendarsController do
       sr       = create(:service_request_without_validations, protocol: protocol)
       arm      = create(:arm, protocol: protocol, name: "Arm")
 
-      session[:service_request_id] = sr.id
-
       xhr :get, :show_move_visits, {
+        service_request_id: sr.id,
         arm_id: arm.id
       }
 
@@ -53,9 +52,8 @@ RSpec.describe ServiceCalendarsController do
       sr       = create(:service_request_without_validations, protocol: protocol)
       arm      = create(:arm, protocol: protocol, name: "Arm")
 
-      session[:service_request_id] = sr.id
-
       xhr :get, :show_move_visits, {
+        service_request_id: sr.id,
         arm_id: arm.id
       }
 
@@ -67,9 +65,8 @@ RSpec.describe ServiceCalendarsController do
       sr       = create(:service_request_without_validations, protocol: protocol)
       arm      = create(:arm, protocol: protocol, name: "Arm")
 
-      session[:service_request_id] = sr.id
-
       xhr :get, :show_move_visits, {
+        service_request_id: sr.id,
         arm_id: arm.id
       }
 

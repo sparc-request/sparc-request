@@ -55,37 +55,27 @@ RSpec.describe NotifierLogic do
         @sr.previous_submitted_at = @sr.submitted_at
       end
 
-      # it 'should notify authorized users' do
-      #   allow(Notifier).to receive(:notify_user) do
-      #     mailer = double('mail') 
-      #     expect(mailer).to receive(:deliver_now)
-      #     mailer
-      #   end
-      #   NotifierLogic.new(@sr, logged_in_user, @previously_submitted_ssrs).send_request_amendment_email_evaluation unless @previously_submitted_ssrs.empty?
-      #   expect(Notifier).to have_received(:notify_user)
-        
-      #   expect(Notifier).not_to have_received(:notify_admin)
-      # end
-
-      it 'should NOT notify service providers' do
-        @sr.previous_submitted_at = @sr.submitted_at
-        allow(Notifier).to receive(:notify_service_provider) do
+      it 'should notify authorized users' do
+        allow(Notifier).to receive(:notify_user) do
           mailer = double('mail') 
           expect(mailer).to receive(:deliver_now)
           mailer
         end
+        NotifierLogic.new(@sr, logged_in_user, @previously_submitted_ssrs).send_request_amendment_email_evaluation unless @previously_submitted_ssrs.empty?
+        expect(Notifier).to have_received(:notify_user)
         
+      end
+
+      it 'should NOT notify service providers' do
+        @sr.previous_submitted_at = @sr.submitted_at
+        allow(Notifier).to receive(:notify_service_provider) 
         NotifierLogic.new(@sr, logged_in_user, @previously_submitted_ssrs).send_request_amendment_email_evaluation unless @previously_submitted_ssrs.empty?
         expect(Notifier).not_to have_received(:notify_service_provider)
       end
 
       it 'should NOT notify admin' do
         @sr.previous_submitted_at = @sr.submitted_at
-        allow(Notifier).to receive(:notify_admin) do
-          mailer = double('mail') 
-          expect(mailer).to receive(:deliver)
-          mailer
-        end
+        allow(Notifier).to receive(:notify_admin) 
         
         NotifierLogic.new(@sr, logged_in_user, @previously_submitted_ssrs).send_request_amendment_email_evaluation unless @previously_submitted_ssrs.empty?
         expect(Notifier).not_to have_received(:notify_admin)

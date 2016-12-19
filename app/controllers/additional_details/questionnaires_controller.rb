@@ -32,7 +32,6 @@ class AdditionalDetails::QuestionnairesController < ApplicationController
     else
       render :edit
     end
-    binding.pry
   end
 
   def destroy

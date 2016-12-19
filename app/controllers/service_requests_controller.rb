@@ -81,7 +81,8 @@ class ServiceRequestsController < ApplicationController
     else
       @institutions = Institution.order('`order`')
     end
-
+    
+    session[:admin_edit] = false
     setup_catalog_calendar
     setup_catalog_news_feed
   end

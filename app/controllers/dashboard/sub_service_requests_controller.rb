@@ -43,7 +43,7 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
         arm_id                            = params[:arm_id] if params[:arm_id]
         page                              = params[:page]   if params[:page]
         session[:service_calendar_pages]  = params[:pages]  if params[:pages]
-
+        session[:admin_edit] = false
         if page && arm_id
           session[:service_calendar_pages]          = {} unless session[:service_calendar_pages].present?
           session[:service_calendar_pages][arm_id]  = page
@@ -73,7 +73,7 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
         cookies['admin-tab'] = 'details-tab' unless cookies['admin-tab']
         session[:service_calendar_pages] = params[:pages] if params[:pages]
         session[:breadcrumbs].add_crumbs(protocol_id: @sub_service_request.protocol.id, sub_service_request_id: @sub_service_request.id).clear(:notifications)
-
+        session[:admin_edit] = true
         @service_request  = @sub_service_request.service_request
         @protocol         = @sub_service_request.protocol
 

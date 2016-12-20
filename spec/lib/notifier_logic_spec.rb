@@ -51,7 +51,6 @@ RSpec.describe NotifierLogic do
         audit_of_ssr = AuditRecovery.where("auditable_id = '#{@ssr.id}' AND auditable_type = 'SubServiceRequest' AND action = 'destroy'")
         audit_of_ssr.first.update_attribute(:created_at, Time.now.utc - 5.hours)
         audit_of_ssr.first.update_attribute(:user_id, logged_in_user.id)
-        @previously_submitted_ssrs = @sr.sub_service_requests.where.not(submitted_at: nil).to_a
         @sr.previous_submitted_at = @sr.submitted_at
       end
 
@@ -61,15 +60,14 @@ RSpec.describe NotifierLogic do
           expect(mailer).to receive(:deliver_now)
           mailer
         end
-        NotifierLogic.new(@sr, logged_in_user, @previously_submitted_ssrs).send_request_amendment_email_evaluation unless @previously_submitted_ssrs.empty?
-        expect(Notifier).to have_received(:notify_user)
-        
+
+        NotifierLogic.new(@sr, nil, logged_in_user).send_request_amendment_email_evaluation
+        expect(Notifier).to have_received(:notify_user) 
       end
 
       it 'should NOT notify service providers' do
-        @sr.previous_submitted_at = @sr.submitted_at
         allow(Notifier).to receive(:notify_service_provider) 
-        NotifierLogic.new(@sr, logged_in_user, @previously_submitted_ssrs).send_request_amendment_email_evaluation unless @previously_submitted_ssrs.empty?
+        NotifierLogic.new(@sr, nil, logged_in_user).send_request_amendment_email_evaluation
         expect(Notifier).not_to have_received(:notify_service_provider)
       end
 
@@ -77,20 +75,20 @@ RSpec.describe NotifierLogic do
         @sr.previous_submitted_at = @sr.submitted_at
         allow(Notifier).to receive(:notify_admin) 
         
-        NotifierLogic.new(@sr, logged_in_user, @previously_submitted_ssrs).send_request_amendment_email_evaluation unless @previously_submitted_ssrs.empty?
+        NotifierLogic.new(@sr, nil, logged_in_user).send_request_amendment_email_evaluation 
         expect(Notifier).not_to have_received(:notify_admin)
       end
 
       it 'should send_user_notifications' do
-        @notifier_logic =  NotifierLogic.new(@sr, logged_in_user, @previously_submitted_ssrs)
+        @notifier_logic =  NotifierLogic.new(@sr, nil, logged_in_user)
         expect(@notifier_logic).to receive(:send_user_notifications)
-        @notifier_logic.send_request_amendment_email_evaluation unless @previously_submitted_ssrs.empty?
+        @notifier_logic.send_request_amendment_email_evaluation 
       end
 
       it 'should not send_request_amendment' do
-        @notifier_logic =  NotifierLogic.new(@sr, logged_in_user, @previously_submitted_ssrs)
+        @notifier_logic =  NotifierLogic.new(@sr, nil, logged_in_user)
         expect(@notifier_logic).not_to receive(:send_request_amendment)
-        @notifier_logic.send_request_amendment_email_evaluation unless @previously_submitted_ssrs.empty?
+        @notifier_logic.send_request_amendment_email_evaluation 
       end
     end
 
@@ -120,15 +118,15 @@ RSpec.describe NotifierLogic do
       end
 
       it 'should send_user_notifications' do
-        @notifier_logic =  NotifierLogic.new(@sr, logged_in_user, @previously_submitted_ssrs)
+        @notifier_logic =  NotifierLogic.new(@sr, nil, logged_in_user)
         expect(@notifier_logic).to receive(:send_user_notifications)
-        @notifier_logic.send_request_amendment_email_evaluation unless @previously_submitted_ssrs.empty?
+        @notifier_logic.send_request_amendment_email_evaluation 
       end
 
       it 'should not send_request_amendment' do
-        @notifier_logic =  NotifierLogic.new(@sr, logged_in_user, @previously_submitted_ssrs)
+        @notifier_logic =  NotifierLogic.new(@sr, nil, logged_in_user)
         expect(@notifier_logic).not_to receive(:send_request_amendment)
-        @notifier_logic.send_request_amendment_email_evaluation unless @previously_submitted_ssrs.empty?
+        @notifier_logic.send_request_amendment_email_evaluation 
       end
     end
 
@@ -159,9 +157,9 @@ RSpec.describe NotifierLogic do
       end
 
       it 'should send_request_amendment' do
-        @notifier_logic =  NotifierLogic.new(@sr, logged_in_user, @previously_submitted_ssrs)
+        @notifier_logic =  NotifierLogic.new(@sr, nil, logged_in_user)
         expect(@notifier_logic).to receive(:send_request_amendment)
-        @notifier_logic.send_request_amendment_email_evaluation unless @previously_submitted_ssrs.empty?
+        @notifier_logic.send_request_amendment_email_evaluation 
       end
     end
 
@@ -186,9 +184,9 @@ RSpec.describe NotifierLogic do
       end
 
       it 'should send_request_amendment' do
-        @notifier_logic =  NotifierLogic.new(@sr, logged_in_user, @previously_submitted_ssrs)
+        @notifier_logic =  NotifierLogic.new(@sr, nil, logged_in_user)
         expect(@notifier_logic).to receive(:send_request_amendment)
-        @notifier_logic.send_request_amendment_email_evaluation unless @previously_submitted_ssrs.empty?
+        @notifier_logic.send_request_amendment_email_evaluation 
       end
     end
 
@@ -211,9 +209,9 @@ RSpec.describe NotifierLogic do
       end
 
       it 'should send_request_amendment' do
-        @notifier_logic =  NotifierLogic.new(@sr, logged_in_user, @previously_submitted_ssrs)
+        @notifier_logic =  NotifierLogic.new(@sr, nil, logged_in_user)
         expect(@notifier_logic).to receive(:send_request_amendment)
-        @notifier_logic.send_request_amendment_email_evaluation unless @previously_submitted_ssrs.empty?
+        @notifier_logic.send_request_amendment_email_evaluation 
       end
     end
   end

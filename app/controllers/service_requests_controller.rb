@@ -177,44 +177,13 @@ class ServiceRequestsController < ApplicationController
     @protocol = @service_request.protocol
     @service_request.previous_submitted_at = @service_request.submitted_at
 
-    to_notify = []
-    if @sub_service_request
-      to_notify << @sub_service_request.id unless @sub_service_request.status == 'get_a_cost_estimate'
-
-      @sub_service_request.update_attribute(:status, 'get_a_cost_estimate')
-    else
-      to_notify = update_service_request_status(@service_request, 'get_a_cost_estimate')
-    end
-    NotifierLogic.new(@service_request, current_user).send_confirmation_notifications(to_notify)
+    NotifierLogic.new(@service_request, current_user).send_confirmation_notifications_get_a_cost_estimate
     render formats: [:html]
   end
 
   def confirmation
     @protocol = @service_request.protocol
-    #### FOR REQUEST AMENDMENT EMAIL ####
-    # Grab ssrs that have been previously submitted
-    # Setting this to an array is necessary to grab the correct ssrs
-    previously_submitted_ssrs = @service_request.sub_service_requests.where.not(submitted_at: nil).to_a
-    #### END FOR REQUEST AMENDMENT EMAIL ####
-
-    # Flag for authorized users: when a new service has been added from
-    # a new ssr, only send the request amendment and not the initial confirmation email
-    send_request_amendment_and_not_initial = @service_request.original_submitted_date.present? && !previously_submitted_ssrs.empty?
     @service_request.previous_submitted_at = @service_request.submitted_at
-
-    to_notify = []
-    if @sub_service_request
-      to_notify << @sub_service_request.id unless @sub_service_request.status == 'submitted' || @sub_service_request.previously_submitted?
-      @sub_service_request.update_attribute(:submitted_at, Time.now) unless @sub_service_request.status == 'submitted'
-
-      @sub_service_request.update_attributes(status: 'submitted', nursing_nutrition_approved: false,
-                                             lab_approved: false, imaging_approved: false, committee_approved: false) if UPDATABLE_STATUSES.include?(@sub_service_request.status)
-    else
-      to_notify = update_service_request_status(@service_request, 'submitted', true, true)
-
-      @service_request.update_arm_minimum_counts
-      @service_request.sub_service_requests.update_all(nursing_nutrition_approved: false, lab_approved: false, imaging_approved: false, committee_approved: false)
-    end
 
     should_push_to_epic = @sub_service_request ? @sub_service_request.should_push_to_epic? : @service_request.should_push_to_epic?
 
@@ -230,8 +199,8 @@ class ServiceRequestsController < ApplicationController
         send_epic_notification_for_user_approval(@protocol)
       end
     end
-    NotifierLogic.new(@service_request, current_user, previously_submitted_ssrs).send_request_amendment_email_evaluation unless previously_submitted_ssrs.empty?
-    NotifierLogic.new(@service_request, current_user).send_confirmation_notifications(to_notify, send_request_amendment_and_not_initial) unless to_notify.empty?
+    NotifierLogic.new(@service_request, @sub_service_request, current_user).send_request_amendment_email_evaluation
+    NotifierLogic.new(@service_request, @sub_service_request, current_user).send_confirmation_notifications_submitted
     render formats: [:html]
   end
 

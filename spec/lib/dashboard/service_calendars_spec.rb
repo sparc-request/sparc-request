@@ -93,7 +93,7 @@ RSpec.describe Dashboard::ServiceCalendars do
 
         arm.reload
         expect(Dashboard::ServiceCalendars.pppv_line_items_visits_to_display(arm, nil, ssr, merged: true, consolidated: true)).
-          to eq({ "B > A" => [liv_pppv1, liv_pppv2] })
+          to eq({ ssr.id => [liv_pppv1, liv_pppv2] })
       end
     end
 
@@ -136,7 +136,7 @@ RSpec.describe Dashboard::ServiceCalendars do
 
         arm.reload
         expect(Dashboard::ServiceCalendars.pppv_line_items_visits_to_display(arm, nil, ssr, merged: true, consolidated: false)).
-          to eq({ "B > A" => [liv_draft, liv_pppv1, liv_pppv2] })
+          to eq({ draft_ssr.id => [liv_draft], ssr.id => [liv_pppv1, liv_pppv2] })
       end
     end
 
@@ -174,7 +174,7 @@ RSpec.describe Dashboard::ServiceCalendars do
 
           arm.reload
           expect(Dashboard::ServiceCalendars.pppv_line_items_visits_to_display(arm, nil, ssr)).
-            to eq({ "B > A" => [liv_pppv1, liv_pppv2] })
+            to eq({ ssr.id => [liv_pppv1, liv_pppv2] })
         end
       end
 
@@ -185,33 +185,35 @@ RSpec.describe Dashboard::ServiceCalendars do
           org_B = create(:organization, process_ssrs: true, abbreviation: "B", parent: org_C)
           org_A = create(:organization, process_ssrs: false, abbreviation: "A", parent: org_B)
           sr = create(:service_request_without_validations)
+          ssr = create(:sub_service_request, service_request_id: sr.id, organization_id: org_A.id)
 
-          # expect this LIV to appear
+          # expect these LIV's to appear
           service_pppv = create(:service, :without_validations, organization: org_A, one_time_fee: false)
-          li_pppv = create(:line_item, :without_validations, service: service_pppv, service_request: sr)
+          li_pppv = create(:line_item, :without_validations, service: service_pppv, service_request: sr, sub_service_request: ssr)
           liv_pppv1 = create(:line_items_visit, arm: arm, line_item: li_pppv)
           liv_pppv2 = create(:line_items_visit, arm: arm, line_item: li_pppv)
 
           # this LIV should not appear (it is not PPPV)
           service_otf = create(:service, :without_validations, organization: org_A, one_time_fee: true)
-          li_otf = create(:line_item, :without_validations, service: service_otf)
+          li_otf = create(:line_item, :without_validations, service: service_otf, service_request: sr, sub_service_request: ssr)
           create(:line_items_visit, arm: arm, line_item: li_otf)
 
           # this LIV should not appear (associated with another SR)
           another_sr = create(:service_request_without_validations)
+          another_ssr = create(:sub_service_request, service_request_id: another_sr.id, organization_id: org_A.id)
           service_pppv = create(:service, :without_validations, organization: org_A, one_time_fee: false)
-          li_pppv = create(:line_item, :without_validations, service: service_pppv, service_request: another_sr)
+          li_pppv = create(:line_item, :without_validations, service: service_pppv, service_request: another_sr, sub_service_request: another_ssr)
           create(:line_items_visit, arm: arm, line_item: li_pppv)
 
           # this LIV should not appear (associated with another Arm)
           wrong_arm = create(:arm, :without_validations)
           service_pppv = create(:service, :without_validations, organization: org_A, one_time_fee: false)
-          li_pppv = create(:line_item, :without_validations, service: service_pppv, service_request: sr)
+          li_pppv = create(:line_item, :without_validations, service: service_pppv, service_request: sr, sub_service_request: ssr)
           create(:line_items_visit, arm: wrong_arm, line_item: li_pppv)
 
           arm.reload
           expect(Dashboard::ServiceCalendars.pppv_line_items_visits_to_display(arm, sr, nil)).
-            to eq({ "B > A" => [liv_pppv1, liv_pppv2] })
+            to eq({ ssr.id => [liv_pppv1, liv_pppv2] })
         end
       end
     end

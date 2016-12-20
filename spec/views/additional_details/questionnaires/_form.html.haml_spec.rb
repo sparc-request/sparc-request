@@ -24,21 +24,21 @@ RSpec.describe 'additional_details/questionnaires/_form', type: :view do
 
   describe 'empty questionnaire' do
 
-	  before(:each) do
-	  	questionnaire = build(:questionnaire)
-	    service = create(:service, questionnaires: [questionnaire])
-	    render "/additional_details/questionnaires/form", service: service, questionnaire: questionnaire
-	  end
+    before(:each) do
+    	questionnaire = build(:questionnaire)
+      service = create(:service, questionnaires: [questionnaire])
+      render "/additional_details/questionnaires/form", service: service, questionnaire: questionnaire
+    end
 
-	  it 'should have the correct title' do
-	  	expect(response).to have_content('Additional Details Form Builder')
-	  end
+    it 'should have the correct title' do
+    	expect(response).to have_content('Additional Details Form Builder')
+    end
 
-	  it 'should have the correct buttons' do
-	  	expect(response).to have_css('a', text: "Add another Question")
-	  	expect(response).to have_css('a', text: "View Preview")
-	  	expect(response).to have_css('a', text: "Return to Questionnaire")
-	  end
+    it 'should have the correct buttons' do
+    	expect(response).to have_css('a', text: "Add another Question")
+    	expect(response).to have_css('a', text: "View Preview")
+    	expect(response).to have_css('a', text: "Return to Questionnaire")
+    end
 
     it 'should have the correct text for setting the form name' do
       expect(response).to have_content('Form Name')

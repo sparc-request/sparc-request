@@ -177,7 +177,7 @@ class ServiceRequestsController < ApplicationController
     @protocol = @service_request.protocol
     @service_request.previous_submitted_at = @service_request.submitted_at
 
-    NotifierLogic.new(@service_request, current_user).send_confirmation_notifications_get_a_cost_estimate
+    NotifierLogic.new(@service_request, @sub_service_request, current_user).send_confirmation_notifications_get_a_cost_estimate
     render formats: [:html]
   end
 
@@ -290,7 +290,7 @@ class ServiceRequestsController < ApplicationController
     if ssr.line_items.empty?
       if !ssr.submitted_at.nil?
         # only notify service providers of destroyed ssr
-        NotifierLogic.new(@service_request, current_user).send_ssr_service_provider_notifications(ssr, ssr_destroyed: true, request_amendment: false)
+        NotifierLogic.new(@service_request, nil, current_user).send_ssr_service_provider_notifications(ssr, ssr_destroyed: true, request_amendment: false)
       end
       ssr.destroy
     end

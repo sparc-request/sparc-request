@@ -49,7 +49,8 @@ class NotifierLogic
   end
 
   def send_confirmation_notifications_get_a_cost_estimate
-    send_request_amendment_and_not_initial = @service_request.original_submitted_date.present? && !previously_submitted_ssrs.empt
+    previously_submitted_ssrs = @service_request.previously_submitted_ssrs
+    send_request_amendment_and_not_initial = @service_request.original_submitted_date.present? && !previously_submitted_ssrs.empty?
     to_notify = []
     if @sub_service_request
       to_notify << @sub_service_request.id unless @sub_service_request.status == 'get_a_cost_estimate'

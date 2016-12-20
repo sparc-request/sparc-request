@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe AdditionalDetails::UpdateQuestionnairesController do
-  describe '#update' do 
+  describe '#update' do
     context 'successfully' do
       it 'should update a questionnaires status to active' do
         service = create(:service)

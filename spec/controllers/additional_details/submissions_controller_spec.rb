@@ -26,7 +26,7 @@ RSpec.describe AdditionalDetails::SubmissionsController do
 
 		it 'should instantiate a submission object' do
 
-      service = create( :service_with_questionnaire )
+      service = create( :service )
 
       xhr :get, :new, service_id: service.id
 
@@ -38,7 +38,7 @@ RSpec.describe AdditionalDetails::SubmissionsController do
 
     it 'should build the submissions questionnaire_responses' do
 
-      service = create( :service_with_questionnaire )
+      service = create( :service )
 
       xhr :get, :new, service_id: service.id
 
@@ -51,7 +51,7 @@ RSpec.describe AdditionalDetails::SubmissionsController do
 
     it 'should return the correct Service and Submission' do
 
-      service = create( :service_with_questionnaire )
+      service = create( :service )
       submission = create( :submission )
 
       xhr :get, :edit, service_id: service.id, id: submission
@@ -63,7 +63,7 @@ RSpec.describe AdditionalDetails::SubmissionsController do
 
     it 'should get the correct Questionnaire' do
 
-      service = create( :service_with_questionnaire )
+      service = create( :service )
       submission = create( :submission )
 
       xhr :get, :edit, service_id: service.id, id: submission
@@ -78,7 +78,7 @@ RSpec.describe AdditionalDetails::SubmissionsController do
 
       it 'should create a new Submissions record' do
 
-        service = create( :service_with_questionnaire )
+        service = create( :service )
         protocol = create( :protocol_without_validations )
         line_item = create( :line_item_without_validations )
         identity = create( :identity )
@@ -98,7 +98,7 @@ RSpec.describe AdditionalDetails::SubmissionsController do
 
     it 'should update the Submission record' do
 
-      service = create( :service_with_questionnaire )
+      service = create( :service )
       protocol = create( :protocol_without_validations )
       line_item = create( :line_item_without_validations )
       service_request = create( :service_request_without_validations )
@@ -123,7 +123,7 @@ RSpec.describe AdditionalDetails::SubmissionsController do
 
     it 'should destroy the Submission record' do
 
-      service = create( :service_with_questionnaire )
+      service = create( :service )
       service_request = create( :service_request_without_validations )
       submission = create( :submission )
 
@@ -132,7 +132,7 @@ RSpec.describe AdditionalDetails::SubmissionsController do
 
     it 'should remove the dependents when destroyed' do
       
-      service = create( :service_with_questionnaire )
+      service = create( :service )
       service_request = create( :service_request_without_validations )
       submission = create( :submission, questionnaire_responses_attributes: { "0" => { content: "This is the updated text "} } )
 
@@ -141,7 +141,7 @@ RSpec.describe AdditionalDetails::SubmissionsController do
 
     it 'should remove the record when its attached to a protocol' do
 
-      service = create( :service_with_questionnaire )
+      service = create( :service )
       service_request = create( :service_request_without_validations )
       submission = create( :submission )
       protocol = create(:protocol_without_validations, submissions: [submission])

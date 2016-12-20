@@ -92,8 +92,9 @@ RSpec.describe Dashboard::ServiceCalendars do
         create(:line_items_visit, arm: arm, line_item: li_pppv, sub_service_request: first_draft_ssr)
 
         arm.reload
-        expect(Dashboard::ServiceCalendars.pppv_line_items_visits_to_display(arm, nil, ssr, merged: true, consolidated: true)).
-          to eq({ ssr.id => [liv_pppv1, liv_pppv2] })
+        livs = Dashboard::ServiceCalendars.pppv_line_items_visits_to_display(arm, nil, ssr, merged: true, consolidated: true)
+        expect(livs.keys).to eq([ssr.id])
+        expect(livs[ssr.id]).to contain_exactly(liv_pppv1, liv_pppv2)
       end
     end
 
@@ -135,8 +136,10 @@ RSpec.describe Dashboard::ServiceCalendars do
         create(:line_items_visit, arm: arm, line_item: li_pppv, sub_service_request: first_draft_ssr)
 
         arm.reload
-        expect(Dashboard::ServiceCalendars.pppv_line_items_visits_to_display(arm, nil, ssr, merged: true, consolidated: false)).
-          to eq({ draft_ssr.id => [liv_draft], ssr.id => [liv_pppv1, liv_pppv2] })
+        livs = Dashboard::ServiceCalendars.pppv_line_items_visits_to_display(arm, nil, ssr, merged: true, consolidated: false)
+        expect(livs.keys).to contain_exactly(draft_ssr.id, ssr.id)
+        expect(livs[draft_ssr.id]).to eq([liv_draft])
+        expect(livs[ssr.id]).to contain_exactly(liv_pppv1, liv_pppv2)
       end
     end
 
@@ -173,8 +176,9 @@ RSpec.describe Dashboard::ServiceCalendars do
           create(:line_items_visit, arm: wrong_arm, line_item: li_pppv, sub_service_request: ssr)
 
           arm.reload
-          expect(Dashboard::ServiceCalendars.pppv_line_items_visits_to_display(arm, nil, ssr)).
-            to eq({ ssr.id => [liv_pppv1, liv_pppv2] })
+          livs = Dashboard::ServiceCalendars.pppv_line_items_visits_to_display(arm, nil, ssr)
+          expect(livs.keys).to eq([ssr.id])
+          expect(livs[ssr.id]).to contain_exactly(liv_pppv1, liv_pppv2)
         end
       end
 
@@ -212,8 +216,10 @@ RSpec.describe Dashboard::ServiceCalendars do
           create(:line_items_visit, arm: wrong_arm, line_item: li_pppv)
 
           arm.reload
-          expect(Dashboard::ServiceCalendars.pppv_line_items_visits_to_display(arm, sr, nil)).
-            to eq({ ssr.id => [liv_pppv1, liv_pppv2] })
+          livs = Dashboard::ServiceCalendars.pppv_line_items_visits_to_display(arm, sr, nil)
+
+          expect(livs.keys).to eq([ssr.id])
+          expect(livs[ssr.id]).to contain_exactly(liv_pppv1, liv_pppv2)
         end
       end
     end

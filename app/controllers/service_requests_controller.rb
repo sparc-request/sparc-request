@@ -278,7 +278,6 @@ class ServiceRequestsController < ApplicationController
       end
 
       @service_request.ensure_ssr_ids
-      
       @line_items_count     = @sub_service_request ? @sub_service_request.line_items.count : @service_request.line_items.count
       @sub_service_requests = @service_request.cart_sub_service_requests
     end

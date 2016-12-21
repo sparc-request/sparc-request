@@ -104,10 +104,6 @@ class ApplicationController < ActionController::Base
     elsif params[:controller] == 'devise/sessions' || params[:controller] == 'identities/sessions'
       if params[:id] || params[:service_request_id]
         use_existing_service_request(params[:id] || params[:service_request_id])
-      else
-        @service_request = ServiceRequest.new(status: 'first_draft')
-        @service_request.save(validate: false)
-        @line_items_count = []
       end
     elsif(params[:service_request_id] || params[:srid])
       # For controllers other than the service requests controller, we

@@ -256,7 +256,7 @@ class ServiceRequestsController < ApplicationController
 
   def add_service
     existing_service_ids = @service_request.line_items.reject{ |line_item| line_item.status == 'complete' }.map(&:service_id)
-    
+
     if existing_service_ids.include?( params[:service_id].to_i )
       @duplicate_service = true
     else

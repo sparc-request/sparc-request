@@ -308,6 +308,14 @@ class SubServiceRequest < ActiveRecord::Base
     self.organization.tag_list.include? "ctrc"
   end
 
+  #A request is locked if the organization it's in isn't editable
+  def is_locked?
+    if organization.has_editable_statuses?
+      return EDITABLE_STATUSES[find_editable_id(self.organization.id)].include?(self.status)
+    end
+    false
+  end
+
   # Can't edit a request if it's placed in an uneditable status
   def can_be_edited?
     if organization.has_editable_statuses?

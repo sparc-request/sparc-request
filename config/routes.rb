@@ -40,13 +40,15 @@ SparcRails::Application.routes.draw do
     devise_for :identities,
                controllers: {
                  omniauth_callbacks: 'identities/omniauth_callbacks',
-                 sessions: 'identities/sessions'
+                 sessions: 'identities/sessions',
+                 registrations: 'identities/registrations'
                }, path_names: { sign_in: 'auth/shibboleth' }
   else
     devise_for :identities,
                controllers: {
                  omniauth_callbacks: 'identities/omniauth_callbacks',
-                 sessions: 'identities/sessions'
+                 sessions: 'identities/sessions',
+                 registrations: 'identities/registrations'
                }
   end
 

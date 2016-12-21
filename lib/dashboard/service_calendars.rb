@@ -88,7 +88,7 @@ module Dashboard
           joins(line_item: :service).
           where(services: { one_time_fee: false }, arm_id: arm.id)
       end.group_by do |liv|
-        self.display_organization_hierarchy(liv)
+        liv.sub_service_request.id
       end
     end
 

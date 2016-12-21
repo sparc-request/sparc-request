@@ -18,21 +18,16 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class Identities::OmniauthCallbacksController < Devise::OmniauthCallbacksController
-  def shibboleth
-    @identity = Identity.find_for_shibboleth_oauth(request.env["omniauth.auth"], current_identity)
-
-    if @identity.persisted?
-      if params[:service_request_id]
-        # redirect back to catalog page
-        store_location_for @identity, catalog_service_request_path(params[:service_request_id])
-      end
-
-      sign_in_and_redirect @identity, :event => :authentication #this will throw if @identity is not activated
-      set_flash_message(:notice, :success, :kind => "Shibboleth") if is_navigational_format?
+class Identities::RegistrationsController < Devise::RegistrationsController
+  def after_sign_up_path_for(resource)
+    if params[:service_request_id]
+      catalog_service_request_path(params[:service_request_id])
     else
-      session["devise.shibboleth_data"] = request.env["omniauth.auth"]
-      redirect_to new_identity_registration_url(service_request_id: params[:service_request_id])
+      super
     end
+  end
+
+  def after_inactive_sign_up_path_for(resource)
+    after_sign_up_path_for(resource)
   end
 end

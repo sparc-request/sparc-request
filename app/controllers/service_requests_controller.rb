@@ -255,8 +255,9 @@ class ServiceRequestsController < ApplicationController
   end
 
   def add_service
+    binding.pry
     existing_service_ids = @service_request.line_items.reject{ |line_item| line_item.status == 'complete' }.map(&:service_id)
-
+    binding.pry
     if existing_service_ids.include?( params[:service_id].to_i )
       @duplicate_service = true
     else
@@ -278,6 +279,7 @@ class ServiceRequestsController < ApplicationController
       end
 
       @service_request.ensure_ssr_ids
+      binding.pry
       @line_items_count     = @sub_service_request ? @sub_service_request.line_items.count : @service_request.line_items.count
       @sub_service_requests = @service_request.cart_sub_service_requests
     end
@@ -493,9 +495,9 @@ class ServiceRequestsController < ApplicationController
     end
 
     destroyed_or_created_ssr = [@service_request.deleted_ssrs_since_previous_submission, @service_request.created_ssrs_since_previous_submission].flatten
-    # If an existing SSR has had services added/deleted, send a request amendment 
+    # If an existing SSR has had services added/deleted, send a request amendment
     # (If an SSR has been deleted or created, this is also seen in the email)
-    # The destroyed_or_created_ssr determines whether authorized users need a request amendment email 
+    # The destroyed_or_created_ssr determines whether authorized users need a request amendment email
     # regarding the destroyed or newly created SSR
     if !request_amendment_ssrs.empty?
       send_request_amendment(request_amendment_ssrs)
@@ -512,7 +514,7 @@ class ServiceRequestsController < ApplicationController
   end
 
   def send_notifications(service_request, sub_service_requests, send_request_amendment_and_not_initial= nil)
-    # If user has added a new service related to a new ssr and edited an existing ssr, 
+    # If user has added a new service related to a new ssr and edited an existing ssr,
     # we only want to send a request amendment email and not an initial submit email
     send_user_notifications(service_request, request_amendment: false) unless send_request_amendment_and_not_initial
     send_admin_notifications(sub_service_requests, request_amendment: false)

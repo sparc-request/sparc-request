@@ -24,17 +24,17 @@ class SearchController < ApplicationController
 
   def services
     term              = params[:term].strip
-    locked_org_ids    = @service_request.
-                          sub_service_requests.
-                          reject{ |ssr| !ssr.is_locked? }.
-                          map(&:organization_id)
-    locked_child_ids  = Organization.authorized_child_organizations(locked_org_ids).map(&:id)
+    # locked_org_ids    = @service_request.
+    #                       sub_service_requests.
+    #                       reject{ |ssr| ssr.can_be_edited? }.
+    #                       map(&:organization_id)
+    #locked_child_ids  = Organization.authorized_child_organizations(locked_org_ids).map(&:id)
 
     results = Service.
                 where("(name LIKE ? OR abbreviation LIKE ? OR cpt_code LIKE ?) AND is_available = 1", "%#{term}%", "%#{term}%", "%#{term}%").
-                where.not(organization_id: locked_org_ids + locked_child_ids).
+                #where.not(organization_id: locked_org_ids + locked_child_ids).
                 reject { |s| (s.current_pricing_map rescue false) == false } # Why is this here?
-
+    binding.pry
     unless @sub_service_request.nil?
       results.reject!{ |s| s.parents.exclude?(@sub_service_request.organization) }
     end

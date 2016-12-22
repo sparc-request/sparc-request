@@ -311,7 +311,7 @@ class SubServiceRequest < ActiveRecord::Base
   #A request is locked if the organization it's in isn't editable
   def is_locked?
     if organization.has_editable_statuses?
-      return EDITABLE_STATUSES[find_editable_id(self.organization.id)].include?(self.status)
+      return !EDITABLE_STATUSES[find_editable_id(self.organization.id)].include?(self.status)
     end
     false
   end

@@ -45,15 +45,15 @@ class VisitGroup < ActiveRecord::Base
 
   validates :name, presence: true
   validates :position, presence: true
-  validates :day,
-            :window_before,
+  validates :window_before,
             :window_after,
             presence: true, numericality: { only_integer: true }
+  validates :day, presence: true, numericality: { only_integer: true }, if: :day_or_no_attr_changed?
 
   # TODO: fix. Currently, this validation fails for all VisitGroups with
   # position == 0. This fails because the position attribute is changed
   # to 1 from 0 by, I think, acts_as_list before validations are performed.
-  validate :day_must_be_in_order
+  validate :day_must_be_in_order, if: :no_attr_changed?
 
   def set_arm_edited_flag_on_subjects
     self.arm.set_arm_edited_flag_on_subjects
@@ -105,5 +105,13 @@ class VisitGroup < ActiveRecord::Base
     unless in_order?
       errors.add(:day, 'must be in order')
     end
+  end
+
+  def day_or_no_attr_changed?
+    [[], ["day"]].include? changed
+  end
+
+  def no_attr_changed?
+    changed.empty?
   end
 end

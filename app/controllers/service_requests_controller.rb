@@ -199,8 +199,9 @@ class ServiceRequestsController < ApplicationController
         send_epic_notification_for_user_approval(@protocol)
       end
     end
-    NotifierLogic.new(@service_request, @sub_service_request, current_user).send_request_amendment_email_evaluation
-    NotifierLogic.new(@service_request, @sub_service_request, current_user).send_confirmation_notifications_submitted
+    notifier_logic = NotifierLogic.new(@service_request, @sub_service_request, current_user)
+    notifier_logic.send_request_amendment_email_evaluation
+    notifier_logic.send_confirmation_notifications_submitted
     render formats: [:html]
   end
 

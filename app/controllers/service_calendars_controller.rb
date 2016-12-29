@@ -50,8 +50,8 @@ class ServiceCalendarsController < ApplicationController
     @admin        = params[:admin] == 'true'
     @consolidated = false
     @pages        = eval(params[:pages])
-    @sub_service_request = visit.line_items_visit.sub_service_request
-    @service_request = @sub_service_request.service_request
+    @sub_service_request = visit.line_items_visit.sub_service_request if @admin
+    @service_request = visit.line_items_visit.sub_service_request.service_request
 
     visit.line_items_visit.sub_service_request.set_to_draft(@admin)
 

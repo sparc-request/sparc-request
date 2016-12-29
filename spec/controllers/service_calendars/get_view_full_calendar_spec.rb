@@ -37,12 +37,14 @@ RSpec.describe ServiceCalendarsController do
     it 'should assign @tab' do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
+      arm       = create(:arm_without_validations, protocol: protocol)
 
       session[:identity_id] = logged_in_user.id
 
       xhr :get, :view_full_calendar, {
         service_request_id: sr.id,
         protocol_id: protocol.id,
+        arm_id: arm.id,
         portal: 'true'
       }
 
@@ -52,12 +54,15 @@ RSpec.describe ServiceCalendarsController do
     it 'should assign @review' do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
+      arm       = create(:arm_without_validations, protocol: protocol)
+
 
       session[:identity_id] = logged_in_user.id
 
       xhr :get, :view_full_calendar, {
         service_request_id: sr.id,
         protocol_id: protocol.id,
+        arm_id: arm.id,
         portal: 'true'
       }
 
@@ -67,12 +72,15 @@ RSpec.describe ServiceCalendarsController do
     it 'should assign @portal' do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
+      arm       = create(:arm_without_validations, protocol: protocol)
+
 
       session[:identity_id] = logged_in_user.id
 
       xhr :get, :view_full_calendar, {
         service_request_id: sr.id,
         protocol_id: protocol.id,
+        arm_id: arm.id,
         portal: 'true'
       }
 
@@ -82,12 +90,15 @@ RSpec.describe ServiceCalendarsController do
     it 'should assign @merged' do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
+      arm       = create(:arm_without_validations, protocol: protocol)
+
 
       session[:identity_id] = logged_in_user.id
 
       xhr :get, :view_full_calendar, {
         service_request_id: sr.id,
         protocol_id: protocol.id,
+        arm_id: arm.id,
         portal: 'true'
       }
 
@@ -105,6 +116,7 @@ RSpec.describe ServiceCalendarsController do
       xhr :get, :view_full_calendar, {
         service_request_id: sr.id,
         protocol_id: protocol.id,
+        arm_id: arm1.id,
         portal: 'true'
       }
 
@@ -133,12 +145,14 @@ RSpec.describe ServiceCalendarsController do
     it 'should render template' do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
+      arm       = create(:arm_without_validations, protocol: protocol)
 
       session[:identity_id] = logged_in_user.id
 
       xhr :get, :view_full_calendar, {
         service_request_id: sr.id,
         protocol_id: protocol.id,
+        arm_id: arm.id,
         portal: 'true'
       }
 
@@ -148,12 +162,15 @@ RSpec.describe ServiceCalendarsController do
     it 'should respond ok' do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
+      arm       = create(:arm_without_validations, protocol: protocol)
+
 
       session[:identity_id] = logged_in_user.id
 
       xhr :get, :view_full_calendar, {
         service_request_id: sr.id,
         protocol_id: protocol.id,
+        arm_id: arm.id,
         portal: 'true'
       }
 

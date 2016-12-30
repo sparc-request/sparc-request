@@ -38,7 +38,7 @@
   %body#body
     #container
       #header
-        = render 'layouts/header_logos', in_dashboard: false
+        = render 'layouts/header_logos', in_dashboard: false, location: 'proper'
         %input#current_user_id{ type: 'hidden', value: @user.try(:id) }
       = render 'layouts/header', user: @user
       .flash

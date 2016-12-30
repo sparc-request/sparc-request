@@ -27,8 +27,10 @@ class Dashboard::LineItemsVisitsController < Dashboard::BaseController
     @service_request  = ServiceRequest.find( params[:srid] )
 
     if @line_items_visit.update_attributes( params[:line_items_visit] )
-      @service_request.update_attributes(status: 'draft')
-      @line_items_visit.sub_service_request.update_attributes(status: 'draft')
+      unless params[:portal] == 'true'
+        @service_request.update_attributes(status: 'draft')
+        @line_items_visit.sub_service_request.update_attributes(status: 'draft')
+      end
       render json: { success: true }
     else
       render json: @line_items_visit.errors, status: :unprocessable_entity

@@ -154,12 +154,6 @@ RSpec.describe ApplicationController, type: :controller do
     build_service_request_with_study
 
     context 'not hitting ServiceRequestsController' do
-      context 'session[:service_request] absent' do
-        it 'should throw an error' do
-          expect { get :index }.to raise_error ActiveRecord::RecordNotFound
-        end
-      end
-
       context 'params[:service_request_id] present' do
         it 'should set @service_request' do
           get :index, service_request_id: service_request.id

@@ -27,7 +27,9 @@ class Dashboard::VisitsController < Dashboard::BaseController
     admin = params[:service_request_id] ? false : true
 
     if @visit.update_attributes( params[:visit] )
-      @visit.line_items_visit.sub_service_request.set_to_draft(@admin)
+      unless params[:portal] == 'true'
+        @visit.line_items_visit.sub_service_request.set_to_draft(@admin)
+      end
       render nothing: true
     else
       render json: @visit.errors, status: :unprocessable_entity

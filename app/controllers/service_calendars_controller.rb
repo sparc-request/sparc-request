@@ -50,6 +50,8 @@ class ServiceCalendarsController < ApplicationController
     @admin        = params[:admin] == 'true'
     @consolidated = false
     @pages        = eval(params[:pages])
+    @sub_service_request = visit.line_items_visit.sub_service_request if @admin
+    @service_request = visit.line_items_visit.sub_service_request.service_request
 
     visit.line_items_visit.sub_service_request.set_to_draft(@admin)
 
@@ -201,7 +203,7 @@ class ServiceCalendarsController < ApplicationController
   end
 
   def authorize_protocol
-    @protocol           = Protocol.find(params[:protocol_id])
+    @protocol           = Arm.find(params[:arm_id]).protocol
     permission_to_view  = @protocol.project_roles.where(identity_id: current_user.id, project_rights: ['approve', 'request']).any?
 
     unless permission_to_view || Protocol.for_admin(current_user.id).include?(@protocol)

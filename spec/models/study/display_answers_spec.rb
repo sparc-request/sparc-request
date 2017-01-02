@@ -27,49 +27,47 @@ RSpec.describe 'Protocol' do
   build_study_type_questions()
   build_study_type_answers()
 
-  describe '#determine_study_type' do
+  describe 'should return a study_type for version_3' do
 
-    describe 'should return a study_type for version_3' do
-      before :each do 
-        study.update_attribute(:selected_for_epic, true)
-      end
-
-      it 'should return the proper study_type' do
-        STUDY_TYPE_ANSWERS_VERSION_3.each do |ans|
-          update_answers(3, ans.last)
-          expect(study.determine_study_type).to eq(ans.first)
-        end 
-      end
+    before :each do 
+      study.update_attribute(:selected_for_epic, true)
     end
 
-    describe 'should return a study_type for version_2' do
+    it 'should return appropriate answers' do
+      STUDY_TYPE_ANSWERS_VERSION_3.each do |ans|
+        update_answers(3, ans.last)
+        expect(study.display_answers.map(&:answer)).to eq(ans.last)
+      end 
+    end
+  end
 
-      before :each do 
-        study.update_attribute(:selected_for_epic, true)
-        study.update_attribute(:study_type_question_group_id, StudyTypeQuestionGroup.where(version: 2).first.id)
-      end
+  describe 'should return a study_type for version_2' do
 
-       it 'should return the proper study_type' do
-        STUDY_TYPE_ANSWERS_VERSION_2.each do |ans|
-          update_answers(2, ans.last)
-          expect(study.determine_study_type).to eq(ans.first)
-        end 
-      end
+    before :each do 
+      study.update_attribute(:selected_for_epic, true)
+      study.update_attribute(:study_type_question_group_id, StudyTypeQuestionGroup.where(version: 2).first.id)
     end
 
-    describe 'should return a study_type for version 1' do
+    it 'should return appropriate answers' do
+      STUDY_TYPE_ANSWERS_VERSION_2.each do |ans|
+        update_answers(2, ans.last)
+        expect(study.display_answers.map(&:answer)).to eq(ans.last)
+      end 
+    end
+  end
 
-      before :each do 
-        study.update_attribute(:selected_for_epic, true)
-        study.update_attribute(:study_type_question_group_id, StudyTypeQuestionGroup.where(version: 1).first.id)
-      end
+  describe 'should return a study_type for version_1' do
 
-       it 'should return the proper study_type' do
-        STUDY_TYPE_ANSWERS.each do |ans|
-          update_answers(1, ans.last)
-          expect(study.determine_study_type).to eq(ans.first)
-        end 
-      end
+    before :each do 
+      study.update_attribute(:selected_for_epic, true)
+      study.update_attribute(:study_type_question_group_id, StudyTypeQuestionGroup.where(version: 1).first.id)
+    end
+
+    it 'should return appropriate answers' do
+      STUDY_TYPE_ANSWERS.each do |ans|
+        update_answers(1, ans.last)
+        expect(study.display_answers.map(&:answer)).to eq(ans.last)
+      end 
     end
   end
 

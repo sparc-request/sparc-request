@@ -140,6 +140,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def update
+    @protocol = @protocol.becomes(params[:protocol][:type].constantize) unless @protocol_type.nil?
     if params[:updated_protocol_type] == 'true' && params[:protocol][:type] == 'Study'
       @protocol.update_attribute(:type, params[:protocol][:type])
       @protocol.activate

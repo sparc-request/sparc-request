@@ -24,12 +24,9 @@ RSpec.describe Arm, type: :model do
   describe '#default_visit_days' do
     let!(:protocol) { create(:protocol_without_validations) }
     let!(:arm)      { create(:arm, protocol: protocol, visit_count: 2, line_item_count: 1) }
-    before(:each) do
-      VisitGroup.all.each { |vg| vg.update_attributes(day: 0) }
-    end
 
-    it 'should set the day for each VisitGroup to its position' do
-      expect { arm.default_visit_days }.to change { arm.visit_groups.pluck :day }.from([0, 1]).to([5, 10])
+    it 'should set the day for each VisitGroup to its position * 5' do
+      expect { arm.default_visit_days }.to change { arm.visit_groups.pluck :day }.to([5, 10])
     end
   end
 end

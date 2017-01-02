@@ -22,7 +22,8 @@ en:
   additional_details:
     additional_details_title: 'Additional Details'
     document_page_header: 'Additional Detail Submissions'
-    add: 'Add Additional Details'
+    label: 'Form Functionality'
+    add: 'Add New Form'
     preview_title: 'Additional Detail Survey Preview'
     close_preview: 'Close'
     form_builder_title: 'Additional Details Form Builder'

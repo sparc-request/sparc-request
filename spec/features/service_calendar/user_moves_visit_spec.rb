@@ -53,33 +53,12 @@ RSpec.describe 'User moves a visit', js: true do
     wait_for_javascript_to_finish
 
     bootstrap_select '#visit_group', @arm.visit_groups.first.name
-    bootstrap_select '#position', 'add as last'
+    bootstrap_select '#position', 'Add as last'
     click_button 'Save'
     wait_for_javascript_to_finish
 
     expect(@arm.visit_groups.order(:position).first).to eq(vgs[1])
     expect(@arm.visit_groups.order(:position).second).to eq(vgs[2])
     expect(@arm.visit_groups.order(:position).third).to eq(vgs[0])
-  end
-
-  scenario 'and sees the updated calendar view' do
-    vgs = @arm.visit_groups.to_a
-
-    visit service_calendar_service_request_path(@sr)
-    wait_for_javascript_to_finish
-
-    click_button 'Move Visit'
-    wait_for_javascript_to_finish
-
-    bootstrap_select '#visit_group', @arm.visit_groups.first.name
-    bootstrap_select '#position', 'add as last'
-    click_button 'Save'
-    wait_for_javascript_to_finish
-
-    calendar_vgs = all('.visit-group-name')
-
-    expect(calendar_vgs[0].text).to eq(vgs[1].name)
-    expect(calendar_vgs[1].text).to eq(vgs[2].name)
-    expect(calendar_vgs[2].text).to eq(vgs[0].name)
   end
 end

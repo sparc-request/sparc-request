@@ -445,7 +445,11 @@ class ServiceRequest < ActiveRecord::Base
         if (ssr.status != new_status) && (UPDATABLE_STATUSES.include?(ssr.status) || !submit)
           ssr.update_attribute(:status, new_status)
           # Do not notify (initial submit email) if ssr has been previously submitted
-          to_notify << ssr.id unless ssr.previously_submitted?
+          if new_status == 'submitted'
+            to_notify << ssr.id unless ssr.previously_submitted?
+          else
+            to_notify << ssr.id
+          end
         end
       end
     end

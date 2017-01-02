@@ -81,6 +81,16 @@ $(document).ready ->
         sub_service_request_id: getSSRId()
       url: $(this).attr('update')
 
+  $(document).on 'change', '#visit_group', ->
+    $.ajax
+      type: 'GET'
+      url: '/service_calendars/show_move_visits'
+      data:
+        arm_id: $('#arm_id').val()
+        visit_group_id: $(this).val()
+        service_request_id: getSRId()
+
+
 (exports ? this).changing_tabs_calculating_rates = ->
   arm_ids = []
   $('.calendar-container').each (index, arm) ->

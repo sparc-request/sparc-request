@@ -122,17 +122,14 @@ class ServiceCalendarsController < ApplicationController
 
   def show_move_visits
     @arm = Arm.find( params[:arm_id] )
+    @visit_group = params[:visit_group_id] ? @arm.visit_groups.find(params[:visit_group_id]) : @arm.visit_groups.first
   end
 
   def move_visit_position
     arm = Arm.find( params[:arm_id] )
     vg  = arm.visit_groups.find( params[:visit_group].to_i )
 
-    if params[:position].blank?
-      vg.move_to_bottom
-    else
-      vg.insert_at( params[:position].to_i - 1 )
-    end
+    vg.insert_at( params[:position].to_i - 1 )
   end
 
   def toggle_calendar_row

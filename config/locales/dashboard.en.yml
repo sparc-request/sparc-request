@@ -357,7 +357,6 @@ en:
     subsidies:
       header: "Subsidy Information"
 
-
     ##################
     #  VISIT GROUPS  #
     ##################
@@ -372,10 +371,3 @@ en:
       created: "Visit Created!"
       updated: "Visit Updated!"
       destroyed: "Visit Destroyed!"
-      arm: "Arm:"
-      visit: "Visit:"
-      name: "Name:"
-      day: "Day:"
-      position: "Position:"
-      window_before: "Window Before:"
-      window_after: "Window After:"

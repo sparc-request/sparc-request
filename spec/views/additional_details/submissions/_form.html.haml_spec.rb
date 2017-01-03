@@ -22,10 +22,12 @@ require 'rails_helper'
 
 RSpec.describe 'additional_details/submissions/_form', type: :view do
 
-  before(:each) do
-    @questionnaire = build(:questionnaire)
-    @service = build(:service, questionnaires: [questionnaire])
-    
-  end
+  question_types = ADDITIONAL_DETAIL_QUESTION_TYPES.values
 
+  question_types.each do |qt|
+    before(:each) do
+      questionnaire = build(:questionnaire)
+      service = build(:service, questionnaires: [ questionnaire ])
+    end
+  end
 end

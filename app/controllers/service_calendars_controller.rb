@@ -203,7 +203,11 @@ class ServiceCalendarsController < ApplicationController
   end
 
   def authorize_protocol
-    @protocol           = Arm.find(params[:arm_id]).protocol
+    @protocol = if params[:protocol_id]
+                  Protocol.find(params[:protocol_id])
+                else
+                  Arm.find(params[:arm_id]).protocol
+                end
     permission_to_view  = @protocol.project_roles.where(identity_id: current_user.id, project_rights: ['approve', 'request']).any?
 
     unless permission_to_view || Protocol.for_admin(current_user.id).include?(@protocol)

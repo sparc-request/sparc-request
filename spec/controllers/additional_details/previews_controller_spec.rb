@@ -24,29 +24,29 @@ RSpec.describe AdditionalDetails::PreviewsController do
 	describe '#create' do
 		before :each do
 			@service = create( :service )
-	    @questionnaire = create( :questionnaire, service: @service, active: false )
+			@questionnaire = create( :questionnaire, service: @service, active: false )
 
-	  	xhr :post, :create, name: 'Some Program', service_id: @service, questionnaire: @questionnaire.attributes, format: :js
-	  end
-
-	  it 'should assign @questionnaire' do
-	  	expect( assigns( :questionnaire ) ).to be_an_instance_of( Questionnaire )
-	  end
-
-	  it 'should assign @service' do
-	  	expect( assigns( :service ) ).to be_an_instance_of( Service )
+			xhr :post, :create, name: 'Some Program', service_id: @service, questionnaire: @questionnaire.attributes, format: :js
 		end
 
-    it 'should assign @submissions' do
-      expect( assigns( :submission ) ).to be_an_instance_of( Submission )
-    end
+		it 'should assign @questionnaire' do
+			expect( assigns( :questionnaire ) ).to be_an_instance_of( Questionnaire )
+		end
 
-    it 'should build questionnaire responses for @submission' do
-      expect( assigns( :submission ).questionnaire_responses ).to_not be_nil
-    end
+		it 'should assign @service' do
+			expect( assigns( :service ) ).to be_an_instance_of( Service )
+		end
 
-    it { is_expected.to render_template "previews/create" }
-    
-    it { is_expected.to respond_with :ok }
+		it 'should assign @submissions' do
+			expect( assigns( :submission ) ).to be_an_instance_of( Submission )
+		end
+
+		it 'should build questionnaire responses for @submission' do
+			expect( assigns( :submission ).questionnaire_responses ).to_not be_nil
+		end
+
+		it { is_expected.to render_template "previews/create" }
+
+		it { is_expected.to respond_with :ok }
 	end
 end

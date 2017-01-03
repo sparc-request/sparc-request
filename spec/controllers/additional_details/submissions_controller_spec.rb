@@ -22,9 +22,9 @@ require 'rails_helper'
 
 RSpec.describe AdditionalDetails::SubmissionsController do
 
-	describe '#new' do
+  describe '#new' do
 
-		it 'should instantiate a submission object' do
+    it 'should instantiate a submission object' do
 
       service = create( :service )
 

@@ -73,6 +73,7 @@ class ServiceCalendarsController < ApplicationController
   end
 
   def table
+    initialize_service_request
     @tab          = params[:tab]
     @review       = params[:review] == 'true'
     @portal       = params[:portal] == 'true'
@@ -89,6 +90,7 @@ class ServiceCalendarsController < ApplicationController
   end
 
   def merged_calendar
+    initialize_service_request
     @tab          = params[:tab]
     @review       = params[:review] == 'true'
     @portal       = params[:portal] == 'true'

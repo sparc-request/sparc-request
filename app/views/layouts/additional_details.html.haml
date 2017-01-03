@@ -29,6 +29,8 @@
 
   %body
     = render 'additional_details/shared/navbar'
+    %ol.breadcrumb
+      = display_organization_tree(@service.organization)
     .container
       .flash
         = render "shared/flash"

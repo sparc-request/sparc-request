@@ -46,6 +46,7 @@ RSpec.describe AdditionalDetails::PreviewsController do
     end
 
     it { is_expected.to render_template "previews/create" }
+    
     it { is_expected.to respond_with :ok }
 	end
 end

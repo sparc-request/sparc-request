@@ -22,7 +22,7 @@
     - next unless sub_service_request.nil? || sub_service_request.id == sub_service_request_id
     - ssr = sub_service_request || SubServiceRequest.find(sub_service_request_id)
     - next if ssr.status == 'first_draft' || (!review && consolidated && ssr.status == 'draft')
-    - locked = !ssr.can_be_edited? && !admin
+    - locked = (!ssr.can_be_edited? || ssr.is_complete?) && !admin
 
     %tr.organization-header{ class: locked ? 'bg-danger text-danger' : '' }
       %th{ colspan: 14 }

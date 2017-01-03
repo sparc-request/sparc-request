@@ -26,8 +26,7 @@ class AdditionalDetails::QuestionnairesController < ApplicationController
   end
 
   def update
-    @questionnaire.attributes = questionnaire_params
-    if @questionnaire.save
+    if @questionnaire.update(questionnaire_params)
       redirect_to service_additional_details_questionnaires_path(@service)
     else
       render :edit

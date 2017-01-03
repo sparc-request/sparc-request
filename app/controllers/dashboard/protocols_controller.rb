@@ -56,7 +56,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     @protocols        = @filterrific.find.page(params[:page])
     @admin_protocols  = Protocol.for_admin(@user.id).pluck(:id)
     @protocol_filters = ProtocolFilter.latest_for_user(@user.id, 5)
-    
+
     #toggles the display of the navigation bar, instead of breadcrumbs
     @show_navbar      = true
     @show_messages    = true
@@ -83,6 +83,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
         render
       }
       format.xlsx {
+        @statuses_hidden = params[:statuses_hidden]
         response.headers['Content-Disposition'] = "attachment; filename=\"(#{@protocol.id}) Consolidated Corporate Study Budget.xlsx\""
       }
     end
@@ -146,7 +147,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
       @protocol.activate
       @protocol = Protocol.find(params[:id]) #Protocol reload
     end
-    
+
     attrs               = fix_date_params
     permission_to_edit  = @authorization.present? ? @authorization.can_edit? : false
     # admin is not able to activate study_type_question_group
@@ -169,12 +170,12 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     # Setting type and study_type_question_group, not actually saving
     @protocol.type      = params[:type]
     @protocol.study_type_question_group_id = StudyTypeQuestionGroup.active_id
-    
+
     @protocol_type = params[:type]
 
     @protocol = @protocol.becomes(@protocol_type.constantize) unless @protocol_type.nil?
     @protocol.populate_for_edit
-    
+
     flash[:success] = t(:protocols)[:change_type][:updated]
     if @protocol_type == "Study" && @protocol.sponsor_name.nil? && @protocol.selected_for_epic.nil?
       flash[:alert] = t(:protocols)[:change_type][:new_study_warning]
@@ -233,7 +234,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
     attrs
   end
-  
+
   def fix_date_params
     attrs               = params[:protocol]
 

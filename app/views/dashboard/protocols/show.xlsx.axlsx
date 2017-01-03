@@ -90,7 +90,7 @@ arm_r_totals = {}
 
     #Displays line_items_visits, grouped by organization from the sub service request
     arm.line_items_visits.includes(:line_item).group_by{|liv| liv.line_item.sub_service_request}.each do |sub_service_request, line_items_visits|
-      next if ["draft", "first_draft"].include?(sub_service_request.status)
+      next if @statuses_hidden.include?(sub_service_request.status)
       ssr_row = ["#{sub_service_request.organization.name}(#{sub_service_request.ssr_id})", "", "", "", "", ""]
       ((arm.visit_groups.count * 3) + 5).times {ssr_row << ""}
       sheet.add_row ssr_row, :style => org_header_style
@@ -143,7 +143,7 @@ arm_r_totals = {}
         "=SUM(#{nr_columns[idx]}1:#{nr_columns[idx]}#{principle_row_no+3})",
         "=SUM(#{r_columns[idx]}1:#{r_columns[idx]}#{principle_row_no+3})"]
     end
-    
+
     principle_row << ["=#{negotiated_reimbursement_column}#{principle_row_no} * #{sum(n_columns, principle_row_no)}",
       "=#{research_cost_column}#{principle_row_no} * #{sum(n_columns, principle_row_no)}",
       arm.subject_count,
@@ -222,7 +222,7 @@ wb.insert_worksheet(0, name: "Summary") do |sheet|
 
   @protocol.service_requests.each do |sr|
     sr.line_items.where(services: {one_time_fee: true}).each do |li|
-      next if ["draft", "first_draft"].include?(li.sub_service_request.status)
+      next if @statuses_hidden.include?(li.sub_service_request.status)
       li_row = sheet.rows.length + 1
       sheet.add_row ["#{li.service.name} (#{li.sub_service_request.ssr_id})", "#{li.sub_service_request.status.humanize.titleize}", "0", cents_to_dollars(li.applicable_rate), li.quantity, "=C#{li_row}*E#{li_row}", "=D#{li_row}*E#{li_row}"], :style => [default, default, money, money, default, money, money]
     end

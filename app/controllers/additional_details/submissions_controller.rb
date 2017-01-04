@@ -13,7 +13,7 @@
 
 # THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
 # BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INC  AL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
@@ -64,13 +64,12 @@ class AdditionalDetails::SubmissionsController < ApplicationController
     @submissions = @protocol.submissions
     @line_item = LineItem.find(submission_params[:line_item_id])
     @service_request = @line_item.service_request
-    @permission_to_edit = @protocol.project_roles.where(identity: @user, project_rights: ['approve', 'request']).any?
+    @permission_to_edit = @protocol.permission_to_edit?(current_user)
+    
+    @submission.save
+
     respond_to do |format|
-      if @submission.save
-        format.js
-      else
-        format.js
-      end
+      format.js
     end
   end
 
@@ -80,13 +79,11 @@ class AdditionalDetails::SubmissionsController < ApplicationController
     if params[:sr_id]
       @service_request = ServiceRequest.find(params[:sr_id])
     end
+
     @submission.update_attributes(submission_params)
+
     respond_to do |format|
-      if @submission.save
-        format.js
-      else
-        format.js
-      end
+      format.js
     end
   end
 
@@ -96,17 +93,17 @@ class AdditionalDetails::SubmissionsController < ApplicationController
     if params[:protocol_id]
       @protocol = Protocol.find(params[:protocol_id])
       @submissions = @protocol.submissions
+      @permission_to_edit = @protocol.permission_to_edit?(current_user)
     end
     if params[:line_item_id]
       @line_item = LineItem.find(params[:line_item_id])
       @service_request = ServiceRequest.find(@line_item.service_request_id)
     end
+    
+    @submission.destroy
+
     respond_to do |format|
-      if @submission.destroy
-        format.js
-      else
-        format.js
-      end
+      format.js
     end
   end
 

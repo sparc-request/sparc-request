@@ -196,7 +196,8 @@ en:
         quantity: "Edit Qty"
         unit_quantity: "Edit Units per Qty"
       totals:
-        total_direct: "Total Costs (One Time Fee Services) Per Study"
+        total_direct: "Total Direct Costs (One Time Fee Services) Per Study"
+        total_costs: "Total Costs (One Time Fee Services) Per Study"
     merged_totals:
       header: "Study Cost Totals"
       grand_total: "Grand Total"

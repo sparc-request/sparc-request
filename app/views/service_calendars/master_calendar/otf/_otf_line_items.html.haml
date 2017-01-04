@@ -67,8 +67,14 @@
         = display_one_time_fee_direct_cost(line_item)
 
 - unless review
+  - if USE_INDIRECT_COST
+    %tr.total-direct-one-time-fee-cost-per-study
+      %th{ colspan: 11 }
+        = t(:calendars)[:otf][:totals][:total_direct]
+      %td.text-center
+        = display_total_direct_cost_per_study_otfs(service_request, service_request.line_items)
   %tr.total-one-time-fee-cost-per-study
     %th{ colspan: 11 }
-      = t(:calendars)[:otf][:totals][:total_direct]
+      = t(:calendars)[:otf][:totals][:total_costs]
     %td.text-center
-      = display_total_direct_cost_per_study_otfs(service_request, service_request.line_items)
+      = display_total_cost_per_study_otfs(service_request, service_request.line_items)

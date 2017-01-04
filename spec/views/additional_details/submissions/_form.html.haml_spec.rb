@@ -25,7 +25,7 @@ RSpec.describe 'additional_details/submissions/_form', type: :view do
 
   let!(:logged_in_user) {create(:identity)}
 
-  describe 'new submission' do
+  describe 'a new submission' do
 
     before(:each) do
 
@@ -36,7 +36,6 @@ RSpec.describe 'additional_details/submissions/_form', type: :view do
       @submission = create( :submission_with_responses, questionnaire_id: @questionnaire.id )
 
       render '/additional_details/submissions/form'
-
     end
 
     it "uses the correct partials for a new form" do
@@ -45,11 +44,18 @@ RSpec.describe 'additional_details/submissions/_form', type: :view do
       ADDITIONAL_DETAIL_QUESTION_TYPES.values.each do |qt|
         expect(response).to render_template(partial: "additional_details/submissions/form_partials/_#{qt}_form_partial")
       end
+    end
 
+    it "has the correct html elements" do
+
+      expect(response).to have_content('Questionnaire Submission')
+      @questionnaire.items.each do |item|
+        expect(response).to have_css('label', text: item.content)
+      end
     end
   end
 
-  describe 'edit submission' do
+  describe 'an edited submission' do
 
     before(:each) do
 
@@ -60,7 +66,6 @@ RSpec.describe 'additional_details/submissions/_form', type: :view do
       @submission = create( :submission_with_responses, questionnaire_id: @questionnaire.id)
 
       render '/additional_details/submissions/form', action_name: 'edit'
-
     end
 
     it "uses the correct partials for an edit form" do
@@ -68,6 +73,14 @@ RSpec.describe 'additional_details/submissions/_form', type: :view do
       expect(response).to render_template(partial: "additional_details/submissions/_edit_form")
       ADDITIONAL_DETAIL_QUESTION_TYPES.values.each do |qt|
         expect(response).to render_template(partial: "additional_details/submissions/form_partials/_#{qt}_form_partial")
+      end
+    end
+
+    it "has the correct html elements" do
+
+      expect(response).to have_content('Questionnaire Submission')
+      @questionnaire.items.each do |item|
+        expect(response).to have_css('label', text: item.content)
       end
     end
   end

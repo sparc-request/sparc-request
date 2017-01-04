@@ -1,6 +1,6 @@
 FactoryGirl.define do
   factory :questionnaire_response do
-    content 'contnt'
+    content 'content'
     required false
   end
 end

@@ -1,6 +1,6 @@
 FactoryGirl.define do
   factory :item do
-    content 'string'
+    content { Faker::Lorem.word.humanize }
     item_type 'text'
     description 'text'
     required true

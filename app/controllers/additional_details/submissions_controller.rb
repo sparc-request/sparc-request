@@ -56,12 +56,15 @@ class AdditionalDetails::SubmissionsController < ApplicationController
   def update
     @service = Service.find(params[:service_id])
     @submission = Submission.find(params[:id])
+    @protocol = Protocol.find(@submission.protocol_id)
+    @submissions = @protocol.submissions
     if params[:sr_id]
       @service_request = ServiceRequest.find(params[:sr_id])
     end
     @submission.update_attributes(submission_params)
     respond_to do |format|
       if @submission.save
+        @submission.touch(:updated_at)
         format.js
       else
         format.js

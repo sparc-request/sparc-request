@@ -55,7 +55,13 @@ en:
 
     submissions:
       header: "Additional Detail Submissions"
+      completed_forms: 'Completed Forms'
       table_fields:
         id: "ID"
+        sr_id: 'SRID'
         service: "Service Name"
+        completion_time: 'Completion Time'
+        view: 'View'
+        edit: 'Edit'
+        delete: 'Delete'
       none: "No Records Found"

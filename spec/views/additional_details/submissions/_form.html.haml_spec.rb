@@ -22,12 +22,27 @@ require 'rails_helper'
 
 RSpec.describe 'additional_details/submissions/_form', type: :view do
 
-  question_types = ADDITIONAL_DETAIL_QUESTION_TYPES.values
 
-  question_types.each do |qt|
+  let!(:logged_in_user) {create(:identity)}
+
+  ADDITIONAL_DETAIL_QUESTION_TYPES.values.each do |qt|
+
     before(:each) do
-      questionnaire = build(:questionnaire)
-      service = build(:service, questionnaires: [ questionnaire ])
+
+      allow(controller).to receive(:current_identity).and_return(logged_in_user)
+
+      @questionnaire =  create( :questionnaire, items: [ create( :item, item_type: qt ) ] )
+      @service = create(:service, questionnaires: [ @questionnaire ])
+      @submission = create( :submission_with_responses )
+
+      render '/additional_details/submissions/form'
+
+    end
+
+    it "should display the correct partial for type #{qt}" do
+
+      expect(response).to render_template(partial: "additional_details/submissions/form_partials/_#{qt}_form_partial")
+
     end
   end
 end

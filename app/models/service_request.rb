@@ -440,7 +440,7 @@ class ServiceRequest < ActiveRecord::Base
     self.assign_attributes(status: new_status)
 
     sub_service_requests.each do |ssr|
-      next unless ssr.can_be_edited? && !ssr.is_complete?
+      next unless ssr.can_be_edited?
       available = AVAILABLE_STATUSES.keys
       editable = EDITABLE_STATUSES[ssr.organization_id] || available
       changeable = available & editable

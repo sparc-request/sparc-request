@@ -195,7 +195,9 @@ class ServiceCalendarsController < ApplicationController
     if params[:sub_service_request_id]
       authorize_admin
     else
-      @service_request = ServiceRequest.find(params[:service_request_id])
+      if params[:service_request_id]
+        @service_request = ServiceRequest.find(params[:service_request_id])
+      end
       authorize_protocol
     end
   end

@@ -327,6 +327,10 @@ class ServiceRequest < ActiveRecord::Base
     AuditRecovery.where("audited_changes LIKE '%service_request_id: #{id}%' AND auditable_type = 'SubServiceRequest' AND action = 'create' AND created_at BETWEEN '#{previous_submitted_at.utc}' AND '#{Time.now.utc}'")
   end
 
+  def previously_submitted_ssrs
+    sub_service_requests.where.not(submitted_at: nil).to_a
+  end
+
   # Returns the line items that a service provider is associated with
   def service_provider_line_items(service_provider, items)
     service_provider_items = []
@@ -445,7 +449,11 @@ class ServiceRequest < ActiveRecord::Base
         if (ssr.status != new_status) && (UPDATABLE_STATUSES.include?(ssr.status) || !submit)
           ssr.update_attribute(:status, new_status)
           # Do not notify (initial submit email) if ssr has been previously submitted
-          to_notify << ssr.id unless ssr.previously_submitted?
+          if new_status == 'submitted'
+            to_notify << ssr.id unless ssr.previously_submitted?
+          else
+            to_notify << ssr.id
+          end
         end
       end
     end

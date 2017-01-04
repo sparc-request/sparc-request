@@ -22,4 +22,5 @@
 window.location = "<%= protocol_service_request_path(@service_request) %>"
 <% else %>
 $("#flashes_container").html("<%= escape_javascript(render( 'shared/modal_errors', errors: @errors )) %>")
+$('#body').scrollTop(0)
 <% end %>

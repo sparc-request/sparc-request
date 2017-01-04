@@ -56,7 +56,9 @@ class AdditionalDetails::SubmissionsController < ApplicationController
   def update
     @service = Service.find(params[:service_id])
     @submission = Submission.find(params[:id])
-    @service_request = ServiceRequest.find(params[:sr_id])
+    if params[:sr_id]
+      @service_request = ServiceRequest.find(params[:sr_id])
+    end
     @submission.update_attributes(submission_params)
     respond_to do |format|
       if @submission.save

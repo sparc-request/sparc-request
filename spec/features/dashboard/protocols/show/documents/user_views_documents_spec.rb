@@ -67,8 +67,8 @@ RSpec.describe "User views documents table", js: true do
     let!(:super_user)           { create(:super_user, organization: organization, identity: logged_in_user) }
     let!(:service_request)      { create(:service_request_without_validations, protocol: protocol) }
     let!(:ssr)                  { create(:sub_service_request_without_validations, service_request: service_request, organization: organization, status: 'draft') }
-    let!(:document_with_access) { create(:document, protocol: protocol, doc_type: 'Protocol') }
-    let!(:document_no_access)   { create(:document, protocol: protocol, doc_type: 'Consent') }
+    let!(:document_with_access) { create(:document, protocol: protocol, doc_type: 'Protocol', document_file_name: 'accessible_doc') }
+    let!(:document_no_access)   { create(:document, protocol: protocol, doc_type: 'Consent', document_file_name: 'inaccessible_doc') }
 
     before :each do
       document_with_access.sub_service_requests = [ssr]
@@ -87,7 +87,7 @@ RSpec.describe "User views documents table", js: true do
 
     scenario 'and sees the document title (no link) and disabled edit/delete buttons for no access documents' do
       doc = @page.documents(text: document_no_access.document_file_name).first
-      
+
       expect(doc).not_to have_selector('td.title a', text: document_no_access.document_file_name)
       expect(doc).to have_selector('td.title', text: document_no_access.document_file_name)
       expect(doc).to have_disabled_edit_button

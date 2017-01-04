@@ -28,10 +28,16 @@ class VisitGroupsController < ApplicationController
   def update
     @visit_group = VisitGroup.find(params[:id])
 
-    if @visit_group.update_attributes(params[:visit_group])
+    if @visit_group.update_attributes(visit_group_params)
       render nothing: true
     else
       render json: @visit_group.errors, status: :unprocessable_entity
     end
+  end
+
+  private
+
+  def visit_group_params
+    params.require(:visit_group).permit(:day, :name, :window_before, :window_after, :position, :arm_id)
   end
 end

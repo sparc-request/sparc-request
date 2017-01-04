@@ -54,6 +54,8 @@ class ProtocolsController < ApplicationController
       @service_request.update_attribute(:status, 'draft')
       @service_request.sub_service_requests.update_all(status: 'draft')
 
+      @protocol.update_attribute(:next_ssr_id, @service_request.sub_service_requests.count + 1)
+
       if USE_EPIC && @protocol.selected_for_epic
         @protocol.ensure_epic_user
         Notifier.notify_for_epic_user_approval(@protocol).deliver unless QUEUE_EPIC
@@ -79,7 +81,7 @@ class ProtocolsController < ApplicationController
   end
 
   def update
-
+    @protocol = @protocol.becomes(params[:protocol][:type].constantize) unless @protocol_type.nil?
     if params[:updated_protocol_type] == 'true' && params[:protocol][:type] == 'Study'
       @protocol.update_attribute(:type, params[:protocol][:type])
       @protocol.activate

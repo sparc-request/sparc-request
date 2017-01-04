@@ -21,5 +21,5 @@
   .shopping-cart
     = render 'service_requests/right_navigation/cart', service_request: service_request, sub_service_request: sub_service_request, sub_service_requests: sub_service_requests, line_items_count: line_items_count, allow_delete: true
   .nav-buttons
-    = link_to t(:proper)[:cart][:to_catalog], catalog_service_request_path(service_request), class: 'submit-request-button btn btn-warning btn-lg btn-block'
+    = link_to t(:proper)[:cart][:to_catalog], catalog_service_request_path(service_request, sub_service_request_id: sub_service_request.try(:id)), class: 'submit-request-button btn btn-warning btn-lg btn-block'
     = render 'service_requests/right_navigation/right_navigation'

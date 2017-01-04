@@ -247,11 +247,6 @@ class Protocol < ActiveRecord::Base
     USE_EPIC
   end
 
-  # virgin project:  a project that has never been a study
-  def virgin_project?
-    selected_for_epic.nil?
-  end
-
   def is_project?
     self.type == 'Project'
   end
@@ -271,11 +266,6 @@ class Protocol < ActiveRecord::Base
 
   def activate
     update_attribute(:study_type_question_group_id, StudyTypeQuestionGroup.active.pluck(:id).first)
-  end
-
-  def display_answers
-    answers = StudyTypeQuestion.joins(:study_type_question_group).where(study_type_question_groups: { version: version_type })
-    answers.map{ |ans| ans.study_type_answers.find_by_protocol_id(id) }
   end
 
   def email_about_change_in_authorized_user(modified_role, action)

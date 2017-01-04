@@ -74,6 +74,8 @@ class SubServiceRequest < ActiveRecord::Base
   accepts_nested_attributes_for :line_items, allow_destroy: true
   accepts_nested_attributes_for :payments, allow_destroy: true
 
+  validates :ssr_id, presence: true, uniqueness: { scope: :service_request_id }
+
   scope :in_work_fulfillment, -> { where(in_work_fulfillment: true) }
 
   def consult_arranged_date=(date)
@@ -304,6 +306,14 @@ class SubServiceRequest < ActiveRecord::Base
   ########################
   def ctrc?
     self.organization.tag_list.include? "ctrc"
+  end
+
+  #A request is locked if the organization it's in isn't editable
+  def is_locked?
+    if organization.has_editable_statuses?
+      return !EDITABLE_STATUSES[find_editable_id(self.organization.id)].include?(self.status)
+    end
+    false
   end
 
   # Can't edit a request if it's placed in an uneditable status

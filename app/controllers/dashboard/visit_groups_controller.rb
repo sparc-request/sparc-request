@@ -70,6 +70,7 @@ class Dashboard::VisitGroupsController < Dashboard::BaseController
     @service_request = ServiceRequest.find(params[:service_request_id])
     @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
     @arm = @visit_group.arm
+    params[:visit_group][:position] = params[:visit_group][:position].to_i - 1
     if @visit_group.update_attributes(params[:visit_group])
       flash[:success] = t(:dashboard)[:visit_groups][:updated]
     else

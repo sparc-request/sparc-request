@@ -18,36 +18,27 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-require 'date'
 require 'rails_helper'
 
-RSpec.describe 'Protocol' do
+RSpec.describe 'User creates an additional details questionnaire', js: true do
   let_there_be_lane
-  let_there_be_j
-  build_service_request_with_study()
-  build_service_request_with_project()
-  build_study_type_question_groups()
-  build_study_type_questions()
-  build_study_type_answers()
+  scenario 'successfully' do
+    service = create(:service)
+    visit new_service_additional_details_questionnaire_path(service)
+    fill_in 'questionnaire_name', with: 'New Questionnaire'
+    fill_in 'questionnaire_items_attributes_0_content', with: 'What is your favorite color?'
+    select 'Radio Button', from: 'questionnaire_items_attributes_0_item_type'
+    fill_in 'questionnaire_items_attributes_0_item_options_attributes_0_content', with: 'Green'
+    click_link 'Add another Option'
+    fill_in 'questionnaire_items_attributes_0_item_options_attributes_1_content', with: 'Red'
 
-  describe "#virgin_project?" do
-    context "project is virgin" do
-      before :each do
-        project.update_attributes(selected_for_epic: nil)
-      end
+    check 'questionnaire_items_attributes_0_required'
 
-      it "should return true" do
-        expect(project.virgin_project?).to eq true
-      end
-    end
-    context "project is not a virgin" do
-      before :each do
-        project.update_attributes(selected_for_epic: false)
-      end
+    click_button 'Create Questionnaire'
 
-      it "should return true" do
-        expect(project.virgin_project?).to eq false
-      end
-    end
+    expect(current_path).to eq service_additional_details_questionnaires_path(service)
+    expect(Questionnaire.count).to eq 1
+    expect(Item.count).to eq 1
+    expect(ItemOption.count).to eq 2
   end
 end

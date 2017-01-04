@@ -50,6 +50,8 @@ class ServiceCalendarsController < ApplicationController
     @admin        = params[:admin] == 'true'
     @consolidated = false
     @pages        = eval(params[:pages])
+    @sub_service_request = visit.line_items_visit.sub_service_request if @admin
+    @service_request = visit.line_items_visit.sub_service_request.service_request
 
     visit.line_items_visit.sub_service_request.set_to_draft(@admin)
 
@@ -120,17 +122,14 @@ class ServiceCalendarsController < ApplicationController
 
   def show_move_visits
     @arm = Arm.find( params[:arm_id] )
+    @visit_group = params[:visit_group_id] ? @arm.visit_groups.find(params[:visit_group_id]) : @arm.visit_groups.first
   end
 
   def move_visit_position
     arm = Arm.find( params[:arm_id] )
     vg  = arm.visit_groups.find( params[:visit_group].to_i )
 
-    if params[:position].blank?
-      vg.move_to_bottom
-    else
-      vg.insert_at( params[:position].to_i - 1 )
-    end
+    vg.insert_at( params[:position].to_i - 1 )
   end
 
   def toggle_calendar_row
@@ -138,7 +137,7 @@ class ServiceCalendarsController < ApplicationController
     @service           = @line_items_visit.line_item.service if params[:check]
     @portal            = params[:portal] == 'true'
 
-    return unless @line_items_visit.sub_service_request.can_be_edited?
+    return unless @line_items_visit.sub_service_request.can_be_edited? || @portal
 
     @line_items_visit.visits.each do |visit|
       if params[:check]
@@ -201,7 +200,11 @@ class ServiceCalendarsController < ApplicationController
   end
 
   def authorize_protocol
-    @protocol           = Protocol.find(params[:protocol_id])
+    @protocol = if params[:protocol_id]
+                  Protocol.find(params[:protocol_id])
+                else
+                  Arm.find(params[:arm_id]).protocol
+                end
     permission_to_view  = @protocol.project_roles.where(identity_id: current_user.id, project_rights: ['approve', 'request']).any?
 
     unless permission_to_view || Protocol.for_admin(current_user.id).include?(@protocol)

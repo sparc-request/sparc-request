@@ -38,7 +38,9 @@ RSpec.describe 'dashboard/protocols/show', type: :view do
     assign(:user, jug2)
     assign(:protocol_type, 'Study')
     assign(:permission_to_edit, false)
-    assign(:submissions, [create(:submission, protocol: protocol, service: create(:service))])
+    assign(:sub_service_request, ssr = create(:sub_service_request, :with_organization))
+    assign(:submissions, [create(:submission, protocol: protocol, service: create(:service), line_item: create(:line_item, :without_validations, sub_service_request_id: ssr.id))])
+    allow(view).to receive(:current_identity).and_return(jug2)
     render
   end
 

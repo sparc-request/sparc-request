@@ -31,20 +31,21 @@
       .row
         .col-md-12.form-horizontal#navigate_visit_form{ data: { intended_action: intended_action } }
           .form-group
-            = label_tag 'vg_form_arm_label', t(:dashboard)[:visit_groups][:arm], class: 'col-sm-4 control-label'
+            = label_tag 'vg_form_arm_label', t(:visit_groups)[:form_fields][:arm], class: 'col-sm-4 control-label required'
             .col-sm-7
               = select_tag 'vg_form_arm_select', options_from_collection_for_select(protocol.arms, 'id', 'name', arm.id), class: 'selectpicker form-control'
           .form-group
-            = label_tag 'vg_form_label', t(:dashboard)[:visit_groups][:visit], class: 'col-sm-4 control-label'
+            = label_tag 'vg_form_label', t(:visit_groups)[:form_fields][:visit], class: 'col-sm-4 control-label required'
             .col-sm-7
               = select_tag 'vg_form_select', options_for_select(arm.visit_groups.map { |vg| ["#{vg.name} - Day #{vg.day || '?'}", vg.id] }, visit_group.id), class: 'selectpicker form-control'
       - if intended_action == 'edit'
         %hr
           .edit_visit_area
-            = render partial: 'dashboard/visit_groups/edit_visit_form', locals: { visit_group: visit_group, service_request: service_request, sub_service_request: sub_service_request }
+            = render partial: 'dashboard/visit_groups/edit_visit_form', locals: { visit_group: visit_group, service_request: service_request, sub_service_request: sub_service_request, arm: arm }
       -else
         .modal-footer
           .center-block
             %button.btn.btn-default{ type: 'button', data: { dismiss: 'modal' } }
               = t(:actions)[:close]
-            %button.btn.btn-primary#remove_visit_group_form_button= t(:actions)[:remove]
+            %button.btn.btn-primary#remove_visit_group_form_button
+              = t(:actions)[:remove]

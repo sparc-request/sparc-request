@@ -23,12 +23,16 @@ class Identities::OmniauthCallbacksController < Devise::OmniauthCallbacksControl
     @identity = Identity.find_for_shibboleth_oauth(request.env["omniauth.auth"], current_identity)
 
     if @identity.persisted?
+      if params[:service_request_id]
+        # redirect back to catalog page
+        store_location_for @identity, catalog_service_request_path(params[:service_request_id])
+      end
+
       sign_in_and_redirect @identity, :event => :authentication #this will throw if @identity is not activated
       set_flash_message(:notice, :success, :kind => "Shibboleth") if is_navigational_format?
     else
       session["devise.shibboleth_data"] = request.env["omniauth.auth"]
-      redirect_to new_identity_registration_url
+      redirect_to new_identity_registration_url(service_request_id: params[:service_request_id])
     end
   end
 end
-

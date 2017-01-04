@@ -178,7 +178,6 @@ en:
         percent: "Edit Effort Billing Qty"
       totals:
         maximum_direct: "Maximum Total Direct Costs Per Patient"
-        maximum_indirect: "Maximum Total Indirect Costs Per Patient"
         maximum_per_patient: "Maximum Total Per Patient"
         total_costs: "Total Costs (Per Patient/Visit Services) Per Study -- %{arm_name}"
     otf:

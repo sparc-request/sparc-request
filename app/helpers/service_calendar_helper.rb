@@ -63,12 +63,6 @@ module ServiceCalendarHelper
     currency_converter sum
   end
 
-  def display_max_total_indirect_cost_per_patient arm, line_items_visits=nil
-    line_items_visits ||= arm.line_items_visits
-    sum = arm.maximum_indirect_costs_per_patient line_items_visits
-    currency_converter sum
-  end
-
   def display_max_total_cost_per_patient arm, line_items_visits=nil
     line_items_visits ||= arm.line_items_visits
     sum = arm.maximum_total_per_patient line_items_visits
@@ -84,11 +78,6 @@ module ServiceCalendarHelper
   # Displays grand totals per study
   def display_total_direct_cost_per_study_pppvs service_request
     sum = service_request.total_direct_costs_per_patient
-    currency_converter sum
-  end
-
-  def display_total_indirect_cost_per_study_pppvs service_request
-    sum = service_request.total_indirect_costs_per_patient
     currency_converter sum
   end
 
@@ -116,11 +105,6 @@ module ServiceCalendarHelper
     currency_converter sum
   end
 
-  def display_total_indirect_cost_per_study_otfs service_request, line_items
-    sum = service_request.total_indirect_costs_one_time line_items
-    currency_converter sum
-  end
-
   def display_total_cost_per_study_otfs service_request, line_items
     sum = service_request.total_costs_one_time line_items
     currency_converter sum
@@ -139,11 +123,6 @@ module ServiceCalendarHelper
     currency_converter sum
   end
 
-  def display_grand_total_indirect_costs service_request, line_items
-    sum = service_request.indirect_cost_total line_items
-    currency_converter sum
-  end
-
   def display_grand_total service_request, line_items
     sum = service_request.grand_total line_items
     currency_converter sum
@@ -151,11 +130,6 @@ module ServiceCalendarHelper
 
   def display_study_grand_total_direct_costs protocol, service_request
     sum = protocol.direct_cost_total service_request
-    currency_converter sum
-  end
-
-  def display_study_grand_total_indirect_costs protocol, service_request
-    sum = protocol.indirect_cost_total service_request
     currency_converter sum
   end
 

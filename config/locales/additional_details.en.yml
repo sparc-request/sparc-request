@@ -53,6 +53,10 @@ en:
     completed: 'Completed'
     document_complete_details: 'Complete Additional Details'
 
+    complete_details:
+      column_header: "Additional Details"
+      selectpicker_text: "Complete Details"
+
     submissions:
       header: "Additional Detail Submissions"
       table_fields:

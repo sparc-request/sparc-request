@@ -413,6 +413,10 @@ class LineItem < ActiveRecord::Base
     service_abbreviation
   end
 
+  def has_incomplete_additional_details?
+    service.questionnaires.active.present? && !submissions.present?
+  end
+
   private
 
   def remove_procedures

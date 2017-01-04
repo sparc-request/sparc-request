@@ -233,6 +233,8 @@ en:
         view: "View"
         edit: "Edit"
         admin_edit: "Admin Edit"
+      additional_details:
+        header: "Additional Details"
       view_ssr:
         documents:
           header: "Documents"

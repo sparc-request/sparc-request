@@ -508,6 +508,20 @@ class Protocol < ActiveRecord::Base
     sub_service_requests.where.not(status: 'first_draft').any?
   end
 
+  def has_incomplete_additional_details?
+    if service_requests.any? { |sr| sr.additional_detail_services.present? }
+      service_requests.each do |sr|
+        sr.line_items.includes(service: :questionnaires).includes(:submissions).each do |li|
+          if li.has_incomplete_additional_details?
+            return true
+          end
+        end
+      end
+    end
+
+    return false
+  end
+
   private
 
   def notify_remote_around_update?

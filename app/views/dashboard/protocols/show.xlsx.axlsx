@@ -44,7 +44,7 @@ arm_r_totals = {}
   wb.add_worksheet(name: "#{arm.sanitized_name}") do |sheet|
 
     #Repeating protocol information on the top of each page
-    protocol_header_row = ["#{@protocol.class.to_s} Information", "", "", "", ""]
+    protocol_header_row = ["#{@protocol.class.to_s} Information", "", "", "", "", ""]
     ((arm.visit_groups.count * 3) + 5).times {protocol_header_row << ""}
     sheet.add_row protocol_header_row, :style => header_style
     sheet.add_row ["SPARC #{@protocol.class.to_s} ID:",@protocol.id], :style => default
@@ -85,7 +85,7 @@ arm_r_totals = {}
     #Displays line_items_visits, grouped by organization from the sub service request
     arm.line_items_visits.includes(:line_item).group_by{|liv| liv.line_item.sub_service_request}.each do |sub_service_request, line_items_visits|
       next if ["draft", "first_draft"].include?(sub_service_request.status)
-      ssr_row = ["#{sub_service_request.organization.name}(#{sub_service_request.ssr_id})", "", "", "", ""]
+      ssr_row = ["#{sub_service_request.organization.name}(#{sub_service_request.ssr_id})", "", "", "", "", ""]
       ((arm.visit_groups.count * 3) + 5).times {ssr_row << ""}
       sheet.add_row ssr_row, :style => org_header_style
 
@@ -93,8 +93,8 @@ arm_r_totals = {}
       line_items_visits.each do |liv|
         @line_item_style_array = [default, default, default, money, money, money]
         n_columns_sum = sum(n_columns, current_row)
-        nr_cell = "C#{current_row}"
-        your_cost_cell = "E#{current_row}"
+        nr_cell = "D#{current_row}"
+        your_cost_cell = "F#{current_row}"
         total_nr_cell = total_nr_per_patient_column + current_row.to_s
         total_research_amount_cell = total_research_amount_column + current_row.to_s
         number_of_subjects_cell = number_of_subjects_column + current_row.to_s
@@ -163,7 +163,7 @@ arm_r_totals = {}
       arm.subject_count,
       "=SUM(#{total_nr_per_study_column}1:#{total_nr_per_study_column}#{principle_row_no+3})",
       "=SUM(#{total_r_cost_per_study_column}1:#{total_r_cost_per_study_column}#{principle_row_no+3})"]
-    @line_item_style_array = [default, default, default, money, money, money, default, money, money, money, money, default, money, money]
+
     sheet.add_row additional_row.flatten, :style => org_header_style
     sheet.add_row principle_row.flatten, :style => @line_item_style_array
     sheet.add_row coordination_row.flatten, :style => @line_item_style_array

@@ -25,24 +25,50 @@ RSpec.describe 'additional_details/submissions/_form', type: :view do
 
   let!(:logged_in_user) {create(:identity)}
 
-  ADDITIONAL_DETAIL_QUESTION_TYPES.values.each do |qt|
+  describe 'new submission' do
 
     before(:each) do
 
       allow(controller).to receive(:current_identity).and_return(logged_in_user)
 
-      @questionnaire =  create( :questionnaire, items: [ create( :item, item_type: qt ) ] )
+      @questionnaire =  create( :questionnaire, :with_all_question_types )
       @service = create(:service, questionnaires: [ @questionnaire ])
-      @submission = create( :submission_with_responses )
+      @submission = create( :submission_with_responses, questionnaire_id: @questionnaire.id )
 
       render '/additional_details/submissions/form'
 
     end
 
-    it "should display the correct partial for type #{qt}" do
+    it "uses the correct partials for a new form" do
 
-      expect(response).to render_template(partial: "additional_details/submissions/form_partials/_#{qt}_form_partial")
+      expect(response).to render_template(partial: "additional_details/submissions/_new_form")
+      ADDITIONAL_DETAIL_QUESTION_TYPES.values.each do |qt|
+        expect(response).to render_template(partial: "additional_details/submissions/form_partials/_#{qt}_form_partial")
+      end
 
+    end
+  end
+
+  describe 'edit submission' do
+
+    before(:each) do
+
+      allow(controller).to receive(:current_identity).and_return(logged_in_user)
+
+      @questionnaire =  create( :questionnaire, :with_all_question_types )
+      @service = create(:service, questionnaires: [ @questionnaire ])
+      @submission = create( :submission_with_responses, questionnaire_id: @questionnaire.id)
+
+      render '/additional_details/submissions/form', action_name: 'edit'
+
+    end
+
+    it "uses the correct partials for an edit form" do
+
+      expect(response).to render_template(partial: "additional_details/submissions/_edit_form")
+      ADDITIONAL_DETAIL_QUESTION_TYPES.values.each do |qt|
+        expect(response).to render_template(partial: "additional_details/submissions/form_partials/_#{qt}_form_partial")
+      end
     end
   end
 end

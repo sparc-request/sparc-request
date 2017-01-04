@@ -9,6 +9,9 @@ FactoryGirl.define do
     trait :with_responses do
       after(:create) do |submission|
         create(:questionnaire_response, submission_id: submission.id)
+        submission.questionnaire_responses.zip(submission.questionnaire.items).each do |response, item|
+          response.item_id = item.id
+        end
       end
     end
 

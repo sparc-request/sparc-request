@@ -158,9 +158,6 @@ $(document).ready ->
           line_item_id        = $selected_option.data('line-item-id')
           $this               = $(this)
           
-          #Set the text to the option to give the fluid appearance
-          find_title_element($this).text($selected_option.text())
-
           $.ajax
             method: 'GET'
             url: "/services/#{service_id}/additional_details/submissions/new.js"
@@ -170,7 +167,6 @@ $(document).ready ->
             success: ->
               $this.selectpicker('deselectAll')
               $this.selectpicker('render')
-              reset_title($this)
 
       reset_service_requests_handlers()
       # Protocol Show End
@@ -209,21 +205,9 @@ $(document).ready ->
 
 
 
-# Helper Methods for Service Request Table and Selectpickers #
-find_title_element = (select) ->
-        return $(select).siblings('.bootstrap-select').find('.dropdown-toggle .filter-option')
-
-reset_title = (select) ->
-  $(select).
-    siblings('.bootstrap-select').
-    find('.dropdown-toggle .filter-option').
-    html($($(select).find('.bs-title-option').text()))
-
 (exports ? this).reset_service_requests_handlers = ->
   $('.service-requests-table').on 'all.bs.table', ->
     #Place a handler on the complete details selectpicker to create the badge
-    $('.complete-details.selectpicker').on 'rendered.bs.select', ->
-      reset_title($(this))
     
     #Enable selectpickers
     $(this).find('.selectpicker').selectpicker()

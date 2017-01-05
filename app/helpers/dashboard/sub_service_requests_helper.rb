@@ -229,11 +229,11 @@ module Dashboard::SubServiceRequestsHelper
       content_tag(
         :select,
         submissions.html_safe,
-        title: content_tag(:span, t(:dashboard)[:service_requests][:additional_details][:selectpicker])+
-                content_tag(:span, line_items.count, class: 'badge complete-form-badge'),
+        title: t(:dashboard)[:service_requests][:additional_details][:selectpicker],
         class: 'selectpicker complete-details',
         data: {
           style: 'btn-danger',
+          counter: line_items.count
         }
       )
     else

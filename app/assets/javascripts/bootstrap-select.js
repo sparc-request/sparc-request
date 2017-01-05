@@ -673,6 +673,11 @@
       this.$button.attr('title', $.trim(title.replace(/<[^>]*>?/g, '')));
       this.$button.children('.filter-option').html(title);
 
+      if (this.options.counter !== undefined) {
+        var badge = "<span class='badge bootstrap-select-badge'>"+this.options.counter+"</span>"
+        this.$button.children('.filter-option').append(badge)
+      }
+
       this.$element.trigger('rendered.bs.select');
     },
 

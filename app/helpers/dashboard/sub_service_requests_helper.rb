@@ -233,7 +233,7 @@ module Dashboard::SubServiceRequestsHelper
         class: 'selectpicker complete-details',
         data: {
           style: 'btn-danger',
-          counter: line_items.count
+          counter: 'true'
         }
       )
     else

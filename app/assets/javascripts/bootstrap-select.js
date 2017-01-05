@@ -303,6 +303,7 @@
     style: 'btn-default',
     size: 'auto',
     title: null,
+    counter: false,
     selectedTextFormat: 'values',
     width: false,
     container: false,
@@ -673,8 +674,8 @@
       this.$button.attr('title', $.trim(title.replace(/<[^>]*>?/g, '')));
       this.$button.children('.filter-option').html(title);
 
-      if (this.options.counter !== undefined) {
-        var badge = "<span class='badge bootstrap-select-badge'>"+this.options.counter+"</span>"
+      if (this.options.counter) {
+        var badge = "<span class='badge bootstrap-select-badge'>"+this.$lis.length+"</span>"
         this.$button.children('.filter-option').append(badge)
       }
 

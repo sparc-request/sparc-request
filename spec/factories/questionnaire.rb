@@ -1,6 +1,6 @@
 FactoryGirl.define do
   factory :questionnaire do
-    name 'string'
+    name {Faker::Lorem.word.humanize}
     service_id nil
     active 1
 
@@ -11,5 +11,15 @@ FactoryGirl.define do
         end
       end
     end
+
+    trait :with_responses do
+      after(:create) do |questionnaire|
+        (1..rand(10)).each do
+          questionnaire.submissions << build(:submission)
+        end
+      end
+    end
+
+    factory :questionnaire_with_responses, traits: [:with_responses]
   end
 end

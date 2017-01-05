@@ -208,7 +208,7 @@ module Dashboard::SubServiceRequestsHelper
   end
 
   def display_ssr_submissions(ssr)
-    line_items = ssr.line_items.includes(service: :questionnaires).includes(:submissions).to_a.select!(&:has_incomplete_additional_details?)
+    line_items = ssr.line_items.includes(service: :questionnaires).includes(:submissions).to_a.select!(&:has_incomplete_additional_details?) || []
 
     if line_items.any?
       protocol    = ssr.protocol

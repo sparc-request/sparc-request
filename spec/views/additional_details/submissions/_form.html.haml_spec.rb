@@ -46,7 +46,7 @@ RSpec.describe 'additional_details/submissions/_form', type: :view do
       end
     end
 
-    it "has the correct html elements" do
+    it "has the correct labels" do
 
       expect(response).to have_content('Questionnaire Submission')
       @questionnaire.items.each do |item|
@@ -76,7 +76,7 @@ RSpec.describe 'additional_details/submissions/_form', type: :view do
       end
     end
 
-    it "has the correct html elements" do
+    it "has the correct labels" do
 
       expect(response).to have_content('Questionnaire Submission')
       @questionnaire.items.each do |item|

@@ -46,9 +46,9 @@ RSpec.describe 'additional_details/questionnaires/_form', type: :view do
     end
 
     it 'should not have elements exclusive to questionnaires with items' do
-      expect(response).to have_css('a', text: 'Remove Question', count: 0)
-      expect(response).to have_css('select#questionnaire_items_attributes_0_item_type', count: 0)
-      expect(response).to have_css('questionnaire_items_attributes_0_required', count: 0)
+      expect(response).to_not have_css('a', text: 'Remove Question')
+      expect(response).to_not have_css('select#questionnaire_items_attributes_0_item_type')
+      expect(response).to_not have_css('questionnaire_items_attributes_0_required')
     end
   end
 

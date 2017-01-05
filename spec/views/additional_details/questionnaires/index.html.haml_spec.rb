@@ -49,7 +49,7 @@ RSpec.describe 'additional_details/questionnaires/index', type: :view do
     it 'should have all of the correct buttons' do
       expect(response).to have_css('a', text: "#{@questionnaire.active ? 'Disable' : 'Activate'} Questionnaire")
       expect(response).to have_css('a', text: "Create new")
-      expect(response).to have_css('a', count: 5)
+      
     end
   end
 

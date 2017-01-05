@@ -301,7 +301,7 @@ class Protocol < ActiveRecord::Base
   end
 
   def permission_to_view?(identity)
-  
+    project_roles.where(identity: identity, project_rights: ['approve', 'request', 'view']).any?  
   end
 
   def permission_to_edit?(identity)

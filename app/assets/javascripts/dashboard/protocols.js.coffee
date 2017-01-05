@@ -27,28 +27,15 @@ $(document).ready ->
       getSRId = () ->
         $('input[name="service_request_id"]').val()
 
-      $('.service-requests-table').on 'all.bs.table', ->
-        $(this).find('.selectpicker').selectpicker() #Find descendant selectpickers
 
-      $(document).on 'click', '.service-request-button', ->
-        if $(this).data('permission')
-          window.location = $(this).data('url')
-
-      disableButton: (containing_text, change_to) ->
-        button = $(".ui-dialog .ui-button:contains(#{containing_text})")
-        button.html("<span class='ui-button-text'>#{change_to}</span>")
-          .attr('disabled', true)
-          .addClass('button-disabled')
-
-      enableButton: (containing_text, change_to) ->
-        button = $(".ui-dialog .ui-button:contains(#{containing_text})")
-        button.html("<span class='ui-button-text'>#{change_to}</span>").attr('disabled', false).removeClass('button-disabled')
 
       # Delete cookies from previously visited SSR
       $.cookie('admin-tab', null, {path: '/'})
       $.cookie('admin-ss-tab', null, {path: '/'})
 
-      #  Protocol Index Begin
+
+
+      # Protocol Index Begin #
       $(document).on 'click', '.protocols_index_row > .id, .protocols_index_row > .title, .protocols_index_row > .pis', ->
         #if you click on the row, it opens the protocol show
         protocol_id = $(this).parent().data('protocol-id')
@@ -64,9 +51,7 @@ $(document).ready ->
             $('#modal_place').html(data.modal)
             $('#modal_place').modal 'show'
             $('.service-requests-table').bootstrapTable()
-            $('.service-requests-table').on 'all.bs.table', ->
-              $(this).find('.selectpicker').selectpicker()
-
+            reset_service_requests_handlers()
 
       $(document).on 'click', '.protocol-archive-button', ->
         protocol_id = $(this).parents("tr").data('protocol-id')
@@ -112,6 +97,8 @@ $(document).ready ->
         $.getScript @href
         false
       # Protocol Index End
+
+
 
       # Protocol Show Begin
       $(document).on 'click', '.view-protocol-details-button', ->
@@ -159,8 +146,7 @@ $(document).ready ->
             $('#modal_place').html(data.modal)
             $('#modal_place').modal 'show'
             $('.service-requests-table').bootstrapTable()
-            $('.service-requests-table').on 'all.bs.table', ->
-              $(this).find('.selectpicker').selectpicker()
+            reset_service_requests_handlers()
 
       $(document).on 'change', '.complete-details', ->
         $selected_options = $('option:selected', this)
@@ -171,9 +157,9 @@ $(document).ready ->
           protocol_id         = $selected_option.data('protocol-id')
           line_item_id        = $selected_option.data('line-item-id')
           $this               = $(this)
-          reset_select_picker = ->
-            $this.selectpicker('deselectAll')
-            $this.selectpicker('render')
+          
+          #Set the text to the option to give the fluid appearance
+          find_title_element($this).text($selected_option.text())
 
           $.ajax
             method: 'GET'
@@ -182,13 +168,19 @@ $(document).ready ->
               protocol_id: protocol_id
               line_item_id: line_item_id
             success: ->
-              reset_select_picker()
+              $this.selectpicker('deselectAll')
+              $this.selectpicker('render')
+              reset_title($this)
+
+      reset_service_requests_handlers()
       # Protocol Show End
 
-      # Protocol Table Sorting
+
+
+      # Protocol Table Sorting Begin #
       $(document).on 'click', '.protocol-sort', ->
-        sorted_by         = "#{$(this).data('sort-name')} #{$(this).data('sort-order')}"
-        page              = $('#page').val() || 1
+        sorted_by = "#{$(this).data('sort-name')} #{$(this).data('sort-order')}"
+        page      = $('#page').val() || 1
 
         data = {} #Grab form values
 
@@ -213,3 +205,25 @@ $(document).ready ->
           type: 'get'
           url: "/dashboard/protocols.js"
           data: data
+      # Protocol Table Sorting End #
+
+
+
+# Helper Methods for Service Request Table and Selectpickers #
+find_title_element = (select) ->
+        return $(select).siblings('.bootstrap-select').find('.dropdown-toggle .filter-option')
+
+reset_title = (select) ->
+  $(select).
+    siblings('.bootstrap-select').
+    find('.dropdown-toggle .filter-option').
+    html($($(select).find('.bs-title-option').text()))
+
+(exports ? this).reset_service_requests_handlers = ->
+  $('.service-requests-table').on 'all.bs.table', ->
+    #Place a handler on the complete details selectpicker to create the badge
+    $('.complete-details.selectpicker').on 'rendered.bs.select', ->
+      reset_title($(this))
+    
+    #Enable selectpickers
+    $(this).find('.selectpicker').selectpicker()

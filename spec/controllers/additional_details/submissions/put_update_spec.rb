@@ -108,7 +108,7 @@ RSpec.describe AdditionalDetails::SubmissionsController, type: :controller do
           service_id: @service.id,
           questionnaire_responses_attributes: {
             "#{@que_resp.id}" => {
-              id: @submission.id,
+              id: @que_resp.id,
               item_id: @item.id,
               content: 'I do not like green eggs & ham.'
             }

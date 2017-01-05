@@ -184,7 +184,7 @@ private
 
   def find_permissions
     @permission_to_edit = @service_request.protocol.permission_to_edit?(@user)
-    @permission_to_view = @service_request.protocol.permission_to_view?(@user)
+    @permission_to_view = @permission_to_edit || @service_request.protocol.permission_to_view?(@user)
   end
 
   def find_admin_orgs

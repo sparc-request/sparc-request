@@ -208,37 +208,32 @@ module Dashboard::SubServiceRequestsHelper
   end
 
   def display_ssr_submissions(ssr)
-    line_items = ssr.line_items.includes(service: :questionnaires).includes(:submissions)
+    line_items = ssr.line_items.includes(service: :questionnaires).includes(:submissions).to_a.select!(&:has_incomplete_additional_details?)
 
-    if line_items.any?(&:has_incomplete_additional_details?)
-      protocol = ssr.protocol
-
+    if line_items.any?
+      protocol    = ssr.protocol
       submissions = ""
+
       line_items.each do |li|
-        if li.has_incomplete_additional_details?
-          submissions +=  content_tag(
-                            :option,
-                            '',
-                            data: {
-                              service_id: li.service.id,
-                              protocol_id: protocol.id,
-                              line_item_id: li.id,
-                              content:
-                                content_tag(:span,
-                                  "#{li.service.name}"
-                                )
-                            }
-                          )
-        end
+        submissions +=  content_tag(
+                          :option,
+                          "#{li.service.name}",
+                          data: {
+                            service_id: li.service.id,
+                            protocol_id: protocol.id,
+                            line_item_id: li.id
+                          }
+                        )
       end
 
       content_tag(
         :select,
         submissions.html_safe,
-        title: t(:additional_details)[:complete_details][:selectpicker_text],
+        title: content_tag(:span, t(:dashboard)[:service_requests][:additional_details][:selectpicker])+
+                content_tag(:span, line_items.count, class: 'badge complete-form-badge'),
         class: 'selectpicker complete-details',
         data: {
-          style: 'btn-danger'
+          style: 'btn-danger',
         }
       )
     else

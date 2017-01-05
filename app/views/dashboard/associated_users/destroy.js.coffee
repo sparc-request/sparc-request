@@ -30,9 +30,7 @@ $("#service-requests-panel").html("<%= escape_javascript(render('dashboard/servi
 $("#associated-users-table").bootstrapTable()
 $("#documents-table").bootstrapTable()
 $(".service-requests-table").bootstrapTable()
-
-$('.service-requests-table').on 'all.bs.table', ->
-	$(this).find('.selectpicker').selectpicker() #Find descendant selectpickers
+reset_service_requests_handlers()
 <% else %>
 $("#associated-users-table").bootstrapTable 'refresh', {silent: true}
 <% end %>

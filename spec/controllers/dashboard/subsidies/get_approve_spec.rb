@@ -18,10 +18,10 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-require 'rails_helper'
+require "rails_helper"
 
 RSpec.describe Dashboard::SubsidiesController do
-  describe 'GET #edit' do
+  describe "GET #approve" do
     before(:each) do
       @current_user = build_stubbed(:identity)
       log_in_dashboard_identity(obj: @current_user)
@@ -40,33 +40,29 @@ RSpec.describe Dashboard::SubsidiesController do
       @pending_subsidy = create(:pending_subsidy,
                                 sub_service_request_id: @ssr.id,
                                 percent_subsidy: 0.1)
-      xhr :get, :edit, admin: 'true', id: @pending_subsidy.id, format: :js
+      xhr :get, :approve, id: @pending_subsidy.id, format: :js
     end
 
-    it { is_expected.to render_template "dashboard/subsidies/edit" }
+    it { is_expected.to render_template "dashboard/subsidies/approve" }
 
     it 'should respond ok' do
       expect(controller).to respond_with(:ok)
     end
 
-    it 'should set @admin to params[:admin]' do
+    it 'should assign @sub_service_request' do
+      expect(assigns(:sub_service_request)).to be
+    end
+
+    it 'should assign @admin to true' do
       expect(assigns(:admin)).to eq(true)
     end
 
-    it 'should set @subsidy to the existing PendingSubsidy' do
-      expect(assigns(:subsidy)).to eq(PendingSubsidy.find(@pending_subsidy.id))
+    it 'should destroy the pending subsidy' do
+      expect(PendingSubsidy.count).to eq(0)
     end
 
-    it 'should set @path to the dashboard subsidy path for @subsidy' do
-      expect(assigns(:path)).to eq(dashboard_subsidy_path(assigns(:subsidy)))
-    end
-
-    it 'should assign header text' do
-      expect(assigns(:header_text)).to be
-    end
-
-    it 'should assign @action to edit' do
-      expect(assigns(:action)).to eq('edit')
+    it 'should create an approved subsidy' do
+      expect(ApprovedSubsidy.count).to eq(1)
     end
   end
 end

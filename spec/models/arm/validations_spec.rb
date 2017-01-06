@@ -42,17 +42,10 @@ RSpec.describe Arm, type: :model do
       expect(arm.errors.full_messages[0]).to eq("Arm Name can not contain any of the following characters: [ ] * / \\ ? : ")
     end
 
-    # it 'may contain numbers, letters, and other special characters' do
-    #   arm = build(:arm, protocol: @protocol)
-    #   arm.name = 'AbCdEfGhIjKlMnOpQrStUvWxYz 1234567890 ~`!@#$%^&()_-+=|}{"\';><.,'
-    #   expect(arm.valid?).to eq(true)
-    # end
-
-    it 'may contain "2 and"' do
+    it 'may contain numbers, letters, and other special characters' do
       arm = build(:arm, protocol: @protocol)
-      arm.name = 'Arm 2 and three'
-
-      expect(arm.valid?). to eq(true)
+      arm.name = 'arm 2 and AbCdEfGhIjKlMnOpQrStUvWxYz 1234567890 ~`!@#$%^&()_-+=|}{"\';><.,'
+      expect(arm.valid?).to eq(true)
     end
 
     it 'must not have the same name as another arm on its protocol' do
@@ -64,10 +57,46 @@ RSpec.describe Arm, type: :model do
   end
 
   context 'Visit Count validations' do
+    it 'may have a visit count of greater than 0' do
+      arm = build(:arm, protocol: @protocol, visit_count: 1)
 
+      expect(arm.valid?).to eq(true)
+    end
+
+    it 'must not have a visit count of 0' do
+      arm = build(:arm, protocol: @protocol, visit_count: 0)
+
+      expect(arm.valid?).to eq(false)
+      expect(arm.errors.full_messages[0]).to eq("Visit count must be greater than 0")
+    end
+
+    it 'must not have a visit count of less than 0' do
+      arm = build(:arm, protocol: @protocol, visit_count: -1)
+
+      expect(arm.valid?).to eq(false)
+      expect(arm.errors.full_messages[0]).to eq("Visit count must be greater than 0")
+    end
   end
 
   context 'Subject count validations' do
+    it 'may have a subject count of greater than 0' do
+      arm = build(:arm, protocol: @protocol, subject_count: 1)
 
+      expect(arm.valid?).to eq(true)
+    end
+
+    it 'must not have a subject count of 0' do
+      arm = build(:arm, protocol: @protocol, subject_count: 0)
+
+      expect(arm.valid?).to eq(false)
+      expect(arm.errors.full_messages[0]).to eq("Subject count must be greater than 0")
+    end
+
+    it 'must not have a subject count of less than 0' do
+      arm = build(:arm, protocol: @protocol, subject_count: -1)
+
+      expect(arm.valid?).to eq(false)
+      expect(arm.errors.full_messages[0]).to eq("Subject count must be greater than 0")
+    end
   end
 end

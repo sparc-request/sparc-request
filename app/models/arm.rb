@@ -44,12 +44,17 @@ class Arm < ActiveRecord::Base
   after_save :update_liv_subject_counts
 
   validates :name, presence: true
-  validates :name, format: { with: /\A([A-Za-z0-9`~!@#$%^&()\-_+={}|<>.,;'"]+(([ ][A-Za-z0-9`~!@#$%^&()\-_+={}|<>.,;'"]*)*)?)\z/,
-                   message: "can not contain any of the following characters: [ ] * / \\ ? : " }
+  validate :name_formatted_properly
   validate :name_unique_to_protocol
 
   validates :visit_count, numericality: { greater_than: 0 }
   validates :subject_count, numericality: { greater_than: 0 }
+
+  def name_formatted_properly
+    if !name.blank? && name.match(/\A([A-Za-z0-9`~!@#$%^&()\-_+={}|<>.,;'"]+(([ ][A-Za-z0-9`~!@#$%^&()\-_+={}|<>.,;'"]*)*)?)\z/).nil?
+      errors.add(:name, I18n.t(:errors)[:arms][:bad_characters])
+    end
+  end
 
   def name_unique_to_protocol
     arm_names = self.protocol.arms.where.not(id: self.id).pluck(:name)

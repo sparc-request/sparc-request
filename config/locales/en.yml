@@ -446,6 +446,7 @@ en:
   errors:
     arms:
       name_unique: "has to be unique within a study/project"
+      bad_characters: "can not contain any of the following characters: [ ] * / \\ ? :"
       visit_day_missing: "Please specify a study day for each visit (%{arm_name})"
       name_unique: 'must be unique to the Protocol'
     line_items:

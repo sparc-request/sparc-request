@@ -39,7 +39,7 @@ RSpec.describe Arm, type: :model do
       arm.name = '[ ] * \\ / ? :'
 
       expect(arm.valid?).to eq(false)
-      expect(arm.errors.full_messages[0]).to eq("Arm Name can not contain any of the following characters: [ ] * / \\ ? : ")
+      expect(arm.errors.full_messages[0]).to eq("Arm Name can not contain any of the following characters: [ ] * / \\ ? :")
     end
 
     it 'may contain numbers, letters, and other special characters' do

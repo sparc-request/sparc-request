@@ -77,33 +77,31 @@ RSpec.describe 'service request list', js: true do
       @complete_li = arm.line_items[2]
       create(:pricing_map_without_validations, service_id: arm.line_items[2].service_id)
 
-      page = go_to_show_protocol(protocol.id)
-      page.view_consolidated_request_button.click
+      @page = go_to_show_protocol(protocol.id)
+      @page.view_consolidated_request_button.click
     end
 
     context "user clicks All" do
       it "should show SSR's of each status except for first-draft" do
-        page.consolidated_request_all.click
+        @page.consolidated_request_all.click
 
-        expect(page.consolidated_request_modal).to
-          have_content(@complete_li.service.display_service_name)
-        expect(page.consolidated_request_modal).to
-          have_content(@draft_li.service.display_service_name)
-        expect(page.consolidated_request_modal).to_not
-          have_content(@first_draft_li.service.display_service_name)
+        within(@page.consolidated_request_modal) do
+          expect(page).to have_content(@complete_li.service.display_service_name)
+          expect(page).to have_content(@draft_li.service.display_service_name)
+          expect(page).to_not have_content(@first_draft_li.service.display_service_name)
+        end
       end
     end
 
     context "user clicks Exclude Drafts" do
       it "should show SSR's of each status except for (first-)draft" do
-        page.consolidated_request_exclude_draft.click
+        @page.consolidated_request_exclude_draft.click
 
-        expect(page.consolidated_request_modal).to
-          have_content(@complete_li.service.display_service_name)
-        expect(page.consolidated_request_modal).to_not
-          have_content(@draft_li.service.display_service_name)
-        expect(page.consolidated_request_modal).to_not
-          have_content(@first_draft_li.service.display_service_name)
+        within(@page.consolidated_request_modal) do
+          expect(page).to have_content(@complete_li.service.display_service_name)
+          expect(page).to_not have_content(@draft_li.service.display_service_name)
+          expect(page).to_not have_content(@first_draft_li.service.display_service_name)
+        end
       end
     end
   end

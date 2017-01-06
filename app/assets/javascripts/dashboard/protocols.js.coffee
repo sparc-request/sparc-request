@@ -207,7 +207,5 @@ $(document).ready ->
 
 (exports ? this).reset_service_requests_handlers = ->
   $('.service-requests-table').on 'all.bs.table', ->
-    #Place a handler on the complete details selectpicker to create the badge
-    
     #Enable selectpickers
     $(this).find('.selectpicker').selectpicker()

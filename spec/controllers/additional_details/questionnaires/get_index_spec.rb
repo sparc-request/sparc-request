@@ -20,33 +20,27 @@
 
 require 'rails_helper'
 
-RSpec.describe AdditionalDetails::PreviewsController do
-  describe '#create' do
+RSpec.describe AdditionalDetails::QuestionnairesController do
+  describe '#index' do
     before :each do
-      @service = create( :service )
-      @questionnaire = create( :questionnaire, service: @service, active: false )
+      @service = create(:service)
+      @questionnaire = create(:questionnaire, service: @service)
 
-      xhr :post, :create, name: 'Some Program', service_id: @service, questionnaire: @questionnaire.attributes, format: :js
-    end
-
-    it 'should assign @questionnaire' do
-      expect( assigns( :questionnaire ) ).to be_an_instance_of( Questionnaire )
+      xhr :get, :index, {
+        service_id: @service.id
+      }
     end
 
     it 'should assign @service' do
-      expect( assigns( :service ) ).to be_an_instance_of( Service )
+      expect(assigns(:service)).to eq(@service)
     end
 
-    it 'should assign @submissions' do
-      expect( assigns( :submission ) ).to be_an_instance_of( Submission )
+    it 'should assign @questionnaires' do
+      expect(assigns(:questionnaires)).to eq([@questionnaire])
     end
 
-    it 'should build questionnaire responses for @submission' do
-      expect( assigns( :submission ).questionnaire_responses ).to_not be_nil
-    end
+    it { is_expected.to render_template(:index) }
 
-    it { is_expected.to render_template "previews/create" }
-
-    it { is_expected.to respond_with :ok }
+    it { is_expected.to respond_with(:ok) }
   end
 end

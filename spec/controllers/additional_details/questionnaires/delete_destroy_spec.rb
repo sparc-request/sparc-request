@@ -18,58 +18,34 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-class AdditionalDetails::QuestionnairesController < ApplicationController
-  before_action :find_service
-  before_action :find_questionnaire, only: [:edit, :update, :destroy]
-  layout 'additional_details'
+require 'rails_helper'
 
-  def index
-    @questionnaires = @service.questionnaires
-  end
+RSpec.describe AdditionalDetails::QuestionnairesController do
+  describe '#destroy' do
+    before :each do
+      @service = create(:service)
+      @questionnaire = create(:questionnaire, service: @service)
 
-  def new
-    @questionnaire = Questionnaire.new
-    @questionnaire.items.build
-  end
-
-  def edit
-  end
-
-  def create
-    @questionnaire = @service.questionnaires.new(questionnaire_params)
-
-    if @questionnaire.save
-      redirect_to service_additional_details_questionnaires_path(@service)
-    else
-      render :new
+      xhr :delete, :destroy, {
+        service_id: @service.id,
+        id: @questionnaire.id
+      }
     end
-  end
 
-  def update
-    @questionnaire.update_attributes(questionnaire_params)
-    if @questionnaire.save
-      redirect_to service_additional_details_questionnaires_path(@service)
-    else
-      render :edit
+    it 'should assign @service' do
+      expect(assigns(:service)).to eq(@service)
     end
-  end
 
-  def destroy
-    @questionnaire.destroy
-    redirect_to service_additional_details_questionnaires_path(@service)
-  end
+    it 'should assign @questionnaire' do
+      expect(assigns(:questionnaire)).to be
+    end
 
-  private
+    it 'should destroy the questionnaire' do
+      expect(Questionnaire.count).to eq(0)
+    end
 
-  def find_questionnaire
-    @questionnaire = Questionnaire.find(params[:id])
-  end
+    it { is_expected.to redirect_to(action: :index, service_id: @service.id) }
 
-  def find_service
-    @service = Service.find(params[:service_id])
-  end
-
-  def questionnaire_params
-    params.require(:questionnaire).permit!
+    it { is_expected.to respond_with(302) }
   end
 end

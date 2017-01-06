@@ -160,7 +160,6 @@ class Identity < ActiveRecord::Base
     more_than_one_department_match.delete("surgery")
     more_than_one_department_match.delete("urology")
 
-    binding.pry
     one_department_match.each do |key, value|
       unassigned_identities = Identity.all.where(professional_organization_id: nil)
       identities_with_key = unassigned_identities.where(department: key)
@@ -217,6 +216,7 @@ class Identity < ActiveRecord::Base
         end
       end
     end
+    binding.pry
     
     puts "END OF DEPARTMENT"
     puts Identity.all.where(professional_organization_id: nil).count

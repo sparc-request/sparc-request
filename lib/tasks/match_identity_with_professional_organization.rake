@@ -27,7 +27,12 @@ task :match_identity_with_professional_organization => :environment do
   one_department_match = Hash.new
   more_than_one_department_match = Hash.new
 
-  Identity.all.map(&:department).uniq.each do |department|
+  identity_departments = Identity.all.map(&:department).uniq
+
+  identity_departments.delete(nil)
+  identity_departments.delete("")
+  @departments_that_need_review = []
+  identity_departments.each do |department|
     prof_org = ProfessionalOrganization.where("LOWER(professional_organizations.name) LIKE LOWER('%#{department}%')").where(org_type: 'department')
     if !prof_org.empty?
       if prof_org.count == 1
@@ -35,8 +40,28 @@ task :match_identity_with_professional_organization => :environment do
       else
         more_than_one_department_match[department] = prof_org.map(&:id)
       end
+    else
+      @departments_that_need_review << department
+      # @identities_that_need_discussion << Identity.where(department: "#{department}")
     end
   end
+
+  ## Addressed, further down
+  @departments_that_need_review.delete("pharmaceutical_and_biomedical_sciences")
+
+
+  @departments_that_need_review.delete("orthopaedic_surgery")
+  @departments_that_need_review.delete("pharmacy_and_clinical_sciences")
+  @departments_that_need_review.delete("cell_biology_and_anatomy")
+  @departments_that_need_review.delete("craniofacial_biology")
+
+  puts "DEPARTMENTS THAT NEED REVIEW: "
+  puts @departments_that_need_review.inspect
+
+  one_department_match["orthopaedic_surgery"] = 52
+  one_department_match["pharmacy_and_clinical_sciences"] = 122
+  one_department_match["cell_biology_and_anatomy"] = 60
+  one_department_match["craniofacial_biology"] = 11
 
   one_department_match["medicine"] = 45
   one_department_match["radiology"] = 59
@@ -57,18 +82,20 @@ task :match_identity_with_professional_organization => :environment do
     end
   end
 
-  matching_department_and_college = { "biochemistry_and_molecular_biology" => ['graduate' => 16, 'medicine' => 40], "cell_and_molecular_pharmacology" => ['graduate' => 18, 'medicine' => 41],  "pathology_and_laboratory_medicine" => ['graduate' => 26, 'medicine' => 54], "microbiology_and_immunology" => ['graduate' => 23, 'medicine' => 46]}
+  matching_department_and_college = { "biochemistry_and_molecular_biology" => ['graduate' => 16, 'medicine' => 40], "cell_and_molecular_pharmacology" => ['graduate' => 18, 'medicine' => 41],  "pathology_and_laboratory_medicine" => ['graduate' => 26, 'medicine' => 54], "microbiology_and_immunology" => ['graduate' => 23, 'medicine' => 46], "pharmaceutical_and_biomedical_sciences" => ['graduate' => 22, 'pharmacy' => 123]}
 
   @identities_that_need_discussion = []
   matching_department_and_college.each do |key, value|
     unassigned_identities = Identity.all.where(professional_organization_id: nil)
     identities_with_key = unassigned_identities.where(department: "#{key}")
-    
+
     identities_with_key.each do |identity_with_key|
       if identity_with_key.college == 'college_of_graduate_studies'
         identity_with_key.update_attribute(:professional_organization_id, value.first['graduate'])
       elsif identity_with_key.college == 'college_of_medicine'
         identity_with_key.update_attribute(:professional_organization_id, value.first['medicine'])
+      elsif identity_with_key.college == 'college_of_pharmacy'
+        identity_with_key.update_attribute(:professional_organization_id, value.first['pharmacy'])
       else
         @identities_that_need_discussion << identity_with_key
       end

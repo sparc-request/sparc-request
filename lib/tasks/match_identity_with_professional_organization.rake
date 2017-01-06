@@ -57,6 +57,24 @@ task :match_identity_with_professional_organization => :environment do
     end
   end
 
+  matching_department_and_college = { "biochemistry_and_molecular_biology" => ['graduate' => 16, 'medicine' => 40], "cell_and_molecular_pharmacology" => ['graduate' => 18, 'medicine' => 41],  "pathology_and_laboratory_medicine" => ['graduate' => 26, 'medicine' => 54], "microbiology_and_immunology" => ['graduate' => 23, 'medicine' => 46]}
+
+  @identities_that_need_discussion = []
+  matching_department_and_college.each do |key, value|
+    unassigned_identities = Identity.all.where(professional_organization_id: nil)
+    identities_with_key = unassigned_identities.where(department: "#{key}")
+    
+    identities_with_key.each do |identity_with_key|
+      if identity_with_key.college == 'college_of_graduate_studies'
+        identity_with_key.update_attribute(:professional_organization_id, value.first['graduate'])
+      elsif identity_with_key.college == 'college_of_medicine'
+        identity_with_key.update_attribute(:professional_organization_id, value.first['medicine'])
+      else
+        @identities_that_need_discussion << identity_with_key
+      end
+    end
+  end
+
   puts "END OF DEPARTMENT"
   puts Identity.all.where(professional_organization_id: nil).count
   ### END DEPARTMENT ###
@@ -78,7 +96,7 @@ task :match_identity_with_professional_organization => :environment do
 
   one_college_match.each do |key, value|
     unassigned_identities = Identity.all.where(professional_organization_id: nil)
-    identities_with_key = unassigned_identities.where(college: key)
+    identities_with_key = unassigned_identities.where(college: key) - @identities_that_need_discussion
     identities_with_key.each do |identity_with_key|
       identity_with_key.update_attribute(:professional_organization_id, value)
     end
@@ -91,7 +109,7 @@ task :match_identity_with_professional_organization => :environment do
   ### INSTITUTION ###
 
   unassigned_identities = Identity.all.where(professional_organization_id: nil)
-  identities_with_key = unassigned_identities.where(institution: 'medical_university_of_south_carolina')
+  identities_with_key = unassigned_identities.where(institution: 'medical_university_of_south_carolina') - @identities_that_need_discussion
   identities_with_key.each do |identity_with_key|
     identity_with_key.update_attribute(:professional_organization_id, 3)
   end

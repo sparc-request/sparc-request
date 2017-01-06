@@ -108,6 +108,173 @@ class Identity < ActiveRecord::Base
     false
   end
 
+  def test
+    ### DEPARTMENT ####
+    puts "START"
+    puts Identity.all.where(professional_organization_id: nil).count
+    one_department_match = Hash.new
+    more_than_one_department_match = Hash.new
+
+    identity_departments = Identity.all.map(&:department).uniq
+
+    identity_departments.delete(nil)
+    identity_departments.delete("")
+    @identities_that_need_discussion = []
+    @departments_that_need_review = []
+    identity_departments.each do |department|
+      prof_org = ProfessionalOrganization.where("LOWER(professional_organizations.name) LIKE LOWER('%#{department}%')").where(org_type: 'department')
+      if !prof_org.empty?
+        if prof_org.count == 1
+          one_department_match[department] = prof_org.first.id
+        else
+          more_than_one_department_match[department] = prof_org.map(&:id)
+        end
+      else
+        @departments_that_need_review << department
+        # @identities_that_need_discussion << Identity.where(department: "#{department}")
+      end
+    end
+
+    ## Addressed, further down
+    @departments_that_need_review.delete("pharmaceutical_and_biomedical_sciences")
+
+
+    @departments_that_need_review.delete("orthopaedic_surgery")
+    @departments_that_need_review.delete("pharmacy_and_clinical_sciences")
+    @departments_that_need_review.delete("cell_biology_and_anatomy")
+    @departments_that_need_review.delete("craniofacial_biology")
+
+    one_department_match["orthopaedic_surgery"] = 52
+    one_department_match["pharmacy_and_clinical_sciences"] = 122
+    one_department_match["cell_biology_and_anatomy"] = 60
+    one_department_match["craniofacial_biology"] = 11
+
+    one_department_match["medicine"] = 45
+    one_department_match["radiology"] = 59
+    one_department_match["surgery"] = 61
+    one_department_match["urology"] = 62
+    more_than_one_department_match.delete(nil)
+    more_than_one_department_match.delete("")
+    more_than_one_department_match.delete("medicine")
+    more_than_one_department_match.delete("radiology")
+    more_than_one_department_match.delete("surgery")
+    more_than_one_department_match.delete("urology")
+
+    binding.pry
+    one_department_match.each do |key, value|
+      unassigned_identities = Identity.all.where(professional_organization_id: nil)
+      identities_with_key = unassigned_identities.where(department: key)
+      identities_with_key.each do |identity_with_key|
+        identity_with_key.update_attribute(:professional_organization_id, value)
+      end
+    end
+
+    # unassigned_identities = Identity.all.where(professional_organization_id: nil)
+    # identities_with_key = unassigned_identities.where(department: "biochemistry_and_molecular_biology")
+    # identities_with_key.each do |identity_with_key|
+    #   if identity_with_key.college == 'college_of_graduate_studies'
+    #     identity_with_key.update_attribute(:professional_organization_id, 16)
+    #   elsif identity_with_key.college == 'college_of_medicine'
+    #     identity_with_key.update_attribute(:professional_organization_id, 40)
+    #   end
+    # end
+
+    # unassigned_identities = Identity.all.where(professional_organization_id: nil)
+    # identities_with_key = unassigned_identities.where(department: "cell_and_molecular_pharmacology")
+    # identities_with_key.each do |identity_with_key|
+    #   if identity_with_key.college == 'college_of_graduate_studies'
+    #     identity_with_key.update_attribute(:professional_organization_id, 18)
+    #   elsif identity_with_key.college == 'college_of_medicine'
+    #     identity_with_key.update_attribute(:professional_organization_id, 41)
+    #   end
+    # end
+
+    # unassigned_identities = Identity.all.where(professional_organization_id: nil)
+    # identities_with_key = unassigned_identities.where(department: "pathology_and_laboratory_medicine")
+    # identities_with_key.each do |identity_with_key|
+    #   if identity_with_key.college == 'college_of_graduate_studies'
+    #     identity_with_key.update_attribute(:professional_organization_id, 26)
+    #   elsif identity_with_key.college == 'college_of_medicine'
+    #     identity_with_key.update_attribute(:professional_organization_id, 54)
+    #   end
+    # end
+
+    matching_department_and_college = { "biochemistry_and_molecular_biology" => ['graduate' => 16, 'medicine' => 40], "cell_and_molecular_pharmacology" => ['graduate' => 18, 'medicine' => 41],  "pathology_and_laboratory_medicine" => ['graduate' => 26, 'medicine' => 54], "microbiology_and_immunology" => ['graduate' => 23, 'medicine' => 46], "pharmaceutical_and_biomedical_sciences" => ['graduate' => 22, 'pharmacy' => 123]}
+
+    matching_department_and_college.each do |key, value|
+      unassigned_identities = Identity.all.where(professional_organization_id: nil)
+      identities_with_key = unassigned_identities.where(department: "#{key}")
+
+      identities_with_key.each do |identity_with_key|
+        if identity_with_key.college == 'college_of_graduate_studies'
+          identity_with_key.update_attribute(:professional_organization_id, value.first['graduate'])
+        elsif identity_with_key.college == 'college_of_medicine'
+          identity_with_key.update_attribute(:professional_organization_id, value.first['medicine'])
+        elsif identity_with_key.college == 'college_of_pharmacy'
+          identity_with_key.update_attribute(:professional_organization_id, value.first['pharmacy'])
+        else
+          @identities_that_need_discussion << identity_with_key
+        end
+      end
+    end
+    
+    puts "END OF DEPARTMENT"
+    puts Identity.all.where(professional_organization_id: nil).count
+
+    puts "Identities that needs discussion:"
+    puts @identities_that_need_discussion.inspect
+    ### END DEPARTMENT ###
+
+    ### COLLEGE ###
+    one_college_match = Hash.new
+    more_than_one_college_match = Hash.new
+
+    Identity.all.map(&:college).uniq.each do |college|
+      college_org = ProfessionalOrganization.where("LOWER(professional_organizations.name) LIKE LOWER('%#{college}%')").where(org_type: 'college')
+      if !college_org.empty?
+        if college_org.count == 1
+          one_college_match[college] = college_org.first.id
+        else
+          more_than_one_college_match[college] = college_org.map(&:id)
+        end
+      end
+    end
+
+    one_college_match.each do |key, value|
+      unassigned_identities = Identity.all.where(professional_organization_id: nil) 
+      identities_with_key = unassigned_identities.where(college: key) - @identities_that_need_discussion
+      identities_with_key.each do |identity_with_key|
+        identity_with_key.update_attribute(:professional_organization_id, value)
+      end
+    end
+    puts "END OF COLLEGE"
+    puts Identity.all.where(professional_organization_id: nil).count
+
+    ### END COLLEGE ###
+
+    ### INSTITUTION ###
+
+    unassigned_identities = Identity.all.where(professional_organization_id: nil) 
+    identities_with_key = unassigned_identities.where(institution: 'medical_university_of_south_carolina') - @identities_that_need_discussion
+    identities_with_key.each do |identity_with_key|
+      identity_with_key.update_attribute(:professional_organization_id, 3)
+    end
+    puts "END OF INSTITUTION"
+    puts Identity.all.where(professional_organization_id: nil).count
+
+
+    ### END INSTITUTION ###
+
+    ### INSTITUTION, COLLEGE, DEPARTMENT ALL ARE NIL OR EMPTY ####
+    identities_with_all_nil_values = Identity.all.where(professional_organization_id: nil).where(college: nil).where(department: nil).where(institution: nil)
+    identities_with_all_empty_values = Identity.all.where(professional_organization_id: nil).where(college: "").where(department: "").where(institution: "")
+
+    ### DIFF (Identity.all.where(professional_organization_id: nil) ) - identities_with_all_nil_values ###
+    diff = (((Identity.all.where(professional_organization_id: nil) ) - identities_with_all_nil_values) - identities_with_all_empty_values)
+    binding.pry
+
+  end
+
   ###############################################################################
   ############################## HELPER METHODS #################################
   ###############################################################################

@@ -26,11 +26,13 @@ task :unmatched_identities_report => :environment do
     identities_with_all_nil_values = Identity.all.where(professional_organization_id: nil).where(college: nil).where(department: nil).where(institution: nil)
     identities_with_all_empty_values = Identity.all.where(professional_organization_id: nil).where(college: "").where(department: "").where(institution: "")
     identitites_with_no_professional_organization_id = Identity.all.where(professional_organization_id: nil)
+    unmatched_identities = ((identitites_with_no_professional_organization_id - identities_with_all_nil_values) - identities_with_all_empty_values)
 
     csv << ['UNMATCHED IDENTITIES']
     csv << ['Identities that do not have a match in Professional Organizations table']
+    csv << ['Total unmatched entries: ', unmatched_identities.count]
     csv << ['Identity ID', 'Insitution', 'College', 'Department']
-    unmatched_identities = ((identitites_with_no_professional_organization_id - identities_with_all_nil_values) - identities_with_all_empty_values)
+    
     unmatched_identities.each do |identity|
       csv << [identity.id, identity.institution, identity.college, identity.department]
     end

@@ -21,7 +21,7 @@
   - value[:line_items].group_by(&:sub_service_request_id).each do |sub_service_request_id, line_items|
     - next unless sub_service_request.nil? || sub_service_request.id == sub_service_request_id
     - ssr = sub_service_request || SubServiceRequest.find(sub_service_request_id)
-    - next if ssr.status == 'first_draft' || (!review && consolidated && ssr.status == 'draft')
+    - next if statuses_hidden.include? ssr.status
     - locked = !ssr.can_be_edited? && !admin
 
     %tr.organization-header{ class: locked ? 'bg-danger text-danger' : '' }

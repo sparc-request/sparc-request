@@ -17,23 +17,31 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-# Send the user back to dashboard if theyre a member and not an admin
-<% if @return_to_dashboard %>
-window.location = "/dashboard"
-# Update the entire view to ensure the user now only has their admin privileges
-<% elsif @current_user_destroyed && @admin %>
-$("#summary-panel").html("<%= escape_javascript(render('dashboard/protocols/summary', protocol: @protocol, protocol_type: @protocol_type, permission_to_edit: @permission_to_edit || @admin)) %>")
-$("#authorized-users-panel").html("<%= escape_javascript(render('dashboard/associated_users/table', protocol: @protocol, permission_to_edit: @permission_to_edit || @admin)) %>")
-$("#documents-panel").html("<%= escape_javascript(render( 'dashboard/documents/documents_table', protocol: @protocol, permission_to_edit: @permission_to_edit || @admin )) %>")
-$("#service-requests-panel").html("<%= escape_javascript(render('dashboard/service_requests/service_requests', protocol: @protocol, permission_to_edit: @permission_to_edit, user: @user, view_only: false, show_view_ssr_back: false)) %>")
 
-$("#associated-users-table").bootstrapTable()
-$("#documents-table").bootstrapTable()
-$(".service-requests-table").bootstrapTable()
+require 'rails_helper'
 
-$('.service-requests-table').on 'all.bs.table', ->
-  $(this).find('.selectpicker').selectpicker()
-<% else %>
-$("#associated-users-table").bootstrapTable 'refresh', {silent: true}
-<% end %>
-$("#flashes_container").html("<%= escape_javascript(render('shared/flash')) %>")
+RSpec.feature 'User wants to submit a questionnaire form', js: true do
+  let_there_be_lane
+  fake_login_for_each_test
+
+  before :each do
+    org       = create(:organization)
+    @service  = create(:service, organization: org)
+    que       = create(:questionnaire, service: @service, active: true)
+                create(:item, questionnaire: que)
+    @protocol = create(:protocol_federally_funded, primary_pi: jug2, type: 'Study')
+    sr        = create(:service_request_without_validations, protocol: @protocol)
+    ssr       = create(:sub_service_request, service_request: sr, organization: org, status: 'draft')
+    li        = create(:line_item, service_request: sr, sub_service_request: ssr, service: @service)
+  end
+
+  scenario 'and sees the modal' do
+    visit dashboard_protocol_path(@protocol)
+    wait_for_javascript_to_finish
+
+    bootstrap_select('.complete-details.selectpicker', @service.name)
+    wait_for_javascript_to_finish
+
+    expect(page).to have_selector('#submissionModal', visible: true)
+  end
+end

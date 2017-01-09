@@ -74,7 +74,7 @@ RSpec.describe AdditionalDetails::SubmissionsController, type: :controller do
       end
 
       it 'should assign @permission_to_edit' do
-        expect(assigns(:permission_to_edit)).to eq(@protocol.permission_to_edit?(logged_in_user))
+        expect(assigns(:permission_to_edit)).to eq(true)
       end
     end
 

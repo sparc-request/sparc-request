@@ -33,6 +33,7 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
     protocol              = service_request.protocol
     @admin_orgs           = @user.authorized_admin_organizations
     @sub_service_requests = service_request.sub_service_requests.where.not(status: 'first_draft') # TODO: Remove Historical first_draft SSRs and remove this
+    @permission_to_edit   = protocol.project_roles.where(identity: @user, project_rights: ['approve', 'request']).any?
     @show_view_ssr_back   = params[:show_view_ssr_back]
   end
 
@@ -183,8 +184,10 @@ private
   end
 
   def find_permissions
-    @permission_to_edit = @service_request.protocol.permission_to_edit?(@user)
-    @permission_to_view = @service_request.protocol.permission_to_view?(@user)
+    project_roles = @service_request.protocol.project_roles
+
+    @permission_to_edit = project_roles.where(identity_id: @user.id, project_rights: ['approve', 'request']).any?
+    @permission_to_view = project_roles.where(identity_id: @user.id, project_rights: ['view', 'approve', 'request']).any?
   end
 
   def find_admin_orgs

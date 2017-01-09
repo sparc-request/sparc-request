@@ -29,8 +29,8 @@ class Dashboard::DocumentsController < Dashboard::BaseController
 
   def index
     @documents          = @protocol.documents
-    @permission_to_edit = @protocol.permission_to_edit?
-    permission_to_view  = @protocol.permission_to_view?
+    @permission_to_edit = @protocol.project_roles.where(identity: @user, project_rights: ['approve', 'request']).any?
+    permission_to_view  = @protocol.project_roles.where(identity: @user, project_rights: ['approve', 'request', 'view']).any?
     @admin_orgs         = @user.authorized_admin_organizations
   end
 

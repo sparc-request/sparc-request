@@ -49,6 +49,8 @@ $(document).ready ->
       $.cookie('admin-ss-tab', null, {path: '/'})
 
       #  Protocol Index Begin
+
+      # Protocol Index Begin #
       $(document).on 'click', '.protocols_index_row > .id, .protocols_index_row > .title, .protocols_index_row > .pis', ->
         #if you click on the row, it opens the protocol show
         protocol_id = $(this).parent().data('protocol-id')
@@ -66,7 +68,6 @@ $(document).ready ->
             $('.service-requests-table').bootstrapTable()
             $('.service-requests-table').on 'all.bs.table', ->
               $(this).find('.selectpicker').selectpicker()
-
 
       $(document).on 'click', '.protocol-archive-button', ->
         protocol_id = $(this).parents("tr").data('protocol-id')
@@ -171,10 +172,7 @@ $(document).ready ->
           protocol_id         = $selected_option.data('protocol-id')
           line_item_id        = $selected_option.data('line-item-id')
           $this               = $(this)
-          reset_select_picker = ->
-            $this.selectpicker('deselectAll')
-            $this.selectpicker('render')
-
+          
           $.ajax
             method: 'GET'
             url: "/services/#{service_id}/additional_details/submissions/new.js"
@@ -182,13 +180,17 @@ $(document).ready ->
               protocol_id: protocol_id
               line_item_id: line_item_id
             success: ->
-              reset_select_picker()
+              $this.selectpicker('deselectAll')
+              $this.selectpicker('render')
+
+      $('.service-requests-table').on 'all.bs.table', ->
+        $(this).find('.selectpicker').selectpicker()
       # Protocol Show End
 
       # Protocol Table Sorting
       $(document).on 'click', '.protocol-sort', ->
-        sorted_by         = "#{$(this).data('sort-name')} #{$(this).data('sort-order')}"
-        page              = $('#page').val() || 1
+        sorted_by = "#{$(this).data('sort-name')} #{$(this).data('sort-order')}"
+        page      = $('#page').val() || 1
 
         data = {} #Grab form values
 

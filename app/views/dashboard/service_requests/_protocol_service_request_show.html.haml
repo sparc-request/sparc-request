@@ -46,7 +46,7 @@
               = t(:dashboard)[:service_requests][:status]
             %th.col-md-1{ data: {field: 'notifications', align: 'center' } }
               = t(:dashboard)[:service_requests][:notifications]
-            %th.col-md-4{ data: { field: 'actions', align: 'center' }, colspan: 3 }
+            %th.col-md-3{ data: { field: 'actions', align: 'center' } }
               = t(:dashboard)[:service_requests][:actions][:header]
             %th.col-md-1{ data: { field: 'surveys', align: 'center', visible: protocol.has_incomplete_additional_details?.to_s, switchable: 'false' } }
               = t(:dashboard)[:service_requests][:additional_details][:header]

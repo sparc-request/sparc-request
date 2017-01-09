@@ -300,14 +300,6 @@ class Protocol < ActiveRecord::Base
     project_roles.find_by(role: 'primary-pi')
   end
 
-  def permission_to_view?(identity)
-  
-  end
-
-  def permission_to_edit?(identity)
-    project_roles.where(identity: identity, project_rights: ['approve', 'request']).any?  
-  end
-
   def billing_business_manager_email
     billing_business_manager_static_email.blank? ?  billing_managers.map(&:email).try(:join, ', ') : billing_business_manager_static_email
   end

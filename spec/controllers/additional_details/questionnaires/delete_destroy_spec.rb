@@ -37,7 +37,7 @@ RSpec.describe AdditionalDetails::QuestionnairesController do
     end
 
     it 'should assign @questionnaire' do
-      expect(assigns(:questionnaire)).to be
+      expect(assigns(:questionnaire)).to eq(@questionnaire)
     end
 
     it 'should destroy the questionnaire' do

@@ -266,6 +266,11 @@ RSpec.describe 'SubServiceRequest' do
           sub_service_request.update_attributes(status: "on_hold")
           expect(sub_service_request.can_be_edited?).to eq(false)
         end
+
+        it 'should should return false if the status is complete' do
+          sub_service_request.update_attributes(status: 'complete')
+          expect(sub_service_request.can_be_edited?).to eq(false)
+        end
       end
     end
 

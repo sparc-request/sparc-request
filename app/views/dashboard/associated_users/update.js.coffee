@@ -37,7 +37,7 @@ $("#documents-table").bootstrapTable()
 $(".service-requests-table").bootstrapTable()
 
 $('.service-requests-table').on 'all.bs.table', ->
-  $(this).find('.selectpicker').selectpicker()
+  $(this).find('.selectpicker').selectpicker() #Find descendant selectpickers
 <% else %>
 $("#associated-users-table").bootstrapTable 'refresh', {silent: true}
 <% end %>

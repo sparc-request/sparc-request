@@ -82,7 +82,7 @@ class ProtocolsController < ApplicationController
 
   def update
     protocol_type = params[:protocol][:type]
-    @protocol = @protocol.becomes(params[:protocol][:type].constantize) unless protocol_type.nil?
+    @protocol = @protocol.becomes(protocol_type.constantize) unless protocol_type.nil?
     if params[:updated_protocol_type] == 'true' && protocol_type == 'Study'
       @protocol.update_attribute(:type, protocol_type)
       @protocol.activate

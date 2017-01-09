@@ -29,7 +29,7 @@ RSpec.describe Dashboard::ProtocolsController do
       before( :each ) do
         @logged_in_user = build_stubbed( :identity )
         
-        protocol = build( :empty_study_for_testing, primary_pi_role: @loggen_in_user )
+        protocol = build( :empty_study_for_testing )
 
         project_role_attributes = { "0" => { identity_id: @logged_in_user.id, role: 'primary-pi', project_rights: 'approve' } }
 
@@ -75,7 +75,7 @@ RSpec.describe Dashboard::ProtocolsController do
       before( :each ) do
         @logged_in_user = build_stubbed( :identity )
         
-        @protocol = build( :empty_study_for_testing, primary_pi_role: @loggen_in_user )
+        @protocol = build( :empty_study_for_testing )
 
         allow( StudyTypeQuestionGroup ).to receive( :active_id ).
           and_return( "active group id" )

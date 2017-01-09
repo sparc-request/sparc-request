@@ -23,9 +23,11 @@ module ApplicationHelper
   def show_welcome_message(current_user, bootstrap = false)
     returning_html = ""
     if current_user
-      returning_html += content_tag(:span,
-        t(:dashboard)[:navbar][:logged_in_as] +
-        (current_user.email || "") + " ") +
+      logged_in_as = current_user.email ? current_user.email : current_user.full_name
+      returning_html +=
+        content_tag(:span,
+          t(:dashboard)[:navbar][:logged_in_as] +
+          logged_in_as + " ") +
         link_to('Logout', destroy_identity_session_path, method: :delete, class: bootstrap ? "btn btn-warning" : "")
     else
       # could be used to provide a login link

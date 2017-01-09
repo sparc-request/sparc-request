@@ -97,7 +97,6 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def create
-    binding.pry
     protocol_class                          = params[:protocol][:type].capitalize.constantize
     attrs                                   = fix_date_params
     @protocol                               = protocol_class.new(attrs)

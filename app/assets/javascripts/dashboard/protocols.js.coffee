@@ -27,22 +27,7 @@ $(document).ready ->
       getSRId = () ->
         $('input[name="service_request_id"]').val()
 
-      $('.service-requests-table').on 'all.bs.table', ->
-        $(this).find('.selectpicker').selectpicker() #Find descendant selectpickers
 
-      $(document).on 'click', '.service-request-button', ->
-        if $(this).data('permission')
-          window.location = $(this).data('url')
-
-      disableButton: (containing_text, change_to) ->
-        button = $(".ui-dialog .ui-button:contains(#{containing_text})")
-        button.html("<span class='ui-button-text'>#{change_to}</span>")
-          .attr('disabled', true)
-          .addClass('button-disabled')
-
-      enableButton: (containing_text, change_to) ->
-        button = $(".ui-dialog .ui-button:contains(#{containing_text})")
-        button.html("<span class='ui-button-text'>#{change_to}</span>").attr('disabled', false).removeClass('button-disabled')
 
       # Delete cookies from previously visited SSR
       $.cookie('admin-tab', null, {path: '/'})
@@ -114,6 +99,8 @@ $(document).ready ->
         false
       # Protocol Index End
 
+
+
       # Protocol Show Begin
       $(document).on 'click', '.view-protocol-details-button', ->
         protocol_id = $(this).data('protocol-id')
@@ -160,8 +147,7 @@ $(document).ready ->
             $('#modal_place').html(data.modal)
             $('#modal_place').modal 'show'
             $('.service-requests-table').bootstrapTable()
-            $('.service-requests-table').on 'all.bs.table', ->
-              $(this).find('.selectpicker').selectpicker()
+            reset_service_requests_handlers()
 
       $(document).on 'change', '.complete-details', ->
         $selected_options = $('option:selected', this)
@@ -187,7 +173,9 @@ $(document).ready ->
         $(this).find('.selectpicker').selectpicker()
       # Protocol Show End
 
-      # Protocol Table Sorting
+
+
+      # Protocol Table Sorting Begin #
       $(document).on 'click', '.protocol-sort', ->
         sorted_by = "#{$(this).data('sort-name')} #{$(this).data('sort-order')}"
         page      = $('#page').val() || 1
@@ -215,3 +203,11 @@ $(document).ready ->
           type: 'get'
           url: "/dashboard/protocols.js"
           data: data
+      # Protocol Table Sorting End #
+
+
+
+(exports ? this).reset_service_requests_handlers = ->
+  $('.service-requests-table').on 'all.bs.table', ->
+    #Enable selectpickers
+    $(this).find('.selectpicker').selectpicker()

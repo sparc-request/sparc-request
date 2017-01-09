@@ -27,12 +27,12 @@ module Dashboard
     end
 
     def collect_grouped_options
-      groups = @organizations.group_by(&:type)
+      groups = @organizations.
+        sort { |lhs, rhs| lhs.name <=> rhs.name }.
+        group_by(&:type)
       options = ["Institution", "Provider", "Program", "Core"].map do |type|
         next unless groups[type].present?
 
-        # Sort organizations by name
-        groups[type].sort! { |lhs, rhs| lhs.name <=> rhs.name }
         [type.pluralize, extract_name_and_id(groups[type])]
       end
       options.compact

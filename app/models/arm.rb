@@ -50,8 +50,12 @@ class Arm < ActiveRecord::Base
   validates :visit_count, numericality: { greater_than: 0 }
   validates :subject_count, numericality: { greater_than: 0 }
 
+  def name=(name)
+    write_attribute(:name, name.squish)
+  end
+
   def name_formatted_properly
-    if !name.blank? && name.match(/\A([A-Za-z0-9`~!@#$%^&()\-_+={}|<>.,;'"]+(([ ][A-Za-z0-9`~!@#$%^&()\-_+={}|<>.,;'"]*)*)?)\z/).nil?
+    if !name.blank? && name.match(/\A([ ]*[A-Za-z0-9``~!@#$%^&()\-_+={}|<>.,;'"][ ]*)+\z/).nil?
       errors.add(:name, I18n.t(:errors)[:arms][:bad_characters])
     end
   end

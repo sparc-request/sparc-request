@@ -18,55 +18,46 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-require 'rails_helper'
+require "rails_helper"
 
 RSpec.describe Dashboard::SubsidiesController do
-  describe 'GET #edit' do
+  describe "DELETE #destroy" do
     before(:each) do
       @current_user = build_stubbed(:identity)
       log_in_dashboard_identity(obj: @current_user)
       @protocol        = create(:protocol_without_validations,
-                                primary_pi: @current_user)
+                                 primary_pi: @current_user)
       @organization    = create(:organization)
       @subsidy_map     = create(:subsidy_map,
-                                default_percentage: 5,
-                                organization: @organization)
+                                 default_percentage: 0,
+                                 organization: @organization)
       @service_request = create(:service_request_without_validations,
                                 protocol: @protocol)
       @ssr             = create(:sub_service_request_without_validations,
-                                service_request: @service_request,
-                                organization: @organization,
-                                status: 'draft')
-      @pending_subsidy = create(:pending_subsidy,
-                                sub_service_request_id: @ssr.id,
-                                percent_subsidy: 0.1)
-      xhr :get, :edit, admin: 'true', id: @pending_subsidy.id, format: :js
+                                 service_request: @service_request,
+                                 organization: @organization,
+                                 status: 'draft')
+      @subsidy         = create(:subsidy_without_validations,
+                                 sub_service_request: @ssr)
+      xhr :delete, :destroy, id: @subsidy.id, format: :js
     end
 
-    it { is_expected.to render_template "dashboard/subsidies/edit" }
+    it { is_expected.to render_template "dashboard/subsidies/destroy" }
 
     it 'should respond ok' do
       expect(controller).to respond_with(:ok)
     end
 
-    it 'should set @admin to params[:admin]' do
-      expect(assigns(:admin)).to eq(true)
+    it 'should assign @subsidy to the current subsidy' do
+      expect(assigns(:subsidy)).to eq(@subsidy)
     end
 
-    it 'should set @subsidy to the existing PendingSubsidy' do
-      expect(assigns(:subsidy)).to eq(PendingSubsidy.find(@pending_subsidy.id))
+    it 'should assign @sub_service_request' do
+      expect(assigns(:sub_service_request)).to eq(@ssr)
     end
 
-    it 'should set @path to the dashboard subsidy path for @subsidy' do
-      expect(assigns(:path)).to eq(dashboard_subsidy_path(assigns(:subsidy)))
-    end
-
-    it 'should assign header text' do
-      expect(assigns(:header_text)).to be
-    end
-
-    it 'should assign @action to edit' do
-      expect(assigns(:action)).to eq('edit')
+    it 'should destroy @subsidy' do
+      expect(Subsidy.count).to eq(0)
     end
   end
 end

@@ -39,8 +39,7 @@ $(document).ready ->
         button.html("<span class='ui-button-text'>#{change_to}</span>")
           .attr('disabled', true)
           .addClass('button-disabled')
- 
- 
+
       enableButton: (containing_text, change_to) ->
         button = $(".ui-dialog .ui-button:contains(#{containing_text})")
         button.html("<span class='ui-button-text'>#{change_to}</span>").attr('disabled', false).removeClass('button-disabled')
@@ -67,6 +66,7 @@ $(document).ready ->
             $('.service-requests-table').bootstrapTable()
             $('.service-requests-table').on 'all.bs.table', ->
               $(this).find('.selectpicker').selectpicker()
+
 
       $(document).on 'click', '.protocol-archive-button', ->
         protocol_id = $(this).parents("tr").data('protocol-id')

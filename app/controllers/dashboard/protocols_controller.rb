@@ -145,9 +145,9 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     if params[:updated_protocol_type] == 'true' && protocol_type == 'Study'
       @protocol.update_attribute(:type, protocol_type)
       @protocol.activate
-      @protocol = Protocol.find(params[:id]) #Protocol reload
+      @protocol.reload
     end
-    
+
     attrs               = fix_date_params
     permission_to_edit  = @authorization.present? ? @authorization.can_edit? : false
     # admin is not able to activate study_type_question_group

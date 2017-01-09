@@ -31,18 +31,10 @@ task :unmatched_identities_report => :environment do
     csv << ['UNMATCHED IDENTITIES']
     csv << ['Identities that do not have a match in Professional Organizations table']
     csv << ['Total unmatched entries: ', unmatched_identities.count]
-    csv << ['Identity ID', 'Insitution', 'College', 'Department']
+    csv << ['Identity ID', 'Institution', 'College', 'Department']
     
     unmatched_identities.each do |identity|
       csv << [identity.id, identity.institution, identity.college, identity.department]
-    end
-
-    csv << ['Identities with nil/empty for INSTITUTION, COLLEGE, AND DEPARTMENT']
-    csv << ['Total nil/empty entries: ', [identities_with_all_nil_values, identities_with_all_empty_values].flatten.count]
-    csv << ['Identity ID']
-
-    [identities_with_all_nil_values, identities_with_all_empty_values].flatten.each do |identity|
-      csv << [identity.id]
     end
   end
 end

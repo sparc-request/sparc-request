@@ -107,7 +107,6 @@ module Dashboard
 
       # actual service request panels
       sections :service_requests, '.panel-primary', text: /Service Request: \d+/ do
-        element :notes_button, :button, text: "Notes"
         element :modify_request_button, :button, text: "Modify Request"
 
         sections :ssrs, 'tbody tr' do

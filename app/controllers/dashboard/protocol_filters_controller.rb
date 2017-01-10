@@ -26,6 +26,7 @@ class Dashboard::ProtocolFiltersController < Dashboard::BaseController
   end
 
   def create
+    binding.pry
     if ProtocolFilter.create(params[:protocol_filter])
       flash[:success] = 'Search Saved!'
     else

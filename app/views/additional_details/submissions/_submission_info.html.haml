@@ -7,6 +7,6 @@
             %h4.list-group-item-heading
               = item.content
             %p.list-group-item-text
-              = qr.content
+              = qr.content.delete('[]').delete('\"')
       - unless item == @items.last
         %hr

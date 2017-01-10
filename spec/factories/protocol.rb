@@ -133,7 +133,7 @@ FactoryGirl.define do
     factory :archived_study_without_validations, traits: [:without_validations, :study, :archived]
     factory :protocol_federally_funded, traits: [:funded, :federal]
     factory :protocol_with_sub_service_request_in_cwf, traits: [:with_sub_service_request_in_cwf, :funded, :federal]
-    factory :empty_study_for_testing, traits: [:study, :pending, :blank_funding_start_dates, :blank_start_and_end_dates]
+    factory :study_with_blank_dates, traits: [:study, :pending, :blank_funding_start_dates, :blank_start_and_end_dates]
   end
 
   factory :study, parent: :protocol, class: 'Study' do

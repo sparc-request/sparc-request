@@ -126,7 +126,7 @@ class ServiceRequest < ActiveRecord::Base
         invalid_day_errors = false
 
         unless days.all?{|x| !x.blank?}
-          errors.add(:base, I18n.t('errors.fulfillments.visit_day_missing', arm_name: arm.name))
+          errors.add(:base, I18n.t('errors.arms.visit_day_missing', arm_name: arm.name))
           visit_group_errors = true
         end
       end

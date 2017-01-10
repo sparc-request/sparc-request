@@ -32,11 +32,17 @@
             = display_total_cost_per_arm(arm, arm.line_items_visits)
       %tr.total-cost-one-time-fees
         %th{ colspan: 10 }
-          = t(:calendars)[:otf][:totals][:total_direct]
+          = t(:calendars)[:otf][:totals][:total_costs]
         %td.text-center{ colspan: 2 }
-          = display_total_direct_cost_per_study_otfs(service_request, service_request.line_items)
+          = display_total_cost_per_study_otfs(service_request, service_request.line_items)
       %tr.bg-primary
         %td{ colspan: 13 }
+      - if USE_INDIRECT_COST
+        %tr.total-direct-cost
+          %th{ colspan: 10 }
+            = t(:calendar_page)[:labels][:direct_cost]
+          %td.text-center{ colspan: 2 }
+            = display_study_grand_total_direct_costs(service_request.protocol, service_request)
       %tr.grand-total-cost
         %th{ colspan: 10 }
           = t(:calendars)[:merged_totals][:grand_total]

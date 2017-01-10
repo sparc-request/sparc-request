@@ -40,6 +40,72 @@ RSpec.describe 'service request list', js: true do
     page
   end
 
+  describe 'View Consolidated Request button' do
+    let!(:protocol) { create(:unarchived_study_without_validations, :federal, funding_status: "funded", primary_pi: user) }
+    let!(:service_request) do
+      create(:service_request_without_validations,
+        protocol: protocol,
+        status: 'draft')
+    end
+    let!(:arm) do
+      create(:arm_without_validations, visit_count: 1, line_item_count: 3,
+        service_request: service_request, protocol: protocol)
+    end
+
+    before(:each) do
+      first_draft_ssr = create(:sub_service_request,
+        service_request: service_request,
+        organization: create(:organization),
+        status: 'first_draft')
+      arm.line_items[0].update(sub_service_request_id: first_draft_ssr.id)
+      @first_draft_li = arm.line_items[0]
+      create(:pricing_map_without_validations, service_id: arm.line_items[0].service_id)
+
+      draft_ssr = create(:sub_service_request,
+        service_request: service_request,
+        organization: create(:organization),
+        status: 'draft')
+      arm.line_items[1].update(sub_service_request_id: draft_ssr.id)
+      @draft_li = arm.line_items[1]
+      create(:pricing_map_without_validations, service_id: arm.line_items[1].service_id)
+
+      complete_ssr = create(:sub_service_request,
+        service_request: service_request,
+        organization: create(:organization),
+        status: 'complete')
+      arm.line_items[2].update(sub_service_request_id: complete_ssr.id)
+      @complete_li = arm.line_items[2]
+      create(:pricing_map_without_validations, service_id: arm.line_items[2].service_id)
+
+      @page = go_to_show_protocol(protocol.id)
+      @page.view_consolidated_request_button.click
+    end
+
+    context "user clicks All" do
+      it "should show SSR's of each status except for first-draft" do
+        @page.consolidated_request_all.click
+
+        within(@page.consolidated_request_modal) do
+          expect(page).to have_content(@complete_li.service.display_service_name)
+          expect(page).to have_content(@draft_li.service.display_service_name)
+          expect(page).to_not have_content(@first_draft_li.service.display_service_name)
+        end
+      end
+    end
+
+    context "user clicks Exclude Drafts" do
+      it "should show SSR's of each status except for (first-)draft" do
+        @page.consolidated_request_exclude_draft.click
+
+        within(@page.consolidated_request_modal) do
+          expect(page).to have_content(@complete_li.service.display_service_name)
+          expect(page).to_not have_content(@draft_li.service.display_service_name)
+          expect(page).to_not have_content(@first_draft_li.service.display_service_name)
+        end
+      end
+    end
+  end
+
   describe 'displayed ServiceRequest' do
     let!(:protocol) { create(:unarchived_study_without_validations, primary_pi: user) }
 

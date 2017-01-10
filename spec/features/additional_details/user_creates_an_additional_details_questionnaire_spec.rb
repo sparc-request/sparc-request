@@ -23,7 +23,7 @@ require 'rails_helper'
 RSpec.describe 'User creates an additional details questionnaire', js: true do
   let_there_be_lane
   scenario 'successfully' do
-    service = create(:service)
+    service = create(:service, :with_ctrc_organization)
     visit new_service_additional_details_questionnaire_path(service)
     fill_in 'questionnaire_name', with: 'New Questionnaire'
     fill_in 'questionnaire_items_attributes_0_content', with: 'What is your favorite color?'

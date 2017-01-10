@@ -1,4 +1,5 @@
 <% if @submission.save %>
+$('.additional-details-submissions-panel').html("<%= j render 'submissions_panel', protocol: @protocol, submissions: @submissions %>")
 swal("Success!", "Submission saved", "success")
 $('#submissionModal').modal('hide')
 <% else %>

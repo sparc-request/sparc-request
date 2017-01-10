@@ -40,36 +40,6 @@ RSpec.describe 'service request list', js: true do
     page
   end
 
-  describe 'displayed ServiceRequest' do
-    let!(:protocol) { create(:unarchived_study_without_validations, primary_pi: user) }
-
-    describe 'notes button' do
-      context 'when user presses Add Note button and saves a note' do
-        it 'should create a new Note and display it in modal' do
-          service_request = create(:service_request_without_validations,
-                                   protocol: protocol,
-                                   status: 'draft')
-          create(:sub_service_request,
-                 service_request: service_request,
-                 organization: create(:organization),
-                 status: 'draft')
-
-          page = go_to_show_protocol(protocol.id)
-          page.service_requests.first.notes_button.click
-          page.index_notes_modal.instance_exec do
-            new_note_button.click
-            wait_for_message_area
-            message_area.set('my important note')
-            add_note_button.click
-          end
-
-          expect(page.index_notes_modal).to have_notes(text: 'my important note')
-          expect(Note.count).to eq 1
-        end
-      end
-    end
-  end
-
   describe 'displayed SubServiceRequest' do
     let!(:protocol) { create(:unarchived_study_without_validations, primary_pi: user) }
     let!(:service_request) do

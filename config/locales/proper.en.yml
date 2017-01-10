@@ -138,8 +138,8 @@ en:
     document_management:
       documents_notice: "Shared Documents"
       documents_instructions: "Visible to Authorized Users and selected Service Providers"
-      notes_notice: "Service Request Notes"
-      notes_instructions: "Important notes for your Service Request"
+      notes_notice: "Notes"
+      notes_instructions: "Important notes for your Study/Project"
 
     ##########
     # REVIEW #

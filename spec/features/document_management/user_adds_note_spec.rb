@@ -45,7 +45,7 @@ RSpec.describe 'User adds a new note', js: true do
       click_button 'Add a Note'
       wait_for_javascript_to_finish
 
-      expect(page).to have_selector('.modal-dialog', text: 'New Service Request Note', visible: true)
+      expect(page).to have_selector('.modal-dialog', text: 'New Protocol Note', visible: true)
     end
 
     context 'and fills out the form and submits' do
@@ -61,8 +61,8 @@ RSpec.describe 'User adds a new note', js: true do
         click_button 'Add'
         wait_for_javascript_to_finish
 
-        expect(@sr.notes.count).to eq(1)
-        expect(@sr.notes.first.body).to eq('Noteworthy Notes')
+        expect(@protocol.notes.count).to eq(1)
+        expect(@protocol.notes.first.body).to eq('Noteworthy Notes')
       end
     end
   end

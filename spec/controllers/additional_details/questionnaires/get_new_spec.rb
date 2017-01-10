@@ -18,57 +18,29 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-class AdditionalDetails::QuestionnairesController < ApplicationController
-  before_action :find_service
-  before_action :find_questionnaire, only: [:edit, :update, :destroy]
-  layout 'additional_details'
+require 'rails_helper'
 
-  def index
-    @questionnaires = @service.questionnaires
-  end
+RSpec.describe AdditionalDetails::QuestionnairesController do
+  describe '#new' do
+    before :each do
+      @service = create(:service)
 
-  def new
-    @questionnaire = Questionnaire.new
-    @questionnaire.items.build
-  end
-
-  def edit
-  end
-
-  def create
-    @questionnaire = @service.questionnaires.new(questionnaire_params)
-
-    if @questionnaire.save
-      redirect_to service_additional_details_questionnaires_path(@service)
-    else
-      render :new
+      xhr :get, :new, {
+        service_id: @service.id
+      }
     end
-  end
 
-  def update
-    if @questionnaire.update(questionnaire_params)
-      redirect_to service_additional_details_questionnaires_path(@service)
-    else
-      render :edit
+    it 'should assign @service' do
+      expect(assigns(:service)).to eq(@service)
     end
-  end
 
-  def destroy
-    @questionnaire.destroy
-    redirect_to service_additional_details_questionnaires_path(@service)
-  end
+    it 'should assign @questionnaire' do
+      expect(assigns(:questionnaire)).to be_a(Questionnaire)
+      expect(assigns(:questionnaire).new_record?).to eq(true)
+    end
 
-  private
+    it { is_expected.to render_template(:new) }
 
-  def find_questionnaire
-    @questionnaire = Questionnaire.find(params[:id])
-  end
-
-  def find_service
-    @service = Service.find(params[:service_id])
-  end
-
-  def questionnaire_params
-    params.require(:questionnaire).permit!
+    it { is_expected.to respond_with(:ok) }
   end
 end

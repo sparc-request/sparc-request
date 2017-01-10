@@ -18,57 +18,40 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-class AdditionalDetails::QuestionnairesController < ApplicationController
-  before_action :find_service
-  before_action :find_questionnaire, only: [:edit, :update, :destroy]
-  layout 'additional_details'
+require 'rails_helper'
 
-  def index
-    @questionnaires = @service.questionnaires
-  end
+RSpec.describe AdditionalDetails::PreviewsController do
+  describe '#create' do
+    before :each do
+      @service = create( :service )
+      @questionnaire = build( :questionnaire, service: @service, active: false )
 
-  def new
-    @questionnaire = Questionnaire.new
-    @questionnaire.items.build
-  end
-
-  def edit
-  end
-
-  def create
-    @questionnaire = @service.questionnaires.new(questionnaire_params)
-
-    if @questionnaire.save
-      redirect_to service_additional_details_questionnaires_path(@service)
-    else
-      render :new
+      xhr :post, :create, {
+        name: 'Some Program',
+        service_id: @service,
+        questionnaire: @questionnaire.attributes,
+        format: :js
+      }
     end
-  end
 
-  def update
-    if @questionnaire.update(questionnaire_params)
-      redirect_to service_additional_details_questionnaires_path(@service)
-    else
-      render :edit
+    it 'should assign @questionnaire' do
+      expect( assigns( :questionnaire ) ).to be_an_instance_of( Questionnaire )
     end
-  end
 
-  def destroy
-    @questionnaire.destroy
-    redirect_to service_additional_details_questionnaires_path(@service)
-  end
+    it 'should assign @service' do
+      expect( assigns( :service ) ).to be_an_instance_of( Service )
+    end
 
-  private
+    it 'should assign @submissions' do
+      expect( assigns( :submission ) ).to be_an_instance_of( Submission )
+    end
 
-  def find_questionnaire
-    @questionnaire = Questionnaire.find(params[:id])
-  end
+    it 'should build questionnaire responses for @submission' do
+      expect( assigns( :submission ).questionnaire_responses ).to_not be_nil
+    end
 
-  def find_service
-    @service = Service.find(params[:service_id])
-  end
+    it { is_expected.to render_template :create }
 
-  def questionnaire_params
-    params.require(:questionnaire).permit!
+    it { is_expected.to respond_with :ok }
   end
 end

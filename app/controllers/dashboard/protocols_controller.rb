@@ -141,11 +141,12 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def update
-    @protocol = @protocol.becomes(params[:protocol][:type].constantize) unless @protocol_type.nil?
-    if params[:updated_protocol_type] == 'true' && params[:protocol][:type] == 'Study'
-      @protocol.update_attribute(:type, params[:protocol][:type])
+    protocol_type = params[:protocol][:type]
+    @protocol = @protocol.becomes(protocol_type.constantize) unless protocol_type.nil?
+    if params[:updated_protocol_type] == 'true' && protocol_type == 'Study'
+      @protocol.update_attribute(:type, protocol_type)
       @protocol.activate
-      @protocol = Protocol.find(params[:id]) #Protocol reload
+      @protocol.reload
     end
 
     attrs               = fix_date_params

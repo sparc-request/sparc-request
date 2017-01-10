@@ -24,29 +24,38 @@ RSpec.describe Dashboard::ProtocolFiltersController do
 
   describe 'POST #create' do
 
-    before(:each) do
-      @user = build(:identity, protocol_filter_count: 3)
+    context 'successful' do
 
-      @filterrific = { sorted_by: "id desc",
-                       search_query: "" }
+      before(:each) do
+        @user = build(:identity, protocol_filter_count: 3)
 
-      
+        @protocol_filter = build(:protocol_filter, identity_id: @user.id)
 
-      log_in_dashboard_identity(obj: @user)
+        log_in_dashboard_identity(obj: @user)
+      end
+
+      it "creates a protocol filter record" do
+        expect{ xhr :post, :create, protocol_filter: @protocol_filter.attributes }.to change{ ProtocolFilter.count }.by(1)
+      end
+
+      it "adds the filter to the user's protocol filter list" do
+        expect{ xhr :post, :create, protocol_filter: @protocol_filter.attributes }.to change{ @user.protocol_filters.count }.by(1)
+      end
+
+      it "saves the correct attributes for the protocol filter" do
+        xhr :post, :create, protocol_filter: @protocol_filter.attributes
+        expect( ProtocolFilter.last.attributes.except( 'id', 'created_at', 'updated_at' ) ).to eq( @protocol_filter.attributes.except( 'id', 'created_at', 'updated_at' ) )
+      end
+
+      it "flashes the correct message" do
+        xhr :post, :create, protocol_filter: @protocol_filter.attributes
+        expect( flash[:success] ).to eq( 'Search Saved!' )
+      end
+
     end
 
-    it "creates the appropriate project filter object" do
-      xhr :get, :new, filterrific: @filterrific
-      expect( assigns(:protocol_filter).attributes ).to eq( build(:protocol_filter, identity_id: @user.id, search_query: "").attributes )
-    end
-
-    it "adds the filter to the user's protocol filter list" do
-      expect{ xhr :get, :new, filterrific: @filterrific }.to change{ @user.protocol_filters.length }.by(1)
-    end
-
-    it "doesn't save the project filter object" do
-      expect{ xhr :get, :new, filterrific: @filterrific }.to_not change{ ProtocolFilter.count }
-    end
+    #Leaving this section in in case we add validation to the protocol filter model
+    #context 'unsuccessful' do
 
   end
 

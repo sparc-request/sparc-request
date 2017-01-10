@@ -311,6 +311,7 @@ en:
         funding_source: "Funding Source:"
         potential_funding_source: "Potential Funding Source:"
         funding_source_internal: "Please Specify:"
+        research_master_id: "Research Master ID:"
         funding_source_federal:
           title: "Federal Grant Title:"
           code: "Federal Grant Code:"

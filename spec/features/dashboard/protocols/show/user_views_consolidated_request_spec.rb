@@ -18,58 +18,45 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-FactoryGirl.define do
-  sequence :ldap_uid do |n|
-    "ldap_uid#{n}@email.com"
-  end
+require 'rails_helper'
 
-  sequence :email do |n|
-    "email#{n}@email.com"
-  end
+RSpec.describe "User views Consolidated Request", js: true do
+  let_there_be_lane
+  fake_login_for_each_test
 
-  factory :identity do
-    ldap_uid
-    last_name             { Faker::Name.last_name }
-    first_name            { Faker::Name.first_name }
-    email
-    era_commons_name      { Faker::Internet.user_name }
-    credentials           { Faker::Name.suffix }
-    subspecialty          { Faker::Lorem.word }
-    phone                 { Faker::PhoneNumber.phone_number }
-    password              "abc123456789!"
-    password_confirmation "abc123456789!"
+  context 'with all SSRs' do
+    scenario 'and sees the Consolidated Request modal' do
+      org      = create(:organization)
+      protocol = create(:protocol_federally_funded, primary_pi: jug2, type: 'Study')
+      sr       = create(:service_request_without_validations, protocol: protocol)
+      ssr      = create(:sub_service_request, service_request: sr, organization: org)
 
+      visit dashboard_protocol_path(protocol)
+      wait_for_javascript_to_finish
 
-    created_at       { 1.day.ago }
-    updated_at       { Time.now }
+      click_button 'View Consolidated Request'
+      first('.view-full-calendar-button').click
+      wait_for_javascript_to_finish
 
-    transient do
-      catalog_manager_count 0
-      super_user_count 0
-      approval_count 0
-      project_role_count 0
-      service_provider_count 0
-      protocol_filter_count 0
+      expect(page).to have_selector('.full-calendar-modal', visible: true)
     end
+  end
 
-    after(:build) do |identity, evaluator|
-      create_list(:catalog_manager,
-       evaluator.catalog_manager_count, identity: identity)
+  context 'excluding draft SSRs' do
+    scenario 'and sees the Consolidated Request modal' do
+      org      = create(:organization)
+      protocol = create(:protocol_federally_funded, primary_pi: jug2, type: 'Study')
+      sr       = create(:service_request_without_validations, protocol: protocol)
+      ssr      = create(:sub_service_request, service_request: sr, organization: org)
 
-      create_list(:super_user,
-       evaluator.super_user_count, identity: identity)
+      visit dashboard_protocol_path(protocol)
+      wait_for_javascript_to_finish
 
-      create_list(:approval,
-       evaluator.approval_count, identity: identity)
+      click_button 'View Consolidated Request'
+      all('.view-full-calendar-button')[1].click
+      wait_for_javascript_to_finish
 
-      create_list(:project_role,
-       evaluator.project_role_count, identity: identity)
-
-      create_list(:service_provider,
-       evaluator.service_provider_count, identity: identity)
-
-      create_list(:protocol_filter,
-        evaluator.protocol_filter_count, identity: identity)
+      expect(page).to have_selector('.full-calendar-modal', visible: true)
     end
   end
 end

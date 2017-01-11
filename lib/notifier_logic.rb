@@ -35,7 +35,7 @@ class NotifierLogic
     if !previously_submitted_ssrs.empty?
       request_amendment_ssrs = previously_submitted_ssrs.select{ |ssr| ssr_has_changed?(ssr) }
 
-      destroyed_or_created_ssr = [@service_request.deleted_ssrs_since_previous_submission, @service_request.created_ssrs_since_previous_submission].flatten
+      destroyed_or_created_ssr = @service_request.previous_submitted_at.nil? ? [] : [@service_request.deleted_ssrs_since_previous_submission, @service_request.created_ssrs_since_previous_submission].flatten
       # If an existing SSR has had services added/deleted, send a request amendment 
       # (If an SSR has been deleted or created, this is also seen in the email)
       # The destroyed_or_created_ssr determines whether authorized users need a request amendment email 

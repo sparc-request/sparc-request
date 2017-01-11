@@ -20,7 +20,7 @@
 <% if @portal %>
 $("#sub_service_request_header").html("<%= escape_javascript(render( 'dashboard/sub_service_requests/header', sub_service_request: @sub_service_request )) %>")
 <% end %>
-$(".arm-calendar-container-<%= @arm.id %>").replaceWith("<%= escape_javascript(render( '/service_calendars/master_calendar/pppv/pppv_calendar', tab: @tab, arm: @arm, service_request: @service_request, sub_service_request: @sub_service_request, page: @pages[@arm.id], pages: @pages, review: @review, portal: @portal, merged: @merged, consolidated: @consolidated, admin: @admin )) %>")
+$(".arm-calendar-container-<%= @arm.id %>").replaceWith("<%= escape_javascript(render( '/service_calendars/master_calendar/pppv/pppv_calendar', tab: @tab, arm: @arm, service_request: @service_request, sub_service_request: @sub_service_request, page: @pages[@arm.id], pages: @pages, review: @review, portal: @portal, merged: @merged, consolidated: @consolidated, admin: @admin, statuses_hidden: @statuses_hidden )) %>")
 $('.selectpicker').selectpicker()
 setup_xeditable_fields()
 changing_tabs_calculating_rates()

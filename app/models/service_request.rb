@@ -126,7 +126,7 @@ class ServiceRequest < ActiveRecord::Base
         invalid_day_errors = false
 
         unless days.all?{|x| !x.blank?}
-          errors.add(:base, I18n.t('errors.fulfillments.visit_day_missing', arm_name: arm.name))
+          errors.add(:base, I18n.t('errors.arms.visit_day_missing', arm_name: arm.name))
           visit_group_errors = true
         end
       end
@@ -440,7 +440,7 @@ class ServiceRequest < ActiveRecord::Base
     self.assign_attributes(status: new_status)
 
     sub_service_requests.each do |ssr|
-      next unless ssr.can_be_edited? && !ssr.is_complete?
+      next unless ssr.can_be_edited?
       available = AVAILABLE_STATUSES.keys
       editable = EDITABLE_STATUSES[ssr.organization_id] || available
       changeable = available & editable

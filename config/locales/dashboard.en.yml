@@ -196,7 +196,8 @@ en:
         view_consolidated: "View Consolidated Request"
         export_consolidated: "Export Consolidated Request"
         add_services: "Add Services"
-
+        consolidated_all: "All"
+        consolidated_exclude_drafts: "Exclude Drafts"
     #####################
     # SERVICE CALENDARS #
     #####################
@@ -233,6 +234,9 @@ en:
         view: "View"
         edit: "Edit"
         admin_edit: "Admin Edit"
+      additional_details:
+        header: "Form Functionality"
+        selectpicker: "Complete Form"
       view_ssr:
         documents:
           header: "Documents"

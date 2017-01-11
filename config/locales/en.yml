@@ -178,7 +178,6 @@ en:
         percent: "Edit Effort Billing Qty"
       totals:
         maximum_direct: "Maximum Total Direct Costs Per Patient"
-        maximum_indirect: "Maximum Total Indirect Costs Per Patient"
         maximum_per_patient: "Maximum Total Per Patient"
         total_costs: "Total Costs (Per Patient/Visit Services) Per Study -- %{arm_name}"
     otf:
@@ -196,7 +195,8 @@ en:
         quantity: "Edit Qty"
         unit_quantity: "Edit Units per Qty"
       totals:
-        total_direct: "Total Costs (One Time Fee Services) Per Study"
+        total_direct: "Total Direct Costs (One Time Fee Services) Per Study"
+        total_costs: "Total Costs (One Time Fee Services) Per Study"
     merged_totals:
       header: "Study Cost Totals"
       grand_total: "Grand Total"
@@ -311,6 +311,7 @@ en:
         funding_source: "Funding Source:"
         potential_funding_source: "Potential Funding Source:"
         funding_source_internal: "Please Specify:"
+        research_master_id: "Research Master ID:"
         funding_source_federal:
           title: "Federal Grant Title:"
           code: "Federal Grant Code:"
@@ -446,6 +447,7 @@ en:
   errors:
     arms:
       name_unique: "has to be unique within a study/project"
+      bad_characters: "can not contain any of the following characters: [ ] * / \\ ? :"
       visit_day_missing: "Please specify a study day for each visit (%{arm_name})"
       name_unique: 'must be unique to the Protocol'
     line_items:

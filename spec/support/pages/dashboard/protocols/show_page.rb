@@ -96,15 +96,17 @@ module Dashboard
         element :cancel_button, :button, text: "Close"
       end
 
-      # big panel of service requests: the consolidated buttongs and the
+      # big panel of service requests: the consolidated buttons and the
       # following :service_requests sections
       element :view_consolidated_request_button, :button, text: "View Consolidated Request"
       element :export_consolidated_request_link, :link, text: "Export Consolidated Request"
       element :add_services_button, '#add-services-button'
+      # submenu options that shows after clicking either consolidated request button
+      element :consolidated_request_all, "a", text: /All/
+      element :consolidated_request_exclude_draft, "a", text: /Exclude Draft/
 
       # actual service request panels
       sections :service_requests, '.panel-primary', text: /Service Request: \d+/ do
-        element :notes_button, :button, text: "Notes"
         element :modify_request_button, :button, text: "Modify Request"
 
         sections :ssrs, 'tbody tr' do
@@ -114,6 +116,7 @@ module Dashboard
           element :view_button, :button, "View"
           element :edit_button, :button, "Edit"
           element :admin_edit_button, :button, "Admin Edit"
+          element :complete_details_select, :button, text: "Complete Details"
         end
       end
 
@@ -123,9 +126,16 @@ module Dashboard
         element :submit_button, 'button[type="submit"]'
       end
 
+      section :new_submission_form, 'form#new_submission' do
+        element :submit_button, :link, "Create Submission"
+      end
+
       section :index_notes_modal, Dashboard::Notes::IndexModal, '#notes-modal'
 
       element :view_ssr_modal, ".user-view-ssr-modal"
+
+      # Modal displaying consolidated request
+      element :consolidated_request_modal, ".modal-dialog", text: /Consolidated Request Summary/
     end
   end
 end

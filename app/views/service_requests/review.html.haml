@@ -33,5 +33,6 @@
 = render 'service_requests/navigation/footer', service_request: @service_request, css_class: @css_class, back: @back, forward: @forward
 
 - if SYSTEM_SATISFACTION_SURVEY
+  = javascript_include_tag 'system_satisfaction'
   = hidden_field_tag :use_system_satisfaction, 'true'
   = render 'service_requests/modals/participate_in_survey_modal'

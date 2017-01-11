@@ -17,36 +17,48 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS~
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
-
 require 'rails_helper'
 
-RSpec.describe AdditionalDetails::PreviewsController do
-  describe '#create' do
-    before :each do
-      @service = create( :service )
-      @questionnaire = create( :questionnaire, service: @service, active: false )
+RSpec.describe AdditionalDetails::SubmissionsController, type: :controller do
+  stub_controller
+  let!(:before_filters) { find_before_filters }
+  let!(:logged_in_user) { create(:identity) }
 
-      xhr :post, :create, name: 'Some Program', service_id: @service, questionnaire: @questionnaire.attributes, format: :js
+  before :each do
+    org         = create(:organization)
+    @service    = create(:service, organization: org)
+    @que        = create(:questionnaire, service: @service, active: true)
+    protocol    = create(:protocol_federally_funded, primary_pi: logged_in_user)
+    sr          = create(:service_request_without_validations, protocol: protocol)
+    ssr         = create(:sub_service_request, service_request: sr, organization: org)
+    li          = create(:line_item, service_request: sr, sub_service_request: ssr, service: @service)
+    @submission = create(:submission, protocol: protocol, identity: logged_in_user, service: @service, line_item: li, questionnaire: @que)
+
+    xhr :get, :edit, {
+      id: @submission.id,
+      service_id: @service.id
+    }
+  end
+
+  describe '#edit' do
+    it 'should assign @service' do
+      expect(assigns(:service)).to eq(@service)
+    end
+
+    it 'should assign @submission' do
+      expect(assigns(:submission)).to eq(@submission)
     end
 
     it 'should assign @questionnaire' do
-      expect( assigns( :questionnaire ) ).to be_an_instance_of( Questionnaire )
+      expect(assigns(:questionnaire)).to eq(@que)
     end
 
-    it 'should assign @service' do
-      expect( assigns( :service ) ).to be_an_instance_of( Service )
+    it 'should render template' do
+      expect(controller).to render_template(:edit)
     end
 
-    it 'should assign @submissions' do
-      expect( assigns( :submission ) ).to be_an_instance_of( Submission )
+    it 'should respond ok' do
+      expect(controller).to respond_with(:ok)
     end
-
-    it 'should build questionnaire responses for @submission' do
-      expect( assigns( :submission ).questionnaire_responses ).to_not be_nil
-    end
-
-    it { is_expected.to render_template "previews/create" }
-
-    it { is_expected.to respond_with :ok }
   end
 end

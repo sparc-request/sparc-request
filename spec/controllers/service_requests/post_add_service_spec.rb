@@ -21,9 +21,14 @@
 require 'rails_helper'
 
 RSpec.describe ServiceRequestsController, type: :controller do
-  stub_controller
   let!(:before_filters) { find_before_filters }
   let!(:logged_in_user) { create(:identity) }
+
+  before(:each) do
+    allow(controller).to receive(:current_user).and_return(logged_in_user)
+    allow(controller).to receive(:authorize_identity) { }
+    allow(controller).to receive(:authenticate_identity!) { }
+  end
 
   describe '#add_service' do
     it 'should call before_filter #initialize_service_request' do

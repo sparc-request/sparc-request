@@ -320,7 +320,7 @@ class SubServiceRequest < ActiveRecord::Base
   def can_be_edited?
     if organization.has_editable_statuses?
       self_or_parent_id = find_editable_id(self.organization.id)
-      EDITABLE_STATUSES[self_or_parent_id].include?(self.status)
+      EDITABLE_STATUSES[self_or_parent_id].include?(self.status) && !is_complete?
     else
       !is_complete?
     end
@@ -342,17 +342,6 @@ class SubServiceRequest < ActiveRecord::Base
   def set_to_draft(admin)
     if !admin && status != 'draft'
       self.update_attributes(status: 'draft')
-    end
-  end
-
-  # If the ssr can't be edited AND it's a request that restricts editing AND there are multiple ssrs under it's service request
-  # (no need to create a new sr if there's only one ssr) AND it's previous status was an editable one
-  # AND it's new status is an uneditable one, then create a new sr and place the ssr under it. Probably don't need the last condition.
-  def update_based_on_status previous_status
-    if !self.can_be_edited? && organization.has_editable_statuses? && (self.service_request.sub_service_requests.count > 1) &&
-                            EDITABLE_STATUSES[self.organization.id].include?(previous_status) &&
-                            !EDITABLE_STATUSES[self.organization.id].include?(self.status)
-      self.switch_to_new_service_request
     end
   end
 

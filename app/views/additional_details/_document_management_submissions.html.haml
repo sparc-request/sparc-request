@@ -24,8 +24,8 @@
               = service.name
             %td
               .text-center
-                - if service.identity_submission(current_identity).present?
-                  = link_to service_additional_details_submission_path(service, service.identity_submission(current_identity).first),
+                - if line_item.submission.present?
+                  = link_to service_additional_details_submission_path(service, line_item.submission),
                     remote: true, class: 'btn btn-primary' do
                     %span.glyphicon.glyphicon-search
                 - else
@@ -34,14 +34,14 @@
                     %span.glyphicon.glyphicon-modal-window
             %td
               .text-center
-                = service.identity_submission(current_identity).present? ? "True" : "False"
+                = line_item.submission.present? ? "True" : "False"
             %td
               .text-center
-                - if service.identity_submission(current_identity).present?
-                  = link_to edit_service_additional_details_submission_path(service, service.identity_submission(current_identity).first, sr_id: @service_request.id), remote: true, class: 'btn btn-warning' do
+                - if line_item.submission.present?
+                  = link_to edit_service_additional_details_submission_path(service, line_item.submission, sr_id: @service_request.id), remote: true, class: 'btn btn-warning' do
                     %span.glyphicon.glyphicon-edit
             %td
               .text-center
-                - if service.identity_submission(current_identity).present?
-                  = link_to "javascript:void(0);", class: 'btn btn-danger delete-submission', data: { id: service.identity_submission(current_identity).first.id, service_id: service.id, sr_id: @service_request.id, protocol_id: @service_request.protocol_id, line_item_id: line_item.id } do
+                - if line_item.submission.present?
+                  = link_to "javascript:void(0);", class: 'btn btn-danger delete-submission', data: { id: line_item.submission.id, service_id: service.id, sr_id: @service_request.id, protocol_id: @service_request.protocol_id, line_item_id: line_item.id } do
                     %span.glyphicon.glyphicon-remove

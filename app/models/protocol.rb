@@ -36,6 +36,7 @@ class Protocol < ActiveRecord::Base
   has_many :service_requests
   has_many :services,                     through: :service_requests
   has_many :sub_service_requests,         through: :service_requests
+  has_many :line_items,                   through: :service_requests
   has_many :organizations,                through: :sub_service_requests
   has_many :affiliations,                 dependent: :destroy
   has_many :impact_areas,                 dependent: :destroy
@@ -138,6 +139,29 @@ class Protocol < ActiveRecord::Base
 
   def has_human_subject_info?
     self.has_human_subject_info == true
+  end
+
+  validate :existing_rm_id,
+    if: -> record { record.has_human_subject_info? && !record.research_master_id.nil? }
+
+  validate :unique_rm_id_to_protocol,
+    if: -> record { record.has_human_subject_info? && !record.research_master_id.nil? }
+
+  def existing_rm_id
+    rm_ids = HTTParty.get(RESEARCH_MASTER_API + 'research_masters.json', headers: {'Content-Type' => 'application/json', 'Authorization' => "Token token=\"#{RMID_API_TOKEN}\""})
+    ids = rm_ids.map{ |rm_id| rm_id['id'] }
+
+    unless ids.include?(self.research_master_id)
+      errors.add(:_, 'The entered Research Master ID does not exist. Please go to the Research Master website to create a new record.')
+    end
+  end
+
+  def unique_rm_id_to_protocol
+    Protocol.all.each do |protocol|
+      if self.research_master_id == protocol.research_master_id
+        errors.add(:_, "The Research Master ID is already taken by Protocol #{protocol.id}. Please enter another RMID.")
+      end
+    end
   end
 
   scope :for_identity, -> (identity) {
@@ -516,6 +540,10 @@ class Protocol < ActiveRecord::Base
 
   def has_non_first_draft_ssrs?
     sub_service_requests.where.not(status: 'first_draft').any?
+  end
+
+  def has_incomplete_additional_details?
+    line_items.any?(&:has_incomplete_additional_details?)
   end
 
   private

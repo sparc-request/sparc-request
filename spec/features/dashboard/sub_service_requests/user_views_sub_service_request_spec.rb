@@ -18,6 +18,44 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$('#modal_place').html("<%= escape_javascript(render( 'dashboard/sub_service_requests/user_modal_ssr_show', sub_service_request: @sub_service_request, show_view_ssr_back: @show_view_ssr_back, service_request: @service_request, service_list: @service_list, tab: @tab, portal: @portal, admin: @admin, review: @review, consolidated: @consolidated, pages: @pages, merged: @merged, protocol: @protocol, statuses_hidden: %w(first_draft) )) %>")
-$('#modal_place').modal 'show'
-$('.selectpicker').selectpicker()
+require 'rails_helper'
+
+RSpec.describe "User views Sub Service Request", js: true do
+  let_there_be_lane
+  fake_login_for_each_test
+
+  context 'as an admin' do
+    scenario 'and sees the View SSR modal' do
+      org       = create(:organization)
+                  create(:super_user, organization: org, identity: jug2)
+      protocol  = create(:protocol_federally_funded, primary_pi: create(:identity), type: 'Study')
+      sr        = create(:service_request_without_validations, protocol: protocol)
+      ssr       = create(:sub_service_request, service_request: sr, organization: org)
+
+      visit dashboard_protocol_path(protocol)
+      wait_for_javascript_to_finish
+
+      find('.view-service-request').click
+      wait_for_javascript_to_finish
+
+      expect(page).to have_selector('.user-view-ssr-modal', visible: true)
+    end
+  end
+
+  context 'as a user with view, approve, or request project_rights' do
+    scenario 'and sees the View SSR modal' do
+      org       = create(:organization)
+      protocol  = create(:protocol_federally_funded, primary_pi: jug2, type: 'Study')
+      sr        = create(:service_request_without_validations, protocol: protocol)
+      ssr       = create(:sub_service_request, service_request: sr, organization: org)
+
+      visit dashboard_protocol_path(protocol)
+      wait_for_javascript_to_finish
+
+      find('.view-service-request').click
+      wait_for_javascript_to_finish
+
+      expect(page).to have_selector('.user-view-ssr-modal', visible: true)
+    end
+  end
+end

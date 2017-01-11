@@ -36,6 +36,7 @@ class Protocol < ActiveRecord::Base
   has_many :service_requests
   has_many :services,                     through: :service_requests
   has_many :sub_service_requests,         through: :service_requests
+  has_many :line_items,                   through: :service_requests
   has_many :organizations,                through: :sub_service_requests
   has_many :affiliations,                 dependent: :destroy
   has_many :impact_areas,                 dependent: :destroy
@@ -519,17 +520,7 @@ class Protocol < ActiveRecord::Base
   end
 
   def has_incomplete_additional_details?
-    if service_requests.any? { |sr| sr.additional_detail_services.present? }
-      service_requests.each do |sr|
-        sr.line_items.includes(service: :questionnaires).includes(:submissions).each do |li|
-          if li.has_incomplete_additional_details?
-            return true
-          end
-        end
-      end
-    end
-
-    return false
+    line_items.any?(&:has_incomplete_additional_details?)
   end
 
   private

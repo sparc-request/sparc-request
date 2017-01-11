@@ -414,7 +414,7 @@ class LineItem < ActiveRecord::Base
   end
 
   def has_incomplete_additional_details?
-    service.questionnaires.active.present? && !submissions.present?
+    service.questionnaires.active.present? && !submission.present?
   end
 
   private

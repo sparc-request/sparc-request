@@ -171,8 +171,7 @@ RSpec.describe Dashboard::VisitGroupsController do
         @protocol = create(:protocol_federally_funded, primary_pi: logged_in_user)
         @sr       = create(:service_request_without_validations, protocol: @protocol)
         @ssr      = create(:sub_service_request, service_request: @sr, organization: org)
-        @arm1     = create(:arm, protocol: @protocol)
-        @arm2     = create(:arm, protocol: @protocol)
+        @arm      = create(:arm, protocol: @protocol)
         
         xhr :get, :new, {
           service_request_id: @sr.id,

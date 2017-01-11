@@ -34,6 +34,9 @@ RSpec.describe Dashboard::VisitGroupsController do
         @sr       = create(:service_request_without_validations, protocol: @protocol)
         @ssr      = create(:sub_service_request, service_request: @sr, organization: org)
         @arm1     = create(:arm, protocol: @protocol)
+        @arm2     = create(:arm, protocol: @protocol)
+        @vg1      = create(:visit_group, arm: @arm1)
+        @vg2      = create(:visit_group, arm: @arm2)
       end
 
       it 'should assign @service_request' do
@@ -41,8 +44,7 @@ RSpec.describe Dashboard::VisitGroupsController do
           service_request_id: @sr.id,
           sub_service_request_id: @ssr.id,
           protocol_id: @protocol.id,
-          current_page: 'tree-fiddy',
-          schedule_tab: 'tabloid'
+          intended_action: 'new'
         }
 
         expect(assigns(:service_request)).to eq(@sr)
@@ -53,8 +55,7 @@ RSpec.describe Dashboard::VisitGroupsController do
           service_request_id: @sr.id,
           sub_service_request_id: @ssr.id,
           protocol_id: @protocol.id,
-          current_page: 'tree-fiddy',
-          schedule_tab: 'tabloid'
+          intended_action: 'new'
         }
 
         expect(assigns(:sub_service_request)).to eq(@ssr)
@@ -65,8 +66,7 @@ RSpec.describe Dashboard::VisitGroupsController do
           service_request_id: @sr.id,
           sub_service_request_id: @ssr.id,
           protocol_id: @protocol.id,
-          current_page: 'tree-fiddy',
-          schedule_tab: 'tabloid'
+          intended_action: 'new'
         }
 
         expect(assigns(:protocol)).to eq(@protocol)
@@ -77,63 +77,70 @@ RSpec.describe Dashboard::VisitGroupsController do
           service_request_id: @sr.id,
           sub_service_request_id: @ssr.id,
           protocol_id: @protocol.id,
-          current_page: 'tree-fiddy',
-          schedule_tab: 'tabloid'
+          intended_action: 'new'
         }
 
-        expect(assigns(:current_page)).to eq('tree-fiddy')
+        expect(assigns(:intended_action)).to eq('new')
       end
 
-      it 'should assign @schedule_tab' do
-        xhr :get, :navigate, {
-          service_request_id: @sr.id,
-          sub_service_request_id: @ssr.id,
-          protocol_id: @protocol.id,
-          current_page: 'tree-fiddy',
-          schedule_tab: 'tabloid'
-        }
-
-        expect(assigns(:schedule_tab)).to eq('tabloid')
-      end
-
-      it 'should assign @visit_group' do
-        xhr :get, :navigate, {
-          service_request_id: @sr.id,
-          sub_service_request_id: @ssr.id,
-          protocol_id: @protocol.id,
-          current_page: 'tree-fiddy',
-          schedule_tab: 'tabloid'
-        }
-
-        expect(assigns(:visit_group)).to be_a_new(VisitGroup)
-      end
-
-      context 'params[:arm_id] is present' do
-        it 'should assign @arm to the arm' do
+      context 'params[:visit_group_id] is present' do
+        before :each do
           xhr :get, :navigate, {
             service_request_id: @sr.id,
             sub_service_request_id: @ssr.id,
             protocol_id: @protocol.id,
-            current_page: 'tree-fiddy',
-            schedule_tab: 'tabloid',
-            arm_id: @arm2.id
+            intended_action: 'new',
+            visit_group_id: @vg1.id
           }
+        end
 
-          expect(assigns(:arm)).to eq(@arm2)
+        it 'should assign @visit_group' do
+          expect(assigns(:visit_group)).to eq(@vg1)
+        end
+
+        it 'should assign @arm' do
+          expect(assigns(:arm)).to eq(@arm1)
         end
       end
 
-      context 'params[:arm_id] is nil' do
-        it 'should assign @arm to the first arm' do
-          xhr :get, :navigate, {
-            service_request_id: @sr.id,
-            sub_service_request_id: @ssr.id,
-            protocol_id: @protocol.id,
-            current_page: 'tree-fiddy',
-            schedule_tab: 'tabloid'
-          }
+      context 'params[:visit_group_id] is nil' do
+        context 'params[:arm_id] is present' do
+          before :each do
+            xhr :get, :navigate, {
+              service_request_id: @sr.id,
+              sub_service_request_id: @ssr.id,
+              protocol_id: @protocol.id,
+              intended_action: 'new',
+              arm_id: @arm2.id
+            }
+          end
 
-          expect(assigns(:arm)).to eq(@arm1)
+          it 'should assign @arm' do
+            expect(assigns(:arm)).to eq(@arm2)
+          end
+
+          it 'should assign @visit_group' do
+            expect(assigns(:visit_group)).to eq(@vg2)
+          end
+        end
+
+        context 'params[:arm_id] is nil' do
+          before :each do
+            xhr :get, :navigate, {
+              service_request_id: @sr.id,
+              sub_service_request_id: @ssr.id,
+              protocol_id: @protocol.id,
+              intended_action: 'new'
+            }
+          end
+
+          it 'should assign @arm' do
+            expect(assigns(:arm)).to eq(@arm1)
+          end
+
+          it 'should assign @visit_group' do
+            expect(assigns(:visit_group)).to eq(@vg1)
+          end
         end
       end
 
@@ -142,11 +149,10 @@ RSpec.describe Dashboard::VisitGroupsController do
           service_request_id: @sr.id,
           sub_service_request_id: @ssr.id,
           protocol_id: @protocol.id,
-          current_page: 'tree-fiddy',
-          schedule_tab: 'tabloid'
+          intended_action: 'new'
         }
 
-        expect(controller).to render_template(:new)
+        expect(controller).to render_template(:navigate)
       end
 
       it 'should respond ok' do
@@ -154,8 +160,7 @@ RSpec.describe Dashboard::VisitGroupsController do
           service_request_id: @sr.id,
           sub_service_request_id: @ssr.id,
           protocol_id: @protocol.id,
-          current_page: 'tree-fiddy',
-          schedule_tab: 'tabloid'
+          intended_action: 'new'
         }
 
         expect(controller).to respond_with(:ok)          
@@ -170,15 +175,13 @@ RSpec.describe Dashboard::VisitGroupsController do
         @protocol = create(:protocol_federally_funded, primary_pi: logged_in_user)
         @sr       = create(:service_request_without_validations, protocol: @protocol)
         @ssr      = create(:sub_service_request, service_request: @sr, organization: org)
-        @arm1     = create(:arm, protocol: @protocol)
-        @arm2     = create(:arm, protocol: @protocol)
+        @arm      = create(:arm, protocol: @protocol)
         
         xhr :get, :navigate, {
           service_request_id: @sr.id,
           sub_service_request_id: @ssr.id,
           protocol_id: @protocol.id,
-          current_page: 'tree-fiddy',
-          schedule_tab: 'tabloid'
+          intended_action: 'new'
         }
       end
 

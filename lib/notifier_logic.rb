@@ -136,7 +136,7 @@ class NotifierLogic
     # send e-mail to all folks with view and above
     @service_request.protocol.project_roles.each do |project_role|
       next if project_role.project_rights == 'none' || project_role.identity.email.blank?
-      Notifier.notify_user(project_role, @service_request, xls, approval, audit_report).deliver_now
+      Notifier.notify_user(project_role, @service_request, xls, approval, @current_user, audit_report).deliver_now
     end
   end
 

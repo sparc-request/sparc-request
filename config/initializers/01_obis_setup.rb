@@ -82,6 +82,13 @@ begin
   USE_FEEDBACK_LINK                         = application_config['use_feedback_link'] || false
   FEEDBACK_LINK                             = application_config['feedback_link'] || "#"
   NAVBAR_LINKS                              = application_config['navbar_links'] || {}
+  USER_PORTAL_LINK                          = application_config['user_portal_link']
+  CONTACT_US_EMAIL                          = application_config['contact_us_email']
+  USE_CAS                                   = application_config['use_cas'] || false
+  USE_CAS_ONLY                              = application_config['use_cas_only'] || false
+  USE_SHIBOLETH                             = application_config['use_shiboleth'] || false
+  USE_SHIBOLETH_ONLY                        = application_config['use_shibboleth_only'] || false
+
 
   if LOCALE_OVERRIDE
     I18n.available_locales = [:en, LOCALE_OVERRIDE]

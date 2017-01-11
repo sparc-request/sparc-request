@@ -1,0 +1,1 @@
+delete_destroy_spec.rb

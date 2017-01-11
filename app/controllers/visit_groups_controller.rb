@@ -31,7 +31,17 @@ class VisitGroupsController < ApplicationController
     if @visit_group.update_attributes(visit_group_params)
       render nothing: true
     else
-      render json: @visit_group.errors, status: :unprocessable_entity
+      if @visit_group.day.nil?
+        @visit_group.errors.delete(:day)
+      end
+
+      if @visit_group.errors.any?
+        render json: @visit_group.errors, status: :unprocessable_entity
+      else
+        @visit_group.attributes = visit_group_params
+        @visit_group.save(validate: false)
+        render nothing: true
+      end
     end
   end
 

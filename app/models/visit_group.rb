@@ -48,7 +48,7 @@ class VisitGroup < ActiveRecord::Base
   validates :window_before,
             :window_after,
             presence: true, numericality: { only_integer: true }
-  validates :day, presence: true, numericality: { only_integer: true }, if: :should_validate_day?
+  validates :day, presence: true, numericality: { only_integer: true }
 
   # TODO: fix. Currently, this validation fails for all VisitGroups with
   # position == 0. This fails because the position attribute is changed
@@ -105,10 +105,6 @@ class VisitGroup < ActiveRecord::Base
     unless in_order?
       errors.add(:day, 'must be in order')
     end
-  end
-
-  def should_validate_day?
-    new_record? || ([[], ["day"]].include? changed)
   end
 
   def no_attr_changed?

@@ -25,15 +25,36 @@ class NotifierLogic
     @service_request = service_request
     @current_user = current_user
     @sub_service_request = sub_service_request
+    # Grab ssrs that have been previously submitted
+    # Setting this to an array is necessary to grab the correct ssrs
+    @previously_submitted_ssrs = @service_request.previously_submitted_ssrs
+    # Flag for authorized users: when a new service has been added from
+    # a new ssr, only send the request amendment and not the initial confirmation email
+    @send_request_amendment_and_not_initial = @service_request.original_submitted_date.present? && !@previously_submitted_ssrs.empty?
+  end
+
+  def update_ssrs_and_send_emails
+    @to_notify = []
+    if @sub_service_request
+      @to_notify << @sub_service_request.id unless @sub_service_request.status == 'submitted' || @sub_service_request.previously_submitted?
+      @sub_service_request.update_attribute(:submitted_at, Time.now) unless @sub_service_request.status == 'submitted'
+
+      @sub_service_request.update_attributes(status: 'submitted', nursing_nutrition_approved: false,
+                                             lab_approved: false, imaging_approved: false, committee_approved: false) if UPDATABLE_STATUSES.include?(@sub_service_request.status)
+    else
+      @to_notify = update_service_request_status('submitted', true, true)
+
+      @service_request.update_arm_minimum_counts
+      @service_request.sub_service_requests.update_all(nursing_nutrition_approved: false, lab_approved: false, imaging_approved: false, committee_approved: false)
+    end
+
+    send_request_amendment_email_evaluation
+    send_confirmation_notifications_submitted
   end
 
   def send_request_amendment_email_evaluation
-      #### FOR REQUEST AMENDMENT EMAIL ####
-    # Grab ssrs that have been previously submitted
-    # Setting this to an array is necessary to grab the correct ssrs
-    previously_submitted_ssrs = @service_request.previously_submitted_ssrs
-    if !previously_submitted_ssrs.empty?
-      request_amendment_ssrs = previously_submitted_ssrs.select{ |ssr| ssr_has_changed?(ssr) }
+    if !@previously_submitted_ssrs.empty?
+      request_amendment_ssrs = @previously_submitted_ssrs.select{ |ssr| ssr_has_changed?(ssr) }
 
       destroyed_or_created_ssr = @service_request.previous_submitted_at.nil? ? [] : [@service_request.deleted_ssrs_since_previous_submission, @service_request.created_ssrs_since_previous_submission].flatten
       # If an existing SSR has had services added/deleted, send a request amendment 
@@ -49,8 +70,6 @@ class NotifierLogic
   end
 
   def send_confirmation_notifications_get_a_cost_estimate
-    previously_submitted_ssrs = @service_request.previously_submitted_ssrs
-    send_request_amendment_and_not_initial = @service_request.original_submitted_date.present? && !previously_submitted_ssrs.empty?
     to_notify = []
     if @sub_service_request
       to_notify << @sub_service_request.id unless @sub_service_request.status == 'get_a_cost_estimate'
@@ -61,39 +80,21 @@ class NotifierLogic
     end
 
     if @sub_service_request && to_notify.include?(@sub_service_request.id)
-      send_notifications([@sub_service_request], send_request_amendment_and_not_initial)
+      send_notifications([@sub_service_request], @send_request_amendment_and_not_initial)
     else
       sub_service_requests = @service_request.sub_service_requests.where(id: to_notify)
-      send_notifications(sub_service_requests, send_request_amendment_and_not_initial) unless sub_service_requests.empty? # if nothing is set to notify then we shouldn't send out e-mails
+      send_notifications(sub_service_requests, @send_request_amendment_and_not_initial) unless sub_service_requests.empty? # if nothing is set to notify then we shouldn't send out e-mails
     end
   end
 
   def send_confirmation_notifications_submitted
 
-    previously_submitted_ssrs = @service_request.previously_submitted_ssrs
-    # Flag for authorized users: when a new service has been added from
-    # a new ssr, only send the request amendment and not the initial confirmation email
-    send_request_amendment_and_not_initial = @service_request.original_submitted_date.present? && !previously_submitted_ssrs.empty?
-
-    to_notify = []
-    if @sub_service_request
-      to_notify << @sub_service_request.id unless @sub_service_request.status == 'submitted' || @sub_service_request.previously_submitted?
-      @sub_service_request.update_attribute(:submitted_at, Time.now) unless @sub_service_request.status == 'submitted'
-
-      @sub_service_request.update_attributes(status: 'submitted', nursing_nutrition_approved: false,
-                                             lab_approved: false, imaging_approved: false, committee_approved: false) if UPDATABLE_STATUSES.include?(@sub_service_request.status)
-    else
-      to_notify = update_service_request_status('submitted', true, true)
-
-      @service_request.update_arm_minimum_counts
-      @service_request.sub_service_requests.update_all(nursing_nutrition_approved: false, lab_approved: false, imaging_approved: false, committee_approved: false)
-    end
-    if !to_notify.empty?
-      if @sub_service_request && to_notify.include?(@sub_service_request.id)
-        send_notifications([@sub_service_request], send_request_amendment_and_not_initial)
+    if !@to_notify.empty?
+      if @sub_service_request && @to_notify.include?(@sub_service_request.id)
+        send_notifications([@sub_service_request], @send_request_amendment_and_not_initial)
       else
-        sub_service_requests = @service_request.sub_service_requests.where(id: to_notify)
-        send_notifications(sub_service_requests, send_request_amendment_and_not_initial) unless sub_service_requests.empty? # if nothing is set to notify then we shouldn't send out e-mails
+        sub_service_requests = @service_request.sub_service_requests.where(id: @to_notify)
+        send_notifications(sub_service_requests, @send_request_amendment_and_not_initial) unless sub_service_requests.empty? # if nothing is set to notify then we shouldn't send out e-mails
       end
     end
   end

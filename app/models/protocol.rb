@@ -141,6 +141,29 @@ class Protocol < ActiveRecord::Base
     self.has_human_subject_info == true
   end
 
+  validate :existing_rm_id,
+    if: -> record { record.has_human_subject_info? && !record.research_master_id.nil? }
+
+  validate :unique_rm_id_to_protocol,
+    if: -> record { record.has_human_subject_info? && !record.research_master_id.nil? }
+
+  def existing_rm_id
+    rm_ids = HTTParty.get(RESEARCH_MASTER_API + 'research_masters.json', headers: {'Content-Type' => 'application/json', 'Authorization' => "Token token=\"#{RMID_API_TOKEN}\""})
+    ids = rm_ids.map{ |rm_id| rm_id['id'] }
+
+    unless ids.include?(self.research_master_id)
+      errors.add(:_, 'The entered Research Master ID does not exist. Please go to the Research Master website to create a new record.')
+    end
+  end
+
+  def unique_rm_id_to_protocol
+    Protocol.all.each do |protocol|
+      if self.research_master_id == protocol.research_master_id
+        errors.add(:_, "The Research Master ID is already taken by Protocol #{protocol.id}. Please enter another RMID.")
+      end
+    end
+  end
+
   scope :for_identity, -> (identity) {
     joins(:project_roles).
     where(project_roles: { identity_id: identity.id }).

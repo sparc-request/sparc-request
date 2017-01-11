@@ -25,6 +25,12 @@ $(document).ready ->
     $(this).children().removeClass('hover')
   )
 
+  $(document).on 'click', '.step-btn', (event) ->
+    if $(this).data('clicked')
+      event.preventDefault()
+    else
+      $(this).data('clicked', true)
+
   # We dont want the extra handler on the submit button if we need to use the system
   # satisfaction survey so that we can preventDefault the submit in system_satisfaction.js.coffee
   if $('#use_system_satisfaction').val() != 'true'

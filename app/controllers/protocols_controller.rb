@@ -33,6 +33,8 @@ class ProtocolsController < ApplicationController
     @protocol.requester_id  = current_user.id
     @service_request        = ServiceRequest.find(params[:srid])
     @protocol.populate_for_edit
+    gon.rm_id_api_url = RESEARCH_MASTER_API
+    gon.rm_id_api_token = RMID_API_TOKEN
   end
 
   def create

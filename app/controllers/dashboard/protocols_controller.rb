@@ -95,6 +95,8 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     @protocol.requester_id  = current_user.id
     @protocol.populate_for_edit
     session[:protocol_type] = params[:protocol_type]
+    gon.rm_id_api_url = RESEARCH_MASTER_API
+    gon.rm_id_api_token = RMID_API_TOKEN
   end
 
   def create

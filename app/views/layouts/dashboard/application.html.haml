@@ -34,6 +34,7 @@
     = csrf_meta_tags
     :javascript
       window.I18n = #{current_translations.to_json.html_safe};
+    = Gon::Base.render_data
 
   %body#body
     #container

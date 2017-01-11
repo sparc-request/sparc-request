@@ -17,7 +17,7 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-$('#modal_place').html("<%= escape_javascript(render( 'service_calendars/view_full_calendar', tab: @tab, service_request: @service_request, sub_service_request: @sub_service_request, pages: @pages, review: @review, portal: @portal, admin: @admin, merged: @merged, consolidated: @consolidated )) %>")
+$('#modal_place').html("<%= escape_javascript(render( 'service_calendars/view_full_calendar', tab: @tab, service_request: @service_request, sub_service_request: @sub_service_request, pages: @pages, review: @review, portal: @portal, admin: @admin, merged: @merged, consolidated: @consolidated, statuses_hidden: @statuses_hidden)) %>")
 $('#modal_place').modal('show')
 $('.selectpicker').selectpicker()
 changing_tabs_calculating_rates()

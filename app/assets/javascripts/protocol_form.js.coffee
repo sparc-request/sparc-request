@@ -19,6 +19,15 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 $(document).ready ->
+
+  $(document).on 'click', '.human-subjects', ->
+    if $('.rm-id').hasClass('required-field')
+      $('.rm-id').removeClass('required-field')
+      $('.has-human-subject-info').val('false')
+    else
+      $('.rm-id').addClass('required-field')
+      $('.has-human-subject-info').val('true')
+
   # Protocol Edit Begin
   $(document).on 'click', '#protocol-type-button', ->
     protocol_id = $(this).data('protocol-id')

@@ -29,6 +29,7 @@ development:
   system_satisfaction_survey_cc: 'amcates@gmail.com, catesa@musc.edu'
   root_url: "https://andrews-mac-pro.thurmond-gazes.musc.edu"
   dashboard_link: 'http://musc-pro.homelinux.net:3001/dashboard'
+  research_master_link: 'https://research-master-staging.musc.edu/'
   create_an_account: false
   header_link_1: http://sctr.musc.edu
   header_link_2_proper: http://localhost:3000/
@@ -98,6 +99,7 @@ test:
   system_satisfaction_survey_cc: 'amcates@gmail.com, catesa@musc.edu'
   root_url: /
   dashboard_link: /dashboard
+  research_master_link: 'https://research-master-staging.musc.edu/'
   header_link_1: http://sctr.musc.edu
   header_link_2_proper: http://localhost:3000/
   header_link_2_dashboard: http://localhost:3000/dashboard

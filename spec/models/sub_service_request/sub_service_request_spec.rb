@@ -266,47 +266,10 @@ RSpec.describe 'SubServiceRequest' do
           sub_service_request.update_attributes(status: "on_hold")
           expect(sub_service_request.can_be_edited?).to eq(false)
         end
-      end
 
-      before :each do
-        EDITABLE_STATUSES[ssr1.organization.id] = ['first_draft', 'draft', 'submitted', nil, 'get_a_cost_estimate', 'awaiting_pi_approval']
-      end
-
-      context "update based on status" do
-
-        it "should place a sub service request under a new service request if conditions are met" do
-          sr_count = service_request.protocol.service_requests.count
-          ssr1.update_attributes(status: 'on_hold')
-          ssr1.update_based_on_status('submitted')
-          expect(ssr1.service_request.id).not_to eq(service_request.id)
-          expect(service_request.protocol.service_requests.count).to be > sr_count
-        end
-
-        it "should assign the ssrs line items to the new service request" do
-          ssr1.update_attributes(status: 'on_hold')
-          ssr1.update_based_on_status('submitted')
-          expect(ssr1.line_items.first.service_request_id).not_to eq(service_request.id)
-          expect(line_item2.service_request_id).to eq(service_request.id)
-        end
-
-        it "should not place a sub service request under a new service request if there is only one ssr" do
-          ssr2.destroy
-          sub_service_request.destroy
-          ssr1.update_attributes(status: 'on_hold')
-          ssr1.update_based_on_status('submitted')
-          expect(ssr1.service_request.id).to eq(service_request.id)
-        end
-
-        it "should not place a sub service request under a new service request if the ssr is not tagged with ctrc" do
-          ssr2.update_attributes(status: 'on_hold')
-          ssr2.update_based_on_status('submitted')
-          expect(ssr2.service_request.id).to eq(service_request.id)
-        end
-
-        it "should not place a sub service request under a new service request if the ssr is being switched to another uneditable status" do
-          ssr1.update_attributes(status: 'on_hold')
-          ssr1.update_based_on_status('complete')
-          expect(ssr1.service_request.id).to eq(service_request.id)
+        it 'should should return false if the status is complete' do
+          sub_service_request.update_attributes(status: 'complete')
+          expect(sub_service_request.can_be_edited?).to eq(false)
         end
       end
     end

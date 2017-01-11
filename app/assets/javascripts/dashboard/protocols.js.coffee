@@ -128,10 +128,15 @@ $(document).ready ->
           window.location = "/dashboard/protocols/#{protocol_id}/edit"
 
       $(document).on 'click', '.view-full-calendar-button', ->
-        protocol_id = $(this).data('protocol-id')
+        protocol_id = $(this).data('protocolId')
+        statuses_hidden = $(this).data('statusesHidden')
         $.ajax
           method: 'get'
-          url: "/service_calendars/view_full_calendar.js?portal=true&protocol_id=#{protocol_id}"
+          url: "/service_calendars/view_full_calendar.js"
+          data:
+            portal: true
+            protocol_id: protocol_id
+            statuses_hidden: statuses_hidden
 
       $(document).on 'click', '.view-service-request', ->
         id = $(this).data('sub-service-request-id')

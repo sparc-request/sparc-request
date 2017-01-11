@@ -46,6 +46,48 @@ RSpec.describe ServiceRequestsController, type: :controller do
       expect(before_filters.include?(:authenticate_identity!)).to eq(true)
     end
 
+    it 'should assign @notable_type' do
+      org      = create(:organization)
+                 create(:subsidy_map, organization: org, max_dollar_cap: 100, max_percentage: 100)
+      service  = create(:service, organization: org)
+      protocol = create(:protocol_federally_funded, primary_pi: logged_in_user)
+      sr       = create(:service_request_without_validations, protocol: protocol)
+      ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
+      li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
+      arm      = create(:arm, protocol: protocol)
+      liv      = create(:line_items_visit, arm: arm, line_item: li)
+      vg       = create(:visit_group, arm: arm, day: 1)
+                 create(:visit, visit_group: vg, line_items_visit: liv)
+                 create(:subsidy, sub_service_request: ssr)
+
+      xhr :get, :document_management, {
+        id: sr.id
+      }
+
+      expect(assigns(:notable_type)).to eq('Protocol')
+    end
+
+    it 'should assign @notable_id' do
+      org      = create(:organization)
+                 create(:subsidy_map, organization: org, max_dollar_cap: 100, max_percentage: 100)
+      service  = create(:service, organization: org)
+      protocol = create(:protocol_federally_funded, primary_pi: logged_in_user)
+      sr       = create(:service_request_without_validations, protocol: protocol)
+      ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
+      li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
+      arm      = create(:arm, protocol: protocol)
+      liv      = create(:line_items_visit, arm: arm, line_item: li)
+      vg       = create(:visit_group, arm: arm, day: 1)
+                 create(:visit, visit_group: vg, line_items_visit: liv)
+                 create(:subsidy, sub_service_request: ssr)
+
+      xhr :get, :document_management, {
+        id: sr.id
+      }
+
+      expect(assigns(:notable_id)).to eq(protocol.id)
+    end
+
     it 'should assign @has_subsidy' do
       org      = create(:organization)
                  create(:subsidy_map, organization: org, max_dollar_cap: 100, max_percentage: 100)

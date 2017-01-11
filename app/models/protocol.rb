@@ -100,6 +100,12 @@ class Protocol < ActiveRecord::Base
   attr_accessible :type
   attr_accessible :udak_project_number
   attr_accessible :vertebrate_animals_info_attributes
+  attr_accessible :research_master_id
+  attr_accessible :has_human_subject_info
+
+  validates :research_master_id, numericality: { only_integer: true }, allow_blank: true
+
+  validates :research_master_id, presence: true, if: :has_human_subject_info?
 
   attr_accessor :requester_id
   attr_accessor :validate_nct
@@ -128,6 +134,10 @@ class Protocol < ActiveRecord::Base
   validation_group :user_details do
     validate :validate_proxy_rights
     validate :primary_pi_exists
+  end
+
+  def has_human_subject_info?
+    self.has_human_subject_info == true
   end
 
   scope :for_identity, -> (identity) {

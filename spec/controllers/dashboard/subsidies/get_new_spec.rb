@@ -42,6 +42,10 @@ RSpec.describe Dashboard::SubsidiesController do
 
     it { is_expected.to render_template "dashboard/subsidies/new" }
 
+    it 'should respond ok' do
+      expect(controller).to respond_with(:ok)
+    end
+
     it 'should set @admin to params[:admin]' do
       expect(assigns(:admin)).to eq(true)
     end

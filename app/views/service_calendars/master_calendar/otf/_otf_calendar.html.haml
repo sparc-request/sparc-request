@@ -23,6 +23,11 @@
       = t(:calendars)[:otf][:header]
   %table.table.table-bordered
     %thead
-      = render 'service_calendars/master_calendar/otf/otf_header', tab: tab, service_request: service_request, sub_service_request: sub_service_request, review: review, portal: portal
+      = render 'service_calendars/master_calendar/otf/otf_header', tab: tab,
+        service_request: service_request, sub_service_request: sub_service_request,
+        review: review, portal: portal
     %tbody
-      = render 'service_calendars/master_calendar/otf/otf_line_items', tab: tab, service_request: service_request, sub_service_request: sub_service_request, review: review, portal: portal, admin: admin, merged: merged, consolidated: consolidated
+      = render 'service_calendars/master_calendar/otf/otf_line_items', tab: tab,
+        service_request: service_request, sub_service_request: sub_service_request,
+        review: review, portal: portal, admin: admin, merged: merged,
+        consolidated: consolidated, statuses_hidden: statuses_hidden

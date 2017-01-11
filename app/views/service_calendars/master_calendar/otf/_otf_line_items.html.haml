@@ -21,7 +21,7 @@
   - value[:line_items].group_by(&:sub_service_request_id).each do |sub_service_request_id, line_items|
     - next unless sub_service_request.nil? || sub_service_request.id == sub_service_request_id
     - ssr = sub_service_request || SubServiceRequest.find(sub_service_request_id)
-    - next if ssr.status == 'first_draft' || (!review && consolidated && ssr.status == 'draft')
+    - next if statuses_hidden.include? ssr.status
     - locked = !ssr.can_be_edited? && !admin
 
     %tr.organization-header{ class: locked ? 'bg-danger text-danger' : '' }
@@ -68,8 +68,4 @@
           = display_one_time_fee_direct_cost(line_item)
 
 - unless review
-  %tr.total-one-time-fee-cost-per-study
-    %th{ colspan: 11 }
-      = t(:calendars)[:otf][:totals][:total_direct]
-    %td.text-center
-      = display_total_direct_cost_per_study_otfs(service_request, service_request.line_items)
+  = render 'service_calendars/master_calendar/otf/otf_totals', service_request: service_request

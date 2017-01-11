@@ -22,10 +22,6 @@
     %h4.panel-title.pull-left
       = protocol_panel_header_line(service_request)
     .pull-right
-      %button.btn.btn-sm.btn-success.notes.list{ data: {notable_type: "ServiceRequest", notable_id: service_request.id } }
-        = t(:models)[:note][:plural]
-        %span.badge{id: "servicerequest_#{service_request.id}_notes"}
-          = service_request.notes.count
       - if permission_to_edit
         %button.btn.btn-warning.btn-sm.edit-service-request{ class: permission_to_edit ? '' : 'disabled', type: 'button', data: { permission: permission_to_edit.to_s, url: modify_request_button_url(service_request) } }
           = t(:dashboard)[:service_requests][:modify_request]

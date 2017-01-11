@@ -54,51 +54,7 @@ RSpec.describe Dashboard::ServiceCalendars do
   end
 
   describe '.pppv_line_items_visits_to_display(arm, service_request, sub_service_request, opts = {})' do
-    context 'opts[:merged] == true && opts[:consoldated] == true' do
-      it "should return PPPV LIV's of arm not associated with a (first-)draft SSR" do
-        arm = create(:arm_without_validations)
-        org_C = create(:organization, process_ssrs: false, abbreviation: "C")
-        org_B = create(:organization, process_ssrs: true, abbreviation: "B", parent: org_C)
-        org_A = create(:organization, process_ssrs: false, abbreviation: "A", parent: org_B)
-        ssr = create(:sub_service_request, organization: org_C, status: "not_draft")
-
-        # expect this LIV to appear
-        service_pppv = create(:service, :without_validations, organization: org_A, one_time_fee: false)
-        li_pppv = create(:line_item, :without_validations, service: service_pppv, sub_service_request: ssr)
-        liv_pppv1 = create(:line_items_visit, arm: arm, line_item: li_pppv, sub_service_request: ssr)
-        liv_pppv2 = create(:line_items_visit, arm: arm, line_item: li_pppv, sub_service_request: ssr)
-
-        # this LIV should not appear (it is not PPPV)
-        service_otf = create(:service, :without_validations, organization: org_A, one_time_fee: true)
-        li_otf = create(:line_item, :without_validations, service: service_otf, sub_service_request: ssr)
-        create(:line_items_visit, arm: arm, line_item: li_otf, sub_service_request: ssr)
-
-        # this LIV should not appear (not associated with arm)
-        wrong_arm = create(:arm, :without_validations)
-        service_pppv = create(:service, :without_validations, organization: org_A, one_time_fee: false)
-        li_pppv = create(:line_item, :without_validations, service: service_pppv, sub_service_request: ssr)
-        create(:line_items_visit, arm: wrong_arm, line_item: li_pppv, sub_service_request: ssr)
-
-        # this LIV should not appear (associated with draft SSR)
-        draft_ssr = create(:sub_service_request, :without_validations, organization: org_A, status: "draft")
-        service_pppv = create(:service, :without_validations, organization: org_A, one_time_fee: false)
-        li_pppv = create(:line_item, :without_validations, service: service_pppv, sub_service_request: draft_ssr)
-        create(:line_items_visit, arm: arm, line_item: li_pppv, sub_service_request: draft_ssr)
-
-        # this LIV should not appear (associated with first-draft SSR)
-        first_draft_ssr = create(:sub_service_request, :without_validations, organization: org_A, status: "first_draft")
-        service_pppv = create(:service, :without_validations, organization: org_A, one_time_fee: false)
-        li_pppv = create(:line_item, :without_validations, service: service_pppv, sub_service_request: first_draft_ssr)
-        create(:line_items_visit, arm: arm, line_item: li_pppv, sub_service_request: first_draft_ssr)
-
-        arm.reload
-        livs = Dashboard::ServiceCalendars.pppv_line_items_visits_to_display(arm, nil, ssr, merged: true, consolidated: true)
-        expect(livs.keys).to eq([ssr.id])
-        expect(livs[ssr.id]).to contain_exactly(liv_pppv1, liv_pppv2)
-      end
-    end
-
-    context 'opts[:merged] == true && opts[:consoldated] == false' do
+    context 'opts[:merged] == true' do
       it "should return PPPV LIV's of arm not associated with a first-draft SSR" do
         arm = create(:arm_without_validations)
         org_C = create(:organization, process_ssrs: false, abbreviation: "C")

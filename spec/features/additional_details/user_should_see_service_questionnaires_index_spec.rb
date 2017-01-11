@@ -23,7 +23,7 @@ require 'rails_helper'
 RSpec.describe 'User should see service questionnaire index', js: true do
   let_there_be_lane
   scenario 'successfully' do
-    service = create(:service)
+    service = create(:service, :with_ctrc_organization)
     questionnaire = create(:questionnaire,
                            name: 'Awesome Questionnaire',
                            service: service)

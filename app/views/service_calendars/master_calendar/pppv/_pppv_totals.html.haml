@@ -17,25 +17,15 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-%tr.maximum-total-direct-cost-per-patient{ class: "arm-#{arm.id} " }
-  %td.col-sm-5{ colspan: tab == 'template' ? 8 : 7 }
-    %strong
-      = t(:calendars)[:pppv][:totals][:maximum_direct]
-  - 5.times do |i|
-    %td.col-sm-1.text-center{ class: "max-direct-per-patient visit-#{i+1}" }
-  %td.col-sm-1.text-center
-    = display_max_total_direct_cost_per_patient(arm, line_items_visits)
-  %td.col-sm-1.text-center
-
 - if USE_INDIRECT_COST
-  %tr.maximum-total-indirect-cost-per-patient{ class: "arm-#{arm.id} " }
+  %tr.maximum-total-direct-cost-per-patient{ class: "arm-#{arm.id} " }
     %td.col-sm-5{ colspan: tab == 'template' ? 8 : 7 }
       %strong
-        = t(:calendars)[:pppv][:totals][:maximum_indirect]
+        = t(:calendars)[:pppv][:totals][:maximum_direct]
     - 5.times do |i|
-      %td.col-sm-1.text-center{ class: "max-indirect-per-patient visit-#{i+1}" }
+      %td.col-sm-1.text-center{ class: "max-direct-per-patient visit-#{i+1}" }
     %td.col-sm-1.text-center
-      = display_max_total_indirect_cost_per_patient(arm, line_items_visits)
+      = display_max_total_direct_cost_per_patient(arm, line_items_visits)
     %td.col-sm-1.text-center
 
 %tr.maximum-total-per-patient{ class: "arm-#{arm.id} " }

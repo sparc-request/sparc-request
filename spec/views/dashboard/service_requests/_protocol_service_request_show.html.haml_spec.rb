@@ -46,6 +46,7 @@ RSpec.describe 'dashboard/service_requests/protocol_service_request_show', type:
   def render_protocol_service_request_show(service_request, permission_to_edit=false)
     render('dashboard/service_requests/protocol_service_request_show',
       service_request: service_request,
+      protocol: service_request.protocol,
       user: jug2,
       admin: false,
       permission_to_edit: permission_to_edit,

@@ -53,7 +53,7 @@ RSpec.describe "User views SSR table", js: true do
         let!(:organization)         { create(:organization,type: 'Institution', name: 'Megacorp', admin: bob, service_provider: bob) }
         
         scenario 'and sees View but not Edit' do
-          EDITABLE_STATUSES[organization.id] = ['draft']
+          stub_const("EDITABLE_STATUSES", { organization.id => ['draft'] })
 
           sub_service_request.update_attribute(:status, 'on_hold')
 
@@ -96,6 +96,39 @@ RSpec.describe "User views SSR table", js: true do
         expect(page).not_to have_selector('button', text: /\AEdit\z/)
         expect(page).to have_selector('button', text: 'Admin Edit')
       end
+    end
+  end
+
+  context 'for an SSR with forms to complete' do
+    let!(:organization)         { create(:organization) }
+    let!(:service)              { create(:service, organization: organization) }
+    let!(:questionnaire)        { create(:questionnaire, service: service, active: true) }
+    let!(:protocol)             { create(:protocol_federally_funded, primary_pi: jug2, type: 'Study') }
+    let!(:service_request)      { create(:service_request_without_validations, protocol: protocol) }
+    let!(:sub_service_request)  { create(:sub_service_request, service_request: service_request, organization: organization, status: 'draft') }
+    let!(:line_item)            { create(:line_item, service_request: service_request, sub_service_request: sub_service_request, service: service) }
+
+    scenario 'and sees the complete form dropdown' do
+      page = go_to_show_protocol(protocol.id)
+
+      expect(page).to have_content('Complete Form')
+      expect(page).to have_selector('.complete-details .badge', text: /\A1\z/)
+    end
+  end
+
+  context 'for a ssr without forms to complete' do
+    let!(:organization)         { create(:organization) }
+    let!(:service)              { create(:service, organization: organization) }
+    let!(:protocol)             { create(:protocol_federally_funded, primary_pi: jug2, type: 'Study') }
+    let!(:service_request)      { create(:service_request_without_validations, protocol: protocol) }
+    let!(:sub_service_request)  { create(:sub_service_request, service_request: service_request, organization: organization, status: 'draft') }
+    let!(:line_item)            { create(:line_item, service_request: service_request, sub_service_request: sub_service_request, service: service) }
+
+    scenario 'and does not see the complete form dropdown' do
+      page = go_to_show_protocol(protocol.id)
+
+      expect(page).to_not have_selector('.complete-details button .filter-option', text: /\AComplete Form\z/)
+      expect(page).to_not have_selector('.complete-details button .filter-option .badge', text: /\A1\z/)
     end
   end
 end

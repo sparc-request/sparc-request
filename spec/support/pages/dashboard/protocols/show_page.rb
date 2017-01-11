@@ -116,6 +116,7 @@ module Dashboard
           element :view_button, :button, "View"
           element :edit_button, :button, "Edit"
           element :admin_edit_button, :button, "Admin Edit"
+          element :complete_details_select, :button, text: "Complete Details"
         end
       end
 
@@ -123,6 +124,10 @@ module Dashboard
         element :subject_field, 'input#notification_subject'
         element :message_field, 'textarea#notification_message_body'
         element :submit_button, 'button[type="submit"]'
+      end
+
+      section :new_submission_form, 'form#new_submission' do
+        element :submit_button, :link, "Create Submission"
       end
 
       section :index_notes_modal, Dashboard::Notes::IndexModal, '#notes-modal'

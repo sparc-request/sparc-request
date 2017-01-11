@@ -207,6 +207,40 @@ module Dashboard::SubServiceRequestsHelper
     ssr.owner.full_name if ssr.owner_id.present?
   end
 
+  def display_ssr_submissions(ssr)
+    line_items = ssr.line_items.includes(service: :questionnaires).includes(:submission).to_a.select(&:has_incomplete_additional_details?)
+
+    if line_items.any?
+      protocol    = ssr.protocol
+      submissions = ""
+
+      line_items.each do |li|
+        submissions +=  content_tag(
+                          :option,
+                          "#{li.service.name}",
+                          data: {
+                            service_id: li.service.id,
+                            protocol_id: protocol.id,
+                            line_item_id: li.id
+                          }
+                        )
+      end
+
+      content_tag(
+        :select,
+        submissions.html_safe,
+        title: t(:dashboard)[:service_requests][:additional_details][:selectpicker],
+        class: 'selectpicker complete-details',
+        data: {
+          style: 'btn-danger',
+          counter: 'true'
+        }
+      )
+    else
+      ''
+    end
+  end
+
   private
 
   def ssr_view_button(ssr, show_view_ssr_back)

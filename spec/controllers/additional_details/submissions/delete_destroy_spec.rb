@@ -25,14 +25,17 @@ RSpec.describe AdditionalDetails::SubmissionsController, type: :controller do
   let!(:logged_in_user) { create(:identity) }
 
   before :each do
-    org         = create(:organization)
-    @service    = create(:service, organization: org)
-    @que        = create(:questionnaire, service: @service, active: true)
-    @protocol   = create(:protocol_federally_funded, primary_pi: logged_in_user)
-    @sr         = create(:service_request_without_validations, protocol: @protocol)
-    ssr         = create(:sub_service_request, service_request: @sr, organization: org)
-    @li         = create(:line_item, service_request: @sr, sub_service_request: ssr, service: @service)
-    @submission = create(:submission, protocol: @protocol, identity: logged_in_user, service: @service, line_item: @li, questionnaire: @que)
+    org           = create(:organization)
+    @service      = create(:service, organization: org)
+    @service2     = create(:service, organization: org)
+    @que          = create(:questionnaire, service: @service, active: true)
+    @protocol     = create(:protocol_federally_funded, primary_pi: logged_in_user)
+    @sr           = create(:service_request_without_validations, protocol: @protocol)
+    ssr           = create(:sub_service_request, service_request: @sr, organization: org)
+    @li           = create(:line_item, service_request: @sr, sub_service_request: ssr, service: @service)
+    @li2          = create(:line_item, service_request: @sr, sub_service_request: ssr, service: @service2)
+    @submission   = create(:submission, protocol: @protocol, identity: logged_in_user, service: @service, line_item: @li, questionnaire: @que)
+    @submission2  = create(:submission, protocol: @protocol, identity: logged_in_user, service: @service, line_item: @li2, questionnaire: @que)
 
     session[:identity_id] = logged_in_user.id
   end
@@ -53,7 +56,7 @@ RSpec.describe AdditionalDetails::SubmissionsController, type: :controller do
         service_id: @service.id
       }
 
-      expect(assigns(:submission)).to be
+      expect(assigns(:submission)).to eq(@submission)
     end
 
     context 'params[:protocol_id] present' do
@@ -70,7 +73,7 @@ RSpec.describe AdditionalDetails::SubmissionsController, type: :controller do
       end
 
       it 'should assign @submissions' do
-        expect(assigns(:submissions)).to be
+        expect(assigns(:submissions).to_a).to eq([@submission2])
       end
 
       it 'should assign @permission_to_edit' do
@@ -102,7 +105,7 @@ RSpec.describe AdditionalDetails::SubmissionsController, type: :controller do
         service_id: @service.id
       }
 
-      expect(Submission.count).to eq(0)
+      expect(Submission.count).to eq(1)
     end
 
     it 'should render template' do

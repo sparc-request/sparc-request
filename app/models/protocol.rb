@@ -106,7 +106,7 @@ class Protocol < ActiveRecord::Base
 
   validates :research_master_id, numericality: { only_integer: true }, allow_blank: true
 
-  validates :research_master_id, presence: true, if: :has_human_subject_info?
+  validates :research_master_id, presence: true, if: "RESEARCH_MASTER_ENABLED && has_human_subject_info?"
 
   attr_accessor :requester_id
   attr_accessor :validate_nct

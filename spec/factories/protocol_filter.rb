@@ -19,57 +19,11 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 FactoryGirl.define do
-  sequence :ldap_uid do |n|
-    "ldap_uid#{n}@email.com"
-  end
-
-  sequence :email do |n|
-    "email#{n}@email.com"
-  end
-
-  factory :identity do
-    ldap_uid
-    last_name             { Faker::Name.last_name }
-    first_name            { Faker::Name.first_name }
-    email
-    era_commons_name      { Faker::Internet.user_name }
-    credentials           { Faker::Name.suffix }
-    subspecialty          { Faker::Lorem.word }
-    phone                 { Faker::PhoneNumber.phone_number }
-    password              "abc123456789!"
-    password_confirmation "abc123456789!"
-
-
-    created_at       { 1.day.ago }
-    updated_at       { Time.now }
-
-    transient do
-      catalog_manager_count 0
-      super_user_count 0
-      approval_count 0
-      project_role_count 0
-      service_provider_count 0
-      protocol_filter_count 0
-    end
-
-    after(:build) do |identity, evaluator|
-      create_list(:catalog_manager,
-       evaluator.catalog_manager_count, identity: identity)
-
-      create_list(:super_user,
-       evaluator.super_user_count, identity: identity)
-
-      create_list(:approval,
-       evaluator.approval_count, identity: identity)
-
-      create_list(:project_role,
-       evaluator.project_role_count, identity: identity)
-
-      create_list(:service_provider,
-       evaluator.service_provider_count, identity: identity)
-
-      create_list(:protocol_filter,
-        evaluator.protocol_filter_count, identity: identity)
-    end
+  factory :protocol_filter do
+    identity_id          { Random.rand(10000) }
+    search_query         ""
+    with_organization    []
+    with_status          []
+    with_owner           [] 
   end
 end

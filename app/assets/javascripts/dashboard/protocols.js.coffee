@@ -166,6 +166,29 @@ $(document).ready ->
             $('.service-requests-table').bootstrapTable()
             $('.service-requests-table').on 'all.bs.table', ->
               $(this).find('.selectpicker').selectpicker()
+
+      $(document).on 'change', '.complete-details', ->
+        $selected_options = $('option:selected', this)
+
+        if $selected_options.length > 0
+          $selected_option    = $selected_options.first()
+          service_id          = $selected_option.data('service-id')
+          protocol_id         = $selected_option.data('protocol-id')
+          line_item_id        = $selected_option.data('line-item-id')
+          $this               = $(this)
+          
+          $.ajax
+            method: 'GET'
+            url: "/services/#{service_id}/additional_details/submissions/new.js"
+            data:
+              protocol_id: protocol_id
+              line_item_id: line_item_id
+            success: ->
+              $this.selectpicker('deselectAll')
+              $this.selectpicker('render')
+
+      $('.service-requests-table').on 'all.bs.table', ->
+        $(this).find('.selectpicker').selectpicker()
       # Protocol Show End
 
       # Protocol Table Sorting

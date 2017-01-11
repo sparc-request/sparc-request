@@ -102,7 +102,7 @@ RSpec.describe AdditionalDetails::SubmissionsController do
       protocol = create( :protocol_without_validations )
       line_item = create( :line_item_without_validations )
       service_request = create( :service_request_without_validations )
-      submission = create( :submission )
+      submission = create( :submission, protocol: protocol)
       response = { "0" => { content: "This is the updated text "} }
       new_submission = { protocol_id: protocol.id,
                          line_item_id: line_item.id,

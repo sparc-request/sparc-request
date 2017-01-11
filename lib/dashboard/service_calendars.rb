@@ -78,13 +78,16 @@ module Dashboard
     end
 
     def self.pppv_line_items_visits_to_display(arm, service_request, sub_service_request, opts = {})
+      statuses_hidden = opts[:statuses_hidden] || %w(first_draft)
       if opts[:merged]
         arm.line_items_visits.joins(line_item: :sub_service_request).
-          where.not(sub_service_requests: { status: opts[:consolidated] ? %w(first_draft draft) : %w(first_draft) }).
+          where.not(sub_service_requests: { status: statuses_hidden }).
           joins(line_item: :service).
           where(services: { one_time_fee: false })
       else
         (sub_service_request || service_request).line_items_visits.
+          joins(:sub_service_request).
+          where.not(sub_service_requests: { status: statuses_hidden }).
           joins(line_item: :service).
           where(services: { one_time_fee: false }, arm_id: arm.id)
       end.group_by do |liv|

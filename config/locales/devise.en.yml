@@ -75,7 +75,7 @@ en:
       last_name: "Last Name:*"
       first_name: "First Name:*"
       company: "Company:"
-      email: "Email:"
+      email: "Email:*"
       phone: "Phone:"
       username: "Username:*"
       password: "Password:*"

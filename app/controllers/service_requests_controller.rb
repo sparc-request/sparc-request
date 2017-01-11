@@ -144,6 +144,8 @@ class ServiceRequestsController < ApplicationController
   end
 
   def document_management
+    @notable_type         = 'Protocol'
+    @notable_id           = @service_request.protocol_id
     @has_subsidy          = @service_request.sub_service_requests.map(&:has_subsidy?).any?
     @eligible_for_subsidy = @service_request.sub_service_requests.map(&:eligible_for_subsidy?).any?
 

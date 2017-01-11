@@ -23,4 +23,4 @@
       = t(:proper)[:document_management][:notes_notice]
       %small
         = t(:proper)[:document_management][:notes_instructions]
-  = render 'notes/table', notable_type: 'ServiceRequest', notable_id: service_request.id, notes: service_request.notes, in_dashboard: false
+  = render 'notes/table', notable_type: notable_type, notable_id: notable_id, notes: service_request.notes, in_dashboard: false

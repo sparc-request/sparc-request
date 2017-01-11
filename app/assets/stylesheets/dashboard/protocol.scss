@@ -112,10 +112,16 @@ textarea {
 
 .service-requests-table {
   tr {
-    td:nth-child(4) {
-      .new-notification {
-        width: 100% !important;
-      }
+    .bootstrap-select {
+      width: 100% !important;
+    }
+
+    .new_notification_button {
+      width: 150px !important
+    }
+
+    .complete-details button {
+      width: 165px;
     }
 
     td:nth-child(5) {
@@ -130,6 +136,10 @@ textarea {
 
 .full-calendar-modal {
   width: 95% !important;
+}
+
+#requests-modal {
+  width: 80%;
 }
 
 /* Show Protocol End*/

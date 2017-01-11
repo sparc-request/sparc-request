@@ -25,6 +25,10 @@
  * Licensed under MIT (https://github.com/silviomoreto/bootstrap-select/blob/master/LICENSE)
  */
 
+.bootstrap-select .bootstrap-select-badge {
+  margin-left: 5px;
+}
+
 .bootstrap-select {
   width: 220px \0;
   /*IE9 and below*/

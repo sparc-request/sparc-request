@@ -17,22 +17,32 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+require 'rails_helper'
 
-<% if @submission.destroy %>
-<% if params[:protocol_id] && params[:sr_id] %>
-$('.additional-details-submissions-panel').html("<%= j render 'submissions_panel', protocol: @protocol %>")
-<% end %>
-<% if params[:protocol_id] && params[:line_item_id] %>
-$('.additional-details-submissions-panel').html("<%= j render 'submissions_panel', protocol: @protocol, submissions: @submissions %>")
-$('.document-management-submissions').html("<%= j render 'additional_details/document_management_submissions', service_request: @service_request %>")
-$("#service-requests-panel").html("<%= j render 'dashboard/service_requests/service_requests', protocol: @protocol, permission_to_edit: @permission_to_edit, user: @user, view_only: false, show_view_ssr_back: false %>")
-$('.service-requests-table').bootstrapTable()
+RSpec.describe 'Protocol' do
+  let!(:logged_in_user) { create(:identity) }
 
-$('.service-requests-table').on 'all.bs.table', ->
-  $(this).find('.selectpicker').selectpicker()
-<% else %>
-$('.submissions-index-table').html("<%= j render 'additional_details/submissions/submission_index_table', submissions: @submissions %>")
-<% end %>
-<% else %>
-swal("Error", "Submission could not be deleted", "error")
-<% end %>
+  before :each do
+    org = create(:organization)
+    @service = create(:service, organization: org)
+    @que = create(:questionnaire, service: @service, active: true)
+    @protocol = create(:protocol_federally_funded, primary_pi: logged_in_user)
+    sr = create(:service_request_without_validations, protocol: @protocol)
+    ssr = create(:sub_service_request, service_request: sr, organization: org)
+    @li = create(:line_item, service_request: sr, sub_service_request: ssr, service: @service)
+  end
+
+  context 'protocol has incomplete additional details' do
+    it 'should return true' do
+      expect(@protocol.has_incomplete_additional_details?).to eq(true)
+    end
+  end
+
+  context 'protocol does not have incomplete additional details' do
+    it 'should return false' do
+      create(:submission, identity: logged_in_user, protocol: @protocol, service: @service, line_item: @li, questionnaire: @que)
+      
+      expect(@protocol.has_incomplete_additional_details?).to eq(false)
+    end
+  end
+end

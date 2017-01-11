@@ -36,6 +36,7 @@ class Protocol < ActiveRecord::Base
   has_many :service_requests
   has_many :services,                     through: :service_requests
   has_many :sub_service_requests,         through: :service_requests
+  has_many :line_items,                   through: :service_requests
   has_many :organizations,                through: :sub_service_requests
   has_many :affiliations,                 dependent: :destroy
   has_many :impact_areas,                 dependent: :destroy
@@ -516,6 +517,10 @@ class Protocol < ActiveRecord::Base
 
   def has_non_first_draft_ssrs?
     sub_service_requests.where.not(status: 'first_draft').any?
+  end
+
+  def has_incomplete_additional_details?
+    line_items.any?(&:has_incomplete_additional_details?)
   end
 
   private

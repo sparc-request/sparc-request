@@ -100,7 +100,9 @@ class NotifierLogic
   end
 
   def send_ssr_service_provider_notifications(sub_service_request, ssr_destroyed: false, request_amendment: false) #single sub-service request
-    audit_report = request_amendment ? sub_service_request.audit_report(@current_user, sub_service_request.service_request.previous_submitted_at.utc, Time.now.utc) : nil
+    previously_submitted_at = sub_service_request.service_request.previous_submitted_at.nil? ? Time.now.utc : sub_service_request.service_request.previous_submitted_at.utc
+    audit_report = request_amendment ? sub_service_request.audit_report(@current_user, previously_submitted_at, Time.now.utc) : nil
+
     sub_service_request.organization.service_providers.where("(`service_providers`.`hold_emails` != 1 OR `service_providers`.`hold_emails` IS NULL)").each do |service_provider|
       send_individual_service_provider_notification(sub_service_request, service_provider, audit_report, ssr_destroyed, request_amendment)
     end
@@ -118,7 +120,8 @@ class NotifierLogic
   def send_user_notifications(request_amendment: false)
     # Does an approval need to be created?  Check that the user
     # submitting has approve rights.
-    audit_report = request_amendment ? @service_request.audit_report(@current_user, @service_request.previous_submitted_at.utc, Time.now.utc) : nil
+    previously_submitted_at = @service_request.previous_submitted_at.nil? ? Time.now.utc : @service_request.previous_submitted_at.utc
+    audit_report = request_amendment ? @service_request.audit_report(@current_user, previously_submitted_at, Time.now.utc) : nil
     service_list_false = @service_request.service_list(false)
     service_list_true = @service_request.service_list(true)
     line_items = @service_request.line_items

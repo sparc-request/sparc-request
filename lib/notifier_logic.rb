@@ -121,7 +121,13 @@ class NotifierLogic
     # Does an approval need to be created?  Check that the user
     # submitting has approve rights.
     previously_submitted_at = @service_request.previous_submitted_at.nil? ? Time.now.utc : @service_request.previous_submitted_at.utc
-    audit_report = request_amendment ? @service_request.audit_report(@current_user, previously_submitted_at, Time.now.utc) : nil
+    audit_report = []
+    if request_amendment
+      @service_request.sub_service_requests.each do |ssr|
+        audit_report << ssr.audit_report(@current_user, previously_submitted_at, Time.now.utc)
+      end
+    end
+    audit_report = audit_report.reduce(:merge)
     service_list_false = @service_request.service_list(false)
     service_list_true = @service_request.service_list(true)
     line_items = @service_request.line_items

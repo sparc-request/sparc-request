@@ -29,7 +29,7 @@
           arm: arm, service_request: service_request, sub_service_request: sub_service_request,
           page: pages[arm.id], pages: pages, portal: portal, admin: admin,
           review: review, merged: merged, consolidated: consolidated, statuses_hidden: %w(first_draft)
-  - if service_request.has_one_time_fee_services?
+  - if service_request.has_one_time_fee_services? 
     .otf-calendars
       .page-header
         %h3

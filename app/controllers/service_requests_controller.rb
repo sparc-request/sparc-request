@@ -395,11 +395,12 @@ class ServiceRequestsController < ApplicationController
 
     c = YAML.load_file(Rails.root.join('config', 'navigation.yml'))[@page]
     unless c.nil?
-      @step_text = c['step_text']
-      @css_class = c['css_class']
-      @back = c['back']
-      @catalog = c['catalog']
-      @forward = c['forward']
+      @step_text   = c['step_text']
+      @step_number = c['step_number']
+      @css_class   = c['css_class']
+      @back        = c['back']
+      @catalog     = c['catalog']
+      @forward     = c['forward']
     end
   end
 

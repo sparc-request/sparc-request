@@ -25,7 +25,7 @@ $(document).ready ->
     $(this).children().removeClass('hover')
   )
 
-  $(document).on 'click', '.step-btn', (event) ->
+  $(document).on 'click', '.step-btn', (event) -> 
     if $(this).data('clicked')
       event.preventDefault()
     else

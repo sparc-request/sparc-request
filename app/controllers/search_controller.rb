@@ -42,7 +42,7 @@ class SearchController < ApplicationController
     results.map! { |s|
       {
         institution:    s.institution.name,
-        inst_css_class: s.institution.css_class + '-text',
+        inst_css_class: s.institution.css_class + '-text', 
         parents:        ' | ' + s.parents.reject{ |p| p.type == 'Institution' }.map(&:abbreviation).join(' | '),
         label:          s.name,
         value:          s.id,

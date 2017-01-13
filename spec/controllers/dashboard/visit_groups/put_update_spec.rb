@@ -34,7 +34,7 @@ RSpec.describe Dashboard::VisitGroupsController do
         @sr       = create(:service_request_without_validations, protocol: @protocol)
         @ssr      = create(:sub_service_request, service_request: @sr, organization: org)
         @arm      = create(:arm, protocol: @protocol)
-        @vg       = create(:visit_group, arm: @arm, name: 'Go Away', position: 2)
+        @vg       = create(:visit_group, arm: @arm, name: 'Go Away', position: 1)
       end
 
       it 'should assign @visit_group' do

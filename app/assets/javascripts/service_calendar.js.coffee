@@ -130,7 +130,7 @@ getSRId = ->
     data = $('#service-calendars').data()
     data.tab = tab
     data.arm_id = arm_id
-    data.service_request_id = 1343216
+    data.service_request_id = getSRId()
     # Reload calendar
     $.get '/service_calendars/table.js', data
 

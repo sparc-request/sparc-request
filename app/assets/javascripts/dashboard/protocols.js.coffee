@@ -177,7 +177,7 @@ $(document).ready ->
           url: "/dashboard/protocols.js"
           data: data
 
-(exports ? this).reset_service_requests_handlers = ->
+(exports ? this).reset_service_requests_handlers = -> 
   $('.service-requests-table').on 'all.bs.table', ->
     #Enable selectpickers
     $(this).find('.selectpicker').selectpicker()

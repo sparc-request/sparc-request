@@ -120,14 +120,7 @@ class NotifierLogic
   def send_user_notifications(request_amendment: false)
     # Does an approval need to be created?  Check that the user
     # submitting has approve rights.
-    previously_submitted_at = @service_request.previous_submitted_at.nil? ? Time.now.utc : @service_request.previous_submitted_at.utc
-
-    audit_report = {}
-    @service_request.sub_service_requests.each do |ssr|
-      audit_report = audit_report.merge!(ssr.audit_report(@current_user, previously_submitted_at, Time.now.utc)) { |k, o, n| o + n  }
-    end
-    audit_report.delete(:sub_service_request_id)
-
+    audit_report = authorized_user_audit_report
     service_list_false = @service_request.service_list(false)
     service_list_true = @service_request.service_list(true)
     line_items = @service_request.line_items
@@ -237,6 +230,51 @@ class NotifierLogic
     end
 
     to_notify
+  end
+
+  def authorized_user_audit_report
+    # Authorized users should receive request amendments for changes to the entire SR 
+    # this is different then the Service Providers and Admin.  They only receive request amendments
+    # to their specific SSR.
+    previously_submitted_at = @service_request.previous_submitted_at.nil? ? Time.now.utc : @service_request.previous_submitted_at.utc
+
+    audit_report = {}
+    @service_request.sub_service_requests.each do |ssr|
+      audit_report = audit_report.merge!(ssr.audit_report(@current_user, previously_submitted_at, Time.now.utc)) { |k, o, n| o + n  }
+    end
+
+    audit_report.delete(:sub_service_request_id)
+
+    service_ids = []
+    audit_report[:line_items].map(&:audited_changes).each do |audited_change|
+      service_ids << audited_change['service_id']
+    end
+    service_ids = service_ids.uniq
+    deleted_ssrs = @service_request.deleted_ssrs_since_previous_submission
+    deleted_lis = { :line_items => [] }
+
+    if !deleted_ssrs.empty?
+      deleted_ssrs.each do |deleted_ssr|
+        deleted_line_items = AuditRecovery.where("audited_changes LIKE '%service_request_id: #{@service_request.id}%' AND
+                                                   audited_changes LIKE '%sub_service_request_id: #{deleted_ssr.auditable_id}%' AND
+                                                   auditable_type = 'LineItem' AND user_id = #{@current_user.id} AND 
+                                                   action = 'destroy' AND
+                                                   created_at BETWEEN '#{previously_submitted_at}' AND '#{Time.now.utc}'")
+        
+        deleted_line_items.each do |deleted_line_item|
+          # On the catalog page- when a user adds a service, deletes the service, then adds the service again, 
+          # this line item that was deleted should not be included in the request amendment email- only the added li
+          # should be included
+          binding.pry
+          deleted_lis[:line_items] << deleted_line_item unless service_ids.include? deleted_line_item.audited_changes['service_id']
+        end
+      end
+      deleted_lis[:line_items].map(&:audited_changes).each do |audited_change|
+        audit_report = audit_report.merge!(deleted_lis) { |k, o, n| o + n  }
+      end
+    end
+    binding.pry
+    audit_report
   end
 
   def set_instance_variables(current_user, service_request, service_list_false, service_list_true, line_items, protocol)

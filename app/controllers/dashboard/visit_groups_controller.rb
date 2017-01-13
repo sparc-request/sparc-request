@@ -110,7 +110,7 @@ class Dashboard::VisitGroupsController < Dashboard::BaseController
       @visit_group         = nil
 
       # This is an intruder
-      flash[:alert] = 'You are not allowed to access that Visit Group.'
+      flash[:alert] = t(:authorization_error)[:dashboard][:visit_groups]
       redirect_to dashboard_root_path
     end
   end

@@ -80,21 +80,20 @@ class NotifierLogic
     end
 
     if @sub_service_request && to_notify.include?(@sub_service_request.id)
-      send_notifications([@sub_service_request], @send_request_amendment_and_not_initial)
+      send_notifications([@sub_service_request])
     else
       sub_service_requests = @service_request.sub_service_requests.where(id: to_notify)
-      send_notifications(sub_service_requests, @send_request_amendment_and_not_initial) unless sub_service_requests.empty? # if nothing is set to notify then we shouldn't send out e-mails
+      send_notifications(sub_service_requests) unless sub_service_requests.empty? # if nothing is set to notify then we shouldn't send out e-mails
     end
   end
 
   def send_confirmation_notifications_submitted
-
     if !@to_notify.empty?
       if @sub_service_request && @to_notify.include?(@sub_service_request.id)
-        send_notifications([@sub_service_request], @send_request_amendment_and_not_initial)
+        send_notifications([@sub_service_request])
       else
         sub_service_requests = @service_request.sub_service_requests.where(id: @to_notify)
-        send_notifications(sub_service_requests, @send_request_amendment_and_not_initial) unless sub_service_requests.empty? # if nothing is set to notify then we shouldn't send out e-mails
+        send_notifications(sub_service_requests) unless sub_service_requests.empty? # if nothing is set to notify then we shouldn't send out e-mails
       end
     end
   end
@@ -109,10 +108,10 @@ class NotifierLogic
   end
 
   private
-  def send_notifications(sub_service_requests, send_request_amendment_and_not_initial)
+  def send_notifications(sub_service_requests)
     # If user has added a new service related to a new ssr and edited an existing ssr, 
     # we only want to send a request amendment email and not an initial submit email
-    send_user_notifications(request_amendment: false) unless send_request_amendment_and_not_initial
+    send_user_notifications(request_amendment: false) unless @send_request_amendment_and_not_initial
     send_admin_notifications(sub_service_requests, request_amendment: false)
     send_service_provider_notifications(sub_service_requests, request_amendment: false)
   end
@@ -139,7 +138,12 @@ class NotifierLogic
     # send e-mail to all folks with view and above
     @service_request.protocol.project_roles.each do |project_role|
       next if project_role.project_rights == 'none' || project_role.identity.email.blank?
-      Notifier.notify_user(project_role, @service_request, xls, approval, @current_user, audit_report).deliver_now
+      # Do not want to send authorized user request amendment emails when audit_report is not present
+      if request_amendment && audit_report.present?
+        Notifier.notify_user(project_role, @service_request, xls, approval, @current_user, audit_report).deliver_now
+      elsif !request_amendment
+        Notifier.notify_user(project_role, @service_request, xls, approval, @current_user, audit_report).deliver_now
+      end
     end
   end
 
@@ -233,48 +237,27 @@ class NotifierLogic
   end
 
   def authorized_user_audit_report
-    # Authorized users should receive request amendments for changes to the entire SR 
-    # this is different then the Service Providers and Admin.  They only receive request amendments
-    # to their specific SSR.
     previously_submitted_at = @service_request.previous_submitted_at.nil? ? Time.now.utc : @service_request.previous_submitted_at.utc
-
-    audit_report = {}
-    @service_request.sub_service_requests.each do |ssr|
-      audit_report = audit_report.merge!(ssr.audit_report(@current_user, previously_submitted_at, Time.now.utc)) { |k, o, n| o + n  }
-    end
-
-    audit_report.delete(:sub_service_request_id)
-
-    service_ids = []
-    audit_report[:line_items].map(&:audited_changes).each do |audited_change|
-      service_ids << audited_change['service_id']
-    end
-    service_ids = service_ids.uniq
-    deleted_ssrs = @service_request.deleted_ssrs_since_previous_submission
-    deleted_lis = { :line_items => [] }
-
-    if !deleted_ssrs.empty?
-      deleted_ssrs.each do |deleted_ssr|
-        deleted_line_items = AuditRecovery.where("audited_changes LIKE '%service_request_id: #{@service_request.id}%' AND
-                                                   audited_changes LIKE '%sub_service_request_id: #{deleted_ssr.auditable_id}%' AND
-                                                   auditable_type = 'LineItem' AND user_id = #{@current_user.id} AND 
-                                                   action = 'destroy' AND
-                                                   created_at BETWEEN '#{previously_submitted_at}' AND '#{Time.now.utc}'")
-        
-        deleted_line_items.each do |deleted_line_item|
-          # On the catalog page- when a user adds a service, deletes the service, then adds the service again, 
-          # this line item that was deleted should not be included in the request amendment email- only the added li
-          # should be included
-          binding.pry
-          deleted_lis[:line_items] << deleted_line_item unless service_ids.include? deleted_line_item.audited_changes['service_id']
+    audit_report = @service_request.audit_report(@current_user, previously_submitted_at, Time.now.utc)
+    audit_report = audit_report[:line_items].values.compact.flatten
+    filtered_audit_report = { :line_items => [] }
+    audit_report.group_by{ |audit| audit[:audited_changes]['service_id'] }.each do |k, value|
+      subset_of_actions = value.sort_by(&:created_at).map(&:action)
+      if subset_of_actions.size >= 2 && subset_of_actions.first == 'create' && subset_of_actions.last == 'create'
+        # EXAMPLE:  subset_of_actions == ['create', 'destroy', 'create'] || subset_of_actions == ["create", "destroy", "create", "destroy", "create"]
+        # DO NOT DISPLAY THE FIRST CREATED OR THE DESTROYED LINE ITEM
+        # DISPLAY THE LAST CREATED LINE ITEM
+        filtered_audit_report[:line_items] << value.last
+      elsif subset_of_actions.size >= 2 && subset_of_actions.first == 'create' && subset_of_actions.last == 'destroy'
+        # EXAMPLE:  subset_of_actions == ['create', 'destroy'] || subset_of_actions == ['create', 'destroy', 'create', 'destroy']
+        # DO NOT DISPLAY EITHER LINE ITEM
+      else
+        value.each do |v|
+          filtered_audit_report[:line_items] << v
         end
       end
-      deleted_lis[:line_items].map(&:audited_changes).each do |audited_change|
-        audit_report = audit_report.merge!(deleted_lis) { |k, o, n| o + n  }
-      end
     end
-    binding.pry
-    audit_report
+    filtered_audit_report[:line_items].present? ? filtered_audit_report : nil
   end
 
   def set_instance_variables(current_user, service_request, service_list_false, service_list_true, line_items, protocol)

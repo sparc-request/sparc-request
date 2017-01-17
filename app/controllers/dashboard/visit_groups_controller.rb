@@ -22,15 +22,15 @@ class Dashboard::VisitGroupsController < Dashboard::BaseController
   respond_to :json, :html
 
   before_action :find_visit_group,          only: [:update, :destroy]
-  before_filter :find_service_request
-  before_filter :find_sub_service_request
-  before_filter :find_protocol,             only: [:new, :navigate]
-  before_filter :authorize_admin_visit_group
+  before_action :find_service_request
+  before_action :find_sub_service_request
+  before_action :find_protocol,             only: [:new, :navigate]
+  before_action :authorize_admin_visit_group
 
   def new
     @current_page = params[:current_page] # the current page of the study schedule
     @schedule_tab = params[:schedule_tab]
-    @visit_group  = VisitGroup.new()
+    @visit_group  = VisitGroup.new
     @arm          = params[:arm_id].present? ? Arm.find(params[:arm_id]) : @protocol.arms.first
   end
 

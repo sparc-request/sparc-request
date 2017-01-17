@@ -85,8 +85,8 @@ class ProtocolsReport < ReportingModule
     attrs["Primary PI Last Name"] = "service_request.try(:protocol).try(:primary_principal_investigator).try(:last_name)"
     attrs["Primary PI First Name"] = "service_request.try(:protocol).try(:primary_principal_investigator).try(:first_name)"
     attrs["Primary PI Email"] = "service_request.try(:protocol).try(:primary_principal_investigator).try(:email)"
-    attrs["Primary PI College"] = ["service_request.try(:protocol).try(:primary_principal_investigator).try(:college)", COLLEGES.invert] # we invert since our hash is setup {"Bio Medical" => "bio_med"} for some crazy reason
-    attrs["Primary PI Department"] = ["service_request.try(:protocol).try(:primary_principal_investigator).try(:department)", DEPARTMENTS.invert]
+    attrs["Primary PI College"] = "service_request.try(:protocol).try(:primary_principal_investigator).try(:professional_organization).try(:parents_and_self).try(:select){|org| org.org_type == 'college'}.try(:first).try(:name)"
+    attrs["Primary PI Department"] = "service_request.try(:protocol).try(:primary_principal_investigator).try(:professional_organization).try(:parents_and_self).try(:select){|org| org.org_type == 'department'}.try(:first).try(:name)"
 
     attrs["Primary Coordinator(s)"] = "service_request.try(:protocol).try(:coordinators).try(:map){|x| x.full_name}.try(:join, ', ')"
     attrs["Primary Coordinator Email(s)"] = "service_request.try(:protocol).try(:coordinator_emails)"

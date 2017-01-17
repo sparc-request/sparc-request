@@ -83,8 +83,9 @@ class TestReport < ReportingModule
 
     attrs["Unique PI Last Name"] = :last_name
     attrs["Unique PI First Name"] = :first_name
-    attrs["College"] = [:college, COLLEGES.invert] # we invert since our hash is setup {"Bio Medical" => "bio_med"} for some crazy reason
-    attrs["Department"] = [:department, DEPARTMENTS.invert]
+    attrs["Institution"] = "try(:professional_organization).try(:parents_and_self).try(:select){|org| org.org_type == 'institution'}.try(:first).try(:name)"
+    attrs["College"] = "try(:professional_organization).try(:parents_and_self).try(:select){|org| org.org_type == 'college'}.try(:first).try(:name)"
+    attrs["Department"] = "try(:professional_organization).try(:parents_and_self).try(:select){|org| org.org_type == 'department'}.try(:first).try(:name)"
 
     attrs
   end

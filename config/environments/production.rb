@@ -100,7 +100,7 @@ SparcRails::Application.configure do
       exception_recipients: ['catesa@musc.edu', 'johstu@musc.edu',
                              'leonarjp@musc.edu', 'wiel@musc.edu',
                              'lohrp@musc.edu', 'holtw@musc.edu',
-                             'hardeeje@musc.edu']
+                             'hardeeje@musc.edu', 'sparcrequest@musc.edu']
     }
 
 end

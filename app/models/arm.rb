@@ -68,8 +68,8 @@ class Arm < ActiveRecord::Base
   end
 
   def sanitized_name
-    #Sanitized for Excel
-    name.gsub(/\[|\]|\*|\/|\\|\?|\:/, ' ')
+    # Sanitized for Excel
+    name.gsub(/\[|\]|\*|\/|\\|\?|\:/, ' ').truncate(31) 
   end
 
   def update_liv_subject_counts

@@ -83,7 +83,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
         render
       }
       format.xlsx {
-        @statuses_hidden = params[:statuses_hidden]
+        @statuses_hidden = params[:statuses_hidden] || %w(draft first_draft)
         response.headers['Content-Disposition'] = "attachment; filename=\"(#{@protocol.id}) Consolidated Corporate Study Budget.xlsx\""
       }
     end

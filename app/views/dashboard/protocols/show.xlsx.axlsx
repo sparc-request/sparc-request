@@ -98,6 +98,8 @@ arm_r_totals = {}
       current_row = sheet.rows.length + 1
       line_items_visits.each do |liv|
         @line_item_style_array = [default, default, default, money, money, money]
+        puts n_columns.inspect
+        puts current_row.inspect
         n_columns_sum = sum(n_columns, current_row)
         nr_cell = "#{negotiated_reimbursement_column}#{current_row}"
         your_cost_cell = "#{research_cost_column}#{current_row}"

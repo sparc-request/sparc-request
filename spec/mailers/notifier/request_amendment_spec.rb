@@ -143,12 +143,7 @@ RSpec.describe Notifier do
                           name: 'ABCD',
                           one_time_fee: true)
         created_line_item_audit_trail(service_request, service, identity)
-
-        @report = {}
-        service_request.sub_service_requests.each do |ssr|
-          @report = @report.merge!(ssr.audit_report(identity, Time.now.yesterday - 4.hours, Time.now)) { |k, o, n| o + n  }
-        end
-        @report.delete(:sub_service_request_id)
+        @report = setup_authorized_user_audit_report
       end
 
       context 'authorized users' do
@@ -272,11 +267,7 @@ RSpec.describe Notifier do
                           name: 'ABCD',
                           one_time_fee: true)
         deleted_line_item_audit_trail(service_request, service, identity)
-        @report = {}
-        service_request.sub_service_requests.each do |ssr|
-          @report = @report.merge!(ssr.audit_report(identity, Time.now.yesterday - 4.hours, Time.now)) { |k, o, n| o + n  }
-        end
-        @report.delete(:sub_service_request_id)
+        @report = setup_authorized_user_audit_report
       end
 
       context 'authorized users' do

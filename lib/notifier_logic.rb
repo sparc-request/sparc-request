@@ -47,7 +47,6 @@ class NotifierLogic
       @service_request.update_arm_minimum_counts
       @service_request.sub_service_requests.update_all(nursing_nutrition_approved: false, lab_approved: false, imaging_approved: false, committee_approved: false)
     end
-
     send_request_amendment_email_evaluation
     send_confirmation_notifications_submitted
   end
@@ -134,7 +133,6 @@ class NotifierLogic
     else
       approval = false
     end
-
     # send e-mail to all folks with view and above
     @service_request.protocol.project_roles.each do |project_role|
       next if project_role.project_rights == 'none' || project_role.identity.email.blank?
@@ -239,21 +237,20 @@ class NotifierLogic
   def authorized_user_audit_report
     previously_submitted_at = @service_request.previous_submitted_at.nil? ? Time.now.utc : @service_request.previous_submitted_at.utc
     audit_report = @service_request.audit_report(@current_user, previously_submitted_at, Time.now.utc)
-    audit_report = audit_report[:line_items].values.compact.flatten
+    audit_report = audit_report[:line_items].values.flatten
     filtered_audit_report = { :line_items => [] }
-    audit_report.group_by{ |audit| audit[:audited_changes]['service_id'] }.each do |k, value|
-      subset_of_actions = value.sort_by(&:created_at).map(&:action)
-      if subset_of_actions.size >= 2 && subset_of_actions.first == 'create' && subset_of_actions.last == 'create'
-        # EXAMPLE:  subset_of_actions == ['create', 'destroy', 'create'] || subset_of_actions == ["create", "destroy", "create", "destroy", "create"]
-        # DO NOT DISPLAY THE FIRST CREATED OR THE DESTROYED LINE ITEM
-        # DISPLAY THE LAST CREATED LINE ITEM
-        filtered_audit_report[:line_items] << value.last
-      elsif subset_of_actions.size >= 2 && subset_of_actions.first == 'create' && subset_of_actions.last == 'destroy'
-        # EXAMPLE:  subset_of_actions == ['create', 'destroy'] || subset_of_actions == ['create', 'destroy', 'create', 'destroy']
-        # DO NOT DISPLAY EITHER LINE ITEM
+    audit_report.group_by{ |audit| audit[:audited_changes]['service_id'] }.each do |service_id, audits|
+      service_actions_since_previous_submission = audits.sort_by(&:created_at).map(&:action)
+      if service_actions_since_previous_submission.size >= 2 && service_actions_since_previous_submission.first == 'create' && service_actions_since_previous_submission.last == 'create'
+        # EXAMPLE:  service_actions_since_previous_submission == ['create', 'destroy', 'create'] || service_actions_since_previous_submission == ["create", "destroy", "create", "destroy", "create"]
+        # END RESULT:  DISPLAY THE LAST CREATED LINE ITEM
+        filtered_audit_report[:line_items] << audits.last
+      elsif service_actions_since_previous_submission.size >= 2 && service_actions_since_previous_submission.first == 'create' && service_actions_since_previous_submission.last == 'destroy'
+        # EXAMPLE:  service_actions_since_previous_submission == ['create', 'destroy'] || service_actions_since_previous_submission == ['create', 'destroy', 'create', 'destroy']
+        # END RESULT:  DO NOT DISPLAY EITHER LINE ITEM
       else
-        value.each do |v|
-          filtered_audit_report[:line_items] << v
+        audits.each do |audit|
+          filtered_audit_report[:line_items] << audit
         end
       end
     end

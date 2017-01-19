@@ -26,6 +26,12 @@
       = t(:protocols)[:studies][:information][:subtext]
   .panel-body.container-fluid
     .form-group.row
+      = form.label :research_master_id, class: 'col-lg-2 control-label rm-id' do
+        = link_to t(:protocols)[:studies][:information][:research_master_id], RESEARCH_MASTER_LINK
+      .col-lg-10
+        = form.text_field :research_master_id, class: 'form-control'
+        = form.hidden_field :has_human_subject_info, value: false, class: 'has-human-subject-info'
+    .form-group.row
       = form.label :short_title, t(:protocols)[:studies][:information][:short_title], class: 'col-lg-2 control-label required'
       .col-lg-10
         = form.text_field :short_title, class: 'form-control'

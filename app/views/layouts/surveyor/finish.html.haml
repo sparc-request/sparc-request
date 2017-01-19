@@ -23,15 +23,6 @@
   %head
     %title
       = t(:proper)[:header]
-    = stylesheet_link_tag('surveyor/reset',
-                        'surveyor/jquery-ui-1.10.0.custom',
-                        'surveyor/jquery-ui-timepicker-addon',
-                        'surveyor/ui.slider.extras',
-                        'surveyor/results',
-                        'surveyor',
-                        'custom')
-    = stylesheet_link_tag 'system_satisfaction'
-    = stylesheet_link_tag 'custom'
     = stylesheet_link_tag 'application'
     = javascript_include_tag 'application'
     /[if IE]
@@ -61,27 +52,17 @@
         .col-sm-2
         .col-sm-8
           .panel.panel-default
-            .panel-heading.text-center
-              %h4.panel-title
-                = @survey.try(:title)
             .panel-body
-              .form-group.text-center
+              .page-header.text-center
+                %h1
+                  = t(:surveyor)[:completed_survey][:header]
+              .alert.alert-info.text-center
                 = yield
-            .panel-footer
-              %a.btn.btn-default#survey-submit-button
-                = t(:actions)[:submit]
-
+              .text-center
+                = link_to t(:proper)[:confirmation][:to_dashboard], DASHBOARD_LINK, class: 'btn btn-lg btn-success'
         .col-sm-2
   %footer
     = render 'layouts/footer'
     = render 'shared/piwik_tracking' if Rails.env == 'production'
     = render 'shared/ie7_modal'
     = render 'shared/modal'
-
-:javascript
-  $(document).ready( function() {
-    $(document).on('click', '#survey-submit-button', function() {
-      $('#survey_form').append("<input type='hidden' id='finish' name='finish' value='Submit'>");
-      $('#survey_form').submit();
-    })
-  })

@@ -41,3 +41,4 @@ class OrganizationUpdater
     end
   end
 end
+

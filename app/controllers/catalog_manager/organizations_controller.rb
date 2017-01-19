@@ -34,7 +34,7 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
 
   def update
     @organization = Organization.find(params[:id])
-    updater = OrganizationUpdater.new(@attributes, @organization)
+    updater = CatalogManager::OrganizationUpdater.new(@attributes, @organization)
     @attributes = updater.set_org_tags
     updater.update_organization
     updater.save_pricing_setups

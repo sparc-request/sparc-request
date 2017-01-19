@@ -69,7 +69,7 @@ module NotifierHelper
         ssr = SubServiceRequest.find(ssr_id)
       end
     else
-      ssr = LineItem.find(last_change.auditable_id).sub_service_request
+      ssr = LineItem.exists?(last_change.auditable_id) ? LineItem.find(last_change.auditable_id).sub_service_request : nil
     end
     ssr
   end

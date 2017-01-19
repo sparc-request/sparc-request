@@ -34,12 +34,23 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
 
   def update
     @organization = Organization.find(params[:id])
-    updater = CatalogManager::OrganizationUpdater.new(@attributes, @organization)
+    updater = OrganizationUpdater.new(@attributes, @organization)
     @attributes = updater.set_org_tags
-    updater.update_organization
+    show_success = updater.update_organization
     updater.save_pricing_setups
     @organization.setup_available_statuses
     @entity = @organization
+    flash_update(show_success)
     render 'catalog_manager/organizations/update'
+  end
+
+  private
+
+  def flash_update(show_success)
+    if show_success
+      flash[:notice] = "#{@organization.name} saved correctly."
+    else
+      flash[:alert] = "Failed to update #{@organization.name}."
+    end
   end
 end

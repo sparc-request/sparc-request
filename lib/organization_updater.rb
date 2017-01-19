@@ -17,9 +17,11 @@ class OrganizationUpdater
     if @organization.update_attributes(@attributes)
       @organization.update_ssr_org_name if name_change
       @organization.update_descendants_availability(@attributes[:is_available])
-      flash[:notice] = "#{@organization.name} saved correctly."
+
+      true
     else
-      flash[:alert] = "Failed to update #{@organization.name}."
+      
+      false
     end
   end
 

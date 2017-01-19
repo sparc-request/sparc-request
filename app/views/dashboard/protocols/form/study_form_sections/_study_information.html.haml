@@ -34,12 +34,12 @@
     .form-group.row
       = form.label :short_title, t(:protocols)[:studies][:information][:short_title], class: 'col-lg-2 control-label required'
       .col-lg-10
-        = form.text_field :short_title, class: 'form-control'
+        = form.text_field :short_title, class: 'form-control rm-id-dependent rm-locked-fields'
 
     .form-group.row
       = form.label :title, t(:protocols)[:studies][:information][:title], class: 'col-lg-2 control-label required'
       .col-lg-10
-        = form.text_field :title, class: 'form-control'
+        = form.text_field :title, class: 'form-control rm-id-dependent rm-locked-fields'
 
     .form-group.row#funding-status
       = form.label :funding_status, t(:protocols)[:studies][:information][:funding_status], class: 'col-lg-2 control-label required'

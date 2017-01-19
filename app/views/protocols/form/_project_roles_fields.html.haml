@@ -29,7 +29,7 @@
       .form-group.row
         = pr_form.label :identity_id, t(:protocols)[:authorized_users][:primary_pi], class: 'col-lg-2 control-label required'
         .col-lg-10
-          = pr_form.text_field :identity_id, placeholder: t(:constants)[:prompts][:search_for_user], class: 'form-control'
+          = pr_form.text_field :identity_id, placeholder: t(:constants)[:prompts][:search_for_user], class: 'form-control rm-id-dependent'
           %label#primary_pi_name.hidden
           %a.btn.btn-xs.btn-danger.glyphicon.glyphicon-remove#user-select-clear-icon{ href: "javascript:void(0);", style: 'display: none; vertical-align: middle;' }
           = pr_form.hidden_field :identity_id

@@ -18,6 +18,12 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+toggleFields = (fields, state) ->
+  $(fields).prop('disabled', state)
+
+resetRmIdFields = (fields, value) ->
+  $(fields).val(value)
+
 $(document).ready ->
 
   $(document).on 'click', '.human-subjects', ->
@@ -27,6 +33,32 @@ $(document).ready ->
     else
       $('.rm-id').addClass('required-field')
       $('.has-human-subject-info').val('true')
+
+  $(document).on 'blur', '.research-master-field', ->
+    rmId = $('.research-master-field').val()
+    unless $(this).val() == ''
+      $.ajax
+        url: "#{gon.rm_id_api_url}research_masters/#{rmId}.json"
+        type: 'GET'
+        headers: {"Authorization": "Token token=\"#{gon.rm_id_api_token}\""}
+        success: (data) ->
+          $('#protocol_short_title').val(data.short_title)
+          $('#protocol_title').val(data.long_title)
+          $('#protocol_project_roles_attributes_0_identity_id').val(data.pi_name)
+          toggleFields('.rm-locked-fields', true)
+        error: ->
+          swal("Error", "Research Master Record not found", "error")
+          resetRmIdFields('.rm-id-dependent', '')
+          toggleFields('.rm-locked-fields', false)
+
+  $(document).on 'change', '.research-master-field', ->
+    if $(this).val() == ''
+      resetRmIdFields('.rm-id-dependent', '')
+      toggleFields('.rm-locked-fields', false)
+
+  $('#new_protocol').bind 'submit', ->
+    $(this).find(':input').prop('disabled', false)
+
 
   # Protocol Edit Begin
   $(document).on 'click', '#protocol-type-button', ->

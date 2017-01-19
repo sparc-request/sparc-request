@@ -89,13 +89,13 @@ class ServiceCalendarsController < ApplicationController
   end
 
   def merged_calendar
-    @tab          = params[:tab]
-    @review       = params[:review] == 'true'
-    @portal       = params[:portal] == 'true'
-    @admin        = @portal && @sub_service_request.present?
-    @merged       = true
-    @consolidated = false
-
+    @tab              = params[:tab]
+    @review           = params[:review] == 'true'
+    @portal           = params[:portal] == 'true'
+    @admin            = @portal && @sub_service_request.present?
+    @merged           = true
+    @consolidated     = false
+    @statuses_hidden  = []
     setup_calendar_pages
 
     respond_to do |format|
@@ -112,7 +112,7 @@ class ServiceCalendarsController < ApplicationController
     @merged             = true
     @consolidated       = true
     @service_request    = @protocol.any_service_requests_to_display?
-    @statuses_hidden = params[:statuses_hidden]
+    @statuses_hidden    = params[:statuses_hidden]
     setup_calendar_pages
 
     respond_to do |format|

@@ -1,8 +1,9 @@
 class OrganizationUpdater
 
-  def initialize(attributes, organization)
+  def initialize(attributes, organization, params)
     @attributes = attributes
     @organization = organization
+    @params = params
   end
 
   def set_org_tags
@@ -28,8 +29,8 @@ class OrganizationUpdater
   end
 
   def save_pricing_setups
-    if @attributes[:pricing_setups] && ['Program', 'Provider'].include?(@organization.type)
-      @attributes[:pricing_setups].each do |ps|
+    if @params[:pricing_setups] && ['Program', 'Provider'].include?(@organization.type)
+      @params[:pricing_setups].each do |ps|
         if ps[1]['id'].blank?
           ps[1].delete(:id)
           ps[1].delete(:newly_created)

@@ -30,29 +30,29 @@ $(document).ready ->
   remove_error = (selector) ->
     $(selector).parent().find('.custom_error_message').remove()
     $(selector).removeClass("custom_error_field")
-  
+
   remove_all_errors = ->
     $('.custom_error_message').remove()
     $('.custom_error_field').removeClass('custom_error_field')
-    
+
   cannot_contain_letters = (selector) ->
     $(selector).val().match(/^\d{0,3}((,)?\d{3})*(\.\d+)?$/) || [null]
-  
+
   validate_numbers_only = (selector) ->
     unless $(selector).val() == ''
-      validated_number = cannot_contain_letters(selector) 
+      validated_number = cannot_contain_letters(selector)
       unless validated_number[0]
         add_error(selector, "#{$(selector).attr('display')} can only contain numbers.")
         $(selector).val('')
 
   validate_percentages_to_federal_percentage = (selector, federal) ->
-    unless $(selector).val() == ''  
+    unless $(selector).val() == ''
       validated_number = cannot_contain_letters(selector)
       if parseFloat(validated_number[0]) < parseFloat(federal)
         add_error(selector, "#{$(selector).attr('display')} percentage must be >= to the Federal percentage.")
-        $(selector).val('')        
+        $(selector).val('')
 
-    
+
   $('.percentage_field').live('change', ->
     remove_error(this)
     unless $(this).hasClass('federal_percentage_field')
@@ -60,20 +60,20 @@ $(document).ready ->
     validate_percentages_to_federal_percentage(this, federal_number)
     validate_numbers_only(this)
   )
-  
+
   $('.federal_percentage_field').live('change', ->
     remove_error(this)
     field = $(this).closest('fieldset').find('.percentage_field')
     for percentage in $(field)
-      validate_percentages_to_federal_percentage(percentage, $(this).val())       
+      validate_percentages_to_federal_percentage(percentage, $(this).val())
       validate_numbers_only(percentage)
   )
-  
+
   $('.unit_field, .rate_field').live('change', ->
     remove_error(this)
     validate_numbers_only(this)
   )
-  
+
   $('.apply_federal_to_all_link').live('click', ->
     federal_value = $(this).closest('tr').siblings('.federal_row').find('.federal_percentage_field').val()
     $(this).closest('tr').siblings('.corporate_row').find('.corporate_percentage_field').val(federal_value).change()
@@ -81,7 +81,7 @@ $(document).ready ->
     $(this).closest('tr').siblings('.member_row').find('.member_percentage_field').val(federal_value).change()
     remove_all_errors()
   )
-    
+
   $('.save_button').live('click', (e) ->
     e.preventDefault()
     $(this).attr('disabled', 'disabled')
@@ -89,10 +89,11 @@ $(document).ready ->
     $('.spinner').show()
 
     $(document).ajaxStop ->
+      $('.switch_all_services').attr("checked", false)
       $('.save_button').removeAttr('disabled')
       $('.spinner').hide()
   )
-    
+
   $('.service_rate').live('blur', ->
     $(this).val(parseFloat($(this).val()).toFixed(2))
   )
@@ -105,7 +106,7 @@ $(document).ready ->
   $('#provider_subsidy_map_attributes_max_dollar_cap, #program_subsidy_map_attributes_max_dollar_cap, #core_subsidy_map_attributes_max_dollar_cap').live('change', ->
     $(this).val(parseFloat($(this).val()).toFixed(2))
   )
-  
+
   $('#fix_pricing_maps_dialog').dialog({
     title: "Fix Pricing Maps"
     closeText: ""
@@ -114,7 +115,7 @@ $(document).ready ->
     width: 575
     height: 200
   })
-  
+
   $('.fix_pricing_maps_button').live('click', ->
     if $(this).attr("class").search("disabled_button") == -1
       $('.pricing_map_fix_spinner').show()
@@ -138,7 +139,7 @@ $(document).ready ->
   $('.dont_fix_pricing_maps_button').live('click', ->
     $('#fix_pricing_maps_dialog').dialog('close')
   )
-  
+
   $('.fix_pricing_maps_on_change').live('change', ->
     entity_name = $(this).attr('entity_name')
     $('.fix_pricing_maps_entity_id').val($(this).attr('entity_id'))
@@ -147,7 +148,7 @@ $(document).ready ->
     $('.fix_pricing_maps_new_value').val($(this).val())
 
     $(this).attr('old_value', $(this).val())
-    
+
     $('.fix_pricing_maps_old_value_type').val("effective_date") if $(this).attr('class').search("effective_date_hidden") > -1
     $('.fix_pricing_maps_old_value_type').val("display_date") if $(this).attr('class').search("display_date_hidden") > -1
     $('.fix_pricing_maps_dialog_content').html("The pricing maps under this entity (#{entity_name}) should be readjusted to use the date you just selected.")

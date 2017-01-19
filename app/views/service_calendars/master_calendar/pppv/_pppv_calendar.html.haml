@@ -28,6 +28,7 @@
         %button.btn.btn-warning.move-visit-button{ data: { arm_id: arm.id } }
           = t(:proper)[:service_calendar][:move_visit][:header]
     .clearfix
+  = hidden_field_tag :service_request_id, service_request.id
   %table.table.table-bordered
     %thead
       = render "service_calendars/master_calendar/pppv/#{tab}_header",

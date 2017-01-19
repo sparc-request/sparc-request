@@ -40,7 +40,7 @@ body {
   margin: 0;
 }
 
-a { 
+a {
   background: url("ui-bg_glass_100_f6f6f6_1x400.png") repeat-x scroll 50% 50% #F6F6F6;
   border: none !important;
   font-weight: bold;
@@ -144,7 +144,7 @@ a.add_new_excluded_funding_source {
 
 .ui-autocomplete-loading { background: white url('ui-anim_basic_16x16.gif') right center no-repeat; }
 
-//Not sure where this ui-dialog css came from or why it is here, there were no dialogs in the application prior 
+//Not sure where this ui-dialog css came from or why it is here, there were no dialogs in the application prior
 //to just having to add jquery dialog code to create the first one. -- RDN
 /*.ui-dialog {
   font-size: 12px !important;
@@ -287,7 +287,7 @@ fieldset.actions .legend {
         margin-left: 0px;
         width: 20px !important;
       }
-      
+
       .linked_quantity_total {
         width: 75px;
       }
@@ -420,7 +420,7 @@ input#new_cp {
   border-style: inset;
   border-width: 1px;
   width: 720px;
-  
+
 
   input#new_rs {
     width: 703px !important;
@@ -630,7 +630,7 @@ ul.excluded_funding_sources {
     -moz-border-radius: 10px;
     -webkit-border-radius: 10px;
     -khtml-border-radius: 10px;
-    border-radius: 10px;  
+    border-radius: 10px;
     padding: 5px;
     border: 2px solid gray;
     background-color: white;

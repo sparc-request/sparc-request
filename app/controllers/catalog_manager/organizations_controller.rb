@@ -45,11 +45,21 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
   private
 
   def update_organization
+    # Update Organization
     @attributes.delete(:id)
     name_change = @attributes[:name] != @organization.name || @attributes[:abbreviation] != @organization.abbreviation
-    if @organization.update_attributes(@attributes)
+    org_updated = @organization.update_attributes(@attributes)
+
+    # Update its Services
+    services_updated = if params[:switch_all_services]
+                         service_availability = (params[:switch_all_services] == "on")
+                         @organization.services.all? { |service| service.update(is_available: service_availability) }
+                       else
+                         true
+                       end
+
+    if org_updated && services_updated
       @organization.update_ssr_org_name if name_change
-      @organization.update_descendants_availability(@attributes[:is_available])
       flash[:notice] = "#{@organization.name} saved correctly."
     else
       flash[:alert] = "Failed to update #{@organization.name}."

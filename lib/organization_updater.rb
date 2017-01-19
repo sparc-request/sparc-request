@@ -9,6 +9,8 @@ class OrganizationUpdater
     unless @attributes[:tag_list] || @organization.type == 'Institution'
       @attributes[:tag_list] = ""
     end
+
+    @attributes
   end
 
   def update_organization
@@ -20,7 +22,7 @@ class OrganizationUpdater
 
       true
     else
-      
+
       false
     end
   end

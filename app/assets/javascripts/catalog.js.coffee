@@ -95,13 +95,7 @@ $(document).ready ->
   ).on('typeahead:render', (event, a, b, c) ->
     $('[data-toggle="tooltip"]').tooltip({ 'delay' : { show: 1000, hide: 500 } })
   ).on('typeahead:select', (event, suggestion) ->
-    srid = $(this).data('srid')
-    id = suggestion.value
-    $.ajax
-      type: 'POST'
-      url: "/service_requests/#{srid}/add_service/#{id}"
-      data:
-        service_request_id: getSRId()
+    window.cart.selectService(suggestion.value, $(this).data('srid'))
   )
 
   ### CONTINUE BUTTON ###

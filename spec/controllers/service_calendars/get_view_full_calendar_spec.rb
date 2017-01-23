@@ -92,7 +92,6 @@ RSpec.describe ServiceCalendarsController do
       sr       = create(:service_request_without_validations, protocol: protocol)
       arm       = create(:arm_without_validations, protocol: protocol)
 
-
       session[:identity_id] = logged_in_user.id
 
       xhr :get, :view_full_calendar, {
@@ -103,6 +102,61 @@ RSpec.describe ServiceCalendarsController do
       }
 
       expect(assigns(:merged)).to eq(true)
+    end
+
+    it 'should assign @consolidated' do
+      protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
+      sr       = create(:service_request_without_validations, protocol: protocol)
+      arm       = create(:arm_without_validations, protocol: protocol)
+
+
+      session[:identity_id] = logged_in_user.id
+
+      xhr :get, :view_full_calendar, {
+        service_request_id: sr.id,
+        protocol_id: protocol.id,
+        arm_id: arm.id,
+        portal: 'true'
+      }
+
+      expect(assigns(:consolidated)).to eq(true)
+    end
+
+    it 'should assign @service_request' do
+      protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
+      sr       = create(:service_request_without_validations, protocol: protocol)
+      arm       = create(:arm_without_validations, protocol: protocol)
+
+
+      session[:identity_id] = logged_in_user.id
+
+      xhr :get, :view_full_calendar, {
+        service_request_id: sr.id,
+        protocol_id: protocol.id,
+        arm_id: arm.id,
+        portal: 'true'
+      }
+
+      expect(assigns(:service_request)).to eq(sr)
+    end
+
+    it 'should assign @statuses_hidden' do
+      protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
+      sr       = create(:service_request_without_validations, protocol: protocol)
+      arm       = create(:arm_without_validations, protocol: protocol)
+
+
+      session[:identity_id] = logged_in_user.id
+
+      xhr :get, :view_full_calendar, {
+        service_request_id: sr.id,
+        protocol_id: protocol.id,
+        arm_id: arm.id,
+        portal: 'true',
+        statuses_hidden: ['None for me, thank you']
+      }
+
+      expect(assigns(:statuses_hidden)).to eq(['None for me, thank you'])
     end
 
     it 'should assign and fill @pages' do

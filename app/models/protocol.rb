@@ -142,10 +142,10 @@ class Protocol < ActiveRecord::Base
   end
 
   validate :existing_rm_id,
-    if: -> record { record.has_human_subject_info? && !record.research_master_id.nil? }
+    if: -> record { !record.research_master_id.nil? }
 
   validate :unique_rm_id_to_protocol,
-    if: -> record { record.has_human_subject_info? && !record.research_master_id.nil? }
+    if: -> record { !record.research_master_id.nil? }
 
   def existing_rm_id
     rm_ids = HTTParty.get(RESEARCH_MASTER_API + 'research_masters.json', headers: {'Content-Type' => 'application/json', 'Authorization' => "Token token=\"#{RMID_API_TOKEN}\""})

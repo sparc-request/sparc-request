@@ -127,7 +127,7 @@ module EmailHelpers
 
   def assert_email_request_amendment_for_added(mail, for_authorized_users=false)
     if for_authorized_users
-      @report[:line_items].values.flatten.each do |li|
+      @report[:line_items].each do |li|
         service = Service.find(li.audited_changes["service_id"])
         ssr = SubServiceRequest.find(li.audited_changes['sub_service_request_id'])
         expect(mail).to have_xpath "//td['#{ssr.display_id}']"
@@ -148,7 +148,7 @@ module EmailHelpers
 
   def assert_email_request_amendment_for_deleted(mail, for_authorized_users=false)
     if for_authorized_users
-      @report[:line_items].values.flatten.each do |li|
+      @report[:line_items].each do |li|
         service = Service.find(li.audited_changes["service_id"])
         ssr = SubServiceRequest.find(li.audited_changes['sub_service_request_id'])
         expect(mail).to have_xpath "//td//strike['#{ssr.display_id}']"

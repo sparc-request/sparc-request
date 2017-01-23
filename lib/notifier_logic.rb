@@ -124,7 +124,7 @@ class NotifierLogic
   def send_user_notifications(request_amendment: false)
     # Does an approval need to be created?  Check that the user
     # submitting has approve rights.
-    audit_report = request_amendment ? authorized_user_audit_report : nil
+    audit_report = authorized_user_audit_report
     service_list_false = @service_request.service_list(false)
     service_list_true = @service_request.service_list(true)
     line_items = @service_request.line_items
@@ -261,7 +261,7 @@ class NotifierLogic
         end
       end
     end
-    filtered_audit_report
+    filtered_audit_report[:line_items].present? ? filtered_audit_report : nil
   end
 
   def set_instance_variables(current_user, service_request, service_list_false, service_list_true, line_items, protocol)

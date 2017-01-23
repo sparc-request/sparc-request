@@ -29,13 +29,13 @@
       %th.skinny-black-border= t(:notifier)[:action]
 
   %tbody
-    - @audit_report = action_name == 'notify_user' ? @audit_report[:line_items].values.flatten : @audit_report[:line_items]
-    - @audit_report.each do |last_change|
+    - @audit_report[:line_items].each do |last_change|
       - service_info = Service.find(last_change.audited_changes["service_id"])
       - ssr = determine_ssr(last_change, action_name)
-      - if SubServiceRequest.where(id: last_change.audited_changes['sub_service_request_id']).empty?
-        = render "audit_new_or_destroyed_ssr", last_change: last_change, service_info: service_info, ssr: ssr
-      - else
-        = render "audit_edited_ssrs", last_change: last_change, service_info: service_info, ssr: ssr
+      - if ssr.present?
+        - if SubServiceRequest.where(id: last_change.audited_changes['sub_service_request_id']).empty?
+          = render "audit_new_or_destroyed_ssr", last_change: last_change, service_info: service_info, ssr: ssr
+        - else
+          = render "audit_edited_ssrs", last_change: last_change, service_info: service_info, ssr: ssr
 %br
 %br

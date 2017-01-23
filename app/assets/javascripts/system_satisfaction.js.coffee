@@ -31,7 +31,7 @@ $(document).ready ->
 
       $(document).on 'click', '#modal_place .yes-button', ->
         survey_offered = true
-        $('#modal_place').load "/surveys/system-satisfaction-survey", {survey_version: ""}, ->
+        $('#modal_place').load "/surveys/system-satisfaction-survey", {survey_version: "", review: 'true'}, ->
           $('#survey_form').append("<input type='hidden' id='redirect_to' name='redirect_to' value='#{button.attr('href')}'>")
           $('#survey_form div.next_section').append("<input type='button' name='cancel' value='Cancel'/>")
 

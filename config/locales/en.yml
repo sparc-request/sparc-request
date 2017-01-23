@@ -92,6 +92,8 @@ en:
   authorization_error:
     header: "Authorization Error"
     link: "Return to your Dashboard"
+    dashboard:
+      visit_groups: 'You are not allowed to access that Visit Group.'
 
   ####################
   # AUTHORIZED USERS #

@@ -174,6 +174,7 @@ module CapybaraSupport
 
     arm = create(:arm, protocol_id: project.id, subject_count: 2, visit_count: 10)
 
+    line_items_visit = create(:line_items_visit, arm_id: arm.id, subject_count: arm.subject_count)
 
     survey = create(:survey, title: "System Satisfaction survey", description: nil, access_code: "system-satisfaction-survey", reference_identifier: nil,
                                          data_export_identifier: nil, common_namespace: nil, common_identifier: nil, active_at: nil, inactive_at: nil, css_url: nil,

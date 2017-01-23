@@ -55,11 +55,11 @@
         li
           width: 100%
       li
-        a:focus
+        .step-btn:focus
           outline: 0
-        a:hover
+        .step-btn:hover
           text-decoration: none
-        a
+        .step-btn
           display: flex
           width: 100%
           .step-text
@@ -72,13 +72,15 @@
             outline: none
             box-shadow: 0 0 0
             font-size: 13px
+            cursor: default
           .right-arrow
             width: 0
             height: 0
             border-top: 50px solid transparent
             border-bottom: 50px solid transparent
             border-left: 45px solid
-          .right-arrow:hover
+        a.step-btn
+          .step-text,.right-arrow:hover
             cursor: pointer
 
       .step-btn-blue

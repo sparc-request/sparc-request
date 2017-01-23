@@ -25,17 +25,37 @@ class NotifierLogic
     @service_request = service_request
     @current_user = current_user
     @sub_service_request = sub_service_request
+    # Grab ssrs that have been previously submitted
+    # Setting this to an array is necessary to grab the correct ssrs
+    @previously_submitted_ssrs = @service_request.previously_submitted_ssrs
+    # Flag for authorized users: when a new service has been added from
+    # a new ssr, only send the request amendment and not the initial confirmation email
+    @send_request_amendment_and_not_initial = @service_request.original_submitted_date.present? && !@previously_submitted_ssrs.empty?
+  end
+
+  def update_ssrs_and_send_emails
+    @to_notify = []
+    if @sub_service_request
+      @to_notify << @sub_service_request.id unless @sub_service_request.status == 'submitted' || @sub_service_request.previously_submitted?
+      @sub_service_request.update_attribute(:submitted_at, Time.now) unless @sub_service_request.status == 'submitted'
+
+      @sub_service_request.update_attributes(status: 'submitted', nursing_nutrition_approved: false,
+                                             lab_approved: false, imaging_approved: false, committee_approved: false) if UPDATABLE_STATUSES.include?(@sub_service_request.status)
+    else
+      @to_notify = update_service_request_status('submitted', true, true)
+
+      @service_request.update_arm_minimum_counts
+      @service_request.sub_service_requests.update_all(nursing_nutrition_approved: false, lab_approved: false, imaging_approved: false, committee_approved: false)
+    end
+    send_request_amendment_email_evaluation
+    send_confirmation_notifications_submitted
   end
 
   def send_request_amendment_email_evaluation
-      #### FOR REQUEST AMENDMENT EMAIL ####
-    # Grab ssrs that have been previously submitted
-    # Setting this to an array is necessary to grab the correct ssrs
-    previously_submitted_ssrs = @service_request.previously_submitted_ssrs
-    if !previously_submitted_ssrs.empty?
-      request_amendment_ssrs = previously_submitted_ssrs.select{ |ssr| ssr_has_changed?(ssr) }
+    if !@previously_submitted_ssrs.empty?
+      request_amendment_ssrs = @previously_submitted_ssrs.select{ |ssr| ssr_has_changed?(ssr) }
 
-      destroyed_or_created_ssr = [@service_request.deleted_ssrs_since_previous_submission, @service_request.created_ssrs_since_previous_submission].flatten
+      destroyed_or_created_ssr = @service_request.previous_submitted_at.nil? ? [] : [@service_request.deleted_ssrs_since_previous_submission, @service_request.created_ssrs_since_previous_submission].flatten
       # If an existing SSR has had services added/deleted, send a request amendment 
       # (If an SSR has been deleted or created, this is also seen in the email)
       # The destroyed_or_created_ssr determines whether authorized users need a request amendment email 
@@ -49,8 +69,6 @@ class NotifierLogic
   end
 
   def send_confirmation_notifications_get_a_cost_estimate
-    previously_submitted_ssrs = @service_request.previously_submitted_ssrs
-    send_request_amendment_and_not_initial = @service_request.original_submitted_date.present? && !previously_submitted_ssrs.empty?
     to_notify = []
     if @sub_service_request
       to_notify << @sub_service_request.id unless @sub_service_request.status == 'get_a_cost_estimate'
@@ -61,55 +79,44 @@ class NotifierLogic
     end
 
     if @sub_service_request && to_notify.include?(@sub_service_request.id)
-      send_notifications([@sub_service_request], send_request_amendment_and_not_initial)
+      send_user_notifications(request_amendment: false)
+      send_admin_notifications([@sub_service_request], request_amendment: false)
+      send_service_provider_notifications([@sub_service_request], request_amendment: false)
     else
       sub_service_requests = @service_request.sub_service_requests.where(id: to_notify)
-      send_notifications(sub_service_requests, send_request_amendment_and_not_initial) unless sub_service_requests.empty? # if nothing is set to notify then we shouldn't send out e-mails
+      if !sub_service_requests.empty? # if nothing is set to notify then we shouldn't send out e-mails
+        send_user_notifications(request_amendment: false)
+        send_admin_notifications(sub_service_requests, request_amendment: false)
+        send_service_provider_notifications(sub_service_requests, request_amendment: false)
+      end
     end
   end
 
   def send_confirmation_notifications_submitted
-
-    previously_submitted_ssrs = @service_request.previously_submitted_ssrs
-    # Flag for authorized users: when a new service has been added from
-    # a new ssr, only send the request amendment and not the initial confirmation email
-    send_request_amendment_and_not_initial = @service_request.original_submitted_date.present? && !previously_submitted_ssrs.empty?
-
-    to_notify = []
-    if @sub_service_request
-      to_notify << @sub_service_request.id unless @sub_service_request.status == 'submitted' || @sub_service_request.previously_submitted?
-      @sub_service_request.update_attribute(:submitted_at, Time.now) unless @sub_service_request.status == 'submitted'
-
-      @sub_service_request.update_attributes(status: 'submitted', nursing_nutrition_approved: false,
-                                             lab_approved: false, imaging_approved: false, committee_approved: false) if UPDATABLE_STATUSES.include?(@sub_service_request.status)
-    else
-      to_notify = update_service_request_status('submitted', true, true)
-
-      @service_request.update_arm_minimum_counts
-      @service_request.sub_service_requests.update_all(nursing_nutrition_approved: false, lab_approved: false, imaging_approved: false, committee_approved: false)
-    end
-    if !to_notify.empty?
-      if @sub_service_request && to_notify.include?(@sub_service_request.id)
-        send_notifications([@sub_service_request], send_request_amendment_and_not_initial)
+    if !@to_notify.empty?
+      if @sub_service_request && @to_notify.include?(@sub_service_request.id)
+        send_notifications([@sub_service_request])
       else
-        sub_service_requests = @service_request.sub_service_requests.where(id: to_notify)
-        send_notifications(sub_service_requests, send_request_amendment_and_not_initial) unless sub_service_requests.empty? # if nothing is set to notify then we shouldn't send out e-mails
+        sub_service_requests = @service_request.sub_service_requests.where(id: @to_notify)
+        send_notifications(sub_service_requests) unless sub_service_requests.empty? # if nothing is set to notify then we shouldn't send out e-mails
       end
     end
   end
 
   def send_ssr_service_provider_notifications(sub_service_request, ssr_destroyed: false, request_amendment: false) #single sub-service request
-    audit_report = request_amendment ? sub_service_request.audit_report(@current_user, sub_service_request.service_request.previous_submitted_at.utc, Time.now.utc) : nil
+    previously_submitted_at = sub_service_request.service_request.previous_submitted_at.nil? ? Time.now.utc : sub_service_request.service_request.previous_submitted_at.utc
+    audit_report = request_amendment ? sub_service_request.audit_report(@current_user, previously_submitted_at, Time.now.utc) : nil
+
     sub_service_request.organization.service_providers.where("(`service_providers`.`hold_emails` != 1 OR `service_providers`.`hold_emails` IS NULL)").each do |service_provider|
       send_individual_service_provider_notification(sub_service_request, service_provider, audit_report, ssr_destroyed, request_amendment)
     end
   end
 
   private
-  def send_notifications(sub_service_requests, send_request_amendment_and_not_initial)
+  def send_notifications(sub_service_requests)
     # If user has added a new service related to a new ssr and edited an existing ssr, 
     # we only want to send a request amendment email and not an initial submit email
-    send_user_notifications(request_amendment: false) unless send_request_amendment_and_not_initial
+    send_user_notifications(request_amendment: false) unless @send_request_amendment_and_not_initial
     send_admin_notifications(sub_service_requests, request_amendment: false)
     send_service_provider_notifications(sub_service_requests, request_amendment: false)
   end
@@ -117,7 +124,7 @@ class NotifierLogic
   def send_user_notifications(request_amendment: false)
     # Does an approval need to be created?  Check that the user
     # submitting has approve rights.
-    audit_report = request_amendment ? @service_request.audit_report(@current_user, @service_request.previous_submitted_at.utc, Time.now.utc) : nil
+    audit_report = authorized_user_audit_report
     service_list_false = @service_request.service_list(false)
     service_list_true = @service_request.service_list(true)
     line_items = @service_request.line_items
@@ -136,7 +143,12 @@ class NotifierLogic
     # send e-mail to all folks with view and above
     @service_request.protocol.project_roles.each do |project_role|
       next if project_role.project_rights == 'none' || project_role.identity.email.blank?
-      Notifier.notify_user(project_role, @service_request, xls, approval, audit_report).deliver_now
+      # Do not want to send authorized user request amendment emails when audit_report is not present
+      if request_amendment && audit_report.present?
+        Notifier.notify_user(project_role, @service_request, xls, approval, @current_user, audit_report).deliver_now
+      elsif !request_amendment
+        Notifier.notify_user(project_role, @service_request, xls, approval, @current_user, audit_report).deliver_now
+      end
     end
   end
 
@@ -145,7 +157,7 @@ class NotifierLogic
     # Passes the correct SSR to display in the attachment and email.
     sub_service_requests.each do |sub_service_request|
 
-      audit_report = request_amendment ? audit_report = sub_service_request.audit_report(@current_user, sub_service_request.service_request.previous_submitted_at.utc, Time.now.utc) : nil
+      audit_report = request_amendment ? sub_service_request.audit_report(@current_user, sub_service_request.service_request.previous_submitted_at.utc, Time.now.utc) : nil
       sub_service_request.organization.submission_emails_lookup.each do |submission_email|
         service_list_false = sub_service_request.service_request.service_list(false, nil, sub_service_request)
         service_list_true = sub_service_request.service_request.service_list(true, nil, sub_service_request)
@@ -227,6 +239,29 @@ class NotifierLogic
     end
 
     to_notify
+  end
+
+  def authorized_user_audit_report
+    previously_submitted_at = @service_request.previous_submitted_at.nil? ? Time.now.utc : @service_request.previous_submitted_at.utc
+    audit_report = @service_request.audit_report(@current_user, previously_submitted_at, Time.now.utc)
+    audit_report = audit_report[:line_items].values.flatten
+    filtered_audit_report = { :line_items => [] }
+    audit_report.group_by{ |audit| audit[:audited_changes]['service_id'] }.each do |service_id, audits|
+      service_actions_since_previous_submission = audits.sort_by(&:created_at).map(&:action)
+      if service_actions_since_previous_submission.size >= 2 && service_actions_since_previous_submission.first == 'create' && service_actions_since_previous_submission.last == 'create'
+        # EXAMPLE:  service_actions_since_previous_submission == ['create', 'destroy', 'create'] || service_actions_since_previous_submission == ["create", "destroy", "create", "destroy", "create"]
+        # END RESULT:  DISPLAY THE LAST CREATED LINE ITEM
+        filtered_audit_report[:line_items] << audits.last
+      elsif service_actions_since_previous_submission.size >= 2 && service_actions_since_previous_submission.first == 'create' && service_actions_since_previous_submission.last == 'destroy'
+        # EXAMPLE:  service_actions_since_previous_submission == ['create', 'destroy'] || service_actions_since_previous_submission == ['create', 'destroy', 'create', 'destroy']
+        # END RESULT:  DO NOT DISPLAY EITHER LINE ITEM
+      else
+        audits.each do |audit|
+          filtered_audit_report[:line_items] << audit
+        end
+      end
+    end
+    filtered_audit_report[:line_items].present? ? filtered_audit_report : nil
   end
 
   def set_instance_variables(current_user, service_request, service_list_false, service_list_true, line_items, protocol)

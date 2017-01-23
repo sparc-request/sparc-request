@@ -143,7 +143,7 @@ RSpec.describe Notifier do
                           name: 'ABCD',
                           one_time_fee: true)
         created_line_item_audit_trail(service_request, service, identity)
-        @report = service_request.audit_report(identity, Time.now.yesterday - 4.hours, Time.now) 
+        @report = setup_authorized_user_audit_report
       end
 
       context 'authorized users' do
@@ -267,7 +267,7 @@ RSpec.describe Notifier do
                           name: 'ABCD',
                           one_time_fee: true)
         deleted_line_item_audit_trail(service_request, service, identity)
-        @report = service_request.audit_report(identity, Time.now.yesterday - 4.hours, Time.now) 
+        @report = setup_authorized_user_audit_report
       end
 
       context 'authorized users' do

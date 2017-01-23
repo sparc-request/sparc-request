@@ -79,6 +79,24 @@ RSpec.describe ServiceCalendarsController do
       expect(assigns(:merged)).to eq(true)
     end
 
+    it 'should assign @consolidated' do
+      protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
+      sr       = create(:service_request_without_validations, protocol: protocol)
+
+      xhr :get, :merged_calendar, service_request_id: sr.id
+
+      expect(assigns(:consolidated)).to eq(false)
+    end
+
+    it 'should assign @statuses_hidden' do
+      protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
+      sr       = create(:service_request_without_validations, protocol: protocol)
+
+      xhr :get, :merged_calendar, service_request_id: sr.id
+
+      expect(assigns(:statuses_hidden)).to eq([])
+    end
+
     it 'should assign and fill @pages' do
       protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr        = create(:service_request_without_validations, protocol: protocol)

@@ -84,7 +84,7 @@ $(document).ready ->
       limit: 100,
       templates: {
         suggestion: Handlebars.compile('<button class="text-left" data-container="body" data-placement="right" data-toggle="tooltip" data-animation="false" title="{{description}}">
-                                          <span>{{parents}}</span><br>
+                                          <span><strong class="{{inst_css_class}}">{{institution}}</strong>{{parents}}</span><br>
                                           <span><strong>Service: {{label}}</strong></span><br>
                                           <span><strong>Abbreviation: {{abbreviation}}</strong></span><br>
                                           <span><strong>CPT Code: {{cpt_code}}</strong></span>

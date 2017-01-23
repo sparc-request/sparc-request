@@ -59,13 +59,12 @@ $(document).ready ->
   $('#new_protocol').bind 'submit', ->
     $(this).find(':input').prop('disabled', false)
 
-
   # Protocol Edit Begin
   $(document).on 'click', '#protocol-type-button', ->
     protocol_id = $(this).data('protocol-id')
     srid        = $(this).data('srid')
     in_dashboard = if $(this).data('in-dashboard') == 1 then '/dashboard' else ''
-    data = 
+    data =
       type : $("#protocol_type").val()
       srid : srid
     if confirm(I18n['protocols']['change_type']['warning'])
@@ -233,7 +232,7 @@ $(document).ready ->
     else
       $('#study_type_note').hide()
     return
-     
+
   ###END EPIC BUTTON FIELDS DISPLAY###
 
   ###HUMAN SUBJECTS FIELDS DISPLAY###

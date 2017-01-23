@@ -110,7 +110,8 @@ calculate_max_rates = (arm_id) ->
     $(visits).each (index, visit) ->
       direct_total += Math.floor($(visit).data('cents')) / 100.0
 
-    indirect_rate = parseFloat($("#indirect_rate").val()) / 100.0
+    indirect_rate = parseFloat(if !!$("#indirect_rate").val() then $("#indirect_rate").val() else '0') / 100.0
+
     max_total = direct_total * (1 + indirect_rate)
 
     direct_total_display = '$' + (direct_total).toFixed(2)

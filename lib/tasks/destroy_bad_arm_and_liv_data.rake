@@ -1,15 +1,20 @@
 task destroy_bad_arm_and_liv_data: :environment do
 
+  ids_of_good_arms = [256, 1072, 1086, 1208]
+
   puts "Destroying line item visits with nil subject counts"
   livs = LineItemsVisit.where(subject_count: nil)
 
+  #Because arms are automatically destroyed it the last line item on them is destroyed
+  #we need to make sure the arm is bad before destrying the line items visit
   livs.each do |liv|
-    puts "Destroying line items visit with an id of #{liv.id}"
-    liv.destroy 
+    if (liv.arm.subject_count == nil) && (liv.arm.protocol_id == nil) && !ids_of_good_arms.include?(liv.arm.id)
+      puts "Destroying line items visit with an id of #{liv.id}"
+      liv.destroy 
+    end
   end
 
   puts "Destroying arms with nil subject counts and nil protocol ids"
-  ids_of_good_arms = [256, 1072, 1086, 1208]
   arms = Arm.where(subject_count: nil, protocol_id: nil).where.not(id: ids_of_good_arms)
 
   arms.each do |arm|

@@ -1,6 +1,6 @@
 task destroy_bad_arm_and_liv_data: :environment do
 
-  ids_of_good_arms = [256, 1072, 1086, 1208]
+  ids_of_good_arms = [257, 1072, 1086, 1208, 1628, 14948]
 
   puts "Destroying line item visits with nil subject counts"
   livs = LineItemsVisit.where(subject_count: nil)

@@ -32,6 +32,7 @@ development:
   dashboard_link: 'http://musc-pro.homelinux.net:3001/dashboard'
   research_master_link: 'https://research-master-staging.musc.edu/'
   research_master_api: 'https://research-master-staging.musc.edu/api/'
+  research_master_enabled: true
   rmid_api_token: 'some token'
   create_an_account: false
   header_link_1: http://sctr.musc.edu
@@ -105,6 +106,7 @@ test:
   research_master_link: 'https://research-master-staging.musc.edu/'
   research_master_api: 'https://research-master-staging.musc.edu/api/'
   rmid_api_token: 'some token'
+  research_master_enabled: true
   header_link_1: http://sctr.musc.edu
   header_link_2_proper: http://localhost:3000/
   header_link_2_dashboard: http://localhost:3000/dashboard

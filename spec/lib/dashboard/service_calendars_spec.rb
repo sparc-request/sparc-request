@@ -71,7 +71,6 @@ RSpec.describe Dashboard::ServiceCalendars do
         # this LIV should not appear (it is not PPPV)
         service_otf = create(:service, :without_validations, organization: org_A, one_time_fee: true)
         li_otf = create(:line_item, :without_validations, service: service_otf, sub_service_request: ssr)
-        create(:line_items_visit, arm: arm, line_item: li_otf, sub_service_request: ssr)
 
         # this LIV should not appear (not associated with arm)
         wrong_arm = create(:arm, :without_validations)
@@ -117,7 +116,6 @@ RSpec.describe Dashboard::ServiceCalendars do
           # this LIV should not appear (it is not PPPV)
           service_otf = create(:service, :without_validations, organization: org_A, one_time_fee: true)
           li_otf = create(:line_item, :without_validations, service: service_otf, sub_service_request: ssr)
-          create(:line_items_visit, arm: arm, line_item: li_otf, sub_service_request: ssr)
 
           # this LIV should not appear (associated with another SSR)
           another_ssr = create(:sub_service_request, :without_validations, organization: org_A)
@@ -156,7 +154,6 @@ RSpec.describe Dashboard::ServiceCalendars do
           # this LIV should not appear (it is not PPPV)
           service_otf = create(:service, :without_validations, organization: org_A, one_time_fee: true)
           li_otf = create(:line_item, :without_validations, service: service_otf, service_request: sr, sub_service_request: ssr)
-          create(:line_items_visit, arm: arm, line_item: li_otf)
 
           # this LIV should not appear (associated with another SR)
           another_sr = create(:service_request_without_validations)

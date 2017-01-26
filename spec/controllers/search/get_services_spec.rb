@@ -35,10 +35,12 @@ RSpec.describe SearchController do
     end
 
     it 'should return services with similar name' do
-      sr  = create(:service_request_without_validations)
-      org = create(:organization)
-      s1  = create(:service, organization: org, name: 'Serve me Well')
-      s2  = create(:service, organization: org, name: 'Evres me Poorly')
+      sr    = create(:service_request_without_validations)
+      inst  = create(:institution)
+      prvdr = create(:provider, parent: inst)
+      org   = create(:program, parent: prvdr)
+      s1    = create(:service, organization: org, name: 'Serve me Well')
+      s2    = create(:service, organization: org, name: 'Evres me Poorly')
 
 
       xhr :get, :services, {
@@ -54,11 +56,12 @@ RSpec.describe SearchController do
     end
 
     it 'should return services with similar abbreviation' do
-      sr  = create(:service_request_without_validations)
-      org = create(:organization)
-      s1  = create(:service, organization: org, abbreviation: 'Serve me Well')
-      s2  = create(:service, organization: org, abbreviation: 'Evres me Poorly')
-
+      sr    = create(:service_request_without_validations)
+      inst  = create(:institution)
+      prvdr = create(:provider, parent: inst)
+      org   = create(:program, parent: prvdr)
+      s1    = create(:service, organization: org, abbreviation: 'Serve me Well')
+      s2    = create(:service, organization: org, abbreviation: 'Evres me Poorly')
 
       xhr :get, :services, {
         service_request_id: sr.id,
@@ -72,10 +75,12 @@ RSpec.describe SearchController do
     end
 
     it 'should return services with cpt code' do
-      sr  = create(:service_request_without_validations)
-      org = create(:organization)
-      s1  = create(:service, organization: org, cpt_code: 1234)
-      s2  = create(:service, organization: org, cpt_code: 4321)
+      sr    = create(:service_request_without_validations)
+      inst  = create(:institution)
+      prvdr = create(:provider, parent: inst)
+      org   = create(:program, parent: prvdr)
+      s1    = create(:service, organization: org, cpt_code: 1234)
+      s2    = create(:service, organization: org, cpt_code: 4321)
 
 
       xhr :get, :services, {
@@ -90,10 +95,12 @@ RSpec.describe SearchController do
     end
 
     it 'should not return unavailable services' do
-      sr  = create(:service_request_without_validations)
-      org = create(:organization)
-      s1  = create(:service, organization: org, name: 'Service 123', is_available: 1)
-      s2  = create(:service, organization: org, name: 'Service 321', is_available: 0)
+      sr    = create(:service_request_without_validations)
+      inst  = create(:institution)
+      prvdr = create(:provider, parent: inst)
+      org   = create(:program, parent: prvdr)
+      s1    = create(:service, organization: org, name: 'Service 123', is_available: 1)
+      s2    = create(:service, organization: org, name: 'Service 321', is_available: 0)
 
 
       xhr :get, :services, {
@@ -114,7 +121,9 @@ RSpec.describe SearchController do
     it 'should not return services from a locked organization' do
       sr    = create(:service_request_without_validations)
       org   = create(:organization)
-      org2  = create(:organization)
+      inst  = create(:institution)
+      prvdr = create(:provider, parent: inst)
+      org2  = create(:program, parent: prvdr)
       ssr   = create(:sub_service_request_without_validations, service_request: sr, organization: org, status: 'on_hold')
       s1    = create(:service, organization: org, name: 'Service 123')
       s2    = create(:service, organization: org2, name: 'Service 321')
@@ -135,7 +144,9 @@ RSpec.describe SearchController do
     context 'editing sub service request' do
       it 'should not return services which are not in the ssr\'s org tree' do
         sr    = create(:service_request_without_validations)
-        org   = create(:organization)
+        inst  = create(:institution)
+        prvdr = create(:provider, parent: inst)
+        org   = create(:program, parent: prvdr)
         org2  = create(:organization)
         ssr   = create(:sub_service_request_without_validations, service_request: sr, organization: org)
         s1    = create(:service, organization: org, name: 'Service 123')

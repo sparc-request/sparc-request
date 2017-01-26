@@ -41,7 +41,9 @@ class SearchController < ApplicationController
 
     results.map! { |s|
       {
-        parents:        s.parents.map(&:abbreviation).join(' | '),
+        institution:    s.institution.name,
+        inst_css_class: s.institution.css_class + '-text', 
+        parents:        ' | ' + s.parents.reject{ |p| p.type == 'Institution' }.map(&:abbreviation).join(' | '),
         label:          s.name,
         value:          s.id,
         description:    (s.description.nil? || s.description.blank?) ? t(:proper)[:catalog][:no_description] : s.description,

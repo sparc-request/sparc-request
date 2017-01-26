@@ -79,10 +79,16 @@ class NotifierLogic
     end
 
     if @sub_service_request && to_notify.include?(@sub_service_request.id)
-      send_notifications([@sub_service_request])
+      send_user_notifications(request_amendment: false)
+      send_admin_notifications([@sub_service_request], request_amendment: false)
+      send_service_provider_notifications([@sub_service_request], request_amendment: false)
     else
       sub_service_requests = @service_request.sub_service_requests.where(id: to_notify)
-      send_notifications(sub_service_requests) unless sub_service_requests.empty? # if nothing is set to notify then we shouldn't send out e-mails
+      if !sub_service_requests.empty? # if nothing is set to notify then we shouldn't send out e-mails
+        send_user_notifications(request_amendment: false)
+        send_admin_notifications(sub_service_requests, request_amendment: false)
+        send_service_provider_notifications(sub_service_requests, request_amendment: false)
+      end
     end
   end
 
@@ -133,6 +139,7 @@ class NotifierLogic
     else
       approval = false
     end
+
     # send e-mail to all folks with view and above
     @service_request.protocol.project_roles.each do |project_role|
       next if project_role.project_rights == 'none' || project_role.identity.email.blank?
@@ -150,7 +157,7 @@ class NotifierLogic
     # Passes the correct SSR to display in the attachment and email.
     sub_service_requests.each do |sub_service_request|
 
-      audit_report = request_amendment ? audit_report = sub_service_request.audit_report(@current_user, sub_service_request.service_request.previous_submitted_at.utc, Time.now.utc) : nil
+      audit_report = request_amendment ? sub_service_request.audit_report(@current_user, sub_service_request.service_request.previous_submitted_at.utc, Time.now.utc) : nil
       sub_service_request.organization.submission_emails_lookup.each do |submission_email|
         service_list_false = sub_service_request.service_request.service_list(false, nil, sub_service_request)
         service_list_true = sub_service_request.service_request.service_list(true, nil, sub_service_request)

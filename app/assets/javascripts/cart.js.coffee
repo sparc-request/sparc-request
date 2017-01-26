@@ -18,6 +18,37 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+# Functions for manipulating the Services cart.
+window.cart =
+  selectService: (id, srid) ->
+    has_protocol = parseInt($('#has_protocol').val())
+    li_count = parseInt($('#line_item_count').val())
+
+    if has_protocol == 0 && li_count == 0
+      $('#modal_place').html($('#new-request-modal').html())
+      $('#modal_place').modal('show')
+      $('#modal_place .yes-button').data('srid', srid)
+      $('#modal_place .yes-button').data('service-id', id)
+      $('#modal_place .yes-button').on 'click', (e) ->
+        $.ajax
+          type: 'POST'
+          url: "/service_requests/#{srid}/add_service/#{id}"
+    else
+      $.ajax
+        type: 'POST'
+        url: "/service_requests/#{srid}/add_service/#{id}"
+
+  removeService: (srid, id, move_on, spinner) ->
+    $.ajax
+      type: 'POST'
+      url: "/service_requests/#{srid}/remove_service/#{id}"
+      success: (data, textStatus, jqXHR) ->
+        if move_on
+          window.location = '/dashboard'
+        else
+          spinner.hide()
+
 $(document).ready ->
   $(document).on 'click', '.cart-toggle .btn', ->
     tab = $(this).data('tab')
@@ -32,20 +63,7 @@ $(document).ready ->
     return false
 
   $(document).on 'click', '.add-service', ->
-    id = $(this).data('id')
-    srid = $(this).data('srid')
-    has_protocol = parseInt($('#has_protocol').val())
-    li_count = parseInt($('#line_item_count').val())
-
-    if has_protocol == 0 && li_count == 0
-      $('#modal_place').html($('#new-request-modal').html())
-      $('#modal_place').modal('show')
-      $('#modal_place .yes-button').data('srid', srid)
-      $('#modal_place .yes-button').data('service-id', id)
-      $('#modal_place .yes-button').on 'click', (e) ->
-        addService(srid, id)
-    else
-      addService(srid, id)
+    window.cart.selectService($(this).data('id'), $(this).data('srid'))
 
   $(document).on 'click', '.remove-service', ->
     id = $(this).data('id')
@@ -66,7 +84,7 @@ $(document).ready ->
 
       $('#modal_place .yes-button').on 'click', (e) ->
         button.replaceWith(spinner)
-        removeService(srid, id, false, spinner)
+        window.cart.removeService(srid, id, false, spinner)
     else
       if editing_ssr == 1 && li_count == 1 # Redirect to the Dashboard if the user deletes the last Service on an SSR
         $('#modal_place').html($('#remove-request-modal').html())
@@ -74,25 +92,10 @@ $(document).ready ->
 
         $('#modal_place .yes-button').on 'click', (e) ->
           button.replaceWith(spinner)
-          removeService(srid, id, true, spinner)
+          window.cart.removeService(srid, id, true, spinner)
       else if li_count == 1 && window.location.pathname.indexOf('catalog') == -1 # Do not allow the user to remove the last service except in the catalog
         $('#modal_place').html($('#line-item-required-modal').html())
         $('#modal_place').modal('show')
       else
         $(this).replaceWith(spinner)
-        removeService(srid, id, false, spinner)
-
-addService = (srid, id) ->
-  $.ajax
-    type: 'POST'
-    url: "/service_requests/#{srid}/add_service/#{id}"
-
-removeService = (srid, id, move_on, spinner) ->
-  $.ajax
-    type: 'POST'
-    url: "/service_requests/#{srid}/remove_service/#{id}"
-    success: (data, textStatus, jqXHR) ->
-      if move_on
-        window.location = '/dashboard'
-      else
-        spinner.hide()
+        window.cart.removeService(srid, id, false, spinner)

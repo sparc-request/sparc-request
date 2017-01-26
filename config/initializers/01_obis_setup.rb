@@ -38,6 +38,7 @@ begin
   SYSTEM_SATISFACTION_SURVEY_CC             = application_config['system_satisfaction_survey_cc']
   ROOT_URL                                  = application_config['root_url']
   DASHBOARD_LINK                            = application_config['dashboard_link']
+  RESEARCH_MASTER_ENABLED                   = application_config['research_master_enabled'] || false
   RESEARCH_MASTER_LINK                      = application_config['research_master_link']
   RESEARCH_MASTER_API                       = application_config['research_master_api']
   RMID_API_TOKEN                            = application_config['rmid_api_token']

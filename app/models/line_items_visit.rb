@@ -38,6 +38,7 @@ class LineItemsVisit < ActiveRecord::Base
 
   validates_numericality_of :subject_count
   validate :subject_count_valid
+  validate :pppv_line_item
 
   after_save :set_arm_edited_flag_on_subjects
 
@@ -47,6 +48,12 @@ class LineItemsVisit < ActiveRecord::Base
   def subject_count_valid
     if subject_count && subject_count > arm.subject_count
       errors.add(:blank, I18n.t('errors.line_items_visits.subject_count_invalid', arm_subject_count: arm.subject_count))
+    end
+  end
+
+  def pppv_line_item
+    if self.line_item.one_time_fee
+      errors.add(:_, 'Line Items Visits should only belong to a PPPV LineItem')
     end
   end
 

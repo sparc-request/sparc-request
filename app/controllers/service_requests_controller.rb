@@ -292,8 +292,9 @@ class ServiceRequestsController < ApplicationController
     if ssr.line_items.empty?
       if !ssr.submitted_at.nil?
         # notify service providers and admin of a destroyed ssr upon deletion of ssr
-        NotifierLogic.new(@service_request, nil, current_user).send_ssr_service_provider_notifications(ssr, ssr_destroyed: true, request_amendment: false)
-        NotifierLogic.new(@service_request, nil, current_user).send_admin_notifications([ssr], request_amendment: false, ssr_destroyed: true)
+        notifier_logic = NotifierLogic.new(@service_request, nil, current_user)
+        notifier_logic.send_ssr_service_provider_notifications(ssr, ssr_destroyed: true, request_amendment: false)
+        notifier_logic.send_admin_notifications([ssr], request_amendment: false, ssr_destroyed: true)
       end
       ssr.destroy
     end

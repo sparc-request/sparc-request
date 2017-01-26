@@ -26,6 +26,10 @@ resetRmIdFields = (fields, value) ->
 
 $(document).ready ->
 
+  if $('.human-subjects:checkbox:checked').length > 0
+    $('.rm-id').addClass('required-field')
+    $('.has-human-subject-info').val('true')
+
   $(document).on 'click', '.human-subjects', ->
     if $('.rm-id').hasClass('required-field')
       $('.rm-id').removeClass('required-field')
@@ -44,7 +48,6 @@ $(document).ready ->
         success: (data) ->
           $('#protocol_short_title').val(data.short_title)
           $('#protocol_title').val(data.long_title)
-          $('#protocol_project_roles_attributes_0_identity_id').val(data.pi_name)
           toggleFields('.rm-locked-fields', true)
         error: ->
           swal("Error", "Research Master Record not found", "error")

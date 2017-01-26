@@ -158,8 +158,10 @@ class Protocol < ActiveRecord::Base
 
   def unique_rm_id_to_protocol
     Protocol.all.each do |protocol|
-      if self.research_master_id == protocol.research_master_id
-        errors.add(:_, "The Research Master ID is already taken by Protocol #{protocol.id}. Please enter another RMID.")
+      if self.id != protocol.id
+        if self.research_master_id == protocol.research_master_id
+          errors.add(:_, "The Research Master ID is already taken by Protocol #{protocol.id}. Please enter another RMID.")
+        end
       end
     end
   end

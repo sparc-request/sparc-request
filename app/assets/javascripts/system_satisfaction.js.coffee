@@ -23,6 +23,7 @@ $(document).ready ->
 
   $(document).on 'click', '.get-a-cost-estimate, .form-submit-button', (event) ->
     button = $(this)
+    counter = 0
 
     if !survey_offered
       event.preventDefault()
@@ -39,8 +40,9 @@ $(document).ready ->
           event.preventDefault()
           $("textarea:hidden").val("")
           $('#survey_form').append("<input type='hidden' id='finish' name='finish' value='Submit'>")
-          $(this).attr('disabled', true)
-          $('#survey_form').submit()
+          if counter == 0
+            $('#survey_form').submit()
+          counter = counter + 1
 
       $(document).on 'click', '#modal_place .no-button', ->
         window.location = button.attr('href')

@@ -7,12 +7,11 @@ $ ->
       $('span.help-block').remove()
       values = {}
       $.each $('.new_submission').serializeArray(), (i, field) ->
+        values[field.name] = field.value
+      $.each values, (key, value) ->
         regEx = /[\[]]/
-        if regEx.test("#{field.name}")
-          console.log $('select[name="#{field.name}"]')
-          values[field.name] = $('select[name="#{field.name}"]').val()
-        else
-          values[field.name] = field.value
+        if regEx.test("#{key}")
+          values[value] = $('[name="#{stripped_key}"]').val()
       serviceId = values["submission[service_id]"]
       $.ajax
         url: "/services/#{serviceId}/additional_details/submissions"

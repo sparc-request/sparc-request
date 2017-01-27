@@ -23,7 +23,6 @@ $(document).ready ->
 
   $(document).on 'click', '.get-a-cost-estimate, .form-submit-button', (event) ->
     button = $(this)
-    counter = 0
 
     if !survey_offered
       event.preventDefault()
@@ -36,13 +35,10 @@ $(document).ready ->
           $('#survey_form').append("<input type='hidden' id='redirect_to' name='redirect_to' value='#{button.attr('href')}'>")
           $('#survey_form div.next_section').append("<input type='button' name='cancel' value='Cancel'/>")
 
-        $(document).on 'click', '#survey-submit-button', (event) ->
-          event.preventDefault()
+        $(document).one 'click', '#survey-submit-button', ->
           $("textarea:hidden").val("")
           $('#survey_form').append("<input type='hidden' id='finish' name='finish' value='Submit'>")
-          if counter == 0
-            $('#survey_form').submit()
-          counter = counter + 1
+          $('#survey_form').submit()
 
       $(document).on 'click', '#modal_place .no-button', ->
         window.location = button.attr('href')

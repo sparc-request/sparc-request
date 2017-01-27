@@ -5,17 +5,10 @@ $ ->
     $('.create-submission').on 'click', ->
       $('.form-group').removeClass('has-error')
       $('span.help-block').remove()
-      values = {}
-      $.each $('.new_submission').serializeArray(), (i, field) ->
-        regEx = /[\[]]/
-        if regEx.test("#{field.name}")
-          console.log $('select[name="#{field.name}"]')
-          values[field.name] = $('select[name="#{field.name}"]').val()
-        else
-          values[field.name] = field.value
-      serviceId = values["submission[service_id]"]
+      rawFormValues = $('.new_submission').serializeArray()
+      processedFormValues = (i for i in rawFormValues when i.value != "" or (j for j in rawFormValues when j.name == i.name and j.value != "").length == 0)
+      serviceId = (i.value for i in rawFormValues when i.name == "submission[service_id]")[0]
       $.ajax
         url: "/services/#{serviceId}/additional_details/submissions"
         type: 'POST'
-        data: values
-
+        data: processedFormValues

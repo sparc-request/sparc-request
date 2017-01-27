@@ -34,6 +34,7 @@ class NotifierLogic
   end
 
   def update_ssrs_and_send_emails
+    binding.pry
     @to_notify = []
     if @sub_service_request
       @to_notify << @sub_service_request.id unless @sub_service_request.status == 'submitted' || @sub_service_request.previously_submitted?
@@ -52,6 +53,7 @@ class NotifierLogic
   end
 
   def send_request_amendment_email_evaluation
+    binding.pry
     if !@previously_submitted_ssrs.empty?
       request_amendment_ssrs = @previously_submitted_ssrs.select{ |ssr| ssr_has_changed?(ssr) }
 
@@ -124,6 +126,7 @@ class NotifierLogic
   def send_user_notifications(request_amendment: false)
     # Does an approval need to be created?  Check that the user
     # submitting has approve rights.
+    binding.pry
     audit_report = authorized_user_audit_report
     service_list_false = @service_request.service_list(false)
     service_list_true = @service_request.service_list(true)

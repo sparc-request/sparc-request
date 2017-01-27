@@ -69,22 +69,33 @@ RSpec.describe ServiceRequestsController, type: :controller do
         @sr          = create(:service_request_without_validations, protocol: protocol, submitted_at: '2015-06-01')
         @ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, status: 'submitted', submitted_at: Time.now.yesterday)
         li          = create(:line_item, service_request: @sr, sub_service_request: @ssr, service: service)
-        li_1        = create(:line_item, service_request: @sr, sub_service_request: @ssr, service: service1)
+        # li_1        = create(:line_item, service_request: @sr, sub_service_request: @ssr, service: service1)
         session[:identity_id]        = logged_in_user.id
         
-        ssr_li_id   = @ssr.line_items.first.id
+        # ssr_li_id   = @ssr.line_items.first.id
+        destroyed_ssr_id = @ssr.id
         @ssr.line_items.first.destroy!
-        same_service_added_back = create(:line_item, service_request: @sr, sub_service_request: @ssr, service: service)
+        @ssr.destroy!
+        # @sr.reload
+        # ssr_added = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, status: 'submitted', submitted_at: Time.now)
+        # same_service_added_back = create(:line_item, service_request: @sr, sub_service_request: ssr_added, service: service)
         
-        @audit = AuditRecovery.where("auditable_id = '#{same_service_added_back.id}' AND auditable_type = 'LineItem' AND action = 'create'")
-        @audit2 = 
-        @audit.first.update_attribute(:created_at, Time.now - 5.hours)
-        @audit.first.update_attribute(:user_id, logged_in_user.id)
+        # @audit = AuditRecovery.where("auditable_id = '#{same_service_added_back.id}' AND auditable_type = 'LineItem' AND action = 'create'")
         binding.pry
+        @audit2 = AuditRecovery.where("auditable_id = '#{destroyed_ssr_id}' AND auditable_type = 'SubServiceRequest' AND action = 'destroy'")
+        # @audit.first.update_attribute(:created_at, Time.now)
+        # @audit.first.update_attribute(:user_id, logged_in_user.id)
+        @audit2.first.update_attribute(:created_at, Time.now - 4.hours)
+        @audit2.first.update_attribute(:user_id, logged_in_user.id)
       end
 
       it "" do
-        
+        create(:service_provider, identity: logged_in_user, organization: @org)
+        expect {
+          xhr :get, :confirmation, {
+            id: @sr.id
+          }
+        }.to change(ActionMailer::Base.deliveries, :count).by(1)
       end
     end
 
@@ -185,7 +196,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
           @sr.reload
           @audit = { :line_items => @audit, :sub_service_request_id => @ssr.id }
 
-          expect(Notifier).to have_received(:notify_service_provider).with(@service_provider, @sr, {"service_request_1.xlsx"=>""}, logged_in_user, @ssr.id, @audit, false, true)
+          expect(Notifier).to have_received(:notify_service_provider).with(@service_provider, @sr, {"service_request_#{@sr.protocol.id}.xlsx"=>""}, logged_in_user, @ssr.id, @audit, false, true)
         end
       end
 
@@ -226,7 +237,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
           @sr.reload
           @audit = { :line_items => @audit, :sub_service_request_id => @ssr.id }
 
-          expect(Notifier).to have_received(:notify_service_provider).with(@service_provider, @sr, {"service_request_1.xlsx"=>""}, logged_in_user, @ssr.id, @audit, false, true)
+          expect(Notifier).to have_received(:notify_service_provider).with(@service_provider, @sr, {"service_request_#{@sr.protocol.id}.xlsx"=>""}, logged_in_user, @ssr.id, @audit, false, true)
         end
 
         it 'should send request amendment email to admin' do

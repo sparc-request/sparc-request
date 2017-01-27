@@ -114,13 +114,30 @@ class NotifierLogic
     end
   end
 
+  def send_admin_notifications(sub_service_requests, request_amendment: false, ssr_destroyed: false)
+    # Iterates through each SSR to find the correct admin email.
+    # Passes the correct SSR to display in the attachment and email.
+    sub_service_requests.each do |sub_service_request|
+      audit_report = request_amendment ? sub_service_request.audit_report(@current_user, sub_service_request.service_request.previous_submitted_at.utc, Time.now.utc) : nil
+      sub_service_request.organization.submission_emails_lookup.each do |submission_email|
+        service_list_false = sub_service_request.service_request.service_list(false, nil, sub_service_request)
+        service_list_true = sub_service_request.service_request.service_list(true, nil, sub_service_request)
+        line_items = sub_service_request.line_items
+        protocol = @service_request.protocol
+        controller = set_instance_variables(@current_user, @service_request, service_list_false, service_list_true, line_items, protocol)
+        xls = controller.render_to_string action: 'show', formats: [:xlsx]
+        Notifier.notify_admin(submission_email.email, xls, @current_user, sub_service_request, audit_report, ssr_destroyed).deliver
+      end
+    end
+  end
+
   private
   def send_notifications(sub_service_requests)
     # If user has added a new service related to a new ssr and edited an existing ssr, 
     # we only want to send a request amendment email and not an initial submit email
     send_user_notifications(request_amendment: false) unless @send_request_amendment_and_not_initial
-    send_admin_notifications(sub_service_requests, request_amendment: false)
-    send_service_provider_notifications(sub_service_requests, request_amendment: false)
+    send_admin_notifications(sub_service_requests, request_amendment: false) 
+    send_service_provider_notifications(sub_service_requests, request_amendment: false) 
   end
 
   def send_user_notifications(request_amendment: false)
@@ -155,25 +172,7 @@ class NotifierLogic
     end
   end
 
-  def send_admin_notifications(sub_service_requests, request_amendment: false)
-    # Iterates through each SSR to find the correct admin email.
-    # Passes the correct SSR to display in the attachment and email.
-    sub_service_requests.each do |sub_service_request|
-
-      audit_report = request_amendment ? sub_service_request.audit_report(@current_user, sub_service_request.service_request.previous_submitted_at.utc, Time.now.utc) : nil
-      sub_service_request.organization.submission_emails_lookup.each do |submission_email|
-        service_list_false = sub_service_request.service_request.service_list(false, nil, sub_service_request)
-        service_list_true = sub_service_request.service_request.service_list(true, nil, sub_service_request)
-        line_items = sub_service_request.line_items
-        protocol = @service_request.protocol
-        controller = set_instance_variables(@current_user, @service_request, service_list_false, service_list_true, line_items, protocol)
-        xls = controller.render_to_string action: 'show', formats: [:xlsx]
-        Notifier.notify_admin(submission_email.email, xls, @current_user, sub_service_request, audit_report).deliver
-      end
-    end
-  end
-
-  def send_service_provider_notifications(sub_service_requests, request_amendment: false) #all sub-service requests on service request
+  def send_service_provider_notifications(sub_service_requests, request_amendment: false)
     sub_service_requests.each do |sub_service_request|
       send_ssr_service_provider_notifications(sub_service_request, ssr_destroyed: false, request_amendment: request_amendment)
     end

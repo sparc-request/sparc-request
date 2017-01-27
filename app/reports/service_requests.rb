@@ -77,12 +77,12 @@ class ServiceRequestsReport < ReportingModule
       attrs["Core"] = "org_tree.select{|org| org.type == 'Core'}.first.try(:abbreviation)"
     end
 
-    attrs["Primary PI Last Name"] = "service_request.try(:protocol).try(:primary_principal_investigator).try(:last_name)"
-    attrs["Primary PI First Name"] = "service_request.try(:protocol).try(:primary_principal_investigator).try(:first_name)"
-    attrs["Primary PI Institution"] = "service_request.try(:protocol).try(:primary_principal_investigator).try(:professional_organization).try(:parents_and_self).try(:select){|org| org.org_type == 'institution'}.try(:first).try(:name)"
-    attrs["Primary PI College"] = "service_request.try(:protocol).try(:primary_principal_investigator).try(:professional_organization).try(:parents_and_self).try(:select){|org| org.org_type == 'college'}.try(:first).try(:name)"
-    attrs["Primary PI Department"] = "service_request.try(:protocol).try(:primary_principal_investigator).try(:professional_organization).try(:parents_and_self).try(:select){|org| org.org_type == 'department'}.try(:first).try(:name)"
-    attrs["Primary PI Division"] = "service_request.try(:protocol).try(:primary_principal_investigator).try(:professional_organization).try(:parents_and_self).try(:select){|org| org.org_type == 'division'}.try(:first).try(:name)"
+    attrs["Primary PI Last Name"]   = "service_request.try(:protocol).try(:primary_principal_investigator).try(:last_name)"
+    attrs["Primary PI First Name"]  = "service_request.try(:protocol).try(:primary_principal_investigator).try(:first_name)"
+    attrs["Primary PI Institution"] = "service_request.try(:protocol).try(:primary_principal_investigator).try(:professional_org_lookup, 'institution')"
+    attrs["Primary PI College"]     = "service_request.try(:protocol).try(:primary_principal_investigator).try(:professional_org_lookup, 'college')"
+    attrs["Primary PI Department"]  = "service_request.try(:protocol).try(:primary_principal_investigator).try(:professional_org_lookup, 'department')"
+    attrs["Primary PI Division"]    = "service_request.try(:protocol).try(:primary_principal_investigator).try(:professional_org_lookup, 'division')"
 
     if params[:apr_data]
       if params[:apr_data].include?("irb")

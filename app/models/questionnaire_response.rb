@@ -7,6 +7,8 @@ class QuestionnaireResponse < ActiveRecord::Base
     required == true
   end
 
+  # When content == '["a","b", "c"]',
+  # return ['a', 'b', 'c'].
   def content_as_array
     begin
       # '["a","b", "c"]' -> '"a","b","c"'

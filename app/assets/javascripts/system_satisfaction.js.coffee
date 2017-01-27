@@ -21,7 +21,7 @@
 $(document).ready ->
   survey_offered = false
 
-  $(document).on 'click', '.get-a-cost-estimate, .form-submit-button', (event) ->
+  $(document).one 'click', '.get-a-cost-estimate, .form-submit-button', (event) ->
     button = $(this)
 
     if !survey_offered

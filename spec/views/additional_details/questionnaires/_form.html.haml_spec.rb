@@ -31,7 +31,7 @@ RSpec.describe 'additional_details/questionnaires/_form', type: :view do
     end
 
     it 'should have the correct title' do
-    	expect(response).to have_content('Additional Details Form Builder')
+    	expect(response).to have_content('Form Functionality Form Builder')
     end
 
     it 'should have the correct buttons' do

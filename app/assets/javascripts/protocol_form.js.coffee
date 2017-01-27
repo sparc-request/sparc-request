@@ -59,7 +59,7 @@ $(document).ready ->
       resetRmIdFields('.rm-id-dependent', '')
       toggleFields('.rm-locked-fields', false)
 
-  $('#new_protocol').bind 'submit', ->
+  $('#protocol-form-display form').bind 'submit', ->
     $(this).find(':input').prop('disabled', false)
 
   # Protocol Edit Begin

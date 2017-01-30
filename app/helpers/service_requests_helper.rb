@@ -83,12 +83,20 @@ module ServiceRequestsHelper
     link_to t(:proper)[:navigation][:bottom][:save_as_draft], save_and_exit_service_request_path, remote: true, class: 'btn btn-default'
   end
 
-  def step_nav_button(text, color, url)
-    link_to(
-      (content_tag(:div, raw(text), class: "btn step-text step-btn-#{color}")+
-      content_tag(:div, '', class: "right-arrow right-arrow-#{color}")),
-      url,
-      class: 'step-btn'
-    )
+  def step_nav_button(text, color, link, url)
+    if link
+      link_to(
+        (content_tag(:div, raw(text), class: "btn step-text step-btn-#{color}")+
+        content_tag(:div, '', class: "right-arrow right-arrow-#{color}")),
+        url,
+        class: 'step-btn'
+      )
+    else
+      content_tag(:div,
+        (content_tag(:div, raw(text), class: "btn step-text step-btn-#{color}")+
+        content_tag(:div, '', class: "right-arrow right-arrow-#{color}")),
+        class: 'step-btn'
+      )
+    end
   end
 end

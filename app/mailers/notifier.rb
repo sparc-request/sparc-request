@@ -59,11 +59,17 @@ class Notifier < ActionMailer::Base
     mail(:to => email, :from => NO_REPLY_FROM, :subject => subject)
   end
 
-  def notify_admin(submission_email_address, xls, user_current, ssr, audit_report=nil)
+  def notify_admin(submission_email_address, xls, user_current, ssr, audit_report=nil, ssr_destroyed=false)
     @ssr_deleted = false
     @notes = ssr.service_request.notes
 
-    @status = audit_report.present? ? 'request_amendment' : ssr.service_request.status
+    if ssr_destroyed
+      @status = 'ssr_destroyed'
+    elsif audit_report.present?
+      @status = 'request_amendment'
+    else
+      @status = ssr.service_request.status
+    end
 
     @role = 'none'
     @full_name = submission_email_address
@@ -77,7 +83,10 @@ class Notifier < ActionMailer::Base
     @portal_text = "Administrators/Service Providers, Click Here"
 
     @audit_report = audit_report
-    attachments["service_request_#{@service_request.protocol.id}.xlsx"] = xls
+
+    if !ssr_destroyed
+      attachments["service_request_#{@service_request.protocol.id}.xlsx"] = xls
+    end
 
     email =  submission_email_address
     subject = "#{@protocol.id} - #{t(:mailer)[:application_title]} service request"
@@ -109,7 +118,8 @@ class Notifier < ActionMailer::Base
     @portal_text = "Administrators/Service Providers, Click Here"
 
     # only display the ssrs that are associated with service_provider
-    @ssrs_to_be_displayed = @service_request.ssrs_to_be_displayed_in_email(service_provider, @audit_report, ssr_destroyed, ssr_id)
+    ssr = SubServiceRequest.find(ssr_id)
+    @ssrs_to_be_displayed = [ssr] if service_provider.identity.is_service_provider?(ssr)
 
     if !ssr_destroyed
       attachments_to_add.each do |file_name, document|

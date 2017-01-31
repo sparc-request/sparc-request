@@ -86,12 +86,6 @@ RSpec.describe "Identity" do
       expect(Identity.search('error')).not_to be_empty()
     end
 
-    it "should return identities without an e-mail address" do
-      expect(Identity.all.count).to eq(3)
-      expect(Identity.search('iamabadldaprecord')).not_to be_empty()
-      expect(Identity.all.count).to eq(4)
-    end
-
     it "should still search the database if the identity creation fails for some reason" do
       create(:identity, first_name: "ash", last_name: "evil", email: "another_ash@s-mart.com", ldap_uid: 'ashley@musc.edu')
       Identity.search('ash')

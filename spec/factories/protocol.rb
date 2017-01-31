@@ -75,6 +75,16 @@ FactoryGirl.define do
       archived false
     end
 
+    trait :blank_funding_start_dates do
+      funding_start_date ""
+      potential_funding_start_date ""
+    end
+
+    trait :blank_start_and_end_dates do
+      start_date nil
+      end_date nil
+    end
+
     trait :with_sub_service_request_in_cwf do
       after(:create) do |protocol, evaluator|
         service_request = create(:service_request, protocol: protocol)
@@ -123,6 +133,7 @@ FactoryGirl.define do
     factory :archived_study_without_validations, traits: [:without_validations, :study, :archived]
     factory :protocol_federally_funded, traits: [:funded, :federal]
     factory :protocol_with_sub_service_request_in_cwf, traits: [:with_sub_service_request_in_cwf, :funded, :federal]
+    factory :study_with_blank_dates, traits: [:study, :pending, :blank_funding_start_dates, :blank_start_and_end_dates]
   end
 
   factory :study, parent: :protocol, class: 'Study' do

@@ -435,13 +435,13 @@ class EpicInterface
       if not service.cpt_code.blank? then
         service_code = service.cpt_code
         service_code_system = "SPARCCPT"
-      elsif not service.charge_code.blank? then
-        service_code = service.charge_code
+      elsif not service.eap_id.blank? then
+        service_code = service.eap_id
         service_code_system = "SPARCCPT"
       else
         # Skip this service, since it has neither a CPT code nor a Charge
         # code and add to an error list to warn the user
-        error_string = "#{service.name} does not have a CPT or a Charge code."
+        error_string = "#{service.name} does not have a CPT code or an EAP Id."
         @errors[:no_code] = [] unless @errors[:no_code]
         @errors[:no_code] << error_string unless @errors[:no_code].include?(error_string)
         next

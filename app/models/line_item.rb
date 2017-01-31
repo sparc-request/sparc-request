@@ -34,7 +34,7 @@ class LineItem < ActiveRecord::Base
   has_many :procedures
   has_many :admin_rates, dependent: :destroy
   has_many :notes, as: :notable, dependent: :destroy
-  has_many :submissions, dependent: :destroy
+  has_one :submission, dependent: :destroy
 
   attr_accessible :service_request_id
   attr_accessible :sub_service_request_id
@@ -411,6 +411,10 @@ class LineItem < ActiveRecord::Base
     end
 
     service_abbreviation
+  end
+
+  def has_incomplete_additional_details?
+    service.questionnaires.active.present? && !submission.present?
   end
 
   private

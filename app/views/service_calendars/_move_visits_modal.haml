@@ -20,6 +20,7 @@
 .modal-dialog.modal-md
   .modal-content
     = form_for arm, url: move_visit_position_service_calendars_path(arm_id: arm.id, service_request_id: service_request.id), remote: true, method: :post, html: { class: 'form-horizontal', role: 'form' } do |f|
+      = hidden_field_tag :arm_id, arm.id
       .modal-header
         %button.close{type: 'button', data: {dismiss: 'modal'}}
           %span{aria: {hidden:'true'}} &times;
@@ -30,13 +31,13 @@
         .row
           .col-md-12
             .form-group
-              = label_tag :visit_group, t(:proper)[:service_calendar][:move_visit][:visit_group], class: 'col-lg-3 control-label'
+              = label_tag :visit_group, t(:visit_groups)[:form_fields][:visit], class: 'col-lg-4 control-label required'
               .col-lg-7
-                = select_tag :visit_group, options_from_collection_for_select(arm.visit_groups, 'id', 'name'), include_blank: false, class: 'form-control selectpicker'
+                = select_tag :visit_group, options_from_collection_for_select(arm.visit_groups, 'id', 'name', visit_group.id), include_blank: false, class: 'form-control selectpicker'
             .form-group
-              = label_tag :position, t(:proper)[:service_calendar][:move_visit][:position], class: 'col-lg-3 control-label'
+              = label_tag :position, t(:visit_groups)[:form_fields][:position], class: 'col-lg-4 control-label required'
               .col-lg-7
-                = select_tag :position, options_from_collection_for_select(arm.visit_groups, 'position', 'insertion_name'), include_blank: 'add as last', class: 'form-control selectpicker'
+                = select_tag :position, visit_position_options(arm, visit_group), class: 'form-control selectpicker'
       .modal-footer
         .center-block
           %button.btn.btn-default{ type: 'button', data: { dismiss: 'modal' } }

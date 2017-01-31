@@ -19,7 +19,7 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 = javascript_include_tag 'review'
 
-= render 'service_requests/navigation/steps', service_request: @service_request, step: @step_text, css_class: @css_class
+= render '/service_requests/navigation/steps', service_request: @service_request, step: @step_text, step_number: @step_number, css_class: @css_class
 .col-sm-12.body-container#review-page
   = form_tag navigate_service_request_path(@service_request), id: 'service-request-form' do
     - if @sub_service_request
@@ -36,11 +36,3 @@
   = javascript_include_tag 'system_satisfaction'
   = hidden_field_tag :use_system_satisfaction, 'true'
   = render 'service_requests/modals/participate_in_survey_modal'
-  = stylesheet_link_tag('surveyor/reset',
-                        'surveyor/jquery-ui-1.10.0.custom',
-                        'surveyor/jquery-ui-timepicker-addon',
-                        'surveyor/ui.slider.extras',
-                        'surveyor/results',
-                        'surveyor',
-                        'custom')
-  = stylesheet_link_tag 'system_satisfaction'

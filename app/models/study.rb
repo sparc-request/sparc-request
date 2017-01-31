@@ -36,6 +36,11 @@ class Study < Protocol
     StudyTypeFinder.new(self).determine_study_type_note
   end
 
+  def display_answers
+    answers = StudyTypeQuestion.joins(:study_type_question_group).where(study_type_question_groups: { version: version_type })
+    answers.map{ |ans| ans.study_type_answers.find_by_protocol_id(id) }
+  end
+
   def populate_for_edit
     super
     self.build_research_types_info           unless self.research_types_info

@@ -151,6 +151,8 @@ class ServiceRequestsController < ApplicationController
   end
 
   def document_management
+    @notable_type         = 'Protocol'
+    @notable_id           = @service_request.protocol_id
     @has_subsidy          = @service_request.sub_service_requests.map(&:has_subsidy?).any?
     @eligible_for_subsidy = @service_request.sub_service_requests.map(&:eligible_for_subsidy?).any?
 
@@ -179,45 +181,13 @@ class ServiceRequestsController < ApplicationController
     @protocol = @service_request.protocol
     @service_request.previous_submitted_at = @service_request.submitted_at
 
-    to_notify = []
-    if @sub_service_request
-      to_notify << @sub_service_request.id unless @sub_service_request.status == 'get_a_cost_estimate'
-
-      @sub_service_request.update_attribute(:status, 'get_a_cost_estimate')
-    else
-      to_notify = update_service_request_status(@service_request, 'get_a_cost_estimate')
-    end
-
-    send_confirmation_notifications(to_notify)
+    NotifierLogic.new(@service_request, @sub_service_request, current_user).send_confirmation_notifications_get_a_cost_estimate
     render formats: [:html]
   end
 
   def confirmation
     @protocol = @service_request.protocol
-    #### FOR REQUEST AMENDMENT EMAIL ####
-    # Grab ssrs that have been previously submitted
-    # Setting this to an array is necessary to grab the correct ssrs
-    previously_submitted_ssrs = @service_request.sub_service_requests.where.not(submitted_at: nil).to_a
-    #### END FOR REQUEST AMENDMENT EMAIL ####
-
-    # Flag for authorized users: when a new service has been added from
-    # a new ssr, only send the request amendment and not the initial confirmation email
-    send_request_amendment_and_not_initial = @service_request.original_submitted_date.present? && !previously_submitted_ssrs.empty?
     @service_request.previous_submitted_at = @service_request.submitted_at
-
-    to_notify = []
-    if @sub_service_request
-      to_notify << @sub_service_request.id unless @sub_service_request.status == 'submitted' || @sub_service_request.previously_submitted?
-      @sub_service_request.update_attribute(:submitted_at, Time.now) unless @sub_service_request.status == 'submitted'
-
-      @sub_service_request.update_attributes(status: 'submitted', nursing_nutrition_approved: false,
-                                             lab_approved: false, imaging_approved: false, committee_approved: false) if UPDATABLE_STATUSES.include?(@sub_service_request.status)
-    else
-      to_notify = update_service_request_status(@service_request, 'submitted', true, true)
-
-      @service_request.update_arm_minimum_counts
-      @service_request.sub_service_requests.update_all(nursing_nutrition_approved: false, lab_approved: false, imaging_approved: false, committee_approved: false)
-    end
 
     should_push_to_epic = @sub_service_request ? @sub_service_request.should_push_to_epic? : @service_request.should_push_to_epic?
 
@@ -233,9 +203,7 @@ class ServiceRequestsController < ApplicationController
         send_epic_notification_for_user_approval(@protocol)
       end
     end
-
-    send_request_amendment_email_evaluation(previously_submitted_ssrs) unless previously_submitted_ssrs.empty?
-    send_confirmation_notifications(to_notify, send_request_amendment_and_not_initial) unless to_notify.empty?
+    NotifierLogic.new(@service_request, @sub_service_request, current_user).update_ssrs_and_send_emails
     render formats: [:html]
   end
 
@@ -323,8 +291,10 @@ class ServiceRequestsController < ApplicationController
 
     if ssr.line_items.empty?
       if !ssr.submitted_at.nil?
-        # only notify service providers of destroyed ssr
-        send_ssr_service_provider_notifications(ssr, ssr_destroyed: true, request_amendment: false)
+        # notify service providers and admin of a destroyed ssr upon deletion of ssr
+        notifier_logic = NotifierLogic.new(@service_request, nil, current_user)
+        notifier_logic.send_ssr_service_provider_notifications(ssr, ssr_destroyed: true, request_amendment: false)
+        notifier_logic.send_admin_notifications([ssr], request_amendment: false, ssr_destroyed: true)
       end
       ssr.destroy
     end
@@ -425,11 +395,12 @@ class ServiceRequestsController < ApplicationController
 
     c = YAML.load_file(Rails.root.join('config', 'navigation.yml'))[@page]
     unless c.nil?
-      @step_text = c['step_text']
-      @css_class = c['css_class']
-      @back = c['back']
-      @catalog = c['catalog']
-      @forward = c['forward']
+      @step_text   = c['step_text']
+      @step_number = c['step_number']
+      @css_class   = c['css_class']
+      @back        = c['back']
+      @catalog     = c['catalog']
+      @forward     = c['forward']
     end
   end
 
@@ -482,103 +453,6 @@ class ServiceRequestsController < ApplicationController
     end
   end
 
-  # A request amendment email is sent to service providers
-  # and admin of ssrs that have had services added/deleted and have been previously submitted
-  def send_request_amendment_email_evaluation(previously_submitted_ssrs)
-    request_amendment_ssrs = []
-    previously_submitted_ssrs.each do |ssr|
-      if ssr_has_changed?(ssr.service_request, ssr)
-        request_amendment_ssrs << ssr
-      end
-    end
-
-    destroyed_or_created_ssr = [@service_request.deleted_ssrs_since_previous_submission, @service_request.created_ssrs_since_previous_submission].flatten
-    # If an existing SSR has had services added/deleted, send a request amendment
-    # (If an SSR has been deleted or created, this is also seen in the email)
-    # The destroyed_or_created_ssr determines whether authorized users need a request amendment email
-    # regarding the destroyed or newly created SSR
-    if !request_amendment_ssrs.empty?
-      send_request_amendment(request_amendment_ssrs)
-    elsif !destroyed_or_created_ssr.empty?
-      send_user_notifications(@service_request, request_amendment: true)
-    end
-  end
-
-  def send_request_amendment(sub_service_requests)
-    sub_service_requests = [sub_service_requests].flatten
-    send_user_notifications(sub_service_requests.first.service_request, request_amendment: true)
-    send_service_provider_notifications(sub_service_requests, request_amendment: true)
-    send_admin_notifications(sub_service_requests, request_amendment: true)
-  end
-
-  def send_notifications(service_request, sub_service_requests, send_request_amendment_and_not_initial= nil)
-    # If user has added a new service related to a new ssr and edited an existing ssr,
-    # we only want to send a request amendment email and not an initial submit email
-    send_user_notifications(service_request, request_amendment: false) unless send_request_amendment_and_not_initial
-    send_admin_notifications(sub_service_requests, request_amendment: false)
-    send_service_provider_notifications(sub_service_requests, request_amendment: false)
-  end
-
-  def send_user_notifications(service_request, request_amendment: false)
-    # Does an approval need to be created?  Check that the user
-    # submitting has approve rights.
-    audit_report = request_amendment ? service_request.audit_report(current_user, service_request.previous_submitted_at.utc, Time.now.utc) : nil
-    @service_list_false = service_request.service_list(false)
-    @service_list_true = service_request.service_list(true)
-    @line_items = @service_request.line_items
-
-    xls = render_to_string action: 'show', formats: [:xlsx]
-
-    if service_request.protocol.project_roles.detect{|pr| pr.identity_id == current_user.id}.project_rights != "approve"
-      approval = service_request.approvals.create
-    else
-      approval = false
-    end
-    # send e-mail to all folks with view and above
-    service_request.protocol.project_roles.each do |project_role|
-      next if project_role.project_rights == 'none' || project_role.identity.email.blank?
-      Notifier.notify_user(project_role, service_request, xls, approval, current_user, audit_report).deliver_now
-    end
-  end
-
-  def send_service_provider_notifications(sub_service_requests, request_amendment: false) #all sub-service requests on service request
-    sub_service_requests.each do |sub_service_request|
-      send_ssr_service_provider_notifications(sub_service_request, ssr_destroyed: false, request_amendment: request_amendment)
-    end
-  end
-
-  def send_admin_notifications(sub_service_requests, request_amendment: false)
-    # Iterates through each SSR to find the correct admin email.
-    # Passes the correct SSR to display in the attachment and email.
-    sub_service_requests.each do |sub_service_request|
-
-      audit_report = request_amendment ? audit_report = sub_service_request.audit_report(current_user, sub_service_request.service_request.previous_submitted_at.utc, Time.now.utc) : nil
-      sub_service_request.organization.submission_emails_lookup.each do |submission_email|
-        @service_list_false = sub_service_request.service_request.service_list(false, nil, sub_service_request)
-        @service_list_true = sub_service_request.service_request.service_list(true, nil, sub_service_request)
-        @line_items = sub_service_request.line_items
-        xls = render_to_string action: 'show', formats: [:xlsx]
-        Notifier.notify_admin(submission_email.email, xls, current_user, sub_service_request, audit_report).deliver
-      end
-    end
-  end
-
-  def send_ssr_service_provider_notifications(sub_service_request, ssr_destroyed: false, request_amendment: false) #single sub-service request
-    audit_report = request_amendment ? sub_service_request.audit_report(current_user, sub_service_request.service_request.previous_submitted_at.utc, Time.now.utc) : nil
-    sub_service_request.organization.service_providers.where("(`service_providers`.`hold_emails` != 1 OR `service_providers`.`hold_emails` IS NULL)").each do |service_provider|
-      send_individual_service_provider_notification(sub_service_request, service_provider, audit_report, ssr_destroyed, request_amendment)
-    end
-  end
-
-  def send_confirmation_notifications(to_notify, send_request_amendment_and_not_initial= nil)
-    if @sub_service_request && to_notify.include?(@sub_service_request.id)
-      send_notifications(@service_request, [@sub_service_request], send_request_amendment_and_not_initial)
-    else
-      sub_service_requests = @service_request.sub_service_requests.where(id: to_notify)
-      send_notifications(@service_request, sub_service_requests, send_request_amendment_and_not_initial) unless sub_service_requests.empty? # if nothing is set to notify then we shouldn't send out e-mails
-    end
-  end
-
   def ssr_has_changed?(service_request, sub_service_request) #specific ssr has changed?
     previously_submitted_at = service_request.previous_submitted_at.nil? ? Time.now.utc : service_request.previous_submitted_at.utc
     unless sub_service_request.audit_report(current_user, previously_submitted_at, Time.now.utc)[:line_items].empty?
@@ -594,34 +468,6 @@ class ServiceRequestsController < ApplicationController
       end
     end
     return false
-  end
-
-  def send_individual_service_provider_notification(sub_service_request, service_provider, audit_report=nil, ssr_destroyed=false, request_amendment=false)
-    attachments = {}
-    @service_list_true = @service_request.service_list(true, service_provider)
-    @service_list_false = @service_request.service_list(false, service_provider)
-
-    # Retrieves the valid line items for service provider to calculate total direct cost in the xls
-    line_items = []
-    @service_request.sub_service_requests.each do |ssr|
-      if service_provider.identity.is_service_provider?(ssr)
-        line_items << ssr.line_items
-      end
-    end
-
-    @line_items = line_items.flatten
-    xls = render_to_string action: 'show', formats: [:xlsx]
-    attachments["service_request_#{sub_service_request.service_request.id}.xlsx"] = xls
-    #TODO this is not very multi-institutional
-    # generate the required forms pdf if it's required
-
-    if sub_service_request.organization.tag_list.include? 'required forms'
-      request_for_grant_billing_form = RequestGrantBillingPdf.generate_pdf service_request
-      attachments["request_for_grant_billing_#{sub_service_request.service_request.id}.pdf"] = request_for_grant_billing_form
-    end
-
-    ssr_id = sub_service_request.id
-    Notifier.notify_service_provider(service_provider, sub_service_request.service_request, attachments, current_user, ssr_id, audit_report, ssr_destroyed, request_amendment).deliver_now
   end
 
   def send_epic_notification_for_user_approval(protocol)

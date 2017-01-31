@@ -25,15 +25,23 @@
     .sub_text
       = t(:protocols)[:studies][:information][:subtext]
   .panel-body.container-fluid
+    - if RESEARCH_MASTER_ENABLED
+      .form-group.row
+        = form.label :research_master_id, class: 'col-lg-2 control-label rm-id' do
+          = link_to t(:protocols)[:studies][:information][:research_master_id], RESEARCH_MASTER_LINK
+        .col-lg-10
+          = form.text_field :research_master_id, class: 'form-control research-master-field'
+          = form.hidden_field :has_human_subject_info, value: false, class: 'has-human-subject-info'
+
     .form-group.row
       = form.label :short_title, t(:protocols)[:studies][:information][:short_title], class: 'col-lg-2 control-label required'
       .col-lg-10
-        = form.text_field :short_title, class: 'form-control'
+        = form.text_field :short_title, class: [('form-control'), (RESEARCH_MASTER_ENABLED ? 'rm-id-dependent rm-locked-fields' : '')], disabled: @protocol.research_master_id
 
     .form-group.row
       = form.label :title, t(:protocols)[:studies][:information][:title], class: 'col-lg-2 control-label required'
       .col-lg-10
-        = form.text_field :title, class: 'form-control'
+        = form.text_field :title, class: [('form-control'), (RESEARCH_MASTER_ENABLED ? 'rm-id-dependent rm-locked-fields' : '')], disabled: @protocol.research_master_id
 
     .form-group.row#funding-status
       = form.label :funding_status, t(:protocols)[:studies][:information][:funding_status], class: 'col-lg-2 control-label required'
@@ -103,5 +111,3 @@
       - else
         = render partial: 'dashboard/protocols/form/study_form_sections/readonly_form', locals: { protocol: protocol, form: form }
     = render partial: 'dashboard/protocols/form/study_form_sections/study_type_note', locals: { protocol: protocol, form: form }
-    
-

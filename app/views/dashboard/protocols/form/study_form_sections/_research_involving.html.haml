@@ -29,7 +29,7 @@
       .form-group.row.human_subjects
         = rt_form.label :human_subjects, t(:protocols)[:studies][:research_involving][:humans][:header], class: 'col-lg-2 control-label'
         .col-lg-1
-          = rt_form.check_box :human_subjects, class: 'form-control'
+          = rt_form.check_box :human_subjects, class: 'form-control human-subjects'
 
       / Human Subjects selected begin
       .human_subjects_dependent{ display_if(rt_form.object.human_subjects) }

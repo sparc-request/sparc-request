@@ -89,13 +89,13 @@ class ServiceCalendarsController < ApplicationController
   end
 
   def merged_calendar
-    @tab          = params[:tab]
-    @review       = params[:review] == 'true'
-    @portal       = params[:portal] == 'true'
-    @admin        = @portal && @sub_service_request.present?
-    @merged       = true
-    @consolidated = false
-
+    @tab              = params[:tab]
+    @review           = params[:review] == 'true'
+    @portal           = params[:portal] == 'true'
+    @admin            = @portal && @sub_service_request.present?
+    @merged           = true
+    @consolidated     = false
+    @statuses_hidden  = []
     setup_calendar_pages
 
     respond_to do |format|
@@ -112,7 +112,7 @@ class ServiceCalendarsController < ApplicationController
     @merged             = true
     @consolidated       = true
     @service_request    = @protocol.any_service_requests_to_display?
-
+    @statuses_hidden    = params[:statuses_hidden]
     setup_calendar_pages
 
     respond_to do |format|
@@ -122,17 +122,14 @@ class ServiceCalendarsController < ApplicationController
 
   def show_move_visits
     @arm = Arm.find( params[:arm_id] )
+    @visit_group = params[:visit_group_id] ? @arm.visit_groups.find(params[:visit_group_id]) : @arm.visit_groups.first
   end
 
   def move_visit_position
     arm = Arm.find( params[:arm_id] )
     vg  = arm.visit_groups.find( params[:visit_group].to_i )
 
-    if params[:position].blank?
-      vg.move_to_bottom
-    else
-      vg.insert_at( params[:position].to_i - 1 )
-    end
+    vg.insert_at( params[:position].to_i - 1 )
   end
 
   def toggle_calendar_row
@@ -211,7 +208,7 @@ class ServiceCalendarsController < ApplicationController
                 else
                   Arm.find(params[:arm_id]).protocol
                 end
-    permission_to_view  = @protocol.project_roles.where(identity_id: current_user.id, project_rights: ['approve', 'request']).any?
+    permission_to_view = @protocol.project_roles.where(identity_id: current_user.id, project_rights: %w(approve request view)).any?
 
     unless permission_to_view || Protocol.for_admin(current_user.id).include?(@protocol)
       @protocol = nil

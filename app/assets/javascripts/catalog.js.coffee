@@ -84,7 +84,7 @@ $(document).ready ->
       limit: 100,
       templates: {
         suggestion: Handlebars.compile('<button class="text-left" data-container="body" data-placement="right" data-toggle="tooltip" data-animation="false" title="{{description}}">
-                                          <span>{{parents}}</span><br>
+                                          <span><strong class="{{inst_css_class}}">{{institution}}</strong>{{parents}}</span><br>
                                           <span><strong>Service: {{label}}</strong></span><br>
                                           <span><strong>Abbreviation: {{abbreviation}}</strong></span><br>
                                           <span><strong>CPT Code: {{cpt_code}}</strong></span>
@@ -95,13 +95,7 @@ $(document).ready ->
   ).on('typeahead:render', (event, a, b, c) ->
     $('[data-toggle="tooltip"]').tooltip({ 'delay' : { show: 1000, hide: 500 } })
   ).on('typeahead:select', (event, suggestion) ->
-    srid = $(this).data('srid')
-    id = suggestion.value
-    $.ajax
-      type: 'POST'
-      url: "/service_requests/#{srid}/add_service/#{id}"
-      data:
-        service_request_id: getSRId()
+    window.cart.selectService(suggestion.value, $(this).data('srid'))
   )
 
   ### CONTINUE BUTTON ###

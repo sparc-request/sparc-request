@@ -22,11 +22,12 @@ FactoryGirl.define do
   factory :sub_service_request do
     service_requester_id { Random.rand(1000) }
     sequence(:ssr_id) { |n| "000#{n}" }
+    status "draft"
 
     trait :without_validations do
       to_create { |instance| instance.save(validate: false) }
     end
-    
+
     trait :with_payment do
       after(:create) do |sub_service_request, evaluator|
         FactoryGirl.create(:payment, sub_service_request: sub_service_request)

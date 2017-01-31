@@ -1,7 +1,0 @@
-- if service_request.additional_detail_services.present?
-  - service_request.line_items.each do |line_item|
-    - unless line_item.submissions.present?
-      %div.alert.alert-warning
-        %h5.text-center
-          = link_to t("additional_details.dashboard_complete_details", service_name: Service.find(line_item.service_id).name),
-            new_service_additional_details_submission_path(line_item.service_id, protocol_id: @protocol.id, line_item_id: line_item.id), remote: true

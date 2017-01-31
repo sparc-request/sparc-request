@@ -92,6 +92,8 @@ en:
   authorization_error:
     header: "Authorization Error"
     link: "Return to your Dashboard"
+    dashboard:
+      visit_groups: 'You are not allowed to access that Visit Group.'
 
   ####################
   # AUTHORIZED USERS #
@@ -178,7 +180,6 @@ en:
         percent: "Edit Effort Billing Qty"
       totals:
         maximum_direct: "Maximum Total Direct Costs Per Patient"
-        maximum_indirect: "Maximum Total Indirect Costs Per Patient"
         maximum_per_patient: "Maximum Total Per Patient"
         total_costs: "Total Costs (Per Patient/Visit Services) Per Study -- %{arm_name}"
     otf:
@@ -196,7 +197,8 @@ en:
         quantity: "Edit Qty"
         unit_quantity: "Edit Units per Qty"
       totals:
-        total_direct: "Total Costs (One Time Fee Services) Per Study"
+        total_direct: "Total Direct Costs (One Time Fee Services) Per Study"
+        total_costs: "Total Costs (One Time Fee Services) Per Study"
     merged_totals:
       header: "Study Cost Totals"
       grand_total: "Grand Total"
@@ -208,6 +210,7 @@ en:
     yes_select: "Yes"
     no_select: "No"
     prompts:
+      none: "Nothing Selected"
       any: "- Any -"
       please_specify: "Please specify: *"
       select: "---Please Select---"
@@ -310,6 +313,7 @@ en:
         funding_source: "Funding Source:"
         potential_funding_source: "Potential Funding Source:"
         funding_source_internal: "Please Specify:"
+        research_master_id: "Research Master ID:"
         funding_source_federal:
           title: "Federal Grant Title:"
           code: "Federal Grant Code:"
@@ -444,98 +448,8 @@ en:
   #############################
   errors:
     arms:
-      manage: "Manage Arms"
-      add: "Add Arm"
-      remove: "Remove Arm"
-      edit: "Edit Arm"
-      created: "Arm Created!"
-      updated: "Arm Updated!"
-      destroyed: "Arm Destroyed!"
-      arm: "Arm:"
-      name: "Arm Name: *"
-      subject_count: "Subject Count: *"
-      visit_count: "Visit Count: *"
       name_unique: "has to be unique within a study/project"
-
-    ######################
-    #  AUTHORIZED USERS  #
-    ######################
-    authorized_users:
-      add:
-        header: "Add Authorized User"
-        select: "Select User:"
-      edit:
-        header: "Edit Authorized User"
-      era: "ERA Commons Name:"
-      credentials: "Credentials:"
-      credentials_prompt: "Select a Credential"
-      credentials_specify: "Please Specify:*"
-      phone: "Phone:"
-      department_prompt: "Select a Department"
-      subspecialty: "Subspecialty:"
-      subspecialty_prompt: "Select a Subspecialty"
-      role: "Role:*"
-      role_prompt: "Select a Role"
-      role_specify: "Please Specify:*"
-      epic_access: "Epic EMR Access?:*"
-      rights:
-        header: "User Rights:*"
-        none: "Member Only"
-        view: "View Rights"
-        request: "Request/Approve Services"
-        approve: "Authorized/Change Study Charges"
-
-    ###############
-    #  DOCUMENTS  #
-    ###############
-    documents:
-      header: "Documents"
-      add: "Add a New Document"
-      edit: "Edit Document"
-      created: "Document Uploaded!"
-      updated: "Document Updated!"
-      destroyed: "Document Destroyed!"
-      table:
-        type: "Type"
-        title: "Title"
-        uploaded: "Uploaded"
-      form:
-        document_type: "Document Type:*"
-        specify_doc_type: "Please Specify:*"
-        document: "Document:*"
-        access: "Allow Access:"
-
-    #################
-    #  EPIC QUEUES  #
-    #################
-    epic_queues:
-      header: "Epic Queues"
-    ##################
-    #  FULFILLMENTS  #
-    ##################
-    fulfillments:
-      add: "Add Fulfillment"
-      edit: "Edit Fulfillment"
-      created: "Fulfillment Created!"
-      updated: "Fulfillment Updated!"
-      destroyed: "Fulfillment Destroyed!"
-      table:
-        date: "Fulfillment Date"
-        time_unit: "Qty Type"
-        time: "Quantity"
-        actions: "Actions"
-      actions:
-        notes: " Notes"
-        edit: " Edit Fulfillment"
-        delete: " Delete Fulfillment"
-      form:
-        date: "Fulfillment Date:*"
-        time: "Quantity:*"
-        time_unit: "Qty Type:*"
-
-    ################
-    #  LINE ITEMS  #
-    ################
+      bad_characters: "can not contain any of the following characters: [ ] * / \\ ? :"
       visit_day_missing: "Please specify a study day for each visit (%{arm_name})"
       name_unique: 'must be unique to the Protocol'
     line_items:
@@ -549,159 +463,26 @@ en:
       start_date_missing: "Start Date can\'t be blank"
       end_date_missing: "End Date can\'t be blank"
       date_range_invalid: "Start Date must come before End Date"
-      table:
-        header: "Protocols"
-        new_protocol: "New Protocol"
-        new_study: "New Study"
-        new_project: "New Project"
-        short_title: "Short Title"
-        id: "ID"
-        pis: "PI(s)"
-        requests: Requests
-        archive: "Archive"
-        unarchive: "Unarchive"
-
-      summary:
-        header: " Summary"
-        notes: " Notes"
-        edit1: "Edit "
-        edit2: " Information"
-        view_details1: "View "
-        view_details2: " Details"
-        title: "Title:"
-        short_title: "Short Title:"
-        sponsor: "Sponsor Name:"
-
-      authorized_users:
-        header: "Authorized Users"
-        add_user: "Add an Authorized User"
-        name: "Full Name"
-        role: "Role"
-        email: "Email"
-        phone: "Phone"
-        rights: "Proxy Rights"
-
-      documents:
-        header: "Documents"
-        add_document: "Add Document"
-
-      service_requests:
-        header: "Service Requests"
-        view_consolidated: "View Consolidated Request"
-        export_consolidated: "Export Consolidated Request"
-        add_services: "Add Services"
-
-      view_details:
-        header: " Details: #"
-        studies:
-          information:
-            header: "Study Information"
-            short_title: "Short Title:"
-            title: "Study Title:"
-            funding_status: "Proposal Funding Status:"
-            funding_source: "Funding Source:"
-            potential_funding_source: "Potential Funding Source:"
-            funding_source_internal: "Internal Funding Source:"
-            funding_source_federal:
-              title: "Federal Grant Title:"
-              code: "Federal Grant Code:"
-              phs_sponsor: "Federal PHS Sponsor:"
-              separator: "-OR-"
-              non_phs_sponsor: "Federal Non-PHS Sponsor:"
-              serial_number: "Federal Grant Serial Number:"
-            phase: "Study Phase:"
-            sponsor: "Sponsor Name:"
-            push_to_epic: "Publish Study in Epic:"
-            study_type_questions: "Study-Type Questions"
-          optional_information:
-            header: "Optional Information"
-            udak_project_number: "Financial Account (UDAK #):"
-            rate: "Indirect Cost Rate:"
-            rfa: "Funding Opportunity # / RFA:"
-            potential_start_date: "Potential Funding Start Date:"
-            start_date: "Funding Start Date:"
-          research_involving:
-            header: "Research Involving"
-            none: "No Research Types selected"
-            humans:
-              header: "Human Subjects"
-              nct_number: "NCT# (National Clinical Trials Number):"
-              hr_number: "HR #:"
-              pro_number: "PRO #:"
-              record_irb: "IRB of Record:"
-              submission_type: "Submission Type:"
-              pending_approval: "Application/Approval Pending?:"
-              irb_approval_date: "IRB Approval Date:"
-              irb_expiration_date: "IRB Expiration Date:"
-            vertebrates:
-              header: "Vertebrate Animals"
-              iacuc_number: "IACUC #:"
-              iacuc_name: "Name of IACUC:"
-              iacuc_approval_date: "IACUC Approval Date:"
-              iacuc_expiration_date: "IACUC Expiration Date:"
-            products:
-              clear: "Clear"
-              header: "Investigational Products"
-              ind_number: "IND #:"
-              ind_on_hold: "IND on Hold?:"
-              numbers:
-                ide: "IDE #:"
-                hde: "HDE #:"
-                hud: "HUD #:"
-            ip_patents:
-              header: "IP/Patents"
-              number: "Patent Number:"
-              inventors: "Inventors:"
-          study_type:
-            header: "Study Type"
-            none: "No Study Types selected"
-          impact_areas:
-            header: "Impact Areas"
-            none: "No Impact Areas selected"
-          affiliations:
-            header: "Affiliations, Collaborations, and Memberships"
-            none: "No Affiliations selected"
-        projects:
-          information:
-            header: "Project Information"
-            short_title: "Short Title:"
-            title: "Project Title:"
-            funding_status: "Proposal Funding Status:"
-            funding_source: "Funding Source:"
-            potential_funding_source: "Potential Funding Source:"
-            description: "Brief Description:"
-            rate: "Indirect Cost Rate:"
-
-    #####################
-    # SERVICE CALENDARS #
-    #####################
-    service_calendars:
-      consolidated_request:
-        header: "Consolidated Request Summary"
-        protocol_information:
-          header: " Information"
-          srid: "SRID:"
-          short_title: "Short Title:"
-          title: " Title:"
-          sponsor: "Sponsor Name:"
-          funding_source: "Funding Source:"
-        authorized_users:
-          header: "Authorized Users"
-          name: "Name"
-          role: "Role"
-          rights: "Proxy Rights"
-        services:
-          header: "Services"
-          none: "There are no services associated with this protocol."
-
-    ######################
-    #  SERVICE REQUESTS  #
-    ######################
     service_requests:
       line_items_missing: "No Services have been detected in your Cart. Please return to the Catalog and add Services before continuing"
       protocol_missing: "You must create a Protocol before continuing"
       protocol_errors: "The selected Protocol has errors which must be fixed. Please edit the Protocol before continuing"
       arms_missing: "You must create Arms before proceeding to the Service Calendar"
+
+  ################
+  # VISIT GROUPS #
+  ################
+  visit_groups:
+    form_fields:
+      arm: "Arm:"
+      visit: "Visit:"
+      name: "Name:"
+      day: "Day:"
+      position: "Insert into Position:"
+      window_before: "Window Before:"
+      window_after: "Window After:"
+    prompts:
+      add_as_last: "Add as last"
 
 
 

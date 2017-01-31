@@ -22,21 +22,25 @@
   = hidden_field_tag :service_request_id, service_request.id
   = hidden_field_tag :sub_service_request_id, sub_service_request.id
   .form-group
-    = a.label "name", t(:dashboard)[:visit_groups][:name], class: "col-sm-4 control-label"
+    = a.label :name, t(:visit_groups)[:form_fields][:name], class: "col-sm-4 control-label required"
     .col-sm-7
-      = a.text_field "name", {class: 'form-control'}
+      = a.text_field :name, {class: 'form-control'}
   .form-group
-    = a.label "day", t(:dashboard)[:visit_groups][:day], class: "col-sm-4 control-label"
+    = a.label :day, t(:visit_groups)[:form_fields][:day], class: "col-sm-4 control-label required"
     .col-sm-7
-      = a.text_field "day", {class: 'form-control', maxlength: 4}
+      = a.text_field :day, {class: 'form-control', maxlength: 4}
   .form-group
-    = a.label "window_before", t(:dashboard)[:visit_groups][:window_before], class: "col-sm-4 control-label"
+    = a.label :position, t(:visit_groups)[:form_fields][:position], class: "col-sm-4 control-label required"
     .col-sm-7
-      = a.text_field "window_before", {class: 'form-control'}
+      = a.select :position, visit_position_options(arm, visit_group), { include_blank: t(:constants)[:prompts][:none] }, class: "form-control selectpicker"
   .form-group
-    = a.label "window_after", t(:dashboard)[:visit_groups][:window_after], class: "col-sm-4 control-label"
+    = a.label :window_before, t(:visit_groups)[:form_fields][:window_before], class: "col-sm-4 control-label required"
     .col-sm-7
-      = a.text_field "window_after", {class: 'form-control'}
+      = a.text_field :window_before, {class: 'form-control'}
+  .form-group
+    = a.label :window_after, t(:visit_groups)[:form_fields][:window_after], class: "col-sm-4 control-label required"
+    .col-sm-7
+      = a.text_field :window_after, {class: 'form-control'}
   .modal-footer
     .center-block
       %button.btn.btn-default{type: 'button', data: {dismiss: 'modal'}}

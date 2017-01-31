@@ -74,9 +74,14 @@
 
             %tr
               %th
-                = t(:additional_details)[:add]
+                = t(:additional_details)[:label]
               %td
-                = link_to t(:additional_details)[:add], service_additional_details_questionnaires_path(@service)
+                - if @service.questionnaires.active.present?
+                  = link_to "#{@service.questionnaires.active.first.name}(active)", service_additional_details_questionnaires_path(@service)
+                - elsif @service.questionnaires.present?
+                  = link_to "#{@service.questionnaires.first.name}(inactive)", service_additional_details_questionnaires_path(@service)
+                - else
+                  = link_to t(:additional_details)[:add], service_additional_details_questionnaires_path(@service)
             %tr
               %th= t(:organization_form)[:tag_list]
               %td

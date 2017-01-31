@@ -19,6 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 development:
+  research_master_enabled: true
   default_mail_to: catesa@musc.edu
   admin_mail_to: catesa@musc.edu
   feedback_mail_to: "hutsonk@musc.edu"
@@ -29,6 +30,10 @@ development:
   system_satisfaction_survey_cc: 'amcates@gmail.com, catesa@musc.edu'
   root_url: "https://andrews-mac-pro.thurmond-gazes.musc.edu"
   dashboard_link: 'http://musc-pro.homelinux.net:3001/dashboard'
+  research_master_link: 'https://research-master-staging.musc.edu/'
+  research_master_api: 'https://research-master-staging.musc.edu/api/'
+  research_master_enabled: true
+  rmid_api_token: 'some token'
   create_an_account: false
   header_link_1: http://sctr.musc.edu
   header_link_2_proper: http://localhost:3000/
@@ -98,6 +103,10 @@ test:
   system_satisfaction_survey_cc: 'amcates@gmail.com, catesa@musc.edu'
   root_url: /
   dashboard_link: /dashboard
+  research_master_link: 'https://research-master-staging.musc.edu/'
+  research_master_api: 'https://research-master-staging.musc.edu/api/'
+  rmid_api_token: 'some token'
+  research_master_enabled: true
   header_link_1: http://sctr.musc.edu
   header_link_2_proper: http://localhost:3000/
   header_link_2_dashboard: http://localhost:3000/dashboard

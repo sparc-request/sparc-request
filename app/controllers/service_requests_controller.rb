@@ -186,7 +186,6 @@ class ServiceRequestsController < ApplicationController
   end
 
   def confirmation
-    binding.pry
     @protocol = @service_request.protocol
     @service_request.previous_submitted_at = @service_request.submitted_at
 
@@ -204,7 +203,6 @@ class ServiceRequestsController < ApplicationController
         send_epic_notification_for_user_approval(@protocol)
       end
     end
-    binding.pry
     NotifierLogic.new(@service_request, @sub_service_request, current_user).update_ssrs_and_send_emails
     render formats: [:html]
   end

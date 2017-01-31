@@ -34,7 +34,6 @@ class NotifierLogic
   end
 
   def update_ssrs_and_send_emails
-    binding.pry
     @to_notify = []
     if @sub_service_request
       @to_notify << @sub_service_request.id unless @sub_service_request.status == 'submitted' || @sub_service_request.previously_submitted?
@@ -53,7 +52,6 @@ class NotifierLogic
   end
 
   def send_request_amendment_email_evaluation
-    binding.pry
     if !@previously_submitted_ssrs.empty?
       request_amendment_ssrs = @previously_submitted_ssrs.select{ |ssr| ssr_has_changed?(ssr) }
 
@@ -143,7 +141,6 @@ class NotifierLogic
   def send_user_notifications(request_amendment: false)
     # Does an approval need to be created?  Check that the user
     # submitting has approve rights.
-    binding.pry
     audit_report = authorized_user_audit_report
     service_list_false = @service_request.service_list(false)
     service_list_true = @service_request.service_list(true)
@@ -159,7 +156,6 @@ class NotifierLogic
     else
       approval = false
     end
-
     # send e-mail to all folks with view and above
     @service_request.protocol.project_roles.each do |project_role|
       next if project_role.project_rights == 'none' || project_role.identity.email.blank?
@@ -203,7 +199,6 @@ class NotifierLogic
       request_for_grant_billing_form = RequestGrantBillingPdf.generate_pdf service_request
       attachments["request_for_grant_billing_#{sub_service_request.service_request.id}.pdf"] = request_for_grant_billing_form
     end
-
     ssr_id = sub_service_request.id
     Notifier.notify_service_provider(service_provider, @service_request, attachments, @current_user, ssr_id, audit_report, ssr_destroyed, request_amendment).deliver_now
   end

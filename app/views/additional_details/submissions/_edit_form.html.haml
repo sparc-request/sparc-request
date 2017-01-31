@@ -1,4 +1,5 @@
-= hidden_field_tag 'sr_id', params[:sr_id]
+- if params[:sr_id]
+  = hidden_field_tag 'sr_id', params[:sr_id]
 = f.fields_for :questionnaire_responses do |qr|
   - item = qr.object.item
   - if item.required?

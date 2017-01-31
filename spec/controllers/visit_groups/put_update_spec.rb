@@ -101,52 +101,122 @@ RSpec.describe VisitGroupsController, type: :controller do
     end
 
     context 'visit group invalid' do
-      it 'should not update visit group' do
-        protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
-        sr        = create(:service_request_without_validations, protocol: protocol)
-        arm       = create(:arm, protocol: protocol, name: "Armada")
-        vg        = create(:visit_group, arm: arm, day: 1, name: "Visit Me Baby One More Time")
-        vg_params = { name: nil }
+      context 'day is the only error (i.e. day validated false but other attribute(s) were good' do
+        it 'should update visit group' do
+          protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
+          sr        = create(:service_request_without_validations, protocol: protocol)
+          arm       = create(:arm, protocol: protocol, name: "Armada")
+          vg        = create(:visit_group, arm: arm, day: 1, name: "Visit Me Baby One More Time", window_before: 2)
+          
+          vg.day = nil
+          vg.save(validate: false)
+          vg_params = { window_before: 1 }
 
-        xhr :put, :update, {
-          id: vg.id,
-          service_request_id: sr.id,
-          visit_group: vg_params
-        }
+          xhr :put, :update, {
+            id: vg.id,
+            service_request_id: sr.id,
+            visit_group: vg_params
+          }
 
-        expect(vg.reload.name).to eq("Visit Me Baby One More Time")
+          expect(vg.reload.window_before).to eq(1)
+        end
+
+        it 'should render nothing' do
+          protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
+          sr        = create(:service_request_without_validations, protocol: protocol)
+          arm       = create(:arm, protocol: protocol, name: "Armada")
+          vg        = create(:visit_group, arm: arm, day: 1, name: "Visit Me Baby One More Time", window_before: 2)
+          
+          vg.day = nil
+          vg.save(validate: false)
+          vg_params = { window_before: 1 }
+
+          xhr :put, :update, {
+            id: vg.id,
+            service_request_id: sr.id,
+            visit_group: vg_params
+          }
+
+          expect(response.body).to be_blank
+        end
+
+        it 'should respond ok' do
+          protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
+          sr        = create(:service_request_without_validations, protocol: protocol)
+          arm       = create(:arm, protocol: protocol, name: "Armada")
+          vg        = create(:visit_group, arm: arm, day: 1, name: "Visit Me Baby One More Time", window_before: 2)
+          
+          vg.day = nil
+          vg.save(validate: false)
+          vg_params = { window_before: 1 }
+
+          xhr :put, :update, {
+            id: vg.id,
+            service_request_id: sr.id,
+            visit_group: vg_params
+          }
+
+          expect(controller).to respond_with(:ok)
+        end
       end
 
-      it 'should render json errors' do
-        protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
-        sr        = create(:service_request_without_validations, protocol: protocol)
-        arm       = create(:arm, protocol: protocol, name: "Armada")
-        vg        = create(:visit_group, arm: arm, day: 1, name: "Visit Me Baby One More Time")
-        vg_params = { name: nil }
+      context 'day is not the only error' do
+        it 'should not update visit group' do
+          protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
+          sr        = create(:service_request_without_validations, protocol: protocol)
+          arm       = create(:arm, protocol: protocol, name: "Armada")
+          vg        = create(:visit_group, arm: arm, day: 1, name: "Visit Me Baby One More Time")
+          
+          vg.day = nil
+          vg.save(validate: false)
+          vg_params = { name: nil }
 
-        xhr :put, :update, {
-          id: vg.id,
-          service_request_id: sr.id,
-          visit_group: vg_params
-        }
+          xhr :put, :update, {
+            id: vg.id,
+            service_request_id: sr.id,
+            visit_group: vg_params
+          }
 
-        expect(JSON.parse(response.body)).to be
-      end
+          expect(vg.reload.name).to eq("Visit Me Baby One More Time")
+        end
 
-      it 'should respond unprocessable entity' do
-        protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
-        sr        = create(:service_request_without_validations, protocol: protocol)
-        arm       = create(:arm, protocol: protocol, name: "Armada")
-        vg        = create(:visit_group, arm: arm, day: 1, name: "Visit Me Baby One More Time")
-        vg_params = { name: nil }
+        it 'should render json errors' do
+          protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
+          sr        = create(:service_request_without_validations, protocol: protocol)
+          arm       = create(:arm, protocol: protocol, name: "Armada")
+          vg        = create(:visit_group, arm: arm, day: 1, name: "Visit Me Baby One More Time")
+          
+          vg.day = nil
+          vg.save(validate: false)
+          vg_params = { name: nil }
 
-        xhr :put, :update, {
-          id: vg.id,
-          service_request_id: sr.id,
-          visit_group: vg_params
-        }
+          xhr :put, :update, {
+            id: vg.id,
+            service_request_id: sr.id,
+            visit_group: vg_params
+          }
 
-        expect(controller).to respond_with(:unprocessable_entity)
+          expect(JSON.parse(response.body)).to be
+        end
+
+        it 'should respond unprocessable entity' do
+          protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
+          sr        = create(:service_request_without_validations, protocol: protocol)
+          arm       = create(:arm, protocol: protocol, name: "Armada")
+          vg        = create(:visit_group, arm: arm, day: 1, name: "Visit Me Baby One More Time")
+          
+          vg.day = nil
+          vg.save(validate: false)
+          vg_params = { name: nil }
+
+          xhr :put, :update, {
+            id: vg.id,
+            service_request_id: sr.id,
+            visit_group: vg_params
+          }
+
+          expect(controller).to respond_with(:unprocessable_entity)
+        end
       end
     end
   end

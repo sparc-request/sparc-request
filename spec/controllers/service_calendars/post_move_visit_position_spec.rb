@@ -38,9 +38,9 @@ RSpec.describe ServiceCalendarsController do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
       arm      = create(:arm, protocol: protocol, name: "Arm")
-      vg1      = create(:visit_group, arm: arm, position: 0)
-      vg2      = create(:visit_group, arm: arm, position: 1)
-      vg3      = create(:visit_group, arm: arm, position: 2)
+      vg1      = create(:visit_group, arm: arm, position: 1)
+      vg2      = create(:visit_group, arm: arm, position: 2)
+      vg3      = create(:visit_group, arm: arm, position: 3)
 
 
       xhr :post, :move_visit_position, {
@@ -60,16 +60,16 @@ RSpec.describe ServiceCalendarsController do
         protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr       = create(:service_request_without_validations, protocol: protocol)
         arm      = create(:arm, protocol: protocol, name: "Arm")
-        vg1      = create(:visit_group, arm: arm, position: 0)
-        vg2      = create(:visit_group, arm: arm, position: 1)
-        vg3      = create(:visit_group, arm: arm, position: 2)
+        vg1      = create(:visit_group, arm: arm, position: 1)
+        vg2      = create(:visit_group, arm: arm, position: 2)
+        vg3      = create(:visit_group, arm: arm, position: 3)
 
 
         xhr :post, :move_visit_position, {
         service_request_id: sr.id,
           arm_id: arm.id,
           visit_group: vg1.id,
-          position: ''
+          position: 4
         }
 
         expect(vg1.reload.position).to eq(3)
@@ -82,9 +82,9 @@ RSpec.describe ServiceCalendarsController do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
       arm      = create(:arm, protocol: protocol, name: "Arm")
-      vg1      = create(:visit_group, arm: arm, position: 0)
-      vg2      = create(:visit_group, arm: arm, position: 1)
-      vg3      = create(:visit_group, arm: arm, position: 2)
+      vg1      = create(:visit_group, arm: arm, position: 1)
+      vg2      = create(:visit_group, arm: arm, position: 2)
+      vg3      = create(:visit_group, arm: arm, position: 3)
 
 
       xhr :post, :move_visit_position, {
@@ -101,9 +101,9 @@ RSpec.describe ServiceCalendarsController do
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
       arm      = create(:arm, protocol: protocol, name: "Arm")
-      vg1      = create(:visit_group, arm: arm, position: 0)
-      vg2      = create(:visit_group, arm: arm, position: 1)
-      vg3      = create(:visit_group, arm: arm, position: 2)
+      vg1      = create(:visit_group, arm: arm, position: 1)
+      vg2      = create(:visit_group, arm: arm, position: 2)
+      vg3      = create(:visit_group, arm: arm, position: 3)
 
 
       xhr :post, :move_visit_position, {

@@ -27,6 +27,7 @@ impact_areas: { 'pediatrics': 'Pediatrics',
                'stroke': 'Stroke',
                'diabetes': 'Diabetes',
                'cancer': 'Cancer',
+               'community': 'Community Engagement',
                'other': 'Other' }
 subject_ethnicities: { 'Caucasian': 'caucasian',
                       'African American/Black': 'black',

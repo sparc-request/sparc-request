@@ -29,18 +29,6 @@ module Dashboard::ProtocolsHelper
       s
     end
   end
-  def consolidated_request_buttons_display(protocol)
-    if !protocol.has_first_draft_service_request? && protocol.service_requests.present?
-      raw(
-        content_tag( :div,
-          content_tag( :button, t(:dashboard)[:protocols][:service_requests][:view_consolidated], type: 'button', class: 'view-full-calendar-button btn btn-primary btn-sm', data: { protocol_id: protocol.id }
-          )+
-          link_to( t(:dashboard)[:protocols][:service_requests][:export_consolidated], dashboard_protocol_path(protocol, format: :xlsx), class: "btn btn-primary btn-sm", data: { protocol_id: protocol.id }
-          ), class: "export-consolidated-request"
-        )
-      )
-    end
-  end
 
   def edit_protocol_button_display(protocol, permission_to_edit)
     if permission_to_edit

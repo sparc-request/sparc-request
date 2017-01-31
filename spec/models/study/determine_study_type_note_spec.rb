@@ -31,113 +31,13 @@ RSpec.describe 'Protocol' do
     study.update_attribute(:selected_for_epic, true)
   end
 
-  describe 'should return a study_type note' do
-    it 'should return study_type 1 note' do
-      answers = [true, nil, nil, nil, nil]
-      update_answers(answers)
-      expect(study.determine_study_type_note).to eq('De-identified Research Participant')
-    end
-
-    it 'should return study_type 3 note' do
-      answers = [false, true, false, false, false]
-      update_answers(answers)
-      expect(study.determine_study_type_note).to eq('Break-The-Glass for research associated encounters')
-    end
-
-    it 'should return study_type 4 note' do
-      answers = [false, true, false, true, false]
-      update_answers(answers)
-      expect(study.determine_study_type_note).to eq('Break-The-Glass for research associated encounters: no notification, pink header, no MyChart access.')
-    end
-
-    it 'should return study_type 5 note' do
-      answers = [false, true, false, false, true]
-      update_answers(answers)
-      expect(study.determine_study_type_note).to eq('Break-The-Glass for research associated encounters: no notification, no pink header, MyChart access.')
-    end
-
-    it 'should return study_type 5 note' do
-      answers = [false, true, false, false, true]
-      update_answers(answers)
-      expect(study.determine_study_type_note).to eq('Break-The-Glass for research associated encounters: no notification, no pink header, MyChart access.')
-    end
-
-    it 'should return study_type 6 note' do
-      answers = [false, true, false, true, true]
-      update_answers(answers)
-      expect(study.determine_study_type_note).to eq('Break-The-Glass for research associated encounters: no notification, pink header, MyChart access.')
-    end
-
-    it 'should return study_type 7 note' do
-      answers = [false, true, true, false, false]
-      update_answers(answers)
-      expect(study.determine_study_type_note).to eq('Break-The-Glass for research associated encounters: notification, no pink header, no MyChart access.')
-    end
-
-    it 'should return study_type 8 note' do
-      answers = [false, true, true, true, false]
-      update_answers(answers)
-      expect(study.determine_study_type_note).to eq('Break-The-Glass for research associated encounters: notification, pink header, no MyChart access.')
-    end
-
-    it 'should return study_type 9 note' do
-      answers = [false, true, true, false, true]
-      update_answers(answers)
-      expect(study.determine_study_type_note).to eq('Break-The-Glass for research associated encounters: notification, no pink header, MyChart access.')
-    end
-
-    it 'should return study_type 10 note' do
-      answers = [false, true, true, true, true]
-      update_answers(answers)
-      expect(study.determine_study_type_note).to eq('Break-The-Glass for research associated encounters: notification, pink header, MyChart access.')
-    end
-
-    it 'should return study_type 11 note' do
-      answers = [false, false, false, false, false]
-      update_answers(answers)
-      expect(study.determine_study_type_note).to eq('Full Epic Functionality:  no notification, no pink header, no MyChart access.')
-    end
-
-    it 'should return study_type 12 note' do
-      answers = [false, false, false, true, false]
-      update_answers(answers)
-      expect(study.determine_study_type_note).to eq('Full Epic Functionality:  no notification, pink header, no MyChart access.')
-    end
-
-    it 'should return study_type 13 note' do
-      answers = [false, false, false, false, true]
-      update_answers(answers)
-      expect(study.determine_study_type_note).to eq('Full Epic Functionality:  no notification, no pink header, MyChart access.')
-    end
-
-    it 'should return study_type 14 note' do
-      answers = [false, false, false, true, true]
-      update_answers(answers)
-      expect(study.determine_study_type_note).to eq('Full Epic Functionality:  no notification, pink header, MyChart access.')
-    end
-
-    it 'should return study_type 15 note' do
-      answers = [false, false, true, false, false]
-      update_answers(answers)
-      expect(study.determine_study_type_note).to eq('Full Epic Functionality:  notification, no pink header, no MyChart access.')
-    end
-
-    it 'should return study_type 16 note' do
-      answers = [false, false, true, true, false]
-      update_answers(answers)
-      expect(study.determine_study_type_note).to eq('Full Epic Functionality:  notification, pink header, no MyChart access.')
-    end
-
-    it 'should return study_type 17 note' do
-      answers = [false, false, true, false, true]
-      update_answers(answers)
-      expect(study.determine_study_type_note).to eq('Full Epic Functionality:  notification, no pink header, MyChart access.')
-    end
-
-    it 'should return study_type 0 note' do
-      answers = [false, false, true, true, true]
-      update_answers(answers)
-      expect(study.determine_study_type_note).to eq('Full Epic Functionality:  notification, pink header, MyChart access.')
+  describe '#determine_study_type_note' do
+    it 'should return the proper study_type note' do
+      STUDY_TYPE_ANSWERS_VERSION_3.each do |ans|
+        update_answers(ans.last)
+        study_type_note = STUDY_TYPE_NOTES[ans.first]
+        expect(study.determine_study_type_note).to eq(study_type_note)
+      end 
     end
   end
 

@@ -89,6 +89,7 @@ class Identity < ActiveRecord::Base
 
   validates_presence_of :last_name
   validates_presence_of :first_name
+  validates_presence_of :email
   validates_format_of   :email, with: email_regexp, allow_blank: true, if: :email_changed?
   validates             :ldap_uid, uniqueness: {case_sensitive: false}, presence: true
 
@@ -133,6 +134,11 @@ class Identity < ActiveRecord::Base
     else
       return ldap_uid
     end
+  end
+
+  #replace old organization methods with new professional organization lookups
+  def professional_org_lookup(org_type)
+    professional_organization ? professional_organization.parents_and_self.select{|org| org.org_type == org_type}.first.try(:name) : ""
   end
 
   ###############################################################################

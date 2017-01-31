@@ -26,7 +26,7 @@ module SurveyorControllerCustomMethods
     # base.send :before_filter, :authenticate_identity! # SPARC Request Authentication
     # base.send :before_filter, :require_user   # AuthLogic
     # base.send :before_filter, :login_required  # Restful Authentication
-    base.send :layout, 'surveyor_custom'
+    base.send :layout, :resolve_layout
   end
 
   def set_current_user
@@ -57,7 +57,7 @@ module SurveyorControllerCustomMethods
     if (@survey && @response_set)
       flash[:notice] = t('surveyor.survey_started_success')
       redirect_to(surveyor.edit_my_survey_path(
-        :survey_code => @survey.access_code, :response_set_code  => @response_set.access_code))
+        :survey_code => @survey.access_code, :response_set_code  => @response_set.access_code, review: params[:review]))
     else
       flash[:notice] = t('surveyor.Unable_to_find_that_survey')
       redirect_to surveyor_index
@@ -173,6 +173,16 @@ module SurveyorControllerCustomMethods
   def response_set_code_params
     return unless params[:response_set_code]
     params.require(:response_set_code).permit!
+  end
+
+  def resolve_layout
+    if params['review'] == 'true'
+      'surveyor/modal'
+    elsif action_name == 'new'
+      'surveyor/finish'
+    else
+      'surveyor/custom'
+    end
   end
 end
 

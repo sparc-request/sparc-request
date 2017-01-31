@@ -19,14 +19,20 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 $(document).ready ->
-  $(document).on('mouseenter focus', '.step-btn', ->
+  $(document).on('mouseenter focus', 'a.step-btn', ->
     $(this).children().addClass('hover')
   ).on('mouseleave focusout', '.step-btn', ->
     $(this).children().removeClass('hover')
   )
 
+  $(document).on 'click', '.step-btn', (event) -> 
+    if $(this).data('clicked')
+      event.preventDefault()
+    else
+      $(this).data('clicked', true)
+
   # We dont want the extra handler on the submit button if we need to use the system
   # satisfaction survey so that we can preventDefault the submit in system_satisfaction.js.coffee
   if $('#use_system_satisfaction').val() != 'true'
-    $(document).on 'click', '.form-submit-button', ->
+    $(document).one 'click', '.form-submit-button', ->
       $('#service-request-form').submit()

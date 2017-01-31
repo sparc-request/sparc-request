@@ -81,6 +81,16 @@ $(document).ready ->
         sub_service_request_id: getSSRId()
       url: $(this).attr('update')
 
+  $(document).on 'change', '#visit_group', ->
+    $.ajax
+      type: 'GET'
+      url: '/service_calendars/show_move_visits'
+      data:
+        arm_id: $('#arm_id').val()
+        visit_group_id: $(this).val()
+        service_request_id: getSRId()
+
+
 (exports ? this).changing_tabs_calculating_rates = ->
   arm_ids = []
   $('.calendar-container').each (index, arm) ->
@@ -101,15 +111,12 @@ calculate_max_rates = (arm_id) ->
       direct_total += Math.floor($(visit).data('cents')) / 100.0
 
     indirect_rate = parseFloat($("#indirect_rate").val()) / 100.0
-    indirect_total = 0
-    max_total = direct_total + indirect_total
+    max_total = direct_total * (1 + indirect_rate)
 
     direct_total_display = '$' + (direct_total).toFixed(2)
-    indirect_total_display = '$' + (Math.floor(indirect_total * 100) / 100).toFixed(2)
     max_total_display = '$' + (Math.floor(max_total * 100) / 100).toFixed(2)
 
     $(".arm-calendar-container-#{arm_id}:visible #{column}.max-direct-per-patient").html(direct_total_display)
-    $(".arm-calendar-container-#{arm_id}:visible #{column}.max-indirect-per-patient").html(indirect_total_display)
     $(".arm-calendar-container-#{arm_id}:visible #{column}.max-total-per-patient").html(max_total_display)
 
 getSRId = ->

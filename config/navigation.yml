@@ -20,6 +20,7 @@
 
 protocol:
   step_text: 'STEP 1: Review Services and Assign Protocol'
+  step_number: '1'
   css_class: blue-provider
   back: catalog
   catalog: catalog
@@ -33,6 +34,7 @@ protocol:
 
 service_details:
   step_text: 'STEP 2A: Enter Dates and Arm Information'
+  step_number: '2'
   css_class: light-blue-provider
   back: protocol
   catalog: catalog
@@ -50,6 +52,7 @@ service_details:
 # change 'forward' to 'calendar_totals' for that page to be used.
 service_calendar:
   step_text: 'STEP 2B: Visit Calendar'
+  step_number: '2'
   css_class: light-blue-provider
   back: service_details
   catalog: catalog
@@ -79,6 +82,7 @@ service_calendar:
 # change 'back' to 'calendar_totals' for that page to be used.
 service_subsidy:
   step_text: 'STEP 2C: Enter Requested Subsidy Information'
+  step_number: '2'
   css_class: light-blue-provider
   back: service_calendar
   catalog: catalog
@@ -89,6 +93,7 @@ service_subsidy:
 
 document_management:
   step_text: 'STEP 3: Shared Documents & Notes'
+  step_number: '3'
   css_class: orange-provider
   back: service_subsidy
   catalog: catalog
@@ -99,6 +104,7 @@ document_management:
 
 review:
   step_text: 'STEP 4: Review Your Request'
+  step_number: '4'
   css_class: red-provider
   back: document_management
   catalog: catalog
@@ -109,6 +115,7 @@ review:
 
 obtain_research_pricing:
   step_text: 'STEP 5a: Get a Cost Estimate'
+  step_number: '5'
   css_class: green-provider
   back: review
   catalog: catalog
@@ -117,6 +124,7 @@ obtain_research_pricing:
 
 confirmation:
   step_text: 'STEP 5: Submission Confirmation'
+  step_number: '5'
   css_class: green-provider
   back: review
   catalog: catalog

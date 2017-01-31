@@ -28,8 +28,16 @@
         %button.btn.btn-warning.move-visit-button{ data: { arm_id: arm.id } }
           = t(:proper)[:service_calendar][:move_visit][:header]
     .clearfix
+  = hidden_field_tag :service_request_id, service_request.id
   %table.table.table-bordered
     %thead
-      = render "service_calendars/master_calendar/pppv/#{tab}_header", service_request: service_request, sub_service_request: sub_service_request, arm: arm, tab: tab, pages: pages, page: page, review: review, portal: portal, visit_groups: visit_groups
+      = render "service_calendars/master_calendar/pppv/#{tab}_header",
+        service_request: service_request, sub_service_request: sub_service_request,
+        arm: arm, tab: tab, pages: pages, page: page, review: review,
+        portal: portal, visit_groups: visit_groups
     %tbody
-      = render "service_calendars/master_calendar/pppv/#{tab}_line_items", service_request: service_request, sub_service_request: sub_service_request, arm: arm, tab: tab, pages: pages, page: page, review: review, portal: portal, admin: admin, merged: merged, consolidated: consolidated, visit_groups: visit_groups
+      = render "service_calendars/master_calendar/pppv/#{tab}_line_items",
+        service_request: service_request, sub_service_request: sub_service_request,
+        arm: arm, tab: tab, pages: pages, page: page, review: review, portal: portal,
+        admin: admin, merged: merged, consolidated: consolidated, visit_groups: visit_groups,
+        statuses_hidden: statuses_hidden

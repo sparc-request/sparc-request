@@ -49,6 +49,7 @@ FactoryGirl.define do
       approval_count 0
       project_role_count 0
       service_provider_count 0
+      protocol_filter_count 0
     end
 
     after(:build) do |identity, evaluator|
@@ -66,6 +67,9 @@ FactoryGirl.define do
 
       create_list(:service_provider,
        evaluator.service_provider_count, identity: identity)
+
+      create_list(:protocol_filter,
+        evaluator.protocol_filter_count, identity: identity)
     end
   end
 end

@@ -41,6 +41,9 @@ class LineItemsVisit < ActiveRecord::Base
 
   after_save :set_arm_edited_flag_on_subjects
 
+  # Destroy parent Arm if the last LineItemsVisit was destroyed
+  after_destroy :release_parent
+
   def subject_count_valid
     if subject_count && subject_count > arm.subject_count
       errors.add(:blank, I18n.t('errors.line_items_visits.subject_count_invalid', arm_subject_count: arm.subject_count))
@@ -215,5 +218,14 @@ class LineItemsVisit < ActiveRecord::Base
 
   def any_visit_quantities_customized?
     visits.any?(&:quantities_customized?)
+  end
+
+  private
+
+  def release_parent
+    # Destroy parent Arm if the last LineItemsVisit was destroyed
+    if LineItemsVisit.where(arm_id: arm_id).none?
+      Arm.find(arm_id).destroy
+    end
   end
 end

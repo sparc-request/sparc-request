@@ -28,10 +28,33 @@ class VisitGroupsController < ApplicationController
   def update
     @visit_group = VisitGroup.find(params[:id])
 
-    if @visit_group.update_attributes(params[:visit_group])
+    if @visit_group.update_attributes(visit_group_params)
       render nothing: true
     else
-      render json: @visit_group.errors, status: :unprocessable_entity
+      # If we update the visit group day, then @visit_group.day is already updated, therefore
+      # any errors for day are not deleted.
+      # If we update a different attribute, then day will be nil and the errors for day
+      # will be deleted.
+      if @visit_group.day.nil?
+        @visit_group.errors.delete(:day)
+      end
+
+      # If there are legitimate errors, render them
+      # Else, it means day validation caused the update_attributes to fail even though we didn't
+      # change it, so we ignore validation and update the attribute correctly.
+      if @visit_group.errors.any?
+        render json: @visit_group.errors, status: :unprocessable_entity
+      else
+        @visit_group.attributes = visit_group_params
+        @visit_group.save(validate: false)
+        render nothing: true
+      end
     end
+  end
+
+  private
+
+  def visit_group_params
+    params.require(:visit_group).permit(:day, :name, :window_before, :window_after, :position, :arm_id)
   end
 end

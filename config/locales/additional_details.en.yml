@@ -20,12 +20,13 @@
 
 en:
   additional_details:
-    additional_details_title: 'Additional Details'
-    document_page_header: 'Additional Detail Submissions'
-    add: 'Add Additional Details'
-    preview_title: 'Additional Detail Survey Preview'
+    additional_details_title: 'Form Functionality'
+    document_page_header: 'Form Functionality Submissions'
+    label: 'Form Functionality'
+    add: 'Add New Form'
+    preview_title: 'Form Functionality Survey Preview'
     close_preview: 'Close'
-    form_builder_title: 'Additional Details Form Builder'
+    form_builder_title: 'Form Functionality Form Builder'
     description_placeholder: 'Description (optional)'
     add_options: 'Add Options'
     remove_option: 'Remove Option'
@@ -33,7 +34,7 @@ en:
     add_question: 'Add another Question'
     view_preview: 'View Preview'
     return_to_questionnaires: 'Return to Questionnaires'
-    questionnaire_index_title: 'Additional Detail Forms'
+    questionnaire_index_title: 'Form Functionality Forms'
     create_new_questionnaire: 'Create new'
     form_name: 'Form Name'
     service_name: 'Service Name'
@@ -46,15 +47,21 @@ en:
     questionnaire_submission: 'Questionnaire Submission'
     yes_label: 'Yes'
     no_label: 'No'
-    dashboard_complete_details: "Please complete the required Additional Details for %{service_name}"
-    take_additional_detail_survey: "Take Additional Details Survey for %{service_name}"
+    dashboard_complete_details: "Please complete the required Form Functionality for %{service_name}"
+    take_additional_detail_survey: "Take Form Functionality Survey for %{service_name}"
     complete_or_view: 'Complete/View'
     completed: 'Completed'
-    document_complete_details: 'Complete Additional Details'
+    document_complete_details: 'Complete Form Functionality'
 
     submissions:
-      header: "Additional Detail Submissions"
+      header: "Form Functionality Submissions"
+      completed_forms: 'Completed Forms'
       table_fields:
         id: "ID"
+        sr_id: 'SRID'
         service: "Service Name"
+        completion_time: 'Completion Time'
+        view: 'View'
+        edit: 'Edit'
+        delete: 'Delete'
       none: "No Records Found"

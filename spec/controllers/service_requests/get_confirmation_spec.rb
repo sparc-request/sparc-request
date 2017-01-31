@@ -345,11 +345,12 @@ RSpec.describe ServiceRequestsController, type: :controller do
       before :each do
         @org         = create(:organization)
         service     = create(:service, organization: @org, one_time_fee: true)
+        service1    = create(:service, organization: @org, one_time_fee: true)
         protocol    = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
         @sr          = create(:service_request_without_validations, protocol: protocol, submitted_at: Time.now.yesterday)
         @ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, status: 'submitted', submitted_at: Time.now.yesterday)
         li          = create(:line_item, service_request: @sr, sub_service_request: @ssr, service: service)
-        li_1        = create(:line_item, service_request: @sr, sub_service_request: @ssr, service: service)
+        li_1        = create(:line_item, service_request: @sr, sub_service_request: @ssr, service: service1)
                       create(:service_provider, identity: logged_in_user, organization: @org)
         
         audit = AuditRecovery.where("auditable_id = '#{li_1.id}' AND auditable_type = 'LineItem' AND action = 'create'")
@@ -358,7 +359,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
 
         ssr_li_id   = @ssr.line_items.first.id
         @ssr.line_items.first.destroy!
-
         audit_1 = AuditRecovery.where("auditable_id = '#{ssr_li_id}' AND auditable_type = 'LineItem' AND action = 'destroy'")
         audit_1.first.update_attribute(:created_at, Time.now - 5.hours)
         audit_1.first.update_attribute(:user_id, logged_in_user.id)
@@ -519,7 +519,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
                 xhr :get, :confirmation, {
                   id: sr.id
                 }
-              }.to change(ActionMailer::Base.deliveries, :count).by(1)
+              }.to change(ActionMailer::Base.deliveries, :count).by(0)
             end
           end
         end
@@ -567,7 +567,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
               xhr :get, :confirmation, {
                 id: sr.id
               }
-            }.to change(ActionMailer::Base.deliveries, :count).by(1)
+            }.to change(ActionMailer::Base.deliveries, :count).by(0)
           end
         end
       end

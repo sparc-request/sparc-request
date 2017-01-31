@@ -34,6 +34,7 @@
     = csrf_meta_tags
     :javascript
       window.I18n = #{current_translations.to_json.html_safe};
+    = Gon::Base.render_data
 
   %body#body
     - if @service_request
@@ -55,3 +56,14 @@
     = render 'shared/piwik_tracking' if Rails.env == 'production'
     = render 'shared/ie7_modal'
     = render 'shared/modal'
+
+- if SYSTEM_SATISFACTION_SURVEY
+  = stylesheet_link_tag('surveyor/reset',
+                        'surveyor/jquery-ui-1.10.0.custom',
+                        'surveyor/jquery-ui-timepicker-addon',
+                        'surveyor/ui.slider.extras',
+                        'surveyor/results',
+                        'surveyor',
+                        'custom')
+  = stylesheet_link_tag 'system_satisfaction'
+  = stylesheet_link_tag 'custom'

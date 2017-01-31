@@ -36,6 +36,7 @@ class Protocol < ActiveRecord::Base
   has_many :service_requests
   has_many :services,                     through: :service_requests
   has_many :sub_service_requests,         through: :service_requests
+  has_many :line_items,                   through: :service_requests
   has_many :organizations,                through: :sub_service_requests
   has_many :affiliations,                 dependent: :destroy
   has_many :impact_areas,                 dependent: :destroy
@@ -100,6 +101,12 @@ class Protocol < ActiveRecord::Base
   attr_accessible :type
   attr_accessible :udak_project_number
   attr_accessible :vertebrate_animals_info_attributes
+  attr_accessible :research_master_id
+  attr_accessible :has_human_subject_info
+
+  validates :research_master_id, numericality: { only_integer: true }, allow_blank: true
+
+  validates :research_master_id, presence: true, if: "RESEARCH_MASTER_ENABLED && has_human_subject_info?"
 
   attr_accessor :requester_id
   attr_accessor :validate_nct
@@ -128,6 +135,35 @@ class Protocol < ActiveRecord::Base
   validation_group :user_details do
     validate :validate_proxy_rights
     validate :primary_pi_exists
+  end
+
+  def has_human_subject_info?
+    self.has_human_subject_info == true
+  end
+
+  validate :existing_rm_id,
+    if: -> record { RESEARCH_MASTER_ENABLED && !record.research_master_id.nil? }
+
+  validate :unique_rm_id_to_protocol,
+    if: -> record { RESEARCH_MASTER_ENABLED && !record.research_master_id.nil? }
+
+  def existing_rm_id
+    rm_ids = HTTParty.get(RESEARCH_MASTER_API + 'research_masters.json', headers: {'Content-Type' => 'application/json', 'Authorization' => "Token token=\"#{RMID_API_TOKEN}\""})
+    ids = rm_ids.map{ |rm_id| rm_id['id'] }
+
+    unless ids.include?(self.research_master_id)
+      errors.add(:_, 'The entered Research Master ID does not exist. Please go to the Research Master website to create a new record.')
+    end
+  end
+
+  def unique_rm_id_to_protocol
+    Protocol.all.each do |protocol|
+      if self.id != protocol.id
+        if self.research_master_id == protocol.research_master_id
+          errors.add(:_, "The Research Master ID is already taken by Protocol #{protocol.id}. Please enter another RMID.")
+        end
+      end
+    end
   end
 
   scope :for_identity, -> (identity) {
@@ -247,11 +283,6 @@ class Protocol < ActiveRecord::Base
     USE_EPIC
   end
 
-  # virgin project:  a project that has never been a study
-  def virgin_project?
-    selected_for_epic.nil?
-  end
-
   def is_project?
     self.type == 'Project'
   end
@@ -271,11 +302,6 @@ class Protocol < ActiveRecord::Base
 
   def activate
     update_attribute(:study_type_question_group_id, StudyTypeQuestionGroup.active.pluck(:id).first)
-  end
-
-  def display_answers
-    answers = StudyTypeQuestion.joins(:study_type_question_group).where(study_type_question_groups: { version: version_type })
-    answers.map{ |ans| ans.study_type_answers.find_by_protocol_id(id) }
   end
 
   def email_about_change_in_authorized_user(modified_role, action)
@@ -516,6 +542,10 @@ class Protocol < ActiveRecord::Base
 
   def has_non_first_draft_ssrs?
     sub_service_requests.where.not(status: 'first_draft').any?
+  end
+
+  def has_incomplete_additional_details?
+    line_items.any?(&:has_incomplete_additional_details?)
   end
 
   private

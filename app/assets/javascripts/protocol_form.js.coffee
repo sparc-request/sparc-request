@@ -18,13 +18,56 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+toggleFields = (fields, state) ->
+  $(fields).prop('disabled', state)
+
+resetRmIdFields = (fields, value) ->
+  $(fields).val(value)
+
 $(document).ready ->
+
+  if $('.human-subjects:checkbox:checked').length > 0
+    $('.rm-id').addClass('required-field')
+    $('.has-human-subject-info').val('true')
+
+  $(document).on 'click', '.human-subjects', ->
+    if $('.rm-id').hasClass('required-field')
+      $('.rm-id').removeClass('required-field')
+      $('.has-human-subject-info').val('false')
+    else
+      $('.rm-id').addClass('required-field')
+      $('.has-human-subject-info').val('true')
+
+  $(document).on 'blur', '.research-master-field', ->
+    rmId = $('.research-master-field').val()
+    unless $(this).val() == ''
+      $.ajax
+        url: "#{gon.rm_id_api_url}research_masters/#{rmId}.json"
+        type: 'GET'
+        headers: {"Authorization": "Token token=\"#{gon.rm_id_api_token}\""}
+        success: (data) ->
+          $('#protocol_short_title').val(data.short_title)
+          $('#protocol_title').val(data.long_title)
+          toggleFields('.rm-locked-fields', true)
+        error: ->
+          swal("Error", "Research Master Record not found", "error")
+          resetRmIdFields('.rm-id-dependent', '')
+          toggleFields('.rm-locked-fields', false)
+
+  $(document).on 'change', '.research-master-field', ->
+    if $(this).val() == ''
+      resetRmIdFields('.rm-id-dependent', '')
+      toggleFields('.rm-locked-fields', false)
+
+  $('#protocol-form-display form').bind 'submit', ->
+    $(this).find(':input').prop('disabled', false)
+
   # Protocol Edit Begin
   $(document).on 'click', '#protocol-type-button', ->
     protocol_id = $(this).data('protocol-id')
     srid        = $(this).data('srid')
     in_dashboard = if $(this).data('in-dashboard') == 1 then '/dashboard' else ''
-    data = 
+    data =
       type : $("#protocol_type").val()
       srid : srid
     if confirm(I18n['protocols']['change_type']['warning'])
@@ -192,7 +235,7 @@ $(document).ready ->
     else
       $('#study_type_note').hide()
     return
-     
+
   ###END EPIC BUTTON FIELDS DISPLAY###
 
   ###HUMAN SUBJECTS FIELDS DISPLAY###

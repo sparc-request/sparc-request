@@ -1,4 +1,4 @@
-The current stable branch is v1.7.0, next release v1.7.5 ETA (07/25/2016)
+The current stable branch is v1.9.0, next release v1.9.5
 
 SPARC (Services, Pricing, and Applications for Research Center) is a web based research management system that integrates research and clinical care workflows with a focus on service request catalog, billing compliance, proposal and budget development, work fulfillment data collection, invoicing and billing, and impact data through grants and publication associations.
 

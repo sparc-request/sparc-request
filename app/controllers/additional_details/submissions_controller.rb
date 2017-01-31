@@ -44,6 +44,8 @@ class AdditionalDetails::SubmissionsController < ApplicationController
     @submissions = @protocol.submissions
     @line_item = LineItem.find(submission_params[:line_item_id])
     @service_request = @line_item.service_request
+    @permission_to_edit = @protocol.project_roles.where(identity: current_user, project_rights: ['approve', 'request']).any?
+    
     respond_to do |format|
       if @submission.save
         format.js
@@ -56,10 +58,15 @@ class AdditionalDetails::SubmissionsController < ApplicationController
   def update
     @service = Service.find(params[:service_id])
     @submission = Submission.find(params[:id])
-    @service_request = ServiceRequest.find(params[:sr_id])
+    @protocol = Protocol.find(@submission.protocol_id)
+    @submissions = @protocol.submissions
+    if params[:sr_id]
+      @service_request = ServiceRequest.find(params[:sr_id])
+    end
     @submission.update_attributes(submission_params)
     respond_to do |format|
       if @submission.save
+        @submission.touch(:updated_at)
         format.js
       else
         format.js
@@ -73,6 +80,7 @@ class AdditionalDetails::SubmissionsController < ApplicationController
     if params[:protocol_id]
       @protocol = Protocol.find(params[:protocol_id])
       @submissions = @protocol.submissions
+      @permission_to_edit = @protocol.project_roles.where(identity: current_user, project_rights: ['approve', 'request']).any?
     end
     if params[:line_item_id]
       @line_item = LineItem.find(params[:line_item_id])

@@ -27,345 +27,49 @@ RSpec.describe 'Protocol' do
   build_study_type_questions()
   build_study_type_answers()
 
-  describe 'should return a study_type for version_3' do
+  describe '#determine_study_type' do
 
-    before :each do 
-      study.update_attribute(:selected_for_epic, true)
+    describe 'should return a study_type for version_3' do
+      before :each do 
+        study.update_attribute(:selected_for_epic, true)
+      end
+
+      it 'should return the proper study_type' do
+        STUDY_TYPE_ANSWERS_VERSION_3.each do |ans|
+          update_answers(3, ans.last)
+          expect(study.determine_study_type).to eq(ans.first)
+        end 
+      end
     end
 
-    it 'should return study_type 1' do
-      answers = [true, nil, nil, nil, nil]
-      update_answers(3, answers)
-      expect(study.determine_study_type).to eq('1')
+    describe 'should return a study_type for version_2' do
+
+      before :each do 
+        study.update_attribute(:selected_for_epic, true)
+        study.update_attribute(:study_type_question_group_id, StudyTypeQuestionGroup.where(version: 2).first.id)
+      end
+
+       it 'should return the proper study_type' do
+        STUDY_TYPE_ANSWERS_VERSION_2.each do |ans|
+          update_answers(2, ans.last)
+          expect(study.determine_study_type).to eq(ans.first)
+        end 
+      end
     end
 
-    it 'should return study_type 3' do
-      answers = [false, true, false, false, false]
-      update_answers(3, answers)
-      expect(study.determine_study_type).to eq('3')
-    end
+    describe 'should return a study_type for version 1' do
 
-    it 'should return study_type 4' do
-      answers = [false, true, false, true, false]
-      update_answers(3, answers)
-      expect(study.determine_study_type).to eq('4')
-    end
+      before :each do 
+        study.update_attribute(:selected_for_epic, true)
+        study.update_attribute(:study_type_question_group_id, StudyTypeQuestionGroup.where(version: 1).first.id)
+      end
 
-    it 'should return study_type 5' do
-      answers = [false, true, false, false, true]
-      update_answers(3, answers)
-      expect(study.determine_study_type).to eq('5')
-    end
-
-    it 'should return study_type 6' do
-      answers = [false, true, false, true, true]
-      update_answers(3, answers)
-      expect(study.determine_study_type).to eq('6')
-    end
-
-    it 'should return study_type 7' do
-      answers = [false, true, true, false, false]
-      update_answers(3, answers)
-      expect(study.determine_study_type).to eq('7')
-    end
-
-    it 'should return study_type 8' do
-      answers = [false, true, true, true, false]
-      update_answers(3, answers)
-      expect(study.determine_study_type).to eq('8')
-    end
-
-    it 'should return study_type 9' do
-      answers = [false, true, true, false, true]
-      update_answers(3, answers)
-      expect(study.determine_study_type).to eq('9')
-    end
-
-    it 'should return study_type 10' do
-      answers = [false, true, true, true, true]
-      update_answers(3, answers)
-      expect(study.determine_study_type).to eq('10')
-    end
-
-    it 'should return study_type 11' do
-      answers = [false, false, false, false, false]
-      update_answers(3, answers)
-      expect(study.determine_study_type).to eq('11')
-    end
-
-    it 'should return study_type 12' do
-      answers = [false, false, false, true, false]
-      update_answers(3, answers)
-      expect(study.determine_study_type).to eq('12')
-    end
-
-    it 'should return study_type 13' do
-      answers = [false, false, false, false, true]
-      update_answers(3, answers)
-      expect(study.determine_study_type).to eq('13')
-    end
-
-    it 'should return study_type 14' do
-      answers = [false, false, false, true, true]
-      update_answers(3, answers)
-      expect(study.determine_study_type).to eq('14')
-    end
-
-    it 'should return study_type 15' do
-      answers = [false, false, true, false, false]
-      update_answers(3, answers)
-      expect(study.determine_study_type).to eq('15')
-    end
-
-    it 'should return study_type 16' do
-      answers = [false, false, true, true, false]
-      update_answers(3, answers)
-      expect(study.determine_study_type).to eq('16')
-    end
-
-    it 'should return study_type 17' do
-      answers = [false, false, true, false, true]
-      update_answers(3, answers)
-      expect(study.determine_study_type).to eq('17')
-    end
-
-    it 'should return study_type 0' do
-      answers = [false, false, true, true, true]
-      update_answers(3, answers)
-      expect(study.determine_study_type).to eq('0')
-    end
-  end
-
-  describe 'should return a study_type for version_2' do
-
-    before :each do 
-      study.update_attribute(:selected_for_epic, true)
-      study.update_attribute(:study_type_question_group_id, StudyTypeQuestionGroup.where(version: 2).first.id)
-    end
-
-    it 'should return study_type 1' do
-      answers = [true, nil, nil, nil, nil, nil]
-      update_answers(2, answers)
-      expect(study.determine_study_type).to eq('1')
-    end
-
-    it 'should return study_type 2' do
-      answers = [false, true, true, nil, nil, nil]
-      update_answers(2, answers)
-      expect(study.determine_study_type).to eq('2')
-    end
-
-    it 'should return study_type 3' do
-      answers = [false, true, false, false, true, true]
-      update_answers(2, answers)
-      expect(study.determine_study_type).to eq('3')
-    end
-
-    it 'should return study_type 4' do
-      answers = [false, true, false, false, false, true]
-      update_answers(2, answers)
-      expect(study.determine_study_type).to eq('4')
-    end
-
-    it 'should return study_type 5' do
-      answers = [false, true, false, false, true, false]
-      update_answers(2, answers)
-      expect(study.determine_study_type).to eq('5')
-    end
-
-    it 'should return study_type 6' do
-      answers = [false, true, false, false, false, false]
-      update_answers(2, answers)
-      expect(study.determine_study_type).to eq('6')
-    end
-
-    it 'should return study_type 7' do
-      answers = [false, true, false, true, true, true]
-      update_answers(2, answers)
-      expect(study.determine_study_type).to eq('7')
-    end
-
-    it 'should return study_type 8' do
-      answers = [false, true, false, true, false, true]
-      update_answers(2, answers)
-      expect(study.determine_study_type).to eq('8')
-    end
-
-    it 'should return study_type 9' do
-      answers = [false, true, false, true, true, false]
-      update_answers(2, answers)
-      expect(study.determine_study_type).to eq('9')
-    end
-
-    it 'should return study_type 10' do
-      answers = [false, true, false, true, false, false]
-      update_answers(2, answers)
-      expect(study.determine_study_type).to eq('10')
-    end
-
-    it 'should return study_type 11' do
-      answers = [false, false, nil, false, true, true]
-      update_answers(2, answers)
-      expect(study.determine_study_type).to eq('11')
-    end
-
-    it 'should return study_type 12' do
-      answers = [false, false, nil, false, false, true]
-      update_answers(2, answers)
-      expect(study.determine_study_type).to eq('12')
-    end
-
-    it 'should return study_type 13' do
-      answers = [false, false, nil, false, true, false]
-      update_answers(2, answers)
-      expect(study.determine_study_type).to eq('13')
-    end
-
-    it 'should return study_type 14' do
-      answers = [false, false, nil, false, false, false]
-      update_answers(2, answers)
-      expect(study.determine_study_type).to eq('14')
-    end
-
-    it 'should return study_type 15' do
-      answers = [false, false, nil, true, true, true]
-      update_answers(2, answers)
-      expect(study.determine_study_type).to eq('15')
-    end
-
-    it 'should return study_type 16' do
-      answers = [false, false, nil, true, false, true]
-      update_answers(2, answers)
-      expect(study.determine_study_type).to eq('16')
-    end
-
-    it 'should return study_type 17' do
-      answers = [false, false, nil, true, true, false]
-      update_answers(2, answers)
-      expect(study.determine_study_type).to eq('17')
-    end
-
-    it 'should return study_type 0' do
-      answers = [false, false, nil, true, false, false]
-      update_answers(2, answers)
-      expect(study.determine_study_type).to eq('0')
-    end
-  end
-
-  describe 'should return a study_type for version_3' do
-
-    before :each do 
-      study.update_attribute(:selected_for_epic, true)
-      study.update_attribute(:study_type_question_group_id, StudyTypeQuestionGroup.where(version: 1).first.id)
-    end
-
-    it 'should return study_type 1' do
-      answers = [true, true, nil, nil, nil, nil]
-      update_answers(1, answers)
-      expect(study.determine_study_type).to eq('1')
-    end
-
-    it 'should return study_type 2' do
-      answers = [true, false, true, nil, nil, nil]
-      update_answers(1, answers)
-      expect(study.determine_study_type).to eq('2')
-    end
-
-    it 'should return study_type 3' do
-      answers = [true, false, false, false, true, true]
-      update_answers(1, answers)
-      expect(study.determine_study_type).to eq('3')
-    end
-
-    it 'should return study_type 4' do
-      answers = [true, false, false, false, false, true]
-      update_answers(1, answers)
-      expect(study.determine_study_type).to eq('4')
-    end
-
-    it 'should return study_type 5' do
-      answers = [true, false, false, false, true, false]
-      update_answers(1, answers)
-      expect(study.determine_study_type).to eq('5')
-    end
-
-    it 'should return study_type 6' do
-      answers = [true, false, false, false, false, false]
-      update_answers(1, answers)
-      expect(study.determine_study_type).to eq('6')
-    end
-
-    it 'should return study_type 7' do
-      answers = [true, false, false, true, true, true]
-      update_answers(1, answers)
-      expect(study.determine_study_type).to eq('7')
-    end
-
-    it 'should return study_type 8' do
-      answers = [true, false, false, true, false, true]
-      update_answers(1, answers)
-      expect(study.determine_study_type).to eq('8')
-    end
-
-    it 'should return study_type 9' do
-      answers = [true, false, false, true, true, false]
-      update_answers(1, answers)
-      expect(study.determine_study_type).to eq('9')
-    end
-
-    it 'should return study_type 10' do
-      answers = [true, false, false, true, false, false]
-
-      update_answers(1, answers)
-      expect(study.determine_study_type).to eq('10')
-    end
-
-    it 'should return study_type 11' do
-      answers = [false, nil, nil, false, true, true]
-      update_answers(1, answers)
-      expect(study.determine_study_type).to eq('11')
-    end
-
-    it 'should return study_type 12' do
-      answers = [false, nil, nil, false, false, true]
-      update_answers(1, answers)
-      expect(study.determine_study_type).to eq('12')
-    end
-
-    it 'should return study_type 13' do
-      answers = [false, nil, nil, false, true, false]
-      update_answers(1, answers)
-      expect(study.determine_study_type).to eq('13')
-    end
-
-    it 'should return study_type 14' do
-      answers = [false, nil, nil, false, false, false]
-      update_answers(1, answers)
-      expect(study.determine_study_type).to eq('14')
-    end
-
-    it 'should return study_type 15' do
-      answers = [false, nil, nil, true, true, true]
-      update_answers(1, answers)
-      expect(study.determine_study_type).to eq('15')
-    end
-
-    it 'should return study_type 16' do
-      answers = [false, nil, nil, true, false, true]
-      update_answers(1, answers)
-      expect(study.determine_study_type).to eq('16')
-    end
-
-    it 'should return study_type 17' do
-      answers = [false, nil, nil, true, true, false]
-      update_answers(1, answers)
-      expect(study.determine_study_type).to eq('17')
-    end
-
-    it 'should return study_type 0' do
-      answers = [false, nil, nil, true, false, false]
-      update_answers(1, answers)
-      expect(study.determine_study_type).to eq('0')
+       it 'should return the proper study_type' do
+        STUDY_TYPE_ANSWERS.each do |ans|
+          update_answers(1, ans.last)
+          expect(study.determine_study_type).to eq(ans.first)
+        end 
+      end
     end
   end
 

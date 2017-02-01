@@ -69,7 +69,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
         li       = create(:line_item, service_request: @sr, sub_service_request: @ssr, service: service)
                      
 
-          session[:identity_id]            = logged_in_user.id
+        session[:identity_id]            = logged_in_user.id
       end
 
       it 'should update SR status to "get_a_cost_estimate"' do
@@ -82,7 +82,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
 
       it 'should update SSR status to "get_a_cost_estimate"' do
         xhr :get, :obtain_research_pricing, {
-          id: @ssr.id
+          id: @sr.id
         }
 
         expect(@ssr.reload.status).to eq('get_a_cost_estimate')

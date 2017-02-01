@@ -287,11 +287,6 @@ class Protocol < ActiveRecord::Base
     self.type == 'Project'
   end
 
-  # Determines whether a protocol contains a service_request with only a "first draft" status
-  def has_first_draft_service_request?
-    service_requests.any? && service_requests.map(&:status).all? { |status| status == 'first_draft'}
-  end
-
   def active?
     study_type_question_group.nil? ? false : study_type_question_group.active
   end
@@ -538,10 +533,6 @@ class Protocol < ActiveRecord::Base
     if remove_arms
       self.arms.destroy_all
     end
-  end
-
-  def has_non_first_draft_ssrs?
-    sub_service_requests.where.not(status: 'first_draft').any?
   end
 
   def has_incomplete_additional_details?

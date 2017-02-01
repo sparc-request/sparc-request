@@ -60,6 +60,234 @@ RSpec.describe ServiceRequestsController, type: :controller do
       expect(assigns(:service_request).previous_submitted_at).to eq(sr.submitted_at)
     end
 
+    #  Scenario: You have an existing SR, you add a new service that creates a new SSR (0004), you then delete this same service (therefore deleting the SSR), you then (because you are in indecisive user) decide to add said service back AGAIN (0005).  You then go through the app to resubmit
+    # Result: authorized users should receive a request amendment email with the service being added(and it should have the number of the last added service- 0005). SP and Admin should receive an initial submit
+    context 'previously submitted SR and SSR' do
+      context 'add line item to new SSR, then immediately delete before resubmitting' do
+        before :each do
+
+          # SR
+          protocol    = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
+          @sr          = create(:service_request_without_validations, protocol: protocol, submitted_at: '2015-06-01')
+
+          # ORIGINAL SSR
+          @org         = create(:organization)
+          service     = create(:service, organization: @org, one_time_fee: true)
+          @ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, status: 'submitted', submitted_at: Time.now.yesterday.utc)
+          li          = create(:line_item, service_request: @sr, sub_service_request: @ssr, service: service)
+
+          # NEW LI ADDED TO NEW SSR
+          @initial_submit_org         = create(:organization)
+          initial_submit_service    = create(:service, organization: @initial_submit_org, one_time_fee: true)
+          # Add LI
+          @ssr2        = create(:sub_service_request_without_validations, service_request: @sr, organization: @initial_submit_org, status: 'draft', submitted_at: nil)
+          initial_submit_li        = create(:line_item, service_request: @sr, sub_service_request: @ssr2, service: initial_submit_service)
+          @audit_add = AuditRecovery.where("auditable_id = '#{initial_submit_li.id}' AND auditable_type = 'LineItem' AND action = 'create'")
+          @audit_add.first.update_attribute(:created_at, Time.now.utc)
+          @audit_add.first.update_attribute(:user_id, logged_in_user.id)
+          initial_submit_li_id = initial_submit_li.id
+
+          # Delete LI
+          @ssr2.line_items.first.destroy!
+          @sr.sub_service_requests.last.destroy!
+
+          @sr.reload
+          @audit_delete = AuditRecovery.where("auditable_id = '#{initial_submit_li_id}' AND auditable_type = 'LineItem' AND action = 'destroy'")
+          @audit_delete.first.update_attribute(:created_at, Time.now.utc)
+          @audit_delete.first.update_attribute(:user_id, logged_in_user.id)
+
+          # Readd LI
+          @readded_ssr        = create(:sub_service_request_without_validations, service_request: @sr, organization: @initial_submit_org, status: 'draft', submitted_at: nil)
+          readded_li        = create(:line_item, service_request: @sr, sub_service_request: @readded_ssr, service: initial_submit_service)
+          @audit_readded = AuditRecovery.where("auditable_id = '#{readded_li.id}' AND auditable_type = 'LineItem' AND action = 'create'")
+          @audit_readded.first.update_attribute(:created_at, Time.now.utc)
+          @audit_readded.first.update_attribute(:user_id, logged_in_user.id)
+ 
+          session[:identity_id]        = logged_in_user.id
+        end
+
+        context 'with an authorized_user, service provider, admin' do
+          before :each do
+            @service_provider = create(:service_provider, identity: logged_in_user, organization: @initial_submit_org)
+            @admin = @initial_submit_org.submission_emails.create(email: 'hedwig@owlpost.com')
+          end
+
+          it "should increase deliveries by 1 (authorized_user), should not send to service_provider and admin" do
+            expect {
+              xhr :get, :confirmation, {
+                id: @sr.id
+              }
+            }.to change(ActionMailer::Base.deliveries, :count).by(3)
+          end
+
+          it 'should send request amendment email to authorized_user' do
+            allow(Notifier).to receive(:notify_user) do
+              mailer = double('mail') 
+              expect(mailer).to receive(:deliver_now)
+              mailer
+            end
+
+            xhr :get, :confirmation, {
+              id: @sr.id
+            }
+            @sr.update_attribute(:status, 'submitted')
+            @sr.reload
+            @audit = { :line_items => @audit_readded }
+            expect(Notifier).to have_received(:notify_user).with(@sr.protocol.project_roles.first, @sr, "", false, logged_in_user, @audit)
+          end
+
+          it 'should send initial submit email to service provider' do
+            request_amendment = false
+            @audit = nil
+            allow(Notifier).to receive(:notify_service_provider) do
+              mailer = double('mail') 
+              expect(mailer).to receive(:deliver_now)
+              mailer
+            end
+
+            xhr :get, :confirmation, {
+              id: @sr.id
+            }
+
+            expect(Notifier).to have_received(:notify_service_provider).with(@service_provider, @sr, {"service_request_#{@sr.id}.xlsx"=>""}, logged_in_user, @readded_ssr.id, @audit, false, request_amendment)
+          end
+
+
+          it 'should send initial submit email to admin' do
+            @audit = nil
+            allow(Notifier).to receive(:notify_admin) do
+              mailer = double('mail') 
+              expect(mailer).to receive(:deliver)
+              mailer
+            end
+
+            xhr :get, :confirmation, {
+              id: @sr.id
+            }
+ 
+            expect(Notifier).to have_received(:notify_admin).with(@admin.email, "", logged_in_user, @readded_ssr, @audit, false)
+          end
+        end
+      end
+    end
+
+
+    #Scenario: You already have an existing SSR with one service and you delete that one service- deleting that SSR.  Service Providers and Admin get their emails with the deleted SSR.  Then you add that same service back, creating a new SSR, go through the app and resubmit.  The authorized users should receive a request amendment email that should display the deleted SSR service and the added SSR service. SP and Admin should get an initial submit email with the added SSR
+    context 'previously submitted ssr with two SSRs' do
+      context 'delete the only service on the SSR (deleting SSR) and then add back that service' do 
+        before :each do
+          #  Service Request
+          protocol    = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
+          @sr          = create(:service_request_without_validations, protocol: protocol, submitted_at: '2015-06-01')
+
+          # original SSR
+          @org_associated_with_deleted         = create(:organization)
+          service_associated_with_deleted     = create(:service, organization: @org_associated_with_deleted, one_time_fee: true)
+          @ssr_associated_with_deleted         = create(:sub_service_request_without_validations, service_request: @sr, organization: @org_associated_with_deleted, status: 'submitted', submitted_at: Time.now.yesterday)
+          create(:line_item, service_request: @sr, sub_service_request: @ssr_associated_with_deleted, service: service_associated_with_deleted)
+
+          # SSR that is left alone
+          @unaffected_org        = create(:organization)
+          unaffected_service     = create(:service, organization: @unaffected_org, one_time_fee: true)
+          @unaffected_ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: @unaffected_org, status: 'submitted', submitted_at: Time.now.yesterday)
+          create(:line_item, service_request: @sr, sub_service_request: @unaffected_ssr, service: unaffected_service)
+          
+          # Destroy SSR
+          destroyed_ssr_id = @ssr_associated_with_deleted.id
+          destroyed_line_item_id = @ssr_associated_with_deleted.line_items.first.id
+          @ssr_associated_with_deleted.line_items.first.destroy!
+          @ssr_associated_with_deleted.destroy!
+          @sr.reload
+
+          @audit = AuditRecovery.where("auditable_id = '#{destroyed_line_item_id}' AND auditable_type = 'LineItem' AND action = 'destroy'")
+          @audit2 = AuditRecovery.where("auditable_id = '#{destroyed_ssr_id}' AND auditable_type = 'SubServiceRequest' AND action = 'destroy'")
+          @audit.first.update_attribute(:created_at, Time.now)
+          @audit.first.update_attribute(:user_id, logged_in_user.id)
+          @audit2.first.update_attribute(:created_at, Time.now - 4.hours)
+          @audit2.first.update_attribute(:user_id, logged_in_user.id)
+
+          # Add service back
+          service_associated_with_added     = create(:service, organization: @org_associated_with_deleted, one_time_fee: true)
+          @ssr_associated_with_added         = create(:sub_service_request_without_validations, service_request: @sr, organization: @org_associated_with_deleted, status: 'draft', submitted_at: nil)
+          line_item_added = create(:line_item, service_request: @sr, sub_service_request: @ssr_associated_with_added, service: service_associated_with_added)
+          @audit_for_added_li = AuditRecovery.where("auditable_id = '#{line_item_added.id}' AND auditable_type = 'LineItem' AND action = 'create'")
+          @audit_for_added_ssr = AuditRecovery.where("auditable_id = '#{@ssr_associated_with_added.id}' AND auditable_type = 'SubServiceRequest' AND action = 'create'")
+          @audit_for_added_ssr.first.update_attribute(:created_at, Time.now - 4.hours)
+          @audit_for_added_ssr.first.update_attribute(:user_id, logged_in_user.id)
+          @audit_for_added_li.first.update_attribute(:created_at, Time.now - 4.hours)
+          @audit_for_added_li.first.update_attribute(:user_id, logged_in_user.id)
+
+          @audit_for_user = []
+          @audit_for_user << @audit
+          @audit_for_user << @audit_for_added_li
+          @audit_for_user = @audit_for_user.flatten
+          session[:identity_id]        = logged_in_user.id
+        end
+
+        context 'with an authorized_user, service provider, admin' do
+          before :each do
+            @service_provider = create(:service_provider, identity: logged_in_user, organization: @org_associated_with_deleted)
+            @admin = @org_associated_with_deleted.submission_emails.create(email: 'hedwig@owlpost.com')
+          end
+
+          it "should increase deliveries by 1 (authorized_user), should not send to service_provider and admin" do
+            expect {
+              xhr :get, :confirmation, {
+                id: @sr.id
+              }
+            }.to change(ActionMailer::Base.deliveries, :count).by(3)
+          end
+
+          it 'should send request amendment email to authorized_user' do
+            allow(Notifier).to receive(:notify_user) do
+              mailer = double('mail') 
+              expect(mailer).to receive(:deliver_now)
+              mailer
+            end
+
+            xhr :get, :confirmation, {
+              id: @sr.id
+            }
+            @sr.update_attribute(:status, 'submitted')
+            @sr.reload
+            @audit = { :line_items => @audit_for_user }
+            expect(Notifier).to have_received(:notify_user).with(@sr.protocol.project_roles.first, @sr, "", false, logged_in_user, @audit)
+          end
+
+          it 'should send initial submit email to service provider' do
+            request_amendment = false
+            @audit = nil
+            allow(Notifier).to receive(:notify_service_provider) do
+              mailer = double('mail') 
+              expect(mailer).to receive(:deliver_now)
+              mailer
+            end
+
+            xhr :get, :confirmation, {
+              id: @sr.id
+            }
+
+            expect(Notifier).to have_received(:notify_service_provider).with(@service_provider, @sr, {"service_request_#{@sr.id}.xlsx"=>""}, logged_in_user, @ssr_associated_with_added.id, @audit, false, request_amendment)
+          end
+
+
+          it 'should send initial submit email to admin' do
+            @audit = nil
+            allow(Notifier).to receive(:notify_admin) do
+              mailer = double('mail') 
+              expect(mailer).to receive(:deliver)
+              mailer
+            end
+
+            xhr :get, :confirmation, {
+              id: @sr.id
+            }
+ 
+            expect(Notifier).to have_received(:notify_admin).with(@admin.email, "", logged_in_user, @ssr_associated_with_added, @audit, false)
+          end
+        end
+      end
+    end
   
     # Scenario:  Delete all services for an existing SSR and resubmit.
     # Result:  Authorized users get a request amendment with the deleted services

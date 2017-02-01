@@ -301,7 +301,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
             @sr.reload
             @audit = { :line_items => @audit_with_deleted_and_added_services, :sub_service_request_id => @ssr.id }
 
-            expect(Notifier).to have_received(:notify_service_provider).with(@service_provider, @sr, {"service_request_#{@sr.protocol.id}.xlsx"=>""}, logged_in_user, @ssr.id, @audit, false, true)
+            expect(Notifier).to have_received(:notify_service_provider).with(@service_provider, @sr, {"service_request_#{@sr.id}.xlsx"=>""}, logged_in_user, @ssr.id, @audit, false, true)
           end
 
           it 'should send request amendment email to admin' do
@@ -421,7 +421,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
             @sr.reload
             @audit = { :line_items => @request_amendment_audit, :sub_service_request_id => @request_amendment_ssr.id }
 
-            expect(Notifier).to have_received(:notify_service_provider).with(@service_provider, @sr, {"service_request_#{@sr.protocol.id}.xlsx"=>""}, logged_in_user, @request_amendment_ssr.id, @audit, false, true)
+            expect(Notifier).to have_received(:notify_service_provider).with(@service_provider, @sr, {"service_request_#{@sr.id}.xlsx"=>""}, logged_in_user, @request_amendment_ssr.id, @audit, false, true)
           end
 
           it 'should send request amendment email to admin' do
@@ -550,7 +550,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
             @sr.reload
             @audit = { :line_items => @audit, :sub_service_request_id => @ssr.id }
 
-            expect(Notifier).to have_received(:notify_service_provider).with(@service_provider, @sr, {"service_request_#{@sr.protocol.id}.xlsx"=>""}, logged_in_user, @ssr.id, @audit, false, true)
+            expect(Notifier).to have_received(:notify_service_provider).with(@service_provider, @sr, {"service_request_#{@sr.id}.xlsx"=>""}, logged_in_user, @ssr.id, @audit, false, true)
           end
         end
 
@@ -591,7 +591,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
             @sr.reload
             @audit = { :line_items => @audit, :sub_service_request_id => @ssr.id }
 
-            expect(Notifier).to have_received(:notify_service_provider).with(@service_provider, @sr, {"service_request_#{@sr.protocol.id}.xlsx"=>""}, logged_in_user, @ssr.id, @audit, false, true)
+            expect(Notifier).to have_received(:notify_service_provider).with(@service_provider, @sr, {"service_request_#{@sr.id}.xlsx"=>""}, logged_in_user, @ssr.id, @audit, false, true)
           end
 
           it 'should send request amendment email to admin' do
@@ -725,7 +725,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
             @sr.reload
             @audit = { :line_items => @audit, :sub_service_request_id => @ssr.id }
 
-            expect(Notifier).to have_received(:notify_service_provider).with(@service_provider, @sr, {"service_request_#{@sr.protocol.id}.xlsx"=>""}, logged_in_user, @ssr.id, @audit, false, true)
+            expect(Notifier).to have_received(:notify_service_provider).with(@service_provider, @sr, {"service_request_#{@sr.id}.xlsx"=>""}, logged_in_user, @ssr.id, @audit, false, true)
           end
         end
 
@@ -766,7 +766,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
             @sr.reload
             @audit = { :line_items => @audit, :sub_service_request_id => @ssr.id }
 
-            expect(Notifier).to have_received(:notify_service_provider).with(@service_provider, @sr, {"service_request_#{@sr.protocol.id}.xlsx"=>""}, logged_in_user, @ssr.id, @audit, false, true)
+            expect(Notifier).to have_received(:notify_service_provider).with(@service_provider, @sr, {"service_request_#{@sr.id}.xlsx"=>""}, logged_in_user, @ssr.id, @audit, false, true)
           end
 
           it 'should send request amendment email to admin' do
@@ -905,7 +905,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
               id: @sr.id
             }
 
-            expect(Notifier).to have_received(:notify_service_provider).with(@service_provider, @sr, {"service_request_#{@sr.protocol.id}.xlsx"=>""}, logged_in_user, @ssr2.id, @audit, false, request_amendment)
+            expect(Notifier).to have_received(:notify_service_provider).with(@service_provider, @sr, {"service_request_#{@sr.id}.xlsx"=>""}, logged_in_user, @ssr2.id, @audit, false, request_amendment)
           end
         end
 
@@ -944,7 +944,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
               id: @sr.id
             }
 
-            expect(Notifier).to have_received(:notify_service_provider).with(@service_provider, @sr, {"service_request_#{@sr.protocol.id}.xlsx"=>""}, logged_in_user, @ssr2.id, @audit, false, request_amendment)
+            expect(Notifier).to have_received(:notify_service_provider).with(@service_provider, @sr, {"service_request_#{@sr.id}.xlsx"=>""}, logged_in_user, @ssr2.id, @audit, false, request_amendment)
           end
 
           it 'should send initial submit email to admin' do
@@ -1108,14 +1108,14 @@ RSpec.describe ServiceRequestsController, type: :controller do
               @sr.reload
               @audit = { :line_items => @request_amendment_audit, :sub_service_request_id => @request_amendment_ssr.id }
 
-              expect(Notifier).to have_received(:notify_service_provider).with(@request_amendment_service_provider, @sr, {"service_request_#{@sr.protocol.id}.xlsx"=>""}, logged_in_user, @request_amendment_ssr.id, @audit, false, true)
+              expect(Notifier).to have_received(:notify_service_provider).with(@request_amendment_service_provider, @sr, {"service_request_#{@sr.id}.xlsx"=>""}, logged_in_user, @request_amendment_ssr.id, @audit, false, true)
 
               # Initial submit email
               @sr.update_attribute(:status, 'submitted')
               @sr.reload
               @audit = nil
 
-              expect(Notifier).to have_received(:notify_service_provider).with(@service_provider, @sr, {"service_request_#{@sr.protocol.id}.xlsx"=>""}, logged_in_user, @initial_submit_ssr.id, @audit, false, false)
+              expect(Notifier).to have_received(:notify_service_provider).with(@service_provider, @sr, {"service_request_#{@sr.id}.xlsx"=>""}, logged_in_user, @initial_submit_ssr.id, @audit, false, false)
             end
           end
 

@@ -200,6 +200,7 @@ class NotifierLogic
       attachments["request_for_grant_billing_#{sub_service_request.service_request.id}.pdf"] = request_for_grant_billing_form
     end
     ssr_id = sub_service_request.id
+
     Notifier.notify_service_provider(service_provider, @service_request, attachments, @current_user, ssr_id, audit_report, ssr_destroyed, request_amendment).deliver_now
   end
 

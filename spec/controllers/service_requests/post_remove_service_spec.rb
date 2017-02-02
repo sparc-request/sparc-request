@@ -278,16 +278,34 @@ RSpec.describe ServiceRequestsController, type: :controller do
         @li_1     = create(:line_item, service_request: @sr, sub_service_request: @ssr, service: @service)
                     create(:line_item, service_request: @sr, sub_service_request: @ssr1, service: @service1)
                     create(:line_item, service_request: @sr, sub_service_request: @ssr1, service: @service)
-                   create(:service_provider, identity: logged_in_user, organization: @org)
+                   
         @li_id = @li.id
+
+        #Authorized User
+        session[:identity_id]        = logged_in_user.id
+        #Service Provider
+        @service_provider = create(:service_provider, identity: logged_in_user, organization: @org)
+        #Admin
+        @admin = @org.submission_emails.create(email: 'hedwig@owlpost.com')
       end
 
       context 'removed all services (line_item1 & line_item2) for SSR' do
 
+        it "should increase deliveries by 1 (authorized_user), should not send to service_provider and admin" do
+          @li_1.destroy
+          expect {
+            post :remove_service, {
+              :id            => @sr.id,
+              :service_id    => @service.id,
+              :line_item_id  => @li_id,
+              :format        => :js,
+            }
+          }.to change(ActionMailer::Base.deliveries, :count).by(2)
+        end
+
         it 'should send notifications to the service provider' do
           @li_1.destroy
-          session[:identity_id]        = logged_in_user.id
-
+          
           allow(Notifier).to receive(:notify_service_provider) do
             mailer = double('mail')
             expect(mailer).to receive(:deliver_now)
@@ -301,7 +319,26 @@ RSpec.describe ServiceRequestsController, type: :controller do
                  :format        => :js,
                }.with_indifferent_access
 
-          expect(Notifier).to have_received(:notify_service_provider)
+          expect(Notifier).to have_received(:notify_service_provider).with(@service_provider, @sr, {"service_request_#{@sr.id}.xlsx"=>""}, logged_in_user, @ssr.id, nil, true, false)
+        end
+
+        it 'should send notifications to the admin' do
+          @li_1.destroy
+          
+          allow(Notifier).to receive(:notify_admin) do
+            mailer = double('mail')
+            expect(mailer).to receive(:deliver)
+            mailer
+          end
+
+          post :remove_service, {
+                 :id            => @sr.id,
+                 :service_id    => @service.id,
+                 :line_item_id  => @li_id,
+                 :format        => :js,
+               }.with_indifferent_access
+
+          expect(Notifier).to have_received(:notify_admin).with(@admin.email, "", logged_in_user, @ssr, nil, true)
         end
       end
 

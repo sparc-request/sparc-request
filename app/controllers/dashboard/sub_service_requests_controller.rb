@@ -39,6 +39,17 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
 
   def show
     respond_to do |format|
+      format.html { # Admin Edit
+        cookies['admin-tab'] = 'details-tab' unless cookies['admin-tab']
+        session[:service_calendar_pages] = params[:pages] if params[:pages]
+        session[:breadcrumbs].add_crumbs(protocol_id: @sub_service_request.protocol.id, sub_service_request_id: @sub_service_request.id).clear(:notifications)
+
+        @service_request  = @sub_service_request.service_request
+        @protocol         = @sub_service_request.protocol
+
+        render
+      }
+
       format.js { # User Modal Show
         arm_id                            = params[:arm_id] if params[:arm_id]
         page                              = params[:page]   if params[:page]
@@ -65,17 +76,6 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
           new_page = (session[:service_calendar_pages].nil?) ? 1 : session[:service_calendar_pages][arm.id.to_s].to_i
           @pages[arm.id] = @service_request.set_visit_page(new_page, arm)
         end
-
-        render
-      }
-
-      format.html { # Admin Edit
-        cookies['admin-tab'] = 'details-tab' unless cookies['admin-tab']
-        session[:service_calendar_pages] = params[:pages] if params[:pages]
-        session[:breadcrumbs].add_crumbs(protocol_id: @sub_service_request.protocol.id, sub_service_request_id: @sub_service_request.id).clear(:notifications)
-
-        @service_request  = @sub_service_request.service_request
-        @protocol         = @sub_service_request.protocol
 
         render
       }

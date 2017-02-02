@@ -73,7 +73,6 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   def show
     @submissions = @protocol.submissions
     respond_to do |format|
-      format.js   { render }
       format.html {
         session[:breadcrumbs].clear.add_crumbs(protocol_id: @protocol.id)
         @permission_to_edit = @authorization.present? ? @authorization.can_edit? : false

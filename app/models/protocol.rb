@@ -202,9 +202,13 @@ class Protocol < ActiveRecord::Base
       "protocols.title like #{like_search_term} escape '!'",
       "protocols.id = #{exact_search_term}"]
 
-    joins(:identities).
+    where_clause += ["human_subjects_info.hr_number = #{exact_search_term}", 
+                      "human_subjects_info.pro_number = #{exact_search_term}"]
+
+    joins(:identities).joins(:human_subjects_info).
       where(where_clause.compact.join(' OR ')).
       distinct
+
   }
 
   scope :for_identity_id, -> (identity_id) {

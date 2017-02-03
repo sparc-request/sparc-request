@@ -24,7 +24,7 @@ RSpec.describe 'dashboard/protocols/show', type: :view do
   let_there_be_lane
 
   let!(:protocol) do
-    protocol = build(:protocol_federally_funded,
+    protocol = create(:protocol_federally_funded,
       :without_validations,
       primary_pi: jug2,
       type: 'Study',

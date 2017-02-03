@@ -263,8 +263,9 @@ RSpec.describe ServiceRequestsController, type: :controller do
 
       expect(controller).to respond_with(:ok)
     end
-    context 'SSR has been previously submitted' do
 
+    #### START OF EMAIL SPECS FOR DELETING LAST LI ON SSR ###
+    context 'SSR has been previously submitted' do
       before :each do
         @org      = create(:organization, process_ssrs: true)
         @org1     = create(:organization, process_ssrs: true)
@@ -290,9 +291,10 @@ RSpec.describe ServiceRequestsController, type: :controller do
       end
 
       context 'removed all services (line_item1 & line_item2) for SSR' do
-
-        it "should increase deliveries by 1 (authorized_user), should not send to service_provider and admin" do
+        before :each do
           @li_1.destroy
+        end
+        it "should increase deliveries by 2 (service providers and admin)" do
           expect {
             post :remove_service, {
               :id            => @sr.id,
@@ -304,7 +306,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
         end
 
         it 'should send notifications to the service provider' do
-          @li_1.destroy
           
           allow(Notifier).to receive(:notify_service_provider) do
             mailer = double('mail')
@@ -323,7 +324,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
         end
 
         it 'should send notifications to the admin' do
-          @li_1.destroy
           
           allow(Notifier).to receive(:notify_admin) do
             mailer = double('mail')
@@ -393,9 +393,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
         @service_provider = create(:service_provider, identity: logged_in_user, organization: @org)
         #Admin
         @admin = @org.submission_emails.create(email: 'hedwig@owlpost.com')
-      end
-
-      it 'should send notifications to the service_provider' do
 
         allow(Notifier).to receive(:notify_service_provider) do
           mailer = double('mail')
@@ -403,17 +400,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
           mailer
         end
 
-        post :remove_service, {
-               :id            => @sr.id,
-               :service_id    => @service.id,
-               :line_item_id  => @li_id,
-               :format        => :js,
-             }.with_indifferent_access
-
-        expect(Notifier).to have_received(:notify_service_provider).with(@service_provider, @sr, {"service_request_#{@sr.id}.xlsx"=>""}, logged_in_user, @ssr.id, nil, true, false)
-      end
-
-      it 'should send notifications to the admin' do
         allow(Notifier).to receive(:notify_admin) do
           mailer = double('mail')
           expect(mailer).to receive(:deliver)
@@ -421,25 +407,26 @@ RSpec.describe ServiceRequestsController, type: :controller do
         end
 
         post :remove_service, {
-               :id            => @sr.id,
-               :service_id    => @service.id,
-               :line_item_id  => @li_id,
-               :format        => :js,
-             }.with_indifferent_access
+             :id            => @sr.id,
+             :service_id    => @service.id,
+             :line_item_id  => @li_id,
+             :format        => :js,
+           }.with_indifferent_access
 
+      end
+
+      it 'should send notifications to the service_provider' do
+        expect(Notifier).to have_received(:notify_service_provider).with(@service_provider, @sr, {"service_request_#{@sr.id}.xlsx"=>""}, logged_in_user, @ssr.id, nil, true, false)
+      end
+
+      it 'should send notifications to the admin' do
         expect(Notifier).to have_received(:notify_admin).with(@admin.email, "", logged_in_user, @ssr, nil, true)
       end
 
       it 'should delete SSR' do
-
-        post :remove_service, {
-               :id            => @sr.id,
-               :service_id    => @service.id,
-               :line_item_id  => @li_id,
-               :format        => :js,
-             }.with_indifferent_access
         expect(@sr.sub_service_requests).to eq([])
       end
     end
+    #### END OF EMAIL SPECS FOR DELETING LAST LI ON SSR ###
   end
 end

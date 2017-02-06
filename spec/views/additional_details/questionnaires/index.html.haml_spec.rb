@@ -25,8 +25,8 @@ RSpec.describe 'additional_details/questionnaires/index', type: :view do
   describe 'with no responses and active' do
 
     before(:each) do
-      @questionnaire = build(:questionnaire, name: 'Test Questionnaire', active: 1)
-      @service = create(:service, name: 'Test Service', questionnaires: [@questionnaire])
+      @service = create(:service, name: 'Test Service')
+      @questionnaire = create(:questionnaire, :without_validations, name: 'Test Questionnaire', active: 1, service: @service)
 
       assign(:service, @service)
       assign(:questionnaires, [@questionnaire])
@@ -57,8 +57,8 @@ RSpec.describe 'additional_details/questionnaires/index', type: :view do
 
     before(:each) do
       submission = create(:submission)
-      @questionnaire = build(:questionnaire, name: 'Test Questionnaire', active: 0, submissions: [submission])
-      @service = create(:service, name: 'Test Service', questionnaires: [@questionnaire])
+      @service = create(:service, name: 'Test Service')
+      @questionnaire = create(:questionnaire, :without_validations, name: 'Test Questionnaire', active: 0, submissions: [submission], service: @service)
       assign(:service, @service)
       assign(:questionnaires, [@questionnaire])
       assign(:service_id, @service.id)

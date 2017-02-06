@@ -4,6 +4,12 @@
   .panel-body
     = hidden_field_tag 'service_id', service.id
     = form_for [service, :additional_details, questionnaire], html: { class: 'form-horizontal questionnaire-form' } do |f|
+      - if questionnaire.errors.any?
+        .alert.alert-danger
+          %ul.list-unstyled
+            - questionnaire.errors.full_messages.each do |msg|
+              %li
+                = msg
       .form-group
         = f.label :name, 'Form Name', class: 'col-sm-2 control-label'
         .col-sm-10

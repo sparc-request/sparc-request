@@ -29,11 +29,14 @@ survey "SCTR Customer Satisfaction Survey", :default_mandatory => false do
     We would greatly appreciate your participation in a one-question survey.
     Be assured that your answers will be kept confidential."
 
-    question_1 "1) Would you recommend this SCTR service to a colleague?", :pick => :one
-    answer_yes "Yes"
-    answer_no "No"
+    question_1 "1) How likely is it that you would recommend this SCTR service to a colleague?", :pick => :one
+    answer "Not at all likely"
+    answer "Not very likely"
+    answer "Neutral"
+    answer "Somewhat likely"
+    answer "Extremely likely"
 
-    question "If you would like to provide additional feedback, please use the space below."
+    question_2 "If you would like to provide additional feedback, please use the space below."
     answer :text
 
   end

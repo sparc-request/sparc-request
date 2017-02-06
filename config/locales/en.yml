@@ -46,6 +46,16 @@ en:
   # ACTIVERECORD #
   ################
   activerecord:
+    errors:
+      models:
+        item:
+          attributes:
+            content:
+              blank: "Content can't be blank"
+        questionnaire:
+          attributes:
+            name:
+              blank: "Name can't be blank"
     attributes:
       arm:
         name: "Arm Name"

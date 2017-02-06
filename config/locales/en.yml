@@ -291,6 +291,8 @@ en:
       sponsor: "Sponsor Name:"
       funding_source: "Funding Source:"
       potential_source: "Potential Funding Source:"
+      research_master_id: "Research Master ID:"
+      na_research_master_id: 'Not Available'
     view_details:
       button: "View %{protocol_type} Details"
       header: "%{protocol_type} Details: #%{protocol_id}"

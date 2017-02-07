@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-RSpec.describe 'User answers an additional details questionnaire', js: true do
+RSpec.describe 'User has a questionnaire to complete', js: true do
   let_there_be_lane
   fake_login_for_each_test
 
@@ -23,10 +23,25 @@ RSpec.describe 'User answers an additional details questionnaire', js: true do
 
   describe 'user visits the documents page' do
 
-    it 'and should see the questionnaire' do
+    it 'should see the questionnaire' do
       within '.document-management-submissions' do
         expect(page).to have_content('Brain Removal')
       end
-    end   
+    end
+
+    it 'should be able to see the submission modal' do
+      click_link 'Complete Form Functionality'
+      wait_for_javascript_to_finish
+      expect(page).to have_content('Questionnaire Submission')
+    end 
+
+    it 'should be able to answer questionnaire and create a submission' do
+      click_link 'Complete Form Functionality'
+      sleep 5
+      choose 'Yes'
+      click_link 'Create Submission'
+      wait_for_javascript_to_finish
+      expect(Submission.all.count).to eq(1)
+    end 
   end
 end

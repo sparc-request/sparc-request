@@ -113,7 +113,7 @@ en:
         header: "Move Visit"
       legend:
         research: "R - Research Coverage"
-        third_party: "T - Third Party (PT Insurance) Coverage"
+        third_party: "T - Third Party (Insurance) Coverage"
         effort: "% - Percent Effort"
       tooltips:
         r: "Research Coverage"

@@ -155,9 +155,6 @@ en:
       pppv_calendars_notice: "Per Patient/Visit Calendars"
       otf_calendar_notice: "One Time Fees"
       totals_notice: "Total Costs"
-      total_direct: "Total Direct Cost:"
-      total_indirect: "Total Indirect Cost:"
-      grand_total: "Grand Total:"
 
     ##############################
     # SYSTEM SATISFACTION SURVEY #

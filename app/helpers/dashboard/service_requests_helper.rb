@@ -261,10 +261,6 @@ module Dashboard::ServiceRequestsHelper
     currency_converter line_item.direct_costs_for_one_time_fee
   end
 
-  def only_has_first_draft_requests(protocol)
-    protocol.service_requests.any? && protocol.service_requests.map(&:status).all? { |status| status == 'first_draft'}
-  end
-
   def has_draft_request(protocol)
     if protocol.service_requests.any?
       (protocol.service_requests.last.status == 'draft') && (protocol.service_requests.last.line_items.count == 0)

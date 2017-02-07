@@ -5,15 +5,17 @@ $ ->
     $('.create-submission').on 'click', ->
       $('.form-group').removeClass('has-error')
       $('span.help-block').remove()
-      values = {}
-      $.each $('.new_submission').serializeArray(), (i, field) ->
-        values[field.name] = field.value
-      unless values["submission[questionnaire_responses_attributes][0][content][]"] == undefined
-        if values["submission[questionnaire_responses_attributes][0][content][]"].length
-          values["submission[questionnaire_responses_attributes][0][content][]"] = $('#submission_questionnaire_responses_attributes_0_content').val()
-      serviceId = values["submission[service_id]"]
+      rawFormValues = $('.new_submission').serializeArray()
+      # rawFormValues is an array of [name, value] pairs from the form.
+      # Values from a multiselect share the same input name.
+      # Rails always passes a "" value with options selected from a multiselect.
+      # We only want this empty value when the user does not select anything
+      # from the multiselect. So processedFormValues is rawFormValues without
+      # these extra blank options.
+      processedFormValues = (i for i in rawFormValues when i.value != "" or (j for j in rawFormValues when j.name == i.name and j.value != "").length == 0)
+      serviceId = (i.value for i in rawFormValues when i.name == "submission[service_id]")[0]
+
       $.ajax
         url: "/services/#{serviceId}/additional_details/submissions"
         type: 'POST'
-        data: values
-
+        data: processedFormValues

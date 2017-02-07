@@ -18,44 +18,11 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-require 'rails_helper'
-
-RSpec.describe 'dashboard/protocols/show', type: :view do
-  let_there_be_lane
-
-  let!(:protocol) do
-    protocol = create(:protocol_federally_funded,
-      :without_validations,
-      primary_pi: jug2,
-      type: 'Study',
-      archived: false,
-      short_title: 'My Awesome Short Title')
-    assign(:protocol, protocol)
-    protocol
-  end
-
-  before(:each) do
-    assign(:user, jug2)
-    assign(:protocol_type, 'Study')
-    assign(:permission_to_edit, false)
-    assign(:sub_service_request, ssr = create(:sub_service_request, :with_organization))
-    assign(:submissions, [create(:submission, protocol: protocol, service: create(:service), line_item: create(:line_item, :without_validations, sub_service_request_id: ssr.id))])
-    allow(view).to receive(:current_identity).and_return(jug2)
-    render
-  end
-
-  it 'should render dashboard/protocols/summary' do
-    expect(response).to render_template(partial: 'dashboard/protocols/_summary',
-      locals: { protocol: protocol })
-  end
-
-  it 'should render dashboard/associated_users/table' do
-    expect(response).to render_template(partial: 'dashboard/associated_users/_table',
-      locals: { protocol: protocol })
-  end
-
-  it 'should render dashboard/service_requests/service_requests' do
-    expect(response).to render_template(partial: 'dashboard/service_requests/service_requests',
-      locals: { protocol: protocol, permission_to_edit: false })
+desc "Add Draft Service Request to any existing Protocols with no Service Requests"
+task :add_service_request_to_dashboard_protocols => :environment do
+  puts "Adding Draft Service Requests:"
+  Protocol.includes(:service_requests).where(service_requests: { id: nil }).each do |protocol|
+    puts "Protocol #{protocol.id}"
+    protocol.service_requests.new(status: 'draft').save(validate: false)
   end
 end

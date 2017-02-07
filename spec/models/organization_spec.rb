@@ -237,15 +237,13 @@ RSpec.describe 'organization' do
     it 'should only make immediate child Services available if organization is made available' do
       provider   = create(:provider, is_available: true)
       program    = create(:program, parent: provider, is_available: false)
-      service1   = create(:service, organization: program, is_available: false)
+      service   = create(:service, organization: program, is_available: false)
       core       = create(:core, parent: program, is_available: false)
-      service2   = create(:service, organization: core, is_available: false)
 
       program.update_descendants_availability("1")
 
       expect(core.reload.is_available).to eq(false)
-      expect(service1.reload.is_available).to eq(true)
-      expect(service2.reload.is_available).to eq(false)
+      expect(service.reload.is_available).to eq(false)
     end
 
   end

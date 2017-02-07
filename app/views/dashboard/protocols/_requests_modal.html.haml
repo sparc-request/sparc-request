@@ -26,11 +26,8 @@
       %h4.modal-title.text-center
         = protocol.short_title
     .modal-body
-      - # TODO: Remove Historical first_draft SSRs and remove this
-      - if protocol.has_non_first_draft_ssrs?
-        - protocol.service_requests.each do |sr|
-          - if sr.has_non_first_draft_ssrs?
-            = render 'dashboard/service_requests/protocol_service_request_show', service_request: sr, protocol: protocol, user: user, permission_to_edit: permission_to_edit, view_only: true, show_view_ssr_back: show_view_ssr_back
+      - protocol.service_requests.each do |sr|
+        = render 'dashboard/service_requests/protocol_service_request_show', service_request: sr, protocol: protocol, user: user, permission_to_edit: permission_to_edit, view_only: true, show_view_ssr_back: show_view_ssr_back
     .modal-footer
       .center-block
         %button.btn.btn-default{type: 'button', data: {dismiss: 'modal'}} 

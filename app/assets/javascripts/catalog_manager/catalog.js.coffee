@@ -532,6 +532,10 @@ $ ->
     $("#epic_wrapper input[type='checkbox']").attr('checked', false)
   )
 
+  $(document).on('change', 'input[id*="_process_ssrs"]', ->
+    $('#available_statuses_wrapper').toggle()
+  )
+
   $(document).on('change', 'input[id*="_tag_list_clinical_work_fulfillment"]', ->
     $('#cwf_wrapper').toggle()
     $('#cwf_wrapper input.cwf_clear').val('')

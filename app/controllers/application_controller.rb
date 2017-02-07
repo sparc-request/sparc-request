@@ -159,7 +159,7 @@ class ApplicationController < ActionController::Base
 
   # Create a new service request and assign it to @service_request.
   def create_new_service_request(from_portal=false)
-    status = from_portal ? 'draft' : 'first_draft'
+    status = 'first_draft'
     @service_request = ServiceRequest.new(status: status)
 
     if params[:protocol_id] # we want to create a new service request that belongs to an existing protocol

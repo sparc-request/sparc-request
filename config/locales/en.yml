@@ -160,6 +160,7 @@ en:
         your_cost: "Your<br>Cost"
         quantity_type: "Clinical Qty Type"
         subject_count: "N"
+        day: "Day"
         page_select:
           previous: "View Previous"
           next: "View Next"

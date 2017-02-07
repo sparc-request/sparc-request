@@ -532,35 +532,11 @@ class ServiceRequest < ActiveRecord::Base
     {:line_items => line_item_audits}
   end
 
-  def has_non_first_draft_ssrs?
-    sub_service_requests.where.not(status: 'first_draft').any?
-  end
-
   def cart_sub_service_requests
     active    = self.sub_service_requests.where.not(status: 'complete')
     complete  = self.sub_service_requests.where(status: 'complete')
 
     { active: active, complete: complete }
-  end
-
-  def ssrs_associated_with_service_provider(service_provider)
-    ssrs_to_be_displayed = []
-    self.sub_service_requests.each do |ssr|
-      if service_provider.identity.is_service_provider?(ssr)
-        ssrs_to_be_displayed << ssr
-      end
-    end
-    ssrs_to_be_displayed
-  end
-
-  def ssrs_to_be_displayed_in_email(service_provider, audit_report, ssr_destroyed, ssr_id)
-    if ssr_destroyed
-      ssr = SubServiceRequest.find(ssr_id)
-      ssrs_to_be_displayed = [ssr] if service_provider.identity.is_service_provider?(ssr)
-    else
-      ssrs_to_be_displayed = self.ssrs_associated_with_service_provider(service_provider)
-    end
-    ssrs_to_be_displayed
   end
 
   private

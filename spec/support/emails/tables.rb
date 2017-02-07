@@ -77,7 +77,7 @@ module EmailHelpers
   end
 
   def assert_email_srid_information_for_service_provider
-    ssrs_to_be_displayed = service_request.ssrs_associated_with_service_provider(service_provider)
+    ssrs_to_be_displayed = [service_request.protocol.sub_service_requests.first]
     # Expect table to show only SSR's (hyper-link) that are associated with service provider 
     expect(mail.body).to have_xpath "//table//strong[text()='Service Request Information']"
     expect(mail.body).to have_xpath "//th[text()='SRID']/following-sibling::th[text()='Organization']/following-sibling::th[text()='Status']"
@@ -89,7 +89,7 @@ module EmailHelpers
   end
 
   def assert_email_deleted_srid_information_for_service_provider
-    ssrs_to_be_displayed = service_request.ssrs_associated_with_service_provider(service_provider)
+    ssrs_to_be_displayed = [service_request.protocol.sub_service_requests.first]
     expect(mail.body).to have_xpath "//table//strong[text()='Service Request Information']"
     expect(mail.body).to have_xpath "//th[text()='SRID']/following-sibling::th[text()='Organization']"
     ssrs_to_be_displayed.each do |ssr_to_be_displayed|

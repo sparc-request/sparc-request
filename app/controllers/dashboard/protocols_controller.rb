@@ -73,7 +73,6 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   def show
     @submissions = @protocol.submissions
     respond_to do |format|
-      format.js   { render }
       format.html {
         session[:breadcrumbs].clear.add_crumbs(protocol_id: @protocol.id)
         @permission_to_edit = @authorization.present? ? @authorization.can_edit? : false
@@ -112,6 +111,8 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
       end
 
       @protocol.save
+
+      @protocol.service_requests.new(status: 'draft').save(validate: false)
 
       if USE_EPIC && @protocol.selected_for_epic
         @protocol.ensure_epic_user

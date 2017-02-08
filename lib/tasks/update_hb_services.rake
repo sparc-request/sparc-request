@@ -60,11 +60,11 @@ task :update_hb_services => :environment do
 
   def update_service_pricing(service, row)
     pricing_map = service.pricing_maps.build(
-                                              :full_rate => Service.dollars_to_cents(row['Service Rate']),
-                                              :corporate_rate => Service.dollars_to_cents(row['Corporate Rate']),
-                                              :federal_rate => Service.dollars_to_cents(row['Federal Rate']),
-                                              :member_rate => Service.dollars_to_cents(row['Member Rate']),
-                                              :other_rate => Service.dollars_to_cents(row['Other Rate']),
+                                              :full_rate => Service.dollars_to_cents(row['Service Rate'].to_s),
+                                              :corporate_rate => Service.dollars_to_cents(row['Corporate Rate'].to_s),
+                                              :federal_rate => Service.dollars_to_cents(row['Federal Rate'].to_s),
+                                              :member_rate => Service.dollars_to_cents(row['Member Rate'].to_s),
+                                              :other_rate => Service.dollars_to_cents(row['Other Rate'].to_s),
                                               :quantity_type => row['Clinical Qty Type'],
                                               :unit_factor => row['Unit Factor'],
                                               :quantity_minimum => row['Qty Min'],

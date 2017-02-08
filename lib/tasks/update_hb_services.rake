@@ -18,8 +18,8 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-desc "Adding eap_id to services and updating columns"
-task :add_eap_id => :environment do
+desc "Updating service columns as needed"
+task :update_hb_services => :environment do
 
   def prompt(*args)
     print(*args)
@@ -39,21 +39,29 @@ task :add_eap_id => :environment do
 
   def header
     [
-     'service_id',
-     'name',
-     'cpt_code',
-     'eap_id',
-     'revenue_code',
-     'is_available',
-     'organization_id',
-     'line_items_count',
-     'description'
+     'Service ID',
+     'EAP ID',
+     'CPT Code',
+     'Revenue Code',
+     'Procedure Name',
+     'Service Rate',
+     'Corporate Rate',
+     'Federal Rate',
+     'Member Rate',
+     'Other Rate',
+     'Is One Time Fee?',
+     'Clinical Qty Type',
+     'Unit Factor',
+     'Qty Min',
+     'Display Date',
+     'Effective Date'
     ]
   end
 
   revenue_codes = []
   cpt_codes = []
   service_names = []
+  pricing_maps = []
   puts ""
   puts "Reading in file..."
   input_file = Rails.root.join("db", "imports", get_file)
@@ -62,26 +70,24 @@ task :add_eap_id => :environment do
   if continue == 'y'
     ActiveRecord::Base.transaction do
       CSV.foreach(input_file, :headers => true) do |row|
-        service = Service.find(row['service_id'].to_i)
+        service = Service.find(row['Service ID'].to_i)
+        map = service.current_effective_pricing_map
         puts ""
         puts ""
-        puts "Adding eap id to service #{service.name}"
-
-        service.eap_id = row['eap_id']
         
-        unless service.revenue_code == row['revenue_code'].rjust(4, '0')
+        unless service.revenue_code == row['Revenue Code'].rjust(4, '0')
           revenue_codes << [service.id, service.revenue_code]
-          service.revenue_code = row['revenue_code'].rjust(4, '0')  
+          service.revenue_code = row['Revenue Code'].rjust(4, '0')  
         end
 
-        unless service.cpt_code == row['cpt_code']
+        unless service.cpt_code == row['CPT Code']
           cpt_codes << [service.id, service.cpt_code]
-          service.cpt_code = row['cpt_code'] == 'NULL' ? nil : row['cpt_code']     
+          service.cpt_code = row['CPT Code'] == 'NULL' ? nil : row['CPT Code']     
         end
 
-        unless service.name == row['name']
+        unless service.name == row['Procedure Name']
           service_names << [service.id, service.name]
-          service.name = row['name'] 
+          service.name = row['Procedure Name'] 
         end
 
         service.save
@@ -107,7 +113,14 @@ task :add_eap_id => :environment do
       unless service_names.empty?
         service_names.each do |id_and_name|
           service = Service.find(id_and_name[0])
-          csv << [service.name, id_and_name[0], 'Service Name', id_and_name[1]]
+          csv << [service.name, id_and_name[0], 'Procedure Name', id_and_name[1]]
+        end
+      end
+
+      unless pricing_maps.empty?
+        service_names.each do |id_and_name|
+          service = Service.find(id_and_name[0])
+          csv << [service.name, id_and_name[0], 'Pricing Map', service.current_effective_pricing_map.full_rate, id_and_name[1]]
         end
       end
     end

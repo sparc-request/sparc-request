@@ -37,7 +37,7 @@ RSpec.describe 'User has a questionnaire to complete', js: true do
 
     it 'should be able to answer questionnaire and create a submission' do
       click_link 'Complete Form Functionality'
-      sleep 5
+      sleep 1
       choose 'Yes'
       click_link 'Create Submission'
       wait_for_javascript_to_finish

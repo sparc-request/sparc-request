@@ -165,7 +165,7 @@ en:
     ##############################
     survey:
       header: "System Satisfaction Survey"
-      participate: "Would you like to participate in a brief 1 question SPARC Request satisfaction survey?"
+      participate: "Would you like to participate in a brief SPARCRequest satisfaction survey?"
 
     ################
     # CONFIRMATION #

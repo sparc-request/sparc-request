@@ -58,6 +58,31 @@ task :update_hb_services => :environment do
     ]
   end
 
+  def update_service_pricing(service, row)
+    pricing_map = service.pricing_maps.build(
+                                              :full_rate => Service.dollars_to_cents(row['Service Rate']),
+                                              :corporate_rate => Service.dollars_to_cents(row['Corporate Rate']),
+                                              :federal_rate => Service.dollars_to_cents(row['Federal Rate']),
+                                              :member_rate => Service.dollars_to_cents(row['Member Rate']),
+                                              :other_rate => Service.dollars_to_cents(row['Other Rate']),
+                                              :quantity_type => row['Clinical Qty Type'],
+                                              :unit_factor => row['Unit Factor'],
+                                              :quantity_minimum => row['Qty Min'],
+                                              :display_date => Date.strptime(row['Display Date'], "%m/%d/%y"),
+                                              :effective_date => Date.strptime(row['Effective Date'], "%m/%d/%y")
+                                              )
+    if pricing_map.valid?
+      pricing_map.save
+    else
+      puts "#"*50
+      puts "Error importing pricing map"
+      puts service.inspect
+      puts pricing_map.inspect
+      puts service.errors
+      puts pricing_map.errors
+    end
+  end
+
   revenue_codes = []
   cpt_codes = []
   service_names = []

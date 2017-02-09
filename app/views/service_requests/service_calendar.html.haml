@@ -27,4 +27,4 @@
     = render 'shared/modal_errors', errors: @errors
     = render 'service_calendars/quantity_billing_labels'
     = render 'service_requests/service_calendar/tabs', service_request: @service_request, sub_service_request: @sub_service_request
-= render 'service_requests/navigation/footer', service_request: @service_request, css_class: @css_class, back: @back, forward: @forward
+= render 'service_requests/navigation/footer', service_request: @service_request, sub_service_request_id: @sub_service_request.try(:id), css_class: @css_class, back: @back, forward: @forward

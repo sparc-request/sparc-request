@@ -30,5 +30,5 @@
       = hidden_field_tag :sub_service_request_id, @sub_service_request.id
     = render 'service_requests/document_management/document_management_left', service_request: @service_request, notable_type: @notable_type, notable_id: @notable_id
     = render 'service_requests/document_management/document_management_right', service_request: @service_request, sub_service_request: @sub_service_request, sub_service_requests: @sub_service_requests, line_items_count: @line_items_count
-= render 'service_requests/navigation/footer', service_request: @service_request, css_class: @css_class, back: @back, forward: @forward
+= render 'service_requests/navigation/footer', service_request: @service_request, sub_service_request_id: @sub_service_request.try(:id), css_class: @css_class, back: @back, forward: @forward
 = render 'additional_details/submissions/submission_modal'

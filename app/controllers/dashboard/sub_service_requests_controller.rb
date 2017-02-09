@@ -108,6 +108,7 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
         Notifier.sub_service_request_deleted(service_provider.identity, @sub_service_request, current_user).deliver
       end
       flash[:alert] = 'Request Destroyed!'
+      session[:breadcrumbs].clear(:sub_service_request_id)
     end
   end
 

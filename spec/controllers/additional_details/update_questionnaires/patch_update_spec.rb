@@ -24,7 +24,7 @@ RSpec.describe AdditionalDetails::UpdateQuestionnairesController do
   describe '#update' do
     before :each do
       @service        = create(:service)
-      @questionnaire  = create(:questionnaire, service: @service, active: true)
+      @questionnaire  = create(:questionnaire, :without_validations, service: @service, active: true)
     end
 
     it 'should assign @service' do

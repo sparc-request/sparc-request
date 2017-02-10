@@ -67,10 +67,10 @@ task :update_hb_services => :environment do
                                               unit_factor: row['Unit Factor'],
                                               unit_type: row['Clinical Qty Type'],
                                               unit_minimum: row['Qty Min'],
-                                              units_per_qty_max: service.current_effective_pricing_map.units_per_qty_max
-                                              quantity_type: service.current_effective_pricing_map.quantity_type
-                                              otf_unit_type: service.current_effective_pricing_map.otf_unit_type
-                                              quantity_minimum: service.current_effective_pricing_map.quantity_minimum
+                                              units_per_qty_max: service.current_effective_pricing_map.units_per_qty_max,
+                                              quantity_type: service.current_effective_pricing_map.quantity_type,
+                                              otf_unit_type: service.current_effective_pricing_map.otf_unit_type,
+                                              quantity_minimum: service.current_effective_pricing_map.quantity_minimum,
                                               display_date: Date.strptime(row['Display Date'], "%m/%d/%y"),
                                               effective_date: Date.strptime(row['Effective Date'], "%m/%d/%y")
                                               )

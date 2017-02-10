@@ -25,7 +25,9 @@ RSpec.describe 'User has multiple questionnaires that can be activated', js: tru
   let_there_be_lane
 
   before(:each) do
-    @service = create(:service_with_ctrc_organization, :with_questionnaires)
+    @service = create(:service_with_ctrc_organization)
+    create(:questionnaire, active: 0, items: [ Item.new( content: 'This is a test question', item_type: 'text', item_options_attributes: { "0" => { content: "" } } , description: "", required: 1 ) ], service: @service)
+    create(:questionnaire, active: 0, items: [ Item.new( content: 'This is a test question', item_type: 'text', item_options_attributes: { "0" => { content: "" } } , description: "", required: 1 ) ], service: @service)
   end
 
   describe "Both are inactive" do

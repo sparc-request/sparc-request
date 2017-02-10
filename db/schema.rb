@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170118151049) do
+ActiveRecord::Schema.define(version: 20170209152118) do
 
   create_table "admin_rates", force: :cascade do |t|
     t.integer  "line_item_id", limit: 4
@@ -357,6 +357,9 @@ ActiveRecord::Schema.define(version: 20170118151049) do
     t.string   "email",                        limit: 255
     t.string   "last_name",                    limit: 255
     t.string   "first_name",                   limit: 255
+    t.string   "institution",                  limit: 255
+    t.string   "college",                      limit: 255
+    t.string   "department",                   limit: 255
     t.string   "era_commons_name",             limit: 255
     t.string   "credentials",                  limit: 255
     t.string   "subspecialty",                 limit: 255
@@ -913,10 +916,6 @@ ActiveRecord::Schema.define(version: 20170118151049) do
     t.integer  "protocol_id",             limit: 4
     t.string   "status",                  limit: 255
     t.boolean  "approved"
-    t.integer  "subject_count",           limit: 4
-    t.datetime "consult_arranged_date"
-    t.datetime "pppv_complete_date"
-    t.datetime "pppv_in_process_date"
     t.datetime "submitted_at"
     t.datetime "created_at",                          null: false
     t.datetime "updated_at",                          null: false

@@ -59,8 +59,7 @@ task :update_hb_services => :environment do
   end
 
   def update_service_pricing(service, row)
-    pricing_map = service.pricing_maps.build(
-                                              :full_rate => Service.dollars_to_cents(row['Service Rate'].to_s),
+    pricing_map = service.pricing_maps.build( :full_rate => Service.dollars_to_cents(row['Service Rate'].to_s),
                                               :corporate_rate => Service.dollars_to_cents(row['Corporate Rate'].to_s),
                                               :federal_rate => Service.dollars_to_cents(row['Federal Rate'].to_s),
                                               :member_rate => Service.dollars_to_cents(row['Member Rate'].to_s),
@@ -115,6 +114,11 @@ task :update_hb_services => :environment do
           service.name = row['Procedure Name'] 
         end
 
+        unless service.current_effective_pricing_map.full_rate == row['Service Rate']
+          pricing_maps << [service.id, service.current_effective_pricing_map.full_rate]
+          update_service_pricing(service, row)
+        end
+        
         service.save
       end
     end

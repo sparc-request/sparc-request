@@ -59,16 +59,20 @@ task :update_hb_services => :environment do
   end
 
   def update_service_pricing(service, row)
-    pricing_map = service.pricing_maps.build( :full_rate => Service.dollars_to_cents(row['Service Rate'].to_s),
-                                              :corporate_rate => Service.dollars_to_cents(row['Corporate Rate'].to_s),
-                                              :federal_rate => Service.dollars_to_cents(row['Federal Rate'].to_s),
-                                              :member_rate => Service.dollars_to_cents(row['Member Rate'].to_s),
-                                              :other_rate => Service.dollars_to_cents(row['Other Rate'].to_s),
-                                              :quantity_type => row['Clinical Qty Type'],
-                                              :unit_factor => row['Unit Factor'],
-                                              :quantity_minimum => row['Qty Min'],
-                                              :display_date => Date.strptime(row['Display Date'], "%m/%d/%y"),
-                                              :effective_date => Date.strptime(row['Effective Date'], "%m/%d/%y")
+    pricing_map = service.pricing_maps.build( full_rate: Service.dollars_to_cents(row['Service Rate'].to_s),
+                                              corporate_rate: Service.dollars_to_cents(row['Corporate Rate'].to_s),
+                                              federal_rate: Service.dollars_to_cents(row['Federal Rate'].to_s),
+                                              member_rate: Service.dollars_to_cents(row['Member Rate'].to_s),
+                                              other_rate: Service.dollars_to_cents(row['Other Rate'].to_s),
+                                              unit_factor: row['Unit Factor'],
+                                              unit_type: row['Clinical Qty Type'],
+                                              unit_minimum: row['Qty Min'],
+                                              units_per_qty_max: service.current_effective_pricing_map.units_per_qty_max
+                                              quantity_type: service.current_effective_pricing_map.quantity_type
+                                              otf_unit_type: service.current_effective_pricing_map.otf_unit_type
+                                              quantity_minimum: service.current_effective_pricing_map.quantity_minimum
+                                              display_date: Date.strptime(row['Display Date'], "%m/%d/%y"),
+                                              effective_date: Date.strptime(row['Effective Date'], "%m/%d/%y")
                                               )
     if pricing_map.valid?
       pricing_map.save
@@ -94,35 +98,37 @@ task :update_hb_services => :environment do
   if (continue == 'y') || (continue == 'Y')
     ActiveRecord::Base.transaction do
       CSV.foreach(input_file, :headers => true) do |row|
-        service = Service.find(row['Service ID'].to_i)
-        map = service.current_effective_pricing_map
+        service = Service.where(id: row['Service ID'].to_i).first
         puts ""
         puts ""
         
-        unless service.revenue_code == row['Revenue Code'].rjust(4, '0')
-          revenue_codes << [service.id, service.revenue_code]
-          puts "Altering the revenue code of service with an id of #{service.id} from #{service.revenue_code} to #{row['Revenue Code']}"
-          service.revenue_code = row['Revenue Code'].rjust(4, '0')  
-        end
+        if service
+          unless service.revenue_code == row['Revenue Code'].rjust(4, '0')
+            revenue_codes << [service.id, service.revenue_code]
+            puts "Altering the revenue code of service with an id of #{service.id} from #{service.revenue_code} to #{row['Revenue Code']}"
+            service.revenue_code = row['Revenue Code'].rjust(4, '0')  
+          end
 
-        unless service.cpt_code == row['CPT Code']
-          cpt_codes << [service.id, service.cpt_code]
-          puts "Altering the CPT code of service with an id of #{service.id} from #{service.cpt_code} to #{row['CPT Code']}"
-          service.cpt_code = row['CPT Code'] == 'NULL' ? nil : row['CPT Code']     
-        end
+          unless service.cpt_code == row['CPT Code']
+            cpt_codes << [service.id, service.cpt_code]
+            puts "Altering the CPT code of service with an id of #{service.id} from #{service.cpt_code} to #{row['CPT Code']}"
+            service.cpt_code = row['CPT Code'] == 'NULL' ? nil : row['CPT Code']     
+          end
 
-        unless service.name == row['Procedure Name']
-          service_names << [service.id, service.name]
-          puts "Altering the name of service with an id of #{service.id} from #{service.name} to #{row['Procedure Name']}"
-          service.name = row['Procedure Name'] 
-        end
+          unless service.name == row['Procedure Name']
+            service_names << [service.id, service.name]
+            puts "Altering the name of service with an id of #{service.id} from #{service.name} to #{row['Procedure Name']}"
+            service.name = row['Procedure Name'] 
+          end
 
-        unless service.current_effective_pricing_map.full_rate == (row['Service Rate'] * 100)
-          pricing_maps << [service.id, service.current_effective_pricing_map.full_rate]
-          update_service_pricing(service, row)
-        end
+          unless service.current_effective_pricing_map.full_rate == (row['Service Rate'].to_i * 100)
+            pricing_maps << [service.id, service.current_effective_pricing_map.full_rate]
+            puts "Altering service #{service.id} cost from a rate of #{service.current_effective_pricing_map.full_rate} to #{row['Service Rate'].to_i * 100}"
+            update_service_pricing(service, row)
+          end
 
-        service.save
+          service.save
+        end
       end
     end
 
@@ -145,14 +151,14 @@ task :update_hb_services => :environment do
       unless service_names.empty?
         service_names.each do |id_and_name|
           service = Service.find(id_and_name[0])
-          csv << [service.name, id_and_name[0], 'Procedure Name', id_and_name[1]]
+          csv << [service.name, id_and_name[0], 'Procedure Name', service.name, id_and_name[1]]
         end
       end
 
       unless pricing_maps.empty?
-        service_names.each do |id_and_name|
-          service = Service.find(id_and_name[0])
-          csv << [service.name, id_and_name[0], 'Pricing Map', service.current_effective_pricing_map.full_rate, id_and_name[1]]
+        pricing_maps.each do |id_and_rate|
+          service = Service.find(id_and_rate[0])
+          csv << [service.name, id_and_rate[0], 'Pricing Map', service.current_effective_pricing_map.full_rate, id_and_rate[1]]
         end
       end
     end

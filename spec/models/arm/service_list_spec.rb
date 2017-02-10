@@ -37,7 +37,6 @@ RSpec.describe Arm, type: :model do
       # org2 <- s2(otf)
       @s2   = create(:service, organization: @org2, one_time_fee: true)
       @li2  = create(:line_item, service: @s2, service_request: @sr)
-      @liv2 = create(:line_items_visit, arm: @arm, line_item: @li2)
 
       # org3(ssrs)* <- org4(ssrs) <- s3(not otf)
       @org3 = create(:organization, process_ssrs: true, parent: nil)

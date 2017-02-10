@@ -22,17 +22,21 @@
     = link_to t(:proper)[:navigation][:bottom][:back], back, class: 'btn btn-default'
   - if controller.action_name == 'review'
     .col-sm-3.text-center
-      = save_as_draft_button
+      = save_as_draft_button(sub_service_request_id)
     .col-sm-3.text-center
-      = link_to t(:proper)[:navigation][:bottom][:get_cost_estimate], obtain_research_pricing_service_request_path, class: 'btn btn-default get-a-cost-estimate'
+      = link_to t(:proper)[:navigation][:bottom][:get_cost_estimate],
+        obtain_research_pricing_service_request_path(sub_service_request_id: sub_service_request_id),
+        class: 'btn btn-default get-a-cost-estimate'
   - else
     .col-sm-6.text-center
       - if service_request.submitted_at.blank? && service_request.protocol.present?
-        = save_as_draft_button
+        = save_as_draft_button(sub_service_request_id)
   -# This was extracted because the surveyor gem requires an href location to redirect to post-submit and it was being cranky
   - if SYSTEM_SATISFACTION_SURVEY && action_name == 'review'
     .col-sm-3.text-right
-      = link_to t(:proper)[:navigation][:bottom][:submit], confirmation_service_request_path(service_request), class: 'btn btn-default form-submit-button'
+      = link_to t(:proper)[:navigation][:bottom][:submit],
+      confirmation_service_request_path(service_request, sub_service_request_id: sub_service_request_id), 
+      class: 'btn btn-default form-submit-button'
   - else
     .col-sm-3.text-right
       = link_to action_name == 'review' ? t(:proper)[:navigation][:bottom][:submit] : t(:proper)[:navigation][:bottom][:save_and_continue], 'javascript:void(0)', class: 'btn btn-default form-submit-button'

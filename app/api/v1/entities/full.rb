@@ -186,13 +186,9 @@ module V1
 
     expose  :protocol_id,
             :status,
-            :approved,
-            :subject_count
+            :approved
 
     with_options(format_with: :iso_timestamp) do
-      expose :consult_arranged_date
-      expose :pppv_complete_date
-      expose :pppv_in_process_date
       expose :submitted_at
     end
   end

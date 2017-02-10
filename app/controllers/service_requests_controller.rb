@@ -155,6 +155,8 @@ class ServiceRequestsController < ApplicationController
   end
 
   def review
+    @notable_type = 'Protocol'
+    @notable_id = @service_request.protocol_id
     @tab          = 'calendar'
     @review       = true
     @portal       = false

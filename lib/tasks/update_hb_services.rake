@@ -77,8 +77,8 @@ task :update_hb_services => :environment do
       puts "Error importing pricing map"
       puts service.inspect
       puts pricing_map.inspect
-      puts service.errors
-      puts pricing_map.errors
+      puts service.errors.inspect
+      puts pricing_map.errors.inspect
     end
   end
 
@@ -91,7 +91,7 @@ task :update_hb_services => :environment do
   input_file = Rails.root.join("db", "imports", get_file)
   continue = prompt('Preparing to modify the services. Are you sure you want to continue? (y/n): ')
 
-  if continue == 'y'
+  if (continue == 'y') || (continue == 'Y')
     ActiveRecord::Base.transaction do
       CSV.foreach(input_file, :headers => true) do |row|
         service = Service.find(row['Service ID'].to_i)
@@ -101,16 +101,19 @@ task :update_hb_services => :environment do
         
         unless service.revenue_code == row['Revenue Code'].rjust(4, '0')
           revenue_codes << [service.id, service.revenue_code]
+          puts "Altering the revenue code of service with an id of #{service.id} from #{service.revenue_code} to #{row['Revenue Code']}"
           service.revenue_code = row['Revenue Code'].rjust(4, '0')  
         end
 
         unless service.cpt_code == row['CPT Code']
           cpt_codes << [service.id, service.cpt_code]
+          puts "Altering the CPT code of service with an id of #{service.id} from #{service.cpt_code} to #{row['CPT Code']}"
           service.cpt_code = row['CPT Code'] == 'NULL' ? nil : row['CPT Code']     
         end
 
         unless service.name == row['Procedure Name']
           service_names << [service.id, service.name]
+          puts "Altering the name of service with an id of #{service.id} from #{service.name} to #{row['Procedure Name']}"
           service.name = row['Procedure Name'] 
         end
 
@@ -118,7 +121,7 @@ task :update_hb_services => :environment do
           pricing_maps << [service.id, service.current_effective_pricing_map.full_rate]
           update_service_pricing(service, row)
         end
-        
+
         service.save
       end
     end
@@ -153,5 +156,7 @@ task :update_hb_services => :environment do
         end
       end
     end
+  else
+    puts 'Exiting rake task...'
   end
 end

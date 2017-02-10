@@ -117,7 +117,7 @@ task :update_hb_services => :environment do
           service.name = row['Procedure Name'] 
         end
 
-        unless service.current_effective_pricing_map.full_rate == row['Service Rate']
+        unless service.current_effective_pricing_map.full_rate == (row['Service Rate'] * 100)
           pricing_maps << [service.id, service.current_effective_pricing_map.full_rate]
           update_service_pricing(service, row)
         end

@@ -28,7 +28,7 @@
     = render 'service_requests/review/protocol_information', service_request: @service_request, protocol: @service_request.protocol
     = render 'service_requests/review/authorized_users', service_request: @service_request, protocol: @service_request.protocol
     = render 'service_requests/review/documents', service_request: @service_request, protocol: @service_request.protocol
-    = render 'service_requests/review/notes', service_request: @service_request, notable_id: @service_request.id, notable_type: 'ServiceRequest'
+    = render 'service_requests/review/notes', service_request: @service_request, notable_id: @notable_id, notable_type: @notable_type
     = render 'service_requests/review/calendars', service_request: @service_request, sub_service_request: @sub_service_request, pages: @pages, tab: @tab, arm: @arm, portal: @portal, admin: @admin, review: @review, merged: @merged, consolidated: @consolidated
 = render 'service_requests/navigation/footer', service_request: @service_request, css_class: @css_class, back: @back, forward: @forward
 

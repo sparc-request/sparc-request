@@ -31,7 +31,7 @@
         .col-lg-10
           = pr_form.text_field :identity_id, placeholder: t(:constants)[:prompts][:search_for_user], class: 'form-control rm-id-dependent'
           %label#primary_pi_name.hidden
-          %a.btn.btn-xs.btn-danger.glyphicon.glyphicon-remove#user-select-clear-icon{ href: "javascript:void(0);", style: 'display: none; vertical-align: middle;' }
+          %a.btn.btn-xs.btn-danger.glyphicon.glyphicon-remove#user-select-clear-icon{ href: "javascript:void(0);", style: 'display: none; vertical-align: middle;', data: { toggle: "tooltip", animation: 'false', placement: 'right'}, title: "Remove" }
           = pr_form.hidden_field :identity_id
           = pr_form.hidden_field :role
           = pr_form.hidden_field :project_rights

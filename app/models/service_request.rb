@@ -532,10 +532,6 @@ class ServiceRequest < ActiveRecord::Base
     {:line_items => line_item_audits}
   end
 
-  def has_non_first_draft_ssrs?
-    sub_service_requests.where.not(status: 'first_draft').any?
-  end
-
   def cart_sub_service_requests
     active    = self.sub_service_requests.where.not(status: 'complete')
     complete  = self.sub_service_requests.where(status: 'complete')

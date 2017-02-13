@@ -49,7 +49,6 @@ service_details:
     service_calendar:
       - service_details
 
-# change 'forward' to 'calendar_totals' for that page to be used.
 service_calendar:
   step_text: 'STEP 2B: Visit Calendar'
   step_number: '2'
@@ -64,22 +63,9 @@ service_calendar:
       - service_calendar_back
     save_and_exit:
       - service_calendar_back
-    # calendar_totals:
-    #   - service_calendar
     service_subsidy:
       - service_calendar
 
-# do not delete.  This page may be used for some institutions.
-# calendar_totals:
-#   step_text: 'STEP 2: Study Cost Totals'
-#   css_class: light-blue-provider
-#   back: service_calendar
-#   catalog: catalog
-#   forward: service_subsidy
-#   validation_groups:
-#     service_subsidy:
-
-# change 'back' to 'calendar_totals' for that page to be used.
 service_subsidy:
   step_text: 'STEP 2C: Enter Requested Subsidy Information'
   step_number: '2'

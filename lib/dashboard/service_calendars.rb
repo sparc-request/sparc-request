@@ -142,7 +142,7 @@ module Dashboard
       url        += "&sub_service_request_id=#{sub_service_request.id}" if sub_service_request
 
       content_tag(:span, '', class: "glyphicon #{icon} btn btn-xs #{klass} service-calendar-row",
-                  id: "check-all-row-#{line_items_visit.id}", data: { url: url }, disabled: locked)
+                  id: "check-all-row-#{line_items_visit.id}", data: { toggle: "tooltip", animation: 'false', title: "Toggle Row", url: url }, disabled: locked)
     end
 
     def self.select_column(visit_group, n, portal, service_request, sub_service_request)
@@ -163,7 +163,7 @@ module Dashboard
         role: 'button',
         class: "btn btn-xs #{klass} service-calendar-column glyphicon #{icon}",
         id: "check-all-column-#{n+1}",
-        data: { url: url })
+        data: { toggle: "tooltip", animation: 'false', title: "Toggle Column", url: url })
     end
   end
 end

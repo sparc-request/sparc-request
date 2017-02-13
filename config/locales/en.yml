@@ -130,7 +130,6 @@ en:
     rights:
       none: Member Only
       view: "View Rights"
-      request: "Request/Approve Services"
       approve: "Authorized/Change Study Charges"
     table_fields:
       name: "Full Name"

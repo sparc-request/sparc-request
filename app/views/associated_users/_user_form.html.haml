@@ -86,11 +86,6 @@
                     = t(:authorized_users)[:rights][:view]
               .radio
                 %label
-                  = form.radio_button :project_rights, "request", disabled: disable
-                  %span
-                    = t(:authorized_users)[:rights][:request]
-              .radio
-                %label
                   = form.radio_button :project_rights, "approve", disabled: disable
                   %span
                     = t(:authorized_users)[:rights][:approve]

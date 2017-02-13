@@ -131,6 +131,8 @@ getSRId = ->
     data.tab = tab
     data.arm_id = arm_id
     data.service_request_id = getSRId()
+    data.sub_service_request_id = data.subServiceRequestId
+    data.protocol_id = data.protocolId
     # Reload calendar
     $.get '/service_calendars/table.js', data
 

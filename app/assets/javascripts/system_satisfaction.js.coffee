@@ -21,7 +21,7 @@
 $(document).ready ->
   survey_offered = false
 
-  $(document).on 'click', '.get-a-cost-estimate, .form-submit-button', (event) ->
+  $(document).one 'click', '.get-a-cost-estimate, .form-submit-button', (event) ->
     button = $(this)
 
     if !survey_offered
@@ -31,15 +31,13 @@ $(document).ready ->
 
       $(document).on 'click', '#modal_place .yes-button', ->
         survey_offered = true
-        $('#modal_place').load "/surveys/system-satisfaction-survey", {survey_version: ""}, ->
+        $('#modal_place').load "/surveys/system-satisfaction-survey", {survey_version: "", review: 'true'}, ->
           $('#survey_form').append("<input type='hidden' id='redirect_to' name='redirect_to' value='#{button.attr('href')}'>")
           $('#survey_form div.next_section').append("<input type='button' name='cancel' value='Cancel'/>")
 
-        $(document).on 'click', '#survey-submit-button', (event) ->
-          event.preventDefault()
+        $(document).one 'click', '#survey-submit-button', ->
           $("textarea:hidden").val("")
           $('#survey_form').append("<input type='hidden' id='finish' name='finish' value='Submit'>")
-          $(this).attr('disabled', true)
           $('#survey_form').submit()
 
       $(document).on 'click', '#modal_place .no-button', ->

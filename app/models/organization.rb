@@ -187,8 +187,6 @@ class Organization < ActiveRecord::Base
       children = Organization.where(id: all_child_organizations << self)
       children.update_all(is_available: false)
       Service.where(organization_id: children).update_all(is_available: false)
-    else
-      Service.where(organization_id: self.id).update_all(is_available: true)
     end
   end
 

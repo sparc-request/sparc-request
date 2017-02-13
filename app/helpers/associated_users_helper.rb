@@ -46,15 +46,15 @@ module AssociatedUsersHelper
   def professional_organization_state(professional_organization)
     if professional_organization
       {
-        dont_submit_selected: professional_organization.parents + (professional_organization.children.empty? ? [] : [professional_organization]),
-        dont_submit_unselected: professional_organization.children,
-        submit_selected: professional_organization.children.empty? ? professional_organization : nil
+        dont_submit_selected: professional_organization.parents,
+        submit_selected: professional_organization,
+        dont_submit_unselected: professional_organization.children
       }
     else
       {
         dont_submit_selected: [],
-        dont_submit_unselected: ProfessionalOrganization.where(parent_id: nil),
-        submit_selected: nil
+        submit_selected: nil,
+        dont_submit_unselected: ProfessionalOrganization.where(parent_id: nil)
       }
     end
   end

@@ -203,9 +203,7 @@ class ServiceRequestsController < ApplicationController
         send_epic_notification_for_user_approval(@protocol)
       end
     end
-    notifier_logic = NotifierLogic.new(@service_request, @sub_service_request, current_user)
-    notifier_logic.send_request_amendment_email_evaluation
-    notifier_logic.send_confirmation_notifications_submitted
+    NotifierLogic.new(@service_request, @sub_service_request, current_user).update_ssrs_and_send_emails
     render formats: [:html]
   end
 
@@ -293,8 +291,10 @@ class ServiceRequestsController < ApplicationController
 
     if ssr.line_items.empty?
       if !ssr.submitted_at.nil?
-        # only notify service providers of destroyed ssr
-        NotifierLogic.new(@service_request, nil, current_user).send_ssr_service_provider_notifications(ssr, ssr_destroyed: true, request_amendment: false)
+        # notify service providers and admin of a destroyed ssr upon deletion of ssr
+        notifier_logic = NotifierLogic.new(@service_request, nil, current_user)
+        notifier_logic.send_ssr_service_provider_notifications(ssr, ssr_destroyed: true, request_amendment: false)
+        notifier_logic.send_admin_notifications([ssr], request_amendment: false, ssr_destroyed: true)
       end
       ssr.destroy
     end
@@ -395,11 +395,12 @@ class ServiceRequestsController < ApplicationController
 
     c = YAML.load_file(Rails.root.join('config', 'navigation.yml'))[@page]
     unless c.nil?
-      @step_text = c['step_text']
-      @css_class = c['css_class']
-      @back = c['back']
-      @catalog = c['catalog']
-      @forward = c['forward']
+      @step_text   = c['step_text']
+      @step_number = c['step_number']
+      @css_class   = c['css_class']
+      @back        = c['back']
+      @catalog     = c['catalog']
+      @forward     = c['forward']
     end
   end
 

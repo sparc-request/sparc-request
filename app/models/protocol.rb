@@ -106,7 +106,7 @@ class Protocol < ActiveRecord::Base
 
   validates :research_master_id, numericality: { only_integer: true }, allow_blank: true
 
-  validates :research_master_id, presence: true, if: :has_human_subject_info?
+  validates :research_master_id, presence: true, if: "RESEARCH_MASTER_ENABLED && has_human_subject_info?"
 
   attr_accessor :requester_id
   attr_accessor :validate_nct
@@ -142,10 +142,10 @@ class Protocol < ActiveRecord::Base
   end
 
   validate :existing_rm_id,
-    if: -> record { record.has_human_subject_info? && !record.research_master_id.nil? }
+    if: -> record { RESEARCH_MASTER_ENABLED && !record.research_master_id.nil? }
 
   validate :unique_rm_id_to_protocol,
-    if: -> record { record.has_human_subject_info? && !record.research_master_id.nil? }
+    if: -> record { RESEARCH_MASTER_ENABLED && !record.research_master_id.nil? }
 
   def existing_rm_id
     rm_ids = HTTParty.get(RESEARCH_MASTER_API + 'research_masters.json', headers: {'Content-Type' => 'application/json', 'Authorization' => "Token token=\"#{RMID_API_TOKEN}\""})
@@ -158,8 +158,10 @@ class Protocol < ActiveRecord::Base
 
   def unique_rm_id_to_protocol
     Protocol.all.each do |protocol|
-      if self.research_master_id == protocol.research_master_id
-        errors.add(:_, "The Research Master ID is already taken by Protocol #{protocol.id}. Please enter another RMID.")
+      if self.id != protocol.id
+        if self.research_master_id == protocol.research_master_id
+          errors.add(:_, "The Research Master ID is already taken by Protocol #{protocol.id}. Please enter another RMID.")
+        end
       end
     end
   end

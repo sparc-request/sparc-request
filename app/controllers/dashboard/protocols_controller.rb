@@ -73,7 +73,6 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   def show
     @submissions = @protocol.submissions
     respond_to do |format|
-      format.js   { render }
       format.html {
         session[:breadcrumbs].clear.add_crumbs(protocol_id: @protocol.id)
         @permission_to_edit = @authorization.present? ? @authorization.can_edit? : false
@@ -83,7 +82,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
         render
       }
       format.xlsx {
-        @statuses_hidden = params[:statuses_hidden]
+        @statuses_hidden = params[:statuses_hidden] || %w(draft first_draft)
         response.headers['Content-Disposition'] = "attachment; filename=\"(#{@protocol.id}) Consolidated Corporate Study Budget.xlsx\""
       }
     end
@@ -95,6 +94,8 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     @protocol.requester_id  = current_user.id
     @protocol.populate_for_edit
     session[:protocol_type] = params[:protocol_type]
+    gon.rm_id_api_url = RESEARCH_MASTER_API
+    gon.rm_id_api_token = RMID_API_TOKEN
   end
 
   def create
@@ -127,6 +128,8 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     @permission_to_edit = @authorization.nil? ? false : @authorization.can_edit?
     @in_dashboard       = true
     @protocol.populate_for_edit
+    gon.rm_id_api_url = RESEARCH_MASTER_API
+    gon.rm_id_api_token = RMID_API_TOKEN
 
     session[:breadcrumbs].
       clear.

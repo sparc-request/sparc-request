@@ -68,6 +68,12 @@ FactoryGirl.define do
       one_time_fee false
     end
 
+    trait :with_questionnaires do
+      after(:create) do |service|
+        service.questionnaires = create_list(:questionnaire, 2, service: service, active: 0)
+      end
+    end
+
     transient do
       line_item_count 0
       pricing_map_count 1

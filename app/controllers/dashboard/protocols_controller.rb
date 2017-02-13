@@ -112,6 +112,8 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
       @protocol.save
 
+      @protocol.service_requests.new(status: 'draft').save(validate: false)
+
       if USE_EPIC && @protocol.selected_for_epic
         @protocol.ensure_epic_user
         Notifier.notify_for_epic_user_approval(@protocol).deliver unless QUEUE_EPIC

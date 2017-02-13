@@ -32,10 +32,10 @@ RSpec.describe 'dashboard/service_requests/service_requests', type: :view do
       show_view_ssr_back: false
   end
 
-  context 'Protocol has no SubServiceRequests' do
+  context 'Protocol has no ServiceRequests' do
     context 'and user has appropriate rights' do
       it 'should display enabled "Add Services" button' do
-        protocol  = create(:unarchived_study_without_validations, primary_pi: jug2)
+        protocol = create(:unarchived_study_without_validations, primary_pi: jug2)
 
         render_service_requests(protocol, true)
 
@@ -45,7 +45,7 @@ RSpec.describe 'dashboard/service_requests/service_requests', type: :view do
 
     context 'and user does not have appropriate rights' do
       it 'should display disabled "Add Services" button' do
-        protocol  = create(:unarchived_study_without_validations, primary_pi: create(:identity))
+        protocol = create(:unarchived_study_without_validations, primary_pi: create(:identity))
 
         render_service_requests(protocol)
 
@@ -54,11 +54,10 @@ RSpec.describe 'dashboard/service_requests/service_requests', type: :view do
     end
   end
 
-  context 'Protocol has SubServiceRequests' do
+  context 'Protocol has ServiceRequests' do
     it 'should render Service Requests with Sub Service Requests' do
       protocol        = create(:unarchived_study_without_validations, primary_pi: jug2)
       service_request = create(:service_request_without_validations, protocol: protocol)
-                        create(:sub_service_request_without_validations, service_request: service_request, organization: create(:organization), status: 'draft')
 
       render_service_requests(protocol)
 
@@ -70,43 +69,6 @@ RSpec.describe 'dashboard/service_requests/service_requests', type: :view do
         view_only: false
       }
     )
-    end
-
-    it 'should not render Service Requests without Sub Service Requests' do
-      protocol                  = create(:unarchived_study_without_validations, primary_pi: jug2)
-      service_request           = create(:service_request_without_validations, protocol: protocol)
-      service_request_with_ssr  = create(:service_request_without_validations, protocol: protocol)
-                                  create(:sub_service_request_without_validations, service_request: service_request_with_ssr, organization: create(:organization))
-
-        render_service_requests(protocol)
-
-        expect(response).not_to render_template(partial: 'dashboard/service_requests/protocol_service_request_show',
-        locals: {
-          service_request: service_request,
-          user: jug2,
-          permission_to_edit: false,
-          view_only: false
-        }
-      )
-    end
-  end
-
-  context 'Service Request with all \'first_draft\'' do
-    it 'should not render' do
-      protocol        = create(:unarchived_study_without_validations, primary_pi: jug2)
-      service_request = create(:service_request_without_validations, protocol: protocol)
-                        create(:sub_service_request_without_validations, service_request: service_request, organization: create(:organization), status: 'first_draft')
-
-      render_service_requests(protocol)
-
-      expect(response).not_to render_template(partial: 'dashboard/service_requests/protocol_service_request_show',
-        locals: {
-          service_request: service_request,
-          user: jug2,
-          permission_to_edit: false,
-          view_only: false
-        }
-      )
     end
   end
 end

@@ -33,7 +33,8 @@ RSpec.describe "Line Item" do
       organization.pricing_setups[0].update_attributes(display_date: Date.today - 1)
       service = build(:service, organization_id: organization.id, pricing_map_count: 0)
       service.save!(validate: false)
-      project = Project.create(attributes_for(:protocol), validate: false)
+      project = Project.new(attributes_for(:protocol), validate: false)
+      project.save!(validate: false)
       # service_request = ServiceRequest.create(attributes_for(:service_request), protocol_id: project.id, validate: false)
       service_request = ServiceRequest.create(attributes_for(:service_request, protocol_id: project.id)); service_request.save!(validate: false); service_request
       line_item = create(:line_item, service_id: service.id, service_request_id: service_request.id)

@@ -99,7 +99,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def create
-    protocol_class                          = params[:protocol][:type].capitalize.constantize
+    protocol_class                          = protocol_params[:type].capitalize.constantize
     attrs                                   = fix_date_params
     @protocol                               = protocol_class.new(attrs)
     @protocol.study_type_question_group_id  = StudyTypeQuestionGroup.active_id
@@ -147,7 +147,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def update
-    protocol_type = params[:protocol][:type]
+    protocol_type = protocol_params[:type]
     @protocol = @protocol.becomes(protocol_type.constantize) unless protocol_type.nil?
     if params[:updated_protocol_type] == 'true' && protocol_type == 'Study'
       @protocol.update_attribute(:type, protocol_type)
@@ -213,6 +213,63 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
   private
 
+  def protocol_params
+    @protocol_params ||= begin
+        params.require(:protocol).permit(:archived,
+        :arms_attributes,
+        :billing_business_manager_static_email,
+        :brief_description,
+        :federal_grant_code_id,
+        :federal_grant_serial_number,
+        :federal_grant_title,
+        :federal_non_phs_sponsor,
+        :federal_phs_sponsor,
+        :funding_rfa,
+        :funding_source,
+        :funding_source_other,
+        :funding_start_date,
+        :funding_status,
+        :identity_id,
+        :indirect_cost_rate,
+        :last_epic_push_status,
+        :last_epic_push_time,
+        :next_ssr_id,
+        :potential_funding_source,
+        :potential_funding_source_other,
+        :potential_funding_start_date,
+        :recruitment_end_date,
+        :recruitment_start_date,
+        :requester_id,
+        :selected_for_epic,
+        :short_title,
+        :sponsor_name,
+        :study_phase,
+        :study_type_question_group_id,
+        :title,
+        :type,
+        :udak_project_number,
+        :research_master_id,
+        :has_human_subject_info,
+        research_types_info_attributes: [:human_subjects, :vertebrate_animals, :investigational_products, :ip_patents],
+        study_types_attributes: [:name, :new, :position, :_destroy],
+        vertebrate_animals_info_attributes: [:iacuc_number,
+          :name_of_iacuc,
+          :iacuc_approval_date,
+          :iacuc_expiration_date],
+        investigational_products_info_attributes: [:protocol_id,
+          :ind_number,
+          :inv_device_number,
+          :exemption_type,
+          :ind_on_hold],
+        ip_patents_info_attributes: [:patent_number, :inventors],
+        impact_areas_attributes: [:name, :other_text, :new, :_destroy],
+        human_subjects_info_attributes: [:nct_number, :hr_number, :pro_number, :irb_of_record, :submission_type, :irb_approval_date, :irb_expiration_date, :approval_pending],
+        affiliations_attributes: [:name, :new, :position, :_destroy],
+        project_roles_attributes: [:identity_id, :role, :project_rights, :_destroy],
+        study_type_answers_attributes: [:answer, :study_type_question_id, :_destroy])
+    end
+  end
+
   def build_with_owner_params
     service_providers = Identity.joins(:service_providers).where(service_providers: {
                                 organization: Organization.authorized_for_identity(current_user.id) })
@@ -244,7 +301,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   end
 
   def fix_date_params
-    attrs               = params[:protocol]
+    attrs               = protocol_params
 
     #### fix dates so they are saved correctly ####
     attrs                                        = convert_date_for_save attrs, :start_date

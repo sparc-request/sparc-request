@@ -41,7 +41,7 @@ class Dashboard::DocumentsController < Dashboard::BaseController
   end
 
   def create
-    @document = @protocol.documents.create( params[:document] )
+    @document = @protocol.documents.create(document_params)
 
     if @document.valid?
       assign_organization_access
@@ -58,7 +58,7 @@ class Dashboard::DocumentsController < Dashboard::BaseController
   end
 
   def update
-    if @document.update_attributes(params[:document])
+    if @document.update_attributes(document_params)
       assign_organization_access
 
       flash.now[:success] = t(:documents)[:updated]
@@ -69,11 +69,19 @@ class Dashboard::DocumentsController < Dashboard::BaseController
 
   def destroy
     DocumentRemover.new(params[:id])
-    
+
     flash.now[:success] = t(:documents)[:destroyed]
   end
 
   private
+
+  def document_params
+    params.require(:document).permit(:document,
+      :doc_type,
+      :doc_type_other,
+      :sub_service_requests,
+      :protocol_id)
+  end
 
   def find_document
     @document = Document.find(params[:id])

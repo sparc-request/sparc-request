@@ -67,7 +67,7 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
   end
 
   def create
-    creator = AssociatedUserCreator.new(params[:project_role])
+    creator = AssociatedUserCreator.new(project_role_params)
 
     if creator.successful?
       if @current_user_created = params[:project_role][:identity_id].to_i == @user.id
@@ -85,7 +85,7 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
   end
 
   def update
-    updater = AssociatedUserUpdater.new(id: params[:id], project_role: params[:project_role])
+    updater = AssociatedUserUpdater.new(id: params[:id], project_role: project_role_params)
 
     if updater.successful?
       # We care about this because the new rights will determine what is rendered
@@ -156,6 +156,28 @@ class Dashboard::AssociatedUsersController < Dashboard::BaseController
   end
 
 private
+def project_role_params
+  params.require(:project_role).permit(:protocol_id,
+    :identity_id,
+    :project_rights,
+    :role,
+    :role_other,
+    :epic_access,
+    identity_attributes: [
+      :credentials,
+      :credentials_other,
+      :email,
+      :era_commons_name,
+      :professional_organization_id,
+      :phone,
+      :subspecialty,
+      :id
+    ],
+    epic_rights_attributes: [:right,
+      :new,
+      :position,
+      :_destroy])
+end
 
   def find_protocol_role
     @protocol_role = ProjectRole.find(params[:id])

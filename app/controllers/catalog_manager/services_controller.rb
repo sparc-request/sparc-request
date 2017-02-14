@@ -71,7 +71,7 @@ class CatalogManager::ServicesController < CatalogManager::AppController
       params[:service].delete(:core)
     end
 
-    service_attributes = params[:service].merge!(organization_id: organization.id)
+    service_attributes = service_params.merge!(organization_id: organization.id)
 
     @service = Service.new(service_attributes)
 
@@ -92,7 +92,7 @@ class CatalogManager::ServicesController < CatalogManager::AppController
       pm[1][:corporate_rate] = Service.dollars_to_cents(pm[1][:corporate_rate]) unless pm[1][:corporate_rate].blank?
       pm[1][:other_rate] = Service.dollars_to_cents(pm[1][:other_rate]) unless pm[1][:other_rate].blank?
       pm[1][:member_rate] = Service.dollars_to_cents(pm[1][:member_rate]) unless pm[1][:member_rate].blank?
-      @service.pricing_maps.build(pm[1])
+      @service.pricing_maps.build(pricing_map_params(pm[1]))
     end if params[:pricing_maps]
 
     if params[:cancel]
@@ -109,18 +109,10 @@ class CatalogManager::ServicesController < CatalogManager::AppController
     @service = Service.find(params[:id])
     saved = false
 
-    unless params[:service][:tag_list]
-      params[:service][:tag_list] = ""
-    end
-
     program = params[:service][:program]
     core = params[:service][:core]
 
-    params[:service].delete(:id)
-    params[:service].delete(:program)
-    params[:service].delete(:core)
-
-    saved = @service.update_attributes(params[:service])
+    saved = @service.update_attributes(service_params)
 
     # This will update the service.organization if a user changes the core of the service.
     unless core.blank? && program.blank?
@@ -140,13 +132,13 @@ class CatalogManager::ServicesController < CatalogManager::AppController
       pm[1][:member_rate] = Service.dollars_to_cents(pm[1][:member_rate]) unless pm[1][:member_rate].blank?
 
       if pm[1]['id'].blank?
-        @service.pricing_maps.build(pm[1])
+        @service.pricing_maps.build(pricing_map_params(pm[1]))
       else
         # saved = @service.pricing_maps.find(pm[1]['id']).update_attributes(pm[1])
         pm_id = pm[1]['id']
         pm[1].delete(:id)
 
-        saved = @service.pricing_maps.find(pm_id).update_attributes(pm[1])
+        saved = @service.pricing_maps.find(pm_id).update_attributes(pricing_map_params(pm[1]))
       end
       if saved == true
         saved = @service.save
@@ -257,4 +249,51 @@ class CatalogManager::ServicesController < CatalogManager::AppController
     render :text => alert_text
   end
 
+  private
+
+  def service_params
+    @service_params ||= begin
+      temp = params.require(:service).permit(:name,
+        :abbreviation,
+        :order,
+        :description,
+        :is_available,
+        :service_center_cost,
+        :cpt_code,
+        :eap_id,
+        :charge_code,
+        :revenue_code,
+        :organization_id,
+        :send_to_epic,
+        :tag_list,
+        :revenue_code_range_id,
+        :line_items_count,
+        :one_time_fee,
+        :components)
+      if !temp[:tag_list]
+        temp[:tag_list] = ""
+      end
+      temp
+    end
+  end
+
+  def pricing_map_params(pm)
+    pm.permit(:service_id,
+      :unit_type,
+      :unit_factor,
+      :percent_of_fee,
+      :full_rate,
+      :exclude_from_indirect_cost,
+      :unit_minimum,
+      :units_per_qty_max,
+      :federal_rate,
+      :corporate_rate,
+      :other_rate,
+      :member_rate,
+      :effective_date,
+      :display_date,
+      :quantity_type,
+      :quantity_minimum,
+      :otf_unit_type)
+  end
 end

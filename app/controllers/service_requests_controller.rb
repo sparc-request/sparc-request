@@ -234,7 +234,7 @@ class ServiceRequestsController < ApplicationController
         li.update_attribute(:sub_service_request_id, ssr.id)
         if @service_request.status == 'first_draft'
           ssr.update_attribute(:status, 'first_draft')
-        elsif ssr.status.nil? || (ssr.can_be_edited? && ssr_has_changed?(@service_request, ssr) && (ssr.status != 'complete'))
+        elsif ssr.status.nil? || (ssr.can_be_edited? && ssr_has_changed?(@service_request, ssr))
           previous_status = ssr.status
           ssr.update_attribute(:status, 'draft')
         end

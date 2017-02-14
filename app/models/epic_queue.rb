@@ -21,8 +21,6 @@
 class EpicQueue < ActiveRecord::Base
   audited
 
-  # attr_accessible :title, :body
-  attr_accessible :protocol_id, :identity_id
   belongs_to :protocol
 
   after_create :update_protocol

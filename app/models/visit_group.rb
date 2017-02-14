@@ -25,14 +25,6 @@ class VisitGroup < ActiveRecord::Base
   include Comparable
 
   audited
-
-  attr_accessible :name
-  attr_accessible :position
-  attr_accessible :arm_id
-  attr_accessible :day
-  attr_accessible :window_before
-  attr_accessible :window_after
-
   belongs_to :arm
   has_many :visits, :dependent => :destroy
   has_many :line_items_visits, through: :visits

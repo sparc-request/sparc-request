@@ -23,14 +23,9 @@ class StudyType < ActiveRecord::Base
 
   belongs_to :protocol
 
-  attr_accessible :protocol_id
-  attr_accessible :name
-  attr_accessible :new
-  attr_accessible :position
   attr_accessor :new
   attr_accessor :position
 
   TYPES = STUDY_TYPES
-  
-end
 
+end

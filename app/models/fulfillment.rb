@@ -23,18 +23,6 @@ class Fulfillment < ActiveRecord::Base
 
   belongs_to :line_item
   has_many :notes, as: :notable, dependent: :destroy
-
-  attr_accessible :line_item_id
-  attr_accessible :timeframe
-  attr_accessible :notes
-  attr_accessible :time
-  attr_accessible :date
-  attr_accessible :quantity
-  attr_accessible :unit_quantity
-  attr_accessible :quantity_type
-  attr_accessible :unit_type
-  # attr_accessible :formatted_date
-
   validates :date, presence: true
 
   validates :time, format: { with: /\A\d+(?:\.\d{0,2})?\z/,

@@ -512,7 +512,7 @@ class ServiceRequestsController < ApplicationController
   def find_or_create_sub_service_request(line_item, service_request)
     organization = line_item.service.process_ssrs_organization
     service_request.sub_service_requests.each do |ssr|
-      if (ssr.organization == organization) && (ssr.status != 'complete')
+      if (ssr.organization == organization) && !ssr.is_complete?
         return ssr
       end
     end

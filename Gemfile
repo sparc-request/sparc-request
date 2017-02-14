@@ -104,6 +104,7 @@ group :test do
   gem 'database_cleaner'
   gem 'email_spec'
   gem 'factory_girl_rails'
+  gem 'rails-controller-testing', require: false
   gem 'rspec-activemodel-mocks'
   gem 'rspec-html-matchers'
   gem 'shoulda-matchers', require: false

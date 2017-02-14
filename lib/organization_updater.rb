@@ -43,15 +43,35 @@ class OrganizationUpdater
         if ps[1]['id'].blank?
           ps[1].delete(:id)
           ps[1].delete(:newly_created)
-          @organization.pricing_setups.build(ps[1])
+          @organization.pricing_setups.build(pricing_setups_params(pricing_setups_params(ps[1])))
         else
           # @organization.pricing_setups.find(ps[1]['id']).update_attributes(ps[1])
           ps_id = ps[1]['id']
           ps[1].delete(:id)
-          @organization.pricing_setups.find(ps_id).update_attributes(ps[1])
+          @organization.pricing_setups.find(ps_id).update_attributes(pricing_setups_params(ps[1]))
         end
         @organization.save
       end
     end
+  end
+
+  private
+
+  def pricing_setups_params(ps)
+    ps.permit(:organization_id,
+      :display_date,
+      :effective_date,
+      :charge_master,
+      :federal,
+      :corporate,
+      :other,
+      :member,
+      :college_rate_type,
+      :federal_rate_type,
+      :foundation_rate_type,
+      :industry_rate_type,
+      :investigator_rate_type,
+      :internal_rate_type,
+      :unfunded_rate_type)
   end
 end

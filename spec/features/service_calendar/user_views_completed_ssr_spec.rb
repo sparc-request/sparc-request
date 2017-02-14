@@ -30,7 +30,7 @@ RSpec.describe 'User views a completed SSR', js: true do
                 create(:pricing_setup, organization: org)
     pppv      = create(:service, organization: org, one_time_fee: false)
     otf       = create(:service, organization: org, one_time_fee: true)
-    otf.pricing_maps.first.update_attributes(otf_unit_type: 'total', units_per_quantity: 5, quantity: 5)
+    otf.pricing_maps.first.update_attributes(otf_unit_type: 'total')
 
     protocol  = create(:protocol_federally_funded, primary_pi: jug2)
     @sr       = create(:service_request_without_validations, protocol: protocol)

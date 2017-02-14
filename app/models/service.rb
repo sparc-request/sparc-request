@@ -192,7 +192,9 @@ class Service < ActiveRecord::Base
       if current_maps.empty?
         raise ArgumentError, "Service has no current pricing maps!"
       else
-        pricing_map = current_maps.sort {|a,b| b.display_date <=> a.display_date}.first
+        # If two pricing maps have the same display_date, prefer the most
+        # recently created pricing_map.
+        pricing_map = current_maps.sort {|a,b| [b.display_date, b.id] <=> [a.display_date, a.id]}.first
       end
 
       return pricing_map

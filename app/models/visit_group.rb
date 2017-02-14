@@ -57,7 +57,8 @@ class VisitGroup < ActiveRecord::Base
   end
 
   def <=> (other_vg)
-    return self.day <=> other_vg.day
+    return unless other_vg.respond_to?(:day)
+    self.day <=> other_vg.day
   end
 
   def insertion_name

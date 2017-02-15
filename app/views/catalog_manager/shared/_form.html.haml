@@ -71,7 +71,7 @@
                 %span
                   = disabled_parent(@organization)
 
-          - if @organization.services.any?
+          - if @organization.is_available? && @organization.services.any?
             %tr
               %td
               %td
@@ -90,7 +90,7 @@
                   %span{style: "margin-right:30px;"}
                     %span= f.label (t(:tags)[tag.name.gsub(" ", "_").to_sym] ? t(:tags)[tag.name.gsub(" ", "_").to_sym] : tag.name.humanize)
                     %span= f.check_box :tag_list, { multiple: true }, tag.name, nil
-                    
+
     #available_statuses_wrapper{style: @organization.process_ssrs? ? "display: block;" : "display: none;"}
       = render partial: 'catalog_manager/shared/available_statuses', locals: {f: f}
 

@@ -138,11 +138,13 @@ module Dashboard
       check_param = checked ? 'uncheck' : 'check'
       icon        = checked ? 'glyphicon-remove' : 'glyphicon-ok'
       klass       = checked ? 'btn-danger' : 'btn-success'
+      tooltip_row    = checked ? 'Check Row' : 'Uncheck Row'
+
       url         = "/service_calendars/toggle_calendar_row?#{check_param}=true&service_request_id=#{line_items_visit.line_item.service_request.id}&line_items_visit_id=#{line_items_visit.id}&portal=#{portal.to_s}"
       url        += "&sub_service_request_id=#{sub_service_request.id}" if sub_service_request
 
       content_tag(:span, '', class: "glyphicon #{icon} btn btn-xs #{klass} service-calendar-row",
-                  id: "check-all-row-#{line_items_visit.id}", data: { toggle: "tooltip", animation: 'false', title: "Toggle Row", url: url }, disabled: locked)
+                  id: "check-all-row-#{line_items_visit.id}", data: { toggle: "tooltip", animation: 'false', title: tooltip_row, url: url }, disabled: locked)
     end
 
     def self.select_column(visit_group, n, portal, service_request, sub_service_request)
@@ -155,6 +157,7 @@ module Dashboard
       check_param   = checked ? 'uncheck' : 'check'
       icon          = checked ? 'glyphicon-remove' : 'glyphicon-ok'
       klass       = checked ? 'btn-danger' : 'btn-success'
+      tooltip_column = checked ? 'Check Column' : 'Uncheck Column'
       service_request_id = service_request ? service_request.id : sub_service_request.service_request.id
       url           = "/service_calendars/toggle_calendar_column?#{check_param}=true&service_request_id=#{service_request_id}&column_id=#{n + 1}&arm_id=#{arm_id}&portal=#{portal.to_s}"
       url          += "&sub_service_request_id=#{sub_service_request.id}" if sub_service_request
@@ -163,7 +166,7 @@ module Dashboard
         role: 'button',
         class: "btn btn-xs #{klass} service-calendar-column glyphicon #{icon}",
         id: "check-all-column-#{n+1}",
-        data: { toggle: "tooltip", animation: 'false', title: "Toggle Column", url: url })
+        data: { toggle: "tooltip", animation: 'false', title: tooltip_column, url: url })
     end
   end
 end

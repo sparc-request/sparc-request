@@ -14,7 +14,7 @@ RSpec.describe 'User has a questionnaire to complete', js: true do
     ssr           = create(:sub_service_request_without_validations, service_request: @sr, organization: program, status: 'first_draft')
                     create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
                     create(:arm, protocol: @protocol, visit_count: 1)
-    questionnaire = create(:questionnaire, service: service, name: 'Does your brain hurt?')
+    questionnaire = create(:questionnaire, :without_validations, service: service, name: 'Does your brain hurt?')
     item          = create(:item, questionnaire: questionnaire, content: 'How is your brain? Does it hurt and need to be removed?',
                            item_type: 'yes_no')
     visit document_management_service_request_path(@sr)

@@ -56,6 +56,10 @@ en:
           attributes:
             name:
               blank: "Name can't be blank"
+        item_option:
+          attributes:
+            content:
+              blank: "Content can't be blank"
     attributes:
       arm:
         name: "Arm Name"

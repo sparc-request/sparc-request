@@ -39,16 +39,16 @@ class OrganizationUpdater
 
   def save_pricing_setups
     if @params[:pricing_setups] && ['Program', 'Provider'].include?(@organization.type)
-      @params[:pricing_setups].each do |ps|
-        if ps[1]['id'].blank?
-          ps[1].delete(:id)
-          ps[1].delete(:newly_created)
-          @organization.pricing_setups.build(pricing_setups_params(pricing_setups_params(ps[1])))
+      @params[:pricing_setups].each do |_, ps|
+        if ps['id'].blank?
+          ps.delete("id")
+          ps.delete("newly_created")
+          @organization.pricing_setups.build(pricing_setups_params(pricing_setups_params(ps)))
         else
-          # @organization.pricing_setups.find(ps[1]['id']).update_attributes(ps[1])
-          ps_id = ps[1]['id']
-          ps[1].delete(:id)
-          @organization.pricing_setups.find(ps_id).update_attributes(pricing_setups_params(ps[1]))
+          # @organization.pricing_setups.find(ps['id']).update_attributes(ps)
+          ps_id = ps['id']
+          ps.delete("id")
+          @organization.pricing_setups.find(ps_id).update_attributes(pricing_setups_params(ps))
         end
         @organization.save
       end

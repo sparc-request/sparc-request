@@ -86,13 +86,8 @@ class CatalogManager::ServicesController < CatalogManager::AppController
     end
 
     # @service.pricing_maps.build(params[:pricing_map]) if params[:pricing_map]
-    params[:pricing_maps].each do |pm|
-      pm[1][:full_rate] = Service.dollars_to_cents(pm[1][:full_rate]) unless pm[1][:full_rate].blank?
-      pm[1][:federal_rate] = Service.dollars_to_cents(pm[1][:federal_rate]) unless pm[1][:federal_rate].blank?
-      pm[1][:corporate_rate] = Service.dollars_to_cents(pm[1][:corporate_rate]) unless pm[1][:corporate_rate].blank?
-      pm[1][:other_rate] = Service.dollars_to_cents(pm[1][:other_rate]) unless pm[1][:other_rate].blank?
-      pm[1][:member_rate] = Service.dollars_to_cents(pm[1][:member_rate]) unless pm[1][:member_rate].blank?
-      @service.pricing_maps.build(pricing_map_params(pm[1]))
+    params[:pricing_maps].each do |_, pm|
+      @service.pricing_maps.build(pricing_map_params(pm))
     end if params[:pricing_maps]
 
     if params[:cancel]
@@ -124,21 +119,15 @@ class CatalogManager::ServicesController < CatalogManager::AppController
       end
     end
 
-    params[:pricing_maps].each do |pm|
-      pm[1][:full_rate] = Service.dollars_to_cents(pm[1][:full_rate]) unless pm[1][:full_rate].blank?
-      pm[1][:federal_rate] = Service.dollars_to_cents(pm[1][:federal_rate]) unless pm[1][:federal_rate].blank?
-      pm[1][:corporate_rate] = Service.dollars_to_cents(pm[1][:corporate_rate]) unless pm[1][:corporate_rate].blank?
-      pm[1][:other_rate] = Service.dollars_to_cents(pm[1][:other_rate]) unless pm[1][:other_rate].blank?
-      pm[1][:member_rate] = Service.dollars_to_cents(pm[1][:member_rate]) unless pm[1][:member_rate].blank?
-
-      if pm[1]['id'].blank?
-        @service.pricing_maps.build(pricing_map_params(pm[1]))
+    params[:pricing_maps].each do |_, pm|
+      if pm['id'].blank?
+        @service.pricing_maps.build(pricing_map_params(pm))
       else
-        # saved = @service.pricing_maps.find(pm[1]['id']).update_attributes(pm[1])
-        pm_id = pm[1]['id']
-        pm[1].delete(:id)
+        # saved = @service.pricing_maps.find(pm['id']).update_attributes(pm)
+        pm_id = pm['id']
+        pm.delete(:id)
 
-        saved = @service.pricing_maps.find(pm_id).update_attributes(pricing_map_params(pm[1]))
+        saved = @service.pricing_maps.find(pm_id).update_attributes(pricing_map_params(pm))
       end
       if saved == true
         saved = @service.save
@@ -278,7 +267,7 @@ class CatalogManager::ServicesController < CatalogManager::AppController
   end
 
   def pricing_map_params(pm)
-    pm.permit(:service_id,
+    temp = pm.permit(:service_id,
       :unit_type,
       :unit_factor,
       :percent_of_fee,
@@ -295,5 +284,13 @@ class CatalogManager::ServicesController < CatalogManager::AppController
       :quantity_type,
       :quantity_minimum,
       :otf_unit_type)
+
+    temp[:full_rate] = Service.dollars_to_cents(temp[:full_rate]) unless temp[:full_rate].blank?
+    temp[:federal_rate] = Service.dollars_to_cents(temp[:federal_rate]) unless temp[:federal_rate].blank?
+    temp[:corporate_rate] = Service.dollars_to_cents(temp[:corporate_rate]) unless temp[:corporate_rate].blank?
+    temp[:other_rate] = Service.dollars_to_cents(temp[:other_rate]) unless temp[:other_rate].blank?
+    temp[:member_rate] = Service.dollars_to_cents(temp[:member_rate]) unless temp[:member_rate].blank?
+
+    temp
   end
 end

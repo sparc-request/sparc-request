@@ -22,7 +22,9 @@ require "rails_helper"
 
 RSpec.describe ContactMailer, type: :mailer do
   let!(:contact_form) do
-    FactoryGirl.create(:contact_form, subject: 'subject', email: 'example@example.com', message: 'message')
+    ContactForm.new(
+      subject: 'subject', email: 'example@example.com', message: 'message'
+    )
   end
 
   let(:mail) do

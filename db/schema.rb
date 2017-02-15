@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170213212738) do
+ActiveRecord::Schema.define(version: 20170215152248) do
 
   create_table "admin_rates", force: :cascade do |t|
     t.integer  "line_item_id", limit: 4
@@ -193,14 +193,6 @@ ActiveRecord::Schema.define(version: 20170213212738) do
 
   add_index "clinical_providers", ["identity_id"], name: "index_clinical_providers_on_identity_id", using: :btree
   add_index "clinical_providers", ["organization_id"], name: "index_clinical_providers_on_organization_id", using: :btree
-
-  create_table "contact_forms", force: :cascade do |t|
-    t.string   "subject",    limit: 255
-    t.string   "email",      limit: 255
-    t.text     "message",    limit: 65535
-    t.datetime "created_at",               null: false
-    t.datetime "updated_at",               null: false
-  end
 
   create_table "cover_letters", force: :cascade do |t|
     t.text     "content",                limit: 65535
@@ -922,6 +914,7 @@ ActiveRecord::Schema.define(version: 20170213212738) do
     t.datetime "updated_at",                          null: false
     t.datetime "deleted_at"
     t.date     "original_submitted_date"
+    t.integer  "subject_count",           limit: 4
   end
 
   add_index "service_requests", ["protocol_id"], name: "index_service_requests_on_protocol_id", using: :btree

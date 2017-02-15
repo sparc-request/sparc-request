@@ -529,8 +529,8 @@ class ServiceRequest < ActiveRecord::Base
   end
 
   def cart_sub_service_requests
-    active    = self.sub_service_requests.where.not(status: 'complete')
-    complete  = self.sub_service_requests.where(status: 'complete')
+    active    = self.sub_service_requests.select{ |ssr| !ssr.is_complete? }
+    complete  = self.sub_service_requests.select{ |ssr| ssr.is_complete? }
 
     { active: active, complete: complete }
   end

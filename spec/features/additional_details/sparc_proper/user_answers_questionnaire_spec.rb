@@ -37,11 +37,10 @@ RSpec.describe 'User has a questionnaire to complete', js: true do
 
     it 'should be able to answer questionnaire and create a submission' do
       click_link 'Complete Form Functionality'
-      sleep 1
       choose 'Yes'
       click_link 'Create Submission'
       wait_for_javascript_to_finish
-      expect(Submission.all.count).to eq(1)
+      expect(page).to have_css('#submissionModal .modal-body form')
     end 
   end
 end

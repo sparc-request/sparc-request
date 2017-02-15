@@ -33,6 +33,14 @@ RSpec.describe LineItemsVisit do
     expect(line_items_visit.visits).to eq [ ]
   end
 
+  it 'should only belong to a PPPV LineItem' do
+    arm = create(:arm, :without_validations)
+    line_item = create(:line_item, :one_time_fee, :without_validations)
+    line_items_visit = build(:line_items_visit, line_item_id: line_item.id, arm_id: arm.id)
+
+    expect(line_items_visit).not_to be_valid
+  end
+
   describe "methods" do
 
     before :each do
@@ -194,7 +202,7 @@ RSpec.describe LineItemsVisit do
       describe 'any visit quantities customized' do
         let!(:protocol)          { create(:protocol_without_validations) }
         let!(:arm)               { create(:arm, protocol: protocol) }
-        let!(:line_items_visit1) { create(:line_items_visit, arm_id: arm.id) }
+        let!(:line_items_visit1) { create(:line_items_visit, :without_validations, arm_id: arm.id) }
         let!(:visit_group)       { create(:visit_group, arm_id: arm.id)}
         let!(:visit1)            { create(:visit, line_items_visit_id: line_items_visit1.id, visit_group_id: visit_group.id) }
         let!(:visit2)            { create(:visit, line_items_visit_id: line_items_visit1.id, visit_group_id: visit_group.id) }

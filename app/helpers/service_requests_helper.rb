@@ -79,8 +79,10 @@ module ServiceRequestsHelper
     end
   end
 
-  def save_as_draft_button
-    link_to t(:proper)[:navigation][:bottom][:save_as_draft], save_and_exit_service_request_path, remote: true, class: 'btn btn-default'
+  def save_as_draft_button(sub_service_request_id=nil)
+    link_to t(:proper)[:navigation][:bottom][:save_as_draft],
+      save_and_exit_service_request_path(sub_service_request_id: sub_service_request_id),
+      remote: true, class: 'btn btn-default'
   end
 
   def step_nav_button(text, color, link, url)

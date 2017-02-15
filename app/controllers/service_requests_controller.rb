@@ -128,13 +128,6 @@ class ServiceRequestsController < ApplicationController
     end
   end
 
-  # do not delete. Method will be needed if calendar totals page is used
-  # def calendar_totals
-  #   if @service_request.arms.blank?
-  #     @back = 'service_details'
-  #   end
-  # end
-
   def service_subsidy
     @has_subsidy          = @service_request.sub_service_requests.map(&:has_subsidy?).any?
     @eligible_for_subsidy = @service_request.sub_service_requests.map(&:eligible_for_subsidy?).any?
@@ -162,6 +155,8 @@ class ServiceRequestsController < ApplicationController
   end
 
   def review
+    @notable_type = 'Protocol'
+    @notable_id = @service_request.protocol_id
     @tab          = 'calendar'
     @review       = true
     @portal       = false

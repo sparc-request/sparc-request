@@ -20,19 +20,17 @@
 
 survey "System Satisfaction survey", default_mandatory: 'false' do
   section "System Satisfaction" do
-    question_1 "Are you satisfied with your use of SPARC Request <span class='underline'>today</span>?", pick: 'one'
-    answer_yes "Yes"
-    answer_no "No"
+    question_1 "1) How satisfied are you with using SPARCRequest today?", pick: 'one'
+    answer "Very dissatisfied", help_text: "1"
+    answer "Dissatisfied", help_text: "2"
+    answer "Neutral", help_text: "3"
+    answer "Satisfied", help_text: "4"
+    answer "Very satisfied", help_text: "5"
 
-    question "If yes, please tell us why. (Intuitive? User Friendly? Other? Have suggestions for us?)"
+    question_2 "2) Please leave your feedback and/or suggestions for future improvement."
     answer :text
-    dependency rule: "Y"
-    condition_Y :question_1, "==", :answer_yes
-
-    question "If no, please tell us why. (Have suggestions for us to make it better?)"
-    answer :text
-    dependency rule: "N"
-    condition_N :question_1, "==", :answer_no
+    dependency rule: "A"
+    condition_A :question_1, "count>0"
   end
 end
 

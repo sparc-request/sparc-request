@@ -37,7 +37,7 @@ RSpec.describe Dashboard::FulfillmentsController do
       end
 
       it "should create Fulfillment" do
-        expect(Fulfillment).to have_received(:new).with("quantity" => "5")
+        expect(Fulfillment).to have_received(:new).with controller_params(quantity: "5")
         expect(@fulfillment).to have_received(:save)
       end
 
@@ -65,7 +65,7 @@ RSpec.describe Dashboard::FulfillmentsController do
       end
 
       it "should attempt to create Fulfillment" do
-        expect(Fulfillment).to have_received(:new).with("quantity" => "5")
+        expect(Fulfillment).to have_received(:new).with controller_params(quantity: "5")
       end
 
       it "should set @errors" do

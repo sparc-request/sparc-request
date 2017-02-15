@@ -57,7 +57,8 @@ RSpec.describe Dashboard::ArmsController do
       end
 
       it 'should assign @arm from params[:arm_id] and update it according to params[:arm]' do
-        expect(@arm_stub).to have_received(:update_attributes).with(name: "some name")
+        expect(@arm_stub).to have_received(:update_attributes).with controller_params(name: "some name")
+
         expect(assigns(:arm)).to eq(@arm_stub)
       end
 
@@ -82,7 +83,7 @@ RSpec.describe Dashboard::ArmsController do
       end
 
       it 'should assign @arm from params[:arm_id] and update it according to params[:arm]' do
-        expect(@arm_stub).to have_received(:update_attributes).with(name: "a bad name")
+        expect(@arm_stub).to have_received(:update_attributes).with controller_params(name: "a bad name")
         expect(assigns(:arm)).to eq(@arm_stub)
       end
 

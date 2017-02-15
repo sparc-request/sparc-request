@@ -119,7 +119,9 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
     @thead_class      = @portal == 'true' ? 'default_calendar' : 'red-provider'
     page              = params[:page] if params[:page]
 
-    session[:service_calendar_pages] = params[:pages] if params[:pages]
+    if params[:pages]
+      session[:service_calendar_pages] = params[:pages].permit!.to_h
+    end
     session[:service_calendar_pages][arm_id] = page if page && arm_id
 
     @pages = {}

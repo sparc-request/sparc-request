@@ -43,7 +43,7 @@ RSpec.describe Dashboard::LineItemsController do
 
       it "should update attributes of LineItem from params[:id]" do
         expect(@line_item).to have_received(:update_attributes).
-          with({ "quantity" => "5" })
+          with controller_params(quantity: "5")
       end
 
       it "should not set @errors" do
@@ -78,7 +78,7 @@ RSpec.describe Dashboard::LineItemsController do
 
       it "should update attributes of LineItem from params[:id]" do
         expect(@line_item).to have_received(:update_attributes).
-          with({ "quantity" => "5" })
+          with controller_params(quantity: "5")
       end
 
       it "should set @errors" do

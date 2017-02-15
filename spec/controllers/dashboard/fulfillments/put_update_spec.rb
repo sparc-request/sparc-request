@@ -37,7 +37,7 @@ RSpec.describe Dashboard::FulfillmentsController do
 
       it "should update Fulfillment" do
         expect(@fulfillment).to have_received(:update_attributes).
-          with("quantity" => "5")
+          with controller_params(quantity: "5")
       end
 
       it "should not set @errors" do
@@ -65,7 +65,7 @@ RSpec.describe Dashboard::FulfillmentsController do
 
       it "should attempt to update Fulfillment" do
         expect(@fulfillment).to have_received(:update_attributes).
-          with("quantity" => "5")
+          with controller_params(quantity: "5")
       end
 
       it "should set @errors" do

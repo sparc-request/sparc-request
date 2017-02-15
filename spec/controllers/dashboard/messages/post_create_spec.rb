@@ -48,7 +48,7 @@ RSpec.describe Dashboard::MessagesController do
       end
 
       it "should create a Message" do
-        expect(Message).to have_received(:create).with(@new_message_attr)
+        expect(Message).to have_received(:create).with controller_params(@new_message_attr)
       end
 
       it "should mark new Message as read by recipient" do

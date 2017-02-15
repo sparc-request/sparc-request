@@ -7,9 +7,10 @@
       - if questionnaire.errors.any?
         .alert.alert-danger
           %ul.list-unstyled
-            - questionnaire.errors.full_messages.each do |msg|
-              %li
-                = msg
+            - questionnaire.errors.messages.values.each do |msg|
+              - msg.each do |m|
+                %li
+                  = m
       .form-group
         = f.label :name, 'Form Name', class: 'col-sm-2 control-label'
         .col-sm-10

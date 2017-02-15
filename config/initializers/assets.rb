@@ -22,3 +22,5 @@ SparcRails::Application.config.assets.paths.unshift "#{Rails.root}/themes/assets
 SparcRails::Application.config.assets.paths.unshift "#{Rails.root}/themes/assets/images"
 SparcRails::Application.config.assets.paths.unshift "#{Rails.root}/themes/assets/javascripts"
 Rails.application.config.assets.precompile += %w(proper/notification_email.css)
+Rails.application.config.assets.precompile += %w( dashboard/update_submission.js )
+Rails.application.config.assets.precompile += %w( dashboard/delete_submission.js )

@@ -212,11 +212,11 @@ RSpec.describe Dashboard::SubServiceRequestsController do
 
       context 'params[:pages] assigned' do
         before :each do
-          xhr :get, :refresh_service_calendar, id: @sub_service_request.id, pages: 'pages', format: :js
+          xhr :get, :refresh_service_calendar, id: @sub_service_request.id, pages: { "1" => "2" }, format: :js
         end
 
         it 'should be assigned' do
-          expect(session[:service_calendar_pages]).to eq('pages')
+          expect(session[:service_calendar_pages]).to eq({ "1" => "2" })
         end
 
         it { is_expected.to render_template "dashboard/sub_service_requests/refresh_service_calendar" }

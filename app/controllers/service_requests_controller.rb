@@ -268,7 +268,7 @@ class ServiceRequestsController < ApplicationController
     line_items.reload
 
     @service_request.reload
-    @page = request.referrer.split('/').last # we need for pages other than the catalog
+    @page = previous_page
 
     # Have the protocol clean up the arms
     @service_request.protocol.arm_cleanup if @service_request.protocol
@@ -322,6 +322,11 @@ class ServiceRequestsController < ApplicationController
   end
 
   private
+
+  def previous_page
+    # we need for pages other than the catalog
+    request.referrer.split('/').last
+  end
 
   def feedback_params
     params.require(:feedback).permit(:email, :message)

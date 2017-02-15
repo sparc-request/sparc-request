@@ -134,11 +134,11 @@ module Dashboard
     end
 
     def self.select_row(line_items_visit, sub_service_request, portal, locked=false)
-      checked     = line_items_visit.visits.all? { |v| v.research_billing_qty >= 1  }
-      check_param = checked ? 'uncheck' : 'check'
-      icon        = checked ? 'glyphicon-remove' : 'glyphicon-ok'
-      klass       = checked ? 'btn-danger' : 'btn-success'
-      tooltip_row    = checked ? 'Check Row' : 'Uncheck Row'
+      checked        = line_items_visit.visits.all? { |v| v.research_billing_qty >= 1  }
+      check_param    = checked ? 'uncheck' : 'check'
+      icon           = checked ? 'glyphicon-remove' : 'glyphicon-ok'
+      klass          = checked ? 'btn-danger' : 'btn-success'
+      tooltip_row    = checked ? 'Uncheck Row' : 'Check Row'
 
       url         = "/service_calendars/toggle_calendar_row?#{check_param}=true&service_request_id=#{line_items_visit.line_item.service_request.id}&line_items_visit_id=#{line_items_visit.id}&portal=#{portal.to_s}"
       url        += "&sub_service_request_id=#{sub_service_request.id}" if sub_service_request
@@ -151,16 +151,16 @@ module Dashboard
 
       arm_id        = visit_group.arm_id
       # If we are in proper, we want to use service request, othewise in dashboard, we use SSR for admin study schedule
-      liv_query     = sub_service_request ? { sub_service_request_id: sub_service_request.id } : { service_request_id: service_request.id }
-      filtered_livs = visit_group.line_items_visits.joins(:line_item).where(line_items: liv_query)
-      checked       = filtered_livs.all? { |l| l.visits[n.to_i].research_billing_qty >= 1 }
-      check_param   = checked ? 'uncheck' : 'check'
-      icon          = checked ? 'glyphicon-remove' : 'glyphicon-ok'
-      klass       = checked ? 'btn-danger' : 'btn-success'
-      tooltip_column = checked ? 'Check Column' : 'Uncheck Column'
+      liv_query          = sub_service_request ? { sub_service_request_id: sub_service_request.id } : { service_request_id: service_request.id }
+      filtered_livs      = visit_group.line_items_visits.joins(:line_item).where(line_items: liv_query)
+      checked            = filtered_livs.all? { |l| l.visits[n.to_i].research_billing_qty >= 1 }
+      check_param        = checked ? 'uncheck' : 'check'
+      icon               = checked ? 'glyphicon-remove' : 'glyphicon-ok'
+      klass              = checked ? 'btn-danger' : 'btn-success'
+      tooltip_column     = checked ? 'Uncheck Column' : 'Check Column'
       service_request_id = service_request ? service_request.id : sub_service_request.service_request.id
-      url           = "/service_calendars/toggle_calendar_column?#{check_param}=true&service_request_id=#{service_request_id}&column_id=#{n + 1}&arm_id=#{arm_id}&portal=#{portal.to_s}"
-      url          += "&sub_service_request_id=#{sub_service_request.id}" if sub_service_request
+      url                = "/service_calendars/toggle_calendar_column?#{check_param}=true&service_request_id=#{service_request_id}&column_id=#{n + 1}&arm_id=#{arm_id}&portal=#{portal.to_s}"
+      url                += "&sub_service_request_id=#{sub_service_request.id}" if sub_service_request
 
       content_tag(:span, '',
         role: 'button',

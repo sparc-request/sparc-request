@@ -38,7 +38,7 @@ class ServiceRequestsReport < ReportingModule
       "Tags" => {:field_type => :text_field_tag},
       "Current Status" => {:field_type => :check_box_tag, :for => 'status', :multiple => AVAILABLE_STATUSES},
       "Show APR Data" => {:field_type => :check_box_tag, :for => 'apr_data', :multiple => {"irb" => "IRB", "iacuc" => "IACUC"}},
-      "Show SPARCFulfillment Information" => {:field_type => :check_box_tag, :for => 'fulfillment_info' }
+      "Show SPARCFulfillment Information" => {:field_type => :check_box_tag, :for => 'fulfillment_info', :field_label => 'Show SPARCFulfillment Information' }
     }
   end
 

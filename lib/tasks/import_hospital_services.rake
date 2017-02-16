@@ -21,7 +21,7 @@
 #####  Import services using a DHHS fee schedule and pricing file
 namespace :data do
   desc "Import hospital based services using the DHHS rates"
-  task :import_hospital_services => :environment do
+  task import_hospital_services: :environment do
 
   def prompt(*args)
     print(*args)
@@ -78,21 +78,21 @@ namespace :data do
               previous_range = previous_associated_revenue_code_range.first || current_associated_revenue_code_range.first # if the range did not exist in the previous version
 
 
-              attr_previous = {:eap_id => row['EAP ID'], :organization_id => organization.id, :revenue_code_range_id => previous_range.id} # we want to find based on past revenue_code_range_id for updates first
-              attr_current = {:eap_id => row['EAP ID'], :organization_id => organization.id, :revenue_code_range_id => current_range.id} # we want to find based on current revenue_code_range_id for updates second
+              attr_previous = {eap_id: row['EAP ID'], organization_id: organization.id, revenue_code_range_id: previous_range.id} # we want to find based on past revenue_code_range_id for updates first
+              attr_current = {eap_id: row['EAP ID'], organization_id: organization.id, revenue_code_range_id: current_range.id} # we want to find based on current revenue_code_range_id for updates second
 
               service = Service.where(attr_previous).first || Service.where(attr_current).first || Service.new(attr_current) # look for previous range, current range, create new
               service.assign_attributes(
-                                  :charge_code => row['Charge Code'],
-                                  :revenue_code_range_id => current_range.id,
-                                  :revenue_code => revenue_code,
-                                  :cpt_code => row['CPT Code'],
-                                  :send_to_epic => (row['Send to Epic'] == 'Y' ? true : false),
-                                  :name => row['Procedure Name'],
-                                  :abbreviation => row['Procedure Name'],
-                                  :order => 1,
-                                  :one_time_fee => (row['Is One Time Fee?'] == 'Y' ? true : false),
-                                  :is_available => true)
+                                  charge_code: row['Charge Code'],
+                                  revenue_code_range_id: current_range.id,
+                                  revenue_code: revenue_code,
+                                  cpt_code: row['CPT Code'],
+                                  send_to_epic: (row['Send to Epic'] == 'Y' ? true : false),
+                                  name: row['Procedure Name'],
+                                  abbreviation: row['Procedure Name'],
+                                  order: 1,
+                                  one_time_fee: (row['Is One Time Fee?'] == 'Y' ? true : false),
+                                  is_available: true)
 
               service.tag_list = "epic" if row['Send to Epic'] == 'Y'
 
@@ -107,18 +107,18 @@ namespace :data do
               display_date = row['Display Date'].match("[0-1]?[0-9]/[0-3]?[0-9]/[0-9]{4}") ? Date.strptime(row['Display Date'], "%m/%d/%Y") : Date.strptime(row['Display Date'], "%m/%d/%y") # see above
 
               pricing_map = service.pricing_maps.build(
-                                                    :full_rate => full_rate,
-                                                    :corporate_rate => corporate_rate,
-                                                    :federal_rate => federal_rate,
-                                                    :member_rate => member_rate,
-                                                    :other_rate => other_rate,
-                                                    :unit_type => (row['Is One Time Fee?'] == 'Y' ? nil : row['Clinical Qty Type']),
-                                                    :quantity_type => (row['Is One Time Fee?'] != 'Y' ? nil : row['Clinical Qty Type']),
-                                                    :unit_factor => row['Unit Factor'],
-                                                    :unit_minimum => (row['Is One Time Fee?'] == 'Y' ? nil : row['Qty Min']),
-                                                    :quantity_minimum => (row['Is One Time Fee?'] != 'Y' ? nil : row['Qty Min']),
-                                                    :display_date => display_date,
-                                                    :effective_date => effective_date
+                                                    full_rate: full_rate,
+                                                    corporate_rate: corporate_rate,
+                                                    federal_rate: federal_rate,
+                                                    member_rate: member_rate,
+                                                    other_rate: other_rate,
+                                                    unit_type: (row['Is One Time Fee?'] == 'Y' ? nil : row['Clinical Qty Type']),
+                                                    quantity_type: (row['Is One Time Fee?'] != 'Y' ? nil : row['Clinical Qty Type']),
+                                                    unit_factor: row['Unit Factor'],
+                                                    unit_minimum: (row['Is One Time Fee?'] == 'Y' ? nil : row['Qty Min']),
+                                                    quantity_minimum: (row['Is One Time Fee?'] != 'Y' ? nil : row['Qty Min']),
+                                                    display_date: display_date,
+                                                    effective_date: effective_date
                                                     )
 
               if service.valid? and pricing_map.valid?

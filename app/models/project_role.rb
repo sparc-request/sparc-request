@@ -134,10 +134,6 @@ class ProjectRole < ActiveRecord::Base
     if role == 'business-grants-manager' and right == 'approve'
       return true
     end
-
-    if current_user == identity and role != 'pi' and role != 'primary-pi' and right == 'request'
-      return true
-    end
     return false
   end
 
@@ -151,7 +147,6 @@ class ProjectRole < ActiveRecord::Base
     case project_rights
     when "none"    then "Member Only"
     when "view"    then "View Rights"
-    when "request" then "Request/Approve Services"
     when "approve" then "Authorize/Change Study Charges"
     end
   end

@@ -61,9 +61,6 @@ class ServiceRequest < ActiveRecord::Base
   attr_accessible :status
   attr_accessible :notes
   attr_accessible :approved
-  attr_accessible :consult_arranged_date
-  attr_accessible :pppv_complete_date
-  attr_accessible :pppv_in_process_date
   attr_accessible :submitted_at
   attr_accessible :line_items_attributes
   attr_accessible :sub_service_requests_attributes
@@ -488,7 +485,6 @@ class ServiceRequest < ActiveRecord::Base
         arm = p.arms.create(
           name: 'Screening Phase',
           visit_count: 1,
-          subject_count: 1,
           new_with_draft: true)
         self.per_patient_per_visit_line_items.each do |li|
           arm.create_line_items_visit(li)
@@ -532,13 +528,9 @@ class ServiceRequest < ActiveRecord::Base
     {:line_items => line_item_audits}
   end
 
-  def has_non_first_draft_ssrs?
-    sub_service_requests.where.not(status: 'first_draft').any?
-  end
-
   def cart_sub_service_requests
-    active    = self.sub_service_requests.where.not(status: 'complete')
-    complete  = self.sub_service_requests.where(status: 'complete')
+    active    = self.sub_service_requests.select{ |ssr| !ssr.is_complete? }
+    complete  = self.sub_service_requests.select{ |ssr| ssr.is_complete? }
 
     { active: active, complete: complete }
   end

@@ -48,6 +48,13 @@ RSpec.describe Dashboard::ProtocolsController do
                     to change{ Protocol.count }.by( 1 )
       end
 
+      it 'creates a new service request record' do
+        expect{ xhr :post, 
+                    :create, 
+                    protocol: @protocol_attributes }.
+                    to change{ ServiceRequest.count }.by( 1 )
+      end
+
       it 'creates a new project role record' do
         expect{ xhr :post, 
                     :create, 
@@ -93,6 +100,13 @@ RSpec.describe Dashboard::ProtocolsController do
                     :create, 
                     protocol: @protocol.attributes }.
                     not_to change{ Protocol.count }
+      end
+
+      it 'does not create a new service request record' do
+        expect{ xhr :post, 
+                    :create, 
+                    protocol: @protocol.attributes }.
+                    not_to change{ ServiceRequest.count }
       end
 
       it 'does not create a new project role record' do

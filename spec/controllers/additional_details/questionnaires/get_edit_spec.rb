@@ -24,7 +24,7 @@ RSpec.describe AdditionalDetails::QuestionnairesController do
   describe '#edit' do
     before :each do
       @service = create(:service)
-      @questionnaire = create(:questionnaire, service: @service)
+      @questionnaire = create(:questionnaire, :without_validations, service: @service)
 
       xhr :get, :edit, {
         service_id: @service.id,

@@ -31,13 +31,13 @@ RSpec.describe '/service_request/navigation/_steps', type: :view do
 
   context 'User is currently on step 1' do
     it 'should have links on the arrows for steps 1-4' do
-      render '/service_requests/navigation/steps', service_request: @service_request, step: "Step 1", step_number: '1', css_class: 'blue-provider'
+      render '/service_requests/navigation/steps', service_request: @service_request, sub_service_request_id: nil, step: "Step 1", step_number: '1', css_class: 'blue-provider'
 
       expect(response).to have_selector('a.step-btn', count: 4)
     end
 
     it 'should just have a div for the arrow for step 5' do
-      render '/service_requests/navigation/steps', service_request: @service_request, step: "Step 1", step_number: '1', css_class: 'blue-provider'
+      render '/service_requests/navigation/steps', service_request: @service_request, sub_service_request_id: nil, step: "Step 1", step_number: '1', css_class: 'blue-provider'
 
       expect(response).to have_selector('div.step-btn', count: 1)
     end
@@ -45,13 +45,13 @@ RSpec.describe '/service_request/navigation/_steps', type: :view do
 
   context 'User is currently on step 2' do
     it 'should have links on the arrows for steps 1-4' do
-      render '/service_requests/navigation/steps', service_request: @service_request, step: "Step 2", step_number: '2', css_class: 'blue-provider'
+      render '/service_requests/navigation/steps', service_request: @service_request, sub_service_request_id: nil, step: "Step 2", step_number: '2', css_class: 'blue-provider'
 
       expect(response).to have_selector('a.step-btn', count: 4)
     end
 
     it 'should just have a div for the arrow for step 5' do
-      render '/service_requests/navigation/steps', service_request: @service_request, step: "Step 2", step_number: '2', css_class: 'blue-provider'
+      render '/service_requests/navigation/steps', service_request: @service_request, sub_service_request_id: nil, step: "Step 2", step_number: '2', css_class: 'blue-provider'
 
       expect(response).to have_selector('div.step-btn', count: 1)
     end
@@ -59,13 +59,13 @@ RSpec.describe '/service_request/navigation/_steps', type: :view do
 
   context 'User is currently on step 3' do
     it 'should have links on the arrows for steps 1-4' do
-      render '/service_requests/navigation/steps', service_request: @service_request, step: "Step 3", step_number: '3', css_class: 'blue-provider'
+      render '/service_requests/navigation/steps', service_request: @service_request, sub_service_request_id: nil, step: "Step 3", step_number: '3', css_class: 'blue-provider'
 
       expect(response).to have_selector('a.step-btn', count: 4)
     end
 
     it 'should just have a div for the arrow for step 5' do
-      render '/service_requests/navigation/steps', service_request: @service_request, step: "Step 3", step_number: '3', css_class: 'blue-provider'
+      render '/service_requests/navigation/steps', service_request: @service_request, sub_service_request_id: nil, step: "Step 3", step_number: '3', css_class: 'blue-provider'
 
       expect(response).to have_selector('div.step-btn', count: 1)
     end
@@ -73,13 +73,13 @@ RSpec.describe '/service_request/navigation/_steps', type: :view do
 
   context 'User is currently on step 4' do
     it 'should have links on the arrows for steps 1-4' do
-      render '/service_requests/navigation/steps', service_request: @service_request, step: "Step 4", step_number: '4', css_class: 'blue-provider'
+      render '/service_requests/navigation/steps', service_request: @service_request, sub_service_request_id: nil, step: "Step 4", step_number: '4', css_class: 'blue-provider'
 
       expect(response).to have_selector('a.step-btn', count: 4)
     end
 
     it 'should just have a div for the arrow for step 5' do
-      render '/service_requests/navigation/steps', service_request: @service_request, step: "Step 4", step_number: '4', css_class: 'blue-provider'
+      render '/service_requests/navigation/steps', service_request: @service_request, sub_service_request_id: nil, step: "Step 4", step_number: '4', css_class: 'blue-provider'
 
       expect(response).to have_selector('div.step-btn', count: 1)
     end
@@ -87,13 +87,13 @@ RSpec.describe '/service_request/navigation/_steps', type: :view do
 
   context 'User is currently on step 5' do
     it 'should just have a div on the arrows for steps 1-4' do
-      render '/service_requests/navigation/steps', service_request: @service_request, step: "Step 5", step_number: '5', css_class: 'blue-provider'
+      render '/service_requests/navigation/steps', service_request: @service_request, sub_service_request_id: nil, step: "Step 5", step_number: '5', css_class: 'blue-provider'
 
       expect(response).to have_selector('div.step-btn', count: 4)
     end
 
     it 'should have a link on the arrow for step 5' do
-      render '/service_requests/navigation/steps', service_request: @service_request, step: "Step 5", step_number: '5', css_class: 'blue-provider'
+      render '/service_requests/navigation/steps', service_request: @service_request, sub_service_request_id: nil, step: "Step 5", step_number: '5', css_class: 'blue-provider'
 
       expect(response).to have_selector('a.step-btn', count: 1)
     end

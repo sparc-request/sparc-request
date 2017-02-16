@@ -32,7 +32,7 @@ RSpec.describe "VisitGroup" do
   describe 'any visit quantities customized' do
     let!(:protocol)          { create(:protocol_without_validations) }
     let!(:arm)               { create(:arm, protocol: protocol) }
-    let!(:line_items_visit1) { create(:line_items_visit, arm_id: arm.id, line_item_id: line_item.id) }
+    let!(:line_items_visit1) { create(:line_items_visit, :without_validations, arm_id: arm.id, line_item_id: line_item.id) }
     let!(:visit_group)       { create(:visit_group, arm_id: arm.id)}
     let!(:visit1)            { create(:visit, line_items_visit_id: line_items_visit1.id, visit_group_id: visit_group.id) }
     let!(:visit2)            { create(:visit, line_items_visit_id: line_items_visit1.id, visit_group_id: visit_group.id) }

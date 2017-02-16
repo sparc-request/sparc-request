@@ -31,8 +31,8 @@ RSpec.describe 'additional_details/submissions/_form', type: :view do
 
       allow(controller).to receive(:current_identity).and_return(logged_in_user)
 
-      @questionnaire =  create( :questionnaire, :with_all_question_types )
-      @service = create(:service, questionnaires: [ @questionnaire ])
+      @service = create(:service)
+      @questionnaire =  create( :questionnaire, :without_validations, :with_all_question_types, service: @service)
       @submission = create( :submission_with_responses, questionnaire_id: @questionnaire.id )
 
       render '/additional_details/submissions/form'
@@ -61,8 +61,8 @@ RSpec.describe 'additional_details/submissions/_form', type: :view do
 
       allow(controller).to receive(:current_identity).and_return(logged_in_user)
 
-      @questionnaire =  create( :questionnaire, :with_all_question_types )
-      @service = create(:service, questionnaires: [ @questionnaire ])
+      @service = create(:service)
+      @questionnaire =  create( :questionnaire, :with_all_question_types, :without_validations, service: @service)
       @submission = create( :submission_with_responses, questionnaire_id: @questionnaire.id)
 
       render '/additional_details/submissions/form', action_name: 'edit'

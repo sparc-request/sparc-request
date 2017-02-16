@@ -202,9 +202,13 @@ class Protocol < ActiveRecord::Base
       "protocols.title like #{like_search_term} escape '!'",
       "protocols.id = #{exact_search_term}"]
 
-    joins(:identities).
+    where_clause += ["human_subjects_info.hr_number = #{exact_search_term}", 
+                      "human_subjects_info.pro_number = #{exact_search_term}"]
+
+    joins(:identities).joins(:human_subjects_info).
       where(where_clause.compact.join(' OR ')).
       distinct
+
   }
 
   scope :for_identity_id, -> (identity_id) {
@@ -285,11 +289,6 @@ class Protocol < ActiveRecord::Base
 
   def is_project?
     self.type == 'Project'
-  end
-
-  # Determines whether a protocol contains a service_request with only a "first draft" status
-  def has_first_draft_service_request?
-    service_requests.any? && service_requests.map(&:status).all? { |status| status == 'first_draft'}
   end
 
   def active?
@@ -538,10 +537,6 @@ class Protocol < ActiveRecord::Base
     if remove_arms
       self.arms.destroy_all
     end
-  end
-
-  def has_non_first_draft_ssrs?
-    sub_service_requests.where.not(status: 'first_draft').any?
   end
 
   def has_incomplete_additional_details?

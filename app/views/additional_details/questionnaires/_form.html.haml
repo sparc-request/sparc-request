@@ -4,6 +4,13 @@
   .panel-body
     = hidden_field_tag 'service_id', service.id
     = form_for [service, :additional_details, questionnaire], html: { class: 'form-horizontal questionnaire-form' } do |f|
+      - if questionnaire.errors.any?
+        .alert.alert-danger
+          %ul.list-unstyled
+            - questionnaire.errors.messages.values.each do |msg|
+              - msg.each do |m|
+                %li
+                  = m
       .form-group
         = f.label :name, 'Form Name', class: 'col-sm-2 control-label'
         .col-sm-10
@@ -24,6 +31,9 @@
           %hr
           - i.object.item_options.build unless i.object.item_options.any?
           = i.nested_fields_for :item_options, html: { class: 'form-horizontal' } do |io|
+            = io.hidden_field :validate_content, value: false,
+              class: 'set-validate-content',
+              data: { item_form_id: '__nested_field_for_replace_with_index__' }
             .col-sm-offset-2
               .form-group
                 = io.label :content, class: 'col-sm-2 control-label'

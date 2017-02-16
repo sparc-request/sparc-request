@@ -86,7 +86,6 @@ en:
       create_protocol_instructions: "Create a Protocol and add all relevant information"
       review_protocol_notice: "Protocol Information"
       review_protocol_instructions: "Review your Protocol and Authorized Users"
-      percent_effort_notice: "If Professional Services are covered by % effort, please indicate in Step 2."
       study_tooltip: "Choose 'New Research Study' for a Research Study with defined aims and outcomes."
       project_tooltip: "Choose 'New Project' for non-study-specific Service Requests or anything that is not a Research Study."
       previously_submitted_warning: "The request that you are editing has been previously submitted and can not be moved to another %{protocol_type}."
@@ -114,7 +113,7 @@ en:
         header: "Move Visit"
       legend:
         research: "R - Research Coverage"
-        third_party: "T - Third Party (PT Insurance) Coverage"
+        third_party: "T - Third Party (Insurance) Coverage"
         effort: "% - Percent Effort"
       tooltips:
         r: "Research Coverage"
@@ -156,16 +155,13 @@ en:
       pppv_calendars_notice: "Per Patient/Visit Calendars"
       otf_calendar_notice: "One Time Fees"
       totals_notice: "Total Costs"
-      total_direct: "Total Direct Cost:"
-      total_indirect: "Total Indirect Cost:"
-      grand_total: "Grand Total:"
 
     ##############################
     # SYSTEM SATISFACTION SURVEY #
     ##############################
     survey:
       header: "System Satisfaction Survey"
-      participate: "Would you like to participate in a brief 1 question SPARC Request satisfaction survey?"
+      participate: "Would you like to participate in a brief SPARCRequest satisfaction survey?"
 
     ################
     # CONFIRMATION #

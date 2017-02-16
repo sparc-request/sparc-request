@@ -91,7 +91,7 @@ RSpec.describe LineItemsController, type: :controller do
 
       it 'should update service request status' do
         protocol  = create(:protocol_without_validations, primary_pi: logged_in_user, funding_status: 'funded', funding_source: 'federal')
-        sr        = create(:service_request_without_validations, protocol: protocol, status: 'on_hold', subject_count: 3)
+        sr        = create(:service_request_without_validations, protocol: protocol, status: 'on_hold')
         org       = create(:organization)
         ssr       = create(:sub_service_request_without_validations, service_request: sr, organization: org, status: 'on_hold')
         service   = create(:service, one_time_fee: true)

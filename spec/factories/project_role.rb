@@ -27,6 +27,10 @@ FactoryGirl.define do
     project_rights { Faker::Lorem.sentence(2) }
     role 'primary-pi'
 
+    trait :without_validations do
+      to_create { |instance| instance.save(validate: false) }
+    end
+
     trait :approve do
       project_rights 'approve'
     end

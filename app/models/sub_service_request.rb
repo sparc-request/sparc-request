@@ -327,7 +327,7 @@ class SubServiceRequest < ActiveRecord::Base
   end
 
   def is_complete?
-    return status == 'complete'
+    return FINISHED_STATUSES.include?(status)
   end
 
   def find_editable_id(id)

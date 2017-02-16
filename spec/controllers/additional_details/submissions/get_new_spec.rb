@@ -27,7 +27,7 @@ RSpec.describe AdditionalDetails::SubmissionsController, type: :controller do
   before :each do
     org         = create(:organization)
     @service    = create(:service, organization: org)
-    @que        = create(:questionnaire, service: @service, active: true)
+    @que        = create(:questionnaire, :without_validations, service: @service, active: true)
     protocol    = create(:protocol_federally_funded, primary_pi: logged_in_user)
     sr          = create(:service_request_without_validations, protocol: protocol)
     ssr         = create(:sub_service_request, service_request: sr, organization: org)

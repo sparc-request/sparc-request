@@ -24,6 +24,16 @@
         = t(:protocols)[:studies][:information][:header]
   %table.table
     %tbody
+      - if RESEARCH_MASTER_ENABLED
+        %tr.row
+          %td
+            %label.col-lg-4
+              = t(:protocols)[:summary][:research_master_id]
+            .col-lg-8
+              - if protocol.research_master_id.nil?
+                = t(:protocols)[:summary][:na_research_master_id]
+              - else
+                = protocol.research_master_id
       %tr.row
         %td
           %label.col-lg-4

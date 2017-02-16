@@ -76,7 +76,13 @@ class ServiceCalendarsController < ApplicationController
     @tab          = params[:tab]
     @review       = params[:review] == 'true'
     @portal       = params[:portal] == 'true'
-    @admin        = @portal && @sub_service_request.present?
+
+    if params[:admin]
+      @admin = params[:admin] == 'true'
+    else
+      @admin = @portal && @sub_service_request.present?
+    end
+
     @merged       = false
     @consolidated = false
 

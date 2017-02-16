@@ -46,15 +46,15 @@ module AssociatedUsersHelper
   def professional_organization_state(professional_organization)
     if professional_organization
       {
-        dont_submit_selected: professional_organization.parents + (professional_organization.children.empty? ? [] : [professional_organization]),
-        dont_submit_unselected: professional_organization.children,
-        submit_selected: professional_organization.children.empty? ? professional_organization : nil
+        dont_submit_selected: professional_organization.parents,
+        submit_selected: professional_organization,
+        dont_submit_unselected: professional_organization.children
       }
     else
       {
         dont_submit_selected: [],
-        dont_submit_unselected: ProfessionalOrganization.where(parent_id: nil),
-        submit_selected: nil
+        submit_selected: nil,
+        dont_submit_unselected: ProfessionalOrganization.where(parent_id: nil)
       }
     end
   end
@@ -68,10 +68,10 @@ module AssociatedUsersHelper
     select_class = 'form-control selectpicker'
     prompt = t(:authorized_users)[:form_fields][:select_one]
     if choices_from.kind_of?(ProfessionalOrganization)
-      options = options_from_collection_for_select(choices_from.self_and_siblings, 'id', 'name', choices_from.id)
+      options = options_from_collection_for_select(choices_from.self_and_siblings.order(:name), 'id', 'name', choices_from.id)
       select_id = "select-pro-org-#{choices_from.org_type}"
     else
-      options = options_from_collection_for_select(choices_from, 'id', 'name')
+      options = options_from_collection_for_select(choices_from.order(:name), 'id', 'name')
       select_id = "select-pro-org-#{choices_from.first.org_type}"
     end
 

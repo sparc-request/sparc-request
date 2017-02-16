@@ -168,7 +168,7 @@ module CapybaraSupport
 
     project = FactoryGirl.create(:protocol_without_validations)
 
-    service_request = FactoryGirl.create(:service_request_without_validations, protocol_id: project.id, status: "draft", subject_count: 2)
+    service_request = FactoryGirl.create(:service_request_without_validations, protocol_id: project.id, status: "draft")
 
     sub_service_request = create(:sub_service_request, service_request_id: service_request.id, organization_id: program.id,status: "draft", service_requester_id: Identity.find_by_ldap_uid("jug2@musc.edu").id)
 

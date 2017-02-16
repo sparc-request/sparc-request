@@ -17,25 +17,12 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS~
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
-require 'rails_helper'
 
-RSpec.describe ServiceRequest, type: :model do
-  let_there_be_lane
-  let_there_be_j
-  build_service_request_with_study
-
-  describe "#ssrs_to_be_displayed_in_email" do
-      
-    context "ssr_deleted == true" do
-      it "should return the ssr with deleted line_item" do
-        expect(service_request.ssrs_to_be_displayed_in_email(service_provider, @report, true, service_request.sub_service_requests.first.id)).to eq([service_request.sub_service_requests.first])
-      end
-    end
-
-    context "ssr_deleted == false" do
-      it "should return all ssrs belonging to service_provider" do
-        expect(service_request.ssrs_to_be_displayed_in_email(service_provider, @report, false, service_request.sub_service_requests)).to eq(service_request.sub_service_requests)
-      end
-    end
+desc "Add Draft Service Request to any existing Protocols with no Service Requests"
+task :add_service_request_to_dashboard_protocols => :environment do
+  puts "Adding Draft Service Requests:"
+  Protocol.includes(:service_requests).where(service_requests: { id: nil }).each do |protocol|
+    puts "Protocol #{protocol.id}"
+    protocol.service_requests.new(status: 'draft').save(validate: false)
   end
 end

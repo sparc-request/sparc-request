@@ -60,10 +60,10 @@ class UniquePiReport < ReportingModule
 
     attrs["Unique PI Last Name"] = :last_name
     attrs["Unique PI First Name"] = :first_name
-    attrs["Institution"] = "try(:professional_organization).try(:parents_and_self).try(:select){|org| org.org_type == 'institution'}.try(:first).try(:name)"
-    attrs["College"] = "try(:professional_organization).try(:parents_and_self).try(:select){|org| org.org_type == 'college'}.try(:first).try(:name)"
-    attrs["Department"] = "try(:professional_organization).try(:parents_and_self).try(:select){|org| org.org_type == 'department'}.try(:first).try(:name)"
-    attrs["Division"] = "try(:professional_organization).try(:parents_and_self).try(:select){|org| org.org_type == 'division'}.try(:first).try(:name)"
+    attrs["Institution"] = "try(:professional_org_lookup, 'institution')"
+    attrs["College"]     = "try(:professional_org_lookup, 'college')"
+    attrs["Department"]  = "try(:professional_org_lookup, 'department')"
+    attrs["Division"]    = "try(:professional_org_lookup, 'division')"
 
     attrs
   end

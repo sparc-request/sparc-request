@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170118151049) do
+ActiveRecord::Schema.define(version: 20170213212738) do
 
   create_table "admin_rates", force: :cascade do |t|
     t.integer  "line_item_id", limit: 4
@@ -427,10 +427,11 @@ ActiveRecord::Schema.define(version: 20170118151049) do
   add_index "ip_patents_info", ["protocol_id"], name: "index_ip_patents_info_on_protocol_id", using: :btree
 
   create_table "item_options", force: :cascade do |t|
-    t.string   "content",    limit: 255
-    t.integer  "item_id",    limit: 4
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
+    t.string   "content",          limit: 255
+    t.boolean  "validate_content"
+    t.integer  "item_id",          limit: 4
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
   end
 
   add_index "item_options", ["item_id"], name: "index_item_options_on_item_id", using: :btree
@@ -916,10 +917,6 @@ ActiveRecord::Schema.define(version: 20170118151049) do
     t.integer  "protocol_id",             limit: 4
     t.string   "status",                  limit: 255
     t.boolean  "approved"
-    t.integer  "subject_count",           limit: 4
-    t.datetime "consult_arranged_date"
-    t.datetime "pppv_complete_date"
-    t.datetime "pppv_in_process_date"
     t.datetime "submitted_at"
     t.datetime "created_at",                          null: false
     t.datetime "updated_at",                          null: false

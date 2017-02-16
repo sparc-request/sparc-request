@@ -6,4 +6,21 @@ class QuestionnaireResponse < ActiveRecord::Base
   def required?
     required == true
   end
+
+  # When content == '["a","b", "c"]',
+  # return ['a', 'b', 'c'].
+  def content_as_array
+    begin
+      # '["a","b", "c"]' -> '"a","b","c"'
+      no_brackets = content[1...-1]
+
+      # '"a","b","c"' -> ['"a"', '"b"', '"c"']
+      quoted_elements = no_brackets.split(", ")
+
+      # ['"a"', '"b"', '"c"'] -> ['a', 'b', 'c']
+      quoted_elements.map { |quoted_elt| quoted_elt[1...-1] }
+    rescue
+      []
+    end
+  end
 end

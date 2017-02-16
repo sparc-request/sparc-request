@@ -263,8 +263,9 @@ RSpec.describe ServiceRequestsController, type: :controller do
 
       expect(controller).to respond_with(:ok)
     end
-    context 'SSR has been previously submitted' do
 
+    #### START OF EMAIL SPECS FOR DELETING LAST LI ON SSR ###
+    context 'SSR has been previously submitted' do
       before :each do
         @org      = create(:organization, process_ssrs: true)
         @org1     = create(:organization, process_ssrs: true)
@@ -278,16 +279,34 @@ RSpec.describe ServiceRequestsController, type: :controller do
         @li_1     = create(:line_item, service_request: @sr, sub_service_request: @ssr, service: @service)
                     create(:line_item, service_request: @sr, sub_service_request: @ssr1, service: @service1)
                     create(:line_item, service_request: @sr, sub_service_request: @ssr1, service: @service)
-                   create(:service_provider, identity: logged_in_user, organization: @org)
+                   
         @li_id = @li.id
+
+        #Authorized User
+        session[:identity_id]        = logged_in_user.id
+        #Service Provider
+        @service_provider = create(:service_provider, identity: logged_in_user, organization: @org)
+        #Admin
+        @admin = @org.submission_emails.create(email: 'hedwig@owlpost.com')
       end
 
       context 'removed all services (line_item1 & line_item2) for SSR' do
+        before :each do
+          @li_1.destroy
+        end
+        it "should increase deliveries by 2 (service providers and admin)" do
+          expect {
+            post :remove_service, {
+              :id            => @sr.id,
+              :service_id    => @service.id,
+              :line_item_id  => @li_id,
+              :format        => :js,
+            }
+          }.to change(ActionMailer::Base.deliveries, :count).by(2)
+        end
 
         it 'should send notifications to the service provider' do
-          @li_1.destroy
-          session[:identity_id]        = logged_in_user.id
-
+          
           allow(Notifier).to receive(:notify_service_provider) do
             mailer = double('mail')
             expect(mailer).to receive(:deliver_now)
@@ -301,15 +320,31 @@ RSpec.describe ServiceRequestsController, type: :controller do
                  :format        => :js,
                }.with_indifferent_access
 
-          expect(Notifier).to have_received(:notify_service_provider)
+          expect(Notifier).to have_received(:notify_service_provider).with(@service_provider, @sr, {"service_request_#{@sr.id}.xlsx"=>""}, logged_in_user, @ssr.id, nil, true, false)
+        end
+
+        it 'should send notifications to the admin' do
+          
+          allow(Notifier).to receive(:notify_admin) do
+            mailer = double('mail')
+            expect(mailer).to receive(:deliver)
+            mailer
+          end
+
+          post :remove_service, {
+                 :id            => @sr.id,
+                 :service_id    => @service.id,
+                 :line_item_id  => @li_id,
+                 :format        => :js,
+               }.with_indifferent_access
+
+          expect(Notifier).to have_received(:notify_admin).with(@admin.email, "", logged_in_user, @ssr, nil, true)
         end
       end
 
       context 'removed one of two services for SSR' do
 
         it 'should not send notifications to the service provider' do
-          # expect(controller).not_to receive(:send_ssr_service_provider_notifications)
-          session[:identity_id]        = logged_in_user.id
 
           allow(Notifier).to receive(:notify_service_provider) do
             mailer = double('mail')
@@ -327,7 +362,6 @@ RSpec.describe ServiceRequestsController, type: :controller do
         end
 
         it 'should not delete SSR (ssr1)' do
-          session[:identity_id]        = logged_in_user.id
 
           post :remove_service, {
                  :id            => @sr.id,
@@ -352,11 +386,13 @@ RSpec.describe ServiceRequestsController, type: :controller do
         @li       = create(:line_item, service_request: @sr, sub_service_request: @ssr, service: @service)
                    create(:service_provider, identity: logged_in_user, organization: @org)
         @li_id = @li.id
-      end
 
-      it 'should send notifications to the service_provider' do
-
+        #Authorized User
         session[:identity_id]        = logged_in_user.id
+        #Service Provider
+        @service_provider = create(:service_provider, identity: logged_in_user, organization: @org)
+        #Admin
+        @admin = @org.submission_emails.create(email: 'hedwig@owlpost.com')
 
         allow(Notifier).to receive(:notify_service_provider) do
           mailer = double('mail')
@@ -364,27 +400,33 @@ RSpec.describe ServiceRequestsController, type: :controller do
           mailer
         end
 
-        post :remove_service, {
-               :id            => @sr.id,
-               :service_id    => @service.id,
-               :line_item_id  => @li_id,
-               :format        => :js,
-             }.with_indifferent_access
+        allow(Notifier).to receive(:notify_admin) do
+          mailer = double('mail')
+          expect(mailer).to receive(:deliver)
+          mailer
+        end
 
-        expect(Notifier).to have_received(:notify_service_provider)
+        post :remove_service, {
+             :id            => @sr.id,
+             :service_id    => @service.id,
+             :line_item_id  => @li_id,
+             :format        => :js,
+           }.with_indifferent_access
+
+      end
+
+      it 'should send notifications to the service_provider' do
+        expect(Notifier).to have_received(:notify_service_provider).with(@service_provider, @sr, {"service_request_#{@sr.id}.xlsx"=>""}, logged_in_user, @ssr.id, nil, true, false)
+      end
+
+      it 'should send notifications to the admin' do
+        expect(Notifier).to have_received(:notify_admin).with(@admin.email, "", logged_in_user, @ssr, nil, true)
       end
 
       it 'should delete SSR' do
-        session[:identity_id]        = logged_in_user.id
-
-        post :remove_service, {
-               :id            => @sr.id,
-               :service_id    => @service.id,
-               :line_item_id  => @li_id,
-               :format        => :js,
-             }.with_indifferent_access
         expect(@sr.sub_service_requests).to eq([])
       end
     end
+    #### END OF EMAIL SPECS FOR DELETING LAST LI ON SSR ###
   end
 end

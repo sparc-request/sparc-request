@@ -24,7 +24,7 @@ RSpec.describe AdditionalDetails::QuestionnairesController do
   describe '#index' do
     before :each do
       @service = create(:service)
-      @questionnaire = create(:questionnaire, service: @service)
+      @questionnaire = create(:questionnaire, :without_validations, service: @service)
 
       xhr :get, :index, {
         service_id: @service.id

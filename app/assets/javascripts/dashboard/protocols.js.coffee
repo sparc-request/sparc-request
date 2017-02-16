@@ -167,6 +167,13 @@ $(document).ready ->
             $('.service-requests-table').on 'all.bs.table', ->
               $(this).find('.selectpicker').selectpicker()
 
+      $(document).on 'click', '.dropdown-menu li', ->
+        value = $('.selectpicker').val()
+        if value != ""
+          $('#filterrific_search_query_search_text').prop('disabled', false)
+        else
+          $('#filterrific_search_query_search_text').prop('disabled', true)
+
       $(document).on 'change', '.complete-details', ->
         $selected_options = $('option:selected', this)
 

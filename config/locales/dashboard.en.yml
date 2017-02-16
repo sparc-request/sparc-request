@@ -157,6 +157,8 @@ en:
     ######################
     protocol_filters:
       header: "Filter Protocols"
+      search_by: "Search By"
+      search_by_options: ['Authorized User', 'HR#', 'PI', 'Protocol', 'PRO#']
       archived: "Archived"
       inactive: "(inactive)"
       status: "Status"

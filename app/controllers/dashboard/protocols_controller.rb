@@ -39,11 +39,10 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     else
       @organizations = Dashboard::IdentityOrganizations.new(@user.id).general_user_organizations_with_protocols
       @default_filter_params[:admin_filter] = "for_identity #{@user.id}"
-      params[:filterrific][:admin_filter] = "for_identity #{@user.id}" if params[:filterrific]
     end
 
     @filterrific =
-      initialize_filterrific(Protocol, params[:filterrific],
+      initialize_filterrific(Protocol, params[:filterrific] && filterrific_params,
         default_filter_params: @default_filter_params,
         select_options: {
           with_status: AVAILABLE_STATUSES.invert,
@@ -213,6 +212,24 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
   private
 
+  def filterrific_params
+    temp = params.require(:filterrific).permit(:identity_id,
+      :search_name,
+      :show_archived,
+      :admin_filter,
+      :search_query,
+      :sorted_by,
+      with_organization: [],
+      with_status: [],
+      with_owner: [])
+
+    unless @admin
+      temp[:admin_filter] = "for_identity #{@user.id}"
+    end
+
+    temp
+  end
+
   def protocol_params
     @protocol_params ||= begin
         params.require(:protocol).permit(:archived,
@@ -284,9 +301,9 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
   def setup_sorting_variables
     # Set filterrific params for sorting logic, store sorted by to re-apply styling
-    @filterrific_params = params[:filterrific] ? params[:filterrific].except(:sorted_by) : @default_filter_params
+    @filterrific_params = params[:filterrific] ? filterrific_params.except(:sorted_by) : @default_filter_params
     @page               = params[:page]
-    @sorted_by          = params[:filterrific][:sorted_by] if params[:filterrific]
+    @sorted_by          = filterrific_params[:sorted_by] if params[:filterrific]
     @sort_name          = @sorted_by.split(' ')[0] if @sorted_by
     @sort_order         = @sorted_by.split(' ')[1] if @sorted_by
     @new_sort_order     = (@sort_order == 'asc' ? 'desc' : 'asc') if @sort_order

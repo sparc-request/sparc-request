@@ -13,6 +13,12 @@ GIT
       activerecord (>= 3.0)
 
 GIT
+  remote: https://github.com/ayaman/filterrific.git
+  revision: 292ecd953df4ec70f2f9a879105ef5aba5b77e95
+  specs:
+    filterrific (2.1.2)
+
+GIT
   remote: https://github.com/jleonardw9/grouped_validations.git
   revision: dc4207a7966fe691a240a47718b3d9689861a76f
   branch: master
@@ -206,7 +212,6 @@ GEM
       railties (>= 3.0.0)
     faker (1.7.3)
       i18n (~> 0.5)
-    filterrific (2.1.2)
     formtastic (2.2.1)
       actionpack (>= 3.0)
     globalid (0.3.7)
@@ -562,7 +567,7 @@ DEPENDENCIES
   execjs
   factory_girl_rails
   faker
-  filterrific
+  filterrific!
   gon (~> 6.1)
   grape (= 0.7.0)
   grape-entity (~> 0.4.4)

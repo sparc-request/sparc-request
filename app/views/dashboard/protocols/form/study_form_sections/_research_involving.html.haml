@@ -77,7 +77,7 @@
           .form-group.row
             = form.label :study_phase, t(:protocols)[:studies][:information][:phase], class: 'col-lg-2 control-label'
             .col-lg-10
-              = form.select :study_phase, options_for_select(STUDY_PHASES, protocol.study_phase), { include_blank: t(:protocols)[:prompts][:phase] }, class: 'selectpicker'
+              = form.collection_select :study_phase_ids, StudyPhase.v1, :id, :phase, { prompt: t(:protocols)[:prompts][:phase] }, class: 'selectpicker btn-large', title: t(:protocols)[:prompts][:phase], multiple: true
       / Human Subjects selected end
 
       .form-group.row.vertebrate_animals

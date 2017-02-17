@@ -94,7 +94,7 @@
                   %label.col-lg-4
                     = t(:protocols)[:studies][:information][:phase]
                   .col-lg-8
-                    = protocol.study_phase.nil? ? '' : protocol.study_phase.capitalize
+                    = Protocol.find(protocol.id).study_phases.map(&:phase).join(', ')
 
       / Vertebrate Animals
       - if research_types_info.vertebrate_animals

@@ -94,6 +94,7 @@ class Protocol < ActiveRecord::Base
   attr_accessible :short_title
   attr_accessible :sponsor_name
   attr_accessible :start_date
+  attr_accessible :study_phase
   attr_accessible :study_phase_ids
   attr_accessible :study_type_answers_attributes
   attr_accessible :study_type_question_group_id

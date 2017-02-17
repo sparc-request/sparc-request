@@ -124,7 +124,7 @@
           - multiple = options[:multiple]
           - grouping = options[:grouping]
           - selected = options[:selected] || []
-          - default_classes = "required_field" if options[:required]
+          - default_classes = options[:required] ? "required_field" : ""
           - name = options[:for] ? "report[#{options[:for]}]" : "report[#{field.name.underscore}_id]"
           - name += "[]" if multiple
           %label.col-sm-3.control-label= field_label

@@ -219,6 +219,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
       :admin_filter,
       :search_query,
       :sorted_by,
+      :reset_filterrific,
       with_organization: [],
       with_status: [],
       with_owner: [])

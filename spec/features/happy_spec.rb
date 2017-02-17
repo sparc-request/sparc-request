@@ -99,14 +99,14 @@ RSpec.describe "User submitting a ServiceRequest", js: true do
     # Step 1
     expect(page).to have_link("New Project")
     click_link("New Project")
-    fill_in("Short Title:*", with: "My Protocol")
-    fill_in("Project Title:*", with: "My Protocol is Very Important - #12345")
+    fill_in("Short Title:", with: "My Protocol")
+    fill_in("Project Title:", with: "My Protocol is Very Important - #12345")
     click_button("Select a Funding Status")
     find("li", text: "Funded").click
     expect(page).to have_button("Select a Funding Source")
     click_button("Select a Funding Source")
     find("li", text: "Federal").click
-    fill_in "Primary PI: *", with: "john"
+    fill_in "Primary PI:", with: "john"
 
     expect(page).to have_css("div.tt-selectable", text: /johnd@musc.edu/)
     first("div.tt-selectable", text: /johnd@musc.edu/).click

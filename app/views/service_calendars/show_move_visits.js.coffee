@@ -20,4 +20,3 @@
 $('#modal_place').html("<%= escape_javascript(render( 'service_calendars/move_visits_modal', arm: @arm, visit_group: @visit_group, service_request: @service_request)) %>")
 $('#modal_place').modal('show')
 $('.selectpicker').selectpicker()
-set_required_fields()

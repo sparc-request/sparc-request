@@ -21,4 +21,3 @@
 $("#modal_place").html("<%= escape_javascript(render( 'dashboard/visit_groups/add_visit_form', protocol: @protocol, visit_group: @visit_group, arm: @arm, schedule_tab: @schedule_tab, current_page: @current_page, service_request: @service_request, sub_service_request: @sub_service_request )) %>");
 $("#modal_place").modal 'show'
 $(".selectpicker").selectpicker()
-set_required_fields()

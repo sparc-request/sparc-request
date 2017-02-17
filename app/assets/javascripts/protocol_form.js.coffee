@@ -26,6 +26,15 @@ resetRmIdFields = (fields, value) ->
 
 $(document).ready ->
 
+  $(document).on 'click', '.exemption-radio', ->
+    type = $(this).data('type')
+    if type == 'ide'
+      $('.device-number').attr('data-original-title', 'Investigation Device Exemption (IDE) Number').tooltip('fixTitle')
+    else if type == 'hde'
+      $('.device-number').attr('data-original-title', 'Humanitarian Device Exemption (HDE) Number').tooltip('fixTitle')
+    else if type == 'hud'
+      $('.device-number').attr('data-original-title', 'Humanitarian Use Device (HUD) Number').tooltip('fixTitle')
+
   if $('.human-subjects:checkbox:checked').length > 0
     $('.rm-id').addClass('required')
     $('.has-human-subject-info').val('true')

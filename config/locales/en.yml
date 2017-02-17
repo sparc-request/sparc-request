@@ -415,6 +415,18 @@ en:
       federal_sponsor: "Select if Applicable"
       phase: "Select a Study Phase"
       submission_type: "Select a Submission Type"
+    tooltips:
+      epic: 'Defines whether record will interface to Epic EMR upon submission'
+      study_type_questions: 'Information needed to determine confidentiality of patients/protocols in Epic'
+      nct_number: 'Clinicaltrials.gov Registry Number'
+      pro_number: 'Institutional Review Board (IRB) Unique Identifier'
+      ind_number: 'Investigational New Drug (IND) Number'
+      short_title: 'An abbreviated form of the title used to identify your study/project'
+      title: 'Full title of your study/project'
+      funding_status: 'Indicates whether or not funding has been applied for or obtained'
+      potential_funding_source: 'Funding source that has been applied for but not yet obtained. Pricing is logically driven off this field'
+      funding_source: 'Funding source which drives research pricing for your study/project'
+      sponsor_name: 'Specify name of the entity funding the project/study'
     authorized_users:
       header: "Add Primary PI"
       primary_pi: "Primary PI:"

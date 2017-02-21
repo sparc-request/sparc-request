@@ -181,10 +181,7 @@ ActiveRecord::Schema.define(version: 20170303171239) do
     t.index ["organization_id"], name: "index_clinical_providers_on_organization_id", using: :btree
   end
 
-  add_index "clinical_providers", ["identity_id"], name: "index_clinical_providers_on_identity_id", using: :btree
-  add_index "clinical_providers", ["organization_id"], name: "index_clinical_providers_on_organization_id", using: :btree
-
-  create_table "cover_letters", force: :cascade do |t|
+  create_table "cover_letters", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.text     "content",                limit: 65535
     t.integer  "sub_service_request_id"
     t.datetime "created_at",                           null: false
@@ -874,6 +871,8 @@ ActiveRecord::Schema.define(version: 20170303171239) do
     t.datetime "updated_at",              null: false
     t.datetime "deleted_at"
     t.date     "original_submitted_date"
+    t.index ["protocol_id"], name: "index_service_requests_on_protocol_id", using: :btree
+    t.index ["status"], name: "index_service_requests_on_status", using: :btree
   end
 
   create_table "services", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|

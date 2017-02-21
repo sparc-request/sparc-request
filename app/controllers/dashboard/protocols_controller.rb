@@ -220,6 +220,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
       :search_query,
       :sorted_by,
       :reset_filterrific,
+      search_query: [:search_drop, :search_text],
       with_organization: [],
       with_status: [],
       with_owner: [])

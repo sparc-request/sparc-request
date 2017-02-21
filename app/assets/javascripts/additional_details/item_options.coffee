@@ -33,7 +33,11 @@ $ ->
     if showOptions($(value).val(), needOptions)
       $(".item-options[data-item-form-id=#{itemFormId}]").removeClass('hidden')
 
+
   $('#datetimepicker').datetimepicker()
 
   $('.selectpicker').selectpicker()
 
+$('.questionnaires.create').ready ->
+  $.each $('.option-content:visible'), (key, value) ->
+    $(value).parents('.option-input').find('.set-validate-content').val('true')

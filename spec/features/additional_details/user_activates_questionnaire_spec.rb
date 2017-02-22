@@ -23,6 +23,7 @@ require 'rails_helper'
 RSpec.describe 'User has multiple questionnaires that can be activated', js: true do
 
   let_there_be_lane
+  fake_login_for_each_test
 
   before(:each) do
     @service = create(:service_with_ctrc_organization)

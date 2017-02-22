@@ -8,7 +8,18 @@ task :protocol_merge => :environment do
 
   def get_protocol(error=false, protocol_place)
     puts "It appears that was not a valid protocol id" if error
-    id = prompt "Enter the id of the #{protocol_place} protocol to be merged: "
+    if protocol_place == 'first'
+      puts '#' * 20
+      puts '#' * 20
+      puts 'Enter the id of the first protocol.'
+      puts 'Please note that this is the protocol that will be set as the master protocol.'
+      puts 'Any attributes chosen when there are differences between the two protocols'
+      puts 'will be set to this protocol.'
+      id = prompt '=> '
+    else
+      id = prompt 'Enter the id of the second protocol: '
+    end
+
     protocol = Protocol.where(id: id.to_i).first
 
     while !protocol
@@ -43,23 +54,28 @@ task :protocol_merge => :environment do
 
   first_protocol = get_protocol(false, 'first')
   second_protocol = get_protocol(false, 'second')
-  merged_protocol = Protocol.new
 
   continue = prompt('Preparing to merge these two protocols. Are you sure you want to continue? (y/n): ')
 
   if (continue == 'y') || (continue == 'Y')
 
     first_protocol.attributes.each do |attribute, value|
-      if (attribute != 'id') && (attribute != 'type')
+      if (attribute != 'id') && (attribute != 'type') && (attribute != 'created_at') && (attribute != 'updated_at') && (attribute != 'deleted_at')
         second_protocol_attributes = second_protocol.attributes
-        if value == second_protocol_attributes[attribute]
-          merged_protocol.assign_attributes(attribute.to_sym => value)
-        else
+        if value != second_protocol_attributes[attribute]
           resolved_value = resolve_conflict(attribute, value, second_protocol_attributes[attribute])
-          merged_protocol.assign_attributes(attribute.to_sym => resolved_value)
+          first_protocol.assign_attributes(attribute.to_sym => resolved_value)
         end
       end
     end
+  end
+
+  if first_protocol.valid?
+    first_protocol.save
+    puts first_protocol.inspect
+  else
+    puts "#" *20
+    puts first_protocol.errors.inspect
   end
 
   puts "Protocols have been succesfully merged. Assigning service requests to merged protocol..."

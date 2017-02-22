@@ -131,9 +131,8 @@ RSpec.describe "User submitting a ServiceRequest", js: true do
     # Set visit day
     expect(page).to have_css("a", text: "(?)")
     find("a", text: "(?)").click
-    expect(page).to have_css('.editable-input input')
-    find('.editable-input input').set('1')
-    find('.editable-buttons .glyphicon-ok').click
+    fill_in 'visit_group_day', with: 1
+    click_button 'Save changes'
     find("a", text: /Save and Continue/).click
 
     # Step 3

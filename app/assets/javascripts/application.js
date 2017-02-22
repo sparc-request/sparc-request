@@ -58,3 +58,4 @@
 //= require study_schedule_tabs
 //= require subsidy_form
 //= require sweetalert.min
+//= require update_visit_group

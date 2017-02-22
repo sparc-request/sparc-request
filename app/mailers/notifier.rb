@@ -61,7 +61,7 @@ class Notifier < ActionMailer::Base
 
   def notify_admin(submission_email_address, xls, user_current, ssr, audit_report=nil, ssr_destroyed=false)
     @ssr_deleted = false
-    @notes = ssr.service_request.notes
+    @notes = ssr.protocol.notes
 
     if ssr_destroyed
       @status = 'ssr_destroyed'
@@ -95,7 +95,7 @@ class Notifier < ActionMailer::Base
   end
 
   def notify_service_provider(service_provider, service_request, attachments_to_add, user_current, ssr_id, audit_report=nil, ssr_destroyed=false, request_amendment=false)
-    @notes = service_request.notes
+    @notes = service_request.protocol.notes
 
     if ssr_destroyed
       @status = 'ssr_destroyed'

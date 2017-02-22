@@ -194,14 +194,6 @@ ActiveRecord::Schema.define(version: 20170217134129) do
   add_index "clinical_providers", ["identity_id"], name: "index_clinical_providers_on_identity_id", using: :btree
   add_index "clinical_providers", ["organization_id"], name: "index_clinical_providers_on_organization_id", using: :btree
 
-  create_table "contact_forms", force: :cascade do |t|
-    t.string   "subject",    limit: 255
-    t.string   "email",      limit: 255
-    t.text     "message",    limit: 65535
-    t.datetime "created_at",               null: false
-    t.datetime "updated_at",               null: false
-  end
-
   create_table "cover_letters", force: :cascade do |t|
     t.text     "content",                limit: 65535
     t.integer  "sub_service_request_id", limit: 4

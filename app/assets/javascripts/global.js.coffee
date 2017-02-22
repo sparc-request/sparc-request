@@ -25,11 +25,6 @@ $ ->
   $(document).ajaxComplete ->
     $('[data-toggle="tooltip"]').tooltip()
 
-  set_required_fields()
-
-(exports ? this).set_required_fields = () ->
-  $('.required:not(:contains(*))').append('*')
-
 (exports ? this).formatMoney = (n, t=',', d='.', c='$') ->
   s = if n < 0 then "-#{c}" else c
   i = Math.abs(n).toFixed(2)

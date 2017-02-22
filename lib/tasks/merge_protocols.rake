@@ -78,5 +78,29 @@ task :protocol_merge => :environment do
     puts first_protocol.errors.inspect
   end
 
-  puts "Protocols have been succesfully merged. Assigning service requests to merged protocol..."
+  puts "The protocol attributes have been succesfully merged. Assigning project roles to master protocol..."
+
+  second_protocol.project_roles.each do |role|
+    if role.role != 'primary-pi'
+      role.update_attributes(protocol_id: first_protocol.id)
+    end
+  end
+
+  puts "Project roles have been transferred. Assigning service requests..."
+
+  second_protocol.service_requests.each do |request|
+    request.update_attributes(protocol_id: first_protocol.id)
+  end
+
+  puts "Service requests have been transferred. Assigning arms..."
+
+  second_protocol.arms.each do |arm|
+    arm.update_attributes(protocol_id: first_protocol.id)
+  end
+
+  puts "Arms have been transferred. Assigning documents..."
+
+  second_protocol.documents.each do |document|
+    document.update_attributes(protocol_id: first_protocol.id)
+  end
 end

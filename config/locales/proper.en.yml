@@ -104,6 +104,12 @@ en:
       end_date: "End Date"
       recruitment_start: "Estimated Recruitment Start Date"
       recruitment_end: "Estimated Recruitment End Date"
+      tooltips:
+        start_date: 'Study/Project estimated start date (used by service providers to prioritize)'
+        end_date: 'Study/Project estimated end date (used by service providers to prioritize)'
+        recruitment_start_date: 'When your study or project is estimated to start recruiting participants'
+        recruitment_end_date: 'When your study or project is estimated to stop recruiting participants'
+
 
     ####################
     # SERVICE CALENDAR #

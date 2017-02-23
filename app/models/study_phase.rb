@@ -19,7 +19,6 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class StudyPhase < ActiveRecord::Base
-  attr_accessible :order, :phase, :version
   has_and_belongs_to_many :protocols
   
   scope :v1, -> { where(version: 1)  }  

@@ -17,7 +17,8 @@ task :protocol_merge => :environment do
       puts 'will be set to this protocol.'
       id = prompt '=> '
     else
-      id = prompt 'Enter the id of the second protocol: '
+      puts 'Enter the id of the second protocol: '
+      id = prompt '=> '
     end
 
     protocol = Protocol.where(id: id.to_i).first
@@ -72,7 +73,6 @@ task :protocol_merge => :environment do
 
   if first_protocol.valid?
     first_protocol.save
-    puts first_protocol.inspect
   else
     puts "#" *20
     puts first_protocol.errors.inspect
@@ -103,4 +103,6 @@ task :protocol_merge => :environment do
   second_protocol.documents.each do |document|
     document.update_attributes(protocol_id: first_protocol.id)
   end
+
+  puts "Updating of child objects complete"
 end

@@ -69,40 +69,48 @@ task :protocol_merge => :environment do
         end
       end
     end
-  end
 
-  if first_protocol.valid?
+    if first_protocol.valid?
     first_protocol.save
-  else
-    puts "#" *20
-    puts first_protocol.errors.inspect
-  end
-
-  puts "The protocol attributes have been succesfully merged. Assigning project roles to master protocol..."
-
-  second_protocol.project_roles.each do |role|
-    if role.role != 'primary-pi'
-      role.update_attributes(protocol_id: first_protocol.id)
+    else
+      puts "#" *20
+      raise first_protocol.errors.inspect
     end
+
+    puts "The protocol attributes have been succesfully merged. Assigning project roles to master protocol..."
+
+    second_protocol.project_roles.each do |role|
+      if role.role != 'primary-pi'
+        role.update_attributes(protocol_id: first_protocol.id)
+      end
+    end
+
+    puts "Project roles have been transferred. Assigning service requests..."
+
+    second_protocol.service_requests.each do |request|
+      request.update_attributes(protocol_id: first_protocol.id)
+    end
+
+    puts "Service requests have been transferred. Assigning arms..."
+
+    second_protocol.arms.each do |arm|
+      arm.update_attributes(protocol_id: first_protocol.id)
+    end
+
+    puts "Arms have been transferred. Assigning documents..."
+
+    second_protocol.documents.each do |document|
+      document.update_attributes(protocol_id: first_protocol.id)
+    end
+
+    puts 'Documents have been transferred. Assigning notes...'
+
+    second_protocol.notes.each do |note|
+      note.update_attributes(notable_id: first_protocol.id)
+    end
+    
+    puts "Updating of child objects complete"
+  else
+    puts 'Exiting the task...'
   end
-
-  puts "Project roles have been transferred. Assigning service requests..."
-
-  second_protocol.service_requests.each do |request|
-    request.update_attributes(protocol_id: first_protocol.id)
-  end
-
-  puts "Service requests have been transferred. Assigning arms..."
-
-  second_protocol.arms.each do |arm|
-    arm.update_attributes(protocol_id: first_protocol.id)
-  end
-
-  puts "Arms have been transferred. Assigning documents..."
-
-  second_protocol.documents.each do |document|
-    document.update_attributes(protocol_id: first_protocol.id)
-  end
-
-  puts "Updating of child objects complete"
 end

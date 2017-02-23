@@ -72,6 +72,7 @@ task :protocol_merge => :environment do
 
     if first_protocol.valid?
     first_protocol.save
+    second_protocol.destroy
     else
       puts "#" *20
       raise first_protocol.errors.inspect
@@ -108,7 +109,7 @@ task :protocol_merge => :environment do
     second_protocol.notes.each do |note|
       note.update_attributes(notable_id: first_protocol.id)
     end
-    
+
     puts "Updating of child objects complete"
   else
     puts 'Exiting the task...'

@@ -151,7 +151,7 @@
           - else # for individual checkboxes that have true/false
             / %label{:for => options[:for]}= field_label
             .col-sm-9
-              = check_box_tag name, true, nil, :class => default_classes + " form-control", :type => "checkbox"
+              = check_box_tag name, true, nil, :class => default_classes, :type => "checkbox"
             /* TODO define behavior if multiple is a method or string representation of method chain */
 
         /* end check_box_tag */

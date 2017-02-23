@@ -337,7 +337,7 @@ en:
           separator: "-OR-"
           non_phs_sponsor: "Federal Non-PHS Sponsor:"
           serial_number: "Federal Grant Serial Number:"
-        phase: "Study Phase:"
+        phase: "Study Phase(s):"
         sponsor: "Sponsor Name:"
         push_to_epic: "Publish Study in Epic:"
         study_type_questions: "Study Type Questions:"
@@ -413,7 +413,7 @@ en:
       source: "Select a Funding Source"
       potential_source: "Select a Potential Funding Source"
       federal_sponsor: "Select if Applicable"
-      phase: "Select a Study Phase"
+      phase: "Select Study Phase(s)"
       submission_type: "Select a Submission Type"
     tooltips:
       epic: 'Defines whether record will interface to Epic EMR upon submission'

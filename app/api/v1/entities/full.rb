@@ -120,7 +120,6 @@ module V1
             :sponsor_name,
             :brief_description,
             :indirect_cost_rate,
-            :study_phase,
             :udak_project_number,
             :funding_rfa,
             :funding_status,

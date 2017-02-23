@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170215152248) do
+ActiveRecord::Schema.define(version: 20170217134129) do
 
   create_table "admin_rates", force: :cascade do |t|
     t.integer  "line_item_id", limit: 4
@@ -725,6 +725,14 @@ ActiveRecord::Schema.define(version: 20170215152248) do
 
   add_index "protocols", ["next_ssr_id"], name: "index_protocols_on_next_ssr_id", using: :btree
 
+  create_table "protocols_study_phases", id: false, force: :cascade do |t|
+    t.integer "protocol_id",    limit: 4, null: false
+    t.integer "study_phase_id", limit: 4, null: false
+  end
+
+  add_index "protocols_study_phases", ["protocol_id", "study_phase_id"], name: "index_protocols_study_phases_on_protocol_id_and_study_phase_id", using: :btree
+  add_index "protocols_study_phases", ["study_phase_id", "protocol_id"], name: "index_protocols_study_phases_on_study_phase_id_and_protocol_id", using: :btree
+
   create_table "question_groups", force: :cascade do |t|
     t.text     "text",                   limit: 65535
     t.text     "help_text",              limit: 65535
@@ -914,7 +922,6 @@ ActiveRecord::Schema.define(version: 20170215152248) do
     t.datetime "updated_at",                          null: false
     t.datetime "deleted_at"
     t.date     "original_submitted_date"
-    t.integer  "subject_count",           limit: 4
   end
 
   add_index "service_requests", ["protocol_id"], name: "index_service_requests_on_protocol_id", using: :btree
@@ -955,6 +962,14 @@ ActiveRecord::Schema.define(version: 20170215152248) do
 
   add_index "sessions", ["session_id"], name: "index_sessions_on_session_id", using: :btree
   add_index "sessions", ["updated_at"], name: "index_sessions_on_updated_at", using: :btree
+
+  create_table "study_phases", force: :cascade do |t|
+    t.integer  "order",      limit: 4
+    t.string   "phase",      limit: 255
+    t.integer  "version",    limit: 4,   default: 1
+    t.datetime "created_at",                         null: false
+    t.datetime "updated_at",                         null: false
+  end
 
   create_table "study_type_answers", force: :cascade do |t|
     t.integer  "protocol_id",            limit: 4

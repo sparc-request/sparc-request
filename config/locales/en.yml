@@ -223,6 +223,19 @@ en:
     merged_totals:
       header: "Study Cost Totals"
       grand_total: "Grand Total"
+    tooltips:
+      total_per_study: 'Total proposed cost of one-time fees per study'
+      move_visit_button: 'Ability to change visit position'
+      pppv_total_costs: 'Total proposed cost of services per arm'
+      pppv_status: 'Used to track the progress of a service'
+      quantity_type: 'Unit of measurement'
+      subject_count: 'Number of participants'
+      service_rate: 'Cost of service prior to any discounts'
+      your_cost: 'Price after research discount (based on selected funding source)'
+      window_before: 'Visit window days before visit'
+      window_after: 'Visit window days after visit'
+      visit_day: 'Day the anticipated visit occurs (incremental)'
+      visit_name: 'Name of the visit'
 
   #############
   # CONSTANTS #

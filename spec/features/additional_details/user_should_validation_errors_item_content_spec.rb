@@ -1,6 +1,9 @@
 require 'rails_helper'
 
 RSpec.describe 'User should see validation errors on item content', js: true do
+  let_there_be_lane
+  fake_login_for_each_test
+
   scenario 'successfully' do
     service = create(:service, :with_ctrc_organization)
     visit new_service_additional_details_questionnaire_path(service)

@@ -7,6 +7,9 @@
             %h4.list-group-item-heading
               = item.content
             %p.list-group-item-text
-              = qr.content.delete('[]').delete('\"')
+              - if item.item_type == 'multiple_dropdown'
+                = qr.content.delete('[]').delete('\"')
+              - else
+                = qr.content
       - unless item == @items.last
         %hr

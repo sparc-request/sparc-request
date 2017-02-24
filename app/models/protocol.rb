@@ -49,11 +49,14 @@ class Protocol < ActiveRecord::Base
 
   has_many :principal_investigators, -> { where(project_roles: { role: %w(pi primary-pi) }) },
     source: :identity, through: :project_roles
+  has_many :non_pi_authorized_users, -> { where.not(project_roles: { role: %w(pi primary-pi) }) },
+    source: :identity, through: :project_roles
   has_many :billing_managers, -> { where(project_roles: { role: 'business-grants-manager' }) },
     source: :identity, through: :project_roles
   has_many :coordinators, -> { where(project_roles: { role: 'research-assistant-coordinator' }) },
     source: :identity, through: :project_roles
 
+  has_and_belongs_to_many :study_phases
   belongs_to :study_type_question_group
 
   attr_accessible :affiliations_attributes
@@ -93,7 +96,7 @@ class Protocol < ActiveRecord::Base
   attr_accessible :short_title
   attr_accessible :sponsor_name
   attr_accessible :start_date
-  attr_accessible :study_phase
+  attr_accessible :study_phase_ids
   attr_accessible :study_type_answers_attributes
   attr_accessible :study_type_question_group_id
   attr_accessible :study_types_attributes
@@ -185,29 +188,43 @@ class Protocol < ActiveRecord::Base
     ]
   )
 
-  scope :search_query, -> (search_term) {
+  scope :search_query, lambda { |search_attrs|
     # Searches protocols based on short_title, title, id, and associated_users
     # Protects against SQL Injection with ActiveRecord::Base::sanitize
 
     # inserts ! so that we can escape special characters
-    escaped_search_term = search_term.to_s.gsub(/[!%_]/) { |x| '!' + x }
+    escaped_search_term = search_attrs[:search_text].to_s.gsub(/[!%_]/) { |x| '!' + x }
 
     like_search_term = ActiveRecord::Base::sanitize("%#{escaped_search_term}%")
-    exact_search_term = ActiveRecord::Base::sanitize(search_term)
+    exact_search_term = ActiveRecord::Base::sanitize(search_attrs[:search_text])
 
     #TODO temporary replacement for "MATCH(identities.first_name, identities.last_name) AGAINST (#{exact_search_term})"
-    where_clause = ["CONCAT(identities.first_name, ' ', identities.last_name) LIKE #{like_search_term} escape '!'"]
-
-    where_clause += ["protocols.short_title like #{like_search_term} escape '!'",
-      "protocols.title like #{like_search_term} escape '!'",
-      "protocols.id = #{exact_search_term}"]
-
-    where_clause += ["human_subjects_info.hr_number = #{exact_search_term}", 
-                      "human_subjects_info.pro_number = #{exact_search_term}"]
-
-    joins(:identities).joins(:human_subjects_info).
-      where(where_clause.compact.join(' OR ')).
-      distinct
+    case search_attrs[:search_drop]
+      
+    when "PI"
+      joins(:principal_investigators).
+        where("CONCAT(identities.first_name, ' ', identities.last_name) LIKE #{like_search_term} escape '!'").
+        distinct
+    when "Authorized User"
+      joins(:non_pi_authorized_users).
+        joins(:identities).
+        where("CONCAT(identities.first_name, ' ', identities.last_name) LIKE #{like_search_term} escape '!'").
+        distinct
+    when "Protocol"
+      where_clause = ["protocols.short_title LIKE #{like_search_term} escape '!'",
+        "protocols.title LIKE #{like_search_term} escape '!'",
+        "protocols.id = #{exact_search_term}"]
+      where(where_clause.join(' OR ')).
+        distinct
+    when "HR#"
+      joins(:human_subjects_info).
+        where("human_subjects_info.hr_number LIKE #{like_search_term} escape '!'").
+        distinct
+    when "PRO#"
+      joins(:human_subjects_info).
+        where("human_subjects_info.pro_number LIKE #{like_search_term} escape '!'").
+        distinct
+    end
 
   }
 

@@ -74,7 +74,7 @@ class ProtocolsReport < ReportingModule
     attrs["Potential Funding Source"] = "service_request.try(:protocol).try(:potential_funding_source)"
     attrs["Sponsor Name"] = "service_request.try(:protocol).try(:sponsor_name)"
     attrs["Financial Account"] = "service_request.try(:protocol).try(:udak_project_number).try{prepend(' ')}"
-    attrs["Study Phase"] = "service_request.try(:protocol).try(:study_phase)"
+    attrs["Study Phase"] = "service_request.try(:protocol).try{study_phases.map(&:phase).join(', ')}"
 
     attrs["NCT #"] = "service_request.try(:protocol).try(:human_subjects_info).try(:nct_number).try{prepend(' ')}"
     attrs["HR #"] = "service_request.try(:protocol).try(:human_subjects_info).try(:hr_number).try{prepend(' ')}"

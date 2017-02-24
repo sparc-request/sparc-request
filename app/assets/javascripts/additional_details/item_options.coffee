@@ -4,7 +4,7 @@ $ ->
   showOptions = (selection, array) ->
     $.inArray(selection, array) > -1
 
-  $('.select-type').on 'change', ->
+  $(document).on 'change', '.select-type', ->
     itemId = $(this).data('item-form-id')
     if showOptions($(this).val(), needOptions)
       $(".item-options[data-item-form-id=#{itemId}]").removeClass('hidden')
@@ -33,7 +33,11 @@ $ ->
     if showOptions($(value).val(), needOptions)
       $(".item-options[data-item-form-id=#{itemFormId}]").removeClass('hidden')
 
+
   $('#datetimepicker').datetimepicker()
 
   $('.selectpicker').selectpicker()
 
+$('.questionnaires.create').ready ->
+  $.each $('.option-content:visible'), (key, value) ->
+    $(value).parents('.option-input').find('.set-validate-content').val('true')

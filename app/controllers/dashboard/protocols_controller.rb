@@ -262,7 +262,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
         :selected_for_epic,
         :short_title,
         :sponsor_name,
-        :study_phase,
+        {:study_phase_ids => []},
         :study_type_question_group_id,
         :title,
         :type,

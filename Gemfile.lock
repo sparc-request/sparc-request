@@ -12,21 +12,6 @@ GIT
   specs:
     grouped_validations (0.3.3)
 
-GIT
-  remote: https://github.com/sparc-request/surveyor.git
-  revision: 5281b317a559fba43c0a3f377dbeeaf9344ad32d
-  branch: rails4
-  specs:
-    surveyor (1.4.1.pre)
-      formtastic (~> 2.2.1)
-      haml (~> 4.0)
-      mustache (~> 0.99)
-      rabl (~> 0.6)
-      rails (>= 3.2)
-      rails-observers (~> 0.1)
-      sass
-      uuidtools (~> 2.1)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -604,7 +589,6 @@ DEPENDENCIES
   spring
   spring-commands-rspec
   sqlite3
-  surveyor!
   therubyracer (= 0.10.2)
   thin
   timecop

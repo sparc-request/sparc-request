@@ -250,8 +250,8 @@ class Protocol < ActiveRecord::Base
 
     ssrs = SubServiceRequest.where.not(status: 'first_draft').where(organization_id: Organization.authorized_for_identity(identity_id))
 
-    joins(:sub_service_requests).
-      merge(ssrs).distinct
+    with_requests = joins(:sub_service_requests).merge(ssrs).distinct
+    Identity.find(identity_id).super_users.any? ? with_requests + includes(:service_requests).where(service_requests: {id: nil}) : with_requests
   }
 
   scope :show_archived, -> (boolean) {

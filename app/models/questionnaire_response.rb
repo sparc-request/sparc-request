@@ -1,7 +1,7 @@
 class QuestionnaireResponse < ActiveRecord::Base
   belongs_to :submission
   belongs_to :item
-  # validates :content, presence: true, if: :required? 
+  validates :content, presence: true, if: :required? 
   validates_format_of :content, with: Devise::email_regexp, if: :content_is_email?
   validates_format_of :content, with: /\d{3}-\d{3}-\d{4}/, if: :content_is_phone?
 

@@ -3,7 +3,7 @@ class QuestionnaireResponse < ActiveRecord::Base
   belongs_to :item
   # validates :content, presence: true, if: :required? 
   validates_format_of :content, with: Devise::email_regexp, if: :content_is_email?
-  validates_format_of :content, with: /\d{3}-\d{3}-\d{4}/, if: :content_is_number?
+  validates_format_of :content, with: /\d{3}-\d{3}-\d{4}/, if: :content_is_phone?
 
   def required?
     required == true
@@ -13,8 +13,8 @@ class QuestionnaireResponse < ActiveRecord::Base
     item.item_type == 'email'
   end
 
-  def content_is_number?
-    item.item_type == 'number'
+  def content_is_phone?
+    item.item_type == 'phone'
   end
 
   # When content == '["a","b", "c"]',

@@ -40,7 +40,7 @@
                 .input-group-btn
                   .dd_select
                     = search.select :search_drop, t(:dashboard)[:protocol_filters][:search_by_options], { prompt:  t(:dashboard)[:protocol_filters][:search_by] }, class: "form-control selectpicker ", data: { style: 'dropdown_filter' }  
-                = search.text_field :search_text, class: 'form-control', disabled: true
+                = search.text_field :search_text, class: 'form-control'
 
         .form-group.row
           = form.label :show_archived, t(:dashboard)[:protocol_filters][:archived], class: 'col-lg-10 control-label'

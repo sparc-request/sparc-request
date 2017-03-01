@@ -68,6 +68,9 @@ $(document).ready ->
       resetRmIdFields('.rm-id-dependent', '')
       toggleFields('.rm-locked-fields', false)
 
+  $(document).on 'click', '.edit-rmid', ->
+    $('#protocol_research_master_id').prop('readonly', false)
+
   $('#protocol-form-display form').bind 'submit', ->
     $(this).find(':input').prop('disabled', false)
 

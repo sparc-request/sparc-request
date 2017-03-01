@@ -264,7 +264,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     attrs
   end
 
-  def save_protocol_with_blank_rmid_if_admin attrs
+  def save_protocol_with_blank_rmid_if_admin(attrs)
     @protocol.assign_attributes(attrs)
     if @admin && !@protocol.valid? && @protocol.errors.full_messages == ["Research master can't be blank"]
       @protocol.save(validate: false)

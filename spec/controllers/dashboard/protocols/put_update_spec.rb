@@ -95,7 +95,7 @@ RSpec.describe Dashboard::ProtocolsController do
     context 'user does not have Admin access nor a valid project role' do
       before :each do
         @logged_in_user = create(:identity)
-        @protocol       = create(:protocol_without_validations, type: 'Project')
+        @protocol       = create(:protocol_without_validations)
 
         log_in_dashboard_identity(obj: @logged_in_user)
 
@@ -114,43 +114,99 @@ RSpec.describe Dashboard::ProtocolsController do
       context 'user authorized to edit Protocol as Super User' do
         before :each do
           @logged_in_user = create(:identity)
-          @protocol       = create(:protocol_without_validations, type: 'Project')
+          @protocol       = create(:protocol_without_validations,
+                                    primary_pi: @logged_in_user,
+                                    funding_status: "funded",
+                                    funding_source: "foundation",
+                                    has_human_subject_info: true)
           organization    = create(:organization)
           service_request = create(:service_request_without_validations, protocol: @protocol)
                             create(:sub_service_request_without_validations, organization: organization, service_request: service_request, status: 'draft')
                             create(:super_user, identity: @logged_in_user, organization: organization)
 
           log_in_dashboard_identity(obj: @logged_in_user)
-
-          xhr :get, :update, id: @protocol.id, protocol: { title: "some value" }
         end
 
         it 'should set @admin to true' do
+          xhr :get, :update, id: @protocol.id, protocol: { title: "some value" }
           expect(assigns(:admin)).to eq(true)
         end
 
-        it { is_expected.to respond_with :ok }
+        it 'should allow blank Research Master ID with human subjects' do
+          stub_const("RESEARCH_MASTER_ENABLED", true)
+          @protocol.research_master_id = 1
+          @protocol.save(validate: false)
+
+          xhr :get, :update, id: @protocol.id, protocol: { research_master_id: nil }
+          @protocol.reload
+
+          expect(@protocol.research_master_id).to be_nil
+        end
+
+        it 'should not save with blank RMID with other invalid params' do
+          stub_const("RESEARCH_MASTER_ENABLED", true)
+          @protocol.research_master_id = 1
+          @protocol.save(validate: false)
+
+          xhr :get, :update, id: @protocol.id, protocol: { title: "", research_master_id: nil }
+          @protocol.reload
+
+          expect(@protocol.research_master_id).to eq(1)
+        end
+
+        it 'should respond ok' do
+          xhr :get, :update, id: @protocol.id, protocol: { title: "some value" }
+          expect(controller).to respond_with(:ok)
+        end
       end
 
       context 'user authorized to edit Protocol as Service Provider' do
         before :each do
           @logged_in_user = create(:identity)
-          @protocol       = create(:protocol_without_validations, type: 'Project')
+          @protocol       = create(:protocol_without_validations,
+                                    primary_pi: @logged_in_user,
+                                    funding_status: "funded",
+                                    funding_source: "foundation",
+                                    has_human_subject_info: true)
           organization    = create(:organization)
           service_request = create(:service_request_without_validations, protocol: @protocol)
                             create(:sub_service_request_without_validations, organization: organization, service_request: service_request, status: 'draft')
                             create(:service_provider, identity: @logged_in_user, organization: organization)
 
           log_in_dashboard_identity(obj: @logged_in_user)
-
-          xhr :get, :update, id: @protocol.id, protocol: { title: "some value" }
         end
 
         it 'should set @admin to true' do
+          xhr :get, :update, id: @protocol.id, protocol: { title: "some value" }
           expect(assigns(:admin)).to eq(true)
         end
 
-        it { is_expected.to respond_with :ok }
+        it 'should allow blank Research Master ID with human subjects' do
+          stub_const("RESEARCH_MASTER_ENABLED", true)
+          @protocol.research_master_id = 1
+          @protocol.save(validate: false)
+
+          xhr :get, :update, id: @protocol.id, protocol: { research_master_id: nil }
+          @protocol.reload
+
+          expect(@protocol.research_master_id).to be_nil
+        end
+
+        it 'should not save with blank RMID with other invalid params' do
+          stub_const("RESEARCH_MASTER_ENABLED", true)
+          @protocol.research_master_id = 1
+          @protocol.save(validate: false)
+
+          xhr :get, :update, id: @protocol.id, protocol: { title: "", research_master_id: nil }
+          @protocol.reload
+
+          expect(@protocol.research_master_id).to eq(1)
+        end
+
+        it 'should respond ok' do
+          xhr :get, :update, id: @protocol.id, protocol: { title: "some value" }
+          expect(controller).to respond_with(:ok)
+        end
       end
     end
   end

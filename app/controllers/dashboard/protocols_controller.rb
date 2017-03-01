@@ -139,6 +139,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
     @protocol.valid?
     @errors = @protocol.errors
+    @errors.delete(:research_master_id) if @admin
 
     respond_to do |format|
       format.html
@@ -269,6 +270,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     if @admin && !@protocol.valid? && @protocol.errors.full_messages == ["Research master can't be blank"]
       @protocol.save(validate: false)
     else
+      @protocol.errors.delete(:research_master_id) if @admin
       @protocol.save
     end
   end

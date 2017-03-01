@@ -10,11 +10,11 @@ class QuestionnaireResponse < ActiveRecord::Base
   end
 
   def content_is_email?
-    item.item_type == 'email'
+    (item.item_type == 'email') if item
   end
 
   def content_is_phone?
-    item.item_type == 'phone'
+    (item.item_type == 'phone') if item
   end
 
   # When content == '["a","b", "c"]',

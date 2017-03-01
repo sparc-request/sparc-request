@@ -193,6 +193,7 @@ class Protocol < ActiveRecord::Base
     # Protects against SQL Injection with ActiveRecord::Base::sanitize
     # inserts ! so that we can escape special characters
     escaped_search_term = search_attrs[:search_text].to_s.gsub(/[!%_]/) { |x| '!' + x }
+    
     like_search_term = ActiveRecord::Base::sanitize("%#{escaped_search_term}%")
     exact_search_term = ActiveRecord::Base::sanitize(search_attrs[:search_text])
 

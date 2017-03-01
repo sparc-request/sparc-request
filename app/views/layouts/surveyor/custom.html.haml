@@ -67,9 +67,10 @@
             .panel-body
               .form-group.text-center
                 = yield
-            .panel-footer
-              %a.btn.btn-default#survey-submit-button
-                = t(:actions)[:submit]
+            - if action_name == "edit"
+              .panel-footer
+                %a.btn.btn-default#survey-submit-button
+                  = t(:actions)[:submit]
 
         .col-sm-2
   %footer

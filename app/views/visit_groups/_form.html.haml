@@ -1,0 +1,33 @@
+.modal-dialog.modal-md
+  = form_for @visit_group, remote: true,
+    url: visit_group_path(@visit_group, service_request_id: params[:service_request_id]),
+    html: { method: 'put', class: 'modal-content form-horizontal visit-group-form', data: { type: 'json' } } do |f|
+    .modal-header
+      %button.close{type: 'button', data: {dismiss: 'modal'}}
+        %span{aria: {hidden:'true'}} &times;
+        %span.sr-only &times;
+      %h4.modal-title.text-center
+        Edit Visit
+    .modal-body
+      = hidden_field_tag 'arm_id', params[:arm_id], class: 'vg-arm-id'
+      = hidden_field_tag 'sr_id', params[:service_request_id], class: 'vg-sr-id'
+      .form-group
+        = f.label :name, 'Visit Name', class: 'col-sm-4 control-label'
+        .col-sm-8
+          = f.text_field :name, class: 'form-control'
+      .form-group
+        = f.label :day, 'Visit Day', class: 'col-sm-4 control-label'
+        .col-sm-8
+          = f.text_field :day, class: 'form-control'
+      .form-group
+        = f.label :window_before, 'Edit Window Before Visit', class: 'col-sm-4 control-label'
+        .col-sm-8
+          = f.text_field :window_before, class: 'form-control'
+      .form-group
+        = f.label :window_after, 'Edit Window After Visit', class: 'col-sm-4 control-label'
+        .col-sm-8
+          = f.text_field :window_after, class: 'form-control'
+    .modal-footer
+      %button{ class: 'btn btn-default', data: { dismiss: 'modal' } } Close
+      = f.submit 'Save changes', class: 'btn btn-primary'
+

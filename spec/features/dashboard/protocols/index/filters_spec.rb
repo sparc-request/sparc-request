@@ -224,7 +224,7 @@ RSpec.describe "filters", js: :true do
   end
 
   describe "search" do
-    context "Protocol search" do 
+    context "Short/Long Title search" do 
       before :each do
         organization1 = create(:organization)
         organization2 = create(:organization)
@@ -255,7 +255,7 @@ RSpec.describe "filters", js: :true do
       it "should match against title case insensitively (lowercase)" do
         visit_protocols_index_page
         expect(@page.search_results).to have_protocols(count: 3)   
-        @page.filter_protocols.select_search(@page, "Protocol", "title")
+        @page.filter_protocols.select_search(@page, "Short/Long Title", "title")
         @page.filter_protocols.apply_filter_button.click()
         expect(@page.search_results).to have_protocols(text: "Protocol1")
         expect(@page.search_results).to have_protocols(text: "Protocol2")
@@ -265,7 +265,7 @@ RSpec.describe "filters", js: :true do
       it "should match against whole short title case insensitively (uppercase)" do
         visit_protocols_index_page
         expect(@page.search_results).to have_protocols(count: 3)
-        @page.filter_protocols.select_search(@page, "Protocol", "Protocol1")
+        @page.filter_protocols.select_search(@page, "Short/Long Title", "Protocol1")
         @page.filter_protocols.apply_filter_button.click
         expect(@page.search_results).to have_protocols(text: "Protocol1")
         expect(@page.search_results).to have_no_protocols(text: "Protocol2")
@@ -275,34 +275,63 @@ RSpec.describe "filters", js: :true do
       it "should match against partial short title case insensitively (uppercase)" do
         visit_protocols_index_page
         expect(@page.search_results).to have_protocols(count: 3)
-        @page.filter_protocols.select_search(@page, "Protocol", "Protocol")
+        @page.filter_protocols.select_search(@page, "Short/Long Title", "Protocol")
         @page.filter_protocols.apply_filter_button.click
         expect(@page.search_results).to have_protocols(text: "Protocol1")
         expect(@page.search_results).to have_protocols(text: "Protocol2")
         expect(@page.search_results).to have_protocols(text: "Protocol3")
       end
 
-      it "should match against id" do
-        visit_protocols_index_page
-        expect(@page.search_results).to have_protocols(count: 3)
-        @page.filter_protocols.select_search(@page, "Protocol", @protocol1.id.to_s)
-        @page.filter_protocols.apply_filter_button.click
-        expect(@page.search_results).to have_protocols(count: 1)
-        expect(@page.search_results).to have_protocols(text: "Protocol1")
-      end
-
-       it "should match against displaying special characters" do
+      it "should match against displaying special characters" do
         @protocol1.update_attribute(:short_title, "title %")
         @protocol2.update_attribute(:short_title, "_Title")
         @protocol3.update_attribute(:short_title, "a%a")
 
         visit_protocols_index_page
         expect(@page.search_results).to have_protocols(count: 3)
-        @page.filter_protocols.select_search(@page, "Protocol", "%")
+        @page.filter_protocols.select_search(@page, "Short/Long Title", "%")
         @page.filter_protocols.apply_filter_button.click()
         expect(@page.search_results).to have_protocols(text: "title %")
         expect(@page.search_results).to have_no_protocols(text: "_Title")
         expect(@page.search_results).to have_protocols(text: "a%a")
+      end
+    end
+
+    context "Protocol ID search" do 
+      before :each do
+        organization1 = create(:organization)
+        organization2 = create(:organization)
+        organization3 = create(:organization)
+        create(:service_provider, organization: organization1, identity: user)
+        create(:service_provider, organization: organization2, identity: user)
+        create(:service_provider, organization: organization3, identity: user)
+
+        @protocol1 = create_protocol(archived: false, title: "titlex", short_title: "Protocol1")
+        create(:project_role, identity: user, role: "very-important", project_rights: "to-party", protocol: @protocol1)
+
+        @protocol2 = create_protocol(archived: false, title: "xTitle", short_title: "Protocol2")
+        create(:project_role, identity: user, role: "very-important", project_rights: "to-party", protocol: @protocol2)
+
+        @protocol3 = create_protocol(archived: false, title: "aaa", short_title: "Protocol3")
+        create(:project_role, identity: user, role: "very-important", project_rights: "to-party", protocol: @protocol3)
+
+        service_request1 = create(:service_request_without_validations, protocol: @protocol1)
+                           create(:sub_service_request, service_request: service_request1, organization: organization1, status: 'draft')
+
+        service_request2 = create(:service_request_without_validations, protocol: @protocol2)
+                           create(:sub_service_request, service_request: service_request2, organization: organization2, status: 'draft')
+
+        service_request3 = create(:service_request_without_validations, protocol: @protocol3)
+                           create(:sub_service_request, service_request: service_request3, organization: organization3, status: 'draft')
+      end
+
+      it "should match against id" do
+        visit_protocols_index_page
+        expect(@page.search_results).to have_protocols(count: 3)
+        @page.filter_protocols.select_search(@page, "Protocol ID", @protocol1.id.to_s)
+        @page.filter_protocols.apply_filter_button.click
+        expect(@page.search_results).to have_protocols(count: 1)
+        expect(@page.search_results).to have_protocols(text: "Protocol1")
       end
     end
 
@@ -426,6 +455,45 @@ RSpec.describe "filters", js: :true do
       end
     end
 
+    context "RMID search" do
+      before :each do
+        organization1 = create(:organization)
+        organization2 = create(:organization)
+        organization3 = create(:organization)
+        create(:service_provider, organization: organization1, identity: user)
+        create(:service_provider, organization: organization2, identity: user)
+        create(:service_provider, organization: organization3, identity: user)
+
+        protocol1 = create_protocol(archived: false, short_title: "Protocol1")
+        create(:project_role, identity: user, role: "very-important", project_rights: "to-party", protocol: protocol1)
+
+        protocol2 = create_protocol(archived: false, short_title: "Protocol2")
+        create(:project_role, identity: user, role: "very-important", project_rights: "to-party", protocol: protocol2)
+
+        @protocol3 = create_protocol(archived: false, short_title: "Protocol3", research_master_id: 999999)
+        create(:project_role, identity: user, role: "very-important", project_rights: "to-party", protocol: @protocol3)
+
+        service_request1 = create(:service_request_without_validations, protocol: protocol1)
+                           create(:sub_service_request, service_request: service_request1, organization: organization1, status: 'draft')
+
+        service_request2 = create(:service_request_without_validations, protocol: protocol2)
+                           create(:sub_service_request, service_request: service_request2, organization: organization2, status: 'draft')
+
+        service_request3 = create(:service_request_without_validations, protocol: @protocol3)
+                           create(:sub_service_request, service_request: service_request3, organization: organization3, status: 'draft')
+      end
+
+      it "should match against RMID" do
+        visit_protocols_index_page
+        expect(@page.search_results).to have_protocols(count: 3)
+        @page.filter_protocols.select_search(@page, "RMID", @protocol3.research_master_id)
+        @page.filter_protocols.apply_filter_button.click()
+        expect(@page.search_results).to have_no_protocols(text: "Protocol1")
+        expect(@page.search_results).to have_no_protocols(text: "Protocol2")
+        expect(@page.search_results).to have_protocols(text: "Protocol3")
+      end
+    end
+
     context "HR# search" do
       before :each do
         organization1 = create(:organization)
@@ -523,20 +591,155 @@ RSpec.describe "filters", js: :true do
         expect(@page.search_results).to have_protocols(text: "Protocol3")
       end
 
-      it "should match against partial PRO#" do
+      it "should not have any PRO# matches" do
         visit_protocols_index_page
         expect(@page.search_results).to have_protocols(count: 3)
-        @page.filter_protocols.select_search(@page, "PRO#", @protocol3.human_subjects_info.pro_number.split(//, 2).last)
+        @page.filter_protocols.select_search(@page, "PRO#", "111111111")
+        @page.filter_protocols.apply_filter_button.click()
+        expect(@page.search_results).to have_no_protocols(text: "Protocol1")
+        expect(@page.search_results).to have_no_protocols(text: "Protocol2")
+        expect(@page.search_results).to have_no_protocols(text: "Protocol3")
+      end
+    end
+
+    context "All search" do
+      before :each do
+        organization1 = create(:organization)
+        organization2 = create(:organization)
+        organization3 = create(:organization)
+        create(:service_provider, organization: organization1, identity: user)
+        create(:service_provider, organization: organization2, identity: user)
+        create(:service_provider, organization: organization3, identity: user)
+
+        @protocol1 = create_protocol(id: 888888, archived: false, title: "titlex", short_title: "Protocol1")
+        create(:project_role, identity: user, role: "very-important", project_rights: "to-party", protocol: @protocol1)
+
+        @protocol2 = create_protocol(id: 777777, archived: false, title: "xTitle", short_title: "Protocol2")
+        create(:project_role, identity: user, role: "very-important", project_rights: "to-party", protocol: @protocol2)
+
+        @protocol3 = create_protocol(archived: false, title: "888888", short_title: "Protocol3", research_master_id: 999999)
+        create(:project_role, identity: user2, role: "very-important", project_rights: "to-party", protocol: @protocol3)
+
+        service_request1 = create(:service_request_without_validations, protocol: @protocol1)
+                           create(:sub_service_request, service_request: service_request1, organization: organization1, status: 'draft')
+
+        service_request2 = create(:service_request_without_validations, protocol: @protocol2)
+                           create(:sub_service_request, service_request: service_request2, organization: organization2, status: 'draft')
+
+        service_request3 = create(:service_request_without_validations, protocol: @protocol3)
+                           create(:sub_service_request, service_request: service_request3, organization: organization3, status: 'draft')
+      end
+
+      ### SEARH ALL TITLE ###
+      it "should match against title case insensitively (lowercase) and match protocol ID" do
+        visit_protocols_index_page
+        expect(@page.search_results).to have_protocols(count: 3)   
+        @page.filter_protocols.search_field.set("888888")
+        @page.filter_protocols.apply_filter_button.click()
+        expect(@page.search_results).to have_protocols(text: "Protocol1")
+        expect(@page.search_results).to have_no_protocols(text: "Protocol2")
+        expect(@page.search_results).to have_protocols(text: "Protocol3")
+      end
+
+      it "should match against whole short title case insensitively (uppercase)" do
+        visit_protocols_index_page
+        expect(@page.search_results).to have_protocols(count: 3)
+        @page.filter_protocols.search_field.set("Protocol1")
+        @page.filter_protocols.apply_filter_button.click
+        expect(@page.search_results).to have_protocols(text: "Protocol1")
+        expect(@page.search_results).to have_no_protocols(text: "Protocol2")
+        expect(@page.search_results).to have_no_protocols(text: "Protocol3")
+      end
+
+      it "should match against partial short title case insensitively (uppercase)" do
+        visit_protocols_index_page
+        expect(@page.search_results).to have_protocols(count: 3)
+        @page.filter_protocols.search_field.set("Protocol")
+        @page.filter_protocols.apply_filter_button.click
+        expect(@page.search_results).to have_protocols(text: "Protocol1")
+        expect(@page.search_results).to have_protocols(text: "Protocol2")
+        expect(@page.search_results).to have_protocols(text: "Protocol3")
+      end
+
+      it "should match against displaying special characters" do
+        @protocol1.update_attribute(:short_title, "title %")
+        @protocol2.update_attribute(:short_title, "_Title")
+        @protocol3.update_attribute(:short_title, "a%a")
+
+        visit_protocols_index_page
+        expect(@page.search_results).to have_protocols(count: 3)
+        @page.filter_protocols.search_field.set("%")
+        @page.filter_protocols.apply_filter_button.click()
+        expect(@page.search_results).to have_protocols(text: "title %")
+        expect(@page.search_results).to have_no_protocols(text: "_Title")
+        expect(@page.search_results).to have_protocols(text: "a%a")
+      end
+
+      ### SEARH ALL PROTOCOL ID ###
+      it "should match against id" do
+        visit_protocols_index_page
+        expect(@page.search_results).to have_protocols(count: 3)
+        @page.filter_protocols.search_field.set(777777)
+        @page.filter_protocols.apply_filter_button.click
+        expect(@page.search_results).to have_protocols(count: 1)
+        expect(@page.search_results).to have_protocols(text: "Protocol2")
+      end
+
+      ### SEARH ALL USERS ###
+      it "should match against associated users first name case insensitively (lowercase)" do        
+        visit_protocols_index_page
+        expect(@page.search_results).to have_protocols(count: 3)
+        @page.filter_protocols.search_field.set("james")
         @page.filter_protocols.apply_filter_button.click()
         expect(@page.search_results).to have_no_protocols(text: "Protocol1")
         expect(@page.search_results).to have_no_protocols(text: "Protocol2")
         expect(@page.search_results).to have_protocols(text: "Protocol3")
       end
 
-      it "should not have any PRO# matches" do
+      it "should match against associated users last name case insensitively (uppercase)" do
         visit_protocols_index_page
         expect(@page.search_results).to have_protocols(count: 3)
-        @page.filter_protocols.select_search(@page, "PRO#", "111111111")
+        @page.filter_protocols.search_field.set("Doop")
+        @page.filter_protocols.apply_filter_button.click()
+        expect(@page.search_results).to have_no_protocols(text: "Protocol1")
+        expect(@page.search_results).to have_no_protocols(text: "Protocol2")
+        expect(@page.search_results).to have_protocols(text: "Protocol3")
+      end
+
+      it "should not have any matches" do
+        visit_protocols_index_page
+        expect(@page.search_results).to have_protocols(count: 3)
+        @page.filter_protocols.search_field.set("Hedwig")
+        @page.filter_protocols.apply_filter_button.click()
+        expect(@page.search_results).to have_no_protocols(text: "Protocol1")
+        expect(@page.search_results).to have_no_protocols(text: "Protocol2")
+        expect(@page.search_results).to have_no_protocols(text: "Protocol3")
+      end
+
+      it "should match against pi first name case insensitively (lowercase)" do
+        visit_protocols_index_page
+        expect(@page.search_results).to have_protocols(count: 3)
+        @page.filter_protocols.search_field.set((@protocol3.principal_investigators.first.first_name.downcase).to_s)
+        @page.filter_protocols.apply_filter_button.click()
+        expect(@page.search_results).to have_no_protocols(text: "Protocol1")
+        expect(@page.search_results).to have_no_protocols(text: "Protocol2")
+        expect(@page.search_results).to have_protocols(text: "Protocol3")
+      end
+
+      it "should match against pi last name case insensitively (uppercase)" do
+        visit_protocols_index_page
+        expect(@page.search_results).to have_protocols(count: 3)
+        @page.filter_protocols.search_field.set((@protocol3.principal_investigators.first.last_name).to_s)
+        @page.filter_protocols.apply_filter_button.click()
+        expect(@page.search_results).to have_no_protocols(text: "Protocol1")
+        expect(@page.search_results).to have_no_protocols(text: "Protocol2")
+        expect(@page.search_results).to have_protocols(text: "Protocol3")
+      end
+
+      it "should not have any matches" do
+        visit_protocols_index_page
+        expect(@page.search_results).to have_protocols(count: 3)
+        @page.filter_protocols.search_field.set("Johnbob")
         @page.filter_protocols.apply_filter_button.click()
         expect(@page.search_results).to have_no_protocols(text: "Protocol1")
         expect(@page.search_results).to have_no_protocols(text: "Protocol2")

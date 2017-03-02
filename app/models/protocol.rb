@@ -193,7 +193,7 @@ class Protocol < ActiveRecord::Base
     # Protects against SQL Injection with ActiveRecord::Base::sanitize
     # inserts ! so that we can escape special characters
     escaped_search_term = search_attrs[:search_text].to_s.gsub(/[!%_]/) { |x| '!' + x }
-    
+
     like_search_term = ActiveRecord::Base::sanitize("%#{escaped_search_term}%")
     exact_search_term = ActiveRecord::Base::sanitize(search_attrs[:search_text])
 
@@ -208,7 +208,7 @@ class Protocol < ActiveRecord::Base
     ### END SEARCH QUERIES ###
 
     case search_attrs[:search_drop]
-    
+
     when "Authorized User"
       joins(:non_pi_authorized_users).
         joins(:identities).
@@ -219,7 +219,7 @@ class Protocol < ActiveRecord::Base
     when "PI"
       joins(:principal_investigators).
         where(pi_query).
-        distinct  
+        distinct
     when "Protocol ID"
       where(protocol_id_query).distinct
     when "PRO#"
@@ -238,30 +238,38 @@ class Protocol < ActiveRecord::Base
 
   }
 
-  scope :for_identity_id, -> (identity_id) {
-    return nil if identity_id == '0'
-    joins(:project_roles).
-      where(project_roles: { identity_id: identity_id }).
-      where.not(project_roles: { project_rights: 'none' })
-  }
-
   scope :admin_filter, -> (params) {
     filter, id  = params.split(" ")
     if filter == 'for_admin'
       for_admin(id)
     elsif filter == 'for_identity'
       for_identity_id(id)
+    elsif filter == 'empty_protocols'
+      empty_protocols(id)
     end
   }
 
   scope :for_admin, -> (identity_id) {
     # returns protocols with ssrs in orgs authorized for identity_id
     return nil if identity_id == '0'
-
     ssrs = SubServiceRequest.where.not(status: 'first_draft').where(organization_id: Organization.authorized_for_identity(identity_id))
+    joins(:sub_service_requests).merge(ssrs).distinct
+  }
 
-    joins(:sub_service_requests).
-      merge(ssrs).distinct
+  scope :for_identity_id, -> (identity_id) {
+    # returns protocols user has a project role for
+    return nil if identity_id == '0'
+    joins(:project_roles).where(project_roles: { identity_id: identity_id }).where.not(project_roles: { project_rights: 'none' })
+  }
+
+  scope :empty_protocols, -> (identity_id) {
+    # returns protocols with no ssrs if you are a super user of any kind
+    return nil if identity_id == '0'
+    if Identity.find(identity_id).super_users.any?
+      includes(:sub_service_requests).where(sub_service_requests: {id: nil})
+    else
+      return nil
+    end
   }
 
   scope :show_archived, -> (boolean) {
@@ -298,7 +306,7 @@ class Protocol < ActiveRecord::Base
     sort_order  = arr[1]
     case sort_name
     when 'id'
-      order("id #{sort_order.upcase}")
+      order("protocols.id #{sort_order.upcase}")
     when 'short_title'
       order("TRIM(REPLACE(short_title, CHAR(9), ' ')) #{sort_order.upcase}")
     when 'pis'

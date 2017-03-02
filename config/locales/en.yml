@@ -371,6 +371,10 @@ en:
           pending_approval: "Application/Approval Pending?:"
           irb_approval_date: "IRB Approval Date:"
           irb_expiration_date: "IRB Expiration Date:"
+        tooltips:
+          ide: 'Investigation Device Exemption (IDE) Number'
+          hde: 'Humanitarian Device Exemption (HDE) Number'
+          hud: 'Humanitarian Use Device (HUD) Number'
         vertebrates:
           header: "Vertebrate Animals"
           iacuc_number: "IACUC #:"

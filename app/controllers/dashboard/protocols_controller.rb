@@ -139,6 +139,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
     @protocol.valid?
     @errors = @protocol.errors
+    @errors.delete(:research_master_id) if @admin
 
     respond_to do |format|
       format.html
@@ -157,7 +158,8 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     attrs               = fix_date_params
     permission_to_edit  = @authorization.present? ? @authorization.can_edit? : false
     # admin is not able to activate study_type_question_group
-    if @protocol.update_attributes(attrs)
+
+    if save_protocol_with_blank_rmid_if_admin(attrs)
       flash[:success] = I18n.t('protocols.updated', protocol_type: @protocol.type)
     else
       @errors = @protocol.errors
@@ -261,5 +263,15 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     end
 
     attrs
+  end
+
+  def save_protocol_with_blank_rmid_if_admin(attrs)
+    @protocol.assign_attributes(attrs)
+    if @admin && !@protocol.valid? && @protocol.errors.full_messages == ["Research master can't be blank"]
+      @protocol.save(validate: false)
+    else
+      @protocol.errors.delete(:research_master_id) if @admin
+      @protocol.save
+    end
   end
 end

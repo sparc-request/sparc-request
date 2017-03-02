@@ -19,7 +19,6 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 development:
-  research_master_enabled: true
   default_mail_to: catesa@musc.edu
   admin_mail_to: catesa@musc.edu
   feedback_mail_to: "hutsonk@musc.edu"
@@ -90,7 +89,7 @@ development:
   about_sparc_url: http://academicdepartments.musc.edu/sctr/sparc_request
   use_about_sparc_link: true
   use_feedback_link: true
-  feedback_link: "http://something.com"
+  feedback_link: "https://redcap.musc.edu/surveys/?s=A37TNJWJPL"
   send_emails_to_real_users: false
 
 test:

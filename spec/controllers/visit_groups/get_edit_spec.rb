@@ -18,50 +18,36 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class VisitGroupsController < ApplicationController
-  respond_to :json
+require 'rails_helper'
 
-  before_filter :initialize_service_request
-  before_filter :authorize_identity
+RSpec.describe VisitGroupsController, type: :controller do
+  stub_controller
+  let!(:before_filters) { find_before_filters }
+  let!(:logged_in_user) { create(:identity) }
 
-  def edit
-    @visit_group = VisitGroup.find(params[:id])
-    respond_to do |format|
-      format.js
+  describe '#edit' do
+
+    it 'should call before_filter #initialize_service_request' do
+      expect(before_filters.include?(:initialize_service_request)).to eq(true)
     end
-  end
 
-  # Used for x-editable update and validations
-  def update
-    @visit_group = VisitGroup.find(params[:id])
-
-    if @visit_group.update_attributes(visit_group_params)
-      render nothing: true
-    else
-      # If we update the visit group day, then @visit_group.day is already updated, therefore
-      # any errors for day are not deleted.
-      # If we update a different attribute, then day will be nil and the errors for day
-      # will be deleted.
-      if @visit_group.day.nil?
-        @visit_group.errors.delete(:day)
-      end
-
-      # If there are legitimate errors, render them
-      # Else, it means day validation caused the update_attributes to fail even though we didn't
-      # change it, so we ignore validation and update the attribute correctly.
-      if @visit_group.errors.any?
-        render json: @visit_group.errors, status: :unprocessable_entity
-      else
-        @visit_group.attributes = visit_group_params
-        @visit_group.save(validate: false)
-        render nothing: true
-      end
+    it 'should call before_filter #authorize_identity' do
+      expect(before_filters.include?(:authorize_identity)).to eq(true)
     end
-  end
 
-  private
+    it 'should have success status' do
+      protocol  = create(:protocol_without_validations, primary_pi: logged_in_user)
+      sr        = create(:service_request_without_validations, protocol: protocol)
+      arm       = create(:arm, protocol: protocol, name: "Armada")
+      vg        = create(:visit_group, arm: arm, day: 1, name: "Visit Me Baby One More Time")
 
-  def visit_group_params
-    params.require(:visit_group).permit(:day, :name, :window_before, :window_after, :position, :arm_id)
+      xhr :get, :edit, {
+        id: vg.id,
+        service_request_id: sr.id
+      }
+
+      expect(response).to have_http_status(200)
+    end
   end
 end
+

@@ -166,6 +166,7 @@ en:
       owner: "Owner"
       my_protocols: "My Protocols"
       my_admin_protocols: "My Admin Protocols"
+      empty_protocols: "Empty Protocols (No Services)"
       filter: "Filter"
       saved_filters:
         header: "Recently Saved Filters"

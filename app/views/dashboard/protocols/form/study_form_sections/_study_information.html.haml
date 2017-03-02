@@ -29,9 +29,12 @@
       .form-group.row
         = form.label :research_master_id, class: 'col-lg-2 control-label rm-id' do
           = link_to t(:protocols)[:studies][:information][:research_master_id], RESEARCH_MASTER_LINK
-        .col-lg-10
-          = form.text_field :research_master_id, class: 'form-control research-master-field'
+        .col-lg-3
+          = form.text_field :research_master_id, class: 'form-control research-master-field', readonly: action_name == "edit" && admin
           = form.hidden_field :has_human_subject_info, value: false, class: 'has-human-subject-info'
+        - if action_name == "edit" && admin
+          .btn.btn-warning.edit-rmid
+            = t(:actions)[:edit]
 
     .form-group.row
       = form.label :short_title,

@@ -1,5 +1,103 @@
+# Copyright © 2011-2016 MUSC Foundation for Research Development
+# All rights reserved.
+
+# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+# disclaimer in the documentation and/or other materials provided with the distribution.
+
+# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+# derived from this software without specific prior written permission.
+
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
 class ModifySurveyColumns < ActiveRecord::Migration
+  class SurveyTranslation < ActiveRecord::Base
+  end
+  class SurveySection < ActiveRecord::Base
+  end
+  class QuestionGroup < ActiveRecord::Base
+  end
+  class Answer < ActiveRecord::Base
+  end
+  class ResponseSet < ActiveRecord::Base
+  end
+
   def up
+    ##########################
+    # For Travis:            #
+    # If tables don't exist, #
+    # create mock tables     #
+    ####################################################################################
+    unless ActiveRecord::Base.connection.table_exists?('surveys')
+      create_table :surveys do |t|
+      end
+    end
+
+    unless ActiveRecord::Base.connection.table_exists?('survey_translations')
+      create_table :survey_translations do |t|
+      end
+    end
+
+    unless ActiveRecord::Base.connection.table_exists?('survey_sections')
+      create_table :survey_sections do |t|
+      end
+    end
+
+    unless ActiveRecord::Base.connection.table_exists?('question_groups')
+      create_table :question_groups do |t|
+      end
+    end
+
+    unless ActiveRecord::Base.connection.table_exists?('questions')
+      create_table :questions do |t|
+      end
+    end
+
+    unless ActiveRecord::Base.connection.table_exists?('answers')
+      create_table :answers do |t|
+      end
+    end
+
+    unless ActiveRecord::Base.connection.table_exists?('response_sets')
+      create_table :response_sets do |t|
+      end
+    end
+
+    unless ActiveRecord::Base.connection.table_exists?('responses')
+      create_table :responses do |t|
+      end
+    end
+
+    unless ActiveRecord::Base.connection.table_exists?('dependencies')
+      create_table :dependencies do |t|
+      end
+    end
+
+    unless ActiveRecord::Base.connection.table_exists?('dependency_conditions')
+      create_table :dependency_conditions do |t|
+      end
+    end
+
+    unless ActiveRecord::Base.connection.table_exists?('validations')
+      create_table :validations do |t|
+      end
+    end
+
+    unless ActiveRecord::Base.connection.table_exists?('validation_conditions')
+      create_table :validation_conditions do |t|
+      end
+    end
+
+
+
     puts "Fixing surveyor models..."
     ###################
     # Gather all data #
@@ -32,6 +130,10 @@ class ModifySurveyColumns < ActiveRecord::Migration
     drop_table :answers
     drop_table :response_sets
     drop_table :responses
+    drop_table :dependencies
+    drop_table :dependency_conditions
+    drop_table :validations
+    drop_table :validation_conditions
 
 
 
@@ -173,7 +275,7 @@ class ModifySurveyColumns < ActiveRecord::Migration
             question_id: corresponding_question_ids["#{response.question_id}"],
             response_id: new_response.id,
             content:     get_question_response_content(options.detect{|a| a.id == response.answer_id}, response),
-            required:    question.detect{|q| q.id == response.question_id}.required
+            required:    question.detect{|q| q.id == response.question_id}.required,
             created_at:  response.created_at,
             updated_at:  response.updated_at
           })

@@ -1373,13 +1373,10 @@ en:
     epic_access: "Epic Access"
     link: "HERE"
     name: "User Name"
-    # Language for 'Get a Cost Estimate'
-    non_service_provider_intro_1: "%{welcome} in SPARCRequest. You can review or edit this request in "
-    non_service_provider_intro_2: ". An email has been sent to the service provider(s) to review and ensure the services are appropriate."
-    non_service_provider_intro_3: "Please note the services will not start until this request is submitted through SPARCDashboard."
-    # Language for 'Submitted'
-    non_service_provider_intro_submitted_1: "%{welcome} in SPARCRequest.  Visit "
-    non_service_provider_intro_submitted_2: " to view the status or make any updates to your request."
+    non_service_provider_message: "%{welcome} in SPARCRequest. You can review or edit this request in %{href}. An email has been sent to the service provider(s) to review and ensure the services are appropriate. <b>Please note the services will not start until this request is submitted through SPARCDashboard.</b>"
+    service_provider_message: "%{welcome} in SPARCRequest and is awaiting your review in %{href}.  Please ensure services chosen are appropriate and can be provided. Communicate any necessary changes to the study team and request they “Submit to Start Services” once ready to proceed."
+    non_service_provider_submitted_message:  "%{welcome} in SPARCRequest.  Visit %{href} to view the status or make any updates to your request."
+    service_provider_submitted_message:  "%{welcome} in SPARCRequest and is awaiting your review in %{href}."
     note: "*Note: upon submission, services selected to go to Epic will be sent daily at 4:30pm."
     notes_present:  "*Note(s) are included with this submission."
     notice:
@@ -1405,13 +1402,8 @@ en:
     s_name: "Sponsor Name"
     service: "Service"
     service_request: "Service Request"
-    # Language for 'Submitted'
-    service_provider_intro_submitted_1: "%{welcome} in SPARCRequest and is awaiting your review in "
-    # Language for 'Get a Cost Estimate'
-    service_provider_intro_1: "%{welcome} in SPARCRequest and is awaiting your review in "
     sparc_dashboard: "SPARCDashboard"
     sparc_dashboard_period: "SPARCDashboard."
-    service_provider_intro_2: ".  Please ensure services chosen are appropriate and can be provided. Communicate any necessary changes to the study team and request they “Submit to Start Services” once ready to proceed."
     source: "Funding Source"
     srid_info: "Service Request Information"
     sr_id: "Service Request ID:"

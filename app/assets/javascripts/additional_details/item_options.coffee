@@ -1,3 +1,5 @@
+#= require 'likert'
+
 $ ->
   needOptions = ['radio_button', 'checkbox', 'dropdown', 'multiple_dropdown']
 

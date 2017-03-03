@@ -18,22 +18,27 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$(document).ready ->
-  survey_offered = false
+module Surveyor::ResponsesHelper
+  def dependency_classes(question)
+    if question.is_dependent?
+      ["dependent-for-option-#{question.depender_id}",
+      "dependent-for-question-#{question.depender.question_id}",
+      "hidden"].join(' ')
+    else
+      ""
+    end
+  end
 
-  $(document).on 'click', '.get-a-cost-estimate, .form-submit-button', (event) ->
-    button = $(this)
+  def survey_data(question)
+    if question.is_dependent?
+      {
+        depender_id: question.depender_id,
+        depender_question_id: question.depender.question_id
+      }
+    end
+  end
 
-    if !survey_offered
-      event.preventDefault()
-      $('#modal_place').html($('#participate-in-survey-modal').html())
-      $('#modal_place').modal('show')
-
-      $(document).on 'click', '#modal_place .yes-button', ->
-        survey_offered = true
-        $.ajax
-          type: 'get'
-          url: '/surveyor/responses/new.js?access_code=system-satisfaction-survey'
-
-      $(document).on 'hidden.bs.modal', "#modal_place", ->
-        window.location = button.attr('href')
+  def multiple_select_formatter(content)
+    content.tr("[]\"", "").split(',').map(&:strip)
+  end
+end

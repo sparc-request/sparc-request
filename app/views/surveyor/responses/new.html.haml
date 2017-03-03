@@ -1,4 +1,4 @@
--# Copyright © 2011 MUSC Foundation for Research Development
+-# Copyright © 2011-2016 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -17,21 +17,16 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-#participate-in-survey-modal.hidden
-  .modal-dialog
-    .modal-content
-      .modal-header
-        %button.close{ type: 'button', data: { dismiss: 'modal' } }
-          %span{ aria: { hidden: 'true' } } &times;
-        %h4.text-center.modal-title
-          = t(:proper)[:survey][:header]
-      .modal-body
-        #modal_errors
-        .form-group.text-center
-          = t(:proper)[:survey][:participate]
-      .modal-footer
-        .center-block
-          %a.btn.btn-default.yes-button
-            = t(:constants)[:yes_select]
-          %a.btn.btn-default.no-button{ data: { dismiss: 'modal' } }
-            = t(:constants)[:no_select]
+.col-sm-2
+.col-sm-8
+  .panel.panel-default#survey-panel
+    .panel-heading.text-center
+      %h4.panel-title
+        = @survey.title
+    = form_for @response, url: surveyor_responses_path(@response, review: @review), remote: true do |f|
+      .panel-body
+        = render 'surveyor/responses/form/response_content', f: f, survey: @survey, sub_service_request: @sub_service_request
+      .panel-footer
+        .clearfix
+          = f.submit t(:actions)[:submit], class: 'btn btn-primary pull-right'
+.col-sm-2

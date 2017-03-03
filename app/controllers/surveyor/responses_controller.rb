@@ -18,22 +18,61 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$(document).ready ->
-  survey_offered = false
+class Surveyor::ResponsesController < ApplicationController
+  respond_to :html, :js, :json
 
-  $(document).on 'click', '.get-a-cost-estimate, .form-submit-button', (event) ->
-    button = $(this)
+  before_action :authenticate_identity!
+  before_action :find_survey, only: [:new]
 
-    if !survey_offered
-      event.preventDefault()
-      $('#modal_place').html($('#participate-in-survey-modal').html())
-      $('#modal_place').modal('show')
+  def show
+    @response = Response.find(params[:id])
+    @survey   = @response.survey
 
-      $(document).on 'click', '#modal_place .yes-button', ->
-        survey_offered = true
-        $.ajax
-          type: 'get'
-          url: '/surveyor/responses/new.js?access_code=system-satisfaction-survey'
+    respond_to do |format|
+      format.html
+    end
+  end
 
-      $(document).on 'hidden.bs.modal', "#modal_place", ->
-        window.location = button.attr('href')
+  def new
+    @response = @survey.responses.new
+    @response.question_responses.build
+
+    respond_to do |format|
+      format.html {
+        @review = 'false'
+        @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
+      }
+      format.js {
+        @review = 'true'
+      }
+    end
+  end
+
+  def create
+    @response = Response.new(response_params)
+    @review   = params[:review] == 'true'
+
+    if @response.save
+      SurveyNotification.system_satisfaction_survey(@response) if @response.survey.access_code == 'system-satisfaction-survey'
+      flash[:success] = t(:surveyor)[:responses][:create]
+    else
+      @errors = @response.errors
+    end
+  end
+
+  private
+
+  def find_survey
+    surveys = Survey.where(access_code: params[:access_code]).order('version DESC')
+
+    if params[:version]
+      @survey = surveys.where(version: params[:version]).first
+    else
+      @survey = surveys.first
+    end
+  end
+
+  def response_params
+    params.require(:response).permit!
+  end
+end

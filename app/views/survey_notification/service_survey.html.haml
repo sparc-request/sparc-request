@@ -18,19 +18,20 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-= "Dear #{@identity.full_name},"
+= t('surveyor.responses.emails.service_survey.greeting', name: @identity.full_name)
 %br
 %br
 
-Thank you for requesting services from
+= t(:surveyor)[:responses][:emails][:service_survey][:text1]
 = "#{ssr_institution(@ssr.organization)} - #{ssr_provider(@ssr.organization)} - #{ssr_program_core(@ssr.organization)}."
-The service(s) you requested have now been completed.
+= t(:surveyor)[:responses][:emails][:service_survey][:text2]
 %br
-Please click on the link(s) below to complete the following survey(s) regarding the service(s) you received. Your feedback is important and appreciated!
+= t(:surveyor)[:responses][:emails][:service_survey][:text3]
 
 %br
 %br
 
 %ul
 - @surveys.each do |survey|
-  %li= link_to survey.title, direct_link_survey_url(survey.access_code, :survey_version => survey.survey_version, :ssr_id => @ssr.id)
+  %li
+    = link_to survey.title, url_for(controller: '/surveyor/responses', action: :new, only_path: false, access_code: survey.access_code, survey_version: survey.version, sub_service_request_id: @ssr.id, format: :html), target: '_blank'

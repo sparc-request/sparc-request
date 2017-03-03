@@ -1,4 +1,3 @@
-# Copyright © 2011-2016 MUSC Foundation for Research Development
 # All rights reserved.
 
 # Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -17,23 +16,5 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-$(document).ready ->
-  survey_offered = false
-
-  $(document).on 'click', '.get-a-cost-estimate, .form-submit-button', (event) ->
-    button = $(this)
-
-    if !survey_offered
-      event.preventDefault()
-      $('#modal_place').html($('#participate-in-survey-modal').html())
-      $('#modal_place').modal('show')
-
-      $(document).on 'click', '#modal_place .yes-button', ->
-        survey_offered = true
-        $.ajax
-          type: 'get'
-          url: '/surveyor/responses/new.js?access_code=system-satisfaction-survey'
-
-      $(document).on 'hidden.bs.modal', "#modal_place", ->
-        window.location = button.attr('href')
+$('#modal_place').html("<%= j render 'surveyor/responses/new_form_modal', survey: @survey, response: @response, review: @review %>")
+$('#modal_place').modal('show')

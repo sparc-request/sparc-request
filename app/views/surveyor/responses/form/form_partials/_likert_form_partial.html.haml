@@ -1,4 +1,4 @@
--# Copyright © 2011 MUSC Foundation for Research Development
+-# Copyright © 2011-2016 MUSC Foundation for Research Development
 -# All rights reserved.
 
 -# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
@@ -17,21 +17,18 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-#participate-in-survey-modal.hidden
-  .modal-dialog
-    .modal-content
-      .modal-header
-        %button.close{ type: 'button', data: { dismiss: 'modal' } }
-          %span{ aria: { hidden: 'true' } } &times;
-        %h4.text-center.modal-title
-          = t(:proper)[:survey][:header]
-      .modal-body
-        #modal_errors
-        .form-group.text-center
-          = t(:proper)[:survey][:participate]
-      .modal-footer
-        .center-block
-          %a.btn.btn-default.yes-button
-            = t(:constants)[:yes_select]
-          %a.btn.btn-default.no-button{ data: { dismiss: 'modal' } }
-            = t(:constants)[:no_select]
+- question.options.each_with_index do |option, index|
+  .option.likert-group.no-padding{ class: "col-sm-#{(12 / question.options.count).ceil}"}
+    .col-sm-12.text-center.no-padding
+      = index+1
+    .col-sm-12.text-center.no-padding.likert
+      - if ['new', 'preview'].include?(action_name)
+        = qr.radio_button :content, option.content
+      - else
+        = radio_button_tag :content_likert, '', qr.content == option.content, disabled: true
+    .col-sm-12.text-center.no-padding
+      - if ['new', 'preview'].include?(action_name)
+        = qr.label :content, option.content, class: "radio-inline option no-padding", data: { question_id: question.id, option_id: option.id }
+      - else
+        %label.radio-inline.option.no-padding
+          = option.content

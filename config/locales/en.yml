@@ -60,8 +60,14 @@ en:
         password_confirmation: "Password Confirmation"
       note:
         body: "Note"
+      option:
+        content: "Option"
       protocol:
         human_subjects_info: "The NCT #"
+      question:
+        content: "Question"
+      question_response:
+        content: "Question"
 
   ########
   # ARMS #
@@ -216,6 +222,7 @@ en:
       select: "---Please Select---"
       search_for_user: "Search for a User"
       select_one: "Select One"
+    add_as_last: "Add as last"
 
   #############
   # DOCUMENTS #
@@ -447,6 +454,7 @@ en:
   # VALIDATION ERROR MESSAGES #
   #############################
   errors:
+    user_note: "Fields with an Asterisk ( * ) are required"
     arms:
       name_unique: "has to be unique within a study/project"
       bad_characters: "can not contain any of the following characters: [ ] * / \\ ? :"
@@ -457,17 +465,21 @@ en:
       displayed_cost_gte_zero: 'must be greater than or equal to 0'
     line_items_visits:
       subject_count_invalid: "Subject Count cannot exceed the Arm Subject Count (%{arm_subject_count})"
-    visit_groups:
-      days_out_of_order: "Please make sure visit days are in sequential order (%{arm_name})."
     protocols:
       start_date_missing: "Start Date can\'t be blank"
       end_date_missing: "End Date can\'t be blank"
       date_range_invalid: "Start Date must come before End Date"
+    question_responses:
+      phone_invalid: "Phone is invalid"
+      email_invalid: "Email is invalid"
+      zipcode_invalid: "Zipcode is invalid"
     service_requests:
       line_items_missing: "No Services have been detected in your Cart. Please return to the Catalog and add Services before continuing"
       protocol_missing: "You must create a Protocol before continuing"
       protocol_errors: "The selected Protocol has errors which must be fixed. Please edit the Protocol before continuing"
       arms_missing: "You must create Arms before proceeding to the Service Calendar"
+    visit_groups:
+      days_out_of_order: "Please make sure visit days are in sequential order (%{arm_name})."
 
   ################
   # VISIT GROUPS #
@@ -481,8 +493,6 @@ en:
       position: "Insert into Position:"
       window_before: "Window Before:"
       window_after: "Window After:"
-    prompts:
-      add_as_last: "Add as last"
 
 
 

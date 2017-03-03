@@ -17,45 +17,37 @@
 // DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 // INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 // TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#survey-response
+  .survey-sections
+    display: inline-block
+    width: 100%
 
-// This is a manifest file that'll be compiled into application.js, which will include all the files
-// listed below.
-//
-// Any JavaScript/Coffee file within this directory, lib/assets/javascripts, vendor/assets/javascripts,
-// or vendor/assets/javascripts of plugins, if any, can be referenced here using a relative path.
-//
-// It's not advisable to add code directly here, but if you do, it'll appear at the bottom of the
-// the compiled file.
-//
-//= require jquery
-//= require bootstrap-sprockets
-//= require bootstrap-select
-//= require bootstrap-table
-//= require bootstrap-table-export
-//= require bootstrap-table-custom
-//= require moment
-//= require bootstrap-datetimepicker
-//= require jquery_ujs
-//= require jquery.remotipart
-//= require jquery_nested_form
-//= require jquery.cookie
-//= require jquery.form
-//= require editable/bootstrap-editable
-//= require editable/rails
-//= require nprogress
-//= require nprogress-ajax
-//= require json2
-//= require underscore-min
-//= require form_manager
-//= require form_fx_manager
-//= require twitter/typeahead.min
-//= require handlebars-v4.0.5
-//= require assert
-//= require ajax_handler
+  .form-group, .question
+    display: inline-block
+    width: 100%
 
-//= require global
-//= require associated_users_form
-//= require study_schedule_tabs
-//= require subsidy_form
-//= require surveyor/responses
-//= require sweetalert.min
+    .likert-group
+      .likert:before
+        content: ''
+        position: relative
+        top: 11px
+        display: block
+        background-color: #efefef
+        height: 4px
+
+      .likert
+        input
+          position: relative
+
+    .likert-group:not(:first-child), .likert-group:not(:last-child)
+      .likert:before
+        width: 100%
+
+    .likert-group:first-child
+      .likert:before
+        width: 50%
+        left: 50%
+
+    .likert-group:last-child
+      .likert:before
+        width: 50%

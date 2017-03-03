@@ -18,22 +18,37 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$(document).ready ->
-  survey_offered = false
+require 'rails_helper'
 
-  $(document).on 'click', '.get-a-cost-estimate, .form-submit-button', (event) ->
-    button = $(this)
+RSpec.describe Surveyor::ResponsesController, type: :controller do
+  stub_controller
+  let!(:before_filters) { find_before_filters }
+  let!(:logged_in_user) { create(:identity) }
 
-    if !survey_offered
-      event.preventDefault()
-      $('#modal_place').html($('#participate-in-survey-modal').html())
-      $('#modal_place').modal('show')
+  before :each do
+    @survey = create(:survey)
+    @resp   = create(:response, survey: @survey)
 
-      $(document).on 'click', '#modal_place .yes-button', ->
-        survey_offered = true
-        $.ajax
-          type: 'get'
-          url: '/surveyor/responses/new.js?access_code=system-satisfaction-survey'
+    xhr :get, :show, {
+      id: @resp.id
+    }
+  end
 
-      $(document).on 'hidden.bs.modal', "#modal_place", ->
-        window.location = button.attr('href')
+  describe '#show' do
+    it 'should call before_filter #authenticate_identity!' do
+      expect(before_filters.include?(:authenticate_identity!)).to eq(true)
+    end
+
+    it 'should assign @response to the response' do
+      expect(assigns(:response)).to eq(@resp)
+    end
+
+    it 'should assign @survey to the responses survey' do
+      expect(assigns(:survey)).to eq(@survey)
+    end
+
+    it { is_expected.to render_template(:show) }
+
+    it { is_expected.to respond_with(:ok) }
+  end
+end

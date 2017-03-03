@@ -844,6 +844,7 @@ additional_detail_question_types: {
   'Text': 'text',
   'Text Area': 'textarea',
   'Radio Button': 'radio_button',
+  'Likert Scale': 'likert',
   'Checkbox': 'checkbox',
   'Yes/No': 'yes_no',
   'Email': 'email',

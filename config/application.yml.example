@@ -31,6 +31,7 @@ development:
   dashboard_link: 'http://musc-pro.homelinux.net:3001/dashboard'
   research_master_link: 'https://research-master-staging.musc.edu/'
   research_master_api: 'https://research-master-staging.musc.edu/api/'
+  research_master_enabled: true
   rmid_api_token: 'some token'
   create_an_account: false
   header_link_1: http://sctr.musc.edu
@@ -66,6 +67,7 @@ development:
   editable_statuses: { 14: ['first_draft', 'draft', 'submitted', nil, 'get_a_cost_estimate', 'awaiting_pi_approval', 'complete'],
                      48: ['draft', 'submitted', 'complete'] }
   updatable_statuses: [ 'first_draft', 'draft', 'get_a_cost_estimate', 'awaiting_pi_approval']
+  finished_statuses: ['complete', 'withdrawn']
   navbar_links: { sparc_request:              ['SPARCRequest', 'http://localhost:3000/'],
                   sparc_dashboard:            ['SPARCDashboard', 'http://localhost:3000/dashboard'],
                   sparc_fulfillment:          ['SPARCFulfillment', 'https://cwf-d.obis.musc.edu/identities/sign_in'],
@@ -87,7 +89,7 @@ development:
   about_sparc_url: http://academicdepartments.musc.edu/sctr/sparc_request
   use_about_sparc_link: true
   use_feedback_link: true
-  feedback_link: "http://something.com"
+  feedback_link: "https://redcap.musc.edu/surveys/?s=A37TNJWJPL"
   send_emails_to_real_users: false
 
 test:
@@ -104,6 +106,7 @@ test:
   research_master_link: 'https://research-master-staging.musc.edu/'
   research_master_api: 'https://research-master-staging.musc.edu/api/'
   rmid_api_token: 'some token'
+  research_master_enabled: true
   header_link_1: http://sctr.musc.edu
   header_link_2_proper: http://localhost:3000/
   header_link_2_dashboard: http://localhost:3000/dashboard
@@ -111,6 +114,7 @@ test:
   editable_statuses: { 14: ['first_draft', 'draft', 'submitted', nil, 'get_a_cost_estimate', 'awaiting_pi_approval'],
                      48: ['draft', 'submitted'] }
   updatable_statuses: [ 'first_draft', 'draft', 'get_a_cost_estimate', 'awaiting_pi_approval']
+  finished_statuses: ['complete', 'withdrawn']
   navbar_links: { sparc_request:              ['SPARCRequest', 'http://localhost:3000/'],
                   sparc_dashboard:            ['SPARCDashboard', 'http://localhost:3000/dashboard'],
                   sparc_fulfillment:          ['SPARCFulfillment', 'https://cwf-d.obis.musc.edu/identities/sign_in'],

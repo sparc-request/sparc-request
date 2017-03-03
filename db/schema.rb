@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170215213352) do
+ActiveRecord::Schema.define(version: 20170217134129) do
 
   create_table "admin_rates", force: :cascade do |t|
     t.integer  "line_item_id", limit: 4
@@ -165,14 +165,6 @@ ActiveRecord::Schema.define(version: 20170215213352) do
 
   add_index "clinical_providers", ["identity_id"], name: "index_clinical_providers_on_identity_id", using: :btree
   add_index "clinical_providers", ["organization_id"], name: "index_clinical_providers_on_organization_id", using: :btree
-
-  create_table "contact_forms", force: :cascade do |t|
-    t.string   "subject",    limit: 255
-    t.string   "email",      limit: 255
-    t.text     "message",    limit: 65535
-    t.datetime "created_at",               null: false
-    t.datetime "updated_at",               null: false
-  end
 
   create_table "cover_letters", force: :cascade do |t|
     t.text     "content",                limit: 65535
@@ -396,10 +388,11 @@ ActiveRecord::Schema.define(version: 20170215213352) do
   add_index "ip_patents_info", ["protocol_id"], name: "index_ip_patents_info_on_protocol_id", using: :btree
 
   create_table "item_options", force: :cascade do |t|
-    t.string   "content",    limit: 255
-    t.integer  "item_id",    limit: 4
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
+    t.string   "content",          limit: 255
+    t.boolean  "validate_content"
+    t.integer  "item_id",          limit: 4
+    t.datetime "created_at",                   null: false
+    t.datetime "updated_at",                   null: false
   end
 
   add_index "item_options", ["item_id"], name: "index_item_options_on_item_id", using: :btree
@@ -710,6 +703,14 @@ ActiveRecord::Schema.define(version: 20170215213352) do
 
   add_index "protocols", ["next_ssr_id"], name: "index_protocols_on_next_ssr_id", using: :btree
 
+  create_table "protocols_study_phases", id: false, force: :cascade do |t|
+    t.integer "protocol_id",    limit: 4, null: false
+    t.integer "study_phase_id", limit: 4, null: false
+  end
+
+  add_index "protocols_study_phases", ["protocol_id", "study_phase_id"], name: "index_protocols_study_phases_on_protocol_id_and_study_phase_id", using: :btree
+  add_index "protocols_study_phases", ["study_phase_id", "protocol_id"], name: "index_protocols_study_phases_on_study_phase_id_and_protocol_id", using: :btree
+
   create_table "question_responses", force: :cascade do |t|
     t.integer  "question_id", limit: 4
     t.integer  "response_id", limit: 4
@@ -856,10 +857,6 @@ ActiveRecord::Schema.define(version: 20170215213352) do
     t.integer  "protocol_id",             limit: 4
     t.string   "status",                  limit: 255
     t.boolean  "approved"
-    t.integer  "subject_count",           limit: 4
-    t.datetime "consult_arranged_date"
-    t.datetime "pppv_complete_date"
-    t.datetime "pppv_in_process_date"
     t.datetime "submitted_at"
     t.datetime "created_at",                          null: false
     t.datetime "updated_at",                          null: false
@@ -905,6 +902,14 @@ ActiveRecord::Schema.define(version: 20170215213352) do
 
   add_index "sessions", ["session_id"], name: "index_sessions_on_session_id", using: :btree
   add_index "sessions", ["updated_at"], name: "index_sessions_on_updated_at", using: :btree
+
+  create_table "study_phases", force: :cascade do |t|
+    t.integer  "order",      limit: 4
+    t.string   "phase",      limit: 255
+    t.integer  "version",    limit: 4,   default: 1
+    t.datetime "created_at",                         null: false
+    t.datetime "updated_at",                         null: false
+  end
 
   create_table "study_type_answers", force: :cascade do |t|
     t.integer  "protocol_id",            limit: 4

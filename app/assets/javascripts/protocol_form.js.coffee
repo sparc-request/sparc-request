@@ -26,12 +26,16 @@ resetRmIdFields = (fields, value) ->
 
 $(document).ready ->
 
+  if $('.human-subjects:checkbox:checked').length > 0
+    $('.rm-id').addClass('required')
+    $('.has-human-subject-info').val('true')
+
   $(document).on 'click', '.human-subjects', ->
-    if $('.rm-id').hasClass('required-field')
-      $('.rm-id').removeClass('required-field')
+    if $('.rm-id').hasClass('required')
+      $('.rm-id').removeClass('required')
       $('.has-human-subject-info').val('false')
     else
-      $('.rm-id').addClass('required-field')
+      $('.rm-id').addClass('required')
       $('.has-human-subject-info').val('true')
 
   $(document).on 'blur', '.research-master-field', ->
@@ -44,7 +48,6 @@ $(document).ready ->
         success: (data) ->
           $('#protocol_short_title').val(data.short_title)
           $('#protocol_title').val(data.long_title)
-          $('#protocol_project_roles_attributes_0_identity_id').val(data.pi_name)
           toggleFields('.rm-locked-fields', true)
         error: ->
           swal("Error", "Research Master Record not found", "error")
@@ -56,16 +59,18 @@ $(document).ready ->
       resetRmIdFields('.rm-id-dependent', '')
       toggleFields('.rm-locked-fields', false)
 
-  $('#new_protocol').bind 'submit', ->
-    $(this).find(':input').prop('disabled', false)
+  $(document).on 'click', '.edit-rmid', ->
+    $('#protocol_research_master_id').prop('readonly', false)
 
+  $('#protocol-form-display form').bind 'submit', ->
+    $(this).find(':input').prop('disabled', false)
 
   # Protocol Edit Begin
   $(document).on 'click', '#protocol-type-button', ->
     protocol_id = $(this).data('protocol-id')
     srid        = $(this).data('srid')
     in_dashboard = if $(this).data('in-dashboard') == 1 then '/dashboard' else ''
-    data = 
+    data =
       type : $("#protocol_type").val()
       srid : srid
     if confirm(I18n['protocols']['change_type']['warning'])
@@ -233,7 +238,7 @@ $(document).ready ->
     else
       $('#study_type_note').hide()
     return
-     
+
   ###END EPIC BUTTON FIELDS DISPLAY###
 
   ###HUMAN SUBJECTS FIELDS DISPLAY###

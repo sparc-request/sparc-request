@@ -27,7 +27,7 @@ module ServiceCalendarHelper
   def display_service_rate line_item
     full_rate = line_item.service.displayed_pricing_map.full_rate
 
-    full_rate < line_item.applicable_rate ? "N/A" : currency_converter(full_rate)
+    currency_converter(full_rate)
   end
 
   def display_your_cost line_item

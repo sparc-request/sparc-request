@@ -27,6 +27,12 @@ $(document).ready ->
   getSSRId = ->
     $("input[name='sub_service_request_id']").val()
 
+  $(document).on 'click', '.custom-tab a', ->
+    if $(this).is('#billing-strategy-tab')
+      $('.billing-info ul').removeClass('hidden')
+    else
+      $('.billing-info ul').addClass('hidden')
+
   $(document).on 'click', '.page-change-arrow', ->
     unless $(this).attr('disabled')
       $.ajax
@@ -131,6 +137,8 @@ getSRId = ->
     data.tab = tab
     data.arm_id = arm_id
     data.service_request_id = getSRId()
+    data.sub_service_request_id = data.subServiceRequestId
+    data.protocol_id = data.protocolId
     # Reload calendar
     $.get '/service_calendars/table.js', data
 

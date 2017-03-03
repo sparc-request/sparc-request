@@ -1,5 +1,6 @@
 class RemoveAffiliationsFromIdentity < ActiveRecord::Migration
   def up
+    Rake::Task['match_identity_with_professional_organization'].invoke
     remove_column :identities, :institution
     remove_column :identities, :college
     remove_column :identities, :department

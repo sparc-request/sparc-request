@@ -128,13 +128,6 @@ class ServiceRequestsController < ApplicationController
     end
   end
 
-  # do not delete. Method will be needed if calendar totals page is used
-  # def calendar_totals
-  #   if @service_request.arms.blank?
-  #     @back = 'service_details'
-  #   end
-  # end
-
   def service_subsidy
     @has_subsidy          = @service_request.sub_service_requests.map(&:has_subsidy?).any?
     @eligible_for_subsidy = @service_request.sub_service_requests.map(&:eligible_for_subsidy?).any?
@@ -162,6 +155,8 @@ class ServiceRequestsController < ApplicationController
   end
 
   def review
+    @notable_type = 'Protocol'
+    @notable_id = @service_request.protocol_id
     @tab          = 'calendar'
     @review       = true
     @portal       = false
@@ -239,7 +234,7 @@ class ServiceRequestsController < ApplicationController
         li.update_attribute(:sub_service_request_id, ssr.id)
         if @service_request.status == 'first_draft'
           ssr.update_attribute(:status, 'first_draft')
-        elsif ssr.status.nil? || (ssr.can_be_edited? && ssr_has_changed?(@service_request, ssr) && (ssr.status != 'complete'))
+        elsif ssr.status.nil? || (ssr.can_be_edited? && ssr_has_changed?(@service_request, ssr))
           previous_status = ssr.status
           ssr.update_attribute(:status, 'draft')
         end
@@ -291,8 +286,10 @@ class ServiceRequestsController < ApplicationController
 
     if ssr.line_items.empty?
       if !ssr.submitted_at.nil?
-        # only notify service providers of destroyed ssr
-        NotifierLogic.new(@service_request, nil, current_user).send_ssr_service_provider_notifications(ssr, ssr_destroyed: true, request_amendment: false)
+        # notify service providers and admin of a destroyed ssr upon deletion of ssr
+        notifier_logic = NotifierLogic.new(@service_request, nil, current_user)
+        notifier_logic.send_ssr_service_provider_notifications(ssr, ssr_destroyed: true, request_amendment: false)
+        notifier_logic.send_admin_notifications([ssr], request_amendment: false, ssr_destroyed: true)
       end
       ssr.destroy
     end
@@ -393,11 +390,12 @@ class ServiceRequestsController < ApplicationController
 
     c = YAML.load_file(Rails.root.join('config', 'navigation.yml'))[@page]
     unless c.nil?
-      @step_text = c['step_text']
-      @css_class = c['css_class']
-      @back = c['back']
-      @catalog = c['catalog']
-      @forward = c['forward']
+      @step_text   = c['step_text']
+      @step_number = c['step_number']
+      @css_class   = c['css_class']
+      @back        = c['back']
+      @catalog     = c['catalog']
+      @forward     = c['forward']
     end
   end
 
@@ -514,7 +512,7 @@ class ServiceRequestsController < ApplicationController
   def find_or_create_sub_service_request(line_item, service_request)
     organization = line_item.service.process_ssrs_organization
     service_request.sub_service_requests.each do |ssr|
-      if (ssr.organization == organization) && (ssr.status != 'complete')
+      if (ssr.organization == organization) && !ssr.is_complete?
         return ssr
       end
     end

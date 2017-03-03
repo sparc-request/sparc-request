@@ -46,6 +46,20 @@ en:
   # ACTIVERECORD #
   ################
   activerecord:
+    errors:
+      models:
+        item:
+          attributes:
+            content:
+              blank: "Content can't be blank"
+        questionnaire:
+          attributes:
+            name:
+              blank: "Name can't be blank"
+        item_option:
+          attributes:
+            content:
+              blank: "Content can't be blank"
     attributes:
       arm:
         name: "Arm Name"
@@ -91,6 +105,10 @@ en:
     delete_warning: "Are you sure you want to delete this arm?"
     screening_tooltip: "Enter the number of subjects you expect to screen as well as how many screening visits are required. If no screening phase is required, you can change the name of the Arm to meet your needs."
     name_tooltip: "Arm Name must be unique within a protocol, and the following special characters are not allowed: [ ] * / \\ ? : )."
+    tooltips:
+      add_arm: 'A group, or subgroup, of participants in a clinical trial that receives specific intervention, or no intervention, according to the study protocol'
+      subject_count: 'Total number of estimated participants per arm'
+      visit_count: 'Total number of visits per arm'
 
   #######################
   # AUTHORIZATION ERROR #
@@ -136,7 +154,6 @@ en:
     rights:
       none: Member Only
       view: "View Rights"
-      request: "Request/Approve Services"
       approve: "Authorized/Change Study Charges"
     table_fields:
       name: "Full Name"
@@ -145,6 +162,9 @@ en:
       phone: "Phone"
       rights: "Proxy Rights"
       epic_emr_access: 'EPIC EMR Access'
+    tooltips:
+      epic_access: 'Granting Epic EMR access populates study personnel in Epic Research Record as long as they have an Epic login'
+      rights: 'Defines access to protocol in SPARCDashboard'
 
   #############
   # CALENDARS #
@@ -166,6 +186,7 @@ en:
         your_cost: "Your<br>Cost"
         quantity_type: "Clinical Qty Type"
         subject_count: "N"
+        day: "Day"
         page_select:
           previous: "View Previous"
           next: "View Next"
@@ -297,6 +318,8 @@ en:
       sponsor: "Sponsor Name:"
       funding_source: "Funding Source:"
       potential_source: "Potential Funding Source:"
+      research_master_id: "Research Master ID:"
+      na_research_master_id: 'Not Available'
     view_details:
       button: "View %{protocol_type} Details"
       header: "%{protocol_type} Details: #%{protocol_id}"
@@ -328,7 +351,7 @@ en:
           separator: "-OR-"
           non_phs_sponsor: "Federal Non-PHS Sponsor:"
           serial_number: "Federal Grant Serial Number:"
-        phase: "Study Phase:"
+        phase: "Study Phase(s):"
         sponsor: "Sponsor Name:"
         push_to_epic: "Publish Study in Epic:"
         study_type_questions: "Study Type Questions:"
@@ -355,6 +378,10 @@ en:
           pending_approval: "Application/Approval Pending?:"
           irb_approval_date: "IRB Approval Date:"
           irb_expiration_date: "IRB Expiration Date:"
+        tooltips:
+          ide: 'Investigation Device Exemption (IDE) Number'
+          hde: 'Humanitarian Device Exemption (HDE) Number'
+          hud: 'Humanitarian Use Device (HUD) Number'
         vertebrates:
           header: "Vertebrate Animals"
           iacuc_number: "IACUC #:"
@@ -404,11 +431,23 @@ en:
       source: "Select a Funding Source"
       potential_source: "Select a Potential Funding Source"
       federal_sponsor: "Select if Applicable"
-      phase: "Select a Study Phase"
+      phase: "Select Study Phase(s)"
       submission_type: "Select a Submission Type"
+    tooltips:
+      epic: 'Defines whether record will interface to Epic EMR upon submission'
+      study_type_questions: 'Information needed to determine confidentiality of patients/protocols in Epic'
+      nct_number: 'Clinicaltrials.gov Registry Number'
+      pro_number: 'Institutional Review Board (IRB) Unique Identifier'
+      ind_number: 'Investigational New Drug (IND) Number'
+      short_title: 'An abbreviated form of the title used to identify your study/project'
+      title: 'Full title of your study/project'
+      funding_status: 'Indicates whether or not funding has been applied for or obtained'
+      potential_funding_source: 'Funding source that has been applied for but not yet obtained. Pricing is logically driven off this field'
+      funding_source: 'Funding source which drives research pricing for your study/project'
+      sponsor_name: 'Specify name of the entity funding the project/study'
     authorized_users:
       header: "Add Primary PI"
-      primary_pi: "Primary PI: *"
+      primary_pi: "Primary PI:"
 
   ########################
   # NOT APPROVED WARNING #
@@ -729,8 +768,10 @@ en:
     default_statuses: "Default Statuses:"
     description: "Description"
     disabled: "Display in SPARC"
+    disabled_all_services: "Disable All Services"
     disabled_at: "Disabled at: %{disabled_parent}"
     eap_id: 'EAP ID'
+    enable_all_services: "Enable All Services"
     epic_info: "Epic Interface"
     errors: "Effective Date, Display Dates, Percent of Fee, and Rates are required on all pricing setups."
     gen_info: "General Information"

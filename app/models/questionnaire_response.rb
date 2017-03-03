@@ -2,31 +2,19 @@ class QuestionnaireResponse < ActiveRecord::Base
   belongs_to :submission
   belongs_to :item
   validates :content, presence: true, if: :required? 
-  validates_format_of :content, with: Devise::email_regexp, if: :content_is_email?
-  validates_format_of :content, with: /\d{3}-\d{3}-\d{4}/, if: :content_is_phone?
+  validates_format_of :content, with: Devise::email_regexp, allow_blank: true, if: :content_is_email?
+  validates_format_of :content, with: /\d{3}-\d{3}-\d{4}/, allow_blank: true, if: :content_is_phone?
 
   def required?
     required == true
   end
 
   def content_is_email?
-    if item && (item.item_type == 'email')
-      if !required && (content == '')
-        return false
-      else
-        return true
-      end
-    end
+    (item.item_type == 'email') if item
   end
 
   def content_is_phone?
-    if item && (item.item_type == 'phone')
-      if !required && (content == '')
-        return false
-      else
-        return true
-      end
-    end
+    (item.item_type == 'phone') if item
   end
 
   # When content == '["a","b", "c"]',

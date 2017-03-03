@@ -65,7 +65,7 @@
             - if USE_EPIC && protocol != nil && protocol.selected_for_epic
               = user_form_group(name: :epic_access,
                 form: form,
-                data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"1500"}' },
+                data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' },
                 title: t(:authorized_users)[:tooltips][:epic_access]) do
                 = label_tag nil, nil, class: 'radio-inline' do
                   = form.radio_button :epic_access, false, class: 'epic_access'
@@ -77,7 +77,7 @@
             - disable = (form.object.role == 'pi' || form.object.role == 'primary-pi')
             = user_form_group(name: :rights,
               form: form,
-              data: { toggle: 'tooltip', placement: 'bottom', delay: '{"show":"1500"}' },
+              data: { toggle: 'tooltip', placement: 'bottom', delay: '{"show":"500"}' },
               title: t(:authorized_users)[:tooltips][:rights]) do
               .radio
                 %label

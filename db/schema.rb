@@ -1031,6 +1031,7 @@ ActiveRecord::Schema.define(version: 20170303171239) do
 
   add_index "sub_service_requests", ["organization_id"], name: "index_sub_service_requests_on_organization_id", using: :btree
   add_index "sub_service_requests", ["owner_id"], name: "index_sub_service_requests_on_owner_id", using: :btree
+  add_index "sub_service_requests", ["protocol_id"], name: "index_sub_service_requests_on_protocol_id", using: :btree
   add_index "sub_service_requests", ["service_request_id"], name: "index_sub_service_requests_on_service_request_id", using: :btree
   add_index "sub_service_requests", ["service_requester_id"], name: "index_sub_service_requests_on_service_requester_id", using: :btree
   add_index "sub_service_requests", ["ssr_id"], name: "index_sub_service_requests_on_ssr_id", using: :btree

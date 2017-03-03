@@ -1,6 +1,7 @@
 class AddProtocolIdToSubServiceRequests < ActiveRecord::Migration
   def change
     add_column :sub_service_requests, :protocol_id, :integer
+    add_index :sub_service_requests, :protocol_id
 
     SubServiceRequest.find_each do |ssr|
       if ssr.service_request

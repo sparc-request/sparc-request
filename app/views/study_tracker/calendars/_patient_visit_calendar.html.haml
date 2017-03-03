@@ -29,14 +29,14 @@
       %tr
         %th
           = t(:study_tracker)[:visit_calendar][:header1]
-          = @sub_service_request.service_request.protocol.id
+          = @sub_service_request.protocol_id
         %th
           = t(:study_tracker)[:visit_calendar][:header2]
           = @subject.external_subject_id
       %tr
         %th
           = t(:study_tracker)[:visit_calendar][:header3]
-          = @sub_service_request.service_request.protocol.billing_managers.try(:first).try(:full_name)
+          = @sub_service_request.protocol.billing_managers.try(:first).try(:full_name)
         %th
           = t(:study_tracker)[:visit_calendar][:header4]
           = f.select :status, options_for_select(["Active", "Completed", "Early Term", "Screen Fail"], f.try(:object).try(:status)), :include_blank => "--Choose a Status--"
@@ -72,4 +72,4 @@
       core_id = $(ui.newTab).data("core_id")
       $.cookie('current_core', core_id, {path: '/', expires: 1})
   )
-  
+

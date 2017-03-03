@@ -31,6 +31,7 @@ class SubServiceRequest < ActiveRecord::Base
   belongs_to :owner, :class_name => 'Identity', :foreign_key => "owner_id"
   belongs_to :service_request
   belongs_to :organization
+  belongs_to :protocol
   has_many :past_statuses, :dependent => :destroy
   has_many :line_items, :dependent => :destroy
   has_many :line_items_visits, through: :line_items
@@ -44,12 +45,12 @@ class SubServiceRequest < ActiveRecord::Base
   has_many :subsidies
   has_one :approved_subsidy, :dependent => :destroy
   has_one :pending_subsidy, :dependent => :destroy
-  has_one :protocol, through: :service_request
 
   delegate :percent_subsidy, to: :approved_subsidy, allow_nil: true
 
   # service_request_id & ssr_id together form a unique id for the sub service request
   attr_accessible :service_request_id
+  attr_accessible :protocol_id
   attr_accessible :ssr_id
   attr_accessible :organization_id
   attr_accessible :owner_id
@@ -134,7 +135,7 @@ class SubServiceRequest < ActiveRecord::Base
   end
 
   def display_id
-    return "#{service_request.try(:protocol).try(:id)}-#{ssr_id || 'DRAFT'}"
+    return "#{protocol.try(:id)}-#{ssr_id || 'DRAFT'}"
   end
 
   def has_subsidy?
@@ -280,7 +281,7 @@ class SubServiceRequest < ActiveRecord::Base
 
   def eligible_for_subsidy?
     # This defines when subsidies show up for SubServiceRequests across the app.
-    if organization.eligible_for_subsidy? and not organization.funding_source_excluded_from_subsidy?(self.service_request.protocol.try(:funding_source_based_on_status))
+    if organization.eligible_for_subsidy? and not organization.funding_source_excluded_from_subsidy?(self.protocol.try(:funding_source_based_on_status))
       true
     else
       false
@@ -444,7 +445,7 @@ class SubServiceRequest < ActiveRecord::Base
   ##########################
   # Distributes all available surveys to primary pi and ssr requester
   def distribute_surveys
-    primary_pi = service_request.protocol.primary_principal_investigator
+    primary_pi = protocol.primary_principal_investigator
     # send all available surveys at once
     available_surveys = line_items.map{|li| li.service.available_surveys}.flatten.compact.uniq
     # do nothing if we don't have any available surveys

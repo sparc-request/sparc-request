@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170217134129) do
+ActiveRecord::Schema.define(version: 20170303171239) do
 
   create_table "admin_rates", force: :cascade do |t|
     t.integer  "line_item_id", limit: 4
@@ -1026,6 +1026,7 @@ ActiveRecord::Schema.define(version: 20170217134129) do
     t.text     "org_tree_display",           limit: 65535
     t.integer  "service_requester_id",       limit: 4
     t.datetime "submitted_at"
+    t.integer  "protocol_id",                limit: 4
   end
 
   add_index "sub_service_requests", ["organization_id"], name: "index_sub_service_requests_on_organization_id", using: :btree

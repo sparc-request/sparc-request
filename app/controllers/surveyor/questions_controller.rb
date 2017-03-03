@@ -29,7 +29,7 @@ class Surveyor::QuestionsController < ApplicationController
     @survey   = @section.survey
     @question = @section.questions.create(
                   content: "Untitled Question",
-                  question_type: ADDITIONAL_DETAIL_QUESTION_TYPES.first,
+                  question_type: ADDITIONAL_DETAIL_QUESTION_TYPES.first[1],
                   required: false,
                   is_dependent: false
                 )

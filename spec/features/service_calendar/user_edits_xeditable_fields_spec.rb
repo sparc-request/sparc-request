@@ -52,36 +52,36 @@ RSpec.describe 'User sets each XEditable field', js: true do
   context 'in the Template Tab' do
     context 'to a valid value' do
       scenario 'window before' do
-        find('.window-before.editable').click
-        find('.editable-input input').set(5)
-        find('.editable-submit').click
+        find('a.edit-visit-group', match: :first).click
+        fill_in 'visit_group_window_before', with: 5
+        click_button 'Save changes'
         wait_for_javascript_to_finish
 
         expect(@arm.visit_groups.first.window_before).to eq(5)
       end
 
       scenario 'window after' do
-        find('.window-after.editable').click
-        find('.editable-input input').set(5)
-        find('.editable-submit').click
+        find('a.edit-visit-group', match: :first).click
+        fill_in 'visit_group_window_after', with: 5
+        click_button 'Save changes'
         wait_for_javascript_to_finish
 
         expect(@arm.visit_groups.first.window_after).to eq(5)
       end
 
       scenario 'day' do
-        find('.day.editable').click
-        find('.editable-input input').set(5)
-        find('.editable-submit').click
+        find('a.edit-visit-group', match: :first).click
+        fill_in 'visit_group_day', with: 5
+        click_button 'Save changes'
         wait_for_javascript_to_finish
 
         expect(@arm.visit_groups.first.day).to eq(5)
       end
 
       scenario 'visit name' do
-        find('.visit-group-name.editable').click
-        find('.editable-input input').set('Visit Me')
-        find('.editable-submit').click
+        find('a.edit-visit-group', match: :first).click
+        fill_in 'visit_group_name', with: 'Visit Me'
+        click_button 'Save changes'
         wait_for_javascript_to_finish
 
         expect(@arm.visit_groups.first.name).to eq('Visit Me')
@@ -117,33 +117,30 @@ RSpec.describe 'User sets each XEditable field', js: true do
 
     context 'to an invalid value' do
       scenario 'window before' do
-        find('.window-before.editable').click
-        find('.editable-input input').set('a lot')
-        find('.editable-submit').click
+        find('a.edit-visit-group', match: :first).click
+        fill_in 'visit_group_window_before', with: 'a lot'
+        click_button 'Save changes'
         wait_for_javascript_to_finish
 
-        expect(page).to have_selector('.editable-error-block', visible: true)
-        expect(page).to have_content('Window Before is not a number')
+        expect(page).to have_css('span.help-block', text: 'Is not a number')
       end
 
       scenario 'window after' do
-        find('.window-after.editable').click
-        find('.editable-input input').set('not a lot')
-        find('.editable-submit').click
+        find('a.edit-visit-group', match: :first).click
+        fill_in 'visit_group_window_after', with: 'a lot'
+        click_button 'Save changes'
         wait_for_javascript_to_finish
 
-        expect(page).to have_selector('.editable-error-block', visible: true)
-        expect(page).to have_content('Window After is not a number')
+        expect(page).to have_css('span.help-block', text: 'Is not a number')
       end
 
       scenario 'day' do
-        find('.day.editable').click
-        find('.editable-input input').set('someday')
-        find('.editable-submit').click
+        find('a.edit-visit-group', match: :first).click
+        fill_in 'visit_group_day', with: 'someday'
+        click_button 'Save changes'
         wait_for_javascript_to_finish
 
-        expect(page).to have_selector('.editable-error-block', visible: true)
-        expect(page).to have_content('Day is not a number')
+        expect(page).to have_css('span.help-block', text: 'Is not a number')
       end
 
       scenario 'subject count' do
@@ -186,36 +183,36 @@ RSpec.describe 'User sets each XEditable field', js: true do
 
     context 'to a valid value' do
       scenario 'window before' do
-        find('.window-before.editable').click
-        find('.editable-input input').set(5)
-        find('.editable-submit').click
+        find('a.edit-visit-group', match: :first).click
+        fill_in 'visit_group_window_before', with: 5
+        click_button 'Save changes'
         wait_for_javascript_to_finish
 
         expect(@arm.visit_groups.first.window_before).to eq(5)
       end
 
       scenario 'window after' do
-        find('.window-after.editable').click
-        find('.editable-input input').set(5)
-        find('.editable-submit').click
+        find('a.edit-visit-group', match: :first).click
+        fill_in 'visit_group_window_after', with: 5
+        click_button 'Save changes'
         wait_for_javascript_to_finish
 
         expect(@arm.visit_groups.first.window_after).to eq(5)
       end
 
       scenario 'day' do
-        find('.day.editable').click
-        find('.editable-input input').set(5)
-        find('.editable-submit').click
+        find('a.edit-visit-group', match: :first).click
+        fill_in 'visit_group_day', with: 5
+        click_button 'Save changes'
         wait_for_javascript_to_finish
 
         expect(@arm.visit_groups.first.day).to eq(5)
       end
 
       scenario 'visit name' do
-        find('.visit-group-name.editable').click
-        find('.editable-input input').set('Visit Me')
-        find('.editable-submit').click
+        find('a.edit-visit-group', match: :first).click
+        fill_in 'visit_group_name', with: 'Visit Me'
+        click_button 'Save changes'
         wait_for_javascript_to_finish
 
         expect(@arm.visit_groups.first.name).to eq('Visit Me')
@@ -278,30 +275,30 @@ RSpec.describe 'User sets each XEditable field', js: true do
 
     context 'to an invalid value' do
       scenario 'window before' do
-        find('.window-before.editable').click
-        find('.editable-input input').set('a lot')
-        find('.editable-submit').click
+        find('a.edit-visit-group', match: :first).click
+        fill_in 'visit_group_window_before', with: 'a lot'
+        click_button 'Save changes'
+        wait_for_javascript_to_finish
 
-        expect(page).to have_selector('.editable-error-block', visible: true)
-        expect(page).to have_content('Window Before is not a number')
+        expect(page).to have_css('span.help-block', text: 'Is not a number')
       end
 
       scenario 'window after' do
-        find('.window-after.editable').click
-        find('.editable-input input').set('not a lot')
-        find('.editable-submit').click
+        find('a.edit-visit-group', match: :first).click
+        fill_in 'visit_group_window_after', with: 'a lot'
+        click_button 'Save changes'
+        wait_for_javascript_to_finish
 
-        expect(page).to have_selector('.editable-error-block', visible: true)
-        expect(page).to have_content('Window After is not a number')
+        expect(page).to have_css('span.help-block', text: 'Is not a number')
       end
 
       scenario 'day' do
-        find('.day.editable').click
-        find('.editable-input input').set('someday')
-        find('.editable-submit').click
+        find('a.edit-visit-group', match: :first).click
+        fill_in 'visit_group_day', with: 'a lot'
+        click_button 'Save changes'
+        wait_for_javascript_to_finish
 
-        expect(page).to have_selector('.editable-error-block', visible: true)
-        expect(page).to have_content('Day is not a number')
+        expect(page).to have_css('span.help-block', text: 'Is not a number')
       end
 
       scenario 'subject count' do

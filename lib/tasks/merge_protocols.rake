@@ -88,8 +88,14 @@ task :protocol_merge => :environment do
 
     puts "Project roles have been transferred. Assigning service requests..."
 
+    fulfillment_ssrs = []
     second_protocol.service_requests.each do |request|
       request.update_attributes(protocol_id: first_protocol.id)
+      request.sub_service_requests.each do |ssr|
+        if ssr.in_work_fulfillment
+          fulfillment_ssrs << ssr
+        end
+      end
     end
 
     puts "Service requests have been transferred. Assigning arms..."
@@ -111,6 +117,17 @@ task :protocol_merge => :environment do
     end
 
     puts "Updating of child objects complete"
+
+    if fulfillment_ssrs.any?
+      puts "#" * 50
+      puts "#" * 50
+      puts "#" * 50
+      puts 'The following sub service requests have data in fulfillment'
+      puts 'and need to be corrected: '
+      fulfillment_ssrs.each do |ssr|
+        puts "ID: #{ssr.id}"
+      end 
+    end
   else
     puts 'Exiting the task...'
   end

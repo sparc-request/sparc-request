@@ -117,6 +117,7 @@ en:
     ##########
     navbar:
       logged_in_as: "Logged in as "
+      surveys: "Surveys"
       epic_queue: "View Epic Queue"
       messages: "All Notifications"
 

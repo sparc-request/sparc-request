@@ -58,4 +58,5 @@
 //= require study_schedule_tabs
 //= require subsidy_form
 //= require surveyor/responses
+//= require surveyor/surveys
 //= require sweetalert.min

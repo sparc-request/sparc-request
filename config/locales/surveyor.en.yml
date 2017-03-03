@@ -37,3 +37,60 @@ en:
           text1: "Thank you for requesting services from"
           text2: "The service(s) you requested have now been completed."
           text3: "Please click on the link(s) below to complete the following survey(s) regarding the service(s) you received. Your feedback is important and appreciated!"
+
+    surveys:
+      header: "Surveys"
+      new: "New Survey"
+      table:
+        headers:
+          title: "Title"
+          access_code: "Access Code"
+          version: "Version"
+          display_order: "Display Order"
+          active: "Active"
+          options: "Options"
+        fields:
+          edit: "Edit Survey"
+          delete: "Delete Survey"
+          activate: "Activate"
+          disable: "Disable"
+          preview: "Preview"
+      form:
+        header: "Live Editing Survey"
+        survey_information:
+          header: "Survey Information"
+          access_code: "Access Code:"
+          version: "Version:"
+          display_order: "Display Order:"
+          active: "Active:"
+        content:
+          survey:
+            title:
+              placeholder: "Survey Title (Required)"
+            description:
+              placeholder: "Survey Description (Recommended)"
+          section:
+            add: "Add Section"
+            delete: "Delete Section"
+            title:
+              placeholder: "Section Title (Recommended)"
+            description:
+              placeholder: "Section Description (Optional)"
+          question:
+            add: "Add Question"
+            delete: "Delete Question"
+            content:
+              placeholder: "Question (Required)"
+            description:
+              placeholder: "Question Description (Optional)"
+            required: "Required:"
+            dependent:
+              label: "Dependent:"
+              dropdown:
+                label: "Display If:"
+          option:
+            add: "Add Option"
+            delete: "Delete Option"
+            content:
+              placeholder: "Option (Required)"
+

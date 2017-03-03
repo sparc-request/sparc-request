@@ -450,6 +450,14 @@ en:
       pi: "PI Contribution:"
       cost: "Subsidy Cost:"
 
+  #######################
+  # SWEET ALERT CONTENT #
+  #######################
+  swal:
+    swal_confirm:
+      title: "Are you sure?"
+      text: "You cannot undo this action"
+
   #############################
   # VALIDATION ERROR MESSAGES #
   #############################

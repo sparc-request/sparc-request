@@ -30,7 +30,7 @@ class SurveyResponseReport < ReportingModule
   # see app/reports/test_report.rb for all options
   def default_options
     {
-      "Date Range" => {:field_type => :date_range, :for => "completed_at", :from => "2012-03-01".to_date, :to => Date.today},
+      "Date Range" => {:field_type => :date_range, :for => "created_at", :from => "2012-03-01".to_date, :to => Date.today},
       Survey => {:field_type => :select_tag, :custom_name_method => :title, :required => true}
     }
   end
@@ -42,18 +42,14 @@ class SurveyResponseReport < ReportingModule
     attrs["SSR ID"] = "sub_service_request.try(:display_id)"
     attrs["User ID"] = :user_id
     attrs["User Name"] = "identity.try(:full_name)"
-    attrs["Submitted Date"] = "completed_at.try(:strftime, \"%D\")"
+    attrs["Submitted Date"] = "created_at.try(:strftime, \"%D\")"
 
     if params[:survey_id]
       survey = Survey.find(params[:survey_id])
       survey.sections.each do |section|
         section.questions.each do |question|
-          question.answers.each do |answer|
-            if answer.response_class == "text"
-              attrs[ActionView::Base.full_sanitizer.sanitize(question.text)] = "responses.select{|response| response.question_id == #{question.id}}.first.try(:text_value)"
-            else
-              attrs[ActionView::Base.full_sanitizer.sanitize(question.text)] = "responses.select{|response| response.question_id == #{question.id}}.first.try(:answer).try(:text)"
-            end
+          question.question_responses.each do |qr|
+            attrs[ActionView::Base.full_sanitizer.sanitize(question.content)] = "question_responses.where(question_id: #{question.id}).first.try(:text_value)"
           end
         end
       end
@@ -74,7 +70,7 @@ class SurveyResponseReport < ReportingModule
   # def order => order by these attributes (include table name is always a safe bet, ex. identities.id DESC, protocols.title ASC)
   # Primary table to query
   def table
-    ResponseSet
+    Response
   end
 
   # Other tables to include
@@ -84,26 +80,26 @@ class SurveyResponseReport < ReportingModule
 
   # Other tables to join
   def joins
-    return :responses
+    return :question_responses
   end
 
   # Conditions
   def where args={}
-    completed_at = (args[:completed_at_from] ? args[:completed_at_from] : self.default_options["Date Range"][:from]).to_time.strftime("%Y-%m-%d 00:00:00")..(args[:completed_at_to] ? args[:completed_at_to] : self.default_options["Date Range"][:to]).to_time.strftime("%Y-%m-%d 23:59:59")
+    created_at = (args[:created_at_from] ? args[:created_at_from] : self.default_options["Date Range"][:from]).to_time.strftime("%Y-%m-%d 00:00:00")..(args[:created_at_to] ? args[:created_at_to] : self.default_options["Date Range"][:to]).to_time.strftime("%Y-%m-%d 23:59:59")
 
-    return :response_sets => {:completed_at => completed_at, :survey_id => args[:survey_id]}
+    return :responses => {:created_at => created_at, :survey_id => args[:survey_id]}
   end
 
   # Return only uniq records for
   def uniq
-    return :response_sets
+    return :responses
   end
 
   def group
   end
 
   def order
-    "response_sets.completed_at ASC"
+    "responses.created_at ASC"
   end
 
   ##################  END QUERY SETUP   #####################
@@ -115,7 +111,7 @@ class SurveyResponseReport < ReportingModule
 
     # only add satisfaction rate to the bottom of reports for the system satisfaction survey
     if params["survey_id"] == Survey.find_by(access_code: "system-satisfaction-survey").id.to_s
-      record_answers = records.map { |record| record.responses.where(question_id: 1).first.try(:answer).try(:text) }.compact
+      record_answers = records.map { |response| response.question_responses.where(question_id: 1).first.try(:content) }.compact
       yes_answers = record_answers.select { |answer| answer == "Yes" }
       percent_satisifed = yes_answers.length.to_f / record_answers.length * 100
 

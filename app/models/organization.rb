@@ -27,7 +27,7 @@ class Organization < ActiveRecord::Base
 
   belongs_to :parent, :class_name => 'Organization'
   has_many :submission_emails, :dependent => :destroy
-  has_many :associated_surveys, as: :surveyable
+  has_many :associated_surveys, as: :surveyable, dependent: :destroy
   has_many :pricing_setups, :dependent => :destroy
   has_one :subsidy_map, :dependent => :destroy
 

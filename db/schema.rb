@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170118151049) do
+ActiveRecord::Schema.define(version: 20170215213352) do
 
   create_table "admin_rates", force: :cascade do |t|
     t.integer  "line_item_id", limit: 4
@@ -36,34 +36,6 @@ ActiveRecord::Schema.define(version: 20170118151049) do
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
   end
-
-  create_table "answers", force: :cascade do |t|
-    t.integer  "question_id",            limit: 4
-    t.text     "text",                   limit: 65535
-    t.text     "short_text",             limit: 65535
-    t.text     "help_text",              limit: 65535
-    t.integer  "weight",                 limit: 4
-    t.string   "response_class",         limit: 255
-    t.string   "reference_identifier",   limit: 255
-    t.string   "data_export_identifier", limit: 255
-    t.string   "common_namespace",       limit: 255
-    t.string   "common_identifier",      limit: 255
-    t.integer  "display_order",          limit: 4
-    t.boolean  "is_exclusive"
-    t.integer  "display_length",         limit: 4
-    t.string   "custom_class",           limit: 255
-    t.string   "custom_renderer",        limit: 255
-    t.datetime "created_at",                           null: false
-    t.datetime "updated_at",                           null: false
-    t.string   "default_value",          limit: 255
-    t.string   "api_id",                 limit: 255
-    t.string   "display_type",           limit: 255
-    t.string   "input_mask",             limit: 255
-    t.string   "input_mask_placeholder", limit: 255
-  end
-
-  add_index "answers", ["api_id"], name: "uq_answers_api_id", unique: true, using: :btree
-  add_index "answers", ["question_id"], name: "index_answers_on_question_id", using: :btree
 
   create_table "appointments", force: :cascade do |t|
     t.integer  "calendar_id",     limit: 4
@@ -357,9 +329,6 @@ ActiveRecord::Schema.define(version: 20170118151049) do
     t.string   "email",                        limit: 255
     t.string   "last_name",                    limit: 255
     t.string   "first_name",                   limit: 255
-    t.string   "institution",                  limit: 255
-    t.string   "college",                      limit: 255
-    t.string   "department",                   limit: 255
     t.string   "era_commons_name",             limit: 255
     t.string   "credentials",                  limit: 255
     t.string   "subspecialty",                 limit: 255
@@ -519,6 +488,15 @@ ActiveRecord::Schema.define(version: 20170118151049) do
 
   add_index "notifications", ["originator_id"], name: "index_notifications_on_originator_id", using: :btree
   add_index "notifications", ["sub_service_request_id"], name: "index_notifications_on_sub_service_request_id", using: :btree
+
+  create_table "options", force: :cascade do |t|
+    t.integer  "question_id", limit: 4
+    t.text     "content",     limit: 65535, null: false
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
+  end
+
+  add_index "options", ["question_id"], name: "index_options_on_question_id", using: :btree
 
   create_table "organizations", force: :cascade do |t|
     t.string   "type",         limit: 255
@@ -732,22 +710,16 @@ ActiveRecord::Schema.define(version: 20170118151049) do
 
   add_index "protocols", ["next_ssr_id"], name: "index_protocols_on_next_ssr_id", using: :btree
 
-  create_table "question_groups", force: :cascade do |t|
-    t.text     "text",                   limit: 65535
-    t.text     "help_text",              limit: 65535
-    t.string   "reference_identifier",   limit: 255
-    t.string   "data_export_identifier", limit: 255
-    t.string   "common_namespace",       limit: 255
-    t.string   "common_identifier",      limit: 255
-    t.string   "display_type",           limit: 255
-    t.string   "custom_class",           limit: 255
-    t.string   "custom_renderer",        limit: 255
-    t.datetime "created_at",                           null: false
-    t.datetime "updated_at",                           null: false
-    t.string   "api_id",                 limit: 255
+  create_table "question_responses", force: :cascade do |t|
+    t.integer  "question_id", limit: 4
+    t.integer  "response_id", limit: 4
+    t.text     "content",     limit: 65535, null: false
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
   end
 
-  add_index "question_groups", ["api_id"], name: "uq_question_groups_api_id", unique: true, using: :btree
+  add_index "question_responses", ["question_id"], name: "index_question_responses_on_question_id", using: :btree
+  add_index "question_responses", ["response_id"], name: "index_question_responses_on_response_id", using: :btree
 
   create_table "questionnaire_responses", force: :cascade do |t|
     t.integer  "submission_id", limit: 4
@@ -772,32 +744,19 @@ ActiveRecord::Schema.define(version: 20170118151049) do
   add_index "questionnaires", ["service_id"], name: "index_questionnaires_on_service_id", using: :btree
 
   create_table "questions", force: :cascade do |t|
-    t.integer  "survey_section_id",      limit: 4
-    t.integer  "question_group_id",      limit: 4
-    t.text     "text",                   limit: 65535
-    t.text     "short_text",             limit: 65535
-    t.text     "help_text",              limit: 65535
-    t.string   "pick",                   limit: 255
-    t.string   "reference_identifier",   limit: 255
-    t.string   "data_export_identifier", limit: 255
-    t.string   "common_namespace",       limit: 255
-    t.string   "common_identifier",      limit: 255
-    t.integer  "display_order",          limit: 4
-    t.string   "display_type",           limit: 255
-    t.boolean  "is_mandatory"
-    t.integer  "display_width",          limit: 4
-    t.string   "custom_class",           limit: 255
-    t.string   "custom_renderer",        limit: 255
-    t.datetime "created_at",                           null: false
-    t.datetime "updated_at",                           null: false
-    t.integer  "correct_answer_id",      limit: 4
-    t.string   "api_id",                 limit: 255
+    t.integer  "section_id",    limit: 4
+    t.boolean  "is_dependent",                null: false
+    t.text     "content",       limit: 65535, null: false
+    t.string   "question_type", limit: 255,   null: false
+    t.string   "description",   limit: 255
+    t.boolean  "required",                    null: false
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
+    t.integer  "depender_id",   limit: 4
   end
 
-  add_index "questions", ["api_id"], name: "uq_questions_api_id", unique: true, using: :btree
-  add_index "questions", ["correct_answer_id"], name: "index_questions_on_correct_answer_id", using: :btree
-  add_index "questions", ["question_group_id"], name: "index_questions_on_question_group_id", using: :btree
-  add_index "questions", ["survey_section_id"], name: "index_questions_on_survey_section_id", using: :btree
+  add_index "questions", ["depender_id"], name: "index_questions_on_depender_id", using: :btree
+  add_index "questions", ["section_id"], name: "index_questions_on_section_id", using: :btree
 
   create_table "quick_questions", force: :cascade do |t|
     t.string   "to",         limit: 255
@@ -831,46 +790,17 @@ ActiveRecord::Schema.define(version: 20170118151049) do
 
   add_index "research_types_info", ["protocol_id"], name: "index_research_types_info_on_protocol_id", using: :btree
 
-  create_table "response_sets", force: :cascade do |t|
-    t.integer  "user_id",                limit: 4
-    t.integer  "survey_id",              limit: 4
-    t.string   "access_code",            limit: 255
-    t.datetime "started_at"
-    t.datetime "completed_at"
-    t.datetime "created_at",                         null: false
-    t.datetime "updated_at",                         null: false
-    t.string   "api_id",                 limit: 255
-    t.integer  "sub_service_request_id", limit: 4
-  end
-
-  add_index "response_sets", ["access_code"], name: "response_sets_ac_idx", unique: true, using: :btree
-  add_index "response_sets", ["api_id"], name: "uq_response_sets_api_id", unique: true, using: :btree
-  add_index "response_sets", ["survey_id"], name: "index_response_sets_on_survey_id", using: :btree
-  add_index "response_sets", ["user_id"], name: "index_response_sets_on_user_id", using: :btree
-
   create_table "responses", force: :cascade do |t|
-    t.integer  "response_set_id",   limit: 4
-    t.integer  "question_id",       limit: 4
-    t.integer  "answer_id",         limit: 4
-    t.datetime "datetime_value"
-    t.integer  "integer_value",     limit: 4
-    t.float    "float_value",       limit: 24
-    t.string   "unit",              limit: 255
-    t.text     "text_value",        limit: 65535
-    t.string   "string_value",      limit: 255
-    t.string   "response_other",    limit: 255
-    t.string   "response_group",    limit: 255
-    t.datetime "created_at",                      null: false
-    t.datetime "updated_at",                      null: false
-    t.integer  "survey_section_id", limit: 4
-    t.string   "api_id",            limit: 255
+    t.integer  "survey_id",              limit: 4
+    t.integer  "identity_id",            limit: 4
+    t.integer  "sub_service_request_id", limit: 4
+    t.datetime "created_at",                       null: false
+    t.datetime "updated_at",                       null: false
   end
 
-  add_index "responses", ["answer_id"], name: "index_responses_on_answer_id", using: :btree
-  add_index "responses", ["api_id"], name: "uq_responses_api_id", unique: true, using: :btree
-  add_index "responses", ["question_id"], name: "index_responses_on_question_id", using: :btree
-  add_index "responses", ["response_set_id"], name: "index_responses_on_response_set_id", using: :btree
-  add_index "responses", ["survey_section_id"], name: "index_responses_on_survey_section_id", using: :btree
+  add_index "responses", ["identity_id"], name: "index_responses_on_identity_id", using: :btree
+  add_index "responses", ["sub_service_request_id"], name: "index_responses_on_sub_service_request_id", using: :btree
+  add_index "responses", ["survey_id"], name: "index_responses_on_survey_id", using: :btree
 
   create_table "revenue_code_ranges", force: :cascade do |t|
     t.integer  "from",           limit: 4
@@ -882,6 +812,16 @@ ActiveRecord::Schema.define(version: 20170118151049) do
     t.datetime "created_at",                 null: false
     t.datetime "updated_at",                 null: false
   end
+
+  create_table "sections", force: :cascade do |t|
+    t.integer  "survey_id",   limit: 4
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+    t.string   "title",       limit: 255
+    t.string   "description", limit: 255
+  end
+
+  add_index "sections", ["survey_id"], name: "index_sections_on_survey_id", using: :btree
 
   create_table "service_providers", force: :cascade do |t|
     t.integer  "identity_id",        limit: 4
@@ -1111,53 +1051,16 @@ ActiveRecord::Schema.define(version: 20170118151049) do
   add_index "super_users", ["identity_id"], name: "index_super_users_on_identity_id", using: :btree
   add_index "super_users", ["organization_id"], name: "index_super_users_on_organization_id", using: :btree
 
-  create_table "survey_sections", force: :cascade do |t|
-    t.integer  "survey_id",              limit: 4
-    t.string   "title",                  limit: 255
-    t.text     "description",            limit: 65535
-    t.string   "reference_identifier",   limit: 255
-    t.string   "data_export_identifier", limit: 255
-    t.string   "common_namespace",       limit: 255
-    t.string   "common_identifier",      limit: 255
-    t.integer  "display_order",          limit: 4
-    t.string   "custom_class",           limit: 255
-    t.datetime "created_at",                           null: false
-    t.datetime "updated_at",                           null: false
-  end
-
-  add_index "survey_sections", ["survey_id"], name: "index_survey_sections_on_survey_id", using: :btree
-
-  create_table "survey_translations", force: :cascade do |t|
-    t.integer  "survey_id",   limit: 4
-    t.string   "locale",      limit: 255
-    t.text     "translation", limit: 65535
+  create_table "surveys", force: :cascade do |t|
+    t.string   "title",         limit: 255, null: false
+    t.string   "description",   limit: 255
+    t.string   "access_code",   limit: 255, null: false
+    t.integer  "display_order", limit: 4,   null: false
+    t.integer  "version",       limit: 4,   null: false
+    t.boolean  "active",                    null: false
     t.datetime "created_at",                null: false
     t.datetime "updated_at",                null: false
   end
-
-  add_index "survey_translations", ["survey_id"], name: "index_survey_translations_on_survey_id", using: :btree
-
-  create_table "surveys", force: :cascade do |t|
-    t.string   "title",                  limit: 255
-    t.text     "description",            limit: 65535
-    t.string   "access_code",            limit: 255
-    t.string   "reference_identifier",   limit: 255
-    t.string   "data_export_identifier", limit: 255
-    t.string   "common_namespace",       limit: 255
-    t.string   "common_identifier",      limit: 255
-    t.datetime "active_at"
-    t.datetime "inactive_at"
-    t.string   "css_url",                limit: 255
-    t.string   "custom_class",           limit: 255
-    t.datetime "created_at",                                       null: false
-    t.datetime "updated_at",                                       null: false
-    t.integer  "display_order",          limit: 4
-    t.string   "api_id",                 limit: 255
-    t.integer  "survey_version",         limit: 4,     default: 0
-  end
-
-  add_index "surveys", ["access_code", "survey_version"], name: "surveys_access_code_version_idx", unique: true, using: :btree
-  add_index "surveys", ["api_id"], name: "uq_surveys_api_id", unique: true, using: :btree
 
   create_table "taggings", force: :cascade do |t|
     t.integer  "tag_id",        limit: 4
@@ -1292,9 +1195,18 @@ ActiveRecord::Schema.define(version: 20170118151049) do
 
   add_foreign_key "item_options", "items"
   add_foreign_key "items", "questionnaires"
+  add_foreign_key "options", "questions"
+  add_foreign_key "question_responses", "questions"
+  add_foreign_key "question_responses", "responses"
   add_foreign_key "questionnaire_responses", "items"
   add_foreign_key "questionnaire_responses", "submissions"
   add_foreign_key "questionnaires", "services"
+  add_foreign_key "questions", "options", column: "depender_id"
+  add_foreign_key "questions", "sections"
+  add_foreign_key "responses", "identities"
+  add_foreign_key "responses", "sub_service_requests"
+  add_foreign_key "responses", "surveys"
+  add_foreign_key "sections", "surveys"
   add_foreign_key "submissions", "identities"
   add_foreign_key "submissions", "line_items"
   add_foreign_key "submissions", "protocols"

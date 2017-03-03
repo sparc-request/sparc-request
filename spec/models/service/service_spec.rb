@@ -334,9 +334,9 @@ RSpec.describe Service, type: :model do
     # let!(:program) { create(:program)}
     # let!(:core)    { create(:core, parent_id: program.id) }
     # let!(:service) { create(:service, organization_id: core.id) }
-    let!(:survey)  { create(:survey, title: "System Satisfaction survey", description: nil, access_code: "system-satisfaction-survey", reference_identifier: nil, survey_version: 0) }
-    let!(:survey1) { create(:survey, title: "System Satisfaction survey", description: nil, access_code: "system-satisfaction-survey", reference_identifier: nil, survey_version: 1) }
-    let!(:survey2) { create(:survey, title: "System Satisfaction survey", description: nil, access_code: "system-satisfaction-survey", reference_identifier: nil, survey_version: 2) }
+    let!(:survey)  { create(:survey, title: "System Satisfaction survey", description: nil, access_code: "system-satisfaction-survey", version: 0) }
+    let!(:survey1) { create(:survey, title: "System Satisfaction survey", description: nil, access_code: "system-satisfaction-survey", version: 1) }
+    let!(:survey2) { create(:survey, title: "System Satisfaction survey", description: nil, access_code: "system-satisfaction-survey", version: 2) }
 
     it "should return an array of available surveys for the service" do
       service.update_attributes(organization_id: core.id)

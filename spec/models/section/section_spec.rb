@@ -20,45 +20,19 @@
 
 require 'rails_helper'
 
-RSpec.describe AssociatedSurvey do
-  it "should create an associated survey" do
-    service = build_stubbed(:service)
-    survey = create(:survey)
-
-    service.associated_surveys.create survey_id: survey.id
-
-    expect(service.associated_surveys.size).to eq(1)
+RSpec.describe Section, type: :model do
+  it 'should have a valid factory' do
+    expect(build(:section)).to be_valid
   end
+  
+  # Associations
+  it { is_expected.to belong_to(:survey) }
 
-  it "should not allow you to associate the same survey version multiple times" do
-    service = create(:service)
-    survey = create(:survey)
+  it { is_expected.to have_many(:questions).dependent(:destroy) }
 
-    service.associated_surveys.create survey_id: survey.id
-    service.associated_surveys.create survey_id: survey.id
+  # Validations
+  it { is_expected.to validate_presence_of(:title) }
 
-    service.reload
-    expect(service.associated_surveys.size).to eq(1)
-  end
-
-  it "should not allow you to create an associated survey without valid attributes" do
-    service = create(:service)
-    survey = create(:survey)
-
-    #should not
-    service.associated_surveys.create survey_id: nil
-    service.reload
-    expect(service.associated_surveys.size).to eq(0)
-
-    AssociatedSurvey.create surveyable_type: 'Service', survey_id: survey.id
-    expect(AssociatedSurvey.count).to eq(0)
-
-    AssociatedSurvey.create surveyable_id: 1, survey_id: survey.id
-    expect(AssociatedSurvey.count).to eq(0)
-
-    #should for good measure
-    AssociatedSurvey.create surveyable_type: 'Service', survey_id: survey.id, surveyable_id: service.id
-    expect(AssociatedSurvey.count).to eq(1)
-  end
+  # Other
+  it { is_expected.to accept_nested_attributes_for(:questions) }
 end
-

@@ -52,7 +52,7 @@ class Service < ActiveRecord::Base
   has_many :depending_services, :through => :depending_service_relations, :source => :service
 
   # Surveys associated with this service
-  has_many :associated_surveys, :as => :surveyable
+  has_many :associated_surveys, as: :surveyable, dependent: :destroy
 
   attr_accessible :name
   attr_accessible :abbreviation

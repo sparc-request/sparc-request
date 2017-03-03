@@ -18,16 +18,23 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class AssociatedSurvey < ActiveRecord::Base
-  audited
+class Question < ActiveRecord::Base
+  belongs_to :section
+  belongs_to :depender, class_name: 'Option'
   
-  belongs_to :survey
-  belongs_to :surveyable, polymorphic: true
-  
-  attr_accessible :surveyable_id
-  attr_accessible :surveyable_type
-  attr_accessible :survey_id
+  delegate :survey, to: :section
 
-  validates :surveyable_type,
+  has_many :options, dependent: :destroy
+  has_many :question_responses, dependent: :destroy
+  has_many :dependents, through: :options
+
+  validates :content,
+            :question_type,
             presence: true
+
+  validates :required,
+            :is_dependent,
+            inclusion: { in: [true, false] }
+
+  accepts_nested_attributes_for :options, allow_destroy: true
 end

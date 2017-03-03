@@ -18,16 +18,52 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class AssociatedSurvey < ActiveRecord::Base
-  audited
-  
-  belongs_to :survey
-  belongs_to :surveyable, polymorphic: true
-  
-  attr_accessible :surveyable_id
-  attr_accessible :surveyable_type
-  attr_accessible :survey_id
+class QuestionResponse < ActiveRecord::Base
+  belongs_to :question
+  belongs_to :response
 
-  validates :surveyable_type,
-            presence: true
+  validates :content, presence: true, if: :required?
+
+  validate :phone_number_format, if: Proc.new{ |qr| !qr.content.blank? && qr.question_id && qr.question.question_type == 'phone' }
+  validate :email_format, if: Proc.new{ |qr| !qr.content.blank? && qr.question_id && qr.question.question_type == 'email' }
+  validate :zipcode_format, if: Proc.new{ |qr| !qr.content.blank? && qr.question_id && qr.question.question_type == 'zipcode' }
+  
+  validates_numericality_of :content, only_integer: true, if: Proc.new{ |qr| !qr.content.blank? && qr.question_id && qr.question.question_type == 'number' }
+
+  def phone_number_format
+    # Valid Formats:
+    # XXXXXXXXXX
+    # XXX XXX XXXX
+    # XXX-XXX-XXXX
+    # XXX.XXX.XXXX
+    # (XXX) XXX-XXXX
+    # +XX (XXX) XXX-XXXX
+    if content.match(/\A(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}\z/).nil?
+      errors.add(:base, I18n.t(:errors)[:question_responses][:phone_invalid])
+    end
+  end
+
+  def email_format
+    # Valid Formats:
+    # X@X.X
+    # X_X@X.X
+    # X@X.X.X
+    # X-X@X.X
+    if content.match(/\A[^@\s]+@([^@\s]+\.)+[^@\s]+\z/).nil?
+      errors.add(:base, I18n.t(:errors)[:question_responses][:email_invalid])
+    end
+  end
+
+  def zipcode_format
+    # Valid Formats:
+    # XXXXX
+    # XXXXX-XXXX
+    if content.match(/\A[0-9]{5}(?:-[0-9]{4})?\z/).nil?
+      errors.add(:base, I18n.t(:errors)[:question_responses][:zipcode_invalid])
+    end
+  end
+
+  def required?
+    self.required
+  end
 end

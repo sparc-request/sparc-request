@@ -18,16 +18,18 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class AssociatedSurvey < ActiveRecord::Base
-  audited
-  
-  belongs_to :survey
-  belongs_to :surveyable, polymorphic: true
-  
-  attr_accessible :surveyable_id
-  attr_accessible :surveyable_type
-  attr_accessible :survey_id
+require 'rails_helper'
 
-  validates :surveyable_type,
-            presence: true
+RSpec.describe Option, type: :model do
+  it 'should have a valid factory' do
+    expect(build(:option)).to be_valid
+  end
+
+  # Associations
+  it { is_expected.to belong_to(:question) }
+
+  it { is_expected.to have_many(:dependents).class_name('Question') }
+
+  # Validations
+  it { is_expected.to validate_presence_of(:content) }
 end

@@ -18,16 +18,16 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class AssociatedSurvey < ActiveRecord::Base
-  audited
-  
-  belongs_to :survey
-  belongs_to :surveyable, polymorphic: true
-  
-  attr_accessible :surveyable_id
-  attr_accessible :surveyable_type
-  attr_accessible :survey_id
+FactoryGirl.define do
+  factory :response do
+    survey              nil
+    identity            nil
+    sub_service_request nil
 
-  validates :surveyable_type,
-            presence: true
+    trait :without_validations do
+      to_create { |instance| instance.save(validate: false) }
+    end
+
+    factory :response_without_validations, traits: [:without_validations]
+  end
 end

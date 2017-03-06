@@ -287,7 +287,7 @@ RSpec.describe 'User takes a survey', js: true do
       click_button 'Submit'
       wait_for_javascript_to_finish
 
-      expect(QuestionResponse.find_by(question_id: @q_date.id).content).to eq(Date.today.strftime("%d/%m/%Y"))
+      expect(QuestionResponse.find_by(question_id: @q_date.id).content).to eq(Date.today.strftime("%m/%d/%Y"))
     end
   end
 

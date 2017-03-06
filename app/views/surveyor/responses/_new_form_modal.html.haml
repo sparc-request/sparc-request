@@ -26,7 +26,7 @@
         %h4.text-center.modal-title
           = survey.title
       .modal-body
-        = render 'surveyor/responses/form/response_content', f: f, survey: survey
+        = render 'surveyor/responses/form/response_content', f: f, survey: survey, sub_service_request: sub_service_request
       .modal-footer
         .center-block
           %button.btn.btn-default.no-button{ type: 'button', data: { dismiss: 'modal' } }

@@ -23,7 +23,7 @@ class SurveyNotification < ActionMailer::Base
 
   def system_satisfaction_survey(response)
     @response = response
-    @identity = Identity.find(response_set.user_id)
+    @identity = Identity.find(response.identity_id)
     email     = ADMIN_MAIL_TO
     cc        = SYSTEM_SATISFACTION_SURVEY_CC
     subject   = t('surveyor.responses.emails.system_satisfaction.subject', site_name: t(:proper)[:header])

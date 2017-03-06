@@ -57,7 +57,7 @@ RSpec.describe Surveyor::OptionsController, type: :controller do
           question_id: question.id
         }
       }.to change{ Option.count }.by(1)
-      expect(assigns(:option)).to be_a(option)
+      expect(assigns(:option)).to be_an(Option)
     end
 
     it 'should render template' do

@@ -21,8 +21,7 @@
   - unless section.description.blank? && index == 0
     %br
     %hr
-  - if question.required?
-    = qr.hidden_field :required, value: true
+  = qr.hidden_field :required, value: question.required?
   = qr.hidden_field :question_id, value: question.id
   .form-group
     = qr.label :content, raw(question.content), class: question.required? ? "required" : ""

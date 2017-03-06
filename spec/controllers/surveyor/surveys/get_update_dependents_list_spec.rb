@@ -59,7 +59,7 @@ RSpec.describe Surveyor::SurveysController, type: :controller do
       }
 
       expect(response.content_type).to eq('application/json')
-      expect(response.body[question.id]).to be
+      expect(JSON.parse(response.body)[question.id.to_s]).to be
     end
 
     it 'should respond ok' do

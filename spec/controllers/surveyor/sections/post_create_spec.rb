@@ -57,7 +57,7 @@ RSpec.describe Surveyor::SectionsController, type: :controller do
           survey_id: survey.id
         }
       }.to change{ Section.count }.by(1)
-      expect(assigns(:section)).to be_a(section)
+      expect(assigns(:section)).to be_a(Section)
     end
 
     it 'should render template' do

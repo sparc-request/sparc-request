@@ -22,4 +22,4 @@
 = t(:surveyor)[:responses][:emails][:system_satisfaction][:text1]
 
 = t(:surveyor)[:responses][:emails][:system_satisfaction][:text2]
-= link_to 'here', surveyor_response_path(@response, format: :html)
+= link_to 'here', url_for(controller: '/surveyor/responses', action: :show, only_path: false, id: @response.id, format: :html), target: '_blank'

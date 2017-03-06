@@ -175,11 +175,13 @@ module CapybaraSupport
     arm = create(:arm, protocol_id: project.id, subject_count: 2, visit_count: 10)
 
 
-    survey = create(:survey, title: "System Satisfaction survey", description: nil, access_code: "system-satisfaction-survey", reference_identifier: nil,
-                                         data_export_identifier: nil, common_namespace: nil, common_identifier: nil, active_at: nil, inactive_at: nil, css_url: nil,
-                                         custom_class: nil, created_at: "2013-07-02 14:40:23", updated_at: "2013-07-02 14:40:23", display_order: 0, api_id: "4137bedf-40db-43e9-a411-932a5f6d77b7",
-                                         survey_version: 0)
-
+    survey = create(:survey, 
+      title: "System Satisfaction survey",
+      description: nil,
+      access_code: "system-satisfaction-survey",
+      display_order: 1,
+      version: 0,
+      active: true)
   end
 
   def create_ctrc_data

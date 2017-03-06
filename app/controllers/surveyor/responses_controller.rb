@@ -44,6 +44,7 @@ class Surveyor::ResponsesController < ApplicationController
       }
       format.js {
         @review = 'true'
+        @sub_service_request = nil
       }
     end
   end

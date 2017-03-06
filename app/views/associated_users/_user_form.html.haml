@@ -63,17 +63,22 @@
               = form.text_field :role_other, class: 'form-control'
 
             - if USE_EPIC && protocol != nil && protocol.selected_for_epic
-              = user_form_group(name: :epic_access, form: form) do
-                .col-lg-9
-                  %label.checkbox-inline
-                    No
+              = user_form_group(name: :epic_access,
+                form: form,
+                data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"1500"}' },
+                title: t(:authorized_users)[:tooltips][:epic_access]) do
+                = label_tag nil, nil, class: 'radio-inline' do
                   = form.radio_button :epic_access, false, class: 'epic_access'
-                  %label.checkbox-inline
-                    Yes
+                  No
+                = label_tag nil, nil, class: 'radio-inline' do
                   = form.radio_button :epic_access, true, class: 'epic_access'
+                  Yes
 
             - disable = (form.object.role == 'pi' || form.object.role == 'primary-pi')
-            = user_form_group(name: :rights, form: form) do
+            = user_form_group(name: :rights,
+              form: form,
+              data: { toggle: 'tooltip', placement: 'bottom', delay: '{"show":"1500"}' },
+              title: t(:authorized_users)[:tooltips][:rights]) do
               .radio
                 %label
                   = form.radio_button :project_rights, "none", disabled: disable

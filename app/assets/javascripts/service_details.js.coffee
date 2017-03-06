@@ -58,3 +58,5 @@ $(document).ready ->
 
   $('#arms-table').on 'all.bs.table', ->
     $('.name-validation').tooltip()
+    $('.subject-count').tooltip()
+    $('.visit-count').tooltip()

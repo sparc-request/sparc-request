@@ -18,10 +18,8 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class NavigationsController < ApplicationController
-  before_filter :initialize_service_request
-  before_filter :authorize_identity
-  def index
-    @institutions = Institution.all
-  end
+class StudyPhase < ActiveRecord::Base
+  has_and_belongs_to_many :protocols
+  
+  scope :v1, -> { where(version: 1)  }  
 end

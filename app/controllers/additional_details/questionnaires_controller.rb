@@ -19,6 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 class AdditionalDetails::QuestionnairesController < ApplicationController
+  before_action :authenticate_identity!
   before_action :find_service
   before_action :find_questionnaire, only: [:edit, :update, :destroy]
   layout 'additional_details'

@@ -26,7 +26,7 @@
     - if @protocol.type.capitalize == "Study"
       .edit-study-view.container-fluid
         .row.user-edit-protocol-view
-          = render partial: 'dashboard/protocols/form/study_fields', locals: { form: form, protocol: protocol, admin: admin, permission_to_edit: permission_to_edit }
+          = render partial: 'dashboard/protocols/form/study_fields', locals: { form: form, protocol: protocol, admin: admin, permission_to_edit: permission_to_edit, action_name: action_name }
 
     - elsif @protocol.type.capitalize == "Project"
       .edit-project-view.container-fluid

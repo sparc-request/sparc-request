@@ -37,7 +37,8 @@ class ServiceRequestsReport < ReportingModule
       Core => {:field_type => :select_tag, :dependency => '#program_id', :dependency_id => 'parent_id'},
       "Tags" => {:field_type => :text_field_tag},
       "Current Status" => {:field_type => :check_box_tag, :for => 'status', :multiple => AVAILABLE_STATUSES},
-      "Show APR Data" => {:field_type => :check_box_tag, :for => 'apr_data', :multiple => {"irb" => "IRB", "iacuc" => "IACUC"}}
+      "Show APR Data" => {:field_type => :check_box_tag, :for => 'apr_data', :multiple => {"irb" => "IRB", "iacuc" => "IACUC"}},
+      "Show SPARCFulfillment Information" => {:field_type => :check_box_tag, :for => 'fulfillment_info', :field_label => 'Show SPARCFulfillment Information' }
     }
   end
 
@@ -97,6 +98,10 @@ class ServiceRequestsReport < ReportingModule
         attrs["IACUC Approval Date"] = "service_request.try(:protocol).try(:vertebrate_animals_info).try(:iacuc_approval_date).try(:strftime, \"%D\")"
         attrs["IACUC Expiration Date"] = "service_request.try(:protocol).try(:vertebrate_animals_info).try(:iacuc_expiration_date).try(:strftime, \"%D\")"
       end
+    end
+
+    if params[:fulfillment_info]
+      attrs["Sent to SPARCFulfillment"] = "service_request.sub_service_requests.in_work_fulfillment.any? ? 'Yes' : 'No'"
     end
 
     attrs

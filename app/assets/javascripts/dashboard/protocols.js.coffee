@@ -27,6 +27,24 @@ $(document).ready ->
       getSRId = () ->
         $('input[name="service_request_id"]').val()
 
+      #  Protocol Index Begin
+      $(document).on 'click', '.protocols_index_row > .id, .protocols_index_row > .title, .protocols_index_row > .pis', ->
+        #if you click on the row, it opens the protocol show
+        protocol_id = $(this).parent().data('protocol-id')
+        window.location = "/dashboard/protocols/#{protocol_id}"
+
+      $(document).on 'click', '.requests_display_link', ->
+        # Opens the requests modal
+        protocol_id = $(this).parents("tr").data('protocol-id')
+        $.ajax
+          type: 'get'
+          url: "/dashboard/protocols/#{protocol_id}/display_requests"
+          success: (data) ->
+            $('#modal_place').html(data.modal)
+            $('#modal_place').modal 'show'
+            $('.service-requests-table').bootstrapTable()
+            reset_service_requests_handlers()
+
       $(document).on 'click', '.protocol-archive-button', ->
         protocol_id = $(this).parents("tr").data('protocol-id')
         $.ajax

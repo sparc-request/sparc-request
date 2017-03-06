@@ -199,7 +199,7 @@ RSpec.describe Notifier do
     before do
       create(:note_without_validations,
             identity_id:  identity.id, 
-            notable_id: service_request.id)
+            notable_id: service_request.protocol.id)
     end
 
     context 'service_provider' do

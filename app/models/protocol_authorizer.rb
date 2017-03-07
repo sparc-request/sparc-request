@@ -28,7 +28,7 @@ class ProtocolAuthorizer
     # NOTE @can_edit memoized; use #nil? since @can_edit is a boolean.
     # !! maps truthy and falsey values to true and false
     if @can_edit.nil?
-      @can_edit = !!(@protocol && @identity && @identity.can_edit_protocol?(@protocol)
+      @can_edit = !!(@protocol && @identity && @identity.can_edit_protocol?(@protocol))
     else
       @can_edit
     end

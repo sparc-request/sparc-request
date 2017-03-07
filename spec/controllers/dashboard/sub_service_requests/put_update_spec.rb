@@ -77,42 +77,27 @@ RSpec.describe Dashboard::SubServiceRequestsController do
 
     #####SURVEYS#####
     context 'ssr status is complete' do
-      context 'org has associated surveys' do
-        before :each do
-          create(:super_user, identity: @logged_in_user, organization: @organization)
-          @service         = create(:service_without_validations, organization_id:  @organization.id)
-          @line_item      = create(:line_item_without_validations, service_request_id: @service_request.id,                          service_id:  @service.id,
-                                      sub_service_request_id: @sub_service_request.id)
-          @organization.associated_surveys.create survey_id: @survey.id
-        end
+      it 'should distribute surveys' do 
+        create(:super_user, identity: @logged_in_user, organization: @organization)
+        @service         = create(:service_without_validations, organization_id:  @organization.id)
+        @line_item      = create(:line_item_without_validations, service_request_id: @service_request.id,                          service_id:  @service.id,
+                                    sub_service_request_id: @sub_service_request.id)
+        @organization.associated_surveys.create survey_id: @survey.id
 
-        it 'should distribute surveys' do 
-          expect_any_instance_of(SubServiceRequest).to receive(:distribute_surveys)
-          put :update, sub_service_request: {status: 'complete'}, id: @sub_service_request.id, format: :js
-        end
-      end
-
-      context 'org does not have associated surveys' do
-        before :each do
-          create(:super_user, identity: @logged_in_user, organization: @organization)
-        end
-        it 'should not distribute surveys' do
-          expect_any_instance_of(SubServiceRequest).to_not receive(:distribute_surveys)
-          put :update, sub_service_request: {status: 'complete'}, id: @sub_service_request.id, format: :js
-        end
+        expect_any_instance_of(SubServiceRequest).to receive(:distribute_surveys)
+        put :update, sub_service_request: {status: 'complete'}, id: @sub_service_request.id, format: :js
       end
     end
 
     context 'org has associated surveys' do
       context 'ssr status is not complete' do
-        before :each do
+        it 'should not distribute surveys' do
           create(:super_user, identity: @logged_in_user, organization: @organization)
           @service         = create(:service_without_validations, organization_id:  @organization.id)
           @line_item      = create(:line_item_without_validations, service_request_id: @service_request.id,                          service_id:  @service.id,
                                       sub_service_request_id: @sub_service_request.id)
           @organization.associated_surveys.create survey_id: @survey.id
-        end
-        it 'should not distribute surveys' do
+
           expect_any_instance_of(SubServiceRequest).to_not receive(:distribute_surveys)
           put :update, sub_service_request: {status: 'not_complete'}, id: @sub_service_request.id, format: :js
         end
@@ -121,10 +106,9 @@ RSpec.describe Dashboard::SubServiceRequestsController do
 
     context 'org does not have associated surveys' do
       context 'ssr status is not complete' do
-        before :each do
-          create(:super_user, identity: @logged_in_user, organization: @organization)
-        end
         it 'should not distribute surveys' do
+          create(:super_user, identity: @logged_in_user, organization: @organization)
+
           expect_any_instance_of(SubServiceRequest).to_not receive(:distribute_surveys)
           put :update, sub_service_request: {status: 'not_complete'}, id: @sub_service_request.id, format: :js
         end

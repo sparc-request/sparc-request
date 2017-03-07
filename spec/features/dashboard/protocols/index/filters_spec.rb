@@ -58,6 +58,7 @@ RSpec.describe "filters", js: :true do
         project_rights: "not-none")
 
       visit_protocols_index_page
+      wait_for_javascript_to_finish
 
       expect(@page.search_results).to have_protocols
     end
@@ -71,6 +72,8 @@ RSpec.describe "filters", js: :true do
         protocol = create_protocol(archived: false, short_title: "Shady Business", organization: organization)
 
         visit_protocols_index_page
+        wait_for_javascript_to_finish
+
         expect do
           @page.instance_exec do
             filter_protocols.archived_checkbox.click
@@ -98,6 +101,8 @@ RSpec.describe "filters", js: :true do
         protocol = create_protocol(archived: false, short_title: "Shady Business", organization: organization)
 
         visit_protocols_index_page
+        wait_for_javascript_to_finish
+
         expect do
           @page.instance_exec do
             filter_protocols.archived_checkbox.click
@@ -150,7 +155,10 @@ RSpec.describe "filters", js: :true do
         f.save!
 
         visit_protocols_index_page
+        wait_for_javascript_to_finish
+
         @page.recently_saved_filters.filters.first.click
+        wait_for_javascript_to_finish
 
         expect(@page.search_results).to have_protocols(text: "ArchivedComplete")
         expect(@page.search_results).to have_protocols(text: "ArchivedActive")
@@ -168,9 +176,12 @@ RSpec.describe "filters", js: :true do
       unarchived_protocol.project_roles.create(identity_id: user.id, role: "very-important", project_rights: "to-party")
 
       visit_protocols_index_page
+      wait_for_javascript_to_finish
+
       @page.filter_protocols.archived_checkbox.click
       @page.filter_protocols.apply_filter_button.click
       @page.filter_protocols.reset_link.click
+      wait_for_javascript_to_finish
 
       expect(@page.search_results).to have_protocols(text: "UnarchivedProject")
       expect(@page.search_results).to have_no_protocols(text: "ArchivedProject")
@@ -186,8 +197,11 @@ RSpec.describe "filters", js: :true do
         unarchived_protocol.project_roles.create(identity_id: user.id, role: "very-important", project_rights: "to-party")
 
         visit_protocols_index_page
+        wait_for_javascript_to_finish
+
         @page.filter_protocols.archived_checkbox.set(true)
         @page.filter_protocols.apply_filter_button.click
+        wait_for_javascript_to_finish
 
         expect(@page.search_results).to have_protocols(text: "ArchivedProject")
         expect(@page.search_results).to have_no_protocols(text: "UnarchivedProject")
@@ -211,8 +225,11 @@ RSpec.describe "filters", js: :true do
         draft_protocol.project_roles.create(identity_id: user.id, role: "very-important", project_rights: "to-party")
 
         visit_protocols_index_page
+        wait_for_javascript_to_finish
+
         @page.filter_protocols.select_status("Approved", "Active")
         @page.filter_protocols.apply_filter_button.click
+        wait_for_javascript_to_finish
 
         expect(@page.search_results).to have_protocols(count: 2)
         expect(@page.search_results).to have_no_protocols(text: "NoSubServiceRequests")
@@ -254,9 +271,14 @@ RSpec.describe "filters", js: :true do
 
       it "should match against title case insensitively (lowercase)" do
         visit_protocols_index_page
+        wait_for_javascript_to_finish
+
         expect(@page.search_results).to have_protocols(count: 3)   
+        
         @page.filter_protocols.select_search(@page, "Short/Long Title", "title")
         @page.filter_protocols.apply_filter_button.click()
+        wait_for_javascript_to_finish
+        
         expect(@page.search_results).to have_protocols(text: "Protocol1")
         expect(@page.search_results).to have_protocols(text: "Protocol2")
         expect(@page.search_results).to have_no_protocols(text: "Protocol3")
@@ -264,9 +286,14 @@ RSpec.describe "filters", js: :true do
 
       it "should match against whole short title case insensitively (uppercase)" do
         visit_protocols_index_page
+        wait_for_javascript_to_finish
+
         expect(@page.search_results).to have_protocols(count: 3)
+        
         @page.filter_protocols.select_search(@page, "Short/Long Title", "Protocol1")
         @page.filter_protocols.apply_filter_button.click
+        wait_for_javascript_to_finish
+
         expect(@page.search_results).to have_protocols(text: "Protocol1")
         expect(@page.search_results).to have_no_protocols(text: "Protocol2")
         expect(@page.search_results).to have_no_protocols(text: "Protocol3")
@@ -274,9 +301,14 @@ RSpec.describe "filters", js: :true do
 
       it "should match against partial short title case insensitively (uppercase)" do
         visit_protocols_index_page
+        wait_for_javascript_to_finish
+        
         expect(@page.search_results).to have_protocols(count: 3)
+        
         @page.filter_protocols.select_search(@page, "Short/Long Title", "Protocol")
         @page.filter_protocols.apply_filter_button.click
+        wait_for_javascript_to_finish
+
         expect(@page.search_results).to have_protocols(text: "Protocol1")
         expect(@page.search_results).to have_protocols(text: "Protocol2")
         expect(@page.search_results).to have_protocols(text: "Protocol3")
@@ -288,9 +320,14 @@ RSpec.describe "filters", js: :true do
         @protocol3.update_attribute(:short_title, "a%a")
 
         visit_protocols_index_page
+        wait_for_javascript_to_finish
+
         expect(@page.search_results).to have_protocols(count: 3)
+        
         @page.filter_protocols.select_search(@page, "Short/Long Title", "%")
         @page.filter_protocols.apply_filter_button.click()
+        wait_for_javascript_to_finish
+
         expect(@page.search_results).to have_protocols(text: "title %")
         expect(@page.search_results).to have_no_protocols(text: "_Title")
         expect(@page.search_results).to have_protocols(text: "a%a")
@@ -327,9 +364,14 @@ RSpec.describe "filters", js: :true do
 
       it "should match against id" do
         visit_protocols_index_page
+        wait_for_javascript_to_finish
+
         expect(@page.search_results).to have_protocols(count: 3)
+        
         @page.filter_protocols.select_search(@page, "Protocol ID", @protocol1.id.to_s)
         @page.filter_protocols.apply_filter_button.click
+        wait_for_javascript_to_finish
+
         expect(@page.search_results).to have_protocols(count: 1)
         expect(@page.search_results).to have_protocols(text: "Protocol1")
       end
@@ -365,9 +407,14 @@ RSpec.describe "filters", js: :true do
 
       it "should match against associated users first name case insensitively (lowercase)" do        
         visit_protocols_index_page
+        wait_for_javascript_to_finish
+
         expect(@page.search_results).to have_protocols(count: 3)
+        
         @page.filter_protocols.select_search(@page, "Authorized User", "james")
         @page.filter_protocols.apply_filter_button.click()
+        wait_for_javascript_to_finish
+
         expect(@page.search_results).to have_no_protocols(text: "Protocol1")
         expect(@page.search_results).to have_no_protocols(text: "Protocol2")
         expect(@page.search_results).to have_protocols(text: "Protocol3")
@@ -375,9 +422,14 @@ RSpec.describe "filters", js: :true do
 
       it "should match against associated users last name case insensitively (uppercase)" do
         visit_protocols_index_page
+        wait_for_javascript_to_finish
+
         expect(@page.search_results).to have_protocols(count: 3)
+        
         @page.filter_protocols.select_search(@page, "Authorized User", "Doop")
         @page.filter_protocols.apply_filter_button.click()
+        wait_for_javascript_to_finish
+
         expect(@page.search_results).to have_no_protocols(text: "Protocol1")
         expect(@page.search_results).to have_no_protocols(text: "Protocol2")
         expect(@page.search_results).to have_protocols(text: "Protocol3")
@@ -385,9 +437,14 @@ RSpec.describe "filters", js: :true do
 
       it "should not have any matches" do
         visit_protocols_index_page
+        wait_for_javascript_to_finish
+        
         expect(@page.search_results).to have_protocols(count: 3)
+        
         @page.filter_protocols.select_search(@page, "Authorized User", "Hedwig")
         @page.filter_protocols.apply_filter_button.click()
+        wait_for_javascript_to_finish
+
         expect(@page.search_results).to have_no_protocols(text: "Protocol1")
         expect(@page.search_results).to have_no_protocols(text: "Protocol2")
         expect(@page.search_results).to have_no_protocols(text: "Protocol3")
@@ -424,9 +481,13 @@ RSpec.describe "filters", js: :true do
 
       it "should match against pi first name case insensitively (lowercase)" do
         visit_protocols_index_page
+        wait_for_javascript_to_finish
+
         expect(@page.search_results).to have_protocols(count: 3)
+        
         @page.filter_protocols.select_search(@page, "PI", @protocol3.principal_investigators.first.first_name.downcase)
         @page.filter_protocols.apply_filter_button.click()
+        wait_for_javascript_to_finish
 
         expect(@page.search_results).to have_no_protocols(text: "Protocol1")
         expect(@page.search_results).to have_no_protocols(text: "Protocol2")
@@ -435,9 +496,13 @@ RSpec.describe "filters", js: :true do
 
       it "should match against pi last name case insensitively (uppercase)" do
         visit_protocols_index_page
+        wait_for_javascript_to_finish
+
         expect(@page.search_results).to have_protocols(count: 3)
+        
         @page.filter_protocols.select_search(@page, "PI", @protocol3.principal_investigators.first.last_name)
         @page.filter_protocols.apply_filter_button.click()
+        wait_for_javascript_to_finish
 
         expect(@page.search_results).to have_no_protocols(text: "Protocol1")
         expect(@page.search_results).to have_no_protocols(text: "Protocol2")
@@ -446,9 +511,14 @@ RSpec.describe "filters", js: :true do
 
       it "should not have any matches" do
         visit_protocols_index_page
+        wait_for_javascript_to_finish
+
         expect(@page.search_results).to have_protocols(count: 3)
+        
         @page.filter_protocols.select_search(@page, "PI", "Johnbob")
         @page.filter_protocols.apply_filter_button.click()
+        wait_for_javascript_to_finish
+
         expect(@page.search_results).to have_no_protocols(text: "Protocol1")
         expect(@page.search_results).to have_no_protocols(text: "Protocol2")
         expect(@page.search_results).to have_no_protocols(text: "Protocol3")
@@ -485,9 +555,14 @@ RSpec.describe "filters", js: :true do
 
       it "should match against RMID" do
         visit_protocols_index_page
+        wait_for_javascript_to_finish
+
         expect(@page.search_results).to have_protocols(count: 3)
+        
         @page.filter_protocols.select_search(@page, "RMID", @protocol3.research_master_id)
         @page.filter_protocols.apply_filter_button.click()
+        wait_for_javascript_to_finish
+
         expect(@page.search_results).to have_no_protocols(text: "Protocol1")
         expect(@page.search_results).to have_no_protocols(text: "Protocol2")
         expect(@page.search_results).to have_protocols(text: "Protocol3")
@@ -524,9 +599,14 @@ RSpec.describe "filters", js: :true do
 
       it "should match against whole HR#" do
         visit_protocols_index_page
+        wait_for_javascript_to_finish
+
         expect(@page.search_results).to have_protocols(count: 3)
+        
         @page.filter_protocols.select_search(@page, "HR#", @protocol3.human_subjects_info.hr_number)
         @page.filter_protocols.apply_filter_button.click()
+        wait_for_javascript_to_finish
+
         expect(@page.search_results).to have_no_protocols(text: "Protocol1")
         expect(@page.search_results).to have_no_protocols(text: "Protocol2")
         expect(@page.search_results).to have_protocols(text: "Protocol3")
@@ -534,9 +614,14 @@ RSpec.describe "filters", js: :true do
 
       it "should match against partial HR#" do
         visit_protocols_index_page
+        wait_for_javascript_to_finish
+
         expect(@page.search_results).to have_protocols(count: 3)
+        
         @page.filter_protocols.select_search(@page, "HR#", @protocol3.human_subjects_info.hr_number.split(//, 2).last)
         @page.filter_protocols.apply_filter_button.click()
+        wait_for_javascript_to_finish
+
         expect(@page.search_results).to have_no_protocols(text: "Protocol1")
         expect(@page.search_results).to have_no_protocols(text: "Protocol2")
         expect(@page.search_results).to have_protocols(text: "Protocol3")
@@ -544,9 +629,14 @@ RSpec.describe "filters", js: :true do
 
       it "should not have any HR# matches" do
         visit_protocols_index_page
+        wait_for_javascript_to_finish
+
         expect(@page.search_results).to have_protocols(count: 3)
+        
         @page.filter_protocols.select_search(@page, "HR#", "1111111")
         @page.filter_protocols.apply_filter_button.click()
+        wait_for_javascript_to_finish
+
         expect(@page.search_results).to have_no_protocols(text: "Protocol1")
         expect(@page.search_results).to have_no_protocols(text: "Protocol2")
         expect(@page.search_results).to have_no_protocols(text: "Protocol3")
@@ -583,9 +673,14 @@ RSpec.describe "filters", js: :true do
 
       it "should match against whole PRO#" do
         visit_protocols_index_page
+        wait_for_javascript_to_finish
+
         expect(@page.search_results).to have_protocols(count: 3)
+        
         @page.filter_protocols.select_search(@page, "PRO#", @protocol3.human_subjects_info.pro_number)
         @page.filter_protocols.apply_filter_button.click()
+        wait_for_javascript_to_finish
+
         expect(@page.search_results).to have_no_protocols(text: "Protocol1")
         expect(@page.search_results).to have_no_protocols(text: "Protocol2")
         expect(@page.search_results).to have_protocols(text: "Protocol3")
@@ -593,9 +688,14 @@ RSpec.describe "filters", js: :true do
 
       it "should not have any PRO# matches" do
         visit_protocols_index_page
+        wait_for_javascript_to_finish
+        
         expect(@page.search_results).to have_protocols(count: 3)
+        
         @page.filter_protocols.select_search(@page, "PRO#", "111111111")
         @page.filter_protocols.apply_filter_button.click()
+        wait_for_javascript_to_finish
+
         expect(@page.search_results).to have_no_protocols(text: "Protocol1")
         expect(@page.search_results).to have_no_protocols(text: "Protocol2")
         expect(@page.search_results).to have_no_protocols(text: "Protocol3")
@@ -633,9 +733,14 @@ RSpec.describe "filters", js: :true do
       ### SEARH ALL TITLE ###
       it "should match against title case insensitively (lowercase) and match protocol ID" do
         visit_protocols_index_page
+        wait_for_javascript_to_finish
+
         expect(@page.search_results).to have_protocols(count: 3)   
+        
         @page.filter_protocols.search_field.set("888888")
         @page.filter_protocols.apply_filter_button.click()
+        wait_for_javascript_to_finish
+
         expect(@page.search_results).to have_protocols(text: "Protocol1")
         expect(@page.search_results).to have_no_protocols(text: "Protocol2")
         expect(@page.search_results).to have_protocols(text: "Protocol3")
@@ -643,9 +748,14 @@ RSpec.describe "filters", js: :true do
 
       it "should match against whole short title case insensitively (uppercase)" do
         visit_protocols_index_page
+        wait_for_javascript_to_finish
+
         expect(@page.search_results).to have_protocols(count: 3)
+        
         @page.filter_protocols.search_field.set("Protocol1")
         @page.filter_protocols.apply_filter_button.click
+        wait_for_javascript_to_finish
+
         expect(@page.search_results).to have_protocols(text: "Protocol1")
         expect(@page.search_results).to have_no_protocols(text: "Protocol2")
         expect(@page.search_results).to have_no_protocols(text: "Protocol3")
@@ -653,9 +763,14 @@ RSpec.describe "filters", js: :true do
 
       it "should match against partial short title case insensitively (uppercase)" do
         visit_protocols_index_page
+        wait_for_javascript_to_finish
+
         expect(@page.search_results).to have_protocols(count: 3)
+        
         @page.filter_protocols.search_field.set("Protocol")
         @page.filter_protocols.apply_filter_button.click
+        wait_for_javascript_to_finish
+
         expect(@page.search_results).to have_protocols(text: "Protocol1")
         expect(@page.search_results).to have_protocols(text: "Protocol2")
         expect(@page.search_results).to have_protocols(text: "Protocol3")
@@ -667,9 +782,14 @@ RSpec.describe "filters", js: :true do
         @protocol3.update_attribute(:short_title, "a%a")
 
         visit_protocols_index_page
+        wait_for_javascript_to_finish
+
         expect(@page.search_results).to have_protocols(count: 3)
+        
         @page.filter_protocols.search_field.set("%")
         @page.filter_protocols.apply_filter_button.click()
+        wait_for_javascript_to_finish
+
         expect(@page.search_results).to have_protocols(text: "title %")
         expect(@page.search_results).to have_no_protocols(text: "_Title")
         expect(@page.search_results).to have_protocols(text: "a%a")
@@ -678,9 +798,14 @@ RSpec.describe "filters", js: :true do
       ### SEARH ALL PROTOCOL ID ###
       it "should match against id" do
         visit_protocols_index_page
+        wait_for_javascript_to_finish
+
         expect(@page.search_results).to have_protocols(count: 3)
+        
         @page.filter_protocols.search_field.set(777777)
         @page.filter_protocols.apply_filter_button.click
+        wait_for_javascript_to_finish
+
         expect(@page.search_results).to have_protocols(count: 1)
         expect(@page.search_results).to have_protocols(text: "Protocol2")
       end
@@ -688,9 +813,14 @@ RSpec.describe "filters", js: :true do
       ### SEARH ALL USERS ###
       it "should match against associated users first name case insensitively (lowercase)" do        
         visit_protocols_index_page
+        wait_for_javascript_to_finish
+
         expect(@page.search_results).to have_protocols(count: 3)
+        
         @page.filter_protocols.search_field.set("james")
         @page.filter_protocols.apply_filter_button.click()
+        wait_for_javascript_to_finish
+
         expect(@page.search_results).to have_no_protocols(text: "Protocol1")
         expect(@page.search_results).to have_no_protocols(text: "Protocol2")
         expect(@page.search_results).to have_protocols(text: "Protocol3")
@@ -698,9 +828,14 @@ RSpec.describe "filters", js: :true do
 
       it "should match against associated users last name case insensitively (uppercase)" do
         visit_protocols_index_page
+        wait_for_javascript_to_finish
+
         expect(@page.search_results).to have_protocols(count: 3)
+        
         @page.filter_protocols.search_field.set("Doop")
         @page.filter_protocols.apply_filter_button.click()
+        wait_for_javascript_to_finish
+
         expect(@page.search_results).to have_no_protocols(text: "Protocol1")
         expect(@page.search_results).to have_no_protocols(text: "Protocol2")
         expect(@page.search_results).to have_protocols(text: "Protocol3")
@@ -708,9 +843,14 @@ RSpec.describe "filters", js: :true do
 
       it "should not have any matches" do
         visit_protocols_index_page
+        wait_for_javascript_to_finish
+
         expect(@page.search_results).to have_protocols(count: 3)
+        
         @page.filter_protocols.search_field.set("Hedwig")
         @page.filter_protocols.apply_filter_button.click()
+        wait_for_javascript_to_finish
+
         expect(@page.search_results).to have_no_protocols(text: "Protocol1")
         expect(@page.search_results).to have_no_protocols(text: "Protocol2")
         expect(@page.search_results).to have_no_protocols(text: "Protocol3")
@@ -718,9 +858,14 @@ RSpec.describe "filters", js: :true do
 
       it "should match against pi first name case insensitively (lowercase)" do
         visit_protocols_index_page
+        wait_for_javascript_to_finish
+
         expect(@page.search_results).to have_protocols(count: 3)
+        
         @page.filter_protocols.search_field.set((@protocol3.principal_investigators.first.first_name.downcase).to_s)
         @page.filter_protocols.apply_filter_button.click()
+        wait_for_javascript_to_finish
+
         expect(@page.search_results).to have_no_protocols(text: "Protocol1")
         expect(@page.search_results).to have_no_protocols(text: "Protocol2")
         expect(@page.search_results).to have_protocols(text: "Protocol3")
@@ -728,9 +873,14 @@ RSpec.describe "filters", js: :true do
 
       it "should match against pi last name case insensitively (uppercase)" do
         visit_protocols_index_page
+        wait_for_javascript_to_finish
+
         expect(@page.search_results).to have_protocols(count: 3)
+        
         @page.filter_protocols.search_field.set((@protocol3.principal_investigators.first.last_name).to_s)
         @page.filter_protocols.apply_filter_button.click()
+        wait_for_javascript_to_finish
+
         expect(@page.search_results).to have_no_protocols(text: "Protocol1")
         expect(@page.search_results).to have_no_protocols(text: "Protocol2")
         expect(@page.search_results).to have_protocols(text: "Protocol3")
@@ -738,9 +888,14 @@ RSpec.describe "filters", js: :true do
 
       it "should not have any matches" do
         visit_protocols_index_page
+        wait_for_javascript_to_finish
+
         expect(@page.search_results).to have_protocols(count: 3)
+        
         @page.filter_protocols.search_field.set("Johnbob")
         @page.filter_protocols.apply_filter_button.click()
+        wait_for_javascript_to_finish
+
         expect(@page.search_results).to have_no_protocols(text: "Protocol1")
         expect(@page.search_results).to have_no_protocols(text: "Protocol2")
         expect(@page.search_results).to have_no_protocols(text: "Protocol3")
@@ -756,18 +911,19 @@ RSpec.describe "filters", js: :true do
       create(:service_provider, organization: organization1, identity: user)
       create(:service_provider, organization: organization2, identity: user)
       create(:service_provider, organization: organization2, identity: person)
-      protocol1 = create(:protocol_without_validations, type: 'Study', archived: false, short_title: 'Magikarp Protocol')
-      protocol2 = create(:protocol_without_validations, type: 'Study', archived: false, short_title: 'Construction')
+      protocol1 = create(:protocol_without_validations, type: 'Study', archived: false, short_title: 'Magikarp Protocol', primary_pi: user)
+      protocol2 = create(:protocol_without_validations, type: 'Study', archived: false, short_title: 'Construction', primary_pi: user)
       service_request1 = create(:service_request_without_validations, protocol: protocol1)
       service_request2 = create(:service_request_without_validations, protocol: protocol2)
       ssr1 = create(:sub_service_request, service_request: service_request1, organization: organization1, status: 'draft')
       ssr2 = create(:sub_service_request, service_request: service_request2, organization: organization2, status: 'draft', owner: person)
 
       visit_protocols_index_page
-
       wait_for_javascript_to_finish
+
       @page.filter_protocols.select_owner("Fisk, Wilson")
       @page.filter_protocols.apply_filter_button.click
+      wait_for_javascript_to_finish
 
       expect(@page.search_results).to have_protocols(text: "Construction")
       expect(@page.search_results).to have_no_protocols(text: "Magikarp Protocol")
@@ -788,7 +944,6 @@ RSpec.describe "filters", js: :true do
         create(:project_role, identity: user, role: "very-important", project_rights: "to-party", protocol: protocol2)
 
         visit_protocols_index_page
-
         wait_for_javascript_to_finish
 
         expect(@page.search_results).to have_protocols(text: "Protocol1")
@@ -814,8 +969,11 @@ RSpec.describe "filters", js: :true do
         llc_protocol.project_roles.create(identity_id: user.id, role: "very-important", project_rights: "to-party")
 
         visit_protocols_index_page
+        wait_for_javascript_to_finish
+
         @page.filter_protocols.select_core("MegaCorp", "SomeLLC")
         @page.filter_protocols.apply_filter_button.click
+        wait_for_javascript_to_finish
 
         expect(@page.search_results).to have_protocols(text: "MegaCorpProtocol")
         expect(@page.search_results).to have_no_protocols(text: "TrumpProtocol")

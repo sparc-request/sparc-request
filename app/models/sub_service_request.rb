@@ -304,6 +304,26 @@ class SubServiceRequest < ActiveRecord::Base
   ########################
   ## SSR STATUS METHODS ##
   ########################
+  def update_status(new_status, submit=false)
+    to_notify = []
+    if can_be_edited?
+      available = AVAILABLE_STATUSES.keys
+      editable = EDITABLE_STATUSES[organization_id] || available
+      changeable = available & editable
+      if changeable.include?(new_status)
+        if (status != new_status) && (UPDATABLE_STATUSES.include?(status) || !submit)
+          update_attribute(:status, new_status)
+          if new_status == 'submitted'
+            to_notify << id unless previously_submitted?
+          else
+            to_notify << id
+          end
+        end
+      end
+    end
+    to_notify
+  end
+
   def ctrc?
     self.organization.tag_list.include? "ctrc"
   end

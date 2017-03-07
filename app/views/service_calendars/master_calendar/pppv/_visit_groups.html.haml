@@ -31,7 +31,9 @@
         - if portal || tab == 'calendar'
           = visit_group.window_before
         - else
-          = link_to visit_group.window_before, 'javascript:void(0)', data: { id: visit_group.id, service_request_id: service_request.id, arm_id: visit_group.arm.id }, class: 'edit-visit-group'
+          = link_to visit_group.window_before, 'javascript:void(0)',
+            data: { id: visit_group.id, service_request_id: service_request.id, arm_id: visit_group.arm.id, toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}' },
+            class: 'edit-visit-group'
       .col-xs-4.no-padding.text-center
         - if portal || tab == 'calendar'
           = visit_group.day
@@ -40,17 +42,25 @@
             - day = '(?)'
           - else
             - day = visit_group.day
-          = link_to day, 'javascript:void(0)', data: { id: visit_group.id, service_request_id: service_request.id, arm_id: visit_group.arm.id }, class: 'edit-visit-group'
+          = link_to day, 'javascript:void(0)',
+            data: { id: visit_group.id, service_request_id: service_request.id, arm_id: visit_group.arm.id, toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}' },
+            class: 'edit-visit-group'
       .col-xs-4.no-padding.text-center
         - if portal || tab == 'calendar'
           = visit_group.window_after
         - else
-          = link_to visit_group.window_after, 'javascript:void(0)', data: { id: visit_group.id, service_request_id: service_request.id, arm_id: visit_group.arm.id }, class: 'edit-visit-group'
+          = link_to visit_group.window_after,
+            'javascript:void(0)',
+            data: { id: visit_group.id, service_request_id: service_request.id, arm_id: visit_group.arm.id, toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}' },
+            class: 'edit-visit-group'
     .row.visit-group-names.text-center
       .col-sm-12.text-center{ data: { visit_group_id: visit_group.id } }
         - if portal || tab == 'calendar'
           = visit_group.name
         - else
-          = link_to visit_group.name, 'javascript:void(0)', data: { id: visit_group.id, service_request_id: service_request.id, arm_id: visit_group.arm.id }, class: 'edit-visit-group'
+          = link_to visit_group.name,
+            'javascript:void(0)',
+            data: { id: visit_group.id, service_request_id: service_request.id, arm_id: visit_group.arm.id, toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}' },
+            class: 'edit-visit-group'
 - (visit_groups.size...Visit.per_page).each do |index|
   %th.col-sm-1.text-center

@@ -55,9 +55,8 @@ class Notifier < ActionMailer::Base
     @service_requester_id = @service_request.sub_service_requests.first.service_requester_id
 
     @portal_link = DASHBOARD_LINK + "/protocols/#{@protocol.id}"
-
     @ssrs_to_be_displayed =  individual_ssr ? [ssr] : service_request.sub_service_requests
-    
+
     attachments["service_request_#{@service_request.protocol.id}.xlsx"] = xls
 
     # only send these to the correct person in the production env
@@ -69,7 +68,7 @@ class Notifier < ActionMailer::Base
 
   def notify_admin(submission_email_address, xls, user_current, ssr, audit_report=nil, ssr_destroyed=false, individual_ssr=false)
     @ssr_deleted = false
-    @notes = ssr.service_request.notes
+    @notes = ssr.protocol.notes
 
     if ssr_destroyed
       @status = 'ssr_destroyed'
@@ -105,7 +104,7 @@ class Notifier < ActionMailer::Base
   end
 
   def notify_service_provider(service_provider, service_request, attachments_to_add, user_current, ssr, audit_report=nil, ssr_destroyed=false, request_amendment=false, individual_ssr=false)
-    @notes = service_request.notes
+    @notes = service_request.protocol.notes
 
     if ssr_destroyed
       @status = 'ssr_destroyed'
@@ -116,7 +115,7 @@ class Notifier < ActionMailer::Base
     else
       @status = service_request.status
     end
-    
+
     @role = 'none'
     @full_name = service_provider.identity.full_name
 
@@ -125,7 +124,7 @@ class Notifier < ActionMailer::Base
     @service_requester_id = @service_request.sub_service_requests.first.service_requester_id
 
     @audit_report = audit_report
-    
+
     @portal_link = DASHBOARD_LINK + "/protocols/#{@protocol.id}"
     @portal_text = "Administrators/Service Providers, Click Here"
 

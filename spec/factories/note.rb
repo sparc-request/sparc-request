@@ -22,7 +22,7 @@ FactoryGirl.define do
 
   factory :note do
     body         { Faker::Lorem.sentence(1) }
-    notable_type { "ServiceRequest" }
+    notable_type { "Protocol" }
 
     trait :without_validations do
       to_create { |instance| instance.save(validate: false) }

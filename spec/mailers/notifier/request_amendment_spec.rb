@@ -347,7 +347,7 @@ RSpec.describe Notifier do
     before do
       create(:note_without_validations,
             identity_id:  identity.id, 
-            notable_id: service_request.id)
+            notable_id: service_request.protocol.id)
       service_request.update_attribute(:submitted_at, Time.now.yesterday)
       deleted_and_created_line_item_audit_trail(service_request, service3, identity)
       ssr = service_request.sub_service_requests.first

@@ -44,7 +44,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
       service2 = create(:service, organization: org)
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
-      ssr      = create(:sub_service_request_without_validations, organization: org, service_request: sr)
+      ssr      = create(:sub_service_request_without_validations, organization: org, service_request: sr, protocol_id: protocol.id)
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
       li2      = create(:line_item, service_request: sr, sub_service_request: ssr, service: service2)
       ServiceRelation.create(service_id: service.id, related_service_id: service2.id, optional: false)
@@ -63,7 +63,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
       service  = create(:service, organization: org)
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
-      ssr      = create(:sub_service_request_without_validations, organization: org, service_request: sr)
+      ssr      = create(:sub_service_request_without_validations, organization: org, service_request: sr, protocol_id: protocol.id)
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
 
@@ -80,7 +80,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
       service  = create(:service, organization: org)
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
-      ssr      = create(:sub_service_request_without_validations, organization: org, service_request: sr, status: 'complete')
+      ssr      = create(:sub_service_request_without_validations, organization: org, service_request: sr, status: 'complete', protocol_id: protocol.id)
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
 
@@ -98,7 +98,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
         service  = create(:service, organization: org)
         protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr       = create(:service_request_without_validations, protocol: protocol)
-        ssr      = create(:sub_service_request_without_validations, organization: org, service_request: sr, status: 'on_hold')
+        ssr      = create(:sub_service_request_without_validations, organization: org, service_request: sr, status: 'on_hold', protocol_id: protocol.id)
         li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
                    create(:line_item, service_request: sr, sub_service_request: ssr, service: create(:service, organization: org))
 
@@ -119,7 +119,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
         service  = create(:service, organization: org)
         protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr       = create(:service_request_without_validations, protocol: protocol)
-        ssr      = create(:sub_service_request_without_validations, organization: org, service_request: sr, status: 'on_hold')
+        ssr      = create(:sub_service_request_without_validations, organization: org, service_request: sr, status: 'on_hold', protocol_id: protocol.id)
         li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
                    create(:line_item, service_request: sr, sub_service_request: ssr, service: create(:service, organization: org))
 
@@ -138,7 +138,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
         service  = create(:service, organization: org)
         protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr       = create(:service_request_without_validations, protocol: protocol)
-        ssr      = create(:sub_service_request_without_validations, organization: org, service_request: sr, status: 'on_hold')
+        ssr      = create(:sub_service_request_without_validations, organization: org, service_request: sr, status: 'on_hold', protocol_id: protocol.id)
         li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
                    create(:line_item, service_request: sr, sub_service_request: ssr, service: create(:service, organization: org))
 
@@ -160,7 +160,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
         service  = create(:service, organization: org)
         protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr       = create(:service_request_without_validations, protocol: protocol)
-        ssr      = create(:sub_service_request_without_validations, organization: org, service_request: sr, status: 'first_draft')
+        ssr      = create(:sub_service_request_without_validations, organization: org, service_request: sr, status: 'first_draft', protocol_id: protocol.id)
         li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
                    create(:line_item, service_request: sr, sub_service_request: ssr, service: create(:service, organization: org))
 
@@ -180,7 +180,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
         service  = create(:service, organization: org)
         protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr       = create(:service_request_without_validations, protocol: protocol)
-        ssr      = create(:sub_service_request_without_validations, organization: org, service_request: sr, status: 'first_draft')
+        ssr      = create(:sub_service_request_without_validations, organization: org, service_request: sr, status: 'first_draft', protocol_id: protocol.id)
         li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
         session[:identity_id]        = logged_in_user.id
@@ -199,7 +199,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
       service  = create(:service, organization: org)
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
-      ssr      = create(:sub_service_request_without_validations, organization: org, service_request: sr, status: 'first_draft')
+      ssr      = create(:sub_service_request_without_validations, organization: org, service_request: sr, status: 'first_draft', protocol_id: protocol.id)
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
                  create(:line_item, service_request: sr, sub_service_request: ssr, service: create(:service, organization: org))
 
@@ -217,7 +217,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
       service  = create(:service, organization: org)
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
-      ssr      = create(:sub_service_request_without_validations, organization: org, service_request: sr, status: 'first_draft')
+      ssr      = create(:sub_service_request_without_validations, organization: org, service_request: sr, status: 'first_draft', protocol_id: protocol.id)
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
                  create(:line_item, service_request: sr, sub_service_request: ssr, service: create(:service, organization: org))
 
@@ -235,7 +235,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
       service  = create(:service, organization: org)
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
-      ssr      = create(:sub_service_request_without_validations, organization: org, service_request: sr)
+      ssr      = create(:sub_service_request_without_validations, organization: org, service_request: sr, protocol_id: protocol.id)
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
 
@@ -252,7 +252,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
       service  = create(:service, organization: org)
       protocol = create(:protocol_without_validations, primary_pi: logged_in_user)
       sr       = create(:service_request_without_validations, protocol: protocol)
-      ssr      = create(:sub_service_request_without_validations, organization: org, service_request: sr)
+      ssr      = create(:sub_service_request_without_validations, organization: org, service_request: sr, protocol_id: protocol.id)
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
 
@@ -273,13 +273,13 @@ RSpec.describe ServiceRequestsController, type: :controller do
         @service1 = create(:service, organization: @org1)
         protocol = create(:study_without_validations, primary_pi: logged_in_user)
         @sr       = create(:service_request_without_validations, protocol: protocol)
-        @ssr      = create(:sub_service_request_without_validations, organization: @org, service_request_id: @sr.id, submitted_at: Time.now.yesterday)
-        @ssr1     = create(:sub_service_request_without_validations, organization: @org, service_request_id: @sr.id, submitted_at: Time.now.yesterday)
+        @ssr      = create(:sub_service_request_without_validations, organization: @org, service_request_id: @sr.id, submitted_at: Time.now.yesterday, protocol_id: protocol.id)
+        @ssr1     = create(:sub_service_request_without_validations, organization: @org, service_request_id: @sr.id, submitted_at: Time.now.yesterday, protocol_id: protocol.id)
         @li       = create(:line_item, service_request: @sr, sub_service_request: @ssr, service: @service1)
         @li_1     = create(:line_item, service_request: @sr, sub_service_request: @ssr, service: @service)
                     create(:line_item, service_request: @sr, sub_service_request: @ssr1, service: @service1)
                     create(:line_item, service_request: @sr, sub_service_request: @ssr1, service: @service)
-                   
+
         @li_id = @li.id
 
         #Authorized User
@@ -306,7 +306,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
         end
 
         it 'should send notifications to the service provider' do
-          
+
           allow(Notifier).to receive(:notify_service_provider) do
             mailer = double('mail')
             expect(mailer).to receive(:deliver_now)
@@ -324,7 +324,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
         end
 
         it 'should send notifications to the admin' do
-          
+
           allow(Notifier).to receive(:notify_admin) do
             mailer = double('mail')
             expect(mailer).to receive(:deliver)
@@ -382,7 +382,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
         @service1 = create(:service, organization: @org1)
         protocol = create(:study_without_validations, primary_pi: logged_in_user)
         @sr       = create(:service_request_without_validations, protocol: protocol)
-        @ssr      = create(:sub_service_request_without_validations, organization: @org, service_request_id: @sr.id, submitted_at: Time.now.yesterday)
+        @ssr      = create(:sub_service_request_without_validations, organization: @org, service_request_id: @sr.id, submitted_at: Time.now.yesterday, protocol_id: protocol.id)
         @li       = create(:line_item, service_request: @sr, sub_service_request: @ssr, service: @service)
                    create(:service_provider, identity: logged_in_user, organization: @org)
         @li_id = @li.id

@@ -31,7 +31,7 @@ RSpec.describe Dashboard::SubServiceRequestsController do
       service               = create(:service, organization: create(:organization))
       line_item             = create(:line_item_without_validations, service_request: @service_request, service: service)
       @organization         = create(:organization)
-      @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, organization: @organization)   
+      @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, organization: @organization, protocol_id: @protocol.id)
     end
 
     #####AUTHORIZATION#####
@@ -114,7 +114,7 @@ RSpec.describe Dashboard::SubServiceRequestsController do
         before :each do
           @breadcrumber = Dashboard::Breadcrumber.new
           @breadcrumber.add_crumbs(protocol_id: @protocol.id, sub_service_request_id: @sub_service_request.id)
-          
+
           get :show, id: @sub_service_request.id
         end
 

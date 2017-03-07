@@ -31,7 +31,7 @@ RSpec.describe 'Protocol' do
   build_study_type_answers()
 
   describe "#with_organization" do
-    
+
     context "return protocols with ssrs that have searched_organization with param of string" do
 
       before :each do
@@ -41,15 +41,15 @@ RSpec.describe 'Protocol' do
 
         @protocol1 = create(:study_without_validations)
         @sr1 = create(:service_request_without_validations, protocol_id: @protocol1.id)
-        @ssr1 = create(:sub_service_request_without_validations, service_request_id: @sr1.id, organization: @searched_organization)
-        
+        @ssr1 = create(:sub_service_request_without_validations, service_request_id: @sr1.id, organization: @searched_organization, protocol_id: @protocol1.id)
+
         @protocol2 = create(:study_without_validations)
         @sr2 = create(:service_request_without_validations, protocol_id: @protocol2.id)
-        @ssr2 = create(:sub_service_request_without_validations, service_request_id: @sr2.id, organization: @searched_organization)
+        @ssr2 = create(:sub_service_request_without_validations, service_request_id: @sr2.id, organization: @searched_organization, protocol_id: @protocol2.id)
 
         @protocol3 = create(:study_without_validations)
         @sr3 = create(:service_request_without_validations, protocol_id: @protocol3.id)
-        @ssr3 = create(:sub_service_request_without_validations, service_request_id: @sr3.id, organization: @not_searched_organization)
+        @ssr3 = create(:sub_service_request_without_validations, service_request_id: @sr3.id, organization: @not_searched_organization, protocol_id: @protocol3.id)
       end
 
       it "will return protocols with searched_status" do
@@ -72,7 +72,7 @@ RSpec.describe 'Protocol' do
         expect(response.pluck(:id).sort).to eq(protocols_with_searched_for_organization)
       end
     end
-    
+
     context "return protocols with ssrs that have searched_organization with param of array" do
 
       before :each do
@@ -82,15 +82,15 @@ RSpec.describe 'Protocol' do
 
         @protocol1 = create(:study_without_validations)
         @sr1 = create(:service_request_without_validations, protocol_id: @protocol1.id)
-        @ssr1 = create(:sub_service_request_without_validations, service_request_id: @sr1.id, organization: @searched_organization)
-        
+        @ssr1 = create(:sub_service_request_without_validations, service_request_id: @sr1.id, organization: @searched_organization, protocol_id: @protocol1.id)
+
         @protocol2 = create(:study_without_validations)
         @sr2 = create(:service_request_without_validations, protocol_id: @protocol2.id)
-        @ssr2 = create(:sub_service_request_without_validations, service_request_id: @sr2.id, organization: @searched_organization)
+        @ssr2 = create(:sub_service_request_without_validations, service_request_id: @sr2.id, organization: @searched_organization, protocol_id: @protocol2.id)
 
         @protocol3 = create(:study_without_validations)
         @sr3 = create(:service_request_without_validations, protocol_id: @protocol3.id)
-        @ssr3 = create(:sub_service_request_without_validations, service_request_id: @sr3.id, organization: @not_searched_organization)
+        @ssr3 = create(:sub_service_request_without_validations, service_request_id: @sr3.id, organization: @not_searched_organization, protocol_id: @protocol3.id)
       end
 
       it "will return protocols with searched_status" do

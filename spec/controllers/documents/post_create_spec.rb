@@ -86,7 +86,7 @@ RSpec.describe DocumentsController, type: :controller do
         protocol    = create(:protocol_without_validations, primary_pi: logged_in_user)
         sr          = create(:service_request_without_validations, protocol: protocol)
         org         = create(:organization)
-        ssr         = create(:sub_service_request_without_validations, organization: org, service_request: sr)
+        ssr         = create(:sub_service_request_without_validations, organization: org, service_request: sr, protocol_id: protocol.id)
         doc_params  = { doc_type: 'Neurology', document: Rack::Test::UploadedFile.new(File.join('doc', 'musc_installation_example.txt'),'text/plain') }
 
 

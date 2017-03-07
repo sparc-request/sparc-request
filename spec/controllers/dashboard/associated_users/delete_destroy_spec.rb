@@ -50,7 +50,7 @@ RSpec.describe Dashboard::AssociatedUsersController do
         before :each do
           @user           = create(:identity)
           @protocol       = create(:protocol_without_validations, selected_for_epic: false, funding_status: 'funded', funding_source: 'federal')
-          create(:sub_service_request, status: 'not_draft', organization: create(:organization), service_request: create(:service_request_without_validations, protocol: @protocol))
+          create(:sub_service_request, status: 'not_draft', protocol_id: @protocol.id, organization: create(:organization), service_request: create(:service_request_without_validations, protocol: @protocol))
           @protocol_role  = create(:project_role, protocol: @protocol, identity: @user, project_rights: 'approve', role: 'primary-pi')
 
           allow(Notifier).to receive(:notify_primary_pi_for_epic_user_removal)
@@ -90,7 +90,7 @@ RSpec.describe Dashboard::AssociatedUsersController do
           @user          = create(:identity)
           @protocol      = create(:protocol_without_validations, selected_for_epic: false, funding_status: 'funded', funding_source: 'federal')
                            create(:project_role, protocol: @protocol, identity: @user, project_rights: 'approve', role: 'primary-pi')
-          @ssr = create(:sub_service_request, status: 'not_draft', organization: create(:organization), service_request: create(:service_request_without_validations, protocol: @protocol))
+          @ssr = create(:sub_service_request, status: 'not_draft', protocol_id: @protocol.id, organization: create(:organization), service_request: create(:service_request_without_validations, protocol: @protocol))
           @user_to_delete = create(:identity)
           @protocol_role = create(:project_role, protocol: @protocol, identity: @user_to_delete, project_rights: 'approve', role: 'consultant')
 
@@ -100,7 +100,7 @@ RSpec.describe Dashboard::AssociatedUsersController do
             expect(mailer).to receive(:deliver)
             mailer
           end
-          log_in_dashboard_identity(obj: @user)    
+          log_in_dashboard_identity(obj: @user)
         end
 
         it 'should destroy @protocol_role' do
@@ -128,7 +128,7 @@ RSpec.describe Dashboard::AssociatedUsersController do
           expect(response.status).to eq(200)
         end
 
-        context "SSRs with status draft" do 
+        context "SSRs with status draft" do
           it 'should not email user' do
             @ssr.update_attribute(:status, 'draft')
             xhr :delete, :destroy, id: @protocol_role.id
@@ -146,7 +146,7 @@ RSpec.describe Dashboard::AssociatedUsersController do
 
           stub_const('USE_EPIC', true)
           stub_const('QUEUE_EPIC', false)
-          
+
           allow(Notifier).to receive(:notify_primary_pi_for_epic_user_removal).
             with(@protocol, @protocol_role) do
               mailer = double('mail') # TODO what is the return type of #notifiy_...?
@@ -177,7 +177,7 @@ RSpec.describe Dashboard::AssociatedUsersController do
 
           log_in_dashboard_identity(obj: @user)
 
-          xhr :delete, :destroy, id: @protocol_role.id    
+          xhr :delete, :destroy, id: @protocol_role.id
         end
 
         it 'should not notify Primary PI for epic user removal' do

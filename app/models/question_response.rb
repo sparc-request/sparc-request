@@ -31,14 +31,7 @@ class QuestionResponse < ActiveRecord::Base
   validates_numericality_of :content, only_integer: true, if: Proc.new{ |qr| !qr.content.blank? && qr.question_id && qr.question.question_type == 'number' }
 
   def phone_number_format
-    # Valid Formats:
-    # XXXXXXXXXX
-    # XXX XXX XXXX
-    # XXX-XXX-XXXX
-    # XXX.XXX.XXXX
-    # (XXX) XXX-XXXX
-    # +XX (XXX) XXX-XXXX
-    if content.match(/\A(\+\d{1,2}\s)?\(?\d{3}\)?[\s.-]?\d{3}[\s.-]?\d{4}\z/).nil?
+    if content.match(/\d{3}-\d{3}-\d{4}/).nil?
       errors.add(:base, I18n.t(:errors)[:question_responses][:phone_invalid])
     end
   end
@@ -49,7 +42,7 @@ class QuestionResponse < ActiveRecord::Base
     # X_X@X.X
     # X@X.X.X
     # X-X@X.X
-    if content.match(/\A[^@\s]+@([^@\s]+\.)+[^@\s]+\z/).nil?
+    if content.match(Devise::email_regexp).nil?
       errors.add(:base, I18n.t(:errors)[:question_responses][:email_invalid])
     end
   end

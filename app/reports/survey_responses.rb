@@ -40,7 +40,7 @@ class SurveyResponseReport < ReportingModule
     attrs = {}
 
     attrs["SSR ID"] = "sub_service_request.try(:display_id)"
-    attrs["User ID"] = :user_id
+    attrs["User ID"] = :identity_id
     attrs["User Name"] = "identity.try(:full_name)"
     attrs["Submitted Date"] = "created_at.try(:strftime, \"%D\")"
 
@@ -49,7 +49,7 @@ class SurveyResponseReport < ReportingModule
       survey.sections.each do |section|
         section.questions.each do |question|
           question.question_responses.each do |qr|
-            attrs[ActionView::Base.full_sanitizer.sanitize(question.content)] = "question_responses.where(question_id: #{question.id}).first.try(:text_value)"
+            attrs[ActionView::Base.full_sanitizer.sanitize(question.content)] = "question_responses.where(question_id: #{question.id}).first.try(:content)"
           end
         end
       end

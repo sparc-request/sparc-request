@@ -23,9 +23,9 @@
       = index+1
     .col-sm-12.text-center.no-padding.likert
       - if ['new', 'preview'].include?(action_name)
-        = qr.radio_button :content, option.content
+        = qr.radio_button :content, index+1
       - else
-        = radio_button_tag :content_likert, '', qr.content == option.content, disabled: true
+        = radio_button_tag :content_likert, '', qr.content == index+1, disabled: true
     .col-sm-12.text-center.no-padding
       - if ['new', 'preview'].include?(action_name)
         = qr.label :content, option.content, class: "radio-inline option no-padding", data: { question_id: question.id, option_id: option.id }

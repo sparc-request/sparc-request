@@ -84,8 +84,7 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
 
   def update
     if @sub_service_request.update_attributes(params[:sub_service_request])
-      sctr_customer_satisfaction_survey_id = Survey.find_by(access_code:'sctr-customer-satisfaction-survey').id
-      @sub_service_request.distribute_surveys if @sub_service_request.is_complete? && @sub_service_request.organization.associated_surveys.where(survey_id: sctr_customer_satisfaction_survey_id).any? #status is complete and ssr has an associated_survey with survey access_code of 'sctr-customer-satisfaction-survey'
+      @sub_service_request.distribute_surveys if @sub_service_request.is_complete?
       flash[:success] = 'Request Updated!'
     else
       @errors = @sub_service_request.errors

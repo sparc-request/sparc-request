@@ -80,7 +80,7 @@ RSpec.describe Notifier do
                                                                           service_request,
                                                                           xls,
                                                                           identity,
-                                                                          service_request.sub_service_requests.first.id,
+                                                                          service_request.sub_service_requests.first,
                                                                           [],
                                                                           false) }
 
@@ -123,6 +123,7 @@ RSpec.describe Notifier do
       let(:approval)                { service_request.approvals.create }
       let(:mail)                    { Notifier.notify_user(project_role,
                                                               service_request,
+                                                              false,
                                                               xls,
                                                               approval,
                                                               identity
@@ -208,7 +209,7 @@ RSpec.describe Notifier do
                                                                           service_request,
                                                                           xls,
                                                                           identity,
-                                                                          service_request.sub_service_requests.first.id,
+                                                                          service_request.sub_service_requests.first,
                                                                           [],
                                                                           false) }
 
@@ -237,6 +238,7 @@ RSpec.describe Notifier do
       let(:approval)                { service_request.approvals.create }
       let(:mail)                    { Notifier.notify_user(project_role,
                                                               service_request,
+                                                              false,
                                                               xls,
                                                               approval,
                                                               identity

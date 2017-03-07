@@ -320,7 +320,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
                  :format        => :js,
                }.with_indifferent_access
 
-          expect(Notifier).to have_received(:notify_service_provider).with(@service_provider, @sr, {"service_request_#{@sr.id}.xlsx"=>""}, logged_in_user, @ssr.id, nil, true, false)
+          expect(Notifier).to have_received(:notify_service_provider).with(@service_provider, @sr, {"service_request_#{@sr.id}.xlsx"=>""}, logged_in_user, @ssr, nil, true, false, false)
         end
 
         it 'should send notifications to the admin' do
@@ -338,7 +338,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
                  :format        => :js,
                }.with_indifferent_access
 
-          expect(Notifier).to have_received(:notify_admin).with(@admin.email, "", logged_in_user, @ssr, nil, true)
+          expect(Notifier).to have_received(:notify_admin).with(@admin.email, "", logged_in_user, @ssr, nil, true, false)
         end
       end
 
@@ -416,11 +416,11 @@ RSpec.describe ServiceRequestsController, type: :controller do
       end
 
       it 'should send notifications to the service_provider' do
-        expect(Notifier).to have_received(:notify_service_provider).with(@service_provider, @sr, {"service_request_#{@sr.id}.xlsx"=>""}, logged_in_user, @ssr.id, nil, true, false)
+        expect(Notifier).to have_received(:notify_service_provider).with(@service_provider, @sr, {"service_request_#{@sr.id}.xlsx"=>""}, logged_in_user, @ssr, nil, true, false, false)
       end
 
       it 'should send notifications to the admin' do
-        expect(Notifier).to have_received(:notify_admin).with(@admin.email, "", logged_in_user, @ssr, nil, true)
+        expect(Notifier).to have_received(:notify_admin).with(@admin.email, "", logged_in_user, @ssr, nil, true, false)
       end
 
       it 'should delete SSR' do

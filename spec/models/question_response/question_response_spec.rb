@@ -77,13 +77,11 @@ RSpec.describe QuestionResponse, type: :model do
       q   = create(:question, question_type: 'email')
       qr1 = build(:question_response, question: q, content: 'email@email@co.us')
       qr2 = build(:question_response, question: q, content: 'emailemail.co.us')
-      qr3 = build(:question_response, question: q, content: 'email@email')
-      qr4 = build(:question_response, question: q, content: 'my email')
+      qr3 = build(:question_response, question: q, content: 'my email')
 
       expect(qr1).to_not be_valid
       expect(qr2).to_not be_valid
       expect(qr3).to_not be_valid
-      expect(qr4).to_not be_valid
     end
 
     it 'should return true if valid format' do

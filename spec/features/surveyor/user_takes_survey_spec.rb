@@ -165,7 +165,7 @@ RSpec.describe 'User takes a survey', js: true do
       click_button 'Submit'
       wait_for_javascript_to_finish
 
-      expect(QuestionResponse.find_by(question_id: @q_likert.id).content).to eq('Option 1')
+      expect(QuestionResponse.find_by(question_id: @q_likert.id).content).to eq('1')
     end
   end
 

@@ -83,7 +83,7 @@ RSpec.describe Notifier do
                                                                         service_request,
                                                                         xls,
                                                                         identity,
-                                                                        service_request.sub_service_requests.first.id) }
+                                                                        service_request.sub_service_requests.first) }
     it 'should display correct subject' do
       expect(mail).to have_subject("#{service_request.protocol.id} - SPARCRequest service request")
     end
@@ -134,6 +134,7 @@ RSpec.describe Notifier do
     let(:approval)                { service_request.approvals.create }
     let(:mail)                    { Notifier.notify_user(project_role,
                                                             service_request,
+                                                            nil,
                                                             xls,
                                                             approval,
                                                             identity

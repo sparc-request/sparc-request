@@ -1,1 +1,1 @@
-= qr.select :content, options_for_select(item.item_options.collect { |io| [ io.content, io.content ] } ), {}, { class: 'form-control' }
+= qr.select :content, options_for_select(item.item_options.collect { |io| [ io.content, io.content ] }, qr.object.content ), {}, { class: 'form-control' }

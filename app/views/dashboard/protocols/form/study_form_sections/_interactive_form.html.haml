@@ -23,7 +23,7 @@
   = form.label :selected_for_epic,
     t(:protocols)[:studies][:information][:push_to_epic],
     class: 'col-lg-2 control-label required',
-    data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"1500"}' },
+    data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' },
     title: t(:protocols)[:tooltips][:epic]
   .col-lg-10
     .btn-group#selected_for_epic_button{data: {toggle: "labels"}}
@@ -38,7 +38,7 @@
   = form.label :study_type_questions,
     t(:protocols)[:studies][:information][:study_type_questions],
     class: 'col-lg-2 control-label required',
-    data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"1500"}' },
+    data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' },
     title: t(:protocols)[:tooltips][:study_type_questions]
   .col-lg-10
     = form.fields_for :study_type_answers, protocol.study_type_answers do |answer_form|

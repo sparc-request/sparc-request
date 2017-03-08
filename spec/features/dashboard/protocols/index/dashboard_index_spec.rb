@@ -100,7 +100,7 @@ RSpec.describe 'dashboard index', js: :true do
         describe 'protocol has ssr' do
           scenario 'user should see requests button and archive button' do
             sr = create(:service_request_without_validations, protocol: @protocol)
-            ssr = create(:sub_service_request, service_request: sr, organization: create(:organization), protocol_id: protocol.id)
+            ssr = create(:sub_service_request, service_request: sr, organization: create(:organization), protocol_id: @protocol.id)
             page = visit_protocols_index_page
 
             expect(page.search_results.protocols.first).to have_requests_button

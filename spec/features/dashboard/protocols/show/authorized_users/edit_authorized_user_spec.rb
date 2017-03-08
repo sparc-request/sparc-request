@@ -65,6 +65,12 @@ RSpec.feature 'User wants to edit an authorized user', js: true do
 
       context 'and clicks the Edit Authorized User button' do
         scenario 'and sees the Edit Authorized User dialog and the users information' do
+
+          puts '#' * 50
+          puts ssr.inspect
+          puts protocol.inspect
+          puts '#' * 50
+
           given_i_have_clicked_the_edit_authorized_user_button("John Doe")
           then_i_should_see_the_edit_authorized_user_dialog
           then_i_should_see_the_user_information
@@ -166,7 +172,7 @@ RSpec.feature 'User wants to edit an authorized user', js: true do
         before :each do
           organization    = create(:organization)
           service_request = create(:service_request_without_validations, protocol: protocol)
-                            create(:sub_service_request_without_validations, service_request: service_request, organization: organization, status: 'draft')
+                            create(:sub_service_request_without_validations, service_request: service_request, organization: organization, status: 'draft', protocol: protocol)
                             create(:super_user, organization: organization, identity: logged_in_user)
 
           # navigate to page

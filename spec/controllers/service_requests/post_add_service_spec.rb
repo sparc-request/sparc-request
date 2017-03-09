@@ -189,6 +189,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
             service_id: service.id
           }
 
+          sr.reload
           expect(sr.sub_service_requests.first.status).to eq('first_draft')
         end
       end
@@ -207,6 +208,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
             id: sr.id,
             service_id: service.id
           }
+          sr.reload
           expect(sr.sub_service_requests.first.status).to eq('draft')
         end
       end

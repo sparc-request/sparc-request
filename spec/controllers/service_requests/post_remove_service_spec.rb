@@ -370,6 +370,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
                  :format        => :js,
                }.with_indifferent_access
           ssrs = [@ssr, @ssr1]
+          @sr.reload
           expect(@sr.sub_service_requests).to eq(ssrs)
         end
       end

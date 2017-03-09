@@ -24,7 +24,7 @@ RSpec.describe ServiceRequest, type: :model do
   let_there_be_j
 
   describe "#update_status" do
-      
+
     context "new_status == 'submitted'" do
       before :each do
         @org         = create(:organization_with_process_ssrs)
@@ -32,12 +32,12 @@ RSpec.describe ServiceRequest, type: :model do
         service     = create(:service, organization: @org, one_time_fee: true)
         protocol    = create(:protocol_federally_funded, primary_pi: identity, type: 'Study')
         @sr          = create(:service_request_without_validations, protocol: protocol, submitted_at: Time.now.yesterday.utc)
-        @ssr_not_previously_submitted   = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, status: 'draft', submitted_at: nil)
-        @ssr_previously_submitted   = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, status: 'draft', submitted_at: Time.now.utc)
-
+        @ssr_not_previously_submitted   = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, status: 'draft', submitted_at: nil, protocol: protocol)
+        @ssr_previously_submitted   = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, status: 'draft', submitted_at: Time.now.utc, protocol: protocol)
       end
 
       it "should return the id of the ssr that was not previously submitted" do
+        @sr.reload
         expect(@sr.update_status('submitted')).to eq([@ssr_not_previously_submitted.id])
       end
     end
@@ -49,12 +49,12 @@ RSpec.describe ServiceRequest, type: :model do
         service     = create(:service, organization: @org, one_time_fee: true)
         protocol    = create(:protocol_federally_funded, primary_pi: identity, type: 'Study')
         @sr          = create(:service_request_without_validations, protocol: protocol, submitted_at: Time.now.yesterday.utc)
-        @ssr_not_previously_submitted   = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, status: 'draft', submitted_at: nil)
-        @ssr_previously_submitted   = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, status: 'draft', submitted_at: Time.now.utc)
-
+        @ssr_not_previously_submitted   = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, status: 'draft', submitted_at: nil, protocol: protocol)
+        @ssr_previously_submitted   = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, status: 'draft', submitted_at: Time.now.utc, protocol: protocol)
       end
 
       it "should return the ids of all the ssrs" do
+        @sr.reload
         expect(@sr.update_status('get_a_cost_estimate')).to eq(@sr.sub_service_requests.map(&:id))
       end
     end

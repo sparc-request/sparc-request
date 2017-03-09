@@ -87,6 +87,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
           @audit_add.first.update_attribute(:user_id, logged_in_user.id)
           initial_submit_li_id = initial_submit_li.id
 
+          @sr.reload
           # Delete LI
           @ssr2.line_items.first.destroy!
           @sr.sub_service_requests.last.destroy!
@@ -421,6 +422,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
           @audit_add = AuditRecovery.where("auditable_id = '#{initial_submit_li.id}' AND auditable_type = 'LineItem' AND action = 'create'")
           initial_submit_li_id = initial_submit_li.id
 
+          @sr.reload
           @ssr2.line_items.first.destroy!
           @sr.sub_service_requests.last.destroy!
 

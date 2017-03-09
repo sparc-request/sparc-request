@@ -123,19 +123,20 @@ class SurveyResponseReport < ReportingModule
     worksheet.add_row(["Overall Satisfaction Rate", "", sprintf("%.2f%%", average_percent_satisifed)])
   end
 
-  # assumes all satisfaction question is answered with a likert scale, or Yes or No answer
+  # assumes all satisfaction question is answered with a likert scale from version 1 of System Satisfaction or SCTR Customer Satisfaction Survey,
+  # or Yes or No answer from version 0 of those surveys.
   def percent_satisfied(response)
-    if response == "Yes" || response == "Extremely likely"
+    if response == "Yes" || response == "Extremely likely" || response == "Very satisfied"
       percent = 100
     elsif response == "No"
       percent = 0
-    elsif response == "Not at all likely"
+    elsif response == "Not at all likely" || response == "Very dissatisfied"
       percent = 20
-    elsif response == "Not very likely"
+    elsif response == "Not very likely" || response == "Dissatisfied"
       percent = 40
     elsif response == "Neutral"
       percent = 60
-    elsif response == "Somewhat likely"
+    elsif response == "Somewhat likely" || response == "Satisfied"
       percent = 80
     end
   end

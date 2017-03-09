@@ -24,7 +24,7 @@ class SubServiceRequest < ActiveRecord::Base
 
   audited
 
-  after_create :set_protocol_id
+  before_create :set_protocol_id
   after_save :update_org_tree
   after_save :update_past_status
 

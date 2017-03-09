@@ -113,14 +113,30 @@ class SurveyResponseReport < ReportingModule
   def create_report(worksheet)
     super
 
-    # only add satisfaction rate to the bottom of reports for the system satisfaction survey
-    if params["survey_id"] == Survey.find_by(access_code: "system-satisfaction-survey").id.to_s
-      record_answers = records.map { |record| record.responses.where(question_id: 1).first.try(:answer).try(:text) }.compact
-      yes_answers = record_answers.select { |answer| answer == "Yes" }
-      percent_satisifed = yes_answers.length.to_f / record_answers.length * 100
+    # assumes the first question where only one option can be picked is the satisfaction question
+    first_question_on_survey_id = Question.where(pick: "one", survey_section_id: SurveySection.where(survey: params[:survey_id].to_i)).first.id
+    record_answers = records.map { |record| record.responses.where(question_id: first_question_on_survey_id).first.try(:answer).try(:text) }.compact
+    total_percent_satisfied = record_answers.map{ |response| percent_satisfied(response) }.sum
+    average_percent_satisifed = record_answers.length == 0 ? 0 : total_percent_satisfied / record_answers.length
 
-      worksheet.add_row([])
-      worksheet.add_row(["Overall Satisfaction Rate", "", sprintf("%.2f%%", percent_satisifed)])
+    worksheet.add_row([])
+    worksheet.add_row(["Overall Satisfaction Rate", "", sprintf("%.2f%%", average_percent_satisifed)])
+  end
+
+  # assumes all satisfaction question is answered with a likert scale, or Yes or No answer
+  def percent_satisfied(response)
+    if response == "Yes" || response == "Extremely likely"
+      percent = 100
+    elsif response == "No"
+      percent = 0
+    elsif response == "Not at all likely"
+      percent = 20
+    elsif response == "Not very likely"
+      percent = 40
+    elsif response == "Neutral"
+      percent = 60
+    elsif response == "Somewhat likely"
+      percent = 80
     end
   end
 end

@@ -36,11 +36,11 @@ class NotifierLogic
   def update_ssrs_and_send_emails
     @to_notify = []
     if @sub_service_request
-      @to_notify << @sub_service_request.id unless @sub_service_request.status == 'submitted' || @sub_service_request.previously_submitted?
-      @sub_service_request.update_attribute(:submitted_at, Time.now) unless @sub_service_request.status == 'submitted'
-
-      @sub_service_request.update_attributes(status: 'submitted', nursing_nutrition_approved: false,
-                                             lab_approved: false, imaging_approved: false, committee_approved: false) if UPDATABLE_STATUSES.include?(@sub_service_request.status)
+      @to_notify = @sub_service_request.update_status('submitted', true)
+      if !@to_notify.empty?
+        @sub_service_request.update_attributes(submitted_at: Time.now, nursing_nutrition_approved: false,
+                                             lab_approved: false, imaging_approved: false, committee_approved: false)
+      end
     else
       @to_notify = update_service_request_status('submitted', true, true)
 
@@ -71,18 +71,14 @@ class NotifierLogic
   def send_confirmation_notifications_get_a_cost_estimate
     to_notify = []
     if @sub_service_request
-      to_notify << @sub_service_request.id unless @sub_service_request.status == 'get_a_cost_estimate'
-
-      @sub_service_request.update_attribute(:status, 'get_a_cost_estimate')
+      to_notify = @sub_service_request.update_status('get_a_cost_estimate')
+      if to_notify.include?(@sub_service_request.id)
+        send_user_notifications(request_amendment: false)
+        send_admin_notifications([@sub_service_request], request_amendment: false)
+        send_service_provider_notifications([@sub_service_request], request_amendment: false)
+      end
     else
       to_notify = update_service_request_status('get_a_cost_estimate')
-    end
-
-    if @sub_service_request && to_notify.include?(@sub_service_request.id)
-      send_user_notifications(request_amendment: false)
-      send_admin_notifications([@sub_service_request], request_amendment: false)
-      send_service_provider_notifications([@sub_service_request], request_amendment: false)
-    else
       sub_service_requests = @service_request.sub_service_requests.where(id: to_notify)
       if !sub_service_requests.empty? # if nothing is set to notify then we shouldn't send out e-mails
         send_user_notifications(request_amendment: false)
@@ -115,8 +111,9 @@ class NotifierLogic
   def send_admin_notifications(sub_service_requests, request_amendment: false, ssr_destroyed: false)
     # Iterates through each SSR to find the correct admin email.
     # Passes the correct SSR to display in the attachment and email.
+
     sub_service_requests.each do |sub_service_request|
-      audit_report = request_amendment ? sub_service_request.audit_report(@current_user, sub_service_request.service_request.previous_submitted_at.utc, Time.now.utc) : nil
+      audit_report = request_amendment ? sub_service_request.audit_report(@current_user, @service_request.previous_submitted_at.utc, Time.now.utc) : nil
       sub_service_request.organization.submission_emails_lookup.each do |submission_email|
         service_list_false = sub_service_request.service_request.service_list(false, nil, sub_service_request)
         service_list_true = sub_service_request.service_request.service_list(true, nil, sub_service_request)
@@ -124,7 +121,8 @@ class NotifierLogic
         protocol = @service_request.protocol
         controller = set_instance_variables(@current_user, @service_request, service_list_false, service_list_true, line_items, protocol)
         xls = controller.render_to_string action: 'show', formats: [:xlsx]
-        Notifier.notify_admin(submission_email.email, xls, @current_user, sub_service_request, audit_report, ssr_destroyed).deliver
+        individual_ssr = @sub_service_request.present? ? true : false
+        Notifier.notify_admin(submission_email.email, xls, @current_user, sub_service_request, audit_report, ssr_destroyed, individual_ssr).deliver
       end
     end
   end
@@ -157,14 +155,15 @@ class NotifierLogic
       approval = false
     end
 
+    individual_ssr = @sub_service_request.present? ? true : false
     # send e-mail to all folks with view and above
     @service_request.protocol.project_roles.each do |project_role|
       next if project_role.project_rights == 'none' || project_role.identity.email.blank?
       # Do not want to send authorized user request amendment emails when audit_report is not present
       if request_amendment && audit_report.present?
-        Notifier.notify_user(project_role, @service_request, xls, approval, @current_user, audit_report).deliver_now
+        Notifier.notify_user(project_role, @service_request, @sub_service_request, xls, approval, @current_user, audit_report, individual_ssr).deliver_now
       elsif !request_amendment
-        Notifier.notify_user(project_role, @service_request, xls, approval, @current_user, audit_report).deliver_now
+        Notifier.notify_user(project_role, @service_request, @sub_service_request, xls, approval, @current_user, audit_report, individual_ssr).deliver_now
       end
     end
   end
@@ -201,8 +200,9 @@ class NotifierLogic
       attachments["request_for_grant_billing_#{sub_service_request.service_request.id}.pdf"] = request_for_grant_billing_form
     end
 
-    ssr_id = sub_service_request.id
-    Notifier.notify_service_provider(service_provider, @service_request, attachments, @current_user, ssr_id, audit_report, ssr_destroyed, request_amendment).deliver_now
+    individual_ssr = @sub_service_request.present? ? true : false
+
+    Notifier.notify_service_provider(service_provider, @service_request, attachments, @current_user, sub_service_request, audit_report, ssr_destroyed, request_amendment, individual_ssr).deliver_now
   end
 
   def ssr_has_changed?(sub_service_request) #specific ssr has changed?

@@ -29,7 +29,10 @@
   %th.col-sm-3.text-center{ colspan: 3, rowspan: 2 }
     = t(:calendars)[:otf][:header_fields][:qty_type]
   %th.col-sm-1.text-center{ colspan: 1, rowspan: 2 }
-    = t(:calendars)[:otf][:header_fields][:total_per_study]
+    = link_to 'javascript:void(0)',
+      data: { toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}' },
+      title: t(:calendars)[:tooltips][:total_per_study] do
+      = t(:calendars)[:otf][:header_fields][:total_per_study]
 
 %tr
   %th.col-sm-1.text-center

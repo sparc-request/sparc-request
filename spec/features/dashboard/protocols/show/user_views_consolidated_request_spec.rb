@@ -29,7 +29,7 @@ RSpec.describe "User views Consolidated Request", js: true do
       org      = create(:organization)
       protocol = create(:protocol_federally_funded, primary_pi: jug2, type: 'Study')
       sr       = create(:service_request_without_validations, protocol: protocol)
-      ssr      = create(:sub_service_request, service_request: sr, organization: org)
+      ssr      = create(:sub_service_request, service_request: sr, organization: org, protocol: protocol)
 
       visit dashboard_protocol_path(protocol)
       wait_for_javascript_to_finish
@@ -47,7 +47,7 @@ RSpec.describe "User views Consolidated Request", js: true do
       org      = create(:organization)
       protocol = create(:protocol_federally_funded, primary_pi: jug2, type: 'Study')
       sr       = create(:service_request_without_validations, protocol: protocol)
-      ssr      = create(:sub_service_request, service_request: sr, organization: org)
+      ssr      = create(:sub_service_request, service_request: sr, organization: org, protocol: protocol)
 
       visit dashboard_protocol_path(protocol)
       wait_for_javascript_to_finish

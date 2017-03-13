@@ -47,7 +47,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
       service  = create(:service, organization: org, one_time_fee: true)
       protocol = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
       sr       = create(:service_request_without_validations, protocol: protocol, submitted_at: '2015-02-10')
-      ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
+      ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org, protocol_id: protocol.id)
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
       session[:identity_id]        = logged_in_user.id
@@ -59,103 +59,315 @@ RSpec.describe ServiceRequestsController, type: :controller do
       expect(assigns(:service_request).previous_submitted_at).to eq(sr.submitted_at)
     end
 
-    context 'editing sub service request' do
-      context 'status not get_a_cost_estimate' do
-        it 'should notify' do
-          org      = create(:organization)
-          service  = create(:service, organization: org, one_time_fee: true)
-          protocol = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
-          sr       = create(:service_request_without_validations, protocol: protocol)
-          ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org, status: 'draft')
-          li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
-                     create(:service_provider, identity: logged_in_user, organization: org)
-
-          session[:identity_id]            = logged_in_user.id
+    context 'a new service request' do
+      before :each do
+        @org      = create(:organization)
+        service  = create(:service, organization: @org, one_time_fee: true)
+        protocol = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
+        @sr       = create(:service_request_without_validations, protocol: protocol, original_submitted_date: nil, status: 'draft')
+        @ssr      = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, status: 'draft', submitted_at: nil, protocol_id: protocol.id)
+        li       = create(:line_item, service_request: @sr, sub_service_request: @ssr, service: service)
 
 
-          # previously_submitted_at is null so we get 2 emails
+        session[:identity_id]            = logged_in_user.id
+      end
+
+      it 'should update SR status to "get_a_cost_estimate"' do
+        xhr :get, :obtain_research_pricing, {
+          id: @sr.id
+        }
+
+        expect(@sr.reload.status).to eq('get_a_cost_estimate')
+      end
+
+      it 'should update SSR status to "get_a_cost_estimate"' do
+        xhr :get, :obtain_research_pricing, {
+          id: @sr.id
+        }
+
+        expect(@ssr.reload.status).to eq('get_a_cost_estimate')
+      end
+
+      it 'should create past status' do
+
+        xhr :get, :obtain_research_pricing, {
+          id: @sr.id
+        }
+
+        expect(PastStatus.count).to eq(1)
+        expect(PastStatus.first.sub_service_request).to eq(@ssr)
+      end
+
+      context 'with an authorized_user' do
+        it 'should notify everyone (authorized_user)' do
           expect {
             xhr :get, :obtain_research_pricing, {
-              id: sr.id
+              id: @sr.id
+            }
+          }.to change(ActionMailer::Base.deliveries, :count).by(1)
+        end
+      end
+
+      context 'with an authorized_user, a service_provider' do
+        it 'should notify everyone (authorized_user, service_provider)' do
+          create(:service_provider, identity: logged_in_user, organization: @org)
+          expect {
+            xhr :get, :obtain_research_pricing, {
+              id: @sr.id
             }
           }.to change(ActionMailer::Base.deliveries, :count).by(2)
         end
       end
 
-      it 'should update status to get_a_cost_estimate' do
-        org      = create(:organization)
-        service  = create(:service, organization: org, one_time_fee: true)
-        protocol = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
-        sr       = create(:service_request_without_validations, protocol: protocol)
-        ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org, status: 'draft')
-        li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
-
-        session[:identity_id]            = logged_in_user.id
-
-
-        xhr :get, :obtain_research_pricing, {
-          id: sr.id
-        }
-
-        expect(ssr.reload.status).to eq('get_a_cost_estimate')
-      end
-
-      it 'should create past status' do
-        org      = create(:organization)
-        service  = create(:service, organization: org, one_time_fee: true)
-        protocol = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
-        sr       = create(:service_request_without_validations, protocol: protocol)
-        ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org, status: 'draft')
-        li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
-
-        session[:identity_id]            = logged_in_user.id
-
-
-        xhr :get, :obtain_research_pricing, {
-          id: sr.id
-        }
-
-        expect(PastStatus.count).to eq(1)
-        expect(PastStatus.first.sub_service_request).to eq(ssr)
+      context 'with an authorized_user, a service_provider, and an admin' do
+        it 'should notify everyone (authorized_user, service_provider, and admin)' do
+          create(:service_provider, identity: logged_in_user, organization: @org)
+          @org.submission_emails.create(email: 'hedwig@owlpost.com')
+          expect {
+            xhr :get, :obtain_research_pricing, {
+              id: @sr.id
+            }
+          }.to change(ActionMailer::Base.deliveries, :count).by(3)
+        end
       end
     end
 
-    context 'editing a service request' do
-      it 'should update status to get_a_cost_estimate' do
-        org      = create(:organization)
-        service  = create(:service, organization: org, one_time_fee: true)
-        protocol = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
-        sr       = create(:service_request_without_validations, protocol: protocol)
-        ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org, status: 'draft')
-        li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
-                   create(:service_provider, identity: logged_in_user, organization: org)
+    context 'editing a service request that has been previously submitted' do
+      context 'status is get_a_cost_estimate' do
+        before :each do
+          @org      = create(:organization)
+          service  = create(:service, organization: @org, one_time_fee: true)
+          protocol = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
+          @sr       = create(:service_request_without_validations, protocol: protocol, original_submitted_date: Time.now.yesterday)
+          @ssr      = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, status: 'get_a_cost_estimate', submitted_at: Time.now.yesterday, protocol_id: protocol.id)
+          li       = create(:line_item, service_request: @sr, sub_service_request: @ssr, service: service)
 
-        session[:identity_id]            = logged_in_user.id
+          session[:identity_id]            = logged_in_user.id
+        end
 
-        xhr :get, :obtain_research_pricing, {
-          id: sr.id
-        }
+        it 'status should remain get_a_cost_estimate' do
+          xhr :get, :obtain_research_pricing, {
+            id: @sr.id
+          }
 
-        expect(sr.reload.status).to eq('get_a_cost_estimate')
+          expect(@ssr.reload.status).to eq('get_a_cost_estimate')
+        end
+
+        context 'with an authorized_user' do
+          it 'should not notify anyone' do
+
+            expect {
+              xhr :get, :obtain_research_pricing, {
+                id: @sr.id
+              }
+            }.to change(ActionMailer::Base.deliveries, :count).by(0)
+          end
+        end
+
+        context 'with an authorized_user and a service_provider' do
+          it 'should not notify anyone' do
+            create(:service_provider, identity: logged_in_user, organization: @org)
+
+            expect {
+              xhr :get, :obtain_research_pricing, {
+                id: @sr.id
+              }
+            }.to change(ActionMailer::Base.deliveries, :count).by(0)
+          end
+        end
+
+        context 'with an authorized_user, a service_provider, and an admin' do
+          it 'should not notify anyone' do
+            create(:service_provider, identity: logged_in_user, organization: @org)
+            @org.submission_emails.create(email: 'hedwig@owlpost.com')
+
+            expect {
+              xhr :get, :obtain_research_pricing, {
+                id: @sr.id
+              }
+            }.to change(ActionMailer::Base.deliveries, :count).by(0)
+          end
+        end
+      end
+    end
+
+    context 'editing a service request that has been previously submitted' do
+      context 'ssr status is set to a locked status' do
+        before :each do
+          @org      = create(:organization)
+          service  = create(:service, organization: @org, one_time_fee: true)
+          protocol = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
+          @sr       = create(:service_request_without_validations, protocol: protocol, original_submitted_date: Time.now.yesterday)
+          @ssr      = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, status: 'locked_status', submitted_at: Time.now.yesterday, protocol_id: protocol.id)
+          li       = create(:line_item, service_request: @sr, sub_service_request: @ssr, service: service)
+
+          session[:identity_id]            = logged_in_user.id
+          stub_const('EDITABLE_STATUSES', {@org.id => ["draft"]})
+        end
+
+        it 'should not update status to "get_a_cost_estimate"' do
+
+          xhr :get, :obtain_research_pricing, {
+            id: @sr.id
+          }
+
+          expect(@ssr.reload.status).to eq('locked_status')
+        end
+
+        context 'with an authorized_user' do
+          it 'should not notify anyone' do
+            expect {
+              xhr :get, :obtain_research_pricing, {
+                id: @sr.id
+              }
+            }.to change(ActionMailer::Base.deliveries, :count).by(0)
+          end
+        end
+
+        context 'with an authorized_user and a service_provider' do
+          it 'should not notify anyone' do
+            create(:service_provider, identity: logged_in_user, organization: @org)
+            expect {
+              xhr :get, :obtain_research_pricing, {
+                id: @sr.id
+              }
+            }.to change(ActionMailer::Base.deliveries, :count).by(0)
+          end
+        end
+
+        context 'with an authorized_user, a service_provider, and an admin' do
+          it 'should not notify anyone' do
+            create(:service_provider, identity: logged_in_user, organization: @org)
+            @org.submission_emails.create(email: 'hedwig@owlpost.com')
+            expect {
+              xhr :get, :obtain_research_pricing, {
+                id: @sr.id
+              }
+            }.to change(ActionMailer::Base.deliveries, :count).by(0)
+          end
+        end
       end
 
-      it 'should notify' do
-        org      = create(:organization)
-        service  = create(:service, organization: org, one_time_fee: true)
-        protocol = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
-        sr       = create(:service_request_without_validations, protocol: protocol)
-        ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org, status: 'draft')
-        li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
-                   create(:service_provider, identity: logged_in_user, organization: org)
+      context 'ssr status is set to "complete"' do
+         before :each do
+          @org      = create(:organization)
+          service  = create(:service, organization: @org, one_time_fee: true)
+          protocol = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
+          @sr       = create(:service_request_without_validations, protocol: protocol, original_submitted_date: Time.now.yesterday)
+          @ssr      = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, status: 'complete', submitted_at: Time.now.yesterday, protocol_id: protocol.id)
+          li       = create(:line_item, service_request: @sr, sub_service_request: @ssr, service: service)
 
-        session[:identity_id]            = logged_in_user.id
+          session[:identity_id]            = logged_in_user.id
+        end
 
-        # previously_submitted_at is null so we get 2 emails
-        expect {
+        it 'should not update status to "get_a_cost_estimate"' do
+
           xhr :get, :obtain_research_pricing, {
-            id: sr.id
+            id: @sr.id
           }
-        }.to change(ActionMailer::Base.deliveries, :count).by(2)
+
+          expect(@ssr.reload.status).to eq('complete')
+        end
+
+        context 'with an authorized_user' do
+          it 'should not notify anyone' do
+            expect {
+              xhr :get, :obtain_research_pricing, {
+                id: @sr.id
+              }
+            }.to change(ActionMailer::Base.deliveries, :count).by(0)
+          end
+        end
+
+        context 'with an authorized_user and a service_provider' do
+          it 'should not notify anyone' do
+            create(:service_provider, identity: logged_in_user, organization: @org)
+            expect {
+              xhr :get, :obtain_research_pricing, {
+                id: @sr.id
+              }
+            }.to change(ActionMailer::Base.deliveries, :count).by(0)
+          end
+        end
+
+        context 'with an authorized_user, a service_provider, and an admin' do
+          it 'should not notify anyone' do
+            create(:service_provider, identity: logged_in_user, organization: @org)
+            @org.submission_emails.create(email: 'hedwig@owlpost.com')
+
+            expect {
+              xhr :get, :obtain_research_pricing, {
+                id: @sr.id
+              }
+            }.to change(ActionMailer::Base.deliveries, :count).by(0)
+          end
+        end
+      end
+    end
+
+    context 'editing a service request that has been previously submitted' do
+      context 'SR and SSR status not get_a_cost_estimate' do
+        before :each do
+          @org      = create(:organization)
+          service  = create(:service, organization: @org, one_time_fee: true)
+          protocol = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
+          @sr       = create(:service_request_without_validations, protocol: protocol, original_submitted_date: Time.now.yesterday, status: 'submitted')
+          @ssr      = create(:sub_service_request_without_validations, service_request: @sr, organization: @org, status: 'not_get_a_cost_estimate', submitted_at: Time.now.yesterday, protocol_id: protocol.id)
+          li       = create(:line_item, service_request: @sr, sub_service_request: @ssr, service: service)
+
+          session[:identity_id]            = logged_in_user.id
+
+        end
+
+        it 'should update SR status to get_a_cost_estimate' do
+          xhr :get, :obtain_research_pricing, {
+            id: @sr.id
+          }
+
+          expect(@sr.reload.status).to eq('get_a_cost_estimate')
+        end
+
+        it 'should update SSR status to get_a_cost_estimate' do
+          xhr :get, :obtain_research_pricing, {
+            id: @sr.id
+          }
+
+          expect(@ssr.reload.status).to eq('get_a_cost_estimate')
+        end
+
+        context 'with an authorized_user' do
+          it 'should notify all (authorized_user)' do
+            expect {
+              xhr :get, :obtain_research_pricing, {
+                id: @sr.id
+              }
+            }.to change(ActionMailer::Base.deliveries, :count).by(1)
+          end
+        end
+
+        context 'with an authorized_user and a service_provider' do
+          it 'should notify all (authorized_user and a service_provider)' do
+            create(:service_provider, identity: logged_in_user, organization: @org)
+            expect {
+              xhr :get, :obtain_research_pricing, {
+                id: @sr.id
+              }
+            }.to change(ActionMailer::Base.deliveries, :count).by(2)
+          end
+        end
+
+        context 'with an authorized_user, a service_provider, and an admin' do
+          it 'should notify all (authorized_user, a service_provider, and an admin)' do
+            create(:service_provider, identity: logged_in_user, organization: @org)
+            @org.submission_emails.create(email: 'hedwig@owlpost.com')
+
+            expect {
+              xhr :get, :obtain_research_pricing, {
+                id: @sr.id
+              }
+            }.to change(ActionMailer::Base.deliveries, :count).by(3)
+          end
+        end
       end
     end
 
@@ -164,7 +376,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
       service  = create(:service, organization: org, one_time_fee: true)
       protocol = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
       sr       = create(:service_request_without_validations, protocol: protocol)
-      ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
+      ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org, protocol_id: protocol.id)
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
       session[:identity_id]        = logged_in_user.id
@@ -181,7 +393,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
       service  = create(:service, organization: org, one_time_fee: true)
       protocol = create(:protocol_federally_funded, primary_pi: logged_in_user, type: 'Study')
       sr       = create(:service_request_without_validations, protocol: protocol)
-      ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
+      ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org, protocol_id: protocol.id)
       li       = create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
 
       session[:identity_id]        = logged_in_user.id

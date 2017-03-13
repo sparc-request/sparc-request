@@ -242,7 +242,7 @@ class Identity < ActiveRecord::Base
   end
 
   def has_correct_project_role? request
-    protocol = request.class == ServiceRequest ? request.protocol : request.service_request.protocol
+    protocol = request.protocol
 
     protocol.project_roles.where(identity_id: self.id, project_rights: ['approve', 'request']).any?
   end

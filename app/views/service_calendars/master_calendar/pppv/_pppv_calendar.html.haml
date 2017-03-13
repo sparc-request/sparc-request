@@ -25,7 +25,7 @@
         = I18n.t('calendars.pppv.header', arm_name: arm.name)
     - unless portal || review
       .pull-right
-        %button.btn.btn-warning.move-visit-button{ data: { arm_id: arm.id } }
+        %button.btn.btn-warning.move-visit-button{ data: { arm_id: arm.id, toggle: 'tooltip', placement: 'bottom', delay: '{"show":"500"}' }, title: t(:calendars)[:tooltips][:move_visit_button]}
           = t(:proper)[:service_calendar][:move_visit][:header]
     .clearfix
   = hidden_field_tag :service_request_id, service_request.id
@@ -34,7 +34,7 @@
       = render "service_calendars/master_calendar/pppv/#{tab}_header",
         service_request: service_request, sub_service_request: sub_service_request,
         arm: arm, tab: tab, pages: pages, page: page, review: review,
-        portal: portal, visit_groups: visit_groups
+        portal: portal, visit_groups: visit_groups, admin: admin
     %tbody
       = render "service_calendars/master_calendar/pppv/#{tab}_line_items",
         service_request: service_request, sub_service_request: sub_service_request,

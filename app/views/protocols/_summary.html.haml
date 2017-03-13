@@ -28,6 +28,16 @@
         = link_to I18n.t('protocols.edit', protocol_type: protocol_type), edit_protocol_path(protocol, srid: service_request.id), class: 'btn btn-warning edit-protocol-information-button'
     .clearfix
   .panel-body#protocol-summary.text-left
+    - if RESEARCH_MASTER_ENABLED && protocol.is_study?
+      .row
+        .col-sm-3
+          %label
+            = I18n.t('protocols.summary.research_master_id')
+        .col-sm-9
+          - if protocol.research_master_id.nil?
+            = I18n.t('protocols.summary.na_research_master_id')
+          - else
+            = protocol.research_master_id
     .row
       .col-sm-3
         %label

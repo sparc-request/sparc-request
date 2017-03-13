@@ -21,10 +21,13 @@
 require 'rails_helper'
 
 RSpec.describe AdditionalDetails::QuestionnairesController do
+  stub_controller
+  let!(:logged_in_user) { create(:identity) }
+
   describe '#update' do
     before :each do
       @service = create(:service)
-      @questionnaire = create(:questionnaire, service: @service, name: 'Funny')
+      @questionnaire = create(:questionnaire, :without_validations, service: @service, name: 'Funny')
     end
 
     it 'should assign @service' do

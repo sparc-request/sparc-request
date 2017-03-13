@@ -21,32 +21,46 @@
   %th.visit-group-box.col-sm-1{ class: "visit-group-#{index+1}" }
     .row.text-center
       .col-xs-4.no-padding.text-center
-        +
-      .col-xs-4.no-padding.text-center
-        Day
-      .col-xs-4.no-padding.text-center
         = "-"
+      .col-xs-4.no-padding.text-center
+        = t(:calendars)[:pppv][:header_fields][:day]
+      .col-xs-4.no-padding.text-center
+        = "+"
     .row.text-center
       .col-xs-4.no-padding.text-center
         - if portal || tab == 'calendar'
           = visit_group.window_before
         - else
-          %a.window-before{ href: 'javascript:void(0)', data: { name: 'window_before', title: t(:calendars)[:pppv][:editable_fields][:window_before], value: visit_group.window_before, url: visit_group_path(visit_group, service_request_id: service_request.id) } }
+          = link_to visit_group.window_before, 'javascript:void(0)',
+            data: { id: visit_group.id, service_request_id: service_request.id, arm_id: visit_group.arm.id, toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}' },
+            class: 'edit-visit-group', title: t(:calendars)[:tooltips][:window_before]
       .col-xs-4.no-padding.text-center
         - if portal || tab == 'calendar'
           = visit_group.day
         - else
-          %a.day{ href: 'javascript:void(0)', data: { name: 'day', value: visit_group.day, title: t(:calendars)[:pppv][:editable_fields][:day], url: visit_group_path(visit_group, service_request_id: service_request.id) } }
+          - if visit_group.day.blank?
+            - day = '(?)'
+          - else
+            - day = visit_group.day
+          = link_to day, 'javascript:void(0)',
+            data: { id: visit_group.id, service_request_id: service_request.id, arm_id: visit_group.arm.id, toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}' },
+            class: 'edit-visit-group', title: t(:calendars)[:tooltips][:visit_day]
       .col-xs-4.no-padding.text-center
         - if portal || tab == 'calendar'
           = visit_group.window_after
         - else
-          %a.window-after{ href: 'javascript:void(0)', data: { name: 'window_after', title: t(:calendars)[:pppv][:editable_fields][:window_after], value: visit_group.window_after, url: visit_group_path(visit_group, service_request_id: service_request.id) } }
+          = link_to visit_group.window_after,
+            'javascript:void(0)',
+            data: { id: visit_group.id, service_request_id: service_request.id, arm_id: visit_group.arm.id, toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}' },
+            class: 'edit-visit-group', title: t(:calendars)[:tooltips][:window_after]
     .row.visit-group-names.text-center
       .col-sm-12.text-center{ data: { visit_group_id: visit_group.id } }
         - if portal || tab == 'calendar'
           = visit_group.name
         - else
-          %a.visit-group-name{ href: 'javascript:void(0)', data: { name: 'name', title: t(:calendars)[:pppv][:editable_fields][:visit_name], value: visit_group.name, url: visit_group_path(visit_group, service_request_id: service_request.id) } }
+          = link_to visit_group.name,
+            'javascript:void(0)',
+            data: { id: visit_group.id, service_request_id: service_request.id, arm_id: visit_group.arm.id, toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}' },
+            class: 'edit-visit-group', title: t(:calendars)[:tooltips][:visit_name]
 - (visit_groups.size...Visit.per_page).each do |index|
   %th.col-sm-1.text-center

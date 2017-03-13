@@ -59,7 +59,7 @@ RSpec.describe Notifier do
                                                                         service_request,
                                                                         xls,
                                                                         identity,
-                                                                        service_request.sub_service_requests.first.id,
+                                                                        service_request.sub_service_requests.first,
                                                                         @report, false, true) }
         # Expected service provider message is defined under request_amendment_intro
         it 'should display service provider intro message, conclusion, link, and should not display acknowledgments' do
@@ -104,7 +104,7 @@ RSpec.describe Notifier do
                                                                         service_request,
                                                                         xls,
                                                                         identity,
-                                                                        service_request.sub_service_requests.first.id,
+                                                                        service_request.sub_service_requests.first,
                                                                         @report, false, true) }
         # Expected service provider message is defined under request_amendment_intro
         it 'should display service provider intro message, conclusion, link, and should not display acknowledgments' do
@@ -152,6 +152,7 @@ RSpec.describe Notifier do
         let(:approval)                { service_request.approvals.create }
         let(:mail)                    { Notifier.notify_user(project_role,
                                                             service_request,
+                                                            nil,
                                                             xls,
                                                             approval,
                                                             identity,
@@ -228,7 +229,7 @@ RSpec.describe Notifier do
                                                                         service_request,
                                                                         xls,
                                                                         identity,
-                                                                        service_request.sub_service_requests.first.id,
+                                                                        service_request.sub_service_requests.first,
                                                                         @report, false, true) }
         # Expected service provider message is defined under request_amendment_intro
         it 'should display service provider intro message, conclusion, link, and should not display acknowledgments' do
@@ -276,6 +277,7 @@ RSpec.describe Notifier do
         let(:approval)                { service_request.approvals.create }
         let(:mail)                    { Notifier.notify_user(project_role,
                                                             service_request,
+                                                            nil,
                                                             xls,
                                                             approval,
                                                             identity,
@@ -345,7 +347,7 @@ RSpec.describe Notifier do
     before do
       create(:note_without_validations,
             identity_id:  identity.id, 
-            notable_id: service_request.id)
+            notable_id: service_request.protocol.id)
       service_request.update_attribute(:submitted_at, Time.now.yesterday)
       deleted_and_created_line_item_audit_trail(service_request, service3, identity)
       ssr = service_request.sub_service_requests.first
@@ -358,7 +360,7 @@ RSpec.describe Notifier do
                                                                         service_request,
                                                                         xls,
                                                                         identity,
-                                                                        service_request.sub_service_requests.first.id,
+                                                                        service_request.sub_service_requests.first,
                                                                         @report, false, true) }
       # Expected service provider message is defined under request_amendment_intro
       it 'should display service provider intro message, conclusion, link, and should not display acknowledgments' do

@@ -24,4 +24,4 @@
     = render 'shared/modal_errors', errors: @errors
 #protocol
   = render 'dashboard/protocols/form/edit_protocol_type', protocol: @protocol, protocol_type: @protocol_type, in_dashboard: @in_dashboard
-  = render 'dashboard/protocols/form/protocol_form', protocol: @protocol, protocol_type: @protocol_type, admin: @admin, permission_to_edit: @permission_to_edit
+  = render 'dashboard/protocols/form/protocol_form', protocol: @protocol, protocol_type: @protocol_type, admin: @admin, permission_to_edit: @permission_to_edit, action_name: action_name

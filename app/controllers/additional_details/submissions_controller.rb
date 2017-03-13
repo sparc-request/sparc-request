@@ -1,4 +1,5 @@
 class AdditionalDetails::SubmissionsController < ApplicationController
+  before_action :authenticate_identity!
   layout 'additional_details'
   include AdditionalDetails::StatesHelper
 

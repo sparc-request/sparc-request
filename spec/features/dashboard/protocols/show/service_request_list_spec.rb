@@ -56,7 +56,8 @@ RSpec.describe 'service request list', js: true do
       first_draft_ssr = create(:sub_service_request,
         service_request: service_request,
         organization: create(:organization),
-        status: 'first_draft')
+        status: 'first_draft',
+        protocol: protocol)
       arm.line_items[0].update(sub_service_request_id: first_draft_ssr.id)
       @first_draft_li = arm.line_items[0]
       create(:pricing_map_without_validations, service_id: arm.line_items[0].service_id)
@@ -64,7 +65,8 @@ RSpec.describe 'service request list', js: true do
       draft_ssr = create(:sub_service_request,
         service_request: service_request,
         organization: create(:organization),
-        status: 'draft')
+        status: 'draft',
+        protocol: protocol)
       arm.line_items[1].update(sub_service_request_id: draft_ssr.id)
       @draft_li = arm.line_items[1]
       create(:pricing_map_without_validations, service_id: arm.line_items[1].service_id)
@@ -72,7 +74,8 @@ RSpec.describe 'service request list', js: true do
       complete_ssr = create(:sub_service_request,
         service_request: service_request,
         organization: create(:organization),
-        status: 'complete')
+        status: 'complete',
+        protocol: protocol)
       arm.line_items[2].update(sub_service_request_id: complete_ssr.id)
       @complete_li = arm.line_items[2]
       create(:pricing_map_without_validations, service_id: arm.line_items[2].service_id)
@@ -124,7 +127,8 @@ RSpec.describe 'service request list', js: true do
         ssr_id: '1234',
         service_request: service_request,
         organization_id: organization.id,
-        status: 'draft')
+        status: 'draft',
+        protocol: protocol)
     end
 
     describe 'sending notifications' do
@@ -200,7 +204,8 @@ RSpec.describe 'service request list', js: true do
         ssr_id: '1234',
         service_request: service_request,
         organization_id: organization.id,
-        status: 'draft')
+        status: 'draft',
+        protocol: protocol)
     end
 
     scenario 'user clicks "Modify Request" button' do

@@ -19,7 +19,6 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 development:
-  research_master_enabled: true
   default_mail_to: catesa@musc.edu
   admin_mail_to: catesa@musc.edu
   feedback_mail_to: "hutsonk@musc.edu"
@@ -68,6 +67,7 @@ development:
   editable_statuses: { 14: ['first_draft', 'draft', 'submitted', nil, 'get_a_cost_estimate', 'awaiting_pi_approval', 'complete'],
                      48: ['draft', 'submitted', 'complete'] }
   updatable_statuses: [ 'first_draft', 'draft', 'get_a_cost_estimate', 'awaiting_pi_approval']
+  finished_statuses: ['complete', 'withdrawn']
   navbar_links: { sparc_request:              ['SPARCRequest', 'http://localhost:3000/'],
                   sparc_dashboard:            ['SPARCDashboard', 'http://localhost:3000/dashboard'],
                   sparc_fulfillment:          ['SPARCFulfillment', 'https://cwf-d.obis.musc.edu/identities/sign_in'],
@@ -89,7 +89,7 @@ development:
   about_sparc_url: http://academicdepartments.musc.edu/sctr/sparc_request
   use_about_sparc_link: true
   use_feedback_link: true
-  feedback_link: "http://something.com"
+  feedback_link: "https://redcap.musc.edu/surveys/?s=A37TNJWJPL"
   send_emails_to_real_users: false
 
 test:
@@ -114,6 +114,7 @@ test:
   editable_statuses: { 14: ['first_draft', 'draft', 'submitted', nil, 'get_a_cost_estimate', 'awaiting_pi_approval'],
                      48: ['draft', 'submitted'] }
   updatable_statuses: [ 'first_draft', 'draft', 'get_a_cost_estimate', 'awaiting_pi_approval']
+  finished_statuses: ['complete', 'withdrawn']
   navbar_links: { sparc_request:              ['SPARCRequest', 'http://localhost:3000/'],
                   sparc_dashboard:            ['SPARCDashboard', 'http://localhost:3000/dashboard'],
                   sparc_fulfillment:          ['SPARCFulfillment', 'https://cwf-d.obis.musc.edu/identities/sign_in'],

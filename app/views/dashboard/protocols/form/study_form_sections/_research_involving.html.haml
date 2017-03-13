@@ -35,7 +35,11 @@
       .human_subjects_dependent{ display_if(rt_form.object.human_subjects) }
         = form.fields_for :human_subjects_info do |hs_form|
           .form-group.row.nct-number
-            = hs_form.label :nct_number, t(:protocols)[:studies][:research_involving][:humans][:nct_number], class: 'col-lg-2 control-label'
+            = hs_form.label :nct_number,
+              t(:protocols)[:studies][:research_involving][:humans][:nct_number],
+              class: 'col-lg-2 control-label',
+              data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' },
+              title: t(:protocols)[:tooltips][:nct_number]
             .col-lg-10
               = hs_form.text_field :nct_number, class: 'form-control'
 
@@ -45,7 +49,11 @@
               = hs_form.text_field :hr_number, class: 'form-control'
 
           .form-group.row
-            = hs_form.label :pro_number, t(:protocols)[:studies][:research_involving][:humans][:pro_number], class: 'col-lg-2 control-label'
+            = hs_form.label :pro_number,
+              t(:protocols)[:studies][:research_involving][:humans][:pro_number],
+              class: 'col-lg-2 control-label',
+              data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' },
+              title: t(:protocols)[:tooltips][:pro_number]
             .col-lg-10
               = hs_form.text_field :pro_number, class: 'form-control'
 
@@ -77,7 +85,7 @@
           .form-group.row
             = form.label :study_phase, t(:protocols)[:studies][:information][:phase], class: 'col-lg-2 control-label'
             .col-lg-10
-              = form.select :study_phase, options_for_select(STUDY_PHASES, protocol.study_phase), { include_blank: t(:protocols)[:prompts][:phase] }, class: 'selectpicker'
+              = form.collection_select :study_phase_ids, StudyPhase.v1, :id, :phase, { include_blank: t(:protocols)[:prompts][:phase] }, class: 'selectpicker', title: t(:protocols)[:prompts][:phase], multiple: true
       / Human Subjects selected end
 
       .form-group.row.vertebrate_animals
@@ -120,7 +128,9 @@
           .form-group.row
             = ip_form.label :ind_number, t(:protocols)[:studies][:research_involving][:products][:ind_number], class: 'col-lg-2 control-label'
             .col-lg-10
-              = ip_form.text_field :ind_number, class: 'form-control'
+              = ip_form.text_field :ind_number, class: 'form-control',
+                data: { toggle: 'tooltip', placement: 'bottom' },
+                title: 'Investigational New Drug (IND) Number'
 
           .form-group.row#ind-on-hold-group{ display_if(!ip_form.object.ind_number.blank?) }
             = ip_form.label :ind_on_hold, t(:protocols)[:studies][:research_involving][:products][:ind_on_hold], class: 'col-lg-2 control-label'
@@ -130,9 +140,13 @@
           - InvestigationalProductsInfo::EXEMPTION_TYPES.each_with_index do |exemption_type, n|
             / Hide radio button for no exemption. There's a clear button for that.
             .form-group.row.inv-device{ class: ("hidden" unless exemption_type.present?) }
-              = ip_form.label "exemption_type_#{exemption_type}", t(:protocols)[:studies][:research_involving][:products][:numbers][exemption_type.to_sym], class: 'col-lg-2 control-label'
+              = ip_form.label "exemption_type_#{exemption_type}",
+                t(:protocols)[:studies][:research_involving][:products][:numbers][exemption_type.to_sym],
+                class: 'col-lg-2 control-label',
+                data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' },
+                title: t(:protocols)[:studies][:research_involving][:tooltips][exemption_type.to_sym]
               .col-lg-1.text-center
-                = ip_form.radio_button :exemption_type, exemption_type, class: 'form-control exemption-radio'
+                = ip_form.radio_button :exemption_type, exemption_type, class: 'form-control exemption-radio', data: { type: exemption_type }
               - if exemption_type == ip_form.object.exemption_type
                 .col-lg-9.inv-device-number-field
                   = ip_form.text_field :inv_device_number, class: 'form-control'

@@ -81,7 +81,7 @@ RSpec.describe 'User interacts with Quantity/Billing tab', js: true do
       li        = create(:line_item, sub_service_request: ssr, service_request: @sr, service: service)
       @arm      = create(:arm, protocol: protocol)
       vg        = create(:visit_group, arm: @arm)
-      liv       = create(:line_items_visit, line_item: li, arm: @arm)
+      liv       = create(:line_items_visit, :without_validations, line_item: li, arm: @arm)
       visit     = create(:visit, line_items_visit: liv, visit_group: vg)
 
       visit service_calendar_service_request_path(@sr)

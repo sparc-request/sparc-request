@@ -73,7 +73,7 @@ class AprReport < Report
       Organization.all.each do |organization|
         ssrs = SubServiceRequest.find_all_by_organization_id(organization.id)
         ssrs_with_sr = ssrs.select {|x| x.service_request}
-        ssrs_with_protocol = ssrs_with_sr.select {|x| x.service_request.protocol}
+        ssrs_with_protocol = ssrs_with_sr.select {|x| x.protocol}
         ssrs_with_status = ssrs_with_protocol.select {|x| ['submitted', 'in process', 'complete'].include?(x.status)}
         within_dates = ssrs_with_status.select {|x| relevant_date(x) < Date.parse('2013-01-01') && relevant_date(x) > Date.parse('2012-03-01')}
         line_items = within_dates.map {|x| x.line_items.count}.inject(:+)
@@ -81,7 +81,7 @@ class AprReport < Report
         lis = LineItem.all.select {|x| x.service.organization_id == organization.id}
         lis_with_ssr = lis.select {|x| x.sub_service_request}
         lis_with_sr = lis_with_ssr.select {|x| x.sub_service_request.service_request}
-        lis_with_protocol = lis_with_sr.select {|x| x.sub_service_request.service_request.protocol}
+        lis_with_protocol = lis_with_sr.select {|x| x.sub_service_request.protocol}
         lis_with_status = lis_with_protocol.select {|x| ['submitted', 'in process', 'complete'].include?(x.sub_service_request.status)}
         lis_within_dates = lis_with_status.select {|x| relevant_date(x.sub_service_request) < Date.parse('2013-01-01') && relevant_date(x.sub_service_request) > Date.parse('2012-03-01')}
 
@@ -165,7 +165,7 @@ class AprReport < Report
         row << protocol.title
         row << protocol.funding_status.try(:humanize)
         row << (protocol.funding_status == 'funded' ? protocol.funding_source : '').try(:humanize)
-        
+
         row << (protocol.funding_source == 'federal' ? protocol.federal_grant_code_id : '')
         row << (protocol.funding_source == 'federal' ? protocol.federal_phs_sponsor : '')
         row << (protocol.funding_source == 'federal' ? protocol.federal_non_phs_sponsor : '')

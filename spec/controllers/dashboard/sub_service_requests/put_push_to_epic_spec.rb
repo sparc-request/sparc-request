@@ -29,7 +29,7 @@ RSpec.describe Dashboard::SubServiceRequestsController do
       @protocol             = create(:protocol_federally_funded, primary_pi: @logged_in_user)
       @service_request      = create(:service_request_without_validations, protocol: @protocol)
       @organization         = create(:organization)
-      @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, organization: @organization)
+      @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, organization: @organization, protocol_id: @protocol.id)
     end
 
     #####AUTHORIZATION#####
@@ -77,7 +77,7 @@ RSpec.describe Dashboard::SubServiceRequestsController do
       before :each do
         create(:super_user, identity: @logged_in_user, organization: @organization)
       end
-      
+
       it 'should push the protocol' do
         expect{ put :push_to_epic, id: @sub_service_request.id, format: :js }.to change(EpicQueueRecord, :count).by(1)
       end

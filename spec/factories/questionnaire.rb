@@ -4,6 +4,10 @@ FactoryGirl.define do
     service_id nil
     active 1
 
+    trait :without_validations do
+      to_create { |instance| instance.save(validate: false) }
+    end
+
     trait :with_all_question_types do
       after(:create) do |questionnaire|
         ADDITIONAL_DETAIL_QUESTION_TYPES.values.each do |qt|

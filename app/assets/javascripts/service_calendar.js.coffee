@@ -27,6 +27,12 @@ $(document).ready ->
   getSSRId = ->
     $("input[name='sub_service_request_id']").val()
 
+  $(document).on 'click', '.custom-tab a', ->
+    if $(this).is('#billing-strategy-tab')
+      $('.billing-info ul').removeClass('hidden')
+    else
+      $('.billing-info ul').addClass('hidden')
+
   $(document).on 'click', '.page-change-arrow', ->
     unless $(this).attr('disabled')
       $.ajax

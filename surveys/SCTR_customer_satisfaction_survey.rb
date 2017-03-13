@@ -21,7 +21,7 @@
 survey "SCTR Customer Satisfaction Survey", :default_mandatory => false do
   section "Customer Satisfaction" do
 
-    question "Thank you for working with the South Carolina Clinical and
+    label "Thank you for working with the South Carolina Clinical and
     Translational Research Institute (SCTR). SCTR is committed to providing quality
     support and requests your feedback on services and tools provided to you.
     The results of your responses will help provide invaluable data to our stakeholders,
@@ -29,12 +29,23 @@ survey "SCTR Customer Satisfaction Survey", :default_mandatory => false do
     We would greatly appreciate your participation in a one-question survey.
     Be assured that your answers will be kept confidential."
 
-    question_1 "1) Would you recommend this SCTR service to a colleague?", :pick => :one
-    answer_yes "Yes"
-    answer_no "No"
+    question_1 "1) How likely is it that you would recommend this SCTR service to a colleague?", :pick => :one
+    answer "Not at all likely", help_text: "1"
+    answer "Not very likely", help_text: "2"
+    answer "Neutral", help_text: "3"
+    answer "Somewhat likely", help_text: "4"
+    answer "Extremely likely", help_text: "5"
 
-    question "If you would like to provide additional feedback, please use the space below."
+    question_2 "2) If you would like to provide additional feedback, please use the space below."
     answer :text
+
+    label "Please remember to cite the CTSA grant in any related publication:
+    <br>
+    <span class='gray-text'>
+    \“This publication [or project] was supported by the South Carolina Clinical & Translational Research (SCTR)
+    Institute, with an academic home at the Medical University of South Carolina <strong class='dim-gray-text'>NIH - NCATS Grant Number UL1
+    TR001450.</strong>\”
+    </span>"
 
   end
 end

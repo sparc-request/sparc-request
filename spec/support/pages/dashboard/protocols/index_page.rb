@@ -31,18 +31,20 @@ module Dashboard
         element :save_link, "a", text: "Save"
         element :reset_link, "a", text: "Reset"
 
-        element :search_field, :field, "Search"
+        element :search_field, "#filterrific_search_query_search_text"
+
         element :archived_checkbox, :field, "Archived"
         element :status_select, "div.status-select button"
         elements :status_options, "div.status-select li"
         element :core_select, "div.core-select button"
         elements :core_options, "div.core-select li"
-        
+
         # these appear if user is an admin
         element :owner_select, "div.owner-select button"
         elements :owner_options, "div.owner-select li"
         element :my_protocols_checkbox, ".identity-protocols input"
         element :my_admin_organizations_checkbox, ".admin-protocols input"
+        element :empty_protocols_checkbox, ".empty-protocols input"
 
         element :apply_filter_button, :button, "Filter"
 
@@ -55,6 +57,13 @@ module Dashboard
           end
           page.find("body").click # seems like Capybara page is available in this context
           wait_until_status_options_invisible
+        end
+
+        def select_search(page, search, search_term)
+          bootstrap_select = page.find("select#filterrific_search_query_search_drop + .bootstrap-select")
+          bootstrap_select.click
+          first('.dropdown-menu.open span.text', text: /\A#{search}\Z/).click
+          page.filter_protocols.search_field.set(search_term.to_s)
         end
 
         # select a core for :core_select by core

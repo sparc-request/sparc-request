@@ -40,7 +40,7 @@ RSpec.describe 'dashboard/notifications/_dropdown', type: :view do
         with(:identity).
         and_return([build_stubbed(:clinical_provider, identity: clinical_provider, organization: organization)])
 
-      @sub_service_request = build_stubbed(:sub_service_request, service_request: service_request, organization: organization)
+      @sub_service_request = build_stubbed(:sub_service_request, service_request: service_request, organization: organization, protocol: protocol)
 
       @logged_in_user = build_stubbed(:identity)
     end

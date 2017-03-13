@@ -27,7 +27,7 @@ task :jit_report => :environment do
 
     ssrs.each do |ssr|
       first_submit = ssr.past_statuses.where(:status => 'submitted').first.date
-      protocol = ssr.service_request.protocol
+      protocol = ssr.protocol
       human_subjects_info = protocol.human_subjects_info
       csv << [first_submit.strftime('%m/%d/%y'), ssr.display_id, ssr.organization.name, protocol.primary_principal_investigator.display_name,
         protocol.title, human_subjects_info.irb_of_record, human_subjects_info.irb_and_pro_numbers, (human_subjects_info.irb_approval_date.strftime('%m/%d/%y') rescue nil)]

@@ -30,7 +30,8 @@ RSpec.describe Dashboard::BaseController, type: :controller do
         @ssr             = create(:sub_service_request_without_validations,
                                   organization: @organization,
                                   service_request: @service_request,
-                                  status: 'complete')
+                                  status: 'complete',
+                                  protocol_id: @protocol.id)
         controller.instance_variable_set(:@protocol, @protocol)
       end
 
@@ -72,7 +73,8 @@ RSpec.describe Dashboard::BaseController, type: :controller do
         @ssr             = create(:sub_service_request_without_validations,
                                   organization: @organization,
                                   service_request: @service_request,
-                                  status: 'complete')
+                                  status: 'complete',
+                                  protocol_id: @protocol.id)
         controller.instance_variable_set(:@protocol, @protocol)
       end
 
@@ -148,7 +150,8 @@ RSpec.describe Dashboard::BaseController, type: :controller do
         @ssr             = create(:sub_service_request_without_validations,
                                   organization: @organization,
                                   service_request: @service_request,
-                                  status: 'complete')
+                                  status: 'complete',
+                                  protocol_id: @protocol.id)
         controller.instance_variable_set(:@protocol, @protocol)
       end
 

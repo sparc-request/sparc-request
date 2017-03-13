@@ -45,9 +45,7 @@ namespace :data do
     end
 
     def full_ssr_id(ssr)
-    protocol = ssr.service_request.protocol
-
-    "#{protocol.id}-#{ssr.ssr_id}"
+      ssr.display_id
     end
 
     def extract_status_dates ssr

@@ -18,7 +18,8 @@ RSpec.describe 'view SSR back button', js: true do
     @ssr             = create(:sub_service_request,
                               service_request: @service_request,
                               organization: @organization,
-                              status: 'submitted')
+                              status: 'submitted',
+                              protocol: @protocol)
     @service         = create(:service, organization: @organization)
     @line_item       = create(:line_item,
                               sub_service_request: @ssr,

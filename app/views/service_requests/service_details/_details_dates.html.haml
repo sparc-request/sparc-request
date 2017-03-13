@@ -27,7 +27,7 @@
     .form-group.col-lg-12
       = f.label :start_date,
         t(:proper)[:service_details][:start_date], class: 'col-lg-2 control-label required',
-        data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"1500"}' },
+        data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' },
         title: t(:proper)[:service_details][:tooltips][:start_date]
       .col-lg-10
         = f.text_field :start_date,
@@ -37,7 +37,7 @@
       = f.label :end_date,
         t(:proper)[:service_details][:end_date],
         class: 'col-lg-2 control-label required',
-        data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"1500"}' },
+        data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' },
         title: t(:proper)[:service_details][:tooltips][:end_date]
       .col-lg-10
         = f.text_field :end_date,
@@ -49,7 +49,7 @@
         = f.label :recruitment_start_date,
           t(:proper)[:service_details][:recruitment_start],
           class: 'col-lg-2 control-label',
-          data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"1500"}' },
+          data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' },
           title: t(:proper)[:service_details][:tooltips][:recruitment_start_date]
         .col-lg-10
           = f.text_field :recruitment_start_date,
@@ -59,7 +59,7 @@
         = f.label :recruitment_end_date,
           t(:proper)[:service_details][:recruitment_end],
           class: 'col-lg-2 control-label',
-          data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"1500"}' },
+          data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' },
           title: t(:proper)[:service_details][:tooltips][:recruitment_end_date]
         .col-lg-10
           = f.text_field :recruitment_end_date,

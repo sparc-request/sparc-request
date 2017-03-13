@@ -45,8 +45,8 @@ module EmailHelpers
     # Expected message:  
     # 'A request has been submitted to start services in 
     # SPARCRequest and is awaiting your review in SPARCDashboard.'
-    expect(mail).to have_xpath("//p[normalize-space(text()) = 'A request has been submitted to start services in SPARCRequest and is awaiting your review in']")
-    expect(mail).to have_xpath "//p//a[@href='/dashboard/protocols/#{service_request.protocol.id}'][text()= 'SPARCDashboard.']/@href"
+    expect(mail).to have_text('A request has been submitted to start services in SPARCRequest and is awaiting your review in SPARCDashboard.')
+    expect(mail).to have_xpath "//a[@href='/dashboard/protocols/#{service_request.protocol.id}'][text()= 'SPARCDashboard']/@href"
   end
 
   def submitted_general_users_message
@@ -54,9 +54,8 @@ module EmailHelpers
     # "A request has been submitted to start services in 
     # SPARCRequest. Visit SPARCDashboard to view the status or 
     # make any updates to your request."
-    expect(mail.body.parts.first.body).to have_xpath("//p[normalize-space(text()) = 'A request has been submitted to start services in SPARCRequest. Visit']")
+    expect(mail.body.parts.first.body).to have_text("A request has been submitted to start services in SPARCRequest. Visit SPARCDashboard to view the status or make any updates to your request.")
     expect(mail.body.parts.first.body).to have_xpath "//p//a[@href='/dashboard/protocols/#{service_request.protocol.id}'][text()= 'SPARCDashboard']/@href"
-    expect(mail.body.parts.first.body).to have_xpath("//p[normalize-space(text()) = 'to view the status or make any updates to your request.']")
   end
   #### END SUBMITTED MESSAGE METHODS ####
 
@@ -67,9 +66,10 @@ module EmailHelpers
     # SPARCRequest and is awaiting your review in SPARCDashboard. Please ensure services chosen 
     # are appropriate and can be provided. Communicate any necessary changes to the study team 
     # and request they “Submit to Start Services” once ready to proceed."
-    expect(mail_response).to have_xpath("//p[normalize-space(text()) = 'A request has been made for a budget review (Get Cost Estimate) in SPARCRequest and is awaiting your review in']")
+    
+    expect(mail_response).to have_text('A request has been made for a budget review (Get Cost Estimate) in SPARCRequest and is awaiting your review in SPARCDashboard.  Please ensure services chosen are appropriate and can be provided. Communicate any necessary changes to the study team and request they “Submit to Start Services” once ready to proceed.')
     expect(mail_response).to have_xpath "//a[@href='/dashboard/protocols/#{service_request.protocol.id}'][text()= 'SPARCDashboard']/@href"
-    expect(mail_response).to have_xpath("//p[normalize-space(text()) = '. Please ensure services chosen are appropriate and can be provided. Communicate any necessary changes to the study team and request they “Submit to Start Services” once ready to proceed.']")
+
   end
 
   def get_a_cost_estimate_general_users
@@ -79,10 +79,8 @@ module EmailHelpers
     # An email has been sent to the service provider(s) to review and ensure 
     # the services are appropriate. Please note the services will not start 
     # until this request is submitted through SPARCDashboard.'
-    expect(mail.body.parts.first.body).to have_xpath("//p[normalize-space(text()) = 'A request has been made for a budget review (Get Cost Estimate) in SPARCRequest. You can review or edit this request in']")
+    expect(mail.body.parts.first.body).to have_text('A request has been made for a budget review (Get Cost Estimate) in SPARCRequest. You can review or edit this request in SPARCDashboard. An email has been sent to the service provider(s) to review and ensure the services are appropriate. Please note the services will not start until this request is submitted through SPARCDashboard.')
     expect(mail.body.parts.first.body).to have_xpath "//a[@href='/dashboard/protocols/#{service_request.protocol.id}'][text()= 'SPARCDashboard']/@href"
-    expect(mail.body.parts.first.body).to have_xpath("//p[normalize-space(text()) = '. An email has been sent to the service provider(s) to review and ensure the services are appropriate.']")
-    expect(mail.body.parts.first.body).to have_xpath("//strong[normalize-space(text()) = 'Please note the services will not start until this request is submitted through SPARCDashboard.']")
   end
   #### END GET A COST ESTIMATE MESSAGE METHODS ####
 

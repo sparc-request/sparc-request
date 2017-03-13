@@ -41,7 +41,10 @@
 %tr.total-per-patient-per-visit-cost-per-study{ class: "arm-#{arm.id} " }
   %td.col-sm-5{ colspan: tab == 'template' ? 8 : 7 }
     %strong
-      = I18n.t('calendars.pppv.totals.total_costs', arm_name: arm.name)
+      = link_to 'javascript:void(0)',
+        data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' },
+        title: t(:calendars)[:tooltips][:pppv_total_costs] do
+        = I18n.t('calendars.pppv.totals.total_costs', arm_name: arm.name)
   %td.col-sm-5{ colspan: 6 }
   %td.col-sm-1.text-center
     = display_total_cost_per_arm(arm, line_items_visits)

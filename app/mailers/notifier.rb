@@ -105,7 +105,7 @@ class Notifier < ActionMailer::Base
 
   def notify_service_provider(service_provider, service_request, attachments_to_add, user_current, ssr, audit_report=nil, ssr_destroyed=false, request_amendment=false, individual_ssr=false)
     @notes = service_request.protocol.notes
-
+    
     if ssr_destroyed
       @status = 'ssr_destroyed'
     elsif request_amendment
@@ -115,7 +115,7 @@ class Notifier < ActionMailer::Base
     else
       @status = service_request.status
     end
-
+    
     @role = 'none'
     @full_name = service_provider.identity.full_name
 
@@ -247,5 +247,4 @@ class Notifier < ActionMailer::Base
     @failed = failed
     mail(:to => EPIC_QUEUE_REPORT_TO, :from => NO_REPLY_FROM, :subject => "Epic Queue Complete")
   end
-
 end

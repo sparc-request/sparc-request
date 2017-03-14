@@ -18,5 +18,8 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$("#modal_place").html("<%= escape_javascript(render( 'protocols/view_details', protocol: @protocol )) %>")
-$("#modal_place").modal 'show'
+FactoryGirl.define do
+  factory :study_type_answer do
+    answer 1
+  end
+end

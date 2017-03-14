@@ -349,9 +349,6 @@ ActiveRecord::Schema.define(version: 20170303171239) do
     t.string   "email",                        limit: 255
     t.string   "last_name",                    limit: 255
     t.string   "first_name",                   limit: 255
-    t.string   "institution",                  limit: 255
-    t.string   "college",                      limit: 255
-    t.string   "department",                   limit: 255
     t.string   "era_commons_name",             limit: 255
     t.string   "credentials",                  limit: 255
     t.string   "subspecialty",                 limit: 255

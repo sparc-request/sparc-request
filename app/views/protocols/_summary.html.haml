@@ -23,7 +23,7 @@
       = I18n.t('protocols.summary.header', protocol_type: protocol_type)
     .pull-right
       %button.btn.btn-info.view-protocol-details-button{ data: { protocol_id: protocol.id } }
-        = I18n.t('protocols.view_details.button', protocol_type: protocol_type)
+        = I18n.t('protocols.show.button', protocol_type: protocol_type)
       - if allow_edit
         = link_to I18n.t('protocols.edit', protocol_type: protocol_type), edit_protocol_path(protocol, srid: service_request.id), class: 'btn btn-warning edit-protocol-information-button'
     .clearfix

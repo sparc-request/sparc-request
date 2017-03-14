@@ -21,11 +21,12 @@
 class ProtocolsController < ApplicationController
 
   respond_to :html, :js, :json
+  protect_from_forgery except: :show
 
   before_filter :initialize_service_request,  unless: :from_portal?,  except: [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
   before_filter :authorize_identity,          unless: :from_portal?,  except: [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
   before_filter :set_portal
-  before_filter :find_protocol,               only: [:edit, :update, :view_details]
+  before_filter :find_protocol,               only: [:edit, :update, :show]
 
   def new
     @protocol_type          = params[:protocol_type]
@@ -126,7 +127,7 @@ class ProtocolsController < ApplicationController
     end  
   end
 
-  def view_details
+  def show
     respond_to do |format|
       format.js
     end

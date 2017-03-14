@@ -205,12 +205,6 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     render json: data
   end
 
-  def view_details
-    respond_to do |format|
-      format.js
-    end
-  end
-
   private
 
   def build_with_owner_params

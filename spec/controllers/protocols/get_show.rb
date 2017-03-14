@@ -18,26 +18,16 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#= require navigation
-#= require cart
-#= require associated_users
+require 'rails_helper'
 
-$(document).ready ->
-  $(document).on 'click', '.service-view a', ->
-    description = $(".service-description-#{$(this).data('id')}")
-    if description.hasClass('hidden')
-      $('.service-description').addClass('hidden')
-      description.removeClass('hidden')
-    else
-      description.addClass('hidden')
+RSpec.describe ProtocolsController, type: :controller do
 
-  $('.protocol-select-help a').tooltip()
-
-  $(document).on 'click', '.view-protocol-details-button', ->
-    protocol_id = $(this).data('protocol-id')
-    $.ajax
-      type: 'get'
-      url: "/protocols/#{protocol_id}.js"
-      data:
-        service_request_id: $("input[name='service_request_id']").val()
-    return false
+  describe "GET #show" do
+    it "returns http success" do
+      protocol = create(:protocol_without_validations)
+      allow(controller).to receive(:authorize_identity).and_return(true)
+      get :show, id: protocol.id, format: :js
+      expect(response).to have_http_status(:success)
+    end
+  end
+end

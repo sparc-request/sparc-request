@@ -107,7 +107,6 @@ RSpec.describe SurveyNotification do
       expect(mail).to deliver_from('no-reply@musc.edu')
     end
 
-<<<<<<< HEAD
     #ensure that the e-mail contains a link to the survey
     it 'should contain the survey link' do
       survey_link_path = "direct_link_to/#{survey.access_code}?ssr_id=#{ssr.id}&amp;survey_version=#{survey.survey_version}"

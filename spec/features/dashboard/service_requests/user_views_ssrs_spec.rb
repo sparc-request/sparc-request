@@ -37,7 +37,7 @@ RSpec.describe "User views SSR table", js: true do
       let!(:protocol)             { create(:unarchived_study_without_validations, primary_pi: jug2) }
       let!(:service_request)      { create(:service_request_without_validations, protocol: protocol, status: 'draft') }
       let!(:organization)         { create(:organization,type: 'Institution', name: 'Megacorp', admin: bob, service_provider: bob) }
-      let!(:sub_service_request)  { create(:sub_service_request, id: 9999, ssr_id: '1234', service_request: service_request, organization_id: organization.id, status: 'draft') }
+      let!(:sub_service_request)  { create(:sub_service_request, id: 9999, ssr_id: '1234', service_request: service_request, organization_id: organization.id, status: 'draft', protocol: protocol) }
 
       scenario 'and sees View and Edit' do
         page = go_to_show_protocol(protocol.id)
@@ -51,7 +51,7 @@ RSpec.describe "User views SSR table", js: true do
         let!(:protocol)             { create(:unarchived_study_without_validations, primary_pi: jug2) }
         let!(:service_request)      { create(:service_request_without_validations, protocol: protocol, status: 'draft') }
         let!(:organization)         { create(:organization,type: 'Institution', name: 'Megacorp', admin: bob, service_provider: bob) }
-        
+
         scenario 'and sees View but not Edit' do
           stub_const("EDITABLE_STATUSES", { organization.id => ['draft'] })
 
@@ -70,7 +70,7 @@ RSpec.describe "User views SSR table", js: true do
       let!(:protocol)             { create(:unarchived_study_without_validations, primary_pi: bob) }
       let!(:service_request)      { create(:service_request_without_validations, protocol: protocol, status: 'draft') }
       let!(:organization)         { create(:organization,type: 'Institution', name: 'Megacorp', admin: bob, service_provider: bob) }
-      let!(:sub_service_request)  { create(:sub_service_request, id: 9999, ssr_id: '1234', service_request: service_request, organization_id: organization.id, status: 'draft') }
+      let!(:sub_service_request)  { create(:sub_service_request, id: 9999, ssr_id: '1234', service_request: service_request, organization_id: organization.id, status: 'draft', protocol: protocol) }
 
       scenario 'and sees View' do
         create(:project_role, identity: jug2, protocol: protocol, project_rights: 'view', role: 'consultant')
@@ -87,7 +87,7 @@ RSpec.describe "User views SSR table", js: true do
       let!(:protocol)             { create(:unarchived_study_without_validations, primary_pi: bob) }
       let!(:service_request)      { create(:service_request_without_validations, protocol: protocol, status: 'draft') }
       let!(:organization)         { create(:organization,type: 'Institution', name: 'Megacorp', admin: jug2, service_provider: jug2) }
-      let!(:sub_service_request)  { create(:sub_service_request, id: 9999, ssr_id: '1234', service_request: service_request, organization_id: organization.id, status: 'draft') }
+      let!(:sub_service_request)  { create(:sub_service_request, id: 9999, ssr_id: '1234', service_request: service_request, organization_id: organization.id, status: 'draft', protocol: protocol) }
 
       scenario 'and sees View, and Admin Edit, but not Edit' do
         page = go_to_show_protocol(protocol.id)
@@ -105,7 +105,7 @@ RSpec.describe "User views SSR table", js: true do
     let!(:questionnaire)        { create(:questionnaire, :without_validations, service: service, active: true) }
     let!(:protocol)             { create(:protocol_federally_funded, primary_pi: jug2, type: 'Study') }
     let!(:service_request)      { create(:service_request_without_validations, protocol: protocol) }
-    let!(:sub_service_request)  { create(:sub_service_request, service_request: service_request, organization: organization, status: 'draft') }
+    let!(:sub_service_request)  { create(:sub_service_request, service_request: service_request, organization: organization, status: 'draft', protocol: protocol) }
     let!(:line_item)            { create(:line_item, service_request: service_request, sub_service_request: sub_service_request, service: service) }
 
     scenario 'and sees the complete form dropdown' do
@@ -121,7 +121,7 @@ RSpec.describe "User views SSR table", js: true do
     let!(:service)              { create(:service, organization: organization) }
     let!(:protocol)             { create(:protocol_federally_funded, primary_pi: jug2, type: 'Study') }
     let!(:service_request)      { create(:service_request_without_validations, protocol: protocol) }
-    let!(:sub_service_request)  { create(:sub_service_request, service_request: service_request, organization: organization, status: 'draft') }
+    let!(:sub_service_request)  { create(:sub_service_request, service_request: service_request, organization: organization, status: 'draft', protocol: protocol) }
     let!(:line_item)            { create(:line_item, service_request: service_request, sub_service_request: sub_service_request, service: service) }
 
     scenario 'and does not see the complete form dropdown' do

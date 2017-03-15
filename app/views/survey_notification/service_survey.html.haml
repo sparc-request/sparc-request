@@ -17,6 +17,7 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+= stylesheet_link_tag "system_satisfaction"
 
 = "Dear #{@identity.full_name},"
 %br
@@ -29,8 +30,18 @@ The service(s) you requested have now been completed.
 Please click on the link(s) below to complete the following survey(s) regarding the service(s) you received. Your feedback is important and appreciated!
 
 %br
-%br
 
 %ul
 - @surveys.each do |survey|
   %li= link_to survey.title, direct_link_survey_url(survey.access_code, :survey_version => survey.survey_version, :ssr_id => @ssr.id)
+
+- if @surveys.map(&:access_code).include?("sctr-customer-satisfaction-survey")
+  #sctr-grant-citation
+    %br
+    Please remember to cite the CTSA grant in any related publication:
+    %br
+    %em.gray-text
+      “This publication [or project] was supported by the South Carolina Clinical & Translational Research (SCTR) Institute, with an academic home at the Medical University of South Carolina
+      %strong.din-gray-text
+        NIH - NCATS Grant Number UL1 TR001450.
+      "

@@ -46,7 +46,7 @@ namespace :data do
       ssr_ids = PastStatus.where("status = 'submitted' and date between '#{start_date}' and '#{end_date}'").pluck(:sub_service_request_id).uniq
       ssrs = SubServiceRequest.where("id in (#{ssr_ids.join(',')}) and org_tree_display like '%SCTR%'")
       ssrs.each do |ssr|
-        protocol = ssr.service_request.protocol
+        protocol = ssr.protocol
         title = protocol.title
         srid = ssr.display_id
         org_tree = ssr.org_tree_display

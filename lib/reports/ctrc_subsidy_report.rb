@@ -58,12 +58,12 @@ class CtrcSubsidyReport < Report
         #unless ["draft", "first_draft"].include? ssr.status
         if ["in_process", "ctrc_review", "ctrc_approved"].include? ssr.status # per request by Lane we only want this report to include these statuses
           if ssr.service_request
-            if ssr.service_request.protocol
+            if ssr.protocol
               row = []
               puts '#'*100
-              puts "#{ssr.service_request.protocol.id}-#{ssr.ssr_id}"
-              row << "#{ssr.service_request.protocol.id}-#{ssr.ssr_id}"
-              row << "#{ssr.service_request.protocol.primary_principal_investigator.full_name}"
+              puts ssr.display_id
+              row << ssr.display_id
+              row << "#{ssr.protocol.primary_principal_investigator.full_name}"
               row << CtrcSubsidyReport.currency_converter(ssr.direct_cost_total)
               puts CtrcSubsidyReport.currency_converter(ssr.direct_cost_total)
               if ssr.subsidy
@@ -75,7 +75,7 @@ class CtrcSubsidyReport < Report
                 row << ""
                 row << ""
               end
-              row << ssr.service_request.protocol.display_funding_source_value
+              row << ssr.protocol.display_funding_source_value
 
               csv << row
             end

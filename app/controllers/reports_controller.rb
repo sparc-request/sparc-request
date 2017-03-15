@@ -121,7 +121,7 @@ class ReportsController < ApplicationController
     end
     @audit_trail += @ssr.reports.map{|x| x.audit_trail start_date, end_date}
 
-    @ssr.service_request.protocol.arms.each do |arm|
+    @ssr.protocol.arms.each do |arm|
       @audit_trail += arm.audit_trail start_date, end_date
       @audit_trail += arm.line_items_visits.includes(:line_item => :service).where("services.organization_id IN (?)", included_cores).map{|x| x.audit_trail start_date, end_date}
       @audit_trail += arm.subjects.map{|x| x.audit_trail start_date, end_date}

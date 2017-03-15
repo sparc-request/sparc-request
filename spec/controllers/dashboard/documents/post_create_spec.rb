@@ -39,7 +39,7 @@ RSpec.describe Dashboard::DocumentsController do
         before :each do
           organization    = create(:organization)
           service_request = create(:service_request_without_validations, protocol: @protocol)
-          @ssr            = create(:sub_service_request_without_validations, service_request: service_request, organization: organization, status: 'draft')
+          @ssr            = create(:sub_service_request_without_validations, service_request: service_request, organization: organization, status: 'draft', protocol_id: @protocol.id)
                             create(:super_user, identity: logged_in_user, organization: organization)
           document        = Rack::Test::UploadedFile.new(File.join('doc', 'musc_installation_example.txt'),'text/plain')
           params          = { org_ids: [organization.id], protocol_id: @protocol.id, document: { protocol: @protocol, doc_type: 'Protocol', document: document } }
@@ -71,13 +71,13 @@ RSpec.describe Dashboard::DocumentsController do
         before :each do
           organization    = create(:organization)
           service_request = create(:service_request_without_validations, protocol: @protocol)
-          @ssr            = create(:sub_service_request_without_validations, service_request: service_request, organization: organization, status: 'draft')
+          @ssr            = create(:sub_service_request_without_validations, service_request: service_request, organization: organization, status: 'draft', protocol_id: @protocol.id)
                             create(:super_user, identity: logged_in_user, organization: organization)
           @document       = Rack::Test::UploadedFile.new(File.join('doc', 'musc_installation_example.txt'),'text/plain')
           params          = { org_ids: [organization.id], protocol_id: @protocol.id, document: { protocol: @protocol, doc_type: 'Protocol', document: @document } }
-          
+
           xhr :post, :create, params, format: :js
-        end 
+        end
 
         it 'should assign sub_service_requests to the document' do
           expect(assigns(:document).reload.sub_service_requests).to eq([@ssr])

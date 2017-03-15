@@ -197,8 +197,8 @@ RSpec.feature 'User wants to add an authorized user', js: true do
         organization    = create(:organization)
         organization2   = create(:organization)
         service_request = create(:service_request_without_validations, protocol: protocol)
-                          create(:sub_service_request_without_validations, service_request: service_request, organization: organization, status: 'draft')
-                          create(:sub_service_request_without_validations, service_request: service_request, organization: organization2, status: 'draft')
+                          create(:sub_service_request_without_validations, service_request: service_request, organization: organization, status: 'draft', protocol: protocol)
+                          create(:sub_service_request_without_validations, service_request: service_request, organization: organization2, status: 'draft', protocol: protocol)
                           create(:super_user, organization: organization, identity: logged_in_user)
         # navigate to page
         @page = Dashboard::Protocols::ShowPage.new

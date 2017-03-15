@@ -497,7 +497,7 @@ class ServiceRequestsController < ApplicationController
                       @service_request.status == 'first_draft' || current_user.can_edit_service_request?(@service_request)
                     end
 
-      protocol = @sub_service_request ? @sub_service_request.service_request.protocol : @service_request.protocol
+      protocol = @sub_service_request ? @sub_service_request.protocol : @service_request.protocol
 
       unless authorized || protocol.project_roles.find_by(identity: current_user).present?
         @service_request     = nil

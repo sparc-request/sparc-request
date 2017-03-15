@@ -39,7 +39,7 @@ RSpec.describe Dashboard::DocumentsController do
         before :each do
           organization    = create(:organization)
           service_request = create(:service_request_without_validations, protocol: @protocol)
-          @ssr            = create(:sub_service_request_without_validations, service_request: service_request, organization: organization, status: 'draft')
+          @ssr            = create(:sub_service_request_without_validations, service_request: service_request, organization: organization, status: 'draft', protocol_id: @protocol.id)
                             create(:super_user, identity: logged_in_user, organization: organization)
           @document       = create(:document, protocol: @protocol)
           params          = { id: @document.id, document: { protocol: @protocol, doc_type: 'Protocol' } }
@@ -71,13 +71,13 @@ RSpec.describe Dashboard::DocumentsController do
         before :each do
           organization    = create(:organization)
           service_request = create(:service_request_without_validations, protocol: @protocol)
-          @ssr            = create(:sub_service_request_without_validations, service_request: service_request, organization: organization, status: 'draft')
+          @ssr            = create(:sub_service_request_without_validations, service_request: service_request, organization: organization, status: 'draft', protocol_id: @protocol.id)
                             create(:super_user, identity: logged_in_user, organization: organization)
           @document       = create(:document, protocol: @protocol)
           params          = { org_ids: [organization.id], id: @document.id, document: { protocol: @protocol, doc_type: 'Protocol' } }
-          
+
           xhr :put, :update, params, format: :js
-        end 
+        end
 
         it 'should update the document' do
           expect(@document.reload.doc_type).to eq('Protocol')
@@ -116,7 +116,7 @@ RSpec.describe Dashboard::DocumentsController do
       before :each do
         protocol  = create(:protocol_without_validations, primary_pi: other_user)
         document  = create(:document, protocol: protocol)
-        
+
         xhr :put, :update, id: document.id, format: :js
       end
 
@@ -129,7 +129,7 @@ RSpec.describe Dashboard::DocumentsController do
         protocol        = create(:protocol_without_validations, primary_pi: other_user)
         organization    = create(:organization)
         service_request = create(:service_request_without_validations, protocol: protocol)
-        ssr             = create(:sub_service_request_without_validations, service_request: service_request, organization: organization, status: 'draft')
+        ssr             = create(:sub_service_request_without_validations, service_request: service_request, organization: organization, status: 'draft', protocol_id: protocol.id)
                           create(:super_user, identity: logged_in_user, organization: organization)
         document        = create(:document, protocol: protocol)
 

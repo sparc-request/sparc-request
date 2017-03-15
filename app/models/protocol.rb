@@ -35,7 +35,7 @@ class Protocol < ActiveRecord::Base
   has_many :identities,                   through: :project_roles
   has_many :service_requests
   has_many :services,                     through: :service_requests
-  has_many :sub_service_requests,         through: :service_requests
+  has_many :sub_service_requests
   has_many :line_items,                   through: :service_requests
   has_many :organizations,                through: :sub_service_requests
   has_many :affiliations,                 dependent: :destroy

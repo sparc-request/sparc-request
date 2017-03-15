@@ -39,7 +39,7 @@ RSpec.describe 'User should be able to view the protocol details', js: true do
       :unarchived_study_without_validations,
       primary_pi: user
     )
-    allow_any_instance_of(ApplicationController).to receive(:authorize_identity).and_return(true)
+    
     visit dashboard_protocol_path(protocol)
     find('.view-protocol-details-button').click
 

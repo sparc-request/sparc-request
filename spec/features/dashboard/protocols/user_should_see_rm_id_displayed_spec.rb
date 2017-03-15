@@ -21,8 +21,6 @@ RSpec.describe 'User should see RM ID displayed', js: true do
       research_master_id: 1
     )
 
-    allow_any_instance_of(ApplicationController).to receive(:authorize_identity).and_return(true)
-
     visit dashboard_protocol_path(protocol)
     find('.view-protocol-details-button').click
 
@@ -46,8 +44,6 @@ RSpec.describe 'User should see RM ID displayed', js: true do
       primary_pi: user,
       research_master_id: nil
     )
-
-    allow_any_instance_of(ApplicationController).to receive(:authorize_identity).and_return(true)
 
     visit dashboard_protocol_path(protocol)
     find('.view-protocol-details-button').click

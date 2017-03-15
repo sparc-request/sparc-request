@@ -118,9 +118,7 @@ $(document).ready ->
         protocol_id = $(this).data('protocol-id')
         $.ajax
           method: 'get'
-          url: "/protocols/#{protocol_id}.js"
-          data:
-            service_request_id: $("input[name='service_request_id']").val()
+          url: "/protocols/#{protocol_id}.js?portal=true"
 
       $(document).on 'click', '.edit-protocol-information-button', ->
         if $(this).data('permission')

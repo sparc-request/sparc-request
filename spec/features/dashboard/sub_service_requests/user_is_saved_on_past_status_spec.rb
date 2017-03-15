@@ -34,7 +34,8 @@ RSpec.describe "User views Status History tab", js: true do
     ssr             = create(:sub_service_request_without_validations,
                               organization: organization,
                               service_request: service_request,
-                              status: 'draft')
+                              status: 'draft',
+                              protocol: protocol)
     survey          = create(:survey,
                               access_code: 'sctr-customer-satisfaction-survey')
 

@@ -54,7 +54,8 @@ RSpec.describe 'requests modal', js: true do
       ssr_id: '1234',
       service_request: service_request,
       status: 'draft',
-      organization_id: organization.id)
+      organization_id: organization.id,
+      protocol_id: protocol.id)
   end
 
   context 'user clicks "Modify Request" button' do
@@ -89,7 +90,7 @@ RSpec.describe 'requests modal', js: true do
       page = visit_protocols_index_page
       page.search_results.protocols.first.requests_button.click
       wait_for_javascript_to_finish
-      
+
       expect(page).to have_requests_modal
 
       page.requests_modal.service_requests.first.sub_service_requests.first.edit_button.click

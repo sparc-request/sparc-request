@@ -32,11 +32,11 @@ RSpec.describe Dashboard::IdentityOrganizations do
 
           provider_protocol        = create(:protocol_without_validations)
           provider_sr              = create(:service_request_without_validations, protocol_id:  provider_protocol.id)
-          create(:sub_service_request_without_validations, service_request_id:  provider_sr.id, organization_id: provider_organization.id)
+          create(:sub_service_request_without_validations, service_request_id:  provider_sr.id, organization_id: provider_organization.id, protocol: provider_protocol)
 
           program_protocol         = create(:protocol_without_validations)
           program_sr               = create(:service_request_without_validations, protocol_id:  program_protocol.id)
-          create(:sub_service_request_without_validations, service_request_id:  program_sr.id, organization_id: program_organization.id)
+          create(:sub_service_request_without_validations, service_request_id:  program_sr.id, organization_id: program_organization.id, protocol: program_protocol)
 
           identity                 = create(:identity)
           create(:service_provider, identity: identity, organization: institution_organization)
@@ -61,11 +61,11 @@ RSpec.describe Dashboard::IdentityOrganizations do
 
         provider_protocol        = create(:protocol_without_validations, primary_pi: identity)
         provider_sr              = create(:service_request_without_validations, protocol_id:  provider_protocol.id)
-        create(:sub_service_request_without_validations, service_request_id:  provider_sr.id, organization_id: provider_organization.id)
+        create(:sub_service_request_without_validations, service_request_id:  provider_sr.id, organization_id: provider_organization.id, protocol: provider_protocol)
 
         program_protocol         = create(:protocol_without_validations, primary_pi: identity)
         program_sr               = create(:service_request_without_validations, protocol_id:  program_protocol.id)
-        create(:sub_service_request_without_validations, service_request_id:  program_sr.id, organization_id: program_organization.id)
+        create(:sub_service_request_without_validations, service_request_id:  program_sr.id, organization_id: program_organization.id, protocol: program_protocol)
 
 
         # This Identity does not have super user or service provider status so we should expect an empty array
@@ -84,11 +84,11 @@ RSpec.describe Dashboard::IdentityOrganizations do
 
           provider_protocol        = create(:protocol_without_validations)
           provider_sr              = create(:service_request_without_validations, protocol_id:  provider_protocol.id)
-          create(:sub_service_request_without_validations, service_request_id:  provider_sr.id, organization_id: provider_organization.id)
+          create(:sub_service_request_without_validations, service_request_id:  provider_sr.id, organization_id: provider_organization.id, protocol: provider_protocol)
 
           program_protocol         = create(:protocol_without_validations)
           program_sr               = create(:service_request_without_validations, protocol_id:  program_protocol.id)
-          create(:sub_service_request_without_validations, service_request_id:  program_sr.id, organization_id: program_organization.id)
+          create(:sub_service_request_without_validations, service_request_id:  program_sr.id, organization_id: program_organization.id, protocol: program_protocol)
 
           identity                 = create(:identity)
           create(:service_provider, identity: identity, organization: institution_organization)
@@ -113,11 +113,11 @@ RSpec.describe Dashboard::IdentityOrganizations do
 
         provider_protocol        = create(:protocol_without_validations, primary_pi: identity)
         provider_sr              = create(:service_request_without_validations, protocol_id:  provider_protocol.id)
-        create(:sub_service_request_without_validations, service_request_id:  provider_sr.id, organization_id: provider_organization.id)
+        create(:sub_service_request_without_validations, service_request_id:  provider_sr.id, organization_id: provider_organization.id, protocol: provider_protocol)
 
         program_protocol         = create(:protocol_without_validations, primary_pi: identity)
         program_sr               = create(:service_request_without_validations, protocol_id:  program_protocol.id)
-        create(:sub_service_request_without_validations, service_request_id:  program_sr.id, organization_id: program_organization.id)
+        create(:sub_service_request_without_validations, service_request_id:  program_sr.id, organization_id: program_organization.id, protocol: program_protocol)
 
         orgs_with_protocols = []
         orgs_with_protocols << provider_organization.id
@@ -138,15 +138,15 @@ RSpec.describe Dashboard::IdentityOrganizations do
 
         provider_protocol        = create(:protocol_without_validations, primary_pi: identity)
         provider_sr              = create(:service_request_without_validations, protocol_id:  provider_protocol.id)
-        create(:sub_service_request_without_validations, service_request_id:  provider_sr.id, organization_id: provider_organization.id)
+        create(:sub_service_request_without_validations, service_request_id:  provider_sr.id, organization_id: provider_organization.id, protocol: provider_protocol)
 
         program_protocol         = create(:protocol_without_validations, primary_pi: identity)
         program_sr               = create(:service_request_without_validations, protocol_id:  program_protocol.id)
-        create(:sub_service_request_without_validations, service_request_id:  program_sr.id, organization_id: program_organization.id)
+        create(:sub_service_request_without_validations, service_request_id:  program_sr.id, organization_id: program_organization.id, protocol: program_protocol)
 
         unattached_protocol      = create(:protocol_without_validations)
         unattached_provider_sr   = create(:service_request_without_validations, protocol_id:  unattached_protocol.id)
-        create(:sub_service_request_without_validations, service_request_id:  unattached_provider_sr.id, organization_id: core_organization.id)
+        create(:sub_service_request_without_validations, service_request_id:  unattached_provider_sr.id, organization_id: core_organization.id, protocol: unattached_protocol)
 
         orgs_with_protocols = []
         orgs_with_protocols << provider_organization.id

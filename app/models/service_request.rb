@@ -38,6 +38,7 @@ class ServiceRequest < ActiveRecord::Base
   has_many :notes, as: :notable, dependent: :destroy
 
   after_save :set_original_submitted_date
+  after_save :set_ssr_protocol_id
 
   validation_group :catalog do
     validate :validate_line_items
@@ -541,6 +542,14 @@ class ServiceRequest < ActiveRecord::Base
     if self.submitted_at && !self.original_submitted_date
       self.original_submitted_date = self.submitted_at
       self.save(validate: false)
+    end
+  end
+
+  def set_ssr_protocol_id
+    if protocol_id_changed?
+      sub_service_requests.each do |ssr|
+        ssr.update_attributes(protocol_id: protocol_id)
+      end
     end
   end
 end

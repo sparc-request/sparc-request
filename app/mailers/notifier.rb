@@ -83,7 +83,7 @@ class Notifier < ActionMailer::Base
     @role = 'none'
     @full_name = submission_email_address
 
-    @protocol = ssr.service_request.protocol
+    @protocol = ssr.protocol
     @service_request = ssr.service_request
     @service_requester_id = @service_request.sub_service_requests.first.service_requester_id
     @ssrs_to_be_displayed = [ssr]
@@ -170,14 +170,14 @@ class Notifier < ActionMailer::Base
   end
 
   def sub_service_request_deleted identity, sub_service_request, user_current
-    @ssr_id = "#{sub_service_request.service_request.protocol.id}-#{sub_service_request.ssr_id}"
+    @ssr_id = "#{sub_service_request.protocol.id}-#{sub_service_request.ssr_id}"
 
     @triggered_by = user_current.id
     @service_request = sub_service_request.service_request
     @ssr = sub_service_request
 
     email_to = identity.email
-    subject = "#{sub_service_request.service_request.protocol.id} - #{t(:mailer)[:application_title]} - service request deleted"
+    subject = "#{sub_service_request.protocol.id} - #{t(:mailer)[:application_title]} - service request deleted"
 
     mail(:to => email_to, :from => NO_REPLY_FROM, :subject => subject)
   end

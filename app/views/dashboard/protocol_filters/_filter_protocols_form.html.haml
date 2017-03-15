@@ -33,10 +33,14 @@
     = form.hidden_field :sorted_by
     .panel-body
       #protocol_filter_form_display
-        .form-group.row
-          = form.label :search_query, t(:actions)[:search], class: 'col-lg-3 control-label'
-          .col-lg-9
-            = form.text_field :search_query, class: 'form-control'
+        .form-group.row.search_padding
+          .col-lg-12
+            .input-group
+              = form.fields_for :search_query do |search|
+                .input-group-btn
+                  .dd_select
+                    = search.select :search_drop, t(:dashboard)[:protocol_filters][:search_by_options], { prompt:  t(:dashboard)[:protocol_filters][:search_by] }, class: "form-control selectpicker ", data: { style: 'dropdown_filter' }
+                = search.text_field :search_text, class: 'form-control'
 
         .form-group.row
           = form.label :show_archived, t(:dashboard)[:protocol_filters][:archived], class: 'col-lg-10 control-label'
@@ -71,6 +75,12 @@
             = form.label :admin_filter, t(:dashboard)[:protocol_filters][:my_admin_protocols], class: 'col-lg-10 control-label'
             .col-lg-2
               = form.radio_button :admin_filter, "for_admin #{current_user.id}"
+
+          - if current_user.super_users.any?
+            .form-group.row.empty-protocols
+              = form.label :admin_filter, t(:dashboard)[:protocol_filters][:empty_protocols], class: 'col-lg-10 control-label'
+              .col-lg-2
+                = form.radio_button :admin_filter, "empty_protocols #{current_user.id}"
 
     .panel-footer
       .pull-right

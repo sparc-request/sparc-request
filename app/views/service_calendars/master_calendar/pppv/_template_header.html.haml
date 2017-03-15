@@ -21,19 +21,28 @@
   %th.text-center{ class: portal ? 'col-sm-2' : 'service-header', colspan: 2, rowspan: 2 }
     = t(:calendars)[:pppv][:header_fields][:service]
   %th.col-sm-1.text-center{ rowspan: 2 }
-    = t(:calendars)[:pppv][:header_fields][:status]
+    = link_to 'javascript:void(0)',
+      data: { toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}' },
+      title: t(:calendars)[:tooltips][:pppv_status] do
+      = t(:calendars)[:pppv][:header_fields][:status]
   %th.col-sm-2.text-center{ colspan: 2 }
     = t(:calendars)[:pppv][:header_fields][:unit_cost]
 
   - unless portal
     %th.col-sm-1.text-center{ rowspan: 2 }
-      = t(:calendars)[:pppv][:header_fields][:quantity_type]
-  
+      = link_to 'javascript:void(0)',
+        data: { toggle: 'tooltip', placement: 'bottom', delay: '{"show":"500"}' },
+        title: t(:calendars)[:tooltips][:quantity_type] do
+        = t(:calendars)[:pppv][:header_fields][:quantity_type]
+
   %th.text-center{ class: portal ? 'col-sm-1' : 'subject-count-header', rowspan: 2 }
-    = t(:calendars)[:pppv][:header_fields][:subject_count]
+    = link_to 'javascript:void(0)',
+      data: { toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}' },
+      title: t(:calendars)[:tooltips][:subject_count] do
+      = t(:calendars)[:pppv][:header_fields][:subject_count]
   %th.select-row-header{ rowspan: 2 }
   %th.visit-group-select.col-sm-5.text-center{ colspan: 5 }
-    = render 'service_calendars/master_calendar/pppv/visit_group_page_select', service_request: service_request, sub_service_request: sub_service_request, arm: arm, tab: tab, page: page, pages: pages, review: review, portal: portal
+    = render 'service_calendars/master_calendar/pppv/visit_group_page_select', service_request: service_request, sub_service_request: sub_service_request, arm: arm, tab: tab, page: page, pages: pages, review: review, portal: portal, admin: admin
 
   - unless portal
     %th.col-sm-1.text-center{ rowspan: 2 }
@@ -43,9 +52,15 @@
 
 %tr
   %th.col-sm-1.text-center
-    = raw(t(:calendars)[:pppv][:header_fields][:service_rate])
+    = link_to 'javascript:void(0)',
+      data: { toggle: 'tooltip', placement: 'bottom', delay: '{"show":"500"}' },
+      title: t(:calendars)[:tooltips][:service_rate] do
+      = raw(t(:calendars)[:pppv][:header_fields][:service_rate])
   %th.col-sm-1.text-center
-    = raw(t(:calendars)[:pppv][:header_fields][:your_cost])
+    = link_to 'javascript:void(0)',
+      data: { toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}' },
+      title: t(:calendars)[:tooltips][:your_cost] do
+      = raw(t(:calendars)[:pppv][:header_fields][:your_cost])
   = render 'service_calendars/master_calendar/pppv/visit_groups', service_request: service_request, arm: arm, tab: tab, visit_groups: visit_groups, portal: portal
 
 %tr

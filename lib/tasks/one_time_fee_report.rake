@@ -44,9 +44,7 @@ namespace :data do
     end
 
     def full_ssr_id(ssr)
-    protocol = ssr.service_request.protocol
-
-    "#{protocol.id}-#{ssr.ssr_id}"
+      ssr.display_id
     end
 
     # Determines whether or not to display the time totals for a line item's fulfillments. If any of the fulfillment's timeframes
@@ -74,12 +72,12 @@ namespace :data do
     end
 
     def build_one_time_fee_report csv, ssr, provider, program, core
-      if ssr.service_request.protocol
+      if ssr.protocol
         service_request_id = full_ssr_id(ssr)
         status = AVAILABLE_STATUSES[ssr.status]
-        protocol_id = ssr.service_request.protocol.id
-        short_title = ssr.service_request.protocol.short_title
-        pi = ssr.service_request.protocol.try(:primary_principal_investigator).try(:full_name)
+        protocol_id = ssr.protocol_id
+        short_title = ssr.protocol.short_title
+        pi = ssr.protocol.try(:primary_principal_investigator).try(:full_name)
         owner = ssr.owner_id ? Identity.find(ssr.owner_id).full_name : ""
 
         ssr.line_items.each do |li|
@@ -106,7 +104,7 @@ namespace :data do
 
     unless provider_id.blank?
       provider = Organization.find(provider_id)
-     
+
       CSV.open("tmp/#{Date.today}_#{provider.abbreviation}_otf_report.csv", "wb") do |csv|
         row = ["PID", "SRID", "Status", "Short Title", "PI", "Provider", "Program", "Core", "Service Request Owner", "Service", "In Process", "Complete", "Fulfillment Date", "Timeframe", "Time", "Comments"]
         csv << row
@@ -123,7 +121,7 @@ namespace :data do
         end
       end
     else
-      puts "No provider id specified." 
+      puts "No provider id specified."
     end
   end
 end

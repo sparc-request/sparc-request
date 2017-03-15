@@ -41,7 +41,7 @@ RSpec.describe NotifierLogic do
         li          = create(:line_item, service_request: @sr, sub_service_request: @ssr, service: service)
         li_1        = create(:line_item, service_request: @sr, sub_service_request: @ssr2, service: service)
                       create(:service_provider, identity: logged_in_user, organization: @org)
-                      
+
         @ssr.destroy
         @sr.reload
         audit = AuditRecovery.where("auditable_id = '#{li.id}' AND auditable_type = 'LineItem' AND action = 'destroy'")
@@ -56,39 +56,39 @@ RSpec.describe NotifierLogic do
 
       it 'should notify authorized users' do
         allow(Notifier).to receive(:notify_user) do
-          mailer = double('mail') 
+          mailer = double('mail')
           expect(mailer).to receive(:deliver_now)
           mailer
         end
 
         NotifierLogic.new(@sr, nil, logged_in_user).send_request_amendment_email_evaluation
-        expect(Notifier).to have_received(:notify_user) 
+        expect(Notifier).to have_received(:notify_user)
       end
 
       it 'should NOT notify service providers' do
-        allow(Notifier).to receive(:notify_service_provider) 
+        allow(Notifier).to receive(:notify_service_provider)
         NotifierLogic.new(@sr, nil, logged_in_user).send_request_amendment_email_evaluation
         expect(Notifier).not_to have_received(:notify_service_provider)
       end
 
       it 'should NOT notify admin' do
         @sr.previous_submitted_at = @sr.submitted_at
-        allow(Notifier).to receive(:notify_admin) 
-        
-        NotifierLogic.new(@sr, nil, logged_in_user).send_request_amendment_email_evaluation 
+        allow(Notifier).to receive(:notify_admin)
+
+        NotifierLogic.new(@sr, nil, logged_in_user).send_request_amendment_email_evaluation
         expect(Notifier).not_to have_received(:notify_admin)
       end
 
       it 'should send_user_notifications' do
         @notifier_logic =  NotifierLogic.new(@sr, nil, logged_in_user)
         expect(@notifier_logic).to receive(:send_user_notifications)
-        @notifier_logic.send_request_amendment_email_evaluation 
+        @notifier_logic.send_request_amendment_email_evaluation
       end
 
       it 'should not send_request_amendment' do
         @notifier_logic =  NotifierLogic.new(@sr, nil, logged_in_user)
         expect(@notifier_logic).not_to receive(:send_request_amendment)
-        @notifier_logic.send_request_amendment_email_evaluation 
+        @notifier_logic.send_request_amendment_email_evaluation
       end
     end
 
@@ -120,13 +120,14 @@ RSpec.describe NotifierLogic do
       it 'should send_user_notifications' do
         @notifier_logic =  NotifierLogic.new(@sr, nil, logged_in_user)
         expect(@notifier_logic).to receive(:send_user_notifications)
-        @notifier_logic.send_request_amendment_email_evaluation 
+        @notifier_logic.send_request_amendment_email_evaluation
       end
 
       it 'should not send_request_amendment' do
+        @sr.reload
         @notifier_logic =  NotifierLogic.new(@sr, nil, logged_in_user)
         expect(@notifier_logic).not_to receive(:send_request_amendment)
-        @notifier_logic.send_request_amendment_email_evaluation 
+        @notifier_logic.send_request_amendment_email_evaluation
       end
     end
 
@@ -140,7 +141,7 @@ RSpec.describe NotifierLogic do
         li          = create(:line_item, service_request: @sr, sub_service_request: @ssr, service: service)
         li_1        = create(:line_item, service_request: @sr, sub_service_request: @ssr, service: service)
                       create(:service_provider, identity: logged_in_user, organization: @org)
-        
+
         audit = AuditRecovery.where("auditable_id = '#{li_1.id}' AND auditable_type = 'LineItem' AND action = 'create'")
         audit.first.update_attribute(:created_at, Time.now - 5.hours)
         audit.first.update_attribute(:user_id, logged_in_user.id)
@@ -159,7 +160,7 @@ RSpec.describe NotifierLogic do
       it 'should send_request_amendment' do
         @notifier_logic =  NotifierLogic.new(@sr, nil, logged_in_user)
         expect(@notifier_logic).to receive(:send_request_amendment)
-        @notifier_logic.send_request_amendment_email_evaluation 
+        @notifier_logic.send_request_amendment_email_evaluation
       end
     end
 
@@ -173,7 +174,7 @@ RSpec.describe NotifierLogic do
         li          = create(:line_item, service_request: @sr, sub_service_request: @ssr, service: service)
         li_1        = create(:line_item, service_request: @sr, sub_service_request: @ssr, service: service)
                       create(:service_provider, identity: logged_in_user, organization: @org)
-        
+
         ssr_li_id   = @ssr.line_items.first.id
         @ssr.line_items.first.destroy!
         audit = AuditRecovery.where("auditable_id = '#{ssr_li_id}' AND auditable_type = 'LineItem' AND action = 'destroy'")
@@ -186,7 +187,7 @@ RSpec.describe NotifierLogic do
       it 'should send_request_amendment' do
         @notifier_logic =  NotifierLogic.new(@sr, nil, logged_in_user)
         expect(@notifier_logic).to receive(:send_request_amendment)
-        @notifier_logic.send_request_amendment_email_evaluation 
+        @notifier_logic.send_request_amendment_email_evaluation
       end
     end
 
@@ -200,7 +201,7 @@ RSpec.describe NotifierLogic do
         li          = create(:line_item, service_request: @sr, sub_service_request: @ssr, service: service)
         li_1        = create(:line_item, service_request: @sr, sub_service_request: @ssr, service: service)
                       create(:service_provider, identity: logged_in_user, organization: @org)
-        
+
         audit = AuditRecovery.where("auditable_id = '#{li_1.id}' AND auditable_type = 'LineItem' AND action = 'create'")
         audit.first.update_attribute(:created_at, Time.now.utc - 5.hours)
         audit.first.update_attribute(:user_id, logged_in_user.id)
@@ -211,7 +212,7 @@ RSpec.describe NotifierLogic do
       it 'should send_request_amendment' do
         @notifier_logic =  NotifierLogic.new(@sr, nil, logged_in_user)
         expect(@notifier_logic).to receive(:send_request_amendment)
-        @notifier_logic.send_request_amendment_email_evaluation 
+        @notifier_logic.send_request_amendment_email_evaluation
       end
     end
   end

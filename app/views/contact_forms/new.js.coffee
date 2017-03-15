@@ -20,4 +20,3 @@
 
 $('#modal_place').html("<%= escape_javascript(render( 'service_requests/right_navigation/contact_modal', contact_form: @contact_form, identity: @identity )) %>")
 $("#modal_place").modal 'show'
-set_required_fields()

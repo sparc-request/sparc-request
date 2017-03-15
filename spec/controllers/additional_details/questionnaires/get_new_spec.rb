@@ -21,6 +21,9 @@
 require 'rails_helper'
 
 RSpec.describe AdditionalDetails::QuestionnairesController do
+  stub_controller
+  let!(:logged_in_user) { create(:identity) }
+
   describe '#new' do
     before :each do
       @service = create(:service)

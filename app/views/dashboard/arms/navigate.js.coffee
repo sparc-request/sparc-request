@@ -21,7 +21,3 @@
 $("#modal_place").html("<%= escape_javascript(render( '/dashboard/arms/navigate_arm_form', intended_action: @intended_action, arm: @arm, protocol_arms: @protocol.arms, sub_service_request: @sub_service_request, service_request: @service_request )) %>");
 $("#modal_place").modal 'show'
 $(".selectpicker").selectpicker()
-
-<% if @intended_action == 'edit' %>
-set_required_fields()
-<% end %>

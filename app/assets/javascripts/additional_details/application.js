@@ -29,5 +29,6 @@
 //= require_tree .
 //= require ../service_calendar
 //= require nested_form_fields
+//= require jquery_readyselector
 
 window.Sparc = {};

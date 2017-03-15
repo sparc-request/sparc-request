@@ -31,9 +31,9 @@ RSpec.describe Dashboard::SubServiceRequestsController do
       @protocol             = create(:protocol_without_validations, primary_pi: @other_user)
       @service_request      = create(:service_request_without_validations, protocol: @protocol)
       @organization         = create(:organization)
-      @non_draft_ssr        = create(:sub_service_request, service_request: @service_request, organization: @organization, status: 'submitted')
-      @draft_ssr            = create(:sub_service_request, service_request: @service_request, organization: @organization, status: 'draft')                              
-                              create(:sub_service_request, service_request: @service_request, organization: @organization, status: 'first_draft')
+      @non_draft_ssr        = create(:sub_service_request, service_request: @service_request, organization: @organization, status: 'submitted', protocol_id: @protocol.id)
+      @draft_ssr            = create(:sub_service_request, service_request: @service_request, organization: @organization, status: 'draft', protocol_id: @protocol.id)
+                              create(:sub_service_request, service_request: @service_request, organization: @organization, status: 'first_draft', protocol_id: @protocol.id)
     end
 
     #####AUTHORIZATION#####
@@ -77,7 +77,7 @@ RSpec.describe Dashboard::SubServiceRequestsController do
 
         get :index, srid: @service_request.id, format: :json
       end
-      
+
       it 'should assign instance variables' do
         expect(assigns(:service_request)).to eq(@service_request)
         expect(assigns(:permission_to_edit)).to eq(false)
@@ -85,7 +85,7 @@ RSpec.describe Dashboard::SubServiceRequestsController do
         expect(assigns(:admin_orgs)).to eq([@organization])
         expect(assigns(:sub_service_requests)).to eq([@non_draft_ssr, @draft_ssr])
       end
-      
+
       it { is_expected.to render_template "dashboard/sub_service_requests/index" }
       it { is_expected.to respond_with :ok }
     end

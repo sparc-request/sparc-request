@@ -27,7 +27,7 @@
     = javascript_include_tag 'additional_details/application'
     = csrf_meta_tags
 
-  %body
+  %body{ class: "#{controller_name} #{action_name}" }
     = render 'additional_details/shared/navbar'
     %ol.breadcrumb
       = display_organization_tree(@service.organization)

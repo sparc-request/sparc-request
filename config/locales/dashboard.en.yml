@@ -157,6 +157,8 @@ en:
     ######################
     protocol_filters:
       header: "Filter Protocols"
+      search_by: "Search All"
+      search_by_options: ['Authorized User', 'HR#', 'PI', 'Protocol ID', 'PRO#', 'RMID', 'Short/Long Title']
       archived: "Archived"
       inactive: "(inactive)"
       status: "Status"
@@ -164,6 +166,7 @@ en:
       owner: "Owner"
       my_protocols: "My Protocols"
       my_admin_protocols: "My Admin Protocols"
+      empty_protocols: "Empty Protocols (No Services)"
       filter: "Filter"
       saved_filters:
         header: "Recently Saved Filters"
@@ -196,7 +199,6 @@ en:
         view_consolidated: "View Consolidated Request"
         export_consolidated: "Export Consolidated Request"
         coverage_report: 'Coverage Analysis Report'
-        add_services: "Add Services"
         consolidated_all: "All"
         consolidated_exclude_drafts: "Exclude Drafts"
     #####################

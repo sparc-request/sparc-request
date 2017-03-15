@@ -27,15 +27,15 @@ resetRmIdFields = (fields, value) ->
 $(document).ready ->
 
   if $('.human-subjects:checkbox:checked').length > 0
-    $('.rm-id').addClass('required-field')
+    $('.rm-id').addClass('required')
     $('.has-human-subject-info').val('true')
 
   $(document).on 'click', '.human-subjects', ->
-    if $('.rm-id').hasClass('required-field')
-      $('.rm-id').removeClass('required-field')
+    if $('.rm-id').hasClass('required')
+      $('.rm-id').removeClass('required')
       $('.has-human-subject-info').val('false')
     else
-      $('.rm-id').addClass('required-field')
+      $('.rm-id').addClass('required')
       $('.has-human-subject-info').val('true')
 
   $(document).on 'blur', '.research-master-field', ->
@@ -58,6 +58,9 @@ $(document).ready ->
     if $(this).val() == ''
       resetRmIdFields('.rm-id-dependent', '')
       toggleFields('.rm-locked-fields', false)
+
+  $(document).on 'click', '.edit-rmid', ->
+    $('#protocol_research_master_id').prop('readonly', false)
 
   $('#protocol-form-display form').bind 'submit', ->
     $(this).find(':input').prop('disabled', false)

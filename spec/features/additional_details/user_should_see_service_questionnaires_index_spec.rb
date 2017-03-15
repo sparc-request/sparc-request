@@ -22,9 +22,12 @@ require 'rails_helper'
 
 RSpec.describe 'User should see service questionnaire index', js: true do
   let_there_be_lane
+  fake_login_for_each_test
+
   scenario 'successfully' do
     service = create(:service, :with_ctrc_organization)
     questionnaire = create(:questionnaire,
+                           :without_validations,
                            name: 'Awesome Questionnaire',
                            service: service)
     create(:item, questionnaire: questionnaire)

@@ -120,7 +120,7 @@ class SurveyResponseReport < ReportingModule
     average_percent_satisfied = record_answers.length == 0 ? 0 : total_percent_satisfied.to_f / record_answers.length
 
     worksheet.add_row([])
-    worksheet.add_row(["Overall Satisfaction Rate", "", sprintf("%.2f%%", average_percent_satisifed.round(2))])
+    worksheet.add_row(["Overall Satisfaction Rate", "", sprintf("%.2f%%", average_percent_satisfied.round(2))])
   end
 
   # assumes all satisfaction question is answered with a likert scale from version 1 of System Satisfaction or SCTR Customer Satisfaction Survey,

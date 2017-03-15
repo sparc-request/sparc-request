@@ -39,7 +39,7 @@ class ProtocolAuthorizer
     # !! maps truthy and falsey values to true and false
     if @can_view.nil?
       @can_view = !!(@protocol && @identity && 
-        (@can_edit || @identity.can_view_protocol?(@protocol))
+        (@can_edit || @identity.can_view_protocol?(@protocol)))
     else
       @can_view
     end

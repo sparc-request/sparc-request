@@ -31,7 +31,7 @@ class QuestionResponse < ActiveRecord::Base
   validates_numericality_of :content, only_integer: true, if: Proc.new{ |qr| !qr.content.blank? && qr.question_id && qr.question.question_type == 'number' }
 
   def phone_number_format
-    if content.match(/\d{3}-\d{3}-\d{4}/).nil?
+    if content.match(/\d{10}/).nil?
       errors.add(:base, I18n.t(:errors)[:question_responses][:phone_invalid])
     end
   end
@@ -58,5 +58,20 @@ class QuestionResponse < ActiveRecord::Base
 
   def required?
     self.required
+  end
+
+  def report_content
+    type    = self.question.question_type
+    content = self.content
+
+    if content.blank? || ['text', 'textarea', 'radio_button', 'likert', 'yes_no', 'email', 'date' 'number', 'zipcode', 'state', 'time' 'phone'].include?(type)
+      content
+    elsif ['checkbox', 'multiple_dropdown'].include?(type)
+      content.tr("[]\"", "")
+    elsif type == 'country'
+      ISO3166::Country[content].name
+    else
+      ""
+    end
   end
 end

@@ -191,38 +191,6 @@ ActiveRecord::Schema.define(version: 20170303171239) do
 
   add_index "delayed_jobs", ["priority", "run_at"], name: "delayed_jobs_priority", using: :btree
 
-  create_table "dependencies", force: :cascade do |t|
-    t.integer  "question_id",       limit: 4
-    t.integer  "question_group_id", limit: 4
-    t.string   "rule",              limit: 255
-    t.datetime "created_at",                    null: false
-    t.datetime "updated_at",                    null: false
-  end
-
-  add_index "dependencies", ["question_group_id"], name: "index_dependencies_on_question_group_id", using: :btree
-  add_index "dependencies", ["question_id"], name: "index_dependencies_on_question_id", using: :btree
-
-  create_table "dependency_conditions", force: :cascade do |t|
-    t.integer  "dependency_id",  limit: 4
-    t.string   "rule_key",       limit: 255
-    t.integer  "question_id",    limit: 4
-    t.string   "operator",       limit: 255
-    t.integer  "answer_id",      limit: 4
-    t.datetime "datetime_value"
-    t.integer  "integer_value",  limit: 4
-    t.float    "float_value",    limit: 24
-    t.string   "unit",           limit: 255
-    t.text     "text_value",     limit: 65535
-    t.string   "string_value",   limit: 255
-    t.string   "response_other", limit: 255
-    t.datetime "created_at",                   null: false
-    t.datetime "updated_at",                   null: false
-  end
-
-  add_index "dependency_conditions", ["answer_id"], name: "index_dependency_conditions_on_answer_id", using: :btree
-  add_index "dependency_conditions", ["dependency_id"], name: "index_dependency_conditions_on_dependency_id", using: :btree
-  add_index "dependency_conditions", ["question_id"], name: "index_dependency_conditions_on_question_id", using: :btree
-
   create_table "documents", force: :cascade do |t|
     t.datetime "deleted_at"
     t.string   "doc_type",              limit: 255
@@ -321,6 +289,9 @@ ActiveRecord::Schema.define(version: 20170303171239) do
     t.string   "email",                        limit: 255
     t.string   "last_name",                    limit: 255
     t.string   "first_name",                   limit: 255
+    t.string   "institution",                  limit: 255
+    t.string   "college",                      limit: 255
+    t.string   "department",                   limit: 255
     t.string   "era_commons_name",             limit: 255
     t.string   "credentials",                  limit: 255
     t.string   "subspecialty",                 limit: 255
@@ -714,7 +685,8 @@ ActiveRecord::Schema.define(version: 20170303171239) do
   create_table "question_responses", force: :cascade do |t|
     t.integer  "question_id", limit: 4
     t.integer  "response_id", limit: 4
-    t.text     "content",     limit: 65535, null: false
+    t.text     "content",     limit: 65535
+    t.boolean  "required",                  null: false
     t.datetime "created_at",                null: false
     t.datetime "updated_at",                null: false
   end
@@ -816,10 +788,10 @@ ActiveRecord::Schema.define(version: 20170303171239) do
 
   create_table "sections", force: :cascade do |t|
     t.integer  "survey_id",   limit: 4
-    t.datetime "created_at",              null: false
-    t.datetime "updated_at",              null: false
     t.string   "title",       limit: 255
     t.string   "description", limit: 255
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
   end
 
   add_index "sections", ["survey_id"], name: "index_sections_on_survey_id", using: :btree
@@ -1113,38 +1085,6 @@ ActiveRecord::Schema.define(version: 20170303171239) do
 
   add_index "tokens", ["identity_id"], name: "index_tokens_on_identity_id", using: :btree
   add_index "tokens", ["service_request_id"], name: "index_tokens_on_service_request_id", using: :btree
-
-  create_table "validation_conditions", force: :cascade do |t|
-    t.integer  "validation_id",  limit: 4
-    t.string   "rule_key",       limit: 255
-    t.string   "operator",       limit: 255
-    t.integer  "question_id",    limit: 4
-    t.integer  "answer_id",      limit: 4
-    t.datetime "datetime_value"
-    t.integer  "integer_value",  limit: 4
-    t.float    "float_value",    limit: 24
-    t.string   "unit",           limit: 255
-    t.text     "text_value",     limit: 65535
-    t.string   "string_value",   limit: 255
-    t.string   "response_other", limit: 255
-    t.string   "regexp",         limit: 255
-    t.datetime "created_at",                   null: false
-    t.datetime "updated_at",                   null: false
-  end
-
-  add_index "validation_conditions", ["answer_id"], name: "index_validation_conditions_on_answer_id", using: :btree
-  add_index "validation_conditions", ["question_id"], name: "index_validation_conditions_on_question_id", using: :btree
-  add_index "validation_conditions", ["validation_id"], name: "index_validation_conditions_on_validation_id", using: :btree
-
-  create_table "validations", force: :cascade do |t|
-    t.integer  "answer_id",  limit: 4
-    t.string   "rule",       limit: 255
-    t.string   "message",    limit: 255
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
-  end
-
-  add_index "validations", ["answer_id"], name: "index_validations_on_answer_id", using: :btree
 
   create_table "versions", force: :cascade do |t|
     t.string   "item_type",  limit: 255,   null: false

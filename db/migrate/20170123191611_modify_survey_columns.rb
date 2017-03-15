@@ -226,12 +226,13 @@ class ModifySurveyColumns < ActiveRecord::Migration
       sections.select{|s| s.survey_id == survey.id}.each do |section|
         section_params = ActionController::Parameters.new({
           survey_id:      new_survey.id,
+          title:          section.title,
           display_order:  section.display_order,
           created_at:     section.created_at,
           updated_at:     section.updated_at
         })
         new_section = Section.create(section_params.permit!)
-
+        binding.pry
         questions.select{|q| q.survey_section_id == section.id}.each do |question|
           question_params = ActionController::Parameters.new({
             section_id:     new_section.id,
@@ -275,7 +276,7 @@ class ModifySurveyColumns < ActiveRecord::Migration
             question_id: corresponding_question_ids["#{response.question_id}"],
             response_id: new_response.id,
             content:     get_question_response_content(options.detect{|a| a.id == response.answer_id}, response),
-            required:    question.detect{|q| q.id == response.question_id}.required,
+            required:    questions.detect{|q| q.id == response.question_id}.required || false,
             created_at:  response.created_at,
             updated_at:  response.updated_at
           })

@@ -44,6 +44,25 @@ RSpec.describe 'User takes a survey', js: true do
 
 
 
+  context 'and selects an option with a dependent question' do
+    scenario 'and sees the dependent question' do
+      @q_radio_button = create(:question, section: @section, question_type: 'radio_button', content: 'Radio Button Question')
+      @opt1           = create(:option, question: @q_radio_button, content: "Option 1")
+      @opt2           = create(:option, question: @q_radio_button, content: "Option 2")
+      @q_dependent    = create(:question, section: @section, content: 'Dependent Question', depender: @opt1)
+
+      visit new_surveyor_response_path(access_code: @survey.access_code, sub_service_request_id: @ssr.id)
+      wait_for_javascript_to_finish
+
+      first('input').click
+      wait_for_javascript_to_finish
+
+      expect(page).to have_content('Dependent Question')
+    end
+  end
+
+
+
   context 'text questions' do
     scenario 'and sees text questions' do
       @q_text = create(:question, section: @section, question_type: 'text', content: 'Text Question')
@@ -165,7 +184,7 @@ RSpec.describe 'User takes a survey', js: true do
       click_button 'Submit'
       wait_for_javascript_to_finish
 
-      expect(QuestionResponse.find_by(question_id: @q_likert.id).content).to eq('1')
+      expect(QuestionResponse.find_by(question_id: @q_likert.id).content).to eq('Option 1')
     end
   end
 
@@ -432,7 +451,7 @@ RSpec.describe 'User takes a survey', js: true do
 
         click_button 'Submit'
         wait_for_javascript_to_finish
-
+        
         expect(Time.parse(QuestionResponse.find_by(question_id: @q_time.id).content).strftime("%I:%M %p")).to eq(time.strftime("12:00 AM"))
       end
     end
@@ -457,12 +476,12 @@ RSpec.describe 'User takes a survey', js: true do
       visit new_surveyor_response_path(access_code: @survey.access_code, sub_service_request_id: @ssr.id)
       wait_for_javascript_to_finish
 
-      fill_in('response_question_responses_attributes_0_content', with: '123-456-7890')
+      fill_in('response_question_responses_attributes_0_content', with: '1234567890')
 
       click_button 'Submit'
       wait_for_javascript_to_finish
 
-      expect(QuestionResponse.find_by(question_id: @q_phone.id).content).to eq('123-456-7890')
+      expect(QuestionResponse.find_by(question_id: @q_phone.id).content).to eq('1234567890')
     end
   end
 

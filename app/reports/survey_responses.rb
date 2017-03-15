@@ -49,7 +49,7 @@ class SurveyResponseReport < ReportingModule
       survey.sections.each do |section|
         section.questions.each do |question|
           question.question_responses.each do |qr|
-            attrs[ActionView::Base.full_sanitizer.sanitize(question.content)] = "question_responses.where(question_id: #{question.id}).first.try(:content)"
+            attrs[ActionView::Base.full_sanitizer.sanitize(question.content)] = "question_responses.where(question_id: #{question.id}).first.try(:report_content)"
           end
         end
       end
@@ -109,42 +109,37 @@ class SurveyResponseReport < ReportingModule
   def create_report(worksheet)
     super
 
-# <<<<<<< HEAD
-#     # only add satisfaction rate to the bottom of reports for the system satisfaction survey
-#     if params["survey_id"] == Survey.find_by(access_code: "system-satisfaction-survey").id.to_s
-#       record_answers = records.map { |response| response.question_responses.where(question_id: 1).first.try(:content) }.compact
-#       yes_answers = record_answers.select { |answer| answer == "Yes" }
-#       percent_satisifed = yes_answers.length.to_f / record_answers.length * 100
+    if Survey.where(access_code: "system-satisfaction-survey").ids.map(&:to_s).include?(params[:survey_id])
+      # assumes the first question where only one option can be picked is the satisfaction question
+      surveys                   = Survey.where(access_code: "system-satisfaction-survey").order('version DESC').first
+      questions                 = Question.where(question_type: ['yes_no', 'likert', 'radio_button'], section: Section.where(survey: surveys))
+      responses                 = QuestionResponse.where(question: questions).where.not(content: [nil, ""])
+      total_percent_satisfied   = responses.map{ |qr| percent_satisfied(qr.content.downcase) }.sum
+      average_percent_satisifed = responses.count == 0 ? 0 : total_percent_satisfied / responses.count
 
-#       worksheet.add_row([])
-#       worksheet.add_row(["Overall Satisfaction Rate", "", sprintf("%.2f%%", percent_satisifed)])
-# =======
-#     # assumes the first question where only one option can be picked is the satisfaction question
-#     first_question_on_survey_id = Question.where(pick: "one", survey_section_id: SurveySection.where(survey: params[:survey_id].to_i)).first.id
-#     record_answers = records.map { |record| record.responses.where(question_id: first_question_on_survey_id).first.try(:answer).try(:text) }.compact
-#     total_percent_satisfied = record_answers.map{ |response| percent_satisfied(response) }.sum
-#     average_percent_satisifed = record_answers.length == 0 ? 0 : total_percent_satisfied / record_answers.length
+      worksheet.add_row([])
+      worksheet.add_row(["Overall Satisfaction Rate", "", sprintf("%.2f%%", average_percent_satisifed)])
+    end
+  end
 
-#     worksheet.add_row([])
-#     worksheet.add_row(["Overall Satisfaction Rate", "", sprintf("%.2f%%", average_percent_satisifed)])
-#   end
-
-#   # assumes all satisfaction question is answered with a likert scale from version 1 of System Satisfaction or SCTR Customer Satisfaction Survey,
-#   # or Yes or No answer from version 0 of those surveys.
-#   def percent_satisfied(response)
-#     if response == "Yes" || response == "Extremely likely" || response == "Very satisfied"
-#       percent = 100
-#     elsif response == "No"
-#       percent = 0
-#     elsif response == "Not at all likely" || response == "Very dissatisfied"
-#       percent = 20
-#     elsif response == "Not very likely" || response == "Dissatisfied"
-#       percent = 40
-#     elsif response == "Neutral"
-#       percent = 60
-#     elsif response == "Somewhat likely" || response == "Satisfied"
-#       percent = 80
-# >>>>>>> master
-#     end
+  # assumes all satisfaction question is answered with a likert scale from version 1 of System Satisfaction or SCTR Customer Satisfaction Survey,
+  # or Yes or No answer from version 0 of those surveys.
+  def percent_satisfied(content)
+    percent = 
+      if ['yes', 'extremely likely'].include?(content)
+        100
+      elsif ['somewhat likely', 'satisfied'].include?(content)
+        80
+      elsif ['neutral'].include?(content)
+        60
+      elsif ['not very likely, dissatisfied'].include?(content)
+        40
+      elsif ['not at all likely', 'very dissatisfied'].include?(content)
+        20
+      elsif ['no'].include?(content)
+        0
+      else
+        0
+      end
   end
 end

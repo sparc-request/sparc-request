@@ -49,15 +49,6 @@ $(document).ready ->
       $.cookie('admin-ss-tab', null, {path: '/'})
 
       #  Protocol Index Begin
-      $(document).on 'click', '#messages-btn', ->
-        window.location.href = '/dashboard/notifications'
-
-      $(document).on 'click', '#epic-queue-btn', ->
-        window.location.href = '/dashboard/epic_queues'
-
-      $(document).on 'click', '#survey-btn', ->
-        window.location.href = '/surveyor/surveys'
-
       $(document).on 'click', '.protocols_index_row > .id, .protocols_index_row > .title, .protocols_index_row > .pis', ->
         #if you click on the row, it opens the protocol show
         protocol_id = $(this).parent().data('protocol-id')

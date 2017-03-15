@@ -40,10 +40,11 @@ RSpec.describe Notifier do
             @service_provider     = create(:service_provider, identity: identity, organization: @organization)
             @protocol             = create(:project_without_validations, funding_source: 'cash flow', primary_pi: jpl6)
             @service_request      = create(:service_request_without_validations, protocol: @protocol, submitted_at: Time.now.yesterday, status: 'submitted')
-            @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, organization: @organization)
+            @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization)
             @line_item            = create(:line_item_without_validations, sub_service_request: @sub_service_request, service_request: @service_request, service: @service)
             @xls                  = Array.new
 
+            @service_request.reload
             deleted_and_created_line_item_audit_trail(@service_request, @service, identity)
 
             @report               = @sub_service_request.audit_report(identity, Time.now.yesterday - 4.hours, Time.now)
@@ -74,10 +75,11 @@ RSpec.describe Notifier do
             @service_provider     = create(:service_provider, identity: identity, organization: @organization)
             @protocol             = create(:project_without_validations, funding_source: 'cash flow', primary_pi: jpl6, selected_for_epic: true)
             @service_request      = create(:service_request_without_validations, protocol: @protocol, submitted_at: Time.now.yesterday, status: 'submitted')
-            @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, organization: @organization)
+            @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization)
             @line_item            = create(:line_item_without_validations, sub_service_request: @sub_service_request, service_request: @service_request, service: @service)
             @xls                  = Array.new
 
+            @service_request.reload
             deleted_and_created_line_item_audit_trail(@service_request, @service, identity)
 
             @report               = @sub_service_request.audit_report(identity, Time.now.yesterday - 4.hours, Time.now)
@@ -100,10 +102,11 @@ RSpec.describe Notifier do
             @service_provider     = create(:service_provider, identity: identity, organization: @organization)
             @protocol             = create(:project_without_validations, funding_source: 'cash flow', primary_pi: jpl6)
             @service_request      = create(:service_request_without_validations, protocol: @protocol, submitted_at: Time.now.yesterday, status: 'submitted')
-            @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, organization: @organization)
+            @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization)
             @line_item            = create(:line_item_without_validations, sub_service_request: @sub_service_request, service_request: @service_request, service: @service)
             @xls                  = Array.new
 
+            @service_request.reload
             created_line_item_audit_trail(@service_request, @service, identity)
 
             @report               = @sub_service_request.audit_report(identity, Time.now.yesterday - 4.hours, Time.now)
@@ -133,10 +136,11 @@ RSpec.describe Notifier do
             @service_provider     = create(:service_provider, identity: identity, organization: @organization)
             @protocol             = create(:project_without_validations, funding_source: 'cash flow', primary_pi: jpl6, selected_for_epic: true)
             @service_request      = create(:service_request_without_validations, protocol: @protocol, submitted_at: Time.now.yesterday, status: 'submitted')
-            @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, organization: @organization)
+            @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization)
             @line_item            = create(:line_item_without_validations, sub_service_request: @sub_service_request, service_request: @service_request, service: @service)
             @xls                  = Array.new
 
+            @service_request.reload
             created_line_item_audit_trail(@service_request, @service, identity)
 
             @report               = @sub_service_request.audit_report(identity, Time.now.yesterday - 4.hours, Time.now)
@@ -157,11 +161,12 @@ RSpec.describe Notifier do
             @protocol             = create(:project_without_validations, funding_source: 'cash flow', primary_pi: jpl6)
             @project_role         = create(:project_role, identity: jug2, protocol: @protocol, project_rights: 'view')
             @service_request      = create(:service_request_without_validations, protocol: @protocol, submitted_at: Time.now.yesterday, status: 'submitted')
-            @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, organization: @organization)
+            @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization)
             @line_item            = create(:line_item_without_validations, sub_service_request: @sub_service_request, service_request: @service_request, service: @service)
             @approval             = create(:approval, service_request: @service_request)
             @xls                  = Array.new
 
+            @service_request.reload
             created_line_item_audit_trail(@service_request, @service, identity)
 
             @report               = setup_authorized_user_audit_report
@@ -191,11 +196,12 @@ RSpec.describe Notifier do
             @protocol             = create(:project_without_validations, funding_source: 'cash flow', primary_pi: jpl6, selected_for_epic: true)
             @project_role         = create(:project_role, identity: jug2, protocol: @protocol, project_rights: 'view')
             @service_request      = create(:service_request_without_validations, protocol: @protocol, submitted_at: Time.now.yesterday, status: 'submitted')
-            @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, organization: @organization)
+            @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization)
             @line_item            = create(:line_item_without_validations, sub_service_request: @sub_service_request, service_request: @service_request, service: @service)
             @approval             = create(:approval, service_request: @service_request)
             @xls                  = Array.new
 
+            @service_request.reload
             created_line_item_audit_trail(@service_request, @service, identity)
 
             @report               = setup_authorized_user_audit_report
@@ -215,11 +221,12 @@ RSpec.describe Notifier do
           @service_provider     = create(:service_provider, identity: identity, organization: @organization)
           @protocol             = create(:project_without_validations, funding_source: 'cash flow', primary_pi: jpl6)
           @service_request      = create(:service_request_without_validations, protocol: @protocol, submitted_at: Time.now.yesterday, status: 'submitted')
-          @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, organization: @organization)
+          @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization)
           @line_item            = create(:line_item_without_validations, sub_service_request: @sub_service_request, service_request: @service_request, service: @service)
           @submission_email     = create(:submission_email, email: 'success@musc.edu', organization: @organization)
           @xls                  = ' '
 
+          @service_request.reload
           created_line_item_audit_trail(@service_request, @service, identity)
 
           @report               = @sub_service_request.audit_report(identity, Time.now.yesterday - 4.hours, Time.now)
@@ -247,10 +254,11 @@ RSpec.describe Notifier do
             @service_provider     = create(:service_provider, identity: identity, organization: @organization)
             @protocol             = create(:project_without_validations, funding_source: 'cash flow', primary_pi: jpl6)
             @service_request      = create(:service_request_without_validations, protocol: @protocol, submitted_at: Time.now.yesterday, status: 'submitted')
-            @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, organization: @organization)
+            @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization)
             @line_item            = create(:line_item_without_validations, sub_service_request: @sub_service_request, service_request: @service_request, service: @service)
             @xls                  = Array.new
 
+            @service_request.reload
             deleted_line_item_audit_trail(@service_request, @service, identity)
 
             @report               = @sub_service_request.audit_report(identity, Time.now.yesterday - 4.hours, Time.now)
@@ -280,10 +288,11 @@ RSpec.describe Notifier do
             @service_provider     = create(:service_provider, identity: identity, organization: @organization)
             @protocol             = create(:project_without_validations, funding_source: 'cash flow', primary_pi: jpl6, selected_for_epic: true)
             @service_request      = create(:service_request_without_validations, protocol: @protocol, submitted_at: Time.now.yesterday, status: 'submitted')
-            @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, organization: @organization)
+            @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization)
             @line_item            = create(:line_item_without_validations, sub_service_request: @sub_service_request, service_request: @service_request, service: @service)
             @xls                  = Array.new
 
+            @service_request.reload
             deleted_line_item_audit_trail(@service_request, @service, identity)
 
             @report               = @sub_service_request.audit_report(identity, Time.now.yesterday - 4.hours, Time.now)
@@ -304,11 +313,12 @@ RSpec.describe Notifier do
             @protocol             = create(:project_without_validations, funding_source: 'cash flow', primary_pi: jpl6)
             @project_role         = create(:project_role, identity: jug2, protocol: @protocol, project_rights: 'view')
             @service_request      = create(:service_request_without_validations, protocol: @protocol, submitted_at: Time.now.yesterday, status: 'submitted')
-            @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, organization: @organization)
+            @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization)
             @line_item            = create(:line_item_without_validations, sub_service_request: @sub_service_request, service_request: @service_request, service: @service)
             @approval             = create(:approval, service_request: @service_request)
             @xls                  = Array.new
 
+            @service_request.reload
             deleted_line_item_audit_trail(@service_request, @service, identity)
 
             @report               = setup_authorized_user_audit_report
@@ -338,11 +348,12 @@ RSpec.describe Notifier do
             @protocol             = create(:project_without_validations, funding_source: 'cash flow', primary_pi: jpl6, selected_for_epic: true)
             @project_role         = create(:project_role, identity: jug2, protocol: @protocol, project_rights: 'view')
             @service_request      = create(:service_request_without_validations, protocol: @protocol, submitted_at: Time.now.yesterday, status: 'submitted')
-            @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, organization: @organization)
+            @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization)
             @line_item            = create(:line_item_without_validations, sub_service_request: @sub_service_request, service_request: @service_request, service: @service)
             @approval             = create(:approval, service_request: @service_request)
             @xls                  = Array.new
 
+            @service_request.reload
             deleted_line_item_audit_trail(@service_request, @service, identity)
 
             @report               = setup_authorized_user_audit_report
@@ -362,11 +373,12 @@ RSpec.describe Notifier do
           @service_provider     = create(:service_provider, identity: identity, organization: @organization)
           @protocol             = create(:project_without_validations, funding_source: 'cash flow', primary_pi: jpl6)
           @service_request      = create(:service_request_without_validations, protocol: @protocol, submitted_at: Time.now.yesterday, status: 'submitted')
-          @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, organization: @organization)
+          @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization)
           @line_item            = create(:line_item_without_validations, sub_service_request: @sub_service_request, service_request: @service_request, service: @service)
           @submission_email     = create(:submission_email, email: 'success@musc.edu', organization: @organization)
           @xls                  = ' '
 
+          @service_request.reload
           deleted_line_item_audit_trail(@service_request, @service, identity)
 
           @report               = @sub_service_request.audit_report(identity, Time.now.yesterday - 4.hours, Time.now)
@@ -395,11 +407,12 @@ RSpec.describe Notifier do
         @service_provider     = create(:service_provider, identity: identity, organization: @organization)
         @protocol             = create(:project_without_validations, funding_source: 'cash flow', primary_pi: jpl6)
         @service_request      = create(:service_request_without_validations, protocol: @protocol, submitted_at: Time.now.yesterday, status: 'submitted')
-        @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, organization: @organization)
+        @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization)
         @line_item            = create(:line_item_without_validations, sub_service_request: @sub_service_request, service_request: @service_request, service: @service)
         @note                 = create(:note_without_validations, identity: identity, notable: @protocol)
         @xls                  = Array.new
 
+        @service_request.reload
         deleted_and_created_line_item_audit_trail(@service_request, @service, identity)
 
         @report               = @sub_service_request.audit_report(identity, Time.now.yesterday - 4.hours, Time.now)

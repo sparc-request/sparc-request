@@ -37,9 +37,11 @@ RSpec.describe Notifier do
           @service_provider     = create(:service_provider, identity: identity, organization: @organization)
           @protocol             = create(:study_without_validations, funding_source: 'cash flow', primary_pi: jpl6)
           @service_request      = create(:service_request_without_validations, protocol: @protocol, status: 'submitted')
-          @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, organization: @organization)
+          @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization)
           @xls                  = Array.new
           @mail                 = Notifier.notify_service_provider(@service_provider, @service_request, @xls, identity, @sub_service_request, [], false)
+          
+          @service_request.reload
         end
 
         it 'should display correct subject' do
@@ -70,9 +72,11 @@ RSpec.describe Notifier do
           @service_provider     = create(:service_provider, identity: identity, organization: @organization)
           @protocol             = create(:study_without_validations, funding_source: 'cash flow', primary_pi: jpl6, selected_for_epic: true)
           @service_request      = create(:service_request_without_validations, protocol: @protocol, status: 'submitted')
-          @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, organization: @organization)
+          @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization)
           @xls                  = Array.new
           @mail                 = Notifier.notify_service_provider(@service_provider, @service_request, @xls, identity, @sub_service_request, [], false)
+          
+          @service_request.reload
         end
 
         it 'should show epic column' do
@@ -88,10 +92,12 @@ RSpec.describe Notifier do
           @protocol             = create(:study_without_validations, funding_source: 'cash flow', primary_pi: jpl6)
           @project_role         = create(:project_role, identity: identity, project_rights: 'view')
           @service_request      = create(:service_request_without_validations, protocol: @protocol, status: 'submitted')
-          @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, organization: @organization)
+          @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization)
           @approval             = create(:approval, service_request: @service_request)
           @xls                  = ' '
           @mail                 = Notifier.notify_user(@project_role, @service_request, false, @xls, @approval, identity)
+          
+          @service_request.reload
         end
 
         # Expected user message is defined under submitted_general_users_message
@@ -115,10 +121,12 @@ RSpec.describe Notifier do
           @protocol             = create(:study_without_validations, funding_source: 'cash flow', primary_pi: jpl6, selected_for_epic: true)
           @project_role         = create(:project_role, identity: identity, project_rights: 'view')
           @service_request      = create(:service_request_without_validations, protocol: @protocol, status: 'submitted')
-          @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, organization: @organization)
+          @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization)
           @approval             = create(:approval, service_request: @service_request)
           @xls                  = ' '
           @mail                 = Notifier.notify_user(@project_role, @service_request, false, @xls, @approval, identity)
+          
+          @service_request.reload
         end
 
         it 'should show epic column' do
@@ -134,10 +142,12 @@ RSpec.describe Notifier do
           @service_provider     = create(:service_provider, identity: identity, organization: @organization)
           @protocol             = create(:study_without_validations, funding_source: 'cash flow', primary_pi: jpl6)
           @service_request      = create(:service_request_without_validations, protocol: @protocol, status: 'submitted')
-          @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, organization: @organization)
+          @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization)
           @submission_email     = create(:submission_email, email: 'success@musc.edu', organization: @organization)
           @xls                  = ' '
           @mail                 = Notifier.notify_admin(@submission_email, @xls, identity, @sub_service_request)
+          
+          @service_request.reload
         end
 
         # Expected admin message is defined under submitted_service_provider_and_admin_message
@@ -161,10 +171,12 @@ RSpec.describe Notifier do
           @service_provider     = create(:service_provider, identity: identity, organization: @organization)
           @protocol             = create(:study_without_validations, funding_source: 'cash flow', primary_pi: jpl6, selected_for_epic: true)
           @service_request      = create(:service_request_without_validations, protocol: @protocol, status: 'submitted')
-          @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, organization: @organization)
+          @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization)
           @submission_email     = create(:submission_email, email: 'success@musc.edu', organization: @organization)
           @xls                  = ' '
           @mail                 = Notifier.notify_admin(@submission_email, @xls, identity, @sub_service_request)
+          
+          @service_request.reload
         end
 
         it 'should show epic column' do
@@ -182,10 +194,12 @@ RSpec.describe Notifier do
         @service_provider     = create(:service_provider, identity: identity, organization: @organization)
         @protocol             = create(:study_without_validations, funding_source: 'cash flow', primary_pi: jpl6)
         @service_request      = create(:service_request_without_validations, protocol: @protocol, status: 'submitted')
-        @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, organization: @organization)
+        @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization)
         @note                 = create(:note_without_validations, identity: identity, notable: @protocol)
         @xls                  = Array.new
         @mail                 = Notifier.notify_service_provider(@service_provider, @service_request, @xls, identity, @sub_service_request, [], false)
+        
+        @service_request.reload
       end
 
       # Expected service provider message is defined under submitted_service_provider_and_admin_message
@@ -213,11 +227,13 @@ RSpec.describe Notifier do
         @protocol             = create(:study_without_validations, funding_source: 'cash flow', primary_pi: jpl6)
         @project_role         = create(:project_role, identity: identity, project_rights: 'view')
         @service_request      = create(:service_request_without_validations, protocol: @protocol, status: 'submitted')
-        @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, organization: @organization)
+        @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization)
         @approval             = create(:approval, service_request: @service_request)
         @note                 = create(:note_without_validations, identity: identity, notable: @protocol)
         @xls                  = ' '
         @mail                 = Notifier.notify_user(@project_role, @service_request, false, @xls, @approval, identity)
+      
+        @service_request.reload
       end
 
       # Expected user message is defined under submitted_general_users_message
@@ -241,11 +257,13 @@ RSpec.describe Notifier do
         @service_provider     = create(:service_provider, identity: identity, organization: @organization)
         @protocol             = create(:study_without_validations, funding_source: 'cash flow', primary_pi: jpl6)
         @service_request      = create(:service_request_without_validations, protocol: @protocol, status: 'submitted')
-        @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, organization: @organization)
+        @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization)
         @submission_email     = create(:submission_email, email: 'success@musc.edu', organization: @organization)
         @note                 = create(:note_without_validations, identity: identity, notable: @protocol)
         @xls                  = ' '
         @mail                 = Notifier.notify_admin(@submission_email, @xls, identity, @sub_service_request)
+        
+        @service_request.reload
       end
 
       # Expected service provider message is defined under submitted_service_provider_and_admin_message

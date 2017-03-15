@@ -36,9 +36,11 @@ RSpec.describe Notifier do
         @service_provider     = create(:service_provider, identity: identity, organization: @organization)
         @protocol             = create(:project_without_validations, funding_source: 'cash flow', primary_pi: jpl6)
         @service_request      = create(:service_request_without_validations, protocol: @protocol, submitted_at: Time.now.yesterday, status: 'submitted')
-        @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, organization: @organization)
+        @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization)
         @line_item            = create(:line_item_without_validations, sub_service_request: @sub_service_request, service_request: @service_request, service: @service)
         @xls                  = Array.new
+
+        @service_request.reload
 
         deleted_and_created_line_item_audit_trail(@service_request, @service, identity)
 
@@ -72,10 +74,12 @@ RSpec.describe Notifier do
         @service_provider     = create(:service_provider, identity: identity, organization: @organization)
         @protocol             = create(:project_without_validations, funding_source: 'cash flow', primary_pi: jpl6, selected_for_epic: true)
         @service_request      = create(:service_request_without_validations, protocol: @protocol, submitted_at: Time.now.yesterday, status: 'submitted')
-        @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, organization: @organization)
+        @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization)
         @line_item            = create(:line_item_without_validations, sub_service_request: @sub_service_request, service_request: @service_request, service: @service)
         @xls                  = Array.new
 
+        @service_request.reload
+        
         deleted_and_created_line_item_audit_trail(@service_request, @service, identity)
 
         @report               = @sub_service_request.audit_report(identity, Time.now.yesterday - 4.hours, Time.now)

@@ -27,7 +27,7 @@ RSpec.describe AssociatedUserCreator do
       @user          = create(:identity)
       @protocol      = create(:protocol_without_validations, selected_for_epic: false, funding_status: 'funded', funding_source: 'federal', type: 'Study')
       create(:project_role, protocol: @protocol, identity: @user, project_rights: 'approve', role: 'primary-pi')
-      @ssr = create(:sub_service_request, status: 'not_draft', organization: create(:organization), service_request: create(:service_request_without_validations, protocol: @protocol))
+      @ssr = create(:sub_service_request, status: 'not_draft', organization: create(:organization), service_request: create(:service_request_without_validations, protocol: @protocol), protocol: @protocol)
 
       @project_role_attrs = { protocol_id: @protocol.id,
         identity_id: @identity.id,
@@ -52,7 +52,7 @@ RSpec.describe AssociatedUserCreator do
 
     context "SEND_AUTHORIZED_USER_EMAILS: true && protocol has non-draft status" do
       it "should send authorized user changed emails" do
-        stub_const("SEND_AUTHORIZED_USER_EMAILS", true)        
+        stub_const("SEND_AUTHORIZED_USER_EMAILS", true)
         allow(UserMailer).to receive(:authorized_user_changed).twice do
           mailer = double("mailer")
           expect(mailer).to receive(:deliver)

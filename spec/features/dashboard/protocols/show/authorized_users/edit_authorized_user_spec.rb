@@ -45,13 +45,13 @@ RSpec.feature 'User wants to edit an authorized user', js: true do
 
   before(:each) { stub_const('USE_LDAP', false) }
 
-  context 'which is not assigned to themself' do
+  context 'which is not assigned to themselves' do
     let!(:protocol) do
       protocol  = create(:unarchived_project_without_validations, primary_pi: logged_in_user)
                   create(:project_role, protocol: protocol, identity: other_user, project_rights: 'approve', role: 'business-grants-manager')
       protocol
     end
-    let!(:ssr) { create(:sub_service_request, status: 'not_draft', organization: create(:organization), service_request: create(:service_request_without_validations, protocol: protocol))}
+    let!(:ssr) { create(:sub_service_request, status: 'not_draft', organization: create(:organization), service_request: create(:service_request_without_validations), protocol: protocol)}
 
     context 'and has permission to edit the protocol' do
       fake_login_for_each_test("johnd")
@@ -157,7 +157,7 @@ RSpec.feature 'User wants to edit an authorized user', js: true do
                   create(:project_role, protocol: protocol, identity: logged_in_user, project_rights: 'approve', role: 'mentor')
       protocol
     end
-    let!(:ssr) { create(:sub_service_request, status: 'not_draft', organization: create(:organization), service_request: create(:service_request_without_validations, protocol: protocol))}
+    let!(:ssr) { create(:sub_service_request, status: 'not_draft', organization: create(:organization), service_request: create(:service_request_without_validations), protocol: protocol)}
 
     fake_login_for_each_test("johnd")
 
@@ -166,7 +166,7 @@ RSpec.feature 'User wants to edit an authorized user', js: true do
         before :each do
           organization    = create(:organization)
           service_request = create(:service_request_without_validations, protocol: protocol)
-                            create(:sub_service_request_without_validations, service_request: service_request, organization: organization, status: 'draft')
+                            create(:sub_service_request_without_validations, service_request: service_request, organization: organization, status: 'draft', protocol: protocol)
                             create(:super_user, organization: organization, identity: logged_in_user)
 
           # navigate to page

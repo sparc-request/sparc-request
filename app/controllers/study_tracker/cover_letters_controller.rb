@@ -25,8 +25,8 @@ class StudyTracker::CoverLettersController < StudyTracker::BaseController
   def new
     @cover_letter = @sub_service_request.cover_letters.build
 
-    @srid = "#{@sub_service_request.service_request.protocol.id}-#{@sub_service_request.ssr_id}"
-    @short_title = @sub_service_request.service_request.protocol.short_title
+    @srid = "#{@sub_service_request.protocol.id}-#{@sub_service_request.ssr_id}"
+    @short_title = @sub_service_request.protocol.short_title
   end
 
   def create

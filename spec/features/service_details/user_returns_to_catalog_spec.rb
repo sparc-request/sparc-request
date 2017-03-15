@@ -45,14 +45,14 @@ RSpec.describe 'User returns to catalog', js: true do
 
     protocol = create(:protocol_without_validations, primary_pi: jug2)
     @sr      = create(:service_request_without_validations, status: "first_draft", protocol_id: protocol.id)
-    @ssr1    = create(:sub_service_request_without_validations, service_request: @sr, organization: program1, status: "draft")
+    @ssr1    = create(:sub_service_request_without_validations, service_request: @sr, organization: program1, status: "draft", protocol: protocol)
     stub_const("EDITABLE_STATUSES", { @ssr1.organization_id => [@ssr1.status] })
-    ssr2     = create(:sub_service_request_without_validations, service_request: @sr, organization: program2, status: "draft")
+    ssr2     = create(:sub_service_request_without_validations, service_request: @sr, organization: program2, status: "draft", protocol: protocol)
     create(:line_item, service_request: @sr, sub_service_request: @ssr1, service: service1)
     create(:line_item, service_request: @sr, sub_service_request: ssr2, service: service2)
   end
 
-  def visit_service_details_page(service_request:, sub_service_request: nil)
+  def visit_service_details_page(service_request: nil, sub_service_request: nil)
     params = if sub_service_request
                "?sub_service_request_id=#{sub_service_request.id}"
              else

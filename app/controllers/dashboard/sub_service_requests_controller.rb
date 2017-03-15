@@ -132,7 +132,7 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
 
   def push_to_epic
     begin
-      @sub_service_request.service_request.protocol.push_to_epic(EPIC_INTERFACE, "admin_push", current_user.id)
+      @sub_service_request.protocol.push_to_epic(EPIC_INTERFACE, "admin_push", current_user.id)
       flash[:success] = 'Request Pushed to Epic!'
     rescue
       flash[:alert] = $!.message

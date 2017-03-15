@@ -34,7 +34,7 @@ module Dashboard::SubServiceRequestsHelper
   end
 
   def full_ssr_id(ssr)
-    protocol = ssr.service_request.protocol
+    protocol = ssr.protocol
     if protocol
       "#{protocol.id}-#{ssr.ssr_id}"
     else

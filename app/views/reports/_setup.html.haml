@@ -52,6 +52,7 @@
             - dependency = options[:dependency]
             - default_classes = "form-control reporting_field"
             - default_classes += " required_field" if options[:required]
+            - default_classes += " selectpicker" if options[:selectpicker]
             - check_dep_class = dependency ? 'check_dep_class' : nil
             - id = options[:for] || "#{field.name.underscore}_id"
             - name = options[:for] ? "report[#{options[:for]}]" : "report[#{field.name.underscore}_id]"

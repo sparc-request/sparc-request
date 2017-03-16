@@ -31,7 +31,7 @@ class SurveyResponseReport < ReportingModule
   def default_options
     {
       "Date Range" => {:field_type => :date_range, :for => "completed_at", :from => "2012-03-01".to_date, :to => Date.today},
-      Survey => {:field_type => :select_tag, :custom_name_method => :title, :required => true}
+      Survey => {:field_type => :select_tag, :custom_name_method => :title, :required => true, :selectpicker => true}
     }
   end
 
@@ -117,10 +117,10 @@ class SurveyResponseReport < ReportingModule
     first_question_on_survey_id = Question.where(pick: "one", survey_section_id: SurveySection.where(survey: params[:survey_id].to_i)).first.id
     record_answers = records.map { |record| record.responses.where(question_id: first_question_on_survey_id).first.try(:answer).try(:text) }.compact
     total_percent_satisfied = record_answers.map{ |response| percent_satisfied(response) }.sum
-    average_percent_satisifed = record_answers.length == 0 ? 0 : total_percent_satisfied / record_answers.length
+    average_percent_satisfied = record_answers.length == 0 ? 0 : total_percent_satisfied.to_f / record_answers.length
 
     worksheet.add_row([])
-    worksheet.add_row(["Overall Satisfaction Rate", "", sprintf("%.2f%%", average_percent_satisifed)])
+    worksheet.add_row(["Overall Satisfaction Rate", "", sprintf("%.2f%%", average_percent_satisfied.round(2))])
   end
 
   # assumes all satisfaction question is answered with a likert scale from version 1 of System Satisfaction or SCTR Customer Satisfaction Survey,

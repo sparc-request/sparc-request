@@ -46,6 +46,7 @@ class TestReport < ReportingModule
   # :selected => array of pre-selected checkboxes ['submitted', 'in_process']
   # :custom_name_method => method (default is :name)
   # :has_dependencies => this is used to signal the first dependencies to set up on page load. For example, institution when filter organizations.
+  # :selectpicker => this adds the class of 'selectpicker' onto the item, for usage by the selectpicker dropdown js.
   def default_options
     {
       "Date Range" => {:field_type => :date_range, :for => "service_requests_submitted_at", :from => "2012-03-01".to_date, :to => Date.today, :required => true},

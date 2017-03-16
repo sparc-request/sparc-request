@@ -52,6 +52,7 @@
             - dependency = options[:dependency]
             - default_classes = "form-control reporting_field"
             - default_classes += " required_field" if options[:required]
+            - default_classes += " selectpicker" if options[:selectpicker]
             - check_dep_class = dependency ? 'check_dep_class' : nil
             - id = options[:for] || "#{field.name.underscore}_id"
             - name = options[:for] ? "report[#{options[:for]}]" : "report[#{field.name.underscore}_id]"
@@ -68,7 +69,11 @@
                     - dependency_id = options[:dependency_id] || dependency.sub(/^#/, "") # either an id is specified or we assume the dependency is the id
                     - if record.respond_to? dependency_id.to_s
                       - option_class = "sub-#{record.send dependency_id}"
-                  %option{:value => record.id, :class => option_class}= record.send(name_method)
+                  %option{:value => record.id, :class => option_class}
+                    - if record.class.to_s == "Survey"
+                      = record.title + " - Version " + record.survey_version.to_s
+                    - else
+                      = record.send(name_method)
         /* end select_tag */
 
         /* date_field */

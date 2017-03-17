@@ -1066,6 +1066,9 @@ en:
     PIs: "PI(s)"
     protocol: "Queued Protocol"
     status: "Last Queue Status"
+    created_at: 'Current Queue Date'
+    send: 'Send'
+    by: 'By'
   footer:
     mail_to: "hundc@musc.edu"
     mail_link: "Sign Up For the SPARC Request Listserv"

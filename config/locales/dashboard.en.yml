@@ -56,7 +56,7 @@ en:
     #  EPIC QUEUES  #
     #################
     epic_queues:
-      header: "Epic Queues"
+      header: "Current"
 
     ##################
     #  FULFILLMENTS  #

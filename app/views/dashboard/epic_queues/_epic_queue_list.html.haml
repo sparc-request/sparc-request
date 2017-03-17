@@ -31,9 +31,15 @@
               = t(:epic_queues)[:protocol]
             %th{data: { field: "pis", align: "left", sortable: 'true' } }
               = t(:epic_queues)[:PIs]
+            %th{data: { field: 'created_at', align: 'left', sortable: 'true' } }
+              = t(:epic_queues)[:created_at]
+            %th{data: { field: 'name', align: 'left', sortable: 'true' } }
+              = t(:epic_queues)[:by]
             %th{data: { field: "date", align: "left", sortable: 'true', sorter: "dateSorter" } }
               = t(:epic_queues)[:date]
             %th{data: { field: "status", align: "left", sortable: 'true' } }
               = t(:epic_queues)[:status]
+            %th{data: { field: 'send', align: 'center', sortable: 'true' } }
+              = t(:epic_queues)[:send]
             %th.last{data: { field: "delete", align: "center" } }
               = t(:epic_queues)[:delete]

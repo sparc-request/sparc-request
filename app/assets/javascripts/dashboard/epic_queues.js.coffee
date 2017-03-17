@@ -28,3 +28,16 @@ $(document).ready ->
       $.ajax
         type: 'DELETE'
         url: "/dashboard/epic_queues/#{eq_id}.js"
+
+  $('.epic-queue-table').on 'dbl-click-row.bs.table', (row, $element, field) ->
+    protocolId = $element.protocol_id
+    window.open("/dashboard/protocols/#{protocolId}")
+
+  $(document).on 'click', '.push-to-epic', (e) ->
+    e.preventDefault()
+    protocol_id = $(this).data('protocol-id')
+    $.ajax
+      type: 'GET'
+      url: "/protocols/#{protocol_id}/push_to_epic.js?from_portal=true"
+
+

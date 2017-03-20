@@ -230,8 +230,8 @@ class Protocol < ActiveRecord::Base
     when "Short/Long Title"
       where(title_query.join(' OR ')).distinct
     when ""
-      all_query = [authorized_user_query, hr_query, pi_query, protocol_id_query, pro_num_query, rmid_query, title_query]
-      joins(:identities).joins(:human_subjects_info).
+      all_query = [authorized_user_query, pi_query, protocol_id_query, title_query]
+      joins(:identities).
         where(all_query.compact.join(' OR ')).
         distinct
     end

@@ -720,6 +720,8 @@ RSpec.describe "filters", js: :true do
         @protocol3 = create_protocol(archived: false, title: "888888", short_title: "Protocol3", research_master_id: 999999)
         create(:project_role, identity: user2, role: "very-important", project_rights: "to-party", protocol: @protocol3)
 
+        @protocol4 = create_protocol(type: 'Project', archived: false, title: '101010101', short_title: 'Protocol4')
+
         service_request1 = create(:service_request_without_validations, protocol: @protocol1)
                            create(:sub_service_request, service_request: service_request1, organization: organization1, status: 'draft', protocol_id: @protocol1.id)
 
@@ -728,6 +730,9 @@ RSpec.describe "filters", js: :true do
 
         service_request3 = create(:service_request_without_validations, protocol: @protocol3)
                            create(:sub_service_request, service_request: service_request3, organization: organization3, status: 'draft', protocol_id: @protocol3.id)
+
+        service_request4 = create(:service_request_without_validations, protocol: @protocol4)
+                           create(:sub_service_request, service_request: service_request4, organization: organization3, status: 'draft', protocol_id: @protocol4.id)
       end
 
       ### SEARH ALL TITLE ###
@@ -735,7 +740,7 @@ RSpec.describe "filters", js: :true do
         visit_protocols_index_page
         wait_for_javascript_to_finish
 
-        expect(@page.search_results).to have_protocols(count: 3)
+        expect(@page.search_results).to have_protocols(count: 4)
 
         @page.filter_protocols.search_field.set("888888")
         @page.filter_protocols.apply_filter_button.click()
@@ -750,7 +755,7 @@ RSpec.describe "filters", js: :true do
         visit_protocols_index_page
         wait_for_javascript_to_finish
 
-        expect(@page.search_results).to have_protocols(count: 3)
+        expect(@page.search_results).to have_protocols(count: 4)
 
         @page.filter_protocols.search_field.set("Protocol1")
         @page.filter_protocols.apply_filter_button.click
@@ -765,7 +770,7 @@ RSpec.describe "filters", js: :true do
         visit_protocols_index_page
         wait_for_javascript_to_finish
 
-        expect(@page.search_results).to have_protocols(count: 3)
+        expect(@page.search_results).to have_protocols(count: 4)
 
         @page.filter_protocols.search_field.set("Protocol")
         @page.filter_protocols.apply_filter_button.click
@@ -784,7 +789,7 @@ RSpec.describe "filters", js: :true do
         visit_protocols_index_page
         wait_for_javascript_to_finish
 
-        expect(@page.search_results).to have_protocols(count: 3)
+        expect(@page.search_results).to have_protocols(count: 4)
 
         @page.filter_protocols.search_field.set("%")
         @page.filter_protocols.apply_filter_button.click()
@@ -795,12 +800,25 @@ RSpec.describe "filters", js: :true do
         expect(@page.search_results).to have_protocols(text: "a%a")
       end
 
+      it 'should return projects and not just studies' do
+        visit_protocols_index_page
+        wait_for_javascript_to_finish
+
+        expect(@page.search_results).to have_protocols(count: 4)
+
+        @page.filter_protocols.search_field.set("101")
+        @page.filter_protocols.apply_filter_button.click
+        wait_for_javascript_to_finish
+
+        expect(@page.search_results).to have_protocols(text: "Protocol4")
+      end
+
       ### SEARH ALL PROTOCOL ID ###
       it "should match against id" do
         visit_protocols_index_page
         wait_for_javascript_to_finish
 
-        expect(@page.search_results).to have_protocols(count: 3)
+        expect(@page.search_results).to have_protocols(count: 4)
 
         @page.filter_protocols.search_field.set(777777)
         @page.filter_protocols.apply_filter_button.click
@@ -815,7 +833,7 @@ RSpec.describe "filters", js: :true do
         visit_protocols_index_page
         wait_for_javascript_to_finish
 
-        expect(@page.search_results).to have_protocols(count: 3)
+        expect(@page.search_results).to have_protocols(count: 4)
 
         @page.filter_protocols.search_field.set("james")
         @page.filter_protocols.apply_filter_button.click()
@@ -830,7 +848,7 @@ RSpec.describe "filters", js: :true do
         visit_protocols_index_page
         wait_for_javascript_to_finish
 
-        expect(@page.search_results).to have_protocols(count: 3)
+        expect(@page.search_results).to have_protocols(count: 4)
 
         @page.filter_protocols.search_field.set("Doop")
         @page.filter_protocols.apply_filter_button.click()
@@ -845,7 +863,7 @@ RSpec.describe "filters", js: :true do
         visit_protocols_index_page
         wait_for_javascript_to_finish
 
-        expect(@page.search_results).to have_protocols(count: 3)
+        expect(@page.search_results).to have_protocols(count: 4)
 
         @page.filter_protocols.search_field.set("Hedwig")
         @page.filter_protocols.apply_filter_button.click()
@@ -860,7 +878,7 @@ RSpec.describe "filters", js: :true do
         visit_protocols_index_page
         wait_for_javascript_to_finish
 
-        expect(@page.search_results).to have_protocols(count: 3)
+        expect(@page.search_results).to have_protocols(count: 4)
 
         @page.filter_protocols.search_field.set((@protocol3.principal_investigators.first.first_name.downcase).to_s)
         @page.filter_protocols.apply_filter_button.click()
@@ -875,7 +893,7 @@ RSpec.describe "filters", js: :true do
         visit_protocols_index_page
         wait_for_javascript_to_finish
 
-        expect(@page.search_results).to have_protocols(count: 3)
+        expect(@page.search_results).to have_protocols(count: 4)
 
         @page.filter_protocols.search_field.set((@protocol3.principal_investigators.first.last_name).to_s)
         @page.filter_protocols.apply_filter_button.click()
@@ -890,7 +908,7 @@ RSpec.describe "filters", js: :true do
         visit_protocols_index_page
         wait_for_javascript_to_finish
 
-        expect(@page.search_results).to have_protocols(count: 3)
+        expect(@page.search_results).to have_protocols(count: 4)
 
         @page.filter_protocols.search_field.set("Johnbob")
         @page.filter_protocols.apply_filter_button.click()

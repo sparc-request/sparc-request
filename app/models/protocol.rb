@@ -207,6 +207,9 @@ class Protocol < ActiveRecord::Base
     title_query            = ["protocols.short_title LIKE #{like_search_term} escape '!'", "protocols.title LIKE #{like_search_term} escape '!'"]
     ### END SEARCH QUERIES ###
 
+    hr_pro_ids = HumanSubjectsInfo.where([hr_query, pro_num_query].join(' OR ')).map(&:protocol_id)
+    hr_protocol_id_query = hr_pro_ids.empty? ? nil : "protocols.id in (#{hr_pro_ids.join(', ')})"
+
     case search_attrs[:search_drop]
 
     when "Authorized User"
@@ -230,12 +233,11 @@ class Protocol < ActiveRecord::Base
     when "Short/Long Title"
       where(title_query.join(' OR ')).distinct
     when ""
-      all_query = [authorized_user_query, pi_query, protocol_id_query, title_query]
+      all_query = [authorized_user_query, pi_query, protocol_id_query, title_query, hr_protocol_id_query, rmid_query]
       joins(:identities).
         where(all_query.compact.join(' OR ')).
         distinct
     end
-
   }
 
   scope :admin_filter, -> (params) {

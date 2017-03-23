@@ -48,7 +48,7 @@ class ProtocolFilter < ActiveRecord::Base
       filterrific: {
         show_archived: (self.show_archived ? 1 : 0),
         admin_filter: self.admin_filter,
-        search_query: self.search_query,
+        search_query: eval(self.search_query),
         with_organization: self.with_organization,
         with_status: self.with_status,
         with_owner: self.with_owner,

@@ -43,7 +43,7 @@ class Organization < ActiveRecord::Base
   has_many :services, :dependent => :destroy
   has_many :sub_service_requests, :dependent => :destroy
   has_many :protocols, through: :sub_service_requests
-  has_many :available_statuses, :dependent => :destroy
+  has_many :available_statuses, -> { order "status DESC" }, :dependent => :destroy
   has_many :org_children, class_name: "Organization", foreign_key: :parent_id
 
   attr_accessible :name
@@ -358,6 +358,19 @@ class Organization < ActiveRecord::Base
     end
 
     return all_super_users.flatten.uniq {|x| x.identity_id}
+  end
+
+  def setup_available_statuses
+    position = 1
+    obj_names = AvailableStatus::TYPES.map{|k,v| k}
+    binding.pry
+    AvailableStatus::TYPES.sort_by(:status) do |status, name|
+      binding.pry
+      available_status = available_statuses.detect{|obj| obj.status == obj_name}
+      available_status = available_statuses.build(:status => obj_name, :new => true) unless available_status
+      available_status.position = position
+      position += 1
+    end
   end
 
   def get_available_statuses

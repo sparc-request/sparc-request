@@ -70,7 +70,6 @@ $(document).ready ->
     srid = $(this).data('srid')
     editing_ssr = $(this).data('editing-ssr')
     li_count = parseInt($('#line_item_count').val())
-    has_fulfillments = $(this).data('has-fulfillments')
     request_submitted = $(this).data('request-submitted')
     spinner = $('<span class="spinner"><img src="/assets/catalog_manager/spinner_small.gif"/></span>')
 

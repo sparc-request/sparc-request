@@ -73,11 +73,8 @@ $(document).ready ->
     has_fulfillments = $(this).data('has-fulfillments')
     request_submitted = $(this).data('request-submitted')
     spinner = $('<span class="spinner"><img src="/assets/catalog_manager/spinner_small.gif"/></span>')
-    console.log editing_ssr
-    if has_fulfillments == 1
-      $('#modal_place').html($('#has-fulfillments-modal').html())
-      $('#modal_place').modal('show')
-    else if (request_submitted == 1) && (editing_ssr != 1)
+
+    if (request_submitted == 1) && (editing_ssr != 1)
       button = $(this)
       $('#modal_place').html($('#request-submitted-modal').html())
       $('#modal_place').modal('show')

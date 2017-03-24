@@ -19,13 +19,13 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Dashboard::DocumentsController < Dashboard::BaseController
-  before_filter :find_document,                   only: [:edit, :update, :destroy]
-  before_filter :find_protocol,                   only: [:index, :new, :create, :edit, :update, :destroy]
-  before_filter :find_admin_for_protocol,         only: [:index, :new, :create, :edit, :update, :destroy]
-  before_filter :protocol_authorizer_view,        only: [:index]
-  before_filter :protocol_authorizer_edit,        only: [:new, :create, :edit, :update, :destroy]
+  before_action :find_document,                   only: [:edit, :update, :destroy]
+  before_action :find_protocol,                   only: [:index, :new, :create, :edit, :update, :destroy]
+  before_action :find_admin_for_protocol,         only: [:index, :new, :create, :edit, :update, :destroy]
+  before_action :protocol_authorizer_view,        only: [:index]
+  before_action :protocol_authorizer_edit,        only: [:new, :create, :edit, :update, :destroy]
 
-  before_filter :authorize_admin_access_document, only: [:edit, :update, :destroy]
+  before_action :authorize_admin_access_document, only: [:edit, :update, :destroy]
 
   def index
     @documents          = @protocol.documents

@@ -21,10 +21,10 @@
 class DocumentsController < ApplicationController
   respond_to :html, :js, :json
 
-  before_filter :initialize_service_request
-  before_filter :authorize_identity
-  before_filter :find_document,             only: [:edit, :update, :destroy]
-  before_filter :find_protocol,             only: [:index, :new, :create, :update]
+  before_action :initialize_service_request
+  before_action :authorize_identity
+  before_action :find_document,             only: [:edit, :update, :destroy]
+  before_action :find_protocol,             only: [:index, :new, :create, :update]
 
   def index
     @documents = @protocol.documents

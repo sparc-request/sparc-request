@@ -22,8 +22,8 @@ class Admin::IdentitiesController < ApplicationController
 
   protect_from_forgery
 
-  before_filter :authenticate_identity! # returns 401 for failed JSON authentication
-  before_filter :load_identity_and_authorize_super_users, :only => [:show, :update]
+  before_action :authenticate_identity! # returns 401 for failed JSON authentication
+  before_action :load_identity_and_authorize_super_users, :only => [:show, :update]
 
   def index
      # index.html displays user search box and results grid with "Add/Update User" functionality

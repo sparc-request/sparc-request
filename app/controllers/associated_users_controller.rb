@@ -21,10 +21,10 @@
 class AssociatedUsersController < ApplicationController
   respond_to :html, :json, :js
 
-  before_filter :initialize_service_request
-  before_filter :authorize_identity
-  before_filter :find_protocol_role,          only: [:edit, :destroy]
-  before_filter :find_protocol,               only: [:index, :new, :edit, :destroy]
+  before_action :initialize_service_request
+  before_action :authorize_identity
+  before_action :find_protocol_role,          only: [:edit, :destroy]
+  before_action :find_protocol,               only: [:index, :new, :edit, :destroy]
 
   def index
     @current_user   = current_user

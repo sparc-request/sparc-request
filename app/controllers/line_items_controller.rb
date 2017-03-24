@@ -21,8 +21,8 @@
 class LineItemsController < ApplicationController
   respond_to :json, :js, :html
 
-  before_filter :initialize_service_request
-  before_filter :authorize_identity
+  before_action :initialize_service_request
+  before_action :authorize_identity
 
   # Used for x-editable update and validations
   def update

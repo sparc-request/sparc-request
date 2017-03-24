@@ -22,10 +22,10 @@ class ProtocolsController < ApplicationController
 
   respond_to :html, :js, :json
 
-  before_filter :initialize_service_request,  unless: :from_portal?,  except: [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
-  before_filter :authorize_identity,          unless: :from_portal?,  except: [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
-  before_filter :set_portal
-  before_filter :find_protocol,               only: [:edit, :update, :view_details]
+  before_action :initialize_service_request,  unless: :from_portal?,  except: [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
+  before_action :authorize_identity,          unless: :from_portal?,  except: [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
+  before_action :set_portal
+  before_action :find_protocol,               only: [:edit, :update, :view_details]
 
   def new
     @protocol_type          = params[:protocol_type]

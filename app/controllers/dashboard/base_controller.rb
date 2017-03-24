@@ -23,10 +23,10 @@ class Dashboard::BaseController < ActionController::Base
   protect_from_forgery
   helper_method :current_user
 
-  before_filter :authenticate_identity!
-  before_filter :set_user
-  before_filter :establish_breadcrumber
-  before_filter :set_highlighted_link
+  before_action :authenticate_identity!
+  before_action :set_user
+  before_action :establish_breadcrumber
+  before_action :set_highlighted_link
 
   def set_highlighted_link
     @highlighted_link ||= 'sparc_dashboard'

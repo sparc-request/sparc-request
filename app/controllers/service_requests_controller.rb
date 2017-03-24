@@ -23,13 +23,13 @@ require 'generate_request_grant_billing_pdf'
 class ServiceRequestsController < ApplicationController
   respond_to :js, :json, :html
 
-  before_filter :initialize_service_request,      except: [:approve_changes, :get_help, :feedback]
-  before_filter :validate_step,                   only:   [:protocol, :service_details, :service_calendar, :service_subsidy, :document_management, :review, :obtain_research_pricing, :confirmation, :save_and_exit]
-  before_filter :setup_navigation,                only:   [:navigate, :protocol, :service_details, :service_calendar, :service_subsidy, :document_management, :review, :obtain_research_pricing, :confirmation]
-  before_filter :authorize_identity,              except: [:approve_changes, :get_help, :feedback, :show]
-  before_filter :authenticate_identity!,          except: [:catalog, :add_service, :remove_service, :get_help, :feedback]
-  before_filter :authorize_protocol_edit_request, only:   [:catalog]
-  before_filter :find_locked_org_ids,             only:   [:catalog]
+  before_action :initialize_service_request,      except: [:approve_changes, :get_help, :feedback]
+  before_action :validate_step,                   only:   [:protocol, :service_details, :service_calendar, :service_subsidy, :document_management, :review, :obtain_research_pricing, :confirmation, :save_and_exit]
+  before_action :setup_navigation,                only:   [:navigate, :protocol, :service_details, :service_calendar, :service_subsidy, :document_management, :review, :obtain_research_pricing, :confirmation]
+  before_action :authorize_identity,              except: [:approve_changes, :get_help, :feedback, :show]
+  before_action :authenticate_identity!,          except: [:catalog, :add_service, :remove_service, :get_help, :feedback]
+  before_action :authorize_protocol_edit_request, only:   [:catalog]
+  before_action :find_locked_org_ids,             only:   [:catalog]
 
   def show
     @protocol = @service_request.protocol

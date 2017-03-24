@@ -20,11 +20,11 @@
 
 class Dashboard::SubServiceRequestsController < Dashboard::BaseController
   before_action :find_sub_service_request,  except: :index
-  before_filter :find_service_request,      only: :index
-  before_filter :find_permissions,          only: :index
-  before_filter :find_admin_orgs,           unless: :show_js?
-  before_filter :authorize_protocol,        only: :index
-  before_filter :authorize_admin,           except: :index, unless: :show_js?
+  before_action :find_service_request,      only: :index
+  before_action :find_permissions,          only: :index
+  before_action :find_admin_orgs,           unless: :show_js?
+  before_action :authorize_protocol,        only: :index
+  before_action :authorize_admin,           except: :index, unless: :show_js?
 
   respond_to :json, :js, :html
 

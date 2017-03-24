@@ -21,11 +21,11 @@
 class Dashboard::AssociatedUsersController < Dashboard::BaseController
   respond_to :html, :json, :js
 
-  before_filter :find_protocol_role,                              only: [:edit, :destroy]
-  before_filter :find_protocol,                                   only: [:index, :new, :create, :edit, :update, :destroy]
-  before_filter :find_admin_for_protocol,                         only: [:index, :new, :create, :edit, :update, :destroy]
-  before_filter :protocol_authorizer_view,                        only: [:index]
-  before_filter :protocol_authorizer_edit,                        only: [:new, :create, :edit, :update, :destroy]
+  before_action :find_protocol_role,                              only: [:edit, :destroy]
+  before_action :find_protocol,                                   only: [:index, :new, :create, :edit, :update, :destroy]
+  before_action :find_admin_for_protocol,                         only: [:index, :new, :create, :edit, :update, :destroy]
+  before_action :protocol_authorizer_view,                        only: [:index]
+  before_action :protocol_authorizer_edit,                        only: [:new, :create, :edit, :update, :destroy]
 
   def index
     @protocol_roles     = @protocol.project_roles

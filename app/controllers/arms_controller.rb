@@ -21,9 +21,9 @@
 class ArmsController < ApplicationController
   respond_to :html, :js, :json
 
-  before_filter :initialize_service_request
-  before_filter :authorize_identity
-  before_filter :find_arm, only: [:edit, :update, :destroy]
+  before_action :initialize_service_request
+  before_action :authorize_identity
+  before_action :find_arm, only: [:edit, :update, :destroy]
 
   def index
     @arms           = @service_request.arms

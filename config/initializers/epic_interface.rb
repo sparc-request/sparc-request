@@ -44,7 +44,7 @@ def start_fake_epic_server(epic_received, epic_results)
   server = FakeEpicServer.new(FakeEpicServlet: { received: epic_received,
                                                  results: epic_results})
   thread = Thread.new { server.start }
-  timeout(10) { while server.status != :Running; end }
+  Timeout.timeout(10) { while server.status != :Running; end }
   at_exit { server.shutdown; thread.join }
 
   return server

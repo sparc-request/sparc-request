@@ -3,11 +3,11 @@ class AddProtocolIdToSubServiceRequests < ActiveRecord::Migration
     add_column :sub_service_requests, :protocol_id, :integer
     add_index :sub_service_requests, :protocol_id
 
+    SubServiceRequest.reset_column_information
     SubServiceRequest.find_each do |ssr|
       if ssr.service_request
         if ssr.service_request.protocol_id
-          ssr.protocol_id = ssr.service_request.protocol_id
-          ssr.save
+          ssr.update_attribute(:protocol_id, ssr.service_request.protocol_id)
         else
           puts "Sub Service Request: #{ssr.id} has a Service Request with no protocol_id"
         end

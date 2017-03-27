@@ -118,7 +118,7 @@ class SurveyResponseReport < ReportingModule
       average_percent_satisifed = responses.count == 0 ? 0 : total_percent_satisfied / responses.count
 
       worksheet.add_row([])
-      worksheet.add_row(["Overall Satisfaction Rate", "", sprintf("%.2f%%", average_percent_satisifed)])
+      worksheet.add_row(["Overall Satisfaction Rate", "", sprintf("%.2f%%", average_percent_satisifed.round(2))])
     end
   end
 

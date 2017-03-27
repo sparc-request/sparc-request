@@ -84,7 +84,6 @@ $(document).ready ->
     else if editing_ssr == 1 && li_count == 1 # Redirect to the Dashboard if the user deletes the last Service on an SSR
       $('#modal_place').html($('#remove-request-modal').html())
       $('#modal_place').modal('show')
-      $(this).replaceWith(spinner)
 
       $('#modal_place .yes-button').on 'click', (e) ->
         window.cart.removeService(srid, id, true, spinner)

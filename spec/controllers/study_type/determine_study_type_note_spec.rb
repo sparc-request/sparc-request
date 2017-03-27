@@ -23,52 +23,54 @@ require 'rails_helper'
 
 RSpec.describe StudyTypeController, type: :controller do
   build_study_type_question_groups
-  describe "GET #determine_study_type_note" do
+
+  describe "#determine_study_type_note" do
+
     it "returns study_type note 0" do
       params = {ans1: "false", ans2: "false", ans3: "true", ans4: "true", ans5: "true", controller: "study_type", action: "determine_study_type_note"}
-      xhr :get, :determine_study_type_note, params, format: :js
+      xhr :post, :determine_study_type_note, params, format: :js
       expect(assigns(:note)).to eq("Full Epic Functionality:  notification, pink header, MyChart access.")
     end
 
     it "returns study_type note 1" do
       params = {ans1: "true", ans2: "", ans3: "", ans4: "", ans5: "", controller: "study_type", action: "determine_study_type_note"}
-      xhr :get, :determine_study_type_note, params, format: :js
+      xhr :post, :determine_study_type_note, params, format: :js
       expect(assigns(:note)).to eq("De-identified Research Participant")
     end
 
     it "returns study_type note 3" do
       params = {ans1: "false", ans2: "true", ans3: "false", ans4: "false", ans5: "false", controller: "study_type", action: "determine_study_type_note"}
-      xhr :get, :determine_study_type_note, params, format: :js
+      xhr :post, :determine_study_type_note, params, format: :js
       expect(assigns(:note)).to eq("Break-The-Glass for research associated encounters")
     end
 
     it "returns study_type note 4" do
       params = {ans1: "false", ans2: "true", ans3: "false", ans4: "true", ans5: "false", controller: "study_type", action: "determine_study_type_note"}
-      xhr :get, :determine_study_type_note, params, format: :js
+      xhr :post, :determine_study_type_note, params, format: :js
       expect(assigns(:note)).to eq("Break-The-Glass for research associated encounters: no notification, pink header, no MyChart access.")
     end
 
     it "returns study_type note 5" do
       params = {ans1: "false", ans2: "true", ans3: "false", ans4: "false", ans5: "true", controller: "study_type", action: "determine_study_type_note"}
-      xhr :get, :determine_study_type_note, params, format: :js
+      xhr :post, :determine_study_type_note, params, format: :js
       expect(assigns(:note)).to eq("Break-The-Glass for research associated encounters: no notification, no pink header, MyChart access.")
     end
 
     it "returns study_type note 6" do
       params = {ans1: "false", ans2: "true", ans3: "false", ans4: "true", ans5: "true", controller: "study_type", action: "determine_study_type_note"}
-      xhr :get, :determine_study_type_note, params, format: :js
+      xhr :post, :determine_study_type_note, params, format: :js
       expect(assigns(:note)).to eq("Break-The-Glass for research associated encounters: no notification, pink header, MyChart access.")
     end
 
     it "returns study_type note 7" do
       params = {ans1: "false", ans2: "true", ans3: "true", ans4: "false", ans5: "false", controller: "study_type", action: "determine_study_type_note"}
-      xhr :get, :determine_study_type_note, params, format: :js
+      xhr :post, :determine_study_type_note, params, format: :js
       expect(assigns(:note)).to eq("Break-The-Glass for research associated encounters: notification, no pink header, no MyChart access.")
     end
 
     it "returns study_type note 8" do
       params = {ans1: "false", ans2: "true", ans3: "true", ans4: "true", ans5: "false", controller: "study_type", action: "determine_study_type_note"}
-      xhr :get, :determine_study_type_note, params, format: :js
+      xhr :post, :determine_study_type_note, params, format: :js
       expect(assigns(:note)).to eq("Break-The-Glass for research associated encounters: notification, pink header, no MyChart access.")
     end
   end

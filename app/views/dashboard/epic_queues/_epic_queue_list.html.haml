@@ -21,10 +21,10 @@
   .panel-heading
     %ul.nav.nav-tabs
       %li.active
-        = link_to t(:dashboard)[:epic_queues][:header], '#current',
+        = link_to t(:dashboard)[:epic_queues][:headers][:current], '#current',
           data: { toggle: 'tab' }
       %li
-        = link_to 'Past', '#past', data: { toggle: 'tab' }
+        = link_to t(:dashboard)[:epic_queues][:headers][:past], '#past', data: { toggle: 'tab' }
   .panel-body
     .tab-content
       .tab-pane.fade.in.active#current

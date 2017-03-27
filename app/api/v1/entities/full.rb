@@ -120,7 +120,6 @@ module V1
             :sponsor_name,
             :brief_description,
             :indirect_cost_rate,
-            :study_phase,
             :udak_project_number,
             :funding_rfa,
             :funding_status,
@@ -186,13 +185,9 @@ module V1
 
     expose  :protocol_id,
             :status,
-            :approved,
-            :subject_count
+            :approved
 
     with_options(format_with: :iso_timestamp) do
-      expose :consult_arranged_date
-      expose :pppv_complete_date
-      expose :pppv_in_process_date
       expose :submitted_at
     end
   end

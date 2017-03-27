@@ -21,4 +21,3 @@
 $("#modal_place").html("<%= escape_javascript(render( 'arms/arm_form', arm: @arm, protocol: @protocol, header_text: @header_text, path: @path, service_request: @service_request)) %>");
 $("#modal_place").modal 'show'
 $("[data-toggle='tooltip']").tooltip()
-set_required_fields()

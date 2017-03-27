@@ -22,31 +22,24 @@
     %h4.panel-title.pull-left
       = t(:dashboard)[:protocols][:service_requests][:header]
     .pull-right
-      - if !protocol.has_first_draft_service_request? && protocol.service_requests.present?
-        .export-consolidated-request
-          .dropdown
-            %button.btn.btn-primary.btn-sm.dropdown-toggle{ type: 'button', data: { toggle: 'dropdown' } }
-              = t(:dashboard)[:protocols][:service_requests][:view_consolidated]
-            %ul.dropdown-menu
-              %li
-                %a.view-full-calendar-button{ data: { protocol_id: protocol.id, statuses_hidden: ['first_draft'] } }= t(:dashboard)[:protocols][:service_requests][:consolidated_all]
-              %li
-                %a.view-full-calendar-button{ data: { protocol_id: protocol.id, statuses_hidden: %w(draft first_draft) } }= t(:dashboard)[:protocols][:service_requests][:consolidated_exclude_drafts]
-          .dropdown
-            %button.btn.btn-primary.btn-sm.dropdown-toggle{ type: 'button', data: { protocol_id: protocol.id, toggle: 'dropdown' } }
-              = t(:dashboard)[:protocols][:service_requests][:export_consolidated]
-            %ul.dropdown-menu
-              %li
-                = link_to t(:dashboard)[:protocols][:service_requests][:consolidated_all], dashboard_protocol_path(protocol, statuses_hidden: ['first_draft'], format: :xlsx)
-              %li
-                = link_to t(:dashboard)[:protocols][:service_requests][:consolidated_exclude_drafts], dashboard_protocol_path(protocol, statuses_hidden: %w(draft first_draft), format: :xlsx)
+      .export-consolidated-request
+        .dropdown
+          %button.btn.btn-primary.btn-sm.dropdown-toggle{ type: 'button', data: { toggle: 'dropdown' } }
+            = t(:dashboard)[:protocols][:service_requests][:view_consolidated]
+          %ul.dropdown-menu
+            %li
+              %a.view-full-calendar-button{ data: { protocol_id: protocol.id, statuses_hidden: ['first_draft'] } }= t(:dashboard)[:protocols][:service_requests][:consolidated_all]
+            %li
+              %a.view-full-calendar-button{ data: { protocol_id: protocol.id, statuses_hidden: %w(draft first_draft) } }= t(:dashboard)[:protocols][:service_requests][:consolidated_exclude_drafts]
+        .dropdown
+          %button.btn.btn-primary.btn-sm.dropdown-toggle{ type: 'button', data: { protocol_id: protocol.id, toggle: 'dropdown' } }
+            = t(:dashboard)[:protocols][:service_requests][:export_consolidated]
+          %ul.dropdown-menu
+            %li
+              = link_to t(:dashboard)[:protocols][:service_requests][:consolidated_all], dashboard_protocol_path(protocol, statuses_hidden: ['first_draft'], format: :xlsx)
+            %li
+              = link_to t(:dashboard)[:protocols][:service_requests][:consolidated_exclude_drafts], dashboard_protocol_path(protocol, statuses_hidden: %w(draft first_draft), format: :xlsx)
     .clearfix
   .panel-body
-    - # TODO: Remove Historical first_draft SSRs and remove this
-    - if protocol.has_non_first_draft_ssrs?
-      - protocol.service_requests.each do |sr|
-        - if sr.has_non_first_draft_ssrs?
-          = render 'dashboard/service_requests/protocol_service_request_show', service_request: sr, protocol: protocol, user: user, permission_to_edit: permission_to_edit, view_only: view_only, show_view_ssr_back: show_view_ssr_back
-    - else
-      %button.btn.btn-success.btn-sm#add-services-button{ class: permission_to_edit ? '' : 'disabled', type: 'button', data: { permission: permission_to_edit.to_s, protocol_id: protocol.id, action: 'new request' } }
-        = t(:dashboard)[:protocols][:service_requests][:add_services]
+    - protocol.service_requests.each do |sr|
+      = render 'dashboard/service_requests/protocol_service_request_show', service_request: sr, protocol: protocol, user: user, permission_to_edit: permission_to_edit, view_only: view_only, show_view_ssr_back: show_view_ssr_back

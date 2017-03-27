@@ -35,7 +35,7 @@ class Protocol < ActiveRecord::Base
   has_many :identities,                   through: :project_roles
   has_many :service_requests
   has_many :services,                     through: :service_requests
-  has_many :sub_service_requests,         through: :service_requests
+  has_many :sub_service_requests
   has_many :line_items,                   through: :service_requests
   has_many :organizations,                through: :sub_service_requests
   has_many :affiliations,                 dependent: :destroy
@@ -49,11 +49,14 @@ class Protocol < ActiveRecord::Base
 
   has_many :principal_investigators, -> { where(project_roles: { role: %w(pi primary-pi) }) },
     source: :identity, through: :project_roles
+  has_many :non_pi_authorized_users, -> { where.not(project_roles: { role: %w(pi primary-pi) }) },
+    source: :identity, through: :project_roles
   has_many :billing_managers, -> { where(project_roles: { role: 'business-grants-manager' }) },
     source: :identity, through: :project_roles
   has_many :coordinators, -> { where(project_roles: { role: 'research-assistant-coordinator' }) },
     source: :identity, through: :project_roles
 
+  has_and_belongs_to_many :study_phases
   belongs_to :study_type_question_group
 
   attr_accessible :affiliations_attributes
@@ -93,7 +96,7 @@ class Protocol < ActiveRecord::Base
   attr_accessible :short_title
   attr_accessible :sponsor_name
   attr_accessible :start_date
-  attr_accessible :study_phase
+  attr_accessible :study_phase_ids
   attr_accessible :study_type_answers_attributes
   attr_accessible :study_type_question_group_id
   attr_accessible :study_types_attributes
@@ -185,33 +188,56 @@ class Protocol < ActiveRecord::Base
     ]
   )
 
-  scope :search_query, -> (search_term) {
-    # Searches protocols based on short_title, title, id, and associated_users
+  scope :search_query, lambda { |search_attrs|
+    # Searches protocols based on 'Authorized User', 'HR#', 'PI', 'Protocol ID', 'PRO#', 'RMID', 'Short/Long Title', OR 'Search All'
     # Protects against SQL Injection with ActiveRecord::Base::sanitize
-
     # inserts ! so that we can escape special characters
-    escaped_search_term = search_term.to_s.gsub(/[!%_]/) { |x| '!' + x }
+    escaped_search_term = search_attrs[:search_text].to_s.gsub(/[!%_]/) { |x| '!' + x }
 
     like_search_term = ActiveRecord::Base::sanitize("%#{escaped_search_term}%")
-    exact_search_term = ActiveRecord::Base::sanitize(search_term)
+    exact_search_term = ActiveRecord::Base::sanitize(search_attrs[:search_text])
 
-    #TODO temporary replacement for "MATCH(identities.first_name, identities.last_name) AGAINST (#{exact_search_term})"
-    where_clause = ["CONCAT(identities.first_name, ' ', identities.last_name) LIKE #{like_search_term} escape '!'"]
+    ### SEARCH QUERIES ###
+    authorized_user_query  = "CONCAT(identities.first_name, ' ', identities.last_name) LIKE #{like_search_term} escape '!'"
+    hr_query               = "human_subjects_info.hr_number LIKE #{like_search_term} escape '!'"
+    pi_query               = "CONCAT(identities.first_name, ' ', identities.last_name) LIKE #{like_search_term} escape '!'"
+    protocol_id_query      = "protocols.id = #{exact_search_term}"
+    pro_num_query          = "human_subjects_info.pro_number LIKE #{like_search_term} escape '!'"
+    rmid_query             = "protocols.research_master_id = #{exact_search_term}"
+    title_query            = ["protocols.short_title LIKE #{like_search_term} escape '!'", "protocols.title LIKE #{like_search_term} escape '!'"]
+    ### END SEARCH QUERIES ###
 
-    where_clause += ["protocols.short_title like #{like_search_term} escape '!'",
-      "protocols.title like #{like_search_term} escape '!'",
-      "protocols.id = #{exact_search_term}"]
+    hr_pro_ids = HumanSubjectsInfo.where([hr_query, pro_num_query].join(' OR ')).map(&:protocol_id)
+    hr_protocol_id_query = hr_pro_ids.empty? ? nil : "protocols.id in (#{hr_pro_ids.join(', ')})"
 
-    joins(:identities).
-      where(where_clause.compact.join(' OR ')).
-      distinct
-  }
+    case search_attrs[:search_drop]
 
-  scope :for_identity_id, -> (identity_id) {
-    return nil if identity_id == '0'
-    joins(:project_roles).
-      where(project_roles: { identity_id: identity_id }).
-      where.not(project_roles: { project_rights: 'none' })
+    when "Authorized User"
+      joins(:non_pi_authorized_users).
+        joins(:identities).
+        where(authorized_user_query).distinct
+    when "HR#"
+      joins(:human_subjects_info).
+        where(hr_query).distinct
+    when "PI"
+      joins(:principal_investigators).
+        where(pi_query).
+        distinct
+    when "Protocol ID"
+      where(protocol_id_query).distinct
+    when "PRO#"
+      joins(:human_subjects_info).
+        where(pro_num_query).distinct
+    when "RMID"
+      where(rmid_query).distinct
+    when "Short/Long Title"
+      where(title_query.join(' OR ')).distinct
+    when ""
+      all_query = [authorized_user_query, pi_query, protocol_id_query, title_query, hr_protocol_id_query, rmid_query]
+      joins(:identities).
+        where(all_query.compact.join(' OR ')).
+        distinct
+    end
   }
 
   scope :admin_filter, -> (params) {
@@ -220,17 +246,32 @@ class Protocol < ActiveRecord::Base
       for_admin(id)
     elsif filter == 'for_identity'
       for_identity_id(id)
+    elsif filter == 'empty_protocols'
+      empty_protocols(id)
     end
   }
 
   scope :for_admin, -> (identity_id) {
     # returns protocols with ssrs in orgs authorized for identity_id
     return nil if identity_id == '0'
-
     ssrs = SubServiceRequest.where.not(status: 'first_draft').where(organization_id: Organization.authorized_for_identity(identity_id))
+    joins(:sub_service_requests).merge(ssrs).distinct
+  }
 
-    joins(:sub_service_requests).
-      merge(ssrs).distinct
+  scope :for_identity_id, -> (identity_id) {
+    # returns protocols user has a project role for
+    return nil if identity_id == '0'
+    joins(:project_roles).where(project_roles: { identity_id: identity_id }).where.not(project_roles: { project_rights: 'none' })
+  }
+
+  scope :empty_protocols, -> (identity_id) {
+    # returns protocols with no ssrs if you are a super user of any kind
+    return nil if identity_id == '0'
+    if Identity.find(identity_id).super_users.any?
+      includes(:sub_service_requests).where(sub_service_requests: {id: nil})
+    else
+      return nil
+    end
   }
 
   scope :show_archived, -> (boolean) {
@@ -267,7 +308,7 @@ class Protocol < ActiveRecord::Base
     sort_order  = arr[1]
     case sort_name
     when 'id'
-      order("id #{sort_order.upcase}")
+      order("protocols.id #{sort_order.upcase}")
     when 'short_title'
       order("TRIM(REPLACE(short_title, CHAR(9), ' ')) #{sort_order.upcase}")
     when 'pis'
@@ -285,11 +326,6 @@ class Protocol < ActiveRecord::Base
 
   def is_project?
     self.type == 'Project'
-  end
-
-  # Determines whether a protocol contains a service_request with only a "first draft" status
-  def has_first_draft_service_request?
-    service_requests.any? && service_requests.map(&:status).all? { |status| status == 'first_draft'}
   end
 
   def active?
@@ -538,10 +574,6 @@ class Protocol < ActiveRecord::Base
     if remove_arms
       self.arms.destroy_all
     end
-  end
-
-  def has_non_first_draft_ssrs?
-    sub_service_requests.where.not(status: 'first_draft').any?
   end
 
   def has_incomplete_additional_details?

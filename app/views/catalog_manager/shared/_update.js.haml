@@ -23,7 +23,7 @@
   :plain
     $('#flash').hide();
     $('#flash').html("There were errors saving #{escape_javascript(@entity.name)}.");
-    Sparc.catalog.handle_ajax_errors("#{escape_javascript(@entity_errors)}", "#{@entity.type}")
+    Sparc.catalog.handle_ajax_errors("#{escape_javascript(@entity_errors)}", "#{@entity.class.name == 'Service' ? 'Service' : @entity.type}")
 
 - else
   :plain

@@ -17,11 +17,11 @@
 // DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 // INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 // TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 $('#defined_reports_step_2').html("<%= raw escape_javascript(render(:partial => 'setup')) %>");
 $('#report_selection').hide();
 $('#defined_reports, #defined_reports_step_2').show();
 // $('#defined_reports_step_1').dialog('close');
+$('.selectpicker').selectpicker()
 first_dependency = "#" + $('.reporting_field[has_dependencies]').attr('id')
 window.check_deps(first_dependency);
 

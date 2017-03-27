@@ -19,6 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 class AdditionalDetails::UpdateQuestionnairesController < ApplicationController
+  before_action :authenticate_identity!
 
   def update
     @service = Service.find(params[:service_id])

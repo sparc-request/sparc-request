@@ -31,7 +31,7 @@
           .text-center
             %label
               = identity.display_name
-            %a.btn.btn-xs.btn-danger.glyphicon.glyphicon-remove#new-associated-user-button{ href: "javascript:void(0);", data: { protocol_id: protocol.id, permission: 'true' } }
+            %a.btn.btn-xs.btn-danger.glyphicon.glyphicon-remove#new-associated-user-button{ href: "javascript:void(0);", data: { protocol_id: protocol.id, permission: 'true', toggle: "tooltip", animation: 'false', placement: 'right' }, title: "Remove" }
       %div#protocol_role_data{ data: { pr_id: identity.id, pr_name: identity.full_name, pi_id: current_pi.id, pi_name: current_pi.full_name }}
       = form_for [:dashboard, project_role], url: project_role.new_record? ? dashboard_associated_users_path : dashboard_associated_user_path(project_role), remote: true, html: { class: "protocol_role_form" } do |form|
         = form.hidden_field :identity_id
@@ -63,17 +63,22 @@
               = form.text_field :role_other, class: 'form-control'
 
             - if USE_EPIC && protocol != nil && protocol.selected_for_epic
-              = user_form_group(name: :epic_access, form: form) do
-                .col-lg-9
-                  %label.checkbox-inline
-                    No
+              = user_form_group(name: :epic_access,
+                form: form,
+                data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' },
+                title: t(:authorized_users)[:tooltips][:epic_access]) do
+                = label_tag nil, nil, class: 'radio-inline' do
                   = form.radio_button :epic_access, false, class: 'epic_access'
-                  %label.checkbox-inline
-                    Yes
+                  No
+                = label_tag nil, nil, class: 'radio-inline' do
                   = form.radio_button :epic_access, true, class: 'epic_access'
+                  Yes
 
             - disable = (form.object.role == 'pi' || form.object.role == 'primary-pi')
-            = user_form_group(name: :rights, form: form) do
+            = user_form_group(name: :rights,
+              form: form,
+              data: { toggle: 'tooltip', placement: 'bottom', delay: '{"show":"500"}' },
+              title: t(:authorized_users)[:tooltips][:rights]) do
               .radio
                 %label
                   = form.radio_button :project_rights, "none", disabled: disable
@@ -84,11 +89,6 @@
                   = form.radio_button :project_rights, "view", disabled: disable
                   %span
                     = t(:authorized_users)[:rights][:view]
-              .radio
-                %label
-                  = form.radio_button :project_rights, "request", disabled: disable
-                  %span
-                    = t(:authorized_users)[:rights][:request]
               .radio
                 %label
                   = form.radio_button :project_rights, "approve", disabled: disable

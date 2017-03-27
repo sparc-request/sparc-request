@@ -1,10 +1,15 @@
 class QuestionnaireResponse < ActiveRecord::Base
   belongs_to :submission
   belongs_to :item
-  validates :content, presence: true, if: :required?
+  validates :content, presence: true, if: :required? 
+  validates_format_of :content, with: Devise::email_regexp, allow_blank: true, if: :content_is_email?
 
   def required?
     required == true
+  end
+
+  def content_is_email?
+    (item.item_type == 'email') if item
   end
 
   # When content == '["a","b", "c"]',

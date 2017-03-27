@@ -27,11 +27,11 @@ RSpec.feature 'User wants to submit a questionnaire form', js: true do
   before :each do
     org       = create(:organization)
     @service  = create(:service, organization: org)
-    que       = create(:questionnaire, service: @service, active: true)
+    que       = create(:questionnaire, :without_validations, service: @service, active: true)
                 create(:item, questionnaire: que)
     @protocol = create(:protocol_federally_funded, primary_pi: jug2, type: 'Study')
     sr        = create(:service_request_without_validations, protocol: @protocol)
-    ssr       = create(:sub_service_request, service_request: sr, organization: org, status: 'draft')
+    ssr       = create(:sub_service_request, service_request: sr, organization: org, status: 'draft', protocol_id: @protocol.id)
     li        = create(:line_item, service_request: sr, sub_service_request: ssr, service: @service)
   end
 

@@ -51,7 +51,7 @@ module Dashboard::ProtocolsHelper
   end
 
   def display_archive_button(protocol, admin_protocols, current_user)
-    if !protocol.project_roles.find_by(identity: current_user).nil? || admin_protocols.try(:include?, protocol.id)
+    if !protocol.project_roles.find_by(identity: current_user).nil? || admin_protocols.try(:include?, protocol.id) || (current_user.super_users.any? && protocol.sub_service_requests.empty?)
       content_tag( :button, (protocol.archived ? t(:dashboard)[:protocols][:table][:unarchive] : t(:dashboard)[:protocols][:table][:archive])+" #{protocol.type.capitalize}", type: 'button', class: 'protocol-archive-button btn btn-warning btn-sm' )
     end
   end

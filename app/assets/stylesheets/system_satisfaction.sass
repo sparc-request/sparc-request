@@ -36,15 +36,29 @@
     .title
       display: none
     ol
-      padding: 0 8px
+      padding: 0 !important
       list-style-type: none
-      .help,
+      text-align: center
       .quiet
         display: none
+      .help
+        margin-left: -122px
       li
-        text-align: left
-        input
-          margin-right: 4px
+        text-align: center
+        display: inline-block
+        margin: 6px 30px
+        label
+          width: 108px
+          margin-top: 17px
+        input[type=radio]
+          display: block
+          margin: 0 auto
 
     .q_hidden
       display: none
+
+.gray-text
+  color: gray
+  font-style: italic
+.dim-gray-text
+  color: dimgray

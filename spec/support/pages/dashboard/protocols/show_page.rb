@@ -62,7 +62,6 @@ module Dashboard
         # rights radio buttons
         element :none_rights, "#project_role_project_rights_none"
         element :view_rights, "#project_role_project_rights_view"
-        element :request_rights, "#project_role_project_rights_request"
         element :approve_rights, "#project_role_project_rights_approve"
 
         # generic matcher for any dropdown choices

@@ -28,7 +28,7 @@ RSpec.describe 'Protocol' do
   build_study_type_question_groups()
   build_study_type_questions()
   build_study_type_answers()
-  
+
   describe "#email_about_change_in_authorized_user" do
     context "SEND_AUTHORIZED_USER_EMAILS == true && ssr.status == 'not_draft'" do
       it "should send authorized user email" do
@@ -36,7 +36,7 @@ RSpec.describe 'Protocol' do
         organization = create(:organization)
         @protocol1 = create(:study_without_validations)
         @sr1 = create(:service_request_without_validations, protocol_id: @protocol1.id)
-        @ssr1 = create(:sub_service_request_without_validations, service_request_id: @sr1.id, organization: organization, status: 'not_draft')
+        @ssr1 = create(:sub_service_request_without_validations, service_request_id: @sr1.id, organization: organization, status: 'not_draft', protocol: @protocol1)
         create(:project_role_with_identity, protocol: @protocol1)
         modified_role = create(:project_role_with_identity, protocol: @protocol1)
 
@@ -57,10 +57,10 @@ RSpec.describe 'Protocol' do
         organization = create(:organization)
         @protocol1 = create(:study_without_validations)
         @sr1 = create(:service_request_without_validations, protocol_id: @protocol1.id)
-        @ssr1 = create(:sub_service_request_without_validations, service_request_id: @sr1.id, organization: organization, status: 'draft')
+        @ssr1 = create(:sub_service_request_without_validations, service_request_id: @sr1.id, organization: organization, status: 'draft', protocol: @protocol1)
         create(:project_role_with_identity, protocol: @protocol1)
         modified_role = create(:project_role_with_identity, protocol: @protocol1)
-        
+
         allow(UserMailer).to receive(:authorized_user_changed) do
           mailer = double()
           expect(mailer).not_to receive(:deliver)
@@ -78,10 +78,10 @@ RSpec.describe 'Protocol' do
         organization = create(:organization)
         @protocol1 = create(:study_without_validations)
         @sr1 = create(:service_request_without_validations, protocol_id: @protocol1.id)
-        @ssr1 = create(:sub_service_request_without_validations, service_request_id: @sr1.id, organization: organization, status: 'draft')
+        @ssr1 = create(:sub_service_request_without_validations, service_request_id: @sr1.id, organization: organization, status: 'draft', protocol: @protocol1)
         create(:project_role_with_identity, protocol: @protocol1)
         modified_role = create(:project_role_with_identity, protocol: @protocol1)
-        
+
         allow(UserMailer).to receive(:authorized_user_changed) do
           mailer = double()
           expect(mailer).not_to receive(:deliver)
@@ -99,10 +99,10 @@ RSpec.describe 'Protocol' do
         organization = create(:organization)
         @protocol1 = create(:study_without_validations)
         @sr1 = create(:service_request_without_validations, protocol_id: @protocol1.id)
-        @ssr1 = create(:sub_service_request_without_validations, service_request_id: @sr1.id, organization: organization, status: 'not_draft')
+        @ssr1 = create(:sub_service_request_without_validations, service_request_id: @sr1.id, organization: organization, status: 'not_draft', protocol: @protocol1)
         create(:project_role_with_identity, protocol: @protocol1)
         modified_role = create(:project_role_with_identity, protocol: @protocol1)
-        
+
         allow(UserMailer).to receive(:authorized_user_changed) do
           mailer = double()
           expect(mailer).not_to receive(:deliver)

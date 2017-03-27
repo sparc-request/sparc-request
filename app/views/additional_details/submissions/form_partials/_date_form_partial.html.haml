@@ -1,4 +1,4 @@
-%div{ class: 'input-group date', id: 'datetimepicker' }
-  %input{ type: 'text', class: 'form-control' }
+.input-group#datetimepicker
+  = qr.text_field :content, class: 'form-control'
   %span.input-group-addon
     %span.glyphicon.glyphicon-calendar

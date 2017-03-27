@@ -21,4 +21,3 @@
 $("#modal_place").html("<%= escape_javascript(render( 'documents/document_form', document: @document, header_text: @header_text, path: @path, service_request: @service_request)) %>");
 $("#modal_place").modal 'show'
 $(".selectpicker").selectpicker()
-set_required_fields()

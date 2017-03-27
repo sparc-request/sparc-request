@@ -52,6 +52,7 @@
             - dependency = options[:dependency]
             - default_classes = "form-control reporting_field"
             - default_classes += " required_field" if options[:required]
+            - default_classes += " selectpicker" if options[:selectpicker]
             - check_dep_class = dependency ? 'check_dep_class' : nil
             - id = options[:for] || "#{field.name.underscore}_id"
             - name = options[:for] ? "report[#{options[:for]}]" : "report[#{field.name.underscore}_id]"
@@ -68,7 +69,11 @@
                     - dependency_id = options[:dependency_id] || dependency.sub(/^#/, "") # either an id is specified or we assume the dependency is the id
                     - if record.respond_to? dependency_id.to_s
                       - option_class = "sub-#{record.send dependency_id}"
-                  %option{:value => record.id, :class => option_class}= record.send(name_method)
+                  %option{:value => record.id, :class => option_class}
+                    - if record.class.to_s == "Survey"
+                      = record.title + " - Version " + record.survey_version.to_s
+                    - else
+                      = record.send(name_method)
         /* end select_tag */
 
         /* date_field */
@@ -124,7 +129,7 @@
           - multiple = options[:multiple]
           - grouping = options[:grouping]
           - selected = options[:selected] || []
-          - default_classes = "required_field" if options[:required]
+          - default_classes = options[:required] ? "required_field" : ""
           - name = options[:for] ? "report[#{options[:for]}]" : "report[#{field.name.underscore}_id]"
           - name += "[]" if multiple
           %label.col-sm-3.control-label= field_label
@@ -151,7 +156,7 @@
           - else # for individual checkboxes that have true/false
             / %label{:for => options[:for]}= field_label
             .col-sm-9
-              = check_box_tag name, true, nil, :class => default_classes + " form-control", :type => "checkbox"
+              = check_box_tag name, true, nil, :class => default_classes, :type => "checkbox"
             /* TODO define behavior if multiple is a method or string representation of method chain */
 
         /* end check_box_tag */

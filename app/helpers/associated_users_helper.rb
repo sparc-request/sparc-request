@@ -24,12 +24,17 @@ module AssociatedUsersHelper
   #        Also used in form helpers.
   # classes - HTML classes to add to form-group.
   # label - Override localized label text.
-  def user_form_group(form: nil, name:, classes: [], label: nil)
+  def user_form_group(form: nil, name:, classes: [], label: nil, data: {}, title: nil)
     form_group_classes = %w(row form-group) + [classes]
     label_class = 'col-lg-3 control-label'
     label_text = label || t(:authorized_users)[:form_fields][name.to_sym]
     label = if form
-              form.label(name, label_text, class: label_class)
+              form.label(name,
+                         label_text,
+                         class: label_class,
+                         data: data,
+                         title: title
+                        )
             else
               content_tag(:label, label_text, class: label_class)
             end
@@ -68,10 +73,10 @@ module AssociatedUsersHelper
     select_class = 'form-control selectpicker'
     prompt = t(:authorized_users)[:form_fields][:select_one]
     if choices_from.kind_of?(ProfessionalOrganization)
-      options = options_from_collection_for_select(choices_from.self_and_siblings, 'id', 'name', choices_from.id)
+      options = options_from_collection_for_select(choices_from.self_and_siblings.order(:name), 'id', 'name', choices_from.id)
       select_id = "select-pro-org-#{choices_from.org_type}"
     else
-      options = options_from_collection_for_select(choices_from, 'id', 'name')
+      options = options_from_collection_for_select(choices_from.order(:name), 'id', 'name')
       select_id = "select-pro-org-#{choices_from.first.org_type}"
     end
 

@@ -22,9 +22,11 @@
     %th{ colspan: 11 }
       = t(:calendars)[:otf][:totals][:total_direct]
     %td.text-center
-      = display_total_direct_cost_per_study_otfs(service_request, service_request.line_items)
+      %strong
+        = display_total_direct_cost_per_study_otfs(service_request, service_request.line_items)
 %tr.total-one-time-fee-cost-per-study
   %th{ colspan: 11 }
     = t(:calendars)[:otf][:totals][:total_costs]
   %td.text-center
-    = display_total_cost_per_study_otfs(service_request, service_request.line_items)
+    %strong
+      = display_total_cost_per_study_otfs(service_request, service_request.line_items)

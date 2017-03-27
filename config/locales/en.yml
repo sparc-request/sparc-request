@@ -490,10 +490,18 @@ en:
       pi_contribution: "PI Contribution"
       cost: "Subsidy Cost"
     form:
-      request_cost: "Current Request Cost:"
-      percent: "Percent Subsidy:"
-      pi: "PI Contribution:"
-      cost: "Subsidy Cost:"
+      request_cost:
+        field: "Current Request Cost:"
+        tooltip: "Total cost of services eligible for a subsidy"
+      percent:
+        field: "Percent Subsidy:"
+        tooltip: "Percent of Current Request Cost to be covered by Service Provider"
+      pi:
+        field: "PI Contribution:"
+        tooltip: "Amount PI is responsible to provide to Service Provider"
+      cost:
+        field: "Subsidy Cost:"
+        tooltip: "Amount of Current Request Cost to be covered by Service Provider"
 
   #############################
   # VALIDATION ERROR MESSAGES #

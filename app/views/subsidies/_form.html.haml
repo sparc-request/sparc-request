@@ -33,7 +33,7 @@
             %tbody
               %tr
                 %th.col-sm-4
-                  = t(:subsidies)[:form][:request_cost]
+                  = link_to t(:subsidies)[:form][:request_cost][:field], 'javascript:void(0)', title: t(:subsidies)[:form][:request_cost][:tooltip], data: { toggle: 'tooltip', delay: { show: '500' } }
                 %td.col-sm-7.text-right#subsidy_form_table_request_cost{ data: { cost: subsidy.total_request_cost } }
                   = number_to_currency(subsidy.total_request_cost / 100.0)
           - html_hash = action == 'new' ? { role: "form", method: :post } : { role: "form" }
@@ -41,12 +41,14 @@
             = form.hidden_field :sub_service_request_id
             = hidden_field_tag :admin, admin
             .form-group
-              = form.label :percent_subsidy, t(:subsidies)[:form][:percent], class: "col-sm-4 control-label"
+              %label.col-sm-4.control-label
+                = link_to t(:subsidies)[:form][:percent][:field], 'javascript:void(0)', title: t(:subsidies)[:form][:percent][:tooltip], data: { toggle: 'tooltip', delay: { show: '500' } }
               .input-group.col-sm-7
                 = form.text_field :percent_subsidy, { class: 'form-control', value: display_as_percent(subsidy.percent_subsidy) }
                 %span.input-group-addon %
             .form-group
-              = form.label :pi_contribution, t(:subsidies)[:form][:pi], class: "col-sm-4 control-label"
+              %label.col-sm-4.control-label
+                = link_to t(:subsidies)[:form][:pi][:field], 'javascript:void(0)', title: t(:subsidies)[:form][:pi][:tooltip], data: { toggle: 'tooltip', delay: { show: '500' } }
               .input-group.col-sm-7
                 %span.input-group-addon $
                 = form.text_field :pi_contribution, { class: 'form-control', value: (cents_to_dollars_float(subsidy.pi_contribution)).to_s }
@@ -56,7 +58,7 @@
                   %tbody
                     %tr
                       %th.col-sm-4
-                        = t(:subsidies)[:form][:cost]
+                        = link_to t(:subsidies)[:form][:cost][:field], 'javascript:void(0)', title: t(:subsidies)[:form][:cost][:tooltip], data: { toggle: 'tooltip', delay: { show: '500' } }
                       %td.col-sm-7.text-right#subsidy_form_table_subsidy_cost{ data: { cost: subsidy.current_cost } }
                         = number_to_currency(subsidy.current_cost)
             .modal-footer

@@ -19,7 +19,8 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .page-header
   %h3
-    = t(:additional_details)[:document_page_header]
+    %span{ title: t(:proper)[:document_management][:tooltips][:additional_details], data: { toggle: 'tooltip', delay: '{"show":"500"}' } }
+      = t(:proper)[:document_management][:additional_details_notice]
 %table.table.table-striped.table-bordered.table-hover
   %thead.primary-header.document-submissions-header
     %tr

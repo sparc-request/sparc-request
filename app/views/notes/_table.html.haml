@@ -20,7 +20,7 @@
 .bootstrap-table-dropdown-overflow
   - unless in_dashboard
     #notes-custom-toolbar
-      %button.btn.btn-success#note-new{ data: { notable_id: notable_id, notable_type: notable_type } }
+      %button.btn.btn-success#note-new{ title: t(:proper)[:document_management][:tooltips][:notes], data: { notable_id: notable_id, notable_type: notable_type, toggle: 'tooltip', delay: '{"show":"500"}' } }
         = t(:notes)[:add]
   %table.table-striped#notes-table{ data: { toggle: 'table', url: notes_path(format: :json, note: { notable_id: notable_id, notable_type: notable_type }), striped: "true", toolbar: "#notes-custom-toolbar" } }
     %thead.primary-header

@@ -22,9 +22,14 @@ require 'rails_helper'
 
 
 RSpec.describe StudyTypeController, type: :controller do
+  stub_controller
   build_study_type_question_groups
+  let!(:before_filters) { find_before_filters }
 
   describe "#determine_study_type_note" do
+    it 'should call before_action #extract_answers' do
+      expect(before_filters.include?(:extract_answers)).to eq(true)
+    end
 
     it "returns study_type note 0" do
       params = {ans1: "false", ans2: "false", ans3: "true", ans4: "true", ans5: "true", controller: "study_type", action: "determine_study_type_note"}

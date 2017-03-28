@@ -24,9 +24,4 @@ class IpPatentsInfo < ActiveRecord::Base
   audited
 
   belongs_to :protocol
-
-  attr_accessible :protocol_id
-  attr_accessible :patent_number
-  attr_accessible :inventors
 end
-

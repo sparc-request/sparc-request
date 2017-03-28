@@ -50,7 +50,7 @@ RSpec.describe Dashboard::SubServiceRequestsController do
         expect(assigns(:portal)).to eq(true)
         expect(assigns(:review)).to eq(true)
       end
-      
+
       it { is_expected.to render_template "dashboard/sub_service_requests/show" }
       it { is_expected.to respond_with :ok }
     end
@@ -115,9 +115,9 @@ RSpec.describe Dashboard::SubServiceRequestsController do
         before :each do
           xhr :get, :show, id: @sub_service_request.id, arm_id: @arm.id, page: 1, format: :js
         end
-        
+
         it 'should be assigned' do
-          expect(session[:service_calendar_pages]).to eq({@arm.id => 1})
+          expect(session[:service_calendar_pages]).to eq(@arm.id.to_s => "1")
         end
 
         it { is_expected.to render_template "dashboard/sub_service_requests/show" }

@@ -21,11 +21,6 @@
 class CreatePastSubsidies < ActiveRecord::Migration
 
   class PastSubsidy < ActiveRecord::Base
-    attr_accessible :pi_contribution
-    attr_accessible :sub_service_request_id
-    attr_accessible :total_at_approval
-    attr_accessible :approved_by
-    attr_accessible :approved_at
   end
 
   def change

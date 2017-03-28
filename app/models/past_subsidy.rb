@@ -24,12 +24,6 @@ class PastSubsidy < ActiveRecord::Base
   belongs_to :sub_service_request
   belongs_to :approver, class_name: 'Identity', foreign_key: "approved_by"
 
-  attr_accessible :sub_service_request_id
-  attr_accessible :total_at_approval
-  attr_accessible :percent_subsidy
-  attr_accessible :approved_by
-  attr_accessible :approved_at
-
   default_scope { order('approved_at ASC') }
 
   def pi_contribution

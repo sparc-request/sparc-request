@@ -1071,6 +1071,10 @@ en:
     PIs: "PI(s)"
     protocol: "Queued Protocol"
     status: "Last Queue Status"
+    created_at: 'Current Queue Date'
+    send: 'Send'
+    by: 'By'
+    sent_protocols: 'Sent Protocols'
   footer:
     mail_to: "hundc@musc.edu"
     mail_link: "Sign Up For the SPARC Request Listserv"
@@ -1280,7 +1284,6 @@ en:
     remove_service: "Are you sure that you want to remove this service from all subjects' visit calendars in this arm?"
     service_delete_confirm: "Are you sure that you want to remove this service from all subjects' visit calendars?"
     subsidy: "Value is over maximum subsidy percentage."
-  has_fulfillments: "This line item has one or more fulfillments associated with it and can not be deleted."
   in_fulfillment: "This line item is associated with a request that is in Fulfillment and cannot be deleted."
   js_confirm: "Are you sure?"
   notifications_js:

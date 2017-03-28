@@ -23,13 +23,8 @@ class ImpactArea < ActiveRecord::Base
 
   belongs_to :protocol
 
-  attr_accessible :protocol_id
-  attr_accessible :name
-  attr_accessible :other_text
-  attr_accessible :new
   attr_accessor :new
   attr_accessor :position
 
   TYPES = IMPACT_AREAS
 end
-

@@ -51,6 +51,7 @@
               .input-group.col-sm-7
                 %span.input-group-addon $
                 = form.text_field :pi_contribution, { class: 'form-control', value: (cents_to_dollars_float(subsidy.pi_contribution)).to_s }
+
             .row
               .col-md-12
                 %table.table.table-condensed.table-bordered
@@ -61,6 +62,11 @@
                           = t(:subsidies)[:form][:cost]
                       %td.col-sm-7.text-right#subsidy_form_table_subsidy_cost{ data: { cost: subsidy.current_cost } }
                         = number_to_currency(subsidy.current_cost)
+            .form-group
+              = form.label :pi_contribution, t(:subsidies)[:form][:pi], class: "col-sm-4 control-label"
+              .input-group.col-sm-7
+                %span.input-group-addon $
+                = form.text_field :pi_contribution, { class: 'form-control', value: (cents_to_dollars_float(subsidy.pi_contribution)).to_s }
             .modal-footer
               %button.btn.btn-default{ type: 'button', data: { dismiss: 'modal' } }
                 = t(:actions)[:close]

@@ -17,28 +17,27 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+class Dashboard::EpicQueueRecordsController < Dashboard::BaseController
+  before_action :authorize_overlord
 
-$(document).ready ->
+  def index
+    @epic_queue_records = EpicQueueRecord.with_valid_protocols
+    respond_to do |format|
+      format.json
+    end
+  end
 
-  $('.epic-queue-table').bootstrapTable()
-  $('.epic-queue-records-table').bootstrapTable()
-
-  $(document).on 'click', '.delete-epic-queue-button', ->
-    if confirm(I18n['epic_queues']['confirm'])
-      eq_id = $(this).data('epic-queue-id')
-      $.ajax
-        type: 'DELETE'
-        url: "/dashboard/epic_queues/#{eq_id}.js"
-
-  $('.epic-queue-table').on 'dbl-click-row.bs.table', (row, $element, field) ->
-    protocolId = $element.protocol_id
-    window.open("/dashboard/protocols/#{protocolId}")
-
-  $(document).on 'click', '.push-to-epic', (e) ->
-    e.preventDefault()
-    protocol_id = $(this).data('protocol-id')
-    $.ajax
-      type: 'GET'
-      url: "/protocols/#{protocol_id}/push_to_epic.js?from_portal=true"
-
+  private
+  # Check to see if user has rights to view epic queues
+  def authorize_overlord
+    unless QUEUE_EPIC_EDIT_LDAP_UIDS.include?(@user.ldap_uid)
+      @epic_queues = nil
+      @epic_queue = nil
+      render partial: 'service_requests/authorization_error',
+        locals: { error: 'You do not have access to view the Epic Queues',
+                  in_dashboard: false 
+      }
+    end
+  end
+end
 

@@ -56,7 +56,9 @@ en:
     #  EPIC QUEUES  #
     #################
     epic_queues:
-      header: "Current"
+      headers:
+        current: "Current"
+        past: "Past"
 
     ##################
     #  FULFILLMENTS  #

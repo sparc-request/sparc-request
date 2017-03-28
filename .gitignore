@@ -9,7 +9,6 @@ fulfillment_production.sql
 
 .rvmrc
 .ruby-gemset
-.ruby-version
 .rubocop.yml
 
 # Ignore bundler config
@@ -67,7 +66,6 @@ fixit.sql
 
 db/imports/*
 config/deploy/*.rb
-.ruby-gemset
 
 Procfile
 

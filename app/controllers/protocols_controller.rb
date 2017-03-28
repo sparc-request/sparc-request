@@ -172,7 +172,10 @@ class ProtocolsController < ApplicationController
     # rendered will
     push_protocol_to_epic(@protocol)
 
-    render :formats => [:html]
+    respond_to do |format|
+      format.html
+      format.js
+    end
   end
 
   def from_portal?

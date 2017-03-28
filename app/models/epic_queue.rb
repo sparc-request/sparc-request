@@ -22,6 +22,7 @@ class EpicQueue < ActiveRecord::Base
   audited
 
   belongs_to :protocol
+  belongs_to :identity
 
   after_create :update_protocol
 

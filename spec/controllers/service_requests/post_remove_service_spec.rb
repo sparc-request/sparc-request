@@ -26,7 +26,7 @@ RSpec.describe ServiceRequestsController, type: :controller do
   let!(:logged_in_user) { create(:identity) }
 
   before(:each) do
-    allow(controller.request).to receive(:referrer).and_return('http://example.com')
+    allow_any_instance_of(ServiceRequestsController).to receive(:previous_page).and_return('http://example.com')
   end
 
   describe '#remove_service' do

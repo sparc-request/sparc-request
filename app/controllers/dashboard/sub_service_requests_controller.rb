@@ -20,11 +20,11 @@
 
 class Dashboard::SubServiceRequestsController < Dashboard::BaseController
   before_action :find_sub_service_request,  except: :index
-  before_filter :find_service_request,      only: :index
-  before_filter :find_permissions,          only: :index
-  before_filter :find_admin_orgs,           unless: :show_js?
-  before_filter :authorize_protocol,        only: :index
-  before_filter :authorize_admin,           except: :index, unless: :show_js?
+  before_action :find_service_request,      only: :index
+  before_action :find_permissions,          only: :index
+  before_action :find_admin_orgs,           unless: :show_js?
+  before_action :authorize_protocol,        only: :index
+  before_action :authorize_admin,           except: :index, unless: :show_js?
 
   respond_to :json, :js, :html
 
@@ -83,7 +83,7 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
   end
 
   def update
-    if @sub_service_request.update_attributes(params[:sub_service_request])
+    if @sub_service_request.update_attributes(sub_service_request_params)
       @sub_service_request.distribute_surveys if @sub_service_request.is_complete?
       flash[:success] = 'Request Updated!'
     else
@@ -119,7 +119,9 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
     @thead_class      = @portal == 'true' ? 'default_calendar' : 'red-provider'
     page              = params[:page] if params[:page]
 
-    session[:service_calendar_pages] = params[:pages] if params[:pages]
+    if params[:pages]
+      session[:service_calendar_pages] = params[:pages].permit!.to_h
+    end
     session[:service_calendar_pages][arm_id] = page if page && arm_id
 
     @pages = {}
@@ -174,6 +176,38 @@ class Dashboard::SubServiceRequestsController < Dashboard::BaseController
 
 
 private
+
+  def sub_service_request_params
+      params.require(:sub_service_request).permit(:service_request_id,
+        :ssr_id,
+        :organization_id,
+        :owner_id,
+        :status_date,
+        :status,
+        :consult_arranged_date,
+        :nursing_nutrition_approved,
+        :lab_approved,
+        :imaging_approved,
+        :committee_approved,
+        :requester_contacted_date,
+        :in_work_fulfillment,
+        :routing,
+        :documents,
+        :service_requester_id,
+        :requester_contacted_date,
+        :submitted_at,
+        line_items_attributes: [:service_request_id,
+          :sub_service_request_id,
+          :service_id,
+          :optional,
+          :complete_date,
+          :in_process_date,
+          :units_per_quantity,
+          :quantity,
+          :fulfillments_attributes,
+          :displayed_cost,
+          :_destroy])
+  end
 
   def find_sub_service_request
     @sub_service_request = SubServiceRequest.find(params[:id])

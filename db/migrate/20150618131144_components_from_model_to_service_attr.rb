@@ -19,11 +19,8 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 class ComponentsFromModelToServiceAttr < ActiveRecord::Migration
-  
+
   class ServiceLevelComponent < ActiveRecord::Base
-    attr_accessible :service_id
-    attr_accessible :component
-    attr_accessible :position
   end
 
   def up

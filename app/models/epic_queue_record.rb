@@ -22,7 +22,7 @@ class EpicQueueRecord < ActiveRecord::Base
   belongs_to :protocol
   belongs_to :identity
   audited
-
+  
   attr_accessible :protocol_id, :status, :origin, :identity_id
 
   def self.with_valid_protocols

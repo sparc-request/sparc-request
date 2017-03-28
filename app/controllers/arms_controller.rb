@@ -21,9 +21,9 @@
 class ArmsController < ApplicationController
   respond_to :html, :js, :json
 
-  before_filter :initialize_service_request
-  before_filter :authorize_identity
-  before_filter :find_arm, only: [:edit, :update, :destroy]
+  before_action :initialize_service_request
+  before_action :authorize_identity
+  before_action :find_arm, only: [:edit, :update, :destroy]
 
   def index
     @arms           = @service_request.arms
@@ -39,7 +39,7 @@ class ArmsController < ApplicationController
   end
 
   def create
-    arm = Arm.create( params[:arm].merge(protocol_id: params[:protocol_id]) )
+    arm = Arm.create(arm_params.merge(protocol_id: params[:protocol_id]))
 
     if arm.valid?
       flash[:success] = t(:arms)[:created]
@@ -55,7 +55,7 @@ class ArmsController < ApplicationController
   end
 
   def update
-    if @arm.update_attributes( params[:arm] )
+    if @arm.update_attributes(arm_params)
       flash[:success] = t(:arms)[:updated]
     else
       @errors = @arm.errors
@@ -64,11 +64,30 @@ class ArmsController < ApplicationController
 
   def destroy
     @arm.destroy
-    
+
     flash[:alert] = t(:arms)[:destroyed]
   end
 
   private
+
+  def arm_params
+    params.require(:arm).permit(:name,
+      :visit_count,
+      :subject_count,
+      :new_with_draft,
+      :protocol_id,
+      :minimum_visit_count,
+      :minimum_subject_count,
+      subjects_attributes: [:name,
+        :mrn,
+        :dob,
+        :gender,
+        :ethnicity,
+        :external_subject_id,
+        :status,
+        :arm_edited,
+        :_destroy])
+  end
 
   def find_arm
     @arm = Arm.find( params[:id] )

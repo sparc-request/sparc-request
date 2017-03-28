@@ -25,13 +25,6 @@ class InvestigationalProductsInfo < ActiveRecord::Base
   audited
 
   belongs_to :protocol
-
-  attr_accessible :protocol_id
-  attr_accessible :ind_number
-  attr_accessible :inv_device_number
-  attr_accessible :exemption_type
-  attr_accessible :ind_on_hold
-
   validates :exemption_type, inclusion: { in: EXEMPTION_TYPES, message: "not among #{EXEMPTION_TYPES.map(&:upcase).join(', ')}" }
   validate :inv_device_number_present_when_exemption_type_present
 

@@ -74,6 +74,11 @@ $(document).ready ->
     validate_numbers_only(this)
   )
 
+  $(document).on 'change', '.rate_field', ->
+    if $(this).val() == ''
+      service_rate = $(this).closest('fieldset').find('.service_rate').val()
+      $(this).val(service_rate)
+
   $('.apply_federal_to_all_link').live('click', ->
     federal_value = $(this).closest('tr').siblings('.federal_row').find('.federal_percentage_field').val()
     $(this).closest('tr').siblings('.corporate_row').find('.corporate_percentage_field').val(federal_value).change()

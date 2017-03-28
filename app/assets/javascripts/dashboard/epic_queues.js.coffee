@@ -21,6 +21,7 @@
 $(document).ready ->
 
   $('.epic-queue-table').bootstrapTable()
+  $('.epic-queue-records-table').bootstrapTable()
 
   $(document).on 'click', '.delete-epic-queue-button', ->
     if confirm(I18n['epic_queues']['confirm'])
@@ -28,3 +29,16 @@ $(document).ready ->
       $.ajax
         type: 'DELETE'
         url: "/dashboard/epic_queues/#{eq_id}.js"
+
+  $('.epic-queue-table').on 'dbl-click-row.bs.table', (row, $element, field) ->
+    protocolId = $element.protocol_id
+    window.open("/dashboard/protocols/#{protocolId}")
+
+  $(document).on 'click', '.push-to-epic', (e) ->
+    e.preventDefault()
+    protocol_id = $(this).data('protocol-id')
+    $.ajax
+      type: 'GET'
+      url: "/protocols/#{protocol_id}/push_to_epic.js?from_portal=true"
+
+

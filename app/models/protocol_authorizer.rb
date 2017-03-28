@@ -28,7 +28,7 @@ class ProtocolAuthorizer
     # NOTE @can_edit memoized; use #nil? since @can_edit is a boolean.
     # !! maps truthy and falsey values to true and false
     if @can_edit.nil?
-      @can_edit = !!(@protocol && @identity && roles_for_edit.any?)
+      @can_edit = !!(@protocol && @identity && @identity.can_edit_protocol?(@protocol))
     else
       @can_edit
     end
@@ -38,24 +38,10 @@ class ProtocolAuthorizer
     # NOTE @can_view memoized; use #nil? since @can_view is a boolean.
     # !! maps truthy and falsey values to true and false
     if @can_view.nil?
-      @can_view = !!(@protocol && @identity &&
-        (self.can_edit? || roles_for_view.any?))
+      @can_view = !!(@protocol && @identity && 
+        (@can_edit || @identity.can_view_protocol?(@protocol)))
     else
       @can_view
     end
-  end
-
-  private
-
-  # 'approve' or 'request' ProjectRoles associating @user and @protocol
-  def roles_for_edit
-    @protocol.project_roles.where(identity_id: @identity.id,
-      project_rights: ['approve', 'request'])
-  end
-
-  # 'view' ProjectRoles associating @user and @protocol
-  def roles_for_view
-    @protocol.project_roles.where(identity_id: @identity.id,
-      project_rights: 'view')
   end
 end

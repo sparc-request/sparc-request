@@ -24,8 +24,6 @@ class Calendar < ActiveRecord::Base
   belongs_to :subject
   has_many :appointments, :dependent => :destroy
 
-  attr_accessible :appointments_attributes
-
   accepts_nested_attributes_for :appointments
 
   def populate(visit_groups)

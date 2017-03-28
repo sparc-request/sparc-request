@@ -64,7 +64,7 @@ class Dashboard::ArmsController < Dashboard::BaseController
   def update
     @service_request = ServiceRequest.find(params[:service_request_id])
     @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
-    if @arm.update_attributes(params[:arm])
+    if @arm.update_attributes(arm_params)
       flash[:success] = t(:arms)[:updated]
     else
       @errors = @arm.errors
@@ -84,6 +84,25 @@ class Dashboard::ArmsController < Dashboard::BaseController
   end
 
   private
+
+  def arm_params
+    params.require(:arm).permit(:name,
+      :visit_count,
+      :subject_count,
+      :new_with_draft,
+      :protocol_id,
+      :minimum_visit_count,
+      :minimum_subject_count,
+      subjects_attributes: [:name,
+        :mrn,
+        :dob,
+        :gender,
+        :ethnicity,
+        :external_subject_id,
+        :status,
+        :arm_edited,
+        :_destroy])
+  end
 
   def find_arm
     @arm = Arm.find(params[:id])

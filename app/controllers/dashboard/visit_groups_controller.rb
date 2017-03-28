@@ -35,8 +35,8 @@ class Dashboard::VisitGroupsController < Dashboard::BaseController
   end
 
   def create
-    @arm          = Arm.find(params[:visit_group][:arm_id])
-    @visit_group  = VisitGroup.new(params[:visit_group])
+    @arm          = Arm.find(create_params[:arm_id])
+    @visit_group  = VisitGroup.new(create_params)
 
     if @visit_group.valid?
       if @arm.add_visit(@visit_group.position, @visit_group.day, @visit_group.window_before, @visit_group.window_after, @visit_group.name, 'true')
@@ -52,7 +52,7 @@ class Dashboard::VisitGroupsController < Dashboard::BaseController
   def navigate
     # Used in study schedule management for navigating to a visit group, given an index of them by arm.
     @intended_action = params[:intended_action]
-    
+
     if params[:visit_group_id]
       @visit_group  = VisitGroup.find(params[:visit_group_id])
       @arm          = @visit_group.arm
@@ -63,10 +63,9 @@ class Dashboard::VisitGroupsController < Dashboard::BaseController
   end
 
   def update
-    @arm                            = @visit_group.arm
-    params[:visit_group][:position] = params[:visit_group][:position].to_i - 1
-    
-    if @visit_group.update_attributes(params[:visit_group])
+    @arm = @visit_group.arm
+
+    if @visit_group.update_attributes(update_params)
       flash[:success] = t(:dashboard)[:visit_groups][:updated]
     else
       @errors = @visit_group.errors
@@ -75,7 +74,7 @@ class Dashboard::VisitGroupsController < Dashboard::BaseController
 
   def destroy
     @arm = @visit_group.arm
-    
+
     if @arm.remove_visit(@visit_group.position)
       @arm.decrement!(:minimum_visit_count)
       flash.now[:alert] = t(:dashboard)[:visit_groups][:destroyed]
@@ -85,6 +84,26 @@ class Dashboard::VisitGroupsController < Dashboard::BaseController
   end
 
   private
+
+  def create_params
+    params.require(:visit_group).permit(:name,
+      :position,
+      :arm_id,
+      :day,
+      :window_before,
+      :window_after)
+  end
+
+  def update_params
+    temp = params.require(:visit_group).permit(:name,
+      :position,
+      :arm_id,
+      :day,
+      :window_before,
+      :window_after)
+    temp[:position] = temp[:position].to_i - 1
+    temp
+  end
 
   def find_visit_group
     @visit_group = VisitGroup.find(params[:id])

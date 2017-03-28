@@ -41,7 +41,7 @@ RSpec.describe Dashboard::ArmsController do
         @arm_stub = findable_stub(Arm) { build_stubbed(:arm) }
         allow(@arm_stub).to receive(:update_attributes).and_return(true)
 
-        xhr :put, :update, id: @arm_stub.id, arm: "arm_attributes",
+        xhr :put, :update, id: @arm_stub.id, arm: { name: "some name" },
           service_request_id: sr_stub.id, sub_service_request_id: ssr_stub.id
       end
 
@@ -57,7 +57,8 @@ RSpec.describe Dashboard::ArmsController do
       end
 
       it 'should assign @arm from params[:arm_id] and update it according to params[:arm]' do
-        expect(@arm_stub).to have_received(:update_attributes).with("arm_attributes")
+        expect(@arm_stub).to have_received(:update_attributes).with controller_params(name: "some name")
+
         expect(assigns(:arm)).to eq(@arm_stub)
       end
 
@@ -77,12 +78,12 @@ RSpec.describe Dashboard::ArmsController do
         end
         allow(@arm_stub).to receive(:update_attributes).and_return(false)
 
-        xhr :put, :update, id: @arm_stub.id, arm: 'arm_attributes',
+        xhr :put, :update, id: @arm_stub.id, arm: { name: "a bad name" },
           service_request_id: sr_stub.id, sub_service_request_id: ssr_stub.id
       end
 
       it 'should assign @arm from params[:arm_id] and update it according to params[:arm]' do
-        expect(@arm_stub).to have_received(:update_attributes).with("arm_attributes")
+        expect(@arm_stub).to have_received(:update_attributes).with controller_params(name: "a bad name")
         expect(assigns(:arm)).to eq(@arm_stub)
       end
 

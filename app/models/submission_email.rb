@@ -23,9 +23,6 @@ class SubmissionEmail < ActiveRecord::Base
 
   belongs_to :organization
 
-  attr_accessible :organization_id
-  attr_accessible :email
-  
   validates :email, format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i }
 
 end

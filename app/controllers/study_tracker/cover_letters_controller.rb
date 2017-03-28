@@ -19,8 +19,8 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class StudyTracker::CoverLettersController < StudyTracker::BaseController
-  before_filter :load_sub_service_request
-  before_filter :sanitize_content, only: [:create, :update]
+  before_action :load_sub_service_request
+  before_action :sanitize_content, only: [:create, :update]
 
   def new
     @cover_letter = @sub_service_request.cover_letters.build

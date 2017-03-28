@@ -56,9 +56,9 @@ class NotifierLogic
       request_amendment_ssrs = @previously_submitted_ssrs.select{ |ssr| ssr_has_changed?(ssr) }
 
       destroyed_or_created_ssr = @service_request.previous_submitted_at.nil? ? [] : [@service_request.deleted_ssrs_since_previous_submission, @service_request.created_ssrs_since_previous_submission].flatten
-      # If an existing SSR has had services added/deleted, send a request amendment 
+      # If an existing SSR has had services added/deleted, send a request amendment
       # (If an SSR has been deleted or created, this is also seen in the email)
-      # The destroyed_or_created_ssr determines whether authorized users need a request amendment email 
+      # The destroyed_or_created_ssr determines whether authorized users need a request amendment email
       # regarding the destroyed or newly created SSR
       if !request_amendment_ssrs.empty?
         send_request_amendment(request_amendment_ssrs)
@@ -100,7 +100,7 @@ class NotifierLogic
   end
 
   def send_ssr_service_provider_notifications(sub_service_request, ssr_destroyed: false, request_amendment: false) #single sub-service request
-    previously_submitted_at = sub_service_request.service_request.previous_submitted_at.nil? ? Time.now.utc : sub_service_request.service_request.previous_submitted_at.utc
+    previously_submitted_at = @service_request.previous_submitted_at.nil? ? Time.now.utc : @service_request.previous_submitted_at.utc
     audit_report = request_amendment ? sub_service_request.audit_report(@current_user, previously_submitted_at, Time.now.utc) : nil
 
     sub_service_request.organization.service_providers.where("(`service_providers`.`hold_emails` != 1 OR `service_providers`.`hold_emails` IS NULL)").each do |service_provider|
@@ -129,11 +129,11 @@ class NotifierLogic
 
   private
   def send_notifications(sub_service_requests)
-    # If user has added a new service related to a new ssr and edited an existing ssr, 
+    # If user has added a new service related to a new ssr and edited an existing ssr,
     # we only want to send a request amendment email and not an initial submit email
     send_user_notifications(request_amendment: false) unless @send_request_amendment_and_not_initial
-    send_admin_notifications(sub_service_requests, request_amendment: false) 
-    send_service_provider_notifications(sub_service_requests, request_amendment: false) 
+    send_admin_notifications(sub_service_requests, request_amendment: false)
+    send_service_provider_notifications(sub_service_requests, request_amendment: false)
   end
 
   def send_user_notifications(request_amendment: false)

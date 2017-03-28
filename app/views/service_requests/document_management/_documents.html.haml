@@ -21,6 +21,4 @@
   .page-header
     %h3
       = t(:proper)[:document_management][:documents_notice]
-      %small
-        = t(:proper)[:document_management][:documents_instructions]
   = render 'documents/table', protocol: service_request.protocol, permission_to_edit: true, in_dashboard: false, service_request: service_request

@@ -131,7 +131,7 @@ en:
     # SERVICE SUBSIDY #
     ###################
     service_subsidy:
-      eligible_notice: "The services selected below may be eligible for a <b><i>funding award</i></b> or subsidy to cover some or all of the costs of the services. For example, SCTR (CTSA) provides funding awards for the Research Nexus."
+      eligible_notice: "The services selected below may be eligible for a <b><i>funding award</i></b> or subsidy to cover some or all of the costs of the services."
       not_eligible_notice: "None of the services you have selected are eligible for a subsidy."
       request_funding_notice: "To request additional research funding go to "
       request_funding_link: "sctr.musc.edu"
@@ -142,9 +142,12 @@ en:
     #######################
     document_management:
       documents_notice: "Shared Documents"
-      documents_instructions: "Visible to Authorized Users and selected Service Providers"
       notes_notice: "Notes"
-      notes_instructions: "Important notes for your Study/Project"
+      additional_details_notice: 'Forms'
+      tooltips:
+        documents: "Visible to Authorized Users and selected Service Providers"
+        notes: "Important notes for your Study/Project"
+        additional_details: "Forms to collect additional information related to requesting a service"
 
     ##########
     # REVIEW #

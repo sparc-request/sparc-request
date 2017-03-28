@@ -90,16 +90,15 @@ RSpec.describe CatalogManager::InstitutionsController do
                        internal_rate_type:     'federal',
                        unfunded_rate_type:     'federal',
                        newly_created: 'true'}
-      @params = ActionController::Parameters.new(
-                { id: @organization.id,
+      @params = { id: @organization.id,
                   institution: { name: 'New Institution Name' },
-                  pricing_setups: {blank_pricing_setup: pricing_setup} })
+                  pricing_setups: {blank_pricing_setup: pricing_setup} }
 
       xhr :put, :update, @params, format: :js
     end
 
     it 'should assign @attributes' do
-      expect(assigns(:attributes)).to eq(@params[:institution])
+      expect(assigns(:attributes).symbolize_keys).to eq(@params[:institution])
     end
 
     it 'should assign @organization' do

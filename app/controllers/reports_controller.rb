@@ -23,10 +23,10 @@ class ReportsController < ApplicationController
   protect_from_forgery
   helper_method :current_user
 
-  before_filter :authenticate_identity!
-  before_filter :require_super_user, :only => [:index, :setup, :generate]
-  before_filter :set_user
-  before_filter :set_show_navbar
+  before_action :authenticate_identity!
+  before_action :require_super_user, :only => [:index, :setup, :generate]
+  before_action :set_user
+  before_action :set_show_navbar
 
   def set_highlighted_link
     @highlighted_link ||= 'sparc_report'

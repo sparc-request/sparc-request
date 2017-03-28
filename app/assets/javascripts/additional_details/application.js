@@ -18,7 +18,6 @@
 //= require nprogress
 //= require nprogress-ajax
 //= require json2
-//= require inflection
 //= require underscore-min
 //= require assert
 //= require form_manager

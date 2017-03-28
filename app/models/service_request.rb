@@ -58,13 +58,6 @@ class ServiceRequest < ActiveRecord::Base
     validate :validate_service_calendar
   end
 
-  attr_accessible :protocol_id
-  attr_accessible :status
-  attr_accessible :notes
-  attr_accessible :approved
-  attr_accessible :submitted_at
-  attr_accessible :line_items_attributes
-  attr_accessible :sub_service_requests_attributes
   attr_accessor   :previous_submitted_at
 
   accepts_nested_attributes_for :line_items

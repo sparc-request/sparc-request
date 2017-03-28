@@ -54,14 +54,14 @@ RSpec.describe ServiceRequestsController, type: :controller do
       ssr      = create(:sub_service_request_without_validations, service_request: sr, organization: org)
                  create(:line_item, service_request: sr, sub_service_request: ssr, service: service)
       arm      = create(:arm, protocol: protocol)
-      pages    = { arm.id => '3' }
+      pages    = { arm.id.to_s => '3' }
 
       xhr :get, :service_calendar, {
         id: sr.id,
         pages: pages
       }
 
-      expect(session[:service_calendar_pages]).to eq(pages)
+      expect(session[:service_calendar_pages]).to eq(ActionController::Parameters.new(pages))
     end
 
     context 'does not have line items visits' do

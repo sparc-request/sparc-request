@@ -3,9 +3,9 @@ require 'rails_helper'
 RSpec.describe SubServiceRequest, type: :model do
 
   describe "#distribute_surveys" do
-    before { SubServiceRequest.skip_callback(:save, :after, :update_org_tree) }
-    after { SubServiceRequest.set_callback(:save, :after, :update_org_tree) }
-      
+    before(:each) { SubServiceRequest.skip_callback(:save, :after, :update_org_tree) }
+    after(:each) { SubServiceRequest.set_callback(:save, :after, :update_org_tree) }
+
     context 'we have available surveys' do
       before :each do
         @pi                    = create(:identity)
@@ -15,13 +15,13 @@ RSpec.describe SubServiceRequest, type: :model do
         @service_request      = create(:service_request_without_validations, protocol: @protocol)
         @organization         = create(:organization)
         @survey               = create(:survey, access_code: 'sctr-customer-satisfaction-survey')
-        @sub_service_request  = create(:sub_service_request_without_validations, 
-                                        service_request: @service_request, 
-                                        organization: @organization, 
+        @sub_service_request  = create(:sub_service_request_without_validations,
+                                        service_request: @service_request,
+                                        organization: @organization,
                                         service_requester_id:  @service_requester.id)
         @service              = create(:service_without_validations, organization_id:  @organization.id)
-        @line_item            = create(:line_item_without_validations, 
-                                        service_request_id: @service_request.id,                          
+        @line_item            = create(:line_item_without_validations,
+                                        service_request_id: @service_request.id,
                                         service_id:  @service.id,
                                         sub_service_request_id: @sub_service_request.id)
         @organization.associated_surveys.create survey_id: @survey.id
@@ -51,9 +51,9 @@ RSpec.describe SubServiceRequest, type: :model do
         @service_request      = create(:service_request_without_validations, protocol: @protocol)
         @organization         = create(:organization)
         @survey               = create(:survey, access_code: 'sctr-customer-satisfaction-survey')
-        @sub_service_request  = create(:sub_service_request_without_validations, 
-                                        service_request: @service_request, 
-                                        organization: @organization, 
+        @sub_service_request  = create(:sub_service_request_without_validations,
+                                        service_request: @service_request,
+                                        organization: @organization,
                                         service_requester_id:  @service_requester.id)
       end
 

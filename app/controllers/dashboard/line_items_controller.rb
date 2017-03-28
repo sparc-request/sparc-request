@@ -48,12 +48,12 @@ class Dashboard::LineItemsController < Dashboard::BaseController
   end
 
   def create
-    @sub_service_request = SubServiceRequest.find(params[:line_item][:sub_service_request_id])
+    @sub_service_request = SubServiceRequest.find(line_item_params[:sub_service_request_id])
     @service_request = @sub_service_request.service_request
-    if params[:line_item][:service_id].blank?
+    if line_item_params[:service_id].blank?
       @sub_service_request.errors.add(:service, 'must be selected')
       @errors = @sub_service_request.errors
-    elsif !@sub_service_request.create_line_item(params[:line_item])
+    elsif !@sub_service_request.create_line_item(line_item_params)
       @errors = @sub_service_request.errors
     else
       flash[:success] = t(:dashboard)[:study_level_activities][:created]
@@ -71,7 +71,7 @@ class Dashboard::LineItemsController < Dashboard::BaseController
   def update
     @sub_service_request  = @line_item.sub_service_request
     @otf                  = @line_item.service.one_time_fee
-    success = @line_item.displayed_cost_valid?(params[:line_item][:displayed_cost]) && @line_item.update_attributes(params[:line_item])
+    success = @line_item.displayed_cost_valid?(line_item_params[:displayed_cost]) && @line_item.update_attributes(line_item_params)
 
     respond_to do |format|
       format.js do
@@ -124,7 +124,7 @@ class Dashboard::LineItemsController < Dashboard::BaseController
       updated_service_relations = @line_item.valid_otf_service_relation_quantity?
     end
 
-    if updated_service_relations && @line_item.update_attributes(params[:line_item])
+    if updated_service_relations && @line_item.update_attributes(line_item_params)
       render 'dashboard/sub_service_requests/add_otf_line_item'
     else
       @line_item.reload
@@ -135,6 +135,30 @@ class Dashboard::LineItemsController < Dashboard::BaseController
   end
 
   private
+
+  def line_item_params
+    @line_item_params ||= params.require(:line_item).
+      permit(:service_request_id,
+        :sub_service_request_id,
+        :service_id,
+        :optional,
+        :complete_date,
+        :in_process_date,
+        :units_per_quantity,
+        :quantity,
+        :displayed_cost,
+        fulfillments_attributes: [:line_item_id,
+          :timeframe,
+          :notes,
+          :time,
+          :date,
+          :quantity,
+          :unit_quantity,
+          :quantity_type,
+          :unit_type,
+          :formatted_date,
+          :_destroy])
+  end
 
   def find_line_item
     @line_item = LineItem.find(params[:id])
@@ -147,7 +171,7 @@ class Dashboard::LineItemsController < Dashboard::BaseController
       updated_service_relations = @line_item.valid_otf_service_relation_quantity?
     end
 
-    if updated_service_relations && @line_item.update_attributes(params[:line_item])
+    if updated_service_relations && @line_item.update_attributes(line_item_params)
       render 'dashboard/sub_service_requests/add_line_item'
     else
       @line_item.reload

@@ -29,8 +29,6 @@ class MoveArmsToProtocols < ActiveRecord::Migration
   end
 
   class Arm < ActiveRecord::Base
-    attr_accessible :protocol_id
-    attr_accessible :service_request_id
     belongs_to :service_request
     belongs_to :protocol
   end

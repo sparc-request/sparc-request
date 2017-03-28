@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 class StudyTypeController < ApplicationController
-  before_filter :extract_answers,               only: [:determine_study_type_note]
+  before_action :extract_answers,               only: [:determine_study_type_note]
 
   def determine_study_type_note
     @note = StudyTypeFinder.new(nil, @study_type_answers).determine_study_type_note

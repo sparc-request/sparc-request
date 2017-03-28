@@ -147,8 +147,6 @@ RSpec.describe "filters", js: :true do
 
         f = ProtocolFilter.create(search_name: "MyFilter",
           show_archived: true,
-          for_admin: false,
-          for_identity_id: true,
           search_query: "",
           with_status: ['ctrc_approved', 'complete'])
         f.identity = user

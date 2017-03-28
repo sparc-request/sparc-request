@@ -222,12 +222,18 @@ class Identity < ActiveRecord::Base
     ssr.can_be_edited? && has_correct_project_role?(ssr)
   end
 
-  def has_correct_project_role? request
-    protocol = request.protocol
-
-    protocol.project_roles.where(identity_id: self.id, project_rights: ['approve', 'request']).any?
+  def has_correct_project_role?(request)
+    can_edit_protocol?(request.protocol)
   end
 
+  def can_view_protocol?(protocol)
+    protocol.project_roles.where(identity_id: self.id, project_rights: ['view', 'approve', 'request']).any?
+  end
+
+  def can_edit_protocol?(protocol)
+    protocol.project_roles.where(identity_id: self.id, project_rights: ['approve', 'request']).any?
+  end
+  
   # Determines whether this identity can edit a given organization's information in CatalogManager.
   # Returns true if this identity's catalog_manager_organizations includes the given organization.
   def can_edit_entity? organization, deep_search=false

@@ -21,7 +21,6 @@
 en:
   additional_details:
     additional_details_title: 'Form Functionality'
-    document_page_header: 'Form Functionality Submissions'
     label: 'Form Functionality'
     add: 'Add New Form'
     preview_title: 'Form Functionality Survey Preview'
@@ -51,7 +50,7 @@ en:
     take_additional_detail_survey: "Take Form Functionality Survey for %{service_name}"
     complete_or_view: 'Complete/View'
     completed: 'Completed'
-    document_complete_details: 'Complete Form Functionality'
+    document_complete_details: 'Complete Form'
 
     submissions:
       header: "Form Functionality Submissions"

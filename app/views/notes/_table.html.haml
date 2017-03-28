@@ -22,7 +22,7 @@
     #notes-custom-toolbar
       %button.btn.btn-success#note-new{ data: { notable_id: notable_id, notable_type: notable_type } }
         = t(:notes)[:add]
-  %table.table-striped#notes-table{ data: { toggle: 'table', search: "true", "show-columns" => "true", "show-refresh" => "true", "show-toggle" => "true", url: notes_path(format: :json, note: { notable_id: notable_id, notable_type: notable_type }), striped: "true", toolbar: "#notes-custom-toolbar", "show-export" => "false", "export-types" => ['excel'] } }
+  %table.table-striped#notes-table{ data: { toggle: 'table', url: notes_path(format: :json, note: { notable_id: notable_id, notable_type: notable_type }), striped: "true", toolbar: "#notes-custom-toolbar" } }
     %thead.primary-header
       %tr
         %th{ data: { class: 'user', align: "left", sortable: "true", field: "user" } }

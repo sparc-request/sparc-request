@@ -24,6 +24,8 @@ class StudyTypeController < ApplicationController
     @note = StudyTypeFinder.new(nil, @study_type_answers).determine_study_type_note
   end
 
+  private
+
   def extract_answers
     extracted_params = params.extract!(:ans1, :ans2, :ans3, :ans4, :ans5)
     boolean_params = extracted_params.transform_values {|val| val.to_s.eql?('true') ? true : val.eql?('') ? nil : false}

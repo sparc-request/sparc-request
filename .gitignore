@@ -9,6 +9,7 @@ fulfillment_production.sql
 
 .rvmrc
 .ruby-gemset
+.ruby-version
 .rubocop.yml
 
 # Ignore bundler config

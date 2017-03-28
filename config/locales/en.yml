@@ -494,6 +494,11 @@ en:
       percent: "Percent Subsidy:"
       pi: "PI Contribution:"
       cost: "Subsidy Cost:"
+    tooltips:
+      request_cost: "Total cost of services eligible for a subsidy"
+      percent: "Percent of Current Request Cost to be covered by Service Provider"
+      pi: "Amount PI is responsible to provide to Service Provider"
+      cost: "Amount of Current Request Cost to be covered by Service Provider"
 
   #############################
   # VALIDATION ERROR MESSAGES #

@@ -110,12 +110,7 @@ build_dependents_selectpicker = (survey_id) ->
     type: 'get'
     url: "/surveyor/surveys/#{survey_id}/update_dependents_list"
     success: (data) ->
-      console.log 'test'
-      console.log $(data.selects)
       $.each data, (question_id, dropdown) ->
-        console.log question_id
-        console.log dropdown
-        console.log
 
         question = $(".question-#{question_id}")
         select = $(question).find('select.select-depender')

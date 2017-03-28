@@ -21,7 +21,7 @@
 class Dashboard::ProtocolsController < Dashboard::BaseController
 
   respond_to :html, :json, :xlsx
-  before_filter :find_protocol,                                   only: [:show, :edit, :update, :update_protocol_type, :display_requests, :archive, :view_details]
+  before_filter :find_protocol,                                   only: [:show, :edit, :update, :update_protocol_type, :display_requests, :archive]
   before_filter :find_admin_for_protocol,                         only: [:show, :edit, :update, :update_protocol_type, :display_requests]
   before_filter :protocol_authorizer_view,                        only: [:show, :view_full_calendar, :display_requests]
   before_filter :protocol_authorizer_edit,                        only: [:edit, :update, :update_protocol_type]

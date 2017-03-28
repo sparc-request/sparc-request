@@ -53,7 +53,7 @@ RSpec.describe "protocols/view_details.html.haml", type: :view do
   describe "view details of a study" do
     before(:each) do
       protocol = create(
-        :study_without_validations_with_question_groups,
+        :study_without_validations_with_questions,
         primary_pi: user,
         research_master_id: 1,
         selected_for_epic: true

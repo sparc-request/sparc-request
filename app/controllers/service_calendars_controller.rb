@@ -36,9 +36,9 @@ class ServiceCalendarsController < ApplicationController
   respond_to :html, :js
   layout false
 
-  before_filter :initialize_service_request,      if: Proc.new{ params[:portal] != 'true' }
-  before_filter :authorize_identity,              if: Proc.new { params[:portal] != 'true' }
-  before_filter :authorize_dashboard_access,      if: Proc.new { params[:portal] == 'true' }
+  before_action :initialize_service_request,      if: Proc.new{ params[:portal] != 'true' }
+  before_action :authorize_identity,              if: Proc.new { params[:portal] != 'true' }
+  before_action :authorize_dashboard_access,      if: Proc.new { params[:portal] == 'true' }
 
   def update
     visit         = Visit.find(params[:visit_id])

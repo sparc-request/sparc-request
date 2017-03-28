@@ -23,17 +23,12 @@ class MovePositionFromVisitToVisitGroup < ActiveRecord::Migration
     has_many :line_items_visits, :dependent => :destroy
     has_many :visit_groups
     has_many :visits, :through => :line_items_visits
-    attr_accessible :visit_count
   end
   class Visit < ActiveRecord::Base
-    attr_accessible :position
-    attr_accessible :visit_group_id
     belongs_to :visit_group
     belongs_to :line_items_visit
   end
   class VisitGroup < ActiveRecord::Base
-    attr_accessible :arm_id
-    attr_accessible :name
     acts_as_list :scope => :arm
   end
   class LineItemsVisit < ActiveRecord::Base

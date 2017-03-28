@@ -40,4 +40,5 @@
       .col-xs-4.text-center.no-padding
         %a.edit-effort-billing-qty{ href: 'javascript:void(0)', data: { name: 'percent_effort_qty', title: t(:calendars)[:pppv][:editable_fields][:percent], value: visit.effort_billing_qty, url: dashboard_visit_path(visit, portal: @portal) } }
 - when 'calendar'
-  = label_tag nil, qty_cost_label(visit.research_billing_qty + visit.insurance_billing_qty, currency_converter(totals_hash["#{visit.id}"])) || "0 - $0.00", class: 'line_item_visit_pricing'
+  .line-item-visit-pricing
+    = qty_cost_label(visit.research_billing_qty + visit.insurance_billing_qty, currency_converter(totals_hash["#{visit.id}"])) || "0 - $0.00"

@@ -26,7 +26,7 @@ class Dashboard::LineItemsVisitsController < Dashboard::BaseController
     @line_items_visit = LineItemsVisit.find( params[:id] )
     @service_request  = ServiceRequest.find( params[:srid] )
 
-    if @line_items_visit.update_attributes( params[:line_items_visit] )
+    if @line_items_visit.update_attributes(line_items_visit_params)
       unless params[:portal] == 'true'
         @service_request.update_attributes(status: 'draft')
         @line_items_visit.sub_service_request.update_attributes(status: 'draft')
@@ -55,5 +55,14 @@ class Dashboard::LineItemsVisitsController < Dashboard::BaseController
         render 'dashboard/sub_service_requests/add_line_item'
       end
     end
+  end
+
+  private
+
+  def line_items_visit_params
+    params.require(:line_items_visit).permit(:arm_id,
+      :line_item_id,
+      :subject_count,
+      :hidden)
   end
 end

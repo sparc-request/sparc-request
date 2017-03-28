@@ -24,8 +24,6 @@ class Note < ActiveRecord::Base
   belongs_to :identity
   belongs_to :notable, polymorphic: true
 
-  attr_accessible :body, :identity_id, :notable_type, :notable_id
-
   validates_presence_of :body, :identity_id
 
   def unique_selector

@@ -29,9 +29,9 @@ class CatalogManager::ProgramsController < CatalogManager::OrganizationsControll
     @path = catalog_manager_program_path
     super
   end
-  
+
   def update
-    @attributes = params[:program]
+    @attributes = organization_params(:program)
     super
   end
 

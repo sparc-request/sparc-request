@@ -70,14 +70,10 @@ $(document).ready ->
     srid = $(this).data('srid')
     editing_ssr = $(this).data('editing-ssr')
     li_count = parseInt($('#line_item_count').val())
-    has_fulfillments = $(this).data('has-fulfillments')
     request_submitted = $(this).data('request-submitted')
     spinner = $('<span class="spinner"><img src="/assets/catalog_manager/spinner_small.gif"/></span>')
 
-    if has_fulfillments == 1
-      $('#modal_place').html($('#has-fulfillments-modal').html())
-      $('#modal_place').modal('show')
-    else if request_submitted == 1
+    if (request_submitted == 1) && (editing_ssr != 1)
       button = $(this)
       $('#modal_place').html($('#request-submitted-modal').html())
       $('#modal_place').modal('show')
@@ -85,17 +81,15 @@ $(document).ready ->
       $('#modal_place .yes-button').on 'click', (e) ->
         button.replaceWith(spinner)
         window.cart.removeService(srid, id, false, spinner)
-    else
-      if editing_ssr == 1 && li_count == 1 # Redirect to the Dashboard if the user deletes the last Service on an SSR
-        $('#modal_place').html($('#remove-request-modal').html())
-        $('#modal_place').modal('show')
+    else if (editing_ssr == 1) && (li_count == 1) && (window.location.pathname.indexOf('catalog') != -1) # Redirect to the Dashboard if the user deletes the last Service on an SSR
+      $('#modal_place').html($('#remove-request-modal').html())
+      $('#modal_place').modal('show')
 
-        $('#modal_place .yes-button').on 'click', (e) ->
-          button.replaceWith(spinner)
-          window.cart.removeService(srid, id, true, spinner)
-      else if li_count == 1 && window.location.pathname.indexOf('catalog') == -1 # Do not allow the user to remove the last service except in the catalog
-        $('#modal_place').html($('#line-item-required-modal').html())
-        $('#modal_place').modal('show')
-      else
-        $(this).replaceWith(spinner)
-        window.cart.removeService(srid, id, false, spinner)
+      $('#modal_place .yes-button').on 'click', (e) ->
+        window.cart.removeService(srid, id, true, spinner)
+    else if (li_count == 1) && (window.location.pathname.indexOf('catalog') == -1) # Do not allow the user to remove the last service except in the catalog
+      $('#modal_place').html($('#line-item-required-modal').html())
+      $('#modal_place').modal('show')
+    else
+      $(this).replaceWith(spinner)
+      window.cart.removeService(srid, id, false, spinner)

@@ -144,6 +144,10 @@ en:
       documents_notice: "Shared Documents"
       notes_notice: "Notes"
       additional_details_notice: 'Forms'
+      tooltips:
+        documents: "Visible to Authorized Users and selected Service Providers"
+        notes: "Important notes for your Study/Project"
+        additional_details: "Forms to collect additional information related to requesting a service"
 
     ##########
     # REVIEW #

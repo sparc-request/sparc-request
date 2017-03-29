@@ -113,8 +113,7 @@ module CapybaraSupport
       otf_unit_type:                'Week',
       full_rate:                    4500.0000,
       exclude_from_indirect_cost:   0,
-      unit_minimum:                 1,
-      unit_type:                    'self')
+      unit_minimum:                 1)
     program_service_pricing_map.save!
 
     program_service = create(:service,
@@ -138,8 +137,7 @@ module CapybaraSupport
       otf_unit_type:                'Week',
       full_rate:                    4500.0000,
       exclude_from_indirect_cost:   0,
-      unit_minimum:                 1,
-      unit_type:                    'self')
+      unit_minimum:                 1)
     service_pricing_map.save!
 
     service = create(:service,
@@ -220,8 +218,7 @@ module CapybaraSupport
       unit_factor:                  1,
       full_rate:                    4500.0000,
       exclude_from_indirect_cost:   0,
-      unit_minimum:                 1,
-      unit_type:                    'Each')
+      unit_minimum:                 1)
     core_service_pricing_map.save!
 
     core_service = create(:service,

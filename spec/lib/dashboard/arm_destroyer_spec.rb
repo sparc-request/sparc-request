@@ -21,10 +21,12 @@
 require "rails_helper"
 
 RSpec.describe Dashboard::ArmDestroyer do
+  before(:each) { SubServiceRequest.skip_callback(:save, :after, :update_org_tree) }
+  after(:each) { SubServiceRequest.set_callback(:save, :after, :update_org_tree) }
+
   describe "#destroy" do
     context "Arm only Arm for ServiceRequest" do
       before(:each) do
-        SubServiceRequest.skip_callback(:save, :after, :update_org_tree)
         # build out a Protocol with PPPV LineItems, one Arm
         protocol = create(:protocol_without_validations)
         arm = create(:arm, :without_validations, protocol: protocol)
@@ -51,7 +53,6 @@ RSpec.describe Dashboard::ArmDestroyer do
 
     context "Arm not only Arm for ServiceRequest" do
       before(:each) do
-        SubServiceRequest.skip_callback(:save, :after, :update_org_tree)
         # build out a Protocol with PPPV LineItems, one Arm
         protocol = create(:protocol_without_validations)
         arm1 = create(:arm, :without_validations, protocol: protocol)
@@ -81,7 +82,6 @@ RSpec.describe Dashboard::ArmDestroyer do
   # these attribute accessors should be nil until #destroy invoked
   describe "#sub_service_request" do
     before(:each) do
-      SubServiceRequest.skip_callback(:save, :after, :update_org_tree)
       # build out a Protocol with PPPV LineItems, one Arm
       protocol = create(:protocol_without_validations)
       arm = create(:arm, :without_validations, protocol: protocol)
@@ -111,7 +111,6 @@ RSpec.describe Dashboard::ArmDestroyer do
 
   describe "#service_request" do
     before(:each) do
-      SubServiceRequest.skip_callback(:save, :after, :update_org_tree)
       # build out a Protocol with PPPV LineItems, one Arm
       protocol = create(:protocol_without_validations)
       arm = create(:arm, :without_validations, protocol: protocol)

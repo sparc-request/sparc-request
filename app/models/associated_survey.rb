@@ -24,10 +24,10 @@ class AssociatedSurvey < ActiveRecord::Base
   belongs_to :survey
   belongs_to :surveyable, polymorphic: true
   
-  attr_accessible :surveyable_id
-  attr_accessible :surveyable_type
-  attr_accessible :survey_id
-
-  validates :surveyable_type,
+  validates :surveyable_id,
+            :surveyable_type,
+            :survey_id,
             presence: true
+
+  validates_uniqueness_of :survey_id, scope: [:surveyable_id, :surveyable_type]
 end

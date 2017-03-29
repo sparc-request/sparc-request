@@ -23,7 +23,7 @@ class ApplicationController < ActionController::Base
   helper :all
   helper_method :current_user
   helper_method :xeditable?
-  before_filter :set_highlighted_link  # default is to not highlight a link
+  before_action :set_highlighted_link  # default is to not highlight a link
   before_action :configure_permitted_parameters, if: :devise_controller?
 
   protected

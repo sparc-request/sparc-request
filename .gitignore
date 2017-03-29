@@ -67,7 +67,6 @@ fixit.sql
 
 db/imports/*
 config/deploy/*.rb
-.ruby-gemset
 
 Procfile
 

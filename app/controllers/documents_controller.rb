@@ -21,10 +21,10 @@
 class DocumentsController < ApplicationController
   respond_to :html, :js, :json
 
-  before_filter :initialize_service_request
-  before_filter :authorize_identity
-  before_filter :find_document,             only: [:edit, :update, :destroy]
-  before_filter :find_protocol,             only: [:index, :new, :create, :update]
+  before_action :initialize_service_request
+  before_action :authorize_identity
+  before_action :find_document,             only: [:edit, :update, :destroy]
+  before_action :find_protocol,             only: [:index, :new, :create, :update]
 
   def index
     @documents = @protocol.documents
@@ -37,7 +37,7 @@ class DocumentsController < ApplicationController
   end
 
   def create
-    @document = @protocol.documents.create( params[:document] )
+    @document = @protocol.documents.create( document_params )
 
     if @document.valid?
       assign_organization_access
@@ -56,7 +56,7 @@ class DocumentsController < ApplicationController
   end
 
   def update
-    if @document.update_attributes(params[:document])
+    if @document.update_attributes(document_params)
       assign_organization_access
 
       flash.now[:success] = t(:documents)[:updated]
@@ -72,6 +72,14 @@ class DocumentsController < ApplicationController
   end
 
   private
+
+  def document_params
+    params.require(:document).permit(:document,
+      :doc_type,
+      :doc_type_other,
+      :sub_service_requests,
+      :protocol_id)
+  end
 
   def find_document
     @document = Document.find(params[:id])

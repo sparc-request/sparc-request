@@ -54,24 +54,6 @@ class Service < ActiveRecord::Base
   # Surveys associated with this service
   has_many :associated_surveys, as: :surveyable, dependent: :destroy
 
-  attr_accessible :name
-  attr_accessible :abbreviation
-  attr_accessible :order
-  attr_accessible :description
-  attr_accessible :is_available
-  attr_accessible :service_center_cost
-  attr_accessible :cpt_code
-  attr_accessible :eap_id
-  attr_accessible :charge_code
-  attr_accessible :revenue_code
-  attr_accessible :organization_id
-  attr_accessible :send_to_epic
-  attr_accessible :tag_list
-  attr_accessible :revenue_code_range_id
-  attr_accessible :line_items_count
-  attr_accessible :one_time_fee
-  attr_accessible :components
-
   validate :validate_pricing_maps_present
 
   ###############################################
@@ -192,7 +174,9 @@ class Service < ActiveRecord::Base
       if current_maps.empty?
         raise ArgumentError, "Service has no current pricing maps!"
       else
-        pricing_map = current_maps.sort {|a,b| b.display_date <=> a.display_date}.first
+        # If two pricing maps have the same display_date, prefer the most
+        # recently created pricing_map.
+        pricing_map = current_maps.sort {|a,b| [b.display_date, b.id] <=> [a.display_date, a.id]}.first
       end
 
       return pricing_map
@@ -323,4 +307,3 @@ class Service < ActiveRecord::Base
     ["components"]
   end
 end
-

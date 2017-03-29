@@ -20,8 +20,8 @@
 
 class Dashboard::EpicQueuesController < Dashboard::BaseController
 
-  before_filter :get_epic_queue, only: [:destroy]
-  before_filter :authorize_overlord
+  before_action :get_epic_queue, only: [:destroy]
+  before_action :authorize_overlord
 
   def index
     respond_to do |format|

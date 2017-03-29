@@ -34,9 +34,8 @@
           = t(:errors)[:user_note]
         .survey-sections
           - @survey.sections.each_with_index do |section, i|
-            - unless @survey.description.blank? && i == 0
-              %br
-              %br
+            %br
+            %br
             .panel.panel-default.section
               .panel-heading
                 %h4.panel-title

@@ -20,4 +20,4 @@
 $('#modal_place').html("<%= j render 'surveyor/surveys/form/survey_form', survey: @survey, modal_title: @modal_title %>")
 $('#modal_place').modal('show')
 $('.selectpicker').selectpicker()
-set_required_fields()
+$('.survey-table').bootstrapTable('refresh')

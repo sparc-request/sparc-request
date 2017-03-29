@@ -213,7 +213,7 @@ RSpec.describe 'User takes a survey', js: true do
       visit new_surveyor_response_path(access_code: @survey.access_code, sub_service_request_id: @ssr.id)
       wait_for_javascript_to_finish
 
-      all('input').each do |input|
+      all('input[type="checkbox"]').each do |input|
         input.click
       end
 

@@ -51,7 +51,7 @@ $(document).ready ->
 
   ### Survey Form ###
   options = {
-    text: 'text', email: 'text', zipcode: 'text', time: 'text', phone: 'text',
+    text: 'text', email: 'text', zipcode: 'text', time: 'time', phone: 'text',
     textarea: 'textarea', yes_no: 'yes_no', state: 'dropdown', country: 'dropdown',
     date: 'date', number: 'number'
   }

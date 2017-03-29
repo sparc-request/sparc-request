@@ -33,7 +33,7 @@ RSpec.describe Notifier do
       before :each do
         @institution          = create(:institution, name: 'Institution')
         @provider             = create(:provider, parent: @institution, name: 'Provider')
-        @organization         = create(:program, parent: @provider, name: 'Organize Me')
+        @organization         = create(:program, parent: @provider, name: 'Organize')
         @service              = create(:service, organization: @organization, one_time_fee: true)
         @service_provider     = create(:service_provider, identity: identity, organization: @organization)
         @protocol             = create(:project_without_validations, funding_source: 'cash flow', primary_pi: jpl6)

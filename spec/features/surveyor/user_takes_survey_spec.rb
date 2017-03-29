@@ -441,7 +441,7 @@ RSpec.describe 'User takes a survey', js: true do
 
     scenario 'and sees correctly saved value' do
       @q_time = create(:question, section: @section, question_type: 'time', content: 'Time Question')
-      time = Time.parse('2016-06-01 12:34:56')
+      time = Time.now
       
       Timecop.freeze(time) do
         visit new_surveyor_response_path(access_code: @survey.access_code, sub_service_request_id: @ssr.id)
@@ -452,7 +452,7 @@ RSpec.describe 'User takes a survey', js: true do
         click_button 'Submit'
         wait_for_javascript_to_finish
         
-        expect(Time.parse(QuestionResponse.find_by(question_id: @q_time.id).content).strftime("%I:%M %p")).to eq(time.strftime("12:00 AM"))
+        expect(Time.parse(QuestionResponse.find_by(question_id: @q_time.id).content).strftime("%I:%M %p")).to eq(time.strftime("%I:%M %p"))
       end
     end
   end

@@ -21,8 +21,8 @@
 class VisitGroupsController < ApplicationController
   respond_to :json
 
-  before_filter :initialize_service_request
-  before_filter :authorize_identity
+  before_action :initialize_service_request
+  before_action :authorize_identity
 
   def edit
     @visit_group = VisitGroup.find(params[:id])

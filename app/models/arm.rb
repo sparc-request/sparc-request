@@ -31,14 +31,6 @@ class Arm < ActiveRecord::Base
   has_many :visit_groups, -> { order("position") }, :dependent => :destroy
   has_many :visits, :through => :line_items_visits
 
-  attr_accessible :name
-  attr_accessible :visit_count
-  attr_accessible :subject_count      # maximum number of subjects for any visit grouping
-  attr_accessible :new_with_draft     # used for existing arm validations in sparc proper (should always be false unless in first draft)
-  attr_accessible :subjects_attributes
-  attr_accessible :protocol_id
-  attr_accessible :minimum_visit_count
-  attr_accessible :minimum_subject_count
   accepts_nested_attributes_for :subjects, allow_destroy: true
 
   after_save :update_liv_subject_counts
@@ -69,7 +61,7 @@ class Arm < ActiveRecord::Base
 
   def sanitized_name
     # Sanitized for Excel
-    name.gsub(/\[|\]|\*|\/|\\|\?|\:/, ' ').truncate(31) 
+    name.gsub(/\[|\]|\*|\/|\\|\?|\:/, ' ').truncate(31)
   end
 
   def update_liv_subject_counts

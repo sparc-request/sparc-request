@@ -19,18 +19,18 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class Dashboard::DocumentsController < Dashboard::BaseController
-  before_filter :find_document,                   only: [:edit, :update, :destroy]
-  before_filter :find_protocol,                   only: [:index, :new, :create, :edit, :update, :destroy]
-  before_filter :find_admin_for_protocol,         only: [:index, :new, :create, :edit, :update, :destroy]
-  before_filter :protocol_authorizer_view,        only: [:index]
-  before_filter :protocol_authorizer_edit,        only: [:new, :create, :edit, :update, :destroy]
+  before_action :find_document,                   only: [:edit, :update, :destroy]
+  before_action :find_protocol,                   only: [:index, :new, :create, :edit, :update, :destroy]
+  before_action :find_admin_for_protocol,         only: [:index, :new, :create, :edit, :update, :destroy]
+  before_action :protocol_authorizer_view,        only: [:index]
+  before_action :protocol_authorizer_edit,        only: [:new, :create, :edit, :update, :destroy]
 
-  before_filter :authorize_admin_access_document, only: [:edit, :update, :destroy]
+  before_action :authorize_admin_access_document, only: [:edit, :update, :destroy]
 
   def index
     @documents          = @protocol.documents
-    @permission_to_edit = @protocol.project_roles.where(identity: @user, project_rights: ['approve', 'request']).any?
-    permission_to_view  = @protocol.project_roles.where(identity: @user, project_rights: ['approve', 'request', 'view']).any?
+    @permission_to_edit = @user.can_edit_protocol?(@protocol)
+    permission_to_view  = @user.can_view_protocol?(@protocol)
     @admin_orgs         = @user.authorized_admin_organizations
   end
 
@@ -41,7 +41,7 @@ class Dashboard::DocumentsController < Dashboard::BaseController
   end
 
   def create
-    @document = @protocol.documents.create( params[:document] )
+    @document = @protocol.documents.create(document_params)
 
     if @document.valid?
       assign_organization_access
@@ -58,7 +58,7 @@ class Dashboard::DocumentsController < Dashboard::BaseController
   end
 
   def update
-    if @document.update_attributes(params[:document])
+    if @document.update_attributes(document_params)
       assign_organization_access
 
       flash.now[:success] = t(:documents)[:updated]
@@ -69,11 +69,19 @@ class Dashboard::DocumentsController < Dashboard::BaseController
 
   def destroy
     DocumentRemover.new(params[:id])
-    
+
     flash.now[:success] = t(:documents)[:destroyed]
   end
 
   private
+
+  def document_params
+    params.require(:document).permit(:document,
+      :doc_type,
+      :doc_type_other,
+      :sub_service_requests,
+      :protocol_id)
+  end
 
   def find_document
     @document = Document.find(params[:id])

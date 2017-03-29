@@ -24,11 +24,6 @@ class Subsidy < ActiveRecord::Base
   belongs_to :sub_service_request
   has_many :notes, as: :notable
 
-  attr_accessible :sub_service_request_id
-  attr_accessible :overridden
-  attr_accessible :status
-  attr_accessible :percent_subsidy
-
   delegate :organization, :direct_cost_total, to: :sub_service_request, allow_nil: true
   delegate :subsidy_map, to: :organization, allow_nil: true
   delegate :max_dollar_cap, :max_percentage, :default_percentage, to: :subsidy_map, allow_nil: true

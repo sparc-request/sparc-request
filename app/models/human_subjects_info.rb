@@ -21,23 +21,12 @@
 class HumanSubjectsInfo < ActiveRecord::Base
 
   include RemotelyNotifiable
-  
+
   audited
-  
+
   self.table_name = 'human_subjects_info'
 
   belongs_to :protocol
-
-  attr_accessible :protocol_id
-  attr_accessible :nct_number
-  attr_accessible :hr_number
-  attr_accessible :pro_number
-  attr_accessible :irb_of_record
-  attr_accessible :submission_type
-  attr_accessible :irb_approval_date
-  attr_accessible :irb_expiration_date
-  attr_accessible :approval_pending
-
   validates :nct_number, :numericality => {:allow_blank => true, :only_integer => true, :message => "must contain 8 numerical digits"}
   validates :nct_number, :length => {:allow_blank => true, :is => 8, :message => "must contain 8 numerical digits"}
 
@@ -47,4 +36,3 @@ class HumanSubjectsInfo < ActiveRecord::Base
     string += "PRO # #{self.pro_number} " unless pro_number.blank?
   end
 end
-

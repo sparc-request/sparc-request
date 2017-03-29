@@ -22,7 +22,7 @@
     %h4.panel-title.pull-left
       = protocol_panel_header_line(service_request)
     .pull-right
-      - if permission_to_edit
+      - if permission_to_edit || user.catalog_overlord
         %button.btn.btn-warning.btn-sm.edit-service-request{ class: permission_to_edit ? '' : 'disabled', type: 'button', data: { permission: permission_to_edit.to_s, url: modify_request_button_url(service_request) } }
           = t(:dashboard)[:service_requests][:modify_request]
       = link_to t(:dashboard)[:protocols][:service_requests][:coverage_report], service_request_path(service_request, format: :xlsx), class: 'btn btn-sm btn-success'

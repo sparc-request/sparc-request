@@ -117,7 +117,7 @@ RSpec.describe Dashboard::DocumentsController do
         protocol  = create(:protocol_without_validations, primary_pi: other_user)
         document  = create(:document, protocol: protocol)
 
-        xhr :put, :update, id: document.id, format: :js
+        xhr :put, :update, id: document.id, document: { doc_type: 'important' }, format: :js
       end
 
       it { is_expected.to respond_with :ok }
@@ -135,7 +135,7 @@ RSpec.describe Dashboard::DocumentsController do
 
         document.sub_service_requests = [ssr]
 
-        xhr :put, :update, id: document.id, format: :js
+        xhr :put, :update, id: document.id, document: { doc_type: 'important' }, format: :js
       end
 
       it { is_expected.to respond_with :ok }
@@ -147,7 +147,7 @@ RSpec.describe Dashboard::DocumentsController do
         protocol  = create(:protocol_without_validations, primary_pi: other_user)
         document  = create(:document, protocol: protocol)
 
-        xhr :put, :update, id: document.id, format: :js
+        xhr :put, :update, id: document.id, document: { doc_type: 'important' }, format: :js
       end
 
       it { is_expected.to respond_with :ok }

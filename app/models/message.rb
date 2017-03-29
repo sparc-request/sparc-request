@@ -24,14 +24,6 @@ class Message < ActiveRecord::Base
   belongs_to :notification
   belongs_to :sender, :class_name => 'Identity', :foreign_key => 'from'
   belongs_to :recipient, :class_name => 'Identity', :foreign_key => 'to'
-
-  attr_accessible :notification_id
-  attr_accessible :to
-  attr_accessible :from
-  attr_accessible :email
-  attr_accessible :subject
-  attr_accessible :body
-
   validates_presence_of :to, :from, :body
 
   # Simple way to skip the after_save callback for the import process
@@ -41,4 +33,3 @@ class Message < ActiveRecord::Base
   end
 
 end
-

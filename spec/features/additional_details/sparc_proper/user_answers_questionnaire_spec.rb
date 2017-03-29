@@ -31,7 +31,7 @@ RSpec.describe 'User has a questionnaire to complete', js: true do
     end
 
     before :each do
-      click_link 'Complete Form Functionality'
+      click_link 'Complete Form'
       wait_for_javascript_to_finish
     end
 

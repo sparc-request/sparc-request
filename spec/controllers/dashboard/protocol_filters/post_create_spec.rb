@@ -44,7 +44,8 @@ RSpec.describe Dashboard::ProtocolFiltersController do
 
       it "saves the correct attributes for the protocol filter" do
         xhr :post, :create, protocol_filter: @protocol_filter.attributes
-        expect( ProtocolFilter.last.attributes.except( 'id', 'created_at', 'updated_at' ) ).to eq( @protocol_filter.attributes.except( 'id', 'created_at', 'updated_at' ) )
+        expect( ProtocolFilter.last.attributes.except( 'id', 'created_at', 'updated_at' ) ).to eq(
+          "identity_id" => @user.id, "search_name" => "", "show_archived" => nil, "search_query" => "", "with_organization" => [], "with_status" => [], "admin_filter" => "", "with_owner" => [])
       end
 
       it "flashes the correct message" do

@@ -22,21 +22,20 @@ $(document).ready ->
 
   $(document).on "click", "#reporting_return_to_list", (event) ->
     event.preventDefault()
-    $('#defined_reports_step_2').hide()
-    $("#report_selection").show()
+    $('#report-container').hide()
 
-  $(document).on "change", ".reporting_field", ->
+  $(document).on "change", ".reporting-field", ->
     parent_id = "#" + $(this).attr('id')
     window.check_deps(parent_id)
     if $(this).val() != ""
-      $(".check_dep_class.needs_update").each ->
+      $(".check-dep-class.needs_update").each ->
         $(this).removeClass('needs_update')
         $(this).prop('disabled', false)
         cattype = $(parent_id).val()
         optionswitch(cattype, "#" + $(this).attr('id'))
 
-  $(document).on "submit", "#reporting_form", (event) ->
-    empty = $('.required_field').filter ->
+  $(document).on "submit", "#reporting-form", (event) ->
+    empty = $('.required').filter ->
       this.value == ""
 
     if empty.length
@@ -91,7 +90,7 @@ window.create_single_date_pickers = ->
   $(".datetimepicker").datetimepicker(format: 'YYYY-MM-DD', allowInputToggle: true)
 
 window.check_deps = (parent_id) ->
-  $(".check_dep_class").each ->
+  $(".check-dep-class").each ->
     dep = $(this).data("dependency")
     if dep.match(parent_id)
       $(this).addClass("needs_update")

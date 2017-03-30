@@ -17,19 +17,11 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+- required_class  = options[:required] ? 'required' : ''
+- default_classes = ["form-control text-field", required_class]
+- id              = options[:for] ? options[:for] : field.delete(' ').underscore
+- name            = options[:for] ? "report[#{options[:for]}]" : "report[#{id}]"
 
-= javascript_include_tag 'reporting'
-
-#reporting-container.col-lg-10.col-lg-offset-1
-  #report-selection.text-center
-    .page-header
-      %h1
-        = t(:reporting)[:index][:intro]
-        %br
-        %small
-          = t(:reporting)[:index][:subtext]
-
-    - $canned_reports.each do |report|
-      = link_to report.constantize.title, setup_reports_path(report: report), method: :get, remote: true, class: "btn btn-primary btn-lg"
-
-  #report-container
+= label_tag id, field_label, class: ['col-sm-3 control-label', required_class]
+.col-sm-9
+  = text_field_tag name, nil, id: id, class: default_classes, type: "text"

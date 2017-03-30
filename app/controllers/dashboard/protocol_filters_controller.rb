@@ -53,7 +53,7 @@ class Dashboard::ProtocolFiltersController < Dashboard::BaseController
       :search_name,
       :show_archived,
       :admin_filter,
-      :search_query,
+      search_query: [:search_drop, :search_text],
       with_organization: [],
       with_status: [],
       with_owner: [])

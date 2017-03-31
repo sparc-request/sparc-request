@@ -51,9 +51,11 @@
       - (5 - visits.size).times do
         %td &nbsp;
       %td.text-center.pppv-per-patient-line-item-total
-        = display_visit_based_direct_cost(liv)
+        %strong
+          = display_visit_based_direct_cost(liv)
       %td.text-center.pppv-per-study-line-item-total
-        = Dashboard::ServiceCalendars.display_visit_based_direct_cost_per_study(liv)
+        %strong
+          = Dashboard::ServiceCalendars.display_visit_based_direct_cost_per_study(liv)
 
 - unless review or portal
   = render 'service_calendars/master_calendar/pppv/pppv_totals', service_request: service_request, arm: arm, tab: tab, line_items_visits: line_items_visits.flatten

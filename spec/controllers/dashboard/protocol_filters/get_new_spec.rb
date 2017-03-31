@@ -28,14 +28,14 @@ RSpec.describe Dashboard::ProtocolFiltersController do
       @user = build(:identity, protocol_filter_count: 3)
 
       @filterrific = { sorted_by: "id desc",
-                       search_query: "" }
+                       search_query: {search_drop: '', search_text: ''} }
 
       log_in_dashboard_identity(obj: @user)
     end
 
     it "creates the appropriate project filter object" do
       xhr :get, :new, filterrific: @filterrific
-      expect( assigns(:protocol_filter).attributes ).to eq( build(:protocol_filter, identity_id: @user.id, search_query: "").attributes )
+      expect( assigns(:protocol_filter).attributes ).to eq( build(:protocol_filter, identity_id: @user.id, search_query: '{"search_drop"=>"", "search_text"=>""}').attributes )
     end
 
     it "adds the filter to the user's protocol filter list" do

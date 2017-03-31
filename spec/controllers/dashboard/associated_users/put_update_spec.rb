@@ -37,7 +37,7 @@ RSpec.describe Dashboard::AssociatedUsersController do
           build_stubbed(:project_role, protocol: @protocol)
         end
 
-        xhr :put, :update,  id: project_role.id, 
+        xhr :put, :update,  id: project_role.id,
                             protocol_id: @protocol.id
       end
 
@@ -73,7 +73,7 @@ RSpec.describe Dashboard::AssociatedUsersController do
 
       it 'should update @protocol_role using params[:project_role] using ProtocolUpdater' do
         expect(AssociatedUserUpdater).to have_received(:new).
-          with(id: @project_role.id.to_s, project_role: {identity_id: '1'})
+          with controller_params(id: @project_role.id.to_s, project_role: {identity_id: '1'})
       end
 
       it 'should not set @errors' do

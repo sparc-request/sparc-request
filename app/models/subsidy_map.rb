@@ -24,12 +24,6 @@ class SubsidyMap < ActiveRecord::Base
   belongs_to :organization
   has_many :excluded_funding_sources
 
-  attr_accessible :organization_id
-  attr_accessible :max_dollar_cap
-  attr_accessible :max_percentage
-  attr_accessible :default_percentage
-  attr_accessible :instructions
-
   def default_percentage=(percentage)
     write_attribute(:default_percentage, percentage.to_f / 100.0) if percentage.present?
   end

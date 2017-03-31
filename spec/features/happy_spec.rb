@@ -21,7 +21,10 @@
 require 'rails_helper'
 
 RSpec.describe "User submitting a ServiceRequest", js: true do
-  # TODO excerise login process instead of using fake_login_for_each_test
+  def click_add_service_for(service)
+    page.find("button[data-id='#{service.id}']").click
+  end
+
   let!(:user) do
     create(:identity,
            last_name: "Doe",
@@ -69,13 +72,16 @@ RSpec.describe "User submitting a ServiceRequest", js: true do
     find("span", text: core1.name).click
     expect(page).to have_content(otf_service_core_1.name)
     expect(page).to have_content(pppv_service_core_1.name)
-    add_service_buttons = find_all("button", text: /Add/)
-    add_service_buttons[0].click
+    click_add_service_for(otf_service_core_1)
     expect(page).to have_css("a", text: /Yes/)
     find("a", text: /Yes/).click
-    add_service_buttons[1].click
-    expect(page).to have_css("a", text: /Yes/)
-    find("a", text: /Yes/).click
+    within(".shopping-cart") do
+      expect(page).to have_content(otf_service_core_1.abbreviation)
+    end
+    click_add_service_for(pppv_service_core_1)
+    within(".shopping-cart") do
+      expect(page).to have_content(pppv_service_core_1.abbreviation)
+    end
 
     # Add Core 2 Services
     find("span", text: provider_split.name).click
@@ -83,16 +89,15 @@ RSpec.describe "User submitting a ServiceRequest", js: true do
     find("span", text: core2.name).click
     expect(page).to have_content(otf_service_core_2.name)
     expect(page).to have_content(pppv_service_core_2.name)
-    add_service_buttons = find_all("button", text: /Add/)
-    add_service_buttons.each(&:click)
-
-    # Should have all four Services in the cart.
+    click_add_service_for(otf_service_core_2)
     within(".shopping-cart") do
-      expect(page).to have_content(otf_service_core_1.abbreviation)
-      expect(page).to have_content(pppv_service_core_1.abbreviation)
       expect(page).to have_content(otf_service_core_2.abbreviation)
+    end
+    click_add_service_for(pppv_service_core_2)
+    within(".shopping-cart") do
       expect(page).to have_content(pppv_service_core_2.abbreviation)
     end
+
     wait_for_javascript_to_finish
     find("a", text: /Continue/).click
 

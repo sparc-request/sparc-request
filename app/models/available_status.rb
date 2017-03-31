@@ -22,11 +22,7 @@ class AvailableStatus < ActiveRecord::Base
   audited
 
   belongs_to :organization
-  
-  attr_accessible :organization_id
-  attr_accessible :status
-  attr_accessible :new
-  attr_accessible :position
+
   attr_accessor :new
   attr_accessor :position
 

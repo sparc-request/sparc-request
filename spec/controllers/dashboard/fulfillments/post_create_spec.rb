@@ -33,11 +33,11 @@ RSpec.describe Dashboard::FulfillmentsController do
 
         log_in_dashboard_identity(obj: build_stubbed(:identity))
 
-        xhr :post, :create, fulfillment: "fulfillment attributes"
+        xhr :post, :create, fulfillment: { quantity: 5 }
       end
 
       it "should create Fulfillment" do
-        expect(Fulfillment).to have_received(:new).with("fulfillment attributes")
+        expect(Fulfillment).to have_received(:new).with controller_params(quantity: "5")
         expect(@fulfillment).to have_received(:save)
       end
 
@@ -61,11 +61,11 @@ RSpec.describe Dashboard::FulfillmentsController do
 
         log_in_dashboard_identity(obj: build_stubbed(:identity))
 
-        xhr :post, :create, fulfillment: "fulfillment attributes"
+        xhr :post, :create, fulfillment: { quantity: 5 }
       end
 
       it "should attempt to create Fulfillment" do
-        expect(Fulfillment).to have_received(:new).with("fulfillment attributes")
+        expect(Fulfillment).to have_received(:new).with controller_params(quantity: "5")
       end
 
       it "should set @errors" do

@@ -19,7 +19,11 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
 class EpicQueueRecord < ActiveRecord::Base
+  belongs_to :protocol
+  belongs_to :identity
   audited
 
-  attr_accessible :protocol_id, :status, :origin, :identity_id
+  def self.with_valid_protocols
+    joins(:protocol).where.not(protocols: { id: nil } )
+  end
 end

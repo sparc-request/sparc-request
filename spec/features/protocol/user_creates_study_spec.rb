@@ -20,7 +20,7 @@
 
 require 'rails_helper'
 
-RSpec.describe 'User creates project', js: true do
+RSpec.describe 'User creates study', js: true do
   let_there_be_lane
   fake_login_for_each_test
 
@@ -77,6 +77,27 @@ RSpec.describe 'User creates project', js: true do
 
       expect(page).to have_current_path(protocol_service_request_path(@sr))
       expect(Study.count).to eq(1)
+    end
+
+    scenario 'clicks other checkbox and sees text field' do
+      visit protocol_service_request_path(@sr)
+      wait_for_javascript_to_finish
+
+      click_link 'New Research Study'
+      wait_for_javascript_to_finish
+
+      fill_in 'protocol_short_title', with: 'asd'
+      fill_in 'protocol_title', with: 'asd'
+      bootstrap_select '#protocol_funding_status', 'Funded'
+      bootstrap_select '#protocol_funding_source', 'Federal'
+      fill_in 'protocol_sponsor_name', with: 'asd'
+      find('#study_selected_for_epic_false_button').click
+
+      fill_in 'protocol_project_roles_attributes_0_identity_id', with: 'Julia'
+
+      find('#protocol_impact_areas_attributes_7__destroy').click
+
+      expect(page).to have_css('.impact_area_dependent', visible: true)
     end
   end
 end

@@ -11,7 +11,7 @@ class RedcapSurveyEmitter
       :letters => Digest::SHA1.hexdigest(Time.now.usec.to_s)[0..16],
       :name => @feedback.name,
       :email => @feedback.email,
-      :date => @feedback.date.to_datetime.strftime("%Y/%m/%d").gsub('/', '-'),
+      :date => Date.strptime(@feedback.date[0..9], '%m/%d/%Y').strftime("%Y/%m/%d").gsub('/', '-'),
       :typeofrequest => @feedback.typeofrequest,
       :priority => @feedback.priority,
       :browser => @feedback.browser,

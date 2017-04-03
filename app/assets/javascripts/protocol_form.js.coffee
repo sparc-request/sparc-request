@@ -295,7 +295,7 @@ $(document).ready ->
 
 
   ###IMPACT AREAS OTHER FIELD DISPLAY###
-  $(document).on 'change', '#protocol_impact_areas_attributes_6__destroy', ->
+  $(document).on 'change', '#protocol_impact_areas_attributes_7__destroy', ->
     # Impact Areas Other - Checkbox
     switch $(this).attr('checked')
       when 'checked' then $('.impact_area_dependent').show()

@@ -169,6 +169,7 @@ GEM
       safe_yaml (~> 1.0.0)
     css_parser (1.4.10)
       addressable
+    curb (0.9.3)
     daemons (1.2.4)
     database_cleaner (1.5.3)
     delayed_job (4.1.2)
@@ -546,6 +547,7 @@ DEPENDENCIES
   coffee-rails
   connection_pool
   country_select
+  curb (~> 0.9.3)
   database_cleaner
   delayed_job_active_record
   devise (~> 4.2)

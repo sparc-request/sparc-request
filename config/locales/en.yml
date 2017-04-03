@@ -1627,6 +1627,20 @@ en:
     dashboard: "Dashboard"
     faq: "Help/FAQs"
     feedback: "Feedback"
+    feedback:
+      name: 'Name'
+      email: 'Email'
+      date: 'Date'
+      bug: 'Bug'
+      enhancement_feature_request: 'Enhancement/Feature Request'
+      training: 'Training'
+      other: 'Other'
+      immediate_work_stoppage: 'Immediate Work Stoppage'
+      high: 'High'
+      normal: 'Normal'
+      low: 'Low'
+      browser_version: 'Browser Version'
+      prompt: 'Please Choose a Browser'
     redcap_survey: 'https://redcap.musc.edu/surveys/?s=A37TNJWJPL'
 
   # Service Request approve epic rights

@@ -42,6 +42,9 @@ begin
   RESEARCH_MASTER_LINK                      = application_config['research_master_link']
   RESEARCH_MASTER_API                       = application_config['research_master_api']
   RMID_API_TOKEN                            = application_config['rmid_api_token']
+  REDCAP_TOKEN                              = application_config['redcap_token']
+  USE_REDCAP_API                            = application_config['use_redcap_api']
+  REDCAP_API                                = application_config['redcap_api']
   HEADER_LINK_1                             = application_config['header_link_1']
   HEADER_LINK_2_PROPER                      = application_config['header_link_2_proper']
   HEADER_LINK_2_DASHBOARD                   = application_config['header_link_2_dashboard']
@@ -110,6 +113,7 @@ begin
   config                         = YAML::load_file(constant_file)
   ADDITIONAL_DETAIL_QUESTION_TYPES = config['additional_detail_question_types']
   AFFILIATION_TYPES              = config['affiliations']
+  BROWSER_VERSIONS               = config['browser_versions']
   IMPACT_AREAS                   = config['impact_areas']
   EPIC_RIGHTS                    = config['epic_rights']
   EPIC_RIGHTS_INFO               = config['epic_rights_info']

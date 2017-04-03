@@ -20,7 +20,7 @@
 
 require 'directory'
 
-class Identity < ActiveRecord::Base
+class Identity < ApplicationRecord
 
   include RemotelyNotifiable
 

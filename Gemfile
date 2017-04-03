@@ -16,6 +16,7 @@ gem 'capistrano-bundler', require: false
 gem 'capistrano-rvm', require: false
 gem 'capistrano-rails', require: false
 gem 'capistrano-passenger', require: false
+gem 'capistrano3-delayed-job', '~> 1.0'
 gem 'coffee-rails'
 gem 'country_select'
 gem 'delayed_job_active_record'

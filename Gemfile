@@ -11,8 +11,11 @@ gem 'bluecloth'
 gem 'bootstrap-sass'
 gem 'bootstrap-select-rails'
 gem 'bootstrap3-datetimepicker-rails'
-gem 'capistrano'
-gem 'capistrano-ext'
+gem 'capistrano', '~> 3.8'
+gem 'capistrano-bundler', require: false
+gem 'capistrano-rvm', require: false
+gem 'capistrano-rails', require: false
+gem 'capistrano-passenger', require: false
 gem 'coffee-rails'
 gem 'country_select'
 gem 'delayed_job_active_record'
@@ -58,7 +61,6 @@ gem "rails-observers", github: 'rails/rails-observers'
 gem 'redcarpet'
 gem 'remotipart'
 gem 'rest-client'
-gem 'rvm-capistrano', require: false
 gem 'sass'
 gem 'sass-rails'
 gem 'savon', '~> 2.2.0'

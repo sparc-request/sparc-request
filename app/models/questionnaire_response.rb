@@ -1,4 +1,4 @@
-class QuestionnaireResponse < ActiveRecord::Base
+class QuestionnaireResponse < ApplicationRecord
   belongs_to :submission
   belongs_to :item
   validates :content, presence: true, if: :required? 

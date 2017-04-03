@@ -310,12 +310,19 @@ class ServiceRequest < ApplicationRecord
     groupings
   end
 
-  def deleted_ssrs_since_previous_submission
-    AuditRecovery.where("audited_changes LIKE '%service_request_id: #{id}%' AND auditable_type = 'SubServiceRequest' AND action = 'destroy' AND created_at BETWEEN '#{previous_submitted_at.utc}' AND '#{Time.now.utc}'")
+  def deleted_ssrs_since_previous_submission(start_time_at_previous_sub_time=false)
+    ### start_time varies depending on if the submitted_at has been updated or not
+    if start_time_at_previous_sub_time
+      start_time = previous_submitted_at.nil? ? Time.now.utc : previous_submitted_at.utc
+    else
+      start_time = submitted_at.nil? ? Time.now.utc : submitted_at.utc
+    end
+    AuditRecovery.where("audited_changes LIKE '%service_request_id: #{id}%' AND auditable_type = 'SubServiceRequest' AND action = 'destroy' AND created_at BETWEEN '#{start_time}' AND '#{Time.now.utc}'")
   end
 
   def created_ssrs_since_previous_submission
-    AuditRecovery.where("audited_changes LIKE '%service_request_id: #{id}%' AND auditable_type = 'SubServiceRequest' AND action = 'create' AND created_at BETWEEN '#{previous_submitted_at.utc}' AND '#{Time.now.utc}'")
+    start_time = submitted_at.nil? ? Time.now.utc : submitted_at.utc
+    AuditRecovery.where("audited_changes LIKE '%service_request_id: #{id}%' AND auditable_type = 'SubServiceRequest' AND action = 'create' AND created_at BETWEEN '#{start_time}' AND '#{Time.now.utc}'")
   end
 
   def previously_submitted_ssrs
@@ -426,32 +433,13 @@ class ServiceRequest < ApplicationRecord
 
   # Change the status of the service request and all the sub service
   # requests to the given status.
-  def update_status(new_status, use_validation=true, submit=false)
+  def update_status(new_status)
     to_notify = []
-    self.assign_attributes(status: new_status)
-
+    update_attribute(:status, new_status)
     sub_service_requests.each do |ssr|
-      next unless ssr.can_be_edited?
-      available = AVAILABLE_STATUSES.keys
-      editable = EDITABLE_STATUSES[ssr.organization_id] || available
-      changeable = available & editable
-
-      if changeable.include?(new_status)
-        if (ssr.status != new_status) && (UPDATABLE_STATUSES.include?(ssr.status) || !submit)
-          ssr.update_attribute(:status, new_status)
-          # Do not notify (initial submit email) if ssr has been previously submitted
-          if new_status == 'submitted'
-            to_notify << ssr.id unless ssr.previously_submitted?
-          else
-            to_notify << ssr.id
-          end
-        end
-      end
+      to_notify << ssr.update_status_and_notify(new_status)
     end
-
-    self.save(validate: use_validation)
-
-    to_notify
+    to_notify.flatten
   end
 
   # Make sure that all the sub service requests have an ssr id

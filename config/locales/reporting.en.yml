@@ -31,3 +31,10 @@ en:
     index:
       intro: "Welcome to the SPARCRequest Reporting Module"
       subtext: "Please select a report type to proceed"
+
+    ###########
+    # ACTIONS #
+    ###########
+    actions:
+      create: "Create Report"
+      return: "Return to Reports List"

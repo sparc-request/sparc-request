@@ -22,8 +22,7 @@
   - records         = field.where(options[:filters])
   - dependency      = options[:dependency]
   - required_class  = options[:required] ? 'required' : ''
-  - select_class    = options[:selectpicker] ? 'selectpicker' : ''
-  - default_classes = ['form-control reporting-field', required_class, select_class]
+  - default_classes = ['form-control reporting-field selectpicker', required_class]
   - check_dep_class = dependency ? 'check-dep-class' : ''
   - id              = options[:for] || "#{field.name.underscore}_id"
   - name            = options[:for] ? "report[#{options[:for]}]" : "report[#{field.name.underscore}_id]"

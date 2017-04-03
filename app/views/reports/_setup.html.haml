@@ -17,61 +17,19 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 %h2.report-title.text-center.bg-primary
-  = @report.title
-
+  = report.title
 = form_tag generate_reports_path, id: 'reporting-form', class: "form-horizontal" do
-  = hidden_field_tag 'report[type]', @report.class.name
-
+  = hidden_field_tag 'report[type]', report.class.name
   #report-fields
-    - @report.options.each do |field, options|
+    - report.options.each do |field, options|
       .form-group
         - field_type  = options[:field_type] || 'text_field_tag'
         - field_label = options[:field_label] || field.to_s.titleize
 
-        = render "reports/form_partials/#{options[:field_type]}_form_partial", options: options, field_label: field_label
-
-        /* check_box_tag */
-        - if field_type == :check_box_tag
-          - multiple = options[:multiple]
-          - grouping = options[:grouping]
-          - selected = options[:selected] || []
-          - default_classes = options[:required] ? "required" : ""
-          - name = options[:for] ? "report[#{options[:for]}]" : "report[#{field.name.underscore}_id]"
-          - name += "[]" if multiple
-          %label.col-sm-3.control-label= field_label
-
-          - if grouping and multiple # we have a defined grouping
-            .col-sm-9
-              - grouping.each do |k,v|
-                .row
-                  %fieldset
-                    %legend= k
-                    - v.each do |sv|
-                      %label{:for => sv, :class => 'checkbox-inline'}
-                        = check_box_tag name, sv, selected.include?(sv), :class => default_classes, :type => "checkbox"
-                        = multiple[sv]
-
-          - elsif multiple
-            - if multiple.is_a? Hash
-              .col-sm-9
-                - multiple.each do |k,v|
-                  %label{:for => k, :class => 'checkbox-inline'}
-                    = check_box_tag name, k, selected.include?(v), :class => default_classes, :type => "checkbox"
-                    = v
-
-          - else # for individual checkboxes that have true/false
-            / %label{:for => options[:for]}= field_label
-            .col-sm-9
-              = check_box_tag name, true, nil, :class => default_classes, :type => "checkbox"
-            /* TODO define behavior if multiple is a method or string representation of method chain */
-
-        /* end check_box_tag */
-
-  /* submit button */
-  .report_actions.text-center
-    = submit_tag t(:reports)[:create_report], :class => "btn btn-success"
-    = button_to "Return to reports list", reports_path, :method => :get, :id => "reporting_return_to_list", :class => "btn btn-primary"
+        = render "reports/form_partials/#{options[:field_type]}_form_partial", options: options, field_label: field_label, field: field
+  .report-actions.text-center
+    = submit_tag t(:reporting)[:actions][:create], class: "btn btn-success"
+    = button_to t(:reporting)[:actions][:return], reports_path, method: :get, id: "reporting_return_to_list", class: "btn btn-primary"
 %br
 %br

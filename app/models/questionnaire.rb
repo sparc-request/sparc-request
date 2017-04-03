@@ -1,4 +1,4 @@
-class Questionnaire < ActiveRecord::Base
+class Questionnaire < ApplicationRecord
   belongs_to :service
   has_many :items, dependent: :destroy
   has_many :submissions, dependent: :destroy

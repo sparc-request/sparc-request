@@ -36,7 +36,7 @@ class NotifierLogic
   end
 
   def update_ssrs_and_send_emails
-    # Authorized users will need only a request amendment and not an initial submission email when ssrs have been destroyed or created.
+    # @to_notify holds the SSRs that require an "initial submission" email
     @send_request_amendment_and_not_initial = @ssrs_updated_from_un_updatable_status.present? || @destroyed_ssrs_needing_notification.present? || @created_ssrs_needing_notification.present?
     @to_notify = []
     if @sub_service_request

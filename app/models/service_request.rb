@@ -431,8 +431,8 @@ class ServiceRequest < ApplicationRecord
     services.joins(:questionnaires).where(questionnaires: { active: true })
   end
 
-  # Change the status of the service request and all the sub service
-  # requests to the given status.
+  # Returns the SSR ids that need an initial submission email, updates the SR status,
+  # and updates the SSR status to new status if appropriate
   def update_status(new_status)
     to_notify = []
     update_attribute(:status, new_status)

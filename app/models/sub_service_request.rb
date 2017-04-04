@@ -282,6 +282,9 @@ class SubServiceRequest < ApplicationRecord
   ########################
   ## SSR STATUS METHODS ##
   ########################
+
+  # Returns the SSR id that need an initial submission email and updates 
+  # the SSR status to new status if appropriate
   def update_status_and_notify(new_status)
     to_notify = []
     if can_be_edited?
@@ -291,10 +294,9 @@ class SubServiceRequest < ApplicationRecord
       if changeable.include?(new_status)
         #  See Pivotal Stories: #133049647 & #135639799
         if (status != new_status) && ((new_status == 'submitted' && UPDATABLE_STATUSES.include?(status)) || new_status != 'submitted')
-          # Since adding/removing services changes a SSR status to 'draft', we have to look at the past status to see if we should notify users
+          ### For 'submitted' status ONLY:
+          # Since adding/removing services changes a SSR status to 'draft', we have to look at the past status to see if we should notify users of a status change
           # We do NOT notify if updating from an un-updatable status or we're updating to a status that we already were previously 
-          # EXAMPLE:  SSR 001 past_status 'get_a_cost_estimate', SSR 001 current status is 'draft' (because we added a new li) 
-          # and now we are updating to 'get_a_cost_estimate again'.  We would not want to send an email.
           if new_status == 'submitted'
             past_status = PastStatus.where(sub_service_request_id: id).last
             past_status = past_status.nil? ? nil : past_status.status
@@ -468,7 +470,11 @@ class SubServiceRequest < ApplicationRecord
     end
   end
 
+  ###############################
   ### AUDIT REPORTING METHODS ###
+  ###############################
+
+  # Collects all the added/deleted line_items that need to be displayed in the audit report for emails
   def audit_line_items(identity)
     filtered_audit_trail = {:line_items => []}
 

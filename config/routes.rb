@@ -21,10 +21,6 @@
 SparcRails::Application.routes.draw do
   post 'study_type/determine_study_type_note'
 
-  match '/direct_link_to/:survey_code', :to => 'surveyor#create', :as => 'direct_link_survey', :via => :get
-  match '/surveys/:survey_code/:response_set_code', :to => 'surveyor#destroy', :via => :delete
-  mount Surveyor::Engine => "/surveys", :as => "surveyor"
-
   resources :services do
     namespace :additional_details do
       resources :questionnaires
@@ -34,6 +30,20 @@ SparcRails::Application.routes.draw do
       resources :submissions
       resources :update_questionnaires, only: [:update]
     end
+  end
+
+  namespace :surveyor do
+    resources :surveys, only: [:index, :show, :create, :destroy] do
+      get :preview
+      get :update_dependents_list
+    end
+    resources :sections, only: [:create, :destroy]
+    resources :questions, only: [:create, :destroy]
+    resources :options, only: [:create, :destroy]
+    resources :responses, only: [:show, :new, :create] do
+      get :complete
+    end
+    resources :survey_updater, only: [:update]
   end
 
   if USE_SHIBBOLETH_ONLY

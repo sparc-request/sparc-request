@@ -232,7 +232,6 @@ class ModifySurveyColumns < ActiveRecord::Migration
           updated_at:     section.updated_at
         })
         new_section = Section.create(section_params.permit!)
-        binding.pry
         questions.select{|q| q.survey_section_id == section.id}.each do |question|
           question_params = ActionController::Parameters.new({
             section_id:     new_section.id,

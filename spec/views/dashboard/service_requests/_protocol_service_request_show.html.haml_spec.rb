@@ -123,7 +123,7 @@ RSpec.describe 'dashboard/service_requests/protocol_service_request_show', type:
 
         render_protocol_service_request_show(service_request, true)
 
-        expect(response).to have_selector('button:not(.disabled'), text: 'Modify Request')
+        expect(response).to have_selector('button:not(.disabled)', text: 'Modify Request')
       end
     end
   end

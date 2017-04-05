@@ -41,8 +41,10 @@ RSpec.describe 'User should be able to view the protocol details', js: true do
     )
     
     visit dashboard_protocol_path(protocol)
+    wait_for_javascript_to_finish
     find('.view-protocol-details-button').click
-
+    wait_for_javascript_to_finish
+    
     expect(page).to have_content "#{protocol.short_title}"
   end
 
@@ -79,8 +81,9 @@ RSpec.describe 'User should be able to view the protocol details', js: true do
     )
 
     visit protocol_service_request_path(sr)
-
+    wait_for_javascript_to_finish
     find('.view-protocol-details-button').click
+    wait_for_javascript_to_finish
     
     expect(page).to have_content "#{protocol.short_title}"
   end

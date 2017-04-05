@@ -66,7 +66,6 @@ gem 'sass'
 gem 'sass-rails'
 gem 'savon', '~> 2.2.0'
 gem 'simplecov', require: false, group: :test
-gem 'surveyor', :git => 'https://github.com/sparc-request/surveyor.git', branch: 'rails4'
 gem 'therubyracer', '0.10.2', :platforms => :ruby, group: :production
 gem 'twitter-typeahead-rails'
 gem 'uglifier', '>= 1.0.3'

@@ -4,16 +4,17 @@ module Features
 
     def bootstrap_multiselect(class_or_id, selections = ['all'])
       bootstrap_multiselect = find("select#{class_or_id} + .btn-group")
-
       bootstrap_multiselect.click
+
       if selections.first == 'all'
-        check 'Select all'
+        first('.dropdown-menu.open span.text', text: 'Select all').click
       else
         selections.each do |selection|
-          check selection
+          first('.dropdown-menu.open span.text', text: selection).click
         end
       end
       find('body').click # Click away
+      wait_for_javascript_to_finish
     end
 
     def bootstrap_select(class_or_id, choice)

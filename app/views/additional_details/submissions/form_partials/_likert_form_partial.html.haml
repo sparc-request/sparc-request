@@ -1,0 +1,9 @@
+%br
+- item.item_options.each do |item_option|
+  .likert-group.no-padding{ class: "col-sm-#{(12 / item.item_options.count).ceil}"}
+    .col-sm-12.text-center.no-padding
+      = index+1
+    .col-sm-12.text-center.no-padding.likert
+      = qr.radio_button :content, item_option.content
+    .col-sm-12.text-center.no-padding
+      = qr.label :content, item_option.content, class: "radio-inline option no-padding"

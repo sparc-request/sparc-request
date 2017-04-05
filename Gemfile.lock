@@ -25,21 +25,6 @@ GIT
   specs:
     grouped_validations (0.3.3)
 
-GIT
-  remote: https://github.com/sparc-request/surveyor.git
-  revision: 5281b317a559fba43c0a3f377dbeeaf9344ad32d
-  branch: rails4
-  specs:
-    surveyor (1.4.1.pre)
-      formtastic (~> 2.2.1)
-      haml (~> 4.0)
-      mustache (~> 0.99)
-      rabl (~> 0.6)
-      rails (>= 3.2)
-      rails-observers (~> 0.1)
-      sass
-      uuidtools (~> 2.1)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -225,8 +210,6 @@ GEM
       railties (>= 3.0.0)
     faker (1.7.3)
       i18n (~> 0.5)
-    formtastic (2.2.1)
-      actionpack (>= 3.0)
     globalid (0.3.7)
       activesupport (>= 4.1.0)
     gon (6.1.0)
@@ -301,7 +284,6 @@ GEM
       sixarm_ruby_unaccent (>= 1.1.1, < 2)
     multi_json (1.12.1)
     multi_xml (0.6.0)
-    mustache (0.99.8)
     mysql2 (0.3.21)
     nested_form (0.3.2)
     nested_form_fields (0.8)
@@ -359,8 +341,6 @@ GEM
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
       slop (~> 3.4)
-    rabl (0.13.1)
-      activesupport (>= 2.3.14)
     rack (2.0.1)
     rack-accept (0.4.5)
       rack (>= 0.4)
@@ -517,7 +497,6 @@ GEM
     unf_ext (0.0.7.2)
     unicode_utils (1.4.0)
     uniform_notifier (1.10.0)
-    uuidtools (2.1.5)
     virtus (1.0.5)
       axiom-types (~> 0.1)
       coercible (~> 1.0)
@@ -640,7 +619,6 @@ DEPENDENCIES
   spring
   spring-commands-rspec
   sqlite3
-  surveyor!
   therubyracer (= 0.10.2)
   thin
   timecop

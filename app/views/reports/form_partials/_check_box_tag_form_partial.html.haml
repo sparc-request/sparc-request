@@ -46,7 +46,6 @@
           = v
 
 - else # for individual checkboxes that have true/false
-  = label_tag options[:for], field_label, class: default_classes
   .col-sm-9
     = check_box_tag name, true, '', class: default_classes, type: "checkbox"
 

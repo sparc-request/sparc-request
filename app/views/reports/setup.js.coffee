@@ -19,8 +19,9 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 $('#report-container').html("<%= j render 'setup', report: @report %>")
 $('#report-container').show()
+$('#report-selection').hide()
 $('.selectpicker').selectpicker()
-first_dependency = "#" + $('.reporting-field[has_dependencies]').attr('id')
+first_dependency = "#" + $('.reporting-field.has-dependencies').attr('id')
 window.check_deps(first_dependency)
 
 <% @date_ranges.each do |dr| %>

@@ -24,13 +24,13 @@
 /* from information */
 - from_id     = options[:for] ? "#{options[:for]}_from" : "#{field.delete(" ").underscore}_from"
 - from_name   = options[:for] ? "report[#{options[:for]}_from]" : "report[#{from_id}]"
-- from_label  = options[:from_label] || "From"
+- from_label  = "#{options[:from_label] || "From"}:"
 - from_date   = options[:from] ? options[:from].strftime('%B %d, %Y %H:%M:%S') : nil
 
 /* to information */
 - to_id     = options[:for] ? "#{options[:for]}_to" : "#{field.delete(" ").underscore}_to"
 - to_name   = options[:for] ? "report[#{options[:for]}_to]" : "report[#{to_id}]"
-- to_label  = options[:to_label] || "To"
+- to_label  = "#{options[:to_label] || "To"}:"
 - to_date   = options[:to] ? options[:to].strftime('%B %d, %Y %H:%M:%S') : nil
 
 = label_tag from_id, from_label, class: ['col-sm-1 col-sm-offset-1 control-label', required_class]

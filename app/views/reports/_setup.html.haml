@@ -25,11 +25,11 @@
     - report.options.each do |field, options|
       .form-group
         - field_type  = options[:field_type] || 'text_field_tag'
-        - field_label = options[:field_label] || field.to_s.titleize
+        - field_label = "#{options[:field_label] || field.to_s.titleize}:"
 
         = render "reports/form_partials/#{options[:field_type]}_form_partial", options: options, field_label: field_label, field: field
   .report-actions.text-center
     = submit_tag t(:reporting)[:actions][:create], class: "btn btn-success"
-    = button_to t(:reporting)[:actions][:return], reports_path, method: :get, id: "reporting_return_to_list", class: "btn btn-primary"
+    = button_to t(:reporting)[:actions][:return], reports_path, method: :get, id: "reporting-return-to-list", class: "btn btn-primary"
 %br
 %br

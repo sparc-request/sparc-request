@@ -38,3 +38,4 @@ en:
     actions:
       create: "Create Report"
       return: "Return to Reports List"
+      errors: "Please fill out all required fields"

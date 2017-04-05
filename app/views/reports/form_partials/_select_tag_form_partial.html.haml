@@ -23,7 +23,7 @@
   - dependency      = options[:dependency]
   - required_class  = options[:required] ? 'required' : ''
   - default_classes = ['form-control reporting-field selectpicker', required_class]
-  - check_dep_class = dependency ? 'check-dep-class' : ''
+  - check_dep_class = dependency ? 'check-dep' : ''
   - id              = options[:for] || "#{field.name.underscore}_id"
   - name            = options[:for] ? "report[#{options[:for]}]" : "report[#{field.name.underscore}_id]"
   - name_method     = options[:custom_name_method] || :name

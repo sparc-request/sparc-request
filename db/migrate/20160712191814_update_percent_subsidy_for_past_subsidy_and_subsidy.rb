@@ -23,15 +23,9 @@
 # PastSubsidy and Subsidy tables
 class UpdatePercentSubsidyForPastSubsidyAndSubsidy < ActiveRecord::Migration
   class Subsidy < ActiveRecord::Base
-    attr_accessible :percent_subsidy
-    attr_accessible :pi_contribution
-    attr_accessible :total_at_approval
   end
 
   class PastSubsidy < ActiveRecord::Base
-    attr_accessible :percent_subsidy
-    attr_accessible :pi_contribution
-    attr_accessible :total_at_approval
   end
 
   def change

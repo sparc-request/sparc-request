@@ -23,10 +23,10 @@ class Dashboard::VisitsController < Dashboard::BaseController
 
   # Used for x-editable update and validations
   def update
-    @visit = Visit.find( params[:id] )
+    @visit = Visit.find(params[:id])
     admin = params[:service_request_id] ? false : true
 
-    if @visit.update_attributes( params[:visit] )
+    if @visit.update_attributes(visit_params)
       unless params[:portal] == 'true'
         @visit.line_items_visit.sub_service_request.set_to_draft(@admin)
       end
@@ -53,5 +53,17 @@ class Dashboard::VisitsController < Dashboard::BaseController
       @subsidy.try(:fix_pi_contribution, percent)
       render 'dashboard/service_requests/add_per_patient_per_visit_visit'
     end
+  end
+
+  private
+
+  def visit_params
+    params.require(:visit).permit(:line_items_visit_id,
+      :visit_group_id,
+      :quantity,
+      :billing,
+      :research_billing_qty,
+      :insurance_billing_qty,
+      :effort_billing_qty)
   end
 end

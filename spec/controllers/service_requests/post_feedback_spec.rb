@@ -48,7 +48,8 @@ RSpec.describe ServiceRequestsController, type: :controller do
         feedback = { message: '', email: '' }
 
         xhr :post, :feedback, {
-          id: sr.id
+          id: sr.id,
+          feedback: feedback
         }
 
         expect(assigns(:errors)).to be
@@ -61,7 +62,8 @@ RSpec.describe ServiceRequestsController, type: :controller do
       feedback = { message: 'hi', email: 'asd123@musc.edu' }
 
       xhr :post, :feedback, {
-        id: sr.id
+        id: sr.id,
+        feedback: feedback
       }
 
       expect(controller).to render_template(:feedback)
@@ -73,7 +75,8 @@ RSpec.describe ServiceRequestsController, type: :controller do
       feedback = { message: 'hi', email: 'asd123@musc.edu' }
 
       xhr :post, :feedback, {
-        id: sr.id
+        id: sr.id,
+        feedback: feedback
       }
 
       expect(controller).to respond_with(:ok)

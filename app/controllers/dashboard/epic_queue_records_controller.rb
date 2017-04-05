@@ -17,38 +17,27 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+class Dashboard::EpicQueueRecordsController < Dashboard::BaseController
+  before_action :authorize_overlord
 
-class StudyTracker::SubjectsController < StudyTracker::BaseController
-  def update
-    @subject = Subject.includes(:calendar).find(params[:id])
-    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id])
-    @procedures = @subject.procedures
-
-    if @subject.update_attributes(params[:subject])
-      calculate_new_procedures
-
-      redirect_to study_tracker_sub_service_request_calendar_path(@sub_service_request, @subject.calendar)
-    else
-      # handle errors
-      redirect_to study_tracker_sub_service_request_calendar_path(@sub_service_request, @subject.calendar)
+  def index
+    @epic_queue_records = EpicQueueRecord.with_valid_protocols
+    respond_to do |format|
+      format.json
     end
   end
 
-
   private
-  def calculate_new_procedures
-    ##Creating array of new procedures, but only procedures with a completed appointment for that procedure's core.
-    new_procedures = @subject.procedures - @procedures
-
-
-    @protocol = @subject.arm.protocol
-    associated_users = @protocol.emailed_associated_users << @protocol.primary_pi_project_role
-
-    # Disabled (potentially only temporary) as per Lane
-    # new_procedures.each do |procedure|
-    #   associated_users.uniq.each do |user|
-    #     UserMailer.subject_procedure_notification(user.identity, procedure, @sub_service_request).deliver
-    #   end
-    # end
+  # Check to see if user has rights to view epic queues
+  def authorize_overlord
+    unless QUEUE_EPIC_EDIT_LDAP_UIDS.include?(@user.ldap_uid)
+      @epic_queues = nil
+      @epic_queue = nil
+      render partial: 'service_requests/authorization_error',
+        locals: { error: 'You do not have access to view the Epic Queues',
+                  in_dashboard: false 
+      }
+    end
   end
 end
+

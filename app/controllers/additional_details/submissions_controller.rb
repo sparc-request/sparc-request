@@ -45,7 +45,7 @@ class AdditionalDetails::SubmissionsController < ApplicationController
     @submissions = @protocol.submissions
     @line_item = LineItem.find(submission_params[:line_item_id])
     @service_request = @line_item.service_request
-    @permission_to_edit = @protocol.project_roles.where(identity: current_user, project_rights: ['approve', 'request']).any?
+    @permission_to_edit = current_user.can_edit_protocol?(@protocol)
     
     respond_to do |format|
       if @submission.save
@@ -81,7 +81,7 @@ class AdditionalDetails::SubmissionsController < ApplicationController
     if params[:protocol_id]
       @protocol = Protocol.find(params[:protocol_id])
       @submissions = @protocol.submissions
-      @permission_to_edit = @protocol.project_roles.where(identity: current_user, project_rights: ['approve', 'request']).any?
+      @permission_to_edit = current_user.can_edit_protocol?(@protocol)
     end
     if params[:line_item_id]
       @line_item = LineItem.find(params[:line_item_id])

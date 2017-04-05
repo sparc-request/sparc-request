@@ -18,13 +18,11 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class Note < ActiveRecord::Base
+class Note < ApplicationRecord
   audited
 
   belongs_to :identity
   belongs_to :notable, polymorphic: true
-
-  attr_accessible :body, :identity_id, :notable_type, :notable_id
 
   validates_presence_of :body, :identity_id
 

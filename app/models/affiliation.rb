@@ -18,18 +18,12 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class Affiliation < ActiveRecord::Base
+class Affiliation < ApplicationRecord
   audited
 
-  belongs_to :protocol
-
-  attr_accessible :protocol_id
-  attr_accessible :name
-  attr_accessible :new
-  attr_accessible :position
   attr_accessor :new
   attr_accessor :position
 
+  belongs_to :protocol
   TYPES = AFFILIATION_TYPES
 end
-

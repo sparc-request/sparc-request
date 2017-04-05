@@ -30,14 +30,14 @@ RSpec.describe 'User sets each XEditable field', js: true do
     pricing   = create(:pricing_setup, organization: org)
     pppv      = create(:service, organization: org, one_time_fee: false)
     otf       = create(:service, organization: org, one_time_fee: true)
-    otf.pricing_maps.first.update_attributes(otf_unit_type: 'total', units_per_quantity: 1, quantity: 1)
+    otf.pricing_maps.first.update_attributes(otf_unit_type: 'total')
 
     protocol  = create(:protocol_federally_funded, primary_pi: jug2)
     sr        = create(:service_request_without_validations, protocol: protocol)
     ssr       = create(:sub_service_request, service_request: sr, organization: org)
     @pppv_li  = create(:line_item, service_request: sr, sub_service_request: ssr, service: pppv)
     @otf_li   = create(:line_item, service_request: sr, sub_service_request: ssr, service: otf, units_per_quantity: 1, quantity: 1)
-    
+
     @arm      = create(:arm, protocol: protocol, subject_count: 10)
     vg        = create(:visit_group, arm: @arm, day: 1)
     @liv      = create(:line_items_visit, line_item: @pppv_li, arm: @arm, subject_count: 1)

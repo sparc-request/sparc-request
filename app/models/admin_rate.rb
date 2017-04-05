@@ -18,11 +18,8 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class AdminRate < ActiveRecord::Base
+class AdminRate < ApplicationRecord
   audited
 
   belongs_to :line_item
-
-  attr_accessible :admin_cost 
-  attr_accessible :line_item_id
 end

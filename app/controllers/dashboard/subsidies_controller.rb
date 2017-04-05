@@ -31,16 +31,15 @@ class Dashboard::SubsidiesController < Dashboard::BaseController
   end
 
   def create
-    format_percent_subsidy_param
-    @subsidy = PendingSubsidy.new(params[:pending_subsidy].except(:pi_contribution))
+    @subsidy = PendingSubsidy.new(subsidy_params)
     admin_param = params[:admin] == 'true'
 
-    if admin_param && (params[:pending_subsidy][:percent_subsidy] != 0)
+    if admin_param && (subsidy_params[:percent_subsidy] != 0)
       @subsidy.save(validate: false)
       perform_subsidy_creation(admin_param)
     else
       if @subsidy.valid?
-        @subsidy.save 
+        @subsidy.save
         perform_subsidy_creation
       else
         @errors = @subsidy.errors
@@ -60,14 +59,13 @@ class Dashboard::SubsidiesController < Dashboard::BaseController
     @subsidy = PendingSubsidy.find(params[:id])
     @sub_service_request = @subsidy.sub_service_request
     admin_param = params[:admin] == 'true'
-    format_percent_subsidy_param
 
-    if admin_param && (params[:pending_subsidy][:percent_subsidy] != 0)
-      @subsidy.assign_attributes(params[:pending_subsidy].except(:pi_contribution))
+    if admin_param && (subsidy_params[:percent_subsidy] != 0)
+      @subsidy.assign_attributes(subsidy_params)
       @subsidy.save(validate: false)
       perform_subsidy_update(admin_param)
     else
-      if @subsidy.update_attributes(params[:pending_subsidy].except(:pi_contribution))
+      if @subsidy.update_attributes(subsidy_params)
         perform_subsidy_update
       else
         @errors = @subsidy.errors
@@ -95,9 +93,16 @@ class Dashboard::SubsidiesController < Dashboard::BaseController
 
   private
 
-  def format_percent_subsidy_param
-    if !params[:pending_subsidy].nil? && params[:pending_subsidy][:percent_subsidy].present?
-      params[:pending_subsidy][:percent_subsidy] = ((params[:pending_subsidy][:percent_subsidy].gsub(/[^\d^\.]/, '').to_f) / 100)
+  def subsidy_params
+    @subsidy_params ||= begin
+      temp = params.require(:pending_subsidy).permit(:sub_service_request_id,
+        :overridden,
+        :status,
+        :percent_subsidy)
+      if temp[:percent_subsidy].present?
+        temp[:percent_subsidy] = temp[:percent_subsidy].gsub(/[^\d^\.]/, '').to_f / 100
+      end
+      temp
     end
   end
 

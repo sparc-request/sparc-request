@@ -18,16 +18,9 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class ServiceRelation < ActiveRecord::Base
+class ServiceRelation < ApplicationRecord
   audited
 
   belongs_to :service
   belongs_to :related_service, :class_name => "Service", :foreign_key => "related_service_id"
-
-  attr_accessible :service_id
-  attr_accessible :related_service_id
-  attr_accessible :optional
-  attr_accessible :linked_quantity
-  attr_accessible :linked_quantity_total
 end
-

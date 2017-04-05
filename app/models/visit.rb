@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class Visit < ActiveRecord::Base
+class Visit < ApplicationRecord
   self.per_page = 5
 
   include RemotelyNotifiable
@@ -29,19 +29,11 @@ class Visit < ActiveRecord::Base
   has_many :appointments, :through => :procedures
   belongs_to :visit_group
   belongs_to :line_items_visit
-
-  attr_accessible :line_items_visit_id
-  attr_accessible :visit_group_id
-  attr_accessible :quantity
-  attr_accessible :billing
-  attr_accessible :research_billing_qty  # (R) qty billed to the study/project
-  attr_accessible :insurance_billing_qty # (T) qty billed to the patients insurance or third party
-  attr_accessible :effort_billing_qty    # (%) qty billing to % effort
-
+  
   validates :research_billing_qty, numericality: { only_integer: true }
   validates :insurance_billing_qty, numericality: { only_integer: true }
   validates :effort_billing_qty, numericality: { only_integer: true }
-            
+
 
   after_save :set_arm_edited_flag_on_subjects
 
@@ -56,7 +48,7 @@ class Visit < ActiveRecord::Base
   end
 
   def cost(per_unit_cost = self.line_items_visit.per_unit_cost(self.line_items_visit.quantity_total))
-    
+
     li = self.line_items_visit.line_item
     if li.applicable_rate == "N/A"
       return "N/A"

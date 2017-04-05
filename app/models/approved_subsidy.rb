@@ -23,10 +23,6 @@ class ApprovedSubsidy < Subsidy
   before_save :default_values
   belongs_to :approver, class_name: 'Identity', foreign_key: "approved_by"
 
-  attr_accessible :total_at_approval
-  attr_accessible :approved_by
-  attr_accessible :approved_at
-
   default_scope { where(status: "Approved") }
 
   def default_values

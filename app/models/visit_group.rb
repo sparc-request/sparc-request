@@ -18,21 +18,13 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class VisitGroup < ActiveRecord::Base
+class VisitGroup < ApplicationRecord
   self.per_page = Visit.per_page
 
   include RemotelyNotifiable
   include Comparable
 
   audited
-
-  attr_accessible :name
-  attr_accessible :position
-  attr_accessible :arm_id
-  attr_accessible :day
-  attr_accessible :window_before
-  attr_accessible :window_after
-
   belongs_to :arm
   has_many :visits, :dependent => :destroy
   has_many :line_items_visits, through: :visits
@@ -57,7 +49,8 @@ class VisitGroup < ActiveRecord::Base
   end
 
   def <=> (other_vg)
-    return self.day <=> other_vg.day
+    return unless other_vg.respond_to?(:day)
+    self.day <=> other_vg.day
   end
 
   def insertion_name

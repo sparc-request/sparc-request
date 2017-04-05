@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class SubServiceRequest < ActiveRecord::Base
+class SubServiceRequest < ApplicationRecord
 
   include RemotelyNotifiable
 
@@ -48,30 +48,6 @@ class SubServiceRequest < ActiveRecord::Base
   has_one :pending_subsidy, :dependent => :destroy
 
   delegate :percent_subsidy, to: :approved_subsidy, allow_nil: true
-
-  # service_request_id & ssr_id together form a unique id for the sub service request
-  attr_accessible :service_request_id
-  attr_accessible :protocol_id
-  attr_accessible :ssr_id
-  attr_accessible :organization_id
-  attr_accessible :owner_id
-  attr_accessible :status_date
-  attr_accessible :status
-  attr_accessible :consult_arranged_date
-  attr_accessible :nursing_nutrition_approved
-  attr_accessible :lab_approved
-  attr_accessible :imaging_approved
-  attr_accessible :committee_approved
-  attr_accessible :requester_contacted_date
-  attr_accessible :line_items_attributes
-  attr_accessible :subsidy_attributes
-  attr_accessible :payments_attributes
-  attr_accessible :in_work_fulfillment
-  attr_accessible :routing
-  attr_accessible :documents
-  attr_accessible :service_requester_id
-  attr_accessible :requester_contacted_date
-  attr_accessible :submitted_at
 
   accepts_nested_attributes_for :line_items, allow_destroy: true
   accepts_nested_attributes_for :payments, allow_destroy: true

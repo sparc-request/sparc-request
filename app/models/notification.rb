@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class Notification < ActiveRecord::Base
+class Notification < ApplicationRecord
   audited
 
   belongs_to :originator, class_name: "Identity"
@@ -26,13 +26,6 @@ class Notification < ActiveRecord::Base
   belongs_to :sub_service_request
 
   has_many :messages
-
-  attr_accessible :sub_service_request_id
-  attr_accessible :subject
-  attr_accessible :originator_id
-  attr_accessible :other_user_id
-  attr_accessible :read_by_originator
-  attr_accessible :read_by_other_user
 
   def self.belonging_to(identity_id, sub_service_request_id=nil)
     notifications = Notification.arel_table

@@ -18,21 +18,11 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class Subject < ActiveRecord::Base
+class Subject < ApplicationRecord
   audited
 
   belongs_to :arm
   has_one :calendar, :dependent => :destroy
-
-  attr_accessible :name
-  attr_accessible :mrn
-  attr_accessible :dob
-  attr_accessible :gender
-  attr_accessible :ethnicity
-  attr_accessible :external_subject_id
-  attr_accessible :calendar_attributes
-  attr_accessible :status
-  attr_accessible :arm_edited
 
   accepts_nested_attributes_for :calendar
 
@@ -44,7 +34,7 @@ class Subject < ActiveRecord::Base
     if not external_subject_id.blank?
       label = "Subject ID:#{external_subject_id}"
     end
-    
+
     if not mrn.blank?
       label = "Subject MRN:#{mrn}"
     end
@@ -57,7 +47,7 @@ class Subject < ActiveRecord::Base
   end
 
   ### audit reporting methods ###
-  
+
   def audit_field_replacements
     {"external_subject_id" => "PARTICIPANT ID"}
   end
@@ -71,7 +61,7 @@ class Subject < ActiveRecord::Base
   end
 
   ### end audit reporting methods ###
-  
+
   def procedures
     appointments = Appointment.where("calendar_id = ?", self.calendar.id).includes(:procedures)
     procedures = appointments.collect{|x| x.procedures}.flatten

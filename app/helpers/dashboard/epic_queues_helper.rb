@@ -36,6 +36,14 @@ module Dashboard::EpicQueuesHelper
       type: 'button', data: { epic_queue_id: epic_queue.id, permission: 'true' }, class: "btn btn-danger actions-button delete-epic-queue-button")
   end
 
+  def epic_queue_send_button(epic_queue)
+    content_tag(
+      :a,
+      raw(content_tag(:span, '', class: 'glyphicon glyphicon-hand-right')),
+      data: { protocol_id: epic_queue.protocol.id, permission: 'true' },
+      class: 'btn btn-success push-to-epic')
+  end
+
   def format_epic_queue_date(protocol)
     date = protocol.last_epic_push_time
     if date.present?
@@ -43,6 +51,11 @@ module Dashboard::EpicQueuesHelper
     else
       ''
     end
+  end
+
+  def format_epic_queue_created_at(epic_queue)
+    created_at = epic_queue.created_at
+    created_at.strftime(t(:epic_queues)[:date_formatter])
   end
 
   def format_status(protocol)

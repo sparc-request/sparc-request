@@ -18,7 +18,6 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-class StudyTypeAnswer < ActiveRecord::Base
+class StudyTypeAnswer < ApplicationRecord
   belongs_to :study_type_question
-  attr_accessible :answer, :protocol_id, :study_type_question_id
 end

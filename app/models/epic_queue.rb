@@ -18,12 +18,11 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class EpicQueue < ActiveRecord::Base
+class EpicQueue < ApplicationRecord
   audited
 
-  # attr_accessible :title, :body
-  attr_accessible :protocol_id, :identity_id
   belongs_to :protocol
+  belongs_to :identity
 
   after_create :update_protocol
 

@@ -28,8 +28,7 @@ $('.document-management-submissions').html("<%= j render 'additional_details/doc
 $("#service-requests-panel").html("<%= j render 'dashboard/service_requests/service_requests', protocol: @protocol, permission_to_edit: @permission_to_edit, user: @user, view_only: false, show_view_ssr_back: false %>")
 $('.service-requests-table').bootstrapTable()
 
-$('.service-requests-table').on 'all.bs.table', ->
-  $(this).find('.selectpicker').selectpicker()
+reset_service_requests_handlers()
 <% else %>
 $('.submissions-index-table').html("<%= j render 'additional_details/submissions/submission_index_table', submissions: @submissions %>")
 <% end %>

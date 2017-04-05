@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class ServiceRequest < ActiveRecord::Base
+class ServiceRequest < ApplicationRecord
 
   include RemotelyNotifiable
 
@@ -58,13 +58,6 @@ class ServiceRequest < ActiveRecord::Base
     validate :validate_service_calendar
   end
 
-  attr_accessible :protocol_id
-  attr_accessible :status
-  attr_accessible :notes
-  attr_accessible :approved
-  attr_accessible :submitted_at
-  attr_accessible :line_items_attributes
-  attr_accessible :sub_service_requests_attributes
   attr_accessor   :previous_submitted_at
 
   accepts_nested_attributes_for :line_items

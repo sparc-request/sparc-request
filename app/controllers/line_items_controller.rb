@@ -21,20 +21,46 @@
 class LineItemsController < ApplicationController
   respond_to :json, :js, :html
 
-  before_filter :initialize_service_request
-  before_filter :authorize_identity
-  
+  before_action :initialize_service_request
+  before_action :authorize_identity
+
   # Used for x-editable update and validations
   def update
     @line_item        = LineItem.find( params[:id] )
     @service_request  = ServiceRequest.find( params[:srid] )
 
-    if @line_item.update_attributes(params[:line_item])
+    if @line_item.update_attributes(line_item_params)
       @service_request.update_attributes(status: 'draft')
       @line_item.sub_service_request.update_attributes(status: 'draft')
       render nothing: true
     else
       render json: @line_item.errors, status: :unprocessable_entity
     end
+  end
+
+  private
+
+  def line_item_params
+    @line_item_params ||= params.require(:line_item).
+      permit(:service_request_id,
+        :sub_service_request_id,
+        :service_id,
+        :optional,
+        :complete_date,
+        :in_process_date,
+        :units_per_quantity,
+        :quantity,
+        :displayed_cost,
+        fulfillments_attributes: [:line_item_id,
+          :timeframe,
+          :notes,
+          :time,
+          :date,
+          :quantity,
+          :unit_quantity,
+          :quantity_type,
+          :unit_type,
+          :formatted_date,
+          :_destroy])
   end
 end

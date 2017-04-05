@@ -20,7 +20,6 @@
 
 FactoryGirl.define do
   factory :study_type_question_group do
-
     version 1
 
     transient do

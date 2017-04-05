@@ -117,8 +117,7 @@ RSpec.describe Dashboard::ProtocolsController do
           @protocol       = create(:protocol_without_validations,
                                     primary_pi: @logged_in_user,
                                     funding_status: "funded",
-                                    funding_source: "foundation",
-                                    has_human_subject_info: true)
+                                    funding_source: "foundation")
           organization    = create(:organization)
           service_request = create(:service_request_without_validations, protocol: @protocol)
                             create(:sub_service_request_without_validations, organization: organization, service_request: service_request, status: 'draft', protocol_id: @protocol.id)
@@ -166,8 +165,7 @@ RSpec.describe Dashboard::ProtocolsController do
           @protocol       = create(:protocol_without_validations,
                                     primary_pi: @logged_in_user,
                                     funding_status: "funded",
-                                    funding_source: "foundation",
-                                    has_human_subject_info: true)
+                                    funding_source: "foundation")
           organization    = create(:organization)
           service_request = create(:service_request_without_validations, protocol: @protocol)
                             create(:sub_service_request_without_validations, organization: organization, service_request: service_request, status: 'draft', protocol_id: @protocol.id)

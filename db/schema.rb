@@ -35,33 +35,6 @@ ActiveRecord::Schema.define(version: 20170303171239) do
     t.datetime "updated_at", null: false
   end
 
-  create_table "answers", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
-    t.integer  "question_id"
-    t.text     "text",                   limit: 65535
-    t.text     "short_text",             limit: 65535
-    t.text     "help_text",              limit: 65535
-    t.integer  "weight"
-    t.string   "response_class"
-    t.string   "reference_identifier"
-    t.string   "data_export_identifier"
-    t.string   "common_namespace"
-    t.string   "common_identifier"
-    t.integer  "display_order"
-    t.boolean  "is_exclusive"
-    t.integer  "display_length"
-    t.string   "custom_class"
-    t.string   "custom_renderer"
-    t.datetime "created_at",                           null: false
-    t.datetime "updated_at",                           null: false
-    t.string   "default_value"
-    t.string   "api_id"
-    t.string   "display_type"
-    t.string   "input_mask"
-    t.string   "input_mask_placeholder"
-    t.index ["api_id"], name: "uq_answers_api_id", unique: true, using: :btree
-    t.index ["question_id"], name: "index_answers_on_question_id", using: :btree
-  end
-
   create_table "appointments", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.integer  "calendar_id"
     t.datetime "created_at",      null: false
@@ -202,36 +175,6 @@ ActiveRecord::Schema.define(version: 20170303171239) do
     t.datetime "created_at",                           null: false
     t.datetime "updated_at",                           null: false
     t.index ["priority", "run_at"], name: "delayed_jobs_priority", using: :btree
-  end
-
-  create_table "dependencies", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
-    t.integer  "question_id"
-    t.integer  "question_group_id"
-    t.string   "rule"
-    t.datetime "created_at",        null: false
-    t.datetime "updated_at",        null: false
-    t.index ["question_group_id"], name: "index_dependencies_on_question_group_id", using: :btree
-    t.index ["question_id"], name: "index_dependencies_on_question_id", using: :btree
-  end
-
-  create_table "dependency_conditions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
-    t.integer  "dependency_id"
-    t.string   "rule_key"
-    t.integer  "question_id"
-    t.string   "operator"
-    t.integer  "answer_id"
-    t.datetime "datetime_value"
-    t.integer  "integer_value"
-    t.float    "float_value",    limit: 24
-    t.string   "unit"
-    t.text     "text_value",     limit: 65535
-    t.string   "string_value"
-    t.string   "response_other"
-    t.datetime "created_at",                   null: false
-    t.datetime "updated_at",                   null: false
-    t.index ["answer_id"], name: "index_dependency_conditions_on_answer_id", using: :btree
-    t.index ["dependency_id"], name: "index_dependency_conditions_on_dependency_id", using: :btree
-    t.index ["question_id"], name: "index_dependency_conditions_on_question_id", using: :btree
   end
 
   create_table "documents", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
@@ -481,6 +424,14 @@ ActiveRecord::Schema.define(version: 20170303171239) do
     t.index ["sub_service_request_id"], name: "index_notifications_on_sub_service_request_id", using: :btree
   end
 
+  create_table "options", force: :cascade do |t|
+    t.integer  "question_id", limit: 4
+    t.text     "content",     limit: 65535, null: false
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
+    t.index ["question_id"], name: "index_options_on_question_id", using: :btree
+  end
+
   create_table "organizations", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.string   "type"
     t.string   "name"
@@ -691,20 +642,15 @@ ActiveRecord::Schema.define(version: 20170303171239) do
   add_index "protocols_study_phases", ["protocol_id", "study_phase_id"], name: "index_protocols_study_phases_on_protocol_id_and_study_phase_id", using: :btree
   add_index "protocols_study_phases", ["study_phase_id", "protocol_id"], name: "index_protocols_study_phases_on_study_phase_id_and_protocol_id", using: :btree
 
-  create_table "question_groups", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
-    t.text     "text",                   limit: 65535
-    t.text     "help_text",              limit: 65535
-    t.string   "reference_identifier"
-    t.string   "data_export_identifier"
-    t.string   "common_namespace"
-    t.string   "common_identifier"
-    t.string   "display_type"
-    t.string   "custom_class"
-    t.string   "custom_renderer"
-    t.datetime "created_at",                           null: false
-    t.datetime "updated_at",                           null: false
-    t.string   "api_id"
-    t.index ["api_id"], name: "uq_question_groups_api_id", unique: true, using: :btree
+  create_table "question_responses", force: :cascade do |t|
+    t.integer  "question_id", limit: 4
+    t.integer  "response_id", limit: 4
+    t.text     "content",     limit: 65535
+    t.boolean  "required",                  null: false
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
+    t.index ["question_id"], name: "index_question_responses_on_question_id", using: :btree
+    t.index ["response_id"], name: "index_question_responses_on_response_id", using: :btree
   end
 
   create_table "questionnaire_responses", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
@@ -727,31 +673,18 @@ ActiveRecord::Schema.define(version: 20170303171239) do
     t.index ["service_id"], name: "index_questionnaires_on_service_id", using: :btree
   end
 
-  create_table "questions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
-    t.integer  "survey_section_id"
-    t.integer  "question_group_id"
-    t.text     "text",                   limit: 65535
-    t.text     "short_text",             limit: 65535
-    t.text     "help_text",              limit: 65535
-    t.string   "pick"
-    t.string   "reference_identifier"
-    t.string   "data_export_identifier"
-    t.string   "common_namespace"
-    t.string   "common_identifier"
-    t.integer  "display_order"
-    t.string   "display_type"
-    t.boolean  "is_mandatory"
-    t.integer  "display_width"
-    t.string   "custom_class"
-    t.string   "custom_renderer"
-    t.datetime "created_at",                           null: false
-    t.datetime "updated_at",                           null: false
-    t.integer  "correct_answer_id"
-    t.string   "api_id"
-    t.index ["api_id"], name: "uq_questions_api_id", unique: true, using: :btree
-    t.index ["correct_answer_id"], name: "index_questions_on_correct_answer_id", using: :btree
-    t.index ["question_group_id"], name: "index_questions_on_question_group_id", using: :btree
-    t.index ["survey_section_id"], name: "index_questions_on_survey_section_id", using: :btree
+  create_table "questions", force: :cascade do |t|
+    t.integer  "section_id",    limit: 4
+    t.boolean  "is_dependent",                null: false
+    t.text     "content",       limit: 65535, null: false
+    t.string   "question_type", limit: 255,   null: false
+    t.string   "description",   limit: 255
+    t.boolean  "required",                    null: false
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
+    t.integer  "depender_id",   limit: 4
+    t.index ["depender_id"], name: "index_questions_on_depender_id", using: :btree
+    t.index ["section_id"], name: "index_questions_on_section_id", using: :btree
   end
 
   create_table "quick_questions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
@@ -785,43 +718,15 @@ ActiveRecord::Schema.define(version: 20170303171239) do
     t.index ["protocol_id"], name: "index_research_types_info_on_protocol_id", using: :btree
   end
 
-  create_table "response_sets", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
-    t.integer  "user_id"
-    t.integer  "survey_id"
-    t.string   "access_code"
-    t.datetime "started_at"
-    t.datetime "completed_at"
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
-    t.string   "api_id"
-    t.integer  "sub_service_request_id"
-    t.index ["access_code"], name: "response_sets_ac_idx", unique: true, using: :btree
-    t.index ["api_id"], name: "uq_response_sets_api_id", unique: true, using: :btree
-    t.index ["survey_id"], name: "index_response_sets_on_survey_id", using: :btree
-    t.index ["user_id"], name: "index_response_sets_on_user_id", using: :btree
-  end
-
-  create_table "responses", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
-    t.integer  "response_set_id"
-    t.integer  "question_id"
-    t.integer  "answer_id"
-    t.datetime "datetime_value"
-    t.integer  "integer_value"
-    t.float    "float_value",       limit: 24
-    t.string   "unit"
-    t.text     "text_value",        limit: 65535
-    t.string   "string_value"
-    t.string   "response_other"
-    t.string   "response_group"
-    t.datetime "created_at",                      null: false
-    t.datetime "updated_at",                      null: false
-    t.integer  "survey_section_id"
-    t.string   "api_id"
-    t.index ["answer_id"], name: "index_responses_on_answer_id", using: :btree
-    t.index ["api_id"], name: "uq_responses_api_id", unique: true, using: :btree
-    t.index ["question_id"], name: "index_responses_on_question_id", using: :btree
-    t.index ["response_set_id"], name: "index_responses_on_response_set_id", using: :btree
-    t.index ["survey_section_id"], name: "index_responses_on_survey_section_id", using: :btree
+  create_table "responses", force: :cascade do |t|
+    t.integer  "survey_id",              limit: 4
+    t.integer  "identity_id",            limit: 4
+    t.integer  "sub_service_request_id", limit: 4
+    t.datetime "created_at",                       null: false
+    t.datetime "updated_at",                       null: false
+    t.index ["identity_id"], name: "index_responses_on_identity_id", using: :btree
+    t.index ["sub_service_request_id"], name: "index_responses_on_sub_service_request_id", using: :btree
+    t.index ["survey_id"], name: "index_responses_on_survey_id", using: :btree
   end
 
   create_table "revenue_code_ranges", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
@@ -833,6 +738,15 @@ ActiveRecord::Schema.define(version: 20170303171239) do
     t.integer  "version"
     t.datetime "created_at",                null: false
     t.datetime "updated_at",                null: false
+  end
+
+  create_table "sections", force: :cascade do |t|
+    t.integer  "survey_id",   limit: 4
+    t.string   "title",       limit: 255
+    t.string   "description", limit: 255
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
+    t.index ["survey_id"], name: "index_sections_on_survey_id", using: :btree
   end
 
   create_table "service_providers", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
@@ -1057,50 +971,13 @@ ActiveRecord::Schema.define(version: 20170303171239) do
     t.index ["organization_id"], name: "index_super_users_on_organization_id", using: :btree
   end
 
-  create_table "survey_sections", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
-    t.integer  "survey_id"
-    t.string   "title"
-    t.text     "description",            limit: 65535
-    t.string   "reference_identifier"
-    t.string   "data_export_identifier"
-    t.string   "common_namespace"
-    t.string   "common_identifier"
-    t.integer  "display_order"
-    t.string   "custom_class"
-    t.datetime "created_at",                           null: false
-    t.datetime "updated_at",                           null: false
-    t.index ["survey_id"], name: "index_survey_sections_on_survey_id", using: :btree
-  end
-
-  create_table "survey_translations", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
-    t.integer  "survey_id"
-    t.string   "locale"
-    t.text     "translation", limit: 65535
-    t.datetime "created_at",                null: false
-    t.datetime "updated_at",                null: false
-    t.index ["survey_id"], name: "index_survey_translations_on_survey_id", using: :btree
-  end
-
-  create_table "surveys", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
-    t.string   "title"
-    t.text     "description",            limit: 65535
-    t.string   "access_code"
-    t.string   "reference_identifier"
-    t.string   "data_export_identifier"
-    t.string   "common_namespace"
-    t.string   "common_identifier"
-    t.datetime "active_at"
-    t.datetime "inactive_at"
-    t.string   "css_url"
-    t.string   "custom_class"
-    t.datetime "created_at",                                       null: false
-    t.datetime "updated_at",                                       null: false
-    t.integer  "display_order"
-    t.string   "api_id"
-    t.integer  "survey_version",                       default: 0
-    t.index ["access_code", "survey_version"], name: "surveys_access_code_version_idx", unique: true, using: :btree
-    t.index ["api_id"], name: "uq_surveys_api_id", unique: true, using: :btree
-  end
+  create_table "surveys", force: :cascade do |t|
+    t.string   "title",         limit: 255, null: false
+    t.string   "description",   limit: 255
+    t.string   "access_code",   limit: 255, null: false
+    t.integer  "display_order", limit: 4,   null: false
+    t.integer  "version",       limit: 4,   null: false
+    t.boolean  "active",                    null: false
 
   create_table "taggings", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
     t.integer  "tag_id"
@@ -1141,36 +1018,6 @@ ActiveRecord::Schema.define(version: 20170303171239) do
     t.datetime "deleted_at"
     t.index ["identity_id"], name: "index_tokens_on_identity_id", using: :btree
     t.index ["service_request_id"], name: "index_tokens_on_service_request_id", using: :btree
-  end
-
-  create_table "validation_conditions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
-    t.integer  "validation_id"
-    t.string   "rule_key"
-    t.string   "operator"
-    t.integer  "question_id"
-    t.integer  "answer_id"
-    t.datetime "datetime_value"
-    t.integer  "integer_value"
-    t.float    "float_value",    limit: 24
-    t.string   "unit"
-    t.text     "text_value",     limit: 65535
-    t.string   "string_value"
-    t.string   "response_other"
-    t.string   "regexp"
-    t.datetime "created_at",                   null: false
-    t.datetime "updated_at",                   null: false
-    t.index ["answer_id"], name: "index_validation_conditions_on_answer_id", using: :btree
-    t.index ["question_id"], name: "index_validation_conditions_on_question_id", using: :btree
-    t.index ["validation_id"], name: "index_validation_conditions_on_validation_id", using: :btree
-  end
-
-  create_table "validations", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
-    t.integer  "answer_id"
-    t.string   "rule"
-    t.string   "message"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["answer_id"], name: "index_validations_on_answer_id", using: :btree
   end
 
   create_table "versions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
@@ -1225,9 +1072,18 @@ ActiveRecord::Schema.define(version: 20170303171239) do
 
   add_foreign_key "item_options", "items"
   add_foreign_key "items", "questionnaires"
+  add_foreign_key "options", "questions"
+  add_foreign_key "question_responses", "questions"
+  add_foreign_key "question_responses", "responses"
   add_foreign_key "questionnaire_responses", "items"
   add_foreign_key "questionnaire_responses", "submissions"
   add_foreign_key "questionnaires", "services"
+  add_foreign_key "questions", "options", column: "depender_id"
+  add_foreign_key "questions", "sections"
+  add_foreign_key "responses", "identities"
+  add_foreign_key "responses", "sub_service_requests"
+  add_foreign_key "responses", "surveys"
+  add_foreign_key "sections", "surveys"
   add_foreign_key "submissions", "identities"
   add_foreign_key "submissions", "line_items"
   add_foreign_key "submissions", "protocols"

@@ -34,5 +34,4 @@ FactoryGirl.define do
 
     factory :study_type_question_with_answer, traits: [:with_answer]
   end
-  
 end

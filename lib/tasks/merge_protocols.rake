@@ -55,7 +55,7 @@ task :protocol_merge => :environment do
 
   def check_arm_names(second_protocol_arm, first_protocol)
     first_protocol.arms.each do |first_protocol_arm|
-      if first_protocol_arm.name == second_protocol.name
+      if first_protocol_arm.name == second_protocol_arm.name
         puts "#" * 20
         puts 'It looks like one of the arm names for the secondary protocol conflicts'
         puts 'with an arm name on the master protocol.'

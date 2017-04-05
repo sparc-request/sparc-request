@@ -36,9 +36,9 @@ FactoryGirl.define do
       protocol.build_vertebrate_animals_info(attributes_for(:vertebrate_animals_info)) unless protocol.vertebrate_animals_info
     end
 
+    factory :study_without_validations,                 traits: [:without_validations]
     factory :unarchived_study_without_validations,      traits: [:without_validations, :unarchived]
     factory :archived_study_without_validations,        traits: [:without_validations, :archived]
-    factory :study_without_validations,                 traits: [:without_validations, :study]
     factory :study_with_blank_dates,                    traits: [:pending, :blank_funding_start_dates, :blank_start_and_end_dates]
     factory :study_without_validations_with_questions,  traits: [:without_validations, :with_study_type_questions_group]
   end

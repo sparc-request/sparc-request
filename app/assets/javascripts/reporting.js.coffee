@@ -43,8 +43,6 @@ $(document).ready ->
       alert I18n['reporting']['actions']['errors']
 
 optionswitch = (myfilter, res) ->
-  console.log myfilter
-  console.log res
   #Populate the optionstore if the first time through
   unless $(res).data("option_store")
     $(res).data("option_store", null)

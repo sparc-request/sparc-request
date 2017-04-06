@@ -73,12 +73,15 @@ RSpec.describe "User submitting a ServiceRequest", js: true do
     # Add Core 1 Services
     expect(page).to have_css("span", text: provider_non_split.name)
     find("span", text: provider_non_split.name).click
+    wait_for_javascript_to_finish
     find("span", text: program_split.name).click
+    wait_for_javascript_to_finish
     find("span", text: core1.name).click
+    wait_for_javascript_to_finish
     expect(page).to have_content(otf_service_core_1.name)
     expect(page).to have_content(pppv_service_core_1.name)
     click_add_service_for(otf_service_core_1)
-    expect(page).to have_css("a", text: /Yes/)
+    expect(page).to have_css("a", text: "Yes (Continue with Shopping Cart)")
     find("a", text: /Yes/).click
     within(".shopping-cart") do
       expect(page).to have_content(otf_service_core_1.abbreviation)
@@ -90,8 +93,11 @@ RSpec.describe "User submitting a ServiceRequest", js: true do
 
     # Add Core 2 Services
     find("span", text: provider_split.name).click
+    wait_for_javascript_to_finish
     find("span", text: program_non_split.name).click
+    wait_for_javascript_to_finish
     find("span", text: core2.name).click
+    wait_for_javascript_to_finish
     expect(page).to have_content(otf_service_core_2.name)
     expect(page).to have_content(pppv_service_core_2.name)
     click_add_service_for(otf_service_core_2)

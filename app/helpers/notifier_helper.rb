@@ -63,7 +63,7 @@ module NotifierHelper
     if last_change.action == 'destroy'
       # This condition signifies a deleted SSR
       if SubServiceRequest.where(id: ssr_id).empty? && action_name == 'notify_user'
-        deleted_ssrs = @service_request.deleted_ssrs_since_previous_submission
+        deleted_ssrs = @service_request.deleted_ssrs_since_previous_submission(true)
         ssr = deleted_ssrs.select{ |ssr| ssr.auditable_id == ssr_id }.first
       else
         ssr = SubServiceRequest.find(ssr_id)

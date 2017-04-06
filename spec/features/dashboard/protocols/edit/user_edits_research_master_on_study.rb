@@ -31,8 +31,7 @@ RSpec.describe 'User edits research master id on study', js: true do
                                 type: "Study",
                                 primary_pi: jug2,
                                 funding_status: "funded",
-                                funding_source: "foundation",
-                                has_human_subject_info: true)
+                                funding_source: "foundation")
       organization    = create(:organization)
       service_request = create(:service_request_without_validations, protocol: @protocol)
                         create(:sub_service_request_without_validations, organization: organization, service_request: service_request, status: 'draft')
@@ -59,8 +58,7 @@ RSpec.describe 'User edits research master id on study', js: true do
                                 type: "Study",
                                 primary_pi: jug2,
                                 funding_status: "funded",
-                                funding_source: "foundation",
-                                has_human_subject_info: true)
+                                funding_source: "foundation")
       stub_const("RESEARCH_MASTER_ENABLED", true)
 
       visit edit_dashboard_protocol_path(@protocol)

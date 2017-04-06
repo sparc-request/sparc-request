@@ -17,19 +17,36 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-%h2.report-title.text-center.bg-primary
-  = report.title
-= form_tag generate_reports_path, id: 'reporting-form', class: "form-horizontal" do
-  = hidden_field_tag 'report[type]', report.class.name
-  #report-fields
-    - report.options.each do |field, options|
-      .form-group
-        - field_type  = options[:field_type] || 'text_field_tag'
-        - field_label = "#{options[:field_label] || field.to_s.titleize}:"
+- multiple        = options[:multiple]
+- grouping        = options[:grouping]
+- selected        = options[:selected] || []
+- default_classes = options[:required] ? "required" : ""
+- name            = options[:for] ? "report[#{options[:for]}]" : "report[#{field.name.underscore}_id]"
+- name           += "[]" if multiple
 
-        = render "reports/form_partials/#{options[:field_type]}_form_partial", options: options, field_label: field_label, field: field
-  .report-actions.text-center
-    = submit_tag t(:reporting)[:actions][:create], class: "btn btn-success"
-    = button_to t(:reporting)[:actions][:return], reports_path, method: :get, id: "reporting-return-to-list", class: "btn btn-primary"
-%br
-%br
+= label_tag nil, field_label, class: ['col-sm-3 control-label', default_classes]
+- if grouping && multiple # we have a defined grouping
+  .col-sm-9
+    - grouping.each do |k,v|
+      .row
+        %fieldset
+          %legend
+            = k
+          - v.each do |sv|
+            = label_tag sv, '', class: ['checkbox-inline', default_classes] do
+              = check_box_tag name, sv, selected.include?(sv), class: default_classes, type: "checkbox"
+              = multiple[sv]
+
+- elsif multiple
+  - if multiple.is_a?(Hash)
+    .col-sm-9
+      - multiple.each do |k,v|
+        = label_tag k, '', class: ['checkbox-inline', default_classes] do
+          = check_box_tag name, k, selected.include?(v), class: default_classes, type: "checkbox"
+          = v
+
+- else # for individual checkboxes that have true/false
+  .col-sm-9
+    = check_box_tag name, true, '', class: default_classes, type: "checkbox"
+
+-# TODO define behavior if multiple is a method or string representation of method chain

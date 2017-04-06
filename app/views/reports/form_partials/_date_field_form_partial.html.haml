@@ -17,19 +17,14 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-%h2.report-title.text-center.bg-primary
-  = report.title
-= form_tag generate_reports_path, id: 'reporting-form', class: "form-horizontal" do
-  = hidden_field_tag 'report[type]', report.class.name
-  #report-fields
-    - report.options.each do |field, options|
-      .form-group
-        - field_type  = options[:field_type] || 'text_field_tag'
-        - field_label = "#{options[:field_label] || field.to_s.titleize}:"
+- required_class  = options[:required] ? 'required' : ''
+- default_classes = ['form-control date datetimepicker', required_class]
+- id              = options[:for] ? options[:for] : field.delete(" ").underscore
+- name            = options[:for] ? "report[#{options[:for]}]" : "report[#{id}]"
 
-        = render "reports/form_partials/#{options[:field_type]}_form_partial", options: options, field_label: field_label, field: field
-  .report-actions.text-center
-    = submit_tag t(:reporting)[:actions][:create], class: "btn btn-success"
-    = button_to t(:reporting)[:actions][:return], reports_path, method: :get, id: "reporting-return-to-list", class: "btn btn-primary"
-%br
-%br
+= label_tag id, field_label, class: ['col-sm-3 control-label', required_class]
+.col-sm-9
+  .input-group.date
+    = text_field_tag name, nil, id: id, class: [default_classes, required_class]
+    %span.input-group-addon
+      %span.glyphicon.glyphicon-calendar

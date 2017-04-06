@@ -17,18 +17,16 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
 = javascript_include_tag 'reporting'
 
-#reporting_container.col-lg-10.col-lg-offset-1
-  #report_selection
-    %h3= t(:reports)[:intro]
-    %h4.text-muted= t(:reports)[:sub_intro]
-
-    %br
-
+#reporting-container.col-lg-10.col-lg-offset-1
+  #report-selection.text-center
+    .page-header
+      %h1
+        = t(:reporting)[:index][:intro]
+        %br
+        %small
+          = t(:reporting)[:index][:subtext]
     - $canned_reports.each do |report|
-      = link_to report.constantize.title, setup_reports_path(report: report), method: :get, remote: true, :class => "btn btn-primary btn-lg"
-
-  #defined_reports
-    #defined_reports_step_2
+      = link_to report.constantize.title, setup_reports_path(report: report), method: :get, remote: true, class: "btn btn-primary btn-lg"
+  #report-container

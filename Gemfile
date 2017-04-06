@@ -81,7 +81,7 @@ group :development, :test, :profile do
   gem 'equivalent-xml'
   gem 'faker'
   gem 'launchy'
-  gem 'thin'
+  gem 'puma', '~> 3.0'
   gem 'timecop'
   gem 'progress_bar'
 end

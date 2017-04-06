@@ -21,8 +21,9 @@
 !!!
 %html
   %head
-    %title SPARC Request Reporting
-    = stylesheet_link_tag "#{CUSTOM_ASSET_PATH}dashboard/application"
+    %title
+      = t(:reporting)[:header]
+    = stylesheet_link_tag "dashboard/application"
     = javascript_include_tag 'dashboard/application'
     /[if IE]
       = stylesheet_link_tag 'ie'
@@ -35,32 +36,18 @@
       window.I18n = #{current_translations.to_json.html_safe};
 
   %body#body
-    #ie7_warning{style: 'display: none'}
-      %p
-        = t('ie_warning.text1')
-      %br
-      %p
-        = t('ie_warning.text2')
-
-    = image_tag 'cancel.png', :style => 'display:none'
-
     #container
-      #processing_request.ui-corner-all{style: 'display:none'}
-        %br
-        = t(:cm_index)[:processing]
-        %br
-        = image_tag 'spinner.gif'
       #header
         = render 'layouts/header_logos', in_dashboard: true, location: @location
         %input#current_user_id{type: 'hidden', value: @user.try(:id)}
       = render 'layouts/dashboard/dashboard_header', user: @user
-
-      .notification_dialog
       .flash
-        = render "shared/flash"
-      #inner-content
+        = render 'shared/flash'
+      #inner-content.row
         = yield
 
   %footer
+    = render 'layouts/footer'
     = render 'shared/piwik_tracking' if Rails.env == 'production'
+    = render 'shared/ie7_modal'
     = render 'shared/modal'

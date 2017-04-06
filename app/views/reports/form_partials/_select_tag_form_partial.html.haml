@@ -17,19 +17,32 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-%h2.report-title.text-center.bg-primary
-  = report.title
-= form_tag generate_reports_path, id: 'reporting-form', class: "form-horizontal" do
-  = hidden_field_tag 'report[type]', report.class.name
-  #report-fields
-    - report.options.each do |field, options|
-      .form-group
-        - field_type  = options[:field_type] || 'text_field_tag'
-        - field_label = "#{options[:field_label] || field.to_s.titleize}:"
+- # we have a select tag that we need to get records for
+- if field.is_a?(Class) && field.respond_to?(:where)
+  - records         = field.where(options[:filters])
+  - dependency      = options[:dependency]
+  - required_class  = options[:required] ? 'required' : ''
+  - default_classes = ['form-control reporting-field selectpicker', required_class]
+  - check_dep_class = dependency ? 'check-dep' : ''
+  - id              = options[:for] || "#{field.name.underscore}_id"
+  - name            = options[:for] ? "report[#{options[:for]}]" : "report[#{field.name.underscore}_id]"
+  - name_method     = options[:custom_name_method] || :name
 
-        = render "reports/form_partials/#{options[:field_type]}_form_partial", options: options, field_label: field_label, field: field
-  .report-actions.text-center
-    = submit_tag t(:reporting)[:actions][:create], class: "btn btn-success"
-    = button_to t(:reporting)[:actions][:return], reports_path, method: :get, id: "reporting-return-to-list", class: "btn btn-primary"
-%br
-%br
+  = label_tag id, field_label, class: ['col-sm-3 control-label', required_class]
+  .col-sm-9
+    %select{ id: id, class: [default_classes, required_class, check_dep_class], name: name, data: { dependency: dependency } }
+      %option{ value: '' }
+        = t(:constants)[:prompts][:select_one]
+      
+      - records.each do |record|
+        - option_class = ''
+        - if dependency
+          - # either an id is specified or we assume the dependency is the id
+          - dependency_id = options[:dependency_id] || dependency.sub(/^#/, "")
+          - if record.respond_to?(dependency_id.to_s)
+            - option_class = "sub-#{record.send(dependency_id)}"
+        %option{ value: record.id, class: option_class }
+          - if record.is_a?(Survey)
+            = record.title + " - Version " + record.survey_version.to_s
+          - else
+            = record.send(name_method)

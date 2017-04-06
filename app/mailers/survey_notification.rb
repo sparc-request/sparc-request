@@ -21,24 +21,24 @@
 class SurveyNotification < ActionMailer::Base
   add_template_helper(ApplicationHelper)
 
-  def system_satisfaction_survey response_set
-    @response_set = response_set
-    @identity = Identity.find response_set.user_id
+  def system_satisfaction_survey(response)
+    @response = response
+    @identity = Identity.find(response.identity_id)
+    email     = ADMIN_MAIL_TO
+    cc        = SYSTEM_SATISFACTION_SURVEY_CC
+    subject   = t('surveyor.responses.emails.system_satisfaction.subject', site_name: t(:proper)[:header])
 
-    email = ADMIN_MAIL_TO
-    cc = SYSTEM_SATISFACTION_SURVEY_CC
-    subject = "System satisfaction survey completed in #{t(:mailer)[:application_title]}"
-
-    mail(:to => email, :cc => cc, :from => @identity.email, :subject => subject)
+    mail(to: email, cc: cc, from: @identity.email, subject: subject)
   end
 
-  def service_survey surveys, identity, ssr
+  def service_survey(surveys, identity, ssr)
     @identity = identity
-    @surveys = surveys
-    @ssr = ssr
-    email = @identity.email
-    subject = "#{t(:mailer)[:application_title]} Survey Notification"
-    mail(:to => email, :from => NO_REPLY_FROM, :subject => subject)
+    @surveys  = surveys
+    @ssr      = ssr
+    email     = @identity.email
+    subject   = t('surveyor.responses.emails.service_survey.subject', site_name: t(:proper)[:header])
+
+    mail(to: email, from: NO_REPLY_FROM, subject: subject)
   end
 
 end

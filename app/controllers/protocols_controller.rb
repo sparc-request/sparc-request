@@ -223,7 +223,6 @@ class ProtocolsController < ApplicationController
         :type,
         :udak_project_number,
         :research_master_id,
-        :has_human_subject_info,
         {:study_phase_ids => []},
         research_types_info_attributes: [:human_subjects, :vertebrate_animals, :investigational_products, :ip_patents],
         study_types_attributes: [:name, :new, :position, :_destroy],

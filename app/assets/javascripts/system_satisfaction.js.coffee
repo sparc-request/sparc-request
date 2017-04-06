@@ -31,14 +31,9 @@ $(document).ready ->
 
       $(document).on 'click', '#modal_place .yes-button', ->
         survey_offered = true
-        $('#modal_place').load "/surveys/system-satisfaction-survey", {survey_version: "", review: 'true'}, ->
-          $('#survey_form').append("<input type='hidden' id='redirect_to' name='redirect_to' value='#{button.attr('href')}'>")
-          $('#survey_form div.next_section').append("<input type='button' name='cancel' value='Cancel'/>")
+        $.ajax
+          type: 'get'
+          url: '/surveyor/responses/new.js?access_code=system-satisfaction-survey'
 
-        $(document).one 'click', '#survey-submit-button', ->
-          $("textarea:hidden").val("")
-          $('#survey_form').append("<input type='hidden' id='finish' name='finish' value='Submit'>")
-          $('#survey_form').submit()
-
-      $(document).on 'click', '#modal_place .no-button', ->
+      $(document).on 'hidden.bs.modal', "#modal_place", ->
         window.location = button.attr('href')

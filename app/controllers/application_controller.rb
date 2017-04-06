@@ -204,6 +204,12 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def authorize_site_admin
+    unless SITE_ADMINS.include?(current_user.ldap_uid)
+      authorization_error "You do not have access to this page.", ""
+    end
+  end
+
   def find_locked_org_ids
     @locked_org_ids = []
     if @service_request.protocol.present?

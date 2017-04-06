@@ -1,4 +1,4 @@
-class ProfessionalOrganization < ActiveRecord::Base
+class ProfessionalOrganization < ApplicationRecord
   # In order from most general to least.
   ORG_TYPES = ['institution', 'college', 'department', 'division'].freeze
   audited

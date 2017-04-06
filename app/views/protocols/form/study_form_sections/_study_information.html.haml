@@ -31,7 +31,6 @@
           = link_to t(:protocols)[:studies][:information][:research_master_id], RESEARCH_MASTER_LINK, target: '_blank'
         .col-lg-10
           = form.text_field :research_master_id, class: 'form-control research-master-field'
-          = form.hidden_field :has_human_subject_info, value: false, class: 'has-human-subject-info'
 
     .form-group.row
       = form.label :short_title, t(:protocols)[:studies][:information][:short_title],

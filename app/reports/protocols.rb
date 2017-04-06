@@ -138,6 +138,7 @@ class ProtocolsReport < ReportingModule
   end
 
   def group
+    "protocol_id"
   end
 
   def order

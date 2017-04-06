@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class InvestigationalProductsInfo < ActiveRecord::Base
+class InvestigationalProductsInfo < ApplicationRecord
   EXEMPTION_TYPES = ["ide", "hde", "hud", ""].freeze
   self.table_name = 'investigational_products_info'
 

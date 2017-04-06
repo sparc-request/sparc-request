@@ -25,64 +25,71 @@ RSpec.describe Notifier do
   let_there_be_lane
   let_there_be_j
   fake_login_for_each_test
-  build_service_request_with_study
 
-  let(:service3)           { create(:service,
-                                    organization_id: program.id,
-                                    name: 'ABCD',
-                                    one_time_fee: true) }
-  let(:identity)          { Identity.first }
-  let(:organization)      { Organization.first }
-  let(:non_service_provider_org)  { create(:organization, name: 'BLAH', process_ssrs: 0, is_available: 1) }
-  let(:service_provider)  { create(:service_provider,
-                                    identity: identity,
-                                    organization: organization,
-                                    service: service3) }
-
-  before { add_visits }
-
-  # SUBMITTED
-  before :each do
-    service_request.update_attribute(:submitted_at, Time.now.yesterday)
-    deleted_line_item_audit_trail(service_request, service3, identity)
-    ssr = service_request.sub_service_requests.first
-    @report = ssr.audit_report(identity, Time.now.yesterday - 4.hours, Time.now) 
-  end
+  let(:identity) { jug2 }
 
   context 'service_provider' do
-    let(:xls)                     { Array.new }
-    let(:mail)                    { Notifier.notify_service_provider(service_provider,
-                                                                        service_request,
-                                                                        xls,
-                                                                        identity,
-                                                                        service_request.sub_service_requests.first,
-                                                                        @report, true, false, false) }
-    # Expected service provider message is defined under deleted_all_services_intro_for_service_providers
-    it 'should display service provider intro message, conclusion, link, and should not display acknowledgments' do
-      deleted_all_services_intro_for_service_providers(mail)
-    end
+    context 'general' do
+      before :each do
+        @institution          = create(:institution, name: 'Institution')
+        @provider             = create(:provider, parent: @institution, name: 'Provider')
+        @organization         = create(:program, parent: @provider, name: 'Organize')
+        @service              = create(:service, organization: @organization, one_time_fee: true)
+        @service_provider     = create(:service_provider, identity: identity, organization: @organization)
+        @protocol             = create(:project_without_validations, funding_source: 'cash flow', primary_pi: jpl6)
+        @service_request      = create(:service_request_without_validations, protocol: @protocol, submitted_at: Time.now.yesterday, status: 'submitted')
+        @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization)
+        @line_item            = create(:line_item_without_validations, sub_service_request: @sub_service_request, service_request: @service_request, service: @service)
+        @xls                  = Array.new
 
-    it 'should render default tables' do
-      assert_notification_email_tables_for_service_provider_with_all_services_deleted
-    end
+        @service_request.reload
 
-    it 'should have a notes reminder message but not a submission reminder' do
-      does_not_have_a_reminder_note(mail)
-      does_not_have_a_submission_reminder(mail)
-    end
+        deleted_and_created_line_item_audit_trail(@service_request, @service, identity)
 
-    it 'should not have audited information table' do
-      expect(mail).not_to have_xpath("//th[text()='Service']/following-sibling::th[text()='Action']")
+        @report               = @sub_service_request.audit_report(identity, Time.now.yesterday - 4.hours, Time.now)
+        @mail                 = Notifier.notify_service_provider(@service_provider, @service_request, @xls, identity, @sub_service_request, @report, true, false, false)
+      end
+
+      # Expected service provider message is defined under deleted_all_services_intro_for_service_providers
+      it 'should display service provider intro message, conclusion, link, and should not display acknowledgments' do
+        deleted_all_services_intro_for_service_providers(@mail)
+      end
+
+      it 'should render default tables' do
+        assert_notification_email_tables_for_service_provider_with_all_services_deleted
+      end
+
+      it 'should have a notes reminder message but not a submission reminder' do
+        does_not_have_a_reminder_note(@mail)
+        does_not_have_a_submission_reminder(@mail)
+      end
+
+      it 'should not have audited information table' do
+        expect(@mail).not_to have_xpath("//th[text()='Service']/following-sibling::th[text()='Action']")
+      end
     end
 
     context 'when protocol has selected for epic' do
+      before :each do
+        @organization         = create(:organization)
+        @service              = create(:service, organization: @organization, one_time_fee: true)
+        @service_provider     = create(:service_provider, identity: identity, organization: @organization)
+        @protocol             = create(:project_without_validations, funding_source: 'cash flow', primary_pi: jpl6, selected_for_epic: true)
+        @service_request      = create(:service_request_without_validations, protocol: @protocol, submitted_at: Time.now.yesterday, status: 'submitted')
+        @sub_service_request  = create(:sub_service_request_without_validations, service_request: @service_request, protocol: @protocol, organization: @organization)
+        @line_item            = create(:line_item_without_validations, sub_service_request: @sub_service_request, service_request: @service_request, service: @service)
+        @xls                  = Array.new
 
-      before do
-        service_request.protocol.update_attribute(:selected_for_epic, true)
+        @service_request.reload
+        
+        deleted_and_created_line_item_audit_trail(@service_request, @service, identity)
+
+        @report               = @sub_service_request.audit_report(identity, Time.now.yesterday - 4.hours, Time.now)
+        @mail                 = Notifier.notify_service_provider(@service_provider, @service_request, @xls, identity, @sub_service_request, @report, true, false, false)
       end
 
       it 'should show epic column' do
-        assert_email_user_information_when_selected_for_epic(mail.body)
+        assert_email_user_information_when_selected_for_epic(@mail.body)
       end
     end
   end

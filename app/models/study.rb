@@ -85,7 +85,7 @@ class Study < Protocol
       position += 1
     end
 
-    impact_areas.sort_by(&:position)
+    impact_areas.sort_by { |ia| ia.position.to_i }
   end
 
   def setup_affiliations

@@ -78,7 +78,7 @@ RSpec.describe "User submitting a ServiceRequest", js: true do
     expect(page).to have_content(otf_service_core_1.name)
     expect(page).to have_content(pppv_service_core_1.name)
     click_add_service_for(otf_service_core_1)
-    expect(page).to have_css("a", text: /Yes/)
+    expect(page).to have_css("a", text: "Yes (Continue with Shopping Cart)")
     find("a", text: /Yes/).click
     within(".shopping-cart") do
       expect(page).to have_content(otf_service_core_1.abbreviation)

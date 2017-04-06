@@ -52,7 +52,8 @@ class Service < ApplicationRecord
   has_many :depending_services, :through => :depending_service_relations, :source => :service
 
   # Surveys associated with this service
-  has_many :associated_surveys, :as => :surveyable
+  has_many :associated_surveys, as: :surveyable, dependent: :destroy
+
   validate :validate_pricing_maps_present
 
   ###############################################

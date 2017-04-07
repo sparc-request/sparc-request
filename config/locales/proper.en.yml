@@ -212,7 +212,7 @@ en:
         warning: "This line item has one or more fulfillments associated with it and can not be deleted."
       remove_request:
         header: "Remove Service"
-        warning: "This action will delete this service request and you will be redirected to your Dashboard. Click OK to proceed."
+        warning: "This action will delete this request (%{ssr_id}) and you will be redirected to your SPARCDashboard. Click Yes to proceed."
       submit_error:
         header: "Submission Error"
         warning: "Please ensure that you have added all necessary research services to your \"My Services\" cart before proceeding. For a listing of available services to add, click on any of the Programs listed on the left-hand side of the page. Services will appear in the middle of the screen. Add services by clicking \"Add\"."

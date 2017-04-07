@@ -31,7 +31,7 @@ RSpec.describe Surveyor::ResponsesController, type: :controller do
     end
 
     it 'should assign @survey to the Survey' do
-      survey = create(:survey)
+      survey = create(:survey, active: true)
 
       xhr :get, :new, {
         access_code: survey.access_code
@@ -41,7 +41,7 @@ RSpec.describe Surveyor::ResponsesController, type: :controller do
     end
 
     it 'should assign @response as a new Response of Survey' do
-      survey = create(:survey)
+      survey = create(:survey, active: true)
 
       xhr :get, :new, {
         access_code: survey.access_code
@@ -52,7 +52,7 @@ RSpec.describe Surveyor::ResponsesController, type: :controller do
     end
 
     it 'should build question responses' do
-      survey = create(:survey)
+      survey = create(:survey, active: true)
 
       xhr :get, :new, {
         access_code: survey.access_code
@@ -63,7 +63,7 @@ RSpec.describe Surveyor::ResponsesController, type: :controller do
 
     context 'format.html (Taking Survey From Email Link)' do
       it 'should assign @review to false' do
-        survey = create(:survey)
+        survey = create(:survey, active: true)
         org = create(:organization)
         ssr = create(:sub_service_request_without_validations, organization: org)
 
@@ -77,7 +77,7 @@ RSpec.describe Surveyor::ResponsesController, type: :controller do
       end
 
       it 'should assign @sub_service_request' do
-        survey = create(:survey)
+        survey = create(:survey, active: true)
         org = create(:organization)
         ssr = create(:sub_service_request_without_validations, organization: org)
 
@@ -91,7 +91,7 @@ RSpec.describe Surveyor::ResponsesController, type: :controller do
       end
 
       it 'should render template' do
-        survey = create(:survey)
+        survey = create(:survey, active: true)
         org = create(:organization)
         ssr = create(:sub_service_request_without_validations, organization: org)
 
@@ -105,7 +105,7 @@ RSpec.describe Surveyor::ResponsesController, type: :controller do
       end
 
       it 'should respond ok' do
-        survey = create(:survey)
+        survey = create(:survey, active: true)
         org = create(:organization)
         ssr = create(:sub_service_request_without_validations, organization: org)
 
@@ -121,7 +121,7 @@ RSpec.describe Surveyor::ResponsesController, type: :controller do
 
     context 'format.js (Taking Survey From Step 4' do
       it 'should assign @review to true' do
-        survey = create(:survey)
+        survey = create(:survey, active: true)
 
         xhr :get, :new, {
           access_code: survey.access_code,
@@ -132,7 +132,7 @@ RSpec.describe Surveyor::ResponsesController, type: :controller do
       end
 
       it 'should render template' do
-        survey = create(:survey)
+        survey = create(:survey, active: true)
 
         xhr :get, :new, {
           access_code: survey.access_code,
@@ -143,7 +143,7 @@ RSpec.describe Surveyor::ResponsesController, type: :controller do
       end
 
       it 'should respond ok' do
-        survey = create(:survey)
+        survey = create(:survey, active: true)
 
         xhr :get, :new, {
           access_code: survey.access_code,

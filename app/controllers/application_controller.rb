@@ -19,7 +19,7 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class ApplicationController < ActionController::Base
-  protect_from_forgery
+  protect_from_forgery prepend: true
   helper :all
   helper_method :current_user
   helper_method :xeditable?

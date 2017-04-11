@@ -18,26 +18,28 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#= require navigation
-#= require cart
-#= require associated_users
+FactoryGirl.define do
+  factory :study, parent: :protocol, class: 'Study' do
+    type "Study"
 
-$(document).ready ->
-  $(document).on 'click', '.service-view a', ->
-    description = $(".service-description-#{$(this).data('id')}")
-    if description.hasClass('hidden')
-      $('.service-description').addClass('hidden')
-      description.removeClass('hidden')
-    else
-      description.addClass('hidden')
+    trait :with_study_type_questions_group do
+      after(:create) do |protocol|
+        protocol.study_type_question_group = create(:active_study_group_with_questions, protocol_id: protocol.id)
+      end
+    end
 
-  $('.protocol-select-help a').tooltip()
+    after(:build) do |protocol, evaluator|
+      protocol.build_ip_patents_info(attributes_for(:ip_patents_info)) unless protocol.ip_patents_info
+      protocol.build_human_subjects_info(attributes_for(:human_subjects_info)) unless protocol.human_subjects_info
+      protocol.build_investigational_products_info(attributes_for(:investigational_products_info)) unless protocol.investigational_products_info
+      protocol.build_research_types_info(attributes_for(:research_types_info)) unless protocol.research_types_info
+      protocol.build_vertebrate_animals_info(attributes_for(:vertebrate_animals_info)) unless protocol.vertebrate_animals_info
+    end
 
-  $(document).on 'click', '.view-protocol-details-button', ->
-    protocol_id = $(this).data('protocol-id')
-    $.ajax
-      type: 'get'
-      url: "/protocols/#{protocol_id}.js"
-      data:
-        service_request_id: $("input[name='service_request_id']").val()
-    return false
+    factory :study_without_validations,                 traits: [:without_validations]
+    factory :unarchived_study_without_validations,      traits: [:without_validations, :unarchived]
+    factory :archived_study_without_validations,        traits: [:without_validations, :archived]
+    factory :study_with_blank_dates,                    traits: [:pending, :blank_funding_start_dates, :blank_start_and_end_dates]
+    factory :study_without_validations_with_questions,  traits: [:without_validations, :with_study_type_questions_group]
+  end
+end

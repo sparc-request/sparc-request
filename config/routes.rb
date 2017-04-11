@@ -100,13 +100,12 @@ SparcRails::Application.routes.draw do
     end
   end
 
-  resources :protocols, except: [:index, :show, :destroy] do
+  resources :protocols, except: [:index, :destroy] do
     member do
       patch :update_protocol_type
       get :approve_epic_rights
       get :push_to_epic
       get :push_to_epic_status
-      get :view_details
     end
   end
 
@@ -269,7 +268,6 @@ SparcRails::Application.routes.draw do
         patch :update_protocol_type
         get :display_requests
         patch :archive
-        get :view_details
       end
     end
 

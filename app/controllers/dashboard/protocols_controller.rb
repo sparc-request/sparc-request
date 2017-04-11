@@ -21,7 +21,8 @@
 class Dashboard::ProtocolsController < Dashboard::BaseController
 
   respond_to :html, :json, :xlsx
-  before_action :find_protocol,                                   only: [:show, :edit, :update, :update_protocol_type, :display_requests, :archive, :view_details]
+
+  before_action :find_protocol,                                   only: [:show, :edit, :update, :update_protocol_type, :display_requests, :archive]
   before_action :find_admin_for_protocol,                         only: [:show, :edit, :update, :update_protocol_type, :display_requests]
   before_action :protocol_authorizer_view,                        only: [:show, :view_full_calendar, :display_requests]
   before_action :protocol_authorizer_edit,                        only: [:edit, :update, :update_protocol_type]
@@ -202,12 +203,6 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
     data = { modal: modal }
     render json: data
-  end
-
-  def view_details
-    respond_to do |format|
-      format.js
-    end
   end
 
   private

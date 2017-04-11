@@ -18,26 +18,24 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#= require navigation
-#= require cart
-#= require associated_users
+FactoryGirl.define do
+  factory :study_type_question_group do
+    version 1
 
-$(document).ready ->
-  $(document).on 'click', '.service-view a', ->
-    description = $(".service-description-#{$(this).data('id')}")
-    if description.hasClass('hidden')
-      $('.service-description').addClass('hidden')
-      description.removeClass('hidden')
-    else
-      description.addClass('hidden')
+    transient do
+      protocol_id nil
+    end
 
-  $('.protocol-select-help a').tooltip()
+    trait :active do
+      active true
+    end
 
-  $(document).on 'click', '.view-protocol-details-button', ->
-    protocol_id = $(this).data('protocol-id')
-    $.ajax
-      type: 'get'
-      url: "/protocols/#{protocol_id}.js"
-      data:
-        service_request_id: $("input[name='service_request_id']").val()
-    return false
+    trait :with_questions do
+      after(:create) do |stqg, evaluator|
+        create_list(:study_type_question_with_answer, 3, study_type_question_group: stqg, protocol_id: evaluator.protocol_id)
+      end
+    end
+
+    factory :active_study_group_with_questions, traits: [:active, :with_questions]
+  end
+end

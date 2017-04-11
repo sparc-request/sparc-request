@@ -18,5 +18,16 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-$("#modal_place").html("<%= escape_javascript(render( 'protocols/view_details', protocol: @protocol )) %>")
-$("#modal_place").modal 'show'
+require 'rails_helper'
+
+RSpec.describe ProtocolsController, type: :controller do
+
+  describe "GET #show" do
+    it "returns http success" do
+      protocol = create(:protocol_without_validations)
+      allow(controller).to receive(:authorize_identity).and_return(true)
+      get :show, id: protocol.id, format: :js
+      expect(response).to have_http_status(:success)
+    end
+  end
+end

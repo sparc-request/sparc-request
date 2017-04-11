@@ -576,13 +576,13 @@ RSpec.describe "filters", js: :true do
         create(:service_provider, organization: organization2, identity: user)
         create(:service_provider, organization: organization3, identity: user)
 
-        @protocol1 = create_protocol(archived: false, short_title: "Protocol1")
+        @protocol1 = create_protocol(archived: false, short_title: "Protocol1", study: true)
         create(:project_role, identity: user, role: "very-important", project_rights: "to-party", protocol: @protocol1)
 
-        @protocol2 = create_protocol(archived: false, short_title: "Protocol2")
+        @protocol2 = create_protocol(archived: false, short_title: "Protocol2", study: true)
         create(:project_role, identity: user, role: "very-important", project_rights: "to-party", protocol: @protocol2)
 
-        @protocol3 = create_protocol(archived: false, short_title: "Protocol3")
+        @protocol3 = create_protocol(archived: false, short_title: "Protocol3", study: true)
         create(:project_role, identity: user, role: "very-important", project_rights: "to-party", protocol: @protocol3)
 
         service_request1 = create(:service_request_without_validations, protocol: @protocol1)
@@ -650,13 +650,13 @@ RSpec.describe "filters", js: :true do
         create(:service_provider, organization: organization2, identity: user)
         create(:service_provider, organization: organization3, identity: user)
 
-        @protocol1 = create_protocol(archived: false, short_title: "Protocol1")
+        @protocol1 = create_protocol(archived: false, short_title: "Protocol1", study: true)
         create(:project_role, identity: user, role: "very-important", project_rights: "to-party", protocol: @protocol1)
 
-        @protocol2 = create_protocol(archived: false, short_title: "Protocol2")
+        @protocol2 = create_protocol(archived: false, short_title: "Protocol2", study: true)
         create(:project_role, identity: user, role: "very-important", project_rights: "to-party", protocol: @protocol2)
 
-        @protocol3 = create_protocol(archived: false, short_title: "Protocol3")
+        @protocol3 = create_protocol(archived: false, short_title: "Protocol3", study: true)
         create(:project_role, identity: user, role: "very-important", project_rights: "to-party", protocol: @protocol3)
 
         service_request1 = create(:service_request_without_validations, protocol: @protocol1)
@@ -1061,8 +1061,13 @@ RSpec.describe "filters", js: :true do
     # if they exist, we'll create one
     status = opts.delete(:status)
     organization = opts.delete(:organization)
-
-    protocol = create(:project_without_validations, opts.merge(primary_pi: create(:identity)))
+    is_study = opts.delete(:study)
+    
+    if is_study
+      protocol = create(:study_without_validations, opts.merge(primary_pi: create(:identity)))
+    else
+      protocol = create(:project_without_validations, opts.merge(primary_pi: create(:identity)))
+    end
 
     if status.present? || organization.present?
       service_request = create(:service_request_without_validations,

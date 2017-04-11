@@ -109,18 +109,6 @@ RSpec.describe 'Notifications index', js: true do
         expect(page).to have_epic_queues(text: "#{status}")
       end
     end
-
-    context 'double clicking row' do
-      it 'should redirect to Protocol Show page' do
-        visit_epic_queues_index_page
-        wait_for_javascript_to_finish
-
-        find('tr[data-index="0"]').double_click
-        page.driver.browser.window_focus page.windows.last.handle
-
-        expect(current_path).to eq dashboard_protocol_path(protocol)
-      end
-    end
   end
 
   describe 'epic_queue_record_table' do

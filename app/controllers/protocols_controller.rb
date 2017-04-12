@@ -21,11 +21,12 @@
 class ProtocolsController < ApplicationController
 
   respond_to :html, :js, :json
+  protect_from_forgery except: :show
 
   before_action :initialize_service_request,  unless: :from_portal?,  except: [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
   before_action :authorize_identity,          unless: :from_portal?,  except: [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
   before_action :set_portal
-  before_action :find_protocol,               only: [:edit, :update, :view_details]
+  before_action :find_protocol,               only: [:edit, :update, :show]
 
   def new
     @protocol_type          = params[:protocol_type]
@@ -126,7 +127,7 @@ class ProtocolsController < ApplicationController
     end
   end
 
-  def view_details
+  def show
     respond_to do |format|
       format.js
     end
@@ -223,7 +224,6 @@ class ProtocolsController < ApplicationController
         :type,
         :udak_project_number,
         :research_master_id,
-        :has_human_subject_info,
         {:study_phase_ids => []},
         research_types_info_attributes: [:human_subjects, :vertebrate_animals, :investigational_products, :ip_patents],
         study_types_attributes: [:name, :new, :position, :_destroy],

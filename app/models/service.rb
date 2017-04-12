@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class Service < ActiveRecord::Base
+class Service < ApplicationRecord
 
   include RemotelyNotifiable
 
@@ -52,7 +52,8 @@ class Service < ActiveRecord::Base
   has_many :depending_services, :through => :depending_service_relations, :source => :service
 
   # Surveys associated with this service
-  has_many :associated_surveys, :as => :surveyable
+  has_many :associated_surveys, as: :surveyable, dependent: :destroy
+
   validate :validate_pricing_maps_present
 
   ###############################################

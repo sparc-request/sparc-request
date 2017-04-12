@@ -54,7 +54,7 @@ begin
   USE_EPIC                                  = application_config['use_epic']
   QUEUE_EPIC                                = application_config['queue_epic']
   QUEUE_EPIC_LOAD_ERROR_TO                  = application_config['queue_epic_load_error_to']
-  QUEUE_EPIC_EDIT_LDAP_UIDS                 = application_config['queue_epic_edit_ldap_uids'] || []
+  SITE_ADMINS                               = application_config['site_admins'] || []
   EPIC_QUEUE_REPORT_TO                      = application_config['epic_queue_report_to']
   USE_GOOGLE_CALENDAR                       = application_config['use_google_calendar']
   USE_NEWS_FEED                             = application_config['use_news_feed']

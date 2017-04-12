@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class Organization < ActiveRecord::Base
+class Organization < ApplicationRecord
 
   include RemotelyNotifiable
 
@@ -27,7 +27,7 @@ class Organization < ActiveRecord::Base
 
   belongs_to :parent, :class_name => 'Organization'
   has_many :submission_emails, :dependent => :destroy
-  has_many :associated_surveys, as: :surveyable
+  has_many :associated_surveys, as: :surveyable, dependent: :destroy
   has_many :pricing_setups, :dependent => :destroy
   has_one :subsidy_map, :dependent => :destroy
 

@@ -21,7 +21,8 @@
 class Dashboard::ProtocolsController < Dashboard::BaseController
 
   respond_to :html, :json, :xlsx
-  before_action :find_protocol,                                   only: [:show, :edit, :update, :update_protocol_type, :display_requests, :archive, :view_details]
+
+  before_action :find_protocol,                                   only: [:show, :edit, :update, :update_protocol_type, :display_requests, :archive]
   before_action :find_admin_for_protocol,                         only: [:show, :edit, :update, :update_protocol_type, :display_requests]
   before_action :protocol_authorizer_view,                        only: [:show, :view_full_calendar, :display_requests]
   before_action :protocol_authorizer_edit,                        only: [:edit, :update, :update_protocol_type]
@@ -204,12 +205,6 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     render json: data
   end
 
-  def view_details
-    respond_to do |format|
-      format.js
-    end
-  end
-
   private
 
   def filterrific_params
@@ -268,7 +263,6 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
         :type,
         :udak_project_number,
         :research_master_id,
-        :has_human_subject_info,
         research_types_info_attributes: [:human_subjects, :vertebrate_animals, :investigational_products, :ip_patents],
         study_types_attributes: [:name, :new, :position, :_destroy],
         vertebrate_animals_info_attributes: [:iacuc_number,

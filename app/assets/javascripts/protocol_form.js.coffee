@@ -28,15 +28,12 @@ $(document).ready ->
 
   if $('.human-subjects:checkbox:checked').length > 0
     $('.rm-id').addClass('required')
-    $('.has-human-subject-info').val('true')
 
   $(document).on 'click', '.human-subjects', ->
     if $('.rm-id').hasClass('required')
       $('.rm-id').removeClass('required')
-      $('.has-human-subject-info').val('false')
     else
       $('.rm-id').addClass('required')
-      $('.has-human-subject-info').val('true')
 
   $(document).on 'blur', '.research-master-field', ->
     rmId = $('.research-master-field').val()
@@ -295,7 +292,7 @@ $(document).ready ->
 
 
   ###IMPACT AREAS OTHER FIELD DISPLAY###
-  $(document).on 'change', '#protocol_impact_areas_attributes_6__destroy', ->
+  $(document).on 'change', '#protocol_impact_areas_attributes_7__destroy', ->
     # Impact Areas Other - Checkbox
     switch $(this).attr('checked')
       when 'checked' then $('.impact_area_dependent').show()

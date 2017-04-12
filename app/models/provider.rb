@@ -23,7 +23,7 @@ class Provider < Organization
   has_many :programs, :dependent => :destroy, :foreign_key => "parent_id"
 
   # Surveys associated with this service
-  has_many :associated_surveys, :as => :surveyable
+  has_many :associated_surveys, as: :surveyable
 
   def populate_for_edit
     self.setup_available_statuses

@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class Protocol < ActiveRecord::Base
+class Protocol < ApplicationRecord
 
   include RemotelyNotifiable
 
@@ -93,7 +93,7 @@ class Protocol < ActiveRecord::Base
   end
 
   def has_human_subject_info?
-    self.has_human_subject_info == true
+    self.research_types_info.try(:human_subjects) || false
   end
 
   validate :existing_rm_id,

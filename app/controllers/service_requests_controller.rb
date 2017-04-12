@@ -283,7 +283,7 @@ class ServiceRequestsController < ApplicationController
       notifier_logic = NotifierLogic.new(@service_request, nil, current_user)
       notifier_logic.ssr_deletion_emails(ssr, ssr_destroyed: true, request_amendment: false)
       ssr.destroy
-    end 
+    end
 
     @service_request.reload
     @line_items_count     = @sub_service_request ? @sub_service_request.line_items.count : @service_request.line_items.count

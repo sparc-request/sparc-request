@@ -67,10 +67,10 @@ en:
           all_day: "All Day"
           none: "No events scheduled within a month from today."
       new_request:
-        header: "New or Existing?"
+        header: "New or Existing"
         warning: "Would you like to enter a new study or project into SPARCRequest?"
         yes_button: "<b>Yes</b> <br>(Continue with Shopping Cart)"
-        no_button: "<b>No</b> <br>(Go to SPARCDashboard)"
+        no_button: "<b>No</b> <br>(Go to SPARCDashboard to Choose)"
       request_submitted:
         header: "Remove Service Warning"
         warning: "Deleting this service from the service cart will be irreversible and will cause it to be deleted from the associated protocol (%{protocol_id}). Are you sure you want to proceed?"

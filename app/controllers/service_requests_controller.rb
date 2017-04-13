@@ -278,7 +278,7 @@ class ServiceRequestsController < ApplicationController
     @service_request.previous_submitted_at = @service_request.submitted_at
     @protocol = @service_request.protocol
 
-    # notify service providers and admin of a destroyed ssr upon deletion of ssr
+    #notify service providers and admin of a destroyed ssr upon deletion of ssr
     if ssr.line_items.empty?
       notifier_logic = NotifierLogic.new(@service_request, nil, current_user)
       notifier_logic.ssr_deletion_emails(ssr, ssr_destroyed: true, request_amendment: false)

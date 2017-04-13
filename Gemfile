@@ -19,6 +19,7 @@ gem 'capistrano-passenger', require: false
 gem 'capistrano3-delayed-job', '~> 1.0'
 gem 'coffee-rails'
 gem 'country_select'
+gem 'curb', '~> 0.9.3'
 gem 'delayed_job_active_record'
 gem 'devise', '~> 4.2'
 gem 'dynamic_form'

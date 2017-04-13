@@ -64,7 +64,7 @@ class Surveyor::ResponsesController < ApplicationController
   private
 
   def find_survey
-    surveys = Survey.where(access_code: params[:access_code]).order('version DESC')
+    surveys = Survey.where(access_code: params[:access_code], active: true).order('version DESC')
 
     if params[:version]
       @survey = surveys.where(version: params[:version]).first

@@ -480,13 +480,18 @@ class SubServiceRequest < ApplicationRecord
     ssr_submitted_at_audit = AuditRecovery.where("audited_changes LIKE '%submitted_at%' AND auditable_id = #{id} AND auditable_type = 'SubServiceRequest' AND action IN ('update') AND user_id = #{identity.id}").order(created_at: :desc).first
 
     ### start_date = last time SSR was submitted
-    start_date = !ssr_submitted_at_audit.nil? ? ssr_submitted_at_audit.audited_changes['submitted_at'].sort.first.utc : Time.now.utc
+    ### if SSR has never been submitted, start_date == nil
+    if ssr_submitted_at_audit.audited_changes['submitted_at'].include?(nil)
+      start_date = nil
+    else
+      start_date = !ssr_submitted_at_audit.nil? ? ssr_submitted_at_audit.audited_changes['submitted_at'].first.utc : Time.now.utc
+    end
     end_date = Time.now.utc
 
     deleted_line_item_audits = AuditRecovery.where("audited_changes LIKE '%sub_service_request_id: #{id}%' AND auditable_type = 'LineItem' AND user_id = #{identity.id} AND action IN ('destroy') AND created_at BETWEEN '#{start_date}' AND '#{end_date}'")
                              
     added_line_item_audits = AuditRecovery.where("audited_changes LIKE '%service_request_id: #{service_request.id}%' AND auditable_type = 'LineItem' AND user_id = #{identity.id} AND action IN ('create') AND created_at BETWEEN '#{start_date}' AND '#{end_date}'")
-
+    
     ### Takes all the added LIs and filters them down to the ones specific to this SSR ###
     added_li_ids = !added_line_item_audits.empty? ? added_line_item_audits.map(&:auditable_id) : []
     li_ids_added_to_this_ssr = !line_items.empty? ? line_items.map(&:id) : []

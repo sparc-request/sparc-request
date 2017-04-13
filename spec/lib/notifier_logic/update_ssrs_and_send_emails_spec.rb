@@ -667,7 +667,7 @@ RSpec.describe NotifierLogic do
     audit_of_ssr2_create.first.update_attribute(:created_at, Time.now.utc - 5.minutes)
 
     ### Needed for SSR#audit_line_items ###
-    AuditRecovery.create(auditable_id: ssr2.id, auditable_type: 'SubServiceRequest', action:  'update', audited_changes: {"submitted_at"=>[nil, Time.now.utc]}, user_id: logged_in_user.id, created_at: Time.now.utc - 5.minutes)
+    AuditRecovery.create(auditable_id: ssr2.id, auditable_type: 'SubServiceRequest', action:  'update', audited_changes: {"submitted_at"=>[nil, Time.now]}, user_id: logged_in_user.id, created_at: Time.now.utc - 5.minutes)
 
     sr.previous_submitted_at = sr.submitted_at
   end
@@ -681,7 +681,7 @@ RSpec.describe NotifierLogic do
 
     # submitted_at_ssr2 = AuditRecovery.where("audited_changes LIKE '%submitted_at%' AND auditable_id = #{ssr2.id} AND auditable_type = 'SubServiceRequest' AND action IN ('update')").order(created_at: :desc).first
 
-    AuditRecovery.create(auditable_id: ssr2.id, auditable_type: 'SubServiceRequest', action:  'update', audited_changes: {"submitted_at"=>[Time.now.yesterday.utc, Time.now.yesterday.utc + 1.hours]}, user_id: logged_in_user.id, created_at: Time.now.utc - 5.minutes)
+    AuditRecovery.create(auditable_id: ssr2.id, auditable_type: 'SubServiceRequest', action:  'update', audited_changes: {"submitted_at"=>[Time.now.yesterday, Time.now.yesterday + 1.hours]}, user_id: logged_in_user.id, created_at: Time.now.utc - 5.minutes)
 
     sr.previous_submitted_at = sr.submitted_at
   end
@@ -713,7 +713,7 @@ RSpec.describe NotifierLogic do
     added_li.first.update_attribute(:created_at, Time.now.yesterday.utc - 1.hours)
     added_li.first.update_attribute(:user_id, logged_in_user.id)
 
-    AuditRecovery.create(auditable_id: ssr2.id, auditable_type: 'SubServiceRequest', action:  'update', audited_changes: {"submitted_at"=>[Time.now.yesterday.utc, Time.now.yesterday.utc + 1.hours]}, user_id: logged_in_user.id, created_at: Time.now.utc - 5.minutes)
+    AuditRecovery.create(auditable_id: ssr2.id, auditable_type: 'SubServiceRequest', action:  'update', audited_changes: {"submitted_at"=>[Time.now.yesterday, Time.now.yesterday + 1.hours]}, user_id: logged_in_user.id, created_at: Time.now.utc - 5.minutes)
 
     sr.previous_submitted_at = sr.submitted_at
   end

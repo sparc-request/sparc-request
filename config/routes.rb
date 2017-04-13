@@ -46,6 +46,8 @@ SparcRails::Application.routes.draw do
     resources :survey_updater, only: [:update]
   end
 
+  resources :feedback
+
   if USE_SHIBBOLETH_ONLY
     devise_for :identities,
                controllers: {

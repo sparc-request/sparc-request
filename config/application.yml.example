@@ -33,6 +33,7 @@ development:
   research_master_api: 'https://research-master-staging.musc.edu/api/'
   research_master_enabled: true
   rmid_api_token: 'some token'
+  redcap_api: 'https://redcap.musc.edu/api/'
   create_an_account: false
   header_link_1: http://sctr.musc.edu
   header_link_2_proper: http://localhost:3000/
@@ -91,6 +92,7 @@ development:
   use_feedback_link: true
   feedback_link: "https://redcap.musc.edu/surveys/?s=A37TNJWJPL"
   send_emails_to_real_users: false
+  use_redcap_api: true
 
 test:
   default_mail_to: nobody@nowhere.com
@@ -162,3 +164,5 @@ test:
   use_about_sparc_link: false
   use_feedback_link: true
   send_emails_to_real_users: false
+  redcap_api: 'https://redcap.musc.edu/api/'
+  use_redcap_api: true

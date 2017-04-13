@@ -281,6 +281,8 @@ en:
       specify_doc_type: "Please Specify:"
       document: "Document:"
       access: "Allow Access:"
+    tooltips:
+      access: "Uploaded documents are made viewable to all service providers unless checkmark is removed"
     select_type: "Please Select Type"
     delete_confirm: "Are you sure you want to delete the selected Document from this protocol?"
 

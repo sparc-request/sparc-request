@@ -24,9 +24,11 @@ $ ->
   $(document).on 'click', 'button.notes.list',  ->
     id = $(this).data('notable-id')
     type = $(this).data('notable-type')
-    data = note:
-      notable_id: id
-      notable_type: type
+    data = 
+      note:
+        notable_id: id
+        notable_type: type
+      in_dashboard: true
     $.ajax
       type: 'GET'
       url: '/notes.js'

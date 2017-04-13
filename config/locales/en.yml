@@ -179,6 +179,7 @@ en:
     pppv:
       header: "Per Patient/Visit Services -- %{arm_name}"
       header_fields:
+        notes: "Notes"
         service: "Service Name"
         status: "Status"
         unit_cost: "Unit Costs"
@@ -233,6 +234,7 @@ en:
       total_per_study: 'Total proposed cost of one-time fees per study'
       move_visit_button: 'Ability to change visit position'
       pppv_total_costs: 'Total proposed cost of services per arm'
+      line_item_notes: 'Line Item Notes'
       pppv_status: 'Used to track the progress of a service'
       quantity_type: 'Unit of measurement'
       subject_count: 'Number of participants'

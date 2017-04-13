@@ -27,7 +27,7 @@
     .modal-body
       #modal_errors
       .form-content
-        = render 'notes/table', notable_id: notable_id, notable_type: notable_type, in_dashboard: true
+        = render 'notes/table', notable_id: notable_id, notable_type: notable_type, in_dashboard: @in_dashboard
     .modal-footer
       .center-block
         %button.btn.btn-default{ type: 'button', data: { dismiss: 'modal' } }

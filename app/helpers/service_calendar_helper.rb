@@ -30,6 +30,15 @@ module ServiceCalendarHelper
     currency_converter(full_rate)
   end
 
+  def display_notes(line_item)
+  has_notes = line_item.notes.count > 0
+  raw(content_tag(:button, raw(content_tag(:span, '', class: "glyphicon glyphicon-list-alt note-styling #{has_notes ? "blue-note" : "black-note"}", aria: {hidden: "true"}))+raw(content_tag(:span, line_item.notes.count, class: "#{has_notes ? "badge blue-badge" : "badge"}", id: "lineitem_#{line_item.id}_notes")), type: 'button', class: 'btn btn-link form-control actions-button notes', data: {notable_id: line_item.id, notable_type: "LineItem"}))
+  end
+
+  def display_service_name_and_code(notable_id)
+    LineItem.find(notable_id.to_i).service.name + " (" + LineItem.find(notable_id.to_i).service.cpt_code + ")"
+  end
+
   def display_your_cost line_item
     currency_converter(line_item.applicable_rate)
   end

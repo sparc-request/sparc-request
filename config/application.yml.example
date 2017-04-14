@@ -50,6 +50,7 @@ development:
   queue_epic: true
   queue_epic_load_error_to: 'hutsonk@musc.edu, forney@musc.edu, crossoml@musc.edu, success@musc.edu'
   site_admins: ['jug2@musc.edu']
+  epic_queue_access: ['jug2@musc.edu']
   use_google_calendar: true
   # insert sub-directory path to override the three header images + account sign-in image and override application.css
 #  custom_asset_path: image_override/
@@ -132,6 +133,7 @@ test:
   queue_epic: false
   queue_epic_load_error_to: 'hutsonk@musc.edu, forney@musc.edu, crossoml@musc.edu, success@musc.edu'
   site_admins: ['jug2']
+  epic_queue_access: ['jug2']
   use_google_calendar: true
   # insert sub-directory path to override the three header images + account sign-in image and override application.css
 #  custom_asset_path: image_override/

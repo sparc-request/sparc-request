@@ -28,6 +28,7 @@
           %table
             = f.fields_for :available_statuses, @organization.available_statuses.sort{|x, y| AVAILABLE_STATUSES[x.status] <=> AVAILABLE_STATUSES[y.status]} do |as|
               %tr
+                -binding.pry
                 %th= as.label :status, "#{AvailableStatus::TYPES[as.object.status].gsub('CTRC', 'Nexus')}:"
                 %td= as.check_box "_destroy", {:checked => !as.object.new_record? || DEFAULT_STATUSES.include?(as.object.status), :disabled => ["Draft", "Get a Cost Estimate", "Submitted"].include?(AVAILABLE_STATUSES[as.object.status])}, false, true
                 = as.hidden_field :status, :value => as.object.status

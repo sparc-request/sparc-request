@@ -25,14 +25,16 @@ class OrganizationUpdater
                        else
                          true
                        end
+    
+    @attributes[:available_statuses_attributes].select! do |k, v|
+      @organization.available_statuses.detect{|status| status.status == v["status"]}.nil?
+    end
 
     if services_updated && @organization.update_attributes(@attributes)
       @organization.update_ssr_org_name if name_change
       @organization.update_descendants_availability(@attributes[:is_available])
-
       true
     else
-
       false
     end
   end

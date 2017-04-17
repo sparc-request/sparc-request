@@ -13,7 +13,7 @@ set :whenever_identifier, ->{ "#{fetch(:application)}_#{fetch(:stage)}" }
 
 set :linked_files, fetch(:linked_files, []).push('config/database.yml', 'config/setup_load_paths.rb', 'config/application.yml', 'config/ldap.yml', 'config/epic.yml')
 
-set :linked_dirs, fetch(:linked_dirs, []).push('log', 'tmp/pids', 'tmp/cache', 'tmp/sockets')
+set :linked_dirs, fetch(:linked_dirs, []).push('log', 'tmp/pids', 'tmp/cache', 'tmp/sockets', 'public/system')
 
 namespace :survey do
   desc "load/update a survey"

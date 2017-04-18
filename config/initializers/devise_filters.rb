@@ -28,6 +28,7 @@ module DeviseFilters
       Devise::PasswordsController
     ].each do |controller|
       controller.before_filter :initialize_service_request
+      controller.before_filter :configure_permitted_parameters
     end
 
     # Example of adding one selective before_filter.

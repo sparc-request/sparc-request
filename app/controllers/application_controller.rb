@@ -76,6 +76,13 @@ class ApplicationController < ActionController::Base
     errors.map {|k,v| v}.flatten
   end
 
+  # permitted parameters for sign-up
+  def configure_permitted_parameters
+    devise_parameter_sanitizer.for(:sign_up) do |u|
+      u.permit(:last_name, :first_name, :company, :phone, :ldap_uid, :reason, :email, :password, :password_confirmation)
+    end
+  end
+
   # Initialize the instance variables used with service requests:
   #   @service_request
   #   @sub_service_request

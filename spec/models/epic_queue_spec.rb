@@ -18,54 +18,33 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-module Dashboard::EpicQueuesHelper
+require 'rails_helper'
 
-  def format_protocol(protocol)
-    "#{protocol.type.capitalize}: #{protocol.id} - #{protocol.short_title}"
-  end
+RSpec.describe EpicQueue, type: :model do
 
-  def format_pis(protocol)
-    pis = protocol.principal_investigators.map(&:full_name).each do |pi|
-      "#{pi}"
+  describe '#not_completed' do
+    it 'should return all epic queues that are not yet completed' do
+      protocol = create(:protocol,
+                        :without_validations,
+                        last_epic_push_status: 'complete'
+                       )
+      eq = create(:epic_queue, protocol: protocol)
+
+      result = EpicQueue.not_completed
+
+      expect(result).not_to include(eq)
     end
-    #bootstrap-table can't search within arrays
-    pis.join(',')
-  end
 
-  def epic_queue_delete_button(epic_queue)
-    content_tag(:button,
-      raw(content_tag(:span, '', class: 'glyphicon glyphicon-remove', aria: { hidden: 'true' })),
-      type: 'button', data: { epic_queue_id: epic_queue.id, permission: 'true' }, class: "btn btn-danger actions-button delete-epic-queue-button")
-  end
+    it 'should return all epic queues that are not yet completed' do
+      protocol = create(:protocol,
+                        :without_validations,
+                        last_epic_push_status: 'failed'
+                       )
+      eq = create(:epic_queue, protocol: protocol)
 
-  def epic_queue_send_button(epic_queue)
-    content_tag(
-      :a,
-      raw(content_tag(:span, '', class: 'glyphicon glyphicon-hand-right')),
-      data: { protocol_id: epic_queue.protocol.id, permission: 'true' },
-      class: 'btn btn-success push-to-epic')
-  end
+      result = EpicQueue.not_completed
 
-  def format_epic_queue_date(protocol)
-    date = protocol.last_epic_push_time
-    if date.present?
-      date.strftime(t(:epic_queues)[:date_formatter])
-    else
-      ''
-    end
-  end
-
-  def format_epic_queue_created_at(epic_queue)
-    created_at = epic_queue.created_at
-    created_at.strftime(t(:epic_queues)[:date_formatter])
-  end
-
-  def format_status(protocol)
-    status = protocol.last_epic_push_status
-    if status.present?
-      "#{status.capitalize}"
-    else
-      ''
+      expect(result).to include(eq)
     end
   end
 end

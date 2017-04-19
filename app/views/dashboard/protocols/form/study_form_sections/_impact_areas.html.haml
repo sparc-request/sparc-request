@@ -25,7 +25,7 @@
     .sub_text
       = t(:protocols)[:studies][:impact_areas][:subtext]
   .panel-body
-    = form.fields_for :impact_areas, protocol.impact_areas.sort_by { |ia| ia.position.to_i } do |ia_form|
+    = form.fields_for :impact_areas, protocol.impact_areas.sort_by(&:position) do |ia_form|
       - checked = !ia_form.object.new && !ia_form.object.marked_for_destruction?
       .form-group.row{ class: ia_form.object.name }
         = ia_form.label :name, "#{ImpactArea::TYPES[ia_form.object.name]}:", class: 'col-lg-2 control-label'

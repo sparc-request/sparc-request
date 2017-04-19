@@ -225,23 +225,23 @@ class ProtocolsController < ApplicationController
         :udak_project_number,
         :research_master_id,
         {:study_phase_ids => []},
-        research_types_info_attributes: [:human_subjects, :vertebrate_animals, :investigational_products, :ip_patents],
-        study_types_attributes: [:name, :new, :position, :_destroy],
-        vertebrate_animals_info_attributes: [:iacuc_number,
+        research_types_info_attributes: [:id, :human_subjects, :vertebrate_animals, :investigational_products, :ip_patents],
+        study_types_attributes: [:id, :name, :new, :position, :_destroy],
+        vertebrate_animals_info_attributes: [:id, :iacuc_number,
           :name_of_iacuc,
           :iacuc_approval_date,
           :iacuc_expiration_date],
-        investigational_products_info_attributes: [:protocol_id,
+        investigational_products_info_attributes: [:id, :protocol_id,
           :ind_number,
           :inv_device_number,
           :exemption_type,
           :ind_on_hold],
-        ip_patents_info_attributes: [:patent_number, :inventors],
-        impact_areas_attributes: [:name, :other_text, :new, :_destroy],
-        human_subjects_info_attributes: [:nct_number, :hr_number, :pro_number, :irb_of_record, :submission_type, :irb_approval_date, :irb_expiration_date, :approval_pending],
-        affiliations_attributes: [:name, :new, :position, :_destroy],
-        project_roles_attributes: [:identity_id, :role, :project_rights, :_destroy],
-        study_type_answers_attributes: [:answer, :study_type_question_id, :_destroy])
+        ip_patents_info_attributes: [:id, :patent_number, :inventors],
+        impact_areas_attributes: [:id, :name, :other_text, :new, :_destroy],
+        human_subjects_info_attributes: [:id, :nct_number, :hr_number, :pro_number, :irb_of_record, :submission_type, :irb_approval_date, :irb_expiration_date, :approval_pending],
+        affiliations_attributes: [:id, :name, :new, :position, :_destroy],
+        project_roles_attributes: [:id, :identity_id, :role, :project_rights, :_destroy],
+        study_type_answers_attributes: [:id, :answer, :study_type_question_id, :_destroy])
     end
   end
 

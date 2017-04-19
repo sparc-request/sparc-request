@@ -27,7 +27,7 @@
 
 = render 'catalogs/about_section'
 = render 'catalogs/service_accordion', institutions: @institutions, ssr_org: @sub_service_request.try(:organization), locked_org_ids: @locked_org_ids
-= render 'catalogs/catalog_center', service_request: @service_request, from_portal: @from_portal, organization: nil
+= render 'catalogs/catalog_center', service_request: @service_request, sub_service_request: @sub_service_request, from_portal: @from_portal, organization: nil
 = render 'catalogs/catalog_right', service_request: @service_request, sub_service_request: @sub_service_request, sub_service_requests: @sub_service_requests, line_items_count: @line_items_count
 = render 'catalogs/back_to_top'
 

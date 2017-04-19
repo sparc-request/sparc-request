@@ -28,6 +28,6 @@
       - @news.each do |article|
         .blog-link
           .title
-            = link_to article[:title], article[:link]
+            = link_to article[:title], article[:link], target: :_blank
           .date
             = article[:date]

@@ -1705,7 +1705,7 @@ en:
   remember_user: "Remember me:"
   signin:
     button1: "MUSC Users Click Here"
-    button2: "Outside Users Click Here"
+    button2: "MUSC External Affiliate Click Here"
     button3: "Sign In"
     message1: "MUSC Users- Sign in here"
     message2: ""

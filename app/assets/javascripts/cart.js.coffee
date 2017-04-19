@@ -21,7 +21,7 @@
 
 # Functions for manipulating the Services cart.
 window.cart =
-  selectService: (id, srid) ->
+  selectService: (id, srid, ssrid) ->
     has_protocol = parseInt($('#has_protocol').val())
     li_count = parseInt($('#line_item_count').val())
 
@@ -33,15 +33,21 @@ window.cart =
       $('#modal_place .yes-button').on 'click', (e) ->
         $.ajax
           type: 'POST'
+          data:
+            sub_service_request_id: ssrid
           url: "/service_requests/#{srid}/add_service/#{id}"
     else
       $.ajax
         type: 'POST'
+        data:
+          sub_service_request_id: ssrid
         url: "/service_requests/#{srid}/add_service/#{id}"
 
-  removeService: (srid, id, move_on, spinner) ->
+  removeService: (srid, ssrid, id, move_on, spinner) ->
     $.ajax
       type: 'POST'
+      data:
+        sub_service_request_id: ssrid
       url: "/service_requests/#{srid}/remove_service/#{id}"
       success: (data, textStatus, jqXHR) ->
         if move_on
@@ -63,11 +69,12 @@ $(document).ready ->
     return false
 
   $(document).on 'click', '.add-service', ->
-    window.cart.selectService($(this).data('id'), $(this).data('srid'))
+    window.cart.selectService($(this).data('id'), $(this).data('srid'), $(this).data('ssrid'))
 
   $(document).on 'click', '.remove-service', ->
     id = $(this).data('id')
     srid = $(this).data('srid')
+    ssrid = $(this).data('ssrid')
     editing_ssr = $(this).data('editing-ssr')
     li_count = parseInt($('#line_item_count').val())
     request_submitted = $(this).data('request-submitted')
@@ -80,16 +87,16 @@ $(document).ready ->
 
       $('#modal_place .yes-button').on 'click', (e) ->
         button.replaceWith(spinner)
-        window.cart.removeService(srid, id, false, spinner)
+        window.cart.removeService(srid, ssrid, id, false, spinner)
     else if (editing_ssr == 1) && (li_count == 1) && (window.location.pathname.indexOf('catalog') != -1) # Redirect to the Dashboard if the user deletes the last Service on an SSR
       $('#modal_place').html($('#remove-request-modal').html())
       $('#modal_place').modal('show')
 
       $('#modal_place .yes-button').on 'click', (e) ->
-        window.cart.removeService(srid, id, true, spinner)
+        window.cart.removeService(srid, ssrid, id, true, spinner)
     else if (li_count == 1) && (window.location.pathname.indexOf('catalog') == -1) # Do not allow the user to remove the last service except in the catalog
       $('#modal_place').html($('#line-item-required-modal').html())
       $('#modal_place').modal('show')
     else
       $(this).replaceWith(spinner)
-      window.cart.removeService(srid, id, false, spinner)
+      window.cart.removeService(srid, ssrid, id, false, spinner)

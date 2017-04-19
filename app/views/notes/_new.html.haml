@@ -22,10 +22,9 @@
   = form.hidden_field :notable_type
   = form.hidden_field :identity_id
   = hidden_field_tag :in_dashboard, in_dashboard
-  - binding.pry
-  - if @notable_type == "LineItem"
+  - if @notable_type == "LineItemsVisit" || "LineItem"
     .row.text-center
-      = display_service_name_and_code(@notable_id)
+      = display_service_name_and_code(@notable_type, @notable_id)
     %br
   .form-group.row
     = form.label :body, t(:notes)[:form_fields][:note], class: 'col-sm-3 control-label'
@@ -36,7 +35,7 @@
       %button.btn.btn-default.notes.cancel{type: 'button', data: {notable_id: @notable_id, notable_type: @notable_type}}
         = t(:actions)[:cancel]
     - else
-      - if @notable_type == "LineItem"
+      - if @notable_type == "LineItemsVisit" || "LineItem"
         %button.btn.btn-default.notes.cancel{type: 'button', data: {notable_id: @notable_id, notable_type: @notable_type}}
           = t(:actions)[:cancel]
       - else

@@ -100,11 +100,12 @@ $(document).ready ->
   $(document).on 'click', 'button.btn-link.notes',  ->
     id = $(this).data('notable-id')
     type = $(this).data('notable-type')
+    in_dashboard = $(this).data('in-dashboard')
     data = 
       note:
         notable_id: id
         notable_type: type
-      in_dashboard: false
+      in_dashboard: in_dashboard
     $.ajax
       type: 'GET'
       url: '/notes.js'
@@ -113,11 +114,12 @@ $(document).ready ->
   $(document).on 'click', 'button.note.new',  ->
     id = $(this).data('notable-id')
     type = $(this).data('notable-type')
+    in_dashboard = $(this).data('in-dashboard')
     data = 
       note:
         notable_id: id
         notable_type: type
-      in_dashboard : false
+      in_dashboard : in_dashboard
     $.ajax
       type: 'GET'
       url: '/notes/new'
@@ -133,9 +135,6 @@ $(document).ready ->
       type: 'GET'
       url: '/notes'
       data: data
-
-  $(document).on 'click', 'input.notes.add',  ->
-    console.log($(this).data('notable-id'))
   # NOTES LISTENERS END
 
 

@@ -33,8 +33,8 @@
     %tr.pppv-line-item-row{ class: locked ? 'bg-danger text-danger' : '' }
       %td.service-name{ colspan: 2 }
         = liv.service.display_service_name
-      %td.notes.text-center{ data: { notable_type: "LineItem", notable_id: liv.line_item.id } }
-        = display_notes(liv.line_item)
+      %td.notes.text-center
+        = display_liv_notes(liv, @portal)
       %td.status.text-center
         = AVAILABLE_STATUSES[ssr.status]
       %td.service-rate.text-center

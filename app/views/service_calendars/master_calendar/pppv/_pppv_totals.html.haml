@@ -19,7 +19,7 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 - if USE_INDIRECT_COST
   %tr.maximum-total-direct-cost-per-patient{ class: "arm-#{arm.id} " }
-    %td.col-sm-5{ colspan: tab == 'template' ? 8 : 7 }
+    %td.col-sm-5{ colspan: tab == 'template' ? 9 : 8 }
       %strong
         = t(:calendars)[:pppv][:totals][:maximum_direct]
     - 5.times do |i|
@@ -31,7 +31,7 @@
     %td.col-sm-1.text-center
 
 %tr.maximum-total-per-patient{ class: "arm-#{arm.id} " }
-  %td.col-sm-5{ colspan: tab == 'template' ? 8 : 7 }
+  %td.col-sm-5{ colspan: tab == 'template' ? 9 : 8 }
     %strong
       = t(:calendars)[:pppv][:totals][:maximum_per_patient]
   - 5.times do |i|
@@ -43,7 +43,7 @@
   %td.col-sm-1.text-center
 
 %tr.total-per-patient-per-visit-cost-per-study{ class: "arm-#{arm.id} " }
-  %td.col-sm-5{ colspan: tab == 'template' ? 8 : 7 }
+  %td.col-sm-5{ colspan: tab == 'template' ? 9 : 8 }
     %strong
       = link_to 'javascript:void(0)',
         data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' },

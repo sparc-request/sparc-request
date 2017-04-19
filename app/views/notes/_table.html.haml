@@ -18,14 +18,14 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .bootstrap-table-dropdown-overflow
-  - if !in_dashboard && notable_type != "LineItem"
+  - if !in_dashboard && (notable_type != "LineItemsVisit" &&  notable_type != "LineItem")
     #notes-custom-toolbar
       %button.btn.btn-success#note-new{ title: t(:proper)[:document_management][:tooltips][:notes], data: { notable_id: notable_id, notable_type: notable_type, toggle: 'tooltip', delay: '{"show":"500"}' } }
         = t(:notes)[:add]
   %table.table-striped#notes-table{ data: { toggle: 'table', url: notes_path(format: :json, note: { notable_id: notable_id, notable_type: notable_type, in_dashboard: in_dashboard }), striped: "true", toolbar: "#notes-custom-toolbar" } }
     %thead.primary-header
     %thead
-      = display_service_name_and_code(notable_id)
+      = display_service_name_and_code(notable_type, notable_id)
       %tr
         %th{ data: { class: 'user', align: "left", sortable: "true", field: "user" } }
           = t(:notes)[:table_fields][:user]

@@ -27,7 +27,7 @@ RSpec.describe 'User takes a survey', js: true do
   fake_login_for_each_test
 
   before :each do
-    @survey   = create(:survey, title: "My Survey")
+    @survey   = create(:survey, title: "My Survey", active: true)
     @section  = create(:section, survey: @survey)
     org       = create(:organization)
     @ssr      = create(:sub_service_request_without_validations, organization: org)

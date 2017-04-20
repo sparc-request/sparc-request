@@ -35,6 +35,7 @@
           %li
             %button.btn.btn-info.navbar-btn#survey-btn{ type: 'button'}
               = t(:dashboard)[:navbar][:surveys]
+        - if EPIC_QUEUE_ACCESS.include?(user.ldap_uid)
           %li
             %button.btn.btn-info.navbar-btn#epic-queue-btn{ type: 'button'}
               = t(:dashboard)[:navbar][:epic_queue]

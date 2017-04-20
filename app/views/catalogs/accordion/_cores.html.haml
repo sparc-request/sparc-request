@@ -27,7 +27,7 @@
         .description
           = organization_description_display(c)
         .core-services
-          = render 'catalogs/accordion/services', services: ssr_org.services, service_request: service_request
+          = render 'catalogs/accordion/services', services: ssr_org.services, service_request: service_request, sub_service_request: sub_service_request
   - else
     .panel-group{ id: "program-#{program.id}"}
       - cores.each do |c|
@@ -42,5 +42,5 @@
               .description
                 = organization_description_display(c)
               .core-services
-                = render 'catalogs/accordion/services', services: c.services, service_request: service_request
+                = render 'catalogs/accordion/services', services: c.services, service_request: service_request, sub_service_request: sub_service_request
 

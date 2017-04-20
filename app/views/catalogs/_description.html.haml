@@ -28,7 +28,7 @@
     - if organization.type == "Program"
       - if organization.services.any? && (sub_service_request.nil? || process_ssr_found || organization.parents.include?(ssr_org))
         .program-services
-          = render 'catalogs/accordion/services', services: organization.services.order('`order`, `name`'), service_request: service_request
+          = render 'catalogs/accordion/services', services: organization.services.order('`order`, `name`'), service_request: service_request, sub_service_request: sub_service_request
 
       - if organization.cores.any?
-        = render 'catalogs/accordion/cores', program: organization, cores: organization.cores.where(is_available: [nil, true]).order('`order`'), ssr_org: ssr_org, service_request: service_request, locked_ids: locked_org_ids, process_ssr_found: process_ssr_found
+        = render 'catalogs/accordion/cores', program: organization, cores: organization.cores.where(is_available: [nil, true]).order('`order`'), ssr_org: ssr_org, service_request: service_request, locked_ids: locked_org_ids, process_ssr_found: process_ssr_found, sub_service_request: sub_service_request

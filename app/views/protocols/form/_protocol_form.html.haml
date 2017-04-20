@@ -24,6 +24,7 @@
     -# TODO rename :srid to :service_request_id in controller action
     = hidden_field_tag :service_request_id, service_request.id
     = hidden_field_tag :srid, service_request.id
+    = hidden_field_tag :sub_service_request_id, sub_service_request_id
     = form.hidden_field :requester_id
     = form.hidden_field :type
     - if protocol.type.capitalize == "Study"

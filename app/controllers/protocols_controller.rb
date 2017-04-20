@@ -73,6 +73,7 @@ class ProtocolsController < ApplicationController
   def edit
     @protocol_type                          = @protocol.type
     @service_request                        = ServiceRequest.find(params[:srid])
+    @sub_service_request                    = SubServiceRequest.find(params[:sub_service_request_id]) if params[:sub_service_request_id]
     @in_dashboard                           = false
     @protocol.populate_for_edit
     @protocol.valid?
@@ -96,6 +97,7 @@ class ProtocolsController < ApplicationController
 
     attrs            = fix_date_params
     @service_request = ServiceRequest.find(params[:srid])
+    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id]) if params[:sub_service_request_id]
 
     if @protocol.update_attributes(attrs.merge(study_type_question_group_id: StudyTypeQuestionGroup.active_id))
 

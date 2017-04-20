@@ -1,0 +1,2 @@
+module ErrorPagesHelper
+end

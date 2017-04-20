@@ -54,6 +54,7 @@ namespace :deploy do
   task :stop, :roles => :app do
     #nothing
   end
+  
 end
 
 namespace :db do

@@ -19,10 +19,6 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 SparcRails::Application.routes.draw do
-  get 'error_pages/not_found'
-
-  get 'error_pages/internal_server_error'
-
   post 'study_type/determine_study_type_note'
 
   match '/direct_link_to/:survey_code', :to => 'surveyor#create', :as => 'direct_link_survey', :via => :get
@@ -341,7 +337,7 @@ SparcRails::Application.routes.draw do
 
   root to: 'service_requests#catalog'
   
-  ## error page routs ##
+  ## error page routes ##
   match "/404", :to => "error_pages#not_found", :via => :all
   match "/500", :to => "error_pages#internal_server_error", :via => :all  
 end

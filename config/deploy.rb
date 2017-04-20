@@ -53,8 +53,7 @@ namespace :deploy do
   desc "does nothing"
   task :stop, :roles => :app do
     #nothing
-  end
-  
+  end 
 end
 
 namespace :db do

@@ -42,10 +42,10 @@ RSpec.describe 'User adds a new note', js: true do
       visit document_management_service_request_path(@sr)
       wait_for_javascript_to_finish
 
-
       click_button 'Add a Note'
       wait_for_javascript_to_finish
       expect(page).to have_selector('.modal-dialog', text: 'New Protocol Note', visible: true)
+      
     end
 
     context 'and fills out the form and submits' do

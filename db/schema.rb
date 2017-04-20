@@ -271,9 +271,6 @@ ActiveRecord::Schema.define(version: 20170405154523) do
     t.string   "email"
     t.string   "last_name"
     t.string   "first_name"
-    t.string   "institution"
-    t.string   "college"
-    t.string   "department"
     t.string   "era_commons_name"
     t.string   "credentials"
     t.string   "subspecialty"
@@ -633,7 +630,7 @@ ActiveRecord::Schema.define(version: 20170405154523) do
     t.index ["next_ssr_id"], name: "index_protocols_on_next_ssr_id", using: :btree
   end
 
-  create_table "protocols_study_phases", id: false, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "protocols_study_phases", id: false, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
     t.integer "protocol_id",    null: false
     t.integer "study_phase_id", null: false
     t.index ["protocol_id", "study_phase_id"], name: "index_protocols_study_phases_on_protocol_id_and_study_phase_id", using: :btree
@@ -821,7 +818,7 @@ ActiveRecord::Schema.define(version: 20170405154523) do
     t.index ["updated_at"], name: "index_sessions_on_updated_at", using: :btree
   end
 
-  create_table "study_phases", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "study_phases", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
     t.integer  "order"
     t.string   "phase"
     t.integer  "version",    default: 1

@@ -32,12 +32,16 @@ module ServiceCalendarHelper
 
   def display_liv_notes(liv, portal)
   has_notes = liv.notes.count > 0
-  raw(content_tag(:button, raw(content_tag(:span, '', class: "glyphicon glyphicon-list-alt note-styling #{has_notes ? "blue-note" : "black-note"}", aria: {hidden: "true"}))+raw(content_tag(:span, liv.notes.count, class: "#{has_notes ? "badge blue-badge" : "badge"}", id: "lineitemsvisit_#{liv.id}_notes")), type: 'button', class: 'btn btn-link form-control actions-button notes', data: {notable_id: liv.id, notable_type: "LineItemsVisit", in_dashboard: portal}))
+  raw(content_tag(:button, raw(content_tag(:span, '', class: "glyphicon glyphicon-list-alt note-icon #{has_notes ? "blue-note" : "black-note"}", aria: {hidden: "true"}))+raw(content_tag(:span, liv.notes.count, class: "#{has_notes ? "badge blue-badge" : "badge"}", id: "lineitemsvisit_#{liv.id}_notes")), type: 'button', class: 'btn btn-link form-control actions-button notes', data: {notable_id: liv.id, notable_type: "LineItemsVisit", in_dashboard: portal}))
   end
 
   def display_li_notes(li, portal)
     has_notes = li.notes.count > 0
-    raw(content_tag(:button, raw(content_tag(:span, '', class: "glyphicon glyphicon-list-alt note-styling #{has_notes ? "blue-note" : "black-note"}", aria: {hidden: "true"}))+raw(content_tag(:span, li.notes.count, class: "#{has_notes ? "badge blue-badge" : "badge"}", id: "lineitem_#{li.id}_notes")), type: 'button', class: 'btn btn-link form-control actions-button notes', data: {notable_id: li.id, notable_type: "LineItem", in_dashboard: portal}))
+    raw(content_tag(:button, raw(content_tag(:span, '', class: "glyphicon glyphicon-list-alt note-icon #{has_notes ? "blue-note" : "black-note"}", aria: {hidden: "true"}))+raw(content_tag(:span, li.notes.count, class: "#{has_notes ? "badge blue-badge" : "badge"}", id: "lineitem_#{li.id}_notes")), type: 'button', class: 'btn btn-link form-control actions-button notes', data: {notable_id: li.id, notable_type: "LineItem", in_dashboard: portal}))
+  end
+
+  def notable_type_is_related_to_li_or_liv(notable_type)
+    notable_type == "LineItemsVisit" || notable_type == "LineItem"
   end
 
   def display_service_name_and_code(notable_type, notable_id)

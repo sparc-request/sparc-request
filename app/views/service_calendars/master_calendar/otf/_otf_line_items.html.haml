@@ -27,7 +27,6 @@
     %tr.organization-header{ class: locked ? 'bg-danger text-danger' : '' }
       %th{ colspan: 14 }
         = display_org_name(value[:name], ssr, locked)
-
     - line_items.each do |line_item|
       - displayed_pricing_map = line_item.service.displayed_pricing_map
       - otf_unit_type         = displayed_pricing_map.try(:otf_unit_type)
@@ -35,6 +34,8 @@
       %tr.otf-line-item-row{ class: locked ? 'bg-danger text-danger' : '' }
         %td.service-name{ colspan: 2 }
           = line_item.service.display_service_name
+        %td.notes.text-center
+          = display_li_notes(line_item, @portal)
         %td.status.text-center
           = AVAILABLE_STATUSES[ssr.status]
         %td.service-rate.text-center

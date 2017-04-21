@@ -24,7 +24,7 @@
         = t(:proper)[:protocol][:review_protocol_notice]
         %small
           = t(:proper)[:protocol][:review_protocol_instructions]
-    = render 'protocols/summary', protocol: protocol, protocol_type: protocol.type, service_request: service_request, allow_edit: true
+    = render 'protocols/summary', protocol: protocol, protocol_type: protocol.type, service_request: service_request, sub_service_request_id: sub_service_request_id, allow_edit: true
     = render 'associated_users/table', protocol: protocol, service_request: service_request
   - else
     .page-header

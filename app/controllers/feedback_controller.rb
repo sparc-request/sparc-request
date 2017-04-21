@@ -9,11 +9,14 @@ class FeedbackController < ApplicationController
 
   def create
     @feedback = Feedback.new(feedback_params)
-    if @feedback.valid?
-      emitter = RedcapSurveyEmitter.new(@feedback)
-      emitter.send_form
-    else
-      render :new
+    respond_to do |format|
+      if @feedback.valid?
+        emitter = RedcapSurveyEmitter.new(@feedback)
+        emitter.send_form
+        format.js
+      else
+        format.json { render json: @feedback.errors, status: :unprocessable_entity }
+      end
     end
   end
 

@@ -29,4 +29,8 @@ class EpicQueue < ApplicationRecord
   def update_protocol
     protocol.update_attributes({:last_epic_push_time => Time.now, :last_epic_push_status => 'complete'})
   end
+
+  def self.not_completed
+    joins(:protocol).where.not(protocols: { last_epic_push_status: 'complete' } )
+  end
 end

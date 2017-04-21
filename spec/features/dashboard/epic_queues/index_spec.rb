@@ -32,7 +32,7 @@ RSpec.describe 'Notifications index', js: true do
            approved: true)
   end
 
-  let!(:protocol) { create(:unarchived_study_without_validations, primary_pi: user) }
+  let!(:protocol) { create(:unarchived_study_without_validations, primary_pi: user, last_epic_push_status: 'failed') }
   let!(:epic_queue) { create(:epic_queue, protocol_id: protocol.id, identity: user) }
   let!(:epic_queue_record) do
     create(:epic_queue_record,
@@ -99,7 +99,7 @@ RSpec.describe 'Notifications index', js: true do
     context "Last Queue Status header" do
       it "should display Last Queue Status" do
         create(:protocol, :without_validations, identity: user)
-        protocol.update_attribute(:last_epic_push_status, 'complete')
+        protocol.update_attribute(:last_epic_push_status, 'failed')
         create(:project_role_with_identity_and_protocol, identity: user, protocol: protocol)
         page = visit_epic_queues_index_page
         wait_for_javascript_to_finish

@@ -347,4 +347,8 @@ SparcRails::Application.routes.draw do
   mount API::Base => '/'
 
   root to: 'service_requests#catalog'
+  
+  ## error page routes ##
+  match "/404", :to => "error_pages#not_found", :via => :all
+  match "/500", :to => "error_pages#internal_server_error", :via => :all  
 end

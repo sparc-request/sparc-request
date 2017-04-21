@@ -26,7 +26,7 @@ class Dashboard::EpicQueuesController < Dashboard::BaseController
   def index
     respond_to do |format|
       format.json do
-        @epic_queues = EpicQueue.all
+        @epic_queues = EpicQueue.not_completed
 
         render
       end

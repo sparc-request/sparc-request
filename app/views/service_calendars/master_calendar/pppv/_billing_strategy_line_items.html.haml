@@ -25,7 +25,7 @@
 
   -# SSR Header Row
   %tr.organization-header{ class: locked ? 'text-danger' : '' }
-    %th.col-sm-6{ colspan: portal ? 6 : 7 }
+    %th.col-sm-6{ colspan: portal ? 7 : 8 }
       = display_org_name(Dashboard::ServiceCalendars.display_organization_hierarchy(livs[0]), ssr, locked)
     - visit_groups.each do
       %th.col-sm-1.billing-type-list.text-center
@@ -47,6 +47,8 @@
     %tr.pppv-line-item-row{ class: locked ? 'bg-danger text-danger' : '' }
       %td.service-name{ colspan: 2 }
         = liv.service.display_service_name
+      %td.notes.text-center
+        = display_liv_notes(liv, @portal)
       %td.status.text-center
         = AVAILABLE_STATUSES[ssr.status]
       %td.service-rate.text-center

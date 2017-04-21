@@ -17,6 +17,34 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-$("#modal_place").html("<%= escape_javascript(render( 'index', notable_id: @notable_id, notable_type: @notable_type)) %>")
-$("#modal_place").modal 'show'
-$('#notes-table').bootstrapTable()
+
+require 'rails_helper'
+
+RSpec.describe EpicQueue, type: :model do
+
+  describe '#not_completed' do
+    it 'should return all epic queues that are not yet completed' do
+      protocol = create(:protocol,
+                        :without_validations,
+                        last_epic_push_status: 'complete'
+                       )
+      eq = create(:epic_queue, protocol: protocol)
+
+      result = EpicQueue.not_completed
+
+      expect(result).not_to include(eq)
+    end
+
+    it 'should return all epic queues that are not yet completed' do
+      protocol = create(:protocol,
+                        :without_validations,
+                        last_epic_push_status: 'failed'
+                       )
+      eq = create(:epic_queue, protocol: protocol)
+
+      result = EpicQueue.not_completed
+
+      expect(result).to include(eq)
+    end
+  end
+end

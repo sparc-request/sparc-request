@@ -289,6 +289,27 @@ en:
     delete_confirm: "Are you sure you want to delete the selected Document from this protocol?"
 
   ###############
+  # ERROR PAGES #
+  ###############
+  error_pages:
+    not_found:
+      heading: "Uh, oh.  You've hit a"
+      error: "Page Not Found (404)"
+      help_text: "For help, contact us:"
+      link_href: "mailto:success@musc.edu"
+      link_display: "Email: success@musc.edu"
+      phone_href: "tel:843-792-8300"
+      phone_display: "Call: 843-792-8300"
+    server_error:
+      heading: "Uh, oh.  You've hit an"
+      error: "Internal Server Error (500)"
+      help_text: "For help, contact us:"
+      link_href: "mailto:success@musc.edu"
+      link_display: "Email: success@musc.edu"
+      phone_href: "tel:843-792-8300"
+      phone_display: "Call: 843-792-8300"
+  
+  ###############
   # IE7 WARNING #
   ###############
   ie_warning:

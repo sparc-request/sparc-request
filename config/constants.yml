@@ -915,8 +915,8 @@ additional_detail_question_types: {
   'Multiple Dropdown': 'multiple_dropdown'
 }
 browser_versions: {
-  'Google Chrome': 'chrome',
-  'Mozilla Firefox': 'firefox',
-  'Internet Explorer': 'internet_explorer',
-  'Safari': 'safari'
+  'Internet Explorer': '1',
+  'Mozilla Firefox': '2',
+  'Google Chrome': '3',
+  'Safari': '4'
 }

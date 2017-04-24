@@ -8,7 +8,7 @@ class RedcapSurveyEmitter
 
   def send_form
     record = {
-      :letters => Digest::SHA1.hexdigest(Time.now.usec.to_s)[0..16],
+      :letters => latest_letter_id + 1,
       :name => @feedback.name,
       :email => @feedback.email,
       :date => Date.strptime(@feedback.date[0..9], '%m/%d/%Y').strftime("%Y/%m/%d").gsub('/', '-'),
@@ -36,4 +36,25 @@ class RedcapSurveyEmitter
 
     ch.body_str
   end
+
+  private
+
+  def latest_letter_id
+    fields = {
+      :token => REDCAP_TOKEN,
+      :content => 'record',
+      :format => 'json',
+      :type => 'flat'
+    }
+
+    ch = Curl::Easy.http_post(
+      REDCAP_API,
+      fields.collect{|k, v| Curl::PostField.content(k.to_s, v)}
+    )
+
+    to_array = JSON.parse(ch.body_str)
+
+    to_array.last['letters'].to_i
+  end
 end
+

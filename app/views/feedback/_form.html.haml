@@ -1,4 +1,4 @@
-.modal-dialog
+.modal-dialog.modal-lg
   .modal-content
     = form_for @feedback, url: feedback_index_path, method: :post, remote: true do |f|
       .modal-header
@@ -32,31 +32,31 @@
             class: 'col-lg-2 control-label required'
           .col-lg-10
             = label_tag '', class: 'radio-inline' do
-              = f.radio_button :typeofrequest, 'bug'
+              = f.radio_button :typeofrequest, '1'
               Bug
             = label_tag '', class: 'radio-inline' do
-              = f.radio_button :typeofrequest, 'enhancement_feature_request'
+              = f.radio_button :typeofrequest, '2'
               Enhancement/Feature Request
             = label_tag '', class: 'radio-inline' do
-              = f.radio_button :typeofrequest, 'training'
+              = f.radio_button :typeofrequest, '3'
               Training
             = label_tag '', class: 'radio-inline' do
-              = f.radio_button :typeofrequest, 'other'
+              = f.radio_button :typeofrequest, '4'
               Other
         .form-group.row
           = f.label :priority, class: 'col-lg-2 control-label required'
           .col-lg-10
             = label_tag '', class: 'radio-inline' do
-              = f.radio_button :priority, 'immediate_work_stoppage'
+              = f.radio_button :priority, '1'
               Immediate/Work Stoppage
             = label_tag '', class: 'radio-inline' do
-              = f.radio_button :priority, 'high'
+              = f.radio_button :priority, '2'
               High
             = label_tag '', class: 'radio-inline' do
-              = f.radio_button :priority, 'normal'
+              = f.radio_button :priority, '3'
               Normal
             = label_tag '', class: 'radio-inline' do
-              = f.radio_button :priority, 'low'
+              = f.radio_button :priority, '4'
               Low
         .form-group.row
           = f.label :browser, class: 'col-lg-2 control-label required'

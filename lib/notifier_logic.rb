@@ -169,7 +169,7 @@ class NotifierLogic
 
     xls = controller.render_to_string action: 'show', formats: [:xlsx]
 
-    if @service_request.protocol.project_roles.detect{|pr| pr.identity_id == @current_user.id}.project_rights != "approve"
+    if @service_request.protocol.project_roles.where(identity: @current_user).where.not(project_rights: "approve").any?
       approval = @service_request.approvals.create
     else
       approval = false

@@ -96,6 +96,47 @@ $(document).ready ->
         visit_group_id: $(this).val()
         service_request_id: getSRId()
 
+  # NOTES LISTENERS BEGIN
+  $(document).on 'click', 'button.btn-link.notes',  ->
+    id = $(this).data('notable-id')
+    type = $(this).data('notable-type')
+    in_dashboard = $(this).data('in-dashboard')
+    data = 
+      note:
+        notable_id: id
+        notable_type: type
+      in_dashboard: in_dashboard
+    $.ajax
+      type: 'GET'
+      url: '/notes.js'
+      data: data
+
+  $(document).on 'click', 'button.note.new',  ->
+    id = $(this).data('notable-id')
+    type = $(this).data('notable-type')
+    in_dashboard = $(this).data('in-dashboard')
+    data = 
+      note:
+        notable_id: id
+        notable_type: type
+      in_dashboard : in_dashboard
+    $.ajax
+      type: 'GET'
+      url: '/notes/new'
+      data: data
+
+  $(document).on 'click', 'button.notes.cancel',  ->
+    id = $(this).data('notable-id')
+    type = $(this).data('notable-type')
+    data = note:
+      notable_id: id
+      notable_type: type
+    $.ajax
+      type: 'GET'
+      url: '/notes'
+      data: data
+  # NOTES LISTENERS END
+
 
 (exports ? this).changing_tabs_calculating_rates = ->
   arm_ids = []

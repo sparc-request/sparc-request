@@ -23,7 +23,7 @@
       .modal-header
         %button.close{ type: 'button', data: { dismiss: 'modal' } }
           %span{ aria: { hidden: 'true' } } &times;
-        %h4.text-center#modal-title
+        %h4.text-center.modal-title
           = t(:proper)[:survey][:header]
       .modal-body
         #modal_errors
@@ -33,5 +33,5 @@
         .center-block
           %a.btn.btn-default.yes-button
             = t(:constants)[:yes_select]
-          %a.btn.btn-default.no-button
+          %a.btn.btn-default.no-button{ data: { dismiss: 'modal' } }
             = t(:constants)[:no_select]

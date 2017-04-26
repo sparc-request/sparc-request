@@ -170,7 +170,7 @@ class ServiceRequestsController < ApplicationController
     @protocol = @service_request.protocol
     @service_request.previous_submitted_at = @service_request.submitted_at
 
-    NotifierLogic.new(@service_request, @sub_service_request, current_user).send_confirmation_notifications_get_a_cost_estimate
+    NotifierLogic.new(@service_request, @sub_service_request, current_user).update_status_and_send_get_a_cost_estimate_email
     render formats: [:html]
   end
 
@@ -202,7 +202,7 @@ class ServiceRequestsController < ApplicationController
         if @sub_service_request #if editing a sub service request, update status
           @sub_service_request.update_attribute(:status, 'draft')
         else
-          update_service_request_status(@service_request, 'draft', false)
+          @service_request.update_status('draft')
           @service_request.ensure_ssr_ids
         end
         redirect_to dashboard_root_path, sub_service_request_id: @sub_service_request.try(:id)
@@ -278,13 +278,10 @@ class ServiceRequestsController < ApplicationController
     @service_request.previous_submitted_at = @service_request.submitted_at
     @protocol = @service_request.protocol
 
+    #notify service providers and admin of a destroyed ssr upon deletion of ssr
     if ssr.line_items.empty?
-      if !ssr.submitted_at.nil?
-        # notify service providers and admin of a destroyed ssr upon deletion of ssr
-        notifier_logic = NotifierLogic.new(@service_request, nil, current_user)
-        notifier_logic.send_ssr_service_provider_notifications(ssr, ssr_destroyed: true, request_amendment: false)
-        notifier_logic.send_admin_notifications([ssr], request_amendment: false, ssr_destroyed: true)
-      end
+      notifier_logic = NotifierLogic.new(@service_request, nil, current_user)
+      notifier_logic.ssr_deletion_emails(ssr, ssr_destroyed: true, request_amendment: false)
       ssr.destroy
     end
 
@@ -488,26 +485,6 @@ class ServiceRequestsController < ApplicationController
 
   def send_epic_notification_for_user_approval(protocol)
     Notifier.notify_for_epic_user_approval(protocol).deliver unless QUEUE_EPIC
-  end
-
-  def update_service_request_status(service_request, status, validate=true, submit=false)
-    requests = []
-
-    service_request.sub_service_requests.each do |ssr|
-      if UPDATABLE_STATUSES.include?(ssr.status) || !submit
-        requests << ssr
-      end
-    end
-
-    to_notify = service_request.update_status(status, validate, submit)
-
-    if (status == 'submitted')
-      service_request.previous_submitted_at = service_request.submitted_at
-      service_request.update_attribute(:submitted_at, Time.now)
-      requests.each { |ssr| ssr.update_attributes(submitted_at: Time.now) }
-    end
-
-    to_notify
   end
 
   def authorize_protocol_edit_request

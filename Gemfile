@@ -11,10 +11,15 @@ gem 'bluecloth'
 gem 'bootstrap-sass'
 gem 'bootstrap-select-rails'
 gem 'bootstrap3-datetimepicker-rails'
-gem 'capistrano'
-gem 'capistrano-ext'
+gem 'capistrano', '~> 3.8'
+gem 'capistrano-bundler', require: false
+gem 'capistrano-rvm', require: false
+gem 'capistrano-rails', require: false
+gem 'capistrano-passenger', require: false
+gem 'capistrano3-delayed-job', '~> 1.0'
 gem 'coffee-rails'
 gem 'country_select'
+gem 'curb', '~> 0.9.3'
 gem 'delayed_job_active_record'
 gem 'devise', '~> 4.2'
 gem 'dynamic_form'
@@ -58,12 +63,10 @@ gem "rails-observers", github: 'rails/rails-observers'
 gem 'redcarpet'
 gem 'remotipart'
 gem 'rest-client'
-gem 'rvm-capistrano', require: false
 gem 'sass'
 gem 'sass-rails'
 gem 'savon', '~> 2.2.0'
 gem 'simplecov', require: false, group: :test
-gem 'surveyor', :git => 'https://github.com/sparc-request/surveyor.git', branch: 'rails4'
 gem 'therubyracer', '0.10.2', :platforms => :ruby, group: :production
 gem 'twitter-typeahead-rails'
 gem 'uglifier', '>= 1.0.3'
@@ -79,7 +82,7 @@ group :development, :test, :profile do
   gem 'equivalent-xml'
   gem 'faker'
   gem 'launchy'
-  gem 'thin'
+  gem 'puma', '~> 3.0'
   gem 'timecop'
   gem 'progress_bar'
 end

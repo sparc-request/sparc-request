@@ -178,10 +178,10 @@ class EpicInterface
         emit_category_grouper(xml, study)
         emit_study_type(xml, study)
         emit_ide_number(xml, study)
+        emit_rmid(xml, study)
         emit_cofc(xml, study)
         emit_visits(xml, study)
         emit_procedures_and_encounters(xml, study)
-        emit_rmid(xml, study)
       }
     }
 

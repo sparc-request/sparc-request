@@ -29,7 +29,7 @@ module VisitGroupsHelper
       ) +
       content_tag(
         :option,
-        t(:visit_groups)[:prompts][:add_as_last],
+        t(:constants)[:add_as_last],
         value: "#{arm.visit_groups.count+1}"
       )
     else
@@ -40,7 +40,7 @@ module VisitGroupsHelper
       ) +
       content_tag(
         :option,
-        t(:visit_groups)[:prompts][:add_as_last],
+        t(:constants)[:add_as_last],
         value: "#{arm.visit_groups.count+1}"
       )
     end

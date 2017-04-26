@@ -101,8 +101,10 @@ class ServiceRequestsReport < ReportingModule
     end
 
     if params[:fulfillment_info]
-      attrs["Sent to SPARCFulfillment"] = "service_request.sub_service_requests.in_work_fulfillment.any? ? 'Yes' : 'No'"
+      attrs["Sent to SPARCFulfillment"] = "in_work_fulfillment ? 'Yes' : 'No'"
     end
+
+    attrs["Owner"] = '"#{owner.try(:first_name)} #{owner.try(:last_name)}"'
 
     attrs
   end

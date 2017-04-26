@@ -23,7 +23,7 @@ en:
     ###########
     # HEADER #
     ##########
-    header: "SPARC Request Dashboard"
+    header: "SPARCRequest Dashboard"
 
     ###########
     #  ADMIN  #
@@ -119,6 +119,7 @@ en:
     ##########
     navbar:
       logged_in_as: "Logged in as "
+      surveys: "Surveys"
       epic_queue: "View Epic Queue"
       messages: "All Notifications"
 

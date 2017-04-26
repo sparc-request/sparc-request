@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class EpicQueue < ActiveRecord::Base
+class EpicQueue < ApplicationRecord
   audited
 
   belongs_to :protocol
@@ -28,5 +28,9 @@ class EpicQueue < ActiveRecord::Base
 
   def update_protocol
     protocol.update_attributes({:last_epic_push_time => Time.now, :last_epic_push_status => 'complete'})
+  end
+
+  def self.not_completed
+    joins(:protocol).where.not(protocols: { last_epic_push_status: 'complete' } )
   end
 end

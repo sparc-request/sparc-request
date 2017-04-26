@@ -20,7 +20,7 @@
 
 require 'directory'
 
-class Identity < ActiveRecord::Base
+class Identity < ApplicationRecord
 
   include RemotelyNotifiable
 
@@ -213,8 +213,8 @@ class Identity < ActiveRecord::Base
   end
 
   # Only users with request or approve rights can edit.
-  def can_edit_service_request? sr
-    has_correct_project_role?(sr)
+  def can_edit_service_request?(sr)
+    has_correct_project_role?(sr) || self.is_overlord?
   end
 
   # If a user has request or approve rights AND the request is editable, then the user can edit.

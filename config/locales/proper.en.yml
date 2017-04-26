@@ -67,8 +67,10 @@ en:
           all_day: "All Day"
           none: "No events scheduled within a month from today."
       new_request:
-        header: "New Request?"
-        warning: "Is this a new research study or project?"
+        header: "New or Existing"
+        warning: "Would you like to enter a new study or project into SPARCRequest?"
+        yes_button: "<b>Yes</b> <br>(Continue with Shopping Cart)"
+        no_button: "<b>No</b> <br>(Go to SPARCDashboard to Choose)"
       request_submitted:
         header: "Remove Service Warning"
         warning: "Deleting this service from the service cart will be irreversible and will cause it to be deleted from the associated protocol (%{protocol_id}). Are you sure you want to proceed?"
@@ -210,13 +212,13 @@ en:
         warning: "This line item has one or more fulfillments associated with it and can not be deleted."
       remove_request:
         header: "Remove Service"
-        warning: "This action will delete this service request and you will be redirected to your Dashboard. Click OK to proceed."
+        warning: "This action will delete this request (%{ssr_id}) and you will be redirected to your SPARCDashboard. Click Yes to proceed."
       submit_error:
         header: "Submission Error"
         warning: "Please ensure that you have added all necessary research services to your \"My Services\" cart before proceeding. For a listing of available services to add, click on any of the Programs listed on the left-hand side of the page. Services will appear in the middle of the screen. Add services by clicking \"Add\"."
         service_required: "You must add at least 1 service to your cart before clicking \"Continue\"."
       must_have_line_item_error:
-        header: "Submission Error"
+        header: "Remove Service"
         warning: "You must have at least 1 Service in your \"My Services\" cart in order to complete a Service Request."
         return_to_catalog: "If you wish to change your requested Services, please click 'Return to Catalog'."
 

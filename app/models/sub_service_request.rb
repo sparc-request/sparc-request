@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class SubServiceRequest < ActiveRecord::Base
+class SubServiceRequest < ApplicationRecord
 
   include RemotelyNotifiable
 
@@ -282,20 +282,34 @@ class SubServiceRequest < ActiveRecord::Base
   ########################
   ## SSR STATUS METHODS ##
   ########################
-  def update_status(new_status, submit=false)
+
+  # Returns the SSR id that need an initial submission email and updates 
+  # the SSR status to new status if appropriate
+  def update_status_and_notify(new_status)
     to_notify = []
     if can_be_edited?
       available = AVAILABLE_STATUSES.keys
       editable = EDITABLE_STATUSES[organization_id] || available
       changeable = available & editable
       if changeable.include?(new_status)
-        if (status != new_status) && (UPDATABLE_STATUSES.include?(status) || !submit)
-          update_attribute(:status, new_status)
+        #  See Pivotal Stories: #133049647 & #135639799
+        if (status != new_status) && ((new_status == 'submitted' && UPDATABLE_STATUSES.include?(status)) || new_status != 'submitted')
+          ### For 'submitted' status ONLY:
+          # Since adding/removing services changes a SSR status to 'draft', we have to look at the past status to see if we should notify users of a status change
+          # We do NOT notify if updating from an un-updatable status or we're updating to a status that we already were previously 
           if new_status == 'submitted'
-            to_notify << id unless previously_submitted?
+            past_status = PastStatus.where(sub_service_request_id: id).last
+            past_status = past_status.nil? ? nil : past_status.status
+            if status == 'draft' && ((UPDATABLE_STATUSES.include?(past_status) && past_status != new_status) || past_status == nil) # past_status == nil indicates a newly created SSR
+              to_notify << id
+            elsif status != 'draft'
+              to_notify << id 
+            end
           else
-            to_notify << id
+            to_notify << id 
           end
+
+          new_status == 'submitted' ? update_attributes(status: new_status, submitted_at: Time.now, nursing_nutrition_approved: false, lab_approved: false, imaging_approved: false, committee_approved: false) : update_attribute(:status, new_status)
         end
       end
     end
@@ -455,7 +469,50 @@ class SubServiceRequest < ActiveRecord::Base
     end
   end
 
-  ### audit reporting methods ###
+  ###############################
+  ### AUDIT REPORTING METHODS ###
+  ###############################
+
+  # Collects all the added/deleted line_items that need to be displayed in the audit report for emails
+  def audit_line_items(identity)
+    filtered_audit_trail = {:line_items => []}
+
+    ssr_submitted_at_audit = AuditRecovery.where("audited_changes LIKE '%submitted_at%' AND auditable_id = #{id} AND auditable_type = 'SubServiceRequest' AND action IN ('update') AND user_id = #{identity.id}").order(created_at: :desc).first
+
+    ### start_date = last time SSR was submitted
+    ### if SSR has never been submitted, start_date == nil
+    if ssr_submitted_at_audit.audited_changes['submitted_at'].include?(nil)
+      start_date = nil
+    else
+      start_date = !ssr_submitted_at_audit.nil? ? ssr_submitted_at_audit.audited_changes['submitted_at'].first.utc : Time.now.utc
+    end
+    end_date = Time.now.utc
+
+    deleted_line_item_audits = AuditRecovery.where("audited_changes LIKE '%sub_service_request_id: #{id}%' AND auditable_type = 'LineItem' AND user_id = #{identity.id} AND action IN ('destroy') AND created_at BETWEEN '#{start_date}' AND '#{end_date}'")
+                             
+    added_line_item_audits = AuditRecovery.where("audited_changes LIKE '%service_request_id: #{service_request.id}%' AND auditable_type = 'LineItem' AND user_id = #{identity.id} AND action IN ('create') AND created_at BETWEEN '#{start_date}' AND '#{end_date}'")
+    
+    ### Takes all the added LIs and filters them down to the ones specific to this SSR ###
+    added_li_ids = !added_line_item_audits.empty? ? added_line_item_audits.map(&:auditable_id) : []
+    li_ids_added_to_this_ssr = !line_items.empty? ? line_items.map(&:id) : []
+    added_lis = added_li_ids & li_ids_added_to_this_ssr
+
+    if !added_lis.empty?
+      added_lis.each do |li_id|
+        filtered_audit_trail[:line_items] << added_line_item_audits.where(auditable_id: li_id).first
+      end
+    end
+
+    if !deleted_line_item_audits.empty?
+      deleted_line_item_audits.each do |deleted_li|
+        filtered_audit_trail[:line_items] << deleted_li
+      end
+    end
+
+    filtered_audit_trail[:sub_service_request_id] = self.id
+    filtered_audit_trail
+  end
+
 
   def audit_label audit
     "Service Request #{display_id}"

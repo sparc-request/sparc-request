@@ -21,11 +21,12 @@
 class ProtocolsController < ApplicationController
 
   respond_to :html, :js, :json
+  protect_from_forgery except: :show
 
   before_action :initialize_service_request,  unless: :from_portal?,  except: [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
   before_action :authorize_identity,          unless: :from_portal?,  except: [:approve_epic_rights, :push_to_epic, :push_to_epic_status]
   before_action :set_portal
-  before_action :find_protocol,               only: [:edit, :update, :view_details]
+  before_action :find_protocol,               only: [:edit, :update, :show]
 
   def new
     @protocol_type          = params[:protocol_type]
@@ -72,6 +73,7 @@ class ProtocolsController < ApplicationController
   def edit
     @protocol_type                          = @protocol.type
     @service_request                        = ServiceRequest.find(params[:srid])
+    @sub_service_request                    = SubServiceRequest.find(params[:sub_service_request_id]) if params[:sub_service_request_id]
     @in_dashboard                           = false
     @protocol.populate_for_edit
     @protocol.valid?
@@ -95,6 +97,7 @@ class ProtocolsController < ApplicationController
 
     attrs            = fix_date_params
     @service_request = ServiceRequest.find(params[:srid])
+    @sub_service_request = SubServiceRequest.find(params[:sub_service_request_id]) if params[:sub_service_request_id]
 
     if @protocol.update_attributes(attrs.merge(study_type_question_group_id: StudyTypeQuestionGroup.active_id))
 
@@ -126,7 +129,7 @@ class ProtocolsController < ApplicationController
     end
   end
 
-  def view_details
+  def show
     respond_to do |format|
       format.js
     end
@@ -223,25 +226,24 @@ class ProtocolsController < ApplicationController
         :type,
         :udak_project_number,
         :research_master_id,
-        :has_human_subject_info,
         {:study_phase_ids => []},
-        research_types_info_attributes: [:human_subjects, :vertebrate_animals, :investigational_products, :ip_patents],
-        study_types_attributes: [:name, :new, :position, :_destroy],
-        vertebrate_animals_info_attributes: [:iacuc_number,
+        research_types_info_attributes: [:id, :human_subjects, :vertebrate_animals, :investigational_products, :ip_patents],
+        study_types_attributes: [:id, :name, :new, :position, :_destroy],
+        vertebrate_animals_info_attributes: [:id, :iacuc_number,
           :name_of_iacuc,
           :iacuc_approval_date,
           :iacuc_expiration_date],
-        investigational_products_info_attributes: [:protocol_id,
+        investigational_products_info_attributes: [:id, :protocol_id,
           :ind_number,
           :inv_device_number,
           :exemption_type,
           :ind_on_hold],
-        ip_patents_info_attributes: [:patent_number, :inventors],
-        impact_areas_attributes: [:name, :other_text, :new, :_destroy],
-        human_subjects_info_attributes: [:nct_number, :hr_number, :pro_number, :irb_of_record, :submission_type, :irb_approval_date, :irb_expiration_date, :approval_pending],
-        affiliations_attributes: [:name, :new, :position, :_destroy],
-        project_roles_attributes: [:identity_id, :role, :project_rights, :_destroy],
-        study_type_answers_attributes: [:answer, :study_type_question_id, :_destroy])
+        ip_patents_info_attributes: [:id, :patent_number, :inventors],
+        impact_areas_attributes: [:id, :name, :other_text, :new, :_destroy],
+        human_subjects_info_attributes: [:id, :nct_number, :hr_number, :pro_number, :irb_of_record, :submission_type, :irb_approval_date, :irb_expiration_date, :approval_pending],
+        affiliations_attributes: [:id, :name, :new, :position, :_destroy],
+        project_roles_attributes: [:id, :identity_id, :role, :project_rights, :_destroy],
+        study_type_answers_attributes: [:id, :answer, :study_type_question_id, :_destroy])
     end
   end
 

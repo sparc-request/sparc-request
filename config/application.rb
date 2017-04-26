@@ -71,6 +71,7 @@ module SparcRails
     config.i18n.load_path += Dir[Rails.root.join('config/locales/proper', '*.{rb,yml}').to_s]
     config.i18n.load_path += Dir[Rails.root.join('config/locales/dashboard', '*.{rb,yml}').to_s]
     config.i18n.load_path += Dir[Rails.root.join('config/locales/additional_details', '*.{rb,yml}').to_s]
+    config.i18n.load_path += Dir[Rails.root.join('config/locales/surveyor', '*.{rb,yml}').to_s]
     config.i18n.fallbacks = [:en]
 
     # Configure the default encoding used in templates for Ruby 1.9.
@@ -100,5 +101,8 @@ module SparcRails
       margin_top: '2in',
       margin_bottom: '1in',
       print_media_type: true
+      
+    ##  Error pages
+    config.exceptions_app = self.routes
   end
 end

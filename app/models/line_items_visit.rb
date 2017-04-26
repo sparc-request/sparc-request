@@ -36,8 +36,6 @@ class LineItemsVisit < ApplicationRecord
   validate :pppv_line_item
   validates_numericality_of :subject_count
 
-  after_save :set_arm_edited_flag_on_subjects
-
   # Destroy parent Arm if the last LineItemsVisit was destroyed
   after_destroy :release_parent
 
@@ -51,10 +49,6 @@ class LineItemsVisit < ApplicationRecord
     if self.line_item.one_time_fee
       errors.add(:_, 'Line Items Visits should only belong to a PPPV LineItem')
     end
-  end
-
-  def set_arm_edited_flag_on_subjects
-    self.arm.set_arm_edited_flag_on_subjects
   end
 
   # Find a LineItemsVisit for the given arm and line item.  If it does

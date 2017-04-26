@@ -207,23 +207,6 @@ class Arm < ApplicationRecord
     end
   end
 
-  def populate_subjects
-    subject_difference = self.subject_count - self.subjects.count
-
-    if subject_difference > 0
-      subject_difference.times do
-        self.subjects.create
-      end
-    end
-  end
-
-  def set_arm_edited_flag_on_subjects
-    if self.subjects
-      subjects = Subject.where(arm_id: self.id)
-      subjects.update_all(arm_edited: true)
-    end
-  end
-
   def update_visit_group_day day, position, portal=false
     position = position.blank? ? self.visit_groups.count - 1 : position.to_i
     before = self.visit_groups[position - 1] unless position == 0

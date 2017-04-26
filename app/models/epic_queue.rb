@@ -24,13 +24,13 @@ class EpicQueue < ApplicationRecord
   belongs_to :protocol
   belongs_to :identity
 
-  after_create :update_protocol
+  #This callback and the method below is probably incorrect. Any insight as to
+  #why we would do this?
 
-  def update_protocol
-    protocol.update_attributes({:last_epic_push_time => Time.now, :last_epic_push_status => 'complete'})
-  end
+  #after_create :update_protocol
 
-  def self.not_completed
-    joins(:protocol).where.not(protocols: { last_epic_push_status: 'complete' } )
-  end
+  #def update_protocol
+  #  protocol.update_attributes({:last_epic_push_time => Time.now, :last_epic_push_status => 'complete'})
+  #end
 end
+

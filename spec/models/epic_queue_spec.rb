@@ -22,29 +22,9 @@ require 'rails_helper'
 
 RSpec.describe EpicQueue, type: :model do
 
-  describe '#not_completed' do
-    it 'should return all epic queues that are not yet completed' do
-      protocol = create(:protocol,
-                        :without_validations,
-                        last_epic_push_status: 'complete'
-                       )
-      eq = create(:epic_queue, protocol: protocol)
+  it { is_expected.to belong_to(:protocol) }
 
-      result = EpicQueue.not_completed
+  it { is_expected.to belong_to(:identity) }
 
-      expect(result).not_to include(eq)
-    end
-
-    it 'should return all epic queues that are not yet completed' do
-      protocol = create(:protocol,
-                        :without_validations,
-                        last_epic_push_status: 'failed'
-                       )
-      eq = create(:epic_queue, protocol: protocol)
-
-      result = EpicQueue.not_completed
-
-      expect(result).to include(eq)
-    end
-  end
 end
+

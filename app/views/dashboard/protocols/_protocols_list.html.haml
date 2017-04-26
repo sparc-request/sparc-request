@@ -32,6 +32,7 @@
       = page_entries_info protocols, {model: "Protocol"}
       = render_filterrific_spinner
     .pull-right
+      = link_to "Exporter", dashboard_protocols_path(:format => :csv, :filterrific => @filterrific.to_hash), class: 'btn btn-success'
       .btn-group#create-new-protocol-select
         %button.btn.btn-success.dropdown-toggle#create-new-study-button{ type: 'button', 'aria-expanded' => 'false', data: { toggle: 'dropdown' }}
           %span

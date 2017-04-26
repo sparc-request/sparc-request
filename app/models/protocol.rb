@@ -103,10 +103,14 @@ class Protocol < ApplicationRecord
     if: -> record { RESEARCH_MASTER_ENABLED && !record.research_master_id.nil? }
 
   def self.to_csv(protocols)
+    ### column_names is a model level method, to filter you could change it to an array of names ###
+    ### columns = column_names
+    ### columns = ['id', 'short_title']
+    columns = ['id', 'short_title']
     CSV.generate({}) do |csv|
-      csv << column_names
+      csv << columns
         protocols.each do |p|
-        csv << p.attributes.values_at(*column_names)
+        csv << p.attributes.values_at(*columns)
       end
     end
   end

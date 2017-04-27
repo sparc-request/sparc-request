@@ -15,7 +15,7 @@ task :merge_service_requests => :environment do
   end
 
   def assign_sub_service_requests(master_request, request)
-    request.sub_service_request.each do |ssr|
+    request.sub_service_requests.each do |ssr|
       ssr.update_attributes(service_request_id: master_request.id)
     end
   end
@@ -31,7 +31,7 @@ task :merge_service_requests => :environment do
   protocol = Protocol.find(protocol_id.to_i)
 
   if protocol.service_requests.size > 1
-    service_requests = protocol.service_requests.order('updated_at DESC')
+    service_requests = protocol.service_requests.order('updated_at DESC').to_a
     merge_requests(service_requests)
   else
     puts "This protocol does not have more than one service request."

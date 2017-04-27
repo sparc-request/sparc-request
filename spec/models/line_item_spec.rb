@@ -238,32 +238,6 @@ RSpec.describe "Line Item" do
           expect(line_item.indirect_costs_for_one_time_fee).to eq(0)
         end
       end
-
-      context "direct costs for one time fees with fulfillments" do
-
-        let!(:otf_line_item) { create(:line_item, service_request_id: service_request.id, service_id: service.id, sub_service_request_id: sub_service_request.id, quantity: 5, units_per_quantity: 1) }
-        let!(:fulfillment1)  { create(:fulfillment, quantity: 5, line_item_id: otf_line_item.id, date: Date.yesterday.strftime("%m/%d/%Y"), time: 1.23) }
-        let!(:fulfillment2)  { create(:fulfillment, quantity: 5, line_item_id: otf_line_item.id, date: Date.today.strftime("%m/%d/%Y"), time: 1.23) }
-        let!(:fulfillment3)  { create(:fulfillment, quantity: 5, line_item_id: otf_line_item.id, date: Date.today.strftime("%m/%d/%Y"), time: 1.23) }
-        let!(:pricing_map2)  { create(:pricing_map, service_id: service.id, unit_type: 'ea', effective_date: Date.today, display_date: Date.today, full_rate: 600, exclude_from_indirect_cost: 0, unit_minimum: 1)}
-
-        it "should correctly calculate a line item's cost that has multiple fulfillments" do
-          # quantity:10 * rate:(percentage:0.5 * cost:600)
-          expect(otf_line_item.direct_cost_for_one_time_fee_with_fulfillments(Date.today, Date.today)).to eq(3000.0)
-        end
-
-        it "should correctly calculate a line item's cost that has a unit factor greater than one" do
-          pricing_map2.update_attributes(unit_factor: 5)
-          fulfillment3 = create(:fulfillment, quantity: 6, line_item_id: otf_line_item.id, date: Date.today.strftime("%m/%d/%Y"), time: 1.23)
-          # ceiling(quantity:16/unit_factor:5) * rate:(percentage:0.5 * cost:600)
-          expect(otf_line_item.reload.direct_cost_for_one_time_fee_with_fulfillments(Date.today, Date.today)).to eq(1200.0)
-        end
-
-        it "should correctly calculate a line item's cost for a fulfillment that has historical pricing" do
-          # quantity:5 * rate:(percentage:0.5 * cost:2000)
-          expect(otf_line_item.direct_cost_for_one_time_fee_with_fulfillments(Date.yesterday, Date.yesterday)).to eq(5000.0)
-        end
-      end
     end
   end
 

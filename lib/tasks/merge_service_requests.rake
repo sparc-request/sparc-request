@@ -11,6 +11,7 @@ task :merge_service_requests => :environment do
     service_requests.each do |request|
       assign_sub_service_requests(master_request, request)
       assign_line_items(master_request, request)
+      request.destroy
     end
   end
 

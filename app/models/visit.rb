@@ -25,8 +25,6 @@ class Visit < ApplicationRecord
 
   audited
 
-  has_many :procedures
-  has_many :appointments, :through => :procedures
   belongs_to :visit_group
   belongs_to :line_items_visit
   

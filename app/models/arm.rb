@@ -27,11 +27,8 @@ class Arm < ApplicationRecord
 
   has_many :line_items_visits, :dependent => :destroy
   has_many :line_items, :through => :line_items_visits
-  has_many :subjects
   has_many :visit_groups, -> { order("position") }, :dependent => :destroy
   has_many :visits, :through => :line_items_visits
-
-  accepts_nested_attributes_for :subjects, allow_destroy: true
 
   after_save :update_liv_subject_counts
 

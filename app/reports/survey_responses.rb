@@ -125,21 +125,20 @@ class SurveyResponseReport < ReportingModule
   # assumes all satisfaction question is answered with a likert scale from version 1 of System Satisfaction or SCTR Customer Satisfaction Survey,
   # or Yes or No answer from version 0 of those surveys.
   def percent_satisfied(content)
-    percent = 
-      if ['yes', 'extremely likely'].include?(content)
-        100
-      elsif ['somewhat likely', 'satisfied'].include?(content)
-        80
-      elsif ['neutral'].include?(content)
-        60
-      elsif ['not very likely, dissatisfied'].include?(content)
-        40
-      elsif ['not at all likely', 'very dissatisfied'].include?(content)
-        20
-      elsif ['no'].include?(content)
-        0
-      else
-        0
-      end
+    if ['yes', 'extremely likely', 'very satisfied'].include?(content)
+      100
+    elsif ['somewhat likely', 'satisfied'].include?(content)
+      80
+    elsif ['neutral'].include?(content)
+      60
+    elsif ['not very likely, dissatisfied'].include?(content)
+      40
+    elsif ['not at all likely', 'very dissatisfied'].include?(content)
+      20
+    elsif ['no'].include?(content)
+      0
+    else
+      0
+    end
   end
 end

@@ -43,6 +43,10 @@
 
   .table-bordered
     height: 100%
+    thead, tbody tr
+      display: table
+      width: 100%
+      table-layout: fixed
     thead
       tr:not(:first-child)
         border-bottom: 1px solid #ddd
@@ -57,6 +61,18 @@
       .popover
         color: black
     tbody
+      td.service-width
+        width: 12%
+      td.subject-count-width
+        width: 6%
+      td.select-row-width
+        width: 5%
+      td.maximum-total-per-patient-width,
+      td.total-per-patient-per-visit-cost-per-study-width,
+        width: 53%
+      td.maximum-total-per-patient-width-template,
+      td.total-per-patient-per-visit-cost-per-study-width-template,
+        width: 54.8%
       td.unit-type-number,
       td.qty-type-number
         height: 100%

@@ -118,7 +118,7 @@ class Protocol < ApplicationRecord
   def self.to_csv(protocols)
     CSV.generate do |csv|
       ##Insert headers
-      csv << ["Protocol ID", "Project/Study", "Short Title", "Primary Principal Investigator", "Archived?"]
+      csv << ["Protocol ID", "Project/Study", "Short Title", "Primary Principal Investigator(s)", "Archived?"]
       ##Insert data for each protocol
       protocols.each do |p|
         csv << [p.id, p.is_study? ? "Study" : "Project", p.short_title, p.principal_investigators.map(&:full_name).join(', '), p.archived ? "Yes" : "No"]

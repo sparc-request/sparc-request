@@ -8,10 +8,11 @@ task :merge_service_requests => :environment do
 
   def merge_requests(service_requests)
     master_request = service_requests.shift
+    puts 'The following requests are now empty and should be deleted:'
     service_requests.each do |request|
       assign_sub_service_requests(master_request, request)
       assign_line_items(master_request, request)
-      request.destroy
+      puts "Service Request: #{request.id}"
     end
   end
 

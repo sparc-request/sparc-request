@@ -42,7 +42,7 @@
       %td.your-cost.text-center
         = "$#{number_with_precision(Service.cents_to_dollars(liv.line_item.applicable_rate), precision: 2)}"
       %td.unit-type.text-center
-        = liv.line_item.service.displayed_pricing_map.unit_type
+        = display_unit_type(liv)
       %td.subject-count.text-center
         = liv.subject_count
       - visits      = liv.visits.paginate(page: page.to_i, per_page: 5)

@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170405154523) do
+ActiveRecord::Schema.define(version: 20170502153721) do
 
   create_table "admin_rates", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
     t.integer  "line_item_id"
@@ -207,9 +207,10 @@ ActiveRecord::Schema.define(version: 20170405154523) do
 
   create_table "epic_queues", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
     t.integer  "protocol_id"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.datetime "created_at",                     null: false
+    t.datetime "updated_at",                     null: false
     t.integer  "identity_id"
+    t.boolean  "attempted_push", default: false
   end
 
   create_table "epic_rights", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=latin1" do |t|

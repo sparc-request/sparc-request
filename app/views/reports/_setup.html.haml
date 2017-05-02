@@ -29,7 +29,7 @@
 
         = render "reports/form_partials/#{options[:field_type]}_form_partial", options: options, field_label: field_label, field: field
   .report-actions.text-center
-    = submit_tag t(:reporting)[:actions][:create], class: "btn btn-success"
+    = submit_tag t(:reporting)[:actions][:create], class: "btn btn-success", data: { disable_with: false }
     = button_to t(:reporting)[:actions][:return], reports_path, method: :get, id: "reporting-return-to-list", class: "btn btn-primary"
 %br
 %br

@@ -101,5 +101,8 @@ module SparcRails
       margin_top: '2in',
       margin_bottom: '1in',
       print_media_type: true
+      
+    ##  Error pages
+    config.exceptions_app = self.routes
   end
 end

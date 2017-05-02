@@ -179,6 +179,7 @@ en:
     pppv:
       header: "Per Patient/Visit Services -- %{arm_name}"
       header_fields:
+        notes: "Notes"
         service: "Service Name"
         status: "Status"
         unit_cost: "Unit Costs"
@@ -233,6 +234,7 @@ en:
       total_per_study: 'Total proposed cost of one-time fees per study'
       move_visit_button: 'Ability to change visit position'
       pppv_total_costs: 'Total proposed cost of services per arm'
+      line_item_notes: 'Line Item Notes'
       pppv_status: 'Used to track the progress of a service'
       quantity_type: 'Unit of measurement'
       subject_count: 'Number of participants'
@@ -286,6 +288,27 @@ en:
     select_type: "Please Select Type"
     delete_confirm: "Are you sure you want to delete the selected Document from this protocol?"
 
+  ###############
+  # ERROR PAGES #
+  ###############
+  error_pages:
+    not_found:
+      heading: "Uh, oh.  You've hit a"
+      error: "Page Not Found (404)"
+      help_text: "For help, contact us:"
+      link_href: "mailto:success@musc.edu"
+      link_display: "Email: success@musc.edu"
+      phone_href: "tel:843-792-8300"
+      phone_display: "Call: 843-792-8300"
+    server_error:
+      heading: "Uh, oh.  You've hit an"
+      error: "Internal Server Error (500)"
+      help_text: "For help, contact us:"
+      link_href: "mailto:success@musc.edu"
+      link_display: "Email: success@musc.edu"
+      phone_href: "tel:843-792-8300"
+      phone_display: "Call: 843-792-8300"
+  
   ###############
   # IE7 WARNING #
   ###############

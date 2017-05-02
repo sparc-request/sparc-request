@@ -7,17 +7,34 @@ class RedcapSurveyEmitter
   end
 
   def send_form
-    record = {
-      :letters => Digest::SHA1.hexdigest(Time.now.usec.to_s)[0..16],
-      :name => @feedback.name,
-      :email => @feedback.email,
-      :date => @feedback.date.to_datetime.strftime("%Y/%m/%d").gsub('/', '-'),
-      :typeofrequest => @feedback.typeofrequest,
-      :priority => @feedback.priority,
-      :browser => @feedback.browser,
-      :version => @feedback.version,
-      :sparc_request_id => @feedback.sparc_request_id
+    #the RedCap API token has differing fields between staging and production.
+    #Due to potential data loss, we cannot change those fields on RedCap itself,
+    #therefore here we are specifying different params based on Rails.env
+    if Rails.env.production?
+      record = {
+        :letters => latest_letter_id + 1,
+        :name => @feedback.name,
+        :email => @feedback.email,
+        :date => Date.strptime(@feedback.date[0..9], '%m/%d/%Y').strftime("%Y/%m/%d").gsub('/', '-'),
+        :type => @feedback.typeofrequest,
+        :priority => @feedback.priority,
+        :browser => @feedback.browser,
+        :version => @feedback.version,
+        :sparc_request_id => @feedback.sparc_request_id
       }
+    else
+      record = {
+        :letters => latest_letter_id + 1,
+        :name => @feedback.name,
+        :email => @feedback.email,
+        :date => Date.strptime(@feedback.date[0..9], '%m/%d/%Y').strftime("%Y/%m/%d").gsub('/', '-'),
+        :typeofrequest => @feedback.typeofrequest,
+        :priority => @feedback.priority,
+        :browser => @feedback.browser,
+        :version => @feedback.version,
+        :sparc_request_id => @feedback.sparc_request_id
+      }
+    end
 
     data = [record].to_json
 
@@ -36,4 +53,25 @@ class RedcapSurveyEmitter
 
     ch.body_str
   end
+
+  private
+
+  def latest_letter_id
+    fields = {
+      :token => REDCAP_TOKEN,
+      :content => 'record',
+      :format => 'json',
+      :type => 'flat'
+    }
+
+    ch = Curl::Easy.http_post(
+      REDCAP_API,
+      fields.collect{|k, v| Curl::PostField.content(k.to_s, v)}
+    )
+
+    to_array = JSON.parse(ch.body_str)
+
+    to_array.last['letters'].to_i
+  end
 end
+

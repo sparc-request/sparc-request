@@ -18,19 +18,13 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class EpicQueue < ApplicationRecord
-  audited
+require 'rails_helper'
 
-  belongs_to :protocol
-  belongs_to :identity
+RSpec.describe EpicQueue, type: :model do
 
-  #This callback and the method below is probably incorrect. Any insight as to
-  #why we would do this?
+  it { is_expected.to belong_to(:protocol) }
 
-  #after_create :update_protocol
+  it { is_expected.to belong_to(:identity) }
 
-  #def update_protocol
-  #  protocol.update_attributes({:last_epic_push_time => Time.now, :last_epic_push_status => 'complete'})
-  #end
 end
 

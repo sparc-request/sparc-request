@@ -113,7 +113,7 @@ class SurveyResponseReport < ReportingModule
       # assumes the first question where only one option can be picked is the satisfaction question
       surveys                   = Survey.where(access_code: "system-satisfaction-survey").order('version DESC').first
       questions                 = Question.where(question_type: ['yes_no', 'likert', 'radio_button'], section: Section.where(survey: surveys))
-      responses                 = QuestionResponse.where(question: questions).where.not(content: [nil, ""])
+      responses                 = QuestionResponse.where(question: questions, created_at: params[:created_at_from]..params[:created_at_to]).where.not(content: [nil, ""])
       total_percent_satisfied   = responses.map{ |qr| percent_satisfied(qr.content.downcase) }.sum
       average_percent_satisifed = responses.count == 0 ? 0 : total_percent_satisfied / responses.count
 
@@ -125,21 +125,20 @@ class SurveyResponseReport < ReportingModule
   # assumes all satisfaction question is answered with a likert scale from version 1 of System Satisfaction or SCTR Customer Satisfaction Survey,
   # or Yes or No answer from version 0 of those surveys.
   def percent_satisfied(content)
-    percent = 
-      if ['yes', 'extremely likely'].include?(content)
-        100
-      elsif ['somewhat likely', 'satisfied'].include?(content)
-        80
-      elsif ['neutral'].include?(content)
-        60
-      elsif ['not very likely, dissatisfied'].include?(content)
-        40
-      elsif ['not at all likely', 'very dissatisfied'].include?(content)
-        20
-      elsif ['no'].include?(content)
-        0
-      else
-        0
-      end
+    if ['yes', 'extremely likely', 'very satisfied'].include?(content)
+      100
+    elsif ['somewhat likely', 'satisfied'].include?(content)
+      80
+    elsif ['neutral'].include?(content)
+      60
+    elsif ['not very likely, dissatisfied'].include?(content)
+      40
+    elsif ['not at all likely', 'very dissatisfied'].include?(content)
+      20
+    elsif ['no'].include?(content)
+      0
+    else
+      0
+    end
   end
 end

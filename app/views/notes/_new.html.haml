@@ -22,16 +22,23 @@
   = form.hidden_field :notable_type
   = form.hidden_field :identity_id
   = hidden_field_tag :in_dashboard, in_dashboard
+  - if notable_type_is_related_to_li_or_liv(@notable_type)
+    .row.text-center
+      = display_service_name_and_code(@notable_type, @notable_id)
+    %br
   .form-group.row
     = form.label :body, t(:notes)[:form_fields][:note], class: 'col-sm-3 control-label'
     .col-sm-6
       = form.text_area :body, { class: 'form-control', rows: 6 }
-
   .modal-footer
     - if in_dashboard
-      %button.btn.btn-default.notes.cancel{type: 'button', data: {notable_id: notable_id, notable_type: notable_type}}
+      %button.btn.btn-default.notes.cancel{type: 'button', data: {notable_id: @notable_id, notable_type: @notable_type}}
         = t(:actions)[:cancel]
     - else
-      %button.btn.btn-default{ type: 'button', data: { dismiss: 'modal' } }
-        = t(:actions)[:close]
-    %input.btn.btn-primary{ type: 'submit', value: t(:actions)[:add] }
+      - if notable_type_is_related_to_li_or_liv(@notable_type)
+        %button.btn.btn-default.notes.cancel{type: 'button', data: {notable_id: @notable_id, notable_type: @notable_type}}
+          = t(:actions)[:cancel]
+      - else
+        %button.btn.btn-default{ type: 'button', data: { dismiss: 'modal' } }
+          = t(:actions)[:close]
+    %input.btn.btn-primary.notes.add{ type: 'submit', value: t(:actions)[:add], data: {notable_id: @notable_id, notable_type: @notable_type, in_dashboard: in_dashboard}}

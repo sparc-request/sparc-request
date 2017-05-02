@@ -24,6 +24,8 @@
     -# TODO rename :srid to :service_request_id in controller action
     = hidden_field_tag :service_request_id, service_request.id
     = hidden_field_tag :srid, service_request.id
+    - if @sub_service_request
+      = hidden_field_tag :sub_service_request_id, @sub_service_request.id
     = form.hidden_field :requester_id
     = form.hidden_field :type
     - if protocol.type.capitalize == "Study"
@@ -43,5 +45,8 @@
       .col-lg-4
       .col-lg-4.text-center
         %input.btn.btn-lg.btn-success{ type: "submit", value: t(:actions)[:save] }
-        = link_to t(:actions)[:cancel], protocol_service_request_path(service_request), class: 'btn btn-lg btn-danger'
+        - if @sub_service_request
+          = link_to t(:actions)[:cancel], protocol_service_request_path(service_request, sub_service_request_id: @sub_service_request.id), class: 'btn btn-lg btn-danger'
+        - else
+          = link_to t(:actions)[:cancel], protocol_service_request_path(service_request), class: 'btn btn-lg btn-danger'
       .col-lg-4

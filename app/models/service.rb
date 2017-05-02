@@ -146,7 +146,9 @@ class Service < ApplicationRecord
       end
     end
 
-    return service_name
+    service_name = service_name.gsub("/", "/ ")
+
+    service_name
   end
 
   # Will check for nil display dates on the service's pricing maps

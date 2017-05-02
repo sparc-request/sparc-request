@@ -27,6 +27,16 @@ if USE_REDCAP_API
     attr_accessor :name, :email, :date, :typeofrequest,
       :priority, :browser, :version, :sparc_request_id, :letters
 
+    validates :name,
+      :email,
+      :date,
+      :typeofrequest,
+      :priority,
+      :browser,
+      :version,
+      :sparc_request_id,
+      presence: true
+
     validates_format_of :email, with: Devise::email_regexp
 
     def initialize(attributes = {})

@@ -35,6 +35,11 @@ $(document).ready ->
       protocolId = $element.protocol_id
       window.open("/dashboard/protocols/#{protocolId}")
 
+  $('.epic-queue-records-table').on 'click-cell.bs.table', (field, value, row, $element) ->
+    if value == 'protocol'
+      protocolId = $element.protocol_id
+      window.open("/dashboard/protocols/#{protocolId}")
+
   $(document).on 'click', '.push-to-epic', (e) ->
     e.preventDefault()
     protocol_id = $(this).data('protocol-id')

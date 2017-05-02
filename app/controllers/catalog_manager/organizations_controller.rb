@@ -56,7 +56,7 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
       :ack_language,
       :process_ssrs,
       :is_available,
-      :tag_list,
+      { tag_list:  [] },
       subsidy_map_attributes: [:organization_id,
         :max_dollar_cap,
         :max_percentage,

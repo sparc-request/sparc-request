@@ -25,7 +25,7 @@
         .name.col-sm-10
           = link_to service.display_service_name, 'javascript:void(0)', class: "service service-#{service.id} btn btn-default full", data: { id: service.id }
         .col-sm-2
-          %button.add-service.pull-right.btn.btn-success{ data: { id: service.id, srid: service_request.id } }
+          %button.add-service.pull-right.btn.btn-success{ data: { id: service.id, srid: service_request.id, ssrid: sub_service_request.try(:id) } }
             = t(:actions)[:add]
       .col-sm-12.service-description.hidden{ class: "service-description-#{service.id}" }
         = organization_description_display(service)

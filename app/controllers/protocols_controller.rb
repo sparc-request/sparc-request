@@ -165,7 +165,8 @@ class ProtocolsController < ApplicationController
 
   def push_to_epic
     @protocol = Protocol.find params[:id]
-
+    epic_queue = EpicQueue.find params[:eq_id]
+    epic_queue.update_attribute(:attempted_push, true)
     # removed 12/23/13 per request by Lane
     #if current_user != @protocol.primary_principal_investigator then
     #  raise ArgumentError, "User is not primary PI"

@@ -42,7 +42,8 @@ module Dashboard::EpicQueuesHelper
     content_tag(
       :a,
       raw(content_tag(:span, '', class: 'glyphicon glyphicon-hand-right')),
-      data: { protocol_id: epic_queue.protocol.id, permission: 'true' },
+      data: { protocol_id: epic_queue.protocol.id, permission: 'true',
+              eq_id: epic_queue.id },
       class: 'btn btn-success push-to-epic')
   end
 

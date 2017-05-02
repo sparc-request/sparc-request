@@ -25,14 +25,12 @@ class OrganizationUpdater
                        else
                          true
                        end
-
+    @organization.update_attribute(:available_statuses, AvailableStatus.none)
     if services_updated && @organization.update_attributes(@attributes)
       @organization.update_ssr_org_name if name_change
       @organization.update_descendants_availability(@attributes[:is_available])
-
       true
     else
-
       false
     end
   end

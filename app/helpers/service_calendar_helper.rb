@@ -46,12 +46,7 @@ module ServiceCalendarHelper
 
   def display_unit_type(liv)
     unit_type = liv.line_item.service.displayed_pricing_map.unit_type
-    if unit_type.include?("/")
-      unit_type = unit_type.split("/")
-      unit_type = unit_type.first + "/" + " " + unit_type.last
-    else
-      unit_type
-    end
+    unit_type = unit_type.gsub("/", "/ ")
     unit_type
   end
 

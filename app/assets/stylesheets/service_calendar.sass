@@ -37,58 +37,92 @@
       color: grey
     .badge
       background-color: grey
+  .notes.btn-link
+    padding: 0px
 
   .panel-title
     width: 100%
 
+  .service-calendar-row.btn-xs,
+  .service-calendar-column.btn-xs
+    padding: 0px 2px
+
+
   .table-bordered
-    height: 100%
+    width: 100%
+    .non-scrolling-table
+      height: 100%
     thead, tbody tr
       display: table
       width: 100%
       table-layout: fixed
-    thead
+    thead.scrolling-thead
+      width: calc( 100% - 1em )
+    tbody
+      .organization-header
+        background: #CCC
+    tbody.scrolling-div
+      font-size: 13px
+      td.service-name
+        width: 20%
+      td.status-width
+        width: 7%
+      td.notes-width
+        width: 4.5%
+      td.smaller-width
+        width: 3.8%
+      td.small-width
+        min-width: 6.17%
+      td.total-width
+        width: 7%
+      td.max-total-per-patient-width,
+      td.maximum-total-direct-cost-per-patient-width,
+      td.total-per-patient-per-visit-cost-per-study-width,
+        width: 54.2%
+      td.maximum-total-per-patient-width-template,
+      td.maximum-total-direct-cost-per-patient-template,
+      td.total-per-patient-per-visit-cost-per-study-width-template,
+        width: 56.5%
+
+    .scrolling-thead
+      border-bottom: 2px solid #DDD
       tr:not(:first-child)
         border-bottom: 1px solid #ddd
       th
         border-bottom: 0
-      th.service-header
-        width: 12%
-      th.subject-count-header
-        width: 6%
-      th.select-row-header
-        width: 5%
+      th.template-otf-service-header,
+      th.portal-consolidated-service-header,
+      th.consolidated-service-header,
+      th.billing-service-header,
+      th.template-service-header,
+        width: 20%
+      th.status-width
+        width: 7%
+      th.notes-width
+        width: 4.5%
+      th.smaller-width
+        width: 3.8%
+      th.small-width
+        width: 6.17%
+      th.total-width
+        width: 7%
       .popover
         color: black
-    tbody
-      td.service-width
-        width: 12%
-      td.subject-count-width
-        width: 6%
-      td.select-row-width
-        width: 5%
-      td.maximum-total-per-patient-width,
-      td.total-per-patient-per-visit-cost-per-study-width,
-        width: 53%
-      td.maximum-total-per-patient-width-template,
-      td.maximum-total-direct-cost-per-patient-template,
-      td.total-per-patient-per-visit-cost-per-study-width-template,
-        width: 54.8%
-      td.unit-type-number,
-      td.qty-type-number
-        height: 100%
-        padding: 0
-        .unit-type,
-        .units-per-qty,
-        .qty-type,
-        .qty
-          height: 100%
-          padding: 8px 15px
-        .unit-type.col-sm-6,
-        .qty-type
-          border-right: 1px solid #DDD
-      .organization-header
-        background: #CCC
+
+    .scrolling-div
+      display: block
+      overflow: auto
+      height: 100%
+      max-height: 400px !important
+
+      th.billing-organization-header-start-width
+        width: 54.2%
+      th.billing-organization-header-end-width
+        width: 14%
+      tr
+        display: table
+        width: 100%
+        table-layout: fixed
 
 .service-calendar-row,
 .service-calendar-column

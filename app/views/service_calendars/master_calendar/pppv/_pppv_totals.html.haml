@@ -19,37 +19,37 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 - if USE_INDIRECT_COST
   %tr.maximum-total-direct-cost-per-patient{ class: "arm-#{arm.id} " }
-    %td{ colspan: tab == 'template' ? 9 : 8, class: tab == 'template' ? "maximum-total-direct-cost-per-patient-template" : "" }
+    %td{ class: tab == 'template' ? "maximum-total-direct-cost-per-patient-template" : "maximum-total-direct-cost-per-patient-width" }
       %strong
         = t(:calendars)[:pppv][:totals][:maximum_direct]
     - 5.times do |i|
       %td.text-center{ class: "max-direct-per-patient visit-#{i+1}" }
         %strong
-    %td.text-center
+    %td.text-center.total-width
       %strong
         = display_max_total_direct_cost_per_patient(arm, line_items_visits)
-    %td.text-center
+    %td.text-center.total-width
 
 %tr.maximum-total-per-patient{ class: "arm-#{arm.id} " }
-  %td{ colspan: tab == 'template' ? 9 : 8, class: tab == 'template' ? "maximum-total-per-patient-width-template" : "" }
+  %td{ class: tab == 'template' ? "maximum-total-per-patient-width-template" : "max-total-per-patient-width" }
     %strong
       = t(:calendars)[:pppv][:totals][:maximum_per_patient]
   - 5.times do |i|
-    %td.text-center{ class: "max-total-per-patient visit-#{i+1}" }
+    %td.text-center.small-width{ class: "max-total-per-patient visit-#{i+1}" }
       %strong
-  %td.text-center
+  %td.text-center.total-width
     %strong
       = display_max_total_cost_per_patient(arm, line_items_visits)
-  %td.text-center
+  %td.text-center.total-width
 
 %tr.total-per-patient-per-visit-cost-per-study{ class: "arm-#{arm.id} " }
-  %td{ colspan: tab == 'template' ? 9 : 8, class: tab == 'template' ? "total-per-patient-per-visit-cost-per-study-width-template" : "" }
+  %td{ class: tab == 'template' ? "total-per-patient-per-visit-cost-per-study-width-template" : "total-per-patient-per-visit-cost-per-study-width" }
     %strong
       = link_to 'javascript:void(0)',
         data: { toggle: 'tooltip', placement: 'right', delay: '{"show":"500"}' },
         title: t(:calendars)[:tooltips][:pppv_total_costs] do
         = I18n.t('calendars.pppv.totals.total_costs', arm_name: arm.name)
   %td{ colspan: 6 }
-  %td.text-center
+  %td.text-center.total-width
     %strong
       = display_total_cost_per_arm(arm, line_items_visits)

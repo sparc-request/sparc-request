@@ -21,12 +21,12 @@
   .panel-heading
     %h3.panel-title
       = t(:calendars)[:otf][:header]
-  %table.table.table-bordered
-    %thead
+  %table.table.table-bordered{ class: line_item_count(service_request) > 5 ? "" : "non-scrolling-table" }
+    %thead{ class: line_item_count(service_request) > 5 ? "scrolling-thead" : "" }
       = render 'service_calendars/master_calendar/otf/otf_header', tab: tab,
         service_request: service_request, sub_service_request: sub_service_request,
         review: review, portal: portal
-    %tbody
+    %tbody{ class: line_item_count(service_request) > 5 ? "scrolling-div" : "" }
       = render 'service_calendars/master_calendar/otf/otf_line_items', tab: tab,
         service_request: service_request, sub_service_request: sub_service_request,
         review: review, portal: portal, admin: admin, merged: merged,

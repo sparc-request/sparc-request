@@ -25,7 +25,7 @@
 
   -# SSR Header Row
   %tr.organization-header{ class: locked ? 'text-danger' : '' }
-    %th.billing-organization-header-start-width{ colspan: portal ? 7 : 8 }
+    %th{ colspan: portal ? 7 : 8, class: portal ? "billing-organization-header-start-width-portal" : "billing-organization-header-start-width" }
       = display_org_name(Dashboard::ServiceCalendars.display_organization_hierarchy(livs[0]), ssr, locked)
     - visit_groups.each do
       %th.billing-type-list.text-center
@@ -51,19 +51,19 @@
         = display_liv_notes(liv, @portal)
       %td.status.text-center.status-width
         = AVAILABLE_STATUSES[ssr.status]
-      %td.service-rate.text-center.small-width
+      %td.service-rate.text-center.sm-col-width
         = display_service_rate(liv.line_item)
-      %td.your-cost.text-center.small-width
+      %td.your-cost.text-center.sm-col-width
         - if portal
           %a.edit-your-cost{ href: 'javascript:void(0)', data: { name: 'displayed_cost', title: t(:calendars)[:pppv][:editable_fields][:your_cost], value: number_with_precision(Service.cents_to_dollars(liv.line_item.applicable_rate), precision: 2), id: liv.line_item.id, url: dashboard_line_item_path(liv.line_item) } }
         - else
           = "$#{number_with_precision(Service.cents_to_dollars(liv.line_item.applicable_rate), precision: 2)}"
 
       - unless portal
-        %td.unit-type.text-center.small-width
+        %td.unit-type.text-center.sm-col-width
           = display_unit_type(liv)
 
-      %td.subject-count.text-center.smaller-width
+      %td.subject-count.text-center.xs-col-width
         - if locked
           = liv.subject_count
         - else
@@ -71,7 +71,7 @@
       - visits      = liv.visits.paginate(page: page.to_i, per_page: 5)
       - totals_hash = liv.try(:per_subject_subtotals, visits)
       - visits.each_with_index do |v, index|
-        %td.text-center.visit.small-width{ class: "visit-#{index+1}", data: { cents: totals_hash["#{v.id}"] || 0.00 } }
+        %td.text-center.visit.sm-col-width{ class: "visit-#{index+1}", data: { cents: totals_hash["#{v.id}"] || 0.00 } }
           = render 'service_calendars/master_calendar/pppv/line_item_visit_input', arm: arm, line_item: liv.line_item, visit: v, tab: tab, portal: portal, service_request: service_request, locked: locked
       - (5 - visits.size).times do
         %td &nbsp;

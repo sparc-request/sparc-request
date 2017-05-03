@@ -26,9 +26,9 @@
     = t(:calendars)[:pppv][:header_fields][:status]
   %th.text-center{ colspan: 2 }
     = t(:calendars)[:pppv][:header_fields][:unit_cost]
-  %th.text-center.small-width{ rowspan: 2 }
+  %th.text-center.sm-col-width{ rowspan: 2 }
     = t(:calendars)[:pppv][:header_fields][:quantity_type]
-  %th.text-center.smaller-width{ rowspan: 2 }
+  %th.text-center.xs-col-width{ rowspan: 2 }
     = t(:calendars)[:pppv][:header_fields][:subject_count]
   %th.text-center.visit-group-select{ colspan: 5 }
     = render 'service_calendars/master_calendar/pppv/visit_group_page_select', service_request: service_request, sub_service_request: sub_service_request, arm: arm, tab: tab, page: page, pages: pages, review: review, portal: portal, admin: admin
@@ -38,8 +38,8 @@
     = t(:calendars)[:pppv][:header_fields][:total_per_study]
 
 %tr
-  %th.text-center.small-width
+  %th.text-center.sm-col-width
     = raw(t(:calendars)[:pppv][:header_fields][:service_rate])
-  %th.text-center.small-width
+  %th.text-center.sm-col-width
     = raw(t(:calendars)[:pppv][:header_fields][:your_cost])
   = render 'service_calendars/master_calendar/pppv/visit_groups', service_request: service_request, arm: arm, tab: tab, visit_groups: visit_groups, portal: portal

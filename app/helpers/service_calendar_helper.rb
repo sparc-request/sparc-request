@@ -44,15 +44,29 @@ module ServiceCalendarHelper
     notable_type == "LineItemsVisit" || notable_type == "LineItem"
   end
 
-  def line_item_count_pppv(portal, arm, service_request, sub_service_request, merged, statuses_hidden)
-    if portal
-      add_scrollable_class = Dashboard::ServiceCalendars.pppv_line_items_visits_to_display(arm, service_request, sub_service_request, merged: merged, statuses_hidden: statuses_hidden).map{|x| x.last}.flatten.count > 10
+  def display_scrollable_pppv(tab, portal, arm, service_request, sub_service_request, merged, statuses_hidden)
+    if portal && tab != "calendar"
+      add_scrollable_class = Dashboard::ServiceCalendars.pppv_line_items_visits_to_display(arm, service_request, sub_service_request, merged: merged, statuses_hidden: statuses_hidden).map{|x| x.last}.flatten.count > 7
     else
-      line_item_count = Dashboard::ServiceCalendars.pppv_line_items_visits_to_display(arm, service_request, sub_service_request, merged: merged, statuses_hidden: statuses_hidden).map{|x| x.last}.flatten.count
-      ssr_count = service_request.sub_service_requests.count
-      add_scrollable_class = (line_item_count + ssr_count) > 5
+      line_item_visits = Dashboard::ServiceCalendars.pppv_line_items_visits_to_display(arm, service_request, sub_service_request, merged: merged, statuses_hidden: statuses_hidden).map{|x| x.last}.flatten
+      line_item_visit_count = line_item_visits.count
+      ssr_count = line_item_visits.map(&:sub_service_request).uniq.count
+      add_scrollable_class = (line_item_visit_count + ssr_count) > 8
     end
     add_scrollable_class
+  end
+
+  def display_scrollable_otf(service_request)
+    @line_items = []
+    service_request.service_list(true).each do |_, value|
+      value[:line_items].group_by(&:sub_service_request_id).each do |sub_service_request_id, line_items|
+        @line_items << line_items
+      end
+    end
+    line_item_count = @line_items.flatten.count
+    
+    ssr_count = @line_items.flatten.map(&:sub_service_request).uniq.count
+    (line_item_count + ssr_count) > 8
   end
 
   def display_unit_type(liv)
@@ -72,16 +86,6 @@ module ServiceCalendarHelper
 
   def display_your_cost line_item
     currency_converter(line_item.applicable_rate)
-  end
-
-  def line_item_count(service_request)
-    @line_items = []
-    service_request.service_list(true).each do |_, value|
-      value[:line_items].group_by(&:sub_service_request_id).each do |sub_service_request_id, line_items|
-        @line_items << line_items
-      end
-    end
-    @line_items.flatten.count
   end
 
   def update_per_subject_subtotals line_items_visit

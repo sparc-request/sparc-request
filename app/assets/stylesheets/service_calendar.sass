@@ -47,7 +47,6 @@
   .service-calendar-column.btn-xs
     padding: 0px 2px
 
-
   .table-bordered
     width: 100%
     .non-scrolling-table
@@ -58,20 +57,50 @@
       table-layout: fixed
     thead.scrolling-thead
       width: calc( 100% - 1em )
+    thead
+      border-bottom: 2px solid #DDD
+      tr:not(:first-child)
+        border-bottom: 1px solid #ddd
+      th
+        border-bottom: 0
+      th.otf-header-width,
+      th.template-otf-service-header,
+      th.portal-consolidated-service-header,
+      th.consolidated-service-header,
+      th.billing-service-header,
+      th.template-service-header,
+        width: 20%
+      th.status-width
+        width: 7%
+      th.notes-width
+        width: 4.5%
+      th.xs-col-width
+        width: 3.8%
+      th.sm-col-width
+        width: 6.17%
+      th.total-width
+        width: 7%
+      .popover
+        color: black
     tbody
+      font-size: 13px
       .organization-header
         background: #CCC
-    tbody.scrolling-div
-      font-size: 13px
+      th.billing-organization-header-start-width-portal
+        width: 53.7%
+      th.billing-organization-header-start-width
+        width: 54.2%
+      th.billing-organization-header-end-width
+        width: 14%
       td.service-name
         width: 20%
       td.status-width
         width: 7%
       td.notes-width
         width: 4.5%
-      td.smaller-width
+      td.xs-col-width
         width: 3.8%
-      td.small-width
+      td.sm-col-width
         min-width: 6.17%
       td.total-width
         width: 7%
@@ -83,42 +112,15 @@
       td.maximum-total-direct-cost-per-patient-template,
       td.total-per-patient-per-visit-cost-per-study-width-template,
         width: 56.5%
-
-    .scrolling-thead
-      border-bottom: 2px solid #DDD
-      tr:not(:first-child)
-        border-bottom: 1px solid #ddd
-      th
-        border-bottom: 0
-      th.template-otf-service-header,
-      th.portal-consolidated-service-header,
-      th.consolidated-service-header,
-      th.billing-service-header,
-      th.template-service-header,
-        width: 20%
-      th.status-width
-        width: 7%
-      th.notes-width
-        width: 4.5%
-      th.smaller-width
-        width: 3.8%
-      th.small-width
-        width: 6.17%
-      th.total-width
-        width: 7%
-      .popover
-        color: black
+      .unit-type.col-sm-6,
+      .qty-type
+        border-right: 1px solid #DDD
 
     .scrolling-div
       display: block
       overflow: auto
       height: 100%
-      max-height: 400px !important
-
-      th.billing-organization-header-start-width
-        width: 54.2%
-      th.billing-organization-header-end-width
-        width: 14%
+      max-height: 450px !important
       tr
         display: table
         width: 100%

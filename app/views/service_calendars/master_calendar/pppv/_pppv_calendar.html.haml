@@ -29,13 +29,13 @@
           = t(:proper)[:service_calendar][:move_visit][:header]
     .clearfix
   = hidden_field_tag :service_request_id, service_request.id
-  %table.table.table-bordered{ class: line_item_count_pppv(portal, arm, service_request, sub_service_request, merged, statuses_hidden) ? "scrolling-table" : "non-scrolling-table"}
-    %thead{ class: line_item_count_pppv(portal, arm, service_request, sub_service_request, merged, statuses_hidden) ? "scrolling-thead" : "" }
+  %table.table.table-bordered{ class: display_scrollable_pppv(tab, portal, arm, service_request, sub_service_request, merged, statuses_hidden) ? "scrolling-table" : "non-scrolling-table"}
+    %thead{ class: display_scrollable_pppv(tab, portal, arm, service_request, sub_service_request, merged, statuses_hidden) ? "scrolling-thead" : "" }
       = render "service_calendars/master_calendar/pppv/#{tab}_header",
         service_request: service_request, sub_service_request: sub_service_request,
         arm: arm, tab: tab, pages: pages, page: page, review: review,
         portal: portal, visit_groups: visit_groups, admin: admin
-    %tbody{ class: line_item_count_pppv(portal, arm, service_request, sub_service_request, merged, statuses_hidden) ? "scrolling-thead" : "" }
+    %tbody{ class: display_scrollable_pppv(tab, portal, arm, service_request, sub_service_request, merged, statuses_hidden) ? "scrolling-div" : "" }
       = render "service_calendars/master_calendar/pppv/#{tab}_line_items",
         service_request: service_request, sub_service_request: sub_service_request,
         arm: arm, tab: tab, pages: pages, page: page, review: review, portal: portal,

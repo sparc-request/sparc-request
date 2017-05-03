@@ -109,17 +109,17 @@ class SurveyResponseReport < ReportingModule
   def create_report(worksheet)
     super
 
-    if Survey.where(access_code: "system-satisfaction-survey").ids.map(&:to_s).include?(params[:survey_id])
-      # assumes the first question where only one option can be picked is the satisfaction question
-      surveys                   = Survey.where(access_code: "system-satisfaction-survey").order('version DESC').first
-      questions                 = Question.where(question_type: ['yes_no', 'likert', 'radio_button'], section: Section.where(survey: surveys))
-      responses                 = QuestionResponse.where(question: questions, created_at: params[:created_at_from]..params[:created_at_to]).where.not(content: [nil, ""])
-      total_percent_satisfied   = responses.map{ |qr| percent_satisfied(qr.content.downcase) }.sum
-      average_percent_satisifed = responses.count == 0 ? 0 : total_percent_satisfied / responses.count
+    start_date = (params[:created_at_from] ? params[:created_at_from] : "2012-03-01".to_date)
+    end_date = (params[:created_at_to] ? params[:created_at_to] : Date.today)
+    # assumes the first question where only one option can be picked is the satisfaction question
+    survey                    = Survey.find(params[:survey_id])
+    questions                 = Question.where(question_type: ['yes_no', 'likert', 'radio_button'], section: Section.where(survey: survey))
+    responses                 = QuestionResponse.where(question: questions, created_at: start_date..end_date).where.not(content: [nil, ""])
+    total_percent_satisfied   = responses.map{ |qr| percent_satisfied(qr.content.downcase) }.sum
+    average_percent_satisifed = responses.count == 0 ? 0 : total_percent_satisfied / responses.count
 
-      worksheet.add_row([])
-      worksheet.add_row(["Overall Satisfaction Rate", "", sprintf("%.2f%%", average_percent_satisifed.round(2))])
-    end
+    worksheet.add_row([])
+    worksheet.add_row(["Overall Satisfaction Rate", "", sprintf("%.2f%%", average_percent_satisifed.round(2))])
   end
 
   # assumes all satisfaction question is answered with a likert scale from version 1 of System Satisfaction or SCTR Customer Satisfaction Survey,

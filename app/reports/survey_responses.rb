@@ -109,17 +109,17 @@ class SurveyResponseReport < ReportingModule
   def create_report(worksheet)
     super
 
-    start_date = (params[:created_at_from] ? params[:created_at_from] : "2012-03-01".to_date)
-    end_date = (params[:created_at_to] ? params[:created_at_to] : Date.today)
+    start_date = (params[:created_at_from] ? params[:created_at_from] : "2012-03-01".to_date).to_time.strftime("%Y-%m-%d 00:00:00")
+    end_date = (params[:created_at_to] ? params[:created_at_to] : Date.today).to_time.strftime("%Y-%m-%d 23:59:59")
     # assumes the first question where only one option can be picked is the satisfaction question
     survey                    = Survey.find(params[:survey_id])
     questions                 = Question.where(question_type: ['yes_no', 'likert', 'radio_button'], section: Section.where(survey: survey))
     responses                 = QuestionResponse.where(question: questions, created_at: start_date..end_date).where.not(content: [nil, ""])
     total_percent_satisfied   = responses.map{ |qr| percent_satisfied(qr.content.downcase) }.sum
-    average_percent_satisifed = responses.count == 0 ? 0 : total_percent_satisfied / responses.count
+    average_percent_satisifed = responses.count == 0 ? 0 : (total_percent_satisfied.to_f / responses.count.to_f).round(2)
 
     worksheet.add_row([])
-    worksheet.add_row(["Overall Satisfaction Rate", "", sprintf("%.2f%%", average_percent_satisifed.round(2))])
+    worksheet.add_row(["Overall Satisfaction Rate", "", "#{average_percent_satisifed}%"])
   end
 
   # assumes all satisfaction question is answered with a likert scale from version 1 of System Satisfaction or SCTR Customer Satisfaction Survey,

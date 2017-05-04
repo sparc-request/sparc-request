@@ -254,7 +254,7 @@ class CatalogManager::ServicesController < CatalogManager::AppController
         :revenue_code,
         :organization_id,
         :send_to_epic,
-        :tag_list,
+        { tag_list: [] },
         :revenue_code_range_id,
         :line_items_count,
         :one_time_fee,

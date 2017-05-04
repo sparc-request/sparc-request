@@ -237,6 +237,7 @@ en:
       line_item_notes: 'Line Item Notes'
       pppv_status: 'Used to track the progress of a service'
       quantity_type: 'Unit of measurement'
+      freeze_header: 'Freeze Header Row'
       subject_count: 'Number of participants'
       service_rate: 'Cost of service prior to any discounts'
       your_cost: 'Price after research discount (based on selected funding source)'

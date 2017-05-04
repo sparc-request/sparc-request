@@ -19,14 +19,19 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .panel.panel-primary.calendar-container.otf-calendar
   .panel-heading
-    %h3.panel-title
-      = t(:calendars)[:otf][:header]
-  %table.table.table-bordered{ class: display_scrollable_otf(service_request) ? "" : "non-scrolling-table" }
-    %thead{ class: display_scrollable_otf(service_request) ? "scrolling-thead" : "" }
+    .pull-left
+      %h3.panel-title
+        = t(:calendars)[:otf][:header]
+    - unless portal
+      .pull-right
+        = render 'service_calendars/master_calendar/otf/otf_scrollable_div_button',service_request: service_request
+    .clearfix
+  %table.table.table-bordered
+    %thead
       = render 'service_calendars/master_calendar/otf/otf_header', tab: tab,
         service_request: service_request, sub_service_request: sub_service_request,
         review: review, portal: portal
-    %tbody{ class: display_scrollable_otf(service_request) ? "scrolling-div" : "" }
+    %tbody
       = render 'service_calendars/master_calendar/otf/otf_line_items', tab: tab,
         service_request: service_request, sub_service_request: sub_service_request,
         review: review, portal: portal, admin: admin, merged: merged,

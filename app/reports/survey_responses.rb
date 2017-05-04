@@ -131,7 +131,7 @@ class SurveyResponseReport < ReportingModule
       80
     elsif ['neutral'].include?(content)
       60
-    elsif ['not very likely, dissatisfied'].include?(content)
+    elsif ['not very likely', 'dissatisfied'].include?(content)
       40
     elsif ['not at all likely', 'very dissatisfied'].include?(content)
       20

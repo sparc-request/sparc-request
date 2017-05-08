@@ -48,9 +48,23 @@
   .panel-title
     width: 100%
 
-  .freeze-header-button,
-  .unfreeze-header-button
-    font-size: 10px
+  .freeze-header-button
+    border-color: #add8e6
+    .glyphicon-th
+      font-size: 19px
+      display: block
+    .top-icon
+      color: #add8e6
+      height: 7px
+      overflow: hidden
+    .bottom-icon
+      height: 13px
+      width: 20px
+      overflow: hidden
+    .freeze-header
+      padding: 3px 1px 6px 4px
+    .unfreeze-header
+      padding: 4px 1px 6px 4px
 
   .service-calendar-row.btn-xs,
   .service-calendar-column.btn-xs
@@ -80,18 +94,30 @@
       th.billing-service-header,
       th.template-service-header,
         width: 17%
+      th.checkbox-row-start-width
+        width: 54.61%
+      th.checkbox-row-end-width
+        width: 14.54%
+      th.visit-group-select
+        width: 34.56%
+      th.visit-group-select-portal
+        width: 55.36%
+      th.visit-width
+        width: 6.9%
+      th.unit-cost-width
+        width: 12.34%
       th.status-width
         width: 7%
       th.notes-width
         width: 4.5%
       th.quantity-type-width
-        widith: 6.8%
+        width: 6.8%
       th.xs-col-width
         width: 3.8%
       th.sm-col-width
         width: 6.17%
       th.total-width
-        width: 7%
+        width: 7.27%
       .popover
         color: black
     tbody
@@ -99,44 +125,70 @@
       .organization-header
         background: #CCC
       th.billing-organization-header-start-width-portal
-        width: 53.7%
+        width: 44.9%
       th.billing-organization-header-start-width
-        width: 52.3%
+        width: 51.44%
       th.billing-organization-header-end-width
-        width: 14%
+        width: 14.5%
+      th.visit-width
+        width: 6.9%
+      th.total-one-time-fee-width
+        width: 90.75%
       td.service-name
         width: 17%
+      td.visit-width
+        width: 6.9%
       td.status-width
         width: 7%
       td.notes-width
         width: 4.5%
+      td.unit-type-width
+        width: 6.8%
       td.xs-col-width
         width: 3.8%
       td.sm-col-width
-        min-width: 6.17%
+        width: 6.17%
       td.total-width
-        width: 7%
+        width: 7.27%
+      td.total-costs-width
+        width: 41.77%
       td.max-total-per-patient-width,
       td.maximum-total-direct-cost-per-patient-width,
       td.total-per-patient-per-visit-cost-per-study-width,
-        width: 52.3%
+        width: 51.5%
       td.maximum-total-per-patient-width-template,
       td.maximum-total-direct-cost-per-patient-template,
       td.total-per-patient-per-visit-cost-per-study-width-template,
-        width: 54.7%
+        width: 55.1%
+      td.total-costs-width-template
+        width: 41.7%
       .unit-type.col-sm-6,
       .qty-type
         border-right: 1px solid #DDD
 
     .scrolling-div
       display: block
-      overflow: auto
+      overflow-y: scroll
       height: 100%
-      max-height: 450px !important
+      max-height: 450px 
       tr
         display: table
         width: 100%
         table-layout: fixed
+      .maximum-total-per-patient-width-template,
+      .maximum-total-direct-cost-per-patient-template,
+      .total-per-patient-per-visit-cost-per-study-width-template,
+        width: 54.8%
+      .max-total-per-patient-width,
+      .maximum-total-direct-cost-per-patient-width,
+      .total-per-patient-per-visit-cost-per-study-width,
+        width: 51.2%
+      .total-costs-width
+        width: 41.6%
+      .billing-organization-header-end-width
+        width: 14.7%
+      .total-one-time-fee-width
+        width: 90.8%
 
 .service-calendar-row,
 .service-calendar-column
@@ -186,3 +238,12 @@ th.visit-group-select > div
         outline-offset: -2px
 .tooltip-inner
   width: 500px
+
+.scrolling-div::-webkit-scrollbar 
+  width: 1em
+.scrolling-div::-webkit-scrollbar-track
+  -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.5)
+  border-radius: 10px
+.scrolling-div::-webkit-scrollbar-thumb 
+  border-radius: 10px
+  background-color: #337ab7

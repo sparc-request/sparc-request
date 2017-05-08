@@ -72,7 +72,7 @@ $(document).ready ->
         service_request_id: getSRId()
     return false
 
-  $(document).on 'click', '.scrollable-button', ->
+  $(document).on 'click', '.freeze-header-button', ->
 
     arm = $(this).data('arm-id')
 
@@ -82,12 +82,11 @@ $(document).ready ->
       arm_container = $(this).closest(".arm-calendar-container-#{arm}")
 
     if $(this).hasClass('freeze')
-      console.log('freeze')
       arm_container.find('table').addClass('scrolling-table')
       arm_container.find('thead').addClass('scrolling-thead')
       arm_container.find('tbody').addClass('scrolling-div')
-      $(this).find('.freeze-header-button').hide()
-      $(this).find('.unfreeze-header-button').show()
+      $(this).find('.freeze-header').hide()
+      $(this).find('.unfreeze-header').show()
       $(this).removeClass('freeze')
       $(this).addClass('unfreeze')
     else
@@ -95,8 +94,8 @@ $(document).ready ->
       arm_container.find('table').addClass('non-scrolling-table')
       arm_container.find('thead').removeClass('scrolling-thead')
       arm_container.find('tbody').removeClass('scrolling-div')
-      $(this).find('.unfreeze-header-button').hide()
-      $(this).find('.freeze-header-button').show()
+      $(this).find('.unfreeze-header').hide()
+      $(this).find('.freeze-header').show()
       $(this).removeClass('unfreeze')
       $(this).addClass('freeze')
 

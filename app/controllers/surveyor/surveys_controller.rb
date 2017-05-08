@@ -66,6 +66,7 @@ class Surveyor::SurveysController < ApplicationController
     @response.question_responses.build
 
     respond_to do |format|
+      format.html
       format.js
     end
   end

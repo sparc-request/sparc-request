@@ -18,39 +18,36 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-module Dashboard
-  class GroupedOrganizations
-    include ActionView::Helpers::TagHelper
+require "rails_helper"
 
-    def initialize(organizations)
-      @organizations = organizations
-    end
+RSpec.describe "User filters using \"My Admin Protocols\"", js: :true do
 
-    def collect_grouped_options
-      groups = @organizations.
-        sort { |lhs, rhs| lhs.name <=> rhs.name }.
-        group_by(&:type)
-      options = ["Institution", "Provider", "Program", "Core"].map do |type|
-        next unless groups[type].present?
+  let_there_be_lane
+  fake_login_for_each_test
 
-        [type.pluralize, extract_name_and_id(groups[type])]
-      end
-      options.compact
-    end
+  before :each do
+    organization    = create(:organization)
+    @protocol       = create(:study_without_validations, primary_pi: jug2)
+    @sr             = create(:service_request_without_validations, protocol: @protocol)
+                      create(:sub_service_request, service_request: @sr, organization: organization)
+    admin_org       = create(:organization)
+    @admin_protocol = create(:study_without_validations, primary_pi: jug2)
+    @admin_sr       = create(:service_request_without_validations, protocol: @admin_protocol)
+                      create(:sub_service_request, service_request: @admin_sr, organization: admin_org)
 
-    private
+    create(:service_provider, identity: jug2, organization: admin_org)
 
-    def extract_name_and_id(orgs)
-      org_options = []
-      inactive = content_tag(:strong, I18n.t(:dashboard)[:protocol_filters][:inactive], class: 'text-danger filter-identifier')
-      orgs.each do |org|
-        name = content_tag(
-                :span,
-                org.name + (org.is_available ? "" : inactive),
-                class: 'text')
-        org_options << [name, org.id]
-      end
-      org_options
-    end
+    visit dashboard_protocols_path
+    wait_for_javascript_to_finish
+
+    find("#filterrific_admin_filter_for_admin_#{jug2.id}").click
+    find("#apply-filter-button").click
+    wait_for_javascript_to_finish
+  end
+
+  scenario "and sees their admin protocols" do
+    expect(page).to have_selector(".protocols_index_row", count: 1)
+    expect(page).to have_content(@admin_protocol.short_title)
+    expect(page).to_not have_content(@protocol.short_title)
   end
 end

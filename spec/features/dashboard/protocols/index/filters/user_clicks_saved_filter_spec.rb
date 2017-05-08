@@ -18,39 +18,27 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-module Dashboard
-  class GroupedOrganizations
-    include ActionView::Helpers::TagHelper
+require "rails_helper"
 
-    def initialize(organizations)
-      @organizations = organizations
-    end
+RSpec.describe "User clicks a saved filter", js: :true do
 
-    def collect_grouped_options
-      groups = @organizations.
-        sort { |lhs, rhs| lhs.name <=> rhs.name }.
-        group_by(&:type)
-      options = ["Institution", "Provider", "Program", "Core"].map do |type|
-        next unless groups[type].present?
+  let_there_be_lane
+  fake_login_for_each_test
 
-        [type.pluralize, extract_name_and_id(groups[type])]
-      end
-      options.compact
-    end
+  scenario "and sees the filter applied" do
+    protocol_archived = create(:study_without_validations, primary_pi: jug2, archived: true, short_title: 'ArchivedProtocol')
+    protocol_unarchived = create(:study_without_validations, primary_pi: jug2, archived: false, short_title: 'UnarchivedProtocol')
 
-    private
+    filter = create(:protocol_filter, identity: jug2, show_archived: true)
 
-    def extract_name_and_id(orgs)
-      org_options = []
-      inactive = content_tag(:strong, I18n.t(:dashboard)[:protocol_filters][:inactive], class: 'text-danger filter-identifier')
-      orgs.each do |org|
-        name = content_tag(
-                :span,
-                org.name + (org.is_available ? "" : inactive),
-                class: 'text')
-        org_options << [name, org.id]
-      end
-      org_options
-    end
+    visit dashboard_protocols_path
+    wait_for_javascript_to_finish
+
+    first(".saved_search_link").click
+    wait_for_javascript_to_finish
+
+    expect(page).to have_selector(".protocols_index_row", count: 1)
+    expect(page).to have_content(protocol_archived.short_title)
+    expect(page).to_not have_content(protocol_unarchived.short_title)
   end
 end

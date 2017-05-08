@@ -26,7 +26,7 @@
         .clearfix
           .form-group.no-margin
             .col-sm-11.no-padding
-              = text_field_tag "section-title", section.title, class: 'form-control', placeholder: t(:surveyor)[:surveys][:form][:content][:section][:title][:placeholder]
+              = text_field_tag "section-title", section.title, class: 'form-control', placeholder: t(:surveyor)[:surveys][:form][:content][:section][:title][:placeholder], maxlength: 255
             .col-sm-1.no-padding
               = link_to surveyor_section_path(section), method: :delete, remote: true, class: 'btn btn-danger pull-right delete-section', title: t(:surveyor)[:surveys][:form][:content][:section][:delete], data: { toggle: 'tooltip', animation: 'false' } do
                 %span.glyphicon.glyphicon-trash

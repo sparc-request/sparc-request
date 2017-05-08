@@ -19,12 +19,13 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .col-sm-8.col-sm-offset-2
   .panel.panel-default#survey-panel
-    .panel-heading.text-center
-      %h4.panel-title
-        = @survey.title
-    = form_for @response, url: surveyor_responses_path(@response, review: @review), remote: true do |f|
+    = form_for @response, url: surveyor_responses_path(@response), remote: true do |f|
+      .panel-heading.text-center
+        %h4.panel-title
+          = @survey.title
       .panel-body
-        = render 'surveyor/responses/form/response_content', f: f, survey: @survey, sub_service_request: @sub_service_request
+        = render 'surveyor/responses/form/response_content', f: f, survey: @survey, sub_service_request: nil
       .panel-footer
         .clearfix
-          = f.submit t(:actions)[:submit], class: 'btn btn-primary pull-right'
+          %button.btn.btn-primary.pull-right.disabled
+            = t(:actions)[:submit]

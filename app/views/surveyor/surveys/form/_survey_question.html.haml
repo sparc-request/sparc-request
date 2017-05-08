@@ -22,7 +22,7 @@
   %hr
   .col-lg-8.no-padding
     .form-group
-      = text_field_tag "question-content", question.content, class: 'form-control', placeholder: t(:surveyor)[:surveys][:form][:content][:question][:content][:placeholder]
+      = text_field_tag "question-content", question.content, class: 'form-control', placeholder: t(:surveyor)[:surveys][:form][:content][:question][:content][:placeholder], maxlength: 255
   .col-lg-4.no-padding
     .form-group
       = select_tag "question-question_type", options_for_select(ADDITIONAL_DETAIL_QUESTION_TYPES, question.question_type), class: 'selectpicker select-question-type pull-right', data: { question_id: question.id }

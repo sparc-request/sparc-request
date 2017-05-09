@@ -44,6 +44,12 @@ module ServiceCalendarHelper
     notable_type == "LineItemsVisit" || notable_type == "LineItem"
   end
 
+  def display_unit_type(liv)
+    unit_type = liv.line_item.service.displayed_pricing_map.unit_type
+    unit_type = unit_type.gsub("/", "/ ")
+    unit_type
+  end
+
   def display_service_name_and_code(notable_type, notable_id)
     case notable_type
     when "LineItem"

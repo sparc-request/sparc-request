@@ -24,19 +24,21 @@
     %table
       %tr
         %td
+          %legend= t(:organization_form)[:available_statuses]
           %table
-            = f.fields_for :available_statuses do |as|
+            = f.fields_for :available_statuses, @organization.available_statuses.sort{|x, y| AVAILABLE_STATUSES[x.status] <=> AVAILABLE_STATUSES[y.status]} do |as|
               %tr
                 %th= as.label :status, "#{AvailableStatus::TYPES[as.object.status].gsub('CTRC', 'Nexus')}:"
-                %td= as.check_box "_destroy", {:checked => !as.object.new}, false, true
+                %td= as.check_box "_destroy", {:checked => !as.object.new_record? || DEFAULT_STATUSES.include?(as.object.status), :disabled => ["Draft", "Get a Cost Estimate", "Submitted"].include?(AVAILABLE_STATUSES[as.object.status])}, false, true
                 = as.hidden_field :status, :value => as.object.status
         %td
-          %legend= t(:organization_form)[:default_statuses]
+          %legend= t(:organization_form)[:selected_statuses]
           %table
             %tr
             %tr
             %tr
-              - AVAILABLE_STATUSES.select{|k,v| DEFAULT_STATUSES.include? k}.each do |k, v|
-                %tr
-                  %th= v
+              - @organization.available_statuses.sort{|x, y| AVAILABLE_STATUSES[x.status] <=> AVAILABLE_STATUSES[y.status]}.each do |as|
+                -if !as.id.nil?
+                  %tr
+                    %th= AVAILABLE_STATUSES[as.status]
 

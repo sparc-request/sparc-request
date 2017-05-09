@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class Organization < ActiveRecord::Base
+class Organization < ApplicationRecord
 
   include RemotelyNotifiable
 
@@ -27,7 +27,7 @@ class Organization < ActiveRecord::Base
 
   belongs_to :parent, :class_name => 'Organization'
   has_many :submission_emails, :dependent => :destroy
-  has_many :associated_surveys, as: :surveyable
+  has_many :associated_surveys, as: :surveyable, dependent: :destroy
   has_many :pricing_setups, :dependent => :destroy
   has_one :subsidy_map, :dependent => :destroy
 
@@ -45,22 +45,7 @@ class Organization < ActiveRecord::Base
   has_many :protocols, through: :sub_service_requests
   has_many :available_statuses, :dependent => :destroy
   has_many :org_children, class_name: "Organization", foreign_key: :parent_id
-
-  attr_accessible :name
-  attr_accessible :order
-  attr_accessible :css_class
-  attr_accessible :description
-  attr_accessible :parent_id
-  attr_accessible :abbreviation
-  attr_accessible :ack_language
-  attr_accessible :process_ssrs
-  attr_accessible :is_available
-  attr_accessible :subsidy_map_attributes
-  attr_accessible :pricing_setups_attributes
-  attr_accessible :submission_emails_attributes
-  attr_accessible :available_statuses_attributes
-  attr_accessible :tag_list
-
+  
   accepts_nested_attributes_for :subsidy_map
   accepts_nested_attributes_for :pricing_setups
   accepts_nested_attributes_for :submission_emails
@@ -105,7 +90,7 @@ class Organization < ActiveRecord::Base
       return self.parents.select {|x| x.process_ssrs}.first
     end
   end
-  
+
   #TODO SubServiceRequest.where(organization: self.all_child_organizations).each(:&update_org_tree)
   def update_ssr_org_name
     SubServiceRequest.where( organization: self.all_child_organizations<<self ).each(&:update_org_tree)
@@ -358,6 +343,17 @@ class Organization < ActiveRecord::Base
     end
 
     return all_super_users.flatten.uniq {|x| x.identity_id}
+  end
+
+  def setup_available_statuses
+    position = 1
+    obj_names = AvailableStatus::TYPES.map{ |k,v| k }
+    obj_names.each do |obj_name|
+      available_status = available_statuses.detect { |obj| obj.status == obj_name }
+      available_status ||= available_statuses.build(status: obj_name, new: true)
+      available_status.position = position
+      position += 1
+    end
   end
 
   def get_available_statuses

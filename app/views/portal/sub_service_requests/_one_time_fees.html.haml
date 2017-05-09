@@ -75,7 +75,7 @@
             %td
               = text_field_tag "line_item_#{otf.id}_complete_date_picker", otf.try(:complete_date).try(:strftime, '%D'), :class => "date datepicker temp_datepicker"
               = hidden_field_tag "line_item_#{otf.id}_complete_date", otf.try(:complete_date).try(:strftime, "%F"), :'data-line_item_id' => otf.id, :class => 'fulfillment_data', :name => "line_item_complete_date"
-            %td= link_to(image_tag('portal/cancel.png'), 'javascript:void(0);', :'data-line_item_id' => otf.id, :'data-has_fulfillments' => one_time_fee_fulfillments?(otf.id), :class => 'delete_data')
+            %td= link_to(image_tag('portal/cancel.png'), 'javascript:void(0);', :'data-line_item_id' => otf.id, :class => 'delete_data')
           - unless otf.fulfillments.empty?
             %tr.fulfillment{:class => "li_#{otf.id}"}
               %th

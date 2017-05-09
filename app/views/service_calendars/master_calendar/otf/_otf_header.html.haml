@@ -21,6 +21,14 @@
   %th.col-sm-2.text-center{ colspan: 2, rowspan: 2 }
     = t(:calendars)[:otf][:header_fields][:service]
   %th.col-sm-1.text-center{ rowspan: 2 }
+    - if @tab == 'template'
+      = link_to 'javascript:void(0)',
+        data: { toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}' },
+        title: t(:calendars)[:tooltips][:line_item_notes] do
+        = t(:calendars)[:pppv][:header_fields][:notes]
+    - else
+      = t(:calendars)[:pppv][:header_fields][:notes]
+  %th.col-sm-1.text-center{ rowspan: 2 }
     = t(:calendars)[:otf][:header_fields][:status]
   %th.col-sm-2.text-center{ colspan: 2 }
     = t(:calendars)[:otf][:header_fields][:unit_cost]

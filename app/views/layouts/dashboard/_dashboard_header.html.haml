@@ -31,10 +31,14 @@
 
     .navbar-right
       %ul.nav.navbar-nav.pull-right
-        - if QUEUE_EPIC_EDIT_LDAP_UIDS.include?(user.ldap_uid)
+        - if SITE_ADMINS.include?(user.ldap_uid)
+          %li
+            %button.btn.btn-info.navbar-btn#survey-btn{ type: 'button'}
+              = t(:dashboard)[:navbar][:surveys]
+        - if EPIC_QUEUE_ACCESS.include?(user.ldap_uid)
           %li
             %button.btn.btn-info.navbar-btn#epic-queue-btn{ type: 'button'}
-              = link_to t(:dashboard)[:navbar][:epic_queue], dashboard_epic_queues_path
+              = t(:dashboard)[:navbar][:epic_queue]
         - if @show_messages
           %li
             %button.btn.btn-danger.navbar-btn#messages-btn{ type: 'button'}

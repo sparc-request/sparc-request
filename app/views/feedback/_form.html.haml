@@ -1,0 +1,81 @@
+.modal-dialog.modal-lg
+  .modal-content
+    = form_for @feedback, url: feedback_index_path, method: :post, remote: true do |f|
+      .modal-header
+        %button.close{ type: 'button', data: { dismiss: 'modal' } }
+          %span{ aria: { hidden: 'true' } } &times;
+        %h4.text-center#modal-title
+          = t(:proper)[:right_navigation][:feedback][:header]
+      .modal-body
+        #modal_errors
+        .form-group.row
+          = f.label :name, t(:proper)[:right_navigation][:feedback][:name],
+            class: 'col-lg-2 control-label required'
+          .col-lg-10
+            = f.text_field :name, class: 'form-control'
+        .form-group.row
+          = f.label :email, t(:proper)[:right_navigation][:feedback][:email],
+            class: 'col-lg-2 control-label required'
+          .col-lg-10
+            = f.text_field :email, class: 'form-control'
+        .form-group.row
+          = f.label :date, t(:proper)[:right_navigation][:feedback][:date],
+            class: 'col-lg-2 control-label required'
+          .col-lg-10
+            .input-group.datetimepicker
+              = f.text_field :date, class: 'form-control'
+              %span.input-group-addon
+                %span.glyphicon.glyphicon-calendar
+        .form-group.row
+          = f.label :typeofrequest,
+            'Type of Request',
+            class: 'col-lg-2 control-label required'
+          .col-lg-10
+            = label_tag '', class: 'radio-inline' do
+              = f.radio_button :typeofrequest, '1'
+              Bug
+            = label_tag '', class: 'radio-inline' do
+              = f.radio_button :typeofrequest, '2'
+              Enhancement/Feature Request
+            = label_tag '', class: 'radio-inline' do
+              = f.radio_button :typeofrequest, '3'
+              Training
+            = label_tag '', class: 'radio-inline' do
+              = f.radio_button :typeofrequest, '4'
+              Other
+        .form-group.row
+          = f.label :priority, class: 'col-lg-2 control-label required'
+          .col-lg-10
+            = label_tag '', class: 'radio-inline' do
+              = f.radio_button :priority, '1'
+              Immediate/Work Stoppage
+            = label_tag '', class: 'radio-inline' do
+              = f.radio_button :priority, '2'
+              High
+            = label_tag '', class: 'radio-inline' do
+              = f.radio_button :priority, '3'
+              Normal
+            = label_tag '', class: 'radio-inline' do
+              = f.radio_button :priority, '4'
+              Low
+        .form-group.row
+          = f.label :browser, class: 'col-lg-2 control-label required'
+          .col-lg-10
+            = f.select :browser, options_for_select(BROWSER_VERSIONS.to_a), {prompt: 'Please Choose a Browser'}, class: 'form-control'
+        .form-group.row
+          = f.label :version,
+            t(:proper)[:right_navigation][:feedback][:browser_version],
+            class: 'col-lg-2 control-label required'
+          .col-lg-10
+            = f.text_field :version, class: 'form-control'
+        .form-group.row
+          = f.label :sparc_request_id,
+            'SPARC Request ID',
+            class: 'col-lg-2 control-label required'
+          .col-lg-10
+            = f.text_field :sparc_request_id, class: 'form-control'
+      .modal-footer
+        .center-block
+          %button.btn.btn-default{ type: 'button', data: { dismiss: 'modal' } }
+            = t(:actions)[:close]
+          = f.submit class: 'btn btn-primary feedback-submit'

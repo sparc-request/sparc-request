@@ -19,7 +19,7 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .bottom-nav.col-sm-12.ui-corner-all{ class: css_class }
   .col-sm-3.text-left
-    = link_to t(:proper)[:navigation][:bottom][:back], back, class: 'btn btn-default'
+    = link_to t(:proper)[:navigation][:bottom][:back], sub_service_request_id ? "#{back}?sub_service_request_id=#{sub_service_request_id}" : back, class: 'btn btn-default'
   - if controller.action_name == 'review'
     .col-sm-3.text-center
       = save_as_draft_button(sub_service_request_id)
@@ -35,7 +35,7 @@
   - if SYSTEM_SATISFACTION_SURVEY && action_name == 'review'
     .col-sm-3.text-right
       = link_to t(:proper)[:navigation][:bottom][:submit],
-      confirmation_service_request_path(service_request, sub_service_request_id: sub_service_request_id), 
+      confirmation_service_request_path(service_request, sub_service_request_id: sub_service_request_id),
       class: 'btn btn-default form-submit-button'
   - else
     .col-sm-3.text-right

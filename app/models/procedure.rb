@@ -18,23 +18,13 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class Procedure < ActiveRecord::Base
+class Procedure < ApplicationRecord
   audited
 
   belongs_to :appointment
   belongs_to :visit
   belongs_to :line_item
   belongs_to :service
-  attr_accessible :appointment_id
-  attr_accessible :visit_id
-  attr_accessible :line_item_id
-  attr_accessible :completed
-  attr_accessible :service_id
-  attr_accessible :r_quantity
-  attr_accessible :t_quantity
-  attr_accessible :unit_factor_cost
-  attr_accessible :toasts_generated
-
   after_create :fix_toasts_if_uncompleted
 
   def fix_toasts_if_uncompleted
@@ -59,7 +49,7 @@ class Procedure < ActiveRecord::Base
     self.service ? self.try(:service).try(:organization) : self.try(:line_item).try(:service).try(:organization)
   end
 
-  # This method is primarily for setting the initial r_quantity values on the visit calendar in 
+  # This method is primarily for setting the initial r_quantity values on the visit calendar in
   # clinical work fulfillment.
   def default_r_quantity
     service_quantity = self.r_quantity
@@ -74,7 +64,7 @@ class Procedure < ActiveRecord::Base
     service_quantity
   end
 
-  # This method is primarily for setting the initial t_quantity values on the visit calendar in 
+  # This method is primarily for setting the initial t_quantity values on the visit calendar in
   # clinical work fulfillment.
   def default_t_quantity
     service_quantity = self.t_quantity
@@ -100,7 +90,7 @@ class Procedure < ActiveRecord::Base
         pricing_map = service.effective_pricing_map_for_date
         pricing_setup = organization.effective_pricing_setup_for_date
       end
-				
+
       rate_type = pricing_setup.rate_type(funding_source)
       if pricing_map.unit_factor > 1
         if self.unit_factor_cost
@@ -161,13 +151,13 @@ class Procedure < ActiveRecord::Base
   end
 
   ### audit reporting methods ###
-    
+
   def audit_label audit
     subject = appointment.calendar.subject
     subject_label = subject.respond_to?(:audit_label) ? subject.audit_label(audit) : "Subject #{subject.id}"
     return "Procedure (#{display_service_name}) for #{subject_label} on #{appointment.visit_group.name}"
   end
- 
+
   def audit_excluded_fields
     {'create' => ['toasts_generated', 'visit_id', 'service_id', 'appointment_id', 'line_item_id', 'unit_factor_cost'], 'update' => ['toasts_generated', 'appointment_id', 'visit_id', 'line_item_id']}
   end

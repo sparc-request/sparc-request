@@ -25,14 +25,16 @@
 
   -# SSR Header Row
   %tr.organization-header{ class: locked ? 'text-danger' : '' }
-    %th{ colspan: 15 }
+    %th{ colspan: 17 }
       = display_org_name(Dashboard::ServiceCalendars.display_organization_hierarchy(livs[0]), ssr, locked)
 
   -# Line Items Visits
   - livs.each do |liv|
     %tr.pppv-line-item-row{ class: locked ? 'bg-danger text-danger' : '' }
-      %td.service-name{ colspan: 2 }
+      %td.service-name.service-width{ colspan: 2 }
         = liv.service.display_service_name
+      %td.notes.text-center
+        = display_liv_notes(liv, @portal)
       %td.status.text-center
         = AVAILABLE_STATUSES[ssr.status]
       %td.service-rate.text-center
@@ -45,28 +47,30 @@
 
       - unless portal
         %td.unit-type.text-center
-          = liv.line_item.service.displayed_pricing_map.unit_type
+          = display_unit_type(liv)
 
-      %td.subject-count.text-center
+      %td.subject-count.text-center.subject-count-width
         - if locked
           = liv.subject_count
         - else
           %a.edit-subject-count{ class: locked ? 'locked' : '', href: 'javascript:void(0)', data: { arm_id: arm.id, name: 'subject_count', title: t(:calendars)[:pppv][:editable_fields][:subject_count], value: liv.subject_count, url: dashboard_line_items_visit_path(liv, srid: service_request.id, portal: @portal) } }
-      %td.text-center
+      %td.text-center.select-row-width
         = Dashboard::ServiceCalendars.select_row(liv, sub_service_request, portal, locked)
       - visits      = liv.visits.paginate(page: page.to_i, per_page: 5)
       - totals_hash = liv.try(:per_subject_subtotals, visits)
       - visits.each_with_index do |v, index|
         %td.text-center.visit{ class: "visit-#{index+1}", data: { cents: totals_hash["#{v.id}"] || 0.00 } }
-          = render 'service_calendars/master_calendar/pppv/line_item_visit_input', arm: arm, line_item: liv.line_item, visit: v, tab: tab, portal: portal, service_request: service_request, sub_service_request: sub_service_request, pages: pages, merged: merged, portal: portal, review: review, admin: admin, locked: locked
+          = render 'service_calendars/master_calendar/pppv/line_item_visit_input', arm: arm, line_item: liv.line_item, visit: v, tab: tab, service_request: service_request, sub_service_request: sub_service_request, pages: pages, merged: merged, portal: portal, review: review, admin: admin, locked: locked
       - (5 - visits.size).times do
         %td &nbsp;
 
       - unless portal
         %td.text-center.pppv-per-patient-line-item-total
-          = display_visit_based_direct_cost(liv)
+          %strong
+            = display_visit_based_direct_cost(liv)
         %td.text-center.pppv-per-study-line-item-total
-          = Dashboard::ServiceCalendars.display_visit_based_direct_cost_per_study(liv)
+          %strong
+            = Dashboard::ServiceCalendars.display_visit_based_direct_cost_per_study(liv)
 
 - unless portal
   = render 'service_calendars/master_calendar/pppv/pppv_totals', service_request: service_request, arm: arm, tab: tab, line_items_visits: line_items_visits.flatten

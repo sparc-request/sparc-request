@@ -21,7 +21,11 @@
 require 'rails_helper'
 
 RSpec.describe "User submitting a ServiceRequest", js: true do
-  # TODO excerise login process instead of using fake_login_for_each_test
+  def click_add_service_for(service)
+    page.find("button[data-id='#{service.id}']").click
+    wait_for_javascript_to_finish
+  end
+
   let!(:user) do
     create(:identity,
            last_name: "Doe",
@@ -53,52 +57,66 @@ RSpec.describe "User submitting a ServiceRequest", js: true do
 
     # Visit catalog page
     visit "/"
+    wait_for_javascript_to_finish
 
     # Log in:
     click_link("Login / Sign Up")
+    wait_for_javascript_to_finish
     expect(page).to have_css("a", text: /Outside User Login/)
     find("a", text: /Outside User Login/).click
+    wait_for_javascript_to_finish
     fill_in "Login", with: "johnd"
     fill_in "Password", with: "p4ssword"
     find("input[value='Login']").click
+    wait_for_javascript_to_finish
 
     # Add Core 1 Services
     expect(page).to have_css("span", text: provider_non_split.name)
     find("span", text: provider_non_split.name).click
+    wait_for_javascript_to_finish
     find("span", text: program_split.name).click
+    wait_for_javascript_to_finish
     find("span", text: core1.name).click
+    wait_for_javascript_to_finish
     expect(page).to have_content(otf_service_core_1.name)
     expect(page).to have_content(pppv_service_core_1.name)
-    add_service_buttons = find_all("button", text: /Add/)
-    add_service_buttons[0].click
-    expect(page).to have_css("a", text: /Yes/)
+    click_add_service_for(otf_service_core_1)
+    expect(page).to have_css("a", text: "Yes (Continue with Shopping Cart)")
     find("a", text: /Yes/).click
-    add_service_buttons[1].click
-    expect(page).to have_css("a", text: /Yes/)
-    find("a", text: /Yes/).click
+    within(".shopping-cart") do
+      expect(page).to have_content(otf_service_core_1.abbreviation)
+    end
+    click_add_service_for(pppv_service_core_1)
+    within(".shopping-cart") do
+      expect(page).to have_content(pppv_service_core_1.abbreviation)
+    end
 
     # Add Core 2 Services
     find("span", text: provider_split.name).click
+    wait_for_javascript_to_finish
     find("span", text: program_non_split.name).click
+    wait_for_javascript_to_finish
     find("span", text: core2.name).click
+    wait_for_javascript_to_finish
     expect(page).to have_content(otf_service_core_2.name)
     expect(page).to have_content(pppv_service_core_2.name)
-    add_service_buttons = find_all("button", text: /Add/)
-    add_service_buttons.each(&:click)
-
-    # Should have all four Services in the cart.
+    click_add_service_for(otf_service_core_2)
     within(".shopping-cart") do
-      expect(page).to have_content(otf_service_core_1.abbreviation)
-      expect(page).to have_content(pppv_service_core_1.abbreviation)
       expect(page).to have_content(otf_service_core_2.abbreviation)
+    end
+    click_add_service_for(pppv_service_core_2)
+    within(".shopping-cart") do
       expect(page).to have_content(pppv_service_core_2.abbreviation)
     end
+
     wait_for_javascript_to_finish
     find("a", text: /Continue/).click
+    wait_for_javascript_to_finish
 
     # Step 1
     expect(page).to have_link("New Project")
     click_link("New Project")
+    wait_for_javascript_to_finish
     fill_in("Short Title:", with: "My Protocol")
     fill_in("Project Title:", with: "My Protocol is Very Important - #12345")
     click_button("Select a Funding Status")
@@ -111,9 +129,11 @@ RSpec.describe "User submitting a ServiceRequest", js: true do
     expect(page).to have_css("div.tt-selectable", text: /johnd@musc.edu/)
     first("div.tt-selectable", text: /johnd@musc.edu/).click
     find("input[value='Save']").click
+    wait_for_javascript_to_finish
 
     expect(page).to have_css("a", text: /Save and Continue/)
     find("a", text: /Save and Continue/).click
+    wait_for_javascript_to_finish
 
     # Step 2A
     expect(page).to have_css('#project_start_date')
@@ -126,6 +146,7 @@ RSpec.describe "User submitting a ServiceRequest", js: true do
       first("td.day", text: "1").click
     end
     find("a", text: /Save and Continue/).click
+    wait_for_javascript_to_finish
 
     # Step 2B
     # Set visit day
@@ -134,23 +155,28 @@ RSpec.describe "User submitting a ServiceRequest", js: true do
     fill_in 'visit_group_day', with: 1
     click_button 'Save changes'
     find("a", text: /Save and Continue/).click
+    wait_for_javascript_to_finish
 
     # Step 3
     expect(page).to have_css("a", text: /Save and Continue/)
     find("a", text: /Save and Continue/).click
+    wait_for_javascript_to_finish
 
     # Step 4
     expect(page).to have_css("a", text: /Submit Request/)
     find("a", text: /Submit Request/).click
+    wait_for_javascript_to_finish
 
     # Don't take survey
     # TODO excerise taking survey and submitting it.
     expect(page).to have_css(".modal-dialog a", text: /No/)
     find(".modal-dialog a", text: /No/).click
+    wait_for_javascript_to_finish
 
     # Step 5
     expect(page).to have_css("a", text: /Go to Dashboard/)
     find("a", text: /Go to Dashboard/).click
+    wait_for_javascript_to_finish
 
     # Dashboard
     expect(page).to have_content("My Protocol")

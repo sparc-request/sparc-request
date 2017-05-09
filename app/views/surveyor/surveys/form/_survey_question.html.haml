@@ -1,0 +1,66 @@
+-# Copyright © 2011-2016 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+.question{ class: "question-#{question.id}", data: { question_id: question.id } }
+  %br
+  %hr
+  .col-lg-8.no-padding
+    .form-group
+      = text_field_tag "question-content", question.content, class: 'form-control', placeholder: t(:surveyor)[:surveys][:form][:content][:question][:content][:placeholder], maxlength: 255
+  .col-lg-4.no-padding
+    .form-group
+      = select_tag "question-question_type", options_for_select(ADDITIONAL_DETAIL_QUESTION_TYPES, question.question_type), class: 'selectpicker select-question-type pull-right', data: { question_id: question.id }
+
+  .form-group
+    = text_area_tag "question-description", question.description, class: 'form-control', placeholder: t(:surveyor)[:surveys][:form][:content][:question][:description][:placeholder]
+
+  .form-group
+    = label_tag "question-required", t(:surveyor)[:surveys][:form][:content][:question][:required], class: 'col-sm-1 control-label no-padding-x text-left'
+    .col-sm-1.no-padding
+      = check_box_tag "question-required", question.required, question.required, class: 'form-control'
+    = label_tag "question-is_dependent", t(:surveyor)[:surveys][:form][:content][:question][:dependent][:label], class: 'col-sm-2 control-label no-padding-x text-right'
+    .col-sm-1.no-padding
+      = check_box_tag "question-is_dependent", question.is_dependent, question.is_dependent, class: 'form-control is-dependent'
+    .dependent-dropdown-container{ class: question.is_dependent ? '' : 'hidden' }
+      = label_tag "question-depender_id", t(:surveyor)[:surveys][:form][:content][:question][:dependent][:dropdown][:label], class: 'col-sm-2 control-label no-padding-x'
+      .col-sm-4.no-padding
+        .col-sm-4
+          = render 'surveyor/surveys/form/dependent_dropdown', survey: survey, question: question
+    .col-sm-1.no-padding.pull-right
+      = link_to surveyor_question_path(question), method: :delete, remote: true, class: 'btn btn-danger pull-right delete-question', title: t(:surveyor)[:surveys][:form][:content][:question][:delete], data: { toggle: 'tooltip', animation: 'false' } do 
+        %span.glyphicon.glyphicon-trash
+
+  -# Render disabled example content so the user can see what the question might look like
+  = render 'surveyor/surveys/form/form_partials/text_example', question: question
+  = render 'surveyor/surveys/form/form_partials/textarea_example', question: question
+  = render 'surveyor/surveys/form/form_partials/yes_no_example', question: question
+  = render 'surveyor/surveys/form/form_partials/date_example', question: question
+  = render 'surveyor/surveys/form/form_partials/time_example', question: question
+  = render 'surveyor/surveys/form/form_partials/number_example', question: question
+  = render 'surveyor/surveys/form/form_partials/dropdown_example', question: question
+
+  .question-options.customize-options{ class: display_question_example(question, 'custom'), data: { question_id: question.id } }
+    %hr
+    .col-sm-12
+      %div{ class: "question-#{question.id}-options" }
+        - question.options.each do |option|
+          = render 'surveyor/surveys/form/survey_option', survey: survey, section: section, question: question, option: option
+
+      .form-group
+        = link_to t(:surveyor)[:surveys][:form][:content][:option][:add], surveyor_options_path(question_id: question.id), method: :post, remote: true, class: 'btn btn-sm btn-primary add-option'

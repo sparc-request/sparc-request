@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class Protocol < ActiveRecord::Base
+class Protocol < ApplicationRecord
 
   include RemotelyNotifiable
 
@@ -59,54 +59,6 @@ class Protocol < ActiveRecord::Base
   has_and_belongs_to_many :study_phases
   belongs_to :study_type_question_group
 
-  attr_accessible :affiliations_attributes
-  attr_accessible :archived
-  attr_accessible :arms_attributes
-  attr_accessible :billing_business_manager_static_email
-  attr_accessible :brief_description
-  attr_accessible :end_date
-  attr_accessible :federal_grant_code_id
-  attr_accessible :federal_grant_serial_number
-  attr_accessible :federal_grant_title
-  attr_accessible :federal_non_phs_sponsor
-  attr_accessible :federal_phs_sponsor
-  attr_accessible :funding_rfa
-  attr_accessible :funding_source
-  attr_accessible :funding_source_other
-  attr_accessible :funding_start_date
-  attr_accessible :funding_status
-  attr_accessible :human_subjects_info_attributes
-  attr_accessible :identity_id
-  attr_accessible :impact_areas_attributes
-  attr_accessible :indirect_cost_rate
-  attr_accessible :investigational_products_info_attributes
-  attr_accessible :ip_patents_info_attributes
-  attr_accessible :last_epic_push_status
-  attr_accessible :last_epic_push_time
-  attr_accessible :next_ssr_id
-  attr_accessible :potential_funding_source
-  attr_accessible :potential_funding_source_other
-  attr_accessible :potential_funding_start_date
-  attr_accessible :project_roles_attributes
-  attr_accessible :recruitment_end_date
-  attr_accessible :recruitment_start_date
-  attr_accessible :requester_id
-  attr_accessible :research_types_info_attributes
-  attr_accessible :selected_for_epic
-  attr_accessible :short_title
-  attr_accessible :sponsor_name
-  attr_accessible :start_date
-  attr_accessible :study_phase_ids
-  attr_accessible :study_type_answers_attributes
-  attr_accessible :study_type_question_group_id
-  attr_accessible :study_types_attributes
-  attr_accessible :title
-  attr_accessible :type
-  attr_accessible :udak_project_number
-  attr_accessible :vertebrate_animals_info_attributes
-  attr_accessible :research_master_id
-  attr_accessible :has_human_subject_info
-
   validates :research_master_id, numericality: { only_integer: true }, allow_blank: true
 
   validates :research_master_id, presence: true, if: "RESEARCH_MASTER_ENABLED && has_human_subject_info?"
@@ -141,7 +93,7 @@ class Protocol < ActiveRecord::Base
   end
 
   def has_human_subject_info?
-    self.has_human_subject_info == true
+    self.research_types_info.try(:human_subjects) || false
   end
 
   validate :existing_rm_id,

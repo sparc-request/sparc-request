@@ -56,7 +56,7 @@ def deleted_and_created_line_item_audit_trail(service_request, service3, identit
 end
 
 def setup_authorized_user_audit_report
-  audit_report = service_request.audit_report(identity, Time.now.yesterday - 4.hours, Time.now.utc)
+  audit_report = @service_request.audit_report(identity, Time.now.yesterday - 4.hours, Time.now.utc)
   audit_report = audit_report[:line_items].values.flatten
   filtered_audit_report = { :line_items => [] }
   audit_report.group_by{ |audit| audit[:audited_changes]['service_id'] }.each do |service_id, audits|

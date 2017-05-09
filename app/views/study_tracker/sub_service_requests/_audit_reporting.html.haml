@@ -48,4 +48,5 @@
                 = text_field_tag :cwf_audit_end_date_input, nil
                 = hidden_field_tag :cwf_audit_end_date
         
-      = submit_tag t(:study_tracker)[:audits][:get_report], :id => "audit_submit_button"
+      = submit_tag t(:study_tracker)[:audits][:get_report],
+        :id => "audit_submit_button", data: { disable_with: false }

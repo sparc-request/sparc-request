@@ -44,7 +44,6 @@
 //= require nprogress
 //= require nprogress-ajax
 //= require json2
-//= require inflection
 //= require underscore-min
 //= require assert
 //= require form_manager
@@ -59,5 +58,6 @@
 //= require associated_users_form
 //= require study_schedule_tabs
 //= require subsidy_form
+//= require dashboard/navbar
 
 window.Sparc = {};

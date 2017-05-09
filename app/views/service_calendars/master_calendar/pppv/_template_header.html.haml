@@ -18,45 +18,50 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 %tr
-  %th.text-center{ class: portal ? 'col-sm-2' : 'service-header', colspan: 2, rowspan: 2 }
+  %th.text-center.service-header{colspan: 2, rowspan: 2 }
     = t(:calendars)[:pppv][:header_fields][:service]
-  %th.col-sm-1.text-center{ rowspan: 2 }
+  %th.text-center{ rowspan: 2 }
+    = link_to 'javascript:void(0)',
+      data: { toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}' },
+      title: t(:calendars)[:tooltips][:line_item_notes] do
+      = t(:calendars)[:pppv][:header_fields][:notes]
+  %th.text-center{ rowspan: 2 }
     = link_to 'javascript:void(0)',
       data: { toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}' },
       title: t(:calendars)[:tooltips][:pppv_status] do
       = t(:calendars)[:pppv][:header_fields][:status]
-  %th.col-sm-2.text-center{ colspan: 2 }
+  %th.text-center{ colspan: 2 }
     = t(:calendars)[:pppv][:header_fields][:unit_cost]
 
   - unless portal
-    %th.col-sm-1.text-center{ rowspan: 2 }
+    %th.text-center{ rowspan: 2 }
       = link_to 'javascript:void(0)',
         data: { toggle: 'tooltip', placement: 'bottom', delay: '{"show":"500"}' },
         title: t(:calendars)[:tooltips][:quantity_type] do
         = t(:calendars)[:pppv][:header_fields][:quantity_type]
 
-  %th.text-center{ class: portal ? 'col-sm-1' : 'subject-count-header', rowspan: 2 }
+  %th.text-center.subject-count-header{ rowspan: 2 }
     = link_to 'javascript:void(0)',
       data: { toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}' },
       title: t(:calendars)[:tooltips][:subject_count] do
       = t(:calendars)[:pppv][:header_fields][:subject_count]
   %th.select-row-header{ rowspan: 2 }
-  %th.visit-group-select.col-sm-5.text-center{ colspan: 5 }
+  %th.visit-group-select.text-center{ colspan: 5 }
     = render 'service_calendars/master_calendar/pppv/visit_group_page_select', service_request: service_request, sub_service_request: sub_service_request, arm: arm, tab: tab, page: page, pages: pages, review: review, portal: portal, admin: admin
 
   - unless portal
-    %th.col-sm-1.text-center{ rowspan: 2 }
+    %th.text-center{ rowspan: 2 }
       = t(:calendars)[:pppv][:header_fields][:total_per_patient]
-    %th.col-sm-1.text-center{ rowspan: 2 }
+    %th.text-center{ rowspan: 2 }
       = t(:calendars)[:pppv][:header_fields][:total_per_study]
 
 %tr
-  %th.col-sm-1.text-center
+  %th.text-center
     = link_to 'javascript:void(0)',
       data: { toggle: 'tooltip', placement: 'bottom', delay: '{"show":"500"}' },
       title: t(:calendars)[:tooltips][:service_rate] do
       = raw(t(:calendars)[:pppv][:header_fields][:service_rate])
-  %th.col-sm-1.text-center
+  %th.text-center
     = link_to 'javascript:void(0)',
       data: { toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}' },
       title: t(:calendars)[:tooltips][:your_cost] do
@@ -64,8 +69,8 @@
   = render 'service_calendars/master_calendar/pppv/visit_groups', service_request: service_request, arm: arm, tab: tab, visit_groups: visit_groups, portal: portal
 
 %tr
-  %th.col-sm-7{ colspan: portal ? 7 : 8 }
+  %th{ colspan: portal ? 8 : 9 }
   = render 'service_calendars/master_calendar/pppv/check_visit_columns', service_request: service_request, sub_service_request: sub_service_request, tab: tab, portal: portal, visit_groups: visit_groups, page: page
 
   -unless portal
-    %th.col-sm-2{ colspan: 2 }
+    %th{ colspan: 2 }

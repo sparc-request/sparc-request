@@ -37,7 +37,7 @@ $(document).ready ->
     protocol_id = $(this).data('protocol-id')
     $.ajax
       type: 'get'
-      url: "/protocols/#{protocol_id}/view_details"
+      url: "/protocols/#{protocol_id}.js"
       data:
         service_request_id: $("input[name='service_request_id']").val()
     return false

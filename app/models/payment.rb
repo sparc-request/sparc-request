@@ -18,21 +18,9 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class Payment < ActiveRecord::Base
+class Payment < ApplicationRecord
   audited
 
-  attr_accessible :sub_service_request_id
-  attr_accessible :date_submitted
-  attr_accessible :formatted_date_submitted
-  attr_accessible :amount_invoiced
-  attr_accessible :amount_received
-  attr_accessible :date_received
-  attr_accessible :formatted_date_received
-  attr_accessible :payment_method
-  attr_accessible :details
-  attr_accessible :uploads_attributes
-  attr_accessible :percent_subsidy
-  
   validates :date_submitted, presence: true
   validates :amount_invoiced, numericality: true
   validates :amount_received, numericality: true, allow_nil: true
@@ -60,13 +48,13 @@ class Payment < ActiveRecord::Base
   def formatted_date_submitted=(d)
     self.date_submitted= parse_date(d)
   end
-  
+
   ### audit reporting methods ###
-  
+
   def audit_excluded_fields
     {'create' => ['sub_service_request_id']}
   end
-  
+
   def audit_label audit
     if audit.action == 'create'
       return "New Payment"
@@ -85,7 +73,7 @@ class Payment < ActiveRecord::Base
 
   def parse_date(str)
     begin
-      Date.strptime(str.to_s.strip, '%m/%d/%Y')  
+      Date.strptime(str.to_s.strip, '%m/%d/%Y')
     rescue ArgumentError => e
       nil
     end

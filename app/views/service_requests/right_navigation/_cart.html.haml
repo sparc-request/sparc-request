@@ -36,6 +36,5 @@
     .list-group.ssr-tab.complete-ssrs.hidden
       = render 'service_requests/right_navigation/cart_sub_service_requests', service_request: service_request, sub_service_requests: sub_service_requests[:complete], allow_delete: allow_delete, editing_ssr: false, tab: 'complete'
 
-= render 'service_requests/modals/has_fulfillments_modal'
 = render 'service_requests/modals/remove_request_modal'
 = render 'service_requests/modals/line_item_required_modal'

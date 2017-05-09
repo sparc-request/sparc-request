@@ -24,15 +24,15 @@ class CatalogManager::CoresController < CatalogManager::OrganizationsController
     @organization = Core.new({name: params[:name], abbreviation: params[:name], parent_id: @parent_org.id})
     super
   end
-  
+
   def show
     @path = catalog_manager_core_path
     super
   end
-  
+
   def update
-    @attributes = params[:core]
+    @attributes = organization_params(:core)
     super
   end
-  
+
 end

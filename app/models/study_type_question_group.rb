@@ -18,9 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-class StudyTypeQuestionGroup < ActiveRecord::Base
-  attr_accessible :active, :group_id
-  attr_accessible :version
+class StudyTypeQuestionGroup < ApplicationRecord
   has_many :study_type_questions
   scope :inactive, -> {where(active:false)}
   scope :active, -> {where(active:true)}

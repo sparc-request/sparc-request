@@ -97,29 +97,33 @@ RSpec.describe 'dashboard/service_requests/protocol_service_request_show', type:
         status: 'draft')
     end
 
-    context 'ServiceRequest with SubServiceRequest' do
-      let!(:ssr) do
-        create(:sub_service_request,
-          ssr_id: '1234',
-          service_request: service_request,
-          status: 'draft',
-          organization_id: organization.id)
+    context 'user can edit ServiceRequest' do
+      it 'should render' do
+        jug2.catalog_overlord = false
+        
+        render_protocol_service_request_show(service_request, true)
+
+        expect(response).to have_selector('button:not(.disabled)', text: 'Modify Request')
       end
+    end
 
-      context 'user can edit ServiceRequest' do
-        it 'should render' do
-          render_protocol_service_request_show(service_request, true)
+    context 'user cannot edit ServiceRequest' do
+      it 'should not render' do
+        jug2.catalog_overlord = false
 
-          expect(response).to have_selector('button', text: 'Modify Request')
-        end
+        render_protocol_service_request_show service_request
+
+        expect(response).not_to have_selector('button', text: 'Modify Request')
       end
+    end
 
-      context 'user cannot edit ServiceRequest' do
-        it 'should not render' do
-          render_protocol_service_request_show service_request
+    context 'user is a Catalog Overlord' do
+      it 'should render' do
+        jug2.catalog_overlord = true
 
-          expect(response).not_to have_selector('button', text: 'Modify Request')
-        end
+        render_protocol_service_request_show(service_request, true)
+
+        expect(response).to have_selector('button:not(.disabled)', text: 'Modify Request')
       end
     end
   end

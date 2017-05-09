@@ -19,8 +19,8 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class SearchController < ApplicationController
-  before_filter :initialize_service_request
-  before_filter :authorize_identity
+  before_action :initialize_service_request
+  before_action :authorize_identity
 
   def services
     term              = params[:term].strip

@@ -19,29 +19,28 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 $(document).ready ->
-
-  $(document).on "click", "#reporting_return_to_list", (event) ->
+  $(document).on "click", "#reporting-return-to-list", (event) ->
     event.preventDefault()
-    $('#defined_reports_step_2').hide()
-    $("#report_selection").show()
+    $('#report-container').hide()
+    $('#report-selection').show()
 
-  $(document).on "change", ".reporting_field", ->
+  $(document).on "change", ".reporting-field", ->
     parent_id = "#" + $(this).attr('id')
     window.check_deps(parent_id)
     if $(this).val() != ""
-      $(".check_dep_class.needs_update").each ->
-        $(this).removeClass('needs_update')
-        $(this).prop('disabled', false)
+      $(".check-dep.needs-update").each ->
+        $(this).removeClass('needs-update')
+        $(this).siblings('.bootstrap-select').children('button').prop('disabled', false)
         cattype = $(parent_id).val()
         optionswitch(cattype, "#" + $(this).attr('id'))
 
-  $(document).on "submit", "#reporting_form", (event) ->
-    empty = $('.required_field').filter ->
+  $(document).on "submit", "#reporting-form", (event) ->
+    empty = $('.required').filter ->
       this.value == ""
 
     if empty.length
       event.preventDefault()
-      alert "Please fill out all required fields"
+      alert I18n['reporting']['actions']['errors']
 
 optionswitch = (myfilter, res) ->
   #Populate the optionstore if the first time through
@@ -60,6 +59,7 @@ optionswitch = (myfilter, res) ->
   #put the filtered stuff back
   populateoption = rewriteoption(myfilter, res)
   $(res).html(populateoption)
+  $(res).selectpicker('refresh')
 
 rewriteoption = (myfilter, res) ->
   #rewrite only the filtered stuff back into the option
@@ -91,12 +91,13 @@ window.create_single_date_pickers = ->
   $(".datetimepicker").datetimepicker(format: 'YYYY-MM-DD', allowInputToggle: true)
 
 window.check_deps = (parent_id) ->
-  $(".check_dep_class").each ->
+  $("select.check-dep").each ->
     dep = $(this).data("dependency")
+
     if dep.match(parent_id)
-      $(this).addClass("needs_update")
+      $(this).addClass("needs-update")
       $(this).val("")
 
     if $(dep).val() == ""
-      $(this).prop('disabled', true)
+      $(this).siblings('.bootstrap-select').children('button').prop('disabled', true)
 

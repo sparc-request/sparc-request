@@ -43,33 +43,10 @@ class ProtocolsReport < ReportingModule
     attrs = {}
 
     attrs["Protocol ID"] = "service_request.try(:protocol).try(:id)"
+    attrs["Research Master ID"] = "service_request.try(:protocol).try(:research_master_id)"
     attrs["Protocol Short Title"] = "service_request.try(:protocol).try(:short_title)"
     attrs["Protocol Title"] = "service_request.try(:protocol).try(:title)"
-
-    if params[:institution_id]
-      attrs[Institution] = [params[:institution_id], :abbreviation]
-    else
-      attrs["Institution"] = "org_tree.select{|org| org.type == 'Institution'}.first.try(:abbreviation)"
-    end
-
-    if params[:provider_id]
-      attrs[Provider] = [params[:provider_id], :abbreviation]
-    else
-      attrs["Provider"] = "org_tree.select{|org| org.type == 'Provider'}.first.try(:abbreviation)"
-    end
-
-    if params[:program_id]
-      attrs[Program] = [params[:program_id], :abbreviation]
-    else
-      attrs["Program"] = "org_tree.select{|org| org.type == 'Program'}.first.try(:abbreviation)"
-    end
-
-    if params[:core_id]
-      attrs[Core] = [params[:core_id], :abbreviation]
-    else
-      attrs["Core"] = "org_tree.select{|org| org.type == 'Core'}.first.try(:abbreviation)"
-    end
-
+    attrs["Number of Requests"] = "service_request.try(:protocol).try(:sub_service_requests).try(:count)"
     attrs["Funding Source"] = "service_request.try(:protocol).try(:funding_source)"
     attrs["Potential Funding Source"] = "service_request.try(:protocol).try(:potential_funding_source)"
     attrs["Sponsor Name"] = "service_request.try(:protocol).try(:sponsor_name)"
@@ -161,6 +138,7 @@ class ProtocolsReport < ReportingModule
   end
 
   def group
+    "protocol_id"
   end
 
   def order

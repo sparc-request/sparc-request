@@ -25,10 +25,10 @@
 
   -# SSR Header Row
   %tr.organization-header{ class: locked ? 'text-danger' : '' }
-    %th.col-sm-6{ colspan: portal ? 6 : 7 }
+    %th{ colspan: portal ? 7 : 8 }
       = display_org_name(Dashboard::ServiceCalendars.display_organization_hierarchy(livs[0]), ssr, locked)
     - visit_groups.each do
-      %th.col-sm-1.billing-type-list.text-center
+      %th.billing-type-list.text-center
         .row
           .col-xs-4.billing-type.no-padding{ data: { toggle: 'tooltip', animation: 'false', title: t(:proper)[:service_calendar][:tooltips][:r] } }
             = t(:calendars)[:pppv][:header_fields][:research]
@@ -37,16 +37,18 @@
           .col-xs-4.billing-type.no-padding{ data: { toggle: 'tooltip', animation: 'false', title: t(:proper)[:service_calendar][:tooltips][:effort] } }
             = t(:calendars)[:pppv][:header_fields][:percent]
     - (5 - visit_groups.count).times do
-      %th.col-sm-1 &nbsp;
+      %th &nbsp;
 
     - unless portal
-      %th.col-sm-1{ colspan: 2 }
+      %th{ colspan: 2 }
 
   -# Line Item Visits
   - livs.each do |liv|
     %tr.pppv-line-item-row{ class: locked ? 'bg-danger text-danger' : '' }
       %td.service-name{ colspan: 2 }
         = liv.service.display_service_name
+      %td.notes.text-center
+        = display_liv_notes(liv, @portal)
       %td.status.text-center
         = AVAILABLE_STATUSES[ssr.status]
       %td.service-rate.text-center
@@ -59,7 +61,7 @@
 
       - unless portal
         %td.unit-type.text-center
-          = liv.line_item.service.displayed_pricing_map.unit_type
+          = display_unit_type(liv)
 
       %td.subject-count.text-center
         - if locked
@@ -76,9 +78,11 @@
 
       - unless portal
         %td.text-center.pppv-per-patient-line-item-total
-          = display_visit_based_direct_cost(liv)
+          %strong
+            = display_visit_based_direct_cost(liv)
         %td.text-center.pppv-per-study-line-item-total
-          = Dashboard::ServiceCalendars.display_visit_based_direct_cost_per_study(liv)
+          %strong
+            = Dashboard::ServiceCalendars.display_visit_based_direct_cost_per_study(liv)
 
 - unless portal
   = render 'service_calendars/master_calendar/pppv/pppv_totals', service_request: service_request, arm: arm, tab: tab, line_items_visits: line_items_visits.flatten

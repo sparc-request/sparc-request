@@ -31,7 +31,7 @@
           = t(:proper)[:catalog][:new_request][:warning]
       .modal-footer
         .center-block
-          %a.btn.btn-default.yes-button{ data: { dismiss: 'modal' } }
-            = t(:constants)[:yes_select]
-          %a.btn.btn-default{ href: DASHBOARD_LINK }
-            = t(:constants)[:no_select]
+          %a.btn.btn-success.same-size-button.pull-left.yes-button{ data: { dismiss: 'modal' } }
+            = raw(t(:proper)[:catalog][:new_request][:yes_button])
+          %a.btn.btn-info.same-size-button.pull-right{ href: DASHBOARD_LINK }
+            = raw(t(:proper)[:catalog][:new_request][:no_button])

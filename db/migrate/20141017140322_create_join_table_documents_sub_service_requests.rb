@@ -22,14 +22,11 @@ class CreateJoinTableDocumentsSubServiceRequests < ActiveRecord::Migration
 
   class SubServiceRequest < ActiveRecord::Base
     has_and_belongs_to_many :documents
-    attr_accessible :documents
   end
 
   class Document < ActiveRecord::Base
     has_and_belongs_to_many :sub_service_requests
     belongs_to :service_request
-    attr_accessible :sub_service_requests
-    attr_accessible :service_request_id
   end
 
   class ServiceRequest < ActiveRecord::Base

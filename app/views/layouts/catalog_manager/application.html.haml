@@ -21,20 +21,32 @@
 !!!
 %html
   %head
-    %title= t(:cm_shared)[:title]
+    %title
+      = t(:catalog_manager)[:header]
     = stylesheet_link_tag    "catalog_manager/application"
     = javascript_include_tag "catalog_manager/application"
+    /[if IE]
+      = stylesheet_link_tag 'ie'
+    /[if gt IE 7]
+      = stylesheet_link_tag 'ie8_plus'
     /[if lt IE 8]
       = javascript_include_tag "ie7_warning"
     = csrf_meta_tags
     :javascript
       window.I18n = #{current_translations.to_json.html_safe};
-  %body
-    #ie7_warning{:style => 'display: none'}
-      %p= t('ie_warning.text1')
-      %br
-      %p= t('ie_warning.text2')
-    #welcome_msg.catalog_manager_welcome{:style => 'float:right;color:#000000 !important;'}= show_welcome_message(@user)
-    #flash.ui-state-highlight.ui-corner-all{:style => 'display:none; position:fixed'}
-    = yield
-    = render :partial => 'shared/piwik_tracking' if Rails.env == 'production'
+
+  %body#body
+    #container
+      #header
+        = render 'layouts/header_logos', location: "proper"
+        %input#current_user_id{type: 'hidden', value: @user.try(:id)}
+      = render 'layouts/header', user: @user
+      .flash
+        = render "shared/flash"
+      #inner-content.row
+        = yield
+  %footer
+    = render 'layouts/footer'
+    = render 'shared/piwik_tracking' if Rails.env == 'production'
+    = render 'shared/ie7_modal'
+    = render 'shared/modal'

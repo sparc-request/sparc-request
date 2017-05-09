@@ -18,10 +18,85 @@
 /* INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR*/
 /* TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.*/
 
-/*
- * This is a manifest file that'll automatically include all the stylesheets available in this directory
- * and any sub-directories. You're free to add application-wide styles to this file and they'll appear at
- * the top of the compiled file, but it's generally better to create a new file per style scope.
- *= require_self
- *= require_tree . 
-*/
+#container
+  #header
+    height: 102px
+    width: 100%
+    display: table
+    margin-bottom: 10px
+
+    div
+      text-align: center
+
+    .org-logo
+      margin-left: 50px
+      margin-top: 15px
+
+    .sparc-request-header
+      margin-top: 15px
+
+    .institution-logo
+      margin-top: 15px
+      margin-left: 25px
+
+  .navbar
+    @media(max-width: 768px)
+      .navbar-nav
+        width: 100%
+        margin-left: 0px
+        margin-right: 0px
+
+      .navbar-right
+        padding: 10px 15px
+        margin: 0
+
+    @media(min-width: 768px)
+      .welcome-nav
+        margin: 9px 0
+
+        a
+          margin-left: 10px
+
+    .navbar-nav li
+      a:hover,
+      a:focus
+        background-color: #e7e7e7
+        color: #555
+      .highlighted
+        background: #E7E7E7
+
+  #inner-content
+    min-height: 625px
+    width: 1300px
+    margin-left: auto
+    margin-right: auto
+    padding-left: 15px
+    padding-right: 15px
+    @media (min-width: 1300px)
+      width: 1300px
+
+    .steps, .step-header, .body-container
+      margin-bottom: 20px
+
+.footer
+  margin-left: auto
+  margin-right: auto
+  height: 100px
+  width: 100%
+  margin-top: 40px
+  padding-top: 40px
+  padding-bottom: 40px
+  border-top: 1px solid #eee
+
+  ul
+    list-style-type: none
+    padding: 0
+
+    li
+      display: inline
+
+    li + li
+      margin-left: 10px
+
+label.required:after
+  content: "*"

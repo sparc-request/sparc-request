@@ -19,9 +19,9 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 #search_box
-  %span.search= t(:cm_index)[:search]
+  %span.search= t(:catalog_manager)[:index][:search]
   = text_field_tag 'search'
-  = submit_tag t(:cm_index)[:submit],
+  = submit_tag t(:catalog_manager)[:index][:submit],
     :class => 'custom_button',
     :id => 'search_button',
     data: { disable_with: false }
@@ -37,68 +37,68 @@
     = link_to "Show Available", 'javascript:void(0)', :class => "btn unavailable_button", data: { 'show-unavailable' => 'true' }
   - else
     = link_to "Show All", 'javascript:void(0)', :class => "btn unavailable_button", data: { 'show-unavailable' => 'false' }
-#catalog
-  %ul
-    - can_create_institution = @user.is_overlord?
-    - if can_create_institution
-      %li{class: "new"}
-        = link_to t(:cm_index)[:institution], '#', :class => "institution"
-    - @institutions.where(is_available: @show_unavailable).each do |institution|
-      %li{:id => 'INSTITUTION' + institution.id.to_s, :class => entity_visibility_class(institution)}
-        - can_access_institution = @user.can_edit_entity? institution
-        = node institution, can_access_institution, 'root'
-        %ul
-          - if can_access_institution
-            %li{class: "new"}
-              = link_to t(:cm_index)[:provider], '#', :class => "provider"
-          - institution.providers.where(is_available: @show_unavailable).order("`order`").each do |provider|
-            %li{:id => 'PROVIDER' + provider.id.to_s, :class => entity_visibility_class(provider)}
-              - can_access_provider = can_access_institution || (@user.can_edit_entity? provider)
-              = node provider, can_access_provider
-              %ul
-                - if can_access_provider
-                  %li{class: "new"}
-                    = link_to t(:cm_index)[:program], '#', :class => "program"
-                - provider.programs.where(is_available: @show_unavailable).order("`order`").each do |program|
-                  %li{:id => 'PROGRAM' + program.id.to_s, :class => entity_visibility_class(program)}
-                    - can_access_program = can_access_provider || (@user.can_edit_entity? program)
-                    = node program, can_access_program
-                    - if program.cores.empty?
-                      %ul
-                        - if can_access_program
-                          %li{class: "new"}
-                            = link_to t(:cm_index)[:core], '#', :class => "core"
-                          %li{class: "new"}
-                            = link_to t(:cm_index)[:service], '#'
-                        - program.services.where(is_available: @show_unavailable).order("`order`, `name`").each do |service|
-                          %li{:id => 'SERVICE' + service.id.to_s, :class => entity_visibility_class(service)}= node service
-                    - else
-                      %ul
-                        - if can_access_program
-                          %li{class: "new"}
-                            = link_to t(:cm_index)[:core], '#', :class => "core"
-                          %li{class: "new"}
-                            = link_to t(:cm_index)[:service], '#'
-                        - program.services.where(is_available: @show_unavailable).order("`order`, `name`").each do |service|
-                          %li{:id => 'SERVICE' + service.id.to_s, :class => entity_visibility_class(service)}= node service                            
-                        - program.cores.where(is_available: @show_unavailable).order("`order`").each do |core|
-                          %li{:id => 'CORE' + core.id.to_s, :class => entity_visibility_class(core)}
-                            - can_access_core = can_access_program || (@user.can_edit_entity? core)
-                            = node core, can_access_core
-                            %ul
-                              - if can_access_core
-                                %li{class: "new"}
-                                  = link_to t(:cm_index)[:service], '#'
-                              - unless core.services.empty?
-                                - core.services.where(is_available: @show_unavailable).order("`order`, `name`").each do |service|
-                                  %li{:id => 'SERVICE' + service.id.to_s, :class => entity_visibility_class(service)}= node service
-                                    
 
+#catalog
+  .panel-group#institution-accordion
+    .panel-heading
+      %h5.panel-title.text-left
+        = link_to create_new_text(:institution), 'javascript:void(0)', class: 'org-form-label', data: { parent: '#institution-accordion' }
+    - @institutions.where(is_available: @show_unavailable).each do |institution|
+      .panel-heading
+        %h5.panel-title.text-left
+          = link_to accordion_link_text(institution), 'javascript:void(0)', class: 'org-form-label', data: { id: institution.id, toggle: 'collapse', target: ".institution-#{institution.id}", parent: '#institution-accordion' }
+      .panel-collapse.collapse{ class: "institution-#{institution.id}" }
+        .panel-body
+          .panel-heading
+            %h5.panel-title.text-left
+              = link_to create_new_text(:provider), 'javascript:void(0)', class: 'org-form-label', data: { parent: ".institution-#{institution.id}" }
+          - institution.providers.where(is_available: @show_unavailable).order("`order`").each do |provider|
+            .panel-heading
+              %h5.panel-title.text-left
+                = link_to accordion_link_text(provider), 'javascript:void(0)', class: 'org-form-label', data: { id: provider.id, toggle: 'collapse', target: ".provider-#{provider.id}", parent: "#institution-#{institution.id}" }
+            .panel-collapse.collapse{ class: "provider-#{provider.id}" }
+              .panel-body
+                .panel-heading
+                  %h5.panel-title.text-left
+                    = link_to create_new_text(:program), 'javascript:void(0)', class: 'org-form-label', data: { parent: ".provider-#{provider.id}" }
+                - provider.programs.where(is_available: @show_unavailable).order("`order`").each do |program|
+                  .panel-heading
+                    %h5.panel-title.text-left
+                      = link_to accordion_link_text(program), 'javascript:void(0)', class: 'org-form-label', data: { id: program.id, toggle: 'collapse', target: ".program-#{program.id}", parent: "provider-#{provider.id}" }
+                  .panel-collapse.collapse{ class: "program-#{program.id}" }
+                    .panel-body
+                      .panel-heading
+                        %h5.panel-title.text-left
+                          = link_to create_new_text(:core), 'javascript:void(0)', class: 'org-form-label', data: { parent: ".program-#{program.id}" }
+                      .panel-heading
+                        %h5.panel-title.text-left
+                          = link_to create_new_text(:service), 'javascript:void(0)', class: 'org-form-label', data: { parent: ".program-#{program.id}" }
+                      - program.cores.where(is_available: @show_unavailable).order("`order`").each do |core|
+                        .panel-heading
+                          %h5.panel-title.text-left
+                            = link_to accordion_link_text(core), 'javascript:void(0)', class: 'org-form-label', data: { id: core.id, toggle: 'collapse', target: ".core-#{core.id}", parent: "program-#{program.id}" }
+                        .panel-collapse.collapse{ class: "core-#{core.id}" }
+                          .panel-body
+                            .panel-heading
+                              %h5.panel-title.text-left
+                                = link_to create_new_text(:service), 'javascript:void(0)', class: 'org-form-label', data: { parent: ".core-#{core.id}" }
+                            - core.services.where(is_available: @show_unavailable).order("`order`, `name`").each do |service|
+                              .panel-heading
+                                %h5.panel-title.text-left
+                                  = link_to accordion_link_text(service), 'javascript:void(0)', class: 'org-form-label', data: { id: service.id, parent: "core-#{core.id}" }
+                      - program.services.where(is_available: @show_unavailable).order("`order`, `name`").each do |service|
+                        .panel-heading
+                          %h5.panel-title.text-left
+                            = link_to accordion_link_text(service), 'javascript:void(0)', class: 'org-form-label', data: { id: service.id, parent: "program-#{program.id}" }
+
+
+
+                                    
 #details
 
 #processing_request.ui-corner-all{:style => "border: 1px solid black; padding: 3px; width: 200px; margin: 30px auto; text-align: center"}
   %br
-  = t(:cm_index)[:processing]
+  = t(:catalog_manager)[:index][:processing]
   %br
   = image_tag 'spinner.gif'
 
@@ -113,9 +113,9 @@
   %br
   %center
     %button.dont_fix_pricing_maps_button.ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-text-only{:type => "button", :role => "button"}
-      %span.ui-button-text= t(:cm_index)[:pricing_map1]
+      %span.ui-button-text= t(:catalog_manager)[:index][:pricing_map1]
     %button.fix_pricing_maps_button.ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-text-only{:type => "button", :role => "button"}
-      %span.ui-button-text= t(:cm_index)[:pricing_map2]
+      %span.ui-button-text= t(:catalog_manager)[:index][:pricing_map2]
     %img.pricing_map_fix_spinner{:src => '/assets/catalog_manager/spinner_small.gif'}  
   
     

@@ -19,6 +19,27 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 module CatalogManager::CatalogHelper
+
+  def accordion_link_text(org)
+    if org.is_a?(Service)
+      content_tag(:span, '', class: 'catalog-glyphicon glyphicon glyphicon-file') + content_tag(:span, org.name, class: "text-service")
+    else
+      content_tag(:span, '', class: 'catalog-glyphicon glyphicon glyphicon-folder-close') + content_tag(:span, org.name, class: "text-#{org.type.downcase}")
+    end
+  end
+
+  def create_new_text(org_key)
+    content_tag(:span, '', class: 'catalog-glyphicon glyphicon glyphicon-plus') + content_tag(:span, t(:catalog_manager)[:index][org_key], class: "text-#{org_key}")
+  end
+
+
+
+
+
+
+
+
+
   def node object, can_access=true, id=nil
     link_to display_name(object), '#', :id => id, :cid => object.id, :object_type => object.class.to_s.downcase, :class => can_access ? "#{object.class.to_s.downcase}" : "#{object.class.to_s.downcase} disabled_node"
   end

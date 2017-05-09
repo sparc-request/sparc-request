@@ -22,6 +22,8 @@
   .panel-heading
     .pull-left
       %h3.panel-title
+        = t(:calendars)[:pppv][:clinical_services]
+        %br
         = I18n.t('calendars.pppv.header', arm_name: arm.name)
     - unless portal || review
       .pull-right

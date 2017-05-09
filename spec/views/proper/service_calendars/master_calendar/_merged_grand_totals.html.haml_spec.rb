@@ -36,14 +36,14 @@ RSpec.describe '/service_calendar/master_calendar/_merged_grand_totals', type: :
   it 'should display total cost per arm for each arm' do
     render "/service_calendars/master_calendar/merged_grand_totals", service_request: @service_request
 
-    expect(response).to have_content("Total Costs (Per Patient/Visit Services) Per Study -- #{@arm1.name}")
-    expect(response).to have_content("Total Costs (Per Patient/Visit Services) Per Study -- #{@arm2.name}")
+    expect(response).to have_content("Total Costs (Clinical Services) Per Study -- #{@arm1.name}")
+    expect(response).to have_content("Total Costs (Clinical Services) Per Study -- #{@arm2.name}")
   end
 
-  it 'should display total costs for one time fee services' do
+  it 'should display total costs for non-clinical services' do
     render "/service_calendars/master_calendar/merged_grand_totals", service_request: @service_request
 
-    expect(response).to have_content('Total Costs (One Time Fee Services) Per Study')
+    expect(response).to have_content('Total Costs (Non-clinical Services) Per Study')
   end
 
   it 'should display total direct cost if USE_INDIRECT_COST is true' do

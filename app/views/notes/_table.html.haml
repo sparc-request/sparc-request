@@ -27,9 +27,9 @@
     %thead
       = display_service_name_and_code(notable_type, notable_id)
       %tr
-        %th{ data: { class: 'user', align: "left", sortable: "true", field: "user" } }
+        %th{ data: { class: 'col-sm-2', align: "left", sortable: "true", field: "user" } }
           = t(:notes)[:table_fields][:user]
-        %th{ data: { class: 'date', align: "left", sortable: "true", field: "date", sorter: 'dateSorter' } }
+        %th{ data: { class: 'col-sm-2', align: "left", sortable: "true", field: "date", sorter: 'dateSorter' } }
           = t(:notes)[:table_fields][:date]
-        %th{ data: { class: 'note', align: "left", sortable: "true", field: "note" } }
+        %th{ data: { class: 'col-sm-8', align: "left", sortable: "true", field: "note" } }
           = t(:notes)[:table_fields][:note]

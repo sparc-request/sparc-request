@@ -34,26 +34,10 @@ task :merge_srs => :environment do
   end
 
   multiple_ssrs_fp.close
-  # deleted_ssrs_fp.close
 
-  cant_delete_fp = CSV.open("tmp/multiple_ssrs_cant_delete.csv", "w")
-  cant_delete_fp << ['Service Request ID']
-
-  # For each Protocol that has a Nexus SSR
   protocols = Protocol.joins(:sub_service_requests).where(sub_service_requests: { organization_id: organizations }).distinct
   bar2 = ProgressBar.new(protocols.count)
   protocols.each do |protocol|
-    organizations.each do |org_id|
-      # Grab all Nexus SSR's
-      nexus_ssrs = protocol.sub_service_requests.where(organization_id: org_id)
-
-      # If there are multiple Nexus SSR's
-      if nexus_ssrs.where.not(status: 'complete').count > 1
-        # Then something is wrong
-        raise "Protocol #{protocol.id} has multiple incomplete SSR's under Organizations #{org_id}"
-      end
-    end
-    delete_empty_srs(protocol)
 
     # Merge remaining service requests into service request with most recently
     # updated status
@@ -124,8 +108,6 @@ task :merge_srs => :environment do
 
     bar2.increment!
   end
-
-  cant_delete_fp.close
 end
 
 def delete_empty_srs(protocol)

@@ -23,13 +23,12 @@ class CatalogManager::CatalogController < CatalogManager::AppController
 
   def index
     @institutions = Institution.order('`order`')
+    @show_available_only = params[:show_available_only] ? params[:show_available_only] == "true" : true
 
-    @show_unavailable = [true]
-
-    if /false/.match(params[:show_unavailable])
-      @show_unavailable << false
+    respond_to do |format|
+      format.html
+      format.js
     end
-
   end
 
   def update_pricing_maps

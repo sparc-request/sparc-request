@@ -30,6 +30,13 @@ $ ->
     $(e.target).prev('.panel-heading').find('.glyphicon-folder-open').removeClass('glyphicon-folder-open').addClass('glyphicon-folder-close')
   )
 
+  $(document).on 'click','.availability-button', ->
+    show_available_only = $(this).data('show-available-only')
+    $.ajax
+      method: "GET"
+      url: "/catalog_manager.js?show_available_only=#{show_available_only}"
+  
+
 
 
 
@@ -559,12 +566,3 @@ $ ->
   #   $('#cwf_wrapper input.cwf_clear').val('')
   #   $("#cwf_wrapper input[type='checkbox']").attr('checked', false)
   # )
-
-  # $(document).on('click','.unavailable_button', ->
-  #   $('#processing_request').dialog('open')
-  #   show_unavailable = $(this).data('show-unavailable')
-  #   window.location.assign("/catalog_manager?show_unavailable=#{show_unavailable}")
-  # )
-
-
-

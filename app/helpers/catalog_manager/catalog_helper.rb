@@ -21,15 +21,16 @@
 module CatalogManager::CatalogHelper
 
   def accordion_link_text(org)
+    unavailable_class = org.is_available ? '' : 'unavailable-org'
     if org.is_a?(Service)
-      content_tag(:span, '', class: 'catalog-glyphicon glyphicon glyphicon-file') + content_tag(:span, org.name, class: "text-service")
+      content_tag(:span, '', class: 'catalog-glyphicon glyphicon glyphicon-file') + content_tag(:span, org.name, class: ["text-service", unavailable_class])
     else
-      content_tag(:span, '', class: 'catalog-glyphicon glyphicon glyphicon-folder-close') + content_tag(:span, org.name, class: "text-#{org.type.downcase}")
+      content_tag(:span, '', class: 'catalog-glyphicon glyphicon glyphicon-folder-close') + content_tag(:span, org.name, class: ["text-#{org.type.downcase}", unavailable_class])
     end
   end
 
   def create_new_text(org_key)
-    content_tag(:span, '', class: 'catalog-glyphicon glyphicon glyphicon-plus') + content_tag(:span, t(:catalog_manager)[:index][org_key], class: "text-#{org_key}")
+    content_tag(:span, '', class: 'catalog-glyphicon glyphicon glyphicon-plus') + content_tag(:span, t(:catalog_manager)[:catalog][:new][org_key], class: "text-#{org_key}")
   end
 
 

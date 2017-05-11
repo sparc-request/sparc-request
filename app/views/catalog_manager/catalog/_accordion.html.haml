@@ -20,53 +20,77 @@
 
 - show_available_only = [show_available_only, true]
 .panel-group#cm-accordion
-  .panel-heading
-    %h5.panel-title.text-left
-      = link_to create_new_text(:institution), 'javascript:void(0)', class: 'org-form-label', data: { parent: '#cm-accordion' }
+  .panel-heading.no-padding-y
+    .col-sm-1.no-padding-y
+      = link_to plus_glyphicon(), 'javascript:void(0)', data: { parent: '#cm-accordion' }
+    .col-sm-11.no-padding-y
+      = link_to create_new_text(:institution), 'javascript:void(0)', class: 'org-form-label panel-title'
   - institutions.where(is_available: show_available_only).each do |institution|
-    .panel-heading
-      %h5.panel-title.text-left
-        = link_to accordion_link_text(institution), 'javascript:void(0)', class: 'org-form-label', data: { id: institution.id, toggle: 'collapse', target: ".institution-#{institution.id}", parent: '#cm-accordion' }
+    .panel-heading.no-padding-y
+      .col-sm-1.no-padding-y
+        = link_to folder_glyphicon(), 'javascript:void(0)', data: { id: institution.id, toggle: 'collapse', target: ".institution-#{institution.id}", parent: '#cm-accordion' }
+      .col-sm-11.no-padding-y
+        = link_to accordion_link_text(institution), 'javascript:void(0)', class: 'org-form-label panel-title'
     .panel-collapse.collapse{ class: "institution-#{institution.id}" }
-      .panel-body
-        .panel-heading
-          %h5.panel-title.text-left
-            = link_to create_new_text(:provider), 'javascript:void(0)', class: 'org-form-label', data: { parent: ".institution-#{institution.id}" }
+      .panel-body.no-padding-y
+        .panel-heading.no-padding-y
+          .col-sm-1.no-padding-y
+            = link_to plus_glyphicon(), 'javascript:void(0)', data: { parent: ".institution-#{institution.id}" }
+          .col-sm-11.no-padding-y
+            = link_to create_new_text(:provider), 'javascript:void(0)', class: 'org-form-label panel-title'
         - institution.providers.where(is_available: show_available_only).order("`order`").each do |provider|
-          .panel-heading
-            %h5.panel-title.text-left
-              = link_to accordion_link_text(provider), 'javascript:void(0)', class: 'org-form-label', data: { id: provider.id, toggle: 'collapse', target: ".provider-#{provider.id}", parent: "#institution-#{institution.id}" }
+          .panel-heading.no-padding-y
+            .col-sm-1.no-padding-y
+              = link_to folder_glyphicon(), 'javascript:void(0)', data: { id: provider.id, toggle: 'collapse', target: ".provider-#{provider.id}", parent: "#institution-#{institution.id}" }
+            .col-sm-11.no-padding-y
+              = link_to accordion_link_text(provider), 'javascript:void(0)', class: 'org-form-label panel-title'
           .panel-collapse.collapse{ class: "provider-#{provider.id}" }
-            .panel-body
-              .panel-heading
-                %h5.panel-title.text-left
-                  = link_to create_new_text(:program), 'javascript:void(0)', class: 'org-form-label', data: { parent: ".provider-#{provider.id}" }
+            .panel-body.no-padding-y
+              .panel-heading.no-padding-y
+                .col-sm-1.no-padding-y
+                  = link_to plus_glyphicon(), 'javascript:void(0)', data: { parent: ".provider-#{provider.id}" }
+                .col-sm-11.no-padding-y
+                  = link_to create_new_text(:program), 'javascript:void(0)', class: 'org-form-label panel-title'
               - provider.programs.where(is_available: show_available_only).order("`order`").each do |program|
-                .panel-heading
-                  %h5.panel-title.text-left
-                    = link_to accordion_link_text(program), 'javascript:void(0)', class: 'org-form-label', data: { id: program.id, toggle: 'collapse', target: ".program-#{program.id}", parent: "provider-#{provider.id}" }
+                .panel-heading.no-padding-y
+                  .col-sm-1.no-padding-y
+                    = link_to folder_glyphicon(), 'javascript:void(0)', data: { id: program.id, toggle: 'collapse', target: ".program-#{program.id}", parent: "provider-#{provider.id}" }
+                  .col-sm-11.no-padding-y
+                    = link_to accordion_link_text(program), 'javascript:void(0)', class: 'org-form-label panel-title'
                 .panel-collapse.collapse{ class: "program-#{program.id}" }
-                  .panel-body
-                    .panel-heading
-                      %h5.panel-title.text-left
-                        = link_to create_new_text(:core), 'javascript:void(0)', class: 'org-form-label', data: { parent: ".program-#{program.id}" }
-                    .panel-heading
-                      %h5.panel-title.text-left
-                        = link_to create_new_text(:service), 'javascript:void(0)', class: 'org-form-label', data: { parent: ".program-#{program.id}" }
+                  .panel-body.no-padding-y
+                    .panel-heading.no-padding-y
+                      .col-sm-1.no-padding-y
+                        = link_to plus_glyphicon(), 'javascript:void(0)', data: { parent: ".program-#{program.id}" }
+                      .col-sm-11.no-padding-y
+                        = link_to create_new_text(:core), 'javascript:void(0)', class: 'org-form-label panel-title'
+                    .panel-heading.no-padding-y
+                      .col-sm-1.no-padding-y
+                        = link_to plus_glyphicon(), 'javascript:void(0)', data: { parent: ".program-#{program.id}" }
+                      .col-sm-11.no-padding-y
+                        = link_to create_new_text(:service), 'javascript:void(0)', class: 'org-form-label panel-title'
                     - program.cores.where(is_available: show_available_only).order("`order`").each do |core|
-                      .panel-heading
-                        %h5.panel-title.text-left
-                          = link_to accordion_link_text(core), 'javascript:void(0)', class: 'org-form-label', data: { id: core.id, toggle: 'collapse', target: ".core-#{core.id}", parent: "program-#{program.id}" }
+                      .panel-heading.no-padding-y
+                        .col-sm-1.no-padding-y
+                          = link_to folder_glyphicon(), 'javascript:void(0)', data: { id: core.id, toggle: 'collapse', target: ".core-#{core.id}", parent: "program-#{program.id}" }
+                        .col-sm-11.no-padding-y
+                          = link_to accordion_link_text(core), 'javascript:void(0)', class: 'org-form-label panel-title'
                       .panel-collapse.collapse{ class: "core-#{core.id}" }
-                        .panel-body
-                          .panel-heading
-                            %h5.panel-title.text-left
-                              = link_to create_new_text(:service), 'javascript:void(0)', class: 'org-form-label', data: { parent: ".core-#{core.id}" }
+                        .panel-body.no-padding-y
+                          .panel-heading.no-padding-y
+                            .col-sm-1.no-padding-y
+                              = link_to plus_glyphicon(), 'javascript:void(0)', data: { parent: ".core-#{core.id}" }
+                            .col-sm-11.no-padding-y
+                              = link_to create_new_text(:service), 'javascript:void(0)', class: 'org-form-label panel-title'
                           - core.services.where(is_available: show_available_only).order("`order`, `name`").each do |service|
-                            .panel-heading
-                              %h5.panel-title.text-left
-                                = link_to accordion_link_text(service), 'javascript:void(0)', class: 'org-form-label', data: { id: service.id, parent: "core-#{core.id}" }
+                            .panel-heading.no-padding-y
+                              .col-sm-1.no-padding-y
+                                = link_to file_glyphicon(), 'javascript:void(0)', data: { id: service.id, parent: "core-#{core.id}" }
+                              .col-sm-11.no-padding-y
+                                = link_to accordion_link_text(service), 'javascript:void(0)', class: 'org-form-label panel-title'
                     - program.services.where(is_available: show_available_only).order("`order`, `name`").each do |service|
-                      .panel-heading
-                        %h5.panel-title.text-left
-                          = link_to accordion_link_text(service), 'javascript:void(0)', class: 'org-form-label', data: { id: service.id, parent: "program-#{program.id}" }
+                      .panel-heading.no-padding-y
+                        .col-sm-1.no-padding-y
+                          = link_to file_glyphicon(), 'javascript:void(0)', data: { id: service.id, parent: "program-#{program.id}" }
+                        .col-sm-11.no-padding-y
+                          = link_to accordion_link_text(service), 'javascript:void(0)', class: 'org-form-label panel-title'

@@ -18,31 +18,32 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-#catalog
-  = text_field_tag 'service-query', nil, placeholder: t(:catalog_manager)[:catalog][:search_placeholder], class: "form-control input-lg"
+.col-sm-6
+  #catalog
+    = text_field_tag 'service-query', nil, placeholder: t(:catalog_manager)[:catalog][:search_placeholder], class: "form-control input-lg"
 
-  = render 'availability_button', show_available_only: @show_available_only
-  = render 'accordion', institutions: @institutions, show_available_only: @show_available_only
+    = render 'availability_button', show_available_only: @show_available_only
+    = render 'accordion', institutions: @institutions, show_available_only: @show_available_only
 
 
 
-                                    
-#details
 
-#fix_pricing_maps_dialog
-  %input.fix_pricing_maps_entity_id{:type => 'hidden'}
-  %input.fix_pricing_maps_old_value{:type => 'hidden'}
-  %input.fix_pricing_maps_old_value_type{:type => 'hidden'}
-  %input.fix_pricing_maps_new_value{:type => 'hidden'}  
+  #details
 
-  .fix_pricing_maps_dialog_content
-  
-  %br
-  %center
-    %button.dont_fix_pricing_maps_button.ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-text-only{:type => "button", :role => "button"}
-      %span.ui-button-text= t(:catalog_manager)[:catalog][:pricing_map1]
-    %button.fix_pricing_maps_button.ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-text-only{:type => "button", :role => "button"}
-      %span.ui-button-text= t(:catalog_manager)[:catalog][:pricing_map2]
-    %img.pricing_map_fix_spinner{:src => '/assets/catalog_manager/spinner_small.gif'}  
-  
+  #fix_pricing_maps_dialog
+    %input.fix_pricing_maps_entity_id{:type => 'hidden'}
+    %input.fix_pricing_maps_old_value{:type => 'hidden'}
+    %input.fix_pricing_maps_old_value_type{:type => 'hidden'}
+    %input.fix_pricing_maps_new_value{:type => 'hidden'}
+
+    .fix_pricing_maps_dialog_content
     
+    %br
+    %center
+      %button.dont_fix_pricing_maps_button.ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-text-only{:type => "button", :role => "button"}
+        %span.ui-button-text= t(:catalog_manager)[:catalog][:pricing_map1]
+      %button.fix_pricing_maps_button.ui-button.ui-widget.ui-state-default.ui-corner-all.ui-button-text-only{:type => "button", :role => "button"}
+        %span.ui-button-text= t(:catalog_manager)[:catalog][:pricing_map2]
+      %img.pricing_map_fix_spinner{:src => '/assets/catalog_manager/spinner_small.gif'}
+
+.col-sm-6

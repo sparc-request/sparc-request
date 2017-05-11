@@ -20,17 +20,30 @@
 
 module CatalogManager::CatalogHelper
 
+  def folder_glyphicon()
+    content_tag(:span, '', class: 'catalog-glyphicon glyphicon glyphicon-folder-close')
+  end
+
+  def file_glyphicon()
+    content_tag(:span, '', class: 'catalog-glyphicon glyphicon glyphicon-file')
+  end
+
+  def plus_glyphicon()
+    content_tag(:span, '', class: 'catalog-glyphicon glyphicon glyphicon-plus')
+  end
+
   def accordion_link_text(org)
-    unavailable_class = org.is_available ? '' : 'unavailable-org'
     if org.is_a?(Service)
-      content_tag(:span, '', class: 'catalog-glyphicon glyphicon glyphicon-file') + content_tag(:span, org.name, class: ["text-service", unavailable_class])
+      css_class = org.is_available ? 'text-service' : 'unavailable-org'
+      content_tag(:span, org.name, class: css_class)
     else
-      content_tag(:span, '', class: 'catalog-glyphicon glyphicon glyphicon-folder-close') + content_tag(:span, org.name, class: ["text-#{org.type.downcase}", unavailable_class])
+      css_class = org.is_available ? "text-#{org.type.downcase}" : 'unavailable-org'
+      content_tag(:span, org.name, class: css_class)
     end
   end
 
   def create_new_text(org_key)
-    content_tag(:span, '', class: 'catalog-glyphicon glyphicon glyphicon-plus') + content_tag(:span, t(:catalog_manager)[:catalog][:new][org_key], class: "text-#{org_key}")
+    content_tag(:span, t(:catalog_manager)[:catalog][:new][org_key], class: "text-#{org_key}")
   end
 
 

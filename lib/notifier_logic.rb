@@ -47,7 +47,6 @@ class NotifierLogic
       @service_request.update_attribute(:submitted_at, Time.now)
       @service_request.update_arm_minimum_counts
     end
-
     send_request_amendment_email_evaluation
     send_initial_submission_email
   end
@@ -117,7 +116,6 @@ class NotifierLogic
 
 
   def send_initial_submission_email
-    
     if @sub_service_request && @to_notify.include?(@sub_service_request.id)
       send_notifications([@sub_service_request])
     elsif !@to_notify.empty?
@@ -278,10 +276,17 @@ class NotifierLogic
     deleted_ssr_audits_that_need_request_amendment_email = []
     destroyed_ssr_audit = @service_request.deleted_ssrs_since_previous_submission
     destroyed_ssr_audit.each do |ssr_audit|
-      latest_action_update_audit = AuditRecovery.where("auditable_id = #{ssr_audit.auditable_id} AND action = 'update'").order(created_at: :desc).first
       un_updatable_statuses = SubServiceRequest.all.map(&:status).uniq - UPDATABLE_STATUSES
-      if un_updatable_statuses.include?(latest_action_update_audit.audited_changes['status'].first)
-        deleted_ssr_audits_that_need_request_amendment_email << ssr_audit
+      latest_action_update_audit = AuditRecovery.where("auditable_id = #{ssr_audit.auditable_id} AND action = 'update'").order(created_at: :desc).first
+      if latest_action_update_audit.nil?
+        latest_action_destroy_audit = AuditRecovery.where("auditable_id = #{ssr_audit.auditable_id} AND action = 'destroy'").order(created_at: :desc).first
+        if un_updatable_statuses.include?(latest_action_destroy_audit.audited_changes['status'])
+          deleted_ssr_audits_that_need_request_amendment_email << ssr_audit
+        end
+      else
+        if un_updatable_statuses.include?(latest_action_update_audit.audited_changes['status'].first)
+          deleted_ssr_audits_that_need_request_amendment_email << ssr_audit
+        end
       end
     end
     deleted_ssr_audits_that_need_request_amendment_email

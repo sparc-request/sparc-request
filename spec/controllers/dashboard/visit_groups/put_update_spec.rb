@@ -34,7 +34,7 @@ RSpec.describe Dashboard::VisitGroupsController do
         @sr       = create(:service_request_without_validations, protocol: @protocol)
         @ssr      = create(:sub_service_request, service_request: @sr, organization: org)
         @arm      = create(:arm, protocol: @protocol)
-        @vg       = create(:visit_group, arm: @arm, name: 'Go Away', position: 1)
+        @vg       = @arm.visit_groups.first
       end
 
       it 'should assign @visit_group' do
@@ -134,7 +134,7 @@ RSpec.describe Dashboard::VisitGroupsController do
         end
 
         it 'should not update visit group' do
-          expect(@vg.reload.name).to eq('Go Away')
+          expect(@vg.reload.name).to eq('Visit 1')
         end
 
         it 'should assign @errors' do
@@ -180,7 +180,7 @@ RSpec.describe Dashboard::VisitGroupsController do
         @sr       = create(:service_request_without_validations, protocol: @protocol)
         @ssr      = create(:sub_service_request, service_request: @sr, organization: org)
         @arm      = create(:arm, protocol: @protocol)
-        @vg       = create(:visit_group, arm: @arm)
+        @vg       = @arm.visit_groups.first
 
         xhr :put, :update, {
           id: @vg.id,

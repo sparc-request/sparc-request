@@ -32,8 +32,10 @@ class VisitGroup < ApplicationRecord
 
   acts_as_list scope: :arm
 
-  after_save :set_arm_edited_flag_on_subjects
+  after_create :build_visits
+  after_create :increment_visit_count, if: Proc.new { self.arm.visit_count < self.arm.visit_groups.count }
   before_destroy :remove_appointments
+  before_destroy :decrement_visit_count, if: Proc.new { self.arm.visit_count >= self.arm.visit_groups.count  }
 
   validates :name, presence: true
   validates :position, presence: true
@@ -44,13 +46,15 @@ class VisitGroup < ApplicationRecord
 
   validate :day_must_be_in_order
 
-  def set_arm_edited_flag_on_subjects
-    self.arm.set_arm_edited_flag_on_subjects
-  end
+  default_scope { order(:position) }
 
   def <=> (other_vg)
     return unless other_vg.respond_to?(:day)
     self.day <=> other_vg.day
+  end
+
+  def self.admin_day_multiplier
+    5
   end
 
   def insertion_name
@@ -80,6 +84,16 @@ class VisitGroup < ApplicationRecord
 
   private
 
+  def build_visits
+    self.arm.line_items_visits.each do |liv|
+      self.visits.create(line_items_visit: liv)
+    end
+  end
+
+  def increment_visit_count
+    self.arm.increment!(:visit_count)
+  end
+
   def remove_appointments
     appointments = self.appointments
     appointments.each do |app|
@@ -89,6 +103,10 @@ class VisitGroup < ApplicationRecord
         app.destroy
       end
     end
+  end
+
+  def decrement_visit_count
+    self.arm.decrement!(:visit_count)
   end
 
   def day_must_be_in_order

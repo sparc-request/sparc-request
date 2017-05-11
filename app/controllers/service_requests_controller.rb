@@ -85,41 +85,17 @@ class ServiceRequestsController < ApplicationController
   end
 
   def service_details
-    @service_request.add_or_update_arms
+    if @service_request.has_per_patient_per_visit_services? && @service_request.arms.empty?
+        @service_request.protocol.arms.create(
+          name: 'Screening Phase',
+          visit_count: 1,
+          new_with_draft: true
+        )
+    end
   end
 
   def service_calendar
     session[:service_calendar_pages] = params[:pages] if params[:pages]
-
-    @service_request.arms.each do |arm|
-      #check each ARM for line_items_visits (in other words, it's a new arm)
-      if arm.line_items_visits.empty?
-        #Create missing line_items_visits
-        @service_request.per_patient_per_visit_line_items.each do |line_item|
-          arm.create_line_items_visit(line_item)
-        end
-      else
-        #Check to see if ARM has been modified...
-        arm.line_items_visits.each do |liv|
-          #Update subject counts under certain conditions
-          if @service_request.status == 'first_draft' or liv.subject_count.nil? or liv.subject_count > arm.subject_count
-            liv.update_attribute(:subject_count, arm.subject_count)
-          end
-        end
-        #Arm.visit_count has benn increased, so create new visit group, and populate the visits
-        if arm.visit_count > arm.visit_groups.count
-          ActiveRecord::Base.transaction do
-            arm.mass_create_visit_group
-          end
-        end
-        #Arm.visit_count has been decreased, destroy visit group (and visits)
-        if arm.visit_count < arm.visit_groups.count
-          ActiveRecord::Base.transaction do
-            arm.mass_destroy_visit_group
-          end
-        end
-      end
-    end
   end
 
   def service_subsidy

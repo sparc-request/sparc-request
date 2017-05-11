@@ -34,25 +34,7 @@ FactoryGirl.define do
     end
 
     after(:create) do |arm, evaluator|
-      if arm.visit_count.present? && arm.visit_count > 0 && evaluator.line_item_count > 0
-        sr = evaluator.service_request || create(:service_request_without_validations)
-
-        vgs = []
-        arm.visit_count.times do |n|
-          vgs << arm.visit_groups.create(name: "Visit #{n}", position: n + 1, day: n,
-                        window_before: 0, window_after: 0)
-        end
-
-        evaluator.line_item_count.times do |n|
-          li = create(:line_item_with_service, service_request: sr)
-          liv = create(:line_items_visit, arm: arm, line_item: li, subject_count: arm.subject_count)
-          vgs.each do |vg|
-            create(:visit, line_items_visit: liv, visit_group: vg)
-          end
-        end
-
-        arm.reload
-      end
+      arm.default_visit_days
     end
 
     factory :arm_without_validations, traits: [:without_validations]

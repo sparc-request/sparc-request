@@ -56,6 +56,7 @@ class ArmsController < ApplicationController
 
   def update
     if @arm.update_attributes(arm_params)
+
       flash[:success] = t(:arms)[:updated]
     else
       @errors = @arm.errors
@@ -75,18 +76,8 @@ class ArmsController < ApplicationController
       :visit_count,
       :subject_count,
       :new_with_draft,
-      :protocol_id,
-      :minimum_visit_count,
-      :minimum_subject_count,
-      subjects_attributes: [:name,
-        :mrn,
-        :dob,
-        :gender,
-        :ethnicity,
-        :external_subject_id,
-        :status,
-        :arm_edited,
-        :_destroy])
+      :protocol_id
+    )
   end
 
   def find_arm

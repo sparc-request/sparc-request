@@ -46,6 +46,45 @@ class CatalogManager::OrganizationsController < CatalogManager::AppController
 
   private
 
+  def organization_params(type)
+    params.require(type).permit(:name,
+      :order,
+      :css_class,
+      :description,
+      :parent_id,
+      :abbreviation,
+      :ack_language,
+      :process_ssrs,
+      :is_available,
+      { tag_list:  [] },
+      subsidy_map_attributes: [:organization_id,
+        :max_dollar_cap,
+        :max_percentage,
+        :default_percentage,
+        :instructions],
+      pricing_setups_attributes: [:organization_id,
+        :display_date,
+        :effective_date,
+        :charge_master,
+        :federal,
+        :corporate,
+        :other,
+        :member,
+        :college_rate_type,
+        :federal_rate_type,
+        :foundation_rate_type,
+        :industry_rate_type,
+        :investigator_rate_type,
+        :internal_rate_type,
+        :unfunded_rate_type],
+      submission_emails_attributes: [:organization_id, :email],
+      available_statuses_attributes: [:organization_id,
+        :status,
+        :new,
+        :position,
+        :_destroy])
+  end
+
   def flash_update(show_success)
     if show_success
       flash[:notice] = "#{@organization.name} saved correctly."

@@ -40,7 +40,7 @@ RSpec.describe 'User adds service to cart', js: true do
       find('.program-link').click
       click_button 'Add'
 
-      expect(page).to have_selector('#modal-title', text: 'New Request?', visible: true)
+      expect(page).to have_selector('#modal-title', text: 'New or Existing', visible: true)
     end
   end
 

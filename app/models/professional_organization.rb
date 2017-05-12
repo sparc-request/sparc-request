@@ -1,12 +1,7 @@
-class ProfessionalOrganization < ActiveRecord::Base
+class ProfessionalOrganization < ApplicationRecord
   # In order from most general to least.
   ORG_TYPES = ['institution', 'college', 'department', 'division'].freeze
   audited
-
-  attr_accessible :name
-  attr_accessible :org_type
-  attr_accessible :depth # might not be needed
-  attr_accessible :parent_id
 
   belongs_to :parent, class_name: "ProfessionalOrganization"
 

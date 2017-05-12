@@ -18,20 +18,13 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class InvestigationalProductsInfo < ActiveRecord::Base
+class InvestigationalProductsInfo < ApplicationRecord
   EXEMPTION_TYPES = ["ide", "hde", "hud", ""].freeze
   self.table_name = 'investigational_products_info'
 
   audited
 
   belongs_to :protocol
-
-  attr_accessible :protocol_id
-  attr_accessible :ind_number
-  attr_accessible :inv_device_number
-  attr_accessible :exemption_type
-  attr_accessible :ind_on_hold
-
   validates :exemption_type, inclusion: { in: EXEMPTION_TYPES, message: "not among #{EXEMPTION_TYPES.map(&:upcase).join(', ')}" }
   validate :inv_device_number_present_when_exemption_type_present
 

@@ -25,7 +25,7 @@
 
   -# SSR Header Row
   %tr.organization-header{ class: locked ? 'text-danger' : '' }
-    %th{ colspan: 14 }
+    %th{ colspan: 15 }
       = display_org_name(Dashboard::ServiceCalendars.display_organization_hierarchy(livs[0]), ssr, locked)
 
   -# Line Items Visits
@@ -33,6 +33,8 @@
     %tr.pppv-line-item-row{ class: locked ? 'bg-danger text-danger' : '' }
       %td.service-name{ colspan: 2 }
         = liv.service.display_service_name
+      %td.notes.text-center
+        = display_liv_notes(liv, @portal)
       %td.status.text-center
         = AVAILABLE_STATUSES[ssr.status]
       %td.service-rate.text-center
@@ -40,7 +42,7 @@
       %td.your-cost.text-center
         = "$#{number_with_precision(Service.cents_to_dollars(liv.line_item.applicable_rate), precision: 2)}"
       %td.unit-type.text-center
-        = liv.line_item.service.displayed_pricing_map.unit_type
+        = display_unit_type(liv)
       %td.subject-count.text-center
         = liv.subject_count
       - visits      = liv.visits.paginate(page: page.to_i, per_page: 5)
@@ -51,9 +53,11 @@
       - (5 - visits.size).times do
         %td &nbsp;
       %td.text-center.pppv-per-patient-line-item-total
-        = display_visit_based_direct_cost(liv)
+        %strong
+          = display_visit_based_direct_cost(liv)
       %td.text-center.pppv-per-study-line-item-total
-        = Dashboard::ServiceCalendars.display_visit_based_direct_cost_per_study(liv)
+        %strong
+          = Dashboard::ServiceCalendars.display_visit_based_direct_cost_per_study(liv)
 
 - unless review or portal
   = render 'service_calendars/master_calendar/pppv/pppv_totals', service_request: service_request, arm: arm, tab: tab, line_items_visits: line_items_visits.flatten

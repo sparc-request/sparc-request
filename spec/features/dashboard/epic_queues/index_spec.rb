@@ -32,8 +32,15 @@ RSpec.describe 'Notifications index', js: true do
            approved: true)
   end
 
-  let!(:protocol) { create(:unarchived_study_without_validations, primary_pi: user) }
-  let!(:epic_queue) { create(:epic_queue, protocol_id: protocol.id) }
+  let!(:protocol) { create(:unarchived_study_without_validations, primary_pi: user, last_epic_push_status: 'failed') }
+  let!(:epic_queue) { create(:epic_queue, protocol_id: protocol.id, identity: user) }
+  let!(:epic_queue_record) do
+    create(:epic_queue_record,
+           protocol: protocol,
+           identity: user,
+           status: 'complete',
+          )
+  end
 
   fake_login_for_each_test("jug2")
 
@@ -44,6 +51,13 @@ RSpec.describe 'Notifications index', js: true do
   end
 
   describe "Epic Queue Table" do
+    context 'panel title' do
+      it 'should display a title of current and past' do
+        visit_epic_queues_index_page
+        expect(page).to have_css('li.active', text: 'Current')
+        expect(page).to have_css('li', text: 'Past')
+      end
+    end
     context "Queued protocol header" do
       it "should display formatted protocol name" do
         create(:protocol, :without_validations, identity: user)
@@ -85,7 +99,7 @@ RSpec.describe 'Notifications index', js: true do
     context "Last Queue Status header" do
       it "should display Last Queue Status" do
         create(:protocol, :without_validations, identity: user)
-        protocol.update_attribute(:last_epic_push_status, 'complete')
+        protocol.update_attribute(:last_epic_push_status, 'failed')
         create(:project_role_with_identity_and_protocol, identity: user, protocol: protocol)
         page = visit_epic_queues_index_page
         wait_for_javascript_to_finish
@@ -96,4 +110,58 @@ RSpec.describe 'Notifications index', js: true do
       end
     end
   end
+
+  describe 'epic_queue_record_table' do
+    it 'should display epic queue record protocol' do
+      visit_epic_queues_index_page
+      wait_for_javascript_to_finish
+
+      click_link 'Past'
+
+      expect(page).to have_css('td',
+        text: "#{protocol.type.capitalize}: #{protocol.id} - #{protocol.short_title}"
+      )
+    end
+
+    it "should display Last Queue Status" do
+      page = visit_epic_queues_index_page
+      wait_for_javascript_to_finish
+
+      click_link 'Past'
+
+      expect(page).to have_css('td', text: "#{epic_queue_record.status.capitalize}")
+    end
+  end
+
+  it "should display PI name" do
+    page = visit_epic_queues_index_page
+    wait_for_javascript_to_finish
+
+    click_link 'Past'
+    protocol.principal_investigators.map(&:full_name).each do |pi|
+      @pi = "#{pi}"
+    end
+
+    expect(page).to have_css('td', text: @pi)
+  end
+
+  it "should display Last Queue Date" do
+    page = visit_epic_queues_index_page
+    wait_for_javascript_to_finish
+
+    click_link 'Past'
+    date = epic_queue.created_at.strftime("%m/%d/%Y %I:%M:%S %p")
+
+    expect(page).to have_css('td', text: "#{date}")
+  end
+
+  it 'should display identity associated to eqr' do
+    page = visit_epic_queues_index_page
+    wait_for_javascript_to_finish
+
+    click_link 'Past'
+
+    expect(page).to have_css('td', text: "#{user.full_name}")
+  end
 end
+

@@ -18,14 +18,9 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class CatalogManager < ActiveRecord::Base
+class CatalogManager < ApplicationRecord
   audited
 
   belongs_to :organization
   belongs_to :identity
-
-  attr_accessible :identity_id
-  attr_accessible :organization_id
-  attr_accessible :edit_historic_data
 end
-

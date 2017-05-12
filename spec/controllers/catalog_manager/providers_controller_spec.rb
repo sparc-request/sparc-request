@@ -96,18 +96,17 @@ RSpec.describe CatalogManager::ProvidersController do
                        internal_rate_type:     'federal',
                        unfunded_rate_type:     'federal',
                        newly_created: 'true'}
-      @params = ActionController::Parameters.new(
-                { id: @organization.id,
+      @params = { id: @organization.id,
                   provider: { name: 'New Provider Name',
                               tag_list: nil },
-                  pricing_setups: {blank_pricing_setup: pricing_setup} })
+                  pricing_setups: {blank_pricing_setup: pricing_setup} }
 
       xhr :put, :update, @params, format: :js
     end
 
     it 'should assign @attributes' do
       @params[:provider][:tag_list] = ''
-      expect(assigns(:attributes)).to eq(@params[:provider])
+      expect(assigns(:attributes).symbolize_keys).to eq(@params[:provider])
     end
 
     it 'should assign @organization' do

@@ -21,25 +21,15 @@
 require 'rails_helper'
 
 RSpec.describe SurveyNotification do
+  
+  let(:identity)  { create(:identity, email: 'nobody@nowhere.com') }
+  let(:org)       { create(:organization) }
+  let(:ssr)       { create(:sub_service_request_without_validations, organization: org) }
 
   describe 'system satisfaction survey' do
-    let(:identity)      { create(:identity, email: 'nobody@nowhere.com') }
-    let(:survey)        { create(:survey,
-                                  title: "System Satisfaction survey",
-                                  description: nil,
-                                  access_code: "system-satisfaction-survey",
-                                  reference_identifier: nil,
-                                  data_export_identifier: nil,
-                                  common_namespace: nil,
-                                  common_identifier: nil, active_at: nil,
-                                  inactive_at: nil, css_url: nil,
-                                  custom_class: nil,
-                                  created_at: "2013-07-02 14:40:23",
-                                  updated_at: "2013-07-02 14:40:23",
-                                  display_order: 0, api_id: "4137bedf-40db-43e9-a411-932a5f6d77b7",
-                                  survey_version: 0) }
-    let(:response_set)  { mock_model(ResponseSet, user_id: identity.id, survey_id: survey.id, access_code: 'abc123', survey: survey) }
-    let(:mail) { SurveyNotification.system_satisfaction_survey(response_set) }
+    let(:survey)    { create(:survey, title: "System Satisfaction survey", access_code: "system-satisfaction-survey") }
+    let(:response)  { create(:response, identity: identity, survey: survey, sub_service_request: ssr) }
+    let(:mail)      { SurveyNotification.system_satisfaction_survey(response) }
 
     #ensure that the subject is correct
     it 'should render the subject' do
@@ -58,7 +48,7 @@ RSpec.describe SurveyNotification do
 
     #ensure that the e-mail contains a link to the survey
     it 'should contain the survey link' do
-      survey_link_path = "surveys/#{survey.access_code}/#{response_set.access_code}"
+      survey_link_path = "surveyor/responses/#{response.id}"
       expect(mail.body.include?(survey_link_path)).to eq(true)
     end
 
@@ -67,30 +57,9 @@ RSpec.describe SurveyNotification do
     end
   end
 
-  describe 'service satisfaction survey' do
-    include ApplicationHelper
-    let(:identity)      { create(:identity, email: 'nobody@nowhere.com') }
-    let(:survey)        { create(:survey,
-                                  title: "System Satisfaction survey",
-                                  description: nil,
-                                  access_code: "system-satisfaction-survey",
-                                  reference_identifier: nil,
-                                  data_export_identifier: nil,
-                                  common_namespace: nil,
-                                  common_identifier: nil, active_at: nil,
-                                  inactive_at: nil, css_url: nil,
-                                  custom_class: nil,
-                                  created_at: "2013-07-02 14:40:23",
-                                  updated_at: "2013-07-02 14:40:23",
-                                  display_order: 0, api_id: "4137bedf-40db-43e9-a411-932a5f6d77b7",
-                                  survey_version: 0) }
-    let(:response_set)  { mock_model(ResponseSet, user_id: identity.id, survey_id: survey.id, access_code: 'abc123', survey: survey) }
-    let(:institution)   { create(:institution) }
-    let(:provider)      { create(:provider, parent_id: institution.id) }
-    let(:program)       { create(:program, parent_id: provider.id) }
-    let(:core)          { create(:core, parent_id: program.id) }
-    let(:ssr)           { create(:sub_service_request, organization_id: core.id) }
-    let(:mail)          { SurveyNotification.service_survey([survey], identity, ssr) }
+  describe 'service system satisfaction survey' do
+    let(:survey)  { create(:survey, title: "System Satisfaction survey", access_code: "system-satisfaction-survey") }
+    let(:mail)    { SurveyNotification.service_survey([survey], identity, ssr) }
 
     #ensure that the subject is correct
     it 'should render the subject' do
@@ -109,7 +78,7 @@ RSpec.describe SurveyNotification do
 
     #ensure that the e-mail contains a link to the survey
     it 'should contain the survey link' do
-      survey_link_path = "direct_link_to/#{survey.access_code}?ssr_id=#{ssr.id}&amp;survey_version=#{survey.survey_version}"
+      survey_link_path = "surveyor/responses/new.html?access_code=#{survey.access_code}&amp;sub_service_request_id=#{ssr.id}&amp;survey_version=#{survey.version}"
       expect(mail.body.include?(survey_link_path)).to eq(true)
     end
 
@@ -119,29 +88,8 @@ RSpec.describe SurveyNotification do
   end
 
   describe 'SCTR Customer Satisfaction Survey' do
-    include ApplicationHelper
-    let(:identity)      { create(:identity, email: 'nobody@nowhere.com') }
-    let(:survey)        { create(:survey,
-                                  title: "SCTR Customer Satisfaction Survey",
-                                  description: nil,
-                                  access_code: "sctr-customer-satisfaction-survey",
-                                  reference_identifier: nil,
-                                  data_export_identifier: nil,
-                                  common_namespace: nil,
-                                  common_identifier: nil, active_at: nil,
-                                  inactive_at: nil, css_url: nil,
-                                  custom_class: nil,
-                                  created_at: "2013-07-02 14:40:23",
-                                  updated_at: "2013-07-02 14:40:23",
-                                  display_order: 0, api_id: "4137bedf-40db-43e9-a411-932a5f6d77b7",
-                                  survey_version: 0) }
-    let(:response_set)  { mock_model(ResponseSet, user_id: identity.id, survey_id: survey.id, access_code: 'abc123', survey: survey) }
-    let(:institution)   { create(:institution) }
-    let(:provider)      { create(:provider, parent_id: institution.id) }
-    let(:program)       { create(:program, parent_id: provider.id) }
-    let(:core)          { create(:core, parent_id: program.id) }
-    let(:ssr)           { create(:sub_service_request, organization_id: core.id) }
-    let(:mail)          { SurveyNotification.service_survey([survey], identity, ssr) }
+    let(:survey)  { create(:survey, title: "SCTR Customer Satisfaction survey", access_code: "sctr-customer-satisfaction-survey") }
+    let(:mail)    { SurveyNotification.service_survey([survey], identity, ssr) }
 
     #ensure that the subject is correct
     it 'should render the subject' do
@@ -160,7 +108,7 @@ RSpec.describe SurveyNotification do
 
     #ensure that the e-mail contains a link to the survey
     it 'should contain the survey link' do
-      survey_link_path = "direct_link_to/#{survey.access_code}?ssr_id=#{ssr.id}&amp;survey_version=#{survey.survey_version}"
+      survey_link_path = "surveyor/responses/new.html?access_code=#{survey.access_code}&amp;sub_service_request_id=#{ssr.id}&amp;survey_version=#{survey.version}"
       expect(mail.body.include?(survey_link_path)).to eq(true)
     end
 

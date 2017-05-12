@@ -101,4 +101,10 @@ module ServiceRequestsHelper
       )
     end
   end
+
+  def display_ssr_id(sub_service_request)
+    if sub_service_request
+      sub_service_request.protocol_id.to_s + '-' + sub_service_request.ssr_id
+    end
+  end
 end

@@ -20,9 +20,20 @@
 
 FactoryGirl.define do
   factory :survey do
-    title          { Faker::Lorem.word }
-    description    { Faker::Lorem.word }
-    access_code    { Faker::Lorem.word }
-    survey_version { 0 }
+    title         { Faker::Lorem.word }
+    access_code   { Faker::Lorem.word }
+    display_order { 0 }
+    version       { 0 }
+    active        { false }
+
+    trait :active do
+      active true
+    end
+
+    trait :without_validations do
+      to_create { |instance| instance.save(validate: false) }
+    end
+
+    factory :survey_without_validations, traits: [:without_validations]
   end
 end

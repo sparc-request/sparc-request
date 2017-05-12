@@ -1,0 +1,42 @@
+-# Copyright © 2011-2016 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+.panel.panel-default
+  .panel-heading
+    %h4.panel-title
+      = t(:surveyor)[:surveys][:header]
+  .panel-body
+    .bootstrap-table-dropdown-overflow
+      #surveys-custom-toolbar
+        = link_to t(:surveyor)[:surveys][:new], surveyor_surveys_path, method: :post, remote: true, class: "btn btn-success", id: "#new-survey-button"
+      %table.survey-table{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', 'show-toggle' => 'true', url: surveyor_surveys_path, striped: 'true', toolbar: '#surveys-custom-toolbar', pagination: 'true', page_size: '20' } }
+        %thead.primary-header
+          %tr
+            %th.col-sm-3{ data: { field: "title", align: "left", sortable: 'true' } }
+              = t(:surveyor)[:surveys][:table][:headers][:title]
+            %th.col-sm-2{ data: { field: "access_code", align: "left", sortable: 'true' } }
+              = t(:surveyor)[:surveys][:table][:headers][:access_code]
+            %th.col-sm-1{ data: { field: "version", align: "left", sortable: 'true' } }
+              = t(:surveyor)[:surveys][:table][:headers][:version]
+            %th.col-sm-2{ data: { field: "display_order", align: "left", sortable: 'true' } }
+              = t(:surveyor)[:surveys][:table][:headers][:display_order]
+            %th.col-sm-1{ data: { field: "active", align: "center" } }
+              = t(:surveyor)[:surveys][:table][:headers][:active]
+            %th.col-sm-3{ data: { field: "options", align: "center" } }
+              = t(:surveyor)[:surveys][:table][:headers][:options]

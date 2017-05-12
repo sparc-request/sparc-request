@@ -67,14 +67,10 @@ fixit.sql
 
 db/imports/*
 config/deploy/*.rb
-.ruby-gemset
 
 Procfile
 
 config/setup_load_paths.rb
-
-# Ignore Bundler binstubs
-bin/*
 
 # Ignore spec examples
 spec/examples.txt

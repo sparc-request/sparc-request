@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class Appointment < ActiveRecord::Base
+class Appointment < ApplicationRecord
   audited
 
   belongs_to :calendar
@@ -27,17 +27,8 @@ class Appointment < ActiveRecord::Base
   has_many :procedures, :dependent => :destroy
   has_many :visits, :through => :procedures
   has_many :notes, as: :notable
-  attr_accessible :visit_group_id
-  attr_accessible :organization_id
-  attr_accessible :completed_at
-  attr_accessible :position
-  attr_accessible :name
-
-  attr_accessible :procedures_attributes
 
   accepts_nested_attributes_for :procedures
-
-  attr_accessible :formatted_completed_date
 
   def formatted_completed_date
     format_date self.completed_at
@@ -78,7 +69,7 @@ class Appointment < ActiveRecord::Base
       false
     end
   end
-  
+
   def completed_for_core? (core_id)
     if self.completed? && (self.organization_id == core_id)
       return true
@@ -89,11 +80,11 @@ class Appointment < ActiveRecord::Base
 
 
   def display_name
-    name_switch 
+    name_switch
   end
-  
+
   ### audit reporting methods ###
- 
+
   def audit_label audit
     name_switch
   end
@@ -101,11 +92,11 @@ class Appointment < ActiveRecord::Base
   def audit_field_value_mapping
     {"completed_at" => "'ORIGINAL_VALUE'.to_time.strftime('%Y-%m-%d')"}
   end
-    
+
   def audit_excluded_actions
     ['create']
   end
-  
+
   ### end audit reporting methods ###
 
   private
@@ -116,7 +107,7 @@ class Appointment < ActiveRecord::Base
 
   def parse_date(str)
     begin
-      Date.strptime(str.to_s.strip, '%m/%d/%Y')  
+      Date.strptime(str.to_s.strip, '%m/%d/%Y')
     rescue ArgumentError => e
       nil
     end

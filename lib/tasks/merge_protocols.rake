@@ -53,6 +53,18 @@ task :protocol_merge => :environment do
     get_value(false, first_value, second_value)
   end
 
+  def check_arm_names(second_protocol_arm, first_protocol)
+    first_protocol.arms.each do |first_protocol_arm|
+      if first_protocol_arm.name == second_protocol_arm.name
+        puts "#" * 20
+        puts 'It looks like one of the arm names for the secondary protocol conflicts'
+        puts 'with an arm name on the master protocol.'
+        new_name = prompt('Please enter a unique name: ')
+        second_protocol_arm.update_attributes(name: new_name)
+      end
+    end
+  end
+
   first_protocol = get_protocol(false, 'first')
   second_protocol = get_protocol(false, 'second')
 
@@ -72,7 +84,6 @@ task :protocol_merge => :environment do
 
     if first_protocol.valid?
     first_protocol.save
-    second_protocol.destroy
     else
       puts "#" *20
       raise first_protocol.errors.inspect
@@ -90,8 +101,12 @@ task :protocol_merge => :environment do
 
     fulfillment_ssrs = []
     second_protocol.service_requests.each do |request|
-      request.update_attributes(protocol_id: first_protocol.id)
+      request.protocol_id = first_protocol.id
+      request.save(validate: false)
       request.sub_service_requests.each do |ssr|
+        ssr.update_attributes(protocol_id: first_protocol.id)
+        ssr.update_attributes(ssr_id: "%04d" % first_protocol.next_ssr_id)
+        first_protocol.update_attributes(next_ssr_id: first_protocol.next_ssr_id + 1)
         if ssr.in_work_fulfillment
           fulfillment_ssrs << ssr
         end
@@ -101,22 +116,27 @@ task :protocol_merge => :environment do
     puts "Service requests have been transferred. Assigning arms..."
 
     second_protocol.arms.each do |arm|
-      arm.update_attributes(protocol_id: first_protocol.id)
+      check_arm_names(arm, first_protocol)
+      arm.protocol_id = first_protocol.id
+      arm.save(validate: false)
     end
 
     puts "Arms have been transferred. Assigning documents..."
 
     second_protocol.documents.each do |document|
-      document.update_attributes(protocol_id: first_protocol.id)
+      document.protocol_id = first_protocol.id
+      document.save(validate: false)
     end
 
     puts 'Documents have been transferred. Assigning notes...'
 
     second_protocol.notes.each do |note|
-      note.update_attributes(notable_id: first_protocol.id)
+      note.notable_id = first_protocol.id
+      note.save(validate: false)
     end
 
     puts "Updating of child objects complete"
+    second_protocol.delete
 
     if fulfillment_ssrs.any?
       puts "#" * 50

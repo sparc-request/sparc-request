@@ -100,15 +100,15 @@
   padding-bottom: 15px
   
 // Custom Reporting Styling
-h2.report_title
+h2.report-title
   padding: 10px
   margin-bottom: 50px
 
-#reporting_form #report_fields .checkbox-inline
+#reporting-form #report-fields .checkbox-inline
   margin: 0px 30px 0 0
   cursor: auto
 
-#reporting_form .report_actions
+#reporting-form .report-actions
   margin-top: 40px
 
 //Custom Navbar Styling
@@ -148,6 +148,7 @@ h2.report_title
 #container > #inner-content
   // these are cwf specs
   width: 1300px !important
+  min-height: 625px
   margin-left: auto
   margin-right: auto
   padding-left: 15px
@@ -453,12 +454,6 @@ div.permissions_dialog
         width: 125px
       li.new_notification.roles, li.new_notification.requester
         width: 325px
-.service-request-button
-  color: $white
-  text-align: center
-  padding: 3px 0 3px 5px
-  background: #00B741 !important
-  border: 2px outset #80CCFF
 
 .right-dashboard
   float: left
@@ -1221,6 +1216,16 @@ div.permissions_dialog
 
 .locked
   margin-left: 3px
+
+.no-padding
+  padding: 0 !important
+
+.no-padding-x
+  padding-left: 0 !important
+  padding-right: 0 !important
+
+.no-margin
+  margin: 0 !important
 
 label.required:after
   content: "*"

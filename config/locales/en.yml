@@ -74,8 +74,14 @@ en:
         password_confirmation: "Password Confirmation"
       note:
         body: "Note"
+      option:
+        content: "Option"
       protocol:
         human_subjects_info: "The NCT #"
+      question:
+        content: "Question"
+      question_response:
+        content: "Question"
 
   ########
   # ARMS #
@@ -173,6 +179,7 @@ en:
     pppv:
       header: "Per Patient/Visit Services -- %{arm_name}"
       header_fields:
+        notes: "Notes"
         service: "Service Name"
         status: "Status"
         unit_cost: "Unit Costs"
@@ -227,6 +234,7 @@ en:
       total_per_study: 'Total proposed cost of one-time fees per study'
       move_visit_button: 'Ability to change visit position'
       pppv_total_costs: 'Total proposed cost of services per arm'
+      line_item_notes: 'Line Item Notes'
       pppv_status: 'Used to track the progress of a service'
       quantity_type: 'Unit of measurement'
       subject_count: 'Number of participants'
@@ -250,6 +258,7 @@ en:
       select: "---Please Select---"
       search_for_user: "Search for a User"
       select_one: "Select One"
+    add_as_last: "Add as last"
 
   #############
   # DOCUMENTS #
@@ -274,6 +283,8 @@ en:
       specify_doc_type: "Please Specify:"
       document: "Document:"
       access: "Allow Access:"
+    tooltips:
+      access: "Uploaded documents are made viewable to all service providers unless checkmark is removed"
     select_type: "Please Select Type"
     delete_confirm: "Are you sure you want to delete the selected Document from this protocol?"
 
@@ -515,11 +526,25 @@ en:
       percent: "Percent Subsidy:"
       pi: "PI Contribution:"
       cost: "Subsidy Cost:"
+    tooltips:
+      request_cost: "Total cost of services eligible for a subsidy"
+      percent: "Percent of Current Request Cost to be covered by Service Provider"
+      pi: "Amount PI is responsible to provide to Service Provider"
+      cost: "Amount of Current Request Cost to be covered by Service Provider"
+
+  #######################
+  # SWEET ALERT CONTENT #
+  #######################
+  swal:
+    swal_confirm:
+      title: "Are you sure?"
+      text: "You cannot undo this action"
 
   #############################
   # VALIDATION ERROR MESSAGES #
   #############################
   errors:
+    user_note: "Fields with an Asterisk ( * ) are required"
     arms:
       name_unique: "has to be unique within a study/project"
       bad_characters: "can not contain any of the following characters: [ ] * / \\ ? :"
@@ -530,17 +555,21 @@ en:
       displayed_cost_gte_zero: 'must be greater than or equal to 0'
     line_items_visits:
       subject_count_invalid: "Subject Count cannot exceed the Arm Subject Count (%{arm_subject_count})"
-    visit_groups:
-      days_out_of_order: "Please make sure visit days are in sequential order (%{arm_name})."
     protocols:
       start_date_missing: "Start Date can\'t be blank"
       end_date_missing: "End Date can\'t be blank"
       date_range_invalid: "Start Date must come before End Date"
+    question_responses:
+      phone_invalid: "Phone is invalid"
+      email_invalid: "Email is invalid"
+      zipcode_invalid: "Zipcode is invalid"
     service_requests:
       line_items_missing: "No Services have been detected in your Cart. Please return to the Catalog and add Services before continuing"
       protocol_missing: "You must create a Protocol before continuing"
       protocol_errors: "The selected Protocol has errors which must be fixed. Please edit the Protocol before continuing"
       arms_missing: "You must create Arms before proceeding to the Service Calendar"
+    visit_groups:
+      days_out_of_order: "Please make sure visit days are in sequential order (%{arm_name})."
 
   ################
   # VISIT GROUPS #
@@ -554,8 +583,6 @@ en:
       position: "Insert into Position:"
       window_before: "Window Before:"
       window_after: "Window After:"
-    prompts:
-      add_as_last: "Add as last"
 
 
 
@@ -768,6 +795,7 @@ en:
     add_map: "Add Pricing Map"
     associated_surveys: "Surveys"
     auto_price_adj: "Automatic Pricing Adjustment"
+    available_statuses: "Available Statuses"
     blank_field_errors: "Name and Order are required on the Service.  Effective Date, Display Date, and Service Rate are required on all Pricing Maps."
     cancel_button: "Cancel"
     change_rates: "Increase or Decrease Rates"
@@ -806,6 +834,7 @@ en:
     program: "Program"
     related_services: "Related Services"
     revenue_code: "Revenue Code"
+    selected_statuses: "Selected Statuses"
     send_to_epic: "Send To Epic"
     service_center_cost: "Service Center Cost"
     service_error: "There are no service providers anywhere on this tree."
@@ -1087,6 +1116,10 @@ en:
     PIs: "PI(s)"
     protocol: "Queued Protocol"
     status: "Last Queue Status"
+    created_at: 'Current Queue Date'
+    send: 'Send'
+    by: 'By'
+    sent_protocols: 'Sent Protocols'
   footer:
     mail_to: "hundc@musc.edu"
     mail_link: "Sign Up For the SPARC Request Listserv"
@@ -1296,7 +1329,6 @@ en:
     remove_service: "Are you sure that you want to remove this service from all subjects' visit calendars in this arm?"
     service_delete_confirm: "Are you sure that you want to remove this service from all subjects' visit calendars?"
     subsidy: "Value is over maximum subsidy percentage."
-  has_fulfillments: "This line item has one or more fulfillments associated with it and can not be deleted."
   in_fulfillment: "This line item is associated with a request that is in Fulfillment and cannot be deleted."
   js_confirm: "Are you sure?"
   notifications_js:
@@ -1622,6 +1654,20 @@ en:
     dashboard: "Dashboard"
     faq: "Help/FAQs"
     feedback: "Feedback"
+    feedback:
+      name: 'Name'
+      email: 'Email'
+      date: 'Date'
+      bug: 'Bug'
+      enhancement_feature_request: 'Enhancement/Feature Request'
+      training: 'Training'
+      other: 'Other'
+      immediate_work_stoppage: 'Immediate Work Stoppage'
+      high: 'High'
+      normal: 'Normal'
+      low: 'Low'
+      browser_version: 'Browser Version'
+      prompt: 'Please Choose a Browser'
     redcap_survey: 'https://redcap.musc.edu/surveys/?s=A37TNJWJPL'
 
   # Service Request approve epic rights

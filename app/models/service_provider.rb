@@ -18,17 +18,10 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class ServiceProvider < ActiveRecord::Base
+class ServiceProvider < ApplicationRecord
   audited
 
   belongs_to :organization
   belongs_to :identity
   belongs_to :service
-
-  attr_accessible :identity_id
-  attr_accessible :organization_id
-  attr_accessible :service_id
-  attr_accessible :is_primary_contact
-  attr_accessible :hold_emails
 end
-

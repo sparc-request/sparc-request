@@ -28,7 +28,7 @@
       .modal-body
         #modal_errors
         .form-group.text-center
-          = t(:proper)[:cart][:remove_request][:warning]
+          = raw(t('proper.cart.remove_request.warning', ssr_id: display_ssr_id(@sub_service_request)))
       .modal-footer
         .center-block
           %a.btn.btn-default.yes-button{ data: { dismiss: 'modal' } }

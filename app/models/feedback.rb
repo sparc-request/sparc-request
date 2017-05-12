@@ -18,13 +18,45 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class Feedback < ActiveRecord::Base
-  audited
+if USE_REDCAP_API
+  class Feedback
+    include ActiveModel::Validations
+    include ActiveModel::Conversion
+    extend ActiveModel::Naming
 
-  attr_accessible :email, :message
+    attr_accessor :name, :email, :date, :typeofrequest,
+      :priority, :browser, :version, :sparc_request_id, :letters
 
-  validates :message,
-            :email,
-            presence: true
-  validates_format_of :email, with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\z/i
+    validates :name,
+      :email,
+      :date,
+      :typeofrequest,
+      :priority,
+      :browser,
+      :version,
+      :sparc_request_id,
+      presence: true
+
+    validates_format_of :email, with: Devise::email_regexp
+
+    def initialize(attributes = {})
+      attributes.each do |name, value|
+        send("#{name}=", value)
+      end
+    end
+
+    def persisted?
+      false
+    end
+  end
+else
+  class Feedback < ApplicationRecord
+    audited
+
+    validates :message,
+      :email,
+      presence: true
+    validates_format_of :email, with: Devise::email_regexp
+  end
 end
+

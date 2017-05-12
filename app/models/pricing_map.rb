@@ -18,31 +18,12 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class PricingMap < ActiveRecord::Base
+class PricingMap < ApplicationRecord
   audited
 
   belongs_to :service
-
-  attr_accessible :service_id
-  attr_accessible :unit_type
-  attr_accessible :unit_factor
-  attr_accessible :percent_of_fee
-  attr_accessible :full_rate
-  attr_accessible :exclude_from_indirect_cost
-  attr_accessible :unit_minimum
-  attr_accessible :units_per_qty_max
-  attr_accessible :federal_rate
-  attr_accessible :corporate_rate
-  attr_accessible :other_rate
-  attr_accessible :member_rate
-  attr_accessible :effective_date
-  attr_accessible :display_date
-  attr_accessible :quantity_type
-  attr_accessible :quantity_minimum
-  attr_accessible :otf_unit_type
-
   before_save :upcase_otf_unit_type
-  
+
   validates :full_rate,
             :display_date,
             :effective_date,
@@ -55,13 +36,13 @@ class PricingMap < ActiveRecord::Base
   with_options :if => :is_one_time_fee? do |one_time_fee|
     one_time_fee.validates :otf_unit_type, :quantity_type, :presence => true
     one_time_fee.validates :units_per_qty_max, :quantity_minimum, :numericality => { :only_integer => true }
-  end  
+  end
   # Per patient pricing maps require: unit_type and unit_minimum
   with_options :unless => :is_one_time_fee? do |per_patient|
     per_patient.validates :unit_type, :presence => true
     per_patient.validates :unit_minimum, :numericality => { :only_integer => true }
-  end  
-  
+  end
+
   def is_one_time_fee?
     service && service.one_time_fee
   end

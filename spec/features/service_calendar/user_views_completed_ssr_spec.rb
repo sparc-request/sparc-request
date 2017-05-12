@@ -30,7 +30,7 @@ RSpec.describe 'User views a completed SSR', js: true do
                 create(:pricing_setup, organization: org)
     pppv      = create(:service, organization: org, one_time_fee: false)
     otf       = create(:service, organization: org, one_time_fee: true)
-    otf.pricing_maps.first.update_attributes(otf_unit_type: 'total', units_per_quantity: 5, quantity: 5)
+    otf.pricing_maps.first.update_attributes(otf_unit_type: 'total')
 
     protocol  = create(:protocol_federally_funded, primary_pi: jug2)
     @sr       = create(:service_request_without_validations, protocol: protocol)
@@ -38,7 +38,7 @@ RSpec.describe 'User views a completed SSR', js: true do
     ssr2      = create(:sub_service_request, service_request: @sr, organization: org, status: 'complete')
     li1       = create(:line_item, service_request: @sr, sub_service_request: ssr1, service: pppv)
     li2       = create(:line_item, service_request: @sr, sub_service_request: ssr2, service: otf, units_per_quantity: 5, quantity: 5)
-    
+
     arm       = create(:arm, protocol: protocol, visit_count: 3, subject_count: 5)
     liv       = create(:line_items_visit, line_item: li1, arm: arm, subject_count: 5)
     vg        = create(:visit_group, arm: arm)
@@ -49,7 +49,7 @@ RSpec.describe 'User views a completed SSR', js: true do
   end
 
   context 'with per patient per visit services' do
-    context 'in the Template Tab' do  
+    context 'in the Template Tab' do
       scenario 'and sees the locked header' do
         expect(page).to have_selector('.pppv-calendar .organization-header.text-danger')
         expect(page).to have_selector('.pppv-calendar .glyphicon.glyphicon-lock.locked')
@@ -62,7 +62,7 @@ RSpec.describe 'User views a completed SSR', js: true do
       scenario 'and sees the non-editable subject count' do
         expect(page).to have_selector('.pppv-calendar td.subject-count', text: 5)
       end
-      
+
       scenario 'and sees the locked row button' do
         expect(page.evaluate_script("$('.pppv-calendar .service-calendar-row').attr('disabled');")).to eq('disabled')
       end

@@ -20,7 +20,6 @@
 
 class AddMissingIndexesToForeignKeys < ActiveRecord::Migration
   def change
-    add_index :answers, :question_id
     add_index :approvals, :identity_id
     add_index :approvals, :sub_service_request_id
     add_index :arms, :service_request_id
@@ -29,11 +28,6 @@ class AddMissingIndexesToForeignKeys < ActiveRecord::Migration
     add_index :calendars, :subject_id
     add_index :charges, :service_id
     add_index :clinical_providers, :identity_id
-    add_index :dependencies, :question_id
-    add_index :dependencies, :question_group_id
-    add_index :dependency_conditions, :dependency_id
-    add_index :dependency_conditions, :question_id
-    add_index :dependency_conditions, :answer_id
     add_index :document_groupings, :service_request_id
     add_index :documents, :sub_service_request_id
     add_index :documents, :document_grouping_id
@@ -50,14 +44,6 @@ class AddMissingIndexesToForeignKeys < ActiveRecord::Migration
     add_index :pricing_setups, :organization_id
     add_index :project_roles, :identity_id
     add_index :protocols, :next_ssr_id
-    add_index :questions, :survey_section_id
-    add_index :questions, :question_group_id
-    add_index :questions, :correct_answer_id
-    add_index :response_sets, :user_id
-    add_index :response_sets, :survey_id
-    add_index :responses, :response_set_id
-    add_index :responses, :question_id
-    add_index :responses, :answer_id
     add_index :service_providers, :identity_id
     add_index :service_relations, :related_service_id
     add_index :sub_service_requests, :owner_id
@@ -65,17 +51,11 @@ class AddMissingIndexesToForeignKeys < ActiveRecord::Migration
     add_index :subjects, :arm_id
     add_index :subsidies, :sub_service_request_id
     add_index :super_users, :identity_id
-    add_index :survey_sections, :survey_id
-    add_index :survey_translations, :survey_id
     add_index :taggings, :tagger_id
     add_index :toast_messages, :sending_class_id
     add_index :tokens, :identity_id
     add_index :user_notifications, :identity_id
     add_index :user_notifications, :notification_id
-    add_index :validation_conditions, :validation_id
-    add_index :validation_conditions, :question_id
-    add_index :validation_conditions, :answer_id
-    add_index :validations, :answer_id
     add_index :visits, :line_items_visit_id
     add_index :visits, :visit_group_id
   end

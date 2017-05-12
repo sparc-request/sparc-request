@@ -29,16 +29,12 @@
         - entity.associated_surveys.each do |associated_survey|
           %tr
             %td
-              = "#{associated_survey.survey.title} - Version #{associated_survey.survey.survey_version}"
-              %br
-              - survey_link = direct_link_survey_url(associated_survey.survey.access_code, :survey_version => associated_survey.survey.survey_version)
-              %a.associated_survey_link{href: survey_link, target: 'blank'}
-                = survey_link
+              = link_to "#{associated_survey.survey.title} - Version #{associated_survey.survey.version}", surveyor_survey_preview_path(associated_survey.survey, format: :html), target: 'blank', class: 'associated_survey_link'
             %td= image_tag 'cancel.png', :"data-associated_survey_id" => associated_survey.id, :class => 'associated_survey_delete'
 
   %table
     %tr
-      %td= select_tag 'new_associated_survey', grouped_options_for_select(Survey.all.group_by(&:title).map{|k,v| [k,v.map{|p| ["Version #{p.survey_version}", p.id]}]}, nil, { prompt: t(:cm_shared)[:labels][:select_survey] }) 
+      %td= select_tag 'new_associated_survey', grouped_options_for_select(Survey.all.group_by(&:title).map{|k,v| [k,v.map{|p| ["Version #{p.version}", p.id]}]}, nil, { prompt: t(:cm_shared)[:labels][:select_survey] }) 
       %td= button_tag t("cm_shared.labels.new_associated_survey"), :"data-surveyable_id" => entity.id, :"data-surveyable_type" => entity.class.to_s, :class => 'add_associated_survey'
   .survey_warning_message
     = t("cm_shared.labels.survey_warning")

@@ -30,7 +30,7 @@ class CatalogManager::InstitutionsController < CatalogManager::OrganizationsCont
   end
 
   def update
-    @attributes = params[:institution]
+    @attributes = organization_params(:institution)
     super
   end
 end

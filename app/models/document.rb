@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class Document < ActiveRecord::Base
+class Document < ApplicationRecord
   audited
 
   include Paperclip::Glue
@@ -26,12 +26,6 @@ class Document < ActiveRecord::Base
   belongs_to :protocol
   has_attached_file :document #, :preserve_files => true
   validates_attachment :document, :content_type => {:content_type => %w(text/plain image/jpeg image/jpg image/png application/vnd.ms-excel text/csv application/pdf application/msword application/vnd.openxmlformats-officedocument.wordprocessingml.document application/vnd.openxmlformats-officedocument.spreadsheetml.sheet)}
-
-  attr_accessible :document
-  attr_accessible :doc_type
-  attr_accessible :doc_type_other
-  attr_accessible :sub_service_requests
-  attr_accessible :protocol_id
 
   validates :doc_type, :document, presence: true
   validates :doc_type_other, presence: true, if: Proc.new { |doc| doc.doc_type == 'other' }

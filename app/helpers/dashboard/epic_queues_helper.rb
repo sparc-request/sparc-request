@@ -25,15 +25,26 @@ module Dashboard::EpicQueuesHelper
   end
 
   def format_pis(protocol)
-    protocol.principal_investigators.map(&:full_name).each do |pi|
+    pis = protocol.principal_investigators.map(&:full_name).each do |pi|
       "#{pi}"
     end
+    #bootstrap-table can't search within arrays
+    pis.join(',')
   end
 
   def epic_queue_delete_button(epic_queue)
     content_tag(:button,
       raw(content_tag(:span, '', class: 'glyphicon glyphicon-remove', aria: { hidden: 'true' })),
       type: 'button', data: { epic_queue_id: epic_queue.id, permission: 'true' }, class: "btn btn-danger actions-button delete-epic-queue-button")
+  end
+
+  def epic_queue_send_button(epic_queue)
+    content_tag(
+      :a,
+      raw(content_tag(:span, '', class: 'glyphicon glyphicon-hand-right')),
+      data: { protocol_id: epic_queue.protocol.id, permission: 'true',
+              eq_id: epic_queue.id },
+      class: 'btn btn-success push-to-epic')
   end
 
   def format_epic_queue_date(protocol)
@@ -43,6 +54,11 @@ module Dashboard::EpicQueuesHelper
     else
       ''
     end
+  end
+
+  def format_epic_queue_created_at(epic_queue)
+    created_at = epic_queue.created_at
+    created_at.strftime(t(:epic_queues)[:date_formatter])
   end
 
   def format_status(protocol)

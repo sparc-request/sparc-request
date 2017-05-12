@@ -5,8 +5,8 @@ $ ->
     lineItemId = $(this).data('line-item-id')
     protocolId = $(this).data('protocol-id')
     swal {
-      title: 'Are you sure?'
-      text: 'You cannot undo this action'
+      title: I18n['swal']['swal_confirm']['title']
+      text: I18n['swal']['swal_confirm']['text']
       type: 'warning'
       showCancelButton: true
       confirmButtonColor: '#DD6B55'

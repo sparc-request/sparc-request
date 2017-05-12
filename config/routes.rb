@@ -21,10 +21,6 @@
 SparcRails::Application.routes.draw do
   post 'study_type/determine_study_type_note'
 
-  match '/direct_link_to/:survey_code', :to => 'surveyor#create', :as => 'direct_link_survey', :via => :get
-  match '/surveys/:survey_code/:response_set_code', :to => 'surveyor#destroy', :via => :delete
-  mount Surveyor::Engine => "/surveys", :as => "surveyor"
-
   resources :services do
     namespace :additional_details do
       resources :questionnaires
@@ -35,6 +31,22 @@ SparcRails::Application.routes.draw do
       resources :update_questionnaires, only: [:update]
     end
   end
+
+  namespace :surveyor do
+    resources :surveys, only: [:index, :show, :create, :destroy] do
+      get :preview
+      get :update_dependents_list
+    end
+    resources :sections, only: [:create, :destroy]
+    resources :questions, only: [:create, :destroy]
+    resources :options, only: [:create, :destroy]
+    resources :responses, only: [:show, :new, :create] do
+      get :complete
+    end
+    resources :survey_updater, only: [:update]
+  end
+
+  resources :feedback
 
   if USE_SHIBBOLETH_ONLY
     devise_for :identities,
@@ -90,13 +102,12 @@ SparcRails::Application.routes.draw do
     end
   end
 
-  resources :protocols, except: [:index, :show, :destroy] do
+  resources :protocols, except: [:index, :destroy] do
     member do
       patch :update_protocol_type
       get :approve_epic_rights
       get :push_to_epic
       get :push_to_epic_status
-      get :view_details
     end
   end
 
@@ -218,6 +229,7 @@ SparcRails::Application.routes.draw do
     resources :documents, except: [:show]
 
     resources :epic_queues, only: [:index, :destroy]
+    resources :epic_queue_records, only: [:index]
 
     resources :fulfillments
 
@@ -258,7 +270,6 @@ SparcRails::Application.routes.draw do
         patch :update_protocol_type
         get :display_requests
         patch :archive
-        get :view_details
       end
     end
 

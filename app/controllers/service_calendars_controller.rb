@@ -36,9 +36,9 @@ class ServiceCalendarsController < ApplicationController
   respond_to :html, :js
   layout false
 
-  before_filter :initialize_service_request,      if: Proc.new{ params[:portal] != 'true' }
-  before_filter :authorize_identity,              if: Proc.new { params[:portal] != 'true' }
-  before_filter :authorize_dashboard_access,      if: Proc.new { params[:portal] == 'true' }
+  before_action :initialize_service_request,      if: Proc.new{ params[:portal] != 'true' }
+  before_action :authorize_identity,              if: Proc.new { params[:portal] != 'true' }
+  before_action :authorize_dashboard_access,      if: Proc.new { params[:portal] == 'true' }
 
   def update
     visit         = Visit.find(params[:visit_id])
@@ -214,7 +214,8 @@ class ServiceCalendarsController < ApplicationController
                 else
                   Arm.find(params[:arm_id]).protocol
                 end
-    permission_to_view = @protocol.project_roles.where(identity_id: current_user.id, project_rights: %w(approve request view)).any?
+
+    permission_to_view = current_user.can_view_protocol?(@protocol)
 
     unless permission_to_view || Protocol.for_admin(current_user.id).include?(@protocol)
       @protocol = nil

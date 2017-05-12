@@ -102,7 +102,7 @@ private
 
   def create_report_header obj
       obj.add_row ["Report Generated:", Date.today.strftime("%Y-%m-%d")]
-      obj.add_row ["# of Records:", self.records.size]
+      obj.add_row ["# of Records:", (self.records.size.is_a?(Hash) ? self.records.size.values.sum : self.records.size)]
 
       obj.add_row [""]
 

@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class LineItemsVisit < ActiveRecord::Base
+class LineItemsVisit < ApplicationRecord
 
   include RemotelyNotifiable
 
@@ -30,15 +30,11 @@ class LineItemsVisit < ActiveRecord::Base
   has_one :sub_service_request, through: :line_item
   has_one :service, through: :line_item
   has_many :visits, -> { includes(:visit_group).order("visit_groups.position") }, :dependent => :destroy
+  has_many :notes, as: :notable, dependent: :destroy
 
-  attr_accessible :arm_id
-  attr_accessible :line_item_id
-  attr_accessible :subject_count  # number of subjects for this visit grouping
-  attr_accessible :hidden
-
-  validates_numericality_of :subject_count
   validate :subject_count_valid
   validate :pppv_line_item
+  validates_numericality_of :subject_count
 
   after_save :set_arm_edited_flag_on_subjects
 

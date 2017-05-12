@@ -289,7 +289,7 @@ SparcRails::Application.routes.draw do
       end
     end
 
-    resources :protocol_filters, only: [:new, :create]
+    resources :protocol_filters, only: [:new, :create, :destroy]
 
     resources :service_requests, only: [:show]
 

@@ -188,10 +188,6 @@ class LineItemsVisit < ApplicationRecord
     self.visits.create(visit_group_id: visit_group.id)
   end
 
-  def procedures
-    self.visits.map {|x| x.appointments.map {|y| y.procedures.select {|z| z.line_item_id == self.line_item_id}}}.flatten
-  end
-
   ### audit reporting methods ###
 
   def audit_excluded_actions

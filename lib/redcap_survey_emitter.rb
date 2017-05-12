@@ -7,17 +7,34 @@ class RedcapSurveyEmitter
   end
 
   def send_form
-    record = {
-      :letters => latest_letter_id + 1,
-      :name => @feedback.name,
-      :email => @feedback.email,
-      :date => Date.strptime(@feedback.date[0..9], '%m/%d/%Y').strftime("%Y/%m/%d").gsub('/', '-'),
-      :typeofrequest => @feedback.typeofrequest,
-      :priority => @feedback.priority,
-      :browser => @feedback.browser,
-      :version => @feedback.version,
-      :sparc_request_id => @feedback.sparc_request_id
+    #the RedCap API token has differing fields between staging and production.
+    #Due to potential data loss, we cannot change those fields on RedCap itself,
+    #therefore here we are specifying different params based on Rails.env
+    if Rails.env.production?
+      record = {
+        :letters => latest_letter_id + 1,
+        :name => @feedback.name,
+        :email => @feedback.email,
+        :date => Date.strptime(@feedback.date[0..9], '%m/%d/%Y').strftime("%Y/%m/%d").gsub('/', '-'),
+        :type => @feedback.typeofrequest,
+        :priority => @feedback.priority,
+        :browser => @feedback.browser,
+        :version => @feedback.version,
+        :sparc_request_id => @feedback.sparc_request_id
       }
+    else
+      record = {
+        :letters => latest_letter_id + 1,
+        :name => @feedback.name,
+        :email => @feedback.email,
+        :date => Date.strptime(@feedback.date[0..9], '%m/%d/%Y').strftime("%Y/%m/%d").gsub('/', '-'),
+        :typeofrequest => @feedback.typeofrequest,
+        :priority => @feedback.priority,
+        :browser => @feedback.browser,
+        :version => @feedback.version,
+        :sparc_request_id => @feedback.sparc_request_id
+      }
+    end
 
     data = [record].to_json
 

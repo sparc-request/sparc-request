@@ -29,11 +29,7 @@
         - entity.associated_surveys.each do |associated_survey|
           %tr
             %td
-              = "#{associated_survey.survey.title} - Version #{associated_survey.survey.version}"
-              %br
-              - survey_link = new_surveyor_response_path(access_code: associated_survey.survey.access_code, survey_version: associated_survey.survey.version, format: :html)
-              %a.associated_survey_link{href: survey_link, target: 'blank'}
-                = survey_link
+              = link_to "#{associated_survey.survey.title} - Version #{associated_survey.survey.version}", surveyor_survey_preview_path(associated_survey.survey, format: :html), target: 'blank', class: 'associated_survey_link'
             %td= image_tag 'cancel.png', :"data-associated_survey_id" => associated_survey.id, :class => 'associated_survey_delete'
 
   %table

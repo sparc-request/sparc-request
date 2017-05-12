@@ -277,10 +277,12 @@ class NotifierLogic
     destroyed_ssr_audit = @service_request.deleted_ssrs_since_previous_submission
     destroyed_ssr_audit.each do |ssr_audit|
       un_updatable_statuses = SubServiceRequest.all.map(&:status).uniq - UPDATABLE_STATUSES
-      latest_action_update_audit = AuditRecovery.where("auditable_id = #{ssr_audit.auditable_id} AND action = 'update'").order(created_at: :desc).first
-      if latest_action_update_audit.nil?
-        latest_action_destroy_audit = AuditRecovery.where("auditable_id = #{ssr_audit.auditable_id} AND action = 'destroy'").order(created_at: :desc).first
-        if un_updatable_statuses.include?(latest_action_destroy_audit.audited_changes['status'])
+      latest_action_update_audit = AuditRecovery.where("auditable_id = #{ssr_audit.auditable_id} AND action = 'update'")
+      latest_action_update_audit = latest_action_update_audit.present? ? latest_action_update_audit.order(created_at: :desc).first : nil
+      if latest_action_update_audit.nil? || latest_action_update_audit.audited_changes['status'].nil?
+        latest_action_destroy_audit = AuditRecovery.where("auditable_id = #{ssr_audit.auditable_id} AND action = 'destroy'")
+        latest_action_destroy_audit = latest_action_destroy_audit.present? ? latest_action_destroy_audit.order(created_at: :desc).first : nil
+        if latest_action_destroy_audit.present? && un_updatable_statuses.include?(latest_action_destroy_audit.audited_changes['status'])
           deleted_ssr_audits_that_need_request_amendment_email << ssr_audit
         end
       else

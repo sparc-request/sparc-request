@@ -192,6 +192,9 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
   def archive
     @protocol.toggle!(:archived)
+    @current_user = Identity.find(params[:current_user])
+    @protocol_type = params[:protocol_type]
+    @permission_to_edit = params[:pte]
     respond_to do |format|
       format.js
     end

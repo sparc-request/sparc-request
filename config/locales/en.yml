@@ -178,7 +178,7 @@ en:
       pricing: "Consolidated Request Tab"
     pppv:
       clinical_services: "Clinical Services"
-      header: "Arm: %{arm_name}"
+      header: "Clinical Services</br>Arm: %{arm_name}"
       header_fields:
         notes: "Notes"
         service: "Service Name"

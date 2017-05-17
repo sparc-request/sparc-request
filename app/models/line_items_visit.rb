@@ -36,8 +36,6 @@ class LineItemsVisit < ApplicationRecord
   validate :pppv_line_item
   validates_numericality_of :subject_count
 
-  after_save :set_arm_edited_flag_on_subjects
-
   # Destroy parent Arm if the last LineItemsVisit was destroyed
   after_destroy :release_parent
 
@@ -51,10 +49,6 @@ class LineItemsVisit < ApplicationRecord
     if self.line_item.one_time_fee
       errors.add(:_, 'Line Items Visits should only belong to a PPPV LineItem')
     end
-  end
-
-  def set_arm_edited_flag_on_subjects
-    self.arm.set_arm_edited_flag_on_subjects
   end
 
   # Find a LineItemsVisit for the given arm and line item.  If it does
@@ -192,23 +186,6 @@ class LineItemsVisit < ApplicationRecord
   # error.
   def add_visit visit_group
     self.visits.create(visit_group_id: visit_group.id)
-  end
-
-  def procedures
-    self.visits.map {|x| x.appointments.map {|y| y.procedures.select {|z| z.line_item_id == self.line_item_id}}}.flatten
-  end
-
-  def remove_procedures
-    self.procedures.each do |pro|
-      if pro.completed?
-        if pro.line_item.service.displayed_pricing_map.unit_factor > 1
-          pro.update_attributes(:unit_factor_cost => pro.cost * 100)
-        end
-        pro.update_attributes(service_id: self.line_item.service_id, line_item_id: nil, visit_id: nil)
-      else
-        pro.destroy
-      end
-    end
   end
 
   ### audit reporting methods ###

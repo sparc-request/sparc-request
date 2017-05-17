@@ -21,10 +21,6 @@
 class Procedure < ApplicationRecord
   audited
 
-  belongs_to :appointment
-  belongs_to :visit
-  belongs_to :line_item
-  belongs_to :service
   after_create :fix_toasts_if_uncompleted
 
   def fix_toasts_if_uncompleted

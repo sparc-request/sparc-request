@@ -182,6 +182,7 @@ en:
     ###############
     protocols:
       table:
+        exporter: "Exporter"
         header: "Protocols"
         new_protocol: "New Protocol"
         new_study: "New Study"

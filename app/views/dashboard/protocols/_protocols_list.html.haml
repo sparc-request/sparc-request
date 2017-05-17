@@ -62,6 +62,9 @@
           %span.glyphicon.glyphicon-triangle-bottom.desc
       %th.col-sm-2.text-center
         = t(:dashboard)[:protocols][:table][:requests]
+        %span.protocol-sort{ name: 'requests', data: { sort_name: 'requests', sort_order: 'asc' } }
+          %span.glyphicon.glyphicon-triangle-top.asc
+          %span.glyphicon.glyphicon-triangle-bottom.desc
       %th.col-sm-2.text-center
         = t(:dashboard)[:protocols][:table][:archive]
     - protocols.each do |protocol|

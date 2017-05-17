@@ -32,7 +32,7 @@ class SubServiceRequest < ApplicationRecord
   belongs_to :owner, :class_name => 'Identity', :foreign_key => "owner_id"
   belongs_to :service_request
   belongs_to :organization
-  belongs_to :protocol
+  belongs_to :protocol, counter_cache: true
   has_many :past_statuses, :dependent => :destroy
   has_many :line_items, :dependent => :destroy
   has_many :line_items_visits, through: :line_items

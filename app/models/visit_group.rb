@@ -28,13 +28,11 @@ class VisitGroup < ApplicationRecord
   belongs_to :arm
   has_many :visits, :dependent => :destroy
   has_many :line_items_visits, through: :visits
-  has_many :appointments
 
   acts_as_list scope: :arm
 
   after_create :build_visits
   after_create :increment_visit_count, if: Proc.new { self.arm.visit_count < self.arm.visit_groups.count }
-  before_destroy :remove_appointments
   before_destroy :decrement_visit_count, if: Proc.new { self.arm.visit_count >= self.arm.visit_groups.count  }
 
   validates :name, presence: true
@@ -92,17 +90,6 @@ class VisitGroup < ApplicationRecord
 
   def increment_visit_count
     self.arm.increment!(:visit_count)
-  end
-
-  def remove_appointments
-    appointments = self.appointments
-    appointments.each do |app|
-      if app.completed?
-        app.update_attributes(position: self.position, name: self.name, visit_group_id: nil)
-      else
-        app.destroy
-      end
-    end
   end
 
   def decrement_visit_count

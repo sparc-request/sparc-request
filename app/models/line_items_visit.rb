@@ -37,6 +37,7 @@ class LineItemsVisit < ApplicationRecord
   validates_numericality_of :subject_count
 
   after_create :build_visits
+
   # Destroy parent Arm if the last LineItemsVisit was destroyed
   after_destroy :release_parent
 
@@ -166,23 +167,6 @@ class LineItemsVisit < ApplicationRecord
       return 0
     else
       self.direct_costs_for_one_time_fee * self.indirect_cost_rate
-    end
-  end
-
-  def procedures
-    self.visits.map {|x| x.appointments.map {|y| y.procedures.select {|z| z.line_item_id == self.line_item_id}}}.flatten
-  end
-
-  def remove_procedures
-    self.procedures.each do |pro|
-      if pro.completed?
-        if pro.line_item.service.displayed_pricing_map.unit_factor > 1
-          pro.update_attributes(:unit_factor_cost => pro.cost * 100)
-        end
-        pro.update_attributes(service_id: self.line_item.service_id, line_item_id: nil, visit_id: nil)
-      else
-        pro.destroy
-      end
     end
   end
 

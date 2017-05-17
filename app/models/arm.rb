@@ -27,11 +27,8 @@ class Arm < ApplicationRecord
 
   has_many :line_items_visits, :dependent => :destroy
   has_many :line_items, :through => :line_items_visits
-  has_many :subjects
   has_many :visit_groups, -> { order("position") }, :dependent => :destroy
   has_many :visits, :through => :line_items_visits
-
-  accepts_nested_attributes_for :subjects, allow_destroy: true
 
   after_create :create_calendar_objects
   after_update :update_visit_groups
@@ -114,16 +111,6 @@ class Arm < ApplicationRecord
 
   def total_costs_for_visit_based_service line_items_visits=self.line_items_visits
     direct_costs_for_visit_based_service(line_items_visits) + indirect_costs_for_visit_based_service(line_items_visits)
-  end
-
-  def populate_subjects
-    subject_difference = self.subject_count - self.subjects.count
-
-    if subject_difference > 0
-      subject_difference.times do
-        self.subjects.create
-      end
-    end
   end
 
   def service_list

@@ -18,9 +18,9 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 %tr
-  %th.col-sm-2.text-center{ colspan: 2, rowspan: 2 }
+  %th.otf-header-width.text-center{ colspan: 2, rowspan: 2 }
     = t(:calendars)[:otf][:header_fields][:service]
-  %th.col-sm-1.text-center{ rowspan: 2 }
+  %th.text-center{ rowspan: 2 }
     - if @tab == 'template'
       = link_to 'javascript:void(0)',
         data: { toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}' },
@@ -28,22 +28,22 @@
         = t(:calendars)[:pppv][:header_fields][:notes]
     - else
       = t(:calendars)[:pppv][:header_fields][:notes]
-  %th.col-sm-1.text-center{ rowspan: 2 }
+  %th.text-center{ rowspan: 2 }
     = t(:calendars)[:otf][:header_fields][:status]
-  %th.col-sm-2.text-center{ colspan: 2 }
+  %th.text-center{ colspan: 2 }
     = t(:calendars)[:otf][:header_fields][:unit_cost]
-  %th.col-sm-3.text-center{ colspan: 3, rowspan: 2 }
+  %th.text-center{ colspan: 2, rowspan: 2 }
     = t(:calendars)[:otf][:header_fields][:unit_type]
-  %th.col-sm-3.text-center{ colspan: 3, rowspan: 2 }
+  %th.text-center{ colspan: 2, rowspan: 2 }
     = t(:calendars)[:otf][:header_fields][:qty_type]
-  %th.col-sm-1.text-center{ colspan: 1, rowspan: 2 }
+  %th.text-center{ colspan: 1, rowspan: 2 }
     = link_to 'javascript:void(0)',
       data: { toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}' },
       title: t(:calendars)[:tooltips][:total_per_study] do
       = t(:calendars)[:otf][:header_fields][:total_per_study]
 
 %tr
-  %th.col-sm-1.text-center
+  %th.text-center
     = t(:calendars)[:otf][:header_fields][:service_rate]
-  %th.col-sm-1.text-center
+  %th.text-center
     = raw(t(:calendars)[:otf][:header_fields][:your_cost])

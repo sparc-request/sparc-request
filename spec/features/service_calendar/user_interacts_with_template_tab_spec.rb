@@ -66,7 +66,7 @@ RSpec.describe 'User interacts with Template tab', js: true do
       click_link 'Template Tab'
       wait_for_javascript_to_finish
 
-      expect(page).to have_selector('.panel-title', text: "Per Patient/Visit Services -- #{@arm.name}")
+      expect(page).to have_selector('.panel-title', text: "Clinical Services Arm: #{@arm.name}")
     end
   end
 
@@ -90,7 +90,7 @@ RSpec.describe 'User interacts with Template tab', js: true do
       click_link 'Template Tab'
       wait_for_javascript_to_finish
 
-      expect(page).to have_selector('.panel-title', text: "One Time Fee Services")
+      expect(page).to have_selector('.panel-title', text: "Non-clinical Services")
     end
   end
 

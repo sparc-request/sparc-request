@@ -55,6 +55,6 @@ RSpec.describe '/service_calendar/master_calendar/pppv/_pppv_totals', type: :vie
   it 'should not display total cost per arm' do
     render "/service_calendars/master_calendar/pppv/pppv_totals", tab: 'calendar', arm: @arm, line_items_visits: @liv
     
-    expect(response).to have_content("Total Costs (Per Patient/Visit Services) Per Study -- #{@arm.name}")
+    expect(response).to have_content("Total Costs (Clinical Services) Per Study -- #{@arm.name}")
   end
 end

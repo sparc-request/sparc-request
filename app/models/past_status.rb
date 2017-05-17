@@ -18,17 +18,12 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class PastStatus < ActiveRecord::Base
+class PastStatus < ApplicationRecord
   audited
 
   belongs_to :sub_service_request
 
   belongs_to :changer, class_name: 'Identity', foreign_key: 'changed_by_id'
-
-  attr_accessible :sub_service_request_id
-  attr_accessible :status
-  attr_accessible :date
-  attr_accessible :changed_by_id
 
   attr_accessor :changed_to
 

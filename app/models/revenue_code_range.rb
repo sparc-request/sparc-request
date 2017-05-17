@@ -18,8 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR~
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.~
 
-class RevenueCodeRange < ActiveRecord::Base
+class RevenueCodeRange < ApplicationRecord
   has_many :services
   belongs_to :organization, :foreign_key => :applied_org_id
-  attr_accessible :applied_org_id, :from, :percentage, :to, :vendor, :version
 end

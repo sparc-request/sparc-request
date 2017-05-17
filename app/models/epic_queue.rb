@@ -18,16 +18,19 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class EpicQueue < ActiveRecord::Base
+class EpicQueue < ApplicationRecord
   audited
 
-  # attr_accessible :title, :body
-  attr_accessible :protocol_id, :identity_id
   belongs_to :protocol
+  belongs_to :identity
 
-  after_create :update_protocol
+  #This callback and the method below is probably incorrect. Any insight as to
+  #why we would do this?
 
-  def update_protocol
-    protocol.update_attributes({:last_epic_push_time => Time.now, :last_epic_push_status => 'complete'})
-  end
+  #after_create :update_protocol
+
+  #def update_protocol
+  #  protocol.update_attributes({:last_epic_push_time => Time.now, :last_epic_push_status => 'complete'})
+  #end
 end
+

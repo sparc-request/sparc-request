@@ -18,16 +18,10 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class Approval < ActiveRecord::Base
+class Approval < ApplicationRecord
   audited
 
   belongs_to :service_request
   belongs_to :sub_service_request
   belongs_to :identity
-
-  attr_accessible :service_request_id
-  attr_accessible :sub_service_request_id
-  attr_accessible :identity_id
-  attr_accessible :approval_date
-  attr_accessible :approval_type
 end

@@ -18,27 +18,11 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class PricingSetup < ActiveRecord::Base
+class PricingSetup < ApplicationRecord
   audited
 
   belongs_to :organization
 
-  attr_accessible :organization_id
-  attr_accessible :display_date
-  attr_accessible :effective_date
-  attr_accessible :charge_master
-  attr_accessible :federal #o
-  attr_accessible :corporate #o
-  attr_accessible :other #o
-  attr_accessible :member #o
-  attr_accessible :college_rate_type
-  attr_accessible :federal_rate_type
-  attr_accessible :foundation_rate_type
-  attr_accessible :industry_rate_type
-  attr_accessible :investigator_rate_type
-  attr_accessible :internal_rate_type
-  attr_accessible :unfunded_rate_type
-  
   after_create :create_pricing_maps
 
   validates :display_date, :effective_date, :corporate, :other, :member, :college_rate_type,
@@ -103,4 +87,3 @@ class PricingSetup < ActiveRecord::Base
     end
   end
 end
-

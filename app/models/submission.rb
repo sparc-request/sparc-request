@@ -1,4 +1,4 @@
-class Submission < ActiveRecord::Base
+class Submission < ApplicationRecord
   belongs_to :service
   belongs_to :line_item
   belongs_to :protocol

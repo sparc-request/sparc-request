@@ -19,11 +19,11 @@
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 class ApplicationController < ActionController::Base
-  protect_from_forgery
+  protect_from_forgery prepend: true
   helper :all
   helper_method :current_user
   helper_method :xeditable?
-  before_filter :set_highlighted_link  # default is to not highlight a link
+  before_action :set_highlighted_link  # default is to not highlight a link
   before_action :configure_permitted_parameters, if: :devise_controller?
 
   protected
@@ -201,6 +201,12 @@ class ApplicationController < ActionController::Base
     else
       authorization_error "The service request you are trying to access is not editable.",
                           "SSR#{params[:sub_service_request_id]}"
+    end
+  end
+
+  def authorize_site_admin
+    unless SITE_ADMINS.include?(current_user.ldap_uid)
+      authorization_error "You do not have access to this page.", ""
     end
   end
 

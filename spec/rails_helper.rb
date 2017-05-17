@@ -26,8 +26,21 @@ require 'spec_helper'
 require 'site_prism'
 require 'tilt/coffee'
 require 'tilt/sass'
+require 'rails-controller-testing'
 
 RSpec.configure do |config|
+
+  # Manually including ::Rails::Controller::Testing::*
+  # until we upgrade RSpec to 3.5.0
+  [:controller, :view].each do |type|
+    config.include ::Rails::Controller::Testing::TestProcess, :type => type
+    config.include ::Rails::Controller::Testing::TemplateAssertions, :type => type
+    config.include ::Rails::Controller::Testing::Integration, :type => type
+  end
+  config.include ::Rails::Controller::Testing::TestProcess, js: true
+  config.include ::Rails::Controller::Testing::TemplateAssertions, js: true
+  config.include ::Rails::Controller::Testing::Integration, js: true
+
   # TODO mark spec types explicitly
   config.infer_spec_type_from_file_location!
   config.use_transactional_fixtures = false

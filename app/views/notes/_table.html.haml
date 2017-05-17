@@ -18,12 +18,14 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .bootstrap-table-dropdown-overflow
-  - unless in_dashboard
+  - if !in_dashboard && !notable_type_is_related_to_li_or_liv(notable_type)
     #notes-custom-toolbar
-      %button.btn.btn-success#note-new{ data: { notable_id: notable_id, notable_type: notable_type } }
+      %button.btn.btn-success#note-new{ title: t(:proper)[:document_management][:tooltips][:notes], data: { notable_id: notable_id, notable_type: notable_type, in_dashboard: in_dashboard, toggle: 'tooltip', delay: '{"show":"500"}' } }
         = t(:notes)[:add]
-  %table.table-striped#notes-table{ data: { toggle: 'table', search: "true", "show-columns" => "true", "show-refresh" => "true", "show-toggle" => "true", url: notes_path(format: :json, note: { notable_id: notable_id, notable_type: notable_type }), striped: "true", toolbar: "#notes-custom-toolbar", "show-export" => "false", "export-types" => ['excel'] } }
+  %table.table-striped#notes-table{ data: { toggle: 'table', url: notes_path(format: :json, note: { notable_id: notable_id, notable_type: notable_type, in_dashboard: in_dashboard }), striped: "true", toolbar: "#notes-custom-toolbar" } }
     %thead.primary-header
+    %thead
+      = display_service_name_and_code(notable_type, notable_id)
       %tr
         %th{ data: { class: 'user', align: "left", sortable: "true", field: "user" } }
           = t(:notes)[:table_fields][:user]

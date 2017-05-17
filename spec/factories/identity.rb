@@ -54,7 +54,11 @@ FactoryGirl.define do
 
     trait :without_validations do
       after(:build) do |user|
-        user.class.skip_callback(:create, :after, :send_admin_mail)
+        begin
+          user.class.skip_callback(:create, :after, :send_admin_mail)
+        rescue ArgumentError
+          # Do nothing. Callback has already been skipped.
+        end
       end
       to_create { |instance| instance.save(validate: false) }
     end

@@ -19,21 +19,15 @@
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 .panel.panel-default#epic-queue-panel
   .panel-heading
-    %h4.panel-title
-      = t(:dashboard)[:epic_queues][:header]
+    %ul.nav.nav-tabs
+      %li.active
+        = link_to t(:dashboard)[:epic_queues][:headers][:current], '#current',
+          data: { toggle: 'tab' }
+      %li
+        = link_to t(:dashboard)[:epic_queues][:headers][:past], '#past', data: { toggle: 'tab' }
   .panel-body
-    .bootstrap-table-dropdown-overflow
-      #epic-queues-custom-toolbar
-      %table.epic-queue-table{ data: { toggle: 'table', search: 'true', 'show-columns' => 'true', 'show-refresh' => 'true', 'show-toggle' => 'true', url: dashboard_epic_queues_path, striped: 'true', toolbar: '#epic-queues-custom-toolbar' } }
-        %thead.primary-header
-          %tr
-            %th{data: { field: "protocol", align: "left", sortable: 'true' } }
-              = t(:epic_queues)[:protocol]
-            %th{data: { field: "pis", align: "left", sortable: 'true' } }
-              = t(:epic_queues)[:PIs]
-            %th{data: { field: "date", align: "left", sortable: 'true', sorter: "dateSorter" } }
-              = t(:epic_queues)[:date]
-            %th{data: { field: "status", align: "left", sortable: 'true' } }
-              = t(:epic_queues)[:status]
-            %th.last{data: { field: "delete", align: "center" } }
-              = t(:epic_queues)[:delete]
+    .tab-content
+      .tab-pane.fade.in.active#current
+        = render "epic_queues_table"
+      .tab-pane.fade#past
+        = render "epic_queue_records_table"

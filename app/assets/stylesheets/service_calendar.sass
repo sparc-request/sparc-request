@@ -20,17 +20,33 @@
 .user-view-ssr-modal
   width: 95%
 
-.no-padding
-  padding: 0
-
 .calendar-container
   width: 100%
+
+  .black-note
+    color: black
+
+  .blue-note
+    color: blue
+
+  .blue-badge
+    background-color: blue
+
+  .notes:hover
+    .note-icon
+      color: grey
+    .badge
+      background-color: grey
 
   .panel-title
     width: 100%
 
   .table-bordered
     height: 100%
+    thead, tbody tr
+      display: table
+      width: 100%
+      table-layout: fixed
     thead
       tr:not(:first-child)
         border-bottom: 1px solid #ddd
@@ -45,6 +61,19 @@
       .popover
         color: black
     tbody
+      td.service-width
+        width: 12%
+      td.subject-count-width
+        width: 6%
+      td.select-row-width
+        width: 5%
+      td.maximum-total-per-patient-width,
+      td.total-per-patient-per-visit-cost-per-study-width,
+        width: 53%
+      td.maximum-total-per-patient-width-template,
+      td.maximum-total-direct-cost-per-patient-template,
+      td.total-per-patient-per-visit-cost-per-study-width-template,
+        width: 54.8%
       td.unit-type-number,
       td.qty-type-number
         height: 100%

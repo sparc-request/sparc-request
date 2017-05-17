@@ -22,6 +22,7 @@
     %h4.panel-title.pull-left
       = protocol_panel_header_line(service_request)
     .pull-right
+      - permission_to_edit = permission_to_edit || user.catalog_overlord
       - if permission_to_edit
         %button.btn.btn-warning.btn-sm.edit-service-request{ class: permission_to_edit ? '' : 'disabled', type: 'button', data: { permission: permission_to_edit.to_s, url: modify_request_button_url(service_request) } }
           = t(:dashboard)[:service_requests][:modify_request]

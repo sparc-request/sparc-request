@@ -1,0 +1,48 @@
+-# Copyright © 2011-2016 MUSC Foundation for Research Development
+-# All rights reserved.
+
+-# Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+-# 1. Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+
+-# 2. Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following
+-# disclaimer in the documentation and/or other materials provided with the distribution.
+
+-# 3. Neither the name of the copyright holder nor the names of its contributors may be used to endorse or promote products
+-# derived from this software without specific prior written permission.
+
+-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING,
+-# BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT
+-# SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+-# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
+-# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
+-# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+- # we have a select tag that we need to get records for
+- if field.is_a?(Class) && field.respond_to?(:where)
+  - records         = field.where(options[:filters])
+  - dependency      = options[:dependency]
+  - required_class  = options[:required] ? 'required' : ''
+  - default_classes = ['form-control reporting-field selectpicker', required_class]
+  - check_dep_class = dependency ? 'check-dep' : ''
+  - id              = options[:for] || "#{field.name.underscore}_id"
+  - name            = options[:for] ? "report[#{options[:for]}]" : "report[#{field.name.underscore}_id]"
+  - name_method     = options[:custom_name_method] || :name
+
+  = label_tag id, field_label, class: ['col-sm-3 control-label', required_class]
+  .col-sm-9
+    %select{ id: id, class: [default_classes, required_class, check_dep_class], name: name, data: { dependency: dependency } }
+      %option{ value: '' }
+        = t(:constants)[:prompts][:select_one]
+      
+      - records.each do |record|
+        - option_class = ''
+        - if dependency
+          - # either an id is specified or we assume the dependency is the id
+          - dependency_id = options[:dependency_id] || dependency.sub(/^#/, "")
+          - if record.respond_to?(dependency_id.to_s)
+            - option_class = "sub-#{record.send(dependency_id)}"
+        %option{ value: record.id, class: option_class }
+          - if record.is_a?(Survey)
+            = record.title + " - Version " + record.version.to_s
+          - else
+            = record.send(name_method)

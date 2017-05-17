@@ -36,6 +36,10 @@ RSpec.describe Dashboard::VisitGroupsController do
         @arm      = create(:arm, protocol: @protocol)
         @vg       = create(:visit_group, arm: @arm)
 
+        # We'll delete a visit from the arm, so we need a second visit
+        # to keep the arm valid.
+        create(:visit_group, arm: @arm)
+
         xhr :delete, :destroy, {
           id: @vg.id,
           service_request_id: @sr.id,
@@ -60,11 +64,11 @@ RSpec.describe Dashboard::VisitGroupsController do
       end
 
       it 'should destroy the visit group' do
-        expect(VisitGroup.count).to eq(0)
+        expect(VisitGroup.count).to eq(1)
       end
 
       it 'should decrement the arm visit count' do
-        expect(@arm.reload.visit_count).to eq(0)
+        expect(@arm.reload.visit_count).to eq(1)
       end
 
       it 'should render template' do
@@ -72,7 +76,7 @@ RSpec.describe Dashboard::VisitGroupsController do
       end
 
       it 'should respond ok' do
-        expect(controller).to respond_with(:ok)          
+        expect(controller).to respond_with(:ok)
       end
     end
 

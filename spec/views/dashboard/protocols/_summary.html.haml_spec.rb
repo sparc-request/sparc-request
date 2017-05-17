@@ -55,7 +55,7 @@ RSpec.describe 'dashboard/protocols/summary', type: :view do
 
       render_summary_for protocol
 
-      expect(response).to have_selector('button', exact: 'Study Notes')
+      expect(response).to have_selector('button', text: 'Study Notes')
     end
 
     context 'Study has potential funding source' do
@@ -122,7 +122,7 @@ RSpec.describe 'dashboard/protocols/summary', type: :view do
 
       render_summary_for protocol
 
-      expect(response).to have_selector('button', exact: 'Project Notes')
+      expect(response).to have_selector('button', text: 'Project Notes')
     end
 
     it 'should be titled "Project Summary"' do

@@ -17,153 +17,19 @@
 -# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-%h2.report_title.text-center.bg-primary= @report.title
-
-= form_tag generate_reports_path, :id => "reporting_form", :class => "form-horizontal" do
-  = hidden_field_tag "report[type]", @report.class.name
-
-  #report_fields
-    - @report.options.each do |field,options|
+%h2.report-title.text-center.bg-primary
+  = report.title
+= form_tag generate_reports_path, id: 'reporting-form', class: "form-horizontal" do
+  = hidden_field_tag 'report[type]', report.class.name
+  #report-fields
+    - report.options.each do |field, options|
       .form-group
-        - field_type = options[:field_type] || 'text_field_tag'
-        - field_label = options[:field_label] || field.to_s.titleize
-        - field_label += " *" if options[:required] and not field_type == :date_range
+        - field_type  = options[:field_type] || 'text_field_tag'
+        - field_label = "#{options[:field_label] || field.to_s.titleize}:"
 
-        /* TODO - extract these into either helpers or a custom form builder */
-        /* text_field_tag */
-        - if field_type == :text_field_tag
-          - dependency = options[:dependency]
-          - default_classes = "form-control text_field"
-          - default_classes = " required_field" if options[:required]
-          - check_dep_class = dependency ? 'check_dep_class' : nil
-          - id = options[:for] ? options[:for] : field.delete(" ").underscore
-          - name = options[:for] ? "report[" + options[:for] + "]" : "report[" + id + "]"
-
-          %label{:for => id, :class => "col-sm-3 control-label"}= field_label
-          .col-sm-9
-            = text_field_tag name, nil, :id => id, :class => default_classes, :type => "text"
-        /* end text_field_tag */
-
-        /* select_tag */
-        - if field_type == :select_tag
-          - if field.is_a? Class and field.respond_to?(:where) # we have a select tag that we need to get records for
-            - records = field.where(options[:filters])
-            - dependency = options[:dependency]
-            - default_classes = "form-control reporting_field"
-            - default_classes += " required_field" if options[:required]
-            - default_classes += " selectpicker" if options[:selectpicker]
-            - check_dep_class = dependency ? 'check_dep_class' : nil
-            - id = options[:for] || "#{field.name.underscore}_id"
-            - name = options[:for] ? "report[#{options[:for]}]" : "report[#{field.name.underscore}_id]"
-            - name_method = options[:custom_name_method] || :name
-
-            %label{:for => id, :class => "col-sm-3 control-label"}= field_label
-            .col-sm-9
-              %select{:"data-dependency" => dependency, :class => [default_classes, check_dep_class].join(" "), :name => name, :id => id}
-                %option{:value => ""} Select One
-                - records.each do |record|
-                  - #next if record.respond_to?(:is_available) and not record.is_available?
-                  - option_class = nil
-                  - if dependency
-                    - dependency_id = options[:dependency_id] || dependency.sub(/^#/, "") # either an id is specified or we assume the dependency is the id
-                    - if record.respond_to? dependency_id.to_s
-                      - option_class = "sub-#{record.send dependency_id}"
-                  %option{:value => record.id, :class => option_class}
-                    - if record.class.to_s == "Survey"
-                      = record.title + " - Version " + record.survey_version.to_s
-                    - else
-                      = record.send(name_method)
-        /* end select_tag */
-
-        /* date_field */
-        - if field_type == :date_field
-          - default_classes = "form-control date datetimepicker"
-          - default_classes += " required_field" if options[:required]
-          - id = options[:for] ? options[:for] : field.delete(" ").underscore
-          - name = options[:for] ? "report[" + options[:for] + "]" : "report[" + id + "]"
-          %label{:for => id, :class => "col-sm-3 control-label"}= field_label
-          .col-sm-9
-            .input-group.date
-              = text_field_tag name, nil, :id => id, :class => default_classes
-              %span.input-group-addon
-                %span.glyphicon.glyphicon-calendar
-
-        /* date_range */
-        - if field_type == :date_range
-          - default_classes = "form-control date datetimepicker"
-          - default_classes += " required_field" if options[:required]
-          %label{:class => "col-sm-3 control-label"}= field_label
-
-          /* from information */
-          - from_id = options[:for] ? options[:for] + "_from" : field.delete(" ").underscore + "_from"
-          - from_name = options[:for] ? "report[" + options[:for] + "_from]" : "report[" + from_id + "]"
-          - from_label = options[:from_label] || "From"
-          - from_label += " *" if options[:required]
-          - from_date = options[:from] ? options[:from].strftime('%B %d, %Y %H:%M:%S') : nil
-
-          /* to information */
-          - to_id = options[:for] ? options[:for] + "_to" : field.delete(" ").underscore + "_to"
-          - to_name = options[:for] ? "report[" + options[:for] + "_to]" : "report[" + to_id + "]"
-          - to_label = options[:to_label] || "To"
-          - to_label += " *" if options[:required]
-          - to_date = options[:to] ? options[:to].strftime('%B %d, %Y %H:%M:%S') : nil
-
-          %label{:for => from_id, :class => 'col-sm-1 col-sm-offset-1 control-label'}= from_label
-          .col-sm-3
-            .input-group.date
-              = text_field_tag from_name, nil, :id => from_id, :"data-from" => from_date, :class => default_classes
-              %span.input-group-addon
-                %span.glyphicon.glyphicon-calendar
-
-          %label{:for => to_id, :class => 'col-sm-1 control-label'}= to_label
-          .col-sm-3
-            .input-group.date
-              = text_field_tag to_name, nil, :id => to_id, :"data-to" => to_date, :class => default_classes
-              %span.input-group-addon
-                %span.glyphicon.glyphicon-calendar
-        /* end date_range */
-
-        /* check_box_tag */
-        - if field_type == :check_box_tag
-          - multiple = options[:multiple]
-          - grouping = options[:grouping]
-          - selected = options[:selected] || []
-          - default_classes = options[:required] ? "required_field" : ""
-          - name = options[:for] ? "report[#{options[:for]}]" : "report[#{field.name.underscore}_id]"
-          - name += "[]" if multiple
-          %label.col-sm-3.control-label= field_label
-
-          - if grouping and multiple # we have a defined grouping
-            .col-sm-9
-              - grouping.each do |k,v|
-                .row
-                  %fieldset
-                    %legend= k
-                    - v.each do |sv|
-                      %label{:for => sv, :class => 'checkbox-inline'}
-                        = check_box_tag name, sv, selected.include?(sv), :class => default_classes, :type => "checkbox"
-                        = multiple[sv]
-
-          - elsif multiple
-            - if multiple.is_a? Hash
-              .col-sm-9
-                - multiple.each do |k,v|
-                  %label{:for => k, :class => 'checkbox-inline'}
-                    = check_box_tag name, k, selected.include?(v), :class => default_classes, :type => "checkbox"
-                    = v
-
-          - else # for individual checkboxes that have true/false
-            / %label{:for => options[:for]}= field_label
-            .col-sm-9
-              = check_box_tag name, true, nil, :class => default_classes, :type => "checkbox"
-            /* TODO define behavior if multiple is a method or string representation of method chain */
-
-        /* end check_box_tag */
-
-  /* submit button */
-  .report_actions.text-center
-    = submit_tag t(:reports)[:create_report], :class => "btn btn-success"
-    = button_to "Return to reports list", reports_path, :method => :get, :id => "reporting_return_to_list", :class => "btn btn-primary"
+        = render "reports/form_partials/#{options[:field_type]}_form_partial", options: options, field_label: field_label, field: field
+  .report-actions.text-center
+    = submit_tag t(:reporting)[:actions][:create], class: "btn btn-success", data: { disable_with: false }
+    = button_to t(:reporting)[:actions][:return], reports_path, method: :get, id: "reporting-return-to-list", class: "btn btn-primary"
 %br
 %br

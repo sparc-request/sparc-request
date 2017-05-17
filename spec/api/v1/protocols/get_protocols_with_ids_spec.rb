@@ -78,7 +78,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
         parsed_body         = JSON.parse(response.body)
         expected_attributes = build(:protocol).attributes.
                                 keys.
-                                reject { |key| ['study_phase', 'id', 'created_at', 'updated_at', 'deleted_at', 'research_master_id', 'has_human_subject_info'].include?(key) }.
+                                reject { |key| ['study_phase', 'id', 'created_at', 'updated_at', 'deleted_at', 'research_master_id'].include?(key) }.
                                 push('callback_url', 'sparc_id').
                                 sort
         expect(parsed_body['protocols'].map(&:keys).flatten.uniq.sort).to eq(expected_attributes)
@@ -93,7 +93,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
         parsed_body         = JSON.parse(response.body)
         expected_attributes = build(:protocol).attributes.
                                 keys.
-                                reject { |key| ['study_phase', 'id', 'created_at', 'updated_at', 'deleted_at', 'research_master_id', 'has_human_subject_info'].include?(key) }.
+                                reject { |key| ['study_phase', 'id', 'created_at', 'updated_at', 'deleted_at', 'research_master_id'].include?(key) }.
                                 push('callback_url', 'sparc_id', 'arms', 'service_requests', 'project_roles', 'human_subjects_info').
                                 sort
 

@@ -22,16 +22,40 @@ class Dashboard::ProtocolFiltersController < Dashboard::BaseController
   respond_to :html, :json
 
   def new
-    @protocol_filter = @user.protocol_filters.new(params[:filterrific].except(:sorted_by))
+    @protocol_filter = @user.protocol_filters.new(new_params)
   end
 
   def create
-    if ProtocolFilter.create(params[:protocol_filter])
+    if ProtocolFilter.create(create_params)
       flash[:success] = 'Search Saved!'
     else
       flash[:alert] = 'Search Failed to Save.'
     end
 
     @protocol_filters = ProtocolFilter.latest_for_user(@user.id, 5)
+  end
+
+  private
+
+  def create_params
+    params.require(:protocol_filter).permit(:identity_id,
+      :search_name,
+      :show_archived,
+      :admin_filter,
+      :search_query,
+      with_organization: [],
+      with_status: [],
+      with_owner: [])
+  end
+
+  def new_params
+    params.require(:filterrific).permit(:identity_id,
+      :search_name,
+      :show_archived,
+      :admin_filter,
+      search_query: [:search_drop, :search_text],
+      with_organization: [],
+      with_status: [],
+      with_owner: [])
   end
 end

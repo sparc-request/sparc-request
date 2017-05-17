@@ -31,7 +31,7 @@ class CatalogManager::ProvidersController < CatalogManager::OrganizationsControl
   end
 
   def update
-    @attributes = params[:provider]
+    @attributes = organization_params(:provider)
     super
   end
 

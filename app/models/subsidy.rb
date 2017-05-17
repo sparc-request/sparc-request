@@ -18,16 +18,11 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class Subsidy < ActiveRecord::Base
+class Subsidy < ApplicationRecord
   audited
 
   belongs_to :sub_service_request
   has_many :notes, as: :notable
-
-  attr_accessible :sub_service_request_id
-  attr_accessible :overridden
-  attr_accessible :status
-  attr_accessible :percent_subsidy
 
   delegate :organization, :direct_cost_total, to: :sub_service_request, allow_nil: true
   delegate :subsidy_map, to: :organization, allow_nil: true

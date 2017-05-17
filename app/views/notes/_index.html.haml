@@ -27,12 +27,12 @@
     .modal-body
       #modal_errors
       .form-content
-        = render 'notes/table', notable_id: notable_id, notable_type: notable_type, in_dashboard: true
+        = render 'notes/table', notable_id: notable_id, notable_type: notable_type, in_dashboard: @in_dashboard
     .modal-footer
       .center-block
         %button.btn.btn-default{ type: 'button', data: { dismiss: 'modal' } }
           = t(:actions)[:close]
-        %button.btn.btn-primary.note.new{ type: "button", aria: { label: t(:notes)[:add] }, data: { notable_id: notable_id, notable_type: notable_type } }
+        %button.btn.btn-primary.note.new{ type: "button", aria: { label: t(:notes)[:add] }, data: { notable_id: notable_id, notable_type: notable_type, in_dashboard: @in_dashboard.to_s } }
           %span.glyphicon.glyphicon-plus{ aria: { hidden: "true" } }
           %span
             = t(:notes)[:add]

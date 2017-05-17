@@ -18,20 +18,12 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class Message < ActiveRecord::Base
+class Message < ApplicationRecord
   audited
 
   belongs_to :notification
   belongs_to :sender, :class_name => 'Identity', :foreign_key => 'from'
   belongs_to :recipient, :class_name => 'Identity', :foreign_key => 'to'
-
-  attr_accessible :notification_id
-  attr_accessible :to
-  attr_accessible :from
-  attr_accessible :email
-  attr_accessible :subject
-  attr_accessible :body
-
   validates_presence_of :to, :from, :body
 
   # Simple way to skip the after_save callback for the import process
@@ -41,4 +33,3 @@ class Message < ActiveRecord::Base
   end
 
 end
-

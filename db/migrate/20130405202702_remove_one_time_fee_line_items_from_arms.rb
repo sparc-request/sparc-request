@@ -27,12 +27,8 @@ class RemoveOneTimeFeeLineItemsFromArms < ActiveRecord::Migration
     belongs_to :line_item
     belongs_to :arm
     has_many :visits
-    attr_accessible :arm_id, :subject_count
   end
   class Arm < ActiveRecord::Base
-    attr_accessible :name
-    attr_accessible :visit_count
-    attr_accessible :subject_count
     has_many :visit_groupings
   end
 

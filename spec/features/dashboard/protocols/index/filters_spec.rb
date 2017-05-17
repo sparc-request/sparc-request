@@ -147,8 +147,6 @@ RSpec.describe "filters", js: :true do
 
         f = ProtocolFilter.create(search_name: "MyFilter",
           show_archived: true,
-          for_admin: false,
-          for_identity_id: true,
           search_query: "",
           with_status: ['ctrc_approved', 'complete'])
         f.identity = user
@@ -578,13 +576,13 @@ RSpec.describe "filters", js: :true do
         create(:service_provider, organization: organization2, identity: user)
         create(:service_provider, organization: organization3, identity: user)
 
-        @protocol1 = create_protocol(archived: false, short_title: "Protocol1")
+        @protocol1 = create_protocol(archived: false, short_title: "Protocol1", study: true)
         create(:project_role, identity: user, role: "very-important", project_rights: "to-party", protocol: @protocol1)
 
-        @protocol2 = create_protocol(archived: false, short_title: "Protocol2")
+        @protocol2 = create_protocol(archived: false, short_title: "Protocol2", study: true)
         create(:project_role, identity: user, role: "very-important", project_rights: "to-party", protocol: @protocol2)
 
-        @protocol3 = create_protocol(archived: false, short_title: "Protocol3")
+        @protocol3 = create_protocol(archived: false, short_title: "Protocol3", study: true)
         create(:project_role, identity: user, role: "very-important", project_rights: "to-party", protocol: @protocol3)
 
         service_request1 = create(:service_request_without_validations, protocol: @protocol1)
@@ -652,13 +650,13 @@ RSpec.describe "filters", js: :true do
         create(:service_provider, organization: organization2, identity: user)
         create(:service_provider, organization: organization3, identity: user)
 
-        @protocol1 = create_protocol(archived: false, short_title: "Protocol1")
+        @protocol1 = create_protocol(archived: false, short_title: "Protocol1", study: true)
         create(:project_role, identity: user, role: "very-important", project_rights: "to-party", protocol: @protocol1)
 
-        @protocol2 = create_protocol(archived: false, short_title: "Protocol2")
+        @protocol2 = create_protocol(archived: false, short_title: "Protocol2", study: true)
         create(:project_role, identity: user, role: "very-important", project_rights: "to-party", protocol: @protocol2)
 
-        @protocol3 = create_protocol(archived: false, short_title: "Protocol3")
+        @protocol3 = create_protocol(archived: false, short_title: "Protocol3", study: true)
         create(:project_role, identity: user, role: "very-important", project_rights: "to-party", protocol: @protocol3)
 
         service_request1 = create(:service_request_without_validations, protocol: @protocol1)
@@ -1000,6 +998,56 @@ RSpec.describe "filters", js: :true do
     end
   end
 
+  describe 'saved searches' do
+    before :each do
+      organization1 = create(:organization)
+      organization2 = create(:organization)
+      organization3 = create(:organization)
+      create(:service_provider, organization: organization1, identity: user)
+      create(:service_provider, organization: organization2, identity: user)
+      create(:service_provider, organization: organization3, identity: user)
+
+      @protocol1 = create_protocol(id: 888888, archived: false, title: "titlex", short_title: "Protocol1")
+      create(:project_role, identity: user, role: "very-important", project_rights: "to-party", protocol: @protocol1)
+
+      @protocol2 = create_protocol(id: 777777, archived: false, title: "xTitle", short_title: "Protocol2")
+      create(:project_role, identity: user, role: "very-important", project_rights: "to-party", protocol: @protocol2)
+
+      @protocol3 = create_protocol(archived: false, title: "888888", short_title: "Protocol3", research_master_id: 999999)
+      create(:project_role, identity: user2, role: "very-important", project_rights: "to-party", protocol: @protocol3)
+
+      service_request1 = create(:service_request_without_validations, protocol: @protocol1)
+      create(:sub_service_request, service_request: service_request1, organization: organization1, status: 'draft', protocol_id: @protocol1.id)
+
+      service_request2 = create(:service_request_without_validations, protocol: @protocol2)
+      create(:sub_service_request, service_request: service_request2, organization: organization2, status: 'draft', protocol_id: @protocol2.id)
+
+      service_request3 = create(:service_request_without_validations, protocol: @protocol3)
+      create(:sub_service_request, service_request: service_request3, organization: organization3, status: 'draft', protocol_id: @protocol3.id)
+
+    end
+
+    it 'should save a search and then a user should be able to perform it' do
+      visit_protocols_index_page
+      wait_for_javascript_to_finish
+
+      expect(@page.search_results).to have_protocols(count: 3)
+
+      @page.filter_protocols.search_field.set((@protocol3.principal_investigators.first.last_name).to_s)
+      find('#save_filters_link').click
+      wait_for_javascript_to_finish
+      fill_in 'protocol_filter_search_name', with: 'saved search'
+      click_button 'Save'
+      wait_for_javascript_to_finish
+      find('a.saved_search_link', text: 'saved search').click
+      wait_for_javascript_to_finish
+
+      expect(@page.search_results).to have_no_protocols(text: "Protocol1")
+      expect(@page.search_results).to have_no_protocols(text: "Protocol2")
+      expect(@page.search_results).to have_protocols(text: "Protocol3")
+    end
+  end
+
   # Creates a protocol using FactoryGirl, optionally with a SubServiceRequest
   #
   # @param [Hash] opts Options for creating the Protocol, all but :status and :organization
@@ -1013,8 +1061,13 @@ RSpec.describe "filters", js: :true do
     # if they exist, we'll create one
     status = opts.delete(:status)
     organization = opts.delete(:organization)
-
-    protocol = create(:project_without_validations, opts.merge(primary_pi: create(:identity)))
+    is_study = opts.delete(:study)
+    
+    if is_study
+      protocol = create(:study_without_validations, opts.merge(primary_pi: create(:identity)))
+    else
+      protocol = create(:project_without_validations, opts.merge(primary_pi: create(:identity)))
+    end
 
     if status.present? || organization.present?
       service_request = create(:service_request_without_validations,

@@ -47,7 +47,7 @@
                   = document.document_file_name
                 = form.file_field :document
             .form-group
-              = form.label :org_ids, t(:documents)[:form_fields][:access], class: 'col-sm-4 control-label'
+              = form.label :org_ids, t(:documents)[:form_fields][:access], class: 'col-sm-4 control-label', title: t(:documents)[:tooltips][:access], data: { toggle: 'tooltip', delay: '{"show":"500"}' }
               .col-sm-7
                 = select_tag :org_ids, document_org_access_collection(document, action_name), class: 'form-control selectpicker', multiple: true
       .modal-footer

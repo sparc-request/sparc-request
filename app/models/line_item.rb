@@ -18,7 +18,7 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class LineItem < ActiveRecord::Base
+class LineItem < ApplicationRecord
 
   include RemotelyNotifiable
 
@@ -35,18 +35,6 @@ class LineItem < ActiveRecord::Base
   has_many :admin_rates, dependent: :destroy
   has_many :notes, as: :notable, dependent: :destroy
   has_one :submission, dependent: :destroy
-
-  attr_accessible :service_request_id
-  attr_accessible :sub_service_request_id
-  attr_accessible :service_id
-  attr_accessible :optional
-  attr_accessible :complete_date
-  attr_accessible :in_process_date
-  attr_accessible :units_per_quantity
-  attr_accessible :quantity
-  attr_accessible :fulfillments_attributes
-  attr_accessible :displayed_cost
-
   attr_accessor :pricing_scheme
 
   accepts_nested_attributes_for :fulfillments, allow_destroy: true

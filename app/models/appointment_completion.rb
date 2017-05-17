@@ -18,14 +18,11 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class AppointmentCompletion < ActiveRecord::Base
+class AppointmentCompletion < ApplicationRecord
   audited
 
   belongs_to :appointment
   belongs_to :organization
-  attr_accessible :completed_date
-  attr_accessible :organization_id
-  attr_accessible :formatted_completed_date
 
   def formatted_completed_date
     format_date self.completed_date
@@ -33,9 +30,9 @@ class AppointmentCompletion < ActiveRecord::Base
   def formatted_completed_date=(d)
     self.completed_date = parse_date(d)
   end
-  
+
   ### audit reporting methods ###
- 
+
   def audit_field_value_mapping
     {"completed_date" => "'ORIGINAL_VALUE'.to_time.strftime('%Y-%m-%d')"}
   end
@@ -60,7 +57,7 @@ class AppointmentCompletion < ActiveRecord::Base
 
   def parse_date(str)
     begin
-      Date.strptime(str.to_s.strip, '%m/%d/%Y')  
+      Date.strptime(str.to_s.strip, '%m/%d/%Y')
     rescue ArgumentError => e
       nil
     end

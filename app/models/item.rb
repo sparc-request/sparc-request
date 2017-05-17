@@ -1,4 +1,4 @@
-class Item < ActiveRecord::Base
+class Item < ApplicationRecord
   belongs_to :questionnaire
   has_many :questionnaire_responses, dependent: :destroy
   has_many :item_options, dependent: :destroy

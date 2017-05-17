@@ -44,8 +44,8 @@ RSpec.describe 'User adds a new note', js: true do
 
       click_button 'Add a Note'
       wait_for_javascript_to_finish
-
       expect(page).to have_selector('.modal-dialog', text: 'New Protocol Note', visible: true)
+      
     end
 
     context 'and fills out the form and submits' do

@@ -18,15 +18,9 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class ResearchTypesInfo < ActiveRecord::Base
+class ResearchTypesInfo < ApplicationRecord
   self.table_name = 'research_types_info'
   audited
 
   belongs_to :protocol
-
-  attr_accessible :protocol_id
-  attr_accessible :human_subjects
-  attr_accessible :vertebrate_animals
-  attr_accessible :investigational_products
-  attr_accessible :ip_patents
 end

@@ -18,14 +18,9 @@
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-class EpicRight < ActiveRecord::Base
+class EpicRight < ApplicationRecord
   audited
   belongs_to :project_role
-
-  attr_accessible :project_role_id
-  attr_accessible :right
-  attr_accessible :new
-  attr_accessible :position
 
   attr_accessor :new
   attr_accessor :position

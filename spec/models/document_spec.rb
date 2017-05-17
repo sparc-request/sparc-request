@@ -34,7 +34,7 @@ RSpec.describe Document do
     let!(:document2) { create(:document, doc_type: 'hipaa') }
 
     it 'should display correctly for doc type other' do
-      expect(document1.display_document_type).to eq('Support')
+      expect(document1.display_document_type).to eq('support')
     end
 
     it 'should display correctly for typical doc type' do

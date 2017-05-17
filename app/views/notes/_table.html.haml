@@ -27,9 +27,9 @@
   %table.table-striped#notes-table{ data: { toggle: 'table', url: notes_path(format: :json, note: { notable_id: notable_id, notable_type: notable_type, in_dashboard: in_dashboard }), striped: "true", toolbar: "#notes-custom-toolbar" } }
     %thead.primary-header
       %tr
-        %th{ data: { class: 'user', align: "left", sortable: "true", field: "user" } }
+        %th{ data: { class: 'col-sm-2 user', align: "left", sortable: "true", field: "user" } }
           = t(:notes)[:table_fields][:user]
-        %th{ data: { class: 'date', align: "left", sortable: "true", field: "date", sorter: 'dateSorter' } }
+        %th{ data: { class: 'col-sm-2 date', align: "left", sortable: "true", field: "date", sorter: 'dateSorter' } }
           = t(:notes)[:table_fields][:date]
-        %th{ data: { class: 'note', align: "left", sortable: "true", field: "note" } }
+        %th{ data: { class: 'col-sm-8 note', align: "left", sortable: "true", field: "note" } }
           = t(:notes)[:table_fields][:note]

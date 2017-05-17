@@ -41,15 +41,6 @@ class UserMailer < ActionMailer::Base
     end
   end
 
-  # Disabled (potentially only temporary) as per Lane
-  # def subject_procedure_notification(user, procedure, ssr)
-  #   @send_to = user
-  #   @procedure = procedure
-  #   @sub_service_request = ssr
-
-  #   send_message("New #{t(:mailer)[:application_title]} Individual Subject Procedure Notification")
-  # end
-
   private
 
   def send_message subject, is_service_provider='false', ssr_id=''

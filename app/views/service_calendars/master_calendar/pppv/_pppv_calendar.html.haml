@@ -23,10 +23,13 @@
     .pull-left
       %h3.panel-title
         = raw(I18n.t('calendars.pppv.header', arm_name: arm.name))
+    .pull-right
+      = render 'service_calendars/master_calendar/pppv/pppv_freeze_header_button', tab: tab, portal: portal, arm: arm, service_request: service_request, sub_service_request: sub_service_request, merged: merged, statuses_hidden: statuses_hidden
     - unless portal || review
       .pull-right
         %button.btn.btn-warning.move-visit-button{ data: { arm_id: arm.id, toggle: 'tooltip', placement: 'bottom', delay: '{"show":"500"}' }, title: t(:calendars)[:tooltips][:move_visit_button]}
           = t(:proper)[:service_calendar][:move_visit][:header]
+        .divider
     .clearfix
   = hidden_field_tag :service_request_id, service_request.id
   %table.table.table-bordered

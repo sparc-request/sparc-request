@@ -67,6 +67,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
     respond_to do |format|
       format.html
       format.js
+      format.csv { send_data Protocol.to_csv(@filterrific.find), :filename => "dashboard_protocols.csv"}
     end
   end
 

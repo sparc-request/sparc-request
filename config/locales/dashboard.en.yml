@@ -329,7 +329,7 @@ en:
 
         study_schedule:
           header: "Study Schedule"
-          no_requests: "There are no per-patient/per-visit requests."
+          no_requests: "There are no clinical services requested."
 
         study_level_activities:
           header: "Study Level Activities"

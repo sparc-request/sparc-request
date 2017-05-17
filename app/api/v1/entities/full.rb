@@ -30,7 +30,9 @@ module V1
             :visit_count,
             :subject_count,
             :protocol_id,
-            :new_with_draft
+            :new_with_draft,
+            :minimum_visit_count,
+            :minimum_subject_count
   end
 
   class ClinicalProviderFull < ClinicalProviderShallow

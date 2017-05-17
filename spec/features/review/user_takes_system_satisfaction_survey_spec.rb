@@ -34,7 +34,7 @@ RSpec.describe 'User takes system satisfaction survey from Step 4', js: true do
     @sr         = create(:service_request_without_validations, status: 'first_draft', protocol: @protocol)
     ssr         = create(:sub_service_request_without_validations, service_request: @sr, organization: program, status: 'first_draft')
                   create(:line_item, service_request: @sr, sub_service_request: ssr, service: service)
-                  create(:arm, protocol: @protocol, visit_count: 1)
+                  create(:arm, protocol: @protocol)
   end
 
   context 'but system is not using system satisfaction survey' do

@@ -76,7 +76,9 @@ class ArmsController < ApplicationController
       :visit_count,
       :subject_count,
       :new_with_draft,
-      :protocol_id
+      :protocol_id,
+      :minimum_visit_count,
+      :minimm_subject_count
     )
   end
 

@@ -20,9 +20,11 @@
 
 FactoryGirl.define do
   factory :arm do
-    sequence(:name) { |n| "Arm #{n}" }
-    subject_count   1
-    visit_count     1
+    sequence(:name)       { |n| "Arm #{n}" }
+    subject_count         { 1 }
+    visit_count           { 1 }
+    minimum_subject_count { 0 }
+    minimum_visit_count   { 0 }
 
     transient do
       line_item_count   0

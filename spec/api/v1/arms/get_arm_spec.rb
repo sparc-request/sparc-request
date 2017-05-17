@@ -24,9 +24,9 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
   describe 'GET /v1/arm/:id.json' do
 
-    before do
-      @arm = build(:arm)
-      @arm.save validate: false
+    before :each do
+      protocol  = create(:protocol_without_validations)
+      @arm      = create(:arm_without_validations, protocol: protocol)
     end
 
     context 'response params' do

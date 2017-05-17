@@ -26,8 +26,8 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
     before do
       5.times do
-        arm = build(:arm)
-        arm.save validate: false
+        protocol  = create(:protocol_without_validations)
+        arm       = create(:arm_without_validations, protocol: protocol)
       end
     end
 

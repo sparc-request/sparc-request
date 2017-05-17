@@ -80,7 +80,9 @@ class Dashboard::ArmsController < Dashboard::BaseController
       :visit_count,
       :subject_count,
       :new_with_draft,
-      :protocol_id
+      :protocol_id,
+      :minimum_visit_count,
+      :minimum_subject_count
     )
   end
 

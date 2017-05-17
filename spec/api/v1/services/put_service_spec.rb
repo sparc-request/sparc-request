@@ -24,7 +24,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
   describe 'PUT /v1/service/:id.json' do
 
-    before do
+    before :each do
       @service = create(:service)
     end
 
@@ -69,9 +69,13 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
         context 'response params' do
 
-          before do
-            line_item = build(:line_item, service: @service)
-            line_item.save validate: false
+          before :each do
+            org               = create(:organization)
+            service           = create(:service, organization: org)
+            protocol          = create(:protocol_without_validations)
+            service_request   = create(:service_request_without_validations, protocol: protocol)
+            ssr               = create(:sub_service_request_without_validations, service_request: service_request, organization: org)
+            line_item         = create(:line_item_without_validations, sub_service_request: ssr, service_request: service_request, service: service)
 
             service_params = {
               service: {
@@ -108,7 +112,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
       describe "Service not found" do
 
-        before do
+        before :each do
           service_params = {
             service: {
               line_items_count: 1
@@ -133,7 +137,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
       describe "params[:service][:line_items_count] not present" do
 
-        before do
+        before :each do
           service_params = {
             service: {}
           }

@@ -39,6 +39,9 @@ class Dashboard::ProtocolFiltersController < Dashboard::BaseController
     filter = ProtocolFilter.find(params[:id])
     filter.destroy
     @protocol_filters = ProtocolFilter.latest_for_user(@user.id, 15)
+    
+    flash[:danger] = 'Search Deleted!'
+    
     respond_to do |format|
       format.js
     end

@@ -251,51 +251,6 @@ wb.add_worksheet(name: "Review") do |sheet|
   line_items.each{|li| li.pricing_scheme = 'effective'} if @admin_offset
 
 
-  #Direct and Indirect Cost Subtotals
-  if USE_INDIRECT_COST
-    sheet.add_row
-
-    direct_cost_total_row = has_per_patient_per_visit_services ? ["", "", "", "", ""] : ["", "", "", ""]
-
-    if has_per_patient_per_visit_services
-      (visit_count*2 - 3).times do
-        direct_cost_total_row << ""
-      end
-    end
-
-    direct_cost_total_row << "" if @admin_offset
-
-    if has_per_patient_per_visit_services
-      direct_cost_total_row += ["Total Direct Cost", "", "", display_study_grand_total_direct_costs(@service_request.protocol, @service_request)]
-    else
-      direct_cost_total_row += ["Total Direct Cost", display_study_grand_total_direct_costs(@service_request.protocol, @service_request)]
-    end
-
-    unless USE_INDIRECT_COST
-      direct_cost_total_row = sheet.add_row(direct_cost_total_row, :style => row_header_style)
-    end
-
-    indirect_cost_total_row = has_per_patient_per_visit_services ? ["", "", "", "", ""] : ["", "", "", ""]
-
-    if has_per_patient_per_visit_services
-      (visit_count*2 - 3).times do
-        indirect_cost_total_row << ""
-      end
-    end
-
-    indirect_cost_total_row << "" if @admin_offset
-
-    if has_per_patient_per_visit_services
-      indirect_cost_total_row += ["Total Indirect Cost", "", "", display_study_grand_total_indirect_costs(@service_request.protocol, @service_request)]
-    else
-      indirect_cost_total_row += ["Total Indirect Cost", display_study_grand_total_indirect_costs(@service_request.protocol, @service_request)]
-    end
-
-    unless USE_INDIRECT_COST
-      indirect_cost_total_row = sheet.add_row(indirect_cost_total_row, :style => row_header_style)
-    end
-  end
-
   ##SSR Total
   if @sub_service_request
     ssr_total_row = ["", "", "", "", ""]
@@ -394,8 +349,5 @@ wb.add_worksheet(name: "Review") do |sheet|
   from_left = 4
   begin_column = alpha_array[visit_count + from_left - 3]
   end_column = alpha_array[visit_count + from_left - 2]
-  sheet.merge_cells("#{begin_column}#{direct_cost_total_row.index+1}:#{end_column}#{direct_cost_total_row.index+1}") if has_per_patient_per_visit_services if !USE_INDIRECT_COST
-  sheet.merge_cells("#{begin_column}#{indirect_cost_total_row.index+1}:#{end_column}#{indirect_cost_total_row.index+1}") if has_per_patient_per_visit_services if !USE_INDIRECT_COST
   sheet.merge_cells("#{begin_column}#{grand_total_row.index+1}:#{end_column}#{grand_total_row.index+1}") if has_per_patient_per_visit_services
-
 end

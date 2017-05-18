@@ -39,6 +39,10 @@ class Survey < ActiveRecord::Base
 
   accepts_nested_attributes_for :sections, allow_destroy: true
 
+  scope :active, -> {
+    where(active: true)
+  }
+
   def insertion_name
     "Before #{title} (Version #{version})"
   end

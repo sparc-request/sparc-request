@@ -22,7 +22,7 @@
 .option{ class: "option-#{option.id}", data: { option_id: option.id } }
   .form-group
     .col-lg-11.no-padding
-      = text_field_tag "option-content", option.content, class: 'form-control option-content', placeholder: t(:surveyor)[:surveys][:form][:content][:option][:content][:placeholder]
+      = text_field_tag "option-content", option.content, class: 'form-control option-content', placeholder: t(:surveyor)[:surveys][:form][:content][:option][:content][:placeholder], maxlength: 255
     .col-lg-1.no-padding
       = link_to surveyor_option_path(option), method: :delete, remote: true, class: 'btn btn-danger pull-right delete-option', title: t(:surveyor)[:surveys][:form][:content][:option][:delete], data: { toggle: 'tooltip', animation: 'false' } do
         %span.glyphicon.glyphicon-trash

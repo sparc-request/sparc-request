@@ -109,37 +109,36 @@ class SurveyResponseReport < ReportingModule
   def create_report(worksheet)
     super
 
-    if Survey.where(access_code: "system-satisfaction-survey").ids.map(&:to_s).include?(params[:survey_id])
-      # assumes the first question where only one option can be picked is the satisfaction question
-      surveys                   = Survey.where(access_code: "system-satisfaction-survey").order('version DESC').first
-      questions                 = Question.where(question_type: ['yes_no', 'likert', 'radio_button'], section: Section.where(survey: surveys))
-      responses                 = QuestionResponse.where(question: questions).where.not(content: [nil, ""])
-      total_percent_satisfied   = responses.map{ |qr| percent_satisfied(qr.content.downcase) }.sum
-      average_percent_satisifed = responses.count == 0 ? 0 : total_percent_satisfied / responses.count
+    start_date = (params[:created_at_from] ? params[:created_at_from] : "2012-03-01".to_date).to_time.strftime("%Y-%m-%d 00:00:00")
+    end_date = (params[:created_at_to] ? params[:created_at_to] : Date.today).to_time.strftime("%Y-%m-%d 23:59:59")
+    # assumes the first question where only one option can be picked is the satisfaction question
+    survey                    = Survey.find(params[:survey_id])
+    questions                 = Question.where(question_type: ['yes_no', 'likert', 'radio_button'], section: Section.where(survey: survey))
+    responses                 = QuestionResponse.where(question: questions, created_at: start_date..end_date).where.not(content: [nil, ""])
+    total_percent_satisfied   = responses.map{ |qr| percent_satisfied(qr.content.downcase) }.sum
+    average_percent_satisifed = responses.count == 0 ? 0 : (total_percent_satisfied.to_f / responses.count.to_f).round(2)
 
-      worksheet.add_row([])
-      worksheet.add_row(["Overall Satisfaction Rate", "", sprintf("%.2f%%", average_percent_satisifed.round(2))])
-    end
+    worksheet.add_row([])
+    worksheet.add_row(["Overall Satisfaction Rate", "", "#{average_percent_satisifed}%"])
   end
 
   # assumes all satisfaction question is answered with a likert scale from version 1 of System Satisfaction or SCTR Customer Satisfaction Survey,
   # or Yes or No answer from version 0 of those surveys.
   def percent_satisfied(content)
-    percent = 
-      if ['yes', 'extremely likely'].include?(content)
-        100
-      elsif ['somewhat likely', 'satisfied'].include?(content)
-        80
-      elsif ['neutral'].include?(content)
-        60
-      elsif ['not very likely, dissatisfied'].include?(content)
-        40
-      elsif ['not at all likely', 'very dissatisfied'].include?(content)
-        20
-      elsif ['no'].include?(content)
-        0
-      else
-        0
-      end
+    if ['yes', 'extremely likely', 'very satisfied'].include?(content)
+      100
+    elsif ['somewhat likely', 'satisfied'].include?(content)
+      80
+    elsif ['neutral'].include?(content)
+      60
+    elsif ['not very likely', 'dissatisfied'].include?(content)
+      40
+    elsif ['not at all likely', 'very dissatisfied'].include?(content)
+      20
+    elsif ['no'].include?(content)
+      0
+    else
+      0
+    end
   end
 end

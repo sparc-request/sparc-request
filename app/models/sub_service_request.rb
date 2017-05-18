@@ -32,7 +32,7 @@ class SubServiceRequest < ApplicationRecord
   belongs_to :owner, :class_name => 'Identity', :foreign_key => "owner_id"
   belongs_to :service_request
   belongs_to :organization
-  belongs_to :protocol
+  belongs_to :protocol, counter_cache: true
   has_many :past_statuses, :dependent => :destroy
   has_many :line_items, :dependent => :destroy
   has_many :line_items_visits, through: :line_items
@@ -127,9 +127,6 @@ class SubServiceRequest < ApplicationRecord
       new_args.update(args)
       li = service_request.create_line_item(new_args)
 
-      # Update subject visit calendars if present
-      update_cwf_data_for_new_line_item(li)
-
       li
     end
 
@@ -138,30 +135,6 @@ class SubServiceRequest < ApplicationRecord
     else
       self.reload
       return false
-    end
-  end
-
-  def update_cwf_data_for_new_line_item(li)
-    if self.in_work_fulfillment
-      values = []
-      columns = [:line_item_id,:visit_id,:appointment_id]
-      self.service_request.arms.each do |arm|
-        visits = Visit.joins(:line_items_visit).where(visits: { visit_group_id: arm.visit_groups}, line_items_visits:{ line_item_id: li.id} )
-        visits.group_by{|v| v.visit_group_id}.each do |vg_id, group_visits|
-          Appointment.where(visit_group_id: vg_id).each do |appointment|
-            appointment_id = appointment.id
-            if appointment.organization_id == li.service.organization_id
-              group_visits.each do |visit|
-                values << [li.id,visit.id,appointment_id]
-              end
-            end
-          end
-        end
-      end
-      if !(values.empty?)
-        Procedure.import columns, values, {:validate => true}
-      end
-      self.reload
     end
   end
 
@@ -476,15 +449,18 @@ class SubServiceRequest < ApplicationRecord
   # Collects all the added/deleted line_items that need to be displayed in the audit report for emails
   def audit_line_items(identity)
     filtered_audit_trail = {:line_items => []}
-
-    ssr_submitted_at_audit = AuditRecovery.where("audited_changes LIKE '%submitted_at%' AND auditable_id = #{id} AND auditable_type = 'SubServiceRequest' AND action IN ('update') AND user_id = #{identity.id}").order(created_at: :desc).first
+    ssr_submitted_at_audit = AuditRecovery.where("audited_changes LIKE '%submitted_at%' AND auditable_id = #{id} AND auditable_type = 'SubServiceRequest' AND action IN ('update') AND user_id = #{identity.id}")
+    ssr_submitted_at_audit = ssr_submitted_at_audit.present? ? ssr_submitted_at_audit.order(created_at: :desc).first : nil
 
     ### start_date = last time SSR was submitted
     ### if SSR has never been submitted, start_date == nil
-    if ssr_submitted_at_audit.audited_changes['submitted_at'].include?(nil)
+    if !ssr_submitted_at_audit.nil? && (ssr_submitted_at_audit.audited_changes['submitted_at'].include?(nil) || ssr_submitted_at_audit.audited_changes['submitted_at'].nil?)
       start_date = nil
     else
-      start_date = !ssr_submitted_at_audit.nil? ? ssr_submitted_at_audit.audited_changes['submitted_at'].first.utc : Time.now.utc
+      if !ssr_submitted_at_audit.nil?
+        start_date = ssr_submitted_at_audit.audited_changes['submitted_at']
+        start_date = start_date.present? ? start_date.first.utc : Time.now.utc
+      end
     end
     end_date = Time.now.utc
 
@@ -493,8 +469,8 @@ class SubServiceRequest < ApplicationRecord
     added_line_item_audits = AuditRecovery.where("audited_changes LIKE '%service_request_id: #{service_request.id}%' AND auditable_type = 'LineItem' AND user_id = #{identity.id} AND action IN ('create') AND created_at BETWEEN '#{start_date}' AND '#{end_date}'")
     
     ### Takes all the added LIs and filters them down to the ones specific to this SSR ###
-    added_li_ids = !added_line_item_audits.empty? ? added_line_item_audits.map(&:auditable_id) : []
-    li_ids_added_to_this_ssr = !line_items.empty? ? line_items.map(&:id) : []
+    added_li_ids = added_line_item_audits.present? ? added_line_item_audits.map(&:auditable_id) : []
+    li_ids_added_to_this_ssr = line_items.present? ? line_items.map(&:id) : []
     added_lis = added_li_ids & li_ids_added_to_this_ssr
 
     if !added_lis.empty?
@@ -503,7 +479,7 @@ class SubServiceRequest < ApplicationRecord
       end
     end
 
-    if !deleted_line_item_audits.empty?
+    if deleted_line_item_audits.present?
       deleted_line_item_audits.each do |deleted_li|
         filtered_audit_trail[:line_items] << deleted_li
       end

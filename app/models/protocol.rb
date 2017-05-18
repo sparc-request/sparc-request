@@ -102,6 +102,17 @@ class Protocol < ApplicationRecord
   validate :unique_rm_id_to_protocol,
     if: -> record { RESEARCH_MASTER_ENABLED && !record.research_master_id.nil? }
 
+  def self.to_csv(protocols)
+    CSV.generate do |csv|
+      ##Insert headers
+      csv << ["Protocol ID", "Project/Study", "Short Title", "Primary Principal Investigator(s)", "Archived?"]
+      ##Insert data for each protocol
+      protocols.each do |p|
+        csv << [p.id, p.is_study? ? "Study" : "Project", p.short_title, p.principal_investigators.map(&:full_name).join(', '), p.archived ? "Yes" : "No"]
+      end
+    end
+  end
+
   def existing_rm_id
     rm_ids = HTTParty.get(RESEARCH_MASTER_API + 'research_masters.json', headers: {'Content-Type' => 'application/json', 'Authorization' => "Token token=\"#{RMID_API_TOKEN}\""})
     ids = rm_ids.map{ |rm_id| rm_id['id'] }
@@ -163,7 +174,6 @@ class Protocol < ApplicationRecord
     hr_protocol_id_query = hr_pro_ids.empty? ? nil : "protocols.id in (#{hr_pro_ids.join(', ')})"
 
     case search_attrs[:search_drop]
-
     when "Authorized User"
       joins(:non_pi_authorized_users).
         joins(:identities).
@@ -206,8 +216,19 @@ class Protocol < ApplicationRecord
   scope :for_admin, -> (identity_id) {
     # returns protocols with ssrs in orgs authorized for identity_id
     return nil if identity_id == '0'
+
     ssrs = SubServiceRequest.where.not(status: 'first_draft').where(organization_id: Organization.authorized_for_identity(identity_id))
-    joins(:sub_service_requests).merge(ssrs).distinct
+    if Identity.find(identity_id).super_users.any?
+      empty_protocols = includes(:sub_service_requests).where(sub_service_requests: {id: nil})
+      protocol_ids = ssrs.map(&:protocol_id)
+      empty_protocol_ids = empty_protocols.map(&:id)
+      all_protocol_ids = protocol_ids + empty_protocol_ids
+      protocols = Protocol.where(:id => all_protocol_ids).distinct
+    else
+      ssrs = SubServiceRequest.where.not(status: 'first_draft').where(organization_id: Organization.authorized_for_identity(identity_id))
+      protocols = joins(:sub_service_requests).merge(ssrs).distinct
+    end
+    protocols
   }
 
   scope :for_identity_id, -> (identity_id) {
@@ -265,6 +286,8 @@ class Protocol < ApplicationRecord
       order("TRIM(REPLACE(short_title, CHAR(9), ' ')) #{sort_order.upcase}")
     when 'pis'
       joins(primary_pi_role: :identity).order(".identities.first_name #{sort_order.upcase}")
+    when 'requests'
+      order("has_ssrs #{sort_order.upcase}")
     end
   }
 

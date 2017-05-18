@@ -32,6 +32,7 @@
       = page_entries_info protocols, {model: "Protocol"}
       = render_filterrific_spinner
     .pull-right
+      = link_to t(:dashboard)[:protocols][:table][:exporter], dashboard_protocols_path(:format => :csv, :filterrific => @filterrific.to_hash), class: 'btn btn-success'
       .btn-group#create-new-protocol-select
         %button.btn.btn-success.dropdown-toggle#create-new-study-button{ type: 'button', 'aria-expanded' => 'false', data: { toggle: 'dropdown' }}
           %span
@@ -62,6 +63,9 @@
           %span.glyphicon.glyphicon-triangle-bottom.desc
       %th.col-sm-2.text-center
         = t(:dashboard)[:protocols][:table][:requests]
+        %span.protocol-sort{ name: 'requests', data: { sort_name: 'requests', sort_order: 'asc' } }
+          %span.glyphicon.glyphicon-triangle-top.asc
+          %span.glyphicon.glyphicon-triangle-bottom.desc
       %th.col-sm-2.text-center
         = t(:dashboard)[:protocols][:table][:archive]
     - protocols.each do |protocol|

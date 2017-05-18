@@ -43,8 +43,9 @@ $(document).ready ->
   $(document).on 'click', '.push-to-epic', (e) ->
     e.preventDefault()
     protocol_id = $(this).data('protocol-id')
+    eq_id = $(this).data('eq-id')
     $.ajax
       type: 'GET'
-      url: "/protocols/#{protocol_id}/push_to_epic.js?from_portal=true"
+      url: "/protocols/#{protocol_id}/push_to_epic.js?from_portal=true&&eq_id=#{eq_id}"
 
 

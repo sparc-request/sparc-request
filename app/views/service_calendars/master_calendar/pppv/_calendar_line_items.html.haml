@@ -33,29 +33,29 @@
     %tr.pppv-line-item-row{ class: locked ? 'bg-danger text-danger' : '' }
       %td.service-name{ colspan: 2 }
         = liv.service.display_service_name
-      %td.notes.text-center
+      %td.notes.text-center.notes-width
         = display_liv_notes(liv, @portal)
-      %td.status.text-center
+      %td.status.text-center.status-width
         = AVAILABLE_STATUSES[ssr.status]
-      %td.service-rate.text-center
+      %td.service-rate.text-center.sm-col-width
         = display_service_rate(liv.line_item)
-      %td.your-cost.text-center
+      %td.your-cost.text-center.sm-col-width
         = "$#{number_with_precision(Service.cents_to_dollars(liv.line_item.applicable_rate), precision: 2)}"
-      %td.unit-type.text-center
-        = liv.line_item.service.displayed_pricing_map.unit_type
-      %td.subject-count.text-center
+      %td.unit-type.text-center.unit-type-width
+        = display_unit_type(liv)
+      %td.subject-count.text-center.xs-col-width
         = liv.subject_count
       - visits      = liv.visits.paginate(page: page.to_i, per_page: 5)
       - totals_hash = liv.try(:per_subject_subtotals, visits)
       - visits.each_with_index do |v, index|
-        %td.text-center.visit{ class: "visit-#{index+1}", data: { cents: totals_hash["#{v.id}"] || 0.00 } }
+        %td.text-center.visit.visit-width{ class: "visit-#{index+1}", data: { cents: totals_hash["#{v.id}"] || 0.00 } }
           = render 'service_calendars/master_calendar/pppv/line_item_visit_input', arm: arm, line_item: liv.line_item, visit: v, tab: tab, portal: portal, service_request: service_request, totals_hash: totals_hash
       - (5 - visits.size).times do
-        %td &nbsp;
-      %td.text-center.pppv-per-patient-line-item-total
+        %td.visit-width &nbsp;
+      %td.text-center.pppv-per-patient-line-item-total.total-width
         %strong
           = display_visit_based_direct_cost(liv)
-      %td.text-center.pppv-per-study-line-item-total
+      %td.text-center.pppv-per-study-line-item-total.total-width
         %strong
           = Dashboard::ServiceCalendars.display_visit_based_direct_cost_per_study(liv)
 

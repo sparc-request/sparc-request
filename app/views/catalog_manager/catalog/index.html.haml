@@ -21,7 +21,10 @@
 #search_box
   %span.search= t(:cm_index)[:search]
   = text_field_tag 'search'
-  = submit_tag t(:cm_index)[:submit], :class => 'custom_button', :id => 'search_button'
+  = submit_tag t(:cm_index)[:submit],
+    :class => 'custom_button',
+    :id => 'search_button',
+    data: { disable_with: false }
   %button#clear_search.custom_button Clear Search
   %span.ui-corner-all.pricing_setup_error
     %p 

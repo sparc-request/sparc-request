@@ -36,20 +36,9 @@ module SparcRails
     # Application configuration should go into files in config/initializers
     # -- all .rb files in that directory are automatically loaded.
 
-    # Custom directories with classes and modules you want to be autoloadable.
-    #config.autoload_paths += %W(#{config.root}/app/reports)
-
-    # /lib path
-    config.autoload_paths += Dir[Rails.root.join('lib')]
-    # /lib/portal path
-    config.autoload_paths += Dir[Rails.root.join('lib/portal')]
-    config.autoload_paths += Dir[Rails.root.join('lib/dashboard')]
-
-    # /app/jobs path
-    config.paths.add File.join('app', 'jobs'), glob: File.join('**', '*.rb')
-    config.autoload_paths += Dir[Rails.root.join('app', 'jobs', '*')]
-
     config.action_dispatch.default_headers.merge!({'X-Frame-Options' => 'ALLOWALL', 'X-UA-Compatible' => 'IE=edge,chrome=1'})
+
+    config.eager_load = true
 
     config.action_view.field_error_proc = Proc.new { |html_tag, instance| html_tag }
     # Only load the plugins named here, in the order given (default is alphabetical).

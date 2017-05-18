@@ -21,10 +21,11 @@
 require 'rails_helper'
 
 RSpec.describe 'dashboard/protocols/summary', type: :view do
-  def render_summary_for protocol
+  def render_summary_for protocol, user
     render 'dashboard/protocols/summary',
       protocol: protocol,
       protocol_type: protocol.type,
+      current_user: user,
       permission_to_edit: true
   end
 
@@ -39,7 +40,7 @@ RSpec.describe 'dashboard/protocols/summary', type: :view do
         archived: false,
         short_title: 'My Awesome Short Title')
 
-      render_summary_for protocol
+      render_summary_for protocol, jug2
 
       expect(response).to have_content('Study Summary')
     end
@@ -53,7 +54,7 @@ RSpec.describe 'dashboard/protocols/summary', type: :view do
         title: 'Study_Title',
         short_title: 'Study_Short_Title')
 
-      render_summary_for protocol
+      render_summary_for protocol, jug2
 
       expect(response).to have_selector('button', text: 'Study Notes')
     end
@@ -72,7 +73,7 @@ RSpec.describe 'dashboard/protocols/summary', type: :view do
           funding_source: 'college',
           funding_status: 'pending_funding')
 
-        render_summary_for protocol
+        render_summary_for protocol, jug2
 
         expect(response).to have_content('9999')
         expect(response).to have_content('My Awesome Full Title')
@@ -97,7 +98,7 @@ RSpec.describe 'dashboard/protocols/summary', type: :view do
           funding_source: 'college',
           funding_status: 'funded')
 
-        render_summary_for protocol
+        render_summary_for protocol, jug2
 
         expect(response).to have_content('9999')
         expect(response).to have_content('My Awesome Full Title')
@@ -120,7 +121,7 @@ RSpec.describe 'dashboard/protocols/summary', type: :view do
         title: 'Project_Title',
         short_title: 'Project_Short_Title')
 
-      render_summary_for protocol
+      render_summary_for protocol, jug2
 
       expect(response).to have_selector('button', text: 'Project Notes')
     end
@@ -133,7 +134,7 @@ RSpec.describe 'dashboard/protocols/summary', type: :view do
         archived: false,
         short_title: 'My Awesome Short Title')
 
-      render_summary_for protocol
+      render_summary_for protocol, jug2
 
       expect(response).to have_content('Project Summary')
     end
@@ -152,7 +153,7 @@ RSpec.describe 'dashboard/protocols/summary', type: :view do
           funding_source: 'college',
           funding_status: 'pending_funding')
 
-        render_summary_for protocol
+        render_summary_for protocol, jug2
 
         expect(response).to have_content('9999')
         expect(response).to have_content('My Awesome Full Title')
@@ -177,7 +178,7 @@ RSpec.describe 'dashboard/protocols/summary', type: :view do
           funding_source: 'college',
           funding_status: 'funded')
 
-        render_summary_for protocol
+        render_summary_for protocol, jug2
 
         expect(response).to have_content('9999')
         expect(response).to have_content('My Awesome Full Title')

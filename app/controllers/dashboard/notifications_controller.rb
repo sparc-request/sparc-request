@@ -33,7 +33,7 @@ class Dashboard::NotificationsController < Dashboard::BaseController
         Notification.in_inbox_of(@user.id, params[:sub_service_request_id])
       else
         Notification.in_sent_of(@user.id, params[:sub_service_request_id])
-      end.distinct
+      end.uniq
   end
 
   def new

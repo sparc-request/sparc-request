@@ -1046,6 +1046,24 @@ RSpec.describe "filters", js: :true do
       expect(@page.search_results).to have_no_protocols(text: "Protocol2")
       expect(@page.search_results).to have_protocols(text: "Protocol3")
     end
+
+    it 'allow a user to delete a saved search from the list' do
+      visit_protocols_index_page
+      wait_for_javascript_to_finish
+      @page.filter_protocols.search_field.set((@protocol3.principal_investigators.first.last_name).to_s)
+      find('#save_filters_link').click
+      wait_for_javascript_to_finish
+      fill_in 'protocol_filter_search_name', with: 'saved search'
+      click_button 'Save'
+      wait_for_javascript_to_finish
+      expect(ProtocolFilter.count).to eq(1)
+      page.execute_script('$(".delete-filter").click()')
+      wait_for_javascript_to_finish
+      expect(ProtocolFilter.count).to eq(0)
+      expect(page).not_to have_selector('.delete-filter')
+      expect(page).not_to have_selector('.saved_search_link')
+    end
+
   end
 
   # Creates a protocol using FactoryGirl, optionally with a SubServiceRequest

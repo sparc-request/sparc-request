@@ -22,6 +22,6 @@ $("#modal_errors").html("<%= j render 'shared/modal_errors', errors: @errors %>"
 $("#saved_searches").html("<%= j render 'dashboard/protocol_filters/saved_searches', current_user: @user, protocol_filters: @protocol_filters %>")
 $("#modal_place").modal('hide')
 <% if @protocol_filters.count == 0 %>
-$("#saved_searches").remove()
+$("#saved_searches").html("")
 <% end %>
 <% end %>

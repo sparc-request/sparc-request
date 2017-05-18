@@ -27,10 +27,10 @@ class SparcUsersReport < Report
   end
 
   def assemble_users
-    associated = Identity.joins(:project_roles).uniq! {|e| e.id}
-    cms = Identity.joins(:catalog_managers).uniq! {|e| e.id}
-    sps = Identity.joins(:service_providers).uniq! {|e| e.id}
-    sus = Identity.joins(:super_users).uniq! {|e| e.id}
+    associated = Identity.joins(:project_roles).distinct! {|e| e.id}
+    cms = Identity.joins(:catalog_managers).distinct! {|e| e.id}
+    sps = Identity.joins(:service_providers).distinct! {|e| e.id}
+    sus = Identity.joins(:super_users).distinct! {|e| e.id}
 
     all_users = (associated + cms + sps + sus).flatten.uniq! {|e| e.id}
 

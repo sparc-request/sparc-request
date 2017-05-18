@@ -39,7 +39,7 @@ class ReportingModule
     records ||= self.table.includes(self.includes)
                     .joins(self.joins)
                     .where(self.where(self.params))
-                    .uniq(self.uniq)
+                    .distinct(self.uniq)
                     .group(self.group)
                     .order(self.order)
     records

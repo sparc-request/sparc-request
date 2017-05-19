@@ -44,8 +44,6 @@ RSpec.describe "Admin User filters My Admin Protocols using Search functionality
       service_request2 = create(:service_request_without_validations, protocol: @protocol2)
       service_request3 = create(:service_request_without_validations, protocol: @protocol3)
 
-      binding.pry
-      
       create(:sub_service_request, service_request: service_request1, organization: organization1)
       create(:sub_service_request, service_request: service_request2, organization: organization2)
       create(:sub_service_request, service_request: service_request3, organization: organization3)

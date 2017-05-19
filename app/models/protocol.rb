@@ -218,17 +218,16 @@ class Protocol < ApplicationRecord
     return nil if identity_id == '0'
 
     ssrs = SubServiceRequest.where.not(status: 'first_draft').where(organization_id: Organization.authorized_for_identity(identity_id))
-    if Identity.find(identity_id).super_users.any?
-      empty_protocols = includes(:sub_service_requests).where(sub_service_requests: {id: nil})
-      protocol_ids = ssrs.map(&:protocol_id)
-      empty_protocol_ids = empty_protocols.map(&:id)
-      all_protocol_ids = protocol_ids + empty_protocol_ids
-      protocols = Protocol.where(:id => all_protocol_ids).distinct
+    
+    if Identity.find(identity_id).is_super_user?
+      empty_protocol_ids  = includes(:sub_service_requests).where(sub_service_requests: { id: nil }).ids
+      protocol_ids        = ssrs.distinct.pluck(:protocol_id)
+      all_protocol_ids    = (protocol_ids + empty_protocol_ids).uniq
+
+      where(id: all_protocol_ids)
     else
-      ssrs = SubServiceRequest.where.not(status: 'first_draft').where(organization_id: Organization.authorized_for_identity(identity_id))
-      protocols = joins(:sub_service_requests).merge(ssrs).distinct
+      joins(:sub_service_requests).merge(ssrs).distinct
     end
-    protocols
   }
 
   scope :for_identity_id, -> (identity_id) {

@@ -109,6 +109,24 @@ RSpec.describe 'dashboard/protocols/summary', type: :view do
         expect(response).to have_content('College Department')
       end
     end
+
+    context 'Study is not archived' do
+      it 'should display the archive button' do
+        protocol = build(:unarchived_study_without_validations)
+        allow(jug2).to receive(:super_users) { [1] }
+        render_summary_for protocol, jug2
+        expect(response).to have_content('Archive Study')
+      end
+    end
+
+    context 'Study is archived' do
+      it 'should display the archive button' do
+        protocol = build(:archived_study_without_validations)
+        allow(jug2).to receive(:super_users) { [1] }
+        render_summary_for protocol, jug2
+        expect(response).to have_content('Unarchive Study')
+      end
+    end
   end
 
   context 'Protocol is a Project' do
@@ -187,6 +205,24 @@ RSpec.describe 'dashboard/protocols/summary', type: :view do
         expect(response).not_to have_content('Potential Funding Source')
         expect(response).to have_content('Funding Source')
         expect(response).to have_content('College Department')
+      end
+    end
+
+    context 'Project is not archived' do
+      it 'should display the archive button' do
+        protocol = build(:unarchived_project_without_validations)
+        allow(jug2).to receive(:super_users) { [1] }
+        render_summary_for protocol, jug2
+        expect(response).to have_content('Archive Project')
+      end
+    end
+
+    context 'Project is archived' do
+      it 'should display the archive button' do
+        protocol = build(:archived_project_without_validations)
+        allow(jug2).to receive(:super_users) { [1] }
+        render_summary_for protocol, jug2
+        expect(response).to have_content('Unarchive Project')
       end
     end
   end

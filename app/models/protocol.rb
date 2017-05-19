@@ -175,9 +175,9 @@ class Protocol < ApplicationRecord
 
     case search_attrs[:search_drop]
     when "Authorized User"
-      joins(:non_pi_authorized_users).
-        joins(:identities).
-        where(authorized_user_query).distinct
+      unscoped = self.unscoped.joins(:non_pi_authorized_users).joins(:identities).where(authorized_user_query)
+      for_identity = current_scope
+      Protocol.where(:id => for_identity & unscoped).distinct
     when "HR#"
       joins(:human_subjects_info).
         where(hr_query).distinct
@@ -286,7 +286,7 @@ class Protocol < ApplicationRecord
     when 'pis'
       joins(primary_pi_role: :identity).order(".identities.first_name #{sort_order.upcase}")
     when 'requests'
-      order("has_ssrs #{sort_order.upcase}")
+      order("sub_service_requests_count #{sort_order.upcase}")
     end
   }
 

@@ -273,7 +273,7 @@ RSpec.describe 'SubServiceRequest' do
 
         it "should not return the same identity twice if it is both the owner and service provider" do
           sub_service_request.update_attributes(owner_id: user.id)
-          expect(sub_service_request.candidate_owners.distinct.length).to eq(sub_service_request.candidate_owners.length)
+          expect(sub_service_request.candidate_owners.uniq.length).to eq(sub_service_request.candidate_owners.length)
         end
       end
     end

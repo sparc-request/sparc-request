@@ -251,9 +251,6 @@ ActiveRecord::Schema.define(version: 20170517143845) do
     t.string   "email"
     t.string   "last_name"
     t.string   "first_name"
-    t.string   "institution"
-    t.string   "college"
-    t.string   "department"
     t.string   "era_commons_name"
     t.string   "credentials"
     t.string   "subspecialty"
@@ -404,7 +401,7 @@ ActiveRecord::Schema.define(version: 20170517143845) do
     t.index ["sub_service_request_id"], name: "index_notifications_on_sub_service_request_id", using: :btree
   end
 
-  create_table "options", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+  create_table "options", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
     t.integer  "question_id"
     t.text     "content",     limit: 65535, null: false
     t.datetime "created_at",                null: false
@@ -593,19 +590,18 @@ ActiveRecord::Schema.define(version: 20170517143845) do
     t.boolean  "archived",                                                                    default: false
     t.integer  "study_type_question_group_id"
     t.integer  "research_master_id"
-    t.boolean  "has_human_subject_info"
-    t.integer  "has_ssrs",                                                                    default: 0
+    t.integer  "sub_service_requests_count",                                                  default: 0
     t.index ["next_ssr_id"], name: "index_protocols_on_next_ssr_id", using: :btree
   end
 
-  create_table "protocols_study_phases", id: false, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+  create_table "protocols_study_phases", id: false, force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
     t.integer "protocol_id",    null: false
     t.integer "study_phase_id", null: false
     t.index ["protocol_id", "study_phase_id"], name: "index_protocols_study_phases_on_protocol_id_and_study_phase_id", using: :btree
     t.index ["study_phase_id", "protocol_id"], name: "index_protocols_study_phases_on_study_phase_id_and_protocol_id", using: :btree
   end
 
-  create_table "question_responses", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+  create_table "question_responses", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
     t.integer  "question_id"
     t.integer  "response_id"
     t.text     "content",     limit: 65535
@@ -636,7 +632,7 @@ ActiveRecord::Schema.define(version: 20170517143845) do
     t.index ["service_id"], name: "index_questionnaires_on_service_id", using: :btree
   end
 
-  create_table "questions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+  create_table "questions", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
     t.integer  "section_id"
     t.boolean  "is_dependent",                null: false
     t.text     "content",       limit: 65535, null: false
@@ -681,7 +677,7 @@ ActiveRecord::Schema.define(version: 20170517143845) do
     t.index ["protocol_id"], name: "index_research_types_info_on_protocol_id", using: :btree
   end
 
-  create_table "responses", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+  create_table "responses", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
     t.integer  "survey_id"
     t.integer  "identity_id"
     t.integer  "sub_service_request_id"
@@ -703,7 +699,7 @@ ActiveRecord::Schema.define(version: 20170517143845) do
     t.datetime "updated_at",                null: false
   end
 
-  create_table "sections", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+  create_table "sections", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
     t.integer  "survey_id"
     t.string   "title"
     t.text     "description", limit: 65535
@@ -786,7 +782,7 @@ ActiveRecord::Schema.define(version: 20170517143845) do
     t.index ["updated_at"], name: "index_sessions_on_updated_at", using: :btree
   end
 
-  create_table "study_phases", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+  create_table "study_phases", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
     t.integer  "order"
     t.string   "phase"
     t.integer  "version",    default: 1
@@ -918,7 +914,7 @@ ActiveRecord::Schema.define(version: 20170517143845) do
     t.index ["organization_id"], name: "index_super_users_on_organization_id", using: :btree
   end
 
-  create_table "surveys", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci" do |t|
+  create_table "surveys", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin" do |t|
     t.string   "title",                       null: false
     t.text     "description",   limit: 65535
     t.string   "access_code",                 null: false

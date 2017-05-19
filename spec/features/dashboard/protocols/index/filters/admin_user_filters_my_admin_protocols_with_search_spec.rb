@@ -343,7 +343,7 @@ RSpec.describe "Admin User filters My Admin Protocols using Search functionality
 
     it "should not have any HR# matches" do
       bootstrap_select '#filterrific_search_query_search_drop', 'HR#'
-      fill_in 'filterrific_search_query_search_text', with: '11111111111
+      fill_in 'filterrific_search_query_search_text', with: '11111111111'
       find('#apply-filter-button').click
       wait_for_javascript_to_finish
 
@@ -390,7 +390,7 @@ RSpec.describe "Admin User filters My Admin Protocols using Search functionality
 
     it "should not have any PRO# matches" do
       bootstrap_select '#filterrific_search_query_search_drop', 'PRO#'
-      fill_in 'filterrific_search_query_search_text', with: '11111111111
+      fill_in 'filterrific_search_query_search_text', with: '11111111111'
       find('#apply-filter-button').click
       wait_for_javascript_to_finish
 
@@ -413,7 +413,7 @@ RSpec.describe "Admin User filters My Admin Protocols using Search functionality
       service_request1 = create(:service_request_without_validations, protocol: @protocol1)
       service_request2 = create(:service_request_without_validations, protocol: @protocol2)
       service_request3 = create(:service_request_without_validations, protocol: @protocol3)
-      service_request4 = create(:service_request_without_validations, protocol: @protocol3)
+      service_request4 = create(:service_request_without_validations, protocol: @protocol4)
 
       create(:sub_service_request, service_request: service_request1, organization: organization1)
       create(:sub_service_request, service_request: service_request2, organization: organization2)

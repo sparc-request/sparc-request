@@ -132,12 +132,6 @@ class Protocol < ApplicationRecord
     end
   end
 
-  scope :for_identity, -> (identity) {
-    joins(:project_roles).
-    where(project_roles: { identity_id: identity.id }).
-    where.not(project_roles: { project_rights: 'none' })
-  }
-
   filterrific(
     default_filter_params: { show_archived: 0 },
     available_filters: [
@@ -170,21 +164,25 @@ class Protocol < ApplicationRecord
     title_query            = ["protocols.short_title LIKE #{like_search_term} escape '!'", "protocols.title LIKE #{like_search_term} escape '!'"]
     ### END SEARCH QUERIES ###
 
-    hr_pro_ids = HumanSubjectsInfo.where([hr_query, pro_num_query].join(' OR ')).map(&:protocol_id)
+    hr_pro_ids = HumanSubjectsInfo.where([hr_query, pro_num_query].join(' OR ')).pluck(:protocol_id)
     hr_protocol_id_query = hr_pro_ids.empty? ? nil : "protocols.id in (#{hr_pro_ids.join(', ')})"
 
     case search_attrs[:search_drop]
     when "Authorized User"
-      unscoped = self.unscoped.joins(:non_pi_authorized_users).joins(:identities).where(authorized_user_query)
-      for_identity = current_scope
-      Protocol.where(:id => for_identity & unscoped).distinct
+      # To prevent overlap between the for_identity or for_admin scope, run the query unscoped
+      # and combine with the old scope's values
+      unscoped  = self.unscoped.joins(:non_pi_authorized_users).joins(:identities).where(authorized_user_query)
+      others    = self.current_scope
+      
+      where(id: others & unscoped).distinct
     when "HR#"
       joins(:human_subjects_info).
         where(hr_query).distinct
     when "PI"
-      joins(:principal_investigators).
-        where(pi_query).
-        distinct
+      unscoped  = self.unscoped.joins(:principal_investigators).where(pi_query)
+      others    = self.current_scope
+
+      where(id: others & unscoped).distinct
     when "Protocol ID"
       where(protocol_id_query).distinct
     when "PRO#"
@@ -207,10 +205,16 @@ class Protocol < ApplicationRecord
     if filter == 'for_admin'
       for_admin(id)
     elsif filter == 'for_identity'
-      for_identity_id(id)
-    elsif filter == 'empty_protocols'
-      empty_protocols(id)
+      for_identity(id)
     end
+  }
+
+  scope :for_identity, -> (identity_id) {
+    return nil if identity_id == '0'
+
+    joins(:project_roles).
+    where(project_roles: { identity_id: identity_id }).
+    where.not(project_roles: { project_rights: 'none' })
   }
 
   scope :for_admin, -> (identity_id) {
@@ -227,22 +231,6 @@ class Protocol < ApplicationRecord
       where(id: all_protocol_ids)
     else
       joins(:sub_service_requests).merge(ssrs).distinct
-    end
-  }
-
-  scope :for_identity_id, -> (identity_id) {
-    # returns protocols user has a project role for
-    return nil if identity_id == '0'
-    joins(:project_roles).where(project_roles: { identity_id: identity_id }).where.not(project_roles: { project_rights: 'none' })
-  }
-
-  scope :empty_protocols, -> (identity_id) {
-    # returns protocols with no ssrs if you are a super user of any kind
-    return nil if identity_id == '0'
-    if Identity.find(identity_id).super_users.any?
-      includes(:sub_service_requests).where(sub_service_requests: {id: nil})
-    else
-      return nil
     end
   }
 

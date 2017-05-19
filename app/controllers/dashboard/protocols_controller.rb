@@ -53,18 +53,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
         persistence_id: false #resets filters on page reload
       ) || return
 
-    @protocols = 
-      if @admin && (params[:filterrific].nil? || @admin_filter.include?('for_admin'))
-        Protocol.where(id: @filterrific.find).for_admin(@user).sorted_by(params[:filterrific] ? filterrific_params[:sorted_by] : 'id desc').page(params[:page]).to_a
-      else
-        Protocol.where(id: @filterrific.find).for_identity(@user).sorted_by(params[:filterrific] ? filterrific_params[:sorted_by] : 'id desc').page(params[:page]).to_a
-      end
-
-    # Replace the admin_filter select option for the filter form
-    if @admin && @admin_filter
-      @filterrific.admin_filter = @admin_filter
-    end
-
+    @protocols        = @filterrific.find.page(params[:page])
     @admin_protocols  = Protocol.for_admin(@user.id).pluck(:id)
     @protocol_filters = ProtocolFilter.latest_for_user(@user.id, 5)
 
@@ -220,7 +209,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   private
 
   def filterrific_params
-    temp = params.require(:filterrific).permit(:identity_id,
+    params.require(:filterrific).permit(:identity_id,
       :search_name,
       :show_archived,
       :admin_filter,
@@ -231,14 +220,6 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
       with_organization: [],
       with_status: [],
       with_owner: [])
-
-    # If you're an admin, remove the admin filter so that filterrific doesn't narrow
-    # project roles
-    if @admin
-      @admin_filter = temp.delete(:admin_filter)
-    end
-
-    temp
   end
 
   def protocol_params

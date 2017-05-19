@@ -41,17 +41,38 @@ RSpec.describe 'protocol sorting', js: :true do
   end
 
   it 'should sort protocols' do
-    protocol1 = create(:study_without_validations, primary_pi: user)
-    protocol2 = create(:study_without_validations, primary_pi: user)
-    protocol3 = create(:study_without_validations, primary_pi: user)
+    create(:study_without_validations, primary_pi: user, short_title: "A")
+    create(:study_without_validations, primary_pi: user, short_title: "B")
+    create(:study_without_validations, primary_pi: user, short_title: "C")
     page      = visit_protocols_index_page
 
     page.first('.protocol-sort').click()
     wait_for_javascript_to_finish
 
-    expect(page.search_results.protocols.first).to have_selector('td', text: protocol1.id)
-    expect(page.search_results.protocols.second).to have_selector('td', text: protocol2.id)
-    expect(page.search_results.protocols.third).to have_selector('td', text: protocol3.id)
+    expect(page.search_results.protocols.first.text.include?("1 A")).to eq(true) #B
+    expect(page.search_results.protocols.second.text.include?("2 B")).to eq(true) #A
+    expect(page.search_results.protocols.third.text.include?("3 C")).to eq(true) #C
+  end
+
+  it 'should sort protocols by requests' do
+    organization = create(:organization)
+    protocol1 = create(:study_without_validations, primary_pi: user, short_title: "A")
+                create(:study_without_validations, primary_pi: user, short_title: "B")
+    protocol3 = create(:study_without_validations, primary_pi: user, short_title: "C")
+    sr_for_protocol1 = create(:service_request_without_validations, protocol: protocol1)
+    sr_for_protocol3 = create(:service_request_without_validations, protocol: protocol3)
+      create(:sub_service_request, service_request: sr_for_protocol1, protocol_id: protocol1.id, organization: organization)
+      create(:sub_service_request, service_request: sr_for_protocol3, protocol_id: protocol3.id, organization: organization)
+    page      = visit_protocols_index_page
+    protocol1.reload
+    protocol3.reload
+    find('[name="requests"]').click()
+
+    wait_for_javascript_to_finish
+
+    expect(page.search_results.protocols.first.text.include?("2 B")).to eq(true) #B
+    expect(page.search_results.protocols.second.text.include?("1 A")).to eq(true) #A
+    expect(page.search_results.protocols.third.text.include?("3 C")).to eq(true) #C
   end
 
   it 'should have a visual cue' do

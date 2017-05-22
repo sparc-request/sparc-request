@@ -23,7 +23,7 @@ class Surveyor::SurveysController < ApplicationController
 
   before_action :authenticate_identity!
   before_action :authorize_site_admin
-  before_action :find_survey, only: [:show, :destroy]
+  before_action :find_survey, only: [:show, :destroy, :preview]
 
   def index
     respond_to do |format|
@@ -61,7 +61,6 @@ class Surveyor::SurveysController < ApplicationController
   end
 
   def preview
-    @survey = Survey.find(params[:survey_id])
     @response = @survey.responses.new()
     @response.question_responses.build
 
@@ -76,7 +75,7 @@ class Surveyor::SurveysController < ApplicationController
     selects = {}
 
     @survey.questions.each do |question|
-      selects[question.id] = render_to_string(partial: 'surveyor/surveys/form/dependent_dropdown', locals: { survey: @survey, question: question })
+      selects[question.id] = render_to_string(partial: 'surveyor/surveys/form/dependent_dropdown.html.haml', locals: { survey: @survey, question: question })
     end
 
     render json: selects.to_json

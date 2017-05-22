@@ -100,22 +100,22 @@ RSpec.describe ServiceRequestsController, type: :controller do
 
       context 'with an authorized_user' do
         it 'should notify everyone (authorized_user)' do
-          expect {
-            xhr :get, :obtain_research_pricing, {
-              id: @sr.id
-            }
-          }.to change(ActionMailer::Base.deliveries, :count).by(1)
+          xhr :get, :obtain_research_pricing, {
+            id: @sr.id
+          }
+
+          expect(Delayed::Backend::ActiveRecord::Job.count).to eq(1)
         end
       end
 
       context 'with an authorized_user, a service_provider' do
         it 'should notify everyone (authorized_user, service_provider)' do
           create(:service_provider, identity: logged_in_user, organization: @org)
-          expect {
-            xhr :get, :obtain_research_pricing, {
-              id: @sr.id
-            }
-          }.to change(ActionMailer::Base.deliveries, :count).by(2)
+          xhr :get, :obtain_research_pricing, {
+            id: @sr.id
+          }
+
+          expect(Delayed::Backend::ActiveRecord::Job.count).to eq(2)
         end
       end
 
@@ -123,11 +123,11 @@ RSpec.describe ServiceRequestsController, type: :controller do
         it 'should notify everyone (authorized_user, service_provider, and admin)' do
           create(:service_provider, identity: logged_in_user, organization: @org)
           @org.submission_emails.create(email: 'hedwig@owlpost.com')
-          expect {
-            xhr :get, :obtain_research_pricing, {
-              id: @sr.id
-            }
-          }.to change(ActionMailer::Base.deliveries, :count).by(3)
+          xhr :get, :obtain_research_pricing, {
+            id: @sr.id
+          }
+
+          expect(Delayed::Backend::ActiveRecord::Job.count).to eq(3)
         end
       end
     end

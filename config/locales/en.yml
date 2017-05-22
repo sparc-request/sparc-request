@@ -353,6 +353,8 @@ en:
     updated: "%{protocol_type} Updated!"
     summary:
       header: "%{protocol_type} Summary"
+      archive: "Archive"
+      unarchive: "Unarchive"
       id: "%{protocol_type} ID:"
       title: "Title:"
       short_title: "Short Title:"

@@ -50,15 +50,12 @@ module Dashboard::ProtocolsHelper
     end
   end
 
-  def display_archive_button(protocol, current_user)
-    if !protocol.project_roles.find_by(identity: current_user).nil? ||  (current_user.super_users.any? && protocol.sub_service_requests.empty?)
-      content_tag( :button, (protocol.archived ? t(:dashboard)[:protocols][:table][:unarchive] : t(:dashboard)[:protocols][:table][:archive])+" #{protocol.type.capitalize}", 
+  def display_archive_button(protocol)
+    if current_user.can_edit_protocol?(protocol)
+      content_tag( :button, (protocol.archived ? t(:protocols)[:summary][:unarchive] : t(:protocols)[:summary][:archive])+" #{protocol.type.capitalize}", 
                     type: 'button', 
                     class: 'protocol-archive-button btn btn-warning btn-sm',
-                    data: { protocol_id: protocol.id, 
-                            protocol_type: protocol.type, 
-                            current_user_id: current_user.id, 
-                            permission_to_edit: current_user.can_edit_protocol?(protocol)} 
+                    data: { protocol_id: protocol.id }
       )
     end
   end

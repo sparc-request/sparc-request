@@ -47,13 +47,9 @@ $(document).ready ->
 
       $(document).on 'click', '.protocol-archive-button', ->
         protocol_id = $(this).data('protocol-id')
-        current_user_id = $(this).data('current-user-id')
-        permission_to_edit = $(this).data('permission-to-edit')
-        protocol_type = $(this).data('protocol-type')
         $.ajax
           type: 'PATCH'
           url:  "/dashboard/protocols/#{protocol_id}/archive.js"
-          data: { protocol_id: protocol_id, current_user: current_user_id, pte: permission_to_edit, protocol_type: protocol_type }
 
       $(document).on 'submit', '#filterrific-no-ajax-auto-submit', ->
         $('#filterrific_sorted_by').val("#{$('.protocol-sort').data('sort-name')} #{$('.protocol-sort').data('sort-order')}")

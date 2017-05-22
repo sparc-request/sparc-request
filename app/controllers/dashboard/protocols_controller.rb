@@ -25,7 +25,7 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
   before_action :find_protocol,                                   only: [:show, :edit, :update, :update_protocol_type, :display_requests, :archive]
   before_action :find_admin_for_protocol,                         only: [:show, :edit, :update, :update_protocol_type, :display_requests]
   before_action :protocol_authorizer_view,                        only: [:show, :view_full_calendar, :display_requests]
-  before_action :protocol_authorizer_edit,                        only: [:edit, :update, :update_protocol_type]
+  before_action :protocol_authorizer_edit,                        only: [:edit, :update, :update_protocol_type, :archive]
 
   def index
     admin_orgs   = @user.authorized_admin_organizations
@@ -193,8 +193,8 @@ class Dashboard::ProtocolsController < Dashboard::BaseController
 
   def archive
     @protocol.toggle!(:archived)
-    @protocol_type = params[:protocol_type]
-    @permission_to_edit = params[:pte]
+    @protocol_type = @protocol.type
+    @permission_to_edit = @authorization.present? ? @authorization.can_edit? : false
     respond_to do |format|
       format.js
     end

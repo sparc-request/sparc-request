@@ -22,15 +22,23 @@
     .steps-banner-container
       %ul#steps-banner
         %li
-          = step_nav_button(t(:proper)[:navigation][:steps][:step1], 'blue', ['1','2','3','4'].include?(step_number), protocol_service_request_path(service_request, sub_service_request_id: sub_service_request_id))
+          = step_nav_button(t(:proper)[:navigation][:steps][:step1], 'blue', step_number != '5', protocol_service_request_path(service_request, sub_service_request_id: sub_service_request.try(:id)))
         %li
-          = step_nav_button(t(:proper)[:navigation][:steps][:step2], 'light-blue', ['1','2','3','4'].include?(step_number), service_details_service_request_path(service_request, sub_service_request_id: sub_service_request_id))
+          = step_nav_button(t(:proper)[:navigation][:steps][:step2], 'light-blue', step_number != '5', service_details_service_request_path(service_request, sub_service_request_id: sub_service_request.try(:id)))
         %li
-          = step_nav_button(t(:proper)[:navigation][:steps][:step3], 'orange', ['1','2','3','4'].include?(step_number), document_management_service_request_path(service_request, sub_service_request_id: sub_service_request_id))
+          = step_nav_button(t(:proper)[:navigation][:steps][:step3], 'orange', step_number != '5', document_management_service_request_path(service_request, sub_service_request_id: sub_service_request.try(:id)))
         %li
-          = step_nav_button(t(:proper)[:navigation][:steps][:step4], 'red', ['1','2','3','4'].include?(step_number), review_service_request_path(service_request, sub_service_request_id: sub_service_request_id))
+          = step_nav_button(t(:proper)[:navigation][:steps][:step4], 'red', step_number != '5', review_service_request_path(service_request, sub_service_request_id: sub_service_request.try(:id)))
         %li
-          = step_nav_button(t(:proper)[:navigation][:steps][:step5], 'green', step_number == '5',confirmation_service_request_path(service_request, sub_service_request_id: sub_service_request_id))
+          = step_nav_button(t(:proper)[:navigation][:steps][:step5], 'green', step_number == '5',confirmation_service_request_path(service_request, sub_service_request_id: sub_service_request.try(:id)))
 .col-sm-12.ui-corner-all.step-header{ class: css_class }
-  %h4
-    = step
+  - if step_number == '2B'
+    .col-sm-3.no-padding
+      %h4
+        = step
+    .col-sm-9.no-padding
+      %h4
+        = protocol_id_display(sub_service_request, service_request)
+  - else
+    %h4
+      = step

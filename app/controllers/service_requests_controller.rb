@@ -432,7 +432,7 @@ class ServiceRequestsController < ApplicationController
 
         cal = cals.first
 
-        events = cal.events.sort { |x, y| y.dtstart <=> x.dtstart }
+        events = cal.try(:events).try(:sort) { |x, y| y.dtstart <=> x.dtstart } || []
 
         events.each do |event|
           next if Time.parse(event.dtstart.to_s) > startMax

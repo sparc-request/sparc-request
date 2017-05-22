@@ -23,7 +23,7 @@ class Surveyor::SurveysController < ApplicationController
 
   before_action :authenticate_identity!
   before_action :authorize_site_admin
-  before_action :find_survey, only: [:show, :destroy, :preview]
+  before_action :find_survey, only: [:show, :destroy]
 
   def index
     respond_to do |format|
@@ -61,6 +61,7 @@ class Surveyor::SurveysController < ApplicationController
   end
 
   def preview
+    @survey = Survey.find(params[:survey_id])
     @response = @survey.responses.new()
     @response.question_responses.build
 

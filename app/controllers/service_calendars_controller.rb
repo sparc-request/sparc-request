@@ -217,7 +217,7 @@ class ServiceCalendarsController < ApplicationController
 
     permission_to_view = current_user.can_view_protocol?(@protocol)
 
-    unless permission_to_view || Protocol.for_admin(current_user.id).include?(@protocol)
+    unless permission_to_view || Protocol.for_admin(current_user).include?(@protocol)
       @protocol = nil
 
       render partial: 'service_requests/authorization_error', locals: { error: 'You are not allowed to access this Sub Service Request.' }

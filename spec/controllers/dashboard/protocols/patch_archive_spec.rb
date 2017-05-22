@@ -23,17 +23,14 @@ require 'rails_helper'
 RSpec.describe Dashboard::ProtocolsController do
   describe 'PATCH #archive' do
     before(:each) do
-      user = findable_stub(Identity) do
-        build_stubbed(:identity)
-      end
-      log_in_dashboard_identity(obj: user)
+      log_in_dashboard_identity(obj: build_stubbed(:identity))
       @protocol_stub = findable_stub(Protocol) do
         build_stubbed(:protocol, type: "Study")
       end
       allow(@protocol_stub).to receive(:valid?).and_return(true)
       allow(@protocol_stub).to receive(:toggle!)
 
-      xhr :patch, :archive, id: @protocol_stub.id, current_user: user.id, permission_to_edit: true, protocol_type: @protocol_stub.type
+      xhr :patch, :archive, id: @protocol_stub.id
     end
 
     it 'should toggle archived field of Protocol' do

@@ -329,12 +329,6 @@ SparcRails::Application.routes.draw do
       get :setup
       post :generate
     end
-
-    member do
-      get :research_project_summary
-      post :cwf_audit
-      get :cwf_subject
-    end
   end
 
   ##### Admin Identities #####

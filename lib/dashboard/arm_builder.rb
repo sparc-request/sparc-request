@@ -36,11 +36,6 @@ module Dashboard
       end
 
       @arm.default_visit_days
-
-      # If any sub service requests under this arm's protocol are in CWF we need to build patient calendars
-      if protocol.sub_service_requests.any?(&:in_work_fulfillment)
-        @arm.populate_subjects
-      end
     end
   end
 end

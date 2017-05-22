@@ -102,6 +102,17 @@ class Protocol < ApplicationRecord
   validate :unique_rm_id_to_protocol,
     if: -> record { RESEARCH_MASTER_ENABLED && !record.research_master_id.nil? }
 
+  def self.to_csv(protocols)
+    CSV.generate do |csv|
+      ##Insert headers
+      csv << ["Protocol ID", "Project/Study", "Short Title", "Primary Principal Investigator(s)", "Archived?"]
+      ##Insert data for each protocol
+      protocols.each do |p|
+        csv << [p.id, p.is_study? ? "Study" : "Project", p.short_title, p.principal_investigators.map(&:full_name).join(', '), p.archived ? "Yes" : "No"]
+      end
+    end
+  end
+
   def existing_rm_id
     rm_ids = HTTParty.get(RESEARCH_MASTER_API + 'research_masters.json', headers: {'Content-Type' => 'application/json', 'Authorization' => "Token token=\"#{RMID_API_TOKEN}\""})
     ids = rm_ids.map{ |rm_id| rm_id['id'] }

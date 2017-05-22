@@ -18,7 +18,7 @@
 -# INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 -# TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 - visit_groups.each_with_index do |visit_group, index|
-  %th.visit-group-box{ class: "visit-group-#{index+1}" }
+  %th.visit-group-box{ class: "visit-group-#{index+1} visit-width" }
     .row.text-center
       .col-xs-4.no-padding.text-center
         = "-"
@@ -63,4 +63,4 @@
             data: { id: visit_group.id, service_request_id: service_request.id, arm_id: visit_group.arm.id, toggle: 'tooltip', placement: 'top', delay: '{"show":"500"}' },
             class: 'edit-visit-group', title: t(:calendars)[:tooltips][:visit_name]
 - (visit_groups.size...Visit.per_page).each do |index|
-  %th.col-sm-1.text-center
+  %th.visit-width.text-center

@@ -21,15 +21,6 @@
 class Appointment < ApplicationRecord
   audited
 
-  belongs_to :calendar
-  belongs_to :visit_group
-  belongs_to :organization
-  has_many :procedures, :dependent => :destroy
-  has_many :visits, :through => :procedures
-  has_many :notes, as: :notable
-
-  accepts_nested_attributes_for :procedures
-
   def formatted_completed_date
     format_date self.completed_at
   end

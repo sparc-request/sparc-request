@@ -184,11 +184,6 @@ RSpec.describe "Line Item" do
     end
 
     describe "cost calculations" do
-
-      before :each do
-        add_visits
-      end
-
       context "direct costs for one time fee" do
 
         it "should return the correct direct cost with a unit factor of 1" do

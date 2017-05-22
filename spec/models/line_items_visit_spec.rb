@@ -45,7 +45,6 @@ RSpec.describe LineItemsVisit do
 
     before :each do
       service_request.protocol.update_attributes(indirect_cost_rate: 200)
-      add_visits
       @line_items_visit = arm1.line_items_visits.first
     end
 

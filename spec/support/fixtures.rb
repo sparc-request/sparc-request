@@ -203,38 +203,6 @@ def build_service_request
   end
 end
 
-def add_visits
-  create_visits
-  update_visits
-  update_visit_groups
-end
-
-def create_visits
-  service_request.reload
-  service_request.arms.each do |arm|
-    service_request.per_patient_per_visit_line_items.each do |line_item|
-      arm.create_line_items_visit(line_item)
-    end
-  end
-  arm1.reload
-  arm2.reload
-end
-
-def update_visits
-  service_request.arms.each do |arm|
-    arm.visits.each do |visit|
-      visit.update_attributes(quantity: 15, research_billing_qty: 5, insurance_billing_qty: 5, effort_billing_qty: 5, billing: Faker::Lorem.word)
-    end
-  end
-end
-
-def update_visit_groups
-  vgs = VisitGroup.all
-  vgs.each do |vg|
-    vg.update_attributes(day: vg.position)
-  end
-end
-
 def build_arms
   let!(:protocol_for_service_request_id) {project.id rescue study.id}
   let!(:arm1)                { create(:arm, name: "Arm", protocol_id: protocol_for_service_request_id, visit_count: 10, subject_count: 2)}

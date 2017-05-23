@@ -17,48 +17,8 @@
 # DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS
 # INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR
 # TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
-
-require 'rails_helper'
-
-RSpec.describe Surveyor::SurveysController, type: :controller do
-  stub_controller
-  
-  let!(:before_filters) { find_before_filters }
-  let!(:logged_in_user) { create(:identity, ldap_uid: 'weh6@musc.edu') }
-
-  before :each do
-    stub_const('SITE_ADMINS', ['weh6@musc.edu'])
-    
-    session[:identity_id] = logged_in_user.id
-
-    @survey = create(:survey_without_validations)
-    section = create(:section, survey: @survey)
-              create(:question, section: section)
-
-    xhr :get, :update_dependents_list, {
-      survey_id: @survey.id
-    }
-  end
-
-  describe '#update_dependents_list' do
-    it 'should call before_filter #authenticate_identity!' do
-      expect(before_filters.include?(:authenticate_identity!)).to eq(true)
-    end
-
-    it 'should call before_filter #authorize_site_admin' do
-      expect(before_filters.include?(:authorize_site_admin)).to eq(true)
-    end
-
-    it 'should assign @survey to the survey' do
-      expect(assigns(:survey)).to eq(@survey)
-    end
-
-    it 'should assign @questions to the questions' do
-      expect(assigns(:questions)).to eq(@survey.questions)
-    end
-
-    it { is_expected.to render_template(:update_dependents_list) }
-
-    it { is_expected.to respond_with(:ok) }
-  end
-end
+<% @questions.each do |question| %>
+select = $(".question-<%=question.id%> select.select-depender")
+select.html("<%= j render 'surveyor/surveys/form/dependent_dropdown', survey: @survey, question: question %>")
+select.selectpicker('refresh')
+<% end %>

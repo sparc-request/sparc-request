@@ -63,6 +63,10 @@ class Service < ApplicationRecord
   end
   ###############################################
 
+  def humanized_status
+    self.is_available ? 'Available' : 'Unavailable'
+  end
+
   def process_ssrs_organization
     organization.process_ssrs_parent
   end

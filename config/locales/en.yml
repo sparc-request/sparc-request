@@ -204,9 +204,6 @@ en:
         visit_name: "Edit Visit Name"
         your_cost: "Edit Your Cost"
         subject_count: "Edit Subject Count"
-        research: "Edit Research Billing Qty"
-        third_party: "Edit Insurance Billing Qty"
-        percent: "Edit Effort Billing Qty"
       totals:
         maximum_direct: "Maximum Total Direct Costs Per Patient"
         maximum_per_patient: "Maximum Total Per Patient"

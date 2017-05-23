@@ -50,7 +50,7 @@ module Dashboard::ProtocolsHelper
     end
   end
 
-  def display_archive_button(protocol)
+  def display_archive_button(protocol, current_user)
     if current_user.can_edit_protocol?(protocol)
       content_tag( :button, (protocol.archived ? t(:protocols)[:summary][:unarchive] : t(:protocols)[:summary][:archive])+" #{protocol.type.capitalize}", 
                     type: 'button', 

@@ -24,11 +24,7 @@ RSpec.describe 'SPARCCWF::APIv1', type: :request do
 
   describe 'GET /v1/line_items_visits.json' do
 
-<<<<<<< HEAD
     before :each do
-=======
-    before do
->>>>>>> master
       5.times do
         org               = create(:organization)
         service           = create(:service, organization: org)
